@@ -28,6 +28,14 @@ var view = function () {
                 break;
         }
     }
+    var addTrackerInList = function (i) {
+        $('body').append('<style>div.tracker_icon.num'+i+' { background-image: url('+tracker[i].icon+'); }</style>');
+        $('<li data-id="'+i+'"/>').append($('<div class="tracker_icon num'+i+'"/>')).append($('<a href="#">'+tracker[i].name+'</a>').click(function() {
+            alert('asd');
+            return false;
+        })).append('<i/>').appendTo($('ul.trackers'));
+    //$('ul.trackers').append('<li data-id="'+i+'"><div class="tracker_icon num'+i+'"></div> <a href="#">'+tracker[i].name+'</a> <i></i></li>');
+    }
     var write_result = function (t,a,s) {
         var c = '';
         $('#rez_table').children('tbody').children('tr[data-tracker='+t+']').remove();
@@ -143,10 +151,6 @@ var view = function () {
         $('ul.trackers').empty();
         for (var i=0;i<tracker.length;i++)
             $('ul.trackers').append('<li data-id="'+i+'"><div class="tracker_icon" style="background-image: url('+tracker[i].icon+');"></div> '+tracker[i].name+' <i></i></li>');
-    }
-    var addTrackerInList = function (i) {
-        $('body').append('<style>div.tracker_icon.num'+i+' { background-image: url('+tracker[i].icon+'); }</style>');
-        $('ul.trackers').append('<li data-id="'+i+'"><div class="tracker_icon num'+i+'"></div> '+tracker[i].name+' <i></i></li>');
     }
     var contentFilter = function (c) {
         var c = c.replace(/\/\//img,'#blockurl#').replace(/script/img,'#blockscr#');
