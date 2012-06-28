@@ -40,6 +40,11 @@ var engine = function () {
     {
         'n' : 'torrents.local', 
         'e' : 0
+    },
+
+    {
+        'n' : 'pornolab', 
+        'e' : 0
     }
     ];
     var internalTrackers = (localStorage.internalTrackers !== undefined) ? JSON.parse(localStorage.internalTrackers) : null;
@@ -67,7 +72,7 @@ var engine = function () {
     }
     var loadModules = function () {
         tracker = [];
-        if (internalTrackers == null)
+        if (internalTrackers == null || option_mode == true)
             var Trackers = defaultList;
         else
             var Trackers = internalTrackers;
@@ -77,7 +82,7 @@ var engine = function () {
         }
         var l = Trackers.length;
         for (var i=0;i<l;i++)
-            if (Trackers[i].e  || option_mode == true)
+            if (Trackers[i].e || option_mode == true)
                 loadInternalModule(Trackers[i].n);
     }
     var ModuleLoaded = function (n) {
