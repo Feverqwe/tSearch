@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Torrents MultiSearch</title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="css/stylesheet.css"> 
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.tablesorter.js"></script>
+        <script src="js/engine.js"></script>
+        <script src="js/view.js"></script>
+    </head>
+    <body>
+        <div class="search_panel">
+            <form name="search">
+                <input type="text" name="s" />
+                <input type="submit" class="sbutton" value="Найти" />
+            </form>
+        </div>
+        <div class="content">
+            <div class="right">
+                <div class="tracker_list">
+                    <p>Трекеры</p>
+                    <div class="setup" title="Настройки"></div>
+                    <ul class="trackers"></ul>
+                </div>
+                <div class="filter">
+                    <p>Фильтр</p>
+                    <input type="text" />
+                    <div class="btn" title="Очистить"></div>
+                </div>
+            </div>
+            <div class="left">
+                <div class="result_panel">
+                    <ul class="categorys">
+                        <li class="selected">Всё <i></i></li>
+                        <li data-id="3">Фильмы <i></i></li>
+                        <li data-id="0">Сериалы <i></i></li>
+                        <li data-id="1">Музыка <i></i></li>
+                        <li data-id="7">Анимэ <i></i></li>
+                        <li data-id="4">Мультфтльмы <i></i></li>
+                        <li data-id="6">ПО <i></i></li>
+                        <li data-id="5">Книги <i></i></li>
+                        <li data-id="2">Игры <i></i></li>
+                        <li data-id="9">Док. и юмор <i></i></li>
+                        <li data-id="10">Спорт <i></i></li>
+                        <li data-id="8">Прочие <i></i></li>
+                    </ul>
+                    <table id="rez_table">
+                        <thead>
+                            <tr>
+                                <th class="time">Время</th>
+                                <th class="name">Название</th>
+                                <th class="size">Размер</th>
+                                <th class="seeds" title="Раздают">С</th>
+                                <th class="leechs" title="Скачивают">Л</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

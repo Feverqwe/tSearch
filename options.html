@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Настройки поиска</title>
+        <meta charset="utf-8" />
+        <link rel="shortcut icon" href="images/settings.png">
+        <link rel="stylesheet" type="text/css" href="css/options.css"> 
+        <script src="js/jquery.min.js"></script>
+        <script src="js/engine.js"></script>
+        <script src="js/options.js"></script>
+    </head>
+    <body>
+    <center><h1>Torrents MultiSearch</h1></center>
+    <center><h2>Настройки</h2></center>
+    <form name="save">
+        <fieldset>
+            <legend>Трекеры</legend>
+            <table id="internalTrackers">
+                <thead>
+                    <tr>
+                        <th>Торрент трекер</th>
+                        <th>Вкл\Выкл</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Опции</legend>
+            <div><input name="icons" type="checkbox"/><span>Показывать иконки торрент-трекеров в выдаче</span></div>
+            <div><input name="AdvFiltration" type="checkbox"/><span>Включить расширенную фильтрацию</span></div>
+        </fieldset>
+        <div class="save_panel">
+            <input type="submit" value="Сохранить" />
+            <div class="progress"></div>
+        </div>
+    </form>
+</body>
+</html>
