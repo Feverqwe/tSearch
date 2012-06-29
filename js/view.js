@@ -13,7 +13,9 @@ var view = function () {
     var clear_table = function () {
         $('#rez_table').children('tbody').empty();
         $('div.filter').children('input').val('');
+        keywordFilter = null;
         lastFilterWord = '';
+        $('div.filter div.btn').hide();
         $('ul.trackers li a.selected').removeClass('selected');
         trackerFilter = null;
         $('ul.categorys').children('li').removeClass('selected').eq(0).addClass('selected');
