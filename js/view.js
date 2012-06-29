@@ -227,10 +227,10 @@ var view = function () {
         keyword = $.trim(keyword).replace(/\s+/g," ");
         if (keyword == '') {
             $('div.filter').children('input').val('');
-            updateTrackerCount();
             keywordFilter = null;
             $('ul.categorys').children('li.selected').trigger('click');
             updateCategorys();
+            updateTrackerCount();
             $('div.filter div.btn').hide();
             return;
         }
