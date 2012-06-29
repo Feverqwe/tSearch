@@ -303,6 +303,10 @@ div.tracker_list > ul.trackers > li > a {
     color: #000;
     padding: 2px;
 }
+div.tracker_list > ul.trackers > li > a:hover {
+    background-color: #ebebeb;
+    border-radius: 6px;
+}
 div.tracker_list > ul.trackers > li > a.selected {
     background-color: #99ccff;
     border-radius: 6px;
