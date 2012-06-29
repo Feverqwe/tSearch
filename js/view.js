@@ -1,6 +1,7 @@
 var view = function () {
     var trackerFilter = null;
     var keywordFilter = null;
+    var categoryFilter = null;
     var lastFilterWord = '';
     var ShowIcons = (localStorage.ShowIcons !== undefined) ? parseInt(localStorage.ShowIcons) : true;
     var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : true;
@@ -17,7 +18,8 @@ var view = function () {
         $('div.filter div.btn').hide();
         $('ul.trackers li a.selected').removeClass('selected');
         trackerFilter = null;
-        $('ul.categorys').children('li').removeClass('selected').eq(0).addClass('selected');
+    //categoryFilter = null;
+    //$('ul.categorys').children('li').removeClass('selected').eq(0).addClass('selected');
     }
     var loadingStatus  = function (s,t) {
         var tracker_img = $('ul.trackers').children('li[data-id="'+t+'"]').children('div.tracker_icon');
@@ -56,7 +58,19 @@ var view = function () {
         var s_s = s.replace(/\s+/g," ");
         $.each(a, function (k,v) {
             var title = filterText(s_s,v.title);
-            c = c + '<tr data-kf="0" data-tracker="'+t+'" data-c="'+v.category.id+'">'
+            var filter = '';
+            var fk = 0;
+            if (trackerFilter!=null && trackerFilter != t) filter = 'style="display: none;"';
+            if (categoryFilter!=null && categoryFilter != v.category.id) filter = 'style="display: none;"';
+            if (keywordFilter!=null) {
+                var keyword = $.trim($('div.filter').children('input').val()).replace(/\s+/g," ");
+                if (title==filterTextCheck(keyword,title)) 
+                    filter = 'style="display: none;"';
+                else
+                    fk = 1;
+                
+            }
+            c = c + '<tr '+filter+' data-kf="'+fk+'" data-tracker="'+t+'" data-c="'+v.category.id+'">'
             +'  <td class="time" data-value="'+v.time+'">'+unixintime(v.time)+'</td>'
             +'  <td class="name"><div class="title"><a href="'+v.url+'" target="_blank">'+title+'</a>'+
             ((v.category.title == null && ShowIcons)?'<div class="tracker_icon num'+t+'" title="'+tracker[t].name+'"></div>':'')
@@ -295,6 +309,9 @@ var view = function () {
         },
         keywordFilter : function () { 
             return keywordFilter;
+        },
+        setCatFilter : function (a) {
+            categoryFilter = a;
         }
     }
 }();
@@ -318,6 +335,7 @@ $(function () {
             var trackerFilter = view.trackerFilter();
             var keywordFilter = view.keywordFilter();
             var id = $(this).data('id');
+            view.setCatFilter(id);
             $('ul.categorys').children('li.selected').removeClass('selected');
             $(this).addClass('selected');
             $('#rez_table').children('tbody').children('tr').css('display','none');
