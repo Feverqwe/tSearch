@@ -1,7 +1,8 @@
 var view = function () {
-    var lastFilterWord = '';
-    var lastFilterCache = [];
     var trackerFilter = null;
+    var keywordFilter = null;
+    var lastFilterWord = '';
+    //var lastFilterCache = null;
     var ShowIcons = (localStorage.ShowIcons !== undefined) ? parseInt(localStorage.ShowIcons) : true;
     var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : true;
     var auth = function (s,t) {
@@ -42,10 +43,10 @@ var view = function () {
                 $(this).addClass('selected');
                 trackerFilter = $(this).parent('li').data('id');
             }
-            if ($('div.filter').children('input').val() != '') {
+            /*if ($('div.filter').children('input').val() != '') {
                 tableFilter($('div.filter').children('input').val());
-            } else
-                updateCategorys();
+            } else*/
+            updateCategorys();
             $('ul.categorys').children('li.selected').trigger('click');
             return false;
         })).append('<i/>').appendTo($('ul.trackers'));
@@ -57,7 +58,7 @@ var view = function () {
         var s_s = s.replace(/\s+/g," ");
         $.each(a, function (k,v) {
             var title = filterText(s_s,v.title);
-            c = c + '<tr data-tracker="'+t+'" data-c="'+v.category.id+'">'
+            c = c + '<tr data-kf="0" data-tracker="'+t+'" data-c="'+v.category.id+'">'
             +'  <td class="time" data-value="'+v.time+'">'+unixintime(v.time)+'</td>'
             +'  <td class="name"><div class="title"><a href="'+v.url+'" target="_blank">'+title+'</a>'+
             ((v.category.title == null && ShowIcons)?'<div class="tracker_icon num'+t+'" title="'+tracker[t].name+'"></div>':'')
@@ -172,15 +173,13 @@ var view = function () {
     var filterTextCheck = function (s,t) {
         if (s == '') return 'a';
         var r = t;
-        if (s != '') {
-            if (AdvFiltration) {
-                var tmp = s.split(" ");
-                if (t.replace(new RegExp(tmp.join('|'),"i"),'') != t)
-                    r = 'a';
-            } else {
-                if (t.replace(new RegExp(s,"i"),'') != t)
-                    r = 'a';
-            }
+        if (AdvFiltration) {
+            var tmp = s.split(" ");
+            if (t.replace(new RegExp(tmp.join('|'),"i"),'') != t)
+                r = 'a';
+        } else {
+            if (t.replace(new RegExp(s,"i"),'') != t)
+                r = 'a';
         }
         return r;
     }
@@ -188,8 +187,14 @@ var view = function () {
         var sum = 0;
         var nl = $('ul.categorys').children('li').length;
         for (var i=0;i<nl-1;i++) {
-            if (trackerFilter!=null)
+            if (trackerFilter!=null && keywordFilter==null)
                 var count = $('#rez_table').children('tbody').children('tr[data-c='+i+'][data-tracker='+trackerFilter+']').length;
+            else
+            if (keywordFilter!=null && trackerFilter==null)
+                var count = $('#rez_table').children('tbody').children('tr[data-c='+i+'][data-kf=1]').length;
+            else
+            if (keywordFilter!=null && trackerFilter!=null)
+                var count = $('#rez_table').children('tbody').children('tr[data-c='+i+'][data-tracker='+trackerFilter+'][data-kf=1]').length;
             else
                 var count = $('#rez_table').children('tbody').children('tr[data-c='+i+']').length;
             if (count > 0) {
@@ -201,119 +206,38 @@ var view = function () {
         }
         $('ul.categorys').children('li').eq(0).children('i').html('('+sum+')');
     }
-    var tableFilter = function (t) {
-        if (t != $('div.filter').children('input').val()) return;
+    var tableFilter = function (keyword) {
+        if (keyword != $('div.filter').children('input').val()) return;
         $('div.filter div.btn').css('background-image','url(/images/loading.gif)');
-        var filterItems = [];
-        t = $.trim(t);
-        if (t == '' && lastFilterWord == '') {
+        keyword = $.trim(keyword).replace(/\s+/g," ");
+        if (keyword == '') {
+            $('div.filter').children('input').val('');
+            keywordFilter = null;
+            $('ul.categorys').children('li.selected').trigger('click');
+            updateCategorys();
             $('div.filter div.btn').hide();
             return;
         }
-        var fromCache = false;
-        var tr = $('#rez_table').children('tbody').children('tr');
-        if (lastFilterWord == t) {
-            fromCache = true;
-            filterItems = lastFilterCache;
-            
-            $('#rez_table').children('tbody').children('tr').css('display','none');
-            nl = filterItems.length;
-            var seldata = $('ul.categorys').children('li.selected').data('id');
-            for (var i=0;i<nl;i++) {
-                var num = filterItems[i];
-                var id = tr.eq(num).data('c');
-                if (seldata == null || seldata == id) {
-                    if (trackerFilter != null) {
-                        if (tr.eq(num).data('tracker') == trackerFilter)
-                            tr.eq(num).css('display','table-row');
-                        else
-                            tr.eq(num).css('display','none');
-                    } else
-                        tr.eq(num).css('display','table-row');
-                }else{
-                    tr.eq(num).css('display','none');
-                }
-            }
-        } else {
-            lastFilterWord = t;
-            var l = tr.length;
-            var s_t = t.replace(/\s+/g," ");
-            var seldata = $('ul.categorys').children('li.selected').data('id');
-            for (var i = 0;i<l;i++) {
-                if (s_t == '') {
-                    var name = 'a';
-                    var new_name = 'b';
-                } else {
-                    var name = tr.eq(i).children('td.name').children('div').eq(0).children('a').text();
-                    var new_name = filterTextCheck(s_t,name);
-                }
-                if (name == new_name){
-                    tr.eq(i).css('display','none');
-                } else {
-                    var id = tr.eq(i).data('c');
-                    filterItems[filterItems.length] = i;
-                    if (seldata == null || seldata == id){
-                        if (trackerFilter != null) {
-                            if (tr.eq(i).data('tracker') == trackerFilter)
-                                tr.eq(i).css('display','table-row');
-                            else
-                                tr.eq(i).css('display','none');
-                        } else
-                            tr.eq(i).css('display','table-row');
-                    }else{
-                        tr.eq(i).css('display','none');
-                    }
-                }
-            }
-            lastFilterCache = filterItems;
-        }
-        var calculateCategorys = function (filterItems) {
-            //усовершенствованный updateCategry
-            var nl = filterItems.length;
-            //if (trackerFilter != null)
-            //    [data-tracker='+trackerFilter+']
+        keywordFilter = keyword;
+        if (keywordFilter != lastFilterWord) {
+            //lastFilterCache = null;
+            lastFilterWord = keyword;
+            //поиск и фильтрация контента
             var tr = $('#rez_table').children('tbody').children('tr');
-            var arr_c = [];
-            var sum = filterItems.length;
-            for (var i=0;i<nl;i++) {
-                var tr_i = tr.eq(filterItems[i]);
-                var c = tr_i.data('c');
-                var t = tr_i.data('tracker');
-                if (trackerFilter != null) {
-                    if (t == trackerFilter)
-                        if (arr_c[c]==null) arr_c[c] = 1; else arr_c[c] += +1;
-                } else {
-                    if (arr_c[c]==null) arr_c[c] = 1; else arr_c[c] += +1;
-                }
-            }
-            if (trackerFilter != null) {
-                sum = 0;
-                for (var ss = 0;ss<nl-1;ss++)
-                    if (arr_c[ss]!=null) {
-                        sum += arr_c[ss];
-                    }
-            }
-            $('ul.categorys').children('li').eq(0).children('i').html('('+sum+')');
-            nl = $('ul.categorys').children('li').length;
-            for (var i=0;i<nl-1;i++) {
-                var count = (arr_c[i] == null)?0:arr_c[i];
-                if (count > 0) {
-                    $('ul.categorys').children('li[data-id="'+i+'"]').css('display','inline-block').children('i').html('('+count+')');
-                } else {
-                    $('ul.categorys').children('li[data-id="'+i+'"]').css('display','none');
-                }
+            var tr_count = tr.length;
+            for (var i = 0;i<tr_count;i++) {
+                var tr_eq = tr.eq(i);
+                var name = tr_eq.children('td.name').children('div.title').children('a').text();
+                var f_name = filterTextCheck(keyword,name);
+                if (name != f_name)
+                    tr_eq.attr('data-kf',1);
+                else
+                    tr_eq.attr('data-kf',0);
             }
         }
-        if (!fromCache || trackerFilter != null) {
-            if (t == '')
-                updateCategorys();
-            else
-                calculateCategorys(filterItems);
-        }
-        $('#rez_table').trigger("update");
+        $('ul.categorys').children('li.selected').trigger('click');
+        updateCategorys();
         $('div.filter div.btn').css('background-image','url(/images/clear.png)');
-        if (($('div.filter input').val()).length == 0)
-            $('div.filter div.btn').hide();
     }
     var triggerSearch = function (keyword) {
         view.clear_table();
@@ -353,6 +277,9 @@ var view = function () {
         },
         trackerFilter : function () { 
             return trackerFilter;
+        },
+        keywordFilter : function () { 
+            return keywordFilter;
         }
     }
 }();
@@ -374,30 +301,41 @@ $(function () {
     for (var n = 0;n<l;n++) {
         t.eq(n).click(function () {
             var trackerFilter = view.trackerFilter();
+            var keywordFilter = view.keywordFilter();
             var id = $(this).data('id');
             $('ul.categorys').children('li').removeClass('selected');
             $(this).addClass('selected');
             
-            if ($('div.filter').children('input').val() != '') {
-                view.tableFilter($('div.filter').children('input').val());
+            //if ($('div.filter').children('input').val() != '') {
+            //     view.tableFilter($('div.filter').children('input').val());
+            //} else {
+            if (id == null){
+                $('#rez_table').children('tbody').children('tr').css('display','none');
+                if (trackerFilter!=null && keywordFilter!=null) {
+                    $('#rez_table').children('tbody').children('tr[data-tracker='+trackerFilter+'][data-kf=1]').css('display','table-row');
+                }else
+                if (trackerFilter!=null && keywordFilter==null) {
+                    $('#rez_table').children('tbody').children('tr[data-tracker='+trackerFilter+']').css('display','table-row');
+                }else
+                if (trackerFilter==null && keywordFilter!=null) {
+                    $('#rez_table').children('tbody').children('tr[data-kf=1]').css('display','table-row');
+                }else
+                    $('#rez_table').children('tbody').children('tr').css('display','table-row');
             } else {
-                if (id == null){
-                    if (trackerFilter!=null) {
-                        $('#rez_table').children('tbody').children('tr[data-tracker!='+trackerFilter+']').css('display','none');
-                        $('#rez_table').children('tbody').children('tr[data-tracker='+trackerFilter+']').css('display','table-row');
-                    } else
-                        $('#rez_table').children('tbody').children('tr').css('display','table-row');
-                } else {
-                    if (trackerFilter!=null) {
-                        $('#rez_table').children('tbody').children('tr').css('display','none');
-                        $('#rez_table').children('tbody').children('tr[data-c='+id+'][data-tracker='+trackerFilter+']').css('display','table-row');
-                    } else {
-                        $('#rez_table').children('tbody').children('tr[data-c!='+id+']').css('display','none');
-                        $('#rez_table').children('tbody').children('tr[data-c='+id+']').css('display','table-row');
-                    }
-                }
-                $('div.result_panel').children('table').trigger("update");
+                $('#rez_table').children('tbody').children('tr').css('display','none');
+                if (trackerFilter!=null && keywordFilter!=null) {
+                    $('#rez_table').children('tbody').children('tr[data-c='+id+'][data-tracker='+trackerFilter+'][data-kf=1]').css('display','table-row');
+                }else
+                if (trackerFilter!=null && keywordFilter==null) {
+                    $('#rez_table').children('tbody').children('tr[data-c='+id+'][data-tracker='+trackerFilter+']').css('display','table-row');
+                }else
+                if (trackerFilter==null && keywordFilter!=null) {
+                    $('#rez_table').children('tbody').children('tr[data-c='+id+'][data-kf=1]').css('display','table-row');
+                }else
+                    $('#rez_table').children('tbody').children('tr[data-c='+id+'][data-c='+id+']').css('display','table-row');
             }
+            $('div.result_panel').children('table').trigger("update");
+        //}
         });
     }
     $('ul.categorys').children('li').css('display','none').eq(0).css('display','inline-block');
@@ -420,14 +358,14 @@ $(function () {
             $('div.filter div.btn').show();
         }
         window.setTimeout(function(){
-            var tmp = t;
-            view.tableFilter(tmp);
+            //var tmp = t;
+            view.tableFilter(t);
         }, 1000);
     });
     $('div.filter div.btn').click(function () {
         $('div.filter input').val('');
         view.tableFilter('');
-        $(this).hide();
+    //$(this).hide();
     });
     var s = (document.URL).replace(/(.*)index.html/,'').replace(/#s=(.*)/,'$1');
     if (s != '') {
