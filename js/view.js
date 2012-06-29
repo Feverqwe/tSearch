@@ -145,6 +145,7 @@ var view = function () {
     var updateTrackerResultCount = function (t,c,l) {
         if (l == null && c == null) {
             var c = $('ul.trackers li[data-id="'+t+'"]').data('count');
+            if (c == null) c = 0;
             $('ul.trackers').children('li[data-id="'+t+'"]').children('i').html('('+c+')');
         } else
         if (l == null)
