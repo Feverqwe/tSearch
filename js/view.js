@@ -3,6 +3,7 @@ var view = function () {
     var keywordFilter = null;
     var categoryFilter = null;
     var lastFilterWord = '';
+    var autoMove = null;
     var ShowIcons = (localStorage.ShowIcons !== undefined) ? parseInt(localStorage.ShowIcons) : true;
     var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : true;
     var auth = function (s,t) {
@@ -18,8 +19,6 @@ var view = function () {
         $('div.filter div.btn').hide();
         $('ul.trackers li a.selected').removeClass('selected');
         trackerFilter = null;
-    //categoryFilter = null;
-    //$('ul.categorys').children('li').removeClass('selected').eq(0).addClass('selected');
     }
     var loadingStatus  = function (s,t) {
         var tracker_img = $('ul.trackers').children('li[data-id="'+t+'"]').children('div.tracker_icon');
@@ -230,11 +229,22 @@ var view = function () {
             }
         }
         $('ul.categorys').children('li').eq(0).children('i').html('('+sum+')');
+        if (autoMove != null) {
+            var item =  $('ul.categorys').children('li[data-id="'+autoMove+'"]');
+            if (item.css('display') == 'inline-block'){
+                $('ul.categorys').children('li.selected').removeClass('selected');
+                item.addClass('selected');
+                item.trigger('click');
+                autoMove = null;
+            }
+        }
         if ($('ul.categorys').children('li.selected').css('display') == 'none') {
+            var category =  $('ul.categorys').children('li.selected').data('id');
             $('ul.categorys').children('li.selected').removeClass('selected');
             $('ul.categorys').children('li').eq(0).addClass('selected');
             $('ul.categorys').children('li.selected').trigger('click');
-        }        
+            autoMove = (category==null)?null:category;
+        }
     }
     var tableFilter = function (keyword) {
         if (keyword != $('div.filter').children('input').val()) return;
@@ -312,6 +322,9 @@ var view = function () {
         },
         setCatFilter : function (a) {
             categoryFilter = a;
+        },
+        SetAutoMove : function (a) {
+            autoMove = a;
         }
     }
 }();
@@ -331,7 +344,9 @@ $(function () {
     var t = $('ul.categorys').children('li');
     var l = t.length;
     for (var n = 0;n<l;n++) {
-        t.eq(n).click(function () {
+        t.eq(n).click(function (event) {
+            if (event.isTrigger != true)
+                view.SetAutoMove(null);
             var trackerFilter = view.trackerFilter();
             var keywordFilter = view.keywordFilter();
             var id = $(this).data('id');
