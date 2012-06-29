@@ -388,11 +388,13 @@ $(function () {
                     } else
                         $('#rez_table').children('tbody').children('tr').css('display','table-row');
                 } else {
-                    $('#rez_table').children('tbody').children('tr[data-c!='+id+']').css('display','none');
                     if (trackerFilter!=null) {
+                        $('#rez_table').children('tbody').children('tr').css('display','none');
                         $('#rez_table').children('tbody').children('tr[data-c='+id+'][data-tracker='+trackerFilter+']').css('display','table-row');
-                    } else
+                    } else {
+                        $('#rez_table').children('tbody').children('tr[data-c!='+id+']').css('display','none');
                         $('#rez_table').children('tbody').children('tr[data-c='+id+']').css('display','table-row');
+                    }
                 }
                 $('div.result_panel').children('table').trigger("update");
             }
