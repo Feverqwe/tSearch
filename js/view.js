@@ -1,6 +1,7 @@
 var view = function () {
     var lastFilterWord = '';
     var lastFilterCache = [];
+    var trackerFilter = null;
     var ShowIcons = (localStorage.ShowIcons !== undefined) ? parseInt(localStorage.ShowIcons) : true;
     var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : true;
     var auth = function (s,t) {
@@ -11,7 +12,9 @@ var view = function () {
     var clear_table = function () {
         $('#rez_table').children('tbody').empty();
         $('div.filter').children('input').val('');
-        view.tableFilter('');
+        lastFilterWord = '';
+        $('ul.trackers li a.selected').removeClass('selected');
+        trackerFilter = null;
         $('ul.categorys').children('li').removeClass('selected').eq(0).addClass('selected');
     }
     var loadingStatus  = function (s,t) {
@@ -31,10 +34,21 @@ var view = function () {
     var addTrackerInList = function (i) {
         $('body').append('<style>div.tracker_icon.num'+i+' { background-image: url('+tracker[i].icon+'); }</style>');
         $('<li data-id="'+i+'"/>').append($('<div class="tracker_icon num'+i+'"/>')).append($('<a href="#">'+tracker[i].name+'</a>').click(function() {
-            alert('asd');
+            if ($(this).attr('class') == 'selected') {
+                $(this).removeClass('selected');
+                trackerFilter = null;
+            } else {
+                $('ul.trackers li a.selected').removeClass('selected');
+                $(this).addClass('selected');
+                trackerFilter = $(this).parent('li').data('id');
+            }
+            if ($('div.filter').children('input').val() != '') {
+                tableFilter($('div.filter').children('input').val());
+            } else
+                updateCategorys();
+            $('ul.categorys').children('li.selected').trigger('click');
             return false;
         })).append('<i/>').appendTo($('ul.trackers'));
-    //$('ul.trackers').append('<li data-id="'+i+'"><div class="tracker_icon num'+i+'"></div> <a href="#">'+tracker[i].name+'</a> <i></i></li>');
     }
     var write_result = function (t,a,s) {
         var c = '';
@@ -59,20 +73,6 @@ var view = function () {
         $('#rez_table').trigger("update");
         loadingStatus(1,t);
         updateCategorys();
-    }
-    var updateCategorys = function () {
-        var sum = 0;
-        var nl = $('ul.categorys').children('li').length;
-        for (var i=0;i<nl-1;i++) {
-            var count = $('#rez_table').children('tbody').children('tr[data-c='+i+']').length;
-            if (count > 0) {
-                $('ul.categorys').children('li[data-id="'+i+'"]').css('display','inline-block').children('i').html('('+count+')');
-                sum += count;
-            } else {
-                $('ul.categorys').children('li[data-id="'+i+'"]').css('display','none');
-            }
-        }
-        $('ul.categorys').children('li').eq(0).children('i').html('('+sum+')');
     }
     var bytesToSize = function (bytes,nan) {
         //переводит байты в строчки
@@ -184,6 +184,23 @@ var view = function () {
         }
         return r;
     }
+    var updateCategorys = function () {
+        var sum = 0;
+        var nl = $('ul.categorys').children('li').length;
+        for (var i=0;i<nl-1;i++) {
+            if (trackerFilter!=null)
+                var count = $('#rez_table').children('tbody').children('tr[data-c='+i+'][data-tracker='+trackerFilter+']').length;
+            else
+                var count = $('#rez_table').children('tbody').children('tr[data-c='+i+']').length;
+            if (count > 0) {
+                $('ul.categorys').children('li[data-id="'+i+'"]').css('display','inline-block').children('i').html('('+count+')');
+                sum += count;
+            } else {
+                $('ul.categorys').children('li[data-id="'+i+'"]').css('display','none');
+            }
+        }
+        $('ul.categorys').children('li').eq(0).children('i').html('('+sum+')');
+    }
     var tableFilter = function (t) {
         if (t != $('div.filter').children('input').val()) return;
         $('div.filter div.btn').css('background-image','url(/images/loading.gif)');
@@ -194,7 +211,6 @@ var view = function () {
             return;
         }
         var fromCache = false;
-        //$('#rez_table tbody').css('display','none');
         var tr = $('#rez_table').children('tbody').children('tr');
         if (lastFilterWord == t) {
             fromCache = true;
@@ -206,10 +222,17 @@ var view = function () {
             for (var i=0;i<nl;i++) {
                 var num = filterItems[i];
                 var id = tr.eq(num).data('c');
-                if (seldata == null || seldata == id)
-                    tr.eq(num).css('display','table-row');
-                else
+                if (seldata == null || seldata == id) {
+                    if (trackerFilter != null) {
+                        if (tr.eq(num).data('tracker') == trackerFilter)
+                            tr.eq(num).css('display','table-row');
+                        else
+                            tr.eq(num).css('display','none');
+                    } else
+                        tr.eq(num).css('display','table-row');
+                }else{
                     tr.eq(num).css('display','none');
+                }
             }
         } else {
             lastFilterWord = t;
@@ -229,10 +252,17 @@ var view = function () {
                 } else {
                     var id = tr.eq(i).data('c');
                     filterItems[filterItems.length] = i;
-                    if (seldata == null || seldata == id)
-                        tr.eq(i).css('display','table-row');
-                    else
+                    if (seldata == null || seldata == id){
+                        if (trackerFilter != null) {
+                            if (tr.eq(i).data('tracker') == trackerFilter)
+                                tr.eq(i).css('display','table-row');
+                            else
+                                tr.eq(i).css('display','none');
+                        } else
+                            tr.eq(i).css('display','table-row');
+                    }else{
                         tr.eq(i).css('display','none');
+                    }
                 }
             }
             lastFilterCache = filterItems;
@@ -240,12 +270,28 @@ var view = function () {
         var calculateCategorys = function (filterItems) {
             //усовершенствованный updateCategry
             var nl = filterItems.length;
+            //if (trackerFilter != null)
+            //    [data-tracker='+trackerFilter+']
             var tr = $('#rez_table').children('tbody').children('tr');
             var arr_c = [];
             var sum = filterItems.length;
             for (var i=0;i<nl;i++) {
-                var c = tr.eq(filterItems[i]).data('c');
-                if (arr_c[c]==null) arr_c[c] = 1; else arr_c[c] += +1;
+                var tr_i = tr.eq(filterItems[i]);
+                var c = tr_i.data('c');
+                var t = tr_i.data('tracker');
+                if (trackerFilter != null) {
+                    if (t == trackerFilter)
+                        if (arr_c[c]==null) arr_c[c] = 1; else arr_c[c] += +1;
+                } else {
+                    if (arr_c[c]==null) arr_c[c] = 1; else arr_c[c] += +1;
+                }
+            }
+            if (trackerFilter != null) {
+                sum = 0;
+                for (var ss = 0;ss<nl-1;ss++)
+                    if (arr_c[ss]!=null) {
+                        sum += arr_c[ss];
+                    }
             }
             $('ul.categorys').children('li').eq(0).children('i').html('('+sum+')');
             nl = $('ul.categorys').children('li').length;
@@ -258,7 +304,7 @@ var view = function () {
                 }
             }
         }
-        if (!fromCache) {
+        if (!fromCache || trackerFilter != null) {
             if (t == '')
                 updateCategorys();
             else
@@ -268,7 +314,6 @@ var view = function () {
         $('div.filter div.btn').css('background-image','url(/images/clear.png)');
         if (($('div.filter input').val()).length == 0)
             $('div.filter div.btn').hide();
-    //$('#rez_table tbody').css('display','table-row-group');
     }
     var triggerSearch = function (keyword) {
         view.clear_table();
@@ -305,6 +350,9 @@ var view = function () {
         },
         triggerSearch : function (a) {
             triggerSearch(a);
+        },
+        trackerFilter : function () { 
+            return trackerFilter;
         }
     }
 }();
@@ -325,22 +373,28 @@ $(function () {
     var l = t.length;
     for (var n = 0;n<l;n++) {
         t.eq(n).click(function () {
-            //$('#rez_table tbody').css('display','none');
+            var trackerFilter = view.trackerFilter();
             var id = $(this).data('id');
             $('ul.categorys').children('li').removeClass('selected');
             $(this).addClass('selected');
             
-            if ($('div.filter').children('input').val() != '')
+            if ($('div.filter').children('input').val() != '') {
                 view.tableFilter($('div.filter').children('input').val());
-            else {
-                if (id== null){
-                    $('#rez_table').children('tbody').children('tr').css('display','table-row');
+            } else {
+                if (id == null){
+                    if (trackerFilter!=null) {
+                        $('#rez_table').children('tbody').children('tr[data-tracker!='+trackerFilter+']').css('display','none');
+                        $('#rez_table').children('tbody').children('tr[data-tracker='+trackerFilter+']').css('display','table-row');
+                    } else
+                        $('#rez_table').children('tbody').children('tr').css('display','table-row');
                 } else {
                     $('#rez_table').children('tbody').children('tr[data-c!='+id+']').css('display','none');
-                    $('#rez_table').children('tbody').children('tr[data-c='+id+']').css('display','table-row');
+                    if (trackerFilter!=null) {
+                        $('#rez_table').children('tbody').children('tr[data-c='+id+'][data-tracker='+trackerFilter+']').css('display','table-row');
+                    } else
+                        $('#rez_table').children('tbody').children('tr[data-c='+id+']').css('display','table-row');
                 }
                 $('div.result_panel').children('table').trigger("update");
-            //$('#rez_table tbody').css('display','table-row-group');
             }
         });
     }

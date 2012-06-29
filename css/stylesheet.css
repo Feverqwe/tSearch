@@ -289,3 +289,13 @@ div.tracker_icon {
 div.tracker_list > ul.trackers div.tracker_icon {
     margin-left: -20px;
 }
+div.tracker_list > ul.trackers > li > a {
+    text-decoration: none;
+    margin-left: 2px;
+    color: #000;
+    padding: 2px;
+}
+div.tracker_list > ul.trackers > li > a.selected {
+    background-color: #99ccff;
+    border-radius: 6px;
+}
