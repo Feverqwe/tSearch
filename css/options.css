@@ -48,3 +48,11 @@ div.save_panel input {
 }
 div.save_panel {
 }
+div.copy, div.copy a {
+    clear: left;
+    padding-top: 10px;
+    text-align: center;
+    color: #a0a0a0;
+    text-decoration: none;
+    font-size: 12px;
+}
