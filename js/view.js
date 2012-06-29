@@ -43,7 +43,7 @@ var view = function () {
             } else {
                 $('ul.trackers li a.selected').removeClass('selected');
                 $(this).addClass('selected');
-                trackerFilter = $(this).parent('li').data('id');
+                trackerFilter = $(this).parent('li').attr('data-id');
             }
             updateCategorys();
             $('ul.categorys').children('li.selected').trigger('click');
@@ -157,15 +157,16 @@ var view = function () {
     }
     var updateTrackerResultCount = function (t,c,l) {
         if (l == null && c == null) {
-            var c = $('ul.trackers li[data-id="'+t+'"]').data('count');
+            var c = $('ul.trackers li[data-id="'+t+'"]').attr('data-count');
             if (c == null) c = 0;
             $('ul.trackers').children('li[data-id="'+t+'"]').children('i').html('('+c+')');
         } else
-        if (l == null)
+        if (l == null) {
             $('ul.trackers').children('li[data-id="'+t+'"]').attr('data-count',c).children('i').html('('+c+')');
-        else 
-        if (l == 1)
-            $('ul.trackers').children('li[data-id="'+t+'"]').children('i').html('('+c+')');
+        }else {
+            if (l == 1)
+                $('ul.trackers').children('li[data-id="'+t+'"]').children('i').html('('+c+')');
+        }
     }
     var contentFilter = function (c) {
         var c = c.replace(/\/\//img,'#blockurl#').replace(/script/img,'#blockscr#');
@@ -215,7 +216,7 @@ var view = function () {
         var li = $('ul.trackers').children('li');
         var t_c = li.length;
         for (var i = 0; i < t_c; i++) {
-            var id = li.eq(i).data('id');
+            var id = li.eq(i).attr('data-id');
             if (keywordFilter==null)
                 updateTrackerResultCount(id);
             else
@@ -253,7 +254,7 @@ var view = function () {
             }
         }
         if ($('ul.categorys').children('li.selected').css('display') == 'none') {
-            var category =  $('ul.categorys').children('li.selected').data('id');
+            var category =  $('ul.categorys').children('li.selected').attr('data-id');
             $('ul.categorys').children('li.selected').removeClass('selected');
             $('ul.categorys').children('li').eq(0).addClass('selected');
             $('ul.categorys').children('li.selected').trigger('click');
@@ -363,7 +364,7 @@ $(function () {
                 view.SetAutoMove(null);
             var trackerFilter = view.trackerFilter();
             var keywordFilter = view.keywordFilter();
-            var id = $(this).data('id');
+            var id = $(this).attr('data-id');
             view.setCatFilter(id);
             $('ul.categorys').children('li.selected').removeClass('selected');
             $(this).addClass('selected');
