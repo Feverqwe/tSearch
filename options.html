@@ -29,7 +29,14 @@
         <fieldset>
             <legend>Опции</legend>
             <div><input name="icons" type="checkbox"/><span>Показывать иконки торрент-трекеров в выдаче</span></div>
-            <div><input name="AdvFiltration" type="checkbox"/><span>Включить расширенную фильтрацию</span></div>
+        </fieldset>
+        <fieldset>
+            <legend>Фильтрация списка</legend>
+            <ul class="option">
+                <li><input name="typeFiltration" type="radio" value="0"/>Обычная</li>
+                <li><input name="typeFiltration" type="radio" value="1"/>Ищет любое совпадение с одной из введенных фраз</li>
+                <li><input name="typeFiltration" type="radio" value="2"/>Ищет полное совпадение с введенной фразой</li>
+            </ul>
         </fieldset>
         <div class="save_panel">
             <input type="submit" value="Сохранить" />

@@ -5,7 +5,7 @@ var view = function () {
     var lastFilterWord = '';
     var autoMove = null;
     var ShowIcons = (localStorage.ShowIcons !== undefined) ? parseInt(localStorage.ShowIcons) : true;
-    var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : true;
+    var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : 2;
     var auth = function (s,t) {
         $('ul.trackers').children('li[data-id="'+t+'"]').children('ul').remove();
         if (!s)
@@ -187,11 +187,25 @@ var view = function () {
     var filterTextCheck = function (s,t) {
         if (s == '') return 'a';
         var r = t;
-        if (AdvFiltration) {
+        if (AdvFiltration == 1) {
             var tmp = s.split(" ");
             if (t.replace(new RegExp(tmp.join('|'),"i"),'') != t)
                 r = 'a';
-        } else {
+        } else 
+        if (AdvFiltration == 2) {
+            var tmp = s.split(" ");
+            var tmp_l = tmp.length;
+            var trgr = true;
+            for (var i=0;i<tmp_l;i++) {
+                if (t.replace(new RegExp(tmp[i],"i"),'') == t) {
+                    trgr = false;
+                    break;
+                }
+            }
+            if (trgr)
+                r = 'a';
+        }
+        else {
             if (t.replace(new RegExp(s,"i"),'') != t)
                 r = 'a';
         }

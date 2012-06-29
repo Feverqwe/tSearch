@@ -1,7 +1,7 @@
 var option_mode = true;
 var view = function () {
     var ShowIcons = (localStorage.ShowIcons !== undefined) ? parseInt(localStorage.ShowIcons) : 1;
-    var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : 1;
+    var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : 2;
     var addTrackerInList = function (i) {
         var filename = tracker[i].filename;
         var t = (localStorage.internalTrackers !== undefined) ? JSON.parse(localStorage.internalTrackers) : null;
@@ -22,7 +22,7 @@ var view = function () {
     }
     var loadSettings = function () {
         $('input[name="icons"]').prop('checked',ShowIcons);
-        $('input[name="AdvFiltration"]').prop('checked',AdvFiltration);
+        $('input[name="typeFiltration"]').eq(AdvFiltration).prop('checked',true);
     }
     var save_settings = function () {
         var tr = $('#internalTrackers tbody').children('tr');
@@ -34,11 +34,18 @@ var view = function () {
             internalTrackers[internalTrackers.length] = {
                 'n' : fn , 
                 'e': (inp.is(':checked'))?1:0
-                };
+            };
         }
         localStorage.internalTrackers = JSON.stringify(internalTrackers);
         localStorage.ShowIcons = ShowIcons = ($('input[name="icons"]').is(':checked'))?1:0;
-        localStorage.AdvFiltration = AdvFiltration = ($('input[name="AdvFiltration"]').is(':checked'))?1:0;
+        var tmp = $('input[name="typeFiltration"]');
+        var tmp_l = tmp.length;
+        for (var i = 0;i<tmp_l;i++)
+            if (tmp.eq(i).is(':checked'))
+            {
+                localStorage.AdvFiltration = AdvFiltration = i;
+                break;
+            }
         showProgress();
         loadSettings();
         var s = (document.URL).replace(/(.*)options.html/,'');

@@ -25,6 +25,10 @@ fieldset, div.save_panel {
 fieldset {
     border: 1px solid #C8C8C8;
     box-shadow: 1px 1px white,inset 0 -20px 60px -20px #DDD,inset 1px 1px white;
+    margin-bottom: 10px;
+}
+legend {
+    background-color: #F1F1F1;
 }
 td.status {
     text-align: center;
@@ -55,4 +59,9 @@ div.copy, div.copy a {
     color: #a0a0a0;
     text-decoration: none;
     font-size: 12px;
+}
+ul.option {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
