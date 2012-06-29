@@ -5,6 +5,7 @@ var view = function () {
     var lastFilterWord = '';
     var autoMove = null;
     var ShowIcons = (localStorage.ShowIcons !== undefined) ? parseInt(localStorage.ShowIcons) : true;
+    var HideZeroSeed = (localStorage.HideZeroSeed !== undefined) ? parseInt(localStorage.HideZeroSeed) : true;
     var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : 2;
     var auth = function (s,t) {
         $('ul.trackers').children('li[data-id="'+t+'"]').children('ul').remove();
@@ -53,9 +54,11 @@ var view = function () {
     var write_result = function (t,a,s) {
         var c = '';
         $('#rez_table').children('tbody').children('tr[data-tracker='+t+']').remove();
-        updateTrackerResultCount(t,a.length);
         var s_s = s.replace(/\s+/g," ");
+        var sum = 0;
         $.each(a, function (k,v) {
+            if (HideZeroSeed && v.seeds == 0) return false;
+            sum++;
             var title = filterText(s_s,v.title);
             var filter = '';
             var fk = 0;
@@ -67,7 +70,6 @@ var view = function () {
                     filter = 'style="display: none;"';
                 else
                     fk = 1;
-                
             }
             c = c + '<tr '+filter+' data-kf="'+fk+'" data-tracker="'+t+'" data-c="'+v.category.id+'">'
             +'  <td class="time" data-value="'+v.time+'">'+unixintime(v.time)+'</td>'
@@ -81,6 +83,7 @@ var view = function () {
             +'  <td class="leechs" data-value="'+v.leechs+'">'+v.leechs+'</td>'
             +'</tr>';
         });
+        updateTrackerResultCount(t,sum);
         $('#rez_table').children('tbody').append(contentUnFilter(c));
         $('#rez_table').trigger("update");
         loadingStatus(1,t);
