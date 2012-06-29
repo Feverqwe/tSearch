@@ -19,7 +19,6 @@ div.search_panel input[type=text] {
     height: 20px;
     font-size: 16px;
     width: 500px;
-    border:  1px solid #cccccc;
     padding-left: 9px;
     padding-right: 5px;
     float: left;
@@ -31,16 +30,12 @@ input[type=text] {
     padding: 2px;
     outline: none;
 }
-input[type=text]:focus {
-    border: 1px solid #3366ff;
-    -webkit-box-shadow: inset 0 1px 5px #CCCccc;
-}
 input[type=text]:hover {
     border: 1px solid #999999;
     -webkit-box-shadow: inset 0 1px 5px #ebebeb;
 }
-input[type=text]:focus:hover {
-    border: 1px solid #3366ff;
+input[type=text]:focus {
+    border: 1px solid #3366ff !important;
     -webkit-box-shadow: inset 0 1px 5px #CCCccc;
 }
 .sbutton {
