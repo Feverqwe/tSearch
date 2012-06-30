@@ -308,6 +308,7 @@ var view = function () {
         $('div.filter div.btn').css('background-image','url(/images/clear.png)');
     }
     var triggerSearch = function (keyword) {
+        $('div.result_panel').css('display','block');
         view.clear_table();
         keyword = $.trim(keyword);
         $('form[name=search]').children('input[type=text]').val(keyword);
