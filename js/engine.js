@@ -45,6 +45,11 @@ var engine = function () {
     {
         'n' : 'pornolab', 
         'e' : 0
+    },
+
+    {
+        'n' : 'torrents.freedom', 
+        'e' : 0
     }
     ];
     var internalTrackers = (localStorage.internalTrackers !== undefined) ? JSON.parse(localStorage.internalTrackers) : null;
