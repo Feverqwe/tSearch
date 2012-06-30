@@ -74,7 +74,7 @@ var view = function () {
                     fk = 1;
             }
             c = c + '<tr '+filter+' data-kf="'+fk+'" data-tracker="'+t+'" data-c="'+v.category.id+'">'
-            +'  <td class="time" data-value="'+v.time+'">'+unixintime(v.time)+'</td>'
+            +'  <td class="time" data-value="'+v.time+'" title="'+unixintimetitle(v.time)+'">'+unixintime(v.time)+'</td>'
             +'  <td class="name"><div class="title"><a href="'+v.url+'" target="_blank">'+title+'</a>'+
             ((v.category.title == null && ShowIcons)?'<div class="tracker_icon num'+t+'" title="'+tracker[t].name+'"></div>':'')
             +'</div>'
@@ -123,6 +123,12 @@ var view = function () {
         var t = d+'-'+m+'-'+dt.getFullYear();
         return t;
     }
+    var unixintimetitle = function (i) {
+        if (i == 0) 
+            return '∞';
+        else
+            return utiemonstr(i);
+    }
     var unixintime = function (i)
     {
         //выписывает отсчет времени из unixtime
@@ -147,15 +153,15 @@ var view = function () {
         var str_minutes = (minutes<5)?(minutes<2)?(minutes<1)?  ' минут':   ' минута':  ' минуты':  ' минут';
         var str_seconds = (seconds<5)?(seconds<2)?(seconds<1)?  ' секунд':  ' секунда': ' секунды': ' секунд';
         if (month>0)
-            return month + str_month+' '+ week+str_week;
+            return month + str_month+((week>0)?' '+week+str_week:'');
         if (week>0)
-            return week + str_week+' '+ day+str_day;
+            return week + str_week+((day > 0)?' '+day+str_day:'');
         if (day>0)
-            return day+str_day+' '+hour+str_hour;
+            return day+str_day+((hour>0)?' '+hour+str_hour:'');
         if (hour>0)
-            return hour+str_hour+' '+minutes+str_minutes;
+            return hour+str_hour+((minutes>0)?' '+minutes+str_minutes:'');
         if (minutes>0)
-            return minutes+str_minutes+' '+seconds+str_seconds;
+            return minutes+str_minutes+((seconds>0)?' '+seconds+str_seconds:'');
         if (seconds>0)
             return seconds+str_seconds;
         return theDate;

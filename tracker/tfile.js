@@ -34,6 +34,12 @@ tracker[tmp_num] = function () {
             }
             return 0;
         }
+        var calculateTime = function (time) {
+            time = $.trim(time).split(" ");
+            var date = time[0].split('-');
+            time = time[1].split(':');
+            return Math.round((new Date(parseInt(date[0]),parseInt(1+date[1])-101,parseInt('1'+date[2])-100,parseInt('1'+time[0])-100,parseInt('1'+time[1])-100)).getTime() / 1000);
+        }
         var calculateCategory = function (n) {
             var n = String(n).replace(/(.*)c=([0-9*])/i,"$2");
             if (isNaN(n))
@@ -79,6 +85,7 @@ tracker[tmp_num] = function () {
             var i = 0;
             for (i = 1;i<l;i++) {
                 var td = t.eq(i).children('td');
+                td.eq(6).children('nobr').remove();
                 if (t.eq(i).children('td.dl').children().length == 0) continue;
                 arr[arr.length] = {
                     //'type' : td.eq(0).children('img').attr('alt'),
@@ -102,7 +109,7 @@ tracker[tmp_num] = function () {
                     'seeds' : td.eq(3).children('b.sd').text(),
                     'leechs' : td.eq(3).children('b.lc').text(),
                     //'down' : td.eq(8).text(),
-                    'time' : 0
+                    'time' : calculateTime(td.eq(6).text())
                 }
             }
             return arr;
