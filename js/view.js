@@ -307,6 +307,18 @@ var view = function () {
         updateTrackerCount();
         $('div.filter div.btn').css('background-image','url(/images/clear.png)');
     }
+    var triggerBlank = function () {
+        $('div.result_panel').css('display','none');
+        $('div.explore').css('display','block');
+        view.clear_table();
+        $('form[name=search]').children('input[type=text]').val('');
+        document.title = 'Torrents MultiSearch'; 
+        window.location = '#s=';
+        global_wl_hash = location.hash;
+        $('form[name=search]').children('input[type=text]').val('').focus();
+        $('ul.trackers li').attr('data-count',0);
+        updateTrackerCount();
+    }
     var triggerSearch = function (keyword) {
         $('div.result_panel').css('display','block');
         $('div.explore').css('display','none');
@@ -345,6 +357,9 @@ var view = function () {
         },
         triggerSearch : function (a) {
             triggerSearch(a);
+        },
+        triggerBlank : function () {
+            triggerBlank();
         },
         trackerFilter : function () { 
             return trackerFilter;
@@ -457,9 +472,7 @@ $(window).load(function () {
     if (s != '') {
         view.triggerSearch(s);
     } else {
-        $('form[name=search]').children('input[type=text]').val('').focus();
-        $('div.result_panel').css('display','none');
-        $('div.explore').css('display','block');
+        view.triggerBlank();
     }
 });
 var global_wl_hash = location.hash;
