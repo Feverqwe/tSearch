@@ -107,6 +107,7 @@ div.content div.right {
 #rez_table tr th {
     cursor: pointer;
     border-right: 1px #c0c0c0 solid;
+    font-weight: normal;
 }
 #rez_table > tbody > tr.even {
     background-color: #f8f8f8;
@@ -315,15 +316,22 @@ div.tracker_list > ul.trackers > li > a.selected {
 }
 div.explore {
 }
-div.explore div.poster {
+div.explore h2 {
+    margin: 0;
+    padding: 0;
+    margin-left: 5px;
+    -webkit-box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.5);
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+div.explore div.films > div.poster {
     display: inline-block;
     width: 130px;
-    padding: 10px;
+    padding: 6px;
     margin: 8px;
-    height: 200px;
     overflow: hidden;
 }
-div.explore div.poster > div.title {
+div.explore div.films > div.poster > div.title {
     overflow: hidden;
     height: 20px;
     margin: 0;
@@ -334,16 +342,48 @@ div.explore div.poster > div.title {
     margin-top: 2px;
     cursor: pointer;
 }
-div.explore div.poster > div.image {
+div.explore div.films > div.poster > div.image {
     cursor: pointer;
-    margin-left: 5px;
-    margin-right: 6px;
-    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    margin: 6px;
 }
-div.explore div.poster > div.image > img {
-    margin-bottom: -3px;
-    margin-right: -2px;
+div.explore div.films > div.poster > div.image > img {
+    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
 }
+div.explore div.films > div.poster > div.image > img:hover {
+    -webkit-box-shadow: 0 0 15px #1A3DC1;
+}
+
+
+div.explore div.game > div.poster {
+    display: inline-block;
+    width: 110px;
+    padding: 8px;
+    margin: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+div.explore div.game > div.poster > div.title {
+    overflow: hidden;
+    height: 20px;
+    margin: 0;
+    font-size: 12px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    margin-top: 2px;
+    cursor: pointer;
+}
+div.explore div.game > div.poster > div.image {
+    cursor: pointer;
+    margin: 8px;
+}
+div.explore div.game > div.poster > div.image > img {
+    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+}
+div.explore div.game > div.poster > div.image > img:hover {
+    -webkit-box-shadow: 0 0 15px #1A3DC1;
+}
+
 @-webkit-keyframes a_moveble150{
     0%{margin-left:2px;}
 50%{margin-left:-75px;}

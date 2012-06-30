@@ -309,11 +309,13 @@ var view = function () {
     }
     var triggerSearch = function (keyword) {
         $('div.result_panel').css('display','block');
+        $('div.explore').css('display','none');
         view.clear_table();
         keyword = $.trim(keyword);
         $('form[name=search]').children('input[type=text]').val(keyword);
         document.title = keyword +' :: '+'TMS'; 
         window.location = '#s='+keyword;
+        global_wl_hash = location.hash;
         engine.search(keyword);
     }
     return {
@@ -443,10 +445,28 @@ $(function () {
         window.location = '/options.html#back='+$.trim($('form[name=search]').children('input[type=text]').val());
     });
     explore.getAfisha();
+    explore.getGames();
+//jQuery(window).bind('beforeunload', function (){
+//    var s = (document.URL).replace(/(.*)index.html/,'').replace(/#s=(.*)/,'$1');
+//    return s;
+//});
+    
 });
 $(window).load(function () {
     var s = (document.URL).replace(/(.*)index.html/,'').replace(/#s=(.*)/,'$1');
     if (s != '') {
         view.triggerSearch(s);
+    } else {
+        $('form[name=search]').children('input[type=text]').val('').focus();
+        $('div.result_panel').css('display','none');
+        $('div.explore').css('display','block');
+    }
+});
+var global_wl_hash = location.hash;
+$(window).bind('hashchange', function() {
+    if (location.hash != global_wl_hash)
+    {
+        $(window).trigger('load');
+        global_wl_hash = location.hash;
     }
 });
