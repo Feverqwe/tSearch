@@ -4,6 +4,8 @@ var view = function () {
     var categoryFilter = null;
     var lastFilterWord = '';
     var autoMove = null;
+    var HideLeech = (localStorage.HideLeech !== undefined) ? parseInt(localStorage.HideLeech) : true;
+    var HideSeed = (localStorage.HideSeed !== undefined) ? parseInt(localStorage.HideSeed) : false;
     var ShowIcons = (localStorage.ShowIcons !== undefined) ? parseInt(localStorage.ShowIcons) : true;
     var HideZeroSeed = (localStorage.HideZeroSeed !== undefined) ? parseInt(localStorage.HideZeroSeed) : true;
     var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : 2;
@@ -54,7 +56,7 @@ var view = function () {
     var write_result = function (t,a,s) {
         var c = '';
         $('#rez_table').children('tbody').children('tr[data-tracker='+t+']').remove();
-        var s_s = s.replace(/\s+/g," ");
+        var s_s = contentFilter(s.replace(/\s+/g," ").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
         var sum = 0;
         $.each(a, function (k,v) {
             if (HideZeroSeed && v.seeds == 0) return false;
@@ -79,8 +81,8 @@ var view = function () {
             +((v.category.title != null)?'<ul><li class="category">'+((v.category.url == null)?v.category.title:'<a href="'+v.category.url+'" target="blank">'+v.category.title+'</a>')+'</li>'+((ShowIcons)?'<li><div class="tracker_icon num'+t+'" title="'+tracker[t].name+'"></div></li>':'')+'</ul>':'')
             +'</td>'
             +'  <td class="size" data-value="'+v.size+'">'+((v.dl != null)?'<a href="'+v.dl+'" target="_blank">'+bytesToSize(v.size)+' ↓</a>':bytesToSize(v.size))+'</td>'
-            +'  <td class="seeds" data-value="'+v.seeds+'">'+v.seeds+'</td>'
-            +'  <td class="leechs" data-value="'+v.leechs+'">'+v.leechs+'</td>'
+            +((!HideSeed)?'  <td class="seeds" data-value="'+v.seeds+'">'+v.seeds+'</td>':'')
+            +((!HideLeech)?'  <td class="leechs" data-value="'+v.leechs+'">'+v.leechs+'</td>':'')
             +'</tr>';
         });
         updateTrackerResultCount(t,sum);
@@ -343,6 +345,12 @@ var view = function () {
         },
         SetAutoMove : function (a) {
             autoMove = a;
+        },
+        HideLeech : function (a) {
+            return HideLeech;
+        },
+        HideSeed : function (a) {
+            return HideSeed;
         }
     }
 }();
@@ -355,6 +363,12 @@ var myTextExtraction = function(node)
     return $(node).html();
 }
 $(function () {
+    if (view.HideLeech()) {
+        $('th.leechs').remove();
+    }
+    if (view.HideSeed()) {
+        $('th.seeds').remove();
+    }
     $('form[name=search]').submit(function () {
         view.triggerSearch($(this).children('input[type=text]').val());
         return false;

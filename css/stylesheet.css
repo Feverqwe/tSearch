@@ -43,8 +43,8 @@ input[type=text]:focus {
     box-shadow:inset 0px 0px 4px 0px #97c4fe;
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #1e62d0) );
     background-color:#3d94f6;
-    border-radius:3px;
-    border-radius:3px;
+    border-radius:2px;
+    border-radius:2px;
     border:1px solid #337fed;
     display:inline-block;
     color:#ffffff;

@@ -1,5 +1,7 @@
 var option_mode = true;
 var view = function () {
+    var HideLeech = (localStorage.HideLeech !== undefined) ? parseInt(localStorage.HideLeech) : true;
+    var HideSeed = (localStorage.HideSeed !== undefined) ? parseInt(localStorage.HideSeed) : false;
     var ShowIcons = (localStorage.ShowIcons !== undefined) ? parseInt(localStorage.ShowIcons) : 1;
     var HideZeroSeed = (localStorage.HideZeroSeed !== undefined) ? parseInt(localStorage.HideZeroSeed) : true;
     var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : 2;
@@ -24,6 +26,8 @@ var view = function () {
     var loadSettings = function () {
         $('input[name="zeroseed"]').prop('checked',HideZeroSeed);
         $('input[name="icons"]').prop('checked',ShowIcons);
+        $('input[name="hideleech"]').prop('checked',HideLeech);
+        $('input[name="hideseed"]').prop('checked',HideSeed);
         $('input[name="typeFiltration"]').eq(AdvFiltration).prop('checked',true);
     }
     var save_settings = function () {
@@ -41,6 +45,8 @@ var view = function () {
         localStorage.internalTrackers = JSON.stringify(internalTrackers);
         localStorage.HideZeroSeed = HideZeroSeed = ($('input[name="zeroseed"]').is(':checked'))?1:0;
         localStorage.ShowIcons = ShowIcons = ($('input[name="icons"]').is(':checked'))?1:0;
+        localStorage.HideLeech = HideLeech = ($('input[name="hideleech"]').is(':checked'))?1:0;
+        localStorage.HideSeed = HideSeed = ($('input[name="hideseed"]').is(':checked'))?1:0;
         var tmp = $('input[name="typeFiltration"]');
         var tmp_l = tmp.length;
         for (var i = 0;i<tmp_l;i++)

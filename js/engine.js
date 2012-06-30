@@ -90,6 +90,7 @@ var engine = function () {
         v.setId(n);
         view.addTrackerInList(n);
     }
+    loadModules();
     return {
         search : function (a) {
             return search(a)
@@ -103,6 +104,3 @@ var engine = function () {
         defaultList : defaultList
     }
 }();
-$(function () {
-    engine.loadModules();
-})
