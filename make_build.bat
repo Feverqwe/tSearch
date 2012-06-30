@@ -17,6 +17,7 @@ copy .\tracker\* .\build\tracker\
 copy .\*.html .\build\
 copy .\*.json .\build\
 
+del .\build\js\explore.js
 del .\build\js\engine.js
 del .\build\js\jquery.tablesorter.js
 del .\build\js\options.js
@@ -26,6 +27,7 @@ del .\build\css\stylesheet.css
 
 java -jar compiler.jar --js .\js\engine.js --js_output_file .\build\js\engine.js
 java -jar compiler.jar --js .\js\view.js --js_output_file .\build\js\view.js
+java -jar compiler.jar --js .\js\explore.js --js_output_file .\build\js\explore.js
 java -jar compiler.jar --js .\js\options.js --js_output_file .\build\js\options.js
 java -jar compiler.jar --js .\js\jquery.tablesorter.js --js_output_file .\build\js\jquery.tablesorter.js
 
