@@ -109,7 +109,7 @@ tracker[tmp_num] = function () {
                     'seeds' : td.eq(3).children('b.sd').text(),
                     'leechs' : td.eq(3).children('b.lc').text(),
                     //'down' : td.eq(8).text(),
-                    'time' : calculateTime(td.eq(6).text())
+                    'time' : 0//calculateTime(td.eq(6).text())
                 }
             }
             return arr;
