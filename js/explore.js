@@ -2,6 +2,11 @@ var explore = function () {
     var xhr = null;
     var xhr_g = null;
     var xhr_s = null;
+    var explorerCache = (localStorage.explorerCache !== undefined) ? JSON.parse(localStorage.explorerCache) : {
+        games:null,
+        films:null,
+        serials:null
+    };
     var sesizeimg = function (i) {
         i = i.replace('/sm_film/','/film/');
         return i;
@@ -11,7 +16,6 @@ var explore = function () {
         return i;
     }
     var readAfisha = function (c) {
-        var root_url = 'http://www.kinopoisk.ru/';
         c = view.contentFilter(c);
         var t = $(c).find('div.filmsListNew').children('div.item');
         t.find('div.threeD').remove();
@@ -23,13 +27,12 @@ var explore = function () {
             arr[arr.length] = {
                 'img' : sesizeimg(item.eq(0).children('a').children('img').attr('src')),
                 'name' : item.eq(1).children('div.name').children('a').text(),
-                'url' : root_url+item.eq(1).children('div.name').children('a').attr('href')
+                'url' : item.eq(1).children('div.name').children('a').attr('href')
             }
         }
         return arr;
     }
     var readSerials = function (c) {
-        var root_url = 'http://www.kinopoisk.ru/';
         c = view.contentFilter(c);
         var t = $(c).find('#top250_place_1').parent().children('tr');
         var l = t.length;
@@ -40,13 +43,12 @@ var explore = function () {
             arr[arr.length] = {
                 'img' : makeimg(item.eq(1).children('a').attr('href')),
                 'name' : item.eq(1).children('a').text().replace(/\(([0-9]*)\)$/,''),
-                'url' : root_url+item.eq(1).children('a').attr('href')
+                'url' : item.eq(1).children('a').attr('href')
             }
         }
         return arr;
     }
     var readGames = function (c) {
-        var root_url = 'http://www.gamespot.com/';
         c = view.contentFilter(c);
         var t = $(c).find('ul.games').children('li');
         var l = t.length;
@@ -57,12 +59,18 @@ var explore = function () {
             arr[arr.length] = {
                 'img' : item.eq(1).children('a').children('img').attr('src'),
                 'name' : item.eq(0).children('h3').children('a').text(),
-                'url' : root_url+item.eq(0).children('h3').children('a').attr('href')
+                'url' : item.eq(0).children('h3').children('a').attr('href')
             }
         }
         return arr;
     }
     var load_serials = function () {
+        var cache_arr = null;
+        if (explorerCache.serials != null)
+            if (explorerCache.serials.date != null && explorerCache.serials.date>Math.round((new Date()).getTime() / 1000)) {
+                show_serials(explorerCache.serials.cache_arr);
+                return;
+            }
         if ( $('div.explore div.serials').length > 0) return;
         var url = 'http://www.kinopoisk.ru/level/20/serial/list/';
         if (xhr_s != null)
@@ -71,7 +79,15 @@ var explore = function () {
             type: 'GET',
             url: url,
             success: function(data) {
-                show_serials(readSerials(data));
+                var cotnt = readSerials(data);
+                if (cache_arr == null) {
+                    explorerCache.serials = {
+                        date : Math.round((new Date()).getTime() / 1000)+24*60*60,
+                        cache_arr : cotnt
+                    };
+                }
+                localStorage.explorerCache = JSON.stringify(explorerCache);
+                show_serials(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
                 
@@ -79,6 +95,12 @@ var explore = function () {
         });
     }
     var load_afisha = function () {
+        var cache_arr = null;
+        if (explorerCache.films != null)
+            if (explorerCache.films.date != null && explorerCache.films.date>Math.round((new Date()).getTime() / 1000)) {
+                show_afisha(explorerCache.films.cache_arr);
+                return;
+            }
         if ( $('div.explore div.films').length > 0) return;
         var url = 'http://www.kinopoisk.ru/level/8/view/main/';
         if (xhr != null)
@@ -87,7 +109,15 @@ var explore = function () {
             type: 'GET',
             url: url,
             success: function(data) {
-                show_afisha(readAfisha(data));
+                var cotnt = readAfisha(data);
+                if (cache_arr == null) {
+                    explorerCache.films = {
+                        date : Math.round((new Date()).getTime() / 1000)+24*60*60,
+                        cache_arr : cotnt
+                    };
+                }
+                localStorage.explorerCache = JSON.stringify(explorerCache);
+                show_afisha(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
                 
@@ -95,6 +125,12 @@ var explore = function () {
         });
     }
     var load_games = function () {
+        var cache_arr = null;
+        if (explorerCache.games != null)
+            if (explorerCache.games.date != null && explorerCache.games.date>Math.round((new Date()).getTime() / 1000)) {
+                show_games(explorerCache.games.cache_arr);
+                return;
+            }
         if ( $('div.explore div.game').length > 0) return;
         var url = 'http://www.gamespot.com/games.html?platform=5&type=top_rated&mode=top&sort=score&dlx_type=all&date_filter=6&sortdir=asc&official=all';
         if (xhr_g != null)
@@ -103,7 +139,15 @@ var explore = function () {
             type: 'GET',
             url: url,
             success: function(data) {
-                show_games(readGames(data));
+                var cotnt = readGames(data);
+                if (cache_arr == null) {
+                    explorerCache.games = {
+                        date : Math.round((new Date()).getTime() / 1000)+24*60*60,
+                        cache_arr : cotnt
+                    };
+                }
+                localStorage.explorerCache = JSON.stringify(explorerCache);
+                show_games(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
                 
