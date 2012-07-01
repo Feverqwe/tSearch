@@ -96,18 +96,116 @@ tracker[tmp_num] = function () {
             }
             return arr;
         }
+        var utf8_decode = function  (aa) {
+            var bb = '', c = 0;
+            for (var i = 0; i < aa.length; i++) {
+                c = aa.charCodeAt(i);
+                if (c > 127) {
+                    if (c > 1024) {
+                        if (c == 1025) {
+                            c = 1016;
+                        } else if (c == 1105) {
+                            c = 1032;
+                        }
+                        bb += String.fromCharCode(c - 848);
+                    }
+                } else {
+                    bb += aa.charAt(i);
+                }
+            }
+            return bb;
+        }
+        var encode2 = function (string) {
+            string = string.replace(/rn/g,"n");
+            var utftext = "";
+
+            for (var n = 0; n < string.length; n++) {
+
+                var c = string.charCodeAt(n);
+
+                if (c < 128) {
+                    utftext += String.fromCharCode(c);
+                }
+                else if((c > 127) && (c < 2048)) {
+                    utftext += String.fromCharCode((c >> 6) | 192);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+                else {
+                    utftext += String.fromCharCode((c >> 12) | 224);
+                    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+
+            }
+
+            return utftext;
+        }
+        var encode = function (sValue) {
+            var    text = "", Ucode, ExitValue, s;
+            for (var i = 0; i < sValue.length; i++) {
+                s = sValue.charAt(i);
+                Ucode = s.charCodeAt(0);
+                var Acode = Ucode;
+                if (Ucode > 1039 && Ucode < 1104) {
+                    Acode -= 848;
+                    ExitValue = "%" + Acode.toString(16);
+                }
+                else if (Ucode == 1025) {
+                    Acode = 168;
+                    ExitValue = "%" + Acode.toString(16);
+                }
+                else if (Ucode == 1105) {
+                    Acode = 184;
+                    ExitValue = "%" + Acode.toString(16);          
+                } 
+                else if (Ucode == 32) {
+                    Acode = 32;
+                    ExitValue = "%" + Acode.toString(16);          
+                } 
+                else if (Ucode == 10){
+                    Acode = 10;
+                    ExitValue = "%0A";
+                }
+                else {
+                    ExitValue = s;          
+                }
+                text = text + ExitValue; 
+            }      
+            return text; 
+        }
         var loadPage = function (text) {
             var t = text;
             if (xhr != null)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'POST',
-                url: url,
+                url: url+'?nm='+encode(text),
                 cache : false,
                 data: {
-                    'max' : 1,
-                    'to' : 1,
-                    'nm' : text
+                    'prev_allw':1,
+                    'prev_a':0,
+                    'prev_dla':0,
+                    'prev_dlc':0,
+                    'prev_dld':0,
+                    'prev_dlw':0,
+                    'prev_my':0,
+                    'prev_new':0,
+                    'prev_sd':0,
+                    'prev_da':1,
+                    'prev_dc':1,
+                    'prev_df':1,
+                    'prev_ds':0,
+                    'f[]':-1,
+                    'o':1,
+                    's':2,
+                    'tm':-1,
+                    'sns':-1,
+                    'dc':1,
+                    'df':1,
+                    'da':1,
+                    'pn':'',
+                    'allw':1,
+                    'submit': ''
                 },
                 success: function(data) {
                     view.result(id,readCode(data),t);

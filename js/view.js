@@ -318,6 +318,8 @@ var view = function () {
         $('form[name=search]').children('input[type=text]').val('').focus();
         $('ul.trackers li').attr('data-count',0);
         updateTrackerCount();
+        explore.getAfisha();
+        explore.getGames();
     }
     var triggerSearch = function (keyword) {
         $('div.result_panel').css('display','block');
@@ -450,7 +452,6 @@ $(function () {
     $('div.filter div.btn').click(function () {
         $('div.filter input').val('');
         view.tableFilter('');
-    //$(this).hide();
     });
     var s = (document.URL).replace(/(.*)index.html/,'').replace(/#s=(.*)/,'$1');
     if (s != '') {
@@ -459,13 +460,6 @@ $(function () {
     $('div.tracker_list div.setup').click(function () {
         window.location = '/options.html#back='+$.trim($('form[name=search]').children('input[type=text]').val());
     });
-    explore.getAfisha();
-    explore.getGames();
-//jQuery(window).bind('beforeunload', function (){
-//    var s = (document.URL).replace(/(.*)index.html/,'').replace(/#s=(.*)/,'$1');
-//    return s;
-//});
-    
 });
 $(window).load(function () {
     var s = (document.URL).replace(/(.*)index.html/,'').replace(/#s=(.*)/,'$1');

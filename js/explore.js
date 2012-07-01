@@ -39,6 +39,7 @@ var explore = function () {
         return arr;
     }
     var load_afisha = function () {
+        if ( $('div.explore div.films').length > 0) return;
         var url = 'http://www.kinopoisk.ru/level/8/view/main/';
         if (xhr != null)
             xhr.abort();
@@ -54,6 +55,7 @@ var explore = function () {
         });
     }
     var load_games = function () {
+        if ( $('div.explore div.game').length > 0) return;
         var url = 'http://www.gamespot.com/games.html?platform=5&type=top_rated&mode=top&sort=score&dlx_type=all&date_filter=6&sortdir=asc&official=all';
         if (xhr_g != null)
             xhr_g.abort();
