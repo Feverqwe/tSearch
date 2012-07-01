@@ -318,8 +318,7 @@ var view = function () {
         $('form[name=search]').children('input[type=text]').val('').focus();
         $('ul.trackers li').attr('data-count',0);
         updateTrackerCount();
-        explore.getAfisha();
-        explore.getGames();
+        explore.getLoad();
     }
     var triggerSearch = function (keyword) {
         $('div.result_panel').css('display','block');

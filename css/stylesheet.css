@@ -353,6 +353,35 @@ div.explore div.films > div.poster > div.image > img:hover {
     -webkit-box-shadow: 0 0 15px #1A3DC1;
 }
 
+div.explore div.serials > div.poster {
+    display: inline-block;
+    width: 130px;
+    padding: 6px;
+    margin: 8px;
+    overflow: hidden;
+}
+div.explore div.serials > div.poster > div.title {
+    overflow: hidden;
+    height: 20px;
+    margin: 0;
+    font-size: 12px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    margin-top: 2px;
+    cursor: pointer;
+}
+div.explore div.serials > div.poster > div.image {
+    cursor: pointer;
+    margin: 6px;
+}
+div.explore div.serials > div.poster > div.image > img {
+    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+}
+div.explore div.serials > div.poster > div.image > img:hover {
+    -webkit-box-shadow: 0 0 15px #1A3DC1;
+}
+
 
 div.explore div.game > div.poster {
     display: inline-block;
