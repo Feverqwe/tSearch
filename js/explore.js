@@ -15,7 +15,7 @@ var explore = function () {
         i = i.replace(/(.*)\/film\/([0-9]*)\//,'http://st.kinopoisk.ru/images/film/$2.jpg');
         return i;
     }
-    var readAfisha = function (c) {
+    var readFilms = function (c) {
         c = view.contentFilter(c);
         var t = $(c).find('div.filmsListNew').children('div.item');
         t.find('div.threeD').remove();
@@ -95,12 +95,12 @@ var explore = function () {
             }
         });
     }
-    var load_afisha = function () {
+    var load_films = function () {
         if ( $('div.explore div.films').length > 0) return;
         var cache_arr = null;
         if (explorerCache.films != null)
             if (explorerCache.films.date != null && explorerCache.films.date>Math.round((new Date()).getTime() / 1000)) {
-                show_afisha(explorerCache.films.cache_arr);
+                show_films(explorerCache.films.cache_arr);
                 return;
             }
         var url = 'http://www.kinopoisk.ru/level/8/view/main/';
@@ -110,7 +110,7 @@ var explore = function () {
             type: 'GET',
             url: url,
             success: function(data) {
-                var cotnt = readAfisha(data);
+                var cotnt = readFilms(data);
                 if (cache_arr == null) {
                     explorerCache.films = {
                         date : Math.round((new Date()).getTime() / 1000)+24*60*60,
@@ -118,16 +118,16 @@ var explore = function () {
                     };
                 }
                 localStorage.explorerCache = JSON.stringify(explorerCache);
-                show_afisha(cotnt);
+                show_films(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
                 if (explorerCache.films != null && explorerCache.films.cache_arr != null)
-                    show_afisha(explorerCache.films.cache_arr);
+                    show_films(explorerCache.films.cache_arr);
             }
         });
     }
     var load_games = function () {
-        if ( $('div.explore div.game').length > 0) return;
+        if ( $('div.explore div.games').length > 0) return;
         var cache_arr = null;
         if (explorerCache.games != null)
             if (explorerCache.games.date != null && explorerCache.games.date>Math.round((new Date()).getTime() / 1000)) {
@@ -185,49 +185,63 @@ var explore = function () {
         return ' '+st;
     }
     var show_games = function (content) {
-        var c = '<div class="game"><h2>Игры</h2>';
+        var c = '<div class="games"><h2>Игры</h2>';
         $.each(content, function (k,v) {
-            c += '<div class="poster"><div class="image"><img src="'+v.img+'"/></div><div class="title'+movebleCalculate(v.name)+'">'+v.name+'</div></div>';
+            c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div>';
         $('div.explore').append(view.contentUnFilter(c));
-        $('div.explore div.game').children('div.poster').click(function () {
-            var s = $(this).children('div.title').text();
+        $('div.explore div.games').children('div.poster').find('img').click(function () {
+            var s = $(this).parent().parent().find('div.title').children('span').text();
+            view.triggerSearch(s);
+        });
+        $('div.explore div.games').find('div.title').click(function () {
+            var s = $(this).children('span').text();
             view.triggerSearch(s);
         });
     }
-    var show_afisha = function (content) {
+    var show_films = function (content) {
+        var root_url = 'http://www.kinopoisk.ru';
         var c = '<div class="films"><h2>Фильмы</h2>';
         $.each(content, function (k,v) {
-            c += '<div class="poster"><div class="image"><img src="'+v.img+'"/></div><div class="title'+movebleCalculate(v.name)+'">'+v.name+'</div></div>';
+            c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div>';
         $('div.explore').prepend(view.contentUnFilter(c));
-        $('div.explore div.films').children('div.poster').click(function () {
-            var s = $(this).children('div.title').text();
+        $('div.explore div.films').children('div.poster').find('img').click(function () {
+            var s = $(this).parent().parent().find('div.title').children('span').text();
+            view.triggerSearch(s);
+        });
+        $('div.explore div.films').find('div.title').click(function () {
+            var s = $(this).children('span').text();
             view.triggerSearch(s);
         });
     }
     var show_serials = function (content) {
+        var root_url = 'http://www.kinopoisk.ru';
         var c = '<div class="serials"><h2>Сериалы</h2>';
         $.each(content, function (k,v) {
-            c += '<div class="poster"><div class="image"><img src="'+v.img+'"/></div><div class="title'+movebleCalculate(v.name)+'">'+v.name+'</div></div>';
+            c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div>';
-        if ($('div.explore div.game').length > 0)
-            $('div.explore div.game').before(view.contentUnFilter(c));
+        if ($('div.explore div.games').length > 0)
+            $('div.explore div.games').before(view.contentUnFilter(c));
         else
         if ($('div.explore div.films').length > 0)
             $('div.explore div.films').after(view.contentUnFilter(c));
         else
             $('div.explore').prepend(view.contentUnFilter(c));
-        $('div.explore div.serials').children('div.poster').click(function () {
-            var s = $(this).children('div.title').text();
+        $('div.explore div.serials').children('div.poster').find('img').click(function () {
+            var s = $(this).parent().parent().find('div.title').children('span').text();
+            view.triggerSearch(s);
+        });
+        $('div.explore div.serials').find('div.title').click(function () {
+            var s = $(this).children('span').text();
             view.triggerSearch(s);
         });
     }
     var load_all = function () {
-        load_afisha();
+        load_films();
         load_serials();
         load_games();
     }

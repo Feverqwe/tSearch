@@ -314,6 +314,10 @@ div.tracker_list > ul.trackers > li > a.selected {
     background-color: #99ccff;
     border-radius: 6px;
 }
+
+
+
+
 div.explore {
 }
 div.explore h2 {
@@ -323,17 +327,17 @@ div.explore h2 {
     -webkit-box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.5);
     font-weight: normal;
     margin-bottom: 5px;
+    padding-left: 10px;
 }
-div.explore div.films > div.poster {
+div.explore div.films > div.poster, div.explore div.serials > div.poster {
     display: inline-block;
     width: 130px;
-    padding: 6px;
-    margin: 8px;
-    overflow: hidden;
+    margin: 14px;
+    position: relative;
 }
-div.explore div.films > div.poster > div.title {
+
+div.explore div.films > div.poster div.title, div.explore div.serials > div.poster div.title {
     overflow: hidden;
-    height: 20px;
     margin: 0;
     font-size: 12px;
     white-space: nowrap;
@@ -341,59 +345,27 @@ div.explore div.films > div.poster > div.title {
     text-align: center;
     margin-top: 2px;
     cursor: pointer;
+    position: relative;
 }
-div.explore div.films > div.poster > div.image {
+div.explore div.films > div.poster > div.image, div.explore div.serials > div.poster > div.image {
     cursor: pointer;
     margin: 6px;
 }
-div.explore div.films > div.poster > div.image > img {
+div.explore div.films > div.poster > div.image > img, div.explore div.serials > div.poster > div.image > img {
     -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
 }
-div.explore div.films > div.poster > div.image > img:hover {
+div.explore div.films > div.poster > div.image > img:hover, div.explore div.serials > div.poster > div.image > img:hover {
     -webkit-box-shadow: 0 0 15px #1A3DC1;
 }
 
-div.explore div.serials > div.poster {
-    display: inline-block;
-    width: 130px;
-    padding: 6px;
-    margin: 8px;
-    overflow: hidden;
-}
-div.explore div.serials > div.poster > div.title {
-    overflow: hidden;
-    height: 20px;
-    margin: 0;
-    font-size: 12px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-align: center;
-    margin-top: 2px;
-    cursor: pointer;
-}
-div.explore div.serials > div.poster > div.image {
-    cursor: pointer;
-    margin: 6px;
-}
-div.explore div.serials > div.poster > div.image > img {
-    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
-}
-div.explore div.serials > div.poster > div.image > img:hover {
-    -webkit-box-shadow: 0 0 15px #1A3DC1;
-}
-
-
-div.explore div.game > div.poster {
+div.explore div.games > div.poster {
     display: inline-block;
     width: 110px;
-    padding: 8px;
-    margin: 2px;
-    margin-top: 8px;
-    overflow: hidden;
+    margin: 12px;
+    position: relative;
 }
-div.explore div.game > div.poster > div.title {
+div.explore div.games > div.poster div.title {
     overflow: hidden;
-    height: 20px;
     margin: 0;
     font-size: 12px;
     white-space: nowrap;
@@ -401,18 +373,42 @@ div.explore div.game > div.poster > div.title {
     text-align: center;
     margin-top: 2px;
     cursor: pointer;
+    position: relative;
 }
-div.explore div.game > div.poster > div.image {
+div.explore div.games > div.poster > div.image {
     cursor: pointer;
     margin: 8px;
 }
-div.explore div.game > div.poster > div.image > img {
+div.explore div.games > div.poster > div.image > img {
     -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
 }
-div.explore div.game > div.poster > div.image > img:hover {
+div.explore div.games > div.poster > div.image > img:hover {
     -webkit-box-shadow: 0 0 15px #1A3DC1;
 }
-
+div.explore div.poster > div {
+    position: relative;
+}
+div.explore div.poster > div > div.info {
+    position: absolute;
+    width: 130px;
+    text-align: center;
+    z-index: 2;
+    font-size: 12px;
+    margin: 0 auto;
+    margin-top: 0px;
+    margin-bottom: 30px;
+    display: none;
+    height: 15px;
+}
+div.explore div.games > div.poster > div > div.info {
+    width: 110px;
+}
+div.explore div.poster:hover div.info {
+    display: block;
+}
+div.explore div.info > a {
+    text-decoration: none;
+}
 @-webkit-keyframes a_moveble150{
     0%{margin-left:2px;}
 50%{margin-left:-75px;}
@@ -473,52 +469,52 @@ div.explore div.game > div.poster > div.image > img:hover {
 90%{margin-left:6px;}
 100%{margin-left:2px;}
 }
-div.explore div.poster > div.title.moveble150:hover
+div.explore div.poster div.title.moveble150:hover > span
 {
     -webkit-animation:a_moveble150 6s 1;
     overflow: visible;
 }
-div.explore div.poster > div.title.moveble200:hover
+div.explore div.poster div.title.moveble200:hover > span
 {
     -webkit-animation:a_moveble200 6s 1;
     overflow: visible;
 }
-div.explore div.poster > div.title.moveble250:hover
+div.explore div.poster div.title.moveble250:hover > span
 {
     -webkit-animation:a_moveble250 6s 1;
     overflow: visible;
 }
-div.explore div.poster > div.title.moveble300:hover
+div.explore div.poster div.title.moveble300:hover > span
 {
     -webkit-animation:a_moveble300 6s 1;
     overflow: visible;
 }
-div.explore div.poster > div.title.moveble350:hover
+div.explore div.poster div.title.moveble350:hover > span
 {
     -webkit-animation:a_moveble350 6s 1;
     overflow: visible;
 }
-div.explore div.poster > div.title.moveble400:hover
+div.explore div.poster div.title.moveble400:hover > span
 {
     -webkit-animation:a_moveble400 6s 1;
     overflow: visible;
 }
-div.explore div.poster > div.title.moveble450:hover
+div.explore div.poster div.title.moveble450:hover > span
 {
     -webkit-animation:a_moveble450 6s 1;
     overflow: visible;
 }
-div.explore div.poster > div.title.moveble500:hover
+div.explore div.poster div.title.moveble500:hover > span
 {
     -webkit-animation:a_moveble500 6s 1;
     overflow: visible;
 }
-div.explore div.poster > div.title.moveble550:hover
+div.explore div.poster div.title.moveble550:hover > span
 {
     -webkit-animation:a_moveble550 6s 1;
     overflow: visible;
 }
-div.explore div.poster > div.title.moveble600:hover
+div.explore div.poster div.title.moveble600:hover > span
 {
     -webkit-animation:a_moveble600 6s 1;
     overflow: visible;
