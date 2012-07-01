@@ -65,14 +65,13 @@ var explore = function () {
         return arr;
     }
     var load_serials = function () {
-        if ( $('div.explore div.films').length > 0) return;
+        if ( $('div.explore div.serials').length > 0) return;
         var cache_arr = null;
         if (explorerCache.serials != null)
             if (explorerCache.serials.date != null && explorerCache.serials.date>Math.round((new Date()).getTime() / 1000)) {
                 show_serials(explorerCache.serials.cache_arr);
                 return;
             }
-        if ( $('div.explore div.serials').length > 0) return;
         var url = 'http://www.kinopoisk.ru/level/20/serial/list/';
         if (xhr_s != null)
             xhr_s.abort();
@@ -91,11 +90,13 @@ var explore = function () {
                 show_serials(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
-                
+                if (explorerCache.serials != null && explorerCache.serials.cache_arr != null)
+                    show_serials(explorerCache.serials.cache_arr);
             }
         });
     }
     var load_afisha = function () {
+        if ( $('div.explore div.films').length > 0) return;
         var cache_arr = null;
         if (explorerCache.films != null)
             if (explorerCache.films.date != null && explorerCache.films.date>Math.round((new Date()).getTime() / 1000)) {
@@ -120,7 +121,8 @@ var explore = function () {
                 show_afisha(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
-                
+                if (explorerCache.films != null && explorerCache.films.cache_arr != null)
+                    show_afisha(explorerCache.films.cache_arr);
             }
         });
     }
@@ -150,7 +152,8 @@ var explore = function () {
                 show_games(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
-                
+                if (explorerCache.games != null && explorerCache.games.cache_arr != null)
+                    show_games(explorerCache.games.cache_arr);
             }
         });
     }
