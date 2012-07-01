@@ -65,6 +65,7 @@ var explore = function () {
         return arr;
     }
     var load_serials = function () {
+        if ( $('div.explore div.films').length > 0) return;
         var cache_arr = null;
         if (explorerCache.serials != null)
             if (explorerCache.serials.date != null && explorerCache.serials.date>Math.round((new Date()).getTime() / 1000)) {
@@ -101,7 +102,6 @@ var explore = function () {
                 show_afisha(explorerCache.films.cache_arr);
                 return;
             }
-        if ( $('div.explore div.films').length > 0) return;
         var url = 'http://www.kinopoisk.ru/level/8/view/main/';
         if (xhr != null)
             xhr.abort();
@@ -125,13 +125,13 @@ var explore = function () {
         });
     }
     var load_games = function () {
+        if ( $('div.explore div.game').length > 0) return;
         var cache_arr = null;
         if (explorerCache.games != null)
             if (explorerCache.games.date != null && explorerCache.games.date>Math.round((new Date()).getTime() / 1000)) {
                 show_games(explorerCache.games.cache_arr);
                 return;
             }
-        if ( $('div.explore div.game').length > 0) return;
         var url = 'http://www.gamespot.com/games.html?platform=5&type=top_rated&mode=top&sort=score&dlx_type=all&date_filter=6&sortdir=asc&official=all';
         if (xhr_g != null)
             xhr_g.abort();
