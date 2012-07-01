@@ -50,6 +50,11 @@ var engine = function () {
     {
         'n' : 'torrents.freedom', 
         'e' : 0
+    },
+
+    {
+        'n' : 'ThePirateBay', 
+        'e' : 1
     }
     ];
     var internalTrackers = (localStorage.internalTrackers !== undefined) ? JSON.parse(localStorage.internalTrackers) : null;
