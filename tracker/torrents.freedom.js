@@ -3,7 +3,7 @@ tracker[tmp_num] = function () {
     var name = 'Freedom';
     var filename = 'torrents.freedom';
     var id = null;
-    var icon = 'http://torrents.freedom/favicon.ico';
+    var icon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAKJJREFUOE9j+E8iYCBR/X98Gr7vXft97RQgiWwoXg0tUe+jFL+3RFFRw/Pn36cUA40EmXpuK5DEa8P39++TDYEqEAjMxekkoNkQpSAbgH6t9oJzsfvhe7YTSEWy4f/v70EqYBbitAHTPAJ+IFkDxDyEk54/J+SHrXOgKrItQZ7OtiSgAeRPWMhAQxZ/sELCDpp+1k75f+3Y/3vXoCRSuJKcWgGsiJbhgQDwngAAAABJRU5ErkJggg%3D%3D';
     var login_url = 'http://torrents.freedom/forum/login.php';
     var url = 'http://torrents.freedom/forum/tracker.php';
     var root_url = 'http://torrents.freedom/forum/';
@@ -94,50 +94,6 @@ tracker[tmp_num] = function () {
                 }
             }
             return arr;
-        }
-        var utf8_decode = function  (aa) {
-            var bb = '', c = 0;
-            for (var i = 0; i < aa.length; i++) {
-                c = aa.charCodeAt(i);
-                if (c > 127) {
-                    if (c > 1024) {
-                        if (c == 1025) {
-                            c = 1016;
-                        } else if (c == 1105) {
-                            c = 1032;
-                        }
-                        bb += String.fromCharCode(c - 848);
-                    }
-                } else {
-                    bb += aa.charAt(i);
-                }
-            }
-            return bb;
-        }
-        var encode2 = function (string) {
-            string = string.replace(/rn/g,"n");
-            var utftext = "";
-
-            for (var n = 0; n < string.length; n++) {
-
-                var c = string.charCodeAt(n);
-
-                if (c < 128) {
-                    utftext += String.fromCharCode(c);
-                }
-                else if((c > 127) && (c < 2048)) {
-                    utftext += String.fromCharCode((c >> 6) | 192);
-                    utftext += String.fromCharCode((c & 63) | 128);
-                }
-                else {
-                    utftext += String.fromCharCode((c >> 12) | 224);
-                    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-                    utftext += String.fromCharCode((c & 63) | 128);
-                }
-
-            }
-
-            return utftext;
         }
         var encode = function (sValue) {
             var    text = "", Ucode, ExitValue, s;
