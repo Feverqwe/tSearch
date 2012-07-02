@@ -3,7 +3,7 @@ tracker[tmp_num] = function () {
     var name = 'ThePirateBay';
     var filename = 'thepiratebay';
     var id = null;
-    var icon = 'http://thepiratebay.se/favicon.ico';
+    var icon = 'data:application/octet-stream;base64,Qk04AwAAAAAAADYAAAAoAAAAEAAAABAAAAABABgAAAAAAAAAAADgTAAA4EwAAAAAAAAAAAAA/////////////////////////////////////////////////////v7+/////////////Pz8vb297Ozs////////////////////////////////4uLiSUlJ3d3d////////8/PzEhIScnJy8fHx////////////////////8fHxwsLCWFhYAAAAyMjI////////5+fnEBAQICAgQkJCV1dXZWVli4uLiYmJUlJSKioqPT09bm5uHh4eYWFhwcHBubm5bGxsQEBAp6end3d3FBQUAAAAFBQUOTk5ISEhGRkZPT09WVlZQkJCKioqJycnenp6AAAAQUFBPz8/YGBgjo6O0dHR+/v7////////7+/vxcXFnZ2dg4ODExMTQEBAv7+/AAAAgoKCjo6OpaWltra2qqqqpqampaWlpKSkra2tr6+vsbGx5eXll5eXW1tb1NTUcXFxmJiYAwMDAAAANzc3VFRUGxsbAAAAX19fPDw8ERERAAAAQUFB/v7+/Pz8////////nJycAAAAAAAAAAAAHx8fCwsLAAAAJiYmBQUFAAAAAAAAKysr+vr6////////////nJycAAAAAAAADw8PAAAAAAAAAAAAAAAADQ0NAwMDAAAANjY2+vr6////////////rq6uAAAANjY25eXlWVlZHx8fJycnIyMj0dHRhoaGAAAAV1dX////////////////r6+vAAAALS0t0tLSX19fsrKy2dnZZWVlsrKyiIiIAAAAWVlZ////////////////r6+vAAAAAAAABQUFAgICExMTEBAQAwMDAwMDAQEBAAAAWlpa////////////////q6urAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVFRU////////////////19fXSUlJQUFBQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQkJCQkJCqKio/////////////////////////v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+////////////AAA%3D';
     var url = 'http://thepiratebay.se/search/';
     var root_url = 'http://thepiratebay.se';
     var xhr = null;
@@ -18,7 +18,6 @@ tracker[tmp_num] = function () {
             /* Книги */[601],
             /* ПО */[301,302,303],
             /* Анимэ */[],
-            /* Прочие */[],
             /* Док. и юмор */ [],
             /* Спорт */[]
             ];
@@ -26,7 +25,7 @@ tracker[tmp_num] = function () {
                 if (jQuery.inArray(parseInt(f),groups_arr[i]) > -1) {
                     return i;
                 }
-            return 8;
+            return -1;
         }
         var calculateSize = function (s) {
             s = s.split(', ')[1];

@@ -2,6 +2,7 @@ var view = function () {
     var trackerFilter = null;
     var keywordFilter = null;
     var categoryFilter = null;
+    var categorys = null;
     var lastFilterWord = '';
     var autoMove = null;
     var HideLeech = (localStorage.HideLeech !== undefined) ? parseInt(localStorage.HideLeech) : true;
@@ -21,6 +22,8 @@ var view = function () {
         lastFilterWord = '';
         $('div.filter div.btn').hide();
         $('ul.trackers li a.selected').removeClass('selected');
+        $('ul.trackers li').attr('data-count',0);
+        updateTrackerCount();
         trackerFilter = null;
     }
     var loadingStatus  = function (s,t) {
@@ -239,19 +242,19 @@ var view = function () {
     }
     var updateCategorys = function () {
         var sum = 0;
-        var nl = $('ul.categorys').children('li').length;
-        for (var i=0;i<nl-1;i++) {
-            var filter = '[data-c='+i+']';
+        var count_c = categorys.length;
+        for (var i=0;i<count_c;i++) {
+            var filter = '[data-c='+categorys[i]+']';
             if (trackerFilter!=null)
                 filter += '[data-tracker='+trackerFilter+']';
             if (keywordFilter!=null)
                 filter += '[data-kf=1]';
             var count = $('#rez_table').children('tbody').children('tr'+filter).length;
             if (count > 0) {
-                $('ul.categorys').children('li[data-id="'+i+'"]').css('display','inline-block').children('i').html('('+count+')');
+                $('ul.categorys').children('li[data-id="'+categorys[i]+'"]').css('display','inline-block').children('i').html('('+count+')');
                 sum += count;
             } else {
-                $('ul.categorys').children('li[data-id="'+i+'"]').css('display','none');
+                $('ul.categorys').children('li[data-id="'+categorys[i]+'"]').css('display','none');
             }
         }
         $('ul.categorys').children('li').eq(0).children('i').html('('+sum+')');
@@ -316,8 +319,6 @@ var view = function () {
         window.location = '#s=';
         global_wl_hash = location.hash;
         $('form[name=search]').children('input[type=text]').val('').focus();
-        $('ul.trackers li').attr('data-count',0);
-        updateTrackerCount();
         explore.getLoad();
     }
     var triggerSearch = function (keyword) {
@@ -330,6 +331,16 @@ var view = function () {
         window.location = '#s='+keyword;
         global_wl_hash = location.hash;
         engine.search(keyword);
+    }
+    var load_category = function (c) {
+        $('ul.categorys').empty()
+        var count = c.length;
+        categorys = [];
+        for (var i = 0;i<count;i++){
+            categorys[categorys.length] = c[i][0];
+            $('ul.categorys').append('<li data-id="'+c[i][0]+'">'+c[i][1]+'<i></i></li>');
+        }
+        $('ul.categorys').prepend('<li class="selected">Всё <i></i></li>');
     }
     return {
         result : function (t,a,s) {
@@ -379,6 +390,9 @@ var view = function () {
         },
         HideSeed : function (a) {
             return HideSeed;
+        },
+        load_category : function (a) {
+            load_category(a);
         }
     }
 }();
@@ -391,6 +405,7 @@ var myTextExtraction = function(node)
     return $(node).html();
 }
 $(function () {
+    view.load_category(engine.categorys);
     if (view.HideLeech()) {
         $('th.leechs').remove();
     }

@@ -3,14 +3,14 @@ tracker[tmp_num] = function () {
     var name = 'Порнолаб';
     var filename = 'pornolab';
     var id = null;
-    var icon = 'http://static.pornolab.net/favicon.ico';
+    var icon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAADFBMVEXj4+Pv7+88YLr6KAKxMh22AAAACXBIWXMAAABIAAAASABGyWs+AAAAK0lEQVQI12NgAAHR0NAQBqlVU78AiaVAIhSVAIuBZUNDUYj4/1ACbAAIAABFhxuT/FH5qgAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMi0wNi0yNVQyMTowNzoyMiswNDowMONsV98AAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTItMDYtMjVUMjE6MDc6MjIrMDQ6MDCSMe9jAAAAAElFTkSuQmCC';
     var login_url = 'http://pornolab.net/forum/login.php';
     var url = 'http://pornolab.net/forum/tracker.php';
     var root_url = 'http://pornolab.net/forum/';
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
-            return 3;
+            return 10;
         }
         var readCode = function (c) {
             c = view.contentFilter(c);

@@ -57,6 +57,20 @@ var engine = function () {
         'e' : 1
     }
     ];
+    var categorys = [
+    [3,'Фильмы'],
+    [0,'Сериалы'],
+    [7,'Анимэ'],
+    [8,'Док. и юмор'],
+    [1,'Музыка'],
+    [2,'Игры'],
+    [5,'Книги'],
+    [4,'Мультфтльмы'],
+    [6,'ПО'],
+    [9,'Спорт'],
+    [10,'Порно'],
+    [-1,'Прочие'],
+    ];
     var internalTrackers = (localStorage.internalTrackers !== undefined) ? JSON.parse(localStorage.internalTrackers) : null;
     var search = function(text) {
         $.each(tracker, function (k, v) {
@@ -110,7 +124,8 @@ var engine = function () {
         ModuleLoaded : function (a) {
             ModuleLoaded(a);
         },
-        defaultList : defaultList
+        defaultList : defaultList,
+        categorys : categorys
     }
 }();
 $(function () {

@@ -3,7 +3,7 @@ tracker[tmp_num] = function () {
     var name = 'Мегашара';
     var filename = 'megashara';
     var id = null;
-    var icon = 'http://megashara.com/favicon.ico';
+    var icon = 'data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAABxt5IAjsSmACWZVgAkmlkAIp5cAKfXugD3+PYAJptcAPf5+QAlnF8AQ6hwABiLSAA0lVwAGolLAPz+/wAYjU4ADXI0AP/+/wAajU4AD3U0AAt5NwBMq3kAz+jaAA95NwAfkVEA7fXuAFCvfAAflVQAIZNXACGWVwAcm10AHptdAKTWuAAimloAIJxgAEKkbgDe7OYAF4RGAAhwLwBjsYIANpJdAAp0MgBHrHQAC3I1AOjw6QDO5NgANJpjAOrx7AAckVIAHJNPAA96OwAdlVUAD307ABN7PgDV7N4AIZlYACKdWwAlmlsAZKZ9ADONWAAXh0cACnMwAAxxMwD///sADHQzAAp1NgAOeDYAC3w5AA16PAA8mmQAIpBQAAx+PwBSrnsA7/XwAJ/VtwAjlVYA7/nzAB+dXACl1roA2+zfABWBPwBhqX4AqNS9ACWdXAAonFkAJ51cAPj7+QDG4dEACHAxAGauhAD9//wAGo5LAOf18QAdkFEADYA9AF2keQDW7OAAHpxaAPL59AAhml0AI5pdAI3HqgAinV0AJZpdACOdXQAlnV0AJ5xjAH26lgBFp3EACHIvAA1wMgALczIA/v/9AAt0NQANdzUAH5JPANPn2wBRq30AH5ZSAB2YWAASfT4AIJhYAD6haQAThEEAJJxbACacWwD3+vgAlsOoAPf++wAIcjAAGIpKAPr//gAJdDYA/f/+AP///gAMdjMA5/DtAJzKtADp8+0AD3c2AA94OQAQeDkADn88AB+XVgAhl1YAIJlcABF/RQAhnFwAIpxcABaBQgAknFwAFYVFAAxvMQAKcjEA/f78APv//wD//P8A/f//AMvl1wD///8ADHY0AOzz7gAeklEAhsOhAByXVwAflFcAVK18ANfs4wAjm1oAE4VGACadYAAonWAAB3EvABmHTAAIczUA//79AMvo2AAbjk8ADHk1AECRYABUsH0AHZ5bABWAQQAShEQAIZxeACObWwAWh0QA3fDnAAlxMAAHdDAAl8mrAAtxMAAKcjMA/P7+AAh2NgD+/v4AC3M2AAt1MwD//v4AG41NAJ7IsQAKdzkAS697AB2UUABRrHsAEno5ABR6OQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgW6BmaxuWL0+vG1YmL89JhCuKykrwBMrxUDEK4TCb3GyQsmHO38tdMizcouyQRegjI1DXyyGhoaDSToURDLNzniOKIqdDhHDwZ1iUTRHNV57tgGGmla+a0+frwZZUJKVlzxXg5+JuiUMFsOcfie3qa2CsJ+fo4ILDUVghVoIAEYPW1KGnS91x7ESeiSGhp4uMDGmgHCGocyic11sGacjGMsbS2WdP4VcSHYcGxUKM6V5HY9nIJ8RxogaNx0CHaSQkR85dwlODoabTLR8N2MDIVVTHqpoq0qdcLvKqGaTYzhNVGk5OCJqBTYqZJN9B2mUaAdhB7kEuAeWtZRok3x9kwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%3D';
     var url = 'http://megashara.com/search/';
     var xhr = null;
     var web = function () {
@@ -43,19 +43,7 @@ tracker[tmp_num] = function () {
                 return 1;
             else if (n == 'Сериалы')
                 return 0;
-            /*
-            var groups_arr = [
-            [], //serials 0
-            [], //music  1
-            [], //games  2
-            [], //films  3
-            [], //cartoon 4
-            [], //books 5
-            [], //prog  6
-            [], //anime 7
-            [] //other 8
-            ];*/
-            return 8;
+            return -1;
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
