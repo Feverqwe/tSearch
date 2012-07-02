@@ -3,58 +3,61 @@ var option_mode = false;
 var engine = function () {
     var defaultList = [
     {
-        'n' : 'tfile', 
-        'e' : 1
+        n : 'tfile',
+        e : 1
     },
 
     {
-        'n' : 'rutracker', 
-        'e' : 1
+        n : 'rutracker',
+        e : 1
+    },
+
+
+    {
+        n : 'rutor',
+        e : 1
+    },
+
+
+    {
+        n : 'opensharing',
+        e : 1
+    },
+
+
+    {
+        n : 'nnm-club', 
+        e : 1
     },
 
     {
-        'n' : 'rutor', 
-        'e' : 1
+        n : 'megashara', 
+        e : 1
     },
 
     {
-        'n' : 'opensharing', 
-        'e' : 1
+        n : 'kinozal', 
+        e : 1
     },
 
     {
-        'n' : 'nnm-club', 
-        'e' : 1
+        n : 'torrents.local', 
+        e : 0
     },
 
     {
-        'n' : 'megashara', 
-        'e' : 1
+        n : 'pornolab', 
+        e : 0
     },
 
     {
-        'n' : 'kinozal', 
-        'e' : 1
+        n : 'torrents.freedom', 
+        e : 0
     },
 
     {
-        'n' : 'torrents.local', 
-        'e' : 0
-    },
-
-    {
-        'n' : 'pornolab', 
-        'e' : 0
-    },
-
-    {
-        'n' : 'torrents.freedom', 
-        'e' : 0
-    },
-
-    {
-        'n' : 'ThePirateBay', 
-        'e' : 1
+        n : 'ThePirateBay', 
+        e : 1
     }
     ];
     var categorys = [
@@ -69,7 +72,7 @@ var engine = function () {
     [6,'ПО'],
     [9,'Спорт'],
     [10,'Порно'],
-    [-1,'Прочие'],
+    [-1,'Прочие']
     ];
     var internalTrackers = (localStorage.internalTrackers !== undefined) ? JSON.parse(localStorage.internalTrackers) : null;
     var search = function(text) {
