@@ -318,7 +318,8 @@ div.tracker_list > ul.trackers > li > a.selected {
 
 
 
-div.explore {
+div.explore > div {
+    padding-bottom: 2px;
 }
 div.explore h2 {
     margin: 0;

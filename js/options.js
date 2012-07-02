@@ -5,6 +5,7 @@ var view = function () {
     var ShowIcons = (localStorage.ShowIcons !== undefined) ? parseInt(localStorage.ShowIcons) : 1;
     var HideZeroSeed = (localStorage.HideZeroSeed !== undefined) ? parseInt(localStorage.HideZeroSeed) : false;
     var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : 2;
+    var AutoSetCategory = (localStorage.AutoSetCategory !== undefined) ? parseInt(localStorage.AutoSetCategory) : true;
     var addTrackerInList = function (i) {
         var filename = tracker[i].filename;
         var t = (localStorage.internalTrackers !== undefined) ? JSON.parse(localStorage.internalTrackers) : null;
@@ -29,6 +30,7 @@ var view = function () {
         $('input[name="hideleech"]').prop('checked',HideLeech);
         $('input[name="hideseed"]').prop('checked',HideSeed);
         $('input[name="typeFiltration"]').eq(AdvFiltration).prop('checked',true);
+        $('input[name="autosetcategory"]').prop('checked',AutoSetCategory);
     }
     var save_settings = function () {
         var tr = $('#internalTrackers tbody').children('tr');
@@ -47,6 +49,7 @@ var view = function () {
         localStorage.ShowIcons = ShowIcons = ($('input[name="icons"]').is(':checked'))?1:0;
         localStorage.HideLeech = HideLeech = ($('input[name="hideleech"]').is(':checked'))?1:0;
         localStorage.HideSeed = HideSeed = ($('input[name="hideseed"]').is(':checked'))?1:0;
+        localStorage.AutoSetCategory = AutoSetCategory = ($('input[name="autosetcategory"]').is(':checked'))?1:0;
         var tmp = $('input[name="typeFiltration"]');
         var tmp_l = tmp.length;
         for (var i = 0;i<tmp_l;i++)

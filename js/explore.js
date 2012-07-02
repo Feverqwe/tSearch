@@ -1,4 +1,5 @@
 var explore = function () {
+    var AutoSetCategory = (localStorage.AutoSetCategory !== undefined) ? parseInt(localStorage.AutoSetCategory) : true;
     var xhr = null;
     var xhr_g = null;
     var xhr_s = null;
@@ -82,7 +83,7 @@ var explore = function () {
                 var cotnt = readSerials(data);
                 if (cache_arr == null) {
                     explorerCache.serials = {
-                        date : Math.round((new Date()).getTime() / 1000)+24*60*60,
+                        date : Math.round((new Date()).getTime() / 1000)+24*60*60/2,
                         cache_arr : cotnt
                     };
                 }
@@ -113,7 +114,7 @@ var explore = function () {
                 var cotnt = readFilms(data);
                 if (cache_arr == null) {
                     explorerCache.films = {
-                        date : Math.round((new Date()).getTime() / 1000)+24*60*60,
+                        date : Math.round((new Date()).getTime() / 1000)+24*60*60/2,
                         cache_arr : cotnt
                     };
                 }
@@ -144,7 +145,7 @@ var explore = function () {
                 var cotnt = readGames(data);
                 if (cache_arr == null) {
                     explorerCache.games = {
-                        date : Math.round((new Date()).getTime() / 1000)+24*60*60,
+                        date : Math.round((new Date()).getTime() / 1000)+24*60*60/2,
                         cache_arr : cotnt
                     };
                 }
@@ -187,17 +188,18 @@ var explore = function () {
     var show_games = function (content) {
         var c = '<div class="games"><h2>Игры</h2>';
         $.each(content, function (k,v) {
+            v.name = v.name.substr(3,(v.name).length-6);
             c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div>';
         $('div.explore').append(view.contentUnFilter(c));
         $('div.explore div.games').children('div.poster').find('img').click(function () {
             var s = $(this).parent().parent().find('div.title').children('span').text();
-            view.triggerSearch(s);
+            triggerClick(s,2);
         });
         $('div.explore div.games').find('div.title').click(function () {
             var s = $(this).children('span').text();
-            view.triggerSearch(s);
+            triggerClick(s,2);
         });
     }
     var show_films = function (content) {
@@ -210,11 +212,11 @@ var explore = function () {
         $('div.explore').prepend(view.contentUnFilter(c));
         $('div.explore div.films').children('div.poster').find('img').click(function () {
             var s = $(this).parent().parent().find('div.title').children('span').text();
-            view.triggerSearch(s);
+            triggerClick(s,3);
         });
         $('div.explore div.films').find('div.title').click(function () {
             var s = $(this).children('span').text();
-            view.triggerSearch(s);
+            triggerClick(s,3);
         });
     }
     var show_serials = function (content) {
@@ -233,12 +235,19 @@ var explore = function () {
             $('div.explore').prepend(view.contentUnFilter(c));
         $('div.explore div.serials').children('div.poster').find('img').click(function () {
             var s = $(this).parent().parent().find('div.title').children('span').text();
-            view.triggerSearch(s);
+            triggerClick(s,0);
         });
         $('div.explore div.serials').find('div.title').click(function () {
             var s = $(this).children('span').text();
-            view.triggerSearch(s);
+            triggerClick(s,0);
         });
+    }
+    var triggerClick = function (s,c) {
+        if (AutoSetCategory) {
+            $('ul.categorys').children('li[data-id='+c+']').trigger('click');
+            view.SetAutoMove(null);
+        }
+        view.triggerSearch(s);
     }
     var load_all = function () {
         load_films();
