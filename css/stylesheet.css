@@ -149,6 +149,14 @@ div.content div.right {
     width: 125px;
     padding-left: 15px;
 }
+#rez_table > thead > tr > th.quality {
+    text-align: center;
+    width: 20px;
+}
+#rez_table > tbody > tr > td.quality {
+    text-align: center;
+    color: #CCCccc;
+}
 #rez_table > tbody > tr > td.time {
     text-align: left;
     color: #666666;

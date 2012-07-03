@@ -62,9 +62,19 @@ var view = function () {
         var s_s = contentFilter(s.replace(/\s+/g," ").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
         var sum = 0;
         $.each(a, function (k,v) {
+            var quality = {
+                seed : 0,
+                name : 0,
+                video : 0,
+                music : 0,
+                game : 0,
+                value : 0
+            };
             if (HideZeroSeed && v.seeds == 0) return false;
             sum++;
             var title = filterText(s_s,v.title);
+            quality.name = title.r;
+            title = title.n;
             var filter = '';
             var fk = 0;
             if (trackerFilter!=null && trackerFilter != t) filter = 'style="display: none;"';
@@ -76,14 +86,20 @@ var view = function () {
                 else
                     fk = 1;
             }
+            quality.seed = (v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>1)?3:0;
+            quality.video = (title.replace(/1080p|Blu-ray|1080i/)!=title)?10:(title.replace(/BDRip/)!=title)?9:(title.replace(/LowHDRip/)!=title)?3:(title.replace(/HDTV|HDRip|HDTVRip|720p|HQRip/)!=title)?8:(title.replace(/DVDRip|WEB-DLRip/)!=title)?6:(title.replace(/DVDScr/)!=title)?2:(title.replace(/DVD/)!=title)?4:(title.replace(/TVRip|WEBRip|WEB-DL|SATRip|TeleSynch/)!=title)?2:(title.replace(/CAMRip/)!=title)?1:(title.replace(/TS/)!=title)?2:0;
+            quality.music = (title.replace(/flac|alac|lossless/i)!=title)?10:(title.replace(/320.?kbps/i)!=title)?8:(title.replace(/256.?kbps/i)!=title)?6:(title.replace(/192.?kbps/i)!=title)?5:(title.replace(/128.?kbps/i)!=title)?4:(title.replace(/mp3/i)!=title)?2:0;
+            quality.game = (title.replace(/Repack/i)!=title)?5:(title.replace(/\[L\]/)!=title)?10:0;
+            quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
             c = c + '<tr '+filter+' data-kf="'+fk+'" data-tracker="'+t+'" data-c="'+v.category.id+'">'
-            +'  <td class="time" data-value="'+v.time+'" title="'+unixintimetitle(v.time)+'">'+unixintime(v.time)+'</td>'
-            +'  <td class="name"><div class="title"><a href="'+v.url+'" target="_blank">'+title+'</a>'+
+            +'<td class="time" data-value="'+v.time+'" title="'+unixintimetitle(v.time)+'">'+unixintime(v.time)+'</td>'
+            +'<td class="quality" data-value="'+quality.value+'" data-qgame="'+quality.game+'" data-qseed="'+quality.seed+'" data-qname="'+quality.name+'" data-qvideo="'+quality.video+'" data-qmusic="'+quality.music+'">'+quality.value+'</td>'
+            +'<td class="name"><div class="title"><a href="'+v.url+'" target="_blank">'+title+'</a>'+
             ((v.category.title == null && ShowIcons)?'<div class="tracker_icon num'+t+'" title="'+tracker[t].name+'"></div>':'')
             +'</div>'
             +((v.category.title != null)?'<ul><li class="category">'+((v.category.url == null)?v.category.title:'<a href="'+v.category.url+'" target="blank">'+v.category.title+'</a>')+'</li>'+((ShowIcons)?'<li><div class="tracker_icon num'+t+'" title="'+tracker[t].name+'"></div></li>':'')+'</ul>':'')
             +'</td>'
-            +'  <td class="size" data-value="'+v.size+'">'+((v.dl != null)?'<a href="'+v.dl+'" target="_blank">'+bytesToSize(v.size)+' ↓</a>':bytesToSize(v.size))+'</td>'
+            +'<td class="size" data-value="'+v.size+'">'+((v.dl != null)?'<a href="'+v.dl+'" target="_blank">'+bytesToSize(v.size)+' ↓</a>':bytesToSize(v.size))+'</td>'
             +((!HideSeed)?'  <td class="seeds" data-value="'+v.seeds+'">'+v.seeds+'</td>':'')
             +((!HideLeech)?'  <td class="leechs" data-value="'+v.leechs+'">'+v.leechs+'</td>':'')
             +'</tr>';
@@ -193,11 +209,19 @@ var view = function () {
     var filterText = function (s,t) {
         var s = $.trim(s);
         var new_name = t.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+        var rate = 0;
+        var new_name2 = new_name;
+        rate = (new_name.replace(new RegExp(s,"i"),'')!=new_name)?10:0;
         if (s != '') {
             var tmp = s.split(" ");
             new_name = new_name.replace(new RegExp('('+tmp.join('|')+')',"ig"),"<b>$1</b>");
         }
-        return new_name;
+        if (new_name2 != new_name)
+            rate = (new_name.replace(new RegExp(s,"i"),'')!=new_name)?8:0;
+        return {
+            n:new_name,
+            r:rate
+        };
     }
     var filterTextCheck = function (s,t) {
         if (s == '') return 'a';
@@ -382,6 +406,9 @@ var view = function () {
         setCatFilter : function (a) {
             categoryFilter = a;
         },
+        getCatFilter : function () {
+            return categoryFilter;
+        },
         SetAutoMove : function (a) {
             autoMove = a;
         },
@@ -398,8 +425,25 @@ var view = function () {
 }();
 var myTextExtraction = function(node)  
 {
-    if ($(node).attr('data-value')!=null)
-        return $(node).attr('data-value');
+    if ($(node).attr('data-value')!=null) {
+        if ($(node).attr('data-qname') != null) {
+            var c = view.getCatFilter();
+            var val = parseInt($(node).attr('data-value'));
+            if (c == null) return val;
+            console.log(c);
+            if (c == 3||c==0||c==7||c==8||c==4) {
+                val = val-parseInt($(node).attr('data-qgame'))-parseInt($(node).attr('data-qmusic'));
+            } else 
+            if (c == 1) {
+                val = val-parseInt($(node).attr('data-qgame'))-parseInt($(node).attr('data-qvideo'));
+            } else
+            if (c == 2) {
+                val = val-parseInt($(node).attr('data-qmusic'))-parseInt($(node).attr('data-qvideo'));
+            }
+            return val;
+        } else         
+            return $(node).attr('data-value');
+    }
     if ($(node).children('div.title')!=null)
         return $(node).children('div.title').text();
     return $(node).html();
@@ -445,7 +489,7 @@ $(function () {
         $('#rez_table').tablesorter({
             textExtraction: myTextExtraction,
             widgets: ['zebra'],
-            sortList: (localStorage.Order !== undefined) ? JSON.parse(localStorage.Order) :  [[0,1]],
+            sortList: (localStorage.Order !== undefined) ? JSON.parse(localStorage.Order) :  [[1,1]],
             autosorter: true,
             onsort: function (s) {
                 localStorage.Order = JSON.stringify(s);
