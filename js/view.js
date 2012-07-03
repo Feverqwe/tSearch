@@ -245,7 +245,16 @@ var view = function () {
                 r = 'a';
         }
         else {
-            if ((new RegExp(s,"i")).test(t))
+            var tmp = s.split(",");
+            var tmp_l = tmp.length;
+            var trgr = true;
+            for (var i=0;i<tmp_l;i++) {
+                if (!(new RegExp(tmp[i],"i")).test(t)) {
+                    trgr = false;
+                    break;
+                }
+            }
+            if (trgr)
                 r = 'a';
         }
         return r;
