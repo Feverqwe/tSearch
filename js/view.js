@@ -87,9 +87,9 @@ var view = function () {
                     fk = 1;
             }
             quality.seed = (v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>1)?3:0;
-            quality.video = (title.replace(/1080p|Blu-ray|1080i/)!=title)?10:(title.replace(/BDRip/)!=title)?9:(title.replace(/LowHDRip/)!=title)?3:(title.replace(/HDTV|HDRip|HDTVRip|720p|HQRip/)!=title)?8:(title.replace(/DVDRip|WEB-DLRip/)!=title)?6:(title.replace(/DVDScr/)!=title)?2:(title.replace(/DVD/)!=title)?4:(title.replace(/TVRip|WEBRip|WEB-DL|SATRip|TeleSynch/)!=title)?2:(title.replace(/CAMRip/)!=title)?1:(title.replace(/TS/)!=title)?2:0;
-            quality.music = (title.replace(/flac|alac|lossless/i)!=title)?10:(title.replace(/320.?kbps/i)!=title)?8:(title.replace(/256.?kbps/i)!=title)?6:(title.replace(/192.?kbps/i)!=title)?5:(title.replace(/128.?kbps/i)!=title)?4:(title.replace(/mp3/i)!=title)?2:0;
-            quality.game = (title.replace(/Repack/i)!=title)?5:(title.replace(/\[L\]/)!=title)?10:0;
+            quality.video = ((/1080p|Blu-ray|1080i/).test(title))?10:((/BDRip/).test(title))?9:((/LowHDRip/).test(title))?3:((/HDTV|HDRip|HDTVRip|720p|HQRip/).test(title))?8:((/DVDRip|WEB-DLRip/).test(title))?6:((/DVDScr/).test(title))?2:((/DVD/).test(title))?4:((/TVRip|WEBRip|WEB-DL|SATRip|TeleSynch/).test(title))?2:((/CAMRip/).test(title))?1:((/TS/).test(title))?2:0;
+            quality.music = ((/flac|alac|lossless/i).test(title))?10:((/320.?kbps/i).test(title))?8:((/256.?kbps/i).test(title))?6:((/192.?kbps/i).test(title))?5:((/128.?kbps/i).test(title))?4:((/mp3/i).test(title))?2:0;
+            quality.game = ((/Repack/i).test(title))?5:((/\[L\]/).test(title))?10:0;
             quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
             c = c + '<tr '+filter+' data-kf="'+fk+'" data-tracker="'+t+'" data-c="'+v.category.id+'">'
             +'<td class="time" data-value="'+v.time+'" title="'+unixintimetitle(v.time)+'">'+unixintime(v.time)+'</td>'
@@ -211,13 +211,13 @@ var view = function () {
         var new_name = t.replace(/</g,"&lt;").replace(/>/g,"&gt;");
         var rate = 0;
         var new_name2 = new_name;
-        rate = (new_name.replace(new RegExp(s,"i"),'')!=new_name)?10:0;
+        rate = ((new RegExp(s,"i")).test(new_name))?10:0;
         if (s != '') {
             var tmp = s.split(" ");
             new_name = new_name.replace(new RegExp('('+tmp.join('|')+')',"ig"),"<b>$1</b>");
         }
         if (new_name2 != new_name)
-            rate = (new_name.replace(new RegExp(s,"i"),'')!=new_name)?8:0;
+            rate = ((new RegExp(s,"i")).test(new_name))?8:0;
         return {
             n:new_name,
             r:rate
@@ -228,7 +228,7 @@ var view = function () {
         var r = t;
         if (AdvFiltration == 1) {
             var tmp = s.split(" ");
-            if (t.replace(new RegExp(tmp.join('|'),"i"),'') != t)
+            if ((new RegExp(tmp.join('|'),"i")).test(t))
                 r = 'a';
         } else 
         if (AdvFiltration == 2) {
@@ -236,7 +236,7 @@ var view = function () {
             var tmp_l = tmp.length;
             var trgr = true;
             for (var i=0;i<tmp_l;i++) {
-                if (t.replace(new RegExp(tmp[i],"i"),'') == t) {
+                if (!(new RegExp(tmp[i],"i")).test(t)) {
                     trgr = false;
                     break;
                 }
@@ -245,7 +245,7 @@ var view = function () {
                 r = 'a';
         }
         else {
-            if (t.replace(new RegExp(s,"i"),'') != t)
+            if ((new RegExp(s,"i")).test(t))
                 r = 'a';
         }
         return r;
@@ -430,7 +430,6 @@ var myTextExtraction = function(node)
             var c = view.getCatFilter();
             var val = parseInt($(node).attr('data-value'));
             if (c == null) return val;
-            console.log(c);
             if (c == 3||c==0||c==7||c==8||c==4) {
                 val = val-parseInt($(node).attr('data-qgame'))-parseInt($(node).attr('data-qmusic'));
             } else 
