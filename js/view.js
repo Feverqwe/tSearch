@@ -97,7 +97,7 @@ var view = function () {
             ((/DVD/).test(title))?5:
             ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|HQRip/).test(title))?4:
             ((/TeleSynch|DVDScr/).test(title))?2:
-            ((/CAMRip/).test(title))?1:
+            ((/CAMRip|CamRip/).test(title))?1:
             ((/TS/).test(title))?2:
             0;
             quality.music = 
