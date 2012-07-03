@@ -89,11 +89,12 @@ var view = function () {
             quality.seed = (v.seeds>0)?10:0;//(v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>0)?3:0;
             quality.video = 
             ((/Blu-ray/).test(title))?10:
-            ((/BD-Remux|BD-Rip|BDRip|1080p|1080i/).test(title))?9:
-            ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?8:
+            ((/BD-Remux|1080p|1080i/).test(title))?9:
+            ((/BD-Rip|BDRip/).test(title))?8:
+            ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?7:
             ((/LowHDRip/).test(title))?3:
-            ((/HDTV|HDRip|DVDRip/).test(title))?7:
-            ((/DVD/).test(title))?6:
+            ((/HDTV|HDRip|DVDRip/).test(title))?6:
+            ((/DVD/).test(title))?5:
             ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|HQRip/).test(title))?4:
             ((/TeleSynch|DVDScr/).test(title))?2:
             ((/CAMRip/).test(title))?1:
@@ -234,7 +235,7 @@ var view = function () {
             var tmp = s.split(" ");
             new_name = new_name.replace(new RegExp('('+tmp.join('|')+')',"ig"),"<b>$1</b>");
         }
-        if (new_name2 != new_name)
+        if (new_name2 != new_name && rate == 0)
             rate = ((new RegExp(s,"i")).test(new_name))?8:0;
         return {
             n:new_name,
