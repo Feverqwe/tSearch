@@ -86,29 +86,32 @@ var view = function () {
                 else
                     fk = 1;
             }
-            quality.seed = (v.seeds>0)?10:0;//(v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>0)?3:0;
+            quality.seed = (v.seeds>0)?100:0;//(v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>0)?3:0;
             quality.video = 
-            ((/Blu-ray/).test(title))?10:
-            ((/BD-Remux|1080p|1080i/).test(title))?9:
-            ((/BD-Rip|BDRip/).test(title))?8:
-            ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?7:
-            ((/LowHDRip/).test(title))?3:
-            ((/HDTV|HDRip|DVDRip/).test(title))?6:
-            ((/DVD/).test(title))?5:
-            ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|HQRip/).test(title))?4:
-            ((/TeleSynch|DVDScr/).test(title))?2:
-            ((/CAMRip|CamRip/).test(title))?1:
-            ((/TS/).test(title))?2:
+            ((/Blu-ray/).test(title))?100:
+            ((/BD-Remux|1080p|1080i/).test(title))?90:
+            ((/BD-Rip|BDRip/).test(title))?80:
+            ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?70:
+            ((/LowHDRip/).test(title))?30:
+            ((/HDTV|HDRip|DVDRip/).test(title))?60:
+            ((/DVD/).test(title))?50:
+            ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|HQRip/).test(title))?40:
+            ((/TeleSynch|DVDScr/).test(title))?20:
+            ((/CAMRip/).test(title))?10:
+            ((/TS/).test(title))?20:
             0;
+            quality.video += ((/5.1/).test(title))?3:0;
+            quality.video += ((/original/i).test(title))?2:0;
+            quality.video += ((/rus sub|Sub|subs/).test(title))?1:0;
             quality.music = 
-            ((/flac|alac|lossless/i).test(title))?10:
-            ((/320.?kbps/i).test(title))?8:
-            ((/256.?kbps/i).test(title))?6:
-            ((/192.?kbps/i).test(title))?5:
-            ((/128.?kbps/i).test(title))?4:
-            ((/mp3/i).test(title))?2:
+            ((/flac|alac|lossless/i).test(title))?100:
+            ((/320.?kbps/i).test(title))?80:
+            ((/256.?kbps/i).test(title))?60:
+            ((/192.?kbps/i).test(title))?50:
+            ((/128.?kbps/i).test(title))?40:
+            ((/mp3/i).test(title))?20:
             0;
-            quality.game = ((/Repack/i).test(title))?5:((/\[L\]/).test(title))?10:0;
+            quality.game = ((/Repack/i).test(title))?50:((/\[L\]/).test(title))?100:0;
             quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
             c = c + '<tr '+filter+' data-kf="'+fk+'" data-tracker="'+t+'" data-c="'+v.category.id+'">'
             +'<td class="time" data-value="'+v.time+'" title="'+unixintimetitle(v.time)+'">'+unixintime(v.time)+'</td>'
@@ -230,13 +233,13 @@ var view = function () {
         var new_name = t.replace(/</g,"&lt;").replace(/>/g,"&gt;");
         var rate = 0;
         var new_name2 = new_name;
-        rate = ((new RegExp(s,"i")).test(new_name))?10:0;
+        rate = ((new RegExp(s,"i")).test(new_name))?100:0;
         if (s != '') {
             var tmp = s.split(" ");
             new_name = new_name.replace(new RegExp('('+tmp.join('|')+')',"ig"),"<b>$1</b>");
         }
         if (new_name2 != new_name && rate == 0)
-            rate = ((new RegExp(s,"i")).test(new_name))?8:0;
+            rate = ((new RegExp(s,"i")).test(new_name))?80:0;
         return {
             n:new_name,
             r:rate
