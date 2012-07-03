@@ -86,7 +86,7 @@ var view = function () {
                 else
                     fk = 1;
             }
-            quality.seed = (v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>1)?3:0;
+            quality.seed = (v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>0)?3:0;
             quality.video = ((/1080p|Blu-ray|1080i/).test(title))?10:((/BDRip/).test(title))?9:((/LowHDRip/).test(title))?3:((/HDTV|HDRip|HDTVRip|720p|HQRip/).test(title))?8:((/DVDRip|WEB-DLRip/).test(title))?6:((/DVDScr/).test(title))?2:((/DVD/).test(title))?4:((/TVRip|WEBRip|WEB-DL|SATRip|TeleSynch/).test(title))?2:((/CAMRip/).test(title))?1:((/TS/).test(title))?2:0;
             quality.music = ((/flac|alac|lossless/i).test(title))?10:((/320.?kbps/i).test(title))?8:((/256.?kbps/i).test(title))?6:((/192.?kbps/i).test(title))?5:((/128.?kbps/i).test(title))?4:((/mp3/i).test(title))?2:0;
             quality.game = ((/Repack/i).test(title))?5:((/\[L\]/).test(title))?10:0;
