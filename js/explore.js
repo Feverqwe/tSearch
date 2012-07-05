@@ -94,7 +94,7 @@ var explore = function () {
             var item = t.eq(i);
             arr[arr.length] = {
                 'img' : makeimg(item.children('a').attr('href')),
-                'name' : item.children('a').text().replace(/ \(([0-9]*)\)$/,''),
+                'name' : item.children('a').text(),
                 'url' : item.children('a').attr('href')
             }
         }
@@ -308,7 +308,10 @@ var explore = function () {
         var root_url = 'http://www.kinopoisk.ru';
         var st = get_view_status('top_films');
         var c = '<div class="top_films"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Фильмы</h2><div'+((!st)?' style="display:none"':'')+'>';
+        var cc = 0;
         $.each(content, function (k,v) {
+            cc += 1;
+            if (cc > 20) return false;
             c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div></div>';
