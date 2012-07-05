@@ -368,13 +368,13 @@ var explore = function () {
             revert: true,
             start: function(event, ui) {
                 $('div.explore').find('div.spoiler').hide('fast');
-                $('div.explore ul.sortable li div').children('div').children('div').hide();
-                $('div.explore ul.sortable li div').children('h2').css('-webkit-box-shadow','none');
+                $('div.explore ul.sortable li div').children('div').children('div.poster').hide();
+                $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow','none');
             },
             stop: function(event, ui) {
                 $('div.explore').find('div.spoiler').show('fast');
-                $('div.explore ul.sortable li div').children('div').children('div').show();
-                $('div.explore ul.sortable li div').children('h2').css('-webkit-box-shadow','0 4px 8px -4px rgba(0, 0, 0, 0.5)');
+                $('div.explore ul.sortable li div').children('div').children('div.poster').show();
+                $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow','0 4px 8px -4px rgba(0, 0, 0, 0.5)');
                 save_options();
             }
         });
