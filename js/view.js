@@ -89,7 +89,7 @@ var view = function () {
             quality.seed = (v.seeds>0)?100:0;//(v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>0)?3:0;
             quality.video = 
             ((/Blu-ray/).test(title))?100:
-            ((/BD-Remux|1080p|1080i/).test(title))?90:
+            ((/BD-Remux|BDRemux|1080p|1080i/).test(title))?90:
             ((/BD-Rip|BDRip/).test(title))?80:
             ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?70:
             ((/LowHDRip/).test(title))?30:
