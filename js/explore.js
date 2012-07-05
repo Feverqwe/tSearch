@@ -120,7 +120,7 @@ var explore = function () {
         var cache_arr = null;
         if (explorerCache.top_films != null) {
             if (explorerCache.top_films.date != null && explorerCache.top_films.date>Math.round((new Date()).getTime() / 1000)) {
-                show_films(explorerCache.top_films.cache_arr);
+                show_top_films(explorerCache.top_films.cache_arr);
                 return;
             }
         } else {
