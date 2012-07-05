@@ -268,13 +268,14 @@ div.filter {
 div.filter > input {
     width: 142px;
     padding-right: 18px;
+    height: 18px;
 }
 div.filter > div.btn {
     background: url(../images/clear.png) center center no-repeat;
     width: 16px;
     height: 16px;
     position: absolute;
-    top: 25px;
+    top: 24px;
     left: 146px;
     cursor: pointer;
     z-index: 1;
@@ -322,6 +323,31 @@ div.tracker_list > ul.trackers > li > a.selected {
     background-color: #99ccff;
     border-radius: 6px;
 }
+
+div.progress {
+    width: 30.3px;
+    height: 12px;
+    position: relative;
+    background-color: #CCCccc;
+    cursor: default;
+}
+div.progress div {
+    top:0;
+    position: absolute;
+    width: 30.3px;
+    background-color: #3d94f6;
+    height: 12px;
+}
+div.progress span {
+    top:-1px;
+    left: 0;
+    position: absolute;
+    width: 30.3px;
+}
+
+
+
+
 
 
 
