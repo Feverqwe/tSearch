@@ -11,7 +11,7 @@ tracker[tmp_num] = function () {
         var calculateSize = function (s) {
             var type = '';
             var size = s.replace(' ','');
-            var t = size.replace('KB','');
+            var t = size.replace('kB','');
             if (t!= size) {
                 t = parseFloat(t);
                 return Math.round(t*1024);
