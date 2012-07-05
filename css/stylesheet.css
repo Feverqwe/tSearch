@@ -352,9 +352,23 @@ div.progress span {
 
 
 
-div.explore > div {
+div.explore > ul > li div {
     padding-bottom: 2px;
 }
+
+div.explore > ul {
+    margin: 0;
+    padding: 0;
+}
+
+div.explore div.move_it {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url(../images/moveble.png) center center no-repeat;
+    margin-right: 5px;
+}
+
 div.explore h2 {
     margin: 0;
     padding: 0;
@@ -365,14 +379,18 @@ div.explore h2 {
     padding-left: 10px;
 }
 
-div.explore div.films > div.poster, div.explore div.top_films > div.poster, div.explore div.serials > div.poster {
+div.explore div.films > div.poster, 
+div.explore div.top_films > div.poster,
+div.explore div.serials > div.poster {
     display: inline-block;
     width: 130px;
     margin: 14px;
     position: relative;
 }
 
-div.explore div.films > div.poster div.title, div.explore div.top_films > div.poster div.title, div.explore div.serials > div.poster div.title {
+div.explore div.films > div.poster div.title, 
+div.explore div.top_films > div.poster div.title, 
+div.explore div.serials > div.poster div.title {
     overflow: hidden;
     margin: 0;
     font-size: 12px;
@@ -383,14 +401,20 @@ div.explore div.films > div.poster div.title, div.explore div.top_films > div.po
     cursor: pointer;
     position: relative;
 }
-div.explore div.films > div.poster > div.image, div.explore div.top_films > div.poster > div.image, div.explore div.serials > div.poster > div.image {
+div.explore div.films > div.poster > div.image, 
+div.explore div.top_films > div.poster > div.image, 
+div.explore div.serials > div.poster > div.image {
     cursor: pointer;
     margin: 6px;
 }
-div.explore div.films > div.poster > div.image > img, div.explore div.top_films > div.poster > div.image > img, div.explore div.serials > div.poster > div.image > img {
+div.explore div.films > div.poster > div.image > img, 
+div.explore div.top_films > div.poster > div.image > img, 
+div.explore div.serials > div.poster > div.image > img {
     -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
 }
-div.explore div.films > div.poster > div.image > img:hover, div.explore div.top_films > div.poster > div.image > img:hover, div.explore div.serials > div.poster > div.image > img:hover {
+div.explore div.films > div.poster > div.image > img:hover, 
+div.explore div.top_films > div.poster > div.image > img:hover, 
+div.explore div.serials > div.poster > div.image > img:hover {
     -webkit-box-shadow: 0 0 15px #1A3DC1;
 }
 
