@@ -10,7 +10,23 @@ var explore = function () {
         top_films:null,
         serials:null
     };
-    var listOrder = (localStorage.listOrder !== undefined) ? JSON.parse(localStorage.listOrder) : ['films','top_films','serials','games'];
+    var listOptions = (localStorage.listOptions !== undefined) ? JSON.parse(localStorage.listOptions) : [{
+        n:'films',
+        s:1,
+        size: 0
+    },{
+        n:'top_films',
+        s:1,
+        size: 0
+    },{
+        n:'serials',
+        s:1,
+        size: 0
+    },{
+        n:'games',
+        s:1,
+        size: 0
+    }];
     var sesizeimg = function (i) {
         i = i.replace('/sm_film/','/film/');
         return i;
@@ -251,72 +267,90 @@ var explore = function () {
         return ' '+st;
     }
     var show_games = function (content) {
-        var c = '<div class="games"><h2><div class="move_it"></div>Игры</h2>';
+        var st = get_view_status('games');
+        var c = '<div class="games"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Игры</h2><div'+((!st)?' style="display:none"':'')+'>';
         $.each(content, function (k,v) {
             v.name = v.name.substr(3,(v.name).length-6);
             c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
-        c += '</div>';
+        c += '</div></div>';
         $('div.explore').find('li.games').append(view.contentUnFilter(c));
-        $('div.explore div.games').children('div.poster').find('img').click(function () {
+        $('div.explore div.games div').children('div.poster').find('img').click(function () {
             var s = $(this).parent().parent().find('div.title').children('span').text();
             triggerClick(s,2);
         });
-        $('div.explore div.games').find('div.title').click(function () {
+        $('div.explore div.games div').find('div.title').click(function () {
             var s = $(this).children('span').text();
             triggerClick(s,2);
         });
+        update_spoiler();
     }
     var show_films = function (content) {
         var root_url = 'http://www.kinopoisk.ru';
-        var c = '<div class="films"><h2><div class="move_it"></div>Сейчас в кино</h2>';
+        var st = get_view_status('films');
+        var c = '<div class="films"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Сейчас в кино</h2><div'+((!st)?' style="display:none"':'')+'>';
         $.each(content, function (k,v) {
             c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
-        c += '</div>';
+        c += '</div></div>';
         $('div.explore').find('li.films').append(view.contentUnFilter(c));
-        $('div.explore div.films').children('div.poster').find('img').click(function () {
+        $('div.explore div.films div').children('div.poster').find('img').click(function () {
             var s = $(this).parent().parent().find('div.title').children('span').text();
             triggerClick(s,3);
         });
-        $('div.explore div.films').find('div.title').click(function () {
+        $('div.explore div.films div').find('div.title').click(function () {
             var s = $(this).children('span').text();
             triggerClick(s,3);
         });
+        update_spoiler();
     }
     var show_top_films = function (content) {
         var root_url = 'http://www.kinopoisk.ru';
-        var c = '<div class="top_films"><h2><div class="move_it"></div>Фильмы</h2>';
+        var st = get_view_status('top_films');
+        var c = '<div class="top_films"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Фильмы</h2><div'+((!st)?' style="display:none"':'')+'>';
         $.each(content, function (k,v) {
             c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
-        c += '</div>';
+        c += '</div></div>';
         $('div.explore').find('li.top_films').append(view.contentUnFilter(c));
-        $('div.explore div.top_films').children('div.poster').find('img').click(function () {
+        $('div.explore div.top_films div').children('div.poster').find('img').click(function () {
             var s = $(this).parent().parent().find('div.title').children('span').text();
             triggerClick(s,3);
         });
-        $('div.explore div.top_films').find('div.title').click(function () {
+        $('div.explore div.top_films div').find('div.title').click(function () {
             var s = $(this).children('span').text();
             triggerClick(s,3);
         });
+        update_spoiler();
+    }
+    var get_view_status = function (n) {
+        if (listOptions == null) return 1;
+        for (var i = 0;i<listOptions.length;i++) {
+            if (listOptions[i].n == n)
+                return listOptions[i].s;
+        }
+        return 1;
     }
     var show_serials = function (content) {
         var root_url = 'http://www.kinopoisk.ru';
-        var c = '<div class="serials"><h2><div class="move_it"></div>Сериалы</h2>';
+        
+        var st = get_view_status('serials');
+        
+        var c = '<div class="serials"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Сериалы</h2><div'+((!st)?' style="display:none"':'')+'>';
         $.each(content, function (k,v) {
             c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
-        c += '</div>';
+        c += '</div></div>';
         $('div.explore').find('li.serials').append(view.contentUnFilter(c));
-        $('div.explore div.serials').children('div.poster').find('img').click(function () {
+        $('div.explore div.serials div').children('div.poster').find('img').click(function () {
             var s = $(this).parent().parent().find('div.title').children('span').text();
             triggerClick(s,0);
         });
-        $('div.explore div.serials').find('div.title').click(function () {
+        $('div.explore div.serials div').find('div.title').click(function () {
             var s = $(this).children('span').text();
             triggerClick(s,0);
         });
+        update_spoiler();
     }
     var triggerClick = function (s,c) {
         if (AutoSetCategory) {
@@ -327,28 +361,37 @@ var explore = function () {
     }
     var make_form = function () {
         var ul = $('div.explore ul.sortable');
-        ul.empty().sortable({
+        if (ul.children('li').length > 0) return;
+        ul.sortable({
             axis: 'y', 
             handle: 'div.move_it',
             revert: true,
             start: function(event, ui) {
-                $('div.explore ul.sortable li div').children('div').hide();
+                $('div.explore').find('div.spoiler').hide('fast');
+                $('div.explore ul.sortable li div').children('div').children('div').hide();
                 $('div.explore ul.sortable li div').children('h2').css('-webkit-box-shadow','none');
             },
             stop: function(event, ui) {
-                $('div.explore ul.sortable li div').children('div').show();
+                $('div.explore').find('div.spoiler').show('fast');
+                $('div.explore ul.sortable li div').children('div').children('div').show();
                 $('div.explore ul.sortable li div').children('h2').css('-webkit-box-shadow','0 4px 8px -4px rgba(0, 0, 0, 0.5)');
-                var ul = $('div.explore ul.sortable').children('li');
-                var ul_c = ul.length;
-                listOrder = [];
-                for (var i2=0;i2<ul_c;i2++)
-                    listOrder[i2] = ul.eq(i2).attr('class');
-                localStorage.listOrder = JSON.stringify(listOrder);
+                save_options();
             }
         });
-        for (var i = 0;i<listOrder.length;i++){
-            ul.append('<li class="'+listOrder[i]+'"/>');
+        for (var i = 0;i<listOptions.length;i++){
+            ul.append('<li class="'+listOptions[i].n+'"></li>');
         }
+    }
+    var save_options = function () {
+        var ul = $('div.explore ul.sortable').children('li');
+        var ul_c = ul.length;
+        listOptions = [];
+        for (var i2=0;i2<ul_c;i2++)
+            listOptions[i2] = {
+                n: ul.eq(i2).attr('class'), 
+                s: (ul.eq(i2).find('div.spoiler').is('.up'))?0:1
+            };
+        localStorage.listOptions = JSON.stringify(listOptions);
     }
     var load_all = function () {
         make_form();
@@ -356,6 +399,27 @@ var explore = function () {
         load_films();
         load_serials();
         load_games();
+    }
+    var update_spoiler = function () {
+        $('div.explore').find('div.spoiler').unbind('click').click( function () {
+            if ($(this).is('.up')){
+                var t = $(this);
+                t.hide('fast');
+                $(this).parent().parent().children('div').slideDown('fast',function (){
+                    t.removeClass('up').addClass('down');
+                    t.show('fast');
+                    save_options();
+                });
+            }else{
+                var t = $(this);
+                t.hide('fast');
+                $(this).parent().parent().children('div').slideUp('fast',function (){
+                    t.removeClass('down').addClass('up');
+                    t.show('fast');
+                    save_options();
+                });
+            }
+        });
     }
     return {
         getLoad : function () {

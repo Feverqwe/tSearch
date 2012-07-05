@@ -367,7 +367,29 @@ div.explore div.move_it {
     height: 16px;
     background: url(../images/moveble.png) center center no-repeat;
     margin-right: 5px;
+    margin-top: 1px;
+    margin-bottom: -1px;
+    cursor: move;
 }
+div.explore div.spoiler
+{
+    float: right;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    margin-top: 6px;
+    background: url(../images/show_hide.png) bottom center no-repeat;
+    cursor: pointer;
+}
+div.explore div.spoiler.down
+{
+    background: url(../images/show_hide.png) bottom center no-repeat;
+}
+div.explore div.spoiler.up {
+    background: url(../images/show_hide.png) top center no-repeat;
+}
+
 
 div.explore h2 {
     margin: 0;
@@ -379,18 +401,18 @@ div.explore h2 {
     padding-left: 10px;
 }
 
-div.explore div.films > div.poster, 
-div.explore div.top_films > div.poster,
-div.explore div.serials > div.poster {
+div.explore div.films > div > div.poster, 
+div.explore div.top_films > div > div.poster,
+div.explore div.serials > div > div.poster {
     display: inline-block;
     width: 130px;
     margin: 14px;
     position: relative;
 }
 
-div.explore div.films > div.poster div.title, 
-div.explore div.top_films > div.poster div.title, 
-div.explore div.serials > div.poster div.title {
+div.explore div.films > div > div.poster div.title, 
+div.explore div.top_films > div > div.poster div.title, 
+div.explore div.serials > div > div.poster div.title {
     overflow: hidden;
     margin: 0;
     font-size: 12px;
@@ -401,32 +423,32 @@ div.explore div.serials > div.poster div.title {
     cursor: pointer;
     position: relative;
 }
-div.explore div.films > div.poster > div.image, 
-div.explore div.top_films > div.poster > div.image, 
-div.explore div.serials > div.poster > div.image {
+div.explore div.films > div > div.poster > div.image, 
+div.explore div.top_films > div > div.poster > div.image, 
+div.explore div.serials > div > div.poster > div.image {
     cursor: pointer;
     margin: 6px;
 }
-div.explore div.films > div.poster > div.image > img, 
-div.explore div.top_films > div.poster > div.image > img, 
-div.explore div.serials > div.poster > div.image > img {
+div.explore div.films > div > div.poster > div.image > img, 
+div.explore div.top_films > div > div.poster > div.image > img, 
+div.explore div.serials > div > div.poster > div.image > img {
     -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
 }
-div.explore div.films > div.poster > div.image > img:hover, 
-div.explore div.top_films > div.poster > div.image > img:hover, 
-div.explore div.serials > div.poster > div.image > img:hover {
+div.explore div.films > div > div.poster > div.image > img:hover, 
+div.explore div.top_films > div > div.poster > div.image > img:hover, 
+div.explore div.serials > div > div.poster > div.image > img:hover {
     -webkit-box-shadow: 0 0 15px #1A3DC1;
 }
 
 
 
-div.explore div.games > div.poster {
+div.explore div.games > div > div.poster {
     display: inline-block;
     width: 110px;
     margin: 12px;
     position: relative;
 }
-div.explore div.games > div.poster div.title {
+div.explore div.games > div > div.poster div.title {
     overflow: hidden;
     margin: 0;
     font-size: 12px;
@@ -437,14 +459,14 @@ div.explore div.games > div.poster div.title {
     cursor: pointer;
     position: relative;
 }
-div.explore div.games > div.poster > div.image {
+div.explore div.games > div > div.poster > div.image {
     cursor: pointer;
     margin: 8px;
 }
-div.explore div.games > div.poster > div.image > img {
+div.explore div.games > div > div.poster > div.image > img {
     -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
 }
-div.explore div.games > div.poster > div.image > img:hover {
+div.explore div.games > div > div.poster > div.image > img:hover {
     -webkit-box-shadow: 0 0 15px #1A3DC1;
 }
 div.explore div.poster > div {
@@ -462,7 +484,7 @@ div.explore div.poster > div > div.info {
     display: none;
     height: 15px;
 }
-div.explore div.games > div.poster > div > div.info {
+div.explore div.games > div > div.poster > div > div.info {
     width: 110px;
 }
 div.explore div.poster:hover div.info {
