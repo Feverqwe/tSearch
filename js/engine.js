@@ -56,7 +56,7 @@ var engine = function () {
     },
 
     {
-        n : 'ThePirateBay', 
+        n : 'thepiratebay', 
         e : 1
     }
     ];
