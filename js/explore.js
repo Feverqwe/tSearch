@@ -12,6 +12,10 @@ var explore = function () {
     };
     var favoritesList = (localStorage.favoritesList !== undefined) ? JSON.parse(localStorage.favoritesList) : [];
     var listOptions = (localStorage.listOptions !== undefined) ? JSON.parse(localStorage.listOptions) : [{
+        n:'favorites',
+        s:1,
+        size: 0
+    },{
         n:'films',
         s:1,
         size: 0
@@ -25,10 +29,6 @@ var explore = function () {
         size: 0
     },{
         n:'games',
-        s:1,
-        size: 0
-    },{
-        n:'favorites',
         s:1,
         size: 0
     }];
