@@ -390,13 +390,11 @@ var explore = function () {
         exp_li.append(view.contentUnFilter(c));
         exp_li.children('div.'+section+'').children('div').children('div.poster').find('img').click(function () {
             var s = $(this).parent().parent().find('div.title').children('span').text();
-            triggerClick(s,0);
+            triggerClick(s,category);
         });
-        var category = category;
         exp_li.children('div.'+section+'').children('div').find('div.title').click(function () {
             var s = $(this).children('span').text();
-            var c = category;
-            triggerClick(s,c);
+            triggerClick(s,category);
         });
         update_btns(section,def_size,koef);
     }
