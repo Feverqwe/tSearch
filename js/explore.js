@@ -517,7 +517,6 @@ var explore = function () {
         else {
             return 0;
         }
-        return 0;
     }
     return {
         getLoad : function () {
