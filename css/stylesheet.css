@@ -430,6 +430,7 @@ div.explore div.poster > div.image > div {
     position: absolute;
     top: 5px;
     left: 5px;
+    cursor: pointer;
 }
 div.explore div.poster > div.image > div.add_favorite {
     background: url(../images/favorite.png) center center no-repeat;

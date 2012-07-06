@@ -362,7 +362,10 @@ var explore = function () {
     }
     var triggerClick = function (s,c) {
         if (AutoSetCategory) {
-            $('ul.categorys').children('li[data-id='+c+']').trigger('click');
+            if (c == null)
+                $('ul.categorys').children('li').eq(0).trigger('click');
+            else
+                $('ul.categorys').children('li[data-id='+c+']').trigger('click');
             view.SetAutoMove(null);
         }
         view.triggerSearch(s);
@@ -425,19 +428,19 @@ var explore = function () {
         $('div.explore').find('li.favorites').append(view.contentUnFilter(c));
         $('div.explore div.favorites div').children('div.poster').find('img').click(function () {
             var s = $(this).parent().parent().find('div.title').children('span').text();
-            triggerClick(s,0);
+            triggerClick(s,null);
         });
         $('div.explore div.favorites div').find('div.title').click(function () {
             var s = $(this).children('span').text();
-            triggerClick(s,0);
+            triggerClick(s,null);
         });
         update_spoiler();
     }
     var add_in_favorites = function (obj) {
         favoritesList[favoritesList.length] = {
-                'img' : $(obj).find('img').attr('src'),
-                'name' : $(obj).find('div.title').attr('title'),
-                'url' : $(obj).find('div.info').children('a').attr('href')
+            'img' : $(obj).find('img').attr('src'),
+            'name' : $(obj).find('div.title').attr('title'),
+            'url' : $(obj).find('div.info').children('a').attr('href')
         }
         localStorage.favoritesList = JSON.stringify(favoritesList);
         show_favorites();
