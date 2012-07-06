@@ -505,15 +505,15 @@ div.explore div.poster > div.image > div {
     height: 16px;
     display: none;
     position: absolute;
-    top: 5px;
-    left: 5px;
+    top: -8px;
+    left: -8px;
     cursor: pointer;
 }
 div.explore div.poster > div.image > div.add_favorite {
     background: url(../images/favorite.png) center center no-repeat;
 }
 div.explore div.poster > div.image > div.del_favorite {
-    background: url(../images/remove.png) center center no-repeat;
+    background: url(../images/clear.png) center center no-repeat;
 }
 div.explore div.poster > div.image > img {
     -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
