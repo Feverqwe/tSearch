@@ -401,18 +401,14 @@ div.explore h2 {
     padding-left: 10px;
 }
 
-div.explore div.films > div > div.poster, 
-div.explore div.top_films > div > div.poster,
-div.explore div.serials > div > div.poster {
+div.explore div.poster {
     display: inline-block;
     width: 130px;
     margin: 14px;
     position: relative;
 }
 
-div.explore div.films > div > div.poster div.title, 
-div.explore div.top_films > div > div.poster div.title, 
-div.explore div.serials > div > div.poster div.title {
+div.explore div.poster div.title {
     overflow: hidden;
     margin: 0;
     font-size: 12px;
@@ -423,51 +419,37 @@ div.explore div.serials > div > div.poster div.title {
     cursor: pointer;
     position: relative;
 }
-div.explore div.films > div > div.poster > div.image, 
-div.explore div.top_films > div > div.poster > div.image, 
-div.explore div.serials > div > div.poster > div.image {
+div.explore div.poster > div.image {
     cursor: pointer;
     margin: 6px;
 }
-div.explore div.films > div > div.poster > div.image > img, 
-div.explore div.top_films > div > div.poster > div.image > img, 
-div.explore div.serials > div > div.poster > div.image > img {
+div.explore div.poster > div.image > div {
+    width: 16px;
+    height: 16px;
+    display: none;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+div.explore div.poster > div.image > div.add_favorite {
+    background: url(../images/favorite.png) center center no-repeat;
+}
+div.explore div.poster > div.image > div.del_favorite {
+    background: url(../images/remove.png) center center no-repeat;
+}
+div.explore div.poster > div.image > img {
     -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
 }
-div.explore div.films > div > div.poster > div.image > img:hover, 
-div.explore div.top_films > div > div.poster > div.image > img:hover, 
-div.explore div.serials > div > div.poster > div.image > img:hover {
+div.explore div.poster > div.image > img:hover {
     -webkit-box-shadow: 0 0 15px #1A3DC1;
 }
-
-
 
 div.explore div.games > div > div.poster {
-    display: inline-block;
     width: 110px;
     margin: 12px;
-    position: relative;
-}
-div.explore div.games > div > div.poster div.title {
-    overflow: hidden;
-    margin: 0;
-    font-size: 12px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-align: center;
-    margin-top: 2px;
-    cursor: pointer;
-    position: relative;
 }
 div.explore div.games > div > div.poster > div.image {
-    cursor: pointer;
     margin: 8px;
-}
-div.explore div.games > div > div.poster > div.image > img {
-    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
-}
-div.explore div.games > div > div.poster > div.image > img:hover {
-    -webkit-box-shadow: 0 0 15px #1A3DC1;
 }
 div.explore div.poster > div {
     position: relative;
@@ -484,11 +466,13 @@ div.explore div.poster > div > div.info {
     display: none;
     height: 15px;
 }
+div.explore div.poster:hover div.info,
+div.explore div.poster:hover div.image > div.add_favorite,
+div.explore div.poster:hover div.image > div.del_favorite {
+    display: block;
+}
 div.explore div.games > div > div.poster > div > div.info {
     width: 110px;
-}
-div.explore div.poster:hover div.info {
-    display: block;
 }
 div.explore div.info > a {
     text-decoration: none;

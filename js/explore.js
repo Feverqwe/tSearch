@@ -10,6 +10,7 @@ var explore = function () {
         top_films:null,
         serials:null
     };
+    var favoritesList = (localStorage.favoritesList !== undefined) ? JSON.parse(localStorage.favoritesList) : [];
     var listOptions = (localStorage.listOptions !== undefined) ? JSON.parse(localStorage.listOptions) : [{
         n:'films',
         s:1,
@@ -24,6 +25,10 @@ var explore = function () {
         size: 0
     },{
         n:'games',
+        s:1,
+        size: 0
+    },{
+        n:'favorites',
         s:1,
         size: 0
     }];
@@ -271,7 +276,7 @@ var explore = function () {
         var c = '<div class="games"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Игры</h2><div'+((!st)?' style="display:none"':'')+'>';
         $.each(content, function (k,v) {
             v.name = v.name.substr(3,(v.name).length-6);
-            c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+v.url+'" target="blank">Подробнее</a></div></div></div>';
+            c += '<div class="poster"><div class="image"><div class="add_favorite" title="В избранное"></div><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div></div>';
         $('div.explore').find('li.games').append(view.contentUnFilter(c));
@@ -290,7 +295,7 @@ var explore = function () {
         var st = get_view_status('films');
         var c = '<div class="films"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Сейчас в кино</h2><div'+((!st)?' style="display:none"':'')+'>';
         $.each(content, function (k,v) {
-            c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
+            c += '<div class="poster"><div class="image"><div class="add_favorite" title="В избранное"></div><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div></div>';
         $('div.explore').find('li.films').append(view.contentUnFilter(c));
@@ -312,7 +317,7 @@ var explore = function () {
         $.each(content, function (k,v) {
             cc += 1;
             if (cc > 20) return false;
-            c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
+            c += '<div class="poster"><div class="image"><div class="add_favorite" title="В избранное"></div><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div></div>';
         $('div.explore').find('li.top_films').append(view.contentUnFilter(c));
@@ -341,7 +346,7 @@ var explore = function () {
         
         var c = '<div class="serials"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Сериалы</h2><div'+((!st)?' style="display:none"':'')+'>';
         $.each(content, function (k,v) {
-            c += '<div class="poster"><div class="image"><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
+            c += '<div class="poster"><div class="image"><div class="add_favorite" title="В избранное"></div><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div></div>';
         $('div.explore').find('li.serials').append(view.contentUnFilter(c));
@@ -381,6 +386,13 @@ var explore = function () {
                 save_options();
             }
         });
+        if (listOptions.length == 4) {
+            listOptions[listOptions.length] = {
+                n:'favorites',
+                s:1,
+                size: 0
+            }
+        }
         for (var i = 0;i<listOptions.length;i++){
             ul.append('<li class="'+listOptions[i].n+'"></li>');
         }
@@ -396,12 +408,52 @@ var explore = function () {
             };
         localStorage.listOptions = JSON.stringify(listOptions);
     }
+    var show_favorites = function () {
+        if (favoritesList.length < 1) { 
+            $('li.favorites').css('display','none');
+            return;
+        } else 
+            $('li.favorites').css('display','list-item');
+        $('li.favorites').empty();
+        var st = get_view_status('favorites');
+        
+        var c = '<div class="favorites"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Избранное</h2><div'+((!st)?' style="display:none"':'')+'>';
+        $.each(favoritesList, function (k,v) {
+            c += '<div class="poster" data-id="'+k+'"><div class="image"><div class="del_favorite" title="Удалить из избранного"></div><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+v.url+'" target="blank">Подробнее</a></div></div></div>';
+        });
+        c += '</div></div>';
+        $('div.explore').find('li.favorites').append(view.contentUnFilter(c));
+        $('div.explore div.favorites div').children('div.poster').find('img').click(function () {
+            var s = $(this).parent().parent().find('div.title').children('span').text();
+            triggerClick(s,0);
+        });
+        $('div.explore div.favorites div').find('div.title').click(function () {
+            var s = $(this).children('span').text();
+            triggerClick(s,0);
+        });
+        update_spoiler();
+    }
+    var add_in_favorites = function (obj) {
+        favoritesList[favoritesList.length] = {
+                'img' : $(obj).find('img').attr('src'),
+                'name' : $(obj).find('div.title').attr('title'),
+                'url' : $(obj).find('div.info').children('a').attr('href')
+        }
+        localStorage.favoritesList = JSON.stringify(favoritesList);
+        show_favorites();
+    }
+    var del_from_favorites = function (id) {
+        favoritesList.splice(id,1);
+        localStorage.favoritesList = JSON.stringify(favoritesList);
+        show_favorites();
+    }
     var load_all = function () {
         make_form();
         load_top_films();
         load_films();
         load_serials();
         load_games();
+        show_favorites();
     }
     var update_spoiler = function () {
         $('div.explore').find('div.spoiler').unbind('click').click( function () {
@@ -422,6 +474,12 @@ var explore = function () {
                     save_options();
                 });
             }
+        });
+        $('div.explore').find('div.add_favorite').unbind('click').click( function () {
+            add_in_favorites($(this).parent().parent());
+        });
+        $('div.explore').find('div.del_favorite').unbind('click').click( function () {
+            del_from_favorites($(this).parent().parent().attr('data-id'));
         });
     }
     return {
