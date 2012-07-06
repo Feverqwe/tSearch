@@ -272,64 +272,16 @@ var explore = function () {
         return ' '+st;
     }
     var show_games = function (content) {
-        var st = get_view_status('games');
-        var c = '<div class="games"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Игры</h2><div'+((!st)?' style="display:none"':'')+'>';
-        $.each(content, function (k,v) {
-            v.name = v.name.substr(3,(v.name).length-6);
-            c += '<div class="poster"><div class="image"><div class="add_favorite" title="В избранное"></div><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+v.url+'" target="blank">Подробнее</a></div></div></div>';
-        });
-        c += '</div></div>';
-        $('div.explore').find('li.games').append(view.contentUnFilter(c));
-        $('div.explore div.games div').children('div.poster').find('img').click(function () {
-            var s = $(this).parent().parent().find('div.title').children('span').text();
-            triggerClick(s,2);
-        });
-        $('div.explore div.games div').find('div.title').click(function () {
-            var s = $(this).children('span').text();
-            triggerClick(s,2);
-        });
-        update_spoiler();
+        write_content(content,'games','Игры',2,null,1,null,110,10);
     }
     var show_films = function (content) {
-        var root_url = 'http://www.kinopoisk.ru';
-        var st = get_view_status('films');
-        var c = '<div class="films"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Сейчас в кино</h2><div'+((!st)?' style="display:none"':'')+'>';
-        $.each(content, function (k,v) {
-            c += '<div class="poster"><div class="image"><div class="add_favorite" title="В избранное"></div><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
-        });
-        c += '</div></div>';
-        $('div.explore').find('li.films').append(view.contentUnFilter(c));
-        $('div.explore div.films div').children('div.poster').find('img').click(function () {
-            var s = $(this).parent().parent().find('div.title').children('span').text();
-            triggerClick(s,3);
-        });
-        $('div.explore div.films div').find('div.title').click(function () {
-            var s = $(this).children('span').text();
-            triggerClick(s,3);
-        });
-        update_spoiler();
+        write_content(content,'films','Сейчас в кино',3,'http://www.kinopoisk.ru',1);
     }
     var show_top_films = function (content) {
-        var root_url = 'http://www.kinopoisk.ru';
-        var st = get_view_status('top_films');
-        var c = '<div class="top_films"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Фильмы</h2><div'+((!st)?' style="display:none"':'')+'>';
-        var cc = 0;
-        $.each(content, function (k,v) {
-            cc += 1;
-            if (cc > 20) return false;
-            c += '<div class="poster"><div class="image"><div class="add_favorite" title="В избранное"></div><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
-        });
-        c += '</div></div>';
-        $('div.explore').find('li.top_films').append(view.contentUnFilter(c));
-        $('div.explore div.top_films div').children('div.poster').find('img').click(function () {
-            var s = $(this).parent().parent().find('div.title').children('span').text();
-            triggerClick(s,3);
-        });
-        $('div.explore div.top_films div').find('div.title').click(function () {
-            var s = $(this).children('span').text();
-            triggerClick(s,3);
-        });
-        update_spoiler();
+        write_content(content,'top_films','Фильмы',3,'http://www.kinopoisk.ru',1);
+    }
+    var show_serials = function (content) {
+        write_content(content,'serials','Сериалы',0,'http://www.kinopoisk.ru',1);
     }
     var get_view_status = function (n) {
         if (listOptions == null) return 1;
@@ -339,26 +291,21 @@ var explore = function () {
         }
         return 1;
     }
-    var show_serials = function (content) {
-        var root_url = 'http://www.kinopoisk.ru';
-        
-        var st = get_view_status('serials');
-        
-        var c = '<div class="serials"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Сериалы</h2><div'+((!st)?' style="display:none"':'')+'>';
-        $.each(content, function (k,v) {
-            c += '<div class="poster"><div class="image"><div class="add_favorite" title="В избранное"></div><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
-        });
-        c += '</div></div>';
-        $('div.explore').find('li.serials').append(view.contentUnFilter(c));
-        $('div.explore div.serials div').children('div.poster').find('img').click(function () {
-            var s = $(this).parent().parent().find('div.title').children('span').text();
-            triggerClick(s,0);
-        });
-        $('div.explore div.serials div').find('div.title').click(function () {
-            var s = $(this).children('span').text();
-            triggerClick(s,0);
-        });
-        update_spoiler();
+    var set_view_size = function (n,s) {
+        if (listOptions == null) return;
+        for (var i = 0;i<listOptions.length;i++) {
+            if (listOptions[i].n == n)
+                listOptions[i].size = s;
+        }
+        localStorage.listOptions = JSON.stringify(listOptions);
+    }
+    var get_view_size = function (n) {
+        if (listOptions == null) return 0;
+        for (var i = 0;i<listOptions.length;i++) {
+            if (listOptions[i].n == n)
+                return listOptions[i].size;
+        }
+        return 0;
     }
     var triggerClick = function (s,c) {
         if (AutoSetCategory) {
@@ -418,23 +365,40 @@ var explore = function () {
         } else 
             $('li.favorites').css('display','list-item');
         $('li.favorites').empty();
-        var st = get_view_status('favorites');
-        
-        var c = '<div class="favorites"><h2><div class="spoiler'+((!st)?' up':'')+'"></div><div class="move_it"></div>Избранное</h2><div'+((!st)?' style="display:none"':'')+'>';
-        $.each(favoritesList, function (k,v) {
-            c += '<div class="poster" data-id="'+k+'"><div class="image"><div class="del_favorite" title="Удалить из избранного"></div><img src="'+v.img+'" title="'+v.name+'"/></div><div><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+v.url+'" target="blank">Подробнее</a></div></div></div>';
+        write_content(favoritesList,'favorites','Избранное',null,null,null,1);
+    }
+    var write_content = function (content,section,name,category,root_url,fav,did,def_size,koef) {
+        koef = (koef == null)?10:koef;
+        fav = (fav != null)?'<div class="add_favorite" title="В избранное">':'<div class="del_favorite" title="Удалить из избранного">';
+        root_url = (root_url == null)? '' : root_url;
+        var st = get_view_status(section);
+        var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" title="Настроить вид"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+'>';
+        var cc = 0;
+        var size = get_view_size(section);
+        var font_size = get_font_size(size);
+        if (size > 0&&size!=null)
+            $('body').append('<style>div.explore div.'+section+' > div > div.poster, div.'+section+' div.info { width: '+size+'px; } div.'+section+' div.image > img {width: '+(size-koef)+'px;} div.'+section+' div.poster > div > div.info { width: '+size+'px} div.'+section+' '+((font_size==0)?' div.label {display: none;}':'div.poster > div.label > div.title {font-size: '+font_size+'px;}')+'</style>');
+        $.each(content, function (k,v) {
+            cc ++;
+            var id = (did!=null) ? ' data-id="'+k+'"' : '';
+            if (cc>20) return false;
+            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div></div>';
-        $('div.explore').find('li.favorites').append(view.contentUnFilter(c));
-        $('div.explore div.favorites div').children('div.poster').find('img').click(function () {
+        var explore_div = $('div.explore');
+        var exp_li = explore_div.children('ul').children('li.'+section);
+        exp_li.append(view.contentUnFilter(c));
+        exp_li.children('div.'+section+'').children('div').children('div.poster').find('img').click(function () {
             var s = $(this).parent().parent().find('div.title').children('span').text();
-            triggerClick(s,null);
+            triggerClick(s,0);
         });
-        $('div.explore div.favorites div').find('div.title').click(function () {
+        var category = category;
+        exp_li.children('div.'+section+'').children('div').find('div.title').click(function () {
             var s = $(this).children('span').text();
-            triggerClick(s,null);
+            var c = category;
+            triggerClick(s,c);
         });
-        update_spoiler();
+        update_btns(section,def_size,koef);
     }
     var add_in_favorites = function (obj) {
         favoritesList[favoritesList.length] = {
@@ -458,11 +422,13 @@ var explore = function () {
         load_games();
         show_favorites();
     }
-    var update_spoiler = function () {
-        $('div.explore').find('div.spoiler').unbind('click').click( function () {
+    var update_btns = function (section,def_size,koef) {
+        def_size = (def_size == null)?130:def_size;
+        $('div.explore div.'+section).find('div.spoiler').click( function () {
             if ($(this).is('.up')){
                 var t = $(this);
                 t.hide('fast');
+                $(this).parent().children('div.setup').show('fast');
                 $(this).parent().parent().children('div').slideDown('fast',function (){
                     t.removeClass('up').addClass('down');
                     t.show('fast');
@@ -471,6 +437,7 @@ var explore = function () {
             }else{
                 var t = $(this);
                 t.hide('fast');
+                $(this).parent().children('div.setup').hide('fast');
                 $(this).parent().parent().children('div').slideUp('fast',function (){
                     t.removeClass('down').addClass('up');
                     t.show('fast');
@@ -478,12 +445,81 @@ var explore = function () {
                 });
             }
         });
-        $('div.explore').find('div.add_favorite').unbind('click').click( function () {
+        $('div.explore div.'+section).find('div.add_favorite').click( function () {
             add_in_favorites($(this).parent().parent());
         });
-        $('div.explore').find('div.del_favorite').unbind('click').click( function () {
-            del_from_favorites($(this).parent().parent().attr('data-id'));
+        $('div.explore div.'+section).find('div.del_favorite').click( function () {
+            $(this).parent().parent().hide('fast',function () {
+                del_from_favorites($(this).attr('data-id'));
+            });
         });
+        $('div.explore div.'+section).find('div.setup').click(function () {
+            if ($(this).parent().children('div.setup_div').length != 0) {
+                $(this).parent().children('div.setup_div').hide('fast',function () {
+                    $(this).parent().children('div.setup_div').remove();
+                });
+                return;
+            }
+            var t = $('<div class="setup_div"></div>').hide();
+            //$(this).after
+            $('<div class="slider"/>').slider({
+                value: $(this).parent().parent().children('div').children('div.poster').width(),
+                max: def_size,
+                min: 30,
+                animate: true,
+                change: function(event, ui) {
+                    set_view_size($(this).parent().parent().parent().parent().attr('class'),ui.value);
+                },
+                slide: function(event, ui) {
+                    var t =  $(this).parent().parent().parent().children('div').children('div.poster');
+                    t.width(ui.value);
+                    t.find('img').width(ui.value-koef);
+                    var ttl = t.find('div.title span');
+                    var inf = t.find('div.info a');
+                    var txt = t.find('div.info').parent();
+                    inf.width(ui.value);
+                    var f = get_font_size(ui.value);
+                    if (f > 0) {
+                        inf.css('font-size',f+'px');
+                        ttl.css('font-size',f+'px');
+                        txt.css('display','block');
+                    } else {
+                        txt.css('display','none');
+                    }
+                //console.log(ui.value);
+                }
+            }).appendTo(t);
+            $('<div class="clear" title="По умолчанию">').click(function () {
+                var t =  $(this).parent().parent().parent().children('div').children('div.poster');
+                t.width(def_size);
+                t.find('img').width(def_size-koef);
+                var ttl = t.find('div.title span');
+                var inf = t.find('div.info a');
+                var txt = t.find('div.info').parent();
+                inf.css('font-size','12px');
+                ttl.css('font-size','12px');
+                txt.css('display','block');
+                $(this).parent().children('div.slider').children().css('left','100%');
+                set_view_size($(this).parent().parent().parent().parent().attr('class'),def_size);
+            }).appendTo(t);
+            $(this).after(t);
+            $(this).parent().children('div.setup_div').show('fast');
+        });
+    }
+    var get_font_size = function (w) {
+        if (w >105) {
+            return 12;
+        }
+        else if (w > 80){
+            return 11;
+        }
+        else if (w > 70){
+            return 9;
+        }
+        else {
+            return 0;
+        }
+        return 0;
     }
     return {
         getLoad : function () {

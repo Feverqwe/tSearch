@@ -65,7 +65,7 @@ input[type=text]:focus {
 
 
 div.content {
-    overflow: hidden;
+    /*overflow: hidden;*/
     position: relative;
 }
 div.content div {
@@ -351,7 +351,9 @@ div.progress span {
 
 
 
-
+div.explore {
+    -webkit-user-select: none;
+}
 div.explore > ul > li div {
     padding-bottom: 2px;
 }
@@ -402,6 +404,80 @@ div.explore h2 {
     cursor: default;
 }
 
+div.explore h2 > div.setup {
+    background: url(../images/settings.png) center center no-repeat;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    opacity: 0.3;
+    display: inline-block;
+    margin-left: 5px;
+    margin-top: 2px;
+    margin-bottom: -2px;
+    display: inline-block;
+}
+div.explore h2 > div.setup_div {
+    background-image: none;
+    width: auto;
+    height: 16px;
+    cursor: auto;
+    opacity: 1;
+    display: inline-block;
+    margin-left: 5px;
+    margin-top: 2px;
+    margin-bottom: -2px;
+    position: relative;
+}
+div.explore h2 > div.setup_div > div.hide { 
+    background: url(../images/settings.png) center center no-repeat;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    opacity: 0.3;
+    display: inline-block;
+    margin-top: -1px;
+    margin-bottom: 1px;
+}
+div.explore h2 > div.setup_div > div.slider {
+    background-color: #EEE;
+    border: 1px solid #DDD;
+    border-radius: 4px;
+    height: 8px;
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+    width: 130px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    display: inline-block;
+}
+div.explore h2 > div.setup_div >  div.clear {
+    background: url(../images/clear.png) center center no-repeat;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: -1px;
+    margin-bottom: 1px;
+    margin-left: 13px;
+}
+div.explore h2 > div.setup_div > div.slider > a {
+    background-color: #F6F6F6;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    display: block;
+    margin: 0px;
+    margin-left: -6.599999904632568px;
+    padding: 0px;
+    position: absolute;
+    top: -3.299999952316284px;
+    width: 13px;
+    height: 13px;
+    z-index: 2;
+}
+div.explore h2 > div.setup:hover {
+    opacity: 0.7;
+}
 div.explore div.poster {
     display: inline-block;
     width: 130px;
@@ -449,9 +525,6 @@ div.explore div.poster > div.image > img:hover {
 div.explore div.games > div > div.poster {
     width: 110px;
     margin: 12px;
-}
-div.explore div.games > div > div.poster > div.image {
-    margin: 8px;
 }
 div.explore div.poster > div {
     position: relative;
