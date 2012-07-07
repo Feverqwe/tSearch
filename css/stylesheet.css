@@ -568,21 +568,9 @@ div.explore div.info > a {
 90%{margin-left:6px;}
 100%{margin-left:2px;}
 }
-@-webkit-keyframes a_moveble150{
-    0%{margin-left:2px;}
-50%{margin-left:-75px;}
-90%{margin-left:6px;}
-100%{margin-left:2px;}
-}
 @-webkit-keyframes a_moveble200{
     0%{margin-left:2px;}
 50%{margin-left:-100px;}
-90%{margin-left:6px;}
-100%{margin-left:2px;}
-}
-@-webkit-keyframes a_moveble250{
-    0%{margin-left:2px;}
-50%{margin-left:-125px;}
 90%{margin-left:6px;}
 100%{margin-left:2px;}
 }
@@ -592,21 +580,9 @@ div.explore div.info > a {
 90%{margin-left:6px;}
 100%{margin-left:2px;}
 }
-@-webkit-keyframes a_moveble350{
-    0%{margin-left:2px;}
-50%{margin-left:-175px;}
-90%{margin-left:6px;}
-100%{margin-left:2px;}
-}
 @-webkit-keyframes a_moveble400{
     0%{margin-left:2px;}
 50%{margin-left:-200px;}
-90%{margin-left:6px;}
-100%{margin-left:2px;}
-}
-@-webkit-keyframes a_moveble450{
-    0%{margin-left:2px;}
-50%{margin-left:-225px;}
 90%{margin-left:6px;}
 100%{margin-left:2px;}
 }
@@ -638,19 +614,9 @@ div.explore div.poster div.title.moveble100:hover > span
     -webkit-animation:a_moveble100 6s 1;
     overflow: visible;
 }
-div.explore div.poster div.title.moveble150:hover > span
-{
-    -webkit-animation:a_moveble150 6s 1;
-    overflow: visible;
-}
 div.explore div.poster div.title.moveble200:hover > span
 {
     -webkit-animation:a_moveble200 6s 1;
-    overflow: visible;
-}
-div.explore div.poster div.title.moveble250:hover > span
-{
-    -webkit-animation:a_moveble250 6s 1;
     overflow: visible;
 }
 div.explore div.poster div.title.moveble300:hover > span
@@ -658,19 +624,9 @@ div.explore div.poster div.title.moveble300:hover > span
     -webkit-animation:a_moveble300 6s 1;
     overflow: visible;
 }
-div.explore div.poster div.title.moveble350:hover > span
-{
-    -webkit-animation:a_moveble350 6s 1;
-    overflow: visible;
-}
 div.explore div.poster div.title.moveble400:hover > span
 {
     -webkit-animation:a_moveble400 6s 1;
-    overflow: visible;
-}
-div.explore div.poster div.title.moveble450:hover > span
-{
-    -webkit-animation:a_moveble450 6s 1;
     overflow: visible;
 }
 div.explore div.poster div.title.moveble500:hover > span

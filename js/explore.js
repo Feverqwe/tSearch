@@ -245,28 +245,23 @@ var explore = function () {
             }
         });
     }
-    var movebleCalculate = function (a,size) {
-        var tmp_size = a.length*7;
+    var movebleCalculate = function (a,size,b) {
+        if (a == null && b!= null) 
+            var tmp_size = b;
+        else
+            var tmp_size = a.length*7;
         var st = '';
         if (tmp_size > size) {
             if (tmp_size < 50)
                 st = 'moveble50';
             else if (tmp_size < 100)
                 st = 'moveble100';
-            else if (tmp_size < 150)
-                st = 'moveble150';
             else if (tmp_size < 200)
                 st = 'moveble200';
-            else if (tmp_size < 250)
-                st = 'moveble250';
             else if (tmp_size < 300)
                 st = 'moveble300';
-            else if (tmp_size < 350)
-                st = 'moveble350';
             else if (tmp_size < 400)
                 st = 'moveble400';
-            else if (tmp_size < 450)
-                st = 'moveble450';
             else if (tmp_size < 500)
                 st = 'moveble500';
             else if (tmp_size < 550)
@@ -401,7 +396,7 @@ var explore = function () {
             cc ++;
             var id = (did!=null) ? ' data-id="'+k+'"' : '';
             if (cc>20) return false;
-            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title'+movebleCalculate(v.name,size)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
+            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div></div>';
         var explore_div = $('div.explore');
@@ -415,7 +410,7 @@ var explore = function () {
             var s = $(this).children('span').text();
             triggerClick(s,category);
         });
-        update_btns(section,def_size);
+        update_btns(section,def_size,size);
     }
     var add_in_favorites = function (obj) {
         favoritesList[favoritesList.length] = {
@@ -439,7 +434,12 @@ var explore = function () {
         load_games();
         show_favorites();
     }
-    var update_btns = function (section,def_size) {
+    var update_btns = function (section,def_size,size) {
+        var titles = $('div.'+section).find('span');
+        var titles_l = titles.length;
+        for (var i = 0;i<titles_l;i++){
+            titles.eq(i).parent().attr('class','title'+movebleCalculate(null,size,titles.eq(i).width()));
+        }
         $('div.explore div.'+section).find('div.spoiler').click( function () {
             if ($(this).is('.up')){
                 var t = $(this);
@@ -479,7 +479,7 @@ var explore = function () {
             }
             t = $('<div class="setup_div" data-size="'+def_size+'"></div>').hide();
             $('<div class="slider"/>').slider({
-                value: $(this).parent().parent().children('div').children('div.poster').width(),
+                value: size,
                 max: def_size,
                 min: 30,
                 animate: true,
