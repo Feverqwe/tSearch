@@ -86,6 +86,7 @@ var explore = function () {
                 'name' : item.eq(0).children('h3').children('a').text(),
                 'url' : item.eq(0).children('h3').children('a').attr('href')
             }
+            arr[arr.length-1].name = arr[arr.length-1].name.substr(3,(arr[arr.length-1].name).length-6);
         }
         return arr;
     }
@@ -379,6 +380,7 @@ var explore = function () {
         var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" title="Настроить вид"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+'>';
         var cc = 0;
         var size = get_view_size(section);
+        size = (size == null)?def_size:(size < 1)?def_size:size;
         var font_size = get_font_size(size);
         if (size > 0 && size!=null && size!=def_size)
             $('body').append('<style>'+
@@ -399,7 +401,7 @@ var explore = function () {
             cc ++;
             var id = (did!=null) ? ' data-id="'+k+'"' : '';
             if (cc>20) return false;
-            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title'+movebleCalculate(v.name,def_size)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
+            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title'+movebleCalculate(v.name,size)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div></div>';
         var explore_div = $('div.explore');
