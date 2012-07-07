@@ -244,11 +244,15 @@ var explore = function () {
             }
         });
     }
-    var movebleCalculate = function (a) {
+    var movebleCalculate = function (a,size) {
         var tmp_size = a.length*7;
         var st = '';
-        if (tmp_size > 140) {
-            if (tmp_size < 150)
+        if (tmp_size > size) {
+            if (tmp_size < 50)
+                st = 'moveble50';
+            else if (tmp_size < 100)
+                st = 'moveble100';
+            else if (tmp_size < 150)
                 st = 'moveble150';
             else if (tmp_size < 200)
                 st = 'moveble200';
@@ -377,12 +381,25 @@ var explore = function () {
         var size = get_view_size(section);
         var font_size = get_font_size(size);
         if (size > 0 && size!=null && size!=def_size)
-            $('body').append('<style>div.explore div.'+section+' > div > div.poster, div.'+section+' div.info { width: '+size+'px; } div.'+section+' div.image > img {width: '+(size-10)+'px;} div.explore div.'+section+' > div > div.poster > div > div.info { width: '+size+'px} div.'+section+' '+((font_size==0)?' div.label {display: none;}':'div.poster > div.label > div.title, div.'+section+' div.poster > div.label a {font-size: '+font_size+'px;}')+'</style>');
+            $('body').append('<style>'+
+                'div.explore div.'+section+' > div > div.poster, '+
+                'div.explore div.'+section+' > div > div.poster > div > div.info '+
+                '{ width: '+size+'px; } '+
+                'div.explore div.'+section+' div.poster > div.image > img '+
+                '{width: '+(size-10)+'px;} '+
+                ((font_size==0)?
+                    'div.explore div.'+section+' div.poster > div.label '+
+                    '{display: none;}'
+                    :
+                    'div.explore div.'+section+' div.poster > div.label > div.title, '+
+                    'div.explore div.'+section+' div.poster > div.label > div.info > a '+
+                    '{font-size: '+font_size+'px;}'
+                    )+'</style>');
         $.each(content, function (k,v) {
             cc ++;
             var id = (did!=null) ? ' data-id="'+k+'"' : '';
             if (cc>20) return false;
-            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title'+movebleCalculate(v.name)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
+            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title'+movebleCalculate(v.name,def_size)+'" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
         c += '</div></div>';
         var explore_div = $('div.explore');

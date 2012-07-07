@@ -556,6 +556,18 @@ div.explore div.games > div > div.poster > div > div.info {
 div.explore div.info > a {
     text-decoration: none;
 }
+@-webkit-keyframes a_moveble50{
+    0%{margin-left:2px;}
+50%{margin-left:-25px;}
+90%{margin-left:6px;}
+100%{margin-left:2px;}
+}
+@-webkit-keyframes a_moveble100{
+    0%{margin-left:2px;}
+50%{margin-left:-50px;}
+90%{margin-left:6px;}
+100%{margin-left:2px;}
+}
 @-webkit-keyframes a_moveble150{
     0%{margin-left:2px;}
 50%{margin-left:-75px;}
@@ -615,6 +627,16 @@ div.explore div.info > a {
 50%{margin-left:-300px;}
 90%{margin-left:6px;}
 100%{margin-left:2px;}
+}
+div.explore div.poster div.title.moveble50:hover > span
+{
+    -webkit-animation:a_moveble50 6s 1;
+    overflow: visible;
+}
+div.explore div.poster div.title.moveble100:hover > span
+{
+    -webkit-animation:a_moveble100 6s 1;
+    overflow: visible;
 }
 div.explore div.poster div.title.moveble150:hover > span
 {
