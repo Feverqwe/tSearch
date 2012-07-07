@@ -377,7 +377,7 @@ var explore = function () {
         var size = get_view_size(section);
         var font_size = get_font_size(size);
         if (size > 0 && size!=null && size!=def_size)
-            $('body').append('<style>div.explore div.'+section+' > div > div.poster, div.'+section+' div.info { width: '+size+'px; } div.'+section+' div.image > img {width: '+(size-10)+'px;} div.'+section+' div.poster > div > div.info { width: '+size+'px} div.'+section+' '+((font_size==0)?' div.label {display: none;}':'div.poster > div.label > div.title {font-size: '+font_size+'px;}')+'</style>');
+            $('body').append('<style>div.explore div.'+section+' > div > div.poster, div.'+section+' div.info { width: '+size+'px; } div.'+section+' div.image > img {width: '+(size-10)+'px;} div.explore div.'+section+' > div > div.poster > div > div.info { width: '+size+'px} div.'+section+' '+((font_size==0)?' div.label {display: none;}':'div.poster > div.label > div.title, div.'+section+' div.poster > div.label a {font-size: '+font_size+'px;}')+'</style>');
         $.each(content, function (k,v) {
             cc ++;
             var id = (did!=null) ? ' data-id="'+k+'"' : '';
@@ -474,7 +474,7 @@ var explore = function () {
                     var ttl = t.find('div.title span');
                     var inf = t.find('div.info a');
                     var txt = t.find('div.info').parent();
-                    inf.width(ui.value);
+                    t.find('div.info').width(ui.value);
                     var f = get_font_size(ui.value);
                     if (f > 0) {
                         inf.css('font-size',f+'px');
