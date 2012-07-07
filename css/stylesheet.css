@@ -508,6 +508,10 @@ div.explore div.poster > div.image > div {
     top: -8px;
     left: -8px;
     cursor: pointer;
+    opacity: 0.6;
+}
+div.explore div.poster > div.image > div:hover {
+    opacity: 1;
 }
 div.explore div.poster > div.image > div.add_favorite {
     background: url(../images/favorite.png) center center no-repeat;

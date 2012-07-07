@@ -272,7 +272,7 @@ var explore = function () {
         return ' '+st;
     }
     var show_games = function (content) {
-        write_content(content,'games','Игры',2,null,1,null,110,10);
+        write_content(content,'games','Игры',2,null,1,null,110);
     }
     var show_films = function (content) {
         write_content(content,'films','Сейчас в кино',3,'http://www.kinopoisk.ru',1);
@@ -367,8 +367,8 @@ var explore = function () {
         $('li.favorites').empty();
         write_content(favoritesList,'favorites','Избранное',null,null,null,1);
     }
-    var write_content = function (content,section,name,category,root_url,fav,did,def_size,koef) {
-        koef = (koef == null)?10:koef;
+    var write_content = function (content,section,name,category,root_url,fav,did,def_size) {
+        def_size = (def_size == null)?130:def_size;
         fav = (fav != null)?'<div class="add_favorite" title="В избранное">':'<div class="del_favorite" title="Удалить из избранного">';
         root_url = (root_url == null)? '' : root_url;
         var st = get_view_status(section);
@@ -376,8 +376,8 @@ var explore = function () {
         var cc = 0;
         var size = get_view_size(section);
         var font_size = get_font_size(size);
-        if (size > 0&&size!=null)
-            $('body').append('<style>div.explore div.'+section+' > div > div.poster, div.'+section+' div.info { width: '+size+'px; } div.'+section+' div.image > img {width: '+(size-koef)+'px;} div.'+section+' div.poster > div > div.info { width: '+size+'px} div.'+section+' '+((font_size==0)?' div.label {display: none;}':'div.poster > div.label > div.title {font-size: '+font_size+'px;}')+'</style>');
+        if (size > 0 && size!=null && size!=def_size)
+            $('body').append('<style>div.explore div.'+section+' > div > div.poster, div.'+section+' div.info { width: '+size+'px; } div.'+section+' div.image > img {width: '+(size-10)+'px;} div.'+section+' div.poster > div > div.info { width: '+size+'px} div.'+section+' '+((font_size==0)?' div.label {display: none;}':'div.poster > div.label > div.title {font-size: '+font_size+'px;}')+'</style>');
         $.each(content, function (k,v) {
             cc ++;
             var id = (did!=null) ? ' data-id="'+k+'"' : '';
@@ -388,15 +388,15 @@ var explore = function () {
         var explore_div = $('div.explore');
         var exp_li = explore_div.children('ul').children('li.'+section);
         exp_li.append(view.contentUnFilter(c));
-        exp_li.children('div.'+section+'').children('div').children('div.poster').find('img').click(function () {
+        exp_li.children('div.'+section).children('div').children('div.poster').find('img').click(function () {
             var s = $(this).parent().parent().find('div.title').children('span').text();
             triggerClick(s,category);
         });
-        exp_li.children('div.'+section+'').children('div').find('div.title').click(function () {
+        exp_li.children('div.'+section).children('div').find('div.title').click(function () {
             var s = $(this).children('span').text();
             triggerClick(s,category);
         });
-        update_btns(section,def_size,koef);
+        update_btns(section,def_size);
     }
     var add_in_favorites = function (obj) {
         favoritesList[favoritesList.length] = {
@@ -420,8 +420,7 @@ var explore = function () {
         load_games();
         show_favorites();
     }
-    var update_btns = function (section,def_size,koef) {
-        def_size = (def_size == null)?130:def_size;
+    var update_btns = function (section,def_size) {
         $('div.explore div.'+section).find('div.spoiler').click( function () {
             if ($(this).is('.up')){
                 var t = $(this);
@@ -452,14 +451,14 @@ var explore = function () {
             });
         });
         $('div.explore div.'+section).find('div.setup').click(function () {
-            if ($(this).parent().children('div.setup_div').length != 0) {
-                $(this).parent().children('div.setup_div').hide('fast',function () {
-                    $(this).parent().children('div.setup_div').remove();
+            var t = $(this).parent().children('div.setup_div');
+            if (t.length != 0) {
+                t.hide('fast',function () {
+                    t.remove();
                 });
                 return;
             }
-            var t = $('<div class="setup_div"></div>').hide();
-            //$(this).after
+            t = $('<div class="setup_div" data-size="'+def_size+'"></div>').hide();
             $('<div class="slider"/>').slider({
                 value: $(this).parent().parent().children('div').children('div.poster').width(),
                 max: def_size,
@@ -471,7 +470,7 @@ var explore = function () {
                 slide: function(event, ui) {
                     var t =  $(this).parent().parent().parent().children('div').children('div.poster');
                     t.width(ui.value);
-                    t.find('img').width(ui.value-koef);
+                    t.find('img').width(ui.value-10);
                     var ttl = t.find('div.title span');
                     var inf = t.find('div.info a');
                     var txt = t.find('div.info').parent();
@@ -484,13 +483,13 @@ var explore = function () {
                     } else {
                         txt.css('display','none');
                     }
-                //console.log(ui.value);
                 }
             }).appendTo(t);
             $('<div class="clear" title="По умолчанию">').click(function () {
                 var t =  $(this).parent().parent().parent().children('div').children('div.poster');
-                t.width(def_size);
-                t.find('img').width(def_size-koef);
+                var defoult_size = $(this).parent().data('size');
+                t.width(defoult_size);
+                t.find('img').width(defoult_size-10);
                 var ttl = t.find('div.title span');
                 var inf = t.find('div.info a');
                 var txt = t.find('div.info').parent();
@@ -498,10 +497,9 @@ var explore = function () {
                 ttl.css('font-size','12px');
                 txt.css('display','block');
                 $(this).parent().children('div.slider').children().css('left','100%');
-                set_view_size($(this).parent().parent().parent().parent().attr('class'),def_size);
+                set_view_size($(this).parent().parent().parent().parent().attr('class'),defoult_size);
             }).appendTo(t);
-            $(this).after(t);
-            $(this).parent().children('div.setup_div').show('fast');
+            $(this).after(t).next('div.setup_div').show('fast');
         });
     }
     var get_font_size = function (w) {
