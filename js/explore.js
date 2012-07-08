@@ -359,7 +359,8 @@ var explore = function () {
         for (var i2=0;i2<ul_c;i2++)
             listOptions[i2] = {
                 n: ul.eq(i2).attr('class'), 
-                s: (ul.eq(i2).find('div.spoiler').is('.up'))?0:1
+                s: (ul.eq(i2).find('div.spoiler').is('.up'))?0:1, 
+                size: ul.eq(i2).find('div.poster').width()
             };
         localStorage.listOptions = JSON.stringify(listOptions);
     }
