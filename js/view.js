@@ -161,7 +161,10 @@ var view = function () {
         var sec = dt.getSeconds();
         if (sec.toString().length==1)
             sec = '0'+sec.toString();
-        var t = d+'-'+m+'-'+dt.getFullYear();
+        //var time = '';
+        //if (h!='00' && mi!='00' && sec != '00')
+        //    time = ' '+h+':'+mi+':'+sec;
+        var t = d+'-'+m+'-'+dt.getFullYear();//+time;
         return t;
     }
     var unixintimetitle = function (i) {
@@ -186,7 +189,7 @@ var view = function () {
         var minutes = Math.floor((i - day*60*60*24 - hour*60*60)/60);
         var seconds = Math.floor((i - day*60*60*24 - hour*60*60 - minutes*60));
         day = Math.floor(i/60/60/24 - 7*week);
-        if (month>1) return theDate;
+        if (week>3 || month>0 ) return theDate;
         var str_month = (month<5)?(month<2)?                    ' месяц':   ' месяца':  ' месяцев';
         var str_week = (week<5)?(week<2)?(week<1)?              ' недель':  ' неделя':  ' недели':  ' недель';
         var str_day = (day<5)?(day<2)?(day<1)?                  ' дней':    ' день':    ' дня':     ' дней';
@@ -194,17 +197,17 @@ var view = function () {
         var str_minutes = (minutes<5)?(minutes<2)?(minutes<1)?  ' минут':   ' минута':  ' минуты':  ' минут';
         var str_seconds = (seconds<5)?(seconds<2)?(seconds<1)?  ' секунд':  ' секунда': ' секунды': ' секунд';
         if (month>0)
-            return month + str_month+((week>0)?' '+week+str_week:'');
+            return month + str_month+((week>0)?' и '+week+str_week:'')+' назад';
         if (week>0)
-            return week + str_week+((day > 0)?' '+day+str_day:'');
+            return week + str_week+' назад';
         if (day>0)
-            return day+str_day+((hour>0)?' '+hour+str_hour:'');
+            return day+str_day+' назад';
         if (hour>0)
-            return hour+str_hour+((minutes>0)?' '+minutes+str_minutes:'');
+            return hour+str_hour+((minutes>0)?' и '+minutes+str_minutes:'')+' назад';
         if (minutes>0)
-            return minutes+str_minutes+((seconds>0)?' '+seconds+str_seconds:'');
+            return minutes+str_minutes+' назад';
         if (seconds>0)
-            return seconds+str_seconds;
+            return seconds+str_seconds+' назад';
         return theDate;
     }
     var updateTrackerResultCount = function (t,c,l) {

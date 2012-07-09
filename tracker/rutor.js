@@ -34,10 +34,11 @@ tracker[tmp_num] = function () {
             return 0;
         }
         var calculateTime = function (s) {
-            var d = s.split(' ');
+            var d = s.replace(/([0-9]*).?([а-яА-Я]*).?([0-9]*)/,'$1 $2 $3').split(' ');
             var date = d[0];
             var month = d[1];
             var year = '20'+d[2];
+            console.log(d);
             if (month == 'Янв') month = '01';
             else if (month == 'Фев') month = '02';
             else if (month == 'Мар') month = '03';
