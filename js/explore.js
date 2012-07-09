@@ -245,32 +245,6 @@ var explore = function () {
             }
         });
     }
-    var movebleCalculate = function (a,size,b) {
-        if (a == null && b!= null) 
-            var tmp_size = b;
-        else
-            var tmp_size = a.length*7;
-        var st = '';
-        if (tmp_size > size) {
-            if (tmp_size < 50)
-                st = 'moveble50';
-            else if (tmp_size < 100)
-                st = 'moveble100';
-            else if (tmp_size < 200)
-                st = 'moveble200';
-            else if (tmp_size < 300)
-                st = 'moveble300';
-            else if (tmp_size < 400)
-                st = 'moveble400';
-            else if (tmp_size < 500)
-                st = 'moveble500';
-            else if (tmp_size < 550)
-                st = 'moveble550';
-            else if (tmp_size > 550)
-                st = 'moveble600';
-        }
-        return ' '+st;
-    }
     var show_games = function (content) {
         write_content(content,'games','Игры',2,null,1,null,110);
     }
@@ -444,8 +418,43 @@ var explore = function () {
     var calculate_moveble = function (section,size) {
         var titles = $('div.'+section).find('span');
         var titles_l = titles.length;
+        
         for (var i = 0;i<titles_l;i++){
-            titles.eq(i).parent().attr('class','title'+movebleCalculate(null,size,titles.eq(i).width()));
+            var str_w = titles.eq(i).width();
+            if (str_w == 0) {
+                str_w = titles.eq(i).text().length * 7;
+            }
+            if (str_w < size) continue;
+            if (size<=70) continue;
+            str_w = Math.ceil(str_w/10);
+            if (str_w > 10) {
+                if (str_w < 100) {
+                    var t1 = Math.round(str_w/10);
+                    if (t1 > str_w/10)
+                        str_w = t1*10*10;
+                    else
+                        str_w = (t1*10 + 5)*10;
+                } else 
+                    str_w = str_w * 10;
+            } else 
+                str_w = str_w * 10;
+            var str_s = size;
+            var move_name = 'moveble'+'_'+str_s+'_'+str_w;
+            if ($('body').find('.'+move_name).length == 0) {
+                $('body').append('<style>'
+                    +'@-webkit-keyframes a_'+move_name
+                    +'{'
+                    +'0%{margin-left:2px;}'
+                    +'50%{margin-left:-'+(str_w-str_s)+'px;}'
+                    +'90%{margin-left:6px;}'
+                    +'100%{margin-left:2px;}'
+                    +'}'
+                    +'div.explore div.poster div.title.'+move_name+':hover > span {'
+                    +'overflow: visible;-webkit-animation:a_'+move_name+' 6s 1;'
+                    +'}'
+                    +'</style>');
+            }
+            titles.eq(i).parent().attr('class','title '+move_name);
         }
     }
     var update_btns = function (section) {
