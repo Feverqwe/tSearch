@@ -104,7 +104,7 @@ var view = function () {
             quality.video += ((/original/i).test(title))?2:0;
             quality.video += ((/rus sub|Sub|subs/).test(title))?1:0;
             quality.music = 
-            ((/flac|alac|lossless/i).test(title))?100:
+            ((/flac|alac|lossless/i).test(title))?90:
             ((/320.?kbps/i).test(title))?80:
             ((/256.?kbps/i).test(title))?60:
             ((/192.?kbps/i).test(title))?50:
