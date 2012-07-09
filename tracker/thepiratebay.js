@@ -29,6 +29,7 @@ tracker[tmp_num] = function () {
         }
         var calculateSize = function (s) {
             s = s.split(', ')[1];
+            if (s == undefined) return 0;
             s = s.split(' ');
             s = s[1]+s[2];
             var size = s;
@@ -56,6 +57,7 @@ tracker[tmp_num] = function () {
         }
         var calculateTime = function (t) {
             t = t.split(', ')[0];
+            if (t.split(' ')[1] == undefined) return 0;
             if (t.split(' ')[1].split('.').length == 2) {
                 //мин назад
                 var min_out = parseInt(t.split(' ')[1].replace(/([0-9]*).*/,'$1'))*60;
@@ -101,6 +103,7 @@ tracker[tmp_num] = function () {
             }
         }
         var readCode = function (c) {
+            console.log(c);
             c = view.contentFilter(c);
             var t = $(c);
             t = t.find('#searchResult').children('tbody').children('tr');
@@ -109,6 +112,7 @@ tracker[tmp_num] = function () {
             var i = 0;
             for (i = 0;i<l;i++) {
                 var td = t.eq(i).children('td');
+                if (td.length == 1) continue;
                 arr[arr.length] = {
                     'category' : {
                         'title' : td.eq(0).children().children('a').eq(1).text(), 
