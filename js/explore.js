@@ -441,7 +441,7 @@ var explore = function () {
             var str_s = size;
             var move_name = 'moveble'+'_'+str_s+'_'+str_w;
             if ($('body').find('.'+move_name).length == 0) {
-                $('body').append('<style>'
+                $('body').append('<style class="'+move_name+'">'
                     +'@-webkit-keyframes a_'+move_name
                     +'{'
                     +'0%{margin-left:2px;}'
