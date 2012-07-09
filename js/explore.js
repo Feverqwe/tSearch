@@ -416,6 +416,7 @@ var explore = function () {
         show_favorites();
     }
     var calculate_moveble = function (section,size) {
+        if (size<=70) return;
         var titles = $('div.'+section).find('span');
         var titles_l = titles.length;
         
@@ -425,7 +426,6 @@ var explore = function () {
                 str_w = titles.eq(i).text().length * 7;
             }
             if (str_w < size) continue;
-            if (size<=70) continue;
             str_w = Math.ceil(str_w/10);
             if (str_w > 10) {
                 if (str_w < 100) {
