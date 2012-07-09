@@ -330,6 +330,7 @@ div.progress {
     position: relative;
     background-color: #CCCccc;
     cursor: default;
+    overflow: hidden;
 }
 div.progress div {
     top:0;
