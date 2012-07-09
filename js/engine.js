@@ -58,6 +58,11 @@ var engine = function () {
     {
         n : 'thepiratebay', 
         e : 1
+    },
+
+    {
+        n : 'rustorka', 
+        e : 1
     }
     ];
     var categorys = [
