@@ -1,7 +1,7 @@
 var view = function () {
     var search_history = null;
     var noHistory = function () {
-        $('ol.list').html('<center>История поиска пуста</center>');
+        $('ol.list').html('<center>Истории поиска пока нет</center>');
     }
     var order = function (a,b) {
         if (a.time > b.time)
