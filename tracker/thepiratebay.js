@@ -103,7 +103,6 @@ tracker[tmp_num] = function () {
             }
         }
         var readCode = function (c) {
-            console.log(c);
             c = view.contentFilter(c);
             var t = $(c);
             t = t.find('#searchResult').children('tbody').children('tr');
