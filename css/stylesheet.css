@@ -16,13 +16,11 @@ div.search_panel {
     border-bottom: 1px solid #c0c0c0;
 }
 div.search_panel input[type=text] {
-    height: 20px;
     font-size: 16px;
     width: 500px;
     padding-left: 9px;
     padding-right: 5px;
     float: left;
-    height: 20px;
     font-size: 16px;
 }
 input[type=text] {
