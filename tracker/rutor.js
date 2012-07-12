@@ -38,7 +38,6 @@ tracker[tmp_num] = function () {
             var date = d[0];
             var month = d[1];
             var year = '20'+d[2];
-            console.log(d);
             if (month == 'Янв') month = '01';
             else if (month == 'Фев') month = '02';
             else if (month == 'Мар') month = '03';
