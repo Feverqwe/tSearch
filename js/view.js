@@ -551,6 +551,12 @@ $(function () {
     $('div.tracker_list div.setup').click(function () {
         window.location = '/options.html#back='+$.trim($('form[name=search]').children('input[type=text]').val());
     });
+    $('input.sbutton.main').click(function (){
+        view.triggerBlank();
+    });
+    $('input.sbutton.history').click(function (){
+        window.location = '/history.html#back='+$.trim($('form[name=search]').children('input[type=text]').val());
+    });
 });
 $(window).load(function () {
     var s = (document.URL).replace(/(.*)index.html/,'').replace(/#s=(.*)/,'$1');

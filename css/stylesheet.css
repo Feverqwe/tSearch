@@ -27,7 +27,6 @@ div.search_panel input[type=text] {
 }
 input[type=text] {
     border:  1px solid #cccccc;
-    padding: 2px;
     outline: none;
 }
 input[type=text]:hover {
@@ -43,23 +42,24 @@ input[type=text]:focus {
     box-shadow:inset 0px 0px 4px 0px #97c4fe;
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #1e62d0) );
     background-color:#3d94f6;
-    border-radius:2px;
     border-radius:3px;
     border:1px solid #337fed;
     display:inline-block;
     color:#ffffff;
-    font-family:arial;
+    font-family: Arial, sans-serif;
     font-size:16px;
     font-weight:bold;
     padding:2px 8px;
     text-decoration:none;
     text-shadow:0px 0px 0px #1570cd;
     margin-top: -0px;
-}.sbutton:hover {
+}
+.sbutton:hover {
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #3d94f6) );
     background-color:#1e62d0;
     cursor: pointer;
-}.sbutton:active {
+}
+.sbutton:active {
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3F81EB), color-stop(1, #3F81EB) );
 }
 
@@ -556,4 +556,35 @@ div.explore div.games > div > div.poster > div > div.info {
 }
 div.explore div.info > a {
     text-decoration: none;
+}
+
+div.search_panel > div.left {
+    display: inline-block;
+}
+
+div.search_panel > div.right {
+    display: inline-block;
+    float: right;
+}
+div.search_panel > div.right input.history {
+    padding-left: 14px;
+    padding-right: 14px;
+    background: url(../images/history.png) no-repeat center ;
+}
+div.search_panel > div.right input.history:hover {
+    background-color: #FFF;
+}
+div.search_panel > div.right input.history:active {
+    background-color: #DDD;
+}
+div.search_panel > div.right input.main {
+    padding-left: 14px;
+    padding-right: 14px;
+    background: url(../images/main.png) no-repeat center ;
+}
+div.search_panel > div.right input.main:hover {
+    background-color: #FFF;
+}
+div.search_panel > div.right input.main:active {
+    background-color: #DDD;
 }
