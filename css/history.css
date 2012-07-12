@@ -5,8 +5,90 @@
     Description:
         Purpose of the stylesheet follows.
 */
-
-root { 
-    display: block;
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    margin: 0;
+}
+div.search_panel h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 22px;
+    font-weight: normal;
+}
+div.search_panel {
+    padding: 20px;
+    background-color: #F1F1F1;
+    border-bottom: 1px solid silver;
 }
 
+div.search_panel > div.left {
+    display: inline-block;
+}
+
+div.search_panel > div.right {
+    display: inline-block;
+    float: right;
+}
+.sbutton {
+    -webkit-box-shadow:inset 0px 0px 4px 0px #97c4fe;
+    box-shadow:inset 0px 0px 4px 0px #97c4fe;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #1e62d0) );
+    background-color:#3d94f6;
+    border-radius:3px;
+    border:1px solid #337fed;
+    display:inline-block;
+    color:#ffffff;
+    font-family: Arial, sans-serif;
+    font-size:16px;
+    font-weight:bold;
+    padding:2px 8px;
+    text-decoration:none;
+    text-shadow:0px 0px 0px #1570cd;
+    margin-top: -0px;
+}
+
+div.search_panel > div.right input.main {
+    padding-left: 14px;
+    padding-right: 14px;
+    background: url(../images/main.png) no-repeat center ;
+}
+div.search_panel > div.right input.main:hover {
+    background-color: #FFF;
+}
+div.search_panel > div.right input.main:active {
+    background-color: #DDD;
+}
+ol.list li {
+    list-style: none;
+}
+ol.list > li > div {
+    display: inline-block;
+    height: 16px;
+}
+ol.list > li > div.remove {
+    width: 16px;
+}
+ol.list div.rm_btn {
+    background: url(../images/clear.png) center center no-repeat;
+    width: 16px;
+    height: 16px;
+    margin-bottom: -3px;
+    margin-top: 3px;
+    display: none;
+    cursor: pointer;
+}
+ol.list > li:hover div.rm_btn {
+    display: block;
+}
+ol.list div.time {
+    color: #979CA0;
+    width: 90px;
+}
+ol.list a {
+    color: #000;
+    text-decoration: none;
+}
+ol.list a:hover {
+    text-decoration: underline;
+}
