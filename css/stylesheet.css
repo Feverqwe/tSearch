@@ -37,6 +37,7 @@ input[type=text]:focus {
     -webkit-box-shadow: inset 0 1px 5px #CCCccc;
 }
 .sbutton {
+    height: 26px !important;
     -webkit-box-shadow:inset 0px 0px 4px 0px #97c4fe;
     box-shadow:inset 0px 0px 4px 0px #97c4fe;
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #1e62d0) );
