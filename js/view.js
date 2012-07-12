@@ -555,7 +555,7 @@ $(function () {
         view.triggerBlank();
     });
     $('input.sbutton.history').click(function (){
-        window.location = '/history.html#back='+$.trim($('form[name=search]').children('input[type=text]').val());
+        window.location = '/history.html';//'#back='+$.trim($('form[name=search]').children('input[type=text]').val());
     });
 });
 $(window).load(function () {

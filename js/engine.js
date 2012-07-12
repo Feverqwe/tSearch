@@ -94,6 +94,69 @@ var engine = function () {
                 view.loadingStatus(2,k);
             }
         });
+        updateHistory(text);
+    }
+    var LimitHistory = function () {
+        var removeItem = function (title) {
+            var search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
+            if (search_history != null) {
+                var count = search_history.length;
+                for (var i=0;i<count;i++) {
+                    if (search_history[i].title == title) {
+                        search_history.splice(i,1);
+                        break;
+                    }
+                }
+                localStorage.search_history = JSON.stringify(search_history);
+            }
+        }
+        var search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
+        if (search_history == null) return;
+        var count = search_history.length;
+        if (count >= 50) {
+            var order = function (a,b) {
+                if (a.time > b.time)
+                    return 0;
+                if (a.time == b.time)
+                    return 0;
+                return 1;
+            }
+            search_history.sort(order);
+            var title = search_history[count-1].title;
+            search_history = null;
+            removeItem(title);
+        }
+    }
+    var updateHistory = function (title) {
+        if (title == '') return;
+        LimitHistory();
+        var search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
+        if (search_history != null) {
+            var count = search_history.length;
+            var find = false;
+            for (var i=0;i<count;i++) {
+                if (search_history[i].title == title) {
+                    search_history[i].count = parseInt(search_history[i].count)+1;
+                    search_history[i].time = Math.round((new Date()).getTime() / 1000);
+                    find = true;
+                }
+            }
+            if (find == false) {
+                search_history[count] = {
+                    'title' : title,
+                    count   : 1,
+                    time    : Math.round((new Date()).getTime() / 1000)
+                }
+            }
+        } else {
+            search_history = [];
+            search_history[0] = {
+                'title' : title,
+                count   : 1,
+                time    : Math.round((new Date()).getTime() / 1000)
+            }
+        }
+        localStorage.search_history = JSON.stringify(search_history);
     }
     var loadInternalModule = function (name) {
         var script= document.createElement('script');
