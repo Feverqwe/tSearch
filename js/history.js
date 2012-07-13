@@ -28,7 +28,7 @@ var view = function () {
         search_history.sort(order);
         var content = '';
         for (var i=0;i<count;i++) {
-            content += '<li>'
+            content += '<li data-id='+i+'>'
             +'<div class="remove"><div class="rm_btn" title="Удалить"></div></div>'
             +'<div class="time" title="'+unixintimetitle(search_history[i].time)+'">'+unixintime(search_history[i].time)+'</div>'
             +'<div class="title"><a href="index.html#s='+search_history[i].title+'">'+search_history[i].title+'</a></div>'
@@ -40,7 +40,8 @@ var view = function () {
     var updateBtns = function () {
         $('div.rm_btn').unbind('click').click(function (){
             $(this).parents().eq(1).hide('fast', function () {
-                var title = $(this).children('div.title').children('a').html();
+                var id = $(this).data('id');
+                var title = search_history[id].title;
                 removeItem(title);
             });
         });
@@ -57,6 +58,7 @@ var view = function () {
             }
             localStorage.search_history = JSON.stringify(search_history);
         }
+        getResult();
     }
     var utiemonstr = function (shtamp) {
         //преврящает TimeShtamp в строчку
