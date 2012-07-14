@@ -400,6 +400,29 @@ var view = function () {
         }
         $('ul.categorys').prepend('<li class="selected">Всё <i></i></li>');
     }
+    var AddAutocomplete = function () {
+        var AutocompleteArr = [];
+        var order = function (a,b) {
+            if (a.count > b.count)
+                return 0;
+            if (a.count == b.count)
+                return 0;
+            return 1;
+        }
+        var search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
+        search_history.sort(order);
+        if (search_history != null) {
+            var count = search_history.length;
+            if (count > 10) count = 10;
+            for (var i=0;i<count;i++) {
+                AutocompleteArr[AutocompleteArr.length] = search_history[i].title;
+            }
+        }
+        $( "input[type=text][name=s]" ).autocomplete({
+            source: AutocompleteArr,
+            minLength: 0
+        });
+    }
     return {
         result : function (t,a,s) {
             return write_result(t,a,s);
@@ -454,6 +477,9 @@ var view = function () {
         },
         load_category : function (a) {
             load_category(a);
+        },
+        AddAutocomplete : function () {
+            AddAutocomplete();
         }
     }
 }();
@@ -557,6 +583,7 @@ $(function () {
     $('input.sbutton.history').click(function (){
         window.location = '/history.html';//'#back='+$.trim($('form[name=search]').children('input[type=text]').val());
     });
+    view.AddAutocomplete();
 });
 $(window).load(function () {
     var s = (document.URL).replace(/(.*)index.html/,'').replace(/#s=(.*)/,'$1');

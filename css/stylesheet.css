@@ -588,3 +588,22 @@ div.search_panel > div.right input.main:hover {
 div.search_panel > div.right input.main:active {
     background-color: #DDD;
 }
+ul.ui-autocomplete {
+    border: 1px solid silver;
+    background: #FFF;
+    color: #333;
+    width: 450px;
+    list-style: none;
+    padding: 0;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-top: 0;
+}
+ul.ui-autocomplete li > a {
+    padding-left: 8px;
+    cursor: pointer;
+}
+ul.ui-autocomplete li > a:hover, ul.ui-autocomplete li > a.ui-state-hover {
+    background-color: #99ccff;
+    border-radius: 6px;
+}
