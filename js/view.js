@@ -384,7 +384,8 @@ var view = function () {
         $('div.explore').css('display','none');
         view.clear_table();
         keyword = $.trim(keyword);
-        $('form[name=search]').children('input[type=text]').val(keyword);
+        if ($('form[name=search]').children('input[type=text]').val() != keyword)
+            $('form[name=search]').children('input[type=text]').val(keyword);
         document.title = keyword +' :: '+'TMS'; 
         window.location = '#s='+keyword;
         global_wl_hash = location.hash;
@@ -417,9 +418,9 @@ var view = function () {
                 AutocompleteArr[AutocompleteArr.length] = search_history[i].title;
             }
         }
-        $( "input[type=text][name=s]" ).autocomplete({
+        $( "input[type=text][name=s]" ).autocomplete( "destroy" ).autocomplete({
             source: AutocompleteArr,
-            minLength: 1,
+            minLength: 0,
             select: function(event, ui) {
                 view.triggerSearch(ui.item.value);
             },
@@ -429,6 +430,7 @@ var view = function () {
                 collision:"bottom"
             }
         });
+        $("input[type=text][name=s]").autocomplete( "close" );
     }
     return {
         result : function (t,a,s) {
