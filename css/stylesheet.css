@@ -601,6 +601,8 @@ ul.ui-autocomplete {
     top: 32px !important;
     left: 20px !important;
     position: absolute !important;
+    max-height: 153px;
+    overflow-y: auto;
 }
 ul.ui-autocomplete li {
     margin-bottom: 1px;
