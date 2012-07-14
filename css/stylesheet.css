@@ -599,9 +599,14 @@ ul.ui-autocomplete {
     border-bottom-left-radius: 6px;
     border-top: 0;
 }
+ul.ui-autocomplete li {
+    margin-bottom: 1px;
+}
 ul.ui-autocomplete li > a {
-    padding-left: 8px;
+    padding-left: 5px;
+    padding-right: 5px;
     cursor: pointer;
+    padding-bottom: 1px;
 }
 ul.ui-autocomplete li > a:hover, ul.ui-autocomplete li > a.ui-state-hover {
     background-color: #99ccff;
