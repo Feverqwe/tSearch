@@ -420,7 +420,10 @@ var view = function () {
         }
         $( "input[type=text][name=s]" ).autocomplete({
             source: AutocompleteArr,
-            minLength: 0
+            minLength: 0,
+            select: function(event, ui) {
+                view.triggerSearch(ui.item.value);
+            }
         });
     }
     return {
