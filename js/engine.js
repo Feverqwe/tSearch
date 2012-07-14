@@ -116,7 +116,7 @@ var engine = function () {
         if (count >= 50) {
             var order = function (a,b) {
                 if (a.time > b.time)
-                    return 0;
+                    return -1;
                 if (a.time == b.time)
                     return 0;
                 return 1;

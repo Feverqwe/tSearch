@@ -404,7 +404,7 @@ var view = function () {
         var AutocompleteArr = [];
         var order = function (a,b) {
             if (a.count > b.count)
-                return 0;
+                return -1;
             if (a.count == b.count)
                 return 0;
             return 1;
@@ -427,7 +427,7 @@ var view = function () {
             position:{
                 at:"bottom",
                 at:"bottom",
-                collision:"bottom",
+                collision:"bottom"
             }
         });
     }
