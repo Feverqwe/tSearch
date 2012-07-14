@@ -427,7 +427,7 @@ var view = function () {
             position:{
                 at:"bottom",
                 at:"bottom",
-                collision:"bottom",
+                collision:"bottom"
             }
         });
     }
