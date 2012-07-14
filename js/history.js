@@ -10,11 +10,8 @@ var view = function () {
             return 0;
         return 1;
     }
-    var updateHistory = function () {
-        search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
-    }
     var getResult = function () {
-        updateHistory();
+        search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
         $('ol.list').empty();
         if (search_history == null) {
             noHistory();
@@ -47,7 +44,7 @@ var view = function () {
         });
     }
     var removeItem = function (title) {
-        updateHistory();
+        search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
         if (search_history != null) {
             var count = search_history.length;
             for (var i=0;i<count;i++) {
