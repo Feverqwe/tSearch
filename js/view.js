@@ -413,7 +413,6 @@ var view = function () {
         if (search_history != null) {
             search_history.sort(order);
             var count = search_history.length;
-            if (count > 10) count = 10;
             for (var i=0;i<count;i++) {
                 AutocompleteArr[AutocompleteArr.length] = search_history[i].title;
             }
