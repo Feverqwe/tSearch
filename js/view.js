@@ -424,6 +424,11 @@ var view = function () {
             minLength: 0,
             select: function(event, ui) {
                 view.triggerSearch(ui.item.value);
+            },
+            position:{
+                at:"bottom",
+                at:"bottom",
+                collision:"bottom",
             }
         });
     }

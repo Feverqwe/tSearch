@@ -598,6 +598,9 @@ ul.ui-autocomplete {
     border-bottom-right-radius: 6px;
     border-bottom-left-radius: 6px;
     border-top: 0;
+    top: 32px !important;
+    left: 20px !important;
+    position: absolute !important;
 }
 ul.ui-autocomplete li {
     margin-bottom: 1px;
