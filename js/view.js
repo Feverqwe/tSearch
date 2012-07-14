@@ -389,7 +389,6 @@ var view = function () {
         window.location = '#s='+keyword;
         global_wl_hash = location.hash;
         engine.search(keyword);
-        view.AddAutocomplete();
     }
     var load_category = function (c) {
         $('ul.categorys').empty()

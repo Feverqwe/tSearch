@@ -157,6 +157,7 @@ var engine = function () {
             }
         }
         localStorage.search_history = JSON.stringify(search_history);
+        view.AddAutocomplete();
     }
     var loadInternalModule = function (name) {
         var script= document.createElement('script');
