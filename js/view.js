@@ -389,6 +389,7 @@ var view = function () {
         window.location = '#s='+keyword;
         global_wl_hash = location.hash;
         engine.search(keyword);
+        view.AddAutocomplete();
     }
     var load_category = function (c) {
         $('ul.categorys').empty()
@@ -410,8 +411,8 @@ var view = function () {
             return 1;
         }
         var search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
-        search_history.sort(order);
         if (search_history != null) {
+            search_history.sort(order);
             var count = search_history.length;
             if (count > 10) count = 10;
             for (var i=0;i<count;i++) {
