@@ -58,9 +58,6 @@ tracker[tmp_num] = function () {
             s = s[1]+s[2];
             return mackcalcSize(s);
         }
-        var calculateSize2 = function (s) {
-            return mackcalcSize(s);
-        }
         var makecalcTime = function (t) {
             if (t.split('.').length == 2) {
                 //мин назад
@@ -109,9 +106,6 @@ tracker[tmp_num] = function () {
             if (t.split(' ')[1] == undefined) return 0;
             t = t.split(' ');
             t = t[1];
-            return makecalcTime(t);
-        }
-        var calculateTime2 = function (t) {
             return makecalcTime(t);
         }
         var readCode = function (c) {
