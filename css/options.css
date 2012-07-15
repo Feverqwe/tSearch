@@ -15,6 +15,9 @@ body {
 body > center > h1 {
     margin: 0;
 }
+#internalTrackers a {
+    color: #1A3DC1;
+}
 body > center > h2 {
     margin: 0;
 }

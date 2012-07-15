@@ -83,5 +83,13 @@ $(function () {
         view.save_settings();
         return false;
     });
+    $('#internalTrackers').find('th').eq(1).children('a').eq(0).click(function () {
+        $('#internalTrackers').children('tbody').find('input[type=checkbox]').attr('checked','checked');
+        return false;
+    });
+    $('#internalTrackers').find('th').eq(1).children('a').eq(1).click(function () {
+        $('#internalTrackers').children('tbody').find('input[type=checkbox]').removeAttr('checked');
+        return false;
+    });
     view.loadSettings();
 });

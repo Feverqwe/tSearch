@@ -27,11 +27,7 @@ tracker[tmp_num] = function () {
                 }
             return -1;
         }
-        var calculateSize = function (s) {
-            s = s.split(', ')[1];
-            if (s == undefined) return 0;
-            s = s.split(' ');
-            s = s[1]+s[2];
+        var mackcalcSize = function (s) {
             var size = s;
             var t = size.replace('KiB','');
             if (t!= size) {
@@ -55,16 +51,22 @@ tracker[tmp_num] = function () {
             }
             return 0;
         }
-        var calculateTime = function (t) {
-            t = t.split(', ')[0];
-            if (t.split(' ')[1] == undefined) return 0;
-            if (t.split(' ')[1].split('.').length == 2) {
+        var calculateSize = function (s) {
+            s = s.split(', ')[1];
+            if (s == undefined) return 0;
+            s = s.split(' ');
+            s = s[1]+s[2];
+            return mackcalcSize(s);
+        }
+        var calculateSize2 = function (s) {
+            return mackcalcSize(s);
+        }
+        var makecalcTime = function (t) {
+            if (t.split('.').length == 2) {
                 //мин назад
-                var min_out = parseInt(t.split(' ')[1].replace(/([0-9]*).*/,'$1'))*60;
+                var min_out = parseInt(t.replace(/([0-9]*).*/,'$1'))*60;
                 return Math.round((new Date()).getTime() / 1000)-min_out;
             } else {
-                t = t.split(' ');
-                var t = t[1];
                 var t_time = t.replace(/.*?([0-9]*):([0-9]*)/,'$1:$2');
                 var t_date =$.trim(t.replace(t_time,''));
                 var now_date = new Date();
@@ -102,6 +104,16 @@ tracker[tmp_num] = function () {
                 return Math.round((new Date(year,t_date[0],parseInt(t_date[1]),parseInt(time_h),parseInt(time_m))).getTime() / 1000);
             }
         }
+        var calculateTime = function (t) {
+            t = t.split(', ')[0];
+            if (t.split(' ')[1] == undefined) return 0;
+            t = t.split(' ');
+            t = t[1];
+            return makecalcTime(t);
+        }
+        var calculateTime2 = function (t) {
+            return makecalcTime(t);
+        }
         var readCode = function (c) {
             c = view.contentFilter(c);
             var t = $(c);
@@ -112,19 +124,36 @@ tracker[tmp_num] = function () {
             for (i = 0;i<l;i++) {
                 var td = t.eq(i).children('td');
                 if (td.length == 1) continue;
-                arr[arr.length] = {
-                    'category' : {
-                        'title' : td.eq(0).children().children('a').eq(1).text(), 
-                        'url': root_url+td.eq(0).children().children('a').eq(1).attr('href'),
-                        'id': calculateCategory(String(td.eq(0).children().children('a').eq(1).attr('href')).replace(/(.*)\/([0-9*])/i,"$2"))
-                    },
-                    'title' : td.eq(1).children('div.detName').children('a').text(),
-                    'url' : root_url+td.eq(1).children('div.detName').children('a').attr('href'),
-                    'size' : calculateSize(td.eq(1).children('font.detDesc').text()),
-                    'dl' : td.eq(1).children('a').eq(0).attr('href'),
-                    'seeds' : td.eq(2).text(),
-                    'leechs' : td.eq(3).text(),
-                    'time' : calculateTime(td.eq(1).children('font.detDesc').text())
+                if (td.length == 4) {
+                    arr[arr.length] = {
+                        'category' : {
+                            'title' : td.eq(0).children().children('a').eq(1).text(), 
+                            'url': root_url+td.eq(0).children().children('a').eq(1).attr('href'),
+                            'id': calculateCategory(String(td.eq(0).children().children('a').eq(1).attr('href')).replace(/(.*)\/([0-9]*)/i,"$2"))
+                        },
+                        'title' : td.eq(1).children('div.detName').children('a').text(),
+                        'url' : root_url+td.eq(1).children('div.detName').children('a').attr('href'),
+                        'size' : calculateSize(td.eq(1).children('font.detDesc').text()),
+                        'dl' : td.eq(1).children('a').eq(0).attr('href'),
+                        'seeds' : td.eq(2).text(),
+                        'leechs' : td.eq(3).text(),
+                        'time' : calculateTime(td.eq(1).children('font.detDesc').text())
+                    }
+                } else if (td.length == 7) {
+                    arr[arr.length] = {
+                        'category' : {
+                            'title' : td.eq(0).children('a').text(), 
+                            'url': root_url+td.eq(0).children('a').attr('href'),
+                            'id': calculateCategory(String(td.eq(0).children('a').attr('href')).replace(/(.*)\/([0-9]*)/i,"$2"))
+                        },
+                        'title' : td.eq(1).children('a').text(),
+                        'url' : root_url+td.eq(1).children('a').attr('href'),
+                        'size' : mackcalcSize(td.eq(4).text()),
+                        'dl' : td.eq(3).children().children('a').eq(0).attr('href'),
+                        'seeds' : td.eq(5).text(),
+                        'leechs' : td.eq(6).text(),
+                        'time' : makecalcTime(td.eq(2).text())
+                    }
                 }
             }
             return arr;
