@@ -68,6 +68,11 @@ var engine = function () {
     {
         n : 'inmac', 
         e : 0
+    },
+
+    {
+        n : 'kickass', 
+        e : 1
     }
     ];
     var categorys = [
