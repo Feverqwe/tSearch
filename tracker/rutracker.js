@@ -52,7 +52,7 @@ tracker[tmp_num] = function () {
                     'category' : {
                         'title' : td.eq(2).children('a').text(), 
                         'url': root_url+td.eq(2).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/(.*)f=([0-9*])/i,"$2"))
+                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/(.*)f=([0-9]*)/i,"$2"))
                     },
                     'title' : td.eq(3).children('div').children('a').text(),
                     'url' : root_url+td.eq(3).children('div').children('a').attr('href'),

@@ -35,7 +35,7 @@ tracker[tmp_num] = function () {
             return 0;
         }
         var calculateCategory = function (n) {
-            var n = (n+'').replace(/(.*)c=([0-9*])/i,"$2");
+            var n = (n+'').replace(/(.*)c=([0-9]*)/i,"$2");
             var groups_arr = [
             /* Сериалы */[45,46], //serials
             /* Музыка */[3,4,42], //music  
