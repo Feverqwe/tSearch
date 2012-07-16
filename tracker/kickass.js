@@ -23,14 +23,13 @@ tracker[tmp_num] = function () {
             /* Порно */['xxx']
             ];
             for (var i=0;i<groups_arr.length;i++)
-                if (jQuery.inArray(parseInt(f),groups_arr[i]) > -1) {
+                if (jQuery.inArray(f,groups_arr[i]) > -1) {
                     return i;
                 }
             return -1;
         }
         var calcTime = function (t) {
             t = t.replace(/([0-9]*).?([A-Za-z]*)/,'$1|$2').split('|');
-            console.log(t);
             var type_time = t[1];
             var val = parseInt(t[0]);
             var nowTS = Math.round((new Date()).getTime() / 1000);
