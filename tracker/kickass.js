@@ -95,8 +95,8 @@ tracker[tmp_num] = function () {
                 arr[arr.length] = {
                     'category' : {
                         'title' : td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).text(), 
-                        'url': root_url+td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).children('a').eq(0).attr('href'),
-                        'id': calculateCategory(td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).children('a').eq(0).attr('href').replace(/\/(.*)\//i,"$1"))
+                        'url': root_url+td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).find('a').eq(0).attr('href'),
+                        'id': calculateCategory(td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).find('a').eq(0).attr('href').replace(/\/(.*)\//i,"$1"))
                     },
                     'title' : td.eq(0).children('div').eq(1).children('a').eq(1).text(),
                     'url' : root_url+td.eq(0).children('div').eq(1).children('a').eq(1).attr('href'),
