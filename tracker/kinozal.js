@@ -111,8 +111,8 @@ tracker[tmp_num] = function () {
             } else if (ver == 2) {
                 arr[arr.length] = {
                     'category' : {
-                        'title' : calculateCategoryName(td.eq(0).children('img').attr('src').replace(/\/([0-9]*)\.gif/i)),
-                        'id': calculateCategory(td.eq(0).children('img').attr('src').replace(/\/([0-9]*)\.gif/i))
+                        'title' : calculateCategoryName(td.eq(0).children('img').attr('src').replace(/.*\/([0-9]*)\.gif/i,'$1')),
+                        'id': calculateCategory(td.eq(0).children('img').attr('src').replace(/.*\/([0-9]*)\.gif/i,'$1'))
                     },
                     'title' : td.eq(1).children('a').text(),
                     'url' : root_url+td.eq(1).children('a').attr('href'),
