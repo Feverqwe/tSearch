@@ -593,6 +593,20 @@ $(function () {
         window.location = '/history.html';//'#back='+$.trim($('form[name=search]').children('input[type=text]').val());
     });
     view.AddAutocomplete();
+    $('div.topbtn').hide();
+    $(window).scroll(function () {
+        if ($(this).scrollTop() > 100) {
+            $('div.topbtn').fadeIn('fast');
+        } else {
+            $('div.topbtn').fadeOut('fast');
+        }
+    });
+    $('div.topbtn').click(function () {
+        $('body,html').animate({
+            scrollTop: 0
+        }, 200);
+        return false;
+    });
 });
 $(window).load(function () {
     var s = (document.URL).replace(/(.*)index.html/,'').replace(/#s=(.*)/,'$1');

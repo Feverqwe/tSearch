@@ -617,3 +617,14 @@ ul.ui-autocomplete li > a:hover, ul.ui-autocomplete li > a.ui-state-hover {
     background-color: #99ccff;
     border-radius: 6px;
 }
+div.topbtn {
+    display: 0;
+    bottom: 10px;
+    width: 60px;
+    height: 60px;
+    background: url(../images/go_top.png) no-repeat center;
+    position: fixed;
+    right: 50px;
+    z-index: 10;
+    cursor: pointer;
+}
