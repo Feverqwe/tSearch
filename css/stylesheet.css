@@ -510,6 +510,7 @@ div.explore div.poster > div.image > div {
     left: -8px;
     cursor: pointer;
     opacity: 0.6;
+    overflow: hidden;
 }
 div.explore div.poster > div.image > div:hover {
     opacity: 1;
