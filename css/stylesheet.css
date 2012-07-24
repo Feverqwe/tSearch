@@ -500,7 +500,6 @@ div.explore div.poster div.title {
 div.explore div.poster > div.image {
     cursor: pointer;
     margin: 6px;
-    overflow: hidden;
 }
 div.explore div.poster > div.image > div {
     width: 16px;
