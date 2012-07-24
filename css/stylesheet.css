@@ -38,8 +38,8 @@ input[type=text]:focus {
 }
 .sbutton {
     height: 26px !important;
-    -webkit-box-shadow:inset 0px 0px 4px 0px #97c4fe;
-    box-shadow:inset 0px 0px 4px 0px #97c4fe;
+    -webkit-box-shadow:inset 0 0 4px 0 #97c4fe;
+    box-shadow:inset 0 0 4px 0 #97c4fe;
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #1e62d0) );
     background-color:#3d94f6;
     border-radius:3px;
@@ -51,8 +51,8 @@ input[type=text]:focus {
     font-weight:bold;
     padding:2px 8px;
     text-decoration:none;
-    text-shadow:0px 0px 0px #1570cd;
-    margin-top: -0px;
+    text-shadow:0 0 0 #1570cd;
+    margin-top: 0;
 }
 .sbutton:hover {
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #3d94f6) );
@@ -286,7 +286,7 @@ div.tracker_list > div.setup {
     width: 16px;
     height: 16px;
     position: absolute;
-    top: 0px;
+    top: 0;
     left: 60px;
     cursor: pointer;
     z-index: 1;
@@ -444,8 +444,8 @@ div.explore h2 > div.setup_div > div.slider {
     border: 1px solid #DDD;
     border-radius: 4px;
     height: 8px;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     position: relative;
     width: 130px;
     margin-bottom: 5px;
@@ -467,9 +467,9 @@ div.explore h2 > div.setup_div > div.slider > a {
     border: 1px solid #CCC;
     border-radius: 4px;
     display: block;
-    margin: 0px;
+    margin: 0;
     margin-left: -6.599999904632568px;
-    padding: 0px;
+    padding: 0;
     position: absolute;
     top: -3.299999952316284px;
     width: 13px;
@@ -541,7 +541,7 @@ div.explore div.poster > div > div.info {
     z-index: 2;
     font-size: 12px;
     margin: 0 auto;
-    margin-top: 0px;
+    margin-top: 0;
     margin-bottom: 30px;
     display: none;
     height: 15px;
@@ -619,12 +619,16 @@ ul.ui-autocomplete li > a:hover, ul.ui-autocomplete li > a.ui-state-hover {
 }
 div.topbtn {
     display: 0;
-    bottom: 10px;
+    bottom: 0;
     width: 60px;
     height: 60px;
-    background: url(../images/go_top.png) no-repeat center;
+    background: url(../images/go_top.png) no-repeat center bottom;
     position: fixed;
-    right: 50px;
+    right: 0;
     z-index: 10;
     cursor: pointer;
+    padding-top: 100%;
+}
+div.topbtn:hover {
+    background-color:#9CF;
 }
