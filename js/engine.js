@@ -161,7 +161,7 @@ var engine = function () {
                 time    : Math.round((new Date()).getTime() / 1000)
             }
         }
-        localStorage.search_history = JSON.stringify(search_history);
+        SetSettings('search_history',JSON.stringify(search_history));
         view.AddAutocomplete();
     }
     var loadInternalModule = function (name) {
