@@ -173,37 +173,55 @@ var view = function () {
         else
             return utiemonstr(i);
     }
-    var unixintime = function (i)
+    var round_day_unixtime= function (i) {
+        var dt = new Date(i * 1000);
+        return Math.round(new Date(dt.getFullYear(),dt.getMonth(),dt.getDate()).getTime() / 1000);
+    }
+    var getHandM_unixtime= function (i) {
+        var dt = new Date(i * 1000);
+        return addZero(dt.getHours())+':'+addZero(dt.getMinutes());
+    }
+    var addZero = function (i) {
+        if (i<10) return '0'+i;
+        return i;
+    }
+    var unixintime = function (utime)
     {
         //выписывает отсчет времени из unixtime
         var now_time = Math.round((new Date()).getTime() / 1000);
-        theDate = utiemonstr(i);
-        if (i == 0) return '∞';
-        i = now_time - i;
+        var theDate = utiemonstr(utime);
+        if (utime == 0) return '∞';
+        var i = now_time - utime;
         if (i<0) return theDate;
         var day = Math.floor(i/60/60/24);
         var week = Math.floor(day/7);
-        var month = Math.floor(day/30);
-        week = Math.floor((day-30*month)/7);
+        //var month = Math.floor(day/30);
+        //week = Math.floor((day-30*month)/7);
         var hour = Math.floor((i - day*60*60*24)/60/60);
         var minutes = Math.floor((i - day*60*60*24 - hour*60*60)/60);
         var seconds = Math.floor((i - day*60*60*24 - hour*60*60 - minutes*60));
         day = Math.floor(i/60/60/24 - 7*week);
-        if (week>3 || month>0 ) return theDate;
-        var str_month = (month<5)?(month<2)?                    ' месяц':   ' месяца':  ' месяцев';
+        if (week>0 ) return theDate;
+        //var str_month = (month<5)?(month<2)?                    ' месяц':   ' месяца':  ' месяцев';
         var str_week = (week<5)?(week<2)?(week<1)?              ' недель':  ' неделя':  ' недели':  ' недель';
         var str_day = (day<5)?(day<2)?(day<1)?                  ' дней':    ' день':    ' дня':     ' дней';
         var str_hour = (hour<5)?(hour<2)?(hour<1)?              ' часов':   ' час':     ' часа':    ' часов';
-        var str_minutes = (minutes<5)?(minutes<2)?(minutes<1)?  ' минут':   ' минута':  ' минуты':  ' минут';
-        var str_seconds = (seconds<5)?(seconds<2)?(seconds<1)?  ' секунд':  ' секунда': ' секунды': ' секунд';
-        if (month>0)
-            return month + str_month+((week>0)?' и '+week+str_week:'')+' назад';
-        if (week>0)
-            return week + str_week+' назад';
+        var str_minutes = ' мин.';
+        var str_seconds = ' сек.';
+        //if (month>0)
+        //    return month + str_month+((week>0)?' и '+week+str_week:'')+' назад';
+        //if (week>0)
+        //    return week + str_week+' назад';
         if (day>0)
-            return day+str_day+' назад';
+            if (day == 1)
+                return 'Вчера '+getHandM_unixtime(utime);
+            else
+                return day+str_day+' назад';
         if (hour>0)
-            return hour+str_hour+((minutes>0)?' и '+minutes+str_minutes:'')+' назад';
+            if (hour > 1)
+                return 'Сегодня '+getHandM_unixtime(utime);
+            else
+                return hour+str_hour+' назад';
         if (minutes>0)
             return minutes+str_minutes+' назад';
         if (seconds>0)
