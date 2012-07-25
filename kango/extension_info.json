@@ -1,0 +1,11 @@
+{
+    "name": "tSearch",
+    "version": "0.0.1",
+    "description": "tSearch",
+    "background_scripts": ["main.js"],
+    "browser_button": {
+        "tooltipText": "tSearch",
+        "caption": "tSearch capt",
+        "icon": "icons/button.png"
+    }
+}

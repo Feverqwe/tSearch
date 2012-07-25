@@ -1,14 +1,14 @@
 var option_mode = true;
 var view = function () {
-    var HideLeech = (localStorage.HideLeech !== undefined) ? parseInt(localStorage.HideLeech) : true;
-    var HideSeed = (localStorage.HideSeed !== undefined) ? parseInt(localStorage.HideSeed) : false;
-    var ShowIcons = (localStorage.ShowIcons !== undefined) ? parseInt(localStorage.ShowIcons) : 1;
-    var HideZeroSeed = (localStorage.HideZeroSeed !== undefined) ? parseInt(localStorage.HideZeroSeed) : false;
-    var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : 2;
-    var AutoSetCategory = (localStorage.AutoSetCategory !== undefined) ? parseInt(localStorage.AutoSetCategory) : true;
+    var HideLeech = (GetSettings('HideLeech') !== undefined) ? parseInt(GetSettings('HideLeech')) : true;
+    var HideSeed = (GetSettings('HideSeed') !== undefined) ? parseInt(GetSettings('HideSeed')) : false;
+    var ShowIcons = (GetSettings('ShowIcons') !== undefined) ? parseInt(GetSettings('ShowIcons')) : 1;
+    var HideZeroSeed = (GetSettings('HideZeroSeed') !== undefined) ? parseInt(GetSettings('HideZeroSeed')) : false;
+    var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
+    var AutoSetCategory = (GetSettings('AutoSetCategory') !== undefined) ? parseInt(GetSettings('AutoSetCategory')) : true;
     var addTrackerInList = function (i) {
         var filename = tracker[i].filename;
-        var t = (localStorage.internalTrackers !== undefined) ? JSON.parse(localStorage.internalTrackers) : null;
+        var t = (GetSettings('internalTrackers') !== undefined) ? JSON.parse(GetSettings('internalTrackers')) : null;
         if (t == null) t = engine.defaultList;
         var tc = t.length;
         var enable = false;
@@ -44,18 +44,18 @@ var view = function () {
                 'e': (inp.is(':checked'))?1:0
             };
         }
-        localStorage.internalTrackers = JSON.stringify(internalTrackers);
-        localStorage.HideZeroSeed = HideZeroSeed = ($('input[name="zeroseed"]').is(':checked'))?1:0;
-        localStorage.ShowIcons = ShowIcons = ($('input[name="icons"]').is(':checked'))?1:0;
-        localStorage.HideLeech = HideLeech = ($('input[name="hideleech"]').is(':checked'))?1:0;
-        localStorage.HideSeed = HideSeed = ($('input[name="hideseed"]').is(':checked'))?1:0;
-        localStorage.AutoSetCategory = AutoSetCategory = ($('input[name="autosetcategory"]').is(':checked'))?1:0;
+        SetSettings('internalTrackers',JSON.stringify(internalTrackers));
+        HideZeroSeed = SetSettings('HideZeroSeed',($('input[name="zeroseed"]').is(':checked'))?1:0);
+        ShowIcons = SetSettings('ShowIcons',($('input[name="icons"]').is(':checked'))?1:0);
+        HideLeech = SetSettings('HideLeech',($('input[name="hideleech"]').is(':checked'))?1:0);
+        HideSeed = SetSettings('HideSeed',($('input[name="hideseed"]').is(':checked'))?1:0);
+        AutoSetCategory = SetSettings('AutoSetCategory',($('input[name="autosetcategory"]').is(':checked'))?1:0);
         var tmp = $('input[name="typeFiltration"]');
         var tmp_l = tmp.length;
         for (var i = 0;i<tmp_l;i++)
             if (tmp.eq(i).is(':checked'))
             {
-                localStorage.AdvFiltration = AdvFiltration = i;
+                AdvFiltration = SetSettings('AdvFiltration',i);
                 break;
             }
         showProgress();
@@ -63,7 +63,7 @@ var view = function () {
         var s = (document.URL).replace(/(.*)options.html/,'');
         if (s!= '') { 
             var s = s.replace(/#back=(.*)/,'$1');
-            window.location = '/index.html#s='+s;
+            window.location = 'index.html#s='+s;
         }
     }
     return {

@@ -5,11 +5,11 @@ var view = function () {
     var categorys = null;
     var lastFilterWord = '';
     var autoMove = null;
-    var HideLeech = (localStorage.HideLeech !== undefined) ? parseInt(localStorage.HideLeech) : true;
-    var HideSeed = (localStorage.HideSeed !== undefined) ? parseInt(localStorage.HideSeed) : false;
-    var ShowIcons = (localStorage.ShowIcons !== undefined) ? parseInt(localStorage.ShowIcons) : true;
-    var HideZeroSeed = (localStorage.HideZeroSeed !== undefined) ? parseInt(localStorage.HideZeroSeed) : false;
-    var AdvFiltration = (localStorage.AdvFiltration !== undefined) ? parseInt(localStorage.AdvFiltration) : 2;
+    var HideLeech = (GetSettings('HideLeech') !== undefined) ? parseInt(GetSettings('HideLeech')) : true;
+    var HideSeed = (GetSettings('HideSeed') !== undefined) ? parseInt(GetSettings('HideSeed')) : false;
+    var ShowIcons = (GetSettings('ShowIcons') !== undefined) ? parseInt(GetSettings('ShowIcons')) : true;
+    var HideZeroSeed = (GetSettings('HideZeroSeed') !== undefined) ? parseInt(GetSettings('HideZeroSeed')) : false;
+    var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
     var auth = function (s,t) {
         $('ul.trackers').children('li[data-id="'+t+'"]').children('ul').remove();
         if (!s)
@@ -428,7 +428,7 @@ var view = function () {
                 return 0;
             return 1;
         }
-        var search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
+        var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
         if (search_history != null) {
             search_history.sort(order);
             var count = search_history.length;
@@ -575,10 +575,10 @@ $(function () {
         $('#rez_table').tablesorter({
             textExtraction: myTextExtraction,
             widgets: ['zebra'],
-            sortList: (localStorage.Order !== undefined) ? JSON.parse(localStorage.Order) :  [[1,1]],
+            sortList: (GetSettings('Order') !== undefined) ? JSON.parse(GetSettings('Order')) :  [[1,1]],
             autosorter: true,
             onsort: function (s) {
-                localStorage.Order = JSON.stringify(s);
+                SetSettings('Order',JSON.stringify(s));
             }
         });
     } catch(err) {}
@@ -602,13 +602,13 @@ $(function () {
         $('form[name=search]').children('input[type=text]').val(s);
     }
     $('div.tracker_list div.setup').click(function () {
-        window.location = '/options.html#back='+$.trim($('form[name=search]').children('input[type=text]').val());
+        window.location = 'options.html#back='+$.trim($('form[name=search]').children('input[type=text]').val());
     });
     $('input.sbutton.main').click(function (){
         view.triggerBlank();
     });
     $('input.sbutton.history').click(function (){
-        window.location = '/history.html';//'#back='+$.trim($('form[name=search]').children('input[type=text]').val());
+        window.location = 'history.html';//'#back='+$.trim($('form[name=search]').children('input[type=text]').val());
     });
     view.AddAutocomplete();
     $('div.topbtn').hide();

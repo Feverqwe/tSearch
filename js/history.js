@@ -11,7 +11,7 @@ var view = function () {
         return 1;
     }
     var getResult = function () {
-        search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
+        search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
         $('ol.list').empty();
         if (search_history == null) {
             noHistory();
@@ -44,7 +44,7 @@ var view = function () {
         });
     }
     var removeItem = function (title) {
-        search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
+        search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
         if (search_history != null) {
             var count = search_history.length;
             for (var i=0;i<count;i++) {
@@ -53,7 +53,7 @@ var view = function () {
                     break;
                 }
             }
-            localStorage.search_history = JSON.stringify(search_history);
+            SetSettings('search_history',JSON.stringify(search_history));
         }
         getResult();
     }
@@ -123,7 +123,7 @@ $(function (){
         //var s = (document.URL).replace(/(.*)history.html/,'');
         //if (s!= '')
         //    var s = s.replace(/#back=(.*)/,'$1');
-        window.location = '/index.html#s='//+s;
+        window.location = 'index.html#s='//+s;
     });
     view.getResult();
 });

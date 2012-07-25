@@ -1,17 +1,17 @@
 var explore = function () {
-    var AutoSetCategory = (localStorage.AutoSetCategory !== undefined) ? parseInt(localStorage.AutoSetCategory) : true;
+    var AutoSetCategory = (GetSettings('AutoSetCategory') !== undefined) ? parseInt(GetSettings('AutoSetCategory')) : true;
     var xhr = null;
     var xhr_g = null;
     var xhr_s = null;
     var xhr_tf = null;
-    var explorerCache = (localStorage.explorerCache !== undefined) ? JSON.parse(localStorage.explorerCache) : {
+    var explorerCache = (GetSettings('explorerCache') !== undefined) ? JSON.parse(GetSettings('explorerCache')) : {
         games:null,
         films:null,
         top_films:null,
         serials:null
     };
-    var favoritesList = (localStorage.favoritesList !== undefined) ? JSON.parse(localStorage.favoritesList) : [];
-    var listOptions = (localStorage.listOptions !== undefined) ? JSON.parse(localStorage.listOptions) : [{
+    var favoritesList = (GetSettings('favoritesList') !== undefined) ? JSON.parse(GetSettings('favoritesList')) : [];
+    var listOptions = (GetSettings('listOptions') !== undefined) ? JSON.parse(GetSettings('listOptions')) : [{
         n:'favorites',
         s:1,
         size: 0
@@ -129,7 +129,7 @@ var explore = function () {
                         cache_arr : cotnt
                     };
                 }
-                localStorage.explorerCache = JSON.stringify(explorerCache);
+                SetSettings('explorerCache',JSON.stringify(explorerCache));
                 show_serials(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
@@ -174,7 +174,7 @@ var explore = function () {
                         cache_arr : cotnt
                     };
                 }
-                localStorage.explorerCache = JSON.stringify(explorerCache);
+                SetSettings('explorerCache',JSON.stringify(explorerCache));
                 show_top_films(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
@@ -205,7 +205,7 @@ var explore = function () {
                         cache_arr : cotnt
                     };
                 }
-                localStorage.explorerCache = JSON.stringify(explorerCache);
+                SetSettings('explorerCache',JSON.stringify(explorerCache));
                 show_films(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
@@ -236,7 +236,7 @@ var explore = function () {
                         cache_arr : cotnt
                     };
                 }
-                localStorage.explorerCache = JSON.stringify(explorerCache);
+                SetSettings('explorerCache',JSON.stringify(explorerCache));
                 show_games(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
@@ -271,7 +271,7 @@ var explore = function () {
             if (listOptions[i].n == n)
                 listOptions[i].size = s;
         }
-        localStorage.listOptions = JSON.stringify(listOptions);
+        SetSettings('listOptions',JSON.stringify(listOptions));
     }
     var get_view_size = function (n) {
         if (listOptions == null) return 0;
@@ -336,7 +336,7 @@ var explore = function () {
                 s: (ul.eq(i2).find('div.spoiler').is('.up'))?0:1, 
                 size: ul.eq(i2).find('div.poster').width()
             };
-        localStorage.listOptions = JSON.stringify(listOptions);
+        SetSettings('listOptions',JSON.stringify(listOptions));
     }
     var show_favorites = function () {
         if (favoritesList.length < 1) { 
@@ -399,12 +399,12 @@ var explore = function () {
             'name' : $(obj).find('div.title').attr('title'),
             'url' : $(obj).find('div.info').children('a').attr('href')
         }
-        localStorage.favoritesList = JSON.stringify(favoritesList);
+        SetSettings('favoritesList',JSON.stringify(favoritesList));
         show_favorites();
     }
     var del_from_favorites = function (id) {
         favoritesList.splice(id,1);
-        localStorage.favoritesList = JSON.stringify(favoritesList);
+        SetSettings('favoritesList',JSON.stringify(favoritesList));
         show_favorites();
     }
     var load_all = function () {

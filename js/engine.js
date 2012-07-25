@@ -89,7 +89,7 @@ var engine = function () {
     [10,'Порно'],
     [-1,'Прочие']
     ];
-    var internalTrackers = (localStorage.internalTrackers !== undefined) ? JSON.parse(localStorage.internalTrackers) : null;
+    var internalTrackers = (GetSettings('internalTrackers') !== undefined) ? JSON.parse(GetSettings('internalTrackers')) : null;
     var search = function(text) {
         $.each(tracker, function (k, v) {
             try {
@@ -103,7 +103,7 @@ var engine = function () {
     }
     var LimitHistory = function () {
         var removeItem = function (title) {
-            var search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
+            var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
             if (search_history != null) {
                 var count = search_history.length;
                 for (var i=0;i<count;i++) {
@@ -112,10 +112,10 @@ var engine = function () {
                         break;
                     }
                 }
-                localStorage.search_history = JSON.stringify(search_history);
+                SetSettings('search_history',JSON.stringify(search_history));
             }
         }
-        var search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
+        var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
         if (search_history == null) return;
         var count = search_history.length;
         if (count >= 50) {
@@ -135,7 +135,7 @@ var engine = function () {
     var updateHistory = function (title) {
         if (title == '') return;
         LimitHistory();
-        var search_history = (localStorage.search_history !== undefined) ? JSON.parse(localStorage.search_history) : null;
+        var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
         if (search_history != null) {
             var count = search_history.length;
             var find = false;
@@ -167,7 +167,7 @@ var engine = function () {
     var loadInternalModule = function (name) {
         var script= document.createElement('script');
         script.async= 'async';
-        script.src= '/tracker/'+name+'.js';
+        script.src= 'tracker/'+name+'.js';
         document.head.appendChild(script);
     }
     var loadExternalModule = function (url) {
