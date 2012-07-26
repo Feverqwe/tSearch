@@ -3,7 +3,7 @@
     "version": "0.1",
     "description": "Мультипоиск по трекерам",
     "background_scripts": ["main.js"],
-    "creator": "KangoExtensions",
+    "creator": "Anton V.",
     "browser_button": {
         "tooltipText": "Torrents MultiSearch",
         "caption": "Torrents MultiSearch",
