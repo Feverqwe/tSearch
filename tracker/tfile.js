@@ -63,7 +63,12 @@ tracker[tmp_num] = function () {
             return -1;
         }
         var readCode = function (c) {
-            c = view.contentFilter(c);
+            try {
+                c = view.contentFilter(c).replace(/scr\'\+\'ipt/img,'#blockscr#');
+            } catch(err) {
+                view.auth(0,id);
+                return [];
+            }
             var t = $(c);//.contents();
             var ex = false;
             for (var tmp_n = 0;tmp_n<t.length;tmp_n++) {
@@ -77,8 +82,9 @@ tracker[tmp_num] = function () {
             if (!ex) {
                 view.auth(0,id);
                 return [];
-            } else 
+            } else {
                 view.auth(1,id);
+            }
             var l = t.length;
             var arr = [];
             var i = 0;

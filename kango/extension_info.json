@@ -1,11 +1,12 @@
 {
-    "name": "tSearch",
-    "version": "0.0.1",
-    "description": "tSearch",
+    "name": "Torrents MultiSearch",
+    "version": "0.1",
+    "description": "Мультипоиск по трекерам",
     "background_scripts": ["main.js"],
+    "creator": "KangoExtensions",
     "browser_button": {
-        "tooltipText": "tSearch",
-        "caption": "tSearch capt",
+        "tooltipText": "Torrents MultiSearch",
+        "caption": "Torrents MultiSearch",
         "icon": "icons/button.png"
     }
 }
