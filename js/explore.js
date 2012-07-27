@@ -449,8 +449,32 @@ var explore = function () {
                     +'90%{margin-left:6px;}'
                     +'100%{margin-left:2px;}'
                     +'}'
+                    +'@keyframes a_'+move_name
+                    +'{'
+                    +'0%{margin-left:2px;}'
+                    +'50%{margin-left:-'+(str_w-str_s)+'px;}'
+                    +'90%{margin-left:6px;}'
+                    +'100%{margin-left:2px;}'
+                    +'}'
+                    +'@-moz-keyframes a_'+move_name
+                    +'{'
+                    +'0%{margin-left:2px;}'
+                    +'50%{margin-left:-'+(str_w-str_s)+'px;}'
+                    +'90%{margin-left:6px;}'
+                    +'100%{margin-left:2px;}'
+                    +'}'
+                    +'@-o-keyframes a_'+move_name
+                    +'{'
+                    +'0%{margin-left:2px;}'
+                    +'50%{margin-left:-'+(str_w-str_s)+'px;}'
+                    +'90%{margin-left:6px;}'
+                    +'100%{margin-left:2px;}'
+                    +'}'
                     +'div.explore div.poster div.title.'+move_name+':hover > span {'
-                    +'overflow: visible;-webkit-animation:a_'+move_name+' 6s 1;'
+                    +'overflow: visible;'
+                    +'-webkit-animation:a_'+move_name+' 6s 1;'
+                    +'-moz-animation:a_'+move_name+' 6s 1;'
+                    +'-o-animation:a_'+move_name+' 6s 1;'
                     +'}'
                     +'</style>');
             }
