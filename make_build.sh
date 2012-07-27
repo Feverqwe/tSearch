@@ -31,10 +31,13 @@ java -jar yuicompressor-2.4.7.jar ./css/stylesheet.css -o ./build/css/stylesheet
 java -jar yuicompressor-2.4.7.jar ./css/options.css -o ./build/css/options.css
 java -jar yuicompressor-2.4.7.jar ./css/history.css -o ./build/css/history.css
 mkdir ./build_kango
-cp -r ./kango/icons ./build_kango/.
 cp -r ./build ./build_kango/.
 cp ./kango/main.js ./build_kango/.
 cp ./kango/extension_info.json ./build_kango/.
 cp ./kango/storage.js ./build_kango/build/js/storage.js
+rm ./build_kango/build/js/storage.js
+rm ./build_kango/build/manifest.json
+rm -r ./build_kango/build/_locales
+java -jar compiler.jar --js ./kango/storage.js --js_output_file ./build_kango/build/js/storage.js
 cd ./build/
 zip -r ../build.zip ./
