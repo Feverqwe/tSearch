@@ -111,7 +111,7 @@ var view = function () {
             ((/128.?kbps/i).test(title))?40:
             ((/mp3/i).test(title))?20:
             0;
-            quality.game = ((/Repack/i).test(title))?50:((/\[L\]/).test(title))?100:0;
+            quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[L\]/).test(title))?100:0;
             quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
             c = c + '<tr '+filter+' data-kf="'+fk+'" data-tracker="'+t+'" data-c="'+v.category.id+'">'
             +'<td class="time" data-value="'+v.time+'" title="'+unixintimetitle(v.time)+'">'+unixintime(v.time)+'</td>'
