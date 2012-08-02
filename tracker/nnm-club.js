@@ -33,7 +33,6 @@ tracker[tmp_num] = function () {
             return 0;
         }
         var calculateCategory = function (n) {
-            console.log(n);
             var n = n.replace(/(.*)c=([0-9]*)/i,"$2");
             var groups_arr = [
             /* Сериалы */[6],
@@ -66,7 +65,6 @@ tracker[tmp_num] = function () {
             c = view.contentFilter(c);
             var t = $(c).find('#glance_div').parent().children('table');
             var l = t.length;
-            console.log(l);
             var arr = [];
             var i = 0;
             for (i = 0;i<l;i++) {
