@@ -9,10 +9,7 @@ tracker[tmp_num] = function () {
     var xhr = null;
     var web = function () {
         var calculateSize = function (s) {
-            var s = jQuery.trim(s.split('::')[2]);
-            s = s.split(' ')[1]+s.split(' ')[2];
-            s = s.replace(',','.');
-            var size = s.replace(' ','');
+            var size = s.replace(',','.').replace(' ','');
             var t = size.replace('KB','');
             if (t!= size) {
                 t = parseFloat(t);
@@ -36,7 +33,8 @@ tracker[tmp_num] = function () {
             return 0;
         }
         var calculateCategory = function (n) {
-            var n = (n).replace(/(.*)c=([0-9]*)/i,"$2");
+            console.log(n);
+            var n = n.replace(/(.*)c=([0-9]*)/i,"$2");
             var groups_arr = [
             /* Сериалы */[6],
             /* Музыка */[2],
@@ -66,25 +64,29 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c).find('table.forumline').eq(9).parent().children('table');
+            var t = $(c).find('#glance_div').parent().children('table');
             var l = t.length;
+            console.log(l);
             var arr = [];
             var i = 0;
-            for (i = 1;i<l;i++) {
+            for (i = 0;i<l;i++) {
                 var tr = t.eq(i).children('tbody').children('tr');
+                if (tr.eq(0).children('td').children('a').eq(0).attr('href') == undefined) {
+                    continue;
+                }
                 arr[arr.length] = {
                     'category' : {
-                        'title' : tr.eq(2).children('td').children('span').children('a').eq(0).children('img').attr('title'),
-                        'url' : root_url+tr.eq(2).children('td').children('span').children('a').eq(0).attr('href'),
-                        'id': calculateCategory(tr.eq(2).children('td').children('span').children('a').eq(0).attr('href')) //calculateCategory(td.eq(0).children('a').eq(0).attr('href'))
+                        'title' : tr.eq(0).children('td').children('a').eq(0).children('img').attr('title'),
+                        'url' : root_url+tr.eq(0).children('td').children('a').eq(0).attr('href'),
+                        'id': calculateCategory(tr.eq(0).children('td').children('a').eq(0).attr('href')) //calculateCategory(td.eq(0).children('a').eq(0).attr('href'))
                     },
                     'title' : tr.eq(0).children('td').children('h2').children('a').text(), //td.eq(1).children('a').text(),
                     'url' : root_url+tr.eq(0).children('td').children('h2').children('a').attr('href'),
-                    'size' : calculateSize(tr.eq(3).children('td').children('span').text()),
+                    'size' : calculateSize(tr.eq(3).children('td').children('span.pcomm').eq(0).text()),
                     'dl' : root_url+tr.eq(3).children('td').children('span').children('a').eq(1).attr('href'),
-                    'seeds' : (tr.eq(3).children('td').children('span').children('span.seedmed').text()).split('	')[0],
-                    'leechs' : (tr.eq(3).children('td').children('span').children('span.leechmed').text()).split('	')[0],
-                    'time' : calculateTime((tr.eq(1).children('td').text()).split(' @ ')[1]) //calculateTime(td.eq(3).text())
+                    'seeds' : $.trim(tr.eq(3).children('td').children('span.seed').text()),
+                    'leechs' : $.trim(tr.eq(3).children('td').children('span.leech').text()),
+                    'time' : calculateTime((tr.eq(1).children('td').children('span.genmed').text()).split(' | ')[1]) //calculateTime(td.eq(3).text())
                 }
             }
             return arr;
