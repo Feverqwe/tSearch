@@ -73,6 +73,11 @@ var engine = function () {
     {
         n : 'kickass', 
         e : 1
+    },
+
+    {
+        n : 'fast-torrent', 
+        e : 1
     }
     ];
     var categorys = [
