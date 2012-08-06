@@ -78,6 +78,11 @@ var engine = function () {
     {
         n : 'fast-torrent', 
         e : 1
+    },
+
+    {
+        n : 'anidub', 
+        e : 0
     }
     ];
     var categorys = [
@@ -91,7 +96,7 @@ var engine = function () {
     [4,'Мультфтльмы'],
     [6,'ПО'],
     [9,'Спорт'],
-    [10,'Порно'],
+    [10,'XXX'],
     [-1,'Прочие']
     ];
     var internalTrackers = (GetSettings('internalTrackers') !== undefined) ? JSON.parse(GetSettings('internalTrackers')) : null;

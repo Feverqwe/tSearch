@@ -70,7 +70,7 @@ tracker[tmp_num] = function () {
         }
         var calculateQuality = function (t) {
             if (t == undefined) return '';
-            t = t.replace(/\qa-.* qa\-([A-Za-z0-9]*)\ use.*/,' $1');
+            t = t.replace(/\qa-.* qa\-([A-Za-z0-9\-]*)\ use.*/,' $1');
             return t;
         }
         var readCode = function (c) {
@@ -93,7 +93,7 @@ tracker[tmp_num] = function () {
                     'url' : root_url+td2.eq(2).children('a').attr('href'),
                     'size' : 0,
                     'seeds' : 1,
-                    'leechs' : $.trim(td2.eq(1).text().replace('Скачали:','')),
+                    'leechs' : 0,//$.trim(td2.eq(1).text().replace('Скачали:','')),
                     'time' : calculateTime($.trim(td2.eq(0).text().split(':')[2]))
                 }
             }
@@ -105,7 +105,7 @@ tracker[tmp_num] = function () {
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
-                url: url+text+'/1.html',
+                url: url+text+'/50/1.html',
                 cache : false,
                 success: function(data) {
                     view.result(id,readCode(data),t);
