@@ -255,12 +255,24 @@ var view = function () {
         var rate = 0;
         var new_name2 = new_name;
         rate = ((new RegExp(s,"i")).test(new_name))?100:0;
+        var left = 0;
         if (s != '') {
             var tmp = s.split(" ");
             new_name = new_name.replace(new RegExp('('+tmp.join('|')+')',"ig"),"<b>$1</b>");
+            left = new_name2.toLowerCase().indexOf(tmp[0].toLowerCase());
         }
-        if (new_name2 != new_name && rate == 0)
-            rate = ((new RegExp(s,"i")).test(new_name))?80:0;
+        if (new_name2 != new_name) {
+            if (rate == 0)
+                rate = 80;
+            
+            if (left < 0)
+                rate = 30;
+            else
+            if (left > 70)
+                rate = 30;
+            else 
+                rate -= left;
+        }
         return {
             n:new_name,
             r:rate
