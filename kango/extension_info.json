@@ -1,6 +1,6 @@
 {
     "name": "Torrents MultiSearch",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "description": "Мультипоиск по трекерам",
     "background_scripts": ["main.js"],
     "creator": "Anton V.",
