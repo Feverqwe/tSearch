@@ -259,7 +259,8 @@ var view = function () {
         if (s != '') {
             var tmp = s.split(" ");
             new_name = new_name.replace(new RegExp('('+tmp.join('|')+')',"ig"),"<b>$1</b>");
-            left = new_name2.toLowerCase().indexOf(tmp[0].toLowerCase());
+            left = new_name2.toLowerCase().indexOf(tmp[0].toLowerCase()+' ');
+            if (left > 0 && new_name2.substr(left-1, 1) != ' ') left = 71;
         }
         if (new_name2 != new_name) {
             if (rate == 0)
