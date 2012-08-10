@@ -1,26 +1,26 @@
 var tmp_num = tracker.length;
 tracker[tmp_num] = function () {
-    var name = 'BitSnoop';
-    var filename = 'bitsnoop';
+    var name = 'ExtraTorrent';
+    var filename = 'extratorrent';
     var id = null;
-    var icon = 'data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAN5SQADG6tQA0pKAAM6ikADt4dgAuy8UAMrWwADWgmwA8c3EAO3d1ADKvqwAwwLoAM6qlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGBgYGBgYGBgYGBgYAAAAGBgYGBgYGBgYGBgYGBgAGBgYGBgYGBgYGBgYGBgYGBgYGBgwBCQkJCQEMBgYGBgYGBgwFCQkJCQkJBQwGBgYGBgYBCQkFDQgKCQkBBgYGBgYGCQkJAwIJCQkJCQYGBgYGBgkJCQcCCQkJCQkGBgYGBgYJCQkHBgIECQkJBgYGBgYGCQkJAwYGAwkJCQYGBgYGBgEJCQULCwUJCQEGBgYGBgYMBQkJCQkJCQUMBgYGBgYGBgwBCQkJCQEMBgYGBgYGBgYGBgYGBgYGBgYGBgYABgYGBgYGBgYGBgYGBgYAAAAGBgYGBgYGBgYGBgYAAMADAACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAEAAMADAAA%3D';
-    var url = 'http://bitsnoop.com/search';
-    var root_url = 'http://bitsnoop.com';
+    var icon = 'data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAAAADIvb7/xry9/8e8vf/Ivb7/yL2+/8i9vv/Ivb7/yL2+/8i9vv/Ivb7/yL2+/8i9vv/Ivb7/x7y9/8a8vf/Ivb7/xry9//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/xry9/8e8vf/8/Pz//Pz8/5OTkv9qSRj/akkY/2tKGf9rShn/a0oZ/2tKGP9qSRj/Tzoc/4iEff/8/Pz//Pz8/8e8vf/HvL3/+/v7//v7+/+Hf3P/4bd0/+G3dP/ht3T/4bd0/+G3dP/ht3T/4bd0/3hgOv9xbmr/+/v7//v7+//HvL3/x7y9//f4+P/3+Pj/hHxx/+zAfP/swHz/7MB8/3xzaP9yal3/cmpd/3JqXf98c2b/xcPB//f4+P/3+Pj/x7y9/8e8vf/29vb/9vb2/4V9cf/txYX/7cWF/2RSNv/Nz8//zs/R/87P0P/Mzs7/29va//f39//29vb/9vb2/8e8vf/HvL3/8/Pz//Pz8/+IgHP/78yU/+/MlP94YDr/8vLy//Ly8v/y8vL/8vLy//Ly8v/09PT/8/T0//Lz8//HvL3/x7y9//Ly8v/y8vL/h4F5/+/Pnf/vz53/kHdP/3hgOv94YDr/eWE7/3hgOv9USDf/5eLd//Ly8v/y8vL/x7y9/8e8vf/w8PD/8PDw/4eBef/t0Kf/7dCn/+3Qp//t0Kf/7dCn/+3Qp//t0Kf/VEg3/9vb2v/w7+//8PDw/8e8vf/HvL3/7u3u/+7t7v+Gg33/7dm8/+3ZvP/Txa7/cW5r/3Fua/9xbmv/d3Rv/62rqf/o5+f/7u3u/+7t7v/HvL3/x7y9/+vr6//r6+v/h4F4/+/l0P/v5dD/XFVM/8XHx//Fx8f/xcfH/8TGxv/r7Ov/6+vr/+vr6//r6+v/x7y9/8e8vf/p6un/6erp/4eAeP/58+b/+fPm/4iEff93dG7/fXl0/356df99eXT/bGlj/5OTkf/p6un/6erp/8e8vf/HvL3/6Ofn/+fn5/+GgHj/5uPd/+bj3f/m493/5uPd/+bj3f/m493/5uPd/3Z2df9vb2//6Ofn/+fn5//HvL3/x7y9/+fn5//n5+f/raqo/3Z2df94eHj/d3d2/3h4ef95eXn/eHh4/3h4eP94eHj/ramo/+fn5//n5+f/x7y9/8a8vf/l5eX/5eXl/+Xl5f/l5eX/5eXl/+Xl5f/l5eX/5eXl/+Xl5f/l5eX/5eXl/+Xl5f/l5eX/5eXl/8a8vf/Ivb7/xry9/8e8vf/Ivb7/yL2+/8i9vv/Ivb7/yL2+/8i9vv/Ivb7/yL2+/8i9vv/Ivb7/x7y9/8a8vf/Ivb7/AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//w%3D%3D';
+    var url = 'http://extratorrent.com/search/';
+    var root_url = 'http://extratorrent.com';
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
             var groups_arr = [
-            /* Сериалы */['tv'],
-            /* Музыка */['audio'],
-            /* Игры */['games','game_pc','xbox'],
-            /* Фильмы */['video'],
+            /* Сериалы */[],
+            /* Музыка */[],
+            /* Игры */[],
+            /* Фильмы */[],
             /* Мультфтльмы */[],
-            /* Книги */['books','abooks'],
-            /* ПО */['software'],
+            /* Книги */[],
+            /* ПО */[],
             /* Анимэ */[],
             /* Док. и юмор */[],
             /* Спорт */[],
-            /* XXX */['x3']
+            /* XXX */[]
             ];
             for (var i=0;i<groups_arr.length;i++)
                 if (jQuery.inArray(f,groups_arr[i]) > -1) {
@@ -91,26 +91,25 @@ tracker[tmp_num] = function () {
         var readCode = function (c) {
             c = view.contentFilter(c);
             var t = $(c);//.contents();
-            t = t.find('#torrents').children('li');
+            t = t.find('table.tl').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
             var i = 0;
             for (i = 0;i<l;i++) {
-                var li = t.eq(i);
-                li.children('div[id=sz]').find('td').eq(0).children('div.nfiles').remove();
+                var td = t.eq(i).children('td');
                 arr[arr.length] = {
                     'category' : {
-                        'title' : li.children('span.icon').attr('title'),//td.eq(2).children('a').text(), 
-                        //'url': root_url+td.eq(2).children('a').attr('href'),
-                        'id': calculateCategory(li.children('span.icon').attr('class').replace(/icon cat_(.*)/,'$1'))//calculateCategory(td.eq(2).children('a').attr('href').replace(/(.*)f=([0-9]*)/i,"$2"))
+                        'title' : td.eq(2).children('span.c_tor').children('a').text(), 
+                        'url': root_url+td.eq(1).children('a').attr('href'),
+                        'id': calculateCategory(td.eq(1).children('a').attr('href').replace(/\/.*\/([0-9]*)\//,'$1'))
                     },
-                    'title' : li.children('a').text(),//td.eq(3).children('div').children('a').text(),
-                    'url' : root_url+li.children('a').attr('href'),//root_url+td.eq(3).children('div').children('a').attr('href'),
-                    'size' : calculateSize(li.children('div[id=sz]').find('td').eq(0).text()),//td.eq(5).children('u').text(),
-                    //'dl' : td.eq(5).children('a').attr('href'),
-                    'seeds' : li.children('div.torInfo').children('span.seeders').text().replace(',',''),//td.eq(6).children('b').text(),
-                    'leechs' : li.children('div.torInfo').children('span.leechers').text().replace(',',''),//td.eq(7).children('b').text(),
-                    'time' : calculateTime(li.children('div.torInfo').text().replace(/.*— .* — (.*)/,'$1'))//td.eq(9).children('u').text()
+                    'title' : td.eq(2).children('a').text(),
+                    'url' : root_url+td.eq(2).children('a').attr('href'),
+                    'size' : calculateSize(td.eq(3).text()),
+                    'dl' : root_url+td.eq(0).children('a').attr('href'),
+                    'seeds' : td.eq(4).text(),
+                    'leechs' : td.eq(5).text(),
+                    'time' : 0
                 }
             }
             return arr;
@@ -124,8 +123,7 @@ tracker[tmp_num] = function () {
                 url: url,
                 cache : false,
                 data: {
-                    'q' : text+' safe:no',
-                    't' : 'all'
+                    'search' : text
                 },
                 success: function(data) {
                     view.result(id,readCode(data),t);

@@ -88,6 +88,11 @@ var engine = function () {
     {
         n : 'bitsnoop', 
         e : 1
+    },
+
+    {
+        n : 'extratorrent', 
+        e : 1
     }
     ];
     var categorys = [
