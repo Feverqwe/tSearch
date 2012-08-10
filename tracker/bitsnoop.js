@@ -98,19 +98,21 @@ tracker[tmp_num] = function () {
             for (i = 0;i<l;i++) {
                 var li = t.eq(i);
                 li.children('div[id=sz]').find('td').eq(0).children('div.nfiles').remove();
+                var ss = li.children('div.torInfo').children('span.seeders').text().replace(',','');
+                var ls = li.children('div.torInfo').children('span.leechers').text().replace(',','');
+                if (ls == '') ls = 0;
+                if (ss == '') ss = 0;
                 arr[arr.length] = {
                     'category' : {
-                        'title' : li.children('span.icon').attr('title'),//td.eq(2).children('a').text(), 
-                        //'url': root_url+td.eq(2).children('a').attr('href'),
-                        'id': calculateCategory(li.children('span.icon').attr('class').replace(/icon cat_(.*)/,'$1'))//calculateCategory(td.eq(2).children('a').attr('href').replace(/(.*)f=([0-9]*)/i,"$2"))
+                        'title' : li.children('span.icon').attr('title'),
+                        'id': calculateCategory(li.children('span.icon').attr('class').replace(/icon cat_(.*)/,'$1'))
                     },
-                    'title' : li.children('a').text(),//td.eq(3).children('div').children('a').text(),
-                    'url' : root_url+li.children('a').attr('href'),//root_url+td.eq(3).children('div').children('a').attr('href'),
-                    'size' : calculateSize(li.children('div[id=sz]').find('td').eq(0).text()),//td.eq(5).children('u').text(),
-                    //'dl' : td.eq(5).children('a').attr('href'),
-                    'seeds' : li.children('div.torInfo').children('span.seeders').text().replace(',',''),//td.eq(6).children('b').text(),
-                    'leechs' : li.children('div.torInfo').children('span.leechers').text().replace(',',''),//td.eq(7).children('b').text(),
-                    'time' : calculateTime(li.children('div.torInfo').text().replace(/.*— .* — (.*)/,'$1'))//td.eq(9).children('u').text()
+                    'title' : li.children('a').text(),
+                    'url' : root_url+li.children('a').attr('href'),
+                    'size' : calculateSize(li.children('div[id=sz]').find('td').eq(0).text()),
+                    'seeds' : ss,
+                    'leechs' : ls,
+                    'time' : calculateTime(li.children('div.torInfo').text().replace(/.*— .* — (.*)/,'$1'))
                 }
             }
             return arr;
