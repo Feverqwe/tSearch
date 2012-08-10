@@ -97,7 +97,7 @@ var engine = function () {
 
     {
         n : 'isohunt', 
-        e : 1
+        e : 0
     }
     ];
     var categorys = [
