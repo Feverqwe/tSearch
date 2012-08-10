@@ -9,22 +9,21 @@ tracker[tmp_num] = function () {
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
-            return -1;
             var groups_arr = [
-            /* Сериалы */[],
-            /* Музыка */[],
-            /* Игры */[],
-            /* Фильмы */[],
+            /* Сериалы */['tv'],
+            /* Музыка */['audio'],
+            /* Игры */['games','game_pc','xbox'],
+            /* Фильмы */['video'],
             /* Мультфтльмы */[],
-            /* Книги */[],
-            /* ПО */[],
+            /* Книги */['books','abooks'],
+            /* ПО */['software'],
             /* Анимэ */[],
             /* Док. и юмор */[],
             /* Спорт */[],
-            /* XXX */[]
+            /* XXX */['x3']
             ];
             for (var i=0;i<groups_arr.length;i++)
-                if (jQuery.inArray(parseInt(f),groups_arr[i]) > -1) {
+                if (jQuery.inArray(f,groups_arr[i]) > -1) {
                     return i;
                 }
             return -1;
@@ -57,38 +56,36 @@ tracker[tmp_num] = function () {
         var calculateTime = function (t) {
             if ($.trim(t.substr(0, 1)) == '') return 0;
             if ((/today/).test(t)) {
-                
+                return Math.round((new Date().getTime() / 1000)/(60*60*24))*(60*60*24);
             } else
             if ((/yesterday/).test(t)) {
-                
+                return (Math.round((new Date().getTime() / 1000)/(60*60*24))*(60*60*24))-(60*60*24);
             } else
             if ((/ old/).test(t)) {
                 var time = parseInt(t.replace(/([0-9]*).*/,'$1'));
                 var nowTime = Math.round(new Date().getTime() / 1000);
                 if ((/second/).test(t)) {
-                    return nowTime - t;
-                    
+                    return nowTime - time;
                 } else
                 if ((/minute/).test(t)) {
-                    return nowTime - t*60;
+                    return nowTime - time*60;
                 } else
                 if ((/hour/).test(t)) {
-                    return nowTime - t*60*60;
+                    return nowTime - time*60*60;
                 } else
                 if ((/day/).test(t)) {
-                
+                    return nowTime - time*60*60*24;
                 } else
                 if ((/week/).test(t)) {
-                
+                    return nowTime - time*60*60*24*7;
                 } else
                 if ((/month/).test(t)) {
-                
+                    return nowTime - time*60*60*24*7*30;
                 } else
                 if ((/year/).test(t)) {
-                
+                    return nowTime - time*60*60*24*7*365;
                 }
             }
-            console.log('"'+t+'"')
             return 0;
         }
         var readCode = function (c) {

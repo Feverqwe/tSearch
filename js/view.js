@@ -197,10 +197,11 @@ var view = function () {
         var week = Math.floor(day/7);
         //var month = Math.floor(day/30);
         //week = Math.floor((day-30*month)/7);
-        var hour = Math.floor((i - day*60*60*24)/60/60);
-        var minutes = Math.floor((i - day*60*60*24 - hour*60*60)/60);
-        var seconds = Math.floor((i - day*60*60*24 - hour*60*60 - minutes*60));
-        day = Math.floor(i/60/60/24 - 7*week);
+        var day_sec = day*60*60*24;
+        var hour = Math.floor((i -day_sec)/60/60);
+        var minutes = Math.floor((i - day_sec - hour*60*60)/60);
+        var seconds = Math.floor((i - day_sec - hour*60*60 - minutes*60));
+        day = Math.floor(day - 7*week);
         if (week>0 ) return theDate;
         //var str_month = (month<5)?(month<2)?                    ' месяц':   ' месяца':  ' месяцев';
         var str_week = (week<5)?(week<2)?(week<1)?              ' недель':  ' неделя':  ' недели':  ' недель';
@@ -212,6 +213,9 @@ var view = function () {
         //    return month + str_month+((week>0)?' и '+week+str_week:'')+' назад';
         //if (week>0)
         //    return week + str_week+' назад';
+        var d_te = (new Date()).getDate();
+        var t_te = (new Date(utime*1000)).getDate();
+        if (day == 0 && d_te != t_te) day = 1;
         if (day>0)
             if (day == 1)
                 return 'Вчера '+getHandM_unixtime(utime);
