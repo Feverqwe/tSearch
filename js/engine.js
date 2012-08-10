@@ -93,6 +93,11 @@ var engine = function () {
     {
         n : 'extratorrent', 
         e : 1
+    },
+
+    {
+        n : 'isohunt', 
+        e : 1
     }
     ];
     var categorys = [
