@@ -83,6 +83,11 @@ var engine = function () {
     {
         n : 'anidub', 
         e : 0
+    },
+
+    {
+        n : 'bitsnoop', 
+        e : 1
     }
     ];
     var categorys = [
