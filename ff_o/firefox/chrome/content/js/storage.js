@@ -1,11 +1,3 @@
-var is_firefox = navigator.userAgent.indexOf('Firefox') > -1;
-/*
-var is_chrome = navigator.userAgent.indexOf('Chrome') > -1;
-var is_explorer = navigator.userAgent.indexOf('MSIE') > -1;
-var is_safari = navigator.userAgent.indexOf("Safari") > -1;
-var is_Opera = navigator.userAgent.indexOf("Presto") > -1;
-*/
-if (is_firefox) {
     /*
 Built using Kango - Cross-browser extension framework.
 http://kangoextensions.com/
@@ -487,16 +479,3 @@ http://kangoextensions.com/
         else
             return kango.storage.getItem(key);
     }
-
-} else {
-    var SetSettings = function (key,value) {
-        localStorage[key] = value;
-        return value;
-    }
-    var GetSettings = function (key) {
-        if (localStorage[key] === undefined)
-            return undefined;
-        else
-            return localStorage[key];
-    }
-}

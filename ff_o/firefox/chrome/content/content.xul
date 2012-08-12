@@ -1,0 +1,14 @@
+﻿<?xml version="1.0"?>
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
+	<script>
+var run = function () {
+		var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+        	.getService(Components.interfaces.nsIWindowMediator);
+		var recentWindow = wm.getMostRecentWindow("navigator:browser");
+		recentWindow.delayedOpenTab('chrome://TorrentsMultiSearch/content/index.html#s=', null, null, null, null);
+	}
+	</script>
+	<toolbarpalette id="BrowserToolbarPalette">
+		<toolbarbutton id="TorrentsMultiSearch-ui-browserButton" label="Torrents MultiSearch" tooltiptext="Torrents MultiSearch tip" image="chrome://TorrentsMultiSearch/content/icons/icon-16.png" oncommand="run()"/>
+	</toolbarpalette>
+</overlay>

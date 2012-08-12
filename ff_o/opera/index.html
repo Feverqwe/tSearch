@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html lang="ru">
+<head>Torrents MultiSearch</title>
+	<meta charset="UTF-8">
+	<script>
+		window.addEventListener( 'load', function(){
+			var theButton;
+			var ToolbarUIItemProperties = {
+				disabled: false,
+          		title: "Torrents MultiSearch",
+          		icon: "icons/icon-16.png",
+          		onclick: function() {
+ 				   var tab = opera.extension.tabs.create({url: 'build/index.html#s='});
+ 				   tab.focus();
+  				}
+			}
+			theButton = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
+			opera.contexts.toolbar.addItem(theButton);
+		}, false );
+	</script>
+</head>
+<body>
+</body>
+</html>

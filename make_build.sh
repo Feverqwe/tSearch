@@ -1,8 +1,10 @@
 #!/bin/sh
-rm ./build.zip
 rm -r ./build
-rm -r ./build_kango
+rm -r ./build_opera
+rm -r ./build_firefox
 mkdir ./build
+mkdir ./build_opera
+mkdir ./build_firefox
 cp -r ./_locales ./build/.
 cp -r ./js ./build/.
 cp -r ./images ./build/.
@@ -52,14 +54,26 @@ java -jar compiler.jar --js ./js/jquery.tablesorter.js --js_output_file ./build/
 java -jar yuicompressor-2.4.7.jar ./css/stylesheet.css -o ./build/css/stylesheet.css
 java -jar yuicompressor-2.4.7.jar ./css/options.css -o ./build/css/options.css
 java -jar yuicompressor-2.4.7.jar ./css/history.css -o ./build/css/history.css
-mkdir ./build_kango
-cp -r ./build ./build_kango/.
-cp ./kango/main.js ./build_kango/.
-cp ./kango/extension_info.json ./build_kango/.
-cp ./kango/storage.js ./build_kango/build/js/storage.js
-rm ./build_kango/build/js/storage.js
-rm ./build_kango/build/manifest.json
-rm -r ./build_kango/build/_locales
-java -jar compiler.jar --js ./kango/storage.js --js_output_file ./build_kango/build/js/storage.js
+
+mkdir ./build_firefox/chrome
+cp -r ./build ./build_firefox/chrome/content
+cp -r ./ff_o/firefox/* ./build_firefox/.
+
+cp -r ./build ./build_opera/.
+cp -r ./ff_o/opera/* ./build_opera/.
+
+rm ./build_firefox/chrome/content/js/storage.js
+java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/storage.js --js_output_file ./build_firefox/chrome/content/js/storage.js
+rm ./build_firefox/chrome/content/manifest.json
+rm -r ./build_firefox/chrome/content/_locales
+rm ./build_opera/build/manifest.json
+rm -r ./build_opera/build/_locales
+rm ./build_chrome.zip
+rm ./build_firefox.xpi
+rm ./build_opera.oex
 cd ./build/
-zip -r ../build.zip ./
+zip -r ../build_chrome.zip ./
+cd ../build_firefox/
+zip -r ../build_firefox.xpi ./
+cd ../build_opera/
+zip -r ../build_opera.oex ./
