@@ -1,4 +1,5 @@
 #!/bin/sh
+find . -name ".DS_Store" -exec rm {} \;
 rm -r ./build
 rm -r ./build_opera
 rm -r ./build_firefox

@@ -9,6 +9,6 @@ var run = function () {
 	}
 	</script>
 	<toolbarpalette id="BrowserToolbarPalette">
-		<toolbarbutton id="TorrentsMultiSearch-ui-browserButton" label="Torrents MultiSearch" tooltiptext="Torrents MultiSearch tip" image="chrome://TorrentsMultiSearch/content/icons/icon-16.png" oncommand="run()"/>
+		<toolbarbutton id="TorrentsMultiSearch-ui-browserButton" label="Torrents MultiSearch" tooltiptext="Torrents MultiSearch" image="chrome://TorrentsMultiSearch/content/icons/icon-16.png" oncommand="run()"/>
 	</toolbarpalette>
 </overlay>

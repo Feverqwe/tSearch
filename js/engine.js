@@ -21,7 +21,7 @@ var engine = function () {
 
     {
         n : 'opensharing',
-        e : 1
+        e : 0
     },
 
 
@@ -57,7 +57,7 @@ var engine = function () {
 
     {
         n : 'thepiratebay', 
-        e : 1
+        e : 0
     },
 
     {
@@ -72,7 +72,7 @@ var engine = function () {
 
     {
         n : 'kickass', 
-        e : 1
+        e : 0
     },
 
     {
@@ -87,7 +87,7 @@ var engine = function () {
 
     {
         n : 'bitsnoop', 
-        e : 0
+        e : 1
     },
 
     {

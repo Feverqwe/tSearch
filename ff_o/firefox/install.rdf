@@ -2,6 +2,7 @@
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
     <Description about="urn:mozilla:install-manifest">
         <em:id>{d03fdff0-d3a0-11e0-baa5-14d64d08fdac}</em:id>
+        <em:type>2</em:type>
         <em:name>Torrents MultiSearch</em:name>
 		<em:description>Мультипоиск по трекерам</em:description>
         <em:version>0.3.0</em:version>
