@@ -98,6 +98,16 @@ var engine = function () {
     {
         n : 'isohunt', 
         e : 0
+    },
+
+    {
+        n : 'fenopy', 
+        e : 1
+    },
+
+    {
+        n : 'torrentz', 
+        e : 0
     }
     ];
     var categorys = [

@@ -165,18 +165,6 @@ tracker[tmp_num] = function () {
         xhr = $.ajax({
             type: 'GET',
             url: url+'?s='+encode(text),
-            /*data : {
-                    //'q' : ,
-                    'f' : 0,
-                    'g' : '',
-                    'ql': '',
-                    'a' : '',
-                    'd' : '',
-                    'io': 1,
-                    'o' : '',
-                    'size_min' : 0,
-                    'size_max' : 0
-                },*/
             cache : false,
             success: function(data) {
                 view.result(id,readCode(data),t);

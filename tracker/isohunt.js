@@ -9,24 +9,18 @@ tracker[tmp_num] = function () {
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
-            var groups_arr = [
-            /* Сериалы */['TV'],
-            /* Музыка */['Audio','Music Video'],
-            /* Игры */['Games'],
-            /* Фильмы */['Video / Movies'],
-            /* Мультфтльмы */[],
-            /* Книги */['Comics','Books'],
-            /* ПО */['Applications'],
-            /* Анимэ */['Anime'],
-            /* Док. и юмор */[],
-            /* Спорт */[],
-            /* XXX */[]
-            ];
-            for (var i=0;i<groups_arr.length;i++)
-                if (jQuery.inArray(f,groups_arr[i]) > -1) {
-                    return i;
-                }
-            return -1;
+            return ((/anime/i).test(f))?7:
+                ((/audio/i).test(f))?1:
+                ((/music/i).test(f))?1:
+                ((/game/i).test(f))?2:
+                ((/video/i).test(f))?3:
+                ((/movies/i).test(f))?3:
+                ((/Comics/i).test(f))?5:
+                ((/Books/i).test(f))?5:
+                ((/Applications/i).test(f))?6:
+                ((/Apps/i).test(f))?6:
+                ((/tv/i).test(f))?0:
+                -1;
         }
         var calculateSize = function (s) {
             var type = '';
@@ -57,7 +51,6 @@ tracker[tmp_num] = function () {
             var type = t.replace(/([0-9\.])*([a-z])*/,'$2');
             var time = parseFloat(t.replace(type,''));
             var nowTime = Math.round(new Date().getTime() / 1000);
-            console.log(type + ' ' + time);
             if (type == 's')
                 return Math.round(nowTime-time);
             else
@@ -113,8 +106,7 @@ tracker[tmp_num] = function () {
                 url: url,
                 cache : false,
                 data: {
-                    'ihq' : text,
-                    'iho1' : 'd'
+                    'ihq' : text
                 },
                 success: function(data) {
                     view.result(id,readCode(data),t);

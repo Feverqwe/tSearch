@@ -80,10 +80,10 @@ tracker[tmp_num] = function () {
                     return nowTime - time*60*60*24*7;
                 } else
                 if ((/month/).test(t)) {
-                    return nowTime - time*60*60*24*7*30;
+                    return nowTime - time*60*60*24*30;
                 } else
                 if ((/year/).test(t)) {
-                    return nowTime - time*60*60*24*7*365;
+                    return nowTime - time*60*60*24*365;
                 }
             }
             return 0;
