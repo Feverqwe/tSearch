@@ -87,12 +87,12 @@ var engine = function () {
 
     {
         n : 'bitsnoop', 
-        e : 1
+        e : 0
     },
 
     {
         n : 'extratorrent', 
-        e : 1
+        e : 0
     },
 
     {
@@ -102,7 +102,7 @@ var engine = function () {
 
     {
         n : 'fenopy', 
-        e : 1
+        e : 0
     },
 
     {
