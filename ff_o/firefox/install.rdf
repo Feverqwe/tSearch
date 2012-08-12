@@ -5,7 +5,6 @@
         <em:type>2</em:type>
         <em:name>Torrents MultiSearch</em:name>
 		<em:description>Мультипоиск по трекерам</em:description>
-        <em:version>0.3.0</em:version>
         <em:creator>Anton V.</em:creator>
 		<em:iconURL>chrome://TorrentsMultiSearch/content/icons/icon-32.png</em:iconURL>
         <em:icon64URL>chrome://TorrentsMultiSearch/content/icons/icon-64.png</em:icon64URL>
@@ -17,5 +16,6 @@
                 <em:maxVersion>16.*</em:maxVersion>
             </Description>
         </em:targetApplication>
+        <em:version>0.3.0</em:version>
     </Description>
 </RDF>
