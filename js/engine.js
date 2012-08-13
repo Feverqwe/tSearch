@@ -32,7 +32,7 @@ var engine = function () {
 
     {
         n : 'megashara', 
-        e : 1
+        e : 0
     },
 
     {
@@ -57,7 +57,7 @@ var engine = function () {
 
     {
         n : 'thepiratebay', 
-        e : 0
+        e : 1
     },
 
     {
