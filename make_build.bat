@@ -54,6 +54,7 @@ java -jar compiler.jar --js .\tracker\isohunt.js --js_output_file .\build\tracke
 java -jar compiler.jar --js .\tracker\fenopy.js --js_output_file .\build\tracker\fenopy.js
 java -jar compiler.jar --js .\tracker\torrentz.js --js_output_file .\build\tracker\torrentz.js
 java -jar compiler.jar --js .\tracker\torrentino.js --js_output_file .\build\tracker\torrentino.js
+java -jar compiler.jar --js .\tracker\mininova.js --js_output_file .\build\tracker\mininova.js
 
 java -jar yuicompressor-2.4.7.jar .\css\stylesheet.css -o .\build\css\stylesheet.css
 java -jar yuicompressor-2.4.7.jar .\css\options.css -o .\build\css\options.css
