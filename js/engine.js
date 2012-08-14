@@ -108,6 +108,11 @@ var engine = function () {
     {
         n : 'torrentz', 
         e : 0
+    },
+
+    {
+        n : 'torrentino', 
+        e : 1
     }
     ];
     var categorys = [
