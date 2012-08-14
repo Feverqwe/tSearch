@@ -45,6 +45,7 @@ java -jar compiler.jar --js ./tracker/extratorrent.js --js_output_file ./build/t
 java -jar compiler.jar --js ./tracker/isohunt.js --js_output_file ./build/tracker/isohunt.js
 java -jar compiler.jar --js ./tracker/fenopy.js --js_output_file ./build/tracker/fenopy.js
 java -jar compiler.jar --js ./tracker/torrentz.js --js_output_file ./build/tracker/torrentz.js
+java -jar compiler.jar --js ./tracker/torrentino.js --js_output_file ./build/tracker/torrentino.js
 java -jar compiler.jar --js ./js/engine.js --js_output_file ./build/js/engine.js
 java -jar compiler.jar --js ./js/view.js --js_output_file ./build/js/view.js
 java -jar compiler.jar --js ./js/storage.js --js_output_file ./build/js/storage.js
