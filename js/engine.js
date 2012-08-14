@@ -113,6 +113,11 @@ var engine = function () {
     {
         n : 'torrentino', 
         e : 1
+    },
+
+    {
+        n : 'mininova', 
+        e : 0
     }
     ];
     var categorys = [
