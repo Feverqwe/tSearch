@@ -9,6 +9,26 @@
         }
     </script>
     <toolbarpalette id="BrowserToolbarPalette">
-        <toolbarbutton class="chromeclass-toolbar-additional toolbarbutton-1" id="TorrentsMultiSearch-ui-browserButton" label="Torrents MultiSearch" tooltiptext="Torrents MultiSearch" image="chrome://TorrentsMultiSearch/content/icons/icon-16.png" oncommand="run()"/>
+        <toolbarbutton class="chromeclass-toolbar-additional toolbarbutton-1" id="TorrentsMultiSearch-Button" label="Torrents MultiSearch" tooltiptext="Torrents MultiSearch" image="chrome://TorrentsMultiSearch/content/icons/icon-16.png" oncommand="run()"/>
     </toolbarpalette>
+    <script>
+        var myId    = "TorrentsMultiSearch-Button"; // ID of button to add
+        var afterId = "urlbar-container";    // ID of element to insert after
+        var navBar  = document.getElementById("nav-bar");
+        var currentSet = navBar.getAttribute("currentset");
+        if (!currentSet)
+        currentSet = navBar.currentSet;
+
+        var curSet = currentSet.split(",");
+        if (curSet.indexOf(myId) == -1){
+        var set = curSet.concat(myId);
+        navBar.setAttribute("currentset", set.join(","));
+        navBar.currentSet = set.join(",");
+        document.persist(navBar.id, "currentset");
+        try {
+        BrowserToolboxCustomizeDone(true);
+        }
+        catch (e) {}
+        }
+    </script>
 </overlay>

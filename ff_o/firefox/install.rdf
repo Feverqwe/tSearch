@@ -4,9 +4,9 @@
         <em:id>{d03fdff0-d3a0-11e0-baa5-14d64d08fdac}</em:id>
         <em:type>2</em:type>
         <em:name>Torrents MultiSearch</em:name>
-		<em:description>Мультипоиск по трекерам</em:description>
+        <em:description>Мультипоиск по трекерам</em:description>
         <em:creator>Anton V.</em:creator>
-		<em:iconURL>chrome://TorrentsMultiSearch/content/icons/icon-32.png</em:iconURL>
+        <em:iconURL>chrome://TorrentsMultiSearch/content/icons/icon-32.png</em:iconURL>
         <em:icon64URL>chrome://TorrentsMultiSearch/content/icons/icon-64.png</em:icon64URL>
         <em:optionsURL>chrome://TorrentsMultiSearch/content/options.html</em:optionsURL>
         <em:targetApplication>

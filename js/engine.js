@@ -215,12 +215,6 @@ var engine = function () {
         script.src= 'tracker/'+name+'.js';
         document.head.appendChild(script);
     }
-    var loadExternalModule = function (url) {
-        var script= document.createElement('script');
-        script.async= 'async';
-        script.src= url;
-        document.head.appendChild(script);
-    }
     var loadModules = function () {
         tracker = [];
         if (internalTrackers == null || option_mode == true)
