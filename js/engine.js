@@ -118,6 +118,11 @@ var engine = function () {
     {
         n : 'mininova', 
         e : 0
+    },
+
+    {
+        n : 'filebase', 
+        e : 0
     }
     ];
     var categorys = [
