@@ -32,11 +32,7 @@ tracker[tmp_num] = function () {
         var readCode = function (c) {
             c = view.contentFilter(c);
             var t = $(c);//.contents();
-            if (t.find('input[name=login_username]').html() != null) {
-                view.auth(0,id);
-                return [];
-            } else 
-                view.auth(1,id);
+            view.auth(1,id);
             t = t.find('#main_content_wrap').children('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
@@ -79,6 +75,7 @@ tracker[tmp_num] = function () {
                 },
                 error:function (xhr, ajaxOptions, thrownError){
                     view.loadingStatus(2,id);
+                    view.auth(0,id);
                 }
             });
         }
