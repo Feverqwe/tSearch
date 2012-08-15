@@ -123,6 +123,11 @@ var engine = function () {
     {
         n : 'filebase', 
         e : 0
+    },
+
+    {
+        n : 'free-torrents', 
+        e : 0
     }
     ];
     var categorys = [
