@@ -58,6 +58,7 @@ java -jar compiler.jar --js .\tracker\torrentz.js --js_output_file .\build\track
 java -jar compiler.jar --js .\tracker\torrentino.js --js_output_file .\build\tracker\torrentino.js
 java -jar compiler.jar --js .\tracker\mininova.js --js_output_file .\build\tracker\mininova.js
 java -jar compiler.jar --js .\tracker\filebase.js --js_output_file .\build\tracker\filebase.js
+java -jar compiler.jar --js .\tracker\free-torrents.js --js_output_file .\build\tracker\free-torrents.js
 
 java -jar yuicompressor-2.4.7.jar .\css\stylesheet.css -o .\build\css\stylesheet.css
 java -jar yuicompressor-2.4.7.jar .\css\options.css -o .\build\css\options.css

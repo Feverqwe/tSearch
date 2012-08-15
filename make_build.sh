@@ -49,6 +49,7 @@ java -jar compiler.jar --js ./tracker/torrentz.js --js_output_file ./build/track
 java -jar compiler.jar --js ./tracker/torrentino.js --js_output_file ./build/tracker/torrentino.js
 java -jar compiler.jar --js ./tracker/mininova.js --js_output_file ./build/tracker/mininova.js
 java -jar compiler.jar --js ./tracker/filebase.js --js_output_file ./build/tracker/filebase.js
+java -jar compiler.jar --js ./tracker/free-torrents.js --js_output_file ./build/tracker/free-torrents.js
 
 java -jar compiler.jar --js ./js/engine.js --js_output_file ./build/js/engine.js
 java -jar compiler.jar --js ./js/view.js --js_output_file ./build/js/view.js
