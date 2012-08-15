@@ -22,6 +22,7 @@ del .\build\js\jquery.tablesorter.js
 del .\build\js\options.js
 del .\build\js\storage.js
 del .\build\js\view.js
+del .\build\js\ad.js
 del .\build\tracker\*.js
 
 java -jar compiler.jar --js .\js\engine.js --js_output_file .\build\js\engine.js
@@ -31,6 +32,7 @@ java -jar compiler.jar --js .\js\jquery.tablesorter.js --js_output_file .\build\
 java -jar compiler.jar --js .\js\options.js --js_output_file .\build\js\options.js
 java -jar compiler.jar --js .\js\storage.js --js_output_file .\build\js\storage.js
 java -jar compiler.jar --js .\js\view.js --js_output_file .\build\js\view.js
+java -jar compiler.jar --js .\js\ad.js --js_output_file .\build\js\ad.js
 
 java -jar compiler.jar --js .\tracker\tfile.js --js_output_file .\build\tracker\tfile.js
 java -jar compiler.jar --js .\tracker\rutracker.js --js_output_file .\build\tracker\rutracker.js

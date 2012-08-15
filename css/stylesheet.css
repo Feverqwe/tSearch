@@ -89,7 +89,7 @@ div.content div.left {
     padding-top: 20px;
 }
 div.content div.right {
-    width: 168px;
+    width: 175px;
     float: right;
     padding-top: 5px;
 }
@@ -644,7 +644,7 @@ ul.ui-autocomplete li > a:hover, ul.ui-autocomplete li > a.ui-state-hover {
 div.topbtn {
     display: 0;
     bottom: 0;
-    width: 60px;
+    width: 50px;
     height: 60px;
     background: url(../images/go_top.png) no-repeat center bottom;
     position: fixed;
@@ -652,7 +652,14 @@ div.topbtn {
     z-index: 10;
     cursor: pointer;
     padding-top: 100%;
+    opacity: 0.9;
 }
 div.topbtn:hover {
     background-color:#9CF;
+}
+div.ad {
+    overflow: hidden;
+}
+.OzonRev_itemList {
+    padding-left: 0 !important;
 }
