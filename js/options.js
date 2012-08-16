@@ -6,6 +6,7 @@ var view = function () {
     var HideZeroSeed = (GetSettings('HideZeroSeed') !== undefined) ? parseInt(GetSettings('HideZeroSeed')) : false;
     var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
     var AutoSetCategory = (GetSettings('AutoSetCategory') !== undefined) ? parseInt(GetSettings('AutoSetCategory')) : true;
+    var TeaserFilter = (GetSettings('TeaserFilter') !== undefined) ? parseInt(GetSettings('TeaserFilter')) : false;
     var addTrackerInList = function (i) {
         var filename = tracker[i].filename;
         var t = (GetSettings('internalTrackers') !== undefined) ? JSON.parse(GetSettings('internalTrackers')) : null;
@@ -31,6 +32,7 @@ var view = function () {
         $('input[name="hideseed"]').prop('checked',HideSeed);
         $('input[name="typeFiltration"]').eq(AdvFiltration).prop('checked',true);
         $('input[name="autosetcategory"]').prop('checked',AutoSetCategory);
+        $('input[name="teaserfilter"]').prop('checked',TeaserFilter);
     }
     var save_settings = function () {
         var tr = $('#internalTrackers tbody').children('tr');
@@ -50,6 +52,7 @@ var view = function () {
         HideLeech = SetSettings('HideLeech',($('input[name="hideleech"]').is(':checked'))?1:0);
         HideSeed = SetSettings('HideSeed',($('input[name="hideseed"]').is(':checked'))?1:0);
         AutoSetCategory = SetSettings('AutoSetCategory',($('input[name="autosetcategory"]').is(':checked'))?1:0);
+        TeaserFilter = SetSettings('TeaserFilter',($('input[name="teaserfilter"]').is(':checked'))?1:0);
         var tmp = $('input[name="typeFiltration"]');
         var tmp_l = tmp.length;
         for (var i = 0;i<tmp_l;i++)

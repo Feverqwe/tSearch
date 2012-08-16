@@ -10,6 +10,7 @@ var view = function () {
     var ShowIcons = (GetSettings('ShowIcons') !== undefined) ? parseInt(GetSettings('ShowIcons')) : true;
     var HideZeroSeed = (GetSettings('HideZeroSeed') !== undefined) ? parseInt(GetSettings('HideZeroSeed')) : false;
     var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
+    var TeaserFilter = (GetSettings('TeaserFilter') !== undefined) ? parseInt(GetSettings('TeaserFilter')) : false;
     var auth = function (s,t) {
         $('ul.trackers').children('li[data-id="'+t+'"]').children('ul').remove();
         if (!s)
@@ -73,6 +74,22 @@ var view = function () {
             if (HideZeroSeed && v.seeds == 0) return false;
             sum++;
             var title = filterText(s_s,v.title);
+            if (TeaserFilter) {
+                var Teaser = ((/Трейлер/i).test(title.n))?1:
+                ((/Тизер/i).test(title.n))?1:
+                ((/Teaser/i).test(title.n))?1:
+                ((/Trailer/i).test(title.n))?1:
+                0;
+                if (Teaser == 1) return false;
+                if (v.category.title != null) {
+                    Teaser = ((/Трейлер/i).test(v.category.title))?1:
+                    ((/Тизер/i).test(v.category.title))?1:
+                    ((/Teaser/i).test(v.category.title))?1:
+                    ((/Trailer/i).test(v.category.title))?1:
+                    0;
+                    if (Teaser == 1) return false;
+                }
+            }
             quality.name = title.r;
             title = title.n;
             var filter = '';
