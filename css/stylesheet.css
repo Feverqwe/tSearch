@@ -1,0 +1,665 @@
+/* 
+    Document   : stylesheet
+    Created on : 23.06.2012, 17:26:23
+    Author     : Антон
+    Description:
+        Purpose of the stylesheet follows.
+*/
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    margin: 0;
+}
+div.search_panel {
+    padding: 20px;
+    background-color: #F1F1F1;
+    border-bottom: 1px solid #c0c0c0;
+}
+div.search_panel input[type=text] {
+    height: 22px !important;
+    font-size: 16px;
+    width: 500px;
+    padding-left: 9px;
+    padding-right: 5px;
+    float: left;
+    font-size: 16px;
+}
+input[type=text] {
+    border:  1px solid #cccccc;
+    outline: none;
+}
+input[type=text]:hover {
+    border: 1px solid #999999;
+    box-shadow: inset 0 1px 5px #ebebeb;
+    -webkit-box-shadow: inset 0 1px 5px #ebebeb;
+}
+input[type=text]:focus {
+    border: 1px solid #3366ff !important;
+    box-shadow: inset 0 1px 5px #CCC;
+    -webkit-box-shadow: inset 0 1px 5px #CCC;
+}
+
+
+.sbutton {
+    height: 26px !important;
+    -moz-box-shadow:inset 0px 0px 4px 0px #97c4fe;
+    -webkit-box-shadow:inset 0px 0px 4px 0px #97c4fe;
+    box-shadow:inset 0px 0px 4px 0px #97c4fe;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #1e62d0) );
+    background:-moz-linear-gradient( center top, #3d94f6 5%, #1e62d0 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3d94f6', endColorstr='#1e62d0');
+    background-color:#3d94f6;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    border-radius:3px;
+    border:1px solid #337fed;
+    display:inline-block;
+    color:#ffffff;
+    font-family: Arial, sans-serif;
+    font-size:16px;
+    font-weight:bold;
+    padding:2px 8px;
+    text-decoration:none;
+    text-shadow:0px 0px 0px #1570cd;
+    margin-top: 0;
+}
+.sbutton:hover {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #3d94f6) );
+    background:-moz-linear-gradient( center top, #3d94f6 5%, #3d94f6 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3d94f6', endColorstr='#3d94f6');
+    background-color:#3d94f6;
+    cursor: pointer;
+}
+.sbutton:active {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3F81EB), color-stop(1, #3F81EB) );
+    background:-moz-linear-gradient( center top, #3F81EB 5%, #3F81EB 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3F81EB', endColorstr='#3F81EB');
+    background-color:#3F81EB;
+}
+
+
+div.content {
+    /*overflow: hidden;*/
+    position: relative;
+}
+div.content div {
+}
+div.content div.left {
+    margin-right: 180px;
+    padding-top: 20px;
+}
+div.content div.right {
+    width: 175px;
+    float: right;
+    padding-top: 5px;
+}
+#rez_table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 2px;
+    border-top: 1px #c0c0c0 solid;
+}
+#rez_table thead {
+    background-image: linear-gradient(bottom, rgb(208,208,208) 30%, rgb(247,247,247) 92%);
+    background-image: -o-linear-gradient(bottom, rgb(208,208,208) 30%, rgb(247,247,247) 92%);
+    background-image: -moz-linear-gradient(bottom, rgb(208,208,208) 30%, rgb(247,247,247) 92%);
+    background-image: -webkit-linear-gradient(bottom, rgb(208,208,208) 30%, rgb(247,247,247) 92%);
+    background-image: -ms-linear-gradient(bottom, rgb(208,208,208) 30%, rgb(247,247,247) 92%);
+
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.3, rgb(208,208,208)),
+        color-stop(0.92, rgb(247,247,247))
+        );
+}
+#rez_table a {
+    text-decoration: none;
+    color: #000;
+}
+#rez_table a:hover {
+    text-decoration: underline;
+}
+#rez_table tr {
+    font-size: 12px;
+}
+#rez_table tr th {
+    cursor: pointer;
+    border-right: 1px #c0c0c0 solid;
+    font-weight: normal;
+}
+#rez_table > tbody > tr.even {
+    background-color: #f8f8f8;
+}
+#rez_table > tbody > tr > td {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+#rez_table > tbody > tr > td.name {
+    padding-left: 10px;
+}
+#rez_table > tbody > tr > td.name > div.title > a {
+    color: #1A3DC1;
+    font-size: 14px;
+}
+#rez_table > tbody > tr > td.name > div.title > a:visited {
+    color: #609;
+    font-size: 14px;
+}
+#rez_table > tbody > tr > td.name > ul {
+    padding-left: 0;
+    margin: 0 auto;
+    list-style: none;
+    font-size: 11px;
+    height: 14px;
+    color: #555;
+    margin-top: 2px;
+}
+#rez_table > tbody > tr > td.name > ul > li.category, #rez_table > tbody > tr > td.name > ul > li.category a {
+    color: #093;
+    font-size: 12px;
+}
+#rez_table > tbody > tr > td.name > ul > li {
+    display: inline-table;
+    margin-left: 4px;
+}
+#rez_table > thead > tr > th.time {
+    text-align: left;
+    width: 125px;
+    padding-left: 15px;
+}
+#rez_table > thead > tr > th.quality {
+    text-align: center;
+    width: 30.3px;
+}
+#rez_table > tbody > tr > td.quality {
+    text-align: center;
+    color: #CCCccc;
+}
+#rez_table > tbody > tr > td.time {
+    text-align: left;
+    color: #666666;
+    vertical-align: top;
+    padding-left: 15px;
+    font-size: 12px;
+}
+#rez_table div.tracker_icon {
+    opacity: 0.5;
+    margin-top: 3px;
+    margin-bottom: -3px;
+    margin-left: 5px;
+    height: 16px;
+    width: 16px;
+}
+#rez_table div.tracker_icon:hover {
+    opacity: 1;
+}
+#rez_table .size {
+    text-align: center;
+    width: 80px;
+    white-space: nowrap;
+}
+#rez_table .size a:visited {
+    color: #999;
+}
+#rez_table .tracker {
+    text-align: center;
+    width: 20px;
+}
+/*#rez_table .seeds, #rez_table .leechs {
+    display: none;
+}*/
+#rez_table .seeds {
+    text-align: center;
+    width: 30px;
+}
+#rez_table .leechs {
+    text-align: center;
+    width: 30px;
+}
+#rez_table > thead > tr > th.headerSortDown {
+    background-image: url('../images/down.png');
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    padding-rigth: 3px;
+}
+#rez_table > thead > tr > th.headerSortUp {
+    background-image: url('../images/up.png');
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    padding-rigth: 3px;
+}
+div.result_panel {
+    display: none;
+}
+div.result_panel ul.categorys {
+    padding-left: 0;
+    margin: 0;
+    margin-left: 4px;
+}
+div.result_panel ul.categorys li {
+    display: inline-block;
+    margin-right: 3px;
+    border: 1px #c0c0c0 solid;
+    border-bottom: 0;
+    background-color: #FFF;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 3px;
+    font-size: 12px;
+    cursor: pointer;
+    box-shadow: inset 0 -2px 5px -2px #c0c0c0;
+    -webkit-box-shadow: inset 0 -2px 5px -2px #c0c0c0;
+}
+div.result_panel ul.categorys li.selected {
+    background-image: linear-gradient(bottom, rgb(38,98,237) 50%, rgb(100,138,241) 90%);
+    background-image: -o-linear-gradient(bottom, rgb(38,98,237) 50%, rgb(100,138,241) 90%);
+    background-image: -moz-linear-gradient(bottom, rgb(38,98,237) 50%, rgb(100,138,241) 90%);
+    background-image: -webkit-linear-gradient(bottom, rgb(38,98,237) 50%, rgb(100,138,241) 90%);
+    background-image: -ms-linear-gradient(bottom, rgb(38,98,237) 50%, rgb(100,138,241) 90%);
+
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.5, rgb(38,98,237)),
+        color-stop(0.9, rgb(100,138,241))
+        );
+    color: #FFF;
+    cursor: default;
+    border: 1px solid rgb(100,138,241);
+    border-bottom: 0;
+}
+div.right > div {
+    margin-bottom: 5px;
+}
+div.right > div > p {
+    margin: 0;
+    margin-bottom: 4px;
+}
+div.tracker_list {
+    position: relative;
+}
+div.tracker_list > ul.trackers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-left: 28px;
+}
+div.filter {
+    position: relative;
+}
+div.filter > input {
+    width: 142px;
+    padding-right: 18px;
+    height: 18px;
+}
+div.filter > div.btn {
+    background: url(../images/clear.png) center center no-repeat;
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 23px;
+    left: 144px;
+    cursor: pointer;
+    z-index: 1;
+    display: none;
+}
+div.tracker_list > div.setup {
+    background: url(../images/settings.png) center center no-repeat;
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 0;
+    left: 60px;
+    cursor: pointer;
+    z-index: 1;
+    opacity: 0.3;
+    display: inline-block;
+}
+div.tracker_list > div.setup:hover {
+    opacity: 0.7;
+}
+div.tracker_icon {
+    width: 16px;
+    height: 16px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    display: inline-block;
+    margin-top: 3px;
+    margin-bottom: -3px;
+}
+div.tracker_list > ul.trackers div.tracker_icon {
+    margin-left: -20px;
+}
+div.tracker_list > ul.trackers > li > a {
+    text-decoration: none;
+    margin-left: 2px;
+    color: #000;
+    padding: 2px;
+}
+div.tracker_list > ul.trackers > li > a:hover {
+    background-color: #ebebeb;
+    border-radius: 6px;
+}
+div.tracker_list > ul.trackers > li > a.selected {
+    background-color: #99ccff;
+    border-radius: 6px;
+}
+
+div.progress {
+    width: 30.3px;
+    height: 12px;
+    position: relative;
+    background-color: #CCCccc;
+    cursor: default;
+    overflow: hidden;
+}
+div.progress div {
+    top:0;
+    position: absolute;
+    width: 30.3px;
+    background-color: #3d94f6;
+    height: 12px;
+}
+div.progress span {
+    top:-1px;
+    left: 0;
+    position: absolute;
+    width: 30.3px;
+}
+
+div.explore {
+    -webkit-user-select: none;
+}
+div.explore > ul > li div {
+    padding-bottom: 2px;
+}
+
+div.explore > ul {
+    margin: 0;
+    padding: 0;
+}
+
+div.explore div.move_it {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url(../images/moveble.png) center center no-repeat;
+    margin-right: 5px;
+    margin-top: 1px;
+    margin-bottom: -1px;
+    cursor: move;
+}
+div.explore div.spoiler
+{
+    float: right;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    margin-top: 6px;
+    background: url(../images/show_hide.png) bottom center no-repeat;
+    cursor: pointer;
+}
+div.explore div.spoiler.down
+{
+    background: url(../images/show_hide.png) bottom center no-repeat;
+}
+div.explore div.spoiler.up {
+    background: url(../images/show_hide.png) top center no-repeat;
+}
+
+
+div.explore h2 {
+    margin: 0;
+    padding: 0;
+    margin-left: 5px;
+    box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.5);
+    font-weight: normal;
+    margin-bottom: 5px;
+    padding-left: 10px;
+    cursor: default;
+}
+
+div.explore h2 > div.setup {
+    background: url(../images/settings.png) center center no-repeat;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    opacity: 0.3;
+    display: inline-block;
+    margin-left: 5px;
+    margin-top: 2px;
+    margin-bottom: -2px;
+    display: inline-block;
+}
+div.explore h2 > div.setup_div {
+    background-image: none;
+    width: auto;
+    height: 16px;
+    cursor: auto;
+    opacity: 1;
+    display: inline-block;
+    margin-left: 5px;
+    margin-top: 2px;
+    margin-bottom: -2px;
+    position: relative;
+}
+div.explore h2 > div.setup_div > div.hide { 
+    background: url(../images/settings.png) center center no-repeat;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    opacity: 0.3;
+    display: inline-block;
+    margin-top: -1px;
+    margin-bottom: 1px;
+}
+div.explore h2 > div.setup_div > div.slider {
+    background-color: #EEE;
+    border: 1px solid #DDD;
+    border-radius: 4px;
+    height: 8px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: 130px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    display: inline-block;
+}
+div.explore h2 > div.setup_div >  div.clear {
+    background: url(../images/clear.png) center center no-repeat;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: -1px;
+    margin-bottom: 1px;
+    margin-left: 13px;
+}
+div.explore h2 > div.setup_div > div.slider > a {
+    background-color: #F6F6F6;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    display: block;
+    margin: 0;
+    margin-left: -6.599999904632568px;
+    padding: 0;
+    position: absolute;
+    top: -3.299999952316284px;
+    width: 13px;
+    height: 13px;
+    z-index: 2;
+}
+div.explore h2 > div.setup:hover {
+    opacity: 0.7;
+}
+div.explore div.poster {
+    display: inline-block;
+    width: 130px;
+    margin: 14px;
+    position: relative;
+}
+
+div.explore div.poster div.title {
+    overflow: hidden;
+    margin: 0;
+    font-size: 12px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    margin-top: 2px;
+    cursor: pointer;
+    position: relative;
+}
+div.explore div.poster > div.image {
+    cursor: pointer;
+    margin: 6px;
+}
+div.explore div.poster > div.image > div {
+    width: 16px;
+    height: 16px;
+    display: none;
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    cursor: pointer;
+    opacity: 0.6;
+}
+div.explore div.poster > div.image > div:hover {
+    opacity: 1;
+}
+div.explore div.poster > div.image > div.add_favorite {
+    background: url(../images/favorite.png) center center no-repeat;
+}
+div.explore div.poster > div.image > div.del_favorite {
+    background: url(../images/clear.png) center center no-repeat;
+}
+div.explore div.poster > div.image > img {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+}
+div.explore div.poster > div.image > img:hover {
+    box-shadow: 0 0 15px #1A3DC1;
+    -webkit-box-shadow: 0 0 15px #1A3DC1;
+}
+
+div.explore div.games > div > div.poster {
+    width: 110px;
+    margin: 12px;
+}
+div.explore div.poster > div {
+    position: relative;
+}
+div.explore div.poster > div > div.info {
+    position: absolute;
+    width: 130px;
+    text-align: center;
+    z-index: 2;
+    font-size: 12px;
+    margin: 0 auto;
+    margin-top: 0;
+    margin-bottom: 30px;
+    display: none;
+    height: 15px;
+}
+div.explore div.poster:hover div.info,
+div.explore div.poster:hover div.image > div.add_favorite,
+div.explore div.poster:hover div.image > div.del_favorite {
+    display: block;
+}
+div.explore div.games > div > div.poster > div > div.info {
+    width: 110px;
+}
+div.explore div.info > a {
+    text-decoration: none;
+}
+
+div.search_panel > div.left {
+    display: inline-block;
+}
+
+div.search_panel > div.right {
+    display: inline-block;
+    float: right;
+}
+div.search_panel > div.right input.history {
+    padding-left: 14px;
+    padding-right: 14px;
+    background: url(../images/history.png) no-repeat center ;
+}
+div.search_panel > div.right input.history:hover {
+    background-color: #FFF;
+}
+div.search_panel > div.right input.history:active {
+    background-color: #DDD;
+}
+div.search_panel > div.right input.main {
+    padding-left: 14px;
+    padding-right: 14px;
+    background: url(../images/main.png) no-repeat center ;
+}
+div.search_panel > div.right input.main:hover {
+    background-color: #FFF;
+}
+div.search_panel > div.right input.main:active {
+    background-color: #DDD;
+}
+ul.ui-autocomplete {
+    border: 1px solid silver;
+    background: #FFF;
+    color: #333;
+    width: 450px;
+    list-style: none;
+    padding: 0;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-top: 0;
+    top: 32px !important;
+    left: 20px !important;
+    position: absolute !important;
+    max-height: 153px;
+    overflow-y: auto;
+}
+ul.ui-autocomplete li {
+    margin-bottom: 1px;
+}
+ul.ui-autocomplete li > a {
+    padding-left: 5px;
+    padding-right: 5px;
+    cursor: pointer;
+    padding-bottom: 1px;
+}
+ul.ui-autocomplete li > a:hover, ul.ui-autocomplete li > a.ui-state-hover {
+    background-color: #99ccff;
+    border-radius: 6px;
+}
+div.topbtn {
+    display: 0;
+    bottom: 0;
+    width: 50px;
+    height: 60px;
+    background: url(../images/go_top.png) no-repeat center bottom;
+    position: fixed;
+    right: 0;
+    z-index: 10;
+    cursor: pointer;
+    padding-top: 100%;
+    opacity: 0.9;
+}
+div.topbtn:hover {
+    background-color:#9CF;
+}
+div.ad {
+    overflow: hidden;
+}
+.OzonRev_itemList {
+    padding-left: 0 !important;
+}

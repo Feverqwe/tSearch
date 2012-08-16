@@ -1,0 +1,70 @@
+/* 
+    Document   : options
+    Created on : 27.06.2012, 17:09:46
+    Author     : Anton
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    margin: 0;
+    background-color: #F1F1F1;
+}
+body > center > h1 {
+    margin: 0;
+}
+#internalTrackers a {
+    color: #1A3DC1;
+}
+body > center > h2 {
+    margin: 0;
+}
+fieldset, div.save_panel {
+    margin: 0 auto;
+    width: 550px;
+}
+fieldset {
+    border: 1px solid #C8C8C8;
+    box-shadow: 1px 1px white,inset 0 -20px 60px -20px #DDD,inset 1px 1px white;
+    margin-bottom: 10px;
+}
+legend {
+    background-color: #F1F1F1;
+}
+td.status {
+    text-align: center;
+}
+div.save_panel div.progress {
+    width: 30px;
+    height: 30px;
+    background-image: url(../images/progress.gif);
+    background-position: center;
+    background-repeat: no-repeat;
+    display: inline-block;
+    margin-top: 9px;
+    margin-bottom: -9px;
+    display: none;
+}
+div.save_panel input {
+    height: 26px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-top: 12px;
+}
+div.save_panel {
+}
+div.copy, div.copy a {
+    clear: left;
+    padding-top: 10px;
+    text-align: center;
+    color: #a0a0a0;
+    text-decoration: none;
+    font-size: 12px;
+}
+ul.option {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}

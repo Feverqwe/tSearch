@@ -1,0 +1,9 @@
+/build/
+/build.zip
+/.idea/
+/build_firefox/
+/build_opera/
+/build_chrome.zip
+/build_firefox.xpi
+/build_opera.oex
+/nbproject/

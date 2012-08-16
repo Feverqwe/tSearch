@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Настройки поиска</title>
+        <meta charset="utf-8" />
+        <link rel="shortcut icon" href="images/settings.png">
+        <link rel="stylesheet" type="text/css" href="css/options.css"> 
+        <script src="js/jquery.min.js"></script>
+        <script src="js/storage.js"></script>
+        <script src="js/engine.js"></script>
+        <script src="js/options.js"></script>
+    </head>
+    <body>
+    <center><h1>Torrents MultiSearch</h1></center>
+    <center><h2>Настройки</h2></center>
+    <form name="save">
+        <fieldset>
+            <legend>Трекеры</legend>
+            <table id="internalTrackers">
+                <thead>
+                    <tr>
+                        <th>Торрент трекер</th>
+                        <th><a href="#">Вкл</a>\<a href="#">Выкл</a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Опции</legend>
+            <div><input name="icons" type="checkbox"/><span>Показывать иконки торрент-трекеров в выдаче</span></div>
+            <div><input name="zeroseed" type="checkbox"/><span>Скрывать раздачи без сидеров (раздающих)</span></div>
+            <div><input name="hideleech" type="checkbox"/><span>Скрыть столбец личеров (скачивающих)</span></div>
+            <div><input name="hideseed" type="checkbox"/><span>Скрыть столбец сидов (раздающих)</span></div>
+            <div><input name="autosetcategory" type="checkbox"/><span>Автоматически переходить в соотв. категорию при выборе фильма\сериала итп на главной</span></div>
+            <div><input name="teaserfilter" type="checkbox"/><span>Не показывать тизеры\трейлеры в результатах поиска</span></div>
+        </fieldset>
+        <fieldset>
+            <legend>Фильтрация списка</legend>
+            <ul class="option">
+                <li><input name="typeFiltration" type="radio" value="0"/>Ищет полное совпадение фразы (более 1 фразы можно разделить запятой)</li>
+                <li><input name="typeFiltration" type="radio" value="1"/>Ищет совпадение с одним из введенных слов</li>
+                <li><input name="typeFiltration" type="radio" value="2"/>Ищет совпадение всех введенных слов</li>
+            </ul>
+        </fieldset>
+        <div class="save_panel">
+            <input type="submit" value="Сохранить" />
+            <div class="progress"></div>
+        </div>
+    </form>
+    <div class="copy">created by  <a href="mailto:leonardspbox@gmail.com">Anton</a></div>
+</body>
+</html>
