@@ -133,6 +133,11 @@ var engine = function () {
     {
         n : 'my-hit', 
         e : 0
+    },
+
+    {
+        n : 'evrl', 
+        e : 0
     }
     ];
     var categorys = [
