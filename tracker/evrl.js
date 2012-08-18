@@ -74,7 +74,6 @@ tracker[tmp_num] = function () {
                 */
             t.find('div.talks_delimeter').remove();
             t = t.children('div');
-            console.log(t);
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -107,7 +106,13 @@ tracker[tmp_num] = function () {
                 dataType: 'json',
                 data: '{"request":{"url":"/search/","search_for":"'+text+'","cat_id":0,"options":0,"offset":1,"method":"getSearch"}}',
                 success: function(data) {
-                    view.result(id,readCode(data.response.result),t);
+                    if (data.response == null) {
+                        view.auth(0,id);
+                        view.result(id,[],t);
+                    } else {
+                        view.auth(1,id);
+                        view.result(id,readCode(data.response.result),t);
+                    }
                 },
                 error:function (xhr, ajaxOptions, thrownError){
                     view.loadingStatus(2,id);
