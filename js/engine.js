@@ -128,6 +128,11 @@ var engine = function () {
     {
         n : 'free-torrents', 
         e : 0
+    },
+
+    {
+        n : 'my-hit', 
+        e : 0
     }
     ];
     var categorys = [
