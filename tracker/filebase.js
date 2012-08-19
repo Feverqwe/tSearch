@@ -65,6 +65,7 @@ tracker[tmp_num] = function () {
             var i = 0;
             for (i = 1;i<l;i++) {
                 var td = t.eq(i).children('td');
+                if (td.length < 2) continue;
                 arr[arr.length] = {
                     'category' : {
                         'title' : td.eq(0).children('a').children('img').attr('alt'), 
