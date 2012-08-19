@@ -659,6 +659,7 @@ div.topbtn:hover {
 }
 div.ad {
     overflow: hidden;
+    margin-top: 30px;
 }
 .OzonRev_itemList {
     padding-left: 0 !important;

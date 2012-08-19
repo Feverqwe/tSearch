@@ -9,7 +9,6 @@ tracker[tmp_num] = function () {
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
-            console.log(f);
             var groups_arr = [
             /* Сериалы */[8],
             /* Музыка */[5],

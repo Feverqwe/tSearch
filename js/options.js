@@ -94,5 +94,14 @@ $(function () {
         $('#internalTrackers').children('tbody').find('input[type=checkbox]').removeAttr('checked');
         return false;
     });
+    $('#internalTrackers').find('th').eq(1).children('a').eq(2).click(function () {
+        $('#internalTrackers').children('tbody').find('input[type=checkbox]').removeAttr('checked');
+        var Trackers = engine.defaultList;
+        var l = Trackers.length;
+        for (var i=0;i<l;i++)
+            if (Trackers[i].e)
+                    $('#internalTrackers').children('tbody').children('tr[data-name="'+Trackers[i].n+'"]').find('input[type=checkbox]').attr('checked','checked');
+        return false;
+    });
     view.loadSettings();
 });
