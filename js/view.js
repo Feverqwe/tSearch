@@ -71,8 +71,7 @@ var view = function () {
                 game : 0,
                 value : 0
             };
-            if (HideZeroSeed && v.seeds == 0) return false;
-            sum++;
+            if (HideZeroSeed && v.seeds == 0) return true;
             var title = filterText(s_s,v.title);
             if (TeaserFilter) {
                 var Teaser = ((/Трейлер/i).test(title.n))?1:
@@ -80,16 +79,17 @@ var view = function () {
                 ((/Teaser/i).test(title.n))?1:
                 ((/Trailer/i).test(title.n))?1:
                 0;
-                if (Teaser == 1) return false;
+                if (Teaser == 1) return true;
                 if (v.category.title != null) {
                     Teaser = ((/Трейлер/i).test(v.category.title))?1:
                     ((/Тизер/i).test(v.category.title))?1:
                     ((/Teaser/i).test(v.category.title))?1:
                     ((/Trailer/i).test(v.category.title))?1:
                     0;
-                    if (Teaser == 1) return false;
+                    if (Teaser == 1) return true;
                 }
             }
+            sum++;
             quality.name = title.r;
             title = title.n;
             var filter = '';
