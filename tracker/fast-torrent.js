@@ -76,7 +76,7 @@ tracker[tmp_num] = function () {
         var readCode = function (c) {
             c = view.contentFilter(c);
             var t = $(c);//.contents();
-            t = t.find('table.list').children('tbody').children('tr[height=1%]');
+            t = t.find('table.list').children('tbody').children('tr[height="1%"]');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -86,8 +86,8 @@ tracker[tmp_num] = function () {
                 if (td1.eq(1).children('h2').text() == '') continue;
                 arr[arr.length] = {
                     'category' : {
-                        'title' : td1.eq(1).children('div[class=genre_list]').text(),
-                        'id': calculateCategory(td1.eq(1).children('div[class=genre_list]').children('a'))
+                        'title' : td1.eq(1).children('div[class="genre_list"]').text(),
+                        'id': calculateCategory(td1.eq(1).children('div[class="genre_list"]').children('a'))
                     },
                     'title' : td1.eq(1).children('h2').text()+calculateQuality(td1.eq(1).children('div.film_controll').children('em.qa-icon').attr('class')),
                     'url' : root_url+td2.eq(2).children('a').attr('href'),

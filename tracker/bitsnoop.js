@@ -97,7 +97,7 @@ tracker[tmp_num] = function () {
             var i = 0;
             for (i = 0;i<l;i++) {
                 var li = t.eq(i);
-                li.children('div[id=sz]').find('td').eq(0).children('div.nfiles').remove();
+                li.children('div[id="sz"]').find('td').eq(0).children('div.nfiles').remove();
                 var ss = li.children('div.torInfo').children('span.seeders').text().replace(',','');
                 var ls = li.children('div.torInfo').children('span.leechers').text().replace(',','');
                 if (ls == '') ls = 0;
@@ -109,7 +109,7 @@ tracker[tmp_num] = function () {
                     },
                     'title' : li.children('a').text(),
                     'url' : root_url+li.children('a').attr('href'),
-                    'size' : calculateSize(li.children('div[id=sz]').find('td').eq(0).text()),
+                    'size' : calculateSize(li.children('div[id="sz"]').find('td').eq(0).text()),
                     'seeds' : ss,
                     'leechs' : ls,
                     'time' : calculateTime(li.children('div.torInfo').text().replace(/.*— .* — (.*)/,'$1'))

@@ -286,7 +286,7 @@ var explore = function () {
             if (c == null)
                 $('ul.categorys').children('li').eq(0).trigger('click');
             else
-                $('ul.categorys').children('li[data-id='+c+']').trigger('click');
+                $('ul.categorys').children('li[data-id="'+c+'"]').trigger('click');
             view.SetAutoMove(null);
         }
         view.triggerSearch(s);

@@ -85,10 +85,10 @@ tracker[tmp_num] = function () {
                         'url': root_url+td.eq(1).children('a').attr('href'),
                         'id': calculateCategory(td.eq(1).children('a').attr('href').replace(/(.*)cat\/([0-9]*)/i,"$2"))
                     },
-                    'title' : td.eq(2).children('a[class!=dl][class!="ti com"]').text(),
-                    'url' : root_url+td.eq(2).children('a[class!=dl][class!="ti com"]').attr('href'),
+                    'title' : td.eq(2).children('a[class!="dl"][class!="ti com"]').text(),
+                    'url' : root_url+td.eq(2).children('a[class!="dl"][class!="ti com"]').attr('href'),
                     'size' : calculateSize(td.eq(3).text()),
-                    'dl' : td.eq(2).children('a[class=dl]').attr('href'),
+                    'dl' : td.eq(2).children('a[class="dl"]').attr('href'),
                     'seeds' : td.eq(4).children().text(),
                     'leechs' : td.eq(5).children().text(),
                     'time' : calculateTime(td.eq(0).text())
