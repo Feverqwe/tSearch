@@ -73,6 +73,9 @@ tracker[tmp_num] = function () {
                 /*if (tr.eq(0).children('td').children('a').eq(0).attr('href') == undefined) {
                     continue;
                 }*/
+                var f = 0;
+                if (td.length == 11)
+                    f = 1;
                 if (td.eq(4).children('a').attr('href') == null) continue;
                 arr[arr.length] = {
                     'category' : {
@@ -84,9 +87,9 @@ tracker[tmp_num] = function () {
                     'url' : root_url+td.eq(2).children('a').attr('href'),
                     'size' : td.eq(5).children('u').text(),
                     'dl' : root_url+td.eq(4).children('a').attr('href'),
-                    'seeds' : td.eq(6).children('b').text(),
-                    'leechs' : td.eq(7).children('b').text(),
-                    'time' : td.eq(9).children('u').text()
+                    'seeds' : td.eq(6+f).children('b').text(),
+                    'leechs' : td.eq(7+f).children('b').text(),
+                    'time' : td.eq(9+f).children('u').text()
                 }
             }
             return arr;
