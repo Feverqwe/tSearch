@@ -6,6 +6,7 @@ tracker[tmp_num] = function () {
     var icon = 'data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACRjor/c3Fu/4WEgv+/v77/i4uL/4GBgP9ycG7/jouI/zMyMN8IBgVwLi0rEwAAAAAAAAAAAAAAAAAAAAAAAAAAfnx5/8rKyv+wr6//zc3M/9LS0v/5+fn/g4KB/6uopP+em5f/Z2Vi/1FPTfgsLCqOSUlGDAAAAAAAAAAAAAAAAJubmv/h4eH/0NDQ//39/f/ExMT/h4eF/42LiP+ioJ3/nZuX/357eP+6t7P/l5SR/0tKR92fnZkjAAAAAAAAAADPzs7/5eXl/8bGxf+fn57/iIeE/6ilof+trKr//v7+/8rJyP+fnJn/npuY/7u5tf+vrKj/MjEvygAAAAAAAAAAzc3M/8bGxf/DwsH/lpOQ/6uopP+rqKT/nZuZ/9zc3P+lpKL/q6ik/46Mif+7ubX/urez/z89O/YREA8JAAAAAOrq6v+fn57/kI6K/6uopP+rqKT/q6ik/6uopP+gnpr/qaai/6ekoP+Qjov/sq+r/3Z0cf8LCglxAAAAAAAAAADIyMf/h4aD/6uopP+rqKT/q6ik/6uopP+rqKT/q6ik/6uopP+MiYb/kY6L/05MSu8vLixhAAAAAAAAAAAAAAAAoZ+d/52bmP+vraz/pKGd/6uopP+rqKT/q6ik/6uopP+rqKT/QUA97wsKCXw9PToVAAAAAAAAAAAAAAAAAAAAAKuopP/R0dH//v7+/66tq/+rqKT/q6ik/6uopP+rqKT/eXZz/wgGBVoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACrqKT/trWz/87NzP+gnZr/q6ik/6uopP+rqKT/enh1/xIRD4EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAenh0/6Wjn/+rqKT/q6ik/6uopP+Rjor/RkRC4woJB1kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKekof99e3j/fnx5/4WDf/+Egn7/Ly4s4wgGBQkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACYlpP/u7m1/7u5tf+vrKj/cnBt/zIyMFoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPTs5za+sqP+6t7P/iYeD/zMyMJ4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL+9uxs6OTfNTEpI9jQzMYVUVFECAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGBQkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB+sQQAHrEEAA6xBAAOsQQABrEEAA6xBAAesQQAPrEEAP6xBAH+sQQD/rEEB/6xBA/+sQQf/rEEH/6xB3/+sQQ%3D%3D';
     var url = 'http://tr.anidub.com/browse.php';
     var root_url = 'http://tr.anidub.com/';
+    var about = 'Аниме торрент-трекер Anidub.';
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -173,6 +174,8 @@ tracker[tmp_num] = function () {
         id : id,
         name : name,
         icon : icon,
+        about : about,
+        url : root_url,
         filename : filename
     }
 }();

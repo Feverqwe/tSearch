@@ -7,6 +7,7 @@ tracker[tmp_num] = function () {
     var login_url = 'http://evrl.to/login/';
     var url = 'http://evrl.to/search/';
     var root_url = 'http://evrl.to';
+    var about = 'Здесь можно найти и пообсуждать кино, фильмы, сериалы, музыку, игры, программы, новинки, другие ключевые слова и множество всяких полезных штук. А можно и не.';
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -139,6 +140,8 @@ tracker[tmp_num] = function () {
         login_url : login_url,
         name : name,
         icon : icon,
+        about : about,
+        url : root_url,
         filename : filename
     }
 }();

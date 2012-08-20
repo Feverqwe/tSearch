@@ -6,6 +6,7 @@ tracker[tmp_num] = function () {
     var icon = 'data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////AOJwNgDws5QAh0ogAPjZygDpkmYA9MmzAOaATQDsonwA++riAO6riQDyvKIA5HY/APni1gDnh1cARERERERERERBERERERERFEEREREREREUQRERERERERRBInHiLhciFEEiceIuFyIUQSJx4i4XIhRBIsHiJRciFEEiYXIjEygUQSIv0tJtKxRBiMYoVY2aFEEREREREREUQRERERERERRBERERERERFEEREREREREUREREREREREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
     var url = 'http://www.mininova.org/search/';
     var root_url = 'http://www.mininova.org';
+    var about = 'Download Movies, TV Shows, Music, Software and more. Mininova is the largest BitTorrent search engine and directory on the net with thousands of torrents.';
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -135,6 +136,8 @@ tracker[tmp_num] = function () {
         id : id,
         name : name,
         icon : icon,
+        about : about,
+        url : root_url,
         filename : filename
     }
 }();

@@ -7,6 +7,7 @@ tracker[tmp_num] = function () {
     var url = 'http://tfile.ru/forum/ssearch.php';
     var login_url = 'http://tfile.ru/forum/ssearch.php';
     var root_url = 'http://tfile.ru';
+    var about = 'Торрент трекер tfile.ru - фильмы, музыка, программы, книги';
     var xhr = null;
     var web = function () {
         var calculateSize = function (s) {
@@ -188,6 +189,8 @@ tracker[tmp_num] = function () {
         id : id,
         name : name,
         icon : icon,
+        about : about,
+        url : root_url,
         filename : filename
     }
 }();

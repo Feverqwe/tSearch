@@ -7,6 +7,7 @@ tracker[tmp_num] = function () {
     var login_url = 'http://pornolab.net/forum/login.php';
     var url = 'http://pornolab.net/forum/tracker.php';
     var root_url = 'http://pornolab.net/forum/';
+    var about = 'Крупнейший русскоязычный порно трекер.';
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -86,6 +87,8 @@ tracker[tmp_num] = function () {
         login_url : login_url,
         name : name,
         icon : icon,
+        about : about,
+        url : root_url,
         filename : filename
     }
 }();

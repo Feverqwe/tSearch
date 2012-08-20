@@ -7,6 +7,7 @@ tracker[tmp_num] = function () {
     var login_url = 'http://torrents.freedom/forum/login.php';
     var url = 'http://torrents.freedom/forum/tracker.php';
     var root_url = 'http://torrents.freedom/forum/';
+    var about = 'Локальный торрент-трекер Freedom';
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -190,6 +191,8 @@ tracker[tmp_num] = function () {
         login_url : login_url,
         name : name,
         icon : icon,
+        about : about,
+        url : root_url,
         filename : filename
     }
 }();

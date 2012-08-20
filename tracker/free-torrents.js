@@ -7,6 +7,7 @@ tracker[tmp_num] = function () {
     var login_url = 'http://login.free-torrents.org/forum/login.php';
     var url = 'http://tr.free-torrents.org/forum/tracker.php';
     var root_url = 'http://free-torrents.org/forum/';
+    var about = 'Первый Свободный BitTorrent трекер Free-Torrents.org';
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -99,6 +100,8 @@ tracker[tmp_num] = function () {
         login_url : login_url,
         name : name,
         icon : icon,
+        about : about,
+        url : root_url,
         filename : filename
     }
 }();

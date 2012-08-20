@@ -7,6 +7,7 @@ var view = function () {
     var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
     var AutoSetCategory = (GetSettings('AutoSetCategory') !== undefined) ? parseInt(GetSettings('AutoSetCategory')) : true;
     var TeaserFilter = (GetSettings('TeaserFilter') !== undefined) ? parseInt(GetSettings('TeaserFilter')) : false;
+    var t_table_line = 0;
     var addTrackerInList = function (i) {
         var filename = tracker[i].filename;
         var t = (GetSettings('internalTrackers') !== undefined) ? JSON.parse(GetSettings('internalTrackers')) : null;
@@ -17,7 +18,12 @@ var view = function () {
             if (t[n].n == filename)
                 enable = t[n].e;
         }
-        $('<tr data-name="'+filename+'"/>').append($('<td/>').text(tracker[i].name)).append('<td class="status"><input type="checkbox" name="tracker" '+((enable)?'checked':'')+'></a>').appendTo($('#internalTrackers tbody'));
+        t_table_line++;
+        if ((t_table_line % 2) == 0) 
+            hh = 'b' 
+        else 
+            hh = '';
+        $('<tr'+((hh!='')?' class="'+hh+'"':'')+' data-name="'+filename+'"/>').append($('<td/>').html('<img src="'+tracker[i].icon+'"/>')).append($('<td/>').html('<a href="'+tracker[i].url+'" target="_blank">'+tracker[i].name+'</a>')).append($('<td class="desc"/>').text(tracker[i].about)).append('<td class="status"><input type="checkbox" name="tracker" '+((enable)?'checked':'')+'></a>').appendTo($('#internalTrackers tbody'));
     }
     var showProgress = function () {
         $('div.progress').css('display','inline-block');
@@ -86,21 +92,21 @@ $(function () {
         view.save_settings();
         return false;
     });
-    $('#internalTrackers').find('th').eq(1).children('a').eq(0).click(function () {
+    $('#internalTrackers').find('th').eq(3).children('a').eq(0).click(function () {
         $('#internalTrackers').children('tbody').find('input[type="checkbox"]').attr('checked','checked');
         return false;
     });
-    $('#internalTrackers').find('th').eq(1).children('a').eq(1).click(function () {
+    $('#internalTrackers').find('th').eq(3).children('a').eq(1).click(function () {
         $('#internalTrackers').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
         return false;
     });
-    $('#internalTrackers').find('th').eq(1).children('a').eq(2).click(function () {
+    $('#internalTrackers').find('th').eq(3).children('a').eq(2).click(function () {
         $('#internalTrackers').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
         var Trackers = engine.defaultList;
         var l = Trackers.length;
         for (var i=0;i<l;i++)
             if (Trackers[i].e)
-                    $('#internalTrackers').children('tbody').children('tr[data-name="'+Trackers[i].n+'"]').find('input[type="checkbox"]').attr('checked','checked');
+                $('#internalTrackers').children('tbody').children('tr[data-name="'+Trackers[i].n+'"]').find('input[type="checkbox"]').attr('checked','checked');
         return false;
     });
     view.loadSettings();

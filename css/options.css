@@ -18,6 +18,27 @@ body > center > h1 {
 #internalTrackers a {
     color: #1A3DC1;
 }
+#internalTrackers {
+    border-collapse: collapse;
+}
+#internalTrackers img {
+    margin-left: 5px;
+}
+#internalTrackers td {
+    vertical-align: top;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+#internalTrackers tr.b {
+    background-color: #FFF;
+}
+#internalTrackers thead {
+    background-color: #C8C8C8;
+    font-size: 12px;
+}
+#internalTrackers td.desc {
+    font-size: 12px;
+}
 body > center > h2 {
     margin: 0;
 }
