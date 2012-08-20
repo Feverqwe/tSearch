@@ -49,6 +49,11 @@ tracker[tmp_num] = function () {
                 t = parseFloat(t);
                 return Math.round(t*1024*1024*1024*1024);
             }
+            var t = size.replace('B','');
+            if (t!= size) {
+                t = parseFloat(t);
+                return Math.round(t);
+            }
             return 0;
         }
         var calculateSize = function (s) {
