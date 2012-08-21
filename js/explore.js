@@ -347,15 +347,13 @@ var explore = function () {
         $('li.favorites').empty();
         write_content(favoritesList,'favorites','Избранное',null,null,null,1);
     }
-    var write_content = function (content,section,name,category,root_url,fav,did,def_size) {
-        def_size = (def_size == null)?130:def_size;
-        fav = (fav != null)?'<div class="add_favorite" title="В избранное">':'<div class="del_favorite" title="Удалить из избранного">';
-        root_url = (root_url == null)? '' : root_url;
+    var write_content = function (content,section,name,category,root_url,fav,did,def_size,page_num) {
+        //определяем размер постера
         var size = get_view_size(section);
-        size = (size == null)?def_size:(size < 1)?def_size:size;
-        var st = get_view_status(section);
-        var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" data-def_size="'+def_size+'" data-size="'+size+'" title="Настроить вид"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+'>';
-        var cc = 0;
+        def_size = (def_size == null)?130:def_size;
+        size = (size == null || size < 1)?def_size:size;
+        //<<
+        //впиливание кастмного стиля для отобрадения нужного размера постеров и шрифта
         var font_size = get_font_size(size);
         if (size > 0 && size!=null && size!=def_size)
             $('body').append('<style>'+
@@ -372,12 +370,13 @@ var explore = function () {
                     'div.explore div.'+section+' div.poster > div.label > div.info > a '+
                     '{font-size: '+font_size+'px;}'
                     )+'</style>');
-        $.each(content, function (k,v) {
-            cc ++;
-            var id = (did!=null) ? ' data-id="'+k+'"' : '';
-            if (cc>20) return false;
-            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
-        });
+        //<<<<
+        if (page_num == null) page_num = 1;
+        var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
+        var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" data-def_size="'+def_size+'" data-size="'+size+'" title="Настроить вид"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+' data-page="'+page_num+'" data-fav="'+((fav==null)?0:1)+'" data-did="'+((did == null)?0:1)+'" data-root_url="'+((root_url == null)?0:root_url)+'">';
+        //для вывода страницы нужно контент (obj), рут_урл (str), фаворит (bool) и did (bool)
+        c += write_page(content, root_url, fav, did, page_num);
+        //<<
         c += '</div></div>';
         var explore_div = $('div.explore');
         var exp_li = explore_div.children('ul').children('li.'+section);
@@ -392,6 +391,34 @@ var explore = function () {
         });
         calculate_moveble(section,size);
         update_btns(section);
+    }
+    var write_page = function (content, root_url, fav, did, page) {
+        if (page == null) page = 1;
+        var poster_count = 10;
+        var cc = 0;
+        var fav = (fav != null)?'<div class="add_favorite" title="В избранное">':'<div class="del_favorite" title="Удалить из избранного">';
+        var root_url = (root_url == null)? '' : root_url;
+        var c = '';
+        var max_item = page*poster_count;
+        var min_item = max_item - poster_count;
+        $.each(content, function (k,v) {
+            cc ++;
+            if (cc<min_item) return true;
+            if (cc>max_item) return false;
+            var id = (did!=null) ? ' data-id="'+k+'"' : '';
+            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
+        });
+        load_content('games');
+        return c;
+    }
+    var get_content = function (section) {
+        var content = (GetSettings('explorerCache') !== undefined) ? JSON.parse(GetSettings('explorerCache')) : {};
+        $.each(content, function (k,v) {
+            if (k == section) {
+                return v.cache_arr;
+            }
+        });
+        return {};
     }
     var add_in_favorites = function (obj) {
         favoritesList[favoritesList.length] = {
@@ -481,7 +508,34 @@ var explore = function () {
             titles.eq(i).parent().attr('class','title '+move_name);
         }
     }
+    var bind_favorite_btn = function (section) {
+        // кнопка избранное - добавить
+        $('div.explore div.'+section).on('click', 'div.add_favorite', function() {
+            add_in_favorites($(this).parent().parent());
+        });
+        // кнопка избранное - удалить
+        $('div.explore div.'+section).on('click', 'div.del_favorite', function() {
+            $(this).parent().parent().hide('fast',function () {
+                del_from_favorites($(this).attr('data-id'));
+            });
+        });
+        
+    /*
+        $('div.explore div.'+section).find('div.add_favorite').click( function () {
+            add_in_favorites($(this).parent().parent());
+        });
+        */
+    /*
+        $('div.explore div.'+section).find('div.del_favorite').click( function () {
+            $(this).parent().parent().hide('fast',function () {
+                del_from_favorites($(this).attr('data-id'));
+            });
+        });
+        */
+    }
     var update_btns = function (section) {
+        bind_favorite_btn(section);
+        //спойлер увеличения\уменьшения постеров
         $('div.explore div.'+section).find('div.spoiler').click( function () {
             if ($(this).is('.up')){
                 var t = $(this);
@@ -509,14 +563,7 @@ var explore = function () {
                 });
             }
         });
-        $('div.explore div.'+section).find('div.add_favorite').click( function () {
-            add_in_favorites($(this).parent().parent());
-        });
-        $('div.explore div.'+section).find('div.del_favorite').click( function () {
-            $(this).parent().parent().hide('fast',function () {
-                del_from_favorites($(this).attr('data-id'));
-            });
-        });
+        //настройки
         $('div.explore div.'+section).find('div.setup').click(function () {
             var t = $(this).parent().children('div.setup_div');
             if (t.length != 0) {
