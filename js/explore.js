@@ -366,32 +366,38 @@ var explore = function () {
         $('li.favorites').empty();
         write_content(favoritesList,'favorites','Избранное',null,null,null,1);
     }
+    var set_poster_size = function (section, size) {
+        var font_size = get_font_size(size);
+        $('div.explore').find('div.setup').attr('data-size',size);
+        $('style.poster_size_'+section).remove();
+        $('body').append('<style class="poster_size_'+section+'">'+
+            'div.explore div.'+section+' > div > div.poster, '+
+            'div.explore div.'+section+' > div > div.poster > div > div.info '+
+            '{ width: '+size+'px; } '+
+            'div.explore div.'+section+' div.poster > div.image > img '+
+            '{width: '+(size-10)+'px;} '+
+            ((font_size==0)?
+                'div.explore div.'+section+' div.poster > div.label '+
+                '{display: none;}'
+                :
+                'div.explore div.'+section+' div.poster > div.label > div.title, '+
+                'div.explore div.'+section+' div.poster > div.label > div.info > a '+
+                '{font-size: '+font_size+'px;}'
+                )+'</style>');
+    //<<<<
+    }
     var write_content = function (content,section,name,category,root_url,fav,did,def_size,page_num) {
+        var i_count = get_view_i_count(section);
+        i_count = (i_count == null || i_count < 1)?20:i_count;
         //определяем размер постера и их кол-во
         var size = get_view_size(section);
-        var i_count = get_view_i_count(section);
         def_size = (def_size == null)?130:def_size;
         size = (size == null || size < 1)?def_size:size;
-        i_count = (i_count == null || i_count < 1)?20:i_count;
+        if (size > 0 && size!=null && size!=def_size)
+            set_poster_size(section, size);
         //<<
         //впиливание кастмного стиля для отобрадения нужного размера постеров и шрифта
-        var font_size = get_font_size(size);
-        if (size > 0 && size!=null && size!=def_size)
-            $('body').append('<style>'+
-                'div.explore div.'+section+' > div > div.poster, '+
-                'div.explore div.'+section+' > div > div.poster > div > div.info '+
-                '{ width: '+size+'px; } '+
-                'div.explore div.'+section+' div.poster > div.image > img '+
-                '{width: '+(size-10)+'px;} '+
-                ((font_size==0)?
-                    'div.explore div.'+section+' div.poster > div.label '+
-                    '{display: none;}'
-                    :
-                    'div.explore div.'+section+' div.poster > div.label > div.title, '+
-                    'div.explore div.'+section+' div.poster > div.label > div.info > a '+
-                    '{font-size: '+font_size+'px;}'
-                    )+'</style>');
-        //<<<<
+        
         if (page_num == null) page_num = 1;
         var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
         var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" data-i_count="'+i_count+'" data-def_size="'+def_size+'" data-size="'+size+'" title="Настроить вид"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+' data-page="'+page_num+'" data-fav="'+((fav==null)?0:1)+'" data-did="'+((did == null)?0:1)+'" data-root_url="'+((root_url == null)?0:root_url)+'">';
@@ -620,7 +626,7 @@ var explore = function () {
     }
     var make_setup_view = function (obj) {
         var i_count = $(obj).attr('data-i_count');
-        var size = $(obj).data('size');
+        var size = $(obj).attr('data-size');
         var def_size = $(obj).data('def_size');
         var t = $('<div class="setup_div" data-i_count="'+i_count+'" data-size="'+def_size+'"></div>').hide();
         $('<div class="slider"/>').slider({
@@ -632,6 +638,8 @@ var explore = function () {
                 var sect = $(this).parents().eq(3).attr('class');
                 set_view_size(sect,ui.value);
                 calculate_moveble(sect,ui.value);
+                set_poster_size(sect,ui.value);
+                $(this).parents().eq(2).children('div').css('min-height','0px');
             },
             slide: function(event, ui) {
                 var t =  $(this).parents().eq(2).children('div').children('div.poster');
@@ -663,6 +671,8 @@ var explore = function () {
             var sect = $(this).parents().eq(3).attr('class');
             set_view_size(sect,defoult_size);
             calculate_moveble(sect,defoult_size);
+            set_poster_size(sect,defoult_size);
+            $(this).parents().eq(2).children('div').css('min-height','0px');
         }).appendTo(t);
         var optns = '';
         for (var i = 1; i<21; i++ )
