@@ -468,10 +468,8 @@ var explore = function () {
         if (content == null)
             var content = get_content(section);
         var root_url = content_sourse[section].root_url;
-        root_url = (root_url == 0)?null:root_url;
         var fav = content_sourse[section].fav;
         var did = content_sourse[section].did;
-        did = (did == 0)?null:1;
             
         if (page == null) page = 1;
         var poster_count = get_view_i_count(section);
