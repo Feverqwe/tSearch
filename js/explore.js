@@ -442,7 +442,7 @@ var explore = function () {
     var make_page_body = function (i_count,length,page) {
         var btns = '';
         if (length<=i_count) return '';
-        var page_count = Math.floor(length/i_count);
+        var page_count = Math.floor((length-1)/i_count);
         for (var i = 1;i<page_count+2;i++) {
             btns += '<div class="item'+((i==page)?' active':'')+'">'+i+'</div>';
         }
