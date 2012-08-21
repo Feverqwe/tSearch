@@ -384,14 +384,14 @@ var explore = function () {
                 $('div.explore ul.sortable li div').children('div').children('div.poster').show();
                 $('div.explore ul.sortable li div').children('div').children('div.pager').show();
                 $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow','0 4px 8px -4px rgba(0, 0, 0, 0.5)');
-                save_options();
+                save_order();
             }
         });
         for (var i = 0;i<listOptions.length;i++){
             ul.append('<li class="'+listOptions[i].n+'"></li>');
         }
     }
-    var save_options = function () {
+    var save_order = function () {
         var ul = $('div.explore ul.sortable').children('li');
         var ul_c = ul.length;
         var old_listOpts = listOptions;
