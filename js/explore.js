@@ -311,6 +311,14 @@ var explore = function () {
         }
         return 1;
     }
+    var set_view_status = function (n,s) {
+        if (listOptions == null) return;
+        for (var i = 0;i<listOptions.length;i++) {
+            if (listOptions[i].n == n)
+                listOptions[i].s = s;
+        }
+        SetSettings('listOptions',JSON.stringify(listOptions));
+    }
     var set_view_size = function (n,s) {
         if (listOptions == null) return;
         for (var i = 0;i<listOptions.length;i++) {
@@ -634,7 +642,8 @@ var explore = function () {
                 $(this).parent().parent().children('div').slideDown('fast',function (){
                     t.removeClass('up').addClass('down');
                     t.show('fast');
-                    save_options();
+                    var sect = t.parents().eq(2).attr('class');
+                    set_view_status(sect,1);
                 });
             }else{
                 var t = $(this);
@@ -649,7 +658,8 @@ var explore = function () {
                 $(this).parents().eq(1).children('div').slideUp('fast',function (){
                     t.removeClass('down').addClass('up');
                     t.show('fast');
-                    save_options();
+                    var sect = t.parents().eq(2).attr('class');
+                    set_view_status(sect,0);
                 });
             }
         });
