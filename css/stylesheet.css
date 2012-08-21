@@ -484,6 +484,17 @@ div.explore h2 > div.setup_div >  div.clear {
     margin-bottom: 1px;
     margin-left: 13px;
 }
+div.explore h2 > div.setup_div >  div.count {
+    display: inline-block;
+    position: relative;
+}
+div.explore h2 > div.setup_div >  div.count select {
+    position: absolute;
+    top: -17px;
+    left: 4px;
+    height: 18px;
+    width: 46px;
+}
 div.explore h2 > div.setup_div > div.slider > a {
     background-color: #F6F6F6;
     border: 1px solid #CCC;
@@ -581,7 +592,26 @@ div.explore div.games > div > div.poster > div > div.info {
 div.explore div.info > a {
     text-decoration: none;
 }
-
+div.explore div.pager {
+    text-align: center;
+}
+div.explore div.pager > div.item {
+    display: inline-block;
+    margin: 0 auto;
+    border-radius: 6px;
+    padding-top: 2px;
+    margin-left: 2px;
+    min-width: 26px;
+    height: 16px;
+    cursor: pointer;
+}
+div.explore div.pager > div.item:hover {
+    background-color: #EBEBEB;
+}
+div.explore div.pager > div.item.active {
+    background-color: #9CF;
+    cursor: default;
+}
 div.search_panel > div.left {
     display: inline-block;
 }

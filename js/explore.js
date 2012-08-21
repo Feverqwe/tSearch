@@ -273,11 +273,27 @@ var explore = function () {
         }
         SetSettings('listOptions',JSON.stringify(listOptions));
     }
+    var set_view_i_count = function (n,s) {
+        if (listOptions == null) return;
+        for (var i = 0;i<listOptions.length;i++) {
+            if (listOptions[i].n == n)
+                listOptions[i].count = parseInt(s);
+        }
+        SetSettings('listOptions',JSON.stringify(listOptions));
+    }
     var get_view_size = function (n) {
         if (listOptions == null) return 0;
         for (var i = 0;i<listOptions.length;i++) {
             if (listOptions[i].n == n)
                 return listOptions[i].size;
+        }
+        return 0;
+    }
+    var get_view_i_count = function (n) {
+        if (listOptions == null) return 0;
+        for (var i = 0;i<listOptions.length;i++) {
+            if (listOptions[i].n == n)
+                return listOptions[i].count;
         }
         return 0;
     }
@@ -305,12 +321,14 @@ var explore = function () {
                 });
                 $('div.explore').find('div.setup:visible').addClass('triggered').hide('fast');
                 $('div.explore ul.sortable li div').children('div').children('div.poster').hide();
+                $('div.explore ul.sortable li div').children('div').children('div.pager').hide();
                 $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow','none');
             },
             stop: function(event, ui) {
                 $('div.explore').find('div.spoiler').show('fast');
                 $('div.explore').find('div.setup.triggered').removeClass('triggered').show('fast');
                 $('div.explore ul.sortable li div').children('div').children('div.poster').show();
+                $('div.explore ul.sortable li div').children('div').children('div.pager').show();
                 $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow','0 4px 8px -4px rgba(0, 0, 0, 0.5)');
                 save_options();
             }
@@ -329,13 +347,14 @@ var explore = function () {
     var save_options = function () {
         var ul = $('div.explore ul.sortable').children('li');
         var ul_c = ul.length;
+        var old_listOpts = listOptions;
         listOptions = [];
-        for (var i2=0;i2<ul_c;i2++)
-            listOptions[i2] = {
-                n: ul.eq(i2).attr('class'), 
-                s: (ul.eq(i2).find('div.spoiler').is('.up'))?0:1, 
-                size: ul.eq(i2).find('div.poster').width()
-            };
+        for (var i2=0;i2<ul_c;i2++){
+            var ol_l = old_listOpts.length;
+            for ( var i = 0; i<ol_l; i++)
+                if (old_listOpts[i].n == ul.eq(i2).attr('class'))
+                    listOptions[i2] = old_listOpts[i];
+        }
         SetSettings('listOptions',JSON.stringify(listOptions));
     }
     var show_favorites = function () {
@@ -348,10 +367,12 @@ var explore = function () {
         write_content(favoritesList,'favorites','Избранное',null,null,null,1);
     }
     var write_content = function (content,section,name,category,root_url,fav,did,def_size,page_num) {
-        //определяем размер постера
+        //определяем размер постера и их кол-во
         var size = get_view_size(section);
+        var i_count = get_view_i_count(section);
         def_size = (def_size == null)?130:def_size;
         size = (size == null || size < 1)?def_size:size;
+        i_count = (i_count == null || i_count < 1)?20:i_count;
         //<<
         //впиливание кастмного стиля для отобрадения нужного размера постеров и шрифта
         var font_size = get_font_size(size);
@@ -373,14 +394,14 @@ var explore = function () {
         //<<<<
         if (page_num == null) page_num = 1;
         var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
-        var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" data-def_size="'+def_size+'" data-size="'+size+'" title="Настроить вид"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+' data-page="'+page_num+'" data-fav="'+((fav==null)?0:1)+'" data-did="'+((did == null)?0:1)+'" data-root_url="'+((root_url == null)?0:root_url)+'">';
+        var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" data-i_count="'+i_count+'" data-def_size="'+def_size+'" data-size="'+size+'" title="Настроить вид"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+' data-page="'+page_num+'" data-fav="'+((fav==null)?0:1)+'" data-did="'+((did == null)?0:1)+'" data-root_url="'+((root_url == null)?0:root_url)+'">';
         //для вывода страницы нужно контент (obj), рут_урл (str), фаворит (bool) и did (bool)
-        c += write_page(content, root_url, fav, did, page_num);
+        c += write_page(content, section, root_url, fav, did, page_num);
         //<<
         c += '</div></div>';
         var explore_div = $('div.explore');
         var exp_li = explore_div.children('ul').children('li.'+section);
-        exp_li.append(view.contentUnFilter(c));
+        exp_li.append(c);
         exp_li.children('div.'+section).children('div').children('div.poster').find('img').click(function () {
             var s = $(this).parents().eq(1).find('div.title').children('span').text();
             triggerClick(s,category);
@@ -392,33 +413,39 @@ var explore = function () {
         calculate_moveble(section,size);
         update_btns(section);
     }
-    var write_page = function (content, root_url, fav, did, page) {
+    var write_page = function (content, section, root_url, fav, did, page) {
         if (page == null) page = 1;
-        var poster_count = 10;
+        var poster_count = get_view_i_count(section);
+        poster_count = (poster_count == null || poster_count < 1)?20:poster_count;
         var cc = 0;
         var fav = (fav != null)?'<div class="add_favorite" title="В избранное">':'<div class="del_favorite" title="Удалить из избранного">';
         var root_url = (root_url == null)? '' : root_url;
         var c = '';
+        c+= '<div class="pager">'+make_page_body(poster_count,content.length,page)+'</div>';
         var max_item = page*poster_count;
         var min_item = max_item - poster_count;
         $.each(content, function (k,v) {
             cc ++;
-            if (cc<min_item) return true;
+            if (cc<=min_item) return true;
             if (cc>max_item) return false;
             var id = (did!=null) ? ' data-id="'+k+'"' : '';
             c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
         });
-        load_content('games');
-        return c;
+        return view.contentUnFilter(c);
+    }
+    var make_page_body = function (i_count,length,page) {
+        var btns = '';
+        if (length<=i_count) return '';
+        var page_count = Math.floor(length/i_count);
+        for (var i = 1;i<page_count+2;i++) {
+            btns += '<div class="item'+((i==page)?' active':'')+'">'+i+'</div>';
+        }
+        return btns;
     }
     var get_content = function (section) {
-        var content = (GetSettings('explorerCache') !== undefined) ? JSON.parse(GetSettings('explorerCache')) : {};
-        $.each(content, function (k,v) {
-            if (k == section) {
-                return v.cache_arr;
-            }
-        });
-        return {};
+        if (section == 'favorites')
+            return favoritesList;
+        return explorerCache[section].cache_arr;
     }
     var add_in_favorites = function (obj) {
         favoritesList[favoritesList.length] = {
@@ -508,7 +535,7 @@ var explore = function () {
             titles.eq(i).parent().attr('class','title '+move_name);
         }
     }
-    var bind_favorite_btn = function (section) {
+    var bind_fav_btns = function (section) {
         // кнопка избранное - добавить
         $('div.explore div.'+section).on('click', 'div.add_favorite', function() {
             add_in_favorites($(this).parent().parent());
@@ -519,22 +546,32 @@ var explore = function () {
                 del_from_favorites($(this).attr('data-id'));
             });
         });
-        
-    /*
-        $('div.explore div.'+section).find('div.add_favorite').click( function () {
-            add_in_favorites($(this).parent().parent());
+    }
+    var bind_pager_btns = function (sect) {
+        // кнопки переключения страниц
+        $('div.explore div.'+sect+' div.pager').on('hover', 'div.item', function() {
+            if ($(this).parents().eq(1).css('min-height') != null) {
+                if ($(this).parents().eq(1).height() > $(this).parents().eq(1).css('min-height').replace('px',''))
+                    $(this).parents().eq(1).css('min-height',$(this).parents().eq(1).height()+'px');
+            } else {
+                $(this).parents().eq(1).css('min-height',$(this).parents().eq(1).height()+'px')
+            }
+                
+            var page = $(this).text();
+            var sect = $(this).parents().eq(3).attr('class');
+            //console.log(sect);
+            var content = get_content(sect);
+            var root_url = $(this).parents().eq(1).data('root_url');
+            root_url = (root_url == 0)?null:root_url;
+            var fav = $(this).parents().eq(1).data('fav');
+            fav = (fav == 0)?null:1;
+            var did = $(this).parents().eq(1).data('did');
+            did = (did == 0)?null:1;
+            $(this).parents().eq(1).html(write_page(content, sect, root_url, fav, did, page));
+            bind_pager_btns(sect);
         });
-        */
-    /*
-        $('div.explore div.'+section).find('div.del_favorite').click( function () {
-            $(this).parent().parent().hide('fast',function () {
-                del_from_favorites($(this).attr('data-id'));
-            });
-        });
-        */
     }
     var update_btns = function (section) {
-        bind_favorite_btn(section);
         //спойлер увеличения\уменьшения постеров
         $('div.explore div.'+section).find('div.spoiler').click( function () {
             if ($(this).is('.up')){
@@ -563,6 +600,8 @@ var explore = function () {
                 });
             }
         });
+        bind_fav_btns(section);
+        bind_pager_btns(section);
         //настройки
         $('div.explore div.'+section).find('div.setup').click(function () {
             var t = $(this).parent().children('div.setup_div');
@@ -580,9 +619,10 @@ var explore = function () {
         });
     }
     var make_setup_view = function (obj) {
+        var i_count = $(obj).attr('data-i_count');
         var size = $(obj).data('size');
         var def_size = $(obj).data('def_size');
-        var t = $('<div class="setup_div" data-size="'+def_size+'"></div>').hide();
+        var t = $('<div class="setup_div" data-i_count="'+i_count+'" data-size="'+def_size+'"></div>').hide();
         $('<div class="slider"/>').slider({
             value: size,
             max: def_size,
@@ -624,6 +664,24 @@ var explore = function () {
             set_view_size(sect,defoult_size);
             calculate_moveble(sect,defoult_size);
         }).appendTo(t);
+        var optns = '';
+        for (var i = 1; i<21; i++ )
+            optns += '<option value="'+i+'"'+((i == i_count)?' selected':'')+'>'+i+'</option>';
+        $('<div class="count"><select>'+optns+'</select></div>').children().change(function () {
+            var sect = $(this).parents().eq(3).attr('class');
+            var content = get_content(sect);
+            var root_url = $(this).parents().eq(3).children('div').data('root_url');
+            root_url = (root_url == 0)?null:root_url;
+            var fav = $(this).parents().eq(3).children('div').data('fav');
+            fav = (fav == 0)?null:1;
+            var did = $(this).parents().eq(3).children('div').data('did');
+            did = (did == 0)?null:1;
+            $(this).parents().eq(2).children('div.setup').attr('data-i_count',$(this).val());
+            set_view_i_count(sect,$(this).val());
+            $(this).parents().eq(3).children('div').css('min-height','0px');
+            $(this).parents().eq(3).children('div').html(write_page(content, sect, root_url, fav, did, null));
+            bind_pager_btns(sect);
+        }).parent().appendTo(t);
         return t;
     }
     var get_font_size = function (w) {
