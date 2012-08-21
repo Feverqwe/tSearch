@@ -556,22 +556,23 @@ var explore = function () {
     var bind_pager_btns = function (sect) {
         // кнопки переключения страниц
         $('div.explore div.'+sect+' div.pager').on('hover', 'div.item', function() {
-            if ($(this).parents().eq(1).css('min-height') != null) {
-                if ($(this).parents().eq(1).height() > $(this).parents().eq(1).css('min-height').replace('px',''))
-                    $(this).parents().eq(1).css('min-height',$(this).parents().eq(1).height()+'px');
+            var main_div = $(this).parents().eq(1);
+            if (main_div.css('min-height') != null) {
+                if (main_div.height() > main_div.css('min-height').replace('px',''))
+                    main_div.css('min-height',main_div.height()+'px');
             } else {
-                $(this).parents().eq(1).css('min-height',$(this).parents().eq(1).height()+'px')
+                main_div.css('min-height',$(this).parents().eq(1).height()+'px')
             }
                 
             var page = $(this).text();
             var sect = $(this).parents().eq(3).attr('class');
             //console.log(sect);
             var content = get_content(sect);
-            var root_url = $(this).parents().eq(1).data('root_url');
+            var root_url = main_div.data('root_url');
             root_url = (root_url == 0)?null:root_url;
-            var fav = $(this).parents().eq(1).data('fav');
+            var fav = main_div.data('fav');
             fav = (fav == 0)?null:1;
-            var did = $(this).parents().eq(1).data('did');
+            var did = main_div.data('did');
             did = (did == 0)?null:1;
             $(this).parents().eq(1).html(write_page(content, sect, root_url, fav, did, page));
             bind_pager_btns(sect);
@@ -581,6 +582,15 @@ var explore = function () {
             var def_size = 130;
             size = (size == null || size < 1)?def_size:size;
             calculate_moveble(sect,size);
+            
+            main_div.children('div.poster').find('img').click(function () {
+                var s = $(this).parents().eq(1).find('div.title').children('span').text();
+                triggerClick(s);
+            });
+            main_div.find('div.title').click(function () {
+                var s = $(this).children('span').text();
+                triggerClick(s);
+            });            
             
         });
     }
@@ -685,19 +695,36 @@ var explore = function () {
         for (var i = 1; i<21; i++ )
             optns += '<option value="'+i+'"'+((i == i_count)?' selected':'')+'>'+i+'</option>';
         $('<div class="count"><select>'+optns+'</select></div>').children().change(function () {
+            var main_div = $(this).parents().eq(3).children('div');
             var sect = $(this).parents().eq(3).attr('class');
             var content = get_content(sect);
-            var root_url = $(this).parents().eq(3).children('div').data('root_url');
+            var root_url = main_div.data('root_url');
             root_url = (root_url == 0)?null:root_url;
-            var fav = $(this).parents().eq(3).children('div').data('fav');
+            var fav = main_div.data('fav');
             fav = (fav == 0)?null:1;
-            var did = $(this).parents().eq(3).children('div').data('did');
+            var did = main_div.data('did');
             did = (did == 0)?null:1;
             $(this).parents().eq(2).children('div.setup').attr('data-i_count',$(this).val());
             set_view_i_count(sect,$(this).val());
-            $(this).parents().eq(3).children('div').css('min-height','0px');
-            $(this).parents().eq(3).children('div').html(write_page(content, sect, root_url, fav, did, null));
+            main_div.css('min-height','0px');
+            main_div.html(write_page(content, sect, root_url, fav, did, null));
             bind_pager_btns(sect);
+            
+            var size = get_view_size(sect);
+            var def_size = 130;
+            size = (size == null || size < 1)?def_size:size;
+            calculate_moveble(sect,size);
+            
+            
+            main_div.children('div.poster').find('img').click(function () {
+                var s = $(this).parents().eq(1).find('div.title').children('span').text();
+                triggerClick(s);
+            });
+            main_div.find('div.title').click(function () {
+                var s = $(this).children('span').text();
+                triggerClick(s);
+            });
+            
         }).parent().appendTo(t);
         return t;
     }
