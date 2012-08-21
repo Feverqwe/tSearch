@@ -575,6 +575,13 @@ var explore = function () {
             did = (did == 0)?null:1;
             $(this).parents().eq(1).html(write_page(content, sect, root_url, fav, did, page));
             bind_pager_btns(sect);
+            
+            
+            var size = get_view_size(sect);
+            var def_size = 130;
+            size = (size == null || size < 1)?def_size:size;
+            calculate_moveble(sect,size);
+            
         });
     }
     var update_btns = function (section) {
