@@ -32,6 +32,48 @@ var explore = function () {
         s:1,
         size: 0
     }];
+    var content_sourse = {
+        favorites: {
+            t:'Избранное',
+            c:null,
+            root_url: null,
+            fav: null,
+            did: 1,
+            size: 130
+        },
+        games: {
+            t:'Игры',
+            c:2,
+            root_url: null,
+            fav: 1,
+            did: null,
+            size: 110
+        },
+        films: {
+            t:'Сейчас в кино',
+            c:3,
+            root_url: 'http://www.kinopoisk.ru',
+            fav: 1,
+            did: null,
+            size: 130
+        },
+        top_films: {
+            t:'Фильмы',
+            c:3,
+            root_url: 'http://www.kinopoisk.ru',
+            fav: 1,
+            did: null,
+            size: 130
+        },
+        serials: {
+            t:'Сериалы',
+            c:0,
+            root_url: 'http://www.kinopoisk.ru',
+            fav: 1,
+            did: null,
+            size: 130
+        }
+    };
     var sesizeimg = function (i) {
         i = i.replace('/sm_film/','/film/');
         return i;
@@ -246,16 +288,20 @@ var explore = function () {
         });
     }
     var show_games = function (content) {
-        write_content(content,'games','Игры',2,null,1,null,110);
+        var t = 'games';
+        write_content(content,t);
     }
     var show_films = function (content) {
-        write_content(content,'films','Сейчас в кино',3,'http://www.kinopoisk.ru',1);
+        var t = 'films';
+        write_content(content,t);
     }
     var show_top_films = function (content) {
-        write_content(content,'top_films','Фильмы',3,'http://www.kinopoisk.ru',1);
+        var t = 'top_films';
+        write_content(content,t);
     }
     var show_serials = function (content) {
-        write_content(content,'serials','Сериалы',0,'http://www.kinopoisk.ru',1);
+        var t = 'serials';
+        write_content(content,t);
     }
     var get_view_status = function (n) {
         if (listOptions == null) return 1;
@@ -282,12 +328,12 @@ var explore = function () {
         SetSettings('listOptions',JSON.stringify(listOptions));
     }
     var get_view_size = function (n) {
-        if (listOptions == null) return 0;
+        if (listOptions == null) return content_sourse[n].size;
         for (var i = 0;i<listOptions.length;i++) {
             if (listOptions[i].n == n)
                 return listOptions[i].size;
         }
-        return 0;
+        return content_sourse[n].size;
     }
     var get_view_i_count = function (n) {
         if (listOptions == null) return 0;
@@ -333,13 +379,6 @@ var explore = function () {
                 save_options();
             }
         });
-        if (listOptions.length == 4) {
-            listOptions[listOptions.length] = {
-                n:'favorites',
-                s:1,
-                size: 0
-            }
-        }
         for (var i = 0;i<listOptions.length;i++){
             ul.append('<li class="'+listOptions[i].n+'"></li>');
         }
@@ -358,13 +397,16 @@ var explore = function () {
         SetSettings('listOptions',JSON.stringify(listOptions));
     }
     var show_favorites = function () {
-        if (favoritesList.length < 1) { 
+        if (favoritesList.length < 1) {
             $('li.favorites').css('display','none');
             return;
         } else 
             $('li.favorites').css('display','list-item');
+        var page = $('li.favorites').children('div').children('div').attr('data-page');
+        if (page == null) page = 1;
         $('li.favorites').empty();
-        write_content(favoritesList,'favorites','Избранное',null,null,null,1);
+        var t = 'favorites';
+        write_content(favoritesList,t,page);
     }
     var set_poster_size = function (section, size) {
         var font_size = get_font_size(size);
@@ -386,12 +428,14 @@ var explore = function () {
                 )+'</style>');
     //<<<<
     }
-    var write_content = function (content,section,name,category,root_url,fav,did,def_size,page_num) {
+    var write_content = function (content,section,page_num) {
         var i_count = get_view_i_count(section);
         i_count = (i_count == null || i_count < 1)?20:i_count;
         //определяем размер постера и их кол-во
         var size = get_view_size(section);
-        def_size = (def_size == null)?130:def_size;
+        var def_size = content_sourse[section].size;
+        var name = content_sourse[section].t;
+        var category = content_sourse[section].c;
         size = (size == null || size < 1)?def_size:size;
         if (size > 0 && size!=null && size!=def_size)
             set_poster_size(section, size);
@@ -400,26 +444,35 @@ var explore = function () {
         
         if (page_num == null) page_num = 1;
         var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
-        var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" data-i_count="'+i_count+'" data-def_size="'+def_size+'" data-size="'+size+'" title="Настроить вид"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+' data-page="'+page_num+'" data-fav="'+((fav==null)?0:1)+'" data-did="'+((did == null)?0:1)+'" data-root_url="'+((root_url == null)?0:root_url)+'">';
-        //для вывода страницы нужно контент (obj), рут_урл (str), фаворит (bool) и did (bool)
-        c += write_page(content, section, root_url, fav, did, page_num);
+        var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" data-i_count="'+i_count+'" data-size="'+size+'" title="Настроить вид"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+' data-page="'+page_num+'">';
+        //вывод страницы
+        c += write_page(section, page_num, content);
         //<<
         c += '</div></div>';
         var explore_div = $('div.explore');
         var exp_li = explore_div.children('ul').children('li.'+section);
         exp_li.append(c);
-        exp_li.children('div.'+section).children('div').children('div.poster').find('img').click(function () {
+        
+        exp_li.children('div.'+section).children('div').on('click', 'div.poster img', function() {
             var s = $(this).parents().eq(1).find('div.title').children('span').text();
             triggerClick(s,category);
         });
-        exp_li.children('div.'+section).children('div').find('div.title').click(function () {
+        exp_li.children('div.'+section).children('div').on('click', 'div.title', function() {
             var s = $(this).children('span').text();
             triggerClick(s,category);
         });
         calculate_moveble(section,size);
         update_btns(section);
     }
-    var write_page = function (content, section, root_url, fav, did, page) {
+    var write_page = function (section, page, content) {
+        if (content == null)
+            var content = get_content(section);
+        var root_url = content_sourse[section].root_url;
+        root_url = (root_url == 0)?null:root_url;
+        var fav = content_sourse[section].fav;
+        var did = content_sourse[section].did;
+        did = (did == 0)?null:1;
+            
         if (page == null) page = 1;
         var poster_count = get_view_i_count(section);
         poster_count = (poster_count == null || poster_count < 1)?20:poster_count;
@@ -555,7 +608,7 @@ var explore = function () {
     }
     var bind_pager_btns = function (sect) {
         // кнопки переключения страниц
-        $('div.explore div.'+sect+' div.pager').on('hover', 'div.item', function() {
+        $('div.explore div.'+sect+'').on('hover', 'div.pager > div.item', function() {
             var main_div = $(this).parents().eq(1);
             if (main_div.css('min-height') != null) {
                 if (main_div.height() > main_div.css('min-height').replace('px',''))
@@ -566,32 +619,11 @@ var explore = function () {
                 
             var page = $(this).text();
             var sect = $(this).parents().eq(3).attr('class');
-            //console.log(sect);
-            var content = get_content(sect);
-            var root_url = main_div.data('root_url');
-            root_url = (root_url == 0)?null:root_url;
-            var fav = main_div.data('fav');
-            fav = (fav == 0)?null:1;
-            var did = main_div.data('did');
-            did = (did == 0)?null:1;
-            $(this).parents().eq(1).html(write_page(content, sect, root_url, fav, did, page));
-            bind_pager_btns(sect);
-            
+            $('li.'+sect).children('div').children('div').attr('data-page',page);
+            $(this).parents().eq(1).html(write_page(sect, page));
             
             var size = get_view_size(sect);
-            var def_size = 130;
-            size = (size == null || size < 1)?def_size:size;
-            calculate_moveble(sect,size);
-            
-            main_div.children('div.poster').find('img').click(function () {
-                var s = $(this).parents().eq(1).find('div.title').children('span').text();
-                triggerClick(s);
-            });
-            main_div.find('div.title').click(function () {
-                var s = $(this).children('span').text();
-                triggerClick(s);
-            });            
-            
+            calculate_moveble(sect,size);            
         });
     }
     var update_btns = function (section) {
@@ -644,7 +676,8 @@ var explore = function () {
     var make_setup_view = function (obj) {
         var i_count = $(obj).attr('data-i_count');
         var size = $(obj).attr('data-size');
-        var def_size = $(obj).data('def_size');
+        var section = $(obj).parents().eq(2).attr('class');
+        var def_size = content_sourse[section].size;
         var t = $('<div class="setup_div" data-i_count="'+i_count+'" data-size="'+def_size+'"></div>').hide();
         $('<div class="slider"/>').slider({
             value: size,
@@ -678,7 +711,8 @@ var explore = function () {
         }).appendTo(t);
         $('<div class="clear" title="По умолчанию">').click(function () {
             var t =  $(this).parents().eq(2).children('div').children('div.poster');
-            var defoult_size = $(this).parent().data('size');
+            var sect = $(this).parents().eq(3).attr('class');
+            var defoult_size = content_sourse[sect].size;
             t.width(defoult_size);
             t.find('img').width(defoult_size-10);
             t.find('div.title span').css('font-size','12px');
@@ -695,36 +729,14 @@ var explore = function () {
         for (var i = 1; i<21; i++ )
             optns += '<option value="'+i+'"'+((i == i_count)?' selected':'')+'>'+i+'</option>';
         $('<div class="count"><select>'+optns+'</select></div>').children().change(function () {
-            var main_div = $(this).parents().eq(3).children('div');
             var sect = $(this).parents().eq(3).attr('class');
-            var content = get_content(sect);
-            var root_url = main_div.data('root_url');
-            root_url = (root_url == 0)?null:root_url;
-            var fav = main_div.data('fav');
-            fav = (fav == 0)?null:1;
-            var did = main_div.data('did');
-            did = (did == 0)?null:1;
             $(this).parents().eq(2).children('div.setup').attr('data-i_count',$(this).val());
             set_view_i_count(sect,$(this).val());
+            var main_div = $(this).parents().eq(3).children('div');
             main_div.css('min-height','0px');
-            main_div.html(write_page(content, sect, root_url, fav, did, null));
-            bind_pager_btns(sect);
-            
+            main_div.html(write_page(sect, null));
             var size = get_view_size(sect);
-            var def_size = 130;
-            size = (size == null || size < 1)?def_size:size;
-            calculate_moveble(sect,size);
-            
-            
-            main_div.children('div.poster').find('img').click(function () {
-                var s = $(this).parents().eq(1).find('div.title').children('span').text();
-                triggerClick(s);
-            });
-            main_div.find('div.title').click(function () {
-                var s = $(this).children('span').text();
-                triggerClick(s);
-            });
-            
+            calculate_moveble(sect,size);            
         }).parent().appendTo(t);
         return t;
     }
