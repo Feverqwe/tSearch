@@ -7,6 +7,8 @@ var view = function () {
     var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
     var AutoSetCategory = (GetSettings('AutoSetCategory') !== undefined) ? parseInt(GetSettings('AutoSetCategory')) : true;
     var TeaserFilter = (GetSettings('TeaserFilter') !== undefined) ? parseInt(GetSettings('TeaserFilter')) : false;
+    var add_in_omnibox = (GetSettings('add_in_omnibox') !== undefined) ? parseInt(GetSettings('add_in_omnibox')) : true;
+    var context_menu = (GetSettings('context_menu') !== undefined) ? parseInt(GetSettings('context_menu')) : true;
     var t_table_line = 0;
     var addTrackerInList = function (i) {
         var filename = tracker[i].filename;
@@ -39,6 +41,9 @@ var view = function () {
         $('input[name="typeFiltration"]').eq(AdvFiltration).prop('checked',true);
         $('input[name="autosetcategory"]').prop('checked',AutoSetCategory);
         $('input[name="teaserfilter"]').prop('checked',TeaserFilter);
+        
+        $('input[name="add_in_omnibox"]').prop('checked',add_in_omnibox);
+        $('input[name="context_menu"]').prop('checked',context_menu);
     }
     var save_settings = function () {
         var tr = $('#internalTrackers tbody').children('tr');
@@ -59,6 +64,13 @@ var view = function () {
         HideSeed = SetSettings('HideSeed',($('input[name="hideseed"]').is(':checked'))?1:0);
         AutoSetCategory = SetSettings('AutoSetCategory',($('input[name="autosetcategory"]').is(':checked'))?1:0);
         TeaserFilter = SetSettings('TeaserFilter',($('input[name="teaserfilter"]').is(':checked'))?1:0);
+        
+        add_in_omnibox = SetSettings('add_in_omnibox',($('input[name="add_in_omnibox"]').is(':checked'))?1:0);
+        context_menu = SetSettings('context_menu',($('input[name="context_menu"]').is(':checked'))?1:0);
+        if (navigator.userAgent.search(/Chrome/) > 0) {
+            var bgp = chrome.extension.getBackgroundPage();
+            bgp.bg.update_context_menu();
+        }
         var tmp = $('input[name="typeFiltration"]');
         var tmp_l = tmp.length;
         for (var i = 0;i<tmp_l;i++)
@@ -88,6 +100,10 @@ var view = function () {
     }
 }();
 $(function () {
+    if (navigator.userAgent.search(/Chrome/) < 1) {
+        $('input[name="add_in_omnibox"]').parent().hide();
+        $('input[name="context_menu"]').parent().hide();
+    }
     $('form[name="save"]').submit(function () {
         view.save_settings();
         return false;
