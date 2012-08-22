@@ -421,6 +421,7 @@ var view = function () {
         $('div.filter div.btn').css('background-image','url(images/clear.png)');
     }
     var triggerBlank = function () {
+        $('body,html').scrollTop();
         $('div.result_panel').css('display','none');
         $('div.explore').css('display','block');
         view.clear_table();
@@ -432,6 +433,7 @@ var view = function () {
         explore.getLoad();
     }
     var triggerSearch = function (keyword) {
+        $('body,html').scrollTop();
         $('div.result_panel').css('display','block');
         $('div.explore').css('display','none');
         view.clear_table();

@@ -443,7 +443,6 @@ var explore = function () {
         var size = get_view_size(section);
         var def_size = content_sourse[section].size;
         var name = content_sourse[section].t;
-        var category = content_sourse[section].c;
         size = (size == null || size < 1)?def_size:size;
         if (size > 0 && size!=null && size!=def_size)
             set_poster_size(section, size);
@@ -461,6 +460,7 @@ var explore = function () {
         var exp_li = explore_div.children('ul').children('li.'+section);
         exp_li.append(c);
         
+        var category = content_sourse[section].c;
         exp_li.children('div.'+section).children('div').on('click', 'div.poster img', function() {
             var s = $(this).parents().eq(1).find('div.title').children('span').text();
             triggerClick(s,category);
