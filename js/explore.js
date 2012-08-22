@@ -643,6 +643,7 @@ var explore = function () {
     var update_btns = function (section) {
         //спойлер увеличения\уменьшения постеров
         $('div.explore div.'+section).find('div.spoiler').click( function () {
+            $(this).parents().eq(1).children('div').css('min-height','0px');
             if ($(this).is('.up')){
                 var t = $(this);
                 t.hide('fast');
