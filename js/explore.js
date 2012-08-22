@@ -122,12 +122,12 @@ var explore = function () {
     }
     var readGames = function (c) {
         c = view.contentFilter(c);
-        var t = $(c).find('div.block12_content').children('div.block12_mostpopulargames_fullblock');
+        var t = $(c).find('div.block12_content').children('div.block12_flash_bottom');
         var l = t.length;
         var arr = [];
         var i = 0;
         for (i = 1;i<l;i++) {
-            var item = t.eq(i);
+            var item = t.eq(i).prev();
             arr[arr.length] = {
                 'img' : item.find('img.block12_gamespic').attr('src'),
                 'name' : item.find('span.block3_newslist_capture').text(),                
@@ -267,7 +267,6 @@ var explore = function () {
                 return;
             }
         var url = 'http://www.igromania.ru/gametop/';
-        //var url = 'http://www.gamespot.com/games.html?platform=5&type=top_rated&mode=top&sort=score&dlx_type=all&date_filter=6&sortdir=asc&official=all';
         if (xhr_g != null)
             xhr_g.abort();
         xhr_g = $.ajax({
