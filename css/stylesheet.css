@@ -563,7 +563,7 @@ div.explore div.poster > div.image > img:hover {
 }
 
 div.explore div.games > div > div.poster {
-    width: 110px;
+    width: 203px;
     margin: 12px;
 }
 div.explore div.poster > div {
@@ -587,7 +587,13 @@ div.explore div.poster:hover div.image > div.del_favorite {
     display: block;
 }
 div.explore div.games > div > div.poster > div > div.info {
-    width: 110px;
+    width: 203px;
+}
+div.explore div.games > div > div.poster > div.image > img {
+    max-width: 203px;
+}
+div.explore div.favorites > div > div.poster > div.image > img {
+    max-width: 130px;
 }
 div.explore div.info > a {
     text-decoration: none;

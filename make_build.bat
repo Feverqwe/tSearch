@@ -23,8 +23,10 @@ del .\build\js\options.js
 del .\build\js\storage.js
 del .\build\js\view.js
 del .\build\js\ad.js
+del .\build\js\background.js
 del .\build\tracker\*.js
 
+java -jar compiler.jar --js .\js\background.js --js_output_file .\build\js\background.js
 java -jar compiler.jar --js .\js\engine.js --js_output_file .\build\js\engine.js
 java -jar compiler.jar --js .\js\explore.js --js_output_file .\build\js\explore.js
 java -jar compiler.jar --js .\js\history.js --js_output_file .\build\js\history.js
@@ -76,8 +78,10 @@ xcopy .\ff_o\opera\* .\build_opera\. /E
 del .\build_firefox\chrome\content\js\storage.js
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js_output_file .\build_firefox\chrome\content\js\storage.js
 del .\build_firefox\chrome\content\manifest.json
+del .\build_firefox\chrome\content\js\background.js
 rd /S /Q .\build_firefox\chrome\content\_locales
 del .\build_opera\build\manifest.json
+del .\build_opera\build\js\background.js
 rd /S /Q .\build_opera\build\_locales
 del .\build_chrome.zip
 del .\build_firefox.xpi

@@ -14,23 +14,28 @@ var explore = function () {
     var listOptions = (GetSettings('listOptions') !== undefined) ? JSON.parse(GetSettings('listOptions')) : [{
         n:'favorites',
         s:1,
-        size: 0
+        size: 0,
+        count: 6
     },{
         n:'films',
         s:1,
-        size: 0
+        size: 0,
+        count: 6
     },{
         n:'top_films',
         s:1,
-        size: 0
+        size: 0,
+        count: 12
     },{
         n:'serials',
         s:1,
-        size: 0
+        size: 0,
+        count: 6
     },{
         n:'games',
         s:1,
-        size: 0
+        size: 0,
+        count: 8
     }];
     var content_sourse = {
         favorites: {
@@ -44,10 +49,10 @@ var explore = function () {
         games: {
             t:'Игры',
             c:2,
-            root_url: null,
+            root_url: 'http://www.igromania.ru',
             fav: 1,
             did: null,
-            size: 110
+            size: 203
         },
         films: {
             t:'Сейчас в кино',
@@ -117,18 +122,17 @@ var explore = function () {
     }
     var readGames = function (c) {
         c = view.contentFilter(c);
-        var t = $(c).find('ul.games').children('li');
+        var t = $(c).find('div.block12_content').children('div.block12_mostpopulargames_fullblock');
         var l = t.length;
         var arr = [];
         var i = 0;
-        for (i = 0;i<l;i++) {
-            var item = t.eq(i).children('div').children('div');
+        for (i = 1;i<l;i++) {
+            var item = t.eq(i);
             arr[arr.length] = {
-                'img' : item.eq(1).children('a').children('img').attr('src'),
-                'name' : item.eq(0).children('h3').children('a').text(),
-                'url' : item.eq(0).children('h3').children('a').attr('href')
+                'img' : item.find('img.block12_gamespic').attr('src'),
+                'name' : item.find('span.block3_newslist_capture').text(),                
+                'url' : item.find('div.block12_underopen_text').children('a').attr('href')
             }
-            arr[arr.length-1].name = arr[arr.length-1].name.substr(3,(arr[arr.length-1].name).length-6);
         }
         return arr;
     }
@@ -157,7 +161,7 @@ var explore = function () {
                 show_serials(explorerCache.serials.cache_arr);
                 return;
             }
-        var url = 'http://www.kinopoisk.ru/level/20/serial/list/';
+        var url = 'http://www.kinopoisk.ru/top/serial/list/';
         if (xhr_s != null)
             xhr_s.abort();
         xhr_s = $.ajax({
@@ -200,9 +204,7 @@ var explore = function () {
         var yr = today.getFullYear();
         var month = today.getMonth()+1;
         month = (month<10) ? '0'+String(month):month;
-        var date = today.getDate();
-        date = (date<10) ? '0'+String(date):date;
-        var url = 'http://www.kinopoisk.ru/level/56/day/'+yr+'-'+month+'-'+date+'/';
+        var url = 'http://www.kinopoisk.ru/popular/day/';
         if (xhr_tf != null)
             xhr_tf.abort();
         xhr_tf = $.ajax({
@@ -233,7 +235,7 @@ var explore = function () {
                 show_films(explorerCache.films.cache_arr);
                 return;
             }
-        var url = 'http://www.kinopoisk.ru/level/8/view/main/';
+        var url = 'http://www.kinopoisk.ru/afisha/new/';
         if (xhr != null)
             xhr.abort();
         xhr = $.ajax({
@@ -264,7 +266,8 @@ var explore = function () {
                 show_games(explorerCache.games.cache_arr);
                 return;
             }
-        var url = 'http://www.gamespot.com/games.html?platform=5&type=top_rated&mode=top&sort=score&dlx_type=all&date_filter=6&sortdir=asc&official=all';
+        var url = 'http://www.igromania.ru/gametop/';
+        //var url = 'http://www.gamespot.com/games.html?platform=5&type=top_rated&mode=top&sort=score&dlx_type=all&date_filter=6&sortdir=asc&official=all';
         if (xhr_g != null)
             xhr_g.abort();
         xhr_g = $.ajax({

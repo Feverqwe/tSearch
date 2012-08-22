@@ -11,8 +11,14 @@
     },
     "options_page": "options.html",
     "permissions": [ "http://*/*", "https://*/*" ],
+    "omnibox": {
+        "keyword" : "tms"
+    },
+    "background": {
+        "scripts": ["js/background.js"]
+    },
     "name": "Torrents MultiSearch",
     "description": "__MSG_appDesc__",
     "default_locale": "ru",
-    "version": "0.1.1.0"
+    "version": "0.1.1.1"
 }
