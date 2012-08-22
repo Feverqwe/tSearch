@@ -530,6 +530,12 @@ var explore = function () {
         show_favorites();
     }
     var load_all = function () {
+        //remove old gamespot
+        var t = JSON.stringify(explorerCache);
+        if ((/gamespotcdn/).test(t)) {
+            explorerCache.games = null;
+        }
+        //<<<<<<<<<<<<<<<<<<<
         make_form();
         load_top_films();
         load_films();
