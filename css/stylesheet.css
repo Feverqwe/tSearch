@@ -445,10 +445,11 @@ div.explore h2 > div.setup_div {
     height: 16px;
     cursor: auto;
     opacity: 1;
-    display: inline-block;
+    display: inline-block !important;
     margin-left: 5px;
-    margin-top: 2px;
-    margin-bottom: -2px;
+    /*margin-top: 2px;
+    margin-bottom: -2px;*/
+    top: 2px;
     position: relative;
 }
 div.explore h2 > div.setup_div > div.hide { 
