@@ -486,12 +486,11 @@ div.explore h2 > div.setup_div >  div.clear {
 }
 div.explore h2 > div.setup_div >  div.count {
     display: inline-block;
-    position: relative;
+    position: absolute;
+    top: -6px;
+    margin-left: 4px;
 }
 div.explore h2 > div.setup_div >  div.count select {
-    position: absolute;
-    top: -17px;
-    left: 4px;
     height: 18px;
     width: 46px;
 }
@@ -603,14 +602,15 @@ div.explore div.pager > div.item {
     margin-left: 2px;
     min-width: 26px;
     height: 16px;
-    cursor: pointer;
+    /*cursor: pointer;*/
+    cursor: default;
 }
 div.explore div.pager > div.item:hover {
     background-color: #EBEBEB;
 }
 div.explore div.pager > div.item.active {
     background-color: #9CF;
-    cursor: default;
+    /*cursor: default;*/
 }
 div.search_panel > div.left {
     display: inline-block;

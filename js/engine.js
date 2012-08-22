@@ -183,7 +183,7 @@ var engine = function () {
         var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
         if (search_history == null) return;
         var count = search_history.length;
-        if (count >= 50) {
+        if (count >= 200) {
             var order = function (a,b) {
                 if (a.time > b.time)
                     return -1;
