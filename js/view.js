@@ -126,6 +126,7 @@ var view = function () {
             ((/256.?kbps/i).test(title))?60:
             ((/192.?kbps/i).test(title))?50:
             ((/128.?kbps/i).test(title))?40:
+            ((/AAC/).test(title))?30:
             ((/mp3/i).test(title))?20:
             0;
             quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[L\]/).test(title))?100:0;
