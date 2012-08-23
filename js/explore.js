@@ -205,7 +205,7 @@ var explore = function () {
         var yr = today.getFullYear();
         var month = today.getMonth()+1;
         month = (month<10) ? '0'+String(month):month;
-        var url = 'http://www.kinopoisk.ru/popular/day//perpage/200/';
+        var url = 'http://www.kinopoisk.ru/popular/day/now/perpage/200/';
         if (xhr_tf != null)
             xhr_tf.abort();
         xhr_tf = $.ajax({
