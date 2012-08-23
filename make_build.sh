@@ -75,6 +75,7 @@ cp -r ./build ./build_opera/.
 cp -r ./ff_o/opera/* ./build_opera/.
 
 rm ./build_firefox/chrome/content/js/storage.js
+rm ./build_firefox/chrome/content/js/ad.js
 java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/storage.js --js_output_file ./build_firefox/chrome/content/js/storage.js
 java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/ad.js --js_output_file ./build_firefox/chrome/content/js/ad.js
 rm ./build_firefox/chrome/content/manifest.json

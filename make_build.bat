@@ -76,6 +76,7 @@ xcopy .\build .\build_opera\build\ /E
 xcopy .\ff_o\opera\* .\build_opera\. /E
 
 del .\build_firefox\chrome\content\js\storage.js
+del .\build_firefox\chrome\content\js\ad.js
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js_output_file .\build_firefox\chrome\content\js\storage.js
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\ad.js --js_output_file .\build_firefox\chrome\content\js\ad.js
 del .\build_firefox\chrome\content\manifest.json
