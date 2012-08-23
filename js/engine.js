@@ -112,7 +112,7 @@ var engine = function () {
 
     {
         n : 'torrentino', 
-        e : 1
+        e : 0
     },
 
     {
@@ -127,6 +127,16 @@ var engine = function () {
 
     {
         n : 'free-torrents', 
+        e : 0
+    },
+
+    {
+        n : 'my-hit', 
+        e : 0
+    },
+
+    {
+        n : 'evrl', 
         e : 0
     }
     ];
@@ -173,7 +183,7 @@ var engine = function () {
         var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
         if (search_history == null) return;
         var count = search_history.length;
-        if (count >= 50) {
+        if (count >= 200) {
             var order = function (a,b) {
                 if (a.time > b.time)
                     return -1;

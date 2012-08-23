@@ -7,6 +7,7 @@ tracker[tmp_num] = function () {
     var login_url = 'http://torrents.local/forum/pauth.php';
     var url = 'http://torrents.local/forum/tracker.php';
     var root_url = 'http://torrents.local/forum/';
+    var about = 'Локальный торрент-трекер Torrents';
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -31,7 +32,7 @@ tracker[tmp_num] = function () {
         var readCode = function (c) {
             c = view.contentFilter(c);
             var t = $(c);//.contents();
-            if (t.find('input[name=login_username]').html() != null) {
+            if (t.find('input[name="login_username"]').html() != null) {
                 view.auth(0,id);
                 return [];
             } else 
@@ -101,6 +102,8 @@ tracker[tmp_num] = function () {
         login_url : login_url,
         name : name,
         icon : icon,
+        about : about,
+        url : root_url,
         filename : filename
     }
 }();

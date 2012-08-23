@@ -14,24 +14,71 @@ var explore = function () {
     var listOptions = (GetSettings('listOptions') !== undefined) ? JSON.parse(GetSettings('listOptions')) : [{
         n:'favorites',
         s:1,
-        size: 0
+        size: 0,
+        count: 6
     },{
         n:'films',
         s:1,
-        size: 0
+        size: 0,
+        count: 6
     },{
         n:'top_films',
         s:1,
-        size: 0
+        size: 0,
+        count: 12
     },{
         n:'serials',
         s:1,
-        size: 0
+        size: 0,
+        count: 6
     },{
         n:'games',
         s:1,
-        size: 0
+        size: 0,
+        count: 8
     }];
+    var content_sourse = {
+        favorites: {
+            t:'Избранное',
+            c:null,
+            root_url: null,
+            fav: null,
+            did: 1,
+            size: 130
+        },
+        games: {
+            t:'Игры',
+            c:2,
+            root_url: 'http://www.igromania.ru',
+            fav: 1,
+            did: null,
+            size: 203
+        },
+        films: {
+            t:'Сейчас в кино',
+            c:3,
+            root_url: 'http://www.kinopoisk.ru',
+            fav: 1,
+            did: null,
+            size: 130
+        },
+        top_films: {
+            t:'Фильмы',
+            c:3,
+            root_url: 'http://www.kinopoisk.ru',
+            fav: 1,
+            did: null,
+            size: 130
+        },
+        serials: {
+            t:'Сериалы',
+            c:0,
+            root_url: 'http://www.kinopoisk.ru',
+            fav: 1,
+            did: null,
+            size: 130
+        }
+    };
     var sesizeimg = function (i) {
         i = i.replace('/sm_film/','/film/');
         return i;
@@ -75,18 +122,17 @@ var explore = function () {
     }
     var readGames = function (c) {
         c = view.contentFilter(c);
-        var t = $(c).find('ul.games').children('li');
+        var t = $(c).find('div.block12_content').children('div.block12_flash_bottom');
         var l = t.length;
         var arr = [];
         var i = 0;
-        for (i = 0;i<l;i++) {
-            var item = t.eq(i).children('div').children('div');
+        for (i = 1;i<l;i++) {
+            var item = t.eq(i).prev();
             arr[arr.length] = {
-                'img' : item.eq(1).children('a').children('img').attr('src'),
-                'name' : item.eq(0).children('h3').children('a').text(),
-                'url' : item.eq(0).children('h3').children('a').attr('href')
+                'img' : item.find('img.block12_gamespic').attr('src'),
+                'name' : item.find('span.block3_newslist_capture').text(),                
+                'url' : item.find('div.block12_underopen_text').children('a').attr('href')
             }
-            arr[arr.length-1].name = arr[arr.length-1].name.substr(3,(arr[arr.length-1].name).length-6);
         }
         return arr;
     }
@@ -115,7 +161,7 @@ var explore = function () {
                 show_serials(explorerCache.serials.cache_arr);
                 return;
             }
-        var url = 'http://www.kinopoisk.ru/level/20/serial/list/';
+        var url = 'http://www.kinopoisk.ru/top/serial/list/';
         if (xhr_s != null)
             xhr_s.abort();
         xhr_s = $.ajax({
@@ -129,7 +175,8 @@ var explore = function () {
                         cache_arr : cotnt
                     };
                 }
-                SetSettings('explorerCache',JSON.stringify(explorerCache));
+                if (cotnt.length > 0)
+                    SetSettings('explorerCache',JSON.stringify(explorerCache));
                 show_serials(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
@@ -158,9 +205,7 @@ var explore = function () {
         var yr = today.getFullYear();
         var month = today.getMonth()+1;
         month = (month<10) ? '0'+String(month):month;
-        var date = today.getDate();
-        date = (date<10) ? '0'+String(date):date;
-        var url = 'http://www.kinopoisk.ru/level/56/day/'+yr+'-'+month+'-'+date+'/';
+        var url = 'http://www.kinopoisk.ru/popular/day/';
         if (xhr_tf != null)
             xhr_tf.abort();
         xhr_tf = $.ajax({
@@ -174,7 +219,8 @@ var explore = function () {
                         cache_arr : cotnt
                     };
                 }
-                SetSettings('explorerCache',JSON.stringify(explorerCache));
+                if (cotnt.length > 0)
+                    SetSettings('explorerCache',JSON.stringify(explorerCache));
                 show_top_films(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
@@ -191,7 +237,7 @@ var explore = function () {
                 show_films(explorerCache.films.cache_arr);
                 return;
             }
-        var url = 'http://www.kinopoisk.ru/level/8/view/main/';
+        var url = 'http://www.kinopoisk.ru/afisha/new/';
         if (xhr != null)
             xhr.abort();
         xhr = $.ajax({
@@ -205,7 +251,8 @@ var explore = function () {
                         cache_arr : cotnt
                     };
                 }
-                SetSettings('explorerCache',JSON.stringify(explorerCache));
+                if (cotnt.length > 0)
+                    SetSettings('explorerCache',JSON.stringify(explorerCache));
                 show_films(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
@@ -222,7 +269,7 @@ var explore = function () {
                 show_games(explorerCache.games.cache_arr);
                 return;
             }
-        var url = 'http://www.gamespot.com/games.html?platform=5&type=top_rated&mode=top&sort=score&dlx_type=all&date_filter=6&sortdir=asc&official=all';
+        var url = 'http://www.igromania.ru/gametop/';
         if (xhr_g != null)
             xhr_g.abort();
         xhr_g = $.ajax({
@@ -236,7 +283,8 @@ var explore = function () {
                         cache_arr : cotnt
                     };
                 }
-                SetSettings('explorerCache',JSON.stringify(explorerCache));
+                if (cotnt.length > 0)
+                    SetSettings('explorerCache',JSON.stringify(explorerCache));
                 show_games(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
@@ -246,16 +294,20 @@ var explore = function () {
         });
     }
     var show_games = function (content) {
-        write_content(content,'games','Игры',2,null,1,null,110);
+        var t = 'games';
+        write_content(content,t);
     }
     var show_films = function (content) {
-        write_content(content,'films','Сейчас в кино',3,'http://www.kinopoisk.ru',1);
+        var t = 'films';
+        write_content(content,t);
     }
     var show_top_films = function (content) {
-        write_content(content,'top_films','Фильмы',3,'http://www.kinopoisk.ru',1);
+        var t = 'top_films';
+        write_content(content,t);
     }
     var show_serials = function (content) {
-        write_content(content,'serials','Сериалы',0,'http://www.kinopoisk.ru',1);
+        var t = 'serials';
+        write_content(content,t);
     }
     var get_view_status = function (n) {
         if (listOptions == null) return 1;
@@ -265,6 +317,14 @@ var explore = function () {
         }
         return 1;
     }
+    var set_view_status = function (n,s) {
+        if (listOptions == null) return;
+        for (var i = 0;i<listOptions.length;i++) {
+            if (listOptions[i].n == n)
+                listOptions[i].s = s;
+        }
+        SetSettings('listOptions',JSON.stringify(listOptions));
+    }
     var set_view_size = function (n,s) {
         if (listOptions == null) return;
         for (var i = 0;i<listOptions.length;i++) {
@@ -273,11 +333,27 @@ var explore = function () {
         }
         SetSettings('listOptions',JSON.stringify(listOptions));
     }
+    var set_view_i_count = function (n,s) {
+        if (listOptions == null) return;
+        for (var i = 0;i<listOptions.length;i++) {
+            if (listOptions[i].n == n)
+                listOptions[i].count = parseInt(s);
+        }
+        SetSettings('listOptions',JSON.stringify(listOptions));
+    }
     var get_view_size = function (n) {
-        if (listOptions == null) return 0;
+        if (listOptions == null) return content_sourse[n].size;
         for (var i = 0;i<listOptions.length;i++) {
             if (listOptions[i].n == n)
                 return listOptions[i].size;
+        }
+        return content_sourse[n].size;
+    }
+    var get_view_i_count = function (n) {
+        if (listOptions == null) return 0;
+        for (var i = 0;i<listOptions.length;i++) {
+            if (listOptions[i].n == n)
+                return listOptions[i].count;
         }
         return 0;
     }
@@ -286,7 +362,7 @@ var explore = function () {
             if (c == null)
                 $('ul.categorys').children('li').eq(0).trigger('click');
             else
-                $('ul.categorys').children('li[data-id='+c+']').trigger('click');
+                $('ul.categorys').children('li[data-id="'+c+'"]').trigger('click');
             view.SetAutoMove(null);
         }
         view.triggerSearch(s);
@@ -305,93 +381,142 @@ var explore = function () {
                 });
                 $('div.explore').find('div.setup:visible').addClass('triggered').hide('fast');
                 $('div.explore ul.sortable li div').children('div').children('div.poster').hide();
+                $('div.explore ul.sortable li div').children('div').children('div.pager').hide();
                 $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow','none');
             },
             stop: function(event, ui) {
                 $('div.explore').find('div.spoiler').show('fast');
                 $('div.explore').find('div.setup.triggered').removeClass('triggered').show('fast');
                 $('div.explore ul.sortable li div').children('div').children('div.poster').show();
+                $('div.explore ul.sortable li div').children('div').children('div.pager').show();
                 $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow','0 4px 8px -4px rgba(0, 0, 0, 0.5)');
-                save_options();
+                save_order();
             }
         });
-        if (listOptions.length == 4) {
-            listOptions[listOptions.length] = {
-                n:'favorites',
-                s:1,
-                size: 0
-            }
-        }
         for (var i = 0;i<listOptions.length;i++){
             ul.append('<li class="'+listOptions[i].n+'"></li>');
         }
     }
-    var save_options = function () {
+    var save_order = function () {
         var ul = $('div.explore ul.sortable').children('li');
         var ul_c = ul.length;
+        var old_listOpts = listOptions;
         listOptions = [];
-        for (var i2=0;i2<ul_c;i2++)
-            listOptions[i2] = {
-                n: ul.eq(i2).attr('class'), 
-                s: (ul.eq(i2).find('div.spoiler').is('.up'))?0:1, 
-                size: ul.eq(i2).find('div.poster').width()
-            };
+        for (var i2=0;i2<ul_c;i2++){
+            var ol_l = old_listOpts.length;
+            for ( var i = 0; i<ol_l; i++)
+                if (old_listOpts[i].n == ul.eq(i2).attr('class'))
+                    listOptions[i2] = old_listOpts[i];
+        }
         SetSettings('listOptions',JSON.stringify(listOptions));
     }
     var show_favorites = function () {
-        if (favoritesList.length < 1) { 
+        if (favoritesList.length < 1) {
             $('li.favorites').css('display','none');
             return;
         } else 
             $('li.favorites').css('display','list-item');
+        var page = $('li.favorites').children('div').children('div').attr('data-page');
+        if (page == null) page = 1;
         $('li.favorites').empty();
-        write_content(favoritesList,'favorites','Избранное',null,null,null,1);
+        var t = 'favorites';
+        write_content(favoritesList,t,page);
     }
-    var write_content = function (content,section,name,category,root_url,fav,did,def_size) {
-        def_size = (def_size == null)?130:def_size;
-        fav = (fav != null)?'<div class="add_favorite" title="В избранное">':'<div class="del_favorite" title="Удалить из избранного">';
-        root_url = (root_url == null)? '' : root_url;
-        var size = get_view_size(section);
-        size = (size == null)?def_size:(size < 1)?def_size:size;
-        var st = get_view_status(section);
-        var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" data-def_size="'+def_size+'" data-size="'+size+'" title="Настроить вид"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+'>';
-        var cc = 0;
+    var set_poster_size = function (section, size) {
         var font_size = get_font_size(size);
+        $('div.explore').find('div.setup').attr('data-size',size);
+        $('style.poster_size_'+section).remove();
+        $('body').append('<style class="poster_size_'+section+'">'+
+            'div.explore div.'+section+' > div > div.poster, '+
+            'div.explore div.'+section+' > div > div.poster > div > div.info '+
+            '{ width: '+size+'px; } '+
+            'div.explore div.'+section+' div.poster > div.image > img '+
+            '{width: '+(size-10)+'px;} '+
+            ((font_size==0)?
+                'div.explore div.'+section+' div.poster > div.label '+
+                '{display: none;}'
+                :
+                'div.explore div.'+section+' div.poster > div.label > div.title, '+
+                'div.explore div.'+section+' div.poster > div.label > div.info > a '+
+                '{font-size: '+font_size+'px;}'
+                )+'</style>');
+    //<<<<
+    }
+    var write_content = function (content,section,page_num) {
+        var i_count = get_view_i_count(section);
+        i_count = (i_count == null || i_count < 1)?20:i_count;
+        //определяем размер постера и их кол-во
+        var size = get_view_size(section);
+        var def_size = content_sourse[section].size;
+        var name = content_sourse[section].t;
+        size = (size == null || size < 1)?def_size:size;
         if (size > 0 && size!=null && size!=def_size)
-            $('body').append('<style>'+
-                'div.explore div.'+section+' > div > div.poster, '+
-                'div.explore div.'+section+' > div > div.poster > div > div.info '+
-                '{ width: '+size+'px; } '+
-                'div.explore div.'+section+' div.poster > div.image > img '+
-                '{width: '+(size-10)+'px;} '+
-                ((font_size==0)?
-                    'div.explore div.'+section+' div.poster > div.label '+
-                    '{display: none;}'
-                    :
-                    'div.explore div.'+section+' div.poster > div.label > div.title, '+
-                    'div.explore div.'+section+' div.poster > div.label > div.info > a '+
-                    '{font-size: '+font_size+'px;}'
-                    )+'</style>');
-        $.each(content, function (k,v) {
-            cc ++;
-            var id = (did!=null) ? ' data-id="'+k+'"' : '';
-            if (cc>20) return false;
-            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
-        });
+            set_poster_size(section, size);
+        //<<
+        //впиливание кастмного стиля для отобрадения нужного размера постеров и шрифта
+        
+        if (page_num == null) page_num = 1;
+        var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
+        var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" data-i_count="'+i_count+'" data-size="'+size+'" title="Настроить вид"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+' data-page="'+page_num+'">';
+        //вывод страницы
+        c += write_page(section, page_num, content);
+        //<<
         c += '</div></div>';
         var explore_div = $('div.explore');
         var exp_li = explore_div.children('ul').children('li.'+section);
-        exp_li.append(view.contentUnFilter(c));
-        exp_li.children('div.'+section).children('div').children('div.poster').find('img').click(function () {
+        exp_li.append(c);
+        
+        var category = content_sourse[section].c;
+        exp_li.children('div.'+section).children('div').on('click', 'div.poster img', function() {
             var s = $(this).parents().eq(1).find('div.title').children('span').text();
             triggerClick(s,category);
         });
-        exp_li.children('div.'+section).children('div').find('div.title').click(function () {
+        exp_li.children('div.'+section).children('div').on('click', 'div.title', function() {
             var s = $(this).children('span').text();
             triggerClick(s,category);
         });
         calculate_moveble(section,size);
         update_btns(section);
+    }
+    var write_page = function (section, page, content) {
+        if (content == null)
+            var content = get_content(section);
+        var root_url = content_sourse[section].root_url;
+        var fav = content_sourse[section].fav;
+        var did = content_sourse[section].did;
+            
+        if (page == null) page = 1;
+        var poster_count = get_view_i_count(section);
+        poster_count = (poster_count == null || poster_count < 1)?20:poster_count;
+        var cc = 0;
+        var fav = (fav != null)?'<div class="add_favorite" title="В избранное">':'<div class="del_favorite" title="Удалить из избранного">';
+        var root_url = (root_url == null)? '' : root_url;
+        var c = '';
+        c+= '<div class="pager">'+make_page_body(poster_count,content.length,page)+'</div>';
+        var max_item = page*poster_count;
+        var min_item = max_item - poster_count;
+        $.each(content, function (k,v) {
+            cc ++;
+            if (cc<=min_item) return true;
+            if (cc>max_item) return false;
+            var id = (did!=null) ? ' data-id="'+k+'"' : '';
+            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
+        });
+        return view.contentUnFilter(c);
+    }
+    var make_page_body = function (i_count,length,page) {
+        var btns = '';
+        if (length<=i_count) return '';
+        var page_count = Math.floor((length-1)/i_count);
+        for (var i = 1;i<page_count+2;i++) {
+            btns += '<div class="item'+((i==page)?' active':'')+'">'+i+'</div>';
+        }
+        return btns;
+    }
+    var get_content = function (section) {
+        if (section == 'favorites')
+            return favoritesList;
+        return explorerCache[section].cache_arr;
     }
     var add_in_favorites = function (obj) {
         favoritesList[favoritesList.length] = {
@@ -408,6 +533,12 @@ var explore = function () {
         show_favorites();
     }
     var load_all = function () {
+        //remove old gamespot
+        var t = JSON.stringify(explorerCache);
+        if ((/gamespotcdn/).test(t)) {
+            explorerCache.games = null;
+        }
+        //<<<<<<<<<<<<<<<<<<<
         make_form();
         load_top_films();
         load_films();
@@ -481,8 +612,42 @@ var explore = function () {
             titles.eq(i).parent().attr('class','title '+move_name);
         }
     }
+    var bind_fav_btns = function (section) {
+        // кнопка избранное - добавить
+        $('div.explore div.'+section).on('click', 'div.add_favorite', function() {
+            add_in_favorites($(this).parent().parent());
+        });
+        // кнопка избранное - удалить
+        $('div.explore div.'+section).on('click', 'div.del_favorite', function() {
+            $(this).parent().parent().hide('fast',function () {
+                del_from_favorites($(this).attr('data-id'));
+            });
+        });
+    }
+    var bind_pager_btns = function (sect) {
+        // кнопки переключения страниц
+        $('div.explore div.'+sect+'').on('hover', 'div.pager > div.item', function() {
+            var main_div = $(this).parents().eq(1);
+            if (main_div.css('min-height') != null) {
+                if (main_div.height() > main_div.css('min-height').replace('px',''))
+                    main_div.css('min-height',main_div.height()+'px');
+            } else {
+                main_div.css('min-height',$(this).parents().eq(1).height()+'px')
+            }
+                
+            var page = $(this).text();
+            var sect = $(this).parents().eq(3).attr('class');
+            $('li.'+sect).children('div').children('div').attr('data-page',page);
+            $(this).parents().eq(1).html(write_page(sect, page));
+            
+            var size = get_view_size(sect);
+            calculate_moveble(sect,size);            
+        });
+    }
     var update_btns = function (section) {
+        //спойлер увеличения\уменьшения постеров
         $('div.explore div.'+section).find('div.spoiler').click( function () {
+            $(this).parents().eq(1).children('div').css('min-height','0px');
             if ($(this).is('.up')){
                 var t = $(this);
                 t.hide('fast');
@@ -490,7 +655,8 @@ var explore = function () {
                 $(this).parent().parent().children('div').slideDown('fast',function (){
                     t.removeClass('up').addClass('down');
                     t.show('fast');
-                    save_options();
+                    var sect = t.parents().eq(2).attr('class');
+                    set_view_status(sect,1);
                 });
             }else{
                 var t = $(this);
@@ -505,18 +671,14 @@ var explore = function () {
                 $(this).parents().eq(1).children('div').slideUp('fast',function (){
                     t.removeClass('down').addClass('up');
                     t.show('fast');
-                    save_options();
+                    var sect = t.parents().eq(2).attr('class');
+                    set_view_status(sect,0);
                 });
             }
         });
-        $('div.explore div.'+section).find('div.add_favorite').click( function () {
-            add_in_favorites($(this).parent().parent());
-        });
-        $('div.explore div.'+section).find('div.del_favorite').click( function () {
-            $(this).parent().parent().hide('fast',function () {
-                del_from_favorites($(this).attr('data-id'));
-            });
-        });
+        bind_fav_btns(section);
+        bind_pager_btns(section);
+        //настройки
         $('div.explore div.'+section).find('div.setup').click(function () {
             var t = $(this).parent().children('div.setup_div');
             if (t.length != 0) {
@@ -533,9 +695,11 @@ var explore = function () {
         });
     }
     var make_setup_view = function (obj) {
-        var size = $(obj).data('size');
-        var def_size = $(obj).data('def_size');
-        var t = $('<div class="setup_div" data-size="'+def_size+'"></div>').hide();
+        var i_count = $(obj).attr('data-i_count');
+        var size = $(obj).attr('data-size');
+        var section = $(obj).parents().eq(2).attr('class');
+        var def_size = content_sourse[section].size;
+        var t = $('<div class="setup_div" data-i_count="'+i_count+'" data-size="'+def_size+'"></div>').hide();
         $('<div class="slider"/>').slider({
             value: size,
             max: def_size,
@@ -545,6 +709,8 @@ var explore = function () {
                 var sect = $(this).parents().eq(3).attr('class');
                 set_view_size(sect,ui.value);
                 calculate_moveble(sect,ui.value);
+                set_poster_size(sect,ui.value);
+                $(this).parents().eq(2).children('div').css('min-height','0px');
             },
             slide: function(event, ui) {
                 var t =  $(this).parents().eq(2).children('div').children('div.poster');
@@ -566,7 +732,8 @@ var explore = function () {
         }).appendTo(t);
         $('<div class="clear" title="По умолчанию">').click(function () {
             var t =  $(this).parents().eq(2).children('div').children('div.poster');
-            var defoult_size = $(this).parent().data('size');
+            var sect = $(this).parents().eq(3).attr('class');
+            var defoult_size = content_sourse[sect].size;
             t.width(defoult_size);
             t.find('img').width(defoult_size-10);
             t.find('div.title span').css('font-size','12px');
@@ -576,7 +743,22 @@ var explore = function () {
             var sect = $(this).parents().eq(3).attr('class');
             set_view_size(sect,defoult_size);
             calculate_moveble(sect,defoult_size);
+            set_poster_size(sect,defoult_size);
+            $(this).parents().eq(2).children('div').css('min-height','0px');
         }).appendTo(t);
+        var optns = '';
+        for (var i = 3; i<21; i++ )
+            optns += '<option value="'+i+'"'+((i == i_count)?' selected':'')+'>'+i+'</option>';
+        $('<div class="count"><select>'+optns+'</select></div>').children().change(function () {
+            var sect = $(this).parents().eq(3).attr('class');
+            $(this).parents().eq(2).children('div.setup').attr('data-i_count',$(this).val());
+            set_view_i_count(sect,$(this).val());
+            var main_div = $(this).parents().eq(3).children('div');
+            main_div.css('min-height','0px');
+            main_div.html(write_page(sect, null));
+            var size = get_view_size(sect);
+            calculate_moveble(sect,size);            
+        }).parent().appendTo(t);
         return t;
     }
     var get_font_size = function (w) {

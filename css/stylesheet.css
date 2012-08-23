@@ -445,10 +445,11 @@ div.explore h2 > div.setup_div {
     height: 16px;
     cursor: auto;
     opacity: 1;
-    display: inline-block;
+    display: inline-block !important;
     margin-left: 5px;
-    margin-top: 2px;
-    margin-bottom: -2px;
+    /*margin-top: 2px;
+    margin-bottom: -2px;*/
+    top: 2px;
     position: relative;
 }
 div.explore h2 > div.setup_div > div.hide { 
@@ -483,6 +484,16 @@ div.explore h2 > div.setup_div >  div.clear {
     margin-top: -1px;
     margin-bottom: 1px;
     margin-left: 13px;
+}
+div.explore h2 > div.setup_div >  div.count {
+    display: inline-block;
+    position: absolute;
+    top: -6px;
+    margin-left: 4px;
+}
+div.explore h2 > div.setup_div >  div.count select {
+    height: 18px;
+    width: 46px;
 }
 div.explore h2 > div.setup_div > div.slider > a {
     background-color: #F6F6F6;
@@ -552,7 +563,7 @@ div.explore div.poster > div.image > img:hover {
 }
 
 div.explore div.games > div > div.poster {
-    width: 110px;
+    width: 203px;
     margin: 12px;
 }
 div.explore div.poster > div {
@@ -576,12 +587,38 @@ div.explore div.poster:hover div.image > div.del_favorite {
     display: block;
 }
 div.explore div.games > div > div.poster > div > div.info {
-    width: 110px;
+    width: 203px;
+}
+div.explore div.games > div > div.poster > div.image > img {
+    max-width: 203px;
+}
+div.explore div.favorites > div > div.poster > div.image > img {
+    max-width: 130px;
 }
 div.explore div.info > a {
     text-decoration: none;
 }
-
+div.explore div.pager {
+    text-align: center;
+}
+div.explore div.pager > div.item {
+    display: inline-block;
+    margin: 0 auto;
+    border-radius: 6px;
+    padding-top: 2px;
+    margin-left: 2px;
+    min-width: 26px;
+    height: 16px;
+    /*cursor: pointer;*/
+    cursor: default;
+}
+div.explore div.pager > div.item:hover {
+    background-color: #EBEBEB;
+}
+div.explore div.pager > div.item.active {
+    background-color: #9CF;
+    /*cursor: default;*/
+}
 div.search_panel > div.left {
     display: inline-block;
 }
@@ -659,6 +696,7 @@ div.topbtn:hover {
 }
 div.ad {
     overflow: hidden;
+    margin-top: 30px;
 }
 .OzonRev_itemList {
     padding-left: 0 !important;

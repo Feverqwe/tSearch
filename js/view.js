@@ -59,7 +59,7 @@ var view = function () {
     }
     var write_result = function (t,a,s) {
         var c = '';
-        $('#rez_table').children('tbody').children('tr[data-tracker='+t+']').remove();
+        $('#rez_table').children('tbody').children('tr[data-tracker="'+t+'"]').remove();
         var s_s = contentFilter(s.replace(/\s+/g," ").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
         var sum = 0;
         $.each(a, function (k,v) {
@@ -71,8 +71,7 @@ var view = function () {
                 game : 0,
                 value : 0
             };
-            if (HideZeroSeed && v.seeds == 0) return false;
-            sum++;
+            if (HideZeroSeed && v.seeds == 0) return true;
             var title = filterText(s_s,v.title);
             if (TeaserFilter) {
                 var Teaser = ((/Трейлер/i).test(title.n))?1:
@@ -80,16 +79,17 @@ var view = function () {
                 ((/Teaser/i).test(title.n))?1:
                 ((/Trailer/i).test(title.n))?1:
                 0;
-                if (Teaser == 1) return false;
+                if (Teaser == 1) return true;
                 if (v.category.title != null) {
                     Teaser = ((/Трейлер/i).test(v.category.title))?1:
                     ((/Тизер/i).test(v.category.title))?1:
                     ((/Teaser/i).test(v.category.title))?1:
                     ((/Trailer/i).test(v.category.title))?1:
                     0;
-                    if (Teaser == 1) return false;
+                    if (Teaser == 1) return true;
                 }
             }
+            sum++;
             quality.name = title.r;
             title = title.n;
             var filter = '';
@@ -126,6 +126,7 @@ var view = function () {
             ((/256.?kbps/i).test(title))?60:
             ((/192.?kbps/i).test(title))?50:
             ((/128.?kbps/i).test(title))?40:
+            ((/AAC/).test(title))?30:
             ((/mp3/i).test(title))?20:
             0;
             quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[L\]/).test(title))?100:0;
@@ -345,7 +346,7 @@ var view = function () {
                 updateTrackerResultCount(id);
             else
             if (keywordFilter!=null) {
-                var count = $('#rez_table').children('tbody').children('tr[data-tracker='+id+'][data-kf=1]').length;
+                var count = $('#rez_table').children('tbody').children('tr[data-tracker="'+id+'"][data-kf="1"]').length;
                 updateTrackerResultCount(id,count,1);
             }
         }
@@ -354,11 +355,11 @@ var view = function () {
         var sum = 0;
         var count_c = categorys.length;
         for (var i=0;i<count_c;i++) {
-            var filter = '[data-c='+categorys[i]+']';
+            var filter = '[data-c="'+categorys[i]+'"]';
             if (trackerFilter!=null)
-                filter += '[data-tracker='+trackerFilter+']';
+                filter += '[data-tracker="'+trackerFilter+'"]';
             if (keywordFilter!=null)
-                filter += '[data-kf=1]';
+                filter += '[data-kf="1"]';
             var count = $('#rez_table').children('tbody').children('tr'+filter).length;
             if (count > 0) {
                 $('ul.categorys').children('li[data-id="'+categorys[i]+'"]').css('display','inline-block').children('i').html('('+count+')');
@@ -421,23 +422,25 @@ var view = function () {
         $('div.filter div.btn').css('background-image','url(images/clear.png)');
     }
     var triggerBlank = function () {
+        $('body,html').scrollTop();
         $('div.result_panel').css('display','none');
         $('div.explore').css('display','block');
         view.clear_table();
-        $('form[name=search]').children('input[type=text]').val('');
+        $('form[name="search"]').children('input[type=text]').val('');
         document.title = 'Torrents MultiSearch'; 
         window.location = '#s=';
         global_wl_hash = location.hash;
-        $('form[name=search]').children('input[type=text]').val('').focus();
+        $('form[name="search"]').children('input[type="text"]').val('').focus();
         explore.getLoad();
     }
     var triggerSearch = function (keyword) {
+        $('body,html').scrollTop();
         $('div.result_panel').css('display','block');
         $('div.explore').css('display','none');
         view.clear_table();
         keyword = $.trim(keyword);
-        if ($('form[name=search]').children('input[type=text]').val() != keyword)
-            $('form[name=search]').children('input[type=text]').val(keyword);
+        if ($('form[name="search"]').children('input[type="text"]').val() != keyword)
+            $('form[name="search"]').children('input[type="text"]').val(keyword);
         document.title = keyword +' :: '+'TMS'; 
         window.location = '#s='+keyword;
         global_wl_hash = location.hash;
@@ -471,7 +474,7 @@ var view = function () {
                 AutocompleteArr[AutocompleteArr.length] = search_history[i].title;
             }
         }
-        $( "input[type=text][name=s]" ).autocomplete( "destroy" ).autocomplete({
+        $( 'input[type="text"][name="s"]' ).autocomplete( "destroy" ).autocomplete({
             source: AutocompleteArr,
             minLength: 0,
             select: function(event, ui) {
@@ -483,7 +486,7 @@ var view = function () {
                 collision:"bottom"
             }
         });
-        $("input[type=text][name=s]").autocomplete( "close" );
+        $('input[type="text"][name="s"]').autocomplete( "close" );
     }
     return {
         result : function (t,a,s) {
@@ -577,8 +580,8 @@ $(function () {
     if (view.HideSeed()) {
         $('th.seeds').remove();
     }
-    $('form[name=search]').submit(function () {
-        view.triggerSearch($(this).children('input[type=text]').val());
+    $('form[name="search"]').submit(function () {
+        view.triggerSearch($(this).children('input[type="text"]').val());
         return false;
     });
     var t = $('ul.categorys').children('li');
@@ -596,11 +599,11 @@ $(function () {
             $('#rez_table').children('tbody').children('tr').css('display','none');
             var filter = '';
             if (id != null)
-                filter += '[data-c='+id+']';
+                filter += '[data-c="'+id+'"]';
             if (trackerFilter!=null)
-                filter += '[data-tracker='+trackerFilter+']';
+                filter += '[data-tracker="'+trackerFilter+'"]';
             if (keywordFilter!=null)
-                filter += '[data-kf=1]';
+                filter += '[data-kf="1"]';
             $('#rez_table').children('tbody').children('tr'+filter).css('display','table-row');
             $('#rez_table').trigger("update");
         });
@@ -617,7 +620,7 @@ $(function () {
             }
         });
     } catch(err) {}
-    $('form[name=search]').children('input').eq(0).focus();
+    $('form[name="search"]').children('input').eq(0).focus();
     $('div.filter input').keyup(function () {
         var t = $(this).val();
         $('div.filter div.btn').css('background-image','url(images/loading.gif)');
@@ -634,10 +637,10 @@ $(function () {
     });
     var s = (document.URL).replace(/(.*)index.html/,'').replace(/#s=(.*)/,'$1');
     if (s != '') {
-        $('form[name=search]').children('input[type=text]').val(s);
+        $('form[name="search"]').children('input[type="text"]').val(s);
     }
     $('div.tracker_list div.setup').click(function () {
-        window.location = 'options.html#back='+$.trim($('form[name=search]').children('input[type=text]').val());
+        window.location = 'options.html#back='+$.trim($('form[name="search"]').children('input[type="text"]').val());
     });
     $('input.sbutton.main').click(function (){
         view.triggerBlank();

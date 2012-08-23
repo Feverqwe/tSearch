@@ -10,9 +10,15 @@
         "16": "images/icon_16.png"
     },
     "options_page": "options.html",
-    "permissions": [ "http://*/*", "https://*/*" ],
+    "permissions": [ "contextMenus", "http://*/*", "https://*/*" ],
+    "omnibox": {
+        "keyword" : "tms"
+    },
+    "background": {
+        "scripts": ["js/storage.js","js/background.js"]
+    },
     "name": "Torrents MultiSearch",
     "description": "__MSG_appDesc__",
     "default_locale": "ru",
-    "version": "0.0.9.3"
+    "version": "0.1.1.3"
 }

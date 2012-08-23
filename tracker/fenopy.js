@@ -6,6 +6,7 @@ tracker[tmp_num] = function () {
     var icon = 'data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAADy8vIMjIvJjkFCr/pBQq7/QEGr/z9AqP8+PqX/Pj6l/z4/pv8/QKn/QEGs/0FCr/9CQ7L/QkOz+o+OzY329vYHjIvKjkFDr/81NaP/JyOW/yAbjv8fGor/HhmH/x4Zhv8eGYf/HxqK/yAajv8hHJL/KSab/zk4qv9DRLX/kZDPi0FCr/o1NKP/IBuP/x8ai/8eGYb/KyeK/1VRnv9VUZ7/VVKf/x0Ygv8eGYb/HxqL/yAbkP8hHJT/OTiq/0JDtfpBQ67/JSGT/x8aiv8dGYT/HBh//1RRm/////////////////8bF3r/HBh//x0ZhP8fGor/IBuQ/ykmnP9DRbT/QEKr/yAbjP8eGYb/HBiA/xsWeP9TUJb/////////////////GhVz/xsWeP8cGH//HhmF/x8ajP8iHZP/QkSx/z9Bqf8fGor/HRiC/xsXe/8aFnT/U1CS/////////////////xgUbf8aFXP/Gxd6/x0Ygv8eGon/IBuQ/0JDsP8+QKf/HhmI/x0YgP8bFnj/GRVx/1JPj/////////////////8XE2j/GRVv/xoWdv8cGH7/HhmG/yAajv9BQ67/PkCm/x4Zhv8cGH7/GhZ2/xgUbf9RTo3/////////////////FhNl/xgUa/8aFnT/HBd8/x0ZhP8fGoz/QEKs/z4/pf8eGYb/HBd9/xoWdf/Gxdv/////////////////////////////////GRVy/xsXev8dGIL/HxqL/0BCq/8+QKb/HhmG/xwYfv8aFnb/xsXb/////////////////////////////////xkVcv8bF3r/HRiC/x8ai/9AQqv/PkCn/x4ZiP8dGID/GxZ4/0RBi/99e6v/////////////////YF2W/1JPkf8aFnX/HBd8/x0ZhP8fGoz/QEKs/0BBqv8fGov/HRmD/xwXfP8aFnX/REGK////////////////////////////GxZ4/xwYf/8eGYb/IRyP/0BCrf9BQq3/JCCS/x4ZiP8dGIL/Gxd7/xoWdf+bmcH/4+Lu/////////////////xwXfP8dGYP/HxqK/ycklf9BQ6//QUKu+jMxof8fG43/HhmI/x0Ygv8cF37/Gxd6/xsWeP8bFnj/Gxd6/xwYfv8dGYP/HhqJ/yAbjv81NaT/QkKw+oyLyY5BQq//NDOh/yMfkP8fGon/HhmF/x0Ygv8dGID/HRiA/x0Ygv8eGYX/HxqK/yUgkv81NKH/QkKw/4yLyo7y8vIMionHkUBBrfpAQqv/PkCn/z0+o/88PqD/Oz2e/zs9nv88PqD/PT6j/z5Ap/9AQqv/QEGt+ouLyI7y8vIMgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAEAAA%3D%3D';
     var url = 'http://fenopy.eu/';
     var root_url = 'http://fenopy.eu';
+    var about = 'A fast and user friendly bittorrent search engine, with milions of Video, Audio and Software torrents.';
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -181,6 +182,8 @@ tracker[tmp_num] = function () {
         id : id,
         name : name,
         icon : icon,
+        about : about,
+        url : root_url,
         filename : filename
     }
 }();

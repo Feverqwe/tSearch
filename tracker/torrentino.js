@@ -6,6 +6,7 @@ tracker[tmp_num] = function () {
     var icon = 'data:image/x-icon;base64,AAABAAEAEBAAAAAAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAAAAD///8B////Af///wEAAAADAAAADQAAABUAAAAbAAAAHwAAABsAAAAVAAAADQAAAAX///8B////Af///wH///8B////AQAAAAMAAAATAAAAKQAAAD0AAABNAAAAWQAAAF0BBBZjAQYkXQIHKE8AAg4zAAAAGQAABAf///8B////Af///wEAAAARAAAALQAAAEcAAABhAAAAeQAAAo8AAACXDRqV3w8cpfsWJMb7ChVuewAAAC8BAxEdAAAAA////wH///8BAAAADwAAACkAAABDAAAAWwAAAHMAAASHAAAAiw4bmeERHKn/GSfT/w0YfX8AAAArAgUbGf///wH///8B////Af///wEAAAALAAAAHwABADEBBwBBAAADRwAAAEUMGIbPER6w/xkn1f8QH55jAAAAAxIgpQP///8B////Af///wH///8B////Af///wEUdAADBQqkCQcbdSUACzEVECC1xRAbpP8YJs7/FirYW////wEQJscTCSKyA////wH///8B////Af///wH///8BNf8ABx6tMl8RIM3LFSXI7xQjx/cQG6T/FyPC/xoozescK9zzFinQl////wH///8B////Af///wEp2h0D////ASjNG5EiyQz/GYNWqxQZ1O0VJcL/ER2v/xYiuv0cKMr/GCfG0RIs4hP///8B////Af///wEs1BwD////AS/ZG3Uq2xv/IcAW/yHLBvEZcXarExjO9xMju/8aJ9j/Gyze4wwgqiH///8B////Af///wElsxcD////ASmyFVUqzhz/KNIb/x+3Ev8gvxb/I9QK4xROlKcSF8f/FyjO8xInzjf///8BFinSA////wH///8B////ATLKF0Mt2h37KMkb/yTAGP8cpBD/IL0U/yLHF/8i0AzbEz6lsxAa1FH///8BEx/IA////wH///8B////Af///wEyxxc7MNQaUzPYGmcq2Bv5HKYR/yG9E/MmxhVhI8YVYSbaCSX///8BHnh4A////wH///8B////Af///wH///8B////Af///wE1vxUbK9cb8x+4E/8bmg/rLrATEf///wH///8B////Af///wH///8B////Af///wH///8B////ATLJFwP///8BNMIWHSvZG/EethP/HKIP6TG+FBP///8BJbsXA////wH///8B////Af///wH///8B////Af///wH///8B////ATa9FBkr2BvxHasS/yG4Eus70xYR////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wE2txMJL80XXSe2EmknrxFfPNIVB////wH///8B////Af///wH///8B////Af///wH///8BAAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//w%3D%3D';
     var url = 'http://www.torrentino.com/search';
     var root_url = 'http://www.torrentino.com';
+    var about = 'Торрент трекер (torrent tracker) ТОРРЕНТИНО - скачать торрент (torrent) скачать фильмы бесплатно (movie film) без регистрации фильмы, сериалы, музыку, софт.';
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -116,6 +117,8 @@ tracker[tmp_num] = function () {
         id : id,
         name : name,
         icon : icon,
+        about : about,
+        url : root_url,
         filename : filename
     }
 }();

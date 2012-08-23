@@ -4,8 +4,8 @@
         <title>Настройки поиска</title>
         <meta charset="utf-8" />
         <link rel="shortcut icon" href="images/settings.png">
-        <link rel="stylesheet" type="text/css" href="css/options.css"> 
-        <script src="js/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/options.css">
+        <script src="js/jquery-1.8.0.min.js"></script>
         <script src="js/storage.js"></script>
         <script src="js/engine.js"></script>
         <script src="js/options.js"></script>
@@ -19,8 +19,10 @@
             <table id="internalTrackers">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Торрент трекер</th>
-                        <th><a href="#">Вкл</a>\<a href="#">Выкл</a></th>
+                        <th>Описание</th>
+                        <th><a href="#">Вкл</a>\<a href="#">Выкл</a>\<a href="#">Станд.</a></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,6 +37,8 @@
             <div><input name="hideseed" type="checkbox"/><span>Скрыть столбец сидов (раздающих)</span></div>
             <div><input name="autosetcategory" type="checkbox"/><span>Автоматически переходить в соотв. категорию при выборе фильма\сериала итп на главной</span></div>
             <div><input name="teaserfilter" type="checkbox"/><span>Не показывать тизеры\трейлеры в результатах поиска</span></div>
+            <div><input name="add_in_omnibox" type="checkbox"/><span>Добавить быстрый поиск в строку адреса (пишем tms потом жмем Tab)</span></div>
+            <div><input name="context_menu" type="checkbox"/><span>Добавить поиск в контекстное меню (выделяем текст, жмем правй кнопкой мыши - Найти торрент)</span></div>
         </fieldset>
         <fieldset>
             <legend>Фильтрация списка</legend>

@@ -7,6 +7,7 @@ tracker[tmp_num] = function () {
     var login_url = 'http://rustorka.com/forum/login.php';
     var url = 'http://rustorka.com/forum/tracker.php';
     var root_url = 'http://rustorka.com/forum/';
+    var about = 'Международный торрент-трекер RUSTORKA.COM у нас можно бесплатно скачать через торрент фильмы, игры, музыку, mp3/lossless, программы, отечественные и зарубежные сериалы, книги, мультфильмы, аниме, Обсудить торренты, новинки кино, только у нас консольные новости, Новости игровой индустрии, трекер это Ваше место общения, Ваша социальная сеть, для любителей качетва у нас Вы найдет Многоканальная музыка, игры для psp, PC игры, торренты бесплатно, ReCoding, скачать бесплатно с tracker, download битторент, кино онлайн, трекеры, новинки, картинки игр';
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -32,7 +33,7 @@ tracker[tmp_num] = function () {
         var readCode = function (c) {
             c = view.contentFilter(c);
             var t = $(c);//.contents();
-            if (t.find('input[name=login_username]').html() != null) {
+            if (t.find('input[name="login_username"]').html() != null) {
                 view.auth(0,id);
                 return [];
             } else 
@@ -134,6 +135,8 @@ tracker[tmp_num] = function () {
         login_url : login_url,
         name : name,
         icon : icon,
+        about : about,
+        url : root_url,
         filename : filename
     }
 }();

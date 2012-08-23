@@ -6,7 +6,8 @@ var ad = function () {
             url: url,
             success: function(data) {
                 if (data.substr(0,16) != 'document.write("') return;
-                var c = data.substr(16,data.length-16-2).replace(/\\\"/g,'"').replace(/\/\/static/g,'http://static');
+                var c = JSON.parse('{"data": "'+data.substr(16,data.length-16-2).replace(/[\r\n\t]/g,'')+'"}');
+                c = c.data.replace(/src\=\"\/\//g,'src="http://').replace(/script/img,'#blockscr#');
                 $('#ad').append(c);
             },
             error:function (xhr, ajaxOptions, thrownError){

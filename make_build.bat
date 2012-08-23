@@ -23,8 +23,10 @@ del .\build\js\options.js
 del .\build\js\storage.js
 del .\build\js\view.js
 del .\build\js\ad.js
+del .\build\js\background.js
 del .\build\tracker\*.js
 
+java -jar compiler.jar --js .\js\background.js --js_output_file .\build\js\background.js
 java -jar compiler.jar --js .\js\engine.js --js_output_file .\build\js\engine.js
 java -jar compiler.jar --js .\js\explore.js --js_output_file .\build\js\explore.js
 java -jar compiler.jar --js .\js\history.js --js_output_file .\build\js\history.js
@@ -59,6 +61,8 @@ java -jar compiler.jar --js .\tracker\torrentino.js --js_output_file .\build\tra
 java -jar compiler.jar --js .\tracker\mininova.js --js_output_file .\build\tracker\mininova.js
 java -jar compiler.jar --js .\tracker\filebase.js --js_output_file .\build\tracker\filebase.js
 java -jar compiler.jar --js .\tracker\free-torrents.js --js_output_file .\build\tracker\free-torrents.js
+java -jar compiler.jar --js .\tracker\my-hit.js --js_output_file .\build\tracker\my-hit.js
+java -jar compiler.jar --js .\tracker\evrl.js --js_output_file .\build\tracker\evrl.js
 
 java -jar yuicompressor-2.4.7.jar .\css\stylesheet.css -o .\build\css\stylesheet.css
 java -jar yuicompressor-2.4.7.jar .\css\options.css -o .\build\css\options.css
@@ -72,10 +76,14 @@ xcopy .\build .\build_opera\build\ /E
 xcopy .\ff_o\opera\* .\build_opera\. /E
 
 del .\build_firefox\chrome\content\js\storage.js
+del .\build_firefox\chrome\content\js\ad.js
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js_output_file .\build_firefox\chrome\content\js\storage.js
+java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\ad.js --js_output_file .\build_firefox\chrome\content\js\ad.js
 del .\build_firefox\chrome\content\manifest.json
+del .\build_firefox\chrome\content\js\background.js
 rd /S /Q .\build_firefox\chrome\content\_locales
 del .\build_opera\build\manifest.json
+del .\build_opera\build\js\background.js
 rd /S /Q .\build_opera\build\_locales
 del .\build_chrome.zip
 del .\build_firefox.xpi
