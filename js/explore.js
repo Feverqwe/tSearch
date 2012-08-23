@@ -175,7 +175,8 @@ var explore = function () {
                         cache_arr : cotnt
                     };
                 }
-                SetSettings('explorerCache',JSON.stringify(explorerCache));
+                if (cotnt.length > 0)
+                    SetSettings('explorerCache',JSON.stringify(explorerCache));
                 show_serials(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
@@ -218,7 +219,8 @@ var explore = function () {
                         cache_arr : cotnt
                     };
                 }
-                SetSettings('explorerCache',JSON.stringify(explorerCache));
+                if (cotnt.length > 0)
+                    SetSettings('explorerCache',JSON.stringify(explorerCache));
                 show_top_films(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
@@ -249,7 +251,8 @@ var explore = function () {
                         cache_arr : cotnt
                     };
                 }
-                SetSettings('explorerCache',JSON.stringify(explorerCache));
+                if (cotnt.length > 0)
+                    SetSettings('explorerCache',JSON.stringify(explorerCache));
                 show_films(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
@@ -280,7 +283,8 @@ var explore = function () {
                         cache_arr : cotnt
                     };
                 }
-                SetSettings('explorerCache',JSON.stringify(explorerCache));
+                if (cotnt.length > 0)
+                    SetSettings('explorerCache',JSON.stringify(explorerCache));
                 show_games(cotnt);
             },
             error:function (xhr, ajaxOptions, thrownError){
