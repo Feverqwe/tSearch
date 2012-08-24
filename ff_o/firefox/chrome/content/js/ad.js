@@ -24,7 +24,7 @@ var ad = function () {
             var c = JSON.parse('{"data": "'+data.substr(16,data.length-16-2).replace(/[\r\n\t]/g,'')+'"}');
             c = c.data;
             c = parseHTML(document,c,true,xhr.channel.URI);
-            $('#ad').append( '<link rel="Stylesheet" type="text/css" href="http://www.ozon.ru/styles/charger/style.css"><link rel="Stylesheet" type="text/css" href="http://www.ozon.ru/styles/charger/00.css">' );
+            $('#ad').empty().append( '<link rel="Stylesheet" type="text/css" href="http://www.ozon.ru/styles/charger/style.css"><link rel="Stylesheet" type="text/css" href="http://www.ozon.ru/styles/charger/00.css">' );
             $('#ad').append( c );            
         }
         xhr.send(null);
@@ -37,7 +37,6 @@ var ad = function () {
         var i = getRandomArbitary(1,4);
         if (last_ad_id == i) return;
         else {
-            $('#ad').empty();
             last_ad_id = i;
             if (i == 1)
                 add_ad('http://www.ozon.ru/PartnerTwinerNew.aspx?revident=4d58bed8-b5c6-4424-bd04-4a2a06e6d98b');

@@ -8,7 +8,7 @@ var ad = function () {
                 if (data.substr(0,16) != 'document.write("') return;
                 var c = JSON.parse('{"data": "'+data.substr(16,data.length-16-2).replace(/[\r\n\t]/g,'')+'"}');
                 c = c.data.replace(/src\=\"\/\//g,'src="http://').replace(/script/img,'#blockscr#');
-                $('#ad').append(c);
+                $('#ad').empty().append(c);
             },
             error:function (xhr, ajaxOptions, thrownError){
             
@@ -23,7 +23,6 @@ var ad = function () {
         var i = getRandomArbitary(1,4);
         if (last_ad_id == i) return;
         else {
-            $('#ad').empty();
             last_ad_id = i;
             if (i == 1)
                 add_ad('http://www.ozon.ru/PartnerTwinerNew.aspx?revident=4d58bed8-b5c6-4424-bd04-4a2a06e6d98b');
