@@ -420,7 +420,7 @@ var explore = function () {
     }
     var set_poster_size = function (section, size) {
         var font_size = get_font_size(size);
-        $('div.explore').find('div.setup').attr('data-size',size);
+        $('div.explore div.'+section).find('div.setup').attr('data-size',size);
         $('style.poster_size_'+section).remove();
         $('body').append('<style class="poster_size_'+section+'">'+
             'div.explore div.'+section+' > div > div.poster, '+
