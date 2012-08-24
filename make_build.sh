@@ -88,8 +88,8 @@ rm ./build_chrome.zip
 rm ./build_firefox.xpi
 rm ./build_opera.oex
 cd ./build/
-zip -r ../build_chrome.zip ./
+zip -9 -r ../build_chrome.zip ./
 cd ../build_firefox/
-zip -r ../build_firefox.xpi ./
+zip -9 -r ../build_firefox.xpi ./
 cd ../build_opera/
-zip -r ../build_opera.oex ./
+zip -9 -r ../build_opera.oex ./
