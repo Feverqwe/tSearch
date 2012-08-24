@@ -378,6 +378,7 @@ var explore = function () {
                 $('div.explore').find('div.setup:visible').addClass('triggered').hide('fast');
                 $('div.explore ul.sortable li div').children('div').children('div.poster').hide();
                 $('div.explore ul.sortable li div').children('div').children('div.pager').hide();
+                $('div.explore ul.sortable li div').children('div').css('min-height','');
                 $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow','none');
             },
             stop: function(event, ui) {
