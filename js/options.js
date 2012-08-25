@@ -104,19 +104,23 @@ $(function () {
         $('input[name="add_in_omnibox"]').parent().hide();
         $('input[name="context_menu"]').parent().hide();
     }
-    $('form[name="save"]').submit(function () {
+    $('form[name="save"]').submit(function (event) {
+        event.preventDefault();
         view.save_settings();
         return false;
     });
-    $('#internalTrackers').find('th').eq(3).children('a').eq(0).click(function () {
+    $('#internalTrackers').find('th').eq(3).children('a').eq(0).click(function (event) {
+        event.preventDefault();
         $('#internalTrackers').children('tbody').find('input[type="checkbox"]').attr('checked','checked');
         return false;
     });
-    $('#internalTrackers').find('th').eq(3).children('a').eq(1).click(function () {
+    $('#internalTrackers').find('th').eq(3).children('a').eq(1).click(function (event) {
+        event.preventDefault();
         $('#internalTrackers').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
         return false;
     });
-    $('#internalTrackers').find('th').eq(3).children('a').eq(2).click(function () {
+    $('#internalTrackers').find('th').eq(3).children('a').eq(2).click(function (event) {
+        event.preventDefault();
         $('#internalTrackers').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
         var Trackers = engine.defaultList;
         var l = Trackers.length;
