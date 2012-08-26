@@ -421,12 +421,13 @@ var explore = function () {
     }
     var set_poster_size = function (section, size) {
         var font_size = get_font_size(size);
+        var margine_size = get_poster_margin_size(section,size);
         $('div.explore div.'+section).find('div.setup').attr('data-size',size);
         $('style.poster_size_'+section).remove();
         $('body').append('<style class="poster_size_'+section+'">'+
             'div.explore div.'+section+' > div > div.poster, '+
             'div.explore div.'+section+' > div > div.poster > div > div.info '+
-            '{ width: '+size+'px; } '+
+            '{ width: '+size+'px; margin: '+margine_size+'px; } '+
             'div.explore div.'+section+' div.poster > div.image > img '+
             '{width: '+(size-10)+'px;} '+
             ((font_size==0)?
@@ -711,7 +712,13 @@ var explore = function () {
             },
             slide: function(event, ui) {
                 var t =  $(this).parents().eq(2).children('div').children('div.poster');
-                t.width(ui.value);
+                var sect = $(this).parents().eq(3).attr('class');
+                var margin_size = get_poster_margin_size(sect,ui.value);
+                t.css({
+                    'width' : ui.value+'px',
+                    'margin' : margin_size+'px'
+                });
+                //.width(ui.value);
                 t.find('img').width(ui.value-10);
                 var ttl = t.find('div.title span');
                 var inf = t.find('div.info a');
@@ -771,6 +778,16 @@ var explore = function () {
         else {
             return 0;
         }
+    }
+    var get_poster_margin_size = function (section,w) {
+        var max_w = content_sourse[section].size;
+        var max_m = 14;
+        if (w < 125) max_m = 10;
+        if (w < 115) max_m = 8;
+        if (w < 105) max_m = 6;
+        if (w < 70) return 0;
+        var size = Math.round((max_m*w)/max_w);
+        return size;
     }
     return {
         getLoad : function () {
