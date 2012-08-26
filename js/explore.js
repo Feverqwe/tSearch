@@ -751,7 +751,7 @@ var explore = function () {
             $(this).parents().eq(2).children('div').css('min-height','0px');
         }).appendTo(t);
         var optns = '';
-        for (var i = 3; i<21; i++ )
+        for (var i = 3; i<36; i++ )
             optns += '<option value="'+i+'"'+((i == i_count)?' selected':'')+'>'+i+'</option>';
         $('<div class="count"><select>'+optns+'</select></div>').children().change(function () {
             var sect = $(this).parents().eq(3).attr('class');
