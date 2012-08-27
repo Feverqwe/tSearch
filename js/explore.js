@@ -44,7 +44,8 @@ var explore = function () {
             root_url: null,
             fav: null,
             did: 1,
-            size: 130
+            size: 130,
+            margin: 14
         },
         games: {
             t:'Игры',
@@ -52,7 +53,8 @@ var explore = function () {
             root_url: 'http://www.igromania.ru',
             fav: 1,
             did: null,
-            size: 203
+            size: 213,
+            margin: 12
         },
         films: {
             t:'Сейчас в кино',
@@ -60,7 +62,8 @@ var explore = function () {
             root_url: 'http://www.kinopoisk.ru',
             fav: 1,
             did: null,
-            size: 130
+            size: 130,
+            margin: 14
         },
         top_films: {
             t:'Фильмы',
@@ -68,7 +71,8 @@ var explore = function () {
             root_url: 'http://www.kinopoisk.ru',
             fav: 1,
             did: null,
-            size: 130
+            size: 130,
+            margin: 14
         },
         serials: {
             t:'Сериалы',
@@ -76,7 +80,8 @@ var explore = function () {
             root_url: 'http://www.kinopoisk.ru',
             fav: 1,
             did: null,
-            size: 130
+            size: 130,
+            margin: 14
         }
     };
     var sesizeimg = function (i) {
@@ -718,7 +723,6 @@ var explore = function () {
                     'width' : ui.value+'px',
                     'margin' : margin_size+'px'
                 });
-                //.width(ui.value);
                 t.find('img').width(ui.value-10);
                 var ttl = t.find('div.title span');
                 var inf = t.find('div.info a');
@@ -738,7 +742,11 @@ var explore = function () {
             var t =  $(this).parents().eq(2).children('div').children('div.poster');
             var sect = $(this).parents().eq(3).attr('class');
             var defoult_size = content_sourse[sect].size;
-            t.width(defoult_size);
+            var margin_size = get_poster_margin_size(sect,defoult_size);
+            t.css({
+                'width' : defoult_size+'px',
+                'margin' : margin_size+'px'
+            });
             t.find('img').width(defoult_size-10);
             t.find('div.title span').css('font-size','12px');
             t.find('div.info a').css('font-size','12px');
@@ -781,10 +789,10 @@ var explore = function () {
     }
     var get_poster_margin_size = function (section,w) {
         var max_w = content_sourse[section].size;
-        var max_m = 14;
-        if (w < 125) max_m = 10;
-        if (w < 115) max_m = 8;
-        if (w < 105) max_m = 6;
+        var max_m = content_sourse[section].margin;
+        if (w < 125) max_m -= 4;
+        if (w < 115) max_m -= 6;
+        if (w < 105) max_m -= 8;
         if (w < 70) return 0;
         var size = Math.round((max_m*w)/max_w);
         return size;
