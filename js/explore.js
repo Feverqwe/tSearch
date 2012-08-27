@@ -792,11 +792,11 @@ var explore = function () {
         var max_m = content_sourse[section].margin;
         if (w < 70) return 0;
         else
-        if (w < 105) max_m -= 8;
+        if (w < max_w-25) max_m -= 8;
         else
-        if (w < 115) max_m -= 6;
+        if (w < max_w-15) max_m -= 6;
         else
-        if (w < 125) max_m -= 4;
+        if (w < max_w-5) max_m -= 4;
         var size = Math.round((max_m*w)/max_w);
         return size;
     }
