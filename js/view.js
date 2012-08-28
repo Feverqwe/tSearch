@@ -272,7 +272,7 @@ var view = function () {
         return c;
     }
     var filterText = function (s,t) {
-        var s = $.trim(s);
+        var s = $.trim(s).replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
         var new_name = t.replace(/</g,"&lt;").replace(/>/g,"&gt;");
         var rate = 0;
         var new_name2 = new_name;
@@ -305,12 +305,12 @@ var view = function () {
         if (s == '') return 'a';
         var r = t;
         if (AdvFiltration == 1) {
-            var tmp = s.split(" ");
+            var tmp = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1").split(" ");
             if ((new RegExp(tmp.join('|'),"i")).test(t))
                 r = 'a';
         } else 
         if (AdvFiltration == 2) {
-            var tmp = s.split(" ");
+            var tmp = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1").split(" ");
             var tmp_l = tmp.length;
             var trgr = true;
             for (var i=0;i<tmp_l;i++) {
@@ -323,7 +323,7 @@ var view = function () {
                 r = 'a';
         }
         else {
-            var tmp = s.split(",");
+            var tmp = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1").split(",");
             var tmp_l = tmp.length;
             var trgr = true;
             for (var i=0;i<tmp_l;i++) {
@@ -680,7 +680,7 @@ $(window).load(function () {
     }
 });
 var global_wl_hash = location.hash;
-$(window).bind('hashchange', function() {
+$(window).on('hashchange', function() {
     if (location.hash != global_wl_hash)
     {
         $(window).trigger('load');
