@@ -1,3 +1,4 @@
+/*
 function parseHTML(doc, html, allowStyle, baseURI, isXML) {
     if (isXML == null) isXML = false;
     PARSER_UTILS = "@mozilla.org/parserutils;1";
@@ -60,3 +61,4 @@ $(window).load(function () {
 $(window).bind('hashchange', function() {
     ad.insert();
 });
+*/

@@ -1,3 +1,4 @@
+/*
 var ad = function () {
     var last_ad_id = 0;
     var add_ad = function(url) {
@@ -46,3 +47,4 @@ $(window).load(function () {
 $(window).bind('hashchange', function() {
     ad.insert();
 });
+*/
