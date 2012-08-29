@@ -72,6 +72,9 @@ cp -r ./build ./build_firefox/chrome/content
 cp -r ./ff_o/firefox/* ./build_firefox/.
 
 cp -r ./build ./build_opera/.
+rm ./build_opera/build/manifest.json
+rm ./build_opera/build/js/background.js
+rm -r ./build_opera/build/_locales
 cp -r ./ff_o/opera/* ./build_opera/.
 
 rm ./build_firefox/chrome/content/js/storage.js
@@ -81,9 +84,7 @@ java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/ad.js --js_output_f
 rm ./build_firefox/chrome/content/manifest.json
 rm ./build_firefox/chrome/content/js/background.js
 rm -r ./build_firefox/chrome/content/_locales
-rm ./build_opera/build/manifest.json
-rm ./build_opera/build/js/background.js
-rm -r ./build_opera/build/_locales
+
 rm ./build_chrome.zip
 rm ./build_firefox.xpi
 rm ./build_opera.oex

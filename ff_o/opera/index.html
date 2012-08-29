@@ -17,6 +17,25 @@
             theButton = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
             opera.contexts.toolbar.addItem(theButton);
         }, false );
+        /*
+        *<feature name="opera:contextmenus"/>
+        if (opera.contexts.menu) {
+            var menu = opera.contexts.menu;
+            // Create a menu item properties object
+            var itemProps = {
+                title: 'Найти торрент',
+                onclick: function(event) {
+                    var query = encodeURIComponent(event.selectionText);
+                    var tabProps = {
+                        url: 'build/index.html#s=' + query
+                    };
+                    var tab = opera.extension.tabs.create(tabProps);
+                }
+            }
+            var item = menu.createItem(itemProps);
+            menu.addItem(item);
+        }
+        */
     </script>
 </head>
 <body>
