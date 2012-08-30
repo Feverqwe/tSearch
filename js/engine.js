@@ -231,9 +231,11 @@ var engine = function () {
     }
     var loadInternalModule = function (name) {
         var script= document.createElement('script');
-        script.async= 'async';
-        script.src= 'tracker/'+name+'.js';
-        document.head.appendChild(script);
+        script.type = 'text/javascript';
+        script.async = true;
+        script.src = 'tracker/'+name+'.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(script, s);
     }
     var loadModules = function () {
         tracker = [];
