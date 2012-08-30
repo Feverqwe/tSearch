@@ -13,6 +13,17 @@ cp -r ./css ./build/.
 cp -r ./tracker ./build/.
 cp *.html ./build/.
 cp *.json ./build/.
+
+rm ./build/css/options.css
+rm ./build/css/history.css
+rm ./build/css/stylesheet.css
+java -jar yuicompressor-2.4.7.jar ./css/stylesheet.css -o ./build/css/stylesheet.css
+java -jar yuicompressor-2.4.7.jar ./css/options.css -o ./build/css/options.css
+java -jar yuicompressor-2.4.7.jar ./css/history.css -o ./build/css/history.css
+
+mkdir ./build_firefox/chrome
+cp -r ./build ./build_firefox/chrome/content
+
 rm ./build/js/explore.js
 rm ./build/js/history.js
 rm ./build/js/engine.js
@@ -22,9 +33,6 @@ rm ./build/js/view.js
 rm ./build/js/storage.js
 rm ./build/js/ad.js
 rm ./build/js/background.js
-rm ./build/css/options.css
-rm ./build/css/history.css
-rm ./build/css/stylesheet.css
 rm ./build/tracker/*.js
 java -jar compiler.jar --js ./tracker/tfile.js --js_output_file ./build/tracker/tfile.js
 java -jar compiler.jar --js ./tracker/rutracker.js --js_output_file ./build/tracker/rutracker.js
@@ -63,13 +71,11 @@ java -jar compiler.jar --js ./js/history.js --js_output_file ./build/js/history.
 java -jar compiler.jar --js ./js/options.js --js_output_file ./build/js/options.js
 java -jar compiler.jar --js ./js/jquery.tablesorter.js --js_output_file ./build/js/jquery.tablesorter.js
 java -jar compiler.jar --js ./js/ad.js --js_output_file ./build/js/ad.js
-java -jar yuicompressor-2.4.7.jar ./css/stylesheet.css -o ./build/css/stylesheet.css
-java -jar yuicompressor-2.4.7.jar ./css/options.css -o ./build/css/options.css
-java -jar yuicompressor-2.4.7.jar ./css/history.css -o ./build/css/history.css
 
-mkdir ./build_firefox/chrome
-cp -r ./build ./build_firefox/chrome/content
 cp -r ./ff_o/firefox/* ./build_firefox/.
+rm -r ./build_firefox/chrome/content/_locales
+rm ./build_firefox/chrome/content/manifest.json
+rm ./build_firefox/chrome/content/js/background.js
 
 cp -r ./build ./build_opera/.
 rm ./build_opera/build/manifest.json
@@ -77,13 +83,10 @@ rm ./build_opera/build/js/background.js
 rm -r ./build_opera/build/_locales
 cp -r ./ff_o/opera/* ./build_opera/.
 
-rm ./build_firefox/chrome/content/js/storage.js
-rm ./build_firefox/chrome/content/js/ad.js
-java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/storage.js --js_output_file ./build_firefox/chrome/content/js/storage.js
-java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/ad.js --js_output_file ./build_firefox/chrome/content/js/ad.js
-rm ./build_firefox/chrome/content/manifest.json
-rm ./build_firefox/chrome/content/js/background.js
-rm -r ./build_firefox/chrome/content/_locales
+#rm ./build_firefox/chrome/content/js/storage.js
+#rm ./build_firefox/chrome/content/js/ad.js
+#java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/storage.js --js_output_file ./build_firefox/chrome/content/js/storage.js
+#java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/ad.js --js_output_file ./build_firefox/chrome/content/js/ad.js
 
 rm ./build_chrome.zip
 rm ./build_firefox.xpi

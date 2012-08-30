@@ -15,6 +15,13 @@ copy .\*.json .\build\.
 del .\build\css\options.css
 del .\build\css\history.css
 del .\build\css\stylesheet.css
+java -jar yuicompressor-2.4.7.jar .\css\stylesheet.css -o .\build\css\stylesheet.css
+java -jar yuicompressor-2.4.7.jar .\css\options.css -o .\build\css\options.css
+java -jar yuicompressor-2.4.7.jar .\css\history.css -o .\build\css\history.css
+
+mkdir .\build_firefox\chrome
+xcopy .\build .\build_firefox\chrome\content\ /E
+
 del .\build\js\engine.js
 del .\build\js\explore.js
 del .\build\js\history.js
@@ -64,13 +71,10 @@ java -jar compiler.jar --js .\tracker\free-torrents.js --js_output_file .\build\
 java -jar compiler.jar --js .\tracker\my-hit.js --js_output_file .\build\tracker\my-hit.js
 java -jar compiler.jar --js .\tracker\evrl.js --js_output_file .\build\tracker\evrl.js
 
-java -jar yuicompressor-2.4.7.jar .\css\stylesheet.css -o .\build\css\stylesheet.css
-java -jar yuicompressor-2.4.7.jar .\css\options.css -o .\build\css\options.css
-java -jar yuicompressor-2.4.7.jar .\css\history.css -o .\build\css\history.css
-
-mkdir .\build_firefox\chrome
-xcopy .\build .\build_firefox\chrome\content\ /E
 xcopy .\ff_o\firefox\* .\build_firefox\. /E /Y
+del .\build_firefox\chrome\content\manifest.json
+del .\build_firefox\chrome\content\js\background.js
+rd /S /Q .\build_firefox\chrome\content\_locales
 
 xcopy .\build .\build_opera\build\ /E
 del .\build_opera\build\manifest.json
@@ -78,13 +82,10 @@ del .\build_opera\build\js\background.js
 rd /S /Q .\build_opera\build\_locales
 xcopy .\ff_o\opera\* .\build_opera\. /E
 
-del .\build_firefox\chrome\content\js\storage.js
-del .\build_firefox\chrome\content\js\ad.js
-java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js_output_file .\build_firefox\chrome\content\js\storage.js
-java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\ad.js --js_output_file .\build_firefox\chrome\content\js\ad.js
-del .\build_firefox\chrome\content\manifest.json
-del .\build_firefox\chrome\content\js\background.js
-rd /S /Q .\build_firefox\chrome\content\_locales
+:: del .\build_firefox\chrome\content\js\storage.js
+:: del .\build_firefox\chrome\content\js\ad.js
+:: java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js_output_file .\build_firefox\chrome\content\js\storage.js
+:: java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\ad.js --js_output_file .\build_firefox\chrome\content\js\ad.js
 
 del .\build_chrome.zip
 del .\build_firefox.xpi
