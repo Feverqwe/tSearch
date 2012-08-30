@@ -11,6 +11,10 @@ var view = function () {
     var HideZeroSeed = (GetSettings('HideZeroSeed') !== undefined) ? parseInt(GetSettings('HideZeroSeed')) : false;
     var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
     var TeaserFilter = (GetSettings('TeaserFilter') !== undefined) ? parseInt(GetSettings('TeaserFilter')) : false;
+    var update_table = {
+        timer: null,
+        time: null
+    };
     var auth = function (s,t) {
         $('ul.trackers').children('li[data-id="'+t+'"]').children('ul').remove();
         if (!s)
@@ -146,9 +150,27 @@ var view = function () {
         });
         updateTrackerResultCount(t,sum);
         $('#rez_table').children('tbody').append(contentUnFilter(c));
-        $('#rez_table').trigger("update");
         loadingStatus(1,t);
-        updateCategorys();
+        table_update_timer(1);
+    }
+    var table_update_timer = function (a) {
+        var time = new Date().getTime();
+        if (a == undefined) {
+            //выполнятеся от таймера
+            if (time-update_table.time > 200) {
+                $('#rez_table').trigger("update");
+                updateCategorys();
+                update_table.timer = null;
+            } else {
+                clearTimeout(update_table.timer);
+                update_table.timer = setTimeout(table_update_timer, 200);
+            }
+        } else {
+            //выполнфется тригером
+            update_table.time = time;
+            clearTimeout(update_table.timer);
+            update_table.timer = setTimeout(table_update_timer, 200);
+        }
     }
     var bytesToSize = function (bytes,nan) {
         //переводит байты в строчки
@@ -437,6 +459,9 @@ var view = function () {
         $('body,html').scrollTop();
         $('div.result_panel').css('display','block');
         $('div.explore').css('display','none');
+        var sel_tr = $('ul.trackers li a.selected').parent().data('id');
+        if (sel_tr == null || sel_tr == undefined)
+            sel_tr = null;
         view.clear_table();
         keyword = $.trim(keyword);
         if ($('form[name="search"]').children('input[type="text"]').val() != keyword)
@@ -444,7 +469,7 @@ var view = function () {
         document.title = keyword +' :: '+'TMS'; 
         window.location = '#s='+keyword;
         global_wl_hash = location.hash;
-        engine.search(keyword);
+        engine.search(keyword,sel_tr);
         return false;
     }
     var load_category = function (c) {

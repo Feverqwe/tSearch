@@ -155,15 +155,25 @@ var engine = function () {
     [-1,'Прочие']
     ];
     var internalTrackers = (GetSettings('internalTrackers') !== undefined) ? JSON.parse(GetSettings('internalTrackers')) : null;
-    var search = function(text) {
-        $.each(tracker, function (k, v) {
+    var search = function(text,tracker_id) {
+        console.log(tracker_id);
+        if (tracker_id != null) {
             try {
-                v.find(text);
-                view.loadingStatus(0,k);
+                tracker[tracker_id].find(text);
+                view.loadingStatus(0,tracker_id);
             } catch(err) {
-                view.loadingStatus(2,k);
+                view.loadingStatus(2,tracker_id);
             }
-        });
+        } else {
+            $.each(tracker, function (k, v) {
+                try {
+                    v.find(text);
+                    view.loadingStatus(0,k);
+                } catch(err) {
+                    view.loadingStatus(2,k);
+                }
+            });
+        }
         updateHistory(text);
     }
     var LimitHistory = function () {
@@ -258,8 +268,8 @@ var engine = function () {
         view.addTrackerInList(n);
     }
     return {
-        search : function (a) {
-            return search(a)
+        search : function (a,b) {
+            return search(a,b)
         },
         loadModules : function () {
             loadModules();
