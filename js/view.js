@@ -605,15 +605,6 @@ $(function () {
         $('#rez_table').children('tbody').children('tr'+filter).css('display','table-row');
         $('#rez_table').trigger("update");
     });
-    /*
-    var t = $('ul.categorys').children('li');
-    var l = t.length;
-    for (var n = 0;n<l;n++) {
-        t.eq(n).click(function (event) {
-            
-            });
-    }
-    */
     $('ul.categorys').children('li').css('display','none').eq(0).css('display','inline-block');
     try {
         $('#rez_table').tablesorter({
