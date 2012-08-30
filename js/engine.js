@@ -156,7 +156,6 @@ var engine = function () {
     ];
     var internalTrackers = (GetSettings('internalTrackers') !== undefined) ? JSON.parse(GetSettings('internalTrackers')) : null;
     var search = function(text,tracker_id) {
-        console.log(tracker_id);
         if (tracker_id != null) {
             try {
                 tracker[tracker_id].find(text);

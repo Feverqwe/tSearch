@@ -167,6 +167,8 @@ var view = function () {
             }
         } else {
             //выполнфется тригером
+            if (update_table.time == null)
+                updateCategorys();
             update_table.time = time;
             clearTimeout(update_table.timer);
             update_table.timer = setTimeout(table_update_timer, 200);
