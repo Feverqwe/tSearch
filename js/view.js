@@ -463,6 +463,8 @@ var view = function () {
         if (sel_tr == null || sel_tr == undefined)
             sel_tr = null;
         view.clear_table();
+        if (sel_tr != null)
+            $('ul.trackers li[data-id='+sel_tr+']').children('a').addClass('selected');
         keyword = $.trim(keyword);
         if ($('form[name="search"]').children('input[type="text"]').val() != keyword)
             $('form[name="search"]').children('input[type="text"]').val(keyword);
