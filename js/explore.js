@@ -104,6 +104,7 @@ var explore = function () {
             arr[arr.length] = {
                 'img' : sesizeimg(item.eq(0).children('a').children('img').attr('src')),
                 'name' : item.eq(1).children('div.name').children('a').text(),
+                'name_en' : item.eq(1).children('div.name').children('span').text().replace(/\ \([0-9]*\) [0-9]*\ мин./, ''),
                 'url' : item.eq(1).children('div.name').children('a').attr('href')
             }
         }
@@ -120,6 +121,7 @@ var explore = function () {
             arr[arr.length] = {
                 'img' : makeimg(item.eq(1).children('a').attr('href')),
                 'name' : item.eq(1).children('a').text().replace(/ \(([0-9]*)\)$/,''),
+                'name_en' : item.eq(1).children('span').text(),
                 'url' : item.eq(1).children('a').attr('href')
             }
         }
@@ -135,7 +137,7 @@ var explore = function () {
             var item = t.eq(i).prev();
             arr[arr.length] = {
                 'img' : item.find('img.block12_gamespic').attr('src'),
-                'name' : item.find('span.block3_newslist_capture').text(),                
+                'name' : item.find('span.block3_newslist_capture').text(),
                 'url' : item.find('div.block12_underopen_text').children('a').attr('href')
             }
         }
@@ -152,6 +154,7 @@ var explore = function () {
             arr[arr.length] = {
                 'img' : makeimg(item.children('a').attr('href')),
                 'name' : item.children('a').text(),
+                'name_en' : item.children('i').text(),
                 'url' : item.children('a').attr('href')
             }
         }
@@ -498,12 +501,18 @@ var explore = function () {
         c+= '<div class="pager">'+make_page_body(poster_count,content.length,page)+'</div>';
         var max_item = page*poster_count;
         var min_item = max_item - poster_count;
+        var name_v = '';
         $.each(content, function (k,v) {
             cc ++;
             if (cc<=min_item) return true;
             if (cc>max_item) return false;
             var id = (did!=null) ? ' data-id="'+k+'"' : '';
-            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">'+_lang.exp_more+'</a></div></div></div>';
+            name_v = v.name;
+            if (_lang.t != 'ru') {
+                if (v.name_en != null && v.name_en != undefined)  
+                    name_v = v.name_en;
+            }
+            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+name_v+'"/></div><div class="label"><div class="title" title="'+name_v+'"><span>'+name_v+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">'+_lang.exp_more+'</a></div></div></div>';
         });
         return view.contentUnFilter(c);
     }

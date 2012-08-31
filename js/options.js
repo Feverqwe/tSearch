@@ -127,15 +127,13 @@ $(function () {
     $('option[data-lang=21]').text(_lang.stp_opt_21);
     $('option[data-lang=22]').text(_lang.stp_opt_22);
     
-    var lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
     $('select[name=lang]').change(function () {
-        var lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
-        if ($(this).val()!=lang) {
+        if ($(this).val()!=_lang.t) {
             SetSettings('lang',$(this).val());
             top.location.reload();
         }
     });
-    $('select[name=lang]').children('option[value='+lang+']').attr('selected','selected');
+    $('select[name=lang]').children('option[value='+_lang.t+']').attr('selected','selected');
     
     
     if (navigator.userAgent.search(/Chrome/) < 1) {

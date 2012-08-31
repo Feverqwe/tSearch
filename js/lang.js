@@ -1,6 +1,7 @@
 var _lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
-if (_lang == 'en')
+if (_lang != 'ru')
     _lang = {
+        t : 'en',
         'categorys' : [
         [3,'Films'],
         [0,'Serials'],
@@ -96,6 +97,7 @@ if (_lang == 'en')
     };
 if (_lang == 'ru')
     _lang = {
+        t : 'ru',
         'categorys' : [
         [3,'Фильмы'],
         [0,'Сериалы'],
