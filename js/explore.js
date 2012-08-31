@@ -162,7 +162,7 @@ var explore = function () {
         return arr;
     }
     var load_serials = function () {
-        if ( $('div.explore div.serials').length > 0) return;
+        if ( $('div.explore div.serials').length > 0 ) return;
         var cache_arr = null;
         if (explorerCache.serials != null)
             if (explorerCache.serials.date != null && explorerCache.serials.date>Math.round((new Date()).getTime() / 1000)) {
@@ -509,7 +509,7 @@ var explore = function () {
             var id = (did!=null) ? ' data-id="'+k+'"' : '';
             name_v = v.name;
             if (_lang.t != 'ru') {
-                if (v.name_en != null && v.name_en != undefined)  
+                if (v.name_en != null && v.name_en != undefined && v.name_en!= '') 
                     name_v = v.name_en;
             }
             c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+name_v+'"/></div><div class="label"><div class="title" title="'+name_v+'"><span>'+name_v+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">'+_lang.exp_more+'</a></div></div></div>';
@@ -639,6 +639,10 @@ var explore = function () {
     var bind_pager_btns = function (sect) {
         // кнопки переключения страниц
         $('div.explore div.'+sect+'').on('hover', 'div.pager > div.item', function() {
+            var page = $(this).text();
+            var sect = $(this).parents().eq(3).attr('class');
+            if ($('li.'+sect).children('div').children('div').attr('data-page') == page) return;
+            
             var main_div = $(this).parents().eq(1);
             if (main_div.css('min-height') != null) {
                 if (main_div.height() > main_div.css('min-height').replace('px',''))
@@ -646,9 +650,7 @@ var explore = function () {
             } else {
                 main_div.css('min-height',$(this).parents().eq(1).height()+'px')
             }
-                
-            var page = $(this).text();
-            var sect = $(this).parents().eq(3).attr('class');
+            
             $('li.'+sect).children('div').children('div').attr('data-page',page);
             $(this).parents().eq(1).html(write_page(sect, page));
             
