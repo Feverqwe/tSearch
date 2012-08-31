@@ -100,6 +100,44 @@ var view = function () {
     }
 }();
 $(function () {
+    
+    $('title').text(_lang.stp_title);
+    $('h2').text(_lang.stp_setup);
+    $('div.save_panel').children('input').val(_lang.stp_save_btn);
+    $('legend[data-lang=1]').text(_lang.stp_legend_1);
+    $('legend[data-lang=7]').text(_lang.stp_legend_7);
+    $('legend[data-lang=16]').text(_lang.stp_legend_16);
+    $('legend[data-lang=20]').text(_lang.stp_legend_20);
+    $('th[data-lang=2]').text(_lang.stp_th_2);
+    $('th[data-lang=3]').text(_lang.stp_th_3);
+    $('a[data-lang=4]').text(_lang.stp_th_4);
+    $('a[data-lang=5]').text(_lang.stp_th_5);
+    $('a[data-lang=6]').text(_lang.stp_th_6);
+    $('span[data-lang=8]').text(_lang.stp_span_8);
+    $('span[data-lang=9]').text(_lang.stp_span_9);
+    $('span[data-lang=10]').text(_lang.stp_span_10);
+    $('span[data-lang=11]').text(_lang.stp_span_11);
+    $('span[data-lang=12]').text(_lang.stp_span_12);
+    $('span[data-lang=13]').text(_lang.stp_span_13);
+    $('span[data-lang=14]').text(_lang.stp_span_14);
+    $('span[data-lang=15]').text(_lang.stp_span_15);
+    $('span[data-lang=17]').text(_lang.stp_span_17);
+    $('span[data-lang=18]').text(_lang.stp_span_18);
+    $('span[data-lang=19]').text(_lang.stp_span_19);
+    $('option[data-lang=21]').text(_lang.stp_opt_21);
+    $('option[data-lang=22]').text(_lang.stp_opt_22);
+    
+    $('select[name=lang]').change(function () {
+        var lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'en';
+        if ($(this).val()!=lang) {
+            SetSettings('lang',$(this).val());
+            top.location.reload();
+        }
+    });
+    var lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'en';
+    $('select[name=lang]').children('option[value='+lang+']').attr('selected','selected');
+    
+    
     if (navigator.userAgent.search(/Chrome/) < 1) {
         $('input[name="add_in_omnibox"]').parent().hide();
         $('input[name="context_menu"]').parent().hide();

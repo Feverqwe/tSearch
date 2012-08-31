@@ -1,7 +1,7 @@
 var view = function () {
     var search_history = null;
     var noHistory = function () {
-        $('ol.list').html('<center>Истории поиска пока нет</center>');
+        $('ol.list').html('<center>'+_lang.his_no_his+'</center>');
     }
     var order = function (a,b) {
         if (a.time > b.time)
@@ -26,7 +26,7 @@ var view = function () {
         var content = '';
         for (var i=0;i<count;i++) {
             content += '<li data-id='+i+'>'
-            +'<div class="remove"><div class="rm_btn" title="Удалить"></div></div>'
+            +'<div class="remove"><div class="rm_btn" title="'+_lang.his_rm_btn+'"></div></div>'
             +'<div class="time" title="'+unixintimetitle(search_history[i].time)+'">'+unixintime(search_history[i].time)+'</div>'
             +'<div class="title"><a href="index.html#s='+search_history[i].title+'">'+search_history[i].title+'</a></div>'
             +'</li>';
@@ -119,6 +119,11 @@ var view = function () {
     }
 }();
 $(function (){
+    
+    $('title').text(_lang.his_title);
+    $('div.left').children('h1').text(_lang.his_h1);
+    $('input.sbutton.main').attr('title',_lang.btn_main);
+    
     $('input.sbutton.main').click(function (){
         //var s = (document.URL).replace(/(.*)history.html/,'');
         //if (s!= '')

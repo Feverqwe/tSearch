@@ -31,8 +31,10 @@ del .\build\js\storage.js
 del .\build\js\view.js
 del .\build\js\ad.js
 del .\build\js\background.js
+del .\build\js\lang.js
 del .\build\tracker\*.js
 
+java -jar compiler.jar --js .\js\lang.js --js_output_file .\build\js\lang.js
 java -jar compiler.jar --js .\js\background.js --js_output_file .\build\js\background.js
 java -jar compiler.jar --js .\js\engine.js --js_output_file .\build\js\engine.js
 java -jar compiler.jar --js .\js\explore.js --js_output_file .\build\js\explore.js

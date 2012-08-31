@@ -15,7 +15,7 @@
         "keyword" : "tms"
     },
     "background": {
-        "scripts": ["js/storage.js","js/background.js"]
+        "scripts": ["js/storage.js","js/lang.js","js/background.js"]
     },
     "name": "Torrents MultiSearch",
     "description": "__MSG_appDesc__",

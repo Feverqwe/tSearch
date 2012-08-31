@@ -18,7 +18,7 @@ var view = function () {
     var auth = function (s,t) {
         $('ul.trackers').children('li[data-id="'+t+'"]').children('ul').remove();
         if (!s)
-            $('ul.trackers').children('li[data-id="'+t+'"]').append('<ul><li><a href="'+tracker[t].login_url+'" target="_blank">Войти</a></li></ul>');
+            $('ul.trackers').children('li[data-id="'+t+'"]').append('<ul><li><a href="'+tracker[t].login_url+'" target="_blank">'+_lang['btn_login']+'</a></li></ul>');
     }
     var clear_table = function () {
         $('#rez_table').children('tbody').empty();
@@ -176,7 +176,7 @@ var view = function () {
     }
     var bytesToSize = function (bytes,nan) {
         //переводит байты в строчки
-        var sizes = ['б', 'Кб', 'Мб', 'Гб', 'Тб', 'Пб', 'Eb', 'Zb', 'Yb'];
+        var sizes = _lang['size_list'];
         if (nan==null) nan = 'n/a';
         if (bytes == 0) return nan;
         var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
@@ -246,11 +246,11 @@ var view = function () {
         day = Math.floor(day - 7*week);
         if (week>0 ) return theDate;
         //var str_month = (month<5)?(month<2)?                    ' месяц':   ' месяца':  ' месяцев';
-        var str_week = (week<5)?(week<2)?(week<1)?              ' недель':  ' неделя':  ' недели':  ' недель';
-        var str_day = (day<5)?(day<2)?(day<1)?                  ' дней':    ' день':    ' дня':     ' дней';
-        var str_hour = (hour<5)?(hour<2)?(hour<1)?              ' часов':   ' час':     ' часа':    ' часов';
-        var str_minutes = ' мин.';
-        var str_seconds = ' сек.';
+        var str_week = ' '+((week<5)?(week<2)?(week<1)?              _lang.times.week1:  _lang.times.week2:  _lang.times.week3: _lang.times.week4);
+        var str_day = ' '+((day<5)?(day<2)?(day<1)?                  _lang.times.day1:   _lang.times.day2:   _lang.times.day3:  _lang.times.day4);
+        var str_hour = ' '+((hour<5)?(hour<2)?(hour<1)?              _lang.times.hour1:  _lang.times.hour2:  _lang.times.hour3: _lang.times.hour4);
+        var str_minutes = ' '+_lang.times.min;
+        var str_seconds = ' '+_lang.times.sec;
         //if (month>0)
         //    return month + str_month+((week>0)?' и '+week+str_week:'')+' назад';
         //if (week>0)
@@ -260,18 +260,18 @@ var view = function () {
         if (day == 0 && d_te != t_te) day = 1;
         if (day>0)
             if (day == 1)
-                return 'Вчера '+getHandM_unixtime(utime);
+                return _lang.times.yest+' '+getHandM_unixtime(utime);
             else
-                return day+str_day+' назад';
+                return day+str_day+' '+_lang.times.old;
         if (hour>0)
             if (hour > 1)
-                return 'Сегодня '+getHandM_unixtime(utime);
+                return _lang.times.today+' '+getHandM_unixtime(utime);
             else
-                return hour+str_hour+' назад';
+                return hour+str_hour+' '+_lang.times.old;
         if (minutes>0)
-            return minutes+str_minutes+' назад';
+            return minutes+str_minutes+' '+_lang.times.old;
         if (seconds>0)
-            return seconds+str_seconds+' назад';
+            return seconds+str_seconds+' '+_lang.times.old;
         return theDate;
     }
     var updateTrackerResultCount = function (t,c,l) {
@@ -484,7 +484,7 @@ var view = function () {
             categorys[categorys.length] = c[i][0];
             $('ul.categorys').append('<li data-id="'+c[i][0]+'">'+c[i][1]+'<i></i></li>');
         }
-        $('ul.categorys').prepend('<li class="selected">Всё <i></i></li>');
+        $('ul.categorys').prepend('<li class="selected">'+_lang['cat_all']+' <i></i></li>');
     }
     var AddAutocomplete = function () {
         var AutocompleteArr = [];
@@ -602,6 +602,27 @@ var myTextExtraction = function(node)
     return $(node).html();
 }
 $(function () {
+    
+    
+    $('form[name=search]').children('.sbutton').val(_lang['btn_form']);
+    $('div.right').children('.main').attr('title',_lang['btn_main']);
+    $('div.right').children('.history').attr('title',_lang['btn_history']);
+    $('div.tracker_list').children('p').text(_lang['btn_tracker_list']);
+    $('div.tracker_list').children('p').eq(0).text(_lang['tracker_list']);
+    $('div.tracker_list').children('div.setup').attr('title',_lang['btn_tracker_list']);
+    $('div.filter').children('p').eq(0).text(_lang['filter']);
+    $('div.filter').children('div.btn').attr('title',_lang['btn_filter']);
+    $('#rez_table').find('th.time').text(_lang['table'].time);
+    $('#rez_table').find('th.quality').text(_lang['table'].quality[0]);
+    $('#rez_table').find('th.quality').attr('title',_lang['table'].quality[1]);
+    $('#rez_table').find('th.name').text(_lang['table'].title);
+    $('#rez_table').find('th.size').text(_lang['table'].size);
+    $('#rez_table').find('th.seeds').text(_lang['table'].seeds[0]);
+    $('#rez_table').find('th.seeds').attr('title',_lang['table'].seeds[1]);
+    $('#rez_table').find('th.leechs').text(_lang['table'].leechs[0]);
+    $('#rez_table').find('th.leechs').attr('title',_lang['table'].leechs[1]);
+    $('div.topbtn').attr('title',_lang['btn_up']);
+    
     view.load_category(engine.categorys);
     if (view.HideLeech()) {
         $('th.leechs').remove();

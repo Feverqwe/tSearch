@@ -33,6 +33,7 @@ rm ./build/js/view.js
 rm ./build/js/storage.js
 rm ./build/js/ad.js
 rm ./build/js/background.js
+rm ./build/js/lang.js
 rm ./build/tracker/*.js
 java -jar compiler.jar --js ./tracker/tfile.js --js_output_file ./build/tracker/tfile.js
 java -jar compiler.jar --js ./tracker/rutracker.js --js_output_file ./build/tracker/rutracker.js
@@ -62,6 +63,7 @@ java -jar compiler.jar --js ./tracker/free-torrents.js --js_output_file ./build/
 java -jar compiler.jar --js ./tracker/my-hit.js --js_output_file ./build/tracker/my-hit.js
 java -jar compiler.jar --js ./tracker/evrl.js --js_output_file ./build/tracker/evrl.js
 
+java -jar compiler.jar --js ./js/lang.js --js_output_file ./build/js/lang.js
 java -jar compiler.jar --js ./js/background.js --js_output_file ./build/js/background.js
 java -jar compiler.jar --js ./js/engine.js --js_output_file ./build/js/engine.js
 java -jar compiler.jar --js ./js/view.js --js_output_file ./build/js/view.js

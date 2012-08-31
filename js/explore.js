@@ -39,7 +39,7 @@ var explore = function () {
     }];
     var content_sourse = {
         favorites: {
-            t:'Избранное',
+            t:_lang.exp_favorites,
             c:null,
             root_url: null,
             fav: null,
@@ -48,7 +48,7 @@ var explore = function () {
             margin: 14
         },
         games: {
-            t:'Игры',
+            t:_lang.exp_games,
             c:2,
             root_url: 'http://www.igromania.ru',
             fav: 1,
@@ -57,7 +57,7 @@ var explore = function () {
             margin: 12
         },
         films: {
-            t:'Сейчас в кино',
+            t:_lang.exp_in_cinima,
             c:3,
             root_url: 'http://www.kinopoisk.ru',
             fav: 1,
@@ -66,7 +66,7 @@ var explore = function () {
             margin: 14
         },
         top_films: {
-            t:'Фильмы',
+            t:_lang.exp_films,
             c:3,
             root_url: 'http://www.kinopoisk.ru',
             fav: 1,
@@ -75,7 +75,7 @@ var explore = function () {
             margin: 14
         },
         serials: {
-            t:'Сериалы',
+            t:_lang.exp_serials,
             c:0,
             root_url: 'http://www.kinopoisk.ru',
             fav: 1,
@@ -460,7 +460,7 @@ var explore = function () {
         
         if (page_num == null) page_num = 1;
         var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
-        var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" data-i_count="'+i_count+'" data-size="'+size+'" title="Настроить вид"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+' data-page="'+page_num+'">';
+        var c = '<div class="'+section+'"><h2><div class="move_it"></div>'+name+'<div class="setup" data-i_count="'+i_count+'" data-size="'+size+'" title="'+_lang.exp_setup_view+'"'+((!st)?' style="display: none"':'')+'></div><div class="spoiler'+((!st)?' up':'')+'"></div></h2><div'+((!st)?' style="display:none"':'')+' data-page="'+page_num+'">';
         //вывод страницы
         c += write_page(section, page_num, content);
         //<<
@@ -492,7 +492,7 @@ var explore = function () {
         var poster_count = get_view_i_count(section);
         poster_count = (poster_count == null || poster_count < 1)?20:poster_count;
         var cc = 0;
-        var fav = (fav != null)?'<div class="add_favorite" title="В избранное">':'<div class="del_favorite" title="Удалить из избранного">';
+        var fav = (fav != null)?'<div class="add_favorite" title="'+_lang.exp_in_fav+'">':'<div class="del_favorite" title="'+_lang.exp_rm_fav+'">';
         var root_url = (root_url == null)? '' : root_url;
         var c = '';
         c+= '<div class="pager">'+make_page_body(poster_count,content.length,page)+'</div>';
@@ -503,7 +503,7 @@ var explore = function () {
             if (cc<=min_item) return true;
             if (cc>max_item) return false;
             var id = (did!=null) ? ' data-id="'+k+'"' : '';
-            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">Подробнее</a></div></div></div>';
+            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+v.name+'"/></div><div class="label"><div class="title" title="'+v.name+'"><span>'+v.name+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">'+_lang.exp_more+'</a></div></div></div>';
         });
         return view.contentUnFilter(c);
     }
@@ -738,7 +738,7 @@ var explore = function () {
                 }
             }
         }).appendTo(t);
-        $('<div class="clear" title="По умолчанию">').click(function () {
+        $('<div class="clear" title="'+_lang.exp_default+'">').click(function () {
             var t =  $(this).parents().eq(2).children('div').children('div.poster');
             var sect = $(this).parents().eq(3).attr('class');
             var defoult_size = content_sourse[sect].size;

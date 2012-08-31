@@ -18,7 +18,7 @@ var bg = function () {
                     chrome.contextMenus.create({
                         "type" : "normal",
                         "id" : "item",
-                        "title" : "Найти торрент",
+                        "title" : _lang.ctx_title,
                         "contexts" : ["selection"],
                         "onclick" : function (info) {
                             chrome.tabs.create({

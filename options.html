@@ -7,6 +7,7 @@
         <link rel="stylesheet" type="text/css" href="css/options.css">
         <script src="js/jquery-1.8.0.min.js"></script>
         <script src="js/storage.js"></script>
+        <script src="js/lang.js"></script>
         <script src="js/engine.js"></script>
         <script src="js/options.js"></script>
     </head>
@@ -15,14 +16,25 @@
     <center><h2>Настройки</h2></center>
     <form name="save">
         <fieldset>
-            <legend>Трекеры</legend>
+            <legend data-lang="20">Language</legend>
+            <div>
+                <center>
+                    <select name="lang">
+                        <option value="ru" data-lang="21">Russian</option>
+                        <option value="en" data-lang="22">English</option>
+                    </select>
+                </center>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend data-lang=1>Трекеры</legend>
             <table id="internalTrackers">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Торрент трекер</th>
-                        <th>Описание</th>
-                        <th><a href="#">Вкл</a>\<a href="#">Выкл</a>\<a href="#">Станд.</a></th>
+                        <th data-lang=2>Торрент трекер</th>
+                        <th data-lang=3>Описание</th>
+                        <th><a href="#" data-lang=4>Вкл</a>\<a href="#" data-lang=5>Выкл</a>\<a href="#" data-lang=6>Станд.</a></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,22 +42,22 @@
             </table>
         </fieldset>
         <fieldset>
-            <legend>Опции</legend>
-            <div><input name="icons" type="checkbox"/><span>Показывать иконки торрент-трекеров в выдаче</span></div>
-            <div><input name="zeroseed" type="checkbox"/><span>Скрывать раздачи без сидеров (раздающих)</span></div>
-            <div><input name="hideleech" type="checkbox"/><span>Скрыть столбец личеров (скачивающих)</span></div>
-            <div><input name="hideseed" type="checkbox"/><span>Скрыть столбец сидов (раздающих)</span></div>
-            <div><input name="autosetcategory" type="checkbox"/><span>Автоматически переходить в соотв. категорию при выборе фильма\сериала итп на главной</span></div>
-            <div><input name="teaserfilter" type="checkbox"/><span>Не показывать тизеры\трейлеры в результатах поиска</span></div>
-            <div><input name="add_in_omnibox" type="checkbox"/><span>Добавить быстрый поиск в строку адреса (пишем tms потом жмем Tab)</span></div>
-            <div><input name="context_menu" type="checkbox"/><span>Добавить поиск в контекстное меню (выделяем текст, жмем правй кнопкой мыши - Найти торрент)</span></div>
+            <legend data-lang=7>Опции</legend>
+            <div><input name="icons" type="checkbox"/><span data-lang=8>Показывать иконки торрент-трекеров в выдаче</span></div>
+            <div><input name="zeroseed" type="checkbox"/><span data-lang=9>Скрывать раздачи без сидеров (раздающих)</span></div>
+            <div><input name="hideleech" type="checkbox"/><span data-lang=10>Скрыть столбец личеров (скачивающих)</span></div>
+            <div><input name="hideseed" type="checkbox"/><span data-lang=11>Скрыть столбец сидов (раздающих)</span></div>
+            <div><input name="autosetcategory" type="checkbox"/><span data-lang=12>Автоматически переходить в соотв. категорию при выборе фильма\сериала итп на главной</span></div>
+            <div><input name="teaserfilter" type="checkbox"/><span data-lang=13>Не показывать тизеры\трейлеры в результатах поиска</span></div>
+            <div><input name="add_in_omnibox" type="checkbox"/><span data-lang=14>Добавить быстрый поиск в строку адреса (пишем tms потом жмем Tab)</span></div>
+            <div><input name="context_menu" type="checkbox"/><span data-lang=15>Добавить поиск в контекстное меню (выделяем текст, жмем правй кнопкой мыши - Найти торрент)</span></div>
         </fieldset>
         <fieldset>
-            <legend>Фильтрация списка</legend>
+            <legend data-lang=16>Фильтрация списка</legend>
             <ul class="option">
-                <li><input name="typeFiltration" type="radio" value="0"/>Ищет полное совпадение фразы (более 1 фразы можно разделить запятой)</li>
-                <li><input name="typeFiltration" type="radio" value="1"/>Ищет совпадение с одним из введенных слов</li>
-                <li><input name="typeFiltration" type="radio" value="2"/>Ищет совпадение всех введенных слов</li>
+                <li><input name="typeFiltration" type="radio" value="0"/><span data-lang=17>Ищет полное совпадение фразы (более 1 фразы можно разделить запятой)</span></li>
+                <li><input name="typeFiltration" type="radio" value="1"/><span data-lang=18>Ищет совпадение с одним из введенных слов</span></li>
+                <li><input name="typeFiltration" type="radio" value="2"/><span data-lang=19>Ищет совпадение всех введенных слов</span></li>
             </ul>
         </fieldset>
         <div class="save_panel">
