@@ -93,6 +93,13 @@ var view = function () {
                     if (Teaser == 1) return true;
                 }
             }
+            if (v.title == undefined || v.size == undefined || v.seeds == undefined || v.leechs == undefined || v.time == undefined) {
+                console.log('Tracker '+tracker[t].name+' have problem!');
+                console.log('#debug start');
+                console.log(v);
+                console.log('#debug end');
+                return true;
+            }
             sum++;
             quality.name = title.r;
             title = title.n;
