@@ -1,4 +1,4 @@
-var _lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'en';
+var _lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
 if (_lang == 'en')
     _lang = {
         'categorys' : [

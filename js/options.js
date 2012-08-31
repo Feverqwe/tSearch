@@ -127,14 +127,14 @@ $(function () {
     $('option[data-lang=21]').text(_lang.stp_opt_21);
     $('option[data-lang=22]').text(_lang.stp_opt_22);
     
+    var lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
     $('select[name=lang]').change(function () {
-        var lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'en';
+        var lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
         if ($(this).val()!=lang) {
             SetSettings('lang',$(this).val());
             top.location.reload();
         }
     });
-    var lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'en';
     $('select[name=lang]').children('option[value='+lang+']').attr('selected','selected');
     
     
