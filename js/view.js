@@ -98,10 +98,9 @@ var view = function () {
                 }
             }
             if (v.title == undefined || !isInt(v.size) || !isInt(v.seeds) 
-                || !isInt(v.leechs) || !isInt(v.time)
+                || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
                 || (v.category.title != null && v.category.title == undefined)
                 || (v.category.url != null && v.category.url == undefined)
-                || (v.category.id != null && !isInt(v.category.id))
                 || (v.dl != null && v.dl == undefined)
                 ) {
                 console.log('Tracker '+tracker[t].name+' have problem!');
