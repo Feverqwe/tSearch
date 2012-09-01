@@ -62,6 +62,7 @@ var view = function () {
         })).append('<i/>').appendTo($('ul.trackers'));
     }
     function isInt(n) {
+        if (n == undefined || n === undefined) return false;
         return n % 1 === 0;
     }
     var write_result = function (t,a,s) {
@@ -96,9 +97,8 @@ var view = function () {
                     if (Teaser == 1) return true;
                 }
             }
-            if (v.title == undefined || v.size == undefined || v.seeds == undefined 
-                || v.leechs == undefined || v.time == undefined || !isInt(v.size) 
-                || !isInt(v.seeds) || !isInt(v.leechs) || !isInt(v.time)
+            if (v.title == undefined || !isInt(v.size) || !isInt(v.seeds) 
+                || !isInt(v.leechs) || !isInt(v.time)
                 || (v.category.title != null && v.category.title == undefined)
                 || (v.category.url != null && v.category.url == undefined)
                 || (v.category.id != null && !isInt(v.category.id))
