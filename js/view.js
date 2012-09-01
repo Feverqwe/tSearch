@@ -61,6 +61,9 @@ var view = function () {
             return false;
         })).append('<i/>').appendTo($('ul.trackers'));
     }
+    function isInt(n) {
+        return n % 1 === 0;
+    }
     var write_result = function (t,a,s) {
         var c = '';
         $('#rez_table').children('tbody').children('tr[data-tracker="'+t+'"]').remove();
@@ -93,7 +96,14 @@ var view = function () {
                     if (Teaser == 1) return true;
                 }
             }
-            if (v.title == undefined || v.size == undefined || v.seeds == undefined || v.leechs == undefined || v.time == undefined) {
+            if (v.title == undefined || v.size == undefined || v.seeds == undefined 
+                || v.leechs == undefined || v.time == undefined || !isInt(v.size) 
+                || !isInt(v.seeds) || !isInt(v.leechs) || !isInt(v.time)
+                || (v.category.title != null && v.category.title == undefined)
+                || (v.category.url != null && v.category.url == undefined)
+                || (v.category.id != null && !isInt(v.category.id))
+                || (v.dl != null && v.dl == undefined)
+                ) {
                 console.log('Tracker '+tracker[t].name+' have problem!');
                 console.log('#debug start');
                 console.log(v);
