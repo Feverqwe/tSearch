@@ -17,7 +17,6 @@ var addButton = function () {
         navBar.insertItem(startButtonId);
         navBar.setAttribute("currentset", navBar.currentSet);
         document.persist("nav-bar", "currentset");
-	
         try
         {
             // The current global scope is not browser.xul.
@@ -25,9 +24,20 @@ var addButton = function () {
         }
         catch (e)
         {
-	   
-        }
-	            
+        }      
     }
 }
-window.addEventListener("load",addButton,false);
+var firstRun = function () {
+    var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefService).getBranch('extensions.TorrentsMultiSearch.storage.');
+    name = 'firstRunPref';
+    var type=prefs.getPrefType(name);
+    var val = null;
+    if(type==prefs.PREF_STRING){
+        val=prefs.getCharPref(name);
+    }
+    if (val != '1') {
+        prefs.setCharPref(name, '1');
+        window.addEventListener("load",addButton,false);
+    }
+}
+firstRun();
