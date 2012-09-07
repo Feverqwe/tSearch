@@ -1,0 +1,23 @@
+{
+    "manifest_version": 2,
+    "browser_action": {
+        "default_icon": "images/icon_16.png",
+        "default_title": "Torrents MultiSearch"
+    },
+    "icons": {
+        "128": "images/icon_128.png",
+        "16": "images/icon_16.png"
+    },
+    "options_page": "options.html",
+    "permissions": [ "contextMenus", "http://*/*", "https://*/*" ],
+    "omnibox": {
+        "keyword" : "tms"
+    },
+    "background": {
+        "scripts": ["js/storage.js","js/lang.js","js/btn.js","js/background.js"]
+    },
+    "name": "Torrents MultiSearch",
+    "description": "__MSG_appDesc__",
+    "default_locale": "ru",
+    "version": "0.1.3.5"
+}

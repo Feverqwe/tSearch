@@ -1,8 +1,10 @@
 rd /S /Q .\build
 rd /S /Q .\build_opera
 rd /S /Q .\build_firefox
+rd /S /Q .\build_chrome_ext
 mkdir .\build_opera
 mkdir .\build_firefox
+mkdir .\build_chrome_ext
 mkdir .\build
 xcopy .\_locales .\build\_locales\ /E
 xcopy .\css .\build\css\ /E
@@ -11,6 +13,9 @@ xcopy .\js .\build\js\ /E
 xcopy .\tracker .\build\tracker\ /E
 copy .\*.html .\build\.
 copy .\*.json .\build\.
+
+xcopy .\build .\build_chrome_ext\ /E
+xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
 
 del .\build\css\options.css
 del .\build\css\history.css

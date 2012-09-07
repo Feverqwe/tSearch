@@ -9,6 +9,7 @@ var view = function () {
     var TeaserFilter = (GetSettings('TeaserFilter') !== undefined) ? parseInt(GetSettings('TeaserFilter')) : false;
     var add_in_omnibox = (GetSettings('add_in_omnibox') !== undefined) ? parseInt(GetSettings('add_in_omnibox')) : true;
     var context_menu = (GetSettings('context_menu') !== undefined) ? parseInt(GetSettings('context_menu')) : true;
+    var search_popup = (GetSettings('search_popup') !== undefined) ? parseInt(GetSettings('search_popup')) : false;
     var t_table_line = 0;
     var addTrackerInList = function (i) {
         var filename = tracker[i].filename;
@@ -44,6 +45,7 @@ var view = function () {
         
         $('input[name="add_in_omnibox"]').prop('checked',add_in_omnibox);
         $('input[name="context_menu"]').prop('checked',context_menu);
+        $('input[name="search_popup"]').prop('checked',search_popup);
     }
     var save_settings = function () {
         var tr = $('#internalTrackers tbody').children('tr');
@@ -70,6 +72,10 @@ var view = function () {
         if (navigator.userAgent.search(/Chrome/) > 0) {
             var bgp = chrome.extension.getBackgroundPage();
             bgp.bg.update_context_menu();
+            if (bgp._type_ext != null && bgp._type_ext == 1) {
+                search_popup = SetSettings('search_popup',($('input[name="search_popup"]').is(':checked'))?1:0);
+                bgp.update_btn();
+            }
         }
         var tmp = $('input[name="typeFiltration"]');
         var tmp_l = tmp.length;
@@ -139,6 +145,10 @@ $(function () {
     if (navigator.userAgent.search(/Chrome/) < 1) {
         $('input[name="add_in_omnibox"]').parent().hide();
         $('input[name="context_menu"]').parent().hide();
+    } else {
+        var bgp = chrome.extension.getBackgroundPage();
+        if (bgp._type_ext == null || bgp._type_ext == 0)
+            $('input[name="search_popup"]').parent().hide();
     }
     $('form[name="save"]').submit(function (event) {
         event.preventDefault();

@@ -93,6 +93,7 @@ if (_lang != 'ru')
         stp_legend_20 : 'Language',
         stp_opt_21 : 'Russian',
         stp_opt_22 : 'English',
+        stp_opt_23 : 'Show search when you click on the icon of the expansion',
         ctx_title : 'Search torrent'
     };
 if (_lang == 'ru')
@@ -189,5 +190,6 @@ if (_lang == 'ru')
         stp_legend_20 : 'Язык / Language',
         stp_opt_21 : 'Русский',
         stp_opt_22 : 'English',
+        stp_opt_23 : 'Показывать поиск при нажатии на иконку расширения',
         ctx_title : 'Найти торрент'
     };
