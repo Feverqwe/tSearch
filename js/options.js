@@ -132,6 +132,7 @@ $(function () {
     $('span[data-lang=19]').text(_lang.stp_span_19);
     $('option[data-lang=21]').text(_lang.stp_opt_21);
     $('option[data-lang=22]').text(_lang.stp_opt_22);
+    $('span[data-lang=23]').text(_lang.stp_opt_23);
     
     $('select[name=lang]').change(function () {
         if ($(this).val()!=_lang.t) {
