@@ -16,9 +16,6 @@ cp -r ./tracker ./build/.
 cp *.html ./build/.
 cp *.json ./build/.
 
-cp -r ./build/ ./build_chrome_ext/.
-cp -r ./ff_o/chrome_ext/ ./build_chrome_ext/.
-
 rm ./build/css/options.css
 rm ./build/css/history.css
 rm ./build/css/stylesheet.css
@@ -29,16 +26,6 @@ java -jar yuicompressor-2.4.7.jar ./css/history.css -o ./build/css/history.css
 mkdir ./build_firefox/chrome
 cp -r ./build ./build_firefox/chrome/content
 
-rm ./build/js/explore.js
-rm ./build/js/history.js
-rm ./build/js/engine.js
-rm ./build/js/jquery.tablesorter.js
-rm ./build/js/options.js
-rm ./build/js/view.js
-rm ./build/js/storage.js
-rm ./build/js/ad.js
-rm ./build/js/background.js
-rm ./build/js/lang.js
 rm ./build/tracker/*.js
 java -jar compiler.jar --js ./tracker/tfile.js --js_output_file ./build/tracker/tfile.js
 java -jar compiler.jar --js ./tracker/rutracker.js --js_output_file ./build/tracker/rutracker.js
@@ -79,6 +66,13 @@ java -jar compiler.jar --js ./js/options.js --js_output_file ./build/js/options.
 java -jar compiler.jar --js ./js/jquery.tablesorter.js --js_output_file ./build/js/jquery.tablesorter.js
 java -jar compiler.jar --js ./js/ad.js --js_output_file ./build/js/ad.js
 
+
+cp -r ./build/ ./build_chrome_ext/.
+cp -r ./ff_o/chrome_ext/ ./build_chrome_ext/.
+java -jar yuicompressor-2.4.7.jar ./ff_o/chrome_ext/css/popup.css -o ./build_chrome_ext/css/popup.css
+java -jar compiler.jar --js ./ff_o/chrome_ext/js/btn.js --js_output_file ./build_chrome_ext/js/btn.js
+java -jar compiler.jar --js ./ff_o/chrome_ext/js/popup.js --js_output_file ./build_chrome_ext/js/popup.js
+
 cp -r ./ff_o/firefox/* ./build_firefox/.
 rm -r ./build_firefox/chrome/content/_locales
 rm ./build_firefox/chrome/content/manifest.json
@@ -98,9 +92,12 @@ cp -r ./ff_o/opera/* ./build_opera/.
 rm ./build_chrome.zip
 rm ./build_firefox.xpi
 rm ./build_opera.oex
+rm ./build_chrome_ext.zip
 cd ./build/
 zip -9 -r ../build_chrome.zip ./
 cd ../build_firefox/
 zip -9 -r ../build_firefox.xpi ./
 cd ../build_opera/
 zip -9 -r ../build_opera.oex ./
+cd ../build_chrome_ext/
+zip -9 -r ../build_chrome_ext.zip ./

@@ -14,9 +14,6 @@ xcopy .\tracker .\build\tracker\ /E
 copy .\*.html .\build\.
 copy .\*.json .\build\.
 
-xcopy .\build .\build_chrome_ext\ /E
-xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
-
 del .\build\css\options.css
 del .\build\css\history.css
 del .\build\css\stylesheet.css
@@ -27,16 +24,6 @@ java -jar yuicompressor-2.4.7.jar .\css\history.css -o .\build\css\history.css
 mkdir .\build_firefox\chrome
 xcopy .\build .\build_firefox\chrome\content\ /E
 
-del .\build\js\engine.js
-del .\build\js\explore.js
-del .\build\js\history.js
-del .\build\js\jquery.tablesorter.js
-del .\build\js\options.js
-del .\build\js\storage.js
-del .\build\js\view.js
-del .\build\js\ad.js
-del .\build\js\background.js
-del .\build\js\lang.js
 del .\build\tracker\*.js
 
 java -jar compiler.jar --js .\js\lang.js --js_output_file .\build\js\lang.js
@@ -78,6 +65,12 @@ java -jar compiler.jar --js .\tracker\free-torrents.js --js_output_file .\build\
 java -jar compiler.jar --js .\tracker\my-hit.js --js_output_file .\build\tracker\my-hit.js
 java -jar compiler.jar --js .\tracker\evrl.js --js_output_file .\build\tracker\evrl.js
 
+xcopy .\build .\build_chrome_ext\ /E
+xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
+java -jar yuicompressor-2.4.7.jar .\ff_o\chrome_ext\css\popup.css -o .\build_chrome_ext\css\popup.css
+java -jar compiler.jar --js .\ff_o\chrome_ext\js\btn.js --js_output_file .\build_chrome_ext\js\btn.js
+java -jar compiler.jar --js .\ff_o\chrome_ext\js\popup.js --js_output_file .\build_chrome_ext\js\popup.js
+
 xcopy .\ff_o\firefox\* .\build_firefox\. /E /Y
 del .\build_firefox\chrome\content\manifest.json
 del .\build_firefox\chrome\content\js\background.js
@@ -97,7 +90,9 @@ xcopy .\ff_o\opera\* .\build_opera\. /E
 del .\build_chrome.zip
 del .\build_firefox.xpi
 del .\build_opera.oex
+del .\build_chrome_ext.zip
 
 start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_chrome.zip D:\Git\ts\build\*
 start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_firefox.xpi D:\Git\ts\build_firefox\*
 start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_opera.oex D:\Git\ts\build_opera\*
+start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_chrome_ext.zip D:\Git\ts\build_chrome_ext\*

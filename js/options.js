@@ -145,6 +145,7 @@ $(function () {
     if (navigator.userAgent.search(/Chrome/) < 1) {
         $('input[name="add_in_omnibox"]').parent().hide();
         $('input[name="context_menu"]').parent().hide();
+        $('input[name="search_popup"]').parent().hide();
     } else {
         var bgp = chrome.extension.getBackgroundPage();
         if (bgp._type_ext == null || bgp._type_ext == 0)
