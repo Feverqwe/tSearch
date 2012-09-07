@@ -16,8 +16,8 @@
     "background": {
         "scripts": ["js/storage.js","js/lang.js","js/btn.js","js/background.js"]
     },
-    "name": "Torrents MultiSearch",
+    "name": "Torrents MultiSearch extension",
     "description": "__MSG_appDesc__",
     "default_locale": "ru",
-    "version": "0.1.3.5"
+    "version": "0.1.3.6"
 }
