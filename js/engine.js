@@ -138,6 +138,16 @@ var engine = function () {
     {
         n : 'evrl', 
         e : 0
+    },
+
+    {
+        n : 'rgfootball', 
+        e : 0
+    },
+
+    {
+        n : 'mmatracker', 
+        e : 0
     }
     ];
     var categorys = _lang['categorys'];

@@ -165,16 +165,20 @@ var view = function () {
             +'</tr>';
         });
         updateTrackerResultCount(t,sum);
-        $('#rez_table').children('tbody').append(contentUnFilter(c));
         loadingStatus(1,t);
-        table_update_timer(1);
+        if (sum > 0) {
+            $('#rez_table').children('tbody').append(contentUnFilter(c));
+            table_update_timer(1);
+        }
     }
     var table_update_timer = function (a) {
         var time = new Date().getTime();
         if (a == undefined) {
             //выполнятеся от таймера
             if (time-update_table.time > 200) {
+                //обновление сортровки
                 $('#rez_table').trigger("update");
+                //обновление категории
                 updateCategorys();
                 update_table.timer = null;
             } else {
