@@ -30,6 +30,7 @@ var view = function () {
         $('ul.trackers li').attr('data-count',0);
         updateTrackerCount();
         trackerFilter = null;
+        updateCategorys();
     }
     var loadingStatus  = function (s,t) {
         var tracker_img = $('ul.trackers').children('li[data-id="'+t+'"]').children('div.tracker_icon');
