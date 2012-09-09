@@ -14,17 +14,12 @@ xcopy .\tracker .\build\tracker\ /E
 copy .\*.html .\build\.
 copy .\*.json .\build\.
 
-del .\build\css\options.css
-del .\build\css\history.css
-del .\build\css\stylesheet.css
 java -jar yuicompressor-2.4.7.jar .\css\stylesheet.css -o .\build\css\stylesheet.css
 java -jar yuicompressor-2.4.7.jar .\css\options.css -o .\build\css\options.css
 java -jar yuicompressor-2.4.7.jar .\css\history.css -o .\build\css\history.css
 
 mkdir .\build_firefox\chrome
 xcopy .\build .\build_firefox\chrome\content\ /E
-
-del .\build\tracker\*.js
 
 java -jar compiler.jar --js .\js\lang.js --js_output_file .\build\js\lang.js
 java -jar compiler.jar --js .\js\background.js --js_output_file .\build\js\background.js
@@ -64,6 +59,8 @@ java -jar compiler.jar --js .\tracker\filebase.js --js_output_file .\build\track
 java -jar compiler.jar --js .\tracker\free-torrents.js --js_output_file .\build\tracker\free-torrents.js
 java -jar compiler.jar --js .\tracker\my-hit.js --js_output_file .\build\tracker\my-hit.js
 java -jar compiler.jar --js .\tracker\evrl.js --js_output_file .\build\tracker\evrl.js
+java -jar compiler.jar --js .\tracker\rgfootball.js --js_output_file .\build\tracker\rgfootball.js
+java -jar compiler.jar --js .\tracker\mmatracker.js --js_output_file .\build\tracker\mmatracker.js
 
 xcopy .\build .\build_chrome_ext\ /E
 xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
