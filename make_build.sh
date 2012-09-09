@@ -23,7 +23,6 @@ java -jar yuicompressor-2.4.7.jar ./css/history.css -o ./build/css/history.css
 mkdir ./build_firefox/chrome
 cp -r ./build ./build_firefox/chrome/content
 
-rm ./build/tracker/*.js
 java -jar compiler.jar --js ./tracker/tfile.js --js_output_file ./build/tracker/tfile.js
 java -jar compiler.jar --js ./tracker/rutracker.js --js_output_file ./build/tracker/rutracker.js
 java -jar compiler.jar --js ./tracker/rutor.js --js_output_file ./build/tracker/rutor.js
