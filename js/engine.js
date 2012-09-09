@@ -148,6 +148,11 @@ var engine = function () {
     {
         n : 'mmatracker', 
         e : 0
+    },
+
+    {
+        n : 'x-torrents', 
+        e : 0
     }
     ];
     var categorys = _lang['categorys'];

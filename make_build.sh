@@ -52,6 +52,7 @@ java -jar compiler.jar --js ./tracker/my-hit.js --js_output_file ./build/tracker
 java -jar compiler.jar --js ./tracker/evrl.js --js_output_file ./build/tracker/evrl.js
 java -jar compiler.jar --js ./tracker/rgfootball.js --js_output_file ./build/tracker/rgfootball.js
 java -jar compiler.jar --js ./tracker/mmatracker.js --js_output_file ./build/tracker/mmatracker.js
+java -jar compiler.jar --js ./tracker/x-torrents.js --js_output_file ./build/tracker/x-torrents.js
 
 java -jar compiler.jar --js ./js/lang.js --js_output_file ./build/js/lang.js
 java -jar compiler.jar --js ./js/background.js --js_output_file ./build/js/background.js
