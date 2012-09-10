@@ -349,7 +349,10 @@ var explore = function () {
         if (listOptions == null) return content_sourse[n].size;
         for (var i = 0;i<listOptions.length;i++) {
             if (listOptions[i].n == n)
-                return listOptions[i].size;
+                if (listOptions[i].size == 0)
+                    return content_sourse[n].size;
+                else
+                    return listOptions[i].size;
         }
         return content_sourse[n].size;
     }
