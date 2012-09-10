@@ -323,7 +323,7 @@ var view = function () {
         var new_name2 = new_name;
         rate = ((new RegExp(s,"i")).test(new_name))?100:0;
         var left = 0;
-        if (s != '') {
+        if (s.length > 0) {
             var tmp = s.split(" ");
             new_name = new_name.replace(new RegExp('('+tmp.join('|')+')',"ig"),"<b>$1</b>");
             left = new_name2.toLowerCase().indexOf(tmp[0].toLowerCase()+' ');
@@ -347,7 +347,7 @@ var view = function () {
         };
     }
     var filterTextCheck = function (s,t) {
-        if (s == '') return 'a';
+        if (s.length == 0) return 'a';
         var r = t;
         if (AdvFiltration == 1) {
             var tmp = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1").split(" ");
@@ -435,7 +435,7 @@ var view = function () {
         if (keyword != $('div.filter').children('input').val()) return;
         $('div.filter div.btn').css('background-image','url(images/loading.gif)');
         keyword = $.trim(keyword).replace(/\s+/g," ");
-        if (keyword == '') {
+        if (keyword.length == 0) {
             $('div.filter').children('input').val('');
             keywordFilter = null;
             $('ul.categorys').children('li.selected').trigger('click');
@@ -704,7 +704,7 @@ $(function () {
         view.tableFilter('');
     });
     var s = (document.URL).replace(/(.*)index.html/,'').replace(/#s=(.*)/,'$1');
-    if (s != '') {
+    if (s.length > 0) {
         $('form[name="search"]').children('input[type="text"]').val(s);
     }
     $('div.tracker_list div.setup').click(function () {
@@ -735,7 +735,7 @@ $(function () {
 });
 $(window).load(function () {
     var s = (document.URL).replace(/.*index.html/,'').replace(/#s=(.*)/,'$1');
-    if (s != '') {
+    if (s.length > 0) {
         view.triggerSearch(decodeURIComponent(s));
     } else {
         view.triggerBlank();

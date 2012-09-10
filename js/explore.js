@@ -512,7 +512,7 @@ var explore = function () {
             var id = (did!=null) ? ' data-id="'+k+'"' : '';
             name_v = v.name;
             if (_lang.t != 'ru') {
-                if (v.name_en != null && v.name_en != undefined && v.name_en!= '') 
+                if (v.name_en != null && v.name_en != undefined && v.name_en.length > 0) 
                     name_v = v.name_en;
             }
             c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+name_v+'"/></div><div class="label"><div class="title" title="'+name_v+'"><span>'+name_v+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">'+_lang.exp_more+'</a></div></div></div>';

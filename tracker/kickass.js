@@ -117,7 +117,7 @@ tracker[tmp_num] = function () {
                 xhr.abort();
             xhr = $.ajax({
                 type: 'POST',
-                url: (text == '') ? blank_url : url+text+'/',
+                url: (text.length == 0) ? blank_url : url+text+'/',
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },

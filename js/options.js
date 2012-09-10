@@ -26,7 +26,7 @@ var view = function () {
             hh = 'b' 
         else 
             hh = '';
-        $('<tr'+((hh!='')?' class="'+hh+'"':'')+' data-name="'+filename+'"/>').append($('<td/>').html('<img src="'+tracker[i].icon+'"/>')).append($('<td/>').html('<a href="'+tracker[i].url+'" target="_blank">'+tracker[i].name+'</a>')).append($('<td class="desc"/>').text(tracker[i].about)).append('<td class="status"><input type="checkbox" name="tracker" '+((enable)?'checked':'')+'></a>').appendTo($('#internalTrackers tbody'));
+        $('<tr'+((hh.length > 0)?' class="'+hh+'"':'')+' data-name="'+filename+'"/>').append($('<td/>').html('<img src="'+tracker[i].icon+'"/>')).append($('<td/>').html('<a href="'+tracker[i].url+'" target="_blank">'+tracker[i].name+'</a>')).append($('<td class="desc"/>').text(tracker[i].about)).append('<td class="status"><input type="checkbox" name="tracker" '+((enable)?'checked':'')+'></a>').appendTo($('#internalTrackers tbody'));
     }
     var showProgress = function () {
         $('div.progress').css('display','inline-block');
@@ -88,7 +88,7 @@ var view = function () {
         showProgress();
         loadSettings();
         var s = (document.URL).replace(/(.*)options.html/,'');
-        if (s!= '') { 
+        if (s.length > 0) { 
             var s = s.replace(/#back=(.*)/,'$1');
             window.location = 'index.html#s='+s;
         }

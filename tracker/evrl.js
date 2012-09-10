@@ -80,7 +80,7 @@ tracker[tmp_num] = function () {
             var i = 0;
             for (i = 0;i<l;i++) {
                 var div = t.eq(i).children('div');
-                if (div.eq(1).children('a').text() == '') continue;
+                if (div.eq(1).children('a').text().length == 0) continue;
                 arr[arr.length] = {
                     'category' : {
                         'id': -1

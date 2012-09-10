@@ -209,7 +209,7 @@ var engine = function () {
         }
     }
     var updateHistory = function (title) {
-        if (title == '') return;
+        if (title.length == 0) return;
         LimitHistory();
         var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
         if (search_history != null) {

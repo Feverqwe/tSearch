@@ -84,7 +84,7 @@ tracker[tmp_num] = function () {
             for (i = 0;i<l;i++) {
                 var td2 = t.eq(i).children('td');
                 var td1 = t.eq(i).prev().children('td');
-                if (td1.eq(1).children('h2').text() == '') continue;
+                if (td1.eq(1).children('h2').text().length == 0) continue;
                 arr[arr.length] = {
                     'category' : {
                         'title' : td1.eq(1).children('div[class="genre_list"]').text(),

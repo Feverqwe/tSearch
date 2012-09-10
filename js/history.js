@@ -125,10 +125,7 @@ $(function (){
     $('input.sbutton.main').attr('title',_lang.btn_main);
     
     $('input.sbutton.main').click(function (){
-        //var s = (document.URL).replace(/(.*)history.html/,'');
-        //if (s!= '')
-        //    var s = s.replace(/#back=(.*)/,'$1');
-        window.location = 'index.html#s='//+s;
+        window.location = 'index.html#s=';
     });
     view.getResult();
 });

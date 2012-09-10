@@ -81,8 +81,8 @@ tracker[tmp_num] = function () {
                 td.eq(1).children('a').remove();
                 var ss = td.eq(4).text();
                 var sl = td.eq(4).text();
-                if (ss == '') ss = 0;
-                if (sl == '') sl = 0;
+                if (ss.length == 0) ss = 0;
+                if (sl.length == 0) sl = 0;
                 arr[arr.length] = {
                     'category' : {
                         'title' : td.eq(0).text(),

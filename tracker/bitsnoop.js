@@ -55,7 +55,7 @@ tracker[tmp_num] = function () {
             return 0;
         }
         var calculateTime = function (t) {
-            if ($.trim(t.substr(0, 1)) == '') return 0;
+            if ($.trim(t.substr(0, 1)).length == 0) return 0;
             if ((/today/).test(t)) {
                 return Math.round((new Date().getTime() / 1000)/(60*60*24))*(60*60*24);
             } else
@@ -101,8 +101,8 @@ tracker[tmp_num] = function () {
                 li.children('div[id="sz"]').find('td').eq(0).children('div.nfiles').remove();
                 var ss = li.children('div.torInfo').children('span.seeders').text().replace(',','');
                 var ls = li.children('div.torInfo').children('span.leechers').text().replace(',','');
-                if (ls == '') ls = 0;
-                if (ss == '') ss = 0;
+                if (ls.length == 0) ls = 0;
+                if (ss.length == 0) ss = 0;
                 arr[arr.length] = {
                     'category' : {
                         'title' : li.children('span.icon').attr('title'),
