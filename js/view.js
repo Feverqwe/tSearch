@@ -200,7 +200,8 @@ var view = function () {
                     backgroundModeID.q = quality.value;
                     backgroundModeID.link = v.url;
                     backgroundModeID.qn = quality.name;
-                    backgroundModeID.year = (v.title).indexOf(new Date().getFullYear()) >= 0
+                    if (backgroundModeID.year == false)
+                        backgroundModeID.year = (v.title).indexOf(new Date().getFullYear()) >= 0
                 }
             }
             if (!backgroundMode) {
