@@ -281,7 +281,10 @@ var engine = function () {
             SetSettings('internalTrackers',null);
         }
         if (trackerProfiles != null) {
-            loadModules(trackerProfiles[prof].Trackers)
+            if (trackerProfiles[prof] == null)
+                loadModules(null)
+            else
+                loadModules(trackerProfiles[prof].Trackers)
         }
     }
     var getProfileList = function () {

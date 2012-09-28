@@ -94,9 +94,22 @@ var view = function () {
         }
     }
     var ClearTrackerList = function () {
-        $('#internalTrackers').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
+        $('#internalTrackers tbody').empty();
+    }
+    var LoadProfiles = function () {
+        var arr = engine.getProfileList();
+        var sel = $('div.profile select');
+        $.each(arr, function (k,v) {
+            sel.append('<option value='+k+'>'+v+'</option>');
+        });
+        $.each(arr, function (k,v) {
+            sel.append('<option value='+(k+1)+'>'+v+'</option>');
+        });
     }
     return {
+        LoadProfiles : function () {
+            LoadProfiles();
+        },
         ClearTrackerList : function () {
             ClearTrackerList()
         },
@@ -139,6 +152,14 @@ $(function () {
     $('option[data-lang=21]').text(_lang.stp_opt_21);
     $('option[data-lang=22]').text(_lang.stp_opt_22);
     $('span[data-lang=23]').text(_lang.stp_opt_23);
+    $('div.profile select').attr('title',_lang.label_profile);
+    $('span[data-lang=24]').text(_lang.label_profile+':');
+    
+    view.LoadProfiles();
+    
+    $('div.profile select').change(function () {
+        engine.loadProfile($(this).val());
+    });
     
     $('select[name=lang]').change(function () {
         if ($(this).val()!=_lang.t) {
