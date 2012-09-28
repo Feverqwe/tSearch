@@ -92,7 +92,7 @@ var view = function () {
             };
             if (HideZeroSeed && v.seeds == 0) return true;
             var title = filterText(s_s,v.title);
-            if (TeaserFilter) {
+            if (TeaserFilter || backgroundMode) {
                 var Teaser = ((/Трейлер/i).test(title.n))?1:
                 ((/Тизер/i).test(title.n))?1:
                 ((/Teaser/i).test(title.n))?1:
@@ -170,7 +170,14 @@ var view = function () {
             quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[L\]/).test(title))?100:0;
             quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
             if (backgroundMode) {
-                if (quality.name < 80 || backgroundModeID.q > quality.value || backgroundModeID.qn > quality.name || v.size < 524288000) return true;
+                if (backgroundModeID.year == false && (v.title).indexOf(new Date().getFullYear()) > 0) {
+                    backgroundModeID.label = '';
+                    backgroundModeID.q = 0;
+                    backgroundModeID.link = '';
+                    backgroundModeID.qn = 0;
+                    backgroundModeID.year = true;
+                }
+                if (quality.name < 80 || backgroundModeID.q > quality.value || backgroundModeID.qn > quality.name) return true;
                 if (backgroundModeID.year && (v.title).indexOf(new Date().getFullYear()) < 0) return true;
                 var tmp_q = ((/Blu-ray|Blu-Ray/).test(title))?'Blu-Ray':
                 ((/BD-Remux|BDRemux/).test(title))?'BDRemux':
@@ -200,8 +207,6 @@ var view = function () {
                     backgroundModeID.q = quality.value;
                     backgroundModeID.link = v.url;
                     backgroundModeID.qn = quality.name;
-                    if (backgroundModeID.year == false)
-                        backgroundModeID.year = (v.title).indexOf(new Date().getFullYear()) >= 0
                 }
             }
             if (!backgroundMode) {
@@ -231,7 +236,6 @@ var view = function () {
             loadingStatus(1,t);
             explore.setQuality(backgroundModeID);
         }
-        console.log(t);
     }
     var table_update_timer = function (a) {
         var time = new Date().getTime();
@@ -561,7 +565,7 @@ var view = function () {
         engine.search(keyword,sel_tr);
         return false;
     }
-    var getQuality = function (keyword,id) {
+    var getQuality = function (keyword,id,section) {
         backgroundMode = true;
         backgroundModeID = {
             'id' : id, 
@@ -569,7 +573,8 @@ var view = function () {
             qn : 0,
             label : '',
             link : '',
-            year : false
+            year : false,
+            'section' : section
         };
         engine.search(keyword);
     }
@@ -691,8 +696,8 @@ var view = function () {
         LoadProfiles : function () {
             LoadProfiles()
         },
-        getQuality : function (a,b) {
-            getQuality(a,b)
+        getQuality : function (a,b,c) {
+            getQuality(a,b,c)
         }
     }
 }();

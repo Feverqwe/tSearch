@@ -502,7 +502,8 @@ var explore = function () {
         var poster_count = get_view_i_count(section);
         poster_count = (poster_count == null || poster_count < 1)?20:poster_count;
         var cc = 0;
-        var fav = (fav != null)?'<div class="add_favorite" title="'+_lang.exp_in_fav+'">':'<div class="del_favorite" title="'+_lang.exp_rm_fav+'"></div><div class="quality_box" title="'+_lang.exp_q_fav+'">';
+        var fav = (fav != null)?'<div class="add_favorite" title="'+_lang.exp_in_fav+'">':'<div class="del_favorite" title="'+_lang.exp_rm_fav+'">';
+        var fav = fav + '</div><div class="quality_box" title="'+_lang.exp_q_fav+'">';
         var root_url = (root_url == null)? '' : root_url;
         var c = '';
         c+= '<div class="pager">'+make_page_body(poster_count,content.length,page)+'</div>';
@@ -513,8 +514,8 @@ var explore = function () {
             cc ++;
             if (cc<=min_item) return true;
             if (cc>max_item) return false;
-            var id = (did!=null) ? ' data-id="'+k+'"' : '';
-            var qual = (did!=null)? get_q_favorites(k) : '';
+            var id = ' data-id="'+k+'"';
+            var qual = (did!=null)? get_q_favorites(k) : '?';
             name_v = v.name;
             if (_lang.t != 'ru') {
                 if (v.name_en != null && v.name_en != undefined && v.name_en.length > 0) 
@@ -558,7 +559,7 @@ var explore = function () {
         show_favorites();
     }
     var update_q_favorites = function (id,q) {
-        if (q == '') q = '-';
+        if (q == '') q = '?';
         favoritesList[id]['quality'] = q;
         SetSettings('favoritesList',JSON.stringify(favoritesList));
     }
@@ -655,7 +656,8 @@ var explore = function () {
         $('div.explore div.'+section).on('click', 'div.quality_box', function() {
             var name = $(this).parent().parent().children('div.label').children('div.title').text();
             $(this).addClass('loading');
-            view.getQuality(name.replace(/ \(([0-9]*)\)$/,' $1'),parseInt($(this).parent().parent().attr('data-id')));
+            var tmp_id = parseInt($(this).parent().parent().attr('data-id'));
+            view.getQuality(name.replace(/ \(([0-9]*)\)$/,' $1'),tmp_id,section);
         });
         // кнопка избранное - удалить
         $('div.explore div.'+section).on('click', 'div.del_favorite', function() {
@@ -840,11 +842,13 @@ var explore = function () {
         return size;
     }
     var setQuality = function (obj) {
-        var qbox = $('li.favorites > div.favorites > div').children('div[data-id='+obj.id+']').find('div.quality_box');
+        console.log(obj)
+        var qbox = $('li.'+obj.section+' > div.'+obj.section+' > div').children('div[data-id='+obj.id+']').find('div.quality_box');
         qbox.removeClass('loading');
         var label = obj.label;
         if (label.length > 0) {
-            update_q_favorites(obj.id,label);
+            if (obj.section == 'favorites')
+                update_q_favorites(obj.id,label);
             qbox.text(label).css('display','block');
         }
     }
