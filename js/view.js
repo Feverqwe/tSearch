@@ -542,13 +542,14 @@ var view = function () {
         $('input[type="text"][name="s"]').autocomplete( "close" );
     }
     var LoadProfiles = function () {
+        var defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
         var arr = engine.getProfileList();
-        if (arr.length <= 0) return;
+        if (arr.length <= 1) return;
         var sel = $('<select title="'+_lang.label_profile+'">').change(function () {
             engine.loadProfile($(this).val());
         });
         $.each(arr, function (k,v) {
-            sel.append('<option value='+k+'>'+v+'</option>')
+            sel.append('<option value="'+k+'" '+((k == defProfile)?'selected':'')+'>'+v+'</option>')
         });
         sel = $('<div class="profile">').append(sel);
         $('div.tracker_list div.setup').after(sel);

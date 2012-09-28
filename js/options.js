@@ -64,7 +64,6 @@ var view = function () {
         
         var id = oldProfileID;
         if (trackerProfiles == null || trackerProfiles[id] == null) {
-            ClearTrackerList();
             return 1;
         }
         var internalTrackers = [];
@@ -121,8 +120,8 @@ var view = function () {
     var LoadProfiles = function () {
         $('div.profile select').change(function () {
             if (saveCurrentProfile()) {
-                engine.loadProfile($(this).val());
                 oldProfileID = $(this).val();
+                engine.loadProfile(oldProfileID);
             }
         });
         var arr = engine.getProfileList();
@@ -141,9 +140,15 @@ var view = function () {
                 Title : name
             };
             if (saveCurrentProfile()) {
-                engine.loadProfile(trackerProfiles.length-1);
                 oldProfileID = trackerProfiles.length-1;
+                engine.loadProfile(oldProfileID);
             }
+            updateProfileList();
+        });
+        $('div.profile input.rmbtn').unbind('click').click(function () {
+            trackerProfiles.splice(oldProfileID,1);
+            oldProfileID = defProfile;
+            engine.loadProfile(oldProfileID);
             updateProfileList();
         });
     }
