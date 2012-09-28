@@ -710,6 +710,8 @@ div.ad {
 div.explore div.poster > div.image > div.quality_box {
     width: auto;
     height: 16px;
+    min-width: 16px;
+    text-align: center;
     display: none;
     position: absolute;
     top: -8px;
@@ -717,7 +719,7 @@ div.explore div.poster > div.image > div.quality_box {
     left: auto;
     float: right;
     cursor: pointer;
-    opacity: 0.9;
+    opacity: 0.8;
     background-color: #3d94f6;
     border: 2px #fff solid;
     border-radius: 4px;
@@ -725,4 +727,11 @@ div.explore div.poster > div.image > div.quality_box {
     padding-bottom: -4px;
     font-size: 13px;
     color: #fff;
+}
+div.explore div.poster > div.image > div.quality_box.loading {
+    background: url(../images/loading.gif) no-repeat center center;
+    background-color: #FFF;
+}
+div.explore div.poster > div.image > div.quality_box:hover {
+    opacity: 1;
 }

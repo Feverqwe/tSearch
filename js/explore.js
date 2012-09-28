@@ -558,7 +558,7 @@ var explore = function () {
         show_favorites();
     }
     var update_q_favorites = function (id,q) {
-        if (q == '') q = '?';
+        if (q == '') q = '-';
         favoritesList[id]['quality'] = q;
         SetSettings('favoritesList',JSON.stringify(favoritesList));
     }
@@ -654,6 +654,7 @@ var explore = function () {
         // кнопка качества
         $('div.explore div.'+section).on('click', 'div.quality_box', function() {
             var name = $(this).parent().parent().children('div.label').children('div.title').text();
+            $(this).addClass('loading');
             view.getQuality(name.replace(/ \(([0-9]*)\)$/,' $1'),parseInt($(this).parent().parent().attr('data-id')));
         });
         // кнопка избранное - удалить
@@ -839,12 +840,12 @@ var explore = function () {
         return size;
     }
     var setQuality = function (obj) {
+        var qbox = $('li.favorites > div.favorites > div').children('div[data-id='+obj.id+']').find('div.quality_box');
+        qbox.removeClass('loading');
         var label = obj.label;
-        if (label.length < 1)
-            $('li.favorites > div.favorites > div').children('div[data-id='+obj.id+']').find('div.quality_box').hide()
-        else {
+        if (label.length > 0) {
             update_q_favorites(obj.id,label);
-            $('li.favorites > div.favorites > div').children('div[data-id='+obj.id+']').find('div.quality_box').text(label).css('display','block');
+            qbox.text(label).css('display','block');
         }
     }
     return {

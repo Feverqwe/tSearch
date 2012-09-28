@@ -18,7 +18,7 @@ var view = function () {
     var backgroundMode = false;
     var backgroundModeID = null;
     var auth = function (s,t) {
-        if (backgroundMode) return;
+        //if (backgroundMode) return;
         $('ul.trackers').children('li[data-id="'+t+'"]').children('ul').remove();
         if (!s)
             $('ul.trackers').children('li[data-id="'+t+'"]').append('<ul><li><a href="'+tracker[t].login_url+'" target="_blank">'+_lang['btn_login']+'</a></li></ul>');
@@ -37,7 +37,7 @@ var view = function () {
         updateCategorys();
     }
     var loadingStatus  = function (s,t) {
-        if (backgroundMode) return;
+        //if (backgroundMode) return;
         var tracker_img = $('ul.trackers').children('li[data-id="'+t+'"]').children('div.tracker_icon');
         switch (s) {
             case 0:
@@ -53,7 +53,8 @@ var view = function () {
     }
     var addTrackerInList = function (i) {
         $('body').append('<style>div.tracker_icon.num'+i+' { background-image: url('+tracker[i].icon+'); }</style>');
-        $('<li data-id="'+i+'"/>').append($('<div class="tracker_icon num'+i+'" data-count="0"/>')).append($('<a href="#">'+tracker[i].name+'</a>').click(function() {
+        $('<li data-id="'+i+'"/>').append($('<div class="tracker_icon num'+i+'" data-count="0"/>')).append($('<a href="#">'+tracker[i].name+'</a>').click(function(event) {
+            event.preventDefault();
             if ($(this).attr('class') == 'selected') {
                 $(this).removeClass('selected');
                 trackerFilter = null;
@@ -64,7 +65,6 @@ var view = function () {
             }
             updateCategorys();
             $('ul.categorys').children('li.selected').trigger('click');
-            return false;
         })).append('<i/>').appendTo($('ul.trackers'));
     }
     var ClearTrackerList = function () {
@@ -75,8 +75,8 @@ var view = function () {
         return n % 1 === 0;
     }
     var write_result = function (t,a,s) {
+        var c = '';
         if (!backgroundMode) {
-            var c = '';
             $('#rez_table').children('tbody').children('tr[data-tracker="'+t+'"]').remove();
         }
         var s_s = contentFilter(s.replace(/\s+/g," ").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
@@ -170,20 +170,20 @@ var view = function () {
             quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[L\]/).test(title))?100:0;
             quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
             if (backgroundMode) {
-                if ((v.title).indexOf(new Date().getFullYear()) < 0 || quality.name < 80 || backgroundModeID.q > quality.value || backgroundModeID.qn > quality.name || v.size < 524288000) return true;
-                
-                t = ((/Blu-ray|Blu-Ray/).test(title))?'Blu-Ray':
+                if (quality.name < 80 || backgroundModeID.q > quality.value || backgroundModeID.qn > quality.name || v.size < 524288000) return true;
+                if (backgroundModeID.year && (v.title).indexOf(new Date().getFullYear()) < 0) return true;
+                var tmp_q = ((/Blu-ray|Blu-Ray/).test(title))?'Blu-Ray':
                 ((/BD-Remux|BDRemux/).test(title))?'BDRemux':
-                ((/1080p|1080i/).test(title))?'1080i':
+                ((/1080p|1080i/).test(title))?'1080p':
                 ((/BD-Rip|BDRip/).test(title))?'BDRip':
-                ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?'HDTVRip':
-                ((/DTheater-Rip/).test(title))?'DTheater-Rip':
+                ((/HDTV-Rip|HDTVRip/).test(title))?'HDTVRip':
+                ((/DTheater-Rip/).test(title))?'DTheater':
                 ((/720p/).test(title))?'720p':
                 ((/LowHDRip/).test(title))?'LowHDRip':
                 ((/HDTV/).test(title))?'HDTV':
                 ((/HDRip/).test(title))?'HDRip':
                 ((/DVDRip/).test(title))?'DVDRip':
-                ((/DVD/).test(title))?'DVD':
+                ((/DVDScr/).test(title))?'DVDScr':
                 ((/TVRip/).test(title))?'TVRip':
                 ((/WEBRip|WEB-DLRip/).test(title))?'WEBRip':
                 ((/WEB-DL/).test(title))?'WEB-DL':
@@ -191,15 +191,16 @@ var view = function () {
                 ((/HQRip/).test(title))?'HQRip':
                 ((/DVB/).test(title))?'DVB':
                 ((/IPTVRip/).test(title))?'IPTVRip':
-                ((/TeleSynch/).test(title))?'TeleSynch':
-                ((/DVDScr/).test(title))?'DVDScr':
+                ((/TeleSynch/).test(title))?'TS':
+                ((/DVD/).test(title))?'DVD':
                 ((/CAMRip|CamRip/).test(title))?'CAMRip':
-                ((/TS/).test(title))?'TeleSynch':'';
-                if (t != '') {
-                    backgroundModeID.label = t;
+                ((/TS/).test(title))?'TS':'';
+                if (tmp_q != '') {
+                    backgroundModeID.label = tmp_q;
                     backgroundModeID.q = quality.value;
                     backgroundModeID.link = v.url;
                     backgroundModeID.qn = quality.name;
+                    backgroundModeID.year = (v.title).indexOf(new Date().getFullYear()) >= 0
                 }
             }
             if (!backgroundMode) {
@@ -224,8 +225,12 @@ var view = function () {
                 $('#rez_table').children('tbody').append(contentUnFilter(c));
                 table_update_timer(1);
             }
-        } else
+        } else {
+            updateTrackerResultCount(t,sum);
+            loadingStatus(1,t);
             explore.setQuality(backgroundModeID);
+        }
+        console.log(t);
     }
     var table_update_timer = function (a) {
         var time = new Date().getTime();
@@ -562,7 +567,8 @@ var view = function () {
             q : 0,
             qn : 0,
             label : '',
-            link : ''
+            link : '',
+            year : false
         };
         engine.search(keyword);
     }
