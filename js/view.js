@@ -170,7 +170,8 @@ var view = function () {
             quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[L\]/).test(title))?100:0;
             quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
             if (backgroundMode) {
-                if (title.indexOf(new Date().getFullYear()) < 0 || quality.name < 80 || backgroundModeID.q > quality.value || backgroundModeID.qn > quality.name || v.size < 524288000) return true;
+                if ((v.title).indexOf(new Date().getFullYear()) < 0 || quality.name < 80 || backgroundModeID.q > quality.value || backgroundModeID.qn > quality.name || v.size < 524288000) return true;
+                
                 t = ((/Blu-ray|Blu-Ray/).test(title))?'Blu-Ray':
                 ((/BD-Remux|BDRemux/).test(title))?'BDRemux':
                 ((/1080p|1080i/).test(title))?'1080i':
