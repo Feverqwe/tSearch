@@ -11,15 +11,27 @@ var view = function () {
     var context_menu = (GetSettings('context_menu') !== undefined) ? parseInt(GetSettings('context_menu')) : true;
     var search_popup = (GetSettings('search_popup') !== undefined) ? parseInt(GetSettings('search_popup')) : false;
     var t_table_line = 0;
+    var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
+    var oldProfileID = null;
     var addTrackerInList = function (i) {
         var filename = tracker[i].filename;
-        var t = (GetSettings('internalTrackers') !== undefined) ? JSON.parse(GetSettings('internalTrackers')) : null;
-        if (t == null) t = engine.defaultList;
-        var tc = t.length;
+        
+        var id = $('div.profile select').val();
+        if (trackerProfiles == null || trackerProfiles[id] == null) {
+            trackerProfiles[id] = {
+                Trackers : null,
+                Title : _lang.label_def_profile //set lang var here
+            }
+        }
+        var t = trackerProfiles[id].Trackers;
+        //if (t == null) t = engine.defaultList;
         var enable = false;
-        for (var n = 0;n<tc;n++) {
-            if (t[n].n == filename)
-                enable = t[n].e;
+        if (t != null) {
+            var tc = t.length;
+            for (var n = 0;n<tc;n++) {
+                if (t[n].n == filename)
+                    enable = t[n].e;
+            }
         }
         t_table_line++;
         if ((t_table_line % 2) == 0) 
@@ -47,9 +59,14 @@ var view = function () {
         $('input[name="context_menu"]').prop('checked',context_menu);
         $('input[name="search_popup"]').prop('checked',search_popup);
     }
-    var save_settings = function () {
+    var saveCurrentProfile = function () {
         var tr = $('#internalTrackers tbody').children('tr');
         var trc = tr.length;
+        var id = oldProfileID;
+        if (trackerProfiles == null || trackerProfiles[id] == null) {
+            ClearTrackerList();
+            return 1;
+        }
         var internalTrackers = [];
         for (var i=0;i<trc;i++) {
             var fn = tr.eq(i).attr('data-name');
@@ -59,7 +76,12 @@ var view = function () {
                 'e': (inp.is(':checked'))?1:0
             };
         }
-        SetSettings('internalTrackers',JSON.stringify(internalTrackers));
+        trackerProfiles[id].Trackers = internalTrackers;
+        return 1;
+    }
+    var save_settings = function () {
+        saveCurrentProfile();
+        SetSettings('trackerProfiles',JSON.stringify(trackerProfiles));
         HideZeroSeed = SetSettings('HideZeroSeed',($('input[name="zeroseed"]').is(':checked'))?1:0);
         ShowIcons = SetSettings('ShowIcons',($('input[name="icons"]').is(':checked'))?1:0);
         HideLeech = SetSettings('HideLeech',($('input[name="hideleech"]').is(':checked'))?1:0);
@@ -97,13 +119,16 @@ var view = function () {
         $('#internalTrackers tbody').empty();
     }
     var LoadProfiles = function () {
+        $('div.profile select').change(function () {
+            if (saveCurrentProfile()) {
+                engine.loadProfile($(this).val());
+                oldProfileID = $('div.profile select').val();
+            }
+        });
         var arr = engine.getProfileList();
         var sel = $('div.profile select');
         $.each(arr, function (k,v) {
             sel.append('<option value='+k+'>'+v+'</option>');
-        });
-        $.each(arr, function (k,v) {
-            sel.append('<option value='+(k+1)+'>'+v+'</option>');
         });
     }
     return {
@@ -156,10 +181,6 @@ $(function () {
     $('span[data-lang=24]').text(_lang.label_profile+':');
     
     view.LoadProfiles();
-    
-    $('div.profile select').change(function () {
-        engine.loadProfile($(this).val());
-    });
     
     $('select[name=lang]').change(function () {
         if ($(this).val()!=_lang.t) {
