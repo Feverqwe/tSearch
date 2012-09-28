@@ -96,7 +96,10 @@ if (_lang != 'ru')
         stp_opt_23 : 'Show search popup, when you click on extension icon',
         ctx_title : 'Search torrent',
         label_profile : 'Profile',
-        label_def_profile : 'Default'
+        label_def_profile : 'Default',
+        spn_26 : 'Title',
+        btn_25 : 'Remove',
+        btn_27 : 'Add'
     };
 if (_lang == 'ru')
     _lang = {
@@ -195,5 +198,8 @@ if (_lang == 'ru')
         stp_opt_23 : 'Показывать поиск при нажатии на иконку расширения',
         ctx_title : 'Найти торрент',
         label_profile : 'Профиль',
-        label_def_profile : 'Стандартный'
+        label_def_profile : 'Стандартный',
+        spn_26 : 'Название',
+        btn_25 : 'Удалить',
+        btn_27 : 'Добавить'
     };

@@ -28,10 +28,16 @@
         </fieldset>
         <fieldset>
             <legend data-lang=1>Трекеры</legend>
-            <div class="profile">
-                <span data-lang=24></span>
-                <select></select>
-            </div>
+            <fieldset>
+                <legend data-lang=24>Профиль</legend>
+                <div class="profile">
+                    <select></select><input data-lang=25 class="rmbtn" type="button" value="Удалить" />
+                    <div>
+                        <span data-lang=26>Название: </span><input name="new_profile_name" type="text" />
+                        <input class="addbtn" type="button" value="Добавить" data-lang=27 />
+                    </div>
+                </div>
+            </fieldset>
             <table id="internalTrackers">
                 <thead>
                     <tr>

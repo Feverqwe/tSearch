@@ -157,7 +157,7 @@ var engine = function () {
     ];
     var categorys = _lang['categorys'];
     var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
-    var defProfile = (GetSettings('defProfile') !== undefined) ? JSON.parse(GetSettings('defProfile')) : 0;
+    var defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
     var search = function(text,tracker_id) {
         if (tracker_id != null) {
             try {
@@ -277,14 +277,16 @@ var engine = function () {
                 Title : _lang.label_def_profile //set lang var here
             }]
             SetSettings('trackerProfiles',JSON.stringify(trackerProfiles));
-            SetSettings('defProfile',JSON.stringify(defProfile));
+            SetSettings('defProfile',defProfile);
             SetSettings('internalTrackers',null);
         }
         if (trackerProfiles != null) {
             if (trackerProfiles[prof] == null)
                 loadModules(null)
-            else
-                loadModules(trackerProfiles[prof].Trackers)
+            else {
+                loadModules(trackerProfiles[prof].Trackers);
+                SetSettings('defProfile',prof);
+            }
         }
     }
     var getProfileList = function () {
