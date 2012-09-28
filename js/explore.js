@@ -486,7 +486,7 @@ var explore = function () {
         });
         calculate_moveble(section,size);
         update_btns(section);
-        if (exp_li.children('div.'+section).children('div.poster').length == 0 && page_num > 1) {
+        if (exp_li.children('div.'+section).children('div').children('div.poster').length == 0 && page_num > 1) {
             $('li.'+section).empty();
             write_content(content,section,page_num-1);
         }

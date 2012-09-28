@@ -717,9 +717,12 @@ div.explore div.poster > div.image > div.quality_box {
     left: auto;
     float: right;
     cursor: pointer;
-    opacity: 0.8;
+    opacity: 0.9;
     background-color: #3d94f6;
-    border: 3px #fff solid;
-    border-radius: 10px;
+    border: 2px #fff solid;
+    border-radius: 4px;
     padding: 2px;
+    padding-bottom: -4px;
+    font-size: 13px;
+    color: #fff;
 }
