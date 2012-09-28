@@ -156,7 +156,8 @@ var engine = function () {
     }
     ];
     var categorys = _lang['categorys'];
-    var internalTrackers = (GetSettings('internalTrackers') !== undefined) ? JSON.parse(GetSettings('internalTrackers')) : null;
+    var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
+    var defProfile = (GetSettings('defProfile') !== undefined) ? JSON.parse(GetSettings('defProfile')) : 0;
     var search = function(text,tracker_id) {
         if (tracker_id != null) {
             try {
@@ -245,10 +246,12 @@ var engine = function () {
         script.type = 'text/javascript';
         script.async = true;
         script.src = 'tracker/'+name+'.js';
+        script.dataset.id='tracker'
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(script, s);
     }
-    var loadModules = function () {
+    var loadModules = function (internalTrackers) {
+        $('script[data-id=tracker]').remove();
         tracker = [];
         if (internalTrackers == null || option_mode == true)
             var Trackers = defaultList;
@@ -263,6 +266,31 @@ var engine = function () {
             if (Trackers[i].e || option_mode == true)
                 loadInternalModule(Trackers[i].n);
     }
+    var loadProfile = function (prof) {
+        view.ClearTrackerList();
+        if (prof == null)
+            prof = defProfile;
+        if (trackerProfiles == null) {
+            var internalTrackers = (GetSettings('internalTrackers') !== undefined) ? JSON.parse(GetSettings('internalTrackers')) : null;
+            trackerProfiles = [{
+                Trackers : internalTrackers,
+                Title : _lang.label_def_profile //set lang var here
+            }]
+            SetSettings('trackerProfiles',JSON.stringify(trackerProfiles));
+            SetSettings('defProfile',JSON.stringify(defProfile));
+            SetSettings('internalTrackers',null);
+        }
+        if (trackerProfiles != null) {
+            loadModules(trackerProfiles[prof].Trackers)
+        }
+    }
+    var getProfileList = function () {
+        var arr = [];
+        $.each(trackerProfiles, function (k,v) {
+            arr[arr.length] = v.Title
+        });
+        return arr;
+    }
     var ModuleLoaded = function (n) {
         v = tracker[n];
         v.setId(n);
@@ -272,16 +300,19 @@ var engine = function () {
         search : function (a,b) {
             return search(a,b)
         },
-        loadModules : function () {
-            loadModules();
+        loadProfile : function (a) {
+            loadProfile(a);
         },
         ModuleLoaded : function (a) {
             ModuleLoaded(a);
+        },
+        getProfileList : function () {
+            return getProfileList();
         },
         defaultList : defaultList,
         categorys : categorys
     }
 }();
 $(function () {
-    engine.loadModules();
+    engine.loadProfile();
 })

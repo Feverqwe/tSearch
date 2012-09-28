@@ -62,6 +62,9 @@ var view = function () {
             return false;
         })).append('<i/>').appendTo($('ul.trackers'));
     }
+    var ClearTrackerList = function () {
+        $('ul.trackers').empty();
+    }
     function isInt(n) {
         if (n == undefined || n === undefined) return false;
         return n % 1 === 0;
@@ -538,6 +541,18 @@ var view = function () {
         });
         $('input[type="text"][name="s"]').autocomplete( "close" );
     }
+    var LoadProfiles = function () {
+        var arr = engine.getProfileList();
+        if (arr.length <= 0) return;
+        var sel = $('<select title="'+_lang.label_profile+'">').change(function () {
+            engine.loadProfile($(this).val());
+        });
+        $.each(arr, function (k,v) {
+            sel.append('<option value='+k+'>'+v+'</option>')
+        });
+        sel = $('<div class="profile">').append(sel);
+        $('div.tracker_list div.setup').after(sel);
+    }
     return {
         result : function (t,a,s) {
             return write_result(t,a,s);
@@ -595,6 +610,12 @@ var view = function () {
         },
         AddAutocomplete : function () {
             AddAutocomplete();
+        },
+        ClearTrackerList : function () {
+            ClearTrackerList()
+        },
+        LoadProfiles : function () {
+            LoadProfiles()
         }
     }
 }();
@@ -645,6 +666,8 @@ $(function () {
     $('div.topbtn').attr('title',_lang['btn_up']);
     
     view.load_category(engine.categorys);
+    view.LoadProfiles();
+    
     if (view.HideLeech()) {
         $('th.leechs').remove();
     }

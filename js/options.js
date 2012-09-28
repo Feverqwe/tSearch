@@ -93,7 +93,13 @@ var view = function () {
             window.location = 'index.html#s='+s;
         }
     }
+    var ClearTrackerList = function () {
+        $('#internalTrackers').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
+    }
     return {
+        ClearTrackerList : function () {
+            ClearTrackerList()
+        },
         addTrackerInList : function (a) {
             addTrackerInList(a);
         },
