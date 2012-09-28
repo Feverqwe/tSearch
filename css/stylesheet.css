@@ -587,7 +587,8 @@ div.explore div.poster > div > div.info {
 }
 div.explore div.poster:hover div.info,
 div.explore div.poster:hover div.image > div.add_favorite,
-div.explore div.poster:hover div.image > div.del_favorite {
+div.explore div.poster:hover div.image > div.del_favorite,
+div.explore div.poster:hover div.image > div.quality_box {
     display: block;
 }
 div.explore div.games > div > div.poster > div > div.info {
@@ -704,4 +705,21 @@ div.ad {
 }
 .OzonRev_itemList {
     padding-left: 0 !important;
+}
+
+div.explore div.poster > div.image > div.quality_box {
+    width: auto;
+    height: 16px;
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    left: auto;
+    float: right;
+    cursor: pointer;
+    opacity: 0.8;
+    background-color: #3d94f6;
+    border: 3px #fff solid;
+    border-radius: 10px;
+    padding: 2px;
 }

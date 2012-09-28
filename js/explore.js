@@ -486,6 +486,10 @@ var explore = function () {
         });
         calculate_moveble(section,size);
         update_btns(section);
+        if (exp_li.children('div.'+section).children('div.poster').length == 0 && page_num > 1) {
+            $('li.'+section).empty();
+            write_content(content,section,page_num-1);
+        }
     }
     var write_page = function (section, page, content) {
         if (content == null)
@@ -498,7 +502,7 @@ var explore = function () {
         var poster_count = get_view_i_count(section);
         poster_count = (poster_count == null || poster_count < 1)?20:poster_count;
         var cc = 0;
-        var fav = (fav != null)?'<div class="add_favorite" title="'+_lang.exp_in_fav+'">':'<div class="del_favorite" title="'+_lang.exp_rm_fav+'">';
+        var fav = (fav != null)?'<div class="add_favorite" title="'+_lang.exp_in_fav+'">':'<div class="del_favorite" title="'+_lang.exp_rm_fav+'"></div><div class="quality_box" title="'+_lang.exp_q_fav+'">';
         var root_url = (root_url == null)? '' : root_url;
         var c = '';
         c+= '<div class="pager">'+make_page_body(poster_count,content.length,page)+'</div>';
@@ -510,13 +514,19 @@ var explore = function () {
             if (cc<=min_item) return true;
             if (cc>max_item) return false;
             var id = (did!=null) ? ' data-id="'+k+'"' : '';
+            var qual = (did!=null)? get_q_favorites(k) : '';
             name_v = v.name;
             if (_lang.t != 'ru') {
                 if (v.name_en != null && v.name_en != undefined && v.name_en.length > 0) 
                     name_v = v.name_en;
             }
-            c += '<div class="poster"'+id+'><div class="image">'+fav+'</div><img src="'+v.img+'" title="'+name_v+'"/></div><div class="label"><div class="title" title="'+name_v+'"><span>'+name_v+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">'+_lang.exp_more+'</a></div></div></div>';
+            c += '<div class="poster"'+id+'><div class="image">'+fav+qual+'</div><img src="'+v.img+'" title="'+name_v+'"/></div><div class="label"><div class="title" title="'+name_v+'"><span>'+name_v+'</span></div><div class="info"><a href="'+root_url+v.url+'" target="blank">'+_lang.exp_more+'</a></div></div></div>';
         });
+        /*if (cc == min_item) {
+            if (page > 1) {
+                return write_page(section, page-1, content);
+            }
+        }*/
         return view.contentUnFilter(c);
     }
     var make_page_body = function (i_count,length,page) {
@@ -546,6 +556,15 @@ var explore = function () {
         favoritesList.splice(id,1);
         SetSettings('favoritesList',JSON.stringify(favoritesList));
         show_favorites();
+    }
+    var update_q_favorites = function (id,q) {
+        if (q == '') q = '?';
+        favoritesList[id]['quality'] = q;
+        SetSettings('favoritesList',JSON.stringify(favoritesList));
+    }
+    var get_q_favorites = function (id) {
+        if (favoritesList[id].quality == null) return '?';
+        return favoritesList[id]['quality'];
     }
     var load_all = function () {
         //remove old gamespot
@@ -631,6 +650,11 @@ var explore = function () {
         // кнопка избранное - добавить
         $('div.explore div.'+section).on('click', 'div.add_favorite', function() {
             add_in_favorites($(this).parent().parent());
+        });
+        // кнопка качества
+        $('div.explore div.'+section).on('click', 'div.quality_box', function() {
+            var name = $(this).parent().parent().children('div.label').children('div.title').text();
+            view.getQuality(name.replace(/ \(([0-9]*)\)$/,' $1'),parseInt($(this).parent().parent().attr('data-id')));
         });
         // кнопка избранное - удалить
         $('div.explore div.'+section).on('click', 'div.del_favorite', function() {
@@ -814,9 +838,21 @@ var explore = function () {
         var size = Math.round((max_m*w)/max_w);
         return size;
     }
+    var setQuality = function (obj) {
+        var label = obj.label;
+        if (label.length < 1)
+            $('li.favorites > div.favorites > div').children('div[data-id='+obj.id+']').find('div.quality_box').hide()
+        else {
+            update_q_favorites(obj.id,label);
+            $('li.favorites > div.favorites > div').children('div[data-id='+obj.id+']').find('div.quality_box').text(label).css('display','block');
+        }
+    }
     return {
         getLoad : function () {
             return load_all();
+        },
+        setQuality : function (a) {
+            setQuality(a);
         }
     }
 }();

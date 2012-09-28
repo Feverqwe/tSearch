@@ -15,12 +15,16 @@ var view = function () {
         timer: null,
         time: null
     };
+    var backgroundMode = false;
+    var backgroundModeID = null;
     var auth = function (s,t) {
+        if (backgroundMode) return;
         $('ul.trackers').children('li[data-id="'+t+'"]').children('ul').remove();
         if (!s)
             $('ul.trackers').children('li[data-id="'+t+'"]').append('<ul><li><a href="'+tracker[t].login_url+'" target="_blank">'+_lang['btn_login']+'</a></li></ul>');
     }
     var clear_table = function () {
+        backgroundMode = false;
         $('#rez_table').children('tbody').empty();
         $('div.filter').children('input').val('');
         keywordFilter = null;
@@ -33,6 +37,7 @@ var view = function () {
         updateCategorys();
     }
     var loadingStatus  = function (s,t) {
+        if (backgroundMode) return;
         var tracker_img = $('ul.trackers').children('li[data-id="'+t+'"]').children('div.tracker_icon');
         switch (s) {
             case 0:
@@ -70,8 +75,10 @@ var view = function () {
         return n % 1 === 0;
     }
     var write_result = function (t,a,s) {
-        var c = '';
-        $('#rez_table').children('tbody').children('tr[data-tracker="'+t+'"]').remove();
+        if (!backgroundMode) {
+            var c = '';
+            $('#rez_table').children('tbody').children('tr[data-tracker="'+t+'"]').remove();
+        }
         var s_s = contentFilter(s.replace(/\s+/g," ").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
         var sum = 0;
         $.each(a, function (k,v) {
@@ -117,15 +124,17 @@ var view = function () {
             quality.name = title.r;
             title = title.n;
             var filter = '';
-            var fk = 0;
-            if (trackerFilter!=null && trackerFilter != t) filter = 'style="display: none;"';
-            if (categoryFilter!=null && categoryFilter != v.category.id) filter = 'style="display: none;"';
-            if (keywordFilter!=null) {
-                var keyword = $.trim($('div.filter').children('input').val()).replace(/\s+/g," ");
-                if (title==filterTextCheck(keyword,title)) 
-                    filter = 'style="display: none;"';
-                else
-                    fk = 1;
+            if (!backgroundMode) {
+                var fk = 0;
+                if (trackerFilter!=null && trackerFilter != t) filter = 'style="display: none;"';
+                if (categoryFilter!=null && categoryFilter != v.category.id) filter = 'style="display: none;"';
+                if (keywordFilter!=null) {
+                    var keyword = $.trim($('div.filter').children('input').val()).replace(/\s+/g," ");
+                    if (title==filterTextCheck(keyword,title)) 
+                        filter = 'style="display: none;"';
+                    else
+                        fk = 1;
+                }
             }
             quality.seed = (v.seeds>0)?100:0;//(v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>0)?3:0;
             quality.video = 
@@ -160,25 +169,62 @@ var view = function () {
             0;
             quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[L\]/).test(title))?100:0;
             quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
-            c = c + '<tr '+filter+' data-kf="'+fk+'" data-tracker="'+t+'" data-c="'+v.category.id+'">'
-            +'<td class="time" data-value="'+v.time+'" title="'+unixintimetitle(v.time)+'">'+unixintime(v.time)+'</td>'
-            +'<td class="quality" data-value="'+quality.value+'" data-qgame="'+quality.game+'" data-qseed="'+quality.seed+'" data-qname="'+quality.name+'" data-qvideo="'+quality.video+'" data-qmusic="'+quality.music+'"><div class="progress"><div style="width:'+(quality.value/10)+'px"></div><span title="'+quality.value+'">'+quality.value+'</span></div></td>'
-            +'<td class="name"><div class="title"><a href="'+v.url+'" target="_blank">'+title+'</a>'+
-            ((v.category.title == null && ShowIcons)?'<div class="tracker_icon num'+t+'" title="'+tracker[t].name+'"></div>':'')
-            +'</div>'
-            +((v.category.title != null)?'<ul><li class="category">'+((v.category.url == null)?v.category.title:'<a href="'+v.category.url+'" target="blank">'+v.category.title+'</a>')+'</li>'+((ShowIcons)?'<li><div class="tracker_icon num'+t+'" title="'+tracker[t].name+'"></div></li>':'')+'</ul>':'')
-            +'</td>'
-            +'<td class="size" data-value="'+v.size+'">'+((v.dl != null)?'<a href="'+v.dl+'" target="_blank">'+bytesToSize(v.size)+' ↓</a>':bytesToSize(v.size))+'</td>'
-            +((!HideSeed)?'  <td class="seeds" data-value="'+v.seeds+'">'+v.seeds+'</td>':'')
-            +((!HideLeech)?'  <td class="leechs" data-value="'+v.leechs+'">'+v.leechs+'</td>':'')
-            +'</tr>';
+            if (backgroundMode) {
+                if (title.indexOf(new Date().getFullYear()) < 0 || quality.name < 80 || backgroundModeID.q > quality.value || backgroundModeID.qn > quality.name || v.size < 524288000) return true;
+                t = ((/Blu-ray|Blu-Ray/).test(title))?'Blu-Ray':
+                ((/BD-Remux|BDRemux/).test(title))?'BDRemux':
+                ((/1080p|1080i/).test(title))?'1080i':
+                ((/BD-Rip|BDRip/).test(title))?'BDRip':
+                ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?'HDTVRip':
+                ((/DTheater-Rip/).test(title))?'DTheater-Rip':
+                ((/720p/).test(title))?'720p':
+                ((/LowHDRip/).test(title))?'LowHDRip':
+                ((/HDTV/).test(title))?'HDTV':
+                ((/HDRip/).test(title))?'HDRip':
+                ((/DVDRip/).test(title))?'DVDRip':
+                ((/DVD/).test(title))?'DVD':
+                ((/TVRip/).test(title))?'TVRip':
+                ((/WEBRip|WEB-DLRip/).test(title))?'WEBRip':
+                ((/WEB-DL/).test(title))?'WEB-DL':
+                ((/SATRip/).test(title))?'SATRip':
+                ((/HQRip/).test(title))?'HQRip':
+                ((/DVB/).test(title))?'DVB':
+                ((/IPTVRip/).test(title))?'IPTVRip':
+                ((/TeleSynch/).test(title))?'TeleSynch':
+                ((/DVDScr/).test(title))?'DVDScr':
+                ((/CAMRip|CamRip/).test(title))?'CAMRip':
+                ((/TS/).test(title))?'TeleSynch':'';
+                if (t != '') {
+                    backgroundModeID.label = t;
+                    backgroundModeID.q = quality.value;
+                    backgroundModeID.link = v.url;
+                    backgroundModeID.qn = quality.name;
+                }
+            }
+            if (!backgroundMode) {
+                c = c + '<tr '+filter+' data-kf="'+fk+'" data-tracker="'+t+'" data-c="'+v.category.id+'">'
+                +'<td class="time" data-value="'+v.time+'" title="'+unixintimetitle(v.time)+'">'+unixintime(v.time)+'</td>'
+                +'<td class="quality" data-value="'+quality.value+'" data-qgame="'+quality.game+'" data-qseed="'+quality.seed+'" data-qname="'+quality.name+'" data-qvideo="'+quality.video+'" data-qmusic="'+quality.music+'"><div class="progress"><div style="width:'+(quality.value/10)+'px"></div><span title="'+quality.value+'">'+quality.value+'</span></div></td>'
+                +'<td class="name"><div class="title"><a href="'+v.url+'" target="_blank">'+title+'</a>'+
+                ((v.category.title == null && ShowIcons)?'<div class="tracker_icon num'+t+'" title="'+tracker[t].name+'"></div>':'')
+                +'</div>'
+                +((v.category.title != null)?'<ul><li class="category">'+((v.category.url == null)?v.category.title:'<a href="'+v.category.url+'" target="blank">'+v.category.title+'</a>')+'</li>'+((ShowIcons)?'<li><div class="tracker_icon num'+t+'" title="'+tracker[t].name+'"></div></li>':'')+'</ul>':'')
+                +'</td>'
+                +'<td class="size" data-value="'+v.size+'">'+((v.dl != null)?'<a href="'+v.dl+'" target="_blank">'+bytesToSize(v.size)+' ↓</a>':bytesToSize(v.size))+'</td>'
+                +((!HideSeed)?'  <td class="seeds" data-value="'+v.seeds+'">'+v.seeds+'</td>':'')
+                +((!HideLeech)?'  <td class="leechs" data-value="'+v.leechs+'">'+v.leechs+'</td>':'')
+                +'</tr>';
+            }
         });
-        updateTrackerResultCount(t,sum);
-        loadingStatus(1,t);
-        if (sum > 0) {
-            $('#rez_table').children('tbody').append(contentUnFilter(c));
-            table_update_timer(1);
-        }
+        if (!backgroundMode) {
+            updateTrackerResultCount(t,sum);
+            loadingStatus(1,t);
+            if (sum > 0) {
+                $('#rez_table').children('tbody').append(contentUnFilter(c));
+                table_update_timer(1);
+            }
+        } else
+            explore.setQuality(backgroundModeID);
     }
     var table_update_timer = function (a) {
         var time = new Date().getTime();
@@ -329,7 +375,10 @@ var view = function () {
         var new_name = t.replace(/</g,"&lt;").replace(/>/g,"&gt;");
         var rate = 0;
         var new_name2 = new_name;
-        rate = ((new RegExp(s,"i")).test(new_name))?100:0;
+        if (new_name.length > s.length+1)
+            rate = ((new RegExp(s+' ',"i")).test(new_name))?100:0;
+        else
+            rate = ((new RegExp(s,"i")).test(new_name))?100:0;
         var left = 0;
         if (s.length > 0) {
             var tmp = s.split(" ");
@@ -505,6 +554,17 @@ var view = function () {
         engine.search(keyword,sel_tr);
         return false;
     }
+    var getQuality = function (keyword,id) {
+        backgroundMode = true;
+        backgroundModeID = {
+            'id' : id, 
+            q : 0,
+            qn : 0,
+            label : '',
+            link : ''
+        };
+        engine.search(keyword);
+    }
     var load_category = function (c) {
         $('ul.categorys').empty()
         var count = c.length;
@@ -622,6 +682,9 @@ var view = function () {
         },
         LoadProfiles : function () {
             LoadProfiles()
+        },
+        getQuality : function (a,b) {
+            getQuality(a,b)
         }
     }
 }();
