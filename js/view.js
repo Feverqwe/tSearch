@@ -141,6 +141,11 @@ var view = function () {
             ((/CAMRip|CamRip/).test(title))?10:
             ((/TS/).test(title))?20:
             0;
+            if (v.size < 524288000 && quality.video > 45)
+                quality.video = Math.round(parseInt(quality.video)/10);
+            else
+            if (v.size < 1363148800 && quality.video > 65)
+                quality.video = Math.round(parseInt(quality.video)/2);
             quality.video += ((/5.1/).test(title))?3:0;
             quality.video += ((/original/i).test(title))?2:0;
             quality.video += ((/rus sub|Sub|subs/).test(title))?1:0;
