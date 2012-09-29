@@ -87,7 +87,7 @@ var view = function () {
                 value : 0
             };
             if (HideZeroSeed && v.seeds == 0) return true;
-            if (backgroundMode && isInt(v.category.id)) {
+            if (isInt(v.category.id)) {
                 if (backgroundModeID.categorys[v.category.id] == null) {
                     backgroundModeID.categorys[v.category.id] = {
                         counter : 1, //счетчтк ппаданий
@@ -174,99 +174,97 @@ var view = function () {
             0;
             quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[L\]/).test(title))?100:0;
             quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
-            if (backgroundMode) {
-                
-                var costume_category = v.category.id;
-                if (v.category.id < 0) {
-                    if (quality.video > quality.music && quality.video > quality.game)
-                        costume_category = 3;
-                    if (quality.music > quality.video && quality.music > quality.game)
-                        costume_category = 1;
-                    if (quality.game > quality.music && quality.game > quality.video)
-                        costume_category = 2;
-                    if (costume_category == 4)
-                        costume_category = 3
-                    if (backgroundModeID.categorys[costume_category] == null)
-                        backgroundModeID.categorys[costume_category] = {
-                            counter : 0, //счетчтк ппаданий
-                            quality_full : 0,//общее качество раздачи
-                            quality_name : 0,//качество имени
-                            label : '',//Название качества
-                            link : '',//ссылка на раздачу
-                            year : backgroundModeID.categorys[v.category.id].year//учитывание текущего года
-                        }
-                    if (v.category.id != costume_category)
-                        backgroundModeID.categorys[v.category.id].counter--;
-                    bgID = backgroundModeID.categorys[costume_category];
-                    bgID.counter++;
-                    backgroundModeID.categorys[costume_category] = bgID;
-                }
-                //получаем качество по категории (взято из сортировки)
-                var self_quality = quality.value;
-                if (costume_category == 3||costume_category==0||costume_category==7||costume_category==8||costume_category==4) {
-                    self_quality = self_quality-quality.game-quality.music;
-                } else 
-                if (costume_category == 1) {
-                    self_quality = self_quality-quality.game-quality.video
-                } else
-                if (costume_category == 2) {
-                    self_quality = self_quality-quality.music-quality.video
-                }
-                
-                if (quality.name < 80 || v.size < 524288000 ||
-                    bgID.quality_full > self_quality ||
-                    bgID.quality_name > quality.name
-                        ) return true;
-                if (bgID.year && (v.title).indexOf(new Date().getFullYear()) < 0) {
-                    return true;
-                }
-                var tmp_label = '';
-                if (costume_category != 1 && costume_category != 2) {
-                    tmp_label = ((/Blu-ray|Blu-Ray/).test(title))?'Blu-Ray':
-                    ((/BD-Remux|BDRemux/).test(title))?'BDRemux':
-                    ((/1080p|1080i/).test(title))?'1080p':
-                    ((/BD-Rip|BDRip/).test(title))?'BDRip':
-                    ((/HDTV-Rip|HDTVRip/).test(title))?'HDTVRip':
-                    ((/DTheater-Rip/).test(title))?'DTheater':
-                    ((/720p/).test(title))?'720p':
-                    ((/LowHDRip/).test(title))?'LowHDRip':
-                    ((/HDTV/).test(title))?'HDTV':
-                    ((/HDRip/).test(title))?'HDRip':
-                    ((/DVDRip/).test(title))?'DVDRip':
-                    ((/DVDScr/).test(title))?'DVDScr':
-                    ((/TVRip/).test(title))?'TVRip':
-                    ((/WEBRip|WEB-DLRip/).test(title))?'WEBRip':
-                    ((/WEB-DL/).test(title))?'WEB-DL':
-                    ((/SATRip/).test(title))?'SATRip':
-                    ((/HQRip/).test(title))?'HQRip':
-                    ((/DVB/).test(title))?'DVB':
-                    ((/IPTVRip/).test(title))?'IPTVRip':
-                    ((/TeleSynch/).test(title))?'TS':
-                    ((/DVD/).test(title))?'DVD':
-                    ((/CAMRip|CamRip/).test(title))?'CAMRip':
-                    ((/NTSC/).test(title))?'':
-                    ((/TS/).test(title))?'TS':'';
-                }
-                if (costume_category == 1) {
-                    tmp_label = ((/flac/i).test(title))?'FLAC':
-                    ((/alac/i).test(title))?'ALAC':
-                    ((/lossless/i).test(title))?'LossLess':
-                    ((/mp3/i).test(title))?'MP3':
-                    ((/AAC/).test(title))?'AAC':''
-                }
-                if (costume_category == 2) {
-                    tmp_label = ((/Repack/).test(title))?'Repack':
-                    ((/\[Native\]/i).test(title))?'Native':
-                    ((/\[L\]/).test(title))?'L':''
-                }
-                if (tmp_label != '') {
-                    bgID.quality_full = self_quality;
-                    bgID.quality_name = quality.name;
-                    bgID.label = tmp_label;
-                    bgID.link = v.url;
-                    backgroundModeID.categorys[costume_category] = bgID;
-                }
+            var costume_category = v.category.id;
+            if (v.category.id < 0) {
+                if (quality.video > quality.music && quality.video > quality.game)
+                    costume_category = 3;
+                if (quality.music > quality.video && quality.music > quality.game)
+                    costume_category = 1;
+                if (quality.game > quality.music && quality.game > quality.video)
+                    costume_category = 2;
+                if (costume_category == 4)
+                    costume_category = 3
+                if (backgroundModeID.categorys[costume_category] == null)
+                    backgroundModeID.categorys[costume_category] = {
+                        counter : 0, //счетчтк ппаданий
+                        quality_full : 0,//общее качество раздачи
+                        quality_name : 0,//качество имени
+                        label : '',//Название качества
+                        link : '',//ссылка на раздачу
+                        year : backgroundModeID.categorys[v.category.id].year//учитывание текущего года
+                    }
+                if (v.category.id != costume_category)
+                    backgroundModeID.categorys[v.category.id].counter--;
+                bgID = backgroundModeID.categorys[costume_category];
+                bgID.counter++;
+                backgroundModeID.categorys[costume_category] = bgID;
             }
+            //получаем качество по категории (взято из сортировки)
+            var self_quality = quality.value;
+            if (costume_category == 3||costume_category==0||costume_category==7||costume_category==8||costume_category==4) {
+                self_quality = self_quality-quality.game-quality.music;
+            } else 
+            if (costume_category == 1) {
+                self_quality = self_quality-quality.game-quality.video
+            } else
+            if (costume_category == 2) {
+                self_quality = self_quality-quality.music-quality.video
+            }
+                
+            if (quality.name < 80 || v.size < 524288000 ||
+                bgID.quality_full > self_quality ||
+                bgID.quality_name > quality.name
+                    ) return true;
+            if (bgID.year && (v.title).indexOf(new Date().getFullYear()) < 0) {
+                return true;
+            }
+            var tmp_label = '';
+            if (costume_category != 1 && costume_category != 2) {
+                tmp_label = ((/Blu-ray|Blu-Ray/).test(title))?'Blu-Ray':
+                ((/BD-Remux|BDRemux/).test(title))?'BDRemux':
+                ((/1080p|1080i/).test(title))?'1080p':
+                ((/BD-Rip|BDRip/).test(title))?'BDRip':
+                ((/HDTV-Rip|HDTVRip/).test(title))?'HDTVRip':
+                ((/DTheater-Rip/).test(title))?'DTheater':
+                ((/720p/).test(title))?'720p':
+                ((/LowHDRip/).test(title))?'LowHDRip':
+                ((/HDTV/).test(title))?'HDTV':
+                ((/HDRip/).test(title))?'HDRip':
+                ((/DVDRip/).test(title))?'DVDRip':
+                ((/DVDScr/).test(title))?'DVDScr':
+                ((/TVRip/).test(title))?'TVRip':
+                ((/WEBRip|WEB-DLRip/).test(title))?'WEBRip':
+                ((/WEB-DL/).test(title))?'WEB-DL':
+                ((/SATRip/).test(title))?'SATRip':
+                ((/HQRip/).test(title))?'HQRip':
+                ((/DVB/).test(title))?'DVB':
+                ((/IPTVRip/).test(title))?'IPTVRip':
+                ((/TeleSynch/).test(title))?'TS':
+                ((/DVD/).test(title))?'DVD':
+                ((/CAMRip|CamRip/).test(title))?'CAMRip':
+                ((/NTSC/).test(title))?'':
+                ((/TS/).test(title))?'TS':'';
+            }
+            if (costume_category == 1) {
+                tmp_label = ((/flac/i).test(title))?'FLAC':
+                ((/alac/i).test(title))?'ALAC':
+                ((/lossless/i).test(title))?'LossLess':
+                ((/mp3/i).test(title))?'MP3':
+                ((/AAC/).test(title))?'AAC':''
+            }
+            if (costume_category == 2) {
+                tmp_label = ((/Repack/).test(title))?'Repack':
+                ((/\[Native\]/i).test(title))?'Native':
+                ((/\[L\]/).test(title))?'L':''
+            }
+            if (tmp_label != '') {
+                bgID.quality_full = self_quality;
+                bgID.quality_name = quality.name;
+                bgID.label = tmp_label;
+                bgID.link = v.url;
+                backgroundModeID.categorys[costume_category] = bgID;
+            }
+            
         });
         updateTrackerResultCount(t,sum);
         loadingStatus(1,t);
