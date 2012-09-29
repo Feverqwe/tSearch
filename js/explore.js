@@ -842,13 +842,40 @@ var explore = function () {
         return size;
     }
     var setQuality = function (obj) {
+        var categorys1 = [];
+        var categorys = [];
+        var order = function (a,b) {
+            if (a.counter > b.counter)
+                return -1;
+            if (a.counter == b.counter)
+                return 0;
+            return 1;
+        }
+        for (var i_tt=-1;i_tt<11;i_tt++)
+            if (obj.categorys[i_tt] != null) {
+                if (obj.categorys[i_tt].year) {
+                    if (categorys1.length == 0)
+                        categorys1[categorys1.length] = obj.categorys[i_tt];
+                    else 
+                    if (obj.categorys[i_tt].label != '')
+                        categorys1[categorys1.length] = obj.categorys[i_tt];
+                } else
+                if (obj.categorys[i_tt].label != '')
+                    categorys[categorys.length] = obj.categorys[i_tt];
+            };
+        if (categorys1.length > 0)
+            categorys = categorys1;
+        categorys.sort(order);
         var qbox = $('li.'+obj.section+' > div.'+obj.section+' > div').children('div[data-id='+obj.id+']').find('div.quality_box');
         qbox.removeClass('loading');
-        var label = obj.label;
+        if (categorys[0] == null) categorys[0] = {label : ''};
+        var label = categorys[0].label;
+        if (obj.section == 'favorites')
+            update_q_favorites(obj.id,label);
         if (label.length > 0) {
-            if (obj.section == 'favorites')
-                update_q_favorites(obj.id,label);
             qbox.text(label).css('display','block');
+        } else {
+            qbox.text('-')
         }
     }
     return {
