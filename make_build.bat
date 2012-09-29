@@ -43,6 +43,7 @@ java -jar compiler.jar --js .\tracker\torrents.local.js --js_output_file .\build
 java -jar compiler.jar --js .\tracker\pornolab.js --js_output_file .\build\tracker\pornolab.js
 java -jar compiler.jar --js .\tracker\torrents.freedom.js --js_output_file .\build\tracker\torrents.freedom.js
 java -jar compiler.jar --js .\tracker\thepiratebay.js --js_output_file .\build\tracker\thepiratebay.js
+java -jar compiler.jar --js .\tracker\thepiratebay2.js --js_output_file .\build\tracker\thepiratebay2.js
 java -jar compiler.jar --js .\tracker\rustorka.js --js_output_file .\build\tracker\rustorka.js
 java -jar compiler.jar --js .\tracker\inmac.js --js_output_file .\build\tracker\inmac.js
 java -jar compiler.jar --js .\tracker\kickass.js --js_output_file .\build\tracker\kickass.js
