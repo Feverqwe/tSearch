@@ -61,6 +61,11 @@ var engine = function () {
     },
 
     {
+        n : 'thepiratebay2', 
+        e : 0
+    },
+
+    {
         n : 'rustorka', 
         e : 1
     },

@@ -170,14 +170,14 @@ var view = function () {
             quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[L\]/).test(title))?100:0;
             quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
             if (backgroundMode) {
-                if (backgroundModeID.year == false && (v.title).indexOf(new Date().getFullYear()) > 0) {
+                if (quality.name < 80 && backgroundModeID.year == false && (v.title).indexOf(new Date().getFullYear()) > 0) {
                     backgroundModeID.label = '';
                     backgroundModeID.q = 0;
                     backgroundModeID.link = '';
                     backgroundModeID.qn = 0;
                     backgroundModeID.year = true;
                 }
-                if (quality.name < 80 || backgroundModeID.q > quality.value || backgroundModeID.qn > quality.name) return true;
+                if (quality.name < 80 || backgroundModeID.q > quality.value || backgroundModeID.qn > quality.name || v.size < 524288000) return true;
                 if (backgroundModeID.year && (v.title).indexOf(new Date().getFullYear()) < 0) return true;
                 var tmp_q = ((/Blu-ray|Blu-Ray/).test(title))?'Blu-Ray':
                 ((/BD-Remux|BDRemux/).test(title))?'BDRemux':
@@ -201,6 +201,7 @@ var view = function () {
                 ((/TeleSynch/).test(title))?'TS':
                 ((/DVD/).test(title))?'DVD':
                 ((/CAMRip|CamRip/).test(title))?'CAMRip':
+                ((/NTSC/).test(title))?'':
                 ((/TS/).test(title))?'TS':'';
                 if (tmp_q != '') {
                     backgroundModeID.label = tmp_q;

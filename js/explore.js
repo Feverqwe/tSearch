@@ -842,7 +842,6 @@ var explore = function () {
         return size;
     }
     var setQuality = function (obj) {
-        console.log(obj)
         var qbox = $('li.'+obj.section+' > div.'+obj.section+' > div').children('div[data-id='+obj.id+']').find('div.quality_box');
         qbox.removeClass('loading');
         var label = obj.label;
