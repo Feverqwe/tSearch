@@ -66,7 +66,6 @@ tracker[tmp_num] = function () {
         }
         var makecalcTime = function (t) {
             t = t.replace(/\s+/g, ' ');
-            console.log(t);
             if (t.split('.').length == 2 || (/mins ago/).test(t)) {
                 //мин назад
                 var min_out = parseInt(t.replace(/([0-9]*).*/,'$1'))*60;
