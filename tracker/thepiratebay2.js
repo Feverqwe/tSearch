@@ -65,7 +65,9 @@ tracker[tmp_num] = function () {
             return mackcalcSize(s);
         }
         var makecalcTime = function (t) {
-            if (t.split('.').length == 2) {
+            t = t.replace(/\s+/g, ' ');
+            console.log(t);
+            if (t.split('.').length == 2 || (/mins ago/).test(t)) {
                 //мин назад
                 var min_out = parseInt(t.replace(/([0-9]*).*/,'$1'))*60;
                 return Math.round((new Date()).getTime() / 1000)-min_out;
@@ -94,7 +96,7 @@ tracker[tmp_num] = function () {
                 var t_date = t_date.split(' ');
                 var time_h = t_time.split(':');
                 if (time_h.length == 1) {
-                    year = String(time_h).replace(/([0-9]*)-([0-9]*).?([0-9]*)/,'$1 $2 $3').split(' ');
+                    year = String(time_h).replace(/([0-9]*)-([0-9]*) ([0-9]*)/,'$1 $2 $3').split(' ');
                     var time_m = 0;
                     var time_h = 0;
                     t_date[0] = parseInt('1'+year[0])-101;
