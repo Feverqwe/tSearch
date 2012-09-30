@@ -313,8 +313,8 @@ var engine = function () {
         view.addTrackerInList(n);
     }
     return {
-        search : function (a,b) {
-            return search(a,b)
+        search : function (a,b,c) {
+            return search(a,b,c)
         },
         loadProfile : function (a) {
             loadProfile(a);
