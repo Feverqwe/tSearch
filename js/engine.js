@@ -158,12 +158,17 @@ var engine = function () {
     {
         n : 'x-torrents', 
         e : 0
+    },
+
+    {
+        n : 'opentorrent', 
+        e : 0
     }
     ];
     var categorys = _lang['categorys'];
     var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     var defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
-    var search = function(text,tracker_id) {
+    var search = function(text,tracker_id,nohistory) {
         if (tracker_id != null) {
             try {
                 tracker[tracker_id].find(text);
@@ -181,7 +186,8 @@ var engine = function () {
                 }
             });
         }
-        updateHistory(text);
+        if (nohistory == null)
+            updateHistory(text);
     }
     var LimitHistory = function () {
         var removeItem = function (title) {

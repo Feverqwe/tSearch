@@ -18,7 +18,9 @@ var view = function () {
         var filename = tracker[i].filename;
         
         var id = $('div.profile select').val();
-        if (trackerProfiles == null || trackerProfiles[id] == null) {
+        if (trackerProfiles == null)
+            trackerProfiles = [];
+        if (trackerProfiles[id] == null) {
             trackerProfiles[id] = {
                 Trackers : null,
                 Title : _lang.label_def_profile //set lang var here

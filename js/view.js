@@ -719,7 +719,7 @@ var view = function () {
             categorys : [],
             'section' : section
         };
-        engine.search(keyword);
+        engine.search(keyword,null,1);
     }
     var load_category = function (c) {
         $('ul.categorys').empty()
