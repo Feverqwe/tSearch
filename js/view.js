@@ -95,6 +95,7 @@ var view = function () {
                         quality_name : 0,//качество имени
                         label : '',//Название качества
                         link : '',//ссылка на раздачу
+                        size : 0,//размер
                         year : false//учитывание текущего года
                     }
                 }
@@ -109,6 +110,7 @@ var view = function () {
                 bgID.label = '';
                 bgID.link = '';
                 bgID.year = true;
+                bgID.size = 0;
                 backgroundModeID.categorys[v.category.id] = bgID;
             }
             var Teaser = ((/Трейлер/i).test(title.n))?1:
@@ -191,6 +193,7 @@ var view = function () {
                         quality_name : 0,//качество имени
                         label : '',//Название качества
                         link : '',//ссылка на раздачу
+                        size : 0,//размер
                         year : backgroundModeID.categorys[v.category.id].year//учитывание текущего года
                     }
                 if (v.category.id != costume_category)
@@ -211,7 +214,7 @@ var view = function () {
                 self_quality = self_quality-quality.music-quality.video
             }
                 
-            if (quality.name < 80 || v.size < 524288000 ||
+            if (quality.name < 80 ||
                 bgID.quality_full > self_quality ||
                 bgID.quality_name > quality.name
                     ) return true;
@@ -257,13 +260,18 @@ var view = function () {
                 ((/\[Native\]/i).test(title))?'Native':
                 ((/\[L\]/).test(title))?'L':''
             }
-            if (tmp_label != '') {
+            if (tmp_label != '' && bgID.size < v.size) {
                 bgID.quality_full = self_quality;
                 bgID.quality_name = quality.name;
+                if (bgID.size != 0 || (bgID.label != tmp_label && bgID.quality_full < self_quality))
+                    bgID.size = v.size-(v.size/10);
+                else
+                    bgID.size = (v.size-bgID.size)/2+bgID.size;
                 bgID.label = tmp_label;
                 bgID.link = v.url;
                 backgroundModeID.categorys[costume_category] = bgID;
-            }
+            } else 
+                return true;
             
         });
         updateTrackerResultCount(t,sum);
