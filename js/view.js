@@ -174,7 +174,7 @@ var view = function () {
             ((/AAC/).test(title))?30:
             ((/mp3/i).test(title))?20:
             0;
-            quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[L\]/).test(title))?100:0;
+            quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[RiP\]/).test(title))?90:((/\[L\]/).test(title))?100:0;
             quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
             var costume_category = v.category.id;
             if (v.category.id < 0) {
@@ -256,8 +256,9 @@ var view = function () {
                 ((/AAC/).test(title))?'AAC':''
             }
             if (costume_category == 2) {
-                tmp_label = ((/Repack/).test(title))?'Repack':
+                tmp_label = ((/Repack/i).test(title))?'Repack':
                 ((/\[Native\]/i).test(title))?'Native':
+                ((/\[RiP]/i).test(title))?'RiP':
                 ((/\[L\]/).test(title))?'L':''
             }
             if (tmp_label != '' && bgID.size < v.size) {
