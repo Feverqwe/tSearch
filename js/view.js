@@ -174,7 +174,7 @@ var view = function () {
             ((/AAC/).test(title))?30:
             ((/mp3/i).test(title))?20:
             0;
-            quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[RiP\]/).test(title))?90:((/\[L\]/).test(title))?100:0;
+            quality.game = ((/PS3/).test(title))?40:((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[RiP\]/).test(title))?90:((/\[L\]/).test(title))?100:0;
             quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
             var costume_category = v.category.id;
             if (v.category.id < 0) {
@@ -259,6 +259,7 @@ var view = function () {
                 tmp_label = ((/Repack/i).test(title))?'Repack':
                 ((/\[Native\]/i).test(title))?'Native':
                 ((/\[RiP]/i).test(title))?'RiP':
+                ((/PS3/).test(title))?'PS3':
                 ((/\[L\]/).test(title))?'L':''
             }
             if (tmp_label != '' && bgID.size < v.size) {
@@ -369,7 +370,7 @@ var view = function () {
             ((/AAC/).test(title))?30:
             ((/mp3/i).test(title))?20:
             0;
-            quality.game = ((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[L\]/).test(title))?100:0;
+            quality.game = ((/PS3/).test(title))?40:((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[RiP\]/).test(title))?90:((/\[L\]/).test(title))?100:0;
             quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
             
             c = c + '<tr '+filter+' data-kf="'+fk+'" data-tracker="'+t+'" data-c="'+v.category.id+'">'
