@@ -854,28 +854,39 @@ var explore = function () {
         for (var i_tt=-1;i_tt<11;i_tt++)
             if (obj.categorys[i_tt] != null) {
                 if (obj.categorys[i_tt].year) {
-                    if (categorys1.length == 0)
+                    if (categorys1.length == 0) {
                         categorys1[categorys1.length] = obj.categorys[i_tt];
-                    else 
-                    if (obj.categorys[i_tt].label != '')
+                        categorys1[categorys1.length-1]['cid'] = i_tt;
+                    } else 
+                    if (obj.categorys[i_tt].label != '') {
                         categorys1[categorys1.length] = obj.categorys[i_tt];
+                        categorys1[categorys1.length-1]['cid'] = i_tt;
+                    }
                 } else
-                if (obj.categorys[i_tt].label != '')
+                if (obj.categorys[i_tt].label != '') {
                     categorys[categorys.length] = obj.categorys[i_tt];
+                    categorys[categorys.length-1]['cid'] = i_tt;
+                }
             };
         if (categorys1.length > 0)
             categorys = categorys1;
         categorys.sort(order);
+        var label = ''
+        $.each(categorys, function (k,v) {
+            if (v.label.length == 0 || v.cid == 4) return true;
+            if (label.length == 0)
+                label = '<label title="'+view.getAssocCategorys(v.cid)+'">'+v.label+'</label>';
+            else
+                label += ', '+'<label title="'+view.getAssocCategorys(v.cid)+'">'+v.label+'</label>';
+        });
         var qbox = $('li.'+obj.section+' > div.'+obj.section+' > div').children('div[data-id='+obj.id+']').find('div.quality_box');
         qbox.removeClass('loading');
-        if (categorys[0] == null) categorys[0] = {label : ''};
-        var label = categorys[0].label;
         if (obj.section == 'favorites')
             update_q_favorites(obj.id,label);
         if (label.length > 0) {
-            qbox.text(label).css('display','block');
+            qbox.html(label).css('display','block');
         } else {
-            qbox.text('-')
+            qbox.text('-');
         }
     }
     return {

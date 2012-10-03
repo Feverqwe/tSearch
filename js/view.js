@@ -3,6 +3,7 @@ var view = function () {
     var keywordFilter = null;
     var categoryFilter = null;
     var categorys = null;
+    var categorys_assoc = null;
     var lastFilterWord = '';
     var autoMove = null;
     var HideLeech = (GetSettings('HideLeech') !== undefined) ? parseInt(GetSettings('HideLeech')) : true;
@@ -151,7 +152,7 @@ var view = function () {
             ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?70:
             ((/LowHDRip/).test(title))?30:
             ((/HDTV|HDRip|DVDRip/).test(title))?60:
-            ((/DVD/).test(title))?50:
+            ((/[^o]DVD/).test(title))?50:
             ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|HQRip|DVB|IPTVRip/).test(title))?40:
             ((/TeleSynch|DVDScr/).test(title))?20:
             ((/CAMRip|CamRip/).test(title))?10:
@@ -243,7 +244,7 @@ var view = function () {
                 ((/DVB/).test(title))?'DVB':
                 ((/IPTVRip/).test(title))?'IPTVRip':
                 ((/TeleSynch/).test(title))?'TS':
-                ((/DVD/).test(title))?'DVD':
+                ((/[^o]DVD/).test(title))?'DVD':
                 ((/CAMRip|CamRip/).test(title))?'CAMRip':
                 ((/NTSC/).test(title))?'':
                 ((/TS/).test(title))?'TS':'';
@@ -347,7 +348,7 @@ var view = function () {
             ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?70:
             ((/LowHDRip/).test(title))?30:
             ((/HDTV|HDRip|DVDRip/).test(title))?60:
-            ((/DVD/).test(title))?50:
+            ((/[^o]DVD/).test(title))?50:
             ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|HQRip|DVB|IPTVRip/).test(title))?40:
             ((/TeleSynch|DVDScr/).test(title))?20:
             ((/CAMRip|CamRip/).test(title))?10:
@@ -735,8 +736,10 @@ var view = function () {
         $('ul.categorys').empty()
         var count = c.length;
         categorys = [];
+        categorys_assoc = [];
         for (var i = 0;i<count;i++){
             categorys[categorys.length] = c[i][0];
+            categorys_assoc[c[i][0]] = c[i][1];
             $('ul.categorys').append('<li data-id="'+c[i][0]+'">'+c[i][1]+'<i></i></li>');
         }
         $('ul.categorys').prepend('<li class="selected">'+_lang['cat_all']+' <i></i></li>');
@@ -851,6 +854,9 @@ var view = function () {
         },
         getQuality : function (a,b,c) {
             getQuality(a,b,c)
+        },
+        getAssocCategorys: function (a) {
+            return categorys_assoc[a];
         }
     }
 }();
