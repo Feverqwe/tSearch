@@ -29,8 +29,8 @@ tracker[tmp_num] = function () {
             return -1;
         }
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = $(c).find('#main_content_wrap').children('#tor-tbl').children('tbody').children('tr');
+            c = view.contentFilter(c.replace(/div id="adv_header" .*\n.*/img,'div id="adv_header">'));
+            var t = $(c).find('tr.hl-tr').parent().children('tr');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -42,10 +42,10 @@ tracker[tmp_num] = function () {
                         'url': root_url+td.eq(2).children('a').attr('href'),
                         'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*)$/i,"$1"))
                     },
-                    'title' : td.eq(3).children('div').children('a').eq(0).text(),
-                    'url' : root_url+td.eq(3).children('div').children('a').eq(0).attr('href'),
+                    'title' : td.eq(3).children('a').eq(0).text(),
+                    'url' : root_url+td.eq(3).children('a').eq(0).attr('href'),
                     'size' : td.eq(5).children('u').text(),
-                    'dl' : root_url+td.eq(5).children('span').children('a').attr('href'),
+                    'dl' : td.eq(5).children('span').children('a').attr('href'),
                     'seeds' : td.eq(6).children('b').text(),
                     'leechs' : td.eq(7).children('b').text(),
                     'time' : td.eq(9).children('u').text()
@@ -62,8 +62,9 @@ tracker[tmp_num] = function () {
                 url: url,
                 cache : false,
                 data: {
-                    'nm' : text,
-                    'submit' : ''
+                    'max':1,
+                    'to':1,
+                    'nm' : text
                 },
                 success: function(data) {
                     view.result(id,readCode(data),t);

@@ -163,6 +163,11 @@ var engine = function () {
     {
         n : 'opentorrent', 
         e : 0
+    },
+    
+    {
+        n: 'youtracker',
+        e: 0
     }
     ];
     var categorys = _lang['categorys'];
