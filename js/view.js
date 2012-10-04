@@ -17,6 +17,7 @@ var view = function () {
         time: null
     };
     var backgroundMode = false;
+    var bgYear = null;
     var backgroundModeID = null;
     var auth = function (s,t) {
         //if (backgroundMode) return;
@@ -76,6 +77,11 @@ var view = function () {
         return n % 1 === 0;
     }
     var inBGMode = function (t,a,s) {
+        if (bgYear == null) {
+            bgYear = s.replace(/.* ([0-9]{4})$/,"$1")
+            if (bgYear == s)
+                bgYear = 0;
+        }
         var s_s = contentFilter(s.replace(/\s+/g," ").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
         var sum = 0;
         $.each(a, function (k,v) {
@@ -97,7 +103,7 @@ var view = function () {
                         label : '',//Название качества
                         link : '',//ссылка на раздачу
                         size : 0,//размер
-                        year : false//учитывание текущего года
+                        year : (bgYear == 0)?false:true//учитывание текущего года
                     }
                 }
                 var bgID = backgroundModeID.categorys[v.category.id];
@@ -219,7 +225,7 @@ var view = function () {
                 bgID.quality_full > self_quality ||
                 bgID.quality_name > quality.name
                     ) return true;
-            if (bgID.year && (v.title).indexOf(new Date().getFullYear()) < 0) {
+            if (bgID.year && (v.title).indexOf((bgYear == 0)?new Date().getFullYear():bgYear) < 0) {
                 return true;
             }
             var tmp_label = '';
@@ -724,6 +730,7 @@ var view = function () {
         return false;
     }
     var getQuality = function (keyword,id,section) {
+        bgYear = null;
         backgroundMode = true;
         backgroundModeID = {
             'id' : id,
