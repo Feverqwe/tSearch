@@ -84,7 +84,7 @@ tracker[tmp_num] = function () {
                     'title' : td.eq(2).children('a').text(),
                     'url' : root_url+td.eq(2).children('a').attr('href'),
                     'size' : calculateSize(td.eq(5).text()),
-                    'dl' : td.eq(4).children('a').attr('href'),
+                    'dl' : root_url+td.eq(4).children('a').attr('href'),
                     'seeds' : td.eq(6).text(),
                     'leechs' : td.eq(7).text(),
                     'time' : calculateTime(td.eq(8).text())
