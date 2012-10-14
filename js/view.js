@@ -76,7 +76,7 @@ var view = function () {
         if (n == undefined || n === undefined) return false;
         return n % 1 === 0;
     }
-    var quality_calc = function (quality) {
+    var quality_calc = function (quality,title,v) {
         quality.seed = (v.seeds>0)?100:0;//(v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>0)?3:0;
         quality.video = 
         ((/Blu-ray|Blu-Ray/).test(title))?100:
@@ -185,7 +185,7 @@ var view = function () {
             sum++;
             quality.name = title.r;
             title = title.n;
-            quality = quality_calc(quality);
+            quality = quality_calc(quality,title,v);
             var costume_category = v.category.id;
             if (v.category.id < 0) {
                 if (quality.video > quality.music && quality.video > quality.game)
@@ -349,7 +349,7 @@ var view = function () {
                 else
                     fk = 1;
             }
-            quality = quality_calc(quality);
+            quality = quality_calc(quality,title,v);
             c = c + '<tr '+filter+' data-kf="'+fk+'" data-tracker="'+t+'" data-c="'+v.category.id+'">'
             +'<td class="time" data-value="'+v.time+'" title="'+unixintimetitle(v.time)+'">'+unixintime(v.time)+'</td>'
             +'<td class="quality" data-value="'+quality.value+'" data-qgame="'+quality.game+'" data-qseed="'+quality.seed+'" data-qname="'+quality.name+'" data-qvideo="'+quality.video+'" data-qmusic="'+quality.music+'"><div class="progress"><div style="width:'+(quality.value/10)+'px"></div><span title="'+quality.value+'">'+quality.value+'</span></div></td>'
