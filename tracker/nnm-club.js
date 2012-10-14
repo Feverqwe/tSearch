@@ -7,6 +7,11 @@ tracker[tmp_num] = function () {
     var url = 'http://nnm-club.ru/forum/tracker.php';
     var root_url = 'http://nnm-club.ru/forum/';
     var about = 'Торрент-трекер NNM-Club.ru. Игры, фильмы, музыка mp3 и lossless, программы, отечественные и зарубежные сериалы, книги, мультфильмы и аниме. Рекомендации, обсуждение, рецензии и рейтинги.';
+    var flags = {
+        a : 1,
+        l : 1,
+        rs: 1
+    }
     var xhr = null;
     var web = function () {
         var calculateSize = function (s) {
@@ -132,7 +137,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

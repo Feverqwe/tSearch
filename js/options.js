@@ -35,11 +35,28 @@ var view = function () {
                 enable = t[n].e;
         }
         t_table_line++;
+        var hh = 'b';
         if ((t_table_line % 2) == 0) 
-            hh = 'b' 
-        else 
-            hh = '';
-        $('<tr'+((hh.length > 0)?' class="'+hh+'"':'')+' data-name="'+filename+'"/>').append($('<td/>').html('<img src="'+tracker[i].icon+'"/>')).append($('<td/>').html('<a href="'+tracker[i].url+'" target="_blank">'+tracker[i].name+'</a>')).append($('<td class="desc"/>').text(tracker[i].about)).append('<td class="status"><input type="checkbox" name="tracker" '+((enable)?'checked':'')+'></a>').appendTo($('#internalTrackers tbody'));
+            hh = ''
+        var flags = '';
+        if (!tracker[i].flags.rs)
+            flags += '<div class="cirilic" title="'+_lang.flag.cirilic+'"></div>';
+        if (tracker[i].flags.a)
+            flags += '<div class="auth" title="'+_lang.flag.auth+'"></div>';
+        if (tracker[i].flags.l)
+            flags += '<div class="rus" title="'+_lang.flag.rus+'"></div>';
+        if (flags.length > 0)
+            flags = '<div class="icons">'+flags+'</div>';
+        $('#internalTrackers tbody').append('<tr'
+            +((hh.length > 0)?' class="'+hh+'"':'')
+            +' data-name="'+filename+'"'+'>'
+            +'<td><img src="'+tracker[i].icon+'"/></td>'
+            +'<td><a href="'+tracker[i].url+'" target="_blank">'+tracker[i].name+'</a>'
+            +'</td>'
+            +'<td class="desc">'+flags
+            +$('<span>'+tracker[i].about+'</span>').text()+'</td>'
+            +'<td class="status"><input type="checkbox" name="tracker" '+((enable)?'checked':'')+'></td>'
+            +'</tr>');
     }
     var showProgress = function () {
         $('div.progress').css('display','inline-block');

@@ -7,6 +7,11 @@ tracker[tmp_num] = function () {
     var url = 'http://torrentz.eu/search';
     var root_url = 'http://torrentz.eu';
     var about = 'Torrent Search Engine';
+    var flags = {
+        a : 0,
+        l : 0,
+        rs: 1
+    }
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -153,7 +158,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

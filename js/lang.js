@@ -100,7 +100,12 @@ if (_lang != 'ru')
         spn_26 : 'Title',
         btn_25 : 'Remove',
         btn_27 : 'Add',
-        exp_q_fav : 'Get quality'
+        exp_q_fav : 'Get quality',
+        flag : {
+            cirilic : 'Unsupport cyrillic',
+            auth: 'Requires authorization',
+            rus: 'Russian language tracker'
+        }
     };
 if (_lang == 'ru')
     _lang = {
@@ -203,5 +208,10 @@ if (_lang == 'ru')
         spn_26 : 'Название',
         btn_25 : 'Удалить',
         btn_27 : 'Добавить',
-        exp_q_fav : 'Узнать качество'
+        exp_q_fav : 'Узнать качество',
+        flag : {
+            cirilic : 'Не поддерживает кириллицу',
+            auth: 'Требуется авторизация',
+            rus: 'Русскоязычный трекер'
+        }
     };

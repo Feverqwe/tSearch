@@ -8,6 +8,11 @@ tracker[tmp_num] = function () {
     var url = 'http://inmac.org/tracker.php';
     var root_url = 'http://inmac.org/';
     var about = 'Русскоязычный MAC - трекер, макинтош, хакинтош, программы, игры, видео, музыка, форум, вопросы, решения, общение..';
+    var flags = {
+        a : 1,
+        l : 1,
+        rs: 1
+    }
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -107,7 +112,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

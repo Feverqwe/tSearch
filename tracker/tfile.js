@@ -8,6 +8,11 @@ tracker[tmp_num] = function () {
     var login_url = 'http://tfile.me/forum/ssearch.php';
     var root_url = 'http://tfile.me';
     var about = 'Торрент трекер tfile.me - фильмы, музыка, программы, книги';
+    var flags = {
+        a : 0,
+        l : 1,
+        rs: 1
+    }
     var xhr = null;
     var web = function () {
         var calculateSize = function (s) {
@@ -191,7 +196,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

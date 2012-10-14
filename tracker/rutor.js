@@ -7,6 +7,11 @@ tracker[tmp_num] = function () {
     var url = 'http://rutor.org/search/0/0/000/0/';
     var root_url = 'http://rutor.org';
     var about = 'Открытый торрент трекер';
+    var flags = {
+        a : 0,
+        l : 1,
+        rs: 1
+    }
     var xhr = null;
     var web = function () {
         var calculateSize = function (s) {
@@ -118,7 +123,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

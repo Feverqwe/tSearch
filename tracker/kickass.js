@@ -8,6 +8,11 @@ tracker[tmp_num] = function () {
     var blank_url = 'http://kat.ph/new/';
     var root_url = 'http://kat.ph';
     var about = 'Search and download new TV shows, TV series, movies, mp3, music and PC/PS2/PSP/Wii/Xbox games absolutely for free.';
+    var flags = {
+        a : 0,
+        l : 0,
+        rs: 1
+    }
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -147,7 +152,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

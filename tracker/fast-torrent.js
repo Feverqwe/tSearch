@@ -7,6 +7,11 @@ tracker[tmp_num] = function () {
     var url = 'http://fast-torrent.ru/search/';
     var root_url = 'http://fast-torrent.ru';
     var about = 'Сайт содержит каталог фильмов, сериалов, мультфильмов и аниме.';
+    var flags = {
+        a : 0,
+        l : 1,
+        rs: 1
+    }
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -137,7 +142,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

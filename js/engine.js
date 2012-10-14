@@ -2,172 +2,144 @@ var tracker = [];
 var option_mode = false;
 var engine = function () {
     var defaultList = [
-    {
-        n : 'tfile',
-        e : 1
-    },
-
+    /*
+     * e = включен по умолчанию
+     */
+    //русские с реги-ей
     {
         n : 'rutracker',
         e : 1
     },
-
-
-    {
-        n : 'rutor',
-        e : 1
-    },
-
-
-    {
-        n : 'opensharing',
-        e : 0
-    },
-
-
     {
         n : 'nnm-club', 
         e : 1
     },
-
-    {
-        n : 'megashara', 
-        e : 0
-    },
-
     {
         n : 'kinozal', 
         e : 1
     },
-
-    {
-        n : 'torrents.local', 
-        e : 0
-    },
-
     {
         n : 'pornolab', 
         e : 0
     },
-
-    {
-        n : 'torrents.freedom', 
-        e : 0
-    },
-
-    {
-        n : 'thepiratebay', 
-        e : 1
-    },
-
-    {
-        n : 'thepiratebay2', 
-        e : 0
-    },
-
     {
         n : 'rustorka', 
         e : 1
     },
-
     {
         n : 'inmac', 
         e : 0
     },
-
-    {
-        n : 'kickass', 
-        e : 0
-    },
-
-    {
-        n : 'fast-torrent', 
-        e : 1
-    },
-
     {
         n : 'anidub', 
         e : 0
     },
-
-    {
-        n : 'bitsnoop', 
-        e : 1
-    },
-
-    {
-        n : 'extratorrent', 
-        e : 0
-    },
-
-    {
-        n : 'isohunt', 
-        e : 0
-    },
-
-    {
-        n : 'fenopy', 
-        e : 0
-    },
-
-    {
-        n : 'torrentz', 
-        e : 0
-    },
-
-    {
-        n : 'torrentino', 
-        e : 0
-    },
-
-    {
-        n : 'mininova', 
-        e : 0
-    },
-
-    {
-        n : 'filebase', 
-        e : 0
-    },
-
     {
         n : 'free-torrents', 
-        e : 0
+        e : 1
     },
-
     {
         n : 'my-hit', 
         e : 0
     },
-
     {
         n : 'evrl', 
         e : 0
     },
-
+    {
+        n: 'youtracker',
+        e: 0
+    },
     {
         n : 'rgfootball', 
         e : 0
     },
-
     {
         n : 'mmatracker', 
         e : 0
     },
-
+    {
+        n : 'filebase', 
+        e : 0
+    },
     {
         n : 'x-torrents', 
         e : 0
     },
-
+    //локальные
+    {
+        n : 'torrents.local', 
+        e : 0
+    },
+    {
+        n : 'torrents.freedom', 
+        e : 0
+    },
     {
         n : 'opentorrent', 
         e : 0
     },
-    
+    //русские дезавт.
     {
-        n: 'youtracker',
-        e: 0
+        n : 'tfile',
+        e : 1
+    },
+    {
+        n : 'fast-torrent', 
+        e : 1
+    },
+    {
+        n : 'rutor',
+        e : 0
+    },
+    {
+        n : 'opensharing',
+        e : 0
+    },
+    {
+        n : 'megashara', 
+        e : 0
+    },
+    {
+        n : 'torrentino', 
+        e : 0
+    },
+    //зарубеж.
+    {
+        n : 'thepiratebay', 
+        e : 0
+    },
+    {
+        n : 'thepiratebay2', 
+        e : 0
+    },
+    {
+        n : 'kickass', 
+        e : 0
+    },
+    {
+        n : 'bitsnoop', 
+        e : 0
+    },
+    {
+        n : 'extratorrent', 
+        e : 0
+    },
+    {
+        n : 'isohunt', 
+        e : 0
+    },
+    {
+        n : 'fenopy', 
+        e : 0
+    },
+    {
+        n : 'torrentz', 
+        e : 0
+    },
+    {
+        n : 'mininova', 
+        e : 0
     }
     ];
     var categorys = _lang['categorys'];

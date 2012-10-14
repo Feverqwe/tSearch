@@ -7,6 +7,11 @@ tracker[tmp_num] = function () {
     var url = 'http://extratorrent.com/search/';
     var root_url = 'http://extratorrent.com';
     var about = 'ExtraTorrent.com is the biggest bittorrent system. Our goal is to provide an easy-to-use directory and search engine for all kind of torrent files. Visitors of ExtraTorrent.com can upload torrents to this site, tracked by any BitTorrent tracker.';
+    var flags = {
+        a : 0,
+        l : 0,
+        rs: 1
+    }
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -127,7 +132,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

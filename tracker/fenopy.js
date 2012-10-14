@@ -7,6 +7,11 @@ tracker[tmp_num] = function () {
     var url = 'http://fenopy.eu/';
     var root_url = 'http://fenopy.eu';
     var about = 'A fast and user friendly bittorrent search engine, with milions of Video, Audio and Software torrents.';
+    var flags = {
+        a : 0,
+        l : 0,
+        rs: 0
+    }
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -184,7 +189,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

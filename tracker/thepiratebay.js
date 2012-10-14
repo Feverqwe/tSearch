@@ -7,6 +7,11 @@ tracker[tmp_num] = function () {
     var url = 'http://thepiratebay.se/search/';
     var root_url = 'http://thepiratebay.se';
     var about = 'Download music, movies, games, software and much more. The Pirate Bay is the world\'s largest bittorrent tracker.';
+    var flags = {
+        a : 0,
+        l : 0,
+        rs: 0
+    }
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -196,7 +201,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

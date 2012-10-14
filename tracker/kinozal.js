@@ -7,6 +7,11 @@ tracker[tmp_num] = function () {
     var url = 'http://kinozal.tv/browse.php';
     var root_url = 'http://kinozal.tv';
     var about = 'Торрент трекер Кинозал.ТВ - фильмы, новинки кино, скачать фильмы, афиша кино';
+    var flags = {
+        a : 1,
+        l : 1,
+        rs: 1
+    }
     var xhr = null;
     var web = function () {
         var calculateSize = function (s) {
@@ -196,7 +201,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

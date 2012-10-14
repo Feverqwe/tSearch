@@ -7,6 +7,11 @@ tracker[tmp_num] = function () {
     var url = 'http://megashara.com/search/';
     var root_url = 'http://megashara.com';
     var about = 'У нас Вы сможете скачать все, что Вам нужно: музыка, фильмы, видео, игры абсолютно бесплатно!';
+    var flags = {
+        a : 0,
+        l : 1,
+        rs: 1
+    }
     var xhr = null;
     var web = function () {
         var calculateSize = function (s) {
@@ -119,7 +124,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

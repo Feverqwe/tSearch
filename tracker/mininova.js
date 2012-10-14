@@ -7,6 +7,11 @@ tracker[tmp_num] = function () {
     var url = 'http://www.mininova.org/search/';
     var root_url = 'http://www.mininova.org';
     var about = 'Download Movies, TV Shows, Music, Software and more. Mininova is the largest BitTorrent search engine and directory on the net with thousands of torrents.';
+    var flags = {
+        a : 0,
+        l : 0,
+        rs: 0
+    }
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -138,7 +143,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

@@ -7,6 +7,11 @@ tracker[tmp_num] = function () {
     var url = 'http://opensharing.org/c.php';
     var root_url = 'http://opensharing.org';
     var about = 'Открытый торрент-трекер без регистрации и рейтинга';
+    var flags = {
+        a : 0,
+        l : 1,
+        rs: 1
+    }
     var xhr = null;
     var web = function () {
         var calculateSize = function (s) {
@@ -128,7 +133,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

@@ -7,6 +7,11 @@ tracker[tmp_num] = function () {
     var url = 'http://bitsnoop.com/search';
     var root_url = 'http://bitsnoop.com';
     var about = 'The best torrent search in the world. Aggregated torrents from numerous sites and groups, automated verification, super-fast search.';
+    var flags = {
+        a : 0,
+        l : 0,
+        rs: 1
+    }
     var xhr = null;
     var web = function () {
         var calculateCategory = function (f) {
@@ -159,7 +164,8 @@ tracker[tmp_num] = function () {
         icon : icon,
         about : about,
         url : root_url,
-        filename : filename
+        filename : filename,
+        flags : flags
     }
 }();
 engine.ModuleLoaded(tmp_num);

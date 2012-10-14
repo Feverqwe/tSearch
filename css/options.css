@@ -94,3 +94,28 @@ ul.option {
     padding: 0;
     margin: 0;
 }
+div.icons {
+    display: inline-block;
+    margin-right: 3px;
+}
+div.icons > div {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+}
+div.icons > div:hover {
+    opacity: 1;
+}
+
+div.icons > div.auth {
+    background: url(../images/need_auth.png) center center;
+}
+
+div.icons > div.rus {
+    background: url(../images/russian.png) center center;
+}
+
+div.icons > div.cirilic {
+    background: url(../images/cyrillic.png) center center;
+}

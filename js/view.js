@@ -76,6 +76,42 @@ var view = function () {
         if (n == undefined || n === undefined) return false;
         return n % 1 === 0;
     }
+    var quality_calc = function (quality) {
+        quality.seed = (v.seeds>0)?100:0;//(v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>0)?3:0;
+        quality.video = 
+        ((/Blu-ray|Blu-Ray/).test(title))?100:
+        ((/BD-Remux|BDRemux|1080p|1080i/).test(title))?90:
+        ((/BD-Rip|BDRip/).test(title))?80:
+        ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?70:
+        ((/LowHDRip/).test(title))?30:
+        ((/HDTV|HDRip|DVDRip/).test(title))?60:
+        ((/[^o]DVD/).test(title))?50:
+        ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|HQRip|DVB|IPTVRip/).test(title))?40:
+        ((/TeleSynch|DVDScr/).test(title))?20:
+        ((/CAMRip|CamRip/).test(title))?10:
+        ((/TS/).test(title))?20:
+        0;
+        if (v.size < 524288000 && quality.video > 45)
+            quality.video = Math.round(parseInt(quality.video)/10);
+        else
+        if (v.size < 1363148800 && quality.video > 65)
+            quality.video = Math.round(parseInt(quality.video)/2);
+        quality.video += ((/5.1/).test(title))?3:0;
+        quality.video += ((/original/i).test(title))?2:0;
+        quality.video += ((/rus sub|Sub|subs/).test(title))?1:0;
+        quality.music = 
+        ((/flac|alac|lossless/i).test(title))?90:
+        ((/320.?kbps/i).test(title))?80:
+        ((/256.?kbps/i).test(title))?60:
+        ((/192.?kbps/i).test(title))?50:
+        ((/128.?kbps/i).test(title))?40:
+        ((/AAC/).test(title))?30:
+        ((/mp3/i).test(title))?20:
+        0;
+        quality.game = ((/PS3/).test(title))?40:((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[RiP\]/).test(title))?90:((/\[L\]/).test(title))?100:0;
+        quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
+        return quality
+    }
     var inBGMode = function (t,a,s) {
         if (bgYear == null) {
             bgYear = s.replace(/.* ([0-9]{4})$/,"$1")
@@ -149,40 +185,7 @@ var view = function () {
             sum++;
             quality.name = title.r;
             title = title.n;
-            var filter = '';
-            quality.seed = (v.seeds>0)?100:0;//(v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>0)?3:0;
-            quality.video = 
-            ((/Blu-ray|Blu-Ray/).test(title))?100:
-            ((/BD-Remux|BDRemux|1080p|1080i/).test(title))?90:
-            ((/BD-Rip|BDRip/).test(title))?80:
-            ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?70:
-            ((/LowHDRip/).test(title))?30:
-            ((/HDTV|HDRip|DVDRip/).test(title))?60:
-            ((/[^o]DVD/).test(title))?50:
-            ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|HQRip|DVB|IPTVRip/).test(title))?40:
-            ((/TeleSynch|DVDScr/).test(title))?20:
-            ((/CAMRip|CamRip/).test(title))?10:
-            ((/TS/).test(title))?20:
-            0;
-            if (v.size < 524288000 && quality.video > 45)
-                quality.video = Math.round(parseInt(quality.video)/10);
-            else
-            if (v.size < 1363148800 && quality.video > 65)
-                quality.video = Math.round(parseInt(quality.video)/2);
-            quality.video += ((/5.1/).test(title))?3:0;
-            quality.video += ((/original/i).test(title))?2:0;
-            quality.video += ((/rus sub|Sub|subs/).test(title))?1:0;
-            quality.music = 
-            ((/flac|alac|lossless/i).test(title))?90:
-            ((/320.?kbps/i).test(title))?80:
-            ((/256.?kbps/i).test(title))?60:
-            ((/192.?kbps/i).test(title))?50:
-            ((/128.?kbps/i).test(title))?40:
-            ((/AAC/).test(title))?30:
-            ((/mp3/i).test(title))?20:
-            0;
-            quality.game = ((/PS3/).test(title))?40:((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[RiP\]/).test(title))?90:((/\[L\]/).test(title))?100:0;
-            quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
+            quality = quality_calc(quality);
             var costume_category = v.category.id;
             if (v.category.id < 0) {
                 if (quality.video > quality.music && quality.video > quality.game)
@@ -346,40 +349,7 @@ var view = function () {
                 else
                     fk = 1;
             }
-            quality.seed = (v.seeds>0)?100:0;//(v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>0)?3:0;
-            quality.video = 
-            ((/Blu-ray|Blu-Ray/).test(title))?100:
-            ((/BD-Remux|BDRemux|1080p|1080i/).test(title))?90:
-            ((/BD-Rip|BDRip/).test(title))?80:
-            ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?70:
-            ((/LowHDRip/).test(title))?30:
-            ((/HDTV|HDRip|DVDRip/).test(title))?60:
-            ((/[^o]DVD/).test(title))?50:
-            ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|HQRip|DVB|IPTVRip/).test(title))?40:
-            ((/TeleSynch|DVDScr/).test(title))?20:
-            ((/CAMRip|CamRip/).test(title))?10:
-            ((/TS/).test(title))?20:
-            0;
-            if (v.size < 524288000 && quality.video > 45)
-                quality.video = Math.round(parseInt(quality.video)/10);
-            else
-            if (v.size < 1363148800 && quality.video > 65)
-                quality.video = Math.round(parseInt(quality.video)/2);
-            quality.video += ((/5.1/).test(title))?3:0;
-            quality.video += ((/original/i).test(title))?2:0;
-            quality.video += ((/rus sub|Sub|subs/).test(title))?1:0;
-            quality.music = 
-            ((/flac|alac|lossless/i).test(title))?90:
-            ((/320.?kbps/i).test(title))?80:
-            ((/256.?kbps/i).test(title))?60:
-            ((/192.?kbps/i).test(title))?50:
-            ((/128.?kbps/i).test(title))?40:
-            ((/AAC/).test(title))?30:
-            ((/mp3/i).test(title))?20:
-            0;
-            quality.game = ((/PS3/).test(title))?40:((/Repack/i).test(title))?50:((/\[Native\]/i).test(title))?80:((/\[RiP\]/).test(title))?90:((/\[L\]/).test(title))?100:0;
-            quality.value = quality.seed+quality.name+quality.video+quality.music+quality.game;
-            
+            quality = quality_calc(quality);
             c = c + '<tr '+filter+' data-kf="'+fk+'" data-tracker="'+t+'" data-c="'+v.category.id+'">'
             +'<td class="time" data-value="'+v.time+'" title="'+unixintimetitle(v.time)+'">'+unixintime(v.time)+'</td>'
             +'<td class="quality" data-value="'+quality.value+'" data-qgame="'+quality.game+'" data-qseed="'+quality.seed+'" data-qname="'+quality.name+'" data-qvideo="'+quality.video+'" data-qmusic="'+quality.music+'"><div class="progress"><div style="width:'+(quality.value/10)+'px"></div><span title="'+quality.value+'">'+quality.value+'</span></div></td>'
