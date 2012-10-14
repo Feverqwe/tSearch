@@ -176,7 +176,7 @@ if (_lang == 'ru')
         his_h1 : 'История',
         his_no_his : 'Истории поиска пока нет',
         his_rm_btn : 'Удалить',
-        stp_title : 'История поиска',
+        stp_title : 'Настройки поиска',
         stp_setup : 'Настройки',
         stp_save_btn : 'Сохранить',
         stp_legend_1 : 'Трекеры',
