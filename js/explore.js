@@ -852,7 +852,7 @@ var explore = function () {
             return 1;
         }
         for (var i_tt=-1;i_tt<11;i_tt++)
-            if (obj.categorys[i_tt] != null) {
+            if (obj.categorys[i_tt] != null && i_tt != 4) {
                 if (obj.categorys[i_tt].year) {
                     if (categorys1.length == 0) {
                         categorys1[categorys1.length] = obj.categorys[i_tt];

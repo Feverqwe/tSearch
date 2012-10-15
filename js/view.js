@@ -60,7 +60,8 @@ var view = function () {
             if ($(this).attr('class') == 'selected') {
                 $(this).removeClass('selected');
                 trackerFilter = null;
-            } else {
+            }
+            else {
                 $('ul.trackers li a.selected').removeClass('selected');
                 $(this).addClass('selected');
                 trackerFilter = $(this).parent('li').attr('data-id');
@@ -187,6 +188,8 @@ var view = function () {
             title = title.n;
             quality = quality_calc(quality,title,v);
             var costume_category = v.category.id;
+            if (costume_category == 4)
+                costume_category = 3
             if (v.category.id < 0) {
                 if (quality.video > quality.music && quality.video > quality.game)
                     costume_category = 3;
@@ -194,8 +197,6 @@ var view = function () {
                     costume_category = 1;
                 if (quality.game > quality.music && quality.game > quality.video)
                     costume_category = 2;
-                if (costume_category == 4)
-                    costume_category = 3
                 if (backgroundModeID.categorys[costume_category] == null)
                     backgroundModeID.categorys[costume_category] = {
                         counter : 0, //счетчтк ппаданий
@@ -223,10 +224,9 @@ var view = function () {
             if (costume_category == 2) {
                 self_quality = self_quality-quality.music-quality.video
             }
-                
             if (quality.name < 80 ||
                 bgID.quality_full > self_quality ||
-                bgID.quality_name > quality.name
+                (costume_category != 1 && bgID.quality_name > quality.name)
                     ) return true;
             if (bgID.year && (v.title).indexOf((bgYear == 0)?new Date().getFullYear():bgYear) < 0) {
                 return true;
@@ -275,9 +275,9 @@ var view = function () {
             if (tmp_label != '' && bgID.size < v.size) {
                 bgID.quality_full = self_quality;
                 bgID.quality_name = quality.name;
-                if (bgID.size != 0 || (bgID.label != tmp_label && bgID.quality_full < self_quality))
+                if (bgID.size != 0 || (bgID.label != tmp_label && bgID.quality_full < self_quality)) {
                     bgID.size = v.size-(v.size/10);
-                else
+                } else
                     bgID.size = (v.size-bgID.size)/2+bgID.size;
                 bgID.label = tmp_label;
                 bgID.link = v.url;
