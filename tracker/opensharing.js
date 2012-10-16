@@ -15,7 +15,6 @@ tracker[tmp_num] = function () {
     var xhr = null;
     var web = function () {
         var calculateSize = function (s) {
-            var type = '';
             var size = s.replace(' ','');
             var t = size.replace('KB','');
             if (t!= size) {
@@ -60,8 +59,7 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c);//.contents();
-            t = t.find('#index').children('table').children('tbody').children('tr');
+            var t = $(c).find('#index').children('table').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -107,7 +105,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

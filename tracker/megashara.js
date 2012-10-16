@@ -15,7 +15,6 @@ tracker[tmp_num] = function () {
     var xhr = null;
     var web = function () {
         var calculateSize = function (s) {
-            var type = '';
             var size = s.replace(' ','');
             var t = size.replace('KB','');
             if (t!= size) {
@@ -54,8 +53,7 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c);//.contents();
-            t = t.find('table.table-wide').children('tbody').children('tr');
+            var t = $(c).find('table.table-wide').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -66,7 +64,7 @@ tracker[tmp_num] = function () {
                         'title' : td.eq(0).text(), 
                         'id': calculateCategory(td.eq(0).text())
                     },
-                    'title' : td.eq(1).children('a').text(),
+                    'title' : $.trim(td.eq(1).children('a').text()),
                     'url' : td.eq(1).children('a').attr('href'),
                     'size' : calculateSize(td.eq(3).children().text()),
                     'dl' : td.eq(2).children('a').attr('href'),
@@ -98,7 +96,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

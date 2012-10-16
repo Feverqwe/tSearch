@@ -132,7 +132,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

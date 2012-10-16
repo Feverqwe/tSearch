@@ -15,12 +15,8 @@ tracker[tmp_num] = function () {
     }
     var xhr = null;
     var web = function () {
-        var calculateCategory = function (f) {
-            return -1;
-        }
         var calculateTime = function (t) {
-            var t = t.replace('в ','');
-            t = t.replace('января','1').replace('февраля','2').replace('марта','3')
+            t = t.replace('в ','').replace('января','1').replace('февраля','2').replace('марта','3')
             .replace('апреля','4').replace('мая','5').replace('июня','6')
             .replace('июля','7').replace('августа','8').replace('сентября','9')
             .replace('октября','10').replace('ноября','11').replace('декабря','12');
@@ -72,12 +68,6 @@ tracker[tmp_num] = function () {
         var readCode = function (c) {
             c = view.contentFilter(c);
             var t = $(c);
-            /*if (t.find('div.navbar-search').html() == null) {
-                view.auth(0,id);
-                return [];
-            } else 
-                view.auth(1,id);
-                */
             t.find('div.talks_delimeter').remove();
             t = t.children('div');
             var l = t.length;
@@ -111,7 +101,16 @@ tracker[tmp_num] = function () {
                 url: url,
                 cache : false,
                 dataType: 'json',
-                data: '{"request":{"url":"/search/","search_for":"'+text+'","cat_id":0,"options":0,"offset":1,"method":"getSearch"}}',
+                data: JSON.stringify({
+                    request : {
+                        "url" : "search",
+                        "search_for" : text,
+                        "cat_id" : 0,
+                        "options" : 0,
+                        "offset" : 1,
+                        "method" : "getSearch"
+                    }
+                }),
                 success: function(data) {
                     if (data.response == null) {
                         view.auth(0,id);
@@ -121,7 +120,7 @@ tracker[tmp_num] = function () {
                         view.result(id,readCode(data.response.result),t);
                     }
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

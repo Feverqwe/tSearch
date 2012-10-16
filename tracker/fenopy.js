@@ -94,32 +94,8 @@ tracker[tmp_num] = function () {
             return 0;
         }
         var readCode = function (c) {
-            /*
-            var l = c.length;
-            var arr = [];
-            var i = 0;
-            for (i = 0;i<l;i++) {
-                var item = c[i];
-                arr[arr.length] = {
-                    'category' : {
-                        'title' : item.category,
-                        'id': calculateCategory(item.category)
-                    },
-                    'title' : item.name,
-                    'url' : item.page,
-                    'size' : item.size,
-                    'dl' : item.magnet,
-                    'seeds' : item.seeder,
-                    'leechs' : item.leecher,
-                    'time' : 0
-                }
-            }
-            return arr;
-            */
-            
             c = view.contentFilter(c);
-            var t = $(c);
-            t = t.find('#search_table').children('tbody').children('tr');
+            var t = $(c).find('#search_table').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -157,13 +133,12 @@ tracker[tmp_num] = function () {
                 cache : false,
                 data: {
                     'keyword' : text,
-                    'limit' : '50'//,
-                    //'format' : 'json'
+                    'limit' : '50'
                 },
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

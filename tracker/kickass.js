@@ -30,13 +30,13 @@ tracker[tmp_num] = function () {
             /* Порно */['xxx']
             ];
             for (var i=0;i<groups_arr.length;i++)
-                if (jQuery.inArray(f,groups_arr[i]) > -1) {
+                if ($.inArray(f,groups_arr[i]) > -1) {
                     return i;
                 }
             return -1;
         }
         var calcTime = function (t) {
-            t = t.replace(/([0-9]*).?([A-Za-z]*)/,'$1|$2').split('|');
+            t = t.replace(/([0-9]*)\s([A-Za-z]*)/,'$1|$2').split('|');
             var type_time = t[1];
             var val = parseInt(t[0]);
             var nowTS = Math.round((new Date()).getTime() / 1000);
@@ -103,7 +103,7 @@ tracker[tmp_num] = function () {
                     'category' : {
                         'title' : td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).text(), 
                         'url': root_url+td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).find('a').eq(0).attr('href'),
-                        'id': calculateCategory(td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).find('a').eq(0).attr('href').replace(/\/(.*)\//i,"$1"))
+                        'id': calculateCategory(td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).find('a').eq(0).attr('href').replace(/\/(.*)\/$/,"$1"))
                     },
                     'title' : td.eq(0).children('div').eq(1).children('a').eq(1).text(),
                     'url' : root_url+td.eq(0).children('div').eq(1).children('a').eq(1).attr('href'),
@@ -126,7 +126,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

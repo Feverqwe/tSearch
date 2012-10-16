@@ -76,8 +76,8 @@ tracker[tmp_num] = function () {
                 var min_out = parseInt(t.replace(/([0-9]*).*/,'$1'))*60;
                 return Math.round((new Date()).getTime() / 1000)-min_out;
             } else {
-                var t_time = t.replace(/.*?([0-9]*):([0-9]*)/,'$1:$2');
-                var t_date =$.trim(t.replace(t_time,''));
+                var t_time = t.replace(/.*?([0-9]*):([0-9]*)$/,'$1:$2');
+                var t_date =t.replace(' '+t_time,'');
                 var now_date = new Date();
                 var year = now_date.getFullYear();
                 if (t_date.split('-').length == 1) {
@@ -100,7 +100,7 @@ tracker[tmp_num] = function () {
                 var t_date = t_date.split(' ');
                 var time_h = t_time.split(':');
                 if (time_h.length == 1) {
-                    year = String(time_h).replace(/([0-9]*)-([0-9]*) ([0-9]*)/,'$1 $2 $3').split(' ');
+                    year = String(time_h).replace(/-/,' ').split(' ');
                     var time_m = 0;
                     var time_h = 0;
                     t_date[0] = parseInt('1'+year[0])-101;
@@ -137,7 +137,7 @@ tracker[tmp_num] = function () {
                             'url': root_url+td.eq(0).children().children('a').eq(1).attr('href'),
                             'id': calculateCategory(String(td.eq(0).children().children('a').eq(1).attr('href')).replace(/(.*)\/([0-9]*)/i,"$2"))
                         },
-                        'title' : td.eq(1).children('div.detName').children('a').text(),
+                        'title' : $.trim(td.eq(1).children('div.detName').children('a').text()),
                         'url' : root_url+td.eq(1).children('div.detName').children('a').attr('href'),
                         'size' : calculateSize(td.eq(1).children('font.detDesc').text()),
                         'dl' : td.eq(1).children('a').eq(0).attr('href'),
@@ -152,7 +152,7 @@ tracker[tmp_num] = function () {
                             'url': root_url+td.eq(0).children('a').attr('href'),
                             'id': calculateCategory(String(td.eq(0).children('a').attr('href')).replace(/(.*)\/([0-9]*)/i,"$2"))
                         },
-                        'title' : td.eq(1).children('a').text(),
+                        'title' : $.trim(td.eq(1).children('a').text()),
                         'url' : root_url+td.eq(1).children('a').attr('href'),
                         'size' : mackcalcSize(td.eq(4).text()),
                         'dl' : td.eq(3).children().children('a').eq(0).attr('href'),

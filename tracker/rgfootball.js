@@ -46,7 +46,7 @@ tracker[tmp_num] = function () {
                     'category' : {
                         'title' : td.eq(2).children('a').text(), 
                         'url': root_url+td.eq(2).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/(.*)f=([0-9]*)/i,"$2"))
+                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*)$/i,"$1"))
                     },
                     'title' : td.eq(3).children('a').eq(0).text(),
                     'url' : root_url+td.eq(3).children('a').eq(0).attr('href'),
@@ -73,7 +73,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

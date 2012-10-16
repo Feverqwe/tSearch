@@ -61,8 +61,7 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c);
-            t = t.find('ol.items').children('li.item');
+            var t = $(c).find('ol.items').children('li.item');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -98,7 +97,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

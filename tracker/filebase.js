@@ -64,8 +64,7 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c);//.contents();
-            t = t.find('td.lista2').parent('tr').parent('tbody').children('tr');
+            var t = $(c).find('td.lista2').parent('tr').parent('tbody').children('tr');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -78,7 +77,7 @@ tracker[tmp_num] = function () {
                         'url': root_url+td.eq(0).children('a').attr('href'),
                         'id': calculateCategory(td.eq(0).children('a').attr('href').replace(/.*\/torrents\/(.*)\/$/i,"$1"))
                     },
-                    'title' : td.eq(1).children('a').text(),
+                    'title' : $.trim(td.eq(1).children('a').text()),
                     'url' : root_url+td.eq(1).children('a').attr('href'),
                     'size' : calculateSize(td.eq(4).text()),
                     'seeds' : td.eq(6).text(),
@@ -104,7 +103,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

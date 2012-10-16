@@ -54,7 +54,7 @@ tracker[tmp_num] = function () {
             return 0;
         }
         var calculateTime = function (t) {
-            var type = t.replace(/([0-9\.])*([a-z])*/,'$2');
+            var type = t.replace(/[0-9\.]*([a-z])*/,'$1');
             var time = parseFloat(t.replace(type,''));
             var nowTime = Math.round(new Date().getTime() / 1000);
             if (type == 's')
@@ -72,8 +72,7 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c);//.contents();
-            t = t.find('#serps').children('tbody').children('tr');
+            var t = $(c).find('#serps').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -117,7 +116,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

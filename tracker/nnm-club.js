@@ -14,32 +14,7 @@ tracker[tmp_num] = function () {
     }
     var xhr = null;
     var web = function () {
-        var calculateSize = function (s) {
-            var size = s.replace(',','.').replace(' ','');
-            var t = size.replace('KB','');
-            if (t!= size) {
-                t = parseFloat(t);
-                return Math.round(t*1024);
-            }
-            var t = size.replace('MB','');
-            if (t!= size) {
-                t = parseFloat(t);
-                return Math.round(t*1024*1024);
-            }
-            var t = size.replace('GB','');
-            if (t!= size) {
-                t = parseFloat(t);
-                return Math.round(t*1024*1024*1024);
-            }
-            var t = size.replace('TB','');
-            if (t!= size) {
-                t = parseFloat(t);
-                return Math.round(t*1024*1024*1024*1024);
-            }
-            return 0;
-        }
         var calculateCategory = function (n) {
-            var n = n.replace(/(.*)c=([0-9]*)/i,"$2");
             var groups_arr = [
             /* Сериалы */[802,496,683,573,501,919,566,498,985,720,987,664,497,721,719,849,949,665,986,666,722,920,570,499,768,779,778,788,787,777,786,803,776,785,775,774,773,784,772,771,783,804,782,781,780,922,770,769,799,800,801,791,798,797,790,793,794,789,796,792,795],
             /* Музыка */[92,726,742,256,257,258,883,955,905,271,304,322,962,333,965,336,337,338,963,334,961,332,323,343,342,341,340,339,324,976,346,977,345,349,978,347,979,673,671,980,672,981,344,983,984,982,348,674,877,350,351,325,356,355,354,353,352,712,326,359,358,357,328,364,362,363,879,824,329,369,368,367,366,365,330,398,370,371,375,374,373,372,376,377,313,680,429,681,331,380,711,379,378,876,917,327,361,360],
@@ -63,8 +38,7 @@ tracker[tmp_num] = function () {
             var t = t.replace('Янв','1').replace('Фев','2').replace('Мар','3')
             .replace('Апр','4').replace('Май','5').replace('Июн','6')
             .replace('Июл','7').replace('Авг','8').replace('Сен','9')
-            .replace('Окт','10').replace('Ноя','11').replace('Дек','12');
-            t = (t.replace(':',' ')).replace(':',' ');
+            .replace('Окт','10').replace('Ноя','11').replace('Дек','12').replace('/:/g',' ');
             var dd = t.split(' ');
             return Math.round((new Date(parseInt(dd[2]),parseInt(dd[1])-1,parseInt('1'+dd[0])-100,parseInt('1'+dd[3])-100,parseInt('1'+dd[4])-100,parseInt('1'+dd[5])-100)).getTime() / 1000);
         }
@@ -76,9 +50,6 @@ tracker[tmp_num] = function () {
             var i = 0;
             for (i = 0;i<l;i++) {
                 var td = t.eq(i).children('td');
-                /*if (tr.eq(0).children('td').children('a').eq(0).attr('href') == undefined) {
-                    continue;
-                }*/
                 var f = 0;
                 if (td.length == 11)
                     f = 1;
@@ -87,9 +58,9 @@ tracker[tmp_num] = function () {
                     'category' : {
                         'title' : td.eq(1).children('a').text(),
                         'url' : root_url+td.eq(1).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(1).children('a').attr('href').replace(/.*f=([0-9]*).*/,'$1')) //calculateCategory(td.eq(0).children('a').eq(0).attr('href'))
+                        'id': calculateCategory(td.eq(1).children('a').attr('href').replace(/.*f=([0-9]*).*$/,'$1'))
                     },
-                    'title' : td.eq(2).children('a').text(), //td.eq(1).children('a').text(),
+                    'title' : td.eq(2).children('a').text(),
                     'url' : root_url+td.eq(2).children('a').attr('href'),
                     'size' : td.eq(5).children('u').text(),
                     'dl' : root_url+td.eq(4).children('a').attr('href'),
@@ -111,7 +82,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

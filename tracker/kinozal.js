@@ -15,7 +15,6 @@ tracker[tmp_num] = function () {
     var xhr = null;
     var web = function () {
         var calculateSize = function (s) {
-            var type = '';
             var size = s.replace(' ','');
             var t = size.replace('КБ','');
             if (t!= size) {
@@ -40,7 +39,7 @@ tracker[tmp_num] = function () {
             return 0;
         }
         var calculateCategory = function (n) {
-            var n = (n+'').replace(/(.*)c=([0-9]*)/i,"$2");
+            var n = n.replace(/.*c=([0-9]*)$/i,"$1");
             var groups_arr = [
             /* Сериалы */[45,46], //serials
             /* Музыка */[3,4,42], //music  
@@ -61,7 +60,8 @@ tracker[tmp_num] = function () {
         }
         var calculateCategoryName = function (n) {
             var n = calculateCategory(n);
-            if (n == 0) return 'Сериалы';
+            if (n > 9) return null;
+            else if (n == 0) return 'Сериалы';
             else if (n == 1) return 'Музыка';
             else if (n == 2) return 'Игры';
             else if (n == 3) return 'Фильмы';
@@ -69,22 +69,20 @@ tracker[tmp_num] = function () {
             else if (n == 5) return 'Книги';
             else if (n == 6) return 'ПО';
             else if (n == 7) return 'Анимэ';
+            else if (n == 8) return 'Док. и юмор';
+            else if (n == 9) return 'Спорт';
         }
         var calculateTime = function (t) {
-            var t = t.replace('в ','');
-            t = t.replace('января','1').replace('февраля','2').replace('марта','3')
+            t = t.replace('в ','').replace('января','1').replace('февраля','2').replace('марта','3')
             .replace('апреля','4').replace('мая','5').replace('июня','6')
             .replace('июля','7').replace('августа','8').replace('сентября','9')
-            .replace('октября','10').replace('ноября','11').replace('декабря','12');
-            t = t.replace(':',' ');
+            .replace('октября','10').replace('ноября','11').replace('декабря','12').replace(':',' ');
             var tt = new Date();
             var today = tt.getDate()+' '+(tt.getMonth()+1)+' '+tt.getFullYear()+' ';
             var tt = new Date((Math.round(tt.getTime()/1000)-24*60*60)*1000);
             var yesterday = tt.getDate()+' '+(tt.getMonth()+1)+' '+tt.getFullYear()+' ';
             t = t.replace('сегодня ',today).replace('вчера ',yesterday);
-            var dd = t.split(' ');
-            if (!$.isNumeric(dd[0]))
-                dd = t.replace(/([0-9]*).?([0-9]*).?([0-9]*).?([0-9]*).?([0-9]*)/,'$1 $2 $3 $4 $5').split(' ');
+            var dd = t.replace(/\./g, ' ').split(' ');
             return Math.round((new Date(parseInt(dd[2]),parseInt(dd[1])-1,parseInt('1'+dd[0])-100,parseInt('1'+dd[3])-100,parseInt('1'+dd[4])-100)).getTime() / 1000);
         }
         var readCode = function (c) {
@@ -117,8 +115,8 @@ tracker[tmp_num] = function () {
                 } else if (ver == 2) {
                     arr[arr.length] = {
                         'category' : {
-                            'title' : calculateCategoryName(td.eq(0).children('img').attr('src').replace(/.*\/([0-9]*)\.gif/i,'$1')),
-                            'id': calculateCategory(td.eq(0).children('img').attr('src').replace(/.*\/([0-9]*)\.gif/i,'$1'))
+                            'title' : calculateCategoryName(td.eq(0).children('img').attr('src').replace(/.*\/([0-9]*)\.gif$/,'$1')),
+                            'id': calculateCategory(td.eq(0).children('img').attr('src').replace(/.*\/([0-9]*)\.gif$/,'$1'))
                         },
                         'title' : td.eq(1).children('a').text(),
                         'url' : root_url+td.eq(1).children('a').attr('href'),

@@ -79,7 +79,7 @@ tracker[tmp_num] = function () {
                     'category' : {
                         'title' : td.eq(2).children('span.c_tor').children('a').text(), 
                         'url': root_url+td.eq(1).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(1).children('a').attr('href').replace(/\/.*\/([0-9]*)\//,'$1'))
+                        'id': calculateCategory(td.eq(1).children('a').attr('href').replace(/\/.*\/([0-9]*)\/$/,'$1'))
                     },
                     'title' : td.eq(2).children('a').text(),
                     'url' : root_url+td.eq(2).children('a').attr('href'),
@@ -106,7 +106,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

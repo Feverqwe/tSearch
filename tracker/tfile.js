@@ -47,9 +47,9 @@ tracker[tmp_num] = function () {
             return Math.round((new Date(parseInt(date[0]),parseInt(1+date[1])-101,parseInt('1'+date[2])-100,parseInt('1'+time[0])-100,parseInt('1'+time[1])-100)).getTime() / 1000);
         }
         var calculateCategory = function (n) {
-            var n = String(n).replace(/(.*)c=([0-9]*)/i,"$2");
+            var n = String(n).replace(/.*c=([0-9]*)$/i,"$1");
             if (isNaN(n))
-                n = String(n).replace(/(.*)f=([0-9]*)/i,"$2");
+                n = String(n).replace(/.*f=([0-9]*)$/i,"$1");
             var groups_arr = [
             /* Сериалы */[37,1323,1252,697,322,323,1235,172,135,311,183,130,1024,139,1023,179,392,308,342,1015,96,997,353,285,154,389,975,168,1020,265,123,117,170,155,167,152,105,374,312,127,1030,773,314,150,310,328,395,305,149,136,134,104,158,372,329,169,1421,768,1003,307,767,309,377,1017],
             /* Музыка */[5,1390,51,56,61,67,186,190,188,250,493,501,879,1418,1417,1422,1405,1400,1402,1403,1398,1399,1401,1404,1114,1200,1199,1115,1202,1201,1116,1204,1203,1206,1205,474,473,1035,1117,1208,1207,1118,531,504,1214,479,478,477,1213,476,475,315,1489,1473,1472,1471,1210,1209,1439,1505,1453,1452,1451,1450,1449,1445,1448,1506,1442,1443,1440,1447,1446,1444,1441,1212,1211,1198,503,502],
@@ -75,7 +75,7 @@ tracker[tmp_num] = function () {
                 view.auth(0,id);
                 return [];
             }
-            var t = $(c);//.contents();
+            var t = $(c);
             var ex = false;
             for (var tmp_n = 0;tmp_n<t.length;tmp_n++) {
                 if ($(t[tmp_n]).attr('id')=='topics')
@@ -99,11 +99,6 @@ tracker[tmp_num] = function () {
                 td.eq(6).children('nobr').remove();
                 if (t.eq(i).children('td.dl').children().length == 0) continue;
                 arr[arr.length] = {
-                    //'type' : td.eq(0).children('img').attr('alt'),
-                    //'status' : {
-                    //    'code': td.eq(1).children('span').attr('class'), 
-                    //    'text': td.eq(1).children('span').text()
-                    //},
                     'category' : {
                         'title' : td.eq(0).text(),
                         'url' : root_url+td.eq(0).children('a').eq(0).attr('href'),
@@ -111,16 +106,11 @@ tracker[tmp_num] = function () {
                     },
                     'title' : td.eq(2).children('a').text(),
                     'url' : root_url+td.eq(2).children('a').attr('href'),
-                    //'author' : {
-                    //    'name' : td.eq(4).children('a').text(), 
-                    //    'url' : root_url+td.eq(4).children('a').attr('href')
-                    //} ,
                     'size' : calculateSize(td.eq(3).children('a').text()),
                     'dl' : root_url+td.eq(3).children('a').attr('href'),
                     'seeds' : td.eq(3).children('b.sd').text(),
                     'leechs' : td.eq(3).children('b.lc').text(),
-                    //'down' : td.eq(8).text(),
-                    'time' : 0//calculateTime(td.eq(6).text())
+                    'time' : 0
                 }
             }
             return arr;
@@ -169,7 +159,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

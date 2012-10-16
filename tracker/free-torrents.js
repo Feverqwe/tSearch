@@ -37,7 +37,7 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c);//.contents();
+            var t = $(c);
             view.auth(1,id);
             t = t.find('#main_content_wrap').children('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
@@ -50,7 +50,7 @@ tracker[tmp_num] = function () {
                     'category' : {
                         'title' : td.eq(2).children('a').text(), 
                         'url': root_url+td.eq(2).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/(.*)f=([0-9]*).*/i,"$2"))
+                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*).*$/i,"$1"))
                     },
                     'title' : td.eq(3).children('a').text(),
                     'url' : td.eq(3).children('a').attr('href'),
@@ -74,7 +74,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                     view.auth(0,id);
                 }

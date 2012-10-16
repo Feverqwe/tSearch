@@ -35,7 +35,7 @@ tracker[tmp_num] = function () {
             return -1;
         }
         var calculateTime = function (f) {
-            var dd = f.replace(/[\ \t\:\-]/g,' ').split(' ');
+            var dd = f.replace(/[\t:-]/g,' ').split(' ');
             return Math.round((new Date(parseInt(dd[0]),parseInt('1'+dd[1])-100-1,parseInt('1'+dd[2])-100,parseInt('1'+dd[3])-100,parseInt('1'+dd[4])-100)).getTime() / 1000);
         }
         var calculateSize = function (s) {
@@ -65,8 +65,7 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c);
-            t = t.find('table.main').eq(1).children('tbody').children('tr').children('td').children('table');
+            var t = $(c).find('table.main').eq(1).children('tbody').children('tr').children('td').children('table');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -80,34 +79,13 @@ tracker[tmp_num] = function () {
                         'title' : td.children('table').eq(2).find('td').eq(1).children('a').eq(0).text(),
                         'id': calculateCategory(td.children('table').eq(2).find('td').eq(1).children('a').eq(0).text())
                     },
-                    'title' : td.children('table').eq(0).find('span').children('a').eq(1).text(),
+                    'title' : $.trim(td.children('table').eq(0).find('span').children('a').eq(1).text()),
                     'url' : root_url+td.children('table').eq(0).find('span').children('a').eq(1).attr('href'),
                     'size' : calculateSize($.trim(params[2+pp]+params[3+pp])),
                     'seeds' : params[5+pp],
                     'leechs' : params[6+pp],
                     'time' : calculateTime(td.children('table').eq(0).find('span').children('a').eq(2).text())
                 }
-            /* view 1
-            t = t.find('table.main').children('tbody').children('tr.highlight');
-            var l = t.length;
-            var arr = [];
-            var i = 0;
-            for (i = 0;i<l;i++) {
-                var td = t.eq(i).children('td');
-                arr[arr.length] = {
-                    'category' : {
-                        'title' : td.eq(0).children('a').children('img').attr('alt'),
-                        'id': calculateCategory(td.eq(0).children('a').children('img').attr('alt'))
-                    },
-                    'title' : td.eq(1).children('a').eq(0).text(),
-                    'url' : root_url+td.eq(1).children('a').eq(0).attr('href'),
-                    'size' : calculateSize(td.eq(4).text()),
-                    'dl' : root_url+td.eq(1).children('a').eq(1).attr('href'),
-                    'seeds' : td.eq(6).children('b').text(),
-                    'leechs' : td.eq(7).children('b').text(),
-                    'time' : 0
-                }
-             */
             }
             return arr;
         }
@@ -155,7 +133,7 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     view.result(id,readCode(data),t);
                 },
-                error:function (xhr, ajaxOptions, thrownError){
+                error:function (){
                     view.loadingStatus(2,id);
                 }
             });

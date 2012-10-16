@@ -335,6 +335,12 @@ var view = function () {
                 console.log('#debug end');
                 return true;
             }
+            if (v.title.substr(0,1) == ' ') {
+                console.log('Tracker '+tracker[t].name+' need trim!!');
+                console.log('#debug start');
+                console.log(v);
+                console.log('#debug end');
+            }
             sum++;
             quality.name = title.r;
             title = title.n;
