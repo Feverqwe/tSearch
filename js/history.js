@@ -123,9 +123,28 @@ $(function (){
     $('title').text(_lang.his_title);
     $('div.left').children('h1').text(_lang.his_h1);
     $('input.sbutton.main').attr('title',_lang.btn_main);
+    $('div.topbtn').attr('title',_lang['btn_up']);
     
     $('input.sbutton.main').click(function (){
         window.location = 'index.html#s=';
     });
     view.getResult();
+    
+    
+    $('div.topbtn').hide();
+    $(window).scroll(function () {
+        if ($(this).scrollTop() > 100) {
+            $('div.topbtn').fadeIn('fast');
+        } else {
+            $('div.topbtn').fadeOut('fast');
+        }
+    });
+    $('div.topbtn').click(function (event) {
+        event.preventDefault();
+        $('body,html').animate({
+            scrollTop: 0
+        }, 200);
+        return false;
+    });
+    
 });

@@ -96,3 +96,19 @@ ol.list a {
 ol.list a:hover {
     text-decoration: underline;
 }
+div.topbtn {
+    display: 0;
+    bottom: 0;
+    width: 50px;
+    height: 60px;
+    background: url(../images/go_top.png) no-repeat center bottom;
+    position: fixed;
+    right: 0;
+    z-index: 10;
+    cursor: pointer;
+    padding-top: 100%;
+    opacity: 0.9;
+}
+div.topbtn:hover {
+    background-color:#9CF;
+}
