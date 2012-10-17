@@ -104,7 +104,7 @@ var explore = function () {
             arr[arr.length] = {
                 'img' : sesizeimg(item.eq(0).children('a').children('img').attr('src')),
                 'name' : item.eq(1).children('div.name').children('a').text(),
-                'name_en' : item.eq(1).children('div.name').children('span').text().replace(/\ \([0-9]*\) [0-9]*\ мин./, ''),
+                'name_en' : item.eq(1).children('div.name').children('span').text().replace(/ \([0-9]*\) [0-9]* мин./, ''),
                 'url' : item.eq(1).children('div.name').children('a').attr('href')
             }
         }
@@ -120,7 +120,7 @@ var explore = function () {
             var item = t.eq(i).children('td');
             arr[arr.length] = {
                 'img' : makeimg(item.eq(1).children('a').attr('href')),
-                'name' : item.eq(1).children('a').text().replace(/ \(([0-9]*)\)$/,''),
+                'name' : item.eq(1).children('a').text().replace(/ \([0-9]*\)$/,''),
                 'name_en' : item.eq(1).children('span').text(),
                 'url' : item.eq(1).children('a').attr('href')
             }
@@ -164,11 +164,10 @@ var explore = function () {
     var load_serials = function () {
         if ( $('div.explore div.serials').length > 0 ) return;
         var cache_arr = null;
-        if (explorerCache.serials != null)
-            if (explorerCache.serials.date != null && explorerCache.serials.date>Math.round((new Date()).getTime() / 1000)) {
-                show_serials(explorerCache.serials.cache_arr);
-                return;
-            }
+        if (explorerCache.serials != null && explorerCache.serials.date != null && explorerCache.serials.date>Math.round((new Date()).getTime() / 1000)) {
+            show_serials(explorerCache.serials.cache_arr);
+            return;
+        }
         var url = 'http://www.kinopoisk.ru/top/serial/list/';
         if (xhr_s != null)
             xhr_s.abort();
@@ -195,11 +194,10 @@ var explore = function () {
     var load_top_films = function () {
         if ( $('div.explore div.top_films').length > 0) return;
         var cache_arr = null;
-        if (explorerCache.top_films != null) {
-            if (explorerCache.top_films.date != null && explorerCache.top_films.date>Math.round((new Date()).getTime() / 1000)) {
-                show_top_films(explorerCache.top_films.cache_arr);
-                return;
-            }
+        if (explorerCache.top_films != null && explorerCache.top_films.date != null && explorerCache.top_films.date>Math.round((new Date()).getTime() / 1000)) {
+            show_top_films(explorerCache.top_films.cache_arr);
+            return;
+            
         } else {
             explorerCache = {
                 games:null,
@@ -238,11 +236,10 @@ var explore = function () {
     var load_films = function () {
         if ( $('div.explore div.films').length > 0) return;
         var cache_arr = null;
-        if (explorerCache.films != null)
-            if (explorerCache.films.date != null && explorerCache.films.date>Math.round((new Date()).getTime() / 1000)) {
-                show_films(explorerCache.films.cache_arr);
-                return;
-            }
+        if (explorerCache.films != null && explorerCache.films.date != null && explorerCache.films.date>Math.round((new Date()).getTime() / 1000)) {
+            show_films(explorerCache.films.cache_arr);
+            return;
+        }
         var url = 'http://www.kinopoisk.ru/afisha/new/';
         if (xhr != null)
             xhr.abort();
@@ -269,11 +266,10 @@ var explore = function () {
     var load_games = function () {
         if ( $('div.explore div.games').length > 0) return;
         var cache_arr = null;
-        if (explorerCache.games != null)
-            if (explorerCache.games.date != null && explorerCache.games.date>Math.round((new Date()).getTime() / 1000)) {
-                show_games(explorerCache.games.cache_arr);
-                return;
-            }
+        if (explorerCache.games != null && explorerCache.games.date != null && explorerCache.games.date>Math.round((new Date()).getTime() / 1000)) {
+            show_games(explorerCache.games.cache_arr);
+            return;
+        }
         var url = 'http://www.igromania.ru/gametop/';
         if (xhr_g != null)
             xhr_g.abort();
