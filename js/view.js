@@ -122,14 +122,18 @@ var view = function () {
         var s_s = contentFilter(s.replace(/\s+/g," ").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
         var sum = 0;
         $.each(a, function (k,v) {
-            var quality = {
-                seed : 0,
-                name : 0,
-                video : 0,
-                music : 0,
-                game : 0,
-                value : 0
-            };
+            if (v.title == undefined || !isInt(v.size) || !isInt(v.seeds) 
+                || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
+                || (v.category.title != null && v.category.title == undefined)
+                || (v.category.url != null && v.category.url == undefined)
+                || (v.dl != null && v.dl == undefined)
+                ) {
+                console.log('Tracker '+tracker[t].name+' have problem!');
+                console.log('#debug start');
+                console.log(v);
+                console.log('#debug end');
+                return true;
+            }
             if (HideZeroSeed && v.seeds == 0) return true;
             if (isInt(v.category.id)) {
                 if (backgroundModeID.categorys[v.category.id] == null) {
@@ -161,29 +165,22 @@ var view = function () {
             ((/Тизер/i).test(title.n))?1:
             ((/Teaser/i).test(title.n))?1:
             ((/Trailer/i).test(title.n))?1:
+            (v.category.title != null)?
+            ((/Трейлер/i).test(v.category.title))?1:
+            ((/Тизер/i).test(v.category.title))?1:
+            ((/Teaser/i).test(v.category.title))?1:
+            ((/Trailer/i).test(v.category.title))?1:0:
             0;
             if (Teaser == 1) return true;
-            if (v.category.title != null) {
-                Teaser = ((/Трейлер/i).test(v.category.title))?1:
-                ((/Тизер/i).test(v.category.title))?1:
-                ((/Teaser/i).test(v.category.title))?1:
-                ((/Trailer/i).test(v.category.title))?1:
-                0;
-                if (Teaser == 1) return true;
-            }
-            if (v.title == undefined || !isInt(v.size) || !isInt(v.seeds) 
-                || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
-                || (v.category.title != null && v.category.title == undefined)
-                || (v.category.url != null && v.category.url == undefined)
-                || (v.dl != null && v.dl == undefined)
-                ) {
-                console.log('Tracker '+tracker[t].name+' have problem!');
-                console.log('#debug start');
-                console.log(v);
-                console.log('#debug end');
-                return true;
-            }
             sum++;
+            var quality = {
+                seed : 0,
+                name : 0,
+                video : 0,
+                music : 0,
+                game : 0,
+                value : 0
+            };
             quality.name = title.r;
             title = title.n;
             quality = quality_calc(quality,title,v);
@@ -305,24 +302,6 @@ var view = function () {
                 game : 0,
                 value : 0
             };
-            if (HideZeroSeed && v.seeds == 0) return true;
-            var title = filterText(s_s,v.title);
-            if (TeaserFilter) {
-                var Teaser = ((/Трейлер/i).test(title.n))?1:
-                ((/Тизер/i).test(title.n))?1:
-                ((/Teaser/i).test(title.n))?1:
-                ((/Trailer/i).test(title.n))?1:
-                0;
-                if (Teaser == 1) return true;
-                if (v.category.title != null) {
-                    Teaser = ((/Трейлер/i).test(v.category.title))?1:
-                    ((/Тизер/i).test(v.category.title))?1:
-                    ((/Teaser/i).test(v.category.title))?1:
-                    ((/Trailer/i).test(v.category.title))?1:
-                    0;
-                    if (Teaser == 1) return true;
-                }
-            }
             if (v.title == undefined || !isInt(v.size) || !isInt(v.seeds) 
                 || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
                 || (v.category.title != null && v.category.title == undefined)
@@ -340,6 +319,21 @@ var view = function () {
                 console.log('#debug start');
                 console.log(v);
                 console.log('#debug end');
+            }
+            if (HideZeroSeed && v.seeds == 0) return true;
+            var title = filterText(s_s,v.title);
+            if (TeaserFilter) {
+                var Teaser = ((/Трейлер/i).test(title.n))?1:
+                ((/Тизер/i).test(title.n))?1:
+                ((/Teaser/i).test(title.n))?1:
+                ((/Trailer/i).test(title.n))?1:
+                (v.category.title != null)?
+                ((/Трейлер/i).test(v.category.title))?1:
+                ((/Тизер/i).test(v.category.title))?1:
+                ((/Teaser/i).test(v.category.title))?1:
+                ((/Trailer/i).test(v.category.title))?1:0:
+                0;
+                if (Teaser == 1) return true;
             }
             sum++;
             quality.name = title.r;
