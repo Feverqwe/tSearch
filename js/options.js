@@ -129,7 +129,7 @@ var view = function () {
         loadSettings();
         var s = (document.URL).replace(/(.*)options.html/,'');
         if (s.length > 0) { 
-            var s = s.replace(/#back=(.*)/,'$1');
+            var s = s.replace(/^#back=(.*)/,'$1');
             window.location = 'index.html#s='+s;
         }
     }
