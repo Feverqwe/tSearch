@@ -78,7 +78,7 @@ tracker[tmp_num] = function () {
                         'url': root_url+tr.eq(1).children('td').eq(0).children('a').attr('href'),
                         'id': calculateCategory(tr.eq(1).children('td').eq(0).children('a').attr('href').replace(/.*cat=([0-9]*)$/i,"$1"))
                     },
-                    'title' : $.trim(tr.eq(1).children('td').eq(1).children('a').eq(0).text()),
+                    'title' : tr.eq(1).children('td').eq(1).children('a').eq(0).text(),
                     'url' : root_url+tr.eq(1).children('td').eq(1).children('a').eq(0).attr('href'),
                     'dl'  : root_url+tr.eq(1).children('td').eq(1).children('a').eq(2).attr('href'),
                     'size' : calculateSize(tr.eq(2).children('td').eq(3).text()),

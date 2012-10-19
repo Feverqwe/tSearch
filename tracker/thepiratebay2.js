@@ -71,7 +71,7 @@ tracker[tmp_num] = function () {
         }
         var makecalcTime = function (t) {
             t = t.replace(/\s+/g, ' ');
-            if (t.split('.').length == 2 || (/mins ago/).test(t)) {
+            if (t.split('.').length == 2 || (/mins? ago/).test(t)) {
                 //мин назад
                 var min_out = parseInt(t.replace(/([0-9]*).*/,'$1'))*60;
                 return Math.round((new Date()).getTime() / 1000)-min_out;
@@ -137,7 +137,7 @@ tracker[tmp_num] = function () {
                             'url': root_url+td.eq(0).children().children('a').eq(1).attr('href'),
                             'id': calculateCategory(String(td.eq(0).children().children('a').eq(1).attr('href')).replace(/(.*)\/([0-9]*)/i,"$2"))
                         },
-                        'title' : $.trim(td.eq(1).children('div.detName').children('a').text()),
+                        'title' : td.eq(1).children('div.detName').children('a').text(),
                         'url' : root_url+td.eq(1).children('div.detName').children('a').attr('href'),
                         'size' : calculateSize(td.eq(1).children('font.detDesc').text()),
                         'dl' : td.eq(1).children('a').eq(0).attr('href'),
@@ -152,7 +152,7 @@ tracker[tmp_num] = function () {
                             'url': root_url+td.eq(0).children('a').attr('href'),
                             'id': calculateCategory(String(td.eq(0).children('a').attr('href')).replace(/(.*)\/([0-9]*)/i,"$2"))
                         },
-                        'title' : $.trim(td.eq(1).children('a').text()),
+                        'title' : td.eq(1).children('a').text(),
                         'url' : root_url+td.eq(1).children('a').attr('href'),
                         'size' : mackcalcSize(td.eq(4).text()),
                         'dl' : td.eq(3).children().children('a').eq(0).attr('href'),

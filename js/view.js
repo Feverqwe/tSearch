@@ -134,6 +134,9 @@ var view = function () {
                 console.log('#debug end');
                 return true;
             }
+            if ((/\s/).test(v.title.substr(0,1))) {
+                tracker[t].name = $.trim(tracker[t].name)
+            }
             if (HideZeroSeed && v.seeds == 0) return true;
             if (isInt(v.category.id)) {
                 if (backgroundModeID.categorys[v.category.id] == null) {
@@ -289,19 +292,12 @@ var view = function () {
     }
     var write_result = function (t,a,s) {
         if (backgroundMode) return inBGMode(t,a,s);
+        //var dbg_start = (new Date()).getTime();
         var c = '';
         $('#rez_table tbody').children('tr[data-tracker="'+t+'"]').remove();
         var s_s = contentFilter(s.replace(/\s+/g," ").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
         var sum = 0;
         $.each(a, function (k,v) {
-            var quality = {
-                seed : 0,
-                name : 0,
-                video : 0,
-                music : 0,
-                game : 0,
-                value : 0
-            };
             if (v.title == undefined || !isInt(v.size) || !isInt(v.seeds) 
                 || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
                 || (v.category.title != null && v.category.title == undefined)
@@ -314,11 +310,16 @@ var view = function () {
                 console.log('#debug end');
                 return true;
             }
-            if (v.title.substr(0,1) == ' ') {
-                console.log('Tracker '+tracker[t].name+' need trim!!');
-                console.log('#debug start');
-                console.log(v);
-                console.log('#debug end');
+            var quality = {
+                seed : 0,
+                name : 0,
+                video : 0,
+                music : 0,
+                game : 0,
+                value : 0
+            };
+            if ((/\s/).test(v.title.substr(0,1))) {
+                tracker[t].name = $.trim(tracker[t].name)
             }
             if (HideZeroSeed && v.seeds == 0) return true;
             var title = filterText(s_s,v.title);
@@ -370,6 +371,8 @@ var view = function () {
             $('#rez_table tbody').append(contentUnFilter(c));
             table_update_timer(1);
         }
+        //var dbg_stop = (new Date()).getTime();
+        //console.log('Tracker '+tracker[t].name+': '+(dbg_stop-dbg_start)+'ms count:'+sum);
     }
     var table_update_timer = function (a) {
         var time = new Date().getTime();

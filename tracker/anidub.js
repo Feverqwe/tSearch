@@ -79,7 +79,7 @@ tracker[tmp_num] = function () {
                         'title' : td.children('table').eq(2).find('td').eq(1).children('a').eq(0).text(),
                         'id': calculateCategory(td.children('table').eq(2).find('td').eq(1).children('a').eq(0).text())
                     },
-                    'title' : $.trim(td.children('table').eq(0).find('span').children('a').eq(1).text()),
+                    'title' : td.children('table').eq(0).find('span').children('a').eq(1).text(),
                     'url' : root_url+td.children('table').eq(0).find('span').children('a').eq(1).attr('href'),
                     'size' : calculateSize($.trim(params[2+pp]+params[3+pp])),
                     'seeds' : params[5+pp],

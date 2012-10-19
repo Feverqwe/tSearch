@@ -64,7 +64,7 @@ tracker[tmp_num] = function () {
                         'title' : td.eq(0).text(), 
                         'id': calculateCategory(td.eq(0).text())
                     },
-                    'title' : $.trim(td.eq(1).children('a').text()),
+                    'title' : td.eq(1).children('a').text(),
                     'url' : td.eq(1).children('a').attr('href'),
                     'size' : calculateSize(td.eq(3).children().text()),
                     'dl' : td.eq(2).children('a').attr('href'),

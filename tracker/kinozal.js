@@ -73,6 +73,9 @@ tracker[tmp_num] = function () {
             else if (n == 9) return 'Спорт';
         }
         var calculateTime = function (t) {
+            if ((/сейчас/).test(t)) {
+                return Math.round((new Date()).getTime() / 1000);
+            }
             t = t.replace('в ','').replace('января','1').replace('февраля','2').replace('марта','3')
             .replace('апреля','4').replace('мая','5').replace('июня','6')
             .replace('июля','7').replace('августа','8').replace('сентября','9')

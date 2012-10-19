@@ -77,7 +77,7 @@ tracker[tmp_num] = function () {
                         'url': root_url+td.eq(0).children('a').attr('href'),
                         'id': calculateCategory(td.eq(0).children('a').attr('href').replace(/.*\/torrents\/(.*)\/$/i,"$1"))
                     },
-                    'title' : $.trim(td.eq(1).children('a').text()),
+                    'title' : td.eq(1).children('a').text(),
                     'url' : root_url+td.eq(1).children('a').attr('href'),
                     'size' : calculateSize(td.eq(4).text()),
                     'seeds' : td.eq(6).text(),
