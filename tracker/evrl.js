@@ -77,7 +77,7 @@ tracker[tmp_num] = function () {
                 var div = t.eq(i).children('div');
                 if (div.eq(1).children('a').text().length == 0) continue;
                 var fix_auth = 0
-                if (div.eq(2).children('div').eq(1).children('a').attr('href') == undefinde) {
+                if (div.eq(2).children('div').eq(1).children('a').attr('href') == undefined) {
                     fix_auth = -1
                 }
                 arr[arr.length] = {
