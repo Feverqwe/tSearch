@@ -76,17 +76,21 @@ tracker[tmp_num] = function () {
             for (i = 0;i<l;i++) {
                 var div = t.eq(i).children('div');
                 if (div.eq(1).children('a').text().length == 0) continue;
+                var fix_auth = 0
+                if (div.eq(2).children('div').eq(1).children('a').attr('href') == undefinde) {
+                    fix_auth = -1
+                }
                 arr[arr.length] = {
                     'category' : {
                         'id': -1
                     },
                     'title' : div.eq(1).children('a').text(),
                     'url' : root_url+div.eq(1).children('a').attr('href'),
-                    'size' : calculateSize(div.eq(2).children('div').eq(2).text()),
-                    'dl' :  root_url+div.eq(2).children('div').eq(1).children('a').attr('href'),
+                    'size' : calculateSize(div.eq(2).children('div').eq(2+fix_auth).text()),
+                    'dl' :  (fix_auth>-1)?root_url+div.eq(2).children('div').eq(1).children('a').attr('href'):null,
                     'seeds' : 1,
                     'leechs' : 0,
-                    'time' : calculateTime(div.eq(2).children('div').eq(3).text())
+                    'time' : calculateTime(div.eq(2).children('div').eq(3+fix_auth).text())
                 }
             }
             return arr;
