@@ -333,8 +333,10 @@ var sort_colum_count_global = 0;
                 }
                 var c = cache,
                 r = c.row,
-                n = c.normalized,
-                totalRows = n.length,
+                n = c.normalized
+                if (n == undefined)
+                    return;
+                var totalRows = n.length,
                 checkCell = (n[0].length - 1),
                 tableBody = $(table.tBodies[0]),
                 rows = [];
@@ -639,6 +641,8 @@ var sort_colum_count_global = 0;
                     var c = sortList[i][0];
                     sort_colum_global = c;
                     var order = sortList[i][1];
+                    if (table.config.parsers == undefined)
+                        return 0;
                     arr[i] = [c,(table.config.parsers[c].type == "text") ? 1 : 0,(order == 0) ? 0 : 1];
                 }
                 sort_colum_global = arr;
