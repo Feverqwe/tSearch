@@ -295,6 +295,7 @@ div.tracker_list > ul.trackers {
 }
 div.filter {
     position: relative;
+    z-index: 11;
 }
 div.filter > input {
     width: 142px;
