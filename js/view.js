@@ -548,7 +548,7 @@ var view = function () {
                 }
             }
             if (ex) {
-                if (word.leangh > 0) {
+                if (word.length > 0) {
                     if (i == 0) {
                         bolder_title = bolder_title.replace(new RegExp('('+word+')',"ig"),"<b>$1</b>");
                     } else {
