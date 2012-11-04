@@ -548,16 +548,18 @@ var view = function () {
                 }
             }
             if (ex) {
-                if (i == 0) {
-                    bolder_title = bolder_title.replace(new RegExp('('+word+')',"ig"),"<b>$1</b>");
-                } else {
-                    if (isNum) {
-                        bolder_title = bolder_title.replace(new RegExp('('+word+')',"g"),"<b>$1</b>");
+                if (word.leangh > 0) {
+                    if (i == 0) {
+                        bolder_title = bolder_title.replace(new RegExp('('+word+')',"ig"),"<b>$1</b>");
                     } else {
-                        var t = bolder_title.length;
-                        bolder_title = bolder_title.replace(new RegExp('( '+word+' )',"ig")," <b>$1</b> ");
-                        if (bolder_title.length == t)
-                            bolder_title = bolder_title.replace(new RegExp('( '+word+')',"ig")," <b>$1</b> ");
+                        if (isNum) {
+                            bolder_title = bolder_title.replace(new RegExp('('+word+')',"g"),"<b>$1</b>");
+                        } else {
+                            var t = bolder_title.length;
+                            bolder_title = bolder_title.replace(new RegExp('( '+word+' )',"ig")," <b>$1</b> ");
+                            if (bolder_title.length == t)
+                                bolder_title = bolder_title.replace(new RegExp('( '+word+')',"ig")," <b>$1</b> ");
+                        }
                     }
                 }
                 rate += 1;
