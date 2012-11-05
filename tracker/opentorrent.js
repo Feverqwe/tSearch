@@ -78,7 +78,7 @@ tracker[tmp_num] = function () {
             var i = 0;
             for (i = 1;i<l-1;i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(1).children('a').attr('href') == undefined)
+                if (td.eq(1).children('a').attr('href') == undefined || td.eq(2).children('a').text() == '')
                     continue;
                 arr[arr.length] = {
                     'category' : {

@@ -371,8 +371,8 @@ var view = function () {
             $('#rez_table tbody').append(contentUnFilter(c));
             table_update_timer(1);
         }
-        //var dbg_stop = (new Date()).getTime();
-        //console.log('Tracker '+tracker[t].name+': '+(dbg_stop-dbg_start)+'ms count:'+sum);
+    //var dbg_stop = (new Date()).getTime();
+    //console.log('Tracker '+tracker[t].name+': '+(dbg_stop-dbg_start)+'ms count:'+sum);
     }
     var table_update_timer = function (a) {
         var time = new Date().getTime();
@@ -525,52 +525,70 @@ var view = function () {
             return !isNaN(parseFloat(n)) && isFinite(n);
         }
         var rate = 0;
-        keyword = $.trim(keyword).replace(/([.?*+^$[\]\\{}|-])/g, "\\$1").replace(/\(([0-9]{4})\)/g, "$1").replace(/ё/g, "е");
+        keyword = $.trim(keyword).replace(/\(([0-9]{4})\)/g, "$1").replace(/ё/g, "е");
         var title = t.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\(([0-9]{4})\)/g, "$1").replace(/ё/g, "е");
+        var title_lower = title.toLowerCase();
         var bolder_title = title;
         var str_arr = keyword.split(' ');
         var str_cou = str_arr.length;
-        var first_type = 0;
-        var first_left = 0;
+        var word_left = 0;
+        var trimed_word = 0;
         for (var i = 0; i < str_cou; i++) {
-            var word = str_arr[i];
-            var ex = 0;
             var isNum = 0;
-            if (i == 0) {
-                first_type = (str_cou == 1 && (new RegExp(' '+word+' ',"i")).test(title))?2:((new RegExp(' '+word+' ',"i")).test(title))?3:((new RegExp(word+' ',"i")).test(title))?1:0;
-                ex = (first_type != 0);
-                first_left = title.toLowerCase().indexOf(word.toLowerCase());
-            } else {
-                ex = ((new RegExp(' '+word+' ',"i")).test(title))?1:((new RegExp(' '+word,"i")).test(title))?1:0;
-                if (ex == 0 && isNumber(word)) {
-                    ex = ((new RegExp(word)).test(title))?1:0;
-                    isNum = 1;
+            var word = str_arr[i];
+            var word_price = Math.round(100/str_cou);
+            var word_lower = word.toLowerCase();
+            if (word_lower.length == 4 && isNumber(word_lower))
+                isNum = 1;
+            if (word_lower.length < 4) {
+                if (word_left + word_lower.length+2 >= title_lower.length)
+                    word_lower = word_lower
+                else
+                if (i == 0) {
+                    word_lower = word_lower+' '
+                    trimed_word = 1;
+                } else {
+                    word_lower = ' '+word_lower+' '
+                    trimed_word = 2;
                 }
             }
-            if (ex) {
-                if (word.length > 0) {
-                    if (i == 0) {
-                        bolder_title = bolder_title.replace(new RegExp('('+word+')',"ig"),"<b>$1</b>");
-                    } else {
-                        if (isNum) {
-                            bolder_title = bolder_title.replace(new RegExp('('+word+')',"g"),"<b>$1</b>");
-                        } else {
-                            var t = bolder_title.length;
-                            bolder_title = bolder_title.replace(new RegExp('( '+word+' )',"ig")," <b>$1</b> ");
-                            if (bolder_title.length == t)
-                                bolder_title = bolder_title.replace(new RegExp('( '+word+')',"ig")," <b>$1</b> ");
-                        }
+            var new_word_left = title_lower.indexOf(word_lower, word_left);
+            if (new_word_left < 0 && word_lower.length-trimed_word > 4) {
+                new_word_left = title_lower.indexOf(word_lower.replace(/[^\b\wA-Za-zА-Яа-я]/g,''), word_left);
+                rate -= word_price/2;
+            }
+            if (new_word_left < 0 && word_lower.length-trimed_word > 4) {
+                rate -= word_price;
+            } else {
+                if (i == 0) {
+                    if (Math.floor(100*new_word_left/(word_lower.length-trimed_word)) > 25 ) {
+                        if (!isNum)
+                            rate -= word_price/3;
+                    }
+                } else {
+                    if (new_word_left-word_left > 10 ) {
+                        rate -= 2;
+                    } else
+                    if (new_word_left-word_left > 4 ) {
+                        rate -= 2;
                     }
                 }
-                rate += 1;
+            }
+            if (new_word_left >= 0) {
+                rate += word_price;
+                bolder_title = bolder_title.replace(new RegExp('('+word_lower.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1")+')',"ig"),"<b>$1</b>");
+                word_left = new_word_left + word_lower.length - trimed_word - 1;
             }
         }
-        rate = Math.floor(100*rate/str_cou);
-        //if (first_type == 3) {
-        if (first_left >= 0)
-            rate -= Math.floor(100*first_left/title.length);
-        //}
-        /*
+        return {
+            n:bolder_title,
+            r:Math.round(rate)
+        };
+    }
+    /*
+    var filterText = function (s,t) {
+        var s = $.trim(s).replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+        var new_name = t.replace(/</g,"&lt;").replace(/>/g,"&gt;");
         var rate = 0;
         var new_name2 = new_name;
         if (new_name.length > s.length+1)
@@ -595,12 +613,12 @@ var view = function () {
                 rate = 30;
             else 
                 rate -= left;
-        }*/
+        }
         return {
-            n:bolder_title,
+            n:new_name,
             r:rate
         };
-    }
+    }*/
     var filterTextCheck = function (s,t) {
         if (s.length == 0) return 'a';
         var r = t;

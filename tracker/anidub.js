@@ -82,8 +82,8 @@ tracker[tmp_num] = function () {
                     'title' : td.children('table').eq(0).find('span').children('a').eq(1).text(),
                     'url' : root_url+td.children('table').eq(0).find('span').children('a').eq(1).attr('href'),
                     'size' : calculateSize($.trim(params[2+pp]+params[3+pp])),
-                    'seeds' : params[5+pp],
-                    'leechs' : params[6+pp],
+                    'seeds' : params[5+pp].replace(',',''),
+                    'leechs' : params[6+pp].replace(',',''),
                     'time' : calculateTime(td.children('table').eq(0).find('span').children('a').eq(2).text())
                 }
             }
