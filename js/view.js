@@ -576,7 +576,7 @@ var view = function () {
             }
             if (new_word_left >= 0) {
                 rate += word_price;
-                if ($.trim(word_lower) != '')
+                if ($.trim(word_lower).length > 0)
                     bolder_title = bolder_title.replace(new RegExp('('+word_lower.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1")+')',"ig"),"<b>$1</b>");
                 word_left = new_word_left + word_lower.length - trimed_word - 1;
             }
