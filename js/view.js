@@ -565,9 +565,9 @@ var view = function () {
                         if (!isNum)
                             rate -= word_price/3;
                     }
-                } else {
+                } else if (!isNum) {
                     if (new_word_left-word_left > 10 ) {
-                        rate -= 2;
+                        rate -= 4;
                     } else
                     if (new_word_left-word_left > 4 ) {
                         rate -= 2;
