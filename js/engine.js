@@ -66,6 +66,10 @@ var engine = function () {
         n : 'x-torrents', 
         e : 0
     },
+    {
+        n : 'piratbit', 
+        e : 0
+    },
     //локальные
     {
         n : 'torrents.local', 

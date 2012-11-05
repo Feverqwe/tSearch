@@ -61,9 +61,9 @@ tracker[tmp_num] = function () {
                         'text': td.eq(1).children('span').text()
                     },*/
                     'category' : {
-                        'title' : td.eq(2).children('a').text(), 
-                        'url': root_url+td.eq(2).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*)$/i,"$1"))
+                        'title' : td.eq(2).children('div').children('a').text(), 
+                        'url': root_url+td.eq(2).children('div').children('a').attr('href'),
+                        'id': calculateCategory(td.eq(2).children('div').children('a').attr('href').replace(/.*f=([0-9]*).*$/i,"$1"))
                     },
                     'title' : td.eq(3).children('div').children('a').text(),
                     'url' : root_url+td.eq(3).children('div').children('a').attr('href'),
@@ -72,7 +72,7 @@ tracker[tmp_num] = function () {
                         'url' : root_url+td.eq(4).children('a').attr('href')
                     } ,*/
                     'size' : td.eq(5).children('u').text(),
-                    //'dl' : td.eq(5).children('a').attr('href'),
+                    'dl' : td.eq(5).children('a').attr('href'),
                     'seeds' : td.eq(6).children('b').text(),
                     'leechs' : td.eq(7).children('b').text(),
                     //'down' : td.eq(8).text(),
