@@ -56,6 +56,8 @@ java -jar compiler.jar --js ./tracker/mmatracker.js --js_output_file ./build/tra
 java -jar compiler.jar --js ./tracker/x-torrents.js --js_output_file ./build/tracker/x-torrents.js
 java -jar compiler.jar --js ./tracker/opentorrent.js --js_output_file ./build/tracker/opentorrent.js
 java -jar compiler.jar --js ./tracker/youtracker.js --js_output_file ./build/tracker/youtracker.js
+java -jar compiler.jar --js ./tracker/piratbit.js --js_output_file ./build/tracker/piratbit.js
+java -jar compiler.jar --js ./tracker/katushka.js --js_output_file ./build/tracker/katushka.js
 
 java -jar compiler.jar --js ./js/lang.js --js_output_file ./build/js/lang.js
 java -jar compiler.jar --js ./js/background.js --js_output_file ./build/js/background.js

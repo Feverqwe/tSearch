@@ -83,7 +83,7 @@ var engine = function () {
         n : 'opentorrent', 
         e : 0
     },
-    //русские дезавт.
+    //русские без авт..
     {
         n : 'tfile',
         e : 1
@@ -106,6 +106,10 @@ var engine = function () {
     },
     {
         n : 'torrentino', 
+        e : 0
+    },
+    {
+        n : 'katushka', 
         e : 0
     },
     //зарубеж.
