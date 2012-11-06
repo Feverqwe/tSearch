@@ -562,6 +562,7 @@ var view = function () {
             var isNum = 0;
             var word = str_arr[i];
             var word_price = Math.round(100/str_cou);
+            var word_rate = word_price;
             var word_lower = word.toLowerCase();
             if (word_lower.length == 4 && isNumber(word_lower))
                 isNum = 1;
@@ -579,28 +580,31 @@ var view = function () {
             }
             var new_word_left = title_lower.indexOf(word_lower, word_left);
             if (new_word_left < 0 && word_lower.length-trimed_word > 4) {
-                new_word_left = title_lower.indexOf(word_lower.replace(/[^\b\wA-Za-zА-Яа-я]/g,''), word_left);
-                rate -= word_price/2;
+                word_lower = word_lower.replace(/[^\b\wA-Za-zА-Яа-я]/g,'');
+                if (word_lower.length == 4 && isNumber(word_lower))
+                    isNum = 1;
+                new_word_left = title_lower.indexOf(word_lower, word_left);
             }
             if (new_word_left < 0 && word_lower.length-trimed_word > 4) {
-                rate -= word_price;
+                word_rate -= word_price;
             } else {
                 if (i == 0) {
                     if (Math.floor(100*new_word_left/(word_lower.length-trimed_word)) > 25 ) {
-                        if (!isNum)
-                            rate -= word_price/3;
+                        if (!isNum) {
+                            word_rate -= 4;
+                        }
                     }
                 } else if (!isNum) {
                     if (new_word_left-word_left > 10 ) {
-                        rate -= 4;
+                        word_rate -= 4;
                     } else
                     if (new_word_left-word_left > 4 ) {
-                        rate -= 2;
+                        word_rate -= 1;
                     }
                 }
             }
             if (new_word_left >= 0) {
-                rate += word_price;
+                rate += word_rate;
                 //if ($.trim(word_lower).length > 0)
                 //    bolder_title = bolder_title.replace(new RegExp('('+word_lower.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1")+')',"ig"),"<b>$1</b>");
                 word_left = new_word_left + word_lower.length - trimed_word - 1;
