@@ -43,7 +43,8 @@ var explore = function () {
             fav: null,
             did: 1,
             size: 130,
-            margin: 14
+            margin: 14,
+            url: ''
         },
         games: {
             t:_lang.exp_games,
@@ -52,7 +53,8 @@ var explore = function () {
             fav: 1,
             did: null,
             size: 213,
-            margin: 12
+            margin: 12,
+            url: 'http://www.igromania.ru/gametop/'
         },
         films: {
             t:_lang.exp_in_cinima,
@@ -61,7 +63,8 @@ var explore = function () {
             fav: 1,
             did: null,
             size: 130,
-            margin: 14
+            margin: 14,
+            url: 'http://www.kinopoisk.ru/afisha/new/'
         },
         top_films: {
             t:_lang.exp_films,
@@ -70,7 +73,8 @@ var explore = function () {
             fav: 1,
             did: null,
             size: 130,
-            margin: 14
+            margin: 14,
+            url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/'
         },
         serials: {
             t:_lang.exp_serials,
@@ -79,7 +83,8 @@ var explore = function () {
             fav: 1,
             did: null,
             size: 130,
-            margin: 14
+            margin: 14,
+            url: 'http://www.kinopoisk.ru/top/serial/list/'
         }
     };
     var read_content = function(type,content) {
@@ -183,11 +188,11 @@ var explore = function () {
             url: url,
             success: function(data) {
                 var content = read_content(type,data);
+                write_content(content,type);
                 explorerCache[type] = {
                     date : time+timeout,
                     cache_arr : content
                 };
-                write_content(content,type);
                 SetSettings('explorerCache',JSON.stringify(explorerCache));
             },
             error:function (){
@@ -195,26 +200,6 @@ var explore = function () {
                     write_content(explorerCache[type].cache_arr,type);
             }
         });
-    }
-    var load_serials = function () {
-        var type = 'serials';
-        var url = 'http://www.kinopoisk.ru/top/serial/list/';
-        load_exp_content(type,url);
-    }
-    var load_top_films = function () {
-        var type = 'top_films';
-        var url = 'http://www.kinopoisk.ru/popular/day/now/perpage/200/';
-        load_exp_content(type,url);
-    }
-    var load_films = function () {
-        var type = 'films';
-        var url = 'http://www.kinopoisk.ru/afisha/new/';
-        load_exp_content(type,url);
-    }
-    var load_games = function () {
-        var type = 'games';
-        var url = 'http://www.igromania.ru/gametop/';
-        load_exp_content(type,url);
     }
     var decodeLocalOptions = function () {
         var count = listOptions.length;
@@ -280,39 +265,6 @@ var explore = function () {
             view.SetAutoMove(null);
         }
         view.triggerSearch(s);
-    }
-    var make_form = function () {
-        var ul = $('div.explore ul.sortable');
-        if (ul.children('li').length > 0) return;
-        ul.sortable({
-            axis: 'y', 
-            handle: 'div.move_it',
-            revert: true,
-            start: function(event, ui) {
-                $('div.explore').find('div.spoiler').hide('fast');
-                $('div.explore').find('div.setup_div').hide('fast',function (a,b) {
-                    $(this).remove();
-                });
-                $('div.explore').find('div.setup:visible').addClass('triggered').hide('fast');
-                $('div.explore ul.sortable li div').children('div').children('div.poster').hide();
-                $('div.explore ul.sortable li div').children('div').children('div.pager').hide();
-                $('div.explore ul.sortable li div').children('div').css('min-height','');
-                $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow','none');
-            },
-            stop: function(event, ui) {
-                $('div.explore').find('div.spoiler').show('fast');
-                $('div.explore').find('div.setup.triggered').removeClass('triggered').show('fast');
-                $('div.explore ul.sortable li div').children('div').children('div.poster').show();
-                $('div.explore ul.sortable li div').children('div').children('div.pager').show();
-                $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow','0 4px 8px -4px rgba(0, 0, 0, 0.5)');
-                save_order();
-            }
-        });
-        if (listOptions['films'] == null)
-            decodeLocalOptions();
-        $.each(listOptions, function(key, value) { 
-            ul.append('<li class="'+key+'"></li>');
-        });
     }
     var show_favorites = function () {
         var type = 'favorites';
@@ -447,13 +399,44 @@ var explore = function () {
         if (favoritesList[id].quality == null) return '?';
         return favoritesList[id]['quality'];
     }
-    var load_all = function () {
-        make_form();
-        load_top_films();
-        load_films();
-        load_serials();
-        load_games();
-        show_favorites();
+    var make_form = function () {
+        var ul = $('div.explore ul.sortable');
+        if (ul.children('li').length > 0) return;
+        ul.sortable({
+            axis: 'y', 
+            handle: 'div.move_it',
+            revert: true,
+            start: function(event, ui) {
+                $('div.explore').find('div.spoiler').hide('fast');
+                $('div.explore').find('div.setup_div').hide('fast',function (a,b) {
+                    $(this).remove();
+                });
+                $('div.explore').find('div.setup:visible').addClass('triggered').hide('fast');
+                $('div.explore ul.sortable li div').children('div').children('div.poster').hide();
+                $('div.explore ul.sortable li div').children('div').children('div.pager').hide();
+                $('div.explore ul.sortable li div').children('div').css('min-height','');
+                $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow','none');
+            },
+            stop: function(event, ui) {
+                $('div.explore').find('div.spoiler').show('fast');
+                $('div.explore').find('div.setup.triggered').removeClass('triggered').show('fast');
+                $('div.explore ul.sortable li div').children('div').children('div.poster').show();
+                $('div.explore ul.sortable li div').children('div').children('div.pager').show();
+                $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow','0 4px 8px -4px rgba(0, 0, 0, 0.5)');
+                save_order();
+            }
+        });
+        //remove!!! временная ф-я
+        if (listOptions['films'] == null)
+            decodeLocalOptions();
+        //<<<<<<<<
+        $.each(listOptions, function(key, value) { 
+            ul.append('<li class="'+key+'"></li>');
+            if (key == 'favorites')
+                show_favorites();
+            else
+                load_exp_content(key,content_sourse[key].url);
+        });
     }
     var calculate_moveble = function (section,size) {
         if (size<=70) return;
@@ -765,7 +748,7 @@ var explore = function () {
     }
     return {
         getLoad : function () {
-            return load_all();
+            return make_form();
         },
         setQuality : function (a) {
             setQuality(a);
