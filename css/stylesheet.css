@@ -535,6 +535,10 @@ div.explore div.poster div.title {
     cursor: pointer;
     position: relative;
 }
+div.explore div.poster div.title a {
+    text-decoration: none;
+    color: #000;
+}
 div.explore div.poster > div.image {
     cursor: pointer;
     margin: 6px;
@@ -558,11 +562,11 @@ div.explore div.poster > div.image > div.add_favorite {
 div.explore div.poster > div.image > div.del_favorite {
     background: url(../images/clear.png) center center no-repeat;
 }
-div.explore div.poster > div.image > img {
+div.explore div.poster > div.image > a > img {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
     -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
 }
-div.explore div.poster > div.image > img:hover {
+div.explore div.poster > div.image > a > img:hover {
     box-shadow: 0 0 15px #1A3DC1;
     -webkit-box-shadow: 0 0 15px #1A3DC1;
 }
@@ -595,10 +599,10 @@ div.explore div.poster:hover div.image > div.quality_box {
 div.explore div.games > div > div.poster > div > div.info {
     width: 213px;
 }
-div.explore div.games > div > div.poster > div.image > img {
+div.explore div.games > div > div.poster > div.image > a > img {
     max-width: 203px;
 }
-div.explore div.favorites > div > div.poster > div.image > img {
+div.explore div.favorites > div > div.poster > div.image > a > img {
     max-width: 130px;
 }
 div.explore div.info > a {
