@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget id="leonardspbox@gmail.com" version="0.7.8" xmlns="http://www.w3.org/ns/widgets">
+<widget id="leonardspbox@gmail.com" version="0.7.9" xmlns="http://www.w3.org/ns/widgets">
     <name>Torrents MultiSearch</name>
     <description xml:lang="ru">Мультипоиск по трекерам</description>
     <author email="leonardspbox@gmail.com">Anton V.</author>
