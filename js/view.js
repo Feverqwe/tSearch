@@ -19,6 +19,11 @@ var view = function () {
     var backgroundMode = false;
     var bgYear = null;
     var backgroundModeID = null;
+    var keyword_filter_cache = {
+        text : null,
+        kw : null,
+        kw_arr : null
+    }
     var auth = function (s,t) {
         //if (backgroundMode) return;
         $('ul.trackers').children('li[data-id="'+t+'"]').children('ul').remove();
@@ -31,6 +36,11 @@ var view = function () {
         $('div.filter').children('input').val('');
         keywordFilter = null;
         lastFilterWord = '';
+        keyword_filter_cache = {
+            text : null,
+            kw : null,
+            kw_arr : null
+        }
         $('div.filter div.btn').hide();
         $('ul.trackers li a.selected').removeClass('selected');
         $('ul.trackers li').attr('data-count',0);
@@ -119,7 +129,10 @@ var view = function () {
             if (bgYear == s)
                 bgYear = 0;
         }
-        var s_s = contentFilter(s.replace(/\s+/g," ").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
+        if (keyword_filter_cache.text == null) {
+            keyword_filter_cache.text = contentFilter(s.replace(/\s+/g," ").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
+        }
+        var s_s = keyword_filter_cache.text;
         var sum = 0;
         $.each(a, function (k,v) {
             if (v.title == undefined || !isInt(v.size) || !isInt(v.seeds) 
@@ -295,7 +308,10 @@ var view = function () {
         //var dbg_start = (new Date()).getTime();
         var c = '';
         $('#rez_table tbody').children('tr[data-tracker="'+t+'"]').remove();
-        var s_s = contentFilter(s.replace(/\s+/g," ").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
+        if (keyword_filter_cache.text == null) {
+            keyword_filter_cache.text = contentFilter(s.replace(/\s+/g," ").replace(/</g,"&lt;").replace(/>/g,"&gt;"));
+        }
+        var s_s = keyword_filter_cache.text;
         var sum = 0;
         $.each(a, function (k,v) {
             if (v.title == undefined || !isInt(v.size) || !isInt(v.seeds) 
@@ -525,7 +541,16 @@ var view = function () {
             return !isNaN(parseFloat(n)) && isFinite(n);
         }
         var rate = 0;
-        keyword = $.trim(keyword).replace(/\(([0-9]{4})\)/g, "$1").replace(/ё/g, "е");
+        if (keyword_filter_cache.kw == null) {
+            keyword_filter_cache.kw = $.trim(keyword).replace(/\(([0-9]{4})\)/g, "$1").replace(/ё/g, "е");
+        }
+        keyword = keyword_filter_cache.kw;
+        if (keyword.length == 0) {
+            return {
+                n:t,
+                r:0
+            };
+        }
         var title = t.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\(([0-9]{4})\)/g, "$1").replace(/ё/g, "е");
         var title_lower = title.toLowerCase();
         var bolder_title = title;
@@ -576,11 +601,34 @@ var view = function () {
             }
             if (new_word_left >= 0) {
                 rate += word_price;
-                if ($.trim(word_lower).length > 0)
-                    bolder_title = bolder_title.replace(new RegExp('('+word_lower.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1")+')',"ig"),"<b>$1</b>");
+                //if ($.trim(word_lower).length > 0)
+                //    bolder_title = bolder_title.replace(new RegExp('('+word_lower.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1")+')',"ig"),"<b>$1</b>");
                 word_left = new_word_left + word_lower.length - trimed_word - 1;
             }
         }
+        var order = function (a,b) {
+            if (a.length > b.length)
+                return -1;
+            if (a.length == b.length)
+                return 0;
+            return 1;
+        }
+        if (keyword_filter_cache.kw_arr == null) {
+            var kw_arr = keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1").replace(/\s+/,' ').split(' ').sort(order);
+            var new_kw_arr = [];
+            for (var i = 0; i < str_cou; i++) {
+                var word = kw_arr[i];
+                if ($.trim(word).length > 0) {
+                    if ( word.length < 4) {
+                        new_kw_arr[new_kw_arr.length] = ' '+word;
+                    } else 
+                        new_kw_arr[new_kw_arr.length] = word;
+                }
+            }
+            keyword_filter_cache.kw_arr = new_kw_arr;
+        }
+        var new_kw_arr = keyword_filter_cache.kw_arr;
+        bolder_title = bolder_title.replace(new RegExp('('+new_kw_arr.join('|')+')',"ig"),"<b>$1</b>");
         return {
             n:bolder_title,
             r:Math.round(rate)
@@ -772,7 +820,13 @@ var view = function () {
         return false;
     }
     var getQuality = function (keyword,id,section) {
+        //flush for bg mode
         bgYear = null;
+        keyword_filter_cache = {
+            text : null,
+            kw : null,
+            kw_arr : null
+        }
         backgroundMode = true;
         backgroundModeID = {
             'id' : id,
