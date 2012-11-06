@@ -620,7 +620,7 @@ var view = function () {
                 var word = kw_arr[i];
                 if ($.trim(word).length > 0) {
                     if ( word.length < 4) {
-                        new_kw_arr[new_kw_arr.length] = ' '+word;
+                        new_kw_arr[new_kw_arr.length] = word+' ';
                     } else 
                         new_kw_arr[new_kw_arr.length] = word;
                 }
