@@ -1106,7 +1106,7 @@ $(function () {
 $(window).load(function () {
     var s = (document.URL).replace(/.*index.html/,'').replace(/^#s=(.*)/,'$1');
     if (s.length > 0) {
-        if (navigator.userAgent.search(/Chrome/) < 1) {
+        if (navigator.userAgent.search(/Chrome/) == -1) {
             var trigger = function () {
                 view.triggerSearch(decodeURIComponent(s));
             }

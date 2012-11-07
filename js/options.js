@@ -244,10 +244,10 @@ $(function () {
     });
     $('select[name=lang]').children('option[value='+_lang.t+']').attr('selected','selected');
     
-    
-    if (navigator.userAgent.search(/Chrome/) < 1) {
-        $('input[name="add_in_omnibox"]').parent().hide();
+    if (navigator.userAgent.search(/Chrome/) == -1 && navigator.userAgent.search(/Opera/) == -1)
         $('input[name="context_menu"]').parent().hide();
+    if (navigator.userAgent.search(/Chrome/) == -1) {
+        $('input[name="add_in_omnibox"]').parent().hide();
         $('input[name="search_popup"]').parent().hide();
     } else {
         var bgp = chrome.extension.getBackgroundPage();
