@@ -31,6 +31,9 @@ div.search_panel > div.right {
     display: inline-block;
     float: right;
 }
+div.search_panel > div.right input {
+    width: 0;
+}
 .sbutton {
     height: 26px !important;
     -webkit-box-shadow:inset 0px 0px 4px 0px #97c4fe;

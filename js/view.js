@@ -1106,7 +1106,13 @@ $(function () {
 $(window).load(function () {
     var s = (document.URL).replace(/.*index.html/,'').replace(/^#s=(.*)/,'$1');
     if (s.length > 0) {
-        view.triggerSearch(decodeURIComponent(s));
+        if (navigator.userAgent.search(/Chrome/) < 1) {
+            var trigger = function () {
+                view.triggerSearch(decodeURIComponent(s));
+            }
+            setTimeout(trigger, 200);
+        } else
+            view.triggerSearch(decodeURIComponent(s));
     } else {
         view.triggerBlank();
     }

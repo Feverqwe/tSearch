@@ -637,6 +637,9 @@ div.search_panel > div.right {
     display: inline-block;
     float: right;
 }
+div.search_panel > div.right input {
+    width: 0;
+}
 div.search_panel > div.right input.history {
     padding-left: 14px;
     padding-right: 14px;
