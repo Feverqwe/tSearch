@@ -150,7 +150,6 @@ var engine = function () {
         e : 0
     }
     ];
-    var waitLoading = null;
     var categorys = _lang['categorys'];
     var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     var defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
@@ -262,10 +261,6 @@ var engine = function () {
         for (var i=0;i<l;i++)
             if (Trackers[i].e || option_mode == true)
                 loadInternalModule(Trackers[i].n);
-        if (waitLoading != null) {
-            view.triggerSearch(waitLoading);
-            waitLoading = null;
-        }
     }
     var loadProfile = function (prof) {
         view.ClearTrackerList();
@@ -314,9 +309,6 @@ var engine = function () {
         },
         getProfileList : function () {
             return getProfileList();
-        },
-        waitLoading : function (s) {
-            waitLoading = s;
         },
         defaultList : defaultList,
         categorys : categorys
