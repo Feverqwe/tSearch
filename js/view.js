@@ -22,7 +22,11 @@ var view = function () {
     var keyword_filter_cache = {
         text : null,
         kw : null,
-        kw_arr : null
+        kw_arr : null,
+        name : null,
+        name_regexp : null,
+        name_regexp_lover : null,
+        year : null
     }
     var auth = function (s,t) {
         //if (backgroundMode) return;
@@ -39,7 +43,11 @@ var view = function () {
         keyword_filter_cache = {
             text : null,
             kw : null,
-            kw_arr : null
+            kw_arr : null,
+            name : null,
+            name_regexp : null,
+            name_regexp_lover : null,
+            year : null
         }
         $('div.filter div.btn').hide();
         $('ul.trackers li a.selected').removeClass('selected');
@@ -542,7 +550,17 @@ var view = function () {
         }
         var rate = 0;
         if (keyword_filter_cache.kw == null) {
-            keyword_filter_cache.kw = $.trim(keyword).replace(/\(([0-9]{4})\)/g, "$1").replace(/ё/g, "е");
+            keyword_filter_cache.kw = $.trim(keyword).replace(/\(.*([0-9]{4})\)$/g, "$1").replace(/ё/g, "е");
+            //удаляем из запроса год если он есть
+            keyword_filter_cache.name = $.trim(keyword_filter_cache.kw.replace(/([0-9]{4})$/g, ""));
+            //экронируем для regexp
+            keyword_filter_cache.name_regexp = keyword_filter_cache.name.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
+            //экронируем для regexp
+            keyword_filter_cache.name_regexp_lover = keyword_filter_cache.name.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1").toLowerCase();
+            //вырываем год, если он есть
+            keyword_filter_cache.year = keyword_filter_cache.kw.replace(/.*([0-9]{4})$/g, "$1");
+            if (keyword_filter_cache.year == '' || !isNumber(keyword_filter_cache.year))
+                keyword_filter_cache.year = null;
         }
         keyword = keyword_filter_cache.kw;
         if (keyword.length == 0) {
@@ -553,6 +571,63 @@ var view = function () {
         }
         var title = t.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\(([0-9]{4})\)/g, "$1").replace(/ё/g, "е");
         var title_lower = title.toLowerCase();
+        if (keyword_filter_cache.year != null) {
+            //если есь год, то 
+            //проверка по маске Name / .*year.*
+            if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+' / .*'+keyword_filter_cache.year+'.*').test(title_lower)) {
+                return {
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+'|'+keyword_filter_cache.year+')',"ig"),"<b>$1</b>")+' *1',
+                    r:100
+                };
+            }
+            //проверка по маске ([.*]) Name / .*year.*
+            if (new RegExp('^[([]{1}.*[)]]{1} '+keyword_filter_cache.name_regexp_lover+' / .*'+keyword_filter_cache.year+'.*').test(title_lower)) {
+                return {
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+'|'+keyword_filter_cache.year+')',"ig"),"<b>$1</b>")+' *2',
+                    r:100
+                };
+            }
+            if (new RegExp('.* '+keyword_filter_cache.name_regexp+' / .*'+keyword_filter_cache.year+'.*').test(title)) {
+                return {
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+'|'+keyword_filter_cache.year+')',"g"),"<b>$1</b>")+' *3',
+                    r:89
+                };
+            }
+            if (new RegExp('.* '+keyword_filter_cache.name_regexp+' .*'+keyword_filter_cache.year+'.*').test(title)) {
+                return {
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+'|'+keyword_filter_cache.year+')',"g"),"<b>$1</b>")+' *4',
+                    r:86
+                };
+            }
+        } else {
+            //если нету года, то 
+            //проверка по маске Name / .*
+            if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+' / .*').test(title_lower)) {
+                return {
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+')',"ig"),"<b>$1</b>")+' *5',
+                    r:100
+                };
+            }
+            //проверка по маске ([.*]) Name / .*year.*
+            if (new RegExp('^[([]{1}.*[)]]{1} '+keyword_filter_cache.name_regexp_lover+' / .*').test(title_lower)) {
+                return {
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+')',"ig"),"<b>$1</b>")+' *6',
+                    r:95
+                };
+            }
+            if (new RegExp('.* '+keyword_filter_cache.name_regexp+' / .*').test(title)) {
+                return {
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>")+' *7',
+                    r:90
+                };
+            }
+            if (new RegExp('.* '+keyword_filter_cache.name_regexp+' .*').test(title)) {
+                return {
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>")+' *8',
+                    r:86
+                };
+            }
+        }
         var bolder_title = title;
         var str_arr = keyword.split(' ');
         var str_cou = str_arr.length;
@@ -561,9 +636,11 @@ var view = function () {
         for (var i = 0; i < str_cou; i++) {
             var isNum = 0;
             var word = str_arr[i];
-            var word_price = Math.round(100/str_cou);
+            var word_price = Math.round(85/str_cou);
             var word_rate = word_price;
             var word_lower = word.toLowerCase();
+            if (keyword_filter_cache.year != null && str_cou == 2 || keyword_filter_cache.year == null && str_cou == 1)
+                var word_lower = word;
             if (word_lower.length == 4 && isNumber(word_lower))
                 isNum = 1;
             if (word_lower.length < 4) {
@@ -588,18 +665,12 @@ var view = function () {
             if (new_word_left < 0 && word_lower.length-trimed_word > 4) {
                 word_rate -= word_price;
             } else {
-                if (i == 0) {
-                    if (Math.floor(100*new_word_left/(word_lower.length-trimed_word)) > 25 ) {
-                        if (!isNum) {
-                            word_rate -= 4;
-                        }
-                    }
-                } else if (!isNum) {
+                if (!isNum) {
                     if (new_word_left-word_left > 10 ) {
-                        word_rate -= 4;
+                        word_rate -= 4*((new_word_left-word_left)/10);
                     } else
                     if (new_word_left-word_left > 4 ) {
-                        word_rate -= 1;
+                        word_rate -= 2;
                     }
                 }
             }
@@ -633,6 +704,7 @@ var view = function () {
         }
         var new_kw_arr = keyword_filter_cache.kw_arr;
         bolder_title = bolder_title.replace(new RegExp('('+new_kw_arr.join('|')+')',"ig"),"<b>$1</b>");
+        
         return {
             n:bolder_title,
             r:Math.round(rate)
@@ -829,7 +901,11 @@ var view = function () {
         keyword_filter_cache = {
             text : null,
             kw : null,
-            kw_arr : null
+            kw_arr : null,
+            name : null,
+            name_regexp : null,
+            name_regexp_lover : null,
+            year : null
         }
         backgroundMode = true;
         backgroundModeID = {
