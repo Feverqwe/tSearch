@@ -576,26 +576,26 @@ var view = function () {
             //проверка по маске Name / .*year.*
             if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+' / .*'+keyword_filter_cache.year+'.*').test(title_lower)) {
                 return {
-                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+'|'+keyword_filter_cache.year+')',"ig"),"<b>$1</b>")+' *1',
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+'|'+keyword_filter_cache.year+')',"ig"),"<b>$1</b>"),
                     r:100
                 };
             }
             //проверка по маске ([.*]) Name / .*year.*
             if (new RegExp('^[([]{1}.*[)]]{1} '+keyword_filter_cache.name_regexp_lover+' / .*'+keyword_filter_cache.year+'.*').test(title_lower)) {
                 return {
-                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+'|'+keyword_filter_cache.year+')',"ig"),"<b>$1</b>")+' *2',
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+'|'+keyword_filter_cache.year+')',"ig"),"<b>$1</b>"),
                     r:100
                 };
             }
             if (new RegExp('.* '+keyword_filter_cache.name_regexp+' / .*'+keyword_filter_cache.year+'.*').test(title)) {
                 return {
-                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+'|'+keyword_filter_cache.year+')',"g"),"<b>$1</b>")+' *3',
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+'|'+keyword_filter_cache.year+')',"g"),"<b>$1</b>"),
                     r:89
                 };
             }
             if (new RegExp('.* '+keyword_filter_cache.name_regexp+' .*'+keyword_filter_cache.year+'.*').test(title)) {
                 return {
-                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+'|'+keyword_filter_cache.year+')',"g"),"<b>$1</b>")+' *4',
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+'|'+keyword_filter_cache.year+')',"g"),"<b>$1</b>"),
                     r:86
                 };
             }
@@ -604,26 +604,26 @@ var view = function () {
             //проверка по маске Name / .*
             if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+' / .*').test(title_lower)) {
                 return {
-                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+')',"ig"),"<b>$1</b>")+' *5',
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+')',"ig"),"<b>$1</b>"),
                     r:100
                 };
             }
             //проверка по маске ([.*]) Name / .*year.*
             if (new RegExp('^[([]{1}.*[)]]{1} '+keyword_filter_cache.name_regexp_lover+' / .*').test(title_lower)) {
                 return {
-                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+')',"ig"),"<b>$1</b>")+' *6',
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+')',"ig"),"<b>$1</b>"),
                     r:95
                 };
             }
             if (new RegExp('.* '+keyword_filter_cache.name_regexp+' / .*').test(title)) {
                 return {
-                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>")+' *7',
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>"),
                     r:90
                 };
             }
             if (new RegExp('.* '+keyword_filter_cache.name_regexp+' .*').test(title)) {
                 return {
-                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>")+' *8',
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>"),
                     r:86
                 };
             }
