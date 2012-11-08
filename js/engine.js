@@ -148,6 +148,10 @@ var engine = function () {
     {
         n : 'mininova', 
         e : 0
+    },
+    {
+        n : 'hurtom', 
+        e : 0
     }
     ];
     var categorys = _lang['categorys'];
