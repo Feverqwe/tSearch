@@ -639,8 +639,10 @@ var view = function () {
             var word_price = Math.round(85/str_cou);
             var word_rate = word_price;
             var word_lower = word.toLowerCase();
-            if (keyword_filter_cache.year != null && str_cou == 2 || keyword_filter_cache.year == null && str_cou == 1)
-                var word_lower = word;
+            if (keyword_filter_cache.year != null && str_cou == 2 || keyword_filter_cache.year == null && str_cou == 1) {
+                word_lower = word;
+                title_lower = title;
+            }
             if (word_lower.length == 4 && isNumber(word_lower))
                 isNum = 1;
             if (word_lower.length < 4) {
