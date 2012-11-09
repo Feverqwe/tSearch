@@ -10,6 +10,7 @@ var view = function () {
     var add_in_omnibox = (GetSettings('add_in_omnibox') !== undefined) ? parseInt(GetSettings('add_in_omnibox')) : true;
     var context_menu = (GetSettings('context_menu') !== undefined) ? parseInt(GetSettings('context_menu')) : true;
     var search_popup = (GetSettings('search_popup') !== undefined) ? parseInt(GetSettings('search_popup')) : false;
+    var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : true;
     var t_table_line = 0;
     var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     var oldProfileID = 0;
@@ -71,6 +72,7 @@ var view = function () {
         $('input[name="hideseed"]').prop('checked',HideSeed);
         $('input[name="typeFiltration"]').eq(AdvFiltration).prop('checked',true);
         $('input[name="autosetcategory"]').prop('checked',AutoSetCategory);
+        $('input[name="autocomplite_opt"]').prop('checked',AutoComplite_opt);
         $('input[name="teaserfilter"]').prop('checked',TeaserFilter);
         
         $('input[name="add_in_omnibox"]').prop('checked',add_in_omnibox);
@@ -105,6 +107,7 @@ var view = function () {
         HideLeech = SetSettings('HideLeech',($('input[name="hideleech"]').is(':checked'))?1:0);
         HideSeed = SetSettings('HideSeed',($('input[name="hideseed"]').is(':checked'))?1:0);
         AutoSetCategory = SetSettings('AutoSetCategory',($('input[name="autosetcategory"]').is(':checked'))?1:0);
+        AutoComplite_opt = SetSettings('AutoComplite_opt',($('input[name="autocomplite_opt"]').is(':checked'))?1:0);
         TeaserFilter = SetSettings('TeaserFilter',($('input[name="teaserfilter"]').is(':checked'))?1:0);
         
         add_in_omnibox = SetSettings('add_in_omnibox',($('input[name="add_in_omnibox"]').is(':checked'))?1:0);
@@ -233,6 +236,7 @@ $(function () {
     $('span[data-lang=26]').text(_lang.spn_26+': ');
     $('input[data-lang=25]').val(_lang.btn_25);
     $('input[data-lang=27]').val(_lang.btn_27);
+    $('span[data-lang=24]').text(_lang.stp_span_24);
     
     view.LoadProfiles();
     

@@ -105,7 +105,8 @@ if (_lang != 'ru')
             cirilic : 'Unsupport cyrillic',
             auth: 'Requires authorization',
             rus: 'Russian language tracker'
-        }
+        },
+        stp_span_24 : 'Enable AutoComplete from Google'
     };
 if (_lang == 'ru')
     _lang = {
@@ -213,5 +214,6 @@ if (_lang == 'ru')
             cirilic : 'Не поддерживает кириллицу',
             auth: 'Требуется авторизация',
             rus: 'Русскоязычный трекер'
-        }
+        },
+        stp_span_24 : 'Включить автозаполнение от Google'
     };

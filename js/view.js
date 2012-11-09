@@ -12,6 +12,7 @@ var view = function () {
     var HideZeroSeed = (GetSettings('HideZeroSeed') !== undefined) ? parseInt(GetSettings('HideZeroSeed')) : false;
     var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
     var TeaserFilter = (GetSettings('TeaserFilter') !== undefined) ? parseInt(GetSettings('TeaserFilter')) : false;
+    var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : true;
     var update_table = {
         timer: null,
         time: null
@@ -28,6 +29,7 @@ var view = function () {
         name_regexp_lover : null,
         year : null
     }
+    var xhr_autocomplite = null;
     var auth = function (s,t) {
         //if (backgroundMode) return;
         $('ul.trackers').children('li[data-id="'+t+'"]').children('ul').remove();
@@ -608,6 +610,12 @@ var view = function () {
         } else {
             //если нету года, то 
             //проверка по маске Name / .*
+            if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+'$').test(title_lower)) {
+                return {
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"ig"),"<b>$1</b>"),
+                    r:100
+                };
+            }
             if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+' / .*').test(title_lower)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+')',"ig"),"<b>$1</b>"),
@@ -621,40 +629,34 @@ var view = function () {
                     r:95
                 };
             }
-            if (new RegExp('.* '+keyword_filter_cache.name_regexp+' / .*').test(title)) {
+            if (new RegExp('.* '+keyword_filter_cache.name_regexp_lover+' / .*').test(title_lower)) {
                 return {
-                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>"),
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"ig"),"<b>$1</b>"),
                     r:86
                 };
             }
-            if (new RegExp('^'+keyword_filter_cache.name_regexp+' .*').test(title_lower)) {
+            if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+' .*').test(title_lower)) {
+                return {
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"ig"),"<b>$1</b>"),
+                    r:86
+                };
+            }
+            if (new RegExp('.* '+keyword_filter_cache.name_regexp+'$').test(title)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>"),
-                    r:86
+                    r:83
+                };
+            }
+            if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+'[-/()\ ./]{1}.*').test(title_lower)) {
+                return {
+                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+')',"ig"),"<b>$1</b>"),
+                    r:80
                 };
             }
             if (new RegExp('.* '+keyword_filter_cache.name_regexp+' .*').test(title)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>"),
                     r:80
-                };
-            }
-            if (new RegExp('.* '+keyword_filter_cache.name_regexp+'$').test(title)) {
-                return {
-                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>"),
-                    r:80
-                };
-            }
-            if (new RegExp('^'+keyword_filter_cache.name_regexp+'[-/()\ ./]{1}.*').test(title)) {
-                return {
-                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>"),
-                    r:80
-                };
-            }
-            if (new RegExp('^'+keyword_filter_cache.name_regexp+'$').test(title)) {
-                return {
-                    n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>"),
-                    r:100
                 };
             }
         }
@@ -960,24 +962,53 @@ var view = function () {
         $('ul.categorys').prepend('<li class="selected">'+_lang['cat_all']+' <i></i></li>');
     }
     var AddAutocomplete = function () {
-        var AutocompleteArr = [];
-        var order = function (a,b) {
-            if (a.count > b.count)
-                return -1;
-            if (a.count == b.count)
-                return 0;
-            return 1;
-        }
-        var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-        if (search_history != null) {
-            search_history.sort(order);
-            var count = search_history.length;
-            for (var i=0;i<count;i++) {
-                AutocompleteArr[AutocompleteArr.length] = search_history[i].title;
+        if (AutoComplite_opt == 0) {
+            var AutocompleteArr = [];
+            var order = function (a,b) {
+                if (a.count > b.count)
+                    return -1;
+                if (a.count == b.count)
+                    return 0;
+                return 1;
+            }
+            var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
+            if (search_history != null) {
+                search_history.sort(order);
+                var count = search_history.length;
+                for (var i=0;i<count;i++) {
+                    AutocompleteArr[AutocompleteArr.length] = search_history[i].title;
+                }
             }
         }
         $( 'input[type="text"][name="s"]' ).autocomplete( "destroy" ).autocomplete({
-            source: AutocompleteArr,
+            source: (AutoComplite_opt == 0)?AutocompleteArr:function (a,response) {
+                if ($.trim(a.term).length == 0 || AutoComplite_opt == 0) {
+                    var AutocompleteArr = [];
+                    var order = function (a,b) {
+                        if (a.count > b.count)
+                            return -1;
+                        if (a.count == b.count)
+                            return 0;
+                        return 1;
+                    }
+                    var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
+                    if (search_history != null) {
+                        search_history.sort(order);
+                        var count = search_history.length;
+                        for (var i=0;i<count;i++) {
+                            AutocompleteArr[AutocompleteArr.length] = search_history[i].title;
+                        }
+                    }
+                    response(AutocompleteArr);
+                } else {
+                    if (xhr_autocomplite != null)
+                        xhr_autocomplite.abort();
+                    xhr_autocomplite = $.getJSON( 'http://suggestqueries.google.com/complete/search?client=firefox&q='+a.term).success(function (data) {
+                        var arr = data[1];
+                        response(arr);
+                    });
+                }
+            },
             minLength: 0,
             select: function(event, ui) {
                 view.triggerSearch(ui.item.value);
