@@ -101,13 +101,13 @@ var view = function () {
         ((/Blu-ray|Blu-Ray/).test(title))?100:
         ((/BD-Remux|BDRemux|1080p|1080i/).test(title))?90:
         ((/BD-Rip|BDRip/).test(title))?80:
+        ((/CAMRip|CamRip/).test(title))?10:
         ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title))?70:
         ((/LowHDRip/).test(title))?30:
         ((/HDTV|HDRip|DVDRip/).test(title))?60:
         ((/[^o]DVD/).test(title))?50:
         ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|HQRip|DVB|IPTVRip/).test(title))?40:
         ((/TeleSynch|DVDScr/).test(title))?20:
-        ((/CAMRip|CamRip/).test(title))?10:
         ((/TS/).test(title))?20:
         0;
         if (v.size < 524288000 && quality.video > 45)
@@ -260,6 +260,7 @@ var view = function () {
                 ((/BD-Rip|BDRip/).test(title))?'BDRip':
                 ((/HDTV-Rip|HDTVRip/).test(title))?'HDTVRip':
                 ((/DTheater-Rip/).test(title))?'DTheater':
+                ((/CAMRip|CamRip/).test(title))?'CAMRip':
                 ((/720p/).test(title))?'720p':
                 ((/LowHDRip/).test(title))?'LowHDRip':
                 ((/HDTV/).test(title))?'HDTV':
@@ -275,7 +276,6 @@ var view = function () {
                 ((/IPTVRip/).test(title))?'IPTVRip':
                 ((/TeleSynch/).test(title))?'TS':
                 ((/[^o]DVD/).test(title))?'DVD':
-                ((/CAMRip|CamRip/).test(title))?'CAMRip':
                 ((/NTSC/).test(title))?'':
                 ((/TS/).test(title))?'TS':'';
             }
