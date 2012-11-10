@@ -545,14 +545,14 @@ var view = function () {
         return c;
     }
     var filterText = function (keyword,t) {
+        var top_coeff = 1;
         //s - searching text (keyword)
         //t - title from torrent
         function isNumber(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
         }
-        var rate = 0;
         if (keyword_filter_cache.kw == null) {
-            keyword_filter_cache.kw = $.trim(keyword).replace(/\(.*([0-9]{4})\)$/g, "$1").replace(/ё/g, "е");
+            keyword_filter_cache.kw = $.trim(keyword).replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\(.*([0-9]{4})\)$/g, "$1");
             //удаляем из запроса год если он есть
             keyword_filter_cache.name = $.trim(keyword_filter_cache.kw.replace(/([0-9]{4})$/g, ""));
             //экронируем для regexp
@@ -564,14 +564,13 @@ var view = function () {
             if (keyword_filter_cache.year == '' || !isNumber(keyword_filter_cache.year))
                 keyword_filter_cache.year = null;
         }
-        keyword = keyword_filter_cache.kw;
-        if (keyword.length == 0) {
+        if (keyword_filter_cache.kw.length == 0) {
             return {
                 n:t,
                 r:0
             };
         }
-        var title = t.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\(([0-9]{4})\)/g, "$1").replace(/ё/g, "е");
+        var title = t.replace(/</g,"&lt;").replace(/>/g,"&gt;");
         var title_lower = title.toLowerCase();
         if (keyword_filter_cache.year != null) {
             //если есь год, то 
@@ -579,32 +578,32 @@ var view = function () {
             if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+' / .*'+keyword_filter_cache.year+'.*').test(title_lower)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+'|'+keyword_filter_cache.year+')',"ig"),"<b>$1</b>"),
-                    r:100
+                    r:100*top_coeff
                 };
             }
             //проверка по маске ([.*]) Name / .*year.*
             if (new RegExp('^[([]{1}.*[)]]{1} '+keyword_filter_cache.name_regexp_lover+' / .*'+keyword_filter_cache.year+'.*').test(title_lower)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+'|'+keyword_filter_cache.year+')',"ig"),"<b>$1</b>"),
-                    r:100
+                    r:100*top_coeff
                 };
             }
             if (new RegExp('.* '+keyword_filter_cache.name_regexp+' / .*'+keyword_filter_cache.year+'.*').test(title)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+'|'+keyword_filter_cache.year+')',"g"),"<b>$1</b>"),
-                    r:89
+                    r:89*top_coeff
                 };
             }
             if (new RegExp('^'+keyword_filter_cache.name_regexp+' .*'+keyword_filter_cache.year+'.*').test(title)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+'|'+keyword_filter_cache.year+')',"g"),"<b>$1</b>"),
-                    r:92
+                    r:92*top_coeff
                 };
             }
             if (new RegExp('.* '+keyword_filter_cache.name_regexp+' .*'+keyword_filter_cache.year+'.*').test(title)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+'|'+keyword_filter_cache.year+')',"g"),"<b>$1</b>"),
-                    r:86
+                    r:86*top_coeff
                 };
             }
         } else {
@@ -613,108 +612,74 @@ var view = function () {
             if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+'$').test(title_lower)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"ig"),"<b>$1</b>"),
-                    r:100
+                    r:100*top_coeff
                 };
             }
             if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+' / .*').test(title_lower)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+')',"ig"),"<b>$1</b>"),
-                    r:100
+                    r:100*top_coeff
                 };
             }
             //проверка по маске ([.*]) Name / .*year.*
             if (new RegExp('^[([]{1}.*[)]]{1} '+keyword_filter_cache.name_regexp_lover+' / .*').test(title_lower)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+')',"ig"),"<b>$1</b>"),
-                    r:95
+                    r:95*top_coeff
                 };
             }
             if (new RegExp('.* '+keyword_filter_cache.name_regexp_lover+' / .*').test(title_lower)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"ig"),"<b>$1</b>"),
-                    r:86
+                    r:86*top_coeff
                 };
             }
             if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+' .*').test(title_lower)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"ig"),"<b>$1</b>"),
-                    r:86
+                    r:86*top_coeff
                 };
             }
             if (new RegExp('.* '+keyword_filter_cache.name_regexp+'$').test(title)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>"),
-                    r:83
+                    r:83*top_coeff
                 };
             }
             if (new RegExp('^'+keyword_filter_cache.name_regexp_lover+'[-/()\ ./]{1}.*').test(title_lower)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp_lover+')',"ig"),"<b>$1</b>"),
-                    r:80
+                    r:80*top_coeff
                 };
             }
             if (new RegExp('.* '+keyword_filter_cache.name_regexp+' .*').test(title)) {
                 return {
                     n:t.replace(new RegExp('('+keyword_filter_cache.name_regexp+')',"g"),"<b>$1</b>"),
-                    r:80
+                    r:80*top_coeff
                 };
             }
         }
-        var bolder_title = title;
-        var str_arr = keyword.split(' ');
+        var str_arr = keyword_filter_cache.kw.split(' ');
         var str_cou = str_arr.length;
-        var word_left = 0;
-        var trimed_word = 0;
+        var ex_count = 0;
+        var left = 0;
         for (var i = 0; i < str_cou; i++) {
-            var isNum = 0;
-            var word = str_arr[i];
-            var word_price = Math.round(85/str_cou);
-            var word_rate = word_price;
-            var word_lower = word.toLowerCase();
-            if (keyword_filter_cache.year != null && str_cou == 2 || keyword_filter_cache.year == null && str_cou == 1) {
-                word_lower = word;
-                title_lower = title;
-            }
-            if (word_lower.length == 4 && isNumber(word_lower))
-                isNum = 1;
-            if (word_lower.length < 4) {
-                if (word_left + word_lower.length+2 >= title_lower.length)
-                    word_lower = word_lower
-                else
-                if (i == 0) {
-                    word_lower = word_lower+' '
-                    trimed_word = 1;
-                } else {
-                    word_lower = ' '+word_lower+' '
-                    trimed_word = 2;
-                }
-            }
-            var new_word_left = title_lower.indexOf(word_lower, word_left);
-            if (new_word_left < 0 && word_lower.length-trimed_word > 4) {
-                word_lower = word_lower.replace(/[^\b\wA-Za-zА-Яа-я]/g,'');
-                if (word_lower.length == 4 && isNumber(word_lower))
-                    isNum = 1;
-                new_word_left = title_lower.indexOf(word_lower, word_left);
-            }
-            if (new_word_left < 0 && word_lower.length-trimed_word > 4) {
-                word_rate -= word_price;
-            } else {
-                if (!isNum) {
-                    if (new_word_left-word_left > 10 ) {
-                        word_rate -= 4*((new_word_left-word_left)/10);
-                    } else
-                    if (new_word_left-word_left > 4 ) {
-                        word_rate -= 2;
-                    }
-                }
-            }
-            if (new_word_left >= 0) {
-                rate += word_rate;
-                //if ($.trim(word_lower).length > 0)
-                //    bolder_title = bolder_title.replace(new RegExp('('+word_lower.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1")+')',"ig"),"<b>$1</b>");
-                word_left = new_word_left + word_lower.length - trimed_word - 1;
-            }
+            if (i == 0) {
+                left = title_lower.indexOf(str_arr[i].toLowerCase());
+                if ((new RegExp(str_arr[i]+'[^\b\wA-Za-zА-Яа-я0-9]{1}','i')).test(title))
+                    ex_count += 1;
+            } else
+            if ((new RegExp('[^\b\wA-Za-zА-Яа-я0-9]{1}'+str_arr[i]+'[^\b\wA-Za-zА-Яа-я0-9]{1}','i')).test(title))
+                ex_count += 1;
         }
+        var rate = Math.round((85/(str_cou))*ex_count);
+        if (left < 0 && rate > 30)
+            rate = -100;
+        else
+        if (left > 70)
+            rate = 30;
+        else
+            rate -= left;
         var order = function (a,b) {
             if (a.length > b.length)
                 return -1;
@@ -723,25 +688,13 @@ var view = function () {
             return 1;
         }
         if (keyword_filter_cache.kw_arr == null) {
-            var kw_arr = keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1").replace(/\s+/,' ').split(' ').sort(order);
-            var new_kw_arr = [];
-            for (var i = 0; i < str_cou; i++) {
-                var word = kw_arr[i];
-                if ($.trim(word).length > 0) {
-                    if ( word.length < 4) {
-                        new_kw_arr[new_kw_arr.length] = word+' ';
-                    } else 
-                        new_kw_arr[new_kw_arr.length] = word;
-                }
-            }
-            keyword_filter_cache.kw_arr = new_kw_arr;
+            keyword_filter_cache.kw_arr = keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1").replace(/\s+/,' ').split(' ').sort(order);
         }
         var new_kw_arr = keyword_filter_cache.kw_arr;
-        bolder_title = bolder_title.replace(new RegExp('('+new_kw_arr.join('|')+')',"ig"),"<b>$1</b>");
-        
+        var bolder_title = t.replace(new RegExp('('+new_kw_arr.join('|')+')',"ig"),"<b>$1</b>");
         return {
             n:bolder_title,
-            r:Math.round(rate)
+            r:rate*top_coeff
         };
     }
     /*
