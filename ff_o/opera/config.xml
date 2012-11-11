@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget id="leonardspbox@gmail.com" version="0.8.9" xmlns="http://www.w3.org/ns/widgets">
+<widget id="leonardspbox@gmail.com" version="0.9.0" xmlns="http://www.w3.org/ns/widgets">
     <name>Torrents MultiSearch</name>
-    <description xml:lang="ru">Самые свежие результаты поиска по сымым поплулярныт торрент трекерам!</description>
+    <description xml:lang="ru">Самые свежие результаты поиска по популярным торрент трекерам!</description>
     <author email="leonardspbox@gmail.com">Anton V.</author>
     <icon src="icons/icon-64.png"/>
     <access origin="*"/>
