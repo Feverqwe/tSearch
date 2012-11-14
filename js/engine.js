@@ -70,6 +70,15 @@ var engine = function () {
         n : 'piratbit', 
         e : 0
     },
+    {
+        n : 'underverse', 
+        e : 0
+    },
+    //с рег-ей иност.
+    {
+        n : 'hurtom', 
+        e : 0
+    },
     //локальные
     {
         n : 'torrents.local', 
@@ -147,10 +156,6 @@ var engine = function () {
     },
     {
         n : 'mininova', 
-        e : 0
-    },
-    {
-        n : 'hurtom', 
         e : 0
     }
     ];
