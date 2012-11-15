@@ -1,4 +1,5 @@
 var explore = function () {
+    var _google_proxy = (GetSettings('google_proxy') !== undefined) ? parseInt(GetSettings('AutoSetCategory')) : false;
     var AutoSetCategory = (GetSettings('AutoSetCategory') !== undefined) ? parseInt(GetSettings('AutoSetCategory')) : true;
     var xhr = {};
     var explorerCache = (GetSettings('explorerCache') !== undefined) ? JSON.parse(GetSettings('explorerCache')) : {
@@ -89,11 +90,21 @@ var explore = function () {
     };
     var read_content = function(type,content) {
         var sesizeimg = function (i) {
-            i = i.replace('/sm_film/','/film/');
+            var g_proxy = function (url) {
+                if (!_google_proxy) return url;
+                var google_proxy = 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url=';
+                return google_proxy+encodeURI(url);
+            }
+            i = g_proxy(i.replace('/sm_film/','/film/'));
             return i;
         }
         var makeimg = function (i) {
-            i = i.replace(/(.*)\/film\/([0-9]*)\//,'http://st.kinopoisk.ru/images/film/$2.jpg');
+            var g_proxy = function (url) {
+                if (!_google_proxy) return url;
+                var google_proxy = 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url=';
+                return google_proxy+encodeURI(url);
+            }
+            i = g_proxy(i.replace(/(.*)\/film\/([0-9]*)\//,'http://st.kinopoisk.ru/images/film/$2.jpg'));
             return i;
         }
         var Films = function (c) {
@@ -132,6 +143,11 @@ var explore = function () {
             return arr;
         }
         var Games = function (c) {
+            var g_proxy = function (url) {
+                if (!_google_proxy) return url;
+                var google_proxy = 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=213&rewriteMime=image/jpeg&url=';
+                return google_proxy+encodeURI(url);
+            }
             c = view.contentFilter(c);
             var t = $(c).find('div.block12_content').children('div.block12_flash_bottom');
             var l = t.length;
@@ -140,7 +156,7 @@ var explore = function () {
             for (i = 1;i<l;i++) {
                 var item = t.eq(i).prev();
                 arr[arr.length] = {
-                    'img' : item.find('img.block12_gamespic').attr('src'),
+                    'img' : g_proxy(item.find('img.block12_gamespic').attr('src')),
                     'name' : item.find('span.block3_newslist_capture').text(),
                     'url' : item.find('div.block12_underopen_text').children('a').attr('href')
                 }
