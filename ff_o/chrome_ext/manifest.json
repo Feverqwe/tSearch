@@ -16,8 +16,9 @@
     "background": {
         "scripts": ["js/storage.js","js/lang.js","js/btn.js","js/background.js"]
     },
+    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
     "name": "__MSG_appName__",
     "description": "__MSG_appDesc__",
     "default_locale": "ru",
-    "version": "0.1.9.8"
+    "version": "0.1.9.9"
 }
