@@ -108,7 +108,8 @@ var view = function () {
         ((/LowHDRip/).test(title))?30:
         ((/HDTV|HDRip|DVDRip/).test(title))?60:
         ((/[^o]DVD/).test(title))?50:
-        ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|HQRip|DVB|IPTVRip/).test(title))?40:
+        ((/HQSATRip|HQRip/).test(title))?44:
+        ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|DVB|IPTVRip/).test(title))?40:
         ((/TeleSynch|DVDScr/).test(title))?20:
         ((/TS/).test(title))?20:
         0;
@@ -272,6 +273,7 @@ var view = function () {
                 ((/TVRip/).test(title))?'TVRip':
                 ((/WEBRip|WEB-DLRip/).test(title))?'WEBRip':
                 ((/WEB-DL/).test(title))?'WEB-DL':
+                ((/HQSATRip/).test(title))?'HQSATRip':
                 ((/SATRip/).test(title))?'SATRip':
                 ((/HQRip/).test(title))?'HQRip':
                 ((/DVB/).test(title))?'DVB':
