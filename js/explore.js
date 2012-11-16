@@ -554,6 +554,17 @@ var explore = function () {
             var s = $(this).children('span').text();
             triggerClick(s,section);
         });
+        //клик по подробнее
+        $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.label > div.info a', function() {
+            try {
+                var s = $(this).parents().eq(1).children('div.title').children('span').text();
+                if(_gaq != null){
+                    _gaq.push(['_trackEvent', 'About', 'keyword', s]);
+                }
+            } finally {
+                return true;
+            }
+        });
     }
     var calculate_moveble = function (section,size) {
         if (size<=70) return;
