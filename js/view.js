@@ -865,7 +865,7 @@ var view = function () {
         $('form[name="search"]').children('input[type="text"]').val('').focus();
         explore.getLoad();
         if(_gaq != null){
-            _gaq.push(['_trackPageview', './index.html']);
+            _gaq.push(['_trackPageview', 'index.html']);
             _gaq.push(['_trackEvent', 'Blank']);
         }
     }
@@ -887,7 +887,7 @@ var view = function () {
         global_wl_hash = location.hash;
         engine.search(keyword,sel_tr);
         if(_gaq != null){
-            _gaq.push(['_trackPageview', './index.html#s='+keyword]);
+            _gaq.push(['_trackPageview', 'index.html#s='+keyword]);
             _gaq.push(['_trackEvent', 'Search', 'keyword', keyword]);
         }
         return false;
