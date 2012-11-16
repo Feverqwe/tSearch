@@ -106,7 +106,10 @@ if (_lang != 'ru')
             auth: 'Requires authorization',
             rus: 'Russian language tracker'
         },
-        stp_span_24 : 'Enable AutoComplete from Google'
+        stp_span_24 : 'Enable AutoComplete from Google',
+        stp_legend_25 : 'Other',
+        stp_span_26 : 'Receive posters, on the home page via a proxy bt google (images-pos-opensocial) (experiment)',
+        stp_span_27 : 'Disable Google-Analytics'
     };
 if (_lang == 'ru')
     _lang = {
@@ -215,5 +218,8 @@ if (_lang == 'ru')
             auth: 'Требуется авторизация',
             rus: 'Русскоязычный трекер'
         },
-        stp_span_24 : 'Включить автозаполнение от Google'
+        stp_span_24 : 'Включить автозаполнение от Google',
+        stp_legend_25 : 'Прочее',
+        stp_span_26 : 'Получать постеры, на главной странице, через прокси гугла (images-pos-opensocial) (эксперимент)',
+        stp_span_27 : 'Отключить Google-Analytics'
     };

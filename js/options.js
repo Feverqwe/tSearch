@@ -11,6 +11,8 @@ var view = function () {
     var context_menu = (GetSettings('context_menu') !== undefined) ? parseInt(GetSettings('context_menu')) : true;
     var search_popup = (GetSettings('search_popup') !== undefined) ? parseInt(GetSettings('search_popup')) : false;
     var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : true;
+    var google_proxy = (GetSettings('google_proxy') !== undefined) ? parseInt(GetSettings('google_proxy')) : false;
+    var google_analytics = (GetSettings('google_analytics') !== undefined) ? parseInt(GetSettings('google_analytics')) : false;
     var t_table_line = 0;
     var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     var oldProfileID = 0;
@@ -73,6 +75,8 @@ var view = function () {
         $('input[name="typeFiltration"]').eq(AdvFiltration).prop('checked',true);
         $('input[name="autosetcategory"]').prop('checked',AutoSetCategory);
         $('input[name="autocomplite_opt"]').prop('checked',AutoComplite_opt);
+        $('input[name="google_proxy"]').prop('checked',google_proxy);
+        $('input[name="google_analytics"]').prop('checked',google_analytics);
         $('input[name="teaserfilter"]').prop('checked',TeaserFilter);
         
         $('input[name="add_in_omnibox"]').prop('checked',add_in_omnibox);
@@ -108,6 +112,12 @@ var view = function () {
         HideSeed = SetSettings('HideSeed',($('input[name="hideseed"]').is(':checked'))?1:0);
         AutoSetCategory = SetSettings('AutoSetCategory',($('input[name="autosetcategory"]').is(':checked'))?1:0);
         AutoComplite_opt = SetSettings('AutoComplite_opt',($('input[name="autocomplite_opt"]').is(':checked'))?1:0);
+        var google_proxy_old = google_proxy;
+        google_proxy = SetSettings('google_proxy',($('input[name="google_proxy"]').is(':checked'))?1:0);
+        if (google_proxy_old != google_proxy) {
+            SetSettings('explorerCache',JSON.stringify({}));
+        }
+        google_analytics = SetSettings('google_analytics',($('input[name="google_analytics"]').is(':checked'))?1:0);
         TeaserFilter = SetSettings('TeaserFilter',($('input[name="teaserfilter"]').is(':checked'))?1:0);
         
         add_in_omnibox = SetSettings('add_in_omnibox',($('input[name="add_in_omnibox"]').is(':checked'))?1:0);
@@ -237,6 +247,9 @@ $(function () {
     $('input[data-lang=25]').val(_lang.btn_25);
     $('input[data-lang=27]').val(_lang.btn_27);
     $('span[data-lang=24]').text(_lang.stp_span_24);
+    $('legend[data-lang=25]').text(_lang.stp_legend_25);
+    $('span[data-lang=26]').text(_lang.stp_span_26);
+    $('span[data-lang=27]').text(_lang.stp_span_27);
     
     view.LoadProfiles();
     
@@ -253,6 +266,7 @@ $(function () {
     if (navigator.userAgent.search(/Chrome/) == -1) {
         $('input[name="add_in_omnibox"]').parent().hide();
         $('input[name="search_popup"]').parent().hide();
+        $('input[name="google_analytics"]').parent().hide();
     } else {
         var bgp = chrome.extension.getBackgroundPage();
         if (bgp._type_ext == null || bgp._type_ext == 0)

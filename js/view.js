@@ -864,6 +864,10 @@ var view = function () {
         global_wl_hash = location.hash;
         $('form[name="search"]').children('input[type="text"]').val('').focus();
         explore.getLoad();
+        if(_gaq != null){
+            _gaq.push(['_trackPageview', './index.html']);
+            _gaq.push(['_trackEvent', 'Blank']);
+        }
     }
     var triggerSearch = function (keyword) {
         $('body,html').scrollTop();
@@ -882,6 +886,10 @@ var view = function () {
         window.location = '#s='+keyword;
         global_wl_hash = location.hash;
         engine.search(keyword,sel_tr);
+        if(_gaq != null){
+            _gaq.push(['_trackPageview', './index.html#s='+keyword]);
+            _gaq.push(['_trackEvent', 'Search', 'keyword', keyword]);
+        }
         return false;
     }
     var getQuality = function (keyword,id,section) {
@@ -903,6 +911,9 @@ var view = function () {
             'section' : section
         };
         engine.search(keyword,null,1);
+        if(_gaq != null){
+            _gaq.push(['_trackEvent', 'Quality', 'keyword', keyword]);
+        }
     }
     var load_category = function (c) {
         $('ul.categorys').empty()

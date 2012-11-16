@@ -1,5 +1,5 @@
 var explore = function () {
-    var _google_proxy = (GetSettings('google_proxy') !== undefined) ? parseInt(GetSettings('AutoSetCategory')) : false;
+    var _google_proxy = (GetSettings('google_proxy') !== undefined) ? parseInt(GetSettings('google_proxy')) : false;
     var AutoSetCategory = (GetSettings('AutoSetCategory') !== undefined) ? parseInt(GetSettings('AutoSetCategory')) : true;
     var xhr = {};
     var explorerCache = (GetSettings('explorerCache') !== undefined) ? JSON.parse(GetSettings('explorerCache')) : {
