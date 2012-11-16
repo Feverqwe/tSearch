@@ -859,14 +859,14 @@ var view = function () {
         $('div.explore').css('display','block');
         view.clear_table();
         $('form[name="search"]').children('input[type=text]').val('');
+        var old_title = document.title;
         document.title = 'Torrents MultiSearch'; 
         window.location = '#s=';
         global_wl_hash = location.hash;
         $('form[name="search"]').children('input[type="text"]').val('').focus();
         explore.getLoad();
-        if(_gaq != null){
+        if(old_title!=document.title && _gaq != null){
             _gaq.push(['_trackPageview', 'index.html']);
-            _gaq.push(['_trackEvent', 'Blank']);
         }
     }
     var triggerSearch = function (keyword) {
