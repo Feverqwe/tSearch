@@ -78,6 +78,23 @@
             <div><input name="google_proxy" type="checkbox"/><span data-lang=26>Получать постеры на главной странице через прокси гугла (images-pos-opensocial)</span></div>
             <div><input name="google_analytics" type="checkbox"/><span data-lang=27>Отключить Google-Analytics</span></div>
         </fieldset>
+        <fieldset>
+            <legend data-lang="28">Экспорт настроек</legend>
+            <div class="backup_form">
+                <div>
+                    <a href="#" class="backup_tab" data-lang="29">Бэкап</a>
+                    <a href="#" class="restore_tab active" data-lang="30">Восстановление</a>
+                </div>
+                <div class="backup" style="display:none;">
+                    <textarea rows="10" name="backup"></textarea>
+                    <input type="button" name="backup_btn" data-lang="31" value="Обновить"/>
+                </div>
+                <div class="restore" style="display:block;">
+                    <textarea rows="10" name="restore"></textarea>
+                    <input type="button" name="restore_btn" data-lang="32" value="Восстановить"/>
+                </div>
+            </div>
+        </fieldset>
         <div class="save_panel">
             <input type="submit" value="Сохранить" />
             <div class="progress"></div>

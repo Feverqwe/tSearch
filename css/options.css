@@ -76,7 +76,7 @@ div.save_panel div.progress {
 div.save_panel input {
     padding-left: 5px;
     padding-right: 5px;
-    margin-top: 12px;
+    font-size: 18px;
 }
 div.save_panel {
 }
@@ -117,4 +117,43 @@ div.icons > div.rus {
 
 div.icons > div.cirilic {
     background: url(../images/cyrillic.png) center center;
+}
+
+div.backup_form { 
+        padding-top: 10px;
+}
+div.backup_form > div { 
+        margin-bottom: -3px;
+}
+div.backup_form > div.restore, div.backup_form > div.backup {
+	background-color:#dddddd;
+	margin-top: 4px;
+	border: 1px solid #c0c0c0;
+	overflow: hidden;
+}
+div.backup_form > textarea, div.backup_form textarea {
+	width: 98%;
+        margin-left: 2px;
+}
+div.backup_form a.backup_tab, div.backup_form a.restore_tab {
+	border-top-left-radius: 4px; 
+	border-top-right-radius: 4px; 
+	padding:5px; 
+	padding-bottom: 2px; 
+	margin-right: 10px; 
+	text-decoration: none;
+	border: 1px solid #c0c0c0;
+	border-bottom: 0px;
+	background-color:#f2f2f2; 
+	color: #82838e;
+}
+div.backup_form a.backup_tab.active, div.backup_form a.restore_tab.active {
+	background-color:#dddddd; 
+	color: #2f5be1;	
+}
+div.backup_form input[name=backup_btn], div.backup_form input[name=restore_btn] {
+    font-size:18px;
+}
+div.backup_form input[name=restore_btn] {
+    float:left;
 }

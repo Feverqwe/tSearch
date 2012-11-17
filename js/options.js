@@ -195,6 +195,22 @@ var view = function () {
         else
             $('div.profile input.rmbtn').ramoveAttr('disabled');
     }
+    var getBackup = function () {
+        var t = localStorage;
+        delete t['explorerCache'];
+        $('div.backup_form div.backup').children('textarea').val(JSON.stringify(t));
+    }
+    var stngsRestore = function (text) {
+        try {
+            var rst = JSON.parse(text);
+            $.each(rst, function(key, value) {
+                localStorage[key] = value;
+            });
+            top.location.reload();
+        } catch(err) {
+            alert(_lang.str33+"\n"+err);
+        }
+    }
     return {
         LoadProfiles : function () {
             LoadProfiles();
@@ -210,9 +226,16 @@ var view = function () {
         },
         loadSettings : function () {
             loadSettings();
+        },
+        getBackup : function () {
+            return getBackup();
+        },
+        stngsRestore : function (a) {
+            stngsRestore(a);
         }
     }
 }();
+
 $(function () {
     
     $('title').text(_lang.stp_title);
@@ -250,6 +273,11 @@ $(function () {
     $('legend[data-lang=25]').text(_lang.stp_legend_25);
     $('span[data-lang=26]').text(_lang.stp_span_26);
     $('span[data-lang=27]').text(_lang.stp_span_27);
+    $('legend[data-lang=28]').text(_lang.str28);
+    $('a[data-lang=29]').text(_lang.str29);
+    $('a[data-lang=30]').text(_lang.str30);
+    $('input[data-lang=31]').val(_lang.str31);
+    $('input[data-lang=32]').val(_lang.str32);
     
     view.LoadProfiles();
     
@@ -261,13 +289,18 @@ $(function () {
     });
     $('select[name=lang]').children('option[value='+_lang.t+']').attr('selected','selected');
     
-    if (navigator.userAgent.search(/Chrome/) == -1 && navigator.userAgent.search(/Opera/) == -1)
+    if (navigator.userAgent.search(/Chrome/) == -1 && navigator.userAgent.search(/Opera/) == -1) {
+        //firefox
         $('input[name="context_menu"]').parent().hide();
+        $('div.backup_form').parent().hide();
+    }
     if (navigator.userAgent.search(/Chrome/) == -1) {
+        //не хром
         $('input[name="add_in_omnibox"]').parent().hide();
         $('input[name="search_popup"]').parent().hide();
         $('input[name="google_analytics"]').parent().hide();
     } else {
+        //хром
         var bgp = chrome.extension.getBackgroundPage();
         if (bgp._type_ext == null || bgp._type_ext == 0)
             $('input[name="search_popup"]').parent().hide();
@@ -296,6 +329,27 @@ $(function () {
             if (Trackers[i].e)
                 $('#internalTrackers').children('tbody').children('tr[data-name="'+Trackers[i].n+'"]').find('input[type="checkbox"]').attr('checked','checked');
         return false;
+    });
+    $('div.backup_form div').children('a.backup_tab').click(function (event) {
+        event.preventDefault();
+        $(this).parents().eq(1).children('div.restore').slideUp('fast');
+        $(this).parent().children('a.restore_tab').removeClass('active');
+        $(this).parents().eq(1).children('div.backup').slideDown('fast');
+        $(this).parent().children('a.backup_tab').addClass('active');
+        view.getBackup();
+    });
+    $('div.backup_form div').children('a.restore_tab').click(function (event) {
+        event.preventDefault();
+        $(this).parents().eq(1).children('div.backup').slideUp('fast');
+        $(this).parent().children('a.backup_tab').removeClass('active');
+        $(this).parents().eq(1).children('div.restore').slideDown('fast');
+        $(this).parent().children('a.restore_tab').addClass('active');
+    });
+    $('div.backup_form').find('input[name=backup_btn]').click(function () {
+        view.getBackup();
+    });
+    $('div.backup_form').find('input[name=restore_btn]').click(function () {
+        view.stngsRestore($(this).parent().children('textarea').val());
     });
     view.loadSettings();
 });

@@ -109,7 +109,13 @@ if (_lang != 'ru')
         stp_span_24 : 'Enable AutoComplete from Google',
         stp_legend_25 : 'Other',
         stp_span_26 : 'Receive posters, on the home page via a proxy bt google (images-pos-opensocial) (experiment)',
-        stp_span_27 : 'Disable Google-Analytics'
+        stp_span_27 : 'Disable Google-Analytics',
+        str28: 'Export settings',
+        str29: 'Backup',
+        str30: 'Restore',
+        str31: 'Update',
+        str32: 'Restore',
+        str33: 'Restore error!'
     };
 if (_lang == 'ru')
     _lang = {
@@ -221,5 +227,11 @@ if (_lang == 'ru')
         stp_span_24 : 'Включить автозаполнение от Google',
         stp_legend_25 : 'Прочее',
         stp_span_26 : 'Получать постеры, на главной странице, через прокси гугла (images-pos-opensocial) (эксперимент)',
-        stp_span_27 : 'Отключить Google-Analytics'
+        stp_span_27 : 'Отключить Google-Analytics',
+        str28: 'Экспорт настроек',
+        str29: 'Бэкап',
+        str30: 'Восстановление',
+        str31: 'Обновить',
+        str32: 'Восстановить',
+        str33: 'Ошибка восстановления настроек!'
     };
