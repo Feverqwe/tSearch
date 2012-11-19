@@ -195,7 +195,7 @@ var explore = function () {
         if (type == 'games') return Games(content);
     }
     var load_exp_content = function (type, url) {
-        var time = Math.round(new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate() - (new Date()).getDay() + 1 ).getTime() / 1000);
+        var time = Math.round(new Date().getTime() / 1000);
         var timeout = content_sourse[type].timeout;
         if ( $('div.explore div.'+type).length > 0 ) return;
         if (explorerCache[type] != null && explorerCache[type].date != null && explorerCache[type].date>time) {
