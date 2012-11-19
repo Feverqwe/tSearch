@@ -24,7 +24,7 @@ var explore = function () {
             s:1,
             size: 0,
             count: 12
-        }, 
+        },
         serials: {
             s:1,
             size: 0,
@@ -45,7 +45,8 @@ var explore = function () {
             did: 1,
             size: 130,
             margin: 14,
-            url: ''
+            url: '',
+            timeout: 0
         },
         games: {
             t:_lang.exp_games,
@@ -55,7 +56,8 @@ var explore = function () {
             did: null,
             size: 213,
             margin: 12,
-            url: 'http://www.igromania.ru/gametop/'
+            url: 'http://www.igromania.ru/gametop/',
+            timeout: 24*60*60*7
         },
         films: {
             t:_lang.exp_in_cinima,
@@ -65,7 +67,8 @@ var explore = function () {
             did: null,
             size: 130,
             margin: 14,
-            url: 'http://www.kinopoisk.ru/afisha/new/'
+            url: 'http://www.kinopoisk.ru/afisha/new/',
+            timeout: 24*60*60*2
         },
         top_films: {
             t:_lang.exp_films,
@@ -75,7 +78,8 @@ var explore = function () {
             did: null,
             size: 130,
             margin: 14,
-            url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/'
+            url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
+            timeout: 24*60*60*3
         },
         serials: {
             t:_lang.exp_serials,
@@ -85,7 +89,8 @@ var explore = function () {
             did: null,
             size: 130,
             margin: 14,
-            url: 'http://www.kinopoisk.ru/top/serial/list/'
+            url: 'http://www.kinopoisk.ru/top/serial/list/',
+            timeout: 24*60*60*7
         }
     };
     var read_content = function(type,content) {
@@ -190,8 +195,8 @@ var explore = function () {
         if (type == 'games') return Games(content);
     }
     var load_exp_content = function (type, url) {
-        var time = Math.round((new Date()).getTime() / 1000);
-        var timeout = 24*60*60/2;
+        var time = Math.round(new Date((new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate() - (new Date()).getDay() + 1 ).getTime() / 1000);
+        var timeout = content_sourse[type].timeout;
         if ( $('div.explore div.'+type).length > 0 ) return;
         if (explorerCache[type] != null && explorerCache[type].date != null && explorerCache[type].date>time) {
             write_content(explorerCache[type].cache_arr,type);

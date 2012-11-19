@@ -273,7 +273,7 @@ $(function () {
     $('input[data-lang=27]').val(_lang.btn_27);
     $('span[data-lang=24]').text(_lang.stp_span_24);
     $('legend[data-lang=25]').text(_lang.stp_legend_25);
-    $('span[data-lang=26]').text(_lang.stp_span_26);
+    $('span[data-lang=34]').text(_lang.stp_span_33);
     $('span[data-lang=27]').text(_lang.stp_span_27);
     $('legend[data-lang=28]').text(_lang.str28);
     $('a[data-lang=29]').text(_lang.str29);
