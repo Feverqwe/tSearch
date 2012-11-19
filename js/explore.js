@@ -57,7 +57,7 @@ var explore = function () {
             size: 213,
             margin: 12,
             url: 'http://www.igromania.ru/gametop/',
-            timeout: 24*60*60*7
+            timeout: Math.round(24*60*60*7)
         },
         films: {
             t:_lang.exp_in_cinima,
@@ -68,7 +68,7 @@ var explore = function () {
             size: 130,
             margin: 14,
             url: 'http://www.kinopoisk.ru/afisha/new/',
-            timeout: 24*60*60*2
+            timeout: Math.round(24*60*60*(7/3))
         },
         top_films: {
             t:_lang.exp_films,
@@ -79,7 +79,7 @@ var explore = function () {
             size: 130,
             margin: 14,
             url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
-            timeout: 24*60*60*3
+            timeout: Math.round(24*60*60*(7/2))
         },
         serials: {
             t:_lang.exp_serials,
@@ -90,7 +90,7 @@ var explore = function () {
             size: 130,
             margin: 14,
             url: 'http://www.kinopoisk.ru/top/serial/list/',
-            timeout: 24*60*60*7
+            timeout: Math.round(24*60*60*7)
         }
     };
     var read_content = function(type,content) {
