@@ -12,4 +12,12 @@ if (!google_analytics) {
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(ga, s);
     })();
+} else {
+    var _gaq = function () {
+        return {
+            push : function (a) {
+                return 1;
+            }
+        }
+    }();
 }

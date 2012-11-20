@@ -563,9 +563,7 @@ var explore = function () {
         $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.label > div.info a', function() {
             try {
                 var s = $(this).parents().eq(1).children('div.title').children('span').text();
-                if(_gaq != null){
-                    _gaq.push(['_trackEvent', 'About', 'keyword', s]);
-                }
+                _gaq.push(['_trackEvent', 'About', 'keyword', s]);
             } finally {
                 return true;
             }
