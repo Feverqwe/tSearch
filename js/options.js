@@ -198,17 +198,23 @@ var view = function () {
     var getBackup = function () {
         var t = localStorage;
         delete t['explorerCache'];
+        delete t['length'];
         $('div.backup_form div.backup').children('textarea').val(JSON.stringify(t));
     }
     var stngsRestore = function (text) {
         try {
             var rst = JSON.parse(text);
+            var google_proxy_old = google_proxy;
             for (var key in rst)
             {
                 var value = rst[key];
                 if (value == undefined)
                     return true;
                 localStorage[key] = value;
+            }
+            google_proxy = (GetSettings('google_proxy') !== undefined) ? parseInt(GetSettings('google_proxy')) : false;
+            if (google_proxy_old != google_proxy) {
+                SetSettings('explorerCache',JSON.stringify({}));
             }
             top.location.reload();
         } catch(err) {
