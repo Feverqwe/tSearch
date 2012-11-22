@@ -208,7 +208,7 @@ var view = function () {
             for (var key in rst)
             {
                 var value = rst[key];
-                if (value == undefined)
+                if (value == undefined || key == 'length')
                     return true;
                 localStorage[key] = value;
             }
