@@ -203,11 +203,13 @@ var view = function () {
     var stngsRestore = function (text) {
         try {
             var rst = JSON.parse(text);
-            $.each(rst, function(key, value) {
+            for (var key in rst)
+            {
+                var value = rst[key];
                 if (value == undefined)
                     return true;
                 localStorage[key] = value;
-            });
+            }
             top.location.reload();
         } catch(err) {
             alert(_lang.str33+"\n"+err);
@@ -294,13 +296,13 @@ $(function () {
     if (navigator.userAgent.search(/Chrome/) == -1 && navigator.userAgent.search(/Opera/) == -1) {
         //firefox
         $('input[name="context_menu"]').parent().hide();
+        $('input[name="backup_form"]').parent().hide();
     }
     if (navigator.userAgent.search(/Chrome/) == -1) {
         //не хром
         $('input[name="add_in_omnibox"]').parent().hide();
         $('input[name="search_popup"]').parent().hide();
         $('input[name="google_analytics"]').parent().hide();
-        $('div.backup_form').parent().hide();
     } else {
         //хром
         var bgp = chrome.extension.getBackgroundPage();
