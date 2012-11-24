@@ -69,6 +69,7 @@ java -jar compiler.jar --js .\tracker\piratbit.js --js_output_file .\build\track
 java -jar compiler.jar --js .\tracker\katushka.js --js_output_file .\build\tracker\katushka.js
 java -jar compiler.jar --js .\tracker\hurtom.js --js_output_file .\build\tracker\hurtom.js
 java -jar compiler.jar --js .\tracker\underverse.js --js_output_file .\build\tracker\underverse.js
+java -jar compiler.jar --js .\tracker\libertorrent.js --js_output_file .\build\tracker\libertorrent.js
 
 xcopy .\build .\build_chrome_ext\ /E
 xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
