@@ -20,9 +20,6 @@ tracker[tmp_num] = function () {
     }
     var xhr = null;
     var web = function () {
-        var calculateCategory = function (f) {
-            return 5;
-        }
         var readCode = function (c) {
             c = view.contentFilter(c);
             var t = $(c);//.contents();
@@ -42,7 +39,7 @@ tracker[tmp_num] = function () {
                     'category' : {
                         'title' : td.eq(2).children('a').text(), 
                         'url': root_url+td.eq(2).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*).*$/i,"$1"))
+                        'id': 5
                     },
                     'title' : td.eq(3).children('a').text(),
                     'url' : root_url+td.eq(3).children('a').attr('href'),
