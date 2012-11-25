@@ -355,11 +355,11 @@ $(function () {
         $(this).parents().eq(1).children('div.restore').slideDown('fast');
         $(this).parent().children('a.restore_tab').addClass('active');
     });
-    $('div.backup_form').find('input[name=backup_btn]').click(function () {
+    $('div.backup_form').find('input[name=backup_btn]').click(function (event) {
         event.preventDefault();
         view.getBackup();
     });
-    $('div.backup_form').find('input[name=restore_btn]').click(function () {
+    $('div.backup_form').find('input[name=restore_btn]').click(function (event) {
         event.preventDefault();
         view.stngsRestore($(this).parent().children('textarea').val());
     });
