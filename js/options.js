@@ -356,9 +356,11 @@ $(function () {
         $(this).parent().children('a.restore_tab').addClass('active');
     });
     $('div.backup_form').find('input[name=backup_btn]').click(function () {
+        event.preventDefault();
         view.getBackup();
     });
     $('div.backup_form').find('input[name=restore_btn]').click(function () {
+        event.preventDefault();
         view.stngsRestore($(this).parent().children('textarea').val());
     });
     view.loadSettings();
