@@ -125,6 +125,10 @@ var engine = function () {
         n : 'katushka', 
         e : 0
     },
+    {
+        n: 'btdigg',
+        e: 0
+    },
     //зарубеж.
     {
         n : 'thepiratebay', 
