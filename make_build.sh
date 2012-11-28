@@ -61,6 +61,7 @@ java -jar compiler.jar --js ./tracker/katushka.js --js_output_file ./build/track
 java -jar compiler.jar --js ./tracker/hurtom.js --js_output_file ./build/tracker/hurtom.js
 java -jar compiler.jar --js ./tracker/underverse.js --js_output_file ./build/tracker/underverse.js
 java -jar compiler.jar --js ./tracker/libertorrent.js --js_output_file ./build/tracker/libertorrent.js
+java -jar compiler.jar --js ./tracker/btdigg.js --js_output_file ./build/tracker/btdigg.js
 
 java -jar compiler.jar --js ./js/lang.js --js_output_file ./build/js/lang.js
 java -jar compiler.jar --js ./js/background.js --js_output_file ./build/js/background.js
