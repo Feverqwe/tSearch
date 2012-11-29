@@ -57,15 +57,18 @@ tracker[tmp_num] = function () {
                 hash = 1;
             }
             if (hash) {
+                var url = t.eq(2).children('td').eq(1).children('a').attr('href');
                 var arr = [];
+                if (url == null)
+                    return arr;
                 arr[arr.length] = {
                     'category' : {
                         'id': -1
                     },
                     'title' : t.eq(3).children('td').eq(1).text(),
-                    'url' : root_url+'/search?info_hash='+t.eq(2).children('td').eq(1).children('a').attr('href').split('btih:')[1].replace('&dn=','&q='),
+                    'url' : root_url+'/search?info_hash='+url.split('btih:')[1].replace('&dn=','&q='),
                     'size' : calculateSize(t.eq(5).children('td').eq(1).text()),
-                    'dl' : t.eq(2).children('td').eq(1).children('a').attr('href'),
+                    'dl' : url,
                     'seeds' : 1,
                     'leechs' : t.eq(4).children('td').eq(1).text(),
                     'time' : calculateTime(t.eq(6).children('td').eq(1).text())
