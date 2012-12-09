@@ -33,7 +33,7 @@ var explore = function () {
         games: {
             s:1,
             size: 0,
-            count: 8
+            count: 4
         }
     };
     var content_sourse = {
@@ -51,12 +51,12 @@ var explore = function () {
         games: {
             t:_lang.exp_games,
             c:2,
-            root_url: 'http://www.igromania.ru',
+            root_url: 'http://games.mail.ru',
             fav: 1,
             did: null,
-            size: 213,
+            size: 230,
             margin: 12,
-            url: 'http://www.igromania.ru/gametop/',
+            url: 'http://games.mail.ru/play/download/best/',
             timeout: Math.round(24*60*60*7)
         },
         films: {
@@ -154,16 +154,16 @@ var explore = function () {
                 return google_proxy+encodeURI(url);
             }
             c = view.contentFilter(c);
-            var t = $(c).find('div.block12_content').children('div.block12_flash_bottom');
+            var t = $(c).find('div.play-list-02').children('div.one.p-rel');
             var l = t.length;
             var arr = [];
             var i = 0;
-            for (i = 1;i<l;i++) {
-                var item = t.eq(i).prev();
+            for (i = 0;i<l;i++) {
+                var item = t.eq(i);
                 arr[arr.length] = {
-                    'img' : g_proxy(item.find('img.block12_gamespic').attr('src')),
-                    'name' : item.find('span.block3_newslist_capture').text(),
-                    'url' : item.find('div.block12_underopen_text').children('a').attr('href')
+                    'img' : g_proxy(item.children('a').eq(0).find('img').attr('src')),
+                    'name' : item.children('div.name-i').children('a').text(),
+                    'url' : item.children('div.name-i').children('a').attr('href')
                 }
             }
             return arr;
@@ -305,9 +305,10 @@ var explore = function () {
         $('div.explore div.'+section).find('div.setup').attr('data-size',size);
         $('style.poster_size_'+section).remove();
         $('body').append('<style class="poster_size_'+section+'">'+
-            'div.explore div.'+section+' > div > div.poster, '+
-            'div.explore div.'+section+' > div > div.poster > div > div.info '+
+            'div.explore div.'+section+' > div > div.poster '+
             '{ width: '+size+'px; margin: '+margine_size+'px; } '+
+            'div.explore div.'+section+' > div > div.poster > div > div.info '+
+            '{ width: '+size+'px; } '+
             'div.explore div.'+section+' div.poster > div.image > a > img '+
             '{width: '+(size-10)+'px;} '+
             ((font_size==0)?
@@ -459,9 +460,7 @@ var explore = function () {
         if (listOptions['films'] == null)
             decodeLocalOptions();
         //<<<<<<<<
-        $.each(listOptions, function(key, value) { 
-            if (key == 'games')
-                return true;
+        $.each(listOptions, function(key, value) {
             ul.append('<li class="'+key+'"></li>');
             if (key == 'favorites')
                 show_favorites();

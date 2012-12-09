@@ -572,7 +572,7 @@ div.explore div.poster > div.image > a > img:hover {
 }
 
 div.explore div.games > div > div.poster {
-    width: 213px;
+    width: 230px;
     margin: 12px;
 }
 div.explore div.poster > div {
@@ -597,10 +597,10 @@ div.explore div.poster:hover div.image > div.quality_box {
     display: block;
 }
 div.explore div.games > div > div.poster > div > div.info {
-    width: 213px;
+    width: 230px;
 }
 div.explore div.games > div > div.poster > div.image > a > img {
-    max-width: 203px;
+    max-width: 220px;
 }
 div.explore div.favorites > div > div.poster > div.image > a > img {
     max-width: 130px;
