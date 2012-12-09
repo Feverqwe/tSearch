@@ -460,6 +460,8 @@ var explore = function () {
             decodeLocalOptions();
         //<<<<<<<<
         $.each(listOptions, function(key, value) { 
+            if (key == 'games')
+                return true;
             ul.append('<li class="'+key+'"></li>');
             if (key == 'favorites')
                 show_favorites();
