@@ -571,7 +571,9 @@ div.explore div.poster > div.image > a > img:hover {
     -webkit-box-shadow: 0 0 15px #1A3DC1;
 }
 
-div.explore div.games > div > div.poster {
+div.explore div.games > div > div.poster, 
+div.explore div.games_n > div > div.poster, 
+div.explore div.games_a > div > div.poster {
     width: 230px;
     margin: 12px;
 }
@@ -596,10 +598,14 @@ div.explore div.poster:hover div.image > div.del_favorite,
 div.explore div.poster:hover div.image > div.quality_box {
     display: block;
 }
-div.explore div.games > div > div.poster > div > div.info {
+div.explore div.games > div > div.poster > div > div.info,
+div.explore div.games_n > div > div.poster > div > div.info,
+div.explore div.games_a > div > div.poster > div > div.info {
     width: 230px;
 }
-div.explore div.games > div > div.poster > div.image > a > img {
+div.explore div.games > div > div.poster > div.image > a > img,
+div.explore div.games_n > div > div.poster > div.image > a > img,
+div.explore div.games_a > div > div.poster > div.image > a > img {
     max-width: 220px;
 }
 div.explore div.favorites > div > div.poster > div.image > a > img {
@@ -628,6 +634,10 @@ div.explore div.pager > div.item:hover {
 div.explore div.pager > div.item.active {
     background-color: #9CF;
     /*cursor: default;*/
+}
+div.explore div.source {
+    padding-left: 10px;
+    margin-bottom: 5px;
 }
 div.search_panel > div.left {
     display: inline-block;

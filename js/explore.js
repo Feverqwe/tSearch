@@ -4,12 +4,14 @@ var explore = function () {
     var xhr = {};
     var explorerCache = (GetSettings('explorerCache') !== undefined) ? JSON.parse(GetSettings('explorerCache')) : {
         games:null,
+        games_a:null,
+        games_n:null,
         films:null,
         top_films:null,
         serials:null
     };
     var favoritesList = (GetSettings('favoritesList') !== undefined) ? JSON.parse(GetSettings('favoritesList')) : [];
-    var listOptions = (GetSettings('listOptions') !== undefined) ? JSON.parse(GetSettings('listOptions')) : {
+    var listOptions_def = {
         favorites: {
             s:1,
             size: 0,
@@ -32,10 +34,21 @@ var explore = function () {
         },
         games: {
             s:1,
-            size: 0,
+            size: 221,
+            count: 4
+        },
+        games_n: {
+            s:1,
+            size: 221,
+            count: 4
+        },
+        games_a: {
+            s:1,
+            size: 221,
             count: 4
         }
     };
+    var listOptions = (GetSettings('listOptions') !== undefined) ? JSON.parse(GetSettings('listOptions')) : listOptions_def;
     var content_sourse = {
         favorites: {
             t:_lang.exp_favorites,
@@ -49,14 +62,36 @@ var explore = function () {
             timeout: 0
         },
         games: {
-            t:_lang.exp_games,
+            t:_lang.exp_games_best,
             c:2,
             root_url: 'http://games.mail.ru',
-            fav: 1,
+            fav: 0,
             did: null,
             size: 230,
             margin: 12,
             url: 'http://games.mail.ru/play/download/best/',
+            timeout: Math.round(24*60*60*7)
+        },
+        games_n: {
+            t:_lang.exp_games_new,
+            c:1,
+            root_url: 'http://games.mail.ru',
+            fav: 0,
+            did: null,
+            size: 230,
+            margin: 12,
+            url: 'http://games.mail.ru/play/download/new/',
+            timeout: Math.round(24*60*60*(7/2))
+        },
+        games_a: {
+            t:_lang.exp_games_all,
+            c:1,
+            root_url: 'http://games.mail.ru',
+            fav: 0,
+            did: null,
+            size: 230,
+            margin: 12,
+            url: 'http://games.mail.ru/play/download/all/',
             timeout: Math.round(24*60*60*7)
         },
         films: {
@@ -193,6 +228,10 @@ var explore = function () {
         if (type == 'films') return Films(content);
         else
         if (type == 'games') return Games(content);
+        else
+        if (type == 'games_n') return Games(content);
+        else
+        if (type == 'games_a') return Games(content);
     }
     var load_exp_content = function (type, url) {
         var time = Math.round(new Date().getTime() / 1000);
@@ -222,16 +261,15 @@ var explore = function () {
             }
         });
     }
-    var decodeLocalOptions = function () {
-        var count = listOptions.length;
+    var updateConfig = function () {
         var new_conf = {};
-        for (var i = 0;i<count;i++) {
-            new_conf[listOptions[i].n] = {
-                s: (listOptions[i].s== null)?1:listOptions[i].s,
-                size: (listOptions[i].size== null)?0:listOptions[i].size,
-                count: (listOptions[i].count== null)?6:listOptions[i].count
+        $.each(content_sourse, function(key, value) {
+            if (listOptions[key] != null) {
+                new_conf[key] = listOptions[key];
+            } else {
+                new_conf[key] = listOptions_def[key];
             }
-        }
+        });
         listOptions = new_conf;
     }
     var set_view_status = function (n,s) {
@@ -457,8 +495,10 @@ var explore = function () {
             }
         });
         //remove!!! временная ф-я
-        if (listOptions['films'] == null)
-            decodeLocalOptions();
+        if (listOptions['games_a'] == null)
+            updateConfig();
+            if (explorerCache['games_a'] == null)
+                SetSettings('explorerCache',JSON.stringify({}));
         //<<<<<<<<
         $.each(listOptions, function(key, value) {
             ul.append('<li class="'+key+'"></li>');

@@ -55,7 +55,9 @@ if (_lang != 'ru')
             old : 'ago'
         },
         exp_favorites : 'Favorites',
-        exp_games : 'Games',
+        exp_games_best : 'Games: Best',
+        exp_games_new : 'Games: New',
+        exp_games_all : 'Games: All',
         exp_in_cinima : 'Now in the movie',
         exp_films : 'Movies',
         exp_serials : 'TV Series',
@@ -115,7 +117,10 @@ if (_lang != 'ru')
         str30: 'Restore',
         str31: 'Update',
         str32: 'Restore',
-        str33: 'Restore error!'
+        str33: 'Restore error!',
+        exp_source : 'Source',
+        exp_s_a_f : 'movies',
+        exp_s_a_g : 'games'
     };
 if (_lang == 'ru')
     _lang = {
@@ -173,7 +178,9 @@ if (_lang == 'ru')
             old : 'назад'
         },
         exp_favorites : 'Избранное',
-        exp_games : 'Игры',
+        exp_games_best : 'Игры: Лучшие',
+        exp_games_new : 'Игры: Новые',
+        exp_games_all : 'Игры: Все',
         exp_in_cinima : 'Сейчас в кино',
         exp_films : 'Фильмы',
         exp_serials : 'Сериалы',
@@ -233,5 +240,8 @@ if (_lang == 'ru')
         str30: 'Восстановление',
         str31: 'Обновить',
         str32: 'Восстановить',
-        str33: 'Ошибка восстановления настроек!'
+        str33: 'Ошибка восстановления настроек!',
+        exp_source : 'Источники',
+        exp_s_a_f : 'фильмы',
+        exp_s_a_g : 'игры'
     };

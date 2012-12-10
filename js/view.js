@@ -977,7 +977,6 @@ var view = function () {
             },
             position:{
                 at:"bottom",
-                at:"bottom",
                 collision:"bottom"
             }
         }).end().autocomplete( "close" );
@@ -1112,6 +1111,9 @@ $(function () {
     $('#rez_table').find('th.leechs').text(_lang['table'].leechs[0]);
     $('#rez_table').find('th.leechs').attr('title',_lang['table'].leechs[1]);
     $('div.topbtn').attr('title',_lang['btn_up']);
+    $('div.explore > div.source').children("span").text(_lang['exp_source']);
+    $('div.explore > div.source').children("a").eq(0).text(_lang['exp_s_a_f']);
+    $('div.explore > div.source').children("a").eq(1).text(_lang['exp_s_a_g']);
     
     view.load_category(engine.categorys);
     view.LoadProfiles();
