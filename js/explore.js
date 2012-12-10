@@ -185,7 +185,7 @@ var explore = function () {
         var Games = function (c) {
             var g_proxy = function (url) {
                 if (!_google_proxy) return url;
-                var google_proxy = 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=213&rewriteMime=image/jpeg&url=';
+                var google_proxy = 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=220&rewriteMime=image/jpeg&url=';
                 return google_proxy+encodeURI(url);
             }
             c = view.contentFilter(c);
