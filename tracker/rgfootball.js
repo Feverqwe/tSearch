@@ -35,7 +35,7 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c).find('#main_content_wrap').children('table.forumline.tablesorter').children('tbody').children('tr');
+            var t = $(c).find('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
             var i = 0;

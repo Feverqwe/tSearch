@@ -77,8 +77,8 @@ tracker[tmp_num] = function () {
                 var div = t.eq(i).children('div');
                 if (div.eq(1).children('a').text().length == 0) continue;
                 var fix_auth = 0
-                if (div.eq(2).children('div').eq(1).children('a').attr('href') == undefined) {
-                    fix_auth = -1
+                if (div.eq(2).children('a').eq(0).attr('href') == undefined) {
+                   fix_auth = -1
                 }
                 arr[arr.length] = {
                     'category' : {
@@ -86,11 +86,11 @@ tracker[tmp_num] = function () {
                     },
                     'title' : div.eq(1).children('a').text(),
                     'url' : root_url+div.eq(1).children('a').attr('href'),
-                    'size' : calculateSize(div.eq(2).children('div').eq(2+fix_auth).text()),
-                    'dl' :  (fix_auth>-1)?root_url+div.eq(2).children('div').eq(1).children('a').attr('href'):null,
+                    'size' : calculateSize(div.eq(2).children('a').eq(0).text().replace("скачать ", "")),
+                    'dl' :  (fix_auth>-1)?root_url+div.eq(2).children('a').eq(0).attr('href'):null,
                     'seeds' : 1,
                     'leechs' : 0,
-                    'time' : calculateTime(div.eq(2).children('div').eq(3+fix_auth).text())
+                    'time' : calculateTime(div.eq(2).children('div').eq(1).text())
                 }
             }
             return arr;
@@ -107,11 +107,8 @@ tracker[tmp_num] = function () {
                 dataType: 'json',
                 data: JSON.stringify({
                     request : {
-                        "url" : "search",
-                        "search_for" : text,
-                        "cat_id" : 0,
-                        "options" : 0,
-                        "offset" : 1,
+                        "url" : "/search/",
+                        "data": {"search":text,"page":1,"cat_id":0,"options":0},
                         "method" : "getSearch"
                     }
                 }),
@@ -121,7 +118,7 @@ tracker[tmp_num] = function () {
                         view.result(id,[],t);
                     } else {
                         view.auth(1,id);
-                        view.result(id,readCode(data.response.result),t);
+                        view.result(id,readCode(data.response),t);
                     }
                 },
                 error:function (){

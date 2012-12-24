@@ -48,3 +48,11 @@ $(window).bind('hashchange', function() {
     ad.insert();
 });
 */
+/*
+(function() {
+	var ad13dbe = document.createElement('script'); ad13dbe.type = 'text/javascript'; ad13dbe.async = true;
+	ad13dbe.src = 'https://r.ad1.ru/3dbe.js';
+	var zst1 = document.getElementsByTagName('script')[0];
+	zst1.parentNode.insertBefore(ad13dbe, zst1);
+})();
+*/
