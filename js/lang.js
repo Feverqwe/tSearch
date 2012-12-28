@@ -120,7 +120,8 @@ if (_lang != 'ru')
         str33: 'Restore error!',
         exp_source : 'Source',
         exp_s_a_f : 'movies',
-        exp_s_a_g : 'games'
+        exp_s_a_g : 'games',
+        str_subsategoryfilter : 'Consider subcategories'
     };
 if (_lang == 'ru')
     _lang = {
@@ -243,5 +244,6 @@ if (_lang == 'ru')
         str33: 'Ошибка восстановления настроек!',
         exp_source : 'Источники',
         exp_s_a_f : 'фильмы',
-        exp_s_a_g : 'игры'
+        exp_s_a_g : 'игры',
+        str_subsategoryfilter : 'Учитывать подкатегории'
     };

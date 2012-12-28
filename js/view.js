@@ -12,6 +12,7 @@ var view = function () {
     var HideZeroSeed = (GetSettings('HideZeroSeed') !== undefined) ? parseInt(GetSettings('HideZeroSeed')) : false;
     var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
     var TeaserFilter = (GetSettings('TeaserFilter') !== undefined) ? parseInt(GetSettings('TeaserFilter')) : false;
+    var SubCategoryFilter = (GetSettings('SubCategoryFilter') !== undefined) ? parseInt(GetSettings('SubCategoryFilter')) : false;
     var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : true;
     var update_table = {
         timer: null,
@@ -840,7 +841,11 @@ var view = function () {
             var tr_count = tr.length;
             for (var i = 0;i<tr_count;i++) {
                 var tr_eq = tr.eq(i);
-                var name = tr_eq.children('td.name').children('div.title').children('a').text();
+                if (SubCategoryFilter) {
+                    var name = tr_eq.children('td.name').text();
+                } else {
+                    var name = tr_eq.children('td.name').children('div.title').children('a').text();
+                }
                 var f_name = filterTextCheck(keyword,name);
                 if (name != f_name)
                     tr_eq.attr('data-kf',1);

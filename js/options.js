@@ -3,6 +3,7 @@ var view = function () {
     var HideLeech = (GetSettings('HideLeech') !== undefined) ? parseInt(GetSettings('HideLeech')) : true;
     var HideSeed = (GetSettings('HideSeed') !== undefined) ? parseInt(GetSettings('HideSeed')) : false;
     var ShowIcons = (GetSettings('ShowIcons') !== undefined) ? parseInt(GetSettings('ShowIcons')) : 1;
+    var SubCategoryFilter = (GetSettings('SubCategoryFilter') !== undefined) ? parseInt(GetSettings('SubCategoryFilter')) : false;
     var HideZeroSeed = (GetSettings('HideZeroSeed') !== undefined) ? parseInt(GetSettings('HideZeroSeed')) : false;
     var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
     var AutoSetCategory = (GetSettings('AutoSetCategory') !== undefined) ? parseInt(GetSettings('AutoSetCategory')) : true;
@@ -73,6 +74,8 @@ var view = function () {
         $('input[name="hideleech"]').prop('checked',HideLeech);
         $('input[name="hideseed"]').prop('checked',HideSeed);
         $('input[name="typeFiltration"]').eq(AdvFiltration).prop('checked',true);
+        $('input[name="subcategoryfilter"]').prop('checked',SubCategoryFilter);
+        
         $('input[name="autosetcategory"]').prop('checked',AutoSetCategory);
         $('input[name="autocomplite_opt"]').prop('checked',AutoComplite_opt);
         $('input[name="google_proxy"]').prop('checked',google_proxy);
@@ -109,6 +112,7 @@ var view = function () {
         HideZeroSeed = SetSettings('HideZeroSeed',($('input[name="zeroseed"]').is(':checked'))?1:0);
         ShowIcons = SetSettings('ShowIcons',($('input[name="icons"]').is(':checked'))?1:0);
         HideLeech = SetSettings('HideLeech',($('input[name="hideleech"]').is(':checked'))?1:0);
+        SubCategoryFilter = SetSettings('SubCategoryFilter',($('input[name="subcategoryfilter"]').is(':checked'))?1:0);
         HideSeed = SetSettings('HideSeed',($('input[name="hideseed"]').is(':checked'))?1:0);
         AutoSetCategory = SetSettings('AutoSetCategory',($('input[name="autosetcategory"]').is(':checked'))?1:0);
         AutoComplite_opt = SetSettings('AutoComplite_opt',($('input[name="autocomplite_opt"]').is(':checked'))?1:0);
@@ -288,6 +292,7 @@ $(function () {
     $('a[data-lang=30]').text(_lang.str30);
     $('input[data-lang=31]').val(_lang.str31);
     $('input[data-lang=32]').val(_lang.str32);
+    $('span[data-lang=33]').text(_lang.str_subsategoryfilter);
     
     view.LoadProfiles();
     
