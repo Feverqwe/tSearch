@@ -48,7 +48,7 @@ var engine = function () {
     },
     {
         n: 'youtracker',
-        e: 0
+        e: 1
     },
     {
         n : 'rgfootball', 
@@ -72,7 +72,7 @@ var engine = function () {
     },
     {
         n : 'underverse', 
-        e : 0
+        e : 1
     },
     {
         n : 'libertorrent', 
@@ -127,7 +127,7 @@ var engine = function () {
     },
     {
         n: 'btdigg',
-        e: 0
+        e: 1
     },
     //зарубеж.
     {

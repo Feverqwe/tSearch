@@ -5,8 +5,8 @@ tracker[tmp_num] = function () {
     var id = null;
     var icon = 'data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAADksgYAAAD/AAAAAACkpKUA4ODgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMzMzMzMzMzMjIyMjIyMjIzMzMzMzMzMzRERERERERERBFARAQEQABEFEBEBAQERAQUQEQEBARERBRARAQEAAAEFEBEBAQERAERAAQEBEAARBRAREQEREREFEQEBAREREREREREREREQzMzMzMzMzMzIyMjIyMjIyMzMzMzMzMzMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
     var url = 'http://tfile.me/forum/search';
-    var login_url = 'http://tfile.me/forum/search';
-    var root_url = 'http://tfile.me/';
+    var login_url = 'http://tfile.me/';
+    var root_url = 'http://tfile.me/forum/';
     var about = 'Торрент трекер tfile.me - фильмы, музыка, программы, книги';
     var flags = {
         a : 0,
