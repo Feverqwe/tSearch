@@ -10,6 +10,7 @@ var explore = function () {
         top_films:null,
         serials:null
     };
+    var topCache = (GetSettings('topCache') !== undefined) ? JSON.parse(GetSettings('topCache')) : null;
     var favoritesList = (GetSettings('favoritesList') !== undefined) ? JSON.parse(GetSettings('favoritesList')) : [];
     var listOptions_def = {
         favorites: {
@@ -607,6 +608,43 @@ var explore = function () {
                 _gaq.push(['_trackEvent', 'About', 'keyword', s]);
             } finally {
                 return true;
+            }
+        });
+        
+        get_search_top()
+        $('div.explore > div.top_search > div.tags').on('click', 'span > a', function() {
+            event.preventDefault();
+            var s = $(this).text();
+            triggerClick(s);
+        });
+    }
+    var render_top = function(arr) {
+        $('div.explore div.top_search div.tags').jQCloud(arr);
+    }
+    var get_search_top = function() {
+        var timeout = 86400;
+        var time = Math.round(new Date().getTime() / 1000);
+        if (topCache != null && topCache.keywords != null && topCache.timeout>time) {
+            render_top(topCache.keywords);
+            return;
+        }
+        var type = "search_top";
+        var url = "http://feverqwe.narod.ru/top.json";
+        if (xhr[type] != null)
+            xhr[type].abort();
+        xhr[type] = $.ajax({
+            type: 'JSON',
+            url: url,
+            success: function(data) {
+                data = jQuery.parseJSON( data );
+                data['timeout'] = time + timeout;
+                SetSettings('topCache',JSON.stringify(data));
+                var kw_arr = data['keywords'];
+                render_top(kw_arr);
+            },
+            error:function (){
+                if (topCache != null && topCache.keywords != null)
+                    render_top(topCache.keywords);
             }
         });
     }

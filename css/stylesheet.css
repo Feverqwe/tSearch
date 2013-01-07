@@ -639,6 +639,16 @@ div.explore div.source {
     padding-left: 10px;
     margin-bottom: 5px;
 }
+div.explore div.top_search {
+    height: 200px;
+    overflow: hidden;
+}
+div.explore div.top_search div.tags {
+    height: 200px;
+}
+div.explore div.top_search a {
+    white-space: nowrap;
+}
 div.search_panel > div.left {
     display: inline-block;
 }

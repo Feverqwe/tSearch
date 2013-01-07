@@ -19,6 +19,7 @@ cp *.json ./build/.
 java -jar yuicompressor-2.4.7.jar ./css/stylesheet.css -o ./build/css/stylesheet.css
 java -jar yuicompressor-2.4.7.jar ./css/options.css -o ./build/css/options.css
 java -jar yuicompressor-2.4.7.jar ./css/history.css -o ./build/css/history.css
+java -jar yuicompressor-2.4.7.jar ./css/jqcloud.css -o ./build/css/jqcloud.css
 
 mkdir ./build_firefox/chrome
 cp -r ./build ./build_firefox/chrome/content

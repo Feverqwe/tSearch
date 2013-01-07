@@ -875,6 +875,9 @@ var view = function () {
         }
     }
     var triggerSearch = function (keyword) {
+        if (keyword == "#") {
+            return false;
+        }
         $('body,html').scrollTop();
         $('div.result_panel').css('display','block');
         $('div.explore').css('display','none');
