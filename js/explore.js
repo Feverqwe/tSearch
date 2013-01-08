@@ -619,7 +619,7 @@ var explore = function () {
         });
     }
     var render_top = function(arr) {
-        $('div.explore div.top_search div.tags').jQCloud(arr);
+        $('div.explore div.top_search div.tags').jQCloud(arr,{delayedMode: true, encodeURI: false});
     }
     var get_search_top = function() {
         var timeout = 86400;
