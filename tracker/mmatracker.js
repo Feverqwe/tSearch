@@ -72,6 +72,12 @@ tracker[tmp_num] = function () {
             var i = 0;
             for (i = 1;i<l-2;i++) {
                 var tr = t.eq(i).children('tr');
+                var dl_link = tr.eq(1).children('td').eq(1).children('a').eq(2).attr('href');
+                if (dl_link == undefined) {
+                    dl_link = null;
+                } else {
+                    dl_link = root_url+dl_link
+                }
                 arr[arr.length] = {
                     'category' : {
                         'title' : tr.eq(1).children('td').eq(0).children('a').children('img').attr('alt'), 
@@ -80,7 +86,7 @@ tracker[tmp_num] = function () {
                     },
                     'title' : tr.eq(1).children('td').eq(1).children('a').eq(0).text(),
                     'url' : root_url+tr.eq(1).children('td').eq(1).children('a').eq(0).attr('href'),
-                    'dl'  : root_url+tr.eq(1).children('td').eq(1).children('a').eq(2).attr('href'),
+                    'dl'  : dl_link,
                     'size' : calculateSize(tr.eq(2).children('td').eq(3).text()),
                     'seeds' : $.trim(tr.eq(2).children('td').eq(4).text().split('|')[0]),
                     'leechs' : $.trim(tr.eq(2).children('td').eq(4).text().split('|')[1]),
