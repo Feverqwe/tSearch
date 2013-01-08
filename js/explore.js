@@ -176,7 +176,7 @@ var explore = function () {
                 var item = t.eq(i).children('td');
                 arr[arr.length] = {
                     'img' : makeimg(item.eq(1).children('a').attr('href')),
-                    'name' : item.eq(1).children('a').text().replace(/ \([0-9]*\)$/,''),
+                    'name' : item.eq(1).children('a').text().replace(/ \([0-9]* – .*\)$/,''),
                     'name_en' : item.eq(1).children('span').text(),
                     'url' : item.eq(1).children('a').attr('href')
                 }
