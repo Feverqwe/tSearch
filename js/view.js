@@ -376,7 +376,7 @@ var view = function () {
             title = title.n;
             
             quality = quality_calc(quality,title,v);
-            if (autoSetCat)
+            if (autoSetCat & v.category.id < 0)
                 v.category.id = autoset_Category(quality);
             
             var filter = '';
