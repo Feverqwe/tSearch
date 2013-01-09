@@ -614,7 +614,7 @@ var explore = function () {
         get_search_top()
         $('div.explore > div.top_search > div.tags').on('click', 'span > a', function() {
             event.preventDefault();
-            var s = $(this).text();
+            var s = $(this).attr('title');
             triggerClick(s);
         });
     }
