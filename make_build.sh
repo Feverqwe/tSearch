@@ -74,6 +74,7 @@ java -jar compiler.jar --js ./js/history.js --js_output_file ./build/js/history.
 java -jar compiler.jar --js ./js/options.js --js_output_file ./build/js/options.js
 java -jar compiler.jar --js ./js/jquery.tablesorter.js --js_output_file ./build/js/jquery.tablesorter.js
 java -jar compiler.jar --js ./js/ad.js --js_output_file ./build/js/ad.js
+java -jar compiler.jar --js ./js/jqcloud-1.0.2.min.js --js_output_file ./build/js/jqcloud-1.0.2.min.js
 
 
 cp -r ./build/ ./build_chrome_ext/.
