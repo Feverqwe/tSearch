@@ -498,8 +498,8 @@ var explore = function () {
         //remove!!! временная ф-я
         if (listOptions['games_a'] == null)
             updateConfig();
-            if (explorerCache['games_a'] == null)
-                SetSettings('explorerCache',JSON.stringify({}));
+        if (explorerCache['games_a'] == null)
+            SetSettings('explorerCache',JSON.stringify({}));
         //<<<<<<<<
         $.each(listOptions, function(key, value) {
             ul.append('<li class="'+key+'"></li>');
@@ -619,7 +619,10 @@ var explore = function () {
         });
     }
     var render_top = function(arr) {
-        $('div.explore div.top_search div.tags').jQCloud(arr,{delayedMode: true, encodeURI: false});
+        $('div.explore div.top_search div.tags').jQCloud(arr,{
+            delayedMode: true, 
+            encodeURI: false
+        });
     }
     var get_search_top = function() {
         var timeout = 86400;

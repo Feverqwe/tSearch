@@ -121,7 +121,8 @@ if (_lang != 'ru')
         exp_source : 'Source',
         exp_s_a_f : 'movies',
         exp_s_a_g : 'games',
-        str_subsategoryfilter : 'Consider subcategories'
+        str_subsategoryfilter : 'Consider subcategories',
+        str_autosetcat : 'Define the category of the torrent, if it is not present'
     };
 if (_lang == 'ru')
     _lang = {
@@ -245,5 +246,6 @@ if (_lang == 'ru')
         exp_source : 'Источники',
         exp_s_a_f : 'фильмы',
         exp_s_a_g : 'игры',
-        str_subsategoryfilter : 'Учитывать подкатегории'
+        str_subsategoryfilter : 'Учитывать подкатегории',
+        str_autosetcat : 'Определить категорию раздачи, если её нету'
     };

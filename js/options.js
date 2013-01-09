@@ -14,6 +14,7 @@ var view = function () {
     var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : true;
     var google_proxy = (GetSettings('google_proxy') !== undefined) ? parseInt(GetSettings('google_proxy')) : false;
     var google_analytics = (GetSettings('google_analytics') !== undefined) ? parseInt(GetSettings('google_analytics')) : false;
+    var autoSetCat = (GetSettings('autoSetCat') !== undefined) ? parseInt(GetSettings('autoSetCat')) : true;
     var t_table_line = 0;
     var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     var oldProfileID = 0;
@@ -85,6 +86,8 @@ var view = function () {
         $('input[name="add_in_omnibox"]').prop('checked',add_in_omnibox);
         $('input[name="context_menu"]').prop('checked',context_menu);
         $('input[name="search_popup"]').prop('checked',search_popup);
+        
+        $('input[name="autosetcat"]').prop('checked',autoSetCat);
     }
     var saveCurrentProfile = function () {
         var tr = $('#internalTrackers tbody').children('tr');
@@ -122,6 +125,7 @@ var view = function () {
             SetSettings('explorerCache',JSON.stringify({}));
         }
         google_analytics = SetSettings('google_analytics',($('input[name="google_analytics"]').is(':checked'))?1:0);
+        autoSetCat = SetSettings('autoSetCat',($('input[name="autosetcat"]').is(':checked'))?1:0);
         TeaserFilter = SetSettings('TeaserFilter',($('input[name="teaserfilter"]').is(':checked'))?1:0);
         
         add_in_omnibox = SetSettings('add_in_omnibox',($('input[name="add_in_omnibox"]').is(':checked'))?1:0);
@@ -285,7 +289,7 @@ $(function () {
     $('input[data-lang=27]').val(_lang.btn_27);
     $('span[data-lang=24]').text(_lang.stp_span_24);
     $('legend[data-lang=25]').text(_lang.stp_legend_25);
-    $('span[data-lang=34]').text(_lang.stp_span_33);
+    $('span[data-lang=34]').text(_lang.stp_span_34);
     $('span[data-lang=27]').text(_lang.stp_span_27);
     $('legend[data-lang=28]').text(_lang.str28);
     $('a[data-lang=29]').text(_lang.str29);
@@ -293,6 +297,7 @@ $(function () {
     $('input[data-lang=31]').val(_lang.str31);
     $('input[data-lang=32]').val(_lang.str32);
     $('span[data-lang=33]').text(_lang.str_subsategoryfilter);
+    $('span[data-lang=35]').text(_lang.str_autosetcat);
     
     view.LoadProfiles();
     
