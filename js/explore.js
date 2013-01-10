@@ -159,7 +159,7 @@ var explore = function () {
                 var item = t.eq(i).children('div');
                 arr[arr.length] = {
                     'img' : sesizeimg(item.eq(0).children('a').children('img').attr('src')),
-                    'name' : item.eq(1).children('div.name').children('a').text(),
+                    'name' : item.eq(1).children('div.name').children('a').text().replace(/ \(.*, ([0-9]{4})\)$/,'$1'),
                     'name_en' : item.eq(1).children('div.name').children('span').text().replace(/ \([0-9]*\) [0-9]* мин./, ''),
                     'url' : item.eq(1).children('div.name').children('a').attr('href')
                 }
