@@ -159,7 +159,7 @@ var explore = function () {
                 var item = t.eq(i).children('div');
                 arr[arr.length] = {
                     'img' : sesizeimg(item.eq(0).children('a').children('img').attr('src')),
-                    'name' : item.eq(1).children('div.name').children('a').text().replace(/ \(.*, ([0-9]{4})\)$/,'$1'),
+                    'name' : item.eq(1).children('div.name').children('a').text().replace(/ \(.*, ([0-9]{4})\)$/,' ($1)'),
                     'name_en' : item.eq(1).children('div.name').children('span').text().replace(/ \([0-9]*\) [0-9]* мин./, ''),
                     'url' : item.eq(1).children('div.name').children('a').attr('href')
                 }
@@ -214,7 +214,7 @@ var explore = function () {
                 var item = t.eq(i);
                 arr[arr.length] = {
                     'img' : makeimg(item.children('a').attr('href')),
-                    'name' : item.children('a').text(),
+                    'name' : item.children('a').text().replace(/ \(.*, ([0-9]{4})\)$/,' ($1)'),
                     'name_en' : item.children('i').text(),
                     'url' : item.children('a').attr('href')
                 }
@@ -293,7 +293,7 @@ var explore = function () {
     }
     var get_view_size = function (n) {
         if (listOptions == null) return content_sourse[n].size;
-        if (listOptions[n] != null)
+        if (listOptions[n] != null & listOptions[n].size > 0)
             return listOptions[n].size;
         return content_sourse[n].size;
     }
@@ -434,6 +434,7 @@ var explore = function () {
             +'</div>'
             +'</div>';
         });
+        
         return view.contentUnFilter(c);
     }
     var make_page_body = function (i_count,length,page) {
