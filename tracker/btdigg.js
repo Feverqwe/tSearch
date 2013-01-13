@@ -87,11 +87,11 @@ tracker[tmp_num] = function () {
                         },
                         'title' : name_link.text(),
                         'url' : root_url+name_link.attr('href'),
-                        'size' : calculateSize(params.eq(1).children('span.attr_val').text()),
+                        'size' : calculateSize(params.eq(2).children('span.attr_val').text()),
                         'dl' : params.eq(0).children('a').attr('href'),
                         'seeds' : 1,
-                        'leechs' : params.eq(3).children('span.attr_val').text(),
-                        'time' : calculateTime(params.eq(4).children('span.attr_val').text())
+                        'leechs' : params.eq(4).children('span.attr_val').text(),
+                        'time' : calculateTime(params.eq(5).children('span.attr_val').text())
                     }
                 }
             }
