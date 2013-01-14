@@ -1,43 +1,30 @@
-/*
 var ad = function () {
-    var last_ad_id = 0;
-    var add_ad = function(url) {
-        $.ajax({
-            type: 'GET',
-            url: url,
-            success: function(data) {
-                if (data.substr(0,16) != 'document.write("') return;
-                var c = JSON.parse('{"data": "'+data.substr(16,data.length-16-2).replace(/[\r\n\t]/g,'')+'"}');
-                c = c.data.replace(/src\=\"\/\//g,'src="http://').replace(/script/img,'#blockscr#');
-                $('#ad').empty().append(c);
-            },
-            error:function (xhr, ajaxOptions, thrownError){
-            
-            }
-        });
-    }
-    var getRandomArbitary = function (min, max)
+    var ad_arr = [["images/ad1.jpg","http://c.cpa1.ru/3hqn"],
+                  ["images/ad2.jpg","http://c.cpa1.ru/3hqp"],
+                  ["images/ad3.jpg","http://c.cpa1.ru/3k37"],
+                  ["images/ad4.jpg","http://c.cpa1.ru/3k3a"],
+                  ["images/ad5.jpg","http://c.cpa1.ru/3k3b"],
+                  ["images/ad6.jpg","http://c.cpa1.ru/3k3c"]
+              ]
+    var getRandomArbitary = function (min, max, e)
     {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+        var i = 0
+        do {
+            i = Math.floor(Math.random() * (max - min + 1)) + min;
+        } while ( i == e );
+        return i
     }
-    var insert = function () {
-        var i = getRandomArbitary(1,4);
-        if (last_ad_id == i) return;
-        else {
-            last_ad_id = i;
-            if (i == 1)
-                add_ad('http://www.ozon.ru/PartnerTwinerNew.aspx?revident=4d58bed8-b5c6-4424-bd04-4a2a06e6d98b');
-            else if (i == 2)
-                add_ad('http://www.ozon.ru/PartnerTwinerNew.aspx?revident=369828f4-0fc9-4262-b20c-07449a5c0bc0');
-            else if (i == 3)
-                add_ad('http://www.ozon.ru/PartnerTwinerNew.aspx?revident=5ac92f2d-1ca1-4e47-bc0d-adc7182824b4');
-            else
-                add_ad('http://www.ozon.ru/PartnerTwinerNew.aspx?revident=1d7850fe-0d87-44cb-ba2a-5bf1a1d887cb');
+    var insert = function (e) {
+        if (e == null) {
+            $('#ad').empty().append('<p>'+_lang.ad+'</p>');
         }
+        var i = getRandomArbitary(0,ad_arr.length-1,e);
+        $('#ad').append('<div><a href="'+ad_arr[i][1]+'" target="_blank"><img src="'+ad_arr[i][0]+'" /></a></div>');
+        return i
     }
     return {
         insert : function () {
-            return insert();
+            return insert(insert());
         }
     }
 }();
@@ -47,12 +34,3 @@ $(window).load(function () {
 $(window).bind('hashchange', function() {
     ad.insert();
 });
-*/
-/*
-(function() {
-	var ad13dbe = document.createElement('script'); ad13dbe.type = 'text/javascript'; ad13dbe.async = true;
-	ad13dbe.src = 'https://r.ad1.ru/3dbe.js';
-	var zst1 = document.getElementsByTagName('script')[0];
-	zst1.parentNode.insertBefore(ad13dbe, zst1);
-})();
-*/
