@@ -574,7 +574,7 @@ div.explore div.poster > div.image > a > img:hover {
 div.explore div.games > div > div.poster, 
 div.explore div.games_n > div > div.poster, 
 div.explore div.games_a > div > div.poster {
-    width: 230px;
+    width: 190px;
     margin: 12px;
 }
 div.explore div.poster > div {
@@ -601,12 +601,12 @@ div.explore div.poster:hover div.image > div.quality_box {
 div.explore div.games > div > div.poster > div > div.info,
 div.explore div.games_n > div > div.poster > div > div.info,
 div.explore div.games_a > div > div.poster > div > div.info {
-    width: 230px;
+    width: 190px;
 }
 div.explore div.games > div > div.poster > div.image > a > img,
 div.explore div.games_n > div > div.poster > div.image > a > img,
 div.explore div.games_a > div > div.poster > div.image > a > img {
-    max-width: 220px;
+    max-width: 180px;
 }
 div.explore div.favorites > div > div.poster > div.image > a > img {
     max-width: 130px;

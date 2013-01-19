@@ -35,18 +35,18 @@ var explore = function () {
         },
         games: {
             s:1,
-            size: 221,
-            count: 4
+            size: 120,
+            count: 7
         },
         games_n: {
             s:1,
-            size: 221,
-            count: 4
+            size: 120,
+            count: 7
         },
         games_a: {
             s:1,
-            size: 221,
-            count: 4
+            size: 120,
+            count: 7
         }
     };
     var listOptions = (GetSettings('listOptions') !== undefined) ? JSON.parse(GetSettings('listOptions')) : listOptions_def;
@@ -62,38 +62,47 @@ var explore = function () {
             url: '',
             timeout: 0
         },
-        games: {
+        games: { //best
             t:_lang.exp_games_best,
             c:2,
-            root_url: 'http://games.mail.ru',
+            root_url: 'http://gameguru.ru/',
             fav: 0,
             did: null,
-            size: 230,
+            size: 190,
             margin: 12,
-            url: 'http://games.mail.ru/play/download/best/',
-            timeout: Math.round(24*60*60*7)
+            url: 'http://gameguru.ru/pc/games/rate_week/page%page%/list.html',
+            timeout: Math.round(24*60*60*7), //week
+            page_max: 5,
+            page_zero: 1,
+            page_e: true
         },
-        games_n: {
+        games_n: { //new
             t:_lang.exp_games_new,
             c:1,
-            root_url: 'http://games.mail.ru',
+            root_url: 'http://gameguru.ru/',
             fav: 0,
             did: null,
-            size: 230,
+            size: 190,
             margin: 12,
-            url: 'http://games.mail.ru/play/download/new/',
-            timeout: Math.round(24*60*60*(7/2))
+            url: 'http://gameguru.ru/pc/games/new/page%page%/list.html',
+            timeout: Math.round(24*60*60*(7/2)), //half week
+            page_max: 5,
+            page_zero: 1,
+            page_e: true
         },
-        games_a: {
+        games_a: { //all
             t:_lang.exp_games_all,
             c:1,
-            root_url: 'http://games.mail.ru',
+            root_url: 'http://gameguru.ru/',
             fav: 0,
             did: null,
-            size: 230,
+            size: 190,
             margin: 12,
-            url: 'http://games.mail.ru/play/download/all/',
-            timeout: Math.round(24*60*60*7)
+            url: 'http://gameguru.ru/pc/games/best_all/page%page%/list.html',
+            timeout: Math.round(24*60*60*7), //week
+            page_max: 10,
+            page_zero: 1,
+            page_e: true
         },
         films: {
             t:_lang.exp_in_cinima,
@@ -204,6 +213,30 @@ var explore = function () {
             }
             return arr;
         }
+        var Games_gg = function (c) {
+            var makeimg = function (url) {
+                return url = content_sourse[type].root_url+url.replace('/small_img','/medium_img');
+            }
+            var g_proxy = function (url) {
+                if (!_google_proxy) return url;
+                var google_proxy = 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=220&rewriteMime=image/jpeg&url=';
+                return google_proxy+encodeURI(url);
+            }
+            c = view.contentFilter(c);
+            var t = $(c).find('td.enc-box-list').children('div.enc-item');
+            var l = t.length;
+            var arr = [];
+            var i = 0;
+            for (i = 0;i<l;i++) {
+                var item = t.eq(i);
+                arr[arr.length] = {
+                    'img' : g_proxy(makeimg(item.children('div.e-title').children('div.im').find('img').attr('src'))),
+                    'name' : item.children('div.e-title').find('a').eq(0).text().trim(),
+                    'url' : item.children('div.e-title').find('a').eq(0).attr('href')
+                }
+            }
+            return arr;
+        }
         var TopFilms = function (c) {
             c = view.contentFilter(c);
             var t = $(c).find('div.stat').children('div.el');
@@ -228,13 +261,16 @@ var explore = function () {
         else
         if (type == 'films') return Films(content);
         else
-        if (type == 'games') return Games(content);
+        if (type == 'games') return Games_gg(content);
         else
-        if (type == 'games_n') return Games(content);
+        if (type == 'games_n') return Games_gg(content);
         else
-        if (type == 'games_a') return Games(content);
+        if (type == 'games_a') return Games_gg(content);
     }
-    var load_exp_content = function (type, url) {
+    var load_exp_content = function (type, url, page) {
+        if (page != null) {
+            url = url.replace('%page%',page[1])
+        }
         var time = Math.round(new Date().getTime() / 1000);
         var timeout = content_sourse[type].timeout;
         if ( $('div.explore div.'+type).length > 0 ) return;
@@ -242,13 +278,31 @@ var explore = function () {
             write_content(explorerCache[type].cache_arr,type);
             return;
         }
-        if (xhr[type] != null)
-            xhr[type].abort();
+        if (page != null) {
+            if (xhr[type+page[1]] != null)
+                xhr[type+page[1]].abort();
+        } else {
+            if (xhr[type] != null)
+                xhr[type].abort();
+        }
         xhr[type] = $.ajax({
             type: 'GET',
             url: url,
             success: function(data) {
                 var content = read_content(type,data);
+                if (page != null) {
+                    if (explorerCache[type] != null && explorerCache[type].date != null && explorerCache[type].date<time) {
+                        explorerCache[type].date = time+timeout;
+                        explorerCache[type].cache_arr = []
+                    }
+                    if (explorerCache[type] != null && explorerCache[type].cache_arr != null) {
+                        if (page[1] == page[0])
+                            content = content.concat(explorerCache[type].cache_arr);
+                        else
+                            content = explorerCache[type].cache_arr.concat(content);
+                    }
+                    $('li.'+type).empty();
+                }
                 write_content(content,type);
                 explorerCache[type] = {
                     date : time+timeout,
@@ -507,7 +561,13 @@ var explore = function () {
             if (key == 'favorites')
                 show_favorites();
             else
-                load_exp_content(key,content_sourse[key].url);
+                if (content_sourse[key].page_e == true && content_sourse[key].page_zero != null && content_sourse[key].page_max != null) {
+                    var zero = content_sourse[key].page_zero;
+                    var max = content_sourse[key].page_max;
+                    for (var n = zero; n <= max; n++)
+                        load_exp_content(key,content_sourse[key].url, [zero, n, max]);
+                } else 
+                    load_exp_content(key,content_sourse[key].url);
         });
         //спойлер
         $('div.explore > ul.sortable > li').on('click','div > h2 > div.spoiler', function () {
