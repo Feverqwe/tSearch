@@ -5,6 +5,7 @@
         <meta charset="utf-8" />
         <link rel="shortcut icon" href="images/settings.png">
         <link rel="stylesheet" type="text/css" href="css/options.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
         <script src="js/jquery-1.8.1.min.js"></script>
         <script src="js/storage.js"></script>
         <script src="js/lang.js"></script>
@@ -32,10 +33,10 @@
             <fieldset>
                 <legend data-lang=24>Профиль</legend>
                 <div class="profile">
-                    <select></select><input data-lang=25 class="rmbtn" type="button" value="Удалить" />
+                    <select></select><input data-lang=25 class="rmbtn btn" type="button" value="Удалить" />
                     <div>
                         <span data-lang=26>Название: </span><input name="new_profile_name" type="text" />
-                        <input class="addbtn" type="button" value="Добавить" data-lang=27 />
+                        <input class="addbtn btn" type="button" value="Добавить" data-lang=27 />
                     </div>
                 </div>
             </fieldset>
@@ -89,16 +90,16 @@
                 </div>
                 <div class="backup" style="display:none;">
                     <textarea rows="10" name="backup"></textarea>
-                    <input type="button" name="backup_btn" data-lang="31" value="Обновить"/>
+                    <input type="button" class="btn" name="backup_btn" data-lang="31" value="Обновить"/>
                 </div>
                 <div class="restore" style="display:block;">
                     <textarea rows="10" name="restore"></textarea>
-                    <input type="button" name="restore_btn" data-lang="32" value="Восстановить"/>
+                    <input type="button" class="btn btn-danger" name="restore_btn" data-lang="32" value="Восстановить"/>
                 </div>
             </div>
         </fieldset>
         <div class="save_panel">
-            <input type="submit" value="Сохранить" />
+            <input class="btn btn-success" type="submit" value="Сохранить" />
             <div class="progress"></div>
         </div>
     </form>
