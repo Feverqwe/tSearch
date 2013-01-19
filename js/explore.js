@@ -65,7 +65,7 @@ var explore = function () {
         games: { //best
             t:_lang.exp_games_best,
             c:2,
-            root_url: 'http://gameguru.ru/',
+            root_url: 'http://gameguru.ru',
             fav: 0,
             did: null,
             size: 190,
@@ -79,7 +79,7 @@ var explore = function () {
         games_n: { //new
             t:_lang.exp_games_new,
             c:1,
-            root_url: 'http://gameguru.ru/',
+            root_url: 'http://gameguru.ru',
             fav: 0,
             did: null,
             size: 190,
@@ -93,7 +93,7 @@ var explore = function () {
         games_a: { //all
             t:_lang.exp_games_all,
             c:1,
-            root_url: 'http://gameguru.ru/',
+            root_url: 'http://gameguru.ru',
             fav: 0,
             did: null,
             size: 190,
@@ -823,6 +823,8 @@ var explore = function () {
             var t =  $(this).parents().eq(2).children('div').children('div.poster');
             var sect = $(this).parents().eq(3).attr('class');
             var defoult_size = content_sourse[sect].size;
+            if (listOptions_def[sect] != null && listOptions_def[sect].size != null && listOptions_def[sect].size > 0)
+                defoult_size = listOptions_def[sect].size;
             var margin_size = get_poster_margin_size(sect,defoult_size);
             t.css({
                 'width' : defoult_size+'px',
@@ -832,7 +834,7 @@ var explore = function () {
             t.find('div.title span').css('font-size','12px');
             t.find('div.info a').css('font-size','12px');
             t.find('div.info').parent().css('display','block');
-            $(this).parent().children('div.slider').children().css('left','100%');
+            $(this).parent().children('div.slider').slider('value',defoult_size);
             var sect = $(this).parents().eq(3).attr('class');
             set_view_size(sect,defoult_size);
             calculate_moveble(sect,defoult_size);
