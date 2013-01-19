@@ -35,17 +35,17 @@ var explore = function () {
         },
         games: {
             s:1,
-            size: 120,
+            size: 128,
             count: 7
         },
         games_n: {
             s:1,
-            size: 120,
+            size: 128,
             count: 7
         },
         games_a: {
             s:1,
-            size: 120,
+            size: 128,
             count: 7
         }
     };
