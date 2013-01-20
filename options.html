@@ -5,7 +5,7 @@
         <meta charset="utf-8" />
         <link rel="shortcut icon" href="images/settings.png">
         <link rel="stylesheet" type="text/css" href="css/options.css">
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
         <script src="js/jquery-1.8.1.min.js"></script>
         <script src="js/storage.js"></script>
         <script src="js/lang.js"></script>
@@ -33,10 +33,10 @@
             <fieldset>
                 <legend data-lang=24>Профиль</legend>
                 <div class="profile">
-                    <select></select><input data-lang=25 class="rmbtn btn" type="button" value="Удалить" />
+                    <select></select><input data-lang=25 class="rmbtn btn btn-mini" type="button" value="Удалить" />
                     <div>
                         <span data-lang=26>Название: </span><input name="new_profile_name" type="text" />
-                        <input class="addbtn btn" type="button" value="Добавить" data-lang=27 />
+                        <input class="addbtn btn btn-mini" type="button" value="Добавить" data-lang=27 />
                     </div>
                 </div>
             </fieldset>
@@ -66,6 +66,7 @@
             <div><input name="context_menu" type="checkbox"/><span data-lang=15>Добавить поиск в контекстное меню (выделяем текст, жмем правй кнопкой мыши - Найти торрент)</span></div>
             <div><input name="search_popup" type="checkbox"/><span data-lang=23>Показывать поиск при нажатии на иконку расширения</span></div>
             <div><input name="autosetcat" type="checkbox"/><span data-lang=35>Автоматически определить категорию раздачи</span></div>
+            <div><input name="use_english_postername" type="checkbox"/><span data-lang=36>Отображать имена фильмов\сериалов на английском на главной странице</span></div>
         </fieldset>
         <fieldset>
             <legend data-lang=16>Фильтрация списка</legend>

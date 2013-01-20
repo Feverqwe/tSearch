@@ -12,6 +12,7 @@ var view = function () {
     var context_menu = (GetSettings('context_menu') !== undefined) ? parseInt(GetSettings('context_menu')) : true;
     var search_popup = (GetSettings('search_popup') !== undefined) ? parseInt(GetSettings('search_popup')) : false;
     var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : true;
+    var use_english_postername = (GetSettings('use_english_postername') !== undefined) ? parseInt(GetSettings('use_english_postername')) : false;
     var google_proxy = (GetSettings('google_proxy') !== undefined) ? parseInt(GetSettings('google_proxy')) : false;
     var google_analytics = (GetSettings('google_analytics') !== undefined) ? parseInt(GetSettings('google_analytics')) : false;
     var autoSetCat = (GetSettings('autoSetCat') !== undefined) ? parseInt(GetSettings('autoSetCat')) : true;
@@ -79,6 +80,8 @@ var view = function () {
         
         $('input[name="autosetcategory"]').prop('checked',AutoSetCategory);
         $('input[name="autocomplite_opt"]').prop('checked',AutoComplite_opt);
+        $('input[name="use_english_postername"]').prop('checked',use_english_postername);
+        
         $('input[name="google_proxy"]').prop('checked',google_proxy);
         $('input[name="google_analytics"]').prop('checked',google_analytics);
         $('input[name="teaserfilter"]').prop('checked',TeaserFilter);
@@ -119,6 +122,8 @@ var view = function () {
         HideSeed = SetSettings('HideSeed',($('input[name="hideseed"]').is(':checked'))?1:0);
         AutoSetCategory = SetSettings('AutoSetCategory',($('input[name="autosetcategory"]').is(':checked'))?1:0);
         AutoComplite_opt = SetSettings('AutoComplite_opt',($('input[name="autocomplite_opt"]').is(':checked'))?1:0);
+        use_english_postername = SetSettings('use_english_postername',($('input[name="use_english_postername"]').is(':checked'))?1:0);
+        
         var google_proxy_old = google_proxy;
         google_proxy = SetSettings('google_proxy',($('input[name="google_proxy"]').is(':checked'))?1:0);
         if (google_proxy_old != google_proxy) {
@@ -298,6 +303,7 @@ $(function () {
     $('input[data-lang=32]').val(_lang.str32);
     $('span[data-lang=33]').text(_lang.str_subsategoryfilter);
     $('span[data-lang=35]').text(_lang.str_autosetcat);
+    $('span[data-lang=36]').text(_lang.use_english_postername);
     
     view.LoadProfiles();
     
@@ -308,6 +314,10 @@ $(function () {
         }
     });
     $('select[name=lang]').children('option[value='+_lang.t+']').attr('selected','selected');
+    
+    if (_lang.t != 'ru') {
+        $('input[name="use_english_postername"]').parent().hide();
+    }
     
     if (navigator.userAgent.search(/Chrome/) == -1 && navigator.userAgent.search(/Opera/) == -1) {
         //firefox

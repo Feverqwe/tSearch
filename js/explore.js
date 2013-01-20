@@ -1,5 +1,6 @@
 var explore = function () {
     var _google_proxy = (GetSettings('google_proxy') !== undefined) ? parseInt(GetSettings('google_proxy')) : false;
+    var use_english_postername = (GetSettings('use_english_postername') !== undefined) ? parseInt(GetSettings('use_english_postername')) : false;
     var AutoSetCategory = (GetSettings('AutoSetCategory') !== undefined) ? parseInt(GetSettings('AutoSetCategory')) : true;
     var xhr = {};
     var explorerCache = (GetSettings('explorerCache') !== undefined) ? JSON.parse(GetSettings('explorerCache')) : {
@@ -104,7 +105,7 @@ var explore = function () {
             page_zero: 1,
             page_e: true
         },
-        films: {
+        films: { //new in cinima
             t:_lang.exp_in_cinima,
             c:3,
             root_url: 'http://www.kinopoisk.ru',
@@ -112,8 +113,11 @@ var explore = function () {
             did: null,
             size: 130,
             margin: 14,
-            url: 'http://www.kinopoisk.ru/afisha/new/',
-            timeout: Math.round(24*60*60*(7/3))
+            url: 'http://www.kinopoisk.ru/afisha/new/page/%page%/',
+            timeout: Math.round(24*60*60*(7/3)),
+            page_max: 2,
+            page_zero: 0,
+            page_e: true
         },
         top_films: {
             t:_lang.exp_films,
@@ -134,7 +138,7 @@ var explore = function () {
             did: null,
             size: 130,
             margin: 14,
-            url: 'http://www.kinopoisk.ru/top/serial/list/',
+            url: 'http://www.kinopoisk.ru/top/lists/45/',
             timeout: Math.round(24*60*60*7)
         }
     };
@@ -177,17 +181,17 @@ var explore = function () {
         }
         var Serials = function (c) {
             c = view.contentFilter(c);
-            var t = $(c).find('#top250_place_1').parent().children('tr');
+            var t = $(c).find('#itemList').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
             var i = 0;
             for (i = 1;i<l;i++) {
                 var item = t.eq(i).children('td');
                 arr[arr.length] = {
-                    'img' : makeimg(item.eq(1).children('a').attr('href')),
-                    'name' : item.eq(1).children('a').text().replace(/ \([0-9]* – .*\)$/,''),
-                    'name_en' : item.eq(1).children('span').text(),
-                    'url' : item.eq(1).children('a').attr('href')
+                    'img' : makeimg(item.eq(1).children('div').children('a').attr('href')),
+                    'name' : item.eq(1).children('div').children('a').text().replace(/ \([0-9]* – .*\)$/,'').replace(/ \(сериал\)$/,''),
+                    'name_en' : item.eq(1).children('div').children('span').text().replace(/ [0-9]* мин.$/,'').replace(/ \([0-9]* – .*\)$/,''),
+                    'url' : item.eq(1).children('div').children('a').attr('href')
                 }
             }
             return arr;
@@ -474,7 +478,7 @@ var explore = function () {
             var id = ' data-id="'+k+'"';
             var qual = (did!=null)? get_q_favorites(k) : '?';
             name_v = v.name;
-            if (_lang.t != 'ru') {
+            if (_lang.t != 'ru' || use_english_postername) {
                 if (v.name_en != null && v.name_en != undefined && v.name_en.length > 0) 
                     name_v = v.name_en;
             }

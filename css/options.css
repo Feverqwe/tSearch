@@ -79,7 +79,7 @@ div.save_panel input {
 }
 div.save_panel {
 }
-div.copy, div.copy a {
+div.copy {
     clear: left;
     padding-top: 10px;
     text-align: center;
@@ -129,6 +129,7 @@ div.backup_form > div.restore, div.backup_form > div.backup {
 	margin-top: 4px;
 	border: 1px solid #c0c0c0;
 	overflow: hidden;
+        padding-bottom: 2px;
 }
 div.backup_form > textarea, div.backup_form textarea {
 	width: 98%;

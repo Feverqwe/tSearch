@@ -123,7 +123,8 @@ if (_lang != 'ru')
         exp_s_a_g : 'games',
         str_subsategoryfilter : 'Consider subcategories',
         str_autosetcat : 'Define the category of the torrent, if it is not present',
-        ad: 'Ad\'s'
+        ad: 'Ad\'s',
+        use_english_postername : 'Show names movie\series in English on the front page'
     };
 if (_lang == 'ru')
     _lang = {
@@ -249,5 +250,6 @@ if (_lang == 'ru')
         exp_s_a_g : 'игры',
         str_subsategoryfilter : 'Учитывать подкатегории',
         str_autosetcat : 'Определить категорию раздачи, если её нету',
-        ad: 'Реклама'
+        ad: 'Реклама',
+        use_english_postername : 'Отображать имена фильмов\сериалов на английском на главной странице'
     };
