@@ -17,37 +17,44 @@ var explore = function () {
         favorites: {
             s:1,
             size: 0,
-            count: 6
+            count: 6,
+            line: 1
         }, 
         films: {
             s:1,
             size: 0,
-            count: 6
+            count: 6,
+            line: 1
         }, 
         top_films: {
             s:1,
             size: 0,
-            count: 12
+            count: 12,
+            line: 2
         },
         serials: {
             s:1,
             size: 0,
-            count: 6
+            count: 6,
+            line: 1
         },
         games: {
             s:1,
             size: 128,
-            count: 7
+            count: 7,
+            line: 1
         },
         games_n: {
             s:1,
             size: 128,
-            count: 7
+            count: 7,
+            line: 1
         },
         games_a: {
             s:1,
             size: 128,
-            count: 7
+            count: 7,
+            line: 1
         }
     };
     var listOptions = (GetSettings('listOptions') !== undefined) ? JSON.parse(GetSettings('listOptions')) : listOptions_def;
@@ -388,34 +395,59 @@ var explore = function () {
         listOptions = new_conf;
     }
     var set_view_status = function (n,s) {
-        listOptions[n].s = s;
+        listOptions[n]['s'] = s;
         SetSettings('listOptions',JSON.stringify(listOptions));
     }
     var set_view_size = function (n,s) {
-        listOptions[n].size = s;
+        listOptions[n]['size'] = s;
         SetSettings('listOptions',JSON.stringify(listOptions));
     }
-    var set_view_i_count = function (n,s) {
-        listOptions[n].count = parseInt(s);
+    var set_view_i_line = function (n,s) {
+        listOptions[n]['line'] = parseInt(s);
         SetSettings('listOptions',JSON.stringify(listOptions));
     }
     var get_view_status = function (n) {
         if (listOptions == null) return 1;
         if (listOptions[n] != null)
-            return listOptions[n].s;
+            return listOptions[n]['s'];
         return 1;
     }
     var get_view_size = function (n) {
-        if (listOptions == null) return content_sourse[n].size;
-        if (listOptions[n] != null & listOptions[n].size > 0)
+        if (listOptions != null && listOptions[n] != null & listOptions[n].size > 0)
             return listOptions[n].size;
-        return content_sourse[n].size;
+        if (listOptions_def[n] != null && listOptions_def[n].size != null && listOptions_def[n].size > 0)
+            return listOptions_def[n].size;
+        else
+            return content_sourse[n].size;
+    }
+    var update_current_item = function (key) {
+        $('li.'+key+' > div > div').html(write_page(key, $('li.'+key+' > div > div').attr('data-page')));
+        var size = get_view_size(key);
+        calculate_moveble(key,size);  
+    }
+    var update_poster_count = function () {
+        $.each(listOptions, function(key, value) {
+            var now_count = $('li.'+key).attr('data-item-count');
+            var new_count = get_view_i_count(key);
+            if (now_count != undefined && now_count != new_count) {
+                update_current_item(key)
+            }
+        });
     }
     var get_view_i_count = function (n) {
-        if (listOptions == null) return 20;
-        if (listOptions[n] != null)
-            return listOptions[n].count;
-        return 20;
+        var line_count = listOptions_def[n].line;
+        if (listOptions[n] != null && listOptions[n].line != null && listOptions[n].line > 0)
+            line_count = listOptions[n].line;
+        var page_width = $('li.'+n).width() - 25;
+        var poster_size = get_view_size(n);
+        var poster_margin = get_poster_margin_size(n,poster_size);
+        return Math.floor(page_width*line_count/(poster_size+poster_margin*2));
+    }
+    var get_view_i_line = function (n) {
+        var line_count = listOptions_def[n].line;
+        if (listOptions[n] != null && listOptions[n].line != null && listOptions[n].line > 0)
+            line_count = listOptions[n].line;
+        return line_count
     }
     var save_order = function () {
         var ul = $('div.explore ul.sortable').children('li');
@@ -475,7 +507,7 @@ var explore = function () {
     //<<<<
     }
     var write_content = function (content,section,page_num) {
-        var i_count = get_view_i_count(section);
+        var i_line = get_view_i_line(section);
         //определяем размер постера и их кол-во
         var size = get_view_size(section);
         var def_size = content_sourse[section].size;
@@ -491,7 +523,7 @@ var explore = function () {
         +'<h2>'
         +'<div class="move_it"></div>'
         +name
-        +'<div class="setup" data-i_count="'+i_count+'" data-size="'+size+'" title="'+_lang.exp_setup_view+'"'+((!st)?' style="display: none"':'')+'></div>'
+        +'<div class="setup" data-i_line="'+i_line+'" data-size="'+size+'" title="'+_lang.exp_setup_view+'"'+((!st)?' style="display: none"':'')+'></div>'
         +'<div class="spoiler'+((!st)?' up':'')+'"></div>'
         +'</h2>'
         +'<div'+((!st)?' style="display:none"':'')+' data-page="'+page_num+'">';
@@ -520,6 +552,7 @@ var explore = function () {
         var did = content_sourse[section].did;
         if (page == null) page = 1;
         var poster_count = get_view_i_count(section);
+        $('li.'+section).attr('data-item-count',poster_count);
         var buttons = (fav != null)?'<div class="add_favorite" title="'+_lang.exp_in_fav+'">':'<div class="del_favorite" title="'+_lang.exp_rm_fav+'"></div><div class="edit_favorite" title="'+_lang.exp_edit_fav+'">';
         var buttons = buttons + '</div><div class="quality_box" title="'+_lang.exp_q_fav+'">';
         var c = '<div class="pager">'+make_page_body(poster_count,content.length,page)+'</div>';
@@ -850,11 +883,11 @@ var explore = function () {
         }
     }
     var make_setup_view = function (obj) {
-        var i_count = $(obj).attr('data-i_count');
+        var i_line = $(obj).attr('data-i_line');
         var size = $(obj).attr('data-size');
         var section = $(obj).parents().eq(2).attr('class');
         var def_size = content_sourse[section].size;
-        var t = $('<div class="setup_div" data-i_count="'+i_count+'" data-size="'+def_size+'"></div>').hide();
+        var t = $('<div class="setup_div" data-i_line="'+i_line+'" data-size="'+def_size+'"></div>').hide();
         $('<div class="slider"/>').slider({
             value: size,
             max: def_size,
@@ -866,6 +899,7 @@ var explore = function () {
                 calculate_moveble(sect,ui.value);
                 set_poster_size(sect,ui.value);
                 $(this).parents().eq(2).children('div').css('min-height','0px');
+                update_current_item(sect);
             },
             slide: function(event, ui) {
                 var t =  $(this).parents().eq(2).children('div').children('div.poster');
@@ -913,12 +947,12 @@ var explore = function () {
             $(this).parents().eq(2).children('div').css('min-height','0px');
         }).appendTo(t);
         var optns = '';
-        for (var i = 3; i<36; i++ )
-            optns += '<option value="'+i+'"'+((i == i_count)?' selected':'')+'>'+i+'</option>';
+        for (var i = 1; i<7; i++ )
+            optns += '<option value="'+i+'"'+((i == i_line)?' selected':'')+'>'+i+'</option>';
         $('<div class="count"><select>'+optns+'</select></div>').children().change(function () {
             var sect = $(this).parents().eq(3).attr('class');
-            $(this).parents().eq(2).children('div.setup').attr('data-i_count',$(this).val());
-            set_view_i_count(sect,$(this).val());
+            $(this).parents().eq(2).children('div.setup').attr('data-i_line',$(this).val());
+            set_view_i_line(sect,$(this).val());
             var main_div = $(this).parents().eq(3).children('div');
             main_div.css('min-height','0px');
             main_div.html(write_page(sect, null));
@@ -1029,6 +1063,12 @@ var explore = function () {
         },
         setQuality : function (a) {
             setQuality(a);
+        },
+        update_poster_count : function () {
+            update_poster_count();
         }
     }
 }();
+$(window).on('resize', function() {
+    explore.update_poster_count();
+});
