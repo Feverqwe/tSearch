@@ -441,7 +441,7 @@ var explore = function () {
         var page_width = $('li.'+n).width() - 25;
         var poster_size = get_view_size(n);
         var poster_margin = get_poster_margin_size(n,poster_size);
-        return Math.floor(page_width*line_count/(poster_size+poster_margin*2));
+        return Math.floor(page_width/(poster_size+poster_margin*2))*line_count;
     }
     var get_view_i_line = function (n) {
         var line_count = listOptions_def[n].line;
