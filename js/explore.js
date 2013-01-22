@@ -992,6 +992,8 @@ var explore = function () {
         }
     }
     var about_keyword = function (keyword) {
+        if (keyword.length == 0)
+            return;
         var ab_panel = $('div.about_panel');
         ab_panel.empty();
         var url = 'https://www.google.com/search?q='+keyword
