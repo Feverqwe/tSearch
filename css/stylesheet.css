@@ -765,3 +765,50 @@ div.explore div.poster > div.image > div.quality_box.loading {
 div.explore div.poster > div.image > div.quality_box:hover {
     opacity: 1;
 }
+div.about_panel > div {
+    padding-left: 10px;
+    margin-bottom: 3px;
+    margin-top: -15px;
+    overflow: hidden;
+}
+div.about_panel > div > div.a-poster {
+    float: right;
+    margin: 3px;
+}
+div.about_panel > div > div.a-poster > img {
+    height: auto;
+    width: auto;
+    max-width: 400px;
+    max-height: 200px;
+    margin-bottom: -3px;
+}
+div.about_panel > div > div.a-type {
+    color: #777777;
+    font-size: 16px;
+    margin-top: 4px;
+}
+div.about_panel > div > div.a-desc {
+    color: #222;
+    font-size: 14px;
+    margin-top: 8px;
+}
+div.about_panel > div > div.a-title {
+    font-size: 30px;
+}
+div.about_panel > div a {
+    color: #1A3DC1;
+    text-decoration: none;
+}
+div.about_panel > div a:hover {
+    text-decoration: underline;
+}
+div.about_panel > div a:visited {
+    color: #609;
+}
+div.about_panel > div > div.a-table {
+    margin-top: 10px;
+}
+div.about_panel > div > div.a-table span.kno-fh a {
+    font-size: 13px;
+    font-weight: bolder;
+}

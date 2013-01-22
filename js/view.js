@@ -15,6 +15,7 @@ var view = function () {
     var SubCategoryFilter = (GetSettings('SubCategoryFilter') !== undefined) ? parseInt(GetSettings('SubCategoryFilter')) : false;
     var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : true;
     var autoSetCat = (GetSettings('autoSetCat') !== undefined) ? parseInt(GetSettings('autoSetCat')) : true;
+    var allow_get_description = (GetSettings('allow_get_description') !== undefined) ? parseInt(GetSettings('allow_get_description')) : true;
     var update_table = {
         timer: null,
         time: null
@@ -904,6 +905,8 @@ var view = function () {
         window.location = '#s='+keyword;
         global_wl_hash = location.hash;
         engine.search(keyword,sel_tr);
+        if (allow_get_description)
+            explore.getAbout(keyword);
         _gaq.push(['_trackPageview', 'index.html#s='+keyword]);
         _gaq.push(['_trackEvent', 'Search', 'keyword', keyword]);
         return false;

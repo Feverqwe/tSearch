@@ -16,6 +16,7 @@ var view = function () {
     var google_proxy = (GetSettings('google_proxy') !== undefined) ? parseInt(GetSettings('google_proxy')) : false;
     var google_analytics = (GetSettings('google_analytics') !== undefined) ? parseInt(GetSettings('google_analytics')) : false;
     var autoSetCat = (GetSettings('autoSetCat') !== undefined) ? parseInt(GetSettings('autoSetCat')) : true;
+    var allow_get_description = (GetSettings('allow_get_description') !== undefined) ? parseInt(GetSettings('allow_get_description')) : true;
     var t_table_line = 0;
     var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     var oldProfileID = 0;
@@ -91,6 +92,8 @@ var view = function () {
         $('input[name="search_popup"]').prop('checked',search_popup);
         
         $('input[name="autosetcat"]').prop('checked',autoSetCat);
+        
+        $('input[name="allow_get_description"]').prop('checked',allow_get_description);
     }
     var saveCurrentProfile = function () {
         var tr = $('#internalTrackers tbody').children('tr');
@@ -123,12 +126,14 @@ var view = function () {
         AutoSetCategory = SetSettings('AutoSetCategory',($('input[name="autosetcategory"]').is(':checked'))?1:0);
         AutoComplite_opt = SetSettings('AutoComplite_opt',($('input[name="autocomplite_opt"]').is(':checked'))?1:0);
         use_english_postername = SetSettings('use_english_postername',($('input[name="use_english_postername"]').is(':checked'))?1:0);
+        allow_get_description = SetSettings('allow_get_description',($('input[name="allow_get_description"]').is(':checked'))?1:0);
         
         var google_proxy_old = google_proxy;
         google_proxy = SetSettings('google_proxy',($('input[name="google_proxy"]').is(':checked'))?1:0);
         if (google_proxy_old != google_proxy) {
             SetSettings('explorerCache',JSON.stringify({}));
         }
+        
         google_analytics = SetSettings('google_analytics',($('input[name="google_analytics"]').is(':checked'))?1:0);
         autoSetCat = SetSettings('autoSetCat',($('input[name="autosetcat"]').is(':checked'))?1:0);
         TeaserFilter = SetSettings('TeaserFilter',($('input[name="teaserfilter"]').is(':checked'))?1:0);
@@ -304,6 +309,8 @@ $(function () {
     $('span[data-lang=33]').text(_lang.str_subsategoryfilter);
     $('span[data-lang=35]').text(_lang.str_autosetcat);
     $('span[data-lang=36]').text(_lang.use_english_postername);
+    $('span[data-lang=37]').text(_lang.allow_get_description);
+    
     
     view.LoadProfiles();
     
