@@ -21,6 +21,7 @@ java -jar yuicompressor-2.4.7.jar ./css/options.css -o ./build/css/options.css
 java -jar yuicompressor-2.4.7.jar ./css/history.css -o ./build/css/history.css
 java -jar yuicompressor-2.4.7.jar ./css/jqcloud.css -o ./build/css/jqcloud.css
 java -jar yuicompressor-2.4.7.jar ./css/bootstrap.css -o ./build/css/bootstrap.css
+java -jar yuicompressor-2.4.7.jar ./css/apprise.css -o ./build/css/apprise.css
 
 mkdir ./build_firefox/chrome
 cp -r ./build ./build_firefox/chrome/content
@@ -76,6 +77,7 @@ java -jar compiler.jar --js ./js/options.js --js_output_file ./build/js/options.
 java -jar compiler.jar --js ./js/jquery.tablesorter.js --js_output_file ./build/js/jquery.tablesorter.js
 java -jar compiler.jar --js ./js/ad.js --js_output_file ./build/js/ad.js
 java -jar compiler.jar --js ./js/jqcloud-1.0.2.min.js --js_output_file ./build/js/jqcloud-1.0.2.min.js
+java -jar compiler.jar --js ./js/apprise-1.5.js --js_output_file ./build/js/apprise-1.5.js
 
 
 cp -r ./build/ ./build_chrome_ext/.

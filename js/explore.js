@@ -520,7 +520,7 @@ var explore = function () {
         var did = content_sourse[section].did;
         if (page == null) page = 1;
         var poster_count = get_view_i_count(section);
-        var buttons = (fav != null)?'<div class="add_favorite" title="'+_lang.exp_in_fav+'">':'<div class="del_favorite" title="'+_lang.exp_rm_fav+'">';
+        var buttons = (fav != null)?'<div class="add_favorite" title="'+_lang.exp_in_fav+'">':'<div class="del_favorite" title="'+_lang.exp_rm_fav+'"></div><div class="edit_favorite" title="'+_lang.exp_edit_fav+'">';
         var buttons = buttons + '</div><div class="quality_box" title="'+_lang.exp_q_fav+'">';
         var c = '<div class="pager">'+make_page_body(poster_count,content.length,page)+'</div>';
         var max_item = page*poster_count;
@@ -568,6 +568,13 @@ var explore = function () {
         }
         SetSettings('favoritesList',JSON.stringify(favoritesList));
         show_favorites();
+    }
+    var edit_from_favorites = function (id) {
+        var new_name = apprise(_lang.exp_edit_fav_label, {'input':favoritesList[id].name, 'id':id}, function (id,name) {
+            favoritesList[id].name = name;
+            SetSettings('favoritesList',JSON.stringify(favoritesList));
+            show_favorites();
+        });
     }
     var del_from_favorites = function (id) {
         favoritesList.splice(id,1);
@@ -699,6 +706,10 @@ var explore = function () {
             $(this).parent().parent().hide('fast',function () {
                 del_from_favorites($(this).attr('data-id'));
             });
+        });
+        // кнопка избранное - редактировать постер
+        $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.image > div.edit_favorite', function() {
+            edit_from_favorites($(this).parent().parent().attr('data-id'));
         });
         // кнопка качества
         $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.image > div.quality_box', function() {

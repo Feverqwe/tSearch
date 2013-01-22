@@ -41,6 +41,7 @@ var view = function () {
     }
     var clear_table = function () {
         backgroundMode = false;
+        $('div.about_panel').empty();
         $('#rez_table').children('tbody').empty();
         $('div.filter').children('input').val('');
         keywordFilter = null;
