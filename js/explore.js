@@ -316,7 +316,7 @@ var explore = function () {
                 content_info += '<div class="a-table">'+info.table+'</div>';
             }
             if (content_info.length > 0)
-                return view.contentUnFilter('<div>'+content_info+'<div>');
+                return view.contentUnFilter('<div>'+content_info+'</div>');
             else
                 return '';
         }
