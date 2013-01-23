@@ -279,7 +279,7 @@ var explore = function () {
             }
             var imgs = t.find('img')
             for (var i = 0 ; i < imgs.length; i++) {
-                var par_href = imgs.eq(i).parent('a').attr('href');
+                var par_href = decodeURIComponent(imgs.eq(i).parent('a').attr('href'));
                 if (par_href == undefined) 
                     continue;
                 if (par_href.indexOf("imgres") < 0) {
