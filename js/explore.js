@@ -438,10 +438,10 @@ var explore = function () {
         var line_count = listOptions_def[n].line;
         if (listOptions[n] != null && listOptions[n].line != null && listOptions[n].line > 0)
             line_count = listOptions[n].line;
-        var page_width = $('li.'+n).width() - 25;
+        var page_width = $('li.'+n).width();
         var poster_size = get_view_size(n);
-        var poster_margin = get_poster_margin_size(n,poster_size);
-        return Math.floor(page_width/(poster_size+poster_margin*2))*line_count;
+        var poster_margin = get_poster_margin_size(n,poster_size)*2;
+        return Math.floor(page_width/(poster_size+poster_margin))*line_count;
     }
     var get_view_i_line = function (n) {
         var line_count = listOptions_def[n].line;
