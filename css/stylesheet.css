@@ -10,6 +10,7 @@ body {
     font-size: 14px;
     margin: 0;
     overflow-y: scroll;
+    min-width: 960px;
 }
 div.search_panel {
     padding: 20px;

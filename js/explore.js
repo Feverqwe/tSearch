@@ -558,6 +558,7 @@ var explore = function () {
         var did = content_sourse[section].did;
         if (page == null) page = 1;
         var poster_count = get_view_i_count(section);
+        if (poster_count <= 0) return '';
         $('li.'+section).attr('data-item-count',poster_count);
         var buttons = (fav != null)?'<div class="add_favorite" title="'+_lang.exp_in_fav+'">':'<div class="del_favorite" title="'+_lang.exp_rm_fav+'"></div><div class="edit_favorite" title="'+_lang.exp_edit_fav+'">';
         var buttons = buttons + '</div><div class="quality_box" title="'+_lang.exp_q_fav+'">';
