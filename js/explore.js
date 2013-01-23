@@ -421,15 +421,20 @@ var explore = function () {
             return content_sourse[n].size;
     }
     var update_current_item = function (key) {
-        $('li.'+key+' > div > div').html(write_page(key, $('li.'+key+' > div > div').attr('data-page')));
+        var item_page = $('li.'+key+' > div > div');
+        if (item_page == undefined) 
+            return;
+        item_page.html(write_page(key, item_page.attr('data-page')));
         var size = get_view_size(key);
         calculate_moveble(key,size);  
     }
     var update_poster_count = function () {
+        if ($('div.explore').css('display') != 'block')
+            return;
         $.each(listOptions, function(key, value) {
             var now_count = $('li.'+key).attr('data-item-count');
             var new_count = get_view_i_count(key);
-            if (now_count != undefined && now_count != new_count) {
+            if (now_count != undefined && new_count > 0 && now_count != new_count) {
                 update_current_item(key)
             }
         });
@@ -439,6 +444,7 @@ var explore = function () {
         if (listOptions[n] != null && listOptions[n].line != null && listOptions[n].line > 0)
             line_count = listOptions[n].line;
         var page_width = $('li.'+n).width();
+        if (page_width == undefined) return 0;
         var poster_size = get_view_size(n);
         var poster_margin = get_poster_margin_size(n,poster_size)*2;
         return Math.floor(page_width/(poster_size+poster_margin))*line_count;
@@ -631,7 +637,10 @@ var explore = function () {
     }
     var make_form = function () {
         var ul = $('div.explore ul.sortable');
-        if (ul.children('li').length > 0) return;
+        if (ul.children('li').length > 0) { 
+            update_poster_count();
+            return;
+        }
         ul.sortable({
             axis: 'y', 
             handle: 'div.move_it',
