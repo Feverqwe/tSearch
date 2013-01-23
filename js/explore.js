@@ -560,10 +560,12 @@ var explore = function () {
         var min_item = max_item - poster_count;
         var name_v = '';
         var cc = 0;
+        var werite_item = 0;
         $.each(content, function (k,v) {
             cc ++;
             if (cc<=min_item) return true;
             if (cc>max_item) return false;
+            werite_item ++;
             var id = ' data-id="'+k+'"';
             var qual = (did!=null)? get_q_favorites(k) : '?';
             name_v = v.name;
@@ -581,8 +583,12 @@ var explore = function () {
             +'</div>'
             +'</div>';
         });
-        
-        return view.contentUnFilter(c);
+        if (werite_item == 0 && page > 1) {
+            var new_page = page-1;
+            $('li.'+section+' > div > div').attr('data-page',new_page)
+            return write_page(section,new_page,content);
+        } else
+            return view.contentUnFilter(c);
     }
     var make_page_body = function (i_count,length,page) {
         var btns = '';
@@ -896,7 +902,7 @@ var explore = function () {
             change: function(event, ui) {
                 var sect = $(this).parents().eq(3).attr('class');
                 set_view_size(sect,ui.value);
-                calculate_moveble(sect,ui.value);
+                //calculate_moveble(sect,ui.value);
                 set_poster_size(sect,ui.value);
                 $(this).parents().eq(2).children('div').css('min-height','0px');
                 update_current_item(sect);
