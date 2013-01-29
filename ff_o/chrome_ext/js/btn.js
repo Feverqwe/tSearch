@@ -1,6 +1,6 @@
 var _type_ext = 1;
 chrome.browserAction.onClicked.addListener(function() {
-    var search_popup = (GetSettings('search_popup') !== undefined) ? parseInt(GetSettings('search_popup')) : false;
+    var search_popup = (GetSettings('search_popup') !== undefined) ? parseInt(GetSettings('search_popup')) : true;
     if (!search_popup) {
         chrome.tabs.create({
             url : 'index.html#s='
