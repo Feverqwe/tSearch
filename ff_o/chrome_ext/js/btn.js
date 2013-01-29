@@ -8,7 +8,7 @@ chrome.browserAction.onClicked.addListener(function() {
     }
 });
 var update_btn = function () {
-    var search_popup = (GetSettings('search_popup') !== undefined) ? parseInt(GetSettings('search_popup')) : false;
+    var search_popup = (GetSettings('search_popup') !== undefined) ? parseInt(GetSettings('search_popup')) : true;
     if (search_popup) {
         chrome.browserAction.setPopup({
             popup : 'popup.html'
