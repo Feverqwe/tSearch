@@ -778,8 +778,8 @@ var explore = function () {
         //клик по имени
         $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.label > div.title a', function(event) {
             event.preventDefault();
-            var section = $(this).parents().eq(3).attr('class');
-            var s = $(this).children('span').text();
+            var section = $(this).parents().eq(6).attr('class');
+            var s = $(this).text();
             triggerClick(s,section);
         });
         //клик по подробнее
