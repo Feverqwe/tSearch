@@ -86,6 +86,9 @@ java -jar yuicompressor-2.4.7.jar ./ff_o/chrome_ext/css/popup.css -o ./build_chr
 java -jar compiler.jar --js ./ff_o/chrome_ext/js/btn.js --js_output_file ./build_chrome_ext/js/btn.js
 java -jar compiler.jar --js ./ff_o/chrome_ext/js/popup.js --js_output_file ./build_chrome_ext/js/popup.js
 
+cp -r ./build/ ./build_chrome_app/.
+cp -r ./ff_o/chrome_app/ ./build_chrome_app/.
+
 cp -r ./ff_o/firefox/* ./build_firefox/.
 rm -r ./build_firefox/chrome/content/_locales
 rm ./build_firefox/chrome/content/manifest.json
@@ -103,6 +106,7 @@ cp -r ./ff_o/opera/* ./build_opera/.
 #java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/ad.js --js_output_file ./build_firefox/chrome/content/js/ad.js
 
 rm ./build_chrome.zip
+rm ./build_chrome_app.zip
 rm ./build_firefox.xpi
 rm ./build_opera.oex
 rm ./build_chrome_ext.zip
@@ -114,3 +118,5 @@ cd ../build_opera/
 zip -9 -r ../build_opera.oex ./
 cd ../build_chrome_ext/
 zip -9 -r ../build_chrome_ext.zip ./
+cd ../build_chrome_app/
+zip -9 -r ../build_chrome_app.zip ./

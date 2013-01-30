@@ -83,6 +83,9 @@ java -jar yuicompressor-2.4.7.jar .\ff_o\chrome_ext\css\popup.css -o .\build_chr
 java -jar compiler.jar --js .\ff_o\chrome_ext\js\btn.js --js_output_file .\build_chrome_ext\js\btn.js
 java -jar compiler.jar --js .\ff_o\chrome_ext\js\popup.js --js_output_file .\build_chrome_ext\js\popup.js
 
+xcopy .\build .\build_chrome_app\ /E
+xcopy .\ff_o\chrome_ext\* .\build_chrome_app\. /E /Y
+
 xcopy .\ff_o\firefox\* .\build_firefox\. /E /Y
 del .\build_firefox\chrome\content\manifest.json
 del .\build_firefox\chrome\content\js\background.js
@@ -103,8 +106,10 @@ del .\build_chrome.zip
 del .\build_firefox.xpi
 del .\build_opera.oex
 del .\build_chrome_ext.zip
+del .\build_chrome_app.zip
 
 start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_chrome.zip D:\Git\ts\build\*
 start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_firefox.xpi D:\Git\ts\build_firefox\*
 start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_opera.oex D:\Git\ts\build_opera\*
 start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_chrome_ext.zip D:\Git\ts\build_chrome_ext\*
+start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_chrome_app.zip D:\Git\ts\build_chrome_app\*
