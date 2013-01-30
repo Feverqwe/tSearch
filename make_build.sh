@@ -4,10 +4,12 @@ rm -r ./build
 rm -r ./build_opera
 rm -r ./build_firefox
 rm -r ./build_chrome_ext
+rm -r ./build_chrome_app
 mkdir ./build
 mkdir ./build_opera
 mkdir ./build_firefox
 mkdir ./build_chrome_ext
+mkdir ./build_chrome_app
 cp -r ./_locales ./build/.
 cp -r ./js ./build/.
 cp -r ./images ./build/.

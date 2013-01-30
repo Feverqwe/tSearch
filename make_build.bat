@@ -2,9 +2,11 @@ rd /S /Q .\build
 rd /S /Q .\build_opera
 rd /S /Q .\build_firefox
 rd /S /Q .\build_chrome_ext
+rd /S /Q .\build_chrome_app
 mkdir .\build_opera
 mkdir .\build_firefox
 mkdir .\build_chrome_ext
+mkdir .\build_chrome_app
 mkdir .\build
 xcopy .\_locales .\build\_locales\ /E
 xcopy .\css .\build\css\ /E
