@@ -2,11 +2,9 @@ rd /S /Q .\build
 rd /S /Q .\build_opera
 rd /S /Q .\build_firefox
 rd /S /Q .\build_chrome_ext
-rd /S /Q .\build_chrome_app
 mkdir .\build_opera
 mkdir .\build_firefox
 mkdir .\build_chrome_ext
-mkdir .\build_chrome_app
 mkdir .\build
 xcopy .\_locales .\build\_locales\ /E
 xcopy .\css .\build\css\ /E
@@ -84,9 +82,6 @@ xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
 java -jar yuicompressor-2.4.7.jar .\ff_o\chrome_ext\css\popup.css -o .\build_chrome_ext\css\popup.css
 java -jar compiler.jar --js .\ff_o\chrome_ext\js\btn.js --js_output_file .\build_chrome_ext\js\btn.js
 java -jar compiler.jar --js .\ff_o\chrome_ext\js\popup.js --js_output_file .\build_chrome_ext\js\popup.js
-
-xcopy .\build .\build_chrome_app\ /E
-xcopy .\ff_o\chrome_ext\* .\build_chrome_app\. /E /Y
 
 xcopy .\ff_o\firefox\* .\build_firefox\. /E /Y
 del .\build_firefox\chrome\content\manifest.json

@@ -4,12 +4,10 @@ rm -r ./build
 rm -r ./build_opera
 rm -r ./build_firefox
 rm -r ./build_chrome_ext
-rm -r ./build_chrome_app
 mkdir ./build
 mkdir ./build_opera
 mkdir ./build_firefox
 mkdir ./build_chrome_ext
-mkdir ./build_chrome_app
 cp -r ./_locales ./build/.
 cp -r ./js ./build/.
 cp -r ./images ./build/.
@@ -87,9 +85,6 @@ cp -r ./ff_o/chrome_ext/ ./build_chrome_ext/.
 java -jar yuicompressor-2.4.7.jar ./ff_o/chrome_ext/css/popup.css -o ./build_chrome_ext/css/popup.css
 java -jar compiler.jar --js ./ff_o/chrome_ext/js/btn.js --js_output_file ./build_chrome_ext/js/btn.js
 java -jar compiler.jar --js ./ff_o/chrome_ext/js/popup.js --js_output_file ./build_chrome_ext/js/popup.js
-
-cp -r ./build/ ./build_chrome_app/.
-cp -r ./ff_o/chrome_app/ ./build_chrome_app/.
 
 cp -r ./ff_o/firefox/* ./build_firefox/.
 rm -r ./build_firefox/chrome/content/_locales
