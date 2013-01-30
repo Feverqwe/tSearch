@@ -1,12 +1,27 @@
 body {
-    background: #0088cc;
-    color: #fff;
     font-family: Arial;
-    font-size: 18px;
 }
 a {
-    color: #ccc;
+    color: #f89406;
+    text-decoration: none;
 }
-span {
+a:hover {
+    text-decoration: underline;
+}
+span.desk {
     font-size: 12px;
+}
+p {
+    font-size: 18px;
+}
+img {
+    padding: 5px;
+    background-color: #DDD;
+    border-radius: 5px;
+}
+a.icon:hover img {
+    background-color: #ccc;
+}
+a.icon:hover {
+    text-decoration: none;
 }

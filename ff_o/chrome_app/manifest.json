@@ -9,8 +9,6 @@
         "128": "images/icon_128.png",
         "16": "images/icon_16.png"
     },
-    "name": "__MSG_appName__",
-    "description": "__MSG_appDesc__",
-    "default_locale": "ru",
-    "version": "1"
+    "name": "TMS - ссылка на расширение",
+    "version": "1.0"
 }
