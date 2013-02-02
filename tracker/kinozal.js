@@ -17,22 +17,22 @@ tracker[tmp_num] = function () {
         var calculateSize = function (s) {
             var size = s.replace(' ','');
             var t = size.replace('КБ','');
-            if (t!= size) {
+            if (t.length!= size.length) {
                 t = parseFloat(t);
                 return Math.round(t*1024);
             }
             var t = size.replace('МБ','');
-            if (t!= size) {
+            if (t.length!= size.length) {
                 t = parseFloat(t);
                 return Math.round(t*1024*1024);
             }
             var t = size.replace('ГБ','');
-            if (t!= size) {
+            if (t.length!= size.length) {
                 t = parseFloat(t);
                 return Math.round(t*1024*1024*1024);
             }
             var t = size.replace('ТБ','');
-            if (t!= size) {
+            if (t.length!= size.length) {
                 t = parseFloat(t);
                 return Math.round(t*1024*1024*1024*1024);
             }

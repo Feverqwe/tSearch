@@ -78,6 +78,10 @@ var engine = function () {
         n : 'libertorrent', 
         e : 0
     },
+    {
+        n : 'riperam',
+        e : 0
+    },
     //с рег-ей иност.
     {
         n : 'hurtom', 
