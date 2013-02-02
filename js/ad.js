@@ -1,5 +1,5 @@
 var ad = function () {
-    var ad_arr = [["images/ad1.jpg","http://c.cpa1.ru/3hqn"],
+    var ad_arr = [["images/ad1.jpg","http://c.cpa1.ru/3pzY"],
                   ["images/ad-3.jpg","http://c.cpa1.ru/3k37"],
                   ["images/ad4.jpg","http://c.cpa1.ru/3k3a"],
                   ["images/ad5.jpg","http://c.cpa1.ru/3k3b"],
