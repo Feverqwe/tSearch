@@ -48,17 +48,17 @@ tracker[tmp_num] = function () {
                 t = parseFloat(t);
                 return Math.round(t*1024);
             }
-            var t = size.replace('МБ','');
+            t = size.replace('МБ','');
             if (t.length!= size.length) {
                 t = parseFloat(t);
                 return Math.round(t*1024*1024);
             }
-            var t = size.replace('ГБ','');
+            t = size.replace('ГБ','');
             if (t.length!= size.length) {
                 t = parseFloat(t);
                 return Math.round(t*1024*1024*1024);
             }
-            var t = size.replace('ТБ','');
+            t = size.replace('ТБ','');
             if (t.length!= size.length) {
                 t = parseFloat(t);
                 return Math.round(t*1024*1024*1024*1024);
@@ -76,7 +76,6 @@ tracker[tmp_num] = function () {
         var readCode = function (c) {
             c = view.contentFilter(c);
             var t = $(c);
-            console.log(t.find('div.inner').children('ul').length);
             if (t.find('#message > div.inner').length > 0 && t.find('#message > div.inner > p').text().indexOf('попробуйте чуть позже') > 0) {
                 view.auth(0,id);
                 return [];
