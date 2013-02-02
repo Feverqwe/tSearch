@@ -103,10 +103,8 @@ del .\build_chrome.zip
 del .\build_firefox.xpi
 del .\build_opera.oex
 del .\build_chrome_ext.zip
-del .\build_chrome_app.zip
 
 start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_chrome.zip D:\Git\ts\build\*
 start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_firefox.xpi D:\Git\ts\build_firefox\*
 start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_opera.oex D:\Git\ts\build_opera\*
 start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_chrome_ext.zip D:\Git\ts\build_chrome_ext\*
-start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_chrome_app.zip D:\Git\ts\build_chrome_app\*

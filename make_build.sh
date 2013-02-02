@@ -103,7 +103,6 @@ cp -r ./ff_o/opera/* ./build_opera/.
 #java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/ad.js --js_output_file ./build_firefox/chrome/content/js/ad.js
 
 rm ./build_chrome.zip
-rm ./build_chrome_app.zip
 rm ./build_firefox.xpi
 rm ./build_opera.oex
 rm ./build_chrome_ext.zip
@@ -115,5 +114,3 @@ cd ../build_opera/
 zip -9 -r ../build_opera.oex ./
 cd ../build_chrome_ext/
 zip -9 -r ../build_chrome_ext.zip ./
-cd ../build_chrome_app/
-zip -9 -r ../build_chrome_app.zip ./
