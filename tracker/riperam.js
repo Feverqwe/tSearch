@@ -76,7 +76,8 @@ tracker[tmp_num] = function () {
         var readCode = function (c) {
             c = view.contentFilter(c);
             var t = $(c);
-            if ($('#message').length > 0) {
+            console.log(t.find('div.inner').children('ul').length);
+            if (t.find('#message > div.inner').length > 0) {
                 view.auth(0,id);
                 return [];
             } else 
@@ -89,13 +90,20 @@ tracker[tmp_num] = function () {
                 var dl = t.eq(i).children('dl').children();
                 var obj_dl_0 = dl.eq(0)
                 var obj_dl_0_a = obj_dl_0.children('a')
+                var corr = 0;
+                if (obj_dl_0_a.eq(0).children('img') != null && obj_dl_0_a.eq(0).children('img').attr('width') == 11) {
+                    corr += 1
+                }
+                var dl_link = dl.eq(0+corr).children('a').eq(0).attr('href');
+                if (dl_link == undefined || dl_link.indexOf('download/file') < 0)
+                    continue;
                 var obj_dl_1_span = dl.eq(1).children('span')
                 var attrs = obj_dl_0.text().replace(/.*»(.*)\n.*: (.*),.*/,"%split%$1%split%$2%split%").split('%split%');
                 var dt_atr_c = obj_dl_0_a.length;
                 arr[arr.length] = {
-                    'title' : obj_dl_0_a.eq(1).text(),
-                    'url' : obj_dl_0_a.eq(1).attr('href'),
-                    'dl' : root_url+dl.eq(0).children('a').eq(0).attr('href'),
+                    'title' : obj_dl_0_a.eq(1+corr).text(),
+                    'url' : obj_dl_0_a.eq(1+corr).attr('href'),
+                    'dl' : root_url+dl_link,
                     'time' : calculateTime(attrs[1].trim()),
                     'size' : calculateSize(attrs[2].trim()),
                     'category' : {
