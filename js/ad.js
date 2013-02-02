@@ -3,7 +3,8 @@ var ad = function () {
                   ["images/ad-3.jpg","http://c.cpa1.ru/3k37"],
                   ["images/ad4.jpg","http://c.cpa1.ru/3k3a"],
                   ["images/ad5.jpg","http://c.cpa1.ru/3k3b"],
-                  ["images/ad6.jpg","http://c.cpa1.ru/3k3c"]
+                  ["images/ad6.jpg","http://c.cpa1.ru/3k3c"],
+                  ["images/ad7.jpg","http://c.cpa1.ru/3pzH"]
               ]
     var getRandomArbitary = function (min, max, e)
     {
