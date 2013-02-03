@@ -17,6 +17,7 @@ var view = function () {
     var google_analytics = (GetSettings('google_analytics') !== undefined) ? parseInt(GetSettings('google_analytics')) : false;
     var autoSetCat = (GetSettings('autoSetCat') !== undefined) ? parseInt(GetSettings('autoSetCat')) : true;
     var allow_get_description = (GetSettings('allow_get_description') !== undefined) ? parseInt(GetSettings('allow_get_description')) : true;
+    var allow_favorites_sync = (GetSettings('allow_favorites_sync') !== undefined) ? parseInt(GetSettings('allow_favorites_sync')) : false;
     var t_table_line = 0;
     var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     var oldProfileID = 0;
@@ -94,6 +95,7 @@ var view = function () {
         $('input[name="autosetcat"]').prop('checked',autoSetCat);
         
         $('input[name="allow_get_description"]').prop('checked',allow_get_description);
+        $('input[name="allow_favorites_sync"]').prop('checked',allow_favorites_sync);
     }
     var saveCurrentProfile = function () {
         var tr = $('#internalTrackers tbody').children('tr');
@@ -147,6 +149,7 @@ var view = function () {
                 search_popup = SetSettings('search_popup',($('input[name="search_popup"]').is(':checked'))?1:0);
                 bgp.update_btn();
             }
+            allow_favorites_sync = SetSettings('allow_favorites_sync',($('input[name="allow_favorites_sync"]').is(':checked'))?1:0);
         }
         var tmp = $('input[name="typeFiltration"]');
         var tmp_l = tmp.length;
@@ -310,6 +313,7 @@ $(function () {
     $('span[data-lang=35]').text(_lang.str_autosetcat);
     $('span[data-lang=36]').text(_lang.use_english_postername);
     $('span[data-lang=37]').text(_lang.allow_get_description);
+    $('span[data-lang=38]').text(_lang.allow_favorites_sync);
     
     
     view.LoadProfiles();
@@ -336,6 +340,7 @@ $(function () {
         $('input[name="add_in_omnibox"]').parent().hide();
         $('input[name="search_popup"]').parent().hide();
         $('input[name="google_analytics"]').parent().hide();
+        $('input[name="allow_favorites_sync"]').parent().hide();
     } else {
         //хром
         var bgp = chrome.extension.getBackgroundPage();

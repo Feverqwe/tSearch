@@ -606,6 +606,10 @@ var explore = function () {
         }
         return btns;
     }
+    var sync_favorites = function (data) {
+        favoritesList = JSON.parse(data);
+        show_favorites();
+    }
     var add_in_favorites = function (obj) {
         favoritesList[favoritesList.length] = {
             'img' : $(obj).find('img').attr('src'),
@@ -616,7 +620,10 @@ var explore = function () {
         show_favorites();
     }
     var edit_from_favorites = function (id) {
-        var new_name = apprise(_lang.exp_edit_fav_label, {'input':favoritesList[id].name, 'id':id}, function (id,name) {
+        var new_name = apprise(_lang.exp_edit_fav_label, {
+            'input':favoritesList[id].name, 
+            'id':id
+        }, function (id,name) {
             favoritesList[id].name = name;
             SetSettings('favoritesList',JSON.stringify(favoritesList));
             show_favorites();
@@ -677,13 +684,13 @@ var explore = function () {
             if (key == 'favorites')
                 show_favorites();
             else
-                if (content_sourse[key].page_e == true && content_sourse[key].page_zero != null && content_sourse[key].page_max != null) {
-                    var zero = content_sourse[key].page_zero;
-                    var max = content_sourse[key].page_max;
-                    for (var n = zero; n <= max; n++)
-                        load_exp_content(key,content_sourse[key].url, [zero, n, max]);
-                } else 
-                    load_exp_content(key,content_sourse[key].url);
+            if (content_sourse[key].page_e == true && content_sourse[key].page_zero != null && content_sourse[key].page_max != null) {
+                var zero = content_sourse[key].page_zero;
+                var max = content_sourse[key].page_max;
+                for (var n = zero; n <= max; n++)
+                    load_exp_content(key,content_sourse[key].url, [zero, n, max]);
+            } else 
+                load_exp_content(key,content_sourse[key].url);
         });
         //спойлер
         $('div.explore > ul.sortable > li').on('click','div > h2 > div.spoiler', function () {
@@ -1071,6 +1078,9 @@ var explore = function () {
         });
     }
     return {
+        updFav : function (d) {
+            sync_favorites(d);
+        },
         getAbout : function (k) {
             return about_keyword(k);
         },
@@ -1088,3 +1098,13 @@ var explore = function () {
 $(window).on('resize', function() {
     explore.update_poster_count();
 });
+
+if (navigator.userAgent.search(/Chrome/) != -1 && chrome && chrome.storage) {
+    chrome.storage.onChanged.addListener(function(changes, namespace) {
+        for (key in changes) {
+            if (key == "favoritesList") {
+                explore.updFav(changes[key].newValue);
+            }
+        }
+    });
+}

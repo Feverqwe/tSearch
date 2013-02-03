@@ -127,7 +127,8 @@ if (_lang != 'ru')
         str_autosetcat : 'Define the category of the torrent, if it is not present',
         ad: 'Ad\'s',
         use_english_postername : 'Show names movie\\series in English on the front page',
-        allow_get_description : 'Get a description of the search query from Google. (each request will be matched with google!)'
+        allow_get_description : 'Get a description of the search query from Google. (each request will be matched with google!)',
+        allow_favorites_sync : 'Allow sync favorites list'
     };
 if (_lang == 'ru')
     _lang = {
@@ -257,5 +258,6 @@ if (_lang == 'ru')
         str_autosetcat : 'Определить категорию раздачи, если её нету',
         ad: 'Реклама',
         use_english_postername : 'Отображать имена фильмов\\сериалов на английском на главной странице',
-        allow_get_description : 'Получать описание поискового запроса из Google. (каждый запрос будет искаться в google!)'
+        allow_get_description : 'Получать описание поискового запроса из Google. (каждый запрос будет искаться в google!)',
+        allow_favorites_sync : 'Разрешить синхронизацию списка избранного'
     };

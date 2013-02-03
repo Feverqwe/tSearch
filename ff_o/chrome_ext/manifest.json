@@ -9,7 +9,7 @@
         "16": "images/icon_16.png"
     },
     "options_page": "options.html",
-    "permissions": [ "contextMenus", "http://*/*", "https://*/*" ],
+    "permissions": ["storage", "contextMenus", "http://*/*", "https://*/*" ],
     "omnibox": {
         "keyword" : "tms"
     },
@@ -20,5 +20,5 @@
     "name": "__MSG_appName__",
     "description": "__MSG_appDesc__",
     "default_locale": "ru",
-    "version": "0.6.5"
+    "version": "0.6.10"
 }
