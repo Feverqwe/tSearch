@@ -1099,7 +1099,7 @@ $(window).on('resize', function() {
     explore.update_poster_count();
 });
 
-if (navigator.userAgent.search(/Chrome/) != -1 && chrome && chrome.storage) {
+if (GetSettings('allow_favorites_sync') !== undefined && navigator.userAgent.search(/Chrome/) != -1 && chrome && chrome.storage) {
     chrome.storage.onChanged.addListener(function(changes, namespace) {
         for (key in changes) {
             if (key == "favoritesList") {
