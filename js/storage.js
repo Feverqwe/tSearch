@@ -19,7 +19,7 @@ var GetSettings = function (key) {
                 localStorage[key] = val.favoritesList;
                 explore.updFav(localStorage[key]);
             }
-        );
+            );
         if (localStorage[key] !== undefined) {
             return localStorage[key];
         } else {

@@ -219,18 +219,21 @@ var view = function () {
     var getBackup = function () {
         var t = localStorage;
         delete t['explorerCache'];
+        delete t['topCache'];
         delete t['length'];
+        delete t['search_history'];
         $('div.backup_form div.backup').children('textarea').val(JSON.stringify(t));
     }
     var stngsRestore = function (text) {
         try {
             var rst = JSON.parse(text);
+            localStorage.clear();
             var google_proxy_old = google_proxy;
             for (var key in rst)
             {
                 var value = rst[key];
                 if (value == undefined || key == 'length')
-                    return true;
+                    continue;
                 localStorage[key] = value;
             }
             google_proxy = (GetSettings('google_proxy') !== undefined) ? parseInt(GetSettings('google_proxy')) : false;
@@ -314,6 +317,7 @@ $(function () {
     $('span[data-lang=36]').text(_lang.use_english_postername);
     $('span[data-lang=37]').text(_lang.allow_get_description);
     $('span[data-lang=38]').text(_lang.allow_favorites_sync);
+    $('input[data-lang=39]').val(_lang.clear_cloud_btn);
     
     
     view.LoadProfiles();
@@ -341,6 +345,7 @@ $(function () {
         $('input[name="search_popup"]').parent().hide();
         $('input[name="google_analytics"]').parent().hide();
         $('input[name="allow_favorites_sync"]').parent().hide();
+        $('input[name="clear_cloud_btn"]').hide();
     } else {
         //хром
         var bgp = chrome.extension.getBackgroundPage();
@@ -394,6 +399,13 @@ $(function () {
     $('div.backup_form').find('input[name=restore_btn]').click(function (event) {
         event.preventDefault();
         view.stngsRestore($(this).parent().children('textarea').val());
+    });
+    $('div.backup_form').find('input[name=clear_cloud_btn]').click(function (event) {
+        event.preventDefault();
+        if (chrome && chrome.storage)
+            chrome.storage.sync.clear();
+        else
+            alert('This function is not supported.');
     });
     view.loadSettings();
 });
