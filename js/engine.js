@@ -82,6 +82,10 @@ var engine = function () {
         n : 'riperam',
         e : 0
     },
+    {
+        n : 'brodim',
+        e : 0
+    },
     //с рег-ей иност.
     {
         n : 'hurtom', 
