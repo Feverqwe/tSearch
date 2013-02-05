@@ -77,6 +77,7 @@ java -jar compiler.jar --js .\tracker\underverse.js --js_output_file .\build\tra
 java -jar compiler.jar --js .\tracker\libertorrent.js --js_output_file .\build\tracker\libertorrent.js
 java -jar compiler.jar --js .\tracker\btdigg.js --js_output_file .\build\tracker\btdigg.js
 java -jar compiler.jar --js .\tracker\riperam.js --js_output_file .\build\tracker\riperam.js
+java -jar compiler.jar --js .\tracker\brodim.js --js_output_file .\build\tracker\brodim.js
 
 xcopy .\build .\build_chrome_ext\ /E
 xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
