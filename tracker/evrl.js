@@ -67,30 +67,46 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c);
-            t.find('div.talks_delimeter').remove();
-            t = t.children('div');
+            var t = $(c).find("#search_all");
+            t.find('div.pagination').remove();
+            t.find('div').filter(function(index) {
+                return $(this).html().length == 0;
+            }).remove();
+            t = t.children('div').children('div');
             var l = t.length;
             var arr = [];
             var i = 0;
             for (i = 0;i<l;i++) {
                 var div = t.eq(i).children('div');
-                if (div.eq(1).children('a').text().length == 0) continue;
-                var fix_auth = 0
-                if (div.eq(2).children('a').eq(0).attr('href') == undefined) {
-                   fix_auth = -1
+                if (div.children('a').text().length == 0) continue;
+                var tag_div = 0;
+                var info_div = 1;
+                var fixed = 0;
+                if (div.children('div').eq(tag_div).children('div').length == 3) {
+                    info_div = 0;
+                    tag_div = 1;
+                    var t_size = div.children('div').eq(info_div).children('div').eq(2).text().trim();
+                    var t_dl = div.children('div').eq(info_div).children('div').eq(2).children('a').eq(0).attr('href');
+                    var t_seed = div.children('div').eq(info_div).children('div').eq(0).children('span').text();
+                    var t_leeches = div.children('div').eq(info_div).children('div').eq(1).children('span').text();
+                } else {
+                    var t_size = div.children('div').eq(info_div).children('div').eq(0).children('div').eq(2).text().trim();
+                    var t_dl = div.children('div').eq(info_div).children('div').eq(0).children('div').eq(2).children('a').eq(0).attr('href');
+                    var t_seed = div.children('div').eq(info_div).children('div').eq(0).children('div').eq(0).children('span').text();
+                    var t_leeches = div.children('div').eq(info_div).children('div').eq(0).children('div').eq(1).children('span').text();
                 }
                 arr[arr.length] = {
                     'category' : {
+                        'title': div.children('div').eq(tag_div).text().trim(),
                         'id': -1
                     },
-                    'title' : div.eq(1).children('a').text(),
-                    'url' : root_url+div.eq(1).children('a').attr('href'),
-                    'size' : calculateSize(div.eq(2).children('a').eq(0).text().replace("скачать ", "")),
-                    'dl' :  (fix_auth>-1)?root_url+div.eq(2).children('a').eq(0).attr('href'):null,
-                    'seeds' : 1,
-                    'leechs' : 0,
-                    'time' : calculateTime(div.eq(2).children('div').eq(1).text())
+                    'title' : div.children('a').eq(0).text(),
+                    'url' : root_url+div.children('a').eq(0).attr('href'),
+                    'size' : calculateSize(t_size),
+                    'dl' :  root_url+t_dl,
+                    'seeds' : t_seed,
+                    'leechs' : t_leeches,
+                    'time' : calculateTime(div.children('div').eq(2).children('div').eq(0).text())
                 }
             }
             return arr;
@@ -102,23 +118,22 @@ tracker[tmp_num] = function () {
             xhr = $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
-                url: url,
+                url: url+'?search="'+text+'"',
                 cache : false,
                 dataType: 'json',
                 data: JSON.stringify({
                     request : {
-                        "url" : "/search/",
-                        "data": {"search":text,"page":1,"cat_id":0,"options":0},
-                        "method" : "getSearch"
+                        "url":"/search/?search=\""+text+"\"",
+                        "method":"getContent"
                     }
                 }),
                 success: function(data) {
-                    if (data.response == null) {
+                    if ('response' in data) {
+                        view.auth(1,id);
+                        view.result(id,readCode(data.response.content),t);
+                    } else {
                         view.auth(0,id);
                         view.result(id,[],t);
-                    } else {
-                        view.auth(1,id);
-                        view.result(id,readCode(data.response),t);
                     }
                 },
                 error:function (){
