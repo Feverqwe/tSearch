@@ -26,10 +26,10 @@ var engine = function () {
         n : 'rustorka', 
         e : 1
     },
-    {
-        n : 'inmac', 
-        e : 0
-    },
+    //{
+    //    n : 'inmac', 
+    //    e : 0
+    //},
     {
         n : 'anidub', 
         e : 0
