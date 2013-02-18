@@ -19,7 +19,7 @@ var ad = function () {
             $('#ad').empty().append('<p>'+_lang.ad+'</p>');
         }
         var i = getRandomArbitary(0,ad_arr.length-1,e);
-        $('#ad').append('<div><a href="'+ad_arr[i][1]+'" target="_blank"><img src="'+ad_arr[i][0]+'" /></a></div>');
+        $('#ad').append('<div><a href="'+ad_arr[i][1]+'" target="_blank" rel="nofollow"><img src="'+ad_arr[i][0]+'" /></a></div>');
         return i
     }
     return {
