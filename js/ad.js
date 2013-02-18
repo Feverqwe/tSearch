@@ -1,7 +1,9 @@
 var ad = function () {
     var ad_arr = [["images/ad4.jpg","http://c.cpa1.ru/3k3a"],
                   ["images/ad5.jpg","http://c.cpa1.ru/3k3b"],
-                  ["images/ad6.jpg","http://c.cpa1.ru/3k3c"]
+                  ["images/ad6.jpg","http://c.cpa1.ru/3k3c"],
+                  ["images/ad-7.jpg","http://c.cpa1.ru/3uqa"],
+                  ["images/ad-8.jpg","http://c.cpa1.ru/3uq9"]
               ]
     var getRandomArbitary = function (min, max, e)
     {
