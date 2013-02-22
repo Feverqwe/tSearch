@@ -110,7 +110,8 @@ tracker[tmp_num] = function () {
                 cache : false,
                 data: {
                     'info_hash' : hash,
-                    'q' : text
+                    'q' : text,
+                    'order' : 0
                 },
                 success: function(data) {
                     view.result(id,readCode(data),t);

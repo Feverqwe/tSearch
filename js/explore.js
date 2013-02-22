@@ -820,7 +820,7 @@ var explore = function () {
             return;
         }
         var type = "search_top";
-        var url = "http://feverqwe.narod2.ru/top.json";
+        var url = "http://feverqwe.narod.ru/top.json";
         if (xhr[type] != null)
             xhr[type].abort();
         xhr[type] = $.ajax({
