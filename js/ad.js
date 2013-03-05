@@ -1,9 +1,7 @@
 var ad = function () {
-    var ad_arr = [["images/ad4.jpg","http://c.cpa1.ru/3k3a"],
-                  ["images/ad5.jpg","http://c.cpa1.ru/3k3b"],
-                  ["images/ad6.jpg","http://c.cpa1.ru/3k3c"],
-                  ["images/ad-7.jpg","http://c.cpa1.ru/3uqa"],
-                  ["images/ad-8.jpg","http://c.cpa1.ru/3uq9"]
+    var ad_arr = [["images/ad6.jpg","http://c.cpa1.ru/3k3c"],//небеса
+                  ["images/ad-7.jpg","http://c.cpa1.ru/3uqa"],//Белки
+                  ["images/ad-rq.jpg","http://c.cpa1.ru/3ycq"]//Royal Quest
               ]
     var getRandomArbitary = function (min, max, e)
     {

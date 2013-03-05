@@ -4,7 +4,7 @@ tracker[tmp_num] = function () {
     var filename = 'tfile';
     var id = null;
     var icon = 'data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAADksgYAAAD/AAAAAACkpKUA4ODgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMzMzMzMzMzMjIyMjIyMjIzMzMzMzMzMzRERERERERERBFARAQEQABEFEBEBAQERAQUQEQEBARERBRARAQEAAAEFEBEBAQERAERAAQEBEAARBRAREQEREREFEQEBAREREREREREREREQzMzMzMzMzMzIyMjIyMjIyMzMzMzMzMzMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-    var url = 'http://tfile.me/forum/search';
+    var url = 'http://tfile.me/forum/ssearch.php';
     var login_url = 'http://tfile.me/';
     var root_url = 'http://tfile.me/forum/';
     var about = 'Торрент трекер tfile.me - фильмы, музыка, программы, книги';
@@ -77,16 +77,14 @@ tracker[tmp_num] = function () {
             }
             var t = $(c);
             var ex = false;
-            for (var tmp_n = 0;tmp_n<t.length;tmp_n++) {
-                if ($(t[tmp_n]).attr('id')=='topics')
-                {
-                    t = $(t[tmp_n]).children('tbody').children('tr');
-                    ex = true;
-                    break;
-                }
+            var t_c = t.find('#topics').eq(0).children('tbody').children('tr');
+            if (t_c != null) {
+                t = t_c;
+                ex = true;
             }
             if (!ex) {
                 view.auth(0,id);
+                console.log('Not ex');
                 return [];
             } else {
                 view.auth(1,id);
@@ -154,7 +152,7 @@ tracker[tmp_num] = function () {
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
-                url: url+'?q='+encode(text)+'&f=0&g=&ql=&a=&d=&io=1&o=&size_min=0&size_max=0',
+                url: url+'?q='+encode(text)+'&c=0&g=&ql=&a=&d=&o=&size_min=0&size_max=0',
                 cache : false,
                 success: function(data) {
                     view.result(id,readCode(data),t);
