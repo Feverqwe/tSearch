@@ -97,9 +97,10 @@ tracker[tmp_num] = function () {
             }
             return arr;
         }
-        var res_buff = [];
+        var res_buff = null;
         var loadPage = function (text,page) {
             if (page == null) {
+                res_buff = [];
                 page = 0;
             }
             var t = text;
@@ -129,7 +130,6 @@ tracker[tmp_num] = function () {
                         loadPage(text,page);
                     } else {
                         view.result(id,res_buff,t);
-                        res_buff = [];
                     }
                 },
                 error:function (){
