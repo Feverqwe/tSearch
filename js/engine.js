@@ -106,6 +106,10 @@ var engine = function () {
     },
     //русские без авт..
     {
+        n : 'torrentmac',
+        e : 0
+    },
+    {
         n : 'tfile',
         e : 1
     },
