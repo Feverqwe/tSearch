@@ -97,7 +97,11 @@ tracker[tmp_num] = function () {
             }
             return arr;
         }
-        var loadPage = function (text) {
+        var res_buff = [];
+        var loadPage = function (text,page) {
+            if (page == null) {
+                page = 0;
+            }
             var t = text;
             var hash = '';
             if (text.length == 40 && text.replace(/[a-zA-Z0-9]/g,'') == '')
@@ -111,10 +115,22 @@ tracker[tmp_num] = function () {
                 data: {
                     'info_hash' : hash,
                     'q' : text,
+                    'p' : page,
                     'order' : 0
                 },
                 success: function(data) {
-                    view.result(id,readCode(data),t);
+                    var arr = readCode(data);
+                    var c = arr.length;
+                    for (var i=0; i<c; i++) {
+                        res_buff[res_buff.length] = arr[i]
+                    }
+                    if (hash.length == 0 && page < 4) {
+                        page++
+                        loadPage(text,page);
+                    } else {
+                        view.result(id,res_buff,t);
+                        res_buff = [];
+                    }
                 },
                 error:function (){
                     view.loadingStatus(2,id);
