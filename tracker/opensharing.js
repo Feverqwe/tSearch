@@ -4,7 +4,7 @@ tracker[tmp_num] = function () {
     var filename = 'opensharing';
     var id = null;
     var icon = 'data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAABILAAASCwAAAAAAAAAAAAAAAA8AElrJ/xJayf8SWsn/ElrJ/xJayf8SWsn/ElrJ/xJayf8SWsn/ElrJ/xJayf8SWsn/ElrJ/xJayf8Ah0sAElzL/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/ElzL/xNfzv8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xeB8/8Uduz/FHbs/xeB8/8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xNfzv8TYtH/GIT0/xiE9P8YhPT/GIT0/xd/8f8RaeT///////////8RaeT/F3/x/xiE9P8YhPT/GIT0/xiE9P8TYtH/FGbV/xeB8f8XgfH/F4Hx/xZ87v8QZ+H//////////////////////xBn4f8WfO7/F4Hx/xeB8f8XgfH/FGbV/xRq2f8Xfu7/F37u/xZ56/8QZN7/////////////////////////////////EGTe/xZ56/8Xfu7/F37u/xRq2f8Vbt3/Fnrq/xZ66v8TcOT///////////////////////////////////////////8TcOT/Fnrq/xZ66v8Vbt3/FXLi/xZ25v8Wdub/FXHj/xJo3f8NVdD//////////////////////w1V0P8SaN3/FXHj/xZ25v8Wdub/FXLi/xZ25v8VcuL/FXLi/xVy4v8VcuL/EF/W//////////////////////8QX9b/FXLi/xVy4v8VcuL/FXLi/xZ25v8Weur/FW7d/xVu3f8Vbt3/FW7d/xBc0f//////////////////////EFzR/xVu3f8Vbt3/FW7d/xVu3f8Weur/F37u/xRq2f8Uatn/FGrZ/xRq2f8PWc3//////////////////////w9Zzf8Uatn/FGrZ/xRq2f8Uatn/F37u/xeB8f8UZtX/FGbV/xRm1f8UZtX/D1XK//////////////////////8PVcr/FGbV/xRm1f8UZtX/FGbV/xeB8f8YhPT/E2LR/xNi0f8TYtH/E2LR/xBWyf//////////////////////EFbJ/xNi0f8TYtH/E2LR/xNi0f8YhPT/GIb2/xNfzv8TX87/E1/O/xNfzv8SW8v/EFTG/w5Qw/8OUMP/EFTG/xJby/8TX87/E1/O/xNfzv8TX87/GIb2/xiG9v8SXMv/ElzL/xJcy/8SXMv/ElzL/xJcy/8SXMv/ElzL/xJcy/8SXMv/ElzL/xJcy/8SXMv/ElzL/xiG9v8AzdMAGIb2/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xiG9v8AjU4AgAE9sQAAsYAAAEHpAACl1QAAGJ8AAAAmAADRIQAAL7MAAFNAAACvfgAA1c8AAJXOAABlJwAAB60AAGWmgAHAaQ%3D%3D';
-    var url = 'http://opensharing.org/c.php';
+    var url = 'http://opensharing.org/newsearch.php';
     var root_url = 'http://opensharing.org';
     var about = 'Открытый торрент-трекер без регистрации и рейтинга';
     var flags = {
@@ -92,14 +92,12 @@ tracker[tmp_num] = function () {
                 type: 'GET',
                 url: url,
                 data: {
-                    'search' : text,
-                    'method' : 1,
-                    'in' : 0,
-                    'tags' : 0,
-                    'cat' : 0,
-                    'order' : 2,
-                    'inc' : 0,
-                    'make_search' : 1
+                    'search_word' : text,
+                    'search_place' : 0,
+                    'search_direction_asc' : 1,
+                    'search_type' : 1,
+                    'search_cat' : 0,
+                    'search_sort' : 2
                 },
                 cache : false,
                 success: function(data) {

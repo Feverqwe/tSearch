@@ -133,7 +133,11 @@ tracker[tmp_num] = function () {
                     }
                 },
                 error:function (){
-                    view.loadingStatus(2,id);
+                    if (res_buff.length > 0) {
+                        view.result(id,res_buff,t);
+                    } else {
+                        view.loadingStatus(2,id);
+                    }
                 }
             });
         }

@@ -38,6 +38,10 @@ tracker[tmp_num] = function () {
         var readCode = function (c) {
             c = view.contentFilter(c);
             var t = $(c);
+            if (t.find('#register_link').length) {
+                view.auth(0,id);
+                return [];
+            }
             view.auth(1,id);
             t = t.find('#main_content_wrap').children('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
