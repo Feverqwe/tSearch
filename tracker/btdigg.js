@@ -124,7 +124,7 @@ tracker[tmp_num] = function () {
                     for (var i=0; i<c; i++) {
                         res_buff[res_buff.length] = arr[i]
                     }
-                    if (hash.length == 0 && page < 4) {
+                    if (hash.length == 0 && c == 10 && page < 4) {
                         page++
                         loadPage(text,page);
                     } else {
