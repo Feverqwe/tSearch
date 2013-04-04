@@ -78,6 +78,9 @@ java -jar compiler.jar --js .\tracker\libertorrent.js --js_output_file .\build\t
 java -jar compiler.jar --js .\tracker\btdigg.js --js_output_file .\build\tracker\btdigg.js
 java -jar compiler.jar --js .\tracker\riperam.js --js_output_file .\build\tracker\riperam.js
 java -jar compiler.jar --js .\tracker\brodim.js --js_output_file .\build\tracker\brodim.js
+java -jar compiler.jar --js .\tracker\torrentmac.js --js_output_file .\build\tracker\torrentmac.js
+java -jar compiler.jar --js .\tracker\hdclub.js --js_output_file .\build\tracker\hdclub.js
+java -jar compiler.jar --js .\tracker\bigfangroup.js --js_output_file .\build\tracker\bigfangroup.js
 
 xcopy .\build .\build_chrome_ext\ /E
 xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y

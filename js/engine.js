@@ -86,6 +86,14 @@ var engine = function () {
         n : 'brodim',
         e : 0
     },
+    {
+        n : 'hdclub',
+        e : 0
+    },
+    {
+        n : 'bigfangroup',
+        e : 0
+    },
     //с рег-ей иност.
     {
         n : 'hurtom', 
