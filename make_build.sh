@@ -71,6 +71,8 @@ java -jar compiler.jar --js ./tracker/torrentmac.js --js_output_file ./build/tra
 java -jar compiler.jar --js ./tracker/hdclub.js --js_output_file ./build/tracker/hdclub.js
 java -jar compiler.jar --js ./tracker/bigfangroup.js --js_output_file ./build/tracker/bigfangroup.js
 java -jar compiler.jar --js ./tracker/piratca.js --js_output_file ./build/tracker/piratca.js
+java -jar compiler.jar --js ./tracker/tapochek.js --js_output_file ./build/tracker/tapochek.js
+java -jar compiler.jar --js ./tracker/bestrepack.js --js_output_file ./build/tracker/bestrepack.js
 
 java -jar compiler.jar --js ./js/lang.js --js_output_file ./build/js/lang.js
 java -jar compiler.jar --js ./js/background.js --js_output_file ./build/js/background.js
