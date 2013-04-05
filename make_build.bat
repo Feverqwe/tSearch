@@ -81,6 +81,7 @@ java -jar compiler.jar --js .\tracker\brodim.js --js_output_file .\build\tracker
 java -jar compiler.jar --js .\tracker\torrentmac.js --js_output_file .\build\tracker\torrentmac.js
 java -jar compiler.jar --js .\tracker\hdclub.js --js_output_file .\build\tracker\hdclub.js
 java -jar compiler.jar --js .\tracker\bigfangroup.js --js_output_file .\build\tracker\bigfangroup.js
+java -jar compiler.jar --js .\tracker\piratca.js --js_output_file .\build\tracker\piratca.js
 
 xcopy .\build .\build_chrome_ext\ /E
 xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y

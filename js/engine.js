@@ -19,6 +19,10 @@ var engine = function () {
         e : 1
     },
     {
+        n : 'piratca',
+        e : 0
+    },
+    {
         n : 'pornolab', 
         e : 0
     },
