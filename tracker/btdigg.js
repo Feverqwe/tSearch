@@ -97,11 +97,13 @@ tracker[tmp_num] = function () {
             }
             return arr;
         }
-        var res_buff = null;
+        var res_count = 0;
         var loadPage = function (text,page) {
             if (page == null) {
-                res_buff = [];
+                res_count = 0;
                 page = 0;
+            } else {
+                view.loadingStatus(0,id);
             }
             var t = text;
             var hash = '';
@@ -122,22 +124,17 @@ tracker[tmp_num] = function () {
                 success: function(data) {
                     var arr = readCode(data);
                     var c = arr.length;
-                    for (var i=0; i<c; i++) {
-                        res_buff[res_buff.length] = arr[i]
-                    }
+                    res_count += c;
                     if (hash.length == 0 && c == 10 && page < 4) {
+                        view.result(id,arr,t,res_count);
                         page++
                         loadPage(text,page);
                     } else {
-                        view.result(id,res_buff,t);
+                        view.result(id,arr,t,res_count);
                     }
                 },
                 error:function (){
-                    if (res_buff.length > 0) {
-                        view.result(id,res_buff,t);
-                    } else {
-                        view.loadingStatus(2,id);
-                    }
+                    view.loadingStatus(2,id);
                 }
             });
         }
