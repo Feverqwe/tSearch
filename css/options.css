@@ -10,7 +10,7 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
     margin: 0;
-    background-color: #F1F1F1;
+    background-color: #f1f2f1;
 }
 body > center > h1 {
     margin: 0;
@@ -44,11 +44,11 @@ body > center > h2 {
 }
 fieldset, div.save_panel {
     margin: 0 auto;
-    width: 550px;
+    width: 720px;
 }
 fieldset > fieldset {
     margin: 0 auto;
-    width: 525px;
+    width: 97%;
     margin-bottom: 10px;
 }
 fieldset {
@@ -132,8 +132,7 @@ div.backup_form > div.restore, div.backup_form > div.backup {
         padding-bottom: 2px;
 }
 div.backup_form > textarea, div.backup_form textarea {
-	width: 98%;
-        margin-left: 2px;
+	width: 99.2%;
 }
 div.backup_form a.backup_tab, div.backup_form a.restore_tab {
 	border-top-left-radius: 4px; 
