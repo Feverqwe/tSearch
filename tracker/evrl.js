@@ -36,9 +36,9 @@ tracker[tmp_num] = function () {
             var dd = t.split(' ');
             if (dd[0]<10) dd[0] = '0'+dd[0];
             if (ex_time)
-                return Math.round((new Date(tt.getFullYear(),parseInt(dd[1])-1,parseInt('1'+dd[0])-100,parseInt('1'+dd[2])-100,parseInt('1'+dd[3])-100)).getTime() / 1000);
+                return Math.round((new Date(tt.getFullYear(),parseInt(dd[1])-1,parseInt(dd[0]),parseInt(dd[2]),parseInt(dd[3]))).getTime() / 1000);
             else
-                return Math.round((new Date(parseInt(dd[2]),parseInt(dd[1])-1,parseInt('1'+dd[0])-100)).getTime() / 1000);
+                return Math.round((new Date(parseInt(dd[2]),parseInt(dd[1])-1,parseInt(dd[0]))).getTime() / 1000);
         }
         var calculateSize = function (s) {
             var type = '';

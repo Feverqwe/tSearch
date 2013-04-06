@@ -65,7 +65,7 @@ tracker[tmp_num] = function () {
         }
         var calculateTime = function (f) {
             var dd = f.split('-');
-            return Math.round((new Date(parseInt(dd[0]),parseInt('1'+dd[1])-100-1,parseInt('1'+dd[2])-100)).getTime() / 1000);
+            return Math.round((new Date(parseInt(dd[0]),parseInt(dd[1])-1,parseInt(dd[2]))).getTime() / 1000);
         }
         var readCode = function (c) {
             c = view.contentFilter(c);

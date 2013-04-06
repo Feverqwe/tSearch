@@ -67,7 +67,7 @@ tracker[tmp_num] = function () {
             .replace('Окт','10').replace('Ноя','11').replace('Дек','12');
             var date = time[1].split('-');
             time = time[0].split(':');
-            return Math.round((new Date(parseInt('20'+date[2]),parseInt(date[1])-1,parseInt(date[0]),parseInt('1'+time[0])-100,parseInt('1'+time[1])-100)).getTime() / 1000);
+            return Math.round((new Date(parseInt('20'+date[2]),parseInt(date[1])-1,parseInt(date[0]),parseInt(time[0]),parseInt(time[1]))).getTime() / 1000);
         }
         var readCode = function (c) {
             c = view.contentFilter(c);

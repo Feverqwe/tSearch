@@ -45,7 +45,7 @@ tracker[tmp_num] = function () {
             .replace('Апреля','4').replace('Мая','5').replace('Июня','6')
             .replace('Июля','7').replace('Августа','8').replace('Сентября','9')
             .replace('Октября','10').replace('Ноября','11').replace('Декабря','12').replace(':',' ').replace(',','').split(' ');
-            return Math.round((new Date(parseInt(dd[2]),parseInt(dd[1])-1,parseInt(dd[0]),parseInt('1'+dd[3])-100,parseInt('1'+dd[4])-100)).getTime() / 1000);
+            return Math.round((new Date(parseInt(dd[2]),parseInt(dd[1])-1,parseInt(dd[0]),parseInt(dd[3]),parseInt(dd[4]))).getTime() / 1000);
         }
         var readCode = function (c) {
             c = view.contentFilter(c);

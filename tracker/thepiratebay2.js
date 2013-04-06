@@ -93,8 +93,8 @@ tracker[tmp_num] = function () {
                     var month = t_date.split('-');
                     var date = month[1];
                     var month = month[0];
-                    var month_m = parseInt('1'+month)-101;
-                    var date_m = parseInt('1'+date)-100;
+                    var month_m = parseInt(month)-1;
+                    var date_m = parseInt(date);
                     t_date = t_date.replace(month+'-'+date,month_m+' '+date_m);
                 }
                 var t_date = t_date.split(' ');
@@ -103,12 +103,12 @@ tracker[tmp_num] = function () {
                     year = String(time_h).replace(/-/,' ').split(' ');
                     var time_m = 0;
                     var time_h = 0;
-                    t_date[0] = parseInt('1'+year[0])-101;
-                    t_date[1] = parseInt('1'+year[1])-100;
+                    t_date[0] = parseInt(year[0])-1;
+                    t_date[1] = parseInt(year[1]);
                     year = year[2];
                 } else {
-                    var time_m = parseInt('1'+time_h[1])-100;
-                    var time_h = parseInt('1'+time_h[0])-100;
+                    var time_m = parseInt(time_h[1]);
+                    var time_h = parseInt(time_h[0]);
                 }
                 return Math.round((new Date(year,t_date[0],parseInt(t_date[1]),parseInt(time_h),parseInt(time_m))).getTime() / 1000);
             }

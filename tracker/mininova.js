@@ -74,7 +74,7 @@ tracker[tmp_num] = function () {
             if (month == 'Oct') month = '10';
             if (month == 'Nov') month = '11';
             if (month == 'Dec') month = '12';
-            return Math.round((new Date(parseInt(year),parseInt('1'+month)-101,parseInt('1'+date)-100)).getTime() / 1000)
+            return Math.round((new Date(parseInt(year),parseInt(month)-1,parseInt(date))).getTime() / 1000)
         }
         var readCode = function (c) {
             c = view.contentFilter(c);

@@ -49,7 +49,6 @@ tracker[tmp_num] = function () {
             } else 
                 view.auth(1,id);
             t = t.find('#main_content').find('#tor-tbl').children('tbody').children('tr');
-            console.log(t);
             var l = t.length;
             var arr = [];
             var i = 0;

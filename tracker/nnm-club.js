@@ -38,9 +38,9 @@ tracker[tmp_num] = function () {
             var t = t.replace('Янв','1').replace('Фев','2').replace('Мар','3')
             .replace('Апр','4').replace('Май','5').replace('Июн','6')
             .replace('Июл','7').replace('Авг','8').replace('Сен','9')
-            .replace('Окт','10').replace('Ноя','11').replace('Дек','12').replace('/:/g',' ');
+            .replace('Окт','10').replace('Ноя','11').replace('Дек','12').replace(/:/g,' ');
             var dd = t.split(' ');
-            return Math.round((new Date(parseInt(dd[2]),parseInt(dd[1])-1,parseInt('1'+dd[0])-100,parseInt('1'+dd[3])-100,parseInt('1'+dd[4])-100,parseInt('1'+dd[5])-100)).getTime() / 1000);
+            return Math.round((new Date(parseInt(dd[2]),parseInt(dd[1])-1,parseInt(dd[0]),parseInt(dd[3]),parseInt(dd[4]),parseInt(dd[5]))).getTime() / 1000);
         }
         var readCode = function (c) {
             c = view.contentFilter(c);

@@ -37,7 +37,7 @@ tracker[tmp_num] = function () {
             time = $.trim(time).split(" ");
             var date = time[0].split('-');
             time = time[1].split(':');
-            return Math.round((new Date(parseInt(date[0]),parseInt(1+date[1])-101,parseInt('1'+date[2])-100,parseInt('1'+time[0])-100,parseInt('1'+time[1])-100)).getTime() / 1000);
+            return Math.round((new Date(parseInt(date[0]),parseInt(date[1])-1,parseInt(date[2]),parseInt(time[0]),parseInt(time[1]))).getTime() / 1000);
         }
         var calculateSize = function (s) {
             var type = '';

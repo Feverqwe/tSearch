@@ -44,7 +44,7 @@ tracker[tmp_num] = function () {
             time = $.trim(time).split(" ");
             var date = time[0].split('-');
             time = time[1].split(':');
-            return Math.round((new Date(parseInt(date[0]),parseInt(1+date[1])-101,parseInt('1'+date[2])-100,parseInt('1'+time[0])-100,parseInt('1'+time[1])-100)).getTime() / 1000);
+            return Math.round((new Date(parseInt(date[0]),parseInt(date[1])-1,parseInt(date[2]),parseInt(time[0]),parseInt(time[1]))).getTime() / 1000);
         }
         var calculateCategory = function (n) {
             var n = String(n).replace(/.*c=([0-9]*)$/i,"$1");
@@ -103,12 +103,12 @@ tracker[tmp_num] = function () {
                         'id': calculateCategory(td.eq(0).children('a').eq(0).attr('href'))
                     },
                     'title' : td.eq(2).children('a').text(),
-                    'url' : root_url+td.eq(2).children('a').attr('href'),
+                    'url' : login_url+td.eq(2).children('a').attr('href'),
                     'size' : calculateSize(td.eq(3).children('a').text()),
                     'dl' : root_url+td.eq(3).children('a').attr('href'),
                     'seeds' : td.eq(3).children('b.sd').text(),
                     'leechs' : td.eq(3).children('b.lc').text(),
-                    'time' : 0
+                    'time' : calculateTime(td.eq(5).text())
                 }
             }
             return arr;

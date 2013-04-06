@@ -72,7 +72,7 @@ tracker[tmp_num] = function () {
         }
         var calculateTime = function (f) {
             var dd = f.split('.');
-            return Math.round(new Date(parseInt(dd[2]),parseInt(dd[1])-1,parseInt('1'+dd[0])-100).getTime() / 1000);
+            return Math.round(new Date(parseInt(dd[2]),parseInt(dd[1])-1,parseInt(dd[0])).getTime() / 1000);
         }
         var calculateQuality = function (t) {
             if (t == undefined) return '';
