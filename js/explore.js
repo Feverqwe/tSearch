@@ -276,7 +276,7 @@ var explore = function () {
             
             var t = mt.find('#rhs_block').find('div.kno-ec.rhsvw.vk_rhsc').eq(0).children('div');
             
-            if (t.length == null) {
+            if (t.length == 0) {
                 return;
             }
             
