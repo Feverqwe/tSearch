@@ -575,11 +575,11 @@ var view = function() {
         }
     }
     var contentFilter = function(c) {
-        var c = c.replace(/\/\//img, '#blockurl#').replace(/script/img, '#blockscr#');
+        var c = c.replace(/\/\//img, '#blockurl#').replace(/ src=(['"]{1})/img, ' src=$1#blockrurl#').replace(/script/img, '#blockscr#');
         return c;
     }
     var contentUnFilter = function(c) {
-        var c = c.replace(/#blockurl#/img, '//').replace(/#blockscr#/img, 'script');
+        var c = c.replace(/#blockrurl#/img, '').replace(/#blockurl#/img, '//').replace(/#blockscr#/img, 'script');
         return c;
     }
     var filterText = function(keyword, t) {
