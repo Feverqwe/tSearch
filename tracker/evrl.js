@@ -67,7 +67,8 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c).find("#search_all");
+            var t = view.load_in_sandbox(id,c);
+            t = t.find("#search_all");
             t.find('div.pagination').remove();
             t.find('div').filter(function(index) {
                 return $(this).html().length == 0;

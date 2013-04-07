@@ -96,7 +96,7 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c);//.contents();
+            var t = view.load_in_sandbox(id,c);
             t = t.find('#torrents').children('li');
             var l = t.length;
             var arr = [];

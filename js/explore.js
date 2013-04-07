@@ -170,7 +170,8 @@ var explore = function () {
         }
         var Films = function (c) {
             c = view.contentFilter(c);
-            var t = $(c).find('div.filmsListNew').children('div.item');
+            var t = view.load_in_sandbox(null,c);
+            t = t.find('div.filmsListNew').children('div.item');
             t.find('div.threeD').remove();
             var l = t.length;
             var arr = [];
@@ -188,7 +189,8 @@ var explore = function () {
         }
         var Serials = function (c) {
             c = view.contentFilter(c);
-            var t = $(c).find('#itemList').children('tbody').children('tr');
+            var t = view.load_in_sandbox(null,c);
+            t = t.find('#itemList').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -210,7 +212,8 @@ var explore = function () {
                 return google_proxy+encodeURI(url);
             }
             c = view.contentFilter(c);
-            var t = $(c).find('div.play-list-02').children('div.one.p-rel');
+            var t = view.load_in_sandbox(null,c);
+            t = t.find('div.play-list-02').children('div.one.p-rel');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -234,7 +237,8 @@ var explore = function () {
                 return google_proxy+encodeURI(url);
             }
             c = view.contentFilter(c);
-            var t = $(c).find('td.enc-box-list').children('div.enc-item');
+            var t = view.load_in_sandbox(null,c);
+            t = t.find('td.enc-box-list').children('div.enc-item');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -250,7 +254,8 @@ var explore = function () {
         }
         var TopFilms = function (c) {
             c = view.contentFilter(c);
-            var t = $(c).find('div.stat').children('div.el');
+            var t = view.load_in_sandbox(null,c);
+            t = t.find('div.stat').children('div.el');
             var l = t.length;
             var arr = [];
             var i = 0;
@@ -267,7 +272,8 @@ var explore = function () {
         }
         var About = function (c) {
             c = view.contentFilter(c);
-            var t = $(c).find('#rhs_block').find('div.kno-ec.rhsvw.vk_rhsc').eq(0).children('div');
+            var t = view.load_in_sandbox(null,c);
+            t = t.find('#rhs_block').find('div.kno-ec.rhsvw.vk_rhsc').eq(0).children('div');
             t.find('span.kno-fm.fl.q').remove();
             
             var obj = t.find('a')

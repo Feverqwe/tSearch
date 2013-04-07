@@ -75,7 +75,7 @@ tracker[tmp_num] = function () {
                 view.auth(0,id);
                 return [];
             }
-            var t = $(c);
+            var t = view.load_in_sandbox(id,c);
             var ex = false;
             var t_c = t.find('#topics').eq(0).children('tbody').children('tr');
             if (t_c != null) {

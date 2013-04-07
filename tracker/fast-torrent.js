@@ -81,7 +81,7 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c);
+            var t = view.load_in_sandbox(id,c);
             t = t.find('table.list').children('tbody').children('tr[height="1%"]');
             var l = t.length;
             var arr = [];

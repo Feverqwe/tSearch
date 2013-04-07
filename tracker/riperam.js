@@ -75,7 +75,7 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c);
+            var t = view.load_in_sandbox(id,c);
             if (t.find('#message > div.inner').length > 0 && t.find('#message > div.inner > p').text().indexOf('попробуйте чуть позже') > 0) {
                 view.auth(0,id);
                 return [];

@@ -49,7 +49,8 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c).find('div.panel.torrents_list > div.content.after_clear').children('div.torr_block');
+            var t = view.load_in_sandbox(id,c);
+            t = t.find('div.panel.torrents_list > div.content.after_clear').children('div.torr_block');
             var list = 0;
             if (t.length == 0) {
                 t = $(c).find('div.panel.torrents_list > div.content.after_clear > table.data_table.torr_table > tbody').children('tr');

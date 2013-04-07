@@ -1,7 +1,7 @@
 var magic = function() {
     var xhr = null;
     var contentFilter = function(c) {
-        var c = c.replace(/\/\//img, '#blockurl#').replace(/script/img, '#blockscr#').replace(/display[: ]*none/img, '#blockdisp#');
+        var c = c.replace(/script/img, 'noscript').replace(/display[: ]*none/img, '#blockdisp#');
         return c;
     }
     var open_page = function(url) {
@@ -13,8 +13,7 @@ var magic = function() {
             url: url,
             success: function(data) {
                 var iframedoc = iframe[0].contentDocument || iframe[0].contentWindow.document;
-                iframedoc.body.innerHTML = contentFilter(data);
-                $($('iframe')[0].contentDocument).find('*').css({'color':'#000','background': '#fff','border':'1px dashed #fff'});
+                iframedoc.body.innerHTML = contentFilter(data)+'<style>* {color:#000;background-color:#fff;border:1px dashed #fff;} input {border:2px solid #099;}</style>';
             }
         });
     }
@@ -25,9 +24,9 @@ var magic = function() {
                 open_page(url);
             })
             $($('iframe')[0].contentDocument).on('mouseenter', '*', function() {
-                $(this).css({'background': '#FFCC33','border':'1px #FF0033 dashed'}).parents().css({'background': '#fff','border':'1px #fff dashed'});
+                $(this).css({'background-color': '#FFCC33'}).parents().css({'background-color': ''});
             }).on("mouseleave", '*', function() {
-                $(this).css({'background': '#fff','border':'1px #fff dashed'});
+                $(this).css({'background-color': '#fff'});
             }).on("click",'*',function (e) {
                 e.preventDefault();
             });

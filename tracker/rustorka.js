@@ -37,7 +37,7 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c);
+            var t = view.load_in_sandbox(id,c);
             if (t.find('input[name="login_username"]').html() != null) {
                 view.auth(0,id);
                 return [];

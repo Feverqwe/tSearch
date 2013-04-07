@@ -1,53 +1,54 @@
 <!DOCTYPE HTML>
 <html lang="ru">
-    <head>Torrents MultiSearch</title>
-    <meta charset="UTF-8">
-    <script src="build/js/storage.js"></script>
-    <script src="build/js/lang.js"></script>
-    <script>
-        window.addEventListener( 'load', function(){
-            var theButton;
-            var ToolbarUIItemProperties = {
-                disabled: false,
-                title: "Torrents MultiSearch",
-                icon: "icons/icon-16.png",
-                onclick: function() {
-                    var tab = opera.extension.tabs.create({url: 'build/index.html#s='});
-                    tab.focus();
-                }
-            }
-            theButton = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
-            opera.contexts.toolbar.addItem(theButton);
-        }, false );
-        var context_menu = (GetSettings('context_menu') !== undefined) ? parseInt(GetSettings('context_menu')) : true;
-        if (context_menu) {
-            window.addEventListener('DOMContentLoaded', function() {
-                // Check the Context Menu API is supported
-                if (opera.contexts.menu) {
-                    var menu = opera.contexts.menu;
-                    if (menu.length > 0) {
-                        menu.removeItem(0);
+    <head>
+        <title>Torrents MultiSearch</title>
+        <meta charset="UTF-8">
+        <script src="build/js/storage.js"></script>
+        <script src="build/js/lang.js"></script>
+        <script>
+            window.addEventListener('load', function() {
+                var theButton;
+                var ToolbarUIItemProperties = {
+                    disabled: false,
+                    title: "Torrents MultiSearch",
+                    icon: "icons/icon-16.png",
+                    onclick: function() {
+                        var tab = opera.extension.tabs.create({url: 'build/index.html#s='});
+                        tab.focus();
                     }
-                    // Create a menu item properties object
-                    var itemProps = {
-                        title: _lang.ctx_title,
-                        contexts: ['selection'],
-                        icon : 'icons/icon-64.png',
-                        onclick: function(event) {
-                            var query = encodeURIComponent(event.selectionText);
-                            var tabProps = {
-                                url: 'build/index.html#s=' + query
-                            };
-                            opera.extension.tabs.create(tabProps);
-                        }
-                    }
-                    var item = menu.createItem(itemProps);
-                    menu.addItem(item);
                 }
+                theButton = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
+                opera.contexts.toolbar.addItem(theButton);
             }, false);
-        }
-    </script>
-</head>
-<body>
-</body>
+            var context_menu = (GetSettings('context_menu') !== undefined) ? parseInt(GetSettings('context_menu')) : true;
+            if (context_menu) {
+                window.addEventListener('DOMContentLoaded', function() {
+                    // Check the Context Menu API is supported
+                    if (opera.contexts.menu) {
+                        var menu = opera.contexts.menu;
+                        if (menu.length > 0) {
+                            menu.removeItem(0);
+                        }
+                        // Create a menu item properties object
+                        var itemProps = {
+                            title: _lang.ctx_title,
+                            contexts: ['selection'],
+                            icon: 'icons/icon-64.png',
+                            onclick: function(event) {
+                                var query = encodeURIComponent(event.selectionText);
+                                var tabProps = {
+                                    url: 'build/index.html#s=' + query
+                                };
+                                opera.extension.tabs.create(tabProps);
+                            }
+                        }
+                        var item = menu.createItem(itemProps);
+                        menu.addItem(item);
+                    }
+                }, false);
+            }
+        </script>
+    </head>
+    <body>
+    </body>
 </html>

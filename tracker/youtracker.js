@@ -35,7 +35,8 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c.replace(/div id="adv_header" .*\n.*/img,'div id="adv_header">'));
-            var t = $(c).find('tr.hl-tr').parent().children('tr');
+            var t = view.load_in_sandbox(id,c);
+            t = t.find('tr.hl-tr').parent().children('tr');
             var l = t.length;
             var arr = [];
             var i = 0;

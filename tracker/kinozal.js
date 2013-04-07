@@ -91,7 +91,8 @@ tracker[tmp_num] = function () {
         var readCode = function (c) {
             c = view.contentFilter(c);
             var ver = 1;
-            var t = $(c).find('table.mn2').eq($(c).find('table.mn2').length-1).children('tbody').children('tr');
+            var t = view.load_in_sandbox(id,c);
+            t = t.find('table.mn2').eq($(c).find('table.mn2').length-1).children('tbody').children('tr');
             if (t.length == 0) {
                 ver = 2;
                 var t = $(c).find('table.t_peer.w100p').children('tbody').children('tr');

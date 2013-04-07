@@ -50,7 +50,8 @@ tracker[tmp_num] = function () {
         }
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = $(c).find('#search_res').children('table').children('tbody').children('tr');
+            var t = view.load_in_sandbox(id,c);
+            t = t.find('#search_res').children('table').children('tbody').children('tr');
             var hash = 0;
             if (t.length == 0) {
                 t = $(c).find('#torrent_info').find('table.torrent_info_tbl').children('tbody').children('tr');
