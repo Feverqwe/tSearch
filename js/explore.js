@@ -272,12 +272,20 @@ var explore = function () {
         }
         var About = function (c) {
             c = view.contentFilter(c);
-            var t = view.load_in_sandbox(null,c);
-            t = t.find('#rhs_block').find('div.kno-ec.rhsvw.vk_rhsc').eq(0).children('div');
+            var mt = view.load_in_sandbox(null,c);
+            
+            var t = mt.find('#rhs_block').find('div.kno-ec.rhsvw.vk_rhsc').eq(0).children('div');
+            
+            if (t.length == null) {
+                return;
+            }
+            
             t.find('span.kno-fm.fl.q').remove();
             
             var obj = t.find('a')
+            if (obj.length == 0) return;
             for (var i = 0 ; i < obj.length; i++) {
+                if (obj.eq(i).attr('href') == null) continue;
                 if (obj.eq(i).attr('href')[0] == '/')
                     obj.eq(i).attr('href','http://google.com'+obj.eq(i).attr('href'));
                 obj.eq(i).attr('target','_blank');
