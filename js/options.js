@@ -132,9 +132,6 @@ var view = function () {
         
         var google_proxy_old = google_proxy;
         google_proxy = SetSettings('google_proxy',($('input[name="google_proxy"]').is(':checked'))?1:0);
-        if (google_proxy_old != google_proxy) {
-            SetSettings('explorerCache',JSON.stringify({}));
-        }
         
         google_analytics = SetSettings('google_analytics',($('input[name="google_analytics"]').is(':checked'))?1:0);
         autoSetCat = SetSettings('autoSetCat',($('input[name="autosetcat"]').is(':checked'))?1:0);
@@ -217,7 +214,7 @@ var view = function () {
             $('div.profile input.rmbtn').ramoveAttr('disabled');
     }
     var getBackup = function () {
-        var t = localStorage;
+        var t = JSON.parse(JSON.stringify(localStorage));
         delete t['explorerCache'];
         delete t['topCache'];
         delete t['length'];
@@ -228,17 +225,12 @@ var view = function () {
         try {
             var rst = JSON.parse(text);
             localStorage.clear();
-            var google_proxy_old = google_proxy;
             for (var key in rst)
             {
                 var value = rst[key];
                 if (value == undefined || key == 'length')
                     continue;
                 localStorage[key] = value;
-            }
-            google_proxy = (GetSettings('google_proxy') !== undefined) ? parseInt(GetSettings('google_proxy')) : false;
-            if (google_proxy_old != google_proxy) {
-                SetSettings('explorerCache',JSON.stringify({}));
             }
             top.location.reload();
         } catch(err) {
