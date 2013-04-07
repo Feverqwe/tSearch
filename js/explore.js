@@ -724,7 +724,7 @@ var explore = function () {
             }
         });
         //переключение страниц
-        $('div.explore > ul.sortable > li').on('hover', 'div > div.pager > div.item', function() {
+        $('div.explore > ul.sortable > li').on('mouseenter', 'div > div.pager > div.item', function() {
             var page = $(this).text();
             var sect = $(this).parents().eq(3).attr('class');
             if ($('li.'+sect).children('div').children('div').attr('data-page') == page) return;

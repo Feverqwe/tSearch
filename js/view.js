@@ -575,11 +575,12 @@ var view = function() {
         }
     }
     var contentFilter = function(c) {
-        var c = c.replace(/\/\//img, '#blockurl#').replace(/ src=(['"]{1})/img, ' src=$1#blockrurl#').replace(/script/img, '#blockscr#');
+        var c = c.replace(/\/\//img, '#blockurl#').replace(/ src=(['"]{1})/img, ' src=$11.png#blockrurl#').replace(/script/img, '#blockscr#');
         return c;
     }
     var contentUnFilter = function(c) {
-        var c = c.replace(/#blockrurl#/img, '').replace(/#blockurl#/img, '//').replace(/#blockscr#/img, 'script');
+        var c = c.replace(/1.png#blockrurl#/img, '').replace(/#blockrurl#/img, '').replace(/#blockurl#/img, '//').replace(/#blockscr#/img, 'script');
+        //#tem!!! replace(/#blockrurl#/img, '')
         return c;
     }
     var filterText = function(keyword, t) {
@@ -989,7 +990,11 @@ var view = function() {
                 }
             }
         }
-        $('input[type="text"][name="s"]').autocomplete("destroy").autocomplete({
+        var inp = $('input[type="text"][name="s"]');
+        if (inp.attr('autocomplete') != null) {
+            inp.autocomplete("destroy");
+        }
+        inp.autocomplete({
             source: (AutoComplite_opt == 0) ? AutocompleteArr : function(a, response) {
                 if ($.trim(a.term).length == 0 || AutoComplite_opt == 0) {
                     var AutocompleteArr = [];
@@ -1026,7 +1031,8 @@ var view = function() {
                 at: "bottom",
                 collision: "bottom"
             }
-        }).end().autocomplete("close");
+        });
+        inp.autocomplete("close");
     }
     var LoadProfiles = function() {
         var defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;

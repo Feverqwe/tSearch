@@ -13,6 +13,7 @@ xcopy .\js .\build\js\ /E
 xcopy .\tracker .\build\tracker\ /E
 copy .\*.html .\build\.
 copy .\*.json .\build\.
+copy .\*.png .\build\.
 
 java -jar yuicompressor-2.4.7.jar .\css\stylesheet.css -o .\build\css\stylesheet.css
 java -jar yuicompressor-2.4.7.jar .\css\options.css -o .\build\css\options.css

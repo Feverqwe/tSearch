@@ -15,6 +15,7 @@ cp -r ./css ./build/.
 cp -r ./tracker ./build/.
 cp *.html ./build/.
 cp *.json ./build/.
+cp *.png ./build/.
 
 java -jar yuicompressor-2.4.7.jar ./css/stylesheet.css -o ./build/css/stylesheet.css
 java -jar yuicompressor-2.4.7.jar ./css/options.css -o ./build/css/options.css
