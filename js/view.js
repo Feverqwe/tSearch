@@ -1052,6 +1052,20 @@ var view = function() {
         var t = $(jQuery.parseHTML(c));
         return t
     }
+    var update_tr_order = function(s) {
+        var th = $('#rez_table').find('th');
+        th.removeClass('headerSortDown headerSortUp');
+        for (var n = 0; n < s.length; n++) {
+            if (s[n][0] > th.length - 1)
+                continue;
+            if (s[n][1]) {
+                th.eq(s[n][0]).addClass('headerSortUp');
+            } else {
+                th.eq(s[n][0]).addClass('headerSortDown');
+            }
+        }
+        return s;
+    }
     return {
         result: function(t, a, s, p) {
             return write_result(t, a, s, p);
@@ -1189,11 +1203,12 @@ var view = function() {
                         return $(node).html();
                     },
                     widgets: ['zebra'],
-                    sortList: (GetSettings('Order') !== undefined) ? JSON.parse(GetSettings('Order')) : [[1, 1]],
-                    autosorter: true,
+                    sortList: update_tr_order((GetSettings('Order') !== undefined) ? JSON.parse(GetSettings('Order')) : [[1, 1]]),
                     onsort: function(s) {
+                        update_tr_order(s);
                         SetSettings('Order', JSON.stringify(s));
-                    }
+                    },
+                    selectorHeaders: '#rez_table > thead th'
                 });
             } catch (err) {
             }

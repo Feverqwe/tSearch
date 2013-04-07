@@ -67,7 +67,7 @@ tracker[tmp_num] = function () {
         var readCode = function (c) {
             c = view.contentFilter(c);
             var t = view.load_in_sandbox(id,c);
-            if (t.find('input[name="username"]').html() != null) {
+            if (t.find('input[name="username"]').length) {
                 view.auth(0,id);
                 return [];
             } else 
