@@ -58,11 +58,6 @@ var options = function() {
                     $('input[name="' + k + '"][value="' + v.v + '"]').eq(0)[0].checked = true;
                 }
             }
-            if (v.t == "array") {
-                if (k in set) {
-
-                }
-            }
         });
         updateProfileList();
     };
@@ -297,31 +292,31 @@ var options = function() {
                 write_language($(this).val());
             });
             LoadProfiles();
-            $('table.tr_table').find('th').eq(3).children('a').eq(0).click(function (event) {
+            $('table.tr_table').find('th').eq(3).children('a').eq(0).click(function(event) {
                 event.preventDefault();
-                $('table.tr_table').children('tbody').find('input[type="checkbox"]').prop('checked','checked');
+                $('table.tr_table').children('tbody').find('input[type="checkbox"]').prop('checked', 'checked');
                 return false;
             });
-            $('table.tr_table').find('th').eq(3).children('a').eq(1).click(function (event) {
+            $('table.tr_table').find('th').eq(3).children('a').eq(1).click(function(event) {
                 event.preventDefault();
                 $('table.tr_table').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
                 return false;
             });
-            $('table.tr_table').find('th').eq(3).children('a').eq(2).click(function (event) {
+            $('table.tr_table').find('th').eq(3).children('a').eq(2).click(function(event) {
                 event.preventDefault();
                 $('table.tr_table').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
                 var Trackers = engine.defaultList;
                 var l = Trackers.length;
                 var tb = $('table.tr_table').children('tbody');
-                for (var i=0;i<l;i++) {
+                for (var i = 0; i < l; i++) {
                     if (Trackers[i].e) {
-                        tb.children('tr[data-name="'+Trackers[i].n+'"]').find('input[type="checkbox"]')[0].checked = true;
+                        tb.children('tr[data-name="' + Trackers[i].n + '"]').find('input[type="checkbox"]')[0].checked = true;
                     }
                 }
                 return false;
             });
             $('select[name=tr_lists]').on('change', function() {
-                $('table.tr_table').parent().css('min-height',$('table.tr_table').height()+'px');
+                $('table.tr_table').parent().css('min-height', $('table.tr_table').height() + 'px');
                 if (saveCurrentProfile()) {
                     oldProfileID = $(this).val();
                     engine.loadProfile(oldProfileID);
@@ -360,17 +355,10 @@ var options = function() {
             $('input[name="save"]').on('click', function() {
                 saveAll();
                 $('div.page.save > div.status').css('background', 'url(images/loading.gif) center center no-repeat').text('');
-                window.setTimeout(function () {
+                window.setTimeout(function() {
                     $('div.page.save > div.status').css('background', 'none').text('');
-                },1000);
+                }, 1000);
             });
-            if (chrome && chrome.storage) {
-                $('input[name="save_in_cloud"]').on('click', function() {
-                    chrome.storage.sync.clear();
-                });
-            } else {
-                $('input[name="clear_cloud"]').css('display', 'none');
-            }
             if (navigator.userAgent.search(/Firefox/) != -1) {
                 //firefox
                 $('div.page.backup').hide();
@@ -391,8 +379,16 @@ var options = function() {
             if (navigator.userAgent.search(/Chrome/) != -1) {
                 //Chrome
                 var bgp = chrome.extension.getBackgroundPage();
-                if (!bgp._type_ext)
+                if (!bgp._type_ext) {
                     $('input[name="search_popup"]').parents().eq(1).hide();
+                }
+                if (chrome && chrome.storage) {
+                    $('input[name="save_in_cloud"]').on('click', function() {
+                        chrome.storage.sync.clear();
+                    });
+                }
+            } else {
+                $('input[name="clear_cloud"]').css('display', 'none');
             }
             set_place_holder();
         }
