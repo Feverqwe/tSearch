@@ -297,6 +297,29 @@ var options = function() {
                 write_language($(this).val());
             });
             LoadProfiles();
+            $('table.tr_table').find('th').eq(3).children('a').eq(0).click(function (event) {
+                event.preventDefault();
+                $('table.tr_table').children('tbody').find('input[type="checkbox"]').prop('checked','checked');
+                return false;
+            });
+            $('table.tr_table').find('th').eq(3).children('a').eq(1).click(function (event) {
+                event.preventDefault();
+                $('table.tr_table').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
+                return false;
+            });
+            $('table.tr_table').find('th').eq(3).children('a').eq(2).click(function (event) {
+                event.preventDefault();
+                $('table.tr_table').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
+                var Trackers = engine.defaultList;
+                var l = Trackers.length;
+                var tb = $('table.tr_table').children('tbody');
+                for (var i=0;i<l;i++) {
+                    if (Trackers[i].e) {
+                        tb.children('tr[data-name="'+Trackers[i].n+'"]').find('input[type="checkbox"]')[0].checked = true;
+                    }
+                }
+                return false;
+            });
             $('select[name=tr_lists]').on('change', function() {
                 $('table.tr_table').parent().css('min-height',$('table.tr_table').height()+'px');
                 if (saveCurrentProfile()) {
