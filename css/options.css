@@ -139,3 +139,53 @@ div.donate img {
 .lang div {
     text-align: center;
 }
+table.tr_table {
+    background-color: #fff;
+    border-collapse: collapse;
+}
+table.tr_table img {
+    margin-left: 5px;
+}
+table.tr_table thead {
+    font-size: 0.8em;
+    background-color: #c8c8c8;
+}
+td.status, th.status {
+    text-align: center;
+}
+table td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+div.icons {
+    display: inline-block;
+    margin-right: 3px;
+}
+div.icons > div {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+}
+div.icons > div:hover {
+    opacity: 1;
+}
+
+div.icons > div.auth {
+    background: url(../images/need_auth.png) center center;
+}
+
+div.icons > div.rus {
+    background: url(../images/russian.png) center center;
+}
+
+div.icons > div.cirilic {
+    background: url(../images/cyrillic.png) center center;
+}
+
+td.desc {
+    font-size: 0.9em;
+}
+table tr:nth-child(even) {
+    background-color: #f1f2f1;
+}

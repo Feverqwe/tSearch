@@ -613,8 +613,9 @@ var explore = function() {
             }
             var image_url = content_sourse[section].base_img_url + v.img;
             var page_url = content_sourse[section].base_url + v.url;
-            if (v.img.substr(0, 4) == 'http') {
-                image_url = v.img;
+            var v_img = view.contentUnFilter(v.img);
+            if (v_img.substr(0, 4) == 'http') {
+                image_url = v_img;
             } else {
                 if (_google_proxy) {
                     image_url = content_sourse[section].google_proxy + image_url;

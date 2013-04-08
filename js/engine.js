@@ -327,14 +327,13 @@ var engine = function() {
             SetSettings('defProfile', defProfile);
             SetSettings('internalTrackers', null);
         }
-        if (trackerProfiles != null) {
-            if (trackerProfiles[prof] == null)
-                loadModules(null)
-            else {
-                loadModules(trackerProfiles[prof].Trackers);
-                SetSettings('defProfile', prof);
-            }
+        if (trackerProfiles[prof] == null) {
+            loadModules(null)
+        } else {
+            loadModules(trackerProfiles[prof].Trackers);
+            SetSettings('defProfile', prof);
         }
+
     }
     var getProfileList = function() {
         var arr = [];
