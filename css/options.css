@@ -1,158 +1,141 @@
-/* 
-    Document   : options
-    Created on : 27.06.2012, 17:09:46
-    Author     : Anton
-    Description:
-        Purpose of the stylesheet follows.
-*/
-
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 14px;
-    margin: 0;
     background-color: #f1f2f1;
+    font-family: Verdana, sans-serif;
+    font-size: 0.84em;
 }
-body > center > h1 {
-    margin: 0;
-}
-#internalTrackers a {
-    color: #1A3DC1;
-}
-#internalTrackers {
-    border-collapse: collapse;
-}
-#internalTrackers img {
-    margin-left: 5px;
-}
-#internalTrackers td {
-    vertical-align: top;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-#internalTrackers tr.b {
-    background-color: #FFF;
-}
-#internalTrackers thead {
-    background-color: #C8C8C8;
-    font-size: 12px;
-}
-#internalTrackers td.desc {
-    font-size: 12px;
-}
-body > center > h2 {
-    margin: 0;
-}
-fieldset, div.save_panel {
-    margin: 0 auto;
+div.title {
     width: 720px;
-}
-fieldset > fieldset {
     margin: 0 auto;
-    width: 97%;
-    margin-bottom: 10px;
+    font-size: 1.1em;
 }
-fieldset {
-    border: 1px solid #C8C8C8;
-    box-shadow: 1px 1px white,inset 0 -20px 60px -20px #DDD,inset 1px 1px white;
-    margin-bottom: 10px;
+ul.menu {
+    width: 720px;
+    margin: 0 auto;
+    background-color: #fff;
 }
-legend {
-    background-color: #F1F1F1;
-}
-td.status {
-    text-align: center;
-}
-div.save_panel div.progress {
-    width: 30px;
-    height: 30px;
-    background-image: url(../images/progress.gif);
-    background-position: center;
-    background-repeat: no-repeat;
+ul.menu li {
     display: inline-block;
-    margin-top: 9px;
-    margin-bottom: -9px;
+    font-size: 1.1em;
+}
+ul.menu li {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+ul.menu li a {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: #025EB3;
+}
+ul.menu li a.active {
+    border-left: 2px solid #c40005;
+    background-color: #d1f09d;
+    color: #000;
+    text-decoration: none;
+}
+div.page {
+    width: 720px;
+    margin: 0 auto;
     display: none;
 }
-div.save_panel input {
-    padding-left: 5px;
-    padding-right: 5px;
-}
-div.save_panel {
-}
-div.copy {
-    clear: left;
-    padding-top: 10px;
+div.page.save {
+    display: block;
+    margin-top: 10px;
     text-align: center;
-    color: #a0a0a0;
-    text-decoration: none;
-    font-size: 12px;
+    margin-bottom: 20px;
 }
-ul.option {
+div.page.save > div.status {
+    height: 30px;
+    margin-bottom: -12px;
+}
+div.page.active {
+    display: block;
+}
+ul {
     list-style: none;
-    padding: 0;
     margin: 0;
+    padding: 0;
 }
-div.icons {
+input {
+    font-size: 1em;
+}
+select {
+    font-size: 1em;
+}
+textarea {
+    font-size: 1em;
+}
+input[type="button"] {
+    font-size: 1em;
+}
+fieldset {
+    margin-top: 15px;
+    border: 1px solid #c0c0c0;
+}
+fieldset > ul > li > ul.item > li {
     display: inline-block;
-    margin-right: 3px;
 }
-div.icons > div {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    opacity: 0.6;
-}
-div.icons > div:hover {
-    opacity: 1;
-}
-
-div.icons > div.auth {
-    background: url(../images/need_auth.png) center center;
-}
-
-div.icons > div.rus {
-    background: url(../images/russian.png) center center;
-}
-
-div.icons > div.cirilic {
-    background: url(../images/cyrillic.png) center center;
-}
-
-div.backup_form { 
-        padding-top: 10px;
+ul.item > li {
+    margin-top: 2px;
+}div.backup_form { 
+    padding-top: 10px;
 }
 div.backup_form > div { 
-        margin-bottom: -3px;
+    margin-bottom: -3px;
 }
 div.backup_form > div.restore, div.backup_form > div.backup {
-	background-color:#dddddd;
-	margin-top: 4px;
-	border: 1px solid #c0c0c0;
-	overflow: hidden;
-        padding-bottom: 2px;
+    background-color:#dddddd;
+    margin-top: 4px;
+    border: 1px solid #c0c0c0;
+    overflow: hidden;
+    padding-bottom: 2px;
+    text-align: center;
 }
 div.backup_form > textarea, div.backup_form textarea {
-	width: 99.2%;
+    width: 99.2%;
+    height: 400px;
+    margin-top: 2px;
 }
 div.backup_form a.backup_tab, div.backup_form a.restore_tab {
-	border-top-left-radius: 4px; 
-	border-top-right-radius: 4px; 
-	padding:5px; 
-	padding-bottom: 2px; 
-	margin-right: 10px; 
-	text-decoration: none;
-	border: 1px solid #c0c0c0;
-	border-bottom: 0px;
-	background-color:#f2f2f2; 
-	color: #82838e;
+    border-top-left-radius: 4px; 
+    border-top-right-radius: 4px; 
+    padding:5px; 
+    padding-bottom: 2px; 
+    margin-right: 10px; 
+    text-decoration: none;
+    border: 1px solid #c0c0c0;
+    border-bottom: 0px;
+    background-color:#f2f2f2; 
+    color: #82838e;
 }
 div.backup_form a.backup_tab.active, div.backup_form a.restore_tab.active {
-	background-color:#dddddd; 
-	color: #2f5be1;	
+    background-color:#dddddd; 
+    color: #2f5be1;	
 }
-div.backup_form input[name=backup_btn], div.backup_form input[name=restore_btn] {
-    font-size:18px;
+div.backup_form div.backup input, div.backup_form div.restore input {
+    margin: 5px;
 }
-div.backup_form input[name=restore_btn] {
-    float:left;
+div.author a {
+    color: #333333;
+}
+div.bottom {
+    width: 720px;
+    margin: 0 auto;
+    font-size: 0.8em;
+}
+div.bottom div {
+    display: inline-block;
+}
+div.author {
+    float: right;
+    text-align: right;
+    color: #82838e;
+    margin-top: 2px;
+}
+div.donate img {
+    margin-bottom: -7px;
+}
+.lang div {
+    text-align: center;
 }
