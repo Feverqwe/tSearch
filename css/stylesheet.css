@@ -362,9 +362,11 @@ div.progress {
     width: 30.3px;
     height: 12px;
     position: relative;
-    background-color: #CCCccc;
+    background-color: #CCC;
     cursor: default;
     overflow: hidden;
+    border: 1px solid #fff;
+    border-radius: 3px;
 }
 div.progress div {
     top:0;

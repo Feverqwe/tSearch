@@ -76,9 +76,9 @@
 
                 // *** css class names
                 tableClass: 'tablesorter',
-                cssAsc: 'tablesorter-headerAsc',
+                cssAsc: 'headerSortDown',
                 cssChildRow: 'tablesorter-childRow', // previously "expand-child"
-                cssDesc: 'tablesorter-headerDesc',
+                cssDesc: 'headerSortUp',
                 cssHeader: 'tablesorter-header',
                 cssHeaderRow: 'tablesorter-headerRow',
                 cssIcon: 'tablesorter-icon', //  if this class exists, a <i> will be added to the header automatically
