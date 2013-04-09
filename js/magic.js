@@ -13,12 +13,14 @@ var magic = function() {
         return !isNaN(parseFloat(n)) && isFinite(n);
     }
     var open_page = function(url) {
+        if (url.length == 0)
+            return;
         var iframe = $('iframe');
         if (xhr != null)
             xhr.abort();
         var post_r = $('input[name=post]').val();
         var search = $('input[name=search_text]').val();
-        if (post_r.length == 0 && $('input[name=cp1251encode]').prop('checked')) {
+        if ($('input[name=cp1251encode]').prop('checked')) {
             search = encode(search);
         }
         url = url.replace('%search%', search);
@@ -33,59 +35,86 @@ var magic = function() {
             }
         });
     }
+    var load_code = function() {
+        var code = null;
+        try {
+            code = JSON.parse($('textarea').html());
+        } catch (e) {
+            alert('Ошибка загрузки!')
+        }
+        if (!code) return;
+        if ('cat_name' in code) {
+            $('input[name=category_name]').val(code['cat_name']);
+        }
+    }
     var make_code = function() {
         var code = {
             'version': 1,
-            'name' : 'noname',
+            'type': 'kit',
+            'name': 'noname',
             'icon': '',
             'root_url': $('input[name=base_path]').val(),
             'search_path': $('input[name=search_url]').val(),
             'encode': $('input[name=cp1251encode]').prop('checked'),
-            'post':  $('input[name=post]').val(),
+            'post': $('input[name=post]').val(),
             'items': $('input[name=item]').val(),
         }
-        if ( $('input[name=category_name]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+        if ($('input[name=category_name]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['cat_name'] = $('input[name=category_name]').val();
+        }
+        if ($('input[name=category_link]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['cat_link'] = $('input[name=category_link]').val()
-            code['cat_link_r'] = $('input[name=category_link_base_path]').prop('checked');
+            if ($('input[name=torrent_link_base_path]').prop('checked')) {
+                code['cat_link_r'] = 1;
+            }
         }
         code['tr_name'] = $('input[name=torrent_name]').val();
         code['tr_link'] = $('input[name=torrent_link]').val();
-        code['tr_link_r'] = $('input[name=torrent_link_base_path]').prop('checked');
-        if ( $('input[name=torrent_size]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+        if ($('input[name=torrent_link_base_path]').prop('checked')) {
+            code['tr_link_r'] = 1;
+        }
+        if ($('input[name=torrent_size]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['tr_size'] = $('input[name=torrent_size]').val();
+            if ($('input[name=convert_size]').prop('checked')) {
+                code['s_c'] = 1;
+            }
         }
-        if ( $('input[name=torrent_dl_link]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+        if ($('input[name=torrent_dl_link]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['tr_dl'] = $('input[name=torrent_dl_link]').val();
-            code['tr_dl_r'] = $('input[name=torrent_dl_link_base_path]').prop('checked');
+            if ($('input[name=torrent_dl_link_base_path]').prop('checked')) {
+                code['tr_dl_r'] = 1;
+            }
         }
-        if ( $('input[name=seed_count]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+        if ($('input[name=seed_count]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['seed'] = $('input[name=seed_count]').val();
         }
-        if ( $('input[name=peer_count]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+        if ($('input[name=peer_count]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['pees'] = $('input[name=peer_count]').val();
         }
-        if ( $('input[name=add_time]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+        if ($('input[name=add_time]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['date'] = $('input[name=add_time]').val();
+            if ($('input[name=time_regexp]').val().length > 0) {
+                code['t_r'] = $('input[name=time_regexp]').val();
+                code['t_r_r'] = $('input[name=time_regexp_repl]').val();
+            }
+            if ($('input[name=month_replace]').prop('checked')) {
+                code['t_m_r'] = 1;
+            }
+            if ($('input[name=mount_replace_short]').val() != -1) {
+                code['t_m_r'] = $('input[name=mount_replace_short]').val();
+            }
         }
-        if ( $('input[name=skip_first]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+        if ($('input[name=skip_first]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['sf'] = $('input[name=skip_first]').val();
         }
-        if ( $('input[name=skip_last]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+        if ($('input[name=skip_last]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['sl'] = $('input[name=skip_last]').val();
         }
-        if ( $('input[name=time_regexp]').val().length > 0 ) {
-            code['t_r'] = $('input[name=time_regexp]').val();
-            code['t_r_r'] = $('input[name=time_regexp_repl]').val();
+        if ($('input[name=auth_url]').val().length > 0) {
+            code['auth'] = $('input[name=auth_url]').val();
         }
-        if ( $('input[name=month_replace]').prop('checked') ) {
-            code['t_m_r'] = 1;
-        }
-        if ( $('input[name=mount_replace_short]').val()!=-1 ) {
-            code['t_m_r'] = $('input[name=mount_replace_short]').val();
-        }
-        if ( $('input[name=convert_size]').prop('checked') ) {
-            code['s_c'] = 1;
+        if ($('input[name=auth_form]').val().length > 0) {
+            code['auth_f'] = $('input[name=auth_form]').val();
         }
         $('textarea').html(JSON.stringify(code));
     }
@@ -94,7 +123,7 @@ var magic = function() {
         return path;
     }
     var format_size = function(s) {
-        var size = s.replace(/[^0-9.кбмгтkmgtb]/ig, '');
+        var size = s.replace(/[^0-9.,кбмгтkmgtb]/ig, '');
         var t = size.replace(/кб|kb/i, '');
         if (t.length != size.length) {
             t = parseFloat(t);
@@ -219,6 +248,11 @@ var magic = function() {
                 open_page(url);
                 $('input[name=base_path]').val(url.replace(/(.*)\/[^\/]*$/, '$1/'));
             });
+            $('input[name=open_auth]').on('click', function() {
+                var url = $(this).parents().eq(1).find('input[name=auth_url]').val();
+                open_page(url);
+            });
+
             $($('iframe')[0].contentDocument).on('mouseenter', '*', function() {
                 if (!select_mode)
                     return;
@@ -244,10 +278,8 @@ var magic = function() {
                     inp.removeClass('error');
                 }
                 sel_function = function(obj) {
-                    select_mode = false;
                     ifr.find('.kit_select').removeClass('kit_select');
-                    inp.val(obj_in_path(obj, ifr).replace(/(.*)>tr.*$/, '$1>tr'));
-                    inp.removeClass('error');
+                    select_mode = false;
                 }
             });
             $('input[name=item]').on('keyup', function() {
@@ -258,6 +290,29 @@ var magic = function() {
                     $(this).removeClass('error');
                 }
             });
+            //auth form
+            $('input[name=auth_form_btn]').on('click', function() {
+                select_mode = true;
+                var ifr = $($('iframe')[0].contentDocument);
+                var inp = $('input[name=auth_form]');
+                hov_function = function(obj) {
+                    inp.val(obj_in_path(obj, ifr));
+                    inp.removeClass('error');
+                }
+                sel_function = function(obj) {
+                    select_mode = false;
+                    ifr.find('.kit_select').removeClass('kit_select');
+                }
+            });
+            $('input[name=auth_form]').on('keyup', function() {
+                var ifr = $($('iframe')[0].contentDocument);
+                if (ifr.find($(this).val()).length == 0) {
+                    $(this).addClass('error');
+                } else {
+                    $(this).removeClass('error');
+                }
+            });
+            //<
 
             var keyup_text = function(inp, out) {
                 var ifr = $($('iframe')[0].contentDocument);
@@ -310,9 +365,12 @@ var magic = function() {
                     if (out == 'add_time_text') {
                         $('input[name=original_time]').val(val);
                         $('input[name=converted_time]').val(val);
+                        $('input[name=result_time]').val(val);
                     }
                     if (out == 'torrent_size_text') {
                         $('input[name=original_size]').val(val);
+                        $('input[name=converted_size]').val(val);
+                        $('input[name=result_time]').val(val);
                     }
                 } catch (e) {
                     inp.addClass('error');
@@ -336,13 +394,6 @@ var magic = function() {
                 sel_function = function(obj) {
                     select_mode = false;
                     ifr.find('.kit_select').removeClass('kit_select');
-                    var o_path = obj_in_path(obj, ifr);
-                    var path = o_path.replace(tr, '');
-                    if (o_path.length == path.length)
-                        return;
-                    inp.val(path);
-                    txt.val(obj.text());
-                    inp.removeClass('error');
                 }
             }
             var click_link = function(opath, otext) {
@@ -363,13 +414,6 @@ var magic = function() {
                 sel_function = function(obj) {
                     select_mode = false;
                     ifr.find('.kit_select').removeClass('kit_select');
-                    var o_path = obj_in_path(obj, ifr);
-                    var path = o_path.replace(tr, '');
-                    if (o_path.length == path.length)
-                        return;
-                    inp.val(path);
-                    txt.val(obj.attr('href'));
-                    inp.removeClass('error');
                 }
             }
             var click_num = function(opath, otext) {
@@ -396,19 +440,7 @@ var magic = function() {
                 sel_function = function(obj) {
                     select_mode = false;
                     ifr.find('.kit_select').removeClass('kit_select');
-                    var o_path = obj_in_path(obj, ifr);
-                    var path = o_path.replace(tr, '');
-                    if (o_path.length == path.length)
-                        return;
-                    inp.val(path);
-                    inp.removeClass('error');
                     var val = obj.text();
-                    txt.val(val);
-                    if (!isNumber(val)) {
-                        txt.addClass('error');
-                    } else {
-                        txt.removeClass('error');
-                    }
                     if (otext == 'add_time_text') {
                         $('input[name=original_time]').val(val);
                         $('input[name=converted_time]').val(val);
@@ -534,7 +566,14 @@ var magic = function() {
             $('input[name=status]').prop('checked', 'checked');
             $('input[name=make_code]').on('click', function() {
                 make_code();
-            })
+            });
+            $('ul.menu').on('click', 'a', function(e) {
+                e.preventDefault();
+                $('ul.menu').find('a.active').removeClass('active');
+                $(this).addClass('active');
+                $('body').find('div.page.active').removeClass('active');
+                $('body').find('div.' + $(this).data('page')).addClass('active');
+            });
         }
     }
 }();
@@ -567,24 +606,25 @@ jQuery.fn.getPath = function(ifr) {
         var tag = name;
         if (realNode.id) {
             if (ifr) {
-                if (ifr.find(name + '#' + realNode.id).length == 1) {
+                if (ifr.find(name + '#' + realNode.id).length == 1 && $.inArray(tag, no_class) == -1) {
                     return name + '#' + realNode.id + (path ? '>' + path : '');
-                } else {
+                } else
+                if ($.inArray(tag, no_class) == -1) {
                     name += '#' + realNode.id;
                 }
             } else {
                 return name + '#' + realNode.id + (path ? '>' + path : '');
             }
         } else if (realNode.className && $.inArray(tag, no_class) == -1) {
-            name += '.' + realNode.className.split(/\s+/).join('.');
+            name += ('.' + realNode.className.split(/\s+/).join('.')).replace('.kit_select', '');
         }
 
         var parent = node.parent();
         var siblings_no_class = parent.children(tag);
+        var siblings = siblings_no_class;
         try {
-            var siblings = parent.children(name);
+            siblings = parent.children(name);
         } catch (e) {
-            var siblings = siblings_no_class;
             name = tag;
         }
         if (siblings_no_class.length == 1) {
