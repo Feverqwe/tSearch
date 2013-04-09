@@ -375,8 +375,8 @@ var get_lang = function(lang) {
     }
 };
 var _lang = get_lang();
-$(function() {
+window.onload = function() {
     if ("options" in window == false) {
         get_lang = null;
     }
-});
+}

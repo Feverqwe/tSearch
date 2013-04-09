@@ -6,7 +6,99 @@
         Purpose of the stylesheet follows.
 */
 
-root { 
-    display: block;
+body {
+    overflow: hidden;
+    font-family: Verdana, sans-serif;
+    font-size: 0.84em;
 }
 
+iframe.web {
+    border: 0;
+    width: 100%;
+}
+
+div.tools {
+    overflow: hidden;
+}
+div.tools > div > div > ul {
+    margin: 0;
+}
+div.tools > div > div > ul li {
+    display: inline-block;
+}
+input[name=url] {
+    width: 300px;
+}
+input[name=item] {
+    width: 600px;
+}
+input[name=category_name] {
+    width: 200px;
+}
+input[name=category_name_text] {
+    width: 200px;
+}
+input[name=category_link] {
+    width: 200px;
+}
+input[name=category_link_href] {
+    width: 200px;
+}
+input[name=base_path] {
+    width: 200px;
+}
+input[name=torrent_name] {
+    width: 200px;
+}
+input[name=torrent_name_text] {
+    width: 200px;
+}
+input[name=torrent_link] {
+    width: 200px;
+}
+input[name=torrent_link_href] {
+    width: 200px;
+}
+input[name=torrent_size] {
+    width: 200px;
+}
+input[name=torrent_size_text] {
+    width: 200px;
+}
+input[name=torrent_dl_link] {
+    width: 200px;
+}
+input[name=torrent_dl_link_href] {
+    width: 200px;
+}
+input[name=seed_count] {
+    width: 200px;
+}
+input[name=seed_count_text] {
+    width: 200px;
+}
+input[name=peer_count] {
+    width: 200px;
+}
+input[name=peer_count_text] {
+    width: 200px;
+}
+input[name=add_time] {
+    width: 200px;
+}
+input[name=add_time_text] {
+    width: 200px;
+}
+input.error {
+    border: 1px solid #c40005;
+    box-shadow: 0 0 4px #c40005 inset !important;
+}
+input[name=time_regexp] {
+    width: 200px;
+}
+input[name=skip_first] {
+    width: 50px;
+}
+input[name=skip_last] {
+    width: 50px;
+}

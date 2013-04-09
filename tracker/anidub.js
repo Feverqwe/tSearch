@@ -36,7 +36,7 @@ tracker[tmp_num] = function () {
         }
         var calculateTime = function (f) {
             var dd = f.replace(/[\t:-]/g,' ').split(' ');
-            return Math.round((new Date(parseInt(dd[0]),parseInt(dd[1])-1,parseInt(dd[2]),parseInt(dd[3]),parseInt(dd[4]))).getTime() / 1000);
+            return Math.round((new Date(parseInt(dd[0]),parseInt(dd[1])-1,parseInt(dd[2]),parseInt(dd[3]),parseInt(dd[4]),parseInt(dd[5]))).getTime() / 1000);
         }
         var calculateSize = function (s) {
             var type = '';

@@ -15,10 +15,132 @@ and open the template in the editor.
         <script src="js/magic.js"></script>
     </head>
     <body>
-        <div class="search_page">
-            <input type="text" name="url" value="http://rutracker.org/forum/tracker.php?nm=harry"/>
-            <input type="button" value="Open" name="open"/>
+        <div class="tools">
+            <div class="search_page">
+                <div>
+                    <span>Результаты поиска</span>
+                    <ul>
+                        <li>URL страницы с результатами</li>: <li><input type="text" name="url" value="http://rutracker.org/forum/tracker.php"/></li>
+                        <li><input type="button" value="Открыть" name="open"/></li>
+                    </ul>
+                    <ul>
+                        <li>Запрос поиска (в параметрах запроса используйте переменную %search%)</li>: <li><input type="text" name="search_text" value="Гарри"></li>
+                    </ul>
+                    <ul>
+                        <li><input type="checkbox" name="cp1251encode"></li><li>Конвертировать кириллицу в cp1251 (только для GET запросов)</li>
+                    </ul>
+                    <ul>
+                        <li>POST запрос (опционально)</li>: <li><input type="text" name="post" value="nm=%search%"/></li>
+                    </ul>
+                </div>
+                <div>
+                    <span>Селекторы</span>
+                    <ul>
+                        <li>Строка в траблице</li>: <li><input type="text" name="item" value="table#tor-tbl>tbody>tr"/></li><li><input type="button" name="item_btn" value="Выбрать"/></li>
+                    </ul>
+                    <!-- Категория -->
+                    <ul>
+                        <li><input type="checkbox" name="status"></li>
+                        <li>Название категории</li>: <li><input type="text" name="category_name" value="td:eq(2)>div>a"/></li>
+                        <li><input type="text" name="category_name_text" value="Зарубежная фантастика / фэнтези / мистика" disabled="disabled"></li>
+                        <li><input type="button" name="category_name_btn" value="Выбрать"/></li>
+                    </ul>
+                    <ul>
+                        <li><input type="checkbox" name="status"></li>
+                        <li>Ссылка на категорию</li>: <li><input type="text" name="category_link" value="td:eq(2)>div>a"/></li>
+                        <li><input type="text" name="category_link_href" value="tracker.php?f=2080" disabled="disabled"></li>
+                        <li><input type="checkbox" name="category_link_base_path"></li>
+                        <li>Добавить основной url</li>
+                        <li><input type="button" name="category_link_btn" value="Выбрать"/></li>
+                    </ul>
+                    <!-- < -->
+                    <!-- Название -->
+                    <ul>
+                        <li>Название раздачи</li>: <li><input type="text" name="torrent_name" value="td:eq(3)>div.wbr.t-title>a"/></li>
+                        <li><input type="text" name="torrent_name_text" value="Шарлин Харрис/Charlaine Harris - серия Вампир Билл/Сьюки Стакхаус - [2001-2012, DOC/FB2]" disabled="disabled"></li>
+                        <li><input type="button" name="torrent_name_btn" value="Выбрать"/></li>
+                    </ul>
+                    <ul>
+                        <li>Ссылка на раздачу</li>: <li><input type="text" name="torrent_link" value="td:eq(3)>div.wbr.t-title>a"/></li>
+                        <li><input type="text" name="torrent_link_href" value="./viewtopic.php?t=1899051" disabled="disabled"></li>
+                        <li><input type="checkbox" name="torrent_link_base_path"></li>
+                        <li>Добавить основной url</li>
+                        <li><input type="button" name="torrent_link_btn" value="Выбрать"/></li>
+                    </ul>
+                    <!-- < -->
+                    <!-- Размер файла -->
+                    <ul>
+                        <li><input type="checkbox" name="status"></li>
+                        <li>Размер раздачи</li>: <li><input type="text" name="torrent_size" value="td:eq(5)>u"/></li>
+                        <li><input type="text" name="torrent_size_text" value="25893076" disabled="disabled"></li>
+                        <li><input type="button" name="torrent_size_btn" value="Выбрать"/></li>
+                    </ul>
+                    <!-- < -->
+                    <!-- Ссылка на скачку раздачи -->
+                    <ul>
+                        <li><input type="checkbox" name="status"></li>
+                        <li>Ссылка на скачку раздачи</li>: <li><input type="text" name="torrent_dl_link" value="td:eq(5)>a"/></li>
+                        <li><input type="text" name="torrent_dl_link_href" value="http://dl.rutracker.org/forum/dl.php?t=1899051" disabled="disabled"></li>
+                        <li><input type="checkbox" name="torrent_dl_link_base_path"></li>
+                        <li>Добавить основной url</li>
+                        <li><input type="button" name="torrent_dl_link_btn" value="Выбрать"/></li>
+                    </ul>
+                    <!-- < -->
+                    <!-- Сиды пиры -->
+                    <ul>
+                        <li><input type="checkbox" name="status"></li>
+                        <li>Количество сидов</li>: <li><input type="text" name="seed_count" value="td:eq(6)>b"/></li>
+                        <li><input type="text" name="seed_count_text" value="22" disabled="disabled"></li>
+                        <li><input type="button" name="seed_count_btn" value="Выбрать"/></li>
+                    </ul>
+                    <ul>
+                        <li><input type="checkbox" name="status"></li>
+                        <li>Количество пиров</li>: <li><input type="text" name="peer_count" value="td:eq(7)>b"/></li>
+                        <li><input type="text" name="peer_count_text" value="2" disabled="disabled"></li>
+                        <li><input type="button" name="peer_count_btn" value="Выбрать"/></li>
+                    </ul>
+                    <!-- < -->
+                    <!-- Время добавления -->
+                    <ul>
+                        <li><input type="checkbox" name="status"></li>
+                        <li>Дата добавления раздачи</li>: <li><input type="text" name="add_time" value="td:eq(9)>u"/></li>
+                        <li><input type="text" name="add_time_text" value="1343496868" disabled="disabled"></li>
+                        <li><input type="button" name="add_time_btn" value="Выбрать"/></li>
+                    </ul>
+                    <!-- < -->
+                    <ul>
+                        <li>Основной url</li>: <li><input type="text" name="base_path" value="http://rutracker.org/forum/"/></li>
+                    </ul>
+                    <ul>
+                        <li>Пропустить первые n строк</li>: <li><input type="number" name="skip_first" value="0"/></li>
+                    </ul>
+                    <ul>
+                        <li>Пропустить последнии n строк</li>: <li><input type="number" name="skip_last" value="0"/></li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <span>Конвертрование</span>
+                <div>
+                    <span>Дата добавления раздачи</span>
+                    <ul>
+                        <li>Применить regexp</li>:<li><input name="time_regexp" type="text" /></li><li>заменить на</li><li><input name="time_regexp_repl" type="text" /></li>
+                    </ul>
+                    <ul>
+                        <li><input name="mount_replace" type="checkbox" /></li><li>Заменить полное название месяца на число</li>
+                    </ul>
+                    <ul>
+                        <li><input name="mount_replace" type="checkbox" /></li><li>Заменить сокращенное название месяца на число</li>
+                    </ul>
+                    <ul>
+                        <li>Конвернтировать время в Unix timestamp из формата</li>:<li><select name="mount_replace_short"></select></li>
+                    </ul>
+                    <ul>
+                        <li>Исходная дата</li>:<li><input name="original_time" type="text" /></li><li>Конвертированная</li>:<li><input name="converted_time" type="text" /></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <iframe height="600px" width="100%" sandbox="allow-same-origin allow-scripts"></iframe>
+        <iframe class="web" sandbox="allow-same-origin allow-scripts"></iframe>
     </body>
 </html>
