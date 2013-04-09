@@ -33,45 +33,142 @@ var magic = function() {
             }
         });
     }
+    var make_code = function() {
+        var code = {
+            'version': 1,
+            'name' : 'noname',
+            'icon': '',
+            'root_url': $('input[name=base_path]').val(),
+            'search_path': $('input[name=search_url]').val(),
+            'encode': $('input[name=cp1251encode]').prop('checked'),
+            'post':  $('input[name=post]').val(),
+            'items': $('input[name=item]').val(),
+        }
+        if ( $('input[name=category_name]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+            code['cat_name'] = $('input[name=category_name]').val();
+            code['cat_link'] = $('input[name=category_link]').val()
+            code['cat_link_r'] = $('input[name=category_link_base_path]').prop('checked');
+        }
+        code['tr_name'] = $('input[name=torrent_name]').val();
+        code['tr_link'] = $('input[name=torrent_link]').val();
+        code['tr_link_r'] = $('input[name=torrent_link_base_path]').prop('checked');
+        if ( $('input[name=torrent_size]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+            code['tr_size'] = $('input[name=torrent_size]').val();
+        }
+        if ( $('input[name=torrent_dl_link]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+            code['tr_dl'] = $('input[name=torrent_dl_link]').val();
+            code['tr_dl_r'] = $('input[name=torrent_dl_link_base_path]').prop('checked');
+        }
+        if ( $('input[name=seed_count]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+            code['seed'] = $('input[name=seed_count]').val();
+        }
+        if ( $('input[name=peer_count]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+            code['pees'] = $('input[name=peer_count]').val();
+        }
+        if ( $('input[name=add_time]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+            code['date'] = $('input[name=add_time]').val();
+        }
+        if ( $('input[name=skip_first]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+            code['sf'] = $('input[name=skip_first]').val();
+        }
+        if ( $('input[name=skip_last]').parents().eq(1).find('input[name=status]').prop('checked') ) {
+            code['sl'] = $('input[name=skip_last]').val();
+        }
+        if ( $('input[name=time_regexp]').val().length > 0 ) {
+            code['t_r'] = $('input[name=time_regexp]').val();
+            code['t_r_r'] = $('input[name=time_regexp_repl]').val();
+        }
+        if ( $('input[name=month_replace]').prop('checked') ) {
+            code['t_m_r'] = 1;
+        }
+        if ( $('input[name=mount_replace_short]').val()!=-1 ) {
+            code['t_m_r'] = $('input[name=mount_replace_short]').val();
+        }
+        if ( $('input[name=convert_size]').prop('checked') ) {
+            code['s_c'] = 1;
+        }
+        $('textarea').html(JSON.stringify(code));
+    }
     var obj_in_path = function(obj, ifr) {
         var path = obj.getPath(ifr);
         return path;
     }
+    var format_size = function(s) {
+        var size = s.replace(/[^0-9.кбмгтkmgtb]/ig, '');
+        var t = size.replace(/кб|kb/i, '');
+        if (t.length != size.length) {
+            t = parseFloat(t);
+            return Math.round(t * 1024);
+        }
+        var t = size.replace(/мб|mb/i, '');
+        if (t.length != size.length) {
+            t = parseFloat(t);
+            return Math.round(t * 1024 * 1024);
+        }
+        var t = size.replace(/гб|gb/i, '');
+        if (t.length != size.length) {
+            t = parseFloat(t);
+            return Math.round(t * 1024 * 1024 * 1024);
+        }
+        var t = size.replace(/tб|tb/i, '');
+        if (t.length != size.length) {
+            t = parseFloat(t);
+            return Math.round(t * 1024 * 1024 * 1024 * 1024);
+        }
+        return 0;
+    }
+    var bytesToSize = function(bytes, nan) {
+        var sizes = _lang['size_list'];
+        if (nan == null)
+            nan = 'n/a';
+        if (bytes == 0)
+            return nan;
+        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+        if (i == 0) {
+            return (bytes / Math.pow(1024, i)) + ' ' + sizes[i];
+        }
+        return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+    }
     var format_date = function(f, t) {
-        if (f == '2013-04-31[ 07[:03[:27]]]') {
-            var dd = t.replace(/[^0-9]/g,' ').replace(/\s+/g,' ').split(' ');
+        if (f == null) {
+            return ['2013-04-31[ 07[:03[:27]]]', '31-04-2013[ 07[:03[:27]]]', 'n day ago']
+        }
+        if (f == 0 || f == '2013-04-31[ 07[:03[:27]]]') {
+            var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
             for (var i = 0; i < 6; i++) {
                 if (dd[i] == null) {
                     dd[i] = 0;
                 }
+            }
+            if (dd[0] < 10) {
+                dd[0] = '200' + dd[0];
+            }
+            if (dd[0] < 100) {
+                dd[0] = '20' + dd[0];
             }
             return Math.round((new Date(parseInt(dd[0]), parseInt(dd[1]) - 1, parseInt(dd[2]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
         }
-        if (f == '31-04-2013 [ 07[:03[:27]]]') {
-            var dd = t.replace(/[^0-9]/g,' ').replace(/\s+/g,' ').split(' ');
+        if (f == 1 || f == '31-04-2013[ 07[:03[:27]]]') {
+            var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
             for (var i = 0; i < 6; i++) {
                 if (dd[i] == null) {
                     dd[i] = 0;
                 }
             }
+            if (dd[2] < 10) {
+                dd[2] = '200' + dd[2];
+            }
+            if (dd[2] < 100) {
+                dd[2] = '20' + dd[2];
+            }
             return Math.round((new Date(parseInt(dd[2]), parseInt(dd[1]) - 1, parseInt(dd[0]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
         }
-        if (f == 'n day ago') {
-            var old = parseFloat(t.replace(/[^0-9.]/g,'')) * 24 * 60 * 60;
+        if (f == 2 || f == 'n day ago') {
+            var old = parseFloat(t.replace(/[^0-9.]/g, '')) * 24 * 60 * 60;
             return Math.round((new Date()).getTime() / 1000) - old;
         }
     }
-    function month_replace(i) {
-        return t.replace(/января/i, '1').replace(/февраля/i, '2').replace(/марта/i, '3')
-                .replace(/апреля/i, '4').replace(/мая/i, '5').replace(/июня/i, '6')
-                .replace(/июля/i, '7').replace(/августа/i, '8').replace(/сентября/i, '9')
-                .replace(/октября/i, '10').replace(/ноября/i, '11').replace(/декабря/i, '12')
-                .replace(/January/i, '1').replace(/February/i, '2').replace(/March/i, '3')
-                .replace(/April/i, '4').replace(/May/i, '5').replace(/June/i, '6')
-                .replace(/July/i, '7').replace(/August/i, '8').replace(/September/i, '9')
-                .replace(/October/i, '10').replace(/November/i, '11').replace(/December/i, '12');
-    }
-    function month_replace_short(i) {
+    function month_replace(t) {
         return t.replace(/янв/i, '1').replace(/фев/i, '2').replace(/мар/i, '3')
                 .replace(/апр/i, '4').replace(/мая/i, '5').replace(/июн/i, '6')
                 .replace(/июл/i, '7').replace(/авг/i, '8').replace(/сен/i, '9')
@@ -118,7 +215,7 @@ var magic = function() {
         begin: function() {
             $('iframe.web').css('height', $(window).height() - $('div.tools').height() - 4 + 'px');
             $('input[name=open]').on('click', function() {
-                var url = $(this).parents().eq(1).find('input[name=url]').val();
+                var url = $(this).parents().eq(1).find('input[name=search_url]').val();
                 open_page(url);
                 $('input[name=base_path]').val(url.replace(/(.*)\/[^\/]*$/, '$1/'));
             });
@@ -213,6 +310,9 @@ var magic = function() {
                     if (out == 'add_time_text') {
                         $('input[name=original_time]').val(val);
                         $('input[name=converted_time]').val(val);
+                    }
+                    if (out == 'torrent_size_text') {
+                        $('input[name=original_size]').val(val);
                     }
                 } catch (e) {
                     inp.addClass('error');
@@ -313,6 +413,9 @@ var magic = function() {
                         $('input[name=original_time]').val(val);
                         $('input[name=converted_time]').val(val);
                     }
+                    if (otext == 'torrent_size_text') {
+                        $('input[name=original_size]').val(val);
+                    }
                 }
             }
             //category
@@ -383,16 +486,55 @@ var magic = function() {
                 keyup_num($(this), 'add_time_text');
             });
             //<
-            $('input[name=time_regexp]').on('keyup', function() {
-                var val = $(this).val();
+            var filter_date = function() {
+                var reg_v = $('input[name=time_regexp]').val();
                 var mtime = $('input[name=original_time]').val();
                 var onrepl = $('input[name=time_regexp_repl]').val();
-                $('input[name=converted_time]').val(mtime.replace(new RegExp(val, "ig"), onrepl));
+                var repl_m = $('input[name=month_replace]').prop('checked');
+                var f_v = $('select[name=mount_replace_short]').val();
+                if (reg_v.length > 0) {
+                    mtime = mtime.replace(new RegExp(reg_v, "ig"), onrepl)
+                }
+                if (repl_m) {
+                    mtime = month_replace(mtime);
+                }
+                if (f_v != -1) {
+                    mtime = format_date(f_v, mtime);
+                }
+                $('input[name=converted_time]').val(mtime);
+                $('input[name=result_time]').val((new Date(mtime * 1000)));
+            }
+            $('input[name=time_regexp]').on('keyup', function() {
+                filter_date();
             });
             $('input[name=time_regexp_repl]').on('keyup', function() {
-                $('input[name=time_regexp]').trigger('keyup');
+                filter_date();
             });
-            
+            var formats = format_date();
+            var f_sel = $('select[name=mount_replace_short]');
+            var f_l = formats.length;
+            f_sel.append('<option value="-1">-</option>')
+            for (var n = 0; n < f_l; n++) {
+                f_sel.append('<option value="' + n + '">' + formats[n] + '</option>')
+            }
+            f_sel.on('change', function() {
+                filter_date();
+            });
+            $('input[name=month_replace]').on('change', function() {
+                filter_date();
+            });
+            $('input[name=convert_size]').on('change', function() {
+                var size = $('input[name=original_size]').val();
+                if ($(this).prop('checked')) {
+                    size = format_size(size);
+                }
+                $('input[name=converted_size]').val(size);
+                $('input[name=result_size]').val(bytesToSize(size));
+            });
+            $('input[name=status]').prop('checked', 'checked');
+            $('input[name=make_code]').on('click', function() {
+                make_code();
+            })
         }
     }
 }();

@@ -16,11 +16,11 @@ and open the template in the editor.
     </head>
     <body>
         <div class="tools">
-            <div class="search_page">
+            <div class="page search">
                 <div>
                     <span>Результаты поиска</span>
                     <ul>
-                        <li>URL страницы с результатами</li>: <li><input type="text" name="url" value="http://rutracker.org/forum/tracker.php"/></li>
+                        <li>URL страницы с результатами</li>: <li><input type="text" name="search_url" value="http://rutracker.org/forum/tracker.php"/></li>
                         <li><input type="button" value="Открыть" name="open"/></li>
                     </ul>
                     <ul>
@@ -30,7 +30,7 @@ and open the template in the editor.
                         <li><input type="checkbox" name="cp1251encode"></li><li>Конвертировать кириллицу в cp1251 (только для GET запросов)</li>
                     </ul>
                     <ul>
-                        <li>POST запрос (опционально)</li>: <li><input type="text" name="post" value="nm=%search%"/></li>
+                        <li>POST запрос</li>: <li><input type="text" name="post" value="nm=%search%"/></li>
                     </ul>
                 </div>
                 <div>
@@ -46,7 +46,6 @@ and open the template in the editor.
                         <li><input type="button" name="category_name_btn" value="Выбрать"/></li>
                     </ul>
                     <ul>
-                        <li><input type="checkbox" name="status"></li>
                         <li>Ссылка на категорию</li>: <li><input type="text" name="category_link" value="td:eq(2)>div>a"/></li>
                         <li><input type="text" name="category_link_href" value="tracker.php?f=2080" disabled="disabled"></li>
                         <li><input type="checkbox" name="category_link_base_path"></li>
@@ -119,7 +118,7 @@ and open the template in the editor.
                     </ul>
                 </div>
             </div>
-            <div>
+            <div class="page convert">
                 <span>Конвертрование</span>
                 <div>
                     <span>Дата добавления раздачи</span>
@@ -127,16 +126,39 @@ and open the template in the editor.
                         <li>Применить regexp</li>:<li><input name="time_regexp" type="text" /></li><li>заменить на</li><li><input name="time_regexp_repl" type="text" /></li>
                     </ul>
                     <ul>
-                        <li><input name="mount_replace" type="checkbox" /></li><li>Заменить полное название месяца на число</li>
-                    </ul>
-                    <ul>
-                        <li><input name="mount_replace" type="checkbox" /></li><li>Заменить сокращенное название месяца на число</li>
+                        <li><input name="month_replace" type="checkbox" /></li><li>Заменить название месяца на число</li>
                     </ul>
                     <ul>
                         <li>Конвернтировать время в Unix timestamp из формата</li>:<li><select name="mount_replace_short"></select></li>
                     </ul>
                     <ul>
-                        <li>Исходная дата</li>:<li><input name="original_time" type="text" /></li><li>Конвертированная</li>:<li><input name="converted_time" type="text" /></li>
+                        <li>Исходная строка</li>:<li><input name="original_time" type="text" /></li><li>Конвертированная</li>:<li><input name="converted_time" type="text" disabled="disabled" /></li>
+                    </ul>
+                    <ul>
+                        <li>Итог</li>:<li><input name="result_time" type="text" disabled="disabled" /></li>
+                    </ul>
+                </div>
+                <div>
+                    <span>Размер торрента</span>
+                    <ul>
+                        <li><input name="convert_size" type="checkbox" /></li><li>Преобразовать</li>
+                    </ul>
+                    <ul>
+                        <li>Исходная строка</li>:<li><input name="original_size" type="text" /></li><li>Конвертированная</li>:<li><input name="converted_size" type="text" disabled="disabled" /></li>
+                    </ul>
+                    <ul>
+                        <li>Итог</li>:<li><input name="result_size" type="text" disabled="disabled" /></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="page save">
+                <span>Сохранить</span>
+                <div>
+                    <ul>
+                        <li><input type="button" name="make_code" value="Получить код"/></li>
+                    </ul>
+                    <ul>
+                        <li><textarea name="code"></textarea></li>
                     </ul>
                 </div>
             </div>

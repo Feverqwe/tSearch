@@ -63,7 +63,7 @@ input[name=torrent_size] {
     width: 200px;
 }
 input[name=torrent_size_text] {
-    width: 200px;
+    width: 100px;
 }
 input[name=torrent_dl_link] {
     width: 200px;
@@ -75,13 +75,13 @@ input[name=seed_count] {
     width: 200px;
 }
 input[name=seed_count_text] {
-    width: 200px;
+    width: 50px;
 }
 input[name=peer_count] {
     width: 200px;
 }
 input[name=peer_count_text] {
-    width: 200px;
+    width: 50px;
 }
 input[name=add_time] {
     width: 200px;
@@ -96,9 +96,35 @@ input.error {
 input[name=time_regexp] {
     width: 200px;
 }
+input[name=time_regexp_repl] {
+    width: 200px;
+}
+input[name=original_time] {
+    width: 200px;
+}
+input[name=converted_time] {
+    width: 200px;
+}
+input[name=result_time] {
+    width: 300px;
+}
 input[name=skip_first] {
     width: 50px;
 }
 input[name=skip_last] {
     width: 50px;
+}
+input[name=original_size] {
+    width: 200px;
+}
+input[name=converted_size] {
+    width: 200px;
+}
+input[name=result_size] {
+    width: 300px;
+}
+div.tools {
+    max-height: 300px;
+    overflow: scroll;
+    padding-bottom: 20px;
 }
