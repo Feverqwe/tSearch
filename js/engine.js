@@ -198,6 +198,7 @@ var engine = function() {
             e: 0
         }
     ];
+    var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
     var categorys = _lang['categorys'];
     var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     var defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
@@ -287,6 +288,161 @@ var engine = function() {
         SetSettings('search_history', JSON.stringify(search_history));
         view.AddAutocomplete();
     }
+    var loadCostumeModule = function(uid) {
+        if ($.inArray(uid, costume_tr) == -1)
+            return;
+        var ct = GetSettings('ct_' + uid);
+        if (!ct) {
+            //удалить из списка итп, конь в вакуме
+            return;
+        }
+        ct = JSON.parse(ct);
+        var l = tracker.length;
+        tracker[l] = function(ct) {
+            var id = null;
+            var me = ct;
+            var icon = ('icon' in me) ? me.icon : null;
+            var name = ('name' in me) ? me.name : '-no name-';
+            var about = ('about' in me) ? me.about : '';
+            var root_url = ('root_url' in me) ? me.root_url : null;
+            var login_url = ('auth' in me) ? me.auth : null;
+            var filename = ('filename' in me) ? ct.uid : null;
+            var flags = ('flags' in me) ? me.flags : {
+                a: 0,
+                l: 0,
+                rs: 0
+            };
+            var xhr = null;
+            var kit = function() {
+                var readCode = function(c) {
+                    c = view.contentFilter(c);
+                    var t = view.load_in_sandbox(id, c);
+
+                    var ex_cat = ('cat_name' in me) ? 1 : 0;
+                    var ex_link = ('cat_link' in me) ? 1 : 0;
+                    var ex_link_r = ('cat_link_r' in me && me.cat_link_r) ? 1 : 0;
+                    var ex_tr_link_r = ('tr_link_r' in me && me.tr_link_r) ? 1 : 0;
+                    var ex_tr_size = ('tr_size' in me) ? 1 : 0;
+                    var ex_tr_size_c = ('s_c' in me && me.s_c) ? 1 : 0;
+                    var ex_tr_dl = ('tr_dl' in me) ? 1 : 0;
+                    var ex_tr_dl_r = ('tr_dl_r' in me) ? 1 : 0;
+                    var ex_seed = ('seed' in me) ? 1 : 0;
+                    var ex_peer = ('peer' in me) ? 1 : 0;
+                    var ex_date = ('date' in me) ? 1 : 0;
+                    var ex_date_regexp = ('t_r' in me && 't_r_r' in me) ? 1 : 0; //t_r t_r_r
+                    var ex_t_m_r = ('t_m_r' in me) ? 1 : 0;
+                    var ex_t_f = ('t_f' in me && me.t_f != -1) ? 1 : 0;
+                    var ex_auth_f = ('auth_f' in me) ? 1 : 0;
+
+                    if (ex_auth_f) {
+                        if (t.find(me.auth_f).length) {
+                            view.auth(0, id);
+                            return [];
+                        } else {
+                            view.auth(1, id);
+                        }
+                    }
+                    t = t.find(me.items)
+                    var l = t.length - ('sl' in me) ? me.sl : 0;
+                    var arr = [];
+                    var s = ('sf' in me) ? me.sf : 0;
+                    for (var i = s; i < l; i++) {
+                        var td = t.eq(i);
+                        var obj = {};
+                        if (ex_cat) {
+                            obj['category'] = {}
+                            obj['category']['title'] = td.children(me.cat_name).text();
+                            if (ex_link)
+                                obj['category']['url'] = ((ex_link_r) ? root_url : '') + me.cat_link.attr('href');
+                            obj['category']['id'] = -1;
+                        }
+                        obj['title'] = td.children(me.tr_name).text();
+                        obj['url'] = ((ex_tr_link_r) ? root_url : '') + td.children(me.tr_link).attr('href');
+                        if (ex_tr_size) {
+                            obj['size'] = td.children(me.tr_size).text();
+                            if (ex_tr_size_c) {
+                                obj['size'] = ex_kit.format_size(obj['size']);
+                            }
+                        }
+                        if (ex_tr_dl) {
+                            obj['dl'] = ((ex_tr_dl_r) ? root_url : '') + td.children(me.ex_tr_dl).attr('href');
+                        }
+                        if (ex_seed) {
+                            obj['seeds'] = td.children(me.seed).text();
+                        }
+                        if (ex_peer) {
+                            obj['leechs'] = td.children(me.peer).text();
+                        }
+                        if (ex_date) {
+                            obj['time'] = td.children(me.date).text();
+                            if (ex_date_regexp) {
+                                obj['time'] = obj['time'].replace(new RegExp(me.t_r, "ig"), me.t_r_r);
+                            }
+                            if (ex_t_m_r) {
+                                obj['time'] = ex_kit.month_replace(obj['time']);
+                            }
+                            if (ex_t_f) {
+                                obj['time'] = ex_kit.format_date(me.t_f, obj['time']);
+                            }
+                        }
+
+                        arr[arr.length] = obj
+
+                    }
+                    return arr;
+                }
+                var loadPage = function(text) {
+                    var t = ('encode' in me && me.encode) ? ex_kit.in_cp1251(text) : text;
+                    if (xhr != null)
+                        xhr.abort();
+                    var obj_req = {
+                        type: 'GET',
+                        url: me.search_path,
+                        cache: false,
+                        success: function(data) {
+                            view.result(id, readCode(data), t);
+                        },
+                        error: function() {
+                            view.loadingStatus(2, id);
+                        }
+                    }
+                    if ('post' in me && me.post > 0) {
+                        obj_req.type = 'POST';
+                        obj_req.data = me.post;
+                    }
+                    xhr = $.ajax(obj_req);
+                }
+                return {
+                    getPage: function(a) {
+                        return loadPage(a);
+                    }
+                }
+            }();
+            var find = function(text) {
+                return kit.loadPage(text);
+            }
+            var setId = function(a) {
+                id = a;
+            }
+            return {
+                find: function(a) {
+                    return find(a);
+                },
+                setId: function(a) {
+                    id = a;
+                },
+                id: id,
+                name: name,
+                icon: icon,
+                about: about,
+                url: root_url,
+                filename: filename,
+                flags: flags,
+                login_url: login_url,
+                c: true
+            }
+        }(ct);
+    }
     var loadInternalModule = function(name) {
         var script = document.createElement('script');
         script.type = 'text/javascript';
@@ -308,9 +464,15 @@ var engine = function() {
             Trackers = defaultList;
         }
         var l = Trackers.length;
-        for (var i = 0; i < l; i++)
-            if (Trackers[i].e || "options" in window)
-                loadInternalModule(Trackers[i].n);
+        for (var i = 0; i < l; i++) {
+            if (Trackers[i].e || "options" in window) {
+                if ('c' in Trackers[i]) {
+                    loadCostumeModule(Trackers[i].uid);
+                } else {
+                    loadInternalModule(Trackers[i].n);
+                }
+            }
+        }
     }
     var loadProfile = function(prof) {
         view.ClearTrackerList();
@@ -333,7 +495,6 @@ var engine = function() {
             loadModules(trackerProfiles[prof].Trackers);
             SetSettings('defProfile', prof);
         }
-
     }
     var getProfileList = function() {
         var arr = [];
@@ -366,4 +527,126 @@ var engine = function() {
 }();
 $(function() {
     engine.loadProfile();
-})
+});
+var ex_kit = function() {
+    var in_cp1251 = function(sValue) {
+        var text = "", Ucode, ExitValue, s;
+        for (var i = 0; i < sValue.length; i++) {
+            s = sValue.charAt(i);
+            Ucode = s.charCodeAt(0);
+            var Acode = Ucode;
+            if (Ucode > 1039 && Ucode < 1104) {
+                Acode -= 848;
+                ExitValue = "%" + Acode.toString(16);
+            }
+            else if (Ucode == 1025) {
+                Acode = 168;
+                ExitValue = "%" + Acode.toString(16);
+            }
+            else if (Ucode == 1105) {
+                Acode = 184;
+                ExitValue = "%" + Acode.toString(16);
+            }
+            else if (Ucode == 32) {
+                Acode = 32;
+                ExitValue = "%" + Acode.toString(16);
+            }
+            else if (Ucode == 10) {
+                Acode = 10;
+                ExitValue = "%0A";
+            }
+            else {
+                ExitValue = s;
+            }
+            text = text + ExitValue;
+        }
+        return text;
+    }
+    var format_size = function(s) {
+        var size = s.replace(/[^0-9.,кбмгтkmgtb]/ig, '');
+        var t = size.replace(/кб|kb/i, '');
+        if (t.length != size.length) {
+            t = parseFloat(t);
+            return Math.round(t * 1024);
+        }
+        var t = size.replace(/мб|mb/i, '');
+        if (t.length != size.length) {
+            t = parseFloat(t);
+            return Math.round(t * 1024 * 1024);
+        }
+        var t = size.replace(/гб|gb/i, '');
+        if (t.length != size.length) {
+            t = parseFloat(t);
+            return Math.round(t * 1024 * 1024 * 1024);
+        }
+        var t = size.replace(/тб|tb/i, '');
+        if (t.length != size.length) {
+            t = parseFloat(t);
+            return Math.round(t * 1024 * 1024 * 1024 * 1024);
+        }
+        return 0;
+    }
+    function month_replace(t) {
+        return t.replace(/янв/i, '1').replace(/фев/i, '2').replace(/мар/i, '3')
+                .replace(/апр/i, '4').replace(/мая/i, '5').replace(/июн/i, '6')
+                .replace(/июл/i, '7').replace(/авг/i, '8').replace(/сен/i, '9')
+                .replace(/окт/i, '10').replace(/ноя/i, '11').replace(/дек/i, '12')
+                .replace(/jan/i, '1').replace(/feb/i, '2').replace(/mar/i, '3')
+                .replace(/apr/i, '4').replace(/may/i, '5').replace(/jun/i, '6')
+                .replace(/jul/i, '7').replace(/aug/i, '8').replace(/sep/i, '9')
+                .replace(/oct/i, '10').replace(/nov/i, '11').replace(/dec/i, '12');
+    }
+    var format_date = function(f, t) {
+        if (f == null) {
+            return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago']
+        }
+        if (f == 0 || f == '2013-04-31[[[ 07]:03]:27]') {
+            var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
+            for (var i = 0; i < 6; i++) {
+                if (dd[i] == null) {
+                    dd[i] = 0;
+                }
+            }
+            if (dd[0] < 10) {
+                dd[0] = '200' + dd[0];
+            }
+            if (dd[0] < 100) {
+                dd[0] = '20' + dd[0];
+            }
+            return Math.round((new Date(parseInt(dd[0]), parseInt(dd[1]) - 1, parseInt(dd[2]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
+        }
+        if (f == 1 || f == '31-04-2013[[[ 07]:03]:27]') {
+            var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
+            for (var i = 0; i < 6; i++) {
+                if (dd[i] == null) {
+                    dd[i] = 0;
+                }
+            }
+            if (dd[2] < 10) {
+                dd[2] = '200' + dd[2];
+            }
+            if (dd[2] < 100) {
+                dd[2] = '20' + dd[2];
+            }
+            return Math.round((new Date(parseInt(dd[2]), parseInt(dd[1]) - 1, parseInt(dd[0]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
+        }
+        if (f == 2 || f == 'n day ago') {
+            var old = parseFloat(t.replace(/[^0-9.]/g, '')) * 24 * 60 * 60;
+            return Math.round((new Date()).getTime() / 1000) - old;
+        }
+    }
+    return {
+        in_cp1251: function(a) {
+            return in_cp1251(a)
+        },
+        format_size: function(a) {
+            return a;
+        },
+        month_replace: function(a) {
+            return month_replace(a);
+        },
+        format_date: function(a, b) {
+            return format_date(a, b)
+        }
+    }
+}();

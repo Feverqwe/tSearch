@@ -62,12 +62,13 @@ var options = function() {
         updateProfileList();
     };
 
-
-
-
-
-
+    var addCostumeTrackerInList = function (i) {
+        
+    }
     var addTrackerInList = function(i) {
+        if ('costume' in tracker) {
+            addCostumeTrackerInList(i);
+        }
         var filename = tracker[i].filename;
         var id = $('select[name=tr_lists]').val();
         if (trackerProfiles == null) {
@@ -105,7 +106,7 @@ var options = function() {
         if (flags.length > 0) {
             flags = '<div class="icons">' + flags + '</div>';
         }
-        $('table.tr_table tbody').append('<tr data-name="' + filename + '"' + '>'
+        $('table.tr_table tbody').append('<tr data-name="' + filename + '" data-id="'+i+'"' + '>'
                 + '<td><img src="' + tracker[i].icon + '"/></td>'
                 + '<td><a href="' + tracker[i].url + '" target="_blank">' + tracker[i].name + '</a>'
                 + '</td>'
@@ -124,7 +125,7 @@ var options = function() {
 
         var internalTrackers = [];
         for (var i = 0; i < trc; i++) {
-            var fn = tr.eq(i).attr('data-name');
+            var fn = tracker[tr.eq(i).attr('data-id')].filename;
             var inp = tr.eq(i).children('td.status').children('input');
             internalTrackers[internalTrackers.length] = {
                 'n': fn,

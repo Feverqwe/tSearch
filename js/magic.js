@@ -25,20 +25,23 @@ var magic = function() {
         }
         url = url.replace('%search%', search);
         post_r = post_r.replace('%search%', search);
-        xhr = $.ajax({
-            type: (post_r.length > 0) ? 'POST' : 'GET',
+        var obj_req = {
+            type: 'GET',
             url: url,
-            data: post_r,
             success: function(data) {
-                var iframedoc = iframe[0].contentDocument || iframe[0].contentWindow.document;
-                iframedoc.all[0].innerHTML = contentFilter(data) + '<style>.kit_select {color:#000 !important;background-color:#FFCC33 !important; cursor:pointer;} td.kit_select { border: 1px dashed red !important; }</style>';
+                iframe[0].contentDocument.all[0].innerHTML = contentFilter(data) + '<style>.kit_select {color:#000 !important;background-color:#FFCC33 !important; cursor:pointer;} td.kit_select { border: 1px dashed red !important; }</style>';
             }
-        });
+        };
+        if (post_r.length > 0) {
+            obj_req.type = 'POST';
+            obj_req['data'] = post_r;
+        }
+        xhr = $.ajax(obj_req);
     }
     var empty_all = function() {
         $('div.page.convert').find('input[type=text]').removeClass('error').val('');
         $('div.page.convert').find('input[type=checkbox]').prop('checked', 0);
-         $('select[name=date_format] option[value=-1]').prop('selected', 1);
+        $('select[name=date_format] option[value=-1]').prop('selected', 1);
         $('div.page.selectors').find('input[type=text]').removeClass('error').val('');
         $('div.page.selectors').find('input[type=checkbox]').prop('checked', 0);
         $('div.page.auth').find('input[type=text]').removeClass('error').val('');
@@ -216,8 +219,20 @@ var magic = function() {
         if ($('input[name=auth_form]').val().length > 0) {
             code['auth_f'] = $('input[name=auth_form]').val();
         }
+        code['uid'] = hashCode(JSON.stringify(code));
         $('textarea[name=code]').val(JSON.stringify(code));
     }
+    var hashCode = function(s) {
+        var hash = 0, i, char;
+        if (s.length == 0)
+            return hash;
+        for (i = 0; i < s.length; i++) {
+            char = s.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return hash;
+    };
     var obj_in_path = function(obj, ifr) {
         var path = obj.getPath(ifr);
         return path;
@@ -442,7 +457,7 @@ var magic = function() {
             var keyup_text = function(inp, out, t) {
                 var txt = $('input[name=' + out + ']');
                 var ifr = $($('iframe')[0].contentDocument);
-                var path = $('input[name=item]').val() + ':eq('+$('input[name=skip_first]').val()+')' + '>' + inp.val();
+                var path = $('input[name=item]').val() + ':eq(' + $('input[name=skip_first]').val() + ')' + '>' + inp.val();
                 try {
                     var obj = ifr.find(path);
                     var val = '';

@@ -1049,7 +1049,7 @@ var view = function() {
         $('div.tracker_list div.setup').after(sel);
     }
     var load_in_sandbox = function(id, c) {
-        var t = $(jQuery.parseHTML(c));
+        var t = $($.parseHTML(c));
         return t
     }
     return {

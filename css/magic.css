@@ -180,3 +180,6 @@ textarea {
     width: 720px;
     height: 200px;
 }
+iframe {
+    background-color: #fff;
+}
