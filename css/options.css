@@ -143,11 +143,24 @@ div.donate img {
 table.tr_table {
     background-color: #fff;
     border-collapse: collapse;
+    width: 100%;
 }
 table.tr_table img {
     margin-left: 5px;
 }
 table.tr_table thead {
+    font-size: 0.8em;
+    background-color: #c8c8c8;
+}
+table.c_table {
+    background-color: #fff;
+    border-collapse: collapse;
+    width: 100%;
+}
+table.c_table img {
+    margin-left: 5px;
+}
+table.c_table thead {
     font-size: 0.8em;
     background-color: #c8c8c8;
 }
