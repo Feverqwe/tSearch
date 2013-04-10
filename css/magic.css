@@ -133,6 +133,9 @@ input[name=auth_url] {
 input[name=auth_form] {
     width: 600px;
 }
+input[name=search_text] {
+    width: 200px;
+}
 div.tools {
     max-height: 320px;
     overflow: auto;

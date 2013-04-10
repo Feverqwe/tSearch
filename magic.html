@@ -152,7 +152,7 @@ and open the template in the editor.
                             <li><input name="month_replace" type="checkbox" /></li><li>Заменить название месяца на число</li>
                         </ul>
                         <ul>
-                            <li>Конвернтировать время в Unix timestamp из формата</li>:<li><select name="mount_replace_short"></select></li>
+                            <li>Конвернтировать время в Unix timestamp из формата</li>:<li><select name="date_format"></select></li>
                         </ul>
                         <ul>
                             <li>Исходная строка</li>:<li><input name="original_time" type="text" /></li><li>Конвертированная</li>:<li><input name="converted_time" type="text" disabled="disabled" /></li>
@@ -180,7 +180,7 @@ and open the template in the editor.
                     <legend>Сохранить</legend>
                     <div>
                         <ul>
-                            <li><input type="button" name="make_code" value="Получить код"/></li>
+                            <li><input type="button" name="make_code" value="Получить код"/></li><li><input type="button" name="make_code" value="Загрузить код"/></li>
                         </ul>
                         <ul>
                             <li><textarea name="code"></textarea></li>

@@ -35,16 +35,110 @@ var magic = function() {
             }
         });
     }
+    var empty_all = function () {
+        $('div.page.convert').find('input[type=text]').removeClass('error').val('');
+        $('div.page.convert').find('input[type=checkbox]').prop('checked',0);
+        $('div.page.selectors').find('input[type=text]').removeClass('error').val('');
+        $('div.page.selectors').find('input[type=checkbox]').prop('checked',0);
+        $('div.page.auth').find('input[type=text]').removeClass('error').val('');
+        $('div.page.auth').find('input[type=checkbox]').prop('checked',0);
+        $('div.page.search').find('input[type=text]').removeClass('error').val('');
+        $('div.page.search').find('input[type=checkbox]').prop('checked',0);
+    }
     var load_code = function() {
+        empty_all();
         var code = null;
         try {
             code = JSON.parse($('textarea').html());
         } catch (e) {
             alert('Ошибка загрузки!')
         }
-        if (!code) return;
+        if (!code)
+            return;
         if ('cat_name' in code) {
             $('input[name=category_name]').val(code['cat_name']);
+            $('input[name=category_name]').parents().eq(1).find('input[name=status]').prop('checked', 1);
+        }
+        if ('cat_link' in code) {
+            $('input[name=category_link]').val(code['cat_link']);
+            if ('cat_link_r' in code) {
+                $('input[name=torrent_link_base_path]').prop('checked', 1);
+            }
+            $('input[name=category_link]').parents().eq(1).find('input[name=status]').prop('checked', 1);
+        }
+        if ('root_url' in code) {
+            $('input[name=base_path]').val(code['root_url']);
+        }
+        if ('search_path' in code) {
+            $('input[name=search_url]').val(code['search_path']);
+        }
+        if ('encode' in code) {
+            $('input[name=cp1251encode]').prop('checked', 1);
+        }
+        if ('post' in code) {
+            $('input[name=post]').val(code['post']);
+        }
+        if ('items' in code) {
+            $('input[name=item]').val(code['items']);
+        }
+        if ('tr_name' in code) {
+            $('input[name=torrent_name]').val(code['tr_name']);
+        }
+        if ('tr_link' in code) {
+            $('input[name=torrent_link]').val(code['tr_link']);
+        }
+        if ('tr_link_r' in code) {
+            $('input[name=torrent_link_base_path]').prop('checked', 1);
+        }
+        if ('tr_size' in code) {
+            $('input[name=torrent_size]').val(code['tr_size']);
+            if ('s_c' in code) {
+                $('input[name=convert_size]').prop('checked', 1);
+            }
+            $('input[name=torrent_size]').parents().eq(1).find('input[name=status]').prop('checked', 1);
+        }
+        if ('tr_dl' in code) {
+            $('input[name=torrent_dl_link]').val(code['tr_dl']);
+            if ('tr_dl_r' in code) {
+                $('input[name=torrent_dl_link_base_path]').prop('checked', 1);
+            }
+            $('input[name=torrent_dl_link]').parents().eq(1).find('input[name=status]').prop('checked', 1);
+        }
+        if ('seed' in code) {
+            $('input[name=seed_count]').val(code['seed']);
+            $('input[name=seed_count]').parents().eq(1).find('input[name=status]').prop('checked', 1);
+        }
+        if ('peer' in code) {
+            $('input[name=peer_count]').val(code['peer']);
+            $('input[name=peer_count]').parents().eq(1).find('input[name=status]').prop('checked', 1);
+        }
+        if ('date' in code) {
+            $('input[name=add_time]').val(code['data']);
+            if ('t_r' in code) {
+                $('input[name=time_regexp]').val(code['t_r']);
+            }
+            if ('t_r_r' in code) {
+                $('input[name=time_regexp_repl]').val(code['t_r_r']);
+            }
+            if ('t_m_r' in code) {
+                $('input[name=month_replace]').prop('checked', 1);
+            }
+            if ('t_f' in code) {
+                $('select[name=date_format] option[value=' + code['t_f'] + ']').prop('selected', 1);
+            }
+            $('input[name=add_time]').parents().eq(1).find('input[name=status]').prop('checked', 1);
+        }
+        if ('sf' in code) {
+            $('input[name=skip_first]').val(code['sf']);
+        }
+        if ('sl' in code) {
+            $('input[name=skip_first]').val(code['sl']);
+        }
+        if ('auth' in code) {
+            $('input[name=auth_url]').val(code['auth']);
+        }
+        if ('auth_f' in code) {
+            $('input[name=auth_form]').val(code['auth_f']);
         }
     }
     var make_code = function() {
@@ -58,18 +152,18 @@ var magic = function() {
             'encode': $('input[name=cp1251encode]').prop('checked'),
             'post': $('input[name=post]').val(),
             'items': $('input[name=item]').val(),
+            'tr_name': $('input[name=torrent_name]').val(),
+            'tr_link': $('input[name=torrent_link]').val()
         }
         if ($('input[name=category_name]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['cat_name'] = $('input[name=category_name]').val();
         }
         if ($('input[name=category_link]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['cat_link'] = $('input[name=category_link]').val()
-            if ($('input[name=torrent_link_base_path]').prop('checked')) {
+            if ($('input[name=category_link_base_path]').prop('checked')) {
                 code['cat_link_r'] = 1;
             }
         }
-        code['tr_name'] = $('input[name=torrent_name]').val();
-        code['tr_link'] = $('input[name=torrent_link]').val();
         if ($('input[name=torrent_link_base_path]').prop('checked')) {
             code['tr_link_r'] = 1;
         }
@@ -100,14 +194,14 @@ var magic = function() {
             if ($('input[name=month_replace]').prop('checked')) {
                 code['t_m_r'] = 1;
             }
-            if ($('input[name=mount_replace_short]').val() != -1) {
-                code['t_m_r'] = $('input[name=mount_replace_short]').val();
+            if ($('input[name=date_format]').val() != -1) {
+                code['t_f'] = $('input[name=date_format]').val();
             }
         }
-        if ($('input[name=skip_first]').parents().eq(1).find('input[name=status]').prop('checked')) {
+        if ($('input[name=skip_first]').val() > 0) {
             code['sf'] = $('input[name=skip_first]').val();
         }
-        if ($('input[name=skip_last]').parents().eq(1).find('input[name=status]').prop('checked')) {
+        if ($('input[name=skip_last]').val() > 0) {
             code['sl'] = $('input[name=skip_last]').val();
         }
         if ($('input[name=auth_url]').val().length > 0) {
@@ -523,7 +617,7 @@ var magic = function() {
                 var mtime = $('input[name=original_time]').val();
                 var onrepl = $('input[name=time_regexp_repl]').val();
                 var repl_m = $('input[name=month_replace]').prop('checked');
-                var f_v = $('select[name=mount_replace_short]').val();
+                var f_v = $('select[name=date_format]').val();
                 if (reg_v.length > 0) {
                     mtime = mtime.replace(new RegExp(reg_v, "ig"), onrepl)
                 }
@@ -543,7 +637,7 @@ var magic = function() {
                 filter_date();
             });
             var formats = format_date();
-            var f_sel = $('select[name=mount_replace_short]');
+            var f_sel = $('select[name=date_format]');
             var f_l = formats.length;
             f_sel.append('<option value="-1">-</option>')
             for (var n = 0; n < f_l; n++) {
@@ -563,7 +657,6 @@ var magic = function() {
                 $('input[name=converted_size]').val(size);
                 $('input[name=result_size]').val(bytesToSize(size));
             });
-            $('input[name=status]').prop('checked', 'checked');
             $('input[name=make_code]').on('click', function() {
                 make_code();
             });
@@ -574,6 +667,9 @@ var magic = function() {
                 $('body').find('div.page.active').removeClass('active');
                 $('body').find('div.' + $(this).data('page')).addClass('active');
             });
+            $('input[name=load_code]').on('click',function() {
+                load_code();
+            })
         }
     }
 }();
