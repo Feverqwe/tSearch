@@ -100,7 +100,7 @@ var options = function() {
         if (flags.length > 0) {
             flags = '<div class="icons">' + flags + '</div>';
         }
-        $('table.tr_table tbody').append('<tr data-name="' + filename + '" data-id="'+i+'"' + '>'
+        $('table.tr_table tbody').append('<tr data-name="' + filename + '" data-id="' + i + '"' + '>'
                 + '<td><img src="' + tracker[i].icon + '"/></td>'
                 + '<td><a href="' + tracker[i].url + '" target="_blank">' + tracker[i].name + '</a>'
                 + '</td>'
@@ -286,18 +286,18 @@ var options = function() {
                 console.log(t);
         });
     };
-    var load_costume_torrents = function () {
+    var load_costume_torrents = function() {
         var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
         var c = costume_tr.length;
         if (costume_tr.length > 0) {
             $('table.c_table tbody').empty();
         }
-        for (var i = 0; i<c; i++) {
-            var tr = (GetSettings('ct_'+costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_'+costume_tr[i])) : null;
-            if (tr == null) { 
-                costume_tr.splice(i,1);
-                SetSettings('costume_tr',JSON.stringify(costume_tr));
-                continue; 
+        for (var i = 0; i < c; i++) {
+            var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;
+            if (tr == null) {
+                costume_tr.splice(i, 1);
+                SetSettings('costume_tr', JSON.stringify(costume_tr));
+                continue;
             }
             $('table.c_table tbody').append('<tr data-name="' + tr.name + '"' + '>'
                     + '<td><img src="' + tr.icon + '"/></td>'
@@ -417,24 +417,24 @@ var options = function() {
                 $('input[name="clear_cloud"]').css('display', 'none');
             }
             set_place_holder();
-            $('input[name=add_code]').on('click',function(){
+            $('input[name=add_code]').on('click', function() {
                 $('div.popup').toggle();
             });
-            $('input[name=create_code]').on('click',function(){
-                document.location.href  = 'magic.html';
+            $('input[name=create_code]').on('click', function() {
+                document.location.href = 'magic.html';
             });
-            $('input[name=close_popup]').on('click', function () {
+            $('input[name=close_popup]').on('click', function() {
                 $('div.popup').hide();
             })
             $(window).trigger('resize')
-            $('input[name=ctr_add]').on('click',function () {
+            $('input[name=ctr_add]').on('click', function() {
                 var str_code = $('textarea[name=code]').val();
                 var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
                 var code = null;
                 try {
                     code = JSON.parse(str_code);
                 } catch (e) {
-                    alert('Ошибка загрузки!'+"\n"+e)
+                    alert('Ошибка загрузки!' + "\n" + e)
                 }
                 if ('uid' in code == false) {
                     alert('Ошибка');
@@ -444,7 +444,7 @@ var options = function() {
                     alert('Этот код уже добавлен.');
                     return;
                 }
-                SetSettings('ct_'+code.uid, str_code);
+                SetSettings('ct_' + code.uid, str_code);
                 costume_tr[costume_tr.length] = code.uid;
                 SetSettings('costume_tr', JSON.stringify(costume_tr));
                 code = null;
@@ -467,6 +467,6 @@ var view = function() {
 $(function() {
     options.begin();
 });
-$(window).on('resize',function () {
-    $('div.popup').css('left',($('html').width() / 2 - $('div.popup').width() / 2) + 'px');
+$(window).on('resize', function() {
+    $('div.popup').css('left', ($('html').width() / 2 - $('div.popup').width() / 2) + 'px');
 })
