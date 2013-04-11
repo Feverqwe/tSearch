@@ -100,7 +100,7 @@ var options = function() {
         if (flags.length > 0) {
             flags = '<div class="icons">' + flags + '</div>';
         }
-        $('table.tr_table tbody').append('<tr data-name="' + filename + '" data-id="' + i + '"' + '>'
+        $('table.tr_table tbody').append('<tr data-id="' + i + '"' + '>'
                 + '<td><img src="' + tracker[i].icon + '"/></td>'
                 + '<td><a href="' + tracker[i].url + '" target="_blank">' + tracker[i].name + '</a>'
                 + '</td>'
@@ -122,7 +122,7 @@ var options = function() {
             var tr_id = tr.eq(i).attr('data-id');
             var fn = tracker[tr.eq(i).attr('data-id')].filename;
             var uid = null;
-            if (fn == null && 'uid' in tracker[tr_id]) {
+            if ('uid' in tracker[tr_id]) {
                 uid = tracker[tr_id].uid;
             }
             var inp = tr.eq(i).children('td.status').children('input');
@@ -262,7 +262,7 @@ var options = function() {
         $('div.restore').find('input[name=restore]').click(function(e) {
             e.preventDefault();
             stngsRestore($(this).parent().children('textarea').val());
-            $('textarea[name="backup"]').empty();
+            $('textarea[name="backup"]').val('');
         });
     };
     var write_language = function(language) {
@@ -287,23 +287,27 @@ var options = function() {
         });
     };
     var load_costume_torrents = function() {
+        $('table.c_table tbody').empty();
         var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
         var c = costume_tr.length;
-        if (costume_tr.length > 0) {
-            $('table.c_table tbody').empty();
-        }
+        if (c == 0) {
+            $('table.c_table tbody').html('<td colspan="4" class="notorrent">Тут пока ничего нету</td>');
+        } else
         for (var i = 0; i < c; i++) {
             var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;
             if (tr == null) {
                 costume_tr.splice(i, 1);
                 SetSettings('costume_tr', JSON.stringify(costume_tr));
+                if (costume_tr.length == 0) {
+                    $('table.c_table tbody').html('<td colspan="4" class="notorrent">Тут пока ничего нету</td>');
+                }
                 continue;
             }
-            $('table.c_table tbody').append('<tr data-name="' + tr.name + '"' + '>'
+            $('table.c_table tbody').append('<tr data-name="' + tr.name + '" data-uid="' + tr.uid + '"' + '>'
                     + '<td><img src="' + tr.icon + '"/></td>'
                     + '<td><a href="' + tr.root_url + '" target="_blank">' + tr.name + '</a>'
                     + '</td>'
-                    + '<td class="desc">no desc</td>'
+                    + '<td class="desc">' + (('desc' in tr) ? tr.desc : '') + '</td>'
                     + '<td class="status"><input type="button" name="rm_ctr" value="Удалить"></td>'
                     + '</tr>');
         }
@@ -448,7 +452,18 @@ var options = function() {
                 costume_tr[costume_tr.length] = code.uid;
                 SetSettings('costume_tr', JSON.stringify(costume_tr));
                 code = null;
+                $('textarea[name=code]').val('');
+                load_costume_torrents();
                 $('div.popup').find('input[name=close_popup]').trigger('click');
+            });
+            $('table.c_table').on('click', 'input[name=rm_ctr]', function() {
+                var uid = $(this).parents().eq(1).attr('data-uid');
+                var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
+                var index = $.inArray(uid, costume_tr);
+                costume_tr.splice(index, 1);
+                SetSettings('ct_' + uid, null);
+                SetSettings('costume_tr', JSON.stringify(costume_tr));
+                load_costume_torrents();
             });
             load_costume_torrents();
         }

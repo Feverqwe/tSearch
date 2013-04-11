@@ -306,7 +306,7 @@ var engine = function() {
             var about = ('about' in me) ? me.about : '';
             var root_url = ('root_url' in me) ? me.root_url : null;
             var login_url = ('auth' in me) ? me.auth : null;
-            var filename = null;
+            var filename = me.uid;
             var uid = me.uid;
             var flags = ('flags' in me) ? me.flags : {
                 a: 0,
@@ -445,8 +445,7 @@ var engine = function() {
                 filename: filename,
                 flags: flags,
                 login_url: login_url,
-                uid: uid,
-                c: true
+                uid: uid
             }
         }(ct);
         engine.ModuleLoaded(l);
