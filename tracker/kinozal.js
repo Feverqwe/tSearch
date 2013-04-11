@@ -71,6 +71,7 @@ tracker[tmp_num] = function () {
             else if (n == 7) return 'Анимэ';
             else if (n == 8) return 'Док. и юмор';
             else if (n == 9) return 'Спорт';
+            return null;
         }
         var calculateTime = function (t) {
             if ((/сейчас/).test(t)) {

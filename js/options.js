@@ -302,7 +302,7 @@ var options = function() {
                     + '<td><a href="' + tr.root_url + '" target="_blank">' + tr.name + '</a>'
                     + '</td>'
                     + '<td class="desc">' + (('about' in tr) ? tr.about : '') + '</td>'
-                    + '<td class="status"><input type="button" name="edit_ctr" value="Изменить"><input type="button" name="rm_ctr" value="Удалить"></td>'
+                    + '<td class="action"><input type="button" name="edit_ctr" value="Изменить"><input type="button" name="rm_ctr" value="Удалить"></td>'
                     + '</tr>');
         }
     }
@@ -415,6 +415,7 @@ var options = function() {
             }
             set_place_holder();
             $('input[name=add_code]').on('click', function() {
+                $('input[name=ctr_add]').parent().show();
                 $('input[name=ctr_edit]').parent().hide();
                 $('div.popup').toggle();
             });
@@ -453,7 +454,8 @@ var options = function() {
                 $('div.popup').find('input[name=close_popup]').trigger('click');
             });
             $('input[name=ctr_edit]').on('click', function() {
-                var uid = $(this).parents().eq(1).attr('data-uid');
+                var uid =  $('div.popup').attr('data-uid');
+                $('div.popup').removeAttr('data-uid');
                 var str_code = $('textarea[name=code]').val();
                 var code = null;
                 try {
@@ -473,11 +475,13 @@ var options = function() {
                 $('div.popup').find('input[name=close_popup]').trigger('click');
             });
             $('table.c_table').on('click','input[name=edit_ctr]',function(){
+                $('input[name=edit_ctr]').parent().show();
                 $('input[name=ctr_add]').parent().hide();
                 var uid = $(this).parents().eq(1).attr('data-uid');
                 var code = (GetSettings('ct_' + uid) !== undefined) ? GetSettings('ct_' + uid) : '';
                 $('textarea[name=code]').val(code);
                 $('div.popup').show();
+                $('div.popup').attr('data-uid',uid);
             });
             $('table.c_table').on('click', 'input[name=rm_ctr]', function() {
                 var uid = $(this).parents().eq(1).attr('data-uid');

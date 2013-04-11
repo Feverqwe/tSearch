@@ -6,7 +6,7 @@ var magic = function() {
     };
     var xhr = null;
     var contentFilter = function(c) {
-        var c = c.replace(/script/img, 'noscript').replace(/display[: ]*none/img, '#blockdisp#').replace(/ src=(['"]{0,1})/img, ' src=$11.png#blockrurl#');
+        var c = c.replace(/display[: ]*none/img, '#blockdisp#').replace(/ src=(['"]{0,1})/img, ' src=$11.png#blockrurl#');
         return c;
     }
     var isNumber = function(n) {

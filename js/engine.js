@@ -311,7 +311,7 @@ var engine = function() {
             var flags = ('flags' in me) ? me.flags : {
                 a: 0,
                 l: 0,
-                rs: 0
+                rs: 1
             };
             var xhr = null;
             var kit = function() {
@@ -363,6 +363,8 @@ var engine = function() {
                             if (ex_tr_size_c) {
                                 obj['size'] = ex_kit.format_size(obj['size']);
                             }
+                        } else {
+                            obj['size'] = 0;
                         }
                         if (ex_tr_dl) {
                             obj['dl'] = ((ex_tr_dl_r) ? root_url : '') + (td.find(me.tr_dl)).attr('href');
@@ -372,12 +374,16 @@ var engine = function() {
                             if (!ex_kit.isNumber(obj['seeds'])) {
                                 obj['seeds'] = 1;
                             }
+                        } else {
+                            obj['seeds'] = 1;
                         }
                         if (ex_peer) {
                             obj['leechs'] = (td.find(me.peer)).text();
                             if (!ex_kit.isNumber(obj['leechs'])) {
                                 obj['leechs'] = 0;
                             }
+                        } else {
+                            obj['leechs'] = 0;
                         }
                         if (ex_date) {
                             obj['time'] = (td.find(me.date)).text();

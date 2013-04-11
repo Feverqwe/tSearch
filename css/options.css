@@ -163,6 +163,9 @@ table.c_table thead {
 td.status, th.status {
     text-align: center;
 }
+td.action, th.action {
+    text-align: right;
+}
 table td {
     padding-top: 5px;
     padding-bottom: 5px;
