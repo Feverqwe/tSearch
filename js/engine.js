@@ -198,7 +198,7 @@ var engine = function() {
             e: 0
         }
     ];
-    var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
+    var costume_tr = null; //load when add costume torrent function
     var categorys = _lang['categorys'];
     var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     var defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
@@ -462,6 +462,7 @@ var engine = function() {
     }
     var addCostumTr = function(a) {
         var b = clone_obj(a);
+        costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
         var l = costume_tr.length;
         for (var i = 0; i < l; i++) {
             var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;

@@ -121,16 +121,14 @@ var options = function() {
         for (var i = 0; i < trc; i++) {
             var tr_id = tr.eq(i).attr('data-id');
             var fn = tracker[tr.eq(i).attr('data-id')].filename;
-            var uid = null;
-            if ('uid' in tracker[tr_id]) {
-                uid = tracker[tr_id].uid;
-            }
             var inp = tr.eq(i).children('td.status').children('input');
             var obj = {
                 'n': fn,
                 'e': (inp.is(':checked')) ? 1 : 0
             };
-            if (uid) {
+            var uid = null;
+            if ('uid' in tracker[tr_id]) {
+                uid = tracker[tr_id].uid;
                 obj['uid'] = uid;
             }
             internalTrackers[internalTrackers.length] = obj
@@ -160,10 +158,6 @@ var options = function() {
             $('input[name=rm_list]').removeAttr('disabled');
         }
     }
-
-
-
-
     var saveAll = function() {
         SetSettings('lang', $('select[name="language"]').val());
         $.each(def_settings, function(key, value) {
@@ -307,8 +301,8 @@ var options = function() {
                     + '<td><img src="' + tr.icon + '"/></td>'
                     + '<td><a href="' + tr.root_url + '" target="_blank">' + tr.name + '</a>'
                     + '</td>'
-                    + '<td class="desc">' + (('desc' in tr) ? tr.desc : '') + '</td>'
-                    + '<td class="status"><input type="button" name="rm_ctr" value="Удалить"></td>'
+                    + '<td class="desc">' + (('about' in tr) ? tr.about : '') + '</td>'
+                    + '<td class="status"><input type="button" name="edit_ctr" value="Изменить"><input type="button" name="rm_ctr" value="Удалить"></td>'
                     + '</tr>');
         }
     }
@@ -368,7 +362,6 @@ var options = function() {
                 updateProfileList();
             });
             $('input[name=rm_list]').on('click', function() {
-
                 trackerProfiles.splice(oldProfileID, 1);
                 oldProfileID = defProfile;
                 engine.loadProfile(oldProfileID);
@@ -422,6 +415,7 @@ var options = function() {
             }
             set_place_holder();
             $('input[name=add_code]').on('click', function() {
+                $('input[name=ctr_edit]').parent().hide();
                 $('div.popup').toggle();
             });
             $('input[name=create_code]').on('click', function() {
@@ -430,7 +424,7 @@ var options = function() {
             $('input[name=close_popup]').on('click', function() {
                 $('div.popup').hide();
             })
-            $(window).trigger('resize')
+            $(window).trigger('resize');
             $('input[name=ctr_add]').on('click', function() {
                 var str_code = $('textarea[name=code]').val();
                 var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
@@ -444,17 +438,44 @@ var options = function() {
                     alert('Ошибка');
                     return;
                 }
+                SetSettings('ct_' + code.uid, str_code);
                 if ($.inArray(code.uid, costume_tr) != -1) {
                     alert('Этот код уже добавлен.');
                     return;
+                } else {
+                    costume_tr[costume_tr.length] = code.uid;
+                    SetSettings('costume_tr', JSON.stringify(costume_tr));
                 }
-                SetSettings('ct_' + code.uid, str_code);
-                costume_tr[costume_tr.length] = code.uid;
-                SetSettings('costume_tr', JSON.stringify(costume_tr));
                 code = null;
                 $('textarea[name=code]').val('');
                 load_costume_torrents();
                 $('div.popup').find('input[name=close_popup]').trigger('click');
+            });
+            $('input[name=ctr_edit]').on('click', function() {
+                var str_code = $('textarea[name=code]').val();
+                var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
+                var code = null;
+                try {
+                    code = JSON.parse(str_code);
+                } catch (e) {
+                    alert('Ошибка загрузки!' + "\n" + e)
+                }
+                if ('uid' in code == false) {
+                    alert('Ошибка');
+                    return;
+                }
+                SetSettings('ct_' + code.uid, str_code);
+                code = null;
+                $('textarea[name=code]').val('');
+                load_costume_torrents();
+                $('div.popup').find('input[name=close_popup]').trigger('click');
+            });
+            $('table.c_table').on('click','input[name=edit_ctr]',function(){
+                $('input[name=ctr_add]').parent().hide();
+                var uid = $(this).parents().eq(1).attr('data-uid');
+                var code = (GetSettings('ct_' + uid) !== undefined) ? GetSettings('ct_' + uid) : '';
+                $('textarea[name=code]').val(code);
+                $('div.popup').show();
             });
             $('table.c_table').on('click', 'input[name=rm_ctr]', function() {
                 var uid = $(this).parents().eq(1).attr('data-uid');
