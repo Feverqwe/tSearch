@@ -464,10 +464,9 @@ var options = function() {
                     alert('Ошибка загрузки!' + "\n" + e)
                 }
                 if ('uid' in code == false || uid != code.uid) {
-                    alert('Ошибка');
-                    return;
+                    code.uid = uid;
                 }
-                SetSettings('ct_' + code.uid, str_code);
+                SetSettings('ct_' + code.uid, JSON.stringify(code));
                 code = null;
                 $('textarea[name=code]').val('');
                 load_costume_torrents();
@@ -475,7 +474,7 @@ var options = function() {
                 $('div.popup').find('input[name=close_popup]').trigger('click');
             });
             $('table.c_table').on('click','input[name=edit_ctr]',function(){
-                $('input[name=edit_ctr]').parent().show();
+                $('input[name=ctr_edit]').parent().show();
                 $('input[name=ctr_add]').parent().hide();
                 var uid = $(this).parents().eq(1).attr('data-uid');
                 var code = (GetSettings('ct_' + uid) !== undefined) ? GetSettings('ct_' + uid) : '';
@@ -486,7 +485,8 @@ var options = function() {
             $('table.c_table').on('click', 'input[name=rm_ctr]', function() {
                 var uid = $(this).parents().eq(1).attr('data-uid');
                 var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
-                var index = $.inArray(uid, costume_tr);
+                var index = $.inArray(parseInt(uid), costume_tr);
+                if (index == -1) return;
                 costume_tr.splice(index, 1);
                 SetSettings('ct_' + uid, null);
                 SetSettings('costume_tr', JSON.stringify(costume_tr));

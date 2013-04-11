@@ -215,8 +215,11 @@ div.popup {
     padding: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     display:  none;
+    overflow: hidden;
 }
 div.popup textarea[name=code] {
     width: 98%;
-    height: 240px;
+    max-width: 98%;
+    height: 235px;
+    max-height: 235px;
 }
