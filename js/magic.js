@@ -49,6 +49,8 @@ var magic = function() {
         $('div.page.search').find('input[type=text]').removeClass('error').val('');
         $('div.page.search').find('input[type=checkbox]').prop('checked', 0);
         $('div.page.selectors').find('input[type=number]').val(0);
+        $('div.page.desk').find('input[type=text]').val('');
+        $('div.page.desk').find('input[type=checkbox]').prop('checked', 0);
     }
     var load_code = function() {
         empty_all();
@@ -145,18 +147,38 @@ var magic = function() {
         if ('auth_f' in code) {
             $('input[name=auth_form]').val(code['auth_f']);
         }
+        if ('icon' in code) {
+            $('input[name=icon]').val(code['icon']);
+        }
+        if ('name' in code) {
+            $('input[name=tr_name]').val(code['name']);
+        }
+        if ('about' in code) {
+            $('input[name=desk]').val(code['about']);
+        }
+        if ('flags' in code) {
+            $('input[name=need_auth]').prop('checked',code['flags'].a);
+            $('input[name=rus]').prop('checked',code['flags'].l);
+            $('input[name=cirilic]').prop('checked',code['flags'].rs);
+        }
     }
     var make_code = function() {
         var code = {
             'version': 1,
             'type': 'kit',
-            'name': 'noname',
-            'icon': '',
+            'name': $('input[name=tr_name]').val(),
+            'icon': $('input[name=icon]').val(),
+            'about': $('input[name=desk]').val(),
             'root_url': $('input[name=base_path]').val(),
             'search_path': $('input[name=search_url]').val(),
             'items': $('input[name=item]').val(),
             'tr_name': $('input[name=torrent_name]').val(),
-            'tr_link': $('input[name=torrent_link]').val()
+            'tr_link': $('input[name=torrent_link]').val(),
+            'flags':{
+                a:($('input[name=need_auth]').prop('checked'))?1:0,
+                l:($('input[name=rus]').prop('checked'))?1:0,
+                rs:($('input[name=cirilic]').prop('checked'))?1:0
+            }
         }
         if ($('input[name=post]').val().length > 0) {
             code['post'] = $('input[name=post]').val();

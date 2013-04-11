@@ -27,6 +27,9 @@ div.tools > div > fieldset ul {
 div.tools > div > fieldset ul li {
     display: inline-block;
 }
+input[type=text] {
+    width: 200px;
+}
 input[name=search_url] {
     width: 300px;
 }

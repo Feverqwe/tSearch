@@ -289,8 +289,9 @@ var engine = function() {
         view.AddAutocomplete();
     }
     var loadCostumeModule = function(uid) {
-        if ($.inArray(uid, costume_tr) == -1)
+        if ($.inArray(uid, costume_tr) == -1) {
             return;
+        }
         var ct = GetSettings('ct_' + uid);
         if (!ct) {
             //удалить из списка итп, конь в вакуме

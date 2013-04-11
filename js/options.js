@@ -464,7 +464,7 @@ var options = function() {
                     alert('Ошибка загрузки!' + "\n" + e)
                 }
                 if ('uid' in code == false || uid != code.uid) {
-                    code.uid = uid;
+                    code.uid = parseInt(uid);
                 }
                 SetSettings('ct_' + code.uid, JSON.stringify(code));
                 code = null;
@@ -491,6 +491,7 @@ var options = function() {
                 SetSettings('ct_' + uid, null);
                 SetSettings('costume_tr', JSON.stringify(costume_tr));
                 load_costume_torrents();
+                $('select[name=tr_lists]').trigger('change');
             });
             load_costume_torrents();
         }

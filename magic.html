@@ -17,6 +17,7 @@
                 <li><a href="#selectors" data-page="selectors">Селекторы</a></li>
                 <li><a href="#convert" data-page="convert">Конвертация</a></li>
                 <li><a href="#auth" data-page="auth">Авторизация</a></li>
+                <li><a href="#desk" data-page="desk">Описание</a></li>
                 <li><a href="#save" data-page="save">Сохранить \ Загрузить</a></li>
             </ul>
             <div class="page search active">
@@ -167,6 +168,31 @@
                         </ul>
                         <ul>
                             <li>Итог</li>:<li><input name="result_size" type="text" disabled="disabled" /></li>
+                        </ul>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="page desk">
+                <fieldset>
+                    <legend>Описание торрент-трекера</legend>
+                    <div>
+                        <ul>
+                            <li>base64 иконка (16x16px)</li><li><input type="text" name="icon" value=""/></li>
+                        </ul>
+                        <ul>
+                            <li>Название торрента</li><li><input type="text" name="tr_name" value=""/></li>
+                        </ul>
+                        <ul>
+                            <li>Описание торрента</li><li><input type="text" name="desk" value=""/></li>
+                        </ul>
+                        <ul>
+                            <li><input type="checkbox" name="cirilic" value=""/></li><li>Поддержка кирилийцы</li>
+                        </ul>
+                        <ul>
+                            <li><input type="checkbox" name="need_auth" value=""/></li><li>Требуется авторизация</li>
+                        </ul>
+                        <ul>
+                            <li><input type="checkbox" name="rus" value=""/></li><li>Русскоязычный трекер</li>
                         </ul>
                     </div>
                 </fieldset>
