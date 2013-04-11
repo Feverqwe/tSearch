@@ -150,6 +150,7 @@ div.page.active {
 }
 ul.menu {
     margin: 0;
+    background-color: #fff
 }
 ul.menu li {
     display: inline-block;

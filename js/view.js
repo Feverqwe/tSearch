@@ -343,11 +343,11 @@ var view = function() {
         var s_s = keyword_filter_cache.text;
         var sum = 0;
         $.each(a, function(k, v) {
-            if (v.title == undefined || !isInt(v.size) || !isInt(v.seeds)
+            if (typeof(v.title) != 'string' || v.title.length == 0 || !isInt(v.size) || !isInt(v.seeds)
                     || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
-                    || (v.category.title != null && v.category.title == undefined)
-                    || (v.category.url != null && v.category.url == undefined)
-                    || (v.dl != null && v.dl == undefined)
+                    || ('title' in v.category && typeof(v.category.title) != 'string')
+                    || ('url' in v.category && typeof(v.category.url) != 'string')
+                    || ('dl' in v && typeof(v.dl) != 'string')
                     ) {
                 console.log('Tracker ' + tracker[t].name + ' have problem!');
                 console.log('#debug start');

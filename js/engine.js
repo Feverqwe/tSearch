@@ -306,7 +306,8 @@ var engine = function() {
             var about = ('about' in me) ? me.about : '';
             var root_url = ('root_url' in me) ? me.root_url : null;
             var login_url = ('auth' in me) ? me.auth : null;
-            var filename = ('filename' in me) ? ct.uid : null;
+            var filename = null;
+            var uid = me.uid;
             var flags = ('flags' in me) ? me.flags : {
                 a: 0,
                 l: 0,
@@ -317,7 +318,6 @@ var engine = function() {
                 var readCode = function(c) {
                     c = view.contentFilter(c);
                     var t = view.load_in_sandbox(id, c);
-
                     var ex_cat = ('cat_name' in me) ? 1 : 0;
                     var ex_link = ('cat_link' in me) ? 1 : 0;
                     var ex_link_r = ('cat_link_r' in me && me.cat_link_r) ? 1 : 0;
@@ -335,7 +335,7 @@ var engine = function() {
                     var ex_auth_f = ('auth_f' in me) ? 1 : 0;
 
                     if (ex_auth_f) {
-                        if (t.find(me.auth_f).length) {
+                        if ((t.find(me.auth_f)).length) {
                             view.auth(0, id);
                             return [];
                         } else {
@@ -343,38 +343,44 @@ var engine = function() {
                         }
                     }
                     t = t.find(me.items)
-                    var l = t.length - ('sl' in me) ? me.sl : 0;
+                    var l = t.length - (('sl' in me) ? me.sl : 0);
                     var arr = [];
                     var s = ('sf' in me) ? me.sf : 0;
                     for (var i = s; i < l; i++) {
                         var td = t.eq(i);
                         var obj = {};
+                        obj['category'] = {id: -1}
                         if (ex_cat) {
-                            obj['category'] = {}
-                            obj['category']['title'] = td.children(me.cat_name).text();
-                            if (ex_link)
-                                obj['category']['url'] = ((ex_link_r) ? root_url : '') + me.cat_link.attr('href');
-                            obj['category']['id'] = -1;
+                            obj['category']['title'] = (td.find(me.cat_name)).text();
+                            if (ex_link) {
+                                obj['category']['url'] = ((ex_link_r) ? root_url : '') + (td.find(me.cat_link)).attr('href');
+                            }
                         }
-                        obj['title'] = td.children(me.tr_name).text();
-                        obj['url'] = ((ex_tr_link_r) ? root_url : '') + td.children(me.tr_link).attr('href');
+                        obj['title'] = (td.find(me.tr_name)).text();
+                        obj['url'] = ((ex_tr_link_r) ? root_url : '') + (td.find(me.tr_link)).attr('href');
                         if (ex_tr_size) {
-                            obj['size'] = td.children(me.tr_size).text();
+                            obj['size'] = (td.find(me.tr_size)).text();
                             if (ex_tr_size_c) {
                                 obj['size'] = ex_kit.format_size(obj['size']);
                             }
                         }
                         if (ex_tr_dl) {
-                            obj['dl'] = ((ex_tr_dl_r) ? root_url : '') + td.children(me.ex_tr_dl).attr('href');
+                            obj['dl'] = ((ex_tr_dl_r) ? root_url : '') + (td.find(me.tr_dl)).attr('href');
                         }
                         if (ex_seed) {
-                            obj['seeds'] = td.children(me.seed).text();
+                            obj['seeds'] = (td.find(me.seed)).text();
+                            if (!ex_kit.isNumber(obj['seeds'])) {
+                                obj['seeds'] = 1;
+                            }
                         }
                         if (ex_peer) {
-                            obj['leechs'] = td.children(me.peer).text();
+                            obj['leechs'] = (td.find(me.peer)).text();
+                            if (!ex_kit.isNumber(obj['leechs'])) {
+                                obj['leechs'] = 0;
+                            }
                         }
                         if (ex_date) {
-                            obj['time'] = td.children(me.date).text();
+                            obj['time'] = (td.find(me.date)).text();
                             if (ex_date_regexp) {
                                 obj['time'] = obj['time'].replace(new RegExp(me.t_r, "ig"), me.t_r_r);
                             }
@@ -384,10 +390,10 @@ var engine = function() {
                             if (ex_t_f) {
                                 obj['time'] = ex_kit.format_date(me.t_f, obj['time']);
                             }
+                        } else {
+                            obj['time'] = 0;
                         }
-
                         arr[arr.length] = obj
-
                     }
                     return arr;
                 }
@@ -397,7 +403,7 @@ var engine = function() {
                         xhr.abort();
                     var obj_req = {
                         type: 'GET',
-                        url: me.search_path,
+                        url: me.search_path.replace('%search%', t),
                         cache: false,
                         success: function(data) {
                             view.result(id, readCode(data), t);
@@ -408,7 +414,7 @@ var engine = function() {
                     }
                     if ('post' in me && me.post > 0) {
                         obj_req.type = 'POST';
-                        obj_req.data = me.post;
+                        obj_req.data = me.post.replace('%search%', t);
                     }
                     xhr = $.ajax(obj_req);
                 }
@@ -419,14 +425,14 @@ var engine = function() {
                 }
             }();
             var find = function(text) {
-                return kit.loadPage(text);
+                kit.getPage(text);
             }
             var setId = function(a) {
                 id = a;
             }
             return {
                 find: function(a) {
-                    return find(a);
+                    find(a);
                 },
                 setId: function(a) {
                     id = a;
@@ -439,9 +445,36 @@ var engine = function() {
                 filename: filename,
                 flags: flags,
                 login_url: login_url,
+                uid: uid,
                 c: true
             }
         }(ct);
+        engine.ModuleLoaded(l);
+    }
+    function clone_obj(obj) {
+        if (null == obj || "object" != typeof obj)
+            return obj;
+        var copy = obj.constructor();
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr))
+                copy[attr] = obj[attr];
+        }
+        return copy;
+    }
+    var addCostumTr = function(a) {
+        var b = clone_obj(a);
+        var l = costume_tr.length;
+        for (var i = 0; i < l; i++) {
+            var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;
+            if (tr == null)
+                continue;
+            b[b.length] = {
+                e: 0,
+                n: tr.name,
+                uid: tr.uid
+            }
+        }
+        return b
     }
     var loadInternalModule = function(name) {
         var script = document.createElement('script');
@@ -455,18 +488,19 @@ var engine = function() {
     var loadModules = function(internalTrackers) {
         $('script[data-id=tracker]').remove();
         tracker = [];
-        if (internalTrackers == null || "options" in window)
-            var Trackers = defaultList;
-        else
+        if (internalTrackers == null || "options" in window) {
+            var Trackers = addCostumTr(defaultList);
+        } else {
             var Trackers = internalTrackers;
+        }
         if (Trackers[0].e == null)
         {
-            Trackers = defaultList;
+            Trackers = addCostumTr(defaultList);
         }
         var l = Trackers.length;
         for (var i = 0; i < l; i++) {
             if (Trackers[i].e || "options" in window) {
-                if ('c' in Trackers[i]) {
+                if ('uid' in Trackers[i]) {
                     loadCostumeModule(Trackers[i].uid);
                 } else {
                     loadInternalModule(Trackers[i].n);
@@ -521,7 +555,7 @@ var engine = function() {
         getProfileList: function() {
             return getProfileList();
         },
-        defaultList: defaultList,
+        defaultList: addCostumTr(defaultList),
         categorys: categorys
     }
 }();
@@ -635,12 +669,18 @@ var ex_kit = function() {
             return Math.round((new Date()).getTime() / 1000) - old;
         }
     }
+    var isNumber = function(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
     return {
+        isNumber: function(a) {
+            return isNumber(a);
+        },
         in_cp1251: function(a) {
             return in_cp1251(a)
         },
         format_size: function(a) {
-            return a;
+            return format_size(a);
         },
         month_replace: function(a) {
             return month_replace(a);

@@ -54,7 +54,6 @@ div.page.active {
 }
 ul {
     list-style: none;
-    margin: 0;
     padding: 0;
 }
 input {
@@ -73,11 +72,8 @@ fieldset {
     margin-top: 15px;
     border: 1px solid #c0c0c0;
 }
-fieldset > ul > li > ul.item > li {
-    display: inline-block;
-}
 ul.item > li {
-    margin-top: 2px;
+    display: inline-block;
 }
 div.backup_form { 
     padding-top: 10px;
@@ -202,4 +198,22 @@ td.desc {
 }
 table tr:nth-child(even) {
     background-color: #f1f2f1;
+}
+table td.notorrent {
+    text-align: center;
+}
+div.popup {
+    position: fixed;
+    top: 100px;
+    width: 400px;
+    height: 300px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    display:  none;
+}
+div.popup textarea[name=code] {
+    width: 98%;
+    height: 240px;
 }

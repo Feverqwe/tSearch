@@ -29,7 +29,7 @@
                 </div>
             </fieldset>
             <fieldset>
-                <legend data-lang=5>Списки торрентов</legend>
+                <legend data-lang="5">Списки торрентов</legend>
                 <ul>
                     <li><ul class="item"><li><select name="tr_lists"></select></li><li><input data-lang="6" name="rm_list" type="button" value="Удалить" /></li></ul></li>
                     <li><ul class="item"><li data-lang="50" >Название</li>: <li><input name="list_name" type="text" /></li><li><input name="add_list" type="button" value="Добавить" data-lang="7" /></li></ul></li>
@@ -54,6 +54,9 @@
         <div class="page tk">
             <fieldset>
                 <legend>Управление пользовательскими торрент-трекерами</legend>
+                <ul class="item">
+                    <li><input type="button" name="add_code" value="Добавить код торрента"/></li><li><input type="button" name="create_code" value="Создать"/></li>
+                </ul>
                 <table class="c_table">
                     <thead>
                         <tr>
@@ -64,6 +67,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                    <td colspan="4" class="notorrent">Тут пока ничего нету</td>
                     </tbody>
                 </table>  
             </fieldset>
@@ -134,6 +138,14 @@
         <div class="bottom">
             <div class="donate"></div>
             <div class="author"><a href="mailto:leonardspbox@gmail.com">Anton</a>, 2013<a href="magic.html">m</a></div>
+        </div>
+        <div class="popup">
+            <span>Код трекера</span>
+            <textarea name="code"></textarea>
+            <ul class="item">
+                <li><input type="button" value="Добавить" name="ctr_add"/></li>
+                <li><input type="button" value="Закрыть" name="close_popup" /></li>
+            </ul>
         </div>
     </body>
 </html>

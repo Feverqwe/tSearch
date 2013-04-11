@@ -62,13 +62,7 @@ var options = function() {
         updateProfileList();
     };
 
-    var addCostumeTrackerInList = function (i) {
-        
-    }
     var addTrackerInList = function(i) {
-        if ('costume' in tracker) {
-            addCostumeTrackerInList(i);
-        }
         var filename = tracker[i].filename;
         var id = $('select[name=tr_lists]').val();
         if (trackerProfiles == null) {
@@ -125,12 +119,21 @@ var options = function() {
 
         var internalTrackers = [];
         for (var i = 0; i < trc; i++) {
+            var tr_id = tr.eq(i).attr('data-id');
             var fn = tracker[tr.eq(i).attr('data-id')].filename;
+            var uid = null;
+            if (fn == null && 'uid' in tracker[tr_id]) {
+                uid = tracker[tr_id].uid;
+            }
             var inp = tr.eq(i).children('td.status').children('input');
-            internalTrackers[internalTrackers.length] = {
+            var obj = {
                 'n': fn,
                 'e': (inp.is(':checked')) ? 1 : 0
             };
+            if (uid) {
+                obj['uid'] = uid;
+            }
+            internalTrackers[internalTrackers.length] = obj
         }
         trackerProfiles[id].Trackers = internalTrackers;
         return 1;
@@ -283,6 +286,28 @@ var options = function() {
                 console.log(t);
         });
     };
+    var load_costume_torrents = function () {
+        var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
+        var c = costume_tr.length;
+        if (costume_tr.length > 0) {
+            $('table.c_table tbody').empty();
+        }
+        for (var i = 0; i<c; i++) {
+            var tr = (GetSettings('ct_'+costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_'+costume_tr[i])) : null;
+            if (tr == null) { 
+                costume_tr.splice(i,1);
+                SetSettings('costume_tr',JSON.stringify(costume_tr));
+                continue; 
+            }
+            $('table.c_table tbody').append('<tr data-name="' + tr.name + '"' + '>'
+                    + '<td><img src="' + tr.icon + '"/></td>'
+                    + '<td><a href="' + tr.root_url + '" target="_blank">' + tr.name + '</a>'
+                    + '</td>'
+                    + '<td class="desc">no desc</td>'
+                    + '<td class="status"><input type="button" name="rm_ctr" value="Удалить"></td>'
+                    + '</tr>');
+        }
+    }
     return {
         addTrackerInList: function(a) {
             addTrackerInList(a);
@@ -392,6 +417,40 @@ var options = function() {
                 $('input[name="clear_cloud"]').css('display', 'none');
             }
             set_place_holder();
+            $('input[name=add_code]').on('click',function(){
+                $('div.popup').toggle();
+            });
+            $('input[name=create_code]').on('click',function(){
+                document.location.href  = 'magic.html';
+            });
+            $('input[name=close_popup]').on('click', function () {
+                $('div.popup').hide();
+            })
+            $(window).trigger('resize')
+            $('input[name=ctr_add]').on('click',function () {
+                var str_code = $('textarea[name=code]').val();
+                var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
+                var code = null;
+                try {
+                    code = JSON.parse(str_code);
+                } catch (e) {
+                    alert('Ошибка загрузки!'+"\n"+e)
+                }
+                if ('uid' in code == false) {
+                    alert('Ошибка');
+                    return;
+                }
+                if ($.inArray(code.uid, costume_tr) != -1) {
+                    alert('Этот код уже добавлен.');
+                    return;
+                }
+                SetSettings('ct_'+code.uid, str_code);
+                costume_tr[costume_tr.length] = code.uid;
+                SetSettings('costume_tr', JSON.stringify(costume_tr));
+                code = null;
+                $('div.popup').find('input[name=close_popup]').trigger('click');
+            });
+            load_costume_torrents();
         }
     };
 }();
@@ -408,3 +467,6 @@ var view = function() {
 $(function() {
     options.begin();
 });
+$(window).on('resize',function () {
+    $('div.popup').css('left',($('html').width() / 2 - $('div.popup').width() / 2) + 'px');
+})

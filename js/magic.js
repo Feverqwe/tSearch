@@ -56,7 +56,7 @@ var magic = function() {
         try {
             code = JSON.parse($('textarea[name=code]').val());
         } catch (e) {
-            alert('Ошибка загрузки!')
+            alert('Ошибка загрузки!' + "\n" + e)
         }
         if (!code)
             return;
@@ -231,7 +231,7 @@ var magic = function() {
             hash = ((hash << 5) - hash) + char;
             hash = hash & hash; // Convert to 32bit integer
         }
-        return hash;
+        return (hash < 0) ? hash * -1 : hash;
     };
     var obj_in_path = function(obj, ifr) {
         var path = obj.getPath(ifr);
@@ -494,15 +494,15 @@ var magic = function() {
             };
             var click_text = function(opath, otext, t) {
                 select_mode = true;
-                var tr = $('input[name=item]').val() + '>';
+                var tr = $('input[name=item]').val();
                 //+ ':eq('+$('input[name=skip_first]').val()+')'
                 var ifr = $($('iframe')[0].contentDocument);
                 var inp = $('input[name=' + opath + ']');
                 var txt = $('input[name=' + otext + ']');
                 inp.removeClass('error');
                 hov_function = function(obj) {
-                    var o_path = obj_in_path(obj, ifr);
-                    var path = o_path.replace(tr, '');
+                    var o_path = obj_in_path(obj, ifr)
+                    var path = o_path.replace(tr, '').replace(/^[^>]*>(.*)$/, '$1');
                     var val = '';
                     if (o_path.length == path.length)
                         return;
@@ -650,9 +650,9 @@ $(function() {
 $(window).on('resize', function() {
     $('iframe.web').css('height', $(window).height() - $('div.tools').height() - 4 + 'px');
 });
+
 jQuery.fn.getPath = function(ifr) {
-    var no_class = ['td', 'tr', 'tbody']
-    var no_eq = ['tr']
+    no_id = ['tr']
     if (this.length != 1)
         throw 'Requires one element.';
     var path, node = this;
@@ -673,16 +673,19 @@ jQuery.fn.getPath = function(ifr) {
         var tag = name;
         if (realNode.id) {
             if (ifr) {
-                if (ifr.find(name + '#' + realNode.id).length == 1 && $.inArray(tag, no_class) == -1) {
-                    return name + '#' + realNode.id + (path ? '>' + path : '');
-                } else if ($.inArray(tag, no_class) == -1) {
+                if ($.inArray(tag, no_id) == -1 && ifr.find('#' + realNode.id).length == 1) {
+                    return '#' + realNode.id + (path ? '>' + path : '');
+                } else {
                     name += '#' + realNode.id;
                 }
             } else {
                 return name + '#' + realNode.id + (path ? '>' + path : '');
             }
-        } else if (realNode.className && $.inArray(tag, no_class) == -1) {
+        } else if (realNode.className) {
             name += ('.' + realNode.className.split(/\s+/).join('.')).replace('.kit_select', '');
+            if (ifr.find(name).length == 1) {
+                return name + (path ? '>' + path : '');
+            }
         }
 
         var parent = node.parent();
@@ -696,9 +699,12 @@ jQuery.fn.getPath = function(ifr) {
         if (siblings_no_class.length == 1) {
             name = tag;
         } else {
-            if (siblings.length > 1 && $.inArray(tag, no_eq) == -1) {
+            if (siblings.length > 1) {
                 name += ':eq(' + siblings.index(node) + ')';
             }
+        }
+        if ($.inArray(tag, ['table', 'div']) != -1 && ifr.find(name).length == 1) {
+            return name + (path ? '>' + path : '');
         }
         path = name + (path ? '>' + path : '');
         node = parent;
