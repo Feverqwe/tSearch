@@ -449,6 +449,7 @@ var options = function() {
                 code = null;
                 $('textarea[name=code]').val('');
                 load_costume_torrents();
+                $('select[name=tr_lists]').trigger('change');
                 $('div.popup').find('input[name=close_popup]').trigger('click');
             });
             $('input[name=ctr_edit]').on('click', function() {
@@ -468,6 +469,7 @@ var options = function() {
                 code = null;
                 $('textarea[name=code]').val('');
                 load_costume_torrents();
+                $('select[name=tr_lists]').trigger('change');
                 $('div.popup').find('input[name=close_popup]').trigger('click');
             });
             $('table.c_table').on('click','input[name=edit_ctr]',function(){
