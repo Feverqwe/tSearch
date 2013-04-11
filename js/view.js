@@ -67,18 +67,18 @@ var view = function() {
         var tracker_img = $('ul.trackers').children('li[data-id="' + t + '"]').children('div.tracker_icon');
         switch (s) {
             case 0:
-                tracker_img.css('background-image', 'url(images/loading.gif)');
+                tracker_img.css('background', 'url(images/loading.gif) center center #fff');
                 break;
             case 1:
                 tracker_img.removeAttr('style');
                 break;
             case 2:
-                tracker_img.css('background-image', 'url(images/error.png)');
+                tracker_img.css('background', 'url(images/error.png) center center #fff');
                 break;
         }
     }
     var addTrackerInList = function(i) {
-        $('body').append('<style>div.tracker_icon.num' + i + ' { background-image: url(' + tracker[i].icon + '); }</style>');
+        $('body').append('<style class="tr_icon">div.tracker_icon.num' + i + ' { '+( (tracker[i].icon.length == 0 || tracker[i].icon[0] == '#')?'background-color: '+((tracker[i].icon.length != 0)?tracker[i].icon:'#ccc')+';border-radius: 8px;':'background-image: url(' + tracker[i].icon + ');' )+' }</style>');
         $('<li data-id="' + i + '"/>').append($('<div class="tracker_icon num' + i + '" data-count="0"/>')).append($('<a href="#">' + tracker[i].name + '</a>').click(function(event) {
             event.preventDefault();
             if ($(this).attr('class') == 'selected') {
@@ -96,6 +96,7 @@ var view = function() {
     }
     var ClearTrackerList = function() {
         $('ul.trackers').empty();
+        $('style.tr_icon').remove();
     }
     function isInt(n) {
         if (n == undefined || n === undefined)

@@ -21,6 +21,7 @@ java -jar yuicompressor-2.4.7.jar .\css\history.css -o .\build\css\history.css
 java -jar yuicompressor-2.4.7.jar .\css\jqcloud.css -o .\build\css\jqcloud.css
 java -jar yuicompressor-2.4.7.jar .\css\bootstrap.css -o .\build\css\bootstrap.css
 java -jar yuicompressor-2.4.7.jar .\css\apprise.css -o .\build\css\apprise.css
+java -jar yuicompressor-2.4.7.jar .\css\magic.css -o .\build\css\magic.css
 
 mkdir .\build_firefox\chrome
 xcopy .\build .\build_firefox\chrome\content\ /E
@@ -37,6 +38,7 @@ java -jar compiler.jar --js .\js\view.js --js_output_file .\build\js\view.js
 java -jar compiler.jar --js .\js\ad.js --js_output_file .\build\js\ad.js
 java -jar compiler.jar --js .\js\jqcloud-1.0.2.min.js --js_output_file .\build\js\jqcloud-1.0.2.min.js
 java -jar compiler.jar --js .\js\apprise-1.5.js --js_output_file ./build\js\apprise-1.5.js
+java -jar compiler.jar --js .\js\magic.js --js_output_file ./build\js\magic.js
 
 java -jar compiler.jar --js .\tracker\tfile.js --js_output_file .\build\tracker\tfile.js
 java -jar compiler.jar --js .\tracker\rutracker.js --js_output_file .\build\tracker\rutracker.js

@@ -17,7 +17,7 @@
         </div>
         <ul class="menu">
             <li><a class="active" href="#torrent_list" data-page="torrent_list" data-lang="1">Список торрентов</a></li>
-            <li><a href="#tk" data-page="tk">Torrent Kit</a></li>
+            <li><a href="#tk" data-page="tk" data-lang="57">Инструменты</a></li>
             <li><a href="#options" data-page="options" data-lang="2">Опции</a></li>
             <li><a href="#backup" data-page="backup" data-lang="3">Восст. наcтроек</a></li>
         </ul>
@@ -53,9 +53,9 @@
         </div>
         <div class="page tk">
             <fieldset>
-                <legend>Управление пользовательскими торрент-трекерами</legend>
+                <legend data-lang="58">Управление пользовательскими торрент-трекерами</legend>
                 <ul class="item">
-                    <li><input type="button" name="add_code" value="Добавить код торрента"/></li><li><input type="button" name="create_code" value="Создать"/></li>
+                    <li><input type="button" data-lang="59" name="add_code" value="Добавить код торрента"/></li><li><a href="magic.html" target="_blank"><input type="button" name="create_code" value="Создать" data-lang="60"/></a></li>
                 </ul>
                 <table class="c_table">
                     <thead>
@@ -67,7 +67,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <td colspan="4" class="notorrent">Тут пока ничего нету</td>
+                    <td colspan="4" class="notorrent" data-lang="51">Тут пока ничего нету</td>
                     </tbody>
                 </table>  
             </fieldset>
@@ -140,12 +140,12 @@
             <div class="author"><a href="mailto:leonardspbox@gmail.com">Anton</a>, 2013</div>
         </div>
         <div class="popup">
-            <span>Код трекера</span>
+            <span data-lang="61">Код трекера</span>
             <textarea name="code"></textarea>
             <ul class="item">
-                <li><input type="button" value="Добавить" name="ctr_add"/></li>
-                <li><input type="button" value="Изменить" name="ctr_edit"/></li>
-                <li><input type="button" value="Закрыть" name="close_popup" /></li>
+                <li><input type="button" value="Добавить" name="ctr_add" data-lang="62"/></li>
+                <li><input type="button" value="Изменить" name="ctr_edit" data-lang="63"/></li>
+                <li><input type="button" value="Закрыть" name="close_popup"  data-lang="64"/></li>
             </ul>
         </div>
     </body>

@@ -223,3 +223,7 @@ div.popup textarea[name=code] {
     height: 235px;
     max-height: 235px;
 }
+.tracker_icon {
+    width: 16px;
+    height: 16px;
+}

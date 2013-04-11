@@ -336,7 +336,7 @@ var engine = function() {
                     var ex_auth_f = ('auth_f' in me) ? 1 : 0;
 
                     if (ex_auth_f) {
-                        if ((t.find(me.auth_f)).length) {
+                        if ((t.find(me.auth_f)).length > 0) {
                             view.auth(0, id);
                             return [];
                         } else {
@@ -419,7 +419,7 @@ var engine = function() {
                             view.loadingStatus(2, id);
                         }
                     }
-                    if ('post' in me && me.post > 0) {
+                    if ('post' in me && me.post.length > 0) {
                         obj_req.type = 'POST';
                         obj_req.data = me.post.replace('%search%', t);
                     }

@@ -101,7 +101,9 @@ var options = function() {
             flags = '<div class="icons">' + flags + '</div>';
         }
         $('table.tr_table tbody').append('<tr data-id="' + i + '"' + '>'
-                + '<td><img src="' + tracker[i].icon + '"/></td>'
+                + '<td><img class="tracker_icon" '+
+((tracker[i].icon.length == 0 || tracker[i].icon[0] == '#')?'style="background-color: '+((tracker[i].icon.length != 0)?tracker[i].icon:'#ccc')+';border-radius: 8px;"':'src="' + tracker[i].icon + '"')
+                + '"/></td>'
                 + '<td><a href="' + tracker[i].url + '" target="_blank">' + tracker[i].name + '</a>'
                 + '</td>'
                 + '<td class="desc">' + flags
@@ -285,7 +287,7 @@ var options = function() {
         var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
         var c = costume_tr.length;
         if (c == 0) {
-            $('table.c_table tbody').html('<td colspan="4" class="notorrent">Тут пока ничего нету</td>');
+            $('table.c_table tbody').html('<td colspan="4" class="notorrent">'+_lang.settings[51]+'</td>');
         } else
         for (var i = 0; i < c; i++) {
             var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;
@@ -293,16 +295,18 @@ var options = function() {
                 costume_tr.splice(i, 1);
                 SetSettings('costume_tr', JSON.stringify(costume_tr));
                 if (costume_tr.length == 0) {
-                    $('table.c_table tbody').html('<td colspan="4" class="notorrent">Тут пока ничего нету</td>');
+                    $('table.c_table tbody').html('<td colspan="4" class="notorrent">'+_lang.settings[51]+'</td>');
                 }
                 continue;
             }
             $('table.c_table tbody').append('<tr data-name="' + tr.name + '" data-uid="' + tr.uid + '"' + '>'
-                    + '<td><img src="' + tr.icon + '"/></td>'
+                    + '<td><img class="tracker_icon" '+
+                    ((tr.icon.length == 0 || tr.icon[0] == '#')?'style="background-color: '+((tr.icon.length != 0)?tr.icon:'#ccc')+';border-radius: 8px;"':'src="' + tr.icon + '"')
+                    +'/></td>'
                     + '<td><a href="' + tr.root_url + '" target="_blank">' + tr.name + '</a>'
                     + '</td>'
                     + '<td class="desc">' + (('about' in tr) ? tr.about : '') + '</td>'
-                    + '<td class="action"><input type="button" name="edit_ctr" value="Изменить"><input type="button" name="rm_ctr" value="Удалить"></td>'
+                    + '<td class="action"><input type="button" name="edit_ctr" value="'+_lang.settings[52]+'" data-lang="52"><input type="button" name="rm_ctr" value="'+_lang.settings[53]+'" data-lang="53"></td>'
                     + '</tr>');
         }
     }
@@ -419,9 +423,6 @@ var options = function() {
                 $('input[name=ctr_edit]').parent().hide();
                 $('div.popup').toggle();
             });
-            $('input[name=create_code]').on('click', function() {
-                document.location.href = 'magic.html';
-            });
             $('input[name=close_popup]').on('click', function() {
                 $('div.popup').hide();
             })
@@ -433,15 +434,15 @@ var options = function() {
                 try {
                     code = JSON.parse(str_code);
                 } catch (e) {
-                    alert('Ошибка загрузки!' + "\n" + e)
+                    alert(_lang.settings[55] + "\n" + e)
                 }
                 if ('uid' in code == false) {
-                    alert('Ошибка');
+                    alert(_lang.settings[56]);
                     return;
                 }
                 SetSettings('ct_' + code.uid, str_code);
                 if ($.inArray(code.uid, costume_tr) != -1) {
-                    alert('Этот код уже добавлен.');
+                    alert(_lang.settings[54]);
                     return;
                 } else {
                     costume_tr[costume_tr.length] = code.uid;
@@ -461,7 +462,7 @@ var options = function() {
                 try {
                     code = JSON.parse(str_code);
                 } catch (e) {
-                    alert('Ошибка загрузки!' + "\n" + e)
+                    alert(_lang.settings[55] + "\n" + e)
                 }
                 if ('uid' in code == false || uid != code.uid) {
                     code.uid = parseInt(uid);

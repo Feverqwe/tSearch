@@ -58,7 +58,7 @@ var magic = function() {
         try {
             code = JSON.parse($('textarea[name=code]').val());
         } catch (e) {
-            alert('Ошибка загрузки!' + "\n" + e)
+            alert(_lang.magic[1] + "\n" + e)
         }
         if (!code)
             return;
@@ -159,7 +159,12 @@ var magic = function() {
         if ('flags' in code) {
             $('input[name=need_auth]').prop('checked',code['flags'].a);
             $('input[name=rus]').prop('checked',code['flags'].l);
-            $('input[name=cirilic]').prop('checked',code['flags'].rs);
+            if (code['flags'].rs) {
+                $('input[name=cirilic]').prop('checked',1);
+            } else {
+                $('input[name=cirilic]').prop('checked',0);
+            }
+            
         }
     }
     var make_code = function() {
@@ -179,6 +184,9 @@ var magic = function() {
                 l:($('input[name=rus]').prop('checked'))?1:0,
                 rs:($('input[name=cirilic]').prop('checked'))?1:0
             }
+        }
+        if ( typeof(code.icon) != 'string' || code.icon.length == 0) {
+            code.icon = '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);
         }
         if ($('input[name=post]').val().length > 0) {
             code['post'] = $('input[name=post]').val();
@@ -245,12 +253,12 @@ var magic = function() {
         $('textarea[name=code]').val(JSON.stringify(code));
     }
     var hashCode = function(s) {
-        var hash = 0, i, char;
+        var hash = 0, i, char_;
         if (s.length == 0)
             return hash;
         for (i = 0; i < s.length; i++) {
-            char = s.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
+            char_ = s.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char_;
             hash = hash & hash; // Convert to 32bit integer
         }
         return (hash < 0) ? hash * -1 : hash;
@@ -403,8 +411,30 @@ var magic = function() {
         $('input[name=converted_size]').val(size);
         $('input[name=result_size]').val(bytesToSize(size));
     }
+    var write_language = function(language) {
+        if (!language) {
+            language = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
+        }
+        _lang = get_lang(language);
+        var lang = _lang.magic;
+        $('select[name="language"]').val(language);
+        $.each(lang, function(k, v) {
+            var el = $('[data-lang=' + k + ']');
+            if (el.length == 0)
+                return true;
+            var t = el.prop("tagName");
+            if (t == "A" || t == "LEGEND" || t == "SPAN" || t == "LI" || t == "TH") {
+                el.text(v);
+            } else
+            if (t == "INPUT") {
+                el.val(v);
+            } else
+                console.log(t);
+        });
+    };
     return {
         begin: function() {
+            write_language();
             $('iframe.web').css('height', $(window).height() - $('div.tools').height() - 4 + 'px');
             $('input[name=open]').on('click', function() {
                 var url = $(this).parents().eq(1).find('input[name=search_url]').val();
@@ -676,7 +706,7 @@ $(window).on('resize', function() {
 jQuery.fn.getPath = function(ifr) {
     no_id = ['tr']
     if (this.length != 1)
-        throw 'Requires one element.';
+        return;
     var path, node = this;
     while (node.length) {
         var realNode = node[0];
