@@ -453,15 +453,15 @@ var options = function() {
                 $('div.popup').find('input[name=close_popup]').trigger('click');
             });
             $('input[name=ctr_edit]').on('click', function() {
+                var uid = $(this).parents().eq(1).attr('data-uid');
                 var str_code = $('textarea[name=code]').val();
-                var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
                 var code = null;
                 try {
                     code = JSON.parse(str_code);
                 } catch (e) {
                     alert('Ошибка загрузки!' + "\n" + e)
                 }
-                if ('uid' in code == false) {
+                if ('uid' in code == false || uid != code.uid) {
                     alert('Ошибка');
                     return;
                 }
