@@ -35,7 +35,7 @@ var view = function () {
         updateBtns();
     }
     var updateBtns = function () {
-        $('div.rm_btn').unbind('click').click(function (){
+        $('div.rm_btn').unbind('click').on("click",function (){
             $(this).parents().eq(1).hide('fast', function () {
                 var id = $(this).data('id');
                 var title = search_history[id].title;
@@ -125,7 +125,7 @@ $(function (){
     $('input.sbutton.main').attr('title',_lang.btn_main);
     $('div.topbtn').attr('title',_lang['btn_up']);
     
-    $('input.sbutton.main').click(function (){
+    $('input.sbutton.main').on("click",function (){
         window.location = 'index.html#s=';
     });
     view.getResult();
@@ -139,7 +139,7 @@ $(function (){
             $('div.topbtn').fadeOut('fast');
         }
     });
-    $('div.topbtn').click(function (event) {
+    $('div.topbtn').on("click",function (event) {
         event.preventDefault();
         $('body,html').animate({
             scrollTop: 0

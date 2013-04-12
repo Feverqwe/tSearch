@@ -236,7 +236,7 @@ var options = function() {
         }
     };
     var make_bakup_form = function() {
-        $('div.backup_form div').children('a.backup_tab').click(function(e) {
+        $('div.backup_form div').children('a.backup_tab').on("click",function(e) {
             e.preventDefault();
             $(this).parents().eq(1).children('div.restore').slideUp('fast');
             $(this).parent().children('a.restore_tab').removeClass('active');
@@ -244,18 +244,18 @@ var options = function() {
             $(this).parent().children('a.backup_tab').addClass('active');
             getBackup();
         });
-        $('div.backup_form div').children('a.restore_tab').click(function(e) {
+        $('div.backup_form div').children('a.restore_tab').on("click",function(e) {
             e.preventDefault();
             $(this).parents().eq(1).children('div.backup').slideUp('fast');
             $(this).parent().children('a.backup_tab').removeClass('active');
             $(this).parents().eq(1).children('div.restore').slideDown('fast');
             $(this).parent().children('a.restore_tab').addClass('active');
         });
-        $('div.backup').find('input[name=backup]').click(function(e) {
+        $('div.backup').find('input[name=backup]').on("click",function(e) {
             e.preventDefault();
             getBackup();
         });
-        $('div.restore').find('input[name=restore]').click(function(e) {
+        $('div.restore').find('input[name=restore]').on("click",function(e) {
             e.preventDefault();
             stngsRestore($(this).parent().children('textarea').val());
             $('textarea[name="backup"]').val('');
@@ -273,13 +273,13 @@ var options = function() {
             if (el.length == 0)
                 return true;
             var t = el.prop("tagName");
-            if (t == "A" || t == "LEGEND" || t == "SPAN" || t == "LI" || t == "TH") {
+            if (t == "A" || t == "LEGEND" || t == "SPAN" || t == "LI" || t == "TH" || t == "TD") {
                 el.text(v);
             } else
             if (t == "INPUT") {
                 el.val(v);
             } else
-                console.log(t);
+                console.log(t,v);
         });
     };
     var load_costume_torrents = function() {
@@ -320,17 +320,17 @@ var options = function() {
                 write_language($(this).val());
             });
             LoadProfiles();
-            $('table.tr_table').find('th').eq(3).children('a').eq(0).click(function(event) {
+            $('table.tr_table').find('th').eq(3).children('a').eq(0).on("click",function(event) {
                 event.preventDefault();
                 $('table.tr_table').children('tbody').find('input[type="checkbox"]').prop('checked', 'checked');
                 return false;
             });
-            $('table.tr_table').find('th').eq(3).children('a').eq(1).click(function(event) {
+            $('table.tr_table').find('th').eq(3).children('a').eq(1).on("click",function(event) {
                 event.preventDefault();
                 $('table.tr_table').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
                 return false;
             });
-            $('table.tr_table').find('th').eq(3).children('a').eq(2).click(function(event) {
+            $('table.tr_table').find('th').eq(3).children('a').eq(2).on("click",function(event) {
                 event.preventDefault();
                 $('table.tr_table').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
                 var Trackers = engine.defaultList;
@@ -338,7 +338,7 @@ var options = function() {
                 var tb = $('table.tr_table').children('tbody');
                 for (var i = 0; i < l; i++) {
                     if (Trackers[i].e) {
-                        tb.children('tr[data-name="' + Trackers[i].n + '"]').find('input[type="checkbox"]')[0].checked = true;
+                        tb.children('tr[data-id="' + i + '"]').find('input[type="checkbox"]')[0].checked = true;
                     }
                 }
                 return false;

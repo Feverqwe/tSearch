@@ -534,7 +534,7 @@ var explore = function() {
                         :
                         'div.explore div.' + section + ' div.poster > div.label > div.title, ' +
                         'div.explore div.' + section + ' div.poster > div.label > div.info > a ' +
-                        '{font-size: ' + font_size + 'px;}'
+                        '{font-size: ' + font_size + 'em;}'
                         ) + '</style>');
         //<<<<
     }
@@ -673,6 +673,7 @@ var explore = function() {
             'input': favoritesList[id].name,
             'id': id
         }, function(id, name) {
+            if (id === false) return;
             favoritesList[id].name = name;
             SetSettings('favoritesList', JSON.stringify(favoritesList));
             show_favorites();
@@ -994,15 +995,15 @@ var explore = function() {
                 t.find('div.info').width(ui.value);
                 var f = get_font_size(ui.value);
                 if (f > 0) {
-                    inf.css('font-size', f + 'px');
-                    ttl.css('font-size', f + 'px');
+                    inf.css('font-size', f + 'em');
+                    ttl.css('font-size', f + 'em');
                     txt.css('display', 'block');
                 } else {
                     txt.css('display', 'none');
                 }
             }
         }).appendTo(t);
-        $('<div class="clear" title="' + _lang.exp_default + '">').click(function() {
+        $('<div class="clear" title="' + _lang.exp_default + '">').on('click',function() {
             var t = $(this).parents().eq(2).children('div').children('div.poster');
             var sect = $(this).parents().eq(3).attr('class');
             var defoult_size = content_sourse[sect].size;
@@ -1014,8 +1015,8 @@ var explore = function() {
                 'margin': margin_size + 'px'
             });
             t.find('img').width(defoult_size - 10);
-            t.find('div.title span').css('font-size', '12px');
-            t.find('div.info a').css('font-size', '12px');
+            t.find('div.title span').css('font-size', '0.857em');
+            t.find('div.info a').css('font-size', '0.857em');
             t.find('div.info').parent().css('display', 'block');
             $(this).parent().children('div.slider').slider('value', defoult_size);
             var sect = $(this).parents().eq(3).attr('class');
@@ -1041,13 +1042,13 @@ var explore = function() {
     }
     var get_font_size = function(w) {
         if (w > 105) {
-            return 12;
+            return 0.857;
         }
         else if (w > 80) {
-            return 11;
+            return 0.786;
         }
         else if (w > 70) {
-            return 9;
+            return 0.643;
         }
         else {
             return 0;

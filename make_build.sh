@@ -21,7 +21,6 @@ java -jar yuicompressor-2.4.7.jar ./css/stylesheet.css -o ./build/css/stylesheet
 java -jar yuicompressor-2.4.7.jar ./css/options.css -o ./build/css/options.css
 java -jar yuicompressor-2.4.7.jar ./css/history.css -o ./build/css/history.css
 java -jar yuicompressor-2.4.7.jar ./css/jqcloud.css -o ./build/css/jqcloud.css
-java -jar yuicompressor-2.4.7.jar ./css/bootstrap.css -o ./build/css/bootstrap.css
 java -jar yuicompressor-2.4.7.jar ./css/apprise.css -o ./build/css/apprise.css
 java -jar yuicompressor-2.4.7.jar ./css/magic.css -o ./build/css/magic.css
 

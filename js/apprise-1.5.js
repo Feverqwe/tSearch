@@ -96,11 +96,11 @@ function apprise(string,args,callback)
             if(e.keyCode==13)
 
             {
-                $('.aButtons > button[value="ok"]').click();
+                $('.aButtons > button[value="ok"]').trigger('click');
             }
             if(e.keyCode==27)
             {
-                $('.aButtons > button[value="cancel"]').click();
+                $('.aButtons > button[value="cancel"]').trigger('click');
             }
         }
     });
@@ -112,7 +112,7 @@ function apprise(string,args,callback)
     {
         aText=$(this).val();
     });
-    $('.aButtons > button').click(function()
+    $('.aButtons > button').on('click',function()
 
     {
             $('.appriseOverlay').remove();
