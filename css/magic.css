@@ -11,6 +11,7 @@ body {
     font-family: Verdana, sans-serif;
     font-size: 0.84em;
     background-color: #f1f2f1;
+    margin: 0;
 }
 
 iframe.web {
@@ -157,6 +158,8 @@ ul.menu {
 }
 ul.menu li {
     display: inline-block;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 ul.menu li a {
     padding-left: 10px;
@@ -186,4 +189,16 @@ textarea {
 }
 iframe {
     background-color: #fff;
+}
+input {
+    font-size: 1em;
+}
+input[type=text] {
+    font-size: 0.84em;;
+}
+select {
+    font-size: 1em;
+}
+textarea {
+    font-size: 1em;
 }

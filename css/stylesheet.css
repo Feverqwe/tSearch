@@ -12,6 +12,15 @@ body {
     overflow-y: scroll;
     min-width: 960px;
 }
+input {
+    font-size: 1em;
+}
+select {
+    font-size: 1em;
+}
+textarea {
+    font-size: 1em;
+}
 div.search_panel {
     padding: 20px;
     background-color: #F1F1F1;
