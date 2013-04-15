@@ -253,7 +253,9 @@ var get_lang = function(lang) {
             55: "Russian language tracker",
             56: "Get \\ Read code",
             57: "Get the code",
-            58: "Read the code"
+            58: "Read the code",
+            59: "Seeds",
+            60: "Peers"
         }
     };
     var lang_arr_ru = {
@@ -510,7 +512,9 @@ var get_lang = function(lang) {
             55: "Русскоязычный трекер",
             56: "Получить \\ Прочитать код",
             57: "Получить код",
-            58: "Прочитать код"
+            58: "Прочитать код",
+            59: "Сиды",
+            60: "Пиры"
         }
     };
     if (!lang) {

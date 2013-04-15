@@ -331,6 +331,8 @@ var engine = function() {
                     var ex_peer = ('peer' in me) ? 1 : 0;
                     var ex_date = ('date' in me) ? 1 : 0;
                     var ex_date_regexp = ('t_r' in me && 't_r_r' in me) ? 1 : 0; //t_r t_r_r
+                    var ex_seed_regexp = ('seed_r' in me && 'seed_rp' in me) ? 1 : 0; 
+                    var ex_peer_regexp = ('peer_r' in me && 'peer_rp' in me) ? 1 : 0;
                     var ex_t_m_r = ('t_m_r' in me) ? 1 : 0;
                     var ex_t_f = ('t_f' in me && me.t_f != -1) ? 1 : 0;
                     var ex_auth_f = ('auth_f' in me) ? 1 : 0;
@@ -372,6 +374,9 @@ var engine = function() {
                         }
                         if (ex_seed) {
                             obj['seeds'] = (td.find(me.seed)).text();
+                            if (ex_seed_regexp) {
+                                obj['seeds'] = obj['seeds'].replace(new RegExp(me.seed_r, "ig"), me.seed_rp);
+                            }
                             if (!ex_kit.isNumber(obj['seeds'])) {
                                 obj['seeds'] = 1;
                             }
@@ -380,6 +385,9 @@ var engine = function() {
                         }
                         if (ex_peer) {
                             obj['leechs'] = (td.find(me.peer)).text();
+                            if (ex_peer_regexp) {
+                                obj['leechs'] = obj['leechs'].replace(new RegExp(me.peer_r, "ig"), me.peer_rp);
+                            }
                             if (!ex_kit.isNumber(obj['leechs'])) {
                                 obj['leechs'] = 0;
                             }

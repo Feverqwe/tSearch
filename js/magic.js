@@ -6,7 +6,7 @@ var magic = function() {
     };
     var xhr = null;
     var contentFilter = function(c) {
-        var c = c.replace(/display[: ]*none/img, '#blockdisp#').replace(/ src=(['"]{0,1})/img, ' src=$11.png#blockrurl#');
+        var c = c.replace(/display[: ]*none/img, '#blockdisp#').replace(/ src=(['"]{0,1})/img, ' src=$1#blockrurl#');
         return c;
     }
     var isNumber = function(n) {
@@ -115,16 +115,22 @@ var magic = function() {
             $('input[name=seed_count]').val(code['seed']);
             $('input[name=seed_count]').parents().eq(1).find('input[name=status]').prop('checked', 1);
         }
+        if ('seed_r' in code) {
+            $('input[name=seed_regexp]').val(code['seed_r']);
+            $('input[name=seed_regexp_repl]').val(code['seed_rp']);
+        }
         if ('peer' in code) {
             $('input[name=peer_count]').val(code['peer']);
             $('input[name=peer_count]').parents().eq(1).find('input[name=status]').prop('checked', 1);
+        }
+        if ('peer_r' in code) {
+            $('input[name=peer_regexp]').val(code['peer_r']);
+            $('input[name=peer_regexp_repl]').val(code['peer_rp']);
         }
         if ('date' in code) {
             $('input[name=add_time]').val(code['date']);
             if ('t_r' in code) {
                 $('input[name=time_regexp]').val(code['t_r']);
-            }
-            if ('t_r_r' in code) {
                 $('input[name=time_regexp_repl]').val(code['t_r_r']);
             }
             if ('t_m_r' in code) {
@@ -220,9 +226,17 @@ var magic = function() {
         }
         if ($('input[name=seed_count]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['seed'] = $('input[name=seed_count]').val();
+            if ($('input[name=seed_regexp]').val().length > 0) {
+                code['seed_r'] = $('input[name=seed_regexp]').val();
+                code['seed_rp'] = $('input[name=seed_regexp_repl]').val();
+            }
         }
         if ($('input[name=peer_count]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['peer'] = $('input[name=peer_count]').val();
+            if ($('input[name=peer_regexp]').val().length > 0) {
+                code['peer_r'] = $('input[name=peer_regexp]').val();
+                code['peer_rp'] = $('input[name=peer_regexp_repl]').val();
+            }
         }
         if ($('input[name=add_time]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['date'] = $('input[name=add_time]').val();
@@ -411,6 +425,28 @@ var magic = function() {
         $('input[name=converted_size]').val(size);
         $('input[name=result_size]').val(bytesToSize(size));
     }
+    var filter_seed = function() {
+        var type = "seed"
+        var reg_v = $('input[name='+type+'_regexp]').val();
+        var ostr = $('input[name=original_'+type+']').val();
+        var onrepl = $('input[name='+type+'_regexp_repl]').val();
+        if (reg_v.length > 0) {
+            ostr = ostr.replace(new RegExp(reg_v, "ig"), onrepl)
+        }
+        $('input[name=converted_'+type+']').val(ostr);
+        $('input[name=result_'+type+']').val(ostr);
+    }
+    var filter_peer = function() {
+        var type = "peer"
+        var reg_v = $('input[name='+type+'_regexp]').val();
+        var ostr = $('input[name=original_'+type+']').val();
+        var onrepl = $('input[name='+type+'_regexp_repl]').val();
+        if (reg_v.length > 0) {
+            ostr = ostr.replace(new RegExp(reg_v, "ig"), onrepl)
+        }
+        $('input[name=converted_'+type+']').val(ostr);
+        $('input[name=result_'+type+']').val(ostr);
+    }
     var write_language = function(language) {
         if (!language) {
             language = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
@@ -532,6 +568,14 @@ var magic = function() {
                             $('input[name=' + out + ']').val(obj.eq(0).text());
                         }
                     }
+                    if (out == 'peer_count_text') {
+                         $('input[name=original_peer]').val(val);
+                         filter_peer();
+                    }
+                    if (out == 'seed_count_text') {
+                        $('input[name=original_seed]').val(val);
+                        filter_seed();
+                    }
                     if (out == 'add_time_text') {
                         $('input[name=original_time]').val(val);
                         filter_date();
@@ -579,6 +623,14 @@ var magic = function() {
                     ifr.find('.kit_select').removeClass('kit_select');
                     if (t == 'n') {
                         var val = obj.text();
+                        if (otext == 'peer_count_text') {
+                            $('input[name=original_peer]').val(val);
+                            filter_peer();
+                        }
+                        if (otext == 'seed_count_text') {
+                            $('input[name=original_seed]').val(val);
+                            filter_seed();
+                        }
                         if (otext == 'add_time_text') {
                             $('input[name=original_time]').val(val);
                             filter_date();
@@ -692,6 +744,20 @@ var magic = function() {
             });
             $('input[name=load_code]').on('click', function() {
                 load_code();
+            });
+            var type = "seed";
+            $('input[name='+type+'_regexp]').on('keyup', function() {
+                filter_seed();
+            });
+            $('input[name='+type+'_regexp_repl]').on('keyup', function() {
+                filter_seed();
+            });
+            var type = "peer";
+            $('input[name='+type+'_regexp]').on('keyup', function() {
+                filter_peer();
+            });
+            $('input[name='+type+'_regexp_repl]').on('keyup', function() {
+                filter_peer();
             });
         }
     }
