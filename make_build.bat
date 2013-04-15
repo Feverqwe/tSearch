@@ -36,8 +36,9 @@ java -jar compiler.jar --js .\js\storage.js --js_output_file .\build\js\storage.
 java -jar compiler.jar --js .\js\view.js --js_output_file .\build\js\view.js
 java -jar compiler.jar --js .\js\ad.js --js_output_file .\build\js\ad.js
 java -jar compiler.jar --js .\js\jqcloud-1.0.2.min.js --js_output_file .\build\js\jqcloud-1.0.2.min.js
-java -jar compiler.jar --js .\js\apprise-1.5.js --js_output_file ./build\js\apprise-1.5.js
-java -jar compiler.jar --js .\js\magic.js --js_output_file ./build\js\magic.js
+java -jar compiler.jar --js .\js\apprise-1.5.js --js_output_file .\build\js\apprise-1.5.js
+java -jar compiler.jar --js .\js\magic.js --js_output_file .\build\js\magic.js
+java -jar compiler.jar --js .\js\counter.js --js_output_file .\build\js\counter.js
 
 java -jar compiler.jar --js .\tracker\tfile.js --js_output_file .\build\tracker\tfile.js
 java -jar compiler.jar --js .\tracker\rutracker.js --js_output_file .\build\tracker\rutracker.js

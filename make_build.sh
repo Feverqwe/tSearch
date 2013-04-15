@@ -88,6 +88,7 @@ java -jar compiler.jar --js ./js/ad.js --js_output_file ./build/js/ad.js
 java -jar compiler.jar --js ./js/jqcloud-1.0.2.min.js --js_output_file ./build/js/jqcloud-1.0.2.min.js
 java -jar compiler.jar --js ./js/apprise-1.5.js --js_output_file ./build/js/apprise-1.5.js
 java -jar compiler.jar --js ./js/magic.js --js_output_file ./build/js/magic.js
+java -jar compiler.jar --js ./js/counter.js --js_output_file ./build/js/counter.js
 
 
 cp -r ./build/ ./build_chrome_ext/.
