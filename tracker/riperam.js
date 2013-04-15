@@ -1,4 +1,4 @@
-var tmp_num = tracker.length;
+(function load_tracker(tmp_num) {
 tracker[tmp_num] = function () {
     var name = 'riper.am';
     var filename = 'riperam';
@@ -166,3 +166,4 @@ tracker[tmp_num] = function () {
     }
 }();
 engine.ModuleLoaded(tmp_num);
+}(tracker.length));

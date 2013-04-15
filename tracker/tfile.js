@@ -1,4 +1,4 @@
-var tmp_num = tracker.length;
+(function load_tracker(tmp_num) {
 tracker[tmp_num] = function () {
     var name = 'tfile';
     var filename = 'tfile';
@@ -194,3 +194,4 @@ tracker[tmp_num] = function () {
     }
 }();
 engine.ModuleLoaded(tmp_num);
+}(tracker.length));

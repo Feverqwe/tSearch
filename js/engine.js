@@ -463,7 +463,7 @@ var engine = function() {
                 uid: uid
             }
         }(ct);
-        engine.ModuleLoaded(l);
+        ModuleLoaded(l);
     }
     function clone_obj(obj) {
         if (null == obj || "object" != typeof obj)
