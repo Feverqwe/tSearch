@@ -1,0 +1,19 @@
+--- index.html	2013-04-07 16:56:52.000000000 +0600
++++ p_index.html	2013-04-16 14:18:49.000000000 +0600
+@@ -9,16 +9,7 @@
+         <link rel="stylesheet" type="text/css" href="css/apprise.css">
+         <script src="js/jquery-1.9.1.min.js"></script>
+         <script src="js/jquery-ui-1.10.2.custom.min.js"></script>
+-        <script src="js/jquery.tablesorter.js"></script>
+-        <script src="js/jqcloud-1.0.2.min.js"></script>
+-        <script src="js/apprise-1.5.js"></script>
+-        <script src="js/storage.js"></script>
+-        <script src="js/lang.js"></script>
+-        <script src="js/engine.js"></script>
+         <script src="js/view.js"></script>
+-        <script src="js/explore.js"></script>
+-        <script src="js/ad.js"></script>
+-        <script src="js/counter.js"></script>
+     </head>
+     <body>
+         <div class="search_panel">

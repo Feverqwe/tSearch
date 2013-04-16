@@ -90,13 +90,6 @@ java -jar compiler.jar --js ./js/apprise-1.5.js --js_output_file ./build/js/appr
 java -jar compiler.jar --js ./js/magic.js --js_output_file ./build/js/magic.js
 java -jar compiler.jar --js ./js/counter.js --js_output_file ./build/js/counter.js
 
-
-cp -r ./build/ ./build_chrome_ext/.
-cp -r ./ff_o/chrome_ext/ ./build_chrome_ext/.
-java -jar yuicompressor-2.4.7.jar ./ff_o/chrome_ext/css/popup.css -o ./build_chrome_ext/css/popup.css
-java -jar compiler.jar --js ./ff_o/chrome_ext/js/btn.js --js_output_file ./build_chrome_ext/js/btn.js
-java -jar compiler.jar --js ./ff_o/chrome_ext/js/popup.js --js_output_file ./build_chrome_ext/js/popup.js
-
 cp -r ./ff_o/firefox/* ./build_firefox/.
 rm -r ./build_firefox/chrome/content/_locales
 rm ./build_firefox/chrome/content/manifest.json
@@ -112,6 +105,31 @@ cp -r ./ff_o/opera/* ./build_opera/.
 #rm ./build_firefox/chrome/content/js/ad.js
 #java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/storage.js --js_output_file ./build_firefox/chrome/content/js/storage.js
 #java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/ad.js --js_output_file ./build_firefox/chrome/content/js/ad.js
+
+#>chrome comression
+cd ./build/.
+patch < ../history.patch
+patch < ../index.patch
+patch < ../magic.patch
+patch < ../options.patch
+cd ..
+java -jar compiler.jar --js ./js/storage.js --js ./js/lang.js --js ./js/history.js --js ./js/counter.js --js_output_file ./build/js/history.js
+java -jar compiler.jar --js ./js/jquery.tablesorter.js --js ./js/jqcloud-1.0.2.min.js --js ./js/apprise-1.5.js --js ./js/storage.js --js ./js/lang.js --js ./js/engine.js --js ./js/view.js --js ./js/explore.js --js ./js/ad.js --js ./js/counter.js --js_output_file ./build/js/view.js
+java -jar compiler.jar --js ./js/storage.js --js ./js/lang.js --js ./js/magic.js --js_output_file ./build/js/magic.js
+java -jar compiler.jar --js ./js/storage.js --js ./js/lang.js --js ./js/engine.js --js ./js/options.js --js_output_file ./build/js/options.js
+rm ./build/js/counter.js
+rm ./build/js/jquery.tablesorter.js
+rm ./build/js/jqcloud-1.0.2.min.js
+rm ./build/js/apprise-1.5.js
+rm ./build/js/explore.js
+rm ./build/js/ad.js
+#<chrome comression
+
+cp -r ./build/ ./build_chrome_ext/.
+cp -r ./ff_o/chrome_ext/ ./build_chrome_ext/.
+java -jar yuicompressor-2.4.7.jar ./ff_o/chrome_ext/css/popup.css -o ./build_chrome_ext/css/popup.css
+java -jar compiler.jar --js ./ff_o/chrome_ext/js/btn.js --js_output_file ./build_chrome_ext/js/btn.js
+java -jar compiler.jar --js ./ff_o/chrome_ext/js/popup.js --js_output_file ./build_chrome_ext/js/popup.js
 
 rm ./build_chrome.zip
 rm ./build_firefox.xpi

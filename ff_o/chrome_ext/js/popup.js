@@ -1,4 +1,5 @@
 $(function () {
+    $('input.sbutton').val(_lang['btn_form']);
     $('form[name="search"]').submit(function (event) {
         event.preventDefault();
         chrome.tabs.create({
