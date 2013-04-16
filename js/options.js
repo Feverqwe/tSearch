@@ -88,7 +88,7 @@ var options = function() {
         var enable = false;
         var tc = t.length;
         for (var n = 0; n < tc; n++) {
-            if (t[n].n == filename || ( 'uid' in t[n] && t[n].uid == filename ) ) {
+            if (t[n].n == filename ) {
                 enable = t[n].e;
                 break;
             }
@@ -124,15 +124,17 @@ var options = function() {
         if (trackerProfiles == null || trackerProfiles[id] == null) {
             return 1;
         }
-
         var internalTrackers = [];
         for (var i = 0; i < trc; i++) {
             var tr_id = tr.eq(i).attr('data-id');
             var fn = tracker[tr.eq(i).attr('data-id')].filename;
             var inp = tr.eq(i).children('td.status').children('input');
+            if (inp.is(':checked') == false) {
+                continue;
+            }
             var obj = {
                 'n': fn,
-                'e': (inp.is(':checked')) ? 1 : 0
+                'e': 1
             };
             var uid = null;
             if ('uid' in tracker[tr_id]) {
@@ -305,7 +307,7 @@ var options = function() {
                 }
                 continue;
             }
-            $('table.c_table tbody').append('<tr data-name="' + tr.name + '" data-uid="' + tr.uid + '"' + '>'
+            $('table.c_table tbody').append('<tr " data-uid="' + tr.uid + '"' + '>'
                     + '<td><img class="tracker_icon" '+
                     ((tr.icon.length == 0 || tr.icon[0] == '#')?'style="background-color: '+((tr.icon.length != 0)?tr.icon:'#ccc')+';border-radius: 8px;"':'src="' + tr.icon + '"')
                     +'/></td>'

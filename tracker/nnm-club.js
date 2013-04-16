@@ -1,5 +1,5 @@
-(function load_tracker(tmp_num) {
-tracker[tmp_num] = function () {
+(function (tmp_num) {
+torrent_lib[tmp_num] = function () {
     var name = 'NoNaMe';
     var filename = 'nnm-club';
     var id = null;
@@ -113,5 +113,7 @@ tracker[tmp_num] = function () {
         flags : flags
     }
 }();
-engine.ModuleLoaded(tmp_num);
-}(tracker.length));
+if ('compression' in window == false || window.compression == 0) {
+    engine.ModuleLoaded(tmp_num);
+}
+}(torrent_lib.length));
