@@ -287,7 +287,7 @@ var options = function() {
         var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
         var c = costume_tr.length;
         if (c == 0) {
-            $('table.c_table tbody').html('<td colspan="4" class="notorrent">'+_lang.settings[51]+'</td>');
+            $('table.c_table tbody').html('<td colspan="4" class="notorrent" data-lang="51">'+_lang.settings[51]+'</td>');
         } else
         for (var i = 0; i < c; i++) {
             var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;
@@ -295,7 +295,7 @@ var options = function() {
                 costume_tr.splice(i, 1);
                 SetSettings('costume_tr', JSON.stringify(costume_tr));
                 if (costume_tr.length == 0) {
-                    $('table.c_table tbody').html('<td colspan="4" class="notorrent">'+_lang.settings[51]+'</td>');
+                    $('table.c_table tbody').html('<td colspan="4" class="notorrent" data-lang="51">'+_lang.settings[51]+'</td>');
                 }
                 continue;
             }
