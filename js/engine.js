@@ -546,8 +546,12 @@ var engine = function() {
         if (prof == null) {
             prof = defProfile;
         }
-        loadModules(trackerProfiles[prof].Trackers);
-        SetSettings('defProfile', prof);
+        if (trackerProfiles[prof] == null) {
+            loadModules(null);
+        } else {
+            loadModules(trackerProfiles[prof].Trackers);
+            SetSettings('defProfile', prof);
+        }
     }
     var getProfileList = function() {
         var arr = [];
