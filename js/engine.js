@@ -516,11 +516,7 @@ var engine = function() {
             }
         }
     }
-    var loadProfile = function(prof) {
-        view.ClearTrackerList();
-        if (prof == null) {
-            prof = defProfile;
-        }
+    var chkDefProfile = function() {
         if (trackerProfiles == null) {
             var internalTrackers = (GetSettings('internalTrackers') !== undefined) ? JSON.parse(GetSettings('internalTrackers')) : null;
             trackerProfiles = [{
@@ -531,6 +527,13 @@ var engine = function() {
             SetSettings('defProfile', defProfile);
             SetSettings('internalTrackers', null);
         }
+    }
+    var loadProfile = function(prof) {
+        view.ClearTrackerList();
+        if (prof == null) {
+            prof = defProfile;
+        }
+        chkDefProfile();
         if (trackerProfiles[prof] == null) {
             loadModules(null)
         } else {
@@ -540,6 +543,7 @@ var engine = function() {
     }
     var getProfileList = function() {
         var arr = [];
+        chkDefProfile();
         $.each(trackerProfiles, function(k, v) {
             arr[arr.length] = v.Title
         });

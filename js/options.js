@@ -27,7 +27,11 @@ var options = function() {
         $.each(def_settings, function(k, v) {
             settings[k] = (GetSettings(k) !== undefined) ? parseInt(GetSettings(k)) : v.v;
         });
-        defProfile = oldProfileID = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
+        if (oldProfileID == 0) {
+            defProfile = oldProfileID = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
+        } else {
+            defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
+        }
         trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     };
     settings_load();
@@ -84,8 +88,10 @@ var options = function() {
         var enable = false;
         var tc = t.length;
         for (var n = 0; n < tc; n++) {
-            if (t[n].n == filename)
+            if (t[n].n == filename || ( 'uid' in t[n] && t[n].uid == filename ) ) {
                 enable = t[n].e;
+                break;
+            }
         }
         var flags = '';
         if (!tracker[i].flags.rs) {
@@ -311,6 +317,9 @@ var options = function() {
         }
     }
     return {
+        LoadProfiles : function() {
+            LoadProfiles();
+        },
         addTrackerInList: function(a) {
             addTrackerInList(a);
         },
@@ -354,7 +363,7 @@ var options = function() {
                 var name = $(this).parents().eq(1).find('input[name=list_name]').val();
                 if (name.length < 1)
                     return;
-                $(this).parent().children('input[name=list_name]').val('');
+                $(this).parents().eq(1).find('input[name=list_name]').val('');
                 trackerProfiles[trackerProfiles.length] = {
                     Trackers: null,
                     Title: name
@@ -384,7 +393,7 @@ var options = function() {
                 $('div.page.save > div.status').css('background', 'url(images/loading.gif) center center no-repeat').text('');
                 window.setTimeout(function() {
                     $('div.page.save > div.status').css('background', 'none').text('');
-                }, 1000);
+                }, 200);
             });
             if (navigator.userAgent.search(/Firefox/) != -1) {
                 //firefox
@@ -501,6 +510,9 @@ var options = function() {
 var view = function() {
     return {
         ClearTrackerList: function() {
+            if ($('select[name=tr_lists]').val() == null) {
+                options.LoadProfiles();
+            }
             $('table.tr_table tbody').empty();
         },
         addTrackerInList: function(i) {
