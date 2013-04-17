@@ -136,6 +136,11 @@ div.donate img {
 .lang div {
     text-align: center;
 }
+table {
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+}
 table.tr_table {
     background-color: #fff;
     border-collapse: collapse;
@@ -143,6 +148,7 @@ table.tr_table {
 }
 table.tr_table img {
     margin-left: 5px;
+    cursor:move;
 }
 table.tr_table thead {
     font-size: 0.8em;
@@ -226,4 +232,12 @@ div.popup textarea[name=code] {
 .tracker_icon {
     width: 16px;
     height: 16px;
+}
+.ui-sortable-helper {
+    background-color:#fff !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    border-radius: 4px;
+}
+.ui-state-highlight {
+    height: 80px;
 }

@@ -504,6 +504,7 @@ var options = function() {
                 $('select[name=tr_lists]').trigger('change');
             });
             load_costume_torrents();
+            $('table.tr_table tbody').sortable({ placeholder: "ui-state-highlight" });
         }
     };
 }();

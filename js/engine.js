@@ -510,16 +510,38 @@ var engine = function() {
             torrent_lib = [];
         }
         var Trackers = internalTrackers;
-        if (internalTrackers == null || "options" in window) {
+        if (internalTrackers == null) {
             Trackers = addCostumTr(defaultList);
+        }
+
+        var ot = 0;
+        if ("options" in window) {
+            ot = 1;
+            var en_a = []
+            var defTrackers = addCostumTr(defaultList);
         }
         var l = Trackers.length;
         for (var i = 0; i < l; i++) {
-            if (Trackers[i].e || "options" in window) {
+            if (Trackers[i].e) {
                 if ('uid' in Trackers[i]) {
                     loadCostumeModule(Trackers[i].n);
                 } else {
                     loadInternalModule(Trackers[i].n);
+                }
+                if (ot) {
+                    en_a[en_a.length] = Trackers[i].n;
+                }
+            }
+        }
+        if (ot) {
+            var l = defTrackers.length;
+            for (var i = 0; i < l; i++) {
+                if ($.inArray(defTrackers[i].n, en_a) == -1) {
+                    if ('uid' in defTrackers[i]) {
+                        loadCostumeModule(defTrackers[i].n);
+                    } else {
+                        loadInternalModule(defTrackers[i].n);
+                    }
                 }
             }
         }
@@ -537,7 +559,7 @@ var engine = function() {
     chkDefProfile();
     var loadProfile = function(prof) {
         view.ClearTrackerList();
-        if ( prof == null ) {
+        if (prof == null) {
             prof = defProfile;
         }
         if (trackerProfiles[prof] == null) {
