@@ -100,7 +100,7 @@ var options = function() {
         if (flags.length > 0) {
             flags = '<div class="icons">' + flags + '</div>';
         }
-        $('table.tr_table tbody').append('<tr data-id="' + i + '" data-name="'+tracker[i].filename+'"' + '>'
+        $('table.tr_table tbody').append('<tr data-id="' + i + '" data-name="' + tracker[i].filename + '"' + '>'
                 + '<td><img class="tracker_icon" ' +
                 ((tracker[i].icon.length == 0 || tracker[i].icon[0] == '#') ? 'style="background-color: ' + ((tracker[i].icon.length != 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;"' : 'src="' + tracker[i].icon + '"')
                 + '"/></td>'
