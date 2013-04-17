@@ -163,14 +163,14 @@ var magic = function() {
             $('input[name=desk]').val(code['about']);
         }
         if ('flags' in code) {
-            $('input[name=need_auth]').prop('checked',code['flags'].a);
-            $('input[name=rus]').prop('checked',code['flags'].l);
+            $('input[name=need_auth]').prop('checked', code['flags'].a);
+            $('input[name=rus]').prop('checked', code['flags'].l);
             if (code['flags'].rs) {
-                $('input[name=cirilic]').prop('checked',1);
+                $('input[name=cirilic]').prop('checked', 1);
             } else {
-                $('input[name=cirilic]').prop('checked',0);
+                $('input[name=cirilic]').prop('checked', 0);
             }
-            
+
         }
     }
     var make_code = function() {
@@ -185,14 +185,14 @@ var magic = function() {
             'items': $('input[name=item]').val(),
             'tr_name': $('input[name=torrent_name]').val(),
             'tr_link': $('input[name=torrent_link]').val(),
-            'flags':{
-                a:($('input[name=need_auth]').prop('checked'))?1:0,
-                l:($('input[name=rus]').prop('checked'))?1:0,
-                rs:($('input[name=cirilic]').prop('checked'))?1:0
+            'flags': {
+                a: ($('input[name=need_auth]').prop('checked')) ? 1 : 0,
+                l: ($('input[name=rus]').prop('checked')) ? 1 : 0,
+                rs: ($('input[name=cirilic]').prop('checked')) ? 1 : 0
             }
         }
-        if ( typeof(code.icon) != 'string' || code.icon.length == 0) {
-            code.icon = '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);
+        if (typeof(code.icon) != 'string' || code.icon.length == 0) {
+            code.icon = '#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
         }
         if ($('input[name=post]').val().length > 0) {
             code['post'] = $('input[name=post]').val();
@@ -427,25 +427,25 @@ var magic = function() {
     }
     var filter_seed = function() {
         var type = "seed"
-        var reg_v = $('input[name='+type+'_regexp]').val();
-        var ostr = $('input[name=original_'+type+']').val();
-        var onrepl = $('input[name='+type+'_regexp_repl]').val();
+        var reg_v = $('input[name=' + type + '_regexp]').val();
+        var ostr = $('input[name=original_' + type + ']').val();
+        var onrepl = $('input[name=' + type + '_regexp_repl]').val();
         if (reg_v.length > 0) {
             ostr = ostr.replace(new RegExp(reg_v, "ig"), onrepl)
         }
-        $('input[name=converted_'+type+']').val(ostr);
-        $('input[name=result_'+type+']').val(ostr);
+        $('input[name=converted_' + type + ']').val(ostr);
+        $('input[name=result_' + type + ']').val(ostr);
     }
     var filter_peer = function() {
         var type = "peer"
-        var reg_v = $('input[name='+type+'_regexp]').val();
-        var ostr = $('input[name=original_'+type+']').val();
-        var onrepl = $('input[name='+type+'_regexp_repl]').val();
+        var reg_v = $('input[name=' + type + '_regexp]').val();
+        var ostr = $('input[name=original_' + type + ']').val();
+        var onrepl = $('input[name=' + type + '_regexp_repl]').val();
         if (reg_v.length > 0) {
             ostr = ostr.replace(new RegExp(reg_v, "ig"), onrepl)
         }
-        $('input[name=converted_'+type+']').val(ostr);
-        $('input[name=result_'+type+']').val(ostr);
+        $('input[name=converted_' + type + ']').val(ostr);
+        $('input[name=result_' + type + ']').val(ostr);
     }
     var write_language = function(language) {
         if (!language) {
@@ -569,8 +569,8 @@ var magic = function() {
                         }
                     }
                     if (out == 'peer_count_text') {
-                         $('input[name=original_peer]').val(val);
-                         filter_peer();
+                        $('input[name=original_peer]').val(val);
+                        filter_peer();
                     }
                     if (out == 'seed_count_text') {
                         $('input[name=original_seed]').val(val);
@@ -746,17 +746,17 @@ var magic = function() {
                 load_code();
             });
             var type = "seed";
-            $('input[name='+type+'_regexp]').on('keyup', function() {
+            $('input[name=' + type + '_regexp]').on('keyup', function() {
                 filter_seed();
             });
-            $('input[name='+type+'_regexp_repl]').on('keyup', function() {
+            $('input[name=' + type + '_regexp_repl]').on('keyup', function() {
                 filter_seed();
             });
             var type = "peer";
-            $('input[name='+type+'_regexp]').on('keyup', function() {
+            $('input[name=' + type + '_regexp]').on('keyup', function() {
                 filter_peer();
             });
-            $('input[name='+type+'_regexp_repl]').on('keyup', function() {
+            $('input[name=' + type + '_regexp_repl]').on('keyup', function() {
                 filter_peer();
             });
         }

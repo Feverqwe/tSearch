@@ -78,8 +78,8 @@ var view = function() {
         }
     }
     var addTrackerInList = function(i) {
-        $('body').append('<style class="tr_icon">div.tracker_icon.num' + i + ' { '+( (tracker[i].icon.length == 0 || tracker[i].icon[0] == '#')?'background-color: '+((tracker[i].icon.length != 0)?tracker[i].icon:'#ccc')+';border-radius: 8px;':'background-image: url(' + tracker[i].icon + ');' )+' }</style>');
-        $('<li data-id="' + i + '"/>').append($('<div class="tracker_icon num' + i + '" data-count="0"/>')).append($('<a href="#">' + tracker[i].name + '</a>').on("click",function(event) {
+        $('body').append('<style class="tr_icon">div.tracker_icon.num' + i + ' { ' + ((tracker[i].icon.length == 0 || tracker[i].icon[0] == '#') ? 'background-color: ' + ((tracker[i].icon.length != 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;' : 'background-image: url(' + tracker[i].icon + ');') + ' }</style>');
+        $('<li data-id="' + i + '"/>').append($('<div class="tracker_icon num' + i + '" data-count="0"/>')).append($('<a href="#">' + tracker[i].name + '</a>').on("click", function(event) {
             event.preventDefault();
             if ($(this).attr('class') == 'selected') {
                 $(this).removeClass('selected');
@@ -163,9 +163,9 @@ var view = function() {
         $.each(a, function(k, v) {
             if (typeof(v.title) != 'string' || v.title.length == 0 || !isInt(v.size) || !isInt(v.seeds)
                     || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
-                    || ('title' in v.category && ( typeof(v.category.title) != 'string' && v.category.title != null ) )
+                    || ('title' in v.category && (typeof(v.category.title) != 'string' && v.category.title != null))
                     || ('url' in v.category && typeof(v.category.url) != 'string')
-                    || ('dl' in v && typeof(v.dl) != 'string')
+                    || ('dl' in v && (typeof(v.dl) != 'string' && v.dl != null) )
                     ) {
                 console.log('Tracker ' + tracker[t].name + ' have problem!');
                 console.log('#debug start');
@@ -346,9 +346,9 @@ var view = function() {
         $.each(a, function(k, v) {
             if (typeof(v.title) != 'string' || v.title.length == 0 || !isInt(v.size) || !isInt(v.seeds)
                     || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
-                    || ('title' in v.category && ( typeof(v.category.title) != 'string' && v.category.title != null ) )
+                    || ('title' in v.category && (typeof(v.category.title) != 'string' && v.category.title != null))
                     || ('url' in v.category && typeof(v.category.url) != 'string')
-                    || ('dl' in v && typeof(v.dl) != 'string')
+                    || ('dl' in v && (typeof(v.dl) != 'string' && v.dl != null) )
                     ) {
                 console.log('Tracker ' + tracker[t].name + ' have problem!');
                 console.log('#debug start');
@@ -1208,7 +1208,7 @@ var view = function() {
                     tableFilter(t);
                 }, 1000);
             });
-            $('div.filter div.btn').on("click",function() {
+            $('div.filter div.btn').on("click", function() {
                 $('div.filter input').val('');
                 tableFilter('');
             });
@@ -1216,13 +1216,13 @@ var view = function() {
             if (s.length > 0) {
                 $('form[name="search"]').children('input[type="text"]').val(s);
             }
-            $('div.tracker_list div.setup').on("click",function() {
+            $('div.tracker_list div.setup').on("click", function() {
                 window.location = 'options.html#back=' + $.trim($('form[name="search"]').children('input[type="text"]').val());
             });
-            $('input.sbutton.main').on("click",function() {
+            $('input.sbutton.main').on("click", function() {
                 triggerBlank();
             });
-            $('input.sbutton.history').on("click",function() {
+            $('input.sbutton.history').on("click", function() {
                 window.location = 'history.html';//'#back='+$.trim($('form[name=search]').children('input[type=text]').val());
             });
             AddAutocomplete();
@@ -1234,7 +1234,7 @@ var view = function() {
                     $('div.topbtn').fadeOut('fast');
                 }
             });
-            $('div.topbtn').on("click",function(event) {
+            $('div.topbtn').on("click", function(event) {
                 event.preventDefault();
                 $('body,html').animate({
                     scrollTop: 0

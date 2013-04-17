@@ -19,7 +19,7 @@ var options = function() {
         allow_get_description: {"v": 1, "t": "checkbox"},
         allow_favorites_sync: {"v": 0, "t": "checkbox"}
     }
-    var oldProfileID = 0;
+    var currentProfileID = 0;
     var defProfile = 0;
     var trackerProfiles = null;
     var settings = {};
@@ -27,8 +27,8 @@ var options = function() {
         $.each(def_settings, function(k, v) {
             settings[k] = (GetSettings(k) !== undefined) ? parseInt(GetSettings(k)) : v.v;
         });
-        if (oldProfileID == 0) {
-            defProfile = oldProfileID = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
+        if (currentProfileID == 0) {
+            defProfile = currentProfileID = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
         } else {
             defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
         }
@@ -68,18 +68,12 @@ var options = function() {
 
     var addTrackerInList = function(i) {
         var filename = tracker[i].filename;
-        var id = $('select[name=tr_lists]').val();
+        var id = currentProfileID;
         if (trackerProfiles == null) {
-            trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
-            if (trackerProfiles == null) {
-                trackerProfiles = [];
-            }
+            return;
         }
         if (trackerProfiles[id] == null) {
-            trackerProfiles[id] = {
-                Trackers: null,
-                Title: _lang.label_def_profile //set lang var here
-            }
+            return;
         }
         var t = trackerProfiles[id].Trackers;
         if (t == null) {
@@ -88,7 +82,7 @@ var options = function() {
         var enable = false;
         var tc = t.length;
         for (var n = 0; n < tc; n++) {
-            if (t[n].n == filename ) {
+            if (t[n].n == filename) {
                 enable = t[n].e;
                 break;
             }
@@ -106,9 +100,9 @@ var options = function() {
         if (flags.length > 0) {
             flags = '<div class="icons">' + flags + '</div>';
         }
-        $('table.tr_table tbody').append('<tr data-id="' + i + '"' + '>'
-                + '<td><img class="tracker_icon" '+
-((tracker[i].icon.length == 0 || tracker[i].icon[0] == '#')?'style="background-color: '+((tracker[i].icon.length != 0)?tracker[i].icon:'#ccc')+';border-radius: 8px;"':'src="' + tracker[i].icon + '"')
+        $('table.tr_table tbody').append('<tr data-id="' + i + '" data-name="'+tracker[i].filename+'"' + '>'
+                + '<td><img class="tracker_icon" ' +
+                ((tracker[i].icon.length == 0 || tracker[i].icon[0] == '#') ? 'style="background-color: ' + ((tracker[i].icon.length != 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;"' : 'src="' + tracker[i].icon + '"')
                 + '"/></td>'
                 + '<td><a href="' + tracker[i].url + '" target="_blank">' + tracker[i].name + '</a>'
                 + '</td>'
@@ -120,18 +114,15 @@ var options = function() {
     var saveCurrentProfile = function() {
         var tr = $('table.tr_table tbody').children('tr');
         var trc = tr.length;
-        var id = oldProfileID;
-        if (trackerProfiles == null || trackerProfiles[id] == null) {
-            return 1;
-        }
+        var id = currentProfileID;
         var internalTrackers = [];
         for (var i = 0; i < trc; i++) {
-            var tr_id = tr.eq(i).attr('data-id');
-            var fn = tracker[tr.eq(i).attr('data-id')].filename;
             var inp = tr.eq(i).children('td.status').children('input');
             if (inp.is(':checked') == false) {
                 continue;
             }
+            var tr_id = tr.eq(i).attr('data-id');
+            var fn = tracker[tr.eq(i).attr('data-id')].filename;
             var obj = {
                 'n': fn,
                 'e': 1
@@ -160,7 +151,7 @@ var options = function() {
         var sel = $('select[name=tr_lists]');
         sel.empty();
         $.each(trackerProfiles, function(k, v) {
-            sel.append('<option value="' + k + '" ' + ((k == oldProfileID) ? 'selected' : '') + '>' + v.Title + '</option>');
+            sel.append('<option value="' + k + '" ' + ((k == currentProfileID) ? 'selected' : '') + '>' + v.Title + '</option>');
         });
         if (trackerProfiles.length < 2) {
             $('input[name=rm_list]').attr('disabled', 'disabled')
@@ -244,7 +235,7 @@ var options = function() {
         }
     };
     var make_bakup_form = function() {
-        $('div.backup_form div').children('a.backup_tab').on("click",function(e) {
+        $('div.backup_form div').children('a.backup_tab').on("click", function(e) {
             e.preventDefault();
             $(this).parents().eq(1).children('div.restore').slideUp('fast');
             $(this).parent().children('a.restore_tab').removeClass('active');
@@ -252,18 +243,18 @@ var options = function() {
             $(this).parent().children('a.backup_tab').addClass('active');
             getBackup();
         });
-        $('div.backup_form div').children('a.restore_tab').on("click",function(e) {
+        $('div.backup_form div').children('a.restore_tab').on("click", function(e) {
             e.preventDefault();
             $(this).parents().eq(1).children('div.backup').slideUp('fast');
             $(this).parent().children('a.backup_tab').removeClass('active');
             $(this).parents().eq(1).children('div.restore').slideDown('fast');
             $(this).parent().children('a.restore_tab').addClass('active');
         });
-        $('div.backup').find('input[name=backup]').on("click",function(e) {
+        $('div.backup').find('input[name=backup]').on("click", function(e) {
             e.preventDefault();
             getBackup();
         });
-        $('div.restore').find('input[name=restore]').on("click",function(e) {
+        $('div.restore').find('input[name=restore]').on("click", function(e) {
             e.preventDefault();
             stngsRestore($(this).parent().children('textarea').val());
             $('textarea[name="backup"]').val('');
@@ -287,7 +278,7 @@ var options = function() {
             if (t == "INPUT") {
                 el.val(v);
             } else
-                console.log(t,v);
+                console.log(t, v);
         });
     };
     var load_costume_torrents = function() {
@@ -295,31 +286,31 @@ var options = function() {
         var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
         var c = costume_tr.length;
         if (c == 0) {
-            $('table.c_table tbody').html('<td colspan="4" class="notorrent" data-lang="51">'+_lang.settings[51]+'</td>');
+            $('table.c_table tbody').html('<td colspan="4" class="notorrent" data-lang="51">' + _lang.settings[51] + '</td>');
         } else
-        for (var i = 0; i < c; i++) {
-            var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;
-            if (tr == null) {
-                costume_tr.splice(i, 1);
-                SetSettings('costume_tr', JSON.stringify(costume_tr));
-                if (costume_tr.length == 0) {
-                    $('table.c_table tbody').html('<td colspan="4" class="notorrent" data-lang="51">'+_lang.settings[51]+'</td>');
+            for (var i = 0; i < c; i++) {
+                var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;
+                if (tr == null) {
+                    costume_tr.splice(i, 1);
+                    SetSettings('costume_tr', JSON.stringify(costume_tr));
+                    if (costume_tr.length == 0) {
+                        $('table.c_table tbody').html('<td colspan="4" class="notorrent" data-lang="51">' + _lang.settings[51] + '</td>');
+                    }
+                    continue;
                 }
-                continue;
+                $('table.c_table tbody').append('<tr " data-uid="' + tr.uid + '"' + '>'
+                        + '<td><img class="tracker_icon" ' +
+                        ((tr.icon.length == 0 || tr.icon[0] == '#') ? 'style="background-color: ' + ((tr.icon.length != 0) ? tr.icon : '#ccc') + ';border-radius: 8px;"' : 'src="' + tr.icon + '"')
+                        + '/></td>'
+                        + '<td><a href="' + tr.root_url + '" target="_blank">' + tr.name + '</a>'
+                        + '</td>'
+                        + '<td class="desc">' + (('about' in tr) ? tr.about : '') + '</td>'
+                        + '<td class="action"><input type="button" name="edit_ctr" value="' + _lang.settings[52] + '" data-lang="52"><input type="button" name="rm_ctr" value="' + _lang.settings[53] + '" data-lang="53"></td>'
+                        + '</tr>');
             }
-            $('table.c_table tbody').append('<tr " data-uid="' + tr.uid + '"' + '>'
-                    + '<td><img class="tracker_icon" '+
-                    ((tr.icon.length == 0 || tr.icon[0] == '#')?'style="background-color: '+((tr.icon.length != 0)?tr.icon:'#ccc')+';border-radius: 8px;"':'src="' + tr.icon + '"')
-                    +'/></td>'
-                    + '<td><a href="' + tr.root_url + '" target="_blank">' + tr.name + '</a>'
-                    + '</td>'
-                    + '<td class="desc">' + (('about' in tr) ? tr.about : '') + '</td>'
-                    + '<td class="action"><input type="button" name="edit_ctr" value="'+_lang.settings[52]+'" data-lang="52"><input type="button" name="rm_ctr" value="'+_lang.settings[53]+'" data-lang="53"></td>'
-                    + '</tr>');
-        }
     }
     return {
-        LoadProfiles : function() {
+        LoadProfiles: function() {
             LoadProfiles();
         },
         addTrackerInList: function(a) {
@@ -330,18 +321,18 @@ var options = function() {
             $('select[name="language"]').on('change', function() {
                 write_language($(this).val());
             });
-            LoadProfiles();
-            $('table.tr_table').find('th').eq(3).children('a').eq(0).on("click",function(event) {
+            //LoadProfiles();
+            $('table.tr_table').find('th').eq(3).children('a').eq(0).on("click", function(event) {
                 event.preventDefault();
                 $('table.tr_table').children('tbody').find('input[type="checkbox"]').prop('checked', 'checked');
                 return false;
             });
-            $('table.tr_table').find('th').eq(3).children('a').eq(1).on("click",function(event) {
+            $('table.tr_table').find('th').eq(3).children('a').eq(1).on("click", function(event) {
                 event.preventDefault();
                 $('table.tr_table').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
                 return false;
             });
-            $('table.tr_table').find('th').eq(3).children('a').eq(2).on("click",function(event) {
+            $('table.tr_table').find('th').eq(3).children('a').eq(2).on("click", function(event) {
                 event.preventDefault();
                 $('table.tr_table').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
                 var Trackers = engine.defaultList;
@@ -349,7 +340,7 @@ var options = function() {
                 var tb = $('table.tr_table').children('tbody');
                 for (var i = 0; i < l; i++) {
                     if (Trackers[i].e) {
-                        tb.children('tr[data-id="' + i + '"]').find('input[type="checkbox"]')[0].checked = true;
+                        tb.children('tr[data-name="' + Trackers[i].n + '"]').find('input[type="checkbox"]')[0].checked = true;
                     }
                 }
                 return false;
@@ -357,8 +348,8 @@ var options = function() {
             $('select[name=tr_lists]').on('change', function() {
                 $('table.tr_table').parent().css('min-height', $('table.tr_table').height() + 'px');
                 if (saveCurrentProfile()) {
-                    oldProfileID = $(this).val();
-                    engine.loadProfile(oldProfileID);
+                    currentProfileID = $(this).val();
+                    engine.loadProfile(currentProfileID);
                 }
             });
             $('input[name=add_list]').on('click', function() {
@@ -371,15 +362,18 @@ var options = function() {
                     Title: name
                 };
                 if (saveCurrentProfile()) {
-                    oldProfileID = trackerProfiles.length - 1;
-                    engine.loadProfile(oldProfileID);
+                    currentProfileID = trackerProfiles.length - 1;
+                    engine.loadProfile();
                 }
                 updateProfileList();
             });
             $('input[name=rm_list]').on('click', function() {
-                trackerProfiles.splice(oldProfileID, 1);
-                oldProfileID = defProfile;
-                engine.loadProfile(oldProfileID);
+                trackerProfiles.splice(currentProfileID, 1);
+                defProfile = currentProfileID = currentProfileID - 1;
+                if (currentProfileID >= trackerProfiles.length) {
+                    defProfile = currentProfileID = 0;
+                }
+                engine.loadProfile(currentProfileID);
                 updateProfileList();
             });
 
@@ -466,7 +460,7 @@ var options = function() {
                 $('div.popup').find('input[name=close_popup]').trigger('click');
             });
             $('input[name=ctr_edit]').on('click', function() {
-                var uid =  $('div.popup').attr('data-uid');
+                var uid = $('div.popup').attr('data-uid');
                 $('div.popup').removeAttr('data-uid');
                 var str_code = $('textarea[name=code]').val();
                 var code = null;
@@ -485,20 +479,21 @@ var options = function() {
                 $('select[name=tr_lists]').trigger('change');
                 $('div.popup').find('input[name=close_popup]').trigger('click');
             });
-            $('table.c_table').on('click','input[name=edit_ctr]',function(){
+            $('table.c_table').on('click', 'input[name=edit_ctr]', function() {
                 $('input[name=ctr_edit]').parent().show();
                 $('input[name=ctr_add]').parent().hide();
                 var uid = $(this).parents().eq(1).attr('data-uid');
                 var code = (GetSettings('ct_' + uid) !== undefined) ? GetSettings('ct_' + uid) : '';
                 $('textarea[name=code]').val(code);
                 $('div.popup').show();
-                $('div.popup').attr('data-uid',uid);
+                $('div.popup').attr('data-uid', uid);
             });
             $('table.c_table').on('click', 'input[name=rm_ctr]', function() {
                 var uid = $(this).parents().eq(1).attr('data-uid');
                 var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
                 var index = $.inArray(parseInt(uid), costume_tr);
-                if (index == -1) return;
+                if (index == -1)
+                    return;
                 costume_tr.splice(index, 1);
                 SetSettings('ct_' + uid, null);
                 SetSettings('costume_tr', JSON.stringify(costume_tr));

@@ -331,7 +331,7 @@ var engine = function() {
                     var ex_peer = ('peer' in me) ? 1 : 0;
                     var ex_date = ('date' in me) ? 1 : 0;
                     var ex_date_regexp = ('t_r' in me && 't_r_r' in me) ? 1 : 0; //t_r t_r_r
-                    var ex_seed_regexp = ('seed_r' in me && 'seed_rp' in me) ? 1 : 0; 
+                    var ex_seed_regexp = ('seed_r' in me && 'seed_rp' in me) ? 1 : 0;
                     var ex_peer_regexp = ('peer_r' in me && 'peer_rp' in me) ? 1 : 0;
                     var ex_t_m_r = ('t_m_r' in me) ? 1 : 0;
                     var ex_t_f = ('t_f' in me && me.t_f != -1) ? 1 : 0;
@@ -465,7 +465,7 @@ var engine = function() {
         }(ct);
         ModuleLoaded(l);
     }
-    var clone_obj = function (obj) {
+    var clone_obj = function(obj) {
         return JSON.parse(JSON.stringify(obj));
     }
     var addCostumTr = function(a) {
@@ -478,17 +478,17 @@ var engine = function() {
                 continue;
             b[b.length] = {
                 e: 0,
-                n: tr.filename,
+                n: tr.uid,
                 uid: tr.uid
             }
         }
         return b
     }
     var loadInternalModule = function(filename) {
-        if ( 'compression' in window && window.compression) {
+        if ('compression' in window && window.compression) {
             var c = torrent_lib.length;
-            for (var i=0; i<c; c++) {
-                if (torrent_lib[i].filename == filename ) {
+            for (var i = 0; i < c; c++) {
+                if (torrent_lib[i].filename == filename) {
                     ModuleLoaded(i);
                     break;
                 }
@@ -505,25 +505,19 @@ var engine = function() {
     }
     var loadModules = function(internalTrackers) {
         tracker = [];
-        if ( 'compression' in window == false || window.compression == 0) {
-            torrent_lib = [];
-        } else {
+        if ('compression' in window == false || window.compression == 0) {
             $('script[data-id=tracker]').remove();
+            torrent_lib = [];
         }
+        var Trackers = internalTrackers;
         if (internalTrackers == null || "options" in window) {
-            var Trackers = addCostumTr(defaultList);
-        } else {
-            var Trackers = internalTrackers;
-        }
-        if ( Trackers.length == 0 )
-        {
             Trackers = addCostumTr(defaultList);
         }
         var l = Trackers.length;
         for (var i = 0; i < l; i++) {
             if (Trackers[i].e || "options" in window) {
                 if ('uid' in Trackers[i]) {
-                    loadCostumeModule(Trackers[i].uid);
+                    loadCostumeModule(Trackers[i].n);
                 } else {
                     loadInternalModule(Trackers[i].n);
                 }
@@ -543,7 +537,7 @@ var engine = function() {
     chkDefProfile();
     var loadProfile = function(prof) {
         view.ClearTrackerList();
-        if (prof == null) {
+        if ( prof == null ) {
             prof = defProfile;
         }
         if (trackerProfiles[prof] == null) {
@@ -561,10 +555,9 @@ var engine = function() {
         return arr;
     }
     var ModuleLoaded = function(num) {
-        n = tracker.length;
+        var n = tracker.length;
         tracker[n] = torrent_lib[n]
-        v = tracker[n];
-        v.setId(n);
+        tracker[n].setId(n);
         view.addTrackerInList(n);
     }
     return {
