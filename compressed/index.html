@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Torrents MultiSearch</title>
+        <meta charset="utf-8" />
+        <link rel="shortcut icon" href="images/icon_16.png">
+        <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
+        <script src="js/jquery-1.9.1.min.js"></script>
+        <script src="js/jquery-ui-1.10.2.custom.min.js"></script>
+        <script src="js/torrent_lib.js"></script>
+        <script src="js/view.js"></script>
+    </head>
+    <body>
+        <div class="search_panel">
+            <div class="left">
+                <form name="search">
+                    <input type="text" name="s" />
+                    <input type="submit" class="sbutton" value="Найти" />
+                </form>
+            </div>
+            <div class="right">
+                <input type="button" class="sbutton main" value="" title="Главная" />
+                <input type="button" class="sbutton history" value="" title="История поиска" />
+            </div>
+        </div>
+        <div class="content">
+            <div class="right">
+                <div class="tracker_list">
+                    <p>Трекеры</p>
+                    <div class="setup" title="Настройки"></div>
+                    <ul class="trackers"></ul>
+                </div>
+                <div class="filter">
+                    <p>Фильтр</p>
+                    <input type="text" />
+                    <div class="btn" title="Очистить"></div>
+                </div>
+                <div class="ad" id="ad">
+                </div>
+            </div>
+            <div class="left">
+                <div class="explore">
+                    <div class="top_search"><div class="tags"></div></div>
+                    <ul class="sortable">
+                    </ul>
+                    <div class="source"><span>Источники</span>: <a href="http://www.kinopoisk.ru" target="_blank">фильмы</a>, <a href="http://gameguru.ru/" target="_blank" />игры</a></div>
+                </div>
+                <div class="about_panel"></div>
+                <div class="result_panel">
+                    <ul class="categorys">
+                    </ul>
+                    <table id="rez_table">
+                        <thead>
+                            <tr>
+                                <th class="time">Добавлено</th>
+                                <th class="quality" title="Качество">К</th>
+                                <th class="name">Название</th>
+                                <th class="size">Размер</th>
+                                <th class="seeds" title="Раздают">С</th>
+                                <th class="leechs" title="Скачивают">Л</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="topbtn" title="Вверх!"></div>
+        </div>
+    </body>
+</html>
