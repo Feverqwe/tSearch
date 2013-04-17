@@ -1,176 +1,178 @@
-(function (tmp_num) {
-torrent_lib[tmp_num] = function () {
-    var name = 'mmatracker';
-    var filename = 'mmatracker';
-    var id = null;
-    var icon = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAODg4APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAREBERISEREBEQEREiIREQERARESEhERAREBERIiEREBEQEREREREQESAhESEhESAhICEhISEhIBIgIhIhIhIgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAMzMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMwAAAAAAAD//wAA';
-    var url = 'http://mmatracker.ru/browse.php';
-    var root_url = 'http://mmatracker.ru/';
-    var about = 'MMAtracker - открытый общедоступный спортивный трекер. Качай и смотри бои без правил.';
-    var flags = {
-        a : 1,
-        l : 1,
-        rs: 1
-    }
-    var xhr = null;
-    var web = function () {
-        var calculateCategory = function (f) {
-            var groups_arr = [
-            /* Сериалы */[],
-            /* Музыка */[],
-            /* Игры */[],
-            /* Фильмы */[],
-            /* Мультфтльмы */[],
-            /* Книги */[],
-            /* ПО */[],
-            /* Анимэ */[],
-            /* Док. и юмор */[19],
-            /* Спорт */[18,21,24,20,23]
-            ];
-            for (var i=0;i<groups_arr.length;i++)
-                if (jQuery.inArray(parseInt(f),groups_arr[i]) > -1) {
-                    return i;
+(function () {
+    num = torrent_lib.length;
+    torrent_lib[num] = null;
+    torrent_lib[num] = function() {
+        var name = 'mmatracker';
+        var filename = 'mmatracker';
+        var id = null;
+        var icon = 'data:image/vnd.microsoft.icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAODg4APr59wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAREBERISEREBEQEREiIREQERARESEhERAREBERIiEREBEQEREREREQESAhESEhESAhICEhISEhIBIgIhIhIhIgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAMzMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMwAAAAAAAD//wAA';
+        var url = 'http://mmatracker.ru/browse.php';
+        var root_url = 'http://mmatracker.ru/';
+        var about = 'MMAtracker - открытый общедоступный спортивный трекер. Качай и смотри бои без правил.';
+        var flags = {
+            a: 1,
+            l: 1,
+            rs: 1
+        }
+        var xhr = null;
+        var web = function() {
+            var calculateCategory = function(f) {
+                var groups_arr = [
+                    /* Сериалы */[],
+                    /* Музыка */[],
+                    /* Игры */[],
+                    /* Фильмы */[],
+                    /* Мультфтльмы */[],
+                    /* Книги */[],
+                    /* ПО */[],
+                    /* Анимэ */[],
+                    /* Док. и юмор */[19],
+                    /* Спорт */[18, 21, 24, 20, 23]
+                ];
+                for (var i = 0; i < groups_arr.length; i++)
+                    if (jQuery.inArray(parseInt(f), groups_arr[i]) > -1) {
+                        return i;
+                    }
+                return -1;
+            }
+            var calculateTime = function(time) {
+                time = $.trim(time).split(" ");
+                var date = time[0].split('-');
+                time = time[1].split(':');
+                return Math.round((new Date(parseInt(date[0]), parseInt(date[1]) - 1, parseInt(date[2]), parseInt(time[0]), parseInt(time[1]))).getTime() / 1000);
+            }
+            var calculateSize = function(s) {
+                var type = '';
+                var size = s.replace(' ', '');
+                var t = size.replace('KB', '');
+                if (t.length != size.length) {
+                    t = parseFloat(t);
+                    return Math.round(t * 1024);
                 }
-            return -1;
-        }
-        var calculateTime = function (time) {
-            time = $.trim(time).split(" ");
-            var date = time[0].split('-');
-            time = time[1].split(':');
-            return Math.round((new Date(parseInt(date[0]),parseInt(date[1])-1,parseInt(date[2]),parseInt(time[0]),parseInt(time[1]))).getTime() / 1000);
-        }
-        var calculateSize = function (s) {
-            var type = '';
-            var size = s.replace(' ','');
-            var t = size.replace('KB','');
-            if (t.length!= size.length) {
-                t = parseFloat(t);
-                return Math.round(t*1024);
-            }
-            var t = size.replace('MB','');
-            if (t.length!= size.length) {
-                t = parseFloat(t);
-                return Math.round(t*1024*1024);
-            }
-            var t = size.replace('GB','');
-            if (t.length!= size.length) {
-                t = parseFloat(t);
-                return Math.round(t*1024*1024*1024);
-            }
-            var t = size.replace('TB','');
-            if (t.length!= size.length) {
-                t = parseFloat(t);
-                return Math.round(t*1024*1024*1024*1024);
-            }
-            return 0;
-        }
-        var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(id,c);
-            t = t.find('table.embedded').children('tbody');
-            var l = t.length;
-            var arr = [];
-            var i = 0;
-            for (i = 1;i<l-2;i++) {
-                var tr = t.eq(i).children('tr');
-                var dl_link = tr.eq(1).children('td').eq(1).children('a').eq(2).attr('href');
-                if (dl_link == undefined) {
-                    dl_link = null;
-                } else {
-                    dl_link = root_url+dl_link
+                var t = size.replace('MB', '');
+                if (t.length != size.length) {
+                    t = parseFloat(t);
+                    return Math.round(t * 1024 * 1024);
                 }
-                arr[arr.length] = {
-                    'category' : {
-                        'title' : tr.eq(1).children('td').eq(0).children('a').children('img').attr('alt'), 
-                        'url': root_url+tr.eq(1).children('td').eq(0).children('a').attr('href'),
-                        'id': calculateCategory(tr.eq(1).children('td').eq(0).children('a').attr('href').replace(/.*cat=([0-9]*)$/i,"$1"))
+                var t = size.replace('GB', '');
+                if (t.length != size.length) {
+                    t = parseFloat(t);
+                    return Math.round(t * 1024 * 1024 * 1024);
+                }
+                var t = size.replace('TB', '');
+                if (t.length != size.length) {
+                    t = parseFloat(t);
+                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
+                }
+                return 0;
+            }
+            var readCode = function(c) {
+                c = view.contentFilter(c);
+                var t = view.load_in_sandbox(id, c);
+                t = t.find('table.embedded').children('tbody');
+                var l = t.length;
+                var arr = [];
+                var i = 0;
+                for (i = 1; i < l - 2; i++) {
+                    var tr = t.eq(i).children('tr');
+                    var dl_link = tr.eq(1).children('td').eq(1).children('a').eq(2).attr('href');
+                    if (dl_link == undefined) {
+                        dl_link = null;
+                    } else {
+                        dl_link = root_url + dl_link
+                    }
+                    arr[arr.length] = {
+                        'category': {
+                            'title': tr.eq(1).children('td').eq(0).children('a').children('img').attr('alt'),
+                            'url': root_url + tr.eq(1).children('td').eq(0).children('a').attr('href'),
+                            'id': calculateCategory(tr.eq(1).children('td').eq(0).children('a').attr('href').replace(/.*cat=([0-9]*)$/i, "$1"))
+                        },
+                        'title': tr.eq(1).children('td').eq(1).children('a').eq(0).text(),
+                        'url': root_url + tr.eq(1).children('td').eq(1).children('a').eq(0).attr('href'),
+                        'dl': dl_link,
+                        'size': calculateSize(tr.eq(2).children('td').eq(3).text()),
+                        'seeds': $.trim(tr.eq(2).children('td').eq(4).text().split('|')[0]),
+                        'leechs': $.trim(tr.eq(2).children('td').eq(4).text().split('|')[1]),
+                        'time': calculateTime($.trim(tr.eq(2).children('td').eq(0).text()))
+                    }
+                }
+                return arr;
+            }
+            var loadPage = function(text) {
+                var t = text;
+                if (xhr != null)
+                    xhr.abort();
+                xhr = $.ajax({
+                    type: 'GET',
+                    url: url + '?search=' + encode(text),
+                    cache: false,
+                    success: function(data) {
+                        view.result(id, readCode(data), t);
                     },
-                    'title' : tr.eq(1).children('td').eq(1).children('a').eq(0).text(),
-                    'url' : root_url+tr.eq(1).children('td').eq(1).children('a').eq(0).attr('href'),
-                    'dl'  : dl_link,
-                    'size' : calculateSize(tr.eq(2).children('td').eq(3).text()),
-                    'seeds' : $.trim(tr.eq(2).children('td').eq(4).text().split('|')[0]),
-                    'leechs' : $.trim(tr.eq(2).children('td').eq(4).text().split('|')[1]),
-                    'time' : calculateTime($.trim(tr.eq(2).children('td').eq(0).text()))
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        view.loadingStatus(2, id);
+                    }
+                });
+            }
+            var encode = function(sValue) {
+                var text = "", Ucode, ExitValue, s;
+                for (var i = 0; i < sValue.length; i++) {
+                    s = sValue.charAt(i);
+                    Ucode = s.charCodeAt(0);
+                    var Acode = Ucode;
+                    if (Ucode > 1039 && Ucode < 1104) {
+                        Acode -= 848;
+                        ExitValue = "%" + Acode.toString(16);
+                    }
+                    else if (Ucode == 1025) {
+                        Acode = 168;
+                        ExitValue = "%" + Acode.toString(16);
+                    }
+                    else if (Ucode == 1105) {
+                        Acode = 184;
+                        ExitValue = "%" + Acode.toString(16);
+                    }
+                    else if (Ucode == 32) {
+                        Acode = 32;
+                        ExitValue = "%" + Acode.toString(16);
+                    }
+                    else if (Ucode == 10) {
+                        Acode = 10;
+                        ExitValue = "%0A";
+                    }
+                    else {
+                        ExitValue = s;
+                    }
+                    text = text + ExitValue;
+                }
+                return text;
+            }
+            return {
+                getPage: function(a) {
+                    return loadPage(a);
                 }
             }
-            return arr;
-        }
-        var loadPage = function (text) {
-            var t = text;
-            if (xhr != null)
-                xhr.abort();
-            xhr = $.ajax({
-                type: 'GET',
-                url: url+'?search='+encode(text),
-                cache : false,
-                success: function(data) {
-                    view.result(id,readCode(data),t);
-                },
-                error:function (xhr, ajaxOptions, thrownError){
-                    view.loadingStatus(2,id);
-                }
-            });
-        }
-        var encode = function (sValue) {
-            var    text = "", Ucode, ExitValue, s;
-            for (var i = 0; i < sValue.length; i++) {
-                s = sValue.charAt(i);
-                Ucode = s.charCodeAt(0);
-                var Acode = Ucode;
-                if (Ucode > 1039 && Ucode < 1104) {
-                    Acode -= 848;
-                    ExitValue = "%" + Acode.toString(16);
-                }
-                else if (Ucode == 1025) {
-                    Acode = 168;
-                    ExitValue = "%" + Acode.toString(16);
-                }
-                else if (Ucode == 1105) {
-                    Acode = 184;
-                    ExitValue = "%" + Acode.toString(16);          
-                } 
-                else if (Ucode == 32) {
-                    Acode = 32;
-                    ExitValue = "%" + Acode.toString(16);          
-                } 
-                else if (Ucode == 10){
-                    Acode = 10;
-                    ExitValue = "%0A";
-                }
-                else {
-                    ExitValue = s;          
-                }
-                text = text + ExitValue; 
-            }      
-            return text; 
+        }();
+        var find = function(text) {
+            return web.getPage(text);
         }
         return {
-            getPage : function (a) {
-                return loadPage(a);
-            }
+            find: function(a) {
+                return find(a);
+            },
+            setId: function(a) {
+                id = a;
+            },
+            id: id,
+            name: name,
+            icon: icon,
+            about: about,
+            url: root_url,
+            filename: filename,
+            flags: flags
         }
     }();
-    var find = function (text) {
-        return web.getPage(text);
+    if (compression == 0) {
+        engine.ModuleLoaded(num);
     }
-    return {
-        find : function (a) {
-            return find(a);
-        },
-        setId : function (a) {
-            id = a;
-        },
-        id : id,
-        name : name,
-        icon : icon,
-        about : about,
-        url : root_url,
-        filename : filename,
-        flags : flags
-    }
-}();
-if ('compression' in window == false || window.compression == 0) {
-    engine.ModuleLoaded(tmp_num);
-}
-}(torrent_lib.length));
+})();

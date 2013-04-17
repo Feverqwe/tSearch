@@ -1,11 +1,12 @@
---- options.html	2013-04-16 15:07:16.000000000 +0600
-+++ p_options.html	2013-04-16 15:10:35.000000000 +0600
-@@ -6,9 +6,6 @@
+--- options.html	2013-04-17 08:05:51.000000000 +0600
++++ p_options.html	2013-04-17 09:45:09.000000000 +0600
+@@ -6,10 +6,7 @@
          <link rel="shortcut icon" href="images/settings.png">
          <link rel="stylesheet" type="text/css" href="css/options.css">
          <script src="js/jquery-1.9.1.min.js"></script>
 -        <script src="js/storage.js"></script>
 -        <script src="js/lang.js"></script>
+         <script src="js/torrent_lib.js"></script>
 -        <script src="js/engine.js"></script>
          <script src="js/options.js"></script>
      </head>

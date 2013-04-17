@@ -485,9 +485,9 @@ var engine = function() {
         return b
     }
     var loadInternalModule = function(filename) {
-        if ('compression' in window && window.compression) {
+        if (compression) {
             var c = torrent_lib.length;
-            for (var i = 0; i < c; c++) {
+            for (var i = 0; i < c; i++) {
                 if (torrent_lib[i].filename == filename) {
                     ModuleLoaded(i);
                     break;
@@ -505,7 +505,7 @@ var engine = function() {
     }
     var loadModules = function(internalTrackers) {
         tracker = [];
-        if ('compression' in window == false || window.compression == 0) {
+        if (compression == 0) {
             $('script[data-id=tracker]').remove();
             torrent_lib = [];
         }
@@ -556,7 +556,7 @@ var engine = function() {
     }
     var ModuleLoaded = function(num) {
         var n = tracker.length;
-        tracker[n] = torrent_lib[n]
+        tracker[n] = torrent_lib[num]
         tracker[n].setId(n);
         view.addTrackerInList(n);
     }

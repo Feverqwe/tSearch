@@ -229,6 +229,9 @@ var options = function() {
             }
             write_language();
             set_place_holder();
+            load_costume_torrents();
+            updateProfileList();
+            engine.loadProfile(currentProfileID);
             //need add save btn & reload settings
         } catch (err) {
             alert(_lang.str33 + "\n" + err);
