@@ -18,7 +18,7 @@ copy .\compressed\history.html .\build\.
 copy .\compressed\index.html .\build\.
 copy .\compressed\magic.html .\build\.
 copy .\compressed\options.html .\build\.
-copy .\compressed\manifest.html .\build\.
+copy .\compressed\manifest.json .\build\.
 
 del .\build\css\*.css
 
@@ -81,8 +81,8 @@ java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\jqcloud-1.0.2.m
 java -jar compiler.jar --js .\ff_o\opera\build\js\storage.js --js .\js\lang.js --js .\js\magic.js --js_output_file .\build_opera\build\js\magic.js
 java -jar compiler.jar --js .\ff_o\opera\build\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\options.js --js_output_file .\build_opera\build\js\options.js
 
-copy ./js/lang.js ./build_opera/build/js/.
-del ./build_opera/build/js/counter.js
+copy .\js\lang.js .\build_opera\build\js\.
+del .\build_opera\build\js\counter.js
 
 :: opera
 
@@ -105,7 +105,7 @@ del .\build_firefox.xpi
 del .\build_opera.oex
 del .\build_chrome_ext.zip
 
-start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_chrome.zip D:\Git\ts\build\*
-start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_firefox.xpi D:\Git\ts\build_firefox\*
-start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_opera.oex D:\Git\ts\build_opera\*
-start "7zip" "C:\Program Files\7-Zip\7z.exe" a D:\Git\ts\build_chrome_ext.zip D:\Git\ts\build_chrome_ext\*
+.\compressed\7za a -tzip .\build_chrome.zip .\build\*
+.\compressed\7za a -tzip .\build_firefox.xpi .\build_firefox\*
+.\compressed\7za a -tzip .\build_opera.oex .\build_opera\*
+.\compressed\7za a -tzip .\build_chrome_ext.zip .\build_chrome_ext\*
