@@ -306,6 +306,7 @@ var engine = function() {
             var name = ('name' in me) ? me.name : '-no name-';
             var about = ('about' in me) ? me.about : '';
             var root_url = ('root_url' in me) ? me.root_url : null;
+            var short_url = ('root_url' in me) ? me.root_url.replace(/http(s?):\/\/([^\/]*)\/?.*$/, 'http$1://$2') : null;
             var login_url = ('auth' in me) ? me.auth : null;
             var filename = me.uid;
             var uid = me.uid;
@@ -349,28 +350,74 @@ var engine = function() {
                     var l = t.length - (('sl' in me) ? me.sl : 0);
                     var arr = [];
                     var s = ('sf' in me) ? me.sf : 0;
+                    var er = [0, 0, 0, 0, 0, 0, 0, 0];
                     for (var i = s; i < l; i++) {
                         var td = t.eq(i);
                         var obj = {};
                         obj['category'] = {id: -1}
                         if (ex_cat) {
                             obj['category']['title'] = (td.find(me.cat_name)).text();
+                            if (typeof(obj['category']['title']) != "string") {
+                                obj['category']['title'] = null;
+                                er[0] += 1;
+                            } else
                             if (ex_link) {
-                                obj['category']['url'] = ((ex_link_r) ? root_url : '') + (td.find(me.cat_link)).attr('href');
+                                obj['category']['url'] = (td.find(me.cat_link)).attr('href');
+                                if (typeof(obj['category']['url']) != "string") {
+                                    obj['category']['url'] = null;
+                                    er[1] += 1;
+                                } else
+                                if (ex_link_r) {
+                                    if (obj['category']['url'][0] == '/') {
+                                        obj['category']['url'] = short_url + obj['category']['url'];
+                                    } else {
+                                        obj['category']['url'] = root_url + obj['category']['url'];
+                                    }
+                                }
                             }
                         }
                         obj['title'] = (td.find(me.tr_name)).text();
-                        obj['url'] = ((ex_tr_link_r) ? root_url : '') + (td.find(me.tr_link)).attr('href');
+                        if (typeof(obj['title']) != "string") {
+                            er[2] += 1;
+                            continue;
+                        }
+                        obj['url'] = (td.find(me.tr_link)).attr('href');
+                        if (typeof(obj['url']) != "string") {
+                            er[3] += 1;
+                            continue;
+                        }
+                        if (ex_tr_link_r) {
+                            if (obj['url'][0] == '/') {
+                                obj['url'] = short_url + obj['url'];
+                            } else {
+                                obj['url'] = root_url + obj['url'];
+                            }
+                        }
                         if (ex_tr_size) {
                             obj['size'] = (td.find(me.tr_size)).text();
                             if (ex_tr_size_c) {
                                 obj['size'] = ex_kit.format_size(obj['size']);
                             }
+                            if (!ex_kit.isNumber(obj['size'])) {
+                                obj['size'] = 0;
+                                er[4] += 1;
+                            }
                         } else {
                             obj['size'] = 0;
                         }
                         if (ex_tr_dl) {
-                            obj['dl'] = ((ex_tr_dl_r) ? root_url : '') + (td.find(me.tr_dl)).attr('href');
+                            obj['dl'] = (td.find(me.tr_dl)).attr('href');
+                            if (typeof(obj['dl']) != "string") {
+                                er[5] += 1;
+                                obj['dl'] = null;
+                            } else
+                            if (ex_tr_dl_r) {
+                                if (obj['dl'][0] == '/') {
+                                    obj['dl'] = short_url + obj['dl'];
+                                } else {
+                                    obj['dl'] = root_url + obj['dl'];
+                                }
+                            }
                         }
                         if (ex_seed) {
                             obj['seeds'] = (td.find(me.seed)).text();
@@ -379,6 +426,7 @@ var engine = function() {
                             }
                             if (!ex_kit.isNumber(obj['seeds'])) {
                                 obj['seeds'] = 1;
+                                er[6] += 1;
                             }
                         } else {
                             obj['seeds'] = 1;
@@ -390,6 +438,7 @@ var engine = function() {
                             }
                             if (!ex_kit.isNumber(obj['leechs'])) {
                                 obj['leechs'] = 0;
+                                er[7] += 1;
                             }
                         } else {
                             obj['leechs'] = 0;
@@ -405,10 +454,35 @@ var engine = function() {
                             if (ex_t_f) {
                                 obj['time'] = ex_kit.format_date(me.t_f, obj['time']);
                             }
+                            if (!ex_kit.isNumber(obj['time'])) {
+                                er[8] += 1;
+                                obj['time'] = 0;
+                            }
                         } else {
                             obj['time'] = 0;
                         }
                         arr[arr.length] = obj
+                    }
+                    if (er.join(',') != '0,0,0,0,0,0,0,0') {
+                        console.log('Tracker ' + me.name + 'have problem!');
+                        if (er[2])
+                            console.log(er[2] + ' - torrent title skip');
+                        if (er[3])
+                            console.log(er[3] + ' - torrent url skip');
+                        if (er[0])
+                            console.log(er[0] + ' - cotegory title fix');
+                        if (er[1])
+                            console.log(er[1] + ' - cotegory url fix');
+                        if (er[4])
+                            console.log(er[4] + ' - sile size fix');
+                        if (er[5])
+                            console.log(er[5] + ' - dl link fix');
+                        if (er[6])
+                            console.log(er[6] + ' - seeds fix');
+                        if (er[7])
+                            console.log(er[7] + ' - leechs fix');
+                        if (er[8])
+                            console.log(er[8] + ' - time fix');
                     }
                     return arr;
                 }
