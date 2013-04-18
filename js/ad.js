@@ -3,7 +3,7 @@ var ad = function () {
                     ["images/ad4.jpg","http://c.cpa1.ru/3H57"],//Буквоед
                     ["images/ad3.jpg","http://c.cpa1.ru/3H59"],//Купоника
                     ["images/ad2.jpg","http://c.cpa1.ru/3H5a"],//BS
-                    ["images/ad1.jpg","http://c.cpa1.ru/3H5b"] //sotmarket
+                    ["images/ad1.png","http://c.cpa1.ru/3H5b"] //sotmarket
               ];
     var getRandomArbitary = function (min, max, e)
     {
