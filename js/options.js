@@ -432,6 +432,7 @@ var options = function() {
                 $('div.popup').toggle();
             });
             $('input[name=close_popup]').on('click', function() {
+                $('textarea[name=code]').val('');
                 $('div.popup').hide();
             })
             $(window).trigger('resize');
@@ -457,7 +458,6 @@ var options = function() {
                     SetSettings('costume_tr', JSON.stringify(costume_tr));
                 }
                 code = null;
-                $('textarea[name=code]').val('');
                 load_costume_torrents();
                 $('select[name=tr_lists]').trigger('change');
                 $('div.popup').find('input[name=close_popup]').trigger('click');
@@ -477,7 +477,6 @@ var options = function() {
                 }
                 SetSettings('ct_' + code.uid, JSON.stringify(code));
                 code = null;
-                $('textarea[name=code]').val('');
                 load_costume_torrents();
                 $('select[name=tr_lists]').trigger('change');
                 $('div.popup').find('input[name=close_popup]').trigger('click');
