@@ -577,6 +577,9 @@ var explore = function() {
             write_content(content, section, page_num - 1);
         }
     }
+    var search_kw_filter = function (kw) {
+           return kw.replace(/(.*) \(([0-9]{4})\)/,'$1 $2');
+    }
     var write_page = function(section, page, content) {
         if (content == null)
             content = (section == 'favorites') ? favoritesList : explorerCache[section].cache_arr;
@@ -630,10 +633,10 @@ var explore = function() {
             
             c += '<div class="poster"' + id + '>'
                     + '<div class="image">' + buttons + qual + '</div>'
-                    + '<a href="#s=' + name_v + '"><img src="' + image_url + '" title="' + name_v + '"/></a>'
+                    + '<a href="#s=' + search_kw_filter(name_v) + '"><img src="' + image_url + '" title="' + name_v + '"/></a>'
                     + '</div>'
                     + '<div class="label">'
-                    + '<div class="title" title="' + name_v + '"><span><a href="#s=' + name_v + '">' + name_v + '</a></span></div>'
+                    + '<div class="title" title="' + name_v + '"><span><a href="#s=' + search_kw_filter(name_v) + '">' + name_v + '</a></span></div>'
                     + '<div class="info"><a href="' + page_url + '" target="blank">' + _lang.exp_more + '</a></div>'
                     + '</div>'
                     + '</div>';
@@ -833,14 +836,14 @@ var explore = function() {
             event.preventDefault();
             var section = $(this).parents().eq(3).attr('class');
             var s = $(this).parents().eq(1).find('div.title').children('span').text();
-            triggerClick(s, section);
+            triggerClick(search_kw_filter(s), section);
         });
         //клик по имени
         $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.label > div.title a', function(event) {
             event.preventDefault();
             var section = $(this).parents().eq(6).attr('class');
             var s = $(this).text();
-            triggerClick(s, section);
+            triggerClick(search_kw_filter(s), section);
         });
         //клик по подробнее
         $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.label > div.info a', function() {

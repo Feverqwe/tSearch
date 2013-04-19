@@ -104,7 +104,7 @@ var view = function() {
         return n % 1 === 0;
     }
     var quality_calc = function(quality, title, v) {
-        quality.seed = (v.seeds > 0) ? 100 : 0;//(v.seeds>50)?5:(v.seeds>10)?4:(v.seeds>0)?3:0;
+        quality.seed = (v.seeds>50)?60:(v.seeds>30)?40:(v.seeds>20)?30:(v.seeds>10)?20:(v.seeds>0)?10:0;
         quality.video =
                 ((/Blu-ray|Blu-Ray/).test(title)) ? 100 :
                 ((/BD-Remux|BDRemux|1080p|1080i/).test(title)) ? 90 :
@@ -125,8 +125,10 @@ var view = function() {
         if (v.size < 1363148800 && quality.video > 65)
             quality.video = Math.round(parseInt(quality.video) / 2);
         quality.video += ((/5\.1/).test(title)) ? 3 : 0;
-        quality.video += ((/original/i).test(title)) ? 2 : 0;
-        quality.video += ((/rus sub|Sub|subs/).test(title)) ? 1 : 0;
+        quality.video += ((/original|лицензия/i).test(title)) ? 2 : 0;
+        quality.video += ((/СТ|rus sub|Sub|subs/).test(title)) ? 1 : 0;
+        quality.video += ((/Dub|ДБ/).test(title)) ? 15 : 0;
+        quality.video += ((/АП|ЛО|ЛД|VO/).test(title)) ? 2 : 0;
         quality.music =
                 ((/flac|alac|lossless(?! repack)/i).test(title)) ? 90 :
                 ((/320.?kbps/i).test(title)) ? 80 :
@@ -158,7 +160,6 @@ var view = function() {
         if (keyword_filter_cache.text == null) {
             keyword_filter_cache.text = contentFilter(s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;"));
         }
-        var s_s = keyword_filter_cache.text;
         var sum = 0;
         $.each(a, function(k, v) {
             if (typeof(v.title) != 'string' || v.title.length == 0 || !isInt(v.size) || !isInt(v.seeds)
@@ -173,10 +174,12 @@ var view = function() {
                 console.log('#debug end');
                 return true;
             }
-            if ((/\s/).test(v.title.substr(0, 1))) {
-                tracker[t].name = $.trim(tracker[t].name)
-            }
             if (HideZeroSeed && v.seeds == 0)
+                return true;
+            var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 :
+                    (v.category.title != null) ?
+                    ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
+            if (Teaser == 1)
                 return true;
             if (isInt(v.category.id)) {
                 if (backgroundModeID.categorys[v.category.id] == null) {
@@ -194,7 +197,7 @@ var view = function() {
                 bgID.counter++;
                 backgroundModeID.categorys[v.category.id] = bgID;
             }
-            var title = filterText(s_s, v.title);
+            var title = syntax_highlighting(keyword_filter_cache.text, v.title);
             if (bgID.year == false && title.r >= 80 && ((v.title).indexOf(new Date().getFullYear())) >= 0) {
                 bgID.quality_full = 0;
                 bgID.quality_name = 0;
@@ -204,18 +207,7 @@ var view = function() {
                 bgID.size = 0;
                 backgroundModeID.categorys[v.category.id] = bgID;
             }
-            var Teaser = ((/Трейлер/i).test(title.n)) ? 1 :
-                    ((/Тизер/i).test(title.n)) ? 1 :
-                    ((/Teaser/i).test(title.n)) ? 1 :
-                    ((/Trailer/i).test(title.n)) ? 1 :
-                    (v.category.title != null) ?
-                    ((/Трейлер/i).test(v.category.title)) ? 1 :
-                    ((/Тизер/i).test(v.category.title)) ? 1 :
-                    ((/Teaser/i).test(v.category.title)) ? 1 :
-                    ((/Trailer/i).test(v.category.title)) ? 1 : 0 :
-                    0;
-            if (Teaser == 1)
-                return true;
+
             sum++;
             var quality = {
                 seed: 0,
@@ -330,9 +322,9 @@ var view = function() {
         explore.setQuality(backgroundModeID);
     }
     var write_result = function(t, a, s, p) {
-        load_in_sandbox(t, null);
-        if (backgroundMode)
+        if (backgroundMode) {
             return inBGMode(t, a, s);
+        }
         //var dbg_start = (new Date()).getTime();
         var c = '';
         if (p == null) {
@@ -341,7 +333,6 @@ var view = function() {
         if (keyword_filter_cache.text == null) {
             keyword_filter_cache.text = contentFilter(s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;"));
         }
-        var s_s = keyword_filter_cache.text;
         var sum = 0;
         $.each(a, function(k, v) {
             if (typeof(v.title) != 'string' || v.title.length == 0 || !isInt(v.size) || !isInt(v.seeds)
@@ -364,26 +355,23 @@ var view = function() {
                 game: 0,
                 value: 0
             };
-            if ((/\s/).test(v.title.substr(0, 1))) {
-                tracker[t].name = $.trim(tracker[t].name)
-            }
-            if (HideZeroSeed && v.seeds == 0)
+            if (HideZeroSeed && v.seeds == 0) {
                 return true;
-            var title = filterText(s_s, v.title);
+            }
             if (TeaserFilter) {
-                var Teaser = ((/Трейлер/i).test(title.n)) ? 1 :
-                        ((/Тизер/i).test(title.n)) ? 1 :
-                        ((/Teaser/i).test(title.n)) ? 1 :
-                        ((/Trailer/i).test(title.n)) ? 1 :
+                var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 :
                         (v.category.title != null) ?
-                        ((/Трейлер/i).test(v.category.title)) ? 1 :
-                        ((/Тизер/i).test(v.category.title)) ? 1 :
-                        ((/Teaser/i).test(v.category.title)) ? 1 :
-                        ((/Trailer/i).test(v.category.title)) ? 1 : 0 :
-                        0;
+                        ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
                 if (Teaser == 1)
                     return true;
             }
+            if ((/^[\s|\t]+/).test(v.title)) {
+                v.title = $.trim(v.title);
+            }
+            if ((/^[\s|\t]+/).test(v.category.title)) {
+                v.category.title = $.trim(v.category.title);
+            }
+            var title = syntax_highlighting(keyword_filter_cache.text, v.title);
             sum++;
             quality.name = title.r;
             title = title.n;
@@ -394,10 +382,12 @@ var view = function() {
 
             var filter = '';
             var fk = 0;
-            if (trackerFilter != null && trackerFilter != t)
+            if (trackerFilter != null && trackerFilter != t) {
                 filter = 'style="display: none;"';
-            if (categoryFilter != null && categoryFilter != v.category.id)
+            }
+            if (categoryFilter != null && categoryFilter != v.category.id) {
                 filter = 'style="display: none;"';
+            }
             if (keywordFilter != null) {
                 var keyword = $.trim($('div.filter').children('input').val()).replace(/\s+/g, " ");
                 if (title == filterTextCheck(keyword, title))
@@ -428,8 +418,6 @@ var view = function() {
             $('#rez_table tbody').append(contentUnFilter(c));
             table_update_timer(1);
         }
-        //var dbg_stop = (new Date()).getTime();
-        //console.log('Tracker '+tracker[t].name+': '+(dbg_stop-dbg_start)+'ms count:'+sum);
     }
     var table_update_timer = function(a) {
         var time = new Date().getTime();
@@ -583,7 +571,7 @@ var view = function() {
         var c = c.replace(/1.png#blockrurl#/img, '').replace(/#blockrurl#/img, '').replace(/#blockurl#/img, '//');
         return c;
     }
-    var filterText = function(keyword, t) {
+    var syntax_highlighting = function(keyword, t) {
         var top_coeff = 1;
         //s - searching text (keyword)
         //t - title from torrent
@@ -591,7 +579,7 @@ var view = function() {
             return !isNaN(parseFloat(n)) && isFinite(n);
         }
         if (keyword_filter_cache.kw == null) {
-            keyword_filter_cache.kw = $.trim(keyword).replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\(.*([0-9]{4})\)$/g, "$1");
+            keyword_filter_cache.kw = keyword.replace(/\(.*([0-9]{4})\)$/g, "$1");
             //удаляем из запроса год если он есть
             keyword_filter_cache.name = $.trim(keyword_filter_cache.kw.replace(/([0-9]{4})$/g, ""));
             //экронируем для regexp
@@ -600,8 +588,9 @@ var view = function() {
             keyword_filter_cache.name_regexp_lover = keyword_filter_cache.name.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1").toLowerCase();
             //вырываем год, если он есть
             keyword_filter_cache.year = keyword_filter_cache.kw.replace(/.*([0-9]{4})$/g, "$1");
-            if (keyword_filter_cache.year == '' || !isNumber(keyword_filter_cache.year))
+            if (keyword_filter_cache.year.length == '' || !isNumber(keyword_filter_cache.year)) {
                 keyword_filter_cache.year = null;
+            }
         }
         if (keyword_filter_cache.kw.length == 0) {
             return {
@@ -916,6 +905,7 @@ var view = function() {
         if (keyword == "#") {
             return false;
         }
+        keyword = $.trim(keyword);
         $('body,html').scrollTop();
         $('div.result_panel').css('display', 'block');
         $('div.explore').css('display', 'none');
