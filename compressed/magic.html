@@ -54,7 +54,7 @@
                 <fieldset>
                     <legend data-lang="20">Селекторы</legend>
                     <ul>
-                        <li data-lang="21">Строка в траблице</li>: <li><input type="text" name="item" value=""/></li><li><input type="button" name="item_btn" value="Выбрать" data-lang="19"/></li>
+                        <li data-lang="21">Строка в траблице</li>: <li><input type="text" name="item" value=""/></li><li><input type="checkbox" name="tr_strip" checked="checked" data-lang="61"></li><li>Таблица</li><li><input type="button" name="item_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                     <!-- Категория -->
                     <ul>
@@ -157,6 +157,9 @@
                     </div>
                     <div>
                         <span data-lang="45">Размер торрента</span>
+                        <ul>
+                            <li data-lang="38">Применить regexp</li>:<li><input name="size_regexp" type="text" /></li> <li data-lang="39">заменить на</li> <li><input name="size_regexp_repl" type="text" /></li>
+                        </ul>
                         <ul>
                             <li><input name="convert_size" type="checkbox" /></li><li data-lang="46">Преобразовать</li>
                         </ul>

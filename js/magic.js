@@ -1,4 +1,5 @@
 var magic = function() {
+    var pageDOM = null;
     var select_mode = false;
     var sel_function = function(i) {
     };
@@ -29,6 +30,7 @@ var magic = function() {
             type: 'GET',
             url: url,
             success: function(data) {
+                pageDOM = $($.parseHTML(data));
                 iframe[0].contentDocument.all[0].innerHTML = contentFilter(data) + '<style>.kit_select {color:#000 !important;background-color:#FFCC33 !important; cursor:pointer;} td.kit_select { border: 1px dashed red !important; }</style>';
             }
         };
@@ -103,6 +105,10 @@ var magic = function() {
                 $('input[name=convert_size]').prop('checked', code['s_c']);
             }
             $('input[name=torrent_size]').parents().eq(1).find('input[name=status]').prop('checked', 1);
+            if ('size_r' in code) {
+                $('input[name=size_regexp]').val(code['size_r']);
+                $('input[name=size_regexp_repl]').val(code['size_rp']);
+            }
         }
         if ('tr_dl' in code) {
             $('input[name=torrent_dl_link]').val(code['tr_dl']);
@@ -114,18 +120,18 @@ var magic = function() {
         if ('seed' in code) {
             $('input[name=seed_count]').val(code['seed']);
             $('input[name=seed_count]').parents().eq(1).find('input[name=status]').prop('checked', 1);
-        }
-        if ('seed_r' in code) {
-            $('input[name=seed_regexp]').val(code['seed_r']);
-            $('input[name=seed_regexp_repl]').val(code['seed_rp']);
+            if ('seed_r' in code) {
+                $('input[name=seed_regexp]').val(code['seed_r']);
+                $('input[name=seed_regexp_repl]').val(code['seed_rp']);
+            }
         }
         if ('peer' in code) {
             $('input[name=peer_count]').val(code['peer']);
             $('input[name=peer_count]').parents().eq(1).find('input[name=status]').prop('checked', 1);
-        }
-        if ('peer_r' in code) {
-            $('input[name=peer_regexp]').val(code['peer_r']);
-            $('input[name=peer_regexp_repl]').val(code['peer_rp']);
+            if ('peer_r' in code) {
+                $('input[name=peer_regexp]').val(code['peer_r']);
+                $('input[name=peer_regexp_repl]').val(code['peer_rp']);
+            }
         }
         if ('date' in code) {
             $('input[name=add_time]').val(code['date']);
@@ -216,6 +222,10 @@ var magic = function() {
             code['tr_size'] = $('input[name=torrent_size]').val();
             if ($('input[name=convert_size]').prop('checked')) {
                 code['s_c'] = 1;
+            }
+            if ($('input[name=size_regexp]').val().length > 0) {
+                code['size_r'] = $('input[name=size_regexp]').val();
+                code['size_rp'] = $('input[name=size_regexp_repl]').val();
             }
         }
         if ($('input[name=torrent_dl_link]').parents().eq(1).find('input[name=status]').prop('checked')) {
@@ -418,7 +428,13 @@ var magic = function() {
         $('input[name=result_time]').val((new Date(mtime * 1000)));
     }
     var filter_size = function() {
+        var type = "size"
         var size = $('input[name=original_size]').val();
+        var reg_v = $('input[name=' + type + '_regexp]').val();
+        var onrepl = $('input[name=' + type + '_regexp_repl]').val();
+        if (reg_v.length > 0) {
+            size = size.replace(new RegExp(reg_v, "ig"), onrepl)
+        }
         if ($('input[name=convert_size]').prop('checked')) {
             size = format_size(size);
         }
@@ -502,8 +518,13 @@ var magic = function() {
                 var ifr = $($('iframe')[0].contentDocument);
                 var inp = $('input[name=item]');
                 inp.removeClass('error');
+                var strip_tr = $('input[name=tr_strip]').prop('checked');
                 hov_function = function(obj) {
-                    inp.val(obj_in_path(obj, ifr).replace(/(.*)>tr.*$/, '$1>tr'));
+                    if (strip_tr) {
+                        inp.val(obj_in_path(obj, ifr).replace(/(.*)>tr.*$/, '$1>tr'));
+                    } else {
+                        inp.val(obj_in_path(obj, ifr));
+                    }
                 }
                 sel_function = function(obj) {
                     select_mode = false;
@@ -544,10 +565,9 @@ var magic = function() {
 
             var keyup_text = function(inp, out, t) {
                 var txt = $('input[name=' + out + ']');
-                var ifr = $($('iframe')[0].contentDocument);
                 var path = $('input[name=item]').val() + ':eq(' + $('input[name=skip_first]').val() + ')' + '>' + inp.val();
                 try {
-                    var obj = ifr.find(path);
+                    var obj = pageDOM.find(path);
                     var val = '';
                     if (obj.length == 0) {
                         inp.addClass('error');
@@ -597,11 +617,16 @@ var magic = function() {
                 var txt = $('input[name=' + otext + ']');
                 inp.removeClass('error');
                 hov_function = function(obj) {
-                    var o_path = obj_in_path(obj, ifr)
-                    var path = o_path.replace(tr, '').replace(/^[^>]*>(.*)$/, '$1');
-                    var val = '';
-                    if (o_path.length == path.length)
+                    var o_path = obj_in_path(obj, ifr);
+                    var path = o_path.replace(tr, '')
+                    if ( path.length != o_path.length ) {
+                        path = path.replace(/^[^>]*>(.*)$/, '$1');
+                    } else {
+                        inp.val('');
+                        txt.val('');
                         return;
+                    }
+                    var val = '';
                     inp.val(path);
                     if (t == 'n') {
                         var val = obj.text();
@@ -759,6 +784,13 @@ var magic = function() {
             $('input[name=' + type + '_regexp_repl]').on('keyup', function() {
                 filter_peer();
             });
+            var type = "size";
+            $('input[name=' + type + '_regexp]').on('keyup', function() {
+                filter_size();
+            });
+            $('input[name=' + type + '_regexp_repl]').on('keyup', function() {
+                filter_size();
+            });
         }
     }
 }();
@@ -791,10 +823,10 @@ jQuery.fn.getPath = function(ifr) {
         var tag = name;
         if (realNode.id) {
             if (ifr) {
-                if ($.inArray(tag, no_id) == -1 && ifr.find('#' + realNode.id).length == 1) {
+                if ($.inArray(tag, no_id) == -1 && ifr.find(tag+'[id=' + realNode.id+ ']').length == 1) {
                     return '#' + realNode.id + (path ? '>' + path : '');
                 } else {
-                    name += '#' + realNode.id;
+                    name += '[id=' + realNode.id+ ']';
                 }
             } else {
                 return name + '#' + realNode.id + (path ? '>' + path : '');

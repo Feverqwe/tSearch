@@ -193,7 +193,9 @@ var get_lang = function(lang) {
             61: "Tracker code",
             62: "Add",
             63: "Edit",
-            64: "Close"
+            64: "Close",
+            65: "Custom codes torrent trackers posted",
+            66: "on this site"
         },
         magic: {
             1: 'Loading error!',
@@ -255,7 +257,8 @@ var get_lang = function(lang) {
             57: "Get the code",
             58: "Read the code",
             59: "Seeds",
-            60: "Peers"
+            60: "Peers",
+            61: "Table"
         }
     };
     var lang_arr_ru = {
@@ -452,7 +455,9 @@ var get_lang = function(lang) {
             61: "Код трекера",
             62: "Добавить",
             63: "Изменить",
-            64: "Закрыть"
+            64: "Закрыть",
+            65: "Пользовательские коды торрент трекеров выложены",
+            66: "на этом сайте"
         },
         magic: {
             1: 'Ошибка загрузки!',
@@ -514,7 +519,8 @@ var get_lang = function(lang) {
             57: "Получить код",
             58: "Прочитать код",
             59: "Сиды",
-            60: "Пиры"
+            60: "Пиры",
+            61: "Таблица"
         }
     };
     if (!lang) {

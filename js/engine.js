@@ -332,6 +332,7 @@ var engine = function() {
                     var ex_peer = ('peer' in me) ? 1 : 0;
                     var ex_date = ('date' in me) ? 1 : 0;
                     var ex_date_regexp = ('t_r' in me && 't_r_r' in me) ? 1 : 0; //t_r t_r_r
+                    var ex_size_regexp = ('size_r' in me && 'size_rp' in me) ? 1 : 0;
                     var ex_seed_regexp = ('seed_r' in me && 'seed_rp' in me) ? 1 : 0;
                     var ex_peer_regexp = ('peer_r' in me && 'peer_rp' in me) ? 1 : 0;
                     var ex_t_m_r = ('t_m_r' in me) ? 1 : 0;
@@ -395,6 +396,9 @@ var engine = function() {
                         }
                         if (ex_tr_size) {
                             obj['size'] = (td.find(me.tr_size)).text();
+                            if (ex_size_regexp) {
+                                obj['size'] = obj['size'].replace(new RegExp(me.size_r, "ig"), me.size_rp);
+                            }
                             if (ex_tr_size_c) {
                                 obj['size'] = ex_kit.format_size(obj['size']);
                             }
@@ -464,7 +468,7 @@ var engine = function() {
                         arr[arr.length] = obj
                     }
                     if (er.join(',') != '0,0,0,0,0,0,0,0') {
-                        console.log('Tracker ' + me.name + 'have problem!');
+                        console.log('Tracker ' + me.name + ' have problem!');
                         if (er[2])
                             console.log(er[2] + ' - torrent title skip');
                         if (er[3])
