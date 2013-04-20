@@ -123,6 +123,14 @@ var view = function() {
         }
         if ("keyword" in keyword_filter_cache == false) {
             keyword_filter_cache["keyword"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            keyword_filter_cache["keyword_lover"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            keyword_filter_cache["keyword_regexp"] = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
+            keyword_filter_cache["keyword_regexp_lover"] = keyword_filter_cache["keyword_regexp"].toLowerCase();
+        }
+        if (keyword_filter_cache["year"] != null && "keyword_no_year" in keyword_filter_cache == false) {
+            keyword_filter_cache["keyword_no_year"] = keyword_filter_cache["keyword"].replace(" " + keyword_filter_cache["year"], "");
+            keyword_filter_cache["keyword_no_year_regexp"] = keyword_filter_cache.keyword_no_year.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
+            keyword_filter_cache["keyword_no_year_regexp_lover"] = keyword_filter_cache["keyword_no_year_regexp"].toLowerCase();
         }
         var sum = 0;
         $.each(a, function(k, v) {
@@ -213,6 +221,13 @@ var view = function() {
         }
         if ("keyword" in keyword_filter_cache == false) {
             keyword_filter_cache["keyword"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            keyword_filter_cache["keyword_regexp"] = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
+            keyword_filter_cache["keyword_regexp_lover"] = keyword_filter_cache["keyword_regexp"].toLowerCase();
+        }
+        if ("keyword_no_year" in keyword_filter_cache == false && keyword_filter_cache["year"]) {
+            keyword_filter_cache["keyword_no_year"] = keyword_filter_cache["keyword"].replace(" " + keyword_filter_cache["year"], "");
+            keyword_filter_cache["keyword_no_year_regexp"] = keyword_filter_cache.keyword_no_year.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
+            keyword_filter_cache["keyword_no_year_regexp_lover"] = keyword_filter_cache["keyword_no_year_regexp"].toLowerCase();
         }
         var sum = 0;
         $.each(a, function(k, v) {
@@ -442,37 +457,14 @@ var view = function() {
         return c;
     }
     var syntax_highlighting = function(t) {
-        var words = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1").split(' ');
+        var words = keyword_filter_cache.keyword_regexp.split(' ');
         var name = t;
-        var rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0}
-        //console.log("======" + t + "======");
+        var name_lover = name.toLowerCase()
+
+
+        var rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0, block: []}
         var word_hl = 0;
         var year_hl = 0;
-        var cal_word_rate = function(a, b, c) {
-            var word_rate = 50;
-            var sub_l = c[b - 1];
-            var sub_r = c[b + a.length];
-            if (sub_r == null)
-                sub_r = '';
-            if (sub_l == null)
-                sub_l = '';
-            if ((/[\wа-яА-Я]/).test(sub_l + sub_r)) {
-                return a;
-            }
-            if (word_hl * word_rate < words.length * word_rate) {
-                if (a == keyword_filter_cache.year) {
-                    year_hl = 1;
-                    rate.name += word_rate;
-                } else
-                if (b == 0) {
-                    rate.name += word_rate * 5;
-                } else
-                    rate.name += word_rate * 2;
-
-            }
-            word_hl++;
-            return '<b>' + a + '</b>';
-        }
         var cal_rate = function(a, b, c) {
             if ($.inArray(a, rate.m) == -1) {
                 rate.m[rate.m.length] = a;
@@ -489,78 +481,108 @@ var view = function() {
             if ((/\w/).test(sub_l + sub_r)) {
                 return '';
             }
-            if (a == "blu-ray") {
-                rate.video += 100;
+            if ($.inArray("video_type", rate.block) == -1) {
+                if (a == "blu-ray") {
+                    rate.video += 100;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "bd-remux" || a == "bdremux") {
+                    rate.video += 90;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "bd-rip" || a == "bdrip" || a == "bdrip-avc") {
+                    rate.video += 80;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "camrip" || a == "camrip-avc") {
+                    rate.video += 10;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "hdtv-rip" || a == "hdtvrip" || a == "dtheater-rip") {
+                    rate.video += 70;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "lowhdrip") {
+                    rate.video += 10;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "hdtv" || a == "hdrip" || a == "dvdrip" || a == "dvd-rip" || a == "dvdrip-avc") {
+                    rate.video += 60;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "dvd" || a == "dvd5" || a == "2xdvd9" || a == "dvd9" || a == "dvd-9" || a == "hd-dvd") {
+                    rate.video += 50;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "hqsatrip" || a == "hqrip" || a == "hqrip-avc") {
+                    rate.video += 44;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "tvrip" || a == "webrip" || a == "web-dlrip-avc" || a == "webdl-rip" || a == "web-dlrip" || a == "web-dl" || a == "satrip" || a == "dvb" || a == "iptvrip") {
+                    rate.video += 40;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "telesynch" || a == "ts" || a == "dvdscr" || a == "dvdscreener") {
+                    rate.video += 20;
+                    rate.block[rate.block.length] = "video_type";
+                }
+                if (a == "flac" || a == "alac" || a == "lossless") {
+                    rate.music += 90;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "ps3" || a == "xbox" || a == "(PS2)") {
+                    rate.game += 50;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "[p]" || a == "{p}" || a == "(p)") {
+                    rate.game += 20;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "repack" || a == "lossless repack" || a == "steam-rip" || a == "(lossy rip)" || a == "reloaded") {
+                    rate.game += 50;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "[native]") {
+                    rate.game += 100;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "[rip]" || a == "{rip}" || a == "(rip)") {
+                    rate.game += 80;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "[l]" || a == "{l}" || a == "(l)") {
+                    rate.game += 100;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "лицензия") {
+                    rate.game += 100;
+                    rate.block[rate.block.length] = "video_type";
+                }
+            }
+            if (a == "h.264" || a == "h264" || a == "mp4" || a == "m4v") {
+                rate.video += 2;
             } else
-            if (a == "bd-remux" || a == "bdremux" || a == "1080p" || a == "1080i") {
-                rate.video += 90;
+            if (a == "1080p" || a == "1080i") {
+                rate.video += 20;
             } else
-            if (a == "bd-rip" || a == "bdrip" || a == "bdrip-avc") {
-                rate.video += 80;
-            } else
-            if (a == "camrip" || a == "camrip-avc") {
+            if (a == "720p") {
                 rate.video += 10;
-            } else
-            if (a == "hdtv-rip" || a == "hdtvrip" || a == "dtheater-rip" || a == "720p") {
-                rate.video += 70;
-            } else
-            if (a == "lowhdrip") {
-                rate.video += 10;
-            } else
-            if (a == "hdtv" || a == "hdrip" || a == "dvdrip" || a == "dvd-rip" || a == "dvdrip-avc") {
-                rate.video += 60;
-            } else
-            if (a == "dvd" || a == "dvd5" || a == "2xdvd9" || a == "dvd9" || a == "dvd-9" || a == "hd-dvd") {
-                rate.video += 50;
-            } else
-            if (a == "hqsatrip" || a == "hqrip" || a == "hqrip-avc") {
-                rate.video += 44;
             } else
             if (a == "звук с ts") {
-                rate.video -= 40;
-            } else
-            if (a == "tvrip" || a == "webrip" || a == "web-dlrip-avc" || a == "webdl-rip" || a == "web-dlrip" || a == "web-dl" || a == "satrip" || a == "dvb" || a == "iptvrip") {
-                rate.video += 40;
-            } else
-            if (a == "telesynch" || a == "ts" || a == "dvdscr" || a == "dvdscreener") {
-                rate.video += 20;
+                rate.video -= 50;
             } else
             if (a == "ст" || a == "sub" || a == "subs") {
                 rate.video += 1;
             } else
             if (a == "dub" || a == "пд" || a == "по" || a == "дб" || a == "2xdub") {
-                rate.video += 6;
+                rate.video += 3;
             } else
             if (a == "пм") {
-                rate.video += 4;
-            } else
-            if (a == "ап" || a == "ло" || a == "лд" || a == "vo") {
                 rate.video += 2;
             } else
-            if (a == "flac" || a == "alac" || a == "lossless") {
-                rate.music += 90;
+            if (a == "ап" || a == "ло" || a == "лд" || a == "vo") {
+                rate.video += 1;
             } else
-            if (a == "ps3" || a == "xbox" ||  a == "(PS2)") {
-                rate.game += 40;
-            } else
-            if (a == "[p]" || a == "{p}" || a == "(p)") {
-                rate.game += 10;
-            } else
-            if (a == "repack" || a == "lossless repack" || a == "steam-rip" || a == "(lossy rip)" || a == "reloaded") {
-                rate.game += 50;
-            } else
-            if (a == "[native]") {
-                rate.game += 80;
-            } else
-            if (a == "[rip]" || a == "{rip}" || a == "(rip)") {
-                rate.game += 90;
-            } else
-            if (a == "[l]" || a == "{l}" || a == "(l)") {
-                rate.game += 100;
-            } else
-            if ( a == "лицензия") {
-                rate.game += 20;
-            }else
             if (a == "pc (windows)") {
                 rate.game += 5;
             } else
@@ -568,35 +590,32 @@ var view = function() {
                 rate.serial++;
             } else
             if (a == "cue") {
-                rate.music += 30;
+                rate.music += 20;
             } else
             if (a == "soundtrack") {
                 rate.music++;
             } else
             if (a == "mp3") {
-                rate.music += 10;
+                rate.music += 1;
             } else
             if ($.inArray("mp3", rate.m) != -1 && a == "128") {
-                rate.music += 5;
+                rate.music += 0;
             } else
             if ($.inArray("mp3", rate.m) != -1 && a == "192") {
-                rate.music += 10;
+                rate.music += 1;
             } else
             if ($.inArray("mp3", rate.m) != -1 && a == "320") {
-                rate.music += 15;
-            } else
-            if (a == "h.264" || a == "h264" || a == "mp4" || a == "m4v") {
-                rate.video += 10;
+                rate.music += 2;
             } else
             if (a == "fb2" || a == "pdf" || a == "dejvu" || a == "rtf" || a == "epub") {
-                rate.book += 10;
+                rate.book += 20;
             } else
             if (a == "мультфильм") {
                 rate.mult++;
             }
             return '';
         }
-        var quality = "Blu-ray|Blu-Ray|BD-Remux|BDRemux|1080p|1080i|BDRip-AVC|BD-Rip|BDRip|CAMRip|CamRip-AVC|CamRip|HDTV-Rip|HQRip-AVC|HDTVrip|HDTVRip|DTheater-Rip|720p|LowHDRip|HDTV|HDRip|DVD-Rip|DVDRip-AVC|DVDRip|DVD5|2xDVD9|DVD9|DVD-9|DVDScr|DVDScreener|HD-DVD|NoDVD|DVD|SatRip|HQSATRip|HQRip|TVRip|WEBRip|WEB-DLRip-AV​C|WebDL-Rip|AVC|WEB-DLRip|WEB-DL|SATRip|DVB|IPTVRip|TeleSynch|звук с TS|TS|АП|ЛО|ЛД|AVO|MVO|VO|DUB|2xDub|Dub|ДБ|ПМ|ПД|ПО|СТ|[Ss]{1}ubs|SUB|[sS]{1}ub|FLAC|flac|ALAC|alac|[lL]{1}oss[lL]{1}ess(?! repack)|\\(PS2\\)|PS3|Xbox|XBOX|Repack|RePack|\\[Native\\]|Lossless Repack|Steam-Rip|\\(Lossy Rip\/|{Rip}|[лЛ]{1}ицензия|RELOADED|\\[Rip\\]|\\[RiP\\]|\\{L\\}|\\(L\\)|\\[L\\]|[Ss]{1}eason(?=[s|:]?)|[Сс]{1}езон(?=[ы|:]?)|CUE|(?=\.)cue|MP3|128|192|320|\\(P\\)|\\[P\\]|PC \\(Windows\\)|Soundtrack|soundtrack|H\.264|mp4|MP4|M4V|FB2|PDF|RTF|EPUB|fb2|DJVU|djvu|epub|pdf|rtf|[мМ]{1}ультфильм";
+        var quality = "Blu-ray|Blu-Ray|BD-Remux|BDRemux|1080p|1080i|BDRip-AVC|BD-Rip|BDRip|CAMRip|CamRip-AVC|CamRip|HDTV-Rip|HQRip-AVC|HDTVrip|HDTVRip|DTheater-Rip|720p|LowHDRip|HDTV|HDRip|DVD-Rip|DVDRip-AVC|DVDRip|DVD5|2xDVD9|DVD9|DVD-9|DVDScr|DVDScreener|HD-DVD|NoDVD|DVD|SatRip|HQSATRip|HQRip|TVRip|WEBRip|WEB-DLRip-AV​C|WebDL-Rip|AVC|WEB-DLRip|WEB-DL|SATRip|DVB|IPTVRip|TeleSynch|[Зз]{1}вук с TS|TS|АП|ЛО|ЛД|AVO|MVO|VO|DUB|2xDub|Dub|ДБ|ПМ|ПД|ПО|СТ|[Ss]{1}ubs|SUB|[sS]{1}ub|FLAC|flac|ALAC|alac|[lL]{1}oss[lL]{1}ess(?! repack)|\\(PS2\\)|PS3|Xbox|XBOX|Repack|RePack|\\[Native\\]|Lossless Repack|Steam-Rip|\\(Lossy Rip\/|{Rip}|[лЛ]{1}ицензия|RELOADED|\\[Rip\\]|\\[RiP\\]|\\{L\\}|\\(L\\)|\\[L\\]|[Ss]{1}eason(?=[s|:]?)|[Сс]{1}езон(?=[ы|:]?)|CUE|(?=\.)cue|MP3|128|192|320|\\(P\\)|\\[P\\]|PC \\(Windows\\)|Soundtrack|soundtrack|H\.264|mp4|MP4|M4V|FB2|PDF|RTF|EPUB|fb2|DJVU|djvu|epub|pdf|rtf|[мМ]{1}ультфильм";
         rate.year = name.match(/[0-9]{4}/);
         if (rate.year) {
             rate.year = parseInt(rate.year[0]);
@@ -608,6 +627,139 @@ var view = function() {
             rate.year = 0;
         }
         name.replace(new RegExp(quality, "g"), cal_rate);
+        var word_rate = 30;
+        var cal_word_rate = function(a, b, c) {
+            var sub_l = c[b - 1];
+            var sub_r = c[b + a.length];
+            if (sub_r == null)
+                sub_r = '';
+            if (sub_l == null)
+                sub_l = '';
+            if ((/[\wа-яА-Я]/).test(sub_l + sub_r)) {
+                return a;
+            }
+            if (word_hl * word_rate < words.length * word_rate) {
+                if (a == keyword_filter_cache.year) {
+                    year_hl = 1;
+                    rate.name += word_rate / 3;
+                } else
+                if (b == 0) {
+                    rate.name += word_rate;
+                } else
+                    rate.name += word_rate / 2;
+            }
+            word_hl++;
+            return '<b>' + a + '</b>';
+        }
+        if (keyword_filter_cache["year"]) {
+            if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
+                rate.name = words.length * (word_rate + 10) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate
+                };
+            }
+            //проверка по маске ([.*]) Name / .*year.*
+            if (new RegExp('^[\\(\\[]{1}.*[\\)\\]]{1} ' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
+                rate.name = words.length * (word_rate + 10) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate
+                };
+            }
+            if (new RegExp('.* ' + keyword_filter_cache.keyword_no_year_regexp + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name)) {
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
+                rate.name = words.length * (word_rate + 6) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate
+                };
+            }
+            if (new RegExp('^' + keyword_filter_cache.keyword_no_year_regexp + ' .*' + keyword_filter_cache.year + '.*').test(name)) {
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
+                rate.name = words.length * (word_rate + 15) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate
+                };
+            }
+            if (new RegExp('.* ' + keyword_filter_cache.keyword_no_year_regexp + ' .*' + keyword_filter_cache.year + '.*').test(name)) {
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
+                rate.name = words.length * (word_rate + 6) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate
+                };
+            }
+        } else {
+            if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + '$').test(name_lover)) {
+                var hl_name = "7" + t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
+                rate.name = words.length * (word_rate + 15) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate
+                };
+            }
+            if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
+                rate.name = words.length * (word_rate + 15) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate
+                };
+            }
+            //проверка по маске ([.*]) Name / .*year.*
+            if (new RegExp('^[([]{1}.*[)]]{1} ' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>")
+                rate.name = words.length * (word_rate + 12) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate //95
+                };
+            }
+            if (new RegExp(keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
+                rate.name = words.length * (word_rate + 10) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate //86
+                };
+            }
+            if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover).test(name_lover)) {
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
+                rate.name = words.length * (word_rate + 10) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate
+                };
+            }
+            if (new RegExp('.* ' + keyword_filter_cache.keyword_regexp + '$').test(name)) {
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp + ')', "g"), "<b>$1</b>");
+                rate.name = words.length * (word_rate + 8) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate //83
+                };
+            }
+            if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + '[-/(\s.]{1}.*').test(name_lover)) {
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
+                rate.name = words.length * (word_rate + 7) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate //80
+                };
+            }
+            if (new RegExp(keyword_filter_cache.keyword_regexp).test(name)) {
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp + ')', "g"), "<b>$1</b>");
+                rate.name = words.length * (word_rate + 7) + word_rate;
+                return {
+                    n: hl_name,
+                    r: rate
+                };
+            }
+        }
         var hl_name = name.replace(new RegExp(words.join('|'), "ig"), cal_word_rate);
         if (year_hl && word_hl == 1) {
             rate.name = 0;
