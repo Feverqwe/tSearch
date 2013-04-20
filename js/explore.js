@@ -11,6 +11,7 @@ var explore = function() {
         top_films: null,
         serials: null
     };
+    var upTimer = null;
     var topCache = (GetSettings('topCache') !== undefined) ? JSON.parse(GetSettings('topCache')) : null;
     var favoritesList = (GetSettings('favoritesList') !== undefined) ? JSON.parse(GetSettings('favoritesList')) : [];
     var listOptions_def = {
@@ -577,8 +578,8 @@ var explore = function() {
             write_content(content, section, page_num - 1);
         }
     }
-    var search_kw_filter = function (kw) {
-           return kw.replace(/(.*) \(([0-9]{4})\)/,'$1 $2');
+    var search_kw_filter = function(kw) {
+        return kw.replace(/(.*) \(([0-9]{4})\)/, '$1 $2');
     }
     var write_page = function(section, page, content) {
         if (content == null)
@@ -630,7 +631,7 @@ var explore = function() {
             if (v.url.substr(0, 4) == 'http') {
                 page_url = v.url;
             }
-            
+
             c += '<div class="poster"' + id + '>'
                     + '<div class="image">' + buttons + qual + '</div>'
                     + '<a href="#s=' + search_kw_filter(name_v) + '"><img src="' + image_url + '" title="' + name_v + '"/></a>'
@@ -676,7 +677,8 @@ var explore = function() {
             'input': favoritesList[id].name,
             'id': id
         }, function(id, name) {
-            if (id === false) return;
+            if (id === false)
+                return;
             favoritesList[id].name = name;
             SetSettings('favoritesList', JSON.stringify(favoritesList));
             show_favorites();
@@ -1006,7 +1008,7 @@ var explore = function() {
                 }
             }
         }).appendTo(t);
-        $('<div class="clear" title="' + _lang.exp_default + '">').on('click',function() {
+        $('<div class="clear" title="' + _lang.exp_default + '">').on('click', function() {
             var t = $(this).parents().eq(2).children('div').children('div.poster');
             var sect = $(this).parents().eq(3).attr('class');
             var defoult_size = content_sourse[sect].size;
@@ -1074,54 +1076,53 @@ var explore = function() {
         var size = Math.round((max_m * w) / max_w);
         return size;
     }
-    var setQuality = function(obj) {
-        var categorys1 = [];
-        var categorys = [];
-        var order = function(a, b) {
-            if (a.counter > b.counter)
-                return -1;
-            if (a.counter == b.counter)
-                return 0;
-            return 1;
-        }
-        for (var i_tt = -1; i_tt < 11; i_tt++)
-            if (obj.categorys[i_tt] != null && i_tt != 4) {
-                if (obj.categorys[i_tt].year) {
-                    if (categorys1.length == 0) {
-                        categorys1[categorys1.length] = obj.categorys[i_tt];
-                        categorys1[categorys1.length - 1]['cid'] = i_tt;
-                    } else
-                    if (obj.categorys[i_tt].label != '') {
-                        categorys1[categorys1.length] = obj.categorys[i_tt];
-                        categorys1[categorys1.length - 1]['cid'] = i_tt;
-                    }
-                } else
-                if (obj.categorys[i_tt].label != '') {
-                    categorys[categorys.length] = obj.categorys[i_tt];
-                    categorys[categorys.length - 1]['cid'] = i_tt;
-                }
-            }
-        ;
-        if (categorys1.length > 0)
-            categorys = categorys1;
-        categorys.sort(order);
-        var label = ''
-        $.each(categorys, function(k, v) {
-            if (v.label.length == 0 || v.cid == 4)
-                return true;
-            if (label.length == 0)
-                label = '<label title="' + view.getAssocCategorys(v.cid) + '">' + v.label + '</label>';
-            else
-                label += ', ' + '<label title="' + view.getAssocCategorys(v.cid) + '">' + v.label + '</label>';
-        });
+    var setQuality = function(obj, year) {
+        var s_year = year;
+        var max_c = 0;
+        var cat = -1;
         var qbox = $('li.' + obj.section + ' > div.' + obj.section + ' > div').children('div[data-id=' + obj.id + ']').find('div.quality_box');
-        qbox.removeClass('loading');
-        if (obj.section == 'favorites')
-            update_q_favorites(obj.id, label);
-        if (label.length > 0) {
-            qbox.html(label).css('display', 'block');
-        } else {
+        if (obj == null || obj.year == null) {
+            qbox.removeClass('loading');
             qbox.text('-');
+            return;
+        }
+        function get_last_year(c) {
+            var year = 0;
+            $.each(obj.year, function(a) {
+                if (year < a && (c in obj.year[a])) {
+                    year = a;
+                }
+            });
+            return year;
+        }
+        if (s_year) {
+            if (s_year in obj.year == false) {
+                s_year = null;
+            } else {
+                $.each(obj.year[s_year], function(a) {
+                    if (obj.cat_c[a] > max_c) {
+                        max_c = obj.cat_c[a];
+                        cat = a;
+                    }
+                });
+            }
+        }
+        if (s_year == null) {
+            max_c = 0;
+            $.each(obj.cat_c, function(a, b) {
+                if (max_c < b) {
+                    max_c = b;
+                    cat = a;
+                }
+            });
+            s_year = get_last_year(cat);
+        }
+        qbox.removeClass('loading');
+        var label = obj.year[s_year][cat].m.join(", ");
+        qbox.text(label);
+        if (obj.section == 'favorites') {
+             clearTimeout(upTimer);
+             upTimer = setTimeout(function () {update_q_favorites(obj.id, label);},500);
         }
     }
     var about_keyword = function(keyword) {
@@ -1152,8 +1153,8 @@ var explore = function() {
         getLoad: function() {
             return make_form();
         },
-        setQuality: function(a) {
-            setQuality(a);
+        setQuality: function(a, b) {
+            setQuality(a, b);
         },
         update_poster_count: function() {
             update_poster_count();

@@ -21,7 +21,6 @@ var view = function() {
         time: null
     };
     var backgroundMode = false;
-    var bgYear = null;
     var backgroundModeID = null;
     var keyword_filter_cache = {}
     var xhr_autocomplite = null;
@@ -87,46 +86,26 @@ var view = function() {
             return false;
         return n % 1 === 0;
     }
-    var quality_calc = function(quality, title, v) {
+    var quality_calc = function(quality, v) {
         quality.seed = (v.seeds > 50) ? 60 : (v.seeds > 30) ? 40 : (v.seeds > 20) ? 30 : (v.seeds > 10) ? 20 : (v.seeds > 0) ? 10 : 0;
-        quality.video =
-                ((/Blu-ray|Blu-Ray/).test(title)) ? 100 :
-                ((/BD-Remux|BDRemux|1080p|1080i/).test(title)) ? 90 :
-                ((/BD-Rip|BDRip/).test(title)) ? 80 :
-                ((/CAMRip|CamRip/).test(title)) ? 10 :
-                ((/HDTV-Rip|HDTVRip|DTheater-Rip|HDTVRip|720p/).test(title)) ? 70 :
-                ((/LowHDRip/).test(title)) ? 30 :
-                ((/HDTV|HDRip|DVDRip/).test(title)) ? 60 :
-                ((/[^o]DVD/).test(title)) ? 50 :
-                ((/HQSATRip|HQRip/).test(title)) ? 44 :
-                ((/TVRip|WEBRip|WEB-DLRip|WEB-DL|SATRip|DVB|IPTVRip/).test(title)) ? 40 :
-                ((/TeleSynch|DVDScr/).test(title)) ? 20 :
-                ((/TS/).test(title)) ? 20 :
-                0;
         if (v.size < 524288000 && quality.video > 45)
             quality.video = Math.round(parseInt(quality.video) / 10);
         else
         if (v.size < 1363148800 && quality.video > 65)
             quality.video = Math.round(parseInt(quality.video) / 2);
-        quality.video += ((/5\.1/).test(title)) ? 3 : 0;
-        quality.video += ((/original|лицензия/i).test(title)) ? 2 : 0;
-        quality.video += ((/СТ|rus sub|Sub|subs/).test(title)) ? 1 : 0;
-        quality.video += ((/Dub|ДБ/).test(title)) ? 15 : 0;
-        quality.video += ((/АП|ЛО|ЛД|VO/).test(title)) ? 2 : 0;
-        quality.music =
-                ((/flac|alac|lossless(?! repack)/i).test(title)) ? 90 :
-                ((/320.?kbps/i).test(title)) ? 80 :
-                ((/256.?kbps/i).test(title)) ? 60 :
-                ((/192.?kbps/i).test(title)) ? 50 :
-                ((/128.?kbps/i).test(title)) ? 40 :
-                ((/AAC/).test(title)) ? 30 :
-                ((/mp3/i).test(title)) ? 20 :
-                0;
-        quality.game = ((/PS3/).test(title)) ? 40 : ((/Repack/i).test(title)) ? 50 : ((/\[Native\]/i).test(title)) ? 80 : ((/\[RiP\]/).test(title)) ? 90 : ((/\[L\]/).test(title)) ? 100 : 0;
         quality.value = quality.seed + quality.name + quality.video + quality.music + quality.game;
-        return quality
+        return quality;
     }
     var autoset_Category = function(quality) {
+        if (quality.book) {
+            return 5;
+        }
+        if (quality.serial) {
+            return 0;
+        }
+        if (quality.mult) {
+            return 4;
+        }
         if (quality.video > quality.music && quality.video > quality.game)
             return 3;
         if (quality.music > quality.video && quality.music > quality.game)
@@ -136,15 +115,14 @@ var view = function() {
         return -1;
     }
     var inBGMode = function(t, a, s) {
-        if (bgYear == null) {
-            bgYear = s.replace(/.* ([0-9]{4}).*/, "$1");
-            if (bgYear.length == s.length) {
-                bgYear = 0;
+        if ("year" in keyword_filter_cache == false) {
+            keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
+            if (keyword_filter_cache["year"]) {
+                keyword_filter_cache["year"] = keyword_filter_cache["year"][0];
             }
         }
         if ("keyword" in keyword_filter_cache == false) {
             keyword_filter_cache["keyword"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            keyword_filter_cache["keyword_regexp"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
         var sum = 0;
         $.each(a, function(k, v) {
@@ -154,160 +132,69 @@ var view = function() {
                     || ('url' in v.category && (typeof(v.category.url) != 'string' && v.category.url != null))
                     || ('dl' in v && (typeof(v.dl) != 'string' && v.dl != null))
                     ) {
-                console.log('Tracker ' + tracker[t].name + ' have problem!');
-                console.log('#debug start');
-                console.log(v);
-                console.log('#debug end');
                 return true;
             }
             if (HideZeroSeed && v.seeds == 0) {
                 return true;
             }
-            var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 :
-                    (v.category.title != null) ?
-                    ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
+            var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title != null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
             if (Teaser == 1) {
                 return true;
             }
-            if (isInt(v.category.id)) {
-                if (backgroundModeID.categorys[v.category.id] == null) {
-                    backgroundModeID.categorys[v.category.id] = {
-                        counter: 1, //счетчтк ппаданий
-                        quality_full: 0, //общее качество раздачи
-                        quality_name: 0, //качество имени
-                        label: '', //Название качества
-                        link: '', //ссылка на раздачу
-                        size: 0, //размер
-                        year: (bgYear == 0) ? false : true//учитывание текущего года
-                    }
-                }
-                var bgID = backgroundModeID.categorys[v.category.id];
-                bgID.counter++;
-                backgroundModeID.categorys[v.category.id] = bgID;
-            }
+
             var title = syntax_highlighting(v.title);
-            if (bgID.year == false && title.r >= 80 && ((v.title).indexOf(new Date().getFullYear())) >= 0) {
-                bgID.quality_full = 0;
-                bgID.quality_name = 0;
-                bgID.label = '';
-                bgID.link = '';
-                bgID.year = true;
-                bgID.size = 0;
-                backgroundModeID.categorys[v.category.id] = bgID;
+            var quality = quality_calc(title.r, v);
+            if (quality.name == 0) {
+                return true;
             }
-
-            sum++;
-            var quality = {
-                seed: 0,
-                name: 0,
-                video: 0,
-                music: 0,
-                game: 0,
-                value: 0
-            };
-            quality.name = title.r;
             title = title.n;
-            quality = quality_calc(quality, title, v);
-            var costume_category = v.category.id;
-            if (costume_category == 4)
-                costume_category = 3
             if (v.category.id < 0) {
-                costume_category = autoset_Category(quality);
-                //============
-                if (backgroundModeID.categorys[costume_category] == null)
-                    backgroundModeID.categorys[costume_category] = {
-                        counter: 0, //счетчтк ппаданий
-                        quality_full: 0, //общее качество раздачи
-                        quality_name: 0, //качество имени
-                        label: '', //Название качества
-                        link: '', //ссылка на раздачу
-                        size: 0, //размер
-                        year: backgroundModeID.categorys[v.category.id].year//учитывание текущего года
-                    }
-                if (v.category.id != costume_category)
-                    backgroundModeID.categorys[v.category.id].counter--;
-                bgID = backgroundModeID.categorys[costume_category];
-                bgID.counter++;
-                backgroundModeID.categorys[costume_category] = bgID;
+                v.category.id = autoset_Category(quality);
             }
-            //получаем качество по категории (взято из сортировки)
-            var self_quality = quality.value;
-            if (costume_category == 3 || costume_category == 0 || costume_category == 7 || costume_category == 8 || costume_category == 4) {
-                self_quality = self_quality - quality.game - quality.music;
+            if ("count" in backgroundModeID == false) {
+                backgroundModeID = {count: 0, section: backgroundModeID.section, id: backgroundModeID.id, cat_c: {}, year: {}};
+            }
+            backgroundModeID.count++;
+            if (backgroundModeID.cat_c[v.category.id] == null) {
+                backgroundModeID.cat_c[v.category.id] = 0;
+            }
+            backgroundModeID.cat_c[v.category.id]++;
+            if (backgroundModeID.year[quality.year] == null) {
+                backgroundModeID.year[quality.year] = {};
+            }
+            if (backgroundModeID.year[quality.year][v.category.id] == null) {
+                backgroundModeID.year[quality.year][v.category.id] = {
+                    count: 0,
+                    name: "",
+                    link: "",
+                    size: 0,
+                    name_quality: 0,
+                    quality: 0,
+                    m: []
+                }
+            }
+            backgroundModeID.year[quality.year][v.category.id].count++;
+            var item = backgroundModeID.year[quality.year][v.category.id];
+            if (item.name.length == 0) {
+                item.name = title;
+                item.link = v.url;
+                item.size = v.size;
+                item.name_quality = quality.name;
+                item.quality = quality.value;
+                item.m = quality.m;
             } else
-            if (costume_category == 1) {
-                self_quality = self_quality - quality.game - quality.video
-            } else
-            if (costume_category == 2) {
-                self_quality = self_quality - quality.music - quality.video
+            if (item.name_quality >= quality.name && item.quality < quality.value) {
+                item.name = title;
+                item.link = v.url;
+                item.size = v.size;
+                item.name_quality = quality.name;
+                item.quality = quality.value;
+                item.m = quality.m;
             }
-            if (quality.name < 80 ||
-                    bgID.quality_full > self_quality ||
-                    (costume_category != 1 && bgID.quality_name > quality.name)
-                    )
-                return true;
-            if (bgID.year && (v.title).indexOf((bgYear == 0) ? new Date().getFullYear() : bgYear) < 0) {
-                return true;
-            }
-            var tmp_label = '';
-            if (costume_category != 1 && costume_category != 2) {
-                tmp_label = ((/Blu-ray|Blu-Ray/).test(title)) ? 'Blu-Ray' :
-                        ((/BD-Remux|BDRemux/).test(title)) ? 'BDRemux' :
-                        ((/1080p|1080i/).test(title)) ? '1080p' :
-                        ((/BD-Rip|BDRip/).test(title)) ? 'BDRip' :
-                        ((/HDTV-Rip|HDTVRip/).test(title)) ? 'HDTVRip' :
-                        ((/DTheater-Rip/).test(title)) ? 'DTheater' :
-                        ((/CAMRip|CamRip/).test(title)) ? 'CAMRip' :
-                        ((/720p/).test(title)) ? '720p' :
-                        ((/LowHDRip/).test(title)) ? 'LowHDRip' :
-                        ((/HDTV/).test(title)) ? 'HDTV' :
-                        ((/HDRip/).test(title)) ? 'HDRip' :
-                        ((/DVDRip/).test(title)) ? 'DVDRip' :
-                        ((/DVDScr/).test(title)) ? 'DVDScr' :
-                        ((/TVRip/).test(title)) ? 'TVRip' :
-                        ((/WEBRip|WEB-DLRip/).test(title)) ? 'WEBRip' :
-                        ((/WEB-DL/).test(title)) ? 'WEB-DL' :
-                        ((/HQSATRip/).test(title)) ? 'HQSATRip' :
-                        ((/SATRip/).test(title)) ? 'SATRip' :
-                        ((/HQRip/).test(title)) ? 'HQRip' :
-                        ((/DVB/).test(title)) ? 'DVB' :
-                        ((/IPTVRip/).test(title)) ? 'IPTVRip' :
-                        ((/TeleSynch/).test(title)) ? 'TS' :
-                        ((/[^o]DVD/).test(title)) ? 'DVD' :
-                        ((/NTSC/).test(title)) ? '' :
-                        ((/TS/).test(title)) ? 'TS' : '';
-            }
-            if (costume_category == 1) {
-                tmp_label = ((/flac/i).test(title)) ? 'FLAC' :
-                        ((/alac/i).test(title)) ? 'ALAC' :
-                        ((/lossless/i).test(title)) ? 'LossLess' :
-                        ((/mp3/i).test(title)) ? 'MP3' :
-                        ((/AAC/).test(title)) ? 'AAC' : ''
-            }
-            if (costume_category == 2) {
-                tmp_label = ((/Repack/i).test(title)) ? 'Repack' :
-                        ((/\[Native\]/i).test(title)) ? 'Native' :
-                        ((/\[RiP]/i).test(title)) ? 'RiP' :
-                        ((/PS3/).test(title)) ? 'PS3' :
-                        ((/\[L\]/).test(title)) ? 'L' : ''
-            }
-            if (tmp_label != '' && bgID.size < v.size) {
-                bgID.quality_full = self_quality;
-                bgID.quality_name = quality.name;
-                if (bgID.size != 0 || (bgID.label != tmp_label && bgID.quality_full < self_quality)) {
-                    bgID.size = v.size - (v.size / 10);
-                } else
-                    bgID.size = (v.size - bgID.size) / 2 + bgID.size;
-                bgID.label = tmp_label;
-                bgID.link = v.url;
-                backgroundModeID.categorys[costume_category] = bgID;
-            } else
-                return true;
-
         });
         updateTrackerResultCount(t, sum);
         loadingStatus(1, t);
-        explore.setQuality(backgroundModeID);
+        explore.setQuality(backgroundModeID, keyword_filter_cache["year"]);
     }
     var write_result = function(t, a, s, p) {
         if (backgroundMode) {
@@ -318,6 +205,12 @@ var view = function() {
         if (p == null) {
             $('#rez_table tbody').children('tr[data-tracker="' + t + '"]').remove();
         }
+        if ("year" in keyword_filter_cache == false) {
+            keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
+            if (keyword_filter_cache["year"]) {
+                keyword_filter_cache["year"] = keyword_filter_cache["year"][0];
+            }
+        }
         if ("keyword" in keyword_filter_cache == false) {
             keyword_filter_cache["keyword"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
@@ -335,23 +228,14 @@ var view = function() {
                 console.log('#debug end');
                 return true;
             }
-            var quality = {
-                seed: 0,
-                name: 0,
-                video: 0,
-                music: 0,
-                game: 0,
-                value: 0
-            };
             if (HideZeroSeed && v.seeds == 0) {
                 return true;
             }
             if (TeaserFilter) {
-                var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 :
-                        (v.category.title != null) ?
-                        ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
-                if (Teaser == 1)
+                var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title != null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
+                if (Teaser == 1) {
                     return true;
+                }
             }
             if ((/^[\s|\t]+/).test(v.title)) {
                 v.title = $.trim(v.title);
@@ -361,13 +245,11 @@ var view = function() {
             }
             var title = syntax_highlighting(v.title);
             sum++;
-            quality.name = title.r;
+            var quality = quality_calc(title.r, v);
             title = title.n;
-
-            quality = quality_calc(quality, title, v);
-            if (autoSetCat & v.category.id < 0)
+            if (autoSetCat & v.category.id < 0) {
                 v.category.id = autoset_Category(quality);
-
+            }
             var filter = '';
             var fk = 0;
             if (trackerFilter != null && trackerFilter != t) {
@@ -562,336 +444,179 @@ var view = function() {
     var syntax_highlighting = function(t) {
         var words = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1").split(' ');
         var name = t;
-        var rate = {c: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: []}
-        console.log("======" + t + "======");
-        var cal_word_rate = function(a) {
-            //console.log(a);
-            rate.c++;
-            return '<b>' + a + '</b>';
-        }
-        var cal_rate = function(a, b, c) {
-            a = a.toLowerCase();
-            if ($.inArray(a, rate.m) == -1) {
-                rate.m[rate.m.length] = a;
-            } else {
-                return '';
-            }
+        var rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0}
+        //console.log("======" + t + "======");
+        var word_hl = 0;
+        var year_hl = 0;
+        var cal_word_rate = function(a, b, c) {
+            var word_rate = 50;
             var sub_l = c[b - 1];
             var sub_r = c[b + a.length];
             if (sub_r == null)
                 sub_r = '';
             if (sub_l == null)
                 sub_l = '';
-            if ((sub_l + sub_r).match(/\w/) != null) {
+            if ((/[\wа-яА-Я]/).test(sub_l + sub_r)) {
+                return a;
+            }
+            if (word_hl * word_rate < words.length * word_rate) {
+                if (a == keyword_filter_cache.year) {
+                    year_hl = 1;
+                    rate.name += word_rate;
+                } else
+                if (b == 0) {
+                    rate.name += word_rate * 5;
+                } else
+                    rate.name += word_rate * 2;
+
+            }
+            word_hl++;
+            return '<b>' + a + '</b>';
+        }
+        var cal_rate = function(a, b, c) {
+            if ($.inArray(a, rate.m) == -1) {
+                rate.m[rate.m.length] = a;
+            } else {
                 return '';
             }
-            console.log(a);
+            a = a.toLowerCase();
+            var sub_l = c[b - 1];
+            var sub_r = c[b + a.length];
+            if (sub_r == null)
+                sub_r = '';
+            if (sub_l == null)
+                sub_l = '';
+            if ((/\w/).test(sub_l + sub_r)) {
+                return '';
+            }
             if (a == "blu-ray") {
                 rate.video += 100;
-            }
+            } else
             if (a == "bd-remux" || a == "bdremux" || a == "1080p" || a == "1080i") {
                 rate.video += 90;
-            }
+            } else
             if (a == "bd-rip" || a == "bdrip" || a == "bdrip-avc") {
                 rate.video += 80;
-            }
+            } else
             if (a == "camrip" || a == "camrip-avc") {
                 rate.video += 10;
-            }
+            } else
             if (a == "hdtv-rip" || a == "hdtvrip" || a == "dtheater-rip" || a == "720p") {
                 rate.video += 70;
-            }
+            } else
             if (a == "lowhdrip") {
                 rate.video += 10;
-            }
+            } else
             if (a == "hdtv" || a == "hdrip" || a == "dvdrip" || a == "dvd-rip" || a == "dvdrip-avc") {
                 rate.video += 60;
-            }
+            } else
             if (a == "dvd" || a == "dvd5" || a == "2xdvd9" || a == "dvd9" || a == "dvd-9" || a == "hd-dvd") {
                 rate.video += 50;
-            }
+            } else
             if (a == "hqsatrip" || a == "hqrip" || a == "hqrip-avc") {
                 rate.video += 44;
-            }
+            } else
             if (a == "звук с ts") {
                 rate.video -= 40;
-            }
+            } else
             if (a == "tvrip" || a == "webrip" || a == "web-dlrip-avc" || a == "webdl-rip" || a == "web-dlrip" || a == "web-dl" || a == "satrip" || a == "dvb" || a == "iptvrip") {
                 rate.video += 40;
-            }
+            } else
             if (a == "telesynch" || a == "ts" || a == "dvdscr" || a == "dvdscreener") {
                 rate.video += 20;
-            }
+            } else
             if (a == "ст" || a == "sub" || a == "subs") {
                 rate.video += 1;
-            }
+            } else
             if (a == "dub" || a == "пд" || a == "по" || a == "дб" || a == "2xdub") {
-                rate.video += 15;
-            }
+                rate.video += 6;
+            } else
             if (a == "пм") {
-                rate.video += 10;
-            }
+                rate.video += 4;
+            } else
             if (a == "ап" || a == "ло" || a == "лд" || a == "vo") {
                 rate.video += 2;
-            }
+            } else
             if (a == "flac" || a == "alac" || a == "lossless") {
                 rate.music += 90;
-            }
-            if (a == "ps3" || a == "xbox") {
+            } else
+            if (a == "ps3" || a == "xbox" ||  a == "(PS2)") {
                 rate.game += 40;
-            }
+            } else
             if (a == "[p]" || a == "{p}" || a == "(p)") {
                 rate.game += 10;
-            }
+            } else
             if (a == "repack" || a == "lossless repack" || a == "steam-rip" || a == "(lossy rip)" || a == "reloaded") {
                 rate.game += 50;
-            }
+            } else
             if (a == "[native]") {
                 rate.game += 80;
-            }
+            } else
             if (a == "[rip]" || a == "{rip}" || a == "(rip)") {
                 rate.game += 90;
-            }
-            if (a == "[l]" || a == "{l}" || a == "(l)" || a == "лицензия") {
+            } else
+            if (a == "[l]" || a == "{l}" || a == "(l)") {
                 rate.game += 100;
-            }
+            } else
+            if ( a == "лицензия") {
+                rate.game += 20;
+            }else
             if (a == "pc (windows)") {
                 rate.game += 5;
-            }
+            } else
             if (a == "сезон" || a == "season") {
                 rate.serial++;
-            }
+            } else
             if (a == "cue") {
                 rate.music += 30;
-            }
+            } else
             if (a == "soundtrack") {
-                rate.music ++;
-            }
+                rate.music++;
+            } else
             if (a == "mp3") {
                 rate.music += 10;
-            }
+            } else
             if ($.inArray("mp3", rate.m) != -1 && a == "128") {
                 rate.music += 5;
-            }
+            } else
             if ($.inArray("mp3", rate.m) != -1 && a == "192") {
                 rate.music += 10;
-            }
+            } else
             if ($.inArray("mp3", rate.m) != -1 && a == "320") {
                 rate.music += 15;
-            }
+            } else
             if (a == "h.264" || a == "h264" || a == "mp4" || a == "m4v") {
                 rate.video += 10;
-            }
+            } else
             if (a == "fb2" || a == "pdf" || a == "dejvu" || a == "rtf" || a == "epub") {
                 rate.book += 10;
-            }
+            } else
             if (a == "мультфильм") {
-                rate.mult ++;
+                rate.mult++;
             }
-            rate.c++;
             return '';
         }
-        var quality = "Blu-ray|Blu-Ray|BD-Remux|BDRemux|1080p|1080i|BDRip-AVC|BD-Rip|BDRip|CAMRip|CamRip-AVC|CamRip|HDTV-Rip|HQRip-AVC|HDTVrip|HDTVRip|DTheater-Rip|720p|LowHDRip|HDTV|HDRip|DVD-Rip|DVDRip-AVC|DVDRip|DVD5|2xDVD9|DVD9|DVD-9|DVDScr|DVDScreener|HD-DVD|NoDVD|DVD|SatRip|HQSATRip|HQRip|TVRip|WEBRip|WEB-DLRip-AV​C|WebDL-Rip|AVC|WEB-DLRip|WEB-DL|SATRip|DVB|IPTVRip|TeleSynch|звук с TS|TS|АП|ЛО|ЛД|AVO|MVO|VO|DUB|2xDub|Dub|ДБ|ПМ|ПД|ПО|СТ|[Ss]{1}ubs|SUB|[sS]{1}ub|FLAC|flac|ALAC|alac|[lL]{1}oss[lL]{1}ess(?! repack)|PS3|Xbox|XBOX|Repack|RePack|\\[Native\\]|Lossless Repack|Steam-Rip|\\(Lossy Rip\/|{Rip}|[лЛ]{1}ицензия|RELOADED|\\[Rip\\]|\\[RiP\\]|\\{L\\}|\\(L\\)|\\[L\\]|[Ss]{1}eason(?=[s|:]?)|[Сс]{1}езон(?=[ы|:]?)|CUE|(?=\.)cue|MP3|128|192|320|\\(P\\)|\\[P\\]|PC \\(Windows\\)|Soundtrack|soundtrack|H\.264|mp4|MP4|M4V|FB2|PDF|RTF|EPUB|fb2|DJVU|djvu|epub|pdf|rtf|[мМ]{1}ультфильм";
-        (name).replace(new RegExp(quality, "g"), cal_rate);
+        var quality = "Blu-ray|Blu-Ray|BD-Remux|BDRemux|1080p|1080i|BDRip-AVC|BD-Rip|BDRip|CAMRip|CamRip-AVC|CamRip|HDTV-Rip|HQRip-AVC|HDTVrip|HDTVRip|DTheater-Rip|720p|LowHDRip|HDTV|HDRip|DVD-Rip|DVDRip-AVC|DVDRip|DVD5|2xDVD9|DVD9|DVD-9|DVDScr|DVDScreener|HD-DVD|NoDVD|DVD|SatRip|HQSATRip|HQRip|TVRip|WEBRip|WEB-DLRip-AV​C|WebDL-Rip|AVC|WEB-DLRip|WEB-DL|SATRip|DVB|IPTVRip|TeleSynch|звук с TS|TS|АП|ЛО|ЛД|AVO|MVO|VO|DUB|2xDub|Dub|ДБ|ПМ|ПД|ПО|СТ|[Ss]{1}ubs|SUB|[sS]{1}ub|FLAC|flac|ALAC|alac|[lL]{1}oss[lL]{1}ess(?! repack)|\\(PS2\\)|PS3|Xbox|XBOX|Repack|RePack|\\[Native\\]|Lossless Repack|Steam-Rip|\\(Lossy Rip\/|{Rip}|[лЛ]{1}ицензия|RELOADED|\\[Rip\\]|\\[RiP\\]|\\{L\\}|\\(L\\)|\\[L\\]|[Ss]{1}eason(?=[s|:]?)|[Сс]{1}езон(?=[ы|:]?)|CUE|(?=\.)cue|MP3|128|192|320|\\(P\\)|\\[P\\]|PC \\(Windows\\)|Soundtrack|soundtrack|H\.264|mp4|MP4|M4V|FB2|PDF|RTF|EPUB|fb2|DJVU|djvu|epub|pdf|rtf|[мМ]{1}ультфильм";
+        rate.year = name.match(/[0-9]{4}/);
+        if (rate.year) {
+            rate.year = parseInt(rate.year[0]);
+            if (rate.year < 1970 || rate.year > (new Date()).getFullYear() + 1)
+            {
+                rate.year = 0;
+            }
+        } else {
+            rate.year = 0;
+        }
+        name.replace(new RegExp(quality, "g"), cal_rate);
+        var hl_name = name.replace(new RegExp(words.join('|'), "ig"), cal_word_rate);
+        if (year_hl && word_hl == 1) {
+            rate.name = 0;
+        }
         return {
-            n: name.replace(new RegExp('(' + words.join('|') + ')', "ig"), cal_word_rate),
-            r: rate.c
+            n: hl_name,
+            r: rate
         };
     }
-    /*
-     
-     
-     var top_coeff = 1;
-     //s - searching text (keyword)
-     //t - title from torrent
-     function isNumber(n) {
-     return !isNaN(parseFloat(n)) && isFinite(n);
-     }
-     if (keyword_filter_cache.kw == null) {
-     keyword_filter_cache.kw = keyword;
-     //вырываем год, если он есть
-     keyword_filter_cache.year = keyword_filter_cache.kw.replace(/.*([0-9]{4}).*//*,"$1");
-      if (keyword_filter_cache.year.length != 4) {
-      keyword_filter_cache.year = null;
-      }
-      if ( keyword_filter_cache.year.length == keyword_filter_cache.kw.length ) {
-      keyword_filter_cache.year = null;
-      }
-      //удаляем из запроса год если он есть
-      keyword_filter_cache.name = $.trim(keyword_filter_cache.kw.replace(/([0-9]{4})$/g, ""));
-      //экронируем для regexp
-      keyword_filter_cache.name_regexp = keyword_filter_cache.name.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
-      //экронируем для regexp
-      keyword_filter_cache.name_regexp_lover = keyword_filter_cache.name.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1").toLowerCase();
-      }
-      if (keyword_filter_cache.kw.length == 0) {
-      return {
-      n: t,
-      r: 0
-      };
-      }
-      var title = t.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      var title_lower = title.toLowerCase();
-      if (keyword_filter_cache.year != null) {
-      //если есь год, то 
-      //проверка по маске Name / .*year.*
-      if (new RegExp('^' + keyword_filter_cache.name_regexp_lover + ' / .*' + keyword_filter_cache.year + '.*').test(title_lower)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>"),
-      r: 100 * top_coeff
-      };
-      }
-      //проверка по маске ([.*]) Name / .*year.*
-      if (new RegExp('^[([]{1}.*[)]]{1} ' + keyword_filter_cache.name_regexp_lover + ' / .*' + keyword_filter_cache.year + '.*').test(title_lower)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>"),
-      r: 100 * top_coeff
-      };
-      }
-      if (new RegExp('.* ' + keyword_filter_cache.name_regexp + ' / .*' + keyword_filter_cache.year + '.*').test(title)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>"),
-      r: 89 * top_coeff
-      };
-      }
-      if (new RegExp('^' + keyword_filter_cache.name_regexp + ' .*' + keyword_filter_cache.year + '.*').test(title)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>"),
-      r: 92 * top_coeff
-      };
-      }
-      if (new RegExp('.* ' + keyword_filter_cache.name_regexp + ' .*' + keyword_filter_cache.year + '.*').test(title)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>"),
-      r: 86 * top_coeff
-      };
-      }
-      } else {
-      //если нету года, то 
-      //проверка по маске Name / .*
-      if (new RegExp('^' + keyword_filter_cache.name_regexp_lover + '$').test(title_lower)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp + ')', "ig"), "<b>$1</b>"),
-      r: 100 * top_coeff
-      };
-      }
-      if (new RegExp('^' + keyword_filter_cache.name_regexp_lover + ' / .*').test(title_lower)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp_lover + ')', "ig"), "<b>$1</b>"),
-      r: 100 * top_coeff
-      };
-      }
-      //проверка по маске ([.*]) Name / .*year.*
-      if (new RegExp('^[([]{1}.*[)]]{1} ' + keyword_filter_cache.name_regexp_lover + ' / .*').test(title_lower)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp_lover + ')', "ig"), "<b>$1</b>"),
-      r: 95 * top_coeff
-      };
-      }
-      if (new RegExp('.* ' + keyword_filter_cache.name_regexp_lover + ' / .*').test(title_lower)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp + ')', "ig"), "<b>$1</b>"),
-      r: 86 * top_coeff
-      };
-      }
-      if (new RegExp('^' + keyword_filter_cache.name_regexp_lover + ' .*').test(title_lower)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp + ')', "ig"), "<b>$1</b>"),
-      r: 86 * top_coeff
-      };
-      }
-      if (new RegExp('.* ' + keyword_filter_cache.name_regexp + '$').test(title)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp + ')', "g"), "<b>$1</b>"),
-      r: 83 * top_coeff
-      };
-      }
-      if (new RegExp('^' + keyword_filter_cache.name_regexp_lover + '[-/()\ ./]{1}.*').test(title_lower)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp_lover + ')', "ig"), "<b>$1</b>"),
-      r: 80 * top_coeff
-      };
-      }
-      if (new RegExp('.* ' + keyword_filter_cache.name_regexp + ' .*').test(title)) {
-      return {
-      n: t.replace(new RegExp('(' + keyword_filter_cache.name_regexp + ')', "g"), "<b>$1</b>"),
-      r: 80 * top_coeff
-      };
-      }
-      }
-      var str_arr = keyword_filter_cache.kw.split(' ');
-      var str_cou = str_arr.length;
-      var ex_count = 0;
-      var left = 0;
-      for (var i = 0; i < str_cou; i++) {
-      if (i == 0) {
-      left = title_lower.indexOf(str_arr[i].toLowerCase());
-      if ((new RegExp(str_arr[i] + '[^\b\wA-Za-zА-Яа-я0-9]{1}', 'i')).test(title))
-      ex_count += 1;
-      } else
-      if ((new RegExp('[^\b\wA-Za-zА-Яа-я0-9]{1}' + str_arr[i] + '[^\b\wA-Za-zА-Яа-я0-9]{1}', 'i')).test(title))
-      ex_count += 1;
-      }
-      var rate = Math.round((85 / (str_cou)) * ex_count);
-      if (left < 0 && rate > 30)
-      rate = -100;
-      else
-      if (left > 70)
-      rate = 30;
-      else
-      rate -= left;
-      var order = function(a, b) {
-      if (a.length > b.length)
-      return -1;
-      if (a.length == b.length)
-      return 0;
-      return 1;
-      }
-      if (keyword_filter_cache.kw_arr == null) {
-      keyword_filter_cache.kw_arr = keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1").replace(/\s+/, ' ').split(' ').sort(order);
-      }
-      var new_kw_arr = keyword_filter_cache.kw_arr;
-      var bolder_title = t.replace(new RegExp('(' + new_kw_arr.join('|') + ')', "ig"), "<b>$1</b>");
-      return {
-      n: bolder_title,
-      r: rate * top_coeff
-      };
-      }
-      */
-    /*
-     var filterText = function (s,t) {
-     var s = $.trim(s).replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-     var new_name = t.replace(/</g,"&lt;").replace(/>/g,"&gt;");
-     var rate = 0;
-     var new_name2 = new_name;
-     if (new_name.length > s.length+1)
-     rate = ((new RegExp(s+' ',"i")).test(new_name))?100:0;
-     else
-     rate = ((new RegExp(s,"i")).test(new_name))?100:0;
-     var left = 0;
-     if (s.length > 0) {
-     var tmp = s.split(" ");
-     new_name = new_name.replace(new RegExp('('+tmp.join('|')+')',"ig"),"<b>$1</b>");
-     left = new_name2.toLowerCase().indexOf(tmp[0].toLowerCase()+' ');
-     if (left > 0 && new_name2.substr(left-1, 1) != ' ') left = 71;
-     }
-     if (new_name2 != new_name) {
-     if (rate == 0)
-     rate = 80;
-     
-     if (left < 0)
-     rate = 30;
-     else
-     if (left > 70)
-     rate = 30;
-     else 
-     rate -= left;
-     }
-     return {
-     n:new_name,
-     r:rate
-     };
-     }*/
     var filterTextCheck = function(s, t) {
         if (s.length == 0)
             return 'a';
@@ -1063,14 +788,9 @@ var view = function() {
     }
     var getQuality = function(keyword, id, section) {
         //flush for bg mode
-        bgYear = null;
         keyword_filter_cache = {}
         backgroundMode = true;
-        backgroundModeID = {
-            'id': id,
-            categorys: [],
-            'section': section
-        };
+        backgroundModeID = {"section": section, "id": id};
         engine.search(keyword, null, 1);
         _gaq.push(['_trackEvent', 'Quality', 'keyword', keyword]);
     }
