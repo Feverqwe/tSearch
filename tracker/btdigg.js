@@ -128,7 +128,7 @@
                         var arr = readCode(data);
                         var c = arr.length;
                         res_count += c;
-                        if (hash.length == 0 && c == 10 && page < 4) {
+                        if (hash.length == 0 && c == 10 && page < 1) {
                             view.result(id, arr, t, res_count);
                             page++
                             loadPage(text, page);
