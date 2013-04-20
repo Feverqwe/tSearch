@@ -146,7 +146,7 @@ table.tr_table {
     border-collapse: collapse;
     width: 100%;
 }
-table.tr_table img {
+table.tr_table div.tracker_icon {
     margin-left: 5px;
     cursor:move;
 }
@@ -159,7 +159,7 @@ table.c_table {
     border-collapse: collapse;
     width: 100%;
 }
-table.c_table img {
+table.c_table div.tracker_icon {
     margin-left: 5px;
 }
 table.c_table thead {

@@ -14,12 +14,19 @@ copy .\*.html .\build\.
 copy .\*.json .\build\.
 copy .\*.png .\build\.
 
-copy .\compressed\history.html .\build\.
-copy .\compressed\index.html .\build\.
-copy .\compressed\magic.html .\build\.
-copy .\compressed\options.html .\build\.
-copy .\compressed\manifest.json .\build\.
 
+cd .\build\
+patch history.html < ..\history.patch
+patch index.html < ..\index.patch
+patch magic.html < ..\magic.patch
+patch options.html < ..\options.patch
+patch manifest.json < ..\manifest.patch
+cd .\js\
+patch torrent_lib.js < ..\..\js\torrent_lib.patch
+cp torrent_lib.js torrent_lib_patched.js 
+cd ..\..\
+
+del .\build\js\*.patch
 del .\build\css\*.css
 
 del .\build\js\ad.js
@@ -31,8 +38,8 @@ del .\build\js\jquery.tablesorter.js
 del .\build\js\lang.js
 del .\build\js\storage.js
 
-java -jar compiler.jar --js .\compressed\torrent_lib.js --js .\tracker\anidub.js --js .\tracker\katushka.js --js .\tracker\rustorka.js --js .\tracker\bestrepack.js --js .\tracker\kickass.js --js .\tracker\rutor.js --js .\tracker\bigfangroup.js --js .\tracker\kinozal.js --js .\tracker\rutracker.js --js .\tracker\bitsnoop.js --js .\tracker\libertorrent.js --js .\tracker\tapochek.js --js .\tracker\brodim.js --js .\tracker\megashara.js --js .\tracker\tfile.js --js .\tracker\btdigg.js --js .\tracker\mininova.js --js .\tracker\thepiratebay.js --js .\tracker\evrl.js --js .\tracker\mmatracker.js --js .\tracker\thepiratebay2.js --js .\tracker\extratorrent.js --js .\tracker\my-hit.js --js .\tracker\torrentino.js --js .\tracker\fast-torrent.js --js .\tracker\nnm-club.js --js .\tracker\torrentmac.js --js .\tracker\fenopy.js --js .\tracker\opensharing.js --js .\tracker\torrents.freedom.js --js .\tracker\filebase.js --js .\tracker\opentorrent.js --js .\tracker\torrents.local.js --js .\tracker\free-torrents.js --js .\tracker\piratbit.js --js .\tracker\torrentz.js --js .\tracker\hdclub.js --js .\tracker\piratca.js --js .\tracker\underverse.js --js .\tracker\hurtom.js --js .\tracker\pornolab.js --js .\tracker\x-torrents.js --js .\tracker\inmac.js --js .\tracker\rgfootball.js --js .\tracker\youtracker.js --js .\tracker\isohunt.js --js .\tracker\riperam.js --js_output_file .\build\js\torrent_lib.js
-
+java -jar compiler.jar --js .\build\js\torrent_lib_patched.js --js .\tracker\anidub.js --js .\tracker\katushka.js --js .\tracker\rustorka.js --js .\tracker\bestrepack.js --js .\tracker\kickass.js --js .\tracker\rutor.js --js .\tracker\bigfangroup.js --js .\tracker\kinozal.js --js .\tracker\rutracker.js --js .\tracker\bitsnoop.js --js .\tracker\libertorrent.js --js .\tracker\tapochek.js --js .\tracker\brodim.js --js .\tracker\megashara.js --js .\tracker\tfile.js --js .\tracker\btdigg.js --js .\tracker\mininova.js --js .\tracker\thepiratebay.js --js .\tracker\evrl.js --js .\tracker\mmatracker.js --js .\tracker\thepiratebay2.js --js .\tracker\extratorrent.js --js .\tracker\my-hit.js --js .\tracker\torrentino.js --js .\tracker\fast-torrent.js --js .\tracker\nnm-club.js --js .\tracker\torrentmac.js --js .\tracker\fenopy.js --js .\tracker\opensharing.js --js .\tracker\torrents.freedom.js --js .\tracker\filebase.js --js .\tracker\opentorrent.js --js .\tracker\torrents.local.js --js .\tracker\free-torrents.js --js .\tracker\piratbit.js --js .\tracker\torrentz.js --js .\tracker\hdclub.js --js .\tracker\piratca.js --js .\tracker\underverse.js --js .\tracker\hurtom.js --js .\tracker\pornolab.js --js .\tracker\x-torrents.js --js .\tracker\inmac.js --js .\tracker\rgfootball.js --js .\tracker\youtracker.js --js .\tracker\isohunt.js --js .\tracker\riperam.js --js_output_file .\build\js\torrent_lib.js
+del .\build\js\torrent_lib_patched.js
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\background.js --js_output_file .\build\js\background.js
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\history.js --js_output_file .\build\js\history.js
 java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\jqcloud-1.0.2.min.js --js .\js\apprise-1.5.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\js\counter.js --js_output_file .\build\js\view.js
@@ -90,11 +97,17 @@ del .\build_opera\build\js\counter.js
 
 xcopy .\build .\build_chrome_ext\ /E
 xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
-copy  .\compressed\ext\popup.html .\build_chrome_ext\.
+
+cd .\build_chrome_ext\
+patch popup.html < ..\ff_o\chrome_ext\popup.patch
+patch manifest.json < ..\ff_o\chrome_ext\manifest.patch
+cd ..\
+
+del .\build_chrome_ext\*.patch
+
 java -jar yuicompressor-2.4.7.jar .\ff_o\chrome_ext\css\popup.css -o .\build_chrome_ext\css\popup.css
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\ff_o\chrome_ext\js\popup.js --js_output_file .\build_chrome_ext\js\popup.js
 
-copy .\compressed\ext\manifest.json .\build_chrome_ext\.
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\ff_o\chrome_ext\js\btn.js --js .\js\background.js --js_output_file .\build_chrome_ext\js\background.js
 del .\build_chrome_ext\js\btn.js
 
@@ -105,7 +118,7 @@ del .\build_firefox.xpi
 del .\build_opera.oex
 del .\build_chrome_ext.zip
 
-.\compressed\7za a -tzip .\build_chrome.zip .\build\*
-.\compressed\7za a -tzip .\build_firefox.xpi .\build_firefox\*
-.\compressed\7za a -tzip .\build_opera.oex .\build_opera\*
-.\compressed\7za a -tzip .\build_chrome_ext.zip .\build_chrome_ext\*
+7za a -tzip .\build_chrome.zip .\build\*
+7za a -tzip .\build_firefox.xpi .\build_firefox\*
+7za a -tzip .\build_opera.oex .\build_opera\*
+7za a -tzip .\build_chrome_ext.zip .\build_chrome_ext\*

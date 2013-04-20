@@ -101,9 +101,9 @@ var options = function() {
             flags = '<div class="icons">' + flags + '</div>';
         }
         $('table.tr_table tbody').append('<tr data-id="' + i + '" data-name="' + tracker[i].filename + '"' + '>'
-                + '<td><img class="tracker_icon" ' +
-                ((tracker[i].icon.length == 0 || tracker[i].icon[0] == '#') ? 'style="background-color: ' + ((tracker[i].icon.length != 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;"' : 'src="' + tracker[i].icon + '"')
-                + '"/></td>'
+                + '<td><div class="tracker_icon" ' +
+                ((tracker[i].icon.length == 0 || tracker[i].icon[0] == '#') ? 'style="background-color: ' + ((tracker[i].icon.length != 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;"' : 'style="background-image: url(' + tracker[i].icon + ');"')
+                + '"></div></td>'
                 + '<td><a href="' + tracker[i].url + '" target="_blank">' + tracker[i].name + '</a>'
                 + '</td>'
                 + '<td class="desc">' + flags
@@ -302,9 +302,9 @@ var options = function() {
                     continue;
                 }
                 $('table.c_table tbody').append('<tr " data-uid="' + tr.uid + '"' + '>'
-                        + '<td><img class="tracker_icon" ' +
-                        ((tr.icon.length == 0 || tr.icon[0] == '#') ? 'style="background-color: ' + ((tr.icon.length != 0) ? tr.icon : '#ccc') + ';border-radius: 8px;"' : 'src="' + tr.icon + '"')
-                        + '/></td>'
+                        + '<td><div class="tracker_icon" ' +
+                        ((tr.icon.length == 0 || tr.icon[0] == '#') ? 'style="background-color: ' + ((tr.icon.length != 0) ? tr.icon : '#ccc') + ';border-radius: 8px;"' : 'style="background-image: url(' + tr.icon + ')"')
+                        + '></div></td>'
                         + '<td><a href="' + tr.root_url + '" target="_blank">' + tr.name + '</a>'
                         + '</td>'
                         + '<td class="desc">' + (('about' in tr) ? tr.about : '') + '</td>'

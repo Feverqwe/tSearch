@@ -1,0 +1,11 @@
+--- magic.html	2013-04-19 15:46:19.000000000 +0600
++++ p_magic.html	2013-04-19 15:46:34.000000000 +0600
+@@ -5,8 +5,6 @@
+         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+         <link rel="stylesheet" type="text/css" href="css/magic.css">
+         <script src="js/jquery-1.9.1.min.js"></script>
+-        <script src="js/storage.js"></script>
+-        <script src="js/lang.js"></script>
+         <script src="js/magic.js"></script>
+     </head>
+     <body>
