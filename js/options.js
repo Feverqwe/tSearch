@@ -504,6 +504,7 @@ var options = function() {
             });
             load_costume_torrents();
             $('table.tr_table tbody').sortable({ placeholder: "ui-state-highlight" });
+            $('table.tr_table tbody').disableSelection();
         }
     };
 }();

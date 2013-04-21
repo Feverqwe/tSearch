@@ -237,7 +237,9 @@ div.popup textarea[name=code] {
     background-color:#fff !important;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     border-radius: 4px;
+    opacity: 0.7;
 }
 .ui-state-highlight {
+    background-color:#f1f2f1 !important;
     height: 80px;
 }
