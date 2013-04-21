@@ -16,14 +16,14 @@ copy .\*.png .\build\.
 
 
 cd .\build\
-patch history.html < ..\history.patch
-patch index.html < ..\index.patch
-patch magic.html < ..\magic.patch
-patch options.html < ..\options.patch
-patch manifest.json < ..\manifest.patch
+..\patch -i ..\history.patch history.html
+..\patch -i ..\index.patch index.html
+..\patch -i ..\magic.patch magic.html
+..\patch -i ..\options.patch options.html
+..\patch -i ..\manifest.patch manifest.json
 cd .\js\
-patch torrent_lib.js < ..\..\js\torrent_lib.patch
-cp torrent_lib.js torrent_lib_patched.js 
+..\..\patch -i ..\..\js\torrent_lib.patch torrent_lib.js
+copy torrent_lib.js torrent_lib_patched.js 
 cd ..\..\
 
 del .\build\js\*.patch
@@ -48,7 +48,7 @@ java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\engine.j
 
 copy .\css\stylesheet.css+.\css\jqcloud.css+.\css\apprise.css .\build\css\stylesheet.css
 
-java -jar yuicompressor-2.4.7.jar  .\build\css\stylesheet.css -o .\build\css\stylesheet.css
+java -jar yuicompressor-2.4.7.jar .\build\css\stylesheet.css -o .\build\css\stylesheet.css
 java -jar yuicompressor-2.4.7.jar .\css\options.css -o .\build\css\options.css
 java -jar yuicompressor-2.4.7.jar .\css\history.css -o .\build\css\history.css
 java -jar yuicompressor-2.4.7.jar .\css\magic.css -o .\build\css\magic.css
@@ -99,8 +99,8 @@ xcopy .\build .\build_chrome_ext\ /E
 xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
 
 cd .\build_chrome_ext\
-patch popup.html < ..\ff_o\chrome_ext\popup.patch
-patch manifest.json < ..\ff_o\chrome_ext\manifest.patch
+..\patch -i ..\ff_o\chrome_ext\popup.patch popup.html
+..\patch -i ..\ff_o\chrome_ext\manifest.patch manifest.json
 cd ..\
 
 del .\build_chrome_ext\*.patch
