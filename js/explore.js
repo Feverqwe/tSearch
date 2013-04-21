@@ -176,6 +176,8 @@ var explore = function() {
             return i;
         }
         var makeimg = function(i) {
+            if (i == null)
+                return i;
             i = i.replace(/(.*)\/film\/([0-9]*)\//, 'http://st.kinopoisk.ru/images/film/$2.jpg');
             return i;
         }
@@ -189,12 +191,21 @@ var explore = function() {
             var i = 0;
             for (i = 0; i < l; i++) {
                 var item = t.eq(i).children('div');
-                arr[arr.length] = {
-                    'img': view.contentUnFilter(sesizeimg(item.eq(0).children('a').children('img').attr('src'))).replace(content_sourse[type].base_img_url, ''),
-                    'name': item.eq(1).children('div.name').children('a').text().replace(/ \(.*, ([0-9]{4}).*\)$/, ' ($1)'),
-                    'name_en': item.eq(1).children('div.name').children('span').text().replace(/ \([0-9]*\) [0-9]* мин./, ''),
-                    'url': (content_sourse[type].root_url + view.contentUnFilter(item.eq(1).children('div.name').children('a').attr('href'))).replace(content_sourse[type].base_url, '')
+                var obj = null;
+                try {
+                    obj = {
+                        'img': view.contentUnFilter(sesizeimg(item.eq(0).children('a').children('img').attr('src'))).replace(content_sourse[type].base_img_url, ''),
+                        'name': item.eq(1).children('div.name').children('a').text().replace(/ \(.*, ([0-9]{4}).*\)$/, ' ($1)'),
+                        'name_en': item.eq(1).children('div.name').children('span').text().replace(/ \([0-9]*\) [0-9]* мин./, ''),
+                        'url': (content_sourse[type].root_url + view.contentUnFilter(item.eq(1).children('div.name').children('a').attr('href'))).replace(content_sourse[type].base_url, '')
+                    }
+                } catch (error) {
                 }
+                if (obj == null || obj.img == null || obj.name == null || obj.name_en == null || obj.url == null) {
+                    console.log("Explorer " + type + " have problem!");
+                    continue;
+                }
+                arr[arr.length] = obj;
             }
             return arr;
         }
@@ -207,12 +218,21 @@ var explore = function() {
             var i = 0;
             for (i = 1; i < l; i++) {
                 var item = t.eq(i).children('td');
-                arr[arr.length] = {
-                    'img': makeimg(item.eq(1).children('div').children('a').attr('href')).replace(content_sourse[type].base_img_url, ''),
-                    'name': item.eq(1).children('div').children('a').text().replace(/ \([0-9]* – .*\)$/, '').replace(/ \(сериал\)$/, ''),
-                    'name_en': item.eq(1).children('div').children('span').text().replace(/ [0-9]* мин.$/, '').replace(/ \([0-9]* – .*\)$/, ''),
-                    'url': (content_sourse[type].root_url + view.contentUnFilter(item.eq(1).children('div').children('a').attr('href'))).replace(content_sourse[type].base_url, '')
+                var obj = null;
+                try {
+                    obj = {
+                        'img': makeimg(item.eq(1).children('div').children('a').attr('href')).replace(content_sourse[type].base_img_url, ''),
+                        'name': item.eq(1).children('div').children('a').text().replace(/ \([0-9]* – .*\)$/, '').replace(/ \(сериал\)$/, ''),
+                        'name_en': item.eq(1).children('div').children('span').text().replace(/ [0-9]* мин.$/, '').replace(/ \([0-9]* – .*\)$/, ''),
+                        'url': (content_sourse[type].root_url + view.contentUnFilter(item.eq(1).children('div').children('a').attr('href'))).replace(content_sourse[type].base_url, '')
+                    }
+                } catch (error) {
                 }
+                if (obj == null || obj.img == null || obj.name == null || obj.name_en == null || obj.url == null) {
+                    console.log("Explorer " + type + " have problem!");
+                    continue;
+                }
+                arr[arr.length] = obj;
             }
             return arr;
         }
@@ -225,11 +245,20 @@ var explore = function() {
             var i = 0;
             for (i = 0; i < l; i++) {
                 var item = t.eq(i);
-                arr[arr.length] = {
-                    'img': view.contentUnFilter(item.children('a').eq(0).find('img').attr('src')).replace(content_sourse[type].base_img_url, ''),
-                    'name': item.children('div.name-i').children('a').text(),
-                    'url': (content_sourse[type].root_url + view.contentUnFilter(item.children('div.name-i').children('a').attr('href'))).replace(content_sourse[type].base_url, '')
+                var obj = null;
+                try {
+                    obj = {
+                        'img': view.contentUnFilter(item.children('a').eq(0).find('img').attr('src')).replace(content_sourse[type].base_img_url, ''),
+                        'name': item.children('div.name-i').children('a').text(),
+                        'url': (content_sourse[type].root_url + view.contentUnFilter(item.children('div.name-i').children('a').attr('href'))).replace(content_sourse[type].base_url, '')
+                    }
+                } catch (error) {
                 }
+                if (obj == null || obj.img == null || obj.name == null || obj.url == null) {
+                    console.log("Explorer " + type + " have problem!");
+                    continue;
+                }
+                arr[arr.length] = obj;
             }
             return arr;
         }
@@ -245,11 +274,20 @@ var explore = function() {
             var i = 0;
             for (i = 0; i < l; i++) {
                 var item = t.eq(i);
-                arr[arr.length] = {
-                    'img': view.contentUnFilter(makeimg(item.children('div.e-title').children('div.im').find('img').attr('src'))).replace(content_sourse[type].base_img_url, ''),
-                    'name': item.children('div.e-title').find('a').eq(0).text().trim(),
-                    'url': (content_sourse[type].root_url + view.contentUnFilter(item.children('div.e-title').find('a').eq(0).attr('href'))).replace(content_sourse[type].base_url, '')
+                var obj = null;
+                try {
+                    obj = {
+                        'img': view.contentUnFilter(makeimg(item.children('div.e-title').children('div.im').find('img').attr('src'))).replace(content_sourse[type].base_img_url, ''),
+                        'name': item.children('div.e-title').find('a').eq(0).text().trim(),
+                        'url': (content_sourse[type].root_url + view.contentUnFilter(item.children('div.e-title').find('a').eq(0).attr('href'))).replace(content_sourse[type].base_url, '')
+                    }
+                } catch (error) {
                 }
+                if (obj == null || obj.img == null || obj.name == null || obj.url == null) {
+                    console.log("Explorer " + type + " have problem!");
+                    continue;
+                }
+                arr[arr.length] = obj;
             }
             return arr;
         }
@@ -262,12 +300,21 @@ var explore = function() {
             var i = 0;
             for (i = 0; i < l; i++) {
                 var item = t.eq(i);
-                arr[arr.length] = {
-                    'img': makeimg(item.children('a').attr('href')).replace(content_sourse[type].base_img_url, ''),
-                    'name': item.children('a').text().replace(/ \(.*, ([0-9]{4}).*\)$/, ' ($1)'),
-                    'name_en': item.children('i').text(),
-                    'url': (content_sourse[type].root_url + view.contentUnFilter(item.children('a').attr('href'))).replace(content_sourse[type].base_url, '')
+                var obj = null;
+                try {
+                    obj = {
+                        'img': makeimg(item.children('a').attr('href')).replace(content_sourse[type].base_img_url, ''),
+                        'name': item.children('a').text().replace(/ \(.*, ([0-9]{4}).*\)$/, ' ($1)'),
+                        'name_en': item.children('i').text(),
+                        'url': (content_sourse[type].root_url + view.contentUnFilter(item.children('a').attr('href'))).replace(content_sourse[type].base_url, '')
+                    }
+                } catch (error) {
                 }
+                if (obj == null || obj.img == null || obj.name == null || obj.name_en == null || obj.url == null) {
+                    console.log("Explorer " + type + " have problem!");
+                    continue;
+                }
+                arr[arr.length] = obj;
             }
             return arr;
         }
@@ -1121,8 +1168,10 @@ var explore = function() {
         var label = obj.year[s_year][cat].m.join(", ");
         qbox.text(label);
         if (obj.section == 'favorites') {
-             clearTimeout(upTimer);
-             upTimer = setTimeout(function () {update_q_favorites(obj.id, label);},500);
+            clearTimeout(upTimer);
+            upTimer = setTimeout(function() {
+                update_q_favorites(obj.id, label);
+            }, 500);
         }
     }
     var about_keyword = function(keyword) {

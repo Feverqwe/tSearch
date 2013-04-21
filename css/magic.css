@@ -202,3 +202,8 @@ select {
 textarea {
     font-size: 1em;
 }
+div.status_bar {
+    background-color: #c0c0c0;
+    height: 18px;
+    opacity: 0.5;
+}

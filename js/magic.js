@@ -1,4 +1,5 @@
 var magic = function() {
+    var status_bar = null;
     var pageDOM = null;
     var select_mode = false;
     var sel_function = function(i) {
@@ -289,6 +290,7 @@ var magic = function() {
     };
     var obj_in_path = function(obj, ifr) {
         var path = obj.getPath(ifr);
+        status_bar.text(path);
         return path;
     }
     var format_size = function(s) {
@@ -487,7 +489,8 @@ var magic = function() {
     return {
         begin: function() {
             write_language();
-            $('iframe.web').css('height', $(window).height() - $('div.tools').height() - 4 + 'px');
+            status_bar = $('div.status_bar');
+            $('iframe.web').css('height', $(window).height() - $('div.tools').height() - 4 - $('div.status_bar').height() + 'px');
             $('input[name=open]').on('click', function() {
                 var url = $(this).parents().eq(1).find('input[name=search_url]').val();
                 open_page(url);
@@ -619,7 +622,7 @@ var magic = function() {
                 hov_function = function(obj) {
                     var o_path = obj_in_path(obj, ifr);
                     var path = o_path.replace(tr, '')
-                    if ( path.length != o_path.length ) {
+                    if (path.length != o_path.length) {
                         path = path.replace(/^[^>]*>(.*)$/, '$1');
                     } else {
                         inp.val('');
@@ -798,11 +801,11 @@ $(function() {
     magic.begin();
 });
 $(window).on('resize', function() {
-    $('iframe.web').css('height', $(window).height() - $('div.tools').height() - 4 + 'px');
+    $('iframe.web').css('height', $(window).height() - $('div.tools').height() - 4 - $('div.status_bar').height() + 'px');
 });
 
 jQuery.fn.getPath = function(ifr) {
-    no_id = ['tr']
+    var no_id = ['tr']
     if (this.length != 1)
         return;
     var path, node = this;
@@ -823,10 +826,10 @@ jQuery.fn.getPath = function(ifr) {
         var tag = name;
         if (realNode.id) {
             if (ifr) {
-                if ($.inArray(tag, no_id) == -1 && ifr.find(tag+'[id=' + realNode.id+ ']').length == 1) {
+                if ($.inArray(tag, no_id) == -1 && ifr.find(tag + '[id=' + realNode.id + ']').length == 1) {
                     return '#' + realNode.id + (path ? '>' + path : '');
                 } else {
-                    name += '[id=' + realNode.id+ ']';
+                    name += '[id=' + realNode.id + ']';
                 }
             } else {
                 return name + '#' + realNode.id + (path ? '>' + path : '');
