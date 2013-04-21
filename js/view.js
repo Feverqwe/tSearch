@@ -30,9 +30,14 @@ var view = function() {
         if (!s)
             $('ul.trackers').children('li[data-id="' + t + '"]').append('<ul><li><a href="' + tracker[t].login_url + '" target="_blank">' + _lang['btn_login'] + '</a></li></ul>');
     }
+    var fast_empty = function (element) {
+        var i;
+        for (i = element.childNodes.length - 1; i >= 0; i--)
+            element.removeChild(element.childNodes(i));
+    }
     var clear_table = function() {
         backgroundMode = false;
-        $('div.about_panel').empty();
+        fast_empty($('div.about_panel')[0]);
         $('#rez_table').children('tbody').empty();
         $('div.filter').children('input').val('');
         keywordFilter = null;

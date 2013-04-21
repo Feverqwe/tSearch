@@ -47,3 +47,7 @@ div.jqcloud {
 }
 
 div.jqcloud span { padding: 0; }
+div.jqcloud span:hover {
+    background-color: #ebebeb;
+    border-radius: 6px;
+}
