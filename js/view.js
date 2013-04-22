@@ -34,7 +34,7 @@ var view = function() {
     var clear_table = function() {
         backgroundMode = false;
         $('div.about_panel').empty();
-        $('#rez_table').children('tbody').empty();
+        $('#rez_table').children('tbody')[0].innerHTML = "";
         $('div.filter').children('input').val('');
         keywordFilter = null;
         lastFilterWord = '';
