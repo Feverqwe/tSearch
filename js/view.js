@@ -27,20 +27,13 @@ var view = function() {
     var auth = function(s, t) {
         //if (backgroundMode) return;
         $('ul.trackers').children('li[data-id="' + t + '"]').children('ul').remove();
-        if (!s)
+        if (!s) {
             $('ul.trackers').children('li[data-id="' + t + '"]').append('<ul><li><a href="' + tracker[t].login_url + '" target="_blank">' + _lang['btn_login'] + '</a></li></ul>');
-    }
-    var fast_empty = function(element) {
-        var i;
-        for (i = element.childNodes.length - 1; i >= 0; i--) {
-            if (typeof(element.childNodes) == 'function') {
-                element.removeChild(element.childNodes(i));
-            }
         }
     }
     var clear_table = function() {
         backgroundMode = false;
-        fast_empty($('div.about_panel')[0]);
+        $('div.about_panel').empty();
         $('#rez_table').children('tbody').empty();
         $('div.filter').children('input').val('');
         keywordFilter = null;
