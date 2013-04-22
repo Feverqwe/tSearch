@@ -752,7 +752,7 @@ var view = function() {
                     n: hl_name,
                     r: rate //80
                 };
-            }
+            }/*
             if (new RegExp(keyword_filter_cache.keyword_regexp).test(name)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp + ')', "g"), "<b>$1</b>");
                 rate.name = words.length * (word_rate + 7) + word_rate;
@@ -760,12 +760,15 @@ var view = function() {
                     n: hl_name,
                     r: rate
                 };
-            }
+            }*/
         }
         var hl_name = name.replace(new RegExp(words.join('|'), "ig"), cal_word_rate);
         if (year_hl && word_hl == 1) {
             rate.name = 0;
         }
+        if ( rate.name == 0 ) {
+            rate.name = -100;
+        } 
         return {
             n: hl_name,
             r: rate
