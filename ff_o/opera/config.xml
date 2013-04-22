@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget id="leonardspbox@gmail.com" version="0.8.18" xmlns="http://www.w3.org/ns/widgets">
+<widget id="leonardspbox@gmail.com" version="0.8.19" xmlns="http://www.w3.org/ns/widgets">
     <name>Torrents MultiSearch</name>
     <description xml:lang="ru">Torrents MultiSearch - Самые свежие результаты поиска по популярным торрент трекерам!</description>
     <description xml:lang="en">Torrents MultiSearch - The most recent search results for the most popular torrent tracker!</description>
