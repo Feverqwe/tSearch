@@ -643,12 +643,12 @@ var view = function() {
             if (word_hl * word_rate < words.length * word_rate) {
                 if (a == keyword_filter_cache.year) {
                     year_hl = 1;
-                    rate.name += word_rate / 3;
+                    rate.name += word_rate / 2;
                 } else
                 if (b == 0) {
-                    rate.name += word_rate;
+                    rate.name += word_rate * 2;
                 } else
-                    rate.name += word_rate / 2;
+                    rate.name += word_rate;
             }
             word_hl++;
             return '<b>' + a + '</b>';
@@ -728,7 +728,7 @@ var view = function() {
                     n: hl_name,
                     r: rate //86
                 };
-            }
+            }/*
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover).test(name_lover)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
                 rate.name = words.length * (word_rate + 10) + word_rate;
@@ -736,7 +736,7 @@ var view = function() {
                     n: hl_name,
                     r: rate
                 };
-            }
+            }*/
             if (new RegExp('.* ' + keyword_filter_cache.keyword_regexp + '$').test(name)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp + ')', "g"), "<b>$1</b>");
                 rate.name = words.length * (word_rate + 8) + word_rate;
@@ -767,7 +767,7 @@ var view = function() {
             rate.name = 0;
         }
         if ( rate.name == 0 ) {
-            rate.name = -100;
+            rate.name = -150;
         } 
         return {
             n: hl_name,
