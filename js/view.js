@@ -461,7 +461,7 @@ var view = function() {
     var syntax_highlighting = function(t) {
         var words = keyword_filter_cache.keyword_regexp.split(' ');
         var word_rate = Math.round(200 / words.length);
-        var first_rate = word_rate + word_rate / 2;
+        var first_rate = Math.round(word_rate + word_rate / 2);
         var name = t;
         var name_lover = name.toLowerCase()
 
