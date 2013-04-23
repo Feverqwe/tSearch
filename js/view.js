@@ -460,6 +460,8 @@ var view = function() {
     }
     var syntax_highlighting = function(t) {
         var words = keyword_filter_cache.keyword_regexp.split(' ');
+        var word_rate = Math.round(200 / words.length);
+        var first_rate = word_rate + word_rate / 2;
         var name = t;
         var name_lover = name.toLowerCase()
 
@@ -529,11 +531,11 @@ var view = function() {
                     rate.block[rate.block.length] = "video_type";
                 }
                 if (a == "flac" || a == "alac" || a == "lossless") {
-                    rate.music += 90;
+                    rate.music += 100;
                     rate.block[rate.block.length] = "video_type";
                 } else
                 if (a == "ps3" || a == "xbox" || a == "(PS2)") {
-                    rate.game += 50;
+                    rate.game += 80;
                     rate.block[rate.block.length] = "video_type";
                 } else
                 if (a == "[p]" || a == "{p}" || a == "(p)") {
@@ -541,7 +543,7 @@ var view = function() {
                     rate.block[rate.block.length] = "video_type";
                 } else
                 if (a == "repack" || a == "lossless repack" || a == "steam-rip" || a == "(lossy rip)" || a == "reloaded") {
-                    rate.game += 50;
+                    rate.game += 60;
                     rate.block[rate.block.length] = "video_type";
                 } else
                 if (a == "[native]") {
@@ -629,26 +631,27 @@ var view = function() {
             rate.year = 0;
         }
         name.replace(new RegExp(quality, "g"), cal_rate);
-        var word_rate = 30;
         var cal_word_rate = function(a, b, c) {
             var sub_l = c[b - 1];
             var sub_r = c[b + a.length];
-            if (sub_r == null)
+            if (sub_r == null) {
                 sub_r = '';
-            if (sub_l == null)
+            }
+            if (sub_l == null) {
                 sub_l = '';
+            }
             if ((/[\wа-яА-Я]/).test(sub_l + sub_r)) {
                 return a;
             }
-            if (word_hl * word_rate < words.length * word_rate) {
+            if (word_hl < words.length) {
                 if (a == keyword_filter_cache.year) {
                     year_hl = 1;
-                    rate.name += word_rate;
-                } else
+                }
                 if (b == 0) {
-                    rate.name += word_rate * 2;
-                } else
+                    rate.name += first_rate;
+                } else {
                     rate.name += word_rate;
+                }
             }
             word_hl++;
             return '<b>' + a + '</b>';
@@ -656,8 +659,7 @@ var view = function() {
         if (keyword_filter_cache["year"]) {
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
-                word_rate += word_rate / 100 * 15;
-                rate.name = words.length * word_rate + word_rate; 
+                rate.name = (words.length - 1) * word_rate + first_rate; 
                 return {
                     n: hl_name,
                     r: rate
@@ -666,7 +668,6 @@ var view = function() {
             //проверка по маске ([.*]) Name / .*year.*
             if (new RegExp('^[\\(\\[]{1}.*[\\)\\]]{1} ' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
-                word_rate += word_rate / 100 * 8;
                 rate.name = words.length * word_rate; 
                 return {
                     n: hl_name,
@@ -675,7 +676,6 @@ var view = function() {
             }
             if (new RegExp('.* ' + keyword_filter_cache.keyword_no_year_regexp + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
-                word_rate += word_rate / 100 * 7;
                 rate.name = words.length * word_rate; 
                 return {
                     n: hl_name,
@@ -684,8 +684,7 @@ var view = function() {
             }
             if (new RegExp('^' + keyword_filter_cache.keyword_no_year_regexp + ' .*' + keyword_filter_cache.year + '.*').test(name)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
-                word_rate += word_rate / 100 * 5;
-                rate.name = words.length * word_rate + word_rate; 
+                rate.name = (words.length -1)  * word_rate + first_rate; 
                 return {
                     n: hl_name,
                     r: rate
@@ -693,7 +692,6 @@ var view = function() {
             }
             if (new RegExp('.* ' + keyword_filter_cache.keyword_no_year_regexp + ' .*' + keyword_filter_cache.year + '.*').test(name)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
-                word_rate += word_rate / 100 * 2;
                 rate.name = words.length * word_rate; 
                 return {
                     n: hl_name,
@@ -703,8 +701,7 @@ var view = function() {
         } else {
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + '$').test(name_lover)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
-                word_rate += word_rate / 100 * 0;
-                rate.name = words.length * word_rate + word_rate; 
+                rate.name = (words.length - 1) * word_rate + first_rate; 
                 return {
                     n: hl_name,
                     r: rate
@@ -712,8 +709,7 @@ var view = function() {
             }
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
-                word_rate += word_rate / 100 * 2;
-                rate.name = words.length * word_rate + word_rate; 
+                rate.name = (words.length - 1) * word_rate + first_rate; 
                 return {
                     n: hl_name,
                     r: rate
@@ -721,9 +717,8 @@ var view = function() {
             }
             //проверка по маске ([.*]) Name / .*year.*
             if (new RegExp('^[([]{1}.*[)]]{1} ' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
-                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>")
-                word_rate += word_rate / 100 * 2;
-                rate.name = words.length * word_rate; 
+                var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
+                rate.name = words.length * word_rate;
                 return {
                     n: hl_name,
                     r: rate //95
@@ -731,8 +726,7 @@ var view = function() {
             }
             if (new RegExp(keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
-                word_rate += word_rate / 100 * 1;
-                rate.name = words.length * word_rate; 
+                rate.name = words.length * word_rate;
                 return {
                     n: hl_name,
                     r: rate //86
@@ -740,8 +734,7 @@ var view = function() {
             }
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + '[-/(\s.]{1}').test(name_lover)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
-                word_rate += word_rate / 100 * 1;
-                rate.name = words.length * word_rate + word_rate; 
+                rate.name = (words.length - 1) * word_rate + first_rate;
                 return {
                     n: hl_name,
                     r: rate //80
@@ -752,9 +745,6 @@ var view = function() {
         if (year_hl && word_hl == 1) {
             rate.name = 0;
         }
-        if ( rate.name == 0 ) {
-            rate.name = -150;
-        } 
         return {
             n: hl_name,
             r: rate

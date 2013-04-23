@@ -20,5 +20,5 @@
     "name": "__MSG_appName__",
     "description": "__MSG_appDesc__",
     "default_locale": "ru",
-    "version": "0.8.22"
+    "version": "0.8.23"
 }
