@@ -387,6 +387,7 @@ var engine = function() {
                             er[3] += 1;
                             continue;
                         }
+                        obj['url'] = obj['url'].replace(/[\r\n]+/g, "");
                         if (ex_tr_link_r) {
                             if (obj['url'][0] == '/') {
                                 obj['url'] = short_url + obj['url'];
@@ -396,11 +397,14 @@ var engine = function() {
                         }
                         if (ex_tr_size) {
                             obj['size'] = (td.find(me.tr_size)).text();
-                            if (ex_size_regexp) {
-                                obj['size'] = obj['size'].replace(new RegExp(me.size_r, "ig"), me.size_rp);
-                            }
-                            if (ex_tr_size_c) {
-                                obj['size'] = ex_kit.format_size(obj['size']);
+                            if (obj['size'] != null) {
+                                obj['size'] = obj['size'].replace(/[\r\n]+/g, "");
+                                if (ex_size_regexp) {
+                                    obj['size'] = obj['size'].replace(new RegExp(me.size_r, "ig"), me.size_rp);
+                                }
+                                if (ex_tr_size_c) {
+                                    obj['size'] = ex_kit.format_size(obj['size']);
+                                }
                             }
                             if (!ex_kit.isNumber(obj['size'])) {
                                 obj['size'] = 0;
@@ -411,6 +415,9 @@ var engine = function() {
                         }
                         if (ex_tr_dl) {
                             obj['dl'] = (td.find(me.tr_dl)).attr('href');
+                            if (obj['dl'] != null) {
+                                obj['dl'] = obj['dl'].replace(/[\r\n]+/g, "");
+                            }
                             if (typeof(obj['dl']) != "string") {
                                 er[5] += 1;
                                 obj['dl'] = null;
@@ -425,8 +432,11 @@ var engine = function() {
                         }
                         if (ex_seed) {
                             obj['seeds'] = (td.find(me.seed)).text();
-                            if (ex_seed_regexp) {
-                                obj['seeds'] = obj['seeds'].replace(new RegExp(me.seed_r, "ig"), me.seed_rp);
+                            if (obj['seeds'] != null) {
+                                obj['seeds'] = obj['seeds'].replace(/[\r\n]+/g, "");
+                                if (ex_seed_regexp) {
+                                    obj['seeds'] = obj['seeds'].replace(new RegExp(me.seed_r, "ig"), me.seed_rp);
+                                }
                             }
                             if (!ex_kit.isNumber(obj['seeds'])) {
                                 obj['seeds'] = 1;
@@ -437,8 +447,11 @@ var engine = function() {
                         }
                         if (ex_peer) {
                             obj['leechs'] = (td.find(me.peer)).text();
-                            if (ex_peer_regexp) {
-                                obj['leechs'] = obj['leechs'].replace(new RegExp(me.peer_r, "ig"), me.peer_rp);
+                            if (obj['leechs'] != null) {
+                                obj['leechs'] = obj['leechs'].replace(/[\r\n]+/g, "");
+                                if (ex_peer_regexp) {
+                                    obj['leechs'] = obj['leechs'].replace(new RegExp(me.peer_r, "ig"), me.peer_rp);
+                                }
                             }
                             if (!ex_kit.isNumber(obj['leechs'])) {
                                 obj['leechs'] = 0;
@@ -449,14 +462,17 @@ var engine = function() {
                         }
                         if (ex_date) {
                             obj['time'] = (td.find(me.date)).text();
-                            if (ex_date_regexp) {
-                                obj['time'] = obj['time'].replace(new RegExp(me.t_r, "ig"), me.t_r_r);
-                            }
-                            if (ex_t_m_r) {
-                                obj['time'] = ex_kit.month_replace(obj['time']);
-                            }
-                            if (ex_t_f) {
-                                obj['time'] = ex_kit.format_date(me.t_f, obj['time']);
+                            if (obj['time'] != null) {
+                                obj['time'] = obj['time'].replace(/[\r\n]+/g, "");
+                                if (ex_date_regexp) {
+                                    obj['time'] = obj['time'].replace(new RegExp(me.t_r, "ig"), me.t_r_r);
+                                }
+                                if (ex_t_m_r) {
+                                    obj['time'] = ex_kit.month_replace(obj['time']);
+                                }
+                                if (ex_t_f) {
+                                    obj['time'] = ex_kit.format_date(me.t_f, obj['time']);
+                                }
                             }
                             if (!ex_kit.isNumber(obj['time'])) {
                                 er[8] += 1;
