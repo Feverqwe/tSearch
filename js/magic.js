@@ -856,7 +856,7 @@ jQuery.fn.getPath = function(ifr) {
                 name += ':eq(' + siblings.index(node) + ')';
             }
         }
-        if ($.inArray(tag, ['table', 'div']) != -1 && ifr.find(name).length == 1) {
+        if ($.inArray(tag, ['table', 'div']) != -1 && ifr.find(tag).length == 1) {
             return name + (path ? '>' + path : '');
         }
         path = name + (path ? '>' + path : '');
