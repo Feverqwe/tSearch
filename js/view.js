@@ -284,7 +284,7 @@ var view = function() {
             }
             c = c + '<tr ' + filter + ' data-kf="' + fk + '" data-tracker="' + t + '" data-c="' + v.category.id + '">'
                     + '<td class="time" data-value="' + v.time + '" title="' + unixintimetitle(v.time) + '">' + unixintime(v.time) + '</td>'
-                    + '<td class="quality" data-value="' + quality.value + '" data-qgame="' + quality.game + '" data-qseed="' + quality.seed + '" data-qname="' + quality.name + '" data-qvideo="' + quality.video + '" data-qmusic="' + quality.music + '"><div class="progress"><div style="width:' + (quality.value / 10) + 'px"></div><span title="' + quality.value + '">' + quality.value + '</span></div></td>'
+                    + '<td class="quality" data-value="' + quality.value + '" data-qgame="' + quality.game + '" data-qseed="' + quality.seed + '" data-qname="' + quality.name + '" data-qvideo="' + quality.video + '" data-qmusic="' + quality.music + '" data-qbook="' + quality.book + '"><div class="progress"><div style="width:' + (quality.value / 10) + 'px"></div><span title="' + quality.value + '">' + quality.value + '</span></div></td>'
                     + '<td class="name"><div class="title"><a href="' + v.url + '" target="_blank">' + title + '</a>' +
                     ((v.category.title == null && ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div>' : '')
                     + '</div>'
@@ -534,6 +534,9 @@ var view = function() {
                     rate.music += 100;
                     rate.block[rate.block.length] = "video_type";
                 } else
+                if (a == "mp3") {
+                    rate.music += 80;
+                } else
                 if (a == "ps3" || a == "xbox" || a == "(PS2)") {
                     rate.game += 80;
                     rate.block[rate.block.length] = "video_type";
@@ -560,6 +563,10 @@ var view = function() {
                 } else
                 if (a == "лицензия") {
                     rate.game += 100;
+                    rate.block[rate.block.length] = "video_type";
+                } else
+                if (a == "fb2" || a == "pdf" || a == "dejvu" || a == "rtf" || a == "epub") {
+                    rate.book += 100;
                     rate.block[rate.block.length] = "video_type";
                 }
             }
@@ -599,20 +606,23 @@ var view = function() {
             if (a == "soundtrack") {
                 rate.music++;
             } else
-            if (a == "mp3") {
-                rate.music += 1;
+            if ($.inArray("mp3", rate.m) != -1 && a == "32") {
+                rate.music -= 2;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "128") {
+            if ($.inArray("mp3", rate.m) != -1 && a == "64") {
                 rate.music += 0;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "192") {
-                rate.music += 1;
-            } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "320") {
+            if ($.inArray("mp3", rate.m) != -1 && a == "96") {
                 rate.music += 2;
             } else
-            if (a == "fb2" || a == "pdf" || a == "dejvu" || a == "rtf" || a == "epub") {
-                rate.book += 20;
+            if ($.inArray("mp3", rate.m) != -1 && a == "128") {
+                rate.music += 5;
+            } else
+            if ($.inArray("mp3", rate.m) != -1 && a == "192") {
+                rate.music += 10;
+            } else
+            if ($.inArray("mp3", rate.m) != -1 && a == "320") {
+                rate.music += 15;
             } else
             if (a == "мультфильм") {
                 rate.mult++;
@@ -659,7 +669,7 @@ var view = function() {
         if (keyword_filter_cache["year"]) {
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
-                rate.name = (words.length - 1) * word_rate + first_rate; 
+                rate.name = (words.length - 1) * word_rate + first_rate;
                 return {
                     n: hl_name,
                     r: rate
@@ -668,7 +678,7 @@ var view = function() {
             //проверка по маске ([.*]) Name / .*year.*
             if (new RegExp('^[\\(\\[]{1}.*[\\)\\]]{1} ' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
-                rate.name = words.length * word_rate; 
+                rate.name = words.length * word_rate;
                 return {
                     n: hl_name,
                     r: rate
@@ -676,7 +686,7 @@ var view = function() {
             }
             if (new RegExp('.* ' + keyword_filter_cache.keyword_no_year_regexp + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
-                rate.name = words.length * word_rate; 
+                rate.name = words.length * word_rate;
                 return {
                     n: hl_name,
                     r: rate
@@ -684,7 +694,7 @@ var view = function() {
             }
             if (new RegExp('^' + keyword_filter_cache.keyword_no_year_regexp + ' .*' + keyword_filter_cache.year + '.*').test(name)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
-                rate.name = (words.length -1)  * word_rate + first_rate; 
+                rate.name = (words.length - 1) * word_rate + first_rate;
                 return {
                     n: hl_name,
                     r: rate
@@ -692,7 +702,7 @@ var view = function() {
             }
             if (new RegExp('.* ' + keyword_filter_cache.keyword_no_year_regexp + ' .*' + keyword_filter_cache.year + '.*').test(name)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
-                rate.name = words.length * word_rate; 
+                rate.name = words.length * word_rate;
                 return {
                     n: hl_name,
                     r: rate
@@ -701,7 +711,7 @@ var view = function() {
         } else {
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + '$').test(name_lover)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
-                rate.name = (words.length - 1) * word_rate + first_rate; 
+                rate.name = (words.length - 1) * word_rate + first_rate;
                 return {
                     n: hl_name,
                     r: rate
@@ -709,7 +719,7 @@ var view = function() {
             }
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
                 var hl_name = t.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
-                rate.name = (words.length - 1) * word_rate + first_rate; 
+                rate.name = (words.length - 1) * word_rate + first_rate;
                 return {
                     n: hl_name,
                     r: rate
@@ -1140,13 +1150,16 @@ var view = function() {
                                 if (c == null)
                                     return val;
                                 if (c == 3 || c == 0 || c == 7 || c == 8 || c == 4) {
-                                    val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qmusic'));
+                                    val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qmusic')) - parseInt($(node).attr('data-qbook'));
                                 } else
                                 if (c == 1) {
-                                    val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qvideo'));
+                                    val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qvideo')) - parseInt($(node).attr('data-qbook'));
                                 } else
                                 if (c == 2) {
-                                    val = val - parseInt($(node).attr('data-qmusic')) - parseInt($(node).attr('data-qvideo'));
+                                    val = val - parseInt($(node).attr('data-qmusic')) - parseInt($(node).attr('data-qvideo')) - parseInt($(node).attr('data-qbook'));
+                                } else
+                                if (c == 5) {
+                                    val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qvideo'));
                                 }
                                 return val;
                             } else
