@@ -820,3 +820,10 @@ div.about_panel > div > div.a-table span.kno-fh a {
 .ui-helper-hidden-accessible {
     display: none;
 }
+#rez_table div.title a span.sub_name {
+    color: #181818;
+    font-weight: normal;
+}
+#rez_table div.title a:visited span.sub_name {
+    color: #609;
+}

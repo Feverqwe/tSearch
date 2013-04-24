@@ -672,10 +672,14 @@ var view = function() {
             word_hl++;
             return '<b>' + a + '</b>';
         }
+        var sub_select = function(name) {
+            return name.replace(/((\[[^\]]*\])|(\([^\)]*\)))/g, "<span class=\"sub_name\">$1</span>");
+        }
         if (keyword_filter_cache["year"]) {
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
                 rate.name = (words.length - 1) * word_rate + first_rate;
+                hl_name = sub_select(hl_name);
                 return {
                     n: hl_name,
                     r: rate
@@ -685,6 +689,7 @@ var view = function() {
             if (new RegExp('^[\\(\\[]{1}.*[\\)\\]]{1} ' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
                 rate.name = words.length * word_rate;
+                hl_name = sub_select(hl_name);
                 return {
                     n: hl_name,
                     r: rate
@@ -693,6 +698,7 @@ var view = function() {
             if (new RegExp('.* ' + keyword_filter_cache.keyword_no_year_regexp + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
                 rate.name = words.length * word_rate;
+                hl_name = sub_select(hl_name);
                 return {
                     n: hl_name,
                     r: rate
@@ -701,6 +707,7 @@ var view = function() {
             if (new RegExp('^' + keyword_filter_cache.keyword_no_year_regexp + ' .*' + keyword_filter_cache.year + '.*').test(name)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
                 rate.name = (words.length - 1) * word_rate + first_rate;
+                hl_name = sub_select(hl_name);
                 return {
                     n: hl_name,
                     r: rate
@@ -709,6 +716,7 @@ var view = function() {
             if (new RegExp('.* ' + keyword_filter_cache.keyword_no_year_regexp + ' .*' + keyword_filter_cache.year + '.*').test(name)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
                 rate.name = words.length * word_rate;
+                hl_name = sub_select(hl_name);
                 return {
                     n: hl_name,
                     r: rate
@@ -718,6 +726,7 @@ var view = function() {
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + '$').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
                 rate.name = (words.length - 1) * word_rate + first_rate;
+                hl_name = sub_select(hl_name);
                 return {
                     n: hl_name,
                     r: rate
@@ -726,6 +735,7 @@ var view = function() {
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
                 rate.name = (words.length - 1) * word_rate + first_rate;
+                hl_name = sub_select(hl_name);
                 return {
                     n: hl_name,
                     r: rate
@@ -735,6 +745,7 @@ var view = function() {
             if (new RegExp('^[([]{1}.*[)]]{1} ' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
                 rate.name = words.length * word_rate;
+                hl_name = sub_select(hl_name);
                 return {
                     n: hl_name,
                     r: rate //95
@@ -743,6 +754,7 @@ var view = function() {
             if (new RegExp(keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
                 rate.name = words.length * word_rate;
+                hl_name = sub_select(hl_name);
                 return {
                     n: hl_name,
                     r: rate //86
@@ -751,6 +763,7 @@ var view = function() {
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + '[-/(\s.]{1}').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
                 rate.name = (words.length - 1) * word_rate + first_rate;
+                hl_name = sub_select(hl_name);
                 return {
                     n: hl_name,
                     r: rate //80
@@ -758,6 +771,7 @@ var view = function() {
             }
         }
         var hl_name = name.replace(new RegExp(words.join('|'), "ig"), cal_word_rate);
+        hl_name = sub_select(hl_name);
         if (year_hl && word_hl == 1) {
             rate.name = 0;
         }
