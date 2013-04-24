@@ -673,7 +673,7 @@ var view = function() {
             return '<b>' + a + '</b>';
         }
         var sub_select = function(name) {
-            return name.replace(/(\[[^\]]*\]|\([^\)]*\))/g, "<span class=\"sub_name\">$1</span>");
+            return name.replace(/(\[[^\]]*\]|\([^\)]*\))/g, '<span class="sub_name">$1</span>');
         }
         if (keyword_filter_cache["year"]) {
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
