@@ -947,7 +947,7 @@ var explore = function() {
                 if (topCache != null && topCache.keywords != null) {
                     render_top(topCache.keywords);
                 } else {
-                    $('top_search').css('display', 'none');
+                    $('div.top_search').css('display', 'none');
                 }
             }
         });
