@@ -925,15 +925,17 @@ var explore = function() {
             return;
         }
         var type = "search_top";
-        var url = "http://feverqwe.narod.ru/top.json";
-        if (xhr[type] != null)
+        var url = "http://antoshka.on.ufanet.ru/top.json";
+        if (xhr[type] != null) {
             xhr[type].abort();
+        }
         xhr[type] = $.ajax({
-            type: 'JSON',
             url: url,
             cache: false,
             success: function(data) {
-                data = jQuery.parseJSON(data);
+                if ( typeof(data) != "object" ) {
+                    data = jQuery.parseJSON(data);
+                }
                 data['timeout'] = time + timeout;
                 SetSettings('topCache', JSON.stringify(data));
                 var kw_arr = data['keywords'];
