@@ -284,7 +284,7 @@ var view = function() {
             }
             c = c + '<tr ' + filter + ' data-kf="' + fk + '" data-tracker="' + t + '" data-c="' + v.category.id + '">'
                     + '<td class="time" data-value="' + v.time + '" title="' + unixintimetitle(v.time) + '">' + unixintime(v.time) + '</td>'
-                    + '<td class="quality" data-value="' + quality.value + '" data-qgame="' + quality.game + '" data-qseed="' + quality.seed + '" data-qname="' + quality.name + '" data-qvideo="' + quality.video + '" data-qmusic="' + quality.music + '" data-qbook="' + quality.book + '"><div class="progress"><div style="width:' + (quality.value / 16) + 'px"></div><span title="' + quality.value + '">' + quality.value + '</span></div></td>'
+                    + '<td class="quality" data-value="' + quality.value + '" data-qgame="' + quality.game + '" data-qseed="' + quality.seed + '" data-qname="' + quality.name + '" data-qvideo="' + quality.video + '" data-qmusic="' + quality.music + '" data-qbook="' + quality.book + '"><div class="progress"><div style="width:' + (quality.value / 15) + 'px"></div><span title="' + quality.value + '">' + quality.value + '</span></div></td>'
                     + '<td class="name"><div class="title"><a href="' + v.url + '" target="_blank">' + title + '</a>' +
                     ((v.category.title == null && ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div>' : '')
                     + '</div>'
