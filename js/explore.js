@@ -912,10 +912,12 @@ var explore = function() {
         });
     }
     var render_top = function(arr) {
-        $('div.explore div.top_search div.tags').jQCloud(arr, {
-            delayedMode: true,
-            encodeURI: false
-        });
+        setTimeout(function() {
+            $('div.explore div.top_search div.tags').jQCloud(arr, {
+                delayedMode: true,
+                encodeURI: false
+            });
+        }, 200);
     }
     var get_search_top = function() {
         var timeout = 86400;
@@ -933,7 +935,7 @@ var explore = function() {
             url: url,
             cache: false,
             success: function(data) {
-                if ( typeof(data) != "object" ) {
+                if (typeof(data) != "object") {
                     data = jQuery.parseJSON(data);
                 }
                 data['timeout'] = time + timeout;
@@ -942,8 +944,11 @@ var explore = function() {
                 render_top(kw_arr);
             },
             error: function() {
-                if (topCache != null && topCache.keywords != null)
+                if (topCache != null && topCache.keywords != null) {
                     render_top(topCache.keywords);
+                } else {
+                    $('top_search').css('display', 'none');
+                }
             }
         });
     }
