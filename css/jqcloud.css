@@ -19,8 +19,8 @@ div.jqcloud span.w6 { font-size: 225%; }
 div.jqcloud span.w5 { font-size: 200%; }
 div.jqcloud span.w4 { font-size: 175%; }
 div.jqcloud span.w3 { font-size: 150%; }
-div.jqcloud span.w2 { font-size: 125%; }
-div.jqcloud span.w1 { font-size: 100%; }
+div.jqcloud span.w2 { font-size: 130%; }
+div.jqcloud span.w1 { font-size: 120%; }
 
 /* colors */
 
@@ -47,6 +47,7 @@ div.jqcloud {
 }
 
 div.jqcloud span { padding: 0; }
+
 div.jqcloud span:hover {
     background-color: #ebebeb;
     border-radius: 6px;
