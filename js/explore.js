@@ -640,7 +640,7 @@ var explore = function() {
         if (poster_count <= 0)
             return '';
         $('li.' + section).attr('data-item-count', poster_count);
-        var buttons = (fav != null) ? '<div class="add_favorite" title="' + _lang.exp_in_fav + '">' : '<div class="del_favorite" title="' + _lang.exp_rm_fav + '"></div><div class="edit_favorite" title="' + _lang.exp_edit_fav + '">';
+        var buttons = (fav != null) ? '<div class="add_favorite" title="' + _lang.exp_in_fav + '">' : '<div class="del_favorite" title="' + _lang.exp_rm_fav + '"></div><div class="edit_favorite" title="' + _lang.exp_edit_fav + '"></div><div class="move_favorite" title="' + _lang.exp_move_fav + '">';
         var buttons = buttons + '</div><div class="quality_box" title="' + _lang.exp_q_fav + '">';
         var c = '<div class="pager">' + make_page_body(poster_count, content.length, page) + '</div>';
         var max_item = page * poster_count;
@@ -731,6 +731,43 @@ var explore = function() {
             show_favorites();
         });
     }
+    var FavoritesOrder = function(left, id, right) {
+        var c = favoritesList.length;
+        var new_arr = []
+        if (left != null) {
+            if (parseInt(id) - 1 == left) {
+                return;
+            }
+            for (var i = 0; i < c; i++) {
+                if (i == id) {
+                    continue;
+                }
+                new_arr[new_arr.length] = favoritesList[i];
+                if (i == left) {
+                    new_arr[new_arr.length] = favoritesList[id];
+                }
+            }
+            favoritesList = new_arr;
+        } else
+        if (right != null)
+        {
+            if (parseInt(id) + 1 == right) {
+                return;
+            }
+            for (var i = 0; i < c; i++) {
+                if (i == id) {
+                    continue;
+                }
+                if (i == right) {
+                    new_arr[new_arr.length] = favoritesList[id];
+                }
+                new_arr[new_arr.length] = favoritesList[i];
+            }
+            favoritesList = new_arr;
+        }
+        SetSettings('favoritesList', JSON.stringify(favoritesList));
+        show_favorites();
+    }
     var del_from_favorites = function(id) {
         favoritesList.splice(id, 1);
         SetSettings('favoritesList', JSON.stringify(favoritesList));
@@ -758,6 +795,7 @@ var explore = function() {
             handle: 'div.move_it',
             revert: true,
             start: function(event, ui) {
+                console.log(event);
                 $('div.explore').find('div.spoiler').hide('fast');
                 $('div.explore').find('div.setup_div').hide('fast', function(a, b) {
                     $(this).remove();
@@ -777,12 +815,6 @@ var explore = function() {
                 save_order();
             }
         });
-        //remove!!! временная ф-я
-        if (listOptions['games_a'] == null)
-            updateConfig();
-        if (explorerCache['games_a'] == null)
-            SetSettings('explorerCache', JSON.stringify({}));
-        //<<<<<<<<
         $.each(listOptions, function(key, value) {
             ul.append('<li class="' + key + '"></li>');
             if (key == 'favorites')
@@ -910,11 +942,16 @@ var explore = function() {
             var s = $(this).attr('title');
             triggerClick(s);
         });
+        $("div.explore").sortable({handle: 'div.move_favorite' ,cancel: "div.pager", items: ">ul.sortable > li.favorites>div.favorites>div>div.poster", opacity: 0.8,
+            beforeStop: function(event, ui) {
+                FavoritesOrder(ui.item.prev().attr("data-id"), ui.item.attr("data-id"), ui.item.next().next().attr("data-id"));
+            }
+        });
     }
     var render_top = function(arr) {
         setTimeout(function() {
             $('div.explore div.top_search div.tags').jQCloud(arr, {
-                delayedMode: true,
+                delayedMode: false,
                 encodeURI: false
             });
         }, 200);

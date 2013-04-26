@@ -564,7 +564,14 @@ div.explore div.poster > div.image > div.del_favorite {
 }
 div.explore div.poster > div.image > div.edit_favorite {
     background: url(../images/edit.png) center center no-repeat;
-    left: 8px;
+    left: auto;
+    right: -8px;
+}
+div.explore div.poster > div.image > div.move_favorite {
+    background: url(../images/move.png) center center no-repeat;
+    left: auto;
+    right: -8px;
+    top: 8px;
 }
 div.explore div.poster > div.image > a > img {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
@@ -600,6 +607,7 @@ div.explore div.poster:hover div.info,
 div.explore div.poster:hover div.image > div.add_favorite,
 div.explore div.poster:hover div.image > div.del_favorite,
 div.explore div.poster:hover div.image > div.edit_favorite,
+div.explore div.poster:hover div.image > div.move_favorite,
 div.explore div.poster:hover div.image > div.quality_box {
     display: block;
 }
