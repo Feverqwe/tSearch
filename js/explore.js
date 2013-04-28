@@ -793,17 +793,17 @@ var explore = function() {
         ul.sortable({
             axis: 'y',
             handle: 'div.move_it',
-            revert: true,
             start: function(event, ui) {
-                console.log(event);
-                $('div.explore').find('div.spoiler').hide('fast');
-                $('div.explore').find('div.setup_div').hide('fast', function(a, b) {
+                var de = $('div.explore');
+                de.find('div.spoiler').hide('fast');
+                de.find('div.setup_div').hide('fast', function(a, b) {
                     $(this).remove();
                 });
-                $('div.explore').find('div.setup:visible').addClass('triggered').hide('fast');
-                $('div.explore ul.sortable li div').children('div').children('div.poster').hide();
-                $('div.explore ul.sortable li div').children('div').children('div.pager').hide();
-                $('div.explore ul.sortable li div').children('div').css('min-height', '');
+                de.find('div.setup:visible').addClass('triggered').hide('fast');
+                var deuld = $('div.explore ul.sortable li div');
+                deuld.children('div').children('div.poster').hide();
+                deuld.children('div').children('div.pager').hide();
+                deuld.children('div').css('min-height', '');
                 $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow', 'none');
             },
             stop: function(event, ui) {
