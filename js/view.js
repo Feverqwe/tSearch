@@ -191,7 +191,7 @@ var view = function() {
                 item.size = v.size;
                 item.name_quality = quality.name;
                 item.quality = quality.value;
-                item.m = quality.m;
+                item.m = quality.qbox;
             } else
             if (item.name_quality >= quality.name && item.quality < quality.value) {
                 item.name = title;
@@ -199,7 +199,7 @@ var view = function() {
                 item.size = v.size;
                 item.name_quality = quality.name;
                 item.quality = quality.value;
-                item.m = quality.m;
+                item.m = quality.qbox;
             }
         });
         updateTrackerResultCount(t, sum);
@@ -466,7 +466,7 @@ var view = function() {
         var name_lover = name.toLowerCase()
 
 
-        var rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0, block: []}
+        var rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0, block: [], qbox: "+"}
         var word_hl = 0;
         var year_hl = 0;
         var cal_rate = function(a, b, c) {
@@ -489,85 +489,156 @@ var view = function() {
                 if (a == "blu-ray") {
                     rate.video += 100;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "Blu-ray";
                 } else
                 if (a == "bd-remux" || a == "bdremux") {
                     rate.video += 90;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "Remux";
                 } else
                 if (a == "bd-rip" || a == "bdrip" || a == "bdrip-avc") {
                     rate.video += 80;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "BDRip";
                 } else
                 if (a == "camrip" || a == "camrip-avc") {
                     rate.video += 10;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "CAMRip";
                 } else
-                if (a == "hdtv-rip" || a == "hdtvrip" || a == "dtheater-rip") {
+                if (a == "hdtv-rip" || a == "hdtvrip") {
                     rate.video += 70;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "HDTV-Rip";
+                } else
+                if (a == "dtheater-rip") {
+                    rate.video += 70;
+                    rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "DTheater-Rip";
                 } else
                 if (a == "lowhdrip") {
                     rate.video += 10;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "LowHDRip";
                 } else
-                if (a == "hdtv" || a == "hdrip" || a == "hdrip-avc" || a == "dvdrip" || a == "dvd-rip" || a == "dvdrip-avc") {
+                if (a == "hdtv") {
                     rate.video += 60;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "HDTV";
+                } else
+                if (a == "hdrip" || a == "hdrip-avc") {
+                    rate.video += 60;
+                    rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "HDRip";
+                } else
+                if (a == "dvdrip" || a == "dvd-rip" || a == "dvdrip-avc") {
+                    rate.video += 60;
+                    rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "DVD-Rip";
                 } else
                 if (a == "dvd" || a == "dvd5" || a == "2xdvd9" || a == "dvd9" || a == "dvd-9" || a == "hd-dvd") {
                     rate.video += 50;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "DVD";
                 } else
                 if (a == "hqsatrip" || a == "hqrip" || a == "hqrip-avc") {
                     rate.video += 44;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "HDrip";
                 } else
-                if (a == "tvrip" || a == "webrip" || a == "web-dlrip-avc" || a == "webdl-rip" || a == "web-dlrip" || a == "web-dl" || a == "satrip" || a == "dvb" || a == "iptvrip") {
+                if (a == "tvrip" || a == "iptvrip") {
                     rate.video += 40;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "TV-Rip";
                 } else
-                if (a == "telesynch" || a == "ts" || a == "dvdscr" || a == "dvdscreener") {
+                if (a == "webrip") {
+                    rate.video += 40;
+                    rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "WebRip";
+                } else
+                if (a == "web-dlrip-avc" || a == "webdl-rip" || a == "web-dlrip" || a == "web-dl") {
+                    rate.video += 40;
+                    rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "WEB-DL";
+                } else
+                if (a == "satrip") {
+                    rate.video += 40;
+                    rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "SAT-Rip";
+                } else
+                if (a == "dvb") {
+                    rate.video += 40;
+                    rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "DVB";
+                } else
+                if (a == "telesynch" || a == "ts") {
                     rate.video += 20;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "Telesync";
+                }
+                if (a == "dvdscr" || a == "dvdscreener") {
+                    rate.video += 20;
+                    rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "DVD-Screener";
                 }
                 if (a == "flac" || a == "alac" || a == "lossless") {
                     rate.music += 100;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "lossless";
                 } else
                 if (a == "mp3") {
                     rate.music += 80;
+                    rate.qbox = "MP3";
                 } else
-                if (a == "ps3" || a == "xbox" || a == "(PS2)") {
+                if (a == "ps3") {
                     rate.game += 80;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "PS3";
+                } else
+                if (a == "xbox") {
+                    rate.game += 80;
+                    rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "XBox";
+                } else
+                if (a == "(PS2)") {
+                    rate.game += 80;
+                    rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "PS2";
                 } else
                 if (a == "[p]" || a == "{p}" || a == "(p)") {
                     rate.game += 20;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "P";
                 } else
                 if (a == "repack" || a == "lossless repack" || a == "steam-rip" || a == "(lossy rip)" || a == "reloaded") {
                     rate.game += 60;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "RePack";
                 } else
                 if (a == "[native]") {
                     rate.game += 100;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "Native";
                 } else
                 if (a == "[rip]" || a == "{rip}" || a == "(rip)") {
                     rate.game += 80;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "Rip";
                 } else
                 if (a == "[l]" || a == "{l}" || a == "(l)") {
                     rate.game += 100;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "L";
                 } else
                 if (a == "лицензия") {
                     rate.game += 100;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = "L";
                 } else
                 if (a == "fb2" || a == "pdf" || a == "dejvu" || a == "rtf" || a == "epub") {
                     rate.book += 100;
                     rate.block[rate.block.length] = "video_type";
+                    rate.qbox = a;
                 }
             }
             if (a == "h.264" || a == "h264" || a == "mp4" || a == "m4v") {
@@ -930,6 +1001,7 @@ var view = function() {
         $('body,html').scrollTop();
         $('div.result_panel').css('display', 'block');
         $('div.explore').css('display', 'none');
+        $('form input[type=text]').blur();
         var sel_tr = $('ul.trackers li a.selected').parent().data('id');
         if (sel_tr == null || sel_tr == undefined)
             sel_tr = null;
@@ -943,8 +1015,9 @@ var view = function() {
         window.location = '#s=' + keyword;
         global_wl_hash = location.hash;
         engine.search(keyword, sel_tr);
-        if (allow_get_description)
+        if (allow_get_description) {
             explore.getAbout(keyword);
+        }
         _gaq.push(['_trackPageview', 'index.html#s=' + keyword]);
         _gaq.push(['_trackEvent', 'Search', 'keyword', keyword]);
         return false;
@@ -1242,7 +1315,14 @@ var view = function() {
                 }, 200);
                 return false;
             });
-
+            $(document).on('keyup', function(e) {
+                if ( e.target.tagName == "INPUT" ) {
+                    return;
+                }
+                if (e.keyCode == 27) {
+                    triggerBlank();
+                }
+            });
         }
     }
 }();

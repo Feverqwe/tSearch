@@ -58,7 +58,6 @@ input[type=text]:focus {
     color:#ffffff;
     font-family: Arial, sans-serif;
     font-size:1.143em;
-    font-weight:bold;
     padding:2px 8px;
     text-decoration:none;
     text-shadow:0px 0px 0px #1570cd;
@@ -834,4 +833,20 @@ div.about_panel > div > div.a-table span.kno-fh a {
 }
 #rez_table div.title a:visited span.sub_name {
     color: #609;
+}
+div.info_popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100px;
+    background-color: #ccc;
+    z-index: 10;
+}
+div.info_popup .corner {
+    border: 8px solid transparent;
+    border-bottom: 10px solid #fff;
+    border-top: 0px;
+    display: block;
+width: 0px;
 }
