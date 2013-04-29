@@ -948,17 +948,24 @@ var explore = function() {
             }
         });
         var info_popup = $("div.info_popup");
-        $("div.explore").on("mouseenter","div.quality_box",function (e) {
+        $("div.explore").on("mouseenter", "div.quality_box", function(e) {
             var ct = $(e.currentTarget);
-            if ( ct.html() == "?" ) return;
-            info_popup.show();
+            if (ct.html() == "?")
+                return;
+            info_popup.children("div.content").html();
             var w = info_popup.width() / 2;
-            var h = info_popup.height() / 2;
+            var h = info_popup.height() + 10;
             var pos = ct.offset();
             var lp = pos.left - w + ct.width() / 2;
-            if ( lp < 0 ) lp = 0;
-            info_popup.css({"left": lp,"top":pos.top - h});
-        }).on("mouseleave","div.quality_box", function (e) {
+            if (lp < 0) {
+                info_popup.children("div.corner").css("margin-left", (lp - 8) + "px");
+                lp = 0;
+            } else {
+                info_popup.children("div.corner").css("margin-left", 8);
+            }
+            info_popup.css({"left": lp, "top": pos.top - h});
+            info_popup.show();
+        }).on("mouseleave", "div.quality_box", function(e) {
             info_popup.hide();
         });
     }
