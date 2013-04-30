@@ -1030,11 +1030,18 @@ var explore = function() {
     }
     var render_top = function(arr) {
         setTimeout(function() {
-            $('div.explore div.top_search div.tags').jQCloud(arr, {
-                delayedMode: false,
-                encodeURI: false
-            });
-        }, 200);
+            var max = 0;
+            for (var i = 0; i < arr.length; i++) {
+                if (max < arr[i].weight) {
+                    max = arr[i].weight;
+                }
+            }
+            for (var i = 0; i < arr.length; i++) {
+                arr[i].weight = Math.round( max/100 * arr[i].weight/10 );
+            }
+            
+            $('div.explore div.top_search div.tags').jQCloud(arr);
+        }, 50);
     }
     var get_search_top = function() {
         var timeout = 86400;
