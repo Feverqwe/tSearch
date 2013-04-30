@@ -970,10 +970,6 @@ var explore = function() {
         });
         var info_popup = $("div.info_popup");
         $("div.explore").on("mouseenter", "div.quality_box", function(e) {
-            if (last_qbox.obj != null) {
-                last_qbox.obj.css("display", "");
-                last_qbox.obj = null;
-            }
             var ct = $(this);
             var pos = ct.offset();
             var section = $(this).parent().parent().parent().parent().parent().attr("class");
@@ -989,6 +985,10 @@ var explore = function() {
             if (pos.left == 0 || ex_name == null) {
                 if (info_popup.css("display") == "block") {
                     info_popup.css("display", "none");
+                }
+                if (last_qbox.obj != null) {
+                    last_qbox.obj.css("display", "");
+                    last_qbox.obj = null;
                 }
                 return;
             }
