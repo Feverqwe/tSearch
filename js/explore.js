@@ -15,7 +15,7 @@ var explore = function() {
     var topCache = (GetSettings('topCache') !== undefined) ? JSON.parse(GetSettings('topCache')) : null;
     var favoritesList = (GetSettings('favoritesList') !== undefined) ? JSON.parse(GetSettings('favoritesList')) : [];
     var favoritesDeskList = (GetSettings('favoritesDeskList') !== undefined) ? JSON.parse(GetSettings('favoritesDeskList')) : {};
-    var last_qbox = {top: 0, obj: null};
+    var last_qbox = {top: 0, obj: null, id: null};
     var listOptions_def = {
         favorites: {
             s: 1,
@@ -974,8 +974,8 @@ var explore = function() {
             var pos = ct.offset();
             var section = $(this).parent().parent().parent().parent().parent().attr("class");
             var ex_name = ct.attr("data-name");
+            var id = $(this).parent().parent().attr("data-id");
             if (ex_name == null && section == "favorites") {
-                var id = $(this).parent().parent().attr("data-id");
                 var db = get_tr_favorites(id);
                 if (db) {
                     ct.attr({"data-name": db.name, "data-link": db.link});
@@ -992,11 +992,15 @@ var explore = function() {
                 }
                 return;
             }
+            if (last_qbox.obj != null && id != last_qbox.id && info_popup.is(":visible")) {
+                last_qbox.obj.css("display", "");
+            }
             info_popup.children("div.content").html('<a href="' + ct.attr("data-link") + '" target="_blank">' + ex_name + '</a>');
             var w = info_popup.width() / 2;
             var h = info_popup.height() + 10;
             last_qbox.top = pos.top;
             last_qbox.obj = ct;
+            last_qbox.id = id;
             var ct_w = ct.width() + 8;
             var lp = pos.left - w + ct_w / 2;
             if (lp < 0) {
