@@ -153,7 +153,7 @@ var view = function() {
 
             var title = syntax_highlighting(v.title);
             var quality = quality_calc(title.r, v);
-            if (quality.name == 0) {
+            if (quality.name == 0 || quality.name < 200) {
                 return true;
             }
             sum++;

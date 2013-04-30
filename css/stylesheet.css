@@ -827,11 +827,11 @@ div.about_panel > div > div.a-table span.kno-fh a {
 .ui-helper-hidden-accessible {
     display: none;
 }
-#rez_table div.title a span.sub_name {
+#rez_table div.title a span.sub_name, div.info_popup .content a span.sub_name {
     color: #181818;
     font-weight: normal;
 }
-#rez_table div.title a:visited span.sub_name {
+#rez_table div.title a:visited span.sub_name, div.info_popup .content a:visited span.sub_name {
     color: #609;
 }
 div.info_popup {
@@ -841,7 +841,6 @@ div.info_popup {
     min-width: 80px;
     z-index: 10;
     background-color: #fff;
-    min-height: 30px;
     border-radius: 4px;
     box-shadow: 0 0 1px 0 rgba(0,0,0,0.6),0 10px 25px -5px rgba(0,0,0,0.4);
     display: none;
@@ -868,4 +867,9 @@ div.info_popup .corner {
 
 }
 div.info_popup .content {
+    padding: 6px;
+    max-width: 300px;
+}
+div.info_popup .content a {
+    text-decoration: none;
 }
