@@ -188,7 +188,7 @@ var view = function() {
             if (item.name.length == 0) {
                 item.name = title;
                 item.link = v.url;
-                item.size = v.size;
+                item.size = bytesToSize(v.size);
                 item.name_quality = quality.name;
                 item.quality = quality.value;
                 item.m = quality.qbox;
@@ -196,7 +196,7 @@ var view = function() {
             if (item.name_quality >= quality.name && item.quality < quality.value) {
                 item.name = title;
                 item.link = v.url;
-                item.size = v.size;
+                item.size = bytesToSize(v.size);
                 item.name_quality = quality.name;
                 item.quality = quality.value;
                 item.m = quality.qbox;
@@ -1297,7 +1297,7 @@ var view = function() {
                 triggerBlank();
             });
             $('input.sbutton.history').on("click", function() {
-                window.location = 'history.html';//'#back='+$.trim($('form[name=search]').children('input[type=text]').val());
+                window.location = 'history.html';
             });
             AddAutocomplete();
             $('div.topbtn').hide();
@@ -1317,6 +1317,9 @@ var view = function() {
             });
             $(document).on('keyup', function(e) {
                 if ( e.target.tagName == "INPUT" ) {
+                    return;
+                }
+                if ( $('div.explore').is(":visible") ) {
                     return;
                 }
                 if (e.keyCode == 27) {

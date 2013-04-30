@@ -1291,13 +1291,13 @@ var explore = function() {
         qbox.removeClass('loading');
         var label = obj.year[s_year][cat].m;
         qbox.text(label);
-        qbox.attr("data-name", obj.year[s_year][cat].name);
+        qbox.attr("data-name", obj.year[s_year][cat].name + ', ' + obj.year[s_year][cat].size);
         qbox.attr("data-link", obj.year[s_year][cat].link);
         qbox.trigger("mouseenter");
         if (obj.section == 'favorites') {
             clearTimeout(upTimer);
             upTimer = setTimeout(function() {
-                update_q_favorites(obj.id, label, obj.year[s_year][cat].link, obj.year[s_year][cat].name);
+                update_q_favorites(obj.id, label, obj.year[s_year][cat].link, obj.year[s_year][cat].name + ', ' + obj.year[s_year][cat].size);
             }, 500);
         }
     }
