@@ -565,12 +565,16 @@ div.explore div.poster > div.image > div.edit_favorite {
     background: url(../images/edit.png) center center no-repeat;
     left: auto;
     right: -8px;
+    background-color: #fff;
+    height: 15px;
 }
 div.explore div.poster > div.image > div.move_favorite {
     background: url(../images/move.png) center center no-repeat;
     left: auto;
     right: -8px;
-    top: 8px;
+    top: 10px;
+    background-color: #fff;
+    border-radius: 8px;
 }
 div.explore div.poster > div.image > a > img {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
@@ -762,13 +766,13 @@ div.explore div.poster > div.image > div.quality_box {
     float: right;
     cursor: pointer;
     opacity: 0.8;
-    background-color: #3d94f6;
-    border: 2px #fff solid;
-    border-radius: 4px;
+    background-color: #fff;
+    border: 1px rgb(175, 173, 173) solid;
+    border-radius: 3px;
     padding: 2px;
     padding-bottom: -4px;
     font-size: 0.857em;
-    color: #fff;
+    color: #000;
 }
 div.explore div.poster > div.image > div.quality_box.loading {
     background: url(../images/loading.gif) no-repeat center center;

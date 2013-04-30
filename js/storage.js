@@ -4,6 +4,9 @@ var SetSettings = function (key,value) {
         var obj = {}
         obj[key] = value;
         chrome.storage.sync.set(obj);
+         if ( value.length + key.length > 4096) {
+            console.log("Can't sync, storage limited!");
+        }
         localStorage[key] = value;
     } else {
         localStorage[key] = value;

@@ -14,6 +14,7 @@ var explore = function() {
     var upTimer = null;
     var topCache = (GetSettings('topCache') !== undefined) ? JSON.parse(GetSettings('topCache')) : null;
     var favoritesList = (GetSettings('favoritesList') !== undefined) ? JSON.parse(GetSettings('favoritesList')) : [];
+    var favoritesDeskList = (GetSettings('favoritesDeskList') !== undefined) ? JSON.parse(GetSettings('favoritesDeskList')) : {};
     var last_qbox = {top: 0, obj: null};
     var listOptions_def = {
         favorites: {
@@ -642,7 +643,7 @@ var explore = function() {
             return '';
         $('li.' + section).attr('data-item-count', poster_count);
         var buttons = (fav != null) ? '<div class="add_favorite" title="' + _lang.exp_in_fav + '">' : '<div class="del_favorite" title="' + _lang.exp_rm_fav + '"></div><div class="edit_favorite" title="' + _lang.exp_edit_fav + '"></div><div class="move_favorite" title="' + _lang.exp_move_fav + '">';
-        var buttons = buttons + '</div><div class="quality_box" title="' + _lang.exp_q_fav + '">';
+        buttons += '</div><div class="quality_box" title="' + _lang.exp_q_fav + '">';
         var c = '<div class="pager">' + make_page_body(poster_count, content.length, page) + '</div>';
         var max_item = page * poster_count;
         var min_item = max_item - poster_count;
@@ -772,17 +773,36 @@ var explore = function() {
     var del_from_favorites = function(id) {
         favoritesList.splice(id, 1);
         SetSettings('favoritesList', JSON.stringify(favoritesList));
+        if (id  in favoritesDeskList) {
+            delete favoritesDeskList[id];
+            SetSettings('favoritesDeskList', JSON.stringify(favoritesDeskList));
+        }
         show_favorites();
     }
-    var update_q_favorites = function(id, q) {
+    var update_q_favorites = function(id, q, link, name) {
         if (q == '')
             q = '?';
         favoritesList[id]['quality'] = q;
+        if (link != null && name != null) {
+            if (id in favoritesDeskList == false) {
+                favoritesDeskList[id] = {};
+            }
+            favoritesDeskList[id]['tr_link'] = link;
+            favoritesDeskList[id]['tr_name'] = name;
+            SetSettings('favoritesDeskList', JSON.stringify(favoritesDeskList));
+        }
         SetSettings('favoritesList', JSON.stringify(favoritesList));
     }
+    var get_tr_favorites = function(id) {
+        if (id in favoritesDeskList) {
+            return {"link": favoritesDeskList[id].tr_link, "name": favoritesDeskList[id].tr_name};
+        }
+        return null;
+    }
     var get_q_favorites = function(id) {
-        if (favoritesList[id].quality == null)
+        if ("quality" in favoritesList[id] == false) {
             return '?';
+        }
         return favoritesList[id]['quality'];
     }
     var make_form = function() {
@@ -950,19 +970,29 @@ var explore = function() {
         });
         var info_popup = $("div.info_popup");
         $("div.explore").on("mouseenter", "div.quality_box", function(e) {
+            if (last_qbox.obj != null) {
+                last_qbox.obj.css("display", "");
+                last_qbox.obj = null;
+            }
             var ct = $(this);
             var pos = ct.offset();
-            if (ct.attr("data-name") == null || pos.left == 0) {
+            var section = $(this).parent().parent().parent().parent().parent().attr("class");
+            var ex_name = ct.attr("data-name");
+            if (ex_name == null && section == "favorites") {
+                var id = $(this).parent().parent().attr("data-id");
+                var db = get_tr_favorites(id);
+                if (db) {
+                    ct.attr({"data-name": db.name, "data-link": db.link});
+                    ex_name = db.name;
+                }
+            }
+            if (pos.left == 0 || ex_name == null) {
                 if (info_popup.css("display") == "block") {
                     info_popup.css("display", "none");
-                    if (last_qbox.obj != null) {
-                        last_qbox.obj.css("display", "");
-                        last_qbox.obj = null;
-                    }
                 }
                 return;
             }
-            info_popup.children("div.content").html('<a href="' + ct.attr("data-link") + '" target="_blank">' + ct.attr("data-name") + '</a>');
+            info_popup.children("div.content").html('<a href="' + ct.attr("data-link") + '" target="_blank">' + ex_name + '</a>');
             var w = info_popup.width() / 2;
             var h = info_popup.height() + 10;
             last_qbox.top = pos.top;
@@ -988,8 +1018,10 @@ var explore = function() {
         });
         info_popup.on('mouseleave', function(event) {
             info_popup.css('display', 'none');
-            last_qbox.obj.css("display", "");
-            last_qbox.obj = null;
+            if (last_qbox.obj != null) {
+                last_qbox.obj.css("display", "");
+                last_qbox.obj = null;
+            }
         });
     }
     var render_top = function(arr) {
@@ -1261,7 +1293,7 @@ var explore = function() {
         if (obj.section == 'favorites') {
             clearTimeout(upTimer);
             upTimer = setTimeout(function() {
-                update_q_favorites(obj.id, label);
+                update_q_favorites(obj.id, label, obj.year[s_year][cat].link, obj.year[s_year][cat].name);
             }, 500);
         }
     }
