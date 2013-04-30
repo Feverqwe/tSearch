@@ -952,8 +952,16 @@ var explore = function() {
         $("div.explore").on("mouseenter", "div.quality_box", function(e) {
             var ct = $(this);
             var pos = ct.offset();
-            if (ct.attr("data-name") == null || pos.left == 0)
+            if (ct.attr("data-name") == null || pos.left == 0) {
+                if (info_popup.css("display") == "block") {
+                    info_popup.css("display", "none");
+                    if (last_qbox.obj != null) {
+                        last_qbox.obj.css("display", "");
+                        last_qbox.obj = null;
+                    }
+                }
                 return;
+            }
             info_popup.children("div.content").html('<a href="' + ct.attr("data-link") + '" target="_blank">' + ct.attr("data-name") + '</a>');
             var w = info_popup.width() / 2;
             var h = info_popup.height() + 10;
@@ -973,8 +981,8 @@ var explore = function() {
             if (event.pageY < last_qbox.top + $(this).height()) {
                 info_popup.hide();
             } else {
-                if ( last_qbox.obj != null ) {
-                    last_qbox.obj.css("display","block");
+                if (last_qbox.obj != null) {
+                    last_qbox.obj.css("display", "block");
                 }
             }
         });
