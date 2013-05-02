@@ -62,6 +62,7 @@ input[type=text]:focus {
     text-decoration:none;
     text-shadow:0px 0px 0px #1570cd;
     margin-top: 0;
+    font-weight: bolder;
 }
 .sbutton:hover {
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #3d94f6) );
