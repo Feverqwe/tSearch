@@ -17,7 +17,8 @@ var options = function() {
         google_analytics: {"v": 0, "t": "checkbox"},
         autoSetCat: {"v": 1, "t": "checkbox"},
         allow_get_description: {"v": 1, "t": "checkbox"},
-        allow_favorites_sync: {"v": 0, "t": "checkbox"}
+        allow_favorites_sync: {"v": 0, "t": "checkbox"},
+        sub_select_enable: {"v": 1, "t": "checkbox"}
     }
     var currentProfileID = 0;
     var defProfile = 0;

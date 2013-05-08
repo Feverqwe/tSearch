@@ -731,7 +731,7 @@ var ex_kit = function() {
         return text;
     }
     var format_size = function(s) {
-        var size = s.replace(/[^0-9.,кбмгтkmgtb]/ig, '');
+        var size = s.replace(/[^0-9.,кбмгтkmgtb]/ig, '').replace(',','.');
         var t = size.replace(/кб|kb/i, '');
         if (t.length != size.length) {
             t = parseFloat(t);

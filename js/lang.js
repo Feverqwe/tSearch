@@ -196,7 +196,8 @@ var get_lang = function(lang) {
             63: "Edit",
             64: "Close",
             65: "Custom codes torrent trackers posted",
-            66: "on this site"
+            66: "on this site",
+            67: "Highlight the notes in the name of the torrent"
         },
         magic: {
             1: 'Loading error!',
@@ -459,7 +460,8 @@ var get_lang = function(lang) {
             63: "Изменить",
             64: "Закрыть",
             65: "Пользовательские коды торрент трекеров выложены",
-            66: "на этом сайте"
+            66: "на этом сайте",
+            67: "Подсвечивать пояснения в названии раздачи"
         },
         magic: {
             1: 'Ошибка загрузки!',
