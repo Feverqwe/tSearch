@@ -7,7 +7,7 @@
         var id = null;
         var icon = 'data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAADksgYAAAD/AAAAAACkpKUA4ODgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMzMzMzMzMzMjIyMjIyMjIzMzMzMzMzMzRERERERERERBFARAQEQABEFEBEBAQERAQUQEQEBARERBRARAQEAAAEFEBEBAQERAERAAQEBEAARBRAREQEREREFEQEBAREREREREREREREQzMzMzMzMzMzIyMjIyMjIyMzMzMzMzMzMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
         var url = 'http://tfile.me/forum/ssearch.php';
-        var login_url = 'http://tfile.me/';
+        var login_url = 'http://tfile.me';
         var root_url = 'http://tfile.me/forum/';
         var about = 'Торрент трекер tfile.me - фильмы, музыка, программы, книги';
         var flags = {
@@ -42,16 +42,10 @@
                 }
                 return 0;
             }
-            var calculateTime = function(time) {
-                time = $.trim(time).split(" ");
-                var date = time[0].split('-');
-                time = time[1].split(':');
-                return Math.round((new Date(parseInt(date[0]), parseInt(date[1]) - 1, parseInt(date[2]), parseInt(time[0]), parseInt(time[1]))).getTime() / 1000);
-            }
             var calculateCategory = function(n) {
-                var n = String(n).replace(/.*c=([0-9]*)$/i, "$1");
+                var n = String(n).replace(/.*f=([0-9]*)$/i, "$1");
                 if (isNaN(n))
-                    n = String(n).replace(/.*f=([0-9]*)$/i, "$1");
+                    n = String(n).replace(/.*c=([0-9]*)$/i, "$1");
                 var groups_arr = [
                     /* Сериалы */[37, 1323, 1252, 697, 322, 323, 1235, 172, 135, 311, 183, 130, 1024, 139, 1023, 179, 392, 308, 342, 1015, 96, 997, 353, 285, 154, 389, 975, 168, 1020, 265, 123, 117, 170, 155, 167, 152, 105, 374, 312, 127, 1030, 773, 314, 150, 310, 328, 395, 305, 149, 136, 134, 104, 158, 372, 329, 169, 1421, 768, 1003, 307, 767, 309, 377, 1017],
                     /* Музыка */[5, 1390, 51, 56, 61, 67, 186, 190, 188, 250, 493, 501, 879, 1418, 1417, 1422, 1405, 1400, 1402, 1403, 1398, 1399, 1401, 1404, 1114, 1200, 1199, 1115, 1202, 1201, 1116, 1204, 1203, 1206, 1205, 474, 473, 1035, 1117, 1208, 1207, 1118, 531, 504, 1214, 479, 478, 477, 1213, 476, 475, 315, 1489, 1473, 1472, 1471, 1210, 1209, 1439, 1505, 1453, 1452, 1451, 1450, 1449, 1445, 1448, 1506, 1442, 1443, 1440, 1447, 1446, 1444, 1441, 1212, 1211, 1198, 503, 502],
@@ -71,47 +65,27 @@
                 return -1;
             }
             var readCode = function(c) {
-                try {
-                    c = view.contentFilter(c).replace(/scr\'\+\'ipt/img, '#blockscr#');
-                } catch (err) {
-                    view.auth(0, id);
-                    return [];
-                }
+                c = view.contentFilter(c);
                 var t = view.load_in_sandbox(id, c);
-                var ex = false;
-                var t_c = t.find('#topics').eq(0).children('tbody').children('tr');
-                if (t_c != null) {
-                    t = t_c;
-                    ex = true;
-                }
-                if (!ex) {
-                    view.auth(0, id);
-                    console.log('Not ex');
-                    return [];
-                } else {
-                    view.auth(1, id);
-                }
+                var t = t.find('#topics>tbody>tr');
                 var l = t.length;
                 var arr = [];
                 var i = 0;
                 for (i = 1; i < l; i++) {
                     var td = t.eq(i).children('td');
-                    td.eq(6).children('nobr').remove();
-                    if (t.eq(i).children('td.dl').children().length == 0)
-                        continue;
                     arr[arr.length] = {
                         'category': {
                             'title': td.eq(0).text(),
-                            'url': root_url + td.eq(0).children('a').eq(0).attr('href'),
-                            'id': calculateCategory(td.eq(0).children('a').eq(0).attr('href'))
+                            'url': login_url + td.eq(0).children('a').last().attr('href'),
+                            'id': calculateCategory(td.eq(0).children('a').last().attr('href'))
                         },
                         'title': td.eq(2).children('a').text(),
                         'url': login_url + td.eq(2).children('a').attr('href'),
-                        'size': calculateSize(td.eq(3).children('a').text()),
-                        'dl': root_url + td.eq(3).children('a').attr('href'),
-                        'seeds': td.eq(3).children('b.sd').text(),
-                        'leechs': td.eq(3).children('b.lc').text(),
-                        'time': calculateTime(td.eq(5).text())
+                        'size': ex_kit.format_size(td.eq(3).children('a').text()),
+                        'dl': login_url + td.eq(3).children('a').attr('href'),
+                        'seeds': td.eq(4).children('b').text(),
+                        'leechs': td.eq(5).children('b').text(),
+                        'time': ex_kit.format_date(0, ($.trim(td.eq(7).text())))
                     }
                 }
                 return arr;
@@ -155,7 +129,7 @@
                     xhr.abort();
                 xhr = $.ajax({
                     type: 'GET',
-                    url: url + '?q=' + encode(text) + '&c=0&g=&ql=&a=&d=&o=&size_min=0&size_max=0',
+                    url: url + '?q=' + encode(text),
                     cache: false,
                     success: function(data) {
                         view.result(id, readCode(data), t);
