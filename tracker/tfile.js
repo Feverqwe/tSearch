@@ -73,6 +73,9 @@
                 var i = 0;
                 for (i = 1; i < l; i++) {
                     var td = t.eq(i).children('td');
+                    if (td.eq(3).children('a').length == 0) {
+                        continue;
+                    }
                     arr[arr.length] = {
                         'category': {
                             'title': td.eq(0).text(),
