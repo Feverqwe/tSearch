@@ -36,9 +36,9 @@
                 return -1;
             }
             var readCode = function(c) {
-                c = view.contentFilter(c.replace(/div id="adv_header" .*\n.*/img, 'div id="adv_header">'));
+                c = view.contentFilter(c);
                 var t = view.load_in_sandbox(id, c);
-                t = t.find('tr.hl-tr').parent().children('tr');
+                t = t.find('#tor-tbl>tbody>tr');
                 var l = t.length;
                 var arr = [];
                 var i = 0;
@@ -46,17 +46,17 @@
                     var td = t.eq(i).children('td');
                     arr[arr.length] = {
                         'category': {
-                            'title': td.eq(2).children('a').text(),
-                            'url': root_url + td.eq(2).children('a').attr('href'),
-                            'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*)$/i, "$1"))
+                            'title': td.eq(0).children('a').text(),
+                            'url': root_url + td.eq(0).children('a').attr('href'),
+                            'id': calculateCategory(td.eq(0).children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
                         },
-                        'title': td.eq(3).children('a').eq(0).text(),
-                        'url': root_url + td.eq(3).children('a').eq(0).attr('href'),
-                        'size': td.eq(5).children('u').text(),
-                        'dl': td.eq(5).children('span').children('a').attr('href'),
-                        'seeds': td.eq(6).children('b').text(),
-                        'leechs': td.eq(7).children('b').text(),
-                        'time': td.eq(9).children('u').text()
+                        'title': td.eq(1).children('div').children('a').eq(0).text(),
+                        'url': root_url + td.eq(1).children('div').children('a').eq(0).attr('href'),
+                        'size': td.eq(2).children('u').text(),
+                        'dl': root_url + td.eq(2).children('a').attr('href'),
+                        'seeds': td.eq(3).children('b').text(),
+                        'leechs': td.eq(4).children('b').text(),
+                        'time': td.eq(6).children('u').text()
                     }
                 }
                 return arr;
