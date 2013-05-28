@@ -122,3 +122,5 @@ del .\build_chrome_ext.zip
 7za a -tzip .\build_firefox.xpi .\build_firefox\*
 7za a -tzip .\build_opera.oex .\build_opera\*
 7za a -tzip .\build_chrome_ext.zip .\build_chrome_ext\*
+
+copy .\build_chrome_ext.zip .\build_opera_nex.nex
