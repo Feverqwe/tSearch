@@ -723,7 +723,7 @@ ul.ui-autocomplete li > a {
     cursor: pointer;
     padding-bottom: 1px;
 }
-ul.ui-autocomplete li > a:hover, ul.ui-autocomplete li > a.ui-state-hover {
+ul.ui-autocomplete li > a:hover, ul.ui-autocomplete li > a.ui-state-focus {
     background-color: #99ccff;
     border-radius: 6px;
 }
