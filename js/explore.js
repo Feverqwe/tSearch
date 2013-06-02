@@ -848,6 +848,11 @@ var explore = function() {
             }
         });
         $.each(listOptions, function(key, value) {
+            /*
+            if ( listOptions != null && key in listOptions && "enable" in listOptions[key] && listOptions[key].enable == 0 ) {
+                return true;
+            }
+            */
             ul.append('<li class="' + key + '"></li>');
             if (key == 'favorites')
                 show_favorites();
