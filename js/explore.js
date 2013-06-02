@@ -61,7 +61,7 @@ var explore = function() {
             line: 1
         }
     };
-    var listOptions = (GetSettings('listOptions') !== undefined) ? JSON.parse(GetSettings('listOptions')) : listOptions_def;
+    var listOptions = (GetSettings('listOptions') !== undefined) ? JSON.parse(GetSettings('listOptions')) : JSON.parse(JSON.stringify(listOptions_def));
     var content_sourse = {
         favorites: {
             t: _lang.exp_favorites,
@@ -854,9 +854,9 @@ var explore = function() {
             }
             */
             ul.append('<li class="' + key + '"></li>');
-            if (key == 'favorites')
+            if (key == 'favorites') {
                 show_favorites();
-            else
+            } else
             if (content_sourse[key].page_e == true && content_sourse[key].page_zero != null && content_sourse[key].page_max != null) {
                 var zero = content_sourse[key].page_zero;
                 var max = content_sourse[key].page_max;
@@ -865,8 +865,9 @@ var explore = function() {
                     count++
                 for (var n = zero; n <= max; n++)
                     load_exp_content(key, content_sourse[key].url, [zero, n, max, count]);
-            } else
+            } else {
                 load_exp_content(key, content_sourse[key].url);
+            }
         });
         //спойлер
         $('div.explore > ul.sortable > li').on('click', 'div > h2 > div.spoiler', function() {
