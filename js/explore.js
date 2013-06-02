@@ -4,18 +4,19 @@ var explore = function() {
     var AutoSetCategory = (GetSettings('AutoSetCategory') !== undefined) ? parseInt(GetSettings('AutoSetCategory')) : true;
     var xhr = {};
     var explorerCache = (GetSettings('explorerCache') !== undefined) ? JSON.parse(GetSettings('explorerCache')) : {
-        games: null,
-        games_a: null,
-        games_n: null,
-        films: null,
-        top_films: null,
-        serials: null
+        games: {},
+        games_a: {},
+        games_n: {},
+        films: {},
+        top_films: {},
+        serials: {}
     };
     var upTimer = null;
     var topCache = (GetSettings('topCache') !== undefined) ? JSON.parse(GetSettings('topCache')) : null;
     var favoritesList = (GetSettings('favoritesList') !== undefined) ? JSON.parse(GetSettings('favoritesList')) : [];
     var favoritesDeskList = (GetSettings('favoritesDeskList') !== undefined) ? JSON.parse(GetSettings('favoritesDeskList')) : {};
     var last_qbox = {top: 0, obj: null, id: null};
+    var _pages_cache = {}
     var listOptions_def = {
         favorites: {
             s: 1,
@@ -414,7 +415,7 @@ var explore = function() {
         var timeout = content_sourse[type].timeout;
         if ($('div.explore div.' + type).length > 0)
             return;
-        if (explorerCache[type] != null && explorerCache[type].date != null && explorerCache[type].date > time) {
+        if ( type in explorerCache && "date" in explorerCache[type] && explorerCache[type].date > time) {
             write_content(explorerCache[type].cache_arr, type);
             return;
         }
@@ -430,28 +431,38 @@ var explore = function() {
             url: url,
             success: function(data) {
                 var content = read_content(type, data);
-                if (page != null) {
-                    if (explorerCache[type] != null && explorerCache[type].date != null && explorerCache[type].date < time) {
-                        explorerCache[type].date = time + timeout;
-                        explorerCache[type].cache_arr = []
+                if ( type in _pages_cache == false   ) {
+                    _pages_cache[type] = {
+                        pages: {},
+                        upTimer: null
                     }
-                    if (explorerCache[type] != null && explorerCache[type].cache_arr != null) {
-                        if (page[1] == page[0])
-                            content = content.concat(explorerCache[type].cache_arr);
-                        else
-                            content = explorerCache[type].cache_arr.concat(content);
-                    }
-                    $('li.' + type).empty();
                 }
-                write_content(content, type);
-                explorerCache[type] = {
-                    date: time + timeout,
-                    cache_arr: content
-                };
-                SetSettings('explorerCache', JSON.stringify(explorerCache));
+                if (page != null) {
+                    _pages_cache[type]["pages"][page[1]] = content;
+                    if ( _pages_cache[type]["pages"].length > 1 ) {
+                        _pages_cache[type]["pages"].sort();
+                    }
+                    content = [];
+                    $.each(_pages_cache[type]["pages"], function(a,b) {
+                        content = content.concat(b);
+                    });
+                    if ( _pages_cache[type]["pages"].length == page[3] ) {
+                        _pages_cache[type]["pages"] = null;
+                    }
+                }
+                clearTimeout(_pages_cache[type].upTimer);
+                _pages_cache[type].upTimer = setTimeout(function() {
+                    $('li.' + type).empty();
+                    write_content(content, type);
+                    explorerCache[type] = {
+                        date: time + timeout,
+                        cache_arr: content
+                    };
+                    SetSettings('explorerCache', JSON.stringify(explorerCache));
+                }, (_pages_cache[type].upTimer == null)?100:500);
             },
             error: function() {
-                if (explorerCache[type] != null && explorerCache[type].cache_arr != null)
+                if ( type in explorerCache && "cache_arr" in explorerCache[type])
                     write_content(explorerCache[type].cache_arr, type);
             }
         });
@@ -844,8 +855,11 @@ var explore = function() {
             if (content_sourse[key].page_e == true && content_sourse[key].page_zero != null && content_sourse[key].page_max != null) {
                 var zero = content_sourse[key].page_zero;
                 var max = content_sourse[key].page_max;
+                var count = 1;
                 for (var n = zero; n <= max; n++)
-                    load_exp_content(key, content_sourse[key].url, [zero, n, max]);
+                    count++
+                for (var n = zero; n <= max; n++)
+                    load_exp_content(key, content_sourse[key].url, [zero, n, max, count]);
             } else
                 load_exp_content(key, content_sourse[key].url);
         });
