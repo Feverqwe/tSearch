@@ -99,6 +99,7 @@
                 var i = 0;
                 for (i = 1; i < l; i++) {
                     var td = t.eq(i).children('td');
+                    if (td.eq(1).children('a').attr('href') == null) continue;
                     arr[arr.length] = {
                         'category': {
                             'title': td.eq(2).children('small').children('strong').children('a').text(),
