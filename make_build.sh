@@ -126,3 +126,5 @@ cd ../build_opera/
 zip -9 -r ../build_opera.oex ./
 cd ../build_chrome_ext/
 zip -9 -r ../build_chrome_ext.zip ./
+cd ..
+cp ./build_chrome_ext.zip ./build_opera_nex.nex
