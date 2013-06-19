@@ -68,6 +68,9 @@ var magic = function() {
         if ('cat_name' in code) {
             $('input[name=category_name]').val(code['cat_name']);
             $('input[name=category_name]').parents().eq(1).find('input[name=status]').prop('checked', 1);
+            if ('cat_alt' in code) {
+                $('input[name=category_alt_name]').prop('checked',1)
+            }
         }
         if ('cat_link' in code) {
             $('input[name=category_link]').val(code['cat_link']);
@@ -209,6 +212,9 @@ var magic = function() {
         }
         if ($('input[name=category_name]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['cat_name'] = $('input[name=category_name]').val();
+            if ($('input[name=category_alt_name]').prop('checked')) {
+                code['cat_alt'] = 1;
+            }
         }
         if ($('input[name=category_link]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['cat_link'] = $('input[name=category_link]').val()
@@ -294,7 +300,7 @@ var magic = function() {
         return path;
     }
     var format_size = function(s) {
-        var size = s.replace(/[^0-9.,кбмгтkmgtb]/ig, '').replace(',','.');
+        var size = s.replace(/[^0-9.,кбмгтkmgtb]/ig, '').replace(',', '.');
         var t = size.replace(/кб|kb/i, '');
         if (t.length != size.length) {
             t = parseFloat(t);
@@ -588,7 +594,11 @@ var magic = function() {
                         if (t == 'l') {
                             $('input[name=' + out + ']').val(obj.eq(0).attr('href'));
                         } else {
-                            $('input[name=' + out + ']').val(obj.eq(0).text());
+                            if (out == "category_name_text" && $('input[name=category_alt_name]').prop('checked')) {
+                                $('input[name=' + out + ']').val(obj.attr("alt"));
+                            } else {
+                                $('input[name=' + out + ']').val(obj.eq(0).text());
+                            }
                         }
                     }
                     if (out == 'peer_count_text') {
@@ -643,7 +653,11 @@ var magic = function() {
                     if (t == 'l') {
                         txt.val(obj.attr('href'));
                     } else {
-                        txt.val(obj.text());
+                        if (otext == "category_name_text" && $('input[name=category_alt_name]').prop('checked')) {
+                            txt.val(obj.attr("alt"));
+                        } else {
+                            txt.val(obj.text());
+                        }
                     }
                 }
                 sel_function = function(obj) {

@@ -357,7 +357,11 @@ var engine = function() {
                         var obj = {};
                         obj['category'] = {id: -1}
                         if (ex_cat) {
-                            obj['category']['title'] = (td.find(me.cat_name)).text();
+                            if ('cat_alt' in me) {
+                                obj['category']['title'] = (td.find(me.cat_name)).attr('alt');
+                            } else {
+                                obj['category']['title'] = (td.find(me.cat_name)).text();
+                            }
                             if (typeof(obj['category']['title']) != "string") {
                                 obj['category']['title'] = null;
                                 er[0] += 1;

@@ -260,7 +260,8 @@ var get_lang = function(lang) {
             58: "Read the code",
             59: "Seeds",
             60: "Peers",
-            61: "Table"
+            61: "Table",
+            62: "ALT (for img)"
         }
     };
     var lang_arr_ru = {
@@ -524,7 +525,8 @@ var get_lang = function(lang) {
             58: "Прочитать код",
             59: "Сиды",
             60: "Пиры",
-            61: "Таблица"
+            61: "Таблица",
+            62: "ALT (для img)"
         }
     };
     if (!lang) {
