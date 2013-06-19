@@ -1,4 +1,4 @@
-(function () {
+(function() {
     num = torrent_lib.length;
     torrent_lib[num] = null;
     torrent_lib[num] = function() {
@@ -44,7 +44,7 @@
                 var i = 0;
                 for (i = 0; i < l; i++) {
                     var td = t.eq(i).children('td');
-                    if ( td.length == 10 ) {
+                    if (td.length == 10) {
                         n = 2
                         m = 1
                     } else {
@@ -52,18 +52,21 @@
                         m = 0
                     }
                     arr[arr.length] = {
-                        'category': {
-                            'title': td.eq(0+n).children('a').text(),
-                            'url': root_url + td.eq(0+n).children('a').attr('href'),
-                            'id': calculateCategory(td.eq(0+n).children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
+                        'category': (n != 0)?{
+                            'title': td.eq(0 + n).children('a').text(),
+                            'url': root_url + td.eq(0 + n).children('a').attr('href'),
+                            'id': calculateCategory(td.eq(0 + n).children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
+                        }:{
+                            'title': td.eq(0 + n).text(),
+                            'id': -1
                         },
-                        'title': td.eq(1+n).children('div').children('a').eq(0).text(),
-                        'url': root_url + td.eq(1+n).children('div').children('a').eq(0).attr('href'),
-                        'size': td.eq(2+n+m).children('u').text(),
-                        'dl': root_url + td.eq(2+n+m).children('a').attr('href'),
-                        'seeds': td.eq(3+n+m).children('b').text(),
-                        'leechs': td.eq(4+n+m).children('b').text(),
-                        'time': td.eq(6+n+m).children('u').text()
+                        'title': td.eq(1 + n).children('div').children('a').eq(0).text(),
+                        'url': root_url + td.eq(1 + n).children('div').children('a').eq(0).attr('href'),
+                        'size': td.eq(2 + n + m).children('u').text(),
+                        'dl': root_url + td.eq(2 + n + m).children('a').attr('href'),
+                        'seeds': td.eq(3 + n + m).children('b').text(),
+                        'leechs': td.eq(4 + n + m).children('b').text(),
+                        'time': td.eq(6 + n + m).children('u').text()
                     }
                 }
                 return arr;

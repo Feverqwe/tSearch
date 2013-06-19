@@ -1,5 +1,9 @@
 var allow_favorites_sync = 0;
 var SetSettings = function (key,value) {
+    if ( value === null && key in localStorage ) {
+        delete localStorage[key];
+        return value
+    }
     if (key == "favoritesList" && allow_favorites_sync && chrome.storage) {
         var obj = {}
         obj[key] = value;
