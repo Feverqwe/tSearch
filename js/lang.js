@@ -23,7 +23,7 @@ var get_lang = function(lang) {
         'tracker_list': 'Trackers',
         'btn_tracker_list': 'Setup',
         'filter': 'Filter',
-        'btn_filter': 'Clean',
+        'btn_filter': 'Clear',
         'table': {
             time: 'Old',
             quality: ['Q', 'Quality'],

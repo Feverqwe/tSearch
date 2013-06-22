@@ -991,6 +991,7 @@ var view = function() {
         window.location = '#s=';
         global_wl_hash = location.hash;
         $('form[name="search"]').children('input[type="text"]').val('').focus();
+        $('form[name="search"]').children('input[type="text"]').trigger("keyup");
         explore.getLoad();
         if (old_title != document.title) {
             _gaq.push(['_trackPageview', 'index.html']);
@@ -1012,8 +1013,10 @@ var view = function() {
         if (sel_tr != null)
             $('ul.trackers li[data-id=' + sel_tr + ']').children('a').addClass('selected');
         keyword = $.trim(keyword);
-        if ($('form[name="search"]').children('input[type="text"]').val() != keyword)
+        if ($('form[name="search"]').children('input[type="text"]').val() != keyword) {
             $('form[name="search"]').children('input[type="text"]').val(keyword);
+            $('form[name="search"]').children('input[type="text"]').trigger("keyup");
+        }
         document.title = keyword + ' :: ' + 'TMS';
         window.location = '#s=' + keyword;
         global_wl_hash = location.hash;
@@ -1190,6 +1193,7 @@ var view = function() {
             $('div.tracker_list').children('div.setup').attr('title', _lang['btn_tracker_list']);
             $('div.filter').children('p').eq(0).text(_lang['filter']);
             $('div.filter').children('div.btn').attr('title', _lang['btn_filter']);
+            $('div.search_panel').find('div.btn.clear').attr('title', _lang['btn_filter']);
             $('#rez_table').find('th.time').text(_lang['table'].time);
             $('#rez_table').find('th.quality').text(_lang['table'].quality[0]);
             $('#rez_table').find('th.quality').attr('title', _lang['table'].quality[1]);
@@ -1275,6 +1279,18 @@ var view = function() {
             } catch (err) {
             }
             $('form[name="search"]').children('input').eq(0).focus();
+            $('form[name="search"]').children('div.btn.clear').on("click",function(){
+                event.preventDefault();
+                $(this).hide();
+                $('form[name="search"]').children('input').eq(0).val("").focus();
+            });
+            $('form[name="search"]').children('input').eq(0).on('keyup', function() {
+                if ( this.value.length > 0 ) {
+                    $(this).parent().children('div.btn.clear').show();
+                } else {
+                    $(this).parent().children('div.btn.clear').hide();
+                }
+            });
             $('div.filter input').keyup(function() {
                 var t = $(this).val();
                 $('div.filter div.btn').css('background-image', 'url(images/loading.gif)');
@@ -1292,6 +1308,7 @@ var view = function() {
             var s = (document.URL).replace(/(.*)index.html/, '').replace(/#s=(.*)/, '$1');
             if (s.length > 0) {
                 $('form[name="search"]').children('input[type="text"]').val(s);
+                $('form[name="search"]').children('input[type="text"]').trigger("keyup");
             }
             $('div.tracker_list div.setup').on("click", function() {
                 window.location = 'options.html#back=' + $.trim($('form[name="search"]').children('input[type="text"]').val());

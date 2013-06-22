@@ -19,9 +19,9 @@ div.search_panel {
 }
 div.search_panel input[type=text] {
     height: 22px !important;
-    width: 500px;
+    width: 487px;
     padding-left: 9px;
-    padding-right: 5px;
+    padding-right: 18px;
     float: left;
     font-size: 1.143em;
 }
@@ -300,7 +300,8 @@ div.filter > input {
     padding-right: 18px;
     height: 18px;
 }
-div.filter > div.btn {
+div.filter > div.btn, 
+div.search_panel div.btn.clear {
     background: url(../images/clear.png) center center no-repeat;
     width: 16px;
     height: 16px;
@@ -310,6 +311,10 @@ div.filter > div.btn {
     cursor: pointer;
     z-index: 1;
     display: none;
+}
+div.search_panel div.btn.clear {
+    left: 518px;
+    top: 25px;
 }
 div.tracker_list > div.setup {
     background: url(../images/settings.png) center center no-repeat;

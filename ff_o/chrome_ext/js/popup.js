@@ -69,10 +69,23 @@ var AddAutocomplete = function() {
 $(function() {
     AddAutocomplete();
     $('input.sbutton').val(_lang['btn_form']);
+    $('div.search_panel').find('div.btn.clear').attr('title', _lang['btn_filter']);
     $('form[name="search"]').submit(function(event) {
         event.preventDefault();
         chrome.tabs.create({
             url: 'index.html#s=' + $(this).children('input[type="text"]').val()
         });
+    });
+    $('form[name="search"]').children('div.btn.clear').on("click",function(){
+        event.preventDefault();
+        $(this).hide();
+        $('form[name="search"]').children('input').eq(0).val("").focus();
+     });
+    $('form[name="search"]').children('input').eq(0).on('keyup', function() {
+         if ( this.value.length > 0 ) {
+            $(this).parent().children('div.btn.clear').show();
+        } else {
+            $(this).parent().children('div.btn.clear').hide();
+        }
     });
 });
