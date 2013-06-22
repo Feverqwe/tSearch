@@ -882,3 +882,12 @@ div.info_popup .content {
 div.info_popup .content a {
     text-decoration: none;
 }
+
+div.info_popup ul {
+    list-style-type: hebrew;
+    padding-left: 20px;
+    margin: 0;
+}
+div.info_popup ul li {
+    margin-bottom: 6px;
+}

@@ -12,9 +12,11 @@ var explore = function() {
         serials: {}
     };
     var upTimer = null;
+    var upTimer2 = null;
     var topCache = (GetSettings('topCache') !== undefined) ? JSON.parse(GetSettings('topCache')) : null;
     var favoritesList = (GetSettings('favoritesList') !== undefined) ? JSON.parse(GetSettings('favoritesList')) : [];
     var favoritesDeskList = (GetSettings('favoritesDeskList') !== undefined) ? JSON.parse(GetSettings('favoritesDeskList')) : {};
+    var tmpDeskList = {};
     var last_qbox = {top: 0, obj: null, id: null};
     var _pages_cache = {}
     var listOptions_def = {
@@ -790,23 +792,35 @@ var explore = function() {
         }
         show_favorites();
     }
-    var update_q_favorites = function(id, q, link, name) {
+    var update_q_favorites = function(id, q, arr) {
         if (q == '')
             q = '?';
         favoritesList[id]['quality'] = q;
-        if (link != null && name != null) {
-            if (id in favoritesDeskList == false) {
-                favoritesDeskList[id] = {};
+        favoritesDeskList[id] = [];
+        $.each(arr,function(k,v){
+            if (v.link != null && v.name != null) {
+                favoritesDeskList[id][favoritesDeskList[id].length] = {
+                    "link": v.link,
+                    "name": v.name
+                }
             }
-            favoritesDeskList[id]['tr_link'] = link;
-            favoritesDeskList[id]['tr_name'] = name;
-            SetSettings('favoritesDeskList', JSON.stringify(favoritesDeskList));
-        }
+        });
+        SetSettings('favoritesDeskList', JSON.stringify(favoritesDeskList));
         SetSettings('favoritesList', JSON.stringify(favoritesList));
     }
-    var get_tr_favorites = function(id) {
-        if (id in favoritesDeskList) {
-            return {"link": favoritesDeskList[id].tr_link, "name": favoritesDeskList[id].tr_name};
+    var get_tr_favorites = function(id, section) {
+        if ( section == "favorites" ) {
+            if (id in favoritesDeskList) {
+                if ( favoritesDeskList[id].constructor !== Array ) {
+                    return {"link": favoritesDeskList[id].tr_link, "name": favoritesDeskList[id].tr_name};
+                } else {
+                    return favoritesDeskList[id]
+                }
+            }
+        } else {
+            if ( section in tmpDeskList && id in tmpDeskList[section]) {
+                return tmpDeskList[section][id]
+            }
         }
         return null;
     }
@@ -989,20 +1003,20 @@ var explore = function() {
             }
         });
         var info_popup = $("div.info_popup");
-        $("div.explore").on("mouseenter", "div.quality_box", function(e) {
-            var ct = $(this);
-            var pos = ct.offset();
-            var section = $(this).parent().parent().parent().parent().parent().attr("class");
-            var ex_name = ct.attr("data-name");
-            var id = $(this).parent().parent().attr("data-id");
-            if (ex_name == null && section == "favorites") {
-                var db = get_tr_favorites(id);
-                if (db) {
-                    ct.attr({"data-name": db.name, "data-link": db.link});
-                    ex_name = db.name;
-                }
+        $("div.explore").on("mouseenter", "div.quality_box", function(e,myparam) {
+            if (myparam) {
+                var ct = myparam.ct;
+                var section = myparam.section;
+                var id = myparam.id;
+                var db = myparam.arr;
+            } else {
+                var ct = $(this);
+                var section = $(this).parent().parent().parent().parent().parent().attr("class");
+                var id = $(this).parent().parent().attr("data-id");
+                var db = get_tr_favorites(id, section);
             }
-            if (pos.left == 0 || ex_name == null) {
+            var pos = ct.offset();
+            if (pos.left == 0 || db == null) {
                 if (info_popup.css("display") == "block") {
                     info_popup.css("display", "none");
                 }
@@ -1015,7 +1029,16 @@ var explore = function() {
             if (last_qbox.obj != null && id != last_qbox.id && info_popup.is(":visible")) {
                 last_qbox.obj.css("display", "");
             }
-            info_popup.children("div.content").html('<a href="' + ct.attr("data-link") + '" target="_blank">' + ex_name + '</a>');
+            if ( db.constructor !== Array ) {
+                info_popup.children("div.content").html('<a href="' + db.link + '" target="_blank">' + db.name + '</a>');
+            } else {
+                var info_content = "<ul>";
+                $.each(db, function(k,v) {
+                    info_content+='<li><a href="' + v.link + '" target="_blank">' + v.name + '</a></li>';
+                });
+                info_content+="</ul>";
+                info_popup.children("div.content").html(info_content);
+            }
             var w = info_popup.width() / 2;
             var h = info_popup.height() + 10;
             last_qbox.top = pos.top;
@@ -1293,6 +1316,21 @@ var explore = function() {
             });
             return year;
         }
+        function get_last_2year() {
+            var year = 0;
+            var prew = 0;
+            $.each(obj.year, function(a) {
+                if (year < a) {
+                    prew = year
+                    year = a;
+                }
+            });
+            if (prew > 0) {
+                return [prew,year];
+            } else {
+                return [year];
+            }
+        }
         if (s_year) {
             if (s_year in obj.year == false) {
                 s_year = null;
@@ -1318,15 +1356,36 @@ var explore = function() {
         qbox.removeClass('loading');
         var label = obj.year[s_year][cat].m;
         qbox.text(label);
-        qbox.attr("data-name", obj.year[s_year][cat].name + ', ' + obj.year[s_year][cat].size);
-        qbox.attr("data-link", obj.year[s_year][cat].link);
-        qbox.trigger("mouseenter");
+        link_array = [];
+        l2y = get_last_2year();
+        for (var i = l2y.length-1; i >= 0; i--) {
+            v_y = l2y[i]
+            lim = 5
+            $.each(obj.year[v_y], function(k,v) {
+                if (lim == 1) {
+                    return false;
+                }
+                lim--
+                link_array[link_array.length] = {
+                    "link": v.link,
+                    "name": v.name + ', ' + v.size
+                }
+            });
+        }
+        if ( obj.section in tmpDeskList == false ) {
+            tmpDeskList[obj.section] = {}
+        }
+        tmpDeskList[obj.section][obj.id] = link_array;
         if (obj.section == 'favorites') {
             clearTimeout(upTimer);
             upTimer = setTimeout(function() {
-                update_q_favorites(obj.id, label, obj.year[s_year][cat].link, obj.year[s_year][cat].name + ', ' + obj.year[s_year][cat].size);
+                update_q_favorites(obj.id, label, link_array);
             }, 500);
         }
+        clearTimeout(upTimer2);
+        upTimer2 = setTimeout(function() {
+            qbox.trigger("mouseenter",[{"ct":qbox,"section":obj.section,"id":obj.id,"arr":link_array}]);
+        }, 100);
     }
     var about_keyword = function(keyword) {
         if (keyword.length == 0)
