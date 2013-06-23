@@ -76,13 +76,13 @@ $(function() {
             url: 'index.html#s=' + $(this).children('input[type="text"]').val()
         });
     });
-    $('form[name="search"]').children('div.btn.clear').on("click",function(){
+    $('form[name="search"]').children('div.btn.clear').on("click", function() {
         event.preventDefault();
         $(this).hide();
         $('form[name="search"]').children('input').eq(0).val("").focus();
-     });
+    });
     $('form[name="search"]').children('input').eq(0).on('keyup', function() {
-         if ( this.value.length > 0 ) {
+        if (this.value.length > 0) {
             $(this).parent().children('div.btn.clear').show();
         } else {
             $(this).parent().children('div.btn.clear').hide();

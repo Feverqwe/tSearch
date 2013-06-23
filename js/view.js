@@ -702,7 +702,8 @@ var view = function() {
             return '';
         }
         var sub_select = function(name) {
-            if (!_sub_select_enable) return name;
+            if (!_sub_select_enable)
+                return name;
             return name.replace(/(\[[^\]]*\]|\([^\)]*\))/g, '<span class="sub_name">$1</span>');
         }
         var quality = "Blu-ray|Blu-Ray|BD-Remux|BDRemux|1080p|1080i|BDRip-AVC|BD-Rip|BDRip|CAMRip|CamRip-AVC|CamRip|HDTV-Rip|HQRip-AVC|HDTVrip|HDTVRip|DTheater-Rip|720p|LowHDRip|HDTV|HDRip-AVC|HDRip|DVD-Rip|DVDRip-AVC|DVDRip|DVD5|2xDVD9|DVD9|DVD-9|DVDScr|DVDScreener|HD-DVD|NoDVD|DVD|SatRip|HQSATRip|HQRip|TVRip|WEBRip|WEB-DLRip-AV​C|WebDL-Rip|AVC|WEB-DLRip|WEB-DL|SATRip|DVB|IPTVRip|TeleSynch|[Зз]{1}вук с TS|TS|АП|ЛО|ЛД|AVO|MVO|VO|DUB|2xDub|Dub|ДБ|ПМ|ПД|ПО|СТ|[Ss]{1}ubs|SUB|[sS]{1}ub|FLAC|flac|ALAC|alac|[lL]{1}oss[lL]{1}ess(?! repack)|\\(PS2\\)|PS3|Xbox|XBOX|Repack|RePack|\\[Native\\]|Lossless Repack|Steam-Rip|\\(Lossy Rip\/|{Rip}|[лЛ]{1}ицензия|RELOADED|\\[Rip\\]|\\[RiP\\]|\\{L\\}|\\(L\\)|\\[L\\]|[Ss]{1}eason(?=[s|:]?)|[Сс]{1}езон(?=[ы|:]?)|CUE|(?=\.)cue|MP3|128|192|320|\\(P\\)|\\[P\\]|PC \\(Windows\\)|Soundtrack|soundtrack|H\.264|mp4|MP4|M4V|FB2|PDF|RTF|EPUB|fb2|DJVU|djvu|epub|pdf|rtf|[мМ]{1}ультфильм";
@@ -737,6 +738,9 @@ var view = function() {
                 return a;
             }
             if (word_hl < words.length) {
+                if (year_hl == 1 && a == keyword_filter_cache.year) {
+                    return '<b>' + a + '</b>';
+                }
                 if (a == keyword_filter_cache.year) {
                     year_hl = 1;
                 }
@@ -1279,13 +1283,13 @@ var view = function() {
             } catch (err) {
             }
             $('form[name="search"]').children('input').eq(0).focus();
-            $('form[name="search"]').children('div.btn.clear').on("click",function(){
+            $('form[name="search"]').children('div.btn.clear').on("click", function() {
                 event.preventDefault();
                 $(this).hide();
                 $('form[name="search"]').children('input').eq(0).val("").focus();
             });
             $('form[name="search"]').children('input').eq(0).on('keyup', function() {
-                if ( this.value.length > 0 ) {
+                if (this.value.length > 0) {
                     $(this).parent().children('div.btn.clear').show();
                 } else {
                     $(this).parent().children('div.btn.clear').hide();
@@ -1336,10 +1340,10 @@ var view = function() {
                 return false;
             });
             $(document).on('keyup', function(e) {
-                if ( e.target.tagName == "INPUT" ) {
+                if (e.target.tagName == "INPUT") {
                     return;
                 }
-                if ( $('div.explore').is(":visible") ) {
+                if ($('div.explore').is(":visible")) {
                     return;
                 }
                 if (e.keyCode == 27) {
