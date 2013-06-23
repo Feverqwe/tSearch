@@ -122,6 +122,9 @@ var view = function() {
             if (keyword_filter_cache["year"]) {
                 keyword_filter_cache["year"] = keyword_filter_cache["year"][0];
             }
+            if ( keyword_filter_cache["year"] == s ) {
+                keyword_filter_cache["year"] = null;
+            }
         }
         if ("keyword" in keyword_filter_cache == false) {
             keyword_filter_cache["keyword"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -220,6 +223,9 @@ var view = function() {
             keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
             if (keyword_filter_cache["year"]) {
                 keyword_filter_cache["year"] = keyword_filter_cache["year"][0];
+            }
+            if ( keyword_filter_cache["year"] == s ) {
+                keyword_filter_cache["year"] = null;
             }
         }
         if ("keyword" in keyword_filter_cache == false) {

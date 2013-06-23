@@ -894,3 +894,8 @@ div.info_popup ul li {
 div.info_popup ul li:last-child {
     margin-bottom: 0;
 }
+div.info_popup ul li:first-child {
+    border-bottom: 1px dashed rgb(111, 111, 111);
+    margin-bottom: 3px;
+    padding-bottom: 3px;
+}
