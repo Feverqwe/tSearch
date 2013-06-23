@@ -891,7 +891,7 @@ div.info_popup ul {
 }
 div.info_popup ul li {
     margin-bottom: 6px;
-    font-size: 0.96em;
+    font-size: 0.95em;
 }
 div.info_popup ul li:first-child {
     border-bottom: 1px dashed rgb(111, 111, 111);
