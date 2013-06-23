@@ -884,7 +884,7 @@ div.info_popup .content a {
 }
 
 div.info_popup ul {
-    list-style-type: hebrew;
+    list-style-type: lower-greek;
     padding-left: 20px;
     margin: 0;
     word-break: break-word;
