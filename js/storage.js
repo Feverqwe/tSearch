@@ -1,6 +1,6 @@
 var allow_favorites_sync = 0;
-var SetSettings = function (key,value) {
-    if ( value === null && key in localStorage ) {
+var SetSettings = function(key, value) {
+    if (value === null && key in localStorage) {
         delete localStorage[key];
         return value
     }
@@ -8,7 +8,7 @@ var SetSettings = function (key,value) {
         var obj = {}
         obj[key] = value;
         chrome.storage.sync.set(obj);
-         if ( value.length + key.length > 4096) {
+        if (value.length + key.length > 4096) {
             console.log("Can't sync, storage limited!");
         }
         localStorage[key] = value;
@@ -17,16 +17,16 @@ var SetSettings = function (key,value) {
     }
     return value;
 }
-var GetSettings = function (key) {
+var GetSettings = function(key) {
     if (key == "favoritesList" && allow_favorites_sync && chrome.storage) {
-        chrome.storage.sync.get(key, 
-            function(val) {
-                if (val.favoritesList === undefined || val.favoritesList == '')
-                    return;
-                localStorage[key] = val.favoritesList;
-                explore.updFav(localStorage[key]);
-            }
-            );
+        chrome.storage.sync.get(key,
+                function(val) {
+                    if (val.favoritesList === undefined || val.favoritesList == '')
+                        return;
+                    localStorage[key] = val.favoritesList;
+                    explore.updFav(localStorage[key]);
+                }
+        );
         if (localStorage[key] !== undefined) {
             return localStorage[key];
         } else {

@@ -66,7 +66,6 @@ var options = function() {
         });
         updateProfileList();
     };
-
     var addTrackerInList = function(i) {
         var filename = tracker[i].filename;
         var id = currentProfileID;
@@ -192,7 +191,6 @@ var options = function() {
         });
         saveCurrentProfile();
         SetSettings('trackerProfiles', JSON.stringify(trackerProfiles));
-
         if (navigator.userAgent.search(/Chrome/) != -1) {
             var bgp = chrome.extension.getBackgroundPage();
             bgp.bg.update_context_menu();
@@ -216,6 +214,69 @@ var options = function() {
         delete st['length'];
         delete st['search_history'];
         $('textarea[name="backup"]').val(JSON.stringify(st));
+        return JSON.stringify(st);
+    }
+    var makePartedBackup = function() {
+        var chank_name = "bk_ch_"
+        var back = getBackup();
+        var full_len = back.length;
+        var chank_len = 1024 - (chank_name + "000").length - 1;
+        var number_of_part = Math.round(full_len / chank_len);
+        if (number_of_part >= 512 || full_len >= 102400) {
+            console.log("Can't save backup, very big size!")
+            return null;
+        }
+        var req_exp = new RegExp(".{1," + chank_len + "}", "g");
+        var arr = back.match(req_exp);
+        var arr_l = arr.length;
+        var obj = {}
+        for (var i = 0; i < arr_l; i++) {
+            obj[chank_name + i] = arr[i];
+        }
+        obj[chank_name + "inf"] = arr_l;
+        obj[chank_name + arr_l] = "END"
+        return obj;
+    }
+    var getPartedBackup = function() {
+        chrome.storage.sync.get(function(data) {
+            var chank_name = "bk_ch_"
+            var inf = 0
+            if (chank_name + "inf" in data) {
+                inf = data[chank_name + "inf"];
+            } else {
+                $('input[name="get_from_cloud"]')[0].disabled = true;
+                console.log("Backup not found!");
+                return null;
+            }
+            var back = "";
+            var broken = 0;
+            for (var i = 0; i < inf; i++) {
+                if (chank_name + i in data) {
+                    back += data[chank_name + i];
+                } else {
+                    console.log("Backup is broken!", "Chank", i);
+                }
+            }
+            if (data[chank_name + inf] != "END") {
+                broken = 1;
+            }
+            if (broken) {
+                chrome.storage.sync.remove(chank_name + "inf");
+                inf = -1;
+            }
+            $.each(data, function(k, v) {
+                if (k.substr(0, 6) == chank_name) {
+                    if (k.substr(6) != "inf" && k.substr(6) > inf) {
+                        chrome.storage.sync.remove(k);
+                    }
+                }
+            });
+            if (broken) {
+                $('input[name="get_from_cloud"]')[0].disabled = true;
+                return null;
+            }
+            $('textarea[name="restore"]').val(back);
+        });
     }
     var stngsRestore = function(text) {
         try {
@@ -380,7 +441,6 @@ var options = function() {
                 engine.loadProfile(currentProfileID);
                 updateProfileList();
             });
-
             $('ul.menu').on('click', 'a', function(e) {
                 e.preventDefault();
                 $('ul.menu').find('a.active').removeClass('active');
@@ -396,7 +456,7 @@ var options = function() {
                 }, 200);
             });
             if (navigator.userAgent.search(/Firefox/) != -1) {
-                //firefox
+//firefox
                 $('div.page.backup').hide();
                 $('a[data-page=backup]').hide();
                 $('input[name="context_menu"]').parents().eq(1).hide();
@@ -405,7 +465,7 @@ var options = function() {
                 make_bakup_form();
             }
             if (navigator.userAgent.search(/Opera/) != -1) {
-                //opera
+//opera
                 $('input[name="add_in_omnibox"]').parents().eq(1).hide();
                 $('input[name="search_popup"]').parents().eq(1).hide();
                 $('input[name="google_analytics"]').parents().eq(1).hide();
@@ -413,18 +473,42 @@ var options = function() {
                 $('input[name="clear_cloud_btn"]').hide();
             }
             if (navigator.userAgent.search(/Chrome/) != -1) {
-                //Chrome
+//Chrome
                 var bgp = chrome.extension.getBackgroundPage();
                 if (!bgp._type_ext) {
                     $('input[name="search_popup"]').parents().eq(1).hide();
                 }
                 if (chrome && chrome.storage) {
-                    $('input[name="save_in_cloud"]').on('click', function() {
+                    $('input[name="clear_cloud"]').on('click', function() {
                         chrome.storage.sync.clear();
                     });
+                    $('input[name="save_in_cloud"]').on('click', function() {
+                        var obj = makePartedBackup();
+                        if (obj == null) {
+                            return;
+                        }
+                        chrome.storage.sync.set(obj);
+                        $(this).val(_lang.settings[70]);
+                        window.setTimeout(function() {
+                            $('input[name="save_in_cloud"]').val(_lang.settings[68]);
+                        }, 3000);
+                        $('input[name="get_from_cloud"]')[0].disabled = false;
+                    });
+                    $('input[name="get_from_cloud"]').on('click', function() {
+                        getPartedBackup();
+                    });
+                    chrome.storage.sync.get("bk_ch_inf",
+                            function(val) {
+                                if ("bk_ch_inf" in val == false) {
+                                    $('input[name="get_from_cloud"]').eq(0)[0].disabled = true;
+                                }
+                            }
+                    );
                 }
             } else {
                 $('input[name="clear_cloud"]').css('display', 'none');
+                $('input[name="get_from_cloud"]').css('display', 'none');
+                $('input[name="save_in_cloud"]').css('display', 'none');
             }
             set_place_holder();
             $('input[name=add_code]').on('click', function() {
@@ -504,7 +588,7 @@ var options = function() {
                 $('select[name=tr_lists]').trigger('change');
             });
             load_costume_torrents();
-            $('table.tr_table tbody').sortable({ placeholder: "ui-state-highlight" });
+            $('table.tr_table tbody').sortable({placeholder: "ui-state-highlight"});
             $('table.tr_table tbody').disableSelection();
         }
     };

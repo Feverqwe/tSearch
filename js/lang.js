@@ -197,7 +197,10 @@ var get_lang = function(lang) {
             64: "Close",
             65: "Custom codes torrent trackers posted",
             66: "on this site",
-            67: "Highlight the notes in the name of the torrent"
+            67: "Highlight the notes in the name of the torrent",
+            68: "Save the settings to the cloud",
+            69: "Get the settings from the cloud",
+            70: "Saved!"
         },
         magic: {
             1: 'Loading error!',
@@ -399,7 +402,7 @@ var get_lang = function(lang) {
             1: "Список торрентов",
             2: "Опции",
             3: "Восст. наcтроек",
-            4: "Язык",
+            4: "Язык / Language",
             5: "Списки торрентов",
             6: "Удалить",
             7: "Добавить",
@@ -462,7 +465,10 @@ var get_lang = function(lang) {
             64: "Закрыть",
             65: "Пользовательские коды торрент трекеров выложены",
             66: "на этом сайте",
-            67: "Подсвечивать пояснения в названии раздачи"
+            67: "Подсвечивать пояснения в названии раздачи",
+            68: "Сохранить настройки в облако",
+            69: "Получить из облака",
+            70: "Сохранено!"
         },
         magic: {
             1: 'Ошибка загрузки!',
