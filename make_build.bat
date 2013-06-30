@@ -54,6 +54,10 @@ java -jar yuicompressor-2.4.7.jar .\css\options.css -o .\build\css\options.css
 java -jar yuicompressor-2.4.7.jar .\css\history.css -o .\build\css\history.css
 java -jar yuicompressor-2.4.7.jar .\css\magic.css -o .\build\css\magic.css
 
+java -jar htmlcompressor-1.5.3.jar -t html .\build\history.html -o .\build\history.html
+java -jar htmlcompressor-1.5.3.jar -t html .\build\index.html -o .\build\index.html
+java -jar htmlcompressor-1.5.3.jar -t html .\build\magic.html -o .\build\magic.html
+java -jar htmlcompressor-1.5.3.jar -t html .\build\options.html -o .\build\options.html
 :: ff
 
 mkdir .\build_firefox\chrome
@@ -112,6 +116,7 @@ java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\ff_o\chrome
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\ff_o\chrome_ext\js\btn.js --js .\js\background.js --js_output_file .\build_chrome_ext\js\background.js
 del .\build_chrome_ext\js\btn.js
 
+java -jar htmlcompressor-1.5.3.jar -t html .\build_chrome_ext\popup.html -o .\build_chrome_ext\popup.html
 :: chrome ext
 
 del .\build_chrome.zip
