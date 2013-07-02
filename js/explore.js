@@ -355,8 +355,9 @@ var explore = function() {
                     continue;
                 }
                 imgs.eq(i).attr('src', par_href.replace(/.*=http(.*)&imgref.*/, 'http$1'));
-                if (imgs.eq(i).attr('src')[0] == '/')
+                if (imgs.eq(i).attr('src')[0] == '/') {
                     imgs.eq(i).attr('src', '#' + imgs.eq(i).attr('src'));
+                }
             }
             var info = {};
             var google_proxy = (!_google_proxy)?"":"https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=400&rewriteMime=image/jpeg&url="
