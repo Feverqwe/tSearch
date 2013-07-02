@@ -763,6 +763,9 @@ var ex_kit = function() {
                 .replace(/апр/i, '4').replace(/мая/i, '5').replace(/июн/i, '6')
                 .replace(/июл/i, '7').replace(/авг/i, '8').replace(/сен/i, '9')
                 .replace(/окт/i, '10').replace(/ноя/i, '11').replace(/дек/i, '12')
+                //fix
+                .replace(/май/i, '5')
+                //<fix
                 .replace(/jan/i, '1').replace(/feb/i, '2').replace(/mar/i, '3')
                 .replace(/apr/i, '4').replace(/may/i, '5').replace(/jun/i, '6')
                 .replace(/jul/i, '7').replace(/aug/i, '8').replace(/sep/i, '9')
