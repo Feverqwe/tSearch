@@ -360,7 +360,7 @@ var explore = function() {
                 }
             }
             var info = {};
-            var google_proxy = (!_google_proxy)?"":"https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=400&rewriteMime=image/jpeg&url="
+            var google_proxy = (!_google_proxy) ? "" : "https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=400&rewriteMime=image/jpeg&url="
             info['img'] = t.find('a.bia.uh_rl').eq(0).children('img').attr('src');
             info['title'] = t.find('div.kno-ecr-pt').html();
             info['type'] = t.find('div.kno-ecr-st').html();
@@ -371,7 +371,7 @@ var explore = function() {
                 return '';
             }
             if (info.img != undefined) {
-                content_info += '<div class="a-poster"><img src="' + google_proxy+info.img + '" /></div>';
+                content_info += '<div class="a-poster"><img src="' + google_proxy + info.img + '" /></div>';
             }
             if (info.title != undefined) {
                 content_info += '<div class="a-title">' + info.title + '</div>';
@@ -1371,7 +1371,7 @@ var explore = function() {
         for (var i = l2y.length - 1; i >= 0; i--) {
             v_y = l2y[i]
             $.each(obj.year[v_y], function(k, v) {
-                if ( v.link == obj.year[s_year][cat].link ) {
+                if (v.link == obj.year[s_year][cat].link) {
                     return true;
                 }
                 if (lim == 1) {
