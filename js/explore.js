@@ -359,6 +359,7 @@ var explore = function() {
                     imgs.eq(i).attr('src', '#' + imgs.eq(i).attr('src'));
             }
             var info = {};
+            var google_proxy = (!_google_proxy)?"":"https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=400&rewriteMime=image/jpeg&url="
             info['img'] = t.find('a.bia.uh_rl').eq(0).children('img').attr('src');
             info['title'] = t.find('div.kno-ecr-pt').html();
             info['type'] = t.find('div.kno-ecr-st').html();
@@ -369,7 +370,7 @@ var explore = function() {
                 return '';
             }
             if (info.img != undefined) {
-                content_info += '<div class="a-poster"><img src="' + info.img + '" /></div>';
+                content_info += '<div class="a-poster"><img src="' + google_proxy+info.img + '" /></div>';
             }
             if (info.title != undefined) {
                 content_info += '<div class="a-title">' + info.title + '</div>';
