@@ -51,7 +51,7 @@
                 var i = 0;
                 for (i = 0; i < l; i++) {
                     var td = t.eq(i).children('td');
-                    if (td.eq(5).children('p').children('a').attr('href') == null)
+                    if (td.eq(5).children('a').attr('href') == null)
                         continue;
                     arr[arr.length] = {
                         'category': {
@@ -61,11 +61,11 @@
                         },
                         'title': td.eq(3).children('a').text(),
                         'url': td.eq(3).children('a').attr('href'),
-                        'size': td.eq(5).children('u').text(),
-                        'dl': td.eq(5).children('p').children('a').attr('href'),
-                        'seeds': td.eq(6).children('b').text(),
-                        'leechs': td.eq(7).children('b').text(),
-                        'time': td.eq(9).children('u').text()
+                        'size': td.eq(6).children('u').text(),
+                        'dl': td.eq(5).children('a').attr('href'),
+                        'seeds': td.eq(7).children('b').text(),
+                        'leechs': td.eq(8).children('b').text(),
+                        'time': td.eq(10).children('u').text()
                     }
                 }
                 return arr;

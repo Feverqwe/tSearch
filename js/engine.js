@@ -47,7 +47,7 @@ var engine = function() {
         },
         {
             n: 'free-torrents',
-            e: 1
+            e: 0
         },
         {
             n: 'my-hit',
@@ -138,7 +138,7 @@ var engine = function() {
         },
         {
             n: 'rutor',
-            e: 0
+            e: 1
         },
         {
             n: 'opensharing',
