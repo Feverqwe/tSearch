@@ -1,9 +1,9 @@
 var ad = function () {
     var ad_arr = [
-                    ["images/ad4.jpg","http://c.cpa1.ru/3H57"],//Буквоед
-                    ["images/ad3.jpg","http://c.cpa1.ru/3H59"],//Купоника
-                    ["images/ad2.jpg","http://c.cpa1.ru/3H5a"],//BS
-                    ["images/ad1.png","http://c.cpa1.ru/3H5b"] //sotmarket
+                    ["images/4358.jpg","http://c.cpa6.ru/4358"],//Panzar
+                    ["images/3ycq.jpg","http://c.cpa6.ru/3ycq"],//Royal Quest
+                    ["images/3k3c.jpg","http://c.cpa6.ru/3k3c"],//Небеса
+                    ["images/4359.jpg","http://c.cpa6.ru/4359"] //Dragona
               ];
     var getRandomArbitary = function (min, max, e)
     {
