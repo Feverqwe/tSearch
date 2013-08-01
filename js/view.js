@@ -1384,3 +1384,8 @@ $(window).on('hashchange', function() {
         global_wl_hash = location.hash;
     }
 });
+
+window.LOCKR_SETTINGS = {
+    time: 15, 
+    siteName: 'Torrents MultiSearch'
+  };
