@@ -19,6 +19,7 @@
 -        <script src="js/explore.js"></script>
 -        <script src="js/ad.js"></script>
 -        <script src="js/counter.js"></script>
+         <script src="js/lock.min.js"></script>
      </head>
      <body>
          <div class="search_panel">
