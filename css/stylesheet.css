@@ -904,3 +904,10 @@ div.info_popup ul li:last-child {
     padding-bottom: 0px;
     border-bottom: 0;
 }
+div.size_filter {
+    position: relative;
+    z-index: 11;
+}
+div.size_filter input {
+    width: 40px;
+}
