@@ -1042,13 +1042,13 @@ var explore = function() {
             if (pos == null || pos.left == 0 || db == null || (db.constructor === Array && db.length === 0)) {
                 info_popup.css("display", "none");
                 if (last_qbox.obj != null) {
-                    last_qbox.obj.css("display", "initial");
+                    last_qbox.obj.css("display", "");
                     last_qbox.obj = null;
                 }
                 return;
             }
             if (last_qbox.obj != null && id != last_qbox.id && info_popup.is(":visible")) {
-                last_qbox.obj.css("display", "initial");
+                last_qbox.obj.css("display", "");
             }
             if (db.constructor !== Array) {
                 info_popup.children("div.content").html('<a href="' + db.link + '" target="_blank">' + db.name + '</a>');
@@ -1087,7 +1087,7 @@ var explore = function() {
         info_popup.on('mouseleave', function(event) {
             info_popup.css('display', 'none');
             if (last_qbox.obj != null) {
-                last_qbox.obj.css("display", "initial");
+                last_qbox.obj.css("display", "");
                 last_qbox.obj = null;
             }
         });
