@@ -30,6 +30,7 @@ var view = function() {
     var backgroundModeID = null;
     var keyword_filter_cache = {}
     var xhr_autocomplite = null;
+    var tmp_var_qbox = 0;
     var auth = function(s, t) {
         //if (backgroundMode) return;
         $('ul.trackers').children('li[data-id="' + t + '"]').children('ul').remove();
@@ -70,7 +71,7 @@ var view = function() {
         }
     }
     var addTrackerInList = function(i) {
-        $('body').append('<style class="tr_icon">div.tracker_icon.num' + i + ' { ' + ((tracker[i].icon.length == 0 || tracker[i].icon[0] == '#') ? 'background-color: ' + ((tracker[i].icon.length != 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;' : 'background-image: url(' + tracker[i].icon + ');') + ' }</style>');
+        $('body').append('<style class="tr_icon">div.tracker_icon.num' + i + ' { ' + ((tracker[i].icon.length === 0 || tracker[i].icon[0] === '#') ? 'background-color: ' + ((tracker[i].icon.length !== 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;' : 'background-image: url(' + tracker[i].icon + ');') + ' }</style>');
         $('<li data-id="' + i + '"/>').append($('<div class="tracker_icon num' + i + '" data-count="0"/>')).append($('<a href="#">' + tracker[i].name + '</a>').on("click", function(event) {
             event.preventDefault();
             if ($(this).attr('class') == 'selected') {
@@ -124,7 +125,7 @@ var view = function() {
         return -1;
     }
     var inBGMode = function(t, a, s) {
-        if ("year" in keyword_filter_cache == false) {
+        if ("year" in keyword_filter_cache === false) {
             keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
             if (keyword_filter_cache["year"]) {
                 keyword_filter_cache["year"] = keyword_filter_cache["year"][0];
@@ -133,7 +134,7 @@ var view = function() {
                 keyword_filter_cache["year"] = null;
             }
         }
-        if ("keyword" in keyword_filter_cache == false) {
+        if ("keyword" in keyword_filter_cache === false) {
             keyword_filter_cache["keyword"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
             keyword_filter_cache["keyword_lover"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
             keyword_filter_cache["keyword_regexp"] = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
@@ -146,25 +147,37 @@ var view = function() {
         }
         var sum = 0;
         $.each(a, function(k, v) {
-            if (typeof(v.title) != 'string' || v.title.length == 0 || !isInt(v.size) || !isInt(v.seeds)
+            if (typeof(v.title) !== 'string' || v.title.length === 0 || !isInt(v.size) || !isInt(v.seeds)
                     || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
                     || ('title' in v.category && (typeof(v.category.title) != 'string' && v.category.title != null))
                     || ('url' in v.category && (typeof(v.category.url) != 'string' && v.category.url != null))
                     || ('dl' in v && (typeof(v.dl) != 'string' && v.dl != null))
                     ) {
+                if (tmp_var_qbox === 0) {
+                    explore.setQuality({id:backgroundModeID.id, section: backgroundModeID.section});
+                }
                 return true;
             }
             if (HideZeroSeed && v.seeds == 0) {
+                if (tmp_var_qbox === 0) {
+                    explore.setQuality({id:backgroundModeID.id, section: backgroundModeID.section});
+                }
                 return true;
             }
             var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title != null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
             if (Teaser == 1) {
+                if (tmp_var_qbox === 0) {
+                    explore.setQuality({id:backgroundModeID.id, section: backgroundModeID.section});
+                }
                 return true;
             }
 
             var title = syntax_highlighting(v.title);
             var quality = quality_calc(title.r, v);
             if (quality.name == 0 || quality.name < 100) {
+                if (tmp_var_qbox === 0) {
+                    explore.setQuality({id:backgroundModeID.id, section: backgroundModeID.section});
+                }
                 return true;
             }
             sum++;
@@ -172,7 +185,7 @@ var view = function() {
             if (v.category.id < 0) {
                 v.category.id = autoset_Category(quality);
             }
-            if ("count" in backgroundModeID == false) {
+            if ("count" in backgroundModeID === false) {
                 backgroundModeID = {count: 0, section: backgroundModeID.section, id: backgroundModeID.id, cat_c: {}, year: {}};
             }
             backgroundModeID.count++;
@@ -196,7 +209,7 @@ var view = function() {
             }
             backgroundModeID.year[quality.year][v.category.id].count++;
             var item = backgroundModeID.year[quality.year][v.category.id];
-            if (item.name.length == 0) {
+            if (item.name.length === 0) {
                 item.name = title;
                 item.link = v.url;
                 item.size = bytesToSize(v.size);
@@ -215,6 +228,7 @@ var view = function() {
         });
         updateTrackerResultCount(t, sum);
         loadingStatus(1, t);
+        tmp_var_qbox = 1;
         explore.setQuality(backgroundModeID, keyword_filter_cache["year"]);
     }
     var write_result = function(t, a, s, p) {
@@ -1085,6 +1099,7 @@ var view = function() {
         keyword_filter_cache = {}
         backgroundMode = true;
         backgroundModeID = {"section": section, "id": id};
+        tmp_var_qbox = 0;
         engine.search(keyword, null, 1);
         _gaq.push(['_trackEvent', 'Quality', 'keyword', keyword]);
     }

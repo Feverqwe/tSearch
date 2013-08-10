@@ -749,8 +749,10 @@ var explore = function() {
         });
     }
     var FavoritesOrder = function(left, id, right) {
+        update_q_favorites(id, null, []);
         var c = favoritesList.length;
-        var new_arr = []
+        var new_arr = [];
+        var new_id = 0;
         if (left != null) {
             if (parseInt(id) - 1 == left) {
                 return;
@@ -761,6 +763,7 @@ var explore = function() {
                 }
                 new_arr[new_arr.length] = favoritesList[i];
                 if (i == left) {
+                    new_id = new_arr.length;
                     new_arr[new_arr.length] = favoritesList[id];
                 }
             }
@@ -776,12 +779,14 @@ var explore = function() {
                     continue;
                 }
                 if (i == right) {
+                    new_id = new_arr.length;
                     new_arr[new_arr.length] = favoritesList[id];
                 }
                 new_arr[new_arr.length] = favoritesList[i];
             }
             favoritesList = new_arr;
         }
+        update_q_favorites(new_id, '?', []);
         SetSettings('favoritesList', JSON.stringify(favoritesList));
         show_favorites();
     }
@@ -795,6 +800,13 @@ var explore = function() {
         show_favorites();
     }
     var update_q_favorites = function(id, q, arr) {
+        if (q == null) {
+            if ( id in favoritesList && "quality" in  favoritesList[id] ) {
+                q = favoritesList[id]['quality'];
+            } else {
+                q = ''
+            }
+        }
         if (q == '')
             q = '?';
         favoritesList[id]['quality'] = q;
@@ -1010,30 +1022,33 @@ var explore = function() {
             var section = null;
             var id = null;
             var db = null;
+            var pos = null;
             if (myparam) {
-                ct = myparam.ct;
-                section = myparam.section;
-                id = myparam.id;
-                db = myparam.arr;
+                if (myparam.length !== 0) {
+                    ct = myparam.ct;
+                    section = myparam.section;
+                    id = myparam.id;
+                    db = myparam.arr;
+                }
             } else {
                 ct = $(this);
                 section = $(this).parent().parent().parent().parent().parent().attr("class");
                 id = $(this).parent().parent().attr("data-id");
                 db = get_tr_favorites(id, section);
             }
-            var pos = ct.offset();
-            if (pos.left == 0 || db == null || (db.constructor === Array && db.length == 0)) {
-                if (info_popup.css("display") == "block") {
-                    info_popup.css("display", "none");
-                }
+            if (ct != null) {
+                pos = ct.offset();
+            }
+            if (pos == null || pos.left == 0 || db == null || (db.constructor === Array && db.length === 0)) {
+                info_popup.css("display", "none");
                 if (last_qbox.obj != null) {
-                    last_qbox.obj.css("display", "");
+                    last_qbox.obj.css("display", "initial");
                     last_qbox.obj = null;
                 }
                 return;
             }
             if (last_qbox.obj != null && id != last_qbox.id && info_popup.is(":visible")) {
-                last_qbox.obj.css("display", "");
+                last_qbox.obj.css("display", "initial");
             }
             if (db.constructor !== Array) {
                 info_popup.children("div.content").html('<a href="' + db.link + '" target="_blank">' + db.name + '</a>');
@@ -1072,7 +1087,7 @@ var explore = function() {
         info_popup.on('mouseleave', function(event) {
             info_popup.css('display', 'none');
             if (last_qbox.obj != null) {
-                last_qbox.obj.css("display", "");
+                last_qbox.obj.css("display", "initial");
                 last_qbox.obj = null;
             }
         });
@@ -1311,6 +1326,10 @@ var explore = function() {
         if (obj == null || obj.year == null) {
             qbox.removeClass('loading');
             qbox.text('-');
+            if (obj.id != null && obj.section == 'favorites') {
+                update_q_favorites(obj.id, '-', []);
+            }
+            qbox.trigger("mouseenter", []);
             return;
         }
         function get_last_year(c) {
