@@ -794,7 +794,16 @@ var explore = function() {
         favoritesList.splice(id, 1);
         SetSettings('favoritesList', JSON.stringify(favoritesList));
         if (id  in favoritesDeskList) {
-            delete favoritesDeskList[id];
+            var new_obj = {}
+            var num = 0;
+            $.each(favoritesDeskList, function(k,v) {
+                if ( k == id ) {
+                    return 1;
+                }
+                new_obj[num] = v;
+                num++;
+            });
+            favoritesDeskList = new_obj;
             SetSettings('favoritesDeskList', JSON.stringify(favoritesDeskList));
         }
         show_favorites();
