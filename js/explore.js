@@ -749,10 +749,9 @@ var explore = function() {
         });
     }
     var FavoritesOrder = function(left, id, right) {
-        update_q_favorites(id, null, []);
         var c = favoritesList.length;
         var new_arr = [];
-        var new_id = 0;
+        var new_desc_arr = {}
         if (left != null) {
             if (parseInt(id) - 1 == left) {
                 return;
@@ -761,13 +760,15 @@ var explore = function() {
                 if (i == id) {
                     continue;
                 }
+                new_desc_arr[new_arr.length] = favoritesDeskList[i] || [];
                 new_arr[new_arr.length] = favoritesList[i];
                 if (i == left) {
-                    new_id = new_arr.length;
+                    new_desc_arr[new_arr.length] = favoritesDeskList[id] || [];
                     new_arr[new_arr.length] = favoritesList[id];
                 }
             }
             favoritesList = new_arr;
+            favoritesDeskList = new_desc_arr;
         } else
         if (right != null)
         {
@@ -779,15 +780,17 @@ var explore = function() {
                     continue;
                 }
                 if (i == right) {
-                    new_id = new_arr.length;
+                    new_desc_arr[new_arr.length] = favoritesDeskList[id] || [];
                     new_arr[new_arr.length] = favoritesList[id];
                 }
+                new_desc_arr[new_arr.length] = favoritesDeskList[i] || [];
                 new_arr[new_arr.length] = favoritesList[i];
             }
             favoritesList = new_arr;
+            favoritesDeskList = new_desc_arr;
         }
-        update_q_favorites(new_id, '?', []);
         SetSettings('favoritesList', JSON.stringify(favoritesList));
+        SetSettings('favoritesDeskList', JSON.stringify(favoritesDeskList));
         show_favorites();
     }
     var del_from_favorites = function(id) {
@@ -796,8 +799,8 @@ var explore = function() {
         if (id  in favoritesDeskList) {
             var new_obj = {}
             var num = 0;
-            $.each(favoritesDeskList, function(k,v) {
-                if ( k == id ) {
+            $.each(favoritesDeskList, function(k, v) {
+                if (k == id) {
                     return 1;
                 }
                 new_obj[num] = v;
@@ -809,8 +812,8 @@ var explore = function() {
         show_favorites();
     }
     var update_q_favorites = function(id, q, arr) {
-        if (q == null) {
-            if ( id in favoritesList && "quality" in  favoritesList[id] ) {
+        if (q === null) {
+            if (id in favoritesList && "quality" in  favoritesList[id]) {
                 q = favoritesList[id]['quality'];
             } else {
                 q = ''
