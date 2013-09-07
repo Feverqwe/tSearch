@@ -694,6 +694,9 @@ var explore = function() {
             } else
             if (v.url.substr(0, 4) == 'http') {
                 page_url = v.url;
+            } else
+            if (v.url.length === 0) {
+                page_url = '';
             }
 
             c += '<div class="poster"' + id + '>'
@@ -702,7 +705,7 @@ var explore = function() {
                     + '</div>'
                     + '<div class="label">'
                     + '<div class="title" title="' + name_v + '"><span><a href="#s=' + search_kw_filter(name_v) + '">' + name_v + '</a></span></div>'
-                    + '<div class="info"><a href="' + page_url + '" target="blank">' + _lang.exp_more + '</a></div>'
+                    + ((page_url.length > 0)?'<div class="info"><a href="' + page_url + '" target="blank">' + _lang.exp_more + '</a></div>':'')
                     + '</div>'
                     + '</div>';
         });
@@ -738,12 +741,17 @@ var explore = function() {
     }
     var edit_from_favorites = function(id) {
         var new_name = apprise(_lang.exp_edit_fav_label, {
-            'input': favoritesList[id].name,
+            'input': [favoritesList[id].name,favoritesList[id].img,favoritesList[id].url],
             'id': id
         }, function(id, name) {
             if (id === false)
                 return;
-            favoritesList[id].name = name;
+            favoritesList[id].name = name[0];
+            if (name[1].length == 0) {
+                name[1] = "http://st.kinopoisk.ru/images/no-poster.gif"
+            }
+            favoritesList[id].img = name[1];
+            favoritesList[id].url = name[2];
             SetSettings('favoritesList', JSON.stringify(favoritesList));
             show_favorites();
         });

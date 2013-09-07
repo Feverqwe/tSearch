@@ -733,7 +733,7 @@ ul.ui-autocomplete li > a:hover, ul.ui-autocomplete li > a.ui-state-focus {
     border-radius: 6px;
 }
 div.topbtn {
-    display: 0;
+    display: none;
     bottom: 0;
     width: 50px;
     height: 60px;
