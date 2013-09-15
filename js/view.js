@@ -324,7 +324,7 @@ var view = function() {
                     + '<td class="name"><div class="title"><a href="' + v.url + '" target="_blank">' + title + '</a>' +
                     ((v.category.title == null && ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div>' : '')
                     + '</div>'
-                    + ((v.category.title != null) ? '<ul><li class="category">' + ((v.category.url == null) ? v.category.title : '<a href="' + v.category.url + '" target="blank">' + v.category.title + '</a>') + '</li>' + ((ShowIcons) ? '<li><div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div></li>' : '') + '</ul>' : '')
+                    + ((v.category.title != null) ? '<ul><li class="category">' + ((v.category.url == null) ? v.category.title : '<a href="' + v.category.url + '" target="blank">' + v.category.title + '</a>') + ((ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div></li>' : '</li>') + '</ul>' : '')
                     + '</td>'
                     + '<td class="size" data-value="' + v.size + '">' + ((v.dl != null) ? '<a href="' + v.dl + '" target="_blank">' + bytesToSize(v.size) + ' ↓</a>' : bytesToSize(v.size)) + '</td>'
                     + ((!HideSeed) ? '  <td class="seeds" data-value="' + v.seeds + '">' + v.seeds + '</td>' : '')
