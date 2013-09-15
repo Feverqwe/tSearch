@@ -1,4 +1,4 @@
-(function () {
+(function() {
     num = torrent_lib.length;
     torrent_lib[num] = null;
     torrent_lib[num] = function() {
@@ -13,65 +13,9 @@
             a: 0,
             l: 1,
             rs: 1
-        }
+        };
         var xhr = null;
         var web = function() {
-            var calculateSize = function(s) {
-                var type = '';
-                var size = s.replace(' ', '');
-                var t = size.replace('kB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                var t = size.replace('MB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                var t = size.replace('GB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                var t = size.replace('TB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
-            var calculateTime = function(s) {
-                var d = s.replace(/\s+/g, ' ').split(' ');
-                var date = d[0];
-                var month = d[1];
-                var year = '20' + d[2];
-                if (month == 'Янв')
-                    month = '01';
-                else if (month == 'Фев')
-                    month = '02';
-                else if (month == 'Мар')
-                    month = '03';
-                else if (month == 'Апр')
-                    month = '04';
-                else if (month == 'Май')
-                    month = '05';
-                else if (month == 'Июн')
-                    month = '06';
-                else if (month == 'Июл')
-                    month = '07';
-                else if (month == 'Авг')
-                    month = '08';
-                else if (month == 'Сен')
-                    month = '09';
-                else if (month == 'Окт')
-                    month = '10';
-                else if (month == 'Ноя')
-                    month = '11';
-                else if (month == 'Дек')
-                    month = '12';
-                return Math.round((new Date(parseInt(year), parseInt(month) - 1, parseInt(date))).getTime() / 1000)
-            }
             var readCode = function(c) {
                 c = view.contentFilter(c);
                 var t = view.load_in_sandbox(id, c);
@@ -81,28 +25,24 @@
                 var i = 0;
                 for (i = 1; i < l; i++) {
                     var td = t.eq(i).children('td');
-                    var corr = 0;
-                    if (td.length > 4)
-                        corr = 1;
-                    td.eq(3 + corr).children('span.green').children('img').remove();
                     arr[arr.length] = {
                         'category': {
                             'id': -1
                         },
-                        'title': td.eq(1).children('a').eq(2).text(),
-                        'url': root_url + td.eq(1).children('a').eq(2).attr('href'),
-                        'size': calculateSize(td.eq(2 + corr).text()),
-                        'dl': td.eq(1).children('a').eq(1).attr('href'),
-                        'seeds': td.eq(3 + corr).children('span.green').text(),
-                        'leechs': td.eq(3 + corr).children('span.red').text(),
-                        'time': calculateTime(td.eq(0).text())
-                    }
+                        'title': td.eq(1).children('a').eq(1).text(),
+                        'url': root_url + td.eq(1).children('a').eq(1).attr('href'),
+                        'size': ex_kit.format_size(td.eq(3).text()),
+                        'dl': td.eq(1).children('a').eq(0).attr('href'),
+                        'seeds': td.eq(4).children('span.green').text(),
+                        'leechs': td.eq(4).children('span.red').text(),
+                        'time': ex_kit.format_date(1, ex_kit.month_replace(td.eq(0).text()))
+                    };
                 }
                 return arr;
-            }
+            };
             var loadPage = function(text) {
                 var t = text;
-                if (xhr != null)
+                if (xhr !== null)
                     xhr.abort();
                 xhr = $.ajax({
                     type: 'GET',
@@ -115,16 +55,16 @@
                         view.loadingStatus(2, id);
                     }
                 });
-            }
+            };
             return {
                 getPage: function(a) {
                     return loadPage(a);
                 }
-            }
+            };
         }();
         var find = function(text) {
             return web.getPage(text);
-        }
+        };
         return {
             find: function(a) {
                 return find(a);
@@ -139,9 +79,9 @@
             url: root_url,
             filename: filename,
             flags: flags
-        }
+        };
     }();
-    if (compression == 0) {
+    if (compression === 0) {
         engine.ModuleLoaded(num);
     }
 })();

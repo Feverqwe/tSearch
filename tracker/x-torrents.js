@@ -88,7 +88,7 @@
                             'url': root_url + td.eq(0).children('a').attr('href'),
                             'id': calculateCategory(td.eq(0).children('a').attr('href').replace('.html', ''))
                         },
-                        'title': td.eq(1).children('a').text(),
+                        'title': td.eq(1).children('a').text().replace('√',''),
                         'url': root_url + td.eq(1).children('a').attr('href'),
                         'size': calculateSize(td.eq(3).text()),
                         'seeds': $.trim(td.eq(4).text().split('|')[0]),
