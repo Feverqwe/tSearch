@@ -705,7 +705,7 @@ var explore = function() {
                     + '</div>'
                     + '<div class="label">'
                     + '<div class="title" title="' + name_v + '"><span><a href="#s=' + search_kw_filter(name_v) + '">' + name_v + '</a></span></div>'
-                    + ((page_url.length > 0)?'<div class="info"><a href="' + page_url + '" target="blank">' + _lang.exp_more + '</a></div>':'')
+                    + ((page_url.length > 0) ? '<div class="info"><a href="' + page_url + '" target="blank">' + _lang.exp_more + '</a></div>' : '')
                     + '</div>'
                     + '</div>';
         });
@@ -741,7 +741,7 @@ var explore = function() {
     }
     var edit_from_favorites = function(id) {
         var new_name = apprise(_lang.exp_edit_fav_label, {
-            'input': [favoritesList[id].name,favoritesList[id].img,favoritesList[id].url],
+            'input': [favoritesList[id].name, favoritesList[id].img, favoritesList[id].url],
             'id': id
         }, function(id, name) {
             if (id === false)
@@ -1159,7 +1159,7 @@ var explore = function() {
                 }
             }
         });
-    }
+    };
     var calculate_moveble = function(section, size) {
         if (size <= 70)
             return;
@@ -1168,7 +1168,7 @@ var explore = function() {
 
         for (var i = 0; i < titles_l; i++) {
             var str_w = titles.eq(i).width();
-            if (str_w == 0) {
+            if (str_w === 0) {
                 str_w = titles.eq(i).text().length * 7;
             }
             if (str_w < size)
@@ -1186,8 +1186,9 @@ var explore = function() {
             } else
                 str_w = str_w * 10;
             var str_s = size;
+            var time_calc = Math.round(parseInt(str_w) / parseInt(str_s) * 3.5);
             var move_name = 'moveble' + '_' + str_s + '_' + str_w;
-            if ($('body').find('.' + move_name).length == 0) {
+            if ($('body').find('.' + move_name).length === 0) {
                 $('body').append('<style class="' + move_name + '">'
                         + '@-webkit-keyframes a_' + move_name
                         + '{'
@@ -1219,9 +1220,9 @@ var explore = function() {
                         + '}'
                         + 'div.explore div.poster div.title.' + move_name + ':hover > span {'
                         + 'overflow: visible;'
-                        + '-webkit-animation:a_' + move_name + ' 6s 1;'
-                        + '-moz-animation:a_' + move_name + ' 6s 1;'
-                        + '-o-animation:a_' + move_name + ' 6s 1;'
+                        + '-webkit-animation:a_' + move_name + ' ' + time_calc + 's;'
+                        + '-moz-animation:a_' + move_name + ' ' + time_calc + 's;'
+                        + '-o-animation:a_' + move_name + ' ' + time_calc + 's;'
                         + '}'
                         + '</style>');
             }
@@ -1401,33 +1402,33 @@ var explore = function() {
         qbox.removeClass('loading');
         var label = obj.year[s_year][cat].m;
         qbox.text(label);
-        link_array = [{
+        var link_array = [{
                 "link": obj.year[s_year][cat].link,
                 "name": obj.year[s_year][cat].name + ', ' + obj.year[s_year][cat].size
             }];
-        l2y = get_last_2year();
-        lim = 5
+        var l2y = get_last_2year();
+        var lim = 5
         for (var i = l2y.length - 1; i >= 0; i--) {
             v_y = l2y[i]
             $.each(obj.year[v_y], function(k, v) {
                 if (v.link == obj.year[s_year][cat].link) {
                     return true;
                 }
-                if (lim == 1) {
+                if (lim === 1) {
                     return false;
                 }
-                lim--
+                lim--;
                 link_array[link_array.length] = {
                     "link": v.link,
                     "name": v.name + ', ' + v.size
-                }
+                };
             });
         }
-        if (obj.section in tmpDeskList == false) {
-            tmpDeskList[obj.section] = {}
+        if (obj.section in tmpDeskList === false) {
+            tmpDeskList[obj.section] = {};
         }
         tmpDeskList[obj.section][obj.id] = link_array;
-        if (obj.section == 'favorites') {
+        if (obj.section === 'favorites') {
             clearTimeout(upTimer);
             upTimer = setTimeout(function() {
                 update_q_favorites(obj.id, label, link_array);
@@ -1437,15 +1438,15 @@ var explore = function() {
         upTimer2 = setTimeout(function() {
             qbox.trigger("mouseenter", [{"ct": qbox, "section": obj.section, "id": obj.id, "arr": link_array}]);
         }, 100);
-    }
+    };
     var about_keyword = function(keyword) {
-        if (keyword.length == 0)
+        if (keyword.length === 0)
             return;
         var ab_panel = $('div.about_panel');
         ab_panel.empty();
-        var url = 'https://www.google.com/search?q=' + keyword
-        var type = "about"
-        if (xhr[type] != null)
+        var url = 'https://www.google.com/search?q=' + keyword;
+        var type = "about";
+        if (xhr[type] !== null)
             xhr[type].abort();
         xhr[type] = $.ajax({
             type: 'GET',
@@ -1455,7 +1456,7 @@ var explore = function() {
                 ab_panel.html(content);
             }
         });
-    }
+    };
     return {
         updFav: function(d) {
             sync_favorites(d);
@@ -1472,13 +1473,13 @@ var explore = function() {
         update_poster_count: function() {
             update_poster_count();
         }
-    }
+    };
 }();
 $(window).on('resize', function() {
     explore.update_poster_count();
 });
 
-if (GetSettings('allow_favorites_sync') == 1 && navigator.userAgent.search(/Chrome/) != -1 && typeof(chrome) != "undefined") {
+if (GetSettings('allow_favorites_sync') == 1 && navigator.userAgent.search(/Chrome/) !== -1 && typeof(chrome) !== "undefined") {
     chrome.storage.onChanged.addListener(function(changes, namespace) {
         for (key in changes) {
             if (key == "favoritesList") {
