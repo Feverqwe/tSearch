@@ -1,17 +1,17 @@
-var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : true;
+var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : 1;
 var xhr_autocomplite = null;
 var AddAutocomplete = function() {
-    if (AutoComplite_opt == 0) {
+    if (AutoComplite_opt === 0) {
         var AutocompleteArr = [];
         var order = function(a, b) {
             if (a.count > b.count)
                 return -1;
-            if (a.count == b.count)
+            if (a.count === b.count)
                 return 0;
             return 1;
-        }
+        };
         var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-        if (search_history != null) {
+        if (search_history !== null) {
             search_history.sort(order);
             var count = search_history.length;
             for (var i = 0; i < count; i++) {
@@ -20,22 +20,22 @@ var AddAutocomplete = function() {
         }
     }
     var inp = $('input[type="text"][name="s"]');
-    if (inp.attr('autocomplete') != null) {
+    if (inp.attr('autocomplete') !== undefined) {
         inp.autocomplete("destroy");
     }
     inp.autocomplete({
-        source: (AutoComplite_opt == 0) ? AutocompleteArr : function(a, response) {
-            if ($.trim(a.term).length == 0 || AutoComplite_opt == 0) {
+        source: (AutoComplite_opt === 0) ? AutocompleteArr : function(a, response) {
+            if ($.trim(a.term).length === 0 || AutoComplite_opt === 0) {
                 var AutocompleteArr = [];
                 var order = function(a, b) {
                     if (a.count > b.count)
                         return -1;
-                    if (a.count == b.count)
+                    if (a.count === b.count)
                         return 0;
                     return 1;
-                }
+                };
                 var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-                if (search_history != null) {
+                if (search_history !== null) {
                     search_history.sort(order);
                     var count = search_history.length;
                     for (var i = 0; i < count; i++) {
@@ -44,7 +44,7 @@ var AddAutocomplete = function() {
                 }
                 response(AutocompleteArr);
             } else {
-                if (xhr_autocomplite != null)
+                if (xhr_autocomplite !== null)
                     xhr_autocomplite.abort();
                 xhr_autocomplite = $.getJSON('http://suggestqueries.google.com/complete/search?client=firefox&q=' + a.term).success(function(data) {
                     var arr = data[1];
@@ -64,7 +64,7 @@ var AddAutocomplete = function() {
         }
     });
     inp.autocomplete("close");
-}
+};
 
 $(function() {
     AddAutocomplete();

@@ -3,7 +3,7 @@ var run = function () {
     .getService(Components.interfaces.nsIWindowMediator);
     var recentWindow = wm.getMostRecentWindow("navigator:browser");
     recentWindow.delayedOpenTab('chrome://TorrentsMultiSearch/content/index.html#s=', null, null, null, null);
-}
+};
 var addButton = function () {
     var startButtonId =  "torrentsmultysearch-button";
     var navBarId = "nav-bar";
@@ -12,7 +12,7 @@ var addButton = function () {
 	
     // Append only if the button is not already there.
     var curSet = currentSet.split(",");
-    if (curSet.indexOf(startButtonId) == -1)
+    if (curSet.indexOf(startButtonId) === -1)
     {
         navBar.insertItem(startButtonId);
         navBar.setAttribute("currentset", navBar.currentSet);
@@ -26,7 +26,7 @@ var addButton = function () {
         {
         }      
     }
-}
+};
 var firstRun = function () {
     var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefService).getBranch('extensions.TorrentsMultiSearch.storage.');
     name = 'firstRunPref';
@@ -39,5 +39,5 @@ var firstRun = function () {
         prefs.setCharPref(name, '1');
         window.addEventListener("load",addButton,false);
     }
-}
+};
 firstRun();

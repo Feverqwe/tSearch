@@ -3,5 +3,5 @@ var _gaq = function () {
         push : function (a) {
             return 1;
         }
-    }
+    };
 }();

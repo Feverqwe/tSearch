@@ -1,1 +1,5 @@
 /nbproject/
+/build/*
+/build_chrome*
+/build_firefox/*
+/build_opera*

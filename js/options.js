@@ -76,7 +76,7 @@ var options = function() {
             return;
         }
         var t = trackerProfiles[id].Trackers;
-        if (t === undefined) {
+        if (t === undefined || t === null) {
             t = engine.defaultList;
         }
         var enable = false;

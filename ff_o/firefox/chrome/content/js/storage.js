@@ -160,11 +160,11 @@ kango.storage=new kango.Storage();
 var SetSettings = function (key,value) {
     kango.storage.setItem(key, value);
     return value;
-}
+};
 var GetSettings = function (key) {
     var val = kango.storage.getItem(key);
     if (val === null)
         return undefined;
     else
         return val;
-}
+};
