@@ -10,7 +10,7 @@ var view = function() {
     var filter_timers = {
         word: null,
         size: null
-    }
+    };
     var HideLeech = (GetSettings('HideLeech') !== undefined) ? parseInt(GetSettings('HideLeech')) : true;
     var HideSeed = (GetSettings('HideSeed') !== undefined) ? parseInt(GetSettings('HideSeed')) : false;
     var ShowIcons = (GetSettings('ShowIcons') !== undefined) ? parseInt(GetSettings('ShowIcons')) : true;
@@ -28,7 +28,7 @@ var view = function() {
     };
     var backgroundMode = false;
     var backgroundModeID = null;
-    var keyword_filter_cache = {}
+    var keyword_filter_cache = {};
     var xhr_autocomplite = null;
     var tmp_var_qbox = 0;
     var auth = function(s, t) {
@@ -37,7 +37,7 @@ var view = function() {
         if (!s) {
             $('ul.trackers').children('li[data-id="' + t + '"]').append('<ul><li><a href="' + tracker[t].login_url + '" target="_blank">' + _lang['btn_login'] + '</a></li></ul>');
         }
-    }
+    };
     var clear_table = function() {
         backgroundMode = false;
         $('div.about_panel').empty();
@@ -45,7 +45,7 @@ var view = function() {
         $('div.filter').children('input').val('');
         keywordFilter = null;
         lastFilterWord = '';
-        keyword_filter_cache = {}
+        keyword_filter_cache = {};
         $('div.filter div.btn').hide();
         $('div.size_filter').find('input').val('');
         sizeFilter = null;
@@ -54,7 +54,7 @@ var view = function() {
         updateTrackerCount();
         trackerFilter = null;
         updateCategorys();
-    }
+    };
     var loadingStatus = function(s, t) {
         //if (backgroundMode) return;
         var tracker_img = $('ul.trackers').children('li[data-id="' + t + '"]').children('div.tracker_icon');
@@ -69,12 +69,12 @@ var view = function() {
                 tracker_img.css('background', 'url(images/error.png) center center #fff');
                 break;
         }
-    }
+    };
     var addTrackerInList = function(i) {
         $('body').append('<style class="tr_icon">div.tracker_icon.num' + i + ' { ' + ((tracker[i].icon.length === 0 || tracker[i].icon[0] === '#') ? 'background-color: ' + ((tracker[i].icon.length !== 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;' : 'background-image: url(' + tracker[i].icon + ');') + ' }</style>');
         $('<li data-id="' + i + '"/>').append($('<div class="tracker_icon num' + i + '" data-count="0"/>')).append($('<a href="#">' + tracker[i].name + '</a>').on("click", function(event) {
             event.preventDefault();
-            if ($(this).attr('class') == 'selected') {
+            if ($(this).attr('class') === 'selected') {
                 $(this).removeClass('selected');
                 trackerFilter = null;
             }
@@ -86,13 +86,13 @@ var view = function() {
             updateCategorys();
             $('ul.categorys').children('li.selected').trigger('click');
         })).append('<i/>').appendTo($('ul.trackers'));
-    }
+    };
     var ClearTrackerList = function() {
         $('ul.trackers').empty();
         $('style.tr_icon').remove();
-    }
+    };
     function isInt(n) {
-        if (n == undefined || n === undefined)
+        if (n === undefined)
             return false;
         return n % 1 === 0;
     }
@@ -105,7 +105,7 @@ var view = function() {
             quality.video = Math.round(parseInt(quality.video) / 2);
         quality.value = quality.seed + quality.name + quality.video + quality.music + quality.game;
         return quality;
-    }
+    };
     var autoset_Category = function(quality) {
         if (quality.book) {
             return 5;
@@ -123,7 +123,7 @@ var view = function() {
         if (quality.game > quality.music && quality.game > quality.video)
             return 2;
         return -1;
-    }
+    };
     var inBGMode = function(t, a, s) {
         if ("year" in keyword_filter_cache === false) {
             keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
@@ -230,7 +230,7 @@ var view = function() {
         loadingStatus(1, t);
         tmp_var_qbox = 1;
         explore.setQuality(backgroundModeID, keyword_filter_cache["year"]);
-    }
+    };
     var write_result = function(t, a, s, p) {
         if (backgroundMode) {
             return inBGMode(t, a, s);
@@ -341,7 +341,7 @@ var view = function() {
             $('#rez_table tbody').append(contentUnFilter(c));
             table_update_timer(1);
         }
-    }
+    };
     var table_update_timer = function(a) {
         var time = new Date().getTime();
         if (a == undefined) {
@@ -364,7 +364,7 @@ var view = function() {
             clearTimeout(update_table.timer);
             update_table.timer = setTimeout(table_update_timer, 200);
         }
-    }
+    };
     var bytesToSize = function(bytes, nan) {
         //переводит байты в строчки
         var sizes = _lang['size_list'];
@@ -377,7 +377,7 @@ var view = function() {
             return (bytes / Math.pow(1024, i)) + ' ' + sizes[i];
         }
         return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
-    }
+    };
     var utiemonstr = function(shtamp) {
         //преврящает TimeShtamp в строчку
         var dt = new Date(shtamp * 1000);
@@ -401,26 +401,26 @@ var view = function() {
         //    time = ' '+h+':'+mi+':'+sec;
         var t = d + '-' + m + '-' + dt.getFullYear();//+time;
         return t;
-    }
+    };
     var unixintimetitle = function(i) {
         if (i == 0)
             return '∞';
         else
             return utiemonstr(i);
-    }
+    };
     var round_day_unixtime = function(i) {
         var dt = new Date(i * 1000);
         return Math.round(new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()).getTime() / 1000);
-    }
+    };
     var getHandM_unixtime = function(i) {
         var dt = new Date(i * 1000);
         return addZero(dt.getHours()) + ':' + addZero(dt.getMinutes());
-    }
+    };
     var addZero = function(i) {
         if (i < 10)
             return '0' + i;
         return i;
-    }
+    };
     var unixintime = function(utime)
     {
         //выписывает отсчет времени из unixtime
@@ -1444,18 +1444,18 @@ var view = function() {
                 return false;
             });
             $(document).on('keyup', function(e) {
-                if (e.target.tagName == "INPUT") {
+                if (e.target.tagName === "INPUT") {
                     return;
                 }
                 if ($('div.explore').is(":visible")) {
                     return;
                 }
-                if (e.keyCode == 27) {
+                if (e.keyCode === 27) {
                     triggerBlank();
                 }
             });
         }
-    }
+    };
 }();
 $(function() {
     view.begin();
@@ -1476,7 +1476,7 @@ $(window).load(function() {
 });
 var global_wl_hash = location.hash;
 $(window).on('hashchange', function() {
-    if (location.hash != global_wl_hash)
+    if (location.hash !== global_wl_hash)
     {
         $(window).trigger('load');
         global_wl_hash = location.hash;
