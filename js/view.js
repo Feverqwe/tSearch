@@ -130,7 +130,7 @@ var view = function() {
             if (keyword_filter_cache["year"]) {
                 keyword_filter_cache["year"] = keyword_filter_cache["year"][0];
             }
-            if (keyword_filter_cache["year"] == s) {
+            if (keyword_filter_cache["year"] === s) {
                 keyword_filter_cache["year"] = null;
             }
         }
@@ -140,7 +140,7 @@ var view = function() {
             keyword_filter_cache["keyword_regexp"] = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
             keyword_filter_cache["keyword_regexp_lover"] = keyword_filter_cache["keyword_regexp"].toLowerCase();
         }
-        if (keyword_filter_cache["year"] != null && "keyword_no_year" in keyword_filter_cache == false) {
+        if (keyword_filter_cache["year"] !== null && "keyword_no_year" in keyword_filter_cache === false) {
             keyword_filter_cache["keyword_no_year"] = keyword_filter_cache["keyword"].replace(" " + keyword_filter_cache["year"], "");
             keyword_filter_cache["keyword_no_year_regexp"] = keyword_filter_cache.keyword_no_year.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
             keyword_filter_cache["keyword_no_year_regexp_lover"] = keyword_filter_cache["keyword_no_year_regexp"].toLowerCase();
@@ -149,34 +149,34 @@ var view = function() {
         $.each(a, function(k, v) {
             if (typeof(v.title) !== 'string' || v.title.length === 0 || !isInt(v.size) || !isInt(v.seeds)
                     || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
-                    || ('title' in v.category && (typeof(v.category.title) != 'string' && v.category.title != null))
-                    || ('url' in v.category && (typeof(v.category.url) != 'string' && v.category.url != null))
-                    || ('dl' in v && (typeof(v.dl) != 'string' && v.dl != null))
+                    || ('title' in v.category && (typeof(v.category.title) !== 'string' && v.category.title != null))
+                    || ('url' in v.category && (typeof(v.category.url) !== 'string' && v.category.url != null))
+                    || ('dl' in v && (typeof(v.dl) !== 'string' && v.dl != null))
                     ) {
                 if (tmp_var_qbox === 0) {
-                    explore.setQuality({id:backgroundModeID.id, section: backgroundModeID.section});
+                    explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
                 }
                 return true;
             }
             if (HideZeroSeed && v.seeds == 0) {
                 if (tmp_var_qbox === 0) {
-                    explore.setQuality({id:backgroundModeID.id, section: backgroundModeID.section});
+                    explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
                 }
                 return true;
             }
             var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title != null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
-            if (Teaser == 1) {
+            if (Teaser === 1) {
                 if (tmp_var_qbox === 0) {
-                    explore.setQuality({id:backgroundModeID.id, section: backgroundModeID.section});
+                    explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
                 }
                 return true;
             }
 
             var title = syntax_highlighting(v.title);
             var quality = quality_calc(title.r, v);
-            if (quality.name == 0 || quality.name < 100) {
+            if (quality.name === 0 || quality.name < 100) {
                 if (tmp_var_qbox === 0) {
-                    explore.setQuality({id:backgroundModeID.id, section: backgroundModeID.section});
+                    explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
                 }
                 return true;
             }
@@ -189,14 +189,14 @@ var view = function() {
                 backgroundModeID = {count: 0, section: backgroundModeID.section, id: backgroundModeID.id, cat_c: {}, year: {}};
             }
             backgroundModeID.count++;
-            if (backgroundModeID.cat_c[v.category.id] == null) {
+            if (backgroundModeID.cat_c[v.category.id] === undefined) {
                 backgroundModeID.cat_c[v.category.id] = 0;
             }
             backgroundModeID.cat_c[v.category.id]++;
-            if (backgroundModeID.year[quality.year] == null) {
+            if (backgroundModeID.year[quality.year] === undefined) {
                 backgroundModeID.year[quality.year] = {};
             }
-            if (backgroundModeID.year[quality.year][v.category.id] == null) {
+            if (backgroundModeID.year[quality.year][v.category.id] === undefined) {
                 backgroundModeID.year[quality.year][v.category.id] = {
                     count: 0,
                     name: "",
@@ -205,7 +205,7 @@ var view = function() {
                     name_quality: 0,
                     quality: 0,
                     m: []
-                }
+                };
             }
             backgroundModeID.year[quality.year][v.category.id].count++;
             var item = backgroundModeID.year[quality.year][v.category.id];
@@ -237,35 +237,35 @@ var view = function() {
         }
         //var dbg_start = (new Date()).getTime();
         var c = '';
-        if (p == null) {
+        if (p === undefined) {
             $('#rez_table tbody').children('tr[data-tracker="' + t + '"]').remove();
         }
-        if ("year" in keyword_filter_cache == false) {
+        if ("year" in keyword_filter_cache === false) {
             keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
             if (keyword_filter_cache["year"]) {
                 keyword_filter_cache["year"] = keyword_filter_cache["year"][0];
             }
-            if (keyword_filter_cache["year"] == s) {
+            if (keyword_filter_cache["year"] === s) {
                 keyword_filter_cache["year"] = null;
             }
         }
-        if ("keyword" in keyword_filter_cache == false) {
+        if ("keyword" in keyword_filter_cache === false) {
             keyword_filter_cache["keyword"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
             keyword_filter_cache["keyword_regexp"] = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
             keyword_filter_cache["keyword_regexp_lover"] = keyword_filter_cache["keyword_regexp"].toLowerCase();
         }
-        if ("keyword_no_year" in keyword_filter_cache == false && keyword_filter_cache["year"]) {
+        if ("keyword_no_year" in keyword_filter_cache === false && keyword_filter_cache["year"]) {
             keyword_filter_cache["keyword_no_year"] = keyword_filter_cache["keyword"].replace(" " + keyword_filter_cache["year"], "");
             keyword_filter_cache["keyword_no_year_regexp"] = keyword_filter_cache.keyword_no_year.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
             keyword_filter_cache["keyword_no_year_regexp_lover"] = keyword_filter_cache["keyword_no_year_regexp"].toLowerCase();
         }
         var sum = 0;
         $.each(a, function(k, v) {
-            if (typeof(v.title) != 'string' || v.title.length == 0 || !isInt(v.size) || !isInt(v.seeds)
+            if (typeof(v.title) !== 'string' || v.title.length === 0 || !isInt(v.size) || !isInt(v.seeds)
                     || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
-                    || ('title' in v.category && (typeof(v.category.title) != 'string' && v.category.title != null))
-                    || ('url' in v.category && (typeof(v.category.url) != 'string' && v.category.url != null))
-                    || ('dl' in v && (typeof(v.dl) != 'string' && v.dl != null))
+                    || ('title' in v.category && (typeof(v.category.title) !== 'string' && v.category.title != null))
+                    || ('url' in v.category && (typeof(v.category.url) !== 'string' && v.category.url != null))
+                    || ('dl' in v && (typeof(v.dl) !== 'string' && v.dl != null))
                     ) {
                 console.log('Tracker ' + tracker[t].name + ' have problem!');
                 console.log('#debug start');
@@ -278,7 +278,7 @@ var view = function() {
             }
             if (TeaserFilter) {
                 var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title != null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
-                if (Teaser == 1) {
+                if (Teaser === 1) {
                     return true;
                 }
             }
@@ -297,15 +297,15 @@ var view = function() {
             }
             var filter = '';
             var fk = 0;
-            if (trackerFilter != null && trackerFilter != t) {
+            if (trackerFilter !== null && trackerFilter != t) {
                 filter = 'style="display: none;"';
             }
-            if (categoryFilter != null && categoryFilter != v.category.id) {
+            if (categoryFilter !== null && categoryFilter != v.category.id) {
                 filter = 'style="display: none;"';
             }
             if (keywordFilter !== null) {
                 var keyword = $.trim($('div.filter').children('input').val()).replace(/\s+/g, " ");
-                if (title == filterTextCheck(keyword, title))
+                if (title === filterTextCheck(keyword, title))
                     filter = 'style="display: none;"';
                 else
                     fk = 1;
@@ -332,7 +332,7 @@ var view = function() {
                     + '</tr>';
 
         });
-        if (p != null) {
+        if (p !== undefined) {
             sum = p;
         }
         updateTrackerResultCount(t, sum);
@@ -344,7 +344,7 @@ var view = function() {
     };
     var table_update_timer = function(a) {
         var time = new Date().getTime();
-        if (a == undefined) {
+        if (a === undefined) {
             //выполнятеся от таймера
             if (time - update_table.time > 200) {
                 //обновление сортровки
@@ -368,12 +368,12 @@ var view = function() {
     var bytesToSize = function(bytes, nan) {
         //переводит байты в строчки
         var sizes = _lang['size_list'];
-        if (nan == null)
+        if (nan === undefined)
             nan = 'n/a';
-        if (bytes == 0)
+        if (bytes <= 0)
             return nan;
         var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-        if (i == 0) {
+        if (i === 0) {
             return (bytes / Math.pow(1024, i)) + ' ' + sizes[i];
         }
         return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
@@ -382,19 +382,19 @@ var view = function() {
         //преврящает TimeShtamp в строчку
         var dt = new Date(shtamp * 1000);
         var m = dt.getMonth() + 1;
-        if (m.toString().length == 1)
+        if (m.toString().length === 1)
             m = '0' + m.toString();
         var d = dt.getDate();
-        if (d.toString().length == 1)
+        if (d.toString().length === 1)
             d = '0' + d.toString();
         var h = dt.getHours();
-        if (h.toString().length == 1)
+        if (h.toString().length === 1)
             h = '0' + h.toString();
         var mi = dt.getMinutes();
-        if (mi.toString().length == 1)
+        if (mi.toString().length === 1)
             mi = '0' + mi.toString();
         var sec = dt.getSeconds();
-        if (sec.toString().length == 1)
+        if (sec.toString().length === 1)
             sec = '0' + sec.toString();
         //var time = '';
         //if (h!='00' && mi!='00' && sec != '00')
@@ -403,7 +403,7 @@ var view = function() {
         return t;
     };
     var unixintimetitle = function(i) {
-        if (i == 0)
+        if (i <= 0)
             return '∞';
         else
             return utiemonstr(i);
@@ -426,7 +426,7 @@ var view = function() {
         //выписывает отсчет времени из unixtime
         var now_time = Math.round((new Date()).getTime() / 1000);
         var theDate = utiemonstr(utime);
-        if (utime == 0)
+        if (utime <= 0)
             return '∞';
         var i = now_time - utime;
         if (i < 0)
@@ -454,10 +454,10 @@ var view = function() {
         //    return week + str_week+' назад';
         var d_te = (new Date()).getDate();
         var t_te = (new Date(utime * 1000)).getDate();
-        if (day == 0 && d_te != t_te)
+        if (day === 0 && d_te !== t_te)
             day = 1;
         if (day > 0)
-            if (day == 1)
+            if (day === 1)
                 return _lang.times.yest + ' ' + getHandM_unixtime(utime);
             else
                 return day + str_day + ' ' + _lang.times.old;
@@ -471,42 +471,42 @@ var view = function() {
         if (seconds > 0)
             return seconds + str_seconds + ' ' + _lang.times.old;
         return theDate;
-    }
+    };
     var updateTrackerResultCount = function(t, c, l) {
-        if (l == null && c == null) {
+        if (l === undefined && c === undefined) {
             var c = $('ul.trackers li[data-id="' + t + '"]').attr('data-count');
-            if (c == null)
+            if (c === undefined)
                 c = 0;
             $('ul.trackers li[data-id="' + t + '"]').children('i').html('(' + c + ')');
         } else
-        if (l == null) {
+        if (l === undefined) {
             $('ul.trackers li[data-id="' + t + '"]').attr('data-count', c).children('i').html('(' + c + ')');
         } else {
-            if (l == 1)
+            if (l === 1)
                 $('ul.trackers li[data-id="' + t + '"]').children('i').html('(' + c + ')');
         }
-    }
+    };
     var contentFilter = function(c) {
         var c = c.replace(/\/\//img, '#blockurl#').replace(/ src=(['"]{0,1})/img, ' src=$11.png#blockrurl#');
         return c;
-    }
+    };
     var contentUnFilter = function(c) {
         var c = c.replace(/1.png#blockrurl#/img, '').replace(/#blockrurl#/img, '').replace(/#blockurl#/img, '//');
         return c;
-    }
+    };
     var syntax_highlighting = function(t) {
         var words = keyword_filter_cache.keyword_regexp.split(' ');
         var word_rate = Math.round(200 / words.length);
         var first_rate = Math.round(word_rate + word_rate / 2);
         var name = t;
-        var name_lover = name.toLowerCase()
+        var name_lover = name.toLowerCase();
 
 
-        var rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0, block: [], qbox: "+"}
+        var rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0, block: [], qbox: "+"};
         var word_hl = 0;
         var year_hl = 0;
         var cal_rate = function(a, b, c) {
-            if ($.inArray(a, rate.m) == -1) {
+            if ($.inArray(a, rate.m) === -1) {
                 rate.m[rate.m.length] = a;
             } else {
                 return '';
@@ -521,7 +521,7 @@ var view = function() {
             if ((/\w/).test(sub_l + sub_r)) {
                 return '';
             }
-            if ($.inArray("video_type", rate.block) == -1) {
+            if ($.inArray("video_type", rate.block) === -1) {
                 if (a == "blu-ray") {
                     rate.video += 100;
                     rate.block[rate.block.length] = "video_type";
@@ -713,34 +713,34 @@ var view = function() {
             if (a == "soundtrack") {
                 rate.music++;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "32") {
+            if ($.inArray("mp3", rate.m) !== -1 && a === "32") {
                 rate.music -= 2;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "64") {
+            if ($.inArray("mp3", rate.m) !== -1 && a === "64") {
                 rate.music += 0;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "96") {
+            if ($.inArray("mp3", rate.m) !== -1 && a === "96") {
                 rate.music += 2;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "128") {
+            if ($.inArray("mp3", rate.m) !== -1 && a === "128") {
                 rate.music += 5;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "192") {
+            if ($.inArray("mp3", rate.m) !== -1 && a === "192") {
                 rate.music += 10;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "320") {
+            if ($.inArray("mp3", rate.m) !== -1 && a === "320") {
                 rate.music += 15;
             } else
             if (a == "мультфильм") {
                 rate.mult++;
             }
             return '';
-        }
+        };
         var sub_select = function(name) {
             if (!_sub_select_enable)
                 return name;
             return name.replace(/(\[[^\]]*\]|\([^\)]*\))/g, '<span class="sub_name">$1</span>');
-        }
+        };
         var quality = "Blu-ray|Blu-Ray|BD-Remux|BDRemux|1080p|1080i|BDRip-AVC|BD-Rip|BDRip|CAMRip|CamRip-AVC|CamRip|HDTV-Rip|HQRip-AVC|HDTVrip|HDTVRip|DTheater-Rip|720p|LowHDRip|HDTV|HDRip-AVC|HDRip|DVD-Rip|DVDRip-AVC|DVDRip|DVD5|2xDVD9|DVD9|DVD-9|DVDScr|DVDScreener|HD-DVD|NoDVD|DVD|SatRip|HQSATRip|HQRip|TVRip|WEBRip|WEB-DLRip-AV​C|WebDL-Rip|AVC|WEB-DLRip|WEB-DL|SATRip|DVB|IPTVRip|TeleSynch|[Зз]{1}вук с TS|TS|АП|ЛО|ЛД|AVO|MVO|VO|DUB|2xDub|Dub|ДБ|ПМ|ПД|ПО|СТ|[Ss]{1}ubs|SUB|[sS]{1}ub|FLAC|flac|ALAC|alac|[lL]{1}oss[lL]{1}ess(?! repack)|\\(PS2\\)|PS3|Xbox|XBOX|Repack|RePack|\\[Native\\]|Lossless Repack|Steam-Rip|\\(Lossy Rip\/|{Rip}|[лЛ]{1}ицензия|RELOADED|\\[Rip\\]|\\[RiP\\]|\\{L\\}|\\(L\\)|\\[L\\]|[Ss]{1}eason(?=[s|:]?)|[Сс]{1}езон(?=[ы|:]?)|CUE|(?=\.)cue|MP3|128|192|320|\\(P\\)|\\[P\\]|PC \\(Windows\\)|Soundtrack|soundtrack|H\.264|mp4|MP4|M4V|FB2|PDF|RTF|EPUB|fb2|DJVU|djvu|epub|pdf|rtf|[мМ]{1}ультфильм";
         rate.year = name.match(/[0-9]{4}/);
         if (rate.year) {
@@ -753,7 +753,7 @@ var view = function() {
             rate.year = 0;
         }
         name.replace(new RegExp(quality, "g"), cal_rate);
-        if (keyword_filter_cache.keyword.length == 0) {
+        if (keyword_filter_cache.keyword.length === 0) {
             hl_name = sub_select(name);
             return {
                 n: hl_name,
@@ -787,7 +787,7 @@ var view = function() {
             }
             word_hl++;
             return '<b>' + a + '</b>';
-        }
+        };
         if (keyword_filter_cache["year"]) {
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
@@ -892,9 +892,9 @@ var view = function() {
             n: hl_name,
             r: rate
         };
-    }
+    };
     var filterTextCheck = function(s, t) {
-        if (s.length == 0)
+        if (s.length === 0)
             return 'a';
         var r = t;
         if (AdvFiltration == 1) {
@@ -929,7 +929,7 @@ var view = function() {
                 r = 'a';
         }
         return r;
-    }
+    };
     var updateTrackerCount = function() {
         var li = $('ul.trackers').children('li');
         var t_c = li.length;
@@ -940,16 +940,16 @@ var view = function() {
             else {
                 var filter = '';
                 if (keywordFilter !== null) {
-                    filter += '[data-kf=1]'
+                    filter += '[data-kf=1]';
                 }
                 if (sizeFilter !== null) {
-                    filter += '[data-fs=1]'
+                    filter += '[data-fs=1]';
                 }
                 var count = $('#rez_table tbody').children('tr[data-tracker="' + id + '"]' + filter).length;
                 updateTrackerResultCount(id, count, 1);
             }
         }
-    }
+    };
     var updateCategorys = function() {
         var sum = 0;
         var count_c = categorys.length;
@@ -988,13 +988,13 @@ var view = function() {
             $('ul.categorys li.selected').trigger('click');
             autoMove = (category == null) ? null : category;
         }
-    }
+    };
     var tableFilter = function(keyword) {
         if (keyword != $('div.filter').children('input').val())
             return;
         $('div.filter div.btn').css('background-image', 'url(images/loading.gif)');
         keyword = $.trim(keyword).replace(/\s+/g, " ");
-        if (keyword.length == 0) {
+        if (keyword.length === 0) {
             $('div.filter').children('input').val('');
             keywordFilter = null;
             $('ul.categorys li.selected').trigger('click');
@@ -1028,7 +1028,7 @@ var view = function() {
         updateCategorys();
         updateTrackerCount();
         $('div.filter div.btn').css('background-image', 'url(images/clear.png)');
-    }
+    };
     tableSizeFilter = function(sizeFilter) {
         var tr = $('#rez_table tbody').children('tr');
         var tr_count = tr.length;
@@ -1045,7 +1045,7 @@ var view = function() {
         updateCategorys();
         updateTrackerCount();
         //$('div.filter div.btn').css('background-image', 'url(images/clear.png)');
-    }
+    };
     var triggerBlank = function() {
         $('body,html').scrollTop();
         $('div.result_panel').css('display', 'none');
@@ -1059,12 +1059,12 @@ var view = function() {
         $('form[name="search"]').children('input[type="text"]').val('').focus();
         $('form[name="search"]').children('input[type="text"]').trigger("keyup");
         explore.getLoad();
-        if (old_title != document.title) {
+        if (old_title !== document.title) {
             _gaq.push(['_trackPageview', 'index.html']);
         }
-    }
+    };
     var triggerSearch = function(keyword) {
-        if (keyword == "#") {
+        if (keyword === "#") {
             return false;
         }
         keyword = $.trim(keyword);
@@ -1093,18 +1093,18 @@ var view = function() {
         _gaq.push(['_trackPageview', 'index.html#s=' + keyword]);
         _gaq.push(['_trackEvent', 'Search', 'keyword', keyword]);
         return false;
-    }
+    };
     var getQuality = function(keyword, id, section) {
         //flush for bg mode
-        keyword_filter_cache = {}
+        keyword_filter_cache = {};
         backgroundMode = true;
         backgroundModeID = {"section": section, "id": id};
         tmp_var_qbox = 0;
         engine.search(keyword, null, 1);
         _gaq.push(['_trackEvent', 'Quality', 'keyword', keyword]);
-    }
+    };
     var load_category = function(c) {
-        $('ul.categorys').empty()
+        $('ul.categorys').empty();
         var count = c.length;
         categorys = [];
         categorys_assoc = [];
@@ -1114,7 +1114,7 @@ var view = function() {
             $('ul.categorys').append('<li data-id="' + c[i][0] + '">' + c[i][1] + '<i></i></li>');
         }
         $('ul.categorys').prepend('<li class="selected">' + _lang['cat_all'] + ' <i></i></li>');
-    }
+    };
     var AddAutocomplete = function() {
         if (AutoComplite_opt == 0) {
             var AutocompleteArr = [];
@@ -1124,7 +1124,7 @@ var view = function() {
                 if (a.count == b.count)
                     return 0;
                 return 1;
-            }
+            };
             var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
             if (search_history != null) {
                 search_history.sort(order);
@@ -1135,12 +1135,12 @@ var view = function() {
             }
         }
         var inp = $('input[type="text"][name="s"]');
-        if (inp.attr('autocomplete') != null) {
+        if (inp.attr('autocomplete') !== undefined) {
             inp.autocomplete("destroy");
         }
         inp.autocomplete({
             source: (AutoComplite_opt == 0) ? AutocompleteArr : function(a, response) {
-                if ($.trim(a.term).length == 0 || AutoComplite_opt == 0) {
+                if ($.trim(a.term).length === 0 || AutoComplite_opt == 0) {
                     var AutocompleteArr = [];
                     var order = function(a, b) {
                         if (a.count > b.count)
@@ -1148,7 +1148,7 @@ var view = function() {
                         if (a.count == b.count)
                             return 0;
                         return 1;
-                    }
+                    };
                     var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
                     if (search_history != null) {
                         search_history.sort(order);
@@ -1177,7 +1177,7 @@ var view = function() {
             }
         });
         inp.autocomplete("close");
-    }
+    };
     var LoadProfiles = function() {
         var defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
         var arr = engine.getProfileList();
@@ -1191,11 +1191,11 @@ var view = function() {
         });
         sel = $('<div class="profile">').append(sel);
         $('div.tracker_list div.setup').after(sel);
-    }
+    };
     var load_in_sandbox = function(id, c) {
         var t = $($.parseHTML(c));
-        return t
-    }
+        return t;
+    };
     return {
         result: function(t, a, s, p) {
             return write_result(t, a, s, p);
@@ -1207,10 +1207,10 @@ var view = function() {
             return contentUnFilter(a);
         },
         clear_table: function() {
-            clear_table()
+            clear_table();
         },
         auth: function(s, id) {
-            auth(s, id)
+            auth(s, id);
         },
         addTrackerInList: function(a) {
             addTrackerInList(a);
@@ -1237,13 +1237,13 @@ var view = function() {
             AddAutocomplete();
         },
         ClearTrackerList: function() {
-            ClearTrackerList()
+            ClearTrackerList();
         },
         LoadProfiles: function() {
-            LoadProfiles()
+            LoadProfiles();
         },
         getQuality: function(a, b, c) {
-            getQuality(a, b, c)
+            getQuality(a, b, c);
         },
         getAssocCategorys: function(a) {
             return categorys_assoc[a];
@@ -1292,7 +1292,7 @@ var view = function() {
                 return false;
             });
             $('ul.categorys').on('click', 'li', function(event) {
-                if (event.isTrigger != true)
+                if (event.isTrigger !== true)
                     autoMove = null;
                 var id = $(this).attr('data-id');
                 categoryFilter = id;
@@ -1374,7 +1374,7 @@ var view = function() {
                 if (t.length > 0) {
                     $('div.filter div.btn').show();
                 }
-                clearTimeout(filter_timers.word)
+                clearTimeout(filter_timers.word);
                 filter_timers.word = setTimeout(function() {
                     tableFilter(t);
                 }, 500);
@@ -1397,7 +1397,7 @@ var view = function() {
                     sizeFilter = {
                         from: 0,
                         to: 0
-                    }
+                    };
                 }
                 if (type === 1) {
                     sizeFilter.to = t;
@@ -1408,7 +1408,7 @@ var view = function() {
                 //if (t.length > 0) {
                 //    $('div.filter div.btn').show();
                 //}
-                clearTimeout(filter_timers.size)
+                clearTimeout(filter_timers.size);
                 filter_timers.size = setTimeout(function() {
                     tableSizeFilter(sizeFilter);
                 }, 500);
@@ -1463,10 +1463,10 @@ $(function() {
 $(window).load(function() {
     var s = (document.URL).replace(/.*index.html/, '').replace(/^#s=(.*)/, '$1');
     if (s.length > 0) {
-        if (navigator.userAgent.search(/Chrome/) == -1) {
+        if (navigator.userAgent.search(/Chrome/) === -1) {
             var trigger = function() {
                 view.triggerSearch(decodeURIComponent(s));
-            }
+            };
             setTimeout(trigger, 200);
         } else
             view.triggerSearch(decodeURIComponent(s));

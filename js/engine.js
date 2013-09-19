@@ -671,7 +671,7 @@ var engine = function() {
     var getProfileList = function() {
         var arr = [];
         $.each(trackerProfiles, function(k, v) {
-            arr[arr.length] = v.Title;
+            arr.push(v.Title);
         });
         return arr;
     };
