@@ -486,7 +486,7 @@ var engine = function() {
                         } else {
                             obj['time'] = 0;
                         }
-                        arr[arr.length] = obj;
+                        arr.push(obj);
                     }
                     if (er.join(',') !== '0,0,0,0,0,0,0,0') {
                         console.log('Tracker ' + me.name + ' have problem!');
@@ -575,11 +575,11 @@ var engine = function() {
             var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;
             if (tr === null)
                 continue;
-            b[b.length] = {
+            b.push({
                 e: 0,
                 n: tr.uid,
                 uid: tr.uid
-            };
+            });
         }
         return b;
     };
@@ -628,7 +628,7 @@ var engine = function() {
                     loadInternalModule(Trackers[i].n);
                 }
                 if (ot) {
-                    en_a[en_a.length] = Trackers[i].n;
+                    en_a.push(Trackers[i].n);
                 }
             }
         }

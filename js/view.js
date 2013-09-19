@@ -507,7 +507,7 @@ var view = function() {
         var year_hl = 0;
         var cal_rate = function(a, b, c) {
             if ($.inArray(a, rate.m) === -1) {
-                rate.m[rate.m.length] = a;
+                rate.m.push(a);
             } else {
                 return '';
             }
@@ -1109,7 +1109,7 @@ var view = function() {
         categorys = [];
         categorys_assoc = [];
         for (var i = 0; i < count; i++) {
-            categorys[categorys.length] = c[i][0];
+            categorys.push(c[i][0]);
             categorys_assoc[c[i][0]] = c[i][1];
             $('ul.categorys').append('<li data-id="' + c[i][0] + '">' + c[i][1] + '<i></i></li>');
         }
@@ -1130,7 +1130,7 @@ var view = function() {
                 search_history.sort(order);
                 var count = search_history.length;
                 for (var i = 0; i < count; i++) {
-                    AutocompleteArr[AutocompleteArr.length] = search_history[i].title;
+                    AutocompleteArr.push(search_history[i].title);
                 }
             }
         }
@@ -1154,7 +1154,7 @@ var view = function() {
                         search_history.sort(order);
                         var count = search_history.length;
                         for (var i = 0; i < count; i++) {
-                            AutocompleteArr[AutocompleteArr.length] = search_history[i].title;
+                            AutocompleteArr.push(search_history[i].title);
                         }
                     }
                     response(AutocompleteArr);

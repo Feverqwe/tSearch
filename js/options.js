@@ -132,7 +132,7 @@ var options = function() {
                 uid = tracker[tr_id].uid;
                 obj['uid'] = uid;
             }
-            internalTrackers[internalTrackers.length] = obj;
+            internalTrackers.push(obj);
         }
         trackerProfiles[id].Trackers = internalTrackers;
         return 1;
@@ -422,10 +422,10 @@ var options = function() {
                 if (name.length < 1)
                     return;
                 $(this).parents().eq(1).find('input[name=list_name]').val('');
-                trackerProfiles[trackerProfiles.length] = {
+                trackerProfiles.push({
                     Trackers: null,
                     Title: name
-                };
+                });
                 if (saveCurrentProfile()) {
                     currentProfileID = trackerProfiles.length - 1;
                     engine.loadProfile();
@@ -539,7 +539,7 @@ var options = function() {
                     alert(_lang.settings[54]);
                     return;
                 } else {
-                    costume_tr[costume_tr.length] = code.uid;
+                    costume_tr.push(code.uid);
                     SetSettings('costume_tr', JSON.stringify(costume_tr));
                 }
                 code = null;

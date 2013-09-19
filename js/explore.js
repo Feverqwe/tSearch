@@ -212,7 +212,7 @@ var explore = function() {
                     console.log("Explorer " + type + " have problem!");
                     continue;
                 }
-                arr[arr.length] = obj;
+                arr.push(obj);
             }
             return arr;
         };
@@ -240,7 +240,7 @@ var explore = function() {
                     console.log("Explorer " + type + " have problem!");
                     continue;
                 }
-                arr[arr.length] = obj;
+                arr.push(obj);
             }
             return arr;
         };
@@ -267,7 +267,7 @@ var explore = function() {
                     console.log("Explorer " + type + " have problem!");
                     continue;
                 }
-                arr[arr.length] = obj;
+                arr.push(obj);
             }
             return arr;
         };
@@ -300,7 +300,7 @@ var explore = function() {
                     console.log("Explorer " + type + " have problem!");
                     continue;
                 }
-                arr[arr.length] = obj;
+                arr.push(obj);
             }
             return arr;
         };
@@ -328,7 +328,7 @@ var explore = function() {
                     console.log("Explorer " + type + " have problem!");
                     continue;
                 }
-                arr[arr.length] = obj;
+                arr.push(obj);
             }
             return arr;
         };
@@ -729,11 +729,11 @@ var explore = function() {
         show_favorites();
     };
     var add_in_favorites = function(obj) {
-        favoritesList[favoritesList.length] = {
+        favoritesList.push({
             'img': $(obj).find('img').attr('src'),
             'name': $(obj).find('div.title').attr('title'),
             'url': $(obj).find('div.info').children('a').attr('href')
-        };
+        });
         SetSettings('favoritesList', JSON.stringify(favoritesList));
         show_favorites();
     };
@@ -770,10 +770,10 @@ var explore = function() {
                     continue;
                 }
                 new_desc_arr[new_arr.length] = favoritesDeskList[i] || [];
-                new_arr[new_arr.length] = favoritesList[i];
+                new_arr.push(favoritesList[i]);
                 if (i === left) {
                     new_desc_arr[new_arr.length] = favoritesDeskList[id] || [];
-                    new_arr[new_arr.length] = favoritesList[id];
+                    new_arr.push(favoritesList[id]);
                 }
             }
             favoritesList = new_arr;
@@ -790,10 +790,10 @@ var explore = function() {
                 }
                 if (i === right) {
                     new_desc_arr[new_arr.length] = favoritesDeskList[id] || [];
-                    new_arr[new_arr.length] = favoritesList[id];
+                    new_arr.push(favoritesList[id]);
                 }
                 new_desc_arr[new_arr.length] = favoritesDeskList[i] || [];
-                new_arr[new_arr.length] = favoritesList[i];
+                new_arr.push(favoritesList[i]);
             }
             favoritesList = new_arr;
             favoritesDeskList = new_desc_arr;
@@ -834,10 +834,10 @@ var explore = function() {
         favoritesDeskList[id] = [];
         $.each(arr, function(k, v) {
             if (v.link != null && v.name != null) { //type?
-                favoritesDeskList[id][favoritesDeskList[id].length] = {
+                favoritesDeskList[id].push({
                     "link": v.link,
                     "name": v.name
-                };
+                });
             }
         });
         SetSettings('favoritesDeskList', JSON.stringify(favoritesDeskList));
@@ -1419,10 +1419,10 @@ var explore = function() {
                     return false;
                 }
                 lim--;
-                link_array[link_array.length] = {
+                link_array.push({
                     "link": v.link,
                     "name": v.name + ', ' + v.size
-                };
+                });
             });
         }
         if (obj.section in tmpDeskList === false) {
