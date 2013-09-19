@@ -81,7 +81,7 @@ var view = function() {
             else {
                 $('ul.trackers li a.selected').removeClass('selected');
                 $(this).addClass('selected');
-                trackerFilter = $(this).parent('li').attr('data-id');
+                trackerFilter = $(this).parent('li').attr('data-id') || null;
             }
             updateCategorys();
             $('ul.categorys').children('li.selected').trigger('click');
@@ -358,7 +358,7 @@ var view = function() {
             }
         } else {
             //выполнфется тригером
-            if (update_table.time == null)
+            if (update_table.time === null)
                 updateCategorys();
             update_table.time = time;
             clearTimeout(update_table.timer);
@@ -514,203 +514,203 @@ var view = function() {
             a = a.toLowerCase();
             var sub_l = c[b - 1];
             var sub_r = c[b + a.length];
-            if (sub_r == null)
+            if (sub_r === undefined)
                 sub_r = '';
-            if (sub_l == null)
+            if (sub_l === undefined)
                 sub_l = '';
             if ((/\w/).test(sub_l + sub_r)) {
                 return '';
             }
             if ($.inArray("video_type", rate.block) === -1) {
-                if (a == "blu-ray") {
+                if (a === "blu-ray") {
                     rate.video += 100;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "Blu-ray";
                 } else
-                if (a == "bd-remux" || a == "bdremux") {
+                if (a === "bd-remux" || a === "bdremux") {
                     rate.video += 90;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "Remux";
                 } else
-                if (a == "bd-rip" || a == "bdrip" || a == "bdrip-avc") {
+                if (a === "bd-rip" || a === "bdrip" || a === "bdrip-avc") {
                     rate.video += 80;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "BDRip";
                 } else
-                if (a == "camrip" || a == "camrip-avc") {
+                if (a === "camrip" || a === "camrip-avc") {
                     rate.video += 10;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "CAMRip";
                 } else
-                if (a == "hdtv-rip" || a == "hdtvrip") {
+                if (a === "hdtv-rip" || a === "hdtvrip") {
                     rate.video += 70;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "HDTV-Rip";
                 } else
-                if (a == "dtheater-rip") {
+                if (a === "dtheater-rip") {
                     rate.video += 70;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "DTheater-Rip";
                 } else
-                if (a == "lowhdrip") {
+                if (a === "lowhdrip") {
                     rate.video += 10;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "LowHDRip";
                 } else
-                if (a == "hdtv") {
+                if (a === "hdtv") {
                     rate.video += 60;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "HDTV";
                 } else
-                if (a == "hdrip" || a == "hdrip-avc") {
+                if (a === "hdrip" || a === "hdrip-avc") {
                     rate.video += 60;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "HDRip";
                 } else
-                if (a == "dvdrip" || a == "dvd-rip" || a == "dvdrip-avc") {
+                if (a === "dvdrip" || a === "dvd-rip" || a === "dvdrip-avc") {
                     rate.video += 60;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "DVD-Rip";
                 } else
-                if (a == "dvd" || a == "dvd5" || a == "2xdvd9" || a == "dvd9" || a == "dvd-9" || a == "hd-dvd") {
+                if (a === "dvd" || a === "dvd5" || a === "2xdvd9" || a === "dvd9" || a === "dvd-9" || a === "hd-dvd") {
                     rate.video += 50;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "DVD";
                 } else
-                if (a == "hqsatrip" || a == "hqrip" || a == "hqrip-avc") {
+                if (a === "hqsatrip" || a === "hqrip" || a === "hqrip-avc") {
                     rate.video += 44;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "HDrip";
                 } else
-                if (a == "tvrip" || a == "iptvrip") {
+                if (a === "tvrip" || a === "iptvrip") {
                     rate.video += 40;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "TV-Rip";
                 } else
-                if (a == "webrip") {
+                if (a === "webrip") {
                     rate.video += 40;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "WebRip";
                 } else
-                if (a == "web-dlrip-avc" || a == "webdl-rip" || a == "web-dlrip" || a == "web-dl") {
+                if (a === "web-dlrip-avc" || a === "webdl-rip" || a === "web-dlrip" || a === "web-dl") {
                     rate.video += 40;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "WEB-DL";
                 } else
-                if (a == "satrip") {
+                if (a === "satrip") {
                     rate.video += 40;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "SAT-Rip";
                 } else
-                if (a == "dvb") {
+                if (a === "dvb") {
                     rate.video += 40;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "DVB";
                 } else
-                if (a == "telesynch" || a == "ts") {
+                if (a === "telesynch" || a === "ts") {
                     rate.video += 20;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "Telesync";
                 }
-                if (a == "dvdscr" || a == "dvdscreener") {
+                if (a === "dvdscr" || a === "dvdscreener") {
                     rate.video += 20;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "DVD-Screener";
                 }
-                if (a == "flac" || a == "alac" || a == "lossless") {
+                if (a === "flac" || a === "alac" || a === "lossless") {
                     rate.music += 100;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "lossless";
                 } else
-                if (a == "mp3") {
+                if (a === "mp3") {
                     rate.music += 80;
                     rate.qbox = "MP3";
                 } else
-                if (a == "ps3") {
+                if (a === "ps3") {
                     rate.game += 80;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "PS3";
                 } else
-                if (a == "xbox") {
+                if (a === "xbox") {
                     rate.game += 80;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "XBox";
                 } else
-                if (a == "(PS2)") {
+                if (a === "(ps2)") {
                     rate.game += 80;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "PS2";
                 } else
-                if (a == "[p]" || a == "{p}" || a == "(p)") {
+                if (a === "[p]" || a === "{p}" || a === "(p)") {
                     rate.game += 20;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "P";
                 } else
-                if (a == "repack" || a == "lossless repack" || a == "steam-rip" || a == "(lossy rip)" || a == "reloaded") {
+                if (a === "repack" || a === "lossless repack" || a === "steam-rip" || a === "(lossy rip)" || a === "reloaded") {
                     rate.game += 60;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "RePack";
                 } else
-                if (a == "[native]") {
+                if (a === "[native]") {
                     rate.game += 100;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "Native";
                 } else
-                if (a == "[rip]" || a == "{rip}" || a == "(rip)") {
+                if (a === "[rip]" || a === "{rip}" || a === "(rip)") {
                     rate.game += 80;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "Rip";
                 } else
-                if (a == "[l]" || a == "{l}" || a == "(l)") {
+                if (a === "[l]" || a === "{l}" || a === "(l)") {
                     rate.game += 100;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "L";
                 } else
-                if (a == "лицензия") {
+                if (a === "лицензия") {
                     rate.game += 100;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "L";
                 } else
-                if (a == "fb2" || a == "pdf" || a == "dejvu" || a == "rtf" || a == "epub") {
+                if (a === "fb2" || a === "pdf" || a === "dejvu" || a === "rtf" || a === "epub") {
                     rate.book += 100;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = a;
                 }
             }
-            if (a == "h.264" || a == "h264" || a == "mp4" || a == "m4v") {
+            if (a === "h.264" || a === "h264" || a === "mp4" || a === "m4v") {
                 rate.video += 2;
             } else
-            if (a == "1080p" || a == "1080i") {
+            if (a === "1080p" || a === "1080i") {
                 rate.video += 20;
             } else
-            if (a == "720p") {
+            if (a === "720p") {
                 rate.video += 10;
             } else
-            if (a == "звук с ts") {
+            if (a === "звук с ts") {
                 rate.video -= 50;
             } else
-            if (a == "ст" || a == "sub" || a == "subs") {
+            if (a === "ст" || a === "sub" || a === "subs") {
                 rate.video += 1;
             } else
-            if (a == "dub" || a == "пд" || a == "по" || a == "дб" || a == "2xdub") {
+            if (a === "dub" || a === "пд" || a === "по" || a === "дб" || a === "2xdub") {
                 rate.video += 3;
             } else
-            if (a == "пм") {
+            if (a === "пм") {
                 rate.video += 2;
             } else
-            if (a == "ап" || a == "ло" || a == "лд" || a == "vo") {
+            if (a === "ап" || a === "ло" || a === "лд" || a === "vo") {
                 rate.video += 1;
             } else
-            if (a == "pc (windows)") {
+            if (a === "pc (windows)") {
                 rate.game += 5;
             } else
-            if (a == "сезон" || a == "season") {
+            if (a === "сезон" || a === "season") {
                 rate.serial++;
             } else
-            if (a == "cue") {
+            if (a === "cue") {
                 rate.music += 20;
             } else
-            if (a == "soundtrack") {
+            if (a === "soundtrack") {
                 rate.music++;
             } else
             if ($.inArray("mp3", rate.m) !== -1 && a === "32") {
@@ -731,7 +731,7 @@ var view = function() {
             if ($.inArray("mp3", rate.m) !== -1 && a === "320") {
                 rate.music += 15;
             } else
-            if (a == "мультфильм") {
+            if (a === "мультфильм") {
                 rate.mult++;
             }
             return '';
@@ -763,10 +763,10 @@ var view = function() {
         var cal_word_rate = function(a, b, c) {
             var sub_l = c[b - 1];
             var sub_r = c[b + a.length];
-            if (sub_r == null) {
+            if (sub_r === undefined) {
                 sub_r = '';
             }
-            if (sub_l == null) {
+            if (sub_l === undefined) {
                 sub_l = '';
             }
             if ((/[\wа-яА-Я]/).test(sub_l + sub_r)) {
@@ -885,7 +885,7 @@ var view = function() {
         }
         var hl_name = name.replace(new RegExp(words.join('|'), "ig"), cal_word_rate);
         hl_name = sub_select(hl_name);
-        if (year_hl && word_hl == 1) {
+        if (year_hl && word_hl === 1) {
             rate.name = 0;
         }
         return {
@@ -897,12 +897,12 @@ var view = function() {
         if (s.length === 0)
             return 'a';
         var r = t;
-        if (AdvFiltration == 1) {
+        if (AdvFiltration === 1) {
             var tmp = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1").split(" ");
             if ((new RegExp(tmp.join('|'), "i")).test(t))
                 r = 'a';
         } else
-        if (AdvFiltration == 2) {
+        if (AdvFiltration === 2) {
             var tmp = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1").split(" ");
             var tmp_l = tmp.length;
             var trgr = true;
@@ -955,7 +955,7 @@ var view = function() {
         var count_c = categorys.length;
         for (var i = 0; i < count_c; i++) {
             var filter = '[data-c="' + categorys[i] + '"]';
-            if (trackerFilter != null)
+            if (trackerFilter !== null)
                 filter += '[data-tracker="' + trackerFilter + '"]';
             if (keywordFilter !== null) {
                 filter += '[data-kf="1"]';
@@ -972,25 +972,25 @@ var view = function() {
             }
         }
         $('ul.categorys li').eq(0).children('i').html('(' + sum + ')');
-        if (autoMove != null) {
+        if (autoMove !== null) {
             var item = $('ul.categorys li[data-id="' + autoMove + '"]');
-            if (item.css('display') == 'inline-block') {
+            if (item.css('display') === 'inline-block') {
                 $('ul.categorys li.selected').removeClass('selected');
                 item.addClass('selected');
                 item.trigger('click');
                 autoMove = null;
             }
         }
-        if ($('ul.categorys li.selected').css('display') == 'none') {
+        if ($('ul.categorys li.selected').css('display') === 'none') {
             var category = $('ul.categorys').children('li.selected').attr('data-id');
             $('ul.categorys li.selected').removeClass('selected');
             $('ul.categorys li').eq(0).addClass('selected');
             $('ul.categorys li.selected').trigger('click');
-            autoMove = (category == null) ? null : category;
+            autoMove = (category === undefined) ? null : category;
         }
     };
     var tableFilter = function(keyword) {
-        if (keyword != $('div.filter').children('input').val())
+        if (keyword !== $('div.filter').children('input').val())
             return;
         $('div.filter div.btn').css('background-image', 'url(images/loading.gif)');
         keyword = $.trim(keyword).replace(/\s+/g, " ");
@@ -1004,7 +1004,7 @@ var view = function() {
             return;
         }
         keywordFilter = keyword;
-        if (keywordFilter != lastFilterWord) {
+        if (keywordFilter !== lastFilterWord) {
             //lastFilterCache = null;
             lastFilterWord = keyword;
             //поиск и фильтрация контента
@@ -1018,7 +1018,7 @@ var view = function() {
                     var name = tr_eq.children('td.name').children('div.title').children('a').text();
                 }
                 var f_name = filterTextCheck(keyword, name);
-                if (name != f_name)
+                if (name !== f_name)
                     tr_eq.attr('data-kf', 1);
                 else
                     tr_eq.attr('data-kf', 0);
@@ -1073,13 +1073,13 @@ var view = function() {
         $('div.explore').css('display', 'none');
         $('form input[type=text]').blur();
         var sel_tr = $('ul.trackers li a.selected').parent().data('id');
-        if (sel_tr == null || sel_tr == undefined)
+        if (sel_tr === undefined)
             sel_tr = null;
         clear_table();
-        if (sel_tr != null)
+        if (sel_tr !== null)
             $('ul.trackers li[data-id=' + sel_tr + ']').children('a').addClass('selected');
         keyword = $.trim(keyword);
-        if ($('form[name="search"]').children('input[type="text"]').val() != keyword) {
+        if ($('form[name="search"]').children('input[type="text"]').val() !== keyword) {
             $('form[name="search"]').children('input[type="text"]').val(keyword);
             $('form[name="search"]').children('input[type="text"]').trigger("keyup");
         }
@@ -1121,12 +1121,12 @@ var view = function() {
             var order = function(a, b) {
                 if (a.count > b.count)
                     return -1;
-                if (a.count == b.count)
+                if (a.count === b.count)
                     return 0;
                 return 1;
             };
             var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-            if (search_history != null) {
+            if (search_history !== null) {
                 search_history.sort(order);
                 var count = search_history.length;
                 for (var i = 0; i < count; i++) {
@@ -1145,12 +1145,12 @@ var view = function() {
                     var order = function(a, b) {
                         if (a.count > b.count)
                             return -1;
-                        if (a.count == b.count)
+                        if (a.count === b.count)
                             return 0;
                         return 1;
                     };
                     var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-                    if (search_history != null) {
+                    if (search_history !== null) {
                         search_history.sort(order);
                         var count = search_history.length;
                         for (var i = 0; i < count; i++) {
@@ -1159,7 +1159,7 @@ var view = function() {
                     }
                     response(AutocompleteArr);
                 } else {
-                    if (xhr_autocomplite != null)
+                    if (xhr_autocomplite !== null)
                         xhr_autocomplite.abort();
                     xhr_autocomplite = $.getJSON('http://suggestqueries.google.com/complete/search?client=firefox&q=' + a.term).success(function(data) {
                         var arr = data[1];
@@ -1179,7 +1179,7 @@ var view = function() {
         inp.autocomplete("close");
     };
     var LoadProfiles = function() {
-        var defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
+        var defProfile = parseFloat((GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0);
         var arr = engine.getProfileList();
         if (arr.length <= 1)
             return;
@@ -1187,7 +1187,7 @@ var view = function() {
             engine.loadProfile($(this).val());
         });
         $.each(arr, function(k, v) {
-            sel.append('<option value="' + k + '" ' + ((k == defProfile) ? 'selected' : '') + '>' + v + '</option>')
+            sel.append('<option value="' + k + '" ' + ((k === defProfile) ? 'selected' : '') + '>' + v + '</option>');
         });
         sel = $('<div class="profile">').append(sel);
         $('div.tracker_list div.setup').after(sel);
@@ -1300,10 +1300,10 @@ var view = function() {
                 $(this).addClass('selected');
                 $('#rez_table').children('tbody').children('tr').css('display', 'none');
                 var filter = '';
-                if (id != null) {
+                if (id !== undefined) {
                     filter += '[data-c="' + id + '"]';
                 }
-                if (trackerFilter != null) {
+                if (trackerFilter !== null) {
                     filter += '[data-tracker="' + trackerFilter + '"]';
                 }
                 if (keywordFilter !== null) {
@@ -1320,29 +1320,30 @@ var view = function() {
                 $('#rez_table').tablesorter({
                     textExtraction: function(node)
                     {
-                        if ($(node).attr('data-value') != null) {
-                            if ($(node).attr('data-qname') != null) {
+                        if ($(node).attr('data-value') !== undefined) {
+                            if ($(node).attr('data-qname') !== undefined) {
                                 var c = categoryFilter;
                                 var val = parseInt($(node).attr('data-value'));
-                                if (c == null)
+                                if (c === null)
                                     return val;
-                                if (c == 3 || c == 0 || c == 7 || c == 8 || c == 4) {
+                                c = parseInt(c);
+                                if (c === 3 || c === 0 || c === 7 || c === 8 || c === 4) {
                                     val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qmusic')) - parseInt($(node).attr('data-qbook'));
                                 } else
-                                if (c == 1) {
+                                if (c === 1) {
                                     val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qvideo')) - parseInt($(node).attr('data-qbook'));
                                 } else
-                                if (c == 2) {
+                                if (c === 2) {
                                     val = val - parseInt($(node).attr('data-qmusic')) - parseInt($(node).attr('data-qvideo')) - parseInt($(node).attr('data-qbook'));
                                 } else
-                                if (c == 5) {
+                                if (c === 5) {
                                     val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qvideo'));
                                 }
                                 return val;
                             } else
                                 return $(node).attr('data-value');
                         }
-                        if ($(node).children('div.title') != null)
+                        if ($(node).children('div.title') !== undefined)
                             return $(node).children('div.title').text();
                         return $(node).html();
                     },
