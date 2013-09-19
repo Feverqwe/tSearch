@@ -596,7 +596,7 @@ var options = function() {
 var view = function() {
     return {
         ClearTrackerList: function() {
-            if ($('select[name=tr_lists]').val() === null) {
+            if ($('select[name=tr_lists]').val() === undefined) {
                 options.LoadProfiles();
             }
             $('table.tr_table tbody').empty();

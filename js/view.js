@@ -1179,7 +1179,7 @@ var view = function() {
         inp.autocomplete("close");
     };
     var LoadProfiles = function() {
-        var defProfile = parseFloat((GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0);
+        var defProfile = (GetSettings('defProfile') !== undefined) ? parseInt(GetSettings('defProfile')) : 0;
         var arr = engine.getProfileList();
         if (arr.length <= 1)
             return;
