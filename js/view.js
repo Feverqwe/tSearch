@@ -10,7 +10,7 @@ var view = function() {
     var filter_timers = {
         word: null,
         size: null
-    }
+    };
     var HideLeech = (GetSettings('HideLeech') !== undefined) ? parseInt(GetSettings('HideLeech')) : true;
     var HideSeed = (GetSettings('HideSeed') !== undefined) ? parseInt(GetSettings('HideSeed')) : false;
     var ShowIcons = (GetSettings('ShowIcons') !== undefined) ? parseInt(GetSettings('ShowIcons')) : true;
@@ -18,7 +18,7 @@ var view = function() {
     var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
     var TeaserFilter = (GetSettings('TeaserFilter') !== undefined) ? parseInt(GetSettings('TeaserFilter')) : true;
     var SubCategoryFilter = (GetSettings('SubCategoryFilter') !== undefined) ? parseInt(GetSettings('SubCategoryFilter')) : false;
-    var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : true;
+    var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : 1;
     var autoSetCat = (GetSettings('autoSetCat') !== undefined) ? parseInt(GetSettings('autoSetCat')) : true;
     var allow_get_description = (GetSettings('allow_get_description') !== undefined) ? parseInt(GetSettings('allow_get_description')) : true;
     var _sub_select_enable = (GetSettings('sub_select_enable') !== undefined) ? parseInt(GetSettings('sub_select_enable')) : true;
@@ -28,7 +28,7 @@ var view = function() {
     };
     var backgroundMode = false;
     var backgroundModeID = null;
-    var keyword_filter_cache = {}
+    var keyword_filter_cache = {};
     var xhr_autocomplite = null;
     var tmp_var_qbox = 0;
     var auth = function(s, t) {
@@ -37,7 +37,7 @@ var view = function() {
         if (!s) {
             $('ul.trackers').children('li[data-id="' + t + '"]').append('<ul><li><a href="' + tracker[t].login_url + '" target="_blank">' + _lang['btn_login'] + '</a></li></ul>');
         }
-    }
+    };
     var clear_table = function() {
         backgroundMode = false;
         $('div.about_panel').empty();
@@ -45,7 +45,7 @@ var view = function() {
         $('div.filter').children('input').val('');
         keywordFilter = null;
         lastFilterWord = '';
-        keyword_filter_cache = {}
+        keyword_filter_cache = {};
         $('div.filter div.btn').hide();
         $('div.size_filter').find('input').val('');
         sizeFilter = null;
@@ -54,7 +54,7 @@ var view = function() {
         updateTrackerCount();
         trackerFilter = null;
         updateCategorys();
-    }
+    };
     var loadingStatus = function(s, t) {
         //if (backgroundMode) return;
         var tracker_img = $('ul.trackers').children('li[data-id="' + t + '"]').children('div.tracker_icon');
@@ -69,30 +69,30 @@ var view = function() {
                 tracker_img.css('background', 'url(images/error.png) center center #fff');
                 break;
         }
-    }
+    };
     var addTrackerInList = function(i) {
         $('body').append('<style class="tr_icon">div.tracker_icon.num' + i + ' { ' + ((tracker[i].icon.length === 0 || tracker[i].icon[0] === '#') ? 'background-color: ' + ((tracker[i].icon.length !== 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;' : 'background-image: url(' + tracker[i].icon + ');') + ' }</style>');
         $('<li data-id="' + i + '"/>').append($('<div class="tracker_icon num' + i + '" data-count="0"/>')).append($('<a href="#">' + tracker[i].name + '</a>').on("click", function(event) {
             event.preventDefault();
-            if ($(this).attr('class') == 'selected') {
+            if ($(this).attr('class') === 'selected') {
                 $(this).removeClass('selected');
                 trackerFilter = null;
             }
             else {
                 $('ul.trackers li a.selected').removeClass('selected');
                 $(this).addClass('selected');
-                trackerFilter = $(this).parent('li').attr('data-id');
+                trackerFilter = $(this).parent('li').attr('data-id') || null;
             }
             updateCategorys();
             $('ul.categorys').children('li.selected').trigger('click');
         })).append('<i/>').appendTo($('ul.trackers'));
-    }
+    };
     var ClearTrackerList = function() {
         $('ul.trackers').empty();
         $('style.tr_icon').remove();
-    }
+    };
     function isInt(n) {
-        if (n == undefined || n === undefined)
+        if (n === undefined)
             return false;
         return n % 1 === 0;
     }
@@ -105,7 +105,7 @@ var view = function() {
             quality.video = Math.round(parseInt(quality.video) / 2);
         quality.value = quality.seed + quality.name + quality.video + quality.music + quality.game;
         return quality;
-    }
+    };
     var autoset_Category = function(quality) {
         if (quality.book) {
             return 5;
@@ -123,14 +123,14 @@ var view = function() {
         if (quality.game > quality.music && quality.game > quality.video)
             return 2;
         return -1;
-    }
+    };
     var inBGMode = function(t, a, s) {
         if ("year" in keyword_filter_cache === false) {
             keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
             if (keyword_filter_cache["year"]) {
                 keyword_filter_cache["year"] = keyword_filter_cache["year"][0];
             }
-            if (keyword_filter_cache["year"] == s) {
+            if (keyword_filter_cache["year"] === s) {
                 keyword_filter_cache["year"] = null;
             }
         }
@@ -140,7 +140,7 @@ var view = function() {
             keyword_filter_cache["keyword_regexp"] = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
             keyword_filter_cache["keyword_regexp_lover"] = keyword_filter_cache["keyword_regexp"].toLowerCase();
         }
-        if (keyword_filter_cache["year"] != null && "keyword_no_year" in keyword_filter_cache == false) {
+        if (keyword_filter_cache["year"] !== null && "keyword_no_year" in keyword_filter_cache === false) {
             keyword_filter_cache["keyword_no_year"] = keyword_filter_cache["keyword"].replace(" " + keyword_filter_cache["year"], "");
             keyword_filter_cache["keyword_no_year_regexp"] = keyword_filter_cache.keyword_no_year.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
             keyword_filter_cache["keyword_no_year_regexp_lover"] = keyword_filter_cache["keyword_no_year_regexp"].toLowerCase();
@@ -149,34 +149,34 @@ var view = function() {
         $.each(a, function(k, v) {
             if (typeof(v.title) !== 'string' || v.title.length === 0 || !isInt(v.size) || !isInt(v.seeds)
                     || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
-                    || ('title' in v.category && (typeof(v.category.title) != 'string' && v.category.title != null))
-                    || ('url' in v.category && (typeof(v.category.url) != 'string' && v.category.url != null))
-                    || ('dl' in v && (typeof(v.dl) != 'string' && v.dl != null))
+                    || ('title' in v.category && (typeof(v.category.title) !== 'string' && v.category.title != null))
+                    || ('url' in v.category && (typeof(v.category.url) !== 'string' && v.category.url != null))
+                    || ('dl' in v && (typeof(v.dl) !== 'string' && v.dl != null))
                     ) {
                 if (tmp_var_qbox === 0) {
-                    explore.setQuality({id:backgroundModeID.id, section: backgroundModeID.section});
+                    explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
                 }
                 return true;
             }
             if (HideZeroSeed && v.seeds == 0) {
                 if (tmp_var_qbox === 0) {
-                    explore.setQuality({id:backgroundModeID.id, section: backgroundModeID.section});
+                    explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
                 }
                 return true;
             }
             var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title != null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
-            if (Teaser == 1) {
+            if (Teaser === 1) {
                 if (tmp_var_qbox === 0) {
-                    explore.setQuality({id:backgroundModeID.id, section: backgroundModeID.section});
+                    explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
                 }
                 return true;
             }
 
             var title = syntax_highlighting(v.title);
             var quality = quality_calc(title.r, v);
-            if (quality.name == 0 || quality.name < 100) {
+            if (quality.name === 0 || quality.name < 100) {
                 if (tmp_var_qbox === 0) {
-                    explore.setQuality({id:backgroundModeID.id, section: backgroundModeID.section});
+                    explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
                 }
                 return true;
             }
@@ -189,14 +189,14 @@ var view = function() {
                 backgroundModeID = {count: 0, section: backgroundModeID.section, id: backgroundModeID.id, cat_c: {}, year: {}};
             }
             backgroundModeID.count++;
-            if (backgroundModeID.cat_c[v.category.id] == null) {
+            if (backgroundModeID.cat_c[v.category.id] === undefined) {
                 backgroundModeID.cat_c[v.category.id] = 0;
             }
             backgroundModeID.cat_c[v.category.id]++;
-            if (backgroundModeID.year[quality.year] == null) {
+            if (backgroundModeID.year[quality.year] === undefined) {
                 backgroundModeID.year[quality.year] = {};
             }
-            if (backgroundModeID.year[quality.year][v.category.id] == null) {
+            if (backgroundModeID.year[quality.year][v.category.id] === undefined) {
                 backgroundModeID.year[quality.year][v.category.id] = {
                     count: 0,
                     name: "",
@@ -205,7 +205,7 @@ var view = function() {
                     name_quality: 0,
                     quality: 0,
                     m: []
-                }
+                };
             }
             backgroundModeID.year[quality.year][v.category.id].count++;
             var item = backgroundModeID.year[quality.year][v.category.id];
@@ -230,42 +230,42 @@ var view = function() {
         loadingStatus(1, t);
         tmp_var_qbox = 1;
         explore.setQuality(backgroundModeID, keyword_filter_cache["year"]);
-    }
+    };
     var write_result = function(t, a, s, p) {
         if (backgroundMode) {
             return inBGMode(t, a, s);
         }
         //var dbg_start = (new Date()).getTime();
         var c = '';
-        if (p == null) {
+        if (p === undefined) {
             $('#rez_table tbody').children('tr[data-tracker="' + t + '"]').remove();
         }
-        if ("year" in keyword_filter_cache == false) {
+        if ("year" in keyword_filter_cache === false) {
             keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
             if (keyword_filter_cache["year"]) {
                 keyword_filter_cache["year"] = keyword_filter_cache["year"][0];
             }
-            if (keyword_filter_cache["year"] == s) {
+            if (keyword_filter_cache["year"] === s) {
                 keyword_filter_cache["year"] = null;
             }
         }
-        if ("keyword" in keyword_filter_cache == false) {
+        if ("keyword" in keyword_filter_cache === false) {
             keyword_filter_cache["keyword"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
             keyword_filter_cache["keyword_regexp"] = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
             keyword_filter_cache["keyword_regexp_lover"] = keyword_filter_cache["keyword_regexp"].toLowerCase();
         }
-        if ("keyword_no_year" in keyword_filter_cache == false && keyword_filter_cache["year"]) {
+        if ("keyword_no_year" in keyword_filter_cache === false && keyword_filter_cache["year"]) {
             keyword_filter_cache["keyword_no_year"] = keyword_filter_cache["keyword"].replace(" " + keyword_filter_cache["year"], "");
             keyword_filter_cache["keyword_no_year_regexp"] = keyword_filter_cache.keyword_no_year.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
             keyword_filter_cache["keyword_no_year_regexp_lover"] = keyword_filter_cache["keyword_no_year_regexp"].toLowerCase();
         }
         var sum = 0;
         $.each(a, function(k, v) {
-            if (typeof(v.title) != 'string' || v.title.length == 0 || !isInt(v.size) || !isInt(v.seeds)
+            if (typeof(v.title) !== 'string' || v.title.length === 0 || !isInt(v.size) || !isInt(v.seeds)
                     || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
-                    || ('title' in v.category && (typeof(v.category.title) != 'string' && v.category.title != null))
-                    || ('url' in v.category && (typeof(v.category.url) != 'string' && v.category.url != null))
-                    || ('dl' in v && (typeof(v.dl) != 'string' && v.dl != null))
+                    || ('title' in v.category && (typeof(v.category.title) !== 'string' && v.category.title != null))
+                    || ('url' in v.category && (typeof(v.category.url) !== 'string' && v.category.url != null))
+                    || ('dl' in v && (typeof(v.dl) !== 'string' && v.dl != null))
                     ) {
                 console.log('Tracker ' + tracker[t].name + ' have problem!');
                 console.log('#debug start');
@@ -278,7 +278,7 @@ var view = function() {
             }
             if (TeaserFilter) {
                 var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title != null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
-                if (Teaser == 1) {
+                if (Teaser === 1) {
                     return true;
                 }
             }
@@ -297,15 +297,15 @@ var view = function() {
             }
             var filter = '';
             var fk = 0;
-            if (trackerFilter != null && trackerFilter != t) {
+            if (trackerFilter !== null && trackerFilter != t) {
                 filter = 'style="display: none;"';
             }
-            if (categoryFilter != null && categoryFilter != v.category.id) {
+            if (categoryFilter !== null && categoryFilter != v.category.id) {
                 filter = 'style="display: none;"';
             }
             if (keywordFilter !== null) {
                 var keyword = $.trim($('div.filter').children('input').val()).replace(/\s+/g, " ");
-                if (title == filterTextCheck(keyword, title))
+                if (title === filterTextCheck(keyword, title))
                     filter = 'style="display: none;"';
                 else
                     fk = 1;
@@ -332,7 +332,7 @@ var view = function() {
                     + '</tr>';
 
         });
-        if (p != null) {
+        if (p !== undefined) {
             sum = p;
         }
         updateTrackerResultCount(t, sum);
@@ -341,10 +341,10 @@ var view = function() {
             $('#rez_table tbody').append(contentUnFilter(c));
             table_update_timer(1);
         }
-    }
+    };
     var table_update_timer = function(a) {
         var time = new Date().getTime();
-        if (a == undefined) {
+        if (a === undefined) {
             //выполнятеся от таймера
             if (time - update_table.time > 200) {
                 //обновление сортровки
@@ -358,75 +358,75 @@ var view = function() {
             }
         } else {
             //выполнфется тригером
-            if (update_table.time == null)
+            if (update_table.time === null)
                 updateCategorys();
             update_table.time = time;
             clearTimeout(update_table.timer);
             update_table.timer = setTimeout(table_update_timer, 200);
         }
-    }
+    };
     var bytesToSize = function(bytes, nan) {
         //переводит байты в строчки
         var sizes = _lang['size_list'];
-        if (nan == null)
+        if (nan === undefined)
             nan = 'n/a';
-        if (bytes == 0)
+        if (bytes <= 0)
             return nan;
         var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-        if (i == 0) {
+        if (i === 0) {
             return (bytes / Math.pow(1024, i)) + ' ' + sizes[i];
         }
         return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
-    }
+    };
     var utiemonstr = function(shtamp) {
         //преврящает TimeShtamp в строчку
         var dt = new Date(shtamp * 1000);
         var m = dt.getMonth() + 1;
-        if (m.toString().length == 1)
+        if (m.toString().length === 1)
             m = '0' + m.toString();
         var d = dt.getDate();
-        if (d.toString().length == 1)
+        if (d.toString().length === 1)
             d = '0' + d.toString();
         var h = dt.getHours();
-        if (h.toString().length == 1)
+        if (h.toString().length === 1)
             h = '0' + h.toString();
         var mi = dt.getMinutes();
-        if (mi.toString().length == 1)
+        if (mi.toString().length === 1)
             mi = '0' + mi.toString();
         var sec = dt.getSeconds();
-        if (sec.toString().length == 1)
+        if (sec.toString().length === 1)
             sec = '0' + sec.toString();
         //var time = '';
         //if (h!='00' && mi!='00' && sec != '00')
         //    time = ' '+h+':'+mi+':'+sec;
         var t = d + '-' + m + '-' + dt.getFullYear();//+time;
         return t;
-    }
+    };
     var unixintimetitle = function(i) {
-        if (i == 0)
+        if (i <= 0)
             return '∞';
         else
             return utiemonstr(i);
-    }
+    };
     var round_day_unixtime = function(i) {
         var dt = new Date(i * 1000);
         return Math.round(new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()).getTime() / 1000);
-    }
+    };
     var getHandM_unixtime = function(i) {
         var dt = new Date(i * 1000);
         return addZero(dt.getHours()) + ':' + addZero(dt.getMinutes());
-    }
+    };
     var addZero = function(i) {
         if (i < 10)
             return '0' + i;
         return i;
-    }
+    };
     var unixintime = function(utime)
     {
         //выписывает отсчет времени из unixtime
         var now_time = Math.round((new Date()).getTime() / 1000);
         var theDate = utiemonstr(utime);
-        if (utime == 0)
+        if (utime <= 0)
             return '∞';
         var i = now_time - utime;
         if (i < 0)
@@ -454,10 +454,10 @@ var view = function() {
         //    return week + str_week+' назад';
         var d_te = (new Date()).getDate();
         var t_te = (new Date(utime * 1000)).getDate();
-        if (day == 0 && d_te != t_te)
+        if (day === 0 && d_te !== t_te)
             day = 1;
         if (day > 0)
-            if (day == 1)
+            if (day === 1)
                 return _lang.times.yest + ' ' + getHandM_unixtime(utime);
             else
                 return day + str_day + ' ' + _lang.times.old;
@@ -471,42 +471,42 @@ var view = function() {
         if (seconds > 0)
             return seconds + str_seconds + ' ' + _lang.times.old;
         return theDate;
-    }
+    };
     var updateTrackerResultCount = function(t, c, l) {
-        if (l == null && c == null) {
+        if (l === undefined && c === undefined) {
             var c = $('ul.trackers li[data-id="' + t + '"]').attr('data-count');
-            if (c == null)
+            if (c === undefined)
                 c = 0;
             $('ul.trackers li[data-id="' + t + '"]').children('i').html('(' + c + ')');
         } else
-        if (l == null) {
+        if (l === undefined) {
             $('ul.trackers li[data-id="' + t + '"]').attr('data-count', c).children('i').html('(' + c + ')');
         } else {
-            if (l == 1)
+            if (l === 1)
                 $('ul.trackers li[data-id="' + t + '"]').children('i').html('(' + c + ')');
         }
-    }
+    };
     var contentFilter = function(c) {
         var c = c.replace(/\/\//img, '#blockurl#').replace(/ src=(['"]{0,1})/img, ' src=$11.png#blockrurl#');
         return c;
-    }
+    };
     var contentUnFilter = function(c) {
         var c = c.replace(/1.png#blockrurl#/img, '').replace(/#blockrurl#/img, '').replace(/#blockurl#/img, '//');
         return c;
-    }
+    };
     var syntax_highlighting = function(t) {
         var words = keyword_filter_cache.keyword_regexp.split(' ');
         var word_rate = Math.round(200 / words.length);
         var first_rate = Math.round(word_rate + word_rate / 2);
         var name = t;
-        var name_lover = name.toLowerCase()
+        var name_lover = name.toLowerCase();
 
 
-        var rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0, block: [], qbox: "+"}
+        var rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0, block: [], qbox: "+"};
         var word_hl = 0;
         var year_hl = 0;
         var cal_rate = function(a, b, c) {
-            if ($.inArray(a, rate.m) == -1) {
+            if ($.inArray(a, rate.m) === -1) {
                 rate.m[rate.m.length] = a;
             } else {
                 return '';
@@ -514,233 +514,233 @@ var view = function() {
             a = a.toLowerCase();
             var sub_l = c[b - 1];
             var sub_r = c[b + a.length];
-            if (sub_r == null)
+            if (sub_r === undefined)
                 sub_r = '';
-            if (sub_l == null)
+            if (sub_l === undefined)
                 sub_l = '';
             if ((/\w/).test(sub_l + sub_r)) {
                 return '';
             }
-            if ($.inArray("video_type", rate.block) == -1) {
-                if (a == "blu-ray") {
+            if ($.inArray("video_type", rate.block) === -1) {
+                if (a === "blu-ray") {
                     rate.video += 100;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "Blu-ray";
                 } else
-                if (a == "bd-remux" || a == "bdremux") {
+                if (a === "bd-remux" || a === "bdremux") {
                     rate.video += 90;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "Remux";
                 } else
-                if (a == "bd-rip" || a == "bdrip" || a == "bdrip-avc") {
+                if (a === "bd-rip" || a === "bdrip" || a === "bdrip-avc") {
                     rate.video += 80;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "BDRip";
                 } else
-                if (a == "camrip" || a == "camrip-avc") {
+                if (a === "camrip" || a === "camrip-avc") {
                     rate.video += 10;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "CAMRip";
                 } else
-                if (a == "hdtv-rip" || a == "hdtvrip") {
+                if (a === "hdtv-rip" || a === "hdtvrip") {
                     rate.video += 70;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "HDTV-Rip";
                 } else
-                if (a == "dtheater-rip") {
+                if (a === "dtheater-rip") {
                     rate.video += 70;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "DTheater-Rip";
                 } else
-                if (a == "lowhdrip") {
+                if (a === "lowhdrip") {
                     rate.video += 10;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "LowHDRip";
                 } else
-                if (a == "hdtv") {
+                if (a === "hdtv") {
                     rate.video += 60;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "HDTV";
                 } else
-                if (a == "hdrip" || a == "hdrip-avc") {
+                if (a === "hdrip" || a === "hdrip-avc") {
                     rate.video += 60;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "HDRip";
                 } else
-                if (a == "dvdrip" || a == "dvd-rip" || a == "dvdrip-avc") {
+                if (a === "dvdrip" || a === "dvd-rip" || a === "dvdrip-avc") {
                     rate.video += 60;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "DVD-Rip";
                 } else
-                if (a == "dvd" || a == "dvd5" || a == "2xdvd9" || a == "dvd9" || a == "dvd-9" || a == "hd-dvd") {
+                if (a === "dvd" || a === "dvd5" || a === "2xdvd9" || a === "dvd9" || a === "dvd-9" || a === "hd-dvd") {
                     rate.video += 50;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "DVD";
                 } else
-                if (a == "hqsatrip" || a == "hqrip" || a == "hqrip-avc") {
+                if (a === "hqsatrip" || a === "hqrip" || a === "hqrip-avc") {
                     rate.video += 44;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "HDrip";
                 } else
-                if (a == "tvrip" || a == "iptvrip") {
+                if (a === "tvrip" || a === "iptvrip") {
                     rate.video += 40;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "TV-Rip";
                 } else
-                if (a == "webrip") {
+                if (a === "webrip") {
                     rate.video += 40;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "WebRip";
                 } else
-                if (a == "web-dlrip-avc" || a == "webdl-rip" || a == "web-dlrip" || a == "web-dl") {
+                if (a === "web-dlrip-avc" || a === "webdl-rip" || a === "web-dlrip" || a === "web-dl") {
                     rate.video += 40;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "WEB-DL";
                 } else
-                if (a == "satrip") {
+                if (a === "satrip") {
                     rate.video += 40;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "SAT-Rip";
                 } else
-                if (a == "dvb") {
+                if (a === "dvb") {
                     rate.video += 40;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "DVB";
                 } else
-                if (a == "telesynch" || a == "ts") {
+                if (a === "telesynch" || a === "ts") {
                     rate.video += 20;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "Telesync";
                 }
-                if (a == "dvdscr" || a == "dvdscreener") {
+                if (a === "dvdscr" || a === "dvdscreener") {
                     rate.video += 20;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "DVD-Screener";
                 }
-                if (a == "flac" || a == "alac" || a == "lossless") {
+                if (a === "flac" || a === "alac" || a === "lossless") {
                     rate.music += 100;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "lossless";
                 } else
-                if (a == "mp3") {
+                if (a === "mp3") {
                     rate.music += 80;
                     rate.qbox = "MP3";
                 } else
-                if (a == "ps3") {
+                if (a === "ps3") {
                     rate.game += 80;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "PS3";
                 } else
-                if (a == "xbox") {
+                if (a === "xbox") {
                     rate.game += 80;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "XBox";
                 } else
-                if (a == "(PS2)") {
+                if (a === "(ps2)") {
                     rate.game += 80;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "PS2";
                 } else
-                if (a == "[p]" || a == "{p}" || a == "(p)") {
+                if (a === "[p]" || a === "{p}" || a === "(p)") {
                     rate.game += 20;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "P";
                 } else
-                if (a == "repack" || a == "lossless repack" || a == "steam-rip" || a == "(lossy rip)" || a == "reloaded") {
+                if (a === "repack" || a === "lossless repack" || a === "steam-rip" || a === "(lossy rip)" || a === "reloaded") {
                     rate.game += 60;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "RePack";
                 } else
-                if (a == "[native]") {
+                if (a === "[native]") {
                     rate.game += 100;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "Native";
                 } else
-                if (a == "[rip]" || a == "{rip}" || a == "(rip)") {
+                if (a === "[rip]" || a === "{rip}" || a === "(rip)") {
                     rate.game += 80;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "Rip";
                 } else
-                if (a == "[l]" || a == "{l}" || a == "(l)") {
+                if (a === "[l]" || a === "{l}" || a === "(l)") {
                     rate.game += 100;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "L";
                 } else
-                if (a == "лицензия") {
+                if (a === "лицензия") {
                     rate.game += 100;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = "L";
                 } else
-                if (a == "fb2" || a == "pdf" || a == "dejvu" || a == "rtf" || a == "epub") {
+                if (a === "fb2" || a === "pdf" || a === "dejvu" || a === "rtf" || a === "epub") {
                     rate.book += 100;
-                    rate.block[rate.block.length] = "video_type";
+                    rate.block.push("video_type");
                     rate.qbox = a;
                 }
             }
-            if (a == "h.264" || a == "h264" || a == "mp4" || a == "m4v") {
+            if (a === "h.264" || a === "h264" || a === "mp4" || a === "m4v") {
                 rate.video += 2;
             } else
-            if (a == "1080p" || a == "1080i") {
+            if (a === "1080p" || a === "1080i") {
                 rate.video += 20;
             } else
-            if (a == "720p") {
+            if (a === "720p") {
                 rate.video += 10;
             } else
-            if (a == "звук с ts") {
+            if (a === "звук с ts") {
                 rate.video -= 50;
             } else
-            if (a == "ст" || a == "sub" || a == "subs") {
+            if (a === "ст" || a === "sub" || a === "subs") {
                 rate.video += 1;
             } else
-            if (a == "dub" || a == "пд" || a == "по" || a == "дб" || a == "2xdub") {
+            if (a === "dub" || a === "пд" || a === "по" || a === "дб" || a === "2xdub") {
                 rate.video += 3;
             } else
-            if (a == "пм") {
+            if (a === "пм") {
                 rate.video += 2;
             } else
-            if (a == "ап" || a == "ло" || a == "лд" || a == "vo") {
+            if (a === "ап" || a === "ло" || a === "лд" || a === "vo") {
                 rate.video += 1;
             } else
-            if (a == "pc (windows)") {
+            if (a === "pc (windows)") {
                 rate.game += 5;
             } else
-            if (a == "сезон" || a == "season") {
+            if (a === "сезон" || a === "season") {
                 rate.serial++;
             } else
-            if (a == "cue") {
+            if (a === "cue") {
                 rate.music += 20;
             } else
-            if (a == "soundtrack") {
+            if (a === "soundtrack") {
                 rate.music++;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "32") {
+            if ($.inArray("mp3", rate.m) !== -1 && a === "32") {
                 rate.music -= 2;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "64") {
+            if ($.inArray("mp3", rate.m) !== -1 && a === "64") {
                 rate.music += 0;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "96") {
+            if ($.inArray("mp3", rate.m) !== -1 && a === "96") {
                 rate.music += 2;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "128") {
+            if ($.inArray("mp3", rate.m) !== -1 && a === "128") {
                 rate.music += 5;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "192") {
+            if ($.inArray("mp3", rate.m) !== -1 && a === "192") {
                 rate.music += 10;
             } else
-            if ($.inArray("mp3", rate.m) != -1 && a == "320") {
+            if ($.inArray("mp3", rate.m) !== -1 && a === "320") {
                 rate.music += 15;
             } else
-            if (a == "мультфильм") {
+            if (a === "мультфильм") {
                 rate.mult++;
             }
             return '';
-        }
+        };
         var sub_select = function(name) {
             if (!_sub_select_enable)
                 return name;
             return name.replace(/(\[[^\]]*\]|\([^\)]*\))/g, '<span class="sub_name">$1</span>');
-        }
+        };
         var quality = "Blu-ray|Blu-Ray|BD-Remux|BDRemux|1080p|1080i|BDRip-AVC|BD-Rip|BDRip|CAMRip|CamRip-AVC|CamRip|HDTV-Rip|HQRip-AVC|HDTVrip|HDTVRip|DTheater-Rip|720p|LowHDRip|HDTV|HDRip-AVC|HDRip|DVD-Rip|DVDRip-AVC|DVDRip|DVD5|2xDVD9|DVD9|DVD-9|DVDScr|DVDScreener|HD-DVD|NoDVD|DVD|SatRip|HQSATRip|HQRip|TVRip|WEBRip|WEB-DLRip-AV​C|WebDL-Rip|AVC|WEB-DLRip|WEB-DL|SATRip|DVB|IPTVRip|TeleSynch|[Зз]{1}вук с TS|TS|АП|ЛО|ЛД|AVO|MVO|VO|DUB|2xDub|Dub|ДБ|ПМ|ПД|ПО|СТ|[Ss]{1}ubs|SUB|[sS]{1}ub|FLAC|flac|ALAC|alac|[lL]{1}oss[lL]{1}ess(?! repack)|\\(PS2\\)|PS3|Xbox|XBOX|Repack|RePack|\\[Native\\]|Lossless Repack|Steam-Rip|\\(Lossy Rip\/|{Rip}|[лЛ]{1}ицензия|RELOADED|\\[Rip\\]|\\[RiP\\]|\\{L\\}|\\(L\\)|\\[L\\]|[Ss]{1}eason(?=[s|:]?)|[Сс]{1}езон(?=[ы|:]?)|CUE|(?=\.)cue|MP3|128|192|320|\\(P\\)|\\[P\\]|PC \\(Windows\\)|Soundtrack|soundtrack|H\.264|mp4|MP4|M4V|FB2|PDF|RTF|EPUB|fb2|DJVU|djvu|epub|pdf|rtf|[мМ]{1}ультфильм";
         rate.year = name.match(/[0-9]{4}/);
         if (rate.year) {
@@ -753,7 +753,7 @@ var view = function() {
             rate.year = 0;
         }
         name.replace(new RegExp(quality, "g"), cal_rate);
-        if (keyword_filter_cache.keyword.length == 0) {
+        if (keyword_filter_cache.keyword.length === 0) {
             hl_name = sub_select(name);
             return {
                 n: hl_name,
@@ -763,23 +763,23 @@ var view = function() {
         var cal_word_rate = function(a, b, c) {
             var sub_l = c[b - 1];
             var sub_r = c[b + a.length];
-            if (sub_r == null) {
+            if (sub_r === undefined) {
                 sub_r = '';
             }
-            if (sub_l == null) {
+            if (sub_l === undefined) {
                 sub_l = '';
             }
             if ((/[\wа-яА-Я]/).test(sub_l + sub_r)) {
                 return a;
             }
             if (word_hl < words.length) {
-                if (year_hl == 1 && a == keyword_filter_cache.year) {
+                if (year_hl === 1 && a === keyword_filter_cache.year) {
                     return '<b>' + a + '</b>';
                 }
-                if (a == keyword_filter_cache.year) {
+                if (a === keyword_filter_cache.year) {
                     year_hl = 1;
                 }
-                if (b == 0) {
+                if (b === 0) {
                     rate.name += first_rate;
                 } else {
                     rate.name += word_rate;
@@ -787,7 +787,7 @@ var view = function() {
             }
             word_hl++;
             return '<b>' + a + '</b>';
-        }
+        };
         if (keyword_filter_cache["year"]) {
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
@@ -885,24 +885,24 @@ var view = function() {
         }
         var hl_name = name.replace(new RegExp(words.join('|'), "ig"), cal_word_rate);
         hl_name = sub_select(hl_name);
-        if (year_hl && word_hl == 1) {
+        if (year_hl && word_hl === 1) {
             rate.name = 0;
         }
         return {
             n: hl_name,
             r: rate
         };
-    }
+    };
     var filterTextCheck = function(s, t) {
-        if (s.length == 0)
+        if (s.length === 0)
             return 'a';
         var r = t;
-        if (AdvFiltration == 1) {
+        if (AdvFiltration === 1) {
             var tmp = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1").split(" ");
             if ((new RegExp(tmp.join('|'), "i")).test(t))
                 r = 'a';
         } else
-        if (AdvFiltration == 2) {
+        if (AdvFiltration === 2) {
             var tmp = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1").split(" ");
             var tmp_l = tmp.length;
             var trgr = true;
@@ -929,7 +929,7 @@ var view = function() {
                 r = 'a';
         }
         return r;
-    }
+    };
     var updateTrackerCount = function() {
         var li = $('ul.trackers').children('li');
         var t_c = li.length;
@@ -940,22 +940,22 @@ var view = function() {
             else {
                 var filter = '';
                 if (keywordFilter !== null) {
-                    filter += '[data-kf=1]'
+                    filter += '[data-kf=1]';
                 }
                 if (sizeFilter !== null) {
-                    filter += '[data-fs=1]'
+                    filter += '[data-fs=1]';
                 }
                 var count = $('#rez_table tbody').children('tr[data-tracker="' + id + '"]' + filter).length;
                 updateTrackerResultCount(id, count, 1);
             }
         }
-    }
+    };
     var updateCategorys = function() {
         var sum = 0;
         var count_c = categorys.length;
         for (var i = 0; i < count_c; i++) {
             var filter = '[data-c="' + categorys[i] + '"]';
-            if (trackerFilter != null)
+            if (trackerFilter !== null)
                 filter += '[data-tracker="' + trackerFilter + '"]';
             if (keywordFilter !== null) {
                 filter += '[data-kf="1"]';
@@ -972,29 +972,29 @@ var view = function() {
             }
         }
         $('ul.categorys li').eq(0).children('i').html('(' + sum + ')');
-        if (autoMove != null) {
+        if (autoMove !== null) {
             var item = $('ul.categorys li[data-id="' + autoMove + '"]');
-            if (item.css('display') == 'inline-block') {
+            if (item.css('display') === 'inline-block') {
                 $('ul.categorys li.selected').removeClass('selected');
                 item.addClass('selected');
                 item.trigger('click');
                 autoMove = null;
             }
         }
-        if ($('ul.categorys li.selected').css('display') == 'none') {
+        if ($('ul.categorys li.selected').css('display') === 'none') {
             var category = $('ul.categorys').children('li.selected').attr('data-id');
             $('ul.categorys li.selected').removeClass('selected');
             $('ul.categorys li').eq(0).addClass('selected');
             $('ul.categorys li.selected').trigger('click');
-            autoMove = (category == null) ? null : category;
+            autoMove = (category === undefined) ? null : category;
         }
-    }
+    };
     var tableFilter = function(keyword) {
-        if (keyword != $('div.filter').children('input').val())
+        if (keyword !== $('div.filter').children('input').val())
             return;
         $('div.filter div.btn').css('background-image', 'url(images/loading.gif)');
         keyword = $.trim(keyword).replace(/\s+/g, " ");
-        if (keyword.length == 0) {
+        if (keyword.length === 0) {
             $('div.filter').children('input').val('');
             keywordFilter = null;
             $('ul.categorys li.selected').trigger('click');
@@ -1004,7 +1004,7 @@ var view = function() {
             return;
         }
         keywordFilter = keyword;
-        if (keywordFilter != lastFilterWord) {
+        if (keywordFilter !== lastFilterWord) {
             //lastFilterCache = null;
             lastFilterWord = keyword;
             //поиск и фильтрация контента
@@ -1018,7 +1018,7 @@ var view = function() {
                     var name = tr_eq.children('td.name').children('div.title').children('a').text();
                 }
                 var f_name = filterTextCheck(keyword, name);
-                if (name != f_name)
+                if (name !== f_name)
                     tr_eq.attr('data-kf', 1);
                 else
                     tr_eq.attr('data-kf', 0);
@@ -1028,7 +1028,7 @@ var view = function() {
         updateCategorys();
         updateTrackerCount();
         $('div.filter div.btn').css('background-image', 'url(images/clear.png)');
-    }
+    };
     tableSizeFilter = function(sizeFilter) {
         var tr = $('#rez_table tbody').children('tr');
         var tr_count = tr.length;
@@ -1045,7 +1045,7 @@ var view = function() {
         updateCategorys();
         updateTrackerCount();
         //$('div.filter div.btn').css('background-image', 'url(images/clear.png)');
-    }
+    };
     var triggerBlank = function() {
         $('body,html').scrollTop();
         $('div.result_panel').css('display', 'none');
@@ -1059,12 +1059,12 @@ var view = function() {
         $('form[name="search"]').children('input[type="text"]').val('').focus();
         $('form[name="search"]').children('input[type="text"]').trigger("keyup");
         explore.getLoad();
-        if (old_title != document.title) {
+        if (old_title !== document.title) {
             _gaq.push(['_trackPageview', 'index.html']);
         }
-    }
+    };
     var triggerSearch = function(keyword) {
-        if (keyword == "#") {
+        if (keyword === "#") {
             return false;
         }
         keyword = $.trim(keyword);
@@ -1073,13 +1073,13 @@ var view = function() {
         $('div.explore').css('display', 'none');
         $('form input[type=text]').blur();
         var sel_tr = $('ul.trackers li a.selected').parent().data('id');
-        if (sel_tr == null || sel_tr == undefined)
+        if (sel_tr === undefined)
             sel_tr = null;
         clear_table();
-        if (sel_tr != null)
+        if (sel_tr !== null)
             $('ul.trackers li[data-id=' + sel_tr + ']').children('a').addClass('selected');
         keyword = $.trim(keyword);
-        if ($('form[name="search"]').children('input[type="text"]').val() != keyword) {
+        if ($('form[name="search"]').children('input[type="text"]').val() !== keyword) {
             $('form[name="search"]').children('input[type="text"]').val(keyword);
             $('form[name="search"]').children('input[type="text"]').trigger("keyup");
         }
@@ -1093,18 +1093,18 @@ var view = function() {
         _gaq.push(['_trackPageview', 'index.html#s=' + keyword]);
         _gaq.push(['_trackEvent', 'Search', 'keyword', keyword]);
         return false;
-    }
+    };
     var getQuality = function(keyword, id, section) {
         //flush for bg mode
-        keyword_filter_cache = {}
+        keyword_filter_cache = {};
         backgroundMode = true;
         backgroundModeID = {"section": section, "id": id};
         tmp_var_qbox = 0;
         engine.search(keyword, null, 1);
         _gaq.push(['_trackEvent', 'Quality', 'keyword', keyword]);
-    }
+    };
     var load_category = function(c) {
-        $('ul.categorys').empty()
+        $('ul.categorys').empty();
         var count = c.length;
         categorys = [];
         categorys_assoc = [];
@@ -1114,19 +1114,19 @@ var view = function() {
             $('ul.categorys').append('<li data-id="' + c[i][0] + '">' + c[i][1] + '<i></i></li>');
         }
         $('ul.categorys').prepend('<li class="selected">' + _lang['cat_all'] + ' <i></i></li>');
-    }
+    };
     var AddAutocomplete = function() {
-        if (AutoComplite_opt == 0) {
+        if (AutoComplite_opt === 0) {
             var AutocompleteArr = [];
             var order = function(a, b) {
                 if (a.count > b.count)
                     return -1;
-                if (a.count == b.count)
+                if (a.count === b.count)
                     return 0;
                 return 1;
-            }
+            };
             var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-            if (search_history != null) {
+            if (search_history !== null) {
                 search_history.sort(order);
                 var count = search_history.length;
                 for (var i = 0; i < count; i++) {
@@ -1135,22 +1135,22 @@ var view = function() {
             }
         }
         var inp = $('input[type="text"][name="s"]');
-        if (inp.attr('autocomplete') != null) {
+        if (inp.attr('autocomplete') !== undefined) {
             inp.autocomplete("destroy");
         }
         inp.autocomplete({
-            source: (AutoComplite_opt == 0) ? AutocompleteArr : function(a, response) {
-                if ($.trim(a.term).length == 0 || AutoComplite_opt == 0) {
+            source: (AutoComplite_opt === 0) ? AutocompleteArr : function(a, response) {
+                if ($.trim(a.term).length === 0 || AutoComplite_opt === 0) {
                     var AutocompleteArr = [];
                     var order = function(a, b) {
                         if (a.count > b.count)
                             return -1;
-                        if (a.count == b.count)
+                        if (a.count === b.count)
                             return 0;
                         return 1;
-                    }
+                    };
                     var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-                    if (search_history != null) {
+                    if (search_history !== null) {
                         search_history.sort(order);
                         var count = search_history.length;
                         for (var i = 0; i < count; i++) {
@@ -1159,7 +1159,7 @@ var view = function() {
                     }
                     response(AutocompleteArr);
                 } else {
-                    if (xhr_autocomplite != null)
+                    if (xhr_autocomplite !== null)
                         xhr_autocomplite.abort();
                     xhr_autocomplite = $.getJSON('http://suggestqueries.google.com/complete/search?client=firefox&q=' + a.term).success(function(data) {
                         var arr = data[1];
@@ -1177,9 +1177,9 @@ var view = function() {
             }
         });
         inp.autocomplete("close");
-    }
+    };
     var LoadProfiles = function() {
-        var defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
+        var defProfile = parseFloat((GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0);
         var arr = engine.getProfileList();
         if (arr.length <= 1)
             return;
@@ -1187,15 +1187,15 @@ var view = function() {
             engine.loadProfile($(this).val());
         });
         $.each(arr, function(k, v) {
-            sel.append('<option value="' + k + '" ' + ((k == defProfile) ? 'selected' : '') + '>' + v + '</option>')
+            sel.append('<option value="' + k + '" ' + ((k === defProfile) ? 'selected' : '') + '>' + v + '</option>');
         });
         sel = $('<div class="profile">').append(sel);
         $('div.tracker_list div.setup').after(sel);
-    }
+    };
     var load_in_sandbox = function(id, c) {
         var t = $($.parseHTML(c));
-        return t
-    }
+        return t;
+    };
     return {
         result: function(t, a, s, p) {
             return write_result(t, a, s, p);
@@ -1207,10 +1207,10 @@ var view = function() {
             return contentUnFilter(a);
         },
         clear_table: function() {
-            clear_table()
+            clear_table();
         },
         auth: function(s, id) {
-            auth(s, id)
+            auth(s, id);
         },
         addTrackerInList: function(a) {
             addTrackerInList(a);
@@ -1237,13 +1237,13 @@ var view = function() {
             AddAutocomplete();
         },
         ClearTrackerList: function() {
-            ClearTrackerList()
+            ClearTrackerList();
         },
         LoadProfiles: function() {
-            LoadProfiles()
+            LoadProfiles();
         },
         getQuality: function(a, b, c) {
-            getQuality(a, b, c)
+            getQuality(a, b, c);
         },
         getAssocCategorys: function(a) {
             return categorys_assoc[a];
@@ -1292,18 +1292,18 @@ var view = function() {
                 return false;
             });
             $('ul.categorys').on('click', 'li', function(event) {
-                if (event.isTrigger != true)
+                if (event.isTrigger !== true)
                     autoMove = null;
                 var id = $(this).attr('data-id');
-                categoryFilter = id;
+                categoryFilter = id || null;
                 $('ul.categorys').children('li.selected').removeClass('selected');
                 $(this).addClass('selected');
                 $('#rez_table').children('tbody').children('tr').css('display', 'none');
                 var filter = '';
-                if (id != null) {
+                if (id !== undefined) {
                     filter += '[data-c="' + id + '"]';
                 }
-                if (trackerFilter != null) {
+                if (trackerFilter !== null) {
                     filter += '[data-tracker="' + trackerFilter + '"]';
                 }
                 if (keywordFilter !== null) {
@@ -1320,29 +1320,30 @@ var view = function() {
                 $('#rez_table').tablesorter({
                     textExtraction: function(node)
                     {
-                        if ($(node).attr('data-value') != null) {
-                            if ($(node).attr('data-qname') != null) {
+                        if ($(node).attr('data-value') !== undefined) {
+                            if ($(node).attr('data-qname') !== undefined) {
                                 var c = categoryFilter;
                                 var val = parseInt($(node).attr('data-value'));
-                                if (c == null)
+                                if (c === null)
                                     return val;
-                                if (c == 3 || c == 0 || c == 7 || c == 8 || c == 4) {
+                                c = parseInt(c);
+                                if (c === 3 || c === 0 || c === 7 || c === 8 || c === 4) {
                                     val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qmusic')) - parseInt($(node).attr('data-qbook'));
                                 } else
-                                if (c == 1) {
+                                if (c === 1) {
                                     val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qvideo')) - parseInt($(node).attr('data-qbook'));
                                 } else
-                                if (c == 2) {
+                                if (c === 2) {
                                     val = val - parseInt($(node).attr('data-qmusic')) - parseInt($(node).attr('data-qvideo')) - parseInt($(node).attr('data-qbook'));
                                 } else
-                                if (c == 5) {
+                                if (c === 5) {
                                     val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qvideo'));
                                 }
                                 return val;
                             } else
                                 return $(node).attr('data-value');
                         }
-                        if ($(node).children('div.title') != null)
+                        if ($(node).children('div.title') !== undefined)
                             return $(node).children('div.title').text();
                         return $(node).html();
                     },
@@ -1374,7 +1375,7 @@ var view = function() {
                 if (t.length > 0) {
                     $('div.filter div.btn').show();
                 }
-                clearTimeout(filter_timers.word)
+                clearTimeout(filter_timers.word);
                 filter_timers.word = setTimeout(function() {
                     tableFilter(t);
                 }, 500);
@@ -1397,7 +1398,7 @@ var view = function() {
                     sizeFilter = {
                         from: 0,
                         to: 0
-                    }
+                    };
                 }
                 if (type === 1) {
                     sizeFilter.to = t;
@@ -1408,7 +1409,7 @@ var view = function() {
                 //if (t.length > 0) {
                 //    $('div.filter div.btn').show();
                 //}
-                clearTimeout(filter_timers.size)
+                clearTimeout(filter_timers.size);
                 filter_timers.size = setTimeout(function() {
                     tableSizeFilter(sizeFilter);
                 }, 500);
@@ -1444,18 +1445,18 @@ var view = function() {
                 return false;
             });
             $(document).on('keyup', function(e) {
-                if (e.target.tagName == "INPUT") {
+                if (e.target.tagName === "INPUT") {
                     return;
                 }
                 if ($('div.explore').is(":visible")) {
                     return;
                 }
-                if (e.keyCode == 27) {
+                if (e.keyCode === 27) {
                     triggerBlank();
                 }
             });
         }
-    }
+    };
 }();
 $(function() {
     view.begin();
@@ -1463,10 +1464,10 @@ $(function() {
 $(window).load(function() {
     var s = (document.URL).replace(/.*index.html/, '').replace(/^#s=(.*)/, '$1');
     if (s.length > 0) {
-        if (navigator.userAgent.search(/Chrome/) == -1) {
+        if (navigator.userAgent.search(/Chrome/) === -1) {
             var trigger = function() {
                 view.triggerSearch(decodeURIComponent(s));
-            }
+            };
             setTimeout(trigger, 200);
         } else
             view.triggerSearch(decodeURIComponent(s));
@@ -1476,7 +1477,7 @@ $(window).load(function() {
 });
 var global_wl_hash = location.hash;
 $(window).on('hashchange', function() {
-    if (location.hash != global_wl_hash)
+    if (location.hash !== global_wl_hash)
     {
         $(window).trigger('load');
         global_wl_hash = location.hash;

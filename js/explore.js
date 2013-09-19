@@ -18,7 +18,7 @@ var explore = function() {
     var favoritesDeskList = (GetSettings('favoritesDeskList') !== undefined) ? JSON.parse(GetSettings('favoritesDeskList')) : {};
     var tmpDeskList = {};
     var last_qbox = {top: 0, obj: null, id: null};
-    var _pages_cache = {}
+    var _pages_cache = {};
     var listOptions_def = {
         favorites: {
             s: 1,
@@ -179,13 +179,14 @@ var explore = function() {
         var sesizeimg = function(i) {
             i = i.replace('/sm_film/', '/film/');
             return i;
-        }
+        };
         var makeimg = function(i) {
-            if (i == null)
-                return i;
+            if (i === undefined) {
+                return "";
+            }
             i = i.replace(/(.*)\/film\/([0-9]*)\//, 'http://st.kinopoisk.ru/images/film/$2.jpg');
             return i;
-        }
+        };
         var Films = function(c) {
             c = view.contentFilter(c);
             var t = view.load_in_sandbox(null, c);
@@ -203,17 +204,18 @@ var explore = function() {
                         'name': item.eq(1).children('div.name').children('a').text().replace(/ \(.*, ([0-9]{4}).*\)$/, ' ($1)'),
                         'name_en': item.eq(1).children('div.name').children('span').text().replace(/ \([0-9]*\) [0-9]* мин./, ''),
                         'url': (content_sourse[type].root_url + view.contentUnFilter(item.eq(1).children('div.name').children('a').attr('href'))).replace(content_sourse[type].base_url, '')
-                    }
+                    };
                 } catch (error) {
+                    obj = null;
                 }
-                if (obj == null || obj.img == null || obj.name == null || obj.name_en == null || obj.url == null) {
+                if (obj === null || obj.img.length === 0 || obj.name.length === 0 || obj.url.indexOf('undefined') !== -1) {
                     console.log("Explorer " + type + " have problem!");
                     continue;
                 }
                 arr[arr.length] = obj;
             }
             return arr;
-        }
+        };
         var Serials = function(c) {
             c = view.contentFilter(c);
             var t = view.load_in_sandbox(null, c);
@@ -230,17 +232,18 @@ var explore = function() {
                         'name': item.eq(1).children('div').children('a').text().replace(/ \([0-9]* – .*\)$/, '').replace(/ \(сериал\)$/, ''),
                         'name_en': item.eq(1).children('div').children('span').text().replace(/ [0-9]* мин.$/, '').replace(/ \([0-9]* – .*\)$/, ''),
                         'url': (content_sourse[type].root_url + view.contentUnFilter(item.eq(1).children('div').children('a').attr('href'))).replace(content_sourse[type].base_url, '')
-                    }
+                    };
                 } catch (error) {
+                    obj = null;
                 }
-                if (obj == null || obj.img == null || obj.name == null || obj.name_en == null || obj.url == null) {
+                if (obj === null || obj.img.length === 0 || obj.name.length === 0 || obj.url.indexOf('undefined') !== -1) {
                     console.log("Explorer " + type + " have problem!");
                     continue;
                 }
                 arr[arr.length] = obj;
             }
             return arr;
-        }
+        };
         var Games = function(c) {
             c = view.contentFilter(c);
             var t = view.load_in_sandbox(null, c);
@@ -256,21 +259,25 @@ var explore = function() {
                         'img': view.contentUnFilter(item.children('a').eq(0).find('img').attr('src')).replace(content_sourse[type].base_img_url, ''),
                         'name': item.children('div.name-i').children('a').text(),
                         'url': (content_sourse[type].root_url + view.contentUnFilter(item.children('div.name-i').children('a').attr('href'))).replace(content_sourse[type].base_url, '')
-                    }
+                    };
                 } catch (error) {
+                    obj = null;
                 }
-                if (obj == null || obj.img == null || obj.name == null || obj.url == null) {
+                if (obj === null || obj.img.length === 0 || obj.name.length === 0 || obj.url.indexOf('undefined') !== -1) {
                     console.log("Explorer " + type + " have problem!");
                     continue;
                 }
                 arr[arr.length] = obj;
             }
             return arr;
-        }
+        };
         var Games_gg = function(c) {
             var makeimg = function(url) {
+                if (url === undefined) {
+                    return "";
+                }
                 return url = content_sourse[type].root_url + url.replace('/small_img', '/medium_img');
-            }
+            };
             c = view.contentFilter(c);
             var t = view.load_in_sandbox(null, c);
             t = t.find('td.enc-box-list').children('div.enc-item');
@@ -285,17 +292,18 @@ var explore = function() {
                         'img': view.contentUnFilter(makeimg(item.children('div.e-title').children('div.im').find('img').attr('src'))).replace(content_sourse[type].base_img_url, ''),
                         'name': item.children('div.e-title').find('a').eq(0).text().trim(),
                         'url': (content_sourse[type].root_url + view.contentUnFilter(item.children('div.e-title').find('a').eq(0).attr('href'))).replace(content_sourse[type].base_url, '')
-                    }
+                    };
                 } catch (error) {
+                    obj = null;
                 }
-                if (obj == null || obj.img == null || obj.name == null || obj.url == null) {
+                if (obj === null || obj.img.length === 0 || obj.name.length === 0 || obj.url.indexOf('undefined') !== -1) {
                     console.log("Explorer " + type + " have problem!");
                     continue;
                 }
                 arr[arr.length] = obj;
             }
             return arr;
-        }
+        };
         var TopFilms = function(c) {
             c = view.contentFilter(c);
             var t = view.load_in_sandbox(null, c);
@@ -312,108 +320,109 @@ var explore = function() {
                         'name': item.children('a').text().replace(/ \(.*, ([0-9]{4}).*\)$/, ' ($1)'),
                         'name_en': item.children('i').text(),
                         'url': (content_sourse[type].root_url + view.contentUnFilter(item.children('a').attr('href'))).replace(content_sourse[type].base_url, '')
-                    }
+                    };
                 } catch (error) {
+                    obj = null;
                 }
-                if (obj == null || obj.img == null || obj.name == null || obj.name_en == null || obj.url == null) {
+                if (obj === null || obj.img.length === 0 || obj.name.length === 0 || obj.url.indexOf('undefined') !== -1) {
                     console.log("Explorer " + type + " have problem!");
                     continue;
                 }
                 arr[arr.length] = obj;
             }
             return arr;
-        }
+        };
         var About = function(c) {
             c = view.contentFilter(c);
             var mt = view.load_in_sandbox(null, c);
 
             var t = mt.find('#rhs_block').find('div.kno-ec.rhsvw.vk_rhsc').eq(0).children('div');
 
-            if (t.length == 0) {
+            if (t.length === 0) {
                 return;
             }
 
             t.find('span.kno-fm.fl.q').remove();
 
-            var obj = t.find('a')
-            if (obj.length == 0)
+            var obj = t.find('a');
+            if (obj.length === 0)
                 return;
             for (var i = 0; i < obj.length; i++) {
-                if (obj.eq(i).attr('href') == null)
+                if (obj.eq(i).attr('href') === undefined)
                     continue;
-                if (obj.eq(i).attr('href')[0] == '/')
+                if (obj.eq(i).attr('href')[0] === '/')
                     obj.eq(i).attr('href', 'http://google.com' + obj.eq(i).attr('href'));
                 obj.eq(i).attr('target', '_blank');
             }
-            var imgs = t.find('img')
+            var imgs = t.find('img');
             for (var i = 0; i < imgs.length; i++) {
                 var par_href = decodeURIComponent(imgs.eq(i).parent('a').attr('href'));
-                if (par_href == undefined)
+                if (par_href === "undefined")
                     continue;
                 if (par_href.indexOf("imgres") < 0) {
                     imgs.eq(i).parent('a').remove();
                     continue;
                 }
                 imgs.eq(i).attr('src', par_href.replace(/.*=http(.*)&imgref.*/, 'http$1'));
-                if (imgs.eq(i).attr('src')[0] == '/') {
+                if (imgs.eq(i).attr('src')[0] === '/') {
                     imgs.eq(i).attr('src', '#' + imgs.eq(i).attr('src'));
                 }
             }
             var info = {};
-            var google_proxy = (!_google_proxy) ? "" : "https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=400&rewriteMime=image/jpeg&url="
+            var google_proxy = (!_google_proxy) ? "" : "https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=400&rewriteMime=image/jpeg&url=";
             info['img'] = t.find('a.bia.uh_rl').eq(0).children('img').attr('src');
             info['title'] = t.find('div.kno-ecr-pt').html();
             info['type'] = t.find('div.kno-ecr-st').html();
             info['desc'] = t.find("div.kno-desc").html();
             info['table'] = t.find('table.kno-fs').html();
-            var content_info = ''
-            if (info.title == undefined || info.desc == undefined) {
+            var content_info = '';
+            if (info.title === undefined || info.desc === undefined) {
                 return '';
             }
-            if (info.img != undefined) {
+            if (info.img !== undefined) {
                 content_info += '<div class="a-poster"><img src="' + google_proxy + info.img + '" /></div>';
             }
-            if (info.title != undefined) {
+            if (info.title !== undefined) {
                 content_info += '<div class="a-title">' + info.title + '</div>';
             }
-            if (info.type != undefined) {
+            if (info.type !== undefined) {
                 content_info += '<div class="a-type">' + info.type + '</div>';
             }
-            if (info.desc != undefined) {
+            if (info.desc !== undefined) {
                 content_info += '<div class="a-desc">' + info.desc + '</div>';
             }
-            if (info.table != undefined) {
+            if (info.table !== undefined) {
                 content_info += '<div class="a-table">' + info.table + '</div>';
             }
             if (content_info.length > 0)
                 return view.contentUnFilter('<div>' + content_info + '</div>');
             else
                 return '';
-        }
-        if (type == "about")
+        };
+        if (type === "about")
             return About(content);
         else
-        if (type == 'serials')
+        if (type === 'serials')
             return Serials(content);
         else
-        if (type == 'top_films')
+        if (type === 'top_films')
             return TopFilms(content);
         else
-        if (type == 'films')
+        if (type === 'films')
             return Films(content);
         else
-        if (type == 'games')
+        if (type === 'games')
             return Games_gg(content);
         else
-        if (type == 'games_n')
+        if (type === 'games_n')
             return Games_gg(content);
         else
-        if (type == 'games_a')
+        if (type === 'games_a')
             return Games_gg(content);
-    }
+    };
     var load_exp_content = function(type, url, page) {
-        if (page != null) {
-            url = url.replace('%page%', page[1])
+        if (page !== undefined) {
+            url = url.replace('%page%', page[1]);
         }
         var time = Math.round(new Date().getTime() / 1000);
         var timeout = content_sourse[type].timeout;
@@ -423,11 +432,11 @@ var explore = function() {
             write_content(explorerCache[type].cache_arr, type);
             return;
         }
-        if (page != null) {
-            if (xhr[type + page[1]] != null)
+        if (page !== undefined) {
+            if (xhr[type + page[1]] !== undefined)
                 xhr[type + page[1]].abort();
         } else {
-            if (xhr[type] != null)
+            if (xhr[type] !== undefined)
                 xhr[type].abort();
         }
         xhr[type] = $.ajax({
@@ -435,13 +444,13 @@ var explore = function() {
             url: url,
             success: function(data) {
                 var content = read_content(type, data);
-                if (type in _pages_cache == false) {
+                if (type in _pages_cache === false) {
                     _pages_cache[type] = {
                         pages: {},
                         upTimer: null
-                    }
+                    };
                 }
-                if (page != null) {
+                if (page !== undefined) {
                     _pages_cache[type]["pages"][page[1]] = content;
                     if (_pages_cache[type]["pages"].length > 1) {
                         _pages_cache[type]["pages"].sort();
@@ -450,7 +459,7 @@ var explore = function() {
                     $.each(_pages_cache[type]["pages"], function(a, b) {
                         content = content.concat(b);
                     });
-                    if (_pages_cache[type]["pages"].length == page[3]) {
+                    if (_pages_cache[type]["pages"].length === page[3]) {
                         _pages_cache[type]["pages"] = null;
                     }
                 }
@@ -463,111 +472,99 @@ var explore = function() {
                         cache_arr: content
                     };
                     SetSettings('explorerCache', JSON.stringify(explorerCache));
-                }, (_pages_cache[type].upTimer == null) ? 100 : 500);
+                }, (_pages_cache[type].upTimer === undefined) ? 100 : 500);
             },
             error: function() {
                 if (type in explorerCache && "cache_arr" in explorerCache[type])
                     write_content(explorerCache[type].cache_arr, type);
             }
         });
-    }
-    var updateConfig = function() {
-        var new_conf = {};
-        $.each(content_sourse, function(key, value) {
-            if (listOptions[key] != null) {
-                new_conf[key] = listOptions[key];
-            } else {
-                new_conf[key] = listOptions_def[key];
-            }
-        });
-        listOptions = new_conf;
-    }
+    };
     var set_view_status = function(n, s) {
         listOptions[n]['s'] = s;
         SetSettings('listOptions', JSON.stringify(listOptions));
-    }
+    };
     var set_view_size = function(n, s) {
         listOptions[n]['size'] = s;
         SetSettings('listOptions', JSON.stringify(listOptions));
-    }
+    };
     var set_view_i_line = function(n, s) {
         listOptions[n]['line'] = parseInt(s);
         SetSettings('listOptions', JSON.stringify(listOptions));
-    }
+    };
     var get_view_status = function(n) {
-        if (listOptions == null)
-            return 1;
-        if (listOptions[n] != null)
+        if (listOptions[n] !== undefined)
             return listOptions[n]['s'];
         return 1;
-    }
+    };
     var get_view_size = function(n) {
-        if (listOptions != null && listOptions[n] != null & listOptions[n].size > 0)
+        if (listOptions[n] !== undefined & listOptions[n].size > 0)
             return listOptions[n].size;
-        if (listOptions_def[n] != null && listOptions_def[n].size != null && listOptions_def[n].size > 0)
+        if (listOptions_def[n] !== undefined && listOptions_def[n].size !== undefined && listOptions_def[n].size > 0)
             return listOptions_def[n].size;
         else
             return content_sourse[n].size;
-    }
+    };
     var update_current_item = function(key) {
         var item_page = $('li.' + key + ' > div > div');
-        if (item_page == undefined)
+        if (item_page.length === 0)
             return;
         item_page.html(write_page(key, item_page.attr('data-page')));
         var size = get_view_size(key);
         calculate_moveble(key, size);
-    }
+    };
     var update_poster_count = function() {
-        if ($('div.explore').css('display') != 'block')
+        if ($('div.explore').css('display') !== 'block')
             return;
         $.each(listOptions, function(key, value) {
             var now_count = $('li.' + key).attr('data-item-count');
             var new_count = get_view_i_count(key);
-            if (now_count != undefined && new_count > 0 && now_count != new_count) {
-                update_current_item(key)
+            if (now_count !== undefined && new_count > 0 && parseInt(now_count) !== new_count) {
+                update_current_item(key);
             }
         });
-    }
+    };
     var get_view_i_count = function(n) {
         var line_count = listOptions_def[n].line;
-        if (listOptions[n] != null && listOptions[n].line != null && listOptions[n].line > 0)
+        if (listOptions[n].line !== undefined && listOptions[n].line > 0)
             line_count = listOptions[n].line;
         var page_width = $('li.' + n).width();
-        if (page_width == undefined)
+        if (page_width === undefined)
             return 0;
         var poster_size = get_view_size(n);
         var poster_margin = get_poster_margin_size(n, poster_size) * 2;
         return Math.floor(page_width / (poster_size + poster_margin)) * line_count;
-    }
+    };
     var get_view_i_line = function(n) {
         var line_count = listOptions_def[n].line;
-        if (listOptions[n] != null && listOptions[n].line != null && listOptions[n].line > 0)
+        if (listOptions[n].line !== undefined && listOptions[n].line > 0)
             line_count = listOptions[n].line;
-        return line_count
-    }
+        return line_count;
+    };
     var save_order = function() {
         var ul = $('div.explore ul.sortable').children('li');
         var ul_c = ul.length;
-        var old_listOpts = listOptions;
+        var old_listOpts = JSON.parse(JSON.stringify(listOptions));
         listOptions = {};
         for (var i2 = 0; i2 < ul_c; i2++) {
             var section = ul.eq(i2).attr('class');
-            if (old_listOpts[section] != null)
+            if (old_listOpts[section] !== undefined) {
                 listOptions[section] = old_listOpts[section];
+            }
         }
         SetSettings('listOptions', JSON.stringify(listOptions));
-    }
+    };
 
     var triggerClick = function(s, c) {
         if (AutoSetCategory) {
-            if (c == null)
+            if (c === undefined)
                 $('ul.categorys').children('li').eq(0).trigger('click');
             else
                 $('ul.categorys').children('li[data-id="' + c + '"]').trigger('click');
             view.SetAutoMove(null);
         }
         view.triggerSearch(s);
-    }
+    };
     var show_favorites = function() {
         var type = 'favorites';
         if (favoritesList.length < 1) {
@@ -576,11 +573,11 @@ var explore = function() {
         } else
             $('li.' + type).css('display', 'list-item');
         var page = $('li.' + type).children('div').children('div').attr('data-page');
-        if (page == null)
+        if (page === undefined)
             page = 1;
         $('li.' + type).empty();
         write_content(favoritesList, type, page);
-    }
+    };
     var set_poster_size = function(section, size) {
         var font_size = get_font_size(size);
         var margine_size = get_poster_margin_size(section, size);
@@ -593,7 +590,7 @@ var explore = function() {
                 '{ width: ' + size + 'px; } ' +
                 'div.explore div.' + section + ' div.poster > div.image > a > img ' +
                 '{width: ' + (size - 10) + 'px;} ' +
-                ((font_size == 0) ?
+                ((font_size === 0) ?
                         'div.explore div.' + section + ' div.poster > div.label ' +
                         '{display: none;}'
                         :
@@ -602,19 +599,19 @@ var explore = function() {
                         '{font-size: ' + font_size + 'em;}'
                         ) + '</style>');
         //<<<<
-    }
+    };
     var write_content = function(content, section, page_num) {
         var i_line = get_view_i_line(section);
         //определяем размер постера и их кол-во
-        var size = get_view_size(section);
+        var size = parseFloat(get_view_size(section));
         var def_size = content_sourse[section].size;
         var name = content_sourse[section].t;
-        size = (size == null || size < 1) ? def_size : size;
-        if (size > 0 && size != def_size)
+        size = (size < 1) ? def_size : size;
+        if (size > 0 && size !== def_size)
             set_poster_size(section, size);
         //<<
         //впиливание кастмного стиля для отобрадения нужного размера постеров и шрифта
-        if (page_num == null)
+        if (page_num === undefined)
             page_num = 1;
         var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
         var c = '<div class="' + section + '">'
@@ -637,27 +634,28 @@ var explore = function() {
         calculate_moveble(section, size);
         //<<<<<<<<<<<<<<
 
-        if (exp_li.children('div.' + section).children('div').children('div.poster').length == 0 && page_num > 1) {
+        if (exp_li.children('div.' + section).children('div').children('div.poster').length === 0 && page_num > 1) {
             $('li.' + section).empty();
             write_content(content, section, page_num - 1);
         }
-    }
+    };
     var search_kw_filter = function(kw) {
         return kw.replace(/(.*) \(([0-9]{4})\)/, '$1 $2');
-    }
+    };
     var write_page = function(section, page, content) {
-        if (content == null)
-            content = (section == 'favorites') ? favoritesList : explorerCache[section].cache_arr;
+        if (content === undefined)
+            content = (section === 'favorites') ? favoritesList : explorerCache[section].cache_arr;
         var root_url = content_sourse[section].root_url;
         var fav = content_sourse[section].fav;
         var did = content_sourse[section].did;
-        if (page == null)
+        page = parseFloat(page);
+        if (isNaN(page))
             page = 1;
         var poster_count = get_view_i_count(section);
         if (poster_count <= 0)
             return '';
         $('li.' + section).attr('data-item-count', poster_count);
-        var buttons = (fav != null) ? '<div class="add_favorite" title="' + _lang.exp_in_fav + '">' : '<div class="del_favorite" title="' + _lang.exp_rm_fav + '"></div><div class="edit_favorite" title="' + _lang.exp_edit_fav + '"></div><div class="move_favorite" title="' + _lang.exp_move_fav + '">';
+        var buttons = (fav !== null) ? '<div class="add_favorite" title="' + _lang.exp_in_fav + '">' : '<div class="del_favorite" title="' + _lang.exp_rm_fav + '"></div><div class="edit_favorite" title="' + _lang.exp_edit_fav + '"></div><div class="move_favorite" title="' + _lang.exp_move_fav + '">';
         buttons += '</div><div class="quality_box" title="' + _lang.exp_q_fav + '">';
         var c = '<div class="pager">' + make_page_body(poster_count, content.length, page) + '</div>';
         var max_item = page * poster_count;
@@ -673,26 +671,26 @@ var explore = function() {
                 return false;
             werite_item++;
             var id = ' data-id="' + k + '"';
-            var qual = (did != null) ? get_q_favorites(k) : '?';
+            var qual = (did !== null) ? get_q_favorites(k) : '?';
             name_v = v.name;
-            if (_lang.t != 'ru' || use_english_postername) {
+            if (_lang.t !== 'ru' || use_english_postername) {
                 if ('name_en' in v && v.name_en.length > 0)
                     name_v = v.name_en;
             }
             var image_url = content_sourse[section].base_img_url + v.img;
             var page_url = content_sourse[section].base_url + v.url;
             var v_img = view.contentUnFilter(v.img);
-            if (v_img.substr(0, 4) == 'http') {
+            if (v_img.substr(0, 4) === 'http') {
                 image_url = v_img;
             } else {
                 if (_google_proxy) {
                     image_url = content_sourse[section].google_proxy + image_url;
                 }
             }
-            if (v.url[0] == "/") {
+            if (v.url[0] === "/") {
                 page_url = content_sourse[section].root_url + v.url;
             } else
-            if (v.url.substr(0, 4) == 'http') {
+            if (v.url.substr(0, 4) === 'http') {
                 page_url = v.url;
             } else
             if (v.url.length === 0) {
@@ -709,36 +707,36 @@ var explore = function() {
                     + '</div>'
                     + '</div>';
         });
-        if (werite_item == 0 && page > 1) {
+        if (werite_item === 0 && page > 1) {
             var new_page = page - 1;
-            $('li.' + section + ' > div > div').attr('data-page', new_page)
+            $('li.' + section + ' > div > div').attr('data-page', new_page);
             return write_page(section, new_page, content);
         } else
             return view.contentUnFilter(c);
-    }
+    };
     var make_page_body = function(i_count, length, page) {
         var btns = '';
         if (length <= i_count)
             return '';
         var page_count = Math.floor((length - 1) / i_count);
         for (var i = 1; i < page_count + 2; i++) {
-            btns += '<div class="item' + ((i == page) ? ' active' : '') + '">' + i + '</div>';
+            btns += '<div class="item' + ((i === page) ? ' active' : '') + '">' + i + '</div>';
         }
         return btns;
-    }
+    };
     var sync_favorites = function(data) {
         favoritesList = JSON.parse(data);
         show_favorites();
-    }
+    };
     var add_in_favorites = function(obj) {
         favoritesList[favoritesList.length] = {
             'img': $(obj).find('img').attr('src'),
             'name': $(obj).find('div.title').attr('title'),
             'url': $(obj).find('div.info').children('a').attr('href')
-        }
+        };
         SetSettings('favoritesList', JSON.stringify(favoritesList));
         show_favorites();
-    }
+    };
     var edit_from_favorites = function(id) {
         var new_name = apprise(_lang.exp_edit_fav_label, {
             'input': [favoritesList[id].name, favoritesList[id].img, favoritesList[id].url],
@@ -747,30 +745,33 @@ var explore = function() {
             if (id === false)
                 return;
             favoritesList[id].name = name[0];
-            if (name[1].length == 0) {
-                name[1] = "http://st.kinopoisk.ru/images/no-poster.gif"
+            if (name[1].length === 0) {
+                name[1] = "http://st.kinopoisk.ru/images/no-poster.gif";
             }
             favoritesList[id].img = name[1];
             favoritesList[id].url = name[2];
             SetSettings('favoritesList', JSON.stringify(favoritesList));
             show_favorites();
         });
-    }
+    };
     var FavoritesOrder = function(left, id, right) {
+        left = parseFloat(left);
+        id = parseFloat(id);
+        right = parseFloat(right);
         var c = favoritesList.length;
         var new_arr = [];
-        var new_desc_arr = {}
-        if (left != null) {
-            if (parseInt(id) - 1 == left) {
+        var new_desc_arr = {};
+        if (!isNaN(left)) {
+            if (id - 1 === left) {
                 return;
             }
             for (var i = 0; i < c; i++) {
-                if (i == id) {
+                if (i === id) {
                     continue;
                 }
                 new_desc_arr[new_arr.length] = favoritesDeskList[i] || [];
                 new_arr[new_arr.length] = favoritesList[i];
-                if (i == left) {
+                if (i === left) {
                     new_desc_arr[new_arr.length] = favoritesDeskList[id] || [];
                     new_arr[new_arr.length] = favoritesList[id];
                 }
@@ -778,16 +779,16 @@ var explore = function() {
             favoritesList = new_arr;
             favoritesDeskList = new_desc_arr;
         } else
-        if (right != null)
+        if (!isNaN(right))
         {
-            if (parseInt(id) + 1 == right) {
+            if (id + 1 === right) {
                 return;
             }
             for (var i = 0; i < c; i++) {
-                if (i == id) {
+                if (i === id) {
                     continue;
                 }
-                if (i == right) {
+                if (i === right) {
                     new_desc_arr[new_arr.length] = favoritesDeskList[id] || [];
                     new_arr[new_arr.length] = favoritesList[id];
                 }
@@ -800,15 +801,15 @@ var explore = function() {
         SetSettings('favoritesList', JSON.stringify(favoritesList));
         SetSettings('favoritesDeskList', JSON.stringify(favoritesDeskList));
         show_favorites();
-    }
+    };
     var del_from_favorites = function(id) {
         favoritesList.splice(id, 1);
         SetSettings('favoritesList', JSON.stringify(favoritesList));
         if (id  in favoritesDeskList) {
-            var new_obj = {}
+            var new_obj = {};
             var num = 0;
             $.each(favoritesDeskList, function(k, v) {
-                if (k == id) {
+                if (String(k) === String(id)) {
                     return 1;
                 }
                 new_obj[num] = v;
@@ -818,52 +819,52 @@ var explore = function() {
             SetSettings('favoritesDeskList', JSON.stringify(favoritesDeskList));
         }
         show_favorites();
-    }
+    };
     var update_q_favorites = function(id, q, arr) {
         if (q === null) {
             if (id in favoritesList && "quality" in  favoritesList[id]) {
                 q = favoritesList[id]['quality'];
             } else {
-                q = ''
+                q = '';
             }
         }
-        if (q == '')
+        if (q.length === 0)
             q = '?';
         favoritesList[id]['quality'] = q;
         favoritesDeskList[id] = [];
         $.each(arr, function(k, v) {
-            if (v.link != null && v.name != null) {
+            if (v.link != null && v.name != null) { //type?
                 favoritesDeskList[id][favoritesDeskList[id].length] = {
                     "link": v.link,
                     "name": v.name
-                }
+                };
             }
         });
         SetSettings('favoritesDeskList', JSON.stringify(favoritesDeskList));
         SetSettings('favoritesList', JSON.stringify(favoritesList));
-    }
+    };
     var get_tr_favorites = function(id, section) {
-        if (section == "favorites") {
+        if (section === "favorites") {
             if (id in favoritesDeskList) {
                 if (favoritesDeskList[id].constructor !== Array) {
                     return {"link": favoritesDeskList[id].tr_link, "name": favoritesDeskList[id].tr_name};
                 } else {
-                    return favoritesDeskList[id]
+                    return favoritesDeskList[id];
                 }
             }
         } else {
             if (section in tmpDeskList && id in tmpDeskList[section]) {
-                return tmpDeskList[section][id]
+                return tmpDeskList[section][id];
             }
         }
         return null;
-    }
+    };
     var get_q_favorites = function(id) {
-        if ("quality" in favoritesList[id] == false) {
+        if ("quality" in favoritesList[id] === false) {
             return '?';
         }
         return favoritesList[id]['quality'];
-    }
+    };
     var make_form = function() {
         var ul = $('div.explore ul.sortable');
         if (ul.children('li').length > 0) {
@@ -902,15 +903,15 @@ var explore = function() {
              }
              */
             ul.append('<li class="' + key + '"></li>');
-            if (key == 'favorites') {
+            if (key === 'favorites') {
                 show_favorites();
             } else
-            if (content_sourse[key].page_e == true && content_sourse[key].page_zero != null && content_sourse[key].page_max != null) {
+            if (content_sourse[key].page_e === true && content_sourse[key].page_zero !== undefined && content_sourse[key].page_max !== undefined) {
                 var zero = content_sourse[key].page_zero;
                 var max = content_sourse[key].page_max;
                 var count = 1;
                 for (var n = zero; n <= max; n++)
-                    count++
+                    count++;
                 for (var n = zero; n <= max; n++)
                     load_exp_content(key, content_sourse[key].url, [zero, n, max, count]);
             } else {
@@ -947,15 +948,15 @@ var explore = function() {
         $('div.explore > ul.sortable > li').on('mouseenter', 'div > div.pager > div.item', function() {
             var page = $(this).text();
             var sect = $(this).parents().eq(3).attr('class');
-            if ($('li.' + sect).children('div').children('div').attr('data-page') == page)
+            if ($('li.' + sect).children('div').children('div').attr('data-page') === page)
                 return;
 
             var main_div = $(this).parents().eq(1);
-            if (main_div.css('min-height') != null) {
+            if (main_div.css('min-height') !== undefined) {
                 if (main_div.height() > main_div.css('min-height').replace('px', ''))
                     main_div.css('min-height', main_div.height() + 'px');
             } else {
-                main_div.css('min-height', $(this).parents().eq(1).height() + 'px')
+                main_div.css('min-height', $(this).parents().eq(1).height() + 'px');
             }
 
             $('li.' + sect).children('div').children('div').attr('data-page', page);
@@ -967,7 +968,7 @@ var explore = function() {
         //настройки
         $('div.explore > ul.sortable > li').on('click', 'div > h2 > div.setup', function() {
             var t = $(this).parent().children('div.setup_div');
-            if (t.length != 0) {
+            if (t.length !== 0) {
                 t.hide('fast', function() {
                     t.remove();
                 });
@@ -1056,18 +1057,18 @@ var explore = function() {
                 id = $(this).parent().parent().attr("data-id");
                 db = get_tr_favorites(id, section);
             }
-            if (ct != null) {
+            if (ct !== null) {
                 pos = ct.offset();
             }
-            if (pos == null || pos.left == 0 || db == null || (db.constructor === Array && db.length === 0)) {
+            if (pos === null || pos.left === 0 || db === null || (db.constructor === Array && db.length === 0)) {
                 info_popup.css("display", "none");
-                if (last_qbox.obj != null) {
+                if (last_qbox.obj !== null) {
                     last_qbox.obj.css("display", "");
                     last_qbox.obj = null;
                 }
                 return;
             }
-            if (last_qbox.obj != null && id != last_qbox.id && info_popup.is(":visible")) {
+            if (last_qbox.obj !== null && id !== last_qbox.id && info_popup.is(":visible")) {
                 last_qbox.obj.css("display", "");
             }
             if (db.constructor !== Array) {
@@ -1099,19 +1100,19 @@ var explore = function() {
             if (event.pageY < last_qbox.top + $(this).height()) {
                 info_popup.hide();
             } else {
-                if (last_qbox.obj != null) {
+                if (last_qbox.obj !== null) {
                     last_qbox.obj.css("display", "block");
                 }
             }
         });
         info_popup.on('mouseleave', function(event) {
             info_popup.css('display', 'none');
-            if (last_qbox.obj != null) {
+            if (last_qbox.obj !== null) {
                 last_qbox.obj.css("display", "");
                 last_qbox.obj = null;
             }
         });
-    }
+    };
     var render_top = function(arr) {
         setTimeout(function() {
             var max = 0;
@@ -1126,24 +1127,24 @@ var explore = function() {
 
             $('div.explore div.top_search div.tags').jQCloud(arr);
         }, 50);
-    }
+    };
     var get_search_top = function() {
         var timeout = 86400;
         var time = Math.round(new Date().getTime() / 1000);
-        if (topCache != null && topCache.keywords != null && topCache.timeout > time) {
+        if (topCache !== null && topCache.keywords !== undefined && topCache.timeout > time) {
             render_top(topCache.keywords);
             return;
         }
         var type = "search_top";
         var url = "http://antoshka.on.ufanet.ru/top.json";
-        if (xhr[type] != null) {
+        if (xhr[type] !== undefined) {
             xhr[type].abort();
         }
         xhr[type] = $.ajax({
             url: url,
             cache: false,
             success: function(data) {
-                if (typeof(data) != "object") {
+                if (typeof(data) !== "object") {
                     data = jQuery.parseJSON(data);
                 }
                 data['timeout'] = time + timeout;
@@ -1152,7 +1153,7 @@ var explore = function() {
                 render_top(kw_arr);
             },
             error: function() {
-                if (topCache != null && topCache.keywords != null) {
+                if (topCache !== null && topCache.keywords !== undefined) {
                     render_top(topCache.keywords);
                 } else {
                     $('div.top_search').css('display', 'none');
@@ -1228,9 +1229,9 @@ var explore = function() {
             }
             titles.eq(i).parent().attr('class', 'title ' + move_name);
         }
-    }
+    };
     var make_setup_view = function(obj) {
-        var i_line = $(obj).attr('data-i_line');
+        var i_line = parseFloat($(obj).attr('data-i_line'));
         var size = $(obj).attr('data-size');
         var section = $(obj).parents().eq(2).attr('class');
         var def_size = content_sourse[section].size;
@@ -1275,7 +1276,7 @@ var explore = function() {
             var t = $(this).parents().eq(2).children('div').children('div.poster');
             var sect = $(this).parents().eq(3).attr('class');
             var defoult_size = content_sourse[sect].size;
-            if (listOptions_def[sect] != null && listOptions_def[sect].size != null && listOptions_def[sect].size > 0)
+            if (listOptions_def[sect] !== undefined && listOptions_def[sect].size !== undefined && listOptions_def[sect].size > 0)
                 defoult_size = listOptions_def[sect].size;
             var margin_size = get_poster_margin_size(sect, defoult_size);
             t.css({
@@ -1295,19 +1296,19 @@ var explore = function() {
         }).appendTo(t);
         var optns = '';
         for (var i = 1; i < 7; i++)
-            optns += '<option value="' + i + '"' + ((i == i_line) ? ' selected' : '') + '>' + i + '</option>';
+            optns += '<option value="' + i + '"' + ((i === i_line) ? ' selected' : '') + '>' + i + '</option>';
         $('<div class="count"><select>' + optns + '</select></div>').children().change(function() {
             var sect = $(this).parents().eq(3).attr('class');
             $(this).parents().eq(2).children('div.setup').attr('data-i_line', $(this).val());
             set_view_i_line(sect, $(this).val());
             var main_div = $(this).parents().eq(3).children('div');
             main_div.css('min-height', '0px');
-            main_div.html(write_page(sect, null));
+            main_div.html(write_page(sect));
             var size = get_view_size(sect);
             calculate_moveble(sect, size);
         }).parent().appendTo(t);
         return t;
-    }
+    };
     var get_font_size = function(w) {
         if (w > 105) {
             return 0.857;
@@ -1321,7 +1322,7 @@ var explore = function() {
         else {
             return 0;
         }
-    }
+    };
     var get_poster_margin_size = function(section, w) {
         var max_w = content_sourse[section].size;
         var max_m = content_sourse[section].margin;
@@ -1338,16 +1339,16 @@ var explore = function() {
             max_m -= 4;
         var size = Math.round((max_m * w) / max_w);
         return size;
-    }
+    };
     var setQuality = function(obj, year) {
         var s_year = year;
         var max_c = 0;
         var cat = -1;
         var qbox = $('li.' + obj.section + ' > div.' + obj.section + ' > div').children('div[data-id=' + obj.id + ']').find('div.quality_box');
-        if (obj == null || obj.year == null) {
+        if (obj === undefined || obj.year === undefined) {
             qbox.removeClass('loading');
             qbox.text('-');
-            if (obj.id != null && obj.section == 'favorites') {
+            if (obj.id !== undefined && obj.section === 'favorites') {
                 update_q_favorites(obj.id, '-', []);
             }
             qbox.trigger("mouseenter", []);
@@ -1378,7 +1379,7 @@ var explore = function() {
             }
         }
         if (s_year) {
-            if (s_year in obj.year == false) {
+            if (s_year in obj.year === false) {
                 s_year = null;
             } else {
                 $.each(obj.year[s_year], function(a) {
@@ -1389,7 +1390,7 @@ var explore = function() {
                 });
             }
         }
-        if (s_year == null) {
+        if (s_year === null) {
             max_c = 0;
             $.each(obj.cat_c, function(a, b) {
                 if (max_c < b) {
@@ -1407,11 +1408,11 @@ var explore = function() {
                 "name": obj.year[s_year][cat].name + ', ' + obj.year[s_year][cat].size
             }];
         var l2y = get_last_2year();
-        var lim = 5
+        var lim = 5;
         for (var i = l2y.length - 1; i >= 0; i--) {
-            v_y = l2y[i]
+            v_y = l2y[i];
             $.each(obj.year[v_y], function(k, v) {
-                if (v.link == obj.year[s_year][cat].link) {
+                if (v.link === obj.year[s_year][cat].link) {
                     return true;
                 }
                 if (lim === 1) {
@@ -1446,7 +1447,7 @@ var explore = function() {
         ab_panel.empty();
         var url = 'https://www.google.com/search?q=' + keyword;
         var type = "about";
-        if (xhr[type] !== null)
+        if (xhr[type] !== undefined)
             xhr[type].abort();
         xhr[type] = $.ajax({
             type: 'GET',
@@ -1479,10 +1480,10 @@ $(window).on('resize', function() {
     explore.update_poster_count();
 });
 
-if (GetSettings('allow_favorites_sync') == 1 && navigator.userAgent.search(/Chrome/) !== -1 && typeof(chrome) !== "undefined") {
+if (parseFloat(GetSettings('allow_favorites_sync')) === 1 && navigator.userAgent.search(/Chrome/) !== -1 && typeof(chrome) !== "undefined") {
     chrome.storage.onChanged.addListener(function(changes, namespace) {
         for (key in changes) {
-            if (key == "favoritesList") {
+            if (key === "favoritesList") {
                 explore.updFav(changes[key].newValue);
             }
         }

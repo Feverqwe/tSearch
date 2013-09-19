@@ -9,7 +9,7 @@ var bg = function() {
                 });
             });
         }
-    }
+    };
     var update_context_menu = function() {
         var context_menu = (GetSettings('context_menu') !== undefined) ? parseInt(GetSettings('context_menu')) : true;
         chrome.contextMenus.removeAll(function() {
@@ -28,7 +28,7 @@ var bg = function() {
                 });
             }
         });
-    }
+    };
     return {
         add_in_omnibox: function() {
             return add_in_omnibox();
@@ -36,7 +36,7 @@ var bg = function() {
         update_context_menu: function() {
             return update_context_menu();
         }
-    }
+    };
 }();
 bg.add_in_omnibox();
 bg.update_context_menu();

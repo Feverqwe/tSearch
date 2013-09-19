@@ -18,6 +18,6 @@ if (!google_analytics) {
             push : function (a) {
                 return 1;
             }
-        }
+        };
     }();
 }
