@@ -264,7 +264,7 @@ var magic = function() {
             if ($('input[name=month_replace]').prop('checked')) {
                 code['t_m_r'] = 1;
             }
-            if ($('select[name=date_format]').val() != -1) {
+            if ($('select[name=date_format]').val() !== '-1') {
                 code['t_f'] = $('select[name=date_format]').val();
             }
         }
@@ -325,25 +325,25 @@ var magic = function() {
     };
     var bytesToSize = function(bytes, nan) {
         var sizes = _lang['size_list'];
-        if (nan == null)
+        if (nan === undefined)
             nan = 'n/a';
-        if (bytes == 0)
+        if (bytes <= 0)
             return nan;
         var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-        if (i == 0) {
+        if (i === 0) {
             return (bytes / Math.pow(1024, i)) + ' ' + sizes[i];
         }
         return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
-    }
+    };
     var format_date = function(f, t) {
-        if (f == null) {
-            return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago']
+        if (f === undefined) {
+            return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago'];
         }
         f = parseInt(f);
-        if (f == 0 || f == '2013-04-31[[[ 07]:03]:27]') {
+        if (f === 0) { // || f === '2013-04-31[[[ 07]:03]:27]') {
             var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
             for (var i = 0; i < 6; i++) {
-                if (dd[i] == null) {
+                if (dd[i] === undefined) {
                     dd[i] = 0;
                 }
             }
@@ -355,10 +355,10 @@ var magic = function() {
             }
             return Math.round((new Date(parseInt(dd[0]), parseInt(dd[1]) - 1, parseInt(dd[2]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
         }
-        if (f == 1 || f == '31-04-2013[[[ 07]:03]:27]') {
+        if (f === 1) { //  || f === '31-04-2013[[[ 07]:03]:27]') {
             var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
             for (var i = 0; i < 6; i++) {
-                if (dd[i] == null) {
+                if (dd[i] === undefined) {
                     dd[i] = 0;
                 }
             }
@@ -370,11 +370,11 @@ var magic = function() {
             }
             return Math.round((new Date(parseInt(dd[2]), parseInt(dd[1]) - 1, parseInt(dd[0]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
         }
-        if (f == 2 || f == 'n day ago') {
+        if (f === 2) { //  || f === 'n day ago') {
             var old = parseFloat(t.replace(/[^0-9.]/g, '')) * 24 * 60 * 60;
             return Math.round((new Date()).getTime() / 1000) - old;
         }
-    }
+    };
     function month_replace(t) {
         return t.replace(/янв/i, '1').replace(/фев/i, '2').replace(/мар/i, '3')
                 .replace(/апр/i, '4').replace(/мая/i, '5').replace(/июн/i, '6')
@@ -395,19 +395,19 @@ var magic = function() {
                 Acode -= 848;
                 ExitValue = "%" + Acode.toString(16);
             }
-            else if (Ucode == 1025) {
+            else if (Ucode === 1025) {
                 Acode = 168;
                 ExitValue = "%" + Acode.toString(16);
             }
-            else if (Ucode == 1105) {
+            else if (Ucode === 1105) {
                 Acode = 184;
                 ExitValue = "%" + Acode.toString(16);
             }
-            else if (Ucode == 32) {
+            else if (Ucode === 32) {
                 Acode = 32;
                 ExitValue = "%" + Acode.toString(16);
             }
-            else if (Ucode == 10) {
+            else if (Ucode === 10) {
                 Acode = 10;
                 ExitValue = "%0A";
             }
@@ -425,24 +425,24 @@ var magic = function() {
         var repl_m = $('input[name=month_replace]').prop('checked');
         var f_v = $('select[name=date_format]').val();
         if (reg_v.length > 0) {
-            mtime = mtime.replace(new RegExp(reg_v, "ig"), onrepl)
+            mtime = mtime.replace(new RegExp(reg_v, "ig"), onrepl);
         }
         if (repl_m) {
             mtime = month_replace(mtime);
         }
-        if (f_v != -1) {
+        if (f_v !== "-1") {
             mtime = format_date(f_v, mtime);
         }
         $('input[name=converted_time]').val(mtime);
         $('input[name=result_time]').val((new Date(mtime * 1000)));
     };
     var filter_size = function() {
-        var type = "size"
+        var type = "size";
         var size = $('input[name=original_size]').val();
         var reg_v = $('input[name=' + type + '_regexp]').val();
         var onrepl = $('input[name=' + type + '_regexp_repl]').val();
         if (reg_v.length > 0) {
-            size = size.replace(new RegExp(reg_v, "ig"), onrepl)
+            size = size.replace(new RegExp(reg_v, "ig"), onrepl);
         }
         if ($('input[name=convert_size]').prop('checked')) {
             size = format_size(size);
@@ -451,23 +451,23 @@ var magic = function() {
         $('input[name=result_size]').val(bytesToSize(size));
     };
     var filter_seed = function() {
-        var type = "seed"
+        var type = "seed";
         var reg_v = $('input[name=' + type + '_regexp]').val();
         var ostr = $('input[name=original_' + type + ']').val();
         var onrepl = $('input[name=' + type + '_regexp_repl]').val();
         if (reg_v.length > 0) {
-            ostr = ostr.replace(new RegExp(reg_v, "ig"), onrepl)
+            ostr = ostr.replace(new RegExp(reg_v, "ig"), onrepl);
         }
         $('input[name=converted_' + type + ']').val(ostr);
         $('input[name=result_' + type + ']').val(ostr);
     };
     var filter_peer = function() {
-        var type = "peer"
+        var type = "peer";
         var reg_v = $('input[name=' + type + '_regexp]').val();
         var ostr = $('input[name=original_' + type + ']').val();
         var onrepl = $('input[name=' + type + '_regexp_repl]').val();
         if (reg_v.length > 0) {
-            ostr = ostr.replace(new RegExp(reg_v, "ig"), onrepl)
+            ostr = ostr.replace(new RegExp(reg_v, "ig"), onrepl);
         }
         $('input[name=converted_' + type + ']').val(ostr);
         $('input[name=result_' + type + ']').val(ostr);
@@ -481,13 +481,13 @@ var magic = function() {
         $('select[name="language"]').val(language);
         $.each(lang, function(k, v) {
             var el = $('[data-lang=' + k + ']');
-            if (el.length == 0)
+            if (el.length === 0)
                 return true;
             var t = el.prop("tagName");
-            if (t == "A" || t == "LEGEND" || t == "SPAN" || t == "LI" || t == "TH") {
+            if (t === "A" || t === "LEGEND" || t === "SPAN" || t === "LI" || t === "TH") {
                 el.text(v);
             } else
-            if (t == "INPUT") {
+            if (t === "INPUT") {
                 el.val(v);
             } else
                 console.log(t);
@@ -565,7 +565,7 @@ var magic = function() {
             });
             $('input[name=auth_form]').on('keyup', function() {
                 var ifr = $($('iframe')[0].contentDocument);
-                if (ifr.find($(this).val()).length == 0) {
+                if (ifr.find($(this).val()).length === 0) {
                     $(this).addClass('error');
                 } else {
                     $(this).removeClass('error');
@@ -583,7 +583,7 @@ var magic = function() {
                         inp.addClass('error');
                     } else {
                         inp.removeClass('error');
-                        if (t == 'n') {
+                        if (t === 'n') {
                             val = obj.eq(0).text();
                             txt.val(val);
                             if (!isNumber(val)) {
@@ -592,10 +592,10 @@ var magic = function() {
                                 txt.removeClass('error');
                             }
                         } else
-                        if (t == 'l') {
+                        if (t === 'l') {
                             $('input[name=' + out + ']').val(obj.eq(0).attr('href'));
                         } else {
-                            if (out == "category_name_text" && $('input[name=category_alt_name]').prop('checked')) {
+                            if (out === "category_name_text" && $('input[name=category_alt_name]').prop('checked')) {
                                 $('input[name=' + out + ']').val(obj.attr("alt"));
                             } else {
                                 $('input[name=' + out + ']').val(obj.eq(0).text());
@@ -642,7 +642,7 @@ var magic = function() {
                     }
                     var val = '';
                     inp.val(path);
-                    if (t == 'n') {
+                    if (t === 'n') {
                         var val = obj.text();
                         txt.val(val);
                         if (!isNumber(val)) {
@@ -651,10 +651,10 @@ var magic = function() {
                             txt.removeClass('error');
                         }
                     } else
-                    if (t == 'l') {
+                    if (t === 'l') {
                         txt.val(obj.attr('href'));
                     } else {
-                        if (otext == "category_name_text" && $('input[name=category_alt_name]').prop('checked')) {
+                        if (otext === "category_name_text" && $('input[name=category_alt_name]').prop('checked')) {
                             txt.val(obj.attr("alt"));
                         } else {
                             txt.val(obj.text());
@@ -664,7 +664,7 @@ var magic = function() {
                 sel_function = function(obj) {
                     select_mode = false;
                     ifr.find('.kit_select').removeClass('kit_select');
-                    if (t == 'n') {
+                    if (t === 'n') {
                         var val = obj.text();
                         if (otext === 'peer_count_text') {
                             $('input[name=original_peer]').val(val);

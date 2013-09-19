@@ -777,7 +777,7 @@ var ex_kit = function() {
             return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago'];
         }
         f = parseInt(f);
-        if (f === 0 || f === '2013-04-31[[[ 07]:03]:27]') {
+        if (f === 0) { // || f === '2013-04-31[[[ 07]:03]:27]') {
             var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
             for (var i = 0; i < 6; i++) {
                 if (dd[i] === undefined) {
@@ -792,7 +792,7 @@ var ex_kit = function() {
             }
             return Math.round((new Date(parseInt(dd[0]), parseInt(dd[1]) - 1, parseInt(dd[2]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
         }
-        if (f === 1 || f === '31-04-2013[[[ 07]:03]:27]') {
+        if (f === 1) { //  || f === '31-04-2013[[[ 07]:03]:27]') {
             var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
             for (var i = 0; i < 6; i++) {
                 if (dd[i] === undefined) {
@@ -807,7 +807,7 @@ var ex_kit = function() {
             }
             return Math.round((new Date(parseInt(dd[2]), parseInt(dd[1]) - 1, parseInt(dd[0]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
         }
-        if (f === 2 || f === 'n day ago') {
+        if (f === 2) { //  || f === 'n day ago') {
             var old = parseFloat(t.replace(/[^0-9.]/g, '')) * 24 * 60 * 60;
             return Math.round((new Date()).getTime() / 1000) - old;
         }
