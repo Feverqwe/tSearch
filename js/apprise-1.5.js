@@ -9,13 +9,13 @@ function apprise(string, args, callback)
         'textCancel': 'Cancel',
         'textYes': 'Yes',
         'textNo': 'No'
-    }
+    };
     if (args)
     {
         for (var index in default_args)
 
         {
-            if (typeof args[index] == "undefined")
+            if (args[index] === undefined)
                 args[index] = default_args[index];
         }
     }
@@ -25,7 +25,7 @@ function apprise(string, args, callback)
     $('.appriseOverlay').css('height', aHeight).css('width', aWidth).fadeIn(100);
     $('body').append('<div class="appriseOuter"></div>');
     $('.appriseOuter').append('<div class="appriseInner"></div>');
-    if (typeof(string) != 'object') {
+    if (typeof(string) !== 'object') {
         $('.appriseInner').append(string);
     }
     $('.appriseOuter').css("left", ($(window).width() - $('.appriseOuter').width()) / 2 + $(window).scrollLeft() + "px");
@@ -55,13 +55,13 @@ function apprise(string, args, callback)
     {
         if (args['input'])
         {
-            if (typeof(args['input']) == 'string')
+            if (typeof(args['input']) === 'string')
             {
                 $('.appriseInner').append('<div class="aInput"><input type="text" class="aTextbox" t="aTextbox" value="' + args['input'] + '" /></div>');
                 $('.aTextbox').focus();
             }
             else
-            if (typeof(args['input']) == 'object')
+            if (typeof(args['input']) === 'object')
             {
                 for (var i = 0; i < args['input'].length; i++) {
                     $('.appriseInner').append(string[i]);
@@ -103,18 +103,18 @@ function apprise(string, args, callback)
         if ($('.appriseOverlay').is(':visible'))
 
         {
-            if (e.keyCode == 13)
+            if (e.keyCode === 13)
 
             {
                 $('.aButtons > button[value="ok"]').trigger('click');
             }
-            if (e.keyCode == 27)
+            if (e.keyCode === 27)
             {
                 $('.aButtons > button[value="cancel"]').trigger('click');
             }
         }
     });
-    if (args['input'] && typeof(args['input']) != 'object') {
+    if (args['input'] && typeof(args['input']) !== 'object') {
         var aText = $('.aTextbox').val();
         if (!aText) {
             aText = false;
@@ -126,8 +126,8 @@ function apprise(string, args, callback)
     }
     $('.aButtons > button').on('click', function()
     {
-        if (args['input'] && typeof(args['input']) == 'object') {
-            var arr = []
+        if (args['input'] && typeof(args['input']) === 'object') {
+            var arr = [];
             for (var i = 0; i < args['input'].length; i++) {
                 arr.push($('.aTextbox' + '.num_' + i).val());
             }
@@ -137,19 +137,19 @@ function apprise(string, args, callback)
         if (callback)
         {
             var wButton = $(this).attr("value");
-            if (wButton == 'ok')
+            if (wButton === 'ok')
             {
                 if (args)
                 {
-                    if (args['input'] && typeof(args['input']) == 'object') {
-                        if (args['id'] != null)
+                    if (args['input'] && typeof(args['input']) === 'object') {
+                        if (args['id'] !== undefined)
                             callback(args['id'], arr);
                         else
                             callback(arr);
                     } else
                     if (args['input'])
                     {
-                        if (args['id'] != null)
+                        if (args['id'] !== undefined)
                             callback(args['id'], aText);
                         else
                             callback(aText);
@@ -164,7 +164,7 @@ function apprise(string, args, callback)
                     callback(true);
                 }
             }
-            else if (wButton == 'cancel')
+            else if (wButton === 'cancel')
             {
                 callback(false);
             }

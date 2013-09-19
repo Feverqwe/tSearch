@@ -69,7 +69,7 @@ var magic = function() {
             $('input[name=category_name]').val(code['cat_name']);
             $('input[name=category_name]').parents().eq(1).find('input[name=status]').prop('checked', 1);
             if ('cat_alt' in code) {
-                $('input[name=category_alt_name]').prop('checked',1)
+                $('input[name=category_alt_name]').prop('checked', 1)
             }
         }
         if ('cat_link' in code) {
@@ -339,6 +339,7 @@ var magic = function() {
         if (f == null) {
             return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago']
         }
+        f = parseInt(f);
         if (f == 0 || f == '2013-04-31[[[ 07]:03]:27]') {
             var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
             for (var i = 0; i < 6; i++) {
