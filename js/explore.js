@@ -809,7 +809,7 @@ var explore = function() {
             var new_obj = {};
             var num = 0;
             $.each(favoritesDeskList, function(k, v) {
-                if (k == id) { //int or str?
+                if (String(k) === String(id)) {
                     return 1;
                 }
                 new_obj[num] = v;
@@ -1447,7 +1447,7 @@ var explore = function() {
         ab_panel.empty();
         var url = 'https://www.google.com/search?q=' + keyword;
         var type = "about";
-        if (xhr[type] !== null)
+        if (xhr[type] !== undefined)
             xhr[type].abort();
         xhr[type] = $.ajax({
             type: 'GET',
