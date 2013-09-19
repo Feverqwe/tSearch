@@ -546,7 +546,7 @@ var get_lang = function(lang) {
     if (!lang) {
         lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
     }
-    if (lang === 'ru') {
+    if (lang == 'ru') {
         return lang_arr_ru;
     } else {
         return lang_arr_en;
@@ -554,7 +554,7 @@ var get_lang = function(lang) {
 };
 var _lang = get_lang();
 window.onload = function() {
-    if ("options" in window === false) {
+    if ("options" in window == false) {
         get_lang = null;
     }
-};
+}

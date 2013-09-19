@@ -10,15 +10,15 @@ var magic = function() {
     var contentFilter = function(c) {
         var c = c.replace(/display[: ]*none/img, '#blockdisp#').replace(/ src=(['"]{0,1})/img, ' src=$1#blockrurl#');
         return c;
-    };
+    }
     var isNumber = function(n) {
         return !isNaN(parseFloat(n)) && isFinite(n);
-    };
+    }
     var open_page = function(url) {
-        if (url.length === 0)
+        if (url.length == 0)
             return;
         var iframe = $('iframe');
-        if (xhr !== null)
+        if (xhr != null)
             xhr.abort();
         var post_r = $('input[name=post]').val();
         var search = $('input[name=search_text]').val();
@@ -40,7 +40,7 @@ var magic = function() {
             obj_req['data'] = post_r;
         }
         xhr = $.ajax(obj_req);
-    };
+    }
     var empty_all = function() {
         $('div.page.convert').find('input[type=text]').removeClass('error').val('');
         $('div.page.convert').find('input[type=checkbox]').prop('checked', 0);
@@ -54,14 +54,14 @@ var magic = function() {
         $('div.page.selectors').find('input[type=number]').val(0);
         $('div.page.desk').find('input[type=text]').val('');
         $('div.page.desk').find('input[type=checkbox]').prop('checked', 0);
-    };
+    }
     var load_code = function() {
         empty_all();
         var code = null;
         try {
             code = JSON.parse($('textarea[name=code]').val());
         } catch (e) {
-            alert(_lang.magic[1] + "\n" + e);
+            alert(_lang.magic[1] + "\n" + e)
         }
         if (!code)
             return;
@@ -69,7 +69,7 @@ var magic = function() {
             $('input[name=category_name]').val(code['cat_name']);
             $('input[name=category_name]').parents().eq(1).find('input[name=status]').prop('checked', 1);
             if ('cat_alt' in code) {
-                $('input[name=category_alt_name]').prop('checked', 1);
+                $('input[name=category_alt_name]').prop('checked',1)
             }
         }
         if ('cat_link' in code) {
@@ -182,7 +182,7 @@ var magic = function() {
             }
 
         }
-    };
+    }
     var make_code = function() {
         var code = {
             'version': 1,
@@ -200,8 +200,8 @@ var magic = function() {
                 l: ($('input[name=rus]').prop('checked')) ? 1 : 0,
                 rs: ($('input[name=cirilic]').prop('checked')) ? 1 : 0
             }
-        };
-        if (typeof(code.icon) !== 'string' || code.icon.length === 0) {
+        }
+        if (typeof(code.icon) != 'string' || code.icon.length == 0) {
             code.icon = '#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
         }
         if ($('input[name=post]').val().length > 0) {
@@ -217,7 +217,7 @@ var magic = function() {
             }
         }
         if ($('input[name=category_link]').parents().eq(1).find('input[name=status]').prop('checked')) {
-            code['cat_link'] = $('input[name=category_link]').val();
+            code['cat_link'] = $('input[name=category_link]').val()
             if ($('input[name=category_link_base_path]').prop('checked')) {
                 code['cat_link_r'] = 1;
             }
@@ -264,7 +264,7 @@ var magic = function() {
             if ($('input[name=month_replace]').prop('checked')) {
                 code['t_m_r'] = 1;
             }
-            if ($('select[name=date_format]').val() !== '-1') {
+            if ($('select[name=date_format]').val() != -1) {
                 code['t_f'] = $('select[name=date_format]').val();
             }
         }
@@ -282,10 +282,10 @@ var magic = function() {
         }
         code['uid'] = hashCode(JSON.stringify(code));
         $('textarea[name=code]').val(JSON.stringify(code));
-    };
+    }
     var hashCode = function(s) {
         var hash = 0, i, char_;
-        if (s.length === 0)
+        if (s.length == 0)
             return hash;
         for (i = 0; i < s.length; i++) {
             char_ = s.charCodeAt(i);
@@ -298,52 +298,51 @@ var magic = function() {
         var path = obj.getPath(ifr);
         status_bar.text(path);
         return path;
-    };
+    }
     var format_size = function(s) {
         var size = s.replace(/[^0-9.,кбмгтkmgtb]/ig, '').replace(',', '.');
         var t = size.replace(/кб|kb/i, '');
-        if (t.length !== size.length) {
+        if (t.length != size.length) {
             t = parseFloat(t);
             return Math.round(t * 1024);
         }
         var t = size.replace(/мб|mb/i, '');
-        if (t.length !== size.length) {
+        if (t.length != size.length) {
             t = parseFloat(t);
             return Math.round(t * 1024 * 1024);
         }
         var t = size.replace(/гб|gb/i, '');
-        if (t.length !== size.length) {
+        if (t.length != size.length) {
             t = parseFloat(t);
             return Math.round(t * 1024 * 1024 * 1024);
         }
         var t = size.replace(/тб|tb/i, '');
-        if (t.length !== size.length) {
+        if (t.length != size.length) {
             t = parseFloat(t);
             return Math.round(t * 1024 * 1024 * 1024 * 1024);
         }
         return 0;
-    };
+    }
     var bytesToSize = function(bytes, nan) {
         var sizes = _lang['size_list'];
-        if (nan === undefined)
+        if (nan == null)
             nan = 'n/a';
-        if (bytes <= 0)
+        if (bytes == 0)
             return nan;
         var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-        if (i === 0) {
+        if (i == 0) {
             return (bytes / Math.pow(1024, i)) + ' ' + sizes[i];
         }
         return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
-    };
+    }
     var format_date = function(f, t) {
-        if (f === undefined) {
-            return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago'];
+        if (f == null) {
+            return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago']
         }
-        f = parseInt(f);
-        if (f === 0) { // || f === '2013-04-31[[[ 07]:03]:27]') {
+        if (f == 0 || f == '2013-04-31[[[ 07]:03]:27]') {
             var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
             for (var i = 0; i < 6; i++) {
-                if (dd[i] === undefined) {
+                if (dd[i] == null) {
                     dd[i] = 0;
                 }
             }
@@ -355,10 +354,10 @@ var magic = function() {
             }
             return Math.round((new Date(parseInt(dd[0]), parseInt(dd[1]) - 1, parseInt(dd[2]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
         }
-        if (f === 1) { //  || f === '31-04-2013[[[ 07]:03]:27]') {
+        if (f == 1 || f == '31-04-2013[[[ 07]:03]:27]') {
             var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
             for (var i = 0; i < 6; i++) {
-                if (dd[i] === undefined) {
+                if (dd[i] == null) {
                     dd[i] = 0;
                 }
             }
@@ -370,11 +369,11 @@ var magic = function() {
             }
             return Math.round((new Date(parseInt(dd[2]), parseInt(dd[1]) - 1, parseInt(dd[0]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
         }
-        if (f === 2) { //  || f === 'n day ago') {
+        if (f == 2 || f == 'n day ago') {
             var old = parseFloat(t.replace(/[^0-9.]/g, '')) * 24 * 60 * 60;
             return Math.round((new Date()).getTime() / 1000) - old;
         }
-    };
+    }
     function month_replace(t) {
         return t.replace(/янв/i, '1').replace(/фев/i, '2').replace(/мар/i, '3')
                 .replace(/апр/i, '4').replace(/мая/i, '5').replace(/июн/i, '6')
@@ -395,19 +394,19 @@ var magic = function() {
                 Acode -= 848;
                 ExitValue = "%" + Acode.toString(16);
             }
-            else if (Ucode === 1025) {
+            else if (Ucode == 1025) {
                 Acode = 168;
                 ExitValue = "%" + Acode.toString(16);
             }
-            else if (Ucode === 1105) {
+            else if (Ucode == 1105) {
                 Acode = 184;
                 ExitValue = "%" + Acode.toString(16);
             }
-            else if (Ucode === 32) {
+            else if (Ucode == 32) {
                 Acode = 32;
                 ExitValue = "%" + Acode.toString(16);
             }
-            else if (Ucode === 10) {
+            else if (Ucode == 10) {
                 Acode = 10;
                 ExitValue = "%0A";
             }
@@ -417,7 +416,7 @@ var magic = function() {
             text = text + ExitValue;
         }
         return text;
-    };
+    }
     var filter_date = function() {
         var reg_v = $('input[name=time_regexp]').val();
         var mtime = $('input[name=original_time]').val();
@@ -425,53 +424,53 @@ var magic = function() {
         var repl_m = $('input[name=month_replace]').prop('checked');
         var f_v = $('select[name=date_format]').val();
         if (reg_v.length > 0) {
-            mtime = mtime.replace(new RegExp(reg_v, "ig"), onrepl);
+            mtime = mtime.replace(new RegExp(reg_v, "ig"), onrepl)
         }
         if (repl_m) {
             mtime = month_replace(mtime);
         }
-        if (f_v !== "-1") {
+        if (f_v != -1) {
             mtime = format_date(f_v, mtime);
         }
         $('input[name=converted_time]').val(mtime);
         $('input[name=result_time]').val((new Date(mtime * 1000)));
-    };
+    }
     var filter_size = function() {
-        var type = "size";
+        var type = "size"
         var size = $('input[name=original_size]').val();
         var reg_v = $('input[name=' + type + '_regexp]').val();
         var onrepl = $('input[name=' + type + '_regexp_repl]').val();
         if (reg_v.length > 0) {
-            size = size.replace(new RegExp(reg_v, "ig"), onrepl);
+            size = size.replace(new RegExp(reg_v, "ig"), onrepl)
         }
         if ($('input[name=convert_size]').prop('checked')) {
             size = format_size(size);
         }
         $('input[name=converted_size]').val(size);
         $('input[name=result_size]').val(bytesToSize(size));
-    };
+    }
     var filter_seed = function() {
-        var type = "seed";
+        var type = "seed"
         var reg_v = $('input[name=' + type + '_regexp]').val();
         var ostr = $('input[name=original_' + type + ']').val();
         var onrepl = $('input[name=' + type + '_regexp_repl]').val();
         if (reg_v.length > 0) {
-            ostr = ostr.replace(new RegExp(reg_v, "ig"), onrepl);
+            ostr = ostr.replace(new RegExp(reg_v, "ig"), onrepl)
         }
         $('input[name=converted_' + type + ']').val(ostr);
         $('input[name=result_' + type + ']').val(ostr);
-    };
+    }
     var filter_peer = function() {
-        var type = "peer";
+        var type = "peer"
         var reg_v = $('input[name=' + type + '_regexp]').val();
         var ostr = $('input[name=original_' + type + ']').val();
         var onrepl = $('input[name=' + type + '_regexp_repl]').val();
         if (reg_v.length > 0) {
-            ostr = ostr.replace(new RegExp(reg_v, "ig"), onrepl);
+            ostr = ostr.replace(new RegExp(reg_v, "ig"), onrepl)
         }
         $('input[name=converted_' + type + ']').val(ostr);
         $('input[name=result_' + type + ']').val(ostr);
-    };
+    }
     var write_language = function(language) {
         if (!language) {
             language = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
@@ -481,13 +480,13 @@ var magic = function() {
         $('select[name="language"]').val(language);
         $.each(lang, function(k, v) {
             var el = $('[data-lang=' + k + ']');
-            if (el.length === 0)
+            if (el.length == 0)
                 return true;
             var t = el.prop("tagName");
-            if (t === "A" || t === "LEGEND" || t === "SPAN" || t === "LI" || t === "TH") {
+            if (t == "A" || t == "LEGEND" || t == "SPAN" || t == "LI" || t == "TH") {
                 el.text(v);
             } else
-            if (t === "INPUT") {
+            if (t == "INPUT") {
                 el.val(v);
             } else
                 console.log(t);
@@ -535,15 +534,15 @@ var magic = function() {
                     } else {
                         inp.val(obj_in_path(obj, ifr));
                     }
-                };
+                }
                 sel_function = function(obj) {
                     select_mode = false;
                     ifr.find('.kit_select').removeClass('kit_select');
-                };
+                }
             });
             $('input[name=item]').on('keyup', function() {
                 var ifr = $($('iframe')[0].contentDocument);
-                if (ifr.find($(this).val()).length === 0) {
+                if (ifr.find($(this).val()).length == 0) {
                     $(this).addClass('error');
                 } else {
                     $(this).removeClass('error');
@@ -557,15 +556,15 @@ var magic = function() {
                 inp.removeClass('error');
                 hov_function = function(obj) {
                     inp.val(obj_in_path(obj, ifr));
-                };
+                }
                 sel_function = function(obj) {
                     select_mode = false;
                     ifr.find('.kit_select').removeClass('kit_select');
-                };
+                }
             });
             $('input[name=auth_form]').on('keyup', function() {
                 var ifr = $($('iframe')[0].contentDocument);
-                if (ifr.find($(this).val()).length === 0) {
+                if (ifr.find($(this).val()).length == 0) {
                     $(this).addClass('error');
                 } else {
                     $(this).removeClass('error');
@@ -579,11 +578,11 @@ var magic = function() {
                 try {
                     var obj = pageDOM.find(path);
                     var val = '';
-                    if (obj.length === 0) {
+                    if (obj.length == 0) {
                         inp.addClass('error');
                     } else {
                         inp.removeClass('error');
-                        if (t === 'n') {
+                        if (t == 'n') {
                             val = obj.eq(0).text();
                             txt.val(val);
                             if (!isNumber(val)) {
@@ -592,29 +591,29 @@ var magic = function() {
                                 txt.removeClass('error');
                             }
                         } else
-                        if (t === 'l') {
+                        if (t == 'l') {
                             $('input[name=' + out + ']').val(obj.eq(0).attr('href'));
                         } else {
-                            if (out === "category_name_text" && $('input[name=category_alt_name]').prop('checked')) {
+                            if (out == "category_name_text" && $('input[name=category_alt_name]').prop('checked')) {
                                 $('input[name=' + out + ']').val(obj.attr("alt"));
                             } else {
                                 $('input[name=' + out + ']').val(obj.eq(0).text());
                             }
                         }
                     }
-                    if (out === 'peer_count_text') {
+                    if (out == 'peer_count_text') {
                         $('input[name=original_peer]').val(val);
                         filter_peer();
                     }
-                    if (out === 'seed_count_text') {
+                    if (out == 'seed_count_text') {
                         $('input[name=original_seed]').val(val);
                         filter_seed();
                     }
-                    if (out === 'add_time_text') {
+                    if (out == 'add_time_text') {
                         $('input[name=original_time]').val(val);
                         filter_date();
                     }
-                    if (out === 'torrent_size_text') {
+                    if (out == 'torrent_size_text') {
                         $('input[name=original_size]').val(val);
                         filter_size();
                     }
@@ -632,8 +631,8 @@ var magic = function() {
                 inp.removeClass('error');
                 hov_function = function(obj) {
                     var o_path = obj_in_path(obj, ifr);
-                    var path = o_path.replace(tr, '');
-                    if (path.length !== o_path.length) {
+                    var path = o_path.replace(tr, '')
+                    if (path.length != o_path.length) {
                         path = path.replace(/^[^>]*>(.*)$/, '$1');
                     } else {
                         inp.val('');
@@ -642,7 +641,7 @@ var magic = function() {
                     }
                     var val = '';
                     inp.val(path);
-                    if (t === 'n') {
+                    if (t == 'n') {
                         var val = obj.text();
                         txt.val(val);
                         if (!isNumber(val)) {
@@ -651,43 +650,43 @@ var magic = function() {
                             txt.removeClass('error');
                         }
                     } else
-                    if (t === 'l') {
+                    if (t == 'l') {
                         txt.val(obj.attr('href'));
                     } else {
-                        if (otext === "category_name_text" && $('input[name=category_alt_name]').prop('checked')) {
+                        if (otext == "category_name_text" && $('input[name=category_alt_name]').prop('checked')) {
                             txt.val(obj.attr("alt"));
                         } else {
                             txt.val(obj.text());
                         }
                     }
-                };
+                }
                 sel_function = function(obj) {
                     select_mode = false;
                     ifr.find('.kit_select').removeClass('kit_select');
-                    if (t === 'n') {
+                    if (t == 'n') {
                         var val = obj.text();
-                        if (otext === 'peer_count_text') {
+                        if (otext == 'peer_count_text') {
                             $('input[name=original_peer]').val(val);
                             filter_peer();
                         }
-                        if (otext === 'seed_count_text') {
+                        if (otext == 'seed_count_text') {
                             $('input[name=original_seed]').val(val);
                             filter_seed();
                         }
-                        if (otext === 'add_time_text') {
+                        if (otext == 'add_time_text') {
                             $('input[name=original_time]').val(val);
                             filter_date();
                         }
-                        if (otext === 'torrent_size_text') {
+                        if (otext == 'torrent_size_text') {
                             $('input[name=original_size]').val(val);
                             filter_size();
                         }
                     }
-                };
-            };
+                }
+            }
             //category
             $('input[name=category_name_btn]').on('click', function() {
-                click_text('category_name', 'category_name_text');
+                click_text('category_name', 'category_name_text')
             });
             $('input[name=category_name]').on('keyup', function() {
                 keyup_text($(this), 'category_name_text');
@@ -701,7 +700,7 @@ var magic = function() {
             //<
             //torrent name
             $('input[name=torrent_name_btn]').on('click', function() {
-                click_text('torrent_name', 'torrent_name_text');
+                click_text('torrent_name', 'torrent_name_text')
             });
             $('input[name=torrent_name]').on('keyup', function() {
                 keyup_text($(this), 'torrent_name_text');
@@ -715,7 +714,7 @@ var magic = function() {
             //<
             //torrent size
             $('input[name=torrent_size_btn]').on('click', function() {
-                click_text('torrent_size', 'torrent_size_text', 'n');
+                click_text('torrent_size', 'torrent_size_text', 'n')
             });
             $('input[name=torrent_size]').on('keyup', function() {
                 keyup_text($(this), 'torrent_size_text', 'n');
@@ -731,7 +730,7 @@ var magic = function() {
             //<
             //seed
             $('input[name=seed_count_btn]').on('click', function() {
-                click_text('seed_count', 'seed_count_text', 'n');
+                click_text('seed_count', 'seed_count_text', 'n')
             });
             $('input[name=seed_count]').on('keyup', function() {
                 keyup_text($(this), 'seed_count_text', 'n');
@@ -762,9 +761,9 @@ var magic = function() {
             var formats = format_date();
             var f_sel = $('select[name=date_format]');
             var f_l = formats.length;
-            f_sel.append('<option value="-1">-</option>');
+            f_sel.append('<option value="-1">-</option>')
             for (var n = 0; n < f_l; n++) {
-                f_sel.append('<option value="' + n + '">' + formats[n] + '</option>');
+                f_sel.append('<option value="' + n + '">' + formats[n] + '</option>')
             }
             f_sel.on('change', function() {
                 filter_date();
@@ -810,7 +809,7 @@ var magic = function() {
                 filter_size();
             });
         }
-    };
+    }
 }();
 $(function() {
     magic.begin();
@@ -820,8 +819,8 @@ $(window).on('resize', function() {
 });
 
 jQuery.fn.getPath = function(ifr) {
-    var no_id = ['tr'];
-    if (this.length !== 1)
+    var no_id = ['tr']
+    if (this.length != 1)
         return;
     var path, node = this;
     while (node.length) {
@@ -835,13 +834,13 @@ jQuery.fn.getPath = function(ifr) {
 
                 );
         // on IE8, nodeName is '#document' at the top level, but we don't need that
-        if (!name || name === '#document')
+        if (!name || name == '#document')
             break;
         name = name.toLowerCase();
         var tag = name;
         if (realNode.id) {
             if (ifr) {
-                if ($.inArray(tag, no_id) === -1 && ifr.find(tag + '[id=' + realNode.id + ']').length === 1) {
+                if ($.inArray(tag, no_id) == -1 && ifr.find(tag + '[id=' + realNode.id + ']').length == 1) {
                     return '#' + realNode.id + (path ? '>' + path : '');
                 } else {
                     name += '[id=' + realNode.id + ']';
@@ -851,7 +850,7 @@ jQuery.fn.getPath = function(ifr) {
             }
         } else if (realNode.className) {
             name += ('.' + realNode.className.split(/\s+/).join('.')).replace('.kit_select', '');
-            if (ifr.find(name).length === 1) {
+            if (ifr.find(name).length == 1) {
                 return name + (path ? '>' + path : '');
             }
         }
@@ -864,14 +863,14 @@ jQuery.fn.getPath = function(ifr) {
         } catch (e) {
             name = tag;
         }
-        if (siblings_no_class.length === 1) {
+        if (siblings_no_class.length == 1) {
             name = tag;
         } else {
             if (siblings.length > 1) {
                 name += ':eq(' + siblings.index(node) + ')';
             }
         }
-        if ($.inArray(tag, ['table', 'div']) !== -1 && ifr.find(tag).length === 1) {
+        if ($.inArray(tag, ['table', 'div']) != -1 && ifr.find(tag).length == 1) {
             return name + (path ? '>' + path : '');
         }
         path = name + (path ? '>' + path : '');

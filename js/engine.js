@@ -203,7 +203,7 @@ var engine = function() {
     var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     var defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
     var search = function(text, tracker_id, nohistory) {
-        if (tracker_id !== null) {
+        if (tracker_id != null) {
             try {
                 tracker[tracker_id].find(text);
                 view.loadingStatus(0, tracker_id);
@@ -220,63 +220,62 @@ var engine = function() {
                 }
             });
         }
-        if (nohistory === undefined) {
+        if (nohistory == null)
             updateHistory(text);
-        }
-    };
+    }
     var LimitHistory = function() {
         var removeItem = function(title) {
             var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-            if (search_history !== null) {
+            if (search_history != null) {
                 var count = search_history.length;
                 for (var i = 0; i < count; i++) {
-                    if (search_history[i].title === title) {
+                    if (search_history[i].title == title) {
                         search_history.splice(i, 1);
                         break;
                     }
                 }
                 SetSettings('search_history', JSON.stringify(search_history));
             }
-        };
+        }
         var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-        if (search_history === null)
+        if (search_history == null)
             return;
         var count = search_history.length;
         if (count >= 200) {
             var order = function(a, b) {
                 if (a.time > b.time)
                     return -1;
-                if (a.time === b.time)
+                if (a.time == b.time)
                     return 0;
                 return 1;
-            };
+            }
             search_history.sort(order);
             var title = search_history[count - 1].title;
             search_history = null;
             removeItem(title);
         }
-    };
+    }
     var updateHistory = function(title) {
-        if (title.length === 0)
+        if (title.length == 0)
             return;
         LimitHistory();
         var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-        if (search_history !== null) {
+        if (search_history != null) {
             var count = search_history.length;
             var find = false;
             for (var i = 0; i < count; i++) {
-                if (search_history[i].title === title) {
+                if (search_history[i].title == title) {
                     search_history[i].count = parseInt(search_history[i].count) + 1;
                     search_history[i].time = Math.round((new Date()).getTime() / 1000);
                     find = true;
                 }
             }
-            if (find === false) {
+            if (find == false) {
                 search_history[count] = {
                     'title': title,
                     count: 1,
                     time: Math.round((new Date()).getTime() / 1000)
-                };
+                }
             }
         } else {
             search_history = [];
@@ -284,13 +283,13 @@ var engine = function() {
                 'title': title,
                 count: 1,
                 time: Math.round((new Date()).getTime() / 1000)
-            };
+            }
         }
         SetSettings('search_history', JSON.stringify(search_history));
         view.AddAutocomplete();
-    };
+    }
     var loadCostumeModule = function(uid) {
-        if ($.inArray(uid, costume_tr) === -1) {
+        if ($.inArray(uid, costume_tr) == -1) {
             return;
         }
         var ct = GetSettings('ct_' + uid);
@@ -337,7 +336,7 @@ var engine = function() {
                     var ex_seed_regexp = ('seed_r' in me && 'seed_rp' in me) ? 1 : 0;
                     var ex_peer_regexp = ('peer_r' in me && 'peer_rp' in me) ? 1 : 0;
                     var ex_t_m_r = ('t_m_r' in me) ? 1 : 0;
-                    var ex_t_f = ('t_f' in me && me.t_f !== "-1") ? 1 : 0; //me.t_f is string from JSON
+                    var ex_t_f = ('t_f' in me && me.t_f != -1) ? 1 : 0;
                     var ex_auth_f = ('auth_f' in me) ? 1 : 0;
 
                     if (ex_auth_f) {
@@ -348,7 +347,7 @@ var engine = function() {
                             view.auth(1, id);
                         }
                     }
-                    t = t.find(me.items);
+                    t = t.find(me.items)
                     var l = t.length - (('sl' in me) ? me.sl : 0);
                     var arr = [];
                     var s = ('sf' in me) ? me.sf : 0;
@@ -356,25 +355,25 @@ var engine = function() {
                     for (var i = s; i < l; i++) {
                         var td = t.eq(i);
                         var obj = {};
-                        obj['category'] = {id: -1};
+                        obj['category'] = {id: -1}
                         if (ex_cat) {
                             if ('cat_alt' in me) {
                                 obj['category']['title'] = (td.find(me.cat_name)).attr('alt');
                             } else {
                                 obj['category']['title'] = (td.find(me.cat_name)).text();
                             }
-                            if (typeof(obj['category']['title']) !== "string") {
+                            if (typeof(obj['category']['title']) != "string") {
                                 obj['category']['title'] = null;
                                 er[0] += 1;
                             } else
                             if (ex_link) {
                                 obj['category']['url'] = (td.find(me.cat_link)).attr('href');
-                                if (typeof(obj['category']['url']) !== "string") {
+                                if (typeof(obj['category']['url']) != "string") {
                                     obj['category']['url'] = null;
                                     er[1] += 1;
                                 } else
                                 if (ex_link_r) {
-                                    if (obj['category']['url'][0] === '/') {
+                                    if (obj['category']['url'][0] == '/') {
                                         obj['category']['url'] = short_url + obj['category']['url'];
                                     } else {
                                         obj['category']['url'] = root_url + obj['category']['url'];
@@ -383,18 +382,18 @@ var engine = function() {
                             }
                         }
                         obj['title'] = (td.find(me.tr_name)).text();
-                        if (obj['title'].length === 0) {
+                        if (typeof(obj['title']) != "string") {
                             er[2] += 1;
                             continue;
                         }
                         obj['url'] = (td.find(me.tr_link)).attr('href');
-                        if (obj['url'].length === 0) {
+                        if (typeof(obj['url']) != "string") {
                             er[3] += 1;
                             continue;
                         }
                         obj['url'] = obj['url'].replace(/[\r\n]+/g, "");
                         if (ex_tr_link_r) {
-                            if (obj['url'][0] === '/') {
+                            if (obj['url'][0] == '/') {
                                 obj['url'] = short_url + obj['url'];
                             } else {
                                 obj['url'] = root_url + obj['url'];
@@ -402,7 +401,7 @@ var engine = function() {
                         }
                         if (ex_tr_size) {
                             obj['size'] = (td.find(me.tr_size)).text();
-                            if (obj['size'].length !== 0) {
+                            if (obj['size'] != null) {
                                 obj['size'] = obj['size'].replace(/[\r\n]+/g, "");
                                 if (ex_size_regexp) {
                                     obj['size'] = obj['size'].replace(new RegExp(me.size_r, "ig"), me.size_rp);
@@ -420,15 +419,15 @@ var engine = function() {
                         }
                         if (ex_tr_dl) {
                             obj['dl'] = (td.find(me.tr_dl)).attr('href');
-                            if (obj['dl'] !== undefined) {
+                            if (obj['dl'] != null) {
                                 obj['dl'] = obj['dl'].replace(/[\r\n]+/g, "");
                             }
-                            if (typeof(obj['dl']) !== "string") {
+                            if (typeof(obj['dl']) != "string") {
                                 er[5] += 1;
                                 obj['dl'] = null;
                             } else
                             if (ex_tr_dl_r) {
-                                if (obj['dl'][0] === '/') {
+                                if (obj['dl'][0] == '/') {
                                     obj['dl'] = short_url + obj['dl'];
                                 } else {
                                     obj['dl'] = root_url + obj['dl'];
@@ -437,7 +436,7 @@ var engine = function() {
                         }
                         if (ex_seed) {
                             obj['seeds'] = (td.find(me.seed)).text();
-                            if (obj['seeds'].length !== 0) {
+                            if (obj['seeds'] != null) {
                                 obj['seeds'] = obj['seeds'].replace(/[\r\n]+/g, "");
                                 if (ex_seed_regexp) {
                                     obj['seeds'] = obj['seeds'].replace(new RegExp(me.seed_r, "ig"), me.seed_rp);
@@ -452,7 +451,7 @@ var engine = function() {
                         }
                         if (ex_peer) {
                             obj['leechs'] = (td.find(me.peer)).text();
-                            if (obj['leechs'].length !== 0) {
+                            if (obj['leechs'] != null) {
                                 obj['leechs'] = obj['leechs'].replace(/[\r\n]+/g, "");
                                 if (ex_peer_regexp) {
                                     obj['leechs'] = obj['leechs'].replace(new RegExp(me.peer_r, "ig"), me.peer_rp);
@@ -467,7 +466,7 @@ var engine = function() {
                         }
                         if (ex_date) {
                             obj['time'] = (td.find(me.date)).text();
-                            if (obj['time'].length !== 0) {
+                            if (obj['time'] != null) {
                                 obj['time'] = obj['time'].replace(/[\r\n]+/g, "");
                                 if (ex_date_regexp) {
                                     obj['time'] = obj['time'].replace(new RegExp(me.t_r, "ig"), me.t_r_r);
@@ -486,9 +485,9 @@ var engine = function() {
                         } else {
                             obj['time'] = 0;
                         }
-                        arr[arr.length] = obj;
+                        arr[arr.length] = obj
                     }
-                    if (er.join(',') !== '0,0,0,0,0,0,0,0') {
+                    if (er.join(',') != '0,0,0,0,0,0,0,0') {
                         console.log('Tracker ' + me.name + ' have problem!');
                         if (er[2])
                             console.log(er[2] + ' - torrent title skip');
@@ -510,10 +509,10 @@ var engine = function() {
                             console.log(er[8] + ' - time fix');
                     }
                     return arr;
-                };
+                }
                 var loadPage = function(text) {
                     var t = ('encode' in me && me.encode) ? ex_kit.in_cp1251(text) : text;
-                    if (xhr !== null)
+                    if (xhr != null)
                         xhr.abort();
                     var obj_req = {
                         type: 'GET',
@@ -525,25 +524,25 @@ var engine = function() {
                         error: function() {
                             view.loadingStatus(2, id);
                         }
-                    };
+                    }
                     if ('post' in me && me.post.length > 0) {
                         obj_req.type = 'POST';
                         obj_req.data = me.post.replace('%search%', t);
                     }
                     xhr = $.ajax(obj_req);
-                };
+                }
                 return {
                     getPage: function(a) {
                         return loadPage(a);
                     }
-                };
+                }
             }();
             var find = function(text) {
                 kit.getPage(text);
-            };
+            }
             var setId = function(a) {
                 id = a;
-            };
+            }
             return {
                 find: function(a) {
                     find(a);
@@ -560,34 +559,34 @@ var engine = function() {
                 flags: flags,
                 login_url: login_url,
                 uid: uid
-            };
+            }
         }(ct);
         ModuleLoaded(l);
-    };
+    }
     var clone_obj = function(obj) {
         return JSON.parse(JSON.stringify(obj));
-    };
+    }
     var addCostumTr = function(a) {
         var b = clone_obj(a);
         costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
         var l = costume_tr.length;
         for (var i = 0; i < l; i++) {
             var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;
-            if (tr === null)
+            if (tr == null)
                 continue;
             b[b.length] = {
                 e: 0,
                 n: tr.uid,
                 uid: tr.uid
-            };
+            }
         }
-        return b;
-    };
+        return b
+    }
     var loadInternalModule = function(filename) {
         if (compression) {
             var c = torrent_lib.length;
             for (var i = 0; i < c; i++) {
-                if (torrent_lib[i].filename === filename) {
+                if (torrent_lib[i].filename == filename) {
                     ModuleLoaded(i);
                     break;
                 }
@@ -597,26 +596,26 @@ var engine = function() {
             script.type = 'text/javascript';
             script.async = true;
             script.src = 'tracker/' + filename + '.js';
-            script.dataset.id = 'tracker';
+            script.dataset.id = 'tracker'
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(script, s);
         }
-    };
+    }
     var loadModules = function(internalTrackers) {
         tracker = [];
-        if (compression === 0) {
+        if (compression == 0) {
             $('script[data-id=tracker]').remove();
             torrent_lib = [];
         }
         var Trackers = internalTrackers;
-        if (internalTrackers === null) {
+        if (internalTrackers == null) {
             Trackers = addCostumTr(defaultList);
         }
 
         var ot = 0;
         if ("options" in window) {
             ot = 1;
-            var en_a = [];
+            var en_a = []
             var defTrackers = addCostumTr(defaultList);
         }
         var l = Trackers.length;
@@ -635,7 +634,7 @@ var engine = function() {
         if (ot) {
             var l = defTrackers.length;
             for (var i = 0; i < l; i++) {
-                if ($.inArray(defTrackers[i].n, en_a) === -1) {
+                if ($.inArray(defTrackers[i].n, en_a) == -1) {
                     if ('uid' in defTrackers[i]) {
                         loadCostumeModule(defTrackers[i].n);
                     } else {
@@ -644,46 +643,46 @@ var engine = function() {
                 }
             }
         }
-    };
+    }
     var chkDefProfile = function() {
-        if (trackerProfiles === null) {
+        if (trackerProfiles == null) {
             trackerProfiles = [{
                     Trackers: null,
                     Title: _lang.label_def_profile
-                }];
+                }]
             SetSettings('trackerProfiles', JSON.stringify(trackerProfiles));
             defProfile = SetSettings('defProfile', 0);
         }
-    };
+    }
     chkDefProfile();
     var loadProfile = function(prof) {
         view.ClearTrackerList();
-        if (prof === undefined) {
+        if (prof == null) {
             prof = defProfile;
         }
-        if (trackerProfiles[prof] === undefined) {
+        if (trackerProfiles[prof] == null) {
             loadModules(null);
         } else {
             loadModules(trackerProfiles[prof].Trackers);
             SetSettings('defProfile', prof);
         }
-    };
+    }
     var getProfileList = function() {
         var arr = [];
         $.each(trackerProfiles, function(k, v) {
-            arr.push(v.Title);
+            arr[arr.length] = v.Title
         });
         return arr;
-    };
+    }
     var ModuleLoaded = function(num) {
         var n = tracker.length;
-        tracker[n] = torrent_lib[num];
+        tracker[n] = torrent_lib[num]
         tracker[n].setId(n);
         view.addTrackerInList(n);
-    };
+    }
     return {
         search: function(a, b, c) {
-            return search(a, b, c);
+            return search(a, b, c)
         },
         loadProfile: function(a) {
             loadProfile(a);
@@ -696,7 +695,7 @@ var engine = function() {
         },
         defaultList: addCostumTr(defaultList),
         categorys: categorys
-    };
+    }
 }();
 $(function() {
     engine.loadProfile();
@@ -712,19 +711,19 @@ var ex_kit = function() {
                 Acode -= 848;
                 ExitValue = "%" + Acode.toString(16);
             }
-            else if (Ucode === 1025) {
+            else if (Ucode == 1025) {
                 Acode = 168;
                 ExitValue = "%" + Acode.toString(16);
             }
-            else if (Ucode === 1105) {
+            else if (Ucode == 1105) {
                 Acode = 184;
                 ExitValue = "%" + Acode.toString(16);
             }
-            else if (Ucode === 32) {
+            else if (Ucode == 32) {
                 Acode = 32;
                 ExitValue = "%" + Acode.toString(16);
             }
-            else if (Ucode === 10) {
+            else if (Ucode == 10) {
                 Acode = 10;
                 ExitValue = "%0A";
             }
@@ -734,31 +733,31 @@ var ex_kit = function() {
             text = text + ExitValue;
         }
         return text;
-    };
+    }
     var format_size = function(s) {
-        var size = s.replace(/[^0-9.,кбмгтkmgtb]/ig, '').replace(',', '.');
+        var size = s.replace(/[^0-9.,кбмгтkmgtb]/ig, '').replace(',','.');
         var t = size.replace(/кб|kb/i, '');
-        if (t.length !== size.length) {
+        if (t.length != size.length) {
             t = parseFloat(t);
             return Math.round(t * 1024);
         }
         var t = size.replace(/мб|mb/i, '');
-        if (t.length !== size.length) {
+        if (t.length != size.length) {
             t = parseFloat(t);
             return Math.round(t * 1024 * 1024);
         }
         var t = size.replace(/гб|gb/i, '');
-        if (t.length !== size.length) {
+        if (t.length != size.length) {
             t = parseFloat(t);
             return Math.round(t * 1024 * 1024 * 1024);
         }
         var t = size.replace(/тб|tb/i, '');
-        if (t.length !== size.length) {
+        if (t.length != size.length) {
             t = parseFloat(t);
             return Math.round(t * 1024 * 1024 * 1024 * 1024);
         }
         return 0;
-    };
+    }
     function month_replace(t) {
         return t.replace(/янв/i, '1').replace(/фев/i, '2').replace(/мар/i, '3')
                 .replace(/апр/i, '4').replace(/мая/i, '5').replace(/июн/i, '6')
@@ -773,54 +772,53 @@ var ex_kit = function() {
                 .replace(/oct/i, '10').replace(/nov/i, '11').replace(/dec/i, '12');
     }
     var format_date = function(f, t) {
-        if (f === undefined) {
-            return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago'];
+        if (f == null) {
+            return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago']
         }
-        f = parseInt(f);
-        if (f === 0) { // || f === '2013-04-31[[[ 07]:03]:27]') {
+        if (f == 0 || f == '2013-04-31[[[ 07]:03]:27]') {
             var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
             for (var i = 0; i < 6; i++) {
-                if (dd[i] === undefined) {
+                if (dd[i] == null) {
                     dd[i] = 0;
                 }
             }
             if (dd[0] < 10) {
                 dd[0] = '200' + dd[0];
-            } else
+            }
             if (dd[0] < 100) {
                 dd[0] = '20' + dd[0];
             }
             return Math.round((new Date(parseInt(dd[0]), parseInt(dd[1]) - 1, parseInt(dd[2]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
         }
-        if (f === 1) { //  || f === '31-04-2013[[[ 07]:03]:27]') {
+        if (f == 1 || f == '31-04-2013[[[ 07]:03]:27]') {
             var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
             for (var i = 0; i < 6; i++) {
-                if (dd[i] === undefined) {
+                if (dd[i] == null) {
                     dd[i] = 0;
                 }
             }
             if (dd[2] < 10) {
                 dd[2] = '200' + dd[2];
-            } else
+            }
             if (dd[2] < 100) {
                 dd[2] = '20' + dd[2];
             }
             return Math.round((new Date(parseInt(dd[2]), parseInt(dd[1]) - 1, parseInt(dd[0]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
         }
-        if (f === 2) { //  || f === 'n day ago') {
+        if (f == 2 || f == 'n day ago') {
             var old = parseFloat(t.replace(/[^0-9.]/g, '')) * 24 * 60 * 60;
             return Math.round((new Date()).getTime() / 1000) - old;
         }
-    };
+    }
     var isNumber = function(n) {
         return !isNaN(parseFloat(n)) && isFinite(n);
-    };
+    }
     return {
         isNumber: function(a) {
             return isNumber(a);
         },
         in_cp1251: function(a) {
-            return in_cp1251(a);
+            return in_cp1251(a)
         },
         format_size: function(a) {
             return format_size(a);
@@ -829,7 +827,7 @@ var ex_kit = function() {
             return month_replace(a);
         },
         format_date: function(a, b) {
-            return format_date(a, b);
+            return format_date(a, b)
         }
-    };
+    }
 }();

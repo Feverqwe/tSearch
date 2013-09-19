@@ -19,7 +19,7 @@ var options = function() {
         allow_get_description: {"v": 1, "t": "checkbox"},
         allow_favorites_sync: {"v": 0, "t": "checkbox"},
         sub_select_enable: {"v": 1, "t": "checkbox"}
-    };
+    }
     var currentProfileID = 0;
     var defProfile = 0;
     var trackerProfiles = null;
@@ -28,10 +28,10 @@ var options = function() {
         $.each(def_settings, function(k, v) {
             settings[k] = (GetSettings(k) !== undefined) ? parseInt(GetSettings(k)) : v.v;
         });
-        if (currentProfileID === 0) {
-            defProfile = currentProfileID = (GetSettings('defProfile') !== undefined) ? parseInt(GetSettings('defProfile')) : 0;
+        if (currentProfileID == 0) {
+            defProfile = currentProfileID = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
         } else {
-            defProfile = (GetSettings('defProfile') !== undefined) ? parseInt(GetSettings('defProfile')) : 0;
+            defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
         }
         trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     };
@@ -40,7 +40,7 @@ var options = function() {
         settings_load();
         $.each(def_settings, function(k, v) {
             var set = settings;
-            if (v.t === "text" || v.t === "number" || v.t === "password") {
+            if (v.t == "text" || v.t == "number" || v.t == "password") {
                 $('input[name="' + k + '"]').removeAttr("value");
                 if (k in set && set[k] != v.v) {
                     $('input[name="' + k + '"]').attr("value", set[k]);
@@ -49,14 +49,14 @@ var options = function() {
                     $('input[name="' + k + '"]').attr("placeholder", v.v);
                 }
             }
-            if (v.t === "checkbox") {
+            if (v.t == "checkbox") {
                 if (k in set) {
                     $('input[name="' + k + '"]').eq(0)[0].checked = (set[k]) ? 1 : 0;
                 } else {
                     $('input[name="' + k + '"]').eq(0)[0].checked = (v.v) ? 1 : 0;
                 }
             }
-            if (v.t === "radio") {
+            if (v.t == "radio") {
                 if (k in set) {
                     $('input[name="' + k + '"][value="' + set[k] + '"]').eq(0)[0].checked = true;
                 } else {
@@ -69,20 +69,20 @@ var options = function() {
     var addTrackerInList = function(i) {
         var filename = tracker[i].filename;
         var id = currentProfileID;
-        if (trackerProfiles === null) {
+        if (trackerProfiles == null) {
             return;
         }
-        if (trackerProfiles[id] === undefined) {
+        if (trackerProfiles[id] == null) {
             return;
         }
         var t = trackerProfiles[id].Trackers;
-        if (t === undefined) {
+        if (t == null) {
             t = engine.defaultList;
         }
         var enable = false;
         var tc = t.length;
         for (var n = 0; n < tc; n++) {
-            if (t[n].n === filename) {
+            if (t[n].n == filename) {
                 enable = t[n].e;
                 break;
             }
@@ -102,7 +102,7 @@ var options = function() {
         }
         $('table.tr_table tbody').append('<tr data-id="' + i + '" data-name="' + tracker[i].filename + '"' + '>'
                 + '<td><div class="tracker_icon" ' +
-                ((tracker[i].icon.length === 0 || tracker[i].icon[0] === '#') ? 'style="background-color: ' + ((tracker[i].icon.length !== 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;"' : 'style="background-image: url(' + tracker[i].icon + ');"')
+                ((tracker[i].icon.length == 0 || tracker[i].icon[0] == '#') ? 'style="background-color: ' + ((tracker[i].icon.length != 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;"' : 'style="background-image: url(' + tracker[i].icon + ');"')
                 + '"></div></td>'
                 + '<td><a href="' + tracker[i].url + '" target="_blank">' + tracker[i].name + '</a>'
                 + '</td>'
@@ -110,7 +110,7 @@ var options = function() {
                 + $('<span>' + tracker[i].about + '</span>').text() + '</td>'
                 + '<td class="status"><input type="checkbox" name="tracker" ' + ((enable) ? 'checked' : '') + '></td>'
                 + '</tr>');
-    };
+    }
     var saveCurrentProfile = function() {
         var tr = $('table.tr_table tbody').children('tr');
         var trc = tr.length;
@@ -118,7 +118,7 @@ var options = function() {
         var internalTrackers = [];
         for (var i = 0; i < trc; i++) {
             var inp = tr.eq(i).children('td.status').children('input');
-            if (inp.is(':checked') === false) {
+            if (inp.is(':checked') == false) {
                 continue;
             }
             var tr_id = tr.eq(i).attr('data-id');
@@ -132,66 +132,66 @@ var options = function() {
                 uid = tracker[tr_id].uid;
                 obj['uid'] = uid;
             }
-            internalTrackers[internalTrackers.length] = obj;
+            internalTrackers[internalTrackers.length] = obj
         }
         trackerProfiles[id].Trackers = internalTrackers;
         return 1;
-    };
+    }
     var LoadProfiles = function() {
         var sel = $('select[name=tr_lists]');
         var arr = engine.getProfileList();
         $.each(arr, function(k, v) {
-            sel.append('<option value="' + k + '" ' + ((k === defProfile) ? 'selected' : '') + '>' + v + '</option>');
+            sel.append('<option value="' + k + '" ' + ((k == defProfile) ? 'selected' : '') + '>' + v + '</option>');
         });
         if (arr.length < 2) {
             $('input[name=rm_list]').attr('disabled', 'disabled');
         }
-    };
+    }
     var updateProfileList = function() {
         var sel = $('select[name=tr_lists]');
         sel.empty();
         $.each(trackerProfiles, function(k, v) {
-            sel.append('<option value="' + k + '" ' + ((k === currentProfileID) ? 'selected' : '') + '>' + v.Title + '</option>');
+            sel.append('<option value="' + k + '" ' + ((k == currentProfileID) ? 'selected' : '') + '>' + v.Title + '</option>');
         });
         if (trackerProfiles.length < 2) {
-            $('input[name=rm_list]').attr('disabled', 'disabled');
+            $('input[name=rm_list]').attr('disabled', 'disabled')
         } else {
             $('input[name=rm_list]').removeAttr('disabled');
         }
-    };
+    }
     var saveAll = function() {
         SetSettings('lang', $('select[name="language"]').val());
         $.each(def_settings, function(key, value) {
-            if (value.t === "text") {
+            if (value.t == "text") {
                 var val = $('input[name="' + key + '"]').val();
                 if (val.length <= 0) {
                     val = $('input[name="' + key + '"]').attr('placeholder');
                 }
                 SetSettings(key, val);
             } else
-            if (value.t === "password") {
+            if (value.t == "password") {
                 var val = $('input[name="' + key + '"]').val();
                 SetSettings(key, val);
             } else
-            if (value.t === "checkbox") {
+            if (value.t == "checkbox") {
                 var val = ($('input[name="' + key + '"]').eq(0)[0].checked) ? 1 : 0;
                 SetSettings(key, val);
             } else
-            if (value.t === "number") {
+            if (value.t == "number") {
                 var val = $('input[name="' + key + '"]').val();
                 if (val.length <= 0) {
                     val = $('input[name="' + key + '"]').attr('placeholder');
                 }
                 SetSettings(key, val);
             } else
-            if (value.t === "radio") {
+            if (value.t == "radio") {
                 var val = $('input[name="' + key + '"]:checked').val();
                 SetSettings(key, val);
             }
         });
         saveCurrentProfile();
         SetSettings('trackerProfiles', JSON.stringify(trackerProfiles));
-        if (navigator.userAgent.search(/Chrome/) !== -1) {
+        if (navigator.userAgent.search(/Chrome/) != -1) {
             var bgp = chrome.extension.getBackgroundPage();
             bgp.bg.update_context_menu();
             if (bgp._type_ext) {
@@ -215,32 +215,32 @@ var options = function() {
         delete st['search_history'];
         $('textarea[name="backup"]').val(JSON.stringify(st));
         return JSON.stringify(st);
-    };
+    }
     var makePartedBackup = function() {
-        var chank_name = "bk_ch_";
+        var chank_name = "bk_ch_"
         var back = getBackup();
         var full_len = back.length;
         var chank_len = 1024 - (chank_name + "000").length - 1;
         var number_of_part = Math.round(full_len / chank_len);
         if (number_of_part >= 512 || full_len >= 102400) {
-            console.log("Can't save backup, very big size!");
+            console.log("Can't save backup, very big size!")
             return null;
         }
         var req_exp = new RegExp(".{1," + chank_len + "}", "g");
         var arr = back.match(req_exp);
         var arr_l = arr.length;
-        var obj = {};
+        var obj = {}
         for (var i = 0; i < arr_l; i++) {
             obj[chank_name + i] = arr[i];
         }
         obj[chank_name + "inf"] = arr_l;
-        obj[chank_name + arr_l] = "END";
+        obj[chank_name + arr_l] = "END"
         return obj;
-    };
+    }
     var getPartedBackup = function() {
         chrome.storage.sync.get(function(data) {
-            var chank_name = "bk_ch_";
-            var inf = 0;
+            var chank_name = "bk_ch_"
+            var inf = 0
             if (chank_name + "inf" in data) {
                 inf = data[chank_name + "inf"];
             } else {
@@ -257,7 +257,7 @@ var options = function() {
                     console.log("Backup is broken!", "Chank", i);
                 }
             }
-            if (data[chank_name + inf] !== "END") {
+            if (data[chank_name + inf] != "END") {
                 broken = 1;
             }
             if (broken) {
@@ -265,8 +265,8 @@ var options = function() {
                 inf = -1;
             }
             $.each(data, function(k, v) {
-                if (k.substr(0, 6) === chank_name) {
-                    if (k.substr(6) !== "inf" && k.substr(6) > inf) {
+                if (k.substr(0, 6) == chank_name) {
+                    if (k.substr(6) != "inf" && k.substr(6) > inf) {
                         chrome.storage.sync.remove(k);
                     }
                 }
@@ -277,7 +277,7 @@ var options = function() {
             }
             $('textarea[name="restore"]').val(back);
         });
-    };
+    }
     var stngsRestore = function(text) {
         try {
             var rst = JSON.parse(text);
@@ -285,7 +285,7 @@ var options = function() {
             for (var key in rst)
             {
                 var value = rst[key];
-                if (value === undefined || key === 'length')
+                if (value == undefined || key == 'length')
                     continue;
                 localStorage[key] = value;
             }
@@ -334,13 +334,13 @@ var options = function() {
         $('select[name="language"]').val(language);
         $.each(lang, function(k, v) {
             var el = $('[data-lang=' + k + ']');
-            if (el.length === 0)
+            if (el.length == 0)
                 return true;
             var t = el.prop("tagName");
-            if (t === "A" || t === "LEGEND" || t === "SPAN" || t === "LI" || t === "TH" || t === "TD") {
+            if (t == "A" || t == "LEGEND" || t == "SPAN" || t == "LI" || t == "TH" || t == "TD") {
                 el.text(v);
             } else
-            if (t === "INPUT") {
+            if (t == "INPUT") {
                 el.val(v);
             } else
                 console.log(t, v);
@@ -350,22 +350,22 @@ var options = function() {
         $('table.c_table tbody').empty();
         var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
         var c = costume_tr.length;
-        if (c === 0) {
+        if (c == 0) {
             $('table.c_table tbody').html('<td colspan="4" class="notorrent" data-lang="51">' + _lang.settings[51] + '</td>');
         } else
             for (var i = 0; i < c; i++) {
                 var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;
-                if (tr === null) {
+                if (tr == null) {
                     costume_tr.splice(i, 1);
                     SetSettings('costume_tr', JSON.stringify(costume_tr));
-                    if (costume_tr.length === 0) {
+                    if (costume_tr.length == 0) {
                         $('table.c_table tbody').html('<td colspan="4" class="notorrent" data-lang="51">' + _lang.settings[51] + '</td>');
                     }
                     continue;
                 }
                 $('table.c_table tbody').append('<tr " data-uid="' + tr.uid + '"' + '>'
                         + '<td><div class="tracker_icon" ' +
-                        ((tr.icon.length === 0 || tr.icon[0] === '#') ? 'style="background-color: ' + ((tr.icon.length !== 0) ? tr.icon : '#ccc') + ';border-radius: 8px;"' : 'style="background-image: url(' + tr.icon + ')"')
+                        ((tr.icon.length == 0 || tr.icon[0] == '#') ? 'style="background-color: ' + ((tr.icon.length != 0) ? tr.icon : '#ccc') + ';border-radius: 8px;"' : 'style="background-image: url(' + tr.icon + ')"')
                         + '></div></td>'
                         + '<td><a href="' + tr.root_url + '" target="_blank">' + tr.name + '</a>'
                         + '</td>'
@@ -373,7 +373,7 @@ var options = function() {
                         + '<td class="action"><input type="button" name="edit_ctr" value="' + _lang.settings[52] + '" data-lang="52"><input type="button" name="rm_ctr" value="' + _lang.settings[53] + '" data-lang="53"></td>'
                         + '</tr>');
             }
-    };
+    }
     return {
         LoadProfiles: function() {
             LoadProfiles();
@@ -455,7 +455,7 @@ var options = function() {
                     $('div.page.save > div.status').css('background', 'none').text('');
                 }, 200);
             });
-            if (navigator.userAgent.search(/Firefox/) !== -1) {
+            if (navigator.userAgent.search(/Firefox/) != -1) {
 //firefox
                 $('div.page.backup').hide();
                 $('a[data-page=backup]').hide();
@@ -464,7 +464,7 @@ var options = function() {
             } else {
                 make_bakup_form();
             }
-            if (navigator.userAgent.search(/Opera/) !== -1) {
+            if (navigator.userAgent.search(/Opera/) != -1) {
 //opera
                 $('input[name="add_in_omnibox"]').parents().eq(1).hide();
                 $('input[name="search_popup"]').parents().eq(1).hide();
@@ -472,7 +472,7 @@ var options = function() {
                 $('input[name="allow_favorites_sync"]').parents().eq(1).hide();
                 $('input[name="clear_cloud_btn"]').hide();
             }
-            if (navigator.userAgent.search(/Chrome/) !== -1) {
+            if (navigator.userAgent.search(/Chrome/) != -1) {
 //Chrome
                 var bgp = chrome.extension.getBackgroundPage();
                 if (!bgp._type_ext) {
@@ -484,7 +484,7 @@ var options = function() {
                     });
                     $('input[name="save_in_cloud"]').on('click', function() {
                         var obj = makePartedBackup();
-                        if (obj === null) {
+                        if (obj == null) {
                             return;
                         }
                         chrome.storage.sync.set(obj);
@@ -499,7 +499,7 @@ var options = function() {
                     });
                     chrome.storage.sync.get("bk_ch_inf",
                             function(val) {
-                                if ("bk_ch_inf" in val === false) {
+                                if ("bk_ch_inf" in val == false) {
                                     $('input[name="get_from_cloud"]').eq(0)[0].disabled = true;
                                 }
                             }
@@ -519,7 +519,7 @@ var options = function() {
             $('input[name=close_popup]').on('click', function() {
                 $('textarea[name=code]').val('');
                 $('div.popup').hide();
-            });
+            })
             $(window).trigger('resize');
             $('input[name=ctr_add]').on('click', function() {
                 var str_code = $('textarea[name=code]').val();
@@ -528,14 +528,14 @@ var options = function() {
                 try {
                     code = JSON.parse(str_code);
                 } catch (e) {
-                    alert(_lang.settings[55] + "\n" + e);
+                    alert(_lang.settings[55] + "\n" + e)
                 }
-                if ('uid' in code === false) {
+                if ('uid' in code == false) {
                     alert(_lang.settings[56]);
                     return;
                 }
                 SetSettings('ct_' + code.uid, str_code);
-                if ($.inArray(code.uid, costume_tr) !== -1) {
+                if ($.inArray(code.uid, costume_tr) != -1) {
                     alert(_lang.settings[54]);
                     return;
                 } else {
@@ -555,9 +555,9 @@ var options = function() {
                 try {
                     code = JSON.parse(str_code);
                 } catch (e) {
-                    alert(_lang.settings[55] + "\n" + e);
+                    alert(_lang.settings[55] + "\n" + e)
                 }
-                if ('uid' in code === false || uid !== code.uid) {
+                if ('uid' in code == false || uid != code.uid) {
                     code.uid = parseInt(uid);
                 }
                 SetSettings('ct_' + code.uid, JSON.stringify(code));
@@ -579,7 +579,7 @@ var options = function() {
                 var uid = $(this).parents().eq(1).attr('data-uid');
                 var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
                 var index = $.inArray(parseInt(uid), costume_tr);
-                if (index === -1)
+                if (index == -1)
                     return;
                 costume_tr.splice(index, 1);
                 SetSettings('ct_' + uid, null);
@@ -596,7 +596,7 @@ var options = function() {
 var view = function() {
     return {
         ClearTrackerList: function() {
-            if ($('select[name=tr_lists]').val() === null) {
+            if ($('select[name=tr_lists]').val() == null) {
                 options.LoadProfiles();
             }
             $('table.tr_table tbody').empty();
@@ -604,11 +604,11 @@ var view = function() {
         addTrackerInList: function(i) {
             options.addTrackerInList(i);
         }
-    };
+    }
 }();
 $(function() {
     options.begin();
 });
 $(window).on('resize', function() {
     $('div.popup').css('left', ($('html').width() / 2 - $('div.popup').width() / 2) + 'px');
-});
+})

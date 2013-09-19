@@ -2,10 +2,10 @@ var allow_favorites_sync = 0;
 var SetSettings = function(key, value) {
     if (value === null && key in localStorage) {
         delete localStorage[key];
-        return value;
+        return value
     }
-    if (key === "favoritesList" && allow_favorites_sync && chrome.storage) {
-        var obj = {};
+    if (key == "favoritesList" && allow_favorites_sync && chrome.storage) {
+        var obj = {}
         obj[key] = value;
         chrome.storage.sync.set(obj);
         if (value.length + key.length > 4096) {
@@ -16,12 +16,12 @@ var SetSettings = function(key, value) {
         localStorage[key] = value;
     }
     return value;
-};
+}
 var GetSettings = function(key) {
-    if (key === "favoritesList" && allow_favorites_sync && chrome.storage) {
+    if (key == "favoritesList" && allow_favorites_sync && chrome.storage) {
         chrome.storage.sync.get(key,
                 function(val) {
-                    if (val.favoritesList === undefined || val.favoritesList.length === 0)
+                    if (val.favoritesList === undefined || val.favoritesList == '')
                         return;
                     localStorage[key] = val.favoritesList;
                     explore.updFav(localStorage[key]);
@@ -38,5 +38,5 @@ var GetSettings = function(key) {
         else
             return localStorage[key];
     }
-};
+}
 allow_favorites_sync = (GetSettings('allow_favorites_sync') !== undefined) ? parseInt(GetSettings('allow_favorites_sync')) : false;
