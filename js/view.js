@@ -1295,7 +1295,7 @@ var view = function() {
                 if (event.isTrigger !== true)
                     autoMove = null;
                 var id = $(this).attr('data-id');
-                categoryFilter = id;
+                categoryFilter = id || null;
                 $('ul.categorys').children('li.selected').removeClass('selected');
                 $(this).addClass('selected');
                 $('#rez_table').children('tbody').children('tr').css('display', 'none');
