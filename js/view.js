@@ -18,7 +18,7 @@ var view = function() {
     var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
     var TeaserFilter = (GetSettings('TeaserFilter') !== undefined) ? parseInt(GetSettings('TeaserFilter')) : true;
     var SubCategoryFilter = (GetSettings('SubCategoryFilter') !== undefined) ? parseInt(GetSettings('SubCategoryFilter')) : false;
-    var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : true;
+    var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : 1;
     var autoSetCat = (GetSettings('autoSetCat') !== undefined) ? parseInt(GetSettings('autoSetCat')) : true;
     var allow_get_description = (GetSettings('allow_get_description') !== undefined) ? parseInt(GetSettings('allow_get_description')) : true;
     var _sub_select_enable = (GetSettings('sub_select_enable') !== undefined) ? parseInt(GetSettings('sub_select_enable')) : true;
@@ -1116,7 +1116,7 @@ var view = function() {
         $('ul.categorys').prepend('<li class="selected">' + _lang['cat_all'] + ' <i></i></li>');
     };
     var AddAutocomplete = function() {
-        if (AutoComplite_opt == 0) {
+        if (AutoComplite_opt === 0) {
             var AutocompleteArr = [];
             var order = function(a, b) {
                 if (a.count > b.count)
@@ -1139,8 +1139,8 @@ var view = function() {
             inp.autocomplete("destroy");
         }
         inp.autocomplete({
-            source: (AutoComplite_opt == 0) ? AutocompleteArr : function(a, response) {
-                if ($.trim(a.term).length === 0 || AutoComplite_opt == 0) {
+            source: (AutoComplite_opt === 0) ? AutocompleteArr : function(a, response) {
+                if ($.trim(a.term).length === 0 || AutoComplite_opt === 0) {
                     var AutocompleteArr = [];
                     var order = function(a, b) {
                         if (a.count > b.count)

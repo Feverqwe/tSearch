@@ -29,9 +29,9 @@ var options = function() {
             settings[k] = (GetSettings(k) !== undefined) ? parseInt(GetSettings(k)) : v.v;
         });
         if (currentProfileID === 0) {
-            defProfile = currentProfileID = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
+            defProfile = currentProfileID = (GetSettings('defProfile') !== undefined) ? parseInt(GetSettings('defProfile')) : 0;
         } else {
-            defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
+            defProfile = (GetSettings('defProfile') !== undefined) ? parseInt(GetSettings('defProfile')) : 0;
         }
         trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
     };
