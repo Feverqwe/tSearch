@@ -773,13 +773,13 @@ var view = function() {
                 return a;
             }
             if (word_hl < words.length) {
-                if (year_hl == 1 && a == keyword_filter_cache.year) {
+                if (year_hl === 1 && a === keyword_filter_cache.year) {
                     return '<b>' + a + '</b>';
                 }
-                if (a == keyword_filter_cache.year) {
+                if (a === keyword_filter_cache.year) {
                     year_hl = 1;
                 }
-                if (b == 0) {
+                if (b === 0) {
                     rate.name += first_rate;
                 } else {
                     rate.name += word_rate;
