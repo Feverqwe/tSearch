@@ -13,7 +13,7 @@
               <RDF:Description>
                 <em:id>{d03fdff0-d3a0-11e0-baa5-14d64d08fdac}</em:id>
                 <em:minVersion>3.5</em:minVersion>
-                <em:maxVersion>16.*</em:maxVersion>
+                <em:maxVersion>50.*</em:maxVersion>
                 <em:updateLink>https://github.com/Feverqwe/tSearch/raw/master/build_firefox.xpi</em:updateLink>
               </RDF:Description>
             </em:targetApplication>
