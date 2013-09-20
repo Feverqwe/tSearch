@@ -21,6 +21,7 @@ div.search_panel {
     padding: 20px;
     background-color: #F1F1F1;
     border-bottom: 1px solid silver;
+    -webkit-user-select: none;
 }
 
 div.search_panel > div.left {

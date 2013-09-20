@@ -16,6 +16,7 @@ div.search_panel {
     padding: 20px;
     background-color: #F1F1F1;
     border-bottom: 1px solid #c0c0c0;
+    -webkit-user-select: none;
 }
 div.search_panel input[type=text] {
     height: 22px !important;
@@ -210,6 +211,7 @@ div.result_panel ul.categorys {
     padding-left: 0;
     margin: 0;
     margin-left: 4px;
+    -webkit-user-select: none;
 }
 div.result_panel ul.categorys li {
     display: inline-block;
@@ -233,6 +235,7 @@ div.result_panel ul.categorys li.selected {
 }
 div.right > div {
     margin-bottom: 5px;
+    -webkit-user-select: none;
 }
 div.right > div > p {
     margin: 0;
@@ -311,12 +314,13 @@ div.tracker_list > ul.trackers > li > a {
     padding: 2px;
 }
 div.tracker_list > ul.trackers > li > a:hover {
-    background-color: #ebebeb;
+    background-color: #ddd;
     border-radius: 4px;
 }
 div.tracker_list > ul.trackers > li > a.selected {
-    background-color: #99ccff;
+    background-color: #337AF8;
     border-radius: 4px;
+    color: #fff;
 }
 
 div.progress {
@@ -389,8 +393,7 @@ div.explore h2 {
     margin: 0;
     padding: 0;
     margin-left: 5px;
-    box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.5);
-    -webkit-box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid #ccc;
     font-weight: normal;
     margin-bottom: 5px;
     padding-left: 10px;
@@ -543,12 +546,8 @@ div.explore div.poster > div.image > div.move_favorite {
     border-radius: 8px;
 }
 div.explore div.poster > div.image > a > img {
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
-    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
-}
-div.explore div.poster > div.image > a > img:hover {
-    box-shadow: 0 0 4px #1A3DC1;
-    -webkit-box-shadow: 0 0 4px #1A3DC1;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
 }
 
 div.explore div.games > div > div.poster, 
@@ -607,15 +606,14 @@ div.explore div.pager > div.item {
     margin-left: 2px;
     min-width: 26px;
     height: 16px;
-    /*cursor: pointer;*/
     cursor: default;
 }
 div.explore div.pager > div.item:hover {
     background-color: #EBEBEB;
 }
 div.explore div.pager > div.item.active {
-    background-color: #9CF;
-    /*cursor: default;*/
+    background-color: #337AF8;
+    color: #fff;
 }
 div.explore div.source {
     padding-left: 10px;
@@ -781,7 +779,7 @@ div.topbtn {
     opacity: 0.9;
 }
 div.topbtn:hover {
-    background-color:#9CF;
+    background-color: #ddd;
 }
 div.ad {
     overflow: hidden;

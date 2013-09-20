@@ -7,6 +7,7 @@ div.search_panel {
     padding: 20px;
     background-color: #F1F1F1;
     width: 590px;
+    -webkit-user-select: none;
 }
 div.search_panel input[type=text] {
     height: 22px !important;

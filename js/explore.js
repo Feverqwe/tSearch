@@ -887,14 +887,14 @@ var explore = function() {
                 deuld.children('div').children('div.poster').hide();
                 deuld.children('div').children('div.pager').hide();
                 deuld.children('div').css('min-height', '');
-                $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow', 'none');
+                $('div.explore ul.sortable li').children('div').children('h2').css('border-width', '0');
             },
             stop: function(event, ui) {
                 $('div.explore').find('div.spoiler').show('fast');
                 $('div.explore').find('div.setup.triggered').removeClass('triggered').show('fast');
                 $('div.explore ul.sortable li div').children('div').children('div.poster').show();
                 $('div.explore ul.sortable li div').children('div').children('div.pager').show();
-                $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow', '0 4px 4px -4px rgba(0, 0, 0, 0.5)');
+                $('div.explore ul.sortable li').children('div').children('h2').css('border-width', '1px');
                 save_order();
             }
         });
