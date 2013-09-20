@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<RDF:RDF xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <RDF:Description about="urn:mozilla:extension">
+    <em:updates>
+      <RDF:Seq>
+        <RDF:li>
+          <RDF:Description>
+            <em:version>0.9.2</em:version>
+            <em:targetApplication>
+              <RDF:Description>
+                <em:id>{d03fdff0-d3a0-11e0-baa5-14d64d08fdac}</em:id>
+                <em:minVersion>3.5</em:minVersion>
+                <em:maxVersion>16.*</em:maxVersion>
+                <em:updateLink>https://github.com/Feverqwe/tSearch/raw/master/build_firefox.xpi</em:updateLink>
+              </RDF:Description>
+            </em:targetApplication>
+          </RDF:Description>
+        </RDF:li>
+      </RDF:Seq>
+    </em:updates>
+  </RDF:Description>
+</RDF:RDF>

@@ -16,8 +16,7 @@
                 <em:maxVersion>16.*</em:maxVersion>
             </Description>
         </em:targetApplication>
-        <em:updateURL>https://github.com/Feverqwe/tSearch/raw/master/build_firefox.xpi</em:updateURL>
-        <em:updateURL>https://github.com/Feverqwe/tSearch/raw/master/ff_o/firefox/install.rdf</em:updateURL>
-        <em:version>0.9.16</em:version>
+        <em:updateURL>https://github.com/Feverqwe/tSearch/raw/master/ff_o/firefox/update.rdf</em:updateURL>
+        <em:version>0.9.0</em:version>
     </Description>
 </RDF>
