@@ -35,8 +35,6 @@ input[type=text]:hover {
 input[type=text]:focus {
     border: 1px solid #3366ff !important;
 }
-
-
 .sbutton {
     height: 26px !important;
     background-color: #ffffff;
@@ -886,9 +884,10 @@ div.info_popup {
     min-width: 80px;
     z-index: 12;
     background-color: #fff;
-    border-radius: 4px;
-    box-shadow: 0 0 1px 0 rgba(0,0,0,0.6),0 10px 25px -5px rgba(0,0,0,0.4);
+    box-shadow: 0 2px 10px 0 rgba(0,0,0,0.2);
     display: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 div.info_popup .corner2 {
     border: 8px solid transparent;
