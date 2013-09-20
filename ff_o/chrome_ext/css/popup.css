@@ -13,7 +13,7 @@ div.search_panel input[type=text] {
     font-size: 16px;
     width: 485px;
     padding-left: 7px;
-    padding-right: 18px;
+    padding-right: 20px;
     float: left;
     font-size: 16px;
 }
@@ -29,7 +29,7 @@ div.search_panel div.btn.clear {
     display: none;
 }
 div.search_panel div.btn.clear {
-    left: 516px;
+    left: 514px;
     top: 25px;
 }
 input[type=text] {

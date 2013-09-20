@@ -21,7 +21,7 @@ div.search_panel input[type=text] {
     height: 22px !important;
     width: 487px;
     padding-left: 7px;
-    padding-right: 18px;
+    padding-right: 20px;
     float: left;
     font-size: 1.143em;
 }
@@ -275,7 +275,7 @@ div.search_panel div.btn.clear {
     display: none;
 }
 div.search_panel div.btn.clear {
-    left: 514px;
+    left: 516px;
     top: 25px;
 }
 div.tracker_list > div.setup {
@@ -314,11 +314,11 @@ div.tracker_list > ul.trackers > li > a {
 }
 div.tracker_list > ul.trackers > li > a:hover {
     background-color: #ebebeb;
-    border-radius: 6px;
+    border-radius: 4px;
 }
 div.tracker_list > ul.trackers > li > a.selected {
     background-color: #99ccff;
-    border-radius: 6px;
+    border-radius: 4px;
 }
 
 div.progress {
