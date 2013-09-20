@@ -1031,7 +1031,7 @@ var explore = function() {
         get_search_top();
         $('div.explore > div.top_search').on('click', 'li > span > a', function() {
             event.preventDefault();
-            var s = $(this).attr('title');
+            var s = $(this).parent().attr('title');
             triggerClick(s);
         });
         $("div.explore").sortable({handle: 'div.move_favorite', cancel: "div.pager", items: ">ul.sortable > li.favorites>div.favorites>div>div.poster", opacity: 0.8,
