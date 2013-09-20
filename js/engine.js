@@ -311,6 +311,7 @@ var engine = function() {
             var login_url = ('auth' in me) ? me.auth : null;
             var filename = me.uid;
             var uid = me.uid;
+            var tests = [0,0,0,0,0,0,0,0,0];
             var flags = ('flags' in me) ? me.flags : {
                 a: 0,
                 l: 0,
@@ -339,6 +340,18 @@ var engine = function() {
                     var ex_t_m_r = ('t_m_r' in me) ? 1 : 0;
                     var ex_t_f = ('t_f' in me && me.t_f !== "-1") ? 1 : 0; //me.t_f is string from JSON
                     var ex_auth_f = ('auth_f' in me) ? 1 : 0;
+                    
+                    if (ex_cat === 0) {
+                        tests[1] = 1;
+                        tests[2] = 1;
+                    }
+                    if (ex_link === 0) {
+                        tests[2] = 1;
+                    }
+                    if (ex_tr_dl === 0) {
+                        tests[5] = 1;
+                    }
+
 
                     if (ex_auth_f) {
                         if ((t.find(me.auth_f)).length > 0) {
@@ -559,7 +572,8 @@ var engine = function() {
                 filename: filename,
                 flags: flags,
                 login_url: login_url,
-                uid: uid
+                uid: uid,
+                tests: tests
             };
         }(ct);
         ModuleLoaded(l);

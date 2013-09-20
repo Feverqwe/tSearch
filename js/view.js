@@ -204,7 +204,7 @@ var view = function() {
             //1 - cotegory title
             //2 - cotegory url
             //3 - cotegory id
-            //4 - sile size
+            //4 - file size
             //5 - dl link
             //6 - seeds
             //7 - leechs
@@ -219,7 +219,7 @@ var view = function() {
             if (er[3])
                 console.log(er[1] + ' - cotegory id fix');
             if (er[4])
-                console.log(er[4] + ' - sile size fix');
+                console.log(er[4] + ' - file size fix');
             if (er[5])
                 console.log(er[5] + ' - dl link fix');
             if (er[6])
