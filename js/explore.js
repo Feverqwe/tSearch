@@ -1029,7 +1029,7 @@ var explore = function() {
         });
 
         get_search_top();
-        $('div.explore > div.top_search').on('click', 'li > a', function() {
+        $('div.explore > div.top_search').on('click', 'li > span > a', function() {
             event.preventDefault();
             var s = $(this).attr('title');
             triggerClick(s);
