@@ -20,7 +20,7 @@ div.search_panel {
 div.search_panel input[type=text] {
     height: 22px !important;
     width: 487px;
-    padding-left: 9px;
+    padding-left: 7px;
     padding-right: 18px;
     float: left;
     font-size: 1.143em;
@@ -31,23 +31,17 @@ input[type=text] {
 }
 input[type=text]:hover {
     border: 1px solid #999999;
-    box-shadow: inset 0 1px 5px #ebebeb;
-    -webkit-box-shadow: inset 0 1px 5px #ebebeb;
 }
 input[type=text]:focus {
     border: 1px solid #3366ff !important;
-    box-shadow: inset 0 1px 5px #CCC;
-    -webkit-box-shadow: inset 0 1px 5px #CCC;
 }
 
 
 .sbutton {
     height: 26px !important;
-
     background-color: #ffffff;
     border-color: #cccccc;
     color:#333333;
-
     -moz-border-radius:3px;
     -webkit-border-radius:3px;
     border-radius:3px;
@@ -56,10 +50,8 @@ input[type=text]:focus {
     padding:2px 8px;
     text-decoration:none;
     margin-top: 0;
-
     font-size: 1em;
     cursor: pointer;
-    
     border:1px solid #cccccc;
 }
 .sbutton:hover {
@@ -95,19 +87,7 @@ div.content div.right {
     border-top: 1px #c0c0c0 solid;
 }
 #rez_table thead {
-    background-image: linear-gradient(bottom, rgb(208,208,208) 30%, rgb(247,247,247) 92%);
-    background-image: -o-linear-gradient(bottom, rgb(208,208,208) 30%, rgb(247,247,247) 92%);
-    background-image: -moz-linear-gradient(bottom, rgb(208,208,208) 30%, rgb(247,247,247) 92%);
-    background-image: -webkit-linear-gradient(bottom, rgb(208,208,208) 30%, rgb(247,247,247) 92%);
-    background-image: -ms-linear-gradient(bottom, rgb(208,208,208) 30%, rgb(247,247,247) 92%);
-
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        color-stop(0.3, rgb(208,208,208)),
-        color-stop(0.92, rgb(247,247,247))
-        );
+    background-color: #eee;
 }
 #rez_table a {
     text-decoration: none;
@@ -121,7 +101,9 @@ div.content div.right {
 }
 #rez_table tr th {
     cursor: pointer;
-    border-right: 1px #c0c0c0 solid;
+    border-right: 1px #c0c0c0 dashed;
+    border-left: 1px #c0c0c0 dashed;
+    border-bottom: 1px #c0c0c0 solid;
     font-weight: normal;
 }
 #rez_table > tbody > tr.even {
@@ -214,14 +196,14 @@ div.content div.right {
     background-position: right center;
     background-repeat: no-repeat;
     background-origin: content-box;
-    padding-rigth: 3px;
+    background-color: #ccc;
 }
 #rez_table > thead > tr > th.headerSortUp {
     background-image: url('../images/up.png');
     background-position: right center;
     background-repeat: no-repeat;
     background-origin: content-box;
-    padding-rigth: 3px;
+    background-color: #ccc;
 }
 div.result_panel {
     display: none;
@@ -242,27 +224,14 @@ div.result_panel ul.categorys li {
     padding: 3px;
     font-size: 0.857em;
     cursor: pointer;
-    box-shadow: inset 0 -2px 5px -2px #c0c0c0;
-    -webkit-box-shadow: inset 0 -2px 5px -2px #c0c0c0;
 }
 div.result_panel ul.categorys li.selected {
-    background-image: linear-gradient(bottom, rgb(38,98,237) 50%, rgb(100,138,241) 90%);
-    background-image: -o-linear-gradient(bottom, rgb(38,98,237) 50%, rgb(100,138,241) 90%);
-    background-image: -moz-linear-gradient(bottom, rgb(38,98,237) 50%, rgb(100,138,241) 90%);
-    background-image: -webkit-linear-gradient(bottom, rgb(38,98,237) 50%, rgb(100,138,241) 90%);
-    background-image: -ms-linear-gradient(bottom, rgb(38,98,237) 50%, rgb(100,138,241) 90%);
-
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        color-stop(0.5, rgb(38,98,237)),
-        color-stop(0.9, rgb(100,138,241))
-        );
+    background-color: #337AF8;
     color: #FFF;
     cursor: default;
     border: 1px solid rgb(100,138,241);
     border-bottom: 0;
+    border-color: #337AF8;
 }
 div.right > div {
     margin-bottom: 5px;
@@ -306,7 +275,7 @@ div.search_panel div.btn.clear {
     display: none;
 }
 div.search_panel div.btn.clear {
-    left: 518px;
+    left: 514px;
     top: 25px;
 }
 div.tracker_list > div.setup {
@@ -318,11 +287,11 @@ div.tracker_list > div.setup {
     left: 60px;
     cursor: pointer;
     z-index: 1;
-    opacity: 0.3;
+    opacity: 0.5;
     display: inline-block;
 }
 div.tracker_list > div.setup:hover {
-    opacity: 0.7;
+    opacity: 1;
 }
 div.tracker_icon {
     width: 16px;
@@ -422,8 +391,8 @@ div.explore h2 {
     margin: 0;
     padding: 0;
     margin-left: 5px;
-    box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.5);
-    -webkit-box-shadow: 0 4px 8px -4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.5);
     font-weight: normal;
     margin-bottom: 5px;
     padding-left: 10px;
@@ -576,12 +545,12 @@ div.explore div.poster > div.image > div.move_favorite {
     border-radius: 8px;
 }
 div.explore div.poster > div.image > a > img {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
-    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
 }
 div.explore div.poster > div.image > a > img:hover {
-    box-shadow: 0 0 15px #1A3DC1;
-    -webkit-box-shadow: 0 0 15px #1A3DC1;
+    box-shadow: 0 0 4px #1A3DC1;
+    -webkit-box-shadow: 0 0 4px #1A3DC1;
 }
 
 div.explore div.games > div > div.poster, 
@@ -654,14 +623,74 @@ div.explore div.source {
     padding-left: 10px;
     margin-bottom: 5px;
 }
-div.explore div.top_search {
+div.top_search ul {
+    list-style-type: none;
+}
+div.top_search ul li {
+    float:left;
+    width:33%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-top: 2px;
+    padding-bottom: 3px;
+}
+div.top_search {
+    margin-top: -15px;
+    margin-bottom: 20px;
     overflow: hidden;
 }
-div.explore div.top_search div.tags {
-    height: 200px;
+div.top_search a {
+    color: #0051D8;
 }
-div.explore div.top_search a {
-    white-space: nowrap;
+div.top_search .info {
+    position: absolute;
+    left: 14px;
+    height: 16px;
+    width: 16px;
+    border-radius: 4px;
+    text-align: center;
+    border: 1px dashed rgb(165, 165, 165);
+    color: #fff;
+}
+div.top_search .l1 span {
+    font-size: 140%;
+}
+div.top_search .l2 span {
+    font-size: 130%;
+}
+div.top_search .l3 span {
+    font-size: 120%;
+}
+div.top_search .l4 span {
+    font-size: 110%;
+}
+div.top_search .l5 span {
+    font-size: 100%;
+}
+div.top_search .t1 {
+    background-color: #DB4733;
+    border: 1px solid #fff;
+    margin-top: 3px;
+}
+div.top_search .t2 {
+    background-color: #FFC70D;
+    border: 1px solid #fff;
+    margin-top: 3px;
+}
+div.top_search .t3 {
+    background-color: #337AF8;
+    border: 1px solid #fff;
+    margin-top: 1px;
+}
+div.top_search .t4 {
+    background-color: #009A57;
+    border: 1px solid #fff;
+}
+div.top_search .t5 {
+    background-color: #8C5FFF;
+    border: 1px solid #fff;
+    border-color: #fff;
 }
 div.search_panel > div.left {
     display: inline-block;
@@ -673,28 +702,24 @@ div.search_panel > div.right {
 }
 div.search_panel > div.right input {
     width: 0;
+    background-repeat:  no-repeat;
+    background-position: center;
+    padding-left: 14px;
+    padding-right: 14px;
 }
 div.search_panel > div.right input.history {
-    padding-left: 14px;
-    padding-right: 14px;
-    background: url(../images/history.png) no-repeat center ;
+    background-image: url(../images/history.png);
 }
 div.search_panel > div.right input.history:hover {
-    background-color: #FFF;
 }
 div.search_panel > div.right input.history:active {
-    background-color: #DDD;
 }
 div.search_panel > div.right input.main {
-    padding-left: 14px;
-    padding-right: 14px;
-    background: url(../images/main.png) no-repeat center ;
+    background-image: url(../images/main.png);
 }
 div.search_panel > div.right input.main:hover {
-    background-color: #FFF;
 }
 div.search_panel > div.right input.main:active {
-    background-color: #DDD;
 }
 ul.ui-autocomplete {
     border: 1px solid silver;
@@ -768,7 +793,6 @@ div.explore div.poster > div.image > div.quality_box {
     border: 1px rgb(175, 173, 173) solid;
     border-radius: 3px;
     padding: 2px;
-    padding-bottom: -4px;
     font-size: 0.857em;
     color: #000;
 }

@@ -33,7 +33,6 @@ del .\build\js\ad.js
 del .\build\js\apprise-1.5.js
 del .\build\js\counter.js
 del .\build\js\explore.js
-del .\build\js\jqcloud-1.0.2.min.js
 del .\build\js\jquery.tablesorter.js
 del .\build\js\lang.js
 del .\build\js\storage.js
@@ -43,11 +42,11 @@ java -jar compiler.jar --js .\build\js\torrent_lib_patched.js --js .\tracker\ani
 del .\build\js\torrent_lib_patched.js
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\background.js --js_output_file .\build\js\background.js
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\history.js --js_output_file .\build\js\history.js
-java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\jqcloud-1.0.2.min.js --js .\js\apprise-1.5.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\js\counter.js --js_output_file .\build\js\view.js
+java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\js\counter.js --js_output_file .\build\js\view.js
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\magic.js --js_output_file .\build\js\magic.js
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\options.js --js_output_file .\build\js\options.js
 
-copy .\css\stylesheet.css+.\css\jqcloud.css+.\css\apprise.css .\build\css\stylesheet.css
+copy .\css\stylesheet.css+.\css\apprise.css .\build\css\stylesheet.css
 
 java -jar yuicompressor-2.4.8.jar .\build\css\stylesheet.css -o .\build\css\stylesheet.css
 java -jar yuicompressor-2.4.8.jar .\css\options.css -o .\build\css\options.css
@@ -66,7 +65,7 @@ xcopy .\build .\build_firefox\chrome\content\ /E
 xcopy .\ff_o\firefox\* .\build_firefox\. /E /Y
 
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\js\history.js --js_output_file .\build_firefox\chrome\content\js\history.js
-java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\jqcloud-1.0.2.min.js --js .\js\apprise-1.5.js --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\ff_o\firefox\chrome\content\js\counter.js --js_output_file .\build_firefox\chrome\content\js\view.js
+java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\ff_o\firefox\chrome\content\js\counter.js --js_output_file .\build_firefox\chrome\content\js\view.js
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\js\magic.js --js_output_file .\build_firefox\chrome\content\js\magic.js
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\options.js --js_output_file .\build_firefox\chrome\content\js\options.js
 
@@ -89,7 +88,7 @@ xcopy .\ff_o\opera\* .\build_opera\. /E
 
 
 java -jar compiler.jar --js .\ff_o\opera\build\js\storage.js --js .\js\lang.js --js .\js\history.js --js_output_file .\build_opera\build\js\history.js
-java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\jqcloud-1.0.2.min.js --js .\js\apprise-1.5.js --js .\ff_o\opera\build\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\ff_o\opera\build\js\counter.js --js_output_file .\build_opera\build\js\view.js
+java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\ff_o\opera\build\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\ff_o\opera\build\js\counter.js --js_output_file .\build_opera\build\js\view.js
 java -jar compiler.jar --js .\ff_o\opera\build\js\storage.js --js .\js\lang.js --js .\js\magic.js --js_output_file .\build_opera\build\js\magic.js
 java -jar compiler.jar --js .\ff_o\opera\build\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\options.js --js_output_file .\build_opera\build\js\options.js
 

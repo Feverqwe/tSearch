@@ -81,22 +81,22 @@ function apprise(string, args, callback)
     {
         if (args['confirm'] || args['input'])
         {
-            $('.aButtons').append('<button value="ok">' + args['textOk'] + '</button>');
-            $('.aButtons').append('<button value="cancel">' + args['textCancel'] + '</button>');
+            $('.aButtons').append('<button class="sbutton" value="ok">' + args['textOk'] + '</button>');
+            $('.aButtons').append('<button class="sbutton" value="cancel">' + args['textCancel'] + '</button>');
         }
         else if (args['verify'])
         {
-            $('.aButtons').append('<button value="ok">' + args['textYes'] + '</button>');
-            $('.aButtons').append('<button value="cancel">' + args['textNo'] + '</button>');
+            $('.aButtons').append('<button class="sbutton" value="ok">' + args['textYes'] + '</button>');
+            $('.aButtons').append('<button class="sbutton" value="cancel">' + args['textNo'] + '</button>');
         }
         else
         {
-            $('.aButtons').append('<button value="ok">' + args['textOk'] + '</button>');
+            $('.aButtons').append('<button class="sbutton" value="ok">' + args['textOk'] + '</button>');
         }
     }
     else
     {
-        $('.aButtons').append('<button value="ok">Ok</button>');
+        $('.aButtons').append('<button class="sbutton" value="ok">Ok</button>');
     }
     $(document).keydown(function(e)
     {

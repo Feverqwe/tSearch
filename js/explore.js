@@ -740,7 +740,9 @@ var explore = function() {
     var edit_from_favorites = function(id) {
         var new_name = apprise(_lang.exp_edit_fav_label, {
             'input': [favoritesList[id].name, favoritesList[id].img, favoritesList[id].url],
-            'id': id
+            'id': id,
+            'textOk': _lang.apprise_btns[0],
+            'textCancel': _lang.apprise_btns[1]
         }, function(id, name) {
             if (id === false)
                 return;
@@ -892,7 +894,7 @@ var explore = function() {
                 $('div.explore').find('div.setup.triggered').removeClass('triggered').show('fast');
                 $('div.explore ul.sortable li div').children('div').children('div.poster').show();
                 $('div.explore ul.sortable li div').children('div').children('div.pager').show();
-                $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow', '0 4px 8px -4px rgba(0, 0, 0, 0.5)');
+                $('div.explore ul.sortable li').children('div').children('h2').css('-webkit-box-shadow', '0 4px 4px -4px rgba(0, 0, 0, 0.5)');
                 save_order();
             }
         });
@@ -1027,7 +1029,7 @@ var explore = function() {
         });
 
         get_search_top();
-        $('div.explore > div.top_search > div.tags').on('click', 'span > a', function() {
+        $('div.explore > div.top_search').on('click', 'li > a', function() {
             event.preventDefault();
             var s = $(this).attr('title');
             triggerClick(s);
@@ -1114,19 +1116,49 @@ var explore = function() {
         });
     };
     var render_top = function(arr) {
-        setTimeout(function() {
-            var max = 0;
-            for (var i = 0; i < arr.length; i++) {
-                if (max < arr[i].weight) {
-                    max = arr[i].weight;
+        arr.sort(function(a, b) {
+            if (a.weight > b.weight) {
+                return -1;
+            }
+            if (a.weight === b.weight) {
+                return 0;
+            }
+            return 1;
+        });
+        var top_search = $('div.top_search');
+        top_search.empty();
+        top_search.append('<ul></ul>');
+        var ul = top_search.children();
+        var info = '';
+        var sub_style = '';
+        var num = 1;
+        var line = 1;
+        var search = '';
+        for (var i = 0; i < arr.length; i++) {
+            var item = arr[i];
+            if (line > 10) {
+                break;
+            }
+            if (num % 3 === 0) {
+                if (line < 6) {
+                    sub_style = ' t' + line;
+                } else {
+                    sub_style = '';
                 }
+                info = '<div class="info' + sub_style + '"></div>';
+            } else {
+                info = '';
             }
-            for (var i = 0; i < arr.length; i++) {
-                arr[i].weight = Math.round(max / 100 * arr[i].weight / 10);
+            search = item.text;
+            if (item.year > 0) {
+                search += ' ' + item.year;
             }
-
-            $('div.explore div.top_search div.tags').jQCloud(arr);
-        }, 50);
+            ul.append('<li class="' + 'l' + line + '">' + info + '<span title="' + search + '"><a href="#s=' + search + '">' + item.text + '</a></span>' + '</li>');
+            if (num % 3 === 0) {
+                line++;
+            }
+            num++;
+        }
     };
     var get_search_top = function() {
         var timeout = 86400;

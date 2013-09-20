@@ -12,7 +12,7 @@ div.search_panel input[type=text] {
     height: 22px !important;
     font-size: 16px;
     width: 485px;
-    padding-left: 9px;
+    padding-left: 7px;
     padding-right: 18px;
     float: left;
     font-size: 16px;
@@ -38,13 +38,9 @@ input[type=text] {
 }
 input[type=text]:hover {
     border: 1px solid #999999;
-    box-shadow: inset 0 1px 5px #ebebeb;
-    -webkit-box-shadow: inset 0 1px 5px #ebebeb;
 }
 input[type=text]:focus {
     border: 1px solid #3366ff !important;
-    box-shadow: inset 0 1px 5px #CCC;
-    -webkit-box-shadow: inset 0 1px 5px #CCC;
 }
 
 .sbutton {
