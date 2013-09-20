@@ -764,7 +764,7 @@ ul.ui-autocomplete li > a {
 ul.ui-autocomplete li > a:hover, ul.ui-autocomplete li > a.ui-state-focus {
     background-color: #337AF8;
     color: #fff;
-    border-radius: 6px;
+    border-radius: 3px;
 }
 div.topbtn {
     display: none;
