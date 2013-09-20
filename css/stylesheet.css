@@ -642,6 +642,10 @@ div.top_search {
 }
 div.top_search a {
     color: #0051D8;
+    text-decoration: none;
+}
+div.top_search a:hover {
+    border-bottom: 1px solid #0051D8;
 }
 div.top_search .info {
     position: absolute;
@@ -691,6 +695,21 @@ div.top_search .t5 {
     background-color: #8C5FFF;
     border: 1px solid #fff;
     border-color: #fff;
+}
+div.top_search .l1 a:hover {
+    border-color: #DB4733;
+}
+div.top_search .l2 a:hover {
+    border-color: #FFC70D;
+}
+div.top_search .l3 a:hover {
+    border-color: #337AF8;
+}
+div.top_search .l4 a:hover {
+    border-color: #009A57;
+}
+div.top_search .l5 a:hover {
+    border-color: #8C5FFF;
 }
 div.search_panel > div.left {
     display: inline-block;
