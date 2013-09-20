@@ -19,27 +19,27 @@
             var calculateSize = function(s) {
                 var size = s.replace(' ', '');
                 var t = size.replace('КБ', '');
-                if (t.length != size.length) {
+                if (t.length !== size.length) {
                     t = parseFloat(t);
                     return Math.round(t * 1024);
                 }
                 var t = size.replace('МБ', '');
-                if (t.length != size.length) {
+                if (t.length !== size.length) {
                     t = parseFloat(t);
                     return Math.round(t * 1024 * 1024);
                 }
                 var t = size.replace('ГБ', '');
-                if (t.length != size.length) {
+                if (t.length !== size.length) {
                     t = parseFloat(t);
                     return Math.round(t * 1024 * 1024 * 1024);
                 }
                 var t = size.replace('ТБ', '');
-                if (t.length != size.length) {
+                if (t.length !== size.length) {
                     t = parseFloat(t);
                     return Math.round(t * 1024 * 1024 * 1024 * 1024);
                 }
                 return 0;
-            }
+            };
             var calculateCategory = function(n) {
                 var n = n.replace(/.*c=([0-9]*)$/i, "$1");
                 var groups_arr = [
@@ -59,7 +59,7 @@
                         return i;
                     }
                 return -1;
-            }
+            };
             var calculateCategoryName = function(n) {
                 var n = calculateCategory(n);
                 if (n > 9)
@@ -107,7 +107,7 @@
                 var ver = 1;
                 var t = view.load_in_sandbox(id, c);
                 t = t.find('table.mn2').eq($(c).find('table.mn2').length - 1).children('tbody').children('tr');
-                if (t.length == 0) {
+                if (t.length === 0) {
                     ver = 2;
                     var t = $(c).find('table.t_peer.w100p').children('tbody').children('tr');
                 }
@@ -116,7 +116,7 @@
                 var i = 0;
                 for (i = 1; i < l; i++) {
                     var td = t.eq(i).children('td');
-                    if (ver == 1) {
+                    if (ver === 1) {
                         arr[arr.length] = {
                             'category': {
                                 'title': calculateCategoryName(td.eq(0).children('a').eq(0).attr('href')),
@@ -130,7 +130,7 @@
                             'leechs': td.eq(7).text(),
                             'time': calculateTime(td.eq(3).text())
                         }
-                    } else if (ver == 2) {
+                    } else if (ver === 2) {
                         arr[arr.length] = {
                             'category': {
                                 'title': calculateCategoryName(td.eq(0).children('img').attr('src').replace(/.*\/([0-9]*)\.gif$/, '$1')),
@@ -218,10 +218,11 @@
             about: about,
             url: root_url,
             filename: filename,
-            flags: flags
+            flags: flags,
+            tests: [0,0,1,0,0,1,0,0,0]
         }
     }();
-    if (compression == 0) {
+    if (compression === 0) {
         engine.ModuleLoaded(num);
     }
 })();

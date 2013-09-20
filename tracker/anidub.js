@@ -13,7 +13,7 @@
             a: 1,
             l: 1,
             rs: 1
-        }
+        };
         var xhr = null;
         var web = function() {
             var calculateCategory = function(f) {
@@ -76,7 +76,7 @@
                     var td = t.eq(i).children('tbody').children('tr').children('td').eq(1);
                     var params = td.children('table').eq(2).find('td').eq(0).text().replace(/[\r\t]*/g, '').replace(/[а-яА-Я]*\:/gm, '').replace(/\n/gm, '').replace(/\s+/g, " ").split(' ');
                     var pp = 0;
-                    if (params.length == 9)
+                    if (params.length === 9)
                         pp = 1;
                     arr[arr.length] = {
                         'category': {
@@ -103,19 +103,19 @@
                         Acode -= 848;
                         ExitValue = "%" + Acode.toString(16);
                     }
-                    else if (Ucode == 1025) {
+                    else if (Ucode === 1025) {
                         Acode = 168;
                         ExitValue = "%" + Acode.toString(16);
                     }
-                    else if (Ucode == 1105) {
+                    else if (Ucode === 1105) {
                         Acode = 184;
                         ExitValue = "%" + Acode.toString(16);
                     }
-                    else if (Ucode == 32) {
+                    else if (Ucode === 32) {
                         Acode = 32;
                         ExitValue = "%" + Acode.toString(16);
                     }
-                    else if (Ucode == 10) {
+                    else if (Ucode === 10) {
                         Acode = 10;
                         ExitValue = "%0A";
                     }
@@ -125,10 +125,10 @@
                     text = text + ExitValue;
                 }
                 return text;
-            }
+            };
             var loadPage = function(text) {
                 var t = text;
-                if (xhr != null)
+                if (xhr !== null)
                     xhr.abort();
                 xhr = $.ajax({
                     type: 'GET',
@@ -141,16 +141,16 @@
                         view.loadingStatus(2, id);
                     }
                 });
-            }
+            };
             return {
                 getPage: function(a) {
                     return loadPage(a);
                 }
-            }
+            };
         }();
         var find = function(text) {
             return web.getPage(text);
-        }
+        };
         return {
             find: function(a) {
                 return find(a);
@@ -164,10 +164,11 @@
             about: about,
             url: root_url,
             filename: filename,
-            flags: flags
-        }
+            flags: flags,
+            tests: [0,0,1,0,0,1,0,0,0]
+        };
     }();
-    if (compression == 0) {
+    if (compression === 0) {
         engine.ModuleLoaded(num);
     }
 })();

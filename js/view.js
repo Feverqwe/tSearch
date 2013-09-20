@@ -92,7 +92,7 @@ var view = function() {
         $('style.tr_icon').remove();
     };
     function isInt(n) {
-        if (n === undefined)
+        if (n === undefined || n === null || n.length === 0)
             return false;
         return n % 1 === 0;
     }
@@ -124,6 +124,112 @@ var view = function() {
             return 2;
         return -1;
     };
+    var torrent_check = function(v, t) {
+        var tests = ('tests' in tracker[t]) ? tracker[t].tests : false;
+        var er = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        if ('category' in v === false) {
+            v['category'] = {
+                title: null,
+                url: null,
+                id: -1
+            };
+            er[0] = 1;
+            if (tests && tests[0] === 2) {
+                er[0] = 0;
+            }
+        }
+        if (v.category.title === undefined || v.category.title === null || v.category.title.length === 0) {
+            v.category.title = null;
+            er[1] = 1;
+            if (tests && tests[1] !== 0) {
+                er[1] = 0;
+            }
+        }
+        if (v.category.url === undefined || v.category.url === null || v.category.url.length === 0) {
+            v.category.url = null;
+            er[2] = 1;
+            if (tests && tests[2] !== 0) {
+                er[2] = 0;
+            }
+        }
+        if (v.category.id === undefined || v.category.id === null || v.category.id.length === 0) {
+            v.category.id = -1;
+            er[3] = 1;
+            if (tests && tests[3] !== 0) {
+                er[3] = 0;
+            }
+        }
+        v.size = parseFloat(v.size);
+        if (isNaN(parseFloat(v.size))) {
+            v.size = 0;
+            er[4] = 1;
+            if (tests && tests[4] !== 0) {
+                er[4] = 0;
+            }
+        }
+        if (v.dl === undefined || v.dl === null || v.dl.length === 0) {
+            v.dl = null;
+            er[5] = 1;
+            if (tests && tests[5] !== 0) {
+                er[5] = 0;
+            }
+        }
+        v.seeds = parseFloat(v.seeds);
+        if (isNaN(parseFloat(v.seeds))) {
+            v.seeds = 1;
+            er[6] = 1;
+            if (tests && tests[6] !== 0) {
+                er[6] = 0;
+            }
+        }
+        v.leechs = parseFloat(v.leechs);
+        if (isNaN(parseFloat(v.leechs))) {
+            v.leechs = 0;
+            er[7] = 1;
+            if (tests && tests[7] !== 0) {
+                er[7] = 0;
+            }
+        }
+        v.time = parseFloat(v.time);
+        if (isNaN(parseFloat(v.time))) {
+            v.time = 0;
+            er[8] = 1;
+            if (tests && tests[8] !== 0) {
+                er[8] = 0;
+            }
+        }
+        if (er.join(',') !== '0,0,0,0,0,0,0,0,0') {
+            //tests syntax:
+            //0 - category exist
+            //1 - cotegory title
+            //2 - cotegory url
+            //3 - cotegory id
+            //4 - sile size
+            //5 - dl link
+            //6 - seeds
+            //7 - leechs
+            //8 - time
+            console.log('Tracker ' + tracker[t].name + ' have problem! Tests: ' + er.join(','));
+            if (er[0])
+                console.log(er[0] + ' - cotegory exist fix!');
+            if (er[1])
+                console.log(er[1] + ' - cotegory title fix');
+            if (er[2])
+                console.log(er[1] + ' - cotegory url fix');
+            if (er[3])
+                console.log(er[1] + ' - cotegory id fix');
+            if (er[4])
+                console.log(er[4] + ' - sile size fix');
+            if (er[5])
+                console.log(er[5] + ' - dl link fix');
+            if (er[6])
+                console.log(er[6] + ' - seeds fix');
+            if (er[7])
+                console.log(er[7] + ' - leechs fix');
+            if (er[8])
+                console.log(er[8] + ' - time fix');
+        }
+    };
     var inBGMode = function(t, a, s) {
         if ("year" in keyword_filter_cache === false) {
             keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
@@ -147,24 +253,18 @@ var view = function() {
         }
         var sum = 0;
         $.each(a, function(k, v) {
-            if (typeof(v.title) !== 'string' || v.title.length === 0 || !isInt(v.size) || !isInt(v.seeds)
-                    || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
-                    || ('title' in v.category && (typeof(v.category.title) !== 'string' && v.category.title != null))
-                    || ('url' in v.category && (typeof(v.category.url) !== 'string' && v.category.url != null))
-                    || ('dl' in v && (typeof(v.dl) !== 'string' && v.dl != null))
-                    ) {
+            if (typeof(v.title) !== 'string' || typeof(v.url) !== 'string' || v.title.length === 0 || v.url.length === 0) {
+                console.log('Tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
+                return true;
+            }
+            torrent_check(v, t);
+            if (HideZeroSeed && v.seeds === 0) {
                 if (tmp_var_qbox === 0) {
                     explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
                 }
                 return true;
             }
-            if (HideZeroSeed && v.seeds == 0) {
-                if (tmp_var_qbox === 0) {
-                    explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
-                }
-                return true;
-            }
-            var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title != null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
+            var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title !== null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
             if (Teaser === 1) {
                 if (tmp_var_qbox === 0) {
                     explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
@@ -261,23 +361,16 @@ var view = function() {
         }
         var sum = 0;
         $.each(a, function(k, v) {
-            if (typeof(v.title) !== 'string' || v.title.length === 0 || !isInt(v.size) || !isInt(v.seeds)
-                    || !isInt(v.leechs) || !isInt(v.time) || !isInt(v.category.id)
-                    || ('title' in v.category && (typeof(v.category.title) !== 'string' && v.category.title != null))
-                    || ('url' in v.category && (typeof(v.category.url) !== 'string' && v.category.url != null))
-                    || ('dl' in v && (typeof(v.dl) !== 'string' && v.dl != null))
-                    ) {
-                console.log('Tracker ' + tracker[t].name + ' have problem!');
-                console.log('#debug start');
-                console.log(v);
-                console.log('#debug end');
+            if (typeof(v.title) !== 'string' || typeof(v.url) !== 'string' || v.title.length === 0 || v.url.length === 0) {
+                console.log('Tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
                 return true;
             }
-            if (HideZeroSeed && v.seeds == 0) {
+            torrent_check(v, t);
+            if (HideZeroSeed && v.seeds === 0) {
                 return true;
             }
             if (TeaserFilter) {
-                var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title != null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
+                var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title !== null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
                 if (Teaser === 1) {
                     return true;
                 }
@@ -322,11 +415,11 @@ var view = function() {
                     + '<td class="time" data-value="' + v.time + '" title="' + unixintimetitle(v.time) + '">' + unixintime(v.time) + '</td>'
                     + '<td class="quality" data-value="' + quality.value + '" data-qgame="' + quality.game + '" data-qseed="' + quality.seed + '" data-qname="' + quality.name + '" data-qvideo="' + quality.video + '" data-qmusic="' + quality.music + '" data-qbook="' + quality.book + '"><div class="progress"><div style="width:' + (quality.value / 15) + 'px"></div><span title="' + quality.value + '">' + quality.value + '</span></div></td>'
                     + '<td class="name"><div class="title"><a href="' + v.url + '" target="_blank">' + title + '</a>' +
-                    ((v.category.title == null && ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div>' : '')
+                    ((v.category.title === null && ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div>' : '')
                     + '</div>'
-                    + ((v.category.title != null) ? '<ul><li class="category">' + ((v.category.url == null) ? v.category.title : '<a href="' + v.category.url + '" target="blank">' + v.category.title + '</a>') + ((ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div></li>' : '</li>') + '</ul>' : '')
+                    + ((v.category.title !== null) ? '<ul><li class="category">' + ((v.category.url === null) ? v.category.title : '<a href="' + v.category.url + '" target="blank">' + v.category.title + '</a>') + ((ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div></li>' : '</li>') + '</ul>' : '')
                     + '</td>'
-                    + '<td class="size" data-value="' + v.size + '">' + ((v.dl != null) ? '<a href="' + v.dl + '" target="_blank">' + bytesToSize(v.size) + ' ↓</a>' : bytesToSize(v.size)) + '</td>'
+                    + '<td class="size" data-value="' + v.size + '">' + ((v.dl !== null) ? '<a href="' + v.dl + '" target="_blank">' + bytesToSize(v.size) + ' ↓</a>' : bytesToSize(v.size)) + '</td>'
                     + ((!HideSeed) ? '  <td class="seeds" data-value="' + v.seeds + '">' + v.seeds + '</td>' : '')
                     + ((!HideLeech) ? '  <td class="leechs" data-value="' + v.leechs + '">' + v.leechs + '</td>' : '')
                     + '</tr>';

@@ -114,10 +114,11 @@
             about: about,
             url: root_url,
             filename: filename,
-            flags: flags
+            flags: flags,
+            tests: [0,0,0,0,0,0,0,0,0]
         }
     }();
-    if (compression == 0) {
+    if (compression === 0) {
         engine.ModuleLoaded(num);
     }
 })();
