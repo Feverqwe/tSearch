@@ -241,7 +241,7 @@ div.result_panel ul.categorys li.selected {
     border-color: #337AF8;
 }
 div.right > div {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     -webkit-user-select: none;
 }
 div.right > div > p {
@@ -259,7 +259,7 @@ div.tracker_list > ul.trackers {
     list-style: none;
     margin: 0;
     padding: 0;
-    margin-left: 28px;
+    margin-left: 8px;
 }
 div.filter {
     position: relative;
@@ -310,9 +310,6 @@ div.tracker_icon {
     display: inline-block;
     margin-top: 3px;
     margin-bottom: -3px;
-}
-div.tracker_list > ul.trackers div.tracker_icon {
-    margin-left: -20px;
 }
 div.tracker_list > ul.trackers > li > a {
     text-decoration: none;
@@ -956,4 +953,45 @@ div.size_filter {
 }
 div.size_filter input {
     width: 40px;
+}
+
+div.tracker_list ul::-webkit-scrollbar {
+    width: 5px;
+}
+div.tracker_list ul::-webkit-scrollbar-thumb:vertical {
+    margin: 5px;
+    background-color: #999;
+    -webkit-border-radius: 5px;
+}
+div.tracker_list ul::-webkit-scrollbar-button:start:decrement,
+div.tracker_list ul::-webkit-scrollbar-button:end:increment {
+    height: 0px;
+    display: block;
+}
+
+div.tracker_list ul {
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    overflow: hidden;
+}
+div.tracker_list ul:hover {
+    border-top-color: #ddd;
+    border-bottom-color: #ddd;
+    overflow-y: auto;
+}
+div.tracker_list {
+    position: relative;
+}
+div.tracker_list > div.ui-resizable-s {
+    position: absolute;
+    width: 100%;
+    padding-top: 3px;
+    padding-bottom: 6px;
+    bottom: -10px;
+    cursor: s-resize;
+    background: url(../images/resize.png) no-repeat center center;
+    opacity: 0.2;
+}
+div.tracker_list > div.ui-resizable-s:hover {
+    opacity: 1;
 }

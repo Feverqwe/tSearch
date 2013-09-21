@@ -3,7 +3,7 @@ var view = function() {
     var keywordFilter = null;
     var sizeFilter = null;
     var categoryFilter = null;
-    var categorys = null;
+    var categorys = [];
     var categorys_assoc = null;
     var lastFilterWord = '';
     var autoMove = null;
@@ -31,6 +31,7 @@ var view = function() {
     var keyword_filter_cache = {};
     var xhr_autocomplite = null;
     var tmp_var_qbox = 0;
+    var tmp_vars = {};
     var auth = function(s, t) {
         //if (backgroundMode) return;
         $('ul.trackers').children('li[data-id="' + t + '"]').children('ul').remove();
@@ -1276,7 +1277,7 @@ var view = function() {
         var arr = engine.getProfileList();
         if (arr.length <= 1)
             return;
-        var sel = $('<select title="' + _lang.label_profile + '">').change(function() {
+        var sel = $('<select title="' + _lang.label_profile + '">').on('change', function() {
             engine.loadProfile($(this).val());
         });
         $.each(arr, function(k, v) {
@@ -1538,6 +1539,24 @@ var view = function() {
                 }, 200);
                 return false;
             });
+            tmp_vars.torrent_list_ul = $('div.tracker_list').children('ul').eq(0);
+            $('div.tracker_list').resizable({
+                minHeight: 50,
+                resize: function(e, ui) {
+                    var ul = tmp_vars.torrent_list_ul;
+                    var top = ul.position().top;
+                    ul.css('height', ui.size.height - top + 'px');
+                },
+                stop: function(e, ui) {
+                    SetSettings('torrent_list_h', ui.size.height);
+                }
+            });
+            var torrent_list_h = GetSettings('torrent_list_h');
+            if (torrent_list_h !== undefined) {
+                var ul = tmp_vars.torrent_list_ul;
+                $('div.tracker_list').css('height', torrent_list_h);
+                ul.css('height', torrent_list_h - ul.position().top);
+            }
             $(document).on('keyup', function(e) {
                 if (e.target.tagName === "INPUT") {
                     return;
