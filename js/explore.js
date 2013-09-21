@@ -1216,7 +1216,7 @@ var explore = function() {
             } else
                 str_w = str_w * 10;
             var str_s = size;
-            var time_calc = Math.round(parseInt(str_w) / parseInt(str_s) * 3.5);
+            var time_calc = Math.round(str_w / parseInt(str_s) * 3.5);
             var move_name = 'moveble' + '_' + str_s + '_' + str_w;
             if ($('body').find('.' + move_name).length === 0) {
                 $('body').append('<style class="' + move_name + '">'
