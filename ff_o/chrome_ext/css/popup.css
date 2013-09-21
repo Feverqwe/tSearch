@@ -85,8 +85,8 @@ ul.ui-autocomplete {
     width: 450px;
     list-style: none;
     padding: 0;
-    border-bottom-right-radius: 6px;
-    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
     border-top: 0;
     left: 0 !important;
     margin-left: 20px !important;
