@@ -117,9 +117,17 @@ div.content div.right {
 #rez_table > tbody > tr > td.name > div.title > a {
     color: #1A3DC1;
     font-size: 1.167em;
+    text-decoration: none;
+    line-height: 130%;
+    padding-bottom: 1px;
 }
 #rez_table > tbody > tr > td.name > div.title > a:visited {
     color: #609;
+}
+#rez_table > tbody > tr > td.name > div.title > a:hover {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: initial;
 }
 #rez_table > tbody > tr > td.name > ul {
     padding-left: 0;
@@ -127,7 +135,7 @@ div.content div.right {
     list-style: none;
     font-size: 1em;
     color: #555;
-    margin-top: 2px;
+    margin-top: 0px;
 }
 #rez_table > tbody > tr > td.name > ul > li.category, #rez_table > tbody > tr > td.name > ul > li.category a {
     color: #093;
