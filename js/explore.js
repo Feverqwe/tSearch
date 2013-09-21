@@ -878,7 +878,7 @@ var explore = function() {
             handle: 'div.move_it',
             start: function(event, ui) {
                 var de = $('div.explore');
-                de.find('div.spoiler').css('opacity','0');
+                de.find('div.spoiler').css('opacity', '0');
                 de.find('div.setup_div').hide('fast', function(a, b) {
                     $(this).remove();
                 });
@@ -888,9 +888,10 @@ var explore = function() {
                 deuld.children('div').children('div.pager').hide();
                 deuld.children('div').css('min-height', '');
                 $('div.explore ul.sortable li').children('div').children('h2').css('border-width', '0');
+                ul.sortable("refreshPositions");
             },
             stop: function(event, ui) {
-                $('div.explore').find('div.spoiler').css('opacity','1');
+                $('div.explore').find('div.spoiler').css('opacity', '1');
                 $('div.explore').find('div.setup.triggered').removeClass('triggered').show('fast');
                 $('div.explore ul.sortable li div').children('div').children('div.poster').show();
                 $('div.explore ul.sortable li div').children('div').children('div.pager').show();
@@ -920,8 +921,9 @@ var explore = function() {
                 load_exp_content(key, content_sourse[key].url);
             }
         });
+        var sortable_li = $('div.explore > ul.sortable > li');
         //спойлер
-        $('div.explore > ul.sortable > li').on('click', 'div > h2 > div.spoiler', function() {
+        sortable_li.on('click', 'div > h2 > div.spoiler', function() {
             var t = $(this);
             t.parents().eq(1).children('div').css('min-height', '0px');
             if (t.is('.up')) {
@@ -944,7 +946,7 @@ var explore = function() {
             }
         });
         //переключение страниц
-        $('div.explore > ul.sortable > li').on('mouseenter', 'div > div.pager > div.item', function() {
+        sortable_li.on('mouseenter', 'div > div.pager > div.item', function() {
             var page = $(this).text();
             var sect = $(this).parents().eq(3).attr('class');
             if ($('li.' + sect).children('div').children('div').attr('data-page') === page)
@@ -965,7 +967,7 @@ var explore = function() {
             calculate_moveble(sect, size);
         });
         //настройки
-        $('div.explore > ul.sortable > li').on('click', 'div > h2 > div.setup', function() {
+        sortable_li.on('click', 'div > h2 > div.setup', function() {
             var t = $(this).parent().children('div.setup_div');
             if (t.length !== 0) {
                 t.hide('fast', function() {
@@ -980,21 +982,21 @@ var explore = function() {
             $(this).after(t).next('div.setup_div').show('fast');
         });
         // кнопка избранное - добавить
-        $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.image > div.add_favorite', function() {
+        sortable_li.on('click', 'div > div.poster > div.image > div.add_favorite', function() {
             add_in_favorites($(this).parent().parent());
         });
         // кнопка избранное - удалить
-        $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.image > div.del_favorite', function() {
+        sortable_li.on('click', 'div > div.poster > div.image > div.del_favorite', function() {
             $(this).parent().parent().hide('fast', function() {
                 del_from_favorites($(this).attr('data-id'));
             });
         });
         // кнопка избранное - редактировать постер
-        $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.image > div.edit_favorite', function() {
+        sortable_li.on('click', 'div > div.poster > div.image > div.edit_favorite', function() {
             edit_from_favorites($(this).parent().parent().attr('data-id'));
         });
         // кнопка качества
-        $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.image > div.quality_box', function() {
+        sortable_li.on('click', 'div > div.poster > div.image > div.quality_box', function() {
             var section = $(this).parents().eq(4).attr('class');
             var name = $(this).parent().parent().children('div.label').children('div.title').text();
             $(this).addClass('loading');
@@ -1002,21 +1004,21 @@ var explore = function() {
             view.getQuality(name.replace(/ \(([0-9]*)\)$/, ' $1'), tmp_id, section);
         });
         //клик по постеру
-        $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.image > a', function(event) {
+        sortable_li.on('click', 'div > div.poster > div.image > a', function(event) {
             event.preventDefault();
             var section = $(this).parents().eq(3).attr('class');
             var s = $(this).parents().eq(1).find('div.title').children('span').text();
             triggerClick(search_kw_filter(s), section);
         });
         //клик по имени
-        $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.label > div.title a', function(event) {
+        sortable_li.on('click', 'div > div.poster > div.label > div.title a', function(event) {
             event.preventDefault();
             var section = $(this).parents().eq(6).attr('class');
             var s = $(this).text();
             triggerClick(search_kw_filter(s), section);
         });
         //клик по подробнее
-        $('div.explore > ul.sortable > li').on('click', 'div > div.poster > div.label > div.info a', function() {
+        sortable_li.on('click', 'div > div.poster > div.label > div.info a', function() {
             try {
                 var s = $(this).parents().eq(1).children('div.title').children('span').text();
                 _gaq.push(['_trackEvent', 'About', 'keyword', s]);
