@@ -106,7 +106,7 @@
                     xhr.abort();
                 xhr = $.ajax({
                     type: 'GET',
-                    url: url + '?tags=&search=' + encode(text) + '&type_search=groups&incldead=0&sorting=0&type_sort=desc',
+                    url: url + '?tags=&search=' + ex_kit.in_cp1251(text) + '&type_search=groups&incldead=0&sorting=0&type_sort=desc',
                     cache: false,
                     success: function(data) {
                         view.result(id, readCode(data), t);
@@ -115,39 +115,6 @@
                         view.loadingStatus(2, id);
                     }
                 });
-            }
-            var encode = function(sValue) {
-                var text = "", Ucode, ExitValue, s;
-                for (var i = 0; i < sValue.length; i++) {
-                    s = sValue.charAt(i);
-                    Ucode = s.charCodeAt(0);
-                    var Acode = Ucode;
-                    if (Ucode > 1039 && Ucode < 1104) {
-                        Acode -= 848;
-                        ExitValue = "%" + Acode.toString(16);
-                    }
-                    else if (Ucode == 1025) {
-                        Acode = 168;
-                        ExitValue = "%" + Acode.toString(16);
-                    }
-                    else if (Ucode == 1105) {
-                        Acode = 184;
-                        ExitValue = "%" + Acode.toString(16);
-                    }
-                    else if (Ucode == 32) {
-                        Acode = 32;
-                        ExitValue = "%" + Acode.toString(16);
-                    }
-                    else if (Ucode == 10) {
-                        Acode = 10;
-                        ExitValue = "%0A";
-                    }
-                    else {
-                        ExitValue = s;
-                    }
-                    text = text + ExitValue;
-                }
-                return text;
             }
             return {
                 getPage: function(a) {
