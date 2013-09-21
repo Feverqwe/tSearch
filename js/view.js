@@ -1290,6 +1290,25 @@ var view = function() {
         var t = $($.parseHTML(c));
         return t;
     };
+    var init_resizeble = function() {
+        tmp_vars.torrent_list.resizable({
+            minHeight: 40,
+            resize: function(e, ui) {
+                var ul = tmp_vars.torrent_list_ul;
+                var top = ul.position().top;
+                ul.css('height', ui.size.height - top + 'px');
+            },
+            stop: function(e, ui) {
+                SetSettings('torrent_list_h', ui.size.height);
+            }
+        });
+        var torrent_list_h = GetSettings('torrent_list_h');
+        if (torrent_list_h !== undefined) {
+            var ul = tmp_vars.torrent_list_ul;
+            tmp_vars.torrent_list.css('height', torrent_list_h);
+            ul.css('height', torrent_list_h - ul.position().top);
+        }
+    };
     return {
         result: function(t, a, s, p) {
             return write_result(t, a, s, p);
@@ -1539,24 +1558,34 @@ var view = function() {
                 }, 200);
                 return false;
             });
+            tmp_vars.torrent_list = $('div.tracker_list');
             tmp_vars.torrent_list_ul = $('div.tracker_list').children('ul').eq(0);
-            $('div.tracker_list').resizable({
-                minHeight: 50,
-                resize: function(e, ui) {
+            if (GetSettings('torrent_list_r') === "1") {
+                init_resizeble();
+            } else {
+                tmp_vars.torrent_list_ul.css('overflow', 'hidden');
+            }
+            tmp_vars.torrent_list.on('dblclick', function() {
+                var resize_enable = GetSettings('torrent_list_r');
+                if (resize_enable === "1") {
+                    SetSettings('torrent_list_r', 0);
+                    $('div.tracker_list').resizable("disable");
+                    tmp_vars.torrent_list.css('height', 'auto');
+                    tmp_vars.torrent_list_ul.attr("style", "").css({'height': 'auto', 'overflow': 'hidden'});
+                    tmp_vars.torrent_list.children(".ui-resizable-s").hide();
+                } else {
+                    SetSettings('torrent_list_r', 1);
+                    var torrent_list_h = GetSettings('torrent_list_h');
                     var ul = tmp_vars.torrent_list_ul;
-                    var top = ul.position().top;
-                    ul.css('height', ui.size.height - top + 'px');
-                },
-                stop: function(e, ui) {
-                    SetSettings('torrent_list_h', ui.size.height);
+                    if (tmp_vars.torrent_list.hasClass('ui-resizable') === false) {
+                        init_resizeble();
+                    }
+                    $('div.tracker_list').resizable("enable");
+                    tmp_vars.torrent_list_ul.attr("style", "").css({'height': torrent_list_h});
+                    ul.css('height', torrent_list_h - ul.position().top);
+                    tmp_vars.torrent_list.children(".ui-resizable-s").show();
                 }
             });
-            var torrent_list_h = GetSettings('torrent_list_h');
-            if (torrent_list_h !== undefined) {
-                var ul = tmp_vars.torrent_list_ul;
-                $('div.tracker_list').css('height', torrent_list_h);
-                ul.css('height', torrent_list_h - ul.position().top);
-            }
             $(document).on('keyup', function(e) {
                 if (e.target.tagName === "INPUT") {
                     return;
