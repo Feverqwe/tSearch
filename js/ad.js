@@ -3,7 +3,9 @@ var ad = function () {
                     ["images/4358.jpg","http://c.cpa6.ru/4358"],//Panzar
                     ["images/3ycq.jpg","http://c.cpa6.ru/3ycq"],//Royal Quest
                     ["images/3k3c.jpg","http://c.cpa6.ru/3k3c"],//Небеса
-                    ["images/4359.jpg","http://c.cpa6.ru/4359"] //Dragona
+                    ["images/4359.jpg","http://c.cpa6.ru/4359"],//Dragona
+                    ["images/4usv.jpg","http://c.cpa6.ru/4usv"],//Танки On-line
+                    ["images/4usK.jpg","http://c.cpa6.ru/4usK"] //Heroes of Newerth
               ];
     var getRandomArbitary = function (min, max, e)
     {
