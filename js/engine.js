@@ -750,23 +750,23 @@ var ex_kit = function() {
         return text;
     };
     var format_size = function(s) {
-        var size = s.replace(/[^0-9.,кбмгтkmgtb]/ig, '').replace(',', '.');
-        var t = size.replace(/кб|kb/i, '');
+        var size = s.toLowerCase().replace(/[^0-9.,кбмгтkmgtb]/g, '').replace(',', '.');
+        var t = size.replace(/кб|kb/, '');
         if (t.length !== size.length) {
             t = parseFloat(t);
             return Math.round(t * 1024);
         }
-        var t = size.replace(/мб|mb/i, '');
+        var t = size.replace(/мб|mb/, '');
         if (t.length !== size.length) {
             t = parseFloat(t);
             return Math.round(t * 1024 * 1024);
         }
-        var t = size.replace(/гб|gb/i, '');
+        var t = size.replace(/гб|gb/, '');
         if (t.length !== size.length) {
             t = parseFloat(t);
             return Math.round(t * 1024 * 1024 * 1024);
         }
-        var t = size.replace(/тб|tb/i, '');
+        var t = size.replace(/тб|tb/, '');
         if (t.length !== size.length) {
             t = parseFloat(t);
             return Math.round(t * 1024 * 1024 * 1024 * 1024);
@@ -774,17 +774,17 @@ var ex_kit = function() {
         return 0;
     };
     function month_replace(t) {
-        return t.replace(/янв/i, '1').replace(/фев/i, '2').replace(/мар/i, '3')
-                .replace(/апр/i, '4').replace(/мая/i, '5').replace(/июн/i, '6')
-                .replace(/июл/i, '7').replace(/авг/i, '8').replace(/сен/i, '9')
-                .replace(/окт/i, '10').replace(/ноя/i, '11').replace(/дек/i, '12')
+        return t.toLowerCase().replace(/янв/, '1').replace(/фев/, '2').replace(/мар/, '3')
+                .replace(/апр/, '4').replace(/мая/, '5').replace(/июн/, '6')
+                .replace(/июл/, '7').replace(/авг/, '8').replace(/сен/, '9')
+                .replace(/окт/, '10').replace(/ноя/, '11').replace(/дек/, '12')
                 //fix
-                .replace(/май/i, '5')
+                .replace(/май/, '5')
                 //<fix
-                .replace(/jan/i, '1').replace(/feb/i, '2').replace(/mar/i, '3')
-                .replace(/apr/i, '4').replace(/may/i, '5').replace(/jun/i, '6')
-                .replace(/jul/i, '7').replace(/aug/i, '8').replace(/sep/i, '9')
-                .replace(/oct/i, '10').replace(/nov/i, '11').replace(/dec/i, '12');
+                .replace(/jan/, '1').replace(/feb/, '2').replace(/mar/, '3')
+                .replace(/apr/, '4').replace(/may/, '5').replace(/jun/, '6')
+                .replace(/jul/, '7').replace(/aug/, '8').replace(/sep/, '9')
+                .replace(/oct/, '10').replace(/nov/, '11').replace(/dec/, '12');
     }
     var format_date = function(f, t) {
         if (f === undefined) {
