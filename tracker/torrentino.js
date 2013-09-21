@@ -42,31 +42,6 @@
                         ((/программ/i).test(f)) ? 6 :
                         -1;
             }
-            var calculateSize = function(s) {
-                var type = '';
-                var size = s.replace(' ', '');
-                var t = size.replace('КБ', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                var t = size.replace('МБ', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                var t = size.replace('ГБ', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                var t = size.replace('ТБ', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
             var readCode = function(c) {
                 c = view.contentFilter(c);
                 var t = view.load_in_sandbox(id, c);
@@ -83,7 +58,7 @@
                         },
                         'title': div.children('div.title').children('h4').children('a').text(),
                         'url': div.children('div.title').children('h4').children('a').attr('href'),
-                        'size': calculateSize(div.children('div.data').children('p.size').text()),
+                        'size': ex_kit.format_size(div.children('div.data').children('p.size').text()),
                         'seeds': div.children('div.data').children('p.peers-info').children('span.s').text(),
                         'leechs': div.children('div.data').children('p.peers-info').children('span.l').text(),
                         'time': 0

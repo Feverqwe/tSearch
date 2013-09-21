@@ -41,30 +41,6 @@
                     }
                 return -1;
             }
-            var calculateSize = function(s) {
-                var size = s.replace(' ', '');
-                var t = size.replace('KB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                var t = size.replace('MB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                var t = size.replace('GB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                var t = size.replace('TB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
             var readCode = function(c) {
                 c = view.contentFilter(c);
                 var t = view.load_in_sandbox(id, c);
@@ -82,7 +58,7 @@
                         },
                         'title': td.eq(1).children('a').text(),
                         'url': root_url + td.eq(1).children('a').attr('href'),
-                        'size': calculateSize(td.eq(5).text()),
+                        'size': ex_kit.format_size(td.eq(5).text()),
                         'seeds': td.eq(6).text(),
                         'leechs': td.eq(7).text(),
                         'time': 0

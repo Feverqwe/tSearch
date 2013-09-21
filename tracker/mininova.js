@@ -33,31 +33,6 @@
                     }
                 return -1;
             }
-            var calculateSize = function(s) {
-                var type = '';
-                var size = s.replace(' ', '');
-                var t = size.replace('KB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                t = size.replace('MB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                t = size.replace('GB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                t = size.replace('TB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
             var calculateTime = function(s) {
                 var s = s.replace(/([0-9]*)([^0-9]*)([0-9]*)/, '$1 $2 $3')
                 var d = s.split(" ");
@@ -108,7 +83,7 @@
                         },
                         'title': td.eq(2).children('a[class!="dl"][class!="ti com"]').text(),
                         'url': root_url + td.eq(2).children('a[class!="dl"][class!="ti com"]').attr('href'),
-                        'size': calculateSize(td.eq(3).text()),
+                        'size': ex_kit.format_size(td.eq(3).text()),
                         'dl': root_url + td.eq(2).children('a[class="dl"]').attr('href'),
                         'seeds': td.eq(4).children().text(),
                         'leechs': td.eq(5).children().text(),

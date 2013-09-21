@@ -16,30 +16,6 @@
         }
         var xhr = null;
         var web = function() {
-            var calculateSize = function(s) {
-                var size = s.replace(' ', '');
-                var t = size.replace('KB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                var t = size.replace('MB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                var t = size.replace('GB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                var t = size.replace('TB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
             var calculateCategory = function(n) {
                 if (n == 'Фильмы')
                     return 3;
@@ -69,7 +45,7 @@
                         },
                         'title': td.eq(1).children('a').text(),
                         'url': td.eq(1).children('a').attr('href'),
-                        'size': calculateSize(td.eq(3).children().text()),
+                        'size': ex_kit.format_size(td.eq(3).children().text()),
                         'dl': td.eq(2).children('a').attr('href'),
                         'seeds': td.eq(4).text(),
                         'leechs': td.eq(5).text(),

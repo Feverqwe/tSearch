@@ -177,7 +177,7 @@
                             },
                             'title': td.eq(1).children('a').text(),
                             'url': root_url + td.eq(1).children('a').attr('href'),
-                            'size': engine.ex_kit.format_size(td.eq(4).text()),
+                            'size': ex_kit.format_size(td.eq(4).text()),
                             'seeds': td.eq(6).text(),
                             'leechs': td.eq(7).text(),
                             'time': calculateTime(td.eq(3).text())
@@ -190,7 +190,7 @@
                             },
                             'title': td.eq(1).children('a').text(),
                             'url': root_url + td.eq(1).children('a').attr('href'),
-                            'size': calculateSize(td.eq(3).text()),
+                            'size': ex_kit.format_size(td.eq(3).text()),
                             'seeds': td.eq(5).text(),
                             'leechs': td.eq(6).text(),
                             'time': calculateTime(td.eq(7).text())

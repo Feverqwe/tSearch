@@ -16,30 +16,6 @@
         }
         var xhr = null;
         var web = function() {
-            var calculateSize = function(s) {
-                var size = s.replace(' ', '');
-                var t = size.replace('KB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                var t = size.replace('MB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                var t = size.replace('GB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                var t = size.replace('TB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
             var calculateTime = function(s) {
                 var d = s.split(' ');
                 var date = d[0];
@@ -90,7 +66,7 @@
                         },
                         'title': td.eq(1).children('a').eq(2).text(),
                         'url': root_url + td.eq(1).children('a').eq(2).attr('href'),
-                        'size': calculateSize(td.eq(4 + corr).text()),
+                        'size': ex_kit.format_size(td.eq(4 + corr).text()),
                         'dl': td.eq(1).children('a').eq(0).attr('href'),
                         'seeds': td.eq(2 + corr).children('span.green').text(),
                         'leechs': td.eq(3 + corr).children('span.red').text(),

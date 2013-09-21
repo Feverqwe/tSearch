@@ -25,31 +25,6 @@
                 var old = parseFloat(t.replace(/\s/, ' ').split(' ')[0]) * 24 * 60 * 60;
                 return Math.round((new Date()).getTime() / 1000) - old;
             }
-            var calculateSize = function(s) {
-                var type = '';
-                var size = s.replace(' ', '');
-                var t = size.replace('КБ', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                var t = size.replace('МБ', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                var t = size.replace('ГБ', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                var t = size.replace('ТБ', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
             var readCode = function(c) {
                 c = view.contentFilter(c);
                 var t = view.load_in_sandbox(id, c);
@@ -70,7 +45,7 @@
                         },
                         'title': t.eq(3).children('td').eq(1).text(),
                         'url': root_url + '/search?info_hash=' + url.split('btih:')[1].replace('&dn=', '&q='),
-                        'size': calculateSize(t.eq(5).children('td').eq(1).text()),
+                        'size': ex_kit.format_size(t.eq(5).children('td').eq(1).text()),
                         'dl': url,
                         'seeds': 1,
                         'leechs': t.eq(4).children('td').eq(1).text(),
@@ -90,7 +65,7 @@
                             },
                             'title': name_link.text(),
                             'url': root_url + name_link.attr('href'),
-                            'size': calculateSize(params.eq(2).children('span.attr_val').text()),
+                            'size': ex_kit.format_size(params.eq(2).children('span.attr_val').text()),
                             'dl': params.eq(0).children('a').attr('href'),
                             'seeds': 1,
                             'leechs': params.eq(4).children('span.attr_val').text(),

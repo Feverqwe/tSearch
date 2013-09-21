@@ -40,31 +40,6 @@
                 var dd = f.replace(/[\t:-]/g, ' ').split(' ');
                 return Math.round((new Date(parseInt(dd[0]), parseInt(dd[1]) - 1, parseInt(dd[2]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
             }
-            var calculateSize = function(s) {
-                var type = '';
-                var size = s.replace(' ', '');
-                var t = size.replace('KB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                var t = size.replace('MB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                var t = size.replace('GB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                var t = size.replace('TB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
             var readCode = function(c) {
                 c = view.contentFilter(c);
                 var t = view.load_in_sandbox(id, c);
@@ -85,7 +60,7 @@
                         },
                         'title': td.children('table').eq(0).find('span').children('a').eq(1).text(),
                         'url': root_url + td.children('table').eq(0).find('span').children('a').eq(1).attr('href'),
-                        'size': calculateSize($.trim(params[2 + pp] + params[3 + pp])),
+                        'size': ex_kit.format_size($.trim(params[2 + pp] + params[3 + pp])),
                         'seeds': params[5 + pp].replace(',', ''),
                         'leechs': params[6 + pp].replace(',', ''),
                         'time': calculateTime(td.children('table').eq(0).find('span').children('a').eq(2).text())

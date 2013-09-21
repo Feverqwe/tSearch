@@ -36,31 +36,6 @@
                     }
                 return -1;
             }
-            var calculateSize = function(s) {
-                var type = '';
-                var size = s.replace(' ', '');
-                var t = size.replace('KB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                var t = size.replace('MB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                var t = size.replace('GB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                var t = size.replace('TB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
             var calculateTime = function(t) {
                 if ($.trim(t.substr(0, 1)).length == 0)
                     return 0;
@@ -120,7 +95,7 @@
                         },
                         'title': li.children('a').text(),
                         'url': root_url + li.children('a').attr('href'),
-                        'size': calculateSize(li.children('div[id="sz"]').find('td').eq(0).text()),
+                        'size': ex_kit.format_size(li.children('div[id="sz"]').find('td').eq(0).text()),
                         'seeds': ss,
                         'leechs': ls,
                         'time': calculateTime(li.children('div.torInfo').text().replace(/.*— .* — (.*)/, '$1'))

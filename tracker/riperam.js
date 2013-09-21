@@ -42,31 +42,6 @@
                     }
                 return -1;
             }
-            var calculateSize = function(s) {
-                var type = '';
-                var size = s.replace(' ', '');
-                var t = size.replace('КБ', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                t = size.replace('МБ', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                t = size.replace('ГБ', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                t = size.replace('ТБ', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
             var calculateTime = function(t) {
                 var t = t.replace(',', '').replace(/\s/g, ':').replace('янв', '1').replace('фев', '2').replace('мар', '3')
                         .replace('апр', '4').replace('май', '5').replace('июн', '6')
@@ -106,7 +81,7 @@
                         'url': obj_dl_0_a.eq(1 + corr).attr('href'),
                         'dl': root_url + dl_link,
                         'time': calculateTime(attrs[1].trim()),
-                        'size': calculateSize(attrs[2].trim()),
+                        'size': ex_kit.format_size(attrs[2].trim()),
                         'category': {
                             'title': obj_dl_0_a.eq(dt_atr_c - 1).text(),
                             'url': obj_dl_0_a.eq(dt_atr_c - 1).attr('href'),

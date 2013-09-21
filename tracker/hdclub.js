@@ -34,30 +34,6 @@
                     return 9;
                 return -1;
             }
-            var calculateSize = function(s) {
-                var size = s.replace(' ', '');
-                var t = size.replace('KB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                var t = size.replace('MB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                var t = size.replace('GB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                var t = size.replace('TB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
             var calculateTime = function(f) {
                 var dd = f.replace(/[\t:-]/g, ' ').split(' ');
                 return Math.round((new Date(parseInt(dd[0]), parseInt(dd[1]) - 1, parseInt(dd[2]), parseInt(dd[3]), parseInt(dd[4]))).getTime() / 1000);
@@ -80,7 +56,7 @@
                         },
                         'title': td.eq(2).children('table').find('a').eq(0).text(),
                         'url': root_url + td.eq(2).children('table').find('a').eq(0).attr('href'),
-                        'size': calculateSize(td.eq(6).text()),
+                        'size': ex_kit.format_size(td.eq(6).text()),
                         'seeds': td.eq(4).children('b').text(),
                         'leechs': td.eq(5).children('b').text(),
                         'time': calculateTime(td.eq(2).children('div').children('div').eq(0).text())

@@ -36,31 +36,6 @@
                     }
                 return -1;
             }
-            var calculateSize = function(s) {
-                var type = '';
-                var size = s.replace(' ', '').replace(',', '.');
-                var t = size.replace('KB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                var t = size.replace('MB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                var t = size.replace('GB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                var t = size.replace('TB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
             var calculateTime = function(time) {
                 time = $.trim(time).split(" ");
                 time[1] = time[1].replace('Янв', '1').replace('Фев', '2').replace('Мар', '3')
@@ -95,7 +70,7 @@
                         },
                         'title': td.eq(4).children('a').text(),
                         'url': root_url + td.eq(4).children('a').attr('href'),
-                        'size': calculateSize(td.eq(7).text()),
+                        'size': ex_kit.format_size(td.eq(7).text()),
                         'dl': root_url + td.eq(6).children('a').attr('href'),
                         'seeds': td.eq(8).children('b').text(),
                         'leechs': td.eq(9).children('b').text(),

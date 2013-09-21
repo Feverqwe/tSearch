@@ -33,31 +33,6 @@
                         ((/tv/i).test(f)) ? 0 :
                         -1;
             }
-            var calculateSize = function(s) {
-                var type = '';
-                var size = s.replace(' ', '');
-                var t = size.replace('KB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024);
-                }
-                var t = size.replace('MB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024);
-                }
-                var t = size.replace('GB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024);
-                }
-                var t = size.replace('TB', '');
-                if (t.length != size.length) {
-                    t = parseFloat(t);
-                    return Math.round(t * 1024 * 1024 * 1024 * 1024);
-                }
-                return 0;
-            }
             var calculateTime = function(t) {
                 if ((/today/).test(t)) {
                     return Math.round((new Date().getTime() / 1000) / (60 * 60 * 24)) * (60 * 60 * 24);
@@ -112,7 +87,7 @@
                         },
                         'title': title,
                         'url': root_url + url,
-                        'size': calculateSize(dl.children('dd').children('span.s').text()),
+                        'size': ex_kit.format_size(dl.children('dd').children('span.s').text()),
                         'seeds': dl.children('dd').children('span.u').text().replace(',', ''),
                         'leechs': dl.children('dd').children('span.d').text().replace(',', ''),
                         'time': calculateTime($.trim(dl.children('dd').children('span.a').text()))
