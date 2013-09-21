@@ -86,7 +86,6 @@ div.content div.right {
     border-top: 1px #c0c0c0 solid;
 }
 #rez_table thead {
-    background-color: #eee;
 }
 #rez_table a {
     text-decoration: none;
@@ -106,7 +105,7 @@ div.content div.right {
     font-weight: normal;
 }
 #rez_table > tbody > tr.even {
-    background-color: #f8f8f8;
+    background-color: #f9f9f9;
 }
 #rez_table > tbody > tr > td {
     padding-top: 12px;
@@ -279,7 +278,7 @@ div.search_panel div.btn.clear {
     left: 516px;
     top: 25px;
 }
-div.tracker_list > div.setup {
+div.tracker_list > .setup {
     background: url(../images/settings.png) center center no-repeat;
     width: 16px;
     height: 16px;
@@ -291,7 +290,7 @@ div.tracker_list > div.setup {
     opacity: 0.5;
     display: inline-block;
 }
-div.tracker_list > div.setup:hover {
+div.tracker_list > .setup:hover {
     opacity: 1;
 }
 div.tracker_icon {
@@ -379,16 +378,21 @@ div.explore div.spoiler
     margin-top: 6px;
     background: url(../images/show_hide.png) bottom center no-repeat;
     cursor: pointer;
+    -moz-transition: all 0.2s;
+    -o-transition: all 0.2s;
+    -webkit-transition: all 0.2s;
 }
 div.explore div.spoiler.down
 {
-    background: url(../images/show_hide.png) bottom center no-repeat;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
 }
 div.explore div.spoiler.up {
-    background: url(../images/show_hide.png) top center no-repeat;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
 }
-
-
 div.explore h2 {
     margin: 0;
     padding: 0;
@@ -405,7 +409,7 @@ div.explore h2 > div.setup {
     width: 16px;
     height: 16px;
     cursor: pointer;
-    opacity: 0.3;
+    opacity: 0.5;
     display: inline-block;
     margin-left: 5px;
     margin-top: 2px;
@@ -461,7 +465,7 @@ div.explore h2 > div.setup_div >  div.clear {
 div.explore h2 > div.setup_div >  div.count {
     display: inline-block;
     position: absolute;
-    top: -6px;
+    top: -4px;
     margin-left: 4px;
 }
 div.explore h2 > div.setup_div >  div.count select {
@@ -483,7 +487,7 @@ div.explore h2 > div.setup_div > div.slider > a {
     z-index: 2;
 }
 div.explore h2 > div.setup:hover {
-    opacity: 0.7;
+    opacity: 1;
 }
 div.explore div.poster {
     display: inline-block;

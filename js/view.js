@@ -1283,7 +1283,7 @@ var view = function() {
             sel.append('<option value="' + k + '" ' + ((k === defProfile) ? 'selected' : '') + '>' + v + '</option>');
         });
         sel = $('<div class="profile">').append(sel);
-        $('div.tracker_list div.setup').after(sel);
+        $('div.tracker_list .setup').after(sel);
     };
     var load_in_sandbox = function(id, c) {
         var t = $($.parseHTML(c));
@@ -1350,7 +1350,7 @@ var view = function() {
             $('div.right').children('.history').attr('title', _lang['btn_history']);
             $('div.tracker_list').children('p').text(_lang['btn_tracker_list']);
             $('div.tracker_list').children('p').eq(0).text(_lang['tracker_list']);
-            $('div.tracker_list').children('div.setup').attr('title', _lang['btn_tracker_list']);
+            $('div.tracker_list').children('.setup').attr('title', _lang['btn_tracker_list']);
             $('div.filter').children('p').eq(0).text(_lang['filter']);
             $('div.filter').children('div.btn').attr('title', _lang['btn_filter']);
             $('div.size_filter').children('p').eq(0).text(_lang['size_filter']);
@@ -1512,7 +1512,8 @@ var view = function() {
                 $('form[name="search"]').children('input[type="text"]').val(s);
                 $('form[name="search"]').children('input[type="text"]').trigger("keyup");
             }
-            $('div.tracker_list div.setup').on("click", function() {
+            $('div.tracker_list .setup').on("click", function(e) {
+                e.preventDefault();
                 window.location = 'options.html#back=' + $.trim($('form[name="search"]').children('input[type="text"]').val());
             });
             $('input.sbutton.main').on("click", function() {

@@ -878,7 +878,7 @@ var explore = function() {
             handle: 'div.move_it',
             start: function(event, ui) {
                 var de = $('div.explore');
-                de.find('div.spoiler').hide('fast');
+                de.find('div.spoiler').css('opacity','0');
                 de.find('div.setup_div').hide('fast', function(a, b) {
                     $(this).remove();
                 });
@@ -890,7 +890,7 @@ var explore = function() {
                 $('div.explore ul.sortable li').children('div').children('h2').css('border-width', '0');
             },
             stop: function(event, ui) {
-                $('div.explore').find('div.spoiler').show('fast');
+                $('div.explore').find('div.spoiler').css('opacity','1');
                 $('div.explore').find('div.setup.triggered').removeClass('triggered').show('fast');
                 $('div.explore ul.sortable li div').children('div').children('div.poster').show();
                 $('div.explore ul.sortable li div').children('div').children('div.pager').show();
@@ -925,11 +925,9 @@ var explore = function() {
             var t = $(this);
             t.parents().eq(1).children('div').css('min-height', '0px');
             if (t.is('.up')) {
-                t.hide('fast');
+                t.removeClass('up').addClass('down');
                 t.parent().children('div.setup').show('fast');
                 t.parent().parent().children('div').slideDown('fast', function() {
-                    t.removeClass('up').addClass('down');
-                    t.show('fast');
                     var sect = t.parents().eq(2).attr('class');
                     set_view_status(sect, 1);
                 });
@@ -938,9 +936,8 @@ var explore = function() {
                 $('div.explore').find('div.setup_div').hide('fast', function(a, b) {
                     $(this).remove();
                 });
+                t.removeClass('down').addClass('up');
                 t.parents().eq(1).children('div').slideUp('fast', function() {
-                    t.removeClass('down').addClass('up');
-                    t.show('fast');
                     var sect = t.parents().eq(2).attr('class');
                     set_view_status(sect, 0);
                 });
