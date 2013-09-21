@@ -1563,7 +1563,7 @@ var view = function() {
             if (GetSettings('torrent_list_r') === "1") {
                 init_resizeble();
             } else {
-                tmp_vars.torrent_list_ul.css('overflow', 'hidden');
+                tmp_vars.torrent_list_ul.css({'border-color': '#fff', 'overflow': 'hidden'});
             }
             tmp_vars.torrent_list.on('dblclick', function() {
                 var resize_enable = GetSettings('torrent_list_r');
@@ -1571,7 +1571,7 @@ var view = function() {
                     SetSettings('torrent_list_r', 0);
                     $('div.tracker_list').resizable("disable");
                     tmp_vars.torrent_list.css('height', 'auto');
-                    tmp_vars.torrent_list_ul.attr("style", "").css({'height': 'auto', 'overflow': 'hidden'});
+                    tmp_vars.torrent_list_ul.attr("style", "").css({'border-color': '#fff', 'height': 'auto', 'overflow': 'hidden'});
                     tmp_vars.torrent_list.children(".ui-resizable-s").hide();
                 } else {
                     SetSettings('torrent_list_r', 1);
