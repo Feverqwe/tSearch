@@ -1,13 +1,13 @@
 var explore = function() {
-    var _google_proxy = (GetSettings('google_proxy') !== undefined) ? parseInt(GetSettings('google_proxy')) : false;
-    var _use_english_postername = GetSettings('use_english_postername') || 0;
+    var _google_proxy = parseInt(GetSettings('google_proxy') || 0);
+    var _use_english_postername = parseInt(GetSettings('use_english_postername')) || 0;
     var xhr = {};
-    var explorerCache = JSON.parse(GetSettings('explorerCache') || "{}");
+    var _explorerCache = JSON.parse(GetSettings('explorerCache') || "{}");
     var upTimer = null;
     var upTimer2 = null;
-    var topCache = (GetSettings('topCache') !== undefined) ? JSON.parse(GetSettings('topCache')) : null;
-    var favoritesList = (GetSettings('favoritesList') !== undefined) ? JSON.parse(GetSettings('favoritesList')) : [];
-    var favoritesDeskList = (GetSettings('favoritesDeskList') !== undefined) ? JSON.parse(GetSettings('favoritesDeskList')) : {};
+    var _top_cache = JSON.parse(GetSettings('topCache') || "{}");
+    var favoritesList = JSON.parse(GetSettings('favoritesList') || "[]");
+    var favoritesDeskList = JSON.parse(GetSettings('favoritesDeskList') || "{}");
     var tmpDeskList = {};
     var tmp_vars = {};
     var last_qbox = {top: 0, obj: null, id: null};
@@ -421,8 +421,8 @@ var explore = function() {
         var timeout = content_sourse[type].timeout;
         if ($('div.explore div.' + type).length > 0)
             return;
-        if (type in explorerCache && "cache_arr" in explorerCache[type] && explorerCache[type].date > time) {
-            write_content(explorerCache[type].cache_arr, type);
+        if (type in _explorerCache && "cache_arr" in _explorerCache[type] && _explorerCache[type].date > time) {
+            write_content(_explorerCache[type].cache_arr, type);
             return;
         }
         if (page !== undefined) {
@@ -460,16 +460,16 @@ var explore = function() {
                 _pages_cache[type].upTimer = setTimeout(function() {
                     $('li.' + type).empty();
                     write_content(content, type);
-                    explorerCache[type] = {
+                    _explorerCache[type] = {
                         date: time + timeout,
                         cache_arr: content
                     };
-                    SetSettings('explorerCache', JSON.stringify(explorerCache));
+                    SetSettings('explorerCache', JSON.stringify(_explorerCache));
                 }, (_pages_cache[type].upTimer === undefined) ? 100 : 500);
             },
             error: function() {
-                if (type in explorerCache && "cache_arr" in explorerCache[type])
-                    write_content(explorerCache[type].cache_arr, type);
+                if (type in _explorerCache && "cache_arr" in _explorerCache[type])
+                    write_content(_explorerCache[type].cache_arr, type);
             }
         });
     };
@@ -630,7 +630,7 @@ var explore = function() {
     };
     var write_page = function(section, page, content) {
         if (content === undefined)
-            content = (section === 'favorites') ? favoritesList : explorerCache[section].cache_arr;
+            content = (section === 'favorites') ? favoritesList : _explorerCache[section].cache_arr;
         var root_url = content_sourse[section].root_url;
         var fav = content_sourse[section].fav;
         var did = content_sourse[section].did;
@@ -1151,8 +1151,8 @@ var explore = function() {
     var get_search_top = function() {
         var timeout = 86400;
         var time = Math.round(new Date().getTime() / 1000);
-        if (topCache !== null && topCache.keywords !== undefined && topCache.timeout > time) {
-            render_top(topCache.keywords);
+        if (_top_cache.keywords !== undefined && _top_cache.timeout > time) {
+            render_top(_top_cache.keywords);
             return;
         }
         var type = "search_top";
@@ -1173,8 +1173,8 @@ var explore = function() {
                 render_top(kw_arr);
             },
             error: function() {
-                if (topCache !== null && topCache.keywords !== undefined) {
-                    render_top(topCache.keywords);
+                if (_top_cache.keywords !== undefined) {
+                    render_top(_top_cache.keywords);
                 } else {
                     $('div.top_search').css('display', 'none');
                 }
