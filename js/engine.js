@@ -311,7 +311,7 @@ var engine = function() {
             var login_url = ('auth' in me) ? me.auth : null;
             var filename = me.uid;
             var uid = me.uid;
-            var tests = [0,0,0,0,0,0,0,0,0];
+            var tests = [0, 0, 0, 0, 0, 0, 0, 0, 0];
             var flags = ('flags' in me) ? me.flags : {
                 a: 0,
                 l: 0,
@@ -340,7 +340,7 @@ var engine = function() {
                     var ex_t_m_r = ('t_m_r' in me) ? 1 : 0;
                     var ex_t_f = ('t_f' in me && me.t_f !== "-1") ? 1 : 0; //me.t_f is string from JSON
                     var ex_auth_f = ('auth_f' in me) ? 1 : 0;
-                    
+
                     if (ex_cat === 0) {
                         tests[1] = 1;
                         tests[2] = 1;
@@ -376,13 +376,13 @@ var engine = function() {
                             } else {
                                 obj['category']['title'] = (td.find(me.cat_name)).text();
                             }
-                            if (typeof(obj['category']['title']) === undefined || obj['category']['title'].length === 0) {
+                            if (obj['category']['title'] === undefined || obj['category']['title'].length === 0) {
                                 obj['category']['title'] = null;
                                 er[0] += 1;
                             } else
                             if (ex_link) {
                                 obj['category']['url'] = (td.find(me.cat_link)).attr('href');
-                                if (typeof(obj['category']['url']) === undefined) {
+                                if (obj['category']['url'] === undefined) {
                                     obj['category']['url'] = null;
                                     er[1] += 1;
                                 } else
@@ -436,7 +436,7 @@ var engine = function() {
                             if (obj['dl'] !== undefined) {
                                 obj['dl'] = obj['dl'].replace(/[\r\n]+/g, "");
                             }
-                            if (typeof(obj['dl']) !== "string") {
+                            if (obj['dl'] === undefined) {
                                 er[5] += 1;
                                 obj['dl'] = null;
                             } else
