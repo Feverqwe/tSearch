@@ -857,7 +857,7 @@ var explore = function() {
         if (tmp_vars.explore === undefined) {
             tmp_vars.explore = $('div.explore');
             tmp_vars.explore_ul = $('div.explore ul.sortable');
-            tmp_vars.top = tmp_vars.explore.children('.top_search')
+            tmp_vars.top = tmp_vars.explore.children('.top_search');
         }
         if (tmp_vars.explore_ul.children('li').length > 0) {
             update_poster_count();
