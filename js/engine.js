@@ -1,4 +1,8 @@
 var tracker = [];
+if (GetSettings('debug') !== "1") {
+    console.log = function() {
+    };
+}
 var engine = function() {
     var defaultList = [
         /*

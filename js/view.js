@@ -209,7 +209,7 @@ var view = function() {
             //6 - seeds
             //7 - leechs
             //8 - time
-            console.log('Tracker ' + tracker[t].name + ' have problem! Tests: ' + er.join(','));
+            console.log('Item in tracker ' + tracker[t].name + ' have problem! Tests: ' + er.join(','));
             if (er[0])
                 console.log(er[0] + ' - cotegory exist fix!');
             if (er[1])
@@ -254,7 +254,7 @@ var view = function() {
         var sum = 0;
         $.each(a, function(k, v) {
             if (typeof(v.title) !== 'string' || typeof(v.url) !== 'string' || v.title.length === 0 || v.url.length === 0) {
-                console.log('Tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
+                console.log('Item in tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
                 return true;
             }
             torrent_check(v, t);
@@ -385,7 +385,7 @@ var view = function() {
                 v.category.title = null;
             }
             if (v.title.length === 0) {
-                console.log('Tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
+                console.log('Item in tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
                 return true;
             }
             var title = syntax_highlighting(v.title);
