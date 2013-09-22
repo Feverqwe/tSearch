@@ -371,7 +371,7 @@ var view = function() {
             if (HideZeroSeed && v.seeds === 0) {
                 return true;
             }
-            if (teaser_filter(v.title + v.category.title) === 1) {
+            if (TeaserFilter === 1 && teaser_filter(v.title + v.category.title) === 1) {
                 return true;
             }
             if ((/^[\s|\t]+/).test(v.title)) {
@@ -417,7 +417,7 @@ var view = function() {
                     filter = 'style="display: none;"';
                 }
             }
-            c = c + '<tr ' + filter + ' data-fs="' + fs + '" data-kf="' + fk + '" data-tracker="' + t + '" data-c="' + v.category.id + '">'
+            c += '<tr ' + filter + ' data-fs="' + fs + '" data-kf="' + fk + '" data-tracker="' + t + '" data-c="' + v.category.id + '">'
                     + '<td class="time" data-value="' + v.time + '" title="' + unixintimetitle(v.time) + '">' + unixintime(v.time) + '</td>'
                     + '<td class="quality" data-value="' + quality.value + '" data-qgame="' + quality.game + '" data-qseed="' + quality.seed + '" data-qname="' + quality.name + '" data-qvideo="' + quality.video + '" data-qmusic="' + quality.music + '" data-qbook="' + quality.book + '"><div class="progress"><div style="width:' + (quality.value / 15) + 'px"></div><span title="' + quality.value + '">' + quality.value + '</span></div></td>'
                     + '<td class="name"><div class="title"><a href="' + v.url + '" target="_blank">' + title + '</a>'
