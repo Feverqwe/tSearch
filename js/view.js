@@ -572,7 +572,7 @@ var view = function() {
     };
     var updateTrackerResultCount = function(t, c, l) {
         if (l === undefined && c === undefined) {
-            var c = $('ul.trackers li[data-id="' + t + '"]').attr('data-count');
+            c = $('ul.trackers li[data-id="' + t + '"]').attr('data-count');
             if (c === undefined)
                 c = 0;
             $('ul.trackers li[data-id="' + t + '"]').children('i').html('(' + c + ')');
