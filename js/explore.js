@@ -835,7 +835,7 @@ var explore = function() {
         favoritesList[id]['quality'] = q;
         favoritesDeskList[id] = [];
         $.each(arr, function(k, v) {
-            if (v.link != null && v.name != null) { //type?
+            if (v.link !== undefined && v.link !== null && v.name !== undefined && v.name !== null) { //type?
                 favoritesDeskList[id].push({
                     "link": v.link,
                     "name": v.name
