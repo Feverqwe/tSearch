@@ -260,6 +260,7 @@ div.tracker_list > ul.trackers {
     margin: 0;
     padding: 0;
     margin-left: 7px;
+    padding-bottom: 2px;
 }
 div.filter {
     position: relative;
@@ -994,4 +995,8 @@ div.tracker_list > div.ui-resizable-s {
 }
 div.tracker_list > div.ui-resizable-s:hover {
     opacity: 1;
+}
+ul.trackers > li > i {
+    display: inline-block;
+    padding-left: 2px;
 }

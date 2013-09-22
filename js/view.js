@@ -584,13 +584,24 @@ var view = function() {
             c = tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').attr('data-count');
             if (c === undefined)
                 c = 0;
-            tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('i').html('(' + c + ')');
+            if (c > 0) {
+                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('i').html(c);
+            } else {
+                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('i').empty();
+            }
         } else
         if (l === undefined) {
-            tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').attr('data-count', c).children('i').html('(' + c + ')');
+            if (c > 0) {
+                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').attr('data-count', c).children('i').html(c);
+            } else {
+                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').attr('data-count', c).children('i').empty();
+            }
         } else {
-            if (l === 1)
-                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('i').html('(' + c + ')');
+            if (c > 0) {
+                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('i').html(c);
+            } else {
+                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('i').empty();
+            }
         }
     };
     var contentFilter = function(c) {
