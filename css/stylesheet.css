@@ -999,4 +999,5 @@ div.tracker_list > div.ui-resizable-s:hover {
 ul.trackers > li > i {
     display: inline-block;
     padding-left: 2px;
+    cursor: default;
 }
