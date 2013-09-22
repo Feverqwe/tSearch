@@ -376,13 +376,13 @@ var engine = function() {
                             } else {
                                 obj['category']['title'] = (td.find(me.cat_name)).text();
                             }
-                            if (typeof(obj['category']['title']) !== "string") {
+                            if (typeof(obj['category']['title']) === undefined || obj['category']['title'].length === 0) {
                                 obj['category']['title'] = null;
                                 er[0] += 1;
                             } else
                             if (ex_link) {
                                 obj['category']['url'] = (td.find(me.cat_link)).attr('href');
-                                if (typeof(obj['category']['url']) !== "string") {
+                                if (typeof(obj['category']['url']) === undefined) {
                                     obj['category']['url'] = null;
                                     er[1] += 1;
                                 } else
@@ -401,7 +401,7 @@ var engine = function() {
                             continue;
                         }
                         obj['url'] = (td.find(me.tr_link)).attr('href');
-                        if (obj['url'].length === 0) {
+                        if (obj['url'] === undefined) {
                             er[3] += 1;
                             continue;
                         }

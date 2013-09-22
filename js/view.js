@@ -75,11 +75,10 @@ var view = function() {
         $('body').append('<style class="tr_icon">div.tracker_icon.num' + i + ' { ' + ((tracker[i].icon.length === 0 || tracker[i].icon[0] === '#') ? 'background-color: ' + ((tracker[i].icon.length !== 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;' : 'background-image: url(' + tracker[i].icon + ');') + ' }</style>');
         $('<li data-id="' + i + '"/>').append($('<div class="tracker_icon num' + i + '" data-count="0"/>')).append($('<a href="#">' + tracker[i].name + '</a>').on("click", function(event) {
             event.preventDefault();
-            if ($(this).attr('class') === 'selected') {
+            if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
                 trackerFilter = null;
-            }
-            else {
+            } else {
                 $('ul.trackers li a.selected').removeClass('selected');
                 $(this).addClass('selected');
                 trackerFilter = $(this).parent('li').attr('data-id') || null;
@@ -382,6 +381,13 @@ var view = function() {
             if ((/^[\s|\t]+/).test(v.category.title)) {
                 v.category.title = $.trim(v.category.title);
             }
+            if (v.category.title !== null && v.category.title.length === 0) {
+                v.category.title = null;
+            }
+            if (v.title.length === 0) {
+                console.log('Tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
+                return true;
+            }
             var title = syntax_highlighting(v.title);
             sum++;
             var quality = quality_calc(title.r, v);
@@ -391,10 +397,10 @@ var view = function() {
             }
             var filter = '';
             var fk = 0;
-            if (trackerFilter !== null && trackerFilter != t) {
+            if (trackerFilter !== null && trackerFilter !== String(t)) {
                 filter = 'style="display: none;"';
             }
-            if (categoryFilter !== null && categoryFilter != v.category.id) {
+            if (categoryFilter !== null && categoryFilter !== String(v.category.id)) {
                 filter = 'style="display: none;"';
             }
             if (keywordFilter !== null) {
@@ -415,8 +421,8 @@ var view = function() {
             c = c + '<tr ' + filter + ' data-fs="' + fs + '" data-kf="' + fk + '" data-tracker="' + t + '" data-c="' + v.category.id + '">'
                     + '<td class="time" data-value="' + v.time + '" title="' + unixintimetitle(v.time) + '">' + unixintime(v.time) + '</td>'
                     + '<td class="quality" data-value="' + quality.value + '" data-qgame="' + quality.game + '" data-qseed="' + quality.seed + '" data-qname="' + quality.name + '" data-qvideo="' + quality.video + '" data-qmusic="' + quality.music + '" data-qbook="' + quality.book + '"><div class="progress"><div style="width:' + (quality.value / 15) + 'px"></div><span title="' + quality.value + '">' + quality.value + '</span></div></td>'
-                    + '<td class="name"><div class="title"><a href="' + v.url + '" target="_blank">' + title + '</a>' +
-                    ((v.category.title === null && ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div>' : '')
+                    + '<td class="name"><div class="title"><a href="' + v.url + '" target="_blank">' + title + '</a>'
+                    + ((v.category.title === null && ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div>' : '')
                     + '</div>'
                     + ((v.category.title !== null) ? '<ul><li class="category">' + ((v.category.url === null) ? v.category.title : '<a href="' + v.category.url + '" target="blank">' + v.category.title + '</a>') + ((ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div></li>' : '</li>') + '</ul>' : '')
                     + '</td>'
@@ -424,7 +430,6 @@ var view = function() {
                     + ((!HideSeed) ? '  <td class="seeds" data-value="' + v.seeds + '">' + v.seeds + '</td>' : '')
                     + ((!HideLeech) ? '  <td class="leechs" data-value="' + v.leechs + '">' + v.leechs + '</td>' : '')
                     + '</tr>';
-
         });
         if (p !== undefined) {
             sum = p;
@@ -1565,7 +1570,10 @@ var view = function() {
             } else {
                 tmp_vars.torrent_list_ul.css({'border-color': '#fff', 'overflow': 'hidden'});
             }
-            tmp_vars.torrent_list.on('dblclick', function() {
+            tmp_vars.torrent_list.on('dblclick', function(e) {
+                if (e.target.tagName === "A" || e.target.tagName === "SELECT") {
+                    return;
+                }
                 var resize_enable = GetSettings('torrent_list_r');
                 if (resize_enable === "1") {
                     SetSettings('torrent_list_r', 0);
