@@ -541,7 +541,7 @@ var view = function() {
         if (week > 0)
             return theDate;
         //var str_month = (month<5)?(month<2)?                    ' месяц':   ' месяца':  ' месяцев';
-        var str_week = ' ' + ((week < 5) ? (week < 2) ? (week < 1) ? _lang.times.week1 : _lang.times.week2 : _lang.times.week3 : _lang.times.week4);
+        //var str_week = ' ' + ((week < 5) ? (week < 2) ? (week < 1) ? _lang.times.week1 : _lang.times.week2 : _lang.times.week3 : _lang.times.week4);
         var str_day = ' ' + ((day < 5) ? (day < 2) ? (day < 1) ? _lang.times.day1 : _lang.times.day2 : _lang.times.day3 : _lang.times.day4);
         var str_hour = ' ' + ((hour < 5) ? (hour < 2) ? (hour < 1) ? _lang.times.hour1 : _lang.times.hour2 : _lang.times.hour3 : _lang.times.hour4);
         var str_minutes = ' ' + _lang.times.min;
