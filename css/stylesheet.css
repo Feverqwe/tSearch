@@ -955,26 +955,26 @@ div.size_filter input {
     width: 40px;
 }
 
-div.tracker_list ul::-webkit-scrollbar {
+div.tracker_list > ul::-webkit-scrollbar {
     width: 5px;
 }
-div.tracker_list ul::-webkit-scrollbar-thumb:vertical {
+div.tracker_list > ul::-webkit-scrollbar-thumb:vertical {
     margin: 5px;
     background-color: #999;
     -webkit-border-radius: 5px;
 }
-div.tracker_list ul::-webkit-scrollbar-button:start:decrement,
-div.tracker_list ul::-webkit-scrollbar-button:end:increment {
+div.tracker_list > ul::-webkit-scrollbar-button:start:decrement,
+div.tracker_list > ul::-webkit-scrollbar-button:end:increment {
     height: 0px;
     display: block;
 }
 
-div.tracker_list ul {
+div.tracker_list > ul {
     border-top: 1px solid #fff;
     border-bottom: 1px solid #fff;
     overflow: hidden;
 }
-div.tracker_list ul:hover {
+div.tracker_list > ul:hover {
     border-top-color: #ddd;
     border-bottom-color: #ddd;
     overflow-y: auto;
