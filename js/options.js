@@ -6,7 +6,6 @@ var options = function() {
         SubCategoryFilter: {"v": 0, "t": "checkbox"},
         HideZeroSeed: {"v": 0, "t": "checkbox"},
         AdvFiltration: {"v": 2, "t": "radio"},
-        AutoSetCategory: {"v": 0, "t": "checkbox"},
         TeaserFilter: {"v": 1, "t": "checkbox"},
         add_in_omnibox: {"v": 1, "t": "checkbox"},
         context_menu: {"v": 1, "t": "checkbox"},
