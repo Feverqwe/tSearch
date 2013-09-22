@@ -474,7 +474,7 @@ var magic = function() {
     };
     var write_language = function(language) {
         if (!language) {
-            language = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
+            language = GetSettings('lang') || 'ru';
         }
         _lang = get_lang(language);
         var lang = _lang.magic;

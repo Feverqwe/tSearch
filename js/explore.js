@@ -1,6 +1,6 @@
 var explore = function() {
     var _google_proxy = parseInt(GetSettings('google_proxy') || 0);
-    var _use_english_postername = parseInt(GetSettings('use_english_postername')) || 0;
+    var _use_english_postername = parseInt(GetSettings('use_english_postername') || 0);
     var xhr = {};
     var _explorerCache = JSON.parse(GetSettings('explorerCache') || "{}");
     var upTimer = null;

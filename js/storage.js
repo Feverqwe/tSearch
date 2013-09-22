@@ -39,4 +39,4 @@ var GetSettings = function(key) {
             return localStorage[key];
     }
 };
-allow_favorites_sync = (GetSettings('allow_favorites_sync') !== undefined) ? parseInt(GetSettings('allow_favorites_sync')) : false;
+allow_favorites_sync = parseInt(GetSettings('allow_favorites_sync') || 0);

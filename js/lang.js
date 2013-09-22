@@ -69,7 +69,7 @@ var get_lang = function(lang) {
         exp_rm_fav: 'Remove from favorites',
         exp_edit_fav: 'Edit poster',
         exp_move_fav: 'Move poster',
-        exp_edit_fav_label: ['Enter new name','Image url','Description url'],
+        exp_edit_fav_label: ['Enter new name', 'Image url', 'Description url'],
         exp_more: 'More',
         exp_default: 'Default',
         his_title: 'Search history',
@@ -134,7 +134,7 @@ var get_lang = function(lang) {
         allow_get_description: 'Get a description of the search query from Google. (each request will be matched with google!)',
         allow_favorites_sync: 'Allow sync favorites list in the cloud',
         clear_cloud_btn: 'Clear settings in the cloud',
-        apprise_btns: ['Ok','Cancel'],
+        apprise_btns: ['Ok', 'Cancel'],
         settings: {
             1: "The list of torrents",
             2: "Options",
@@ -342,7 +342,7 @@ var get_lang = function(lang) {
         exp_rm_fav: 'Удалить из избранного',
         exp_edit_fav: 'Редактировать постер',
         exp_move_fav: 'Переместить',
-        exp_edit_fav_label: ['Введите новое имя','URL изображения','URL описания'],
+        exp_edit_fav_label: ['Введите новое имя', 'URL изображения', 'URL описания'],
         exp_more: 'Подробнее',
         exp_default: 'По умолчанию',
         his_title: 'История поиска',
@@ -407,7 +407,7 @@ var get_lang = function(lang) {
         allow_get_description: 'Получать описание поискового запроса из Google. (каждый запрос будет искаться в google!)',
         allow_favorites_sync: 'Разрешить синхронизацию списка избранного в облако',
         clear_cloud_btn: 'Очистить настройки в облаке',
-        apprise_btns: ['Ок','Отменить'],
+        apprise_btns: ['Ок', 'Отменить'],
         settings: {
             1: "Список торрентов",
             2: "Опции",
@@ -546,7 +546,7 @@ var get_lang = function(lang) {
         }
     };
     if (!lang) {
-        lang = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
+        lang = GetSettings('lang') || 'ru';
     }
     if (lang === 'ru') {
         return lang_arr_ru;

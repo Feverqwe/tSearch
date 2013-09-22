@@ -25,7 +25,7 @@ var options = function() {
     var settings = {};
     var settings_load = function() {
         $.each(def_settings, function(k, v) {
-            settings[k] = (GetSettings(k) !== undefined) ? parseInt(GetSettings(k)) : v.v;
+            settings[k] = parseInt(GetSettings(k) || v.v);
         });
         defProfile = parseInt(GetSettings('defProfile') || 0);
         if (currentProfileID === 0) {
@@ -322,7 +322,7 @@ var options = function() {
     };
     var write_language = function(language) {
         if (!language) {
-            language = (GetSettings('lang') !== undefined) ? GetSettings('lang') : 'ru';
+            language = GetSettings('lang') || 'ru';
         }
         _lang = get_lang(language);
         var lang = _lang.settings;
@@ -343,14 +343,14 @@ var options = function() {
     };
     var load_costume_torrents = function() {
         $('table.c_table tbody').empty();
-        var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
+        var costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
         var c = costume_tr.length;
         if (c === 0) {
             $('table.c_table tbody').html('<td colspan="4" class="notorrent" data-lang="51">' + _lang.settings[51] + '</td>');
         } else
             for (var i = 0; i < c; i++) {
-                var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;
-                if (tr === null) {
+                var tr = JSON.parse(GetSettings('ct_' + costume_tr[i]) || {});
+                if (tr.uid === undefined) {
                     costume_tr.splice(i, 1);
                     SetSettings('costume_tr', JSON.stringify(costume_tr));
                     if (costume_tr.length === 0) {
@@ -518,7 +518,7 @@ var options = function() {
             $(window).trigger('resize');
             $('input[name=ctr_add]').on('click', function() {
                 var str_code = $('textarea[name=code]').val();
-                var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
+                var costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
                 var code = null;
                 try {
                     code = JSON.parse(str_code);
@@ -565,14 +565,14 @@ var options = function() {
                 $('input[name=ctr_edit]').parent().show();
                 $('input[name=ctr_add]').parent().hide();
                 var uid = $(this).parents().eq(1).attr('data-uid');
-                var code = (GetSettings('ct_' + uid) !== undefined) ? GetSettings('ct_' + uid) : '';
+                var code = GetSettings('ct_' + uid) || '';
                 $('textarea[name=code]').val(code);
                 $('div.popup').show();
                 $('div.popup').attr('data-uid', uid);
             });
             $('table.c_table').on('click', 'input[name=rm_ctr]', function() {
                 var uid = $(this).parents().eq(1).attr('data-uid');
-                var costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
+                var costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
                 var index = $.inArray(parseInt(uid), costume_tr);
                 if (index === -1)
                     return;

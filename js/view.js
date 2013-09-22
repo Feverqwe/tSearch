@@ -13,15 +13,15 @@ var view = function() {
     };
     var HideLeech = parseInt(GetSettings('HideLeech') || 1);
     var HideSeed = parseInt(GetSettings('HideSeed') || 0);
-    var ShowIcons = (GetSettings('ShowIcons') !== undefined) ? parseInt(GetSettings('ShowIcons')) : true;
-    var HideZeroSeed = (GetSettings('HideZeroSeed') !== undefined) ? parseInt(GetSettings('HideZeroSeed')) : false;
-    var AdvFiltration = (GetSettings('AdvFiltration') !== undefined) ? parseInt(GetSettings('AdvFiltration')) : 2;
-    var TeaserFilter = (GetSettings('TeaserFilter') !== undefined) ? parseInt(GetSettings('TeaserFilter')) : true;
-    var SubCategoryFilter = (GetSettings('SubCategoryFilter') !== undefined) ? parseInt(GetSettings('SubCategoryFilter')) : false;
-    var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : 1;
-    var autoSetCat = (GetSettings('autoSetCat') !== undefined) ? parseInt(GetSettings('autoSetCat')) : true;
-    var allow_get_description = (GetSettings('allow_get_description') !== undefined) ? parseInt(GetSettings('allow_get_description')) : true;
-    var _sub_select_enable = (GetSettings('sub_select_enable') !== undefined) ? parseInt(GetSettings('sub_select_enable')) : true;
+    var ShowIcons = parseInt(GetSettings('ShowIcons') || 1);
+    var HideZeroSeed = parseInt(GetSettings('HideZeroSeed') || 0);
+    var AdvFiltration = parseInt(GetSettings('AdvFiltration') || 2);
+    var TeaserFilter = parseInt(GetSettings('TeaserFilter') || 1);
+    var SubCategoryFilter = parseInt(GetSettings('SubCategoryFilter') || 0);
+    var AutoComplite_opt = parseInt(GetSettings('AutoComplite_opt') || 1);
+    var autoSetCat = parseInt(GetSettings('autoSetCat') || 1);
+    var allow_get_description = parseInt(GetSettings('allow_get_description') || 1);
+    var _sub_select_enable = parseInt(GetSettings('sub_select_enable') || 1);
     var update_table = {
         timer: null,
         time: null
@@ -230,6 +230,9 @@ var view = function() {
                 console.log(er[8] + ' - time fix');
         }
     };
+    var teaser_filter = function(title) {
+        return ((/Трейлер|Тизер|Teaser|Trailer/i).test(title)) ? 1 : 0;
+    };
     var inBGMode = function(t, a, s) {
         if ("year" in keyword_filter_cache === false) {
             keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
@@ -264,8 +267,7 @@ var view = function() {
                 }
                 return true;
             }
-            var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title !== null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
-            if (Teaser === 1) {
+            if (teaser_filter(v.title + v.category.title) === 1) {
                 if (tmp_var_qbox === 0) {
                     explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
                 }
@@ -369,11 +371,8 @@ var view = function() {
             if (HideZeroSeed && v.seeds === 0) {
                 return true;
             }
-            if (TeaserFilter) {
-                var Teaser = ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.title)) ? 1 : (v.category.title !== null) ? ((/Трейлер|Тизер|Teaser|Trailer/i).test(v.category.title)) ? 1 : 0 : 0;
-                if (Teaser === 1) {
-                    return true;
-                }
+            if (teaser_filter(v.title + v.category.title) === 1) {
+                return true;
             }
             if ((/^[\s|\t]+/).test(v.title)) {
                 v.title = $.trim(v.title);
