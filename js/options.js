@@ -21,18 +21,17 @@ var options = function() {
     };
     var currentProfileID = 0;
     var defProfile = 0;
-    var trackerProfiles = null;
+    var trackerProfiles = [];
     var settings = {};
     var settings_load = function() {
         $.each(def_settings, function(k, v) {
             settings[k] = (GetSettings(k) !== undefined) ? parseInt(GetSettings(k)) : v.v;
         });
+        defProfile = parseInt(GetSettings('defProfile') || 0);
         if (currentProfileID === 0) {
-            defProfile = currentProfileID = (GetSettings('defProfile') !== undefined) ? parseInt(GetSettings('defProfile')) : 0;
-        } else {
-            defProfile = (GetSettings('defProfile') !== undefined) ? parseInt(GetSettings('defProfile')) : 0;
+            currentProfileID = defProfile;
         }
-        trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
+        trackerProfiles = JSON.parse(GetSettings('trackerProfiles') || "[]");
     };
     settings_load();
     var set_place_holder = function() {
@@ -68,9 +67,6 @@ var options = function() {
     var addTrackerInList = function(i) {
         var filename = tracker[i].filename;
         var id = currentProfileID;
-        if (trackerProfiles === null) {
-            return;
-        }
         if (trackerProfiles[id] === undefined) {
             return;
         }

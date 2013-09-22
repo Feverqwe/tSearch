@@ -204,8 +204,8 @@ var engine = function() {
     ];
     var costume_tr = null; //load when add costume torrent function
     var categorys = _lang['categorys'];
-    var trackerProfiles = (GetSettings('trackerProfiles') !== undefined) ? JSON.parse(GetSettings('trackerProfiles')) : null;
-    var defProfile = (GetSettings('defProfile') !== undefined) ? GetSettings('defProfile') : 0;
+    var trackerProfiles = JSON.parse(GetSettings('trackerProfiles') || "[]");
+    var defProfile = parseInt(GetSettings('defProfile') || 0);
     var search = function(text, tracker_id, nohistory) {
         if (tracker_id !== null) {
             try {
@@ -664,7 +664,7 @@ var engine = function() {
         }
     };
     var chkDefProfile = function() {
-        if (trackerProfiles === null) {
+        if (trackerProfiles.length === 0) {
             trackerProfiles = [{
                     Trackers: null,
                     Title: _lang.label_def_profile
