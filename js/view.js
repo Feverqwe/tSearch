@@ -42,6 +42,9 @@ var view = function() {
     var clear_table = function() {
         backgroundMode = false;
         $('div.about_panel').empty();
+        if (tmp_vars.rez_table_tbody === undefined) {
+            tmp_vars.rez_table_tbody = $('#rez_table').children('tbody');
+        }
         tmp_vars.rez_table_tbody.get(0).innerHTML = "";
         $('div.filter').children('input').val('');
         keywordFilter = null;
@@ -88,6 +91,9 @@ var view = function() {
         })).append('<i/>').appendTo($('ul.trackers'));
     };
     var ClearTrackerList = function() {
+        if (tmp_vars.ul_trackers === undefined) {
+            tmp_vars.ul_trackers = $('ul.trackers');
+        }
         tmp_vars.ul_trackers.empty();
         $('style.tr_icon').remove();
     };
