@@ -1,5 +1,5 @@
 var view = function() {
-    var search_history = null;
+    var search_history = [];
     var noHistory = function() {
         $('ol.list').html('<center>' + _lang.his_no_his + '</center>');
     };
@@ -11,9 +11,9 @@ var view = function() {
         return 1;
     };
     var getResult = function() {
-        search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
+        search_history = JSON.parse(GetSettings('search_history') || "[]");
         $('ol.list').empty();
-        if (search_history === null) {
+        if (search_history.length < 1) {
             noHistory();
             return;
         }
@@ -44,8 +44,8 @@ var view = function() {
         });
     };
     var removeItem = function(title) {
-        search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-        if (search_history !== null) {
+        search_history = JSON.parse(GetSettings('search_history') || "[]");
+        if (search_history.length > 0) {
             var count = search_history.length;
             for (var i = 0; i < count; i++) {
                 if (search_history[i].title === title) {

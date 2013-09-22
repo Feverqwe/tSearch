@@ -230,8 +230,8 @@ var engine = function() {
     };
     var LimitHistory = function() {
         var removeItem = function(title) {
-            var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-            if (search_history !== null) {
+            var search_history = JSON.parse(GetSettings('search_history') || "[]");
+            if (search_history.length > 0) {
                 var count = search_history.length;
                 for (var i = 0; i < count; i++) {
                     if (search_history[i].title === title) {
@@ -242,8 +242,8 @@ var engine = function() {
                 SetSettings('search_history', JSON.stringify(search_history));
             }
         };
-        var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-        if (search_history === null)
+        var search_history = JSON.parse(GetSettings('search_history') || "[]");
+        if (search_history.length < 1)
             return;
         var count = search_history.length;
         if (count >= 200) {
@@ -264,8 +264,8 @@ var engine = function() {
         if (title.length === 0)
             return;
         LimitHistory();
-        var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-        if (search_history !== null) {
+        var search_history = JSON.parse(GetSettings('search_history') || "[]");
+        if (search_history.length > 0) {
             var count = search_history.length;
             var find = false;
             for (var i = 0; i < count; i++) {

@@ -1,4 +1,4 @@
-var AutoComplite_opt = (GetSettings('AutoComplite_opt') !== undefined) ? parseInt(GetSettings('AutoComplite_opt')) : 1;
+var AutoComplite_opt = parseInt(GetSettings('AutoComplite_opt') || 1);
 var xhr_autocomplite = null;
 var AddAutocomplete = function() {
     if (AutoComplite_opt === 0) {
@@ -10,8 +10,8 @@ var AddAutocomplete = function() {
                 return 0;
             return 1;
         };
-        var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-        if (search_history !== null) {
+        var search_history = JSON.parse(GetSettings('search_history') || "[]");
+        if (search_history.length > 0) {
             search_history.sort(order);
             var count = search_history.length;
             for (var i = 0; i < count; i++) {
@@ -34,8 +34,8 @@ var AddAutocomplete = function() {
                         return 0;
                     return 1;
                 };
-                var search_history = (GetSettings('search_history') !== undefined) ? JSON.parse(GetSettings('search_history')) : null;
-                if (search_history !== null) {
+                var search_history = JSON.parse(GetSettings('search_history') || "[]");
+                if (search_history.length > 0) {
                     search_history.sort(order);
                     var count = search_history.length;
                     for (var i = 0; i < count; i++) {

@@ -1,21 +1,21 @@
 var _type_ext = 1;
 chrome.browserAction.onClicked.addListener(function() {
-    var search_popup = (GetSettings('search_popup') !== undefined) ? parseInt(GetSettings('search_popup')) : true;
+    var search_popup = parseInt(GetSettings('search_popup') || 1);
     if (!search_popup) {
         chrome.tabs.create({
-            url : 'index.html#s='
+            url: 'index.html#s='
         });
     }
 });
-var update_btn = function () {
-    var search_popup = (GetSettings('search_popup') !== undefined) ? parseInt(GetSettings('search_popup')) : true;
+var update_btn = function() {
+    var search_popup = parseInt(GetSettings('search_popup') || 1);
     if (search_popup) {
         chrome.browserAction.setPopup({
-            popup : 'popup.html'
+            popup: 'popup.html'
         });
     } else {
         chrome.browserAction.setPopup({
-            popup : ''
+            popup: ''
         });
     }
 };

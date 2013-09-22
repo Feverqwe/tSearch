@@ -1,6 +1,6 @@
 var bg = function() {
     var add_in_omnibox = function() {
-        var add_in_omnibox = (GetSettings('add_in_omnibox') !== undefined) ? parseInt(GetSettings('add_in_omnibox')) : true;
+        var add_in_omnibox = parseInt(GetSettings('add_in_omnibox') || 1);
         if (add_in_omnibox) {
             chrome.omnibox.onInputEntered.addListener(function(text) {
                 chrome.tabs.create({
@@ -11,7 +11,7 @@ var bg = function() {
         }
     };
     var update_context_menu = function() {
-        var context_menu = (GetSettings('context_menu') !== undefined) ? parseInt(GetSettings('context_menu')) : true;
+        var context_menu = parseInt(GetSettings('context_menu') || 1);
         chrome.contextMenus.removeAll(function() {
             if (context_menu) {
                 chrome.contextMenus.create({
