@@ -556,8 +556,8 @@ div.explore div.poster > div.image > div.move_favorite {
     border-radius: 8px;
 }
 div.explore div.poster > div.image > a > img {
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
-    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.8);
 }
 
 div.explore div.games > div > div.poster, 
