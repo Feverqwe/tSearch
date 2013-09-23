@@ -507,14 +507,10 @@ var explore = function() {
         calculate_moveble(key, size);
     };
     var update_poster_count = function() {
-        if ( tmp_vars.explore.css('display') !== 'block')
+        if (tmp_vars.explore.css('display') !== 'block')
             return;
         $.each(listOptions, function(key) {
-            if (tmp_vars.li_cache === undefined || tmp_vars.li_cache[key] === undefined) {
-                tmp_vars.li_cache = {};
-                tmp_vars.li_cache[key] = $('li.' + key);
-            }
-            var obj = tmp_vars.li_cache[key];
+            var obj = $('li.' + key);
             var now_count = obj.attr('data-item-count');
             var new_count = get_view_i_count(key, obj);
             if (now_count !== undefined && new_count > 0 && parseInt(now_count) !== new_count) {
@@ -1510,8 +1506,9 @@ var explore = function() {
         setQuality: function(a, b) {
             setQuality(a, b);
         },
-        update_poster_count: function() {
-            update_poster_count();
+        update_poster_count: function(a) {
+            clearTimeout(tmp_vars.resizetimer);
+            tmp_vars.resizetimer = setTimeout(update_poster_count, 200);
         },
         render_top: function(a, b) {
             if (tmp_vars.top_state !== b) {
@@ -1521,8 +1518,9 @@ var explore = function() {
     };
 }();
 $(window).on('resize', function(e) {
+    var ww = e.currentTarget.outerWidth;
     explore.update_poster_count();
-    if (e.currentTarget.outerWidth > 1152) {
+    if (ww > 1152) {
         explore.render_top(undefined, 4);
     } else {
         explore.render_top(undefined, 3);
