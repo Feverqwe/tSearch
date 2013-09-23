@@ -1445,7 +1445,7 @@ var explore = function() {
         var l2y = get_last_2year();
         var lim = 5;
         for (var i = l2y.length - 1; i >= 0; i--) {
-            v_y = l2y[i];
+            var v_y = l2y[i];
             $.each(obj.year[v_y], function(k, v) {
                 if (v.link === obj.year[s_year][cat].link) {
                     return true;
