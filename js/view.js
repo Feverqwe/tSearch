@@ -1169,13 +1169,12 @@ var view = function() {
         $('div.result_panel').css('display', 'none');
         $('div.explore').css('display', 'block');
         clear_table();
-        $('form[name="search"]').children('input[type=text]').val('');
+        tmp_vars.search_input.val('');
         var old_title = document.title;
         document.title = 'Torrents MultiSearch';
         window.location = '#s=';
         global_wl_hash = location.hash;
-        $('form[name="search"]').children('input[type="text"]').val('').focus();
-        $('form[name="search"]').children('input[type="text"]').trigger("keyup");
+        tmp_vars.search_input.focus().trigger("keyup");
         explore.getLoad();
         if (old_title !== document.title) {
             _gaq.push(['_trackPageview', 'index.html']);
@@ -1197,9 +1196,8 @@ var view = function() {
         if (sel_tr !== null)
             $('ul.trackers li[data-id=' + sel_tr + ']').children('a').addClass('selected');
         keyword = $.trim(keyword);
-        if ($('form[name="search"]').children('input[type="text"]').val() !== keyword) {
-            $('form[name="search"]').children('input[type="text"]').val(keyword);
-            $('form[name="search"]').children('input[type="text"]').trigger("keyup");
+        if (tmp_vars.search_input.val() !== keyword) {
+            tmp_vars.search_input.val(keyword).trigger("keyup");
         }
         document.title = keyword + ' :: ' + 'TMS';
         window.location = '#s=' + keyword;
@@ -1391,8 +1389,10 @@ var view = function() {
         begin: function() {
             tmp_vars.ul_trackers = $('ul.trackers');
             tmp_vars.rez_table = $('#rez_table');
-            tmp_vars.rez_table_tbody = $('#rez_table').children('tbody');
+            tmp_vars.rez_table_tbody = tmp_vars.rez_table.children('tbody');
             tmp_vars.ul_categorys = $('ul.categorys');
+            tmp_vars.form_search = $('form[name="search"]');
+            tmp_vars.search_input = tmp_vars.form_search.children('input[type="text"]');
             $('form[name=search]').children('.sbutton').val(_lang['btn_form']);
             $('div.right').children('.main').attr('title', _lang['btn_main']);
             $('div.right').children('.history').attr('title', _lang['btn_history']);
@@ -1427,9 +1427,9 @@ var view = function() {
             if (HideSeed) {
                 $('th.seeds').remove();
             }
-            $('form[name="search"]').submit(function(event) {
+            tmp_vars.form_search.submit(function(event) {
                 event.preventDefault();
-                triggerSearch($(this).children('input[type="text"]').val());
+                triggerSearch(tmp_vars.search_input.val());
                 return false;
             });
             tmp_vars.ul_categorys.on('click', 'li', function(event) {
@@ -1497,13 +1497,13 @@ var view = function() {
                 });
             } catch (err) {
             }
-            $('form[name="search"]').children('input').eq(0).focus();
-            $('form[name="search"]').children('div.btn.clear').on("click", function() {
+            tmp_vars.search_input.focus();
+            tmp_vars.form_search.children('div.btn.clear').on("click", function() {
                 event.preventDefault();
                 $(this).hide();
-                $('form[name="search"]').children('input').eq(0).val("").focus();
+                tmp_vars.search_input.val("").focus();
             });
-            $('form[name="search"]').children('input').eq(0).on('keyup', function() {
+            tmp_vars.search_input.on('keyup', function() {
                 if (this.value.length > 0) {
                     $(this).parent().children('div.btn.clear').show();
                 } else {
@@ -1557,12 +1557,11 @@ var view = function() {
             });
             var s = (document.URL).replace(/(.*)index.html/, '').replace(/#s=(.*)/, '$1');
             if (s.length > 0) {
-                $('form[name="search"]').children('input[type="text"]').val(s);
-                $('form[name="search"]').children('input[type="text"]').trigger("keyup");
+                tmp_vars.search_input.val(s).trigger("keyup");
             }
             $('div.tracker_list .setup').on("click", function(e) {
                 e.preventDefault();
-                window.location = 'options.html#back=' + $.trim($('form[name="search"]').children('input[type="text"]').val());
+                window.location = 'options.html#back=' + $.trim(tmp_vars.search_input.val());
             });
             $('input.sbutton.main').on("click", function() {
                 triggerBlank();

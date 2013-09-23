@@ -1,4 +1,5 @@
 /nbproject/
+/.idea/
 /build
 /build_chrome*
 /build_firefox
