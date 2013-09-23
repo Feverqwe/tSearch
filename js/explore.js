@@ -1520,7 +1520,7 @@ var explore = function() {
 $(window).on('resize', function(e) {
     var ww = e.currentTarget.outerWidth;
     explore.update_poster_count();
-    if (ww > 1152) {
+    if (ww > 1275) {
         explore.render_top(undefined, 4);
     } else {
         explore.render_top(undefined, 3);
