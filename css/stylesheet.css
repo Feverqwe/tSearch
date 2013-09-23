@@ -634,13 +634,18 @@ div.top_search ul {
 }
 div.top_search ul li {
     float:left;
-    width:33%;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     padding-top: 2px;
     padding-bottom: 3px;
 }
+div.top_search ul.c3 li {
+    width:33%;
+} 
+div.top_search ul.c4 li {
+    width:25%;
+} 
 div.top_search {
     margin-top: -15px;
     margin-bottom: 20px;
