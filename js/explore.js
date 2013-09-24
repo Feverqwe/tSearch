@@ -1109,7 +1109,7 @@ var explore = function() {
     };
     var render_top = function(arr, colums) {
         if (colums === undefined) {
-            colums = (document.body.clientWidth > 1275) ? 4 : 3;
+            colums = (window.innerWidth > 1275) ? 4 : 3;
         }
         tmp_vars.top_state = colums;
         if (arr === undefined) {
@@ -1519,7 +1519,7 @@ var explore = function() {
 }();
 $(window).on('resize', function(e) {
     explore.update_poster_count();
-    if (this.outerWidth > 1275) {
+    if (this.innerWidth > 1275) {
         explore.render_top(undefined, 4);
     } else {
         explore.render_top(undefined, 3);
