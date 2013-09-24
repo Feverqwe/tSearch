@@ -34,10 +34,6 @@ var engine = function() {
             e: 0
         },
         {
-            n: 'pornolab',
-            e: 0
-        },
-        {
             n: 'rustorka',
             e: 1
         },
