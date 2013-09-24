@@ -638,7 +638,7 @@ var explore = function() {
         var root_url = content_sourse[section].root_url;
         var fav = content_sourse[section].fav;
         var did = content_sourse[section].did;
-        page = parseFloat(page);
+        page = parseInt(page);
         if (isNaN(page))
             page = 1;
         var poster_count = get_view_i_count(section);
@@ -747,9 +747,9 @@ var explore = function() {
         });
     };
     var FavoritesOrder = function(left, id, right) {
-        left = parseFloat(left);
-        id = parseFloat(id);
-        right = parseFloat(right);
+        left = parseInt(left);
+        id = parseInt(id);
+        right = parseInt(right);
         var c = favoritesList.length;
         var new_arr = [];
         var new_desc_arr = {};
@@ -1267,7 +1267,7 @@ var explore = function() {
         }
     };
     var make_setup_view = function(obj) {
-        var i_line = parseFloat($(obj).attr('data-i_line'));
+        var i_line = parseInt($(obj).attr('data-i_line'));
         var size = $(obj).attr('data-size');
         var section = $(obj).parents().eq(2).attr('class');
         var def_size = content_sourse[section].size;

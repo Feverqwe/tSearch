@@ -169,7 +169,7 @@ var view = function() {
             }
         }
         v.size = parseFloat(v.size);
-        if (isNaN(parseFloat(v.size))) {
+        if (isNaN(v.size)) {
             v.size = 0;
             er[4] = 1;
             if (tests && tests[4] !== 0) {
@@ -183,24 +183,24 @@ var view = function() {
                 er[5] = 0;
             }
         }
-        v.seeds = parseFloat(v.seeds);
-        if (isNaN(parseFloat(v.seeds))) {
+        v.seeds = parseInt(v.seeds);
+        if (isNaN(v.seeds)) {
             v.seeds = 1;
             er[6] = 1;
             if (tests && tests[6] !== 0) {
                 er[6] = 0;
             }
         }
-        v.leechs = parseFloat(v.leechs);
-        if (isNaN(parseFloat(v.leechs))) {
+        v.leechs = parseInt(v.leechs);
+        if (isNaN(v.leechs)) {
             v.leechs = 0;
             er[7] = 1;
             if (tests && tests[7] !== 0) {
                 er[7] = 0;
             }
         }
-        v.time = parseFloat(v.time);
-        if (isNaN(parseFloat(v.time))) {
+        v.time = parseInt(v.time);
+        if (isNaN(v.time)) {
             v.time = 0;
             er[8] = 1;
             if (tests && tests[8] !== 0) {
