@@ -418,6 +418,9 @@ var explore = function() {
         var KinopoiskFav = function(c) {
             c = view.contentFilter(c);
             var t = view.load_in_sandbox(null, c);
+            if (t.find('#login').length > 0) {
+                return '';
+            }
             t = t.find('#itemList').children('li.item');
             var l = t.length;
             var arr = [];
@@ -987,7 +990,18 @@ var explore = function() {
             url: content_sourse[type].url,
             success: function(data) {
                 var content = read_content(type, data);
+                if (typeof(content) === 'string') {
+                    $('li.kinopoisk').find('.kinopoisk_update_btn').removeClass('update').addClass('error').removeClass('success');
+                    return;
+                }
                 SetSettings('kinopoiskList', JSON.stringify(content));
+                for (var i = 0; i < kinopoiskList.length; i++) {
+                    for (var f = 0; f < content.length; f++) {
+                        if (kinopoiskList[i].url === content[f].url && "quality" in kinopoiskList[i]) {
+                            content[f].quality = kinopoiskList[i].quality;
+                        }
+                    }
+                }
                 kinopoiskList = content;
                 show_kinopoisk();
                 $('li.kinopoisk').find('.kinopoisk_update_btn').removeClass('update').removeClass('error').addClass('success');
