@@ -1381,12 +1381,15 @@ var explore = function() {
         var cat = -1;
         var qbox = $('li.' + obj.section + ' > div.' + obj.section + ' > div').children('div[data-id=' + obj.id + ']').find('div.quality_box');
         if (obj === undefined || obj.year === undefined) {
-            qbox.removeClass('loading');
-            qbox.text('-');
-            if (obj.id !== undefined && obj.section === 'favorites') {
-                update_q_favorites(obj.id, '-', []);
-            }
-            qbox.trigger("mouseenter", []);
+            clearTimeout(upTimer2);
+            upTimer2 = setTimeout(function() {
+                qbox.removeClass('loading');
+                qbox.text('-');
+                if (obj.id !== undefined && obj.section === 'favorites') {
+                    update_q_favorites(obj.id, '-', []);
+                }
+                qbox.trigger("mouseenter", []);
+            }, 500);
             return;
         }
         function get_last_year(c) {
