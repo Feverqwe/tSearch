@@ -20,7 +20,7 @@
                 theButton = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
                 opera.contexts.toolbar.addItem(theButton);
             }, false);
-            var context_menu = (GetSettings('context_menu') !== undefined) ? parseInt(GetSettings('context_menu')) : true;
+            var context_menu = parseInt(localStorage['context_menu'] || 1);
             if (context_menu) {
                 window.addEventListener('DOMContentLoaded', function() {
                     // Check the Context Menu API is supported
