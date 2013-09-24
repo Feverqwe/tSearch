@@ -3,6 +3,7 @@
     <head>
         <title>Torrents MultiSearch</title>
         <meta charset="utf-8" />
+        <script src="build/js/storage.js"></script>
         <script src="build/js/lang.js"></script>
         <script>
             window.addEventListener('load', function() {
@@ -19,7 +20,7 @@
                 theButton = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
                 opera.contexts.toolbar.addItem(theButton);
             }, false);
-            var context_menu = parseInt(localStorage['context_menu'] || 1);
+            var context_menu = parseInt(GetSettings('context_menu') || 1);
             if (context_menu) {
                 window.addEventListener('DOMContentLoaded', function() {
                     // Check the Context Menu API is supported
