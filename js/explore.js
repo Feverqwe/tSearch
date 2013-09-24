@@ -701,14 +701,16 @@ var explore = function() {
         return kw.replace(/(.*) \(([0-9]{4})\)/, '$1 $2');
     };
     var write_page = function(section, page, content) {
-        if (section === 'kinopoisk') {
-            content = kinopoiskList;
-        } else
-        if (section === 'favorites') {
-            content = favoritesList;
-        } else
-        if (content === undefined)
-            content = _explorerCache[section].cache_arr;
+        if (content === undefined) {
+            if (section === 'kinopoisk') {
+                content = kinopoiskList;
+            } else
+            if (section === 'favorites') {
+                content = favoritesList;
+            } else {
+                content = _explorerCache[section].cache_arr;
+            }
+        }
         var root_url = content_sourse[section].root_url;
         var fav = content_sourse[section].fav;
         var did = content_sourse[section].did;
