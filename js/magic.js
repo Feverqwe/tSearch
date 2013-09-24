@@ -345,30 +345,48 @@ var magic = function() {
             for (var i = 0; i < 6; i++) {
                 if (dd[i] === undefined) {
                     dd[i] = 0;
+                } else {
+                    dd[i] = parseInt(dd[i]);
+                    if (isNaN(dd[i])) {
+                        if (i < 3) {
+                            return 0;
+                        } else {
+                            dd[i] = 0;
+                        }
+                    }
                 }
             }
             if (dd[0] < 10) {
                 dd[0] = '200' + dd[0];
-            }
+            } else
             if (dd[0] < 100) {
                 dd[0] = '20' + dd[0];
             }
-            return Math.round((new Date(parseInt(dd[0]), parseInt(dd[1]) - 1, parseInt(dd[2]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
+            return Math.round((new Date(dd[0], dd[1] - 1, dd[2], dd[3], dd[4], dd[5])).getTime() / 1000);
         }
         if (f === 1) { //  || f === '31-04-2013[[[ 07]:03]:27]') {
             var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
             for (var i = 0; i < 6; i++) {
                 if (dd[i] === undefined) {
                     dd[i] = 0;
+                } else {
+                    dd[i] = parseInt(dd[i]);
+                    if (isNaN(dd[i])) {
+                        if (i < 3) {
+                            return 0;
+                        } else {
+                            dd[i] = 0;
+                        }
+                    }
                 }
             }
             if (dd[2] < 10) {
                 dd[2] = '200' + dd[2];
-            }
+            } else
             if (dd[2] < 100) {
                 dd[2] = '20' + dd[2];
             }
-            return Math.round((new Date(parseInt(dd[2]), parseInt(dd[1]) - 1, parseInt(dd[0]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
+            return Math.round((new Date(dd[2], dd[1] - 1, dd[0], dd[3], dd[4], dd[5])).getTime() / 1000);
         }
         if (f === 2) { //  || f === 'n day ago') {
             var old = parseFloat(t.replace(/[^0-9.]/g, '')) * 24 * 60 * 60;
