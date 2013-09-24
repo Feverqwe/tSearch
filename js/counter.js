@@ -1,9 +1,8 @@
-var google_analytics = (GetSettings('google_analytics') !== undefined) ? parseInt(GetSettings('google_analytics')) : false;
+var google_analytics = parseInt(GetSettings('google_analytics') || 0);
 if (!google_analytics) {
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-10717861-22']);
     _gaq.push(['_trackPageview']);
-
     (function() {
         var ga = document.createElement('script');
         ga.type = 'text/javascript';
