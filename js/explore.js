@@ -493,7 +493,7 @@ var explore = function() {
     var get_view_size = function(n) {
         if (listOptions[n] !== undefined & listOptions[n].size > 0)
             return listOptions[n].size;
-        if (listOptions_def[n] !== undefined && listOptions_def[n].size !== undefined && listOptions_def[n].size > 0)
+        if (listOptions_def[n] !== undefined && listOptions_def[n].size > 0)
             return listOptions_def[n].size;
         else
             return content_sourse[n].size;
@@ -524,7 +524,7 @@ var explore = function() {
             obj = $('li.' + n);
         }
         var line_count = listOptions_def[n].line;
-        if (listOptions[n].line !== undefined && listOptions[n].line > 0)
+        if (listOptions[n].line > 0)
             line_count = listOptions[n].line;
         var page_width = obj.width();
         if (page_width === undefined)

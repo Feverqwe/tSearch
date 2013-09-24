@@ -1530,7 +1530,7 @@ var view = function() {
             });
             $('div.size_filter').find('input').keyup(function() {
                 var t = parseFloat($(this).val());
-                if (isNaN(t) || t < 0 || (t < 0 === false && t > 0 === false)) {
+                if (isNaN(t) || t < 0) {
                     t = 0;
                 }
                 t = t * 1024 * 1024 * 1024;
