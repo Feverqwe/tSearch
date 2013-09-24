@@ -8,6 +8,8 @@ var explore = function() {
     var _top_cache = JSON.parse(GetSettings('topCache') || "{}");
     var favoritesList = JSON.parse(GetSettings('favoritesList') || "[]");
     var favoritesDeskList = JSON.parse(GetSettings('favoritesDeskList') || "{}");
+    var kinopoiskList = JSON.parse(GetSettings('kinopoiskList') || "[]");
+    var kinopoiskDeskList = JSON.parse(GetSettings('kinopoiskDeskList') || "{}");
     var tmpDeskList = {};
     var tmp_vars = {};
     var last_qbox = {top: 0, obj: null, id: null};
@@ -52,6 +54,12 @@ var explore = function() {
         games_a: {
             s: 1,
             size: 128,
+            count: 7,
+            line: 1
+        },
+        kinopoisk: {
+            s: 1,
+            size: 0,
             count: 7,
             line: 1
         }
@@ -162,6 +170,21 @@ var explore = function() {
             margin: 14,
             url: 'http://www.kinopoisk.ru/top/lists/45/',
             timeout: Math.round(24 * 60 * 60 * 7),
+            page_e: false,
+            base_url: "http://www.kinopoisk.ru/film/",
+            base_img_url: "http://st.kinopoisk.ru/images/film/",
+            google_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+        },
+        kinopoisk: {
+            t: _lang.exp_kinopoisk,
+            c: null,
+            root_url: 'http://www.kinopoisk.ru',
+            fav: 1,
+            did: 2,
+            size: 130,
+            margin: 14,
+            url: 'http://www.kinopoisk.ru/mykp/movies/list/type/1/page/1/sort/default/vector/desc/vt/all/format/full/',
+            timeout: 0,
             page_e: false,
             base_url: "http://www.kinopoisk.ru/film/",
             base_img_url: "http://st.kinopoisk.ru/images/film/",
@@ -392,6 +415,35 @@ var explore = function() {
             else
                 return '';
         };
+        var KinopoiskFav = function(c) {
+            c = view.contentFilter(c);
+            var t = view.load_in_sandbox(null, c);
+            t = t.find('#itemList').children('li.item');
+            var l = t.length;
+            var arr = [];
+            var i = 0;
+            for (i = 0; i < l; i++) {
+                var item = t.eq(i);
+                var obj = null;
+                try {
+                    var year = item.find('.viewDate').eq(0).text().trim().split("\n")[0].replace(/.*([0-9]{4})$/, '$1');
+                    obj = {
+                        'img': view.contentUnFilter(sesizeimg('http://st.kinopoisk.ru' + item.find('img.poster').attr('title'))).replace(content_sourse[type].base_img_url, ''),
+                        'name': item.find('div.info').eq(0).children('a.name').text().replace(/ \(.*, ([0-9]{4}).*\)$/, ' ($1)') + ' ' + year,
+                        'name_en': item.find('div.info').children('span').eq(0).text().replace(/ [0-9]* мин.$/, '').replace(/ \([0-9]*\)$/, '').replace(/ \([0-9]* – .*\)$/, ''),
+                        'url': (content_sourse[type].root_url + view.contentUnFilter(item.find('div.info').eq(0).children('a.name').attr('href'))).replace(content_sourse[type].base_url, '')
+                    };
+                } catch (error) {
+                    obj = null;
+                }
+                if (obj === null || obj.img.length === 0 || obj.name.length === 0 || obj.url.indexOf('undefined') !== -1) {
+                    console.log("Explorer " + type + " have problem!");
+                    continue;
+                }
+                arr.push(obj);
+            }
+            return arr;
+        };
         if (type === "about")
             return About(content);
         else
@@ -412,6 +464,10 @@ var explore = function() {
         else
         if (type === 'games_a')
             return Games_gg(content);
+        else
+        if (type === 'kinopoisk') {
+            return KinopoiskFav(content);
+        }
     };
     var load_exp_content = function(type, url, page) {
         if (page !== undefined) {
@@ -568,6 +624,14 @@ var explore = function() {
         $('li.' + type).empty();
         write_content(favoritesList, type, page);
     };
+    var show_kinopoisk = function() {
+        var type = 'kinopoisk';
+        var page = $('li.' + type).children('div').children('div').attr('data-page');
+        if (page === undefined)
+            page = 1;
+        $('li.' + type).empty();
+        write_content(kinopoiskList, type, page);
+    };
     var set_poster_size = function(section, size) {
         var font_size = get_font_size(size);
         var margine_size = get_poster_margin_size(section, size);
@@ -604,10 +668,14 @@ var explore = function() {
         if (page_num === undefined)
             page_num = 1;
         var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
+        var sub_function = '';
+        if (section === 'kinopoisk') {
+            sub_function = '<a class="kinopoisk_open_btn" href="' + content_sourse[section].url + '" target="_blank" title="' + _lang.exp_btn_open + '"></a><span class="kinopoisk_update_btn" title="' + _lang.exp_btn_sync + '"></span>'
+        }
         var c = '<div class="' + section + '">'
                 + '<h2>'
                 + '<div class="move_it"></div>'
-                + name
+                + name + sub_function
                 + '<div class="setup" data-i_line="' + i_line + '" data-size="' + size + '" title="' + _lang.exp_setup_view + '"' + ((!st) ? ' style="display: none"' : '') + '></div>'
                 + '<div class="spoiler' + ((!st) ? ' up' : '') + '"></div>'
                 + '</h2>'
@@ -633,8 +701,14 @@ var explore = function() {
         return kw.replace(/(.*) \(([0-9]{4})\)/, '$1 $2');
     };
     var write_page = function(section, page, content) {
+        if (section === 'kinopoisk') {
+            content = kinopoiskList;
+        } else
+        if (section === 'favorites') {
+            content = favoritesList;
+        } else
         if (content === undefined)
-            content = (section === 'favorites') ? favoritesList : _explorerCache[section].cache_arr;
+            content = _explorerCache[section].cache_arr;
         var root_url = content_sourse[section].root_url;
         var fav = content_sourse[section].fav;
         var did = content_sourse[section].did;
@@ -661,7 +735,13 @@ var explore = function() {
                 return false;
             werite_item++;
             var id = ' data-id="' + k + '"';
-            var qual = (did !== null) ? get_q_favorites(k) : '?';
+            var qual = '?';
+            if (did === 1) {
+                qual = get_q_favorites(k);
+            } else
+            if (did === 2) {
+                qual = get_q_kinopoisk(k);
+            }
             name_v = v.name;
             if (_lang.t !== 'ru' || _use_english_postername !== 0) {
                 if ('name_en' in v && v.name_en.length > 0)
@@ -677,16 +757,15 @@ var explore = function() {
                     image_url = content_sourse[section].google_proxy + image_url;
                 }
             }
+            if (v.url.length === 0) {
+                page_url = '';
+            } else
             if (v.url[0] === "/") {
                 page_url = content_sourse[section].root_url + v.url;
             } else
             if (v.url.substr(0, 4) === 'http') {
                 page_url = v.url;
-            } else
-            if (v.url.length === 0) {
-                page_url = '';
             }
-
             c += '<div class="poster"' + id + '>'
                     + '<div class="image">' + buttons + qual + '</div>'
                     + '<a href="#s=' + search_kw_filter(name_v) + '"><img src="' + image_url + '" title="' + name_v + '"/></a>'
@@ -835,6 +914,29 @@ var explore = function() {
         SetSettings('favoritesDeskList', JSON.stringify(favoritesDeskList));
         SetSettings('favoritesList', JSON.stringify(favoritesList));
     };
+    var update_q_kinopoisk = function(id, q, arr) {
+        if (q === null) {
+            if (id in kinopoiskList && "quality" in  kinopoiskList[id]) {
+                q = kinopoiskList[id]['quality'];
+            } else {
+                q = '';
+            }
+        }
+        if (q.length === 0)
+            q = '?';
+        kinopoiskList[id]['quality'] = q;
+        kinopoiskDeskList[id] = [];
+        $.each(arr, function(k, v) {
+            if (v.link !== undefined && v.link !== null && v.name !== undefined && v.name !== null) { //type?
+                kinopoiskDeskList[id].push({
+                    "link": v.link,
+                    "name": v.name
+                });
+            }
+        });
+        SetSettings('kinopoiskDeskList', JSON.stringify(kinopoiskDeskList));
+        SetSettings('kinopoiskList', JSON.stringify(kinopoiskList));
+    };
     var get_tr_favorites = function(id, section) {
         if (section === "favorites") {
             if (id in favoritesDeskList) {
@@ -844,7 +946,17 @@ var explore = function() {
                     return favoritesDeskList[id];
                 }
             }
-        } else {
+        } else
+        if (section === "kinopoisk") {
+            if (id in kinopoiskDeskList) {
+                if (kinopoiskDeskList[id].constructor !== Array) {
+                    return {"link": kinopoiskDeskList[id].tr_link, "name": kinopoiskDeskList[id].tr_name};
+                } else {
+                    return kinopoiskDeskList[id];
+                }
+            }
+        }
+        else {
             if (section in tmpDeskList && id in tmpDeskList[section]) {
                 return tmpDeskList[section][id];
             }
@@ -856,6 +968,32 @@ var explore = function() {
             return '?';
         }
         return favoritesList[id]['quality'];
+    };
+    var get_q_kinopoisk = function(id) {
+        if ("quality" in kinopoiskList[id] === false) {
+            return '?';
+        }
+        return kinopoiskList[id]['quality'];
+    };
+    var get_kinopoisk_films = function() {
+        $('li.kinopoisk').find('.kinopoisk_update_btn').addClass('update').removeClass('error').removeClass('success');
+        var type = 'kinopoisk';
+        if (xhr[type] !== undefined)
+            xhr[type].abort();
+        xhr[type] = $.ajax({
+            type: 'GET',
+            url: content_sourse[type].url,
+            success: function(data) {
+                var content = read_content(type, data);
+                SetSettings('kinopoiskList', JSON.stringify(content));
+                kinopoiskList = content;
+                show_kinopoisk();
+                $('li.kinopoisk').find('.kinopoisk_update_btn').removeClass('update').removeClass('error').addClass('success');
+            },
+            error: function() {
+                $('li.kinopoisk').find('.kinopoisk_update_btn').removeClass('update').addClass('error').removeClass('success');
+            }
+        });
     };
     var make_form = function() {
         if (tmp_vars.explore === undefined) {
@@ -898,10 +1036,21 @@ var explore = function() {
                 save_order();
             }
         });
+        tmp_vars.explore_ul.on('click', '.kinopoisk_update_btn', function() {
+            get_kinopoisk_films();
+        });
+        //temp code!
+        if ('kinopoisk' in listOptions === false) {
+            listOptions.kinopoisk = listOptions_def.kinopoisk;
+        }
+        //<<<temp code
         $.each(listOptions, function(key, value) {
             tmp_vars.explore_ul.append('<li class="' + key + '"></li>');
             if (key === 'favorites') {
                 show_favorites();
+            } else
+            if (key === 'kinopoisk') {
+                show_kinopoisk();
             } else
             if (content_sourse[key].page_e === true && content_sourse[key].page_zero !== undefined && content_sourse[key].page_max !== undefined) {
                 var zero = content_sourse[key].page_zero;
@@ -1386,8 +1535,13 @@ var explore = function() {
             upTimer2 = setTimeout(function() {
                 qbox.removeClass('loading');
                 qbox.text('-');
-                if (obj.id !== undefined && obj.section === 'favorites') {
-                    update_q_favorites(obj.id, '-', []);
+                if (obj.id !== undefined) {
+                    if (obj.section === 'favorites') {
+                        update_q_favorites(obj.id, '-', []);
+                    }
+                    if (obj.section === 'kinopoisk') {
+                        update_q_kinopoisk(obj.id, '-', []);
+                    }
                 }
                 qbox.trigger("mouseenter", []);
             }, 500);
@@ -1472,6 +1626,12 @@ var explore = function() {
             clearTimeout(upTimer);
             upTimer = setTimeout(function() {
                 update_q_favorites(obj.id, label, link_array);
+            }, 500);
+        }
+        if (obj.section === 'kinopoisk') {
+            clearTimeout(upTimer);
+            upTimer = setTimeout(function() {
+                update_q_kinopoisk(obj.id, label, link_array);
             }, 500);
         }
         clearTimeout(upTimer2);

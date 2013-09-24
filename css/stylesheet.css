@@ -1006,3 +1006,31 @@ ul.trackers > li > i {
     padding-left: 2px;
     cursor: default;
 }
+.kinopoisk_update_btn {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url(../images/sync.png) no-repeat center;
+    margin-left: 5px;
+    margin-bottom: -1px;
+    cursor: pointer;
+    -webkit-transition: all 0.5s;
+}
+.kinopoisk_update_btn:hover {
+    -webkit-transform: rotate(360deg);
+}
+.kinopoisk_update_btn.update {
+    background: url(../images/loading.gif) no-repeat center;
+}
+.kinopoisk_update_btn.error {
+    background: url(../images/error.png) no-repeat center;
+}
+
+.kinopoisk_open_btn {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url(../images/external.png) no-repeat center;
+    margin-bottom: -1px;
+    cursor: pointer;
+}

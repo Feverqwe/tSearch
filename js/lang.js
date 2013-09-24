@@ -57,7 +57,10 @@ var get_lang = function(lang) {
             sec: 'sec',
             old: 'ago'
         },
+        exp_btn_sync: 'Update', 
+        exp_btn_open: 'Open site',
         exp_favorites: 'Favorites',
+        exp_kinopoisk: 'Kinopoisk: Favorites',
         exp_games_best: 'Games: Best',
         exp_games_new: 'Games: New',
         exp_games_all: 'Games: All',
@@ -330,7 +333,10 @@ var get_lang = function(lang) {
             sec: 'сек',
             old: 'назад'
         },
+        exp_btn_sync: 'Обновить',
+        exp_btn_open: 'Перейти на сайт',
         exp_favorites: 'Избранное',
+        exp_kinopoisk: 'Кинопоиск: Избранное',
         exp_games_best: 'Игры: Лучшие',
         exp_games_new: 'Игры: Новые',
         exp_games_all: 'Игры: Все',
