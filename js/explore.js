@@ -670,7 +670,7 @@ var explore = function() {
         var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
         var sub_function = '';
         if (section === 'kinopoisk') {
-            sub_function = '<a class="kinopoisk_open_btn" href="' + content_sourse[section].url + '" target="_blank" title="' + _lang.exp_btn_open + '"></a><span class="kinopoisk_update_btn" title="' + _lang.exp_btn_sync + '"></span>'
+            sub_function = '<a class="kinopoisk_open_btn" href="' + content_sourse[section].url + '" target="_blank" title="' + _lang.exp_btn_open + '"></a><span class="kinopoisk_update_btn" title="' + _lang.exp_btn_sync + '"></span>';
         }
         var c = '<div class="' + section + '">'
                 + '<h2>'
