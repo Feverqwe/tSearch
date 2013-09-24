@@ -298,7 +298,7 @@ var engine = function() {
             return;
         }
         var ct = GetSettings('ct_' + uid);
-        if (!ct) {
+        if (ct === undefined) {
             //удалить из списка итп, конь в вакуме
             return;
         }
@@ -587,11 +587,11 @@ var engine = function() {
     };
     var addCostumTr = function(a) {
         var b = clone_obj(a);
-        costume_tr = (GetSettings('costume_tr') !== undefined) ? JSON.parse(GetSettings('costume_tr')) : [];
+        costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
         var l = costume_tr.length;
         for (var i = 0; i < l; i++) {
-            var tr = (GetSettings('ct_' + costume_tr[i]) !== undefined) ? JSON.parse(GetSettings('ct_' + costume_tr[i])) : null;
-            if (tr === null)
+            var tr = JSON.parse(GetSettings('ct_' + costume_tr[i]) || "{}");
+            if (tr.uid === undefined)
                 continue;
             b.push({
                 e: 0,
