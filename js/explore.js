@@ -183,7 +183,7 @@ var explore = function() {
             did: 2,
             size: 130,
             margin: 14,
-            url: 'http://www.kinopoisk.ru/mykp/movies/list/type/1/page/1/sort/default/vector/desc/vt/all/format/full/',
+            url: 'http://www.kinopoisk.ru/mykp/movies/list/type/1/page/1/sort/default/vector/desc/vt/all/format/full/perpage/100/',
             timeout: 0,
             page_e: false,
             base_url: "http://www.kinopoisk.ru/film/",

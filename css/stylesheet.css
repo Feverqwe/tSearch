@@ -1030,7 +1030,7 @@ ul.trackers > li > i {
     display: inline-block;
     width: 16px;
     height: 16px;
-    background: url(../images/external.png) no-repeat center;
+    background: url(../images/external.png) no-repeat top center;
     margin-bottom: -1px;
     cursor: pointer;
 }
