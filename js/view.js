@@ -1168,7 +1168,7 @@ var view = function() {
         //$('div.filter div.btn').css('background-image', 'url(images/clear.png)');
     };
     var triggerBlank = function() {
-        $('body,html').scrollTop();
+        $(window).scrollTop(0);
         $('div.result_panel').css('display', 'none');
         $('div.explore').css('display', 'block');
         clear_table();
@@ -1188,7 +1188,7 @@ var view = function() {
             return false;
         }
         keyword = $.trim(keyword);
-        $('body,html').scrollTop();
+        $(window).scrollTop(0);
         $('div.result_panel').css('display', 'block');
         $('div.explore').css('display', 'none');
         $('form input[type=text]').blur();

@@ -553,7 +553,7 @@ div.explore div.poster > div.image > div.move_favorite {
     right: -8px;
     top: 10px;
     background-color: #fff;
-    border-radius: 8px;
+    border-radius: 4px;
 }
 div.explore div.poster > div.image > a > img {
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.8);

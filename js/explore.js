@@ -871,6 +871,7 @@ var explore = function() {
             axis: 'y',
             handle: 'div.move_it',
             start: function(event, ui) {
+                $(window).scrollTop(0);
                 var de = tmp_vars.explore;
                 de.find('div.spoiler').css('opacity', '0');
                 de.find('div.setup_div').hide('fast', function(a, b) {
