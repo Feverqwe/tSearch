@@ -803,7 +803,11 @@ var ex_kit = function() {
                 } else {
                     dd[i] = parseInt(dd[i]);
                     if (isNaN(dd[i])) {
-                        return 0;
+                        if (i < 3) {
+                            return 0;
+                        } else {
+                            dd[i] = 0;
+                        }
                     }
                 }
             }
@@ -823,7 +827,11 @@ var ex_kit = function() {
                 } else {
                     dd[i] = parseInt(dd[i]);
                     if (isNaN(dd[i])) {
-                        return 0;
+                        if (i < 3) {
+                            return 0;
+                        } else {
+                            dd[i] = 0;
+                        }
                     }
                 }
             }
