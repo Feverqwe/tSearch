@@ -1269,7 +1269,7 @@ var view = function() {
                         return 1;
                     };
                     var search_history = JSON.parse(GetSettings('search_history') || "[]");
-                    if (search_history > 0) {
+                    if (search_history.length > 0) {
                         search_history.sort(order);
                         var count = search_history.length;
                         for (var i = 0; i < count; i++) {
