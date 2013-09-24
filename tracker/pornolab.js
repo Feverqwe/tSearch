@@ -1,3 +1,7 @@
+//DISABLED!
+//DISABLED!
+//DISABLED!
+//DISABLED!
 (function () {
     num = torrent_lib.length;
     torrent_lib[num] = null;
