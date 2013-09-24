@@ -1109,7 +1109,7 @@ var explore = function() {
     };
     var render_top = function(arr, colums) {
         if (colums === undefined) {
-            colums = (document.body.clientWidth > 1152) ? 4 : 3;
+            colums = (document.body.clientWidth > 1275) ? 4 : 3;
         }
         tmp_vars.top_state = colums;
         if (arr === undefined) {
