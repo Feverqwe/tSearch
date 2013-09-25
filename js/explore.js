@@ -432,10 +432,15 @@ var explore = function() {
                     var year = item.find('.viewDate').eq(0).text().trim().split("\n")[0].replace(/.*([0-9]{4})$/, '$1');
                     obj = {
                         'img': view.contentUnFilter(sesizeimg('http://st.kinopoisk.ru' + item.find('img.poster').attr('title'))).replace(content_sourse[type].base_img_url, ''),
-                        'name': item.find('div.info').eq(0).children('a.name').text().replace(/ \(.*, ([0-9]{4}).*\)$/, ' ($1)') + ' ' + year,
+                        'name': item.find('div.info').eq(0).children('a.name').text().replace(/ \(.*, ([0-9]{4}).*\)$/, ' ($1)'),
                         'name_en': item.find('div.info').children('span').eq(0).text().replace(/ [0-9]* мин.$/, '').replace(/ \([0-9]*\)$/, '').replace(/ \([0-9]* – .*\)$/, ''),
                         'url': (content_sourse[type].root_url + view.contentUnFilter(item.find('div.info').eq(0).children('a.name').attr('href'))).replace(content_sourse[type].base_url, '')
                     };
+                    var tmp = obj.name.length;
+                    obj.name = obj.name.replace(/ \(сериал\)/, '');
+                    if (obj.name.length === tmp) {
+                        obj.name += ' ' + year;
+                    }
                 } catch (error) {
                     obj = null;
                 }
