@@ -213,6 +213,7 @@ var options = function() {
         $('textarea[name="backup"]').val(JSON.stringify(st));
         return JSON.stringify(st);
     };
+
     var makePartedBackup = function() {
         var chank_name = "bk_ch_";
         var back = getBackup();
@@ -224,6 +225,7 @@ var options = function() {
             return null;
         }
         var req_exp = new RegExp(".{1," + chank_len + "}", "g");
+        back = 'LZ' + LZString.compressToBase64(back);
         var arr = back.match(req_exp);
         var arr_l = arr.length;
         var obj = {};
@@ -234,15 +236,30 @@ var options = function() {
         obj[chank_name + arr_l] = "END";
         return obj;
     };
-    var getPartedBackup = function() {
+    var getPartedBackup = function(test) {
         chrome.storage.sync.get(function(data) {
             var chank_name = "bk_ch_";
+            var clear_broken = function(chank_name, obj, len) {
+                var l = 0;
+                $.each(obj, function(k) {
+                    if (k.substr(0, 6) === chank_name) {
+                        if ((k.substr(6) !== "inf") && k.substr(6) > len) {
+                            chrome.storage.sync.remove(k);
+                            l++;
+                        }
+                    }
+                });
+                if (l > 0) {
+                    console.log("Removed garbage: ", l);
+                }
+            };
             var inf = 0;
             if (chank_name + "inf" in data) {
                 inf = data[chank_name + "inf"];
             } else {
                 $('input[name="get_from_cloud"]')[0].disabled = true;
                 console.log("Backup not found!");
+                clear_broken(chank_name, data, inf);
                 return null;
             }
             var back = "";
@@ -261,18 +278,18 @@ var options = function() {
                 chrome.storage.sync.remove(chank_name + "inf");
                 inf = -1;
             }
-            $.each(data, function(k, v) {
-                if (k.substr(0, 6) === chank_name) {
-                    if (k.substr(6) !== "inf" && k.substr(6) > inf) {
-                        chrome.storage.sync.remove(k);
-                    }
-                }
-            });
+            clear_broken(chank_name, data, inf);
             if (broken) {
                 $('input[name="get_from_cloud"]')[0].disabled = true;
                 return null;
             }
-            $('textarea[name="restore"]').val(back);
+
+            if (back.substr(0, 2) === 'LZ') {
+                back = LZString.decompressFromBase64(back.substr(2));
+            }
+            if (test === undefined) {
+                $('textarea[name="restore"]').val(back);
+            }
         });
     };
     var stngsRestore = function(text) {
@@ -485,6 +502,8 @@ var options = function() {
                             return;
                         }
                         chrome.storage.sync.set(obj);
+                        getPartedBackup(1);
+
                         $(this).val(_lang.settings[70]);
                         window.setTimeout(function() {
                             $('input[name="save_in_cloud"]').val(_lang.settings[68]);

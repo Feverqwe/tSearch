@@ -44,7 +44,7 @@ java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\backgrou
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\history.js --js_output_file .\build\js\history.js
 java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\js\counter.js --js_output_file .\build\js\view.js
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\magic.js --js_output_file .\build\js\magic.js
-java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\options.js --js_output_file .\build\js\options.js
+java -jar compiler.jar --js .\js\lz-string-1.3.3.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\options.js --js_output_file .\build\js\options.js
 
 copy .\css\stylesheet.css+.\css\apprise.css .\build\css\stylesheet.css
 
@@ -67,7 +67,7 @@ xcopy .\ff_o\firefox\* .\build_firefox\. /E /Y
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\js\history.js --js_output_file .\build_firefox\chrome\content\js\history.js
 java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\ff_o\firefox\chrome\content\js\counter.js --js_output_file .\build_firefox\chrome\content\js\view.js
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\js\magic.js --js_output_file .\build_firefox\chrome\content\js\magic.js
-java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\options.js --js_output_file .\build_firefox\chrome\content\js\options.js
+java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lz-string-1.3.3.js --js .\js\lang.js --js .\js\engine.js --js .\js\options.js --js_output_file .\build_firefox\chrome\content\js\options.js
 
 del .\build_firefox\chrome\content\js\storage.js
 del .\build_firefox\chrome\content\js\counter.js
@@ -90,7 +90,7 @@ xcopy .\ff_o\opera\* .\build_opera\. /E
 java -jar compiler.jar --js .\ff_o\opera\build\js\storage.js --js .\js\lang.js --js .\js\history.js --js_output_file .\build_opera\build\js\history.js
 java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\ff_o\opera\build\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\ff_o\opera\build\js\counter.js --js_output_file .\build_opera\build\js\view.js
 java -jar compiler.jar --js .\ff_o\opera\build\js\storage.js --js .\js\lang.js --js .\js\magic.js --js_output_file .\build_opera\build\js\magic.js
-java -jar compiler.jar --js .\ff_o\opera\build\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\options.js --js_output_file .\build_opera\build\js\options.js
+java -jar compiler.jar --js .\ff_o\opera\build\js\storage.js --js .\js\lz-string-1.3.3.js --js .\js\lang.js --js .\js\engine.js --js .\js\options.js --js_output_file .\build_opera\build\js\options.js
 
 copy .\js\lang.js .\build_opera\build\js\.
 del .\build_opera\build\js\counter.js

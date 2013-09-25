@@ -679,7 +679,8 @@ var explore = function() {
         var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
         var sub_function = '';
         if (section === 'kinopoisk') {
-            sub_function = '<a class="kinopoisk_open_btn" href="' + content_sourse[section].url.replace('%page%', 1) + '" target="_blank" title="' + _lang.exp_btn_open + '"></a><span class="kinopoisk_update_btn" title="' + _lang.exp_btn_sync + '"></span>';
+            var kinopoisk_category = parseInt(GetSettings('kinopoisk_f_id') || 1);
+            sub_function = '<a class="kinopoisk_open_btn" href="' + content_sourse[section].url.replace('%page%', 1).replace('%category%', kinopoisk_category) + '" target="_blank" title="' + _lang.exp_btn_open + '"></a><span class="kinopoisk_update_btn" title="' + _lang.exp_btn_sync + '"></span>';
         }
         var c = '<div class="' + section + '">'
                 + '<h2>'
