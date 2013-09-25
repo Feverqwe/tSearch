@@ -37,6 +37,7 @@ del .\build\js\jquery.tablesorter.js
 del .\build\js\lang.js
 del .\build\js\storage.js
 del .\build\js\engine.js
+del .\build\js\lz-string-1.3.3.js
 
 java -jar compiler.jar --js .\build\js\torrent_lib_patched.js --js .\tracker\anidub.js --js .\tracker\katushka.js --js .\tracker\rustorka.js --js .\tracker\bestrepack.js --js .\tracker\kickass.js --js .\tracker\rutor.js --js .\tracker\bigfangroup.js --js .\tracker\kinozal.js --js .\tracker\rutracker.js --js .\tracker\bitsnoop.js --js .\tracker\libertorrent.js --js .\tracker\tapochek.js --js .\tracker\brodim.js --js .\tracker\megashara.js --js .\tracker\tfile.js --js .\tracker\btdigg.js --js .\tracker\mininova.js --js .\tracker\thepiratebay.js --js .\tracker\evrl.js --js .\tracker\thepiratebay2.js --js .\tracker\extratorrent.js --js .\tracker\fast-torrent.js --js .\tracker\nnm-club.js --js .\tracker\torrentmac.js --js .\tracker\fenopy.js --js .\tracker\opensharing.js --js .\tracker\torrents.freedom.js --js .\tracker\filebase.js --js .\tracker\opentorrent.js --js .\tracker\torrents.local.js --js .\tracker\free-torrents.js --js .\tracker\piratbit.js --js .\tracker\torrentz.js --js .\tracker\hdclub.js --js .\tracker\piratca.js --js .\tracker\underverse.js --js .\tracker\hurtom.js --js .\tracker\x-torrents.js --js .\tracker\inmac.js --js .\tracker\rgfootball.js --js .\tracker\youtracker.js --js .\tracker\isohunt.js --js .\tracker\riperam.js --js_output_file .\build\js\torrent_lib.js
 del .\build\js\torrent_lib_patched.js
