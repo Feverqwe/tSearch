@@ -183,7 +183,7 @@ var explore = function() {
             did: 2,
             size: 130,
             margin: 14,
-            url: 'http://www.kinopoisk.ru/mykp/movies/list/type/1/page/1/sort/default/vector/desc/vt/all/format/full/perpage/100/',
+            url: 'http://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
             timeout: 0,
             page_e: false,
             base_url: "http://www.kinopoisk.ru/film/",
@@ -629,6 +629,12 @@ var explore = function() {
     };
     var show_kinopoisk = function() {
         var type = 'kinopoisk';
+        if (parseInt(GetSettings('kinopoisk_category') || 1)) {
+            $('li.' + type).css('display', 'list-item');
+        } else {
+            $('li.' + type).css('display', 'none');
+            return;
+        }
         var page = $('li.' + type).children('div').children('div').attr('data-page');
         if (page === undefined)
             page = 1;
@@ -673,7 +679,7 @@ var explore = function() {
         var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
         var sub_function = '';
         if (section === 'kinopoisk') {
-            sub_function = '<a class="kinopoisk_open_btn" href="' + content_sourse[section].url + '" target="_blank" title="' + _lang.exp_btn_open + '"></a><span class="kinopoisk_update_btn" title="' + _lang.exp_btn_sync + '"></span>';
+            sub_function = '<a class="kinopoisk_open_btn" href="' + content_sourse[section].url.replace('%page%', 1) + '" target="_blank" title="' + _lang.exp_btn_open + '"></a><span class="kinopoisk_update_btn" title="' + _lang.exp_btn_sync + '"></span>';
         }
         var c = '<div class="' + section + '">'
                 + '<h2>'
@@ -981,34 +987,56 @@ var explore = function() {
         return kinopoiskList[id]['quality'];
     };
     var get_kinopoisk_films = function() {
+        var category = parseInt(GetSettings('kinopoisk_f_id') || 1);
         $('li.kinopoisk').find('.kinopoisk_update_btn').addClass('update').removeClass('error').removeClass('success');
         var type = 'kinopoisk';
-        if (xhr[type] !== undefined)
-            xhr[type].abort();
-        xhr[type] = $.ajax({
-            type: 'GET',
-            url: content_sourse[type].url,
-            success: function(data) {
-                var content = read_content(type, data);
-                if (typeof(content) === 'string') {
+        var full_content = [];
+        var limit = 8;
+        var page_load = function(page, cb) {
+            if (xhr[type] !== undefined)
+                xhr[type].abort();
+            xhr[type] = $.ajax({
+                type: 'GET',
+                url: content_sourse[type].url.replace('%page%', page).replace('%category%', category),
+                success: function(data) {
+                    var content = read_content(type, data);
+                    if (typeof(content) === 'string') {
+                        $('li.kinopoisk').find('.kinopoisk_update_btn').removeClass('update').addClass('error').removeClass('success');
+                        if (page !== 1) {
+                            cb(full_content);
+                        }
+                        return;
+                    }
+                    full_content = full_content.concat(content);
+                    if (content.length === 25 && page <= limit) {
+                        page_load(page + 1, cb);
+                        return;
+                    }
+                    cb(full_content);
+                },
+                error: function() {
                     $('li.kinopoisk').find('.kinopoisk_update_btn').removeClass('update').addClass('error').removeClass('success');
-                    return;
                 }
-                SetSettings('kinopoiskList', JSON.stringify(content));
-                for (var i = 0; i < kinopoiskList.length; i++) {
-                    for (var f = 0; f < content.length; f++) {
-                        if (kinopoiskList[i].url === content[f].url && "quality" in kinopoiskList[i]) {
-                            content[f].quality = kinopoiskList[i].quality;
+            });
+        };
+        page_load(1, function(content) {
+            var tmp_desk_arr = {};
+            for (var i = 0; i < kinopoiskList.length; i++) {
+                for (var f = 0; f < content.length; f++) {
+                    if (kinopoiskList[i].url === content[f].url && "quality" in kinopoiskList[i]) {
+                        content[f].quality = kinopoiskList[i].quality;
+                        if (kinopoiskDeskList[i] !== undefined) {
+                            tmp_desk_arr[f] = kinopoiskDeskList[i];
                         }
                     }
                 }
-                kinopoiskList = content;
-                show_kinopoisk();
-                $('li.kinopoisk').find('.kinopoisk_update_btn').removeClass('update').removeClass('error').addClass('success');
-            },
-            error: function() {
-                $('li.kinopoisk').find('.kinopoisk_update_btn').removeClass('update').addClass('error').removeClass('success');
             }
+            kinopoiskDeskList = tmp_desk_arr;
+            SetSettings('kinopoiskList', JSON.stringify(content));
+            SetSettings('kinopoiskDeskList', JSON.stringify(kinopoiskDeskList));
+            kinopoiskList = content;
+            show_kinopoisk();
+            $('li.kinopoisk').find('.kinopoisk_update_btn').removeClass('update').removeClass('error').addClass('success');
         });
     };
     var make_form = function() {

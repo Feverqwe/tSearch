@@ -17,7 +17,9 @@ var options = function() {
         autoSetCat: {"v": 1, "t": "checkbox"},
         allow_get_description: {"v": 1, "t": "checkbox"},
         allow_favorites_sync: {"v": 0, "t": "checkbox"},
-        sub_select_enable: {"v": 1, "t": "checkbox"}
+        sub_select_enable: {"v": 1, "t": "checkbox"},
+        kinopoisk_category: {"v": 1, "t": "checkbox"},
+        kinopoisk_f_id: {"v": 1, "t": "number"}
     };
     var currentProfileID = 0;
     var defProfile = 0;

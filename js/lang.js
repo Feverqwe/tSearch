@@ -57,7 +57,7 @@ var get_lang = function(lang) {
             sec: 'sec',
             old: 'ago'
         },
-        exp_btn_sync: 'Update', 
+        exp_btn_sync: 'Update',
         exp_btn_open: 'Open site',
         exp_favorites: 'Favorites',
         exp_kinopoisk: 'Kinopoisk: Favorites',
@@ -208,7 +208,9 @@ var get_lang = function(lang) {
             67: "Highlight the notes in the name of the torrent",
             68: "Save the settings to the cloud",
             69: "Get the settings from the cloud",
-            70: "Saved!"
+            70: "Saved!",
+            71: "Show favorites from the site kinopoisk.",
+            72: "ID \"category\" from the site kinopoisk (1 - favorites)"
         },
         magic: {
             1: 'Loading error!',
@@ -484,7 +486,9 @@ var get_lang = function(lang) {
             67: "Подсвечивать пояснения в названии раздачи",
             68: "Сохранить настройки в облако",
             69: "Получить из облака",
-            70: "Сохранено!"
+            70: "Сохранено!",
+            71: "Показывать избранное с сайта кинопоиска.",
+            72: "ID \"категории\" из кинопоиска (1 - избранное)"
         },
         magic: {
             1: 'Ошибка загрузки!',
