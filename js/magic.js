@@ -347,7 +347,7 @@ var magic = function() {
         }
         f = parseInt(f);
         if (f === 0) { // || f === '2013-04-31[[[ 07]:03]:27]') {
-            var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
+            var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').trim().split(' ');
             for (var i = 0; i < 6; i++) {
                 if (dd[i] === undefined) {
                     dd[i] = 0;
@@ -371,7 +371,7 @@ var magic = function() {
             return Math.round((new Date(dd[0], dd[1] - 1, dd[2], dd[3], dd[4], dd[5])).getTime() / 1000);
         }
         if (f === 1) { //  || f === '31-04-2013[[[ 07]:03]:27]') {
-            var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').split(' ');
+            var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').trim().split(' ');
             for (var i = 0; i < 6; i++) {
                 if (dd[i] === undefined) {
                     dd[i] = 0;
