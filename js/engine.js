@@ -338,6 +338,7 @@ var engine = function() {
                     var ex_seed_regexp = ('seed_r' in me && 'seed_rp' in me) ? 1 : 0;
                     var ex_peer_regexp = ('peer_r' in me && 'peer_rp' in me) ? 1 : 0;
                     var ex_t_m_r = ('t_m_r' in me) ? 1 : 0;
+                    var ex_t_t_r = ('t_t_r' in me) ? 1 : 0;
                     var ex_t_f = ('t_f' in me && me.t_f !== "-1") ? 1 : 0; //me.t_f is string from JSON
                     var ex_auth_f = ('auth_f' in me) ? 1 : 0;
 
@@ -484,6 +485,9 @@ var engine = function() {
                                 obj['time'] = obj['time'].replace(/[\r\n]+/g, "");
                                 if (ex_date_regexp) {
                                     obj['time'] = obj['time'].replace(new RegExp(me.t_r, "ig"), me.t_r_r);
+                                }
+                                if (ex_t_t_r) {
+                                    obj['time'] = ex_kit.today_replace(obj['time'], me.t_f);
                                 }
                                 if (ex_t_m_r) {
                                     obj['time'] = ex_kit.month_replace(obj['time']);
@@ -773,6 +777,24 @@ var ex_kit = function() {
         }
         return 0;
     };
+    function today_replace(t, f) {
+        f = parseInt(f);
+        t = t.toLowerCase();
+        if ((/сейчас|now/).test(t)) {
+            return Math.round((new Date()).getTime() / 1000);
+        }
+        var tt = new Date();
+        var tty = new Date((Math.round(tt.getTime() / 1000) - 24 * 60 * 60) * 1000);
+        if (f === 0) {
+            var today = tt.getFullYear() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getDate() + ' ';
+            var yesterday = tty.getFullYear() + ' ' + (tty.getMonth() + 1) + ' ' + tty.getDate() + ' ';
+        } else {
+            var today = tt.getDate() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getFullYear() + ' ';
+            var yesterday = tty.getDate() + ' ' + (tty.getMonth() + 1) + ' ' + tty.getFullYear() + ' ';
+        }
+        t = t.replace(/сегодня|today/, today).replace(/вчера|yesterday/, yesterday);
+        return t;
+    }
     function month_replace(t) {
         return t.toLowerCase().replace(/янв/, '1').replace(/фев/, '2').replace(/мар/, '3')
                 .replace(/апр/, '4').replace(/мая/, '5').replace(/июн/, '6')
@@ -862,6 +884,9 @@ var ex_kit = function() {
         },
         format_date: function(a, b) {
             return format_date(a, b);
+        },
+        today_replace: function(a, b) {
+            return today_replace(a, b);
         }
     };
 }();

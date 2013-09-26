@@ -274,7 +274,8 @@ var get_lang = function(lang) {
             59: "Seeds",
             60: "Peers",
             61: "Table",
-            62: "ALT (for img)"
+            62: "ALT (for img)",
+            63: "Replace the words of today\\yesterday\\now"
         }
     };
     var lang_arr_ru = {
@@ -552,7 +553,8 @@ var get_lang = function(lang) {
             59: "Сиды",
             60: "Пиры",
             61: "Таблица",
-            62: "ALT (для img)"
+            62: "ALT (для img)",
+            63: "Заменить слова сегодня\\вчера\\сейчас"
         }
     };
     if (!lang) {

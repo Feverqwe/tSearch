@@ -143,6 +143,9 @@ var magic = function() {
                 $('input[name=time_regexp]').val(code['t_r']);
                 $('input[name=time_regexp_repl]').val(code['t_r_r']);
             }
+            if ('t_t_r' in code) {
+                $('input[name=today_replace]').prop('checked', code['t_t_r']);
+            }
             if ('t_m_r' in code) {
                 $('input[name=month_replace]').prop('checked', code['t_m_r']);
             }
@@ -260,6 +263,9 @@ var magic = function() {
             if ($('input[name=time_regexp]').val().length > 0) {
                 code['t_r'] = $('input[name=time_regexp]').val();
                 code['t_r_r'] = $('input[name=time_regexp_repl]').val();
+            }
+            if ($('input[name=today_replace]').prop('checked')) {
+                code['t_t_r'] = 1;
             }
             if ($('input[name=month_replace]').prop('checked')) {
                 code['t_m_r'] = 1;
@@ -393,6 +399,24 @@ var magic = function() {
             return Math.round((new Date()).getTime() / 1000) - old;
         }
     };
+    function today_replace(t, f) {
+        f = parseInt(f);
+        t = t.toLowerCase();
+        if ((/сейчас|now/).test(t)) {
+            return Math.round((new Date()).getTime() / 1000);
+        }
+        var tt = new Date();
+        var tty = new Date((Math.round(tt.getTime() / 1000) - 24 * 60 * 60) * 1000);
+        if (f === 0) {
+            var today = tt.getFullYear() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getDate() + ' ';
+            var yesterday = tty.getFullYear() + ' ' + (tty.getMonth() + 1) + ' ' + tty.getDate() + ' ';
+        } else {
+            var today = tt.getDate() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getFullYear() + ' ';
+            var yesterday = tty.getDate() + ' ' + (tty.getMonth() + 1) + ' ' + tty.getFullYear() + ' ';
+        }
+        t = t.replace(/сегодня|today/, today).replace(/вчера|yesterday/, yesterday);
+        return t;
+    }
     function month_replace(t) {
         return t.replace(/янв/i, '1').replace(/фев/i, '2').replace(/мар/i, '3')
                 .replace(/апр/i, '4').replace(/мая/i, '5').replace(/июн/i, '6')
@@ -440,10 +464,14 @@ var magic = function() {
         var reg_v = $('input[name=time_regexp]').val();
         var mtime = $('input[name=original_time]').val();
         var onrepl = $('input[name=time_regexp_repl]').val();
+        var repl_t = $('input[name=today_replace]').prop('checked');
         var repl_m = $('input[name=month_replace]').prop('checked');
         var f_v = $('select[name=date_format]').val();
         if (reg_v.length > 0) {
             mtime = mtime.replace(new RegExp(reg_v, "ig"), onrepl);
+        }
+        if (repl_t) {
+            mtime = today_replace(mtime, f_v);
         }
         if (repl_m) {
             mtime = month_replace(mtime);
@@ -785,6 +813,9 @@ var magic = function() {
                 f_sel.append('<option value="' + n + '">' + formats[n] + '</option>');
             }
             f_sel.on('change', function() {
+                filter_date();
+            });
+            $('input[name=today_replace]').on('change', function() {
                 filter_date();
             });
             $('input[name=month_replace]').on('change', function() {
