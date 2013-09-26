@@ -571,7 +571,7 @@ var explore = function() {
         calculate_moveble(key, size);
     };
     var update_poster_count = function() {
-        if (tmp_vars.explore.css('display') !== 'block')
+        if (tmp_vars.explore === undefined || tmp_vars.explore.css('display') !== 'block')
             return;
         $.each(listOptions, function(key) {
             var obj = $('li.' + key);
