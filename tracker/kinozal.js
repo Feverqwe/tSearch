@@ -142,18 +142,15 @@
                 if ((/сейчас/).test(t)) {
                     return Math.round((new Date()).getTime() / 1000);
                 }
-                t = t.replace('в ', '').replace('января', '1').replace('февраля', '2').replace('марта', '3')
-                        .replace('апреля', '4').replace('мая', '5').replace('июня', '6')
-                        .replace('июля', '7').replace('августа', '8').replace('сентября', '9')
-                        .replace('октября', '10').replace('ноября', '11').replace('декабря', '12').replace(':', ' ');
                 var tt = new Date();
                 var today = tt.getDate() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getFullYear() + ' ';
                 var tt = new Date((Math.round(tt.getTime() / 1000) - 24 * 60 * 60) * 1000);
                 var yesterday = tt.getDate() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getFullYear() + ' ';
                 t = t.replace('сегодня ', today).replace('вчера ', yesterday);
-                var dd = t.replace(/\./g, ' ').split(' ');
-                return Math.round((new Date(parseInt(dd[2]), parseInt(dd[1]) - 1, parseInt(dd[0]), parseInt(dd[3]), parseInt(dd[4]))).getTime() / 1000);
-            }
+                t = ex_kit.month_replace(t);
+                console.log(t);
+                return ex_kit.format_date(1,t);
+            };
             var readCode = function(c) {
                 c = view.contentFilter(c);
                 var ver = 1;
@@ -181,7 +178,7 @@
                             'seeds': td.eq(6).text(),
                             'leechs': td.eq(7).text(),
                             'time': calculateTime(td.eq(3).text())
-                        }
+                        };
                     } else if (ver === 2) {
                         arr[arr.length] = {
                             'category': {
@@ -191,17 +188,17 @@
                             'title': td.eq(1).children('a').text(),
                             'url': root_url + td.eq(1).children('a').attr('href'),
                             'size': ex_kit.format_size(td.eq(3).text()),
-                            'seeds': td.eq(5).text(),
-                            'leechs': td.eq(6).text(),
-                            'time': calculateTime(td.eq(7).text())
-                        }
+                            'seeds': td.eq(4).text(),
+                            'leechs': td.eq(5).text(),
+                            'time': calculateTime(td.eq(6).text())
+                        };
                     }
                 }
                 return arr;
-            }
+            };
             var loadPage = function(text) {
                 var t = text;
-                if (xhr != null)
+                if (xhr !== null)
                     xhr.abort();
                 xhr = $.ajax({
                     type: 'GET',
@@ -214,16 +211,16 @@
                         view.loadingStatus(2, id);
                     }
                 });
-            }
+            };
             return {
                 getPage: function(a) {
                     return loadPage(a);
                 }
-            }
+            };
         }();
         var find = function(text) {
             return web.getPage(text);
-        }
+        };
         return {
             find: function(a) {
                 return find(a);
@@ -239,7 +236,7 @@
             filename: filename,
             flags: flags,
             tests: [0, 0, 1, 0, 0, 1, 0, 0, 0]
-        }
+        };
     }();
     if (compression === 0) {
         engine.ModuleLoaded(num);
