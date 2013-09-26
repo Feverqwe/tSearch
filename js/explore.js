@@ -571,7 +571,7 @@ var explore = function() {
         calculate_moveble(key, size);
     };
     var update_poster_count = function() {
-        if (tmp_vars.explore === undefined || tmp_vars.explore.css('display') !== 'block')
+        if (tmp_vars.explore.css('display') !== 'block')
             return;
         $.each(listOptions, function(key) {
             var obj = $('li.' + key);
@@ -699,7 +699,7 @@ var explore = function() {
         c += write_page(section, page_num, content);
         //<<
         c += '</div></div>';
-        var explore_div = $('div.explore');
+        var explore_div = tmp_vars.explore;
         var exp_li = explore_div.children('ul').children('li.' + section);
         exp_li.append(c);
 
@@ -1709,7 +1709,9 @@ var explore = function() {
     };
     return {
         updFav: function(d) {
-            sync_favorites(d);
+            if (tmp_vars.explore !== undefined) {
+                sync_favorites(d);
+            }
         },
         getAbout: function(k) {
             return about_keyword(k);
@@ -1721,11 +1723,13 @@ var explore = function() {
             setQuality(a, b);
         },
         update_poster_count: function(a) {
-            clearTimeout(tmp_vars.resizetimer);
-            tmp_vars.resizetimer = setTimeout(update_poster_count, 200);
+            if (tmp_vars.explore !== undefined) {
+                clearTimeout(tmp_vars.resizetimer);
+                tmp_vars.resizetimer = setTimeout(update_poster_count, 200);
+            }
         },
         render_top: function(a, b) {
-            if (tmp_vars.top_state !== b) {
+            if (tmp_vars.explore !== undefined && tmp_vars.top_state !== b) {
                 render_top(a, b);
             }
         }
