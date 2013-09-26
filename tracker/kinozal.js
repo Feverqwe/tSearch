@@ -148,8 +148,7 @@
                 var yesterday = tt.getDate() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getFullYear() + ' ';
                 t = t.replace('сегодня ', today).replace('вчера ', yesterday);
                 t = ex_kit.month_replace(t);
-                console.log(t);
-                return ex_kit.format_date(1,t);
+                return ex_kit.format_date(1, t);
             };
             var readCode = function(c) {
                 c = view.contentFilter(c);
