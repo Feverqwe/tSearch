@@ -43,9 +43,11 @@ var view = function() {
         backgroundMode = false;
         $('div.about_panel').empty();
         if (tmp_vars.rez_table_tbody === undefined) {
-            tmp_vars.rez_table_tbody = $('#rez_table').children('tbody');
+            tmp_vars.rez_table = $('#rez_table');
+            tmp_vars.rez_table_tbody = tmp_vars.rez_table.children('tbody');
         }
         tmp_vars.rez_table_tbody.get(0).innerHTML = "";
+        tmp_vars.rez_table.trigger("update");
         $('div.filter').children('input').val('');
         keywordFilter = null;
         lastFilterWord = '';
