@@ -179,10 +179,12 @@
                             'time': calculateTime(td.eq(3).text())
                         };
                     } else if (ver === 2) {
+                        var category_id = td.eq(0).children('img').attr('src').replace(/.*\/([0-9]*)\.gif$/, '$1');
                         arr[arr.length] = {
                             'category': {
-                                'title': calculateCategoryName(td.eq(0).children('img').attr('src').replace(/.*\/([0-9]*)\.gif$/, '$1')),
-                                'id': calculateCategory(td.eq(0).children('img').attr('src').replace(/.*\/([0-9]*)\.gif$/, '$1'))
+                                'title': calculateCategoryName(category_id),
+                                'url': url + '?c=' + category_id,
+                                'id': calculateCategory(category_id)
                             },
                             'title': td.eq(1).children('a').text(),
                             'url': root_url + td.eq(1).children('a').attr('href'),
@@ -234,7 +236,7 @@
             url: root_url,
             filename: filename,
             flags: flags,
-            tests: [0, 0, 1, 0, 0, 1, 0, 0, 0]
+            tests: [0, 0, 0, 0, 0, 1, 0, 0, 0]
         };
     }();
     if (compression === 0) {
