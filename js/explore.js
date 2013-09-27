@@ -483,7 +483,7 @@ var explore = function() {
         }
         var time = Math.round(new Date().getTime() / 1000);
         var timeout = content_sourse[type].timeout;
-        if (tmp_vars.explore_ul.children('li.' + type).children('div').length > 0)
+        if (tmp_vars.li_cache[type].children('div').length > 0)
             return;
         if (type in _explorerCache && "cache_arr" in _explorerCache[type] && _explorerCache[type].date > time) {
             write_content(_explorerCache[type].cache_arr, type);
@@ -522,7 +522,7 @@ var explore = function() {
                 }
                 clearTimeout(_pages_cache[type].upTimer);
                 _pages_cache[type].upTimer = setTimeout(function() {
-                    $('li.' + type).empty();
+                    tmp_vars.li_cache[type].empty();
                     write_content(content, type);
                     _explorerCache[type] = {
                         date: time + timeout,
@@ -563,7 +563,7 @@ var explore = function() {
             return content_sourse[n].size;
     };
     var update_current_item = function(key) {
-        var item_page = $('li.' + key + ' > div > div');
+        var item_page = tmp_vars.li_cache[key].children('div').children('div');
         if (item_page.length === 0)
             return;
         item_page.html(write_page(key, item_page.attr('data-page')));
@@ -574,7 +574,7 @@ var explore = function() {
         if (tmp_vars.explore.css('display') !== 'block')
             return;
         $.each(listOptions, function(key) {
-            var obj = $('li.' + key);
+            var obj = tmp_vars.li_cache[key];
             var now_count = obj.attr('data-item-count');
             var new_count = get_view_i_count(key, obj);
             if (now_count !== undefined && new_count > 0 && parseInt(now_count) !== new_count) {
@@ -585,7 +585,7 @@ var explore = function() {
     var get_view_i_count = function(n, obj) {
         var poster_size = get_view_size(n);
         if (obj === undefined) {
-            obj = $('li.' + n);
+            obj = tmp_vars.li_cache[n];
         }
         var line_count = listOptions_def[n].line;
         if (listOptions[n].line > 0)
@@ -622,34 +622,34 @@ var explore = function() {
     var show_favorites = function() {
         var type = 'favorites';
         if (favoritesList.length < 1) {
-            $('li.' + type).css('display', 'none');
+            tmp_vars.li_cache[type].css('display', 'none');
             return;
         } else
-            $('li.' + type).css('display', 'list-item');
-        var page = $('li.' + type).children('div').children('div').attr('data-page');
+            tmp_vars.li_cache[type].css('display', 'list-item');
+        var page = tmp_vars.li_cache[type].children('div').children('div').attr('data-page');
         if (page === undefined)
             page = 1;
-        $('li.' + type).empty();
+        tmp_vars.li_cache[type].empty();
         write_content(favoritesList, type, page);
     };
     var show_kinopoisk = function() {
         var type = 'kinopoisk';
         if (parseInt(GetSettings('kinopoisk_category') || 1)) {
-            $('li.' + type).css('display', 'list-item');
+            tmp_vars.li_cache[type].css('display', 'list-item');
         } else {
-            $('li.' + type).css('display', 'none');
+            tmp_vars.li_cache[type].css('display', 'none');
             return;
         }
-        var page = $('li.' + type).children('div').children('div').attr('data-page');
+        var page = tmp_vars.li_cache[type].children('div').children('div').attr('data-page');
         if (page === undefined)
             page = 1;
-        $('li.' + type).empty();
+        tmp_vars.li_cache[type].empty();
         write_content(kinopoiskList, type, page);
     };
     var set_poster_size = function(section, size) {
         var font_size = get_font_size(size);
         var margine_size = get_poster_margin_size(section, size);
-        tmp_vars.explore_ul.children('li.' + section).find('div.setup').attr('data-size', size);
+        tmp_vars.li_cache[section].find('div.setup').attr('data-size', size);
         $('style.poster_size_' + section).remove();
         $('body').append('<style class="poster_size_' + section + '">' +
                 'div.explore li.' + section + ' > div > div > div.poster ' +
@@ -699,7 +699,7 @@ var explore = function() {
         c += write_page(section, page_num, content);
         //<<
         c += '</div></div>';
-        var exp_li = tmp_vars.explore_ul.children('li.' + section);
+        var exp_li = tmp_vars.li_cache[section];
         exp_li.append(c);
 
         //триггеры пошли
@@ -734,7 +734,7 @@ var explore = function() {
         var poster_count = get_view_i_count(section);
         if (poster_count <= 0)
             return '';
-        $('li.' + section).attr('data-item-count', poster_count);
+        tmp_vars.li_cache[section].attr('data-item-count', poster_count);
         var buttons = (fav !== null) ? '<div class="add_favorite" title="' + _lang.exp_in_fav + '">' : '<div class="del_favorite" title="' + _lang.exp_rm_fav + '"></div><div class="edit_favorite" title="' + _lang.exp_edit_fav + '"></div><div class="move_favorite" title="' + _lang.exp_move_fav + '">';
         buttons += '</div><div class="quality_box" title="' + _lang.exp_q_fav + '">';
         var c = '<div class="pager">' + make_page_body(poster_count, content.length, page) + '</div>';
@@ -794,7 +794,7 @@ var explore = function() {
         });
         if (werite_item === 0 && page > 1) {
             var new_page = page - 1;
-            $('li.' + section + ' > div > div').attr('data-page', new_page);
+            tmp_vars.li_cache[section].children('div').children('div').attr('data-page', new_page);
             return write_page(section, new_page, content);
         } else
             return view.contentUnFilter(c);
@@ -993,7 +993,7 @@ var explore = function() {
     };
     var get_kinopoisk_films = function() {
         var category = parseInt(GetSettings('kinopoisk_f_id') || 1);
-        $('li.kinopoisk').find('.kinopoisk_update_btn').addClass('update').removeClass('error').removeClass('success');
+        tmp_vars.li_cache["kinopoisk"].find('.kinopoisk_update_btn').addClass('update').removeClass('error').removeClass('success');
         var type = 'kinopoisk';
         var full_content = [];
         var limit = 8;
@@ -1006,7 +1006,7 @@ var explore = function() {
                 success: function(data) {
                     var content = read_content(type, data);
                     if (typeof(content) === 'string') {
-                        $('li.kinopoisk').find('.kinopoisk_update_btn').removeClass('update').addClass('error').removeClass('success');
+                        tmp_vars.li_cache["kinopoisk"].find('.kinopoisk_update_btn').removeClass('update').addClass('error').removeClass('success');
                         if (page !== 1) {
                             cb(full_content);
                         }
@@ -1020,7 +1020,7 @@ var explore = function() {
                     cb(full_content);
                 },
                 error: function() {
-                    $('li.kinopoisk').find('.kinopoisk_update_btn').removeClass('update').addClass('error').removeClass('success');
+                    tmp_vars.li_cache["kinopoisk"].find('.kinopoisk_update_btn').removeClass('update').addClass('error').removeClass('success');
                 }
             });
         };
@@ -1041,7 +1041,7 @@ var explore = function() {
             SetSettings('kinopoiskDeskList', JSON.stringify(kinopoiskDeskList));
             kinopoiskList = content;
             show_kinopoisk();
-            $('li.kinopoisk').find('.kinopoisk_update_btn').removeClass('update').removeClass('error').addClass('success');
+            tmp_vars.li_cache["kinopoisk"].find('.kinopoisk_update_btn').removeClass('update').removeClass('error').addClass('success');
         });
     };
     var make_form = function() {
@@ -1441,7 +1441,7 @@ var explore = function() {
     var calculate_moveble = function(section, size) {
         if (size <= 70)
             return;
-        var titles = $('li.' + section).find('span');
+        var titles = tmp_vars.li_cache[section].find('span');
         var titles_l = titles.length;
 
         for (var i = 0; i < titles_l; i++) {
@@ -1590,7 +1590,7 @@ var explore = function() {
         var s_year = year;
         var max_c = 0;
         var cat = -1;
-        var qbox = $('li.' + obj.section).find('div[data-id=' + obj.id + ']').find('div.quality_box');
+        var qbox = tmp_vars.li_cache[obj.section].find('div[data-id=' + obj.id + ']').find('div.quality_box');
         if (obj === undefined || obj.year === undefined) {
             clearTimeout(upTimer2);
             upTimer2 = setTimeout(function() {
