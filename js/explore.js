@@ -1086,6 +1086,39 @@ var explore = function() {
                 save_order();
             }
         });
+        tmp_vars.explore.on('change', 'div.count > select', function() {
+            var li = $(this).closest('li');
+            var sect = li.attr('class');
+            $(this).closest('h2').children('div.setup').attr('data-i_line', $(this).val());
+            set_view_i_line(sect, $(this).val());
+            var main_div = li.children('div').children('div');
+            main_div.css('min-height', '0px');
+            main_div.html(write_page(sect));
+            var size = get_view_size(sect);
+            calculate_moveble(sect, size);
+        });
+        tmp_vars.explore.on('click', 'div.setup_div > div.clear', function() {
+            var li = $(this).closest('li');
+            var t = li.children('div').children('div.poster');
+            var sect = li.attr('class');
+            var defoult_size = content_sourse[sect].size;
+            if (listOptions_def[sect] !== undefined && listOptions_def[sect].size !== undefined && listOptions_def[sect].size > 0)
+                defoult_size = listOptions_def[sect].size;
+            var margin_size = get_poster_margin_size(sect, defoult_size);
+            t.css({
+                'width': defoult_size + 'px',
+                'margin': margin_size + 'px'
+            });
+            t.find('img').width(defoult_size - 10);
+            t.find('div.title span').css('font-size', '0.857em');
+            t.find('div.info a').css('font-size', '0.857em');
+            t.find('div.info').parent().css('display', 'block');
+            $(this).parent().children('div.slider').slider('value', defoult_size);
+            set_view_size(sect, defoult_size);
+            calculate_moveble(sect, defoult_size);
+            set_poster_size(sect, defoult_size);
+            li.children('div').css('min-height', '0px');
+        });
         tmp_vars.explore_ul.on('click', '.kinopoisk_update_btn', function() {
             get_kinopoisk_films();
         });
@@ -1114,119 +1147,124 @@ var explore = function() {
                 load_exp_content(key, content_sourse[key].url);
             }
         });
-        var sortable_li = tmp_vars.explore_ul.children('li');
         //спойлер
-        sortable_li.on('click', 'div > h2 > div.spoiler', function() {
+        tmp_vars.explore.on('click', 'h2 > div.spoiler', function() {
             var t = $(this);
-            var t_parent = t.parent();
-            t_parent.parent().children('div').css('min-height', '0px');
+            var h2 = t.parent();
+            h2.parent().children('div').css('min-height', '0px');
             if (t.is('.up')) {
                 t.removeClass('up').addClass('down');
-                t_parent.children('div.setup').show('fast');
-                t_parent.parent().children('div').slideDown('fast', function() {
+                h2.children('div.setup').show('fast');
+                h2.parent().children('div').slideDown('fast', function() {
                     var sect = $(this).closest('li').attr('class');
                     set_view_status(sect, 1);
                 });
             } else {
                 t.removeClass('down').addClass('up');
-                t_parent.children('div.setup').hide('fast');
+                h2.children('div.setup').hide('fast');
                 tmp_vars.explore.find('div.setup_div').hide('fast', function(a, b) {
                     $(this).remove();
                 });
-                t_parent.parent().children('div').slideUp('fast', function() {
+                h2.parent().children('div').slideUp('fast', function() {
                     var sect = $(this).closest('li').attr('class');
                     set_view_status(sect, 0);
                 });
             }
         });
         //переключение страниц
-        sortable_li.on('mouseenter', 'div > div.pager > div.item', function() {
+        tmp_vars.explore.on('mouseenter', 'div.pager > div.item', function() {
+            var li = $(this).closest('li');
             var page = $(this).text();
-            var sect = $(this).closest('li').attr('class');
-            var data_page = $('li.' + sect).children('div').children('div');
+            var sect = li.attr('class');
+            var data_page = li.children('div').children('div');
             if (data_page.attr('data-page') === page)
                 return;
-            var main_div = $(this).parent().parent();
-            if (main_div.css('min-height') !== undefined) {
-                if (main_div.height() > main_div.css('min-height').replace('px', ''))
-                    main_div.css('min-height', main_div.height() + 'px');
+            if (data_page.css('min-height') !== undefined) {
+                if (data_page.height() > data_page.css('min-height').replace('px', ''))
+                    data_page.css('min-height', data_page.height() + 'px');
             } else {
-                main_div.css('min-height', $(this).parents().eq(1).height() + 'px');
+                data_page.css('min-height', $(this).parents().eq(1).height() + 'px');
             }
             data_page.attr('data-page', page);
-            main_div.html(write_page(sect, page));
-
+            data_page.html(write_page(sect, page));
             var size = get_view_size(sect);
             calculate_moveble(sect, size);
         });
         //настройки
-        sortable_li.on('click', 'div > h2 > div.setup', function() {
-            var t = $(this).parent().children('div.setup_div');
-            if (t.length !== 0) {
-                t.hide('fast', function() {
-                    t.remove();
+        tmp_vars.explore.on('click', 'h2 > div.setup', function() {
+            var setup_div = $(this).parent().children('div.setup_div');
+            if (setup_div.length !== 0) {
+                setup_div.hide('fast', function() {
+                    setup_div.remove();
                 });
                 return;
             }
-            tmp_vars.explore.find('div.setup_div').hide('fast', function(a, b) {
+            setup_div.hide('fast', function(a, b) {
                 $(this).remove();
             });
-            t = make_setup_view(this);
-            $(this).after(t).next('div.setup_div').show('fast');
+            var setup = make_setup_view(this);
+            $(this).after(setup).next('div.setup_div').show('fast');
         });
         // кнопка избранное - добавить
-        sortable_li.on('click', 'div > div.poster > div.image > div.add_favorite', function() {
-            add_in_favorites($(this).closest('div.poster'));
+        tmp_vars.explore.on('click', 'div.poster > div.image > div.add_favorite', function() {
+            var poster = $(this).closest('div.poster');
+            add_in_favorites(poster);
         });
         // кнопка избранное - удалить
-        sortable_li.on('click', 'div > div.poster > div.image > div.del_favorite', function() {
-            $(this).closest('div.poster').hide('fast', function() {
+        tmp_vars.explore.on('click', 'div.poster > div.image > div.del_favorite', function() {
+            var poster = $(this).closest('div.poster');
+            poster.hide('fast', function() {
                 del_from_favorites($(this).attr('data-id'));
             });
         });
         // кнопка избранное - редактировать постер
-        sortable_li.on('click', 'div > div.poster > div.image > div.edit_favorite', function() {
-            edit_from_favorites($(this).closest('div.poster').attr('data-id'));
+        tmp_vars.explore.on('click', 'div.poster > div.image > div.edit_favorite', function() {
+            var poster = $(this).closest('div.poster');
+            edit_from_favorites(poster.attr('data-id'));
         });
         // кнопка качества
-        sortable_li.on('click', 'div > div.poster > div.image > div.quality_box', function() {
+        tmp_vars.explore.on('click', 'div.poster > div.image > div.quality_box', function() {
             var section = $(this).closest('li').attr('class');
-            var name = $(this).closest('div.poster').children('div.label').children('div.title').text();
+            var poster = $(this).closest('div.poster');
+            var name = poster.children('div.label').children('div.title').text();
             $(this).addClass('loading');
-            var tmp_id = parseInt($(this).parent().parent().attr('data-id'));
+            var tmp_id = parseInt(poster.attr('data-id'));
             view.getQuality(name.replace(/ \(([0-9]*)\)$/, ' $1'), tmp_id, section);
         });
         //клик по постеру
-        sortable_li.on('click', 'div > div.poster > div.image > a', function(event) {
+        tmp_vars.explore.on('click', 'div.poster > div.image > a', function(event) {
             event.preventDefault();
             var section = $(this).closest('li').attr('class');
-            var s = $(this).parents().eq(1).find('div.title').children('span').text();
+            var poster = $(this).closest('div.poster');
+            var s = poster.find('div.title > span').text();
             triggerClick(search_kw_filter(s), section);
         });
         //клик по имени
-        sortable_li.on('click', 'div > div.poster > div.label > div.title a', function(event) {
+        tmp_vars.explore.on('click', 'div.poster div.title a', function(event) {
             event.preventDefault();
             var section = $(this).closest('li').attr('class');
             var s = $(this).text();
             triggerClick(search_kw_filter(s), section);
         });
         //клик по подробнее
-        sortable_li.on('click', 'div > div.poster > div.label > div.info a', function() {
+        tmp_vars.explore.on('click', 'div.poster div.info a', function(event) {
             try {
-                var s = $(this).parents().eq(1).children('div.title').children('span').text();
+                var s = $(this).closest('div.poster').find('div.title > span').text();
                 _gaq.push(['_trackEvent', 'About', 'keyword', s]);
-            } finally {
-                return true;
+            } catch (e) {
+            }
+            if (chrome !== undefined && chrome.tabs !== undefined) {
+                event.preventDefault();
+                chrome.tabs.create({'url': $(this).attr('href'), 'active': true});
             }
         });
-
         get_search_top();
         tmp_vars.top.on('click', 'a', function(e) {
             e.preventDefault();
             var s = $(this).parent().attr('title');
             triggerClick(s);
         });
-        tmp_vars.explore.sortable({handle: 'div.move_favorite', cancel: "div.pager", items: ">ul.sortable > li.favorites>div.favorites>div>div.poster", opacity: 0.8,
+        tmp_vars.explore.sortable({handle: 'div.move_favorite', cancel: "div.pager", items: "li.favorites div.poster", opacity: 0.8,
             beforeStop: function(event, ui) {
                 FavoritesOrder(ui.item.prev().attr("data-id"), ui.item.attr("data-id"), ui.item.next().next().attr("data-id"));
             }
@@ -1468,7 +1506,7 @@ var explore = function() {
     var make_setup_view = function(obj) {
         var i_line = parseInt($(obj).attr('data-i_line'));
         var size = $(obj).attr('data-size');
-        var section = $(obj).parents().eq(2).attr('class');
+        var section = $(obj).closest('li').attr('class');
         var def_size = content_sourse[section].size;
         var t = $('<div class="setup_div" data-i_line="' + i_line + '" data-size="' + def_size + '"></div>').hide();
         $('<div class="slider"/>').slider({
@@ -1507,41 +1545,10 @@ var explore = function() {
                 }
             }
         }).appendTo(t);
-        $('<div class="clear" title="' + _lang.exp_default + '">').on('click', function() {
-            var t = $(this).parents().eq(2).children('div').children('div.poster');
-            var sect = $(this).parents().eq(3).attr('class');
-            var defoult_size = content_sourse[sect].size;
-            if (listOptions_def[sect] !== undefined && listOptions_def[sect].size !== undefined && listOptions_def[sect].size > 0)
-                defoult_size = listOptions_def[sect].size;
-            var margin_size = get_poster_margin_size(sect, defoult_size);
-            t.css({
-                'width': defoult_size + 'px',
-                'margin': margin_size + 'px'
-            });
-            t.find('img').width(defoult_size - 10);
-            t.find('div.title span').css('font-size', '0.857em');
-            t.find('div.info a').css('font-size', '0.857em');
-            t.find('div.info').parent().css('display', 'block');
-            $(this).parent().children('div.slider').slider('value', defoult_size);
-            var sect = $(this).parents().eq(3).attr('class');
-            set_view_size(sect, defoult_size);
-            calculate_moveble(sect, defoult_size);
-            set_poster_size(sect, defoult_size);
-            $(this).parents().eq(2).children('div').css('min-height', '0px');
-        }).appendTo(t);
         var optns = '';
         for (var i = 1; i < 7; i++)
             optns += '<option value="' + i + '"' + ((i === i_line) ? ' selected' : '') + '>' + i + '</option>';
-        $('<div class="count"><select>' + optns + '</select></div>').children().change(function() {
-            var sect = $(this).parents().eq(3).attr('class');
-            $(this).parents().eq(2).children('div.setup').attr('data-i_line', $(this).val());
-            set_view_i_line(sect, $(this).val());
-            var main_div = $(this).parents().eq(3).children('div');
-            main_div.css('min-height', '0px');
-            main_div.html(write_page(sect));
-            var size = get_view_size(sect);
-            calculate_moveble(sect, size);
-        }).parent().appendTo(t);
+        $('<div class="clear" title="' + _lang.exp_default + '"></div><div class="count"><select>' + optns + '</select></div>').appendTo(t);
         return t;
     };
     var get_font_size = function(w) {
