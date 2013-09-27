@@ -469,14 +469,14 @@ var options = function() {
                     $('div.page.save > div.status').css('background', 'none').text('');
                 }, 200);
             });
+            make_bakup_form();
             if (navigator.userAgent.search(/Firefox/) !== -1) {
 //firefox
-                $('div.page.backup').hide();
-                $('a[data-page=backup]').hide();
-                $('input[name="context_menu"]').parents().eq(1).hide();
-                $('input[name="backup_form"]').parents().eq(1).hide();
-            } else {
-                make_bakup_form();
+                $('input[name="add_in_omnibox"]').parents().eq(1).hide();
+                $('input[name="google_analytics"]').parents().eq(1).hide();
+                $('input[name="search_popup"]').parents().eq(1).hide();
+                $('input[name="allow_favorites_sync"]').parents().eq(1).hide();
+                $('input[name="clear_cloud_btn"]').hide();
             }
             if (navigator.userAgent.search(/Opera/) !== -1) {
 //opera
