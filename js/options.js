@@ -471,7 +471,7 @@ var options = function() {
             });
             make_bakup_form();
             if (navigator.userAgent.search(/Firefox/) !== -1) {
-//firefox
+            //firefox
                 $('input[name="add_in_omnibox"]').parents().eq(1).hide();
                 $('input[name="google_analytics"]').parents().eq(1).hide();
                 $('input[name="search_popup"]').parents().eq(1).hide();
@@ -479,7 +479,7 @@ var options = function() {
                 $('input[name="clear_cloud_btn"]').hide();
             }
             if (navigator.userAgent.search(/Opera/) !== -1) {
-//opera
+            //opera
                 $('input[name="add_in_omnibox"]').parents().eq(1).hide();
                 $('input[name="search_popup"]').parents().eq(1).hide();
                 $('input[name="google_analytics"]').parents().eq(1).hide();
@@ -487,7 +487,7 @@ var options = function() {
                 $('input[name="clear_cloud_btn"]').hide();
             }
             if (navigator.userAgent.search(/Chrome/) !== -1) {
-//Chrome
+            //Chrome
                 var bgp = chrome.extension.getBackgroundPage();
                 if (!bgp._type_ext) {
                     $('input[name="search_popup"]').parents().eq(1).hide();
