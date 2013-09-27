@@ -821,11 +821,11 @@ div.explore div.poster > div.image > div.quality_box {
     cursor: pointer;
     opacity: 0.8;
     background-color: #fff;
-    border: 1px rgb(175, 173, 173) solid;
     border-radius: 3px;
     padding: 2px;
     font-size: 0.857em;
     color: #000;
+    box-shadow: 0 0px 1px #000;
 }
 div.explore div.poster > div.image > div.quality_box.loading {
     background: url(../images/loading.gif) no-repeat center center;
