@@ -483,7 +483,7 @@ var explore = function() {
         }
         var time = Math.round(new Date().getTime() / 1000);
         var timeout = content_sourse[type].timeout;
-        if ($('div.explore div.' + type).length > 0)
+        if (tmp_vars.explore_ul.children('li.' + type).children('div').length > 0)
             return;
         if (type in _explorerCache && "cache_arr" in _explorerCache[type] && _explorerCache[type].date > time) {
             write_content(_explorerCache[type].cache_arr, type);
@@ -649,21 +649,21 @@ var explore = function() {
     var set_poster_size = function(section, size) {
         var font_size = get_font_size(size);
         var margine_size = get_poster_margin_size(section, size);
-        $('div.explore div.' + section).find('div.setup').attr('data-size', size);
+        tmp_vars.explore_ul.children('li.' + section).find('div.setup').attr('data-size', size);
         $('style.poster_size_' + section).remove();
         $('body').append('<style class="poster_size_' + section + '">' +
-                'div.explore div.' + section + ' > div > div.poster ' +
+                'div.explore li.' + section + ' > div > div > div.poster ' +
                 '{ width: ' + size + 'px; margin: ' + margine_size + 'px; } ' +
-                'div.explore div.' + section + ' > div > div.poster > div > div.info ' +
+                'div.explore li.' + section + ' > div > div > div.poster > div > div.info ' +
                 '{ width: ' + size + 'px; } ' +
-                'div.explore div.' + section + ' div.poster > div.image > a > img ' +
+                'div.explore li.' + section + ' div.poster > div.image > a > img ' +
                 '{width: ' + (size - 10) + 'px;} ' +
                 ((font_size === 0) ?
-                        'div.explore div.' + section + ' div.poster > div.label ' +
+                        'div.explore li.' + section + ' div.poster > div.label ' +
                         '{display: none;}'
                         :
-                        'div.explore div.' + section + ' div.poster > div.label > div.title, ' +
-                        'div.explore div.' + section + ' div.poster > div.label > div.info > a ' +
+                        'div.explore li.' + section + ' div.poster > div.label > div.title, ' +
+                        'div.explore li.' + section + ' div.poster > div.label > div.info > a ' +
                         '{font-size: ' + font_size + 'em;}'
                         ) + '</style>');
         //<<<<
@@ -687,7 +687,7 @@ var explore = function() {
             var kinopoisk_category = parseInt(GetSettings('kinopoisk_f_id') || 1);
             sub_function = '<a class="kinopoisk_open_btn" href="' + content_sourse[section].url.replace('%page%', 1).replace('%category%', kinopoisk_category) + '" target="_blank" title="' + _lang.exp_btn_open + '"></a><span class="kinopoisk_update_btn" title="' + _lang.exp_btn_sync + '"></span>';
         }
-        var c = '<div class="' + section + '">'
+        var c = '<div class="conteiner">'
                 + '<h2>'
                 + '<div class="move_it"></div>'
                 + name + sub_function
@@ -699,16 +699,15 @@ var explore = function() {
         c += write_page(section, page_num, content);
         //<<
         c += '</div></div>';
-        var explore_div = tmp_vars.explore;
-        var exp_li = explore_div.children('ul').children('li.' + section);
+        var exp_li = tmp_vars.explore_ul.children('li.' + section);
         exp_li.append(c);
 
         //триггеры пошли
         calculate_moveble(section, size);
         //<<<<<<<<<<<<<<
 
-        if (exp_li.children('div.' + section).children('div').children('div.poster').length === 0 && page_num > 1) {
-            $('li.' + section).empty();
+        if (exp_li.find('div.poster').length === 0 && page_num > 1) {
+            exp_li.empty();
             write_content(content, section, page_num - 1);
         }
     };
@@ -1119,7 +1118,7 @@ var explore = function() {
             set_poster_size(sect, defoult_size);
             li.children('div').css('min-height', '0px');
         });
-        tmp_vars.explore_ul.on('click', '.kinopoisk_update_btn', function() {
+        tmp_vars.explore.on('click', '.kinopoisk_update_btn', function() {
             get_kinopoisk_films();
         });
         //temp code!
@@ -1129,6 +1128,10 @@ var explore = function() {
         //<<<temp code
         $.each(listOptions, function(key, value) {
             tmp_vars.explore_ul.append('<li class="' + key + '"></li>');
+            if ("li_cache" in tmp_vars === false) {
+                tmp_vars.li_cache = {};
+            }
+            tmp_vars.li_cache[key] = $('li.' + key);
             if (key === 'favorites') {
                 show_favorites();
             } else
@@ -1328,7 +1331,8 @@ var explore = function() {
             }
             info_popup.css({"left": lp, "top": pos.top - 40});
             info_popup.show();
-        }).on("mouseleave", "div.quality_box", function(e) {
+        });
+        tmp_vars.explore.on("mouseleave", "div.quality_box", function(e) {
             if (e.pageY < last_qbox.top + $(this).height()) {
                 info_popup.hide();
             } else {
@@ -1437,7 +1441,7 @@ var explore = function() {
     var calculate_moveble = function(section, size) {
         if (size <= 70)
             return;
-        var titles = $('div.' + section).find('span');
+        var titles = $('li.' + section).find('span');
         var titles_l = titles.length;
 
         for (var i = 0; i < titles_l; i++) {
@@ -1586,7 +1590,7 @@ var explore = function() {
         var s_year = year;
         var max_c = 0;
         var cat = -1;
-        var qbox = $('li.' + obj.section + ' > div.' + obj.section + ' > div').children('div[data-id=' + obj.id + ']').find('div.quality_box');
+        var qbox = $('li.' + obj.section).find('div[data-id=' + obj.id + ']').find('div.quality_box');
         if (obj === undefined || obj.year === undefined) {
             clearTimeout(upTimer2);
             upTimer2 = setTimeout(function() {
