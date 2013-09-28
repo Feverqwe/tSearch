@@ -10,6 +10,8 @@ var explore = function() {
     var favoritesDeskList = JSON.parse(GetSettings('favoritesDeskList') || "{}");
     var kinopoiskList = JSON.parse(GetSettings('kinopoiskList') || "[]");
     var kinopoiskDeskList = JSON.parse(GetSettings('kinopoiskDeskList') || "{}");
+    var kinopoisk_category = parseInt(GetSettings('kinopoisk_category') || 1);
+    var kinopoisk_folder_id = parseInt(GetSettings('kinopoisk_f_id') || 1);
     var tmpDeskList = {};
     var tmp_vars = {};
     var last_qbox = {top: 0, obj: null, id: null};
@@ -634,7 +636,7 @@ var explore = function() {
     };
     var show_kinopoisk = function() {
         var type = 'kinopoisk';
-        if (parseInt(GetSettings('kinopoisk_category') || 1)) {
+        if (kinopoisk_category) {
             tmp_vars.li_cache[type].css('display', 'list-item');
         } else {
             tmp_vars.li_cache[type].css('display', 'none');
@@ -684,8 +686,7 @@ var explore = function() {
         var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
         var sub_function = '';
         if (section === 'kinopoisk') {
-            var kinopoisk_category = parseInt(GetSettings('kinopoisk_f_id') || 1);
-            sub_function = '<a class="kinopoisk_open_btn" href="' + content_sourse[section].url.replace('%page%', 1).replace('%category%', kinopoisk_category) + '" target="_blank" title="' + _lang.exp_btn_open + '"></a><span class="kinopoisk_update_btn" title="' + _lang.exp_btn_sync + '"></span>';
+            sub_function = '<a class="kinopoisk_open_btn" href="' + content_sourse[section].url.replace('%page%', 1).replace('%category%', kinopoisk_folder_id) + '" target="_blank" title="' + _lang.exp_btn_open + '"></a><span class="kinopoisk_update_btn" title="' + _lang.exp_btn_sync + '"></span>';
         }
         var c = '<div class="conteiner">'
                 + '<h2>'
@@ -992,7 +993,6 @@ var explore = function() {
         return kinopoiskList[id]['quality'];
     };
     var get_kinopoisk_films = function() {
-        var category = parseInt(GetSettings('kinopoisk_f_id') || 1);
         tmp_vars.li_cache["kinopoisk"].find('.kinopoisk_update_btn').addClass('update').removeClass('error').removeClass('success');
         var type = 'kinopoisk';
         var full_content = [];
@@ -1002,7 +1002,7 @@ var explore = function() {
                 xhr[type].abort();
             xhr[type] = $.ajax({
                 type: 'GET',
-                url: content_sourse[type].url.replace('%page%', page).replace('%category%', category),
+                url: content_sourse[type].url.replace('%page%', page).replace('%category%', kinopoisk_folder_id),
                 success: function(data) {
                     var content = read_content(type, data);
                     if (typeof(content) === 'string') {
