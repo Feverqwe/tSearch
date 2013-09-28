@@ -637,105 +637,105 @@ var view = function() {
             if ((/\w/).test(sub_l + sub_r)) {
                 return '';
             }
-            if ($.inArray("video_type", rate.block) === -1) {
+            if (rate.block.lenth === 0) {
                 if (a === "blu-ray") {
                     rate.video += 100;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "Blu-ray";
                 } else
                 if (a === "bd-remux" || a === "bdremux") {
                     rate.video += 90;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "Remux";
                 } else
                 if (a === "bd-rip" || a === "bdrip" || a === "bdrip-avc") {
                     rate.video += 80;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "BDRip";
                 } else
                 if (a === "camrip" || a === "camrip-avc") {
                     rate.video += 10;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "CAMRip";
                 } else
                 if (a === "hdtv-rip" || a === "hdtvrip") {
                     rate.video += 70;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "HDTV-Rip";
                 } else
                 if (a === "dtheater-rip") {
                     rate.video += 70;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "DTheater-Rip";
                 } else
                 if (a === "lowhdrip") {
                     rate.video += 10;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "LowHDRip";
                 } else
                 if (a === "hdtv") {
                     rate.video += 60;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "HDTV";
                 } else
                 if (a === "hdrip" || a === "hdrip-avc") {
                     rate.video += 60;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "HDRip";
                 } else
                 if (a === "dvdrip" || a === "dvd-rip" || a === "dvdrip-avc") {
                     rate.video += 60;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "DVD-Rip";
                 } else
                 if (a === "dvd" || a === "dvd5" || a === "2xdvd9" || a === "dvd9" || a === "dvd-9" || a === "hd-dvd") {
                     rate.video += 50;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "DVD";
                 } else
                 if (a === "hqsatrip" || a === "hqrip" || a === "hqrip-avc") {
                     rate.video += 44;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "HDrip";
                 } else
                 if (a === "tvrip" || a === "iptvrip") {
                     rate.video += 40;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "TV-Rip";
                 } else
                 if (a === "webrip") {
                     rate.video += 40;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "WebRip";
                 } else
                 if (a === "web-dlrip-avc" || a === "webdl-rip" || a === "web-dlrip" || a === "web-dl") {
                     rate.video += 40;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "WEB-DL";
                 } else
                 if (a === "satrip") {
                     rate.video += 40;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "SAT-Rip";
                 } else
                 if (a === "dvb") {
                     rate.video += 40;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "DVB";
                 } else
                 if (a === "telesynch" || a === "ts") {
                     rate.video += 20;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "Telesync";
                 }
                 if (a === "dvdscr" || a === "dvdscreener") {
                     rate.video += 20;
-                    rate.block.push("video_type");
+                    rate.block.push("video");
                     rate.qbox = "DVD-Screener";
                 }
                 if (a === "flac" || a === "alac" || a === "lossless") {
                     rate.music += 100;
-                    rate.block.push("video_type");
+                    rate.block.push("music");
                     rate.qbox = "lossless";
                 } else
                 if (a === "mp3") {
@@ -744,52 +744,52 @@ var view = function() {
                 } else
                 if (a === "ps3") {
                     rate.game += 80;
-                    rate.block.push("video_type");
+                    rate.block.push("game");
                     rate.qbox = "PS3";
                 } else
                 if (a === "xbox") {
                     rate.game += 80;
-                    rate.block.push("video_type");
+                    rate.block.push("game");
                     rate.qbox = "XBox";
                 } else
                 if (a === "(ps2)") {
                     rate.game += 80;
-                    rate.block.push("video_type");
+                    rate.block.push("game");
                     rate.qbox = "PS2";
                 } else
                 if (a === "[p]" || a === "{p}" || a === "(p)") {
                     rate.game += 20;
-                    rate.block.push("video_type");
+                    rate.block.push("game");
                     rate.qbox = "P";
                 } else
                 if (a === "repack" || a === "lossless repack" || a === "steam-rip" || a === "(lossy rip)" || a === "reloaded") {
                     rate.game += 60;
-                    rate.block.push("video_type");
+                    rate.block.push("game");
                     rate.qbox = "RePack";
                 } else
                 if (a === "[native]") {
                     rate.game += 100;
-                    rate.block.push("video_type");
+                    rate.block.push("game");
                     rate.qbox = "Native";
                 } else
                 if (a === "[rip]" || a === "{rip}" || a === "(rip)") {
                     rate.game += 80;
-                    rate.block.push("video_type");
+                    rate.block.push("game");
                     rate.qbox = "Rip";
                 } else
                 if (a === "[l]" || a === "{l}" || a === "(l)") {
                     rate.game += 100;
-                    rate.block.push("video_type");
+                    rate.block.push("game");
                     rate.qbox = "L";
                 } else
                 if (a === "лицензия") {
                     rate.game += 100;
-                    rate.block.push("video_type");
+                    rate.block.push("game");
                     rate.qbox = "L";
                 } else
                 if (a === "fb2" || a === "pdf" || a === "dejvu" || a === "rtf" || a === "epub") {
                     rate.book += 100;
-                    rate.block.push("video_type");
+                    rate.block.push("book");
                     rate.qbox = a;
                 }
             }
