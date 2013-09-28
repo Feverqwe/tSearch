@@ -16,6 +16,6 @@
                 <em:maxVersion>16.*</em:maxVersion>
             </Description>
         </em:targetApplication>
-        <em:version>0.9.32</em:version>
+        <em:version>0.9.33</em:version>
     </Description>
 </RDF>
