@@ -110,7 +110,129 @@ var view = function() {
         quality.value = quality.seed + quality.name + quality.video + quality.music + quality.game;
         return quality;
     };
-    var autoset_Category = function(quality) {
+    var autoset_Category = function(quality, category) {
+
+        var rate = {films: 0, serials: 0, anime: 0, dochumor: 0, music: 0, games: 0, books: 0, cartoons: 0, software: 0, sport: 0, xxx: 0, other: 0, m: []};
+        var cal_rate = function(a, b, c) {
+            if ($.inArray(a, rate.m) === -1) {
+                rate.m.push(a);
+            } else {
+                return '';
+            }
+            a = a.toLowerCase();
+            var sub_l = c[b - 1];
+            var sub_r = c[b + a.length];
+            if (sub_r === undefined)
+                sub_r = '';
+            if (sub_l === undefined)
+                sub_l = '';
+            if ((/\w/).test(sub_l + sub_r)) {
+                return '';
+            }
+            if (a === "эрот" || a === "xxx" || a === "porn" || a === "порно" || a === "сайтр" || a === "фильмы без сюжета" || a === "hentai" || a === "хентай") {
+                rate.xxx += 10;
+            }
+            if (a === "мультим") {
+                rate.software += 3;
+            }
+            if (a === "мульт") {
+                rate.cartoons += 2;
+            }
+            if (a === "сериа") {
+                rate.serials += 2;
+            }
+            if (a === "книг" || a === "аудиокниги" || a === "литер" || a === "беллетр" || a === "журнал") {
+                rate.books += 1;
+            }
+            if (a === "фильм") {
+                rate.films += 1;
+            }
+            if (a === "soundtrack" || a === "музыка" || a === "саундтрек") {
+                rate.music += 2;
+            }
+            if (a === "игр" || a === "psp" || a === "xbox") {
+                rate.games += 1;
+            }
+            if (a === "аним" || a === "anim") {
+                rate.anime += 1;
+            }
+            if (a === "софт" || a === "soft" || a === "программы" || a === "утилит") {
+                rate.software += 1;
+            }
+            if (a === "комикс") {
+                rate.other += 1;
+            }
+            if (a === "документальные") {
+                rate.dochumor += 3;
+            }
+            if (a === "спорт") {
+                rate.sport += 1;
+            }
+            if (a === "докумел" || a === "телеп" || a === "тв " || a === "тв-" || a === "юмор") {
+                rate.dochumor += 2;
+            }
+            if (a === "видео для моб" || a === "видео для смарт" || a === "видео для устр" || a === "Мобильное" || a === "3gp") {
+                rate.other += 1;
+            }
+            return '';
+        };
+        var reg_quality = "фильмы без сюжета|документальные|мультим|мульт|сериа|комикс|видео для [моб|смарт|устр]{1}|Мобильное|аудиокниги|беллетр|книг|фильм|игр|3gp|soundtrack|саундтрек|anim|аним|докумел|литер|телеп|эрот|xxx|porn|порно|сайтр|тв |музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|программы|утилит|тв-";
+        if (category.length > 0)
+            category.toLowerCase().replace(new RegExp(reg_quality, "g"), cal_rate);
+
+        var qual_cat = [];
+        $.each(rate, function(k, v) {
+            if (k !== 'm') {
+                qual_cat.push([v, k]);
+            }
+        });
+        qual_cat.sort(function(a, b) {
+            if (a[0] > b[0]) {
+                return -1;
+            } else
+            if (a[0] === b[0]) {
+                return 0;
+            } else
+                return 1;
+        });
+        if (qual_cat[0][0] > 0) {
+            if (qual_cat[0][1] === "films") {
+                return 3;
+            } else
+            if (qual_cat[0][1] === "serials") {
+                return 0;
+            } else
+            if (qual_cat[0][1] === "anime") {
+                return 7;
+            } else
+            if (qual_cat[0][1] === "dochumor") {
+                return 8;
+            } else
+            if (qual_cat[0][1] === "music") {
+                return 1;
+            } else
+            if (qual_cat[0][1] === "games") {
+                return 2;
+            } else
+            if (qual_cat[0][1] === "books") {
+                return 5;
+            } else
+            if (qual_cat[0][1] === "cartoons") {
+                return 4;
+            } else
+            if (qual_cat[0][1] === "software") {
+                return 6;
+            } else
+            if (qual_cat[0][1] === "sport") {
+                return 9;
+            } else
+            if (qual_cat[0][1] === "xxx") {
+                return 10;
+            } else
+            if (qual_cat[0][1] === "other") {
+                return -1;
+            }
+        }
         if (quality.book) {
             return 5;
         } else
@@ -399,7 +521,7 @@ var view = function() {
             var quality = quality_calc(title.r, v);
             title = title.n;
             if (autoSetCat & v.category.id < 0) {
-                v.category.id = autoset_Category(quality);
+                v.category.id = autoset_Category(quality, v.category.title || "");
             }
             var filter = '';
             var fk = 0;
