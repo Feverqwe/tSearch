@@ -138,6 +138,9 @@ var get_lang = function(lang) {
         allow_favorites_sync: 'Allow sync favorites list in the cloud',
         clear_cloud_btn: 'Clear settings in the cloud',
         apprise_btns: ['Ok', 'Cancel'],
+        time_f_s: ['For all the time','For an hour','For the day','For the week','For the month','For the year','For the period...'],
+        time_f_d: ["su", "mo", "tu", "we", "th", "fr", "sa"],
+        time_f_m: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         settings: {
             1: "The list of torrents",
             2: "Options",
@@ -417,6 +420,9 @@ var get_lang = function(lang) {
         allow_favorites_sync: 'Разрешить синхронизацию списка избранного в облако',
         clear_cloud_btn: 'Очистить настройки в облаке',
         apprise_btns: ['Ок', 'Отменить'],
+        time_f_s: ['За всё время','За час','За сутки','За неделю','За месяц','За год','За период...'],
+        time_f_d: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
+        time_f_m: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
         settings: {
             1: "Список торрентов",
             2: "Опции",

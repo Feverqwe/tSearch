@@ -2,6 +2,7 @@ var view = function() {
     var trackerFilter = null;
     var keywordFilter = null;
     var sizeFilter = null;
+    var timeFilter = null;
     var categoryFilter = null;
     var categorys = [];
     var categorys_assoc = null;
@@ -51,6 +52,11 @@ var view = function() {
         $('div.filter div.btn').hide();
         $('div.size_filter').find('input').val('');
         sizeFilter = null;
+        timeFilter = null;
+        var time_filter = $('div.time_filter');
+        time_filter.find('input').val('');
+        time_filter.find('option').removeAttr('selected');
+        time_filter.find('option[value=all]').attr('selected', 'selected');
         tmp_vars.ul_trackers.find('a.selected').removeClass('selected');
         tmp_vars.ul_trackers.children('li').attr('data-count', 0);
         updateTrackerCount();
@@ -545,7 +551,15 @@ var view = function() {
                     filter = 'style="display: none;"';
                 }
             }
-            c += '<tr ' + filter + ' data-fs="' + fs + '" data-kf="' + fk + '" data-tracker="' + t + '" data-c="' + v.category.id + '">'
+            var ft = 0;
+            if (timeFilter !== null) {
+                if (v.time > timeFilter.from && ((timeFilter.to > 0 && v.time < timeFilter.to) || (timeFilter.to <= 0))) {
+                    ft = 1;
+                } else {
+                    filter = 'style="display: none;"';
+                }
+            }
+            c += '<tr ' + filter + ' data-fs="' + fs + '" data-ft="' + ft + '" data-kf="' + fk + '" data-tracker="' + t + '" data-c="' + v.category.id + '">'
                     + '<td class="time" data-value="' + v.time + '" title="' + unixintimetitle(v.time) + '">' + unixintime(v.time) + '</td>'
                     + '<td class="quality" data-value="' + quality.value + '" data-qgame="' + quality.game + '" data-qseed="' + quality.seed + '" data-qname="' + quality.name + '" data-qvideo="' + quality.video + '" data-qmusic="' + quality.music + '" data-qbook="' + quality.book + '"><div class="progress"><div style="width:' + (quality.value / 15) + 'px"></div><span title="' + quality.value + '">' + quality.value + '</span></div></td>'
                     + '<td class="name"><div class="title"><a href="' + v.url + '" target="_blank">' + title + '</a>'
@@ -1165,7 +1179,7 @@ var view = function() {
         var t_c = li.length;
         for (var i = 0; i < t_c; i++) {
             var id = li.eq(i).attr('data-id');
-            if (keywordFilter === null && sizeFilter === null)
+            if (keywordFilter === null && sizeFilter === null && timeFilter === null)
                 updateTrackerResultCount(id);
             else {
                 var filter = '';
@@ -1174,6 +1188,9 @@ var view = function() {
                 }
                 if (sizeFilter !== null) {
                     filter += '[data-fs=1]';
+                }
+                if (timeFilter !== null) {
+                    filter += '[data-ft=1]';
                 }
                 var count = tmp_vars.rez_table_tbody.children('tr[data-tracker="' + id + '"]' + filter).length;
                 updateTrackerResultCount(id, count, 1);
@@ -1192,6 +1209,9 @@ var view = function() {
             }
             if (sizeFilter !== null) {
                 filter += '[data-fs="1"]';
+            }
+            if (timeFilter !== null) {
+                filter += '[data-ft="1"]';
             }
             var count = tmp_vars.rez_table_tbody.children('tr' + filter).length;
             if (count > 0) {
@@ -1269,6 +1289,27 @@ var view = function() {
                 tr_eq.attr('data-fs', 1);
             } else {
                 tr_eq.attr('data-fs', 0);
+            }
+        }
+        tmp_vars.ul_categorys.children('li.selected').trigger('click');
+        updateCategorys();
+        updateTrackerCount();
+        //$('div.filter div.btn').css('background-image', 'url(images/clear.png)');
+    };
+    tableTimeFilter = function(from, to) {
+        timeFilter = {
+            from: from || 0,
+            to: to || 0
+        };
+        var tr = tmp_vars.rez_table_tbody.children('tr');
+        var tr_count = tr.length;
+        for (var i = 0; i < tr_count; i++) {
+            var tr_eq = tr.eq(i);
+            var date = parseInt(tr_eq.children('td.time').attr('data-value'));
+            if (date > timeFilter.from && ((timeFilter.to > 0 && date < timeFilter.to) || (timeFilter.to <= 0))) {
+                tr_eq.attr('data-ft', 1);
+            } else {
+                tr_eq.attr('data-ft', 0);
             }
         }
         tmp_vars.ul_categorys.children('li.selected').trigger('click');
@@ -1543,6 +1584,63 @@ var view = function() {
             $('div.explore > div.source').children("span").text(_lang['exp_source']);
             $('div.explore > div.source').children("a").eq(0).text(_lang['exp_s_a_f']);
             $('div.explore > div.source').children("a").eq(1).text(_lang['exp_s_a_g']);
+            //$('div.time_filter').children('p').eq(0).text(_lang['time_filter']);
+            var time_filter = $('.time_filter');
+            var time_filter_select = time_filter.find('select');
+            time_filter_select.children("option[value=all]").text(_lang.time_f_s[0]);
+            time_filter_select.children("option[value=1h]").text(_lang.time_f_s[1]);
+            time_filter_select.children("option[value=24h]").text(_lang.time_f_s[2]);
+            time_filter_select.children("option[value=1w]").text(_lang.time_f_s[3]);
+            time_filter_select.children("option[value=1m]").text(_lang.time_f_s[4]);
+            time_filter_select.children("option[value=1y]").text(_lang.time_f_s[5]);
+            time_filter_select.children("option[value=range]").text(_lang.time_f_s[6]);
+            time_filter.find('input').datepicker({
+                defaultDate: "0",
+                changeMonth: true,
+                numberOfMonths: 1,
+                prevText: "",
+                nextText: "",
+                monthNamesShort: _lang.time_f_m,
+                dayNamesMin: _lang.time_f_d,
+                firstDay: 1,
+                maxDate: "+1d",
+                hideIfNoPrevNext: true,
+                dateFormat: "dd/mm/yy",
+                onSelect: function() {
+                    var dateList = $('.time_filter').find('input');
+                    tableTimeFilter(ex_kit.format_date(1, dateList.eq(0).val()), ex_kit.format_date(1, dateList.eq(1).val()));
+                }
+            });
+            time_filter_select.on('change', function() {
+                var value = this.value;
+                if (value === "range") {
+                    $('.time_filter').children('.range').show();
+                } else {
+                    $('.time_filter').children('.range').hide();
+                }
+                var utime = 0;
+                var date = ((new Date).getTime() / 1000);
+                if (value === "all") {
+                    utime = 0;
+                } else
+                if (value === "1h") {
+                    utime = date - 60 * 60;
+                } else
+                if (value === "24h") {
+                    utime = date - 60 * 60 * 24;
+                } else
+                if (value === "1w") {
+                    utime = date - 60 * 60 * 24 * 7;
+                } else
+                if (value === "1m") {
+                    utime = date - 60 * 60 * 24 * 30;
+                } else
+                if (value === "1y") {
+                    utime = date - 60 * 60 * 24 * 365;
+                }
+                tableTimeFilter(utime);
+            });
+
             load_category(engine.categorys);
             LoadProfiles();
             if (HideLeech) {
@@ -1576,6 +1674,9 @@ var view = function() {
                 }
                 if (sizeFilter !== null) {
                     filter += '[data-fs="1"]';
+                }
+                if (timeFilter !== null) {
+                    filter += '[data-ft="1"]';
                 }
                 tmp_vars.rez_table_tbody.children('tr' + filter).css('display', 'table-row');
                 tmp_vars.rez_table.trigger("update");

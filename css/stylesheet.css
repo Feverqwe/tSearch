@@ -961,6 +961,19 @@ div.size_filter input {
     width: 40px;
 }
 
+div.time_filter {
+    position: relative;
+    z-index: 11;
+}
+div.time_filter input {
+    width: 65px;
+}
+div.time_filter div.range {
+    display: none;
+    padding-left: 18px;
+    background: url(../images/clock.png) center left no-repeat;
+}
+
 div.tracker_list > ul::-webkit-scrollbar {
     width: 5px;
 }
@@ -1059,4 +1072,76 @@ div.ui-sortable-placeholder {
     background-color: #ddd;
     visibility: visible !important;
     border-radius: 3px;
+}
+
+#ui-datepicker-div {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 3px;
+    box-shadow: 0 2px 10px 0 rgba(0,0,0,0.2);
+    -webkit-user-select: none;
+    display: none;
+}
+.ui-datepicker-header.ui-widget-header.ui-helper-clearfix.ui-corner-all {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+.ui-datepicker-title {
+    text-align: center;
+}
+.ui-datepicker-next.ui-corner-all {
+    float: right;
+    cursor: pointer;
+    margin-top: 4px;
+}
+.ui-datepicker-prev.ui-corner-all {
+    cursor: pointer;
+    float: left;
+    margin-top: 4px;
+}
+.ui-datepicker-calendar th {
+    font-size: 0.9em;
+    width: 20px;
+    font-weight: normal;
+}
+.ui-datepicker-calendar td a {
+    color: #000;
+    text-decoration: none;
+}
+.ui-datepicker-calendar td {
+    border-radius: 3px;
+    text-align: center;
+    cursor: pointer;
+}
+.ui-datepicker-calendar td:hover {
+    background-color: #337AF8;
+}
+.ui-datepicker-calendar td.ui-datepicker-unselectable {
+    opacity: 0.5;
+}
+.ui-datepicker-calendar td.ui-datepicker-unselectable:hover {
+    background-color: #fff;
+    cursor: default;
+}
+.ui-datepicker-calendar td:hover a {
+    color: #fff;
+}
+.ui-icon.ui-icon-circle-triangle-w {
+    background: url(../images/back.png) center left no-repeat;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+}
+.ui-icon.ui-icon-circle-triangle-e {
+    background: url(../images/back.png) center left no-repeat;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+}
+
+.ui-datepicker-week-end, .ui-datepicker-week-end a {
+    color: #a61b1b;
 }
