@@ -1587,6 +1587,7 @@ var view = function() {
             //$('div.time_filter').children('p').eq(0).text(_lang['time_filter']);
             var time_filter = $('.time_filter');
             var time_filter_select = time_filter.find('select');
+            time_filter.children('p').eq(0).text(_lang['time_filter']);
             time_filter_select.children("option[value=all]").text(_lang.time_f_s[0]);
             time_filter_select.children("option[value=1h]").text(_lang.time_f_s[1]);
             time_filter_select.children("option[value=24h]").text(_lang.time_f_s[2]);
