@@ -142,6 +142,8 @@ var get_lang = function(lang) {
         time_f_s: ['For all the time','For an hour','For the day','For the week','For the month','For the year','For the period...'],
         time_f_d: ["su", "mo", "tu", "we", "th", "fr", "sa"],
         time_f_m: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        seed_filter: "Seeds",
+        peer_filter: "Peers",
         settings: {
             1: "The list of torrents",
             2: "Options",
@@ -425,6 +427,8 @@ var get_lang = function(lang) {
         time_f_s: ['За всё время','За час','За сутки','За неделю','За месяц','За год','За период...'],
         time_f_d: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
         time_f_m: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+        seed_filter: "Сиды",
+        peer_filter: "Пиры",
         settings: {
             1: "Список торрентов",
             2: "Опции",

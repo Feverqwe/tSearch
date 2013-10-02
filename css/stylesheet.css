@@ -974,6 +974,20 @@ div.time_filter div.range {
     background: url(../images/clock.png) center left no-repeat;
     margin-top: 4px;
 }
+div.seed_filter {
+    position: relative;
+    z-index: 11;
+}
+div.seed_filter input {
+    width: 40px;
+}
+div.peer_filter {
+    position: relative;
+    z-index: 11;
+}
+div.peer_filter input {
+    width: 40px;
+}
 
 div.tracker_list > ul::-webkit-scrollbar {
     width: 5px;
