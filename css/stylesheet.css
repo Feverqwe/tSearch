@@ -1161,3 +1161,7 @@ table.ui-datepicker-calendar .ui-datepicker-current-day {
     -moz-transform: rotate(180deg);
     -o-transform: rotate(180deg);
 }
+.ui-icon.ui-icon-circle-triangle-w:hover,
+.ui-icon.ui-icon-circle-triangle-e:hover {
+    -webkit-filter: invert(0.5);
+}
