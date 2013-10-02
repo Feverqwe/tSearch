@@ -1690,7 +1690,11 @@ var view = function() {
                 $('div.peer_filter').hide();
             }
             $('div.seed_filter').children('p').eq(0).text(_lang['seed_filter']);
+            $('div.seed_filter').find('span.from').eq(0).text(_lang['size_filter_f']);
+            $('div.seed_filter').find('span.to').eq(0).text(_lang['size_filter_t']);
             $('div.peer_filter').children('p').eq(0).text(_lang['peer_filter']);
+            $('div.peer_filter').find('span.from').eq(0).text(_lang['size_filter_f']);
+            $('div.peer_filter').find('span.to').eq(0).text(_lang['size_filter_t']);
 
             time_filter.find('input').datepicker({
                 defaultDate: "0",
