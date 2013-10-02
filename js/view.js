@@ -62,6 +62,7 @@ var view = function() {
         tmp_vars.ul_trackers.children('li').attr('data-count', 0);
         updateTrackerCount();
         trackerFilter = null;
+        $('style.userFilter').remove();
         updateCategorys();
     };
     var loadingStatus = function(s, t) {
@@ -529,38 +530,25 @@ var view = function() {
             if (autoSetCat & v.category.id < 0) {
                 v.category.id = autoset_Category(quality, v.category.title || "");
             }
-            var filter = '';
             var fk = 0;
-            if (trackerFilter !== null && trackerFilter !== String(t)) {
-                filter = 'style="display: none;"';
-            }
-            if (categoryFilter !== null && categoryFilter !== String(v.category.id)) {
-                filter = 'style="display: none;"';
-            }
             if (keywordFilter !== null) {
                 var keyword = $.trim($('div.filter').children('input').val()).replace(/\s+/g, " ");
-                if (title === filterTextCheck(keyword, title))
-                    filter = 'style="display: none;"';
-                else
+                if (title !== filterTextCheck(keyword, title))
                     fk = 1;
             }
             var fs = 0;
             if (sizeFilter !== null) {
                 if (v.size > sizeFilter.from && ((sizeFilter.to > 0 && v.size < sizeFilter.to) || (sizeFilter.to <= 0))) {
                     fs = 1;
-                } else {
-                    filter = 'style="display: none;"';
                 }
             }
             var ft = 0;
             if (timeFilter !== null) {
                 if (v.time > timeFilter.from && ((timeFilter.to > 0 && v.time < timeFilter.to) || (timeFilter.to <= 0))) {
                     ft = 1;
-                } else {
-                    filter = 'style="display: none;"';
                 }
             }
-            c += '<tr ' + filter + ' data-fs="' + fs + '" data-ft="' + ft + '" data-kf="' + fk + '" data-tracker="' + t + '" data-c="' + v.category.id + '">'
+            c += '<tr data-fs="' + fs + '" data-ft="' + ft + '" data-kf="' + fk + '" data-tracker="' + t + '" data-c="' + v.category.id + '">'
                     + '<td class="time" data-value="' + v.time + '" title="' + unixintimetitle(v.time) + '">' + unixintime(v.time) + '</td>'
                     + '<td class="quality" data-value="' + quality.value + '" data-qgame="' + quality.game + '" data-qseed="' + quality.seed + '" data-qname="' + quality.name + '" data-qvideo="' + quality.video + '" data-qmusic="' + quality.music + '" data-qbook="' + quality.book + '"><div class="progress"><div style="width:' + (quality.value / 15) + 'px"></div><span title="' + quality.value + '">' + quality.value + '</span></div></td>'
                     + '<td class="name"><div class="title"><a href="' + v.url + '" target="_blank">' + title + '</a>'
@@ -1248,7 +1236,7 @@ var view = function() {
         if (keyword.length === 0) {
             $('div.filter').children('input').val('');
             keywordFilter = null;
-            tmp_vars.ul_categorys.children('li.selected').trigger('click');
+            doFiltering();
             updateCategorys();
             updateTrackerCount();
             $('div.filter div.btn').hide();
@@ -1275,7 +1263,7 @@ var view = function() {
                     tr_eq.attr('data-kf', 0);
             }
         }
-        tmp_vars.ul_categorys.children('li.selected').trigger('click');
+        doFiltering();
         updateCategorys();
         updateTrackerCount();
         $('div.filter div.btn').css('background-image', 'url(images/clear.png)');
@@ -1292,10 +1280,9 @@ var view = function() {
                 tr_eq.attr('data-fs', 0);
             }
         }
-        tmp_vars.ul_categorys.children('li.selected').trigger('click');
+        doFiltering();
         updateCategorys();
         updateTrackerCount();
-        //$('div.filter div.btn').css('background-image', 'url(images/clear.png)');
     };
     tableTimeFilter = function(from, to) {
         timeFilter = {
@@ -1313,10 +1300,9 @@ var view = function() {
                 tr_eq.attr('data-ft', 0);
             }
         }
-        tmp_vars.ul_categorys.children('li.selected').trigger('click');
+        doFiltering();
         updateCategorys();
         updateTrackerCount();
-        //$('div.filter div.btn').css('background-image', 'url(images/clear.png)');
     };
     var triggerBlank = function() {
         $(window).scrollTop(0);
@@ -1505,6 +1491,37 @@ var view = function() {
             tmp_vars.search_input = tmp_vars.form_search.children('input[type="text"]');
         }
     };
+    var doFiltering = function() {
+        //All filtering hear!
+        var showFilter = [];
+        if (categoryFilter !== null) {
+            showFilter.push('data-c="' + categoryFilter + '"');
+        }
+        if (trackerFilter !== null) {
+            showFilter.push('data-tracker="' + trackerFilter + '"');
+        }
+        if (keywordFilter !== null) {
+            showFilter.push('data-kf="1"');
+        }
+        if (sizeFilter !== null) {
+            showFilter.push('data-fs="1"');
+        }
+        if (timeFilter !== null) {
+            showFilter.push('data-ft="1"');
+        }
+        var selector = '#rez_table>tbody>tr';
+        var uF = $('style.userFilter');
+        if (showFilter.length === 0) {
+            uF.remove();
+        } else {
+            var filterStyle = selector + ':not([' + showFilter.join(']),' + selector + ':not([') + ']){display: none;}' + selector + '[' + showFilter.join(',') + ']{display:table-row;}';
+            if (uF.length === 0) {
+                $('body').append('<style class="userFilter">' + filterStyle + '</style>');
+            } else {
+                uF.html(filterStyle);
+            }
+        }
+    };
     return {
         result: function(t, a, s, p) {
             return write_result(t, a, s, p);
@@ -1618,7 +1635,7 @@ var view = function() {
                     var st = ex_kit.format_date(1, dateList.eq(0).val());
                     var en = ex_kit.format_date(1, dateList.eq(1).val());
                     if (en > 0) {
-                        en += 60*60*24;
+                        en += 60 * 60 * 24;
                     }
                     tableTimeFilter(st, en);
                 }
@@ -1673,25 +1690,7 @@ var view = function() {
                 categoryFilter = id || null;
                 tmp_vars.ul_categorys.children('li.selected').removeClass('selected');
                 $(this).addClass('selected');
-                tmp_vars.rez_table_tbody.children('tr').css('display', 'none');
-                var filter = '';
-                if (id !== undefined) {
-                    filter += '[data-c="' + id + '"]';
-                }
-                if (trackerFilter !== null) {
-                    filter += '[data-tracker="' + trackerFilter + '"]';
-                }
-                if (keywordFilter !== null) {
-                    filter += '[data-kf="1"]';
-                }
-                if (sizeFilter !== null) {
-                    filter += '[data-fs="1"]';
-                }
-                if (timeFilter !== null) {
-                    filter += '[data-ft="1"]';
-                }
-                tmp_vars.rez_table_tbody.children('tr' + filter).css('display', 'table-row');
-                tmp_vars.rez_table.trigger("update");
+                doFiltering();
             });
             tmp_vars.ul_categorys.children('li').css('display', 'none').eq(0).css('display', 'inline-block');
             try {
@@ -1725,7 +1724,6 @@ var view = function() {
                             return $(node).children('div.title').text();
                         return $(node).html();
                     },
-                    widgets: ['zebra'],
                     sortList: JSON.parse(GetSettings('Order') || '[["1", "1"]]'),
                     onsort: function(s) {
                         SetSettings('Order', JSON.stringify(s));
