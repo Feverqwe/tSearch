@@ -54,7 +54,8 @@ var view = function() {
         sizeFilter = null;
         timeFilter = null;
         var time_filter = $('div.time_filter');
-        time_filter.find('input').val('');
+        time_filter.find('.range').hide();
+        time_filter.find('input').val('').datepicker("option", {"maxDate": "+1d", "minDate": null});
         time_filter.find('option').removeAttr('selected');
         time_filter.find('option[value=all]').attr('selected', 'selected');
         tmp_vars.ul_trackers.find('a.selected').removeClass('selected');
@@ -1607,9 +1608,19 @@ var view = function() {
                 maxDate: "+1d",
                 hideIfNoPrevNext: true,
                 dateFormat: "dd/mm/yy",
-                onSelect: function() {
+                onClose: function(date, b) {
+                    if ($(b.input[0]).attr("name") === "start") {
+                        time_filter.find('input[name=end]').datepicker("option", "minDate", date);
+                    } else {
+                        time_filter.find('input[name=start]').datepicker("option", "maxDate", date);
+                    }
                     var dateList = $('.time_filter').find('input');
-                    tableTimeFilter(ex_kit.format_date(1, dateList.eq(0).val()), ex_kit.format_date(1, dateList.eq(1).val()));
+                    var st = ex_kit.format_date(1, dateList.eq(0).val());
+                    var en = ex_kit.format_date(1, dateList.eq(1).val());
+                    if (en > 0) {
+                        en += 60*60*24;
+                    }
+                    tableTimeFilter(st, en);
                 }
             });
             time_filter_select.on('change', function() {
