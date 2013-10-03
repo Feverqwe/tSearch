@@ -1487,6 +1487,12 @@ var view = function() {
                     });
                 }
             },
+            /*
+            messages: {
+                noResults: '',
+                results: function() {}
+            },
+            */
             minLength: 0,
             select: function(event, ui) {
                 triggerSearch(ui.item.value);
