@@ -1590,7 +1590,8 @@ var view = function() {
         if (showFilter.length === 0) {
             uF.remove();
         } else {
-            var filterStyle = selector + ':not([' + showFilter.join(']),' + selector + ':not([') + ']){display: none;}' + selector + '[' + showFilter.join(',') + ']{display:table-row;}';
+            var filterStyle = selector + ':not([' + showFilter.join(']),' + selector + ':not([') + ']){display: none;}';
+            //+ selector + '[' + showFilter.join('][') + ']{display:table-row;}';
             if (uF.length === 0) {
                 $('body').append('<style class="userFilter">' + filterStyle + '</style>');
             } else {
