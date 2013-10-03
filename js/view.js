@@ -1274,6 +1274,9 @@ var view = function() {
             return;
         $('div.filter div.btn').css('background-image', 'url(images/loading.gif)');
         keyword = $.trim(keyword).replace(/\s+/g, " ");
+        if ("result_filter_input" in keyword_filter_cache !== false) {
+            keyword_filter_cache["result_filter_input"] = keyword;
+        }
         if (keyword.length === 0) {
             $('div.filter').children('input').val('');
             keywordFilter = null;
