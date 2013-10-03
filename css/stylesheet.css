@@ -26,6 +26,9 @@ div.search_panel input[type=text] {
     float: left;
     font-size: 1.143em;
 }
+div.search_panel form {
+    overflow: hidden;
+}
 input[type=text] {
     border:  1px solid #cccccc;
     outline: none;
