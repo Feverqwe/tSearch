@@ -505,6 +505,9 @@ var view = function() {
             keyword_filter_cache["keyword_no_year_regexp"] = keyword_filter_cache.keyword_no_year.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
             keyword_filter_cache["keyword_no_year_regexp_lover"] = keyword_filter_cache["keyword_no_year_regexp"].toLowerCase();
         }
+        if ("result_filter_input" in keyword_filter_cache === false) {
+            keyword_filter_cache["result_filter_input"] = $.trim($('div.filter').children('input').val()).replace(/\s+/g, " ");
+        }
         var sum = 0;
         $.each(a, function(k, v) {
             if (typeof(v.title) !== 'string' || typeof(v.url) !== 'string' || v.title.length === 0 || v.url.length === 0) {
@@ -540,8 +543,7 @@ var view = function() {
             }
             var advFilter = [0, 0, 0, 0, 0];
             if (keywordFilter !== null) {
-                var keyword = $.trim($('div.filter').children('input').val()).replace(/\s+/g, " ");
-                if (title !== filterTextCheck(keyword, title))
+                if (title !== filterTextCheck(keyword_filter_cache["result_filter_input"], title))
                     advFilter[0] = 1;
             }
             if (sizeFilter !== null) {
