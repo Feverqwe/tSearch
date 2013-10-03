@@ -1722,6 +1722,15 @@ var view = function() {
                     }
                     tableTimeFilter(st, en);
                 }
+            }).on('dblclick', function() {
+                $(this).val('');
+                var dateList = $('.time_filter').find('input');
+                var st = ex_kit.format_date(1, dateList.eq(0).val());
+                var en = ex_kit.format_date(1, dateList.eq(1).val());
+                if (en > 0) {
+                    en += 60 * 60 * 24;
+                }
+                tableTimeFilter(st, en);
             });
             time_filter_select.on('change', function() {
                 var value = this.value;
@@ -1776,45 +1785,42 @@ var view = function() {
                 doFiltering();
             });
             tmp_vars.ul_categorys.children('li').css('display', 'none').eq(0).css('display', 'inline-block');
-            try {
-                tmp_vars.rez_table.tablesorter({
-                    textExtraction: function(node)
-                    {
-                        if ($(node).attr('data-value') !== undefined) {
-                            if ($(node).attr('data-qname') !== undefined) {
-                                var c = categoryFilter;
-                                var val = parseInt($(node).attr('data-value'));
-                                if (c === null)
-                                    return val;
-                                c = parseInt(c);
-                                if (c === 3 || c === 0 || c === 7 || c === 8 || c === 4) {
-                                    val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qmusic')) - parseInt($(node).attr('data-qbook'));
-                                } else
-                                if (c === 1) {
-                                    val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qvideo')) - parseInt($(node).attr('data-qbook'));
-                                } else
-                                if (c === 2) {
-                                    val = val - parseInt($(node).attr('data-qmusic')) - parseInt($(node).attr('data-qvideo')) - parseInt($(node).attr('data-qbook'));
-                                } else
-                                if (c === 5) {
-                                    val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qvideo'));
-                                }
+            tmp_vars.rez_table.tablesorter({
+                textExtraction: function(node)
+                {
+                    if ($(node).attr('data-value') !== undefined) {
+                        if ($(node).attr('data-qname') !== undefined) {
+                            var c = categoryFilter;
+                            var val = parseInt($(node).attr('data-value'));
+                            if (c === null)
                                 return val;
+                            c = parseInt(c);
+                            if (c === 3 || c === 0 || c === 7 || c === 8 || c === 4) {
+                                val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qmusic')) - parseInt($(node).attr('data-qbook'));
                             } else
-                                return $(node).attr('data-value');
-                        }
-                        if ($(node).children('div.title') !== undefined)
-                            return $(node).children('div.title').text();
-                        return $(node).html();
-                    },
-                    sortList: JSON.parse(GetSettings('Order') || '[["1", "1"]]'),
-                    onsort: function(s) {
-                        SetSettings('Order', JSON.stringify(s));
-                    },
-                    selectorHeaders: '#rez_table > thead th'
-                });
-            } catch (err) {
-            }
+                            if (c === 1) {
+                                val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qvideo')) - parseInt($(node).attr('data-qbook'));
+                            } else
+                            if (c === 2) {
+                                val = val - parseInt($(node).attr('data-qmusic')) - parseInt($(node).attr('data-qvideo')) - parseInt($(node).attr('data-qbook'));
+                            } else
+                            if (c === 5) {
+                                val = val - parseInt($(node).attr('data-qgame')) - parseInt($(node).attr('data-qvideo'));
+                            }
+                            return val;
+                        } else
+                            return $(node).attr('data-value');
+                    }
+                    if ($(node).children('div.title') !== undefined)
+                        return $(node).children('div.title').text();
+                    return $(node).html();
+                },
+                sortList: JSON.parse(GetSettings('Order') || '[["1", "1"]]'),
+                onsort: function(s) {
+                    SetSettings('Order', JSON.stringify(s));
+                },
+                selectorHeaders: '#rez_table > thead th'
+            });
             tmp_vars.search_input.focus();
             tmp_vars.form_search.children('div.btn.clear').on("click", function() {
                 event.preventDefault();
@@ -1868,6 +1874,8 @@ var view = function() {
                 filter_timers.size = setTimeout(function() {
                     tableSizeFilter(sizeFilter);
                 }, 500);
+            }).on('dblclick', function() {
+                $(this).val('').trigger('keyup');
             });
             $('div.seed_filter').find('input').keyup(function() {
                 if (HideSeed)
@@ -1895,6 +1903,8 @@ var view = function() {
                 filter_timers.seed = setTimeout(function() {
                     tableSeedFilter(seedFilter);
                 }, 500);
+            }).on('dblclick', function() {
+                $(this).val('').trigger('keyup');
             });
             $('div.peer_filter').find('input').keyup(function() {
                 if (HideLeech)
@@ -1922,6 +1932,8 @@ var view = function() {
                 filter_timers.peer = setTimeout(function() {
                     tablePeerFilter(peerFilter);
                 }, 500);
+            }).on('dblclick', function() {
+                $(this).val('').trigger('keyup');
             });
             var s = (document.URL).replace(/(.*)index.html/, '').replace(/#s=(.*)/, '$1');
             if (s.length > 0) {

@@ -1140,10 +1140,12 @@ table.ui-datepicker-calendar .ui-datepicker-current-day {
     background-color: #fff;
     cursor: default;
 }
-.ui-datepicker-week-end, table.ui-datepicker-calendar td.ui-datepicker-week-end > a {
+.ui-datepicker-week-end, 
+table.ui-datepicker-calendar td.ui-datepicker-week-end > a {
     color: #a61b1b;
 }
-.ui-datepicker-calendar td:hover a, table.ui-datepicker-calendar td.ui-datepicker-week-end:hover > a {
+.ui-datepicker-calendar td:hover a, 
+table.ui-datepicker-calendar td.ui-datepicker-week-end:hover > a {
     color: #fff;
 }
 .ui-icon.ui-icon-circle-triangle-w {
