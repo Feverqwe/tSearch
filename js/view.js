@@ -545,22 +545,22 @@ var view = function() {
                     advFilter[0] = 1;
             }
             if (sizeFilter !== null) {
-                if ((sizeFilter.from > 0 && v.size >= sizeFilter.from || sizeFilter.from <= 0) && ((sizeFilter.to > 0 && v.size <= sizeFilter.to) || (sizeFilter.to <= 0))) {
+                if (calcSizeFilter(v.size)) {
                     advFilter[1] = 1;
                 }
             }
             if (timeFilter !== null) {
-                if ((timeFilter.from > 0 && v.time >= timeFilter.from || timeFilter.from <= 0) && ((timeFilter.to > 0 && v.time <= timeFilter.to) || (timeFilter.to <= 0))) {
+                if (calcTimeFilter(v.time)) {
                     advFilter[2] = 1;
                 }
             }
             if (HideSeed === 0 && seedFilter !== null) {
-                if ((seedFilter.from > -1 && v.seeds >= seedFilter.from || seedFilter.from < 0) && ((seedFilter.to > -1 && v.seeds <= seedFilter.to) || (seedFilter.to < 0))) {
+                if (calcSeedFilter(v.seeds)) {
                     advFilter[3] = 1;
                 }
             }
             if (HideLeech === 0 && peerFilter !== null) {
-                if ((peerFilter.from > -1 && v.leechs >= peerFilter.from || peerFilter.from < 0) && ((peerFilter.to > -1 && v.leechs <= peerFilter.to) || (peerFilter.to < 0))) {
+                if (calcPeerFilter(v.leechs)) {
                     advFilter[4] = 1;
                 }
             }
@@ -1306,10 +1306,9 @@ var view = function() {
                 } else {
                     var name = tr_eq.children('td.name').children('div.title').children('a').text();
                 }
-                var f_name = filterTextCheck(keyword, name);
                 var advFilter = tr_eq.attr('data-filter').split(',');
                 var oldVal = parseInt(advFilter[0]);
-                if (name !== f_name) {
+                if (name !== filterTextCheck(keyword, name)) {
                     advFilter[0] = 1;
                 } else {
                     advFilter[0] = 0;
@@ -1324,7 +1323,10 @@ var view = function() {
         updateTrackerCount();
         $('div.filter div.btn').css('background-image', 'url(images/clear.png)');
     };
-    tableSizeFilter = function(sizeFilter) {
+    calcSizeFilter = function(value) {
+        return ((sizeFilter.from > 0 && value >= sizeFilter.from || sizeFilter.from <= 0) && ((sizeFilter.to > 0 && value <= sizeFilter.to) || (sizeFilter.to <= 0)));
+    };
+    tableSizeFilter = function() {
         var tr = tmp_vars.rez_table_tbody.children('tr');
         var tr_count = tr.length;
         for (var i = 0; i < tr_count; i++) {
@@ -1332,7 +1334,7 @@ var view = function() {
             var size = parseInt(tr_eq.children('td.size').attr('data-value'));
             var advFilter = tr_eq.attr('data-filter').split(',');
             var oldVal = parseInt(advFilter[1]);
-            if ((sizeFilter.from > 0 && size >= sizeFilter.from || sizeFilter.from <= 0) && ((sizeFilter.to > 0 && size <= sizeFilter.to) || (sizeFilter.to <= 0))) {
+            if (calcSizeFilter(size)) {
                 advFilter[1] = 1;
             } else {
                 advFilter[1] = 0;
@@ -1344,6 +1346,9 @@ var view = function() {
         doFiltering();
         updateCategorys();
         updateTrackerCount();
+    };
+    calcTimeFilter = function(value) {
+        return ((timeFilter.from > 0 && value >= timeFilter.from || timeFilter.from <= 0) && ((timeFilter.to > 0 && value <= timeFilter.to) || (timeFilter.to <= 0)));
     };
     tableTimeFilter = function(from, to) {
         timeFilter = {
@@ -1357,7 +1362,7 @@ var view = function() {
             var date = parseInt(tr_eq.children('td.time').attr('data-value'));
             var advFilter = tr_eq.attr('data-filter').split(',');
             var oldVal = parseInt(advFilter[2]);
-            if ((timeFilter.from > 0 && date >= timeFilter.from || timeFilter.from <= 0) && ((timeFilter.to > 0 && date <= timeFilter.to) || (timeFilter.to <= 0))) {
+            if (calcTimeFilter(date)) {
                 advFilter[2] = 1;
             } else {
                 advFilter[2] = 0;
@@ -1370,7 +1375,10 @@ var view = function() {
         updateCategorys();
         updateTrackerCount();
     };
-    tableSeedFilter = function(seedFilter) {
+    calcSeedFilter = function(value) {
+        return ((seedFilter.from > -1 && value >= seedFilter.from || seedFilter.from < 0) && ((seedFilter.to > -1 && value <= seedFilter.to) || (seedFilter.to < 0)));
+    };
+    tableSeedFilter = function() {
         var tr = tmp_vars.rez_table_tbody.children('tr');
         var tr_count = tr.length;
         for (var i = 0; i < tr_count; i++) {
@@ -1378,7 +1386,7 @@ var view = function() {
             var seed_count = parseInt(tr_eq.children('td.seeds').attr('data-value'));
             var advFilter = tr_eq.attr('data-filter').split(',');
             var oldVal = parseInt(advFilter[3]);
-            if ((seedFilter.from > -1 && seed_count >= seedFilter.from || seedFilter.from < 0) && ((seedFilter.to > -1 && seed_count <= seedFilter.to) || (seedFilter.to < 0))) {
+            if (calcSeedFilter(seed_count)) {
                 advFilter[3] = 1;
             } else {
                 advFilter[3] = 0;
@@ -1391,7 +1399,10 @@ var view = function() {
         updateCategorys();
         updateTrackerCount();
     };
-    tablePeerFilter = function(peerFilter) {
+    calcPeerFilter = function(value) {
+        return ((peerFilter.from > -1 && value >= peerFilter.from || peerFilter.from < 0) && ((peerFilter.to > -1 && value <= peerFilter.to) || (peerFilter.to < 0)));
+    };
+    tablePeerFilter = function() {
         var tr = tmp_vars.rez_table_tbody.children('tr');
         var tr_count = tr.length;
         for (var i = 0; i < tr_count; i++) {
@@ -1399,7 +1410,7 @@ var view = function() {
             var peer_count = parseInt(tr_eq.children('td.leechs').attr('data-value'));
             var advFilter = tr_eq.attr('data-filter').split(',');
             var oldVal = parseInt(advFilter[4]);
-            if ((peerFilter.from > -1 && peer_count >= peerFilter.from || peerFilter.from < 0) && ((peerFilter.to > -1 && peer_count <= peerFilter.to) || (peerFilter.to < 0))) {
+            if (calcPeerFilter(peer_count)) {
                 advFilter[4] = 1;
             } else {
                 advFilter[4] = 0;
@@ -1925,7 +1936,7 @@ var view = function() {
                 }
                 clearTimeout(filter_timers.size);
                 filter_timers.size = setTimeout(function() {
-                    tableSizeFilter(sizeFilter);
+                    tableSizeFilter();
                 }, 500);
             }).on('dblclick', function() {
                 $(this).val('').trigger('keyup');
@@ -1954,7 +1965,7 @@ var view = function() {
                 }
                 clearTimeout(filter_timers.seed);
                 filter_timers.seed = setTimeout(function() {
-                    tableSeedFilter(seedFilter);
+                    tableSeedFilter();
                 }, 500);
             }).on('dblclick', function() {
                 $(this).val('').trigger('keyup');
@@ -1983,7 +1994,7 @@ var view = function() {
                 }
                 clearTimeout(filter_timers.peer);
                 filter_timers.peer = setTimeout(function() {
-                    tablePeerFilter(peerFilter);
+                    tablePeerFilter();
                 }, 500);
             }).on('dblclick', function() {
                 $(this).val('').trigger('keyup');
