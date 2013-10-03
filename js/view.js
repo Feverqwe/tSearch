@@ -8,7 +8,6 @@ var view = function() {
     var categoryFilter = null;
     var categorys = [];
     var categorys_assoc = null;
-    var lastFilterWord = '';
     var autoMove = undefined;
     var filter_timers = {
         word: null,
@@ -51,7 +50,6 @@ var view = function() {
         tmp_vars.rez_table.trigger("update");
         $('div.filter').children('input').val('');
         keywordFilter = null;
-        lastFilterWord = '';
         keyword_filter_cache = {};
         $('div.filter div.btn').hide();
         $('div.size_filter').find('input').val('');
@@ -1270,57 +1268,42 @@ var view = function() {
         }
     };
     var tableFilter = function(keyword) {
-        if (keyword !== $('div.filter').children('input').val())
-            return;
         $('div.filter div.btn').css('background-image', 'url(images/loading.gif)');
         keyword = $.trim(keyword).replace(/\s+/g, " ");
         if ("result_filter_input" in keyword_filter_cache !== false) {
             keyword_filter_cache["result_filter_input"] = keyword;
         }
         if (keyword.length === 0) {
-            $('div.filter').children('input').val('');
             keywordFilter = null;
-            var tr = tmp_vars.rez_table_tbody.children('tr');
-            var tr_count = tr.length;
-            for (var i = 0; i < tr_count; i++) {
-                var tr_eq = tr.eq(i);
-                var advFilter = tr_eq.attr('data-filter').split(',');
-                var oldVal = parseInt(advFilter[0]);
+        } else {
+            keywordFilter = keyword;
+        }
+        //поиск и фильтрация контента
+        var tr = tmp_vars.rez_table_tbody.children('tr');
+        var tr_count = tr.length;
+        for (var i = 0; i < tr_count; i++) {
+            var tr_eq = tr.eq(i);
+            var advFilter = tr_eq.attr('data-filter').split(',');
+            var oldVal = parseInt(advFilter[0]);
+            if (keywordFilter === null) {
                 if (oldVal !== 0) {
                     advFilter[0] = 0;
                     tr_eq.attr('data-filter', advFilter.join(','));
                 }
+                continue;
             }
-            doFiltering();
-            updateCategorys();
-            updateTrackerCount();
-            $('div.filter div.btn').hide();
-            return;
-        }
-        keywordFilter = keyword;
-        if (keywordFilter !== lastFilterWord) {
-            //lastFilterCache = null;
-            lastFilterWord = keyword;
-            //поиск и фильтрация контента
-            var tr = tmp_vars.rez_table_tbody.children('tr');
-            var tr_count = tr.length;
-            for (var i = 0; i < tr_count; i++) {
-                var tr_eq = tr.eq(i);
-                if (SubCategoryFilter) {
-                    var name = tr_eq.children('td.name').text();
-                } else {
-                    var name = tr_eq.children('td.name').children('div.title').children('a').text();
-                }
-                var advFilter = tr_eq.attr('data-filter').split(',');
-                var oldVal = parseInt(advFilter[0]);
-                if (name !== filterTextCheck(keyword, name)) {
-                    advFilter[0] = 1;
-                } else {
-                    advFilter[0] = 0;
-                }
-                if (oldVal !== advFilter[0]) {
-                    tr_eq.attr('data-filter', advFilter.join(','));
-                }
+            if (SubCategoryFilter) {
+                var name = tr_eq.children('td.name').text();
+            } else {
+                var name = tr_eq.children('td.name').children('div.title').children('a').text();
+            }
+            if (name !== filterTextCheck(keyword, name)) {
+                advFilter[0] = 1;
+            } else {
+                advFilter[0] = 0;
+            }
+            if (oldVal !== advFilter[0]) {
+                tr_eq.attr('data-filter', advFilter.join(','));
             }
         }
         doFiltering();
@@ -1911,7 +1894,7 @@ var view = function() {
                 }
                 clearTimeout(filter_timers.word);
                 filter_timers.word = setTimeout(function() {
-                    tableFilter(t);
+                    tableFilter($('div.filter input').val());
                 }, 500);
             });
             $('div.filter div.btn').on("click", function() {
