@@ -1645,57 +1645,27 @@ var view = function() {
         }
     };
     return {
-        result: function(t, a, s, p) {
-            return write_result(t, a, s, p);
-        },
-        contentFilter: function(a) {
-            return contentFilter(a);
-        },
-        contentUnFilter: function(a) {
-            return contentUnFilter(a);
-        },
-        clear_table: function() {
-            clear_table();
-        },
-        auth: function(s, id) {
-            auth(s, id);
-        },
-        addTrackerInList: function(a) {
-            addTrackerInList(a);
-        },
-        loadingStatus: function(a, b) {
-            loadingStatus(a, b);
-        },
-        triggerSearch: function(a) {
-            triggerSearch(a);
-        },
-        triggerBlank: function() {
-            triggerBlank();
-        },
+        result: write_result,
+        contentFilter: contentFilter,
+        contentUnFilter: contentUnFilter,
+        clear_table: clear_table,
+        auth: auth,
+        addTrackerInList: addTrackerInList,
+        loadingStatus: loadingStatus,
+        triggerSearch: triggerSearch,
+        triggerBlank: triggerBlank,
         setCatFilter: function(a) {
             categoryFilter = a;
         },
         SetAutoMove: function(a) {
             autoMove = a;
         },
-        AddAutocomplete: function() {
-            AddAutocomplete();
-        },
-        ClearTrackerList: function() {
-            ClearTrackerList();
-        },
-        LoadProfiles: function() {
-            LoadProfiles();
-        },
-        getQuality: function(a, b, c) {
-            getQuality(a, b, c);
-        },
-        getAssocCategorys: function(a) {
-            return categorys_assoc[a];
-        },
-        load_in_sandbox: function(a, b) {
-            return load_in_sandbox(a, b);
-        },
+        AddAutocomplete: AddAutocomplete,
+        ClearTrackerList: ClearTrackerList,
+        LoadProfiles: LoadProfiles,
+        getQuality: getQuality,
+        getAssocCategorys: categorys_assoc,
+        load_in_sandbox: load_in_sandbox,
         begin: function() {
             init_tmp_vars();
             $('form[name=search]').children('.sbutton').val(_lang['btn_form']);
