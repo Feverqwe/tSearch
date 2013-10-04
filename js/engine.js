@@ -521,9 +521,7 @@ var engine = function() {
             loadProfileModules(null);
         } else {
             loadProfileModules(trackerProfiles[profile].Trackers);
-            if ( defProfile != profile ) {
-                SetSettings('defProfile', profile);
-            }
+            SetSettings('defProfile', profile);
         }
     };
     return {
