@@ -210,6 +210,12 @@ div.icons > div.cirilic {
 td.desc {
     font-size: 0.9em;
 }
+table a {
+    color: #0051D8;
+    padding: 0px 4px;
+    border-radius: 4px;
+    background-color: #fff;
+}
 table tbody tr {
     border-top: 1px solid #ccc;
 }
