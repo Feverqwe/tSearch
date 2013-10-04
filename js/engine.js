@@ -5,7 +5,7 @@ if (GetSettings('debug') !== "1") {
 }
 var engine = function() {
     var defaultList = function() {
-        var def = ['rutracker', 'nnm-club', 'kinozal', 'rutor', 'rustorka', 'youtracker', 'hdclub', 'tfile', 'fast-torrent', 'btdigg', 'opensharing'];
+        var def = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'rustorka', 'youtracker', 'hdclub', 'tfile', 'fast-torrent', 'opensharing', 'btdigg'];
         var all = ['anidub', 'bestrepack', 'bigfangroup', 'bitsnoop', 'brodim', 'btdigg', 'evrl', 'extratorrent', 'fast-torrent', 'fenopy', 'filebase', 'free-torrents', 'hdclub', 'hurtom', 'inmac', 'isohunt', 'katushka', 'kickass', 'kinozal', 'libertorrent', 'megashara', 'mininova', 'mmatracker', 'my-hit', 'nnm-club', 'opensharing', 'opentorrent', 'piratbit', 'piratca', 'pornolab', 'rgfootball', 'riperam', 'rustorka', 'rutor', 'rutracker', 'tapochek', 'tfile', 'thepiratebay', 'thepiratebay2', 'torrentino', 'torrentmac', 'torrents.freedom', 'torrents.local', 'torrentz', 'underverse', 'x-torrents', 'youtracker.js'];
         var torrentList = [];
         def.forEach(function(item) {
@@ -484,25 +484,25 @@ var engine = function() {
     };
     var chkDefProfile = function() {
         if (trackerProfiles.length === 0) {
-            trackerProfiles = [{
-                    Trackers: null,
-                    Title: _lang.label_def_profile
-                }];
+            trackerProfiles.push({
+                Trackers: null,
+                Title: _lang.label_def_profile
+            });
             SetSettings('trackerProfiles', JSON.stringify(trackerProfiles));
             defProfile = SetSettings('defProfile', 0);
         }
     };
     chkDefProfile();
-    var loadProfile = function(prof) {
+    var loadProfile = function(profile) {
         view.ClearTrackerList();
-        if (prof === undefined) {
-            prof = defProfile;
+        if (profile === undefined) {
+            profile = defProfile;
         }
-        if (trackerProfiles[prof] === undefined) {
+        if (trackerProfiles[profile] === undefined) {
             loadModules(null);
         } else {
-            loadModules(trackerProfiles[prof].Trackers);
-            SetSettings('defProfile', prof);
+            loadModules(trackerProfiles[profile].Trackers);
+            SetSettings('defProfile', profile);
         }
     };
     var getProfileList = function() {
@@ -519,18 +519,10 @@ var engine = function() {
         view.addTrackerInList(n);
     };
     return {
-        search: function(a, b, c) {
-            return search(a, b, c);
-        },
-        loadProfile: function(a) {
-            loadProfile(a);
-        },
-        ModuleLoaded: function(a) {
-            ModuleLoaded(a);
-        },
-        getProfileList: function() {
-            return getProfileList();
-        },
+        search: search,
+        loadProfile: loadProfile,
+        ModuleLoaded: ModuleLoaded,
+        getProfileList: getProfileList,
         defaultList: addCostumTr(defaultList)
     };
 }();
@@ -688,23 +680,11 @@ var ex_kit = function() {
         return !isNaN(parseFloat(n)) && isFinite(n);
     };
     return {
-        isNumber: function(a) {
-            return isNumber(a);
-        },
-        in_cp1251: function(a) {
-            return in_cp1251(a);
-        },
-        format_size: function(a) {
-            return format_size(a);
-        },
-        month_replace: function(a) {
-            return month_replace(a);
-        },
-        format_date: function(a, b) {
-            return format_date(a, b);
-        },
-        today_replace: function(a, b) {
-            return today_replace(a, b);
-        }
+        isNumber: isNumber,
+        in_cp1251: in_cp1251,
+        format_size: format_size,
+        month_replace: month_replace,
+        format_date: format_date,
+        today_replace: today_replace
     };
 }();
