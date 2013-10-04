@@ -213,6 +213,16 @@ td.desc {
 table tbody tr {
     border-top: 1px solid #ccc;
 }
+table tbody tr {
+    height: 60px;
+    min-height: 60px;
+}
+table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+table tbody tr.checked {
+    background-color: #F9F0FD;
+}
 table thead th {
     padding-bottom: 10px;
 }

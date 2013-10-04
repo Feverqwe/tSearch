@@ -97,7 +97,7 @@ var options = function() {
         } else {
             icon += 'style="background-image: url(' + Tracker.icon + ');"';
         }
-        $('table.tr_table tbody').append('<tr data-id="' + i + '" data-name="' + Tracker.filename + '"' + '>'
+        $('table.tr_table tbody').append('<tr data-id="' + i + '" data-name="' + Tracker.filename + '" ' + ((enable) ? 'class="checked"' : '') + '>'
                 + '<td><div class="tracker_icon" ' + icon + '></div></td>'
                 + '<td><a href="' + Tracker.url + '" target="_blank">' + Tracker.name + '</a>'
                 + '</td>'
@@ -275,10 +275,12 @@ var options = function() {
     var saveCurrentProfile = function() {
         var pid = currentProfile.id;
         var checked_torrents = tmp_vars.tracker_list.find('input[name="tracker"]:checked');
+        tmp_vars.tracker_list.find('tr.checked').removeClass("checked");
         var checked_torrents_length = checked_torrents.length;
         var TrackerList = [];
         for (var i = 0; i < checked_torrents_length; i++) {
             var item = checked_torrents.eq(i).closest('tr');
+            item.addClass('checked');
             var id = item.attr('data-id');
             var fn = tracker[id].filename;
             var obj = {
@@ -494,6 +496,11 @@ var options = function() {
                 currentProfile = sandbox_trackerProfiles[id];
                 currentProfile.id = id;
                 engine.loadProfile(id);
+            });
+            $('input[name=list_name]').on('keypress', function(e) {
+                if (e.which == 13) {
+                    $('input[name=add_list]').trigger('click');
+                }
             });
             $('input[name=add_list]').on('click', function() {
                 var input = $(this).closest('ul').find('input[name=list_name]');
