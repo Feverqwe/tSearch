@@ -90,15 +90,15 @@ var options = function() {
         }
         var icon = '';
         if (Tracker.icon.length === 0) {
-            icon += 'style="background-color:#ccc' + ';border-radius: 8px;';
+            icon += 'style="background-color:#ccc' + ';border-radius: 8px;"';
         } else
         if (Tracker.icon[0] === '#') {
-            icon += 'style="background-color:' + Tracker.icon + ';border-radius: 8px;';
+            icon += 'style="background-color:' + Tracker.icon + ';border-radius: 8px;"';
         } else {
             icon += 'style="background-image: url(' + Tracker.icon + ');"';
         }
         $('table.tr_table tbody').append('<tr data-id="' + i + '" data-name="' + Tracker.filename + '"' + '>'
-                + '<td><div class="tracker_icon" ' + icon + '"></div></td>'
+                + '<td><div class="tracker_icon" ' + icon + '></div></td>'
                 + '<td><a href="' + Tracker.url + '" target="_blank">' + Tracker.name + '</a>'
                 + '</td>'
                 + '<td class="desc">' + flags
@@ -142,14 +142,14 @@ var options = function() {
                 }
                 var icon = '';
                 if (Tracker.icon.length === 0) {
-                    icon += 'style="background-color:#ccc' + ';border-radius: 8px;';
+                    icon += 'style="background-color:#ccc' + ';border-radius: 8px;"';
                 } else
                 if (Tracker.icon[0] === '#') {
-                    icon += 'style="background-color:' + Tracker.icon + ';border-radius: 8px;';
+                    icon += 'style="background-color:' + Tracker.icon + ';border-radius: 8px;"';
                 } else {
                     icon += 'style="background-image: url(' + Tracker.icon + ');"';
                 }
-                tmp_vars.c_tracker_list.append('<tr data-uid="' + Tracker.uid + '"' + '>'
+                tmp_vars.c_tracker_list.append('<tr data-uid="' + Tracker.uid + '">'
                         + '<td><div class="tracker_icon" ' + icon + '></div></td>'
                         + '<td><a href="' + Tracker.root_url + '" target="_blank">' + Tracker.name + '</a>'
                         + '</td>'
@@ -366,7 +366,6 @@ var options = function() {
             write_language();
             tmp_vars.tracker_list = $('table.tr_table tbody');
             tmp_vars.c_tracker_list = $('table.c_table tbody');
-            tmp_vars.tracker_list.sortable({placeholder: "ui-state-highlight"});
             tmp_vars.tracker_list.disableSelection();
             $('ul.menu').on('click', 'a', function(e) {
                 e.preventDefault();
@@ -423,6 +422,11 @@ var options = function() {
                 $('input[name="get_from_cloud"]').css('display', 'none');
                 $('input[name="save_in_cloud"]').css('display', 'none');
             }
+            tmp_vars.tracker_list.sortable({placeholder: "ui-state-highlight",
+                stop: function() {
+                    saveCurrentProfile();
+                }
+            });
             set_place_holder();
             load_costume_torrents();
             updateProfileList(parseInt(GetSettings('defProfile') || 0));

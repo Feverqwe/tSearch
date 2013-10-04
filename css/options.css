@@ -1,5 +1,4 @@
 body {
-    background-color: #f1f2f1;
     font-family: Verdana, sans-serif;
     font-size: 0.84em;
 }
@@ -26,13 +25,14 @@ ul.menu li a {
     padding-right: 10px;
     padding-top: 3px;
     padding-bottom: 3px;
-    color: #025EB3;
+    color: #0051D8;
+    border: 1px solid transparent;
+    border-radius: 4px;
 }
 ul.menu li a.active {
-    border-left: 2px solid #c40005;
-    background-color: #d1f09d;
-    color: #000;
     text-decoration: none;
+    border-color: #ccc;
+    color: #000;
 }
 div.page {
     width: 720px;
@@ -73,7 +73,20 @@ input[type="number"] {
 }
 fieldset {
     margin-top: 15px;
-    border: 1px solid #c0c0c0;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+fieldset.info {
+    background-color: #f0f7fd;
+    border-color: #d0e3f0;
+    border-left-width: 5px;
+    border-radius: 0px;
+}
+fieldset.info a {
+    color: #c7254e;
+    padding: 2px 4px;
+    border-radius: 4px;
+    background-color: #fff;
 }
 ul.item > li {
     display: inline-block;
@@ -85,17 +98,16 @@ div.backup_form > div {
     margin-bottom: -3px;
 }
 div.backup_form > div.restore, div.backup_form > div.backup {
-    background-color:#dddddd;
+    background-color:#fff;
     margin-top: 4px;
-    border: 1px solid #c0c0c0;
     overflow: hidden;
-    padding-bottom: 2px;
+    padding-bottom: 0px;
     text-align: center;
 }
 div.backup_form > textarea, div.backup_form textarea {
     width: 99.2%;
     height: 400px;
-    margin-top: 2px;
+    margin-top: 1px;
 }
 div.backup_form a.backup_tab, div.backup_form a.restore_tab {
     border-top-left-radius: 4px; 
@@ -110,7 +122,7 @@ div.backup_form a.backup_tab, div.backup_form a.restore_tab {
     color: #82838e;
 }
 div.backup_form a.backup_tab.active, div.backup_form a.restore_tab.active {
-    background-color:#dddddd; 
+    background-color:#fff; 
     color: #2f5be1;	
 }
 div.backup_form div.backup input, div.backup_form div.restore input {
@@ -140,12 +152,8 @@ div.donate img {
     text-align: center;
 }
 table {
-    border-radius: 3px;
-    overflow: hidden;
-    box-shadow: 0 0 2px rgba(0,0,0,0.5);
 }
 table.tr_table {
-    background-color: #fff;
     border-collapse: collapse;
     width: 100%;
 }
@@ -153,21 +161,15 @@ table.tr_table div.tracker_icon {
     margin-left: 5px;
     cursor:move;
 }
-table.tr_table thead {
-    font-size: 0.8em;
-    background-color: #c8c8c8;
-}
 table.c_table {
-    background-color: #fff;
     border-collapse: collapse;
     width: 100%;
 }
 table.c_table div.tracker_icon {
     margin-left: 5px;
 }
-table.c_table thead {
-    font-size: 0.8em;
-    background-color: #c8c8c8;
+table th {
+    font-size: 1em;
 }
 td.status, th.status {
     text-align: center;
@@ -208,8 +210,11 @@ div.icons > div.cirilic {
 td.desc {
     font-size: 0.9em;
 }
-table tr:nth-child(even) {
-    background-color: #f1f2f1;
+table tbody tr {
+    border-top: 1px solid #ccc;
+}
+table thead th {
+    padding-bottom: 10px;
 }
 table td.notorrent {
     text-align: center;
@@ -238,11 +243,22 @@ div.popup textarea[name=code] {
 }
 .ui-sortable-helper {
     background-color:#fff !important;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
     border-radius: 4px;
-    opacity: 0.7;
+    opacity: 0.9;
 }
 .ui-state-highlight {
-    background-color:#f1f2f1 !important;
+    background-color:#f0f7fd !important;
     height: 80px;
+}
+h1 {
+    font-size: 36px;
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    line-height: 1.1;
+    box-sizing: border-box;
+    -webkit-margin-before: 0.67em;
+    -webkit-margin-after: 0.67em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
 }
