@@ -4,202 +4,21 @@ if (GetSettings('debug') !== "1") {
     };
 }
 var engine = function() {
-    var defaultList = [
-        /*
-         * e = включен по умолчанию
-         */
-        //русские с реги-ей
-        {
-            n: 'rutracker',
-            e: 1
-        },
-        {
-            n: 'nnm-club',
-            e: 1
-        },
-        {
-            n: 'kinozal',
-            e: 1
-        },
-        {
-            n: 'piratca',
-            e: 0
-        },
-        {
-            n: 'tapochek',
-            e: 0
-        },
-        {
-            n: 'bestrepack',
-            e: 0
-        },
-        {
-            n: 'rustorka',
-            e: 1
-        },
-        {
-            n: 'inmac',
-            e: 0
-        },
-        {
-            n: 'anidub',
-            e: 0
-        },
-        {
-            n: 'free-torrents',
-            e: 0
-        },
-        {
-            n: 'my-hit',
-            e: 0
-        },
-        {
-            n: 'evrl',
-            e: 0
-        },
-        {
-            n: 'youtracker',
-            e: 1
-        },
-        {
-            n: 'rgfootball',
-            e: 0
-        },
-        {
-            n: 'mmatracker',
-            e: 0
-        },
-        {
-            n: 'filebase',
-            e: 0
-        },
-        {
-            n: 'x-torrents',
-            e: 0
-        },
-        {
-            n: 'piratbit',
-            e: 0
-        },
-        {
-            n: 'underverse',
-            e: 1
-        },
-        {
-            n: 'libertorrent',
-            e: 0
-        },
-        {
-            n: 'riperam',
-            e: 0
-        },
-        {
-            n: 'brodim',
-            e: 0
-        },
-        {
-            n: 'hdclub',
-            e: 0
-        },
-        {
-            n: 'bigfangroup',
-            e: 0
-        },
-        //с рег-ей иност.
-        {
-            n: 'hurtom',
-            e: 0
-        },
-        //локальные
-        {
-            n: 'torrents.local',
-            e: 0
-        },
-        {
-            n: 'torrents.freedom',
-            e: 0
-        },
-        {
-            n: 'opentorrent',
-            e: 0
-        },
-        //русские без авт..
-        {
-            n: 'torrentmac',
-            e: 0
-        },
-        {
-            n: 'tfile',
-            e: 1
-        },
-        {
-            n: 'fast-torrent',
-            e: 1
-        },
-        {
-            n: 'rutor',
-            e: 1
-        },
-        {
-            n: 'opensharing',
-            e: 0
-        },
-        {
-            n: 'megashara',
-            e: 0
-        },
-        {
-            n: 'torrentino',
-            e: 0
-        },
-        {
-            n: 'katushka',
-            e: 0
-        },
-        {
-            n: 'btdigg',
-            e: 1
-        },
-        //зарубеж.
-        {
-            n: 'thepiratebay',
-            e: 0
-        },
-        {
-            n: 'thepiratebay2',
-            e: 0
-        },
-        {
-            n: 'kickass',
-            e: 0
-        },
-        {
-            n: 'bitsnoop',
-            e: 0
-        },
-        {
-            n: 'extratorrent',
-            e: 0
-        },
-        {
-            n: 'isohunt',
-            e: 0
-        },
-        {
-            n: 'fenopy',
-            e: 0
-        },
-        {
-            n: 'torrentz',
-            e: 0
-        },
-        {
-            n: 'mininova',
-            e: 0
-        }
-    ];
-    var costume_tr = null; //load when add costume torrent function
-    var categorys = _lang['categorys'];
+    var defaultList = function() {
+        var def = ['rutracker', 'nnm-club', 'kinozal', 'rutor', 'rustorka', 'youtracker', 'hdclub', 'tfile', 'fast-torrent', 'btdigg', 'opensharing'];
+        var all = ['anidub', 'bestrepack', 'bigfangroup', 'bitsnoop', 'brodim', 'btdigg', 'evrl', 'extratorrent', 'fast-torrent', 'fenopy', 'filebase', 'free-torrents', 'hdclub', 'hurtom', 'inmac', 'isohunt', 'katushka', 'kickass', 'kinozal', 'libertorrent', 'megashara', 'mininova', 'mmatracker', 'my-hit', 'nnm-club', 'opensharing', 'opentorrent', 'piratbit', 'piratca', 'pornolab', 'rgfootball', 'riperam', 'rustorka', 'rutor', 'rutracker', 'tapochek', 'tfile', 'thepiratebay', 'thepiratebay2', 'torrentino', 'torrentmac', 'torrents.freedom', 'torrents.local', 'torrentz', 'underverse', 'x-torrents', 'youtracker.js'];
+        var torrentList = [];
+        def.forEach(function(item) {
+            torrentList.push({e: 1, n: item});
+        });
+        all.forEach(function(item) {
+            if ( def.indexOf(item) === -1 ) {
+                torrentList.push({e: 0, n: item});
+            }
+        });
+        return torrentList;
+    }();
+    var costume_tr = null;
     var trackerProfiles = JSON.parse(GetSettings('trackerProfiles') || "[]");
     var defProfile = parseInt(GetSettings('defProfile') || 0);
     var search = function(text, tracker_id, nohistory) {
@@ -712,8 +531,7 @@ var engine = function() {
         getProfileList: function() {
             return getProfileList();
         },
-        defaultList: addCostumTr(defaultList),
-        categorys: categorys
+        defaultList: addCostumTr(defaultList)
     };
 }();
 $(function() {

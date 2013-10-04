@@ -1814,7 +1814,7 @@ var view = function() {
                 tableTimeFilter(utime);
             });
 
-            load_category(engine.categorys);
+            load_category(_lang['categorys']);
             LoadProfiles();
             if (HideLeech) {
                 $('th.leechs').remove();
