@@ -309,6 +309,9 @@ var options = function() {
             updateProfileList();
             engine.loadProfile(currentProfileID);
             //need add save btn & reload settings
+            if (trackerProfiles.length === 0) {
+                document.location.reload();
+            }
         } catch (err) {
             alert(_lang.str33 + "\n" + err);
         }
