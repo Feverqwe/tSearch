@@ -106,7 +106,7 @@ var engine = function() {
             }
             if (find === false) {
                 search_history[count] = {
-                    'title': title,
+                    title: title,
                     count: 1,
                     time: Math.round((new Date()).getTime() / 1000)
                 };
@@ -114,7 +114,7 @@ var engine = function() {
         } else {
             search_history = [];
             search_history[0] = {
-                'title': title,
+                title: title,
                 count: 1,
                 time: Math.round((new Date()).getTime() / 1000)
             };
