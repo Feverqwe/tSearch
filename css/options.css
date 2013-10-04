@@ -234,6 +234,7 @@ table thead th {
 }
 table td.notorrent {
     text-align: center;
+    background-color: #fcf8e3;
 }
 div.popup {
     position: fixed;
