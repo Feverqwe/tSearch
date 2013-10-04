@@ -12,7 +12,7 @@ var engine = function() {
             torrentList.push({e: 1, n: item});
         });
         all.forEach(function(item) {
-            if ( def.indexOf(item) === -1 ) {
+            if (def.indexOf(item) === -1) {
                 torrentList.push({e: 0, n: item});
             }
         });
@@ -32,6 +32,10 @@ var engine = function() {
             val = 0;
         } else {
             val = parseInt(GetSettings('defProfile') || 0);
+            if (val >= trackerProfiles.length) {
+                val = 0;
+                SetSettings('defProfile', val);
+            }
         }
         return val;
     }();
@@ -449,6 +453,9 @@ var engine = function() {
         var n = tracker.length;
         tracker[n] = torrent_lib[num];
         tracker[n].setId(n);
+        //bug fix >
+        tracker[n].id = n;
+        //<
         view.addTrackerInList(n);
     };
     var addCostumTr = function(originalList) {

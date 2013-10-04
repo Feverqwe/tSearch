@@ -68,6 +68,9 @@ textarea {
 input[type="button"] {
     font-size: 1em;
 }
+input[type="number"] {
+    width: 60px;
+}
 fieldset {
     margin-top: 15px;
     border: 1px solid #c0c0c0;
