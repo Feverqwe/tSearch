@@ -2041,6 +2041,7 @@ var view = function() {
 }();
 $(function() {
     view.begin();
+    engine.loadProfile();
 });
 $(window).load(function() {
     var s = (document.URL).replace(/.*index.html/, '').replace(/^#s=(.*)/, '$1');

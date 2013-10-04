@@ -532,9 +532,6 @@ var engine = function() {
         defaultList: addCostumTr(defaultList)
     };
 }();
-$(function() {
-    engine.loadProfile();
-});
 var ex_kit = function() {
     var in_cp1251 = function(sValue) {
         var text = "", Ucode, ExitValue, s;

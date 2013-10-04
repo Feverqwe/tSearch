@@ -612,6 +612,7 @@ var view = function() {
 }();
 $(function() {
     options.begin();
+    engine.loadProfile();
 });
 $(window).on('resize', function() {
     $('div.popup').css('left', ($('html').width() / 2 - $('div.popup').width() / 2) + 'px');
