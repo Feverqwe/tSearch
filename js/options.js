@@ -73,7 +73,7 @@ var options = function() {
             return;
         }
         var t = trackerProfiles[id].Trackers;
-        if (t === undefined || t === null) {
+        if (t === undefined || t === null || t.length === 0) {
             t = engine.defaultList;
         }
         var enable = false;
@@ -292,7 +292,7 @@ var options = function() {
             }
         });
     };
-    var stngsRestore = function(text) {
+    var settingsRestore = function(text) {
         try {
             var rst = JSON.parse(text);
             localStorage.clear();
@@ -335,7 +335,7 @@ var options = function() {
         });
         $('div.restore').find('input[name=restore]').on("click", function(e) {
             e.preventDefault();
-            stngsRestore($(this).parent().children('textarea').val());
+            settingsRestore($(this).parent().children('textarea').val());
             $('textarea[name="backup"]').val('');
         });
     };
@@ -617,9 +617,7 @@ var view = function() {
             }
             $('table.tr_table tbody').empty();
         },
-        addTrackerInList: function(i) {
-            options.addTrackerInList(i);
-        }
+        addTrackerInList: options.addTrackerInList
     };
 }();
 $(function() {
