@@ -6,7 +6,7 @@ if (GetSettings('debug') !== "1") {
 var engine = function() {
     var defaultList = function() {
         var def = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'rustorka', 'youtracker', 'hdclub', 'tfile', 'fast-torrent', 'opensharing', 'btdigg'];
-        var all = ['anidub', 'bestrepack', 'bigfangroup', 'bitsnoop', 'brodim', 'btdigg', 'evrl', 'extratorrent', 'fast-torrent', 'fenopy', 'filebase', 'free-torrents', 'hdclub', 'hurtom', 'inmac', 'isohunt', 'katushka', 'kickass', 'kinozal', 'libertorrent', 'megashara', 'mininova', 'mmatracker', 'my-hit', 'nnm-club', 'opensharing', 'opentorrent', 'piratbit', 'piratca', 'pornolab', 'rgfootball', 'riperam', 'rustorka', 'rutor', 'rutracker', 'tapochek', 'tfile', 'thepiratebay', 'thepiratebay2', 'torrentino', 'torrentmac', 'torrents.freedom', 'torrents.local', 'torrentz', 'underverse', 'x-torrents', 'youtracker.js'];
+        var all = ['anidub', 'bestrepack', 'bigfangroup', 'bitsnoop', 'brodim', 'btdigg', 'evrl', 'extratorrent', 'fast-torrent', 'fenopy', 'filebase', 'free-torrents', 'hdclub', 'hurtom', 'inmac', 'isohunt', 'katushka', 'kickass', 'kinozal', 'libertorrent', 'megashara', 'mininova', 'nnm-club', 'opensharing', 'opentorrent', 'piratbit', 'piratca', 'rgfootball', 'riperam', 'rustorka', 'rutor', 'rutracker', 'tapochek', 'tfile', 'thepiratebay', 'thepiratebay2', 'torrentmac', 'torrents.freedom', 'torrents.local', 'torrentz', 'underverse', 'x-torrents', 'youtracker.js'];
         var torrentList = [];
         def.forEach(function(item) {
             torrentList.push({e: 1, n: item});
@@ -20,7 +20,21 @@ var engine = function() {
     }();
     var costume_tr = null;
     var trackerProfiles = JSON.parse(GetSettings('trackerProfiles') || "[]");
-    var defProfile = parseInt(GetSettings('defProfile') || 0);
+    var defProfile = function() {
+        var val = 0;
+        if (trackerProfiles.length === 0) {
+            trackerProfiles.push({
+                Trackers: null,
+                Title: _lang.label_def_profile
+            });
+            SetSettings('trackerProfiles', JSON.stringify(trackerProfiles));
+            SetSettings('defProfile', 0);
+            val = 0;
+        } else {
+            val = parseInt(GetSettings('defProfile') || 0);
+        }
+        return val;
+    }();
     var search = function(text, tracker_id, nohistory) {
         if (tracker_id !== null) {
             try {
@@ -107,6 +121,16 @@ var engine = function() {
         }
         SetSettings('search_history', JSON.stringify(search_history));
         view.AddAutocomplete();
+    };
+    var clone_obj = function(obj) {
+        return JSON.parse(JSON.stringify(obj));
+    };
+    var getProfileList = function() {
+        var arr = [];
+        $.each(trackerProfiles, function(k, v) {
+            arr.push(v.Title);
+        });
+        return arr;
     };
     var loadCostumeModule = function(uid) {
         if ($.inArray(uid, costume_tr) === -1) {
@@ -401,25 +425,6 @@ var engine = function() {
         }(ct);
         ModuleLoaded(l);
     };
-    var clone_obj = function(obj) {
-        return JSON.parse(JSON.stringify(obj));
-    };
-    var addCostumTr = function(a) {
-        var b = clone_obj(a);
-        costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
-        var l = costume_tr.length;
-        for (var i = 0; i < l; i++) {
-            var tr = JSON.parse(GetSettings('ct_' + costume_tr[i]) || "{}");
-            if (tr.uid === undefined)
-                continue;
-            b.push({
-                e: 0,
-                n: tr.uid,
-                uid: tr.uid
-            });
-        }
-        return b;
-    };
     var loadInternalModule = function(filename) {
         if (compression) {
             var c = torrent_lib.length;
@@ -439,40 +444,64 @@ var engine = function() {
             s.parentNode.insertBefore(script, s);
         }
     };
-    var loadModules = function(internalTrackers) {
+    var ModuleLoaded = function(num) {
+        //Call from js-file tracker-module on load!
+        var n = tracker.length;
+        tracker[n] = torrent_lib[num];
+        tracker[n].setId(n);
+        view.addTrackerInList(n);
+    };
+    var addCostumTr = function(originalList) {
+        //add in internal-tracker list costume torrents
+        var newList = clone_obj(originalList);
+        costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
+        var l = costume_tr.length;
+        for (var i = 0; i < l; i++) {
+            var tr = JSON.parse(GetSettings('ct_' + costume_tr[i]) || "{}");
+            if (tr.uid === undefined)
+                continue;
+            newList.push({
+                e: 0,
+                n: tr.uid,
+                uid: tr.uid
+            });
+        }
+        return newList;
+    };
+    var loadProfileModules = function(torrentList) {
         tracker = [];
+        if (torrentList === null || torrentList.length === 0) {
+            torrentList = addCostumTr(defaultList);
+        }
         if (compression === 0) {
             $('script[data-id=tracker]').remove();
             torrent_lib = [];
         }
-        var Trackers = internalTrackers;
-        if (internalTrackers === null) {
-            Trackers = addCostumTr(defaultList);
-        }
 
-        var ot = 0;
+        var optionsMode = 0;
         if ("options" in window) {
-            ot = 1;
+            optionsMode = 1;
             var en_a = [];
             var defTrackers = addCostumTr(defaultList);
         }
-        var l = Trackers.length;
-        for (var i = 0; i < l; i++) {
+        var Trackers = torrentList;
+        var len = Trackers.length;
+        for (var i = 0; i < len; i++) {
             if (Trackers[i].e) {
                 if ('uid' in Trackers[i]) {
                     loadCostumeModule(Trackers[i].n);
                 } else {
                     loadInternalModule(Trackers[i].n);
                 }
-                if (ot) {
+                if (optionsMode) {
                     en_a.push(Trackers[i].n);
                 }
             }
         }
-        if (ot) {
-            var l = defTrackers.length;
-            for (var i = 0; i < l; i++) {
-                if ($.inArray(defTrackers[i].n, en_a) === -1) {
+        if (optionsMode) {
+            var len = defTrackers.length;
+            for (var i = 0; i < len; i++) {
+                if (en_a.indexOf(defTrackers[i].n) === -1) {
                     if ('uid' in defTrackers[i]) {
                         loadCostumeModule(defTrackers[i].n);
                     } else {
@@ -482,41 +511,20 @@ var engine = function() {
             }
         }
     };
-    var chkDefProfile = function() {
-        if (trackerProfiles.length === 0) {
-            trackerProfiles.push({
-                Trackers: null,
-                Title: _lang.label_def_profile
-            });
-            SetSettings('trackerProfiles', JSON.stringify(trackerProfiles));
-            defProfile = SetSettings('defProfile', 0);
-        }
-    };
-    chkDefProfile();
     var loadProfile = function(profile) {
+        profile = parseInt(profile);
         view.ClearTrackerList();
-        if (profile === undefined) {
+        if (profile === undefined || isNaN(profile)) {
             profile = defProfile;
         }
         if (trackerProfiles[profile] === undefined) {
-            loadModules(null);
+            loadProfileModules(null);
         } else {
-            loadModules(trackerProfiles[profile].Trackers);
-            SetSettings('defProfile', profile);
+            loadProfileModules(trackerProfiles[profile].Trackers);
+            if ( defProfile != profile ) {
+                SetSettings('defProfile', profile);
+            }
         }
-    };
-    var getProfileList = function() {
-        var arr = [];
-        $.each(trackerProfiles, function(k, v) {
-            arr.push(v.Title);
-        });
-        return arr;
-    };
-    var ModuleLoaded = function(num) {
-        var n = tracker.length;
-        tracker[n] = torrent_lib[num];
-        tracker[n].setId(n);
-        view.addTrackerInList(n);
     };
     return {
         search: search,
