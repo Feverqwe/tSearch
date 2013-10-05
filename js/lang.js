@@ -216,7 +216,8 @@ var get_lang = function(lang) {
             69: "Get the settings from the cloud",
             70: "Saved!",
             71: "Show favorites from the site kinopoisk.",
-            72: "ID \"category\" from the site kinopoisk (1 - favorites)"
+            72: "ID \"category\" from the site kinopoisk (1 - favorites)",
+            73: "Action"
         },
         magic: {
             1: 'Loading error!',
@@ -501,7 +502,8 @@ var get_lang = function(lang) {
             69: "Получить из облака",
             70: "Сохранено!",
             71: "Показывать избранное с сайта кинопоиска.",
-            72: "ID \"категории\" из кинопоиска (1 - избранное)"
+            72: "ID \"категории\" из кинопоиска (1 - избранное)",
+            73: "Действие"
         },
         magic: {
             1: 'Ошибка загрузки!',

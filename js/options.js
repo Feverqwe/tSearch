@@ -117,14 +117,18 @@ var options = function() {
             var el = $('[data-lang=' + k + ']');
             if (el.length === 0)
                 return true;
-            var t = el.prop("tagName");
-            if (t === "A" || t === "LEGEND" || t === "SPAN" || t === "LI" || t === "TH" || t === "TD") {
-                el.text(v);
-            } else
-            if (t === "INPUT") {
-                el.val(v);
-            } else
-                console.log(t, v);
+            for (var i = 0; i < el.length; i++) {
+                var obj = el.eq(i);
+                var t = obj.prop("tagName");
+                if (t === "A" || t === "LEGEND" || t === "SPAN" || t === "LI" || t === "TH" || t === "TD") {
+                    obj.text(v);
+                } else
+                if (t === "INPUT") {
+                    obj.val(v);
+                } else {
+                    console.log(t, v);
+                }
+            }
         });
     };
     var load_costume_torrents = function() {
@@ -501,7 +505,7 @@ var options = function() {
                 engine.loadProfile(id);
             });
             $('input[name=list_name]').on('keypress', function(e) {
-                if (e.which == 13) {
+                if (e.which === 13) {
                     $('input[name=add_list]').trigger('click');
                 }
             });
@@ -620,6 +624,21 @@ var options = function() {
                 $('div.popup').css('left', ($('html').width() / 2 - $('div.popup').width() / 2) + 'px');
             }).trigger('resize');
             //<<<<<<<<<<<<<<<<<
+            $('div.topbtn').attr('title', _lang['btn_up']);
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 100) {
+                    $('div.topbtn').fadeIn('fast');
+                } else {
+                    $('div.topbtn').fadeOut('fast');
+                }
+            });
+            $('div.topbtn').on("click", function(event) {
+                event.preventDefault();
+                $('body,html').animate({
+                    scrollTop: 0
+                }, 200);
+                return false;
+            });
         },
         addTrackerInList: addTrackerInList
     };

@@ -131,7 +131,6 @@ $(function() {
     view.getResult();
 
 
-    $('div.topbtn').hide();
     $(window).scroll(function() {
         if ($(this).scrollTop() > 100) {
             $('div.topbtn').fadeIn('fast');

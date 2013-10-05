@@ -12,6 +12,7 @@ var explore = function() {
     var kinopoiskDeskList = JSON.parse(GetSettings('kinopoiskDeskList') || "{}");
     var kinopoisk_category = parseInt(GetSettings('kinopoisk_category') || 1);
     var kinopoisk_folder_id = parseInt(GetSettings('kinopoisk_f_id') || 1);
+    var _hideTopSearch = parseInt(GetSettings('hideTopSearch') || 0);
     var tmpDeskList = {};
     var tmp_vars = {};
     var last_qbox = {top: 0, obj: null, id: null};
@@ -1350,16 +1351,28 @@ var explore = function() {
         });
     };
     var render_top = function(arr, colums) {
+        if (_hideTopSearch === 1) {
+            return;
+        }
         if (colums === undefined) {
             colums = (window.innerWidth > 1275) ? 4 : 3;
+        }
+        if (tmp_vars.top === undefined) {
+            tmp_vars.top = $('div.top_search');
         }
         tmp_vars.top_state = colums;
         if (arr === undefined) {
             if (_top_cache.keywords !== undefined) {
                 arr = _top_cache.keywords;
             } else {
+                tmp_vars.top.css('display', 'none');
+                _hideTopSearch = 1;
                 return;
             }
+        }
+        if (arr.length === 0) {
+            tmp_vars.top.css('display', 'none');
+            _hideTopSearch = 1;
         }
         arr.sort(function(a, b) {
             if (a.weight > b.weight) {
@@ -1370,7 +1383,7 @@ var explore = function() {
             }
             return 1;
         });
-        var top_search = $('div.top_search');
+        var top_search = tmp_vars.top;
         var info = '';
         var sub_style = '';
         var num = 1;
@@ -1406,6 +1419,10 @@ var explore = function() {
         top_search.html(content);
     };
     var get_search_top = function() {
+        if (_hideTopSearch) {
+            $('div.top_search').css('display', 'none');
+            return;
+        }
         var timeout = 86400;
         var time = Math.round(new Date().getTime() / 1000);
         if (_top_cache.keywords !== undefined && _top_cache.timeout > time) {
@@ -1433,6 +1450,7 @@ var explore = function() {
                 if (_top_cache.keywords !== undefined) {
                     render_top(_top_cache.keywords);
                 } else {
+                    _hideTopSearch = 1;
                     $('div.top_search').css('display', 'none');
                 }
             }
