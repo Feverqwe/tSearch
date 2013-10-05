@@ -1268,7 +1268,8 @@ var view = function() {
         }
     };
     var tableFilter = function(keyword) {
-        $('div.filter div.btn').css('background-image', 'url(images/loading.gif)');
+        var clear_btn = $('div.filter div.btn');
+        clear_btn.css('background-image', 'url(images/loading.gif)');
         keyword = $.trim(keyword).replace(/\s+/g, " ");
         if ("result_filter_input" in keyword_filter_cache !== false) {
             keyword_filter_cache["result_filter_input"] = keyword;
@@ -1309,7 +1310,11 @@ var view = function() {
         doFiltering();
         updateCategorys();
         updateTrackerCount();
-        $('div.filter div.btn').css('background-image', 'url(images/clear.png)');
+        if ( keywordFilter === null ) {
+            clear_btn.hide();
+        } else {
+            clear_btn.css('background-image', 'url(images/clear.png)');
+        }
     };
     calcSizeFilter = function(value) {
         return ((sizeFilter.from > 0 && value >= sizeFilter.from || sizeFilter.from <= 0) && ((sizeFilter.to > 0 && value <= sizeFilter.to) || (sizeFilter.to <= 0)));
