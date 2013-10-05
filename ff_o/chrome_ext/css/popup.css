@@ -5,7 +5,6 @@ body {
 }
 div.search_panel {
     padding: 20px;
-    background-color: #F1F1F1;
     width: 590px;
     -webkit-user-select: none;
 }

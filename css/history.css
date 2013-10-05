@@ -19,8 +19,7 @@ div.search_panel h1 {
 }
 div.search_panel {
     padding: 20px;
-    background-color: #F1F1F1;
-    border-bottom: 1px solid silver;
+    border-bottom: 1px solid #ccc;
     -webkit-user-select: none;
 }
 
