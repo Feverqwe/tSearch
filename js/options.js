@@ -371,6 +371,9 @@ var options = function() {
             tmp_vars.tracker_list.disableSelection();
             $('ul.menu').on('click', 'a', function(e) {
                 e.preventDefault();
+                if ($(this).data('page') === undefined) {
+                    return;
+                }
                 $('ul.menu').find('a.active').removeClass('active');
                 $(this).addClass('active');
                 $('body').find('div.page.active').removeClass('active');
@@ -525,6 +528,10 @@ var options = function() {
                 setTimeout(function() {
                     $('div.page.save > div.status').css('background', 'none');
                 }, 500);
+            });
+            $('li.save_btn').on('click', function(e) {
+                e.preventDefault();
+                saveAll();
             });
             //all about costume code
             $('input[name=add_code]').on('click', function() {
