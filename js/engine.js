@@ -4,7 +4,7 @@ if (GetSettings('debug') !== "1") {
     };
 }
 var engine = function() {
-    var defaultList = function() {
+    var makeDefaultList = function() {
         def = ['bitsnoop','extratorrent','fenopy','torrentz','thepiratebay','isohunt','kickass'];
         if (_lang['t'] === "ru") {
             def = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'rustorka', 'youtracker', 'hdclub', 'tfile', 'fast-torrent', 'opensharing', 'btdigg'];
@@ -20,7 +20,8 @@ var engine = function() {
             }
         });
         return torrentList;
-    }();
+    };
+    var defaultList = makeDefaultList();
     var costume_tr = null;
     var trackerProfiles = JSON.parse(GetSettings('trackerProfiles') || "[]");
     var defProfile = function() {
@@ -539,7 +540,8 @@ var engine = function() {
         loadProfile: loadProfile,
         ModuleLoaded: ModuleLoaded,
         getProfileList: getProfileList,
-        defaultList: addCostumTr(defaultList)
+        defaultList: addCostumTr(defaultList),
+        getDefList: makeDefaultList
     };
 }();
 var ex_kit = function() {

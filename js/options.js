@@ -353,6 +353,7 @@ var options = function() {
                 SetSettings(key, val);
             }
         });
+        saveCurrentProfile();
         SetSettings('trackerProfiles', JSON.stringify(sandbox_trackerProfiles));
         if ("chrome" in window && chrome.extension) {
             var bgp = chrome.extension.getBackgroundPage();
@@ -493,12 +494,12 @@ var options = function() {
             $('table.tr_table').find('th').eq(3).children('a').eq(2).on("click", function(event) {
                 event.preventDefault();
                 $('table.tr_table').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
-                var Trackers = engine.defaultList;
+                var Trackers = engine.getDefList();
                 var l = Trackers.length;
                 var tb = tmp_vars.tracker_list;
                 for (var i = 0; i < l; i++) {
                     if (Trackers[i].e) {
-                        tb.children('tr[data-name="' + Trackers[i].filename + '"]').find('input[type="checkbox"]').get(0).checked = true;
+                        tb.children('tr[data-name="' + Trackers[i].n + '"]').find('input[type="checkbox"]').get(0).checked = true;
                     }
                 }
                 saveCurrentProfile();
