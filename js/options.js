@@ -386,13 +386,14 @@ var options = function() {
             tmp_vars.tracker_list.disableSelection();
             $('ul.menu').on('click', 'a', function(e) {
                 e.preventDefault();
-                if ($(this).data('page') === undefined) {
+                var page = $(this).data('page');
+                if (page === undefined) {
                     return;
                 }
                 $('ul.menu').find('a.active').removeClass('active');
                 $(this).addClass('active');
                 $('body').find('div.page.active').removeClass('active');
-                $('body').find('div.' + $(this).data('page')).addClass('active');
+                $('body').find('div.' + page).addClass('active');
             });
             if ("Application" in window && Application.name === "Firefox") {
                 //FF
