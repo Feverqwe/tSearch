@@ -5,7 +5,7 @@ if (GetSettings('debug') !== "1") {
 }
 var engine = function() {
     var makeDefaultList = function() {
-        def = ['bitsnoop','extratorrent','fenopy','torrentz','thepiratebay','isohunt','kickass'];
+        def = ['bitsnoop', 'extratorrent', 'fenopy', 'torrentz', 'thepiratebay', 'isohunt', 'kickass'];
         if (_lang['t'] === "ru") {
             def = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'rustorka', 'youtracker', 'hdclub', 'tfile', 'fast-torrent', 'opensharing', 'btdigg'];
         }
@@ -481,17 +481,20 @@ var engine = function() {
     };
     var loadProfileModules = function(torrentList) {
         tracker = [];
+        var optionsMode = "options" in window;
         if (torrentList === null || torrentList.length === 0) {
-            torrentList = addCostumTr(defaultList);
+            if (optionsMode) {
+                torrentList = addCostumTr(makeDefaultList());
+            } else {
+                torrentList = addCostumTr(defaultList);
+            }
         }
         if (compression === 0) {
             $('script[data-id=tracker]').remove();
             torrent_lib = [];
         }
 
-        var optionsMode = 0;
-        if ("options" in window) {
-            optionsMode = 1;
+        if (optionsMode) {
             var en_a = [];
             var defTrackers = addCostumTr(defaultList);
         }
@@ -525,7 +528,7 @@ var engine = function() {
     var loadProfile = function(profile) {
         profile = parseInt(profile);
         view.ClearTrackerList();
-        if (profile === undefined || isNaN(profile)) {
+        if (isNaN(profile) || profile === undefined) {
             profile = defProfile;
         }
         if (trackerProfiles[profile] === undefined) {

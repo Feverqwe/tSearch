@@ -65,7 +65,7 @@ var options = function() {
         var Tracker = tracker[i];
         var profileTrackers = sandbox_trackerProfiles[currentProfile.id].Trackers;
         if (profileTrackers === undefined || profileTrackers === null) {
-            profileTrackers = engine.defaultList;
+            profileTrackers = engine.getDefList();
         }
         var enable = false;
         var tc = profileTrackers.length;
@@ -107,6 +107,7 @@ var options = function() {
                 + '</tr>');
     };
     var write_language = function(language) {
+        var selected = (language !== undefined) ? 1 : 0;
         if (language === undefined) {
             language = GetSettings('lang');
         }
@@ -136,6 +137,9 @@ var options = function() {
                 }
             }
         });
+        if (selected) {
+            $('select[name=tr_lists]').trigger("change");
+        }
     };
     var load_costume_torrents = function() {
         var empty_list = '<td colspan="4" class="notorrent" data-lang="51">' + _lang.settings[51] + '</td>';
