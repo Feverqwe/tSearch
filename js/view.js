@@ -1243,13 +1243,13 @@ var view = function() {
         for (var i = 0; i < count_c; i++) {
             var count = el_err.filter('[data-c="' + categorys[i] + '"]').length;
             if (count > 0) {
-                tmp_vars.ul_categorys.children('li[data-id="' + categorys[i] + '"]').css('display', 'inline-block').children('i').html('(' + count + ')');
+                tmp_vars.ul_categorys.children('li[data-id="' + categorys[i] + '"]').css('display', 'inline-block').children('i').html(count);
                 sum += count;
             } else {
                 tmp_vars.ul_categorys.children('li[data-id="' + categorys[i] + '"]').css('display', 'none');
             }
         }
-        tmp_vars.ul_categorys.children('li').eq(0).children('i').html('(' + sum + ')');
+        tmp_vars.ul_categorys.children('li').eq(0).children('i').html(sum);
         if (autoMove !== undefined) {
             var item = tmp_vars.ul_categorys.children('li[data-id="' + autoMove + '"]');
             if (item.css('display') === 'inline-block') {
@@ -1479,7 +1479,7 @@ var view = function() {
         for (var i = 0; i < count; i++) {
             categorys.push(c[i][0]);
             categorys_assoc[c[i][0]] = c[i][1];
-            tmp_vars.ul_categorys.append('<li data-id="' + c[i][0] + '">' + c[i][1] + '<i></i></li>');
+            tmp_vars.ul_categorys.append('<li data-id="' + c[i][0] + '">' + c[i][1] + ' <i></i></li>');
         }
         tmp_vars.ul_categorys.prepend('<li class="selected">' + _lang['cat_all'] + ' <i></i></li>');
     };

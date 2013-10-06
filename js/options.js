@@ -111,9 +111,8 @@ var options = function() {
             language = GetSettings('lang');
         }
         if (language === undefined) {
-            if ("chrome" in window && chrome.i18n && chrome.i18n.getMessage("lang") !== 'ru') {
-                language = 'en';
-            } else {
+            language = 'en';
+            if ("chrome" in window && chrome.i18n && chrome.i18n.getMessage("lang") === 'ru') {
                 language = 'ru';
             }
         }
@@ -392,7 +391,7 @@ var options = function() {
             });
             if ("Application" in window && Application.name === "Firefox") {
                 //FF
-                $('input[name="context_menu"]').parents().hide();
+                $('input[name="context_menu"]').parents().eq(1).hide();
             }
             if ("chrome" in window === false) {
                 //opera and firefox

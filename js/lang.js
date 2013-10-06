@@ -575,9 +575,8 @@ var get_lang = function(lang) {
         lang = GetSettings('lang');
     }
     if (lang === undefined) {
-        if ("chrome" in window && chrome.i18n && chrome.i18n.getMessage("lang") !== 'ru') {
-            lang = 'en';
-        } else {
+        lang = 'en';
+        if ("chrome" in window && chrome.i18n && chrome.i18n.getMessage("lang") === 'ru') {
             lang = 'ru';
         }
     }
