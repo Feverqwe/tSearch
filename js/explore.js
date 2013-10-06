@@ -1257,7 +1257,7 @@ var explore = function() {
                 _gaq.push(['_trackEvent', 'About', 'keyword', s]);
             } catch (e) {
             }
-            if (chrome !== undefined && chrome.tabs !== undefined) {
+            if ("chrome" in window && chrome.tabs) {
                 event.preventDefault();
                 chrome.tabs.create({'url': $(this).attr('href'), 'active': true});
             }
@@ -1773,7 +1773,7 @@ $(window).on('resize', function(e) {
     }
 });
 
-if (GetSettings('allow_favorites_sync') === "1" && navigator.userAgent.search(/Chrome/) !== -1 && chrome !== undefined) {
+if (GetSettings('allow_favorites_sync') === "1" && "chrome" in window && chrome.storage) {
     chrome.storage.onChanged.addListener(function(changes) {
         for (key in changes) {
             if (key === "favoritesList") {

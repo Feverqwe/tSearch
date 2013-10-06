@@ -139,7 +139,7 @@ var get_lang = function(lang) {
         clear_cloud_btn: 'Clear settings in the cloud',
         apprise_btns: ['Ok', 'Cancel'],
         time_filter: 'Date filter',
-        time_f_s: ['For all the time','For an hour','For the day','For the week','For the month','For the year','For the period...'],
+        time_f_s: ['For all the time', 'For an hour', 'For the day', 'For the week', 'For the month', 'For the year', 'For the period...'],
         time_f_d: ["su", "mo", "tu", "we", "th", "fr", "sa"],
         time_f_m: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         seed_filter: "Seeds",
@@ -425,7 +425,7 @@ var get_lang = function(lang) {
         clear_cloud_btn: 'Очистить настройки в облаке',
         apprise_btns: ['Ок', 'Отменить'],
         time_filter: 'Дата',
-        time_f_s: ['За всё время','За час','За сутки','За неделю','За месяц','За год','За период...'],
+        time_f_s: ['За всё время', 'За час', 'За сутки', 'За неделю', 'За месяц', 'За год', 'За период...'],
         time_f_d: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
         time_f_m: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
         seed_filter: "Сиды",
@@ -571,8 +571,15 @@ var get_lang = function(lang) {
             63: "Заменить слова сегодня\\вчера\\сейчас"
         }
     };
-    if (!lang) {
-        lang = GetSettings('lang') || 'ru';
+    if (lang === undefined) {
+        lang = GetSettings('lang');
+    }
+    if (lang === undefined) {
+        if ("chrome" in window && chrome.i18n && chrome.i18n.getMessage("lang") !== 'ru') {
+            lang = 'en';
+        } else {
+            lang = 'ru';
+        }
     }
     if (lang === 'ru') {
         return lang_arr_ru;

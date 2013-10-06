@@ -108,7 +108,14 @@ var options = function() {
     };
     var write_language = function(language) {
         if (language === undefined) {
-            language = GetSettings('lang') || 'ru';
+            language = GetSettings('lang');
+        }
+        if (language === undefined) {
+            if ("chrome" in window && chrome.i18n && chrome.i18n.getMessage("lang") !== 'ru') {
+                language = 'en';
+            } else {
+                language = 'ru';
+            }
         }
         _lang = get_lang(language);
         var lang = _lang.settings;
@@ -348,7 +355,7 @@ var options = function() {
             }
         });
         SetSettings('trackerProfiles', JSON.stringify(sandbox_trackerProfiles));
-        if (navigator.userAgent.search(/Chrome/) !== -1) {
+        if ("chrome" in window && chrome.extension) {
             var bgp = chrome.extension.getBackgroundPage();
             bgp.bg.update_context_menu();
             if (bgp._type_ext) {
@@ -383,49 +390,53 @@ var options = function() {
                 $('body').find('div.page.active').removeClass('active');
                 $('body').find('div.' + $(this).data('page')).addClass('active');
             });
-            if (navigator.userAgent.search(/Opera/) !== -1 || navigator.userAgent.search(/Firefox/) !== -1) {
+            if ("Application" in window && Application.name === "Firefox") {
+                //FF
+                $('input[name="context_menu"]').parents().hide();
+            }
+            if ("chrome" in window === false) {
                 //opera and firefox
                 $('input[name="add_in_omnibox"]').parents().eq(1).hide();
                 $('input[name="search_popup"]').parents().eq(1).hide();
                 $('input[name="google_analytics"]').parents().eq(1).hide();
                 $('input[name="allow_favorites_sync"]').parents().eq(1).hide();
                 $('input[name="clear_cloud_btn"]').hide();
-            } else
-            if (navigator.userAgent.search(/Chrome/) !== -1) {
+            }
+            if ("chrome" in window && chrome.extension) {
                 //Chrome
                 var bgp = chrome.extension.getBackgroundPage();
                 if (!bgp._type_ext) {
                     $('input[name="search_popup"]').parents().eq(1).hide();
                 }
-                if (chrome && chrome.storage) {
-                    $('input[name="clear_cloud"]').on('click', function() {
-                        chrome.storage.sync.clear();
-                    });
-                    $('input[name="save_in_cloud"]').on('click', function() {
-                        var obj = makePartedBackup();
-                        if (obj === undefined) {
-                            return;
-                        }
-                        chrome.storage.sync.set(obj);
-                        getPartedBackup(1);
+            }
+            if ("chrome" in window && chrome.storage) {
+                $('input[name="clear_cloud"]').on('click', function() {
+                    chrome.storage.sync.clear();
+                });
+                $('input[name="save_in_cloud"]').on('click', function() {
+                    var obj = makePartedBackup();
+                    if (obj === undefined) {
+                        return;
+                    }
+                    chrome.storage.sync.set(obj);
+                    getPartedBackup(1);
 
-                        $(this).val(_lang.settings[70]);
-                        setTimeout(function() {
-                            $('input[name="save_in_cloud"]').val(_lang.settings[68]);
-                        }, 3000);
-                        $('input[name="get_from_cloud"]').get(0).disabled = false;
-                    });
-                    $('input[name="get_from_cloud"]').on('click', function() {
-                        getPartedBackup();
-                    });
-                    chrome.storage.sync.get("bk_ch_inf",
-                            function(val) {
-                                if ("bk_ch_inf" in val === false) {
-                                    $('input[name="get_from_cloud"]').eq(0).get(0).disabled = true;
-                                }
+                    $(this).val(_lang.settings[70]);
+                    setTimeout(function() {
+                        $('input[name="save_in_cloud"]').val(_lang.settings[68]);
+                    }, 3000);
+                    $('input[name="get_from_cloud"]').get(0).disabled = false;
+                });
+                $('input[name="get_from_cloud"]').on('click', function() {
+                    getPartedBackup();
+                });
+                chrome.storage.sync.get("bk_ch_inf",
+                        function(val) {
+                            if ("bk_ch_inf" in val === false) {
+                                $('input[name="get_from_cloud"]').eq(0).get(0).disabled = true;
                             }
-                    );
-                }
+                        }
+                );
             } else {
                 $('input[name="clear_cloud"]').css('display', 'none');
                 $('input[name="get_from_cloud"]').css('display', 'none');
