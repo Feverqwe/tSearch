@@ -1102,16 +1102,6 @@ div.ui-sortable-placeholder {
 .ui-datepicker-title {
     text-align: center;
 }
-.ui-datepicker-next.ui-corner-all {
-    float: right;
-    cursor: pointer;
-    margin-top: 4px;
-}
-.ui-datepicker-prev.ui-corner-all {
-    cursor: pointer;
-    float: left;
-    margin-top: 4px;
-}
 .ui-datepicker-calendar th {
     font-size: 0.9em;
     width: 20px;
@@ -1151,19 +1141,30 @@ table.ui-datepicker-calendar td.ui-datepicker-week-end:hover > a {
     color: #fff;
 }
 .ui-icon.ui-icon-circle-triangle-w {
-    background: url(../images/back.png) center left no-repeat;
     display: inline-block;
     width: 16px;
     height: 16px;
 }
 .ui-icon.ui-icon-circle-triangle-e {
-    background: url(../images/back.png) center left no-repeat;
     display: inline-block;
     width: 16px;
     height: 16px;
+}
+
+.ui-datepicker-next.ui-corner-all {
+    float: right;
+    cursor: pointer;
+    background: url(../images/back.png) center left no-repeat;
     -webkit-transform: rotate(180deg);
     -moz-transform: rotate(180deg);
     -o-transform: rotate(180deg);
+    background-position-y: 4px;
+}
+.ui-datepicker-prev.ui-corner-all {
+    cursor: pointer;
+    float: left;
+    background: url(../images/back.png) center left no-repeat;
+    background-position-y: 4px;
 }
 .ui-icon.ui-icon-circle-triangle-w:hover,
 .ui-icon.ui-icon-circle-triangle-e:hover {
