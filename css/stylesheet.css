@@ -1158,7 +1158,7 @@ table.ui-datepicker-calendar td.ui-datepicker-week-end:hover > a {
     -webkit-transform: rotate(180deg);
     -moz-transform: rotate(180deg);
     -o-transform: rotate(180deg);
-    background-position-y: 4px;
+    background-position-y: 0px;
 }
 .ui-datepicker-prev.ui-corner-all {
     cursor: pointer;
