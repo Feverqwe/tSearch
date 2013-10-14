@@ -1,6 +1,6 @@
 /nbproject/
 /.idea/
-/build
-/build_chrome*
-/build_firefox
-/build_opera*
+/build/
+/build_chrome_ext/
+/build_firefox/
+/build_opera/
