@@ -1706,6 +1706,7 @@ var view = function() {
             time_filter_select.children("option[value=all]").text(_lang.time_f_s[0]);
             time_filter_select.children("option[value=1h]").text(_lang.time_f_s[1]);
             time_filter_select.children("option[value=24h]").text(_lang.time_f_s[2]);
+            time_filter_select.children("option[value=72h]").text(_lang.time_f_s[2]);
             time_filter_select.children("option[value=1w]").text(_lang.time_f_s[3]);
             time_filter_select.children("option[value=1m]").text(_lang.time_f_s[4]);
             time_filter_select.children("option[value=1y]").text(_lang.time_f_s[5]);
@@ -1776,6 +1777,9 @@ var view = function() {
                 } else
                 if (value === "24h") {
                     utime = date - 60 * 60 * 24;
+                } else
+                if (value === "72h") {
+                    utime = date - 60 * 60 * 24 * 3;
                 } else
                 if (value === "1w") {
                     utime = date - 60 * 60 * 24 * 7;
