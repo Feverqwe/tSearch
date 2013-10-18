@@ -114,10 +114,18 @@ java -jar yuicompressor-2.4.8.jar .\ff_o\chrome_ext\css\popup.css -o .\build_chr
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\ff_o\chrome_ext\js\popup.js --js_output_file .\build_chrome_ext\js\popup.js
 
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\ff_o\chrome_ext\js\btn.js --js .\js\background.js --js_output_file .\build_chrome_ext\js\background.js
+
+::censure
+java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\ff_o\censure\js\explore.js --js .\js\ad.js --js .\js\counter.js --js_output_file .\build_chrome_ext\js\view.js
+echo "var censure = true;"  >>.\build_chrome_ext\js\background.js
+::censure
+
 del .\build_chrome_ext\js\btn.js
 
 java -jar htmlcompressor-1.5.3.jar -t html .\build_chrome_ext\popup.html -o .\build_chrome_ext\popup.html
 :: chrome ext
+
+
 
 del .\build_chrome.zip
 del .\build_firefox.xpi
