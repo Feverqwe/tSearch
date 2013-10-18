@@ -2045,6 +2045,9 @@ var view = function() {
                     triggerBlank();
                 }
             });
+            if (window.censure) {
+                $('div.explore').children("div.source").remove();
+            }
         }
     };
 }();

@@ -447,6 +447,11 @@ var options = function() {
                 $('input[name="get_from_cloud"]').css('display', 'none');
                 $('input[name="save_in_cloud"]').css('display', 'none');
             }
+
+            if (window.censure) {
+                $('input[name="use_english_postername"]').parents().eq(1).hide();
+                $('input[name="allow_favorites_sync"]').parents().eq(1).hide();
+            }
             tmp_vars.tracker_list.sortable({placeholder: "ui-state-highlight",
                 stop: function() {
                     saveCurrentProfile();

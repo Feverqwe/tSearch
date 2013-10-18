@@ -2,5 +2,6 @@
 /.idea/
 /build/
 /build_chrome_ext/
+/build_chrome_ext_cens/
 /build_firefox/
 /build_opera/
