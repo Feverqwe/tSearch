@@ -26,6 +26,7 @@ var view = function() {
     var autoSetCat = parseInt(GetSettings('autoSetCat') || 1);
     var allow_get_description = parseInt(GetSettings('allow_get_description') || 1);
     var _sub_select_enable = parseInt(GetSettings('sub_select_enable') || 1);
+    var filter_panel_to_left = parseInt(GetSettings('filter_panel_to_left') || 0);
     var update_table = {
         timer: null,
         time: null
@@ -1723,6 +1724,12 @@ var view = function() {
             $('div.peer_filter').children('p').eq(0).text(_lang['peer_filter']);
             $('div.peer_filter').find('span.from').eq(0).text(_lang['size_filter_f']);
             $('div.peer_filter').find('span.to').eq(0).text(_lang['size_filter_t']);
+
+            if (filter_panel_to_left) {
+                $("div.content div.right").css({"float": "left", "padding-left": "5px"});
+                $("div.content div.left").css({"margin-left": "180px", "margin-right": "initial"});
+                $("div.topbtn").css({"right": "auto"});
+            }
 
             time_filter.find('input').datepicker({
                 defaultDate: "0",

@@ -364,6 +364,7 @@ div.explore > ul > li div {
 div.explore > ul {
     margin: 0;
     padding: 0;
+    list-style-type: none;
 }
 
 div.explore div.move_it {
@@ -652,6 +653,7 @@ div.top_search {
     margin-top: -15px;
     margin-bottom: 20px;
     overflow: hidden;
+    position: relative;
 }
 div.top_search a {
     color: #0051D8;

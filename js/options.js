@@ -19,7 +19,8 @@ var options = function() {
         allow_favorites_sync: {"v": 0, "t": "checkbox"},
         sub_select_enable: {"v": 1, "t": "checkbox"},
         kinopoisk_category: {"v": 1, "t": "checkbox"},
-        kinopoisk_f_id: {"v": 1, "t": "number"}
+        kinopoisk_f_id: {"v": 1, "t": "number"},
+        filter_panel_to_left: {"v": 0, "t": "checkbox"}
     };
     var loadSettings = function() {
         var settings = {};
