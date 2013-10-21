@@ -1727,7 +1727,7 @@ var view = function() {
 
             if (filter_panel_to_left) {
                 $("div.content div.right").css({"float": "left", "padding-left": "5px"});
-                $("div.content div.left").css({"margin-left": "180px", "margin-right": "initial"});
+                $("div.content div.left").css({"margin-left": "180px", "margin-right": "0"});
                 $("div.topbtn").css({"right": "auto"});
             }
 
