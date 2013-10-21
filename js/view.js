@@ -2053,7 +2053,7 @@ var view = function() {
                 }
             });
             if (window.censure) {
-                $('div.explore').children("div.source").remove();
+                $('div.explore').children("div.source").html("<div class=\"censure\">"+_lang.cens+"<a href=\"https://addons.opera.com/ru/extensions/details/torrents-multisearch/\">Opera</a></div>");
             }
         }
     };

@@ -3,10 +3,12 @@ rd /S /Q .\build_opera
 rd /S /Q .\build_firefox
 rd /S /Q .\build_chrome_ext
 rd /S /Q .\build_chrome_ext_cens
+rd /S /Q .\build_chrome_cens
 mkdir .\build_opera
 mkdir .\build_firefox
 mkdir .\build_chrome_ext
 mkdir .\build_chrome_ext_cens
+mkdir .\build_chrome_cens
 mkdir .\build
 xcopy .\_locales .\build\_locales\ /E
 xcopy .\js .\build\js\ /E
@@ -60,8 +62,14 @@ java -jar htmlcompressor-1.5.3.jar -t html .\build\history.html -o .\build\histo
 java -jar htmlcompressor-1.5.3.jar -t html .\build\index.html -o .\build\index.html
 java -jar htmlcompressor-1.5.3.jar -t html .\build\magic.html -o .\build\magic.html
 java -jar htmlcompressor-1.5.3.jar -t html .\build\options.html -o .\build\options.html
-:: ff
 
+::chrome censure
+xcopy .\build .\build_chrome_cens\ /E
+java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\ff_o\censure\js\explore.js --js .\js\ad.js --js .\js\counter.js --js_output_file .\build_chrome_cens\js\view.js
+echo var censure = true;  >>.\build_chrome_cens\js\torrent_lib.js
+::chrome censure
+
+:: ff
 mkdir .\build_firefox\chrome
 xcopy .\build .\build_firefox\chrome\content\ /E
 
@@ -133,11 +141,13 @@ del .\build_firefox.xpi
 del .\build_opera.oex
 del .\build_chrome_ext.zip
 del .\build_chrome_ext_cens.zip
+del .\build_chrome_cens.zip
 
 7za a -tzip .\build_chrome.zip .\build\*
 7za a -tzip .\build_firefox.xpi .\build_firefox\*
 7za a -tzip .\build_opera.oex .\build_opera\*
 7za a -tzip .\build_chrome_ext.zip .\build_chrome_ext\*
 7za a -tzip .\build_chrome_ext_cens.zip .\build_chrome_ext_cens\*
+7za a -tzip .\build_chrome_cens.zip .\build_chrome_cens\*
 
 copy .\build_chrome_ext.zip .\build_opera_nex.nex

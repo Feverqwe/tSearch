@@ -5,11 +5,13 @@ rm -r ./build_opera
 rm -r ./build_firefox
 rm -r ./build_chrome_ext
 rm -r ./build_chrome_ext_cens
+rm -r ./build_chrome_cens
 mkdir ./build
 mkdir ./build_opera
 mkdir ./build_firefox
 mkdir ./build_chrome_ext
 mkdir ./build_chrome_ext_cens
+mkdir ./build_chrome_cens
 cp -r ./_locales ./build/.
 cp -r ./js ./build/.
 cp -r ./images ./build/.
@@ -67,7 +69,11 @@ java -jar htmlcompressor-1.5.3.jar -t html ./build/magic.html -o ./build/magic.h
 java -jar htmlcompressor-1.5.3.jar -t html ./build/options.html -o ./build/options.html
 #<chrome comression
 
-
+#>chrome censure
+cp -r ./build/ ./build_chrome_cens/.
+java -jar compiler.jar --js ./js/jquery.tablesorter.js --js ./js/apprise-1.5.js --js ./js/storage.js --js ./js/lang.js --js ./js/engine.js --js ./js/view.js --js ./ff_o/censure/js/explore.js --js ./js/ad.js --js ./js/counter.js --js_output_file ./build_chrome_cens/js/view.js
+echo "var censure = true;" >> ./build_chrome_cens/js/torrent_lib.js
+#<chrome censure
 
 #firefox
 mkdir ./build_firefox/chrome
@@ -142,5 +148,9 @@ cd ../build_opera/
 zip -9 -r ../build_opera.oex ./
 cd ../build_chrome_ext/
 zip -9 -r ../build_chrome_ext.zip ./
+cd ../build_chrome_ext_cens/
+zip -9 -r ../build_chrome_ext_cens.zip ./
+cd ../build_chrome_cens/
+zip -9 -r ../build_chrome_cens.zip ./
 cd ..
 cp ./build_chrome_ext.zip ./build_opera_nex.nex

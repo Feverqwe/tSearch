@@ -1,6 +1,7 @@
 var get_lang = function(lang) {
     var lang_arr_en = {
         t: 'en',
+        cens: 'This is the censored version. Full version in ',
         'categorys': [
             [3, 'Films'],
             [0, 'Serials'],
@@ -288,6 +289,7 @@ var get_lang = function(lang) {
     };
     var lang_arr_ru = {
         t: 'ru',
+        cens: 'Это цензурированная версия. Полная версия в ',
         'categorys': [
             [3, 'Фильмы'],
             [0, 'Сериалы'],
