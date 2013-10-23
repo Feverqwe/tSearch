@@ -139,7 +139,9 @@ echo "var censure = true;" >> ./build_chrome_ext_cens/js/torrent_lib.js
 rm ./build_chrome.zip
 rm ./build_firefox.xpi
 rm ./build_opera.oex
+rm ./build_chrome_cens.zip
 rm ./build_chrome_ext.zip
+rm ./build_chrome_ext_cens.zip
 cd ./build/
 zip -9 -r ../build_chrome.zip ./
 cd ../build_firefox/
