@@ -589,21 +589,20 @@ var view = function() {
         loadingStatus(1, t);
         if (sum > 0) {
             tmp_vars.rez_table_tbody.append(contentUnFilter(c));
-            table_update_timer(1);
+            table_update_timer();
         }
     };
-    var table_update_timer = function(a) {
-        if (a === undefined) {
-            //выполнятеся от таймера
+    var table_update_timer = function() {
+        /*
+         * таймер обновления таблицы
+         */
+        clearTimeout(update_table.timer);
+        update_table.timer = setTimeout(function() {
             //обновление сортровки
             tmp_vars.rez_table.trigger("update");
             //обновление категории
             updateCategorys();
-        } else {
-            //выполнфется тригером
-            clearTimeout(update_table.timer);
-            update_table.timer = setTimeout(table_update_timer, 200);
-        }
+        }, 200);
     };
     var bytesToSize = function(bytes, nan) {
         //переводит байты в строчки
@@ -647,10 +646,6 @@ var view = function() {
             return '∞';
         else
             return utiemonstr(i);
-    };
-    var round_day_unixtime = function(i) {
-        var dt = new Date(i * 1000);
-        return Math.round(new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()).getTime() / 1000);
     };
     var getHandM_unixtime = function(i) {
         var dt = new Date(i * 1000);
@@ -738,11 +733,11 @@ var view = function() {
         }
     };
     var contentFilter = function(c) {
-        var c = c.replace(/\/\//img, '#blockurl#').replace(/ src=(['"]{0,1})/img, ' src=$11.png#blockrurl#');
+        c = c.replace(/\/\//img, '#blockurl#').replace(/ src=(['"]{0,1})/img, ' src=$11.png#blockrurl#');
         return c;
     };
     var contentUnFilter = function(c) {
-        var c = c.replace(/1.png#blockrurl#/img, '').replace(/#blockrurl#/img, '').replace(/#blockurl#/img, '//');
+        c = c.replace(/1.png#blockrurl#/img, '').replace(/#blockrurl#/img, '').replace(/#blockurl#/img, '//');
         return c;
     };
     var syntax_highlighting = function(t) {
@@ -988,6 +983,7 @@ var view = function() {
             return '';
         };
         var sub_select = function(name) {
+            //выделяет то, что в скобках
             if (!_sub_select_enable)
                 return name;
             return name.replace(/(\[[^\]]*\]|\([^\)]*\))/g, '<span class="sub_name">$1</span>');
@@ -1012,6 +1008,7 @@ var view = function() {
             };
         }
         var cal_word_rate = function(a, b, c) {
+            //word_hl - счетчик подсвеченных слов
             var sub = (c[b - 1] || '') + (c[b + a.length] || '');
             if (sub !== "" && sub !== "  " && sub !== " " && (/[\wА-Яа-я]/).test(sub)) {
                 return a;
@@ -1033,8 +1030,9 @@ var view = function() {
             return '<b>' + a + '</b>';
         };
         if (keyword_filter_cache["year"]) {
-            if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
-                var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
+            //проверка по маске Name-no-year-lowc /|( .*year.*
+            if (new RegExp('^' + keyword_filter_cache.keyword_no_year_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
+                var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
                 rate.name = (words.length - 1) * word_rate + first_rate;
                 hl_name = sub_select(hl_name);
                 return {
@@ -1042,9 +1040,9 @@ var view = function() {
                     r: rate
                 };
             }
-            //проверка по маске ([.*]) Name / .*year.*
-            if (new RegExp('^[\\(\\[]{1}.*[\\)\\]]{1} ' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
-                var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
+            //проверка по маске ([.*]) Name-no-year-lowc /|( .*year.*
+            if (new RegExp('^[\\(\\[]{1}.*[\\)\\]]{1} ' + keyword_filter_cache.keyword_no_year_regexp_lover + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
+                var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp_lover + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
                 rate.name = words.length * word_rate;
                 hl_name = sub_select(hl_name);
                 return {
@@ -1052,6 +1050,7 @@ var view = function() {
                     r: rate
                 };
             }
+            //проверка по маске .* Name-no-year /|( .*year.*
             if (new RegExp('.* ' + keyword_filter_cache.keyword_no_year_regexp + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
                 rate.name = words.length * word_rate;
@@ -1061,6 +1060,7 @@ var view = function() {
                     r: rate
                 };
             }
+            //проверка по маске Name-no-year .*year.*
             if (new RegExp('^' + keyword_filter_cache.keyword_no_year_regexp + ' .*' + keyword_filter_cache.year + '.*').test(name)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
                 rate.name = (words.length - 1) * word_rate + first_rate;
@@ -1070,6 +1070,7 @@ var view = function() {
                     r: rate
                 };
             }
+            //проверка по маске .* Name-no-year .*year.*
             if (new RegExp('.* ' + keyword_filter_cache.keyword_no_year_regexp + ' .*' + keyword_filter_cache.year + '.*').test(name)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp + '|' + keyword_filter_cache.year + ')', "g"), "<b>$1</b>");
                 rate.name = words.length * word_rate;
@@ -1080,6 +1081,7 @@ var view = function() {
                 };
             }
         } else {
+            //проверка по маске Name-lowc
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + '$').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
                 rate.name = (words.length - 1) * word_rate + first_rate;
@@ -1089,6 +1091,7 @@ var view = function() {
                     r: rate
                 };
             }
+            //проверка по маске Name-lowc /|(
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
                 rate.name = (words.length - 1) * word_rate + first_rate;
@@ -1098,7 +1101,7 @@ var view = function() {
                     r: rate
                 };
             }
-            //проверка по маске ([.*]) Name / .*year.*
+            //проверка по маске ([.*]) Name-lowc /|(
             if (new RegExp('^[([]{1}.*[)]]{1} ' + keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
                 rate.name = words.length * word_rate;
@@ -1108,6 +1111,7 @@ var view = function() {
                     r: rate //95
                 };
             }
+            //проверка по маске .* Name-lowc /|(
             if (new RegExp(keyword_filter_cache.keyword_regexp_lover + ' [/|(]{1} ').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
                 rate.name = words.length * word_rate;
@@ -1117,6 +1121,7 @@ var view = function() {
                     r: rate //86
                 };
             }
+            //проверка по маске Name-lowc -/(.
             if (new RegExp('^' + keyword_filter_cache.keyword_regexp_lover + '[-/(\s.]{1}').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_regexp_lover + ')', "ig"), "<b>$1</b>");
                 rate.name = (words.length - 1) * word_rate + first_rate;
@@ -1138,6 +1143,9 @@ var view = function() {
         };
     };
     var filterTextCheck = function(s, t) {
+        /*
+         * фильтр по фразам в названии раздачи
+         */
         if (s.length === 0)
             return null;
         var r = t;
@@ -1531,6 +1539,7 @@ var view = function() {
                 }
             },
             /*
+             * unstable api
              messages: {
              noResults: '',
              results: function() {}
