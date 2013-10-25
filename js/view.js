@@ -38,6 +38,9 @@ var view = function() {
     var tmp_var_qbox = 0;
     var tmp_vars = {};
     var auth = function(s, t) {
+        /*
+         * отображает требование авторизоваться
+         */
         //if (backgroundMode) return;
         tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('ul').remove();
         if (!s) {
@@ -45,6 +48,9 @@ var view = function() {
         }
     };
     var clear_table = function() {
+        /*
+         * очищает результаты поиска, сбрасывает все в ноль
+         */
         backgroundMode = false;
         $('div.about_panel').empty();
         tmp_vars.rez_table_tbody.get(0).innerHTML = "";
@@ -73,6 +79,9 @@ var view = function() {
         updateCategorys();
     };
     var loadingStatus = function(s, t) {
+        /*
+         * отображает иконку загрузки, ошибки итп
+         */
         //if (backgroundMode) return;
         var tracker_img = tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('div.tracker_icon');
         switch (s) {
@@ -88,6 +97,9 @@ var view = function() {
         }
     };
     var addTrackerInList = function(i) {
+        /*
+         * динамическое ддобавление трекеров в список
+         */
         $('body').append('<style class="tr_icon">div.tracker_icon.num' + i + ' { ' + ((tracker[i].icon.length === 0 || tracker[i].icon[0] === '#') ? 'background-color: ' + ((tracker[i].icon.length !== 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;' : 'background-image: url(' + tracker[i].icon + ');') + ' }</style>');
         $('<li data-id="' + i + '"/>').append($('<div class="tracker_icon num' + i + '" data-count="0"/>')).append($('<a href="#">' + tracker[i].name + '</a>').on("click", function(event) {
             event.preventDefault();
@@ -104,6 +116,9 @@ var view = function() {
         })).append('<i/>').appendTo($('ul.trackers'));
     };
     var ClearTrackerList = function() {
+        /*
+         * тригер очистки списка трекеров
+         */
         if (tmp_vars.ul_trackers === undefined) {
             init_tmp_vars();
         }
@@ -126,7 +141,9 @@ var view = function() {
         return quality;
     };
     var autoset_Category = function(quality, category) {
-
+        /*
+         * Алгоритм определения категории
+         */
         var rate = {films: 0, serials: 0, anime: 0, dochumor: 0, music: 0, games: 0, books: 0, cartoons: 0, software: 0, sport: 0, xxx: 0, other: 0, m: []};
         var cal_rate = function(a, b, c) {
             if ($.inArray(a, rate.m) === -1) {
@@ -269,6 +286,7 @@ var view = function() {
     };
     var log_errors = function(t, er) {
         /*
+         * Описывает ошибки трекера
          * t - id торрента
          * er - массив ошибок
          */
@@ -318,6 +336,9 @@ var view = function() {
         console.warn(msg);
     };
     var torrent_check = function(v, t, er) {
+        /*
+         * Проверка тестов
+         */
         if (er === undefined) {
             er = [0, 0, 0, 0, 0, 0, 0, 0, 0];
         }
@@ -368,9 +389,15 @@ var view = function() {
         return er;
     };
     var teaser_filter = function(title) {
+        /*
+         * фильтр тизеров
+         */
         return ((/Трейлер|Тизер|Teaser|Trailer/i).test(title)) ? 1 : 0;
     };
     var inBGMode = function(t, a, s) {
+        /*
+         * поиск в фоне - для определения качества чего либо
+         */
         if ("year" in keyword_filter_cache === false) {
             keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
             if (keyword_filter_cache["year"]) {
@@ -474,6 +501,7 @@ var view = function() {
     };
     var write_result = function(t, a, s, p) {
         /*
+         * Обрабатывает полученный массив торрентов
          * t - id торрент трекера
          * a - массив записей
          * s - текст поиска
@@ -1009,6 +1037,7 @@ var view = function() {
         }
         var cal_word_rate = function(a, b, c) {
             //word_hl - счетчик подсвеченных слов
+            //year_hl - если 1 то значит год в названии найден
             var sub = (c[b - 1] || '') + (c[b + a.length] || '');
             if (sub !== "" && sub !== "  " && sub !== " " && (/[\wА-Яа-я]/).test(sub)) {
                 return a;
@@ -1148,14 +1177,15 @@ var view = function() {
          */
         if (s.length === 0)
             return null;
+        s = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
         var r = t;
         if (AdvFiltration === 1) {
-            var tmp = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1").split(" ");
+            var tmp = s.split(" ");
             if ((new RegExp(tmp.join('|'), "i")).test(t))
                 r = null;
         } else
         if (AdvFiltration === 2) {
-            var tmp = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1").split(" ");
+            var tmp = s.split(" ");
             var tmp_l = tmp.length;
             var trgr = true;
             for (var i = 0; i < tmp_l; i++) {
@@ -1168,7 +1198,7 @@ var view = function() {
                 r = null;
         }
         else {
-            var tmp = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1").split(",");
+            var tmp = s.split(",");
             var tmp_l = tmp.length;
             var trgr = true;
             for (var i = 0; i < tmp_l; i++) {
@@ -1220,6 +1250,9 @@ var view = function() {
         }
     };
     var updateCategorys = function() {
+        /*
+         * обновляет счетчик раздач в категориях
+         */
         var sum = 0;
         var count_c = categorys.length;
         var filter = '';
@@ -1271,6 +1304,9 @@ var view = function() {
         }
     };
     var tableFilter = function(keyword) {
+        /*
+         * фильтр по словам
+         */
         var clear_btn = $('div.filter div.btn');
         clear_btn.css('background-image', 'url(images/loading.gif)');
         keyword = $.trim(keyword).replace(/\s+/g, " ");
@@ -1323,6 +1359,9 @@ var view = function() {
         return ((sizeFilter.from > 0 && value >= sizeFilter.from || sizeFilter.from <= 0) && ((sizeFilter.to > 0 && value <= sizeFilter.to) || (sizeFilter.to <= 0)));
     };
     tableSizeFilter = function() {
+        /*
+         * фильтр по размеру раздачи
+         */
         var tr = tmp_vars.rez_table_tbody.children('tr');
         var tr_count = tr.length;
         for (var i = 0; i < tr_count; i++) {
@@ -1347,6 +1386,9 @@ var view = function() {
         return ((timeFilter.from > 0 && value >= timeFilter.from || timeFilter.from <= 0) && ((timeFilter.to > 0 && value <= timeFilter.to) || (timeFilter.to <= 0)));
     };
     tableTimeFilter = function(from, to) {
+        /*
+         * фильтр по времени раздачи
+         */
         timeFilter = {
             from: from || 0,
             to: to || 0
@@ -1375,6 +1417,9 @@ var view = function() {
         return ((seedFilter.from > -1 && value >= seedFilter.from || seedFilter.from < 0) && ((seedFilter.to > -1 && value <= seedFilter.to) || (seedFilter.to < 0)));
     };
     tableSeedFilter = function() {
+        /*
+         * фильтр по сидам
+         */
         var tr = tmp_vars.rez_table_tbody.children('tr');
         var tr_count = tr.length;
         for (var i = 0; i < tr_count; i++) {
@@ -1399,6 +1444,9 @@ var view = function() {
         return ((peerFilter.from > -1 && value >= peerFilter.from || peerFilter.from < 0) && ((peerFilter.to > -1 && value <= peerFilter.to) || (peerFilter.to < 0)));
     };
     tablePeerFilter = function() {
+        /*
+         * фильтр по пирам
+         */
         var tr = tmp_vars.rez_table_tbody.children('tr');
         var tr_count = tr.length;
         for (var i = 0; i < tr_count; i++) {
@@ -1420,6 +1468,9 @@ var view = function() {
         updateTrackerCount();
     };
     var triggerBlank = function() {
+        /*
+         * рычаг очистки страницы - возврат на главную
+         */
         $(window).scrollTop(0);
         $('div.result_panel').css('display', 'none');
         $('div.explore').css('display', 'block');
@@ -1436,6 +1487,9 @@ var view = function() {
         }
     };
     var triggerSearch = function(keyword) {
+        /*
+         * рычаг старта поиска
+         */
         if (keyword === "#") {
             return false;
         }
@@ -1466,6 +1520,9 @@ var view = function() {
         return false;
     };
     var getQuality = function(keyword, id, section) {
+        /*
+         * рычаг получения качества раздачи
+         */
         //flush for bg mode
         keyword_filter_cache = {};
         backgroundMode = true;
@@ -1475,6 +1532,9 @@ var view = function() {
         _gaq.push(['_trackEvent', 'Quality', 'keyword', keyword]);
     };
     var load_category = function(c) {
+        /*
+         * загрузка списка категорий
+         */
         tmp_vars.ul_categorys.empty();
         var count = c.length;
         categorys = [];
@@ -1487,6 +1547,9 @@ var view = function() {
         tmp_vars.ul_categorys.prepend('<li class="selected">' + _lang['cat_all'] + ' <i></i></li>');
     };
     var AddAutocomplete = function() {
+        /*
+         * добавляет автозавершение для поисковой строки
+         */
         if (AutoComplite_opt === 0) {
             var AutocompleteArr = [];
             var order = function(a, b) {
@@ -1557,6 +1620,9 @@ var view = function() {
         inp.autocomplete("close");
     };
     var LoadProfiles = function() {
+        /*
+         * загружает список профилей
+         */
         var defProfile = parseInt(GetSettings('defProfile') || 0);
         var arr = engine.getProfileList();
         if (arr.length <= 1)
