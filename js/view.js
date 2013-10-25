@@ -267,111 +267,101 @@ var view = function() {
         }
         return -1;
     };
-    var torrent_check = function(v, t) {
+    var log_errors = function(t, er) {
+        if (er === undefined)
+            return;
         var tests = ('tests' in tracker[t]) ? tracker[t].tests : false;
-        var er = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        //tests syntax:
+        //0 - category exist
+        //1 - cotegory title
+        //2 - cotegory url
+        //3 - cotegory id
+        //4 - file size
+        //5 - dl link
+        //6 - seeds
+        //7 - leechs
+        //8 - time
+        var all_errors = er;
+        if (tests) {
+            for (var i = 0; i < tests.length; i++) {
+                if (tests[i] !== 0) {
+                    er[i] = 0;
+                }
+            }
+        }
+        if (er.join(',') === '0,0,0,0,0,0,0,0,0') {
+            return;
+        }
+        var msg = 'Tracker ' + tracker[t].name + ' have problem!' + "\n" + 'Tests: ' + er.join(',') + "\n" + 'All tests: ' + all_errors.join(',');
+        if (er[0])
+            msg += "\n" + er[0] + ' - cotegory exist fixed!';
+        if (er[1])
+            msg += "\n" + er[1] + ' - cotegory title fixed!';
+        if (er[2])
+            msg += "\n" + er[1] + ' - cotegory url fixed!';
+        if (er[3])
+            msg += "\n" + er[1] + ' - cotegory id fixed!';
+        if (er[4])
+            msg += "\n" + er[4] + ' - file size fixed!';
+        if (er[5])
+            msg += "\n" + er[5] + ' - dl link fixed!';
+        if (er[6])
+            msg += "\n" + er[6] + ' - seeds fixed!';
+        if (er[7])
+            msg += "\n" + er[7] + ' - leechs fixed!';
+        if (er[8])
+            msg += "\n" + er[8] + ' - time fixed!';
+        console.warn(msg);
+    };
+    var torrent_check = function(v, t, er) {
+        if (er === undefined) {
+            er = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        }
         if ('category' in v === false) {
             v['category'] = {
                 title: null,
                 url: null,
                 id: -1
             };
-            er[0] = 1;
-            if (tests && tests[0] === 2) {
-                er[0] = 0;
-            }
+            er[0] += 1;
         }
         if (v.category.title === undefined || v.category.title === null || v.category.title.length === 0) {
             v.category.title = null;
-            er[1] = 1;
-            if (tests && tests[1] !== 0) {
-                er[1] = 0;
-            }
+            er[1] += 1;
         }
         if (v.category.url === undefined || v.category.url === null || v.category.url.length === 0) {
             v.category.url = null;
-            er[2] = 1;
-            if (tests && tests[2] !== 0) {
-                er[2] = 0;
-            }
+            er[2] += 1;
         }
         if (v.category.id === undefined || v.category.id === null || v.category.id.length === 0) {
             v.category.id = -1;
-            er[3] = 1;
-            if (tests && tests[3] !== 0) {
-                er[3] = 0;
-            }
+            er[3] += 1;
         }
         v.size = parseFloat(v.size);
         if (isNaN(v.size)) {
             v.size = 0;
-            er[4] = 1;
-            if (tests && tests[4] !== 0) {
-                er[4] = 0;
-            }
+            er[4] += 1;
         }
         if (v.dl === undefined || v.dl === null || v.dl.length === 0) {
             v.dl = null;
-            er[5] = 1;
-            if (tests && tests[5] !== 0) {
-                er[5] = 0;
-            }
+            er[5] += 1;
         }
         v.seeds = parseInt(v.seeds);
         if (isNaN(v.seeds)) {
             v.seeds = 1;
-            er[6] = 1;
-            if (tests && tests[6] !== 0) {
-                er[6] = 0;
-            }
+            er[6] += 1;
         }
         v.leechs = parseInt(v.leechs);
         if (isNaN(v.leechs)) {
             v.leechs = 0;
-            er[7] = 1;
-            if (tests && tests[7] !== 0) {
-                er[7] = 0;
-            }
+            er[7] += 1;
         }
         v.time = parseInt(v.time);
         if (isNaN(v.time)) {
             v.time = 0;
-            er[8] = 1;
-            if (tests && tests[8] !== 0) {
-                er[8] = 0;
-            }
+            er[8] += 1;
         }
-        if (er.join(',') !== '0,0,0,0,0,0,0,0,0') {
-            //tests syntax:
-            //0 - category exist
-            //1 - cotegory title
-            //2 - cotegory url
-            //3 - cotegory id
-            //4 - file size
-            //5 - dl link
-            //6 - seeds
-            //7 - leechs
-            //8 - time
-            console.log('Item in tracker ' + tracker[t].name + ' have problem! Tests: ' + er.join(','));
-            if (er[0])
-                console.log(er[0] + ' - cotegory exist fix!');
-            if (er[1])
-                console.log(er[1] + ' - cotegory title fix');
-            if (er[2])
-                console.log(er[1] + ' - cotegory url fix');
-            if (er[3])
-                console.log(er[1] + ' - cotegory id fix');
-            if (er[4])
-                console.log(er[4] + ' - file size fix');
-            if (er[5])
-                console.log(er[5] + ' - dl link fix');
-            if (er[6])
-                console.log(er[6] + ' - seeds fix');
-            if (er[7])
-                console.log(er[7] + ' - leechs fix');
-            if (er[8])
-                console.log(er[8] + ' - time fix');
-        }
+        return er;
     };
     var teaser_filter = function(title) {
         return ((/Трейлер|Тизер|Teaser|Trailer/i).test(title)) ? 1 : 0;
@@ -398,12 +388,13 @@ var view = function() {
             keyword_filter_cache["keyword_no_year_regexp_lover"] = keyword_filter_cache["keyword_no_year_regexp"].toLowerCase();
         }
         var sum = 0;
+        var errors = undefined;
         $.each(a, function(k, v) {
-            if (typeof(v.title) !== 'string' || typeof(v.url) !== 'string' || v.title.length === 0 || v.url.length === 0) {
-                console.log('Item in tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
+            if (typeof (v.title) !== 'string' || typeof (v.url) !== 'string' || v.title.length === 0 || v.url.length === 0) {
+                console.error('Item in tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
                 return true;
             }
-            torrent_check(v, t);
+            errors = torrent_check(v, t, errors);
             if (HideZeroSeed && v.seeds === 0) {
                 if (tmp_var_qbox === 0) {
                     explore.setQuality({id: backgroundModeID.id, section: backgroundModeID.section});
@@ -471,6 +462,7 @@ var view = function() {
                 item.m = quality.qbox;
             }
         });
+        log_errors(t, errors);
         updateTrackerResultCount(t, sum);
         loadingStatus(1, t);
         tmp_var_qbox = 1;
@@ -508,12 +500,13 @@ var view = function() {
             keyword_filter_cache["result_filter_input"] = $.trim($('div.filter').children('input').val()).replace(/\s+/g, " ");
         }
         var sum = 0;
+        var errors = undefined;
         $.each(a, function(k, v) {
-            if (typeof(v.title) !== 'string' || typeof(v.url) !== 'string' || v.title.length === 0 || v.url.length === 0) {
-                console.log('Tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
+            if (typeof (v.title) !== 'string' || typeof (v.url) !== 'string' || v.title.length === 0 || v.url.length === 0) {
+                console.error('Tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
                 return true;
             }
-            torrent_check(v, t);
+            errors = torrent_check(v, t, errors);
             if (HideZeroSeed && v.seeds === 0) {
                 return true;
             }
@@ -530,7 +523,7 @@ var view = function() {
                 v.category.title = null;
             }
             if (v.title.length === 0) {
-                console.log('Item in tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
+                console.error('Item in tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
                 return true;
             }
             var title = syntax_highlighting(v.title);
@@ -578,6 +571,7 @@ var view = function() {
                     + ((!HideLeech) ? '  <td class="leechs" data-value="' + v.leechs + '">' + v.leechs + '</td>' : '')
                     + '</tr>';
         });
+        log_errors(t, errors);
         if (p !== undefined) {
             sum = p;
         }
@@ -1311,7 +1305,7 @@ var view = function() {
         doFiltering();
         updateCategorys();
         updateTrackerCount();
-        if ( keywordFilter === null ) {
+        if (keywordFilter === null) {
             clear_btn.hide();
         } else {
             clear_btn.css('background-image', 'url(images/clear.png)');
@@ -2055,7 +2049,7 @@ var view = function() {
                 }
             });
             if (window.censure) {
-                $('div.explore').children("div.source").html("<div class=\"censure\">"+_lang.cens+"<a href=\"https://addons.opera.com/ru/extensions/details/torrents-multisearch/\">Opera</a></div>");
+                $('div.explore').children("div.source").html("<div class=\"censure\">" + _lang.cens + "<a href=\"https://addons.opera.com/ru/extensions/details/torrents-multisearch/\">Opera</a></div>");
             }
         }
     };

@@ -1,8 +1,4 @@
 var tracker = [];
-if (GetSettings('debug') !== "1") {
-    console.log = function() {
-    };
-}
 var engine = function() {
     var makeDefaultList = function() {
         def = ['bitsnoop', 'extratorrent', 'fenopy', 'torrentz', 'thepiratebay', 'isohunt', 'kickass'];
@@ -357,25 +353,26 @@ var engine = function() {
                         arr.push(obj);
                     }
                     if (er.join(',') !== '0,0,0,0,0,0,0,0') {
-                        console.log('Tracker ' + me.name + ' have problem!');
+                        var msg = 'Tracker ' + me.name + ' have problem!';
                         if (er[2])
-                            console.log(er[2] + ' - torrent title skip');
+                            msg += "\n" + er[2] + ' - torrent title skip';
                         if (er[3])
-                            console.log(er[3] + ' - torrent url skip');
+                            msg += "\n" + er[3] + ' - torrent url skip';
                         if (er[0])
-                            console.log(er[0] + ' - cotegory title fix');
+                            msg += "\n" + er[0] + ' - cotegory title fix';
                         if (er[1])
-                            console.log(er[1] + ' - cotegory url fix');
+                            msg += "\n" + er[1] + ' - cotegory url fix';
                         if (er[4])
-                            console.log(er[4] + ' - sile size fix');
+                            msg += "\n" + er[4] + ' - sile size fix';
                         if (er[5])
-                            console.log(er[5] + ' - dl link fix');
+                            msg += "\n" + er[5] + ' - dl link fix';
                         if (er[6])
-                            console.log(er[6] + ' - seeds fix');
+                            msg += "\n" + er[6] + ' - seeds fix';
                         if (er[7])
-                            console.log(er[7] + ' - leechs fix');
+                            msg += "\n" + er[7] + ' - leechs fix';
                         if (er[8])
-                            console.log(er[8] + ' - time fix');
+                            msg += "\n" + er[8] + ' - time fix';
+                        console.warn(msg);
                     }
                     return arr;
                 };
