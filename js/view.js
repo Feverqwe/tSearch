@@ -1635,7 +1635,9 @@ var view = function() {
         if (HideLeech === 0 && peerFilter !== null) {
             advFilter[4] = 1;
         }
-        showFilter.push('data-filter="' + advFilter.join(',') + '"');
+        if (advFilter.indexOf(1) !== -1) {
+            showFilter.push('data-filter="' + advFilter.join(',') + '"');
+        }
         var selector = '#rez_table>tbody>tr';
         var uF = $('style.userFilter');
         if (showFilter.length === 0) {
