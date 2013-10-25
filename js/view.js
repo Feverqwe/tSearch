@@ -268,6 +268,10 @@ var view = function() {
         return -1;
     };
     var log_errors = function(t, er) {
+        /*
+         * t - id торрента
+         * er - массив ошибок
+         */
         if (er === undefined)
             return;
         var tests = ('tests' in tracker[t]) ? tracker[t].tests : false;
@@ -469,6 +473,12 @@ var view = function() {
         explore.setQuality(backgroundModeID, keyword_filter_cache["year"]);
     };
     var write_result = function(t, a, s, p) {
+        /*
+         * t - id торрент трекера
+         * a - массив записей
+         * s - текст поиска
+         * p - количество найденный торрентов, указывается принудительно если загрузка более 1 страницы. 
+         */
         if (backgroundMode) {
             return inBGMode(t, a, s);
         }
@@ -583,24 +593,14 @@ var view = function() {
         }
     };
     var table_update_timer = function(a) {
-        var time = new Date().getTime();
         if (a === undefined) {
             //выполнятеся от таймера
-            if (time - update_table.time > 200) {
-                //обновление сортровки
-                tmp_vars.rez_table.trigger("update");
-                //обновление категории
-                updateCategorys();
-                update_table.timer = null;
-            } else {
-                clearTimeout(update_table.timer);
-                update_table.timer = setTimeout(table_update_timer, 200);
-            }
+            //обновление сортровки
+            tmp_vars.rez_table.trigger("update");
+            //обновление категории
+            updateCategorys();
         } else {
             //выполнфется тригером
-            if (update_table.time === null)
-                updateCategorys();
-            update_table.time = time;
             clearTimeout(update_table.timer);
             update_table.timer = setTimeout(table_update_timer, 200);
         }
