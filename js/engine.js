@@ -21,6 +21,10 @@ var engine = function() {
     var costume_tr = null;
     var trackerProfiles = JSON.parse(GetSettings('trackerProfiles') || "[]");
     var defProfile = function() {
+        /* функция отдает текущий ID профиля
+         * если нету - создает если нету новый профиль.
+         * если нету ID - создает тоже.
+         */
         var val = 0;
         if (trackerProfiles.length === 0) {
             trackerProfiles.push({
@@ -40,6 +44,12 @@ var engine = function() {
         return val;
     }();
     var search = function(text, tracker_id, nohistory) {
+        /*
+         * функция выполняет многопоточный поиск по трекерам
+         * text - запрос
+         * tracker_id - id трекера, если нету - поиск во всех трекерах в списке.
+         * nohistory - если 1 то история не пишется.
+         */
         if (tracker_id !== null) {
             try {
                 tracker[tracker_id].find(text);
@@ -62,7 +72,13 @@ var engine = function() {
         }
     };
     var LimitHistory = function() {
+        /*
+         * Если история более х запросов удаляются самые старые.
+         */
         var removeItem = function(title) {
+            /*
+             * Удаляет элемент из истории по названию.
+             */
             var search_history = JSON.parse(GetSettings('search_history') || "[]");
             if (search_history.length > 0) {
                 var count = search_history.length;
@@ -94,6 +110,10 @@ var engine = function() {
         }
     };
     var updateHistory = function(title) {
+        /*
+         * добавляет поисковый запрос в историю.
+         * если такой запрос уже есть - увеличивает кол-во попаданий и обновляет дату запроса.
+         */
         if (title.length === 0)
             return;
         LimitHistory();
@@ -130,6 +150,9 @@ var engine = function() {
         return JSON.parse(JSON.stringify(obj));
     };
     var getProfileList = function() {
+        /*
+         * получает список профилей.
+         */
         var arr = [];
         $.each(trackerProfiles, function(k, v) {
             arr.push(v.Title);
@@ -137,6 +160,9 @@ var engine = function() {
         return arr;
     };
     var loadCostumeModule = function(uid) {
+        /*
+         * загружает пользовательский модуль.
+         */
         if ($.inArray(uid, costume_tr) === -1) {
             return;
         }
@@ -431,6 +457,9 @@ var engine = function() {
         ModuleLoaded(l);
     };
     var loadInternalModule = function(filename) {
+        /*
+         * загрузка встроенного модуля по названию.
+         */
         if (compression) {
             var c = torrent_lib.length;
             for (var i = 0; i < c; i++) {
@@ -450,6 +479,9 @@ var engine = function() {
         }
     };
     var ModuleLoaded = function(num) {
+        /*
+         * вызывается когда модуль загрузился.
+         */
         //Call from js-file tracker-module on load!
         var n = tracker.length;
         tracker[n] = torrent_lib[num];
@@ -477,6 +509,9 @@ var engine = function() {
         return newList;
     };
     var loadProfileModules = function(torrentList) {
+        /*
+         * Загружает можули из массива торрентов профиля.
+         */
         tracker = [];
         var optionsMode = "options" in window;
         if (torrentList === null || torrentList.length === 0) {
@@ -523,6 +558,9 @@ var engine = function() {
         }
     };
     var loadProfile = function(profile) {
+        /*
+         * загрузка ID профиля
+         */
         profile = parseInt(profile);
         view.ClearTrackerList();
         if (isNaN(profile) || profile === undefined) {
@@ -545,6 +583,9 @@ var engine = function() {
     };
 }();
 var ex_kit = function() {
+    /*
+     * Набор универсальных тулзов для использования в пользовательских кодах трекеров.
+     */
     var in_cp1251 = function(sValue) {
         var text = "", Ucode, ExitValue, s;
         for (var i = 0; i < sValue.length; i++) {
