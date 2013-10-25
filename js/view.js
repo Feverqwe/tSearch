@@ -536,7 +536,7 @@ var view = function() {
         }
         if ("result_filter_input" in keyword_filter_cache === false) {
             keyword_filter_cache["result_filter_input"] = $.trim($('div.filter').children('input').val()).replace(/\s+/g, " ");
-            keyword_filter_cache["result_filter_input_checked"] = keyword_filter_cache["result_filter_input"].replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+            keyword_filter_cache["result_filter_input"] = keyword_filter_cache["result_filter_input"].replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
         }
         var sum = 0;
         var errors = undefined;
@@ -574,7 +574,7 @@ var view = function() {
             }
             var advFilter = [0, 0, 0, 0, 0];
             if (keywordFilter !== null) {
-                if (keyword_filter_cache["result_filter_input"].length !== 0 && title !== filterTextCheck(keyword_filter_cache["result_filter_input_checked"], title))
+                if (title !== filterTextCheck(keyword_filter_cache["result_filter_input"], title))
                     advFilter[0] = 1;
             }
             if (sizeFilter !== null) {
@@ -1173,6 +1173,9 @@ var view = function() {
         };
     };
     var filterTextCheck = function(s, t) {
+        if (s.length === 0) {
+            return null;
+        }
         /*
          * фильтр по фразам в названии раздачи
          */
@@ -1329,8 +1332,7 @@ var view = function() {
         keyword = $.trim(keyword).replace(/\s+/g, " ");
         var keyword_checked = keyword.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
         if ("result_filter_input" in keyword_filter_cache !== false) {
-            keyword_filter_cache["result_filter_input"] = keyword;
-            keyword_filter_cache["result_filter_input_checked"] = keyword_checked;
+            keyword_filter_cache["result_filter_input"] = keyword_checked;
         }
         if (keyword.length === 0) {
             keywordFilter = null;
@@ -1356,7 +1358,7 @@ var view = function() {
             } else {
                 var name = tr_eq.children('td.name').children('div.title').children('a').text();
             }
-            if (keyword.length !== 0 && name !== filterTextCheck(keyword_checked, name)) {
+            if (name !== filterTextCheck(keyword_checked, name)) {
                 advFilter[0] = 1;
             } else {
                 advFilter[0] = 0;
