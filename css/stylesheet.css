@@ -770,6 +770,7 @@ ul.ui-autocomplete {
     position: absolute !important;
     max-height: 153px;
     overflow-y: auto;
+    z-index: 2;
 }
 ul.ui-autocomplete li {
     margin-bottom: 1px;
