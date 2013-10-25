@@ -398,26 +398,6 @@ var view = function() {
         /*
          * поиск в фоне - для определения качества чего либо
          */
-        if ("year" in keyword_filter_cache === false) {
-            keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
-            if (keyword_filter_cache["year"]) {
-                keyword_filter_cache["year"] = keyword_filter_cache["year"][0];
-            }
-            if (keyword_filter_cache["year"] === s) {
-                keyword_filter_cache["year"] = null;
-            }
-        }
-        if ("keyword" in keyword_filter_cache === false) {
-            keyword_filter_cache["keyword"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            keyword_filter_cache["keyword_lover"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            keyword_filter_cache["keyword_regexp"] = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
-            keyword_filter_cache["keyword_regexp_lower"] = keyword_filter_cache["keyword_regexp"].toLowerCase();
-        }
-        if (keyword_filter_cache["year"] !== null && "keyword_no_year" in keyword_filter_cache === false) {
-            keyword_filter_cache["keyword_no_year"] = keyword_filter_cache["keyword"].replace(" " + keyword_filter_cache["year"], "");
-            keyword_filter_cache["keyword_no_year_regexp"] = keyword_filter_cache.keyword_no_year.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
-            keyword_filter_cache["keyword_no_year_regexp_lower"] = keyword_filter_cache["keyword_no_year_regexp"].toLowerCase();
-        }
         var sum = 0;
         var errors = undefined;
         $.each(a, function(k, v) {
@@ -497,7 +477,7 @@ var view = function() {
         updateTrackerResultCount(t, sum);
         loadingStatus(1, t);
         tmp_var_qbox = 1;
-        explore.setQuality(backgroundModeID, keyword_filter_cache["year"]);
+        explore.setQuality(backgroundModeID, keyword_filter_cache.year);
     };
     var write_result = function(t, a, s, p) {
         /*
@@ -507,6 +487,25 @@ var view = function() {
          * s - текст поиска
          * p - количество найденный торрентов, указывается принудительно если загрузка более 1 страницы. 
          */
+        if ("year" in keyword_filter_cache === false) {
+            keyword_filter_cache.year = s.match(/[1-2]{1}[0-9]{3}/);
+            if (keyword_filter_cache.year) {
+                keyword_filter_cache.year = keyword_filter_cache.year[0];
+            } else {
+                keyword_filter_cache.year = null;
+            }
+        }
+        if ("keyword" in keyword_filter_cache === false) {
+            keyword_filter_cache.keyword = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            keyword_filter_cache.keyword_regexp = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
+            keyword_filter_cache.keyword_regexp_lower = keyword_filter_cache["keyword_regexp"].toLowerCase();
+        }
+        if ("keyword_no_year" in keyword_filter_cache === false && keyword_filter_cache.year) {
+            keyword_filter_cache.keyword_no_year = keyword_filter_cache.keyword.replace(keyword_filter_cache.year, "").trim();
+            keyword_filter_cache.keyword_no_year_regexp = keyword_filter_cache.keyword_no_year.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
+            keyword_filter_cache.keyword_no_year_regexp_lower = keyword_filter_cache.keyword_no_year_regexp.toLowerCase();
+        }
+
         if (backgroundMode) {
             return inBGMode(t, a, s);
         }
@@ -515,28 +514,9 @@ var view = function() {
         if (p === undefined) {
             tmp_vars.rez_table_tbody.children('tr[data-tracker="' + t + '"]').remove();
         }
-        if ("year" in keyword_filter_cache === false) {
-            keyword_filter_cache["year"] = s.match(/[0-9]{4}/);
-            if (keyword_filter_cache["year"]) {
-                keyword_filter_cache["year"] = keyword_filter_cache["year"][0];
-            }
-            if (keyword_filter_cache["year"] === s) {
-                keyword_filter_cache["year"] = null;
-            }
-        }
-        if ("keyword" in keyword_filter_cache === false) {
-            keyword_filter_cache["keyword"] = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            keyword_filter_cache["keyword_regexp"] = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
-            keyword_filter_cache["keyword_regexp_lower"] = keyword_filter_cache["keyword_regexp"].toLowerCase();
-        }
-        if ("keyword_no_year" in keyword_filter_cache === false && keyword_filter_cache["year"]) {
-            keyword_filter_cache["keyword_no_year"] = keyword_filter_cache["keyword"].replace(" " + keyword_filter_cache["year"], "");
-            keyword_filter_cache["keyword_no_year_regexp"] = keyword_filter_cache.keyword_no_year.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
-            keyword_filter_cache["keyword_no_year_regexp_lower"] = keyword_filter_cache["keyword_no_year_regexp"].toLowerCase();
-        }
         if ("result_filter_input" in keyword_filter_cache === false) {
-            keyword_filter_cache["result_filter_input"] = $.trim($('div.filter').children('input').val()).replace(/\s+/g, " ");
-            keyword_filter_cache["result_filter_input"] = keyword_filter_cache["result_filter_input"].replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+            keyword_filter_cache.result_filter_input = $.trim($('div.filter').children('input').val()).replace(/\s+/g, " ");
+            keyword_filter_cache.result_filter_input = keyword_filter_cache.result_filter_input.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
         }
         var sum = 0;
         var errors = undefined;
@@ -574,7 +554,7 @@ var view = function() {
             }
             var advFilter = [0, 0, 0, 0, 0];
             if (keywordFilter !== null) {
-                if (title !== filterTextCheck(keyword_filter_cache["result_filter_input"], title))
+                if (title !== filterTextCheck(keyword_filter_cache.result_filter_input, title))
                     advFilter[0] = 1;
             }
             if (sizeFilter !== null) {
@@ -1018,7 +998,7 @@ var view = function() {
             return name.replace(/(\[[^\]]*\]|\([^\)]*\))/g, '<span class="sub_name">$1</span>');
         };
         var quality = "Blu-ray|Blu-Ray|BD-Remux|BDRemux|1080p|1080i|BDRip-AVC|BD-Rip|BDRip|CAMRip|CamRip-AVC|CamRip|HDTV-Rip|HQRip-AVC|HDTVrip|HDTVRip|DTheater-Rip|720p|LowHDRip|HDTV|HDRip-AVC|HDRip|DVD-Rip|DVDRip-AVC|DVDRip|DVD5|2xDVD9|DVD9|DVD-9|DVDScr|DVDScreener|HD-DVD|NoDVD|DVD|SatRip|HQSATRip|HQRip|TVRip|WEBRip|WEB-DLRip-AV​C|WebDL-Rip|AVC|WEB-DLRip|WEB-DL|SATRip|DVB|IPTVRip|TeleSynch|[Зз]{1}вук с TS|TS|АП|ЛО|ЛД|AVO|MVO|VO|DUB|2xDub|Dub|ДБ|ПМ|ПД|ПО|СТ|[Ss]{1}ubs|SUB|[sS]{1}ub|FLAC|flac|ALAC|alac|[lL]{1}oss[lL]{1}ess(?! repack)|\\(PS2\\)|PS3|Xbox|XBOX|Repack|RePack|\\[Native\\]|Lossless Repack|Steam-Rip|\\(Lossy Rip\/|{Rip}|[лЛ]{1}ицензия|RELOADED|\\[Rip\\]|\\[RiP\\]|\\{L\\}|\\(L\\)|\\[L\\]|[Ss]{1}eason(?=[s|:]?)|[Сс]{1}езон(?=[ы|:]?)|CUE|(?=\.)cue|MP3|128|192|320|\\(P\\)|\\[P\\]|PC \\(Windows\\)|Soundtrack|soundtrack|H\.264|mp4|MP4|M4V|FB2|PDF|RTF|EPUB|fb2|DJVU|djvu|epub|pdf|rtf|[мМ]{1}ультфильм|iTunes Russia";
-        rate.year = name.match(/[0-9]{4}/);
+        rate.year = name.match(/[1-2]{1}[0-9]{3}/);
         if (rate.year) {
             rate.year = parseInt(rate.year[0]);
             if (rate.year < 1970 || rate.year > (new Date()).getFullYear() + 1)
@@ -1059,7 +1039,7 @@ var view = function() {
             word_hl++;
             return '<b>' + a + '</b>';
         };
-        if (keyword_filter_cache["year"]) {
+        if (keyword_filter_cache.year) {
             //проверка по маске Name-no-year-lowc /|( .*year.*
             if (new RegExp('^' + keyword_filter_cache.keyword_no_year_regexp_lower + ' [/|(]{1} .*' + keyword_filter_cache.year + '.*').test(name_lover)) {
                 var hl_name = name.replace(new RegExp('(' + keyword_filter_cache.keyword_no_year_regexp_lower + '|' + keyword_filter_cache.year + ')', "ig"), "<b>$1</b>");
@@ -1332,7 +1312,7 @@ var view = function() {
         keyword = $.trim(keyword).replace(/\s+/g, " ");
         var keyword_checked = keyword.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
         if ("result_filter_input" in keyword_filter_cache !== false) {
-            keyword_filter_cache["result_filter_input"] = keyword_checked;
+            keyword_filter_cache.result_filter_input = keyword_checked;
         }
         if (keyword.length === 0) {
             keywordFilter = null;
