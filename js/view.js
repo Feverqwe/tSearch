@@ -770,7 +770,7 @@ var view = function() {
             }
             a = a.toLowerCase();
             //проверяет что это не фрагмент слова (проверка слева и справа)
-            var sub = c[b - 1] || '' + c[b + a.length] || '';
+            var sub = (c[b - 1] || '') + (c[b + a.length] || '');
             if (sub !== "" && sub !== "  " && sub !== " " && (/[\wА-Яа-я]/).test(sub)) {
                 return '';
             }
@@ -1018,7 +1018,7 @@ var view = function() {
             };
         }
         var cal_word_rate = function(a, b, c) {
-            var sub = c[b - 1] || '' + c[b + a.length] || '';
+            var sub = (c[b - 1] || '') + (c[b + a.length] || '');
             if (sub !== "" && sub !== "  " && sub !== " " && (/[\wА-Яа-я]/).test(sub)) {
                 return a;
             }
