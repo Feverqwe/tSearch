@@ -536,6 +536,7 @@ var view = function() {
         }
         if ("result_filter_input" in keyword_filter_cache === false) {
             keyword_filter_cache["result_filter_input"] = $.trim($('div.filter').children('input').val()).replace(/\s+/g, " ");
+            keyword_filter_cache["result_filter_input_checked"] = keyword_filter_cache["result_filter_input"].replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
         }
         var sum = 0;
         var errors = undefined;
@@ -573,7 +574,7 @@ var view = function() {
             }
             var advFilter = [0, 0, 0, 0, 0];
             if (keywordFilter !== null) {
-                if (title !== filterTextCheck(keyword_filter_cache["result_filter_input"], title))
+                if (keyword_filter_cache["result_filter_input"].length !== 0 && title !== filterTextCheck(keyword_filter_cache["result_filter_input_checked"], title))
                     advFilter[0] = 1;
             }
             if (sizeFilter !== null) {
@@ -1175,9 +1176,6 @@ var view = function() {
         /*
          * фильтр по фразам в названии раздачи
          */
-        if (s.length === 0)
-            return null;
-        s = s.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
         var r = t;
         if (AdvFiltration === 1) {
             var tmp = s.split(" ");
@@ -1189,9 +1187,17 @@ var view = function() {
             var tmp_l = tmp.length;
             var trgr = true;
             for (var i = 0; i < tmp_l; i++) {
-                if (!(new RegExp(tmp[i], "i")).test(t)) {
-                    trgr = false;
-                    break;
+                if (tmp[i].length > 2 && tmp[i].substr(0, 2) === "\\-") {
+                    tmp[i] = tmp[i].substr(2);
+                    if ((new RegExp(tmp[i], "i")).test(t)) {
+                        trgr = false;
+                        break;
+                    }
+                } else {
+                    if (!(new RegExp(tmp[i], "i")).test(t)) {
+                        trgr = false;
+                        break;
+                    }
                 }
             }
             if (trgr)
@@ -1202,9 +1208,17 @@ var view = function() {
             var tmp_l = tmp.length;
             var trgr = true;
             for (var i = 0; i < tmp_l; i++) {
-                if (!(new RegExp(tmp[i], "i")).test(t)) {
-                    trgr = false;
-                    break;
+                if (tmp[i].length > 2 && tmp[i].substr(0, 2) === "\\-") {
+                    tmp[i] = tmp[i].substr(2);
+                    if ((new RegExp(tmp[i], "i")).test(t)) {
+                        trgr = false;
+                        break;
+                    }
+                } else {
+                    if (!(new RegExp(tmp[i], "i")).test(t)) {
+                        trgr = false;
+                        break;
+                    }
                 }
             }
             if (trgr)
@@ -1213,6 +1227,9 @@ var view = function() {
         return r;
     };
     var updateTrackerCount = function() {
+        /*
+         * Обновляет кол-во раздач в каждом трекере.
+         */
         var li = tmp_vars.ul_trackers.children('li');
         var t_c = li.length;
         var advFilter = [0, 0, 0, 0, 0];
@@ -1303,15 +1320,17 @@ var view = function() {
             autoMove = category1;
         }
     };
-    var tableFilter = function(keyword) {
+    var tableKeywordFilter = function(keyword) {
         /*
          * фильтр по словам
          */
         var clear_btn = $('div.filter div.btn');
         clear_btn.css('background-image', 'url(images/loading.gif)');
         keyword = $.trim(keyword).replace(/\s+/g, " ");
+        var keyword_checked = keyword.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
         if ("result_filter_input" in keyword_filter_cache !== false) {
             keyword_filter_cache["result_filter_input"] = keyword;
+            keyword_filter_cache["result_filter_input_checked"] = keyword_checked;
         }
         if (keyword.length === 0) {
             keywordFilter = null;
@@ -1337,7 +1356,7 @@ var view = function() {
             } else {
                 var name = tr_eq.children('td.name').children('div.title').children('a').text();
             }
-            if (name !== filterTextCheck(keyword, name)) {
+            if (keyword.length !== 0 && name !== filterTextCheck(keyword_checked, name)) {
                 advFilter[0] = 1;
             } else {
                 advFilter[0] = 0;
@@ -1951,12 +1970,12 @@ var view = function() {
                 }
                 clearTimeout(filter_timers.word);
                 filter_timers.word = setTimeout(function() {
-                    tableFilter($('div.filter input').val());
+                    tableKeywordFilter($('div.filter input').val());
                 }, 500);
             });
             $('div.filter div.btn').on("click", function() {
                 $('div.filter input').val('');
-                tableFilter('');
+                tableKeywordFilter('');
             });
             $('div.size_filter').find('input').keyup(function() {
                 var t = parseFloat($(this).val());
