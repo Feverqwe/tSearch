@@ -554,7 +554,7 @@ var view = function() {
             }
             var advFilter = [0, 0, 0, 0, 0];
             if (keywordFilter !== null) {
-                if (title !== filterTextCheck(keyword_filter_cache.result_filter_input, title))
+                if (title !== calcKeywordFilter(keyword_filter_cache.result_filter_input, title))
                     advFilter[0] = 1;
             }
             if (sizeFilter !== null) {
@@ -629,21 +629,11 @@ var view = function() {
     var utiemonstr = function(shtamp) {
         //преврящает TimeShtamp в строчку
         var dt = new Date(shtamp * 1000);
-        var m = dt.getMonth() + 1;
-        if (m.toString().length === 1)
-            m = '0' + m.toString();
-        var d = dt.getDate();
-        if (d.toString().length === 1)
-            d = '0' + d.toString();
-        var h = dt.getHours();
-        if (h.toString().length === 1)
-            h = '0' + h.toString();
-        var mi = dt.getMinutes();
-        if (mi.toString().length === 1)
-            mi = '0' + mi.toString();
-        var sec = dt.getSeconds();
-        if (sec.toString().length === 1)
-            sec = '0' + sec.toString();
+        var m = addZero(dt.getMonth() + 1);
+        var d = addZero(dt.getDate());
+        //var h = addZero(dt.getHours());
+        //var mi = addZero(dt.getMinutes());
+        //var sec = addZero(dt.getSeconds());
         //var time = '';
         //if (h!='00' && mi!='00' && sec != '00')
         //    time = ' '+h+':'+mi+':'+sec;
@@ -750,6 +740,10 @@ var view = function() {
         return c;
     };
     var syntax_highlighting = function(t) {
+        /*
+         * Выставляет рейтинг заголовку раздачи
+         * Подсвечивает найденный текст в заголовке
+         */
         var words = keyword_filter_cache.keyword_regexp.split(' ');
         var word_rate = Math.round(200 / words.length);
         var first_rate = Math.round(word_rate + word_rate / 2);
@@ -1017,6 +1011,7 @@ var view = function() {
             };
         }
         var cal_word_rate = function(a, b, c) {
+            //функ-я подсвечивает слова поиска в заголовке
             //word_hl - счетчик подсвеченных слов
             //year_hl - если 1 то значит год в названии найден
             var sub = (c[b - 1] || '') + (c[b + a.length] || '');
@@ -1152,13 +1147,13 @@ var view = function() {
             r: rate
         };
     };
-    var filterTextCheck = function(s, t) {
-        if (s.length === 0) {
-            return null;
-        }
+    var calcKeywordFilter = function(s, t) {
         /*
          * фильтр по фразам в названии раздачи
          */
+        if (s.length === 0) {
+            return null;
+        }
         var r = t;
         if (AdvFiltration === 1) {
             var tmp = s.split(" ");
@@ -1185,8 +1180,7 @@ var view = function() {
             }
             if (trgr)
                 r = null;
-        }
-        else {
+        } else {
             var tmp = s.split(",");
             var tmp_l = tmp.length;
             var trgr = true;
@@ -1338,7 +1332,7 @@ var view = function() {
             } else {
                 var name = tr_eq.children('td.name').children('div.title').children('a').text();
             }
-            if (name !== filterTextCheck(keyword_checked, name)) {
+            if (name !== calcKeywordFilter(keyword_checked, name)) {
                 advFilter[0] = 1;
             } else {
                 advFilter[0] = 0;
