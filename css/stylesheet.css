@@ -122,12 +122,13 @@ div.content div.right {
     text-decoration: none;
     line-height: 130%;
     padding-bottom: 1px;
+    border-bottom-width: 1px;
+    border-bottom-style: hidden;
 }
 #rez_table > tbody > tr > td.name > div.title > a:visited {
     color: #609;
 }
 #rez_table > tbody > tr > td.name > div.title > a:hover {
-    border-bottom-width: 1px;
     border-bottom-style: solid;
     border-bottom-color: initial;
 }
