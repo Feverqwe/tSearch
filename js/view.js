@@ -1581,8 +1581,9 @@ var view = function() {
                 if ($.trim(a.term).length === 0 || AutoComplite_opt === 0) {
                     response(getStaticArray());
                 } else {
-                    if (xhr_autocomplite !== null)
+                    if (xhr_autocomplite !== null) {
                         xhr_autocomplite.abort();
+                    }
                     xhr_autocomplite = $.getJSON('http://suggestqueries.google.com/complete/search?client=firefox&q=' + a.term).success(function(data) {
                         var arr = data[1];
                         response(arr);
@@ -1601,7 +1602,6 @@ var view = function() {
                 triggerSearch(ui.item.value);
             },
             position: {
-                at: "bottom",
                 collision: "bottom"
             }
         });
@@ -1918,7 +1918,7 @@ var view = function() {
                 selectorHeaders: '#rez_table > thead th'
             });
             tmp_vars.search_input.focus();
-            tmp_vars.form_search.children('div.btn.clear').on("click", function() {
+            tmp_vars.form_search.children('div.btn.clear').on("click", function(event) {
                 event.preventDefault();
                 $(this).hide();
                 tmp_vars.search_input.val("").focus();

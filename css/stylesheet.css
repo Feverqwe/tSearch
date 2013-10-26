@@ -765,9 +765,6 @@ ul.ui-autocomplete {
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
     border-top: 0;
-    top: 32px !important;
-    left: 20px !important;
-    position: absolute !important;
     max-height: 153px;
     overflow-y: auto;
     z-index: 100;
