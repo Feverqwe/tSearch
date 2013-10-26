@@ -247,6 +247,8 @@ var engine = function() {
                         if (ex_cat) {
                             if ('cat_alt' in me) {
                                 obj['category']['title'] = (td.find(me.cat_name)).attr('alt');
+                            } else if ('cat_attr' in me) {
+                                obj['category']['title'] = (td.find(me.cat_name)).attr(ex_kit.value_to_attr_name(me.cat_attr));
                             } else {
                                 obj['category']['title'] = (td.find(me.cat_name)).text();
                             }
@@ -735,12 +737,22 @@ var ex_kit = function() {
     var isNumber = function(n) {
         return !isNaN(parseFloat(n)) && isFinite(n);
     };
+    var value_to_attr_name = function(val) {
+        val = parseInt(val);
+        if (val === 0) {
+            return "alt";
+        }
+        if (val === 1) {
+            return "title";
+        }
+    };
     return {
         isNumber: isNumber,
         in_cp1251: in_cp1251,
         format_size: format_size,
         month_replace: month_replace,
         format_date: format_date,
-        today_replace: today_replace
+        today_replace: today_replace,
+        value_to_attr_name: value_to_attr_name
     };
 }();

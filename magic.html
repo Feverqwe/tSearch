@@ -23,20 +23,20 @@
                 <fieldset>
                     <legend data-lang="8">Результаты поиска</legend>
                     <ul>
-                        <li data-lang="9">URL страницы с результатами</li>:<li><input type="text" name="search_url" value=""/></li>
+                        <li><span data-lang="9">URL страницы с результатами</span>:</li><li><input type="text" name="search_url" value=""/></li>
                         <li><input type="button" value="Открыть" name="open" data-lang="10"/></li>
                     </ul>
                     <ul>
-                        <li data-lang="11">Запрос поиска (в параметрах запроса используйте переменную %search%)</li>: <li><input type="text" name="search_text" value=""></li>
+                        <li><span data-lang="11">Запрос поиска (в параметрах запроса используйте переменную %search%)</span>:</li><li><input type="text" name="search_text" value=""></li>
                     </ul>
                     <ul>
-                        <li><input type="checkbox" name="cp1251encode"></li><li data-lang="12">Конвертировать кириллицу в cp1251</li>
+                        <li><input type="checkbox" name="cp1251encode"></li><li><span data-lang="12">Конвертировать кириллицу в cp1251</span></li>
                     </ul>
                     <ul>
-                        <li data-lang="13">POST запрос</li>: <li><input type="text" name="post" value=""/></li>
+                        <li><span data-lang="13">POST запрос</span>:</li><li><input type="text" name="post" value=""/></li>
                     </ul>
                     <ul>
-                        <li data-lang="14">Основной url</li>: <li><input type="text" name="base_path" value=""/></li>
+                        <li><span data-lang="14">Основной url</span>:</li><li><input type="text" name="base_path" value=""/></li>
                     </ul>
                 </fieldset>
             </div>
@@ -44,11 +44,11 @@
                 <fieldset>
                     <legend data-lang="15">Определение страницы авторизации</legend>
                     <ul>
-                        <li data-lang="16">URL страницы входа</li>:<li><input type="text" name="auth_url" value=""/></li>
+                        <li><span data-lang="16">URL страницы входа</span>:</li><li><input type="text" name="auth_url" value=""/></li>
                         <li><input type="button" value="Открыть" name="open_auth" data-lang="17"/></li>
                     </ul>
                     <ul>
-                        <li data-lang="18">Форма входа</li>:<li><input type="text" name="auth_form" value=""/></li><li><input type="button" name="auth_form_btn" value="Выбрать" data-lang="19"/></li>
+                        <li><span data-lang="18">Форма входа</span>:</li><li><input type="text" name="auth_form" value=""/></li><li><input type="button" name="auth_form_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                 </fieldset>
             </div>
@@ -56,44 +56,44 @@
                 <fieldset>
                     <legend data-lang="20">Селекторы</legend>
                     <ul>
-                        <li data-lang="21">Строка в траблице</li>: <li><input type="text" name="item" value=""/></li><li><input type="checkbox" name="tr_strip" checked="checked"></li><li data-lang="61">Таблица</li><li><input type="button" name="item_btn" value="Выбрать" data-lang="19"/></li>
+                        <li><span class="istr nc" data-lang="21">Строка в траблице</span></li><li><input type="text" name="item" value=""/></li><li><input type="checkbox" name="tr_strip" checked="checked"></li><li data-lang="61">Таблица</li><li><input type="button" name="item_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                     <!-- Категория -->
                     <ul>
                         <li><input type="checkbox" name="status"></li>
-                        <li data-lang="22">Название категории</li>: <li><input type="text" name="category_name" value=""/></li>
+                        <li><span class="istr" data-lang="22">Название категории</span></li><li><input type="text" name="category_name" value=""/></li>
                         <li><input type="text" name="category_name_text" value="" disabled="disabled"></li>
-                        <li><input type="checkbox" name="category_alt_name"></li>
-                        <li data-lang="62">ALT</li>
+                        <li><input type="checkbox" name="category_attr"></li>
+                        <li><span data-lang="62">Атрибут</span>: <select name="category_attr_type"><option value="0">Alt</option><option value="1">Title</option></select></li>
                         <li><input type="button" name="category_name_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                     <ul>
                         <li><input type="checkbox" name="status"></li>
-                        <li data-lang="23">Ссылка на категорию</li>: <li><input type="text" name="category_link" value=""/></li>
+                        <li><span class="istr" data-lang="23">Ссылка на категорию</span></li><li><input type="text" name="category_link" value=""/></li>
                         <li><input type="text" name="category_link_href" value="" disabled="disabled"></li>
                         <li><input type="checkbox" name="category_link_base_path"></li>
-                        <li data-lang="24">Добавить основной url</li>
+                        <li><span data-lang="24">Добавить основной url</span></li>
                         <li><input type="button" name="category_link_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                     <!-- < -->
                     <!-- Название -->
                     <ul>
-                        <li data-lang="25">Название раздачи</li>: <li><input type="text" name="torrent_name" value=""/></li>
+                        <li><span class="istr nc" data-lang="25">Название раздачи</span></li><li><input type="text" name="torrent_name" value=""/></li>
                         <li><input type="text" name="torrent_name_text" value="" disabled="disabled"></li>
                         <li><input type="button" name="torrent_name_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                     <ul>
-                        <li data-lang="26">Ссылка на раздачу</li>: <li><input type="text" name="torrent_link" value=""/></li>
+                        <li><span class="istr nc" data-lang="26">Ссылка на раздачу</span></li><li><input type="text" name="torrent_link" value=""/></li>
                         <li><input type="text" name="torrent_link_href" value="" disabled="disabled"></li>
                         <li><input type="checkbox" name="torrent_link_base_path"></li>
-                        <li data-lang="27">Добавить основной url</li>
+                        <li><span data-lang="27">Добавить основной url</span></li>
                         <li><input type="button" name="torrent_link_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                     <!-- < -->
                     <!-- Размер файла -->
                     <ul>
                         <li><input type="checkbox" name="status"></li>
-                        <li data-lang="28">Размер раздачи</li>: <li><input type="text" name="torrent_size" value=""/></li>
+                        <li><span class="istr" data-lang="28">Размер раздачи</span></li><li><input type="text" name="torrent_size" value=""/></li>
                         <li><input type="text" name="torrent_size_text" value="" disabled="disabled"></li>
                         <li><input type="button" name="torrent_size_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
@@ -101,23 +101,23 @@
                     <!-- Ссылка на скачку раздачи -->
                     <ul>
                         <li><input type="checkbox" name="status"></li>
-                        <li data-lang="29">Ссылка на скачку раздачи</li>: <li><input type="text" name="torrent_dl_link" value=""/></li>
+                        <li><span class="istr" data-lang="29">Ссылка на скачку раздачи</span></li><li><input type="text" name="torrent_dl_link" value=""/></li>
                         <li><input type="text" name="torrent_dl_link_href" value="" disabled="disabled"></li>
                         <li><input type="checkbox" name="torrent_dl_link_base_path"></li>
-                        <li data-lang="30">Добавить основной url</li>
+                        <li><span data-lang="30">Добавить основной url</span></li>
                         <li><input type="button" name="torrent_dl_link_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                     <!-- < -->
                     <!-- Сиды пиры -->
                     <ul>
                         <li><input type="checkbox" name="status"></li>
-                        <li data-lang="31">Количество сидов</li>: <li><input type="text" name="seed_count" value=""/></li>
+                        <li><span class="istr" data-lang="31">Количество сидов</span></li><li><input type="text" name="seed_count" value=""/></li>
                         <li><input type="text" name="seed_count_text" value="" disabled="disabled"></li>
                         <li><input type="button" name="seed_count_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                     <ul>
                         <li><input type="checkbox" name="status"></li>
-                        <li data-lang="32">Количество пиров</li>: <li><input type="text" name="peer_count" value=""/></li>
+                        <li><span class="istr" data-lang="32">Количество пиров</span></li><li><input type="text" name="peer_count" value=""/></li>
                         <li><input type="text" name="peer_count_text" value="" disabled="disabled"></li>
                         <li><input type="button" name="peer_count_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
@@ -125,16 +125,16 @@
                     <!-- Время добавления -->
                     <ul>
                         <li><input type="checkbox" name="status"></li>
-                        <li data-lang="33">Дата добавления раздачи</li>: <li><input type="text" name="add_time" value=""/></li>
+                        <li><span class="istr" data-lang="33">Дата добавления раздачи</span></li><li><input type="text" name="add_time" value=""/></li>
                         <li><input type="text" name="add_time_text" value="" disabled="disabled"></li>
                         <li><input type="button" name="add_time_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                     <!-- < -->
                     <ul>
-                        <li data-lang="34">Пропустить первые n строк</li>: <li><input type="number" name="skip_first" value="0"/></li>
+                        <li><span class="istr nc" data-lang="34">Пропустить первые n строк</span></li><li><input type="number" name="skip_first" value="0"/></li>
                     </ul>
                     <ul>
-                        <li data-lang="35">Пропустить последнии n строк</li>: <li><input type="number" name="skip_last" value="0"/></li>
+                        <li><span class="istr nc" data-lang="35">Пропустить последнии n строк</span></li><li><input type="number" name="skip_last" value="0"/></li>
                     </ul>
                 </fieldset>
             </div>
@@ -144,61 +144,61 @@
                     <div>
                         <span data-lang="37">Дата добавления раздачи</span>
                         <ul>
-                            <li data-lang="38">Применить regexp</li>:<li><input name="time_regexp" type="text" /></li> <li data-lang="39">заменить на</li> <li><input name="time_regexp_repl" type="text" /></li>
+                            <li><span data-lang="38">Применить regexp</span>:</li><li><input name="time_regexp" type="text" /></li> <li><span data-lang="39">заменить на</span></li><li><input name="time_regexp_repl" type="text" /></li>
                         </ul>
                         <ul>
-                            <li><input name="today_replace" type="checkbox" /></li><li data-lang="63">Заменить слова сегодня\вчера\сейчас</li>
+                            <li><input name="today_replace" type="checkbox" /></li><li><span data-lang="63">Заменить слова сегодня\вчера\сейчас</span></li>
                         </ul>
                         <ul>
-                            <li><input name="month_replace" type="checkbox" /></li><li data-lang="40">Заменить название месяца на число</li>
+                            <li><input name="month_replace" type="checkbox" /></li><li><span data-lang="40">Заменить название месяца на число</span></li>
                         </ul>
                         <ul>
-                            <li data-lang="41">Конвернтировать время в Unix timestamp из формата</li>:<li><select name="date_format"></select></li>
+                            <li><span data-lang="41">Конвернтировать время в Unix timestamp из формата</span>:</li><li><select name="date_format"></select></li>
                         </ul>
                         <ul>
-                            <li data-lang="42">Исходная строка</li>:<li><input name="original_time" type="text" /></li><li data-lang="43">Конвертированная</li>:<li><input name="converted_time" type="text" disabled="disabled" /></li>
+                            <li><span data-lang="42">Исходная строка</span>:</li><li><input name="original_time" type="text" /></li> <li><span data-lang="43">Конвертированная</span>:</li><li><input name="converted_time" type="text" disabled="disabled" /></li>
                         </ul>
                         <ul>
-                            <li data-lang="44">Итог</li>:<li><input name="result_time" type="text" disabled="disabled" /></li>
+                            <li><span data-lang="44">Итог</span>:</li><li><input name="result_time" type="text" disabled="disabled" /></li>
                         </ul>
                     </div>
                     <div>
                         <span data-lang="45">Размер торрента</span>
                         <ul>
-                            <li data-lang="38">Применить regexp</li>:<li><input name="size_regexp" type="text" /></li> <li data-lang="39">заменить на</li> <li><input name="size_regexp_repl" type="text" /></li>
+                            <li><span data-lang="38">Применить regexp</span>:</li><li><input name="size_regexp" type="text" /></li> <li><span data-lang="39">заменить на</span>:</li><li><input name="size_regexp_repl" type="text" /></li>
                         </ul>
                         <ul>
-                            <li><input name="convert_size" type="checkbox" /></li><li data-lang="46">Преобразовать</li>
+                            <li><input name="convert_size" type="checkbox" /></li><li><span data-lang="46">Преобразовать</li>
                         </ul>
                         <ul>
-                            <li data-lang="47">Исходная строка</li>:<li><input name="original_size" type="text" /></li><li data-lang="48">Конвертированная</li>:<li><input name="converted_size" type="text" disabled="disabled" /></li>
+                            <li><span data-lang="47">Исходная строка</span>:</li><li><input name="original_size" type="text" /></li> <li><span data-lang="48">Конвертированная</span>:</li><li><input name="converted_size" type="text" disabled="disabled" /></li>
                         </ul>
                         <ul>
-                            <li data-lang="44">Итог</li>:<li><input name="result_size" type="text" disabled="disabled" /></li>
+                            <li><span data-lang="44">Итог</span>:</li><li><input name="result_size" type="text" disabled="disabled" /></li>
                         </ul>
                     </div>
                     <div>
                         <span data-lang="59">Сиды</span>
                         <ul>
-                            <li data-lang="38">Применить regexp</li>:<li><input name="seed_regexp" type="text" /></li> <li data-lang="39">заменить на</li> <li><input name="seed_regexp_repl" type="text" /></li>
+                            <li><span data-lang="38">Применить regexp</span>:</li><li><input name="seed_regexp" type="text" /></li> <li><span data-lang="39">заменить на</span>:</li><li><input name="seed_regexp_repl" type="text" /></li>
                         </ul>
                         <ul>
-                            <li data-lang="47">Исходная строка</li>:<li><input name="original_seed" type="text" /></li><li data-lang="48">Конвертированная</li>:<li><input name="converted_seed" type="text" disabled="disabled" /></li>
+                            <li><span data-lang="47">Исходная строка</span>:</li><li><input name="original_seed" type="text" /></li> <li><span data-lang="48">Конвертированная</span>:</li><li><input name="converted_seed" type="text" disabled="disabled" /></li>
                         </ul>
                         <ul>
-                            <li data-lang="44">Итог</li>:<li><input name="result_seed" type="text" disabled="disabled" /></li>
+                            <li><span data-lang="44">Итог</span>:</li><li><input name="result_seed" type="text" disabled="disabled" /></li>
                         </ul>
                     </div>
                     <div>
                         <span data-lang="60">Пиры</span>
                         <ul>
-                            <li data-lang="38">Применить regexp</li>:<li><input name="peer_regexp" type="text" /></li> <li data-lang="39">заменить на</li> <li><input name="peer_regexp_repl" type="text" /></li>
+                            <li><span data-lang="38">Применить regexp</span>:</li><li><input name="peer_regexp" type="text" /></li> <li><span data-lang="39">заменить на</span>:</li><li><input name="peer_regexp_repl" type="text" /></li>
                         </ul>
                         <ul>
-                            <li data-lang="47">Исходная строка</li>:<li><input name="original_peer" type="text" /></li><li data-lang="48">Конвертированная</li>:<li><input name="converted_peer" type="text" disabled="disabled" /></li>
+                            <li><span data-lang="47">Исходная строка</span>:</li><li><input name="original_peer" type="text" /></li> <li><span data-lang="48">Конвертированная</span>:</li><li><input name="converted_peer" type="text" disabled="disabled" /></li>
                         </ul>
                         <ul>
-                            <li data-lang="44">Итог</li>:<li><input name="result_peer" type="text" disabled="disabled" /></li>
+                            <li><span data-lang="44">Итог</span>:</li><li><input name="result_peer" type="text" disabled="disabled" /></li>
                         </ul>
                     </div>
                 </fieldset>
@@ -208,22 +208,22 @@
                     <legend data-lang="49">Описание торрент-трекера</legend>
                     <div>
                         <ul>
-                            <li data-lang="50">base64 иконка (16x16px)</li><li><input type="text" name="icon" value=""/></li>
+                            <li><span data-lang="50">base64 иконка (16x16px)</span>:</li><li><input type="text" name="icon" value=""/></li>
                         </ul>
                         <ul>
-                            <li data-lang="51">Название торрента</li><li><input type="text" name="tr_name" value=""/></li>
+                            <li><span data-lang="51">Название торрента</span>:</li><li><input type="text" name="tr_name" value=""/></li>
                         </ul>
                         <ul>
-                            <li data-lang="52">Описание торрента</li><li><input type="text" name="desk" value=""/></li>
+                            <li><span data-lang="52">Описание торрента</span>:</li><li><input type="text" name="desk" value=""/></li>
                         </ul>
                         <ul>
-                            <li><input type="checkbox" name="cirilic" value=""/></li><li data-lang="53">Поддержка кириллицы</li>
+                            <li><input type="checkbox" name="cirilic" value=""/></li><li><span data-lang="53">Поддержка кириллицы</span></li>
                         </ul>
                         <ul>
-                            <li><input type="checkbox" name="need_auth" value=""/></li><li data-lang="54">Требуется авторизация</li>
+                            <li><input type="checkbox" name="need_auth" value=""/></li><li><span data-lang="54">Требуется авторизация</span></li>
                         </ul>
                         <ul>
-                            <li><input type="checkbox" name="rus" value=""/></li><li data-lang="55">Русскоязычный трекер</li>
+                            <li><input type="checkbox" name="rus" value=""/></li><li><span data-lang="55">Русскоязычный трекер</span></li>
                         </ul>
                     </div>
                 </fieldset>

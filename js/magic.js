@@ -69,7 +69,12 @@ var magic = function() {
             $('input[name=category_name]').val(code['cat_name']);
             $('input[name=category_name]').parents().eq(1).find('input[name=status]').prop('checked', 1);
             if ('cat_alt' in code) {
-                $('input[name=category_alt_name]').prop('checked', 1);
+                $('input[name=category_attr]').prop('checked', 1);
+                $('select[name=category_attr_type]').val(0);
+            }
+            if ('cat_attr' in code) {
+                $('input[name=category_attr]').prop('checked', 1);
+                $('select[name=category_attr_type]').val(parseInt(code['cat_attr']));
             }
         }
         if ('cat_link' in code) {
@@ -204,7 +209,7 @@ var magic = function() {
                 rs: ($('input[name=cirilic]').prop('checked')) ? 1 : 0
             }
         };
-        if (typeof(code.icon) !== 'string' || code.icon.length === 0) {
+        if (typeof (code.icon) !== 'string' || code.icon.length === 0) {
             code.icon = '#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
         }
         if ($('input[name=post]').val().length > 0) {
@@ -215,8 +220,8 @@ var magic = function() {
         }
         if ($('input[name=category_name]').parents().eq(1).find('input[name=status]').prop('checked')) {
             code['cat_name'] = $('input[name=category_name]').val();
-            if ($('input[name=category_alt_name]').prop('checked')) {
-                code['cat_alt'] = 1;
+            if ($('input[name=category_attr]').prop('checked')) {
+                code['cat_attr'] = parseInt($('select[name=category_attr_type]').val());
             }
         }
         if ($('input[name=category_link]').parents().eq(1).find('input[name=status]').prop('checked')) {
@@ -539,6 +544,15 @@ var magic = function() {
                 console.log(t);
         });
     };
+    var avalue_to_attr = function(val) {
+        val = parseInt(val);
+        if (val === 0) {
+            return "alt";
+        }
+        if (val === 1) {
+            return "title";
+        }
+    };
     return {
         begin: function() {
             write_language();
@@ -641,8 +655,8 @@ var magic = function() {
                         if (t === 'l') {
                             $('input[name=' + out + ']').val(obj.eq(0).attr('href'));
                         } else {
-                            if (out === "category_name_text" && $('input[name=category_alt_name]').prop('checked')) {
-                                $('input[name=' + out + ']').val(obj.attr("alt"));
+                            if (out === "category_name_text" && $('input[name=category_attr]').prop('checked')) {
+                                $('input[name=' + out + ']').val(obj.attr(avalue_to_attr($('select[name=category_attr_type]').val())));
                             } else {
                                 $('input[name=' + out + ']').val(obj.eq(0).text());
                             }
@@ -700,8 +714,8 @@ var magic = function() {
                     if (t === 'l') {
                         txt.val(obj.attr('href'));
                     } else {
-                        if (otext === "category_name_text" && $('input[name=category_alt_name]').prop('checked')) {
-                            txt.val(obj.attr("alt"));
+                        if (otext === "category_name_text" && $('input[name=category_attr]').prop('checked')) {
+                            txt.val(obj.attr(avalue_to_attr($('select[name=category_attr_type]').val())));
                         } else {
                             txt.val(obj.text());
                         }
@@ -833,6 +847,7 @@ var magic = function() {
                 $(this).addClass('active');
                 $('body').find('div.page.active').removeClass('active');
                 $('body').find('div.' + $(this).data('page')).addClass('active');
+                $(window).trigger('resize');
             });
             $('input[name=load_code]').on('click', function() {
                 load_code();
