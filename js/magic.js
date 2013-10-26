@@ -163,7 +163,7 @@ var magic = function() {
             }
             if ('date_attr' in code) {
                 $('input[name=time_attr]').prop('checked', 1);
-                $('input[name=time_attr_value]').val(code['time_attr']);
+                $('input[name=time_attr_value]').val(code['date_attr']);
             }
             $('input[name=add_time]').parents().eq(1).find('input[name=status]').prop('checked', 1);
         }
