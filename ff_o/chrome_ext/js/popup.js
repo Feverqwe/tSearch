@@ -59,11 +59,7 @@ var AddAutocomplete = function() {
          */
         minLength: 0,
         select: function(event, ui) {
-            chrome.tabs.create({
-                url: 'index.html#s=' + ui.item.value
-            }, function() {
-                window.close();
-            });
+            $(this).closest('form').trigger('submit');
         },
         position: {
             collision: "bottom"
@@ -79,8 +75,6 @@ $(function() {
         event.preventDefault();
         chrome.tabs.create({
             url: 'index.html#s=' + $(this).children('input[type="text"]').val()
-        }, function() {
-            window.close();
         });
     });
     $('form[name="search"]').children('div.btn.clear').on("click", function(event) {
