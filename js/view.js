@@ -125,12 +125,11 @@ var view = function() {
         tmp_vars.ul_trackers.empty();
         $('style.tr_icon').remove();
     };
-    function isInt(n) {
-        if (n === undefined || n === null || n.length === 0)
-            return false;
-        return n % 1 === 0;
-    }
     var quality_calc = function(quality, v) {
+        /*
+         * Расчет качетсва по сидам
+         * Перерасчет соотношения качества видео и размера раздачи
+         */
         quality.seed = (v.seeds > 50) ? 60 : (v.seeds > 30) ? 40 : (v.seeds > 20) ? 30 : (v.seeds > 10) ? 20 : (v.seeds > 0) ? 10 : 0;
         if (v.size < 524288000 && quality.video > 45)
             quality.video = Math.round(parseInt(quality.video) / 10);
@@ -1545,9 +1544,15 @@ var view = function() {
         /*
          * добавляет автозавершение для поисковой строки
          */
-        if (AutoComplite_opt === 0) {
+        function getStaticArray() {
+            /*
+             * Отдает массив поисковых запросов из истории
+             */
             var AutocompleteArr = [];
             var order = function(a, b) {
+                /*
+                 * сортирует по кол-ву попаданий
+                 */
                 if (a.count > b.count)
                     return -1;
                 if (a.count === b.count)
@@ -1562,31 +1567,19 @@ var view = function() {
                     AutocompleteArr.push(search_history[i].title);
                 }
             }
+            return AutocompleteArr;
         }
         var inp = $('input[type="text"][name="s"]');
         if (inp.attr('autocomplete') !== undefined) {
-            inp.autocomplete("destroy");
+            if (AutoComplite_opt === 0) {
+                inp.autocomplete({source: getStaticArray()});
+            }
+            return;
         }
         inp.autocomplete({
-            source: (AutoComplite_opt === 0) ? AutocompleteArr : function(a, response) {
+            source: (AutoComplite_opt === 0) ? getStaticArray() : function(a, response) {
                 if ($.trim(a.term).length === 0 || AutoComplite_opt === 0) {
-                    var AutocompleteArr = [];
-                    var order = function(a, b) {
-                        if (a.count > b.count)
-                            return -1;
-                        if (a.count === b.count)
-                            return 0;
-                        return 1;
-                    };
-                    var search_history = JSON.parse(GetSettings('search_history') || "[]");
-                    if (search_history.length > 0) {
-                        search_history.sort(order);
-                        var count = search_history.length;
-                        for (var i = 0; i < count; i++) {
-                            AutocompleteArr.push(search_history[i].title);
-                        }
-                    }
-                    response(AutocompleteArr);
+                    response(getStaticArray());
                 } else {
                     if (xhr_autocomplite !== null)
                         xhr_autocomplite.abort();
@@ -1612,7 +1605,6 @@ var view = function() {
                 collision: "bottom"
             }
         });
-        inp.autocomplete("close");
     };
     var LoadProfiles = function() {
         /*
