@@ -61,6 +61,8 @@ var AddAutocomplete = function() {
         select: function(event, ui) {
             chrome.tabs.create({
                 url: 'index.html#s=' + ui.item.value
+            }, function() {
+                window.close();
             });
         },
         position: {
