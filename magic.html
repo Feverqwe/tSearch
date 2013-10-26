@@ -64,7 +64,7 @@
                         <li><span class="istr" data-lang="22">Название категории</span></li><li><input type="text" name="category_name" value=""/></li>
                         <li><input type="text" name="category_name_text" value="" disabled="disabled"></li>
                         <li><input type="checkbox" name="category_attr"></li>
-                        <li><span data-lang="62">Атрибут</span>: <select name="category_attr_type"><option value="0">Alt</option><option value="1">Title</option></select></li>
+                        <li><span data-lang="62">Атрибут</span>: <input type="text" name="category_attr_value" class="cos_attr"/></li>
                         <li><input type="button" name="category_name_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                     <ul>
@@ -95,6 +95,8 @@
                         <li><input type="checkbox" name="status"></li>
                         <li><span class="istr" data-lang="28">Размер раздачи</span></li><li><input type="text" name="torrent_size" value=""/></li>
                         <li><input type="text" name="torrent_size_text" value="" disabled="disabled"></li>
+                        <li><input type="checkbox" name="size_attr"></li>
+                        <li><span data-lang="62">Атрибут</span>: <input type="text" name="size_attr_value" class="cos_attr"/></li>
                         <li><input type="button" name="torrent_size_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                     <!-- < -->
@@ -127,6 +129,8 @@
                         <li><input type="checkbox" name="status"></li>
                         <li><span class="istr" data-lang="33">Дата добавления раздачи</span></li><li><input type="text" name="add_time" value=""/></li>
                         <li><input type="text" name="add_time_text" value="" disabled="disabled"></li>
+                        <li><input type="checkbox" name="time_attr"></li>
+                        <li><span data-lang="62">Атрибут</span>: <input type="text" name="time_attr_value" class="cos_attr"/></li>
                         <li><input type="button" name="add_time_btn" value="Выбрать" data-lang="19"/></li>
                     </ul>
                     <!-- < -->
@@ -144,7 +148,7 @@
                     <div>
                         <span data-lang="37">Дата добавления раздачи</span>
                         <ul>
-                            <li><span data-lang="38">Применить regexp</span>:</li><li><input name="time_regexp" type="text" /></li> <li><span data-lang="39">заменить на</span></li><li><input name="time_regexp_repl" type="text" /></li>
+                            <li><span data-lang="38">Применить regexp</span>:</li><li><input name="time_regexp" type="text" /></li> <li><span data-lang="39">заменить на</span></li> <li><input name="time_regexp_repl" type="text" /></li>
                         </ul>
                         <ul>
                             <li><input name="today_replace" type="checkbox" /></li><li><span data-lang="63">Заменить слова сегодня\вчера\сейчас</span></li>
@@ -165,7 +169,7 @@
                     <div>
                         <span data-lang="45">Размер торрента</span>
                         <ul>
-                            <li><span data-lang="38">Применить regexp</span>:</li><li><input name="size_regexp" type="text" /></li> <li><span data-lang="39">заменить на</span>:</li><li><input name="size_regexp_repl" type="text" /></li>
+                            <li><span data-lang="38">Применить regexp</span>:</li><li><input name="size_regexp" type="text" /></li> <li><span data-lang="39">заменить на</span></li> <li><input name="size_regexp_repl" type="text" /></li>
                         </ul>
                         <ul>
                             <li><input name="convert_size" type="checkbox" /></li><li><span data-lang="46">Преобразовать</li>
@@ -180,7 +184,7 @@
                     <div>
                         <span data-lang="59">Сиды</span>
                         <ul>
-                            <li><span data-lang="38">Применить regexp</span>:</li><li><input name="seed_regexp" type="text" /></li> <li><span data-lang="39">заменить на</span>:</li><li><input name="seed_regexp_repl" type="text" /></li>
+                            <li><span data-lang="38">Применить regexp</span>:</li><li><input name="seed_regexp" type="text" /></li> <li><span data-lang="39">заменить на</span></li> <li><input name="seed_regexp_repl" type="text" /></li>
                         </ul>
                         <ul>
                             <li><span data-lang="47">Исходная строка</span>:</li><li><input name="original_seed" type="text" /></li> <li><span data-lang="48">Конвертированная</span>:</li><li><input name="converted_seed" type="text" disabled="disabled" /></li>
@@ -192,7 +196,7 @@
                     <div>
                         <span data-lang="60">Пиры</span>
                         <ul>
-                            <li><span data-lang="38">Применить regexp</span>:</li><li><input name="peer_regexp" type="text" /></li> <li><span data-lang="39">заменить на</span>:</li><li><input name="peer_regexp_repl" type="text" /></li>
+                            <li><span data-lang="38">Применить regexp</span>:</li><li><input name="peer_regexp" type="text" /></li> <li><span data-lang="39">заменить на</span></li> <li><input name="peer_regexp_repl" type="text" /></li>
                         </ul>
                         <ul>
                             <li><span data-lang="47">Исходная строка</span>:</li><li><input name="original_peer" type="text" /></li> <li><span data-lang="48">Конвертированная</span>:</li><li><input name="converted_peer" type="text" disabled="disabled" /></li>

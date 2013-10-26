@@ -59,6 +59,7 @@ var AddAutocomplete = function() {
          */
         minLength: 0,
         select: function(event, ui) {
+            $(this).val(ui.item.value);
             $(this).closest('form').trigger('submit');
         },
         position: {

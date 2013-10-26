@@ -213,3 +213,6 @@ div.status_bar {
     margin-bottom: 3px;
     margin-top: 6px;
 }
+.cos_attr {
+    width: 50px !important;
+}

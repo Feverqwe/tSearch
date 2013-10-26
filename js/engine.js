@@ -248,7 +248,7 @@ var engine = function() {
                             if ('cat_alt' in me) {
                                 obj['category']['title'] = (td.find(me.cat_name)).attr('alt');
                             } else if ('cat_attr' in me) {
-                                obj['category']['title'] = (td.find(me.cat_name)).attr(ex_kit.value_to_attr_name(me.cat_attr));
+                                obj['category']['title'] = (td.find(me.cat_name)).attr(me.cat_attr);
                             } else {
                                 obj['category']['title'] = (td.find(me.cat_name)).text();
                             }
@@ -290,7 +290,11 @@ var engine = function() {
                             }
                         }
                         if (ex_tr_size) {
-                            obj['size'] = (td.find(me.tr_size)).text();
+                            if ('size_attr' in me) {
+                                obj['size'] = (td.find(me.tr_size)).attr(me.size_attr);
+                            } else {
+                                obj['size'] = (td.find(me.tr_size)).text();
+                            }
                             if (obj['size'].length !== 0) {
                                 obj['size'] = obj['size'].replace(/[\r\n]+/g, "");
                                 if (ex_size_regexp) {
@@ -355,7 +359,11 @@ var engine = function() {
                             obj['leechs'] = 0;
                         }
                         if (ex_date) {
-                            obj['time'] = (td.find(me.date)).text();
+                            if ('date_attr' in me) {
+                                obj['time'] = (td.find(me.date)).attr(me.date_attr);
+                            } else {
+                                obj['time'] = (td.find(me.date)).text();
+                            }
                             if (obj['time'].length !== 0) {
                                 obj['time'] = obj['time'].replace(/[\r\n]+/g, "");
                                 if (ex_date_regexp) {
@@ -737,22 +745,12 @@ var ex_kit = function() {
     var isNumber = function(n) {
         return !isNaN(parseFloat(n)) && isFinite(n);
     };
-    var value_to_attr_name = function(val) {
-        val = parseInt(val);
-        if (val === 0) {
-            return "alt";
-        }
-        if (val === 1) {
-            return "title";
-        }
-    };
     return {
         isNumber: isNumber,
         in_cp1251: in_cp1251,
         format_size: format_size,
         month_replace: month_replace,
         format_date: format_date,
-        today_replace: today_replace,
-        value_to_attr_name: value_to_attr_name
+        today_replace: today_replace
     };
 }();
