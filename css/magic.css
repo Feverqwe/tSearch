@@ -200,11 +200,11 @@ div.status_bar {
     border-bottom: 1px dashed #c0c0c0;
     border-top: 1px dashed #c0c0c0;
 }
-.page.selectors ul li span.istr {
+.page.selectors ul li.istr {
     width: 200px;
     display: inline-block;
 }
-.page.selectors ul li span.istr.nc {
+.page.selectors ul li.istr.nc {
     width: 224px;
 }
 .page.convert div>span {
@@ -215,4 +215,16 @@ div.status_bar {
 }
 .cos_attr {
     width: 50px !important;
+}
+.page li.istr {
+    width: 200px;
+}
+.page.convert li.istr {
+    width: 150px;
+}
+.page.auth li.istr {
+    width: 200px;
+}
+.page.search li.istr {
+    width: 150px;
 }

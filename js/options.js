@@ -32,7 +32,7 @@ var options = function() {
     var settings = loadSettings();
     var sandbox_trackerProfiles = JSON.parse(GetSettings('trackerProfiles'));
     var tmp_vars = {};
-    currentProfile = {};
+    var currentProfile = {};
     var set_place_holder = function() {
         settings = loadSettings();
         $.each(def_settings, function(k, v) {
@@ -138,6 +138,11 @@ var options = function() {
                 }
             }
         });
+        if (_lang.t !== "ru") {
+            $('input[name="use_english_postername"]').parents().eq(1).hide();
+        } else {
+            $('input[name="use_english_postername"]').parents().eq(1).show();
+        }
         if (selected) {
             $('select[name=tr_lists]').trigger("change");
         }
