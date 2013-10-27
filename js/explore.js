@@ -1006,7 +1006,7 @@ var explore = function() {
                 url: content_sourse[type].url.replace('%page%', page).replace('%category%', kinopoisk_folder_id),
                 success: function(data) {
                     var content = read_content(type, data);
-                    if (typeof(content) === 'string') {
+                    if (typeof (content) === 'string') {
                         tmp_vars.li_cache["kinopoisk"].find('.kinopoisk_update_btn').removeClass('update').addClass('error').removeClass('success');
                         if (page !== 1) {
                             cb(full_content);
@@ -1324,9 +1324,16 @@ var explore = function() {
             last_qbox.id = id;
             var ct_w = ct.width() + 8;
             var lp = pos.left - w + ct_w / 2;
+            var rp = lp + info_popup.width();
+            var win_w = $(window).width();
             if (lp < 0) {
                 info_popup.children("div.corner").css("margin-left", (lp - 8) + "px");
                 lp = 0;
+            } else
+            if (rp > win_w) {
+                var raz = rp - win_w;
+                info_popup.children("div.corner").css("margin-left", (raz - 8) + "px");
+                lp = lp - raz;
             } else {
                 info_popup.children("div.corner").css("margin-left", -8);
             }
@@ -1438,7 +1445,7 @@ var explore = function() {
             url: url,
             cache: false,
             success: function(data) {
-                if (typeof(data) !== "object") {
+                if (typeof (data) !== "object") {
                     data = jQuery.parseJSON(data);
                 }
                 data['timeout'] = time + timeout;
