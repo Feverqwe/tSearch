@@ -486,6 +486,9 @@ var view = function() {
          * s - текст поиска
          * p - количество найденный торрентов, указывается принудительно если загрузка более 1 страницы. 
          */
+        if (tracker[t] === undefined) {
+            return;
+        }
         if ("year" in keyword_filter_cache === false) {
             keyword_filter_cache.year = s.match(/[1-2]{1}[0-9]{3}/);
             if (keyword_filter_cache.year) {
