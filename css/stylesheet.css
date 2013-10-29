@@ -117,20 +117,25 @@ div.content div.right {
     padding-left: 10px;
 }
 #rez_table > tbody > tr > td.name > div.title > a {
-    color: #1A3DC1;
     font-size: 1.167em;
     text-decoration: none;
     line-height: 130%;
     padding-bottom: 1px;
     border-bottom-width: 1px;
-    border-bottom-style: hidden;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+}
+#rez_table > tbody > tr > td.name > div.title > a:link {
+    color: #1A3DC1;
+}
+#rez_table > tbody > tr > td.name > div.title > a:link:hover {
+    border-bottom-color: #1A3DC1;
 }
 #rez_table > tbody > tr > td.name > div.title > a:visited {
     color: #609;
 }
-#rez_table > tbody > tr > td.name > div.title > a:hover {
-    border-bottom-style: solid;
-    border-bottom-color: initial;
+#rez_table > tbody > tr > td.name > div.title > a:visited:hover {
+    border-bottom-color: #609;
 }
 #rez_table > tbody > tr > td.name > ul {
     padding-left: 0;
