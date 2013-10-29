@@ -121,17 +121,16 @@ div.content div.right {
     font-size: 1.167em;
     text-decoration: none;
     line-height: 130%;
-    padding-bottom: 2px;
-    border-bottom-width: 0px;
-    border-bottom-color: initial;
+    padding-bottom: 1px;
+    border-bottom-width: 1px;
+    border-bottom-style: hidden;
 }
 #rez_table > tbody > tr > td.name > div.title > a:visited {
     color: #609;
 }
 #rez_table > tbody > tr > td.name > div.title > a:hover {
     border-bottom-style: solid;
-    padding-bottom: 1px;
-    border-bottom-width: 1px;
+    border-bottom-color: initial;
 }
 #rez_table > tbody > tr > td.name > ul {
     padding-left: 0;
