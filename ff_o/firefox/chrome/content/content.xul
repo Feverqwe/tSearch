@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
-    <script type="application/javascript" src="chrome://TorrentsMultiSearch/content/js/button.js"/> 
+    <script type="application/javascript" src="chrome://TorrentsMultiSearch/content/js/button.js"/>
+    <popupset>
+        <panel id="tms_popup"
+               type="arrow"
+               noautofocus="false"
+               consumeoutsideclicks="true"
+               noautohide="false"
+               level="parent"
+               style="overflow:hidden">
+            <vbox id="iframeContainerContainer" align="top">
+                <iframe src="chrome://TorrentsMultiSearch/content/popup.html" id="myframe" style="width: 630px; height: 66px; margin: 0; padding: 0" />
+            </vbox>
+        </panel>
+    </popupset>
     <toolbarpalette id="BrowserToolbarPalette">
-        <toolbarbutton class="chromeclass-toolbar-additional toolbarbutton-1" id="torrentsmultysearch-button" label="Torrents MultiSearch" tooltiptext="Torrents MultiSearch" image="chrome://TorrentsMultiSearch/content/icons/icon-16.png" oncommand="run()"/>
+        <toolbarbutton class="chromeclass-toolbar-additional toolbarbutton-1"
+                       id="torrentsmultysearch-button" 
+                       label="Torrents MultiSearch" 
+                       tooltiptext="Torrents MultiSearch" 
+                       image="chrome://TorrentsMultiSearch/content/icons/icon-16.png" 
+                       oncommand="run()"/>
     </toolbarpalette>
 </overlay>

@@ -4,14 +4,14 @@ rm -r ./build
 rm -r ./build_opera
 rm -r ./build_firefox
 rm -r ./build_chrome_ext
-rm -r ./build_chrome_ext_cens
-rm -r ./build_chrome_cens
+#rm -r ./build_chrome_ext_cens
+#rm -r ./build_chrome_cens
 mkdir ./build
 mkdir ./build_opera
 mkdir ./build_firefox
 mkdir ./build_chrome_ext
-mkdir ./build_chrome_ext_cens
-mkdir ./build_chrome_cens
+#mkdir ./build_chrome_ext_cens
+#mkdir ./build_chrome_cens
 cp -r ./_locales ./build/.
 cp -r ./js ./build/.
 cp -r ./images ./build/.
@@ -70,9 +70,11 @@ java -jar htmlcompressor-1.5.3.jar -t html ./build/options.html -o ./build/optio
 #<chrome comression
 
 #>chrome censure
-cp -r ./build/ ./build_chrome_cens/.
-java -jar compiler.jar --js ./js/jquery.tablesorter.js --js ./js/apprise-1.5.js --js ./js/storage.js --js ./js/lang.js --js ./js/engine.js --js ./js/view.js --js ./ff_o/censure/js/explore.js --js ./js/ad.js --js ./js/counter.js --js_output_file ./build_chrome_cens/js/view.js
-echo "var censure = true;" >> ./build_chrome_cens/js/torrent_lib.js
+
+#cp -r ./build/ ./build_chrome_cens/.
+#java -jar compiler.jar --js ./js/jquery.tablesorter.js --js ./js/apprise-1.5.js --js ./js/storage.js --js ./js/lang.js --js ./js/engine.js --js ./js/view.js --js ./ff_o/censure/js/explore.js --js ./js/ad.js --js ./js/counter.js --js_output_file ./build_chrome_cens/js/view.js
+#echo "var censure = true;" >> ./build_chrome_cens/js/torrent_lib.js
+
 #<chrome censure
 
 #firefox
@@ -81,11 +83,17 @@ cp -r ./build ./build_firefox/chrome/content
 
 cp -r ./ff_o/firefox/* ./build_firefox/.
 
+java -jar yuicompressor-2.4.8.jar ./ff_o/firefox/chrome/content/css/popup.css -o ./build_firefox/chrome/content/css/popup.css
+
+java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/storage.js --js ./js/lang.js --js ./ff_o/firefox/chrome/content/js/popup.js --js_output_file ./build_firefox/chrome/content/js/popup.js
 java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/storage.js --js ./js/lang.js --js ./js/history.js --js_output_file ./build_firefox/chrome/content/js/history.js
 java -jar compiler.jar --js ./js/jquery.tablesorter.js --js ./js/apprise-1.5.js --js ./ff_o/firefox/chrome/content/js/storage.js --js ./js/lang.js --js ./js/engine.js --js ./js/view.js --js ./js/explore.js --js ./js/ad.js --js ./ff_o/firefox/chrome/content/js/counter.js --js_output_file ./build_firefox/chrome/content/js/view.js
 java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/storage.js --js ./js/lang.js --js ./js/magic.js --js_output_file ./build_firefox/chrome/content/js/magic.js
 java -jar compiler.jar --js ./ff_o/firefox/chrome/content/js/storage.js --js ./js/lz-string-1.3.3.js --js ./js/lang.js --js ./js/engine.js --js ./js/options.js --js_output_file ./build_firefox/chrome/content/js/options.js
 
+patch -i ./build_firefox/chrome/content/popup.patch ./build_firefox/chrome/content/popup.html
+
+rm ./build_firefox/chrome/content/popup.patch
 rm ./build_firefox/chrome/content/js/storage.js
 rm ./build_firefox/chrome/content/js/counter.js
 rm -r ./build_firefox/chrome/content/_locales
@@ -131,9 +139,11 @@ java -jar htmlcompressor-1.5.3.jar -t html ./build_chrome_ext/popup.html -o ./bu
 #<chr_ext
 
 #censure extension
-cp -r ./build_chrome_ext/ ./build_chrome_ext_cens/.
-java -jar compiler.jar --js ./js/jquery.tablesorter.js --js ./js/apprise-1.5.js --js ./js/storage.js --js ./js/lang.js --js ./js/engine.js --js ./js/view.js --js ./ff_o/censure/js/explore.js --js ./js/ad.js --js ./js/counter.js --js_output_file ./build_chrome_ext_cens/js/view.js
-echo "var censure = true;" >> ./build_chrome_ext_cens/js/torrent_lib.js
+
+#cp -r ./build_chrome_ext/ ./build_chrome_ext_cens/.
+#java -jar compiler.jar --js ./js/jquery.tablesorter.js --js ./js/apprise-1.5.js --js ./js/storage.js --js ./js/lang.js --js ./js/engine.js --js ./js/view.js --js ./ff_o/censure/js/explore.js --js ./js/ad.js --js ./js/counter.js --js_output_file ./build_chrome_ext_cens/js/view.js
+#echo "var censure = true;" >> ./build_chrome_ext_cens/js/torrent_lib.js
+
 #<censure
 
 rm ./build_chrome.zip
@@ -150,9 +160,9 @@ cd ../build_opera/
 zip -9 -r ../build_opera.oex ./
 cd ../build_chrome_ext/
 zip -9 -r ../build_chrome_ext.zip ./
-cd ../build_chrome_ext_cens/
-zip -9 -r ../build_chrome_ext_cens.zip ./
-cd ../build_chrome_cens/
-zip -9 -r ../build_chrome_cens.zip ./
+#cd ../build_chrome_ext_cens/
+#zip -9 -r ../build_chrome_ext_cens.zip ./
+#cd ../build_chrome_cens/
+#zip -9 -r ../build_chrome_cens.zip ./
 cd ..
 cp ./build_chrome_ext.zip ./build_opera_nex.nex

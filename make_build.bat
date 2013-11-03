@@ -2,13 +2,13 @@ rd /S /Q .\build
 rd /S /Q .\build_opera
 rd /S /Q .\build_firefox
 rd /S /Q .\build_chrome_ext
-rd /S /Q .\build_chrome_ext_cens
-rd /S /Q .\build_chrome_cens
+::rd /S /Q .\build_chrome_ext_cens
+::rd /S /Q .\build_chrome_cens
 mkdir .\build_opera
 mkdir .\build_firefox
 mkdir .\build_chrome_ext
-mkdir .\build_chrome_ext_cens
-mkdir .\build_chrome_cens
+::mkdir .\build_chrome_ext_cens
+::mkdir .\build_chrome_cens
 mkdir .\build
 xcopy .\_locales .\build\_locales\ /E
 xcopy .\js .\build\js\ /E
@@ -64,9 +64,11 @@ java -jar htmlcompressor-1.5.3.jar -t html .\build\magic.html -o .\build\magic.h
 java -jar htmlcompressor-1.5.3.jar -t html .\build\options.html -o .\build\options.html
 
 ::chrome censure
-xcopy .\build .\build_chrome_cens\ /E
-java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\ff_o\censure\js\explore.js --js .\js\ad.js --js .\js\counter.js --js_output_file .\build_chrome_cens\js\view.js
-echo var censure = true;  >>.\build_chrome_cens\js\torrent_lib.js
+
+::xcopy .\build .\build_chrome_cens\ /E
+::java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\ff_o\censure\js\explore.js --js .\js\ad.js --js .\js\counter.js --js_output_file .\build_chrome_cens\js\view.js
+::echo var censure = true;  >>.\build_chrome_cens\js\torrent_lib.js
+
 ::chrome censure
 
 :: ff
@@ -75,16 +77,25 @@ xcopy .\build .\build_firefox\chrome\content\ /E
 
 xcopy .\ff_o\firefox\* .\build_firefox\. /E /Y
 
+java -jar yuicompressor-2.4.8.jar .\ff_o\firefox\chrome\content\css\popup.css -o .\build_firefox\chrome\content\css\popup.css
+
+java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\ff_o\firefox\chrome\content\js\popup.js --js_output_file .\build_firefox\chrome\content\js\popup.js
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\js\history.js --js_output_file .\build_firefox\chrome\content\js\history.js
+
 java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\ff_o\firefox\chrome\content\js\counter.js --js_output_file .\build_firefox\chrome\content\js\view.js
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lang.js --js .\js\magic.js --js_output_file .\build_firefox\chrome\content\js\magic.js
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js .\js\lz-string-1.3.3.js --js .\js\lang.js --js .\js\engine.js --js .\js\options.js --js_output_file .\build_firefox\chrome\content\js\options.js
 
+patch -i .\build_firefox\chrome\content\popup.patch .\build_firefox\chrome\content\popup.html
+
+del .\build_firefox\chrome\content\popup.patch
 del .\build_firefox\chrome\content\js\storage.js
 del .\build_firefox\chrome\content\js\counter.js
 rd /S /Q .\build_firefox\chrome\content\_locales
 del .\build_firefox\chrome\content\manifest.json
 del .\build_firefox\chrome\content\js\background.js
+
+
 
 :: ff
 
@@ -131,9 +142,11 @@ java -jar htmlcompressor-1.5.3.jar -t html .\build_chrome_ext\popup.html -o .\bu
 :: chrome ext
 
 ::censure extension
-xcopy .\build_chrome_ext .\build_chrome_ext_cens\ /E
-java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\ff_o\censure\js\explore.js --js .\js\ad.js --js .\js\counter.js --js_output_file .\build_chrome_ext_cens\js\view.js
-echo var censure = true;  >>.\build_chrome_ext_cens\js\torrent_lib.js
+
+::xcopy .\build_chrome_ext .\build_chrome_ext_cens\ /E
+::java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\ff_o\censure\js\explore.js --js .\js\ad.js --js .\js\counter.js --js_output_file .\build_chrome_ext_cens\js\view.js
+::echo var censure = true;  >>.\build_chrome_ext_cens\js\torrent_lib.js
+
 ::censure
 
 del .\build_chrome.zip
@@ -147,7 +160,7 @@ del .\build_chrome_cens.zip
 7za a -tzip .\build_firefox.xpi .\build_firefox\*
 7za a -tzip .\build_opera.oex .\build_opera\*
 7za a -tzip .\build_chrome_ext.zip .\build_chrome_ext\*
-7za a -tzip .\build_chrome_ext_cens.zip .\build_chrome_ext_cens\*
-7za a -tzip .\build_chrome_cens.zip .\build_chrome_cens\*
+::7za a -tzip .\build_chrome_ext_cens.zip .\build_chrome_ext_cens\*
+::7za a -tzip .\build_chrome_cens.zip .\build_chrome_cens\*
 
 copy .\build_chrome_ext.zip .\build_opera_nex.nex
