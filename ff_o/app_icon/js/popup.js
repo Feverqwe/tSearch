@@ -4,7 +4,6 @@ function getExtId() {
     if (ext_id !== undefined && ext_id.length > 0) {
         return;
     }
-    var def = ext_id;
     chrome.management.getAll(function(exts) {
         var len = exts.length;
         for (var i = 0; i < len; i++) {
@@ -12,7 +11,7 @@ function getExtId() {
             if (item.enabled !== true || item.type === "extension" || item.type === "theme") {
                 continue;
             }
-            if (item.id === def) {
+            if (item.id === ext_id) {
                 ext_id = item.id;
                 return;
             }
