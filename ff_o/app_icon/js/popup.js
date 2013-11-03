@@ -11,7 +11,7 @@ function getExtId() {
             if (item.enabled !== true || item.type === "extension" || item.type === "theme") {
                 continue;
             }
-            if (item.id === ext_id) {
+            if (item.id === def_id) {
                 ext_id = item.id;
                 return;
             }
