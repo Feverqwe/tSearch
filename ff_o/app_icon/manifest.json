@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    "browser_action": {
+        "default_icon": "images/icon_16.png",
+        "default_popup": "popup.html",
+        "default_title": "TMS App icon"
+    },
+    "icons": {
+        "128": "images/icon_128.png",
+        "16": "images/icon_16.png"
+    },
+    "options_page": "options.html",
+    "permissions": ["http://suggestqueries.google.com/*","management"],
+    "name": "__MSG_appName__",
+    "description": "__MSG_appDesc__",
+    "default_locale": "en",
+    "version": "0.1"
+}

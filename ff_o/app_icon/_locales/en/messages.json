@@ -1,0 +1,11 @@
+{
+    "appName": {
+        "message": "TMS App popup"
+    },
+    "appDesc": {
+        "message": "Search popup for TMS App"
+    },
+    "lang": {
+    	"message": "en"
+    }
+}
