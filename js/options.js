@@ -1,4 +1,6 @@
 var options = function() {
+    var isFF = "Application" in window && Application.name === "Firefox";
+    var isChromeum = "chrome" in window;
     var def_settings = {
         HideLeech: {"v": 1, "t": "checkbox"},
         HideSeed: {"v": 0, "t": "checkbox"},
@@ -114,7 +116,7 @@ var options = function() {
         }
         if (language === undefined) {
             language = 'en';
-            if ("chrome" in window && chrome.i18n && chrome.i18n.getMessage("lang") === 'ru') {
+            if (isChromeum && chrome.i18n && chrome.i18n.getMessage("lang") === 'ru') {
                 language = 'ru';
             }
         }
@@ -365,7 +367,7 @@ var options = function() {
         });
         saveCurrentProfile();
         SetSettings('trackerProfiles', JSON.stringify(sandbox_trackerProfiles));
-        if ("chrome" in window && chrome.extension) {
+        if (isChromeum && chrome.extension) {
             var bgp = chrome.extension.getBackgroundPage();
             bgp.bg.update_context_menu();
             if (bgp._type_ext) {
@@ -373,6 +375,10 @@ var options = function() {
                 bgp.update_btn();
             }
             SetSettings('allow_favorites_sync', ($('input[name="allow_favorites_sync"]').is(':checked')) ? 1 : 0);
+        }
+        if (isFF) {
+            //FF
+            SetSettings('search_popup', ($('input[name="search_popup"]').is(':checked')) ? 1 : 0);
         }
         var s = (document.URL).replace(/(.*)options.html/, '');
         if (s.length > 0) {
@@ -401,26 +407,28 @@ var options = function() {
                 $('body').find('div.page.active').removeClass('active');
                 $('body').find('div.' + page).addClass('active');
             });
-            if ("Application" in window && Application.name === "Firefox") {
+            if (isFF) {
                 //FF
                 $('input[name="context_menu"]').parents().eq(1).hide();
             }
-            if ("chrome" in window === false) {
+            if (!isChromeum) {
                 //opera and firefox
                 $('input[name="add_in_omnibox"]').parents().eq(1).hide();
-                $('input[name="search_popup"]').parents().eq(1).hide();
                 $('input[name="google_analytics"]').parents().eq(1).hide();
                 $('input[name="allow_favorites_sync"]').parents().eq(1).hide();
                 $('input[name="clear_cloud_btn"]').hide();
             }
-            if ("chrome" in window && chrome.extension) {
+            if (!isChromeum && !isFF) {
+                $('input[name="search_popup"]').parents().eq(1).hide();
+            }
+            if (isChromeum && chrome.extension) {
                 //Chrome
                 var bgp = chrome.extension.getBackgroundPage();
                 if (!bgp._type_ext) {
                     $('input[name="search_popup"]').parents().eq(1).hide();
                 }
             }
-            if ("chrome" in window && chrome.storage) {
+            if (isChromeum && chrome.storage) {
                 $('input[name="clear_cloud"]').on('click', function() {
                     chrome.storage.sync.clear();
                 });

@@ -1,10 +1,32 @@
+var localStorage = function() {
+    var url = "http://tms_ex";
+    var ios = Components.classes["@mozilla.org/network/io-service;1"]
+            .getService(Components.interfaces.nsIIOService);
+    var ssm = Components.classes["@mozilla.org/scriptsecuritymanager;1"]
+            .getService(Components.interfaces.nsIScriptSecurityManager);
+    var dsm = Components.classes["@mozilla.org/dom/storagemanager;1"]
+            .getService(Components.interfaces.nsIDOMStorageManager);
+    var uri = ios.newURI(url, "", null);
+    var principal = ssm.getCodebasePrincipal(uri);
+    var storage = dsm.getLocalStorageForPrincipal(principal, "");
+    return storage;
+}();
 var run = function() {
-    var ifr = document.getElementById('myframe');
-    var panel = document.getElementById('tms_popup');
-    ifr.contentWindow.location.reload();
-    ifr.style.height = "66px";
-    panel.sizeTo(660, 66);
-    panel.openPopup(document.getElementById('torrentsmultysearch-button'));
+    var search_popup = parseInt(localStorage['search_popup'] || 1);
+    if (search_popup) {
+        var ifr = document.getElementById('myframe');
+        var panel = document.getElementById('tms_popup');
+        ifr.contentWindow.location.reload();
+        ifr.style.height = "66px";
+        panel.sizeTo(660, 66);
+        panel.openPopup(document.getElementById('torrentsmultysearch-button'));
+    } else {
+        var url = 'chrome://TorrentsMultiSearch/content/index.html#s=';
+        var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+                .getService(Components.interfaces.nsIWindowMediator);
+        var recentWindow = wm.getMostRecentWindow("navigator:browser");
+        recentWindow.delayedOpenTab(url, null, null, null, null);
+    }
 };
 var addButton = function() {
     var startButtonId = "torrentsmultysearch-button";

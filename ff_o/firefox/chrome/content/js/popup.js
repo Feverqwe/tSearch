@@ -104,4 +104,5 @@ $(function() {
             $(this).parent().children('div.btn.clear').hide();
         }
     });
+    $('form[name="search"]').children('input').eq(0).val("").focus();
 });
