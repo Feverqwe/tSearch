@@ -774,6 +774,7 @@ ul.ui-autocomplete {
     max-height: 153px;
     overflow-y: auto;
     z-index: 100;
+    position: absolute;
 }
 ul.ui-autocomplete li {
     margin-bottom: 1px;
