@@ -57,8 +57,8 @@
                         'title': td.eq(2).children('table').find('a').eq(0).text(),
                         'url': root_url + td.eq(2).children('table').find('a').eq(0).attr('href'),
                         'size': ex_kit.format_size(td.eq(6).text()),
-                        'seeds': td.eq(4).children('b').text(),
-                        'leechs': td.eq(5).children('b').text(),
+                        'seeds': td.eq(4).text(),
+                        'leechs': td.eq(5).text(),
                         'time': calculateTime(td.eq(2).children('div').children('div').eq(0).text())
                     }
                 }

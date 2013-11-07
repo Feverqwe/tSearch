@@ -12,7 +12,7 @@
         var flags = {
             a: 0,
             l: 0,
-            rs: 0
+            rs: 1
         }
         var xhr = null;
         var web = function() {

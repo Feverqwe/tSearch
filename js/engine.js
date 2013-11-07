@@ -1,11 +1,11 @@
 var tracker = [];
 var engine = function() {
     var makeDefaultList = function() {
-        def = ['bitsnoop', 'extratorrent', 'fenopy', 'torrentz', 'thepiratebay', 'isohunt', 'kickass'];
+        def = ['bitsnoop', 'extratorrent', 'fenopy', 'torrentz', 'thepiratebay', 'kickass'];
         if (_lang['t'] === "ru") {
             def = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'rustorka', 'hdclub', 'tfile', 'fast-torrent', 'opensharing', 'btdigg'];
         }
-        var all = ['anidub', 'bestrepack', 'bigfangroup', 'bitsnoop', 'brodim', 'btdigg', 'evrl', 'extratorrent', 'fast-torrent', 'fenopy', 'filebase', 'free-torrents', 'hdclub', 'hurtom', 'inmac', 'isohunt', 'katushka', 'kickass', 'kinozal', 'libertorrent', 'megashara', 'mininova', 'nnm-club', 'opensharing', 'opentorrent', 'piratbit', 'piratca', 'rgfootball', 'riperam', 'rustorka', 'rutor', 'rutracker', 'tapochek', 'tfile', 'thepiratebay', 'thepiratebay2', 'torrentmac', 'torrents.freedom', 'torrents.local', 'torrentz', 'underverse', 'x-torrents', 'ru-board'];
+        var all = ['anidub', 'bestrepack', 'bigfangroup', 'bitsnoop', 'brodim', 'btdigg', 'evrl', 'extratorrent', 'fast-torrent', 'fenopy', 'filebase', 'free-torrents', 'hdclub', 'hurtom', 'inmac', 'katushka', 'kickass', 'kinozal', 'libertorrent', 'megashara', 'mininova', 'nnm-club', 'opensharing', 'opentorrent', 'piratbit', 'piratca', 'rgfootball', 'riperam', 'rustorka', 'rutor', 'rutracker', 'tapochek', 'tfile', 'thepiratebay', 'torrentmac', 'torrents.freedom', 'torrents.local', 'torrentz', 'underverse', 'x-torrents', 'ru-board'];
         var torrentList = [];
         def.forEach(function(item) {
             torrentList.push({e: 1, n: item});
