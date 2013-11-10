@@ -1013,10 +1013,22 @@ var explore = function() {
                         }
                         return;
                     }
-                    full_content = full_content.concat(content);
-                    if (content.length === 25 && page <= limit) {
-                        page_load(page + 1, cb);
-                        return;
+                    var no_dbl = true;
+                    if (full_content.length > 0) {
+                        var check_content = JSON.stringify(full_content[full_content.length - 1]);
+                        for (var i = 0; i < content.length; i++) {
+                            if (JSON.stringify(content[i]) === check_content) {
+                                no_dbl = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (no_dbl) {
+                        full_content = full_content.concat(content);
+                        if (content.length === 25 && page <= limit) {
+                            page_load(page + 1, cb);
+                            return;
+                        }
                     }
                     cb(full_content);
                 },
