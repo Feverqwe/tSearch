@@ -1018,7 +1018,8 @@ var explore = function() {
                         var check_content_1 = JSON.stringify(full_content[full_content.length - 1]);
                         var check_content_2 = JSON.stringify(full_content[0]);
                         for (var i = 0; i < content.length; i++) {
-                            if (JSON.stringify(content[i]) === check_content_1 || JSON.stringify(content[i]) === check_content_2) {
+                            var cont = JSON.stringify(content[i]);
+                            if (cont === check_content_1 || cont === check_content_2) {
                                 no_dbl = false;
                                 break;
                             }
