@@ -23,6 +23,7 @@ var options = function() {
         kinopoisk_category: {"v": 1, "t": "checkbox"},
         kinopoisk_f_id: {"v": 1, "t": "number"},
         filter_panel_to_left: {"v": 0, "t": "checkbox"}
+        /*sync_trackers: {"v": 0, "t": "checkbox"}*/
     };
     var loadSettings = function() {
         var settings = {};
@@ -216,9 +217,8 @@ var options = function() {
             alert(_lang.str33 + "\n" + err);
         }
     };
-    var makePartedBackup = function() {
-        var chank_name = "bk_ch_";
-        var back = getBackup();
+    var makePartedBackup = function(chank_name, content) {
+        var back = content;
         var full_len = back.length;
         var chank_len = 1024 - (chank_name + "000").length - 1;
         var number_of_part = Math.round(full_len / chank_len);
@@ -335,8 +335,153 @@ var options = function() {
             engine.loadProfile(id);
         }
     };
+    var getPartedSync = function(chank_name, cb, isRemove) {
+        chrome.storage.sync.get(function(data) {
+            var clear_broken = function(chank_name, obj, len) {
+                var l = 0;
+                $.each(obj, function(k) {
+                    if (k.substr(0, 6) === chank_name) {
+                        if ((k.substr(6) !== "inf") && k.substr(6) > len) {
+                            chrome.storage.sync.remove(k);
+                            l++;
+                        }
+                    }
+                });
+                if (l > 0) {
+                    console.log("Removed garbage: ", l);
+                }
+            };
+            var inf = 0;
+            if (chank_name + "inf" in data) {
+                inf = data[chank_name + "inf"];
+            } else {
+                console.log("Sync ", chank_name, " not found!");
+                clear_broken(chank_name, data, inf);
+                return null;
+            }
+            var back = "";
+            var broken = 0;
+            for (var i = 0; i < inf; i++) {
+                if (chank_name + i in data) {
+                    back += data[chank_name + i];
+                } else {
+                    console.log("Sync is broken!", chank_name, "Chank", i);
+                }
+            }
+            if (data[chank_name + inf] !== "END" || isRemove) {
+                broken = 1;
+            }
+            if (broken) {
+                chrome.storage.sync.remove(chank_name + "inf");
+                inf = -1;
+            }
+            clear_broken(chank_name, data, inf);
+            if (broken) {
+                console.log("Sync is broken!", chank_name);
+                return null;
+            }
+
+            if (back.substr(0, 2) === 'LZ') {
+                back = LZString.decompressFromBase64(back.substr(2));
+            }
+            if (cb) {
+                cb(back);
+            }
+        });
+    };
+    var trackersSync = function() {
+        var make_tracker_list = function() {
+            var trackerList = JSON.parse(GetSettings('trackerProfiles') || []);
+            var arr = [];
+            var c_trackers = {};
+            var trackerList_len = trackerList.length;
+            for (var i = 0; i < trackerList_len; i++) {
+                var item = trackerList[i];
+                var trackers = [];
+                var i_trackers_len = item["Trackers"].length;
+                for (var n = 0; n < i_trackers_len; n++) {
+                    var tr = item["Trackers"][n];
+                    if (tr["e"] !== 1) {
+                        continue;
+                    }
+                    if ("uid" in tr === false) {
+                        trackers.push(tr["n"]);
+                    } else {
+                        tr["n"] = parseInt(tr["n"]);
+                        if (isNaN(tr["n"])) {
+                            continue;
+                        }
+                        if (tr["n"] in c_trackers === false) {
+                            var ctr_code = GetSettings('ct_' + tr["n"]);
+                            if (ctr_code !== undefined) {
+                                try {
+                                    c_trackers[tr["n"]] = JSON.parse(ctr_code);
+                                } catch (e) {
+                                    continue;
+                                }
+                                trackers.push(tr["n"]);
+                            }
+                        }
+                    }
+                }
+                arr.push([trackers, item["Title"], item["id"]]);
+            }
+            return JSON.stringify([arr, c_trackers]);
+        };
+        var chanks = makePartedBackup("ts_ch_", make_tracker_list());
+        chrome.storage.sync.set(chanks);
+        getPartedSync("ts_ch_");
+    };
+    var loadSyncTrackers = function() {
+        getPartedSync("ts_ch_", function(data) {
+            if (data.length === 0) {
+                return;
+            }
+            var code = "";
+            try {
+                code = JSON.parse(data);
+            } catch (e) {
+                return;
+            }
+            data = code;
+            var c_trackers = data[1];
+            var costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
+            $.each(c_trackers, function(item) {
+                var uid = parseInt(item);
+                if (isNaN(uid)) {
+                    return 1;
+                }
+                if (costume_tr.indexOf(uid) === -1) {
+                    costume_tr.push(uid);
+                    console.log('ct_' + uid, JSON.stringify(c_trackers[uid]));
+                    //SetSettings('ct_' + uid, JSON.stringify(c_trackers[uid]));
+                }
+            });
+            var trackers = data[0];
+            var Sync_trackerProfiles = [];
+            trackers.forEach(function(item) {
+                var tr_list = [];
+                item[0].forEach(function(tr) {
+                    if (tr in c_trackers) {
+                        tr_list.push({n: tr, e: 1, uid: tr});
+                    } else {
+                        tr_list.push({n: tr, e: 1});
+                    }
+                });
+                Sync_trackerProfiles.push({Trackers: tr_list, Title: item[1], id: item[2]});
+            });
+            //SetSettings('costume_tr', JSON.stringify(costume_tr));
+            //SetSettings('trackerProfiles', JSON.stringify(Sync_trackerProfiles));
+            console.log(costume_tr);
+            console.log(Sync_trackerProfiles);
+        });
+
+    };
     var saveAll = function() {
         SetSettings('lang', $('select[name="language"]').val());
+        /*
+        var prev_sync_trackers = settings.sync_trackers;
+        */
         $.each(def_settings, function(key, value) {
             if (value.t === "text") {
                 var val = $('input[name="' + key + '"]').val();
@@ -389,6 +534,14 @@ var options = function() {
             sandbox_trackerProfiles = JSON.parse(GetSettings('trackerProfiles'));
             updateProfileList(currentProfile.id);
         }
+        /*
+        if (settings.sync_trackers) {
+            trackersSync();
+        } else
+        if (prev_sync_trackers) {
+            getPartedSync("ts_ch_", undefined, true);
+        }
+        */
     };
     return {
         begin: function() {
@@ -433,7 +586,7 @@ var options = function() {
                     chrome.storage.sync.clear();
                 });
                 $('input[name="save_in_cloud"]').on('click', function() {
-                    var obj = makePartedBackup();
+                    var obj = makePartedBackup("bk_ch_", getBackup());
                     if (obj === undefined) {
                         return;
                     }
