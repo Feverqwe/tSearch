@@ -13,8 +13,8 @@ var explore = function() {
     var kinopoisk_category = parseInt(GetSettings('kinopoisk_category') || 1);
     var kinopoisk_folder_id = parseInt(GetSettings('kinopoisk_f_id') || 1);
     var _hideTopSearch = parseInt(GetSettings('hideTopSearch') || 0);
-    var _hide_exp_section = {films: parseInt(GetSettings('s_films') || 0), top_films: parseInt(GetSettings('s_top_films') || 0), serials: parseInt(GetSettings('s_serials') || 0),
-        games_n: parseInt(GetSettings('s_games_n') || 0), games: parseInt(GetSettings('s_games') || 0), games_a: parseInt(GetSettings('s_games_a') || 0)};
+    var _hide_exp_section = {films: parseInt(GetSettings('s_films') || 1), top_films: parseInt(GetSettings('s_top_films') || 1), serials: parseInt(GetSettings('s_serials') || 1),
+        games_n: parseInt(GetSettings('s_games_n') || 1), games: parseInt(GetSettings('s_games') || 1), games_a: parseInt(GetSettings('s_games_a') || 1)};
     var _hide_all_exp = (_hide_exp_section.films === 0 && _hide_exp_section.top_films === 0 && _hide_exp_section.serials === 0 &&
             _hide_exp_section.games_n === 0 && _hide_exp_section.games === 0 && _hide_exp_section.games_a === 0 && kinopoisk_category === 0);
     var tmpDeskList = {};
