@@ -28,10 +28,12 @@ var options = function() {
         s_films: {"v": 1, "t": "checkbox"},
         s_top_films: {"v": 1, "t": "checkbox"},
         s_serials: {"v": 1, "t": "checkbox"},
+        s_imdb_films: {"v": 0, "t": "checkbox"},
+        s_imdb_top_films: {"v": 0, "t": "checkbox"},
+        s_imdb_serials: {"v": 0, "t": "checkbox"},
         s_games_n: {"v": 1, "t": "checkbox"},
         s_games: {"v": 1, "t": "checkbox"},
-        s_games_a: {"v": 1, "t": "checkbox"},
-        use_imdb: {"v": 0, "t": "checkbox"}
+        s_games_a: {"v": 1, "t": "checkbox"}
     };
     var loadSettings = function() {
         var settings = {};
@@ -152,6 +154,9 @@ var options = function() {
         $('[data-lang="exp_in_cinima"]').text(_lang.exp_in_cinima);
         $('[data-lang="exp_films"]').text(_lang.exp_films);
         $('[data-lang="exp_serials"]').text(_lang.exp_serials);
+        $('[data-lang="exp_imdb_in_cinima"]').text(_lang.exp_imdb_in_cinima);
+        $('[data-lang="exp_imdb_films"]').text(_lang.exp_imdb_films);
+        $('[data-lang="exp_imdb_serials"]').text(_lang.exp_imdb_serials);
         $('[data-lang="exp_games_new"]').text(_lang.exp_games_new);
         $('[data-lang="exp_games_best"]').text(_lang.exp_games_best);
         $('[data-lang="exp_games_all"]').text(_lang.exp_games_all);
@@ -496,7 +501,6 @@ var options = function() {
         /*
          var prev_sync_trackers = settings.sync_trackers;
          */
-        var prev_use_imdb = settings.use_imdb;
         $.each(def_settings, function(key, value) {
             if (value.t === "text") {
                 var val = $('input[name="' + key + '"]').val();
@@ -541,10 +545,6 @@ var options = function() {
             SetSettings('search_popup', ($('input[name="search_popup"]').is(':checked')) ? 1 : 0);
         }
         var s = (document.URL).replace(/(.*)options.html/, '');
-
-        if (prev_use_imdb !== parseInt(GetSettings("use_imdb") || 0)) {
-            SetSettings("explorerCache", null);
-        }
 
         if (s.length > 0) {
             var s = s.replace(/^#back=(.*)/, '$1');

@@ -14,14 +14,15 @@ var explore = function() {
     var kinopoisk_folder_id = parseInt(GetSettings('kinopoisk_f_id') || 1);
     var _hideTopSearch = parseInt(GetSettings('hideTopSearch') || 0);
     var _hide_exp_section = {films: parseInt(GetSettings('s_films') || 1), top_films: parseInt(GetSettings('s_top_films') || 1), serials: parseInt(GetSettings('s_serials') || 1),
-        games_n: parseInt(GetSettings('s_games_n') || 1), games: parseInt(GetSettings('s_games') || 1), games_a: parseInt(GetSettings('s_games_a') || 1)};
+        games_n: parseInt(GetSettings('s_games_n') || 1), games: parseInt(GetSettings('s_games') || 1), games_a: parseInt(GetSettings('s_games_a') || 1),
+        imdb_films: parseInt(GetSettings('s_imdb_films') || 0), imdb_top_films: parseInt(GetSettings('s_imdb_top_films') || 0), imdb_serials: parseInt(GetSettings('s_imdb_serials') || 0)};
     var _hide_all_exp = (_hide_exp_section.films === 0 && _hide_exp_section.top_films === 0 && _hide_exp_section.serials === 0 &&
-            _hide_exp_section.games_n === 0 && _hide_exp_section.games === 0 && _hide_exp_section.games_a === 0 && kinopoisk_category === 0);
+            _hide_exp_section.games_n === 0 && _hide_exp_section.games === 0 && _hide_exp_section.games_a === 0 && kinopoisk_category === 0
+            && _hide_exp_section.imdb_films === 0 && _hide_exp_section.imdb_top_films === 0 && _hide_exp_section.imdb_serials === 0);
     var tmpDeskList = {};
     var tmp_vars = {};
     var last_qbox = {top: 0, obj: null, id: null};
     var _pages_cache = {};
-    var _use_imdb = parseInt(GetSettings('use_imdb') || 0);
     var listOptions_def = {
         favorites: {
             s: 1,
@@ -69,6 +70,24 @@ var explore = function() {
             s: 1,
             size: 0,
             count: 7,
+            line: 1
+        },
+        imdb_films: {
+            s: 1,
+            size: 0,
+            count: 6,
+            line: 1
+        },
+        imdb_top_films: {
+            s: 1,
+            size: 0,
+            count: 12,
+            line: 2
+        },
+        imdb_serials: {
+            s: 1,
+            size: 0,
+            count: 6,
             line: 1
         }
     };
@@ -197,11 +216,9 @@ var explore = function() {
             base_url: "http://www.kinopoisk.ru/film/",
             base_img_url: "http://st.kinopoisk.ru/images/film/",
             google_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
-        }
-    };
-    var c_s_imdb = {
-        films: {
-            t: _lang.exp_in_cinima,
+        },
+        imdb_films: {
+            t: _lang.exp_imdb_in_cinima,
             c: 3,
             root_url: 'http://www.imdb.com',
             fav: 1,
@@ -215,8 +232,8 @@ var explore = function() {
             base_img_url: "http://ia.media-imdb.com/images/",
             google_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
-        top_films: {
-            t: _lang.exp_films,
+        imdb_top_films: {
+            t: _lang.exp_imdb_films,
             c: 3,
             root_url: 'http://www.imdb.com',
             fav: 1,
@@ -230,8 +247,8 @@ var explore = function() {
             base_img_url: "http://ia.media-imdb.com/images/",
             google_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
-        serials: {
-            t: _lang.exp_serials,
+        imdb_serials: {
+            t: _lang.exp_imdb_serials,
             c: 0,
             root_url: 'http://www.imdb.com',
             fav: 1,
@@ -246,14 +263,6 @@ var explore = function() {
             google_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         }
     };
-    var is_imdb = function() {
-        if (!_use_imdb) {
-            return;
-        }
-        content_sourse.films = c_s_imdb.films;
-        content_sourse.top_films = c_s_imdb.top_films;
-        content_sourse.serials = c_s_imdb.serials;
-    }();
     var read_content = function(type, content) {
         var sesizeimg = function(i) {
             i = i.replace('/sm_film/', '/film/');
@@ -615,27 +624,24 @@ var explore = function() {
             }
             return arr;
         };
-        if (_use_imdb) {
-            if (type === 'films') {
-                return imdb_Films(content);
-            } else
-            if (type === 'top_films') {
-                return imdb_TopFilms(content);
-            } else
-            if (type === 'serials') {
-                return imdb_Serials(content);
-            }
-        } else {
-            if (type === 'films') {
-                return Films(content);
-            } else
-            if (type === 'top_films') {
-                return TopFilms(content);
-            } else
-            if (type === 'serials') {
-                return Serials(content);
-            }
-        }
+        if (type === 'imdb_films') {
+            return imdb_Films(content);
+        } else
+        if (type === 'imdb_top_films') {
+            return imdb_TopFilms(content);
+        } else
+        if (type === 'imdb_serials') {
+            return imdb_Serials(content);
+        } else
+        if (type === 'films') {
+            return Films(content);
+        } else
+        if (type === 'top_films') {
+            return TopFilms(content);
+        } else
+        if (type === 'serials') {
+            return Serials(content);
+        } else
         if (type === "about") {
             return About(content);
         } else
@@ -1324,6 +1330,15 @@ var explore = function() {
         //temp code!
         if ('kinopoisk' in listOptions === false) {
             listOptions.kinopoisk = listOptions_def.kinopoisk;
+        }
+        if ('imdb_films' in listOptions === false) {
+            listOptions.imdb_films = listOptions_def.imdb_films;
+        }
+        if ('imdb_top_films' in listOptions === false) {
+            listOptions.imdb_top_films = listOptions_def.imdb_top_films;
+        }
+        if ('imdb_serials' in listOptions === false) {
+            listOptions.imdb_serials = listOptions_def.imdb_serials;
         }
         //<<<temp code
         $.each(listOptions, function(key, value) {
