@@ -22,8 +22,15 @@ var options = function() {
         sub_select_enable: {"v": 1, "t": "checkbox"},
         kinopoisk_category: {"v": 1, "t": "checkbox"},
         kinopoisk_f_id: {"v": 1, "t": "number"},
-        filter_panel_to_left: {"v": 0, "t": "checkbox"}
-        /*sync_trackers: {"v": 0, "t": "checkbox"}*/
+        filter_panel_to_left: {"v": 0, "t": "checkbox"},
+        /*sync_trackers: {"v": 0, "t": "checkbox"},*/
+        hideTopSearch: {"v":0, "t": "checkbox"},
+        s_films: {"v":1, "t": "checkbox"},
+        s_top_films: {"v":1, "t": "checkbox"},
+        s_serials: {"v":1, "t": "checkbox"},
+        s_games_n: {"v":1, "t": "checkbox"},
+        s_games: {"v":1, "t": "checkbox"},
+        s_games_a: {"v":1, "t": "checkbox"}
     };
     var loadSettings = function() {
         var settings = {};
@@ -141,6 +148,12 @@ var options = function() {
                 }
             }
         });
+        $('[data-lang="exp_in_cinima"]').text(_lang.exp_in_cinima);
+        $('[data-lang="exp_films"]').text(_lang.exp_films);
+        $('[data-lang="exp_serials"]').text(_lang.exp_serials);
+        $('[data-lang="exp_games_new"]').text(_lang.exp_games_new);
+        $('[data-lang="exp_games_best"]').text(_lang.exp_games_best);
+        $('[data-lang="exp_games_all"]').text(_lang.exp_games_all);
         if (_lang.t !== "ru") {
             $('input[name="use_english_postername"]').parents().eq(1).hide();
         } else {

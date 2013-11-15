@@ -13,6 +13,10 @@ var explore = function() {
     var kinopoisk_category = parseInt(GetSettings('kinopoisk_category') || 1);
     var kinopoisk_folder_id = parseInt(GetSettings('kinopoisk_f_id') || 1);
     var _hideTopSearch = parseInt(GetSettings('hideTopSearch') || 0);
+    var _hide_exp_section = {films: parseInt(GetSettings('s_films') || 0), top_films: parseInt(GetSettings('s_top_films') || 0), serials: parseInt(GetSettings('s_serials') || 0),
+        games_n: parseInt(GetSettings('s_games_n') || 0), games: parseInt(GetSettings('s_games') || 0), games_a: parseInt(GetSettings('s_games_a') || 0)};
+    var _hide_all_exp = (_hide_exp_section.films === 0 && _hide_exp_section.top_films === 0 && _hide_exp_section.serials === 0 &&
+            _hide_exp_section.games_n === 0 && _hide_exp_section.games === 0 && _hide_exp_section.games_a === 0 && kinopoisk_category === 0);
     var tmpDeskList = {};
     var tmp_vars = {};
     var last_qbox = {top: 0, obj: null, id: null};
@@ -1065,6 +1069,16 @@ var explore = function() {
             tmp_vars.explore_ul = $('div.explore ul.sortable');
             tmp_vars.top = tmp_vars.explore.children('.top_search');
         }
+
+        if (_hide_all_exp === true) {
+            if ($('div.explore > div.source').css('display') === "none") {
+                return;
+            }
+            $('div.explore > div.source').hide();
+            get_search_top();
+            return;
+        }
+
         if (tmp_vars.explore_ul.children('li').length > 0) {
             update_poster_count();
             return;
@@ -1143,6 +1157,9 @@ var explore = function() {
         //<<<temp code
         $.each(listOptions, function(key, value) {
             tmp_vars.explore_ul.append('<li class="' + key + '"></li>');
+            if (_hide_exp_section[key] === 0) {
+                return 1;
+            }
             if ("li_cache" in tmp_vars === false) {
                 tmp_vars.li_cache = {};
             }

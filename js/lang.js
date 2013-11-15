@@ -171,7 +171,7 @@ var get_lang = function(lang) {
             23: "Add search in the context menu",
             24: "Show search popup, when you click on extension icon",
             25: "Try define the category of the torrent, if it is not present",
-            26: "Show names movie\\series in English on the front page",
+            26: "Show names movie\\series in English",
             27: "Get a description of the search query from Google. (Every request will search in google!)",
             28: "Allow sync favorites list in the cloud",
             29: "Filters the list",
@@ -219,7 +219,10 @@ var get_lang = function(lang) {
             71: "Show favorites from the site kinopoisk.",
             72: "ID \"category\" from the site kinopoisk (1 - favorites)",
             73: "Action",
-            74: "Move the filter panel to the left"
+            74: "Move the filter panel to the left",
+            75: "Hide Top-40 search query",
+            76: "Main page",
+            77: "Show sections:"
         },
         magic: {
             1: 'Loading error!',
@@ -459,7 +462,7 @@ var get_lang = function(lang) {
             23: "Добавить поиск в контекстное меню",
             24: "Показывать поиск при нажатии на иконку расширения",
             25: "Автоматически определить категорию раздачи",
-            26: "Отображать имена фильмов\\сериалов на английском на главной странице",
+            26: "Отображать имена фильмов\\сериалов на английском",
             27: "Получать описание поискового запроса из Google. (каждый запрос будет искаться в google!)",
             28: "Разрешить синхронизацию списка избранного",
             29: "Фильтрация списка",
@@ -507,7 +510,10 @@ var get_lang = function(lang) {
             71: "Показывать избранное с сайта кинопоиска.",
             72: "ID \"категории\" из кинопоиска (1 - избранное)",
             73: "Действие",
-            74: "Переместить панель фильтров влево"
+            74: "Переместить панель фильтров влево",
+            75: "Скрыть Топ-40 поисковых запросов",
+            76: "Главная страница",
+            77: "Показывать секции:"
         },
         magic: {
             1: 'Ошибка загрузки!',
