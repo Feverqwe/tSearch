@@ -578,10 +578,13 @@ var explore = function() {
         calculate_moveble(key, size);
     };
     var update_poster_count = function() {
-        if (tmp_vars.explore.css('display') !== 'block')
+        if (tmp_vars.explore.css('display') !== 'block' || _hide_all_exp)
             return;
         $.each(listOptions, function(key) {
             var obj = tmp_vars.li_cache[key];
+            if (obj === undefined) {
+                return 1;
+            }
             var now_count = obj.attr('data-item-count');
             var new_count = get_view_i_count(key, obj);
             if (now_count !== undefined && new_count > 0 && parseInt(now_count) !== new_count) {
