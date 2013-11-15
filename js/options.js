@@ -24,13 +24,14 @@ var options = function() {
         kinopoisk_f_id: {"v": 1, "t": "number"},
         filter_panel_to_left: {"v": 0, "t": "checkbox"},
         /*sync_trackers: {"v": 0, "t": "checkbox"},*/
-        hideTopSearch: {"v":0, "t": "checkbox"},
-        s_films: {"v":1, "t": "checkbox"},
-        s_top_films: {"v":1, "t": "checkbox"},
-        s_serials: {"v":1, "t": "checkbox"},
-        s_games_n: {"v":1, "t": "checkbox"},
-        s_games: {"v":1, "t": "checkbox"},
-        s_games_a: {"v":1, "t": "checkbox"}
+        hideTopSearch: {"v": 0, "t": "checkbox"},
+        s_films: {"v": 1, "t": "checkbox"},
+        s_top_films: {"v": 1, "t": "checkbox"},
+        s_serials: {"v": 1, "t": "checkbox"},
+        s_games_n: {"v": 1, "t": "checkbox"},
+        s_games: {"v": 1, "t": "checkbox"},
+        s_games_a: {"v": 1, "t": "checkbox"},
+        use_imdb: {"v": 0, "t": "checkbox"}
     };
     var loadSettings = function() {
         var settings = {};
@@ -493,8 +494,9 @@ var options = function() {
     var saveAll = function() {
         SetSettings('lang', $('select[name="language"]').val());
         /*
-        var prev_sync_trackers = settings.sync_trackers;
-        */
+         var prev_sync_trackers = settings.sync_trackers;
+         */
+        var prev_use_imdb = settings.use_imdb;
         $.each(def_settings, function(key, value) {
             if (value.t === "text") {
                 var val = $('input[name="' + key + '"]').val();
@@ -539,6 +541,11 @@ var options = function() {
             SetSettings('search_popup', ($('input[name="search_popup"]').is(':checked')) ? 1 : 0);
         }
         var s = (document.URL).replace(/(.*)options.html/, '');
+
+        if (prev_use_imdb !== parseInt(GetSettings("use_imdb") || 0)) {
+            SetSettings("explorerCache", null);
+        }
+
         if (s.length > 0) {
             var s = s.replace(/^#back=(.*)/, '$1');
             window.location = 'index.html#s=' + s;
@@ -548,13 +555,13 @@ var options = function() {
             updateProfileList(currentProfile.id);
         }
         /*
-        if (settings.sync_trackers) {
-            trackersSync();
-        } else
-        if (prev_sync_trackers) {
-            getPartedSync("ts_ch_", undefined, true);
-        }
-        */
+         if (settings.sync_trackers) {
+         trackersSync();
+         } else
+         if (prev_sync_trackers) {
+         getPartedSync("ts_ch_", undefined, true);
+         }
+         */
     };
     return {
         begin: function() {

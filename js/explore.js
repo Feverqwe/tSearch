@@ -21,6 +21,7 @@ var explore = function() {
     var tmp_vars = {};
     var last_qbox = {top: 0, obj: null, id: null};
     var _pages_cache = {};
+    var _use_imdb = parseInt(GetSettings('use_imdb') || 0);
     var listOptions_def = {
         favorites: {
             s: 1,
@@ -198,6 +199,61 @@ var explore = function() {
             google_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         }
     };
+    var c_s_imdb = {
+        films: {
+            t: _lang.exp_in_cinima,
+            c: 3,
+            root_url: 'http://www.imdb.com',
+            fav: 1,
+            did: null,
+            size: 130,
+            margin: 14,
+            url: 'http://www.imdb.com/movies-in-theaters/',
+            timeout: Math.round(24 * 60 * 60 * (7 / 3)),
+            page_e: false,
+            base_url: "http://www.imdb.com/title/",
+            base_img_url: "http://ia.media-imdb.com/images/",
+            google_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+        },
+        top_films: {
+            t: _lang.exp_films,
+            c: 3,
+            root_url: 'http://www.imdb.com',
+            fav: 1,
+            did: null,
+            size: 130,
+            margin: 14,
+            url: 'http://www.imdb.com/search/title?count=100&title_type=feature',
+            timeout: Math.round(24 * 60 * 60 * (7 / 2)),
+            page_e: false,
+            base_url: "http://www.imdb.com/title/",
+            base_img_url: "http://ia.media-imdb.com/images/",
+            google_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+        },
+        serials: {
+            t: _lang.exp_serials,
+            c: 0,
+            root_url: 'http://www.imdb.com',
+            fav: 1,
+            did: null,
+            size: 130,
+            margin: 14,
+            url: 'http://www.imdb.com/search/title?count=100&title_type=tv_series',
+            timeout: Math.round(24 * 60 * 60 * 7),
+            page_e: false,
+            base_url: "http://www.imdb.com/title/",
+            base_img_url: "http://ia.media-imdb.com/images/",
+            google_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+        }
+    };
+    var imdb = function() {
+        if (!_use_imdb) {
+            return;
+        }
+        content_sourse.films = c_s_imdb.films;
+        content_sourse.top_films = c_s_imdb.top_films;
+        content_sourse.serials = c_s_imdb.serials;
+    }();
     var read_content = function(type, content) {
         var sesizeimg = function(i) {
             i = i.replace('/sm_film/', '/film/');
@@ -208,6 +264,13 @@ var explore = function() {
                 return "";
             }
             i = i.replace(/(.*)\/film\/([0-9]*)\//, 'http://st.kinopoisk.ru/images/film/$2.jpg');
+            return i;
+        };
+        var imdb_makeimg = function(i) {
+            if (i === undefined) {
+                return "";
+            }
+            i = i.replace(/(.*)_V1.*/, '$1_V1_SX120_.jpg');
             return i;
         };
         var Films = function(c) {
@@ -459,27 +522,132 @@ var explore = function() {
             }
             return arr;
         };
-        if (type === "about")
+        var imdb_Films = function(c) {
+            c = view.contentFilter(c);
+            var t = view.load_in_sandbox(null, c);
+            t = t.find('table.nm-title-overview-widget-layout');
+            var l = t.length;
+            var arr = [];
+            var i = 0;
+            for (i = 0; i < l; i++) {
+                var item = t.eq(i);
+                var obj = null;
+                try {
+                    var img_url = item.find('div.image img').attr('src');
+                    var url = item.find('[itemprop="name"] a').eq(0).attr('href');
+                    var name = item.find('[itemprop="name"] a').eq(0).text().trim();
+                    obj = {
+                        img: imdb_makeimg(view.contentUnFilter(img_url)).replace(content_sourse[type].base_img_url, ''),
+                        name: name,
+                        name_en: '',
+                        url: (content_sourse[type].root_url + view.contentUnFilter(url)).replace(content_sourse[type].base_url, '')
+                    };
+                } catch (error) {
+                    obj = null;
+                }
+                if (obj === null || obj.img.length === 0 || obj.name.length === 0 || obj.url.indexOf('undefined') !== -1) {
+                    console.log("Explorer " + type + " have problem!");
+                    continue;
+                }
+                arr.push(obj);
+            }
+            return arr;
+        };
+        var imdb_TopFilms = function(c) {
+            c = view.contentFilter(c);
+            var t = view.load_in_sandbox(null, c);
+            t = t.find('table.results').children('tbody').children('tr.detailed');
+            var l = t.length;
+            var arr = [];
+            var i = 0;
+            for (i = 0; i < l; i++) {
+                var item = t.eq(i);
+                var obj = null;
+                try {
+                    var img_url = item.children('td.image').find('img').attr('src');
+                    var url = item.children('td.title').children('a').eq(0).attr('href');
+                    var name = item.children('td.title').children('a').eq(0).text().trim();
+                    obj = {
+                        img: imdb_makeimg(view.contentUnFilter(img_url)).replace(content_sourse[type].base_img_url, ''),
+                        name: name,
+                        name_en: '',
+                        url: (content_sourse[type].root_url + view.contentUnFilter(url)).replace(content_sourse[type].base_url, '')
+                    };
+                } catch (error) {
+                    obj = null;
+                }
+                if (obj === null || obj.img.length === 0 || obj.name.length === 0 || obj.url.indexOf('undefined') !== -1) {
+                    console.log("Explorer " + type + " have problem!");
+                    continue;
+                }
+                arr.push(obj);
+            }
+            return arr;
+        };
+        var imdb_Serials = function(c) {
+            c = view.contentFilter(c);
+            var t = view.load_in_sandbox(null, c);
+            t = t.find('table.results').children('tbody').children('tr.detailed');
+            var l = t.length;
+            var arr = [];
+            var i = 0;
+            for (i = 0; i < l; i++) {
+                var item = t.eq(i);
+                var obj = null;
+                try {
+                    var img_url = item.children('td.image').find('img').attr('src');
+                    var url = item.children('td.title').children('a').eq(0).attr('href');
+                    var name = item.children('td.title').children('a').eq(0).text().trim();
+                    obj = {
+                        img: imdb_makeimg(view.contentUnFilter(img_url)).replace(content_sourse[type].base_img_url, ''),
+                        name: name.replace(/ \(([0-9]{4}).*\)$/, ' ($1)'),
+                        name_en: '',
+                        url: (content_sourse[type].root_url + view.contentUnFilter(url)).replace(content_sourse[type].base_url, '')
+                    };
+                } catch (error) {
+                    obj = null;
+                }
+                if (obj === null || obj.img.length === 0 || obj.name.length === 0 || obj.url.indexOf('undefined') !== -1) {
+                    console.log("Explorer " + type + " have problem!");
+                    continue;
+                }
+                arr.push(obj);
+            }
+            return arr;
+        };
+        if (_use_imdb) {
+            if (type === 'films') {
+                return imdb_Films(content);
+            } else
+            if (type === 'top_films') {
+                return imdb_TopFilms(content);
+            } else
+            if (type === 'serials') {
+                return imdb_Serials(content);
+            }
+        } else {
+            if (type === 'films') {
+                return Films(content);
+            } else
+            if (type === 'top_films') {
+                return TopFilms(content);
+            } else
+            if (type === 'serials') {
+                return Serials(content);
+            }
+        }
+        if (type === "about") {
             return About(content);
-        else
-        if (type === 'serials')
-            return Serials(content);
-        else
-        if (type === 'top_films')
-            return TopFilms(content);
-        else
-        if (type === 'films')
-            return Films(content);
-        else
-        if (type === 'games')
+        } else
+        if (type === 'games') {
             return Games_gg(content);
-        else
-        if (type === 'games_n')
+        } else
+        if (type === 'games_n') {
             return Games_gg(content);
-        else
-        if (type === 'games_a')
+        } else
+        if (type === 'games_a') {
             return Games_gg(content);
-        else
+        } else
         if (type === 'kinopoisk') {
             return KinopoiskFav(content);
         }

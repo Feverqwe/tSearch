@@ -222,7 +222,8 @@ var get_lang = function(lang) {
             74: "Move the filter panel to the left",
             75: "Hide Top-40 search query",
             76: "Main page",
-            77: "Show sections:"
+            77: "Show sections:",
+            78: "Use imdb movies"
         },
         magic: {
             1: 'Loading error!',
@@ -513,7 +514,8 @@ var get_lang = function(lang) {
             74: "Переместить панель фильтров влево",
             75: "Скрыть Топ-40 поисковых запросов",
             76: "Главная страница",
-            77: "Показывать секции:"
+            77: "Показывать секции:",
+            78: "Использовать imdb для фильмов"
         },
         magic: {
             1: 'Ошибка загрузки!',
