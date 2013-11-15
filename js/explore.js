@@ -246,7 +246,7 @@ var explore = function() {
             google_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         }
     };
-    var imdb = function() {
+    var is_imdb = function() {
         if (!_use_imdb) {
             return;
         }
