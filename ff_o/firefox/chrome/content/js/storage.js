@@ -12,6 +12,10 @@ var localStorage = function() {
     return storage;
 }();
 var SetSettings = function(key, value) {
+    if (value === null && key in localStorage) {
+        delete localStorage[key];
+        return value;
+    }
     localStorage[key] = value;
     return value;
 };
