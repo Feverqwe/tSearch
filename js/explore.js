@@ -615,7 +615,7 @@ var explore = function() {
                     /*
                     var year = item.children('td.title').children('span.year_type').eq(0)
                     if (year.length > 0) {
-                        year = year.text().replace(/\(([0-9]{4}).*\)$/, ' ($1)');
+                        year = year.text().replace(/\(([0-9]{4}).*\)$/, '($1)');
                         name += " " + year;
                     }
                     */
