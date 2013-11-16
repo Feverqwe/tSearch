@@ -576,6 +576,11 @@ var explore = function() {
                     var img_url = item.children('td.image').find('img').attr('src');
                     var url = item.children('td.title').children('a').eq(0).attr('href');
                     var name = item.children('td.title').children('a').eq(0).text().trim();
+                    var year = item.children('td.title').children('span.year_type').eq(0);
+                    if (year.length > 0) {
+                        year = year.text();
+                        name += " " + year;
+                    }
                     obj = {
                         img: imdb_makeimg(view.contentUnFilter(img_url)).replace(content_sourse[type].base_img_url, ''),
                         name: name,
@@ -607,6 +612,13 @@ var explore = function() {
                     var img_url = item.children('td.image').find('img').attr('src');
                     var url = item.children('td.title').children('a').eq(0).attr('href');
                     var name = item.children('td.title').children('a').eq(0).text().trim();
+                    /*
+                    var year = item.children('td.title').children('span.year_type').eq(0)
+                    if (year.length > 0) {
+                        year = year.text().replace(/\(([0-9]{4}).*\)$/, ' ($1)');
+                        name += " " + year;
+                    }
+                    */
                     obj = {
                         img: imdb_makeimg(view.contentUnFilter(img_url)).replace(content_sourse[type].base_img_url, ''),
                         name: name.replace(/ \(([0-9]{4}).*\)$/, ' ($1)'),
