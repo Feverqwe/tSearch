@@ -215,7 +215,11 @@ var options = function() {
     var settingsRestore = function(text) {
         try {
             var rst = JSON.parse(text);
+            var search_history = localStorage.search_history;
             localStorage.clear();
+            if (search_history !== undefined) {
+                localStorage.search_history = search_history;
+            }
             for (var key in rst)
             {
                 var value = rst[key];
