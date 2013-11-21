@@ -1627,7 +1627,7 @@ var view = function() {
         });
         sel = $('<div class="profile">').append(sel);
         $('div.tracker_list .setup').after(sel);
-    };/*
+    };
     if (isFF) {
         var parseHTML = function(doc, html, allowStyle, baseURI, isXML) {
             var PARSER_UTILS = "@mozilla.org/parserutils;1";
@@ -1645,17 +1645,21 @@ var view = function() {
                     .getService(Components.interfaces.nsIScriptableUnescapeHTML)
                     .parseFragment(html, !!isXML, baseURI, doc.documentElement);
         };
-    }*/
+    }
     var load_in_sandbox = function(id, c) {
-        /*if (isFF) {
+        if (isFF) {
+            c = c.replace(/href=/g, "data-href=");
             var t = parseHTML(document, c);
             var t1 = $('<html></html>').append(t);
+            var links = t1.find('a');
+            var links_len = links.length;
+            for (var n = 0; n < links_len; n++) {
+                $(links[n]).attr('href', $(links[n]).attr('data-href')).removeAttr('data-href');
+            }
             t = t1;
-            console.log(t.html())
         } else {
             var t = $($.parseHTML(c));
-        }*/
-        var t = $($.parseHTML(c));
+        }
         return t;
     };
     var init_resizeble = function() {
@@ -2148,6 +2152,9 @@ var view = function() {
     };
 }();
 $(function() {
+    $.ajaxSetup({
+        jsonp: false
+    });
     view.begin();
     engine.loadProfile();
 });

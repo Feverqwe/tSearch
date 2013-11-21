@@ -864,5 +864,9 @@ var view = function() {
     };
 }();
 $(function() {
+    $.ajaxSetup({
+        global: true,
+        jsonp: false
+    });
     options.begin();
 });
