@@ -37,6 +37,7 @@ var view = function() {
     var xhr_autocomplite = null;
     var tmp_var_qbox = 0;
     var tmp_vars = {};
+    var isFF = "Application" in window && Application.name === "Firefox";
     var auth = function(s, t) {
         /*
          * отображает требование авторизоваться
@@ -1626,8 +1627,34 @@ var view = function() {
         });
         sel = $('<div class="profile">').append(sel);
         $('div.tracker_list .setup').after(sel);
-    };
+    };/*
+    if (isFF) {
+        var parseHTML = function(doc, html, allowStyle, baseURI, isXML) {
+            var PARSER_UTILS = "@mozilla.org/parserutils;1";
+
+            // User the newer nsIParserUtils on versions that support it.
+            if (PARSER_UTILS in Components.classes) {
+                var parser = Components.classes[PARSER_UTILS]
+                        .getService(Components.interfaces.nsIParserUtils);
+                if ("parseFragment" in parser)
+                    return parser.parseFragment(html, allowStyle ? parser.SanitizerAllowStyle : 0,
+                            !!isXML, baseURI, doc.documentElement);
+            }
+
+            return Components.classes["@mozilla.org/feed-unescapehtml;1"]
+                    .getService(Components.interfaces.nsIScriptableUnescapeHTML)
+                    .parseFragment(html, !!isXML, baseURI, doc.documentElement);
+        };
+    }*/
     var load_in_sandbox = function(id, c) {
+        /*if (isFF) {
+            var t = parseHTML(document, c);
+            var t1 = $('<html></html>').append(t);
+            t = t1;
+            console.log(t.html())
+        } else {
+            var t = $($.parseHTML(c));
+        }*/
         var t = $($.parseHTML(c));
         return t;
     };
