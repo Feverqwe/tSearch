@@ -91,34 +91,33 @@ var options = function() {
         }
         var flags = [];
         if (!Tracker.flags.rs) {
-            flags.push('<div class="cirilic" title="' + _lang.flag.cirilic + '"></div>');
+            flags.push($('<div>', {'class': 'cirilic', title: _lang.flag.cirilic}));
         }
         if (Tracker.flags.a) {
-            flags.push('<div class="auth" title="' + _lang.flag.auth + '"></div>');
+            flags.push($('<div>', {'class': 'auth', title: _lang.flag.auth}));
         }
         if (Tracker.flags.l) {
-            flags.push('<div class="rus" title="' + _lang.flag.rus + '"></div>');
+            flags.push($('<div>', {'class': 'rus', title: _lang.flag.rus}));
         }
         if (flags.length > 0) {
-            flags = '<div class="icons">' + flags.join('') + '</div>';
+            flags = $('<div>', {'class': 'icons'}).append(flags);
         }
-        var icon = '';
+        var tracker_icon = $('<div>', {'class': 'tracker_icon'});
         if (Tracker.icon.length === 0) {
-            icon += 'style="background-color:#ccc' + ';border-radius: 8px;"';
+            tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
         } else
         if (Tracker.icon[0] === '#') {
-            icon += 'style="background-color:' + Tracker.icon + ';border-radius: 8px;"';
+            tracker_icon.css({'background-color': Tracker.icon, 'border-radius': '8px'});
         } else {
-            icon += 'style="background-image: url(' + Tracker.icon + ');"';
+            tracker_icon.css('background-image', 'url(' + Tracker.icon + ')');
         }
-        $('table.tr_table tbody').append('<tr data-id="' + i + '" data-name="' + Tracker.filename + '" ' + ((enable) ? 'class="checked"' : '') + '>'
-                + '<td><div class="tracker_icon" ' + icon + '></div></td>'
-                + '<td><a href="' + Tracker.url + '" target="_blank">' + Tracker.name + '</a>'
-                + '</td>'
-                + '<td class="desc">' + flags
-                + $('<span>' + Tracker.about + '</span>').text() + '</td>'
-                + '<td class="status"><input type="checkbox" name="tracker" ' + ((enable) ? 'checked' : '') + '></td>'
-                + '</tr>');
+        $('table.tr_table tbody').append(
+                $('<tr>', {'data-id': i, 'data-name': Tracker.filename, 'class': ((enable) ? 'checked' : '')}).append(
+                $('<td>').append(tracker_icon),
+                $('<td>').append($('<a>', {href: Tracker.url, target: '_blank', text: Tracker.name})),
+                $('<td>', {'class': 'desc'}).append(flags, $('<span>', {text: Tracker.about})),
+                $('<td>', {'class': 'status'}).append($('<input>', {type: 'checkbox', name: 'tracker'}).prop('checked', (enable) ? true : false)))
+                );
     };
     var write_language = function(language) {
         var selected = (language !== undefined) ? 1 : 0;
@@ -170,34 +169,38 @@ var options = function() {
         }
     };
     var load_costume_torrents = function() {
-        var empty_list = '<td colspan="4" class="notorrent" data-lang="51">' + _lang.settings[51] + '</td>';
+        var empty_list = $('<td>', {colspan: 4, 'class': 'notorrent', 'data-lang': 51, text: _lang.settings[51]});
         tmp_vars.c_tracker_list.empty();
         var costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
         var c = costume_tr.length;
         if (c === 0) {
-            tmp_vars.c_tracker_list.html(empty_list);
+            tmp_vars.c_tracker_list.empty().append(empty_list);
         } else {
             for (var i = 0; i < c; i++) {
                 var Tracker = JSON.parse(GetSettings('ct_' + costume_tr[i]) || {});
                 if (Tracker.uid === undefined) {
                     continue;
                 }
-                var icon = '';
+
+                var tracker_icon = $('<div>', {'class': 'tracker_icon'});
                 if (Tracker.icon.length === 0) {
-                    icon += 'style="background-color:#ccc' + ';border-radius: 8px;"';
+                    tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
                 } else
                 if (Tracker.icon[0] === '#') {
-                    icon += 'style="background-color:' + Tracker.icon + ';border-radius: 8px;"';
+                    tracker_icon.css({'background-color': Tracker.icon, 'border-radius': '8px'});
                 } else {
-                    icon += 'style="background-image: url(' + Tracker.icon + ');"';
+                    tracker_icon.css('background-image', 'url(' + Tracker.icon + ')');
                 }
-                tmp_vars.c_tracker_list.append('<tr data-uid="' + Tracker.uid + '">'
-                        + '<td><div class="tracker_icon" ' + icon + '></div></td>'
-                        + '<td><a href="' + Tracker.root_url + '" target="_blank">' + Tracker.name + '</a>'
-                        + '</td>'
-                        + '<td class="desc">' + (('about' in Tracker) ? Tracker.about : '') + '</td>'
-                        + '<td class="action"><input type="button" name="edit_ctr" value="' + _lang.settings[52] + '" data-lang="52"><input type="button" name="rm_ctr" value="' + _lang.settings[53] + '" data-lang="53"></td>'
-                        + '</tr>');
+                tmp_vars.c_tracker_list.append(
+                        $('<tr>', {'data-uid': Tracker.uid}).append(
+                        $('<td>').append(tracker_icon),
+                        $('<td>').append($('<a>', {href: Tracker.root_url, target: '_blank', text: Tracker.name})),
+                        $('<td>', {'class': 'desc', text: Tracker.about || ''}),
+                $('<td>', {'class': 'action'}).append(
+                        $('<input>', {type: 'button', name: 'edit_ctr', value: _lang.settings[52], 'data-lang': 52}),
+                $('<input>', {type: 'button', name: 'rm_ctr', value: _lang.settings[53], 'data-lang': 53})
+                        ))
+                        );
             }
         }
     };
@@ -344,7 +347,7 @@ var options = function() {
         sel.empty();
         var sel_id = (id === undefined) ? currentProfile.id : id;
         $.each(sandbox_trackerProfiles, function(k, v) {
-            sel.append('<option value="' + k + '" ' + ((k === sel_id) ? 'selected' : '') + '>' + v.Title + '</option>');
+            sel.append($('<option>', {value: k, text: v.Title}).prop('selected', (k === sel_id)));
         });
         if (sandbox_trackerProfiles.length < 2) {
             $('input[name=rm_list]').attr('disabled', 'disabled');
