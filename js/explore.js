@@ -759,7 +759,7 @@ var explore = function() {
         var item_page = tmp_vars.li_cache[key].children('div').children('div');
         if (item_page.length === 0)
             return;
-        item_page.html(write_page(key, item_page.attr('data-page')));
+        item_page.empty().append(write_page(key, item_page.attr('data-page')));
         var size = get_view_size(key);
         calculate_moveble(key, size);
     };
@@ -880,20 +880,19 @@ var explore = function() {
         var st = get_view_status(section);//st - статус отображения (открыт или нет спойлер)
         var sub_function = '';
         if (section === 'kinopoisk') {
-            sub_function = '<a class="kinopoisk_open_btn" href="' + content_sourse[section].url.replace('%page%', 1).replace('%category%', kinopoisk_folder_id) + '" target="_blank" title="' + _lang.exp_btn_open + '"></a><span class="kinopoisk_update_btn" title="' + _lang.exp_btn_sync + '"></span>';
+            sub_function = [$('<a>', {'class': 'kinopoisk_open_btn', href: content_sourse[section].url.replace('%page%', 1).replace('%category%', kinopoisk_folder_id), target: '_blank', title: _lang.exp_btn_open}), $('<span>', {'class': 'kinopoisk_update_btn', title: _lang.exp_btn_sync})];
         }
-        var c = '<div class="conteiner">'
-                + '<h2>'
-                + '<div class="move_it"></div>'
-                + name + sub_function
-                + '<div class="setup" data-i_line="' + i_line + '" data-size="' + size + '" title="' + _lang.exp_setup_view + '"' + ((!st) ? ' style="display: none"' : '') + '></div>'
-                + '<div class="spoiler' + ((!st) ? ' up' : '') + '"></div>'
-                + '</h2>'
-                + '<div' + ((!st) ? ' style="display:none"' : '') + ' data-page="' + page_num + '">';
+        var c = $('<div>', {'class': 'conteiner'}).append(
+                $('<h2>').append(
+                $('<div>', {class: 'move_it'}),
+        name,
+                sub_function,
+                $('<div>', {class: 'setup', 'data-i_line': i_line, 'data-size': size, title: _lang.exp_setup_view}).css('display', (!st) ? 'none' : ''),
+                $('<div>', {class: 'spoiler' + ((!st) ? ' up' : '')})
+                ),
+                $('<div>', {'data-page': page_num}).css('display', (!st) ? 'none' : '').append(write_page(section, page_num, content))
+                );
         //вывод страницы
-        c += write_page(section, page_num, content);
-        //<<
-        c += '</div></div>';
         var exp_li = tmp_vars.li_cache[section];
         exp_li.append(c);
 
@@ -930,9 +929,9 @@ var explore = function() {
         if (poster_count <= 0)
             return '';
         tmp_vars.li_cache[section].attr('data-item-count', poster_count);
-        var buttons = (fav !== null) ? '<div class="add_favorite" title="' + _lang.exp_in_fav + '">' : '<div class="del_favorite" title="' + _lang.exp_rm_fav + '"></div><div class="edit_favorite" title="' + _lang.exp_edit_fav + '"></div><div class="move_favorite" title="' + _lang.exp_move_fav + '">';
-        buttons += '</div><div class="quality_box" title="' + _lang.exp_q_fav + '">';
-        var c = '<div class="pager">' + make_page_body(poster_count, content.length, page) + '</div>';
+        var c = [];
+        c.push($('<div>', {class: 'pager'}).append(make_page_body(poster_count, content.length, page)));
+        // var c = '<div class="pager">' + make_page_body(poster_count, content.length, page) + '</div>';
         var max_item = page * poster_count;
         var min_item = max_item - poster_count;
         var name_v = '';
@@ -977,30 +976,40 @@ var explore = function() {
             if (v.url.substr(0, 4) === 'http') {
                 page_url = v.url;
             }
-            c += '<div class="poster"' + id + '>'
-                    + '<div class="image">' + buttons + qual + '</div>'
-                    + '<a href="#s=' + search_kw_filter(name_v) + '"><img src="' + image_url + '" title="' + name_v + '"/></a>'
-                    + '</div>'
-                    + '<div class="label">'
-                    + '<div class="title" title="' + name_v + '"><span><a href="#s=' + search_kw_filter(name_v) + '">' + name_v + '</a></span></div>'
-                    + ((page_url.length > 0) ? '<div class="info"><a href="' + page_url + '" target="blank">' + _lang.exp_more + '</a></div>' : '')
-                    + '</div>'
-                    + '</div>';
+            c.push($('<div>', {class: 'poster', 'data-id': k}).append(
+                    $('<div>', {class: 'image'}).append(
+                    (fav !== null) ? $('<div>', {'class': 'add_favorite', title: _lang.exp_in_fav}) : [
+                $('<div>', {'class': 'del_favorite', title: _lang.exp_rm_fav}),
+                $('<div>', {'class': 'edit_favorite', title: _lang.exp_edit_fav}),
+                $('<div>', {'class': 'move_favorite', title: _lang.exp_move_fav})
+            ],
+                    $('<div>', {'class': 'quality_box', title: _lang.exp_q_fav, text: qual}),
+            $('<a>', {href: '#s=' + search_kw_filter(name_v)}).append(
+                    $('<img>', {src: view.contentUnFilter(image_url), title: name_v})
+                    )
+                    ),
+                    $('<div>', {class: 'label'}).append(
+                    $('<div>', {class: 'title', title: name_v}).append($('<span>').append($('<a>', {href: '#s=' + search_kw_filter(name_v), text: name_v}))),
+                    (page_url.length > 0) ? $('<div>', {class: 'info'}).append($('<a>', {href: view.contentUnFilter(page_url), target: 'blank', text: _lang.exp_more})) : ''
+                    )
+                    )
+                    );
         });
         if (werite_item === 0 && page > 1) {
             var new_page = page - 1;
             tmp_vars.li_cache[section].children('div').children('div').attr('data-page', new_page);
             return write_page(section, new_page, content);
         } else
-            return view.contentUnFilter(c);
+            return c;
     };
     var make_page_body = function(i_count, length, page) {
-        var btns = '';
+        var btns = [];
         if (length <= i_count)
             return '';
         var page_count = Math.floor((length - 1) / i_count);
         for (var i = 1; i < page_count + 2; i++) {
-            btns += '<div class="item' + ((i === page) ? ' active' : '') + '">' + i + '</div>';
+            btns.push($('<div>', {class: 'item' + ((i === page) ? ' active' : ''), text: i}));
+            // btns += '<div class="item' + ((i === page) ? ' active' : '') + '">' + i + '</div>';
         }
         return btns;
     };
@@ -1310,7 +1319,7 @@ var explore = function() {
             set_view_i_line(sect, $(this).val());
             var main_div = li.children('div').children('div');
             main_div.css('min-height', '0px');
-            main_div.html(write_page(sect));
+            main_div.empty().append(write_page(sect));
             var size = get_view_size(sect);
             calculate_moveble(sect, size);
         });
@@ -1354,7 +1363,7 @@ var explore = function() {
         }
         //<<<temp code
         $.each(listOptions, function(key, value) {
-            tmp_vars.explore_ul.append('<li class="' + key + '"></li>');
+            tmp_vars.explore_ul.append($('<li>', {class: key}));
             if (_hide_exp_section[key] === 0) {
                 return 1;
             }
@@ -1419,7 +1428,7 @@ var explore = function() {
                 data_page.css('min-height', $(this).parents().eq(1).height() + 'px');
             }
             data_page.attr('data-page', page);
-            data_page.html(write_page(sect, page));
+            data_page.empty().append(write_page(sect, page));
             var size = get_view_size(sect);
             calculate_moveble(sect, size);
         });
@@ -1624,7 +1633,8 @@ var explore = function() {
         var num = 1;
         var line = 1;
         var search = '';
-        var content = '<ul class="c' + colums + '">';
+        var content = $('<ul>', {class: 'c' + colums});
+        //'  <ul class="c' + colums + '">';
         for (var i = 0; i < arr.length; i++) {
             var item = arr[i];
             if (line > 10) {
@@ -1636,7 +1646,7 @@ var explore = function() {
                 } else {
                     sub_style = '';
                 }
-                info = '<div class="info' + sub_style + '"></div>';
+                info = $('<div>', {class: 'info' + sub_style});
             } else {
                 info = '';
             }
@@ -1644,14 +1654,13 @@ var explore = function() {
             if (item.year > 0) {
                 search += ' ' + item.year;
             }
-            content += '<li class="' + 'l' + line + '">' + info + '<span title="' + search + '"><a href="#s=' + search + '">' + item.text + '</a></span>' + '</li>';
+            content.append($('<li>', {class: 'l' + line}).append(info, $('<span>', {title: search}).append($('<a>', {href: '#s=' + search, text: item.text}))));
             if (num % colums === 0) {
                 line++;
             }
             num++;
         }
-        content += '</ul>';
-        top_search.html(content);
+        top_search.empty().append(content);
     };
     var get_search_top = function() {
         if (_hideTopSearch) {
@@ -1678,6 +1687,7 @@ var explore = function() {
                 }
                 data['timeout'] = time + timeout;
                 SetSettings('topCache', JSON.stringify(data));
+                _top_cache = data;
                 var kw_arr = data['keywords'];
                 render_top(kw_arr);
             },
@@ -1765,8 +1775,9 @@ var explore = function() {
         var size = $(obj).attr('data-size');
         var section = $(obj).closest('li').attr('class');
         var def_size = content_sourse[section].size;
-        var t = $('<div class="setup_div" data-i_line="' + i_line + '" data-size="' + def_size + '"></div>').hide();
-        $('<div class="slider"/>').slider({
+        var t = $($('<div>', {class: 'setup_div', 'data-i_line': i_line, 'data-size': def_size})).hide();
+        //var t = $('<div class="setup_div" data-i_line="' + i_line + '" data-size="' + def_size + '"></div>').hide();
+        $('<div>', {class: 'slider'}).slider({
             value: size,
             max: def_size,
             min: 30,
@@ -1802,10 +1813,15 @@ var explore = function() {
                 }
             }
         }).appendTo(t);
-        var optns = '';
-        for (var i = 1; i < 7; i++)
-            optns += '<option value="' + i + '"' + ((i === i_line) ? ' selected' : '') + '>' + i + '</option>';
-        $('<div class="clear" title="' + _lang.exp_default + '"></div><div class="count"><select>' + optns + '</select></div>').appendTo(t);
+        var optns = [];
+        for (var i = 1; i < 7; i++) {
+            var t_opt = $('<option>', {value: i, text: i});
+            if (i === i_line) {
+                t_opt.prop('selected', true);
+            }
+            optns.push(t_opt);
+        }
+        t.append($('<div>', {class: 'clear', title: _lang.exp_default}), $('<div>', {class: 'count'}).append($('<select>').append(optns)));
         return t;
     };
     var get_font_size = function(w) {
