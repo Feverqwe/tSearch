@@ -45,7 +45,8 @@ var view = function() {
         //if (backgroundMode) return;
         tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('ul').remove();
         if (!s) {
-            tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').append('<ul><li><a href="' + tracker[t].login_url + '" target="_blank">' + _lang['btn_login'] + '</a></li></ul>');
+            tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').append(
+                    $('<ul>').append($('<li>').append($('<a>', {href: tracker[t].login_url, target: '_blank', text: _lang['btn_login']}))));
         }
     };
     var clear_table = function() {
@@ -102,7 +103,9 @@ var view = function() {
          * динамическое ддобавление трекеров в список
          */
         $('body').append('<style class="tr_icon">div.tracker_icon.num' + i + ' { ' + ((tracker[i].icon.length === 0 || tracker[i].icon[0] === '#') ? 'background-color: ' + ((tracker[i].icon.length !== 0) ? tracker[i].icon : '#ccc') + ';border-radius: 8px;' : 'background-image: url(' + tracker[i].icon + ');') + ' }</style>');
-        $('<li data-id="' + i + '"/>').append($('<div class="tracker_icon num' + i + '" data-count="0"/>')).append($('<a href="#">' + tracker[i].name + '</a>').on("click", function(event) {
+        $('ul.trackers').append($('<li>', {'data-id': i}).append(
+                $('<div>', {'class': 'tracker_icon num' + i, 'data-count': 0}),
+        $('<a>', {href: '#', text: tracker[i].name}).on("click", function(event) {
             event.preventDefault();
             if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
@@ -114,7 +117,7 @@ var view = function() {
             }
             updateCategorys();
             tmp_vars.ul_categorys.children('li.selected').trigger('click');
-        })).append('<i/>').appendTo($('ul.trackers'));
+        }), $('<i>')));
     };
     var ClearTrackerList = function() {
         /*
@@ -729,20 +732,20 @@ var view = function() {
             if (c === undefined)
                 c = 0;
             if (c > 0) {
-                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('i').html(c);
+                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('i').text(c);
             } else {
                 tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('i').empty();
             }
         } else
         if (l === undefined) {
             if (c > 0) {
-                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').attr('data-count', c).children('i').html(c);
+                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').attr('data-count', c).children('i').text(c);
             } else {
                 tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').attr('data-count', c).children('i').empty();
             }
         } else {
             if (c > 0) {
-                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('i').html(c);
+                tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('i').text(c);
             } else {
                 tmp_vars.ul_trackers.children('li[data-id="' + t + '"]').children('i').empty();
             }
@@ -1290,13 +1293,13 @@ var view = function() {
         for (var i = 0; i < count_c; i++) {
             var count = el_err.filter('[data-c="' + categorys[i] + '"]').length;
             if (count > 0) {
-                tmp_vars.ul_categorys.children('li[data-id="' + categorys[i] + '"]').css('display', 'inline-block').children('i').html(count);
+                tmp_vars.ul_categorys.children('li[data-id="' + categorys[i] + '"]').css('display', 'inline-block').children('i').text(count);
                 sum += count;
             } else {
                 tmp_vars.ul_categorys.children('li[data-id="' + categorys[i] + '"]').css('display', 'none');
             }
         }
-        tmp_vars.ul_categorys.children('li').eq(0).children('i').html(sum);
+        tmp_vars.ul_categorys.children('li').eq(0).children('i').text(sum);
         if (autoMove !== undefined) {
             var item = tmp_vars.ul_categorys.children('li[data-id="' + autoMove + '"]');
             if (item.css('display') === 'inline-block') {
@@ -1554,9 +1557,9 @@ var view = function() {
         for (var i = 0; i < count; i++) {
             categorys.push(c[i][0]);
             categorys_assoc[c[i][0]] = c[i][1];
-            tmp_vars.ul_categorys.append('<li data-id="' + c[i][0] + '">' + c[i][1] + ' <i></i></li>');
+            tmp_vars.ul_categorys.append($('<li>', {'data-id': c[i][0], text: c[i][1]}).append(' ', $('<i>')));
         }
-        tmp_vars.ul_categorys.prepend('<li class="selected">' + _lang['cat_all'] + ' <i></i></li>');
+        tmp_vars.ul_categorys.prepend($('<li>', {'class': 'selected', text: _lang['cat_all']}).append(' ', $('<i>')));
     };
     var AddAutocomplete = function() {
         /*
@@ -1633,13 +1636,17 @@ var view = function() {
         var arr = engine.getProfileList();
         if (arr.length <= 1)
             return;
-        var sel = $('<select title="' + _lang.label_profile + '">').on('change', function() {
+        var sel = $('<select>', {title: _lang.label_profile}).on('change', function() {
             engine.loadProfile($(this).val());
         });
         $.each(arr, function(k, v) {
-            sel.append('<option value="' + k + '" ' + ((k === defProfile) ? 'selected' : '') + '>' + v + '</option>');
+            var opt = $('<option>', {value: k, text: v});
+            if (k === defProfile) {
+                opt.prop('selected', true);
+            }
+            sel.append(opt);
         });
-        sel = $('<div class="profile">').append(sel);
+        sel = $('<div>', {'class': "profile"}).append(sel);
         $('div.tracker_list .setup').after(sel);
     };
     if (isFF) {
@@ -1958,7 +1965,7 @@ var view = function() {
                     }
                     if ($(node).children('div.title') !== undefined)
                         return $(node).children('div.title').text();
-                    return $(node).html();
+                    return $(node).text();
                 },
                 sortList: JSON.parse(GetSettings('Order') || '[["1", "1"]]'),
                 onsort: function(s) {
