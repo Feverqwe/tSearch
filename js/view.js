@@ -589,25 +589,25 @@ var view = function() {
             if (v.category.title !== null) {
                 var t_cat_icon = '';
                 if (ShowIcons) {
-                    t_cat_icon = $('<div>', {class: 'tracker_icon num' + t, title: tracker[t].name});
+                    t_cat_icon = $('<div>', {'class': 'tracker_icon num' + t, title: tracker[t].name});
                 }
                 if (v.category.url === null) {
-                    t_category_section = $('<ul>').append($('<li>', {class: 'category', text: v.category.title}).append(t_cat_icon));
+                    t_category_section = $('<ul>').append($('<li>', {'class': 'category', text: v.category.title}).append(t_cat_icon));
                 } else {
-                    t_category_section = $('<ul>').append($('<li>', {class: 'category'}).append($('<a>', {href: contentUnFilter(v.category.url), target: "_blank", text: v.category.title}), t_cat_icon));
+                    t_category_section = $('<ul>').append($('<li>', {'class': 'category'}).append($('<a>', {href: contentUnFilter(v.category.url), target: "_blank", text: v.category.title}), t_cat_icon));
                 }
             }
 
             c.push($('<tr>', {'data-filter': advFilter.join(','), 'data-tracker': t, 'data-c': v.category.id}).append(
-                    $('<td>', {class: 'time', 'data-value': v.time, title: unixintimetitle(v.time), text: unixintime(v.time)}),
-            $('<td>', {class: 'quality', 'data-value': quality.value, 'data-qgame': quality.game, 'data-qseed': quality.seed, 'data-qname': quality.name, 'data-qvideo': quality.video, 'data-qmusic': quality.music, 'data-qbook': quality.book})
-                    .append($('<div>', {class: 'progress'}).append($('<div>').css('width', (quality.value / 15) + 'px'), $('<span>', {title: quality.value, text: quality.value}))),
-                    $('<td>', {class: 'name'})
-                    .append($('<div>', {class: 'title'})
-                            .append($('<a>', {href: contentUnFilter(v.url), target: "_blank"}).append(title), (v.category.title === null && ShowIcons) ? $('<div>', {class: 'tracker_icon num' + t, title: tracker[t].name}) : ''), t_category_section),
-                    (v.dl !== null) ? $('<td>', {class: 'size', 'data-value': v.size}).append($('<a>', {href: contentUnFilter(v.dl), target: '_blank', text: bytesToSize(v.size) + ' ↓'})) : $('<td>', {class: 'size', 'data-value': v.size, text: bytesToSize(v.size)}),
-            (HideSeed) ? '' : $('<td>', {class: 'seeds', 'data-value': v.seeds, text: v.seeds}),
-            (HideLeech) ? '' : $('<td>', {class: 'leechs', 'data-value': v.leechs, text: v.leechs})
+                    $('<td>', {'class': 'time', 'data-value': v.time, title: unixintimetitle(v.time), text: unixintime(v.time)}),
+            $('<td>', {'class': 'quality', 'data-value': quality.value, 'data-qgame': quality.game, 'data-qseed': quality.seed, 'data-qname': quality.name, 'data-qvideo': quality.video, 'data-qmusic': quality.music, 'data-qbook': quality.book})
+                    .append($('<div>', {'class': 'progress'}).append($('<div>').css('width', (quality.value / 15) + 'px'), $('<span>', {title: quality.value, text: quality.value}))),
+                    $('<td>', {'class': 'name'})
+                    .append($('<div>', {'class': 'title'})
+                            .append($('<a>', {href: contentUnFilter(v.url), target: "_blank"}).append(title), (v.category.title === null && ShowIcons) ? $('<div>', {'class': 'tracker_icon num' + t, title: tracker[t].name}) : ''), t_category_section),
+                    (v.dl !== null) ? $('<td>', {'class': 'size', 'data-value': v.size}).append($('<a>', {href: contentUnFilter(v.dl), target: '_blank', text: bytesToSize(v.size) + ' ↓'})) : $('<td>', {'class': 'size', 'data-value': v.size, text: bytesToSize(v.size)}),
+            (HideSeed) ? '' : $('<td>', {'class': 'seeds', 'data-value': v.seeds, text: v.seeds}),
+            (HideLeech) ? '' : $('<td>', {'class': 'leechs', 'data-value': v.leechs, text: v.leechs})
                     ));
         });
         log_errors(t, errors);

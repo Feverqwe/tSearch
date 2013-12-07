@@ -884,11 +884,11 @@ var explore = function() {
         }
         var c = $('<div>', {'class': 'conteiner'}).append(
                 $('<h2>').append(
-                $('<div>', {class: 'move_it'}),
+                $('<div>', {'class': 'move_it'}),
         name,
                 sub_function,
-                $('<div>', {class: 'setup', 'data-i_line': i_line, 'data-size': size, title: _lang.exp_setup_view}).css('display', (!st) ? 'none' : ''),
-                $('<div>', {class: 'spoiler' + ((!st) ? ' up' : '')})
+                $('<div>', {'class': 'setup', 'data-i_line': i_line, 'data-size': size, title: _lang.exp_setup_view}).css('display', (!st) ? 'none' : ''),
+                $('<div>', {'class': 'spoiler' + ((!st) ? ' up' : '')})
                 ),
                 $('<div>', {'data-page': page_num}).css('display', (!st) ? 'none' : '').append(write_page(section, page_num, content))
                 );
@@ -930,7 +930,7 @@ var explore = function() {
             return '';
         tmp_vars.li_cache[section].attr('data-item-count', poster_count);
         var c = [];
-        c.push($('<div>', {class: 'pager'}).append(make_page_body(poster_count, content.length, page)));
+        c.push($('<div>', {'class': 'pager'}).append(make_page_body(poster_count, content.length, page)));
         // var c = '<div class="pager">' + make_page_body(poster_count, content.length, page) + '</div>';
         var max_item = page * poster_count;
         var min_item = max_item - poster_count;
@@ -976,8 +976,8 @@ var explore = function() {
             if (v.url.substr(0, 4) === 'http') {
                 page_url = v.url;
             }
-            c.push($('<div>', {class: 'poster', 'data-id': k}).append(
-                    $('<div>', {class: 'image'}).append(
+            c.push($('<div>', {'class': 'poster', 'data-id': k}).append(
+                    $('<div>', {'class': 'image'}).append(
                     (fav !== null) ? $('<div>', {'class': 'add_favorite', title: _lang.exp_in_fav}) : [
                 $('<div>', {'class': 'del_favorite', title: _lang.exp_rm_fav}),
                 $('<div>', {'class': 'edit_favorite', title: _lang.exp_edit_fav}),
@@ -988,9 +988,9 @@ var explore = function() {
                     $('<img>', {src: view.contentUnFilter(image_url), title: name_v})
                     )
                     ),
-                    $('<div>', {class: 'label'}).append(
-                    $('<div>', {class: 'title', title: name_v}).append($('<span>').append($('<a>', {href: '#s=' + search_kw_filter(name_v), text: name_v}))),
-                    (page_url.length > 0) ? $('<div>', {class: 'info'}).append($('<a>', {href: view.contentUnFilter(page_url), target: 'blank', text: _lang.exp_more})) : ''
+                    $('<div>', {'class': 'label'}).append(
+                    $('<div>', {'class': 'title', title: name_v}).append($('<span>').append($('<a>', {href: '#s=' + search_kw_filter(name_v), text: name_v}))),
+                    (page_url.length > 0) ? $('<div>', {'class': 'info'}).append($('<a>', {href: view.contentUnFilter(page_url), target: 'blank', text: _lang.exp_more})) : ''
                     )
                     )
                     );
@@ -1008,7 +1008,7 @@ var explore = function() {
             return '';
         var page_count = Math.floor((length - 1) / i_count);
         for (var i = 1; i < page_count + 2; i++) {
-            btns.push($('<div>', {class: 'item' + ((i === page) ? ' active' : ''), text: i}));
+            btns.push($('<div>', {'class': 'item' + ((i === page) ? ' active' : ''), text: i}));
             // btns += '<div class="item' + ((i === page) ? ' active' : '') + '">' + i + '</div>';
         }
         return btns;
@@ -1363,7 +1363,7 @@ var explore = function() {
         }
         //<<<temp code
         $.each(listOptions, function(key, value) {
-            tmp_vars.explore_ul.append($('<li>', {class: key}));
+            tmp_vars.explore_ul.append($('<li>', {'class': key}));
             if (_hide_exp_section[key] === 0) {
                 return 1;
             }
@@ -1633,7 +1633,7 @@ var explore = function() {
         var num = 1;
         var line = 1;
         var search = '';
-        var content = $('<ul>', {class: 'c' + colums});
+        var content = $('<ul>', {'class': 'c' + colums});
         //'  <ul class="c' + colums + '">';
         for (var i = 0; i < arr.length; i++) {
             var item = arr[i];
@@ -1646,7 +1646,7 @@ var explore = function() {
                 } else {
                     sub_style = '';
                 }
-                info = $('<div>', {class: 'info' + sub_style});
+                info = $('<div>', {'class': 'info' + sub_style});
             } else {
                 info = '';
             }
@@ -1654,7 +1654,7 @@ var explore = function() {
             if (item.year > 0) {
                 search += ' ' + item.year;
             }
-            content.append($('<li>', {class: 'l' + line}).append(info, $('<span>', {title: search}).append($('<a>', {href: '#s=' + search, text: item.text}))));
+            content.append($('<li>', {'class': 'l' + line}).append(info, $('<span>', {title: search}).append($('<a>', {href: '#s=' + search, text: item.text}))));
             if (num % colums === 0) {
                 line++;
             }
@@ -1775,9 +1775,9 @@ var explore = function() {
         var size = $(obj).attr('data-size');
         var section = $(obj).closest('li').attr('class');
         var def_size = content_sourse[section].size;
-        var t = $($('<div>', {class: 'setup_div', 'data-i_line': i_line, 'data-size': def_size})).hide();
+        var t = $($('<div>', {'class': 'setup_div', 'data-i_line': i_line, 'data-size': def_size})).hide();
         //var t = $('<div class="setup_div" data-i_line="' + i_line + '" data-size="' + def_size + '"></div>').hide();
-        $('<div>', {class: 'slider'}).slider({
+        $('<div>', {'class': 'slider'}).slider({
             value: size,
             max: def_size,
             min: 30,
@@ -1821,7 +1821,7 @@ var explore = function() {
             }
             optns.push(t_opt);
         }
-        t.append($('<div>', {class: 'clear', title: _lang.exp_default}), $('<div>', {class: 'count'}).append($('<select>').append(optns)));
+        t.append($('<div>', {'class': 'clear', title: _lang.exp_default}), $('<div>', {'class': 'count'}).append($('<select>').append(optns)));
         return t;
     };
     var get_font_size = function(w) {
