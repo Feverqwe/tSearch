@@ -405,6 +405,7 @@ var view = function() {
                 console.error('Item in tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
                 return true;
             }
+            v.title = $('<span>', {text: v.title}).text();
             errors = torrent_check(v, t, errors);
             if (HideZeroSeed && v.seeds === 0) {
                 if (tmp_var_qbox === 0) {
@@ -513,7 +514,7 @@ var view = function() {
             return inBGMode(t, a, s);
         }
         //var dbg_start = (new Date()).getTime();
-        var c = '';
+        var c = [];
         if (p === undefined) {
             tmp_vars.rez_table_tbody.children('tr[data-tracker="' + t + '"]').remove();
         }
@@ -528,6 +529,7 @@ var view = function() {
                 console.error('Tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
                 return true;
             }
+            v.title = $('<span>', {text: v.title}).text();
             errors = torrent_check(v, t, errors);
             if (HideZeroSeed && v.seeds === 0) {
                 return true;
@@ -580,18 +582,30 @@ var view = function() {
                     advFilter[4] = 1;
                 }
             }
-            c += '<tr data-filter="' + advFilter.join(',') + '" data-tracker="' + t + '" data-c="' + v.category.id + '">'
-                    + '<td class="time" data-value="' + v.time + '" title="' + unixintimetitle(v.time) + '">' + unixintime(v.time) + '</td>'
-                    + '<td class="quality" data-value="' + quality.value + '" data-qgame="' + quality.game + '" data-qseed="' + quality.seed + '" data-qname="' + quality.name + '" data-qvideo="' + quality.video + '" data-qmusic="' + quality.music + '" data-qbook="' + quality.book + '"><div class="progress"><div style="width:' + (quality.value / 15) + 'px"></div><span title="' + quality.value + '">' + quality.value + '</span></div></td>'
-                    + '<td class="name"><div class="title"><a href="' + v.url + '" target="_blank">' + title + '</a>'
-                    + ((v.category.title === null && ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div>' : '')
-                    + '</div>'
-                    + ((v.category.title !== null) ? '<ul><li class="category">' + ((v.category.url === null) ? v.category.title : '<a href="' + v.category.url + '" target="blank">' + v.category.title + '</a>') + ((ShowIcons) ? '<div class="tracker_icon num' + t + '" title="' + tracker[t].name + '"></div></li>' : '</li>') + '</ul>' : '')
-                    + '</td>'
-                    + '<td class="size" data-value="' + v.size + '">' + ((v.dl !== null) ? '<a href="' + v.dl + '" target="_blank">' + bytesToSize(v.size) + ' ↓</a>' : bytesToSize(v.size)) + '</td>'
-                    + ((!HideSeed) ? '  <td class="seeds" data-value="' + v.seeds + '">' + v.seeds + '</td>' : '')
-                    + ((!HideLeech) ? '  <td class="leechs" data-value="' + v.leechs + '">' + v.leechs + '</td>' : '')
-                    + '</tr>';
+            var t_category_section = '';
+            if (v.category.title !== null) {
+                var t_cat_icon = '';
+                if (ShowIcons) {
+                    t_cat_icon = $('<div>', {class: 'tracker_icon num' + t, title: tracker[t].name});
+                }
+                if (v.category.url === null) {
+                    t_category_section = $('<ul>').append($('<li>', {class: 'category', text: v.category.title}).append(t_cat_icon));
+                } else {
+                    t_category_section = $('<ul>').append($('<li>', {class: 'category'}).append($('<a>', {href: contentUnFilter(v.category.url), target: "_blank", text: v.category.title}), t_cat_icon));
+                }
+            }
+
+            c.push($('<tr>', {'data-filter': advFilter.join(','), 'data-tracker': t, 'data-c': v.category.id}).append(
+                    $('<td>', {class: 'time', 'data-value': v.time, title: unixintimetitle(v.time), text: unixintime(v.time)}),
+            $('<td>', {class: 'quality', 'data-value': quality.value, 'data-qgame': quality.game, 'data-qseed': quality.seed, 'data-qname': quality.name, 'data-qvideo': quality.video, 'data-qmusic': quality.music, 'data-qbook': quality.book})
+                    .append($('<div>', {class: 'progress'}).append($('<div>').css('width', (quality.value / 15) + 'px'), $('<span>', {title: quality.value, text: quality.value}))),
+                    $('<td>', {class: 'name'})
+                    .append($('<div>', {class: 'title'})
+                            .append($('<a>', {href: contentUnFilter(v.url), target: "_blank"}).append(title), (v.category.title === null && ShowIcons) ? $('<div>', {class: 'tracker_icon num' + t, title: tracker[t].name}) : ''), t_category_section),
+                    (v.dl !== null) ? $('<td>', {class: 'size', 'data-value': v.size}).append($('<a>', {href: contentUnFilter(v.dl), target: '_blank', text: bytesToSize(v.size) + ' ↓'})) : $('<td>', {class: 'size', 'data-value': v.size, text: bytesToSize(v.size)}),
+            (HideSeed) ? '' : $('<td>', {class: 'seeds', 'data-value': v.seeds, text: v.seeds}),
+            (HideLeech) ? '' : $('<td>', {class: 'leechs', 'data-value': v.leechs, text: v.leechs})
+                    ));
         });
         log_errors(t, errors);
         if (p !== undefined) {
@@ -600,7 +614,7 @@ var view = function() {
         updateTrackerResultCount(t, sum);
         loadingStatus(1, t);
         if (sum > 0) {
-            tmp_vars.rez_table_tbody.append(contentUnFilter(c));
+            tmp_vars.rez_table_tbody.append(c);
             table_update_timer();
         }
     };

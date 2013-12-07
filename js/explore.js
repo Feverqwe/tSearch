@@ -613,12 +613,12 @@ var explore = function() {
                     var url = item.children('td.title').children('a').eq(0).attr('href');
                     var name = item.children('td.title').children('a').eq(0).text().trim();
                     /*
-                    var year = item.children('td.title').children('span.year_type').eq(0)
-                    if (year.length > 0) {
-                        year = year.text().replace(/\(([0-9]{4}).*\)$/, '($1)');
-                        name += " " + year;
-                    }
-                    */
+                     var year = item.children('td.title').children('span.year_type').eq(0)
+                     if (year.length > 0) {
+                     year = year.text().replace(/\(([0-9]{4}).*\)$/, '($1)');
+                     name += " " + year;
+                     }
+                     */
                     obj = {
                         img: imdb_makeimg(view.contentUnFilter(img_url)).replace(content_sourse[type].base_img_url, ''),
                         name: name.replace(/ \(([0-9]{4}).*\)$/, ' ($1)'),
@@ -1537,14 +1537,13 @@ var explore = function() {
                 last_qbox.obj.css("display", "");
             }
             if (db.constructor !== Array) {
-                info_popup.children("div.content").html('<a href="' + db.link + '" target="_blank">' + db.name + '</a>');
+                info_popup.children("div.content").empty().append($('<a>', {href: db.link, target: '_blank', text: db.name}));
             } else {
-                var info_content = "<ul>";
+                var info_content = $('<ul>');
                 $.each(db, function(k, v) {
-                    info_content += '<li><a href="' + v.link + '" target="_blank">' + v.name + '</a></li>';
+                    info_content.append($('<li>').append($('<a>', {href: v.link, target: '_blank'}).html(v.name)));
                 });
-                info_content += "</ul>";
-                info_popup.children("div.content").html(info_content);
+                info_popup.children("div.content").empty().append(info_content);
             }
             var w = info_popup.width() / 2;
             var h = info_popup.height() + 10;
