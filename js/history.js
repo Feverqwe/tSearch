@@ -1,7 +1,7 @@
 var view = function() {
     var search_history = [];
     var noHistory = function() {
-        $('ol.list').html('<center>' + _lang.his_no_his + '</center>');
+        $('ol.list').empty().append($('<center>', {text: _lang.his_no_his}));
     };
     var order = function(a, b) {
         if (a.time > b.time)
@@ -23,15 +23,15 @@ var view = function() {
             return;
         }
         search_history.sort(order);
-        var content = '';
+        var content = [];
         for (var i = 0; i < count; i++) {
-            content += '<li data-id=' + i + '>'
-                    + '<div class="remove"><div class="rm_btn" title="' + _lang.his_rm_btn + '"></div></div>'
-                    + '<div class="time" title="' + unixintimetitle(search_history[i].time) + '">' + unixintime(search_history[i].time) + '</div>'
-                    + '<div class="title"><a href="index.html#s=' + search_history[i].title + '">' + search_history[i].title + '</a></div>'
-                    + '</li>';
+            content.push($('<li>', {'data-id': i}).append(
+                    $('<div>', {'class': 'remove'}).append($('<div>', {'class': 'rm_btn', title: _lang.his_rm_btn})),
+                    $('<div>', {'class': 'time', title: unixintimetitle(search_history[i].time), text: unixintime(search_history[i].time)}),
+            $('<div>', {'class': 'title'}).append($('<a>', {href: 'index.html#s=' + search_history[i].title, text: search_history[i].title}))
+                    ));
         }
-        $('ol.list').html(content);
+        $('ol.list').append(content);
         updateBtns();
     };
     var updateBtns = function() {
