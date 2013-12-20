@@ -1,20 +1,20 @@
 (function () {
-    num = torrent_lib.length;
+    var num = torrent_lib.length;
     torrent_lib[num] = null;
     torrent_lib[num] = function() {
         var name = 'InMac';
         var filename = 'inmac';
         var id = null;
         var icon = 'data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAABMLAAATCwAAAAAAAAAAAAD///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8BvIYqT8WNJ2vFjShrxY0oa8WMKGvAiSlldEYuA////wH///8B////Af///wH///8B////Af///wH///8BpnAoI72AKcW4fynFvYQqf7qCKoG5gSqdxIUq2f///wH///8B////Af///wH///8B////Af///wH///8BsXUlgahuJJ+lcCdDtnUi27BzI4GqbyJttnUi26VuJVWfgCAD////Af///wH///8B////Af///wG4cSoDpnIpK7l6JbH///8Bn18gA6NyKxmtcSOVtHYj16hzKGmucyNtoXQqEf///wH///8B////Af///wH///8Bv4AgA6x0KEXBgCit////Aa12J1+9fiijunsm27l6JN/AfyeptXYlpbl7J5mqgCoD////Af///wH///8B////AbiORwOmdCspv4Ao7aZ2LDXCgSjpsHcoV6VzLCFKVT8DxXM5A6JxLR+7fSjlfWY1Bf///wH///8B////Af///wH///8BgmM2CcWFLfGqdi1RxYUt64toLgeqgCoD////Af///wH///8Bxocuy655LjvUjkcD////Af///wH///8B////AdSAKgPNjS7RsHotWcOGK/mmdi0fqoAqA////wGqgCoDwIIiA72DLIG+hC2PqoArA////wH///8B////Af///wGKZy4LzpAr5beBK0vQkSzftX4rQ55gIgPUgCoDlmsuFbmCK1PDiCq3z5Aq+7R/LFX///8Bo3UuF7yGKl2+hyllzJApx8qPKduhdCwN0pUrvcCIKZXBiSmB1JYqx82RKfXTlSvLvoYphcCGKWW2gCtP////AYBmMwO7hSln05cqpcKKKIGpeCsV3Z4+A9GWKMnVmSf3z5Qpr7uFKWGldSwd////Af///wH///8B////Af///wH///8B////AbiORwP///8B////Af///wHPlirNuIQqO8CCPgP///8BqoAqA////wH///8B////Af///wH///8B////Af///wH///8B////Af///wGqgCsDoXQtEf///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8B////Af///wH///8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%3D%3D';
-        var login_url = 'http://inmac.org/login.php';
-        var url = 'http://inmac.org/tracker.php';
-        var root_url = 'http://inmac.org/';
+        var login_url = 'https://inmac.org/login.php';
+        var url = 'https://inmac.org/tracker.php';
+        var root_url = 'https://inmac.org/';
         var about = 'Русскоязычный MAC - трекер, макинтош, хакинтош, программы, игры, видео, музыка, форум, вопросы, решения, общение..';
         var flags = {
             a: 1,
             l: 1,
             rs: 1
-        }
+        };
         var xhr = null;
         var web = function() {
             var calculateCategory = function(f) {
@@ -35,7 +35,7 @@
                         return i;
                     }
                 return -1;
-            }
+            };
             var readCode = function(c) {
                 c = view.contentFilter(c);
                 var t = view.load_in_sandbox(id, c);
@@ -50,7 +50,7 @@
                 var i = 0;
                 for (i = 0; i < l; i++) {
                     var td = t.eq(i).children('td');
-                    if (td.eq(5).children('a').attr('href') == null)
+                    if (td.eq(5).children('a').attr('href') === undefined)
                         continue;
                     arr[arr.length] = {
                         'category': {
@@ -65,13 +65,13 @@
                         'seeds': td.eq(6).children('b').text(),
                         'leechs': td.eq(7).children('b').text(),
                         'time': td.eq(9).children('u').text()
-                    }
+                    };
                 }
                 return arr;
-            }
+            };
             var loadPage = function(text) {
                 var t = text;
-                if (xhr != null)
+                if (xhr !== null)
                     xhr.abort();
                 xhr = $.ajax({
                     type: 'POST',
@@ -92,16 +92,16 @@
                         view.loadingStatus(2, id);
                     }
                 });
-            }
+            };
             return {
                 getPage: function(a) {
                     return loadPage(a);
                 }
-            }
+            };
         }();
         var find = function(text) {
             return web.getPage(text);
-        }
+        };
         return {
             find: function(a) {
                 return find(a);
@@ -118,7 +118,7 @@
             filename: filename,
             flags: flags,
             tests: [0,0,0,0,0,0,0,0,0]
-        }
+        };
     }();
     if (compression === 0) {
         engine.ModuleLoaded(num);
