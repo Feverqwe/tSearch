@@ -1,5 +1,5 @@
 (function () {
-    num = torrent_lib.length;
+    var num = torrent_lib.length;
     torrent_lib[num] = null;
     torrent_lib[num] = function() {
         var name = 'Piratca';
@@ -19,7 +19,7 @@
             a: 1,
             l: 1,
             rs: 1
-        }
+        };
         var xhr = null;
         var web = function() {
             var calculateCategory = function(f) {
@@ -41,7 +41,7 @@
                         return i;
                     }
                 return -1;
-            }
+            };
             var readCode = function(c) {
                 c = view.contentFilter(c);
                 var t = view.load_in_sandbox(id, c);
@@ -56,7 +56,7 @@
                 var i = 0;
                 for (i = 0; i < l; i++) {
                     var td = t.eq(i).children('td');
-                    if (td.eq(4).children('a').attr('href') == null)
+                    if (td.eq(4).children('div').attr('href') === undefined)
                         continue;
                     arr[arr.length] = {
                         'category': {
@@ -67,17 +67,17 @@
                         'title': td.eq(2).children('a').text(),
                         'url': root_url + td.eq(2).children('a').attr('href'),
                         'size': td.eq(4).children('u').text(),
-                        'dl': root_url + td.eq(4).children('a').attr('href'),
+                        'dl': root_url + td.eq(4).children('div').attr('href'),
                         'seeds': td.eq(5).children('b.seedmed').text(),
                         'leechs': td.eq(5).children('b.leechmed').text(),
                         'time': td.eq(6).children('u').text()
-                    }
+                    };
                 }
                 return arr;
-            }
+            };
             var loadPage = function(text) {
                 var t = text;
-                if (xhr != null)
+                if (xhr !== null)
                     xhr.abort();
                 xhr = $.ajax({
                     type: 'POST',
@@ -95,16 +95,16 @@
                         view.loadingStatus(2, id);
                     }
                 });
-            }
+            };
             return {
                 getPage: function(a) {
                     return loadPage(a);
                 }
-            }
+            };
         }();
         var find = function(text) {
             return web.getPage(text);
-        }
+        };
         return {
             find: function(a) {
                 return find(a);
@@ -121,7 +121,7 @@
             filename: filename,
             flags: flags,
             tests: [0,0,0,0,0,0,0,0,0]
-        }
+        };
     }();
     if (compression === 0) {
         engine.ModuleLoaded(num);
