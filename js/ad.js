@@ -1,11 +1,8 @@
 var ad = function() {
     var ad_arr = [
-        ["images/4358.jpg", "http://c.cpa6.ru/4358"], //Panzar
-        ["images/3ycq.jpg", "http://c.cpa6.ru/3ycq"], //Royal Quest
-        ["images/3k3c.jpg", "http://c.cpa6.ru/3k3c"], //Небеса
-        ["images/4359.jpg", "http://c.cpa6.ru/4359"], //Dragona
         ["images/4usv.jpg", "http://c.cpa6.ru/4usv"], //Танки On-line
-        ["images/4usK.jpg", "http://c.cpa6.ru/4usK"] //Heroes of Newerth
+        ['images/57EA.jpg','http://c.cpl1.ru/57EA'], //War Thunder
+        ['images/57EC.jpg','http://c.cpl1.ru/57EC'] //Forsaken World
     ];
     var getRandomArbitary = function(min, max, e)
     {

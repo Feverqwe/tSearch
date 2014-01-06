@@ -113,7 +113,7 @@
                     view.auth(1, id);
                 }
                 c = JSON.parse(c);
-                if ("torrents" in c === false) {
+                if (c.torrents === undefined) {
                     return;
                 }
                 var arr = [];

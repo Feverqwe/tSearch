@@ -65,130 +65,130 @@ var magic = function() {
         }
         if (!code)
             return;
-        if ('cat_name' in code) {
+        if (code.cat_name !== undefined) {
             $('input[name=category_name]').val(code['cat_name']);
             $('input[name=category_name]').parents().eq(1).find('input[name=status]').prop('checked', 1);
-            if ('cat_alt' in code) {
+            if (code.cat_alt !== undefined) {
                 $('input[name=category_attr]').prop('checked', 1);
                 $('input[name=category_attr_value]').val('alt');
             }
-            if ('cat_attr' in code) {
+            if (code.cat_attr !== undefined) {
                 $('input[name=category_attr]').prop('checked', 1);
                 $('input[name=category_attr_value]').val(code['cat_attr']);
             }
         }
-        if ('cat_link' in code) {
+        if (code.cat_link !== undefined) {
             $('input[name=category_link]').val(code['cat_link']);
-            if ('cat_link_r' in code) {
+            if (code.cat_link_r !== undefined) {
                 $('input[name=category_link_base_path]').prop('checked', code['cat_link_r']);
             }
             $('input[name=category_link]').parents().eq(1).find('input[name=status]').prop('checked', 1);
         }
-        if ('root_url' in code) {
+        if (code.root_url !== undefined) {
             $('input[name=base_path]').val(code['root_url']);
         }
-        if ('search_path' in code) {
+        if (code.search_path !== undefined) {
             $('input[name=search_url]').val(code['search_path']);
         }
-        if ('encode' in code) {
+        if (code.encode !== undefined) {
             $('input[name=cp1251encode]').prop('checked', code['encode']);
         }
-        if ('post' in code) {
+        if (code.post !== undefined) {
             $('input[name=post]').val(code['post']);
         }
-        if ('items' in code) {
+        if (code.items !== undefined) {
             $('input[name=item]').val(code['items']);
         }
-        if ('tr_name' in code) {
+        if (code.tr_name !== undefined) {
             $('input[name=torrent_name]').val(code['tr_name']);
         }
-        if ('tr_link' in code) {
+        if (code.tr_link !== undefined) {
             $('input[name=torrent_link]').val(code['tr_link']);
         }
-        if ('tr_link_r' in code) {
+        if (code.tr_link_r !== undefined) {
             $('input[name=torrent_link_base_path]').prop('checked', code['tr_link_r']);
         }
-        if ('tr_size' in code) {
+        if (code.tr_size !== undefined) {
             $('input[name=torrent_size]').val(code['tr_size']);
-            if ('s_c' in code) {
+            if (code.s_c !== undefined) {
                 $('input[name=convert_size]').prop('checked', code['s_c']);
             }
             $('input[name=torrent_size]').parents().eq(1).find('input[name=status]').prop('checked', 1);
-            if ('size_r' in code) {
+            if (code.size_r !== undefined) {
                 $('input[name=size_regexp]').val(code['size_r']);
                 $('input[name=size_regexp_repl]').val(code['size_rp']);
             }
-            if ('size_attr' in code) {
+            if (code.size_attr !== undefined) {
                 $('input[name=size_attr]').prop('checked', 1);
                 $('input[name=size_attr_value]').val(code['size_attr']);
             }
         }
-        if ('tr_dl' in code) {
+        if (code.tr_dl !== undefined) {
             $('input[name=torrent_dl_link]').val(code['tr_dl']);
-            if ('tr_dl_r' in code) {
+            if (code.tr_dl_r !== undefined) {
                 $('input[name=torrent_dl_link_base_path]').prop('checked', code['tr_dl_r']);
             }
             $('input[name=torrent_dl_link]').parents().eq(1).find('input[name=status]').prop('checked', 1);
         }
-        if ('seed' in code) {
+        if (code.seed !== undefined) {
             $('input[name=seed_count]').val(code['seed']);
             $('input[name=seed_count]').parents().eq(1).find('input[name=status]').prop('checked', 1);
-            if ('seed_r' in code) {
+            if (code.seed_r !== undefined) {
                 $('input[name=seed_regexp]').val(code['seed_r']);
                 $('input[name=seed_regexp_repl]').val(code['seed_rp']);
             }
         }
-        if ('peer' in code) {
+        if (code.peer !== undefined) {
             $('input[name=peer_count]').val(code['peer']);
             $('input[name=peer_count]').parents().eq(1).find('input[name=status]').prop('checked', 1);
-            if ('peer_r' in code) {
+            if (code.peer_r !== undefined) {
                 $('input[name=peer_regexp]').val(code['peer_r']);
                 $('input[name=peer_regexp_repl]').val(code['peer_rp']);
             }
         }
-        if ('date' in code) {
+        if (code.date !== undefined) {
             $('input[name=add_time]').val(code['date']);
-            if ('t_r' in code) {
+            if (code.t_r !== undefined) {
                 $('input[name=time_regexp]').val(code['t_r']);
                 $('input[name=time_regexp_repl]').val(code['t_r_r']);
             }
-            if ('t_t_r' in code) {
+            if (code.t_t_r !== undefined) {
                 $('input[name=today_replace]').prop('checked', code['t_t_r']);
             }
-            if ('t_m_r' in code) {
+            if (code.t_m_r !== undefined) {
                 $('input[name=month_replace]').prop('checked', code['t_m_r']);
             }
-            if ('t_f' in code) {
+            if (code.t_f !== undefined) {
                 $('select[name=date_format] option[value=' + code['t_f'] + ']').prop('selected', 1);
             }
-            if ('date_attr' in code) {
+            if (code.date_attr !== undefined) {
                 $('input[name=time_attr]').prop('checked', 1);
                 $('input[name=time_attr_value]').val(code['date_attr']);
             }
             $('input[name=add_time]').parents().eq(1).find('input[name=status]').prop('checked', 1);
         }
-        if ('sf' in code) {
+        if (code.sf !== undefined) {
             $('input[name=skip_first]').val(code['sf']);
         }
-        if ('sl' in code) {
+        if (code.sl !== undefined) {
             $('input[name=skip_last]').val(code['sl']);
         }
-        if ('auth' in code) {
+        if (code.auth !== undefined) {
             $('input[name=auth_url]').val(code['auth']);
         }
-        if ('auth_f' in code) {
+        if (code.auth_f !== undefined) {
             $('input[name=auth_form]').val(code['auth_f']);
         }
-        if ('icon' in code) {
+        if (code.icon !== undefined) {
             $('input[name=icon]').val(code['icon']);
         }
-        if ('name' in code) {
+        if (code.name !== undefined) {
             $('input[name=tr_name]').val(code['name']);
         }
-        if ('about' in code) {
+        if (code.about !== undefined) {
             $('input[name=desk]').val(code['about']);
         }
-        if ('flags' in code) {
+        if (code.flags !== undefined) {
             $('input[name=need_auth]').prop('checked', code['flags'].a);
             $('input[name=rus]').prop('checked', code['flags'].l);
             if (code['flags'].rs) {

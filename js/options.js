@@ -1,6 +1,6 @@
 var options = function() {
-    var isFF = "Application" in window && Application.name === "Firefox";
-    var isChromeum = "chrome" in window;
+    var isFF = window.Application !== undefined && Application.name === "Firefox";
+    var isChromeum = (window.chrome !== undefined);
     var def_settings = {
         HideLeech: {"v": 1, "t": "checkbox"},
         HideSeed: {"v": 0, "t": "checkbox"},
@@ -52,7 +52,7 @@ var options = function() {
             var set = settings;
             if (v.t === "text" || v.t === "number" || v.t === "password") {
                 $('input[name="' + k + '"]').removeAttr("value");
-                if (k in set && set[k] != v.v) {
+                if (set.k !== undefined && set[k] != v.v) {
                     $('input[name="' + k + '"]').attr("value", set[k]);
                 }
                 if (v.v !== null && v.v !== undefined) {
@@ -60,14 +60,14 @@ var options = function() {
                 }
             }
             if (v.t === "checkbox") {
-                if (k in set) {
+                if (set.k !== undefined) {
                     $('input[name="' + k + '"]').eq(0)[0].checked = (set[k]) ? 1 : 0;
                 } else {
                     $('input[name="' + k + '"]').eq(0)[0].checked = (v.v) ? 1 : 0;
                 }
             }
             if (v.t === "radio") {
-                if (k in set) {
+                if (set.k !== undefined) {
                     $('input[name="' + k + '"][value="' + set[k] + '"]').eq(0)[0].checked = true;
                 } else {
                     $('input[name="' + k + '"][value="' + v.v + '"]').eq(0)[0].checked = true;
@@ -282,8 +282,8 @@ var options = function() {
                 }
             };
             var inf = 0;
-            if (chank_name + "inf" in data) {
-                inf = data[chank_name + "inf"];
+            if (data[chank_name + 'inf'] !== undefined) {
+                inf = data[chank_name + 'inf'];
             } else {
                 $('input[name="get_from_cloud"]')[0].disabled = true;
                 console.log("Backup not found!");
@@ -293,7 +293,7 @@ var options = function() {
             var back = "";
             var broken = 0;
             for (var i = 0; i < inf; i++) {
-                if (chank_name + i in data) {
+                if (data[chank_name + i] !== undefined) {
                     back += data[chank_name + i];
                 } else {
                     console.log("Backup is broken!", "Chank", i);
@@ -335,7 +335,7 @@ var options = function() {
                 'n': fn,
                 'e': 1
             };
-            if ('uid' in tracker[id]) {
+            if (tracker[id].uid !== undefined) {
                 obj['uid'] = tracker[id].uid;
             }
             TrackerList.push(obj);
@@ -378,7 +378,7 @@ var options = function() {
                 }
             };
             var inf = 0;
-            if (chank_name + "inf" in data) {
+            if (data[chank_name + 'inf'] !== undefined) {
                 inf = data[chank_name + "inf"];
             } else {
                 console.log("Sync ", chank_name, " not found!");
@@ -388,7 +388,7 @@ var options = function() {
             var back = "";
             var broken = 0;
             for (var i = 0; i < inf; i++) {
-                if (chank_name + i in data) {
+                if (data[chank_name + i] !== undefined) {
                     back += data[chank_name + i];
                 } else {
                     console.log("Sync is broken!", chank_name, "Chank", i);
@@ -427,25 +427,25 @@ var options = function() {
                 var i_trackers_len = item["Trackers"].length;
                 for (var n = 0; n < i_trackers_len; n++) {
                     var tr = item["Trackers"][n];
-                    if (tr["e"] !== 1) {
+                    if (tr.e !== 1) {
                         continue;
                     }
-                    if ("uid" in tr === false) {
-                        trackers.push(tr["n"]);
+                    if (tr.uid === undefined) {
+                        trackers.push(tr.n);
                     } else {
-                        tr["n"] = parseInt(tr["n"]);
-                        if (isNaN(tr["n"])) {
+                        tr.n = parseInt(tr.n);
+                        if (isNaN(tr.n)) {
                             continue;
                         }
-                        if (tr["n"] in c_trackers === false) {
-                            var ctr_code = GetSettings('ct_' + tr["n"]);
+                        if (c_trackers[tr.n] === undefined) {
+                            var ctr_code = GetSettings('ct_' + tr.n);
                             if (ctr_code !== undefined) {
                                 try {
-                                    c_trackers[tr["n"]] = JSON.parse(ctr_code);
+                                    c_trackers[tr.n] = JSON.parse(ctr_code);
                                 } catch (e) {
                                     continue;
                                 }
-                                trackers.push(tr["n"]);
+                                trackers.push(tr.n);
                             }
                         }
                     }
@@ -488,7 +488,7 @@ var options = function() {
             trackers.forEach(function(item) {
                 var tr_list = [];
                 item[0].forEach(function(tr) {
-                    if (tr in c_trackers) {
+                    if (c_trackers[tr] !== undefined) {
                         tr_list.push({n: tr, e: 1, uid: tr});
                     } else {
                         tr_list.push({n: tr, e: 1});
@@ -631,7 +631,7 @@ var options = function() {
                 });
                 chrome.storage.sync.get("bk_ch_inf",
                         function(val) {
-                            if ("bk_ch_inf" in val === false) {
+                            if (val.bk_ch_inf === undefined) {
                                 $('input[name="get_from_cloud"]').eq(0).get(0).disabled = true;
                             }
                         }
@@ -772,7 +772,7 @@ var options = function() {
                     alert(_lang.settings[55] + "\n" + e);
                     return;
                 }
-                if ('uid' in code === false) {
+                if (code.uid === undefined) {
                     alert(_lang.settings[56]);
                     return;
                 }

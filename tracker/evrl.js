@@ -87,7 +87,7 @@
                         }
                     }),
                     success: function(data) {
-                        if ('response' in data) {
+                        if (data.response !== undefined) {
                             view.auth(1, id);
                             view.result(id, readCode(data.response.content), t);
                         } else {

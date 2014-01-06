@@ -37,7 +37,7 @@ var view = function() {
     var xhr_autocomplite = null;
     var tmp_var_qbox = 0;
     var tmp_vars = {};
-    var isFF = "Application" in window && Application.name === "Firefox";
+    var isFF = window.Application !== undefined && Application.name === "Firefox";
     var auth = function(s, t) {
         /*
          * отображает требование авторизоваться
@@ -295,7 +295,7 @@ var view = function() {
          */
         if (er === undefined)
             return;
-        var tests = ('tests' in tracker[t]) ? tracker[t].tests : false;
+        var tests = (tracker[t].tests !== undefined) ? tracker[t].tests : false;
         //tests syntax:
         //0 - category exist
         //1 - cotegory title
@@ -345,8 +345,8 @@ var view = function() {
         if (er === undefined) {
             er = [0, 0, 0, 0, 0, 0, 0, 0, 0];
         }
-        if ('category' in v === false) {
-            v['category'] = {
+        if (v.category === undefined) {
+            v.category = {
                 title: null,
                 url: null,
                 id: -1
@@ -436,7 +436,7 @@ var view = function() {
             if (v.category.id < 0) {
                 v.category.id = autoset_Category(quality, v.category.title || "");
             }
-            if ("count" in backgroundModeID === false) {
+            if (backgroundModeID.count === undefined) {
                 backgroundModeID = {count: 0, section: backgroundModeID.section, id: backgroundModeID.id, cat_c: {}, year: {}};
             }
             backgroundModeID.count++;
@@ -494,7 +494,7 @@ var view = function() {
         if (tracker[t] === undefined) {
             return;
         }
-        if ("year" in keyword_filter_cache === false) {
+        if (keyword_filter_cache.year === undefined) {
             keyword_filter_cache.year = s.match(/[1-2]{1}[0-9]{3}/);
             if (keyword_filter_cache.year) {
                 keyword_filter_cache.year = keyword_filter_cache.year[0];
@@ -502,12 +502,12 @@ var view = function() {
                 keyword_filter_cache.year = null;
             }
         }
-        if ("keyword" in keyword_filter_cache === false) {
+        if (keyword_filter_cache.keyword === undefined) {
             keyword_filter_cache.keyword = s.replace(/\s+/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
             keyword_filter_cache.keyword_regexp = keyword_filter_cache.keyword.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
             keyword_filter_cache.keyword_regexp_lower = keyword_filter_cache["keyword_regexp"].toLowerCase();
         }
-        if ("keyword_no_year" in keyword_filter_cache === false && keyword_filter_cache.year) {
+        if (keyword_filter_cache.keyword_no_year === undefined && keyword_filter_cache.year) {
             keyword_filter_cache.keyword_no_year = keyword_filter_cache.keyword.replace(keyword_filter_cache.year, "").trim();
             keyword_filter_cache.keyword_no_year_regexp = keyword_filter_cache.keyword_no_year.replace(/([.?*+^$[\]\\{}|-])/g, "\\$1");
             keyword_filter_cache.keyword_no_year_regexp_lower = keyword_filter_cache.keyword_no_year_regexp.toLowerCase();
@@ -521,7 +521,7 @@ var view = function() {
         if (p === undefined) {
             tmp_vars.rez_table_tbody.children('tr[data-tracker="' + t + '"]').remove();
         }
-        if ("result_filter_input" in keyword_filter_cache === false) {
+        if (keyword_filter_cache.result_filter_input === undefined) {
             keyword_filter_cache.result_filter_input = $.trim($('div.filter').children('input').val()).replace(/\s+/g, " ");
             keyword_filter_cache.result_filter_input = keyword_filter_cache.result_filter_input.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
         }
@@ -1325,7 +1325,7 @@ var view = function() {
         clear_btn.css('background-image', 'url(images/loading.gif)');
         keyword = $.trim(keyword).replace(/\s+/g, " ");
         var keyword_checked = keyword.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-        if ("result_filter_input" in keyword_filter_cache !== false) {
+        if (keyword_filter_cache.result_filter_input !== undefined) {
             keyword_filter_cache.result_filter_input = keyword_checked;
         }
         if (keyword.length === 0) {

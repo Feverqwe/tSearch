@@ -176,16 +176,16 @@ var engine = function() {
         torrent_lib[l] = function(ct) {
             var id = null;
             var me = ct;
-            var icon = ('icon' in me) ? me.icon : null;
-            var name = ('name' in me) ? me.name : '-no name-';
-            var about = ('about' in me) ? me.about : '';
-            var root_url = ('root_url' in me) ? me.root_url : null;
-            var short_url = ('root_url' in me) ? me.root_url.replace(/http(s?):\/\/([^\/]*)\/?.*$/, 'http$1://$2') : null;
-            var login_url = ('auth' in me) ? me.auth : null;
+            var icon = (me.icon !== undefined) ? me.icon : null;
+            var name = (me.name !== undefined) ? me.name : '-no name-';
+            var about = (me.about !== undefined) ? me.about : '';
+            var root_url = (me.root_url !== undefined) ? me.root_url : null;
+            var short_url = (me.root_url !== undefined) ? me.root_url.replace(/http(s?):\/\/([^\/]*)\/?.*$/, 'http$1://$2') : null;
+            var login_url = (me.auth !== undefined) ? me.auth : null;
             var filename = me.uid;
             var uid = me.uid;
             var tests = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-            var flags = ('flags' in me) ? me.flags : {
+            var flags = (me.flags !== undefined) ? me.flags : {
                 a: 0,
                 l: 0,
                 rs: 1
@@ -195,25 +195,25 @@ var engine = function() {
                 var readCode = function(c) {
                     c = view.contentFilter(c);
                     var t = view.load_in_sandbox(id, c);
-                    var ex_cat = ('cat_name' in me) ? 1 : 0;
-                    var ex_link = ('cat_link' in me) ? 1 : 0;
-                    var ex_link_r = ('cat_link_r' in me && me.cat_link_r) ? 1 : 0;
-                    var ex_tr_link_r = ('tr_link_r' in me && me.tr_link_r) ? 1 : 0;
-                    var ex_tr_size = ('tr_size' in me) ? 1 : 0;
-                    var ex_tr_size_c = ('s_c' in me && me.s_c) ? 1 : 0;
-                    var ex_tr_dl = ('tr_dl' in me) ? 1 : 0;
-                    var ex_tr_dl_r = ('tr_dl_r' in me) ? 1 : 0;
-                    var ex_seed = ('seed' in me) ? 1 : 0;
-                    var ex_peer = ('peer' in me) ? 1 : 0;
-                    var ex_date = ('date' in me) ? 1 : 0;
-                    var ex_date_regexp = ('t_r' in me && 't_r_r' in me) ? 1 : 0; //t_r t_r_r
-                    var ex_size_regexp = ('size_r' in me && 'size_rp' in me) ? 1 : 0;
-                    var ex_seed_regexp = ('seed_r' in me && 'seed_rp' in me) ? 1 : 0;
-                    var ex_peer_regexp = ('peer_r' in me && 'peer_rp' in me) ? 1 : 0;
-                    var ex_t_m_r = ('t_m_r' in me) ? 1 : 0;
-                    var ex_t_t_r = ('t_t_r' in me) ? 1 : 0;
-                    var ex_t_f = ('t_f' in me && me.t_f !== "-1") ? 1 : 0; //me.t_f is string from JSON
-                    var ex_auth_f = ('auth_f' in me) ? 1 : 0;
+                    var ex_cat = (me.cat_name !== undefined) ? 1 : 0;
+                    var ex_link = (me.cat_link !== undefined) ? 1 : 0;
+                    var ex_link_r = (me.cat_link_r !== undefined && me.cat_link_r) ? 1 : 0;
+                    var ex_tr_link_r = (me.tr_link_r !== undefined && me.tr_link_r) ? 1 : 0;
+                    var ex_tr_size = (me.tr_size !== undefined) ? 1 : 0;
+                    var ex_tr_size_c = (me.s_c !== undefined && me.s_c) ? 1 : 0;
+                    var ex_tr_dl = (me.tr_dl !== undefined) ? 1 : 0;
+                    var ex_tr_dl_r = (me.tr_dl_r !== undefined) ? 1 : 0;
+                    var ex_seed = (me.seed !== undefined) ? 1 : 0;
+                    var ex_peer = (me.peer !== undefined) ? 1 : 0;
+                    var ex_date = (me.date !== undefined) ? 1 : 0;
+                    var ex_date_regexp = (me.t_r !== undefined && me.t_r_r !== undefined) ? 1 : 0; //t_r t_r_r
+                    var ex_size_regexp = (me.size_r !== undefined && me.size_rp !== undefined) ? 1 : 0;
+                    var ex_seed_regexp = (me.seed_r !== undefined && me.seed_rp !== undefined) ? 1 : 0;
+                    var ex_peer_regexp = (me.peer_r !== undefined && me.peer_rp !== undefined) ? 1 : 0;
+                    var ex_t_m_r = (me.t_m_r !== undefined) ? 1 : 0;
+                    var ex_t_t_r = (me.t_t_r !== undefined) ? 1 : 0;
+                    var ex_t_f = (me.t_f !== undefined && me.t_f !== "-1") ? 1 : 0; //me.t_f is string from JSON
+                    var ex_auth_f = (me.auth_f !== undefined) ? 1 : 0;
 
                     if (ex_cat === 0) {
                         tests[1] = 1;
@@ -236,18 +236,18 @@ var engine = function() {
                         }
                     }
                     t = t.find(me.items);
-                    var l = t.length - (('sl' in me) ? me.sl : 0);
+                    var l = t.length - ((me.sl !== undefined) ? me.sl : 0);
                     var arr = [];
-                    var s = ('sf' in me) ? me.sf : 0;
+                    var s = (me.sf !== undefined) ? me.sf : 0;
                     var er = [0, 0, 0, 0, 0, 0, 0, 0];
                     for (var i = s; i < l; i++) {
                         var td = t.eq(i);
                         var obj = {};
                         obj['category'] = {id: -1};
                         if (ex_cat) {
-                            if ('cat_alt' in me) {
+                            if (me.cat_alt !== undefined) {
                                 obj['category']['title'] = (td.find(me.cat_name)).attr('alt');
-                            } else if ('cat_attr' in me) {
+                            } else if (me.cat_attr !== undefined) {
                                 obj['category']['title'] = (td.find(me.cat_name)).attr(me.cat_attr);
                             } else {
                                 obj['category']['title'] = (td.find(me.cat_name)).text();
@@ -290,7 +290,7 @@ var engine = function() {
                             }
                         }
                         if (ex_tr_size) {
-                            if ('size_attr' in me) {
+                            if (me.size_attr !== undefined) {
                                 obj['size'] = (td.find(me.tr_size)).attr(me.size_attr);
                             } else {
                                 obj['size'] = (td.find(me.tr_size)).text();
@@ -359,7 +359,7 @@ var engine = function() {
                             obj['leechs'] = 0;
                         }
                         if (ex_date) {
-                            if ('date_attr' in me) {
+                            if (me.date_attr !== undefined) {
                                 obj['time'] = (td.find(me.date)).attr(me.date_attr);
                             } else {
                                 obj['time'] = (td.find(me.date)).text();
@@ -413,7 +413,7 @@ var engine = function() {
                     return arr;
                 };
                 var loadPage = function(text) {
-                    var t = ('encode' in me && me.encode) ? ex_kit.in_cp1251(text) : text;
+                    var t = (me.encode !== undefined && me.encode) ? ex_kit.in_cp1251(text) : text;
                     if (xhr !== null)
                         xhr.abort();
                     var obj_req = {
@@ -427,7 +427,7 @@ var engine = function() {
                             view.loadingStatus(2, id);
                         }
                     };
-                    if ('post' in me && me.post.length > 0) {
+                    if (me.post !== undefined && me.post.length > 0) {
                         obj_req.type = 'POST';
                         obj_req.data = me.post.replace('%search%', t);
                     }
@@ -523,7 +523,7 @@ var engine = function() {
          * Загружает можули из массива торрентов профиля.
          */
         tracker = [];
-        var optionsMode = "options" in window;
+        var optionsMode = (window.options !== undefined);
         if (torrentList === null || torrentList.length === 0) {
             if (optionsMode) {
                 torrentList = addCostumTr(makeDefaultList());
@@ -544,7 +544,7 @@ var engine = function() {
         var len = Trackers.length;
         for (var i = 0; i < len; i++) {
             if (Trackers[i].e) {
-                if ('uid' in Trackers[i]) {
+                if (Trackers[i].uid !== undefined) {
                     loadCostumeModule(Trackers[i].n);
                 } else {
                     loadInternalModule(Trackers[i].n);
@@ -558,7 +558,7 @@ var engine = function() {
             var len = defTrackers.length;
             for (var i = 0; i < len; i++) {
                 if (en_a.indexOf(defTrackers[i].n) === -1) {
-                    if ('uid' in defTrackers[i]) {
+                    if (defTrackers[i].uid !== undefined) {
                         loadCostumeModule(defTrackers[i].n);
                     } else {
                         loadInternalModule(defTrackers[i].n);
