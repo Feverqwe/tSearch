@@ -52,7 +52,7 @@ var options = function() {
             var set = settings;
             if (v.t === "text" || v.t === "number" || v.t === "password") {
                 $('input[name="' + k + '"]').removeAttr("value");
-                if (set.k !== undefined && set[k] != v.v) {
+                if (set[k] !== undefined && set[k] != v.v) {
                     $('input[name="' + k + '"]').attr("value", set[k]);
                 }
                 if (v.v !== null && v.v !== undefined) {
@@ -60,14 +60,14 @@ var options = function() {
                 }
             }
             if (v.t === "checkbox") {
-                if (set.k !== undefined) {
+                if (set[k] !== undefined) {
                     $('input[name="' + k + '"]').eq(0)[0].checked = (set[k]) ? 1 : 0;
                 } else {
                     $('input[name="' + k + '"]').eq(0)[0].checked = (v.v) ? 1 : 0;
                 }
             }
             if (v.t === "radio") {
-                if (set.k !== undefined) {
+                if (set[k] !== undefined) {
                     $('input[name="' + k + '"][value="' + set[k] + '"]').eq(0)[0].checked = true;
                 } else {
                     $('input[name="' + k + '"][value="' + v.v + '"]').eq(0)[0].checked = true;
