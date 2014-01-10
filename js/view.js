@@ -537,6 +537,10 @@ var view = function() {
             if (HideZeroSeed && v.seeds === 0) {
                 return true;
             }
+            if (v.title.length === 0) {
+                console.error('Item in tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
+                return true;
+            }
             if (TeaserFilter === 1 && teaser_filter(v.title + v.category.title) === 1) {
                 return true;
             }
@@ -545,13 +549,6 @@ var view = function() {
             }
             if ((/^[\s|\t]+/).test(v.category.title)) {
                 v.category.title = $.trim(v.category.title);
-            }
-            if (v.category.title !== null && v.category.title.length === 0) {
-                v.category.title = null;
-            }
-            if (v.title.length === 0) {
-                console.error('Item in tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
-                return true;
             }
             var title = syntax_highlighting(v.title);
             sum++;
