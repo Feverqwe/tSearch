@@ -562,7 +562,11 @@ var view = function() {
             }
             var advFilter = [0, 0, 0, 0, 0];
             if (keywordFilter !== null) {
-                if (title !== calcKeywordFilter(keyword_filter_cache.result_filter_input, title))
+                var tmp_title = title;
+                if (SubCategoryFilter && v.category.title !== null) {
+                    tmp_title += ' ' + v.category.title;
+                }
+                if (tmp_title !== calcKeywordFilter(keyword_filter_cache.result_filter_input, tmp_title))
                     advFilter[0] = 1;
             }
             if (sizeFilter !== null) {
