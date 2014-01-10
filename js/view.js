@@ -537,10 +537,6 @@ var view = function() {
             if (HideZeroSeed && v.seeds === 0) {
                 return true;
             }
-            if (v.title.length === 0) {
-                console.error('Item in tracker ' + tracker[t].name + ' have critical problem! Torrent skipped!', v);
-                return true;
-            }
             if (TeaserFilter === 1 && teaser_filter(v.title + v.category.title) === 1) {
                 return true;
             }
