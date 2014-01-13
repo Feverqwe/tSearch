@@ -26,6 +26,7 @@ function getExtId() {
                 return;
             }
         }
+        chrome.tabs.create({url: 'https://chrome.google.com/webstore/detail/pakhafflipopfhfmnbhoocpkcdjfpphc'});
         ext_id = def_id;
         return;
     });
