@@ -77,6 +77,7 @@ $(function() {
         chrome.tabs.create({
             url: 'index.html#s=' + $(this).children('input[type="text"]').val()
         });
+        window.close();
     });
     $('form[name="search"]').children('div.btn.clear').on("click", function(event) {
         event.preventDefault();
