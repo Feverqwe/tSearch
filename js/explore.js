@@ -431,7 +431,7 @@ var explore = function() {
             c = view.contentFilter(c);
             var mt = view.load_in_sandbox(null, c);
 
-            var t = mt.find('#rhs_block').find('div.kno-ec.rhsvw.vk_rhsc').eq(0).children('div');
+            var t = mt.find('#rhs_block').find('.rhsvw.kno-inline').eq(0).children('div');
 
             if (t.length === 0) {
                 return;
@@ -440,8 +440,9 @@ var explore = function() {
             t.find('span.kno-fm.fl.q').remove();
 
             var obj = t.find('a');
-            if (obj.length === 0)
+            if (obj.length === 0) {
                 return;
+            }
             for (var i = 0; i < obj.length; i++) {
                 if (obj.eq(i).attr('href') === undefined)
                     continue;
@@ -450,7 +451,8 @@ var explore = function() {
                 obj.eq(i).attr('target', '_blank');
             }
             var imgs = t.find('img');
-            for (var i = 0; i < imgs.length; i++) {
+            var imgs_len = imgs.length;
+            for (var i = 0; i < imgs_len; i++) {
                 var par_href = decodeURIComponent(imgs.eq(i).parent('a').attr('href'));
                 if (par_href === "undefined")
                     continue;
@@ -465,34 +467,42 @@ var explore = function() {
             }
             var info = {};
             var google_proxy = (!_google_proxy) ? "" : "https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=400&rewriteMime=image/jpeg&url=";
-            info['img'] = t.find('a.bia.uh_rl').eq(0).children('img').attr('src');
-            info['title'] = t.find('div.kno-ecr-pt').html();
-            info['type'] = t.find('div.kno-ecr-st').html();
-            info['desc'] = t.find("div.kno-desc").html();
-            info['table'] = t.find('table.kno-fs').html();
-            var content_info = '';
+            info.img = t.find('a.bia.uh_rl').eq(0).children('img').attr('src');
+            info.title = t.find('div.kno-ecr-pt').text();
+            info.type = t.find('div.kno-ecr-st').text();
+            var dom_desc = t.find('div.kno-desc');
+            info.desc_link_title = dom_desc.find('.kno-desca-lnk').eq(0).text();
+            info.desc_link = dom_desc.find('.kno-desca-lnk').eq(0).attr('href');
+            if (info.desc_link !== undefined) {
+                info.desc_link = $('<a>', {href: view.contentUnFilter(info.desc_link), text: info.desc_link_title});
+            } else {
+                info.desc_link = '';
+            }
+            dom_desc.find('.kno-desca-lnk').remove();
+            info.desc = dom_desc.text();
+            info.other = t.find('div.kno-f.kno-fb-ctx');
+            var content_info = $('<div>');
             if (info.title === undefined || info.desc === undefined) {
                 return '';
             }
             if (info.img !== undefined) {
-                content_info += '<div class="a-poster"><img src="' + google_proxy + info.img + '" /></div>';
+                content_info.append($('<div>', {'class': 'a-poster'}).append($('<img>', {src: google_proxy + view.contentUnFilter(info.img)})));
             }
             if (info.title !== undefined) {
-                content_info += '<div class="a-title">' + info.title + '</div>';
+                content_info.append($('<div>', {'class': 'a-title', text: info.title}));
             }
             if (info.type !== undefined) {
-                content_info += '<div class="a-type">' + info.type + '</div>';
+                content_info.append($('<div>', {'class': 'a-type', text: info.type}));
             }
             if (info.desc !== undefined) {
-                content_info += '<div class="a-desc">' + info.desc + '</div>';
+                content_info.append($('<div>', {'class': 'a-desc', text: info.desc}).append(info.desc_link));
             }
-            if (info.table !== undefined) {
-                content_info += '<div class="a-table">' + info.table + '</div>';
+            for (var i = 0, item; item = info.other[i]; i++) {
+                var k = $(item).children('.kno-fh').text();
+                var v = $(item).children('.kno-fv').text();
+                content_info.append($('<div>', {'class': 'a-table'}).append($('<span>', {'class': 'key', text: k}), $('<span>', {'class': 'value', text: v})));
             }
-            if (content_info.length > 0)
-                return view.contentUnFilter('<div>' + content_info + '</div>');
-            else
-                return '';
+            return content_info;
         };
         var KinopoiskFav = function(c) {
             c = view.contentFilter(c);
@@ -1983,7 +1993,7 @@ var explore = function() {
             url: url,
             success: function(data) {
                 var content = read_content(type, data);
-                ab_panel.html(content);
+                ab_panel.empty().append(content);
             }
         });
     };
