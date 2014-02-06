@@ -488,7 +488,9 @@ var explore = function() {
                 return '';
             }
             if (info.img !== undefined) {
-                content_info.append($('<div>', {'class': 'a-poster'}).append($('<img>', {src: google_proxy + view.contentUnFilter(info.img)})));
+                content_info.append($('<div>', {'class': 'a-poster'}).append($('<img>', {src: google_proxy + view.contentUnFilter(info.img)}).on('error', function(){
+                    $(this).css('display', 'none');
+                })));
             }
             if (info.title !== undefined) {
                 content_info.append($('<div>', {'class': 'a-title', text: info.title}));

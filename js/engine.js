@@ -673,12 +673,9 @@ var ex_kit = function() {
     }
     function month_replace(t) {
         return t.toLowerCase().replace(/янв/, '1').replace(/фев/, '2').replace(/мар/, '3')
-                .replace(/апр/, '4').replace(/мая/, '5').replace(/июн/, '6')
+                .replace(/апр/, '4').replace(/ма(я|й)/, '5').replace(/июн/, '6')
                 .replace(/июл/, '7').replace(/авг/, '8').replace(/сен/, '9')
                 .replace(/окт/, '10').replace(/ноя/, '11').replace(/дек/, '12')
-                //fix
-                .replace(/май/, '5')
-                //<fix
                 .replace(/jan/, '1').replace(/feb/, '2').replace(/mar/, '3')
                 .replace(/apr/, '4').replace(/may/, '5').replace(/jun/, '6')
                 .replace(/jul/, '7').replace(/aug/, '8').replace(/sep/, '9')
