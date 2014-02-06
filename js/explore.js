@@ -481,7 +481,7 @@ var explore = function() {
                 info.desc_link = '';
             }
             info.desc = dom_desc.text();
-            info.other = t.find('div.kno-f.kno-fb-ctx');
+            info.other = t.find('div.kno-fb-ctx');
             var content_info = $('<div>');
             if (info.title.length === 0 || info.desc.length === 0) {
                 return '';
@@ -499,8 +499,9 @@ var explore = function() {
                 content_info.append($('<div>', {'class': 'a-desc', text: info.desc}).append(info.desc_link));
             }
             for (var i = 0, item; item = info.other[i]; i++) {
-                var k = $(item).children('.kno-fh').text();
-                var v = $(item).children('.kno-fv').text();
+                var val = $(item).children('.kno-fv');
+                var k = val.prev().text();
+                var v = val.text();
                 content_info.append($('<div>', {'class': 'a-table'}).append($('<span>', {'class': 'key', text: k}), $('<span>', {'class': 'value', text: v})));
             }
             return content_info;
