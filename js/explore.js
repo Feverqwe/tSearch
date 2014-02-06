@@ -470,19 +470,20 @@ var explore = function() {
             info.img = t.find('a.bia.uh_rl').eq(0).children('img').attr('src');
             info.title = t.find('div.kno-ecr-pt').text();
             info.type = t.find('div.kno-ecr-st').text();
-            var dom_desc = t.find('div.kno-desc');
-            info.desc_link_title = dom_desc.find('.kno-desca-lnk').eq(0).text();
-            info.desc_link = dom_desc.find('.kno-desca-lnk').eq(0).attr('href');
+            var dom_desc = t.find('div.kno-rdesc');
+            info.desc_link_a = dom_desc.find('a').eq(-1);
+            info.desc_link_title = info.desc_link_a.text();
+            info.desc_link = info.desc_link_a.attr('href');
             if (info.desc_link !== undefined) {
                 info.desc_link = $('<a>', {href: view.contentUnFilter(info.desc_link), text: info.desc_link_title});
+                info.desc_link_a.remove();
             } else {
                 info.desc_link = '';
             }
-            dom_desc.find('.kno-desca-lnk').remove();
             info.desc = dom_desc.text();
             info.other = t.find('div.kno-f.kno-fb-ctx');
             var content_info = $('<div>');
-            if (info.title === undefined || info.desc === undefined) {
+            if (info.title.length === 0 || info.desc.length === 0) {
                 return '';
             }
             if (info.img !== undefined) {
