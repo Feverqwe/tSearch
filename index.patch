@@ -1,6 +1,6 @@
 --- index.html	2013-04-17 08:05:51.000000000 +0600
 +++ p_index.html	2013-04-17 12:27:40.000000000 +0600
-@@ -5,19 +5,10 @@
+@@ -5,20 +5,10 @@
          <meta charset="utf-8" />
          <link rel="shortcut icon" href="images/icon_16.png">
          <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
@@ -11,6 +11,7 @@
 -        <script src="js/apprise-1.5.js"></script>
 -        <script src="js/storage.js"></script>
 -        <script src="js/lang.js"></script>
+-        <script src="js/ex_kit.js"></script>
          <script src="js/torrent_lib.js"></script>
 -        <script src="js/engine.js"></script>
          <script src="js/view.js"></script>

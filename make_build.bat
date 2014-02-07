@@ -47,7 +47,7 @@ java -jar compiler.jar --js .\build\js\torrent_lib_patched.js --js .\tracker\ani
 del .\build\js\torrent_lib_patched.js
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\background.js --js_output_file .\build\js\background.js
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\history.js --js_output_file .\build\js\history.js
-java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\js\counter.js --js_output_file .\build\js\view.js
+java -jar compiler.jar --js .\js\jquery.tablesorter.js --js .\js\apprise-1.5.js --js .\js\storage.js --js .\js\lang.js --js .\js\ex_kit.js --js .\js\engine.js --js .\js\view.js --js .\js\explore.js --js .\js\ad.js --js .\js\counter.js --js_output_file .\build\js\view.js
 java -jar compiler.jar --js .\js\storage.js --js .\js\lang.js --js .\js\magic.js --js_output_file .\build\js\magic.js
 java -jar compiler.jar --js .\js\lz-string-1.3.3.js --js .\js\storage.js --js .\js\lang.js --js .\js\engine.js --js .\js\options.js --js_output_file .\build\js\options.js
 
