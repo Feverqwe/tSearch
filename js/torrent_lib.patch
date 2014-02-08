@@ -1,8 +1,6 @@
---- torrent_lib.js	2013-04-17 10:36:00.000000000 +0600
-+++ p_torrent_lib.js	2013-04-17 10:36:27.000000000 +0600
 @@ -1,2 +1,2 @@
- var torrent_lib=[];
--var compression=0;
+ window.torrent_lib = [];
+-window.torrent_lib_min = 0;
 \ No newline at end of file
-+var compression=1;
++window.torrent_lib_min = 1;
 \ No newline at end of file

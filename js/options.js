@@ -654,6 +654,11 @@ var options = function() {
             set_place_holder();
             load_costume_torrents();
             updateProfileList(parseInt(GetSettings('defProfile') || 0));
+            if (window.torrent_lib_min === 0) {
+                setTimeout(function(){
+                    updateProfileList(parseInt(GetSettings('defProfile') || 0));
+                }, 50);
+            }
 
             //backup >>>>>>>>>>>>>>>>>>
             $('div.backup_form div').children('a.backup_tab').on("click", function(e) {
