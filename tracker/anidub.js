@@ -37,8 +37,8 @@ torrent_lib.anidub = function () {
             return Math.round((new Date(parseInt(dd[0]), parseInt(dd[1]) - 1, parseInt(dd[2]), parseInt(dd[3]), parseInt(dd[4]), parseInt(dd[5]))).getTime() / 1000);
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('table.main').eq(1).children('tbody').children('tr').children('td').children('table');
             var l = t.length;
             var arr = [];

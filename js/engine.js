@@ -1,6 +1,7 @@
 var engine = function() {
+    var isFF = window.Application !== undefined && Application.name === "Firefox";
     var currentTrList = {};
-    var profileList = {};
+    var profileList = JSON.parse(GetSettings('trackerProfiles') || "{}");
     var getDefaultList = function () {
         var list;
         if (_lang.t === "ru") {
@@ -74,8 +75,8 @@ var engine = function() {
                     tests[5] = 1;
                 }
                 var readCode = function(c) {
-                    c = view.contentFilter(c);
-                    var t = view.load_in_sandbox(id, c);
+                    c = contentFilter(c);
+                    var t = load_in_sandbox(c);
 
                     if (ex_auth_f === 1) {
                         if ((t.find(me.auth_f)).length !== 0) {
@@ -346,11 +347,14 @@ var engine = function() {
         /*
          * загрузка профиля
          */
+        if (title === undefined) {
+            title = GetSettings('currentProfile');
+        }
         loadTrList(profileList[title]);
         SetSettings('currentProfile', title);
     };
     var getProfileList = function() {
-        return JSON.parse(GetSettings('trackerProfiles') || "{}");
+        return profileList;
     };
     var search = function(text, tracker_id, nohistory) {
         /*
@@ -416,7 +420,51 @@ var engine = function() {
         SetSettings('history', JSON.stringify(historyList));
         //view.AddAutocomplete();
     };
+    var contentFilter = function(content) {
+        return content.replace(/\/\//img, '//about:blank#blockurl#').replace(/ src=(['"]?)/img, ' src=$1data:image/gif,base64#blockrurl#');
+    };
+    var contentUnFilter = function(content) {
+        return content.replace(/data:image\/gif,base64#blockrurl#/mg, '').replace(/\/\/about:blank#blockurl#/mg, '//');
+    };
+    if (isFF) {
+        var parseHTML = function(doc, html, allowStyle, baseURI, isXML) {
+            var PARSER_UTILS = "@mozilla.org/parserutils;1";
+
+            // User the newer nsIParserUtils on versions that support it.
+            if (PARSER_UTILS in Components.classes) {
+                var parser = Components.classes[PARSER_UTILS]
+                    .getService(Components.interfaces.nsIParserUtils);
+                if ("parseFragment" in parser)
+                    return parser.parseFragment(html, allowStyle ? parser.SanitizerAllowStyle : 0,
+                        !!isXML, baseURI, doc.documentElement);
+            }
+
+            return Components.classes["@mozilla.org/feed-unescapehtml;1"]
+                .getService(Components.interfaces.nsIScriptableUnescapeHTML)
+                .parseFragment(html, !!isXML, baseURI, doc.documentElement);
+        };
+    }
+    var load_in_sandbox = function(content) {
+        var $safe_content;
+        if (isFF) {
+            content = content.replace(/href=/img, "data-href=");
+            var safe_content = parseHTML(document, content);
+            $safe_content = $('<html>').append(safe_content);
+            var links = $safe_content.find('a');
+            for (var n = 0, links_len = links.length; n < links_len; n++) {
+                var link = links.eq(n);
+                link.attr('href', link.attr('data-href')).removeAttr('data-href');
+            }
+        } else {
+            $safe_content = $($.parseHTML(content));
+        }
+        return $safe_content;
+    };
     return {
+        //need modules
+        contentFilter: contentFilter,
+        contentUnFilter: contentUnFilter,
+        load_in_sandbox: load_in_sandbox,
         //need view and options
         loadProfile: loadProfile,
         //need view
@@ -426,5 +474,5 @@ var engine = function() {
         getDefList: function () {
             return wrapAllCustomTrList(getDefaultList());
         }
-    };
+    }
 }();

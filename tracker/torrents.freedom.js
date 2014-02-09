@@ -43,8 +43,8 @@ torrent_lib['torrents.freedom'] = function () {
             return Math.round((new Date(parseInt('20' + date[2]), parseInt(date[1]) - 1, parseInt(date[0]), parseInt(time[0]), parseInt(time[1]))).getTime() / 1000);
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             if (t.find('input[name="login_username"]').length) {
                 view.auth(0, filename);
                 return [];

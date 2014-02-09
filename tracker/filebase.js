@@ -36,8 +36,8 @@ torrent_lib.filebase = function () {
             return Math.round(new Date(parseInt('20' + dd[2]), parseInt(dd[1]) - 1, parseInt(dd[0])).getTime() / 1000);
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('td.lista2').parent('tr').parent('tbody').children('tr');
             var l = t.length;
             var arr = [];

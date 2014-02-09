@@ -50,8 +50,8 @@ torrent_lib.torrentz = function () {
             return 0;
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('dl').parent('div.results').children('dl');
             var l = t.length;
             var arr = [];

@@ -38,8 +38,8 @@ torrent_lib['fast-torrent'] = function () {
             return t;
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('table.list').children('tbody').children('tr[height="1%"]');
             var l = t.length;
             var arr = [];

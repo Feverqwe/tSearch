@@ -61,8 +61,8 @@ torrent_lib.bitsnoop = function () {
             return 0;
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('#torrents').children('li');
             var l = t.length;
             var arr = [];

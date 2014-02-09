@@ -147,9 +147,9 @@ torrent_lib.kinozal = function () {
             return ex_kit.format_date(1, t);
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
+            c = engine.contentFilter(c);
             var ver = 1;
-            var t = view.load_in_sandbox(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('table.mn2').eq($(c).find('table.mn2').length - 1).children('tbody').children('tr');
             if (t.length === 0) {
                 ver = 2;

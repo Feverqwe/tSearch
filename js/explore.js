@@ -283,8 +283,8 @@ var explore = function() {
             return i;
         };
         var Films = function(c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(null, c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('div.filmsListNew').children('div.item');
             t.find('div.threeD').remove();
             var l = t.length;
@@ -312,8 +312,8 @@ var explore = function() {
             return arr;
         };
         var Serials = function(c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(null, c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('#itemList').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
@@ -340,8 +340,8 @@ var explore = function() {
             return arr;
         };
         var Games = function(c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(null, c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('div.play-list-02').children('div.one.p-rel');
             var l = t.length;
             var arr = [];
@@ -373,8 +373,8 @@ var explore = function() {
                 }
                 return url = content_sourse[type].root_url + url.replace('/small_img', '/medium_img');
             };
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(null, c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('td.enc-box-list').children('div.enc-item');
             var l = t.length;
             var arr = [];
@@ -400,8 +400,8 @@ var explore = function() {
             return arr;
         };
         var TopFilms = function(c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(null, c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('div.stat').children('div.el');
             var l = t.length;
             var arr = [];
@@ -428,8 +428,8 @@ var explore = function() {
             return arr;
         };
         var About = function(c) {
-            c = view.contentFilter(c);
-            var mt = view.load_in_sandbox(null, c);
+            c = engine.contentFilter(c);
+            var mt = engine.load_in_sandbox(c);
 
             var t = mt.find('#rhs_block').find('.rhsvw.kno-inline').eq(0).children('div');
 
@@ -510,8 +510,8 @@ var explore = function() {
             return content_info;
         };
         var KinopoiskFav = function(c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(null, c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             if (t.find('#login').length > 0) {
                 return '';
             }
@@ -547,8 +547,8 @@ var explore = function() {
             return arr;
         };
         var imdb_Films = function(c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(null, c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('table.nm-title-overview-widget-layout');
             var l = t.length;
             var arr = [];
@@ -578,8 +578,8 @@ var explore = function() {
             return arr;
         };
         var imdb_TopFilms = function(c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(null, c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('table.results').children('tbody').children('tr.detailed');
             var l = t.length;
             var arr = [];
@@ -614,8 +614,8 @@ var explore = function() {
             return arr;
         };
         var imdb_Serials = function(c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(null, c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('table.results').children('tbody').children('tr.detailed');
             var l = t.length;
             var arr = [];

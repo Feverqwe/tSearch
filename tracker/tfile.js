@@ -36,8 +36,8 @@ torrent_lib.tfile = function () {
             return -1;
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             var t = t.find('#topics>tbody>tr');
             var l = t.length;
             var arr = [];

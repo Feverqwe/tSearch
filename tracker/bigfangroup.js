@@ -38,8 +38,8 @@ torrent_lib.bigfangroup = function () {
             return -1;
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('#releases-table').children('table.embedded').children('tbody#highlighted').children('tr');
             var l = t.length;
             var arr = [];

@@ -57,8 +57,8 @@ torrent_lib.kickass = function () {
             return nowTS;
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('table.data').children('tbody').children('tr');
             var l = t.length;
             var arr = [];

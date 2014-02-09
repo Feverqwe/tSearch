@@ -22,8 +22,8 @@ torrent_lib.btdigg = function () {
             return Math.round((new Date()).getTime() / 1000) - old;
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('#search_res').children('table').children('tbody').children('tr');
             var hash = 0;
             if (t.length == 0) {

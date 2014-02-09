@@ -38,9 +38,9 @@ torrent_lib.rutracker = function () {
             return -1;
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
+            c = engine.contentFilter(c);
             //var t = $(c);//.contents();
-            var t = view.load_in_sandbox(c);
+            var t = engine.load_in_sandbox(c);
             if (t.find('input[name="login_username"]').length) {
                 view.auth(0, filename);
                 return [];

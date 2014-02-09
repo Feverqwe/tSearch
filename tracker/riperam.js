@@ -47,8 +47,8 @@ torrent_lib.riperam = function () {
             return Math.round((new Date(parseInt(dd[2]), parseInt(dd[1]) - 1, parseInt(dd[0]), parseInt(dd[3]), parseInt(dd[4]))).getTime() / 1000);
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             if (t.find('#message > div.inner').length > 0 && t.find('#message > div.inner > p').text().indexOf('попробуйте чуть позже') > 0) {
                 view.auth(0, filename);
                 return [];

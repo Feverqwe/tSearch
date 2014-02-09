@@ -44,8 +44,8 @@ torrent_lib.opensharing = function () {
             return Math.round((new Date(parseInt(year), parseInt(month) - 1, parseInt(date))).getTime() / 1000)
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             t = t.find('#index').children('table').children('tbody').children('tr');
             var l = t.length;
             var arr = [];

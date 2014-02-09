@@ -34,8 +34,8 @@ torrent_lib['free-torrents'] = function () {
             return -1;
         };
         var readCode = function (c) {
-            c = view.contentFilter(c);
-            var t = view.load_in_sandbox(c);
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
             if (t.find('#register_link').length) {
                 view.auth(0, filename);
                 return [];
