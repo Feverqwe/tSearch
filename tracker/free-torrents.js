@@ -1,7 +1,6 @@
-torrent_lib.push(function () {
+torrent_lib['free-torrents'] = function () {
     var name = 'FreeTorrents';
     var filename = 'free-torrents';
-    var id = null;
     var icon = 'data:image/x-icon;base64,AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAQAEAAAAAAAAAAAAAAAEAAAAAAADhkBUAHLUAAB+4AAAhugAA/cgxAB22AAAlvgAA6J4cAOmfHQD4viwAKsMAACS9AAD8xzAA5JUYAOWXGQDnnBsA/MUwAOSXGAD8xjAAE6wAAOKSFgApwgAAM8wAADHKAAAvyAAAILkAAOOUFwDrpB8AFK0AAOKTFgDlmBkA/8wzAACZAADMZgAAAAAAAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiIhISEhISIiIiIiIiIiIiIhAA8PISIiIiIiIiIiIiIhABAHISIiIiIiIiIiIiIhAAwPISIiIiIiIiIiIiIhAAQPISIiIiIiIiIiIiIhAAQPISIgICAgICIiIiIiIiEeHwchIiADAwUgIiIiIiIiIQ4fFCEiIAMWBSAiIiIiIiIhER8aISIgAxYBICIiIiIiIiENDx0hIiADGAEgIiIiIiIiISEhISEiIAIYASAiIiIiIiIiIiIiIAMYGSAiIiIiIiIiIiIiIAMYAiAiIiIiIiIiIiIiIAMYAyAiIiIiIiIiIiIiIAMDAyAiIiIiIiIiIiIiICAgICAiIiIiIvg/AADwfwAA4P8AAMH/AACD/wAABB8AAIIPAADBBwAA4IMAAPBBAAD4IAAA/8EAAP+DAAD/BwAA/g8AAPwfAAA%3D';
     var login_url = 'http://login.free-torrents.org/forum/login.php';
     var url = 'http://tr.free-torrents.org/forum/tracker.php';
@@ -36,12 +35,12 @@ torrent_lib.push(function () {
         };
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = view.load_in_sandbox(id, c);
+            var t = view.load_in_sandbox(c);
             if (t.find('#register_link').length) {
-                view.auth(0, id);
+                view.auth(0, filename);
                 return [];
             }
-            view.auth(1, id);
+            view.auth(1, filename);
             t = t.find('#main_content_wrap').children('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
@@ -75,11 +74,11 @@ torrent_lib.push(function () {
                 url: url + '?nm=' + ex_kit.in_cp1251(text),
                 cache: false,
                 success: function (data) {
-                    view.result(id, readCode(data), t);
+                    view.result(filename, readCode(data), t);
                 },
                 error: function () {
-                    view.loadingStatus(2, id);
-                    view.auth(0, id);
+                    view.loadingStatus(2, filename);
+                    view.auth(0, filename);
                 }
             });
         };
@@ -96,10 +95,6 @@ torrent_lib.push(function () {
         find: function (a) {
             return find(a);
         },
-        setId: function (a) {
-            id = a;
-        },
-        id: id,
         login_url: login_url,
         name: name,
         icon: icon,
@@ -109,4 +104,4 @@ torrent_lib.push(function () {
         flags: flags,
         tests: [0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
-}());
+}();

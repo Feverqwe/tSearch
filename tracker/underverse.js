@@ -1,7 +1,6 @@
-torrent_lib.push(function () {
+torrent_lib.underverse = function () {
     var name = 'Underverse';
     var filename = 'underverse';
-    var id = null;
     var icon = 'data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAABMLAAATCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAEMD1saDA9iSAsPVmQICjx9BQgxiRYWN4FISUtpYV5YUEdFQjIODQwOAAAAAgAAAAAAAAAAAAAAAgAAAAYAAAARAAAAKAsLOIAhIYrhQkDK+1RS0/2imbH3mpKO6GdiYK4EBARFAAAAIgAAAA0AAAAEAAAAAQAAAAIAAAAIAAAAGx0eo5U8PN76SUrl/k9S7P9jZfP/iov2/+/t+P//+ff/6N/c73Ruam8AAAAnAAAADgAAAAIAAAACAAAABygqwoRFRuP3Nzni/yks5/9HSvH/T1P0/1FX9v9aX/f/4934//759v7u4971WVNShQAAACEAAAACAAAAASIkmixCROTvJCbc/hof4P8wNer/QUbu/zI57v8uNe//Lzbw/zU+8v/o4/P//O/p/ZCKiu8lJCRnAAAABAAAAAQvM9CQJSfd/Rof2/8eJOD/KzHm/ygv5/8aIuf/Exvo/xQe6f8wOev/7ubu//fn4f96d3j7Z19f1gMDAxUAAAAKJine2B0j2/4fJdz/GiHe/xoj4v8aJOL/GiLi/xgg4v9DS+T/1tHl//Hm4f+ompX/MTE1/VBQVfI1NTU3AgVMFiUt4OofJ9z/GSHb/xQb2/8pMt7/KzTe/zhA3v+Ymt//3dvd/9fRzf+MhoP/QkJF/zMzOP5HR073cXByVAECHhE7QuPfISnd/hEa2v80PN3/QEje/3R42//Ozdn/u7u7/4mIiP5eXl7/WVla/1tbXv5QUFT9TExT8ZOTlUoAAAAIUVfhshsm3vwTHt7+a3Lg/7Kw3P/BvLr/jo2N/nNzc/5wcG/9bm5u/nBwcf50dHf9eHh89l1dY9aqqastAAAAAnd72Vs6ReftISve/drU3v6sqaf/lZWV/pCQkPyMjIv7iYmJ/YiIif6Li4z+j4+S9pOTluORkZaUl5eZEAAAAABcX4MOmaP4xoGC6Pnl3tT+rq6u/K2trP2pqan8pqam/6SkpP+lpaX+qKip/aqqq/OurrGprayvLwAAAAAAAAAAAAAAAdHR82nEy/vc+/fw+NHR0vXGxsb1wcHB9cDAwPfBwcH4w8PD9sTExfLExMWrsbGzL3Z2eAkAAAAAAAAAAAAAAAEAAAAB6ejvZfv6/MH+/f3c6uvs4uDg4OLd3d3h3Nzc2Nvb3M7d3d2a1tbWNIODhgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALRzckj/fz8lf/+/sT+/v7A/Pz8pfb29oj09PVezMvMJ42NjgwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoaGhAdDQ0AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/n8AAPAfAADgDwAAwAMAAMADAACAAQAAgAEAAIABAACAAQAAgAEAAMABAADAAwAA4AcAAPAPAAD4P////////w%3D%3D';
     var url = 'http://underverse.su/tracker.php';
     var root_url = 'http://underverse.su/';
@@ -40,7 +39,7 @@ torrent_lib.push(function () {
         };
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = view.load_in_sandbox(id, c);
+            var t = view.load_in_sandbox(c);
             t = t.find('#main_content_wrap').children('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
@@ -74,10 +73,10 @@ torrent_lib.push(function () {
                 url: url + '?nm=' + ex_kit.in_cp1251(text),
                 cache: false,
                 success: function (data) {
-                    view.result(id, readCode(data), t);
+                    view.result(filename, readCode(data), t);
                 },
                 error: function () {
-                    view.loadingStatus(2, id);
+                    view.loadingStatus(2, filename);
                 }
             });
         };
@@ -94,10 +93,6 @@ torrent_lib.push(function () {
         find: function (a) {
             return find(a);
         },
-        setId: function (a) {
-            id = a;
-        },
-        id: id,
         name: name,
         icon: icon,
         about: about,
@@ -106,4 +101,4 @@ torrent_lib.push(function () {
         flags: flags,
         tests: [0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
-}());
+}();

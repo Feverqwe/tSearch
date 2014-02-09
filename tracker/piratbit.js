@@ -1,7 +1,6 @@
-torrent_lib.push(function () {
+torrent_lib.piratbit = function () {
     var name = 'Piratbit';
     var filename = 'piratbit';
-    var id = null;
     var icon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACf0lEQVR4nI2SW0gUYRTH//ON3+yszbQ7rutqu6WRj3ZRS0iQIozeIrAeJAqD8iGiICOIiJLAXpKoB4uIejHMZAoqCKR9atNIKizwEhWuPmRpq3tx19n55vt6CKWLt/N4Lj/O/5y/hBVEyNQIheIjkDcTkICBvMibusEoAEhLDQZNzZAh72WwD0ggVIHSQUGffKr7HpvrWRAQMnU/g91owz6mcHVUZLQWyt3hsYYR+9/evwBrTZ1KIPWzSF8SnECJh5qzY+s7JppfZJfVWWJ6C4Km9iDPlLLBTu/DotaqNXO13Oo7i0qVfg8boSysxxmkKzzcd82aCJz/dnzA0vdcL0x/2HhaZDxbJSKNEEm+J7gTYVMVYh5QYhpKFtbzDNK73FjVR7P6jmj9eMbfeMITMxuewSEQglhcWJsgHI0quVcEd1rYVKUDADkq3OUzSEYA1MiQu6L14xkAcCWLS7Tq8GHYNMomAxCxkM+O65ft7MwFVdUmGHDrTwkKB+9KI7XT4/hPsuTqThY3LD7tl10qq+YD2/tH2y/GaUGPwmaVbiHsIonQu6qL3p4/TrHp9XHw+ykka1WoXyjoVwe8kCYKwyNHPp8BgNxgX3k6Yb+E4G6qaGft2JZWMgeI1k3/lIW8z8t9R3O4a4gzmbBJ/81UT+05AFBLu0OzM2iD4KpMtTYunBtLvjW/af/8dsqG7hp4Xg9A752WPP1NsvGOLusLAFDKHvlJIHIVem8c+tswPB+3LeiD/5J57w0IdkgwcQrC+QGitgLiKRIV1qIAJX9IcpgoFYId5NzeDYkMESK3cyf7CsnKRa0sAYCxbpjYNqlKZ5xSITAoBBtGoiy1Epm/AGvkDrjq7XpKAAAAAElFTkSuQmCC';
     var url = 'http://piratbit.net/tracker.php';
     var root_url = 'http://piratbit.net';
@@ -40,7 +39,7 @@ torrent_lib.push(function () {
         };
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = view.load_in_sandbox(id, c);
+            var t = view.load_in_sandbox(c);
             t = t.find('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
@@ -79,10 +78,10 @@ torrent_lib.push(function () {
                     'nm': text
                 },
                 success: function (data) {
-                    view.result(id, readCode(data), t);
+                    view.result(filename, readCode(data), t);
                 },
                 error: function () {
-                    view.loadingStatus(2, id);
+                    view.loadingStatus(2, filename);
                 }
             });
         };
@@ -99,10 +98,6 @@ torrent_lib.push(function () {
         find: function (a) {
             return find(a);
         },
-        setId: function (a) {
-            id = a;
-        },
-        id: id,
         name: name,
         icon: icon,
         about: about,
@@ -111,4 +106,4 @@ torrent_lib.push(function () {
         flags: flags,
         tests: [0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
-}());
+}();

@@ -1,7 +1,6 @@
-torrent_lib.push(function () {
+torrent_lib.rustorka = function () {
     var name = 'Rustorka';
     var filename = 'rustorka';
-    var id = null;
     var icon = 'data:image/png;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAq41tANG9qwCcck4AmG5JALKQdQDk3dUAnnRRANC9rACWaEIAeUIRAMivmgCDTB4Apn9cAJ50UgCnhWQA9vLtAL6jiwCJWC4As5V5AIxYLgCEUSEApX1aANbDtQDRv7AAgk8fAK6LbQCASh0AqIBjAKuHaABzPwsA1cSzAIFNHQDj2M0Ag00dAJ91UQDAp5IAy7ikAKV7WQDHrpcAx7SfAJVpQgDl3NMAq4NkAJlxTQCFUSQAzrqoANDAsACzlHcApX9gAMmyngB8RRUA0LyrAIVPIgB4QxMAo4BeAOff1QCackwAhlMoAOfb0ACNYDUA6OHYAJNjPQCsiGkA3s/BAJlsRQDFrJgAoXxaAMOokwCSZDsAdzsKAN/VygCTaEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwIAAAAAAEABAAAAAAAAACA2DCwkMS0zRgAAAAAAAAAUPi9DIkguMB4AAAAAAAAADjUAAAAAAD8bAAAAAAAARxUSAAAAAAAaCjIAAAAABkEmAAAAAAAAAAVFNAAAQg0HKAAAAAAAAAAXNyNCAB8IJUQcOQIAKhYDHRELHwAAAAAAOBMpISsEOAAAAAAAAAAAAAAQCTw6GAAAAAAAAAAAAAAAADsZJwAAAAAAAAAAAAAAAAAAPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAD//wAA//8AAOfPAADgDwAA4A8AAOfPAADHxwAAj+MAAA/hAAABAQAA8B8AAPg/AAD8fwAA/v8AAP//AAA%3D';
     var login_url = 'http://rustorka.com/forum/login.php';
     var url = 'http://rustorka.com/forum/tracker.php';
@@ -36,12 +35,12 @@ torrent_lib.push(function () {
         };
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = view.load_in_sandbox(id, c);
+            var t = view.load_in_sandbox(c);
             if (t.find('input[name="login_username"]').length) {
-                view.auth(0, id);
+                view.auth(0, filename);
                 return [];
             } else
-                view.auth(1, id);
+                view.auth(1, filename);
             t = t.find('#main_content_wrap').children('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
@@ -79,10 +78,10 @@ torrent_lib.push(function () {
                     'to': 1
                 },
                 success: function (data) {
-                    view.result(id, readCode(data), t);
+                    view.result(filename, readCode(data), t);
                 },
                 error: function () {
-                    view.loadingStatus(2, id);
+                    view.loadingStatus(2, filename);
                 }
             });
         };
@@ -99,10 +98,6 @@ torrent_lib.push(function () {
         find: function (a) {
             return find(a);
         },
-        setId: function (a) {
-            id = a;
-        },
-        id: id,
         login_url: login_url,
         name: name,
         icon: icon,
@@ -112,4 +107,4 @@ torrent_lib.push(function () {
         flags: flags,
         tests: [0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
-}());
+}();

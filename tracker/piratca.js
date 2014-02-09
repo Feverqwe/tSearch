@@ -1,7 +1,6 @@
-torrent_lib.push(function () {
+torrent_lib.piratca = function () {
     var name = 'Piratca';
     var filename = 'piratca';
-    var id = null;
     var icon = 'data:image/x-icon;base64,AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAABAAAAAAAAAgQGAAQFBgAAAQgABQcKAAYJDgAEBRcACQsQAA8PEwABARsAAwUcAAULGQAHDBgABgkdAA0RFgALEBwAEhgeAAkOLQAMFSIADBsnABIbJwAUGycAEh4sAAgHOAAMET8AEiExABsnMAAQIT4AFys6ABgqOgAbKjwAJSsyACYuPgAoMj0ABwdPABQeRgAHB1MAGCdFABcvSgAcMUIAFzFOABowSQAcMUoAGjFPAB4yTQAeM1sAHj9cACEsQgAgMEMAITlPADA9SwArPlEAIDpZAAkJYQAKD2YACw1sABkcZQAJDXEAHB57ACA9cAAvRFUAJURZAClCWwA2R1EAMkdaACZEYAApSGcALkhlACZGbQA7WG0AL1R9ADJWeQA0Wn0AQUZPAEBKVABQXWkAVl5rAFtiZABUZWsAQWB+AFppdgBSbX8AZWhwAHJzcQAMEIUAExyLAA4XmwAkNIUACw6lAAwapQARF6EAExupAAYZuQAZIa0AFyKyACQtrgAxWosAPUuTADFTlgA/apAAOFyuAExQmABKbYQAUm+AAFhqggBfZ4gAWWCcAEhzkQBReJ8AVH6eAEBwqABFcbYASH+wAEt5vwBOfrwAVmrFAF2AnAB5iJIAToGvAFyEoQBMg7MAWYywAHONpQBhkLkAZZe/AGufwQB8td8AgJKqAJKYoACRn60AhqK8AIGXzgCEo8QAiqvCAIu+ygCesMcAnrTLAIq/3ACfxNYAr9/qALLp9QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///8AAAAAAAAAcGMrSwAAAAAAAAAAAAAAdkISBxRQAAAAAAAAAABNdEIyMx4HHisAAAAAAAAAZz9Oimw0MAQcAAAAAAAAABAAe3tPFhkADQAAAAAAAC9FQUQrDhQFDRs4AAAAAAB6hnd+fRoND0JHJQAAAAAAh0AAPnlmBAAAK0kAAAAAAH+BUT5GSCcTMStLAAAAAACIi4yJeG5gJi4oPAAAAAAAal5dXVY5NhcKBhEAAAAAADpYc4NcWVU3NiIKAAAAAABXWl9hXFlVNzYkEQAAAAAAhWRbVFxZVTc2GCAAAAAAAACEcnJvYjstIx8AAAAAAAAAAACCbGs9IQAAAAAAAPw/AAD4HwAA4A8AAOAPAADgDwAAwAcAAMAHAADABwAAwAcAAMAHAADABwAAwAcAAMAHAADABwAA4A8AAPg/AAA%3D';
     var login_url = 'http://pirat.ca/login.php';
     var url = 'http://pirat.ca/tracker.php';
@@ -41,12 +40,12 @@ torrent_lib.push(function () {
         };
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = view.load_in_sandbox(id, c);
+            var t = view.load_in_sandbox(c);
             if (t.find('input[name="login_username"]').length) {
-                view.auth(0, id);
+                view.auth(0, filename);
                 return [];
             } else
-                view.auth(1, id);
+                view.auth(1, filename);
             t = t.find('#main_content').find('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
@@ -85,10 +84,10 @@ torrent_lib.push(function () {
                     'nm': text
                 },
                 success: function (data) {
-                    view.result(id, readCode(data), t);
+                    view.result(filename, readCode(data), t);
                 },
                 error: function () {
-                    view.loadingStatus(2, id);
+                    view.loadingStatus(2, filename);
                 }
             });
         };
@@ -105,10 +104,6 @@ torrent_lib.push(function () {
         find: function (a) {
             return find(a);
         },
-        setId: function (a) {
-            id = a;
-        },
-        id: id,
         login_url: login_url,
         name: name,
         icon: icon,
@@ -118,4 +113,4 @@ torrent_lib.push(function () {
         flags: flags,
         tests: [0, 0, 0, 0, 0, 0, 0, 0, 0]
     };
-}());
+}();

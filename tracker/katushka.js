@@ -1,7 +1,6 @@
-torrent_lib.push(function () {
+torrent_lib.katushka = function () {
     var name = 'Катушка';
     var filename = 'katushka';
-    var id = null;
     var icon = 'data:image/x-icon;base64,R0lGODlhEAAQAMQAAO7u7oWFhbKysqurq4GBgfr6+pqamn19fZeXl46Ojr29vZOTk5+fn4KCgoeHh6Ghob+/v5iYmIqKivDw8OPj45GRkcXFxXV1dYmJib6+vnx8fIuLi4+Pj5WVlYaGhv///yH5BAAAAAAALAAAAAAQABAAAAWa4Cd+gMJ0HaMAY5s1modhntZk7TdcW+VxHE9lcxmMMheByOLxWESCC25C2LRQrQ1hAtFUWhFEq6KBMALO5UHz/DADjIUk2IkcLBQPohPgYBZydBEaFB8OCQYYG39naW4eAUofFBtwXV8jBgQFIzsZVFaZDZwiDxosSJIWDh4DnBYXCp08PkCHHEU5LzEYEg4HBLI5JCYoKiwjIQA7';
     var url = 'http://katushka.net/torrents/';
     var root_url = 'http://katushka.net';
@@ -48,7 +47,7 @@ torrent_lib.push(function () {
         };
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = view.load_in_sandbox(id, c);
+            var t = view.load_in_sandbox(c);
             t = t.find('div.panel.torrents_list > div.content.after_clear').children('div.torr_block');
             var list = 0;
             if (t.length == 0) {
@@ -105,10 +104,10 @@ torrent_lib.push(function () {
                 url: url + '?tags=&search=' + ex_kit.in_cp1251(text) + '&type_search=groups&incldead=0&sorting=0&type_sort=desc',
                 cache: false,
                 success: function (data) {
-                    view.result(id, readCode(data), t);
+                    view.result(filename, readCode(data), t);
                 },
                 error: function () {
-                    view.loadingStatus(2, id);
+                    view.loadingStatus(2, filename);
                 }
             });
         };
@@ -125,10 +124,6 @@ torrent_lib.push(function () {
         find: function (a) {
             return find(a);
         },
-        setId: function (a) {
-            id = a;
-        },
-        id: id,
         name: name,
         icon: icon,
         about: about,
@@ -137,4 +132,4 @@ torrent_lib.push(function () {
         flags: flags,
         tests: [0, 0, 0, 0, 0, 1, 0, 0, 0]
     }
-}());
+}();

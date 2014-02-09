@@ -1,7 +1,6 @@
-torrent_lib.push(function () {
+torrent_lib['torrents.local'] = function () {
     var name = 'Торрент (уфанет)';
     var filename = 'torrents.local';
-    var id = null;
     var icon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwwAADsMBx2+oZAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAAAh0lEQVQ4T6XTIQvCQByG8SsrNpt1ddm6ajWurVj2uUQQBoJhsDAYDBnsWz2WwQn3hvcw/OI9f3jhAhD+ER9vHeTYD8fAeoMcSeDTQo4k8LvF0oAi9tIDzldQ7MB0AcUOjDUodmA4g2IH3hUoduBVgmIH+hModuB5BMUOPA6g2IF7AYodyPjiX1qi+gcxhCCwAAAAAElFTkSuQmCC';
     var login_url = 'http://torrents.local/forum/login.php';
     var url = 'http://torrents.local/forum/tracker.php';
@@ -35,12 +34,12 @@ torrent_lib.push(function () {
         };
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = view.load_in_sandbox(id, c);
+            var t = view.load_in_sandbox(c);
             if (t.find('input[name="login_username"]').length) {
-                view.auth(0, id);
+                view.auth(0, filename);
                 return [];
             } else
-                view.auth(1, id);
+                view.auth(1, filename);
             t = t.find('#main_content_wrap').children('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
@@ -79,10 +78,10 @@ torrent_lib.push(function () {
                     'nm': text
                 },
                 success: function (data) {
-                    view.result(id, readCode(data), t);
+                    view.result(filename, readCode(data), t);
                 },
                 error: function () {
-                    view.loadingStatus(2, id);
+                    view.loadingStatus(2, filename);
                 }
             });
         };
@@ -99,10 +98,6 @@ torrent_lib.push(function () {
         find: function (a) {
             return find(a);
         },
-        setId: function (a) {
-            id = a;
-        },
-        id: id,
         login_url: login_url,
         name: name,
         icon: icon,
@@ -112,4 +107,4 @@ torrent_lib.push(function () {
         flags: flags,
         tests: [0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
-}());
+}();

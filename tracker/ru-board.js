@@ -1,7 +1,6 @@
-torrent_lib.push(function () {
+torrent_lib['ru-board'] = function () {
     var name = 'ru-board';
     var filename = 'ru-board';
-    var id = null;
     var icon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwwAADsMBx2+oZAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTFH80I3AAACAElEQVQ4T2P4hw2cPnF05cIZK5bMh/KRAHYNy6dO2RRs2xriDuUjAewaJhcmbyuOWJgXfuHCBagQDGDX0J2XNyU6qjs2+vr161AhGEDXcOjggarSwiW+OocdVI/6as+d2AqVgAGEBqDSTdOqlrekzLJX+qAv9ZuJ+Q8v5wlv3Xwvi0ePHkEVQTQA+RE+Hg+XZ71dEv9qqvvUYN2bTExADUDUIcW/qSF0e1/SpuVzIdqgNqxZMvvn1oJ7kwIvpQk/atSd4KUM1ANUPSdIs9lJcdes1lVz+yf0dEE1HNmz+dYU37+rw//sqfx5Zs7jOUn3atQKbeV6QvQ210V+vLju7/MTfz/ePbpzDVTDpPKYRzP9QRq2F/45OeHvw/3/PtzbOanqzqKsvxtTIKasWTB5zYrFUA1AcHD3trZw40dLU0Ea7mxd1ldzr9t+YYn7+/mBS7ItpzXEz5gIcg8QgDS8efOmu6Mzkp+9VIZ9aqrLvNqUM4lc3xYFPNnYuKg2/NnOtn/3Vi+ZOwmh4fbt22FBwR5sLPNlWTYasmzyYH9TxP5jmvXfXSV/j3cD7fx3Y97yGe0IDRBw/vz53tSEfn2es4EsjzJBGkBe2lN5a1XVlnmdQEMhyhAaIACobUpuwu5A9p8T9K7PTlgxqQYoApUDA3QNEHDzwokVUzrRlILAv38AcPBDHc0bg+4AAAAASUVORK5CYII%3D';
     var login_url = 'http://dc.ru-board.com/login.php';
     var url = 'http://dc.ru-board.com/controls/tdata.php';
@@ -81,10 +80,10 @@ torrent_lib.push(function () {
     var web = function () {
         var readCode = function (c) {
             if (c.length === 0) {
-                view.auth(0, id);
+                view.auth(0, filename);
                 return [];
             } else {
-                view.auth(1, id);
+                view.auth(1, filename);
             }
             c = JSON.parse(c);
             if (c.torrents === undefined) {
@@ -133,10 +132,10 @@ torrent_lib.push(function () {
                     }
                 },
                 success: function (data) {
-                    view.result(id, readCode(data), t);
+                    view.result(filename, readCode(data), t);
                 },
                 error: function () {
-                    view.loadingStatus(2, id);
+                    view.loadingStatus(2, filename);
                 }
             });
         };
@@ -153,10 +152,6 @@ torrent_lib.push(function () {
         find: function (a) {
             return find(a);
         },
-        setId: function (a) {
-            id = a;
-        },
-        id: id,
         login_url: login_url,
         name: name,
         icon: icon,
@@ -166,4 +161,4 @@ torrent_lib.push(function () {
         flags: flags,
         tests: [0, 0, 1, 0, 0, 1, 0, 0, 0]
     };
-}());
+}();

@@ -1,7 +1,6 @@
-torrent_lib.push(function () {
+torrent_lib.rgfootball = function () {
     var name = 'rgFootball';
     var filename = 'rgfootball';
-    var id = null;
     var icon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3AkIAyUadlurrgAAA19JREFUOMt9U19sk3UUPb+v29rC9nXDCbIwNxodWZlLs1EIQzDSCaFOVkVgE//MUJEawoYx+ILExAeZDwNnukEcuC2GRSVTOhoU6IiFOcUh0Hb9Q5kjtGtpWtzasa/tpN/1gTBHMJ6ne09ybu45NxeYBZOpY3aLnYZd0vr1+qzZXG9vH/4TJtOXM3V//88Gt9tzrv+81WE+2XvN5fb0WSw/1QIAEaHlYNvD4jb9dgBA97cnltgdTvuI9zp5r9pFc3WdaF5XL454PBQIBMjhdJ06P3T5cQBornkDAMA+rzeisacdlmUblb5F2QPK7XVP+FqOkvZPgR6LJhmTSOhuQS5+WCyBuukd7o+jXzuf8gtrNt7LHJf9/s2/W/Tt3mfzut0UCoXEO3cnxQM1W0Vf9irxRs6zYnPd22IkNiGGw2HRaRsg85Z3Dz7QcQDQV/zcuoJVFauFVErkOEYJQYDc4aNLe3SwvaahvJExkstkNBmPIbNgPi1aoW766unq+QAgAYDlxoZ9C5aWqCGRgGMcrl2+wiQryrC+YRsrWbsGV+JhJuN5yKRSlhAERCcnWUCRMfrj4MUhDgC27jYqr7pcVFJaSslkEol4DLpaPZx2By7abGjY00QXLKcwVz4HxUolknnZ0BkNKgDIAIA00b2FoQlmazFB+M2Owrc2IRgMss7OTigUCrayqgqlUgUGP/sCc4sKkWYErqz875kB49E7DtUG7Vqp4ROaw/P4FWm2QCalTdpqlimXEwEIp6bw8sAoC/U7ITvejEAgdGkmxFha7Djb1gHh1hiTBaIsa9enOPbe+4z4HMQEgXW9uYNVdFnZtM+PVPQv5r/lT7xUu60XANiDc5xoPXJEDnGH4qPDYqBxC1tY8QzFOTAxmSKEIgidvQCVO4jbm5/nbk4njXtbDhwevem/b8Hn8WDYe2Nvuaai0joWrFSqy+hJdTkikQjy8/PB5+ay9jNW8G37WVFpiTlj+Poxw0Qci4sL71s4aTkHfW1N7BfboLZI90KrKzTGxkO3ubx58xgxxtmsVraycWd6Kif7g57j329+ZYN2WrV0CR6ycOhQO6pWL8PySg0+bjUVs67vXle8qlNNDXvTiWRqKEuj6d7/YeN4d3cPeJ6HXv/iox95+vQZ/B+I6BHuH9zfeibCOpt1AAAAAElFTkSuQmCC';
     var url = 'http://rgfootball.net/tracker.php';
     var root_url = 'http://rgfootball.net/';
@@ -34,7 +33,7 @@ torrent_lib.push(function () {
         };
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = view.load_in_sandbox(id, c);
+            var t = view.load_in_sandbox(c);
             t = t.find('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
@@ -71,10 +70,10 @@ torrent_lib.push(function () {
                     'nm': text
                 },
                 success: function (data) {
-                    view.result(id, readCode(data), t);
+                    view.result(filename, readCode(data), t);
                 },
                 error: function () {
-                    view.loadingStatus(2, id);
+                    view.loadingStatus(2, filename);
                 }
             });
         };
@@ -91,10 +90,6 @@ torrent_lib.push(function () {
         find: function (a) {
             return find(a);
         },
-        setId: function (a) {
-            id = a;
-        },
-        id: id,
         name: name,
         icon: icon,
         about: about,
@@ -103,4 +98,4 @@ torrent_lib.push(function () {
         flags: flags,
         tests: [0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
-}());
+}();

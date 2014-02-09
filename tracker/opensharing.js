@@ -1,7 +1,6 @@
-torrent_lib.push(function () {
+torrent_lib.opensharing = function () {
     var name = 'OpenSharing';
     var filename = 'opensharing';
-    var id = null;
     var icon = 'data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAABILAAASCwAAAAAAAAAAAAAAAA8AElrJ/xJayf8SWsn/ElrJ/xJayf8SWsn/ElrJ/xJayf8SWsn/ElrJ/xJayf8SWsn/ElrJ/xJayf8Ah0sAElzL/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/ElzL/xNfzv8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xeB8/8Uduz/FHbs/xeB8/8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xNfzv8TYtH/GIT0/xiE9P8YhPT/GIT0/xd/8f8RaeT///////////8RaeT/F3/x/xiE9P8YhPT/GIT0/xiE9P8TYtH/FGbV/xeB8f8XgfH/F4Hx/xZ87v8QZ+H//////////////////////xBn4f8WfO7/F4Hx/xeB8f8XgfH/FGbV/xRq2f8Xfu7/F37u/xZ56/8QZN7/////////////////////////////////EGTe/xZ56/8Xfu7/F37u/xRq2f8Vbt3/Fnrq/xZ66v8TcOT///////////////////////////////////////////8TcOT/Fnrq/xZ66v8Vbt3/FXLi/xZ25v8Wdub/FXHj/xJo3f8NVdD//////////////////////w1V0P8SaN3/FXHj/xZ25v8Wdub/FXLi/xZ25v8VcuL/FXLi/xVy4v8VcuL/EF/W//////////////////////8QX9b/FXLi/xVy4v8VcuL/FXLi/xZ25v8Weur/FW7d/xVu3f8Vbt3/FW7d/xBc0f//////////////////////EFzR/xVu3f8Vbt3/FW7d/xVu3f8Weur/F37u/xRq2f8Uatn/FGrZ/xRq2f8PWc3//////////////////////w9Zzf8Uatn/FGrZ/xRq2f8Uatn/F37u/xeB8f8UZtX/FGbV/xRm1f8UZtX/D1XK//////////////////////8PVcr/FGbV/xRm1f8UZtX/FGbV/xeB8f8YhPT/E2LR/xNi0f8TYtH/E2LR/xBWyf//////////////////////EFbJ/xNi0f8TYtH/E2LR/xNi0f8YhPT/GIb2/xNfzv8TX87/E1/O/xNfzv8SW8v/EFTG/w5Qw/8OUMP/EFTG/xJby/8TX87/E1/O/xNfzv8TX87/GIb2/xiG9v8SXMv/ElzL/xJcy/8SXMv/ElzL/xJcy/8SXMv/ElzL/xJcy/8SXMv/ElzL/xJcy/8SXMv/ElzL/xiG9v8AzdMAGIb2/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xiG9v8Yhvb/GIb2/xiG9v8AjU4AgAE9sQAAsYAAAEHpAACl1QAAGJ8AAAAmAADRIQAAL7MAAFNAAACvfgAA1c8AAJXOAABlJwAAB60AAGWmgAHAaQ%3D%3D';
     var url = 'http://opensharing.org/newsearch.php';
     var root_url = 'http://opensharing.org';
@@ -46,7 +45,7 @@ torrent_lib.push(function () {
         };
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = view.load_in_sandbox(id, c);
+            var t = view.load_in_sandbox(c);
             t = t.find('#index').children('table').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
@@ -88,10 +87,10 @@ torrent_lib.push(function () {
                 },
                 cache: false,
                 success: function (data) {
-                    view.result(id, readCode(data), t);
+                    view.result(filename, readCode(data), t);
                 },
                 error: function () {
-                    view.loadingStatus(2, id);
+                    view.loadingStatus(2, filename);
                 }
             });
         };
@@ -108,10 +107,6 @@ torrent_lib.push(function () {
         find: function (a) {
             return find(a);
         },
-        setId: function (a) {
-            id = a;
-        },
-        id: id,
         name: name,
         icon: icon,
         about: about,
@@ -120,4 +115,4 @@ torrent_lib.push(function () {
         flags: flags,
         tests: [0, 1, 1, 0, 0, 0, 0, 0, 0]
     }
-}());
+}();

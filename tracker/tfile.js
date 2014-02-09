@@ -1,7 +1,6 @@
-torrent_lib.push(function () {
+torrent_lib.tfile = function () {
     var name = 'tfile';
     var filename = 'tfile';
-    var id = null;
     var icon = 'data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAADksgYAAAD/AAAAAACkpKUA4ODgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMzMzMzMzMzMjIyMjIyMjIzMzMzMzMzMzRERERERERERBFARAQEQABEFEBEBAQERAQUQEQEBARERBRARAQEAAAEFEBEBAQERAERAAQEBEAARBRAREQEREREFEQEBAREREREREREREREQzMzMzMzMzMzIyMjIyMjIyMzMzMzMzMzMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
     var url = 'http://tfile.me/forum/ssearch.php';
     var login_url = 'http://tfile.me';
@@ -38,7 +37,7 @@ torrent_lib.push(function () {
         };
         var readCode = function (c) {
             c = view.contentFilter(c);
-            var t = view.load_in_sandbox(id, c);
+            var t = view.load_in_sandbox(c);
             var t = t.find('#topics>tbody>tr');
             var l = t.length;
             var arr = [];
@@ -73,14 +72,14 @@ torrent_lib.push(function () {
                 url: url + '?q=' + ex_kit.in_cp1251(text),
                 cache: false,
                 success: function (data) {
-                    view.result(id, readCode(data), t);
+                    view.result(filename, readCode(data), t);
                 },
                 error: function () {
-                    view.loadingStatus(2, id);
+                    view.loadingStatus(2, filename);
                 },
                 statusCode: {
                     503: function () {
-                        view.auth(0, id);
+                        view.auth(0, filename);
                     }
                 }
             });
@@ -98,11 +97,7 @@ torrent_lib.push(function () {
         find: function (a) {
             return find(a);
         },
-        setId: function (a) {
-            id = a;
-        },
         login_url: login_url,
-        id: id,
         name: name,
         icon: icon,
         about: about,
@@ -111,4 +106,4 @@ torrent_lib.push(function () {
         flags: flags,
         tests: [0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
-}());
+}();

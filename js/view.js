@@ -1664,19 +1664,19 @@ var view = function() {
                     .parseFragment(html, !!isXML, baseURI, doc.documentElement);
         };
     }
-    var load_in_sandbox = function(id, c) {
+    var load_in_sandbox = function(c) {
+        var t;
         if (isFF) {
-            c = c.replace(/href=/g, "data-href=");
-            var t = parseHTML(document, c);
-            var t1 = $('<html></html>').append(t);
+            c = c.replace(/href=/ig, "data-href=");
+            t = parseHTML(document, c);
+            var t1 = $('<html>').append(t);
             var links = t1.find('a');
-            var links_len = links.length;
-            for (var n = 0; n < links_len; n++) {
-                $(links[n]).attr('href', $(links[n]).attr('data-href')).removeAttr('data-href');
+            for (var n = 0, links_len = links.length; n < links_len; n++) {
+                links.eq(n).attr('href', $(links[n]).attr('data-href')).removeAttr('data-href');
             }
             t = t1;
         } else {
-            var t = $($.parseHTML(c));
+            t = $($.parseHTML(c));
         }
         return t;
     };

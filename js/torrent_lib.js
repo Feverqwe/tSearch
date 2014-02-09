@@ -1,4 +1,4 @@
-window.torrent_lib = [];
+window.torrent_lib = {};
 window.torrent_lib_min = 0;
 (function(){
     if (window.torrent_lib_min === 1) {
