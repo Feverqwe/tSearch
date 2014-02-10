@@ -1,7 +1,7 @@
 var engine = function() {
     var isFF = window.Application !== undefined && Application.name === "Firefox";
     var currentTrList = {};
-    var profileList = JSON.parse(GetSettings('trackerProfiles') || "{}");
+    var profileList = JSON.parse(GetSettings('profileList') || '{}');
     var getDefaultList = function () {
         var list;
         if (_lang.t === "ru") {
@@ -21,7 +21,6 @@ var engine = function() {
         }
         ct = JSON.parse(ct);
         torrent_lib[uid] = function() {
-            var id = undefined;
             var me = $.extend({},ct);
             var icon = (me.icon !== undefined) ? me.icon : '';
             var name = (me.name !== undefined) ? me.name : '-no name-';
@@ -80,10 +79,10 @@ var engine = function() {
 
                     if (ex_auth_f === 1) {
                         if ((t.find(me.auth_f)).length !== 0) {
-                            view.auth(0, id);
+                            view.auth(0, uid);
                             return [];
                         } else {
-                            view.auth(1, id);
+                            view.auth(1, uid);
                         }
                     }
                     t = t.find(me.items);
@@ -267,10 +266,10 @@ var engine = function() {
                         url: me.search_path.replace('%search%', t),
                         cache: false,
                         success: function(data) {
-                            view.result(id, readCode(data), t);
+                            view.result(uid, readCode(data), t);
                         },
                         error: function() {
-                            view.loadingStatus(2, id);
+                            view.loadingStatus(2, uid);
                         }
                     };
                     if (ex_post === 1) {
@@ -283,12 +282,15 @@ var engine = function() {
                     getPage: loadPage
                 };
             }();
-            var find = function(text) {
-                kit.getPage(text);
-            };
             return {
-                find: function(a) {
-                    find(a);
+                find: function(text) {
+                    kit.getPage(text);
+                },
+                stop: function(){
+                    if (xhr !== undefined) {
+                        xhr.abort();
+                    }
+                    //view.loadingStatus(1, uid);
                 },
                 name: name,
                 icon: icon,
@@ -343,27 +345,54 @@ var engine = function() {
             currentTrList[k] = window.torrent_lib[k];
         });
     };
-    var loadProfile = function(title) {
+    var createProfile = function(title) {
+        if (title === undefined) {
+            title = _lang.label_def_profile;
+        }
+        profileList[title] = undefined;
+        SetSettings('profileList', JSON.stringify(profileList));
+        return title;
+    };
+    var loadProfile = function(title, cb) {
         /*
          * загрузка профиля
          */
         if (title === undefined) {
             title = GetSettings('currentProfile');
         }
+        if (title === undefined) {
+            var first;
+            for (var key in profileList) {
+                if (profileList.hasOwnProperty(key) === false) {
+                    continue;
+                }
+                if (first === undefined) {
+                    first = key;
+                }
+            }
+            if (first === undefined) {
+                title = createProfile(title);
+            } else {
+                title = first;
+            }
+        }
         loadTrList(profileList[title]);
         SetSettings('currentProfile', title);
+        if (cb !== undefined) {
+            cb(currentTrList);
+        }
     };
     var getProfileList = function() {
         return profileList;
     };
-    var search = function(text, tracker_id, nohistory) {
+    var search = function(text, trackers, nohistory) {
         /*
          * функция выполняет многопоточный поиск по трекерам
          * text - запрос
          * tracker_id - id трекера, если нету - поиск во всех трекерах в списке.
          * nohistory - если 1 то история не пишется.
          */
-        if (tracker_id === undefined) {
+        if (trackers === undefined || trackers.length === 0) {
             $.each(currentTrList, function(k, tracker) {
                 try {
                     tracker.find(text);
@@ -373,16 +402,23 @@ var engine = function() {
                 }
             });
         } else {
-            try {
-                currentTrList[tracker_id].find(text);
-                view.loadingStatus(0, tracker_id);
-            } catch (err) {
-                view.loadingStatus(2, tracker_id);
-            }
+            trackers.forEach(function(tracker) {
+                try {
+                    view.loadingStatus(0, tracker);
+                    currentTrList[tracker].find(text);
+                } catch (err) {
+                    view.loadingStatus(2, tracker);
+                }
+            });
         }
         if (nohistory === undefined) {
             updateHistory(text);
         }
+    };
+    var stop = function() {
+        $.each(currentTrList, function(k, tracker) {
+            tracker.stop();
+        });
     };
     var updateHistory = function(title) {
         /*
@@ -470,6 +506,7 @@ var engine = function() {
         //need view
         getProfileList: getProfileList,
         search: search,
+        stop: stop,
         //need options:
         getDefList: function () {
             return wrapAllCustomTrList(getDefaultList());

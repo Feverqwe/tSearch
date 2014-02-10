@@ -93,11 +93,13 @@ torrent_lib['ru-board'] = function () {
             var len = c.torrents.length;
             for (var i = 0; i < len; i++) {
                 var item = c.torrents[i];
+                var title = item.name;
+                title = $('<span>', {text: title}).text();
                 arr.push({category: {
                     title: getCatName(item.catid),
                     id: getCat(item.catid)
                 },
-                    title: item.name,
+                    title: title,
                     url: root_url + 'details.php?id=' + item.id,
                     size: item.size,
                     seeds: item.seeders,
@@ -151,6 +153,12 @@ torrent_lib['ru-board'] = function () {
     return {
         find: function (a) {
             return find(a);
+        },
+        stop: function(){
+            if (xhr !== undefined) {
+                xhr.abort();
+            }
+            //view.loadingStatus(1, filename);
         },
         login_url: login_url,
         name: name,

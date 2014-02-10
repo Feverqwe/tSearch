@@ -48,12 +48,14 @@ torrent_lib['fast-torrent'] = function () {
                 var td1 = t.eq(i).prev().children('td');
                 if (td1.eq(1).children('h2').text().length == 0)
                     continue;
+                var title = td1.eq(1).children('h2').text() + calculateQuality(td1.eq(1).children('div.film_controll').children('em.qa-icon').attr('class'));
+                title = $('<span>', {text: title}).text();
                 arr[arr.length] = {
                     'category': {
                         'title': td1.eq(1).children('div[class="genre_list"]').text(),
                         'id': calculateCategory(td1.eq(1).children('div[class="genre_list"]').children('a'))
                     },
-                    'title': td1.eq(1).children('h2').text() + calculateQuality(td1.eq(1).children('div.film_controll').children('em.qa-icon').attr('class')),
+                    'title': title,
                     'url': root_url + td2.eq(2).children('a').attr('href'),
                     'size': 0,
                     'seeds': 1,
@@ -91,6 +93,12 @@ torrent_lib['fast-torrent'] = function () {
     return {
         find: function (a) {
             return find(a);
+        },
+        stop: function(){
+            if (xhr !== undefined) {
+                xhr.abort();
+            }
+            //view.loadingStatus(1, filename);
         },
         name: name,
         icon: icon,

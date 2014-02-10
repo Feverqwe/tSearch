@@ -99,6 +99,12 @@ torrent_lib['nnm-club'] = function () {
         find: function (a) {
             return find(a);
         },
+        stop: function(){
+            if (xhr !== undefined) {
+                xhr.abort();
+            }
+            //view.loadingStatus(1, filename);
+        },
         name: name,
         icon: icon,
         about: about,

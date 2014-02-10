@@ -101,6 +101,12 @@ torrent_lib.inmac = function () {
         find: function (a) {
             return find(a);
         },
+        stop: function(){
+            if (xhr !== undefined) {
+                xhr.abort();
+            }
+            //view.loadingStatus(1, filename);
+        },
         login_url: login_url,
         name: name,
         icon: icon,
