@@ -143,7 +143,7 @@ var view = function() {
         /*
          * очищает результаты поиска, сбрасывает все в ноль
          */
-        dom_cache.result.get(0).textContent = "";
+        dom_cache.tbody.get(0).textContent = "";
         dom_cache.about_panel.empty();
         var_cache.table_dom = [];
         var_cache.table_sort_pos = [];
@@ -456,7 +456,7 @@ var view = function() {
                 if (_id === undefined) {
                     indexs.splice(i,0,id);
                     if (i === 0) {
-                        dom_cache.result.append(item.node);
+                        dom_cache.tbody.append(item.node);
                     } else {
                         list[i-1].node.after(item.node);
                     }
@@ -490,10 +490,10 @@ var view = function() {
     };
     var table_sort = function(colum, by) {
         if (colum === undefined) {
-            colum = 'quality';
+            colum = var_cache.table_sort_colum;
         }
         if (by === undefined) {
-            by = 0;
+            by = var_cache.table_sort_by;
         }
         var_cache.table_sort_by = by;
         var_cache.table_sort_colum = colum;
@@ -649,7 +649,7 @@ var view = function() {
                         $('<span>', {title: quality.value, text: quality.value})
                     )
                 ),
-                $('<td>', {'class': 'name'}).append(
+                $('<td>', {'class': 'title'}).append(
                     $('<div>', {'class': 'title'}).append(
                         $('<a>', {href: item.url, target: "_blank"}).append(title_highLight),
                         (item.category.title === undefined) ? td_icon : ''
@@ -1360,6 +1360,24 @@ var view = function() {
             var_cache.categorys[undefined].li.trigger('click');
         }
     };
+    var setColumSort = function (el) {
+        dom_cache.thead.children().children('th.' + var_cache.table_sort_colum).removeClass('sortDown').removeClass('sortUp');
+        var colum = el.data('type');
+        var by = var_cache.table_sort_by;
+        if (var_cache.table_sort_colum === colum) {
+            by = (by === 1) ? 0 : 1;
+        }
+        if (by === 0) {
+            el.removeClass('sortDown').addClass('sortUp');
+        } else {
+            el.removeClass('sortUp').addClass('sortDown');
+        }
+        table_sort(colum, by);
+        var_cache.table_sort_colum = colum;
+        var_cache.table_sort_by = by;
+        SetSettings('table_sort_colum', colum);
+        SetSettings('table_sort_by', by);
+    };
     return {
         result: writeResult,
         auth: writeTrackerAuth,
@@ -1372,12 +1390,25 @@ var view = function() {
             dom_cache.explore = $('div.explore');
             dom_cache.result_panel = $('div.result_panel');
             dom_cache.about_panel = dom_cache.result_panel.children('div.about_panel');
-            dom_cache.result = dom_cache.result_panel.children('table').children('tbody');
+            dom_cache.table = dom_cache.result_panel.children('table');
+            dom_cache.thead = dom_cache.table.children('thead');
+            dom_cache.tbody = dom_cache.table.children('tbody');
             dom_cache.time_filter = $('.time_filter');
             dom_cache.time_filter_select = dom_cache.time_filter.find('select');
             dom_cache.word_filter = $('div.word_filter input');
             dom_cache.word_filter_btn = $('div.word_filter div.btn');
             dom_cache.categorys = $('ul.categorys');
+            if (GetSettings('table_sort_colum') !== undefined) {
+                var_cache.table_sort_colum = GetSettings('table_sort_colum');
+            }
+            if (GetSettings('table_sort_by') !== undefined) {
+                var_cache.table_sort_by = parseInt(GetSettings('table_sort_by'));
+            }
+            if (var_cache.table_sort_by === 1) {
+                dom_cache.thead.children().children('th.'+var_cache.table_sort_colum).addClass('sortDown');
+            } else {
+                dom_cache.thead.children().children('th.'+var_cache.table_sort_colum).addClass('sortUp');
+            }
             writeCategory();
             writeProfileList(engine.getProfileList());
             engine.loadProfile(undefined, writeTrackerList);
@@ -1415,8 +1446,6 @@ var view = function() {
                 e.preventDefault();
                 search(dom_cache.search_input.val());
             });
-
-
             dom_cache.word_filter.keyup(function() {
                 var value = $(this).val();
                 var value_len = value.length;
@@ -1680,6 +1709,10 @@ var view = function() {
             $('input.sbutton.history').on("click", function() {
                 window.location = 'history.html';
             });
+            dom_cache.thead.on('click', 'th', function(e) {
+                e.preventDefault();
+                setColumSort($(this));
+            })
         }
     }
 }();

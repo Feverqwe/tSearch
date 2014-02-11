@@ -113,10 +113,10 @@ div.content div.right {
     padding-top: 12px;
     padding-bottom: 12px;
 }
-#rez_table > tbody > tr > td.name {
+#rez_table > tbody > tr > td.title {
     padding-left: 10px;
 }
-#rez_table > tbody > tr > td.name > div.title > a {
+#rez_table > tbody > tr > td.title > div.title > a {
     font-size: 1.167em;
     text-decoration: none;
     line-height: 130%;
@@ -125,19 +125,19 @@ div.content div.right {
     border-bottom-style: solid;
     border-bottom-color: transparent;
 }
-#rez_table > tbody > tr > td.name > div.title > a:link {
+#rez_table > tbody > tr > td.title > div.title > a:link {
     color: #1A3DC1;
 }
-#rez_table > tbody > tr > td.name > div.title > a:link:hover {
+#rez_table > tbody > tr > td.title > div.title > a:link:hover {
     border-bottom-color: #1A3DC1;
 }
-#rez_table > tbody > tr > td.name > div.title > a:visited {
+#rez_table > tbody > tr > td.title > div.title > a:visited {
     color: #609;
 }
-#rez_table > tbody > tr > td.name > div.title > a:visited:hover {
+#rez_table > tbody > tr > td.title > div.title > a:visited:hover {
     border-bottom-color: #609;
 }
-#rez_table > tbody > tr > td.name > ul {
+#rez_table > tbody > tr > td.title > ul {
     padding-left: 0;
     margin: 0 auto;
     list-style: none;
@@ -145,10 +145,10 @@ div.content div.right {
     color: #555;
     margin-top: 0px;
 }
-#rez_table > tbody > tr > td.name > ul > li.category, #rez_table > tbody > tr > td.name > ul > li.category a {
+#rez_table > tbody > tr > td.title > ul > li.category, #rez_table > tbody > tr > td.title > ul > li.category a {
     color: #093;
 }
-#rez_table > tbody > tr > td.name > ul > li {
+#rez_table > tbody > tr > td.title > ul > li {
     display: inline-table;
     margin-left: 4px;
 }
@@ -205,14 +205,14 @@ div.content div.right {
     text-align: center;
     width: 30px;
 }
-#rez_table > thead > tr > th.headerSortDown {
+#rez_table > thead > tr > th.sortDown {
     background-image: url('../images/down.png');
     background-position: right center;
     background-repeat: no-repeat;
     background-origin: content-box;
     background-color: #ccc;
 }
-#rez_table > thead > tr > th.headerSortUp {
+#rez_table > thead > tr > th.sortUp {
     background-image: url('../images/up.png');
     background-position: right center;
     background-repeat: no-repeat;
