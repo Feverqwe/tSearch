@@ -41,10 +41,23 @@ var view = function() {
         //таймер до наступления фильтрации списка
         filterTimer: undefined,
         //Время таймера фильтрации
-        filterTimerValue: 250
+        filterTimerValue: 250,
+        //список трекеров профиля
+        trackers: {},
+        //текущий запрос
+        currentRequest: undefined,
+        //массив с выделенными трекерами
+        currentTrackerList: [],
+        //текущая категория
+        currentCategory: undefined,
+        //кэш категорий
+        categorys: {},
+        //фильтр стиль
+        filter_string: '0,0,0,0,0',
+        //счетчик
+        counter: {}
     };
     var dom_cache = {};
-    var currentTracker = [];
 
     var HideLeech = parseInt(GetSettings('HideLeech') || 1);
     var HideSeed = parseInt(GetSettings('HideSeed') || 0);
@@ -64,14 +77,14 @@ var view = function() {
         var items = [];
         var style = '';
         $.each(trList, function(key, item) {
-            item.icon_class = key.replace(/[^A-Za-z0-9]/g,'_');
-            var icon = $('<div>', {'class': 'tracker_icon '+item.icon_class});
-            var count = $('<i>');
+            item.class_name = key.replace(/[^A-Za-z0-9]/g,'_');
+            var icon = $('<div>', {'class': 'tracker_icon '+item.class_name});
+            var i = $('<i>');
             var link = $('<a>', {text: item.name, href: '#'}).data('tracker', key);
-            var li = $('<li>').append(icon, link, count);
-            var_cache.trackers[key] = {icon: 1, link: link, count: count, count_val: 0, tracker: item, li: li, auth: 1};
+            var li = $('<li>').append(icon, link, i);
+            var_cache.trackers[key] = {icon: 1, link: link, i: i, count: 0, count_val: 0, tracker: item, li: li, auth: 1};
             items.push( li );
-            style += 'div.tracker_icon.'+item.icon_class+'{background-image:url('+item.icon+');}';
+            style += 'div.tracker_icon.'+item.class_name+'{background-image:url('+item.icon+');}';
         });
         dom_cache.trackers_ul.append(items);
         dom_cache.body.append($('<style>', {'class':'tracker_icons', text: style}));
@@ -116,13 +129,13 @@ var view = function() {
         if (gui.icon === state) {
             return;
         }
-        dom_cache.body.children('style.icon_'+gui.tracker.icon_class).remove();
+        dom_cache.body.children('style.icon_'+gui.tracker.class_name).remove();
         if (state === 2) {
-            dom_cache.body.append( $('<style>', {'class': 'icon_'+gui.tracker.icon_class, text: 'ul.trackers>li>div.tracker_icon.'+gui.tracker.icon_class+'{background:url(images/error.png) center center #fff;}'}) );
+            dom_cache.body.append( $('<style>', {'class': 'icon_'+gui.tracker.class_name, text: 'ul.trackers>li>div.tracker_icon.'+gui.tracker.class_name+'{background:url(images/error.png) center center #fff;}'}) );
         } else if (state === 1) {
             return;
         } else if (state === 0) {
-            dom_cache.body.append( $('<style>', {'class': 'icon_'+gui.tracker.icon_class, text: 'ul.trackers>li>div.tracker_icon.'+gui.tracker.icon_class+'{background:url(images/loading.gif) center center #fff;}'}) );
+            dom_cache.body.append( $('<style>', {'class': 'icon_'+gui.tracker.class_name, text: 'ul.trackers>li>div.tracker_icon.'+gui.tracker.class_name+'{background:url(images/loading.gif) center center #fff;}'}) );
         }
         gui.icon = state;
     };
@@ -137,20 +150,18 @@ var view = function() {
     };
     var homeMode = function(){
         dom_cache.explore.show();
-        dom_cache.about_panel.hide();
         dom_cache.result_panel.hide();
         clear_table();
     };
     var searchMode = function() {
         dom_cache.explore.hide();
-        dom_cache.about_panel.show();
         dom_cache.result_panel.show();
     };
     var search = function(request) {
         clear_table();
         searchMode();
         syntaxCacheRequest(request);
-        engine.search(request, currentTracker);
+        engine.search(request, var_cache.currentTrackerList);
         var_cache.currentRequest = request;
     };
     var home = function(){
@@ -329,7 +340,7 @@ var view = function() {
         if (checkForSymbol(string[position - 1] || '') === 0) {
             return '';
         }
-        if (word === "эрот" || word === "xxx" || word === "porn" || word === "порно" || word === "сайтр" || word === "фильмы без сюжета" || word === "hentai" || word === "хентай") {
+        if (word === "эрот" || word === "xxx" || word === "porn" || word === "порно" || word === "фильмы без сюжета" || word === "hentai" || word === "хентай") {
             rate.xxx += 10;
         }
         if (word === "мультим") {
@@ -471,7 +482,7 @@ var view = function() {
             return 0;
         } else if (a < b) {
             return  (by === 1) ? -1 : 1;
-        } else if (a > b) {
+        } else {
             return (by === 1) ? 1 : -1;
         }
     };
@@ -489,18 +500,14 @@ var view = function() {
         sorted_list.sort(table_onsort);
         table_sort_insert_in_list(sorted_list);
     };
+    var arrUnique = function (value, index, self) {
+        return self.indexOf(value) === index;
+    };
     var calcKeywordFilter = function(title) {
         /*
          * фильтр по фразам в названии раздачи
          */
-        //0 - исключает отображение, 1 - включает
-        /*
-        var_cache.keywordFilter = {
-            inc_len: 3,
-            include: new RegExp('один|два|три', 'g'),
-            exclude: new RegExp('три', 'g')
-        };
-        */
+        //false - исключает отображение, true - включает
         if (var_cache.keywordFilter.exclude !== undefined) {
             var exc = title.match(var_cache.keywordFilter.exclude);
             if (exc !== null) {
@@ -510,11 +517,11 @@ var view = function() {
         if (var_cache.keywordFilter.include === undefined) {
             return true;
         }
-        var inc = title.match(var_cache.keywordFilter.include);
+        var inc = title.toLowerCase().match(var_cache.keywordFilter.include);
         if (inc === null) {
             return false;
         }
-        return (inc.length >= var_cache.keywordFilter.inc_len);
+        return (inc.filter(arrUnique).length >= var_cache.keywordFilter.inc_len);
     };
     var calcSizeFilter = function(value) {
         var sizeFilter = var_cache.sizeFilter;
@@ -575,6 +582,9 @@ var view = function() {
             return;
         }
         var errors = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        if (var_cache.counter[id] === undefined) {
+            var_cache.counter[id] = {}
+        }
         for (var i = 0, item; item = result[i]; i++) {
             if (itemCheck(item, errors) === 0) {
                 console.error('Item in tracker ' + tracker.name + ' have critical problem! Torrent skipped!', item);
@@ -603,7 +613,7 @@ var view = function() {
             table_dom_item.filter = filter.join(',');
             var td_icon = '';
             if (ShowIcons === 1) {
-                td_icon = $('<div>', {'class': 'tracker_icon ' + tracker.icon_class, title: tracker.name});
+                td_icon = $('<div>', {'class': 'tracker_icon ' + tracker.class_name, title: tracker.name});
             }
             var td_category = '';
             if (item.category.title !== undefined) {
@@ -628,7 +638,7 @@ var view = function() {
             } else {
                 td_download = $('<td>', {'class': 'size', text: bytesToSize(item.size)});
             }
-            table_dom_item.node = $('<tr>', {'data-filter': table_dom_item.filter, 'data-tracker': tracker.icon_class, 'data-category': item.category.id}).data('id', item_id).append(
+            table_dom_item.node = $('<tr>', {'data-filter': table_dom_item.filter, 'data-tracker': tracker.class_name, 'data-category': item.category.id}).data('id', item_id).append(
                 $('<td>', {'class': 'time', title: u2ddmmyyyy_title(item.time), text: u2timeago(item.time)}),
                 $('<td>', {'class': 'quality'/*, 'data-value': quality.value, 'data-qgame': quality.game, 'data-qseed': quality.seed, 'data-qname': quality.name, 'data-qvideo': quality.video, 'data-qmusic': quality.music, 'data-qbook': quality.book*/}).append(
                     $('<div>', {'class': 'progress'}).append(
@@ -647,9 +657,14 @@ var view = function() {
                 (HideLeech === 1) ? '' : $('<td>', {'class': 'leechs', text: item.leechs})
             );
             var_cache.table_dom.push(table_dom_item);
+            if (var_cache.counter[id][item.category.id] === undefined) {
+                var_cache.counter[id][item.category.id] = 0;
+            }
+            var_cache.counter[id][item.category.id]++;
         }
         log_errors(tracker, errors);
         table_sort();
+        updateCounts();
     };
     var checkForSymbol = function(char) {
         var code = char.charCodeAt(0);
@@ -979,8 +994,9 @@ var view = function() {
                 }
             }
         }
+        var pre_word;
         if (has_fullName > 0) {
-            var pre_word = $.trim(name.substr(0, has_fullName).replace(var_cache.rm_pre_tag_regexp, ''));
+            pre_word = $.trim(name.substr(0, has_fullName).replace(var_cache.rm_pre_tag_regexp, ''));
             if (pre_word.length === 0){
                 has_fullName = 0;
             }
@@ -1003,7 +1019,7 @@ var view = function() {
                 }
             }
             if (has_fullLowName > 0) {
-                var pre_word = $.trim(name.substr(0, has_fullLowName).replace(var_cache.rm_pre_tag_regexp, ''));
+                pre_word = $.trim(name_low.substr(0, has_fullLowName).replace(var_cache.rm_pre_tag_regexp, ''));
                 if (pre_word.length === 0){
                     has_fullLowName = 0;
                 }
@@ -1178,39 +1194,111 @@ var view = function() {
         return u2ddmmyyyy(utime);
     };
     var startFiltering = function() {
-        var filter;
-        for (var i = 0, item; item = var_cache.table_dom[i]; i++) {
-            filter = itemFilter(item);
-            item.filter = filter.join(',');
-            item.node.attr('data-filter',item.filter);
-        }
-        filter = [0,0,0,0,0];
+        var _filter = [0,0,0,0,0];
         var isEmpty = true;
         if (var_cache.keywordFilter !== undefined) {
-            filter[0] = 1;
+            _filter[0] = 1;
             isEmpty = false;
         }
         if (var_cache.sizeFilter !== undefined) {
-            filter[1] = 1;
+            _filter[1] = 1;
             isEmpty = false;
         }
         if (var_cache.timeFilter !== undefined) {
-            filter[2] = 1;
+            _filter[2] = 1;
             isEmpty = false;
         }
         if (var_cache.seedFilter !== undefined) {
-            filter[3] = 1;
+            _filter[3] = 1;
             isEmpty = false;
         }
         if (var_cache.peerFilter !== undefined) {
-            filter[4] = 1;
+            _filter[4] = 1;
             isEmpty = false;
+        }
+        var _filter_string = var_cache.filter_string = _filter.join(',');
+        for (var i = 0, item; item = var_cache.table_dom[i]; i++) {
+            var filter = itemFilter(item);
+            var filter_string = filter.join(',');
+            item.filter = filter_string;
+            item.node.attr('data-filter',item.filter);
         }
         dom_cache.body.children('style.filter').remove();
         if (isEmpty) {
             return;
         }
-        dom_cache.body.append( $('<style>', {'class': 'filter', text: 'div.result_panel>table>tbody>tr:not([data-filter="'+filter.join(',')+'"]){display: none;}'}) );
+        dom_cache.body.append( $('<style>', {'class': 'filter', text: 'div.result_panel>table>tbody>tr:not([data-filter="'+_filter_string+'"]){display: none;}'}) );
+    };
+    var startFilterByCategory = function() {
+        dom_cache.body.children('style.categoryFilter').remove();
+        if (var_cache.currentCategory === undefined) {
+            return;
+        }
+        dom_cache.body.append( $('<style>', {'class': 'categoryFilter', text: 'div.result_panel>table>tbody>tr:not([data-category="'+var_cache.currentCategory+'"]){display: none;}'}) );
+    };
+    var startFilterByTracker = function() {
+        dom_cache.body.children('style.trackerFilter').remove();
+        if (var_cache.currentTrackerList.length === 0) {
+            return;
+        }
+        var classTrList = [];
+        var_cache.currentTrackerList.forEach(function(key) {
+            var className = var_cache.trackers[key].tracker.class_name;
+            classTrList.push( ':not([data-tracker="'+className+'"])' );
+        });
+        dom_cache.body.append( $('<style>', {'class': 'trackerFilter', text: 'div.result_panel>table>tbody>tr'+classTrList.join('')+'{display: none;}'}) );
+    };
+    var writeCategory = function() {
+        /*
+         * загрузка списка категорий
+         */
+        var_cache.categorys = {};
+        var categoryList = _lang.categorys;
+        var content = [];
+        var counter;
+        var li;
+        for (var i = 0, item; item = categoryList[i]; i++) {
+            var id = item[0];
+            counter = $('<i>');
+            li = $('<li>', {text: item[1]}).data('id', id).append(counter);
+            var_cache.categorys[id] = { i: counter, li: li, count: 0 };
+            content.push( li );
+        }
+        counter = $('<i>');
+        li = $('<li>', {'class':'selected', text: _lang['cat_all']}).append(counter);
+        var_cache.categorys[undefined] = { i: counter, li: li, count: 0 };
+        content.unshift( li );
+        dom_cache.categorys.append(content);
+    };
+    var updateCounts = function() {
+        var filter = false;
+        var category_filter = false;
+        var tracker_filter = false;
+        if (var_cache.filter_string !== '0,0,0,0,0') {
+            filter = true;
+        }
+        if (var_cache.currentCategory !== undefined) {
+            category_filter = true;
+        }
+        if (var_cache.currentTrackerList.length !== 0) {
+            tracker_filter = true;
+        }
+        var sum_cat = {};
+        var sum_tr = {};
+        for (var i = 0, item; item = var_cache.table_dom[i]; i++) {
+            $.each(var_cache.counter, function(tracker, value) {
+                $.each(value, function(category, count) {
+                    if (sum_cat[category] === undefined) {
+                        sum_cat[category] = 0;
+                    }
+                    if (sum_tr[key] === undefined) {
+                        sum_tr[key] = 0;
+                    }
+                    sum_cat[category] += count;
+                    sum_tr[key] += count;
+                });
+            });
+        }
     };
     return {
         result: writeResult,
@@ -1222,15 +1310,29 @@ var view = function() {
             dom_cache.form_search = $('form[name="search"]');
             dom_cache.search_input = dom_cache.form_search.children('input[type="text"]');
             dom_cache.explore = $('div.explore');
-            dom_cache.about_panel = $('div.about_panel');
             dom_cache.result_panel = $('div.result_panel');
+            dom_cache.about_panel = dom_cache.result_panel.children('div.about_panel');
             dom_cache.result = dom_cache.result_panel.children('table').children('tbody');
             dom_cache.time_filter = $('.time_filter');
             dom_cache.time_filter_select = dom_cache.time_filter.find('select');
             dom_cache.word_filter = $('div.word_filter input');
             dom_cache.word_filter_btn = $('div.word_filter div.btn');
+            dom_cache.categorys = $('ul.categorys');
+            writeCategory();
             writeProfileList(engine.getProfileList());
             engine.loadProfile(undefined, writeTrackerList);
+            dom_cache.categorys.on('click', 'li', function(e){
+                e.preventDefault();
+                var $this = $(this);
+                var category = $this.data('id');
+                if (var_cache.currentCategory === category) {
+                    return;
+                }
+                dom_cache.categorys.find('li.selected').removeClass('selected');
+                $this.addClass('selected');
+                var_cache.currentCategory = category;
+                startFilterByCategory();
+            });
             dom_cache.trackers_ul.on('click','a', function(e) {
                 e.preventDefault();
                 var $this = $(this);
@@ -1238,16 +1340,16 @@ var view = function() {
                 var hasClass = $this.hasClass('selected');
                 if (options.single_filter_mode) {
                     dom_cache.trackers_ul.find('a.selected').removeClass('selected');
-                    currentTracker = [];
+                    var_cache.currentTrackerList = [];
                 }
                 if (hasClass) {
-                    currentTracker.splice(currentTracker.indexOf(type), 1);
+                    var_cache.currentTrackerList.splice(var_cache.currentTrackerList.indexOf(type), 1);
                     $this.removeClass('selected');
                 } else {
-                    currentTracker.push(type);
+                    var_cache.currentTrackerList.push(type);
                     $this.addClass('selected');
                 }
-                //do filter list
+                startFilterByTracker();
             });
             dom_cache.form_search.on('submit', function(e){
                 e.preventDefault();
@@ -1277,15 +1379,16 @@ var view = function() {
                 var exc = [];
                 var inc = [];
                 value = value.split((AdvFiltration === 0)?',':' ');
+                var safe_item;
                 for (var i = 0, item; item = value[i]; i++) {
                     if (item.length === 0) {
                         continue;
                     }
                     if (item.substr(0,1) === '-') {
-                        var safe_item = item.substr(1).replace(/([{})(\][\\\.^$\|\?\+])/g,"\\$1");
+                        safe_item = item.substr(1).replace(/([{})(\][\\\.^$\|\?\+])/g,"\\$1");
                         exc.push(safe_item);
                     } else {
-                        var safe_item = item.replace(/([{})(\][\\\.^$\|\?\+])/g,"\\$1");
+                        safe_item = item.replace(/([{})(\][\\\.^$\|\?\+])/g,"\\$1");
                         inc.push(safe_item);
                     }
                 }
@@ -1304,7 +1407,6 @@ var view = function() {
                 if (inc.length === 0 && exc.length === 0) {
                     var_cache.keywordFilter = undefined;
                 }
-                console.log(inc, exc);
                 clearTimeout(var_cache.filterTimer);
                 var_cache.filterTimer = setTimeout(function() {
                     dom_cache.word_filter_btn.removeClass('loading');

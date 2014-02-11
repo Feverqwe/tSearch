@@ -328,6 +328,8 @@ div.tracker_list > ul.trackers > li > a {
     margin-left: 2px;
     color: #000;
     padding: 2px;
+    padding-bottom: 2px;
+    padding-top: 1px;
 }
 div.tracker_list > ul.trackers > li > a:hover {
     background-color: #ddd;
