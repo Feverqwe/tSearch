@@ -1,4 +1,7 @@
 var view = function() {
+    /**
+     * @namespace $
+     */
     var var_cache = {
         year: (new Date()).getFullYear(),
         syntaxCache: {},
@@ -16,10 +19,29 @@ var view = function() {
             "устр]{1}|мобильное|аудиокниги|беллетр|книг|фильм|игр|3gp|soundtrack|саундтрек|anim|аним|докумел|литер|" +
             "телеп|эрот|xxx|porn|порно|сайтр|тв[\-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
             "утилит|book|game|tv |tv$|manga", "g"),
+        rm_pre_tag_regexp: new RegExp("\\(.*\\)|\\[.*\\]", 'g'),
+        //массив содержащий всю информацию и dom элемент торрентов
         table_dom: [],
+        //сортировка по возрастанию или убыванию
         table_sort_by: 0,
+        //столбец для сортировки
         table_sort_colum: 'quality',
-        table_sort_pos: []
+        //массив содержащий текущий порядок списка
+        table_sort_pos: [],
+        //фильтр времени
+        timeFilter: undefined,
+        //фильтр по размеру
+        sizeFilter: undefined,
+        //фильтр по словам
+        keywordFilter: undefined,
+        //фильтр по сидам
+        seedFilter: undefined,
+        //фильтр по пирам
+        peerFilter: undefined,
+        //таймер до наступления фильтрации списка
+        filterTimer: undefined,
+        //Время таймера фильтрации
+        filterTimerValue: 250
     };
     var dom_cache = {};
     var currentTracker = [];
@@ -108,7 +130,7 @@ var view = function() {
         /*
          * очищает результаты поиска, сбрасывает все в ноль
          */
-        dom_cache.result.get(0).innerHTML = "";
+        dom_cache.result.get(0).textContent = "";
         dom_cache.about_panel.empty();
         var_cache.table_dom = [];
         var_cache.table_sort_pos = [];
@@ -123,9 +145,9 @@ var view = function() {
         dom_cache.explore.hide();
         dom_cache.about_panel.show();
         dom_cache.result_panel.show();
-        clear_table();
     };
     var search = function(request) {
+        clear_table();
         searchMode();
         syntaxCacheRequest(request);
         engine.search(request, currentTracker);
@@ -411,7 +433,7 @@ var view = function() {
         var indexs = var_cache.table_sort_pos.slice(0);
         var dune = false;
         var break_index = 0;
-        for (var n = 0, len = list_len; n < len; n++) {
+        for (var n = 0; n < list_len; n++) {
             if (dune === true) {
                 break;
             }
@@ -434,7 +456,7 @@ var view = function() {
                     break_index = i;
                     break;
                 }
-                if (i === len - 1) {
+                if (i === list_len - 1) {
                     dune = true;
                 }
             }
@@ -467,6 +489,82 @@ var view = function() {
         sorted_list.sort(table_onsort);
         table_sort_insert_in_list(sorted_list);
     };
+    var calcKeywordFilter = function(title) {
+        /*
+         * фильтр по фразам в названии раздачи
+         */
+        //0 - исключает отображение, 1 - включает
+        /*
+        var_cache.keywordFilter = {
+            inc_len: 3,
+            include: new RegExp('один|два|три', 'g'),
+            exclude: new RegExp('три', 'g')
+        };
+        */
+        if (var_cache.keywordFilter.exclude !== undefined) {
+            var exc = title.match(var_cache.keywordFilter.exclude);
+            if (exc !== null) {
+                return false;
+            }
+        }
+        if (var_cache.keywordFilter.include === undefined) {
+            return true;
+        }
+        var inc = title.match(var_cache.keywordFilter.include);
+        if (inc === null) {
+            return false;
+        }
+        return (inc.length >= var_cache.keywordFilter.inc_len);
+    };
+    var calcSizeFilter = function(value) {
+        var sizeFilter = var_cache.sizeFilter;
+        return ((sizeFilter.from > 0 && value >= sizeFilter.from || sizeFilter.from <= 0) && ((sizeFilter.to > 0 && value <= sizeFilter.to) || (sizeFilter.to <= 0)));
+    };
+    var calcTimeFilter = function(value) {
+        var timeFilter = var_cache.timeFilter;
+        return ((timeFilter.from > 0 && value >= timeFilter.from || timeFilter.from <= 0) && ((timeFilter.to > 0 && value <= timeFilter.to) || (timeFilter.to <= 0)));
+    };
+    var calcSeedFilter = function(value) {
+        var seedFilter = var_cache.seedFilter;
+        return ((seedFilter.from > -1 && value >= seedFilter.from || seedFilter.from < 0) && ((seedFilter.to > -1 && value <= seedFilter.to) || (seedFilter.to < 0)));
+    };
+    var calcPeerFilter = function(value) {
+        var peerFilter = var_cache.peerFilter;
+        return ((peerFilter.from > -1 && value >= peerFilter.from || peerFilter.from < 0) && ((peerFilter.to > -1 && value <= peerFilter.to) || (peerFilter.to < 0)));
+    };
+    var itemFilter = function(item) {
+        var filter = [0, 0, 0, 0, 0];
+        if (var_cache.keywordFilter !== undefined) {
+            var title = item.title;
+            if (SubCategoryFilter && item.category !== undefined) {
+                title += ' ' + item.category;
+            }
+            if (calcKeywordFilter(title)) {
+                filter[0] = 1;
+            }
+        }
+        if (var_cache.sizeFilter !== undefined) {
+            if (calcSizeFilter(item.size)) {
+                filter[1] = 1;
+            }
+        }
+        if (var_cache.timeFilter !== undefined) {
+            if (calcTimeFilter(item.time)) {
+                filter[2] = 1;
+            }
+        }
+        if (HideSeed === 0 && var_cache.seedFilter !== undefined) {
+            if (calcSeedFilter(item.seeds)) {
+                filter[3] = 1;
+            }
+        }
+        if (HideLeech === 0 && var_cache.peerFilter !== undefined) {
+            if (calcPeerFilter(item.leechs)) {
+                filter[4] = 1;
+            }
+        }
+        return filter;
+    };
     var writeResult = function(id, result, request) {
         setTrackerLoadingState(1, id);
         var tracker = var_cache.trackers[id].tracker;
@@ -477,7 +575,6 @@ var view = function() {
             return;
         }
         var errors = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-        var content = [];
         for (var i = 0, item; item = result[i]; i++) {
             if (itemCheck(item, errors) === 0) {
                 console.error('Item in tracker ' + tracker.name + ' have critical problem! Torrent skipped!', item);
@@ -500,9 +597,10 @@ var view = function() {
             if (item.category.id < 0 && item.category.title !== undefined) {
                 item.category.id = autosetCategory(quality, item.category.title);
             }
-            /**
-             * @namespace $
-             */
+            var item_id = var_cache.table_dom.length;
+            var table_dom_item = {id: item_id, tracker: id, time: item.time, quality: quality.value, title: item.title, category: item.category.title, category_id: item.category.id, size: item.size, seeds: item.seeds, leechs: item.leechs};
+            var filter = itemFilter(table_dom_item);
+            table_dom_item.filter = filter.join(',');
             var td_icon = '';
             if (ShowIcons === 1) {
                 td_icon = $('<div>', {'class': 'tracker_icon ' + tracker.icon_class, title: tracker.name});
@@ -530,9 +628,9 @@ var view = function() {
             } else {
                 td_download = $('<td>', {'class': 'size', text: bytesToSize(item.size)});
             }
-            var tr = $('<tr>', {'data-filter': ''/* advFilter.join(',') */, 'data-tracker': tracker.icon_class, 'data-category': item.category.id}).append(
+            table_dom_item.node = $('<tr>', {'data-filter': table_dom_item.filter, 'data-tracker': tracker.icon_class, 'data-category': item.category.id}).data('id', item_id).append(
                 $('<td>', {'class': 'time', title: u2ddmmyyyy_title(item.time), text: u2timeago(item.time)}),
-                $('<td>', {'class': 'quality', 'data-value': quality.value, 'data-qgame': quality.game, 'data-qseed': quality.seed, 'data-qname': quality.name, 'data-qvideo': quality.video, 'data-qmusic': quality.music, 'data-qbook': quality.book}).append(
+                $('<td>', {'class': 'quality'/*, 'data-value': quality.value, 'data-qgame': quality.game, 'data-qseed': quality.seed, 'data-qname': quality.name, 'data-qvideo': quality.video, 'data-qmusic': quality.music, 'data-qbook': quality.book*/}).append(
                     $('<div>', {'class': 'progress'}).append(
                         $('<div>').css('width', parseInt(quality.value / 15) + 'px'),
                         $('<span>', {title: quality.value, text: quality.value})
@@ -548,9 +646,7 @@ var view = function() {
                 (HideSeed === 1) ? '' : $('<td>', {'class': 'seeds', text: item.seeds}),
                 (HideLeech === 1) ? '' : $('<td>', {'class': 'leechs', text: item.leechs})
             );
-            var id = var_cache.table_dom.length;
-            var_cache.table_dom.push({id: id, time: item.time, quality: quality.value, name: item.title, size: item.size, seeds: item.seeds, leechs: item.leechs, node: tr});
-            content.push(tr);
+            var_cache.table_dom.push(table_dom_item);
         }
         log_errors(tracker, errors);
         table_sort();
@@ -826,17 +922,17 @@ var view = function() {
         var_cache.syntaxCache = {};
         var_cache.syntaxCache.normalize_request = $.trim(request).replace(/\s+/g, " ");
         var safe_regexp = var_cache.syntaxCache.normalize_request.replace(/([{})(\][\\\.^$\|\?\+])/g,"\\$1");
-        var words = safe_regexp.split(' ');
+        var_cache.syntaxCache.words = safe_regexp.toLowerCase().split(' ');
         var_cache.syntaxCache.normalize_request_low = var_cache.syntaxCache.normalize_request.toLowerCase();
-        var_cache.syntaxCache.words_len = words.length;
-        var_cache.syntaxCache.words_is_regexp = new RegExp(words.join('|'), "ig");
+        var_cache.syntaxCache.words_len = var_cache.syntaxCache.words.length;
+        var_cache.syntaxCache.words_is_regexp = new RegExp(var_cache.syntaxCache.words.join('|'), "ig");
         if (year !== null) {
             var_cache.syntaxCache.year = year;
             var_cache.syntaxCache.normalize_request_no_year = $.trim(var_cache.syntaxCache.normalize_request.replace(new RegExp('\\s?'+year+'\\s?','g'),' ').replace(/\s+/g, " "));
             var_cache.syntaxCache.normalize_request_no_year_low = var_cache.syntaxCache.normalize_request_no_year.toLowerCase();
         }
         var_cache.syntaxCache.word_rate = Math.round(200 / var_cache.syntaxCache.words_len);
-        var_cache.syntaxCache.first_word_rate = Math.round( var_cache.syntaxCache.word_rate*1.5 );
+        var_cache.syntaxCache.first_word_rate = Math.round( var_cache.syntaxCache.word_rate*1.25 );
     };
     var checkLeftRightSymbol = function(word, pos, string) {
         return (checkForSymbol(string[pos - 1] || '') !== 0 && checkForSymbol(string[pos + word.length] || '') !== 0);
@@ -883,6 +979,12 @@ var view = function() {
                 }
             }
         }
+        if (has_fullName > 0) {
+            var pre_word = $.trim(name.substr(0, has_fullName).replace(var_cache.rm_pre_tag_regexp, ''));
+            if (pre_word.length === 0){
+                has_fullName = 0;
+            }
+        }
         var has_fullLowName = -1;
         if (has_fullName === -1) {
             if (year !== undefined) {
@@ -900,23 +1002,32 @@ var view = function() {
                     }
                 }
             }
+            if (has_fullLowName > 0) {
+                var pre_word = $.trim(name.substr(0, has_fullLowName).replace(var_cache.rm_pre_tag_regexp, ''));
+                if (pre_word.length === 0){
+                    has_fullLowName = 0;
+                }
+            }
         }
         var rateSet = false;
-        if (has_year === true && (has_fullName === 0 || has_fullLowName === 0)) {
-            rate.name = (words_len - 1) * word_rate + first_word_rate;
-            rateSet = true;
-        } else
-        if (has_year === true && (has_fullName !== -1 || has_fullLowName !== -1)) {
-            rate.name = words_len * word_rate;
-            rateSet = true;
-        } else
-        if (has_year === false && (has_fullName === 0 || has_fullLowName === 0)) {
-            rate.name = (words_len - 1) * word_rate + first_word_rate - (exists_year)?word_rate:0;
-            rateSet = true;
-        } else
-        if (has_year === false && (has_fullName !== -1 || has_fullLowName !== -1)) {
-            rate.name = words_len * word_rate - (exists_year)?word_rate:0;
-            rateSet = true;
+        if (has_year === true) {
+            if (has_fullName === 0 || has_fullLowName === 0) {
+                rate.name = (words_len - 1) * word_rate + first_word_rate;
+                rateSet = true;
+            } else
+            if (has_fullName !== -1 || has_fullLowName !== -1) {
+                rate.name = words_len * word_rate;
+                rateSet = true;
+            }
+        } else {
+            if (has_fullName === 0 || has_fullLowName === 0) {
+                rate.name = (words_len - 1) * word_rate + first_word_rate - ((exists_year)?word_rate:0);
+                rateSet = true;
+            } else
+            if (has_fullName !== -1 || has_fullLowName !== -1) {
+                rate.name = words_len * word_rate - ((exists_year)?word_rate:0);
+                rateSet = true;
+            }
         }
         var hl_name;
         if (rateSet) {
@@ -949,7 +1060,7 @@ var view = function() {
                     year_found = 1;
                     return '<b>' + word + '</b>';
                 }
-                if (position === 0) {
+                if (position === 0 && word.toLowerCase() === var_cache.syntaxCache.words[0]) {
                     rate.name += first_word_rate;
                 } else {
                     rate.name += word_rate;
@@ -1066,6 +1177,41 @@ var view = function() {
         }
         return u2ddmmyyyy(utime);
     };
+    var startFiltering = function() {
+        var filter;
+        for (var i = 0, item; item = var_cache.table_dom[i]; i++) {
+            filter = itemFilter(item);
+            item.filter = filter.join(',');
+            item.node.attr('data-filter',item.filter);
+        }
+        filter = [0,0,0,0,0];
+        var isEmpty = true;
+        if (var_cache.keywordFilter !== undefined) {
+            filter[0] = 1;
+            isEmpty = false;
+        }
+        if (var_cache.sizeFilter !== undefined) {
+            filter[1] = 1;
+            isEmpty = false;
+        }
+        if (var_cache.timeFilter !== undefined) {
+            filter[2] = 1;
+            isEmpty = false;
+        }
+        if (var_cache.seedFilter !== undefined) {
+            filter[3] = 1;
+            isEmpty = false;
+        }
+        if (var_cache.peerFilter !== undefined) {
+            filter[4] = 1;
+            isEmpty = false;
+        }
+        dom_cache.body.children('style.filter').remove();
+        if (isEmpty) {
+            return;
+        }
+        dom_cache.body.append( $('<style>', {'class': 'filter', text: 'div.result_panel>table>tbody>tr:not([data-filter="'+filter.join(',')+'"]){display: none;}'}) );
+    };
     return {
         result: writeResult,
         auth: writeTrackerAuth,
@@ -1079,6 +1225,10 @@ var view = function() {
             dom_cache.about_panel = $('div.about_panel');
             dom_cache.result_panel = $('div.result_panel');
             dom_cache.result = dom_cache.result_panel.children('table').children('tbody');
+            dom_cache.time_filter = $('.time_filter');
+            dom_cache.time_filter_select = dom_cache.time_filter.find('select');
+            dom_cache.word_filter = $('div.word_filter input');
+            dom_cache.word_filter_btn = $('div.word_filter div.btn');
             writeProfileList(engine.getProfileList());
             engine.loadProfile(undefined, writeTrackerList);
             dom_cache.trackers_ul.on('click','a', function(e) {
@@ -1104,6 +1254,264 @@ var view = function() {
                 search(dom_cache.search_input.val());
             });
 
+
+            dom_cache.word_filter.keyup(function() {
+                var value = $(this).val();
+                var value_len = value.length;
+                if (var_cache.keywordFilter === undefined) {
+                    if (value_len === 0) {
+                        return;
+                    }
+                    var_cache.keywordFilter = {
+                        inc_len: 0,
+                        include: undefined,
+                        exclude: undefined
+                    };
+                }
+                dom_cache.word_filter_btn.addClass('loading');
+                if (value_len > 0) {
+                    dom_cache.word_filter_btn.show();
+                } else {
+                    dom_cache.word_filter_btn.hide();
+                }
+                var exc = [];
+                var inc = [];
+                value = value.split((AdvFiltration === 0)?',':' ');
+                for (var i = 0, item; item = value[i]; i++) {
+                    if (item.length === 0) {
+                        continue;
+                    }
+                    if (item.substr(0,1) === '-') {
+                        var safe_item = item.substr(1).replace(/([{})(\][\\\.^$\|\?\+])/g,"\\$1");
+                        exc.push(safe_item);
+                    } else {
+                        var safe_item = item.replace(/([{})(\][\\\.^$\|\?\+])/g,"\\$1");
+                        inc.push(safe_item);
+                    }
+                }
+                if (exc.length > 0) {
+                    var_cache.keywordFilter.exclude = new RegExp(exc.join('|'), 'ig');
+                }
+                if (inc.length > 0) {
+                    var_cache.keywordFilter.include =  new RegExp(inc.join('|'), 'ig');
+                }
+                if (AdvFiltration === 1) {
+                    var_cache.keywordFilter.inc_len = 1;
+                }
+                if (AdvFiltration === 2) {
+                    var_cache.keywordFilter.inc_len = inc.length;
+                }
+                if (inc.length === 0 && exc.length === 0) {
+                    var_cache.keywordFilter = undefined;
+                }
+                console.log(inc, exc);
+                clearTimeout(var_cache.filterTimer);
+                var_cache.filterTimer = setTimeout(function() {
+                    dom_cache.word_filter_btn.removeClass('loading');
+                    startFiltering();
+                }, var_cache.filterTimerValue);
+            });
+            dom_cache.word_filter_btn.on("click", function() {
+                dom_cache.word_filter.val('').trigger('keyup');
+            });
+            $('div.size_filter').find('input').keyup(function() {
+                if (var_cache.sizeFilter === undefined) {
+                    var_cache.sizeFilter = {
+                        from: 0,
+                        to: 0
+                    };
+                }
+                var value = parseFloat($(this).val());
+                if (isNaN(value) || value < 0) {
+                    value = 0;
+                }
+                value = value * 1024 * 1024 * 1024;
+                var type = 1;
+                if ($(this).attr('name') === "f_v") {
+                    type = 0;
+                }
+                if (type === 1) {
+                    var_cache.sizeFilter.to = value;
+                } else {
+                    var_cache.sizeFilter.from = value;
+                }
+                if ( var_cache.sizeFilter.from === 0 && var_cache.sizeFilter.to === 0) {
+                    var_cache.sizeFilter = undefined;
+                }
+                clearTimeout(var_cache.filterTimer);
+                var_cache.filterTimer = setTimeout(function() {
+                    startFiltering();
+                }, var_cache.filterTimerValue);
+            }).on('dblclick', function() {
+                $(this).val('').trigger('keyup');
+            });
+            dom_cache.time_filter.find('input').datepicker({
+                defaultDate: "0",
+                changeMonth: true,
+                numberOfMonths: 1,
+                prevText: "",
+                nextText: "",
+                monthNamesShort: _lang.time_f_m,
+                dayNamesMin: _lang.time_f_d,
+                firstDay: 1,
+                maxDate: "+1d",
+                hideIfNoPrevNext: true,
+                dateFormat: "dd/mm/yy",
+                onClose: function(date, b) {
+                    if ($(b.input[0]).attr("name") === "start") {
+                        dom_cache.time_filter.find('input[name=end]').datepicker("option", "minDate", date);
+                    } else {
+                        dom_cache.time_filter.find('input[name=start]').datepicker("option", "maxDate", date);
+                    }
+                    var dateList = $('.time_filter').find('input');
+                    var st = ex_kit.format_date(1, dateList.eq(0).val());
+                    var en = ex_kit.format_date(1, dateList.eq(1).val());
+                    if (en > 0) {
+                        en += 60 * 60 * 24;
+                    }
+                    if (var_cache.timeFilter === undefined) {
+                        var_cache.timeFilter = {
+                            from: 0,
+                            to: 0
+                        };
+                    }
+                    var_cache.timeFilter.from = st;
+                    var_cache.timeFilter.to = en;
+                    if ( var_cache.timeFilter.from === 0 && var_cache.timeFilter.to === 0) {
+                        var_cache.timeFilter = undefined;
+                    }
+                    startFiltering();
+                }
+            }).on('dblclick', function() {
+                $(this).val('');
+                var dateList = $('.time_filter').find('input');
+                var st = ex_kit.format_date(1, dateList.eq(0).val());
+                var en = ex_kit.format_date(1, dateList.eq(1).val());
+                if (en > 0) {
+                    en += 60 * 60 * 24;
+                }
+                if (var_cache.timeFilter === undefined) {
+                    var_cache.timeFilter = {
+                        from: 0,
+                        to: 0
+                    };
+                }
+                var_cache.timeFilter.from = st;
+                var_cache.timeFilter.to = en;
+                if ( var_cache.timeFilter.from === 0 && var_cache.timeFilter.to === 0) {
+                    var_cache.timeFilter = undefined;
+                }
+                startFiltering();
+            });
+            dom_cache.time_filter_select.on('change', function() {
+                var value = this.value;
+                if (value === "range") {
+                    $('.time_filter').children('.range').show();
+                } else {
+                    $('.time_filter').children('.range').hide();
+                }
+                var utime = 0;
+                var date = ((new Date).getTime() / 1000);
+                if (value === "all") {
+                    utime = 0;
+                } else
+                if (value === "1h") {
+                    utime = date - 60 * 60;
+                } else
+                if (value === "24h") {
+                    utime = date - 60 * 60 * 24;
+                } else
+                if (value === "72h") {
+                    utime = date - 60 * 60 * 24 * 3;
+                } else
+                if (value === "1w") {
+                    utime = date - 60 * 60 * 24 * 7;
+                } else
+                if (value === "1m") {
+                    utime = date - 60 * 60 * 24 * 30;
+                } else
+                if (value === "1y") {
+                    utime = date - 60 * 60 * 24 * 365;
+                }
+                if (var_cache.timeFilter === undefined) {
+                    var_cache.timeFilter = {
+                        from: 0,
+                        to: 0
+                    };
+                }
+                var_cache.timeFilter.from = utime;
+                var_cache.timeFilter.to = 0;
+                if ( var_cache.timeFilter.from === 0 && var_cache.timeFilter.to === 0) {
+                    var_cache.timeFilter = undefined;
+                }
+                startFiltering();
+            });
+            $('div.seed_filter').find('input').keyup(function() {
+                if (HideSeed) {
+                    return;
+                }
+                if (var_cache.seedFilter === undefined) {
+                    var_cache.seedFilter = {
+                        from: -1,
+                        to: -1
+                    };
+                }
+                var value = parseInt($(this).val());
+                if (isNaN(value) || value < 0) {
+                    value = -1;
+                }
+                var type = 1;
+                if ($(this).attr('name') === "start") {
+                    type = 0;
+                }
+                if (type === 1) {
+                    var_cache.seedFilter.to = value;
+                } else {
+                    var_cache.seedFilter.from = value;
+                }
+                if (var_cache.seedFilter.from === -1 && var_cache.seedFilter.to === -1) {
+                    var_cache.seedFilter = undefined;
+                }
+                clearTimeout(var_cache.filterTimer);
+                var_cache.filterTimer = setTimeout(function() {
+                    startFiltering();
+                }, var_cache.filterTimerValue);
+            }).on('dblclick', function() {
+                $(this).val('').trigger('keyup');
+            });
+            $('div.peer_filter').find('input').keyup(function() {
+                if (HideLeech) {
+                    return;
+                }
+                if (var_cache.peerFilter === undefined) {
+                    var_cache.peerFilter = {
+                        from: -1,
+                        to: -1
+                    };
+                }
+                var value = parseInt($(this).val());
+                if (isNaN(value) || value < 0) {
+                    value = -1;
+                }
+                var type = 1;
+                if ($(this).attr('name') === "start") {
+                    type = 0;
+                }
+                if (type === 1) {
+                    var_cache.peerFilter.to = value;
+                } else {
+                    var_cache.peerFilter.from = value;
+                }
+                if (var_cache.peerFilter.from === -1 && var_cache.peerFilter.to === -1) {
+                    var_cache.peerFilter = undefined;
+                }
+                clearTimeout(var_cache.filterTimer);
+                var_cache.filterTimer = setTimeout(function() {
+                    startFiltering();
+                }, var_cache.filterTimerValue);
+            }).on('dblclick', function() {
+                $(this).val('').trigger('keyup');
+            });
             $('input.sbutton.main').on("click", function() {
                 home();
             });
