@@ -248,6 +248,9 @@ div.result_panel ul.categorys li.selected {
     border-bottom: 0;
     border-color: #337AF8;
 }
+ul.categorys > li > i {
+    margin-left: 2px;
+}
 div.right > div {
     margin-bottom: 10px;
     -webkit-user-select: none;

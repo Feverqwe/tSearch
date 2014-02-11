@@ -79,7 +79,7 @@ var view = function() {
         $.each(trList, function(key, item) {
             item.class_name = key.replace(/[^A-Za-z0-9]/g,'_');
             var icon = $('<div>', {'class': 'tracker_icon '+item.class_name});
-            var i = $('<i>');
+            var i = $('<i>', {text: 0});
             var link = $('<a>', {text: item.name, href: '#'}).data('tracker', key);
             var li = $('<li>').append(icon, link, i);
             var_cache.trackers[key] = {icon: 1, link: link, i: i, count: 0, count_val: 0, tracker: item, li: li, auth: 1};
@@ -147,6 +147,8 @@ var view = function() {
         dom_cache.about_panel.empty();
         var_cache.table_dom = [];
         var_cache.table_sort_pos = [];
+        var_cache.counter = {};
+        updateCounts();
     };
     var homeMode = function(){
         dom_cache.explore.show();
@@ -585,6 +587,7 @@ var view = function() {
         if (var_cache.counter[id] === undefined) {
             var_cache.counter[id] = {}
         }
+        var tr_count = 0;
         for (var i = 0, item; item = result[i]; i++) {
             if (itemCheck(item, errors) === 0) {
                 console.error('Item in tracker ' + tracker.name + ' have critical problem! Torrent skipped!', item);
@@ -661,7 +664,9 @@ var view = function() {
                 var_cache.counter[id][item.category.id] = 0;
             }
             var_cache.counter[id][item.category.id]++;
+            tr_count++;
         }
+        var_cache.counter[id].count = tr_count;
         log_errors(tracker, errors);
         table_sort();
         updateCounts();
@@ -1223,6 +1228,7 @@ var view = function() {
             item.filter = filter_string;
             item.node.attr('data-filter',item.filter);
         }
+        updateCounts();
         dom_cache.body.children('style.filter').remove();
         if (isEmpty) {
             return;
@@ -1239,6 +1245,7 @@ var view = function() {
     var startFilterByTracker = function() {
         dom_cache.body.children('style.trackerFilter').remove();
         if (var_cache.currentTrackerList.length === 0) {
+            updateCounts();
             return;
         }
         var classTrList = [];
@@ -1247,6 +1254,7 @@ var view = function() {
             classTrList.push( ':not([data-tracker="'+className+'"])' );
         });
         dom_cache.body.append( $('<style>', {'class': 'trackerFilter', text: 'div.result_panel>table>tbody>tr'+classTrList.join('')+'{display: none;}'}) );
+        updateCounts();
     };
     var writeCategory = function() {
         /*
@@ -1259,12 +1267,12 @@ var view = function() {
         var li;
         for (var i = 0, item; item = categoryList[i]; i++) {
             var id = item[0];
-            counter = $('<i>');
-            li = $('<li>', {text: item[1]}).data('id', id).append(counter);
+            counter = $('<i>', {text: 0});
+            li = $('<li>', {text: item[1]}).data('id', id).hide().append(counter);
             var_cache.categorys[id] = { i: counter, li: li, count: 0 };
             content.push( li );
         }
-        counter = $('<i>');
+        counter = $('<i>', {text: 0});
         li = $('<li>', {'class':'selected', text: _lang['cat_all']}).append(counter);
         var_cache.categorys[undefined] = { i: counter, li: li, count: 0 };
         content.unshift( li );
@@ -1272,32 +1280,74 @@ var view = function() {
     };
     var updateCounts = function() {
         var filter = false;
-        var category_filter = false;
         var tracker_filter = false;
         if (var_cache.filter_string !== '0,0,0,0,0') {
             filter = true;
         }
-        if (var_cache.currentCategory !== undefined) {
-            category_filter = true;
-        }
         if (var_cache.currentTrackerList.length !== 0) {
             tracker_filter = true;
         }
-        var sum_cat = {};
-        var sum_tr = {};
-        for (var i = 0, item; item = var_cache.table_dom[i]; i++) {
-            $.each(var_cache.counter, function(tracker, value) {
+        var count_tr = {};
+        var count_cat = {};
+        if (tracker_filter === false && filter === false) {
+            $.each(var_cache.counter, function(key, value) {
+                count_tr[key] = value.count;
                 $.each(value, function(category, count) {
-                    if (sum_cat[category] === undefined) {
-                        sum_cat[category] = 0;
+                    if (count_cat[category] === undefined) {
+                        count_cat[category] = 0;
                     }
-                    if (sum_tr[key] === undefined) {
-                        sum_tr[key] = 0;
-                    }
-                    sum_cat[category] += count;
-                    sum_tr[key] += count;
+                    count_cat[category] += count;
                 });
             });
+        } else {
+            for (var i = 0, item; item = var_cache.table_dom[i]; i++) {
+                if (filter === true && item.filter !== var_cache.filter_string) {
+                    continue;
+                }
+                if (count_tr[item.tracker] === undefined) {
+                    count_tr[item.tracker] = 0;
+                }
+                count_tr[item.tracker] += 1;
+                if (tracker_filter === true && var_cache.currentTrackerList.indexOf(item.tracker) === -1) {
+                    continue;
+                }
+                if (count_cat[item.category_id] === undefined) {
+                    count_cat[item.category_id] = 0;
+                }
+                count_cat[item.category_id] += 1;
+            }
+        }
+        $.each(var_cache.trackers, function(key, value) {
+            if (count_tr[key] === undefined) {
+                count_tr[key] = 0;
+            }
+            if (value.count !== count_tr[key]) {
+                value.count = count_tr[key];
+                value.i.text(count_tr[key]);
+            }
+        });
+        var summ = 0;
+        $.each(var_cache.categorys, function(key, value) {
+            if (key === 'undefined') {
+                return 1;
+            }
+            if (count_cat[key] === undefined) {
+                count_cat[key] = 0;
+            }
+            summ += count_cat[key];
+            if (value.count !== count_cat[key]) {
+                if (value.count === 0 && count_cat[key] !== 0) {
+                    value.li.show();
+                } else if (value.count !== 0 && count_cat[key] === 0) {
+                    value.li.hide();
+                }
+                value.count = count_cat[key];
+                value.i.text(count_cat[key]);
+            }
+        });
+        if (var_cache.categorys[undefined].count !== summ) {
+            var_cache.categorys[undefined].count = summ;
+            var_cache.categorys[undefined].i.text(summ);
         }
     };
     return {
