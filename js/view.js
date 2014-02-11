@@ -1228,12 +1228,13 @@ var view = function() {
             item.filter = filter_string;
             item.node.attr('data-filter',item.filter);
         }
-        updateCounts();
         dom_cache.body.children('style.filter').remove();
         if (isEmpty) {
+            updateCounts();
             return;
         }
         dom_cache.body.append( $('<style>', {'class': 'filter', text: 'div.result_panel>table>tbody>tr:not([data-filter="'+_filter_string+'"]){display: none;}'}) );
+        updateCounts();
     };
     var startFilterByCategory = function() {
         dom_cache.body.children('style.categoryFilter').remove();
@@ -1268,13 +1269,13 @@ var view = function() {
         for (var i = 0, item; item = categoryList[i]; i++) {
             var id = item[0];
             counter = $('<i>', {text: 0});
-            li = $('<li>', {text: item[1]}).data('id', id).hide().append(counter);
-            var_cache.categorys[id] = { i: counter, li: li, count: 0 };
+            li = $('<li>', {text: item[1], 'class': 'hide'}).data('id', id).append(counter);
+            var_cache.categorys[id] = { i: counter, li: li, count: 0, hide: 1 };
             content.push( li );
         }
         counter = $('<i>', {text: 0});
         li = $('<li>', {'class':'selected', text: _lang['cat_all']}).append(counter);
-        var_cache.categorys[undefined] = { i: counter, li: li, count: 0 };
+        var_cache.categorys[undefined] = { i: counter, li: li, count: 0, hide: 0 };
         content.unshift( li );
         dom_cache.categorys.append(content);
     };
@@ -1326,7 +1327,8 @@ var view = function() {
                 value.i.text(count_tr[key]);
             }
         });
-        var summ = 0;
+        var sum = 0;
+        var swith = false;
         $.each(var_cache.categorys, function(key, value) {
             if (key === 'undefined') {
                 return 1;
@@ -1334,20 +1336,28 @@ var view = function() {
             if (count_cat[key] === undefined) {
                 count_cat[key] = 0;
             }
-            summ += count_cat[key];
+            sum += count_cat[key];
             if (value.count !== count_cat[key]) {
-                if (value.count === 0 && count_cat[key] !== 0) {
-                    value.li.show();
-                } else if (value.count !== 0 && count_cat[key] === 0) {
-                    value.li.hide();
-                }
                 value.count = count_cat[key];
+                if (value.count === 0 && value.hide === 0) {
+                    value.hide = 1;
+                    value.li.addClass('hide');
+                    if (value.li.hasClass('selected')) {
+                        swith = true;
+                    }
+                } else if (value.count !== 0 && value.hide === 1) {
+                    value.hide = 0;
+                    value.li.removeClass('hide');
+                }
                 value.i.text(count_cat[key]);
             }
         });
-        if (var_cache.categorys[undefined].count !== summ) {
-            var_cache.categorys[undefined].count = summ;
-            var_cache.categorys[undefined].i.text(summ);
+        if (var_cache.categorys[undefined].count !== sum) {
+            var_cache.categorys[undefined].count = sum;
+            var_cache.categorys[undefined].i.text(sum);
+        }
+        if (swith === true) {
+            var_cache.categorys[undefined].li.trigger('click');
         }
     };
     return {

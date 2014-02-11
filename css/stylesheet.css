@@ -251,6 +251,9 @@ div.result_panel ul.categorys li.selected {
 ul.categorys > li > i {
     margin-left: 2px;
 }
+div.result_panel ul.categorys li.hide {
+    display: none;
+}
 div.right > div {
     margin-bottom: 10px;
     -webkit-user-select: none;
