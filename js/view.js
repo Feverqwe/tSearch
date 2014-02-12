@@ -193,10 +193,12 @@ var view = function() {
         dom_cache.search_input.autocomplete( "close" );
         engine.search(request, var_cache.currentTrackerList);
         var_cache.currentRequest = request;
+        setPage(request);
     };
     var home = function(){
         homeMode();
         engine.stop();
+        setPage();
     };
     var itemCheck = function(item, er) {
         /*
@@ -1504,6 +1506,69 @@ var view = function() {
         dom_cache.thead.append(tr);
         dom_cache.body.append( $('<style>', {'class': 'thead_size', text: style}) );
     };
+    var setPage = function(request) {
+        var title;
+        if (request === undefined) {
+            title = 'Torrents MultiSearch';
+            dom_cache.title.text(title);
+            window.history.pushState(undefined, title, 'index.html');
+            return;
+        }
+        title = request+' :: TMS';
+        var trackers;
+        if (var_cache.currentTrackerList.length > 0) {
+            trackers = JSON.stringify(var_cache.currentTrackerList);
+        }
+        dom_cache.title.text(title);
+        window.history.pushState(undefined, title,
+            'index.html#?search='+encodeURIComponent(request)+
+                ((trackers !== undefined)?'&tracker='+encodeURIComponent(trackers):'')
+        );
+    };
+    var selectCurrentTrackerList = function() {
+        for (var i = 0, item; item = var_cache.currentTrackerList[i]; i++) {
+            var_cache.trackers[item].link.addClass('selected');
+        }
+    };
+    var readUrl = function() {
+        var hash = window.location.hash;
+        var hash_len = hash.length;
+        if (hash_len === 0) {
+            return;
+        }
+        var item, i;
+        hash = hash.substr(hash.indexOf('?')+1);
+        var args = hash.split('&');
+        var params = {};
+        for (i = 0; item = args[i]; i++) {
+            var pos = item.indexOf('=');
+            var key = item.substr(0, pos);
+            params[key] = item.substr(pos+1);
+        }
+        if (params.search !== undefined) {
+            params.search = decodeURIComponent(params.search);
+        }
+        try {
+            if (params.tracker !== undefined) {
+                params.tracker = JSON.parse(decodeURIComponent(params.tracker));
+            }
+        } catch (error) {
+            delete  params.tracker;
+        }
+        if (params.tracker !== undefined) {
+            var_cache.currentTrackerList = [];
+            for (i = 0; item = params.tracker[i]; i++) {
+                if (var_cache.trackers[item] !== undefined) {
+                    var_cache.currentTrackerList.push(item);
+                }
+            }
+            selectCurrentTrackerList();
+        }
+        if (params.search !== undefined) {
+            dom_cache.search_input.val(params.search);
+            search(params.search);
+        }
+    };
     return {
         result: writeResult,
         auth: writeTrackerAuth,
@@ -1511,6 +1576,7 @@ var view = function() {
         begin: function() {
             dom_cache.body = $('body');
             dom_cache.html = $('html');
+            dom_cache.title = $('head').children('title');
             dom_cache.trackers_ul = $('ul.trackers');
             dom_cache.form_search = $('form[name="search"]');
             dom_cache.search_input = dom_cache.form_search.children('input.request');
@@ -1910,6 +1976,7 @@ var view = function() {
             if (options.resizableTrList === 1) {
                 initResizeble();
             }
+            readUrl();
         }
     }
 }();
