@@ -11,7 +11,7 @@ torrent_lib.tfile = function () {
         l: 1,
         rs: 1
     };
-    var xhr = null;
+    var xhr = undefined;
     var web = function () {
         var calculateCategory = function (n) {
             var n = String(n).replace(/.*f=([0-9]*)$/i, "$1");

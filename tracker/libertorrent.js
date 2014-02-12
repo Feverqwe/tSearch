@@ -16,7 +16,7 @@ torrent_lib.libertorrent = function () {
         l: 1,
         rs: 1
     };
-    var xhr = null;
+    var xhr = undefined;
     var web = function () {
         var readCode = function (c) {
             c = engine.contentFilter(c);

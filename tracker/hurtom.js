@@ -15,7 +15,7 @@ torrent_lib.hurtom = function () {
         l: 0,
         rs: 1
     };
-    var xhr = null;
+    var xhr = undefined;
     var web = function () {
         var calculateCategory = function (f) {
             var groups_arr = [

@@ -10,7 +10,7 @@ torrent_lib['nnm-club'] = function () {
         l: 1,
         rs: 1
     };
-    var xhr = null;
+    var xhr = undefined;
     var web = function () {
         var calculateCategory = function (n) {
             var groups_arr = [
@@ -72,7 +72,7 @@ torrent_lib['nnm-club'] = function () {
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr != undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',

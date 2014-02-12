@@ -15,7 +15,7 @@ torrent_lib.katushka = function () {
         l: 1,
         rs: 1
     };
-    var xhr = null;
+    var xhr = undefined;
     var web = function () {
         var calculateCategory = function (f) {
             f = f[f.length - 2];

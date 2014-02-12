@@ -16,7 +16,7 @@ torrent_lib['ru-board'] = function () {
         l: 1,
         rs: 1
     };
-    var xhr = null;
+    var xhr = undefined;
     var getCatName = function (id) {
         id = parseInt(id);
         if (id === 12) {
@@ -110,7 +110,7 @@ torrent_lib['ru-board'] = function () {
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr !== null) {
+            if (xhr !== undefined) {
                 xhr.abort();
             }
             xhr = $.ajax({

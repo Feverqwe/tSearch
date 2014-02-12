@@ -10,7 +10,7 @@ torrent_lib.opensharing = function () {
         l: 1,
         rs: 1
     };
-    var xhr = null;
+    var xhr = undefined;
     var web = function () {
         var calculateTime = function (s) {
             var d = s.split(' ');

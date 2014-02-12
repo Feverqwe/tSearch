@@ -6,6 +6,7 @@ var engine = function() {
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
         rn: new RegExp('[\\r\\n]+','g')
     };
+    var historyList = JSON.parse(GetSettings('history') || '[]');
     var isFF = window.Application !== undefined && Application.name === "Firefox";
     var currentTrList = {};
     var profileList = JSON.parse(GetSettings('profileList') || '{}');
@@ -419,7 +420,7 @@ var engine = function() {
             });
         }
         if (nohistory === undefined) {
-            updateHistory(text);
+            updateHistory(text, trackers);
         }
     };
     var stop = function() {
@@ -427,7 +428,7 @@ var engine = function() {
             tracker.stop();
         });
     };
-    var updateHistory = function(title) {
+    var updateHistory = function(title, trackers) {
         /*
          * добавляет поисковый запрос в историю.
          * если такой запрос уже есть - увеличивает кол-во попаданий и обновляет дату запроса.
@@ -435,7 +436,6 @@ var engine = function() {
         if (title.length === 0) {
             return;
         }
-        var historyList = JSON.parse(GetSettings('history') || '[]');
         var found = false;
         var oldest_time;
         var oldest_item;
@@ -454,7 +454,8 @@ var engine = function() {
             historyList.push({
                 title: title,
                 count: 1,
-                time: (new Date()).getTime()
+                time: parseInt((new Date()).getTime() / 1000),
+                trackers: (trackers.length > 0)?trackers:undefined
             });
         }
         if (historyList.length > 200) {
@@ -514,6 +515,7 @@ var engine = function() {
         getProfileList: getProfileList,
         search: search,
         stop: stop,
+        history: historyList,
         //need options:
         getDefList: function () {
             return wrapAllCustomTrList(getDefaultList());

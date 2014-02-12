@@ -15,7 +15,7 @@ torrent_lib.btdigg = function () {
         l: 1,
         rs: 1
     };
-    var xhr = null;
+    var xhr = undefined;
     var web = function () {
         var calculateTime = function (t) {
             var old = parseFloat(t.replace(/\s/, ' ').split(' ')[0]) * 24 * 60 * 60;

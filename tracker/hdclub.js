@@ -15,7 +15,7 @@ torrent_lib.hdclub = function () {
         l: 1,
         rs: 1
     };
-    var xhr = null;
+    var xhr = undefined;
     var web = function () {
         var calculateCategory = function (f) {
             if (f == "Animation")

@@ -10,7 +10,7 @@ torrent_lib.mininova = function () {
         l: 0,
         rs: 0
     };
-    var xhr = null;
+    var xhr = undefined;
     var web = function () {
         var calculateCategory = function (f) {
             var groups_arr = [

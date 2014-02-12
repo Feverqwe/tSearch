@@ -16,7 +16,7 @@ torrent_lib.piratca = function () {
         l: 1,
         rs: 1
     };
-    var xhr = null;
+    var xhr = undefined;
     var web = function () {
         var calculateCategory = function (f) {
             var groups_arr = [
@@ -72,7 +72,7 @@ torrent_lib.piratca = function () {
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr !== null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'POST',

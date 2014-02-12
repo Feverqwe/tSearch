@@ -24,42 +24,46 @@ var view = function() {
         text2safe_regexp_text: new RegExp('([{})(\\][\\\\\\.^$\\|\\?\\+])','g'),
         rm_retry: new RegExp('<\\/span>(.?)<span class="sub_name">|<\\/b>(.?)<b>', 'g'),
         rm_spaces: new RegExp('\\s+','g'),
-        //массив содержащий всю информацию и dom элемент торрентов
+        // массив содержащий всю информацию и dom элемент торрентов
         table_dom: [],
-        //сортировка по возрастанию или убыванию
+        // сортировка по возрастанию или убыванию
         table_sort_by: 0,
-        //столбец для сортировки
+        // столбец для сортировки
         table_sort_colum: 'quality',
-        //массив содержащий текущий порядок списка
+        // массив содержащий текущий порядок списка
         table_sort_pos: [],
-        //фильтр времени
+        // фильтр времени
         timeFilter: undefined,
-        //фильтр по размеру
+        // фильтр по размеру
         sizeFilter: undefined,
-        //фильтр по словам
+        // фильтр по словам
         keywordFilter: undefined,
-        //фильтр по сидам
+        // фильтр по сидам
         seedFilter: undefined,
-        //фильтр по пирам
+        // фильтр по пирам
         peerFilter: undefined,
-        //таймер до наступления фильтрации списка
+        // таймер до наступления фильтрации списка
         filterTimer: undefined,
-        //Время таймера фильтрации
+        // Время таймера фильтрации
         filterTimerValue: 250,
-        //список трекеров профиля
+        // список трекеров профиля
         trackers: {},
-        //текущий запрос
+        // текущий запрос
         currentRequest: undefined,
-        //массив с выделенными трекерами
+        // массив с выделенными трекерами
         currentTrackerList: [],
-        //текущая категория
+        // текущая категория
         currentCategory: undefined,
-        //кэш категорий
+        // кэш категорий
         categorys: {},
-        //фильтр стиль
+        // фильтр стиль
         filter_string: '0,0,0,0,0',
-        //счетчик
-        counter: {}
+        // счетчик
+        counter: {},
+        // таймер при скроле
+        window_scroll_timer: undefined,
+        // xhr для автозаполнения
+        suggest_xhr: undefined
     };
     var dom_cache = {};
 
@@ -76,7 +80,8 @@ var view = function() {
         filter_panel_to_left: parseInt(GetSettings('filter_panel_to_left') || 1),
         resizableTrList: parseInt(GetSettings('torrent_list_r') || 0),
         trListHeight: GetSettings('torrent_list_h'),
-        parenthetical_select_enable: parseInt(GetSettings('sub_select_enable') || 1)
+        parenthetical_select_enable: parseInt(GetSettings('sub_select_enable') || 1),
+        autoComplete: parseInt(GetSettings('AutoComplite_opt') || 1)
     };
     var writeTrackerList = function(trList) {
         var_cache.trackers = {};
@@ -203,6 +208,10 @@ var view = function() {
         if (typeof item.category.title !== 'string' || item.category.title.length === 0) {
             item.category.title = undefined;
             er[1] += 1;
+        } else {
+            if (item.category.title.indexOf('#block') !== -1) {
+                item.category.title = engine.contentUnFilter(item.category.title);
+            }
         }
         if (typeof item.category.url !== 'string' || item.category.url.length === 0) {
             item.category.url = null;
@@ -583,7 +592,6 @@ var view = function() {
         return filter;
     };
     var writeResult = function(id, result, request) {
-        console.time(id);
         setTrackerLoadingState(1, id);
         var tracker = var_cache.trackers[id].tracker;
         if (tracker === undefined) {
@@ -679,7 +687,6 @@ var view = function() {
         log_errors(tracker, errors);
         table_sort();
         updateCounts();
-        console.timeEnd(id);
     };
     var checkForSymbol = function(char) {
         var code = char.charCodeAt(0);
@@ -1407,6 +1414,59 @@ var view = function() {
             }
         });
     };
+    var addAutocomplete = function() {
+        function getHistory() {
+            /*
+             * Отдает массив поисковых запросов из истории
+             */
+            var history = engine.history.slice(0);
+            history.sort(function(a,b){
+                if (a.count === b.count) {
+                    return 0;
+                } else if (a.count < b.count) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            });
+            var list = [];
+            for (var i = 0, item; item = history[i]; i++) {
+                list.push(item.title);
+            }
+            return list;
+        }
+        dom_cache.search_input.autocomplete({
+            source: function(a, response) {
+                if (a.term.length === 0 || options.autoComplete === 0) {
+                    response(getHistory());
+                } else {
+                    if (var_cache.suggest_xhr !== undefined) {
+                        var_cache.suggest_xhr.abort();
+                    }
+                    var_cache.suggest_xhr = $.getJSON('http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(a.term)).success(
+                        function(data) {
+                            response(data[1]);
+                        }
+                    );
+                }
+            },
+            /*
+             * experimental API
+             */
+            messages: {
+                noResults: '',
+                results: function() {}
+            },
+            minLength: 0,
+            select: function(event, ui) {
+                this.value = ui.item.value;
+                dom_cache.form_search.trigger('submit');
+            },
+            position: {
+                collision: "bottom"
+            }
+        });
+    };
     return {
         result: writeResult,
         auth: writeTrackerAuth,
@@ -1416,6 +1476,7 @@ var view = function() {
             dom_cache.trackers_ul = $('ul.trackers');
             dom_cache.form_search = $('form[name="search"]');
             dom_cache.search_input = dom_cache.form_search.children('input[type="text"]');
+            dom_cache.search_btn_clear = dom_cache.form_search.children('div.btn.clear');
             dom_cache.explore = $('div.explore');
             dom_cache.result_panel = $('div.result_panel');
             dom_cache.about_panel = dom_cache.result_panel.children('div.about_panel');
@@ -1428,6 +1489,8 @@ var view = function() {
             dom_cache.word_filter_btn = $('div.word_filter div.btn');
             dom_cache.categorys = $('ul.categorys');
             dom_cache.torrent_list = dom_cache.trackers_ul.parent();
+            dom_cache.window = $(window);
+            dom_cache.topbtn = $('div.topbtn');
             if (GetSettings('table_sort_colum') !== undefined) {
                 var_cache.table_sort_colum = GetSettings('table_sort_colum');
             }
@@ -1445,7 +1508,7 @@ var view = function() {
             if (options.filter_panel_to_left === 1) {
                 $("div.content div.right").css({"float": "left", "padding-left": "5px"});
                 $("div.content div.left").css({"margin-left": "180px", "margin-right": "0"});
-                $("div.topbtn").css({"right": "auto"});
+                dom_cache.topbtn.css({"right": "auto"});
             }
 
             dom_cache.form_search.on('submit', function(e){
@@ -1460,9 +1523,40 @@ var view = function() {
                 e.preventDefault();
                 window.location = 'history.html';
             });
+            dom_cache.search_btn_clear.on("click", function(event) {
+                event.preventDefault();
+                $(this).hide();
+                dom_cache.search_input.val('').focus();
+            });
+            dom_cache.search_input.on('keyup', function() {
+                if (this.value.length > 0) {
+                    dom_cache.search_btn_clear.show();
+                } else {
+                    dom_cache.search_btn_clear.hide();
+                }
+            });
+            addAutocomplete();
             dom_cache.thead.on('click', 'th', function(e) {
                 e.preventDefault();
                 setColumSort($(this));
+            });
+            dom_cache.window.on('scroll',function() {
+                clearTimeout(var_cache.window_scroll_timer);
+                var_cache.window_scroll_timer = setTimeout(function() {
+                    if (dom_cache.window.scrollTop() > 100) {
+                        dom_cache.topbtn.fadeIn('fast');
+                    } else {
+                        dom_cache.topbtn.fadeOut('fast');
+                    }
+                }, 250);
+            });
+            dom_cache.topbtn.on("click", function(event) {
+                event.preventDefault();
+                dom_cache.body.scrollTop(150);
+                dom_cache.body.animate({
+                    scrollTop: 0
+                }, 200);
+                return false;
             });
             dom_cache.categorys.on('click', 'li', function(e){
                 e.preventDefault();

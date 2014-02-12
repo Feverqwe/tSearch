@@ -10,7 +10,7 @@ torrent_lib.kinozal = function () {
         l: 1,
         rs: 1
     };
-    var xhr = null;
+    var xhr = undefined;
     var web = function () {
         var calculateSize = function (s) {
             var size = s.replace(' ', '');
@@ -194,7 +194,7 @@ torrent_lib.kinozal = function () {
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr !== null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
