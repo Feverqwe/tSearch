@@ -20,6 +20,10 @@ var view = function() {
             "телеп|эрот|xxx|porn|порно|сайтр|тв[\-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
             "утилит|book|game|tv |tv$|manga", "g"),
         rm_pre_tag_regexp: new RegExp("\\(.*\\)|\\[.*\\]", 'g'),
+        found_parenthetical: new RegExp('(\\[[^\\]]*\\]|\\([^\\)]*\\))','g'),
+        text2safe_regexp_text: new RegExp('([{})(\\][\\\\\\.^$\\|\\?\\+])','g'),
+        rm_retry: new RegExp('<\\/span>(.?)<span class="sub_name">|<\\/b>(.?)<b>', 'g'),
+        rm_spaces: new RegExp('\\s+','g'),
         //массив содержащий всю информацию и dom элемент торрентов
         table_dom: [],
         //сортировка по возрастанию или убыванию
@@ -68,7 +72,11 @@ var view = function() {
     var SubCategoryFilter = parseInt(GetSettings('SubCategoryFilter') || 0);
 
     var options = {
-        single_filter_mode: true
+        single_filter_mode: true,
+        filter_panel_to_left: parseInt(GetSettings('filter_panel_to_left') || 1),
+        resizableTrList: parseInt(GetSettings('torrent_list_r') || 0),
+        trListHeight: GetSettings('torrent_list_h'),
+        parenthetical_select_enable: parseInt(GetSettings('sub_select_enable') || 1)
     };
     var writeTrackerList = function(trList) {
         var_cache.trackers = {};
@@ -575,6 +583,7 @@ var view = function() {
         return filter;
     };
     var writeResult = function(id, result, request) {
+        console.time(id);
         setTrackerLoadingState(1, id);
         var tracker = var_cache.trackers[id].tracker;
         if (tracker === undefined) {
@@ -670,6 +679,7 @@ var view = function() {
         log_errors(tracker, errors);
         table_sort();
         updateCounts();
+        console.timeEnd(id);
     };
     var checkForSymbol = function(char) {
         var code = char.charCodeAt(0);
@@ -921,12 +931,11 @@ var view = function() {
     };
     var sub_select = function(name) {
         //выделяет то, что в скобках
-        /*
-         if (!_sub_select_enable) {
-         return name;
-         }
-         */
-        return name.replace(/(\[[^\]]*\]|\([^\)]*\))/g, '<span class="sub_name">$1</span>');
+        if (options.parenthetical_select_enable === 0) {
+            return name;
+        }
+        name = name.replace(var_cache.found_parenthetical, '<span class="sub_name">$1</span>').replace(var_cache.rm_retry,'$1$2');
+        return name;
     };
     var syntaxCacheRequest = function(request) {
         var year = request.match(/[1-2]{1}[0-9]{3}/);
@@ -940,15 +949,15 @@ var view = function() {
             }
         }
         var_cache.syntaxCache = {};
-        var_cache.syntaxCache.normalize_request = $.trim(request).replace(/\s+/g, " ");
-        var safe_regexp = var_cache.syntaxCache.normalize_request.replace(/([{})(\][\\\.^$\|\?\+])/g,"\\$1");
+        var_cache.syntaxCache.normalize_request = $.trim(request).replace(var_cache.rm_spaces, " ");
+        var safe_regexp = var_cache.syntaxCache.normalize_request.replace(var_cache.text2safe_regexp_text,"\\$1");
         var_cache.syntaxCache.words = safe_regexp.toLowerCase().split(' ');
         var_cache.syntaxCache.normalize_request_low = var_cache.syntaxCache.normalize_request.toLowerCase();
         var_cache.syntaxCache.words_len = var_cache.syntaxCache.words.length;
         var_cache.syntaxCache.words_is_regexp = new RegExp(var_cache.syntaxCache.words.join('|'), "ig");
         if (year !== null) {
             var_cache.syntaxCache.year = year;
-            var_cache.syntaxCache.normalize_request_no_year = $.trim(var_cache.syntaxCache.normalize_request.replace(new RegExp('\\s?'+year+'\\s?','g'),' ').replace(/\s+/g, " "));
+            var_cache.syntaxCache.normalize_request_no_year = $.trim(var_cache.syntaxCache.normalize_request.replace(new RegExp('\\s?'+year+'\\s?','g'),' ').replace(var_cache.rm_spaces, " "));
             var_cache.syntaxCache.normalize_request_no_year_low = var_cache.syntaxCache.normalize_request_no_year.toLowerCase();
         }
         var_cache.syntaxCache.word_rate = Math.round(200 / var_cache.syntaxCache.words_len);
@@ -1378,6 +1387,26 @@ var view = function() {
         SetSettings('table_sort_colum', colum);
         SetSettings('table_sort_by', by);
     };
+    var initResizeble = function() {
+        dom_cache.torrent_list.resizable({
+            minHeight: 40,
+            resize: function(e, ui) {
+                var ul = dom_cache.trackers_ul;
+                var top = ul.position().top;
+                ul.css('height', ui.size.height - top + 'px');
+            },
+            stop: function(e, ui) {
+                SetSettings('torrent_list_h', ui.size.height);
+                options.trListHeight = ui.size.height;
+            },
+            create: function(e, ui) {
+                if (options.trListHeight !== undefined) {
+                    dom_cache.torrent_list.css('height', options.trListHeight).attr('aria-disabled', 'false');
+                    dom_cache.trackers_ul.css('height', options.trListHeight - dom_cache.trackers_ul.position().top);
+                }
+            }
+        });
+    };
     return {
         result: writeResult,
         auth: writeTrackerAuth,
@@ -1398,6 +1427,7 @@ var view = function() {
             dom_cache.word_filter = $('div.word_filter input');
             dom_cache.word_filter_btn = $('div.word_filter div.btn');
             dom_cache.categorys = $('ul.categorys');
+            dom_cache.torrent_list = dom_cache.trackers_ul.parent();
             if (GetSettings('table_sort_colum') !== undefined) {
                 var_cache.table_sort_colum = GetSettings('table_sort_colum');
             }
@@ -1412,6 +1442,28 @@ var view = function() {
             writeCategory();
             writeProfileList(engine.getProfileList());
             engine.loadProfile(undefined, writeTrackerList);
+            if (options.filter_panel_to_left === 1) {
+                $("div.content div.right").css({"float": "left", "padding-left": "5px"});
+                $("div.content div.left").css({"margin-left": "180px", "margin-right": "0"});
+                $("div.topbtn").css({"right": "auto"});
+            }
+
+            dom_cache.form_search.on('submit', function(e){
+                e.preventDefault();
+                search(dom_cache.search_input.val());
+            });
+            $('input.sbutton.main').on("click", function(e) {
+                e.preventDefault();
+                home();
+            });
+            $('input.sbutton.history').on("click", function(e) {
+                e.preventDefault();
+                window.location = 'history.html';
+            });
+            dom_cache.thead.on('click', 'th', function(e) {
+                e.preventDefault();
+                setColumSort($(this));
+            });
             dom_cache.categorys.on('click', 'li', function(e){
                 e.preventDefault();
                 var $this = $(this);
@@ -1442,11 +1494,29 @@ var view = function() {
                 }
                 startFilterByTracker();
             });
-            dom_cache.form_search.on('submit', function(e){
-                e.preventDefault();
-                search(dom_cache.search_input.val());
+            dom_cache.torrent_list.on('dblclick', function(e) {
+                if (e.target.tagName === "A" || e.target.tagName === "SELECT") {
+                    return;
+                }
+                if (options.resizableTrList === 1) {
+                    options.resizableTrList = 0;
+                    dom_cache.torrent_list.resizable("disable");
+                    dom_cache.torrent_list.css('height', 'auto');
+                    dom_cache.trackers_ul.css('height', 'auto');
+                    dom_cache.torrent_list.children("div.ui-resizable-s").hide();
+                } else {
+                    options.resizableTrList = 1;
+                    if (dom_cache.torrent_list.hasClass('ui-resizable') === false) {
+                        initResizeble();
+                    } else {
+                        dom_cache.trackers_ul.css('height', options.trListHeight - dom_cache.trackers_ul.position().top);
+                        dom_cache.torrent_list.children("div.ui-resizable-s").show();
+                        dom_cache.torrent_list.resizable("enable");
+                    }
+                }
+                SetSettings('torrent_list_r', options.resizableTrList);
             });
-            dom_cache.word_filter.keyup(function() {
+            dom_cache.word_filter.on('keyup', function() {
                 var value = $(this).val();
                 var value_len = value.length;
                 if (var_cache.keywordFilter === undefined) {
@@ -1474,10 +1544,10 @@ var view = function() {
                         continue;
                     }
                     if (item.substr(0,1) === '-') {
-                        safe_item = item.substr(1).replace(/([{})(\][\\\.^$\|\?\+])/g,"\\$1");
+                        safe_item = item.substr(1).replace(var_cache.text2safe_regexp_text,"\\$1");
                         exc.push(safe_item);
                     } else {
-                        safe_item = item.replace(/([{})(\][\\\.^$\|\?\+])/g,"\\$1");
+                        safe_item = item.replace(var_cache.text2safe_regexp_text,"\\$1");
                         inc.push(safe_item);
                     }
                 }
@@ -1505,7 +1575,7 @@ var view = function() {
             dom_cache.word_filter_btn.on("click", function() {
                 dom_cache.word_filter.val('').trigger('keyup');
             });
-            $('div.size_filter').find('input').keyup(function() {
+            $('div.size_filter').on('keyup', 'input', function() {
                 if (var_cache.sizeFilter === undefined) {
                     var_cache.sizeFilter = {
                         from: 0,
@@ -1533,7 +1603,7 @@ var view = function() {
                 var_cache.filterTimer = setTimeout(function() {
                     startFiltering();
                 }, var_cache.filterTimerValue);
-            }).on('dblclick', function() {
+            }).on('dblclick', 'input', function() {
                 $(this).val('').trigger('keyup');
             });
             dom_cache.time_filter.find('input').datepicker({
@@ -1573,7 +1643,8 @@ var view = function() {
                     }
                     startFiltering();
                 }
-            }).on('dblclick', function() {
+            });
+            dom_cache.time_filter.on('dblclick', 'input', function() {
                 $(this).val('');
                 var dateList = $('.time_filter').find('input');
                 var st = ex_kit.format_date(1, dateList.eq(0).val());
@@ -1637,7 +1708,7 @@ var view = function() {
                 }
                 startFiltering();
             });
-            $('div.seed_filter').find('input').keyup(function() {
+            $('div.seed_filter').on('keyup', 'input', function() {
                 if (HideSeed) {
                     return;
                 }
@@ -1667,10 +1738,10 @@ var view = function() {
                 var_cache.filterTimer = setTimeout(function() {
                     startFiltering();
                 }, var_cache.filterTimerValue);
-            }).on('dblclick', function() {
+            }).on('dblclick', 'input', function() {
                 $(this).val('').trigger('keyup');
             });
-            $('div.peer_filter').find('input').keyup(function() {
+            $('div.peer_filter').on('keyup', 'input', function() {
                 if (HideLeech) {
                     return;
                 }
@@ -1700,19 +1771,13 @@ var view = function() {
                 var_cache.filterTimer = setTimeout(function() {
                     startFiltering();
                 }, var_cache.filterTimerValue);
-            }).on('dblclick', function() {
+            }).on('dblclick', 'input', function() {
                 $(this).val('').trigger('keyup');
             });
-            $('input.sbutton.main').on("click", function() {
-                home();
-            });
-            $('input.sbutton.history').on("click", function() {
-                window.location = 'history.html';
-            });
-            dom_cache.thead.on('click', 'th', function(e) {
-                e.preventDefault();
-                setColumSort($(this));
-            })
+            $('div.content').removeClass('loading');
+            if (options.resizableTrList === 1) {
+                initResizeble();
+            }
         }
     }
 }();

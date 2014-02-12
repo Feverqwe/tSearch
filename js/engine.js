@@ -1,4 +1,11 @@
 var engine = function() {
+    var var_cache = {
+        block_href:  new RegExp('\\/\\/','img'),
+        block_src:   new RegExp(' src=([\'"]?)','img'),
+        unblock_src: new RegExp('data:image\\/gif,base64#blockrurl#','mg'),
+        unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
+        rn: new RegExp('[\\r\\n]+','g')
+    };
     var isFF = window.Application !== undefined && Application.name === "Firefox";
     var currentTrList = {};
     var profileList = JSON.parse(GetSettings('profileList') || '{}');
@@ -128,7 +135,7 @@ var engine = function() {
                             er[3] += 1;
                             continue;
                         }
-                        obj.url = obj.url.replace(/[\r\n]+/g, "");
+                        obj.url = obj.url.replace(var_cache.rn, "");
                         if (ex_tr_link_r === 1) {
                             if (obj.url[0] === '/') {
                                 obj.url = short_url + obj.url;
@@ -143,7 +150,7 @@ var engine = function() {
                                 obj.size = (td.find(me.tr_size)).text();
                             }
                             if (obj.size !== undefined && obj.size.length !== 0) {
-                                obj.size = obj.size.replace(/[\r\n]+/g, "");
+                                obj.size = obj.size.replace(var_cache.rn, "");
                                 if (ex_size_regexp === 1) {
                                     obj.size = obj.size.replace(new RegExp(me.size_r, "ig"), me.size_rp);
                                 }
@@ -161,7 +168,7 @@ var engine = function() {
                         if (ex_tr_dl === 1) {
                             obj.dl = (td.find(me.tr_dl)).attr('href');
                             if (obj.dl !== undefined) {
-                                obj.dl = obj.dl.replace(/[\r\n]+/g, "");
+                                obj.dl = obj.dl.replace(var_cache.rn, "");
                                 if (ex_tr_dl_r === 1) {
                                     if (obj.dl[0] === '/') {
                                         obj.dl = short_url + obj.dl;
@@ -176,7 +183,7 @@ var engine = function() {
                         if (ex_seed === 1) {
                             obj.seeds = (td.find(me.seed)).text();
                             if (obj.seeds.length !== 0) {
-                                obj.seeds = obj.seeds.replace(/[\r\n]+/g, "");
+                                obj.seeds = obj.seeds.replace(var_cache.rn, "");
                                 if (ex_seed_regexp === 1) {
                                     obj.seeds = obj.seeds.replace(new RegExp(me.seed_r, "ig"), me.seed_rp);
                                 }
@@ -191,7 +198,7 @@ var engine = function() {
                         if (ex_peer === 1) {
                             obj.leechs = (td.find(me.peer)).text();
                             if (obj.leechs.length !== 0) {
-                                obj.leechs = obj.leechs.replace(/[\r\n]+/g, "");
+                                obj.leechs = obj.leechs.replace(var_cache.rn, "");
                                 if (ex_peer_regexp === 1) {
                                     obj.leechs = obj.leechs.replace(new RegExp(me.peer_r, "ig"), me.peer_rp);
                                 }
@@ -210,7 +217,7 @@ var engine = function() {
                                 obj.time = (td.find(me.date)).text();
                             }
                             if (obj.time !== undefined && obj.time.length !== 0) {
-                                obj.time = obj.time.replace(/[\r\n]+/g, "");
+                                obj.time = obj.time.replace(var_cache.rn, "");
                                 if (ex_date_regexp === 1) {
                                     obj.time = obj.time.replace(new RegExp(me.t_r, "ig"), me.t_r_r);
                                 }
@@ -457,10 +464,10 @@ var engine = function() {
         //view.AddAutocomplete();
     };
     var contentFilter = function(content) {
-        return content.replace(/\/\//img, '//about:blank#blockurl#').replace(/ src=(['"]?)/img, ' src=$1data:image/gif,base64#blockrurl#');
+        return content.replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
     };
     var contentUnFilter = function(content) {
-        return content.replace(/data:image\/gif,base64#blockrurl#/mg, '').replace(/\/\/about:blank#blockurl#/mg, '//');
+        return content.replace(var_cache.unblock_src, '').replace(var_cache.unblock_href, '//');
     };
     if (isFF) {
         var parseHTML = function(doc, html, allowStyle, baseURI, isXML) {
