@@ -24,6 +24,8 @@ var view = function() {
         text2safe_regexp_text: new RegExp('([{})(\\][\\\\\\.^$\\|\\?\\+])','g'),
         rm_retry: new RegExp('<\\/span>(.?)<span class="sub_name">|<\\/b>(.?)<b>', 'g'),
         rm_spaces: new RegExp('\\s+','g'),
+        long_string: new RegExp('[^\\s]{100,}'),
+        split_long_string: new RegExp('.{0,100}', 'g'),
         // массив содержащий всю информацию и dom элемент торрентов
         table_dom: [],
         // сортировка по возрастанию или убыванию
@@ -67,13 +69,22 @@ var view = function() {
     };
     var dom_cache = {};
 
-    var HideLeech = parseInt(GetSettings('HideLeech') || 1);
+    var HideLeech = parseInt(GetSettings('HideLeech') || 0);
     var HideSeed = parseInt(GetSettings('HideSeed') || 0);
     var ShowIcons = parseInt(GetSettings('ShowIcons') || 1);
     var HideZeroSeed = parseInt(GetSettings('HideZeroSeed') || 0);
     var AdvFiltration = parseInt(GetSettings('AdvFiltration') || 2);
     var TeaserFilter = parseInt(GetSettings('TeaserFilter') || 1);
     var SubCategoryFilter = parseInt(GetSettings('SubCategoryFilter') || 0);
+
+    var table_colums = [
+        {title: _lang.table.time, text: _lang.table.time, type: 'time', size: 125},
+        {title: _lang.table.quality[1], text: _lang.table.quality[0], type: 'quality', size: 31},
+        {title: _lang.table.title, text: _lang.table.title, type: 'title'},
+        {title: _lang.table.size, text: _lang.table.size, type: 'size', size: 80},
+        {title: _lang.table.seeds[1], text: _lang.table.seeds[0], type: 'seeds', size: 30},
+        {title: _lang.table.leechs[1], text: _lang.table.leechs[0], type: 'leechs', size: 30}
+    ];
 
     var options = {
         single_filter_mode: true,
@@ -176,6 +187,7 @@ var view = function() {
         clear_table();
         searchMode();
         syntaxCacheRequest(request);
+        dom_cache.search_input.autocomplete( "close" );
         engine.search(request, var_cache.currentTrackerList);
         var_cache.currentRequest = request;
     };
@@ -196,6 +208,10 @@ var view = function() {
             if (item.title.indexOf('#block') !== -1) {
                 item.title = engine.contentUnFilter(item.title);
             }
+            var isLongTitle = var_cache.long_string.test(item.title);
+            if (isLongTitle === true) {
+                item.title = item.title.match(var_cache.split_long_string).join(' ');
+            }
         }
         if (item.category === undefined) {
             item.category = {
@@ -211,6 +227,10 @@ var view = function() {
         } else {
             if (item.category.title.indexOf('#block') !== -1) {
                 item.category.title = engine.contentUnFilter(item.category.title);
+            }
+            var isLongTitle = var_cache.long_string.test(item.category.title);
+            if (isLongTitle === true) {
+                item.category.title = item.category.title.match(var_cache.split_long_string).join(' ');
             }
         }
         if (typeof item.category.url !== 'string' || item.category.url.length === 0) {
@@ -638,28 +658,25 @@ var view = function() {
             var td_category = '';
             if (item.category.title !== undefined) {
                 if (item.category.url === undefined) {
-                    td_category = $('<ul>').append(
-                        $('<li>', {'class': 'category', text: item.category.title}).append(td_icon)
-                    );
+                    td_category = $('<div>', {'class': 'category', text: item.category.title}).append(td_icon)
                 } else {
-                    td_category = $('<ul>').append(
-                        $('<li>', {'class': 'category'}).append(
-                            $('<a>', {href: item.category.url, target: "_blank", text: item.category.title}),
-                            td_icon
-                        )
+                    td_category = $('<div>', {'class': 'category'}).append(
+                        $('<a>', {href: item.category.url, target: "_blank", text: item.category.title}),
+                        td_icon
                     );
                 }
             }
             var td_download;
             if (item.dl !== undefined) {
+                var isBlank = true;//(item.dl.substr(0, 7).toLowerCase() !== 'magnet:');
                 td_download = $('<td>', {'class': 'size'}).append(
-                    $('<a>', {href: item.dl, target: '_blank', text: bytesToSize(item.size) + ' ↓'})
+                    $('<div>').append( $('<a>', {href: item.dl, target: (isBlank === true)?'_blank':'', text: bytesToSize(item.size) + ' ↓'}) )
                 );
             } else {
-                td_download = $('<td>', {'class': 'size', text: bytesToSize(item.size)});
+                td_download = $('<td>', {'class': 'size'}).append( $('<div>', {text: bytesToSize(item.size)}) );
             }
             table_dom_item.node = $('<tr>', {'data-filter': table_dom_item.filter, 'data-tracker': tracker.class_name, 'data-category': item.category.id}).data('id', item_id).append(
-                $('<td>', {'class': 'time', title: u2ddmmyyyy_title(item.time), text: u2timeago(item.time)}),
+                $('<td>', {'class': 'time', title: u2ddmmyyyy_title(item.time)}).append( $('<div>', {text: u2timeago(item.time)}) ),
                 $('<td>', {'class': 'quality'/*, 'data-value': quality.value, 'data-qgame': quality.game, 'data-qseed': quality.seed, 'data-qname': quality.name, 'data-qvideo': quality.video, 'data-qmusic': quality.music, 'data-qbook': quality.book*/}).append(
                     $('<div>', {'class': 'progress'}).append(
                         $('<div>').css('width', parseInt(quality.value / 15) + 'px'),
@@ -668,13 +685,14 @@ var view = function() {
                 ),
                 $('<td>', {'class': 'title'}).append(
                     $('<div>', {'class': 'title'}).append(
-                        $('<a>', {href: item.url, target: "_blank"}).append(title_highLight),
-                        (item.category.title === undefined) ? td_icon : ''
+                        $('<span>').append(
+                            $('<a>', {href: item.url, target: "_blank"}).append(title_highLight)
+                        ), (item.category.title === undefined) ? td_icon : ''
                     ), td_category
                 ),
                 td_download,
-                (HideSeed === 1) ? '' : $('<td>', {'class': 'seeds', text: item.seeds}),
-                (HideLeech === 1) ? '' : $('<td>', {'class': 'leechs', text: item.leechs})
+                (HideSeed === 1) ? '' : $('<td>', {'class': 'seeds'}).append( $('<div>', {text: item.seeds}) ),
+                (HideLeech === 1) ? '' : $('<td>', {'class': 'leechs'}).append( $('<div>', {text: item.leechs}) )
             );
             var_cache.table_dom.push(table_dom_item);
             if (var_cache.counter[id][item.category.id] === undefined) {
@@ -1467,15 +1485,32 @@ var view = function() {
             }
         });
     };
+    var writeTableHead = function() {
+        var tr = $('<tr>');
+        var style = '';
+        var sortBy = (var_cache.table_sort_by === 0)?'sortUp':'sortDown';
+        for (var i = 0, item; item = table_colums[i]; i++) {
+            tr.append( $('<th>', {'class': item.type+((var_cache.table_sort_colum === item.type)?' '+sortBy:''), title: item.title})
+                .data('type', item.type)
+                .append( $('<span>', {text: item.text}) )
+            );
+            if (item.size !== undefined) {
+                style += 'thead>tr>th.'+item.type+'{width:'+item.size+'px;}';
+            }
+        }
+        dom_cache.thead.append(tr);
+        dom_cache.body.append( $('<style>', {'class': 'thead_size', text: style}) );
+    };
     return {
         result: writeResult,
         auth: writeTrackerAuth,
         loadingStatus: setTrackerLoadingState,
         begin: function() {
             dom_cache.body = $('body');
+            dom_cache.html = $('html');
             dom_cache.trackers_ul = $('ul.trackers');
             dom_cache.form_search = $('form[name="search"]');
-            dom_cache.search_input = dom_cache.form_search.children('input[type="text"]');
+            dom_cache.search_input = dom_cache.form_search.children('input.request');
             dom_cache.search_btn_clear = dom_cache.form_search.children('div.btn.clear');
             dom_cache.explore = $('div.explore');
             dom_cache.result_panel = $('div.result_panel');
@@ -1486,7 +1521,7 @@ var view = function() {
             dom_cache.time_filter = $('.time_filter');
             dom_cache.time_filter_select = dom_cache.time_filter.find('select');
             dom_cache.word_filter = $('div.word_filter input');
-            dom_cache.word_filter_btn = $('div.word_filter div.btn');
+            dom_cache.word_filter_btn = $('div.word_filter div.btn.clear');
             dom_cache.categorys = $('ul.categorys');
             dom_cache.torrent_list = dom_cache.trackers_ul.parent();
             dom_cache.window = $(window);
@@ -1497,16 +1532,12 @@ var view = function() {
             if (GetSettings('table_sort_by') !== undefined) {
                 var_cache.table_sort_by = parseInt(GetSettings('table_sort_by'));
             }
-            if (var_cache.table_sort_by === 1) {
-                dom_cache.thead.children().children('th.'+var_cache.table_sort_colum).addClass('sortDown');
-            } else {
-                dom_cache.thead.children().children('th.'+var_cache.table_sort_colum).addClass('sortUp');
-            }
+            writeTableHead();
             writeCategory();
             writeProfileList(engine.getProfileList());
             engine.loadProfile(undefined, writeTrackerList);
             if (options.filter_panel_to_left === 1) {
-                $("div.content div.right").css({"float": "left", "padding-left": "5px"});
+                $("div.content div.right").css({"float": "left", "padding-left": "5px", "padding-right": '0'});
                 $("div.content div.left").css({"margin-left": "180px", "margin-right": "0"});
                 dom_cache.topbtn.css({"right": "auto"});
             }
@@ -1515,11 +1546,11 @@ var view = function() {
                 e.preventDefault();
                 search(dom_cache.search_input.val());
             });
-            $('input.sbutton.main').on("click", function(e) {
+            $('input.button.main').on("click", function(e) {
                 e.preventDefault();
                 home();
             });
-            $('input.sbutton.history').on("click", function(e) {
+            $('input.button.history').on("click", function(e) {
                 e.preventDefault();
                 window.location = 'history.html';
             });
@@ -1552,8 +1583,8 @@ var view = function() {
             });
             dom_cache.topbtn.on("click", function(event) {
                 event.preventDefault();
-                dom_cache.body.scrollTop(150);
-                dom_cache.body.animate({
+                dom_cache.html.scrollTop(150);
+                dom_cache.html.animate({
                     scrollTop: 0
                 }, 200);
                 return false;

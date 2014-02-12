@@ -5,7 +5,6 @@
         <meta charset="utf-8" />
         <link rel="shortcut icon" href="images/icon_16.png">
         <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
-        <link rel="stylesheet" type="text/css" href="css/apprise.css">
         <script src="js/jquery-2.1.0.min.js"></script>
         <script src="js/jquery-ui-1.10.4.custom.min.js"></script>
         <script src="js/storage.js"></script>
@@ -22,27 +21,26 @@
         <div class="search_panel">
             <div class="left">
                 <form name="search">
-                    <input type="text" name="s" />
+                    <input type="text" name="s" class="request" />
                     <div class="btn clear" title="Очистить"></div>
-                    <input type="submit" class="sbutton" value="Найти" />
+                    <input type="submit" class="button" value="Найти" />
                 </form>
             </div>
             <div class="right">
-                <input type="button" class="sbutton main" value="" title="Главная" />
-                <input type="button" class="sbutton history" value="" title="История поиска" />
+                <input type="button" class="button main" value="" title="Главная" />
+                <input type="button" class="button history" value="" title="История поиска" />
             </div>
         </div>
         <div class="content loading">
             <div class="right">
                 <div class="tracker_list">
-                    <p>Трекеры</p>
-                    <a class="setup" href="options.html" title="Настройки"></a>
+                    <p>Трекеры<a class="setup" href="options.html" title="Настройки"></a></p>
                     <ul class="trackers"></ul>
                 </div>
                 <div class="word_filter">
                     <p>Фильтр слов</p>
                     <input type="text" />
-                    <div class="btn" title="Очистить"></div>
+                    <div class="btn clear" title="Очистить"></div>
                 </div>
                 <div class="size_filter">
                     <p>Размер</p>
@@ -77,32 +75,17 @@
             <div class="left">
                 <div class="explore">
                     <div class="top_search"></div>
-                    <ul class="sortable">
-                    </ul>
-                    <div class="source"><span>Источники</span>: <a href="http://www.kinopoisk.ru" target="_blank">фильмы</a>, <a href="http://gameguru.ru/" target="_blank">игры</a>, <a href="http://www.imdb.com/" target="_blank">imdb</a></div>
+                    <ul></ul>
                     <div class="info_popup">
-                        <div class="corner">
-                            <div class="corner2"></div>
-                        </div>
-                        <div class="content">
-                        </div>
+                        <div class="corner"><div class="corner2"></div></div>
+                        <div class="content"></div>
                     </div>
                 </div>
                 <div class="result_panel">
                     <div class="about_panel"></div>
-                    <ul class="categorys">
-                    </ul>
-                    <table id="rez_table">
-                        <thead>
-                            <tr>
-                                <th class="time" data-type="time">Добавлено</th>
-                                <th class="quality" data-type="quality" title="Качество">К</th>
-                                <th class="title" data-type="title">Название</th>
-                                <th class="size" data-type="size">Размер</th>
-                                <th class="seeds" data-type="seeds" title="Раздают">С</th>
-                                <th class="leechs" data-type="leechs" title="Скачивают">Л</th>
-                            </tr>
-                        </thead>
+                    <ul class="categorys"></ul>
+                    <table>
+                        <thead></thead>
                         <tbody></tbody>
                     </table>
                 </div>

@@ -1,8 +1,8 @@
-var get_lang = function(lang) {
+var get_lang = function (lang) {
     var lang_arr_en = {
         t: 'en',
         cens: 'This is the censored version. Full version in ',
-        'categorys': [
+        categorys: [
             [3, 'Films'],
             [0, 'Serials'],
             [7, 'Anime'],
@@ -17,19 +17,19 @@ var get_lang = function(lang) {
             [-1, 'Other']
         ],
         cat_all: 'All',
-        'btn_form': 'Search',
-        'btn_main': 'Main',
-        'btn_history': 'Search history',
-        'btn_up': 'Up!',
-        'tracker_list': 'Trackers',
-        'btn_tracker_list': 'Setup',
-        'filter': 'Word filter',
-        'btn_filter': 'Clear',
-        'size_filter': 'Size filter',
-        'size_filter_f': 'from',
-        'size_filter_t': 'to',
-        'size_filter_g': 'Gb',
-        'table': {
+        btn_form: 'Search',
+        btn_main: 'Main',
+        btn_history: 'Search history',
+        btn_up: 'Up!',
+        tracker_list: 'Trackers',
+        btn_tracker_list: 'Setup',
+        filter: 'Word filter',
+        btn_filter: 'Clear',
+        size_filter: 'Size filter',
+        size_filter_f: 'from',
+        size_filter_t: 'to',
+        size_filter_g: 'Gb',
+        table: {
             time: 'Date',
             quality: ['Q', 'Quality'],
             title: 'Title',
@@ -296,7 +296,7 @@ var get_lang = function(lang) {
     var lang_arr_ru = {
         t: 'ru',
         cens: 'Это цензурированная версия. Полная версия в ',
-        'categorys': [
+        categorys: [
             [3, 'Фильмы'],
             [0, 'Сериалы'],
             [7, 'Анимэ'],
@@ -311,19 +311,19 @@ var get_lang = function(lang) {
             [-1, 'Прочее']
         ],
         cat_all: 'Всё',
-        'btn_form': 'Найти',
-        'btn_main': 'Главная',
-        'btn_history': 'История поиска',
-        'btn_up': 'Вверх!',
-        'tracker_list': 'Трекеры',
-        'btn_tracker_list': 'Настройки',
-        'filter': 'Фильтр слов',
-        'btn_filter': 'Очистить',
-        'size_filter': 'Размер',
-        'size_filter_f': 'от',
-        'size_filter_t': 'до',
-        'size_filter_g': 'Гб',
-        'table': {
+        btn_form: 'Найти',
+        btn_main: 'Главная',
+        btn_history: 'История поиска',
+        btn_up: 'Вверх!',
+        tracker_list: 'Трекеры',
+        btn_tracker_list: 'Настройки',
+        filter: 'Фильтр слов',
+        btn_filter: 'Очистить',
+        size_filter: 'Размер',
+        size_filter_f: 'от',
+        size_filter_t: 'до',
+        size_filter_g: 'Гб',
+        table: {
             time: 'Добавлено',
             quality: ['К', 'Качество'],
             title: 'Название',
@@ -603,7 +603,7 @@ var get_lang = function(lang) {
     }
 };
 var _lang = get_lang();
-window.onload = function() {
+window.onload = function () {
     if (window.options === undefined) {
         get_lang = null;
     }
