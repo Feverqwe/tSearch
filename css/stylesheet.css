@@ -58,6 +58,7 @@ input.button {
     cursor: pointer;
     border: 1px solid #cccccc;
     font-size: 1em;
+    outline-color: rgb(81, 136, 255);
 }
 
 input.button:hover {
@@ -132,6 +133,7 @@ div.result_panel > table td div.title a {
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-bottom-color: transparent;
+    -webkit-transition: border-bottom-color .2s;
 }
 div.result_panel > table td div.title a:link {
     color: #1A3DC1;
@@ -179,6 +181,7 @@ div.result_panel > table div.tracker_icon {
     margin-left: 5px;
     height: 16px;
     width: 16px;
+    -webkit-transition: opacity .2s;
 }
 
 div.result_panel > table div.tracker_icon:hover {
@@ -245,12 +248,21 @@ div.result_panel ul.categorys li {
     font-size: 0.929em
 }
 
+div.result_panel ul.categorys li > a {
+    text-decoration: none;
+}
+
 div.result_panel ul.categorys li.selected {
     background-color: #337AF8;
-    color: #FFF;
+    color: #fff;
     cursor: default;
     border: 1px solid #337AF8;
     border-bottom: 0;
+}
+
+div.result_panel ul.categorys li.selected > a {
+    color: #fff;
+    cursor: default;
 }
 
 div.result_panel ul.categorys > li > i {
@@ -328,6 +340,9 @@ div.tracker_icon {
     margin-top: 3px;
     margin-bottom: -3px;
 }
+div.tracker_icon.login {
+    background-image: url(../images/login.png);
+}
 
 
 div.tracker_list {
@@ -345,6 +360,13 @@ div.tracker_list > ul.trackers {
     border-top-width: 1px;
     border-bottom-width: 1px;
     height: auto;
+}
+div.tracker_list > ul.trackers > li > ul {
+    list-style: none;
+    padding-left: 16px;
+}
+div.tracker_list > ul.trackers > li > ul div.tracker_icon {
+    margin-right: 3px;
 }
 div.tracker_list[aria-disabled="false"] > ul.trackers:hover {
     border-top-color: #ddd;

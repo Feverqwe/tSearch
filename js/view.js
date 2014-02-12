@@ -139,7 +139,10 @@ var view = function() {
             return;
         }
         if (state === 0) {
-            gui.li.append( $('<ul>').append( $('<li>').append( $('<a>', {href: gui.tracker.login_url, target: '_blank', text: _lang.btn_login}) ) ) );
+            gui.li.append( $('<ul>').append( $('<li>').append(
+                $('<div>',{'class': 'tracker_icon login'}),
+                $('<a>', {href: gui.tracker.login_url, target: '_blank', text: _lang.btn_login})
+            ) ) );
         } else {
             var_cache.trackers[id].li.children('ul').remove();
         }
@@ -1303,12 +1306,12 @@ var view = function() {
         for (var i = 0, item; item = categoryList[i]; i++) {
             var id = item[0];
             counter = $('<i>', {text: 0});
-            li = $('<li>', {text: item[1], 'class': 'hide'}).data('id', id).append(counter);
+            li = $('<li>', {'class': 'hide'}).data('id', id).append($('<a>',{text: item[1], href: '#'}), counter);
             var_cache.categorys[id] = { i: counter, li: li, count: 0, hide: 1 };
             content.push( li );
         }
         counter = $('<i>', {text: 0});
-        li = $('<li>', {'class':'selected', text: _lang['cat_all']}).append(counter);
+        li = $('<li>', {'class':'selected'}).append($('<a>',{text: _lang['cat_all'], href: '#'}), counter);
         var_cache.categorys[undefined] = { i: counter, li: li, count: 0, hide: 0 };
         content.unshift( li );
         dom_cache.categorys.append(content);
