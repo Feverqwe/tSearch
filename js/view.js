@@ -1575,6 +1575,9 @@ var view = function() {
                 setColumSort($(this));
             });
             dom_cache.window.on('scroll',function() {
+                if(document.body.classList.contains('disable-hover') === false) {
+                    document.body.classList.add('disable-hover')
+                }
                 clearTimeout(var_cache.window_scroll_timer);
                 var_cache.window_scroll_timer = setTimeout(function() {
                     if (dom_cache.window.scrollTop() > 100) {
@@ -1582,11 +1585,12 @@ var view = function() {
                     } else {
                         dom_cache.topbtn.fadeOut('fast');
                     }
+                    document.body.classList.remove('disable-hover');
                 }, 250);
             });
             dom_cache.topbtn.on("click", function(event) {
                 event.preventDefault();
-                dom_cache.html.scrollTop(150);
+                dom_cache.html.scrollTop(200);
                 dom_cache.html.animate({
                     scrollTop: 0
                 }, 200);
