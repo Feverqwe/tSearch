@@ -1,123 +1,48 @@
 var options = function() {
     var isFF = window.Application !== undefined && Application.name === "Firefox";
     var isChromeum = (window.chrome !== undefined);
-    var def_settings = {
-        HideLeech: {"v": 1, "t": "checkbox"},
-        HideSeed: {"v": 0, "t": "checkbox"},
-        ShowIcons: {"v": 1, "t": "checkbox"},
-        SubCategoryFilter: {"v": 0, "t": "checkbox"},
-        HideZeroSeed: {"v": 0, "t": "checkbox"},
-        AdvFiltration: {"v": 2, "t": "radio"},
-        TeaserFilter: {"v": 1, "t": "checkbox"},
-        add_in_omnibox: {"v": 1, "t": "checkbox"},
-        context_menu: {"v": 1, "t": "checkbox"},
-        search_popup: {"v": 1, "t": "checkbox"},
-        AutoComplite_opt: {"v": 1, "t": "checkbox"},
-        use_english_postername: {"v": 0, "t": "checkbox"},
-        google_proxy: {"v": 0, "t": "checkbox"},
-        google_analytics: {"v": 0, "t": "checkbox"},
-        autoSetCat: {"v": 1, "t": "checkbox"},
-        allow_get_description: {"v": 1, "t": "checkbox"},
-        allow_favorites_sync: {"v": 0, "t": "checkbox"},
-        sub_select_enable: {"v": 1, "t": "checkbox"},
-        kinopoisk_category: {"v": 1, "t": "checkbox"},
-        kinopoisk_f_id: {"v": 1, "t": "number"},
-        filter_panel_to_left: {"v": 0, "t": "checkbox"},
-        /*sync_trackers: {"v": 0, "t": "checkbox"},*/
-        hideTopSearch: {"v": 0, "t": "checkbox"},
-        s_films: {"v": 1, "t": "checkbox"},
-        s_top_films: {"v": 1, "t": "checkbox"},
-        s_serials: {"v": 1, "t": "checkbox"},
-        s_imdb_films: {"v": 0, "t": "checkbox"},
-        s_imdb_top_films: {"v": 0, "t": "checkbox"},
-        s_imdb_serials: {"v": 0, "t": "checkbox"},
-        s_games_n: {"v": 1, "t": "checkbox"},
-        s_games: {"v": 1, "t": "checkbox"},
-        s_games_a: {"v": 1, "t": "checkbox"}
-    };
+    var dom_cache = {};
+    var var_cache = {};
     var loadSettings = function() {
         var settings = {};
-        $.each(def_settings, function(k, v) {
-            settings[k] = parseInt(GetSettings(k) || v.v);
+        $.each(engine.def_settings, function(type, attr) {
+            if (attr.t === 'checkbox' || attr.t === 'radio' || attr.t === 'number') {
+                settings[type] = parseInt(GetSettings(type) || attr.v);
+                if (isNaN(settings[type])) {
+                    settings[type] = attr.v;
+                }
+            } else {
+                settings[type] = GetSettings(type) || attr.v;
+            }
         });
         return settings;
     };
     var settings = loadSettings();
-    var sandbox_trackerProfiles = JSON.parse(GetSettings('trackerProfiles'));
-    var tmp_vars = {};
-    var currentProfile = {};
+    var profile = $.extend(true,{},engine.getProfileList());
+    //profile = {profile_name:{tracker_name:0, tracker_name: 1}}
+    var current_profile = GetSettings('currentProfile');
     var set_place_holder = function() {
-        settings = loadSettings();
-        $.each(def_settings, function(k, v) {
-            var set = settings;
+        $.each(engine.def_settings, function(k, v) {
+            if (settings[k] === undefined) {
+                settings[k] = v.v;
+            }
             if (v.t === "text" || v.t === "number" || v.t === "password") {
-                $('input[name="' + k + '"]').removeAttr("value");
-                if (set[k] !== undefined && set[k] != v.v) {
-                    $('input[name="' + k + '"]').attr("value", set[k]);
+                var dom_obj = $('input[name="' + k + '"]');
+                dom_obj.removeAttr("value");
+                if (settings[k] !== v.v) {
+                    dom_obj.attr("value", settings[k]);
                 }
-                if (v.v !== null && v.v !== undefined) {
-                    $('input[name="' + k + '"]').attr("placeholder", v.v);
+                if (v.v !== undefined) {
+                    dom_obj.attr("placeholder", v.v);
                 }
-            }
+            } else
             if (v.t === "checkbox") {
-                if (set[k] !== undefined) {
-                    $('input[name="' + k + '"]').eq(0)[0].checked = (set[k]) ? 1 : 0;
-                } else {
-                    $('input[name="' + k + '"]').eq(0)[0].checked = (v.v) ? 1 : 0;
-                }
-            }
+                $('input[name="' + k + '"]').prop('checked', settings[k]);
+            } else
             if (v.t === "radio") {
-                if (set[k] !== undefined) {
-                    $('input[name="' + k + '"][value="' + set[k] + '"]').eq(0)[0].checked = true;
-                } else {
-                    $('input[name="' + k + '"][value="' + v.v + '"]').eq(0)[0].checked = true;
-                }
+                $('input[name="' + k + '"][value="' + settings[k] + '"]').prop('checked', true);
             }
         });
-    };
-    var addTrackerInList = function(i) {
-        var Tracker = tracker[i];
-        var profileTrackers = sandbox_trackerProfiles[currentProfile.id].Trackers;
-        if (profileTrackers === undefined || profileTrackers === null) {
-            profileTrackers = engine.getDefList();
-        }
-        var enable = false;
-        var tc = profileTrackers.length;
-        for (var n = 0; n < tc; n++) {
-            if (profileTrackers[n].n === Tracker.filename) {
-                enable = profileTrackers[n].e;
-                break;
-            }
-        }
-        var flags = [];
-        if (!Tracker.flags.rs) {
-            flags.push($('<div>', {'class': 'cirilic', title: _lang.flag.cirilic}));
-        }
-        if (Tracker.flags.a) {
-            flags.push($('<div>', {'class': 'auth', title: _lang.flag.auth}));
-        }
-        if (Tracker.flags.l) {
-            flags.push($('<div>', {'class': 'rus', title: _lang.flag.rus}));
-        }
-        if (flags.length > 0) {
-            flags = $('<div>', {'class': 'icons'}).append(flags);
-        }
-        var tracker_icon = $('<div>', {'class': 'tracker_icon'});
-        if (Tracker.icon.length === 0) {
-            tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
-        } else
-        if (Tracker.icon[0] === '#') {
-            tracker_icon.css({'background-color': Tracker.icon, 'border-radius': '8px'});
-        } else {
-            tracker_icon.css('background-image', 'url(' + Tracker.icon + ')');
-        }
-        $('table.tr_table tbody').append(
-                $('<tr>', {'data-id': i, 'data-name': Tracker.filename, 'class': ((enable) ? 'checked' : '')}).append(
-                $('<td>').append(tracker_icon),
-                $('<td>').append($('<a>', {href: Tracker.url, target: '_blank', text: Tracker.name})),
-                $('<td>', {'class': 'desc'}).append(flags, $('<span>', {text: Tracker.about})),
-                $('<td>', {'class': 'status'}).append($('<input>', {type: 'checkbox', name: 'tracker'}).prop('checked', (enable) ? true : false)))
-                );
     };
     var write_language = function(language) {
         var selected = (language !== undefined) ? 1 : 0;
@@ -130,14 +55,15 @@ var options = function() {
                 language = 'ru';
             }
         }
-        _lang = get_lang(language);
-        var lang = _lang.settings;
-        $('select[name="language"]').val(language);
-        $.each(lang, function(k, v) {
+        window._lang = get_lang(language);
+        dom_cache.select_language.val(language);
+        $.each(_lang.settings, function(k, v) {
             var el = $('[data-lang=' + k + ']');
-            if (el.length === 0)
+            var el_len = el.length;
+            if (el_len === 0) {
                 return true;
-            for (var i = 0; i < el.length; i++) {
+            }
+            for (var i = 0; i < el_len; i++) {
                 var obj = el.eq(i);
                 var t = obj.prop("tagName");
                 if (t === "A" || t === "LEGEND" || t === "SPAN" || t === "LI" || t === "TH" || t === "TD") {
@@ -150,385 +76,39 @@ var options = function() {
                 }
             }
         });
-        $('[data-lang="exp_in_cinima"]').text(_lang.exp_in_cinima);
-        $('[data-lang="exp_films"]').text(_lang.exp_films);
-        $('[data-lang="exp_serials"]').text(_lang.exp_serials);
-        $('[data-lang="exp_imdb_in_cinima"]').text(_lang.exp_imdb_in_cinima);
-        $('[data-lang="exp_imdb_films"]').text(_lang.exp_imdb_films);
-        $('[data-lang="exp_imdb_serials"]').text(_lang.exp_imdb_serials);
-        $('[data-lang="exp_games_new"]').text(_lang.exp_games_new);
-        $('[data-lang="exp_games_best"]').text(_lang.exp_games_best);
-        $('[data-lang="exp_games_all"]').text(_lang.exp_games_all);
+        dom_cache.exp_in_cinima.text(_lang.exp_in_cinima);
+        dom_cache.exp_films.text(_lang.exp_films);
+        dom_cache.exp_serials.text(_lang.exp_serials);
+        dom_cache.exp_imdb_in_cinima.text(_lang.exp_imdb_in_cinima);
+        dom_cache.exp_imdb_films.text(_lang.exp_imdb_films);
+        dom_cache.exp_imdb_serials.text(_lang.exp_imdb_serials);
+        dom_cache.exp_games_new.text(_lang.exp_games_new);
+        dom_cache.exp_games_best.text(_lang.exp_games_best);
+        dom_cache.exp_games_all.text(_lang.exp_games_all);
         if (_lang.t !== "ru") {
-            $('input[name="use_english_postername"]').parents().eq(1).hide();
+            dom_cache.use_english_postername.parents().eq(1).hide();
         } else {
-            $('input[name="use_english_postername"]').parents().eq(1).show();
+            dom_cache.use_english_postername.parents().eq(1).show();
         }
         if (selected) {
-            $('select[name=tr_lists]').trigger("change");
+            dom_cache.select_profileList.trigger("change");
         }
-    };
-    var load_costume_torrents = function() {
-        var empty_list = $('<td>', {colspan: 4, 'class': 'notorrent', 'data-lang': 51, text: _lang.settings[51]});
-        tmp_vars.c_tracker_list.empty();
-        var costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
-        var c = costume_tr.length;
-        if (c === 0) {
-            tmp_vars.c_tracker_list.empty().append(empty_list);
-        } else {
-            for (var i = 0; i < c; i++) {
-                var Tracker = JSON.parse(GetSettings('ct_' + costume_tr[i]) || {});
-                if (Tracker.uid === undefined) {
-                    continue;
-                }
-
-                var tracker_icon = $('<div>', {'class': 'tracker_icon'});
-                if (Tracker.icon.length === 0) {
-                    tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
-                } else
-                if (Tracker.icon[0] === '#') {
-                    tracker_icon.css({'background-color': Tracker.icon, 'border-radius': '8px'});
-                } else {
-                    tracker_icon.css('background-image', 'url(' + Tracker.icon + ')');
-                }
-                tmp_vars.c_tracker_list.append(
-                        $('<tr>', {'data-uid': Tracker.uid}).append(
-                        $('<td>').append(tracker_icon),
-                        $('<td>').append($('<a>', {href: Tracker.root_url, target: '_blank', text: Tracker.name})),
-                        $('<td>', {'class': 'desc', text: Tracker.about || ''}),
-                $('<td>', {'class': 'action'}).append(
-                        $('<input>', {type: 'button', name: 'edit_ctr', value: _lang.settings[52], 'data-lang': 52}),
-                $('<input>', {type: 'button', name: 'rm_ctr', value: _lang.settings[53], 'data-lang': 53})
-                        ))
-                        );
-            }
-        }
-    };
-    var getBackup = function() {
-        var st = JSON.parse(JSON.stringify(localStorage));
-        delete st['explorerCache'];
-        delete st['topCache'];
-        delete st['length'];
-        delete st['search_history'];
-        delete st['kinopoiskDeskList'];
-        delete st['favoritesDeskList'];
-        $('textarea[name="backup"]').val(JSON.stringify(st));
-        return JSON.stringify(st);
-    };
-    var settingsRestore = function(text) {
-        try {
-            var rst = JSON.parse(text);
-            var search_history = localStorage.search_history;
-            localStorage.clear();
-            if (search_history !== undefined) {
-                localStorage.search_history = search_history;
-            }
-            for (var key in rst)
-            {
-                var value = rst[key];
-                if (value === undefined || value === null || key === 'length')
-                    continue;
-                localStorage[key] = value;
-            }
-            write_language();
-            set_place_holder();
-            load_costume_torrents();
-            sandbox_trackerProfiles = JSON.parse(GetSettings('trackerProfiles') || "[]");
-            if (sandbox_trackerProfiles.length === 0) {
-                document.location.reload();
-                return;
-            }
-            updateProfileList(0);
-        } catch (err) {
-            alert(_lang.str33 + "\n" + err);
-        }
-    };
-    var makePartedBackup = function(chank_name, content) {
-        var back = content;
-        var full_len = back.length;
-        var chank_len = 1024 - (chank_name + "000").length - 1;
-        var number_of_part = Math.round(full_len / chank_len);
-        if (number_of_part >= 512 || full_len >= 102400) {
-            console.log("Can't save backup, very big size!");
-            return undefined;
-        }
-        var req_exp = new RegExp(".{1," + chank_len + "}", "g");
-        back = 'LZ' + LZString.compressToBase64(back);
-        var arr = back.match(req_exp);
-        var arr_l = arr.length;
-        var obj = {};
-        for (var i = 0; i < arr_l; i++) {
-            obj[chank_name + i] = arr[i];
-        }
-        obj[chank_name + "inf"] = arr_l;
-        obj[chank_name + arr_l] = "END";
-        return obj;
-    };
-    var getPartedBackup = function(test) {
-        chrome.storage.sync.get(function(data) {
-            var chank_name = "bk_ch_";
-            var clear_broken = function(chank_name, obj, len) {
-                var l = 0;
-                $.each(obj, function(k) {
-                    if (k.substr(0, 6) === chank_name) {
-                        if ((k.substr(6) !== "inf") && k.substr(6) > len) {
-                            chrome.storage.sync.remove(k);
-                            l++;
-                        }
-                    }
-                });
-                if (l > 0) {
-                    console.log("Removed garbage: ", l);
-                }
-            };
-            var inf = 0;
-            if (data[chank_name + 'inf'] !== undefined) {
-                inf = data[chank_name + 'inf'];
-            } else {
-                $('input[name="get_from_cloud"]')[0].disabled = true;
-                console.log("Backup not found!");
-                clear_broken(chank_name, data, inf);
-                return null;
-            }
-            var back = "";
-            var broken = 0;
-            for (var i = 0; i < inf; i++) {
-                if (data[chank_name + i] !== undefined) {
-                    back += data[chank_name + i];
-                } else {
-                    console.log("Backup is broken!", "Chank", i);
-                }
-            }
-            if (data[chank_name + inf] !== "END") {
-                broken = 1;
-            }
-            if (broken) {
-                chrome.storage.sync.remove(chank_name + "inf");
-                inf = -1;
-            }
-            clear_broken(chank_name, data, inf);
-            if (broken) {
-                $('input[name="get_from_cloud"]')[0].disabled = true;
-                return null;
-            }
-
-            if (back.substr(0, 2) === 'LZ') {
-                back = LZString.decompressFromBase64(back.substr(2));
-            }
-            if (test === undefined) {
-                $('textarea[name="restore"]').val(back);
-            }
-        });
-    };
-    var saveCurrentProfile = function() {
-        var pid = currentProfile.id;
-        var checked_torrents = tmp_vars.tracker_list.find('input[name="tracker"]:checked');
-        tmp_vars.tracker_list.find('tr.checked').removeClass("checked");
-        var checked_torrents_length = checked_torrents.length;
-        var TrackerList = [];
-        for (var i = 0; i < checked_torrents_length; i++) {
-            var item = checked_torrents.eq(i).closest('tr');
-            item.addClass('checked');
-            var id = item.attr('data-id');
-            var fn = tracker[id].filename;
-            var obj = {
-                'n': fn,
-                'e': 1
-            };
-            if (tracker[id].uid !== undefined) {
-                obj['uid'] = tracker[id].uid;
-            }
-            TrackerList.push(obj);
-        }
-        sandbox_trackerProfiles[pid].Trackers = TrackerList;
-    };
-    var updateProfileList = function(id) {
-        var sel = $('select[name=tr_lists]');
-        sel.empty();
-        var sel_id = (id === undefined) ? currentProfile.id : id;
-        $.each(sandbox_trackerProfiles, function(k, v) {
-            sel.append($('<option>', {value: k, text: v.Title}).prop('selected', (k === sel_id)));
-        });
-        if (sandbox_trackerProfiles.length < 2) {
-            $('input[name=rm_list]').attr('disabled', 'disabled');
-        } else {
-            $('input[name=rm_list]').removeAttr('disabled');
-        }
-        if (id !== undefined) {
-            currentProfile = sandbox_trackerProfiles[id];
-            currentProfile.id = id;
-            SetSettings('defProfile', currentProfile.id);
-            engine.loadProfile(id);
-        }
-    };
-    var getPartedSync = function(chank_name, cb, isRemove) {
-        chrome.storage.sync.get(function(data) {
-            var clear_broken = function(chank_name, obj, len) {
-                var l = 0;
-                $.each(obj, function(k) {
-                    if (k.substr(0, 6) === chank_name) {
-                        if ((k.substr(6) !== "inf") && k.substr(6) > len) {
-                            chrome.storage.sync.remove(k);
-                            l++;
-                        }
-                    }
-                });
-                if (l > 0) {
-                    console.log("Removed garbage: ", l);
-                }
-            };
-            var inf = 0;
-            if (data[chank_name + 'inf'] !== undefined) {
-                inf = data[chank_name + "inf"];
-            } else {
-                console.log("Sync ", chank_name, " not found!");
-                clear_broken(chank_name, data, inf);
-                return null;
-            }
-            var back = "";
-            var broken = 0;
-            for (var i = 0; i < inf; i++) {
-                if (data[chank_name + i] !== undefined) {
-                    back += data[chank_name + i];
-                } else {
-                    console.log("Sync is broken!", chank_name, "Chank", i);
-                }
-            }
-            if (data[chank_name + inf] !== "END" || isRemove) {
-                broken = 1;
-            }
-            if (broken) {
-                chrome.storage.sync.remove(chank_name + "inf");
-                inf = -1;
-            }
-            clear_broken(chank_name, data, inf);
-            if (broken) {
-                console.log("Sync is broken!", chank_name);
-                return null;
-            }
-
-            if (back.substr(0, 2) === 'LZ') {
-                back = LZString.decompressFromBase64(back.substr(2));
-            }
-            if (cb) {
-                cb(back);
-            }
-        });
-    };
-    var trackersSync = function() {
-        var make_tracker_list = function() {
-            var trackerList = JSON.parse(GetSettings('trackerProfiles') || []);
-            var arr = [];
-            var c_trackers = {};
-            var trackerList_len = trackerList.length;
-            for (var i = 0; i < trackerList_len; i++) {
-                var item = trackerList[i];
-                var trackers = [];
-                var i_trackers_len = item["Trackers"].length;
-                for (var n = 0; n < i_trackers_len; n++) {
-                    var tr = item["Trackers"][n];
-                    if (tr.e !== 1) {
-                        continue;
-                    }
-                    if (tr.uid === undefined) {
-                        trackers.push(tr.n);
-                    } else {
-                        tr.n = parseInt(tr.n);
-                        if (isNaN(tr.n)) {
-                            continue;
-                        }
-                        if (c_trackers[tr.n] === undefined) {
-                            var ctr_code = GetSettings('ct_' + tr.n);
-                            if (ctr_code !== undefined) {
-                                try {
-                                    c_trackers[tr.n] = JSON.parse(ctr_code);
-                                } catch (e) {
-                                    continue;
-                                }
-                                trackers.push(tr.n);
-                            }
-                        }
-                    }
-                }
-                arr.push([trackers, item["Title"], item["id"]]);
-            }
-            return JSON.stringify([arr, c_trackers]);
-        };
-        var chanks = makePartedBackup("ts_ch_", make_tracker_list());
-        chrome.storage.sync.set(chanks);
-        getPartedSync("ts_ch_");
-    };
-    var loadSyncTrackers = function() {
-        getPartedSync("ts_ch_", function(data) {
-            if (data.length === 0) {
-                return;
-            }
-            var code = "";
-            try {
-                code = JSON.parse(data);
-            } catch (e) {
-                return;
-            }
-            data = code;
-            var c_trackers = data[1];
-            var costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
-            $.each(c_trackers, function(item) {
-                var uid = parseInt(item);
-                if (isNaN(uid)) {
-                    return 1;
-                }
-                if (costume_tr.indexOf(uid) === -1) {
-                    costume_tr.push(uid);
-                    console.log('ct_' + uid, JSON.stringify(c_trackers[uid]));
-                    //SetSettings('ct_' + uid, JSON.stringify(c_trackers[uid]));
-                }
-            });
-            var trackers = data[0];
-            var Sync_trackerProfiles = [];
-            trackers.forEach(function(item) {
-                var tr_list = [];
-                item[0].forEach(function(tr) {
-                    if (c_trackers[tr] !== undefined) {
-                        tr_list.push({n: tr, e: 1, uid: tr});
-                    } else {
-                        tr_list.push({n: tr, e: 1});
-                    }
-                });
-                Sync_trackerProfiles.push({Trackers: tr_list, Title: item[1], id: item[2]});
-            });
-            //SetSettings('costume_tr', JSON.stringify(costume_tr));
-            //SetSettings('trackerProfiles', JSON.stringify(Sync_trackerProfiles));
-            console.log(costume_tr);
-            console.log(Sync_trackerProfiles);
-        });
-
     };
     var saveAll = function() {
-        SetSettings('lang', $('select[name="language"]').val());
-        /*
-         var prev_sync_trackers = settings.sync_trackers;
-         */
-        $.each(def_settings, function(key, value) {
-            if (value.t === "text") {
+        SetSettings('lang', dom_cache.select_language.val());
+        $.each(engine.def_settings, function(key, value) {
+            if (value.t === "text" || value.t === "number") {
                 var val = $('input[name="' + key + '"]').val();
-                if (val.length <= 0) {
-                    val = $('input[name="' + key + '"]').attr('placeholder');
+                if (val.length === 0) {
+                    val = value.v;
                 }
                 SetSettings(key, val);
             } else
             if (value.t === "password") {
-                var val = $('input[name="' + key + '"]').val();
-                SetSettings(key, val);
+                SetSettings(key, $('input[name="' + key + '"]').val());
             } else
             if (value.t === "checkbox") {
-                var val = ($('input[name="' + key + '"]').eq(0)[0].checked) ? 1 : 0;
-                SetSettings(key, val);
-            } else
-            if (value.t === "number") {
-                var val = $('input[name="' + key + '"]').val();
-                if (val.length <= 0) {
-                    val = $('input[name="' + key + '"]').attr('placeholder');
-                }
+                var val = ($('input[name="' + key + '"]').prop('checked')) ? 1 : 0;
                 SetSettings(key, val);
             } else
             if (value.t === "radio") {
@@ -536,6 +116,7 @@ var options = function() {
                 SetSettings(key, val);
             }
         });
+        /*
         saveCurrentProfile();
         SetSettings('trackerProfiles', JSON.stringify(sandbox_trackerProfiles));
         if (isChromeum && chrome.extension) {
@@ -561,6 +142,7 @@ var options = function() {
             sandbox_trackerProfiles = JSON.parse(GetSettings('trackerProfiles'));
             updateProfileList(currentProfile.id);
         }
+        */
         /*
          if (settings.sync_trackers) {
          trackersSync();
@@ -570,49 +152,249 @@ var options = function() {
          }
          */
     };
+    var load_costume_torrents = function() {
+        dom_cache.custom_list.get(0).textContent = '';
+        var customList = JSON.parse(GetSettings('costume_tr') || "[]");
+        if (customList.length === 0) {
+            dom_cache.custom_list.append($('<td>', {colspan: 4, 'class': 'notorrent', 'data-lang': 51, text: _lang.settings[51]}));
+            return;
+        }
+        var content = [];
+        for (var i = 0, id; id = customList[i]; i++) {
+            var json = GetSettings('ct_' + id);
+            if (json === undefined) {
+                continue;
+            }
+            var customTr = JSON.parse(GetSettings('ct_' + id));
+            if (customTr.uid === undefined) {
+                continue;
+            }
+            var tracker_icon = $('<div>', {'class': 'tracker_icon'});
+            if (customTr.icon.length === 0) {
+                tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
+            } else
+            if (customTr.icon[0] === '#') {
+                tracker_icon.css({'background-color': customTr.icon, 'border-radius': '8px'});
+            } else {
+                tracker_icon.css('background-image', 'url(' + customTr.icon + ')');
+            }
+            content.push($('<tr>', {'data-id': customTr.uid}).append(
+                $('<td>').append(tracker_icon),
+                $('<td>').append($('<a>', {href: customTr.root_url, target: '_blank', text: customTr.name})),
+                $('<td>', {'class': 'desc', text: customTr.about || ''}),
+                $('<td>', {'class': 'action'}).append(
+                    $('<input>', {type: 'button', name: 'edit_ctr', value: _lang.settings[52], 'data-lang': 52}),
+                    $('<input>', {type: 'button', name: 'rm_ctr', value: _lang.settings[53], 'data-lang': 53})
+                )
+            ));
+        }
+        dom_cache.custom_list.append( content );
+    };
+    var writeProfileList = function(list) {
+        dom_cache.select_profileList.get(0).textContent = '';
+        var content = [];
+        $.each(list, function(text, trackers){
+            content.push( $('<option>', {text: text, value: text}) );
+        });
+        if (content.length === 0) {
+            profile[_lang.label_def_profile] = engine.getDefList();
+            writeProfileList(profile);
+            return;
+        }
+        dom_cache.select_profileList.append(content);
+    };
+    var loadProfile = function(current) {
+        if (current === undefined) {
+            current = GetSettings('currentProfile');
+        }
+        current_profile = current;
+        dom_cache.tracker_list.find('input').prop('checked', false);
+        $.each(profile[current], function(id, status){
+            if (status === 0) {
+                return 1;
+            }
+            var checkbox = dom_cache.tracker_list.children('tr[data-id="'+id+'"]').children('td.status').children('input');
+            checkbox.prop('checked', true);
+        });
+        sortTable();
+    };
+    var sortTable = function() {
+        var dom_list = dom_cache.tracker_list.children('tr');
+        var content = [];
+        for (var i = 0, len = dom_list.length; i < len; i++) {
+            var item = dom_list.eq(i);
+            var state = item.children('td.status').children('input').prop('checked');
+            if (state === false) {
+                continue;
+            }
+            content.push(item);
+        }
+        dom_cache.tracker_list.prepend(content);
+    };
+    var writeTrackerList = function() {
+        dom_cache.tracker_list.get(0).textContent = '';
+        var content = [];
+        $.each(torrent_lib, function(id, tracker) {
+            var flags = [];
+            if (!tracker.flags.rs) {
+                flags.push($('<div>', {'class': 'cirilic', title: _lang.flag.cirilic}));
+            }
+            if (tracker.flags.a) {
+                flags.push($('<div>', {'class': 'auth', title: _lang.flag.auth}));
+            }
+            if (tracker.flags.l) {
+                flags.push($('<div>', {'class': 'rus', title: _lang.flag.rus}));
+            }
+            if (flags.length > 0) {
+                flags = $('<div>', {'class': 'icons'}).append(flags);
+            }
+            var tracker_icon = $('<div>', {'class': 'tracker_icon'});
+            if (tracker.icon.length === 0) {
+                tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
+            } else
+            if (tracker.icon[0] === '#') {
+                tracker_icon.css({'background-color': tracker.icon, 'border-radius': '8px'});
+            } else {
+                tracker_icon.css('background-image', 'url(' + tracker.icon + ')');
+            }
+            content.push( $('<tr>',{'data-id': id}).append(
+                $('<td>').append(tracker_icon),
+                $('<td>').append(
+                    $('<a>', {href: tracker.url, target: '_blank', text: tracker.name})
+                ),
+                $('<td>', {'class': 'desc'}).append(
+                    flags,
+                    $('<span>', {text: tracker.about})
+                ),
+                $('<td>', {'class': 'status'}).append(
+                    $('<input>', {type: 'checkbox'})
+                )
+            ));
+        });
+        dom_cache.tracker_list.append(content);
+    };
+    var getBackup = function() {
+        var data = $.extend({},localStorage);
+        /*
+        delete st['explorerCache'];
+        delete st['topCache'];
+        delete st['search_history'];
+        delete st['kinopoiskDeskList'];
+        delete st['favoritesDeskList'];
+        */
+        var json = JSON.stringify(data);
+        dom_cache.textarea_backup.val(json);
+        return JSON.stringify(json);
+    };
+    var settingsRestore = function(text) {
+        try {
+            var data = JSON.parse(text);
+        } catch (err) {
+            alert(_lang.str33 + "\n" + err);
+            return;
+        }
+        var search_history = localStorage.search_history;
+        localStorage.clear();
+        if (search_history !== undefined) {
+            localStorage.search_history = search_history;
+        }
+        for (var item in data) {
+            if (data.hasOwnProperty(item) === false) {
+                continue;
+            }
+            var value = data[item];
+            if (value === undefined) {
+                continue;
+            }
+            localStorage[item] = value;
+        }
+        window.location.reload();
+    };
+    var checkTrList = function(list) {
+        dom_cache.tracker_list.find('input').removeAttr('checked');
+        $.each(list, function(id, state){
+            if (state !== 1) {
+                return;
+            }
+            dom_cache.tracker_list.children('tr[data-id="' + id + '"]').children('td.status').children('input').prop('checked', true);
+        });
+        sortTable();
+    };
     return {
         begin: function() {
+            engine.loadProfile(undefined);
+            dom_cache.body = $('body');
+            dom_cache.ul_menu = $('ul.menu');
+            dom_cache.tracker_list = $('table.tr_table tbody');
+            dom_cache.tracker_head = $('table.tr_table thead');
+            dom_cache.custom_list = $('table.c_table tbody');
+            dom_cache.add_in_omnibox = $('input[name="context_menu"]');
+            dom_cache.google_analytics = $('input[name="google_analytics"]');
+            dom_cache.allow_favorites_sync = $('input[name="allow_favorites_sync"]');
+            dom_cache.clear_cloud_btn = $('input[name="clear_cloud_btn"]');
+            dom_cache.clear_cloud = $('input[name="clear_cloud"]');
+            dom_cache.search_popup = $('input[name="search_popup"]');
+            dom_cache.save_in_cloud = $('input[name="save_in_cloud"]');
+            dom_cache.get_from_cloud = $('input[name="get_from_cloud"]');
+            dom_cache.select_language = $('select[name="language"]');
+            dom_cache.exp_in_cinima = $('[data-lang="exp_in_cinima"]');
+            dom_cache.exp_films = $('[data-lang="exp_films"]');
+            dom_cache.exp_serials = $('[data-lang="exp_serials"]');
+            dom_cache.exp_imdb_in_cinima = $('[data-lang="exp_imdb_in_cinima"]');
+            dom_cache.exp_imdb_films = $('[data-lang="exp_imdb_films"]');
+            dom_cache.exp_imdb_serials = $('[data-lang="exp_imdb_serials"]');
+            dom_cache.exp_games_new = $('[data-lang="exp_games_new"]');
+            dom_cache.exp_games_best = $('[data-lang="exp_games_best"]');
+            dom_cache.exp_games_all = $('[data-lang="exp_games_all"]');
+            dom_cache.use_english_postername = $('input[name="use_english_postername"]');
+            dom_cache.select_profileList = $('select[name=tr_lists]');
+            dom_cache.backup_form = $('div.backup_form');
+            dom_cache.backup_form_links = $('div.backup_form div').eq(0);
+            dom_cache.textarea_backup = $('textarea[name="backup"]');
+            dom_cache.textarea_restore = $('textarea[name="restore"]');
             write_language();
-            tmp_vars.tracker_list = $('table.tr_table tbody');
-            tmp_vars.c_tracker_list = $('table.c_table tbody');
-            tmp_vars.tracker_list.disableSelection();
-            $('ul.menu').on('click', 'a', function(e) {
+            dom_cache.ul_menu.on('click', 'a', function(e) {
                 e.preventDefault();
-                var page = $(this).data('page');
+                var $this = $(this);
+                var page = $this.data('page');
                 if (page === undefined) {
                     return;
                 }
-                $('ul.menu').find('a.active').removeClass('active');
-                $(this).addClass('active');
-                $('body').find('div.page.active').removeClass('active');
-                $('body').find('div.' + page).addClass('active');
+                dom_cache.ul_menu.find('a.active').removeClass('active');
+                $this.addClass('active');
+                dom_cache.body.find('div.page.active').removeClass('active');
+                dom_cache.body.find('div.' + page).addClass('active');
             });
             if (isFF) {
                 //FF
-                $('input[name="context_menu"]').parents().eq(1).hide();
+                dom_cache.add_in_omnibox.closest('ul').hide();
             }
             if (!isChromeum) {
-                //opera and firefox
-                $('input[name="add_in_omnibox"]').parents().eq(1).hide();
-                $('input[name="google_analytics"]').parents().eq(1).hide();
-                $('input[name="allow_favorites_sync"]').parents().eq(1).hide();
-                $('input[name="clear_cloud_btn"]').hide();
+                //opera 12 and firefox
+                dom_cache.add_in_omnibox.closest('ul').hide();
+                dom_cache.google_analytics.closest('ul').hide();
+                dom_cache.allow_favorites_sync.closest('ul').hide();
+                dom_cache.clear_cloud_btn.hide();
             }
             if (!isChromeum && !isFF) {
-                $('input[name="search_popup"]').parents().eq(1).hide();
+                // Opera 12
+                dom_cache.search_popup.closest('ul').hide();
             }
             if (isChromeum && chrome.extension) {
-                //Chrome
+                //Chromeum extension
                 var bgp = chrome.extension.getBackgroundPage();
-                if (!bgp._type_ext) {
-                    $('input[name="search_popup"]').parents().eq(1).hide();
+                if (bgp._type_ext) {
+                    return;
                 }
+                dom_cache.search_popup.closest('ul').hide();
             }
             if (isChromeum && chrome.storage) {
-                $('input[name="clear_cloud"]').on('click', function() {
+                // Chromeum with storage
+                dom_cache.clear_cloud.on('click', function() {
                     chrome.storage.sync.clear();
                 });
-                $('input[name="save_in_cloud"]').on('click', function() {
+                dom_cache.save_in_cloud.on('click', function() {
+                    /*
                     var obj = makePartedBackup("bk_ch_", getBackup());
                     if (obj === undefined) {
                         return;
@@ -625,98 +407,87 @@ var options = function() {
                         $('input[name="save_in_cloud"]').val(_lang.settings[68]);
                     }, 3000);
                     $('input[name="get_from_cloud"]').get(0).disabled = false;
+                    */
                 });
-                $('input[name="get_from_cloud"]').on('click', function() {
+                dom_cache.get_from_cloud.on('click', function() {
+                    /*
                     getPartedBackup();
+                    */
                 });
-                chrome.storage.sync.get("bk_ch_inf",
-                        function(val) {
-                            if (val.bk_ch_inf === undefined) {
-                                $('input[name="get_from_cloud"]').eq(0).get(0).disabled = true;
-                            }
-                        }
-                );
+                chrome.storage.sync.get("bk_ch_inf", function(val) {
+                    if (val.bk_ch_inf !== undefined) {
+                        return;
+                    }
+                    dom_cache.get_from_cloud.prop('disabled', true);
+                });
             } else {
-                $('input[name="clear_cloud"]').css('display', 'none');
-                $('input[name="get_from_cloud"]').css('display', 'none');
-                $('input[name="save_in_cloud"]').css('display', 'none');
+                dom_cache.clear_cloud.hide();
+                dom_cache.get_from_cloud.hide();
+                dom_cache.save_in_cloud.hide();
             }
-
-            if (window.censure) {
-                $('input[name="use_english_postername"]').parents().eq(1).hide();
-                $('input[name="allow_favorites_sync"]').parents().eq(1).hide();
-            }
-            tmp_vars.tracker_list.sortable({placeholder: "ui-state-highlight",
+            dom_cache.tracker_list.sortable({placeholder: "ui-state-highlight",
                 stop: function() {
-                    saveCurrentProfile();
+                    //saveCurrentProfile();
                 }
             });
             set_place_holder();
             load_costume_torrents();
-            updateProfileList(parseInt(GetSettings('defProfile') || 0));
-            if (window.torrent_lib_min === 0) {
-                setTimeout(function(){
-                    updateProfileList(parseInt(GetSettings('defProfile') || 0));
-                }, 50);
-            }
+            writeProfileList(profile);
+            writeTrackerList();
+            loadProfile(current_profile);
 
-            //backup >>>>>>>>>>>>>>>>>>
-            $('div.backup_form div').children('a.backup_tab').on("click", function(e) {
+            dom_cache.backup_form_links.children('a.backup_tab').on("click", function(e) {
                 e.preventDefault();
-                $(this).parents().eq(1).children('div.restore').slideUp('fast');
-                $(this).parent().children('a.restore_tab').removeClass('active');
-                $(this).parents().eq(1).children('div.backup').slideDown('fast');
-                $(this).parent().children('a.backup_tab').addClass('active');
+                dom_cache.backup_form.children('div.restore').slideUp('fast');
+                dom_cache.backup_form_links.children('a.restore_tab').removeClass('active');
+                dom_cache.backup_form.children('div.backup').slideDown('fast');
+                dom_cache.backup_form_links.children('a.backup_tab').addClass('active');
                 getBackup();
             });
-            $('div.backup_form div').children('a.restore_tab').on("click", function(e) {
+            dom_cache.backup_form_links.children('a.restore_tab').on("click", function(e) {
                 e.preventDefault();
-                $(this).parents().eq(1).children('div.backup').slideUp('fast');
-                $(this).parent().children('a.backup_tab').removeClass('active');
-                $(this).parents().eq(1).children('div.restore').slideDown('fast');
-                $(this).parent().children('a.restore_tab').addClass('active');
+                dom_cache.backup_form.children('div.backup').slideUp('fast');
+                dom_cache.backup_form_links.children('a.backup_tab').removeClass('active');
+                dom_cache.backup_form.children('div.restore').slideDown('fast');
+                dom_cache.backup_form_links.children('a.restore_tab').addClass('active');
             });
-            $('div.backup').find('input[name=backup]').on("click", function(e) {
+            dom_cache.backup_form.children('div.backup').children('input[name=backup]').on("click", function(e) {
                 e.preventDefault();
                 getBackup();
             });
-            $('div.restore').find('input[name=restore]').on("click", function(e) {
+            dom_cache.backup_form.children('div.restore').children('input[name=restore]').on("click", function(e) {
                 e.preventDefault();
-                settingsRestore($(this).parent().children('textarea').val());
-                $('textarea[name="backup"]').val('');
+                settingsRestore( dom_cache.textarea_restore.val() );
             });
-            //<<<<<<<<<<<<<<<<<<
-            //torrent-list head
-            $('select[name="language"]').on('change', function() {
+            dom_cache.select_language.on('change', function(e) {
+                e.preventDefault();
                 write_language($(this).val());
             });
-            $('table.tr_table').find('th').eq(3).children('a').eq(0).on("click", function(event) {
-                event.preventDefault();
-                $('table.tr_table').children('tbody').find('input[type="checkbox"]').prop('checked', 'checked');
-                saveCurrentProfile();
+            dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(0).on("click", function(e) {
+                e.preventDefault();
+                dom_cache.tracker_list.find('input').prop('checked', true);
+                //saveCurrentProfile();
             });
-            $('table.tr_table').find('th').eq(3).children('a').eq(1).on("click", function(event) {
-                event.preventDefault();
-                $('table.tr_table').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
-                saveCurrentProfile();
+            dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(1).on("click", function(e) {
+                e.preventDefault();
+                dom_cache.tracker_list.find('input').removeAttr('checked');
+                //saveCurrentProfile();
             });
-            $('table.tr_table').find('th').eq(3).children('a').eq(2).on("click", function(event) {
-                event.preventDefault();
-                $('table.tr_table').children('tbody').find('input[type="checkbox"]').removeAttr('checked');
-                var Trackers = engine.getDefList();
-                var l = Trackers.length;
-                var tb = tmp_vars.tracker_list;
-                for (var i = 0; i < l; i++) {
-                    if (Trackers[i].e) {
-                        tb.children('tr[data-name="' + Trackers[i].n + '"]').find('input[type="checkbox"]').get(0).checked = true;
-                    }
-                }
-                saveCurrentProfile();
+            dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(2).on("click", function(e) {
+                e.preventDefault();
+                var list = engine.getDefList();
+                checkTrList(list);
+                // saveCurrentProfile();
             });
-            //<<<<<<<<<<<<<<<<<<<<<<<<
-            tmp_vars.tracker_list.on('change', 'td.status input', function() {
-                saveCurrentProfile();
+            dom_cache.tracker_list.on('change', 'input', function() {
+                sortTable();
+                //saveCurrentProfile();
             });
+            dom_cache.select_profileList.on('change', function() {
+                var profile = parseInt($(this).val());
+                checkTrList(engine.getProfileList(profile));
+            });
+            /*
             $('select[name=tr_lists]').on('change', function() {
                 tmp_vars.tracker_list.parent().css('min-height', tmp_vars.tracker_list.height() + 'px');
                 var id = parseInt($(this).val());
@@ -859,22 +630,17 @@ var options = function() {
                 }, 200);
                 return false;
             });
-        },
-        addTrackerInList: addTrackerInList
-    };
-}();
-var view = function() {
-    return {
-        ClearTrackerList: function() {
-            $('table.tr_table tbody').empty();
-        },
-        addTrackerInList: options.addTrackerInList
+            */
+
+        }
     };
 }();
 $(function() {
-    $.ajaxSetup({
-        global: true,
-        jsonp: false
-    });
-    options.begin();
+    if (torrent_lib_min === 0) {
+        setTimeout(function(){
+            options.begin();
+        }, 100);
+    } else {
+        options.begin();
+    }
 });

@@ -1,4 +1,37 @@
 var engine = function() {
+    var def_settings = {
+        HideLeech: {v: 1, t: "checkbox"},
+        HideSeed: {v: 0, t: "checkbox"},
+        ShowIcons: {v: 1, t: "checkbox"},
+        SubCategoryFilter: {v: 0, t: "checkbox"},
+        HideZeroSeed: {v: 0, t: "checkbox"},
+        AdvFiltration: {v: 2, t: "radio"},
+        TeaserFilter: {v: 1, t: "checkbox"},
+        add_in_omnibox: {v: 1, t: "checkbox"},
+        context_menu: {v: 1, t: "checkbox"},
+        search_popup: {v: 1, t: "checkbox"},
+        AutoComplite_opt: {v: 1, t: "checkbox"},
+        use_english_postername: {v: 0, t: "checkbox"},
+        google_proxy: {v: 0, t: "checkbox"},
+        google_analytics: {v: 0, t: "checkbox"},
+        autoSetCat: {v: 1, t: "checkbox"},
+        allow_get_description: {v: 1, t: "checkbox"},
+        allow_favorites_sync: {v: 0, t: "checkbox"},
+        sub_select_enable: {v: 1, t: "checkbox"},
+        kinopoisk_category: {v: 1, t: "checkbox"},
+        kinopoisk_f_id: {v: 1, t: "number"},
+        filter_panel_to_left: {v: 0, t: "checkbox"},
+        hideTopSearch: {v: 0, t: "checkbox"},
+        s_films: {v: 1, t: "checkbox"},
+        s_top_films: {v: 1, t: "checkbox"},
+        s_serials: {v: 1, t: "checkbox"},
+        s_imdb_films: {v: 0, t: "checkbox"},
+        s_imdb_top_films: {v: 0, t: "checkbox"},
+        s_imdb_serials: {v: 0, t: "checkbox"},
+        s_games_n: {v: 1, t: "checkbox"},
+        s_games: {v: 1, t: "checkbox"},
+        s_games_a: {v: 1, t: "checkbox"}
+    };
     var var_cache = {
         block_href:  new RegExp('\\/\\/','img'),
         block_src:   new RegExp(' src=([\'"]?)','img'),
@@ -487,7 +520,6 @@ var engine = function() {
     if (isFF) {
         var parseHTML = function(doc, html, allowStyle, baseURI, isXML) {
             var PARSER_UTILS = "@mozilla.org/parserutils;1";
-
             // User the newer nsIParserUtils on versions that support it.
             if (PARSER_UTILS in Components.classes) {
                 var parser = Components.classes[PARSER_UTILS]
@@ -496,7 +528,6 @@ var engine = function() {
                     return parser.parseFragment(html, allowStyle ? parser.SanitizerAllowStyle : 0,
                         !!isXML, baseURI, doc.documentElement);
             }
-
             return Components.classes["@mozilla.org/feed-unescapehtml;1"]
                 .getService(Components.interfaces.nsIScriptableUnescapeHTML)
                 .parseFragment(html, !!isXML, baseURI, doc.documentElement);
@@ -525,6 +556,7 @@ var engine = function() {
         load_in_sandbox: load_in_sandbox,
         //need view and options
         loadProfile: loadProfile,
+        def_settings: def_settings,
         //need view
         getProfileList: getProfileList,
         search: search,
@@ -536,3 +568,7 @@ var engine = function() {
         }
     }
 }();
+$.ajaxSetup({
+    global: true,
+    jsonp: false
+});
