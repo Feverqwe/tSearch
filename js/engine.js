@@ -436,13 +436,26 @@ var engine = function() {
         if (title.length === 0) {
             return;
         }
+        var trackers = (trackers.length > 0)?trackers:undefined;
+        var trackers_names;
+        if (trackers !== undefined) {
+            trackers_names = [];
+            trackers.forEach(function(item) {
+                if (currentTrList[item] === undefined) {
+                    return 1;
+                }
+                trackers_names.push( currentTrList[item].name );
+            });
+        }
         var found = false;
         var oldest_time;
         var oldest_item;
         for (var i = 0, item; item = historyList[i]; i++) {
             if (found === false && item.title === title) {
                 item.count += 1;
-                item.time = (new Date()).getTime();
+                item.time = parseInt((new Date()).getTime() / 1000);
+                item.trackers = trackers;
+                item.trackers_names = trackers_names;
                 found = true;
             }
             if (oldest_time === undefined || oldest_time > item.time) {
@@ -455,7 +468,8 @@ var engine = function() {
                 title: title,
                 count: 1,
                 time: parseInt((new Date()).getTime() / 1000),
-                trackers: (trackers.length > 0)?trackers:undefined
+                trackers: trackers,
+                trackers_names: trackers_names
             });
         }
         if (historyList.length > 200) {

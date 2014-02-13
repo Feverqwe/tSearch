@@ -1,149 +1,165 @@
 var view = function() {
-    var search_history = [];
-    var noHistory = function() {
-        $('ol.list').empty().append($('<center>', {text: _lang.his_no_his}));
+    var dom_cache = {};
+    var var_cache = {
+        history: JSON.parse(GetSettings('history') || '[]'),
+        click_history: JSON.parse(GetSettings('click_history') || '{}')
     };
-    var order = function(a, b) {
-        if (a.time > b.time)
-            return -1;
-        if (a.time === b.time)
+    var onsort = function(a,b) {
+        if (a.time === b.time) {
             return 0;
-        return 1;
+        } else if (a.time > b.time) {
+            return -1;
+        } else {
+            return 1;
+        }
     };
-    var getResult = function() {
-        search_history = JSON.parse(GetSettings('search_history') || "[]");
-        $('ol.list').empty();
-        if (search_history.length < 1) {
-            noHistory();
+    var writeHistory = function() {
+        if (var_cache.history.length === 0) {
+            dom_cache.history.append($('<center>', {text: _lang.his_no_his}));
             return;
         }
-        var count = search_history.length;
-        if (count === 0) {
-            noHistory();
-            return;
-        }
-        search_history.sort(order);
         var content = [];
-        for (var i = 0; i < count; i++) {
-            content.push($('<li>', {'data-id': i}).append(
-                    $('<div>', {'class': 'remove'}).append($('<div>', {'class': 'rm_btn', title: _lang.his_rm_btn})),
-                    $('<div>', {'class': 'time', title: unixintimetitle(search_history[i].time), text: unixintime(search_history[i].time)}),
-            $('<div>', {'class': 'title'}).append($('<a>', {href: 'index.html#s=' + search_history[i].title, text: search_history[i].title}))
-                    ));
-        }
-        $('ol.list').append(content);
-        updateBtns();
-    };
-    var updateBtns = function() {
-        $('div.rm_btn').unbind('click').on("click", function() {
-            $(this).parents().eq(1).hide('fast', function() {
-                var id = $(this).data('id');
-                var title = search_history[id].title;
-                removeItem(title);
-            });
+        var_cache.history.sort(onsort);
+        var_cache.history.forEach(function(item) {
+            var trackers = '';
+            var trackers_dom = [];
+            if (item.trackers !== undefined && item.trackers.length > 0) {
+                trackers = '&tracker='+JSON.stringify(item.trackers);
+                item.trackers_names.forEach(function(item) {
+                    trackers_dom.push( $('<span>', {'class': 'tracker', text: item}) );
+                });
+            }
+            content.push(
+                $('<li>').append(
+                    $('<div>', {'class': 'remove', title: 'Удалить'}).data('title',item.title),
+                    $('<div>', {'class': 'time', title: u2ddmmyyyy_title(item.time), text: u2ddmmyyyy_title(item.time)}),
+                    $('<div>', {'class': 'title'}).append(
+                        $('<a>', {text: item.title, href:'index.html#?search='+item.title+trackers})
+                    ),
+                    trackers_dom
+                )
+            );
         });
+        dom_cache.history.empty().append( content );
     };
-    var removeItem = function(title) {
-        search_history = JSON.parse(GetSettings('search_history') || "[]");
-        if (search_history.length > 0) {
-            var count = search_history.length;
-            for (var i = 0; i < count; i++) {
-                if (search_history[i].title === title) {
-                    search_history.splice(i, 1);
+    var writeClickHistory = function() {
+        var content = [];
+        $.each(var_cache.click_history, function(request, items) {
+            var items_dom = [];
+            items.sort(onsort);
+            items.forEach(function(item){
+                items_dom.push( $('<li>').append(
+                    $('<div>', {'class': 'remove', title: 'Удалить'}).data('title',item.title).data('request',request),
+                    $('<div>', {'class': 'time', title: u2ddmmyyyy_title(item.time), text: u2ddmmyyyy_title(item.time)}),
+                    $('<div>', {'class': 'title'}).append(
+                        $('<a>',{href: item.href, target: '_blank'}).html(item.title)
+                    )
+                ));
+            });
+            content.push($('<li>').append($('<a>',{text: request, href:'index.html#?search='+request}), $('<ol>',{'class': 'items'}).append(items_dom) ));
+        });
+        dom_cache.click_history.empty().append(content);
+    };
+    var removeItem = function(request, title) {
+        var index, i, item;
+        if (request === undefined) {
+            for (i = 0; item = var_cache.history[i]; i++) {
+                if (title === item.title) {
+                    index = i;
                     break;
                 }
             }
-            SetSettings('search_history', JSON.stringify(search_history));
+            if (index === undefined) {
+                return;
+            }
+            var_cache.history.splice(index,1);
+            SetSettings('history', JSON.stringify(var_cache.history));
+            writeHistory();
+            return;
         }
-        getResult();
+        var list = var_cache.click_history[request];
+        if (list === undefined) {
+            return;
+        }
+        var list_len = list.length;
+        if (list_len === 1) {
+            delete var_cache.click_history[request];
+            SetSettings('click_history', JSON.stringify(var_cache.click_history));
+            writeClickHistory();
+            return;
+        }
+        for (i = 0; item = list[i]; i++) {
+            if (title === item.title) {
+                index = i;
+                break;
+            }
+        }
+        if (index === undefined) {
+            return;
+        }
+        list.splice(index,1);
+        SetSettings('click_history', JSON.stringify(var_cache.click_history));
+        writeClickHistory();
     };
-    var utiemonstr = function(shtamp) {
+    var u2ddmmyyyy = function(shtamp) {
         //преврящает TimeShtamp в строчку
-        var dt = new Date(shtamp * 1000);
-        var m = dt.getMonth() + 1;
-        if (m.toString().length === 1)
-            m = '0' + m.toString();
-        var d = dt.getDate();
-        if (d.toString().length === 1)
-            d = '0' + d.toString();
-        var h = dt.getHours();
-        if (h.toString().length === 1)
-            h = '0' + h.toString();
-        var mi = dt.getMinutes();
-        if (mi.toString().length === 1)
-            mi = '0' + mi.toString();
-        var sec = dt.getSeconds();
-        if (sec.toString().length === 1)
-            sec = '0' + sec.toString();
-        var t = d + '-' + m + '-' + dt.getFullYear() + ' ' + h + ':' + mi + ':' + sec;
-        return t;
+        var time = new Date(shtamp * 1000);
+        var month = time.getMonth() + 1;
+        if (month < 10) {
+            month = '0'+month;
+        }
+        var date = time.getDate();
+        if (date < 10) {
+            date = '0'+date;
+        }
+        return date + '-' + month + '-' + time.getFullYear();
     };
-    var unixintimetitle = function(i) {
-        if (i === 0)
+    var u2ddmmyyyy_title = function(i) {
+        if (i <= 0)
             return '∞';
         else
-            return utiemonstr(i);
-    };
-    var unixintime = function(shtamp)
-    {
-        //преврящает TimeShtamp в строчку
-        var dt = new Date(shtamp * 1000);
-        var today = false;
-        if ((new Date()).toDateString() === dt.toDateString())
-            today = true;
-        var m = dt.getMonth() + 1;
-        if (m.toString().length === 1)
-            m = '0' + m.toString();
-        var d = dt.getDate();
-        if (d.toString().length === 1)
-            d = '0' + d.toString();
-        var h = dt.getHours();
-        if (h.toString().length === 1)
-            h = '0' + h.toString();
-        var mi = dt.getMinutes();
-        if (mi.toString().length === 1)
-            mi = '0' + mi.toString();
-        var sec = dt.getSeconds();
-        if (sec.toString().length === 1)
-            sec = '0' + sec.toString();
-        if (today) {
-            var t = h + ':' + mi;
-        } else
-            var t = d + '-' + m + '-' + dt.getFullYear();
-        return t;
+            return u2ddmmyyyy(i);
     };
     return {
-        getResult: function() {
-            getResult();
+        begin: function() {
+            dom_cache.window = $('window');
+            dom_cache.body = $('body');
+            dom_cache.topbtn = $('div.topbtn');
+            dom_cache.history = $('ol.history');
+            dom_cache.click_history = $('ol.click_history');
+            dom_cache.window.on('scroll',function() {
+                if(document.body.classList.contains('disable-hover') === false) {
+                    document.body.classList.add('disable-hover')
+                }
+                clearTimeout(var_cache.window_scroll_timer);
+                var_cache.window_scroll_timer = setTimeout(function() {
+                    if (dom_cache.window.scrollTop() > 100) {
+                        dom_cache.topbtn.fadeIn('fast');
+                    } else {
+                        dom_cache.topbtn.fadeOut('fast');
+                    }
+                    document.body.classList.remove('disable-hover');
+                }, 250);
+            });
+            dom_cache.topbtn.on("click", function(e) {
+                e.preventDefault();
+                dom_cache.html.scrollTop(200);
+                dom_cache.html.animate({
+                    scrollTop: 0
+                }, 200);
+            });
+            writeHistory();
+            writeClickHistory();
+            dom_cache.body.on('click', 'div.remove', function(e){
+                e.preventDefault();
+                var $this = $(this);
+                $this.parent().hide();
+                removeItem($this.data('request'), $this.data('title'));
+            });
+            $('div.content').removeClass('loading');
         }
     };
 }();
 $(function() {
-
-    $('title').text(_lang.his_title);
-    $('div.left').children('h1').text(_lang.his_h1);
-    $('input.sbutton.main').attr('title', _lang.btn_main);
-    $('div.topbtn').attr('title', _lang['btn_up']);
-
-    $('input.sbutton.main').on("click", function() {
-        window.location = 'index.html#s=';
-    });
-    view.getResult();
-
-
-    $(window).scroll(function() {
-        if ($(this).scrollTop() > 100) {
-            $('div.topbtn').fadeIn('fast');
-        } else {
-            $('div.topbtn').fadeOut('fast');
-        }
-    });
-    $('div.topbtn').on("click", function(event) {
-        event.preventDefault();
-        $('body,html').animate({
-            scrollTop: 0
-        }, 200);
-        return false;
-    });
-
+    view.begin();
 });

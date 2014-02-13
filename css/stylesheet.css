@@ -1174,6 +1174,9 @@ div.time_filter {
 div.time_filter input {
     width: 65px;
 }
+div.time_filter select {
+    width: 162px;
+}
 div.time_filter div.range {
     display: none;
     padding-left: 18px;
