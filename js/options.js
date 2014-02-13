@@ -660,21 +660,6 @@ var options = function() {
                 $('div.popup').css('left', ($('html').width() / 2 - $('div.popup').width() / 2) + 'px');
             }).trigger('resize');
             //<<<<<<<<<<<<<<<<<
-            $('div.topbtn').attr('title', _lang['btn_up']);
-            $(window).scroll(function() {
-                if ($(this).scrollTop() > 100) {
-                    $('div.topbtn').fadeIn('fast');
-                } else {
-                    $('div.topbtn').fadeOut('fast');
-                }
-            });
-            $('div.topbtn').on("click", function(event) {
-                event.preventDefault();
-                $('body,html').animate({
-                    scrollTop: 0
-                }, 200);
-                return false;
-            });
             */
             dom_cache.window.on('scroll',function() {
                 if(document.body.classList.contains('disable-hover') === false) {
