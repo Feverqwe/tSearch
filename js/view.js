@@ -26,6 +26,7 @@ var view = function() {
         rm_spaces: new RegExp('\\s+','g'),
         long_string: new RegExp('[^\\s]{100,}'),
         split_long_string: new RegExp('.{0,100}', 'g'),
+        teaser_regexp: new RegExp('Трейлер|Тизер|Teaser|Trailer','i'),
         // массив содержащий всю информацию и dom элемент торрентов
         table_dom: [],
         // сортировка по возрастанию или убыванию
@@ -107,6 +108,10 @@ var view = function() {
         var items = [];
         var style = '';
         $.each(trList, function(key, item) {
+            if (item === undefined) {
+                console.log('Torrent not loaded! ',key);
+                return 1;
+            }
             item.class_name = key.replace(/[^A-Za-z0-9]/g,'_');
             var icon = $('<div>', {'class': 'tracker_icon '+item.class_name});
             var i = $('<i>', {text: 0});
@@ -224,6 +229,7 @@ var view = function() {
     };
     var home = function(){
         homeMode();
+        clear_filters();
         clear_tracker_filter();
         setPage(undefined);
     };
@@ -385,7 +391,7 @@ var view = function() {
         /*
          * фильтр тизеров
          */
-        return ((/Трейлер|Тизер|Teaser|Trailer/i).test(title)) ? 1 : 0;
+        return ((var_cache.teaser_regexp).test(title)) ? 1 : 0;
     };
     var checkRate = function(quality, v) {
         /*
@@ -1732,6 +1738,11 @@ var view = function() {
             dom_cache.size_filter = $('div.size_filter');
             dom_cache.seed_filter = $('div.seed_filter');
             dom_cache.peer_filter = $('div.peer_filter');
+            $.each(_lang.time_f_s, function(value, text) {
+                dom_cache.time_filter_select.append(
+                    $('<option>',{value: value, text: text, selected: (value === 'all')})
+                );
+            });
             if (GetSettings('table_sort_colum') !== undefined) {
                 var_cache.table_sort_colum = GetSettings('table_sort_colum');
             }

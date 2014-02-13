@@ -74,7 +74,7 @@ var view = function() {
             }
             var_cache.history.splice(index,1);
             SetSettings('history', JSON.stringify(var_cache.history));
-            writeHistory();
+            //writeHistory();
             return;
         }
         var list = var_cache.click_history[request];
@@ -85,7 +85,7 @@ var view = function() {
         if (list_len === 1) {
             delete var_cache.click_history[request];
             SetSettings('click_history', JSON.stringify(var_cache.click_history));
-            writeClickHistory();
+            //writeClickHistory();
             return;
         }
         for (i = 0; item = list[i]; i++) {
@@ -99,7 +99,7 @@ var view = function() {
         }
         list.splice(index,1);
         SetSettings('click_history', JSON.stringify(var_cache.click_history));
-        writeClickHistory();
+        //writeClickHistory();
     };
     var u2ddmmyyyy = function(shtamp) {
         //преврящает TimeShtamp в строчку
@@ -115,10 +115,10 @@ var view = function() {
         return date + '-' + month + '-' + time.getFullYear();
     };
     var u2ddmmyyyy_title = function(i) {
-        if (i <= 0)
+        if (i <= 0) {
             return '∞';
-        else
-            return u2ddmmyyyy(i);
+        }
+        return u2ddmmyyyy(i);
     };
     return {
         begin: function() {
@@ -153,8 +153,16 @@ var view = function() {
             dom_cache.body.on('click', 'div.remove', function(e){
                 e.preventDefault();
                 var $this = $(this);
-                $this.parent().hide();
-                removeItem($this.data('request'), $this.data('title'));
+                var li = $this.parent();
+                li.hide();
+                var request = $this.data('request');
+                if (request !== undefined) {
+                    var ol = li.parent();
+                    if (ol.children('li').length === 1) {
+                        ol.hide();
+                    }
+                }
+                removeItem(request, $this.data('title'));
             });
             $('div.content').removeClass('loading');
         }

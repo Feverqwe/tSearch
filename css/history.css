@@ -16,17 +16,15 @@ body.disable-hover {
     pointer-events: none;
 }
 
-a:link {
+a span.sub_name {
+    color: #181818;
+}
+a {
+    text-decoration: none;
     color: #1A3DC1;
 }
 a:link:hover {
-    border-bottom-color: #1A3DC1;
-}
-a:visited {
-    color: #609;
-}
-a:visited:hover {
-    border-bottom-color: #609;
+    text-decoration: underline;
 }
 
 div.content.loading {
@@ -146,6 +144,7 @@ ol.items li:hover div.remove {
 }
 ol.items div.time {
     color: #666666;
+    cursor: default;
 }
 ol.items div.title {
     display: inline;
@@ -157,4 +156,5 @@ ol.items span.tracker {
     border-radius: 4px;
     background-color: #337AF8;
     color: #fff;
+    cursor: default;
 }
