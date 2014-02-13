@@ -1,11 +1,14 @@
 body {
-    font-family: Verdana, sans-serif;
-    font-size: 0.84em;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.875em;
+    margin: 0;
+}
+body.disable-hover {
+    pointer-events: none;
 }
 div.title {
     width: 720px;
     margin: 0 auto;
-    font-size: 1.1em;
 }
 ul.menu {
     width: 720px;
@@ -14,7 +17,7 @@ ul.menu {
 }
 ul.menu li {
     display: inline-block;
-    font-size: 1.1em;
+    font-size: 1.143em;
 }
 ul.menu li {
     padding-top: 3px;
@@ -126,7 +129,6 @@ div.author a {
 div.bottom {
     width: 720px;
     margin: 0 auto;
-    font-size: 0.8em;
 }
 div.bottom div {
     display: inline-block;
@@ -159,9 +161,6 @@ table.c_table {
 }
 table.c_table div.tracker_icon {
     margin-left: 5px;
-}
-table th {
-    font-size: 1em;
 }
 td.status, th.status {
     text-align: center;
@@ -197,10 +196,6 @@ div.icons > div.rus {
 
 div.icons > div.cirilic {
     background: url(../images/cyrillic.png) center center;
-}
-
-td.desc {
-    font-size: 0.9em;
 }
 table a {
     color: #0051D8;
@@ -293,13 +288,12 @@ div.topbtn {
     display: none;
     bottom: 0;
     width: 50px;
-    height: 60px;
     background: url(../images/go_top.png) no-repeat center bottom;
     position: fixed;
     right: 0;
     z-index: 10;
     cursor: pointer;
-    padding-top: 100%;
+    height: 100%;
     opacity: 0.9;
 }
 div.topbtn:hover {

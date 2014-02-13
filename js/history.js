@@ -2,7 +2,8 @@ var view = function() {
     var dom_cache = {};
     var var_cache = {
         history: JSON.parse(GetSettings('history') || '[]'),
-        click_history: JSON.parse(GetSettings('click_history') || '{}')
+        click_history: JSON.parse(GetSettings('click_history') || '{}'),
+        window_scroll_timer: undefined
     };
     var onsort = function(a,b) {
         if (a.time === b.time) {
@@ -122,11 +123,12 @@ var view = function() {
     };
     return {
         begin: function() {
-            dom_cache.window = $('window');
+            dom_cache.window = $(window);
             dom_cache.body = $('body');
             dom_cache.topbtn = $('div.topbtn');
             dom_cache.history = $('ol.history');
             dom_cache.click_history = $('ol.click_history');
+            dom_cache.html = $('html');
             dom_cache.window.on('scroll',function() {
                 if(document.body.classList.contains('disable-hover') === false) {
                     document.body.classList.add('disable-hover')

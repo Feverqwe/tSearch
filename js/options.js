@@ -2,7 +2,9 @@ var options = function() {
     var isFF = window.Application !== undefined && Application.name === "Firefox";
     var isChromeum = (window.chrome !== undefined);
     var dom_cache = {};
-    var var_cache = {};
+    var var_cache = {
+        window_scroll_timer: undefined
+    };
     var loadSettings = function() {
         var settings = {};
         $.each(engine.def_settings, function(type, attr) {
@@ -190,14 +192,27 @@ var options = function() {
         }
         dom_cache.custom_list.append( content );
     };
+    var saveCurrentProfile = function() {
+        var current = current_profile;
+        var list = engine.getDefList();
+        var active = {};
+        $.each(list, function(id){
+            var state = dom_cache.tracker_list.children('tr[data-id="' + id + '"]').children('td.status').children('input').prop('checked');
+            if (state === false) {
+                return;
+            }
+            active[id] = 1;
+        });
+        profile[current] = active;
+    };
     var writeProfileList = function(list) {
         dom_cache.select_profileList.get(0).textContent = '';
         var content = [];
-        $.each(list, function(text, trackers){
+        $.each(list, function(text){
             content.push( $('<option>', {text: text, value: text}) );
         });
         if (content.length === 0) {
-            profile[_lang.label_def_profile] = engine.getDefList();
+            profile[_lang.label_def_profile] = undefined;
             writeProfileList(profile);
             return;
         }
@@ -207,13 +222,34 @@ var options = function() {
         if (current === undefined) {
             current = GetSettings('currentProfile');
         }
+        if (profile.hasOwnProperty(current)) {
+            if (profile[current] === undefined) {
+                profile[current] = engine.getDefList();
+            }
+        } else {
+            current = undefined;
+            $.each(profile, function(a){
+                current = a;
+                return 0;
+            });
+            if (current === undefined) {
+                console.warn('can\'t found profile');
+                return;
+            }
+        }
         current_profile = current;
+        dom_cache.select_profileList.children('option[value="'+current+'"]').prop('selected', true);
         dom_cache.tracker_list.find('input').prop('checked', false);
         $.each(profile[current], function(id, status){
             if (status === 0) {
+                delete profile[current][id];
                 return 1;
             }
             var checkbox = dom_cache.tracker_list.children('tr[data-id="'+id+'"]').children('td.status').children('input');
+            if (checkbox.length === 0) {
+                delete profile[current][id];
+                return 1;
+            }
             checkbox.prop('checked', true);
         });
         sortTable();
@@ -323,6 +359,7 @@ var options = function() {
     return {
         begin: function() {
             engine.loadProfile(undefined);
+            dom_cache.window = $(window);
             dom_cache.body = $('body');
             dom_cache.ul_menu = $('ul.menu');
             dom_cache.tracker_list = $('table.tr_table tbody');
@@ -352,6 +389,11 @@ var options = function() {
             dom_cache.backup_form_links = $('div.backup_form div').eq(0);
             dom_cache.textarea_backup = $('textarea[name="backup"]');
             dom_cache.textarea_restore = $('textarea[name="restore"]');
+            dom_cache.profile_input = $('input[name=list_name]');
+            dom_cache.profile_btn = $('input[name=add_list]');
+            dom_cache.profile_rmlist = $('input[name=rm_list]');
+            dom_cache.html = $('html');
+            dom_cache.topbtn = $('div.topbtn');
             write_language();
             dom_cache.ul_menu.on('click', 'a', function(e) {
                 e.preventDefault();
@@ -427,7 +469,8 @@ var options = function() {
             }
             dom_cache.tracker_list.sortable({placeholder: "ui-state-highlight",
                 stop: function() {
-                    //saveCurrentProfile();
+                    sortTable();
+                    saveCurrentProfile();
                 }
             });
             set_place_holder();
@@ -466,57 +509,59 @@ var options = function() {
             dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(0).on("click", function(e) {
                 e.preventDefault();
                 dom_cache.tracker_list.find('input').prop('checked', true);
-                //saveCurrentProfile();
+                saveCurrentProfile();
             });
             dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(1).on("click", function(e) {
                 e.preventDefault();
                 dom_cache.tracker_list.find('input').removeAttr('checked');
-                //saveCurrentProfile();
+                saveCurrentProfile();
             });
             dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(2).on("click", function(e) {
                 e.preventDefault();
                 var list = engine.getDefList();
                 checkTrList(list);
-                // saveCurrentProfile();
+                saveCurrentProfile();
             });
-            dom_cache.tracker_list.on('change', 'input', function() {
+            dom_cache.tracker_list.on('change', 'input', function(e) {
+                e.preventDefault();
                 sortTable();
-                //saveCurrentProfile();
+                saveCurrentProfile();
             });
-            dom_cache.select_profileList.on('change', function() {
-                var profile = parseInt($(this).val());
-                checkTrList(engine.getProfileList(profile));
-            });
-            /*
-            $('select[name=tr_lists]').on('change', function() {
-                tmp_vars.tracker_list.parent().css('min-height', tmp_vars.tracker_list.height() + 'px');
-                var id = parseInt($(this).val());
-                currentProfile = sandbox_trackerProfiles[id];
-                currentProfile.id = id;
-                engine.loadProfile(id);
-            });
-            $('input[name=list_name]').on('keypress', function(e) {
-                if (e.which === 13) {
-                    $('input[name=add_list]').trigger('click');
+            dom_cache.select_profileList.on('change', function(e) {
+                e.preventDefault();
+                var current = parseInt($(this).val());
+                var list = profile[current];
+                if (list === undefined) {
+                    loadProfile(current);
+                } else {
+                    current_profile = current;
+                    checkTrList(list);
                 }
             });
-            $('input[name=add_list]').on('click', function() {
-                var input = $(this).closest('ul').find('input[name=list_name]');
-                var name = input.val();
-                if (name.length === 0)
+            dom_cache.profile_input.on('keydown', function(e) {
+                if (e.which === 13) {
+                    dom_cache.profile_btn.trigger('click');
+                }
+            });
+            dom_cache.profile_btn.on('click', function(e) {
+                e.preventDefault();
+                var name = dom_cache.profile_input.val();
+                if (name.length === 0) {
                     return;
-                input.val('');
-                sandbox_trackerProfiles.push({
-                    Trackers: null,
-                    Title: name
-                });
-                updateProfileList(sandbox_trackerProfiles.length - 1);
+                }
+                dom_cache.profile_input.val('');
+                profile[name] = undefined;
+                writeProfileList(profile);
+                loadProfile(name);
             });
-            $('input[name=rm_list]').on('click', function() {
-                sandbox_trackerProfiles.splice(currentProfile.id, 1);
-                var id = sandbox_trackerProfiles.length - 1;
-                updateProfileList(id);
+            dom_cache.profile_rmlist.on('click', function(e) {
+                e.preventDefault();
+                delete profile[dom_cache.select_profileList.val()];
+                writeProfileList(profile);
+                loadProfile();
             });
+
+            /*
             $('input[name="save"]').on('click', function() {
                 saveAll();
                 $('div.page.save > div.status').css('background', 'url(images/loading.gif) center center no-repeat');
@@ -631,7 +676,27 @@ var options = function() {
                 return false;
             });
             */
-
+            dom_cache.window.on('scroll',function() {
+                if(document.body.classList.contains('disable-hover') === false) {
+                    document.body.classList.add('disable-hover')
+                }
+                clearTimeout(var_cache.window_scroll_timer);
+                var_cache.window_scroll_timer = setTimeout(function() {
+                    if (dom_cache.window.scrollTop() > 100) {
+                        dom_cache.topbtn.fadeIn('fast');
+                    } else {
+                        dom_cache.topbtn.fadeOut('fast');
+                    }
+                    document.body.classList.remove('disable-hover');
+                }, 250);
+            });
+            dom_cache.topbtn.on("click", function(e) {
+                e.preventDefault();
+                dom_cache.html.scrollTop(200);
+                dom_cache.html.animate({
+                    scrollTop: 0
+                }, 200);
+            });
         }
     };
 }();
