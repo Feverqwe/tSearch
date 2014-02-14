@@ -1,6 +1,6 @@
 var allow_favorites_sync = 0;
 var SetSettings = function(key, value) {
-    if (value === null) {
+    if (value === undefined) {
         delete localStorage[key];
         return value;
     }

@@ -12,55 +12,29 @@ torrent_lib['fast-torrent'] = function () {
     };
     var xhr = undefined;
     var web = function () {
-        var calculateCategory = function (f) {
-            var c = f.length;
-            var url = '';
-            for (var i = 0; i < c; i++)
-                url += $(f[i]).attr('href');
-            return ((/sex/).test(url)) ? 10 :
-                ((/anime/).test(url)) ? 7 :
-                    ((/videoklipy|koncertnoe|music/).test(url)) ? 1 :
-                        ((/documental|dokumental/).test(url)) ? 8 :
-                            ((/multfilm|multserialy|channel/).test(url)) ? 4 :
-                                ((/tv/).test(url)) ? 0 :
-                                    ((/dopolnitelnye|gipotezy|vojna|vidovoj|vampiryi|fantasy|triller|spektakl|adventure|horror|soviet|skazka|family|russian|triller|roman|adventure|parody|noir|nemoe|mystic|melodrama|criminal|comedy|film|art-haus|biography|action|boevye|western|voenniy|detective|detskiy|drama|history|katastrofa|short/).test(url)) ? 3 :
-                                        ((/sport/).test(url)) ? 9 :
-                                            -1;
-        };
-        var calculateTime = function (f) {
-            var dd = f.split('.');
-            return Math.round(new Date(parseInt(dd[2]), parseInt(dd[1]) - 1, parseInt(dd[0])).getTime() / 1000);
-        };
-        var calculateQuality = function (t) {
-            if (t == undefined)
-                return '';
-            t = t.replace(/qa-.* qa-([A-Za-z0-9\-]*) use.*/, ' $1');
-            return t;
-        };
         var readCode = function (c) {
             c = engine.contentFilter(c);
             var t = engine.load_in_sandbox(c);
-            t = t.find('table.list').children('tbody').children('tr[height="1%"]');
+            t = t.find('div.film-list').children('div');
             var l = t.length;
             var arr = [];
             for (var i = 0; i < l; i++) {
-                var td2 = t.eq(i).children('td');
-                var td1 = t.eq(i).prev().children('td');
-                if (td1.eq(1).children('h2').text().length == 0)
-                    continue;
-                var title = td1.eq(1).children('h2').text() + calculateQuality(td1.eq(1).children('div.film_controll').children('em.qa-icon').attr('class'));
-                title = $('<span>', {text: title}).text();
+                var item = t.eq(i).children('div.film-wrap');
+                var title = item.children('h2').text();
+                var category = item.children('div.film-genre').children('div').eq(0).text();
+                var link = root_url+item.children('div.film-image').children('a').attr('href');
+                var time = ex_kit.format_date(1, item.children('div.film-foot').children('em').eq(2).text().replace(/.*: /,''));
                 arr[arr.length] = {
-                    'category': {
-                        'title': td1.eq(1).children('div[class="genre_list"]').text(),
-                        'id': calculateCategory(td1.eq(1).children('div[class="genre_list"]').children('a'))
+                    category: {
+                        title: category,
+                        id: -1
                     },
-                    'title': title,
-                    'url': root_url + td2.eq(2).children('a').attr('href'),
-                    'size': 0,
-                    'seeds': 1,
-                    'leechs': 0, //$.trim(td2.eq(1).text().replace('Скачали:','')),
-                    'time': calculateTime($.trim(td2.eq(0).text().split(':')[2]))
+                    title: title,
+                    url: link,
+                    size: 0,
+                    seeds: 1,
+                    leechs: 0,
+                    time: time
                 }
             }
             return arr;
@@ -71,7 +45,7 @@ torrent_lib['fast-torrent'] = function () {
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
-                url: url + text + '/50/1.html',
+                url: url + text + '/1.html',
                 cache: false,
                 success: function (data) {
                     view.result(filename, readCode(data), t);

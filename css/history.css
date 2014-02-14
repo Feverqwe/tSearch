@@ -11,10 +11,6 @@ body {
     margin: 0;
     min-width: 960px;
 }
-body.disable-hover {
-    pointer-events: none;
-}
-
 a span.sub_name {
     color: #181818;
 }

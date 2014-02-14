@@ -247,7 +247,6 @@ var options = function() {
             content.push($item);
         });
         dom_cache.tracker_list.prepend(content);
-        //sortTable();
     };
     var sortTable = function() {
         var dom_list = dom_cache.tracker_list.children('tr');
@@ -288,7 +287,7 @@ var options = function() {
             } else {
                 tracker_icon.css('background-image', 'url(' + tracker.icon + ')');
             }
-            content.push( $('<tr>',{'data-id': id}).append(
+            content.push( $('<tr>',{'data-id': id, 'class':(tracker.uid !== undefined)?'custom':''}).append(
                 $('<td>').append(tracker_icon),
                 $('<td>').append(
                     $('<a>', {href: tracker.url, target: '_blank', text: tracker.name})
@@ -353,7 +352,6 @@ var options = function() {
             content.push($item);
         });
         dom_cache.tracker_list.prepend(content);
-        //sortTable();
     };
     return {
         begin: function() {
@@ -477,7 +475,6 @@ var options = function() {
             }
             dom_cache.tracker_list.sortable({placeholder: "ui-state-highlight",
                 stop: function() {
-                    sortTable();
                     saveCurrentProfile();
                 }
             });
@@ -532,7 +529,6 @@ var options = function() {
             });
             dom_cache.tracker_list.on('change', 'input', function(e) {
                 e.preventDefault();
-                sortTable();
                 saveCurrentProfile();
             });
             dom_cache.select_profileList.on('change', function(e) {
@@ -667,9 +663,6 @@ var options = function() {
                 saveAll();
             });
             dom_cache.window.on('scroll',function() {
-                if(document.body.classList.contains('disable-hover') === false) {
-                    document.body.classList.add('disable-hover')
-                }
                 clearTimeout(var_cache.window_scroll_timer);
                 var_cache.window_scroll_timer = setTimeout(function() {
                     if (dom_cache.window.scrollTop() > 100) {
@@ -677,7 +670,6 @@ var options = function() {
                     } else {
                         dom_cache.topbtn.fadeOut('fast');
                     }
-                    document.body.classList.remove('disable-hover');
                 }, 250);
             });
             dom_cache.topbtn.on("click", function(e) {

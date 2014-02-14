@@ -3,12 +3,11 @@ body {
     font-size: 0.875em;
     margin: 0;
 }
-body.disable-hover {
-    pointer-events: none;
-}
-
 textarea {
     border-color: #ccc;
+}
+th {
+    font-weight: normal;
 }
 
 div.title {
@@ -214,8 +213,8 @@ table tbody tr {
     height: 60px;
     min-height: 60px;
 }
-table tbody tr:nth-child(odd) {
-    background-color: #f9f9f9;
+table tbody tr.custom {
+    background-color: #FDFAEC;
 }
 table tbody tr.checked {
     background-color: #F9F0FD;

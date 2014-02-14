@@ -37,7 +37,7 @@ var engine = function() {
         block_src:   new RegExp(' src=([\'"]?)','img'),
         unblock_src: new RegExp('data:image\\/gif,base64#blockrurl#','mg'),
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
-        rn: new RegExp('[\\r\\n]+','g')
+        rn: new RegExp('[\\r?\\n]+','g')
     };
     var historyList = JSON.parse(GetSettings('history') || '[]');
     var isFF = window.Application !== undefined && Application.name === "Firefox";
@@ -57,7 +57,7 @@ var engine = function() {
          * загружает пользовательский модуль.
          */
         var ct = GetSettings(uid);
-        if (ct === undefined) {
+        if (ct === undefined || ct === 'undefined') {
             return;
         }
         ct = JSON.parse(ct);
@@ -102,8 +102,8 @@ var engine = function() {
                 var ex_post = (me.post !== undefined && me.post.length !== 0) ? 1 : 0;
                 if (me.cat_alt !== undefined) {
                     me.cat_attr = 'alt';
+                    delete me.cat_alt;
                 }
-                delete me.cat_alt;
 
                 if (ex_cat === 0) {
                     tests[1] = 1;
@@ -170,7 +170,7 @@ var engine = function() {
                             er[3] += 1;
                             continue;
                         }
-                        obj.url = obj.url.replace(var_cache.rn, "");
+                        obj.url = obj.url.replace(var_cache.rn, " ");
                         if (ex_tr_link_r === 1) {
                             if (obj.url[0] === '/') {
                                 obj.url = short_url + obj.url;
@@ -185,7 +185,7 @@ var engine = function() {
                                 obj.size = (td.find(me.tr_size)).text();
                             }
                             if (obj.size !== undefined && obj.size.length !== 0) {
-                                obj.size = obj.size.replace(var_cache.rn, "");
+                                obj.size = obj.size.replace(var_cache.rn, " ");
                                 if (ex_size_regexp === 1) {
                                     obj.size = obj.size.replace(new RegExp(me.size_r, "ig"), me.size_rp);
                                 }
@@ -203,7 +203,7 @@ var engine = function() {
                         if (ex_tr_dl === 1) {
                             obj.dl = (td.find(me.tr_dl)).attr('href');
                             if (obj.dl !== undefined) {
-                                obj.dl = obj.dl.replace(var_cache.rn, "");
+                                obj.dl = obj.dl.replace(var_cache.rn, " ");
                                 if (ex_tr_dl_r === 1) {
                                     if (obj.dl[0] === '/') {
                                         obj.dl = short_url + obj.dl;
@@ -218,7 +218,7 @@ var engine = function() {
                         if (ex_seed === 1) {
                             obj.seeds = (td.find(me.seed)).text();
                             if (obj.seeds.length !== 0) {
-                                obj.seeds = obj.seeds.replace(var_cache.rn, "");
+                                obj.seeds = obj.seeds.replace(var_cache.rn, " ");
                                 if (ex_seed_regexp === 1) {
                                     obj.seeds = obj.seeds.replace(new RegExp(me.seed_r, "ig"), me.seed_rp);
                                 }
@@ -233,7 +233,7 @@ var engine = function() {
                         if (ex_peer === 1) {
                             obj.leechs = (td.find(me.peer)).text();
                             if (obj.leechs.length !== 0) {
-                                obj.leechs = obj.leechs.replace(var_cache.rn, "");
+                                obj.leechs = obj.leechs.replace(var_cache.rn, " ");
                                 if (ex_peer_regexp === 1) {
                                     obj.leechs = obj.leechs.replace(new RegExp(me.peer_r, "ig"), me.peer_rp);
                                 }
@@ -252,7 +252,7 @@ var engine = function() {
                                 obj.time = (td.find(me.date)).text();
                             }
                             if (obj.time !== undefined && obj.time.length !== 0) {
-                                obj.time = obj.time.replace(var_cache.rn, "");
+                                obj.time = obj.time.replace(var_cache.rn, " ");
                                 if (ex_date_regexp === 1) {
                                     obj.time = obj.time.replace(new RegExp(me.t_r, "ig"), me.t_r_r);
                                 }
@@ -286,7 +286,7 @@ var engine = function() {
                         if (er[1])
                             msg += "\n" + er[1] + ' - category url fix';
                         if (er[4])
-                            msg += "\n" + er[4] + ' - sile size fix';
+                            msg += "\n" + er[4] + ' - size fix';
                         if (er[5])
                             msg += "\n" + er[5] + ' - dl link fix';
                         if (er[6])
@@ -308,7 +308,7 @@ var engine = function() {
                         url: me.search_path.replace('%search%', t),
                         cache: false,
                         success: function(data) {
-                            view.result(custom_id, readCode(data), t);
+                            view.result(custom_id, readCode(data), text);
                         },
                         error: function() {
                             view.loadingStatus(2, custom_id);

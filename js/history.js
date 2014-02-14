@@ -130,9 +130,6 @@ var view = function() {
             dom_cache.click_history = $('ol.click_history');
             dom_cache.html = $('html');
             dom_cache.window.on('scroll',function() {
-                if(document.body.classList.contains('disable-hover') === false) {
-                    document.body.classList.add('disable-hover')
-                }
                 clearTimeout(var_cache.window_scroll_timer);
                 var_cache.window_scroll_timer = setTimeout(function() {
                     if (dom_cache.window.scrollTop() > 100) {
@@ -140,7 +137,6 @@ var view = function() {
                     } else {
                         dom_cache.topbtn.fadeOut('fast');
                     }
-                    document.body.classList.remove('disable-hover');
                 }, 250);
             });
             dom_cache.topbtn.on("click", function(e) {

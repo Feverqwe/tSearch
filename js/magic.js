@@ -8,11 +8,7 @@ var magic = function() {
     };
     var xhr = null;
     var contentFilter = function(c) {
-        var c = c.replace(/display[: ]*none/img, '#blockdisp#').replace(/ src=(['"]{0,1})/img, ' src=$1#blockrurl#');
-        return c;
-    };
-    var isNumber = function(n) {
-        return !isNaN(parseFloat(n)) && isFinite(n);
+        return c.replace(/display[: ]*none/img, '#blockdisp#').replace(/ src=(['"]{0,1})/img, ' src=$1#blockrurl#');
     };
     var open_page = function(url) {
         if (url.length === 0)
@@ -324,30 +320,6 @@ var magic = function() {
         status_bar.text(path);
         return path;
     };
-    var format_size = function(s) {
-        var size = s.replace(/[^0-9.,кбмгтkmgtb]/ig, '').replace(',', '.');
-        var t = size.replace(/кб|kb/i, '');
-        if (t.length !== size.length) {
-            t = parseFloat(t);
-            return Math.round(t * 1024);
-        }
-        var t = size.replace(/мб|mb/i, '');
-        if (t.length !== size.length) {
-            t = parseFloat(t);
-            return Math.round(t * 1024 * 1024);
-        }
-        var t = size.replace(/гб|gb/i, '');
-        if (t.length !== size.length) {
-            t = parseFloat(t);
-            return Math.round(t * 1024 * 1024 * 1024);
-        }
-        var t = size.replace(/тб|tb/i, '');
-        if (t.length !== size.length) {
-            t = parseFloat(t);
-            return Math.round(t * 1024 * 1024 * 1024 * 1024);
-        }
-        return 0;
-    };
     var bytesToSize = function(bytes, nan) {
         var sizes = _lang['size_list'];
         if (nan === undefined)
@@ -360,92 +332,6 @@ var magic = function() {
         }
         return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
     };
-    var format_date = function(f, t) {
-        if (f === undefined) {
-            return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago'];
-        }
-        f = parseInt(f);
-        if (f === 0) { // || f === '2013-04-31[[[ 07]:03]:27]') {
-            var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').trim().split(' ');
-            for (var i = 0; i < 6; i++) {
-                if (dd[i] === undefined) {
-                    dd[i] = 0;
-                } else {
-                    dd[i] = parseInt(dd[i]);
-                    if (isNaN(dd[i])) {
-                        if (i < 3) {
-                            return 0;
-                        } else {
-                            dd[i] = 0;
-                        }
-                    }
-                }
-            }
-            if (dd[0] < 10) {
-                dd[0] = '200' + dd[0];
-            } else
-            if (dd[0] < 100) {
-                dd[0] = '20' + dd[0];
-            }
-            return Math.round((new Date(dd[0], dd[1] - 1, dd[2], dd[3], dd[4], dd[5])).getTime() / 1000);
-        }
-        if (f === 1) { //  || f === '31-04-2013[[[ 07]:03]:27]') {
-            var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').trim().split(' ');
-            for (var i = 0; i < 6; i++) {
-                if (dd[i] === undefined) {
-                    dd[i] = 0;
-                } else {
-                    dd[i] = parseInt(dd[i]);
-                    if (isNaN(dd[i])) {
-                        if (i < 3) {
-                            return 0;
-                        } else {
-                            dd[i] = 0;
-                        }
-                    }
-                }
-            }
-            if (dd[2] < 10) {
-                dd[2] = '200' + dd[2];
-            } else
-            if (dd[2] < 100) {
-                dd[2] = '20' + dd[2];
-            }
-            return Math.round((new Date(dd[2], dd[1] - 1, dd[0], dd[3], dd[4], dd[5])).getTime() / 1000);
-        }
-        if (f === 2) { //  || f === 'n day ago') {
-            var old = parseFloat(t.replace(/[^0-9.]/g, '')) * 24 * 60 * 60;
-            return Math.round((new Date()).getTime() / 1000) - old;
-        }
-    };
-    function today_replace(t, f) {
-        f = parseInt(f);
-        t = t.toLowerCase();
-        if ((/сейчас|now/).test(t)) {
-            return Math.round((new Date()).getTime() / 1000);
-        }
-        var tt = new Date();
-        var tty = new Date((Math.round(tt.getTime() / 1000) - 24 * 60 * 60) * 1000);
-        if (f === 0) {
-            var today = tt.getFullYear() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getDate() + ' ';
-            var yesterday = tty.getFullYear() + ' ' + (tty.getMonth() + 1) + ' ' + tty.getDate() + ' ';
-        } else {
-            var today = tt.getDate() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getFullYear() + ' ';
-            var yesterday = tty.getDate() + ' ' + (tty.getMonth() + 1) + ' ' + tty.getFullYear() + ' ';
-        }
-        t = t.replace(/сегодня|today/, today).replace(/вчера|yesterday/, yesterday);
-        return t;
-    }
-    function month_replace(t) {
-        return t.replace(/янв/i, '1').replace(/фев/i, '2').replace(/мар/i, '3')
-                .replace(/апр/i, '4').replace(/мая/i, '5').replace(/июн/i, '6')
-                .replace(/июл/i, '7').replace(/авг/i, '8').replace(/сен/i, '9')
-                .replace(/окт/i, '10').replace(/ноя/i, '11').replace(/дек/i, '12')
-                .replace(/jan/i, '1').replace(/feb/i, '2').replace(/mar/i, '3')
-                .replace(/apr/i, '4').replace(/may/i, '5').replace(/jun/i, '6')
-                .replace(/jul/i, '7').replace(/aug/i, '8').replace(/sep/i, '9')
-                .replace(/oct/i, '10').replace(/nov/i, '11').replace(/dec/i, '12');
-    }
     var encode = function(sValue) {
         var text = "", Ucode, ExitValue, s;
         for (var i = 0; i < sValue.length; i++) {
@@ -490,13 +376,13 @@ var magic = function() {
             mtime = mtime.replace(new RegExp(reg_v, "ig"), onrepl);
         }
         if (repl_t) {
-            mtime = today_replace(mtime, f_v);
+            mtime = ex_kit.today_replace(mtime, f_v);
         }
         if (repl_m) {
-            mtime = month_replace(mtime);
+            mtime = ex_kit.month_replace(mtime);
         }
         if (f_v !== "-1") {
-            mtime = format_date(f_v, mtime);
+            mtime = ex_kit.format_date(f_v, mtime);
         }
         $('input[name=converted_time]').val(mtime);
         $('input[name=result_time]').val((new Date(mtime * 1000)));
@@ -510,7 +396,7 @@ var magic = function() {
             size = size.replace(new RegExp(reg_v, "ig"), onrepl);
         }
         if ($('input[name=convert_size]').prop('checked')) {
-            size = format_size(size);
+            size = ex_kit.format_size(size);
         }
         $('input[name=converted_size]').val(size);
         $('input[name=result_size]').val(bytesToSize(size));
@@ -537,14 +423,8 @@ var magic = function() {
         $('input[name=converted_' + type + ']').val(ostr);
         $('input[name=result_' + type + ']').val(ostr);
     };
-    var write_language = function(language) {
-        if (!language) {
-            language = GetSettings('lang') || 'ru';
-        }
-        _lang = get_lang(language);
-        var lang = _lang.magic;
-        $('select[name="language"]').val(language);
-        $.each(lang, function(k, v) {
+    var write_language = function() {
+        $.each(_lang.magic, function(k, v) {
             var el = $('[data-lang=' + k + ']');
             if (el.length === 0)
                 return true;
@@ -658,7 +538,7 @@ var magic = function() {
                                 val = obj.eq(0).text();
                             }
                             txt.val(val);
-                            if (!isNumber(val)) {
+                            if (!ex_kit.isNumber(val)) {
                                 txt.addClass('error');
                             } else {
                                 txt.removeClass('error');
@@ -712,7 +592,6 @@ var magic = function() {
                         txt.val('');
                         return;
                     }
-                    var val = '';
                     inpv.val(path);
                     if (t === 'n') {
                         var val = '';
@@ -725,7 +604,7 @@ var magic = function() {
                             val = obj.text();
                         }
                         txt.val(val);
-                        if (!isNumber(val)) {
+                        if (!ex_kit.isNumber(val)) {
                             txt.addClass('error');
                         } else {
                             txt.removeClass('error');
@@ -839,7 +718,7 @@ var magic = function() {
             $('input[name=time_regexp_repl]').on('keyup', function() {
                 filter_date();
             });
-            var formats = format_date();
+            var formats = ex_kit.format_date();
             var f_sel = $('select[name=date_format]');
             var f_l = formats.length;
             f_sel.append('<option value="-1">-</option>');

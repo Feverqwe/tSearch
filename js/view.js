@@ -27,6 +27,7 @@ var view = function() {
         long_string: new RegExp('[^\\s]{100,}'),
         split_long_string: new RegExp('.{0,100}', 'g'),
         teaser_regexp: new RegExp('Трейлер|Тизер|Teaser|Trailer','i'),
+        rn: new RegExp('[\\r?\\n]+','g'),
         // массив содержащий всю информацию и dom элемент торрентов
         table_dom: [],
         // сортировка по возрастанию или убыванию
@@ -120,7 +121,16 @@ var view = function() {
             var li = $('<li>').append(icon, link, i);
             var_cache.trackers[key] = {icon: 1, link: link, i: i, count: 0, count_val: 0, tracker: item, li: li, auth: 1};
             items.push( li );
-            style += 'div.tracker_icon.'+item.class_name+'{background-image:url('+item.icon+');}';
+            var icon_style;
+            if (item.icon.length === 0) {
+                icon_style = 'background-color:#ddd;border-radius: 8px;';
+            } else
+            if (item.icon[0] === '#') {
+                icon_style = 'background-color:'+item.icon+';border-radius: 8px;';
+            } else {
+                icon_style = 'background-image:url('+item.icon+');';
+            }
+            style += 'div.tracker_icon.'+item.class_name+'{'+icon_style+'}';
         });
         dom_cache.trackers_ul.append(items);
         dom_cache.body.append($('<style>', {'class':'tracker_icons', text: style}));
@@ -219,6 +229,7 @@ var view = function() {
         var_cache.tableIsEmpty = 0;
         searchMode();
         syntaxCacheRequest(request);
+        dom_cache.search_input.autocomplete( "close" );
         dom_cache.search_input.autocomplete( "disable" );
         engine.search(request, var_cache.currentTrackerList);
         var_cache.currentRequest = request;
@@ -244,6 +255,9 @@ var view = function() {
         if (typeof (item.title) !== 'string' || typeof (item.url) !== 'string' || item.title.length === 0 || item.url.length === 0) {
             return 0;
         } else {
+            if (item.title.indexOf('\n') !== -1) {
+                item.title = item.title.replace(var_cache.rn, ' ');
+            }
             if (item.url.indexOf('#block') !== -1) {
                 item.url = engine.contentUnFilter(item.url);
             }
@@ -267,6 +281,9 @@ var view = function() {
             item.category.title = undefined;
             er[1] += 1;
         } else {
+            if (item.category.title.indexOf('\n') !== -1) {
+                item.category.title = item.category.title.replace(var_cache.rn, ' ');
+            }
             if (item.category.title.indexOf('#block') !== -1) {
                 item.category.title = engine.contentUnFilter(item.category.title);
             }
@@ -1532,6 +1549,9 @@ var view = function() {
         var style = '';
         var sortBy = (var_cache.table_sort_by === 0)?'sortUp':'sortDown';
         for (var i = 0, item; item = table_colums[i]; i++) {
+            if ((item.type === 'seeds' && HideSeed === 1) || item.type === 'leechs' && HideLeech === 1) {
+                continue;
+            }
             tr.append( $('<th>', {'class': item.type+((var_cache.table_sort_colum === item.type)?' '+sortBy:''), title: item.title})
                 .data('type', item.type)
                 .append( $('<span>', {text: item.text}) )
@@ -1805,9 +1825,6 @@ var view = function() {
                 setColumSort($(this));
             });
             dom_cache.window.on('scroll',function() {
-                if(document.body.classList.contains('disable-hover') === false) {
-                    document.body.classList.add('disable-hover')
-                }
                 clearTimeout(var_cache.window_scroll_timer);
                 var_cache.window_scroll_timer = setTimeout(function() {
                     if (dom_cache.window.scrollTop() > 100) {
@@ -1815,7 +1832,6 @@ var view = function() {
                     } else {
                         dom_cache.topbtn.fadeOut('fast');
                     }
-                    document.body.classList.remove('disable-hover');
                 }, 250);
             });
             dom_cache.topbtn.on("click", function(e) {

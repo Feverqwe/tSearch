@@ -5,9 +5,6 @@ body {
     overflow-y: scroll;
     min-width: 960px;
 }
-body.disable-hover {
-    pointer-events: none;
-}
 div.search_panel {
     border-bottom: 1px solid #ccc;
     -webkit-user-select: none;

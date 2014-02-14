@@ -2,6 +2,18 @@ var ex_kit = function() {
     /*
      * Набор универсальных тулзов для использования в пользовательских кодах трекеров.
      */
+    var var_cache = {
+        size_check: new RegExp('[^0-9.,кбмгтkmgtb]','g'),
+        size_kb: new RegExp('кб|kb'),
+        size_mb: new RegExp('мб|mb'),
+        size_gb: new RegExp('гб|gb'),
+        size_tb: new RegExp('тб|tb'),
+        today_now: new RegExp('сейчас|now'),
+        today_today: new RegExp('сегодня|today'),
+        today_yest: new RegExp('вчера|yesterday'),
+        ex_num: new RegExp('[^0-9]','g'),
+        spaces: new RegExp('\\s+','g')
+    };
     var in_cp1251 = function(sValue) {
         var text = "", Ucode, ExitValue, s;
         for (var i = 0, sValue_len = sValue.length; i < sValue_len; i++) {
@@ -36,24 +48,25 @@ var ex_kit = function() {
         return text;
     };
     var format_size = function(s) {
-        var size = s.toLowerCase().replace(/[^0-9.,кбмгтkmgtb]/g, '').replace(',', '.');
-        var t = size.replace(/кб|kb/, '');
-        if (t.length !== size.length) {
+        var size = s.toLowerCase().replace(var_cache.size_check, '').replace(',', '.');
+        var t = size.replace(var_cache.size_kb, '');
+        var size_len = size.length;
+        if (t.length !== size_len) {
             t = parseFloat(t);
             return Math.round(t * 1024);
         }
-        t = size.replace(/мб|mb/, '');
-        if (t.length !== size.length) {
+        t = size.replace(var_cache.size_mb, '');
+        if (t.length !== size_len) {
             t = parseFloat(t);
             return Math.round(t * 1024 * 1024);
         }
-        t = size.replace(/гб|gb/, '');
-        if (t.length !== size.length) {
+        t = size.replace(var_cache.size_gb, '');
+        if (t.length !== size_len) {
             t = parseFloat(t);
             return Math.round(t * 1024 * 1024 * 1024);
         }
-        t = size.replace(/тб|tb/, '');
-        if (t.length !== size.length) {
+        t = size.replace(var_cache.size_tb, '');
+        if (t.length !== size_len) {
             t = parseFloat(t);
             return Math.round(t * 1024 * 1024 * 1024 * 1024);
         }
@@ -62,7 +75,7 @@ var ex_kit = function() {
     function today_replace(t, f) {
         f = parseInt(f);
         t = t.toLowerCase();
-        if ((/сейчас|now/).test(t)) {
+        if ((var_cache.today).test(t)) {
             return Math.round((new Date()).getTime() / 1000);
         }
         var tt = new Date();
@@ -76,18 +89,18 @@ var ex_kit = function() {
             today = tt.getDate() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getFullYear() + ' ';
             yesterday = tty.getDate() + ' ' + (tty.getMonth() + 1) + ' ' + tty.getFullYear() + ' ';
         }
-        t = t.replace(/сегодня|today/, today).replace(/вчера|yesterday/, yesterday);
+        t = t.replace(var_cache.today_today, today).replace(var_cache.today_yest, yesterday);
         return t;
     }
     function month_replace(t) {
-        return t.toLowerCase().replace(/янв/, '1').replace(/фев/, '2').replace(/мар/, '3')
-            .replace(/апр/, '4').replace(/ма(я|й)/, '5').replace(/июн/, '6')
-            .replace(/июл/, '7').replace(/авг/, '8').replace(/сен/, '9')
-            .replace(/окт/, '10').replace(/ноя/, '11').replace(/дек/, '12')
-            .replace(/jan/, '1').replace(/feb/, '2').replace(/mar/, '3')
-            .replace(/apr/, '4').replace(/may/, '5').replace(/jun/, '6')
-            .replace(/jul/, '7').replace(/aug/, '8').replace(/sep/, '9')
-            .replace(/oct/, '10').replace(/nov/, '11').replace(/dec/, '12');
+        return t.toLowerCase().replace('янв', '1').replace('фев', '2').replace('мар', '3')
+            .replace('апр', '4').replace('мая', '5').replace('май', '5').replace('июн', '6')
+            .replace('июл', '7').replace('авг', '8').replace('сен', '9')
+            .replace('окт', '10').replace('ноя', '11').replace('дек', '12')
+            .replace('jan', '1').replace('feb', '2').replace('mar', '3')
+            .replace('apr', '4').replace('may', '5').replace('jun', '6')
+            .replace('jul', '7').replace('aug', '8').replace('sep', '9')
+            .replace('oct', '10').replace('nov', '11').replace('dec', '12');
     }
     var format_date = function(f, t) {
         if (f === undefined) {
@@ -95,7 +108,7 @@ var ex_kit = function() {
         }
         f = parseInt(f);
         if (f === 0) { // || f === '2013-04-31[[[ 07]:03]:27]') {
-            var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').trim().split(' ');
+            var dd = t.replace(var_cache.ex_num, ' ').replace(var_cache.spaces, ' ').trim().split(' ');
             for (var i = 0; i < 6; i++) {
                 if (dd[i] === undefined) {
                     dd[i] = 0;
@@ -119,7 +132,7 @@ var ex_kit = function() {
             return Math.round((new Date(dd[0], dd[1] - 1, dd[2], dd[3], dd[4], dd[5])).getTime() / 1000);
         }
         if (f === 1) { //  || f === '31-04-2013[[[ 07]:03]:27]') {
-            var dd = t.replace(/[^0-9]/g, ' ').replace(/\s+/g, ' ').trim().split(' ');
+            var dd = t.replace(var_cache.ex_num, ' ').replace(var_cache.spaces, ' ').trim().split(' ');
             for (var i = 0; i < 6; i++) {
                 if (dd[i] === undefined) {
                     dd[i] = 0;
@@ -143,7 +156,7 @@ var ex_kit = function() {
             return Math.round((new Date(dd[2], dd[1] - 1, dd[0], dd[3], dd[4], dd[5])).getTime() / 1000);
         }
         if (f === 2) { //  || f === 'n day ago') {
-            var old = parseFloat(t.replace(/[^0-9.]/g, '')) * 24 * 60 * 60;
+            var old = parseFloat(t.replace(var_cache.ex_num, '')) * 24 * 60 * 60;
             return Math.round((new Date()).getTime() / 1000) - old;
         }
     };
