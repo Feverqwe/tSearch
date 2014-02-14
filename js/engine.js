@@ -346,11 +346,14 @@ var engine = function() {
     };
     var wrapAllCustomTrList = function (list) {
         var _list = $.extend({}, list);
-        var costume_tr = JSON.parse(GetSettings('costume_tr') || '[]');
-        costume_tr.forEach(function(item) {
+        var custom_list = JSON.parse(GetSettings('costume_tr') || '[]');
+        custom_list.forEach(function(item) {
             var key = 'ct_'+item;
             if (_list[key] === undefined) {
                 _list[key] = 0;
+            }
+            if (window.torrent_lib[key] === undefined) {
+                loadModule(key);
             }
         });
         for (var key in window.torrent_lib) {
@@ -383,7 +386,9 @@ var engine = function() {
             if (window.torrent_lib[k] === undefined) {
                 loadModule(k);
             }
-            currentTrList[k] = window.torrent_lib[k];
+            if (window.torrent_lib[k] !== undefined) {
+                currentTrList[k] = window.torrent_lib[k];
+            }
         });
     };
     var createProfile = function(title) {

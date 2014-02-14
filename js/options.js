@@ -118,41 +118,21 @@ var options = function() {
                 SetSettings(key, val);
             }
         });
-        /*
         saveCurrentProfile();
-        SetSettings('trackerProfiles', JSON.stringify(sandbox_trackerProfiles));
+        SetSettings('profileList', JSON.stringify(profile));
         if (isChromeum && chrome.extension) {
+            //Chrome extension
             var bgp = chrome.extension.getBackgroundPage();
             bgp.bg.update_context_menu();
             if (bgp._type_ext) {
-                SetSettings('search_popup', ($('input[name="search_popup"]').is(':checked')) ? 1 : 0);
                 bgp.update_btn();
             }
-            SetSettings('allow_favorites_sync', ($('input[name="allow_favorites_sync"]').is(':checked')) ? 1 : 0);
         }
-        if (isFF) {
-            //FF
-            SetSettings('search_popup', ($('input[name="search_popup"]').is(':checked')) ? 1 : 0);
+        var fromIndex = (document.URL).replace(/.*options.html/, '');
+        if (fromIndex.length > 0) {
+            window.location = 'index.html';
         }
-        var s = (document.URL).replace(/(.*)options.html/, '');
-
-        if (s.length > 0) {
-            var s = s.replace(/^#back=(.*)/, '$1');
-            window.location = 'index.html#s=' + s;
-        } else {
-            set_place_holder();
-            sandbox_trackerProfiles = JSON.parse(GetSettings('trackerProfiles'));
-            updateProfileList(currentProfile.id);
-        }
-        */
-        /*
-         if (settings.sync_trackers) {
-         trackersSync();
-         } else
-         if (prev_sync_trackers) {
-         getPartedSync("ts_ch_", undefined, true);
-         }
-         */
+        set_place_holder();
     };
     var load_costume_torrents = function() {
         dom_cache.custom_list.get(0).textContent = '';
@@ -161,14 +141,17 @@ var options = function() {
             dom_cache.custom_list.append($('<td>', {colspan: 4, 'class': 'notorrent', 'data-lang': 51, text: _lang.settings[51]}));
             return;
         }
+        var rm_list = [];
         var content = [];
         for (var i = 0, id; id = customList[i]; i++) {
             var json = GetSettings('ct_' + id);
             if (json === undefined) {
+                rm_list.push(id);
                 continue;
             }
             var customTr = JSON.parse(GetSettings('ct_' + id));
             if (customTr.uid === undefined) {
+                rm_list.push(id);
                 continue;
             }
             var tracker_icon = $('<div>', {'class': 'tracker_icon'});
@@ -189,6 +172,12 @@ var options = function() {
                     $('<input>', {type: 'button', name: 'rm_ctr', value: _lang.settings[53], 'data-lang': 53})
                 )
             ));
+        }
+        if (rm_list.length > 0) {
+            rm_list.forEach(function(id) {
+                customList.splice(customList.indexOf(id),1);
+            });
+            SetSettings('costume_tr', JSON.stringify(customList));
         }
         dom_cache.custom_list.append( content );
     };
@@ -392,8 +381,17 @@ var options = function() {
             dom_cache.profile_input = $('input[name=list_name]');
             dom_cache.profile_btn = $('input[name=add_list]');
             dom_cache.profile_rmlist = $('input[name=rm_list]');
+            dom_cache.add_code_btn = $('input[name=add_code]');
+            dom_cache.custom_popup = $('div.popup');
+            dom_cache.custom_add_btn = $('input[name=ctr_add]');
+            dom_cache.custom_edit_btn = $('input[name=ctr_edit]');
+            dom_cache.custom_close_btn = $('input[name=close_popup]');
+            dom_cache.custom_textarea = dom_cache.custom_popup.children('textarea[name=code]');
             dom_cache.html = $('html');
             dom_cache.topbtn = $('div.topbtn');
+            dom_cache.bottom_save_btn = $('input[name="save"]');
+            dom_cache.save_btn = $('li.save_btn');
+            dom_cache.save_status = $('div.page.save > div.status');
             write_language();
             dom_cache.ul_menu.on('click', 'a', function(e) {
                 e.preventDefault();
@@ -560,31 +558,17 @@ var options = function() {
                 writeProfileList(profile);
                 loadProfile();
             });
-
-            /*
-            $('input[name="save"]').on('click', function() {
-                saveAll();
-                $('div.page.save > div.status').css('background', 'url(images/loading.gif) center center no-repeat');
-                setTimeout(function() {
-                    $('div.page.save > div.status').css('background', 'none');
-                }, 500);
+            dom_cache.add_code_btn.on('click', function() {
+                dom_cache.custom_add_btn.parent().show();
+                dom_cache.custom_edit_btn.parent().hide();
+                dom_cache.custom_popup.toggle();
             });
-            $('li.save_btn').on('click', function(e) {
-                e.preventDefault();
-                saveAll();
+            dom_cache.custom_close_btn.on('click', function() {
+                dom_cache.custom_textarea.val('');
+                dom_cache.custom_popup.hide();
             });
-            //all about costume code
-            $('input[name=add_code]').on('click', function() {
-                $('input[name=ctr_add]').parent().show();
-                $('input[name=ctr_edit]').parent().hide();
-                $('div.popup').toggle();
-            });
-            $('input[name=close_popup]').on('click', function() {
-                $('textarea[name=code]').val('');
-                $('div.popup').hide();
-            });
-            $('input[name=ctr_add]').on('click', function() {
-                var str_code = $('textarea[name=code]').val();
+            dom_cache.custom_add_btn.on('click', function() {
+                var str_code = dom_cache.custom_textarea.val();
                 var costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
                 var code = null;
                 try {
@@ -599,7 +583,7 @@ var options = function() {
                 }
                 var ex = GetSettings('ct_' + code.uid) || 0;
                 var ex_in_list = costume_tr.indexOf(code.uid) !== -1;
-                if (ex && ex_in_list) {
+                if (ex !== 0 && ex_in_list === true) {
                     alert(_lang.settings[54]);
                     return;
                 } else {
@@ -610,17 +594,26 @@ var options = function() {
                     }
                 }
                 load_costume_torrents();
-                $('select[name=tr_lists]').trigger('change');
-                $('div.popup').find('input[name=close_popup]').trigger('click');
+                engine.getDefList();
+                writeTrackerList();
+                loadProfile(current_profile);
+                dom_cache.custom_close_btn.trigger('click');
             });
-            $('input[name=ctr_edit]').on('click', function() {
-                var popup = $('div.popup');
-                var uid = popup.attr('data-uid');
-                popup.removeAttr('data-uid');
-                var str_code = $('textarea[name=code]').val();
-                var code = null;
+            dom_cache.custom_list.on('click', 'input[name=edit_ctr]', function() {
+                dom_cache.custom_edit_btn.parent().show();
+                dom_cache.custom_add_btn.parent().hide();
+                var uid = $(this).closest('tr').data('id');
+                var code = GetSettings('ct_' + uid) || '';
+                dom_cache.custom_textarea.val(code);
+                dom_cache.custom_popup.data('id', uid).show();
+            });
+            dom_cache.custom_edit_btn.on('click', function() {
+                var uid = dom_cache.custom_popup.data('id');
+                dom_cache.custom_popup.data('id', undefined);
+                var json = dom_cache.custom_textarea.val();
+                var code = undefined;
                 try {
-                    code = JSON.parse(str_code);
+                    code = JSON.parse(json);
                 } catch (e) {
                     alert(_lang.settings[55] + "\n" + e);
                     return;
@@ -630,37 +623,39 @@ var options = function() {
                 }
                 SetSettings('ct_' + code.uid, JSON.stringify(code));
                 load_costume_torrents();
-                $('select[name=tr_lists]').trigger('change');
-                $('div.popup').find('input[name=close_popup]').trigger('click');
+                engine.getDefList();
+                writeTrackerList();
+                loadProfile(current_profile);
+                dom_cache.custom_close_btn.trigger('click');
             });
-            $('table.c_table').on('click', 'input[name=edit_ctr]', function() {
-                $('input[name=ctr_edit]').parent().show();
-                $('input[name=ctr_add]').parent().hide();
-                var uid = $(this).closest('tr').attr('data-uid');
-                var code = GetSettings('ct_' + uid) || '';
-                $('textarea[name=code]').val(code);
-                var popup = $('div.popup');
-                popup.show();
-                popup.attr('data-uid', uid);
-            });
-            $('table.c_table').on('click', 'input[name=rm_ctr]', function() {
-                var uid = parseInt($(this).closest('tr').attr('data-uid'));
-                var costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
-                var index = $.inArray(uid, costume_tr);
+            dom_cache.custom_list.on('click', 'input[name=rm_ctr]', function() {
+                var uid = $(this).closest('tr').data('id');
+                var customList = JSON.parse(GetSettings('costume_tr') || "[]");
+                var index = customList.indexOf(uid);
                 if (index === -1) {
+                    console.log('Torrent not found! ', uid);
                     return;
                 }
-                costume_tr.splice(index, 1);
-                SetSettings('ct_' + uid, null);
-                SetSettings('costume_tr', JSON.stringify(costume_tr));
+                customList.splice(index, 1);
+                SetSettings('ct_' + uid, undefined);
+                SetSettings('costume_tr', JSON.stringify(customList));
+                delete torrent_lib['ct_' + uid];
                 load_costume_torrents();
-                $('select[name=tr_lists]').trigger('change');
+                engine.getDefList();
+                writeTrackerList();
+                loadProfile(current_profile);
             });
-            $(window).on('resize', function() {
-                $('div.popup').css('left', ($('html').width() / 2 - $('div.popup').width() / 2) + 'px');
-            }).trigger('resize');
-            //<<<<<<<<<<<<<<<<<
-            */
+            dom_cache.bottom_save_btn.on('click', function() {
+                saveAll();
+                dom_cache.save_status.css('background', 'url(images/loading.gif) center center no-repeat');
+                setTimeout(function() {
+                    dom_cache.save_status.css('background', 'none');
+                }, 500);
+            });
+            dom_cache.save_btn.on('click', function(e) {
+                e.preventDefault();
+                saveAll();
+            });
             dom_cache.window.on('scroll',function() {
                 if(document.body.classList.contains('disable-hover') === false) {
                     document.body.classList.add('disable-hover')

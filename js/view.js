@@ -102,6 +102,7 @@ var view = function() {
         autoComplete: parseInt(GetSettings('AutoComplite_opt') || 1)
     };
     var writeTrackerList = function(trList) {
+        console.log(trList);
         var_cache.trackers = {};
         dom_cache.trackers_ul.empty();
         dom_cache.body.children('style.tracker_icons').remove();
@@ -128,7 +129,7 @@ var view = function() {
         var $select = $('<select>', {'title': _lang.label_profile});
         var count = 0;
         $.each(profileList, function(key) {
-            $select.append( $('<option>', {text: key}) );
+            $select.append( $('<option>', {text: key, value: key}) );
             count++;
         });
         if (count < 2) {
@@ -1791,6 +1792,10 @@ var view = function() {
                 }
             });
             addAutocomplete();
+            dom_cache.torrent_list.on('change', 'div.profile > select', function() {
+                console.log('chenge')
+                engine.loadProfile(this.value, writeTrackerList);
+            });
             dom_cache.thead.on('click', 'th', function(e) {
                 e.preventDefault();
                 setColumSort($(this));
