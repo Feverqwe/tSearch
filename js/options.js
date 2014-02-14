@@ -104,17 +104,24 @@ var options = function() {
                 if (val.length === 0) {
                     val = value.v;
                 }
+                if (value.t === "number") {
+                    val = parseInt(val);
+                }
+                settings[key] = val;
                 SetSettings(key, val);
             } else
             if (value.t === "password") {
-                SetSettings(key, $('input[name="' + key + '"]').val());
+                settings[key] = $('input[name="' + key + '"]').val();
+                SetSettings(key, settings[key]);
             } else
             if (value.t === "checkbox") {
                 var val = ($('input[name="' + key + '"]').prop('checked')) ? 1 : 0;
+                settings[key] = val;
                 SetSettings(key, val);
             } else
             if (value.t === "radio") {
                 var val = $('input[name="' + key + '"]:checked').val();
+                settings[key] = val;
                 SetSettings(key, val);
             }
         });

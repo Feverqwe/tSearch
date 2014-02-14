@@ -84,6 +84,7 @@ var view = function() {
     var AdvFiltration = parseInt(GetSettings('AdvFiltration') || 2);
     var TeaserFilter = parseInt(GetSettings('TeaserFilter') || 1);
     var SubCategoryFilter = parseInt(GetSettings('SubCategoryFilter') || 0);
+    var autoSetCat = parseInt(GetSettings('autoSetCat') || 1);
 
     var table_colums = [
         {title: _lang.table.time, text: _lang.table.time, type: 'time', size: 125},
@@ -231,6 +232,7 @@ var view = function() {
         syntaxCacheRequest(request);
         dom_cache.search_input.autocomplete( "close" );
         dom_cache.search_input.autocomplete( "disable" );
+        engine.stop();
         engine.search(request, var_cache.currentTrackerList);
         var_cache.currentRequest = request;
         if (history !== undefined) {
@@ -703,7 +705,7 @@ var view = function() {
             var rate = title_highLight.rate;
             var quality = checkRate(rate, item);
             title_highLight = title_highLight.hl_name;
-            if (item.category.id < 0 && item.category.title !== undefined) {
+            if (autoSetCat === 1 && item.category.id < 0 && item.category.title !== undefined) {
                 item.category.id = autosetCategory(quality, item.category.title);
             }
             var item_id = var_cache.table_dom.length;
@@ -1016,10 +1018,10 @@ var view = function() {
     var sub_select = function(name) {
         //выделяет то, что в скобках
         if (options.parenthetical_select_enable === 0) {
-            return name;
+            return name.replace(var_cache.rm_retry,'$1$2');
         }
-        name = name.replace(var_cache.found_parenthetical, '<span class="sub_name">$1</span>').replace(var_cache.rm_retry,'$1$2');
-        return name;
+        name = name.replace(var_cache.found_parenthetical, '<span class="sub_name">$1</span>');
+        return name.replace(var_cache.rm_retry,'$1$2');
     };
     var syntaxCacheRequest = function(request) {
         var year = request.match(/[1-2]{1}[0-9]{3}/);
@@ -1922,7 +1924,9 @@ var view = function() {
                     }
                     if (item.substr(0,1) === '-') {
                         safe_item = item.substr(1).replace(var_cache.text2safe_regexp_text,"\\$1");
-                        exc.push(safe_item);
+                        if (safe_item.length > 0) {
+                            exc.push(safe_item);
+                        }
                     } else {
                         safe_item = item.replace(var_cache.text2safe_regexp_text,"\\$1");
                         inc.push(safe_item);
@@ -1930,9 +1934,13 @@ var view = function() {
                 }
                 if (exc.length > 0) {
                     var_cache.keywordFilter.exclude = new RegExp(exc.join('|'), 'ig');
+                } else {
+                    var_cache.keywordFilter.exclude = undefined;
                 }
                 if (inc.length > 0) {
                     var_cache.keywordFilter.include =  new RegExp(inc.join('|'), 'ig');
+                } else {
+                    var_cache.keywordFilter.include = undefined;
                 }
                 if (AdvFiltration === 1) {
                     var_cache.keywordFilter.inc_len = 1;
@@ -1943,6 +1951,7 @@ var view = function() {
                 if (inc.length === 0 && exc.length === 0) {
                     var_cache.keywordFilter = undefined;
                 }
+                console.log(var_cache.keywordFilter, inc, exc)
                 clearTimeout(var_cache.filterTimer);
                 var_cache.filterTimer = setTimeout(function() {
                     dom_cache.word_filter_btn.removeClass('loading');
