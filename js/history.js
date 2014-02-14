@@ -32,7 +32,7 @@ var view = function() {
             }
             content.push(
                 $('<li>').append(
-                    $('<div>', {'class': 'remove', title: 'Удалить'}).data('title',item.title),
+                    $('<div>', {'class': 'remove', title: _lang.his_rm_btn}).data('title',item.title),
                     $('<div>', {'class': 'time', title: u2ddmmyyyy_title(item.time), text: u2ddmmyyyy_title(item.time)}),
                     $('<div>', {'class': 'title'}).append(
                         $('<a>', {text: item.title, href:'index.html#?search='+item.title+trackers})
@@ -50,7 +50,7 @@ var view = function() {
             items.sort(onsort);
             items.forEach(function(item){
                 items_dom.push( $('<li>').append(
-                    $('<div>', {'class': 'remove', title: 'Удалить'}).data('title',item.title).data('request',request),
+                    $('<div>', {'class': 'remove', title: _lang.his_rm_btn}).data('title',item.title).data('request',request),
                     $('<div>', {'class': 'time', title: u2ddmmyyyy_title(item.time), text: u2ddmmyyyy_title(item.time)}),
                     $('<div>', {'class': 'title'}).append(
                         $('<a>',{href: item.href, target: '_blank'}).html(item.title)

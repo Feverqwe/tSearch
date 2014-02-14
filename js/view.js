@@ -1735,6 +1735,28 @@ var view = function() {
         var_cache.click_history = new_obj;
         SetSettings('click_history', JSON.stringify(new_obj));
     };
+    var write_language = function() {
+        dom_cache.form_search.children('.button').val(_lang['btn_form']);
+        var search_panel = $('div.search_panel');
+        search_panel.children('div.right').children('.main').attr('title', _lang['btn_main']);
+        search_panel.children('div.right').children('.history').attr('title', _lang['btn_history']);
+        search_panel.find('div.btn.clear').attr('title', _lang['btn_filter']);
+        var tracker_list = $('div.tracker_list');
+        var setup = tracker_list.children('p').children('a').attr('title',_lang['btn_tracker_list']);
+        tracker_list.children('p').empty().append( _lang['tracker_list'], setup );
+        var word_filter_form = dom_cache.word_filter.parent();
+        word_filter_form.children('p').text(_lang['filter']);
+        word_filter_form.children('div.btn.clear').attr('title', _lang['btn_filter']);
+        dom_cache.time_filter.children('p').eq(0).text(_lang['time_filter']);
+        dom_cache.size_filter.children('p').text(_lang['size_filter']);
+        dom_cache.size_filter.find('span.g').eq(0).text(_lang['size_filter_g']);
+        dom_cache.seed_filter.children('p').eq(0).text(_lang['seed_filter']);
+        dom_cache.peer_filter.children('p').eq(0).text(_lang['peer_filter']);
+        var right_panel = dom_cache.word_filter.parent();
+        right_panel.find('span.from').text(_lang['size_filter_f']);
+        right_panel.find('span.to').text(_lang['size_filter_t']);
+        dom_cache.topbtn.attr('title', _lang['btn_up']);
+    };
     return {
         result: writeResult,
         auth: writeTrackerAuth,
@@ -1764,6 +1786,7 @@ var view = function() {
             dom_cache.size_filter = $('div.size_filter');
             dom_cache.seed_filter = $('div.seed_filter');
             dom_cache.peer_filter = $('div.peer_filter');
+            write_language();
             $.each(_lang.time_f_s, function(value, text) {
                 dom_cache.time_filter_select.append(
                     $('<option>',{value: value, text: text, selected: (value === 'all')})
