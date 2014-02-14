@@ -146,8 +146,7 @@ var engine = function() {
                     var er = [0, 0, 0, 0, 0, 0, 0, 0];
                     for (var i = s; i < l; i++) {
                         var td = t.eq(i);
-                        var obj = {};
-                        obj.category = {id: -1};
+                        var obj = {category: {id: -1}};
                         if (ex_cat === 1) {
                             if (me.cat_attr !== undefined) {
                                 obj.category.title = (td.find(me.cat_name)).attr(me.cat_attr);

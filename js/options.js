@@ -210,6 +210,7 @@ var options = function() {
         dom_cache.select_profileList.append(content);
     };
     var loadProfile = function(current) {
+        console.log('loadProfile')
         if (current === undefined) {
             current = GetSettings('currentProfile');
         }
@@ -230,14 +231,14 @@ var options = function() {
         }
         current_profile = current;
         dom_cache.select_profileList.children('option[value="'+current+'"]').prop('selected', true);
-        dom_cache.tracker_list.find('input').prop('checked', false);
+        dom_cache.tracker_list.children('tr.checked').removeClass('checked').find('input').removeAttr('checked');
         var content = [];
         $.each(profile[current], function(id, status){
             if (status === 0) {
                 delete profile[current][id];
                 return 1;
             }
-            var $item = dom_cache.tracker_list.children('tr[data-id="'+id+'"]');
+            var $item = dom_cache.tracker_list.children('tr[data-id="'+id+'"]').addClass('checked');
             var checkbox = $item.children('td.status').children('input');
             if (checkbox.length === 0) {
                 delete profile[current][id];
@@ -287,7 +288,7 @@ var options = function() {
             } else {
                 tracker_icon.css('background-image', 'url(' + tracker.icon + ')');
             }
-            content.push( $('<tr>',{'data-id': id, 'class':(tracker.uid !== undefined)?'custom':''}).append(
+            content.push( $('<tr>',{'data-id': id, 'class':((tracker.uid !== undefined)?'custom':'')}).append(
                 $('<td>').append(tracker_icon),
                 $('<td>').append(
                     $('<a>', {href: tracker.url, target: '_blank', text: tracker.name})
@@ -341,14 +342,14 @@ var options = function() {
         window.location.reload();
     };
     var checkTrList = function(list) {
-        dom_cache.tracker_list.find('input').removeAttr('checked');
+        dom_cache.tracker_list.children('tr.checked').removeClass('checked').find('input').removeAttr('checked');
         var content = [];
         $.each(list, function(id, state){
             if (state !== 1) {
                 return;
             }
-            var $item = dom_cache.tracker_list.children('tr[data-id="' + id + '"]');
-            $item.children('td.status').children('input').prop('checked', true);
+            var $item = dom_cache.tracker_list.children('tr[data-id="' + id + '"]')
+            $item.addClass('checked').children('td.status').children('input').prop('checked', true);
             content.push($item);
         });
         dom_cache.tracker_list.prepend(content);
@@ -513,12 +514,12 @@ var options = function() {
             });
             dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(0).on("click", function(e) {
                 e.preventDefault();
-                dom_cache.tracker_list.find('input').prop('checked', true);
+                dom_cache.tracker_list.children('tr').addClass('checked').find('input').prop('checked', true);
                 saveCurrentProfile();
             });
             dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(1).on("click", function(e) {
                 e.preventDefault();
-                dom_cache.tracker_list.find('input').removeAttr('checked');
+                dom_cache.tracker_list.children('tr').removeClass('checked').find('input').removeAttr('checked');
                 saveCurrentProfile();
             });
             dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(2).on("click", function(e) {
@@ -529,6 +530,12 @@ var options = function() {
             });
             dom_cache.tracker_list.on('change', 'input', function(e) {
                 e.preventDefault();
+                var $this = $(this);
+                if ($this.prop('checked') === true) {
+                    $(this).closest('tr').addClass('checked');
+                } else {
+                    $(this).closest('tr').removeClass('checked');
+                }
                 saveCurrentProfile();
             });
             dom_cache.select_profileList.on('change', function(e) {
