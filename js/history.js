@@ -128,7 +128,7 @@ var view = function() {
             dom_cache.topbtn = $('div.topbtn');
             dom_cache.history = $('ol.history');
             dom_cache.click_history = $('ol.click_history');
-            dom_cache.html = $('html');
+            dom_cache.html_body = $('html, body');
             dom_cache.window.on('scroll',function() {
                 clearTimeout(var_cache.window_scroll_timer);
                 var_cache.window_scroll_timer = setTimeout(function() {
@@ -141,8 +141,8 @@ var view = function() {
             });
             dom_cache.topbtn.on("click", function(e) {
                 e.preventDefault();
-                dom_cache.html.scrollTop(200);
-                dom_cache.html.animate({
+                window.scrollTo(window.scrollX, 200);
+                dom_cache.html_body.animate({
                     scrollTop: 0
                 }, 200);
             });

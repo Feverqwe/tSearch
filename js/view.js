@@ -1770,7 +1770,6 @@ var view = function() {
         loadingStatus: setTrackerLoadingState,
         begin: function() {
             dom_cache.body = $('body');
-            dom_cache.html = $('html');
             dom_cache.title = $('head').children('title');
             dom_cache.trackers_ul = $('ul.trackers');
             dom_cache.form_search = $('form[name="search"]');
@@ -1793,6 +1792,7 @@ var view = function() {
             dom_cache.size_filter = $('div.size_filter');
             dom_cache.seed_filter = $('div.seed_filter');
             dom_cache.peer_filter = $('div.peer_filter');
+            dom_cache.html_body = $('html, body');
             write_language();
             $.each(_lang.time_f_s, function(value, text) {
                 dom_cache.time_filter_select.append(
@@ -1872,8 +1872,8 @@ var view = function() {
             });
             dom_cache.topbtn.on("click", function(e) {
                 e.preventDefault();
-                dom_cache.html.scrollTop(200);
-                dom_cache.html.animate({
+                window.scrollTo(window.scrollX, 200);;
+                dom_cache.html_body.animate({
                     scrollTop: 0
                 }, 200);
             });

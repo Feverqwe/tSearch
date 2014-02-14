@@ -405,11 +405,11 @@ var options = function() {
             dom_cache.custom_edit_btn = $('input[name=ctr_edit]');
             dom_cache.custom_close_btn = $('input[name=close_popup]');
             dom_cache.custom_textarea = dom_cache.custom_popup.children('textarea[name=code]');
-            dom_cache.html = $('html');
             dom_cache.topbtn = $('div.topbtn');
             dom_cache.bottom_save_btn = $('input[name="save"]');
             dom_cache.save_btn = $('li.save_btn');
             dom_cache.save_status = $('div.page.save > div.status');
+            dom_cache.html_body = $('html, body');
             write_language();
             dom_cache.ul_menu.on('click', 'a', function(e) {
                 e.preventDefault();
@@ -690,8 +690,8 @@ var options = function() {
             });
             dom_cache.topbtn.on("click", function(e) {
                 e.preventDefault();
-                dom_cache.html.scrollTop(200);
-                dom_cache.html.animate({
+                window.scrollTo(window.scrollX, 200);
+                dom_cache.html_body.animate({
                     scrollTop: 0
                 }, 200);
             });
