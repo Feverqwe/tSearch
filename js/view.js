@@ -27,7 +27,7 @@ var view = function() {
         long_string: new RegExp('[^\\s]{100,}'),
         split_long_string: new RegExp('.{0,100}', 'g'),
         teaser_regexp: new RegExp('Трейлер|Тизер|Teaser|Trailer','i'),
-        rn: new RegExp('[\\r?\\n]+','g'),
+        rn: new RegExp('[\\r\\n]+','g'),
         // массив содержащий всю информацию и dom элемент торрентов
         table_dom: [],
         // сортировка по возрастанию или убыванию

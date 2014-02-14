@@ -37,7 +37,7 @@ var engine = function() {
         block_src:   new RegExp(' src=([\'"]?)','img'),
         unblock_src: new RegExp('data:image\\/gif,base64#blockrurl#','mg'),
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
-        rn: new RegExp('[\\r?\\n]+','g')
+        rn: new RegExp('[\\r\\n]+','g'),
     };
     var historyList = JSON.parse(GetSettings('history') || '[]');
     var isFF = window.Application !== undefined && Application.name === "Firefox";
@@ -103,6 +103,18 @@ var engine = function() {
                 if (me.cat_alt !== undefined) {
                     me.cat_attr = 'alt';
                     delete me.cat_alt;
+                }
+                if (ex_date_regexp === 1) {
+                    me.t_r = new RegExp(me.t_r, "ig");
+                }
+                if (ex_size_regexp === 1) {
+                    me.size_r = new RegExp(me.size_r, "ig");
+                }
+                if (ex_seed_regexp === 1) {
+                    me.seed_r = new RegExp(me.seed_r, "ig");
+                }
+                if (ex_peer_regexp === 1) {
+                    me.peer_r = new RegExp(me.peer_r, "ig");
                 }
 
                 if (ex_cat === 0) {
@@ -170,7 +182,7 @@ var engine = function() {
                             er[3] += 1;
                             continue;
                         }
-                        obj.url = obj.url.replace(var_cache.rn, " ");
+                        obj.url = obj.url.replace(var_cache.rn, '');
                         if (ex_tr_link_r === 1) {
                             if (obj.url[0] === '/') {
                                 obj.url = short_url + obj.url;
@@ -185,9 +197,9 @@ var engine = function() {
                                 obj.size = (td.find(me.tr_size)).text();
                             }
                             if (obj.size !== undefined && obj.size.length !== 0) {
-                                obj.size = obj.size.replace(var_cache.rn, " ");
+                                obj.size = obj.size.replace(var_cache.rn, ' ');
                                 if (ex_size_regexp === 1) {
-                                    obj.size = obj.size.replace(new RegExp(me.size_r, "ig"), me.size_rp);
+                                    obj.size = obj.size.replace(me.size_r, me.size_rp);
                                 }
                                 if (ex_tr_size_c === 1) {
                                     obj.size = ex_kit.format_size(obj.size);
@@ -203,7 +215,7 @@ var engine = function() {
                         if (ex_tr_dl === 1) {
                             obj.dl = (td.find(me.tr_dl)).attr('href');
                             if (obj.dl !== undefined) {
-                                obj.dl = obj.dl.replace(var_cache.rn, " ");
+                                obj.dl = obj.dl.replace(var_cache.rn, '');
                                 if (ex_tr_dl_r === 1) {
                                     if (obj.dl[0] === '/') {
                                         obj.dl = short_url + obj.dl;
@@ -218,9 +230,9 @@ var engine = function() {
                         if (ex_seed === 1) {
                             obj.seeds = (td.find(me.seed)).text();
                             if (obj.seeds.length !== 0) {
-                                obj.seeds = obj.seeds.replace(var_cache.rn, " ");
+                                obj.seeds = obj.seeds.replace(var_cache.rn, ' ');
                                 if (ex_seed_regexp === 1) {
-                                    obj.seeds = obj.seeds.replace(new RegExp(me.seed_r, "ig"), me.seed_rp);
+                                    obj.seeds = obj.seeds.replace(me.seed_r, me.seed_rp);
                                 }
                             }
                             if (!ex_kit.isNumber(obj.seeds)) {
@@ -233,9 +245,9 @@ var engine = function() {
                         if (ex_peer === 1) {
                             obj.leechs = (td.find(me.peer)).text();
                             if (obj.leechs.length !== 0) {
-                                obj.leechs = obj.leechs.replace(var_cache.rn, " ");
+                                obj.leechs = obj.leechs.replace(var_cache.rn, ' ');
                                 if (ex_peer_regexp === 1) {
-                                    obj.leechs = obj.leechs.replace(new RegExp(me.peer_r, "ig"), me.peer_rp);
+                                    obj.leechs = obj.leechs.replace(me.peer_r, me.peer_rp);
                                 }
                             }
                             if (!ex_kit.isNumber(obj.leechs)) {
@@ -252,9 +264,9 @@ var engine = function() {
                                 obj.time = (td.find(me.date)).text();
                             }
                             if (obj.time !== undefined && obj.time.length !== 0) {
-                                obj.time = obj.time.replace(var_cache.rn, " ");
+                                obj.time = obj.time.replace(var_cache.rn, ' ');
                                 if (ex_date_regexp === 1) {
-                                    obj.time = obj.time.replace(new RegExp(me.t_r, "ig"), me.t_r_r);
+                                    obj.time = obj.time.replace(me.t_r, me.t_r_r);
                                 }
                                 if (ex_t_t_r === 1) {
                                     obj.time = ex_kit.today_replace(obj.time, me.t_f);
