@@ -20,7 +20,7 @@ var engine = function() {
         sub_select_enable: {v: 1, t: "checkbox"},
         kinopoisk_category: {v: 1, t: "checkbox"},
         kinopoisk_f_id: {v: 1, t: "number"},
-        filter_panel_to_left: {v: 0, t: "checkbox"},
+        filter_panel_to_left: {v: 1, t: "checkbox"},
         hideTopSearch: {v: 0, t: "checkbox"},
         s_films: {v: 1, t: "checkbox"},
         s_top_films: {v: 1, t: "checkbox"},
@@ -70,6 +70,7 @@ var engine = function() {
             var short_url = (me.root_url !== undefined) ? me.root_url.replace(/http(s?):\/\/([^\/]*)\/?.*$/, 'http$1://$2') : '';
             var login_url = (me.auth !== undefined) ? me.auth : '';
             var uid = me.uid;
+            var custom_id = 'ct_' + me.uid;
             var tests = [0, 0, 0, 0, 0, 0, 0, 0, 0];
             var flags = (me.flags !== undefined) ? me.flags : {
                 a: 0,
@@ -120,10 +121,10 @@ var engine = function() {
 
                     if (ex_auth_f === 1) {
                         if ((t.find(me.auth_f)).length !== 0) {
-                            view.auth(0, uid);
+                            view.auth(0, custom_id);
                             return [];
                         } else {
-                            view.auth(1, uid);
+                            view.auth(1, custom_id);
                         }
                     }
                     t = t.find(me.items);
@@ -307,10 +308,10 @@ var engine = function() {
                         url: me.search_path.replace('%search%', t),
                         cache: false,
                         success: function(data) {
-                            view.result(uid, readCode(data), t);
+                            view.result(custom_id, readCode(data), t);
                         },
                         error: function() {
-                            view.loadingStatus(2, uid);
+                            view.loadingStatus(2, custom_id);
                         }
                     };
                     if (ex_post === 1) {

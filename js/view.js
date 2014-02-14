@@ -102,7 +102,7 @@ var view = function() {
         autoComplete: parseInt(GetSettings('AutoComplite_opt') || 1)
     };
     var writeTrackerList = function(trList) {
-        console.log(trList);
+        dom_cache.torrent_list.find('option[value="'+GetSettings('currentProfile')+'"]').prop('selected', true);
         var_cache.trackers = {};
         dom_cache.trackers_ul.empty();
         dom_cache.body.children('style.tracker_icons').remove();
@@ -219,7 +219,7 @@ var view = function() {
         var_cache.tableIsEmpty = 0;
         searchMode();
         syntaxCacheRequest(request);
-        dom_cache.search_input.autocomplete( "close" );
+        dom_cache.search_input.autocomplete( "disable" );
         engine.search(request, var_cache.currentTrackerList);
         var_cache.currentRequest = request;
         if (history !== undefined) {
@@ -227,6 +227,9 @@ var view = function() {
         } else {
             setPage(request);
         }
+        setTimeout(function() {
+            dom_cache.search_input.autocomplete( "enable" );
+        }, 1000);
     };
     var home = function(){
         homeMode();
@@ -1692,6 +1695,7 @@ var view = function() {
                 time: parseInt((new Date()).getTime() / 1000)
             });
         }
+        console.log(var_cache.click_history);
         if (click_history.length > 10) {
             click_history.splice(oldest_item, 1);
         }
@@ -1793,7 +1797,7 @@ var view = function() {
             });
             addAutocomplete();
             dom_cache.torrent_list.on('change', 'div.profile > select', function() {
-                console.log('chenge')
+                engine.stop();
                 engine.loadProfile(this.value, writeTrackerList);
             });
             dom_cache.thead.on('click', 'th', function(e) {
@@ -1833,7 +1837,7 @@ var view = function() {
                 var_cache.currentCategory = category;
                 startFilterByCategory();
             });
-            dom_cache.trackers_ul.on('click','a', function(e) {
+            dom_cache.torrent_list.on('click','ul.trackers>li>a', function(e) {
                 e.preventDefault();
                 var $this = $(this);
                 var type = $this.data('tracker');

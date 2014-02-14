@@ -120,6 +120,7 @@ var options = function() {
         });
         saveCurrentProfile();
         SetSettings('profileList', JSON.stringify(profile));
+        SetSettings('currentProfile', current_profile);
         if (isChromeum && chrome.extension) {
             //Chrome extension
             var bgp = chrome.extension.getBackgroundPage();
@@ -184,14 +185,15 @@ var options = function() {
     var saveCurrentProfile = function() {
         var current = current_profile;
         var list = engine.getDefList();
+        var $active = dom_cache.tracker_list.find('input:checked');
         var active = {};
-        $.each(list, function(id){
-            var state = dom_cache.tracker_list.children('tr[data-id="' + id + '"]').children('td.status').children('input').prop('checked');
-            if (state === false) {
-                return;
+        for (var i = 0, len = $active.length; i < len; i++) {
+            var id = $active.eq(i).closest('tr').data('id');
+            if (id === undefined || list[id] === undefined) {
+                continue;
             }
             active[id] = 1;
-        });
+        }
         profile[current] = active;
     };
     var writeProfileList = function(list) {
@@ -229,19 +231,23 @@ var options = function() {
         current_profile = current;
         dom_cache.select_profileList.children('option[value="'+current+'"]').prop('selected', true);
         dom_cache.tracker_list.find('input').prop('checked', false);
+        var content = [];
         $.each(profile[current], function(id, status){
             if (status === 0) {
                 delete profile[current][id];
                 return 1;
             }
-            var checkbox = dom_cache.tracker_list.children('tr[data-id="'+id+'"]').children('td.status').children('input');
+            var $item = dom_cache.tracker_list.children('tr[data-id="'+id+'"]');
+            var checkbox = $item.children('td.status').children('input');
             if (checkbox.length === 0) {
                 delete profile[current][id];
                 return 1;
             }
             checkbox.prop('checked', true);
+            content.push($item);
         });
-        sortTable();
+        dom_cache.tracker_list.prepend(content);
+        //sortTable();
     };
     var sortTable = function() {
         var dom_list = dom_cache.tracker_list.children('tr');
@@ -337,13 +343,17 @@ var options = function() {
     };
     var checkTrList = function(list) {
         dom_cache.tracker_list.find('input').removeAttr('checked');
+        var content = [];
         $.each(list, function(id, state){
             if (state !== 1) {
                 return;
             }
-            dom_cache.tracker_list.children('tr[data-id="' + id + '"]').children('td.status').children('input').prop('checked', true);
+            var $item = dom_cache.tracker_list.children('tr[data-id="' + id + '"]');
+            $item.children('td.status').children('input').prop('checked', true);
+            content.push($item);
         });
-        sortTable();
+        dom_cache.tracker_list.prepend(content);
+        //sortTable();
     };
     return {
         begin: function() {
@@ -527,7 +537,7 @@ var options = function() {
             });
             dom_cache.select_profileList.on('change', function(e) {
                 e.preventDefault();
-                var current = parseInt($(this).val());
+                var current = $(this).val();
                 var list = profile[current];
                 if (list === undefined) {
                     loadProfile(current);

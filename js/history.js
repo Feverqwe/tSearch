@@ -57,7 +57,7 @@ var view = function() {
                     )
                 ));
             });
-            content.push($('<li>').append($('<a>',{text: request, href:'index.html#?search='+request}), $('<ol>',{'class': 'items'}).append(items_dom) ));
+            content.push($('<li>').append($('<a>',{text: (request.length === 0)?'""':request, href:'index.html#?search='+request}), $('<ol>',{'class': 'items'}).append(items_dom) ));
         });
         dom_cache.click_history.empty().append(content);
     };
@@ -160,8 +160,8 @@ var view = function() {
                 var request = $this.data('request');
                 if (request !== undefined) {
                     var ol = li.parent();
-                    if (ol.children('li').length === 1) {
-                        ol.hide();
+                    if (ol.children('li:visible').length === 0) {
+                        ol.parent().hide();
                     }
                 }
                 removeItem(request, $this.data('title'));
