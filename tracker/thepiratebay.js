@@ -25,10 +25,12 @@ torrent_lib.thepiratebay = function () {
                 /* Док. и юмор */ [],
                 /* Спорт */[]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseInt(f), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++) {
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var mackcalcSize = function (s) {
@@ -62,7 +64,7 @@ torrent_lib.thepiratebay = function () {
         };
         var calculateSize = function (s) {
             s = s.split(', ')[1];
-            if (s == undefined)
+            if (s === undefined)
                 return 0;
             s = s.split(' ');
             s = s[1] + s[2];
@@ -70,7 +72,7 @@ torrent_lib.thepiratebay = function () {
         };
         var makecalcTime = function (t) {
             t = t.replace(/\s+/g, ' ');
-            if (t.split('.').length == 2 || (/mins? ago/).test(t)) {
+            if (t.split('.').length === 2 || (/mins? ago/).test(t)) {
                 //мин назад
                 var min_out = parseInt(t.replace(/([0-9]*).*/, '$1')) * 60;
                 return Math.round((new Date()).getTime() / 1000) - min_out;
@@ -79,7 +81,7 @@ torrent_lib.thepiratebay = function () {
                 var t_date = t.replace(' ' + t_time, '');
                 var now_date = new Date();
                 var year = now_date.getFullYear();
-                if (t_date.split('-').length == 1) {
+                if (t_date.split('-').length === 1) {
                     //Вчера 20:38
                     //Сегодня 12:32
                     var date_td = now_date.getDate();
@@ -98,7 +100,7 @@ torrent_lib.thepiratebay = function () {
                 }
                 var t_date = t_date.split(' ');
                 var time_h = t_time.split(':');
-                if (time_h.length == 1) {
+                if (time_h.length === 1) {
                     year = String(time_h).replace(/-/, ' ').split(' ');
                     var time_m = 0;
                     var time_h = 0;
@@ -114,7 +116,7 @@ torrent_lib.thepiratebay = function () {
         };
         var calculateTime = function (t) {
             t = t.split(', ')[0];
-            if (t.split(' ')[1] == undefined)
+            if (t.split(' ')[1] === undefined)
                 return 0;
             t = t.split(' ');
             t = t[1];
@@ -128,45 +130,47 @@ torrent_lib.thepiratebay = function () {
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.length == 1)
+                var td_len = td.length;
+                if (td_len === 1) {
                     continue;
-                if (td.length == 4) {
-                    arr[arr.length] = {
-                        'category': {
-                            'title': td.eq(0).children().children('a').eq(1).text(),
-                            'url': root_url + td.eq(0).children().children('a').eq(1).attr('href'),
-                            'id': calculateCategory(String(td.eq(0).children().children('a').eq(1).attr('href')).replace(/(.*)\/([0-9]*)/i, "$2"))
+                }
+                if (td_len === 4) {
+                    arr.push({
+                        category: {
+                            title: td.eq(0).children().children('a').eq(1).text(),
+                            url: root_url + td.eq(0).children().children('a').eq(1).attr('href'),
+                            id: calculateCategory(String(td.eq(0).children().children('a').eq(1).attr('href')).replace(/(.*)\/([0-9]*)/i, "$2"))
                         },
-                        'title': td.eq(1).children('div.detName').children('a').text(),
-                        'url': root_url + td.eq(1).children('div.detName').children('a').attr('href'),
-                        'size': calculateSize(td.eq(1).children('font.detDesc').text()),
-                        'dl': td.eq(1).children('a').eq(0).attr('href'),
-                        'seeds': td.eq(2).text(),
-                        'leechs': td.eq(3).text(),
-                        'time': calculateTime(td.eq(1).children('font.detDesc').text())
-                    }
-                } else if (td.length == 7) {
-                    arr[arr.length] = {
-                        'category': {
-                            'title': td.eq(0).children('a').text(),
-                            'url': root_url + td.eq(0).children('a').attr('href'),
-                            'id': calculateCategory(String(td.eq(0).children('a').attr('href')).replace(/(.*)\/([0-9]*)/i, "$2"))
+                        title: td.eq(1).children('div.detName').children('a').text(),
+                        url: root_url + td.eq(1).children('div.detName').children('a').attr('href'),
+                        size: calculateSize(td.eq(1).children('font.detDesc').text()),
+                        dl: td.eq(1).children('a').eq(0).attr('href'),
+                        seeds: td.eq(2).text(),
+                        leechs: td.eq(3).text(),
+                        time: calculateTime(td.eq(1).children('font.detDesc').text())
+                    });
+                } else if (td_len === 7) {
+                    arr.push({
+                        category: {
+                            title: td.eq(0).children('a').text(),
+                            url: root_url + td.eq(0).children('a').attr('href'),
+                            id: calculateCategory(String(td.eq(0).children('a').attr('href')).replace(/(.*)\/([0-9]*)/i, "$2"))
                         },
-                        'title': td.eq(1).children('a').text(),
-                        'url': root_url + td.eq(1).children('a').attr('href'),
-                        'size': mackcalcSize(td.eq(4).text()),
-                        'dl': td.eq(3).children().children('a').eq(0).attr('href'),
-                        'seeds': td.eq(5).text(),
-                        'leechs': td.eq(6).text(),
-                        'time': makecalcTime(td.eq(2).text())
-                    }
+                        title: td.eq(1).children('a').text(),
+                        url: root_url + td.eq(1).children('a').attr('href'),
+                        size: mackcalcSize(td.eq(4).text()),
+                        dl: td.eq(3).children().children('a').eq(0).attr('href'),
+                        seeds: td.eq(5).text(),
+                        leechs: td.eq(6).text(),
+                        time: makecalcTime(td.eq(2).text())
+                    });
                 }
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',

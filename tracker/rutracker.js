@@ -31,15 +31,16 @@ torrent_lib.rutracker = function () {
                 /* Док. и юмор */[670, 2107, 294, 1453, 1475, 46, 2178, 671, 2177, 251, 97, 851, 821, 2076, 98, 56, 1469, 2123, 1280, 876, 752, 1114, 2380, 1467, 672, 249, 552, 500, 2112, 1327, 1468, 24, 1959, 115, 939, 1481, 113, 882, 1482, 393, 1569, 373, 1186, 137, 1321, 532, 979, 827, 1484, 1485, 114, 1332, 1495],
                 /* Спорт */[2, 255, 256, 1986, 1551, 626, 262, 1326, 978, 1287, 1188, 1667, 1675, 257, 845, 875, 263, 2073, 550, 2124, 1470, 528, 486, 854, 2079, 260, 2111, 1608, 1952, 1613, 1614, 1623, 1615, 1630, 2514, 1616, 2014, 1617, 1987, 2171, 1620, 1621, 1998, 751, 1697, 2004, 2001, 2002, 283, 1997, 2003, 2009, 2010, 2006, 2007, 2005, 259, 2008, 126]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseInt(f), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++) {
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var readCode = function (c) {
             c = engine.contentFilter(c);
-            //var t = $(c);//.contents();
             var t = engine.load_in_sandbox(c);
             if (t.find('input[name="login_username"]').length) {
                 view.auth(0, filename);
@@ -51,52 +52,43 @@ torrent_lib.rutracker = function () {
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(5).children('a').attr('href') == null)
+                if (td.eq(5).children('a').attr('href') === undefined) {
                     continue;
-                arr[arr.length] = {
-                    /*'type' : td.eq(0).children('img').attr('alt'),
-                     'status' : {
-                     'code': td.eq(1).children('span').attr('class'),
-                     'text': td.eq(1).children('span').text()
-                     },*/
-                    'category': {
-                        'title': td.eq(2).children('div').children('a').text(),
-                        'url': root_url + td.eq(2).children('div').children('a').attr('href'),
-                        'id': calculateCategory(td.eq(2).children('div').children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
-                    },
-                    'title': td.eq(3).children('div').children('a').text(),
-                    'url': root_url + td.eq(3).children('div').children('a').attr('href'),
-                    /*'author' : {
-                     'name' : td.eq(4).children('a').text(),
-                     'url' : root_url+td.eq(4).children('a').attr('href')
-                     } ,*/
-                    'size': td.eq(5).children('u').text(),
-                    //'dl' : td.eq(5).children('a').attr('href'),
-                    'seeds': td.eq(6).children('b').text(),
-                    'leechs': td.eq(7).children('b').text(),
-                    //'down' : td.eq(8).text(),
-                    'time': td.eq(9).children('u').text()
                 }
+                arr.push({
+                    category: {
+                        title: td.eq(2).children('div').children('a').text(),
+                        url: root_url + td.eq(2).children('div').children('a').attr('href'),
+                        id: calculateCategory(td.eq(2).children('div').children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
+                    },
+                    title: td.eq(3).children('div').children('a').text(),
+                    url: root_url + td.eq(3).children('div').children('a').attr('href'),
+                    size: td.eq(5).children('u').text(),
+                    //'dl' : td.eq(5).children('a').attr('href'),
+                    seeds: td.eq(6).children('b').text(),
+                    leechs: td.eq(7).children('b').text(),
+                    time: td.eq(9).children('u').text()
+                });
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'POST',
                 url: url,
                 cache: false,
                 data: {
-                    'prev_my': 0,
-                    'prev_new': 0,
-                    'prev_oop': 0,
+                    prev_my: 0,
+                    prev_new: 0,
+                    prev_oop: 0,
                     'f[]': -1,
-                    'o': 1,
-                    's': 2,
-                    'nm': text,
-                    'submit': ''
+                    o: 1,
+                    s: 2,
+                    nm: text,
+                    submit: ''
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

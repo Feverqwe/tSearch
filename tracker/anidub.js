@@ -26,8 +26,8 @@ torrent_lib.anidub = function () {
                 /* Спорт */[],
                 ['Hentai']
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray($.trim(f), groups_arr[i]) > -1) {
+            for (var i = 0, len = groups_arr.length; i < len; i++)
+                if (groups_arr[i].indexOf($.trim(f)) !== -1) {
                     return i;
                 }
             return -1;
@@ -41,24 +41,28 @@ torrent_lib.anidub = function () {
             var t = engine.load_in_sandbox(c);
             t = t.find('table.main').eq(1).children('tbody').children('tr').children('td').children('table');
             var l = t.length;
-            var arr = [];
+            if ( l === 0) {
+                return [];
+            }
+            var arr = new Array(l - 1);
             for (var i = 0; i < l - 1; i++) {
                 var td = t.eq(i).children('tbody').children('tr').children('td').eq(1);
                 var params = td.children('table').eq(2).find('td').eq(0).text().replace(/[\r\t]*/g, '').replace(/[а-яА-Я]*\:/gm, '').replace(/\n/gm, '').replace(/\s+/g, " ").split(' ');
                 var pp = 0;
-                if (params.length === 9)
+                if (params.length === 9) {
                     pp = 1;
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.children('table').eq(2).find('td').eq(1).children('a').eq(0).text(),
-                        'id': calculateCategory(td.children('table').eq(2).find('td').eq(1).children('a').eq(0).text())
+                }
+                arr[i] = {
+                    category: {
+                        title: td.children('table').eq(2).find('td').eq(1).children('a').eq(0).text(),
+                        id: calculateCategory(td.children('table').eq(2).find('td').eq(1).children('a').eq(0).text())
                     },
-                    'title': td.children('table').eq(0).find('span').children('a').eq(1).text(),
-                    'url': root_url + td.children('table').eq(0).find('span').children('a').eq(1).attr('href'),
-                    'size': ex_kit.format_size($.trim(params[2 + pp] + params[3 + pp])),
-                    'seeds': params[5 + pp].replace(',', ''),
-                    'leechs': params[6 + pp].replace(',', ''),
-                    'time': calculateTime(td.children('table').eq(0).find('span').children('a').eq(2).text())
+                    title: td.children('table').eq(0).find('span').children('a').eq(1).text(),
+                    url: root_url + td.children('table').eq(0).find('span').children('a').eq(1).attr('href'),
+                    size: ex_kit.format_size($.trim(params[2 + pp] + params[3 + pp])),
+                    seeds: params[5 + pp].replace(',', ''),
+                    leechs: params[6 + pp].replace(',', ''),
+                    time: calculateTime(td.children('table').eq(0).find('span').children('a').eq(2).text())
                 }
             }
             return arr;

@@ -21,27 +21,27 @@ torrent_lib.evrl = function () {
             t = t.find('div');
             var l = t.length;
             var arr = [];
-            var i = 0;
+            var i;
             for (i = 0; i < l; i++) {
                 var div = t.eq(i);
                 if (div.children('a').length !== 2 || div.children('a').eq(0).children('img').length !== 1) {
                     continue;
                 }
                 arr.push({
-                    'category': {
-                        'id': -1
+                    category: {
+                        id: -1
                     },
-                    'title': div.children('a').eq(1).text(),
-                    'url': root_url + div.children('a').eq(1).attr('href'),
-                    'size': 0,
-                    'dl': null,
-                    'seeds': 1,
-                    'leechs': 0,
-                    'time': 0
+                    title: div.children('a').eq(1).text(),
+                    url: root_url + div.children('a').eq(1).attr('href'),
+                    size: 0,
+                    dl: null,
+                    seeds: 1,
+                    leechs: 0,
+                    time: 0
                 });
             }
-            var l = t2.length;
-            for (var i = 0; i < l; i++) {
+            l = t2.length;
+            for (i = 0; i < l; i++) {
                 var div = t2.eq(i).children('div').children('div');
                 var categorys = '';
                 var info = div.children('div').eq(1).children('div').eq(0);
@@ -50,24 +50,24 @@ torrent_lib.evrl = function () {
                     categorys += ' ' + '<a href="' + root_url + cc.eq(i).attr('href') + '">' + cc.eq(i).text() + '</a>';
                 }
                 arr.push({
-                    'category': {
-                        'title': categorys,
-                        'id': -1
+                    category: {
+                        title: categorys,
+                        id: -1
                     },
-                    'title': div.children('a').eq(0).text(),
-                    'url': root_url + div.children('a').eq(0).attr('href'),
-                    'size': ex_kit.format_size(info.children('div').eq(2).children('a').text().substr(8)),
-                    'dl': root_url + info.children('div').eq(2).children('a').attr('href'),
-                    'seeds': info.children('div').eq(0).children('span').text(),
-                    'leechs': info.children('div').eq(1).children('span').text(),
-                    'time': 0
+                    title: div.children('a').eq(0).text(),
+                    url: root_url + div.children('a').eq(0).attr('href'),
+                    size: ex_kit.format_size(info.children('div').eq(2).children('a').text().substr(8)),
+                    dl: root_url + info.children('div').eq(2).children('a').attr('href'),
+                    seeds: info.children('div').eq(0).children('span').text(),
+                    leechs: info.children('div').eq(1).children('span').text(),
+                    time: 0
                 });
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'POST',

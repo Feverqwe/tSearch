@@ -17,29 +17,29 @@ torrent_lib.opensharing = function () {
             var date = d[0];
             var month = d[1];
             var year = '20' + d[2];
-            if (month == 'Янв')
+            if (month === 'Янв')
                 month = '01';
-            if (month == 'Фев')
+            if (month === 'Фев')
                 month = '02';
-            if (month == 'Мар')
+            if (month === 'Мар')
                 month = '03';
-            if (month == 'Апр')
+            if (month === 'Апр')
                 month = '04';
-            if (month == 'Май')
+            if (month === 'Май')
                 month = '05';
-            if (month == 'Июн')
+            if (month === 'Июн')
                 month = '06';
-            if (month == 'Июл')
+            if (month === 'Июл')
                 month = '07';
-            if (month == 'Авг')
+            if (month === 'Авг')
                 month = '08';
-            if (month == 'Сен')
+            if (month === 'Сен')
                 month = '09';
-            if (month == 'Окт')
+            if (month === 'Окт')
                 month = '10';
-            if (month == 'Ноя')
+            if (month === 'Ноя')
                 month = '11';
-            if (month == 'Дек')
+            if (month === 'Дек')
                 month = '12';
             return Math.round((new Date(parseInt(year), parseInt(month) - 1, parseInt(date))).getTime() / 1000)
         };
@@ -48,42 +48,43 @@ torrent_lib.opensharing = function () {
             var t = engine.load_in_sandbox(c);
             t = t.find('#index').children('table').children('tbody').children('tr');
             var l = t.length;
-            var arr = [];
+            var arr = new Array(l);
             for (var i = 1; i < l; i++) {
                 var td = t.eq(i).children('td');
                 var corr = 0;
-                if (td.length > 5)
+                if (td.length > 5) {
                     corr = 1;
+                }
                 td.eq(2 + corr).children('span').children('img').remove();
-                arr[arr.length] = {
-                    'category': {
-                        'id': -1
+                arr[i - 1] = {
+                    category: {
+                        id: -1
                     },
-                    'title': td.eq(1).children('a').eq(2).text(),
-                    'url': root_url + td.eq(1).children('a').eq(2).attr('href'),
-                    'size': ex_kit.format_size(td.eq(4 + corr).text()),
-                    'dl': td.eq(1).children('a').eq(0).attr('href'),
-                    'seeds': td.eq(2 + corr).children('span.green').text(),
-                    'leechs': td.eq(3 + corr).children('span.red').text(),
-                    'time': calculateTime(td.eq(0).text())
+                    title: td.eq(1).children('a').eq(2).text(),
+                    url: root_url + td.eq(1).children('a').eq(2).attr('href'),
+                    size: ex_kit.format_size(td.eq(4 + corr).text()),
+                    dl: td.eq(1).children('a').eq(0).attr('href'),
+                    seeds: td.eq(2 + corr).children('span.green').text(),
+                    leechs: td.eq(3 + corr).children('span.red').text(),
+                    time: calculateTime(td.eq(0).text())
                 }
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
                 url: url,
                 data: {
-                    'search_word': text,
-                    'search_place': 0,
-                    'search_direction_asc': 1,
-                    'search_type': 1,
-                    'search_cat': 0,
-                    'search_sort': 2
+                    search_word: text,
+                    search_place: 0,
+                    search_direction_asc: 1,
+                    search_type: 1,
+                    search_cat: 0,
+                    search_sort: 2
                 },
                 cache: false,
                 success: function (data) {

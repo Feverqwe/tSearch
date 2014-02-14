@@ -36,8 +36,8 @@ torrent_lib.kinozal = function () {
             }
             return 0;
         };
-        var calculateCategory = function (n) {
-            var n = n.replace(/.*c=([0-9]*)$/i, "$1");
+        var calculateCategory = function (f) {
+            f = f.replace(/.*c=([0-9]*)$/i, "$1");
             var groups_arr = [
                 /* Сериалы */[45, 46], //serials
                 /* Музыка */[3, 4, 42], //music
@@ -50,10 +50,12 @@ torrent_lib.kinozal = function () {
                 /* Док. и юмор */[18],
                 /* Спорт */[37]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseFloat(n), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++) {
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var calculateCategoryName = function (n) {
@@ -140,7 +142,7 @@ torrent_lib.kinozal = function () {
             }
             var tt = new Date();
             var today = tt.getDate() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getFullYear() + ' ';
-            var tt = new Date((Math.round(tt.getTime() / 1000) - 24 * 60 * 60) * 1000);
+            tt = new Date((Math.round(tt.getTime() / 1000) - 24 * 60 * 60) * 1000);
             var yesterday = tt.getDate() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getFullYear() + ' ';
             t = t.replace('сегодня ', today).replace('вчера ', yesterday);
             t = ex_kit.month_replace(t);
@@ -150,45 +152,26 @@ torrent_lib.kinozal = function () {
             c = engine.contentFilter(c);
             var ver = 1;
             var t = engine.load_in_sandbox(c);
-            t = t.find('table.mn2').eq($(c).find('table.mn2').length - 1).children('tbody').children('tr');
-            if (t.length === 0) {
-                ver = 2;
-                var t = $(c).find('table.t_peer.w100p').children('tbody').children('tr');
-            }
+            t = $(c).find('table.t_peer.w100p').children('tbody').children('tr');
             var l = t.length;
-            var arr = [];
-            for (var i = 1; i < l; i++) {
-                var td = t.eq(i).children('td');
-                if (ver === 1) {
-                    arr[arr.length] = {
-                        'category': {
-                            'title': calculateCategoryName(td.eq(0).children('a').eq(0).attr('href')),
-                            'url': root_url + td.eq(0).children('a').eq(0).attr('href'),
-                            'id': calculateCategory(td.eq(0).children('a').eq(0).attr('href'))
-                        },
-                        'title': td.eq(1).children('a').text(),
-                        'url': root_url + td.eq(1).children('a').attr('href'),
-                        'size': ex_kit.format_size(td.eq(4).text()),
-                        'seeds': td.eq(6).text(),
-                        'leechs': td.eq(7).text(),
-                        'time': calculateTime(td.eq(3).text())
-                    };
-                } else if (ver === 2) {
-                    var category_id = td.eq(0).children('img').attr('src').replace(/.*\/([0-9]*)\.gif$/, '$1');
-                    arr[arr.length] = {
-                        'category': {
-                            'title': calculateCategoryName(category_id),
-                            'url': url + '?c=' + category_id,
-                            'id': calculateCategory(category_id)
-                        },
-                        'title': td.eq(1).children('a').text(),
-                        'url': root_url + td.eq(1).children('a').attr('href'),
-                        'size': ex_kit.format_size(td.eq(3).text()),
-                        'seeds': td.eq(4).text(),
-                        'leechs': td.eq(5).text(),
-                        'time': calculateTime(td.eq(6).text())
-                    };
-                }
+            var arr = new Array(l);
+            var i, td;
+            for (i = 1; i < l; i++) {
+                td = t.eq(i).children('td');
+                var category_id = td.eq(0).children('img').attr('src').replace(/.*\/([0-9]*)\.gif$/, '$1');
+                arr[i - 1] = {
+                    category: {
+                        title: calculateCategoryName(category_id),
+                        url: url + '?c=' + category_id,
+                        id: calculateCategory(category_id)
+                    },
+                    title: td.eq(1).children('a').text(),
+                    url: root_url + td.eq(1).children('a').attr('href'),
+                    size: ex_kit.format_size(td.eq(3).text()),
+                    seeds: td.eq(4).text(),
+                    leechs: td.eq(5).text(),
+                    time: calculateTime(td.eq(6).text())
+                };
             }
             return arr;
         };

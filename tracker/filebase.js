@@ -25,8 +25,8 @@ torrent_lib.filebase = function () {
                 /* Док. и юмор */['documental'],
                 /* Спорт */['sport']
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(f, groups_arr[i]) > -1) {
+            for (var i = 0, len = groups_arr.length; i < len; i++)
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
             return -1;
@@ -43,36 +43,37 @@ torrent_lib.filebase = function () {
             var arr = [];
             for (var i = 1; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.length < 2)
+                if (td.length < 2) {
                     continue;
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(0).children('a').children('img').attr('alt'),
-                        'url': root_url + td.eq(0).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(0).children('a').attr('href').replace(/.*\/torrents\/(.*)\/$/i, "$1"))
-                    },
-                    'title': td.eq(1).children('a').text(),
-                    'url': root_url + td.eq(1).children('a').attr('href'),
-                    'size': ex_kit.format_size(td.eq(4).text()),
-                    'seeds': td.eq(6).text(),
-                    'leechs': td.eq(7).text(),
-                    'time': calculateTime(td.eq(3).text())
                 }
+                arr.push({
+                    category: {
+                        title: td.eq(0).children('a').children('img').attr('alt'),
+                        url: root_url + td.eq(0).children('a').attr('href'),
+                        id: calculateCategory(td.eq(0).children('a').attr('href').replace(/.*\/torrents\/(.*)\/$/i, "$1"))
+                    },
+                    title: td.eq(1).children('a').text(),
+                    url: root_url + td.eq(1).children('a').attr('href'),
+                    size: ex_kit.format_size(td.eq(4).text()),
+                    seeds: td.eq(6).text(),
+                    leechs: td.eq(7).text(),
+                    time: calculateTime(td.eq(3).text())
+                });
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
                 url: url,
                 cache: false,
                 data: {
-                    'search': text,
-                    'c': 0,
-                    't': 'liveonly'
+                    search: text,
+                    c: 0,
+                    t: 'liveonly'
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

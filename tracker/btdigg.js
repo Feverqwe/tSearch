@@ -26,45 +26,46 @@ torrent_lib.btdigg = function () {
             var t = engine.load_in_sandbox(c);
             t = t.find('#search_res').children('table').children('tbody').children('tr');
             var hash = 0;
-            if (t.length == 0) {
+            var l = t.length;
+            if (l === 0) {
                 t = $(c).find('#torrent_info').find('table.torrent_info_tbl').children('tbody').children('tr');
                 hash = 1;
             }
-            if (hash) {
+            if (hash === 1) {
                 var url = t.eq(2).children('td').eq(1).children('a').attr('href');
                 var arr = [];
-                if (url == null)
+                if (url === undefined) {
                     return arr;
-                arr[arr.length] = {
-                    'category': {
-                        'id': -1
-                    },
-                    'title': t.eq(3).children('td').eq(1).text(),
-                    'url': root_url + '/search?info_hash=' + url.split('btih:')[1].replace('&dn=', '&q='),
-                    'size': ex_kit.format_size(t.eq(5).children('td').eq(1).text()),
-                    'dl': url,
-                    'seeds': 1,
-                    'leechs': t.eq(4).children('td').eq(1).text(),
-                    'time': calculateTime(t.eq(6).children('td').eq(1).text())
                 }
+                arr.push({
+                    category: {
+                        id: -1
+                    },
+                    title: t.eq(3).children('td').eq(1).text(),
+                    url: root_url + '/search?info_hash=' + url.split('btih:')[1].replace('&dn=', '&q='),
+                    size: ex_kit.format_size(t.eq(5).children('td').eq(1).text()),
+                    dl: url,
+                    seeds: 1,
+                    leechs: t.eq(4).children('td').eq(1).text(),
+                    time: calculateTime(t.eq(6).children('td').eq(1).text())
+                });
             } else {
-                var l = t.length;
-                var arr = [];
+                var arr = new Array(l);
                 for (var i = 0; i < l; i++) {
                     var td = t.eq(i).children('td').eq(1).children('table');
                     var name_link = td.eq(0).find('td.torrent_name').children('a');
                     var params = td.eq(1).children('tbody').children('tr').children('td');
-                    arr[arr.length] = {
-                        'category': {
-                            'id': -1
+                    arr[i] = {
+                        category: {
+                            id: -1
                         },
-                        'title': name_link.text(),
-                        'url': root_url + name_link.attr('href'),
-                        'size': ex_kit.format_size(params.eq(2).children('span.attr_val').text()),
-                        'dl': params.eq(0).children('a').attr('href'),
-                        'seeds': 1,
-                        'leechs': params.eq(4).children('span.attr_val').text(),
-                        'time': calculateTime(params.eq(5).children('span.attr_val').text())
+                        title: name_link.text(),
+                        url: root_url + name_link.attr('href'),
+                        size: ex_kit.format_size(params.eq(2).children('span.attr_val').text()),
+                        dl: params.eq(0).children('a').attr('href'),
+                        seeds: 1,
+                        leechs: params.eq(4).children('span.attr_val').text(),
+                        time: calculateTime(params.eq(5).children('span.attr_val').text())
                     }
                 }
             }
@@ -72,7 +73,7 @@ torrent_lib.btdigg = function () {
         };
         var res_count = 0;
         var loadPage = function (text, page) {
-            if (page == null) {
+            if (page === undefined) {
                 res_count = 0;
                 page = 0;
             } else {
@@ -80,25 +81,25 @@ torrent_lib.btdigg = function () {
             }
             var t = text;
             var hash = '';
-            if (text.length == 40 && text.replace(/[a-zA-Z0-9]/g, '') == '')
+            if (text.length === 40 && (/[^a-zA-Z0-9]/).test(text) === false)
                 hash = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
                 url: url,
                 cache: false,
                 data: {
-                    'info_hash': hash,
-                    'q': text,
-                    'p': page,
-                    'order': 0
+                    info_hash: hash,
+                    q: text,
+                    p: page,
+                    order: 0
                 },
                 success: function (data) {
                     var arr = readCode(data);
                     var c = arr.length;
                     res_count += c;
-                    if (hash.length == 0 && c == 10 && page < 0) {
+                    if (hash.length === 0 && c === 10 && page < 0) {
                         view.result(filename, arr, t, res_count);
                         page++;
                         loadPage(text, page);

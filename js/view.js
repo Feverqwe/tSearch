@@ -1717,7 +1717,6 @@ var view = function() {
                 time: parseInt((new Date()).getTime() / 1000)
             });
         }
-        console.log(var_cache.click_history);
         if (click_history.length > 10) {
             click_history.splice(oldest_item, 1);
         }
@@ -1819,6 +1818,7 @@ var view = function() {
             });
             addAutocomplete();
             dom_cache.torrent_list.on('change', 'div.profile > select', function() {
+                var_cache.currentTrackerList = [];
                 engine.stop();
                 engine.loadProfile(this.value, writeTrackerList);
             });
@@ -1951,7 +1951,6 @@ var view = function() {
                 if (inc.length === 0 && exc.length === 0) {
                     var_cache.keywordFilter = undefined;
                 }
-                console.log(var_cache.keywordFilter, inc, exc)
                 clearTimeout(var_cache.filterTimer);
                 var_cache.filterTimer = setTimeout(function() {
                     dom_cache.word_filter_btn.removeClass('loading');

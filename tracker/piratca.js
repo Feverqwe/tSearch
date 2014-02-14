@@ -32,10 +32,12 @@ torrent_lib.piratca = function () {
                 /* Спорт */[2586, 42, 2471, 54, 1465, 2313, 53, 52, 51, 2308, 50, 49, 48, 47, 2311, 46, 45, 1512, 922, 44, 2457],
                 /* xxx */[132, 2516, 2051, 854, 853, 2015, 851, 626, 1666, 2524, 2526, 852, 2514, 2521, 1376, 855, 2575]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseInt(f), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++) {
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var readCode = function (c) {
@@ -51,22 +53,23 @@ torrent_lib.piratca = function () {
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(4).children('div').attr('href') === undefined)
+                if (td.eq(4).children('div').attr('href') === undefined) {
                     continue;
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(1).children('a').text(),
-                        'url': root_url + td.eq(1).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(1).children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
+                }
+                arr.push({
+                    category: {
+                        title: td.eq(1).children('a').text(),
+                        url: root_url + td.eq(1).children('a').attr('href'),
+                        id: calculateCategory(td.eq(1).children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
                     },
-                    'title': td.eq(2).children('a').text(),
-                    'url': root_url + td.eq(2).children('a').attr('href'),
-                    'size': td.eq(4).children('u').text(),
-                    'dl': root_url + td.eq(4).children('div').attr('href'),
-                    'seeds': td.eq(5).children('b.seedmed').text(),
-                    'leechs': td.eq(5).children('b.leechmed').text(),
-                    'time': td.eq(6).children('u').text()
-                };
+                    title: td.eq(2).children('a').text(),
+                    url: root_url + td.eq(2).children('a').attr('href'),
+                    size: td.eq(4).children('u').text(),
+                    dl: root_url + td.eq(4).children('div').attr('href'),
+                    seeds: td.eq(5).children('b.seedmed').text(),
+                    leechs: td.eq(5).children('b.leechmed').text(),
+                    time: td.eq(6).children('u').text()
+                });
             }
             return arr;
         };
@@ -79,9 +82,9 @@ torrent_lib.piratca = function () {
                 url: url,
                 cache: false,
                 data: {
-                    'max': 1,
-                    'to': 1,
-                    'nm': text
+                    max: 1,
+                    to: 1,
+                    nm: text
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

@@ -26,10 +26,12 @@ torrent_lib['torrents.freedom'] = function () {
                 /* Док. и юмор */[13, 187, 188, 298, 299, 300, 297, 296, 190, 191, 295, 291, 619, 201, 15, 185, 184, 629, 183, 542, 714, 186, 630, 122, 304, 14, 215, 214, 213, 212, 211, 210, 123],
                 /* Спорт */[88, 196, 193, 192, 586, 194, 195, 198, 618, 585, 199, 197, 627, 628]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseInt(f), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++) {
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var calculateTime = function (time) {
@@ -55,58 +57,59 @@ torrent_lib['torrents.freedom'] = function () {
             var arr = [];
             for (var i = 1; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(6).children('a').attr('href') == null)
+                if (td.eq(6).children('a').attr('href') === undefined) {
                     continue;
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(3).children('a').text(),
-                        'url': root_url + td.eq(3).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(3).children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
-                    },
-                    'title': td.eq(4).children('a').text(),
-                    'url': root_url + td.eq(4).children('a').attr('href'),
-                    'size': ex_kit.format_size(td.eq(7).text()),
-                    'dl': root_url + td.eq(6).children('a').attr('href'),
-                    'seeds': td.eq(8).children('b').text(),
-                    'leechs': td.eq(9).children('b').text(),
-                    'time': calculateTime(td.eq(11).children('p').eq(0).text() + ' ' + td.eq(11).children('p').eq(1).text())
                 }
+                arr.push({
+                    category: {
+                        title: td.eq(3).children('a').text(),
+                        url: root_url + td.eq(3).children('a').attr('href'),
+                        id: calculateCategory(td.eq(3).children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
+                    },
+                    title: td.eq(4).children('a').text(),
+                    url: root_url + td.eq(4).children('a').attr('href'),
+                    size: ex_kit.format_size(td.eq(7).text()),
+                    dl: root_url + td.eq(6).children('a').attr('href'),
+                    seeds: td.eq(8).children('b').text(),
+                    leechs: td.eq(9).children('b').text(),
+                    time: calculateTime(td.eq(11).children('p').eq(0).text() + ' ' + td.eq(11).children('p').eq(1).text())
+                });
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'POST',
                 url: url + '?nm=' + ex_kit.in_cp1251(text),
                 cache: false,
                 data: {
-                    'prev_allw': 1,
-                    'prev_a': 0,
-                    'prev_dla': 0,
-                    'prev_dlc': 0,
-                    'prev_dld': 0,
-                    'prev_dlw': 0,
-                    'prev_my': 0,
-                    'prev_new': 0,
-                    'prev_sd': 0,
-                    'prev_da': 1,
-                    'prev_dc': 1,
-                    'prev_df': 1,
-                    'prev_ds': 0,
+                    prev_allw: 1,
+                    prev_a: 0,
+                    prev_dla: 0,
+                    prev_dlc: 0,
+                    prev_dld: 0,
+                    prev_dlw: 0,
+                    prev_my: 0,
+                    prev_new: 0,
+                    prev_sd: 0,
+                    prev_da: 1,
+                    prev_dc: 1,
+                    prev_df: 1,
+                    prev_ds: 0,
                     'f[]': -1,
-                    'o': 1,
-                    's': 2,
-                    'tm': -1,
-                    'sns': -1,
-                    'dc': 1,
-                    'df': 1,
-                    'da': 1,
-                    'pn': '',
-                    'allw': 1,
-                    'submit': ''
+                    o: 1,
+                    s: 2,
+                    tm: -1,
+                    sns: -1,
+                    dc: 1,
+                    df: 1,
+                    da: 1,
+                    pn: '',
+                    allw: 1,
+                    submit: ''
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

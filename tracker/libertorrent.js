@@ -31,37 +31,38 @@ torrent_lib.libertorrent = function () {
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(5).children('a').attr('href') == null)
+                if (td.eq(5).children('a').attr('href') === undefined) {
                     continue;
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(2).children('a').text(),
-                        'url': root_url + td.eq(2).children('a').attr('href'),
-                        'id': 5
-                    },
-                    'title': td.eq(3).children('a').text(),
-                    'url': root_url + td.eq(3).children('a').attr('href'),
-                    'size': td.eq(5).children('u').text(),
-                    'dl': root_url + td.eq(5).children('a').attr('href'),
-                    'seeds': td.eq(6).text(),
-                    'leechs': td.eq(7).text(),
-                    'time': td.eq(9).children('u').text()
                 }
+                arr.push({
+                    category: {
+                        title: td.eq(2).children('a').text(),
+                        url: root_url + td.eq(2).children('a').attr('href'),
+                        id: 5
+                    },
+                    title: td.eq(3).children('a').text(),
+                    url: root_url + td.eq(3).children('a').attr('href'),
+                    size: td.eq(5).children('u').text(),
+                    dl: root_url + td.eq(5).children('a').attr('href'),
+                    seeds: td.eq(6).text(),
+                    leechs: td.eq(7).text(),
+                    time: td.eq(9).children('u').text()
+                });
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'POST',
                 url: url,
                 cache: false,
                 data: {
-                    'max': 1,
-                    'to': 1,
-                    'nm': text
+                    max: 1,
+                    to: 1,
+                    nm: text
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

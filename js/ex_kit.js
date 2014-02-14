@@ -75,7 +75,7 @@ var ex_kit = function() {
     function today_replace(t, f) {
         f = parseInt(f);
         t = t.toLowerCase();
-        if ((var_cache.today).test(t)) {
+        if ((var_cache.today_now).test(t)) {
             return Math.round((new Date()).getTime() / 1000);
         }
         var tt = new Date();

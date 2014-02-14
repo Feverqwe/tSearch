@@ -31,10 +31,12 @@ torrent_lib.underverse = function () {
                 /* Спорт */[10, 69, 943, 742, 70, 71, 964, 72, 73, 702, 74, 671, 836, 837, 838],
                 /* XXX */[52, 695, 782]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseInt(f), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++){
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var readCode = function (c) {
@@ -45,28 +47,29 @@ torrent_lib.underverse = function () {
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(5).children('a').attr('href') == null)
+                if (td.eq(5).children('a').attr('href') === undefined) {
                     continue;
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(2).children('a').text(),
-                        'url': root_url + td.eq(2).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
-                    },
-                    'title': td.eq(3).children('a').eq(1).text(),
-                    'url': root_url + td.eq(3).children('a').eq(1).attr('href'),
-                    'size': td.eq(5).children('u').text(),
-                    'dl': root_url + td.eq(5).children('a').attr('href'),
-                    'seeds': td.eq(6).children('b').text(),
-                    'leechs': td.eq(7).children('b').text(),
-                    'time': td.eq(9).children('u').text()
                 }
+                arr.push({
+                    category: {
+                        title: td.eq(2).children('a').text(),
+                        url: root_url + td.eq(2).children('a').attr('href'),
+                        id: calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
+                    },
+                    title: td.eq(3).children('a').eq(1).text(),
+                    url: root_url + td.eq(3).children('a').eq(1).attr('href'),
+                    size: td.eq(5).children('u').text(),
+                    dl: root_url + td.eq(5).children('a').attr('href'),
+                    seeds: td.eq(6).children('b').text(),
+                    leechs: td.eq(7).children('b').text(),
+                    time: td.eq(9).children('u').text()
+                });
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',

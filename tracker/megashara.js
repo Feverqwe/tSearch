@@ -13,15 +13,15 @@ torrent_lib.megashara = function () {
     var xhr = undefined;
     var web = function () {
         var calculateCategory = function (n) {
-            if (n == 'Фильмы')
+            if (n === 'Фильмы')
                 return 3;
-            if (n == 'ТВ')
+            if (n === 'ТВ')
                 return 3;
-            else if (n == 'Игры' || n == 'Онлайн игры.')
+            else if (n === 'Игры' || n === 'Онлайн игры.')
                 return 2;
-            else if (n == 'Музыка')
+            else if (n === 'Музыка')
                 return 1;
-            else if (n == 'Сериалы')
+            else if (n === 'Сериалы')
                 return 0;
             return -1;
         };
@@ -30,42 +30,42 @@ torrent_lib.megashara = function () {
             var t = engine.load_in_sandbox(c);
             t = t.find('table.table-wide').children('tbody').children('tr');
             var l = t.length;
-            var arr = [];
+            var arr = new Array(l);
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(0).text(),
-                        'id': calculateCategory(td.eq(0).text())
+                arr[i] = {
+                    category: {
+                        title: td.eq(0).text(),
+                        id: calculateCategory(td.eq(0).text())
                     },
-                    'title': td.eq(1).children('a').text(),
-                    'url': td.eq(1).children('a').attr('href'),
-                    'size': ex_kit.format_size(td.eq(3).children().text()),
-                    'dl': td.eq(2).children('a').attr('href'),
-                    'seeds': td.eq(4).text(),
-                    'leechs': td.eq(5).text(),
-                    'time': 0
+                    title: td.eq(1).children('a').text(),
+                    url: td.eq(1).children('a').attr('href'),
+                    size: ex_kit.format_size(td.eq(3).children().text()),
+                    dl: td.eq(2).children('a').attr('href'),
+                    seeds: td.eq(4).text(),
+                    leechs: td.eq(5).text(),
+                    time: 0
                 }
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
                 url: url,
                 cache: false,
                 data: {
-                    'sorting': 'seed',
-                    'time': 'ALL',
-                    'year': 0,
-                    'parent': 0,
-                    'where': 'title',
-                    'all_words': 1,
-                    'text': text,
-                    'order': 'added'
+                    sorting: 'seed',
+                    time: 'ALL',
+                    year: 0,
+                    parent: 0,
+                    where: 'title',
+                    all_words: 1,
+                    text: text,
+                    order: 'added'
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

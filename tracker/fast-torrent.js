@@ -17,14 +17,14 @@ torrent_lib['fast-torrent'] = function () {
             var t = engine.load_in_sandbox(c);
             t = t.find('div.film-list').children('div');
             var l = t.length;
-            var arr = [];
+            var arr = new Array(l);
             for (var i = 0; i < l; i++) {
                 var item = t.eq(i).children('div.film-wrap');
                 var title = item.children('h2').text();
                 var category = item.children('div.film-genre').children('div').eq(0).text();
                 var link = root_url+item.children('div.film-image').children('a').attr('href');
                 var time = ex_kit.format_date(1, item.children('div.film-foot').children('em').eq(2).text().replace(/.*: /,''));
-                arr[arr.length] = {
+                arr[i] = {
                     category: {
                         title: category,
                         id: -1
@@ -41,7 +41,7 @@ torrent_lib['fast-torrent'] = function () {
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',

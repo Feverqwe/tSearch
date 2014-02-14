@@ -17,20 +17,20 @@ torrent_lib.rutor = function () {
             var t = engine.load_in_sandbox(c);
             t = t.find('#index').children('table').children('tbody').children('tr');
             var l = t.length;
-            var arr = [];
+            var arr = new Array(l);
             for (var i = 1; i < l; i++) {
                 var td = t.eq(i).children('td');
-                arr[arr.length] = {
-                    'category': {
-                        'id': -1
+                arr[i - 1] = {
+                    category: {
+                        id: -1
                     },
-                    'title': td.eq(1).children('a').eq(1).text(),
-                    'url': root_url + td.eq(1).children('a').eq(1).attr('href'),
-                    'size': ex_kit.format_size(td.eq(-2).text()),
-                    'dl': td.eq(1).children('a').eq(0).attr('href'),
-                    'seeds': td.eq(-1).children('span.green').text(),
-                    'leechs': td.eq(-1).children('span.red').text(),
-                    'time': ex_kit.format_date(1, ex_kit.month_replace(td.eq(0).text()))
+                    title: td.eq(1).children('a').eq(1).text(),
+                    url: root_url + td.eq(1).children('a').eq(1).attr('href'),
+                    size: ex_kit.format_size(td.eq(-2).text()),
+                    dl: td.eq(1).children('a').eq(0).attr('href'),
+                    seeds: td.eq(-1).children('span.green').text(),
+                    leechs: td.eq(-1).children('span.red').text(),
+                    time: ex_kit.format_date(1, ex_kit.month_replace(td.eq(0).text()))
                 };
             }
             return arr;

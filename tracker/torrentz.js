@@ -54,38 +54,38 @@ torrent_lib.torrentz = function () {
             var t = engine.load_in_sandbox(c);
             t = t.find('dl').parent('div.results').children('dl');
             var l = t.length;
-            var arr = [];
+            var arr = new  Array(l - 1);
             for (var i = 0; i < l - 1; i++) {
                 var dl = t.eq(i);
                 var title = dl.children('dt').children('a').text();
                 var url = dl.children('dt').children('a').attr('href');
                 dl.children('dt').children('a').remove();
                 var cat = $.trim($.trim(dl.children('dt').text()).substr(1));
-                arr[arr.length] = {
-                    'category': {
-                        'title': cat,
-                        'id': calculateCategory(cat)
+                arr[i] = {
+                    category: {
+                        title: cat,
+                        id: calculateCategory(cat)
                     },
-                    'title': title,
-                    'url': root_url + url,
-                    'size': ex_kit.format_size(dl.children('dd').children('span.s').text()),
-                    'seeds': dl.children('dd').children('span.u').text().replace(',', ''),
-                    'leechs': dl.children('dd').children('span.d').text().replace(',', ''),
-                    'time': calculateTime($.trim(dl.children('dd').children('span.a').text()))
+                    title: title,
+                    url: root_url + url,
+                    size: ex_kit.format_size(dl.children('dd').children('span.s').text()),
+                    seeds: dl.children('dd').children('span.u').text().replace(',', ''),
+                    leechs: dl.children('dd').children('span.d').text().replace(',', ''),
+                    time: calculateTime($.trim(dl.children('dd').children('span.a').text()))
                 }
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
                 url: url,
                 cache: false,
                 data: {
-                    'f': text
+                    f: text
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

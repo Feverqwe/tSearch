@@ -32,10 +32,11 @@ torrent_lib.katushka = function () {
                 /* Спорт */['sport'],
                 /* XXX */['xxx']
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(f, groups_arr[i]) > -1) {
+            for (var i = 0, len = groups_arr.length; i < len; i++) {
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var calculateTime = function (t) {
@@ -50,46 +51,48 @@ torrent_lib.katushka = function () {
             var t = engine.load_in_sandbox(c);
             t = t.find('div.panel.torrents_list > div.content.after_clear').children('div.torr_block');
             var list = 0;
-            if (t.length == 0) {
+            var l = t.length;
+            if (l === 0) {
                 t = $(c).find('div.panel.torrents_list > div.content.after_clear > table.data_table.torr_table > tbody').children('tr');
                 list = 1;
+                l = t.length;
             }
-            var l = t.length;
-            var arr = [];
-            if (list) {
-                for (var i = 1; i < l; i++) {
+            var i;
+            var arr = new Array(l);
+            if (list === 1) {
+                for (i = 1; i < l; i++) {
                     var td = t.eq(i).children('td');
                     var tags = td.eq(1).children('div.tags').text();
-                    arr[arr.length] = {
-                        'category': {
-                            'title': td.eq(0).children('a').attr('title') + ((tags.length > 0) ? ', ' + tags : ''),
-                            'url': root_url + td.eq(0).children('a').attr('href'),
-                            'id': calculateCategory(td.eq(0).children('a').attr('href').split('/'))
+                    arr[i - 1] = {
+                        category: {
+                            title: td.eq(0).children('a').attr('title') + ((tags.length > 0) ? ', ' + tags : ''),
+                            url: root_url + td.eq(0).children('a').attr('href'),
+                            id: calculateCategory(td.eq(0).children('a').attr('href').split('/'))
                         },
-                        'title': td.eq(1).children('div.torr_name').children('a').eq(1).text(),
-                        'url': root_url + td.eq(1).children('div.torr_name').children('a').eq(1).attr('href'),
-                        'size': 0,
-                        'seeds': parseInt(td.eq(2).text()),
-                        'leechs': 0,
-                        'time': calculateTime(td.eq(1).children('div.date').text())
+                        title: td.eq(1).children('div.torr_name').children('a').eq(1).text(),
+                        url: root_url + td.eq(1).children('div.torr_name').children('a').eq(1).attr('href'),
+                        size: 0,
+                        seeds: parseInt(td.eq(2).text()),
+                        leechs: 0,
+                        time: calculateTime(td.eq(1).children('div.date').text())
                     }
                 }
             } else {
-                for (var i = 0; i < l; i++) {
+                for (i = 0; i < l; i++) {
                     var td = t.eq(i);
                     var tags = td.children('div.descr').children('div.tags').text();
-                    arr[arr.length] = {
-                        'category': {
-                            'title': td.children('a').attr('title') + ((tags.length > 0) ? ', ' + tags : ''),
-                            'url': root_url + td.children('a').attr('href'),
-                            'id': calculateCategory(td.children('a').attr('href').split('/'))
+                    arr[i] = {
+                        category: {
+                            title: td.children('a').attr('title') + ((tags.length > 0) ? ', ' + tags : ''),
+                            url: root_url + td.children('a').attr('href'),
+                            id: calculateCategory(td.children('a').attr('href').split('/'))
                         },
-                        'title': td.children('div.descr').children('div.torr_name').children('a').eq(1).text(),
-                        'url': root_url + td.children('div.descr').children('div.torr_name').children('a').eq(1).attr('href'),
-                        'size': 0,
-                        'seeds': parseInt(td.children('div.descr').children('span').eq(0).text()),
-                        'leechs': 0,
-                        'time': calculateTime(td.children('div.descr').children('div.date').text())
+                        title: td.children('div.descr').children('div.torr_name').children('a').eq(1).text(),
+                        url: root_url + td.children('div.descr').children('div.torr_name').children('a').eq(1).attr('href'),
+                        size: 0,
+                        seeds: parseInt(td.children('div.descr').children('span').eq(0).text()),
+                        leechs: 0,
+                        time: calculateTime(td.children('div.descr').children('div.date').text())
                     }
                 }
             }
@@ -97,7 +100,7 @@ torrent_lib.katushka = function () {
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',

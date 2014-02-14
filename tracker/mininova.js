@@ -23,10 +23,12 @@ torrent_lib.mininova = function () {
                 /* ПО */[7],
                 /* Анимэ */[1]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseInt(f), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++) {
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var calculateTime = function (s) {
@@ -35,29 +37,29 @@ torrent_lib.mininova = function () {
             var date = d[0];
             var month = $.trim(d[1]);
             var year = '20' + d[2];
-            if (month == 'Jan')
+            if (month === 'Jan')
                 month = '01';
-            if (month == 'Feb')
+            if (month === 'Feb')
                 month = '02';
-            if (month == 'Mar')
+            if (month === 'Mar')
                 month = '03';
-            if (month == 'Apr')
+            if (month === 'Apr')
                 month = '04';
-            if (month == 'May')
+            if (month === 'May')
                 month = '05';
-            if (month == 'Jun')
+            if (month === 'Jun')
                 month = '06';
-            if (month == 'Jul')
+            if (month === 'Jul')
                 month = '07';
-            if (month == 'Aug')
+            if (month === 'Aug')
                 month = '08';
-            if (month == 'Sep')
+            if (month === 'Sep')
                 month = '09';
-            if (month == 'Oct')
+            if (month === 'Oct')
                 month = '10';
-            if (month == 'Nov')
+            if (month === 'Nov')
                 month = '11';
-            if (month == 'Dec')
+            if (month === 'Dec')
                 month = '12';
             return Math.round((new Date(parseInt(year), parseInt(month) - 1, parseInt(date))).getTime() / 1000)
         };
@@ -69,35 +71,37 @@ torrent_lib.mininova = function () {
             var arr = [];
             for (var i = 1; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(1).children('a').attr('href') == null) continue;
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(2).children('small').children('strong').children('a').text(),
-                        'url': root_url + td.eq(1).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(1).children('a').attr('href').replace(/.*cat\/([0-9]*)$/i, "$1"))
-                    },
-                    'title': td.eq(2).children('a[class!="dl"][class!="ti com"]').text(),
-                    'url': root_url + td.eq(2).children('a[class!="dl"][class!="ti com"]').attr('href'),
-                    'size': ex_kit.format_size(td.eq(3).text()),
-                    'dl': root_url + td.eq(2).children('a[class="dl"]').attr('href'),
-                    'seeds': td.eq(4).children().text(),
-                    'leechs': td.eq(5).children().text(),
-                    'time': calculateTime(td.eq(0).text())
+                if (td.eq(1).children('a').attr('href') === undefined){
+                    continue;
                 }
+                arr.push({
+                    category: {
+                        title: td.eq(2).children('small').children('strong').children('a').text(),
+                        url: root_url + td.eq(1).children('a').attr('href'),
+                        id: calculateCategory(td.eq(1).children('a').attr('href').replace(/.*cat\/([0-9]*)$/i, "$1"))
+                    },
+                    title: td.eq(2).children('a[class!="dl"][class!="ti com"]').text(),
+                    url: root_url + td.eq(2).children('a[class!="dl"][class!="ti com"]').attr('href'),
+                    size: ex_kit.format_size(td.eq(3).text()),
+                    dl: root_url + td.eq(2).children('a[class="dl"]').attr('href'),
+                    seeds: td.eq(4).children().text(),
+                    leechs: td.eq(5).children().text(),
+                    time: calculateTime(td.eq(0).text())
+                });
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
                 url: url,
                 cache: false,
                 data: {
-                    'search': text,
-                    'cat': 0
+                    search: text,
+                    cat: 0
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

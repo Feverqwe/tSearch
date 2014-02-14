@@ -217,7 +217,6 @@ var options = function() {
         dom_cache.select_profileList.append(content);
     };
     var loadProfile = function(current) {
-        console.log('loadProfile')
         if (current === undefined) {
             current = GetSettings('currentProfile');
         }

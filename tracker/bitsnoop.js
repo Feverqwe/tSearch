@@ -26,14 +26,15 @@ torrent_lib.bitsnoop = function () {
                 /* Спорт */[],
                 /* XXX */['x3']
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(f, groups_arr[i]) > -1) {
+            for (var i = 0, len = groups_arr.length; i < len; i++) {
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var calculateTime = function (t) {
-            if ($.trim(t.substr(0, 1)).length == 0)
+            if ($.trim(t.substr(0, 1)).length === 0)
                 return 0;
             if ((/today/).test(t)) {
                 return Math.round((new Date().getTime() / 1000) / (60 * 60 * 24)) * (60 * 60 * 24);
@@ -65,42 +66,44 @@ torrent_lib.bitsnoop = function () {
             var t = engine.load_in_sandbox(c);
             t = t.find('#torrents').children('li');
             var l = t.length;
-            var arr = [];
+            var arr = new Array(l);
             for (var i = 0; i < l; i++) {
                 var li = t.eq(i);
                 li.children('div[id="sz"]').find('td').eq(0).children('div.nfiles').remove();
                 var ss = li.children('div.torInfo').children('span.seeders').text().replace(',', '');
                 var ls = li.children('div.torInfo').children('span.leechers').text().replace(',', '');
-                if (ls.length == 0)
+                if (ls.length === 0) {
                     ls = 0;
-                if (ss.length == 0)
+                }
+                if (ss.length === 0) {
                     ss = 0;
-                arr[arr.length] = {
-                    'category': {
-                        'title': li.children('span.icon').attr('title'),
-                        'id': calculateCategory(li.children('span.icon').attr('class').replace(/icon cat_(.*)/, '$1'))
+                }
+                arr[i] = {
+                    category: {
+                        title: li.children('span.icon').attr('title'),
+                        id: calculateCategory(li.children('span.icon').attr('class').replace(/icon cat_(.*)/, '$1'))
                     },
-                    'title': li.children('a').text(),
-                    'url': root_url + li.children('a').attr('href'),
-                    'size': ex_kit.format_size(li.children('div[id="sz"]').find('td').eq(0).text()),
-                    'seeds': ss,
-                    'leechs': ls,
-                    'time': calculateTime(li.children('div.torInfo').text().replace(/.*— .* — (.*)/, '$1'))
+                    title: li.children('a').text(),
+                    url: root_url + li.children('a').attr('href'),
+                    size: ex_kit.format_size(li.children('div[id="sz"]').find('td').eq(0).text()),
+                    seeds: ss,
+                    leechs: ls,
+                    time: calculateTime(li.children('div.torInfo').text().replace(/.*— .* — (.*)/, '$1'))
                 }
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
                 url: url,
                 cache: false,
                 data: {
-                    'q': text + ' safe:no',
-                    't': 'all'
+                    q: text + ' safe:no',
+                    t: 'all'
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

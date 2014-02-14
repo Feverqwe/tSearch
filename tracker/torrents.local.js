@@ -26,10 +26,12 @@ torrent_lib['torrents.local'] = function () {
                 /* Док. и юмор */[57, 155, 186, 570, 634, 403, 824, 855, 856, 443, 635, 929, 554, 830, 867, 633, 531, 185, 965, 866, 523, 949, 425, 109, 890, 736, 625, 891, 626, 899, 927, 919, 898, 920, 627, 926, 892, 893, 894, 628, 58, 154, 551, 877, 878, 145, 858, 632, 621, 857, 930, 372, 791, 793, 794, 795, 792, 797, 60, 490, 491, 492, 489, 649, 488, 493, 829, 204, 450, 449, 451, 636, 452, 203, 662, 760, 666, 664, 663, 665, 763, 897, 766, 814, 772, 764, 928, 765, 767, 768, 770, 896, 769, 879],
                 /* Спорт */[59, 208, 750, 229, 528, 206, 828, 205, 207, 210, 407, 817, 404, 209, 673]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseInt(f), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++){
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var readCode = function (c) {
@@ -45,37 +47,38 @@ torrent_lib['torrents.local'] = function () {
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(5).children('a').attr('href') == null)
+                if (td.eq(5).children('a').attr('href') === undefined){
                     continue;
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(2).children('a').text(),
-                        'url': root_url + td.eq(2).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*)$/i, "$1"))
-                    },
-                    'title': td.eq(3).children('a').text(),
-                    'url': root_url + td.eq(3).children('a').attr('href'),
-                    'size': td.eq(5).children('u').text(),
-                    'dl': root_url + td.eq(5).children('a').attr('href'),
-                    'seeds': td.eq(6).children('b').text(),
-                    'leechs': td.eq(7).children('b').text(),
-                    'time': td.eq(9).children('u').text()
                 }
+                arr.push({
+                    category: {
+                        title: td.eq(2).children('a').text(),
+                        url: root_url + td.eq(2).children('a').attr('href'),
+                        id: calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*)$/i, "$1"))
+                    },
+                    title: td.eq(3).children('a').text(),
+                    url: root_url + td.eq(3).children('a').attr('href'),
+                    size: td.eq(5).children('u').text(),
+                    dl: root_url + td.eq(5).children('a').attr('href'),
+                    seeds: td.eq(6).children('b').text(),
+                    leechs: td.eq(7).children('b').text(),
+                    time: td.eq(9).children('u').text()
+                });
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'POST',
                 url: url,
                 cache: false,
                 data: {
-                    'max': 1,
-                    'to': 1,
-                    'nm': text
+                    max: 1,
+                    to: 1,
+                    nm: text
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

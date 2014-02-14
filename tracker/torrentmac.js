@@ -27,10 +27,12 @@ torrent_lib.torrentmac = function () {
                 /* Книги */[270, 7, 9, 105],
                 /* ПО */[20, 116, 100, 99, 267, 268, 199, 253, 11, 109, 13, 356, 355, 80, 14, 256, 81, 42, 351, 350, 255, 82, 15, 211, 83, 39, 84, 46, 208, 85, 70, 86, 16, 87]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseInt(f), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++){
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var readCode = function (c) {
@@ -41,35 +43,36 @@ torrent_lib.torrentmac = function () {
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(5).children('span').children('a').attr('href') == null)
+                if (td.eq(5).children('span').children('a').attr('href') === undefined) {
                     continue;
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(2).children('a').text(),
-                        'url': root_url + td.eq(2).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
-                    },
-                    'title': td.eq(3).children('a').text(),
-                    'url': root_url + td.eq(3).children('a').attr('href'),
-                    'size': td.eq(5).children('u').text(),
-                    'dl': td.eq(5).children('span').children('a').attr('href'),
-                    'seeds': td.eq(6).text(),
-                    'leechs': td.eq(7).text(),
-                    'time': td.eq(9).children('u').text()
                 }
+                arr.push({
+                    category: {
+                        title: td.eq(2).children('a').text(),
+                        url: root_url + td.eq(2).children('a').attr('href'),
+                        id: calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*).*$/i, "$1"))
+                    },
+                    title: td.eq(3).children('a').text(),
+                    url: root_url + td.eq(3).children('a').attr('href'),
+                    size: td.eq(5).children('u').text(),
+                    dl: td.eq(5).children('span').children('a').attr('href'),
+                    seeds: td.eq(6).text(),
+                    leechs: td.eq(7).text(),
+                    time: td.eq(9).children('u').text()
+                });
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'POST',
                 url: url,
                 cache: false,
                 data: {
-                    'nm': text
+                    nm: text
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

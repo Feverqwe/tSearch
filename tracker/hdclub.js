@@ -18,15 +18,15 @@ torrent_lib.hdclub = function () {
     var xhr = undefined;
     var web = function () {
         var calculateCategory = function (f) {
-            if (f == "Animation")
+            if (f === "Animation")
                 return 4;
-            if (f == "Movie")
+            if (f === "Movie")
                 return 3;
-            if (f == "HD Audio" || f == "Music Video")
+            if (f === "HD Audio" || f === "Music Video")
                 return 1;
-            if (f == "Documentary" || f == "TV Show")
-                return 8
-            if (f == "Sport")
+            if (f === "Documentary" || f === "TV Show")
+                return 8;
+            if (f === "Sport")
                 return 9;
             return -1;
         };
@@ -39,29 +39,29 @@ torrent_lib.hdclub = function () {
             var t = engine.load_in_sandbox(c);
             t = t.find('td.outer').children('table.embedded').children('tbody#highlighted').children('tr');
             var l = t.length;
-            var arr = [];
+            var arr = new Array(l);
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
                 td.eq(6).children().children().remove();
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(0).find('img').attr('alt') + ', ' + td.eq(1).find('img').attr('alt'),
-                        'url': root_url + td.eq(0).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(1).find('img').attr('alt'))
+                arr[i] = {
+                    category: {
+                        title: td.eq(0).find('img').attr('alt') + ', ' + td.eq(1).find('img').attr('alt'),
+                        url: root_url + td.eq(0).children('a').attr('href'),
+                        id: calculateCategory(td.eq(1).find('img').attr('alt'))
                     },
-                    'title': td.eq(2).children('table').find('a').eq(0).text(),
-                    'url': root_url + td.eq(2).children('table').find('a').eq(0).attr('href'),
-                    'size': ex_kit.format_size(td.eq(6).text()),
-                    'seeds': td.eq(4).text(),
-                    'leechs': td.eq(5).text(),
-                    'time': calculateTime(td.eq(2).children('div').children('div').eq(0).text())
+                    title: td.eq(2).children('table').find('a').eq(0).text(),
+                    url: root_url + td.eq(2).children('table').find('a').eq(0).attr('href'),
+                    size: ex_kit.format_size(td.eq(6).text()),
+                    seeds: td.eq(4).text(),
+                    leechs: td.eq(5).text(),
+                    time: calculateTime(td.eq(2).children('div').children('div').eq(0).text())
                 }
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',

@@ -27,10 +27,11 @@ torrent_lib.kickass = function () {
                 /* Спорт */[],
                 /* Порно */['xxx']
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if ($.inArray(f, groups_arr[i]) > -1) {
+            for (var i = 0, len = groups_arr.length; i < len; i++) {
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var calcTime = function (t) {
@@ -61,34 +62,34 @@ torrent_lib.kickass = function () {
             var t = engine.load_in_sandbox(c);
             t = t.find('table.data').children('tbody').children('tr');
             var l = t.length;
-            var arr = [];
+            var arr = new Array(l);
             for (var i = 1; i < l; i++) {
                 var td = t.eq(i).children('td');
                 var span_l = td.eq(0).children('div').eq(1).children('span').find('span').length - 1;
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).text(),
-                        'url': root_url + td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).find('a').eq(0).attr('href'),
-                        'id': calculateCategory(td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).find('a').eq(0).attr('href').replace(/\/(.*)\/$/, "$1"))
+                arr[i - 1] = {
+                    category: {
+                        title: td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).text(),
+                        url: root_url + td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).find('a').eq(0).attr('href'),
+                        id: calculateCategory(td.eq(0).children('div').eq(1).children('span').find('span').eq(span_l).find('a').eq(0).attr('href').replace(/\/(.*)\/$/, "$1"))
                     },
-                    'title': td.eq(0).children('div').eq(1).children('a').eq(1).text(),
-                    'url': root_url + td.eq(0).children('div').eq(1).children('a').eq(1).attr('href'),
-                    'size': ex_kit.format_size(td.eq(1).text()),
-                    'dl': td.eq(0).children('div').eq(0).children('a.imagnet').attr('href'),
-                    'seeds': td.eq(4).text(),
-                    'leechs': td.eq(5).text(),
-                    'time': calcTime(td.eq(3).text())
+                    title: td.eq(0).children('div').eq(1).children('a').eq(1).text(),
+                    url: root_url + td.eq(0).children('div').eq(1).children('a').eq(1).attr('href'),
+                    size: ex_kit.format_size(td.eq(1).text()),
+                    dl: td.eq(0).children('div').eq(0).children('a.imagnet').attr('href'),
+                    seeds: td.eq(4).text(),
+                    leechs: td.eq(5).text(),
+                    time: calcTime(td.eq(3).text())
                 }
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'POST',
-                url: (text.length == 0) ? blank_url : url + text + '/',
+                url: (text.length === 0) ? blank_url : url + text + '/',
                 success: function (data) {
                     view.result(filename, readCode(data), t);
                 },

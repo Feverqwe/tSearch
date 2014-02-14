@@ -13,10 +13,11 @@ torrent_lib.tfile = function () {
     };
     var xhr = undefined;
     var web = function () {
-        var calculateCategory = function (n) {
-            var n = String(n).replace(/.*f=([0-9]*)$/i, "$1");
-            if (isNaN(n))
-                n = String(n).replace(/.*c=([0-9]*)$/i, "$1");
+        var calculateCategory = function (f) {
+            if (f === undefined) {
+                return -1;
+            }
+            f = f.replace(/.*f=([0-9]*)$/i, "$1");
             var groups_arr = [
                 /* Сериалы */[37, 1323, 1252, 697, 322, 323, 1235, 172, 135, 311, 183, 130, 1024, 139, 1023, 179, 392, 308, 342, 1015, 96, 997, 353, 285, 154, 389, 975, 168, 1020, 265, 123, 117, 170, 155, 167, 152, 105, 374, 312, 127, 1030, 773, 314, 150, 310, 328, 395, 305, 149, 136, 134, 104, 158, 372, 329, 169, 1421, 768, 1003, 307, 767, 309, 377, 1017],
                 /* Музыка */[5, 1390, 51, 56, 61, 67, 186, 190, 188, 250, 493, 501, 879, 1418, 1417, 1422, 1405, 1400, 1402, 1403, 1398, 1399, 1401, 1404, 1114, 1200, 1199, 1115, 1202, 1201, 1116, 1204, 1203, 1206, 1205, 474, 473, 1035, 1117, 1208, 1207, 1118, 531, 504, 1214, 479, 478, 477, 1213, 476, 475, 315, 1489, 1473, 1472, 1471, 1210, 1209, 1439, 1505, 1453, 1452, 1451, 1450, 1449, 1445, 1448, 1506, 1442, 1443, 1440, 1447, 1446, 1444, 1441, 1212, 1211, 1198, 503, 502],
@@ -29,43 +30,45 @@ torrent_lib.tfile = function () {
                 /* Док. и юмор */[16, 366, 1380, 1425, 1438, 1333, 187, 1062, 1310, 1059, 1033, 1509, 1193, 1195, 1064, 1063, 1028, 1058, 1019, 490, 1397, 1065, 1419, 1194, 1070, 274, 1383, 1334, 1067, 1068, 1066, 1069, 1060, 1282, 1284, 1294, 1301, 1288, 1289, 1291, 1309, 39, 1285, 1290, 1306, 1295, 1300, 1302, 1287, 1307, 1292, 1299, 1286, 1297, 1293, 1298, 1296, 1303],
                 /* Спорт */[18, 1061, 1393, 1278, 272, 284, 1308, 331, 270, 1281, 1279, 472, 1236, 343, 173, 332, 273, 268, 269, 1319, 1318, 1317, 1316, 1315, 1314, 1313]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseInt(n), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++) {
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var readCode = function (c) {
             c = engine.contentFilter(c);
             var t = engine.load_in_sandbox(c);
-            var t = t.find('#topics>tbody>tr');
+            t = t.find('#topics>tbody>tr');
             var l = t.length;
             var arr = [];
             for (var i = 1; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(3).children('a').length == 0) {
+                if (td.eq(3).children('a').length === 0) {
                     continue;
                 }
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(0).text(),
-                        'url': login_url + td.eq(0).children('a').last().attr('href'),
-                        'id': calculateCategory(td.eq(0).children('a').last().attr('href'))
+                arr.push({
+                    category: {
+                        title: td.eq(0).text(),
+                        url: login_url + td.eq(0).children('a').last().attr('href'),
+                        id: calculateCategory(td.eq(0).children('a').last().attr('href'))
                     },
-                    'title': td.eq(2).children('a').text(),
-                    'url': login_url + td.eq(2).children('a').attr('href'),
-                    'size': ex_kit.format_size(td.eq(3).children('a').text()),
-                    'dl': login_url + td.eq(3).children('a').attr('href'),
-                    'seeds': td.eq(4).children('b').text(),
-                    'leechs': td.eq(5).children('b').text(),
-                    'time': ex_kit.format_date(0, ($.trim(td.eq(7).text())))
-                }
+                    title: td.eq(2).children('a').text(),
+                    url: login_url + td.eq(2).children('a').attr('href'),
+                    size: ex_kit.format_size(td.eq(3).children('a').text()),
+                    dl: login_url + td.eq(3).children('a').attr('href'),
+                    seeds: td.eq(4).children('b').text(),
+                    leechs: td.eq(5).children('b').text(),
+                    time: ex_kit.format_date(0, ($.trim(td.eq(7).text())))
+                });
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',

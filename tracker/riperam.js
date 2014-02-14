@@ -32,14 +32,16 @@ torrent_lib.riperam = function () {
                 /* Спорт */[25, 616, 201, 146, 127, 145, 211, 192, 622, 346],
                 /* xxx */[46]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseInt(f), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++) {
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var calculateTime = function (t) {
-            var t = t.replace(',', '').replace(/\s/g, ':').replace('янв', '1').replace('фев', '2').replace('мар', '3')
+            t = t.replace(',', '').replace(/\s/g, ':').replace('янв', '1').replace('фев', '2').replace('мар', '3')
                 .replace('апр', '4').replace('май', '5').replace('июн', '6')
                 .replace('июл', '7').replace('авг', '8').replace('сен', '9')
                 .replace('окт', '10').replace('ноя', '11').replace('дек', '12');
@@ -59,49 +61,50 @@ torrent_lib.riperam = function () {
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var dl = t.eq(i).children('dl').children();
-                var obj_dl_0 = dl.eq(0)
-                var obj_dl_0_a = obj_dl_0.children('a')
+                var obj_dl_0 = dl.eq(0);
+                var obj_dl_0_a = obj_dl_0.children('a');
                 var corr = 0;
-                if (obj_dl_0_a.eq(0).children('img') != null && obj_dl_0_a.eq(0).children('img').attr('width') == 11) {
+                if (parseInt(obj_dl_0_a.eq(0).children('img').attr('width')) === 11) {
                     corr += 1
                 }
                 var dl_link = dl.eq(0 + corr).children('a').eq(0).attr('href');
-                if (dl_link == undefined || dl_link.indexOf('download/file') < 0)
+                if (dl_link === undefined || dl_link.indexOf('download/file') === -1) {
                     continue;
-                var obj_dl_1_span = dl.eq(1).children('span')
+                }
+                var obj_dl_1_span = dl.eq(1).children('span');
                 var attrs = obj_dl_0.text().replace(/.*»(.*)\n.*: (.*),.*/, "%split%$1%split%$2%split%").split('%split%');
                 var dt_atr_c = obj_dl_0_a.length;
-                arr[arr.length] = {
-                    'title': obj_dl_0_a.eq(1 + corr).text(),
-                    'url': obj_dl_0_a.eq(1 + corr).attr('href'),
-                    'dl': root_url + dl_link,
-                    'time': calculateTime(attrs[1].trim()),
-                    'size': ex_kit.format_size(attrs[2].trim()),
-                    'category': {
-                        'title': obj_dl_0_a.eq(dt_atr_c - 1).text(),
-                        'url': obj_dl_0_a.eq(dt_atr_c - 1).attr('href'),
-                        'id': -1
+                arr.push({
+                    title: obj_dl_0_a.eq(1 + corr).text(),
+                    url: obj_dl_0_a.eq(1 + corr).attr('href'),
+                    dl: root_url + dl_link,
+                    time: calculateTime(attrs[1].trim()),
+                    size: ex_kit.format_size(attrs[2].trim()),
+                    category: {
+                        title: obj_dl_0_a.eq(dt_atr_c - 1).text(),
+                        url: obj_dl_0_a.eq(dt_atr_c - 1).attr('href'),
+                        id: -1
                     },
-                    'seeds': obj_dl_1_span.eq(0).text(),
-                    'leechs': obj_dl_1_span.eq(1).text()
-                }
+                    seeds: obj_dl_1_span.eq(0).text(),
+                    leechs: obj_dl_1_span.eq(1).text()
+                });
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
                 url: url,
                 cache: false,
                 data: {
-                    'keywords': text,
-                    'sr': 'topics',
-                    'sf': 'titleonly',
-                    'fp': '1',
-                    'tracker_search': 'torrent'
+                    keywords: text,
+                    sr: 'topics',
+                    sf: 'titleonly',
+                    fp: '1',
+                    tracker_search: 'torrent'
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

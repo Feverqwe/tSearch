@@ -26,10 +26,12 @@ torrent_lib.inmac = function () {
                 /* Док. и юмор */[],
                 /* Спорт */[]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseInt(f), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++) {
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var readCode = function (c) {
@@ -45,22 +47,23 @@ torrent_lib.inmac = function () {
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(5).children('a').attr('href') === undefined)
+                if (td.eq(5).children('a').attr('href') === undefined) {
                     continue;
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(2).children('a').text(),
-                        'url': root_url + td.eq(2).children('a').attr('href'),
-                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*)$/i, "$1"))
+                }
+                arr.push({
+                    category: {
+                        title: td.eq(2).children('a').text(),
+                        url: root_url + td.eq(2).children('a').attr('href'),
+                        id: calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*)$/i, "$1"))
                     },
-                    'title': td.eq(3).children('div').children('a').text(),
-                    'url': root_url + td.eq(3).children('div').children('a').attr('href'),
-                    'size': td.eq(5).children('u').text(),
-                    'dl': root_url + td.eq(5).children('a').attr('href'),
-                    'seeds': td.eq(6).children('b').text(),
-                    'leechs': td.eq(7).children('b').text(),
-                    'time': td.eq(9).children('u').text()
-                };
+                    title: td.eq(3).children('div').children('a').text(),
+                    url: root_url + td.eq(3).children('div').children('a').attr('href'),
+                    size: td.eq(5).children('u').text(),
+                    dl: root_url + td.eq(5).children('a').attr('href'),
+                    seeds: td.eq(6).children('b').text(),
+                    leechs: td.eq(7).children('b').text(),
+                    time: td.eq(9).children('u').text()
+                });
             }
             return arr;
         };
@@ -73,12 +76,12 @@ torrent_lib.inmac = function () {
                 url: url,
                 cache: false,
                 data: {
-                    'max': 1,
-                    'to': 0,
-                    'dm': 1,
-                    'x': 0,
-                    'y': 0,
-                    'nm': text
+                    max: 1,
+                    to: 0,
+                    dm: 1,
+                    x: 0,
+                    y: 0,
+                    nm: text
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);

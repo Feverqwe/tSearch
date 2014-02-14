@@ -48,7 +48,7 @@ torrent_lib['ru-board'] = function () {
         } else if (id === 9) {
             return "XXX";
         }
-        return null;
+        return undefined;
     };
     var getCat = function (id) {
         id = parseInt(id);
@@ -89,22 +89,24 @@ torrent_lib['ru-board'] = function () {
             if (c.torrents === undefined) {
                 return;
             }
-            var arr = [];
             var len = c.torrents.length;
+            var arr = new Array(len);
             for (var i = 0; i < len; i++) {
                 var item = c.torrents[i];
                 var title = item.name;
-                title = $('<span>', {text: title}).text();
-                arr.push({category: {
-                    title: getCatName(item.catid),
-                    id: getCat(item.catid)
-                },
+                title = document.createTextNode(title).textContent;
+                arr[i] = {
+                    category: {
+                        title: getCatName(item.catid),
+                        id: getCat(item.catid)
+                    },
                     title: title,
                     url: root_url + 'details.php?id=' + item.id,
                     size: item.size,
                     seeds: item.seeders,
                     leechs: item.leechers,
-                    time: ex_kit.format_date(0, item.date)});
+                    time: ex_kit.format_date(0, item.date)
+                };
             }
             return arr;
         };
@@ -118,12 +120,12 @@ torrent_lib['ru-board'] = function () {
                 url: url,
                 cache: false,
                 data: {
-                    'take': 20,
-                    'skip': 0,
-                    'page': 1,
-                    'pageSize': 20,
-                    'filter': {
-                        'logic': 'and',
+                    take: 20,
+                    skip: 0,
+                    page: 1,
+                    pageSize: 20,
+                    filter: {
+                        logic: 'and',
                         filters: [
                             {
                                 field: 'name',

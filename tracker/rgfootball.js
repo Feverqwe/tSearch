@@ -25,10 +25,12 @@ torrent_lib.rgfootball = function () {
                 /* Док. и юмор */[],
                 /* Спорт */[2, 352, 196, 57, 56, 46, 3, 54, 351, 172, 194, 53, 55, 223, 4, 58, 353, 173, 202, 59, 60, 208, 5, 209, 63, 354, 174, 198, 62, 61, 6, 210, 66, 355, 175, 195, 65, 64, 7, 211, 69, 176, 68, 67, 8, 72, 348, 152, 71, 70, 212, 188, 356, 189, 190, 191, 213, 9, 87, 91, 90, 88, 89, 179, 214, 338, 340, 342, 344, 339, 341, 343, 345, 157, 158, 159, 232, 220, 160, 161, 162, 231, 215, 11, 376, 377, 13, 12, 74, 75, 76, 78, 79, 80, 14, 350, 118, 200, 255, 337, 185, 136, 216, 15, 380, 168, 178, 153, 217, 10, 367, 239, 241, 132, 230, 155, 133, 92, 77, 218, 16, 219, 18, 19, 17, 37, 199, 86, 36, 43, 21, 251, 379, 201, 47, 207, 48, 151, 206, 222, 131, 234, 49, 20, 233, 50, 150, 204, 197, 51, 203, 171, 22, 274, 125, 126, 127, 128, 130, 129, 23, 248, 117, 44, 227, 226, 38, 261, 262, 170, 169, 82, 205, 122, 123, 25, 98, 101, 100, 99, 97, 121, 145, 106, 240, 137, 139, 140, 141, 24, 142, 105, 104, 149, 103, 148, 96, 192, 193, 143, 144, 147, 138, 184, 26, 146, 95, 180, 182, 181, 183, 276, 277, 359, 360, 301, 369, 362, 361, 303, 304, 325, 327, 326, 316, 318, 278, 370, 292, 280, 281, 282, 279, 284, 285, 286, 287, 288, 289, 291, 290, 294, 296, 297, 298, 299, 305, 368, 364, 363, 306, 308, 245, 366, 365, 310, 312, 311, 313, 322, 324, 323, 328, 331, 330, 329, 333, 371, 358, 319, 320, 283, 336, 335, 349]
             ];
-            for (var i = 0; i < groups_arr.length; i++)
-                if (jQuery.inArray(parseInt(f), groups_arr[i]) > -1) {
+            f = parseInt(f);
+            for (var i = 0, len = groups_arr.length; i < len; i++){
+                if (groups_arr[i].indexOf(f) !== -1) {
                     return i;
                 }
+            }
             return -1;
         };
         var readCode = function (c) {
@@ -39,35 +41,36 @@ torrent_lib.rgfootball = function () {
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(5).children('a').attr('href') == null)
+                if (td.eq(5).children('a').attr('href') === undefined) {
                     continue;
-                arr[arr.length] = {
-                    'category': {
-                        'title': td.eq(2).children('a').text(),
-                        'url': root_url + td.eq(2).children('a').attr('href').replace(/.*href='(.*)';/i, '$1'),
-                        'id': calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*)$/i, "$1"))
-                    },
-                    'title': td.eq(3).children('div').children('a').eq(0).text(),
-                    'url': root_url + td.eq(3).children('div').children('a').eq(0).attr('href'),
-                    'size': td.eq(5).children('u').text(),
-                    'dl': root_url + td.eq(5).children('a').attr('href'),
-                    'seeds': td.eq(6).children('b').text(),
-                    'leechs': td.eq(7).children('b').text(),
-                    'time': td.eq(9).children('u').text()
                 }
+                arr.push({
+                    category: {
+                        title: td.eq(2).children('a').text(),
+                        url: root_url + td.eq(2).children('a').attr('href').replace(/.*href='(.*)';/i, '$1'),
+                        id: calculateCategory(td.eq(2).children('a').attr('href').replace(/.*f=([0-9]*)$/i, "$1"))
+                    },
+                    title: td.eq(3).children('div').children('a').eq(0).text(),
+                    url: root_url + td.eq(3).children('div').children('a').eq(0).attr('href'),
+                    size: td.eq(5).children('u').text(),
+                    dl: root_url + td.eq(5).children('a').attr('href'),
+                    seeds: td.eq(6).children('b').text(),
+                    leechs: td.eq(7).children('b').text(),
+                    time: td.eq(9).children('u').text()
+                });
             }
             return arr;
         };
         var loadPage = function (text) {
             var t = text;
-            if (xhr != null)
+            if (xhr !== undefined)
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
                 url: url,
                 cache: false,
                 data: {
-                    'nm': text
+                    nm: text
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);
