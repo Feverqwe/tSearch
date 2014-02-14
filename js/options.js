@@ -234,6 +234,9 @@ var options = function() {
                 console.warn('can\'t found profile');
                 return;
             }
+            if (profile[current] === undefined) {
+                profile[current] = engine.getDefList();
+            }
         }
         current_profile = current;
         dom_cache.select_profileList.children('option[value="'+current+'"]').prop('selected', true);
