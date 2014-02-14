@@ -1,4 +1,9 @@
 var ad = function() {
+    var $ad;
+    $(function(){
+        $ad = $('div.ad');
+        insert(insert());
+    });
     var ad_arr = [
         ["images/4usv.jpg", "http://c.cpa6.ru/4usv"], //Танки On-line
         ['images/57EA.jpg','http://c.cpl1.ru/57EA'], //War Thunder
@@ -14,10 +19,16 @@ var ad = function() {
     };
     var insert = function(e) {
         if (e === undefined) {
-            $('#ad').empty().append($('<p>', {text: _lang.ad}));
+            $ad.empty().append($('<p>', {text: _lang.ad}));
         }
         var i = getRandomArbitary(0, ad_arr.length - 1, e);
-        $('#ad').append($('<div>').append($('<a>', {href: ad_arr[i][1], target: '_blank', rel: 'nofollow'}).append($('<img>', {src: ad_arr[i][0]}).css('max-width', '170px'))));
+        $ad.append(
+            $('<div>').append(
+                $('<a>', {href: ad_arr[i][1], target: '_blank', rel: 'nofollow'}).append(
+                    $('<img>', {src: ad_arr[i][0]}).css('max-width', '170px')
+                )
+            )
+        );
         return i;
     };
     return {
@@ -26,9 +37,6 @@ var ad = function() {
         }
     };
 }();
-$(window).load(function() {
-    ad.insert();
-});
-$(window).bind('hashchange', function() {
+$(window).on('hashchange', function() {
     ad.insert();
 });

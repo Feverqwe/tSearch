@@ -10,29 +10,21 @@ div.search_panel {
     -webkit-user-select: none;
 }
 
-div.search_panel input.request {
-    height: 22px !important;
-    width: 487px;
-    padding-left: 7px;
-    padding-right: 20px;
-    float: left;
-}
-
-div.search_panel form input.button {
-    margin-left: 2px;
-}
-
 input[type=text] {
     border: 1px solid #cccccc;
     outline: none;
+    padding-bottom: 1px;
+    padding-top: 1px;
+    font-size: 1em;
 }
-
 input[type=text]:hover {
     border: 1px solid #999999;
 }
-
 input[type=text]:focus {
     border: 1px solid #3366ff !important;
+}
+select {
+    font-size: 1em;
 }
 a {
     text-decoration: none;
@@ -44,6 +36,20 @@ a:hover {
 th {
     font-weight: normal;
 }
+
+div.search_panel input.request {
+    height: 22px !important;
+    width: 487px;
+    padding-left: 5px;
+    padding-right: 20px;
+    float: left;
+    font-size: 1.143em;
+}
+
+div.search_panel form input.button {
+    margin-left: 2px;
+}
+
 
 input.button {
     height: 26px !important;
@@ -285,6 +291,9 @@ div.content div.right > div > p {
 div.tracker_list div.profile {
     margin-left: 5px;
 }
+div.tracker_list div.profile select {
+    max-width: 162px;
+}
 div.tracker_list a.setup {
     background: url(../images/settings.png) center center no-repeat;
     width: 16px;
@@ -306,7 +315,7 @@ div.word_filter {
 div.word_filter > input {
     width: 142px;
     padding-right: 18px;
-    height: 18px;
+    height: 19px;
 }
 
 div.btn.clear {
@@ -323,7 +332,7 @@ div.word_filter > div.btn.clear {
     right: 15px;
 }
 div.search_panel div.btn.clear {
-    right: 65px;
+    left: 495px;
     top: 5px;
 }
 div.word_filter > div.btn.clear.loading {
@@ -360,6 +369,7 @@ div.tracker_list > ul.trackers {
     border-top-width: 1px;
     border-bottom-width: 1px;
     height: auto;
+    overflow-y: hidden;
 }
 div.tracker_list > ul.trackers > li > ul {
     list-style: none;
@@ -1170,6 +1180,7 @@ div.time_filter {
 }
 div.time_filter input {
     width: 65px;
+    font-size: 0.929em;
 }
 div.time_filter select {
     width: 162px;

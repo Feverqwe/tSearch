@@ -1,6 +1,5 @@
-var google_analytics = parseInt(GetSettings('google_analytics') || 0);
-if (!google_analytics) {
-    var _gaq = _gaq || [];
+var _gaq = _gaq || [];
+if (parseInt(GetSettings('google_analytics') || 0) === 0) {
     _gaq.push(['_setAccount', 'UA-10717861-22']);
     _gaq.push(['_trackPageview']);
     (function() {
@@ -11,12 +10,4 @@ if (!google_analytics) {
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(ga, s);
     })();
-} else {
-    var _gaq = function () {
-        return {
-            push : function (a) {
-                return 1;
-            }
-        };
-    }();
 }

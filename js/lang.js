@@ -136,7 +136,7 @@ var get_lang = function (lang) {
         exp_s_a_g: 'games',
         str_subsategoryfilter: 'Consider subcategories',
         str_autosetcat: 'Define the category of the torrent, if it is not present',
-        ad: 'Ad\'s',
+        ad: 'Ad',
         use_english_postername: 'Show names movie\\series in English on the front page',
         allow_get_description: 'Get a description of the search query from Google. (each request will be matched with google!)',
         allow_favorites_sync: 'Allow sync favorites list in the cloud',

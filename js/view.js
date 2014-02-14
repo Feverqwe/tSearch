@@ -73,7 +73,9 @@ var view = function() {
         // стутус таблицы очищина или нет
         tableIsEmpty: 1,
         // испория переходов
-        click_history: JSON.parse(GetSettings('click_history') || '{}')
+        click_history: JSON.parse(GetSettings('click_history') || '{}'),
+        // кэш location, fix bug with popstate, when script don't loaded.
+        oldlocationHash: undefined
     };
     var dom_cache = {};
 
@@ -1584,11 +1586,13 @@ var view = function() {
         return title;
     };
     var setPage = function(request, update) {
-        updateTitle();
+        var title = updateTitle();
         if (request === undefined) {
             if (update === undefined) {
-                window.history.pushState(undefined, undefined, 'index.html');
+                window.history.pushState(undefined, title, 'index.html');
             }
+            _gaq.push(['_trackPageview', url]);
+            var_cache.oldlocationHash = '';
             return;
         }
         var trackers;
@@ -1596,9 +1600,12 @@ var view = function() {
             trackers = JSON.stringify(var_cache.currentTrackerList);
         }
         var url = 'index.html#?search='+request+((trackers !== undefined)?'&tracker='+trackers:'');
+        _gaq.push(['_trackEvent', 'Search', 'keyword', request]);
+        _gaq.push(['_trackPageview', url]);
         if (update === undefined) {
-            window.history.pushState(undefined, undefined, url);
+            window.history.pushState(undefined, title, url);
         }
+        var_cache.oldlocationHash = url.substr(10);
     };
     var selectCurrentTrackerList = function() {
         dom_cache.trackers_ul.find('a.selected').removeClass('selected');
@@ -1825,6 +1832,10 @@ var view = function() {
                 window.location = 'history.html';
             });
             window.addEventListener('popstate', function(e){
+                if (window.location.hash === var_cache.oldlocationHash){
+                    return;
+                }
+                var_cache.oldlocationHash = window.location.hash;
                 readUrl(1);
             }, false);
             dom_cache.search_btn_clear.on("click", function(event) {
@@ -2186,6 +2197,7 @@ var view = function() {
             if (options.resizableTrList === 1) {
                 initResizeble();
             }
+            var_cache.oldlocationHash = window.location.hash;
             readUrl();
         }
     }
