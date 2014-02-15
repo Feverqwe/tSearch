@@ -486,7 +486,6 @@ var explore = function() {
         }
         var_cache.source[type].body.get(0).textContent = '';
         var_cache.source[type].body.append(content_body);
-        console.log(var_cache.source[type]);
     };
     var xhr_dune = function(type, source) {
         source.xhr_wait_count--;
@@ -524,7 +523,20 @@ var explore = function() {
             })
         );
     };
+    var getCacheDate = function() {
+        var currentDate = new Data();
+        var day = currentDate.getDay();
+        var h = currentDate.getHours();
+        var unixtime = parseInt(currentDate.getTime() / 1000);
+        return unixtime - day*24*60*60;
+    };
     var load_content = function(type) {
+        var cache = JSON.parse(GetSettings('exp_cache_'+type) || {});
+        var date = getCacheDate();
+        if (cache.keepAlive > date) {
+            content_write(cache.content);
+            return;
+        }
         var source = content_options[type];
         var page_mode = false;
         if (source.page_start !== undefined && source.page_end !== undefined) {
