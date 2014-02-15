@@ -453,8 +453,8 @@ var engine = function() {
         if (trackers === undefined || trackers.length === 0) {
             $.each(currentTrList, function(k, tracker) {
                 try {
-                    tracker.find(text);
                     view.loadingStatus(0, k);
+                    tracker.find(text);
                 } catch (err) {
                     view.loadingStatus(2, k);
                 }
@@ -476,6 +476,7 @@ var engine = function() {
     var stop = function() {
         $.each(currentTrList, function(k, tracker) {
             tracker.stop();
+            view.loadingStatus(1, k);
         });
     };
     var updateHistory = function(title, trackers) {

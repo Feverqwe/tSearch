@@ -1,13 +1,27 @@
+div.explore {
+    -webkit-user-select: none;
+}
+
 div.explore ul {
     list-style: none;
     padding-left: 0;
+    margin: 0;
 }
 
 div.explore div.head > div {
     display: inline-block;
 }
+div.explore ul.page_body.hide {
+    display: none;
+}
 div.explore ul.page_body > li {
     display: inline-block;
+}
+div.explore ul > li.collapsed > ul {
+    display: none;
+}
+div.explore ul.body a {
+    text-decoration: none;
 }
 div.explore ul.body > li {
     display: inline-block;
@@ -35,11 +49,14 @@ div.explore div.head div.action > div.setup {
     cursor: pointer;
     opacity: 0.5;
     margin-left: 5px;
-    margin-top: 2px;
     margin-bottom: -2px;
 }
 div.explore div.head div.action > div.setup:hover {
     opacity: 1;
+}
+div.explore div.head div.setup_body.show {
+    display: inline-block;
+    margin-bottom: -1px;
 }
 div.explore div.head > div.setup_body {
     display: none;
@@ -74,11 +91,11 @@ div.explore ul.page_body {
 }
 div.explore ul.page_body > li {
     display: inline-block;
-    border-radius: 6px;
+    border-radius: 4px;
     padding-top: 2px;
     padding-bottom: 2px;
     margin-left: 2px;
-    min-width: 26px;
+    min-width: 24px;
     height: 16px;
     cursor: default;
 }
@@ -88,7 +105,6 @@ div.explore ul.page_body > li.active {
 }
 div.explore ul.body li {
     position: relative;
-    width: 120px;
     margin: 10px;
     margin-top: 5px;
     margin-bottom: 5px;
@@ -96,7 +112,7 @@ div.explore ul.body li {
 div.explore ul.body div.picture {
     text-align: center;
 }
-div.explore ul.body div.picture > img {
+div.explore ul.body div.picture img {
     max-width: 100%;
     box-shadow: 0 0 1px rgba(0,0,0,0.8);
 }
@@ -107,6 +123,76 @@ div.explore ul.body div.title {
     overflow: hidden;
     white-space: nowrap;
     text-align: center;
+    font-size: 0.857em;
+}
+div.explore div.setup_body {
+    position: relative;
+}
+div.explore div.setup_body > div {
+    display: inline-block;
+}
+div.explore div.setup_body > div.slider {
+    background-color: #EEE;
+    border: 1px solid #DDD;
+    border-radius: 4px;
+    height: 6px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: 130px;
+    margin-left: 10px;
+    margin-right: 10px;
+    display: inline-block;
+    margin-bottom: 1px;
+}
+div.explore div.setup_body > div.slider > a {
+    background-color: #FFF;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    display: block;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 10px;
+    height: 12px;
+    z-index: 2;
+    top: -4px;
+    outline: none;
+    margin-left: -5px;
+}
+
+div.explore div.setup_body > div.default_size {
+    background: url(../images/clear.png) center center no-repeat;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: -3px;
+    margin-right: 1px;
+}
+div.explore > ul.sort_mode div.collapses,
+div.explore > ul.sort_mode div.action,
+div.explore > ul.sort_mode ul.body,
+div.explore > ul.sort_mode ul.page_body {
+    display: none;
+}
+div.explore li.ui-sortable-helper {
+    background-color: #fff;
+    border-radius: 3px;
+    opacity: 0.7;
+}
+div.explore li.ui-sortable-placeholder {
+    height: 40px !important;
+}
+
+li.ui-sortable-helper {
+    height: auto !important;
+}
+
+div.explore .ui-sortable-placeholder {
+    background-color: #337AF8;
+    visibility: visible !important;
+    border-radius: 3px;
 }
 /*
 div.explore {
@@ -205,19 +291,6 @@ div.explore h2 > div.setup_div > div.hide {
     margin-bottom: 1px;
 }
 
-div.explore h2 > div.setup_div > div.slider {
-    background-color: #EEE;
-    border: 1px solid #DDD;
-    border-radius: 4px;
-    height: 8px;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    width: 130px;
-    margin-bottom: 5px;
-    margin-left: 5px;
-    display: inline-block;
-}
 
 div.explore h2 > div.setup_div > div.clear {
     background: url(../images/clear.png) center center no-repeat;
@@ -242,20 +315,6 @@ div.explore h2 > div.setup_div > div.count select {
     width: 46px;
 }
 
-div.explore h2 > div.setup_div > div.slider > a {
-    background-color: #F6F6F6;
-    border: 1px solid #CCC;
-    border-radius: 4px;
-    display: block;
-    margin: 0;
-    margin-left: -6.599999904632568px;
-    padding: 0;
-    position: absolute;
-    top: -3.299999952316284px;
-    width: 13px;
-    height: 13px;
-    z-index: 2;
-}
 
 div.explore h2 > div.setup:hover {
     opacity: 1;

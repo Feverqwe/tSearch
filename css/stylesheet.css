@@ -654,39 +654,6 @@ div.peer_filter input {
     width: 55px;
 }
 
-div.ui-sortable-helper div.info {
-    display: none !important;
-}
-
-div.ui-sortable-helper div.image div {
-    display: none !important;
-}
-
-div.ui-sortable-helper {
-    opacity: 1 !important;
-}
-
-li.ui-sortable-helper {
-    height: initial !important;
-    opacity: 1 !important;
-}
-
-.ui-sortable-placeholder {
-    background-color: #337AF8;
-    visibility: visible !important;
-    border-radius: 3px;
-}
-
-li.ui-sortable-placeholder {
-    height: 40px !important;
-}
-
-div.ui-sortable-placeholder {
-    background-color: #ddd;
-    visibility: visible !important;
-    border-radius: 3px;
-}
-
 #ui-datepicker-div {
     border: 1px solid #ccc;
     background-color: #fff;

@@ -1,7 +1,11 @@
 var explore = function() {
     var var_cache = {
         // dom cache for items
-        source: {}
+        source: {},
+        // resize_timer
+        resize_timer: undefined,
+        calculateMovebleCache: {},
+        resize_timer_work: 0
     };
     var dom_cache = {};
     var options = {
@@ -26,31 +30,31 @@ var explore = function() {
         }
     };
     var listOptions_def = {
-        favorites: { e: 1, w: 120, c: 1 },
-        kp_favorites: { e: 1, w: 120, c: 1 },
-        kp_in_cinema: { e: 1, w: 120, c: 1 },
-        kp_popular: { e: 1, w: 120, c: 2 },
-        kp_serials: { e: 1, w: 120, c: 1 },
-        imdb_in_cinema: { e: 1, w: 120, c: 1 },
-        imdb_popular: { e: 1, w: 120, c: 2 },
-        imdb_serials: { e: 1, w: 120, c: 1 },
-        gg_games_top: { e: 1, w: 128, c: 1 },
-        gg_games_new: { e: 1, w: 128, c: 1 }
+        favorites: { e: 1, s: 1, w: 120, c: 1 },
+        kp_favorites: { e: 1, s: 1, w: 120, c: 1 },
+        kp_in_cinema: { e: 1, s: 1, w: 120, c: 1 },
+        kp_popular: { e: 1, s: 1, w: 120, c: 2 },
+        kp_serials: { e: 1, s: 1, w: 120, c: 1 },
+        imdb_in_cinema: { e: 1, s: 1, w: 120, c: 1 },
+        imdb_popular: { e: 1, s: 1, w: 120, c: 2 },
+        imdb_serials: { e: 1, s: 1, w: 120, c: 1 },
+        gg_games_top: { e: 1, s: 1, w: 120, c: 1 },
+        gg_games_new: { e: 1, s: 1, w: 120, c: 1 }
     };
     var listOptions = JSON.parse(GetSettings('listOptions') || "{}");
     if (listOptions.hasOwnProperty('favorites') === false) {
-        listOptions = listOptions_def;
+        listOptions = $.extend(true, {}, listOptions_def);
     }
     var content_options = {
         favorites: {
             title: _lang.exp_favorites,
             root_url: undefined,
-            margin: 14
+            max_w: 120
         },
         kp_favorites: {
             title: _lang.exp_kinopoisk,
             root_url: 'http://www.kinopoisk.ru',
-            margin: 14,
+            max_w: 120,
             url: 'http://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
             base_url: "http://www.kinopoisk.ru/film/",
             img_url: "http://st.kinopoisk.ru/images/film/",
@@ -59,7 +63,7 @@ var explore = function() {
         kp_in_cinema: {//new in cinema
             title: _lang.exp_in_cinima,
             root_url: 'http://www.kinopoisk.ru',
-            margin: 14,
+            max_w: 120,
             url: 'http://www.kinopoisk.ru/afisha/new/page/%page%/',
             keepAlive: Math.round(24 * 60 * 60 * (7 / 3)),
             page_end: 2,
@@ -71,7 +75,7 @@ var explore = function() {
         kp_popular: {
             title: _lang.exp_films,
             root_url: 'http://www.kinopoisk.ru',
-            margin: 14,
+            max_w: 120,
             url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
             keepAlive: Math.round(24 * 60 * 60 * (7 / 2)),
             base_url: "http://www.kinopoisk.ru/film/",
@@ -81,7 +85,7 @@ var explore = function() {
         kp_serials: {
             title: _lang.exp_serials,
             root_url: 'http://www.kinopoisk.ru',
-            margin: 14,
+            max_w: 120,
             url: 'http://www.kinopoisk.ru/top/lists/45/',
             keepAlive: Math.round(24 * 60 * 60 * 7),
             base_url: "http://www.kinopoisk.ru/film/",
@@ -91,7 +95,7 @@ var explore = function() {
         imdb_in_cinema: {
             title: _lang.exp_imdb_in_cinima,
             root_url: 'http://www.imdb.com',
-            margin: 14,
+            max_w: 120,
             url: 'http://www.imdb.com/movies-in-theaters/',
             keepAlive: Math.round(24 * 60 * 60 * (7 / 3)),
             base_url: "http://www.imdb.com/title/",
@@ -101,7 +105,7 @@ var explore = function() {
         imdb_popular: {
             title: _lang.exp_imdb_films,
             root_url: 'http://www.imdb.com',
-            margin: 14,
+            max_w: 120,
             url: 'http://www.imdb.com/search/title?count=100&title_type=feature',
             keepAlive: Math.round(24 * 60 * 60 * (7 / 2)),
             base_url: "http://www.imdb.com/title/",
@@ -111,7 +115,7 @@ var explore = function() {
         imdb_serials: {
             title: _lang.exp_imdb_serials,
             root_url: 'http://www.imdb.com',
-            margin: 14,
+            max_w: 120,
             url: 'http://www.imdb.com/search/title?count=100&title_type=tv_series',
             keepAlive: Math.round(24 * 60 * 60 * 7),
             base_url: "http://www.imdb.com/title/",
@@ -121,7 +125,7 @@ var explore = function() {
         gg_games_top: {//best
             title: _lang.exp_games_best,
             root_url: 'http://gameguru.ru',
-            margin: 12,
+            max_w: 120,
             url: 'http://gameguru.ru/pc/games/rate_week/page%page%/list.html',
             keepAlive: Math.round(24 * 60 * 60 * 7), //week
             page_end: 5,
@@ -133,7 +137,7 @@ var explore = function() {
         gg_games_new: {//new
             title: _lang.exp_games_new,
             root_url: 'http://gameguru.ru',
-            margin: 12,
+            max_w: 120,
             url: 'http://gameguru.ru/pc/games/new/page%page%/list.html',
             keepAlive: Math.round(24 * 60 * 60 * (7 / 2)), //half week
             page_end: 5,
@@ -185,12 +189,21 @@ var explore = function() {
                     console.log("Explorer gg_games_new have problem!");
                     continue;
                 }
+                obj.img = obj.img.replace('/f/games/','');
+                obj.title = obj.title.trim();
                 arr.push(obj);
             }
             return arr;
         };
         var kp_img_url = function(url) {
-            return url.replace(/\/film\/([0-9]*)\//, '$1.jpg');
+            return url.replace(/.*\/film\/([0-9]*)\//, '$1.jpg');
+        };
+        var kp_img_url2 = function(url) {
+            return url.replace(/.*film\/([0-9]*).jpg/, '$1.jpg');
+        };
+        var imdb_img_url = function(i) {
+            i = i.replace(/.*\/images\/(.*)_V1.*/, '$1_V1_SX120_.jpg');
+            return i;
         };
         return {
             kp_favorites: function(content) {
@@ -236,6 +249,7 @@ var explore = function() {
                         console.log("Explorer kp_in_cinema have problem!");
                         continue;
                     }
+                    obj.img = kp_img_url2(obj.img);
                     arr.push(obj);
                 }
                 return arr;
@@ -279,6 +293,7 @@ var explore = function() {
                         console.log("Explorer kp_serials have problem!");
                         continue;
                     }
+                    obj.img = kp_img_url(obj.img);
                     arr.push(obj);
                 }
                 return arr;
@@ -299,6 +314,7 @@ var explore = function() {
                         console.log("Explorer imdb_in_cinema have problem!");
                         continue;
                     }
+                    obj.img = imdb_img_url(obj.img);
                     arr.push(obj);
                 }
                 return arr;
@@ -319,6 +335,7 @@ var explore = function() {
                         console.log("Explorer imdb_popular have problem!");
                         continue;
                     }
+                    obj.img = imdb_img_url(obj.img);
                     arr.push(obj);
                 }
                 return arr;
@@ -339,6 +356,7 @@ var explore = function() {
                         console.log("Explorer imdb_serials have problem!");
                         continue;
                     }
+                    obj.img = imdb_img_url(obj.img);
                     arr.push(obj);
                 }
                 return arr;
@@ -430,62 +448,109 @@ var explore = function() {
             }
         }
     }();
-    var content_write = function(type, content, page) {
-        if (page === undefined || page < 1) {
-            page = 1;
+    var content_write = function(type, content, page, update_pages) {
+        var content_len = content.length;
+        if (page === undefined || page < 0) {
+            page = 0;
         }
-        var line_count = listOptions[type].c;
+        var options = listOptions[type];
+        var line_count = options.c;
+        var vc_source = var_cache.source[type];
         var source = content_options[type];
         if (source.conteiner_width === undefined) {
-            source.conteiner_width = var_cache.source[type].li.width();
+            source.conteiner_width = vc_source.li.width();
         }
-        var item_count = Math.ceil(source.conteiner_width / (listOptions[type].w + 10*2)) - 1;
-        if (var_cache.source[type].pages === undefined) {
-            var onpage_count = item_count * line_count;
-            var page_count = Math.floor(content.length / onpage_count);
-            var page_body = $('<ul>',{'class': 'page_body'});
-            for (var i = 1; i <=page_count; i++) {
-                page_body.append(
-                    $('<li>', {'class': (page === i)?'active':'', text: i})
+        var item_count = Math.ceil(source.conteiner_width / (options.w + 10*2)) - 1;
+        var onpage_count = item_count * line_count;
+        vc_source.onpage_count = onpage_count;
+        if (vc_source.pages === undefined || update_pages !== undefined) {
+            var coef = content_len / onpage_count;
+            var page_count = Math.floor(coef);
+            if (coef % 1 === 0) {
+                page_count--;
+            }
+            var page_items = [];
+            for (var i = 0; i <= page_count; i++) {
+                page_items.push(
+                    $('<li>', {'class': 'page_'+i+( (i === page)?' active':'' ), text: i+1}).data('page', i).data('type', type)
                 );
             }
-            var_cache.source[type].pages = page_body;
-            var_cache.source[type].title.after(
-                var_cache.source[type].pages
-            );
+            if (vc_source.pages !== undefined) {
+                vc_source.pages.get(0).textContent = '';
+                vc_source.pages.append(page_items);
+            } else {
+                var page_body = $('<ul>',{'class': 'page_body'}).append(page_items);
+                vc_source.pages = page_body;
+                vc_source.title.after(
+                    vc_source.pages
+                );
+            }
+            if (page_items.length === 1) {
+                vc_source.pages.addClass('hide');
+            } else {
+                vc_source.pages.removeClass('hide');
+            }
         }
-        if (var_cache.source[type].body === undefined) {
-            var_cache.source[type].body = $('<ul>',{'class': 'body'});
-            var_cache.source[type].pages.after(
-                var_cache.source[type].body
+        var active_page = vc_source.pages.children('li.active');
+        if (active_page.data('page') !== page) {
+            active_page.removeClass('active');
+            vc_source.pages.children('li.page_'+page).addClass('active');
+        }
+        if (vc_source.body === undefined) {
+            vc_source.body = $('<ul>',{'class': 'body'});
+            vc_source.pages.after(
+                vc_source.body
             );
+            vc_source.body_height = 0;
         }
         var content_body = [];
-        for (var line = 0; line < line_count; line++) {
-            var from = item_count * line * page;
-            var end = from + item_count;
-            for (var index = from; index < end; index++) {
-                content_body.push(
-                    $('<li>').append(
-                        $('<div>', {'class': 'picture'}).append(
-                            $('<img>', {src: ((source.img_url !== undefined)?source.img_url:'')+content[index].img}),
-                            $('<div>', {'class': 'menu'}),
-                            $('<div>', {'class': 'info'}).append(
-                                $('<div>', {'class': 'quality'}),
-                                $('<a>', {'class': 'more', href: ((source.root_url !== undefined)?source.root_url:'')+content[index].url})
-                            )
-                        ),
-                        $('<div>',{'class': 'title'}).append(
-                            $('<span>').append(
-                                $('<a>',{href: 'index.html#?search='+content[index].title, text: content[index].title})
-                            )
-                        )
-                    )
-                );
-            }
+        var from = onpage_count * page;
+        var end = from + onpage_count;
+        if (end > content_len) {
+            end = content_len;
         }
-        var_cache.source[type].body.get(0).textContent = '';
-        var_cache.source[type].body.append(content_body);
+        var spanList = [];
+        for (var index = from; index < end; index++) {
+            var title = content[index].title;
+            var search_link = 'index.html#?search='+title;
+            var span = $('<span>').append(
+                $('<a>',{href: search_link, text: title, title: title})
+            );
+            var title_className = 'title';
+            var moveble_class = var_cache.calculateMovebleCache[title];
+            if (moveble_class === undefined) {
+                spanList.push([span, title]);
+            } else {
+                title_className += ' '+moveble_class;
+            }
+            content_body.push(
+                $('<li>').append(
+                    $('<div>', {'class': 'picture'}).append(
+                        $('<a>',{href: search_link, title: title}).append(
+                            $('<img>', {src: ((source.img_url !== undefined)?source.img_url:'')+content[index].img})
+                        ),
+                        $('<div>', {'class': 'menu'}),
+                        $('<div>', {'class': 'info'}).append(
+                            $('<div>', {'class': 'quality'}),
+                            $('<a>', {'class': 'more', href: ((source.root_url !== undefined)?source.root_url:'')+content[index].url})
+                        )
+                    ),
+                    $('<div>',{'class': title_className}).append(
+                        span
+                    )
+                )
+            );
+        }
+        if (content_body.length === 0 && page > 0) {
+            page--;
+            content_write(type, content, page, update_pages);
+            return;
+        }
+        vc_source.body.get(0).textContent = '';
+        vc_source.body.append(content_body);
+        if (spanList.length > 0) {
+            calculateMoveble(spanList, options.w, 'title');
+        }
     };
     var xhr_dune = function(type, source) {
         source.xhr_wait_count--;
@@ -497,9 +562,9 @@ var explore = function() {
                 return 0;
             }
             if (a[0] > b[0]){
-                return -1;
-            } else {
                 return 1;
+            } else {
+                return -1;
             }
         });
         var content = [];
@@ -531,13 +596,13 @@ var explore = function() {
         var hours = currentDate.getHours();
         var minutes = currentDate.getMinutes();
         var seconds = currentDate.getSeconds();
-        var unixtime = parseInt(currentDate.getTime() / 1000);
-        return unixtime - day*24*60*60 - hours*60*60 - minutes*60 - seconds;
+        return parseInt(currentDate.getTime() / 1000) - day*24*60*60 - hours*60*60 - minutes*60 - seconds;
     };
     var load_content = function(type) {
         var cache = JSON.parse(GetSettings('exp_cache_'+type) || '{}');
         var date = getCacheDate();
         if (cache.keepAlive === date) {
+            var_cache['exp_cache_'+type] = cache;
             content_write(type, cache.content);
             return;
         }
@@ -562,48 +627,284 @@ var explore = function() {
             xhr_send(type, source, i, page_mode);
         }
     };
-    var explorerCache = JSON.parse(GetSettings('explorerCache') || "{}");
+    var calculateMoveble = function (title, size, classname) {
+        /*
+         * Расчитывает стиль прокрутки длиных имен.
+         */
+        if (classname === undefined) {
+            classname = 'title';
+        }
+        var styles = [];
+        var title_l = title.length;
+        for (var i = 0; i < title_l; i++) {
+            var item = title[i][0];
+            var text = title[i][1];
+            var str_w = item.width();
+            if (str_w <= size) {
+                var_cache.calculateMovebleCache[text] = '';
+                item.parent().attr('class', classname);
+                continue;
+            }
+            str_w = Math.ceil(str_w / 10);
+            if (str_w > 10) {
+                if (str_w < 100) {
+                    var t1 = Math.round(str_w / 10);
+                    if (t1 > str_w / 10)
+                        str_w = t1 * 10 * 10;
+                    else
+                        str_w = (t1 * 10 + 5) * 10;
+                } else
+                    str_w = str_w * 10;
+            } else
+                str_w = str_w * 10;
+            var time_calc = Math.round(parseInt(str_w) / parseInt(size) * 3.5);
+            var move_name = 'moveble' + '_' + size + '_' + str_w;
+            var_cache.calculateMovebleCache[text] = move_name;
+            if (dom_cache.body.children('style.' + move_name).length === 0) {
+                styles.push(
+                    $('<style>', {'class': move_name, text: '@-webkit-keyframes a_' + move_name
+                    + '{'
+                    +   '0%{margin-left:2px;}'
+                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
+                    +   '90%{margin-left:6px;}'
+                    +   '100%{margin-left:2px;}'
+                    + '}'
+                    + 'div.' + move_name + ':hover > span {'
+                    +   'overflow: visible;'
+                    +   '-webkit-animation:a_' + move_name + ' ' + time_calc + 's;'
+                    + '}'})
+                );
+            }
+            item.parent().attr('class', classname + ' ' + move_name);
+        }
+        if (styles.length > 0) {
+            dom_cache.body.append(styles);
+        }
+    };
+    var width2fontSize = function(type, width) {
+        var min = 714;
+        var max = 857;
+        var max_width = content_options[type].max_w;
+        if (width >= 60) {
+            width -= 60;
+            max_width -= 60;
+        } else {
+            return;
+        }
+        var coefficient = width/max_width * 100;
+        return Math.round(min+((max-min)/100 * coefficient));
+    };
+    var calculateSize = function(type) {
+        var options = listOptions[type];
+        var font_size_style = width2fontSize(type, options.w);
+        var picture_size = 'li.'+type+' > ul.body > li{width: '+options.w+'px;}';
+
+        var font_size;
+        if (font_size_style === undefined) {
+            font_size = 'li.'+type+' > ul.body > li > div.title{display: none;}';
+        } else {
+            font_size= 'li.'+type+' > ul.body > li > div.title{font-size: .'+font_size_style+'em;}';
+        }
+        dom_cache.body.children('style.'+'picture_width_'+type).remove();
+        dom_cache.body.append( $('<style>',{'class': 'picture_width_'+type, text: picture_size+font_size}));
+    };
     return {
         show: function() {
+            if (dom_cache.explore !== undefined) {
+                dom_cache.explore.show();
+                return;
+            }
             dom_cache.explore = $('div.explore');
             dom_cache.explore_ul = dom_cache.explore.children('ul');
             dom_cache.top = dom_cache.explore.children('div.top_search');
+            dom_cache.body = $('body');
+            dom_cache.window = $(window);
             $.each(listOptions, function(type, item){
+                if (type === 'kp_favorites' || type === 'favorites') {
+                    return 1;
+                }
                 if (item.e === 0) {
                     return 1;
                 }
-                if (var_cache.source[type] === undefined) {
-                    var source = content_options[type];
-                    var_cache.source[type] = {};
-                    var_cache.source[type].li = $('<li>',{'class': type});
-                    var_cache.source[type].title = $('<div>', {'class': 'head'}).append(
-                        $('<div>',{'class': 'move'}),
-                        $('<div>',{'class': 'title', text: source.title}),
-                        $('<div>',{'class': 'action'}).append(
-                            $('<div>', {'class': 'setup'})
-                        ),
-                        $('<div>',{'class': 'setup_body'}).append(
-                            $('<div>', {'class': 'slider'}),
-                            $('<div>', {'class': 'default_size'}),
-                            $('<select>', {'class': 'item_count'}).append(
-                                (function(){
-                                    var list = [];
-                                    for (var i = 0; i < 7; i++) {
-                                        list.push(
-                                            $('<option>',{text: i, value: i})
-                                        );
-                                    }
-                                    return list;
-                                })()
-                            )
-                        ),
-                        $('<div>',{'class': 'collapses'})
-                    );
-                    var_cache.source[type].li.append(var_cache.source[type].title);
-                }
+                var source = content_options[type];
+                var_cache.source[type] = {};
+                var_cache.source[type].li = $('<li>',{'class': type+( (item.s !== 1)?' collapsed':'' )}).data('type', type);
+                var_cache.source[type].title = $('<div>', {'class': 'head'}).append(
+                    $('<div>',{'class': 'move'}).data('type', type),
+                    $('<div>',{'class': 'title', text: source.title}),
+                    $('<div>',{'class': 'action'}).append(
+                        $('<div>', {'class': 'setup', title: _lang.exp_setup_view}).data('type', type)
+                    ),
+                    $('<div>',{'class': 'setup_body'}).append(
+                        $('<div>', {'class': 'slider'}),
+                        $('<div>', {'class': 'default_size', title: _lang.exp_default}).data('type', type),
+                        $('<select>', {'class': 'item_count'}).data('type', type).append(
+                            (function(){
+                                var list = [];
+                                for (var i = 1; i < 7; i++) {
+                                    list.push(
+                                        $('<option>',{text: i, value: i})
+                                    );
+                                }
+                                return list;
+                            })()
+                        )
+                    ),
+                    $('<div>',{'class': 'collapses '+( (item.s === 1)?'down':'up' )}).data('type', type)
+                );
+                var_cache.source[type].li.append(var_cache.source[type].title);
+                calculateSize(type);
                 dom_cache.explore_ul.append(var_cache.source[type].li);
+                load_content(type);
             });
-            load_content('kp_popular');
+            dom_cache.explore_ul.on('mouseover', 'ul.page_body > li', function () {
+                var $this = $(this);
+                var page = $this.data('page');
+                var type = $this.data('type');
+                var body_height = var_cache.source[type].body.height();
+                var_cache.source[type].body.css('min-height', body_height);
+                var_cache.source[type].body_height = body_height;
+                var content = var_cache['exp_cache_'+type].content;
+                content_write(type, content, page);
+            });
+            dom_cache.explore_ul.on('click', 'div.collapses', function(e) {
+                e.preventDefault();
+                var $this = $(this);
+                var type = $this.data('type');
+                if ($this.hasClass('down') === true) {
+                    listOptions[type].s = 0;
+                    $this.removeClass('down').addClass('up');
+                    var_cache.source[type].li.addClass('collapsed');
+                } else {
+                    listOptions[type].s = 1;
+                    $this.removeClass('up').addClass('down');
+                    var_cache.source[type].li.removeClass('collapsed');
+                }
+                SetSettings('listOptions', JSON.stringify(listOptions));
+            });
+            dom_cache.explore_ul.on('click', 'div.action > div.setup', function (e){
+                e.preventDefault();
+                var $this = $(this);
+                var type = $this.data('type');
+                var page = var_cache.source[type].pages.children('li.active').data('page');
+                var content = var_cache['exp_cache_'+type].content;
+                var setup_body = var_cache.source[type].title.children('div.setup_body');
+                setup_body.children('select.item_count').children('option[value="'+listOptions[type].c+'"]').prop('selected', true);
+                setup_body.children('div.slider').slider({
+                    value: listOptions[type].w,
+                    min: 20,
+                    max: content_options[type].max_w,
+                    slide: function(e, ui) {
+                        var value = ui.value;
+                        listOptions[type].w = value;
+                        calculateSize(type);
+                    },
+                    stop: function(e, ui) {
+                        var value = ui.value;
+                        listOptions[type].w = value;
+                        calculateSize(type);
+                        var_cache.source[type].body.css('min-height', 'auto');
+                        content_write(type, content, page, 1);
+                        SetSettings('listOptions', JSON.stringify(listOptions));
+                    }
+                });
+                setup_body.toggleClass('show');
+            });
+            dom_cache.explore_ul.on('change', 'div.setup_body > select.item_count', function(e){
+                e.preventDefault();
+                var $this = $(this);
+                var type = $this.data('type');
+                var content = var_cache['exp_cache_'+type].content;
+                var page = var_cache.source[type].pages.children('li.active').data('page');
+                listOptions[type].c = parseInt(this.value);
+                var_cache.source[type].body.css('min-height', 'auto');
+                content_write(type, content, page, 1);
+                SetSettings('listOptions', JSON.stringify(listOptions));
+            });
+            dom_cache.explore_ul.on('click','div.setup_body > div.default_size', function(e){
+                e.preventDefault();
+                var $this = $(this);
+                var type = $this.data('type');
+                listOptions[type].w = listOptions_def[type].w;
+                var_cache.source[type].title.children('div.setup_body').children('div.slider').slider({value: listOptions[type].w});
+                var_cache.source[type].body.css('min-height', 'auto');
+                var content = var_cache['exp_cache_'+type].content;
+                var page = var_cache.source[type].pages.children('li.active').data('page');
+                calculateSize(type);
+                var_cache.source[type].body.css('min-height', 'auto');
+                content_write(type, content, page, 1);
+                SetSettings('listOptions', JSON.stringify(listOptions));
+            });
+            dom_cache.explore_ul.sortable({
+                axis: 'y',
+                handle: 'div.move',
+                scroll: false,
+                start: function(e, ui) {
+                    window.scrollTo(0,0);
+                    dom_cache.explore_ul.addClass('sort_mode');
+                    var type = $(e.toElement).data('type');
+                    $(this).data('type', type).sortable("refreshPositions");
+                    ui.type = type;
+                },
+                stop: function(e, ui) {
+                    dom_cache.explore_ul.removeClass('sort_mode');
+                    var type = $(this).data('type');
+                    var lo = {};
+                    var $li = dom_cache.explore_ul.children('li');
+                    for (var i = 0, len = $li.length; i < len; i++) {
+                        var type = $li.eq(i).data('type');
+                        lo[type] = listOptions[type];
+                    }
+                    listOptions = lo;
+                    SetSettings('listOptions', JSON.stringify(listOptions));
+                }
+            });
+            dom_cache.window.on('resize', function(e) {
+                clearTimeout(var_cache.resize_timer);
+                var_cache.resize_timer = setTimeout(function(){
+                    if (var_cache.resize_timer_work === 1) {
+                        return;
+                    }
+                    var_cache.resize_timer_work = 1;
+                    var cacheList = {};
+                    var conteiner_width = dom_cache.explore_ul.width();
+                    for (var type in listOptions) {
+                        if (listOptions.hasOwnProperty(type) === false
+                            || listOptions[type].e === 0
+                            || type === 'favorites'
+                            || type === 'kp_favorites') {
+                            continue;
+                        }
+                        var options = listOptions[type];
+                        var source = content_options[type];
+                        source.conteiner_width = conteiner_width;
+                        var currentCount = source.onpage_count;
+                        if (cacheList[options.w] !== undefined) {
+                            if (currentCount === cacheList[options.w]) {
+                                continue;
+                            }
+                            content_write(type, var_cache['exp_cache_'+type].content, 0, 1);
+                            continue;
+                        }
+                        var line_count = options.c;
+                        var item_count = Math.ceil(source.conteiner_width / (options.w + 10*2)) - 1;
+                        var onpage_count = item_count * line_count;
+                        cacheList[options.w] = onpage_count;
+                        if (currentCount === onpage_count) {
+                            continue;
+                        }
+                        content_write(type, var_cache['exp_cache_'+type].content, 0, 1);
+                    }
+                    var_cache.resize_timer_work = 0;
+                }, 100);
+            });
+            dom_cache.explore.show();
+        },
+        hide: function(){
+            if (dom_cache.explore === undefined) {
+                return;
+            }
+            dom_cache.explore.hide();
         },
         getDesc: function(request) {
             return about_keyword(k);
