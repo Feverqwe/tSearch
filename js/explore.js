@@ -42,7 +42,7 @@ var explore = function() {
         gg_games_new: { e: 1, s: 1, w: 120, c: 1 }
     };
     var listOptions = JSON.parse(GetSettings('listOptions') || "{}");
-    if (listOptions.hasOwnProperty('favorites') === false) {
+    if (listOptions.hasOwnProperty('kp_in_cinema') === false) {
         listOptions = $.extend(true, {}, listOptions_def);
     }
     var content_options = {
