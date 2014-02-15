@@ -286,7 +286,7 @@ var engine = function() {
                         }
                         arr.push(obj);
                     }
-                    if (er.join(',') !== '0,0,0,0,0,0,0,0') {
+                    if (Math.max.apply(null,er) !== 0) {
                         var msg = 'Tracker ' + me.name + ' have problem!';
                         if (er[2])
                             msg += "\n" + er[2] + ' - torrent title skip';

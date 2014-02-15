@@ -379,7 +379,7 @@ var view = function() {
                 }
             }
         }
-        if (er.join(',') === '0,0,0,0,0,0,0,0,0') {
+        if (Math.max.apply(null,er) === 0) {
             return;
         }
         var msg = 'Tracker ' + tracker.name + ' have problem!' + "\n" + 'Tests: ' + er.join(',') + "\n" + 'All tests: ' + all_errors.join(',');

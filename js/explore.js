@@ -37,8 +37,8 @@ var explore = function() {
         gg_games_top: { e: 1, w: 128, c: 1 },
         gg_games_new: { e: 1, w: 128, c: 1 }
     };
-    var listOptions = JSON.parse(GetSettings('listOptions') || "[]");
-    if (listOptions.length === 0) {
+    var listOptions = JSON.parse(GetSettings('listOptions') || "{}");
+    if (listOptions.hasOwnProperty('favorites') === false) {
         listOptions = listOptions_def;
     }
     var content_options = {
@@ -507,6 +507,8 @@ var explore = function() {
             content = content.concat(item[1]);
         });
         content_write(type, content);
+        var_cache['exp_cache_'+type].content = content;
+        SetSettings('exp_cache_'+type, JSON.stringify(var_cache['exp_cache_'+type]));
     };
     var xhr_send = function(type, source, page, page_mode) {
         source.xhr_wait_count++;
@@ -524,19 +526,22 @@ var explore = function() {
         );
     };
     var getCacheDate = function() {
-        var currentDate = new Data();
+        var currentDate = new Date();
         var day = currentDate.getDay();
-        var h = currentDate.getHours();
+        var hours = currentDate.getHours();
+        var minutes = currentDate.getMinutes();
+        var seconds = currentDate.getSeconds();
         var unixtime = parseInt(currentDate.getTime() / 1000);
-        return unixtime - day*24*60*60;
+        return unixtime - day*24*60*60 - hours*60*60 - minutes*60 - seconds;
     };
     var load_content = function(type) {
-        var cache = JSON.parse(GetSettings('exp_cache_'+type) || {});
+        var cache = JSON.parse(GetSettings('exp_cache_'+type) || '{}');
         var date = getCacheDate();
-        if (cache.keepAlive > date) {
-            content_write(cache.content);
+        if (cache.keepAlive === date) {
+            content_write(type, cache.content);
             return;
         }
+        var_cache['exp_cache_'+type] = {keepAlive: date};
         var source = content_options[type];
         var page_mode = false;
         if (source.page_start !== undefined && source.page_end !== undefined) {
