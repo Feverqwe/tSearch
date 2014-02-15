@@ -196,7 +196,7 @@ var explore = function() {
             return arr;
         };
         var kp_img_url = function(url) {
-            return url.replace(/.*\/film\/([0-9]*)\//, '$1.jpg');
+            return url.replace(/\/film\/([0-9]*)\//, '$1.jpg');
         };
         var kp_img_url2 = function(url) {
             return url.replace(/.*film\/([0-9]*).jpg/, '$1.jpg');
@@ -523,11 +523,15 @@ var explore = function() {
             } else {
                 title_className += ' '+moveble_class;
             }
+            var img_url = content[index].img;
+            if (img_url[6] !== '/' && source.img_url !== undefined) {
+                img_url = source.img_url+img_url;
+            }
             content_body.push(
                 $('<li>').append(
                     $('<div>', {'class': 'picture'}).append(
                         $('<a>',{href: search_link, title: title}).append(
-                            $('<img>', {src: ((source.img_url !== undefined)?source.img_url:'')+content[index].img})
+                            $('<img>', {src: img_url})
                         ),
                         $('<div>', {'class': 'menu'}),
                         $('<div>', {'class': 'info'}).append(
