@@ -4,7 +4,7 @@ var SetSettings = function(key, value) {
         delete localStorage[key];
         return value;
     }
-    if (key === "favoritesList" && allow_favorites_sync && chrome.storage) {
+    if (key === "exp_cache_favorites" && allow_favorites_sync && chrome.storage) {
         var obj = {};
         obj[key] = value;
         chrome.storage.sync.set(obj);
@@ -13,7 +13,7 @@ var SetSettings = function(key, value) {
     return value;
 };
 var GetSettings = function(key) {
-    if (key === "favoritesList" && allow_favorites_sync && chrome.storage) {
+    if (key === "exp_cache_favorites" && allow_favorites_sync && chrome.storage) {
         chrome.storage.sync.get(key,
                 function(val) {
                     if (val.favoritesList === undefined || val.favoritesList.length === 0)
