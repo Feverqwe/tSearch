@@ -51,7 +51,7 @@ var explore = function() {
             root_url: 'http://www.kinopoisk.ru',
             max_w: 120,
             url: 'http://www.kinopoisk.ru/afisha/new/page/%page%/',
-            keepAlive: Math.round(24 * 60 * 60 * (7 / 3)),
+            keepAlive: [2, 4, 6],
             page_end: 2,
             page_start: 0,
             base_url: "http://www.kinopoisk.ru/film/",
@@ -63,7 +63,7 @@ var explore = function() {
             root_url: 'http://www.kinopoisk.ru',
             max_w: 120,
             url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
-            keepAlive: Math.round(24 * 60 * 60 * (7 / 2)),
+            keepAlive: [0, 3],
             base_url: "http://www.kinopoisk.ru/film/",
             img_url: "http://st.kinopoisk.ru/images/film/",
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
@@ -73,7 +73,7 @@ var explore = function() {
             root_url: 'http://www.kinopoisk.ru',
             max_w: 120,
             url: 'http://www.kinopoisk.ru/top/lists/45/',
-            keepAlive: Math.round(24 * 60 * 60 * 7),
+            keepAlive: [0],
             base_url: "http://www.kinopoisk.ru/film/",
             img_url: "http://st.kinopoisk.ru/images/film/",
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
@@ -83,7 +83,7 @@ var explore = function() {
             root_url: 'http://www.imdb.com',
             max_w: 120,
             url: 'http://www.imdb.com/movies-in-theaters/',
-            keepAlive: Math.round(24 * 60 * 60 * (7 / 3)),
+            keepAlive: [2, 4, 6],
             base_url: "http://www.imdb.com/title/",
             img_url: "http://ia.media-imdb.com/images/",
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
@@ -93,7 +93,7 @@ var explore = function() {
             root_url: 'http://www.imdb.com',
             max_w: 120,
             url: 'http://www.imdb.com/search/title?count=100&title_type=feature',
-            keepAlive: Math.round(24 * 60 * 60 * (7 / 2)),
+            keepAlive: [0 , 2],
             base_url: "http://www.imdb.com/title/",
             img_url: "http://ia.media-imdb.com/images/",
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
@@ -103,7 +103,7 @@ var explore = function() {
             root_url: 'http://www.imdb.com',
             max_w: 120,
             url: 'http://www.imdb.com/search/title?count=100&title_type=tv_series',
-            keepAlive: Math.round(24 * 60 * 60 * 7),
+            keepAlive: [0],
             base_url: "http://www.imdb.com/title/",
             img_url: "http://ia.media-imdb.com/images/",
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
@@ -113,7 +113,7 @@ var explore = function() {
             root_url: 'http://gameguru.ru',
             max_w: 120,
             url: 'http://gameguru.ru/pc/games/rate_week/page%page%/list.html',
-            keepAlive: Math.round(24 * 60 * 60 * 7), //week
+            keepAlive: [0],
             page_end: 5,
             page_start: 1,
             base_url: "http://gameguru.ru/pc/games/",
@@ -125,7 +125,7 @@ var explore = function() {
             root_url: 'http://gameguru.ru',
             max_w: 120,
             url: 'http://gameguru.ru/pc/games/new/page%page%/list.html',
-            keepAlive: Math.round(24 * 60 * 60 * (7 / 2)), //half week
+            keepAlive: [2, 4],
             page_end: 5,
             page_start: 1,
             base_url: "http://gameguru.ru/pc/games/",
@@ -658,12 +658,19 @@ var explore = function() {
             })
         );
     };
-    var getCacheDate = function() {
-        var currentDate = new Date();
+    var getCacheDate = function(keepAlive) {
+        var currentDate = new Date( (new Date()).getTime() );
         var day = currentDate.getDay();
         var hours = currentDate.getHours();
         var minutes = currentDate.getMinutes();
         var seconds = currentDate.getSeconds();
+        var lastDay = 0;
+        keepAlive.forEach(function(num) {
+            if (day === num || day > num) {
+                lastDay =  num;
+            }
+        });
+        day = day - lastDay;
         return parseInt(currentDate.getTime() / 1000) - day*24*60*60 - hours*60*60 - minutes*60 - seconds;
     };
     var load_content = function(type) {
@@ -673,13 +680,13 @@ var explore = function() {
             content_write(type, cache.content);
             return;
         }
-        var date = getCacheDate();
+        var source = content_options[type];
+        var date = getCacheDate(source.keepAlive);
         if (cache.keepAlive === date) {
             content_write(type, cache.content);
             return;
         }
         var_cache['exp_cache_'+type] = {keepAlive: date};
-        var source = content_options[type];
         var page_mode = false;
         if (source.page_start !== undefined && source.page_end !== undefined) {
             page_mode = true;
