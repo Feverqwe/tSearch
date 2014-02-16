@@ -248,7 +248,9 @@ var view = function() {
         homeMode();
         clear_filters();
         clear_tracker_filter();
-        setPage(undefined);
+        if (window.location.hash.length !== 0) {
+            setPage(undefined);
+        }
     };
     var itemCheck = function(item, er) {
         /*
@@ -848,7 +850,22 @@ var view = function() {
                 rate.block.push("video");
                 rate.qbox = "DVD-Rip";
             } else
-            if (word === "dvd" || word === "dvd5" || word === "2xdvd9" || word === "dvd9" || word === "dvd-9" || word === "hd-dvd") {
+            if (word === "hd-dvd") {
+                rate.video += 68;
+                rate.block.push("video");
+                rate.qbox = "DVD";
+            } else
+            if (word === "2xdvd9") {
+                rate.video += 65;
+                rate.block.push("video");
+                rate.qbox = "DVD";
+            } else
+            if (word === "dvd9" || word === "dvd-9") {
+                rate.video += 62;
+                rate.block.push("video");
+                rate.qbox = "DVD";
+            } else
+            if (word === "dvd" || word === "dvd5") {
                 rate.video += 50;
                 rate.block.push("video");
                 rate.qbox = "DVD";
