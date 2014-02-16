@@ -959,7 +959,7 @@ var explore = function() {
                     var content = var_cache['exp_cache_'+type].content;
                     var item = content[index];
                     if (prev === undefined && next === undefined) {
-                        // hi!
+                        return;
                     } else
                     if (prev !== undefined) {
                         if (prev < index) {
@@ -970,8 +970,13 @@ var explore = function() {
                             content.splice(index, 1);
                         }
                     } else {
-                        content.splice(index, 1);
-                        content.unshift(item);
+                        if (next < index) {
+                            content.splice(index, 1);
+                            content.splice(next, 0, item);
+                        } else {
+                            content.splice(next, 0, item);
+                            content.splice(index, 1);
+                        }
                     }
                     var page = var_cache.source[type].current_page;
                     content_write(type, var_cache['exp_cache_'+type].content, page, 1);
