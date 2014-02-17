@@ -234,6 +234,7 @@ var view = function() {
             var_cache.tableIsEmpty = 0;
         }
         clear_table();
+        explore.getDescription(request);
         var_cache.tableIsEmpty = 0;
         searchMode();
         syntaxCacheRequest(request);
@@ -1887,11 +1888,15 @@ var view = function() {
         right_panel.find('span.to').text(_lang['size_filter_t']);
         dom_cache.topbtn.attr('title', _lang['btn_up']);
     };
+    var setDescription = function(content) {
+        dom_cache.about_panel.append(content);
+    }
     return {
         result: writeResult,
         auth: writeTrackerAuth,
         loadingStatus: setTrackerLoadingState,
         getQuality: getQuality,
+        setDescription: setDescription,
         begin: function() {
             dom_cache.body = $('body');
             dom_cache.title = $('head').children('title');

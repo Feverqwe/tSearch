@@ -452,7 +452,6 @@ div.progress > span {
     left: 0;
     position: absolute;
     width: 30px;
-    color: #fff;
     font-size: 0.857em;
     margin-top: -1px;
 }
@@ -545,9 +544,8 @@ div.ad {
 }
 
 div.about_panel > div {
-    padding-left: 10px;
     margin-bottom: 3px;
-    margin-top: -15px;
+    overflow: hidden;
 }
 
 div.about_panel > div > div.a-poster {
