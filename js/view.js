@@ -732,7 +732,7 @@ var view = function() {
                 item.category.id = autosetCategory(quality, item.category.title);
             }
             var item_id = var_cache.table_dom.length;
-            var table_dom_item = {id: item_id, tracker: id, time: item.time, qualityBox: quality.qbox, quality: quality.value, url: item.url, title: item.title, hlTitle: title_highLight, category_id: item.category.id, size: item.size, seeds: item.seeds, leechs: item.leechs};
+            var table_dom_item = {qualityBox: quality.qbox, url: item.url, hlTitle: title_highLight, sizeText: bytesToSize(item.size)};
             var_cache.table_dom.push(table_dom_item);
             if (var_cache.counter[id][item.category.id] === undefined) {
                 var_cache.counter[id][item.category.id] = 0;
