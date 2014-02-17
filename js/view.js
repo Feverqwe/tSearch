@@ -248,6 +248,7 @@ var view = function() {
         homeMode();
         clear_filters();
         clear_tracker_filter();
+        dom_cache.search_input.focus();
         if (window.location.hash.length !== 0) {
             setPage(undefined);
         }
@@ -1807,6 +1808,7 @@ var view = function() {
             dom_cache.seed_filter = $('div.seed_filter');
             dom_cache.peer_filter = $('div.peer_filter');
             dom_cache.html_body = $('html, body');
+            dom_cache.search_input.focus();
             write_language();
             $.each(_lang.time_f_s, function(value, text) {
                 dom_cache.time_filter_select.append(
@@ -2006,7 +2008,7 @@ var view = function() {
                 }, var_cache.filterTimerValue);
             });
             dom_cache.word_filter_btn.on("click", function() {
-                dom_cache.word_filter.val('').trigger('keyup');
+                dom_cache.word_filter.val('').trigger('keyup').focus();
             });
             dom_cache.size_filter.on('keyup', 'input', function() {
                 if (var_cache.sizeFilter === undefined) {

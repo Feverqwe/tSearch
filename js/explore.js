@@ -7,7 +7,12 @@ var explore = function() {
         calculateMovebleCache: {},
         resize_timer_work: 0,
         conteiner_width: undefined,
-        top_columns_num: undefined
+        top_columns_num: undefined,
+        kp_img_url: new RegExp('\\/film\\/([0-9]*)\\/'),
+        kp_img_url2: new RegExp('.*film\\/([0-9]*).jpg'),
+        imdb_img_url: new RegExp('.*\\/images\\/(.*)_V1.*'),
+        getYear: new RegExp('.*\\([^\\(]*([1-2]{1}[0-9]{3})[^\\)]*\\).*','g'),
+        rmYear: new RegExp('(.*) \\([^\\(]*[0-9]{4}[^\\)]*\\).*')
     };
     var dom_cache = {};
     var options = {
@@ -181,20 +186,20 @@ var explore = function() {
             return arr;
         };
         var kp_img_url = function(url) {
-            return url.replace(/\/film\/([0-9]*)\//, '$1.jpg');
+            return url.replace(var_cache.kp_img_url, '$1.jpg');
         };
         var kp_img_url2 = function(url) {
-            return url.replace(/.*film\/([0-9]*).jpg/, '$1.jpg');
+            return url.replace(var_cache.kp_img_url2, '$1.jpg');
         };
         var imdb_img_url = function(i) {
-            i = i.replace(/.*\/images\/(.*)_V1.*/, '$1_V1_SX120_.jpg');
+            i = i.replace(var_cache.imdb_img_url, '$1_V1_SX120_.jpg');
             return i;
         };
         var getYear = function(text) {
-            return parseInt(text.replace(/.*\([^\(]*([1-2]{1}[0-9]{3})[^\)]*\).*/g, '$1'));
+            return parseInt(text.replace(var_cache.getYear, '$1'));
         };
         var rmYear = function(text) {
-            return text.replace(/(.*) \([^\(]*[0-9]{4}[^\)]*\).*/, '$1').trim();
+            return text.replace(var_cache.rmYear, '$1').trim();
         };
         var rmSerial = function(text) {
             return text.replace(' (сериал)', '').trim();
@@ -778,11 +783,11 @@ var explore = function() {
             success: function(data) {
                 var keywords = data.keywords;
                 keywords.sort(function(a, b) {
-                    if (a.weight > b.weight) {
-                        return -1;
-                    }
                     if (a.weight === b.weight) {
                         return 0;
+                    }
+                    if (a.weight > b.weight) {
+                        return -1;
                     }
                     return 1;
                 });

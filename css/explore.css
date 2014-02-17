@@ -235,7 +235,7 @@ div.explore ul.body div.picture > div.quality {
     position: absolute;
     visibility: hidden;
     bottom: -5px;
-    right: -5px;
+    left: -5px;
     white-space: nowrap;
     border-radius: 3px;
     background-color: rgba(255, 255, 255, 0.7);
@@ -289,8 +289,7 @@ div.explore ul.body li div.picture > div.move,
 div.explore ul.body li div.picture > div.edit,
 div.explore ul.body li div.picture > a.link {
     position: absolute;
-    right: auto;
-    left: -10px;
+    right: -10px;
     background-color: rgba(255, 255, 255, 0.7);
     width: 20px;
     height: 20px;
