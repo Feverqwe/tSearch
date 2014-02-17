@@ -246,16 +246,17 @@ div.explore div.head div.action > a.open {
     margin-bottom: -2px;
     display: inline-block;
 }
-
+div.explore ul.body div.picture > div.quality > span {
+    white-space: nowrap;
+    font-size: .857em;
+}
 div.explore ul.body div.picture > div.quality {
     position: absolute;
     visibility: hidden;
     bottom: -5px;
     left: -5px;
-    white-space: nowrap;
     border-radius: 3px;
     background-color: rgba(255, 255, 255, 0.7);
-    font-size: .857em;
     min-width: 16px;
     padding-left: 2px;
     padding-right: 2px;
@@ -266,12 +267,15 @@ div.explore ul.body div.picture > div.quality {
     -webkit-transition: background-color .2s;
 }
 div.explore ul.body div.picture:hover > div.quality {
+    z-index: 14;
     visibility: visible;
 }
 div.explore ul.body div.picture > div.quality:hover {
     background-color: #fff;
 }
-
+div.explore ul.body div.picture > div.quality:hover div.info_popup {
+    visibility: visible;
+}
 div.explore ul.body div.picture > a.link {
     top: 0px;
     background: url(../images/external.png) no-repeat center center;
@@ -376,14 +380,14 @@ div.explore ul.body li div.picture > a.link:hover {
     margin-left: calc(50% - 160px);
 }
 
-div.top_search {
+div.explore div.top_search {
     position: relative;
 }
-div.top_search > ul {
+div.explore div.top_search > ul {
     margin-left: 40px;
     margin-bottom: 10px;
 }
-div.top_search ul li {
+div.explore div.top_search ul li {
     display: inline-block;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -391,22 +395,22 @@ div.top_search ul li {
     padding-bottom: 3px;
 }
 
-div.top_search ul.c3 li {
+div.explore div.top_search ul.c3 li {
     width: 33%;
 }
-div.top_search ul.c4 li {
+div.explore div.top_search ul.c4 li {
     width: 25%;
 }
-div.top_search a {
+div.explore div.top_search a {
     color: #0051D8;
     text-decoration: none;
     border-bottom: 1px solid transparent;
     transition: border-bottom-color .2s;
 }
-div.top_search a:hover {
+div.explore div.top_search a:hover {
     border-bottom-color: #0051D8;
 }
-div.top_search .info {
+div.explore div.top_search .info {
     position: absolute;
     left: 14px;
     height: 16px;
@@ -415,58 +419,136 @@ div.top_search .info {
     border: 1px dashed rgb(165, 165, 165);
     color: #fff;
 }
-div.top_search .l1 span {
+div.explore div.top_search .l1 span {
     font-size: 140%;
 }
-div.top_search .l2 span {
+div.explore div.top_search .l2 span {
     font-size: 130%;
 }
-div.top_search .l3 span {
+div.explore div.top_search .l3 span {
     font-size: 120%;
 }
-div.top_search .l4 span {
+div.explore div.top_search .l4 span {
     font-size: 110%;
 }
-div.top_search .l5 span {
+div.explore div.top_search .l5 span {
     font-size: 100%;
 }
-div.top_search .t1 {
+div.explore div.top_search .t1 {
     background-color: #DB4733;
     border: 1px solid #fff;
     margin-top: 3px;
 }
-div.top_search .t2 {
+div.explore div.top_search .t2 {
     background-color: #FFC70D;
     border: 1px solid #fff;
     margin-top: 3px;
 }
-div.top_search .t3 {
+div.explore div.top_search .t3 {
     background-color: #337AF8;
     border: 1px solid #fff;
     margin-top: 1px;
 }
-div.top_search .t4 {
+div.explore div.top_search .t4 {
     background-color: #009A57;
     border: 1px solid #fff;
 }
-div.top_search .t5 {
+div.explore div.top_search .t5 {
     background-color: #8C5FFF;
     border: 1px solid #fff;
 }
-div.top_search .l1 a:hover {
+div.explore div.top_search .l1 a:hover {
     border-color: #DB4733;
 }
-div.top_search .l2 a:hover {
+div.explore div.top_search .l2 a:hover {
     border-color: #FFC70D;
 }
-div.top_search .l3 a:hover {
+div.explore div.top_search .l3 a:hover {
     border-color: #337AF8;
 }
-div.top_search .l4 a:hover {
+div.explore div.top_search .l4 a:hover {
     border-color: #009A57;
 }
-div.top_search .l5 a:hover {
+div.explore div.top_search .l5 a:hover {
     border-color: #8C5FFF;
+}
+
+div.explore div.info_popup:hover {
+    visibility: visible;
+}
+div.explore div.info_popup {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    z-index: 12;
+    width: 300px;
+    visibility: hidden;
+    padding-top: 11px;
+    text-align: left;
+    font-size: 0.929em;
+    cursor: default;
+}
+div.explore div.popup {
+    background-color: #fff;
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+div.explore div.info_popup .corner2 {
+    border: 8px solid transparent;
+    border-bottom: 10px solid #fff;
+    border-top: 0;
+    width: 0;
+    top: 1px;
+    position: absolute;
+    left: 50%;
+    margin-left: -8px;
+}
+div.explore div.info_popup .corner {
+    border: 8px solid transparent;
+    border-bottom: 10px solid rgb(192, 187, 187);
+    border-top: 0;
+    width: 0;
+    top: 2px;
+    position: absolute;
+    left: 50%;
+    margin-left: -8px;
+
+}
+div.explore div.info_popup .content {
+    padding: 6px;
+}
+div.explore div.info_popup ul {
+    list-style-type: lower-greek;
+    padding-left: 20px;
+    margin: 0;
+    word-wrap: break-word;
+}
+div.explore div.info_popup > div.popup > div.content > ul > li {
+    margin: 0;
+    margin-bottom: 6px;
+    line-height: normal;
+}
+div.explore div.info_popup ul li:first-child {
+    border-bottom: 1px dashed rgb(111, 111, 111);
+    margin-bottom: 3px;
+    padding-bottom: 3px;
+    font-size: 1.071em;
+}
+div.explore div.info_popup ul li:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+div.explore div.popup div.content a {
+    color: #0051D8;
+    text-decoration: none;
+}
+div.explore div.popup div.content a:link {
+    color: #1A3DC1;
+}
+div.explore div.popup div.content a:visited {
+    color: #609;
 }
 /*
 div.explore ul.body div.picture > div.edit {
@@ -815,73 +897,6 @@ div.explore ul.body div.picture > div.edit {
         background: url(../images/external.png) no-repeat top center;
         margin-bottom: -1px;
         cursor: pointer;
-    }
-    div.info_popup {
-        position: absolute;
-        top: 0;
-        left: 0;
-        min-width: 80px;
-        z-index: 12;
-        background-color: #fff;
-        box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
-        display: none;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    div.info_popup .corner2 {
-        border: 8px solid transparent;
-        border-bottom: 10px solid #fff;
-        border-top: 0px;
-        width: 0px;
-        top: 1px;
-        position: absolute;
-        left: 50%;
-        margin-left: -8px;
-    }
-
-    div.info_popup .corner {
-        border: 8px solid transparent;
-        border-bottom: 10px solid rgb(192, 187, 187);
-        border-top: 0px;
-        width: 0px;
-        top: -10px;
-        position: absolute;
-        left: 50%;
-        margin-left: -8px;
-
-    }
-
-    div.info_popup .content {
-        padding: 6px;
-        max-width: 300px;
-    }
-
-    div.info_popup .content a {
-        text-decoration: none;
-    }
-
-    div.info_popup ul {
-        list-style-type: lower-greek;
-        padding-left: 20px;
-        margin: 0;
-        word-wrap: break-word;
-    }
-
-    div.info_popup ul li {
-        margin-bottom: 6px;
-    }
-
-    div.info_popup ul li:first-child {
-        border-bottom: 1px dashed rgb(111, 111, 111);
-        margin-bottom: 3px;
-        padding-bottom: 3px;
-    }
-
-    div.info_popup ul li:last-child {
-        margin-bottom: 0;
-        padding-bottom: 0px;
-        border-bottom: 0;
     }
 
     div.top_search ul {

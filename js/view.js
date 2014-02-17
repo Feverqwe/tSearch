@@ -28,6 +28,7 @@ var view = function() {
         split_long_string: new RegExp('.{0,100}', 'g'),
         teaser_regexp: new RegExp('Трейлер|Тизер|Teaser|Trailer','i'),
         rn: new RegExp('[\\r\\n]+','g'),
+        getYear: new RegExp('[1-2]{1}[0-9]{3}'),
         // массив содержащий всю информацию и dom элемент торрентов
         table_dom: [],
         // сортировка по возрастанию или убыванию
@@ -75,7 +76,9 @@ var view = function() {
         // испория переходов
         click_history: JSON.parse(GetSettings('click_history') || '{}'),
         // кэш location, fix bug with popstate, when script don't loaded.
-        oldlocationHash: undefined
+        oldlocationHash: undefined,
+        // bg mode switch
+        backgroundMode: undefined
     };
     var dom_cache = {};
 
@@ -226,6 +229,10 @@ var view = function() {
         dom_cache.result_panel.show();
     };
     var search = function(request, history) {
+        if (var_cache.backgroundMode !== undefined) {
+            var_cache.backgroundMode = undefined;
+            var_cache.tableIsEmpty = 0;
+        }
         clear_table();
         var_cache.tableIsEmpty = 0;
         searchMode();
@@ -244,6 +251,16 @@ var view = function() {
             dom_cache.search_input.autocomplete( "enable" );
         }, 1000);
     };
+    var getQuality = function(request, type, index) {
+        var_cache.backgroundMode = {type: type, index: index};
+        var_cache.table_dom = [];
+        var_cache.counter = {};
+        updateCounts();
+        syntaxCacheRequest(request);
+        engine.stop();
+        engine.search(request, []);
+        var_cache.currentRequest = request;
+    }
     var home = function(){
         homeMode();
         clear_filters();
@@ -675,6 +692,58 @@ var view = function() {
         }
         return filter;
     };
+    var sendTop5 = function(){
+        var_cache.table_dom.sort(function(a,b){
+            if (a.quality === b.quality) {
+                return 0;
+            } else
+            if (a.quality > b.quality) {
+                return -1;
+            }
+            return 1;
+        });
+        explore.setQuality(var_cache.backgroundMode.type, var_cache.backgroundMode.index, var_cache.table_dom.slice(0,5), var_cache.currentRequest);
+    }
+    var bgReadResult = function(id, result, request) {
+        var tracker = var_cache.trackers[id].tracker;
+        if (tracker === undefined) {
+            return;
+        }
+        var errors = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var tr_count = 0;
+        for (var i = 0, item; item = result[i]; i++) {
+            if (itemCheck(item, errors) === 0) {
+                console.error('Item in tracker ' + tracker.name + ' have critical problem! Torrent skipped!', item);
+                continue;
+            }
+            if (teaserFilter(item.title + item.category.title) === 1) {
+                continue;
+            }
+            item.title = $.trim(item.title);
+            if (item.category.title !== undefined) {
+                item.category.title = $.trim(item.category.title);
+            }
+            var title_highLight = titleHighLight(item.title);
+            var rate = title_highLight.rate;
+            var quality = checkRate(rate, item);
+            title_highLight = title_highLight.hl_name;
+            if (item.category.id < 0 && item.category.title !== undefined) {
+                item.category.id = autosetCategory(quality, item.category.title);
+            }
+            var item_id = var_cache.table_dom.length;
+            var table_dom_item = {id: item_id, tracker: id, time: item.time, qualityBox: quality.qbox, quality: quality.value, url: item.url, title: item.title, hlTitle: title_highLight, category_id: item.category.id, size: item.size, seeds: item.seeds, leechs: item.leechs};
+            var_cache.table_dom.push(table_dom_item);
+            if (var_cache.counter[id][item.category.id] === undefined) {
+                var_cache.counter[id][item.category.id] = 0;
+            }
+            var_cache.counter[id][item.category.id]++;
+            tr_count++;
+        }
+        var_cache.counter[id].count = tr_count;
+        log_errors(tracker, errors);
+        updateCounts();
+        sendTop5();
+    }
     var writeResult = function(id, result, request) {
         setTrackerLoadingState(1, id);
         var tracker = var_cache.trackers[id].tracker;
@@ -687,6 +756,10 @@ var view = function() {
         var errors = [0, 0, 0, 0, 0, 0, 0, 0, 0];
         if (var_cache.counter[id] === undefined) {
             var_cache.counter[id] = {}
+        }
+        if (var_cache.backgroundMode !== undefined) {
+            bgReadResult(id, result, request);
+            return;
         }
         var tr_count = 0;
         for (var i = 0, item; item = result[i]; i++) {
@@ -1042,7 +1115,7 @@ var view = function() {
         return name.replace(var_cache.rm_retry,'$1$2');
     };
     var syntaxCacheRequest = function(request) {
-        var year = request.match(/[1-2]{1}[0-9]{3}/);
+        var year = request.match(var_cache.getYear);
         if (year !== null) {
             year = Math.max.apply(Math, year);
             if (year > var_cache.year + 5) {
@@ -1054,15 +1127,19 @@ var view = function() {
         }
         var_cache.syntaxCache = {};
         var_cache.syntaxCache.normalize_request = $.trim(request).replace(var_cache.rm_spaces, " ");
+        var_cache.syntaxCache.normalize_request_len = var_cache.syntaxCache.normalize_request.length;
         var safe_regexp = var_cache.syntaxCache.normalize_request.replace(var_cache.text2safe_regexp_text,"\\$1");
         var_cache.syntaxCache.words = safe_regexp.toLowerCase().split(' ');
         var_cache.syntaxCache.normalize_request_low = var_cache.syntaxCache.normalize_request.toLowerCase();
+        var_cache.syntaxCache.normalize_request_low_len = var_cache.syntaxCache.normalize_request_low.length;
         var_cache.syntaxCache.words_len = var_cache.syntaxCache.words.length;
         var_cache.syntaxCache.words_is_regexp = new RegExp(var_cache.syntaxCache.words.join('|'), "ig");
         if (year !== null) {
             var_cache.syntaxCache.year = year;
             var_cache.syntaxCache.normalize_request_no_year = $.trim(var_cache.syntaxCache.normalize_request.replace(new RegExp('\\s?'+year+'\\s?','g'),' ').replace(var_cache.rm_spaces, " "));
+            var_cache.syntaxCache.normalize_request_no_year_len = var_cache.syntaxCache.normalize_request_no_year.length;
             var_cache.syntaxCache.normalize_request_no_year_low = var_cache.syntaxCache.normalize_request_no_year.toLowerCase();
+            var_cache.syntaxCache.normalize_request_no_year_low_len = var_cache.syntaxCache.normalize_request_no_year_low.length;
         }
         var_cache.syntaxCache.word_rate = Math.round(200 / var_cache.syntaxCache.words_len);
         var_cache.syntaxCache.first_word_rate = Math.round( var_cache.syntaxCache.word_rate*1.25 );
@@ -1075,8 +1152,10 @@ var view = function() {
          * Выставляет рейтинг заголовку раздачи
          * Подсвечивает найденный текст в заголовке
          */
+        var bonus = 0;
         var words_len = var_cache.syntaxCache.words_len;
         var word_rate = var_cache.syntaxCache.word_rate;
+        var bonus_value = Math.round(word_rate / 2);
         var first_word_rate = var_cache.syntaxCache.first_word_rate;
         var year = var_cache.syntaxCache.year;
         var rate = var_cache.syntax_rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0, block: [], qbox: "+"};
@@ -1096,6 +1175,7 @@ var view = function() {
                 has_year = checkLeftRightSymbol(year, year_pos, name);
             }
         }
+        var symbol;
         var has_fullName = -1;
         if (year !== undefined) {
             has_fullName = name.indexOf(var_cache.syntaxCache.normalize_request_no_year);
@@ -1104,11 +1184,23 @@ var view = function() {
                     has_fullName = -1;
                 }
             }
+            if (has_fullName !== -1) {
+                symbol = name[has_fullName+var_cache.syntaxCache.normalize_request_no_year_len+1];
+                if ( symbol === '/' || symbol === '(' || symbol === '|') {
+                    bonus += bonus_value;
+                }
+            }
         } else {
             has_fullName = name.indexOf(var_cache.syntaxCache.normalize_request);
             if (has_fullName !== -1) {
                 if (checkLeftRightSymbol(var_cache.syntaxCache.normalize_request, has_fullName, name) === false) {
                     has_fullName = -1;
+                }
+            }
+            if (has_fullName !== -1) {
+                symbol = name[has_fullName+var_cache.syntaxCache.normalize_request_len+1];
+                if ( symbol === '/' || symbol === '(' || symbol === '|') {
+                    bonus += bonus_value;
                 }
             }
         }
@@ -1128,11 +1220,23 @@ var view = function() {
                         has_fullLowName = -1;
                     }
                 }
+                if (has_fullLowName !== -1) {
+                    symbol = name_low[has_fullLowName+var_cache.syntaxCache.normalize_request_no_year_low_len+1];
+                    if ( symbol === '/' || symbol === '(' || symbol === '|') {
+                        bonus += bonus_value;
+                    }
+                }
             } else {
                 has_fullLowName = name_low.indexOf(var_cache.syntaxCache.normalize_request_low);
                 if (has_fullLowName !== -1) {
                     if (checkLeftRightSymbol(var_cache.syntaxCache.normalize_request_low, has_fullLowName, name) === false) {
                         has_fullLowName = -1;
+                    }
+                }
+                if (has_fullLowName !== -1) {
+                    symbol = name_low[has_fullLowName+var_cache.syntaxCache.normalize_request_low_len+1];
+                    if ( symbol === '/' || symbol === '(' || symbol === '|') {
+                        bonus += bonus_value;
                     }
                 }
             }
@@ -1146,20 +1250,20 @@ var view = function() {
         var rateSet = false;
         if (has_year === true) {
             if (has_fullName === 0 || has_fullLowName === 0) {
-                rate.name = (words_len - 1) * word_rate + first_word_rate;
+                rate.name = (words_len - 1) * word_rate + first_word_rate + bonus;
                 rateSet = true;
             } else
             if (has_fullName !== -1 || has_fullLowName !== -1) {
-                rate.name = words_len * word_rate;
+                rate.name = words_len * word_rate + bonus;
                 rateSet = true;
             }
         } else {
             if (has_fullName === 0 || has_fullLowName === 0) {
-                rate.name = (words_len - 1) * word_rate + first_word_rate - ((exists_year)?word_rate:0);
+                rate.name = (words_len - 1) * word_rate + first_word_rate - ((exists_year)?word_rate:0) + bonus;
                 rateSet = true;
             } else
             if (has_fullName !== -1 || has_fullLowName !== -1) {
-                rate.name = words_len * word_rate - ((exists_year)?word_rate:0);
+                rate.name = words_len * word_rate - ((exists_year)?word_rate:0) + bonus;
                 rateSet = true;
             }
         }
@@ -1311,6 +1415,9 @@ var view = function() {
         return u2ddmmyyyy(utime);
     };
     var startFiltering = function() {
+        if (var_cache.backgroundMode !== undefined) {
+            return;
+        }
         var _filter = [0,0,0,0,0];
         var isEmpty = true;
         if (var_cache.keywordFilter !== undefined) {
@@ -1784,6 +1891,7 @@ var view = function() {
         result: writeResult,
         auth: writeTrackerAuth,
         loadingStatus: setTrackerLoadingState,
+        getQuality: getQuality,
         begin: function() {
             dom_cache.body = $('body');
             dom_cache.title = $('head').children('title');

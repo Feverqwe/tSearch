@@ -7,12 +7,17 @@ var explore = function() {
         calculateMovebleCache: {},
         resize_timer_work: 0,
         conteiner_width: undefined,
+        window_width: undefined,
         top_columns_num: undefined,
         kp_img_url: new RegExp('\\/film\\/([0-9]*)\\/'),
         kp_img_url2: new RegExp('.*film\\/([0-9]*).jpg'),
         imdb_img_url: new RegExp('.*\\/images\\/(.*)_V1.*'),
         getYear: new RegExp('.*\\([^\\(]*([1-2]{1}[0-9]{3})[^\\)]*\\).*','g'),
-        rmYear: new RegExp('(.*) \\([^\\(]*[0-9]{4}[^\\)]*\\).*')
+        rmYear: new RegExp('(.*) \\([^\\(]*[0-9]{4}[^\\)]*\\).*'),
+        //cache dom obj
+        qulityList: {},
+        qualityCache: JSON.parse( GetSettings('qualityCache') || '{}' ),
+        qualityCacheTimer: undefined
     };
     var dom_cache = {};
     var options = {
@@ -469,7 +474,7 @@ var explore = function() {
                     return '';
                 }
                 if (info.img !== undefined) {
-                    content_info.append($('<div>', {'class': 'a-poster'}).append($('<img>', {src: google_proxy + view.contentUnFilter(info.img)}).on('error', function(){
+                    content_info.append($('<div>', {'class': 'a-poster'}).append($('<img>', {src: google_proxy + view.contentUnFilter(info.img), alt: info.title}).on('error', function(){
                         $(this).css('display', 'none');
                     })));
                 }
@@ -557,6 +562,7 @@ var explore = function() {
             end = content_len;
         }
         var spanList = [];
+        var_cache.qulityList[type] = {};
         for (var index = from; index < end; index++) {
             var title = content[index].title;
             var search_link = 'index.html#?search='+title;
@@ -589,11 +595,17 @@ var explore = function() {
                     $('<div>',{'class': 'inFavorite', title: _lang.exp_in_fav}).data('item',{url: url, img: img_url, title: title})
                 ]
             }
+            var qualityText = '?';
+            if (var_cache.qualityCache[title] !== undefined) {
+                qualityText = var_cache.qualityCache[title].box;
+            }
+            var quality = $('<div>', {'class': 'quality', title: _lang.exp_q_fav}).append($('<span>', {text: qualityText})).data('type', type).data('index', index).data('title', title);
+            var_cache.qulityList[type][index] = quality;
             content_body.push(
                 $li.append(
                     $('<div>', {'class': 'picture'}).append(
                         menu,
-                        $('<div>', {'class': 'quality', title: _lang.exp_q_fav, text: '?'}),
+                        quality,
                         $('<a>', {'class': 'link', href: url, target: '_blank', title: _lang.exp_more}).data('title', title),
                         $('<a>',{href: search_link, title: title}).append(
                             $('<img>', {src: img_url})
@@ -744,7 +756,7 @@ var explore = function() {
         }
         var source = content_options[type];
         var date = getCacheDate(source.keepAlive);
-        if (cache.keepAlive === date) {
+        if (cache.keepAlive === date || navigator.onLine === false) {
             content_write(type, cache.content);
             return;
         }
@@ -773,7 +785,7 @@ var explore = function() {
         var cache = JSON.parse(GetSettings('topList') || '{}');
         var_cache.topList = cache;
         var date = getCacheDate([0,1,2,3,4,5,6]);
-        if (cache.keepAlive === date) {
+        if (cache.keepAlive === date || navigator.onLine === false) {
             topList_write();
             return;
         }
@@ -888,6 +900,73 @@ var explore = function() {
         dom_cache.body.children('style.'+'picture_width_'+type).remove();
         dom_cache.body.append( $('<style>',{'class': 'picture_width_'+type, text: picture_size+font_size}));
     };
+    var setQuality = function(type, index, quality, request) {
+        var quality_len = quality.length;
+        if (quality_len !== 0) {
+            var_cache.qualityCache[request] = {box: quality[0].qualityBox, quality: quality};
+            clearTimeout(var_cache.qualityCacheTimer);
+            var_cache.qualityCacheTimer = setTimeout(function(){
+                var n = 0;
+                var i;
+                for (i in var_cache.qualityCache) {
+                    n++;
+                }
+                var obj = var_cache.qualityCache;
+                if (n > 40) {
+                    obj = {};
+                    var from = n - 30;
+                    n = 0;
+                    for (i in var_cache.qualityCache) {
+                        if (var_cache.qualityCache.hasOwnProperty(i) === false) {
+                            continue;
+                        }
+                        if (n > from) {
+                            obj[i] = var_cache.qualityCache[i];
+                        }
+                        n++;
+                    }
+                }
+                SetSettings('qualityCache', JSON.stringify(obj));
+            }, 1000);
+        }
+        if (var_cache.qulityList[type][index] === undefined) {
+            return;
+        }
+        var $quality = var_cache.qulityList[type][index];
+        if (quality_len === 0) {
+            $quality.children('span').text('-');
+            return;
+        }
+        $quality.children('span').text( quality[0].qualityBox );
+        if ($quality.children('info_popup').length === 0) {
+            $quality.append( dom_cache.popup );
+            var btn_offset = $quality.offset();
+            var top = btn_offset.top+16;
+            var left = btn_offset.left - 150 + 16;
+            var left_pos = left;
+            if (var_cache.window_width === undefined) {
+                var_cache.window_width = dom_cache.window.width();
+            }
+            var corner_pos = 0;
+            if (left_pos + 300 > var_cache.window_width) {
+                left_pos = var_cache.window_width - 300;
+                corner_pos = 150 + (left - left_pos);
+            } else if ( left_pos < 0 ) {
+                left_pos = 0;
+                corner_pos = btn_offset.left + 8;
+            }
+            dom_cache.popup.offset({top: top, left: left_pos});
+            var popup = dom_cache.popup.children();
+            popup.children('div.corner').css('left',(corner_pos === 0)?'50%':(corner_pos+'px'));
+        }
+        var ul = popup.children('div.content').children('ul');
+        ul.get(0).textContent = '';
+        for (var i = 0, item; item = quality[i]; i++) {
+            ul.append( $('<li>').append(
+                $('<a>',{href: item.url, target: '_blank'}).html(item.hlTitle)
+            ));
+        }
+    };
     return {
         show: function() {
             if (dom_cache.explore !== undefined) {
@@ -899,6 +978,7 @@ var explore = function() {
             dom_cache.top = dom_cache.explore.children('div.top_search');
             dom_cache.body = $('body');
             dom_cache.window = $(window);
+            dom_cache.popup = dom_cache.explore.children('div.info_popup');
             if (options.hideTopSearch === 0) {
                 load_topList();
             }
@@ -988,9 +1068,6 @@ var explore = function() {
                 var $this = $(this);
                 var type = $this.data('type');
                 var page = var_cache.source[type].current_page;
-                if (var_cache.source[type].body === undefined) {
-                    return;
-                }
                 var content = var_cache['exp_cache_'+type].content;
                 var setup_body = var_cache.source[type].title.children('div.setup_body');
                 setup_body.children('select.item_count').children('option[value="'+listOptions[type].c+'"]').prop('selected', true);
@@ -1015,7 +1092,7 @@ var explore = function() {
             dom_cache.explore_ul.on('click', 'div.action > div.update', function(e){
                 var $this = $(this);
                 var type = $this.data('type');
-                if (var_cache.source[type].body === undefined) {
+                if (navigator.onLine === false) {
                     return;
                 }
                 var source = content_options[type];
@@ -1105,6 +1182,27 @@ var explore = function() {
             dom_cache.explore_ul.on('click', 'div.picture > a.link', function(e){
                 var $this = $(this);
                 _gaq.push(['_trackEvent', 'About', 'keyword', $this.data('title')]);
+            });
+            dom_cache.explore_ul.on('click', 'div.quality', function(e) {
+                var $this = $(this);
+                var type = $this.data('type');
+                var index = $this.data('index');
+                var title = $this.data('title');
+                $this.children('span').text('*');
+                view.getQuality(title, type, index);
+            });
+            dom_cache.explore_ul.on('mouseover', 'div.quality', function(e) {
+                var $this = $(this);
+                var title = $this.data('title');
+                if (var_cache.qualityCache[title] === undefined) {
+                    return;
+                }
+                var type = $this.data('type');
+                var index = $this.data('index');
+                setQuality(type, index, var_cache.qualityCache[title].quality,title)
+            });
+            dom_cache.explore_ul.on('click', 'div.quality > div.info_popup', function(e) {
+                e.stopPropagation();
             });
             dom_cache.explore_ul.on('change', 'div.setup_body > select.item_count', function(e){
                 e.preventDefault();
@@ -1199,6 +1297,7 @@ var explore = function() {
                     var_cache.resize_timer_work = 1;
                     var cacheList = {};
                     var_cache.conteiner_width = dom_cache.explore_ul.width();
+                    var_cache.window_width = dom_cache.window.width();
                     var columns_num = (var_cache.conteiner_width > 1275) ? 4 : 3;
                     if (options.hideTopSearch === 0 && var_cache.top_columns_num !== columns_num) {
                         topList_write();
@@ -1257,6 +1356,7 @@ var explore = function() {
         },
         getDesc: function(request) {
             return about_keyword(k);
-        }
+        },
+        setQuality: setQuality
     };
 }();
