@@ -5,11 +5,12 @@ var explore = function() {
         // resize_timer
         resize_timer: undefined,
         calculateMovebleCache: {},
-        resize_timer_work: 0
+        resize_timer_work: 0,
+        conteiner_width: undefined,
+        top_columns_num: undefined
     };
     var dom_cache = {};
     var options = {
-        google_proxy: parseInt(GetSettings('google_proxy') || 0),
         use_english_postername: parseInt(GetSettings('use_english_postername') || 0),
         top_cache: JSON.parse(GetSettings('topCache') || "{}"),
         kp_folder_id: parseInt(GetSettings('kinopoisk_f_id') || 1),
@@ -494,14 +495,14 @@ var explore = function() {
         if (page === undefined || page < 0) {
             page = 0;
         }
-        var options = listOptions[type];
-        var line_count = options.c;
+        var _options = listOptions[type];
+        var line_count = _options.c;
         var vc_source = var_cache.source[type];
         var source = content_options[type];
-        if (source.conteiner_width === undefined) {
-            source.conteiner_width = vc_source.li.width();
+        if (var_cache.conteiner_width === undefined) {
+            var_cache.conteiner_width = vc_source.li.width();
         }
-        var item_count = Math.ceil(source.conteiner_width / (options.w + 10*2)) - 1;
+        var item_count = Math.ceil(var_cache.conteiner_width / (_options.w + 10*2)) - 1;
         var onpage_count = item_count * line_count;
         vc_source.onpage_count = onpage_count;
         if (vc_source.pages === undefined || update_pages !== undefined) {
@@ -588,7 +589,7 @@ var explore = function() {
                     $('<div>', {'class': 'picture'}).append(
                         menu,
                         $('<div>', {'class': 'quality', title: _lang.exp_q_fav, text: '?'}),
-                        $('<a>', {'class': 'link', href: url, target: '_blank', title: _lang.exp_btn_open}),
+                        $('<a>', {'class': 'link', href: url, target: '_blank', title: _lang.exp_more}).data('title', title),
                         $('<a>',{href: search_link, title: title}).append(
                             $('<img>', {src: img_url})
                         )
@@ -617,8 +618,56 @@ var explore = function() {
         vc_source.body.get(0).textContent = '';
         vc_source.body.append(content_body);
         if (spanList.length > 0) {
-            calculateMoveble(spanList, options.w, 'title');
+            calculateMoveble(spanList, _options.w, 'title');
         }
+    };
+    var topList_write = function() {
+        if (var_cache.conteiner_width === undefined) {
+            var_cache.conteiner_width = dom_cache.explore_ul.width();
+        }
+        var columns_num = (var_cache.conteiner_width > 1275) ? 4 : 3;
+        var_cache.top_columns_num = columns_num;
+        if (var_cache.topList === undefined || var_cache.topList.content === undefined || var_cache.topList.content.length === 0) {
+            return;
+        }
+        var dot = '';
+        var sub_style = '';
+        var num = 1;
+        var column = 1;
+        var request = '';
+        var content = $('<ul>', {'class': 'c' + columns_num});
+        for (var i = 0, item; item = var_cache.topList.content[i]; i++) {
+            if (column > 10) {
+                break;
+            }
+            dot = '';
+            if (num % columns_num === 0) {
+                if (column < 6) {
+                    sub_style = ' t' + column;
+                } else {
+                    sub_style = '';
+                }
+                dot = $('<div>', {'class': 'info' + sub_style});
+            }
+            request = item.text;
+            if (item.year > 0) {
+                request += ' ' + item.year;
+            }
+            content.append(
+                $('<li>', {'class': 'l' + column}).append(
+                    dot,
+                    $('<span>', {title: request}).append(
+                        $('<a>', {href: '#?search=' + request, text: item.text})
+                    )
+                )
+            );
+            if (num % columns_num === 0) {
+                column++;
+            }
+            num++;
+        }
+        dom_cache.top.get(0).textContent = '';
+        dom_cache.top.append(content);
     };
     var xhr_dune = function(type, source) {
         source.xhr_wait_count--;
@@ -639,6 +688,13 @@ var explore = function() {
         source.xhr_content.forEach(function(item){
             content = content.concat(item[1]);
         });
+        if (content.length === 0) {
+            if (var_cache['exp_cache_'+type].content !== undefined) {
+                content = var_cache['exp_cache_'+type].content;
+            } else {
+                return;
+            }
+        }
         content_write(type, content);
         var_cache['exp_cache_'+type].content = content;
         SetSettings('exp_cache_'+type, JSON.stringify(var_cache['exp_cache_'+type]));
@@ -686,7 +742,7 @@ var explore = function() {
             content_write(type, cache.content);
             return;
         }
-        var_cache['exp_cache_'+type] = {keepAlive: date};
+        var_cache['exp_cache_'+type].keepAlive = date;
         var page_mode = false;
         if (source.page_start !== undefined && source.page_end !== undefined) {
             page_mode = true;
@@ -705,6 +761,42 @@ var explore = function() {
         for (var i = source.page_start; i <= source.page_end; i++) {
             xhr_send(type, source, i, page_mode);
         }
+    };
+    var load_topList = function() {
+        var cache = JSON.parse(GetSettings('topList') || '{}');
+        var_cache.topList = cache;
+        var date = getCacheDate([0,1,2,3,4,5,6]);
+        if (cache.keepAlive === date) {
+            topList_write();
+            return;
+        }
+        var_cache.topList.keepAlive = date;
+        $.ajax({
+            url: "http://antoshka.on.ufanet.ru/top.json",
+            dataType: 'JSON',
+            cache: false,
+            success: function(data) {
+                var keywords = data.keywords;
+                keywords.sort(function(a, b) {
+                    if (a.weight > b.weight) {
+                        return -1;
+                    }
+                    if (a.weight === b.weight) {
+                        return 0;
+                    }
+                    return 1;
+                });
+                var_cache.topList.content = keywords;
+                topList_write();
+                SetSettings('topList', JSON.stringify(var_cache.topList));
+            },
+            error: function() {
+                if (var_cache.topList.content === undefined) {
+                    return;
+                }
+                topList_write();
+            }
+        });
     };
     var calculateMoveble = function (title, size, classname) {
         /*
@@ -800,6 +892,9 @@ var explore = function() {
             dom_cache.top = dom_cache.explore.children('div.top_search');
             dom_cache.body = $('body');
             dom_cache.window = $(window);
+            if (options.hideTopSearch === 0) {
+                load_topList();
+            }
             $.each(listOptions, function(type, item){
                 if (item.e === 0) {
                     return 1;
@@ -992,6 +1087,10 @@ var explore = function() {
                         SetSettings('exp_cache_'+type, JSON.stringify(var_cache['exp_cache_'+type]));
                     });
             });
+            dom_cache.explore_ul.on('click', 'div.picture > a.link', function(e){
+                var $this = $(this);
+                _gaq.push(['_trackEvent', 'About', 'keyword', $this.data('title')]);
+            });
             dom_cache.explore_ul.on('change', 'div.setup_body > select.item_count', function(e){
                 e.preventDefault();
                 var $this = $(this);
@@ -1084,28 +1183,31 @@ var explore = function() {
                     }
                     var_cache.resize_timer_work = 1;
                     var cacheList = {};
-                    var conteiner_width = dom_cache.explore_ul.width();
+                    var_cache.conteiner_width = dom_cache.explore_ul.width();
+                    var columns_num = (var_cache.conteiner_width > 1275) ? 4 : 3;
+                    if (options.hideTopSearch === 0 && var_cache.top_columns_num !== columns_num) {
+                        topList_write();
+                    }
                     for (var type in listOptions) {
                         if (listOptions.hasOwnProperty(type) === false
                             || listOptions[type].e === 0
                             || var_cache.source[type].body === undefined) {
                             continue;
                         }
-                        var options = listOptions[type];
+                        var _options = listOptions[type];
                         var source = content_options[type];
-                        source.conteiner_width = conteiner_width;
                         var currentCount = source.onpage_count;
-                        if (cacheList[options.w] !== undefined) {
-                            if (currentCount === cacheList[options.w]) {
+                        if (cacheList[_options.w] !== undefined) {
+                            if (currentCount === cacheList[_options.w]) {
                                 continue;
                             }
                             content_write(type, var_cache['exp_cache_'+type].content, var_cache.source[type].current_page, 1);
                             continue;
                         }
-                        var line_count = options.c;
-                        var item_count = Math.ceil(source.conteiner_width / (options.w + 10*2)) - 1;
+                        var line_count = _options.c;
+                        var item_count = Math.ceil(var_cache.conteiner_width / (_options.w + 10*2)) - 1;
                         var onpage_count = item_count * line_count;
-                        cacheList[options.w] = onpage_count;
+                        cacheList[_options.w] = onpage_count;
                         if (currentCount === onpage_count) {
                             continue;
                         }
@@ -1131,7 +1233,6 @@ var explore = function() {
                     }
                 });
             }
-            dom_cache.explore.show();
         },
         hide: function(){
             if (dom_cache.explore === undefined) {

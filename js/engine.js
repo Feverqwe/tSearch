@@ -12,7 +12,6 @@ var engine = function() {
         search_popup: {v: 1, t: "checkbox"},
         AutoComplite_opt: {v: 1, t: "checkbox"},
         use_english_postername: {v: 0, t: "checkbox"},
-        google_proxy: {v: 0, t: "checkbox"},
         google_analytics: {v: 0, t: "checkbox"},
         autoSetCat: {v: 1, t: "checkbox"},
         allow_get_description: {v: 1, t: "checkbox"},
