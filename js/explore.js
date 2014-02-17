@@ -700,6 +700,7 @@ var explore = function() {
                 return;
             }
         }
+        var_cache.source[type].li.removeClass('loading');
         content_write(type, content);
         var_cache['exp_cache_'+type].content = content;
         SetSettings('exp_cache_'+type, JSON.stringify(var_cache['exp_cache_'+type]));
@@ -747,6 +748,7 @@ var explore = function() {
             content_write(type, cache.content);
             return;
         }
+        var_cache.source[type].li.addClass('loading');
         var_cache['exp_cache_'+type].keepAlive = date;
         var page_mode = false;
         if (source.page_start !== undefined && source.page_end !== undefined) {
@@ -957,11 +959,11 @@ var explore = function() {
             });
             dom_cache.explore_ul.on('click', 'div.collapses', function(e) {
                 e.preventDefault();
+                var $this = $(this);
+                var type = $this.data('type');
                 if (var_cache.isCollapsing === 1) {
                     return;
                 }
-                var $this = $(this);
-                var type = $this.data('type');
                 if ($this.hasClass('down') === true) {
                     listOptions[type].s = 0;
                     $this.removeClass('down').addClass('up');

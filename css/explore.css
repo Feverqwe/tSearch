@@ -11,6 +11,10 @@ div.explore ul {
 div.explore div.head > div {
     display: inline-block;
 }
+
+div.explore ul > li.loading div.head div.move {
+    background: url(../images/loading.gif) no-repeat center;
+}
 div.explore ul.page_body.hide {
     display: none;
 }
@@ -20,15 +24,13 @@ div.explore ul.page_body > li {
 div.explore ul > li.collapsed > ul {
     display: none;
 }
+div.explore ul > li.collapsing > div,
 div.explore ul > li.collapsed > div {
     border-bottom: 0;
 }
+div.explore ul > li.collapsing > ul,
 div.explore ul > li.collapsed > div > div.action {
     display: none;
-}
-div.explore ul > li.collapsing > ul {
-    opacity: 0;
-    transition: opacity .2s;
 }
 div.explore ul > li.collapsing > div > div.action {
     opacity: 0;
