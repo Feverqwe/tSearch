@@ -915,9 +915,9 @@ var explore = function() {
             delete obj[arr[i]];
         }
     };
-    var setQuality = function(type, index, quality, request) {
+    var setQuality = function(type, index, quality, request, cache) {
         var quality_len = quality.length;
-        if (quality_len !== 0) {
+        if (quality_len !== 0 && cache === undefined) {
             if (type === 'favorites' || type === 'kp_favorites') {
                 var_cache.qualityCache[request] = quality;
             }
@@ -1213,7 +1213,10 @@ var explore = function() {
                 }
                 var type = $this.data('type');
                 var index = $this.data('index');
-                setQuality(type, index, var_cache.qualityCache[title],title)
+                setQuality(type, index, var_cache.qualityCache[title], title, 1)
+            });
+            dom_cache.explore_ul.on('mouseover', 'div.quality > div.info_popup', function(e) {
+                e.stopPropagation();
             });
             dom_cache.explore_ul.on('click', 'div.quality > div.info_popup', function(e) {
                 e.stopPropagation();

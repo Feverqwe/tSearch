@@ -693,17 +693,98 @@ var view = function() {
         }
         return filter;
     };
-    var sendTop5 = function(){
-        var_cache.table_dom.sort(function(a,b){
-            if (a.quality === b.quality) {
+    var arraySortBy = function(arr, by) {
+        arr.sort(function(a,b){
+            if (a[by] === b[by]) {
                 return 0;
             } else
-            if (a.quality > b.quality) {
+            if (a[by] > b[by]) {
                 return -1;
             }
             return 1;
         });
-        explore.setQuality(var_cache.backgroundMode.type, var_cache.backgroundMode.index, var_cache.table_dom.slice(0,5), var_cache.currentRequest);
+        return arr;
+    }
+    var sendTop5 = function(){
+        var_cache.table_dom = arraySortBy(var_cache.table_dom, 'quality');
+        var obj = {};
+        for (var i in var_cache.counter) {
+            if (var_cache.counter.hasOwnProperty(i) === false) {
+                continue;
+            }
+            for (var id in var_cache.counter[i]) {
+                if (var_cache.counter[i].hasOwnProperty(id) === false || id === 'count') {
+                    continue;
+                }
+                if (obj[id] === undefined) {
+                    obj[id] = 0;
+                }
+                obj[id] +=  var_cache.counter[i][id];
+            }
+        }
+        var arr = [];
+        for (var i in obj) {
+            if (obj.hasOwnProperty(i) === false) {
+                continue;
+            }
+            arr.push([parseInt(i), obj[i]]);
+        }
+        arr.sort(function(a,b){
+            if (a[1] === b[1]) {
+                return 0;
+            } else if (a[1] > b[1]) {
+                return -1;
+            }
+            return 1;
+        });
+        var items = [];
+        var sum = var_cache.table_dom.length;
+        if (sum  > 5){
+            for (var i = 0, item; item = arr[i]; i++) {
+                if (item[1]/sum*100 < 60) {
+                    console.log('skip', item, sum)
+                    continue;
+                }
+                if (items.length > 4) {
+                    break;
+                }
+                var arr_in_cat = var_cache.table_dom.filter(function(a){
+                    return a.category_id === item[0];
+                });
+                if (item[0] === 0 || item[0] === 8) {
+                    arr_in_cat = arraySortBy(arr_in_cat, 'time');
+                }
+                if (i === 0) {
+                    if (item[1] > 1) {
+                        items = items.concat(arr_in_cat.slice(0, 2));
+                    } else {
+                        items = items.concat(arr_in_cat.slice(0, 1));
+                    }
+                } else {
+                    items = items.concat(arr_in_cat.slice(0, 1));
+                }
+            }
+            if (items.length < 5) {
+                for (var i = 0, item; item = var_cache.table_dom[i]; i++) {
+                    if (items.length > 4) {
+                        break;
+                    }
+                    var found = false;
+                    items.forEach(function(itm){
+                        if (itm.url === item.url) {
+                            found = true;
+                            return 0;
+                        }
+                    });
+                    if (found === false) {
+                        items.push(item);
+                    }
+                }
+            }
+        } else {
+            items = var_cache.table_dom;
+        }
+        explore.setQuality(var_cache.backgroundMode.type, var_cache.backgroundMode.index, items, var_cache.currentRequest);
     }
     var bgReadResult = function(id, result, request) {
         var tracker = var_cache.trackers[id].tracker;
@@ -732,7 +813,7 @@ var view = function() {
                 item.category.id = autosetCategory(quality, item.category.title);
             }
             var item_id = var_cache.table_dom.length;
-            var table_dom_item = {qualityBox: quality.qbox, url: item.url, hlTitle: title_highLight, sizeText: bytesToSize(item.size)};
+            var table_dom_item = {qualityBox: quality.qbox, time: item.time, quality: quality.value, url: item.url, hlTitle: title_highLight, sizeText: bytesToSize(item.size), category_id: item.category.id};
             var_cache.table_dom.push(table_dom_item);
             if (var_cache.counter[id][item.category.id] === undefined) {
                 var_cache.counter[id][item.category.id] = 0;
