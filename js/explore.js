@@ -706,6 +706,7 @@ var explore = function() {
             if (var_cache['exp_cache_'+type].content !== undefined) {
                 content = var_cache['exp_cache_'+type].content;
             } else {
+                var_cache.source[type].li.removeClass('loading');
                 return;
             }
         }
@@ -1126,6 +1127,10 @@ var explore = function() {
                         url: source.url.replace('%page%', page).replace('%category%', options.kp_folder_id),
                         success: function(data) {
                             var data = content_parser.kp_favorites(data);
+                            if (data === undefined) {
+                                $this.addClass('error');
+                                return;
+                            }
                             var new_count = 0;
                             for (var i = 0, item; item = data[i]; i++) {
                                 if (w_check_obj[item.url] !== undefined) {
