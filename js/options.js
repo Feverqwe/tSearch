@@ -315,6 +315,20 @@ var options = function() {
     };
     var getBackup = function() {
         var data = $.extend({},localStorage);
+        delete data.exp_cache_kp_favorites;
+        delete data.exp_cache_kp_in_cinema;
+        delete data.exp_cache_kp_popular;
+        delete data.exp_cache_kp_serials;
+        delete data.exp_cache_imdb_in_cinema;
+        delete data.exp_cache_imdb_popular;
+        delete data.exp_cache_imdb_serials;
+        delete data.exp_cache_gg_games_top;
+        delete data.exp_cache_gg_games_new;
+        delete data.top_list;
+        delete data.click_history;
+        delete data.history;
+        delete data.qualityBoxCache;
+        delete data.qualityCache;
         /*
         delete st['explorerCache'];
         delete st['topCache'];
@@ -324,7 +338,7 @@ var options = function() {
         */
         var json = JSON.stringify(data);
         dom_cache.textarea_backup.val(json);
-        return JSON.stringify(json);
+        return json;
     };
     var settingsRestore = function(text) {
         try {
@@ -362,6 +376,83 @@ var options = function() {
             content.push($item);
         });
         dom_cache.tracker_list.prepend(content);
+    };
+    var makePartedBackup = function(chank, content) {
+        var content_len = content.length;
+        var chank_len = 1024 - (chank + "000").length;
+        var number_of_part = Math.floor(content_len / chank_len);
+        if (number_of_part >= 512 || content_len >= 102400) {
+            console.log('Can\'t save item', chank,', very big size!');
+            return;
+        }
+        var req_exp = new RegExp('.{1,' + chank_len + '}', 'g');
+        content = 'LZ' + LZString.compressToBase64(content);
+        var arr = content.match(req_exp);
+        var arr_l = arr.length;
+        var obj = {};
+        for (var i = 0; i < arr_l; i++) {
+            obj[chank + i] = arr[i];
+        }
+        obj[chank + "inf"] = arr_l;
+        obj[chank + arr_l] = "END";
+        return obj;
+    };
+    var clear_broken = function(chank, obj, len) {
+        var chank_len = chank.length;
+        var rm_list = [];
+        $.each(obj, function(k) {
+            if (k.substr(0, chank_len) !== chank) {
+                return 1;
+            }
+            if (len === undefined) {
+                rm_list.push(k);
+                return 1;
+            }
+            var index = k.substr(chank_len);
+            if (index !== "inf" && index > len) {
+                rm_list.push(k);
+            }
+        });
+        if (rm_list.length > 0) {
+            chrome.storage.sync.remove(rm_list);
+            console.log("Garbage: ", rm_list.length);
+        }
+    };
+    var getPartedBackup = function(chank, cb) {
+        chrome.storage.sync.get(function(data) {
+            var content_len = data[chank + 'inf'];
+            if (content_len === undefined) {
+                console.log("Item not found!", chank);
+                clear_broken(chank, data, content_len);
+                cb(undefined);
+                return;
+            }
+            var isBroken = 0;
+            var content = '';
+            for (var i = 0; i < content_len; i++) {
+                var item = data[chank + i];
+                if (item === undefined) {
+                    console.log("Item is broken!", chank, "Chank", i);
+                    isBroken = 1;
+                    break;
+                }
+                content += item;
+            }
+            if (data[chank + content_len] !== "END") {
+                isBroken = 1;
+            }
+            if (isBroken === 1) {
+                clear_broken(chank, data, undefined);
+            }
+            if (isBroken) {
+                cb(undefined);
+                return;
+            }
+            if (content.substr(0, 2) === 'LZ') {
+                content = LZString.decompressFromBase64(content.substr(2));
+            }
+            cb(content);
+        });
     };
     return {
         begin: function() {
@@ -452,25 +543,31 @@ var options = function() {
                     chrome.storage.sync.clear();
                 });
                 dom_cache.save_in_cloud.on('click', function() {
-                    /*
                     var obj = makePartedBackup("bk_ch_", getBackup());
                     if (obj === undefined) {
                         return;
                     }
-                    chrome.storage.sync.set(obj);
-                    getPartedBackup(1);
-
-                    $(this).val(_lang.settings[70]);
-                    setTimeout(function() {
-                        $('input[name="save_in_cloud"]').val(_lang.settings[68]);
-                    }, 3000);
-                    $('input[name="get_from_cloud"]').get(0).disabled = false;
-                    */
+                    var _this = this;
+                    chrome.storage.sync.set(obj, function(){
+                        getPartedBackup("bk_ch_", function(content){
+                            if (content === undefined) {
+                                dom_cache.get_from_cloud.prop('disabled', true);
+                            }
+                            $(_this).val(_lang.settings[70]);
+                            setTimeout(function() {
+                                dom_cache.save_in_cloud.val(_lang.settings[68]);
+                            }, 3000);
+                            dom_cache.get_from_cloud.prop('disabled', false);
+                        });
+                    });
                 });
                 dom_cache.get_from_cloud.on('click', function() {
-                    /*
-                    getPartedBackup();
-                    */
+                    getPartedBackup("bk_ch_", function(content){
+                        if (content === undefined) {
+                            return;
+                        }
+                        dom_cache.textarea_restore.val(content);
+                    });
                 });
                 chrome.storage.sync.get("bk_ch_inf", function(val) {
                     if (val.bk_ch_inf !== undefined) {
