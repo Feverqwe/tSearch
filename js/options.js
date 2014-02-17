@@ -324,7 +324,7 @@ var options = function() {
         delete data.exp_cache_imdb_serials;
         delete data.exp_cache_gg_games_top;
         delete data.exp_cache_gg_games_new;
-        delete data.top_list;
+        delete data.topList;
         delete data.click_history;
         delete data.history;
         delete data.qualityBoxCache;
@@ -347,10 +347,14 @@ var options = function() {
             alert(_lang.str33 + "\n" + err);
             return;
         }
-        var search_history = localStorage.search_history;
+        var click_history = localStorage.click_history;
+        var search_history = localStorage.history;
         localStorage.clear();
         if (search_history !== undefined) {
-            localStorage.search_history = search_history;
+            localStorage.history = history;
+        }
+        if (click_history !== undefined) {
+            localStorage.click_history = click_history;
         }
         for (var item in data) {
             if (data.hasOwnProperty(item) === false) {
@@ -377,7 +381,7 @@ var options = function() {
         });
         dom_cache.tracker_list.prepend(content);
     };
-    var makePartedBackup = function(chank, content) {
+    var savePartedBackup = function(chank, content, cb) {
         var content_len = content.length;
         var chank_len = 1024 - (chank + "000").length;
         var number_of_part = Math.floor(content_len / chank_len);
@@ -395,7 +399,7 @@ var options = function() {
         }
         obj[chank + "inf"] = arr_l;
         obj[chank + arr_l] = "END";
-        return obj;
+        chrome.storage.sync.set(obj, cb);
     };
     var clear_broken = function(chank, obj, len) {
         var chank_len = chank.length;
@@ -529,7 +533,7 @@ var options = function() {
                 // Opera 12
                 dom_cache.search_popup.closest('ul').hide();
             }
-            if (isChromeum && chrome.extension) {
+            if (isChromeum && chrome.extension !== undefined) {
                 //Chromeum extension
                 var bgp = chrome.extension.getBackgroundPage();
                 if (bgp._type_ext) {
@@ -537,18 +541,14 @@ var options = function() {
                 }
                 dom_cache.search_popup.closest('ul').hide();
             }
-            if (isChromeum && chrome.storage) {
+            if (isChromeum && chrome.storage !== undefined) {
                 // Chromeum with storage
                 dom_cache.clear_cloud.on('click', function() {
                     chrome.storage.sync.clear();
                 });
                 dom_cache.save_in_cloud.on('click', function() {
-                    var obj = makePartedBackup("bk_ch_", getBackup());
-                    if (obj === undefined) {
-                        return;
-                    }
                     var _this = this;
-                    chrome.storage.sync.set(obj, function(){
+                    savePartedBackup("bk_ch_", getBackup(), function(){
                         getPartedBackup("bk_ch_", function(content){
                             if (content === undefined) {
                                 dom_cache.get_from_cloud.prop('disabled', true);
