@@ -20,6 +20,20 @@ div.explore ul.page_body > li {
 div.explore ul > li.collapsed > ul {
     display: none;
 }
+div.explore ul > li.collapsed > div {
+    border-bottom: 0;
+}
+div.explore ul > li.collapsed > div > div.action {
+    display: none;
+}
+div.explore ul > li.collapsing > ul {
+    opacity: 0;
+    transition: opacity .2s;
+}
+div.explore ul > li.collapsing > div > div.action {
+    opacity: 0;
+    transition: opacity .2s;
+}
 div.explore ul > li.no_items {
     display: none;
 }
@@ -384,9 +398,11 @@ div.top_search ul.c4 li {
 div.top_search a {
     color: #0051D8;
     text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-bottom-color .2s;
 }
 div.top_search a:hover {
-    border-bottom: 1px solid #0051D8;
+    border-bottom-color: #0051D8;
 }
 div.top_search .info {
     position: absolute;

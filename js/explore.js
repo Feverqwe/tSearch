@@ -957,12 +957,20 @@ var explore = function() {
             });
             dom_cache.explore_ul.on('click', 'div.collapses', function(e) {
                 e.preventDefault();
+                if (var_cache.isCollapsing === 1) {
+                    return;
+                }
                 var $this = $(this);
                 var type = $this.data('type');
                 if ($this.hasClass('down') === true) {
                     listOptions[type].s = 0;
                     $this.removeClass('down').addClass('up');
-                    var_cache.source[type].li.addClass('collapsed');
+                    var_cache.source[type].li.addClass('collapsing');
+                    var_cache.isCollapsing = 1;
+                    setTimeout(function(){
+                        var_cache.isCollapsing = undefined;
+                        var_cache.source[type].li.removeClass('collapsing').addClass('collapsed');
+                    }, 200);
                 } else {
                     listOptions[type].s = 1;
                     $this.removeClass('up').addClass('down');
