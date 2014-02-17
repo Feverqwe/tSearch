@@ -1349,7 +1349,7 @@ var explore = function() {
                         content_write(type, var_cache['exp_cache_'+type].content, var_cache.source[type].current_page, 1);
                     }
                     var_cache.resize_timer_work = 0;
-                }, 100);
+                }, 250);
             });
             if (GetSettings('allow_favorites_sync') === "1" && window.chrome !== undefined && chrome.storage) {
                 chrome.storage.onChanged.addListener(function(changes) {
