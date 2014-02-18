@@ -1851,6 +1851,9 @@ var view = function() {
     };
     var readUrl = function(history) {
         var hash = window.location.hash;
+        if (hash.substr(0, 3) === '#s=') {
+            hash = '#?search='+hash.substr(3);
+        }
         var hash_len = hash.length;
         var item, i;
         hash = hash.substr(hash.indexOf('?')+1);
