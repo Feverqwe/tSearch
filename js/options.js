@@ -808,10 +808,7 @@ var options = function() {
     };
 }();
 $(function() {
-    if (window.torrent_lib['rutracker'] !== undefined) {
-        window.torrent_lib_min = 1;
-    }
-    if (torrent_lib_min === 0) {
+    if (window.torrent_lib_min !== 1) {
         setTimeout(function(){
             options.begin();
         }, 100);

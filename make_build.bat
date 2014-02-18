@@ -14,7 +14,7 @@ xcopy .\css .\build\css\ /E
 copy .\*.html .\build\.
 copy .\*.json .\build\.
 
-java -jar compiler.jar --js .\js\torrent_lib.js^
+java -jar compiler.jar --js .\js\build.js --js .\js\torrent_lib.js^
  --js .\tracker\anidub.js --js .\tracker\katushka.js --js .\tracker\rustorka.js --js .\tracker\bestrepack.js^
  --js .\tracker\kickass.js --js .\tracker\rutor.js --js .\tracker\bigfangroup.js --js .\tracker\kinozal.js^
  --js .\tracker\rutracker.js --js .\tracker\bitsnoop.js --js .\tracker\libertorrent.js --js .\tracker\tapochek.js^
@@ -63,7 +63,7 @@ java -jar yuicompressor-2.4.8.jar .\ff_o\firefox\chrome\content\css\popup.css -o
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\storage.js --js_output_file .\build_firefox\chrome\content\js\storage.js
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\popup.js --js_output_file .\build_firefox\chrome\content\js\popup.js
 java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\counter.js --js_output_file .\build_firefox\chrome\content\js\counter.js
-java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\buttons.js --js_output_file .\build_firefox\chrome\content\js\buttons.js
+java -jar compiler.jar --js .\ff_o\firefox\chrome\content\js\button.js --js_output_file .\build_firefox\chrome\content\js\button.js
 
 java -jar htmlcompressor-1.5.3.jar -t html .\ff_o\firefox\chrome\content\popup.html -o .\build_firefox\chrome\content\popup.html
 
@@ -79,6 +79,8 @@ del .\build_firefox\chrome\content\js\background.js
 xcopy .\build .\build_opera\build\ /E
 del .\build_opera\build\manifest.json
 del .\build_opera\build\js\background.js
+del .\build_opera\build\js\counter.js
+del .\build_opera\build\js\storage.js
 rd /S /Q .\build_opera\build\_locales
 xcopy .\ff_o\opera\* .\build_opera\. /E
 

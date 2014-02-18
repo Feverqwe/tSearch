@@ -956,8 +956,8 @@ var view = function() {
         table_sort();
         updateCounts();
     };
-    var checkForSymbol = function(char) {
-        var code = char.charCodeAt(0);
+    var checkForSymbol = function(_char) {
+        var code = _char.charCodeAt(0);
         if (isNaN(code)) {
             return 1;
         }
@@ -2450,10 +2450,7 @@ var view = function() {
     }
 }();
 $(function(){
-    if (window.torrent_lib['rutracker'] !== undefined) {
-        window.torrent_lib_min = 1;
-    }
-    if (torrent_lib_min === 0) {
+    if (window.torrent_lib_min !== 1) {
         setTimeout(function(){
             view.begin();
         }, 100);

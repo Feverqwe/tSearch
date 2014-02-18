@@ -19,7 +19,7 @@ var engine = function() {
         sub_select_enable: {v: 1, t: "checkbox"},
         kinopoisk_f_id: {v: 1, t: "number"},
         filter_panel_to_left: {v: 1, t: "checkbox"},
-        hideTopSearch: {v: 0, t: "checkbox"},
+        hideTopSearch: {v: 0, t: "checkbox"}
     };
     var def_listOptions = {
         favorites: { e: 1, s: 1, w: 100, c: 1 },
@@ -38,7 +38,7 @@ var engine = function() {
         block_src:   new RegExp(' src=([\'"]?)','img'),
         unblock_src: new RegExp('data:image\\/gif,base64#blockrurl#','mg'),
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
-        rn: new RegExp('[\\r\\n]+','g'),
+        rn: new RegExp('[\\r\\n]+','g')
     };
     var historyList = JSON.parse(GetSettings('history') || '[]');
     var isFF = window.Application !== undefined && Application.name === "Firefox";
