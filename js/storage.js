@@ -18,11 +18,8 @@ var GetSettings = function(key) {
             if (data.exp_cache_favorites === undefined) {
                 return;
             }
-            var old_data = localStorage[key];
-            if (old_data !== data.exp_cache_favorites) {
-                explore.updateFavorites(data.exp_cache_favorites);
-                localStorage[key] = data.exp_cache_favorites;
-            }
+            localStorage[key] = data.exp_cache_favorites;
+            explore.updateFavorites(data.exp_cache_favorites);
         });
     }
     return localStorage[key];
