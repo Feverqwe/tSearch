@@ -70,49 +70,53 @@ torrent_lib.thepiratebay = function () {
             s = s[1] + s[2];
             return mackcalcSize(s);
         };
-        var makecalcTime = function (t) {
-            t = t.replace(/\s+/g, ' ');
-            if (t.split('.').length === 2 || (/mins? ago/).test(t)) {
-                //мин назад
-                var min_out = parseInt(t.replace(/([0-9]*).*/, '$1')) * 60;
-                return Math.round((new Date()).getTime() / 1000) - min_out;
-            } else {
-                var t_time = t.replace(/.*?([0-9]*):([0-9]*)$/, '$1:$2');
-                var t_date = t.replace(' ' + t_time, '');
-                var now_date = new Date();
-                var year = now_date.getFullYear();
-                if (t_date.split('-').length === 1) {
-                    //Вчера 20:38
-                    //Сегодня 12:32
-                    var date_td = now_date.getDate();
-                    var month_td = now_date.getMonth();
-                    var yt_date = new Date((Math.round(now_date.getTime() / 1000) - 24 * 60 * 60) * 1000);
-                    var date_yt = yt_date.getDate();
-                    var month_yt = yt_date.getMonth();
-                    t_date = t_date.replace('Вчера', month_yt + ' ' + date_yt).replace('Сегодня', month_td + ' ' + date_td).replace(t_date, month_td + ' ' + date_td);
-                } else {
-                    var month = t_date.split('-');
-                    var date = month[1];
-                    var month = month[0];
-                    var month_m = parseInt(month) - 1;
-                    var date_m = parseInt(date);
-                    t_date = t_date.replace(month + '-' + date, month_m + ' ' + date_m);
-                }
-                var t_date = t_date.split(' ');
-                var time_h = t_time.split(':');
-                if (time_h.length === 1) {
-                    year = String(time_h).replace(/-/, ' ').split(' ');
-                    var time_m = 0;
-                    var time_h = 0;
-                    t_date[0] = parseInt(year[0]) - 1;
-                    t_date[1] = parseInt(year[1]);
-                    year = year[2];
-                } else {
-                    var time_m = parseInt(time_h[1]);
-                    var time_h = parseInt(time_h[0]);
-                }
-                return Math.round((new Date(year, t_date[0], parseInt(t_date[1]), parseInt(time_h), parseInt(time_m))).getTime() / 1000);
+        var getMonth = function(date) {
+            var m = date.getMonth()+1;
+            if (m < 10) {
+                m = '0'+m;
             }
+            return m;
+        };
+        var makecalcTime = function (t) {
+            t = t.trim().replace(/\s+/g, ' ');
+            var space_pos = t.lastIndexOf(' ');
+            var time = t.substr(space_pos+1);
+            var year = undefined;
+            var c_date = new Date();
+            if (time.indexOf(':') !== -1) {
+                year = undefined;
+            } else if ((/[0-9]{4}/).test(time)) {
+                year = time;
+                time = undefined;
+            } else {
+                console.info('undef time', time);
+                year = c_date.getFullYear();
+                time = undefined;
+            }
+            var month_date = t.substr(0, space_pos);
+            var word = undefined;
+            if ((/[^0-9-]/).test(month_date)) {
+                word = month_date.toLowerCase();
+                month_date = undefined;
+            } else {
+                word = undefined;
+            }
+            if (word !== undefined) {
+                var o_word = word;
+                word = ex_kit.today_replace(word).split(' ').slice(0, 2).reverse().join(' ');
+                if (o_word === word) {
+                    if ((/y-day/).test(word)) {
+                        c_date = new Date( c_date.getTime() - 24*60*60*1000 );
+                        word = word.replace('y-day', getMonth(c_date)+' '+c_date.getDate() );
+                    }
+                }
+                if (o_word === word) {
+                    console.info('undef date', o_word);
+                    word = getMonth(c_date)+' '+c_date.getDate();
+                }
+            }
+            var date = ((month_date)?month_date:word)+' '+( (year)?year:c_date.getFullYear() )+' '+( (time)?time:'' );
+            return ex_kit.format_date(3, date);
         };
         var calculateTime = function (t) {
             t = t.split(', ')[0];

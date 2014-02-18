@@ -159,6 +159,30 @@ var ex_kit = function() {
             var old = parseFloat(t.replace(var_cache.ex_num, '')) * 24 * 60 * 60;
             return Math.round((new Date()).getTime() / 1000) - old;
         }
+        if (f === 3) { //  || f === '04-31-2013[[[ 07]:03]:27]') {
+            var dd = t.replace(var_cache.ex_num, ' ').replace(var_cache.spaces, ' ').trim().split(' ');
+            for (var i = 0; i < 6; i++) {
+                if (dd[i] === undefined) {
+                    dd[i] = 0;
+                } else {
+                    dd[i] = parseInt(dd[i]);
+                    if (isNaN(dd[i])) {
+                        if (i < 3) {
+                            return 0;
+                        } else {
+                            dd[i] = 0;
+                        }
+                    }
+                }
+            }
+            if (dd[2] < 10) {
+                dd[2] = '200' + dd[2];
+            } else
+            if (dd[2] < 100) {
+                dd[2] = '20' + dd[2];
+            }
+            return Math.round((new Date(dd[2], dd[0] - 1, dd[1], dd[3], dd[4], dd[5])).getTime() / 1000);
+        }
     };
     var isNumber = function(n) {
         return !isNaN(parseFloat(n)) && isFinite(n);

@@ -441,7 +441,7 @@ var explore = function() {
                 info.desc_link_title = info.desc_link_a.text();
                 info.desc_link = info.desc_link_a.attr('href');
                 if (info.desc_link !== undefined) {
-                    info.desc_link = $('<a>', {href: engine.contentUnFilter(info.desc_link), text: info.desc_link_title});
+                    info.desc_link = $('<a>', {href: engine.contentUnFilter(info.desc_link), text: info.desc_link_title, target: '_blank'});
                     info.desc_link_a.remove();
                 } else {
                     info.desc_link = '';

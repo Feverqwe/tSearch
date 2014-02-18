@@ -69,8 +69,8 @@ var get_lang = function (lang) {
             imdb_in_cinema: 'IMDB: Now in the movie',
             imdb_popular: 'IMDB: Movies',
             imdb_serials: 'IMDB: TV Series',
-            gg_games_top: 'Игры: Best',
-            gg_games_new: 'Игры: New'
+            gg_games_top: 'Games: Best',
+            gg_games_new: 'Games: New'
         },
         exp_setup_view: 'Setup view',
         exp_in_fav: 'Add to favorites',

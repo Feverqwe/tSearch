@@ -1864,6 +1864,9 @@ var view = function() {
         if (params.search !== undefined) {
             if (params.search.length === 0) {
                 homeMode();
+                if (history === undefined) {
+                    explore.show();
+                }
                 updateTitle();
                 return;
             }
