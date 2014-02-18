@@ -970,12 +970,14 @@ var explore = function() {
         });
     };
     var updateFavorites = function(data) {
+        var type = 'favorites';
         if (var_cache['exp_cache_'+type] === undefined) {
-            console.warn('Sync problem!');
+            console.log('Sync problem!');
             return;
         }
-        var_cache['exp_cache_'+type].content = JSON.parse(data || '[]');
-        content_write('favorites', var_cache['exp_cache_'+type].content, 0, 1);
+        var_cache['exp_cache_'+type] = JSON.parse(data || '[]');
+        var page = var_cache.source[type].current_page;
+        content_write('favorites', var_cache['exp_cache_'+type].content, page, 1);
     };
     return {
         show: function() {

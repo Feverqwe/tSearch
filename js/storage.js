@@ -18,8 +18,10 @@ var GetSettings = function(key) {
             if (data.exp_cache_favorites === undefined) {
                 return;
             }
-            localStorage[key] = data.exp_cache_favorites;
-            explore.updateFavorites(data.exp_cache_favorites);
+            if (localStorage[key] !== data.exp_cache_favorites) {
+                localStorage[key] = data.exp_cache_favorites;
+                explore.updateFavorites(data.exp_cache_favorites);
+            }
         });
     }
     return localStorage[key];
