@@ -746,7 +746,6 @@ var view = function() {
         if (sum  > 5){
             for (var i = 0, item; item = arr[i]; i++) {
                 if (item[1]/sum*100 < 60) {
-                    //console.log('skip', item, sum)
                     continue;
                 }
                 if (items.length > 4) {

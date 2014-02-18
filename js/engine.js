@@ -21,6 +21,9 @@ var engine = function() {
         filter_panel_to_left: {v: 1, t: "checkbox"},
         hideTopSearch: {v: 0, t: "checkbox"}
     };
+    if (window.chrome !== undefined && chrome.i18n && chrome.i18n.getMessage("lang") === 'en') {
+        def_settings.hideTopSearch = 1;
+    }
     var def_listOptions = {
         favorites: { e: 1, s: 1, w: 100, c: 1 },
         kp_favorites: { e: 1, s: 1, w: 100, c: 1 },
@@ -33,6 +36,19 @@ var engine = function() {
         gg_games_top: { e: 1, s: 1, w: 100, c: 1 },
         gg_games_new: { e: 1, s: 1, w: 100, c: 1 }
     };
+    if (window.chrome !== undefined && chrome.i18n !== undefined) {
+        if (chrome.i18n.getMessage("lang") === 'en') {
+            def_settings.hideTopSearch.v = 1;
+            def_listOptions.kp_favorites.e = 0;
+            def_listOptions.kp_in_cinema.e = 0;
+            def_listOptions.kp_popular.e = 0;
+            def_listOptions.kp_serials.e = 0;
+        } else {
+            def_listOptions.imdb_in_cinema.e = 0;
+            def_listOptions.imdb_popular.e = 0;
+            def_listOptions.imdb_serials.e = 0;
+        }
+    }
     var var_cache = {
         block_href:  new RegExp('\\/\\/','img'),
         block_src:   new RegExp(' src=([\'"]?)','img'),

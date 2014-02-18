@@ -29,7 +29,7 @@ var explore = function() {
         use_english_postername: parseInt(GetSettings('use_english_postername') || 0),
         top_cache: JSON.parse(GetSettings('topCache') || "{}"),
         kp_folder_id: parseInt(GetSettings('kinopoisk_f_id') || 1),
-        hideTopSearch: parseInt(GetSettings('hideTopSearch') || 0),
+        hideTopSearch: parseInt(GetSettings('hideTopSearch') || engine.def_settings.hideTopSearch.v),
         allow_favorites_sync: parseInt(GetSettings('allow_favorites_sync') || 1)
     };
     var listOptions = JSON.parse(GetSettings('listOptions') || "{}");
@@ -993,16 +993,6 @@ var explore = function() {
             var_cache.mode = 1;
             if (listOptions.hasOwnProperty('favorites') === false) {
                 listOptions = $.extend(true, {}, engine.def_listOptions);
-                if (_lang.t === "ru") {
-                    listOptions.imdb_in_cinema.e = 0;
-                    listOptions.imdb_popular.e = 0;
-                    listOptions.imdb_serials.e = 0;
-                } else {
-                    listOptions.kp_favorites.e = 0;
-                    listOptions.kp_in_cinema.e = 0;
-                    listOptions.kp_popular.e = 0;
-                    listOptions.kp_serials.e = 0;
-                }
             }
             dom_cache.explore = $('div.explore');
             dom_cache.explore_ul = dom_cache.explore.children('ul');

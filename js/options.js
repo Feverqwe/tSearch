@@ -128,7 +128,6 @@ var options = function() {
                 SetSettings(key, val);
             }
         });
-        console.log(settings)
         $.each(listOptions, function(key){
             var value = $('input[name='+key+']').prop('checked')?1:0;
             listOptions[key].e = value;
@@ -501,16 +500,6 @@ var options = function() {
             dom_cache.main_item_body = $('ul.main_item_body');
             if (listOptions.hasOwnProperty('favorites') === false) {
                 listOptions = $.extend(true, {}, engine.def_listOptions);
-                if (_lang.t === "ru") {
-                    listOptions.imdb_in_cinema.e = 0;
-                    listOptions.imdb_popular.e = 0;
-                    listOptions.imdb_serials.e = 0;
-                } else {
-                    listOptions.kp_favorites.e = 0;
-                    listOptions.kp_in_cinema.e = 0;
-                    listOptions.kp_popular.e = 0;
-                    listOptions.kp_serials.e = 0;
-                }
             }
             write_language();
             dom_cache.ul_menu.on('click', 'a', function(e) {
