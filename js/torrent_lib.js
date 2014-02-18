@@ -6,7 +6,7 @@ window.torrent_lib_min = 0;
         'kinozal', 'libertorrent', 'megashara', 'mininova', 'nnm-club', 'opensharing', 'opentorrent', 'piratbit',
         'piratca', 'rgfootball', 'riperam', 'ru-board', 'rustorka', 'rutor', 'rutracker', 'tapochek', 'tfile',
         'thepiratebay', 'torrentmac', 'torrents.freedom', 'torrents.local', 'torrentz', 'underverse', 'x-torrents'];
-    if (window.torrent_lib[trackers[0]] !== undefined) {
+    if (window.torrent_lib['rutracker'] !== undefined) {
         window.torrent_lib_min = 1;
         return;
     }

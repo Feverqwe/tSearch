@@ -2450,6 +2450,9 @@ var view = function() {
     }
 }();
 $(function(){
+    if (window.torrent_lib['rutracker'] !== undefined) {
+        window.torrent_lib_min = 1;
+    }
     if (torrent_lib_min === 0) {
         setTimeout(function(){
             view.begin();
