@@ -771,8 +771,25 @@ var view = function() {
             if (items.length < 5) {
                 var arr = var_cache.table_dom.filter(function(a){
                     return [1, 6, 9, 10].indexOf(a.category_id) === -1;
-                }).slice(0,10);
+                }).slice(0,20);
                 for (var i = 0, item; item = arr[i]; i++) {
+                    if (items.length > 4) {
+                        break;
+                    }
+                    var found = false;
+                    for (var n = 0, itm; itm = items[n]; n++) {
+                        if (itm.url === item.url) {
+                            found = true;
+                            break;
+                        }
+                    };
+                    if (found === false) {
+                        items.push(item);
+                    }
+                };
+            }
+            if (items.length < 5) {
+                for (var i = 0, item; item = var_cache.table_dom[i]; i++) {
                     if (items.length > 4) {
                         break;
                     }
