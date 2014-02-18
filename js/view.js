@@ -769,7 +769,9 @@ var view = function() {
                 }
             }
             if (items.length < 5) {
-                var arr = var_cache.table_dom.slice(0,10);
+                var arr = var_cache.table_dom.filter(function(a){
+                    return [1, 6, 9, 10].indexOf(a.category_id) === -1;
+                }).slice(0,10);
                 for (var i = 0, item; item = arr[i]; i++) {
                     if (items.length > 4) {
                         break;

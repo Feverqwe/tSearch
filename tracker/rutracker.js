@@ -55,7 +55,7 @@ torrent_lib.rutracker = function () {
                 if (td.eq(5).children('a').attr('href') === undefined) {
                     continue;
                 }
-                arr.push({
+                var obj = {
                     category: {
                         title: td.eq(2).children('div').children('a').text(),
                         url: root_url + td.eq(2).children('div').children('a').attr('href'),
@@ -68,7 +68,11 @@ torrent_lib.rutracker = function () {
                     seeds: td.eq(6).children('b').text(),
                     leechs: td.eq(7).children('b').text(),
                     time: td.eq(9).children('u').text()
-                });
+                };
+                if (isNaN(parseInt(obj.seeds))) {
+                    obj.seeds = 1;
+                }
+                arr.push(obj);
             }
             return arr;
         };
