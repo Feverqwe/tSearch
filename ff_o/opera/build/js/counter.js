@@ -1,7 +1,1 @@
-var _gaq = function () {
-    return {
-        push : function (a) {
-            return 1;
-        }
-    };
-}();
+var _gaq = [];

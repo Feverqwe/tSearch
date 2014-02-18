@@ -141,7 +141,7 @@ var options = function() {
             //Chrome extension
             var bgp = chrome.extension.getBackgroundPage();
             bgp.bg.update_context_menu();
-            if (bgp._type_ext) {
+            if (bgp._type_ext === 1) {
                 bgp.update_btn();
             }
         }

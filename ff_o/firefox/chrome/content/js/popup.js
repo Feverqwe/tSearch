@@ -81,28 +81,29 @@ $(function() {
     AddAutocomplete();
     $('input.sbutton').val(_lang['btn_form']);
     $('div.search_panel').find('div.btn.clear').attr('title', _lang['btn_filter']);
-    $('form[name="search"]').submit(function(event) {
+    var search_form = $('form[name="search"]');
+    search_form.submit(function(event) {
         event.preventDefault();
-        var url = 'chrome://TorrentsMultiSearch/content/index.html#s=' + $(this).children('input[type="text"]').val();
+        var url = 'chrome://TorrentsMultiSearch/content/index.html#?search=' + $(this).children('input[type="text"]').val();
         var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
                 .getService(Components.interfaces.nsIWindowMediator);
         var recentWindow = wm.getMostRecentWindow("navigator:browser");
         panel.getElementById('tms_popup').hidePopup();
         recentWindow.delayedOpenTab(url, null, null, null, null);
     });
-    $('form[name="search"]').children('div.btn.clear').on("click", function(event) {
+    search_form.children('div.btn.clear').on("click", function(event) {
         event.preventDefault();
         $(this).hide();
         $('form[name="search"]').children('input').eq(0).val("").focus();
         panel.getElementById('tms_popup').sizeTo(660, 66);
         $(panel).find('iframe').height(66);
     });
-    $('form[name="search"]').children('input').eq(0).on('keyup', function() {
+    search_form.children('input').eq(0).on('keyup', function() {
         if (this.value.length > 0) {
             $(this).parent().children('div.btn.clear').show();
         } else {
             $(this).parent().children('div.btn.clear').hide();
         }
     });
-    $('form[name="search"]').children('input').eq(0).val("").focus();
+    search_form.children('input').eq(0).val("").focus();
 });

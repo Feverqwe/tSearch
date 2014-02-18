@@ -1731,7 +1731,7 @@ var view = function() {
         });
     };
     var addAutocomplete = function() {
-        function getHistory() {
+        var getHistory = function () {
             /*
              * Отдает массив поисковых запросов из истории
              */
@@ -1750,7 +1750,7 @@ var view = function() {
                 list.push(item.title);
             }
             return list;
-        }
+        };
         dom_cache.search_input.autocomplete({
             source: function(a, response) {
                 if (a.term.length === 0 || options.autoComplete === 0) {

@@ -21,7 +21,7 @@ var run = function() {
         panel.sizeTo(660, 66);
         panel.openPopup(document.getElementById('torrentsmultysearch-button'));
     } else {
-        var url = 'chrome://TorrentsMultiSearch/content/index.html#s=';
+        var url = 'chrome://TorrentsMultiSearch/content/index.html#?search=';
         var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
                 .getService(Components.interfaces.nsIWindowMediator);
         var recentWindow = wm.getMostRecentWindow("navigator:browser");

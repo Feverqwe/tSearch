@@ -622,9 +622,10 @@ var get_lang = function (lang) {
         return lang_arr_en;
     }
 };
-var _lang = get_lang();
-window.onload = function () {
-    if (window.options === undefined) {
-        get_lang = null;
+window._lang = get_lang();
+window.addEventListener("load",function(){
+    if (window.options !== undefined) {
+        return;
     }
-};
+    window.get_lang = undefined;
+});

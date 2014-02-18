@@ -13,10 +13,10 @@
                     title: "Torrents MultiSearch",
                     icon: "icons/icon-16.png",
                     onclick: function() {
-                        var tab = opera.extension.tabs.create({url: 'build/index.html#s='});
+                        var tab = opera.extension.tabs.create({url: 'build/index.html'});
                         tab.focus();
                     }
-                }
+                };
                 theButton = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
                 opera.contexts.toolbar.addItem(theButton);
             }, false);
@@ -37,11 +37,11 @@
                             onclick: function(event) {
                                 var query = encodeURIComponent(event.selectionText);
                                 var tabProps = {
-                                    url: 'build/index.html#s=' + query
+                                    url: 'build/index.html#?search=' + query
                                 };
                                 opera.extension.tabs.create(tabProps);
                             }
-                        }
+                        };
                         var item = menu.createItem(itemProps);
                         menu.addItem(item);
                     }

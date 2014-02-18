@@ -3,7 +3,7 @@ chrome.browserAction.onClicked.addListener(function() {
     var search_popup = parseInt(GetSettings('search_popup') || 1);
     if (!search_popup) {
         chrome.tabs.create({
-            url: 'index.html#s='
+            url: 'index.html'
         });
     }
 });
