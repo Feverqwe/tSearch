@@ -17,7 +17,6 @@ var engine = function() {
         allow_get_description: {v: 1, t: "checkbox"},
         allow_favorites_sync: {v: 1, t: "checkbox"},
         sub_select_enable: {v: 1, t: "checkbox"},
-        kinopoisk_category: {v: 1, t: "checkbox"},
         kinopoisk_f_id: {v: 1, t: "number"},
         filter_panel_to_left: {v: 1, t: "checkbox"},
         hideTopSearch: {v: 0, t: "checkbox"},
@@ -54,6 +53,69 @@ var engine = function() {
         }
         return list;
     };
+    var migrate = function() {
+        var storage = $.extend({},localStorage);
+        var new_storage = {};
+        var favoritesList = JSON.parse(storage.favoritesList || '[]');
+        var exp_cache_favorites = {content:[]};
+        favoritesList.forEach(function(item) {
+            exp_cache_favorites.content.push({title: item.name, url: item.url, img: item.img})
+        });
+        new_storage.favoritesList = JSON.stringify(favoritesList);
+        new_storage.history = storage.search_history
+        $.each(storage, function(key, value) {
+            if (key.substr(0, 3) === 'ct_') {
+                new_storage[key] = value;
+            } else if ( ['hideTopSearch', 'filter_panel_to_left', 'kinopoisk_f_id',
+                'sub_select_enable', 'allow_favorites_sync', 'allow_get_description',
+                'autoSetCat', 'use_english_postername', 'AutoComplite_opt',
+                'search_popup', 'context_menu', 'add_in_omnibox', 'TeaserFilter',
+                'AdvFiltration', 'HideZeroSeed', 'SubCategoryFilter', 'ShowIcons',
+                'HideSeed', 'HideLeech', 'costume_tr', 'lang', 'torrent_list_r', 'torrent_list_h'
+            ].indexOf(key) !== -1) {
+                new_storage[key] = value;
+            }
+        });
+        var newProfiles = {};
+        var new_profile_len = 0;
+        var trList = JSON.parse(storage.trackerProfiles || '[]');
+        trList.forEach(function(item){
+            if (item.Title === undefined) {
+                return 1;
+            }
+            var len = 0;
+            var list = {};
+            item.Trackers.forEach(function(itm){
+                if (itm.e === undefined || itm.n === undefined || itm.e !== 1) {
+                    return 1;
+                }
+                list[itm.n] = 1;
+                len++;
+            });
+            if (len === 0) {
+                return 1;
+            }
+            newProfiles[item.Title] = list;
+            new_profile_len++;
+        });
+        if ( new_profile_len > 0 ){
+            new_storage.profileList = JSON.stringify(newProfiles);
+        }
+        chrome.storage.local.clear();
+        chrome.storage.sync.clear();
+        localStorage.clear();
+        $.each(new_storage, function(key, value){
+            if (value === undefined) {
+                return 1;
+            }
+            localStorage[key] = value;
+        });
+        window.location.reload();
+    };
+    if ( GetSettings('defProfile') !== undefined ) {
+        migrate();
+        return;
+    }
     var loadModule = function(uid) {
         /*
          * загружает пользовательский модуль.

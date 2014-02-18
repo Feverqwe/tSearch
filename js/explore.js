@@ -29,7 +29,8 @@ var explore = function() {
         use_english_postername: parseInt(GetSettings('use_english_postername') || 0),
         top_cache: JSON.parse(GetSettings('topCache') || "{}"),
         kp_folder_id: parseInt(GetSettings('kinopoisk_f_id') || 1),
-        hideTopSearch: parseInt(GetSettings('hideTopSearch') || 0)
+        hideTopSearch: parseInt(GetSettings('hideTopSearch') || 0),
+        allow_favorites_sync: parseInt(GetSettings('allow_favorites_sync') || 1)
     };
     var listOptions = JSON.parse(GetSettings('listOptions') || "{}");
     var content_options = {
@@ -968,6 +969,14 @@ var explore = function() {
             content_parser.google(data);
         });
     };
+    var updateFavorites = function(data) {
+        if (var_cache['exp_cache_'+type] === undefined) {
+            console.warn('Sync problem!');
+            return;
+        }
+        var_cache['exp_cache_'+type].content = JSON.parse(data || '[]');
+        content_write('favorites', var_cache['exp_cache_'+type].content, 0, 1);
+    };
     return {
         show: function() {
             if (dom_cache.explore !== undefined) {
@@ -1362,7 +1371,7 @@ var explore = function() {
                     var_cache.resize_timer_work = 0;
                 }, 250);
             });
-            if (GetSettings('allow_favorites_sync') === "1" && window.chrome !== undefined && chrome.storage) {
+            if (allow_favorites_sync === 1 && window.chrome !== undefined && chrome.storage) {
                 chrome.storage.onChanged.addListener(function(changes) {
                     for (var key in changes) {
                         if (key !== "exp_cache_favorites") {
@@ -1388,6 +1397,7 @@ var explore = function() {
             dom_cache.explore.hide();
         },
         getDescription: getDescription,
-        setQuality: setQuality
+        setQuality: setQuality,
+        updateFavorites: updateFavorites
     };
 }();
