@@ -36,11 +36,6 @@ div.search_panel input.request {
     font-size: 1.143em;
 }
 
-div.search_panel form input.button {
-    margin-left: 2px;
-}
-
-
 input.button {
     height: 26px !important;
     background-color: #ffffff;

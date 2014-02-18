@@ -2001,7 +2001,7 @@ var view = function() {
         dom_cache.size_filter.find('span.g').eq(0).text(_lang['size_filter_g']);
         dom_cache.seed_filter.children('p').eq(0).text(_lang['seed_filter']);
         dom_cache.peer_filter.children('p').eq(0).text(_lang['peer_filter']);
-        var right_panel = dom_cache.word_filter.parent();
+        var right_panel = dom_cache.word_filter.parent().parent();
         right_panel.find('span.from').text(_lang['size_filter_f']);
         right_panel.find('span.to').text(_lang['size_filter_t']);
         dom_cache.topbtn.attr('title', _lang['btn_up']);
