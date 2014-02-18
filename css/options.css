@@ -105,6 +105,7 @@ div.backup_form > div.restore, div.backup_form > div.backup {
     position: relative;
 }
 div.backup_form textarea {
+    width: 100%;
     width: calc(100% - 6px);
     height: 400px;
 }
