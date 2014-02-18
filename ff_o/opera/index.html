@@ -20,31 +20,31 @@
                 theButton = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
                 opera.contexts.toolbar.addItem(theButton);
             }, false);
-            var context_menu = parseInt(GetSettings('context_menu') || 1);
-            if (context_menu) {
+            if (parseInt(GetSettings('context_menu') || 1) === 1) {
                 window.addEventListener('DOMContentLoaded', function() {
                     // Check the Context Menu API is supported
-                    if (opera.contexts.menu) {
-                        var menu = opera.contexts.menu;
-                        if (menu.length > 0) {
-                            menu.removeItem(0);
-                        }
-                        // Create a menu item properties object
-                        var itemProps = {
-                            title: _lang.ctx_title,
-                            contexts: ['selection'],
-                            icon: 'icons/icon-64.png',
-                            onclick: function(event) {
-                                var query = encodeURIComponent(event.selectionText);
-                                var tabProps = {
-                                    url: 'build/index.html#?search=' + query
-                                };
-                                opera.extension.tabs.create(tabProps);
-                            }
-                        };
-                        var item = menu.createItem(itemProps);
-                        menu.addItem(item);
+                    if (!opera.contexts.menu) {
+                        return;
                     }
+                    var menu = opera.contexts.menu;
+                    if (menu.length > 0) {
+                        menu.removeItem(0);
+                    }
+                    // Create a menu item properties object
+                    var itemProps = {
+                        title: _lang.ctx_title,
+                        contexts: ['selection'],
+                        icon: 'icons/icon-64.png',
+                        onclick: function(event) {
+                            var query = encodeURIComponent(event.selectionText);
+                            var tabProps = {
+                                url: 'build/index.html' + ((query.length > 0)?'#?search=' + query:'')
+                            };
+                            opera.extension.tabs.create(tabProps);
+                        }
+                    };
+                    var item = menu.createItem(itemProps);
+                    menu.addItem(item);
                 }, false);
             }
         </script>

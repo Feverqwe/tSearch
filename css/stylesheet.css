@@ -8,7 +8,6 @@ body {
 div.search_panel {
     border-bottom: 1px solid #ccc;
     -webkit-user-select: none;
-    white-space: nowrap;
 }
 
 input[type=text] {
@@ -44,6 +43,11 @@ div.search_panel input.request {
     padding-left: 5px;
     padding-right: 20px;
     font-size: 1.143em;
+    float: left;
+}
+
+div.search_panel form input.button {
+    margin-left: 2px;
 }
 
 input.button {

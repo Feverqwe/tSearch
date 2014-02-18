@@ -1363,7 +1363,7 @@ var explore = function() {
                     var_cache.resize_timer_work = 0;
                 }, 250);
             });
-            if (allow_favorites_sync === 1 && window.chrome !== undefined && chrome.storage) {
+            if (options.allow_favorites_sync === 1 && window.chrome !== undefined && chrome.storage) {
                 chrome.storage.onChanged.addListener(function(changes) {
                     for (var key in changes) {
                         if (key !== "exp_cache_favorites") {

@@ -292,6 +292,7 @@ var view = function() {
             if (isLongTitle === true) {
                 item.title = item.title.match(var_cache.split_long_string).join(' ');
             }
+            item.title = $('<span>',{text: item.title}).text();
         }
         if (item.category === undefined) {
             item.category = {

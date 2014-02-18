@@ -126,8 +126,10 @@ var engine = function() {
         if ( new_profile_len > 0 ){
             new_storage.profileList = JSON.stringify(newProfiles);
         }
-        chrome.storage.local.clear();
-        chrome.storage.sync.clear();
+        if (window.chrome !== undefined) {
+            chrome.storage.local.clear();
+            chrome.storage.sync.clear();
+        }
         localStorage.clear();
         $.each(new_storage, function(key, value){
             if (value === undefined) {

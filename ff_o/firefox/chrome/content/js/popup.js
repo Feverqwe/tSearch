@@ -1,109 +1,103 @@
-var AutoComplite_opt = parseInt(GetSettings('AutoComplite_opt') || 1);
-var panel = window.parent.document;
-var xhr_autocomplite = null;
-var AddAutocomplete = function() {
-    /*
-     * добавляет автозавершение для поисковой строки
-     */
-    function getStaticArray() {
+$(function() {
+    var var_cache = {
+        suggest_xhr: undefined,
+        panel: window.parent.document
+    };
+    var dom_cache = {};
+    var options = {
+        autoComplete: parseInt(GetSettings('AutoComplite_opt') || 1)
+    };
+    var getHistory = function () {
         /*
          * Отдает массив поисковых запросов из истории
          */
-        var AutocompleteArr = [];
-        var order = function(a, b) {
-            /*
-             * сортирует по кол-ву попаданий
-             */
-            if (a.count > b.count)
-                return -1;
-            if (a.count === b.count)
+        var history = JSON.parse(GetSettings('history') || "[]");
+        history.sort(function(a,b){
+            if (a.count === b.count) {
                 return 0;
-            return 1;
-        };
-        var search_history = JSON.parse(GetSettings('search_history') || "[]");
-        if (search_history.length > 0) {
-            search_history.sort(order);
-            var count = search_history.length;
-            for (var i = 0; i < count; i++) {
-                AutocompleteArr.push(search_history[i].title);
-            }
-        }
-        return AutocompleteArr;
-    }
-    var inp = $('input[type="text"][name="s"]');
-    if (inp.attr('autocomplete') !== undefined) {
-        if (AutoComplite_opt === 0) {
-            inp.autocomplete({source: getStaticArray()});
-        }
-        return;
-    }
-    inp.autocomplete({
-        source: (AutoComplite_opt === 0) ? getStaticArray() : function(a, response) {
-            if ($.trim(a.term).length === 0) {
-                response(getStaticArray());
+            } else if (a.count < b.count) {
+                return 1;
             } else {
-                if (xhr_autocomplite !== null) {
-                    xhr_autocomplite.abort();
-                }
-                xhr_autocomplite = $.getJSON('http://suggestqueries.google.com/complete/search?client=firefox&q=' + a.term).success(function(data) {
-                    var arr = data[1];
-                    response(arr);
-                });
+                return -1;
             }
-        },
-        open: function() {
-            panel.getElementById('tms_popup').sizeTo(660, 200);
-            $(panel).find('iframe').height(200);
-        },
-        close: function() {
-            panel.getElementById('tms_popup').sizeTo(660, 66);
-            $(panel).find('iframe').height(66);
+        });
+        var list = [];
+        for (var i = 0, item; item = history[i]; i++) {
+            list.push(item.title);
+        }
+        return list;
+    };
+    dom_cache.search_input = $('input[type="text"]');
+    dom_cache.submit = $('input[type="submit"]');
+    dom_cache.form_search = $('form');
+    dom_cache.clear = $('div.btn.clear');
+
+    dom_cache.submit.val(_lang['btn_form']);
+    dom_cache.clear.attr('title', _lang.btn_filter);
+    dom_cache.search_input.focus();
+
+    dom_cache.form_search.submit(function(e) {
+        e.preventDefault();
+        var text = dom_cache.search_input.val();
+        var url = 'chrome://TorrentsMultiSearch/content/index.html' + ( (text.length > 0)?'#?search='+text:'' );
+        var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+            .getService(Components.interfaces.nsIWindowMediator);
+        var recentWindow = wm.getMostRecentWindow("navigator:browser");
+        var_cache.panel.getElementById('tms_popup').hidePopup();
+        recentWindow.delayedOpenTab(url, null, null, null, null);
+    });
+    dom_cache.clear.on("click", function(e) {
+        e.preventDefault();
+        dom_cache.search_input.val('').focus();
+        $(this).hide();
+        var_cache.panel.getElementById('tms_popup').sizeTo(660, 66);
+        var_cache.panel.getElementById('myframe').style.height = '66px';
+    });
+    dom_cache.search_input.on('keyup', function() {
+        if (this.value.length > 0) {
+            dom_cache.clear.show();
+        } else {
+            dom_cache.clear.hide();
+        }
+    });
+    dom_cache.search_input.autocomplete({
+        source: function(a, response) {
+            if (a.term.length === 0 || options.autoComplete === 0) {
+                response(getHistory());
+            } else {
+                if (var_cache.suggest_xhr !== undefined) {
+                    var_cache.suggest_xhr.abort();
+                }
+                var_cache.suggest_xhr = $.getJSON('http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(a.term)).success(
+                    function(data) {
+                        response(data[1]);
+                    }
+                );
+            }
         },
         /*
-         * unstable api
-         messages: {
-         noResults: '',
-         results: function() {}
-         },
+         * experimental API
          */
+        messages: {
+            noResults: '',
+            results: function() {}
+        },
+        open: function() {
+            var_cache.panel.getElementById('tms_popup').sizeTo(660, 220);
+            var_cache.panel.getElementById('myframe').style.height = '220px';
+        },
+        close: function() {
+            var_cache.panel.getElementById('tms_popup').sizeTo(660, 66);
+            var_cache.panel.getElementById('myframe').style.height = '66px';
+        },
         minLength: 0,
         select: function(event, ui) {
-            $(this).val(ui.item.value);
-            $(this).closest('form').trigger('submit');
+            this.value = ui.item.value;
+            $(this).trigger('keyup');
+            dom_cache.form_search.trigger('submit');
         },
         position: {
             collision: "bottom"
         }
-    });
-};
-
-$(function() {
-    AddAutocomplete();
-    $('input.sbutton').val(_lang['btn_form']);
-    $('div.search_panel').find('div.btn.clear').attr('title', _lang['btn_filter']);
-    var search_form = $('form[name="search"]');
-    search_form.submit(function(event) {
-        event.preventDefault();
-        var url = 'chrome://TorrentsMultiSearch/content/index.html#?search=' + $(this).children('input[type="text"]').val();
-        var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-                .getService(Components.interfaces.nsIWindowMediator);
-        var recentWindow = wm.getMostRecentWindow("navigator:browser");
-        panel.getElementById('tms_popup').hidePopup();
-        recentWindow.delayedOpenTab(url, null, null, null, null);
-    });
-    search_form.children('div.btn.clear').on("click", function(event) {
-        event.preventDefault();
-        $(this).hide();
-        $('form[name="search"]').children('input').eq(0).val("").focus();
-        panel.getElementById('tms_popup').sizeTo(660, 66);
-        $(panel).find('iframe').height(66);
-    });
-    search_form.children('input').eq(0).on('keyup', function() {
-        if (this.value.length > 0) {
-            $(this).parent().children('div.btn.clear').show();
-        } else {
-            $(this).parent().children('div.btn.clear').hide();
-        }
-    });
-    search_form.children('input').eq(0).val("").focus();
+    })
 });
