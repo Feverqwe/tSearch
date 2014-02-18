@@ -26,9 +26,7 @@ java -jar compiler.jar --js .\js\torrent_lib.js^
  --js .\tracker\piratbit.js --js .\tracker\torrentz.js --js .\tracker\hdclub.js --js .\tracker\piratca.js^
  --js .\tracker\underverse.js --js .\tracker\hurtom.js --js .\tracker\x-torrents.js --js .\tracker\inmac.js^
  --js .\tracker\rgfootball.js --js .\tracker\riperam.js --js .\tracker\ru-board.js^
- --js .\js\torrent_lib_init.js --js_output_file .\build\js\torrent_lib.js
-
-del .\build\js\torrent_lib_init.js
+ --js_output_file .\build\js\torrent_lib.js
 
 java -jar compiler.jar --js .\js\storage.js --js_output_file .\build\js\storage.js
 java -jar compiler.jar --js .\js\lang.js --js_output_file .\build\js\lang.js
