@@ -850,9 +850,33 @@ var explore = function() {
                     +   '90%{margin-left:6px;}'
                     +   '100%{margin-left:2px;}'
                     + '}'
+                    + '@keyframes a_' + move_name
+                    + '{'
+                    +   '0%{margin-left:2px;}'
+                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
+                    +   '90%{margin-left:6px;}'
+                    +   '100%{margin-left:2px;}'
+                    + '}'
+                    + '@-moz-keyframes a_' + move_name
+                    + '{'
+                    +   '0%{margin-left:2px;}'
+                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
+                    +   '90%{margin-left:6px;}'
+                    +   '100%{margin-left:2px;}'
+                    + '}'
+                    + '@-o-keyframes a_' + move_name
+                    + '{'
+                    +   '0%{margin-left:2px;}'
+                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
+                    +   '90%{margin-left:6px;}'
+                    +   '100%{margin-left:2px;}'
+                    + '}'
                     + 'div.' + move_name + ':hover > span {'
                     +   'overflow: visible;'
                     +   '-webkit-animation:a_' + move_name + ' ' + time_calc + 's;'
+                    +   '-moz-animation:a_' + move_name + ' ' + time_calc + 's;'
+                    +   '-o-animation:a_' + move_name + ' ' + time_calc + 's;'
+                    +   'animation:a_' + move_name + ' ' + time_calc + 's;'
                     + '}'})
                 );
             }
