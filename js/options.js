@@ -543,10 +543,9 @@ var options = function() {
             if (isChromeum && chrome.extension !== undefined) {
                 //Chromeum extension
                 var bgp = chrome.extension.getBackgroundPage();
-                if (bgp._type_ext) {
-                    return;
+                if (!bgp._type_ext) {
+                    dom_cache.search_popup.closest('ul').hide();
                 }
-                dom_cache.search_popup.closest('ul').hide();
             }
             if (isChromeum && chrome.storage !== undefined) {
                 // Chromeum with storage

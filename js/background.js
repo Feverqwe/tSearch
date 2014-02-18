@@ -33,12 +33,8 @@ var bg = function() {
         });
     };
     return {
-        add_in_omnibox: function() {
-            return add_in_omnibox();
-        },
-        update_context_menu: function() {
-            return update_context_menu();
-        }
+        add_in_omnibox: add_in_omnibox(),
+        update_context_menu: update_context_menu()
     };
 }();
 bg.add_in_omnibox();

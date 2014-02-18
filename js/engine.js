@@ -85,13 +85,15 @@ var engine = function() {
             }
             var len = 0;
             var list = {};
-            item.Trackers.forEach(function(itm){
-                if (itm.e === undefined || itm.n === undefined || itm.e !== 1) {
-                    return 1;
-                }
-                list[itm.n] = 1;
-                len++;
-            });
+            if (item.Trackers !== null) {
+                item.Trackers.forEach(function(itm){
+                    if (itm.e === undefined || itm.n === undefined || itm.e !== 1) {
+                        return 1;
+                    }
+                    list[itm.n] = 1;
+                    len++;
+                });
+            }
             if (len === 0) {
                 return 1;
             }
