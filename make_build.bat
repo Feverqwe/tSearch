@@ -14,7 +14,7 @@ xcopy .\css .\build\css\ /E
 copy .\*.html .\build\.
 copy .\*.json .\build\.
 
-java -jar compiler.jar --js .\js\build.js --js .\js\torrent_lib.js^
+java -jar compiler.jar --js .\js\torrent_lib_build.js^
  --js .\tracker\anidub.js --js .\tracker\katushka.js --js .\tracker\rustorka.js --js .\tracker\bestrepack.js^
  --js .\tracker\kickass.js --js .\tracker\rutor.js --js .\tracker\bigfangroup.js --js .\tracker\kinozal.js^
  --js .\tracker\rutracker.js --js .\tracker\bitsnoop.js --js .\tracker\libertorrent.js --js .\tracker\tapochek.js^
@@ -27,6 +27,8 @@ java -jar compiler.jar --js .\js\build.js --js .\js\torrent_lib.js^
  --js .\tracker\underverse.js --js .\tracker\hurtom.js --js .\tracker\x-torrents.js --js .\tracker\inmac.js^
  --js .\tracker\rgfootball.js --js .\tracker\riperam.js --js .\tracker\ru-board.js^
  --js_output_file .\build\js\torrent_lib.js
+
+del .\build\js\torrent_lib_build.js
 
 java -jar compiler.jar --js .\js\storage.js --js_output_file .\build\js\storage.js
 java -jar compiler.jar --js .\js\lang.js --js_output_file .\build\js\lang.js
