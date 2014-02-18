@@ -259,7 +259,7 @@ var view = function() {
         updateCounts();
         syntaxCacheRequest(request);
         engine.stop();
-        engine.search(request, []);
+        engine.search(request, [], 1);
         var_cache.currentRequest = request;
     }
     var home = function(){
