@@ -907,6 +907,9 @@ var explore = function() {
         }
     };
     var setQuality = function(type, index, quality, request, cache) {
+        /**
+         * quality = {qualityBox, url, hlTitle}
+         */
         var quality_len = quality.length;
         if (quality_len !== 0 && cache === undefined) {
             if (type === 'favorites' || type === 'kp_favorites') {
@@ -953,7 +956,7 @@ var explore = function() {
         var ul = popup.children('div.content').children('ul');
         var content = [];
         for (var i = 0, item; item = quality[i]; i++) {
-            var a = $('<a>',{href: item.url, target: '_blank'}).html(item.hlTitle+', '+item.sizeText);
+            var a = $('<a>',{href: item.url, target: '_blank'}).html(item.hlTitle);
             a.attr('title', a.text());
             content.push( $('<li>').append(a) );
         }
@@ -1244,7 +1247,7 @@ var explore = function() {
                 e.preventDefault();
                 var $this = $(this);
                 var type = $this.data('type');
-                listOptions[type].w = listOptions_def[type].w;
+                listOptions[type].w = engine.def_listOptions[type].w;
                 var_cache.source[type].title.children('div.setup_body').children('div.slider').slider({value: listOptions[type].w});
                 var_cache.source[type].body.css('min-height', 'auto');
                 var content = var_cache['exp_cache_'+type].content;

@@ -742,7 +742,7 @@ var view = function() {
         if (sum  > 5){
             for (var i = 0, item; item = arr[i]; i++) {
                 if (item[1]/sum*100 < 60) {
-                    console.log('skip', item, sum)
+                    //console.log('skip', item, sum)
                     continue;
                 }
                 if (items.length > 4) {
@@ -784,6 +784,13 @@ var view = function() {
         } else {
             items = var_cache.table_dom;
         }
+        items.forEach(function(item){
+            delete item.time;
+            delete item.quality;
+            delete item.category_id;
+            item.hlTitle += ', '+item.sizeText;
+            delete item.sizeText;
+        });
         explore.setQuality(var_cache.backgroundMode.type, var_cache.backgroundMode.index, items, var_cache.currentRequest);
     }
     var bgReadResult = function(id, result, request) {
