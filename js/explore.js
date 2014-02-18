@@ -339,7 +339,7 @@ var explore = function() {
                     var obj = {
                         img: item.find('div.image img').attr('src'),
                         title: item.find('[itemprop="name"] a').eq(0).text(),
-                        url: item.find('div.image img').attr('src')
+                        url: item.find('[itemprop="name"] a').attr('href')
                     };
                     if (check_item(obj) === 0) {
                         console.log("Explorer imdb_in_cinema have problem!");
