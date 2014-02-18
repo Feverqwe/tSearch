@@ -31,30 +31,15 @@ var explore = function() {
         kp_folder_id: parseInt(GetSettings('kinopoisk_f_id') || 1),
         hideTopSearch: parseInt(GetSettings('hideTopSearch') || 0)
     };
-    var listOptions_def = {
-        favorites: { e: 1, s: 1, w: 120, c: 1 },
-        kp_favorites: { e: 1, s: 1, w: 120, c: 1 },
-        kp_in_cinema: { e: 1, s: 1, w: 120, c: 1 },
-        kp_popular: { e: 1, s: 1, w: 120, c: 2 },
-        kp_serials: { e: 1, s: 1, w: 120, c: 1 },
-        imdb_in_cinema: { e: 1, s: 1, w: 120, c: 1 },
-        imdb_popular: { e: 1, s: 1, w: 120, c: 2 },
-        imdb_serials: { e: 1, s: 1, w: 120, c: 1 },
-        gg_games_top: { e: 1, s: 1, w: 120, c: 1 },
-        gg_games_new: { e: 1, s: 1, w: 120, c: 1 }
-    };
     var listOptions = JSON.parse(GetSettings('listOptions') || "{}");
-    if (listOptions.hasOwnProperty('favorites') === false) {
-        listOptions = $.extend(true, {}, listOptions_def);
-    }
     var content_options = {
         favorites: {
-            title: _lang.exp_favorites,
+            title: _lang.exp_items.favorites,
             root_url: undefined,
             max_w: 120
         },
         kp_favorites: {
-            title: _lang.exp_kinopoisk,
+            title: _lang.exp_items.kp_favorites,
             root_url: 'http://www.kinopoisk.ru',
             max_w: 120,
             url: 'http://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
@@ -63,7 +48,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         kp_in_cinema: {//new in cinema
-            title: _lang.exp_in_cinima,
+            title: _lang.exp_items.kp_in_cinema,
             root_url: 'http://www.kinopoisk.ru',
             max_w: 120,
             url: 'http://www.kinopoisk.ru/afisha/new/page/%page%/',
@@ -75,7 +60,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         kp_popular: {
-            title: _lang.exp_films,
+            title: _lang.exp_items.kp_popular,
             root_url: 'http://www.kinopoisk.ru',
             max_w: 120,
             url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
@@ -85,7 +70,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         kp_serials: {
-            title: _lang.exp_serials,
+            title: _lang.exp_items.kp_serials,
             root_url: 'http://www.kinopoisk.ru',
             max_w: 120,
             url: 'http://www.kinopoisk.ru/top/lists/45/',
@@ -95,7 +80,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         imdb_in_cinema: {
-            title: _lang.exp_imdb_in_cinima,
+            title: _lang.exp_items.imdb_in_cinema,
             root_url: 'http://www.imdb.com',
             max_w: 120,
             url: 'http://www.imdb.com/movies-in-theaters/',
@@ -105,7 +90,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         imdb_popular: {
-            title: _lang.exp_imdb_films,
+            title: _lang.exp_items.imdb_popular,
             root_url: 'http://www.imdb.com',
             max_w: 120,
             url: 'http://www.imdb.com/search/title?count=100&title_type=feature',
@@ -115,7 +100,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         imdb_serials: {
-            title: _lang.exp_imdb_serials,
+            title: _lang.exp_items.imdb_serials,
             root_url: 'http://www.imdb.com',
             max_w: 120,
             url: 'http://www.imdb.com/search/title?count=100&title_type=tv_series',
@@ -125,7 +110,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         gg_games_top: {//best
-            title: _lang.exp_games_best,
+            title: _lang.exp_items.gg_games_top,
             root_url: 'http://gameguru.ru',
             max_w: 120,
             url: 'http://gameguru.ru/pc/games/rate_week/page%page%/list.html',
@@ -137,7 +122,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=220&rewriteMime=image/jpeg&url='
         },
         gg_games_new: {//new
-            title: _lang.exp_games_new,
+            title: _lang.exp_items.gg_games_new,
             root_url: 'http://gameguru.ru',
             max_w: 120,
             url: 'http://gameguru.ru/pc/games/new/page%page%/list.html',
@@ -561,7 +546,12 @@ var explore = function() {
         var spanList = [];
         var_cache.qulityList[type] = {};
         for (var index = from; index < end; index++) {
-            var title = content[index].title;
+            var title;
+            if ((_lang.t === 'en' || options.use_english_postername === 1) && content[index].title_en !== undefined) {
+                title = content[index].title_en;
+            } else {
+                title = content[index].title;
+            }
             var search_link = 'index.html#?search='+title;
             var span = $('<span>').append(
                 $('<a>',{href: search_link, text: title, title: title})
@@ -961,13 +951,13 @@ var explore = function() {
             popup.children('div.corner').css('left',(corner_pos === 0)?'50%':(corner_pos+'px'));
         }
         var ul = popup.children('div.content').children('ul');
-        ul.get(0).textContent = '';
         var content = [];
         for (var i = 0, item; item = quality[i]; i++) {
             var a = $('<a>',{href: item.url, target: '_blank'}).html(item.hlTitle+', '+item.sizeText);
             a.attr('title', a.text());
             content.push( $('<li>').append(a) );
         }
+        ul.get(0).textContent = '';
         ul.append( content );
     };
     var getDescription = function(request) {
@@ -987,6 +977,9 @@ var explore = function() {
                 return;
             }
             var_cache.mode = 1;
+            if (listOptions.hasOwnProperty('favorites') === false) {
+                listOptions = $.extend(true, {}, engine.def_listOptions);
+            }
             dom_cache.explore = $('div.explore');
             dom_cache.explore_ul = dom_cache.explore.children('ul');
             dom_cache.top = dom_cache.explore.children('div.top_search');

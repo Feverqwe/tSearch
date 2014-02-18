@@ -1,6 +1,7 @@
 var options = function() {
     var isFF = window.Application !== undefined && Application.name === "Firefox";
     var isChromeum = (window.chrome !== undefined);
+    var listOptions = JSON.parse(GetSettings('listOptions') || "{}");
     var dom_cache = {};
     var var_cache = {
         window_scroll_timer: undefined
@@ -21,7 +22,6 @@ var options = function() {
     };
     var settings = loadSettings();
     var profile = $.extend(true,{},engine.getProfileList());
-    //profile = {profile_name:{tracker_name:0, tracker_name: 1}}
     var current_profile = GetSettings('currentProfile');
     var set_place_holder = function() {
         $.each(engine.def_settings, function(k, v) {
@@ -78,15 +78,18 @@ var options = function() {
                 }
             }
         });
-        dom_cache.exp_in_cinima.text(_lang.exp_in_cinima);
-        dom_cache.exp_films.text(_lang.exp_films);
-        dom_cache.exp_serials.text(_lang.exp_serials);
-        dom_cache.exp_imdb_in_cinima.text(_lang.exp_imdb_in_cinima);
-        dom_cache.exp_imdb_films.text(_lang.exp_imdb_films);
-        dom_cache.exp_imdb_serials.text(_lang.exp_imdb_serials);
-        dom_cache.exp_games_new.text(_lang.exp_games_new);
-        dom_cache.exp_games_best.text(_lang.exp_games_best);
-        dom_cache.exp_games_all.text(_lang.exp_games_all);
+        dom_cache.main_item_body.get(0).textContent = '';
+        $.each(listOptions, function(key, value){
+            if (key === 'favorites') {
+                value.e = 1;
+            }
+            dom_cache.main_item_body.append( $('<ul>', {'class': 'item'}).append(
+                $('<li>').append(
+                    $('<input>',{type: 'checkbox', name: key, checked: value.e === 1, disabled: key === 'favorites'})
+                ),
+                $('<li>').append( _lang.exp_items[key] )
+            ));
+        });
         if (_lang.t !== "ru") {
             dom_cache.use_english_postername.parents().eq(1).hide();
         } else {
@@ -125,6 +128,12 @@ var options = function() {
                 SetSettings(key, val);
             }
         });
+        console.log(settings)
+        $.each(listOptions, function(key){
+            var value = $('input[name='+key+']').prop('checked')?1:0;
+            listOptions[key].e = value;
+        });
+        SetSettings('listOptions', JSON.stringify(listOptions));
         saveCurrentProfile();
         SetSettings('profileList', JSON.stringify(profile));
         SetSettings('currentProfile', current_profile);
@@ -329,13 +338,6 @@ var options = function() {
         delete data.history;
         delete data.qualityBoxCache;
         delete data.qualityCache;
-        /*
-        delete st['explorerCache'];
-        delete st['topCache'];
-        delete st['search_history'];
-        delete st['kinopoiskDeskList'];
-        delete st['favoritesDeskList'];
-        */
         var json = JSON.stringify(data);
         dom_cache.textarea_backup.val(json);
         return json;
@@ -351,7 +353,7 @@ var options = function() {
         var search_history = localStorage.history;
         localStorage.clear();
         if (search_history !== undefined) {
-            localStorage.history = history;
+            localStorage.history = search_history;
         }
         if (click_history !== undefined) {
             localStorage.click_history = click_history;
@@ -476,15 +478,6 @@ var options = function() {
             dom_cache.save_in_cloud = $('input[name="save_in_cloud"]');
             dom_cache.get_from_cloud = $('input[name="get_from_cloud"]');
             dom_cache.select_language = $('select[name="language"]');
-            dom_cache.exp_in_cinima = $('[data-lang="exp_in_cinima"]');
-            dom_cache.exp_films = $('[data-lang="exp_films"]');
-            dom_cache.exp_serials = $('[data-lang="exp_serials"]');
-            dom_cache.exp_imdb_in_cinima = $('[data-lang="exp_imdb_in_cinima"]');
-            dom_cache.exp_imdb_films = $('[data-lang="exp_imdb_films"]');
-            dom_cache.exp_imdb_serials = $('[data-lang="exp_imdb_serials"]');
-            dom_cache.exp_games_new = $('[data-lang="exp_games_new"]');
-            dom_cache.exp_games_best = $('[data-lang="exp_games_best"]');
-            dom_cache.exp_games_all = $('[data-lang="exp_games_all"]');
             dom_cache.use_english_postername = $('input[name="use_english_postername"]');
             dom_cache.select_profileList = $('select[name=tr_lists]');
             dom_cache.backup_form = $('div.backup_form');
@@ -505,6 +498,20 @@ var options = function() {
             dom_cache.save_btn = $('li.save_btn');
             dom_cache.save_status = $('div.page.save > div.status');
             dom_cache.html_body = $('html, body');
+            dom_cache.main_item_body = $('ul.main_item_body');
+            if (listOptions.hasOwnProperty('favorites') === false) {
+                listOptions = $.extend(true, {}, engine.def_listOptions);
+                if (_lang.t === "ru") {
+                    listOptions.imdb_in_cinema.e = 0;
+                    listOptions.imdb_popular.e = 0;
+                    listOptions.imdb_serials.e = 0;
+                } else {
+                    listOptions.kp_favorites.e = 0;
+                    listOptions.kp_in_cinema.e = 0;
+                    listOptions.kp_popular.e = 0;
+                    listOptions.kp_serials.e = 0;
+                }
+            }
             write_language();
             dom_cache.ul_menu.on('click', 'a', function(e) {
                 e.preventDefault();
@@ -773,6 +780,11 @@ var options = function() {
             });
             dom_cache.save_btn.on('click', function(e) {
                 e.preventDefault();
+                var $this = $(this).children();
+                $this.text(_lang.settings_saved);
+                setTimeout(function() {
+                    $this.text(_lang.settings[45]);
+                }, 500);
                 saveAll();
             });
             dom_cache.window.on('scroll',function() {
