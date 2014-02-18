@@ -498,6 +498,8 @@ var options = function() {
             dom_cache.save_status = $('div.page.save > div.status');
             dom_cache.html_body = $('html, body');
             dom_cache.main_item_body = $('ul.main_item_body');
+            dom_cache.magic_btn = $('input[name="create_code"]');
+
             if (listOptions.hasOwnProperty('favorites') === false) {
                 listOptions = $.extend(true, {}, engine.def_listOptions);
             }
@@ -516,6 +518,7 @@ var options = function() {
             });
             if (isFF) {
                 //FF
+                dom_cache.magic_btn.hide();
                 dom_cache.add_in_omnibox.closest('ul').hide();
             }
             if (!isChromeum) {

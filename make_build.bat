@@ -70,6 +70,9 @@ java -jar htmlcompressor-1.5.3.jar -t html .\ff_o\firefox\chrome\content\popup.h
 rd /S /Q .\build_firefox\chrome\content\_locales
 del .\build_firefox\chrome\content\manifest.json
 del .\build_firefox\chrome\content\js\background.js
+del .\build_firefox\chrome\content\js\magic.js
+del .\build_firefox\chrome\content\css\magic.css
+del .\build_firefox\chrome\content\magic.html
 
 :: ff
 
