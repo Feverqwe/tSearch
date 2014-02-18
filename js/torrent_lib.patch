@@ -1,6 +1,0 @@
-@@ -1,2 +1,2 @@
- window.torrent_lib = {};
--window.torrent_lib_min = 0;
-\ No newline at end of file
-+window.torrent_lib_min = 1;
-\ No newline at end of file
