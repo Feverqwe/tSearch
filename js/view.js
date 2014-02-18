@@ -2085,6 +2085,15 @@ var view = function() {
                 var_cache.oldlocationHash = window.location.hash;
                 readUrl(1);
             }, false);
+            if (window.opera !== undefined) {
+                dom_cache.window.on('hashchange', function() {
+                    if (window.location.hash === var_cache.oldlocationHash){
+                        return;
+                    }
+                    var_cache.oldlocationHash = window.location.hash;
+                    readUrl(1);
+                });
+            }
             dom_cache.search_btn_clear.on("click", function(event) {
                 event.preventDefault();
                 $(this).hide();

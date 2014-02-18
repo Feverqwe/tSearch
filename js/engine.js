@@ -21,9 +21,6 @@ var engine = function() {
         filter_panel_to_left: {v: 1, t: "checkbox"},
         hideTopSearch: {v: 0, t: "checkbox"}
     };
-    if (window.chrome !== undefined && chrome.i18n && chrome.i18n.getMessage("lang") === 'en') {
-        def_settings.hideTopSearch = 1;
-    }
     var def_listOptions = {
         favorites: { e: 1, s: 1, w: 100, c: 1 },
         kp_favorites: { e: 1, s: 1, w: 100, c: 1 },
@@ -36,8 +33,8 @@ var engine = function() {
         gg_games_top: { e: 1, s: 1, w: 100, c: 1 },
         gg_games_new: { e: 1, s: 1, w: 100, c: 1 }
     };
-    if (window.chrome !== undefined && chrome.i18n !== undefined) {
-        if (chrome.i18n.getMessage("lang") === 'en') {
+    if (window._lang !== undefined) {
+        if ( _lang.t === 'en' ) {
             def_settings.hideTopSearch.v = 1;
             def_listOptions.kp_favorites.e = 0;
             def_listOptions.kp_in_cinema.e = 0;
