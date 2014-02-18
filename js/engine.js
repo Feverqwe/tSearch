@@ -57,12 +57,16 @@ var engine = function() {
         var storage = $.extend({},localStorage);
         var new_storage = {};
         var favoritesList = JSON.parse(storage.favoritesList || '[]');
-        var exp_cache_favorites = {content:[]};
-        favoritesList.forEach(function(item) {
-            exp_cache_favorites.content.push({title: item.name, url: item.url, img: item.img})
-        });
-        new_storage.favoritesList = JSON.stringify(favoritesList);
-        new_storage.history = storage.search_history
+        if (favoritesList.length > 0) {
+            var exp_cache_favorites = {content:[]};
+            favoritesList.forEach(function(item) {
+                exp_cache_favorites.content.push({title: item.name, url: item.url, img: item.img})
+            });
+            new_storage.favoritesList = JSON.stringify(favoritesList);
+        }
+        if (storage.search_history !== null || storage.search_history !== undefined) {
+            new_storage.history = storage.search_history;
+        }
         $.each(storage, function(key, value) {
             if (key.substr(0, 3) === 'ct_') {
                 new_storage[key] = value;
@@ -73,6 +77,9 @@ var engine = function() {
                 'AdvFiltration', 'HideZeroSeed', 'SubCategoryFilter', 'ShowIcons',
                 'HideSeed', 'HideLeech', 'costume_tr', 'lang', 'torrent_list_r', 'torrent_list_h'
             ].indexOf(key) !== -1) {
+                if (value === null || value === undefined) {
+                    return 1;
+                }
                 new_storage[key] = value;
             }
         });
