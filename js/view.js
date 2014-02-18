@@ -727,7 +727,11 @@ var view = function() {
             if (obj.hasOwnProperty(i) === false) {
                 continue;
             }
-            arr.push([parseInt(i), obj[i]]);
+            var id = parseInt(i);
+            if ([1, 5, 4, 6, 9, 10, -1].indexOf(id) !== -1) {
+                continue;
+            }
+            arr.push([id, obj[i]]);
         }
         arr.sort(function(a,b){
             if (a[1] === b[1]) {
@@ -765,32 +769,33 @@ var view = function() {
                 }
             }
             if (items.length < 5) {
-                for (var i = 0, item; item = var_cache.table_dom[i]; i++) {
+                var arr = var_cache.table_dom.slice(0,10);
+                for (var i = 0, item; item = arr[i]; i++) {
                     if (items.length > 4) {
                         break;
                     }
                     var found = false;
-                    items.forEach(function(itm){
+                    for (var n = 0, itm; itm = items[n]; n++) {
                         if (itm.url === item.url) {
                             found = true;
-                            return 0;
+                            break;
                         }
-                    });
+                    };
                     if (found === false) {
                         items.push(item);
                     }
-                }
+                };
             }
         } else {
             items = var_cache.table_dom;
         }
-        items.forEach(function(item){
-            delete item.time;
-            delete item.quality;
-            delete item.category_id;
+        items = $.extend(true,[],items);
+        for (var i = 0, item; item = items[i]; i++) {
             item.hlTitle += ', '+item.sizeText;
+            delete item.time;
+            delete item.category_id;
             delete item.sizeText;
-        });
+        }
         explore.setQuality(var_cache.backgroundMode.type, var_cache.backgroundMode.index, items, var_cache.currentRequest);
     }
     var bgReadResult = function(id, result, request) {

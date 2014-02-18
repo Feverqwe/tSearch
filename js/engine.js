@@ -23,16 +23,16 @@ var engine = function() {
         hideTopSearch: {v: 0, t: "checkbox"},
     };
     var def_listOptions = {
-        favorites: { e: 1, s: 1, w: 120, c: 1 },
-        kp_favorites: { e: 1, s: 1, w: 120, c: 1 },
-        kp_in_cinema: { e: 1, s: 1, w: 120, c: 1 },
-        kp_popular: { e: 1, s: 1, w: 120, c: 2 },
-        kp_serials: { e: 1, s: 1, w: 120, c: 1 },
-        imdb_in_cinema: { e: 1, s: 1, w: 120, c: 1 },
-        imdb_popular: { e: 1, s: 1, w: 120, c: 2 },
-        imdb_serials: { e: 1, s: 1, w: 120, c: 1 },
-        gg_games_top: { e: 1, s: 1, w: 120, c: 1 },
-        gg_games_new: { e: 1, s: 1, w: 120, c: 1 }
+        favorites: { e: 1, s: 1, w: 100, c: 1 },
+        kp_favorites: { e: 1, s: 1, w: 100, c: 1 },
+        kp_in_cinema: { e: 1, s: 1, w: 100, c: 1 },
+        kp_popular: { e: 1, s: 1, w: 100, c: 2 },
+        kp_serials: { e: 1, s: 1, w: 100, c: 1 },
+        imdb_in_cinema: { e: 1, s: 1, w: 100, c: 1 },
+        imdb_popular: { e: 1, s: 1, w: 100, c: 2 },
+        imdb_serials: { e: 1, s: 1, w: 100, c: 1 },
+        gg_games_top: { e: 1, s: 1, w: 100, c: 1 },
+        gg_games_new: { e: 1, s: 1, w: 100, c: 1 }
     };
     var var_cache = {
         block_href:  new RegExp('\\/\\/','img'),
