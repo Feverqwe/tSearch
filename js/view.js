@@ -261,6 +261,7 @@ var view = function() {
         engine.stop();
         engine.search(request, [], 1);
         var_cache.currentRequest = request;
+        _gaq.push(['_trackEvent', 'Quality', 'keyword', request]);
     }
     var home = function(){
         homeMode();
