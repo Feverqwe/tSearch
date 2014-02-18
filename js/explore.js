@@ -979,6 +979,16 @@ var explore = function() {
             var_cache.mode = 1;
             if (listOptions.hasOwnProperty('favorites') === false) {
                 listOptions = $.extend(true, {}, engine.def_listOptions);
+                if (_lang.t === "ru") {
+                    listOptions.imdb_in_cinema.e = 0;
+                    listOptions.imdb_popular.e = 0;
+                    listOptions.imdb_serials.e = 0;
+                } else {
+                    listOptions.kp_favorites.e = 0;
+                    listOptions.kp_in_cinema.e = 0;
+                    listOptions.kp_popular.e = 0;
+                    listOptions.kp_serials.e = 0;
+                }
             }
             dom_cache.explore = $('div.explore');
             dom_cache.explore_ul = dom_cache.explore.children('ul');
