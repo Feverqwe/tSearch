@@ -76,7 +76,7 @@ var engine = function() {
         if (favoritesList.length > 0) {
             var exp_cache_favorites = {content:[]};
             favoritesList.forEach(function(item) {
-                exp_cache_favorites.content.push({title: item.name, url: item.url, img: item.img})
+                exp_cache_favorites.content.push({title: item.name, url: item.url, img: item.img});
             });
             new_storage.favoritesList = JSON.stringify(favoritesList);
         }
@@ -676,7 +676,7 @@ var engine = function() {
         getDefList: function () {
             return wrapAllCustomTrList(getDefaultList());
         }
-    }
+    };
 }();
 $.ajaxSetup({
     global: true,
