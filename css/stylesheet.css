@@ -727,6 +727,7 @@ table.ui-datepicker-calendar td.ui-datepicker-week-end:hover > a {
     cursor: pointer;
     background: url(../images/back.png) center left no-repeat;
     transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
     background-position-y: 0px;
 }
 
