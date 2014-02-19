@@ -446,7 +446,7 @@ var magic = function() {
             dom_cache.body = $('body');
             dom_cache.dev_tools = $('div.tools');
             dom_cache.status_bar = $('div.status_bar');
-            dom_cache.iframe = $('iframe.web');
+            dom_cache.iframe = $('iframe');
             dom_cache.input_open = $('input[name=open]');
             dom_cache.search_url = $('input[name=search_url]');
             dom_cache.base_path = $('input[name=base_path]');
@@ -867,7 +867,7 @@ $(function() {
     magic.begin();
 });
 
-jQuery.fn.getPath = function(ifr) {
+$.fn.getPath = function(ifr) {
     var no_id = ['tr'];
     if (this.length !== 1)
         return;

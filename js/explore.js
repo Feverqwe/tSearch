@@ -399,7 +399,7 @@ var explore = function() {
             google: function(content) {
                 content = engine.contentFilter(content);
                 var $content = engine.load_in_sandbox(content);
-                var $content = $content.find('#rhs_block').find('.rhsvw.kno-inline').eq(0).children('div');
+                $content = $content.find('#rhs_block').find('.rhsvw.kno-inline').eq(0).children('div');
                 //content = undefined;
                 if ($content.length === 0) {
                     return;
@@ -788,7 +788,7 @@ var explore = function() {
                 keywords.sort(function(a, b) {
                     if (a.weight === b.weight) {
                         return 0;
-                    }
+                    } else
                     if (a.weight > b.weight) {
                         return -1;
                     }
@@ -1157,7 +1157,7 @@ var explore = function() {
                     source.xhr = $.ajax({
                         url: source.url.replace('%page%', page).replace('%category%', options.kp_folder_id),
                         success: function(data) {
-                            var data = content_parser.kp_favorites(data);
+                            data = content_parser.kp_favorites(data);
                             if (data === undefined) {
                                 $this.addClass('error');
                                 return;
@@ -1387,7 +1387,7 @@ var explore = function() {
                     var_cache.resize_timer_work = 0;
                 }, 250);
             });
-            if (options.allow_favorites_sync === 1 && window.chrome !== undefined && chrome.storage) {
+            if (options.allow_favorites_sync === 1 && window.chrome !== undefined && chrome.storage !== undefined) {
                 chrome.storage.onChanged.addListener(function(changes) {
                     for (var key in changes) {
                         if (changes.hasOwnProperty(key) === false) {

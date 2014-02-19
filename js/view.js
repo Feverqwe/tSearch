@@ -782,11 +782,11 @@ var view = function() {
                             found = true;
                             break;
                         }
-                    };
+                    }
                     if (found === false) {
                         items.push(item);
                     }
-                };
+                }
             }
             if (items.length < 5) {
                 for (var i = 0, item; item = var_cache.table_dom[i]; i++) {
@@ -799,11 +799,11 @@ var view = function() {
                             found = true;
                             break;
                         }
-                    };
+                    }
                     if (found === false) {
                         items.push(item);
                     }
-                };
+                }
             }
         } else {
             items = var_cache.table_dom;
@@ -1556,8 +1556,7 @@ var view = function() {
         var _filter_string = var_cache.filter_string = _filter.join(',');
         for (var i = 0, item; item = var_cache.table_dom[i]; i++) {
             var filter = itemFilter(item);
-            var filter_string = filter.join(',');
-            item.filter = filter_string;
+            item.filter = filter.join(',');
             item.node.attr('data-filter',item.filter);
         }
         dom_cache.body.children('style.filter').remove();
@@ -1826,8 +1825,8 @@ var view = function() {
         if (request === undefined) {
             if (update === undefined) {
                 window.history.pushState(undefined, title, 'index.html');
+                _gaq.push(['_trackPageview', 'index.html']);
             }
-            _gaq.push(['_trackPageview', url]);
             var_cache.oldlocationHash = '';
             return;
         }
@@ -2128,7 +2127,7 @@ var view = function() {
             });
             dom_cache.topbtn.on("click", function(e) {
                 e.preventDefault();
-                window.scrollTo(window.scrollX, 200);;
+                window.scrollTo(window.scrollX, 200);
                 dom_cache.html_body.animate({
                     scrollTop: 0
                 }, 200);
