@@ -441,11 +441,13 @@ var magic = function() {
     return {
         begin: function() {
             write_language();
+            dom_cache.window = $(window);
+            dom_cache.menu = $('ul.menu');
+            dom_cache.body = $('body');
+            dom_cache.dev_tools = $('div.tools');
             dom_cache.status_bar = $('div.status_bar');
             dom_cache.iframe = $('iframe.web');
             dom_cache.input_open = $('input[name=open]');
-            dom_cache.dev_tools = $('div.tools');
-            dom_cache.window = $(window);
             dom_cache.search_url = $('input[name=search_url]');
             dom_cache.base_path = $('input[name=base_path]');
             dom_cache.open_auth = $('input[name=open_auth]');
@@ -492,8 +494,6 @@ var magic = function() {
             dom_cache.month_replace = $('input[name=month_replace]');
             dom_cache.convert_size = $('input[name=convert_size]');
             dom_cache.make_code = $('input[name=make_code]');
-            dom_cache.menu = $('ul.menu');
-            dom_cache.body = $('body');
             dom_cache.load_code = $('input[name=load_code]');
             dom_cache.seed_regexp = $('input[name=seed_regexp]');
             dom_cache.seed_regexp_repl = $('input[name=seed_regexp_repl]');
@@ -809,9 +809,9 @@ var magic = function() {
             var formats = ex_kit.format_date();
             var f_sel = dom_cache.date_format;
             var f_l = formats.length;
-            f_sel.append('<option value="-1">-</option>');
+            f_sel.append($('<option>',{value: -1, text: '-'}));
             for (var n = 0; n < f_l; n++) {
-                f_sel.append('<option value="' + n + '">' + formats[n] + '</option>');
+                f_sel.append($('<option>',{value: n, text: formats[n]}));
             }
             f_sel.on('change', function() {
                 filter_date();
