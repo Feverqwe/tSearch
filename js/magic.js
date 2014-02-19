@@ -1,6 +1,8 @@
 var magic = function() {
     var dom_cache = {};
-    var var_cache = {};
+    var var_cache = {
+        xhr: undefined
+    };
     var input_list = {
         search: {
             url: undefined,
@@ -13,7 +15,7 @@ var magic = function() {
         auth: {
             url: undefined,
             open: undefined,
-            form: undefined,
+            input: undefined,
             btn: undefined
         },
         selectors: {
@@ -140,6 +142,37 @@ var magic = function() {
             }
         }
     };
+    var contentFilter = function(c) {
+        return c.replace(/display[: ]*none/img, '#blockdisp#').replace(/ src=(['"]?)/img, ' src=$1#blockrurl#');
+    };
+    var loadUrl = function(url, type) {
+        if (url.length === 0) {
+            return;
+        }
+        if (var_cache.xhr !== undefined) {
+            var_cache.xhr.abort();
+        }
+        var post = (type === 'search')?input_list.search.post.val():'';
+        var search = input_list.search.request.val();
+        if (input_list.search.cp1251.prop('checked')) {
+            search = ex_kit.in_cp1251(search);
+        }
+        url = url.replace('%search%', search);
+        post = post.replace('%search%', search);
+        var obj_req = {
+            type: 'GET',
+            url: url,
+            success: function(data) {
+                var_cache.pageDOM = $($.parseHTML(data));
+                dom_cache.iframe[0].contentDocument.all[0].innerHTML = contentFilter(data) + '<style>.kit_select {color:#000 !important;background-color:#FFCC33 !important; cursor:pointer;} td.kit_select { border: 1px dashed red !important; }</style>';
+            }
+        };
+        if (post.length > 0) {
+            obj_req.type = 'POST';
+            obj_req['data'] = post;
+        }
+        var_cache.xhr = $.ajax(obj_req);
+    };
     var loadDom = function(item, value) {
         for (var i in value) {
             if ( value.hasOwnProperty(i) === false ) {
@@ -147,20 +180,38 @@ var magic = function() {
             }
             var name = item+'_'+i;
             value[i] = $('input[name='+name+'],select[name='+name+'],textarea[name='+name+']');
-            value[i].data('type', item);
             if (value[i].length !== 1) {
                 console.log('Error:', 'count:', value[i].length, name);
                 return;
             }
             if (i === 'btn') {
+                value[i].data('type', item);
                 value[i].on('click', function(e){
                     e.preventDefault();
+                    //включать выделятор
                     // do...
                 });
-            } else
-            if (i === 'input') {
+            } else if (i === 'input') {
+                value[i].data('type', item);
                 value[i].on('keyup', function(e){
                     e.preventDefault();
+                    //обновлять text поле, подсвечивание при ошибке
+                    // do...
+                });
+            } else if (i === 'enable') {
+                value[i].data('type', item);
+                value[i].on('click', function(e){
+                    e.preventDefault();
+                    var $this = $(this);
+                    //если включено включать поля input и прочие на строке
+                    // do...
+                });
+            } else if (i === 'attr_enable') {
+                value[i].data('type', item);
+                value[i].on('click', function(e){
+                    e.preventDefault();
+                    var $this = $(this);
+                    //если включено включать поле attr на строке
                     // do...
                 });
             }
@@ -170,6 +221,9 @@ var magic = function() {
         begin: function() {
             dom_cache.window = $(window);
             dom_cache.body = $('body');
+            dom_cache.menu = $('ul.menu');
+            dom_cache.pages = $('div.body');
+            dom_cache.iframe = $('iframe');
             $.each(input_list, function(item, value){
                 if (item === 'selectors' || item === 'convert' || item === 'desk' || item === 'save') {
                     $.each(value, function(subItem, value){
@@ -180,6 +234,26 @@ var magic = function() {
                 loadDom(item, value);
             });
 
+            dom_cache.menu.on('click', 'a', function(e) {
+                e.preventDefault();
+                var $this = $(this);
+                var page = $this.data('page');
+                dom_cache.menu.children('.active').removeClass('active');
+                $this.parent().addClass('active');
+                dom_cache.pages.children('.page.active').removeClass('active');
+                dom_cache.pages.children('.page.'+page).addClass('active');
+
+            });
+            input_list.search.open.on('click', function(e){
+                e.preventDefault();
+                var $this = $(this);
+                var type = $this.data('type');
+                loadUrl(input_list.search.url.val(), type);
+            });
+            input_list.auth.open.on('click', function(e){
+                e.preventDefault();
+                loadUrl(input_list.auth.url.val());
+            });
         }
     };
 }();

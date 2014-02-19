@@ -1,230 +1,72 @@
-/* 
-    Document   : magic
-    Created on : 07.04.2013, 10:51:18
-    Author     : anton
-    Description:
-        Purpose of the stylesheet follows.
-*/
-
 body {
-    overflow: hidden;
-    font-family: Verdana, sans-serif;
-    font-size: 0.84em;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.875em;
     margin: 0;
-}
-
-iframe.web {
-    border: 0;
-    width: 100%;
-}
-
-div.tools {
-    overflow: hidden;
-}
-div.tools > div > fieldset ul {
-    margin: 0;
-}
-div.tools > div > fieldset>ul {
-    margin-bottom: 2px;
-}
-div.tools > div > fieldset ul li {
-    display: inline-block;
-}
-input[type=text] {
-    width: 200px;
-}
-input[name=search_url] {
-    width: 300px;
-}
-input[name=post] {
-    width: 200px;
-}
-input[name=item] {
-    width: 600px;
-}
-input[name=category_name] {
-    width: 200px;
-}
-input[name=category_name_text] {
-    width: 200px;
-}
-input[name=category_link] {
-    width: 200px;
-}
-input[name=category_link_href] {
-    width: 200px;
-}
-input[name=base_path] {
-    width: 200px;
-}
-input[name=torrent_name] {
-    width: 200px;
-}
-input[name=torrent_name_text] {
-    width: 200px;
-}
-input[name=torrent_link] {
-    width: 200px;
-}
-input[name=torrent_link_href] {
-    width: 200px;
-}
-input[name=torrent_size] {
-    width: 200px;
-}
-input[name=torrent_size_text] {
-    width: 100px;
-}
-input[name=torrent_dl_link] {
-    width: 200px;
-}
-input[name=torrent_dl_link_href] {
-    width: 200px;
-}
-input[name=seed_count] {
-    width: 200px;
-}
-input[name=seed_count_text] {
-    width: 50px;
-}
-input[name=peer_count] {
-    width: 200px;
-}
-input[name=peer_count_text] {
-    width: 50px;
-}
-input[name=add_time] {
-    width: 200px;
-}
-input[name=add_time_text] {
-    width: 200px;
-}
-input.error {
-    border: 1px solid #c40005;
-    box-shadow: 0 0 4px #c40005 inset !important;
-}
-input[name=time_regexp] {
-    width: 200px;
-}
-input[name=time_regexp_repl] {
-    width: 200px;
-}
-input[name=original_time] {
-    width: 200px;
-}
-input[name=converted_time] {
-    width: 200px;
-}
-input[name=result_time] {
-    width: 300px;
-}
-input[name=skip_first] {
-    width: 50px;
-}
-input[name=skip_last] {
-    width: 50px;
-}
-input[name=original_size] {
-    width: 200px;
-}
-input[name=converted_size] {
-    width: 200px;
-}
-input[name=result_size] {
-    width: 300px;
-}
-input[name=auth_url] {
-    width: 200px;
-}
-input[name=auth_form] {
-    width: 600px;
-}
-input[name=search_text] {
-    width: 200px;
+    min-width: 960px;
+    height: 100%;
 }
 div.tools {
-    max-height: 320px;
-    overflow: auto;
+    position: relative;
+    height: 300px;
+    background-color: #fff;
+    border-bottom: 1px solid #e6e6e6;
 }
-div.page {
-    display: none;
-}
-div.page.active {
-    display: block;
-}
-ul.menu {
-    margin: 0;
+div.tools > .menu {
     background-color: #e6e6e6;
+    margin: 0;
+    padding: 0;
+    font-size: 1.143em;
 }
-ul.menu li {
+div.tools > .menu > li {
     display: inline-block;
-    font-size: 1.1em;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding-top: 1px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: 5px;
+    margin-top: 3px;
 }
-ul.menu li a {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    color: #0051D8;
-    border: 1px solid transparent;
-    border-radius: 4px;
-}
-ul.menu li a.active {
+div.tools > .menu > li a {
     text-decoration: none;
-    border-color: #ccc;
+    color: #0051D8;
+}
+div.tools > .menu > li.active {
+    background-color: #fff;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+div.tools > .menu > li.active a {
     color: #000;
 }
-div.tools > div > fieldset {
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-bottom: 5px;
+
+div.tools > div.body {
+    overflow-y: scroll;
+    height: 259px;
+    width: 100%;
 }
-fieldset {
-    margin-top: 5px;
-    border: 1px solid #c0c0c0;
+div.tools > div.body > fieldset {
+    display: none;
+    border: 0;
+    margin-top: 4px;
 }
-textarea {
-    width: 720px;
-    height: 200px;
+div.tools > div.body > fieldset.active {
+    display: block;
 }
-iframe {
+div.tools > div.body > fieldset > fieldset {
+    border: 0;
+}
+div.tools > div.body ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    padding-left: 10px;
+}
+
+div.tools > div.status_bar {
+    position: absolute;
+    bottom: 0;
+    height: 16px;
+    width: 100%;
+    border-top: 1px solid #e6e6e6;
     background-color: #fff;
-}
-div.status_bar {
-    height: 18px;
-    opacity: 0.5;
-    border-bottom: 1px dashed #c0c0c0;
-    border-top: 1px dashed #c0c0c0;
-}
-.page.selectors ul li.istr {
-    width: 200px;
-    display: inline-block;
-}
-.page.selectors ul li.istr.nc {
-    width: 224px;
-}
-.page.convert div>span {
-    font-size: 110%;
-    display: inline-block;
-    margin-bottom: 3px;
-    margin-top: 6px;
-}
-.cos_attr {
-    width: 50px !important;
-}
-.page li.istr {
-    width: 200px;
-}
-.page.convert li.istr {
-    width: 150px;
-}
-.page.auth li.istr {
-    width: 200px;
-}
-.page.search li.istr {
-    width: 150px;
 }
