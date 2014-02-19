@@ -1150,7 +1150,7 @@ var explore = function() {
                 } else {
                     $this.addClass('loading');
                 }
-                var page_limit = 20;
+                var page_limit = 10;
                 var w_check_obj = {};
                 var content = [];
                 var load_page = function(page) {
@@ -1169,11 +1169,13 @@ var explore = function() {
                                 }
                                 w_check_obj[item.url] = 1;
                                 content.push(item);
+                                new_count++;
                             }
                             if (new_count !== 0 && page_limit > 0) {
                                 page++;
                                 page_limit--;
                                 load_page(page);
+                                return;
                             }
                             var current_page = var_cache.source[type].current_page;
                             content_write(type, content, current_page, 1);
@@ -1186,7 +1188,7 @@ var explore = function() {
                         }
                     });
                 };
-                load_page(0);
+                load_page(1);
             });
             dom_cache.explore_ul.on('click', 'div.picture > div.inFavorite', function(e){
                 var $this = $(this);
