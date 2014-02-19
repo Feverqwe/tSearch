@@ -1150,7 +1150,7 @@ var explore = function() {
                 } else {
                     $this.addClass('loading');
                 }
-                var page_limit = 10;
+                var page_limit = 20;
                 var w_check_obj = {};
                 var content = [];
                 var load_page = function(page) {
