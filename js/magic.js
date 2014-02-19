@@ -147,6 +147,7 @@ var magic = function() {
             }
             var name = item+'_'+i;
             value[i] = $('input[name='+name+'],select[name='+name+'],textarea[name='+name+']');
+            value[i].data('type', item);
             if (value[i].length !== 1) {
                 console.log('Error:', 'count:', value[i].length, name);
                 return;
