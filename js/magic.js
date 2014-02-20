@@ -231,6 +231,15 @@ var magic = function() {
                                 }
                             }
                             item.output.val(path_text[1]);
+                            if (itemName === 'time') {
+                                updateTimeConverter();
+                            } else if (itemName === 'torrent_size') {
+                                updateSizeConverter();
+                            } else if (itemName === 'seed') {
+                                updateSeedConverter();
+                            } else if (itemName === 'peer') {
+                                updatePeerConverter();
+                            }
                         }
                         if (path_text[0] === undefined) {
                             path_text[0] = path;
@@ -240,7 +249,7 @@ var magic = function() {
                     }, itemName, parent);
                 });
             } else if (i === 'input') {
-                value[i].on('keyup', function(e){
+                value[i].on('keyup', function(){
                     var item;
                     if (parent !== undefined) {
                         item = input_list[parent][itemName];
@@ -267,13 +276,22 @@ var magic = function() {
                             }
                         }
                         item.output.val(path_text[1]);
+                        if (itemName === 'time') {
+                            updateTimeConverter();
+                        } else if (itemName === 'torrent_size') {
+                            updateSizeConverter();
+                        } else if (itemName === 'seed') {
+                            updateSeedConverter();
+                        } else if (itemName === 'peer') {
+                            updatePeerConverter();
+                        }
                     }
                     if (path_text[0] === undefined) {
                         item.input.addClass('error');
                     }
                 });
             } else if (i === 'enable') {
-                value[i].on('click', function(e){
+                value[i].on('click', function(){
                     var item;
                     if (parent !== undefined) {
                         item = input_list[parent][itemName];
@@ -290,7 +308,7 @@ var magic = function() {
                     }
                 });
             } else if (i === 'attr_enable') {
-                value[i].on('click', function(e){
+                value[i].on('click', function(){
                     var item;
                     if (parent !== undefined) {
                         item = input_list[parent][itemName];
@@ -301,7 +319,7 @@ var magic = function() {
                     item.input.trigger('keyup');
                 });
             } else if (i === 'attr') {
-                value[i].on('keyup', function(e){
+                value[i].on('keyup', function(){
                     var item;
                     if (parent !== undefined) {
                         item = input_list[parent][itemName];
@@ -311,82 +329,65 @@ var magic = function() {
                     item.input.trigger('keyup');
                 });
             } else if (i === 'regexp') {
-                value[i].on('keyup', function(e){
-                    var item;
-                    if (parent !== undefined) {
-                        item = input_list[parent][itemName];
-                    } else {
-                        item = input_list[itemName];
+                value[i].on('keyup', function(){
+                    if (itemName === 'time') {
+                        updateTimeConverter();
+                    } else if (itemName === 'size') {
+                        updateSizeConverter();
+                    } else if (itemName === 'peer') {
+                        updatePeerConverter();
+                    } else if (itemName === 'seed') {
+                        updateSeedConverter();
                     }
-                    //обновление времени
-                    //do..
                 });
             } else if (i === 'regexp_text') {
-                value[i].on('keyup', function(e){
-                    var item;
-                    if (parent !== undefined) {
-                        item = input_list[parent][itemName];
-                    } else {
-                        item = input_list[itemName];
+                value[i].on('keyup', function(){
+                    if (itemName === 'time') {
+                        updateTimeConverter();
+                    } else if (itemName === 'size') {
+                        updateSizeConverter();
+                    } else if (itemName === 'peer') {
+                        updatePeerConverter();
+                    } else if (itemName === 'seed') {
+                        updateSeedConverter();
                     }
-                    //обновление времени
-                    //do..
                 });
             } else if (i === 'format') {
-                value[i].on('change', function(e){
-                    var item;
-                    if (parent !== undefined) {
-                        item = input_list[parent][itemName];
-                    } else {
-                        item = input_list[itemName];
-                    }
-                    //обновление времени
-                    //do..
+                value[i].on('change', function(){
+                    updateTimeConverter();
                 });
             } else if (i === 'today') {
-                value[i].on('change', function(e){
-                    var item;
-                    if (parent !== undefined) {
-                        item = input_list[parent][itemName];
-                    } else {
-                        item = input_list[itemName];
-                    }
-                    //обновление времени
-                    //do..
+                value[i].on('change', function(){
+                    updateTimeConverter();
                 });
             } else if (i === 'month') {
-                value[i].on('change', function(e){
-                    var item;
-                    if (parent !== undefined) {
-                        item = input_list[parent][itemName];
-                    } else {
-                        item = input_list[itemName];
-                    }
-                    //обновление времени
-                    //do..
+                value[i].on('change', function(){
+                    updateTimeConverter();
                 });
             } else if (i === 'convert') {
-                value[i].on('change', function(e){
-                    var item;
-                    if (parent !== undefined) {
-                        item = input_list[parent][itemName];
-                    } else {
-                        item = input_list[itemName];
-                    }
-                    // обновление размера
-                    //do..
+                value[i].on('change', function(){
+                    // for size
+                    updateSizeConverter();
                 });
             }
+        }
+        if (value.input !== undefined) {
+            value.input.addClass('input');
         }
         if (value.enable !== undefined) {
             value.input.prop('disabled', true);
             value.btn.prop('disabled', true);
             if (value.attr_enable !== undefined) {
                 value.attr_enable.prop('disabled', true);
+                value.attr.addClass('attr')
             }
             if (value.add_root !== undefined) {
                 value.add_root.prop('disabled', true);
             }
+        }
+        if (value.output !== undefined) {
+            value.output.prop('disabled', true);
+            value.output.addClass('output')
         }
         if (value.attr_enable !== undefined) {
             value.attr.prop('disabled', true);
@@ -400,16 +401,70 @@ var magic = function() {
         }
     };
     var updateTimeConverter = function() {
-        
+        var text = input_list.selectors.time.output.val();
+        input_list.convert.time.original.val( text );
+        var value_regexp = input_list.convert.time.regexp.val();
+        var value_regexp_text = input_list.convert.time.regexp_text.val();
+        var isTodayReplace = input_list.convert.time.today.prop('checked');
+        var isMonthReplace = input_list.convert.time.month.prop('checked');
+        var timeFormat = parseInt(input_list.convert.time.format.val());
+        if (value_regexp.length > 0) {
+            var regexp = new RegExp(value_regexp, 'ig');
+            text = text.replace(regexp, value_regexp_text);
+            console.log(text)
+        }
+        if (isTodayReplace) {
+            text = ex_kit.today_replace(text, timeFormat);
+        }
+        if (isMonthReplace) {
+            text = ex_kit.month_replace(text);
+        }
+        if (timeFormat !== -1) {
+            text = ex_kit.format_date(timeFormat, text);
+        }
+        input_list.convert.time.converted.val(text);
+        input_list.convert.time.result.val( new Date(text * 1000) );
     };
     var updateSizeConverter = function() {
-
+        var text = input_list.selectors.torrent_size.output.val();
+        input_list.convert.size.original.val( text );
+        var value_regexp = input_list.convert.size.regexp.val();
+        var value_regexp_text = input_list.convert.size.regexp_text.val();
+        var isConvert = input_list.convert.size.convert.prop('checked');
+        console.log(text, value_regexp, value_regexp_text)
+        if (value_regexp.length > 0) {
+            var regexp = new RegExp(value_regexp, 'ig');
+            text = text.replace(regexp, value_regexp_text);
+        }
+        if (isConvert) {
+            text = ex_kit.format_size(text);
+        }
+        input_list.convert.size.converted.val( text );
+        input_list.convert.size.result.val( bytesToSize(text) );
     };
     var updatePeerConverter = function() {
-
+        var text = input_list.selectors.peer.output.val();
+        input_list.convert.peer.original.val( text );
+        var value_regexp = input_list.convert.peer.regexp.val();
+        var value_regexp_text = input_list.convert.peer.regexp_text.val();
+        if (value_regexp.length > 0) {
+            var regexp = new RegExp(value_regexp, 'ig');
+            text = text.replace(regexp, value_regexp_text);
+        }
+        input_list.convert.peer.converted.val( text );
+        input_list.convert.peer.result.val( parseInt(text) );
     };
     var updateSeedConverter = function() {
-
+        var text = input_list.selectors.seed.output.val();
+        input_list.convert.seed.original.val( text );
+        var value_regexp = input_list.convert.seed.regexp.val();
+        var value_regexp_text = input_list.convert.seed.regexp_text.val();
+        if (value_regexp.length > 0) {
+            var regexp = new RegExp(value_regexp, 'ig');
+            text = text.replace(regexp, value_regexp_text);
+        }
+        input_list.convert.seed.converted.val( text );
+        input_list.convert.seed.result.val( parseInt(text) );
     };
     var onPathChange = function(path, itemName, parent, noStripPath) {
         var item;
@@ -455,6 +510,12 @@ var magic = function() {
                 } else {
                     text = el.text();
                 }
+            }
+        } else
+        if (item.table_mode === undefined) {
+            if (var_cache.pageDOM.find(path).length === 0) {
+                console.log('error',path)
+                path = undefined;
             }
         }
         return [path, text];
@@ -524,7 +585,8 @@ var magic = function() {
                     if (a === 'kit_select' || a.length === 0) {
                         return 0;
                     }
-                    return (/[^\w]{1,}/).test(a) === false;
+                    var s = (/[^\w-]{1,}/).test(a);
+                    return s === false;
                 });
                 if (classList.length > 0) {
                     name += ('.' + classList.join('.'));
@@ -549,6 +611,19 @@ var magic = function() {
             node = parent;
         }
         return path;
+    };
+    var bytesToSize = function(bytes, nan) {
+        //переводит байты в строчки
+        var sizes = _lang.size_list;
+        if (nan === undefined)
+            nan = 'n/a';
+        if (bytes <= 0)
+            return nan;
+        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+        if (i === 0) {
+            return (bytes / Math.pow(1024, i)) + ' ' + sizes[i];
+        }
+        return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
     };
     return {
         begin: function() {
@@ -605,6 +680,15 @@ var magic = function() {
             input_list.search.request.on('keyup', function(e){
                 if (e.keyCode === 13) {
                     input_list.search.open.trigger('click');
+                }
+            });
+            input_list.search.url.on('keyup', function(e){
+                var root = this.value.replace(/(.*)\/[^\/]*$/, '$1/');
+                input_list.search.root.val(root);
+            });
+            input_list.auth.url.on('keyup', function(e){
+                if (e.keyCode === 13) {
+                    input_list.auth.open.trigger('click');
                 }
             });
             input_list.selectors.skip.first.on('change', function(){

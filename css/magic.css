@@ -92,12 +92,6 @@ div.tools fieldset.selectors li > span:nth-child(1) {
     width: 199px;
     display: inline-block;
 }
-div.tools fieldset.selectors li > input[type=text] {
-    width: 200px;
-}
-div.tools fieldset.selectors li > input[type=text]:nth-child(7) {
-    width: 50px;
-}
 div.tools fieldset.selectors li > input[type=number] {
     width: 50px;
 }
@@ -112,4 +106,32 @@ div.tools fieldset.search li:nth-child(4) > span:nth-child(1),
 div.tools fieldset.search li:nth-child(5) > span:nth-child(1) {
     width: 100px;
     display: inline-block;
+}
+div.tools fieldset.convert input[name=time_result] {
+    width: 300px;
+}
+div.tools fieldset.auth input[type=text] {
+    width: 450px;
+}
+div.tools fieldset.auth li > span:nth-child(1) {
+    width: 160px;
+    display: inline-block;
+}
+div.tools fieldset.desk li > span:nth-child(1) {
+    width: 180px;
+    display: inline-block;
+}
+div.tools fieldset.desk input[type=text] {
+    width: 450px;
+}
+div.tools input.output {
+    border: 1px dashed #B6B6B6;
+    background-color: #fff;
+    width: 200px;
+}
+div.tools input.input {
+    width: 200px;
+}
+div.tools input.attr {
+    width: 50px;
 }
