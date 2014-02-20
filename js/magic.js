@@ -268,6 +268,145 @@ var magic = function() {
         code.uid = tracker_code;
         input_list.save.code.textarea.val(tracker_code);
     };
+    var form_empty = function() {
+        
+    };
+    var load_code = function() {
+        form_empty();
+        var code;
+        try {
+            code = JSON.parse(dom_cache.code.val());
+        } catch (e) {
+            alert(_lang.magic[1] + "\n" + e);
+        }
+        if (code === undefined) {
+            return;
+        }
+        if (code.cat_name !== undefined) {
+            input_list.selectors.category_name.input.val(code.cat_name);
+            input_list.selectors.category_name.enable.prop('checked', true).trigger('click');
+            if (code.cat_alt !== undefined) {
+                input_list.selectors.category_name.attr_enable.prop('checked', true).trigger('click');
+                input_list.selectors.category_name.attr.val('alt');
+            }
+            if (code.cat_attr !== undefined) {
+                input_list.selectors.category_name.attr_enable.prop('checked', true).trigger('click');
+                input_list.selectors.category_name.attr.val(code.cat_attr);
+            }
+        }
+        if (code.cat_link !== undefined) {
+            input_list.selectors.category_link.input.val(code.cat_link);
+            input_list.selectors.category_link.add_root.prop('checked', code.cat_link_r !== undefined);
+            input_list.selectors.category_link.enable.prop('checked', true).trigger('click');
+        }
+        if (code.root_url !== undefined) {
+            input_list.search.root.val(code.root_url);
+        }
+        if (code.search_path !== undefined) {
+            input_list.search.url.val(code.search_path);
+        }
+        if (code.encode !== undefined) {
+            input_list.search.cp1251.prop('checked', code.encode);
+        }
+        if (code.post !== undefined) {
+            input_list.search.post.val(code.post);
+        }
+        if (code.items !== undefined) {
+            input_list.selectors.list.input.val(code.items);
+        }
+        if (code.tr_name !== undefined) {
+            input_list.selectors.torrent_name.input.val(code.tr_name);
+        }
+        if (code.tr_link !== undefined) {
+            input_list.selectors.torrent_link.input.val(code.tr_link);
+        }
+        if (code.tr_link_r !== undefined) {
+            input_list.selectors.torrent_link.add_root.prop('checked', true);
+        }
+        if (code.tr_size !== undefined) {
+            input_list.selectors.torrent_size.input.val(code.tr_size);
+            if (code.s_c !== undefined) {
+                input_list.convert.size.convert.prop('checked', code.s_c);
+            }
+            input_list.selectors.torrent_size.enable.prop('checked', true).trigger('click');
+            if (code.size_r !== undefined) {
+                input_list.convert.size.regexp.val(code.size_r);
+                input_list.convert.size.regexp_text.val(code.size_rp);
+            }
+            if (code.size_attr !== undefined) {
+                input_list.selectors.torrent_size.attr_enable.prop('checked', true).trigger('click');
+                input_list.selectors.torrent_size.attr.val(code.size_attr);
+            }
+        }
+        if (code.tr_dl !== undefined) {
+            input_list.selectors.torrent_dl.input.val(code.tr_dl);
+            input_list.selectors.torrent_dl.add_root.prop('checked', code.tr_dl_r !== undefined);
+            input_list.selectors.torrent_dl.enable.prop('checked', true).trigger('click');
+        }
+        if (code.seed !== undefined) {
+            input_list.selectors.seed.input.val(code.seed);
+            input_list.selectors.seed.enable.prop('checked', true).trigger('click');
+            if (code.seed_r !== undefined) {
+                input_list.convert.seed.regexp.val(code.seed_r);
+                input_list.convert.seed.regexp_text.val(code.seed_rp);
+            }
+        }
+        if (code.peer !== undefined) {
+            input_list.selectors.peer.input.val(code.peer);
+            input_list.selectors.peer.enable.prop('checked', true).trigger('click');
+            if (code.peer_r !== undefined) {
+                input_list.convert.peer.regexp.val(code.peer_r);
+                input_list.convert.peer.regexp_text.val(code.peer_rp);
+            }
+        }
+        if (code.date !== undefined) {
+            input_list.selectors.time.input.val(code.date);
+            if (code.t_r !== undefined) {
+                input_list.convert.time.regexp.val(code.t_r);
+                input_list.convert.time.regexp_text.val(code.t_r_r);
+            }
+            if (code.t_t_r !== undefined) {
+                input_list.convert.time.today.prop('checked', code.t_t_r);
+            }
+            if (code.t_m_r !== undefined) {
+                input_list.convert.time.month.prop('checked', code.t_m_r);
+            }
+            if (code.t_f !== undefined) {
+                input_list.convert.time.format.children('option[value=' + code.t_f + ']')..prop('selected', true);
+            }
+            if (code.date_attr !== undefined) {
+                input_list.selectors.time.attr_enable.prop('checked', true).trigger('click');
+                input_list.selectors.time.attr.val(code.date_attr);
+            }
+            input_list.selectors.time.enable.prop('checked', true).trigger('click');
+        }
+        if (code.sf !== undefined) {
+            input_list.selectors.skip.first.val(code.sf);
+        }
+        if (code.sl !== undefined) {
+            input_list.selectors.skip.last.val(code.sl);
+        }
+        if (code.auth !== undefined) {
+            input_list.auth.url.val(code.auth);
+        }
+        if (code.auth_f !== undefined) {
+            input_list.auth.input.val(code.auth_f);
+        }
+        if (code.icon !== undefined) {
+            input_list.desk.tracker.icon.val(code.icon);
+        }
+        if (code.name !== undefined) {
+            input_list.desk.tracker.title.val(code.name);
+        }
+        if (code.about !== undefined) {
+            input_list.desk.tracker.desk.val(code.about);
+        }
+        if (code.flags !== undefined) {
+            input_list.desk.tracker.needAuth.prop('checked', code.flags.a);
+            input_list.desk.tracker.isRus.prop('checked', code.flags.l);
+            input_list.desk.tracker.isCirilic.prop('checked', code.flags.rs);
+        }
+    };
     var loadUrl = function(url, type) {
         if (url.length === 0) {
             return;

@@ -398,12 +398,12 @@ var engine = function() {
                     return arr;
                 };
                 var loadPage = function(text) {
-                    var t = (ex_encode === 1) ? ex_kit.in_cp1251(text) : text;
+                    var request = (ex_encode === 1) ? ex_kit.in_cp1251(text) : text;
                     if (xhr !== undefined)
                         xhr.abort();
                     var obj_req = {
                         type: 'GET',
-                        url: me.search_path.replace('%search%', t),
+                        url: me.search_path.replace('%search%', request),
                         cache: false,
                         success: function(data) {
                             view.result(custom_id, readCode(data), text);
@@ -414,7 +414,7 @@ var engine = function() {
                     };
                     if (ex_post === 1) {
                         obj_req.type = 'POST';
-                        obj_req.data = me.post.replace('%search%', t);
+                        obj_req.data = me.post.replace('%search%', request);
                     }
                     xhr = $.ajax(obj_req);
                 };
