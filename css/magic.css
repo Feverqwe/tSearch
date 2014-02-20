@@ -100,7 +100,7 @@ div.tools fieldset.search li > input[name=search_url] {
 }
 div.tools fieldset.search li > input[name=search_post],
 div.tools fieldset.search li > input[name=search_root] {
-    width: 400px;
+    width: 450px;
 }
 div.tools fieldset.search li:nth-child(4) > span:nth-child(1),
 div.tools fieldset.search li:nth-child(5) > span:nth-child(1) {

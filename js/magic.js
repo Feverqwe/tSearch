@@ -152,7 +152,8 @@ var magic = function() {
         }
     };
     var contentFilter = function(content) {
-        content = content.replace(/<(\/?)script[^>]*/img,'<$1code data-script="1"');
+        content = content.replace(/<script/img, '<textarea data-script="1"');
+        content = content.replace(/<\/script/img, '</textarea');
         content = content.replace(/display[: ]{1,}none/img, '').replace(/visibility[: ]{1,}hidden/img, '');
         content = content.replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
         return content;
@@ -264,18 +265,15 @@ var magic = function() {
         if (input_list.auth.input.val().length > 0) {
             code.auth_f = input_list.auth.input.val();
         }
+        code.uid = hashCode(JSON.stringify(code));
         var tracker_code = JSON.stringify(code);
-        code.uid = tracker_code;
         input_list.save.code.textarea.val(tracker_code);
     };
-    var form_empty = function() {
-        
-    };
-    var load_code = function() {
+    var read_code = function() {
         form_empty();
         var code;
         try {
-            code = JSON.parse(dom_cache.code.val());
+            code = JSON.parse(input_list.save.code.textarea.val());
         } catch (e) {
             alert(_lang.magic[1] + "\n" + e);
         }
@@ -284,20 +282,20 @@ var magic = function() {
         }
         if (code.cat_name !== undefined) {
             input_list.selectors.category_name.input.val(code.cat_name);
-            input_list.selectors.category_name.enable.prop('checked', true).trigger('click');
+            input_list.selectors.category_name.enable.prop('checked', false).trigger('click');
             if (code.cat_alt !== undefined) {
-                input_list.selectors.category_name.attr_enable.prop('checked', true).trigger('click');
+                input_list.selectors.category_name.attr_enable.prop('checked', false).trigger('click');
                 input_list.selectors.category_name.attr.val('alt');
             }
             if (code.cat_attr !== undefined) {
-                input_list.selectors.category_name.attr_enable.prop('checked', true).trigger('click');
+                input_list.selectors.category_name.attr_enable.prop('checked', false).trigger('click');
                 input_list.selectors.category_name.attr.val(code.cat_attr);
             }
         }
         if (code.cat_link !== undefined) {
             input_list.selectors.category_link.input.val(code.cat_link);
             input_list.selectors.category_link.add_root.prop('checked', code.cat_link_r !== undefined);
-            input_list.selectors.category_link.enable.prop('checked', true).trigger('click');
+            input_list.selectors.category_link.enable.prop('checked', false).trigger('click');
         }
         if (code.root_url !== undefined) {
             input_list.search.root.val(code.root_url);
@@ -313,6 +311,7 @@ var magic = function() {
         }
         if (code.items !== undefined) {
             input_list.selectors.list.input.val(code.items);
+            var_cache.list_input_value = code.items;
         }
         if (code.tr_name !== undefined) {
             input_list.selectors.torrent_name.input.val(code.tr_name);
@@ -328,24 +327,24 @@ var magic = function() {
             if (code.s_c !== undefined) {
                 input_list.convert.size.convert.prop('checked', code.s_c);
             }
-            input_list.selectors.torrent_size.enable.prop('checked', true).trigger('click');
+            input_list.selectors.torrent_size.enable.prop('checked', false).trigger('click');
             if (code.size_r !== undefined) {
                 input_list.convert.size.regexp.val(code.size_r);
                 input_list.convert.size.regexp_text.val(code.size_rp);
             }
             if (code.size_attr !== undefined) {
-                input_list.selectors.torrent_size.attr_enable.prop('checked', true).trigger('click');
+                input_list.selectors.torrent_size.attr_enable.prop('checked', false).trigger('click');
                 input_list.selectors.torrent_size.attr.val(code.size_attr);
             }
         }
         if (code.tr_dl !== undefined) {
             input_list.selectors.torrent_dl.input.val(code.tr_dl);
             input_list.selectors.torrent_dl.add_root.prop('checked', code.tr_dl_r !== undefined);
-            input_list.selectors.torrent_dl.enable.prop('checked', true).trigger('click');
+            input_list.selectors.torrent_dl.enable.prop('checked', false).trigger('click');
         }
         if (code.seed !== undefined) {
             input_list.selectors.seed.input.val(code.seed);
-            input_list.selectors.seed.enable.prop('checked', true).trigger('click');
+            input_list.selectors.seed.enable.prop('checked', false).trigger('click');
             if (code.seed_r !== undefined) {
                 input_list.convert.seed.regexp.val(code.seed_r);
                 input_list.convert.seed.regexp_text.val(code.seed_rp);
@@ -353,7 +352,7 @@ var magic = function() {
         }
         if (code.peer !== undefined) {
             input_list.selectors.peer.input.val(code.peer);
-            input_list.selectors.peer.enable.prop('checked', true).trigger('click');
+            input_list.selectors.peer.enable.prop('checked', false).trigger('click');
             if (code.peer_r !== undefined) {
                 input_list.convert.peer.regexp.val(code.peer_r);
                 input_list.convert.peer.regexp_text.val(code.peer_rp);
@@ -372,13 +371,13 @@ var magic = function() {
                 input_list.convert.time.month.prop('checked', code.t_m_r);
             }
             if (code.t_f !== undefined) {
-                input_list.convert.time.format.children('option[value=' + code.t_f + ']')..prop('selected', true);
+                input_list.convert.time.format.children('option[value=' + code.t_f + ']').prop('selected', true);
             }
             if (code.date_attr !== undefined) {
-                input_list.selectors.time.attr_enable.prop('checked', true).trigger('click');
+                input_list.selectors.time.attr_enable.prop('checked', false).trigger('click');
                 input_list.selectors.time.attr.val(code.date_attr);
             }
-            input_list.selectors.time.enable.prop('checked', true).trigger('click');
+            input_list.selectors.time.enable.prop('checked', false).trigger('click');
         }
         if (code.sf !== undefined) {
             input_list.selectors.skip.first.val(code.sf);
@@ -406,6 +405,7 @@ var magic = function() {
             input_list.desk.tracker.isRus.prop('checked', code.flags.l);
             input_list.desk.tracker.isCirilic.prop('checked', code.flags.rs);
         }
+        dom_cache.menu.children().eq(0).children('a').trigger('click');
     };
     var loadUrl = function(url, type) {
         if (url.length === 0) {
@@ -427,11 +427,14 @@ var magic = function() {
             success: function(data) {
                 var_cache.ifContent = undefined;
                 var_cache.pageDOM = $($.parseHTML(data));
+                if (var_cache.list_input_value !== undefined && var_cache.list_input_value.length > 0) {
+                    var_cache.list_input_dom = var_cache.pageDOM.find(var_cache.list_input_value);
+                }
                 dom_cache.iframe[0].contentDocument.all[0].innerHTML = contentFilter(data) +
                     '<style>' +
                         '.kit_select {color:#000 !important;background-color:#FFCC33 !important; cursor:pointer;}' +
                         'td.kit_select { border: 1px dashed red !important; }' +
-                        'code[data-script="1"] {display: none;}' +
+                        'textarea[data-script="1"] {display: none;}' +
                     '</style>';
             }
         };
@@ -441,7 +444,7 @@ var magic = function() {
         }
         var_cache.xhr = $.ajax(obj_req);
     };
-    var loadDom = function(itemName, value, parent) {
+    var loadDom = function(itemName, value, parent, empty) {
         for (var i in value) {
             if ( value.hasOwnProperty(i) === false ) {
                 continue;
@@ -452,9 +455,25 @@ var magic = function() {
                 console.log('Error:', 'count:', value[i].length, name);
                 return;
             }
+            if (empty !== undefined) {
+                var tagName = value[i].get(0).tagName;
+                if (tagName === 'INPUT' && value[i].attr('type') === 'text' && i !== 'request') {
+                    value[i].val('').removeClass('error');
+                } else if (tagName === 'SELECT') {
+                    value[i].children('option[value=-1]').prop('selected', true);
+                } else if (tagName === 'INPUT' && value[i].attr('type') === 'checkbox') {
+                    value[i].prop('checked', false);
+                } else if (tagName === 'INPUT' && value[i].attr('type') === 'number') {
+                    value[i].val(0);
+                }
+                continue;
+            }
             if (i === 'btn') {
                 value[i].on('click', function(e){
                     e.preventDefault();
+                    if (var_cache.pageDOM === undefined) {
+                        return;
+                    }
                     //включать выделятор
                     // do...
                     selectMode(function(path, itemName, parent){
@@ -500,6 +519,9 @@ var magic = function() {
                 });
             } else if (i === 'input') {
                 value[i].on('keyup', function(){
+                    if (var_cache.pageDOM === undefined) {
+                        return;
+                    }
                     var item;
                     if (parent !== undefined) {
                         item = input_list[parent][itemName];
@@ -625,6 +647,7 @@ var magic = function() {
             value.input.addClass('input');
         }
         if (value.enable !== undefined) {
+            value.enable.prop('checked', false);
             value.input.prop('disabled', true);
             value.btn.prop('disabled', true);
             if (value.attr_enable !== undefined) {
@@ -640,6 +663,7 @@ var magic = function() {
             value.output.addClass('output')
         }
         if (value.attr_enable !== undefined) {
+            value.attr_enable.prop('checked', false);
             value.attr.prop('disabled', true);
         }
         if (value.original !== undefined) {
@@ -649,6 +673,28 @@ var magic = function() {
         if (value.result !== undefined) {
             value.result.prop('disabled', true);
         }
+        if (value.table_mode !== undefined) {
+            value.table_mode.prop('checked', true);
+        }
+        if (value.cp1251 !== undefined) {
+            value.cp1251.prop('checked', false);
+        }
+    };
+    var form_empty = function() {
+        $.each(input_list, function(item, value){
+            if (item === 'selectors' || item === 'convert' || item === 'desk' || item === 'save') {
+                $.each(value, function(subItem, value){
+                    loadDom(subItem, value, item, 1);
+                });
+                return 1;
+            }
+            loadDom(item, value, undefined, 1);
+        });
+        dom_cache.iframe[0].contentDocument.all[0].innerHTML = '';
+        var_cache.pageDOM = undefined;
+        var_cache.ifContent = undefined;
+        var_cache.writePath = undefined;
+        var_cache.list_input_dom = undefined;
     };
     var updateTimeConverter = function() {
         var text = input_list.selectors.time.output.val();
@@ -661,7 +707,6 @@ var magic = function() {
         if (value_regexp.length > 0) {
             var regexp = new RegExp(value_regexp, 'ig');
             text = text.replace(regexp, value_regexp_text);
-            console.log(text)
         }
         if (isTodayReplace) {
             text = ex_kit.today_replace(text, timeFormat);
@@ -681,7 +726,6 @@ var magic = function() {
         var value_regexp = input_list.convert.size.regexp.val();
         var value_regexp_text = input_list.convert.size.regexp_text.val();
         var isConvert = input_list.convert.size.convert.prop('checked');
-        console.log(text, value_regexp, value_regexp_text)
         if (value_regexp.length > 0) {
             var regexp = new RegExp(value_regexp, 'ig');
             text = text.replace(regexp, value_regexp_text);
@@ -862,6 +906,17 @@ var magic = function() {
         }
         return path;
     };
+    var hashCode = function(s) {
+        var hash = 0, i, char_;
+        if (s.length === 0)
+            return hash;
+        for (i = 0; i < s.length; i++) {
+            char_ = s.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char_;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return (hash < 0) ? hash * -1 : hash;
+    };
     var bytesToSize = function(bytes, nan) {
         //переводит байты в строчки
         var sizes = _lang.size_list;
@@ -917,8 +972,7 @@ var magic = function() {
             });
             input_list.search.open.on('click', function(e){
                 e.preventDefault();
-                var $this = $(this);
-                var type = $this.data('type');
+                var type = 'search';
                 loadUrl(input_list.search.url.val(), type);
             });
             input_list.auth.open.on('click', function(e){
@@ -951,7 +1005,11 @@ var magic = function() {
             input_list.save.code.write.on('click', function(e){
                 e.preventDefault();
                 make_code();
-            })
+            });
+            input_list.save.code.read.on('click', function(e){
+                e.preventDefault();
+                read_code();
+            });
         }
     };
 }();
