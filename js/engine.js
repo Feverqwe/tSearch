@@ -170,10 +170,10 @@ var engine = function() {
             var kit = function() {
                 var ex_cat = (me.cat_name !== undefined) ? 1 : 0;
                 var ex_link = (me.cat_link !== undefined) ? 1 : 0;
-                var ex_link_r = (me.cat_link_r !== undefined && me.cat_link_r) ? 1 : 0;
-                var ex_tr_link_r = (me.tr_link_r !== undefined && me.tr_link_r) ? 1 : 0;
+                var ex_link_r = (me.cat_link_r !== undefined) ? 1 : 0;
+                var ex_tr_link_r = (me.tr_link_r !== undefined) ? 1 : 0;
                 var ex_tr_size = (me.tr_size !== undefined) ? 1 : 0;
-                var ex_tr_size_c = (me.s_c !== undefined && me.s_c) ? 1 : 0;
+                var ex_tr_size_c = (me.s_c !== undefined) ? 1 : 0;
                 var ex_tr_dl = (me.tr_dl !== undefined) ? 1 : 0;
                 var ex_tr_dl_r = (me.tr_dl_r !== undefined) ? 1 : 0;
                 var ex_seed = (me.seed !== undefined) ? 1 : 0;
@@ -187,8 +187,8 @@ var engine = function() {
                 var ex_t_t_r = (me.t_t_r !== undefined) ? 1 : 0;
                 var ex_t_f = (me.t_f !== undefined && me.t_f !== "-1") ? 1 : 0; //me.t_f is string from JSON
                 var ex_auth_f = (me.auth_f !== undefined) ? 1 : 0;
-                var ex_encode = (me.encode !== undefined && me.encode) ? 1 : 0;
-                var ex_post = (me.post !== undefined && me.post.length !== 0) ? 1 : 0;
+                var ex_encode = (me.encode !== undefined) ? 1 : 0;
+                var ex_post = (me.post !== undefined) ? 1 : 0;
                 if (me.cat_alt !== undefined) {
                     me.cat_attr = 'alt';
                     delete me.cat_alt;
@@ -216,42 +216,40 @@ var engine = function() {
                 if (ex_tr_dl === 0) {
                     tests[5] = 1;
                 }
-                var readCode = function(c) {
-                    c = contentFilter(c);
-                    var t = load_in_sandbox(c);
+                var readCode = function(data) {
+                    data = contentFilter(data);
+                    var $content = load_in_sandbox(data);
 
                     if (ex_auth_f === 1) {
-                        if ((t.find(me.auth_f)).length !== 0) {
+                        if (($content.find(me.auth_f)).length === 0) {
+                            view.auth(1, custom_id);
+                        } else {
                             view.auth(0, custom_id);
                             return [];
-                        } else {
-                            view.auth(1, custom_id);
                         }
                     }
-                    t = t.find(me.items);
-                    var l = t.length - ((me.sl !== undefined) ? me.sl : 0);
+                    $content = $content.find(me.items);
+                    var len = $content.length - ((me.sl !== undefined) ? me.sl : 0);
                     var arr = [];
-                    var s = (me.sf !== undefined) ? me.sf : 0;
+                    var start = (me.sf !== undefined) ? me.sf : 0;
                     var er = [0, 0, 0, 0, 0, 0, 0, 0];
-                    for (var i = s; i < l; i++) {
-                        var td = t.eq(i);
+                    for (var i = start; i < len; i++) {
+                        var item = $content.eq(i);
                         var obj = {category: {id: -1}};
                         if (ex_cat === 1) {
                             if (me.cat_attr !== undefined) {
-                                obj.category.title = (td.find(me.cat_name)).attr(me.cat_attr);
+                                obj.category.title = (item.find(me.cat_name)).attr(me.cat_attr);
                             } else {
-                                obj.category.title = (td.find(me.cat_name)).text();
+                                obj.category.title = (item.find(me.cat_name)).text();
                             }
                             if (obj.category.title === undefined || obj.category.title.length === 0) {
                                 obj.category.title = undefined;
                                 er[0] += 1;
-                            } else
-                            if (ex_link === 1) {
-                                obj.category.url = (td.find(me.cat_link)).attr('href');
+                            } else if (ex_link === 1) {
+                                obj.category.url = (item.find(me.cat_link)).attr('href');
                                 if (obj.category.url === undefined) {
                                     er[1] += 1;
-                                } else
-                                if (ex_link_r === 1) {
+                                } else if (ex_link_r === 1) {
                                     if (obj.category.url[0] === '/') {
                                         obj.category.url = short_url + obj.category.url;
                                     } else {
@@ -260,12 +258,12 @@ var engine = function() {
                                 }
                             }
                         }
-                        obj.title = (td.find(me.tr_name)).text();
+                        obj.title = (item.find(me.tr_name)).text();
                         if (obj.title.length === 0) {
                             er[2] += 1;
                             continue;
                         }
-                        obj.url = (td.find(me.tr_link)).attr('href');
+                        obj.url = (item.find(me.tr_link)).attr('href');
                         if (obj.url === undefined) {
                             er[3] += 1;
                             continue;
@@ -280,9 +278,9 @@ var engine = function() {
                         }
                         if (ex_tr_size === 1) {
                             if (me.size_attr !== undefined) {
-                                obj.size = (td.find(me.tr_size)).attr(me.size_attr);
+                                obj.size = (item.find(me.tr_size)).attr(me.size_attr);
                             } else {
-                                obj.size = (td.find(me.tr_size)).text();
+                                obj.size = (item.find(me.tr_size)).text();
                             }
                             if (obj.size !== undefined && obj.size.length !== 0) {
                                 obj.size = obj.size.replace(var_cache.rn, ' ');
@@ -301,7 +299,7 @@ var engine = function() {
                             obj.size = 0;
                         }
                         if (ex_tr_dl === 1) {
-                            obj.dl = (td.find(me.tr_dl)).attr('href');
+                            obj.dl = (item.find(me.tr_dl)).attr('href');
                             if (obj.dl !== undefined) {
                                 obj.dl = obj.dl.replace(var_cache.rn, '');
                                 if (ex_tr_dl_r === 1) {
@@ -316,7 +314,7 @@ var engine = function() {
                             }
                         }
                         if (ex_seed === 1) {
-                            obj.seeds = (td.find(me.seed)).text();
+                            obj.seeds = (item.find(me.seed)).text();
                             if (obj.seeds.length !== 0) {
                                 obj.seeds = obj.seeds.replace(var_cache.rn, ' ');
                                 if (ex_seed_regexp === 1) {
@@ -331,7 +329,7 @@ var engine = function() {
                             obj.seeds = 1;
                         }
                         if (ex_peer === 1) {
-                            obj.leechs = (td.find(me.peer)).text();
+                            obj.leechs = (item.find(me.peer)).text();
                             if (obj.leechs.length !== 0) {
                                 obj.leechs = obj.leechs.replace(var_cache.rn, ' ');
                                 if (ex_peer_regexp === 1) {
@@ -347,9 +345,9 @@ var engine = function() {
                         }
                         if (ex_date === 1) {
                             if (me.date_attr !== undefined) {
-                                obj.time = (td.find(me.date)).attr(me.date_attr);
+                                obj.time = (item.find(me.date)).attr(me.date_attr);
                             } else {
-                                obj.time = (td.find(me.date)).text();
+                                obj.time = (item.find(me.date)).text();
                             }
                             if (obj.time !== undefined && obj.time.length !== 0) {
                                 obj.time = obj.time.replace(var_cache.rn, ' ');

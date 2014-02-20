@@ -161,18 +161,18 @@ var magic = function() {
         var code = {
             version: 1,
             type: 'kit',
-            name: input_list.tracker.title.val(),
-            icon: input_list.tracker.icon.val(),
-            about: input_list.tracker.desk.val(),
+            name: input_list.desk.tracker.title.val(),
+            icon: input_list.desk.tracker.icon.val(),
+            about: input_list.desk.tracker.desk.val(),
             root_url: input_list.search.root.val(),
             search_path: input_list.search.url.val(),
             items: input_list.selectors.list.input.val(),
             tr_name: input_list.selectors.torrent_name.input.val(),
-            tr_link: input_list.selectors.torrent_link.val(),
+            tr_link: input_list.selectors.torrent_link.input.val(),
             flags: {
-                a: (input_list.tracker.needAuth.prop('checked')) ? 1 : 0,
-                l: (input_list.tracker.isRus.prop('checked')) ? 1 : 0,
-                rs: (input_list.tracker.isCirilic.prop('checked')) ? 1 : 0
+                a: (input_list.desk.tracker.needAuth.prop('checked')) ? 1 : 0,
+                l: (input_list.desk.tracker.isRus.prop('checked')) ? 1 : 0,
+                rs: (input_list.desk.tracker.isCirilic.prop('checked')) ? 1 : 0
             }
         };
         if (code.icon.length === 0) {
@@ -185,87 +185,88 @@ var magic = function() {
         if (input_list.search.cp1251.prop('checked')) {
             code.encode = 1;
         }
-        if (dom_cache.category_name.parents().eq(1).find('input[name=status]').prop('checked')) {
-            code.cat_name = dom_cache.category_name.val();
-            if (dom_cache.category_attr.prop('checked')) {
-                code.cat_attr = dom_cache.category_attr_value.val();
+        if (input_list.selectors.category_name.enable.prop('checked')) {
+            code.cat_name = input_list.selectors.category_name.input.val();
+            if (input_list.selectors.category_name.attr_enable.prop('checked')) {
+                code.cat_attr = input_list.selectors.category_name.attr.val();
             }
         }
-        if (dom_cache.category_link.parents().eq(1).find('input[name=status]').prop('checked')) {
-            code.cat_link = dom_cache.category_link.val();
-            if (dom_cache.category_link_base_path.prop('checked')) {
+        if (input_list.selectors.category_link.enable.prop('checked')) {
+            code.cat_link = input_list.selectors.category_link.input.val();
+            if (input_list.selectors.category_link.add_root.prop('checked')) {
                 code.cat_link_r = 1;
             }
         }
-        if (dom_cache.torrent_link_base_path.prop('checked')) {
+        if (input_list.selectors.torrent_link.add_root.prop('checked')) {
             code.tr_link_r = 1;
         }
-        if (dom_cache.torrent_size.parents().eq(1).find('input[name=status]').prop('checked')) {
-            code.tr_size = dom_cache.torrent_size.val();
-            if (dom_cache.convert_size.prop('checked')) {
+        if (input_list.selectors.torrent_size.enable.prop('checked')) {
+            code.tr_size = input_list.selectors.torrent_size.input.val();
+            if (input_list.convert.size.convert.prop('checked')) {
                 code.s_c = 1;
             }
-            if (dom_cache.size_regexp.val().length > 0) {
-                code.size_r = dom_cache.size_regexp.val();
-                code.size_rp = dom_cache.size_regexp_repl.val();
+            if (input_list.convert.size.regexp.val().length > 0) {
+                code.size_r = input_list.convert.size.regexp.val();
+                code.size_rp = input_list.convert.size.regexp_text.val();
             }
-            if (dom_cache.size_attr.prop('checked')) {
-                code.size_attr = dom_cache.size_attr_value.val();
+            if (input_list.selectors.torrent_size.attr_enable.prop('checked')) {
+                code.size_attr = input_list.selectors.torrent_size.attr.val();
             }
         }
-        if (dom_cache.torrent_dl_link.parents().eq(1).find('input[name=status]').prop('checked')) {
-            code.tr_dl = dom_cache.torrent_dl_link.val();
-            if (dom_cache.torrent_dl_link_base_path.prop('checked')) {
+        if (input_list.selectors.torrent_dl.enable.prop('checked')) {
+            code.tr_dl = input_list.selectors.torrent_dl.input.val();
+            if (input_list.selectors.torrent_dl.add_root.prop('checked')) {
                 code.tr_dl_r = 1;
             }
         }
-        if (dom_cache.seed_count.parents().eq(1).find('input[name=status]').prop('checked')) {
-            code.seed = dom_cache.seed_count.val();
-            if (dom_cache.seed_regexp.val().length > 0) {
-                code.seed_r = dom_cache.seed_regexp.val();
-                code.seed_rp = dom_cache.seed_regexp_repl.val();
+        if (input_list.selectors.seed.enable.prop('checked')) {
+            code.seed = input_list.selectors.seed.input.val();
+            if (input_list.convert.seed.regexp.val().length > 0) {
+                code.seed_r = input_list.convert.seed.regexp.val();
+                code.seed_rp = input_list.convert.seed.regexp_text.val();
             }
         }
-        if (dom_cache.peer_count.parents().eq(1).find('input[name=status]').prop('checked')) {
-            code.peer = dom_cache.peer_count.val();
-            if (dom_cache.peer_regexp.val().length > 0) {
-                code.peer_r = dom_cache.peer_regexp.val();
-                code.peer_rp = dom_cache.peer_regexp_repl.val();
+        if (input_list.selectors.peer.enable.prop('checked')) {
+            code.peer = input_list.selectors.peer.input.val();
+            if (input_list.convert.peer.regexp.val().length > 0) {
+                code.peer_r = input_list.convert.peer.regexp.val();
+                code.peer_rp = input_list.convert.peer.regexp_text.val();
             }
         }
-        if (dom_cache.add_time.parents().eq(1).find('input[name=status]').prop('checked')) {
-            code.date = dom_cache.add_time.val();
-            if (dom_cache.time_attr.prop('checked')) {
-                code.date_attr = dom_cache.time_attr_value.val();
+        if (input_list.selectors.time.enable.prop('checked')) {
+            code.date = input_list.selectors.time.input.val();
+            if (input_list.selectors.time.attr_enable.prop('checked')) {
+                code.date_attr = input_list.selectors.time.attr.val();
             }
-            if (dom_cache.time_regexp.val().length > 0) {
-                code.t_r = dom_cache.time_regexp.val();
-                code.t_r_r = dom_cache.time_regexp_repl.val();
+            if (input_list.convert.time.regexp.val().length > 0) {
+                code.t_r = input_list.convert.time.regexp.val();
+                code.t_r_r = input_list.convert.time.regexp_text.val();
             }
-            if (dom_cache.today_replace.prop('checked')) {
+            if (input_list.convert.time.today.prop('checked')) {
                 code.t_t_r = 1;
             }
-            if (dom_cache.month_replace.prop('checked')) {
+            if (input_list.convert.time.month.prop('checked')) {
                 code.t_m_r = 1;
             }
-            if (dom_cache.date_format.val() !== '-1') {
-                code.t_f = dom_cache.date_format.val();
+            if (input_list.convert.time.format.val() !== '-1') {
+                code.t_f = parseInt(input_list.convert.time.format.val());
             }
         }
-        if (dom_cache.skip_first.val() > 0) {
-            code.sf = dom_cache.skip_first.val();
+        if (input_list.selectors.skip.first.val() > 0) {
+            code.sf = parseInt(input_list.selectors.skip.first.val());
         }
-        if (dom_cache.skip_last.val() > 0) {
-            code.sl = dom_cache.skip_last.val();
+        if (input_list.selectors.skip.last.val() > 0) {
+            code.sl = parseInt(input_list.selectors.skip.last.val());
         }
-        if (dom_cache.auth_url.val().length > 0) {
-            code.auth = dom_cache.auth_url.val();
+        if (input_list.auth.url.val().length > 0) {
+            code.auth = input_list.auth.url.val();
         }
-        if (dom_cache.auth_form.val().length > 0) {
-            code.auth_f = dom_cache.auth_form.val();
+        if (input_list.auth.input.val().length > 0) {
+            code.auth_f = input_list.auth.input.val();
         }
-        code.uid = hashCode(JSON.stringify(code));
-        dom_cache.code.val(JSON.stringify(code));
+        var tracker_code = JSON.stringify(code);
+        code.uid = tracker_code;
+        input_list.save.code.textarea.val(tracker_code);
     };
     var loadUrl = function(url, type) {
         if (url.length === 0) {
@@ -808,6 +809,10 @@ var magic = function() {
                     }
                 });
             });
+            input_list.save.code.write.on('click', function(e){
+                e.preventDefault();
+                make_code();
+            })
         }
     };
 }();
