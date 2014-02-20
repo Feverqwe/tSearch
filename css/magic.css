@@ -76,6 +76,40 @@ div.tools > div.status_bar {
 }
 iframe {
     height: 100%;
+    height: calc(100% - 304px);
     width: 100%;
     border: 0;
+}
+div.tools input.error {
+    box-shadow: 0 0 2px 1px #FF0000;
+    outline-color: red;
+}
+div.tools fieldset.selectors li > span:nth-child(2) {
+    width: 175px;
+    display: inline-block;
+}
+div.tools fieldset.selectors li > span:nth-child(1) {
+    width: 199px;
+    display: inline-block;
+}
+div.tools fieldset.selectors li > input[type=text] {
+    width: 200px;
+}
+div.tools fieldset.selectors li > input[type=text]:nth-child(7) {
+    width: 50px;
+}
+div.tools fieldset.selectors li > input[type=number] {
+    width: 50px;
+}
+div.tools fieldset.search li > input[name=search_url] {
+    width: 450px;
+}
+div.tools fieldset.search li > input[name=search_post],
+div.tools fieldset.search li > input[name=search_root] {
+    width: 400px;
+}
+div.tools fieldset.search li:nth-child(4) > span:nth-child(1),
+div.tools fieldset.search li:nth-child(5) > span:nth-child(1) {
+    width: 100px;
+    display: inline-block;
 }
