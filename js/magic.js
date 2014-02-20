@@ -153,12 +153,12 @@ var magic = function() {
             var_cache.xhr.abort();
         }
         var post = (type === 'search')?input_list.search.post.val():'';
-        var search = input_list.search.request.val();
+        var request = input_list.search.request.val();
         if (input_list.search.cp1251.prop('checked')) {
-            search = ex_kit.in_cp1251(search);
+            request = ex_kit.in_cp1251(request);
         }
-        url = url.replace('%search%', search);
-        post = post.replace('%search%', search);
+        url = url.replace('%search%', request);
+        post = post.replace('%search%', request);
         var obj_req = {
             type: 'GET',
             url: url,
@@ -169,7 +169,7 @@ var magic = function() {
         };
         if (post.length > 0) {
             obj_req.type = 'POST';
-            obj_req['data'] = post;
+            obj_req.data = post;
         }
         var_cache.xhr = $.ajax(obj_req);
     };
@@ -239,10 +239,9 @@ var magic = function() {
                 var $this = $(this);
                 var page = $this.data('page');
                 dom_cache.menu.children('.active').removeClass('active');
-                $this.parent().addClass('active');
                 dom_cache.pages.children('.page.active').removeClass('active');
+                $this.parent().addClass('active');
                 dom_cache.pages.children('.page.'+page).addClass('active');
-
             });
             input_list.search.open.on('click', function(e){
                 e.preventDefault();
@@ -254,6 +253,8 @@ var magic = function() {
                 e.preventDefault();
                 loadUrl(input_list.auth.url.val());
             });
+            input_list.search.url.val('http://rutracker.org/forum/tracker.php?nm=%search%');
+            input_list.search.request.val('Harry Potter');
         }
     };
 }();

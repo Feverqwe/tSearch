@@ -61,7 +61,11 @@ div.tools > div.body ul {
     list-style: none;
     padding-left: 10px;
 }
-
+div.tools > div.body textarea[name="code_textarea"] {
+    height: 190px;
+    width: 600px;
+    border-color: #ccc;
+}
 div.tools > div.status_bar {
     position: absolute;
     bottom: 0;
@@ -69,4 +73,9 @@ div.tools > div.status_bar {
     width: 100%;
     border-top: 1px solid #e6e6e6;
     background-color: #fff;
+}
+iframe {
+    height: 100%;
+    width: 100%;
+    border: 0;
 }

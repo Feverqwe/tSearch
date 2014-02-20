@@ -82,7 +82,9 @@ var engine = function() {
         }
         $.each(storage, function(key, value) {
             if (key.substr(0, 3) === 'ct_') {
-                new_storage[key] = value;
+                if (value !== null && value !== undefined) {
+                    new_storage[key] = value;
+                }
             } else if ( ['hideTopSearch', 'filter_panel_to_left', 'kinopoisk_f_id',
                 'sub_select_enable', 'allow_favorites_sync', 'allow_get_description',
                 'autoSetCat', 'use_english_postername', 'AutoComplite_opt',
@@ -90,10 +92,9 @@ var engine = function() {
                 'AdvFiltration', 'HideZeroSeed', 'SubCategoryFilter', 'ShowIcons',
                 'HideSeed', 'HideLeech', 'costume_tr', 'lang', 'torrent_list_r', 'torrent_list_h'
             ].indexOf(key) !== -1) {
-                if (value === null || value === undefined) {
-                    return 1;
+                if (value !== null && value !== undefined) {
+                    new_storage[key] = value;
                 }
-                new_storage[key] = value;
             }
         });
         var newProfiles = {};
