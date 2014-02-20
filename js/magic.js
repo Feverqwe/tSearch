@@ -157,6 +157,116 @@ var magic = function() {
         content = content.replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
         return content;
     };
+    var make_code = function() {
+        var code = {
+            version: 1,
+            type: 'kit',
+            name: input_list.tracker.title.val(),
+            icon: input_list.tracker.icon.val(),
+            about: input_list.tracker.desk.val(),
+            root_url: input_list.search.root.val(),
+            search_path: input_list.search.url.val(),
+            items: input_list.selectors.list.input.val(),
+            tr_name: input_list.selectors.torrent_name.input.val(),
+            tr_link: input_list.selectors.torrent_link.val(),
+            flags: {
+                a: (input_list.tracker.needAuth.prop('checked')) ? 1 : 0,
+                l: (input_list.tracker.isRus.prop('checked')) ? 1 : 0,
+                rs: (input_list.tracker.isCirilic.prop('checked')) ? 1 : 0
+            }
+        };
+        if (code.icon.length === 0) {
+            code.icon = '#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
+        }
+        code.post = input_list.search.post.val();
+        if (code.post.length === 0) {
+            delete code.post;
+        }
+        if (input_list.search.cp1251.prop('checked')) {
+            code.encode = 1;
+        }
+        if (dom_cache.category_name.parents().eq(1).find('input[name=status]').prop('checked')) {
+            code.cat_name = dom_cache.category_name.val();
+            if (dom_cache.category_attr.prop('checked')) {
+                code.cat_attr = dom_cache.category_attr_value.val();
+            }
+        }
+        if (dom_cache.category_link.parents().eq(1).find('input[name=status]').prop('checked')) {
+            code.cat_link = dom_cache.category_link.val();
+            if (dom_cache.category_link_base_path.prop('checked')) {
+                code.cat_link_r = 1;
+            }
+        }
+        if (dom_cache.torrent_link_base_path.prop('checked')) {
+            code.tr_link_r = 1;
+        }
+        if (dom_cache.torrent_size.parents().eq(1).find('input[name=status]').prop('checked')) {
+            code.tr_size = dom_cache.torrent_size.val();
+            if (dom_cache.convert_size.prop('checked')) {
+                code.s_c = 1;
+            }
+            if (dom_cache.size_regexp.val().length > 0) {
+                code.size_r = dom_cache.size_regexp.val();
+                code.size_rp = dom_cache.size_regexp_repl.val();
+            }
+            if (dom_cache.size_attr.prop('checked')) {
+                code.size_attr = dom_cache.size_attr_value.val();
+            }
+        }
+        if (dom_cache.torrent_dl_link.parents().eq(1).find('input[name=status]').prop('checked')) {
+            code.tr_dl = dom_cache.torrent_dl_link.val();
+            if (dom_cache.torrent_dl_link_base_path.prop('checked')) {
+                code.tr_dl_r = 1;
+            }
+        }
+        if (dom_cache.seed_count.parents().eq(1).find('input[name=status]').prop('checked')) {
+            code.seed = dom_cache.seed_count.val();
+            if (dom_cache.seed_regexp.val().length > 0) {
+                code.seed_r = dom_cache.seed_regexp.val();
+                code.seed_rp = dom_cache.seed_regexp_repl.val();
+            }
+        }
+        if (dom_cache.peer_count.parents().eq(1).find('input[name=status]').prop('checked')) {
+            code.peer = dom_cache.peer_count.val();
+            if (dom_cache.peer_regexp.val().length > 0) {
+                code.peer_r = dom_cache.peer_regexp.val();
+                code.peer_rp = dom_cache.peer_regexp_repl.val();
+            }
+        }
+        if (dom_cache.add_time.parents().eq(1).find('input[name=status]').prop('checked')) {
+            code.date = dom_cache.add_time.val();
+            if (dom_cache.time_attr.prop('checked')) {
+                code.date_attr = dom_cache.time_attr_value.val();
+            }
+            if (dom_cache.time_regexp.val().length > 0) {
+                code.t_r = dom_cache.time_regexp.val();
+                code.t_r_r = dom_cache.time_regexp_repl.val();
+            }
+            if (dom_cache.today_replace.prop('checked')) {
+                code.t_t_r = 1;
+            }
+            if (dom_cache.month_replace.prop('checked')) {
+                code.t_m_r = 1;
+            }
+            if (dom_cache.date_format.val() !== '-1') {
+                code.t_f = dom_cache.date_format.val();
+            }
+        }
+        if (dom_cache.skip_first.val() > 0) {
+            code.sf = dom_cache.skip_first.val();
+        }
+        if (dom_cache.skip_last.val() > 0) {
+            code.sl = dom_cache.skip_last.val();
+        }
+        if (dom_cache.auth_url.val().length > 0) {
+            code.auth = dom_cache.auth_url.val();
+        }
+        if (dom_cache.auth_form.val().length > 0) {
+            code.auth_f = dom_cache.auth_form.val();
+        }
+        code.uid = hashCode(JSON.stringify(code));
+        dom_cache.code.val(JSON.stringify(code));
+    };
     var loadUrl = function(url, type) {
         if (url.length === 0) {
             return;
