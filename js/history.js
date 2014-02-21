@@ -121,6 +121,12 @@ var view = function() {
         }
         return u2ddmmyyyy(i);
     };
+    var write_language = function() {
+        $('body > title').text(_lang.his_title);
+        $('h1').text(_lang.his_h1);
+        $('a.button.main').attr('title',_lang.btn_main);
+        dom_cache.topbtn.attr('title',_lang.btn_up);
+    };
     return {
         begin: function() {
             dom_cache.window = $(window);
@@ -129,6 +135,7 @@ var view = function() {
             dom_cache.history = $('ol.history');
             dom_cache.click_history = $('ol.click_history');
             dom_cache.html_body = $('html, body');
+            write_language();
             dom_cache.window.on('scroll',function() {
                 clearTimeout(var_cache.window_scroll_timer);
                 var_cache.window_scroll_timer = setTimeout(function() {
