@@ -30,6 +30,9 @@ java -jar compiler.jar --js .\js\torrent_lib_build.js^
 
 del .\build\js\torrent_lib_build.js
 
+java -jar compiler.jar --js .\js\lz-string-1.3.3.js --js_output_file .\build\js\lz-string-1.3.3.js
+java -jar compiler.jar --js .\js\notifer.js --js_output_file .\build\js\notifer.js
+java -jar compiler.jar --js .\js\ex_kit.js --js_output_file .\build\js\ex_kit.js
 java -jar compiler.jar --js .\js\storage.js --js_output_file .\build\js\storage.js
 java -jar compiler.jar --js .\js\lang.js --js_output_file .\build\js\lang.js
 java -jar compiler.jar --js .\js\history.js --js_output_file .\build\js\history.js
@@ -78,7 +81,6 @@ del .\build_firefox\chrome\content\magic.html
 
 :: ff
 
-
 :: opera
 
 xcopy .\build .\build_opera\build\ /E
@@ -112,8 +114,6 @@ del .\build_chrome.zip
 del .\build_firefox.xpi
 del .\build_opera.oex
 del .\build_chrome_ext.zip
-del .\build_chrome_ext_cens.zip
-del .\build_chrome_cens.zip
 
 7za a -tzip .\build_chrome.zip .\build\*
 7za a -tzip .\build_firefox.xpi .\build_firefox\*
