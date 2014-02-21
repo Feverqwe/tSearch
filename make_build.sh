@@ -99,7 +99,7 @@ java -jar compiler.jar --js ./ff_o/opera/build/js/counter.js --js_output_file ./
 
 # Chrome extension
 
-cp -r ./build ./build_chrome_ext
+cp -r ./build/* ./build_chrome_ext/.
 cp -r ./ff_o/chrome_ext/* ./build_chrome_ext/.
 
 java -jar yuicompressor-2.4.8.jar ./ff_o/chrome_ext/css/popup.css -o ./build_chrome_ext/css/popup.css
