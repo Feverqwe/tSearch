@@ -6,6 +6,13 @@ var magic = function() {
         block_src:   new RegExp(' src=([\'"]?)','img'),
         unblock_src: new RegExp('data:image\\/gif,base64#blockrurl#','mg'),
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
+        stripPath:   new RegExp('(.*)>tr.*$'),
+        stripPathSel:new RegExp('^[^>]*>(.*)$'),
+        root:        new RegExp('(.*)\\/[^\\/]*$'),
+        stScript:    new RegExp('<script', 'img'),
+        enScript:    new RegExp('<\\/script', 'img'),
+        rmDisp:      new RegExp('display[: ]{1,}none','img'),
+        rmVis:       new RegExp('visibility[: ]{1,}hidden','img'),
         ifContent: undefined,
         writePath: undefined,
         list_input_value: undefined,
@@ -152,9 +159,9 @@ var magic = function() {
         }
     };
     var contentFilter = function(content) {
-        content = content.replace(/<script/img, '<textarea data-script="1"');
-        content = content.replace(/<\/script/img, '</textarea');
-        content = content.replace(/display[: ]{1,}none/img, '').replace(/visibility[: ]{1,}hidden/img, '');
+        content = content.replace(var_cache.stScript, '<textarea data-script="1"');
+        content = content.replace(var_cache.enScript, '</textarea');
+        content = content.replace(var_cache.rmDisp, '').replace(var_cache.rmVis, '');
         content = content.replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
         return content;
     };
@@ -769,7 +776,7 @@ var magic = function() {
         }
         if (item.table_mode !== undefined) {
             if (noStripPath === undefined && item.table_mode.prop('checked')) {
-                path = path.replace(/(.*)>tr.*$/, '$1>tr');
+                path = path.replace(var_cache.stripPath, '$1>tr');
             }
             var_cache.list_input_dom = var_cache.pageDOM.find(path);
             if (var_cache.list_input_dom.length === 0) {
@@ -783,7 +790,7 @@ var magic = function() {
                 return [];
             }
             if (noStripPath === undefined) {
-                path = path.replace(var_cache.list_input_value, '').replace(/^[^>]*>(.*)$/,'$1');
+                path = path.replace(var_cache.list_input_value, '').replace(var_cache.stripPathSel,'$1');
             }
             var el = var_cache.list_input_dom.eq(input_list.selectors.skip.first.val()).find(path);
             if (el.length === 0){
@@ -973,21 +980,20 @@ var magic = function() {
             input_list.search.open.on('click', function(e){
                 e.preventDefault();
                 var type = 'search';
+                input_list.search.root.val(input_list.search.url.val().replace(var_cache.root, '$1/'));
                 loadUrl(input_list.search.url.val(), type);
             });
             input_list.auth.open.on('click', function(e){
                 e.preventDefault();
                 loadUrl(input_list.auth.url.val());
             });
-            input_list.search.url.val('http://rutracker.org/forum/tracker.php?nm=%search%');
-            input_list.search.request.val('Harry Potter');
             input_list.search.request.on('keyup', function(e){
                 if (e.keyCode === 13) {
                     input_list.search.open.trigger('click');
                 }
             });
             input_list.search.url.on('keyup', function(e){
-                var root = this.value.replace(/(.*)\/[^\/]*$/, '$1/');
+                var root = this.value.replace(var_cache.root, '$1/');
                 input_list.search.root.val(root);
             });
             input_list.auth.url.on('keyup', function(e){
