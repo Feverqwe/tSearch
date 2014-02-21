@@ -937,8 +937,26 @@ var magic = function() {
         }
         return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
     };
+    var write_language = function() {
+        $.each(_lang.magic, function(k, v) {
+        var el = $('[data-lang=' + k + ']');
+        if (el.length === 0) {
+                return true;
+            }
+        var t = el.prop("tagName");
+        if (t === "A" || t === "LEGEND" || t === "SPAN" || t === "LI" || t === "TH") {
+                el.text(v);
+            } else
+            if (t === "INPUT") {
+                el.val(v);
+            } else {
+                console.log(t);
+            }
+        });
+    };
     return {
         begin: function() {
+            write_language();
             dom_cache.window = $(window);
             dom_cache.body = $('body');
             dom_cache.menu = $('ul.menu');
