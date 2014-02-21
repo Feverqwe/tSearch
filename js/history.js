@@ -122,7 +122,7 @@ var view = function() {
         return u2ddmmyyyy(i);
     };
     var write_language = function() {
-        $('body > title').text(_lang.his_title);
+        $('head > title').text(_lang.his_title);
         $('h1').text(_lang.his_h1);
         $('a.button.main').attr('title',_lang.btn_main);
         dom_cache.topbtn.attr('title',_lang.btn_up);
