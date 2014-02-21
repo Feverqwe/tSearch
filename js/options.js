@@ -136,7 +136,7 @@ var options = function() {
         saveCurrentProfile();
         SetSettings('profileList', JSON.stringify(profile));
         SetSettings('currentProfile', current_profile);
-        if (isChromeum && chrome.extension) {
+        if (isChromeum && chrome.extension !== undefined) {
             //Chrome extension
             var bgp = chrome.extension.getBackgroundPage();
             bgp.bg.update_context_menu();

@@ -106,7 +106,8 @@ var view = function() {
         resizableTrList: parseInt(GetSettings('torrent_list_r') || 0),
         trListHeight: GetSettings('torrent_list_h'),
         parenthetical_select_enable: parseInt(GetSettings('sub_select_enable') || 1),
-        autoComplete: parseInt(GetSettings('AutoComplite_opt') || 1)
+        autoComplete: parseInt(GetSettings('AutoComplite_opt') || 1),
+        allow_get_description: parseInt(GetSettings('allow_get_description') || 1)
     };
     var writeTrackerList = function(trList) {
         dom_cache.torrent_list.find('option[value="'+GetSettings('currentProfile')+'"]').prop('selected', true);
@@ -234,7 +235,9 @@ var view = function() {
             var_cache.tableIsEmpty = 0;
         }
         clear_table();
-        explore.getDescription(request);
+        if (options.allow_get_description === 1) {
+            explore.getDescription(request);
+        }
         var_cache.tableIsEmpty = 0;
         searchMode();
         syntaxCacheRequest(request);
