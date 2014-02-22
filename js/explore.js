@@ -725,14 +725,14 @@ var explore = function() {
         );
     };
     var getCacheDate = function(keepAlive) {
-        var currentDate = new Date( (new Date()).getTime() );
+        var currentDate = new Date();
         var day = currentDate.getDay();
         var hours = currentDate.getHours();
         var minutes = currentDate.getMinutes();
         var seconds = currentDate.getSeconds();
         var lastDay = 0;
         keepAlive.forEach(function(num) {
-            if (day === num || day > num) {
+            if (day >= num) {
                 lastDay =  num;
             }
         });

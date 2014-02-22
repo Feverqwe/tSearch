@@ -2075,12 +2075,20 @@ var view = function() {
                 e.preventDefault();
                 window.location = 'history.html';
             });
-            dom_cache.window.on('hashchange', function() {
+            window.addEventListener('popstate', function(){
                 if (window.location.hash === var_cache.oldlocationHash){
                     return;
                 }
                 readUrl();
-            });
+            }, false);
+            if (window.opera !== undefined) {
+                dom_cache.window.on('hashchange', function() {
+                    if (window.location.hash === var_cache.oldlocationHash){
+                        return;
+                    }
+                    readUrl();
+                });
+            }
             dom_cache.search_btn_clear.on("click", function(event) {
                 event.preventDefault();
                 $(this).hide();
