@@ -53,7 +53,7 @@ var view = function() {
                     $('<div>', {'class': 'remove', title: _lang.his_rm_btn}).data('title',item.title).data('request',request),
                     $('<div>', {'class': 'time', title: u2ddmmyyyy_title(item.time), text: u2ddmmyyyy_title(item.time)}),
                     $('<div>', {'class': 'title'}).append(
-                        $('<a>',{href: item.href, target: '_blank'}).data('request',request).html(item.title)
+                        $('<a>',{href: item.href, target: '_blank'}).data('request',request).data('href', item.href).html(item.title)
                     )
                 ));
             });
@@ -181,12 +181,22 @@ var view = function() {
                 removeItem(request, $this.data('title'));
             });
             dom_cache.body.on('click', 'ol.click_history div.title > a', function(){
-                var request = $(this).data('request');
-                if (request === undefined) {
+                var $this = $(this);
+                var request = $this.data('request');
+                var href = $this.data('href');
+                if (request === undefined || href === undefined) {
                     return;
                 }
+                var click_history = var_cache.click_history[request];
+                for (var i = 0, item; item = click_history[i]; i++) {
+                    if (item.href === href) {
+                        item.count += 1;
+                        item.time = parseInt((new Date()).getTime() / 1000);
+                        break;
+                    }
+                }
                 var new_obj = {};
-                new_obj[request] = var_cache.click_history[request];
+                new_obj[request] = click_history;
                 $.each(var_cache.click_history, function(key, value) {
                     if (key !== request) {
                         new_obj[key] = value;
