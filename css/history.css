@@ -153,3 +153,13 @@ ol.items span.tracker {
     color: #fff;
     cursor: default;
 }
+li > .icon {
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    border-radius: 4px;
+    border: 1px dashed rgb(165, 165, 165);
+    margin-bottom: -4px;
+    margin-right: 5px;
+    margin-left: 2px;
+}

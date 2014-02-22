@@ -57,7 +57,10 @@ var view = function() {
                     )
                 ));
             });
-            content.push($('<li>').append($('<a>',{text: (request.length === 0)?'""':request, href:'index.html#?search='+request}), $('<ol>',{'class': 'items'}).append(items_dom) ));
+            content.push($('<li>').append(
+                $('<div>', {'class': 'icon'}),
+                $('<a>',{text: (request.length === 0)?'""':request, href:'index.html#?search='+request}), $('<ol>',{'class': 'items'}).append(items_dom)
+            ));
         });
         dom_cache.click_history.empty().append(content);
     };
