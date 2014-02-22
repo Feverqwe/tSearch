@@ -610,8 +610,12 @@ var engine = function() {
                 trackers_names: trackers_names
             });
         }
-        if (historyList.length > 200) {
+        var historyList_len = historyList.length;
+        if (historyList.length > 100) {
             historyList.splice(oldest_item, 1);
+        }
+        if (historyList_len - 1 > 100) {
+            historyList = historyList.slice(-100);
         }
         SetSettings('history', JSON.stringify(historyList));
         //view.AddAutocomplete();
