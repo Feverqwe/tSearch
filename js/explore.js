@@ -506,6 +506,9 @@ var explore = function() {
             }
             vc_source.current_page = page;
             var page_items = [];
+            if (Infinity === page_count) {
+                page_count = 0;
+            }
             for (var i = 0; i <= page_count; i++) {
                 page_items.push(
                     $('<li>', {'class': 'page_'+i+( (i === page)?' active':'' ), text: i+1}).data('page', i).data('type', type)
