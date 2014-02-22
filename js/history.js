@@ -53,7 +53,7 @@ var view = function() {
                     $('<div>', {'class': 'remove', title: _lang.his_rm_btn}).data('title',item.title).data('request',request),
                     $('<div>', {'class': 'time', title: u2ddmmyyyy_title(item.time), text: u2ddmmyyyy_title(item.time)}),
                     $('<div>', {'class': 'title'}).append(
-                        $('<a>',{href: item.href, target: '_blank'}).html(item.title)
+                        $('<a>',{href: item.href, target: '_blank'}).data('request',request).html(item.title)
                     )
                 ));
             });
@@ -179,6 +179,21 @@ var view = function() {
                     }
                 }
                 removeItem(request, $this.data('title'));
+            });
+            dom_cache.body.on('click', 'ol.click_history div.title > a', function(){
+                var request = $(this).data('request');
+                if (request === undefined) {
+                    return;
+                }
+                var new_obj = {};
+                new_obj[request] = var_cache.click_history[request];
+                $.each(var_cache.click_history, function(key, value) {
+                    if (key !== request) {
+                        new_obj[key] = value;
+                    }
+                });
+                var_cache.click_history = new_obj;
+                SetSettings('click_history', JSON.stringify(new_obj));
             });
             $('div.content').removeClass('loading');
         }
