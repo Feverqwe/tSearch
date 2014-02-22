@@ -89,7 +89,6 @@ torrent_lib.thepiratebay = function () {
                 year = time;
                 time = undefined;
             } else {
-                console.info('undef time', time);
                 year = c_date.getFullYear();
                 time = undefined;
             }
@@ -97,6 +96,9 @@ torrent_lib.thepiratebay = function () {
             var word = undefined;
             if ((/[^0-9-]/).test(month_date)) {
                 word = month_date.toLowerCase();
+                if ((/min|мин/).test(month_date)) {
+                    word = 'today';
+                }
                 month_date = undefined;
             } else {
                 word = undefined;
