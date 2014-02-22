@@ -70,6 +70,9 @@ torrent_lib['nnm-club'] = function () {
             if (xhr != undefined)
                 xhr.abort();
             xhr = $.ajax({
+                beforeSend: function(xhr) {
+                    xhr.overrideMimeType("text/plain; charset=windows-1251");
+                },
                 type: 'GET',
                 url: url + '?nm=' + encodeURI(text) + '&f[]=-1&prev_sd=0&prev_a=0&prev_my=0&prev_n=0&prev_shc=0&prev_shf=1&prev_sha=1&prev_shs=0&prev_shr=0&prev_sht=0&f[]=-1&o=1&s=2&tm=-1&shf=1&sha=1&ta=-1&sns=-1&sds=-1',
                 cache: false,
