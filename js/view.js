@@ -1805,7 +1805,7 @@ var view = function() {
         var title;
         if (var_cache.currentRequest === undefined || var_cache.currentRequest.length === 0) {
             title = 'Torrents MultiSearch';
-            dom_cache.title.text(title);
+            document.title = title;
             return title;
         }
         var tracker = '';
@@ -1816,7 +1816,7 @@ var view = function() {
             tracker += ':: ';
         }
         title = var_cache.currentRequest + ' :: '+tracker+'TMS';
-        dom_cache.title.text(title);
+        document.title = title;
         return title;
     };
     var setPage = function(request) {
@@ -1838,7 +1838,13 @@ var view = function() {
         _gaq.push(['_trackPageview', url+hash]);
         var_cache.oldlocationHash = hash;
         var title = updateTitle();
-        window.history.pushState(undefined, title, url+hash);
+        if (window.history.state === null) {
+            window.history.replaceState({
+                hash: hash
+            }, title, url+hash);
+        } else if (window.history.state.hash !== hash) {
+            window.history.pushState({hash: hash}, title, url+hash);
+        }
         if (window.location.hash !== var_cache.oldlocationHash) {
             var_cache.oldlocationHash = window.location.hash;
         }
@@ -2448,6 +2454,9 @@ var view = function() {
             if (options.resizableTrList === 1) {
                 initResizeble();
             }
+            window.history.replaceState({
+                hash: window.location.hash
+            }, document.title, window.location.href);
             readUrl();
         }
     };
