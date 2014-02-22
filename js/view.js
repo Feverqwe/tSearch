@@ -69,14 +69,14 @@ var view = function() {
         window_scroll_timer: undefined,
         // xhr для автозаполнения
         suggest_xhr: undefined,
-        // режим Home - 0 или Search - 1
-        pageMode: 0,
+        // режим Home - 0 или Search - 1 , -1 undefined
+        pageMode: -1,
         // стутус таблицы очищина или нет
         tableIsEmpty: 1,
         // испория переходов
         click_history: JSON.parse(GetSettings('click_history') || '{}'),
         // кэш location, fix bug with popstate, when script don't loaded.
-        oldlocationHash: undefined,
+        oldlocationHash: '',
         // bg mode switch
         backgroundMode: undefined
     };
@@ -209,17 +209,17 @@ var view = function() {
         updateCounts();
         clear_filters();
     };
-    var homeMode = function(){
+    var homeMode = function() {
         if (var_cache.pageMode === 0) {
             return;
         }
         var_cache.pageMode = 0;
-        explore.show();
         dom_cache.result_panel.hide();
         clear_table();
         var_cache.currentRequest = undefined;
         dom_cache.search_input.val('').trigger('keyup');
         engine.stop();
+        explore.show();
     };
     var searchMode = function() {
         if (var_cache.pageMode === 1) {
@@ -229,7 +229,7 @@ var view = function() {
         explore.hide();
         dom_cache.result_panel.show();
     };
-    var search = function(request, history) {
+    var search = function(request) {
         if (var_cache.backgroundMode !== undefined) {
             var_cache.backgroundMode = undefined;
             var_cache.tableIsEmpty = 0;
@@ -246,11 +246,7 @@ var view = function() {
         engine.stop();
         engine.search(request, var_cache.currentTrackerList);
         var_cache.currentRequest = request;
-        if (history !== undefined) {
-            updateTitle();
-        } else {
-            setPage(request);
-        }
+        setPage(request);
         setTimeout(function() {
             dom_cache.search_input.autocomplete( "enable" );
         }, 1000);
@@ -266,14 +262,14 @@ var view = function() {
         var_cache.currentRequest = request;
         _gaq.push(['_trackEvent', 'Quality', 'keyword', request]);
     };
-    var home = function(){
+    var blankPage = function(noClearTrackerFilters){
         homeMode();
         clear_filters();
-        clear_tracker_filter();
-        dom_cache.search_input.focus();
-        if (window.location.hash.length !== 0) {
-            setPage(undefined);
+        if (noClearTrackerFilters === undefined) {
+            clear_tracker_filter();
         }
+        dom_cache.search_input.focus();
+        setPage(undefined);
     };
     var itemCheck = function(item, er) {
         /*
@@ -1823,27 +1819,29 @@ var view = function() {
         dom_cache.title.text(title);
         return title;
     };
-    var setPage = function(request, update) {
-        var title = updateTitle();
-        if (request === undefined) {
-            if (update === undefined) {
-                window.history.pushState(undefined, title, 'index.html');
-                _gaq.push(['_trackPageview', 'index.html']);
+    var setPage = function(request) {
+        var url = 'index.html';
+        var hash = '';
+        if (request !== undefined) {
+            var trackers;
+            if (var_cache.currentTrackerList.length > 0) {
+                trackers = JSON.stringify(var_cache.currentTrackerList);
             }
-            var_cache.oldlocationHash = '';
+            hash = '#?search='+request+((trackers !== undefined)?'&tracker='+trackers:'');
+        }
+        if (var_cache.oldlocationHash === hash) {
             return;
         }
-        var trackers;
-        if (var_cache.currentTrackerList.length > 0) {
-            trackers = JSON.stringify(var_cache.currentTrackerList);
+        if (request !== undefined) {
+            _gaq.push(['_trackEvent', 'Search', 'keyword', request]);
         }
-        var url = 'index.html#?search='+request+((trackers !== undefined)?'&tracker='+trackers:'');
-        _gaq.push(['_trackEvent', 'Search', 'keyword', request]);
-        _gaq.push(['_trackPageview', url]);
-        if (update === undefined) {
-            window.history.pushState(undefined, title, url);
+        _gaq.push(['_trackPageview', url+hash]);
+        var_cache.oldlocationHash = hash;
+        var title = updateTitle();
+        window.history.pushState(undefined, title, url+hash);
+        if (window.location.hash !== var_cache.oldlocationHash) {
+            var_cache.oldlocationHash = window.location.hash;
         }
-        var_cache.oldlocationHash = url.substr(10);
     };
     var selectCurrentTrackerList = function() {
         dom_cache.trackers_ul.find('a.selected').removeClass('selected');
@@ -1851,33 +1849,24 @@ var view = function() {
             var_cache.trackers[item].link.addClass('selected');
         }
     };
-    var readUrl = function(history) {
-        var hash = window.location.hash;
-        if (hash.substr(0, 3) === '#s=') {
-            hash = '#?search='+hash.substr(3);
-        }
-        var hash_len = hash.length;
-        var item, i;
-        hash = hash.substr(hash.indexOf('?')+1);
-        if (history !== undefined && hash_len === 0) {
-            homeMode();
-            clear_tracker_filter();
-            updateTitle();
-            return;
-        }
-        var args = hash.split('&');
+    var readHash = function(hash) {
         var params = {};
+        if (hash.length === 0) {
+            return params;
+        }
+        hash = hash.substr(hash.indexOf('?')+1);
+        var args = hash.split('&');
+        var item, i;
         for (i = 0; item = args[i]; i++) {
             var pos = item.indexOf('=');
             var key = item.substr(0, pos);
             params[key] = item.substr(pos+1);
         }
-        if (params.search === undefined && params.tracker === undefined && hash_len !== 0) {
-            home();
-            return;
-        }
         if (params.search !== undefined) {
             params.search = decodeURIComponent(params.search);
+            if (params.search.length === 0) {
+                delete params.search;
+            }
         }
         try {
             if (params.tracker !== undefined) {
@@ -1897,17 +1886,23 @@ var view = function() {
         } else {
             clear_tracker_filter();
         }
+        return params;
+    };
+    var readUrl = function() {
+        var hash = window.location.hash;
+        if (hash.substr(0, 3) === '#s=') {
+            hash = '#?search='+hash.substr(3);
+        }
+        var params = readHash(hash);
         if (params.search !== undefined) {
-            if (params.search.length === 0) {
-                homeMode();
-                if (history === undefined) {
-                    explore.show();
-                }
-                updateTitle();
-                return;
-            }
             dom_cache.search_input.val(params.search).trigger('keyup');
-            search(params.search, 1);
+            search(params.search);
+        } else {
+            if (params.tracker !== undefined) {
+                blankPage(1);
+            } else {
+                blankPage();
+            }
         }
     };
     var clear_tracker_filter = function() {
@@ -2074,28 +2069,18 @@ var view = function() {
             });
             $('input.button.main').on("click", function(e) {
                 e.preventDefault();
-                home();
+                blankPage();
             });
             $('input.button.history').on("click", function(e) {
                 e.preventDefault();
                 window.location = 'history.html';
             });
-            window.addEventListener('popstate', function(e){
+            dom_cache.window.on('hashchange', function() {
                 if (window.location.hash === var_cache.oldlocationHash){
                     return;
                 }
-                var_cache.oldlocationHash = window.location.hash;
-                readUrl(1);
-            }, false);
-            if (window.opera !== undefined) {
-                dom_cache.window.on('hashchange', function() {
-                    if (window.location.hash === var_cache.oldlocationHash){
-                        return;
-                    }
-                    var_cache.oldlocationHash = window.location.hash;
-                    readUrl(1);
-                });
-            }
+                readUrl();
+            });
             dom_cache.search_btn_clear.on("click", function(event) {
                 event.preventDefault();
                 $(this).hide();
@@ -2455,11 +2440,7 @@ var view = function() {
             if (options.resizableTrList === 1) {
                 initResizeble();
             }
-            var_cache.oldlocationHash = window.location.hash;
             readUrl();
-            if (var_cache.oldlocationHash === '') {
-                explore.show();
-            }
         }
     };
 }();
