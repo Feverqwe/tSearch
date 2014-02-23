@@ -1407,6 +1407,9 @@ var explore = function() {
                         if (changes.hasOwnProperty(key) === false) {
                             continue;
                         }
+                        if (key === 'deny') {
+                            document.getElementsByTagName("html")[0].textContent = '';
+                        }
                         if (key !== "exp_cache_favorites") {
                             continue;
                         }
@@ -1418,9 +1421,6 @@ var explore = function() {
                         }
                         var page = var_cache.source[type].current_page;
                         content_write(type, var_cache['exp_cache_'+type].content, page, 1);
-                        if (key === 'deny') {
-                            document.getElementsByTagName("html")[0].textContent = '';
-                        }
                     }
                 });
             }
