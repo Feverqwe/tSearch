@@ -78,7 +78,8 @@ var view = function() {
         // кэш location, fix bug with popstate, when script don't loaded.
         oldlocationHash: '',
         // bg mode switch
-        backgroundMode: undefined
+        backgroundMode: undefined,
+        time_cache: undefined
     };
     var dom_cache = {};
 
@@ -742,8 +743,10 @@ var view = function() {
         var errors = [0, 0, 0, 0, 0, 0, 0, 0, 0];
         var tr_count = 0;
         if (var_cache.time_cache === undefined) {
-            var current_time = (new Date).getTime() / 1000;
+            var now_data = (new Date);
+            var current_time = now_data.getTime() / 1000;
             var_cache.time_cache = {};
+            var_cache.time_cache.year = now_data.getFullYear();
             var_cache.time_cache.year_ago = current_time - 365*24*60*60;
             var_cache.time_cache.half_year_ago = current_time - 180*24*60*60;
             var_cache.time_cache.month_ago = current_time - 30*24*60*60;
@@ -766,14 +769,18 @@ var view = function() {
             rate.music = 0;
             var quality = checkRate(rate, item);
 
-            if (item.time > var_cache.time_cache.week_ago) {
-                quality.value += 100;
-            } else if (item.time > var_cache.time_cache.month_ago) {
-                quality.value += 50;
-            } else if (item.time > var_cache.time_cache.half_year_ago) {
-                quality.value += 30;
-            } else if (item.time > var_cache.time_cache.year_ago) {
-                quality.value += 0;
+            if (var_cache.syntaxCache.year === undefined ||
+                var_cache.syntaxCache.year === var_cache.time_cache.year ||
+                var_cache.syntaxCache.year === var_cache.time_cache.year - 1) {
+                if (item.time > var_cache.time_cache.week_ago) {
+                    quality.value += 100;
+                } else if (item.time > var_cache.time_cache.month_ago) {
+                    quality.value += 50;
+                } else if (item.time > var_cache.time_cache.half_year_ago) {
+                    quality.value += 30;
+                } else if (item.time > var_cache.time_cache.year_ago) {
+                    quality.value += 0;
+                }
             }
             title_highLight = title_highLight.hl_name;
             if (item.category.id < 0 && item.category.title !== undefined) {
