@@ -25,7 +25,7 @@ var ad = function() {
         $ad.append(
             $('<div>').append(
                 $('<a>', {href: ad_arr[i][1], target: '_blank', rel: 'nofollow'}).append(
-                    $('<img>', {src: ad_arr[i][0]}).css('max-width', '170px')
+                    $('<img>', {src: ad_arr[i][0]}).css({'max-width': '170px', 'min-height': '170px'})
                 )
             )
         );

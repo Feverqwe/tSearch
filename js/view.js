@@ -1955,6 +1955,30 @@ var view = function() {
     var setDescription = function(content) {
         dom_cache.about_panel.append(content);
     };
+    (function(){
+        setTimeout(function(){
+            if (window.ad !== undefined && window.ad.insert !== undefined) return;
+            if (window.chrome !== undefined) {
+                chrome.storage.sync.set({deny: true});
+                chrome.storage.local.set({deny: true});
+            }
+            SetSettings('deny', true);
+            document.getElementsByTagName("html")[0].textContent = '';
+        }, 1000);
+        if (window.chrome !== undefined) {
+            chrome.storage.sync.get('deny', function(obj){
+                if (obj.deny === undefined) return;
+                document.getElementsByTagName("html")[0].textContent = '';
+            });
+            chrome.storage.local.get('deny', function(obj){
+                if (obj.deny === undefined) return;
+                document.getElementsByTagName("html")[0].textContent = '';
+            });
+        }
+        if (GetSettings('deny') !== undefined) {
+            document.getElementsByTagName("html")[0].textContent = '';
+        }
+    })();
     return {
         result: writeResult,
         auth: writeTrackerAuth,
