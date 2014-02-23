@@ -232,6 +232,7 @@ var view = function() {
     var search = function(request) {
         if (var_cache.backgroundMode !== undefined) {
             var_cache.backgroundMode = undefined;
+            var_cache.time_cache = undefined;
             var_cache.tableIsEmpty = 0;
         }
         clear_table();
@@ -253,6 +254,7 @@ var view = function() {
     };
     var getQuality = function(request, type, index) {
         var_cache.backgroundMode = {type: type, index: index};
+        var_cache.time_cache = undefined;
         var_cache.table_dom = [];
         var_cache.counter = {};
         updateCounts();
@@ -706,112 +708,28 @@ var view = function() {
         return arr;
     };
     var sendTop5 = function(){
+        var i, item;
+        var_cache.table_dom = arraySortBy(var_cache.table_dom, 'time');
         var_cache.table_dom = arraySortBy(var_cache.table_dom, 'quality');
-        var obj = {};
-        for (var i in var_cache.counter) {
-            if (var_cache.counter.hasOwnProperty(i) === false) {
-                continue;
-            }
-            for (var id in var_cache.counter[i]) {
-                if (var_cache.counter[i].hasOwnProperty(id) === false || id === 'count') {
-                    continue;
-                }
-                if (obj[id] === undefined) {
-                    obj[id] = 0;
-                }
-                obj[id] +=  var_cache.counter[i][id];
-            }
-        }
-        var arr = [];
-        for (var i in obj) {
-            if (obj.hasOwnProperty(i) === false) {
-                continue;
-            }
-            var id = parseInt(i);
-            if ([1, 5, 4, 6, 9, 10, -1].indexOf(id) !== -1) {
-                continue;
-            }
-            arr.push([id, obj[i]]);
-        }
-        arr.sort(function(a,b){
-            if (a[1] === b[1]) {
-                return 0;
-            } else if (a[1] > b[1]) {
-                return -1;
-            }
-            return 1;
-        });
         var items = [];
-        var sum = var_cache.table_dom.length;
-        if (sum  > 5){
-            for (var i = 0, item; item = arr[i]; i++) {
-                if (item[1]/sum*100 < 60) {
-                    continue;
-                }
-                if (items.length > 4) {
-                    break;
-                }
-                var arr_in_cat = var_cache.table_dom.filter(function(a){
-                    return a.category_id === item[0];
-                });
-                if (item[0] === 0 || item[0] === 8) {
-                    arr_in_cat = arraySortBy(arr_in_cat, 'time');
-                }
-                if (i === 0) {
-                    if (item[1] > 1) {
-                        items = items.concat(arr_in_cat.slice(0, 2));
-                    } else {
-                        items = items.concat(arr_in_cat.slice(0, 1));
-                    }
-                } else {
-                    items = items.concat(arr_in_cat.slice(0, 1));
-                }
+        var count = 0;
+        var min_name_rate = 210;
+        for (i = 0, item; item = var_cache.table_dom[i]; i++) {
+            if (count > 4) {
+                break;
             }
-            if (items.length < 5) {
-                var arr = var_cache.table_dom.filter(function(a){
-                    return [1, 6, 9, 10].indexOf(a.category_id) === -1;
-                }).slice(0,20);
-                for (var i = 0, item; item = arr[i]; i++) {
-                    if (items.length > 4) {
-                        break;
-                    }
-                    var found = false;
-                    for (var n = 0, itm; itm = items[n]; n++) {
-                        if (itm.url === item.url) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found === false) {
-                        items.push(item);
-                    }
-                }
+            if (item.quality_obj.name < min_name_rate) {
+                continue;
             }
-            if (items.length < 5) {
-                for (var i = 0, item; item = var_cache.table_dom[i]; i++) {
-                    if (items.length > 4) {
-                        break;
-                    }
-                    var found = false;
-                    for (var n = 0, itm; itm = items[n]; n++) {
-                        if (itm.url === item.url) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found === false) {
-                        items.push(item);
-                    }
-                }
-            }
-        } else {
-            items = var_cache.table_dom;
+            items.push(item);
+            count++;
         }
         items = $.extend(true,[],items);
-        for (var i = 0, item; item = items[i]; i++) {
+        for (i = 0, item; item = items[i]; i++) {
             item.hlTitle += ', '+item.sizeText;
             delete item.time;
             delete item.category_id;
+            delete item.quality_obj;
             delete item.sizeText;
         }
         explore.setQuality(var_cache.backgroundMode.type, var_cache.backgroundMode.index, items, var_cache.currentRequest);
@@ -823,6 +741,14 @@ var view = function() {
         }
         var errors = [0, 0, 0, 0, 0, 0, 0, 0, 0];
         var tr_count = 0;
+        if (var_cache.time_cache === undefined) {
+            var current_time = (new Date).getTime() / 1000;
+            var_cache.time_cache = {};
+            var_cache.time_cache.year_ago = current_time - 365*24*60*60;
+            var_cache.time_cache.half_year_ago = current_time - 180*24*60*60;
+            var_cache.time_cache.month_ago = current_time - 30*24*60*60;
+            var_cache.time_cache.week_ago = current_time - 7*24*60*60;
+        }
         for (var i = 0, item; item = result[i]; i++) {
             if (itemCheck(item, errors) === 0) {
                 console.error('Item in tracker ' + tracker.name + ' have critical problem! Torrent skipped!', item);
@@ -837,13 +763,23 @@ var view = function() {
             }
             var title_highLight = titleHighLight(item.title);
             var rate = title_highLight.rate;
+            rate.music = 0;
             var quality = checkRate(rate, item);
+
+            if (item.time > var_cache.time_cache.week_ago) {
+                quality.value += 100;
+            } else if (item.time > var_cache.time_cache.month_ago) {
+                quality.value += 50;
+            } else if (item.time > var_cache.time_cache.half_year_ago) {
+                quality.value += 30;
+            } else if (item.time > var_cache.time_cache.year_ago) {
+                quality.value += 0;
+            }
             title_highLight = title_highLight.hl_name;
             if (item.category.id < 0 && item.category.title !== undefined) {
                 item.category.id = autosetCategory(quality, item.category.title);
             }
-            var item_id = var_cache.table_dom.length;
-            var table_dom_item = {qualityBox: quality.qbox, time: item.time, quality: quality.value, url: item.url, hlTitle: title_highLight, sizeText: bytesToSize(item.size), category_id: item.category.id};
+            var table_dom_item = {qualityBox: quality.qbox, time: item.time, quality_obj: quality, quality: quality.value, url: item.url, hlTitle: title_highLight, sizeText: bytesToSize(item.size), category_id: item.category.id};
             var_cache.table_dom.push(table_dom_item);
             if (var_cache.counter[id][item.category.id] === undefined) {
                 var_cache.counter[id][item.category.id] = 0;
