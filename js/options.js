@@ -524,11 +524,11 @@ var options = function() {
             if (!isChromeum) {
                 //opera 12 and firefox
                 dom_cache.add_in_omnibox.closest('ul').hide();
-                dom_cache.google_analytics.closest('ul').hide();
+                dom_cache.google_analytics.closest('fieldset').hide();
                 dom_cache.allow_favorites_sync.closest('ul').hide();
                 dom_cache.clear_cloud_btn.hide();
             }
-            if (!isChromeum && !isFF) {
+            if (window.opera !== undefined) {
                 // Opera 12
                 dom_cache.search_popup.closest('ul').hide();
             }
