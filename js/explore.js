@@ -228,13 +228,13 @@ var explore = function() {
                     var year = getYear(obj.title_en);
                     obj.title_en = rmYear(obj.title_en);
                     if (obj.title_en.length > 0) {
-                        if (!isSerial) {
+                        if (!isSerial && !isNaN(year)) {
                             obj.title_en += ' '+year;
                         }
                     } else {
                         obj.title_en = undefined;
                     }
-                    if (!isSerial) {
+                    if (!isSerial && !isNaN(year)) {
                         obj.title += ' '+year;
                     }
                     arr.push(obj);
@@ -264,10 +264,13 @@ var explore = function() {
                     obj.title_en = rmYear(obj.title_en);
                     if (obj.title_en.length === 0) {
                         obj.title_en = undefined;
-                    } else {
-                        obj.title_en += ' '+year;
                     }
-                    obj.title += ' '+year;
+                    if (!isNaN(year)) {
+                        if (obj.title_en !== undefined) {
+                            obj.title_en += ' '+year;
+                        }
+                        obj.title += ' '+year;
+                    }
                     arr.push(obj);
                 }
                 return arr;
@@ -294,9 +297,12 @@ var explore = function() {
                     }
                     obj.img = kp_img_url(obj.img);
                     var year = getYear(obj.title);
-                    obj.title = rmYear(obj.title) + ' '+year;
-                    if (obj.title_en !== undefined) {
-                        obj.title_en += ' '+year;
+                    obj.title = rmYear(obj.title);
+                    if (!isNaN(year)) {
+                        obj.title += ' '+year;
+                        if (obj.title_en !== undefined) {
+                            obj.title_en += ' '+year;
+                        }
                     }
                     arr.push(obj);
                 }
@@ -347,7 +353,10 @@ var explore = function() {
                     }
                     obj.img = imdb_img_url(obj.img);
                     var year = getYear(obj.title);
-                    obj.title = rmYear(obj.title)+' '+year;
+                    obj.title = rmYear(obj.title);
+                    if (!isNaN(year)) {
+                        obj.title += ' '+year;
+                    }
                     arr.push(obj);
                 }
                 return arr;
