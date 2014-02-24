@@ -73,7 +73,7 @@ torrent_lib.anidub = function () {
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
-                url: url + '?noscript=0&ajax=1&search=' + text + '&view=0&incldead=0&trailer=no&date=0',
+                url: url + '?noscript=0&ajax=1&search=' + encodeURIComponent(text) + '&view=0&incldead=0&trailer=no&date=0',
                 cache: false,
                 success: function (data) {
                     view.result(filename, readCode(data), t);

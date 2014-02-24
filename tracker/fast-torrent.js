@@ -45,7 +45,7 @@ torrent_lib['fast-torrent'] = function () {
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
-                url: url + text + '/1.html',
+                url: url + encodeURIComponent(text) + '/1.html',
                 cache: false,
                 success: function (data) {
                     view.result(filename, readCode(data), t);

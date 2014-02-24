@@ -180,7 +180,7 @@ torrent_lib.thepiratebay = function () {
                 xhr.abort();
             xhr = $.ajax({
                 type: 'GET',
-                url: url + text + '/0/99/0',
+                url: url + encodeURIComponent(text) + '/0/99/0',
                 cache: false,
                 success: function (data) {
                     view.result(filename, readCode(data), t);
