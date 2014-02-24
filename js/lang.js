@@ -301,7 +301,7 @@ var get_lang = function (lang) {
             61: "Table",
             62: "Attribute",
             63: "Replace the words of today\\yesterday\\now",
-            64: "Custom charset"
+            64: "Page charset"
         }
     };
     var lang_arr_ru = {
@@ -606,7 +606,7 @@ var get_lang = function (lang) {
             61: "Таблица",
             62: "Атрибут",
             63: "Заменить слова сегодня\\вчера\\сейчас",
-            64: "Кодировка"
+            64: "Кодировка страницы"
         }
     };
     if (lang === undefined) {
