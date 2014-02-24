@@ -300,7 +300,8 @@ var get_lang = function (lang) {
             60: "Peers",
             61: "Table",
             62: "Attribute",
-            63: "Replace the words of today\\yesterday\\now"
+            63: "Replace the words of today\\yesterday\\now",
+            64: "Custom charset"
         }
     };
     var lang_arr_ru = {
@@ -604,7 +605,8 @@ var get_lang = function (lang) {
             60: "Пиры",
             61: "Таблица",
             62: "Атрибут",
-            63: "Заменить слова сегодня\\вчера\\сейчас"
+            63: "Заменить слова сегодня\\вчера\\сейчас",
+            64: "Кодировка"
         }
     };
     if (lang === undefined) {

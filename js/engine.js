@@ -189,6 +189,7 @@ var engine = function() {
                 var ex_auth_f = (me.auth_f !== undefined) ? 1 : 0;
                 var ex_encode = (me.encode !== undefined) ? 1 : 0;
                 var ex_post = (me.post !== undefined) ? 1 : 0;
+                var ex_charset = (me.charset !== undefined) ? 1 : 0;
                 if (me.cat_alt !== undefined) {
                     me.cat_attr = 'alt';
                     delete me.cat_alt;
@@ -412,6 +413,11 @@ var engine = function() {
                             view.loadingStatus(2, custom_id);
                         }
                     };
+                    if (ex_charset) {
+                        obj_req.beforeSend = function(xhr) {
+                            xhr.overrideMimeType("text/plain; charset="+me.charset);
+                        }
+                    }
                     if (ex_post === 1) {
                         obj_req.type = 'POST';
                         obj_req.data = me.post.replace('%search%', request);

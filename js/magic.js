@@ -26,7 +26,8 @@ var magic = function() {
             request: undefined,
             cp1251: undefined,
             post: undefined,
-            root: undefined
+            root: undefined,
+            charset: undefined
         },
         auth: {
             url: undefined,
@@ -190,6 +191,9 @@ var magic = function() {
         if (code.post.length === 0) {
             delete code.post;
         }
+        if (input_list.search.charset.val().length > 0) {
+            code.charset = input_list.search.charset.val();
+        }
         if (input_list.search.cp1251.prop('checked')) {
             code.encode = 1;
         }
@@ -312,6 +316,9 @@ var magic = function() {
         }
         if (code.encode !== undefined) {
             input_list.search.cp1251.prop('checked', code.encode);
+        }
+        if (code.charset !== undefined) {
+            input_list.search.charset.val(code.charset);
         }
         if (code.post !== undefined) {
             input_list.search.post.val(code.post);
@@ -445,6 +452,12 @@ var magic = function() {
                     '</style>';
             }
         };
+        var charset = input_list.search.charset.val();
+        if (charset.length > 0) {
+            obj_req.beforeSend = function(xhr) {
+                xhr.overrideMimeType("text/plain; charset="+charset);
+            }
+        }
         if (post.length > 0) {
             obj_req.type = 'POST';
             obj_req.data = post;
@@ -1039,4 +1052,8 @@ var magic = function() {
 }();
 $(function() {
     magic.begin();
+});
+$.ajaxSetup({
+    global: true,
+    jsonp: false
 });
