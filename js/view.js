@@ -1808,7 +1808,11 @@ var view = function() {
         for (i = 0; item = args[i]; i++) {
             var pos = item.indexOf('=');
             var key = item.substr(0, pos);
-            params[key] = item.substr(pos+1);
+            if (key === 'search' || key === 'tracker') {
+                params[key] = item.substr(pos+1);
+            } else if (params.search !== undefined) {
+                params.search += '&' + item;
+            }
         }
         if (params.search !== undefined) {
             params.search = decodeURIComponent(params.search);
