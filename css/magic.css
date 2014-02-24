@@ -75,7 +75,6 @@ div.tools > div.status_bar {
     background-color: #fff;
 }
 iframe {
-    height: 100%;
     height: calc(100% - 304px);
     width: 100%;
     border: 0;
@@ -102,8 +101,12 @@ div.tools fieldset.search li > input[name=search_post],
 div.tools fieldset.search li > input[name=search_root] {
     width: 450px;
 }
+div.tools fieldset.search li > input[name=search_charset] {
+    width: 150px;
+}
 div.tools fieldset.search li:nth-child(4) > span:nth-child(1),
-div.tools fieldset.search li:nth-child(5) > span:nth-child(1) {
+div.tools fieldset.search li:nth-child(5) > span:nth-child(1),
+div.tools fieldset.search li:nth-child(6) > span:nth-child(1){
     width: 100px;
     display: inline-block;
 }
