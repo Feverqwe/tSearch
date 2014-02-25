@@ -22,7 +22,8 @@ var explore = function() {
         qualityBoxCache: JSON.parse( GetSettings('qualityBoxCache') || '{}' ),
         // 1 - show , 0 - hide
         mode: 0,
-        needResize: 0
+        needResize: 0,
+        about_cache: {}
     };
     var dom_cache = {};
     var options = {
@@ -405,7 +406,7 @@ var explore = function() {
             },
             gg_games_new: gg_games_new,
             gg_games_top: gg_games_new,
-            google: function(content) {
+            google: function(content, request) {
                 content = engine.contentFilter(content);
                 var $content = engine.load_in_sandbox(content);
                 $content = $content.find('#rhs_block').find('.rhsvw.kno-inline').eq(0).children('div');
@@ -485,6 +486,7 @@ var explore = function() {
                     }
                     content_info.append($('<div>', {'class': 'a-table'}).append($('<span>', {'class': 'key', text: k}), $('<span>', {'class': 'value', text: v})));
                 }
+                var_cache.about_cache[request] = '<div>'+content_info.html()+'</div>';
                 view.setDescription(content_info);
             }
         };
@@ -1001,8 +1003,12 @@ var explore = function() {
         ul.append( content );
     };
     var getDescription = function(request) {
+        if (var_cache.about_cache[request] !== undefined) {
+            view.setDescription(var_cache.about_cache[request]);
+            return;
+        }
         $.get('https://www.google.com/search?q='+request, function(data){
-            content_parser.google(data);
+            content_parser.google(data, request);
         });
     };
     var updateFavorites = function(data) {
