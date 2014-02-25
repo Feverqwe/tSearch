@@ -60,7 +60,6 @@ java -jar htmlcompressor-1.5.3.jar -t html .\options.html -o .\build\options.htm
 
 mkdir .\build_firefox\chrome
 xcopy .\build .\build_firefox\chrome\content\ /E
-
 xcopy .\ff_o\firefox\* .\build_firefox\. /E /Y
 
 java -jar yuicompressor-2.4.8.jar .\ff_o\firefox\chrome\content\css\popup.css -o .\build_firefox\chrome\content\css\popup.css
