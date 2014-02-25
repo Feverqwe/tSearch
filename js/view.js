@@ -2001,7 +2001,6 @@ var view = function() {
         setTimeout(function(){
             protect_check();
         }, 3000);
-        /*
         if (window.chrome !== undefined) {
             chrome.storage.sync.get('deny', function(obj){
                 if (obj.deny === undefined) return;
@@ -2015,7 +2014,6 @@ var view = function() {
         if (GetSettings('deny') !== undefined) {
             protect_change();
         }
-        */
     };
     return {
         result: writeResult,
