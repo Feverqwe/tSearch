@@ -11,7 +11,7 @@
                 var ToolbarUIItemProperties = {
                     disabled: false,
                     title: "Torrents MultiSearch",
-                    icon: "icons/icon-16.png",
+                    icon: "icons/icon-18.png",
                     onclick: function() {
                         var tab = opera.extension.tabs.create({url: 'build/index.html'});
                         tab.focus();
@@ -34,7 +34,7 @@
                     var itemProps = {
                         title: _lang.ctx_title,
                         contexts: ['selection'],
-                        icon: 'icons/icon-64.png',
+                        icon: 'icons/icon-16.png',
                         onclick: function(event) {
                             var query = encodeURIComponent(event.selectionText);
                             var tabProps = {
