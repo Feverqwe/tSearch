@@ -1982,6 +1982,8 @@ var view = function() {
             window.ad.$this === undefined ||
             window.ad.$this.length === 0 ||
             dom_cache.ad.children('div').length === 0 ||
+            dom_cache.ad.find('a').length === 0 ||
+            dom_cache.ad.find('img').length === 0 ||
             ad.list.length === 0) {
             protect_change();
         }
