@@ -107,7 +107,7 @@ div.tools fieldset.search li > input[name=search_charset] {
 div.tools fieldset.search li:nth-child(4) > span:nth-child(1),
 div.tools fieldset.search li:nth-child(5) > span:nth-child(1),
 div.tools fieldset.search li:nth-child(6) > span:nth-child(1){
-    width: 100px;
+    width: 140px;
     display: inline-block;
 }
 div.tools fieldset.convert input[name=time_result] {
