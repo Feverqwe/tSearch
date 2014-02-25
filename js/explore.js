@@ -1407,9 +1407,6 @@ var explore = function() {
                         if (changes.hasOwnProperty(key) === false) {
                             continue;
                         }
-                        if (key === 'deny') {
-                            document.getElementsByTagName("html")[0].textContent = '';
-                        }
                         if (key !== "exp_cache_favorites") {
                             continue;
                         }
