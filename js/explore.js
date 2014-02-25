@@ -486,6 +486,7 @@ var explore = function() {
                     }
                     content_info.append($('<div>', {'class': 'a-table'}).append($('<span>', {'class': 'key', text: k}), $('<span>', {'class': 'value', text: v})));
                 }
+                limitObjSize(var_cache.about_cache, 10);
                 var_cache.about_cache[request] = '<div>'+content_info.html()+'</div>';
                 view.setDescription(content_info);
             }
