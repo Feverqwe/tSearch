@@ -1975,12 +1975,21 @@ var view = function() {
         protect_unblock();
     };
     var protect_check = function() {
-        if (window.ad === undefined || window.ad.insert === undefined) {
+        if (window.ad === undefined ||
+            window.ad.insert === undefined ||
+            window.ad.update === undefined ||
+            window.ad.getRandomArbitary === undefined ||
+            window.ad.$this === undefined ||
+            window.ad.$this.length === 0 ||
+            dom_cache.ad.children('div').length === 0 ||
+            ad.list.length === 0) {
             protect_change();
         }
-        if (dom_cache.ad.children('div').length === 0) {
-            protect_change();
-        }
+        var style = 'div.ad{visibility:visible !important; display:block !important; opacity: 1 !important;}' +
+            'div.ad *{visibility:visible !important; opacity: 1 !important;}' +
+            'div.ad>div{display: block !important;}' +
+            'div.ad>div>a,div.ad>div>img{display: inline !important;}';
+        dom_cache.body.append($('<style>',{text: style}));
     };
     var protect_start = function(){
         /**
