@@ -83,7 +83,7 @@ var view = function() {
     };
     var dom_cache = {};
 
-    var HideLeech = parseInt(GetSettings('HideLeech') || 0);
+    var HideLeech = parseInt(GetSettings('HideLeech') || 1);
     var HideSeed = parseInt(GetSettings('HideSeed') || 0);
     var ShowIcons = parseInt(GetSettings('ShowIcons') || 1);
     var HideZeroSeed = parseInt(GetSettings('HideZeroSeed') || 0);
@@ -2058,6 +2058,12 @@ var view = function() {
             }
             if (GetSettings('table_sort_by') !== undefined) {
                 var_cache.table_sort_by = parseInt(GetSettings('table_sort_by'));
+            }
+            if (HideSeed === 1) {
+                dom_cache.seed_filter.hide();
+            }
+            if (HideLeech === 1) {
+                dom_cache.peer_filter.hide();
             }
             writeTableHead();
             writeCategory();
