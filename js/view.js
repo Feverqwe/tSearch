@@ -768,15 +768,13 @@ var view = function() {
             rate.music = 0;
             var quality = checkRate(rate, item);
 
-            if (var_cache.syntaxCache.year === undefined ||
-                var_cache.syntaxCache.year === var_cache.time_cache.year ||
-                var_cache.syntaxCache.year === var_cache.time_cache.year - 1) {
+            if (var_cache.syntaxCache.year === undefined) {
                 if (item.time > var_cache.time_cache.week_ago) {
-                    quality.value += 100;
+                    quality.value += 60;
                 } else if (item.time > var_cache.time_cache.month_ago) {
-                    quality.value += 50;
-                } else if (item.time > var_cache.time_cache.half_year_ago) {
                     quality.value += 30;
+                } else if (item.time > var_cache.time_cache.half_year_ago) {
+                    quality.value += 10;
                 } else if (item.time > var_cache.time_cache.year_ago) {
                     quality.value += 0;
                 }
