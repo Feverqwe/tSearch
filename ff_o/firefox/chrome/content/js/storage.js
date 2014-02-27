@@ -27,6 +27,7 @@ var GetStorageSettings = function(key, cb) {
     if (typeof key === 'string') {
         storage[key] = localStorage[key];
         cb(storage);
+        return;
     }
     key.forEach(function(item) {
         storage[item] = localStorage[item];

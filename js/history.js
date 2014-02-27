@@ -165,7 +165,7 @@ var view = function() {
                 }, 200);
             });
             GetStorageSettings(['history', 'click_history'], function(storage){
-                var_cache.history = JSON.parse(storage.history || '{}');
+                var_cache.history = JSON.parse(storage.history || '[]');
                 var_cache.click_history = JSON.parse(storage.click_history || '{}');
                 writeHistory();
                 writeClickHistory();

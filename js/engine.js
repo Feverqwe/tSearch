@@ -169,7 +169,8 @@ var engine = function() {
     };
     if ( window.chrome !== undefined && (
                 GetSettings('click_history') !== undefined ||
-                GetSettings('history') !== undefined
+                GetSettings('history') !== undefined ||
+                GetSettings('gg_games_new') !== undefined
             )
         ) {
         migrate2();
