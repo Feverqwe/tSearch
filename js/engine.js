@@ -75,7 +75,7 @@ var engine = function() {
             favoritesList.forEach(function(item) {
                 exp_cache_favorites.content.push({title: item.name, url: item.url, img: item.img});
             });
-            new_storage.favoritesList = JSON.stringify(favoritesList);
+            new_storage.exp_cache_favorites = JSON.stringify(exp_cache_favorites);
         }
         if (storage.search_history !== null || storage.search_history !== undefined) {
             new_storage.history = storage.search_history;
