@@ -968,15 +968,13 @@ var explore = function() {
          */
         var quality_len = quality.length;
         if (quality_len !== 0 && cache === undefined) {
-            if (type === 'favorites' || type === 'kp_favorites') {
+            if (window.chrome !== undefined || type === 'favorites' || type === 'kp_favorites') {
                 var_cache.qualityCache[request] = quality;
             }
             var_cache.qualityBoxCache[request] = quality[0].qualityBox;
             clearTimeout(var_cache.qualityCacheTimer);
             var_cache.qualityCacheTimer = setTimeout(function(){
-                if (type === 'favorites' || type === 'kp_favorites') {
-                    limitObjSize(var_cache.qualityCache, var_cache.qualityCache_limit);
-                }
+                limitObjSize(var_cache.qualityCache, var_cache.qualityCache_limit);
                 limitObjSize(var_cache.qualityBoxCache, var_cache.qualityBoxCache_limit);
                 var storage = {};
                 storage['qualityCache'] = JSON.stringify(var_cache.qualityCache);
