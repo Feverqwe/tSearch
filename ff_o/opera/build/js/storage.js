@@ -21,11 +21,12 @@ var GetStorageSettings = function(key, cb) {
     });
     cb(storage);
 };
-var SetStorageSettings = function(keys) {
+var SetStorageSettings = function(keys, cb) {
     for (var key in keys) {
         if (!keys.hasOwnProperty(key)) {
             continue;
         }
         localStorage[key] = keys[key];
+        cb();
     }
 };

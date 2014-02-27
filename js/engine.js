@@ -150,23 +150,24 @@ var engine = function() {
         storage['qualityCache'] = GetSettings('qualityCache');
         storage['click_history'] = GetSettings('click_history');
         storage['history'] = GetSettings('history');
-        SetStorageSettings(storage);
-        SetSettings(pre+'favorites', undefined);
-        SetSettings(pre+'kp_favorites', undefined);
-        SetSettings(pre+'kp_in_cinema', undefined);
-        SetSettings(pre+'kp_popular', undefined);
-        SetSettings(pre+'kp_serials', undefined);
-        SetSettings(pre+'imdb_in_cinema', undefined);
-        SetSettings(pre+'imdb_popular', undefined);
-        SetSettings(pre+'imdb_serials', undefined);
-        SetSettings(pre+'gg_games_top', undefined);
-        SetSettings(pre+'gg_games_new', undefined);
-        SetSettings('topList', undefined);
-        SetSettings('qualityBoxCache', undefined);
-        SetSettings('qualityCache', undefined);
-        SetSettings('click_history', undefined);
-        SetSettings('history', undefined);
-        window.location.reload();
+        SetStorageSettings(storage, function(){
+            SetSettings(pre+'favorites', undefined);
+            SetSettings(pre+'kp_favorites', undefined);
+            SetSettings(pre+'kp_in_cinema', undefined);
+            SetSettings(pre+'kp_popular', undefined);
+            SetSettings(pre+'kp_serials', undefined);
+            SetSettings(pre+'imdb_in_cinema', undefined);
+            SetSettings(pre+'imdb_popular', undefined);
+            SetSettings(pre+'imdb_serials', undefined);
+            SetSettings(pre+'gg_games_top', undefined);
+            SetSettings(pre+'gg_games_new', undefined);
+            SetSettings('topList', undefined);
+            SetSettings('qualityBoxCache', undefined);
+            SetSettings('qualityCache', undefined);
+            SetSettings('click_history', undefined);
+            SetSettings('history', undefined);
+            window.location.reload();
+        });
     };
     if ( window.chrome !== undefined && (
                 GetSettings('click_history') !== undefined ||
