@@ -7,25 +7,27 @@ $(function() {
     var options = {
         autoComplete: parseInt(GetSettings('AutoComplite_opt') || 1)
     };
-    var getHistory = function () {
+    var getHistory = function (cb) {
         /*
          * Отдает массив поисковых запросов из истории
          */
-        var history = JSON.parse(GetSettings('history') || "[]");
-        history.sort(function(a,b){
-            if (a.count === b.count) {
-                return 0;
-            } else if (a.count < b.count) {
-                return 1;
-            } else {
-                return -1;
+        GetStorageSettings('history', function(storage) {
+            var history = JSON.parse(storage.history || "[]");
+            history.sort(function(a,b){
+                if (a.count === b.count) {
+                    return 0;
+                } else if (a.count < b.count) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            });
+            var list = [];
+            for (var i = 0, item; item = history[i]; i++) {
+                list.push(item.title);
             }
+            cb(list)
         });
-        var list = [];
-        for (var i = 0, item; item = history[i]; i++) {
-            list.push(item.title);
-        }
-        return list;
     };
     dom_cache.search_input = $('input[type="text"]');
     dom_cache.submit = $('input[type="submit"]');
@@ -63,7 +65,7 @@ $(function() {
     dom_cache.search_input.autocomplete({
         source: function(a, response) {
             if (a.term.length === 0 || options.autoComplete === 0) {
-                response(getHistory());
+                getHistory(response);
             } else {
                 if (var_cache.suggest_xhr !== undefined) {
                     var_cache.suggest_xhr.abort();
