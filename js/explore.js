@@ -621,7 +621,9 @@ var explore = function() {
                         quality,
                         $('<a>', {'class': 'link', href: url, target: '_blank', title: _lang.exp_more}).data('title', title),
                         $('<a>',{href: search_link, title: title}).append(
-                            $('<img>', {src: img_url})
+                            $('<img>', {src: img_url}).on('error', function(){
+                                this.src = 'images/no_poster.png';
+                            })
                         )
                     ),
                     $('<div>',{'class': title_className}).append(
