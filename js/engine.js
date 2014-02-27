@@ -144,12 +144,12 @@ var engine = function() {
     var migrate2 = function() {
         var pre = 'exp_cache_';
         var storage = {};
-        storage[pre+'favorites'] = GetSettings(pre+'favorites');
         storage[pre+'kp_favorites'] = GetSettings(pre+'kp_favorites');
         storage['qualityBoxCache'] = GetSettings('qualityBoxCache');
         storage['qualityCache'] = GetSettings('qualityCache');
         storage['click_history'] = GetSettings('click_history');
         storage['history'] = GetSettings('history');
+        SetStorageSettings({'exp_cache_favorites': GetSettings('exp_cache_favorites')});
         SetStorageSettings(storage, function(){
             SetSettings(pre+'favorites', undefined);
             SetSettings(pre+'kp_favorites', undefined);
