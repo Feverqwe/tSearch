@@ -1,8 +1,8 @@
 var view = function() {
     var dom_cache = {};
     var var_cache = {
-        history: JSON.parse(GetSettings('history') || '[]'),
-        click_history: JSON.parse(GetSettings('click_history') || '{}'),
+        history: [],
+        click_history: {},
         window_scroll_timer: undefined
     };
     var onsort = function(a,b) {
@@ -77,7 +77,7 @@ var view = function() {
                 return;
             }
             var_cache.history.splice(index,1);
-            SetSettings('history', JSON.stringify(var_cache.history));
+            SetStorageSettings({history: JSON.stringify(var_cache.history)});
             //writeHistory();
             return;
         }
@@ -88,7 +88,7 @@ var view = function() {
         var list_len = list.length;
         if (list_len === 1) {
             delete var_cache.click_history[request];
-            SetSettings('click_history', JSON.stringify(var_cache.click_history));
+            SetStorageSettings({click_history: JSON.stringify(var_cache.click_history)});
             //writeClickHistory();
             return;
         }
@@ -102,7 +102,7 @@ var view = function() {
             return;
         }
         list.splice(index,1);
-        SetSettings('click_history', JSON.stringify(var_cache.click_history));
+        SetStorageSettings({click_history: JSON.stringify(var_cache.click_history)});
         //writeClickHistory();
     };
     var u2ddmmyyyy = function(shtamp) {
@@ -164,8 +164,12 @@ var view = function() {
                     scrollTop: 0
                 }, 200);
             });
-            writeHistory();
-            writeClickHistory();
+            GetStorageSettings(['history', 'click_history'], function(storage){
+                var_cache.history = JSON.parse(storage.history || '{}');
+                var_cache.click_history = JSON.parse(storage.click_history || '{}');
+                writeHistory();
+                writeClickHistory();
+            });
             dom_cache.body.on('click', 'div.remove', function(e){
                 e.preventDefault();
                 var $this = $(this);
@@ -203,7 +207,7 @@ var view = function() {
                     }
                 });
                 var_cache.click_history = new_obj;
-                SetSettings('click_history', JSON.stringify(new_obj));
+                SetStorageSettings({click_history: JSON.stringify(new_obj)});
             });
             $('div.content').removeClass('loading');
         }

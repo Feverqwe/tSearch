@@ -323,51 +323,35 @@ var options = function() {
     };
     var getBackup = function() {
         var data = $.extend({},localStorage);
-        delete data.exp_cache_kp_favorites;
-        delete data.exp_cache_kp_in_cinema;
-        delete data.exp_cache_kp_popular;
-        delete data.exp_cache_kp_serials;
-        delete data.exp_cache_imdb_in_cinema;
-        delete data.exp_cache_imdb_popular;
-        delete data.exp_cache_imdb_serials;
-        delete data.exp_cache_gg_games_top;
-        delete data.exp_cache_gg_games_new;
-        delete data.topList;
-        delete data.click_history;
-        delete data.history;
-        delete data.qualityBoxCache;
-        delete data.qualityCache;
         var json = JSON.stringify(data);
         dom_cache.textarea_backup.val(json);
         return json;
     };
     var settingsRestore = function(text) {
-        try {
-            var data = JSON.parse(text);
-        } catch (err) {
-            alert(_lang.str33 + "\n" + err);
-            return;
-        }
-        var click_history = localStorage.click_history;
-        var search_history = localStorage.history;
-        localStorage.clear();
-        if (search_history !== undefined) {
-            localStorage.history = search_history;
-        }
-        if (click_history !== undefined) {
-            localStorage.click_history = click_history;
-        }
-        for (var item in data) {
-            if (data.hasOwnProperty(item) === false) {
-                continue;
+        GetStorageSettings(['history', 'click_history'], function(storage) {
+            try {
+                var data = JSON.parse(text);
+            } catch (err) {
+                alert(_lang.str33 + "\n" + err);
+                return;
             }
-            var value = data[item];
-            if (value === undefined) {
-                continue;
+            if (isChromeum) {
+                chrome.storage.local.clear();
+                chrome.storage.local.set(storage);
             }
-            localStorage[item] = value;
-        }
-        window.location.reload();
+            localStorage.clear();
+            for (var item in data) {
+                if (data.hasOwnProperty(item) === false) {
+                    continue;
+                }
+                var value = data[item];
+                if (value === undefined) {
+                    continue;
+                }
+                localStorage[item] = value;
+            }
+            window.location.reload();
+        });
     };
     var checkTrList = function(list) {
         dom_cache.tracker_list.children('tr.checked').removeClass('checked').find('input').removeAttr('checked');

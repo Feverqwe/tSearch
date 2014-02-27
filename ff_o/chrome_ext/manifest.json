@@ -13,7 +13,7 @@
         "16": "images/icon_16.png"
     },
     "options_page": "options.html",
-    "permissions": ["storage", "contextMenus", "http://*/*", "https://*/*" ],
+    "permissions": ["storage", "contextMenus", "http://*/*", "https://*/*", "unlimitedStorage" ],
     "omnibox": {
         "keyword" : "tms"
     },

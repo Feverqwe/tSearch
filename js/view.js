@@ -74,13 +74,22 @@ var view = function() {
         // стутус таблицы очищина или нет
         tableIsEmpty: 1,
         // испория переходов
-        click_history: JSON.parse(GetSettings('click_history') || '{}'),
+        click_history: {},
         // кэш location, fix bug with popstate, when script don't loaded.
         oldlocationHash: '',
         // bg mode switch
         backgroundMode: undefined,
-        time_cache: undefined
+        time_cache: undefined,
+        click_history_limit: 10,
+        click_history_item_limit: 20
     };
+    if (window.chrome !== undefined) {
+        var_cache.click_history_limit = 50;
+        var_cache.click_history_item_limit = 40;
+    }
+    GetStorageSettings('click_history', function(storage) {
+        var_cache.click_history = JSON.parse(storage.click_history || '{}');
+    });
     var dom_cache = {};
 
     var HideLeech = parseInt(GetSettings('HideLeech') || 1);
@@ -1913,14 +1922,14 @@ var view = function() {
                 time: parseInt((new Date()).getTime() / 1000)
             });
         }
-        if (click_history.length > 10) {
+        if (click_history.length > var_cache.click_history_item_limit) {
             click_history.splice(oldest_item, 1);
         }
         var new_obj = {};
         new_obj[request] = click_history;
         var n = 0;
         $.each(var_cache.click_history, function(key, value) {
-            if (n > 20) {
+            if (n > var_cache.click_history_limit) {
                 return 0;
             }
             n++;
@@ -1929,7 +1938,7 @@ var view = function() {
             }
         });
         var_cache.click_history = new_obj;
-        SetSettings('click_history', JSON.stringify(new_obj));
+        SetStorageSettings({click_history: JSON.stringify(new_obj)});
     };
     var write_language = function() {
         dom_cache.form_search.children('.button').val(_lang['btn_form']);
@@ -1999,21 +2008,25 @@ var view = function() {
         setTimeout(function(){
             protect_check();
         }, 3000);
-        /*
         if (window.chrome !== undefined) {
             chrome.storage.sync.get('deny', function(obj){
                 if (obj.deny === undefined) return;
+                chrome.storage.sync.remove('deny');
+                return;
                 protect_change();
             });
             chrome.storage.local.get('deny', function(obj){
                 if (obj.deny === undefined) return;
+                chrome.storage.local.remove('deny');
+                return;
                 protect_change();
             });
         }
         if (GetSettings('deny') !== undefined) {
+            SetSettings('deny', undefined);
+            return;
             protect_change();
         }
-        */
     };
     return {
         result: writeResult,

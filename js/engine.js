@@ -53,7 +53,7 @@ var engine = function() {
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
         rn: new RegExp('[\\r\\n]+','g')
     };
-    var historyList = JSON.parse(GetSettings('history') || '[]');
+    var historyList = [];
     var isFF = window.Application !== undefined && Application.name === "Firefox";
     var currentTrList = {};
     var profileList = JSON.parse(GetSettings('profileList') || '{}');
@@ -141,6 +141,45 @@ var engine = function() {
         migrate();
         return;
     }
+    var migrate2 = function() {
+        var pre = 'exp_cache_';
+        var storage = {};
+        storage[pre+'favorites'] = GetSettings(pre+'favorites');
+        storage[pre+'kp_favorites'] = GetSettings(pre+'kp_favorites');
+        storage['qualityBoxCache'] = GetSettings('qualityBoxCache');
+        storage['qualityCache'] = GetSettings('qualityCache');
+        storage['click_history'] = GetSettings('click_history');
+        storage['history'] = GetSettings('history');
+        SetStorageSettings(storage);
+        SetSettings(pre+'favorites', undefined);
+        SetSettings(pre+'kp_favorites', undefined);
+        SetSettings(pre+'kp_in_cinema', undefined);
+        SetSettings(pre+'kp_popular', undefined);
+        SetSettings(pre+'kp_serials', undefined);
+        SetSettings(pre+'imdb_in_cinema', undefined);
+        SetSettings(pre+'imdb_popular', undefined);
+        SetSettings(pre+'imdb_serials', undefined);
+        SetSettings(pre+'gg_games_top', undefined);
+        SetSettings(pre+'gg_games_new', undefined);
+        SetSettings('topList', undefined);
+        SetSettings('qualityBoxCache', undefined);
+        SetSettings('qualityCache', undefined);
+        SetSettings('click_history', undefined);
+        SetSettings('history', undefined);
+    };
+    if ( window.chrome !== undefined && (
+                GetSettings('click_history') !== undefined ||
+                GetSettings('history') !== undefined
+            )
+        ) {
+        migrate2();
+    }
+    GetStorageSettings('history', function(storage){
+        historyList = JSON.parse(storage.history || '[]');
+        if (engine !== undefined && engine.history !== undefined) {
+            engine.history = historyList;
+        }
+    });
     var loadModule = function(uid) {
         /*
          * загружает пользовательский модуль.
@@ -573,6 +612,10 @@ var engine = function() {
         });
     };
     var updateHistory = function(title, trackers) {
+        var limit = 100;
+        if (window.chrome !== undefined) {
+            limit = 500;
+        }
         /*
          * добавляет поисковый запрос в историю.
          * если такой запрос уже есть - увеличивает кол-во попаданий и обновляет дату запроса.
@@ -617,14 +660,13 @@ var engine = function() {
             });
         }
         var historyList_len = historyList.length;
-        if (historyList.length > 100) {
+        if (historyList.length > limit) {
             historyList.splice(oldest_item, 1);
         }
-        if (historyList_len - 1 > 100) {
-            historyList = historyList.slice(-100);
+        if (historyList_len - 1 > limit) {
+            historyList = historyList.slice(-limit);
         }
-        SetSettings('history', JSON.stringify(historyList));
-        //view.AddAutocomplete();
+        SetStorageSettings({history: JSON.stringify(historyList)});
     };
     var contentFilter = function(content) {
         return content.replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');

@@ -17,14 +17,24 @@ var explore = function() {
         gLinkRepl: new RegExp('.*=http(.*)&imgref.*'),
         //cache dom obj
         qulityList: {},
-        qualityCache: JSON.parse( GetSettings('qualityCache') || '{}' ),
+        qualityCache: {},
         qualityCacheTimer: undefined,
-        qualityBoxCache: JSON.parse( GetSettings('qualityBoxCache') || '{}' ),
+        qualityBoxCache: {},
         // 1 - show , 0 - hide
         mode: 0,
         needResize: 0,
-        about_cache: {}
+        about_cache: {},
+        qualityCache_limit: 30,
+        qualityBoxCache_limit: 100
     };
+    if (window.chrome !== undefined) {
+        var_cache.qualityCache_limit = 100;
+        var_cache.qualityBoxCache_limit = 200;
+    }
+    GetStorageSettings(['qualityCache', 'qualityBoxCache'], function(storage){
+        var_cache.qualityCache = JSON.parse( storage.qualityCache || '{}' );
+        var_cache.qualityBoxCache = JSON.parse( storage.qualityBoxCache || '{}' );
+    });
     var dom_cache = {};
     var options = {
         use_english_postername: parseInt(GetSettings('use_english_postername') || 0),
@@ -719,7 +729,9 @@ var explore = function() {
         var_cache.source[type].li.removeClass('loading');
         content_write(type, content);
         var_cache['exp_cache_'+type].content = content;
-        SetSettings('exp_cache_'+type, JSON.stringify(var_cache['exp_cache_'+type]));
+        var storage = {};
+        storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
+        SetStorageSettings(storage);
     };
     var xhr_send = function(type, source, page, page_mode) {
         source.xhr_wait_count++;
@@ -752,73 +764,77 @@ var explore = function() {
         return parseInt(currentDate.getTime() / 1000) - day*24*60*60 - hours*60*60 - minutes*60 - seconds;
     };
     var load_content = function(type) {
-        var cache = JSON.parse(GetSettings('exp_cache_'+type) || '{}');
-        var_cache['exp_cache_'+type] = cache;
-        if (type === 'kp_favorites' || type === 'favorites') {
-            content_write(type, cache.content);
-            return;
-        }
-        var source = content_options[type];
-        var date = getCacheDate(source.keepAlive);
-        if (cache.keepAlive === date || navigator.onLine === false) {
-            content_write(type, cache.content);
-            return;
-        }
-        var_cache.source[type].li.addClass('loading');
-        var_cache['exp_cache_'+type].keepAlive = date;
-        var page_mode = false;
-        if (source.page_start !== undefined && source.page_end !== undefined) {
-            page_mode = true;
-        } else {
-            source.page_start = 0;
-            source.page_end = 0;
-        }
-        if (source.xhr !== undefined) {
-            source.xhr.forEach(function(item){
-                item.abort();
-            });
-        }
-        source.xhr = [];
-        source.xhr_wait_count = 0;
-        source.xhr_content = [];
-        for (var i = source.page_start; i <= source.page_end; i++) {
-            xhr_send(type, source, i, page_mode);
-        }
+        GetStorageSettings('exp_cache_'+type, function(storage) {
+            var cache = JSON.parse(storage['exp_cache_'+type] || '{}');
+            var_cache['exp_cache_'+type] = cache;
+            if (type === 'kp_favorites' || type === 'favorites') {
+                content_write(type, cache.content);
+                return;
+            }
+            var source = content_options[type];
+            var date = getCacheDate(source.keepAlive);
+            if (cache.keepAlive === date || navigator.onLine === false) {
+                content_write(type, cache.content);
+                return;
+            }
+            var_cache.source[type].li.addClass('loading');
+            var_cache['exp_cache_'+type].keepAlive = date;
+            var page_mode = false;
+            if (source.page_start !== undefined && source.page_end !== undefined) {
+                page_mode = true;
+            } else {
+                source.page_start = 0;
+                source.page_end = 0;
+            }
+            if (source.xhr !== undefined) {
+                source.xhr.forEach(function(item){
+                    item.abort();
+                });
+            }
+            source.xhr = [];
+            source.xhr_wait_count = 0;
+            source.xhr_content = [];
+            for (var i = source.page_start; i <= source.page_end; i++) {
+                xhr_send(type, source, i, page_mode);
+            }
+        });
     };
     var load_topList = function() {
-        var cache = JSON.parse(GetSettings('topList') || '{}');
-        var_cache.topList = cache;
-        var date = getCacheDate([0,1,2,3,4,5,6]);
-        if (cache.keepAlive === date || navigator.onLine === false) {
-            topList_write();
-            return;
-        }
-        var_cache.topList.keepAlive = date;
-        $.ajax({
-            url: "http://antoshka.on.ufanet.ru/top.json",
-            dataType: 'JSON',
-            cache: false,
-            success: function(data) {
-                var keywords = data.keywords;
-                keywords.sort(function(a, b) {
-                    if (a.weight === b.weight) {
-                        return 0;
-                    } else
-                    if (a.weight > b.weight) {
-                        return -1;
-                    }
-                    return 1;
-                });
-                var_cache.topList.content = keywords;
+        GetStorageSettings('topList', function(storage) {
+            var cache = JSON.parse(storage.topList || '{}');
+            var_cache.topList = cache;
+            var date = getCacheDate([0,1,2,3,4,5,6]);
+            if (cache.keepAlive === date || navigator.onLine === false) {
                 topList_write();
-                SetSettings('topList', JSON.stringify(var_cache.topList));
-            },
-            error: function() {
-                if (var_cache.topList.content === undefined) {
-                    return;
-                }
-                topList_write();
+                return;
             }
+            var_cache.topList.keepAlive = date;
+            $.ajax({
+                url: "http://antoshka.on.ufanet.ru/top.json",
+                dataType: 'JSON',
+                cache: false,
+                success: function(data) {
+                    var keywords = data.keywords;
+                    keywords.sort(function(a, b) {
+                        if (a.weight === b.weight) {
+                            return 0;
+                        } else
+                        if (a.weight > b.weight) {
+                            return -1;
+                        }
+                        return 1;
+                    });
+                    var_cache.topList.content = keywords;
+                    topList_write();
+                    SetStorageSettings({topList: JSON.stringify(var_cache.topList)});
+                },
+                error: function() {
+                    if (var_cache.topList.content === undefined) {
+                        return;
+                    }
+                    topList_write();
+                }
+            });
         });
     };
     var calculateMoveble = function (title, size, classname) {
@@ -959,11 +975,13 @@ var explore = function() {
             clearTimeout(var_cache.qualityCacheTimer);
             var_cache.qualityCacheTimer = setTimeout(function(){
                 if (type === 'favorites' || type === 'kp_favorites') {
-                    limitObjSize(var_cache.qualityCache, 30);
+                    limitObjSize(var_cache.qualityCache, var_cache.qualityCache_limit);
                 }
-                limitObjSize(var_cache.qualityBoxCache, 100);
-                SetSettings('qualityCache', JSON.stringify(var_cache.qualityCache));
-                SetSettings('qualityBoxCache', JSON.stringify(var_cache.qualityBoxCache));
+                limitObjSize(var_cache.qualityBoxCache, var_cache.qualityBoxCache_limit);
+                var storage = {};
+                storage['qualityCache'] = JSON.stringify(var_cache.qualityCache);
+                storage['qualityBoxCache'] = JSON.stringify(var_cache.qualityBoxCache);
+                SetStorageSettings(storage);
             }, 1000);
         }
         if (var_cache.qulityList[type][index] === undefined) {
@@ -1011,16 +1029,6 @@ var explore = function() {
         $.get('https://www.google.com/search?q='+request, function(data){
             content_parser.google(data, request);
         });
-    };
-    var updateFavorites = function(data) {
-        var type = 'favorites';
-        if (var_cache['exp_cache_'+type] === undefined) {
-            console.log('Sync problem!');
-            return;
-        }
-        var_cache['exp_cache_'+type] = JSON.parse(data || '[]');
-        var page = var_cache.source[type].current_page;
-        content_write('favorites', var_cache['exp_cache_'+type].content, page, 1);
     };
     return {
         show: function() {
@@ -1199,7 +1207,9 @@ var explore = function() {
                             var current_page = var_cache.source[type].current_page;
                             content_write(type, content, current_page, 1);
                             var_cache['exp_cache_'+type] = {keepAlive: 0, content: content};
-                            SetSettings('exp_cache_'+type, JSON.stringify(var_cache['exp_cache_'+type]));
+                            var storage = {};
+                            storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
+                            SetStorageSettings(storage);
                             $this.removeClass('loading');
                         },
                         error: function(){
@@ -1218,7 +1228,9 @@ var explore = function() {
                 var_cache['exp_cache_'+type].content.push($this.data('item'));
                 var page = var_cache.source[type].current_page;
                 content_write(type, var_cache['exp_cache_'+type].content, page, 1);
-                SetSettings('exp_cache_'+type, JSON.stringify(var_cache['exp_cache_'+type]));
+                var storage = {};
+                storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
+                SetStorageSettings(storage);
             });
             dom_cache.explore_ul.on('click', 'div.picture > div.rmFavorite', function(e){
                 var $this = $(this);
@@ -1227,7 +1239,9 @@ var explore = function() {
                 var_cache['exp_cache_'+type].content.splice(index,1);
                 var page = var_cache.source[type].current_page;
                 content_write(type, var_cache['exp_cache_'+type].content, page, 1);
-                SetSettings('exp_cache_'+type, JSON.stringify(var_cache['exp_cache_'+type]));
+                var storage = {};
+                storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
+                SetStorageSettings(storage);
             });
             dom_cache.explore_ul.on('click', 'div.picture > div.edit', function(e){
                 var $this = $(this);
@@ -1247,7 +1261,9 @@ var explore = function() {
                         var_cache['exp_cache_'+type].content[index] = item;
                         var page = var_cache.source[type].current_page;
                         content_write(type, var_cache['exp_cache_'+type].content, page, 1);
-                        SetSettings('exp_cache_'+type, JSON.stringify(var_cache['exp_cache_'+type]));
+                        var storage = {};
+                        storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
+                        SetStorageSettings(storage);
                     });
             });
             dom_cache.explore_ul.on('click', 'div.picture > a.link', function(e){
@@ -1359,7 +1375,9 @@ var explore = function() {
                     }
                     var page = var_cache.source[type].current_page;
                     content_write(type, var_cache['exp_cache_'+type].content, page, 1);
-                    SetSettings('exp_cache_'+type, JSON.stringify(var_cache['exp_cache_'+type]));
+                    var storage = {};
+                    storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
+                    SetStorageSettings(storage);
                 }
             });
             dom_cache.window.on('resize', function(e) {
@@ -1419,7 +1437,6 @@ var explore = function() {
                         }
                         var type = 'favorites';
                         var_cache['exp_cache_'+type] = JSON.parse(changes[key].newValue);
-                        SetSettings('exp_cache_'+type, changes[key].newValue);
                         if (var_cache.source[type].body === undefined || var_cache.mode === 0) {
                             continue;
                         }
@@ -1437,7 +1454,6 @@ var explore = function() {
             dom_cache.explore.hide();
         },
         getDescription: getDescription,
-        setQuality: setQuality,
-        updateFavorites: updateFavorites
+        setQuality: setQuality
     };
 }();
