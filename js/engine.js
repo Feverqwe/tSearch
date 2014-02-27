@@ -166,6 +166,7 @@ var engine = function() {
         SetSettings('qualityCache', undefined);
         SetSettings('click_history', undefined);
         SetSettings('history', undefined);
+        window.location.reload();
     };
     if ( window.chrome !== undefined && (
                 GetSettings('click_history') !== undefined ||
