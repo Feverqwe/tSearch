@@ -605,7 +605,19 @@ var engine = function() {
             });
         }
         if (nohistory === undefined) {
-            updateHistory(text, trackers);
+            if (historyList.length === 0) {
+                if (GetStorageSettings('history', function(storage){
+                    if (historyList.length === 0) {
+                        historyList = JSON.parse(storage.history || '[]');
+                        if (engine !== undefined && engine.history !== undefined) {
+                            engine.history = historyList;
+                        }
+                    }
+                    updateHistory(text, trackers);
+                }));
+            } else {
+                updateHistory(text, trackers);
+            }
         }
     };
     var stop = function() {
