@@ -34,7 +34,9 @@ var GetStorageSettings = function(key, cb) {
     key.forEach(function(item) {
         storage[item] = localStorage[item];
     });
-    cb(storage);
+    if (cb !== undefined) {
+        cb(storage);
+    }
 };
 var SetStorageSettings = function(keys, cb) {
     for (var key in keys) {
