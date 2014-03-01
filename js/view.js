@@ -85,7 +85,7 @@ var view = function() {
     };
     if (window.chrome !== undefined) {
         var_cache.click_history_limit = 50;
-        var_cache.click_history_item_limit = 40;
+        var_cache.click_history_item_limit = 20;
     }
     GetStorageSettings('click_history', function(storage) {
         var_cache.click_history = JSON.parse(storage.click_history || '{}');
