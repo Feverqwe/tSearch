@@ -13,13 +13,17 @@ var GetStorageSettings = function(key, cb) {
     var storage = {};
     if (typeof key === 'string') {
         storage[key] = localStorage[key];
-        cb(storage);
+        if (cb !== undefined) {
+            cb(storage);
+        }
         return;
     }
     key.forEach(function(item) {
         storage[item] = localStorage[item];
     });
-    cb(storage);
+    if (cb !== undefined) {
+        cb(storage);
+    }
 };
 var SetStorageSettings = function(keys, cb) {
     for (var key in keys) {
@@ -27,6 +31,8 @@ var SetStorageSettings = function(keys, cb) {
             continue;
         }
         localStorage[key] = keys[key];
-        cb();
+        if (cb !== undefined) {
+            cb();
+        }
     }
 };

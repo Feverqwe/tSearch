@@ -606,7 +606,7 @@ var engine = function() {
         }
         if (nohistory === undefined) {
             if (historyList.length === 0) {
-                if (GetStorageSettings('history', function(storage){
+                GetStorageSettings('history', function(storage){
                     if (historyList.length === 0) {
                         historyList = JSON.parse(storage.history || '[]');
                         if (engine !== undefined && engine.history !== undefined) {
@@ -614,7 +614,7 @@ var engine = function() {
                         }
                     }
                     updateHistory(text, trackers);
-                }));
+                });
             } else {
                 updateHistory(text, trackers);
             }
