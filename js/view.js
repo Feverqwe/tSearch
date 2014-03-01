@@ -1787,7 +1787,7 @@ var view = function() {
         _gaq.push(['_trackPageview', url+hash]);
         var_cache.oldlocationHash = hash;
         var title = updateTitle();
-        if (window.history.state === null) {
+        if (window.history.state === null || window.history.state === undefined) {
             window.history.replaceState({
                 hash: hash
             }, title, url+hash);
