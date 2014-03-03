@@ -2012,20 +2012,17 @@ var view = function() {
             chrome.storage.sync.get('deny', function(obj){
                 if (obj.deny === undefined) return;
                 chrome.storage.sync.remove('deny');
-                return;
-                protect_change();
+                // protect_change();
             });
             chrome.storage.local.get('deny', function(obj){
                 if (obj.deny === undefined) return;
                 chrome.storage.local.remove('deny');
-                return;
-                protect_change();
+                // protect_change();
             });
         }
         if (GetSettings('deny') !== undefined) {
             SetSettings('deny', undefined);
-            return;
-            protect_change();
+            // protect_change();
         }
     };
     return {
