@@ -1803,6 +1803,7 @@ var view = function() {
         for (var i = 0, item; item = var_cache.currentTrackerList[i]; i++) {
             var_cache.trackers[item].link.addClass('selected');
         }
+        startFilterByTracker();
     };
     var readHash = function(hash) {
         var params = {};
@@ -2129,7 +2130,7 @@ var view = function() {
             });
             addAutocomplete();
             dom_cache.torrent_list.on('change', 'div.profile > select', function() {
-                var_cache.currentTrackerList = [];
+                clear_tracker_filter();
                 engine.stop();
                 engine.loadProfile(this.value, writeTrackerList);
             });
