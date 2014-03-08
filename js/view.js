@@ -117,7 +117,8 @@ var view = function() {
         trListHeight: GetSettings('torrent_list_h'),
         parenthetical_select_enable: parseInt(GetSettings('sub_select_enable') || 1),
         autoComplete: parseInt(GetSettings('AutoComplite_opt') || 1),
-        allow_get_description: parseInt(GetSettings('allow_get_description') || 1)
+        allow_get_description: parseInt(GetSettings('allow_get_description') || 1),
+        no_blank_dl_link: parseInt(GetSettings('no_blank_dl_link') || 0)
     };
     var writeTrackerList = function(trList) {
         dom_cache.torrent_list.find('option[value="'+GetSettings('currentProfile')+'"]').prop('selected', true);
@@ -879,7 +880,7 @@ var view = function() {
             }
             var td_download;
             if (item.dl !== undefined) {
-                var isBlank = true;//(item.dl.substr(0, 7).toLowerCase() !== 'magnet:');
+                var isBlank = (options.no_blank_dl_link===1)?false:true;//(item.dl.substr(0, 7).toLowerCase() !== 'magnet:');
                 td_download = $('<td>', {'class': 'size'}).append(
                     $('<div>').append( $('<a>', {href: item.dl, target: (isBlank === true)?'_blank':'', text: bytesToSize(item.size) + ' ↓'}) )
                 );
