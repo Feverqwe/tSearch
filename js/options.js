@@ -366,7 +366,7 @@ var options = function() {
         });
         dom_cache.tracker_list.prepend(content);
     };
-    var savePartedBackup = function(chank, content, cb) {
+    var savePartedBackup = function(chank, content, cb, noLZ) {
         var content_len = content.length;
         var chank_len = 4095 - (chank + "000").length;
         var number_of_part = Math.floor(content_len / chank_len);
@@ -375,7 +375,11 @@ var options = function() {
             return;
         }
         var req_exp = new RegExp('.{1,' + chank_len + '}', 'g');
-        content = 'LZ' + LZString.compressToBase64(content);
+        if (noLZ !== undefined) {
+            content = window.btoa(content);
+        } else {
+            content = 'LZ' + LZString.compressToBase64(content);
+        }
         var arr = content.match(req_exp);
         var arr_l = arr.length;
         var obj = {};
@@ -438,6 +442,8 @@ var options = function() {
             }
             if (content.substr(0, 2) === 'LZ') {
                 content = LZString.decompressFromBase64(content.substr(2));
+            } else {
+                content = window.atob(content);
             }
             cb(content);
         });

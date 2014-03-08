@@ -184,12 +184,23 @@ var engine = function() {
             engine.history = historyList;
         }
     });
+    /*
+    var addModuleFromSync = function(uid) {
+        if (window.chrome === undefined) {
+            return;
+        }
+        // Need exptract parted backup, need LZ lib and etc
+    }
+    */
     var loadModule = function(uid) {
         /*
          * загружает пользовательский модуль.
          */
         var ct = GetSettings(uid);
         if (ct === undefined || ct === 'undefined') {
+            /*
+             addModuleFromSync(uid);
+            */
             return;
         }
         ct = JSON.parse(ct);
