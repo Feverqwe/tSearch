@@ -484,9 +484,12 @@ var options = function() {
             dom_cache.main_item_body = $('ul.main_item_body');
             dom_cache.magic_btn = $('input[name="create_code"]');
 
-            if (listOptions.hasOwnProperty('favorites') === false) {
-                listOptions = $.extend(true, {}, engine.def_listOptions);
-            }
+            $.each(engine.def_listOptions, function(key, value){
+                if (listOptions.hasOwnProperty(key) === false) {
+                    listOptions[key] = value;
+                }
+            });
+            
             write_language();
             dom_cache.ul_menu.on('click', 'a', function(e) {
                 e.preventDefault();
