@@ -178,14 +178,27 @@ var view = function() {
             return;
         }
         if (state === 0) {
-            gui.li.append( $('<ul>').append( $('<li>').append(
+            var $auth_ul = $('<ul>').append( $('<li>').append(
                 $('<div>',{'class': 'tracker_icon login'}),
                 $('<a>', {href: gui.tracker.login_url, target: '_blank', text: _lang.btn_login})
-            ) ) );
+            ) );
+            gui.li.append( $auth_ul );
+            if (options.resizableTrList === 1) {
+                scrool_to($auth_ul);
+            }
         } else {
             var_cache.trackers[id].li.children('ul').remove();
         }
         gui.auth = state;
+    };
+    var scrool_to = function(el) {
+        /*
+         * Скролит до конкретного элемента.
+         */
+        if (el.offset() === undefined) {
+            return;
+        }
+        dom_cache.trackers_ul.scrollTop(el.offset().top + dom_cache.trackers_ul.scrollTop() - (dom_cache.trackers_ul.height() / 2));
     };
     var setTrackerLoadingState = function(state, id) {
         var gui = var_cache.trackers[id];
