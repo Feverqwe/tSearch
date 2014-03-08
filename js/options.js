@@ -429,10 +429,9 @@ var options = function() {
             }
             if (data[chank + content_len] !== "END") {
                 isBroken = 1;
+                content_len = undefined;
             }
-            if (isBroken === 1) {
-                clear_broken(chank, data, undefined);
-            }
+            clear_broken(chank, data, content_len);
             if (isBroken) {
                 cb(undefined);
                 return;
@@ -530,6 +529,7 @@ var options = function() {
                 // Chromeum with storage
                 dom_cache.clear_cloud.on('click', function() {
                     chrome.storage.sync.clear();
+                    dom_cache.get_from_cloud.prop('disabled', true);
                 });
                 dom_cache.save_in_cloud.on('click', function() {
                     var _this = this;
