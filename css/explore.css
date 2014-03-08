@@ -2,6 +2,10 @@ div.explore {
     -webkit-user-select: none;
 }
 
+div.explore.loading {
+    visibility: hidden;
+}
+
 div.explore ul {
     list-style: none;
     padding-left: 0;
@@ -72,6 +76,7 @@ div.explore div.head div.action > div.setup {
     opacity: 0.5;
     margin-left: 5px;
     margin-bottom: -2px;
+    transition: opacity .2s;
 }
 div.explore div.head div.action > div.setup:hover {
     opacity: 1;

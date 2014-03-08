@@ -81,7 +81,7 @@ div.content {
     position: relative;
 }
 div.content.loading {
-    display: none;
+    visibility: hidden;
 }
 
 div.content div.left {
@@ -184,7 +184,7 @@ div.result_panel > table div.tracker_icon {
     margin-left: 5px;
     height: 16px;
     width: 16px;
-    -webkit-transition: opacity .2s;
+    transition: opacity .2s;
 }
 
 div.result_panel > table div.tracker_icon:hover {
@@ -300,6 +300,7 @@ div.tracker_list a.setup {
     display: inline-block;
     margin-left: 2px;
     margin-bottom: -3px;
+    transition: opacity .2s;
 }
 div.tracker_list a.setup:hover {
     opacity: 1;
