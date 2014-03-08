@@ -368,7 +368,7 @@ var options = function() {
     };
     var savePartedBackup = function(chank, content, cb) {
         var content_len = content.length;
-        var chank_len = 1024 - (chank + "000").length;
+        var chank_len = 4095 - (chank + "000").length;
         var number_of_part = Math.floor(content_len / chank_len);
         if (number_of_part >= 512) {
             console.log('Can\'t save item', chank,', very big size!');
