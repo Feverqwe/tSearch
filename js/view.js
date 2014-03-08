@@ -880,7 +880,7 @@ var view = function() {
             }
             var td_download;
             if (item.dl !== undefined) {
-                var isBlank = (options.no_blank_dl_link===1)?false:true;//(item.dl.substr(0, 7).toLowerCase() !== 'magnet:');
+                var isBlank = options.no_blank_dl_link===1;//(item.dl.substr(0, 7).toLowerCase() !== 'magnet:');
                 td_download = $('<td>', {'class': 'size'}).append(
                     $('<div>').append( $('<a>', {href: item.dl, target: (isBlank === true)?'_blank':'', text: bytesToSize(item.size) + ' ↓'}) )
                 );
