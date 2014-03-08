@@ -1014,7 +1014,7 @@ var explore = function() {
         var ul = popup.children('div.content').children('ul');
         var content = [];
         for (var i = 0, item; item = quality[i]; i++) {
-            var a = $('<a>',{href: item.url, target: '_blank'}).html(item.hlTitle);
+            var a = $('<a>',{href: item.url, target: '_blank'}).data('title', item.hlTitle).data('href', item.url).data('request', request).html(item.hlTitle);
             a.attr('title', a.text());
             content.push( $('<li>').append(a) );
         }
@@ -1108,7 +1108,7 @@ var explore = function() {
 
             setTimeout(function(){
                 dom_cache.explore.removeClass('loading');
-            }, 50);
+            }, 30);
 
             dom_cache.explore_ul.on('mouseover', 'ul.page_body > li', function () {
                 var $this = $(this);
@@ -1303,6 +1303,12 @@ var explore = function() {
             });
             dom_cache.explore_ul.on('click', 'div.quality > div.info_popup', function(e) {
                 e.stopPropagation();
+            });
+            dom_cache.explore_ul.on('click', 'div.quality > div.info_popup a', function() {
+                var title = $(this).data('title');
+                var request = $(this).data('request');
+                var href = $(this).data('href');
+                view.addInClickHistory(request, title, href);
             });
             dom_cache.explore_ul.on('change', 'div.setup_body > select.item_count', function(e){
                 e.preventDefault();

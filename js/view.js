@@ -1908,6 +1908,7 @@ var view = function() {
             if (found === false && item.href === href) {
                 item.count += 1;
                 item.time = parseInt((new Date()).getTime() / 1000);
+                item.title = title;
                 found = true;
             }
             if (oldest_time === undefined || oldest_time > item.time) {
@@ -2032,6 +2033,7 @@ var view = function() {
         loadingStatus: setTrackerLoadingState,
         getQuality: getQuality,
         setDescription: setDescription,
+        addInClickHistory: addInClickHistory,
         begin: function() {
             dom_cache.body = $('body');
             dom_cache.title = $('head').children('title');
