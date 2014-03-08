@@ -390,6 +390,7 @@ div.explore div.top_search ul li {
     text-overflow: ellipsis;
     padding-top: 2px;
     padding-bottom: 3px;
+    overflow: hidden;
 }
 
 div.explore div.top_search ul.c3 li {
