@@ -2,8 +2,8 @@ var ad = {
     $this : undefined,
     list : [
         ["images/4usv.jpg", "http://c.cpa6.ru/4usv"], //Танки On-line
-        ['images/57EA.jpg','http://c.cpl1.ru/57EA'], //War Thunder
-        ['images/57EC.jpg','http://c.cpl1.ru/57EC'] //Forsaken World
+        ['images/57EC.jpg','http://c.cpl1.ru/57EC'], //Forsaken World
+        ['images/yad.jpg', 'http://goo.gl/xbmFPg'] // Yandex.Disk
     ],
     getRandomArbitary : function(min, max, e) {
         var i = 0;
