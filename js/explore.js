@@ -1354,6 +1354,11 @@ var explore = function() {
                         var type = $li.eq(i).data('type');
                         lo[type] = listOptions[type];
                     }
+                    $.each(engine.def_listOptions, function(key, value){
+                        if (lo.hasOwnProperty(key) === false) {
+                            lo[key] = listOptions[key];
+                        }
+                    });
                     listOptions = lo;
                     SetSettings('listOptions', JSON.stringify(listOptions));
                 }
