@@ -236,7 +236,9 @@ var get_lang = function (lang) {
             75: "Hide Top-40 search query",
             76: "Main page",
             77: "Show sections:",
-            78: "Don't to open a new page when click download link ↓"
+            78: "Don't to open a new page when click download link ↓",
+            79: "Disable animation links",
+            80: "Disable all animations"
         },
         magic: {
             1: 'Loading error!',
@@ -542,7 +544,9 @@ var get_lang = function (lang) {
             75: "Скрыть Топ-40 поисковых запросов",
             76: "Главная страница",
             77: "Показывать секции:",
-            78: "Не открывать новую страницу при нажатии на ссылку загрузки ↓"
+            78: "Не открывать новую страницу при нажатии на ссылку загрузки ↓",
+            79: "Отключить анимацию ссылок",
+            80: "Отключить всю анимацию"
         },
         magic: {
             1: 'Ошибка загрузки!',

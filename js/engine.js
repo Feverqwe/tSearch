@@ -20,7 +20,9 @@ var engine = function() {
         kinopoisk_f_id: {v: 1, t: "number"},
         filter_panel_to_left: {v: 1, t: "checkbox"},
         hideTopSearch: {v: 0, t: "checkbox"},
-        no_blank_dl_link: {v: 0, t: "checkbox"}
+        no_blank_dl_link: {v: 0, t: "checkbox"},
+        noTransitionLinks: {v: 1, t: "checkbox"},
+        noTransition: {v: 0, t: "checkbox"},
     };
     var def_listOptions = {
         favorites: { e: 1, s: 1, w: 100, c: 1 },

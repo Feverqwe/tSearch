@@ -118,7 +118,9 @@ var view = function() {
         parenthetical_select_enable: parseInt(GetSettings('sub_select_enable') || 1),
         autoComplete: parseInt(GetSettings('AutoComplite_opt') || 1),
         allow_get_description: parseInt(GetSettings('allow_get_description') || 1),
-        no_blank_dl_link: parseInt(GetSettings('no_blank_dl_link') || 0)
+        no_blank_dl_link: parseInt(GetSettings('no_blank_dl_link') || 0),
+        noTransitionLinks: parseInt(GetSettings('noTransitionLinks') || 1),
+        noTransition: parseInt(GetSettings('noTransition') || 0)
     };
     var writeTrackerList = function(trList) {
         dom_cache.torrent_list.find('option[value="'+GetSettings('currentProfile')+'"]').prop('selected', true);
@@ -2100,6 +2102,19 @@ var view = function() {
                 $("div.content div.right").css({"float": "left", "padding-left": "5px", "padding-right": '0'});
                 $("div.content div.left").css({"margin-left": "180px", "margin-right": "0"});
                 dom_cache.topbtn.css({"right": "auto"});
+            }
+            var style;
+            if (options.noTransitionLinks === 1) {
+                style = 'div.result_panel > table td div.title a,' +
+                    'div.result_panel > table div.tracker_icon' +
+                    '{transition: none;}';
+                dom_cache.body.append($('<style>', {text: style}));
+            }
+            if (options.noTransition === 1) {
+                style = 'div.result_panel > table div.tracker_icon,' +
+                    'div.tracker_list a.setup' +
+                    '{transition: none;}';
+                dom_cache.body.append($('<style>', {text: style}));
             }
             dom_cache.tbody.on('click', 'div.title > span > a', function() {
                 var title = this.innerHTML;

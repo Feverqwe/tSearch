@@ -41,7 +41,9 @@ var explore = function() {
         top_cache: JSON.parse(GetSettings('topCache') || "{}"),
         kp_folder_id: parseInt(GetSettings('kinopoisk_f_id') || 1),
         hideTopSearch: parseInt(GetSettings('hideTopSearch') || engine.def_settings.hideTopSearch.v),
-        allow_favorites_sync: parseInt(GetSettings('allow_favorites_sync') || 1)
+        allow_favorites_sync: parseInt(GetSettings('allow_favorites_sync') || 1),
+        noTransitionLinks: parseInt(GetSettings('noTransitionLinks') || 1),
+        noTransition: parseInt(GetSettings('noTransition') || 0)
     };
     var listOptions = JSON.parse(GetSettings('listOptions') || "{}");
     var content_options = {
@@ -1354,7 +1356,7 @@ var explore = function() {
                         var type = $li.eq(i).data('type');
                         lo[type] = listOptions[type];
                     }
-                    $.each(engine.def_listOptions, function(key, value){
+                    $.each(listOptions, function(key, value){
                         if (lo.hasOwnProperty(key) === false) {
                             lo[key] = listOptions[key];
                         }
@@ -1465,6 +1467,20 @@ var explore = function() {
                         content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                     }
                 });
+            }
+            var style;
+            if (options.noTransitionLinks === 1) {
+                style = 'div.explore div.top_search a,' +
+                    'div.explore div.popup div.content a' +
+                    '{transition: none;}';
+                dom_cache.body.append($('<style>', {text: style}));
+            }
+            if (options.noTransition === 1) {
+                style = 'div.explore ul > li.collapsing > div > div.action,' +
+                    'div.explore div.head div.action > div.setup,' +
+                    'div.explore ul.body li div.picture > *' +
+                    '{transition: none !important;}';
+                dom_cache.body.append($('<style>', {text: style}));
             }
         },
         hide: function(){
