@@ -23,7 +23,7 @@ a:link:hover {
 }
 
 div.content.loading {
-    display: none;
+    visibility: hidden;
 }
 div.search_panel h1 {
     margin: 0;
