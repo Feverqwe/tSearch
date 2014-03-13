@@ -2104,14 +2104,14 @@ var view = function() {
                 dom_cache.topbtn.css({"right": "auto"});
             }
             var style;
-            if (options.noTransitionLinks === 1) {
-                style = 'div.result_panel > table td div.title a,' +
-                    'div.result_panel > table div.tracker_icon' +
+            if (options.noTransition === 1 || options.noTransitionLinks === 1) {
+                style = 'div.result_panel > table td div.title a' +
                     '{transition: none;}';
                 dom_cache.body.append($('<style>', {text: style}));
             }
             if (options.noTransition === 1) {
                 style = 'div.result_panel > table div.tracker_icon,' +
+                    'div.result_panel > table div.tracker_icon,' +
                     'div.tracker_list a.setup' +
                     '{transition: none;}';
                 dom_cache.body.append($('<style>', {text: style}));

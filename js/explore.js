@@ -1469,7 +1469,7 @@ var explore = function() {
                 });
             }
             var style;
-            if (options.noTransitionLinks === 1) {
+            if (options.noTransition === 1 || options.noTransitionLinks === 1) {
                 style = 'div.explore div.top_search a,' +
                     'div.explore div.popup div.content a' +
                     '{transition: none;}';
