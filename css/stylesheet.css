@@ -539,10 +539,6 @@ div.topbtn:hover {
     background-color: #ddd;
 }
 
-div.ad {
-    margin-top: 30px;
-}
-
 div.about_panel > div {
     margin-bottom: 3px;
     overflow: hidden;
@@ -742,4 +738,27 @@ table.ui-datepicker-calendar td.ui-datepicker-week-end:hover > a {
 .ui-icon.ui-icon-circle-triangle-w:hover,
 .ui-icon.ui-icon-circle-triangle-e:hover {
     -webkit-filter: invert(0.5);
+}
+
+div.donate {
+    text-align: center;
+}
+div.donate > div {
+    display: inline-block;
+    vertical-align: middle;
+}
+div.donate > div.block {
+    text-align: left;
+}
+div.donate .logo {
+    background-image: url(../images/pig.png);
+    width: 64px;
+    height: 64px;
+}
+div.donate a {
+    color: #0051D8;
+}
+div.donate div.block > div {
+    padding-bottom: 2px;
+    padding-top: 3px;
 }

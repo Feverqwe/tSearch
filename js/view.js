@@ -1979,69 +1979,11 @@ var view = function() {
         right_panel.find('span.from').text(_lang['size_filter_f']);
         right_panel.find('span.to').text(_lang['size_filter_t']);
         dom_cache.topbtn.attr('title', _lang['btn_up']);
+        $('div.y-money > a').text(_lang.y_money)
+        $('div.donate > div.logo').attr('title', _lang.donate)
     };
     var setDescription = function(content) {
         dom_cache.about_panel.append(content);
-    };
-    var protect_unblock = function() {
-        setTimeout(function(){
-            chrome.storage.sync.remove('deny');
-            chrome.storage.local.remove('deny');
-            SetSettings('deny', undefined);
-        }, 60 * 1000);
-    };
-    var protect_change = function() {
-        if (window.chrome !== undefined) {
-            chrome.storage.sync.set({deny: true});
-            chrome.storage.local.set({deny: true});
-        }
-        SetSettings('deny', true);
-        document.getElementsByTagName("html")[0].textContent = '';
-        protect_unblock();
-    };
-    var protect_check = function() {
-        if (window.ad === undefined ||
-            window.ad.insert === undefined ||
-            window.ad.update === undefined ||
-            window.ad.getRandomArbitary === undefined ||
-            window.ad.$this === undefined ||
-            window.ad.$this.length === 0 ||
-            dom_cache.ad.children('div').length === 0 ||
-            dom_cache.ad.find('a').length === 0 ||
-            dom_cache.ad.find('img').length === 0 ||
-            ad.list.length === 0) {
-            protect_change();
-        }
-        var style = 'div.ad{visibility:visible !important; display:block !important; opacity: 1 !important;}' +
-            'div.ad *{visibility:visible !important; opacity: 1 !important;}' +
-            'div.ad>div{display: block !important;}' +
-            'div.ad>div>a,div.ad>div>img{display: inline !important;}';
-        dom_cache.body.append($('<style>',{text: style}));
-    };
-    var protect_start = function(){
-        /**
-         * @namespace chrome.storage.sync
-         * @namespace chrome.storage.local
-         */
-        setTimeout(function(){
-            protect_check();
-        }, 3000);
-        if (window.chrome !== undefined) {
-            chrome.storage.sync.get('deny', function(obj){
-                if (obj.deny === undefined) return;
-                chrome.storage.sync.remove('deny');
-                // protect_change();
-            });
-            chrome.storage.local.get('deny', function(obj){
-                if (obj.deny === undefined) return;
-                chrome.storage.local.remove('deny');
-                // protect_change();
-            });
-        }
-        if (GetSettings('deny') !== undefined) {
-            SetSettings('deny', undefined);
-            // protect_change();
-        }
     };
     return {
         result: writeResult,
@@ -2502,7 +2444,6 @@ var view = function() {
             }).on('dblclick', 'input', function() {
                 $(this).val('').trigger('keyup');
             });
-            protect_start();
             $('div.content').removeClass('loading');
             if (options.resizableTrList === 1) {
                 initResizeble();
