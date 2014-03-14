@@ -42,7 +42,6 @@ java -jar compiler.jar --js ./js/background.js --js_output_file ./build/js/backg
 java -jar compiler.jar --js ./js/engine.js --js_output_file ./build/js/engine.js
 java -jar compiler.jar --js ./js/view.js --js_output_file ./build/js/view.js
 java -jar compiler.jar --js ./js/explore.js --js_output_file ./build/js/explore.js
-java -jar compiler.jar --js ./js/ad.js --js_output_file ./build/js/ad.js
 java -jar compiler.jar --js ./js/counter.js --js_output_file ./build/js/counter.js
 java -jar compiler.jar --js ./js/magic.js --js_output_file ./build/js/magic.js
 java -jar compiler.jar --js ./js/options.js --js_output_file ./build/js/options.js
