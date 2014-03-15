@@ -2448,6 +2448,15 @@ var view = function() {
             if (options.resizableTrList === 1) {
                 initResizeble();
             }
+            if ( Math.random()<.5 ) {
+                dom_cache.body.append( $('<style>', {text: 'div.donate > div.logo {' +
+                    '-moz-transform: scaleX(-1);' +
+                    '-o-transform: scaleX(-1);' +
+                    '-webkit-transform: scaleX(-1);' +
+                    'transform: scaleX(-1);' +
+                    '}'})
+                );
+            }
             window.history.replaceState({
                 hash: window.location.hash
             }, document.title, window.location.href);
