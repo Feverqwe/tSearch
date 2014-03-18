@@ -22,8 +22,9 @@ var get_lang = function(lang) {
     }
 };
 var _lang = get_lang();
-window.onload = function() {
-    if (window.options === undefined) {
-        get_lang = null;
+window.addEventListener("load",function(){
+    if (window.options !== undefined) {
+        return;
     }
-};
+    window.get_lang = undefined;
+});

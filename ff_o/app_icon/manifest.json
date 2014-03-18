@@ -1,12 +1,16 @@
 {
     "manifest_version": 2,
     "browser_action": {
-        "default_icon": "images/icon_16.png",
+        "default_icon": {
+            "19": "images/icon_19.png",
+            "38": "images/icon_38.png"
+        },
         "default_popup": "popup.html",
         "default_title": "TMS App icon"
     },
     "icons": {
         "128": "images/icon_128.png",
+        "48": "images/icon_48.png",
         "16": "images/icon_16.png"
     },
     "options_page": "options.html",
@@ -14,5 +18,5 @@
     "name": "__MSG_appName__",
     "description": "__MSG_appDesc__",
     "default_locale": "en",
-    "version": "0.1.4"
+    "version": "0.1.5"
 }
