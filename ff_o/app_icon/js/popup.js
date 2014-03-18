@@ -36,7 +36,7 @@ $(function() {
                 }
             }
             chrome.tabs.create({url: 'https://chrome.google.com/webstore/detail/pakhafflipopfhfmnbhoocpkcdjfpphc'});
-            options.id = def_id;
+            options.id = default_id;
             return;
         });
     })();
