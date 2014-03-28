@@ -344,7 +344,7 @@ var view = function() {
             }
         }
         if (typeof item.category.url !== 'string' || item.category.url.length === 0) {
-            item.category.url = null;
+            item.category.url = undefined;
             er[2] += 1;
         } else {
             if (item.category.url.indexOf('#block') !== -1) {

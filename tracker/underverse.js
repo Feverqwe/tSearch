@@ -58,11 +58,11 @@ torrent_lib.underverse = function () {
                     },
                     title: td.eq(3).children('a').eq(1).text(),
                     url: root_url + td.eq(3).children('a').eq(1).attr('href'),
-                    size: td.eq(5).children('u').text(),
-                    dl: root_url + td.eq(5).children('a').attr('href'),
-                    seeds: td.eq(6).children('b').text(),
-                    leechs: td.eq(7).children('b').text(),
-                    time: td.eq(9).children('u').text()
+                    size: td.eq(6).children('u').text(),
+                    dl: td.eq(5).children('a').eq(1).attr('href'),
+                    seeds: td.eq(7).children('b').text(),
+                    leechs: td.eq(8).children('b').text(),
+                    time: td.eq(10).children('u').text()
                 });
             }
             return arr;
