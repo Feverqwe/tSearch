@@ -915,11 +915,13 @@ var magic = function() {
                 name = tag;
             } else {
                 var childs = parent.children(name);
-                var index = childs.index(node);
-                if (parent.children(tag).index(node) === index) {
-                    name = tag;
+                if (childs.length !== 1) {
+                    var index = childs.index(node);
+                    if (parent.children(tag).index(node) === index) {
+                        name = tag;
+                    }
+                    name += ':eq(' + index + ')';
                 }
-                name += ':eq(' + index + ')';
             }
             path = name + (path ? '>' + path : '');
             node = parent;

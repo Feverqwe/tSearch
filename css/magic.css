@@ -83,6 +83,9 @@ div.tools input.error {
     box-shadow: 0 0 2px 1px #FF0000;
     outline-color: red;
 }
+div.tools fieldset.selectors li > input[name=list_input] {
+    width: 406px;
+}
 div.tools fieldset.selectors li > span:nth-child(2) {
     width: 175px;
     display: inline-block;
