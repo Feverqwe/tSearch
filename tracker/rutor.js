@@ -24,10 +24,10 @@ torrent_lib.rutor = function () {
                     category: {
                         id: -1
                     },
-                    title: td.eq(1).children('a').eq(1).text(),
-                    url: root_url + td.eq(1).children('a').eq(1).attr('href'),
+                    title: td.eq(1).children('a').eq(2).text(),
+                    url: root_url + td.eq(1).children('a').eq(2).attr('href'),
                     size: ex_kit.format_size(td.eq(-2).text()),
-                    dl: td.eq(1).children('a').eq(0).attr('href'),
+                    dl: td.eq(1).children('a').eq(-2).attr('href'),
                     seeds: td.eq(-1).children('span.green').text(),
                     leechs: td.eq(-1).children('span.red').text(),
                     time: ex_kit.format_date(1, ex_kit.month_replace(td.eq(0).text()))
