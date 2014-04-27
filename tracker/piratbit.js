@@ -78,7 +78,7 @@ torrent_lib.piratbit = function () {
                 data: {
                     max: 1,
                     to: 1,
-                    nm: text
+                    ss: text
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);
