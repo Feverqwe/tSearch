@@ -70,7 +70,12 @@ var engine = function() {
         return list;
     };
     var migrate = function() {
-        var storage = $.extend({},localStorage);
+        var storage;
+        if (isFF) {
+            storage = $.extend({},localStorage2);
+        } else {
+            storage = $.extend({},localStorage);
+        }
         var new_storage = {};
         var favoritesList = JSON.parse(storage.favoritesList || '[]');
         if (favoritesList.length > 0) {
@@ -131,12 +136,20 @@ var engine = function() {
             chrome.storage.local.clear();
             chrome.storage.sync.clear();
         }
-        localStorage.clear();
+        if (isFF) {
+            localStorage2.clear();
+        } else {
+            localStorage.clear();
+        }
         $.each(new_storage, function(key, value){
             if (value === undefined) {
                 return 1;
             }
-            localStorage[key] = value;
+            if (isFF) {
+                localStorage2[key] = value;
+            } else {
+                localStorage[key] = value;
+            }
         });
         window.location.reload();
     };

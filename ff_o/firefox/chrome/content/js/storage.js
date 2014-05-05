@@ -1,4 +1,4 @@
-var localStorage = function() {
+var localStorage2 = function() {
     var url = "http://tms_ex";
     var ios = Components.classes["@mozilla.org/network/io-service;1"]
             .getService(Components.interfaces.nsIIOService);
@@ -13,26 +13,26 @@ var localStorage = function() {
 }();
 var SetSettings = function(key, value) {
     if (value === undefined) {
-        delete localStorage[key];
+        delete localStorage2[key];
         return value;
     }
-    localStorage[key] = value;
+    localStorage2[key] = value;
     return value;
 };
 var GetSettings = function(key) {
-    return localStorage[key];
+    return localStorage2[key];
 };
 var GetStorageSettings = function(key, cb) {
     var storage = {};
     if (typeof key === 'string') {
-        storage[key] = localStorage[key];
+        storage[key] = localStorage2[key];
         if (cb !== undefined) {
             cb(storage);
         }
         return;
     }
     key.forEach(function(item) {
-        storage[item] = localStorage[item];
+        storage[item] = localStorage2[item];
     });
     if (cb !== undefined) {
         cb(storage);
@@ -43,7 +43,7 @@ var SetStorageSettings = function(keys, cb) {
         if (!keys.hasOwnProperty(key)) {
             continue;
         }
-        localStorage[key] = keys[key];
+        localStorage2[key] = keys[key];
         if (cb !== undefined) {
             cb();
         }

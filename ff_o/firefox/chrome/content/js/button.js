@@ -1,4 +1,4 @@
-var localStorage = function() {
+var localStorage2 = function() {
     var url = "http://tms_ex";
     var ios = Components.classes["@mozilla.org/network/io-service;1"]
             .getService(Components.interfaces.nsIIOService);
@@ -12,7 +12,7 @@ var localStorage = function() {
     return storage;
 }();
 var run = function() {
-    var search_popup = parseInt(localStorage['search_popup'] || 1);
+    var search_popup = parseInt(localStorage2['search_popup'] || 1);
     if (search_popup) {
         var ifr = document.getElementById('myframe');
         var panel = document.getElementById('tms_popup');

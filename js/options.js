@@ -322,7 +322,12 @@ var options = function() {
         dom_cache.tracker_list.append(content);
     };
     var getBackup = function() {
-        var data = $.extend({},localStorage);
+        var data;
+        if (isFF) {
+            data = $.extend({},localStorage2);
+        } else {
+            data = $.extend({},localStorage);
+        }
         var json = JSON.stringify(data);
         dom_cache.textarea_backup.val(json);
         return json;
@@ -339,7 +344,11 @@ var options = function() {
                 chrome.storage.local.clear();
                 chrome.storage.local.set(storage);
             }
-            localStorage.clear();
+            if (isFF) {
+                localStorage2.clear();
+            } else {
+                localStorage.clear();
+            }
             for (var item in data) {
                 if (data.hasOwnProperty(item) === false) {
                     continue;
@@ -348,7 +357,11 @@ var options = function() {
                 if (value === undefined) {
                     continue;
                 }
-                localStorage[item] = value;
+                if (isFF) {
+                    localStorage2[item] = value;
+                } else {
+                    localStorage[item] = value;
+                }
             }
             window.location.reload();
         });
