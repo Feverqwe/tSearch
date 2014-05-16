@@ -63,7 +63,7 @@ var engine = function() {
     var getDefaultList = function () {
         var list;
         if (_lang.t === "ru") {
-            list = {'nnm-club': 1, rutracker: 1, kinozal: 1, rutor: 1, rustorka: 1, hdclub: 1, tfile: 1, 'fast-torrent': 1, opensharing: 1, btdigg: 1};
+            list = {'nnm-club': 1, rutracker: 1, kinozal: 1, rutor: 1, hdclub: 1, tfile: 1, 'fast-torrent': 1, opensharing: 1, btdigg: 1};
         } else {
             list = {bitsnoop: 1, extratorrent: 1, fenopy: 1, torrentz: 1, thepiratebay: 1, kickass: 1};
         }
