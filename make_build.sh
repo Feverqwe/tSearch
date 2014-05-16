@@ -17,7 +17,7 @@ cp *.html ./build/.
 cp *.json ./build/.
 
 java -jar compiler.jar --js ./js/torrent_lib_build.js\
- --js ./tracker/anidub.js --js ./tracker/katushka.js --js ./tracker/rustorka.js --js ./tracker/bestrepack.js\
+ --js ./tracker/anidub.js --js ./tracker/katushka.js --js ./tracker/bestrepack.js\
  --js ./tracker/kickass.js --js ./tracker/rutor.js --js ./tracker/bigfangroup.js --js ./tracker/kinozal.js\
  --js ./tracker/rutracker.js --js ./tracker/bitsnoop.js --js ./tracker/libertorrent.js --js ./tracker/tapochek.js\
  --js ./tracker/brodim.js --js ./tracker/megashara.js --js ./tracker/tfile.js --js ./tracker/btdigg.js\
