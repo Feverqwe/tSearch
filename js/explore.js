@@ -45,6 +45,7 @@ var explore = function() {
         noTransitionLinks: parseInt(GetSettings('noTransitionLinks') || 1),
         noTransition: parseInt(GetSettings('noTransition') || 0)
     };
+    var isFF = window.Application !== undefined && Application.name === "Firefox";
     var listOptions = JSON.parse(GetSettings('listOptions') || "{}");
     var content_options = {
         favorites: {
@@ -1112,7 +1113,7 @@ var explore = function() {
                 dom_cache.explore.removeClass('loading');
             }, 30);
 
-            dom_cache.explore_ul.on('mouseover', 'ul.page_body > li', function () {
+            dom_cache.explore_ul.on( isFF ? 'mouseenter ' : 'mouseover', 'ul.page_body > li', function () {
                 var $this = $(this);
                 var page = $this.data('page');
                 var type = $this.data('type');
@@ -1290,7 +1291,7 @@ var explore = function() {
                 $this.children('span').text('*');
                 view.getQuality(title, type, index);
             });
-            dom_cache.explore_ul.on('mouseover', 'div.quality', function(e) {
+            dom_cache.explore_ul.on(isFF ? 'mouseenter ' : 'mouseover', 'div.quality', function(e) {
                 var $this = $(this);
                 var title = $this.data('title');
                 if (var_cache.qualityCache[title] === undefined) {
@@ -1300,7 +1301,7 @@ var explore = function() {
                 var index = $this.data('index');
                 setQuality(type, index, var_cache.qualityCache[title], title, 1);
             });
-            dom_cache.explore_ul.on('mouseover', 'div.quality > div.info_popup', function(e) {
+            dom_cache.explore_ul.on(isFF ? 'mouseenter ' : 'mouseover', 'div.quality > div.info_popup', function(e) {
                 e.stopPropagation();
             });
             dom_cache.explore_ul.on('click', 'div.quality > div.info_popup', function(e) {
