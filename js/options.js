@@ -53,7 +53,8 @@ var options = function() {
         }
         if (language === undefined) {
             language = 'en';
-            if (isChromeum && chrome.i18n && chrome.i18n.getMessage("lang") === 'ru') {
+            if ( (isChromeum && chrome.i18n && chrome.i18n.getMessage("lang") === 'ru') ||
+                  navigator.language.substr(0,2) === 'ru') {
                 language = 'ru';
             }
         }

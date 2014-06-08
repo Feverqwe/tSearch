@@ -624,7 +624,8 @@ var get_lang = function (lang) {
     }
     if (lang === undefined) {
         lang = 'en';
-        if (window.chrome !== undefined && chrome.i18n && chrome.i18n.getMessage("lang") === 'ru') {
+        if ( (window.chrome !== undefined && chrome.i18n && chrome.i18n.getMessage("lang") === 'ru') ||
+              navigator.language.substr(0,2) === 'ru' ) {
             lang = 'ru';
         }
     }
