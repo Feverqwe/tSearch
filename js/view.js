@@ -940,6 +940,9 @@ var view = function() {
         if (code > 122 && code < 127) {
             return 1;
         }
+        if (code === 171 || code === 187) {
+          return 1;
+        }
         return 0;
     };
     var cal_rate = function(word, position, string) {
