@@ -619,27 +619,9 @@ var get_lang = function (lang) {
             64: "Кодировка страницы"
         }
     };
-    if (lang === undefined) {
-        lang = GetSettings('lang');
-    }
-    if (lang === undefined) {
-        lang = 'en';
-        if ( (window.chrome !== undefined && chrome.i18n && chrome.i18n.getMessage("lang") === 'ru') ||
-             (navigator.language && navigator.language.substr(0,2) === 'ru')
-          ) {
-            lang = 'ru';
-        }
-    }
     if (lang === 'ru') {
         return lang_arr_ru;
     } else {
         return lang_arr_en;
     }
 };
-window._lang = get_lang();
-window.addEventListener("load",function(){
-    if (window.options !== undefined) {
-        return;
-    }
-    window.get_lang = undefined;
-});

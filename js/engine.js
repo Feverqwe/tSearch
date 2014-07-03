@@ -36,30 +36,17 @@ var engine = function() {
         gg_games_top: { e: 1, s: 1, w: 100, c: 1 },
         gg_games_new: { e: 1, s: 1, w: 100, c: 1 }
     };
-    if (window._lang !== undefined) {
-        if ( _lang.t === 'en' ) {
-            def_settings.hideTopSearch.v = 1;
-            def_listOptions.kp_favorites.e = 0;
-            def_listOptions.kp_in_cinema.e = 0;
-            def_listOptions.kp_popular.e = 0;
-            def_listOptions.kp_serials.e = 0;
-        } else {
-            def_listOptions.imdb_in_cinema.e = 0;
-            def_listOptions.imdb_popular.e = 0;
-            def_listOptions.imdb_serials.e = 0;
-        }
-    }
     var var_cache = {
         block_href:  new RegExp('\\/\\/','img'),
         block_src:   new RegExp(' src=([\'"]?)','img'),
         unblock_src: new RegExp('data:image\\/gif,base64#blockrurl#','mg'),
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
-        rn: new RegExp('[\\r\\n]+','g')
+        rn: new RegExp('[\\r\\n]+','g'),
+        historyLimit: 500
     };
     var historyList = [];
-    var isFF = window.Application !== undefined && Application.name === "Firefox";
     var currentTrList = {};
-    var profileList = JSON.parse(GetSettings('profileList') || '{}');
+    var profileList;
     var getDefaultList = function () {
         var list;
         if (_lang.t === "ru") {
@@ -69,136 +56,6 @@ var engine = function() {
         }
         return list;
     };
-    var migrate = function() {
-        var storage;
-        if (isFF) {
-            storage = $.extend({},localStorage2);
-        } else {
-            storage = $.extend({},localStorage);
-        }
-        var new_storage = {};
-        var favoritesList = JSON.parse(storage.favoritesList || '[]');
-        if (favoritesList.length > 0) {
-            var exp_cache_favorites = {content:[]};
-            favoritesList.forEach(function(item) {
-                exp_cache_favorites.content.push({title: item.name, url: item.url, img: item.img});
-            });
-            new_storage.exp_cache_favorites = JSON.stringify(exp_cache_favorites);
-        }
-        if (storage.search_history !== null || storage.search_history !== undefined) {
-            new_storage.history = storage.search_history;
-        }
-        $.each(storage, function(key, value) {
-            if (key.substr(0, 3) === 'ct_') {
-                if (value !== null && value !== undefined) {
-                    new_storage[key] = value;
-                }
-            } else if ( ['hideTopSearch', 'filter_panel_to_left', 'kinopoisk_f_id',
-                'sub_select_enable', 'allow_favorites_sync', 'allow_get_description',
-                'autoSetCat', 'use_english_postername', 'AutoComplite_opt',
-                'search_popup', 'context_menu', 'add_in_omnibox', 'TeaserFilter',
-                'AdvFiltration', 'HideZeroSeed', 'SubCategoryFilter', 'ShowIcons',
-                'HideSeed', 'HideLeech', 'costume_tr', 'lang', 'torrent_list_r', 'torrent_list_h'
-            ].indexOf(key) !== -1) {
-                if (value !== null && value !== undefined) {
-                    new_storage[key] = value;
-                }
-            }
-        });
-        var newProfiles = {};
-        var new_profile_len = 0;
-        var trList = JSON.parse(storage.trackerProfiles || '[]');
-        trList.forEach(function(item){
-            if (item.Title === undefined) {
-                return 1;
-            }
-            var len = 0;
-            var list = {};
-            if (item.Trackers !== null) {
-                item.Trackers.forEach(function(itm){
-                    if (itm.e === undefined || itm.n === undefined || itm.e !== 1) {
-                        return 1;
-                    }
-                    list[itm.n] = 1;
-                    len++;
-                });
-            }
-            if (len === 0) {
-                return 1;
-            }
-            newProfiles[item.Title] = list;
-            new_profile_len++;
-        });
-        if ( new_profile_len > 0 ){
-            new_storage.profileList = JSON.stringify(newProfiles);
-        }
-        if (window.chrome !== undefined) {
-            chrome.storage.local.clear();
-            chrome.storage.sync.clear();
-        }
-        if (isFF) {
-            localStorage2.clear();
-        } else {
-            localStorage.clear();
-        }
-        $.each(new_storage, function(key, value){
-            if (value === undefined) {
-                return 1;
-            }
-            if (isFF) {
-                localStorage2[key] = value;
-            } else {
-                localStorage[key] = value;
-            }
-        });
-        window.location.reload();
-    };
-    if ( GetSettings('defProfile') !== undefined ) {
-        migrate();
-        return;
-    }
-    var migrate2 = function() {
-        var pre = 'exp_cache_';
-        var storage = {};
-        storage[pre+'kp_favorites'] = GetSettings(pre+'kp_favorites');
-        storage['qualityBoxCache'] = GetSettings('qualityBoxCache');
-        storage['qualityCache'] = GetSettings('qualityCache');
-        storage['click_history'] = GetSettings('click_history');
-        storage['history'] = GetSettings('history');
-        SetStorageSettings({'exp_cache_favorites': GetSettings('exp_cache_favorites')});
-        SetStorageSettings(storage, function(){
-            SetSettings(pre+'favorites', undefined);
-            SetSettings(pre+'kp_favorites', undefined);
-            SetSettings(pre+'kp_in_cinema', undefined);
-            SetSettings(pre+'kp_popular', undefined);
-            SetSettings(pre+'kp_serials', undefined);
-            SetSettings(pre+'imdb_in_cinema', undefined);
-            SetSettings(pre+'imdb_popular', undefined);
-            SetSettings(pre+'imdb_serials', undefined);
-            SetSettings(pre+'gg_games_top', undefined);
-            SetSettings(pre+'gg_games_new', undefined);
-            SetSettings('topList', undefined);
-            SetSettings('qualityBoxCache', undefined);
-            SetSettings('qualityCache', undefined);
-            SetSettings('click_history', undefined);
-            SetSettings('history', undefined);
-            window.location.reload();
-        });
-    };
-    if ( window.chrome !== undefined && (
-                GetSettings('click_history') !== undefined ||
-                GetSettings('history') !== undefined ||
-                GetSettings('gg_games_new') !== undefined
-            )
-        ) {
-        migrate2();
-    }
-    GetStorageSettings('history', function(storage){
-        historyList = JSON.parse(storage.history || '[]');
-        if (engine !== undefined && engine.history !== undefined) {
-            engine.history = historyList;
-        }
-    });
     var loadModule = function(uid) {
         /*
          * загружает пользовательский модуль.
@@ -643,10 +500,6 @@ var engine = function() {
         });
     };
     var updateHistory = function(title, trackers) {
-        var limit = 100;
-        if (window.chrome !== undefined) {
-            limit = 500;
-        }
         /*
          * добавляет поисковый запрос в историю.
          * если такой запрос уже есть - увеличивает кол-во попаданий и обновляет дату запроса.
@@ -671,7 +524,7 @@ var engine = function() {
         for (var i = 0, item; item = historyList[i]; i++) {
             if (found === false && item.title === title) {
                 item.count += 1;
-                item.time = parseInt((new Date()).getTime() / 1000);
+                item.time = parseInt(Date.now() / 1000);
                 item.trackers = trackers;
                 item.trackers_names = trackers_names;
                 found = true;
@@ -685,17 +538,17 @@ var engine = function() {
             historyList.push({
                 title: title,
                 count: 1,
-                time: parseInt((new Date()).getTime() / 1000),
+                time: parseInt(Date.now() / 1000),
                 trackers: trackers,
                 trackers_names: trackers_names
             });
         }
         var historyList_len = historyList.length;
-        if (historyList.length > limit) {
+        if (historyList.length > var_cache.historyLimit) {
             historyList.splice(oldest_item, 1);
         }
-        if (historyList_len - 1 > limit) {
-            historyList = historyList.slice(-limit);
+        if (historyList_len - 1 > var_cache.historyLimit) {
+            historyList = historyList.slice(-var_cache.historyLimit);
         }
         SetStorageSettings({history: JSON.stringify(historyList)});
     };
@@ -705,36 +558,9 @@ var engine = function() {
     var contentUnFilter = function(content) {
         return content.replace(var_cache.unblock_src, '').replace(var_cache.unblock_href, '//');
     };
-    if (isFF) {
-        var parseHTML = function(doc, html, allowStyle, baseURI, isXML) {
-            var PARSER_UTILS = "@mozilla.org/parserutils;1";
-            // User the newer nsIParserUtils on versions that support it.
-            if (PARSER_UTILS in Components.classes) {
-                var parser = Components.classes[PARSER_UTILS]
-                    .getService(Components.interfaces.nsIParserUtils);
-                if ("parseFragment" in parser)
-                    return parser.parseFragment(html, allowStyle ? parser.SanitizerAllowStyle : 0,
-                        !!isXML, baseURI, doc.documentElement);
-            }
-            return Components.classes["@mozilla.org/feed-unescapehtml;1"]
-                .getService(Components.interfaces.nsIScriptableUnescapeHTML)
-                .parseFragment(html, !!isXML, baseURI, doc.documentElement);
-        };
-    }
     var load_in_sandbox = function(content) {
         var $safe_content;
-        if (isFF) {
-            content = content.replace(/href=/img, "data-href=");
-            var safe_content = parseHTML(document, content);
-            $safe_content = $('<html>').append(safe_content);
-            var links = $safe_content.find('a');
-            for (var n = 0, links_len = links.length; n < links_len; n++) {
-                var link = links.eq(n);
-                link.attr('href', link.attr('data-href')).removeAttr('data-href');
-            }
-        } else {
-            $safe_content = $($.parseHTML(content));
-        }
+        $safe_content = $($.parseHTML(content));
         return $safe_content;
     };
     return {
@@ -754,6 +580,31 @@ var engine = function() {
         //need options:
         getDefList: function () {
             return wrapAllCustomTrList(getDefaultList());
+        },
+        boot: function() {
+            if (window._lang !== undefined) {
+                if ( _lang.t === 'en' ) {
+                    def_settings.hideTopSearch.v = 1;
+                    def_listOptions.kp_favorites.e = 0;
+                    def_listOptions.kp_in_cinema.e = 0;
+                    def_listOptions.kp_popular.e = 0;
+                    def_listOptions.kp_serials.e = 0;
+                } else {
+                    def_listOptions.imdb_in_cinema.e = 0;
+                    def_listOptions.imdb_popular.e = 0;
+                    def_listOptions.imdb_serials.e = 0;
+                }
+            }
+            profileList = JSON.parse(GetSettings('profileList') || '{}');
+            GetStorageSettings('history', function(storage){
+                historyList = JSON.parse(storage.history || '[]');
+                if (engine !== undefined && engine.history !== undefined) {
+                    engine.history = historyList;
+                }
+            });
+            if (window.chrome === undefined) {
+                var_cache.historyLimit = 500;
+            }
         }
     };
 }();

@@ -83,32 +83,17 @@ var view = function() {
         click_history_limit: 10,
         click_history_item_limit: 20
     };
-    if (window.chrome !== undefined) {
-        var_cache.click_history_limit = 50;
-        var_cache.click_history_item_limit = 20;
-    }
-    GetStorageSettings('click_history', function(storage) {
-        var_cache.click_history = JSON.parse(storage.click_history || '{}');
-    });
     var dom_cache = {};
+    var HideLeech;
+    var HideSeed;
+    var ShowIcons;
+    var HideZeroSeed;
+    var AdvFiltration;
+    var TeaserFilter;
+    var SubCategoryFilter;
+    var autoSetCat;
 
-    var HideLeech = parseInt(GetSettings('HideLeech') || 1);
-    var HideSeed = parseInt(GetSettings('HideSeed') || 0);
-    var ShowIcons = parseInt(GetSettings('ShowIcons') || 1);
-    var HideZeroSeed = parseInt(GetSettings('HideZeroSeed') || 0);
-    var AdvFiltration = parseInt(GetSettings('AdvFiltration') || 2);
-    var TeaserFilter = parseInt(GetSettings('TeaserFilter') || 1);
-    var SubCategoryFilter = parseInt(GetSettings('SubCategoryFilter') || 0);
-    var autoSetCat = parseInt(GetSettings('autoSetCat') || 1);
-
-    var table_colums = [
-        {title: _lang.table.time, text: _lang.table.time, type: 'time', size: 125},
-        {title: _lang.table.quality[1], text: _lang.table.quality[0], type: 'quality', size: 31},
-        {title: _lang.table.title, text: _lang.table.title, type: 'title'},
-        {title: _lang.table.size, text: _lang.table.size, type: 'size', size: 80},
-        {title: _lang.table.seeds[1], text: _lang.table.seeds[0], type: 'seeds', size: 30},
-        {title: _lang.table.leechs[1], text: _lang.table.leechs[0], type: 'leechs', size: 30}
-    ];
+    var table_colums;
 
     var options = {
         single_filter_mode: true,
@@ -1445,7 +1430,7 @@ var view = function() {
     };
     var u2timeago = function(utime) {
         //выписывает отсчет времени из unixtime
-        var now_time = Math.round((new Date()).getTime() / 1000);
+        var now_time = Math.round(Date.now() / 1000);
         if (utime <= 0) {
             return '∞';
         }
@@ -1926,7 +1911,7 @@ var view = function() {
         for (var i = 0, item; item = click_history[i]; i++) {
             if (found === false && item.href === href) {
                 item.count += 1;
-                item.time = parseInt((new Date()).getTime() / 1000);
+                item.time = parseInt(Date.now() / 1000);
                 item.title = title;
                 found = true;
             }
@@ -1940,7 +1925,7 @@ var view = function() {
                 title: title,
                 href: href,
                 count: 1,
-                time: parseInt((new Date()).getTime() / 1000)
+                time: parseInt(Date.now() / 1000)
             });
         }
         if (click_history.length > var_cache.click_history_item_limit) {
@@ -2464,15 +2449,36 @@ var view = function() {
                 hash: window.location.hash
             }, document.title, window.location.href);
             readUrl();
+        },
+        boot: function() {
+            if (window.chrome !== undefined) {
+                var_cache.click_history_limit = 50;
+                var_cache.click_history_item_limit = 20;
+            }
+            GetStorageSettings('click_history', function(storage) {
+                var_cache.click_history = JSON.parse(storage.click_history || '{}');
+            });
+
+            HideLeech = parseInt(GetSettings('HideLeech') || 1);
+            HideSeed = parseInt(GetSettings('HideSeed') || 0);
+            ShowIcons = parseInt(GetSettings('ShowIcons') || 1);
+            HideZeroSeed = parseInt(GetSettings('HideZeroSeed') || 0);
+            AdvFiltration = parseInt(GetSettings('AdvFiltration') || 2);
+            TeaserFilter = parseInt(GetSettings('TeaserFilter') || 1);
+            SubCategoryFilter = parseInt(GetSettings('SubCategoryFilter') || 0);
+            autoSetCat = parseInt(GetSettings('autoSetCat') || 1);
+
+            table_colums = [
+                {title: _lang.table.time, text: _lang.table.time, type: 'time', size: 125},
+                {title: _lang.table.quality[1], text: _lang.table.quality[0], type: 'quality', size: 31},
+                {title: _lang.table.title, text: _lang.table.title, type: 'title'},
+                {title: _lang.table.size, text: _lang.table.size, type: 'size', size: 80},
+                {title: _lang.table.seeds[1], text: _lang.table.seeds[0], type: 'seeds', size: 30},
+                {title: _lang.table.leechs[1], text: _lang.table.leechs[0], type: 'leechs', size: 30}
+            ]
         }
     };
 }();
 $(function(){
-    if (window.torrent_lib_min !== 1) {
-        setTimeout(function(){
-            view.begin();
-        }, 100);
-    } else {
-        view.begin();
-    }
+    view.begin();
 });

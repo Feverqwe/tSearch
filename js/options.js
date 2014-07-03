@@ -1,7 +1,7 @@
 var options = function() {
     var isFF = window.Application !== undefined && Application.name === "Firefox";
     var isChromeum = (window.chrome !== undefined);
-    var listOptions = JSON.parse(GetSettings('listOptions') || "{}");
+    var listOptions;
     var dom_cache = {};
     var var_cache = {
         window_scroll_timer: undefined
@@ -20,9 +20,9 @@ var options = function() {
         });
         return settings;
     };
-    var settings = loadSettings();
-    var profile = $.extend(true,{},engine.getProfileList());
-    var current_profile = GetSettings('currentProfile');
+    var settings;
+    var profile;
+    var current_profile;
     var set_place_holder = function() {
         $.each(engine.def_settings, function(k, v) {
             if (settings[k] === undefined) {
@@ -803,15 +803,15 @@ var options = function() {
                     scrollTop: 0
                 }, 200);
             });
+        },
+        boot: function() {
+            listOptions = JSON.parse(GetSettings('listOptions') || "{}");
+            settings = loadSettings();
+            profile = $.extend(true,{},engine.getProfileList());
+            current_profile = GetSettings('currentProfile');
         }
     };
 }();
 $(function() {
-    if (window.torrent_lib_min !== 1) {
-        setTimeout(function(){
-            options.begin();
-        }, 100);
-    } else {
-        options.begin();
-    }
+    options.begin();
 });

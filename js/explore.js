@@ -27,128 +27,10 @@ var explore = function() {
         qualityCache_limit: 30,
         qualityBoxCache_limit: 100
     };
-    if (window.chrome !== undefined) {
-        var_cache.qualityCache_limit = 100;
-        var_cache.qualityBoxCache_limit = 200;
-    }
-    GetStorageSettings(['qualityCache', 'qualityBoxCache'], function(storage){
-        var_cache.qualityCache = JSON.parse( storage.qualityCache || '{}' );
-        var_cache.qualityBoxCache = JSON.parse( storage.qualityBoxCache || '{}' );
-    });
     var dom_cache = {};
-    var options = {
-        use_english_postername: parseInt(GetSettings('use_english_postername') || 0),
-        top_cache: JSON.parse(GetSettings('topCache') || "{}"),
-        kp_folder_id: parseInt(GetSettings('kinopoisk_f_id') || 1),
-        hideTopSearch: parseInt(GetSettings('hideTopSearch') || engine.def_settings.hideTopSearch.v),
-        allow_favorites_sync: parseInt(GetSettings('allow_favorites_sync') || 1),
-        noTransitionLinks: parseInt(GetSettings('noTransitionLinks') || 1),
-        noTransition: parseInt(GetSettings('noTransition') || 0)
-    };
-    var isFF = window.Application !== undefined && Application.name === "Firefox";
-    var listOptions = JSON.parse(GetSettings('listOptions') || "{}");
-    var content_options = {
-        favorites: {
-            title: _lang.exp_items.favorites,
-            root_url: undefined,
-            max_w: 120
-        },
-        kp_favorites: {
-            title: _lang.exp_items.kp_favorites,
-            root_url: 'http://www.kinopoisk.ru',
-            max_w: 120,
-            url: 'http://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
-            base_url: "http://www.kinopoisk.ru/film/",
-            img_url: "http://st.kinopoisk.ru/images/film/",
-            g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
-        },
-        kp_in_cinema: {//new in cinema
-            title: _lang.exp_items.kp_in_cinema,
-            root_url: 'http://www.kinopoisk.ru',
-            max_w: 120,
-            url: 'http://www.kinopoisk.ru/afisha/new/page/%page%/',
-            keepAlive: [2, 4, 6],
-            page_end: 2,
-            page_start: 0,
-            base_url: "http://www.kinopoisk.ru/film/",
-            img_url: "http://st.kinopoisk.ru/images/film/",
-            g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
-        },
-        kp_popular: {
-            title: _lang.exp_items.kp_popular,
-            root_url: 'http://www.kinopoisk.ru',
-            max_w: 120,
-            url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
-            keepAlive: [0, 3],
-            base_url: "http://www.kinopoisk.ru/film/",
-            img_url: "http://st.kinopoisk.ru/images/film/",
-            g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
-        },
-        kp_serials: {
-            title: _lang.exp_items.kp_serials,
-            root_url: 'http://www.kinopoisk.ru',
-            max_w: 120,
-            url: 'http://www.kinopoisk.ru/top/lists/45/',
-            keepAlive: [0],
-            base_url: "http://www.kinopoisk.ru/film/",
-            img_url: "http://st.kinopoisk.ru/images/film/",
-            g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
-        },
-        imdb_in_cinema: {
-            title: _lang.exp_items.imdb_in_cinema,
-            root_url: 'http://www.imdb.com',
-            max_w: 120,
-            url: 'http://www.imdb.com/movies-in-theaters/',
-            keepAlive: [2, 4, 6],
-            base_url: "http://www.imdb.com/title/",
-            img_url: "http://ia.media-imdb.com/images/",
-            g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
-        },
-        imdb_popular: {
-            title: _lang.exp_items.imdb_popular,
-            root_url: 'http://www.imdb.com',
-            max_w: 120,
-            url: 'http://www.imdb.com/search/title?count=100&title_type=feature',
-            keepAlive: [0 , 2],
-            base_url: "http://www.imdb.com/title/",
-            img_url: "http://ia.media-imdb.com/images/",
-            g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
-        },
-        imdb_serials: {
-            title: _lang.exp_items.imdb_serials,
-            root_url: 'http://www.imdb.com',
-            max_w: 120,
-            url: 'http://www.imdb.com/search/title?count=100&title_type=tv_series',
-            keepAlive: [0],
-            base_url: "http://www.imdb.com/title/",
-            img_url: "http://ia.media-imdb.com/images/",
-            g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
-        },
-        gg_games_top: {//best
-            title: _lang.exp_items.gg_games_top,
-            root_url: 'http://gameguru.ru',
-            max_w: 120,
-            url: 'http://gameguru.ru/pc/games/rate_week/page%page%/list.html',
-            keepAlive: [0],
-            page_end: 5,
-            page_start: 1,
-            base_url: "http://gameguru.ru/pc/games/",
-            img_url: "http://gameguru.ru/f/games/",
-            g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=220&rewriteMime=image/jpeg&url='
-        },
-        gg_games_new: {//new
-            title: _lang.exp_items.gg_games_new,
-            root_url: 'http://gameguru.ru',
-            max_w: 120,
-            url: 'http://gameguru.ru/pc/games/new/page%page%/list.html',
-            keepAlive: [2, 4],
-            page_end: 5,
-            page_start: 1,
-            base_url: "http://gameguru.ru/pc/games/",
-            img_url: "http://gameguru.ru/f/games/",
-            g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=220&rewriteMime=image/jpeg&url='
-        }
-    };
+    var options = {};
+    var listOptions;
+    var content_options;
     var content_parser = function () {
         var check_item = function(item) {
             if (item.url === undefined) {
@@ -1113,7 +995,7 @@ var explore = function() {
                 dom_cache.explore.removeClass('loading');
             }, 30);
 
-            dom_cache.explore_ul.on( isFF ? 'mouseenter ' : 'mouseover', 'ul.page_body > li', function () {
+            dom_cache.explore_ul.on('mouseover', 'ul.page_body > li', function () {
                 var $this = $(this);
                 var page = $this.data('page');
                 var type = $this.data('type');
@@ -1291,7 +1173,7 @@ var explore = function() {
                 $this.children('span').text('*');
                 view.getQuality(title, type, index);
             });
-            dom_cache.explore_ul.on(isFF ? 'mouseenter ' : 'mouseover', 'div.quality', function(e) {
+            dom_cache.explore_ul.on('mouseover', 'div.quality', function(e) {
                 var $this = $(this);
                 var title = $this.data('title');
                 if (var_cache.qualityCache[title] === undefined) {
@@ -1301,7 +1183,7 @@ var explore = function() {
                 var index = $this.data('index');
                 setQuality(type, index, var_cache.qualityCache[title], title, 1);
             });
-            dom_cache.explore_ul.on(isFF ? 'mouseenter ' : 'mouseover', 'div.quality > div.info_popup', function(e) {
+            dom_cache.explore_ul.on('mouseover', 'div.quality > div.info_popup', function(e) {
                 e.stopPropagation();
             });
             dom_cache.explore_ul.on('click', 'div.quality > div.info_popup', function(e) {
@@ -1492,6 +1374,129 @@ var explore = function() {
             dom_cache.explore.hide();
         },
         getDescription: getDescription,
-        setQuality: setQuality
+        setQuality: setQuality,
+        boot: function() {
+            if (window.chrome !== undefined) {
+                var_cache.qualityCache_limit = 100;
+                var_cache.qualityBoxCache_limit = 200;
+            }
+            GetStorageSettings(['qualityCache', 'qualityBoxCache'], function(storage){
+                var_cache.qualityCache = JSON.parse( storage.qualityCache || '{}' );
+                var_cache.qualityBoxCache = JSON.parse( storage.qualityBoxCache || '{}' );
+            });
+
+            options.use_english_postername= parseInt(GetSettings('use_english_postername') || 0);
+            options.top_cache= JSON.parse(GetSettings('topCache') || "{}");
+            options.kp_folder_id= parseInt(GetSettings('kinopoisk_f_id') || 1);
+            options.hideTopSearch= parseInt(GetSettings('hideTopSearch') || engine.def_settings.hideTopSearch.v);
+            options.allow_favorites_sync= parseInt(GetSettings('allow_favorites_sync') || 1);
+            options.noTransitionLinks= parseInt(GetSettings('noTransitionLinks') || 1);
+            options.noTransition= parseInt(GetSettings('noTransition') || 0);
+
+            listOptions = JSON.parse(GetSettings('listOptions') || "{}");
+
+            content_options = {
+                favorites: {
+                    title: _lang.exp_items.favorites,
+                    root_url: undefined,
+                    max_w: 120
+                },
+                kp_favorites: {
+                    title: _lang.exp_items.kp_favorites,
+                    root_url: 'http://www.kinopoisk.ru',
+                    max_w: 120,
+                    url: 'http://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
+                    base_url: "http://www.kinopoisk.ru/film/",
+                    img_url: "http://st.kinopoisk.ru/images/film/",
+                    g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+                },
+                kp_in_cinema: {//new in cinema
+                    title: _lang.exp_items.kp_in_cinema,
+                    root_url: 'http://www.kinopoisk.ru',
+                    max_w: 120,
+                    url: 'http://www.kinopoisk.ru/afisha/new/page/%page%/',
+                    keepAlive: [2, 4, 6],
+                    page_end: 2,
+                    page_start: 0,
+                    base_url: "http://www.kinopoisk.ru/film/",
+                    img_url: "http://st.kinopoisk.ru/images/film/",
+                    g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+                },
+                kp_popular: {
+                    title: _lang.exp_items.kp_popular,
+                    root_url: 'http://www.kinopoisk.ru',
+                    max_w: 120,
+                    url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
+                    keepAlive: [0, 3],
+                    base_url: "http://www.kinopoisk.ru/film/",
+                    img_url: "http://st.kinopoisk.ru/images/film/",
+                    g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+                },
+                kp_serials: {
+                    title: _lang.exp_items.kp_serials,
+                    root_url: 'http://www.kinopoisk.ru',
+                    max_w: 120,
+                    url: 'http://www.kinopoisk.ru/top/lists/45/',
+                    keepAlive: [0],
+                    base_url: "http://www.kinopoisk.ru/film/",
+                    img_url: "http://st.kinopoisk.ru/images/film/",
+                    g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+                },
+                imdb_in_cinema: {
+                    title: _lang.exp_items.imdb_in_cinema,
+                    root_url: 'http://www.imdb.com',
+                    max_w: 120,
+                    url: 'http://www.imdb.com/movies-in-theaters/',
+                    keepAlive: [2, 4, 6],
+                    base_url: "http://www.imdb.com/title/",
+                    img_url: "http://ia.media-imdb.com/images/",
+                    g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+                },
+                imdb_popular: {
+                    title: _lang.exp_items.imdb_popular,
+                    root_url: 'http://www.imdb.com',
+                    max_w: 120,
+                    url: 'http://www.imdb.com/search/title?count=100&title_type=feature',
+                    keepAlive: [0 , 2],
+                    base_url: "http://www.imdb.com/title/",
+                    img_url: "http://ia.media-imdb.com/images/",
+                    g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+                },
+                imdb_serials: {
+                    title: _lang.exp_items.imdb_serials,
+                    root_url: 'http://www.imdb.com',
+                    max_w: 120,
+                    url: 'http://www.imdb.com/search/title?count=100&title_type=tv_series',
+                    keepAlive: [0],
+                    base_url: "http://www.imdb.com/title/",
+                    img_url: "http://ia.media-imdb.com/images/",
+                    g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+                },
+                gg_games_top: {//best
+                    title: _lang.exp_items.gg_games_top,
+                    root_url: 'http://gameguru.ru',
+                    max_w: 120,
+                    url: 'http://gameguru.ru/pc/games/rate_week/page%page%/list.html',
+                    keepAlive: [0],
+                    page_end: 5,
+                    page_start: 1,
+                    base_url: "http://gameguru.ru/pc/games/",
+                    img_url: "http://gameguru.ru/f/games/",
+                    g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=220&rewriteMime=image/jpeg&url='
+                },
+                gg_games_new: {//new
+                    title: _lang.exp_items.gg_games_new,
+                    root_url: 'http://gameguru.ru',
+                    max_w: 120,
+                    url: 'http://gameguru.ru/pc/games/new/page%page%/list.html',
+                    keepAlive: [2, 4],
+                    page_end: 5,
+                    page_start: 1,
+                    base_url: "http://gameguru.ru/pc/games/",
+                    img_url: "http://gameguru.ru/f/games/",
+                    g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=220&rewriteMime=image/jpeg&url='
+                }
+            };
+        }
     };
 }();

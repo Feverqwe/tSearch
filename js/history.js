@@ -195,7 +195,7 @@ var view = function() {
                 for (var i = 0, item; item = click_history[i]; i++) {
                     if (item.href === href) {
                         item.count += 1;
-                        item.time = parseInt((new Date()).getTime() / 1000);
+                        item.time = parseInt(Date.now() / 1000);
                         break;
                     }
                 }
