@@ -805,6 +805,9 @@ var options = function() {
             });
         },
         boot: function() {
+            if (window._lang === undefined) {
+                window._lang = get_lang(GetSettings('lang') || navigator.language.substr(0, 2));
+            }
             listOptions = JSON.parse(GetSettings('listOptions') || "{}");
             settings = loadSettings();
             profile = $.extend(true,{},engine.getProfileList());

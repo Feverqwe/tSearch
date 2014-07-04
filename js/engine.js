@@ -582,18 +582,19 @@ var engine = function() {
             return wrapAllCustomTrList(getDefaultList());
         },
         boot: function() {
-            if (window._lang !== undefined) {
-                if ( _lang.t === 'en' ) {
-                    def_settings.hideTopSearch.v = 1;
-                    def_listOptions.kp_favorites.e = 0;
-                    def_listOptions.kp_in_cinema.e = 0;
-                    def_listOptions.kp_popular.e = 0;
-                    def_listOptions.kp_serials.e = 0;
-                } else {
-                    def_listOptions.imdb_in_cinema.e = 0;
-                    def_listOptions.imdb_popular.e = 0;
-                    def_listOptions.imdb_serials.e = 0;
-                }
+            if (window._lang === undefined) {
+                window._lang = get_lang(GetSettings('lang') || navigator.language.substr(0, 2));
+            }
+            if ( _lang.t === 'en' ) {
+                def_settings.hideTopSearch.v = 1;
+                def_listOptions.kp_favorites.e = 0;
+                def_listOptions.kp_in_cinema.e = 0;
+                def_listOptions.kp_popular.e = 0;
+                def_listOptions.kp_serials.e = 0;
+            } else {
+                def_listOptions.imdb_in_cinema.e = 0;
+                def_listOptions.imdb_popular.e = 0;
+                def_listOptions.imdb_serials.e = 0;
             }
             profileList = JSON.parse(GetSettings('profileList') || '{}');
             GetStorageSettings('history', function(storage){
