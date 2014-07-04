@@ -582,9 +582,6 @@ var engine = function() {
             return wrapAllCustomTrList(getDefaultList());
         },
         boot: function() {
-            if (window._lang === undefined) {
-                window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
-            }
             if ( _lang.t === 'en' ) {
                 def_settings.hideTopSearch.v = 1;
                 def_listOptions.kp_favorites.e = 0;
@@ -603,8 +600,8 @@ var engine = function() {
                     engine.history = historyList;
                 }
             });
-            if (window.chrome === undefined) {
-                var_cache.historyLimit = 500;
+            if (mono.isChrome) {
+                var_cache.historyLimit = 200;
             }
         }
     };

@@ -138,13 +138,8 @@ var options = function() {
         saveCurrentProfile();
         mono.localStorage.set('profileList', JSON.stringify(profile));
         mono.localStorage.set('currentProfile', current_profile);
-        if (isChromeum && chrome.extension !== undefined) {
-            //Chrome extension
-            var bgp = chrome.extension.getBackgroundPage();
-            bgp.bg.update_context_menu();
-            if (bgp._type_ext === 1) {
-                bgp.update_btn();
-            }
+        if (mono.isChrome) {
+            mono.sendMessage('bg_update');
         }
         var fromIndex = (document.URL).replace(/.*options.html/, '');
         if (fromIndex.length > 0) {
@@ -805,9 +800,6 @@ var options = function() {
             });
         },
         boot: function() {
-            if (window._lang === undefined) {
-                window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
-            }
             listOptions = JSON.parse(mono.localStorage.get('listOptions') || "{}");
             settings = loadSettings();
             profile = $.extend(true,{},engine.getProfileList());
@@ -815,6 +807,11 @@ var options = function() {
         }
     };
 }();
-$(function() {
-    options.begin();
+mono.localStorage(function() {
+    window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
+    engine.boot();
+    options.boot();
+    $(function() {
+        options.begin();
+    });
 });

@@ -95,18 +95,7 @@ var view = function() {
 
     var table_colums;
 
-    var options = {
-        single_filter_mode: true,
-        filter_panel_to_left: parseInt(mono.localStorage.get('filter_panel_to_left') || 1),
-        resizableTrList: parseInt(mono.localStorage.get('torrent_list_r') || 0),
-        trListHeight: mono.localStorage.get('torrent_list_h'),
-        parenthetical_select_enable: parseInt(mono.localStorage.get('sub_select_enable') || 1),
-        autoComplete: parseInt(mono.localStorage.get('AutoComplite_opt') || 1),
-        allow_get_description: parseInt(mono.localStorage.get('allow_get_description') || 1),
-        no_blank_dl_link: parseInt(mono.localStorage.get('no_blank_dl_link') || 0),
-        noTransitionLinks: parseInt(mono.localStorage.get('noTransitionLinks') || 1),
-        noTransition: parseInt(mono.localStorage.get('noTransition') || 0)
-    };
+    var options;
     var writeTrackerList = function(trList) {
         dom_cache.torrent_list.find('option[value="'+mono.localStorage.get('currentProfile')+'"]').prop('selected', true);
         var_cache.trackers = {};
@@ -2451,7 +2440,7 @@ var view = function() {
             readUrl();
         },
         boot: function() {
-            if (window.chrome !== undefined) {
+            if (mono.isChrome) {
                 var_cache.click_history_limit = 50;
                 var_cache.click_history_item_limit = 20;
             }
@@ -2468,6 +2457,19 @@ var view = function() {
             SubCategoryFilter = parseInt(mono.localStorage.get('SubCategoryFilter') || 0);
             autoSetCat = parseInt(mono.localStorage.get('autoSetCat') || 1);
 
+            options = {
+                single_filter_mode: true,
+                filter_panel_to_left: parseInt(mono.localStorage.get('filter_panel_to_left') || 1),
+                resizableTrList: parseInt(mono.localStorage.get('torrent_list_r') || 0),
+                trListHeight: mono.localStorage.get('torrent_list_h'),
+                parenthetical_select_enable: parseInt(mono.localStorage.get('sub_select_enable') || 1),
+                autoComplete: parseInt(mono.localStorage.get('AutoComplite_opt') || 1),
+                allow_get_description: parseInt(mono.localStorage.get('allow_get_description') || 1),
+                no_blank_dl_link: parseInt(mono.localStorage.get('no_blank_dl_link') || 0),
+                noTransitionLinks: parseInt(mono.localStorage.get('noTransitionLinks') || 1),
+                noTransition: parseInt(mono.localStorage.get('noTransition') || 0)
+            };
+
             table_colums = [
                 {title: _lang.table.time, text: _lang.table.time, type: 'time', size: 125},
                 {title: _lang.table.quality[1], text: _lang.table.quality[0], type: 'quality', size: 31},
@@ -2475,10 +2477,19 @@ var view = function() {
                 {title: _lang.table.size, text: _lang.table.size, type: 'size', size: 80},
                 {title: _lang.table.seeds[1], text: _lang.table.seeds[0], type: 'seeds', size: 30},
                 {title: _lang.table.leechs[1], text: _lang.table.leechs[0], type: 'leechs', size: 30}
-            ]
+            ];
+            view.begin();
         }
     };
 }();
-$(function(){
-    view.begin();
+mono.localStorage(function() {
+    window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
+    engine.boot();
+    explore.boot();
+    $(function() {
+        if (parseInt(mono.localStorage.get('google_analytics') || 0) === 0) {
+            counter();
+        }
+        view.boot();
+    })
 });

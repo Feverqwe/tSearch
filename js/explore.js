@@ -1376,7 +1376,7 @@ var explore = function() {
         getDescription: getDescription,
         setQuality: setQuality,
         boot: function() {
-            if (window.chrome !== undefined) {
+            if (mono.isChrome) {
                 var_cache.qualityCache_limit = 100;
                 var_cache.qualityBoxCache_limit = 200;
             }

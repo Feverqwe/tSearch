@@ -70,6 +70,11 @@ var bg = function() {
             popup: (show_popup)?'popup.html':''
         });
     };
+    mono.onMessage(function(message) {
+        if (message === 'bg_update') {
+            bg.update();
+        }
+    });
     return {
         update: function() {
             mono.localStorage(function() {

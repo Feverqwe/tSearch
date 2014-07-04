@@ -1055,16 +1055,14 @@ var magic = function() {
                 });
                 dom_cache.window.trigger('resize');
             }
-        },
-        boot: function() {
-            if (window._lang === undefined) {
-                window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
-            }
         }
     };
 }();
-$(function() {
-    magic.begin();
+mono.localStorage(function() {
+    window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
+    $(function() {
+        magic.begin();
+    });
 });
 $.ajaxSetup({
     global: true,

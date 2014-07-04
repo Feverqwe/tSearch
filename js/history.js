@@ -210,12 +210,12 @@ var view = function() {
                 mono.storage.set({click_history: JSON.stringify(new_obj)});
             });
             $('div.content').removeClass('loading');
-        },
-        boot: function() {
-            window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
         }
     };
 }();
-$(function() {
-    view.begin();
+mono.localStorage(function() {
+    window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
+    $(function() {
+        view.begin();
+    });
 });

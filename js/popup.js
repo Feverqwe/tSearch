@@ -91,8 +91,8 @@ var popup = function() {
         }
     })
 };
-$(function(){
-   mono.init(function() {
-       popup();
+mono.localStorage(function() {
+   $(function(){
+        popup();
    });
 });
