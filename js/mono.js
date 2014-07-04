@@ -346,7 +346,7 @@ var mono = function (env) {
             addon.port.emit(message.monoTo, message);
         },
         on: function(cb) {
-            var hasMessages = messagesEnable;
+            var firstOn = messagesEnable;
             messagesEnable = true;
             var pageId = mono.pageId;
             var onMessage = function(message) {
@@ -356,7 +356,7 @@ var mono = function (env) {
                 if (message.monoResponseId) {
                     return msgTools.cbCaller(message, pageId);
                 }
-                if (hasMessages === false && message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
+                if (firstOn === false && message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
                     return serviceList[message.monoFrom].onMessage(message.data);
                 }
                 var response = msgTools.mkResponse(message, pageId);
@@ -375,7 +375,7 @@ var mono = function (env) {
             chrome.runtime.sendMessage(message);
         },
         on: function(cb) {
-            var hasMessages = messagesEnable;
+            var firstOn = messagesEnable;
             messagesEnable = true;
             var pageId = mono.pageId;
             chrome.runtime.onMessage.addListener(function(message) {
@@ -385,7 +385,7 @@ var mono = function (env) {
                 if (message.monoResponseId) {
                     return msgTools.cbCaller(message, pageId);
                 }
-                if (hasMessages === false && message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
+                if (firstOn === false && message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
                     return serviceList[message.monoFrom].onMessage(message.data);
                 }
                 var response = msgTools.mkResponse(message, pageId);
@@ -400,7 +400,7 @@ var mono = function (env) {
             opera.extension.postMessage(message);
         },
         on: function(cb) {
-            var hasMessages = messagesEnable;
+            var firstOn = messagesEnable;
             messagesEnable = true;
             var pageId = mono.pageId;
             opera.extension.onmessage = function(message) {
@@ -410,7 +410,7 @@ var mono = function (env) {
                 if (message.monoResponseId) {
                     return msgTools.cbCaller(message, pageId);
                 }
-                if (hasMessages === false && message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
+                if (firstOn === false && message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
                     return serviceList[message.monoFrom].onMessage(message.data);
                 }
                 var response = msgTools.mkResponse(message, pageId);
