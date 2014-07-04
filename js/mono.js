@@ -46,7 +46,11 @@ var mono = function (env) {
         var storage = storage;
         return {
             set: function(key, value) {
-                storage[key] = value;
+                if (value === null || value === undefined) {
+                    delete storage[key];
+                } else {
+                    storage[key] = value;
+                }
                 var data = {};
                 data[monoLocalStorageName] = storage;
                 mono.storage.set(data, function() {
@@ -88,6 +92,9 @@ var mono = function (env) {
                     return storage = {};
                 }
                 for (var key in changes) {
+                    if (changes[key] === null || changes[key] === undefined) {
+                        return delete storage[key];
+                    }
                     storage[key] = changes[key];
                 }
             }
