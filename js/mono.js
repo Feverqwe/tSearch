@@ -160,6 +160,9 @@ var mono = function (env) {
         set: function(obj, cb) {
             mono.sendMessage({action: 'set', data: obj}, cb, 'monoStorage');
         },
+        remove: function(obj, cb) {
+            mono.sendMessage({action: 'remove', data: obj}, cb, 'monoStorage');
+        },
         clear: function(cb) {
             mono.sendMessage({action: 'clear'}, cb, 'monoStorage');
         }
@@ -200,8 +203,8 @@ var mono = function (env) {
         },
         remove: function (obj, cb) {
             if (Array.isArray(obj)) {
-                for (var i = 0, len = src.length; i < len; i++) {
-                    var key = src[i];
+                for (var i = 0, len = obj.length; i < len; i++) {
+                    var key = obj[i];
                     delete localStorage[key];
                 }
             } else {
@@ -251,8 +254,8 @@ var mono = function (env) {
             },
             remove: function (obj, cb) {
                 if (Array.isArray(obj)) {
-                    for (var i = 0, len = src.length; i < len; i++) {
-                        var key = src[i];
+                    for (var i = 0, len = obj.length; i < len; i++) {
+                        var key = obj[i];
                         delete ss.storage[key];
                     }
                 } else {
