@@ -38,6 +38,8 @@ var mono = function (env) {
     mono.debug = {
         massages: false
     };
+
+    var messagesEnable = false;
     var serviceList = {};
 
     var monoLocalStorageServiceName = 'monoLS';
@@ -46,10 +48,14 @@ var mono = function (env) {
         var storage = storage;
         return {
             set: function(key, value) {
+                var oldValue = storage[key];
                 if (value === null || value === undefined) {
                     delete storage[key];
                 } else {
                     storage[key] = value;
+                }
+                if (value === oldValue) {
+                    return;
                 }
                 var data = {};
                 data[monoLocalStorageName] = storage;
@@ -57,7 +63,8 @@ var mono = function (env) {
                     var message = {
                         data: {},
                         monoTo: defaultId,
-                        monoFrom: monoLocalStorageServiceName
+                        monoFrom: monoLocalStorageServiceName,
+                        monoService: 1
                     };
                     message.data[key] = value;
                     mono.sendMessage.send(message);
@@ -102,6 +109,9 @@ var mono = function (env) {
     };
     mono.localStorage = function() {
         var vLS = function(cb) {
+            if (!messagesEnable) {
+                mono.onMessage(function (message) {});
+            }
             mono.storage.get(monoLocalStorageName, function(data) {
                 var smls = monoLocalStorage(data[monoLocalStorageName] || {});
                 serviceList[monoLocalStorageServiceName] = smls;
@@ -311,6 +321,7 @@ var mono = function (env) {
             addon.port.emit(message.monoTo, message);
         },
         on: function(cb) {
+            messagesEnable = true;
             var pageId = mono.pageId;
             var onMessage = function(message) {
                 if (message.monoTo !== pageId && message.monoTo !== defaultId) {
@@ -320,7 +331,7 @@ var mono = function (env) {
                     return msgTools.cbCaller(message, pageId);
                 }
                 if (message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
-                    return serviceList[message.monoFrom].onMessage(message);
+                    return serviceList[message.monoFrom].onMessage(message.data);
                 }
                 var response = msgTools.mkResponse(message, pageId);
                 cb(message.data, response);
@@ -338,6 +349,7 @@ var mono = function (env) {
             chrome.runtime.sendMessage(message);
         },
         on: function(cb) {
+            messagesEnable = true;
             var pageId = mono.pageId;
             chrome.runtime.onMessage.addListener(function(message) {
                 if (message.monoTo !== pageId && message.monoTo !== defaultId) {
@@ -345,6 +357,9 @@ var mono = function (env) {
                 }
                 if (message.monoResponseId) {
                     return msgTools.cbCaller(message, pageId);
+                }
+                if (message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
+                    return serviceList[message.monoFrom].onMessage(message.data);
                 }
                 var response = msgTools.mkResponse(message, pageId);
                 cb(message.data, response);
@@ -358,6 +373,7 @@ var mono = function (env) {
             opera.extension.postMessage(message);
         },
         on: function(cb) {
+            messagesEnable = true;
             var pageId = mono.pageId;
             opera.extension.onmessage = function(message) {
                 if (message.monoTo !== pageId && message.monoTo !== defaultId) {
@@ -365,6 +381,9 @@ var mono = function (env) {
                 }
                 if (message.monoResponseId) {
                     return msgTools.cbCaller(message, pageId);
+                }
+                if (message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
+                    return serviceList[message.monoFrom].onMessage(message.data);
                 }
                 var response = msgTools.mkResponse(message, pageId);
                 cb(message.data, response);
