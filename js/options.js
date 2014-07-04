@@ -1,6 +1,4 @@
 var options = function() {
-    var isFF = window.Application !== undefined && Application.name === "Firefox";
-    var isChromeum = (window.chrome !== undefined);
     var listOptions;
     var dom_cache = {};
     var var_cache = {
@@ -52,15 +50,10 @@ var options = function() {
             language = mono.localStorage.get('lang');
         }
         if (language === undefined) {
-            language = 'en';
-            if ( (isChromeum && chrome.i18n && chrome.i18n.getMessage("lang") === 'ru') ||
-                 (navigator.language && navigator.language.substr(0,2) === 'ru')
-              ) {
-                language = 'ru';
-            }
+            language = navigator.language.substr(0,2);
         }
         window._lang = get_lang(language);
-        dom_cache.select_language.val(language);
+        dom_cache.select_language.val(_lang.t);
         $.each(_lang.settings, function(k, v) {
             var el = $('[data-lang=' + k + ']');
             var el_len = el.length;
@@ -320,11 +313,7 @@ var options = function() {
     };
     var getBackup = function() {
         var data;
-        if (isFF) {
-            data = $.extend({},localStorage2);
-        } else {
-            data = $.extend({},localStorage);
-        }
+        data = $.extend({}, mono.localStorage.get());
         var json = JSON.stringify(data);
         dom_cache.textarea_backup.val(json);
         return json;
@@ -337,15 +326,9 @@ var options = function() {
                 alert(_lang.str33 + "\n" + err);
                 return;
             }
-            if (isChromeum) {
-                chrome.storage.local.clear();
-                chrome.storage.local.set(storage);
-            }
-            if (isFF) {
-                localStorage2.clear();
-            } else {
-                localStorage.clear();
-            }
+            mono.storage.local.clear();
+            mono.storage.local.set(storage);
+            mono.localStorage.clear();
             for (var item in data) {
                 if (data.hasOwnProperty(item) === false) {
                     continue;
@@ -354,11 +337,7 @@ var options = function() {
                 if (value === undefined) {
                     continue;
                 }
-                if (isFF) {
-                    localStorage2[item] = value;
-                } else {
-                    localStorage[item] = value;
-                }
+                mono.localStorage.set(item, value);
             }
             window.location.reload();
         });
@@ -398,7 +377,7 @@ var options = function() {
         }
         obj[chank + "inf"] = arr_l;
         obj[chank + arr_l] = "END";
-        chrome.storage.sync.set(obj, cb);
+        mono.storage.sync.set(obj, cb);
     };
     var clear_broken = function(chank, obj, len) {
         var chank_len = chank.length;
@@ -417,12 +396,12 @@ var options = function() {
             }
         });
         if (rm_list.length > 0) {
-            chrome.storage.sync.remove(rm_list);
+            mono.storage.sync.remove(rm_list);
             console.log("Garbage: ", rm_list.length);
         }
     };
     var getPartedBackup = function(chank, cb) {
-        chrome.storage.sync.get(function(data) {
+        mono.storage.sync.get(function(data) {
             var content_len = data[chank + 'inf'];
             if (content_len === undefined) {
                 console.log("Item not found!", chank);
@@ -518,12 +497,12 @@ var options = function() {
                 dom_cache.body.find('div.page.active').removeClass('active');
                 dom_cache.body.find('div.' + page).addClass('active');
             });
-            if (isFF) {
+            if (mono.isFF) {
                 //FF
                 dom_cache.magic_btn.hide();
                 dom_cache.add_in_omnibox.closest('ul').hide();
             }
-            if (!isChromeum) {
+            if (!mono.isChrome) {
                 //opera 12 and firefox
                 dom_cache.add_in_omnibox.closest('ul').hide();
                 dom_cache.google_analytics.closest('fieldset').hide();
@@ -534,17 +513,14 @@ var options = function() {
                 // Opera 12
                 dom_cache.search_popup.closest('ul').hide();
             }
-            if (isChromeum && chrome.extension !== undefined) {
+            if (mono.isChrome && !mono.isChromeApp) {
                 //Chromeum extension
-                var bgp = chrome.extension.getBackgroundPage();
-                if (!bgp._type_ext) {
-                    dom_cache.search_popup.closest('ul').hide();
-                }
+                dom_cache.search_popup.closest('ul').hide();
             }
-            if (isChromeum && chrome.storage !== undefined) {
+            if (mono.isChrome) {
                 // Chromeum with storage
                 dom_cache.clear_cloud.on('click', function() {
-                    chrome.storage.sync.clear();
+                    mono.storage.sync.clear();
                     dom_cache.get_from_cloud.prop('disabled', true);
                 });
                 dom_cache.save_in_cloud.on('click', function() {
@@ -570,7 +546,7 @@ var options = function() {
                         dom_cache.textarea_restore.val(content);
                     });
                 });
-                chrome.storage.sync.get("bk_ch_inf", function(val) {
+                mono.storage.sync.get("bk_ch_inf", function(val) {
                     if (val.bk_ch_inf !== undefined) {
                         return;
                     }

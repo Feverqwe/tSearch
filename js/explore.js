@@ -618,7 +618,8 @@ var explore = function() {
         var_cache['exp_cache_'+type].content = content;
         var storage = {};
         storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-        mono.storage.set(storage);
+        var storageType = (type === 'favorites')?'sync':'local';
+        mono.storage[storageType].set(storage);
     };
     var xhr_send = function(type, source, page, page_mode) {
         source.xhr_wait_count++;
@@ -855,7 +856,7 @@ var explore = function() {
          */
         var quality_len = quality.length;
         if (quality_len !== 0 && cache === undefined) {
-            if (window.chrome !== undefined || type === 'favorites' || type === 'kp_favorites') {
+            if (mono.isChrome || type === 'favorites' || type === 'kp_favorites') {
                 var_cache.qualityCache[request] = quality;
             }
             var_cache.qualityBoxCache[request] = quality[0].qualityBox;
@@ -1104,7 +1105,8 @@ var explore = function() {
                             var_cache['exp_cache_'+type] = {keepAlive: 0, content: content};
                             var storage = {};
                             storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                            mono.storage.set(storage);
+                            var storageType = (type === 'favorites')?'sync':'local';
+                            mono.storage[storageType].set(storage);
                             $this.removeClass('loading');
                         },
                         error: function(){
@@ -1125,7 +1127,8 @@ var explore = function() {
                 content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                 var storage = {};
                 storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                mono.storage.set(storage);
+                var storageType = (type === 'favorites')?'sync':'local';
+                mono.storage[storageType].set(storage);
             });
             dom_cache.explore_ul.on('click', 'div.picture > div.rmFavorite', function(e){
                 var $this = $(this);
@@ -1136,7 +1139,8 @@ var explore = function() {
                 content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                 var storage = {};
                 storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                mono.storage.set(storage);
+                var storageType = (type === 'favorites')?'sync':'local';
+                mono.storage[storageType].set(storage);
             });
             dom_cache.explore_ul.on('click', 'div.picture > div.edit', function(e){
                 var $this = $(this);
@@ -1158,7 +1162,8 @@ var explore = function() {
                         content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                         var storage = {};
                         storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                        mono.storage.set(storage);
+                        var storageType = (type === 'favorites')?'sync':'local';
+                        mono.storage[storageType].set(storage);
                     });
             });
             dom_cache.explore_ul.on('click', 'div.picture > a.link', function(e){
@@ -1283,7 +1288,8 @@ var explore = function() {
                     content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                     var storage = {};
                     storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                    mono.storage.set(storage);
+                    var storageType = (type === 'favorites')?'sync':'local';
+                    mono.storage[storageType].set(storage);
                 }
             });
             dom_cache.window.on('resize', function(e) {
@@ -1332,7 +1338,7 @@ var explore = function() {
                     var_cache.resize_timer_work = 0;
                 }, 250);
             });
-            if (options.allow_favorites_sync === 1 && window.chrome !== undefined && chrome.storage !== undefined) {
+            if (mono.isChrome && options.allow_favorites_sync === 1) {
                 chrome.storage.onChanged.addListener(function(changes) {
                     for (var key in changes) {
                         if (changes.hasOwnProperty(key) === false) {

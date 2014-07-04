@@ -198,6 +198,17 @@ var mono = function (env) {
             }
             cb && cb();
         },
+        remove: function (obj, cb) {
+            if (Array.isArray(obj)) {
+                for (var i = 0, len = src.length; i < len; i++) {
+                    var key = src[i];
+                    delete localStorage[key];
+                }
+            } else {
+                delete localStorage[obj];
+            }
+            cb && cb();
+        },
         clear: function (cb) {
             localStorage.clear();
             cb && cb();
@@ -235,6 +246,17 @@ var mono = function (env) {
                 var key;
                 for (key in obj) {
                     ss.storage[key] = obj[key];
+                }
+                cb && cb();
+            },
+            remove: function (obj, cb) {
+                if (Array.isArray(obj)) {
+                    for (var i = 0, len = src.length; i < len; i++) {
+                        var key = src[i];
+                        delete ss.storage[key];
+                    }
+                } else {
+                    delete ss.storage[obj];
                 }
                 cb && cb();
             },
