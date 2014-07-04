@@ -20,6 +20,9 @@ var mono = function (env) {
     } else {
         if (window.chrome !== undefined) {
             mono.isChrome = true;
+            if (window.chrome.app.getDetails().app) {
+                mono.isChromeApp = true;
+            }
         } else
         if (window.opera !== undefined) {
             mono.isOpera = true;
@@ -32,7 +35,9 @@ var mono = function (env) {
     }
     mono.addon = addon;
     mono.pageId = defaultId;
-    mono.debug = {};
+    mono.debug = {
+        massages: false
+    };
     var serviceList = {};
 
     var monoLocalStorageServiceName = 'monoLS';
@@ -88,19 +93,19 @@ var mono = function (env) {
             }
         }
     };
-    mono.LocalStorage = function() {
+    mono.localStorage = function() {
         var vLS = function(cb) {
             mono.storage.get(monoLocalStorageName, function(data) {
                 var smls = monoLocalStorage(data[monoLocalStorageName] || {});
                 serviceList[monoLocalStorageServiceName] = smls;
-                mono.LocalStorage.get = smls.get;
-                mono.LocalStorage.set = smls.set;
-                mono.LocalStorage.clear = smls.clear;
+                mono.localStorage.get = smls.get;
+                mono.localStorage.set = smls.set;
+                mono.localStorage.clear = smls.clear;
                 cb && cb();
             });
         };
         var rLS = function(cb) {
-            mono.LocalStorage.get = function(key) {
+            mono.localStorage.get = function(key) {
                 if (key === undefined || key === null) {
                     var copyStorage = {};
                     for (var item in localStorage) {
@@ -113,10 +118,10 @@ var mono = function (env) {
                 }
                 return localStorage[key];
             };
-            mono.LocalStorage.set = function(key, value) {
+            mono.localStorage.set = function(key, value) {
                 localStorage[key] = value;
             };
-            mono.LocalStorage.clear = function() {
+            mono.localStorage.clear = function() {
                 localStorage.clear();
             };
             cb && cb();
@@ -254,6 +259,7 @@ var mono = function (env) {
         var id = 0;
         return {
             cbCollector: function (message, cb) {
+                mono.debug.message && mono('cbCollector', message);
                 if (cb !== undefined) {
                     if (cbStack.length > 10) {
                         delete cbObj[cbStack.shift()];
@@ -265,6 +271,7 @@ var mono = function (env) {
                 }
             },
             cbCaller: function(message, pageId) {
+                mono.debug.message && mono('cbCaller', message);
                 if (cbObj[message.monoResponseId] === undefined) {
                     return mono(pageId+':','Message response not found!', message);
                 }
@@ -273,6 +280,7 @@ var mono = function (env) {
                 cbStack.splice(cbStack.indexOf(message.monoResponseId), 1);
             },
             mkResponse: function(message, pageId) {
+                mono.debug.message && mono('mkResponse', message);
                 var response;
                 if (message.monoCallbackId !== undefined) {
                     response = function(responseMessage) {
@@ -363,6 +371,7 @@ var mono = function (env) {
             monoTo: to || defaultId,
             monoFrom: mono.pageId
         };
+        mono.debug.message && mono('sendMessage', 'to:', to, 'hasCallback', !!cb, message);
         mono.sendMessage.send(message, cb);
     };
 
