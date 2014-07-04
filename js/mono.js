@@ -434,8 +434,12 @@ var mono = function (env) {
         mono.onMessage = chMessaging.on;
     } else
     if (mono.isFF) {
-        mono.sendMessage.send = ffMessaging.send;
-        mono.onMessage = ffMessaging.on;
+        if (mono.addon === undefined || mono.addon.port === undefined) {
+            mono.sendMessage.send = mono.onMessage = function() {};
+        } else {
+            mono.sendMessage.send = ffMessaging.send;
+            mono.onMessage = ffMessaging.on;
+        }
     } else
     if (mono.isOpera) {
         mono.sendMessage.send = opMessaging.send;

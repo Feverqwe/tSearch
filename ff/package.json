@@ -1,0 +1,14 @@
+{
+  "name": "torrents_multisearch",
+  "title": "Torrents MultiSearch",
+  "id": "jid1-7XBKB605W1k0kg",
+  "description": "Torrents MultiSearch - поиск по нескольки трекерам сразу!",
+  "author": "Anton V.",
+  "license": "MPL 2.0",
+  "version": "0.1",
+  "permissions": {
+    "cross-domain-content": ["http://*", "https://*"]
+  },
+  "icon": "data/icons/icon-48.png",
+  "icon64": "data/icons/icon-64.png"
+}

@@ -625,3 +625,6 @@ var get_lang = function (lang) {
         return lang_arr_en;
     }
 };
+if (typeof window === 'undefined') {
+    exports.get_lang = get_lang;
+}

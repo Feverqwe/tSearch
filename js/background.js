@@ -1,3 +1,19 @@
+if (typeof window === 'undefined') {
+    window = require("sdk/window/utils").getMostRecentBrowserWindow();
+    window.isModule = true;
+    mono = require('./mono.js');
+}
+var init = function (env, lang) {
+    if (env) {
+        mono = mono.init(env);
+        window.get_lang = lang.get_lang;
+    }
+    mono.pageId = 'bg';
+    mono.localStorage(function() {
+        bg.boot();
+        bg.update();
+    });
+};
 var bg = function() {
     /**
      * @namespace chrome
@@ -11,8 +27,7 @@ var bg = function() {
      * @namespace chrome.browserAction.onClicked
      * @namespace chrome.browserAction.setPopup
      */
-    var _lang;
-    var btn_init;
+    var _lang, btn_init;
     var add_in_omnibox = function() {
         var add_in_omnibox = parseInt(mono.localStorage.get('add_in_omnibox') || 1);
         if (add_in_omnibox === 0) {
@@ -70,22 +85,26 @@ var bg = function() {
             popup: (show_popup)?'popup.html':''
         });
     };
-    mono.onMessage(function(message) {
-        if (message === 'bg_update') {
-            bg.update();
-        }
-    });
     return {
-        update: function() {
-            mono.localStorage(function() {
-                _lang = get_lang( mono.localStorage.get('lang') || window.navigator.language.substr(0, 2) );
-                add_in_omnibox();
-                update_context_menu();
-                if (mono.isChrome && !mono.isChromeApp) {
-                    update_btn_action();
+        boot: function() {
+            _lang = window.get_lang( mono.localStorage.get('lang') || window.navigator.language.substr(0, 2) );
+            mono.onMessage(function(message) {
+                if (message === 'bg_update') {
+                    bg.update();
                 }
             });
+        },
+        update: function() {
+            add_in_omnibox();
+            update_context_menu();
+            if (mono.isChrome && !mono.isChromeApp) {
+                update_btn_action();
+            }
         }
     };
 }();
-bg.update();
+if (window.isModule) {
+    exports.init = init;
+} else {
+    init();
+}
