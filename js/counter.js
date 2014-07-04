@@ -1,5 +1,5 @@
 var _gaq = _gaq || [];
-if (parseInt(GetSettings('google_analytics') || 0) === 0) {
+if (parseInt(mono.localStorage.get('google_analytics') || 0) === 0) {
     _gaq.push(['_setAccount', 'UA-10717861-22']);
     _gaq.push(['_trackPageview']);
     (function() {

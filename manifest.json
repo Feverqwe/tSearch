@@ -16,7 +16,7 @@
         "keyword" : "tms"
     },
     "background": {
-        "scripts": ["js/storage.js","js/lang.js","js/background.js"]
+        "scripts": ["js/mono.js","js/lang.js","js/background.js"]
     },
     "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
     "name": "__MSG_appName__",

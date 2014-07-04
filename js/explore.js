@@ -618,7 +618,7 @@ var explore = function() {
         var_cache['exp_cache_'+type].content = content;
         var storage = {};
         storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-        SetStorageSettings(storage);
+        mono.storage.set(storage);
     };
     var xhr_send = function(type, source, page, page_mode) {
         source.xhr_wait_count++;
@@ -651,7 +651,7 @@ var explore = function() {
         return parseInt(currentDate.getTime() / 1000) - day*24*60*60 - hours*60*60 - minutes*60 - seconds;
     };
     var load_content = function(type) {
-        GetStorageSettings('exp_cache_'+type, function(storage) {
+        mono.storage.get('exp_cache_'+type, function(storage) {
             var cache = JSON.parse(storage['exp_cache_'+type] || '{}');
             var_cache['exp_cache_'+type] = cache;
             if (type === 'kp_favorites' || type === 'favorites') {
@@ -687,7 +687,7 @@ var explore = function() {
         });
     };
     var load_topList = function() {
-        GetStorageSettings('topList', function(storage) {
+        mono.storage.get('topList', function(storage) {
             var cache = JSON.parse(storage.topList || '{}');
             var_cache.topList = cache;
             var date = getCacheDate([0,1,2,3,4,5,6]);
@@ -713,7 +713,7 @@ var explore = function() {
                     });
                     var_cache.topList.content = keywords;
                     topList_write();
-                    SetStorageSettings({topList: JSON.stringify(var_cache.topList)});
+                    mono.storage.set({topList: JSON.stringify(var_cache.topList)});
                 },
                 error: function() {
                     if (var_cache.topList.content === undefined) {
@@ -866,7 +866,7 @@ var explore = function() {
                 var storage = {};
                 storage['qualityCache'] = JSON.stringify(var_cache.qualityCache);
                 storage['qualityBoxCache'] = JSON.stringify(var_cache.qualityBoxCache);
-                SetStorageSettings(storage);
+                mono.storage.set(storage);
             }, 1000);
         }
         if (var_cache.qulityList[type][index] === undefined) {
@@ -1029,7 +1029,7 @@ var explore = function() {
                         load_content(type);
                     }
                 }
-                SetSettings('listOptions', JSON.stringify(listOptions));
+                mono.localStorage.set('listOptions', JSON.stringify(listOptions));
             });
             dom_cache.explore_ul.on('click', 'div.action > div.setup', function (e){
                 e.preventDefault();
@@ -1052,7 +1052,7 @@ var explore = function() {
                         calculateSize(type);
                         var_cache.source[type].body.css('min-height', 'auto');
                         content_write(type, content, page, 1);
-                        SetSettings('listOptions', JSON.stringify(listOptions));
+                        mono.localStorage.set('listOptions', JSON.stringify(listOptions));
                     }
                 });
                 setup_body.toggleClass('show');
@@ -1104,7 +1104,7 @@ var explore = function() {
                             var_cache['exp_cache_'+type] = {keepAlive: 0, content: content};
                             var storage = {};
                             storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                            SetStorageSettings(storage);
+                            mono.storage.set(storage);
                             $this.removeClass('loading');
                         },
                         error: function(){
@@ -1125,7 +1125,7 @@ var explore = function() {
                 content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                 var storage = {};
                 storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                SetStorageSettings(storage);
+                mono.storage.set(storage);
             });
             dom_cache.explore_ul.on('click', 'div.picture > div.rmFavorite', function(e){
                 var $this = $(this);
@@ -1136,7 +1136,7 @@ var explore = function() {
                 content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                 var storage = {};
                 storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                SetStorageSettings(storage);
+                mono.storage.set(storage);
             });
             dom_cache.explore_ul.on('click', 'div.picture > div.edit', function(e){
                 var $this = $(this);
@@ -1158,7 +1158,7 @@ var explore = function() {
                         content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                         var storage = {};
                         storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                        SetStorageSettings(storage);
+                        mono.storage.set(storage);
                     });
             });
             dom_cache.explore_ul.on('click', 'div.picture > a.link', function(e){
@@ -1204,7 +1204,7 @@ var explore = function() {
                 listOptions[type].c = parseInt(this.value);
                 var_cache.source[type].body.css('min-height', 'auto');
                 content_write(type, content, page, 1);
-                SetSettings('listOptions', JSON.stringify(listOptions));
+                mono.localStorage.set('listOptions', JSON.stringify(listOptions));
             });
             dom_cache.explore_ul.on('click','div.setup_body > div.default_size', function(e){
                 e.preventDefault();
@@ -1218,7 +1218,7 @@ var explore = function() {
                 calculateSize(type);
                 var_cache.source[type].body.css('min-height', 'auto');
                 content_write(type, content, page, 1);
-                SetSettings('listOptions', JSON.stringify(listOptions));
+                mono.localStorage.set('listOptions', JSON.stringify(listOptions));
             });
             dom_cache.explore_ul.sortable({
                 axis: 'y',
@@ -1245,7 +1245,7 @@ var explore = function() {
                         }
                     });
                     listOptions = lo;
-                    SetSettings('listOptions', JSON.stringify(listOptions));
+                    mono.localStorage.set('listOptions', JSON.stringify(listOptions));
                 }
             });
             dom_cache.explore.sortable({
@@ -1283,7 +1283,7 @@ var explore = function() {
                     content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                     var storage = {};
                     storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                    SetStorageSettings(storage);
+                    mono.storage.set(storage);
                 }
             });
             dom_cache.window.on('resize', function(e) {
@@ -1380,20 +1380,20 @@ var explore = function() {
                 var_cache.qualityCache_limit = 100;
                 var_cache.qualityBoxCache_limit = 200;
             }
-            GetStorageSettings(['qualityCache', 'qualityBoxCache'], function(storage){
+            mono.storage.get(['qualityCache', 'qualityBoxCache'], function(storage){
                 var_cache.qualityCache = JSON.parse( storage.qualityCache || '{}' );
                 var_cache.qualityBoxCache = JSON.parse( storage.qualityBoxCache || '{}' );
             });
 
-            options.use_english_postername= parseInt(GetSettings('use_english_postername') || 0);
-            options.top_cache= JSON.parse(GetSettings('topCache') || "{}");
-            options.kp_folder_id= parseInt(GetSettings('kinopoisk_f_id') || 1);
-            options.hideTopSearch= parseInt(GetSettings('hideTopSearch') || engine.def_settings.hideTopSearch.v);
-            options.allow_favorites_sync= parseInt(GetSettings('allow_favorites_sync') || 1);
-            options.noTransitionLinks= parseInt(GetSettings('noTransitionLinks') || 1);
-            options.noTransition= parseInt(GetSettings('noTransition') || 0);
+            options.use_english_postername= parseInt(mono.localStorage.get('use_english_postername') || 0);
+            options.top_cache= JSON.parse(mono.localStorage.get('topCache') || "{}");
+            options.kp_folder_id= parseInt(mono.localStorage.get('kinopoisk_f_id') || 1);
+            options.hideTopSearch= parseInt(mono.localStorage.get('hideTopSearch') || engine.def_settings.hideTopSearch.v);
+            options.allow_favorites_sync= parseInt(mono.localStorage.get('allow_favorites_sync') || 1);
+            options.noTransitionLinks= parseInt(mono.localStorage.get('noTransitionLinks') || 1);
+            options.noTransition= parseInt(mono.localStorage.get('noTransition') || 0);
 
-            listOptions = JSON.parse(GetSettings('listOptions') || "{}");
+            listOptions = JSON.parse(mono.localStorage.get('listOptions') || "{}");
 
             content_options = {
                 favorites: {

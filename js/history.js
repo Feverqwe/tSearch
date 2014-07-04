@@ -77,7 +77,7 @@ var view = function() {
                 return;
             }
             var_cache.history.splice(index,1);
-            SetStorageSettings({history: JSON.stringify(var_cache.history)});
+            mono.storage.set({history: JSON.stringify(var_cache.history)});
             //writeHistory();
             return;
         }
@@ -88,7 +88,7 @@ var view = function() {
         var list_len = list.length;
         if (list_len === 1) {
             delete var_cache.click_history[request];
-            SetStorageSettings({click_history: JSON.stringify(var_cache.click_history)});
+            mono.storage.set({click_history: JSON.stringify(var_cache.click_history)});
             //writeClickHistory();
             return;
         }
@@ -102,7 +102,7 @@ var view = function() {
             return;
         }
         list.splice(index,1);
-        SetStorageSettings({click_history: JSON.stringify(var_cache.click_history)});
+        mono.storage.set({click_history: JSON.stringify(var_cache.click_history)});
         //writeClickHistory();
     };
     var u2ddmmyyyy = function(shtamp) {
@@ -164,7 +164,7 @@ var view = function() {
                     scrollTop: 0
                 }, 200);
             });
-            GetStorageSettings(['history', 'click_history'], function(storage){
+            mono.storage.get(['history', 'click_history'], function(storage){
                 var_cache.history = JSON.parse(storage.history || '[]');
                 var_cache.click_history = JSON.parse(storage.click_history || '{}');
                 writeHistory();
@@ -207,12 +207,12 @@ var view = function() {
                     }
                 });
                 var_cache.click_history = new_obj;
-                SetStorageSettings({click_history: JSON.stringify(new_obj)});
+                mono.storage.set({click_history: JSON.stringify(new_obj)});
             });
             $('div.content').removeClass('loading');
         },
         boot: function() {
-            window._lang = get_lang(GetSettings('lang') || navigator.language.substr(0, 2));
+            window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
         }
     };
 }();

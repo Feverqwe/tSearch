@@ -1058,7 +1058,7 @@ var magic = function() {
         },
         boot: function() {
             if (window._lang === undefined) {
-                window._lang = get_lang(GetSettings('lang') || navigator.language.substr(0, 2));
+                window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
             }
         }
     };

@@ -60,7 +60,7 @@ var engine = function() {
         /*
          * загружает пользовательский модуль.
          */
-        var ct = GetSettings(uid);
+        var ct = mono.localStorage.get(uid);
         if (ct === undefined || ct === 'undefined') {
             return;
         }
@@ -366,7 +366,7 @@ var engine = function() {
     };
     var wrapAllCustomTrList = function (list) {
         var _list = $.extend({}, list);
-        var custom_list = JSON.parse(GetSettings('costume_tr') || '[]');
+        var custom_list = JSON.parse(mono.localStorage.get('costume_tr') || '[]');
         custom_list.forEach(function(item) {
             var key = 'ct_'+item;
             if (_list[key] === undefined) {
@@ -416,7 +416,7 @@ var engine = function() {
             title = _lang.label_def_profile;
         }
         profileList[title] = undefined;
-        SetSettings('profileList', JSON.stringify(profileList));
+        mono.localStorage.set('profileList', JSON.stringify(profileList));
         return title;
     };
     var loadProfile = function(title, cb) {
@@ -424,7 +424,7 @@ var engine = function() {
          * загрузка профиля
          */
         if (title === undefined) {
-            title = GetSettings('currentProfile');
+            title = mono.localStorage.get('currentProfile');
         }
         if (title === undefined) {
             var first;
@@ -443,7 +443,7 @@ var engine = function() {
             }
         }
         loadTrList(profileList[title]);
-        SetSettings('currentProfile', title);
+        mono.localStorage.set('currentProfile', title);
         if (cb !== undefined) {
             cb(currentTrList);
         }
@@ -479,7 +479,7 @@ var engine = function() {
         }
         if (nohistory === undefined) {
             if (historyList.length === 0) {
-                GetStorageSettings('history', function(storage){
+                mono.storage.get('history', function(storage){
                     if (historyList.length === 0) {
                         historyList = JSON.parse(storage.history || '[]');
                         if (engine !== undefined && engine.history !== undefined) {
@@ -550,7 +550,7 @@ var engine = function() {
         if (historyList_len - 1 > var_cache.historyLimit) {
             historyList = historyList.slice(-var_cache.historyLimit);
         }
-        SetStorageSettings({history: JSON.stringify(historyList)});
+        mono.storage.set({history: JSON.stringify(historyList)});
     };
     var contentFilter = function(content) {
         return content.replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
@@ -583,7 +583,7 @@ var engine = function() {
         },
         boot: function() {
             if (window._lang === undefined) {
-                window._lang = get_lang(GetSettings('lang') || navigator.language.substr(0, 2));
+                window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
             }
             if ( _lang.t === 'en' ) {
                 def_settings.hideTopSearch.v = 1;
@@ -596,8 +596,8 @@ var engine = function() {
                 def_listOptions.imdb_popular.e = 0;
                 def_listOptions.imdb_serials.e = 0;
             }
-            profileList = JSON.parse(GetSettings('profileList') || '{}');
-            GetStorageSettings('history', function(storage){
+            profileList = JSON.parse(mono.localStorage.get('profileList') || '{}');
+            mono.storage.get('history', function(storage){
                 historyList = JSON.parse(storage.history || '[]');
                 if (engine !== undefined && engine.history !== undefined) {
                     engine.history = historyList;

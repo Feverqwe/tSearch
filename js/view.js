@@ -97,18 +97,18 @@ var view = function() {
 
     var options = {
         single_filter_mode: true,
-        filter_panel_to_left: parseInt(GetSettings('filter_panel_to_left') || 1),
-        resizableTrList: parseInt(GetSettings('torrent_list_r') || 0),
-        trListHeight: GetSettings('torrent_list_h'),
-        parenthetical_select_enable: parseInt(GetSettings('sub_select_enable') || 1),
-        autoComplete: parseInt(GetSettings('AutoComplite_opt') || 1),
-        allow_get_description: parseInt(GetSettings('allow_get_description') || 1),
-        no_blank_dl_link: parseInt(GetSettings('no_blank_dl_link') || 0),
-        noTransitionLinks: parseInt(GetSettings('noTransitionLinks') || 1),
-        noTransition: parseInt(GetSettings('noTransition') || 0)
+        filter_panel_to_left: parseInt(mono.localStorage.get('filter_panel_to_left') || 1),
+        resizableTrList: parseInt(mono.localStorage.get('torrent_list_r') || 0),
+        trListHeight: mono.localStorage.get('torrent_list_h'),
+        parenthetical_select_enable: parseInt(mono.localStorage.get('sub_select_enable') || 1),
+        autoComplete: parseInt(mono.localStorage.get('AutoComplite_opt') || 1),
+        allow_get_description: parseInt(mono.localStorage.get('allow_get_description') || 1),
+        no_blank_dl_link: parseInt(mono.localStorage.get('no_blank_dl_link') || 0),
+        noTransitionLinks: parseInt(mono.localStorage.get('noTransitionLinks') || 1),
+        noTransition: parseInt(mono.localStorage.get('noTransition') || 0)
     };
     var writeTrackerList = function(trList) {
-        dom_cache.torrent_list.find('option[value="'+GetSettings('currentProfile')+'"]').prop('selected', true);
+        dom_cache.torrent_list.find('option[value="'+mono.localStorage.get('currentProfile')+'"]').prop('selected', true);
         var_cache.trackers = {};
         dom_cache.trackers_ul.empty();
         dom_cache.body.children('style.tracker_icons').remove();
@@ -1658,8 +1658,8 @@ var view = function() {
         table_sort(colum, by);
         var_cache.table_sort_colum = colum;
         var_cache.table_sort_by = by;
-        SetSettings('table_sort_colum', colum);
-        SetSettings('table_sort_by', by);
+        mono.localStorage.set('table_sort_colum', colum);
+        mono.localStorage.set('table_sort_by', by);
     };
     var initResizeble = function() {
         dom_cache.torrent_list.resizable({
@@ -1670,7 +1670,7 @@ var view = function() {
                 ul.css('height', ui.size.height - top + 'px');
             },
             stop: function(e, ui) {
-                SetSettings('torrent_list_h', ui.size.height);
+                mono.localStorage.set('torrent_list_h', ui.size.height);
                 options.trListHeight = ui.size.height;
             },
             create: function(e, ui) {
@@ -1944,7 +1944,7 @@ var view = function() {
             }
         });
         var_cache.click_history = new_obj;
-        SetStorageSettings({click_history: JSON.stringify(new_obj)});
+        mono.storage.set({click_history: JSON.stringify(new_obj)});
     };
     var write_language = function() {
         dom_cache.form_search.children('.button').val(_lang['btn_form']);
@@ -2012,11 +2012,11 @@ var view = function() {
                     $('<option>',{value: value, text: text, selected: (value === 'all')})
                 );
             });
-            if (GetSettings('table_sort_colum') !== undefined) {
-                var_cache.table_sort_colum = GetSettings('table_sort_colum');
+            if (mono.localStorage.get('table_sort_colum') !== undefined) {
+                var_cache.table_sort_colum = mono.localStorage.get('table_sort_colum');
             }
-            if (GetSettings('table_sort_by') !== undefined) {
-                var_cache.table_sort_by = parseInt(GetSettings('table_sort_by'));
+            if (mono.localStorage.get('table_sort_by') !== undefined) {
+                var_cache.table_sort_by = parseInt(mono.localStorage.get('table_sort_by'));
             }
             if (HideSeed === 1) {
                 dom_cache.seed_filter.hide();
@@ -2166,7 +2166,7 @@ var view = function() {
                         dom_cache.torrent_list.resizable("enable");
                     }
                 }
-                SetSettings('torrent_list_r', options.resizableTrList);
+                mono.localStorage.set('torrent_list_r', options.resizableTrList);
             });
             dom_cache.word_filter.on('keyup', function() {
                 var value = $(this).val();
@@ -2455,18 +2455,18 @@ var view = function() {
                 var_cache.click_history_limit = 50;
                 var_cache.click_history_item_limit = 20;
             }
-            GetStorageSettings('click_history', function(storage) {
+            mono.storage.get('click_history', function(storage) {
                 var_cache.click_history = JSON.parse(storage.click_history || '{}');
             });
 
-            HideLeech = parseInt(GetSettings('HideLeech') || 1);
-            HideSeed = parseInt(GetSettings('HideSeed') || 0);
-            ShowIcons = parseInt(GetSettings('ShowIcons') || 1);
-            HideZeroSeed = parseInt(GetSettings('HideZeroSeed') || 0);
-            AdvFiltration = parseInt(GetSettings('AdvFiltration') || 2);
-            TeaserFilter = parseInt(GetSettings('TeaserFilter') || 1);
-            SubCategoryFilter = parseInt(GetSettings('SubCategoryFilter') || 0);
-            autoSetCat = parseInt(GetSettings('autoSetCat') || 1);
+            HideLeech = parseInt(mono.localStorage.get('HideLeech') || 1);
+            HideSeed = parseInt(mono.localStorage.get('HideSeed') || 0);
+            ShowIcons = parseInt(mono.localStorage.get('ShowIcons') || 1);
+            HideZeroSeed = parseInt(mono.localStorage.get('HideZeroSeed') || 0);
+            AdvFiltration = parseInt(mono.localStorage.get('AdvFiltration') || 2);
+            TeaserFilter = parseInt(mono.localStorage.get('TeaserFilter') || 1);
+            SubCategoryFilter = parseInt(mono.localStorage.get('SubCategoryFilter') || 0);
+            autoSetCat = parseInt(mono.localStorage.get('autoSetCat') || 1);
 
             table_colums = [
                 {title: _lang.table.time, text: _lang.table.time, type: 'time', size: 125},

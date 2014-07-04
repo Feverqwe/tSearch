@@ -10,12 +10,12 @@ var options = function() {
         var settings = {};
         $.each(engine.def_settings, function(type, attr) {
             if (attr.t === 'checkbox' || attr.t === 'radio' || attr.t === 'number') {
-                settings[type] = parseInt(GetSettings(type) || attr.v);
+                settings[type] = parseInt(mono.localStorage.get(type) || attr.v);
                 if (isNaN(settings[type])) {
                     settings[type] = attr.v;
                 }
             } else {
-                settings[type] = GetSettings(type) || attr.v;
+                settings[type] = mono.localStorage.get(type) || attr.v;
             }
         });
         return settings;
@@ -49,7 +49,7 @@ var options = function() {
     var write_language = function(language) {
         var selected = (language !== undefined) ? 1 : 0;
         if (language === undefined) {
-            language = GetSettings('lang');
+            language = mono.localStorage.get('lang');
         }
         if (language === undefined) {
             language = 'en';
@@ -102,7 +102,7 @@ var options = function() {
         }
     };
     var saveAll = function() {
-        SetSettings('lang', dom_cache.select_language.val());
+        mono.localStorage.set('lang', dom_cache.select_language.val());
         $.each(engine.def_settings, function(key, value) {
             if (value.t === "text" || value.t === "number") {
                 var val = $('input[name="' + key + '"]').val();
@@ -113,31 +113,31 @@ var options = function() {
                     val = parseInt(val);
                 }
                 settings[key] = val;
-                SetSettings(key, val);
+                mono.localStorage.set(key, val);
             } else
             if (value.t === "password") {
                 settings[key] = $('input[name="' + key + '"]').val();
-                SetSettings(key, settings[key]);
+                mono.localStorage.set(key, settings[key]);
             } else
             if (value.t === "checkbox") {
                 var val = ($('input[name="' + key + '"]').prop('checked')) ? 1 : 0;
                 settings[key] = val;
-                SetSettings(key, val);
+                mono.localStorage.set(key, val);
             } else
             if (value.t === "radio") {
                 var val = $('input[name="' + key + '"]:checked').val();
                 settings[key] = val;
-                SetSettings(key, val);
+                mono.localStorage.set(key, val);
             }
         });
         $.each(listOptions, function(key){
             var value = $('input[name='+key+']').prop('checked')?1:0;
             listOptions[key].e = value;
         });
-        SetSettings('listOptions', JSON.stringify(listOptions));
+        mono.localStorage.set('listOptions', JSON.stringify(listOptions));
         saveCurrentProfile();
-        SetSettings('profileList', JSON.stringify(profile));
-        SetSettings('currentProfile', current_profile);
+        mono.localStorage.set('profileList', JSON.stringify(profile));
+        mono.localStorage.set('currentProfile', current_profile);
         if (isChromeum && chrome.extension !== undefined) {
             //Chrome extension
             var bgp = chrome.extension.getBackgroundPage();
@@ -154,7 +154,7 @@ var options = function() {
     };
     var load_costume_torrents = function() {
         dom_cache.custom_list.get(0).textContent = '';
-        var customList = JSON.parse(GetSettings('costume_tr') || "[]");
+        var customList = JSON.parse(mono.localStorage.get('costume_tr') || "[]");
         if (customList.length === 0) {
             dom_cache.custom_list.append($('<td>', {colspan: 4, 'class': 'notorrent', 'data-lang': 51, text: _lang.settings[51]}));
             return;
@@ -162,12 +162,12 @@ var options = function() {
         var rm_list = [];
         var content = [];
         for (var i = 0, id; id = customList[i]; i++) {
-            var json = GetSettings('ct_' + id);
+            var json = mono.localStorage.get('ct_' + id);
             if (json === undefined) {
                 rm_list.push(id);
                 continue;
             }
-            var customTr = JSON.parse(GetSettings('ct_' + id));
+            var customTr = JSON.parse(mono.localStorage.get('ct_' + id));
             if (customTr.uid === undefined) {
                 rm_list.push(id);
                 continue;
@@ -195,7 +195,7 @@ var options = function() {
             rm_list.forEach(function(id) {
                 customList.splice(customList.indexOf(id),1);
             });
-            SetSettings('costume_tr', JSON.stringify(customList));
+            mono.localStorage.set('costume_tr', JSON.stringify(customList));
         }
         dom_cache.custom_list.append( content );
     };
@@ -228,7 +228,7 @@ var options = function() {
     };
     var loadProfile = function(current) {
         if (current === undefined) {
-            current = GetSettings('currentProfile');
+            current = mono.localStorage.get('currentProfile');
         }
         if (profile.hasOwnProperty(current)) {
             if (profile[current] === undefined) {
@@ -335,7 +335,7 @@ var options = function() {
         return json;
     };
     var settingsRestore = function(text) {
-        GetStorageSettings(['history', 'click_history'], function(storage) {
+        mono.storage.get(['history', 'click_history'], function(storage) {
             try {
                 var data = JSON.parse(text);
             } catch (err) {
@@ -694,7 +694,7 @@ var options = function() {
             });
             dom_cache.custom_add_btn.on('click', function() {
                 var str_code = dom_cache.custom_textarea.val();
-                var costume_tr = JSON.parse(GetSettings('costume_tr') || "[]");
+                var costume_tr = JSON.parse(mono.localStorage.get('costume_tr') || "[]");
                 var code = null;
                 try {
                     code = JSON.parse(str_code);
@@ -706,16 +706,16 @@ var options = function() {
                     alert(_lang.settings[56]);
                     return;
                 }
-                var ex = GetSettings('ct_' + code.uid) || 0;
+                var ex = mono.localStorage.get('ct_' + code.uid) || 0;
                 var ex_in_list = costume_tr.indexOf(code.uid) !== -1;
                 if (ex !== 0 && ex_in_list === true) {
                     alert(_lang.settings[54]);
                     return;
                 } else {
-                    SetSettings('ct_' + code.uid, str_code);
+                    mono.localStorage.set('ct_' + code.uid, str_code);
                     if (ex_in_list === false) {
                         costume_tr.push(code.uid);
-                        SetSettings('costume_tr', JSON.stringify(costume_tr));
+                        mono.localStorage.set('costume_tr', JSON.stringify(costume_tr));
                     }
                 }
                 load_costume_torrents();
@@ -728,7 +728,7 @@ var options = function() {
                 dom_cache.custom_edit_btn.parent().show();
                 dom_cache.custom_add_btn.parent().hide();
                 var uid = $(this).closest('tr').data('id');
-                var code = GetSettings('ct_' + uid) || '';
+                var code = mono.localStorage.get('ct_' + uid) || '';
                 dom_cache.custom_textarea.val(code);
                 dom_cache.custom_popup.data('id', uid).show();
             });
@@ -746,7 +746,7 @@ var options = function() {
                 if (uid !== code.uid) {
                     code.uid = parseInt(uid);
                 }
-                SetSettings('ct_' + code.uid, JSON.stringify(code));
+                mono.localStorage.set('ct_' + code.uid, JSON.stringify(code));
                 load_costume_torrents();
                 engine.getDefList();
                 writeTrackerList();
@@ -755,15 +755,15 @@ var options = function() {
             });
             dom_cache.custom_list.on('click', 'input[name=rm_ctr]', function() {
                 var uid = $(this).closest('tr').data('id');
-                var customList = JSON.parse(GetSettings('costume_tr') || "[]");
+                var customList = JSON.parse(mono.localStorage.get('costume_tr') || "[]");
                 var index = customList.indexOf(uid);
                 if (index === -1) {
                     console.log('Torrent not found! ', uid);
                     return;
                 }
                 customList.splice(index, 1);
-                SetSettings('ct_' + uid, undefined);
-                SetSettings('costume_tr', JSON.stringify(customList));
+                mono.localStorage.set('ct_' + uid, undefined);
+                mono.localStorage.set('costume_tr', JSON.stringify(customList));
                 delete torrent_lib['ct_' + uid];
                 load_costume_torrents();
                 engine.getDefList();
@@ -806,12 +806,12 @@ var options = function() {
         },
         boot: function() {
             if (window._lang === undefined) {
-                window._lang = get_lang(GetSettings('lang') || navigator.language.substr(0, 2));
+                window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
             }
-            listOptions = JSON.parse(GetSettings('listOptions') || "{}");
+            listOptions = JSON.parse(mono.localStorage.get('listOptions') || "{}");
             settings = loadSettings();
             profile = $.extend(true,{},engine.getProfileList());
-            current_profile = GetSettings('currentProfile');
+            current_profile = mono.localStorage.get('currentProfile');
         }
     };
 }();
