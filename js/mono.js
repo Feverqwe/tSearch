@@ -348,7 +348,8 @@ var mono = function (env) {
     }();
 
     var ffVirtualPort = function() {
-        var onCollector = [];
+        var onCollector = {};
+        var hasListener = false;
         mono.addon = addon = {
             port: {
                 emit: function(pageId, message) {
@@ -356,10 +357,14 @@ var mono = function (env) {
                     window.postMessage(msg, "*");
                 },
                 on: function(pageId, onMessage) {
-                    onCollector.push(onMessage);
-                    if (onCollector.length !== 1) {
+                    if (onCollector[pageId] === undefined) {
+                        onCollector[pageId] = [];
+                    }
+                    onCollector[pageId].push(onMessage);
+                    if (hasListener) {
                         return;
                     }
+                    hasListener = true;
                     window.addEventListener('monoMessage', function (e) {
                         if (e.detail[0] !== '<') {
                             return;
@@ -368,10 +373,10 @@ var mono = function (env) {
                         if (sepPos === -1) {
                             return;
                         }
-                        // var pageId = e.detail.substr(1, sepPos - 1);
+                        var pageId = e.detail.substr(1, sepPos - 1);
                         var data = e.detail.substr(sepPos + 1);
                         var json = JSON.parse(data);
-                        for (var i = 0, item; item = onCollector[i]; i++) {
+                        for (var i = 0, item; item = onCollector[pageId][i]; i++) {
                             item(json);
                         }
                     });
