@@ -38,6 +38,7 @@ var mono = function (env) {
 
         }
     }
+    mono.messageStack = 50;
     mono.addon = addon;
     mono.pageId = defaultId;
     mono.debug = {
@@ -301,14 +302,15 @@ var mono = function (env) {
     mono.storage.sync = storage_fn('sync');
 
     var msgTools = function() {
-        var cbObj = {};
+        var cbObj = mono.debug.cbStack = {};
         var cbStack = [];
         var id = 0;
         return {
             cbCollector: function (message, cb) {
                 mono.debug.messages && mono('cbCollector', message);
                 if (cb !== undefined) {
-                    if (cbStack.length > 10) {
+                    if (cbStack.length > mono.messageStack) {
+                        mono('Stack overflow!');
                         delete cbObj[cbStack.shift()];
                     }
                     id++;
@@ -320,7 +322,7 @@ var mono = function (env) {
             cbCaller: function(message, pageId) {
                 mono.debug.messages && mono('cbCaller', message);
                 if (cbObj[message.monoResponseId] === undefined) {
-                    return mono('Message response not found!');
+                    return mono('Send to', pageId, 'Id', message.monoResponseId,'Message response not found!');
                 }
                 cbObj[message.monoResponseId](message.data);
                 delete cbObj[message.monoResponseId];
