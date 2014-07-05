@@ -34,6 +34,7 @@ div.search_panel input.request {
     padding-left: 5px;
     padding-right: 20px;
     font-size: 1.143em;
+    float: left;
 }
 
 input.button {
@@ -50,6 +51,7 @@ input.button {
     border: 1px solid #cccccc;
     font-size: 1em;
     outline-color: rgb(81, 136, 255);
+    float: right;
 }
 
 input.button:hover {

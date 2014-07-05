@@ -7,6 +7,7 @@
  * @namespace exports
  */
 (function() {
+    var self = require("sdk/self");
     var tabs = require("sdk/tabs");
     var serviceList = {};
     var route = {};
@@ -70,6 +71,7 @@
             }
         }
     }();
+    exports.storage = monoStorage;
 
     var sendTo = function(to, message) {
         if (typeof to !== "string") {
@@ -144,7 +146,7 @@
             });
         }
         if (msg.action === 'openTab') {
-            return tabs.open(msg.url);
+            return tabs.open( (msg.dataUrl)?self.data.url(msg.url):msg.url );
         }
         if (msg.action === 'xhr') {
             var obj = msg.data;
@@ -301,8 +303,8 @@
             });
             page.on('detach', function() {
                 stateList[pageId] = false;
-                // delete route[pageId];
-                // delete stateList[pageId];
+                delete route[pageId];
+                delete stateList[pageId];
             });
         }
 

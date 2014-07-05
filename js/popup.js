@@ -28,10 +28,13 @@ var popup = function() {
             url += ( (url.indexOf('?') === -1)?'?':'&' ) + nc;
         }
 
-        var xhr = new XMLHttpRequest();
-
-        if (obj.mimeType) {
-            xhr.overrideMimeType( obj.mimeType );
+        var xhr;
+        if (mono.isFF) {
+            xhr = {};
+            xhr.open = [method, url, true];
+        } else {
+            xhr = new XMLHttpRequest();
+            xhr.open(method, url, true);
         }
 
         if (obj.dataType) {
@@ -45,24 +48,43 @@ var popup = function() {
             obj.headers["Content-Type"] = obj.contentType;
         }
 
-        if (obj.headers) {
-            for (var key in obj.headers) {
-                xhr.setRequestHeader(key, obj.headers[key]);
+        if (mono.isFF) {
+            xhr.headers = obj.headers;
+            xhr.mimeType = obj.mimeType;
+            xhr.data = data;
+            xhr.id = Math.floor((Math.random() * 10000) + 1);
+
+            mono.sendMessage({action: 'xhr', data: xhr}, function(_xhr) {
+                xhr.status = _xhr.status;
+                xhr.statusText = _xhr.statusText;
+                xhr.response = _xhr.response;
+                if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+                    return obj.success && obj.success(xhr.response);
+                }
+                obj.error && obj.error();
+            }, "service");
+
+            xhr.abort = function() {
+                mono.sendMessage({action: 'xhrAbort', data: xhr.id}, undefined, "service");
             }
+        } else {
+            if (obj.mimeType) {
+                xhr.overrideMimeType(obj.mimeType);
+            }
+            if (obj.headers) {
+                for (var key in obj.headers) {
+                    xhr.setRequestHeader(key, obj.headers[key]);
+                }
+            }
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+                    return obj.success && obj.success((obj.dataType) ? xhr.response : xhr.responseText);
+                }
+                obj.error && obj.error();
+            };
+            xhr.onerror = obj.error;
+            xhr.send(data);
         }
-
-        xhr.open(method, url, true);
-
-        xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
-                return obj.success && obj.success( (obj.dataType)?xhr.response:xhr.responseText );
-            }
-            obj.error && obj.error();
-        };
-
-        xhr.onerror = obj.error;
-
-        xhr.send( data );
 
         return xhr;
     };
@@ -99,10 +121,19 @@ var popup = function() {
     dom_cache.form_search.submit(function(e) {
         e.preventDefault();
         var text = dom_cache.search_input.val();
+        var url = 'index.html' + ( (text.length > 0) ? '#?search=' + text : '' );
         if (mono.isChrome) {
             chrome.tabs.create({
-                url: 'index.html' + ( (text.length > 0) ? '#?search=' + text : '' )
+                url: url
             });
+        }
+        if (mono.isFF) {
+            mono.sendMessage({action: 'openTab', dataUrl: true, url: url}, undefined, 'service');
+
+            dom_cache.search_input.val('').focus();
+            dom_cache.clear.hide();
+
+            return mono.addon.postMessage('closeMe');
         }
         window.close();
     });
@@ -150,11 +181,27 @@ var popup = function() {
         },
         position: {
             collision: "bottom"
+        },
+        open: function() {
+            mono.sendMessage({action: 'resize', height: 220 }, undefined, "service");
+        },
+        close: function() {
+            mono.sendMessage({action: 'resize', height: 66 }, undefined, "service");
         }
-    })
+    });
+    if (mono.isFF) {
+        mono.onMessage(function(message) {
+            console.log(message);
+            if (message === 'show') {
+                dom_cache.search_input.focus();
+            }
+        });
+        dom_cache.search_input.focus();
+    }
 };
 mono.pageId = 'popup';
 mono.localStorage(function() {
+    window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
    $(function(){
         popup();
    });

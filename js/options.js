@@ -7,13 +7,14 @@ var options = function() {
     var loadSettings = function() {
         var settings = {};
         $.each(engine.def_settings, function(type, attr) {
+            var val = mono.localStorage.get(type);
             if (attr.t === 'checkbox' || attr.t === 'radio' || attr.t === 'number') {
-                settings[type] = parseInt(mono.localStorage.get(type) || attr.v);
+                settings[type] = parseInt( (val === undefined || val === null)?attr.v:val );
                 if (isNaN(settings[type])) {
                     settings[type] = attr.v;
                 }
             } else {
-                settings[type] = mono.localStorage.get(type) || attr.v;
+                settings[type] =  (val === undefined || val === null)?attr.v:val ;
             }
         });
         return settings;
