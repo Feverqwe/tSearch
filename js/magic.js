@@ -1056,6 +1056,8 @@ var magic = function() {
         }
     };
 }();
+mono.pageId = 'tab';
+mono.noAddon && mono.onMessage(function() {});
 mono.localStorage(function () {
     window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
     $(function () {
