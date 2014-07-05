@@ -583,10 +583,13 @@ var engine = function() {
             url += ( (url.indexOf('?') === -1)?'?':'&' ) + nc;
         }
 
-        var xhr = new XMLHttpRequest();
-
-        if (obj.mimeType) {
-            xhr.overrideMimeType( obj.mimeType );
+        var xhr;
+        if (mono.isFF) {
+            xhr = {};
+            xhr.open = [method, url, true];
+        } else {
+            xhr = new XMLHttpRequest();
+            xhr.open(method, url, true);
         }
 
         if (obj.dataType) {
@@ -600,24 +603,44 @@ var engine = function() {
             obj.headers["Content-Type"] = obj.contentType;
         }
 
-        if (obj.headers) {
-            for (var key in obj.headers) {
-                xhr.setRequestHeader(key, obj.headers[key]);
+        if (mono.isFF) {
+            xhr.headers = obj.headers;
+            xhr.mimeType = xhr.mimeType;
+            xhr.data = data;
+            xhr.responseType = xhr.responseType || 'text';
+
+            mono.sendMessage({action: 'xhr', data: xhr}, function(_xhr) {
+                console.log(_xhr)
+                xhr.status = _xhr.status;
+                xhr.statusText = _xhr.statusText;
+                xhr.response = _xhr.response;
+                if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+                    return obj.success && obj.success(xhr.response);
+                }
+                obj.error && obj.error();
+            }, "service");
+
+            xhr.abort = function() {
+                // console.log('Need abort function!');
             }
+        } else {
+            if (obj.mimeType) {
+                xhr.overrideMimeType(obj.mimeType);
+            }
+            if (obj.headers) {
+                for (var key in obj.headers) {
+                    xhr.setRequestHeader(key, obj.headers[key]);
+                }
+            }
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+                    return obj.success && obj.success((obj.dataType) ? xhr.response : xhr.responseText);
+                }
+                obj.error && obj.error();
+            };
+            xhr.onerror = obj.error;
+            xhr.send(data);
         }
-
-        xhr.open(method, url, true);
-
-        xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
-                return obj.success && obj.success( (obj.dataType)?xhr.response:xhr.responseText );
-            }
-            obj.error && obj.error();
-        };
-
-        xhr.onerror = obj.error;
-
-        xhr.send( data );
 
         return xhr;
     };

@@ -116,9 +116,23 @@
         }
     };
 
+    var Request = require("sdk/request").Request;
+    var xhrList = {};
     serviceList['service'] = function(message) {
         var to = message.monoFrom;
         var msg = message.data;
+        var response;
+        if (message.monoCallbackId !== undefined) {
+            response = function(responseMessage) {
+                responseMessage = {
+                    data: responseMessage,
+                    monoTo: to,
+                    monoFrom: 'monoStorage',
+                    monoResponseId: message.monoCallbackId
+                };
+                sendTo(to, responseMessage);
+            }
+        }
         if (msg.action === 'resize') {
             return route[to].forEach(function(page) {
                 if (msg.width) {
@@ -131,6 +145,24 @@
         }
         if (msg.action === 'openTab') {
             return tabs.open(msg.url);
+        }
+        if (msg.action === 'xhr') {
+            var data = msg.data;
+            var opt = {
+                url: data.open[1],
+                headers: data.headers,
+                content: data.data,
+                onComplete: function(result) {
+                    var respData = (data.responseType === 'json') ? result.json : result.text;
+                    var resp = {
+                        status: result.status,
+                        statusText: result.statusText,
+                        response: respData
+                    };
+                    response(resp);
+                }
+            };
+            Request(opt)[data.open[0].toLowerCase()]();
         }
     };
 
