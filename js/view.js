@@ -1699,11 +1699,13 @@ var view = function() {
                     if (var_cache.suggest_xhr !== undefined) {
                         var_cache.suggest_xhr.abort();
                     }
-                    var_cache.suggest_xhr = $.getJSON('http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(a.term)).success(
-                        function(data) {
+                    var_cache.suggest_xhr = engine.ajax({
+                        url: 'http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(a.term),
+                        dataType: 'JSON',
+                        success: function(data) {
                             response(data[1]);
                         }
-                    );
+                    });
                 }
             },
             /*

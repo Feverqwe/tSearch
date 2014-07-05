@@ -589,7 +589,7 @@ var engine = function() {
         }
 
         if (obj.dataType) {
-            xhr.responseType = obj.dataType;
+            xhr.responseType = obj.dataType.toLowerCase();
         }
 
         if (obj.contentType) {
@@ -600,7 +600,7 @@ var engine = function() {
 
         xhr.onload = function() {
             if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
-                return obj.success && obj.success( (obj.responseType)?xhr.response:xhr.responseText );
+                return obj.success && obj.success( (obj.dataType)?xhr.response:xhr.responseText );
             }
             obj.error && obj.error();
         };
@@ -609,7 +609,6 @@ var engine = function() {
 
         xhr.send( obj.data );
 
-        console.log('hi!')
         return xhr;
     };
     return {

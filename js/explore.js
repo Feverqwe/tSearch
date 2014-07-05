@@ -912,8 +912,11 @@ var explore = function() {
             view.setDescription(var_cache.about_cache[request]);
             return;
         }
-        $.get('https://www.google.com/search?q='+request, function(data){
-            content_parser.google(data, request);
+        engine.ajax({
+            url: 'https://www.google.com/search?q='+request,
+            success: function(data) {
+                content_parser.google(data, request);
+            }
         });
     };
     return {

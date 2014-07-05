@@ -6,6 +6,56 @@ var popup = function() {
     var options = {
         autoComplete: parseInt(mono.localStorage.get('AutoComplite_opt') || 1)
     };
+    var ajax = function(obj) {
+        var url = obj.url;
+        var method = obj.type || 'GET';
+        method.toUpperCase();
+
+        var data = obj.data;
+
+        if (data && typeof data !== "string") {
+            data = $.param(data);
+        }
+
+        if (method === 'GET') {
+            url += ( (url.indexOf('?') === -1)?'?':'&' ) + data;
+            data = undefined;
+        }
+
+        if (obj.cache === false) {
+            var nc = '_=' + Date.now();
+            url += ( (url.indexOf('?') === -1)?'?':'&' ) + nc;
+        }
+
+        var xhr = new XMLHttpRequest();
+
+        if (obj.mimeType) {
+            xhr.overrideMimeType( obj.mimeType );
+        }
+
+        if (obj.dataType) {
+            xhr.responseType = obj.dataType.toLowerCase();
+        }
+
+        if (obj.contentType) {
+            xhr.setRequestHeader("Content-Type", obj.contentType);
+        }
+
+        xhr.open(method, url, true);
+
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+                return obj.success && obj.success( (obj.dataType)?xhr.response:xhr.responseText );
+            }
+            obj.error && obj.error();
+        };
+
+        xhr.onerror = obj.error;
+
+        xhr.send( obj.data );
+
+        return xhr;
+    };
     var getHistory = function (cb) {
         /*
          * Отдает массив поисковых запросов из истории
@@ -66,11 +116,13 @@ var popup = function() {
                 if (var_cache.suggest_xhr !== undefined) {
                     var_cache.suggest_xhr.abort();
                 }
-                var_cache.suggest_xhr = $.getJSON('http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(a.term)).success(
-                    function(data) {
+                var_cache.suggest_xhr = ajax({
+                    url: 'http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(a.term),
+                    dataType: 'JSON',
+                    success: function(data) {
                         response(data[1]);
                     }
-                );
+                });
             }
         },
         /*
