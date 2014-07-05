@@ -617,7 +617,7 @@ var engine = function() {
 
         xhr.onerror = obj.error;
 
-        xhr.send( obj.data );
+        xhr.send( data );
 
         return xhr;
     };
