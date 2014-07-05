@@ -113,7 +113,7 @@ var mono = function (env) {
             }
         }
     };
-    mono.localStorage = function() {
+    mono.localStorage = function(cb, virtual) {
         var vLS = function(cb) {
             if (messagesEnable === false) {
                 mono.onMessage(function (message) {});
@@ -149,15 +149,21 @@ var mono = function (env) {
             };
             cb && cb();
         };
+        if (virtual) {
+            mono.localStorage = vLS;
+            return vLS(cb);
+        }
+
         if (mono.isModule) {
-            return vLS;
+            mono.localStorage = vLS;
         } else
         if (window.localStorage !== undefined) {
-            return rLS;
+            mono.localStorage = rLS;
         } else {
-            return vLS;
+            mono.localStorage = vLS;
         }
-    }();
+        mono.localStorage(cb);
+    };
 
     var externalStorage = {
         get: function(src, cb) {

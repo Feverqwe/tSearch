@@ -7,10 +7,7 @@ var lang = require("./lang.js");
 var pageMod = require("sdk/page-mod");
 pageMod.PageMod({
     include: [
-        self.data.url('index.html'),
-        self.data.url('options.html'),
-        self.data.url('magic.html'),
-        self.data.url('history.html')
+        self.data.url()+'*'
     ],
     contentScript: '('+monoLib.virtualPort.toString()+')()',
     contentScriptWhen: 'start',

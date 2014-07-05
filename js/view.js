@@ -2496,4 +2496,4 @@ mono.localStorage(function () {
         }
         view.boot();
     });
-});
+}, 1);

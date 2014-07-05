@@ -301,6 +301,8 @@
             });
             page.on('detach', function() {
                 stateList[pageId] = false;
+                // delete route[pageId];
+                // delete stateList[pageId];
             });
         }
 

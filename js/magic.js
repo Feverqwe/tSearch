@@ -1063,4 +1063,4 @@ mono.localStorage(function () {
     $(function () {
         magic.begin();
     });
-});
+}, 1);

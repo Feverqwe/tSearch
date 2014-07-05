@@ -221,4 +221,4 @@ mono.localStorage(function () {
     $(function () {
         view.begin();
     });
-});
+}, 1);

@@ -158,4 +158,4 @@ mono.localStorage(function() {
    $(function(){
         popup();
    });
-});
+}, 1);

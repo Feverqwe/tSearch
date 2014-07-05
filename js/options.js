@@ -792,4 +792,4 @@ mono.localStorage(function () {
     $(function () {
         options.begin();
     });
-});
+}, 1);
