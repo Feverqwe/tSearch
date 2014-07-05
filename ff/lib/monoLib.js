@@ -180,18 +180,30 @@
 
     var monoVirtualPort = function() {
         window.addEventListener('message', function(e) {
+            if (e.data[0] !== '>') {
+                return;
+            }
             var sepPos = e.data.indexOf(':');
-            var pageId = e.data.substr(0, sepPos);
+            if (sepPos === -1) {
+                return;
+            }
+            var pageId = e.data.substr(1, sepPos - 1);
             var data = e.data.substr(sepPos+1);
             self.port.emit(pageId, JSON.parse(data));
         });
         if (self.options.pageId !== undefined) {
             self.port.on(self.options.pageId, function (message) {
-                self.postMessage(self.options.pageId + ':' + JSON.stringify(message), "*");
+                var msg = '<'+self.options.pageId + ':' + JSON.stringify(message);
+                var event = document.createEvent("CustomEvent");
+                event.initCustomEvent("monoMessage", false, false, msg);
+                window.dispatchEvent(event);
             });
         }
-        self.port.on(self.options.defaultId, function(message) {
-            self.postMessage(self.options.defaultId+':'+JSON.stringify(message), "*");
+        self.port.on(self.options.defaultId, function (message) {
+            var msg = '<'+self.options.defaultId + ':' + JSON.stringify(message);
+            var event = document.createEvent("CustomEvent");
+            event.initCustomEvent("monoMessage", false, false, msg);
+            window.dispatchEvent(event);
         });
     };
     exports.virtualPort = monoVirtualPort;

@@ -13,7 +13,7 @@ pageMod.PageMod({
         self.data.url('history.html')
     ],
     contentScript: '('+monoLib.virtualPort.toString()+')()',
-    contentScriptWhen: 'ready',
+    contentScriptWhen: 'start',
     contentScriptOptions: {
         monoVirtual: true,
         pageId: 'tab',

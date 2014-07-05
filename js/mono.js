@@ -349,13 +349,24 @@ var mono = function (env) {
         mono.addon = addon = {
             port: {
                 emit: function(pageId, message) {
-                    window.postMessage(pageId+':'+JSON.stringify(message), "*");
+                    var msg = '>'+pageId+':'+JSON.stringify(message);
+                    window.postMessage(msg, "*");
                 },
                 on: function(pageId, onMessage) {
-                    window.addEventListener('message', function(e) {
-                        var sepPos = e.data.indexOf(':');
-                        var data = e.data.substr(sepPos+1);
-                        onMessage(JSON.parese(data));
+                    window.addEventListener('monoMessage', function(e) {
+                        if (e.detail[0] !== '<') {
+                            return;
+                        }
+                        var sepPos = e.detail.indexOf(':');
+                        if (sepPos === -1) {
+                            return;
+                        }
+                        var _pageId = e.detail.substr(1, sepPos - 1);
+                        if (pageId !== _pageId) {
+                            return;
+                        }
+                        var data = e.detail.substr(sepPos + 1);
+                        onMessage(JSON.parse(data));
                     });
                 }
             }
