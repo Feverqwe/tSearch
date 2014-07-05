@@ -607,10 +607,9 @@ var engine = function() {
             xhr.headers = obj.headers;
             xhr.mimeType = xhr.mimeType;
             xhr.data = data;
-            xhr.responseType = xhr.responseType || 'text';
+            xhr.id = Math.floor((Math.random() * 10000) + 1);
 
             mono.sendMessage({action: 'xhr', data: xhr}, function(_xhr) {
-                console.log(_xhr)
                 xhr.status = _xhr.status;
                 xhr.statusText = _xhr.statusText;
                 xhr.response = _xhr.response;
@@ -621,7 +620,7 @@ var engine = function() {
             }, "service");
 
             xhr.abort = function() {
-                // console.log('Need abort function!');
+                mono.sendMessage({action: 'xhrAbort', data: xhr.id}, undefined, "service");
             }
         } else {
             if (obj.mimeType) {

@@ -116,7 +116,7 @@
         }
     };
 
-    var Request = require("sdk/request").Request;
+    XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     var xhrList = {};
     serviceList['service'] = function(message) {
         var to = message.monoFrom;
@@ -147,22 +147,40 @@
             return tabs.open(msg.url);
         }
         if (msg.action === 'xhr') {
-            var data = msg.data;
-            var opt = {
-                url: data.open[1],
-                headers: data.headers,
-                content: data.data,
-                onComplete: function(result) {
-                    var respData = (data.responseType === 'json') ? result.json : result.text;
-                    var resp = {
-                        status: result.status,
-                        statusText: result.statusText,
-                        response: respData
-                    };
-                    response(resp);
+            var obj = msg.data;
+            var xhr = new XMLHttpRequest();
+            xhr.open(obj.open[0], obj.open[1], obj.open[2], obj.open[3], obj.open[4]);
+            xhr.responseType = obj.responseType;
+            if (obj.mimeType) {
+                xhr.overrideMimeType(obj.mimeType);
+            }
+            if (obj.headers) {
+                for (var key in obj.headers) {
+                    xhr.setRequestHeader(key, obj.headers[key]);
                 }
+            }
+            if (obj.responseType) {
+                xhr.responseType = obj.responseType;
+            }
+            xhr.onload = xhr.onerror = function() {
+                delete xhrList[obj.id];
+                return response({
+                    status: xhr.status,
+                    statusText: xhr.statusText,
+                    response: (obj.responseType)?xhr.response:xhr.responseText
+                });
             };
-            Request(opt)[data.open[0].toLowerCase()]();
+            xhr.send(obj.data);
+            if (obj.id) {
+                xhrList[obj.id] = xhr;
+            }
+        }
+        if (msg.action === 'xhrAbort') {
+            var xhr = xhrList[msg.data];
+            if (xhr) {
+                xhr.abort();
+                delete xhrList[msg.data];
+            }
         }
     };
 
