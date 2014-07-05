@@ -81,18 +81,12 @@ torrent_lib.rutracker = function () {
             if (xhr !== undefined)
                 xhr.abort();
             xhr = engine.ajax({
-                type: 'POST',
+                type: 'GET',
                 url: url,
                 cache: false,
                 data: {
-                    prev_my: 0,
-                    prev_new: 0,
-                    prev_oop: 0,
-                    'f[]': -1,
-                    o: 1,
-                    s: 2,
-                    nm: text,
-                    submit: ''
+                    max: 1,
+                    nm: text
                 },
                 success: function (data) {
                     view.result(filename, readCode(data), t);
