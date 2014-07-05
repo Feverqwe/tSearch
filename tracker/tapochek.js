@@ -77,10 +77,8 @@ torrent_lib.tapochek = function () {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
-            xhr = $.ajax({
-                beforeSend: function(xhr) {
-                    xhr.overrideMimeType("text/plain; charset=windows-1251");
-                },
+            xhr = engine.ajax({
+                mimeType: "text/plain; charset=windows-1251",
                 type: 'GET',
                 url: url + '?nm=' + ex_kit.in_cp1251(text),
                 cache: false,

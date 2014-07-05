@@ -624,7 +624,7 @@ var explore = function() {
     var xhr_send = function(type, source, page, page_mode) {
         source.xhr_wait_count++;
         source.xhr.push(
-            $.ajax({
+            engine.ajax({
                 url: (page_mode)?source.url.replace('%page%', page):source.url,
                 success: function(data) {
                     source.xhr_content.push([page,content_parser[type](data)]);
@@ -697,7 +697,7 @@ var explore = function() {
                 return;
             }
             var_cache.topList.keepAlive = date;
-            $.ajax({
+            engine.ajax({
                 url: "http://antoshka.on.ufanet.ru/top.json",
                 dataType: 'JSON',
                 cache: false,
@@ -1077,7 +1077,7 @@ var explore = function() {
                 var w_check_obj = {};
                 var content = [];
                 var load_page = function(page) {
-                    source.xhr = $.ajax({
+                    source.xhr = engine.ajax({
                         url: source.url.replace('%page%', page).replace('%category%', options.kp_folder_id),
                         success: function(data) {
                             data = content_parser.kp_favorites(data);

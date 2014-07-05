@@ -179,14 +179,14 @@ torrent_lib.kinozal = function () {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
-            xhr = $.ajax({
+            xhr = engine.ajax({
                 type: 'GET',
                 url: url + '?s=' + ex_kit.in_cp1251(text),
                 cache: false,
                 success: function (data) {
                     view.result(filename, readCode(data), t);
                 },
-                error: function (xhr, ajaxOptions, thrownError) {
+                error: function () {
                     view.loadingStatus(2, filename);
                 }
             });

@@ -97,7 +97,7 @@ torrent_lib.bitsnoop = function () {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
-            xhr = $.ajax({
+            xhr = engine.ajax({
                 type: 'GET',
                 url: url,
                 cache: false,
@@ -108,7 +108,7 @@ torrent_lib.bitsnoop = function () {
                 success: function (data) {
                     view.result(filename, readCode(data), t);
                 },
-                error: function (xhr, ajaxOptions, thrownError) {
+                error: function () {
                     view.loadingStatus(2, filename);
                 }
             });

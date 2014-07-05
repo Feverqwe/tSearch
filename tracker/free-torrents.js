@@ -72,11 +72,9 @@ torrent_lib['free-torrents'] = function () {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
-            xhr = $.ajax({
+            xhr = engine.ajax({
                 type: 'POST',
-                beforeSend: function(xhr) {
-                    xhr.overrideMimeType("text/plain; charset=windows-1251");
-                },
+                mimeType: "text/plain; charset=windows-1251",
                 url: url + '?nm=' + ex_kit.in_cp1251(text),
                 cache: false,
                 success: function (data) {

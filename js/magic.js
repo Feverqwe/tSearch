@@ -454,15 +454,13 @@ var magic = function() {
         };
         var charset = input_list.search.charset.val();
         if (charset.length > 0) {
-            obj_req.beforeSend = function(xhr) {
-                xhr.overrideMimeType("text/plain; charset="+charset);
-            }
+            obj_req.mimeType = "text/plain; charset="+charset;
         }
         if (post.length > 0) {
             obj_req.type = 'POST';
             obj_req.data = post;
         }
-        var_cache.xhr = $.ajax(obj_req);
+        var_cache.xhr = engine.ajax(obj_req);
     };
     var loadDom = function(itemName, value, parent, empty) {
         for (var i in value) {
@@ -1063,8 +1061,4 @@ mono.localStorage(function () {
     $(function () {
         magic.begin();
     });
-});
-$.ajaxSetup({
-    global: true,
-    jsonp: false
 });

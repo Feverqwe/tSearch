@@ -81,7 +81,7 @@ torrent_lib['torrents.freedom'] = function () {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
-            xhr = $.ajax({
+            xhr = engine.ajax({
                 type: 'POST',
                 url: url + '?nm=' + ex_kit.in_cp1251(text),
                 cache: false,

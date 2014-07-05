@@ -329,15 +329,13 @@ var engine = function() {
                         }
                     };
                     if (ex_charset) {
-                        obj_req.beforeSend = function(xhr) {
-                            xhr.overrideMimeType("text/plain; charset="+me.charset);
-                        }
+                        obj_req.mimeType = "text/plain; charset="+me.charset;
                     }
                     if (ex_post === 1) {
                         obj_req.type = 'POST';
                         obj_req.data = me.post.replace('%search%', request);
                     }
-                    xhr = $.ajax(obj_req);
+                    xhr = engine.ajax(obj_req);
                 };
                 return {
                     getPage: loadPage
@@ -563,6 +561,57 @@ var engine = function() {
         $safe_content = $($.parseHTML(content));
         return $safe_content;
     };
+    var ajax = function(obj) {
+        var url = obj.url;
+        var method = obj.type || 'GET';
+        method.toUpperCase();
+
+        var data = obj.data;
+
+        if (data && typeof data !== "string") {
+            data = $.param(data);
+        }
+
+        if (method === 'GET') {
+            url += ( (url.indexOf('?') === -1)?'?':'&' ) + data;
+            data = undefined;
+        }
+
+        if (obj.cache === false) {
+            var nc = '_=' + Date.now();
+            url += ( (url.indexOf('?') === -1)?'?':'&' ) + nc;
+        }
+
+        var xhr = new XMLHttpRequest();
+
+        if (obj.mimeType) {
+            xhr.overrideMimeType( obj.mimeType );
+        }
+
+        if (obj.dataType) {
+            xhr.responseType = obj.dataType;
+        }
+
+        if (obj.contentType) {
+            xhr.setRequestHeader("Content-Type", obj.contentType);
+        }
+
+        xhr.open(method, url, true);
+
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+                return obj.success && obj.success( (obj.responseType)?xhr.response:xhr.responseText );
+            }
+            obj.error && obj.error();
+        };
+
+        xhr.onerror = obj.error;
+
+        xhr.send( obj.data );
+
+        console.log('hi!')
+        return xhr;
+    };
     return {
         //need modules
         contentFilter: contentFilter,
@@ -603,10 +652,7 @@ var engine = function() {
             if (mono.isChrome) {
                 var_cache.historyLimit = 200;
             }
-        }
+        },
+        ajax: ajax
     };
 }();
-$.ajaxSetup({
-    global: true,
-    jsonp: false
-});

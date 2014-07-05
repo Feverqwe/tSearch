@@ -71,7 +71,7 @@ torrent_lib.anidub = function () {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
-            xhr = $.ajax({
+            xhr = engine.ajax({
                 type: 'GET',
                 url: url + '?noscript=0&ajax=1&search=' + encodeURIComponent(text) + '&view=0&incldead=0&trailer=no&date=0',
                 cache: false,

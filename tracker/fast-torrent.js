@@ -43,7 +43,7 @@ torrent_lib['fast-torrent'] = function () {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
-            xhr = $.ajax({
+            xhr = engine.ajax({
                 type: 'GET',
                 url: url + encodeURIComponent(text) + '/1.html',
                 cache: false,

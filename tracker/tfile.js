@@ -70,7 +70,7 @@ torrent_lib.tfile = function () {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
-            xhr = $.ajax({
+            xhr = engine.ajax({
                 type: 'GET',
                 url: url + '?q=' + ex_kit.in_cp1251(text),
                 cache: false,
@@ -78,12 +78,10 @@ torrent_lib.tfile = function () {
                     view.result(filename, readCode(data), t);
                 },
                 error: function () {
-                    view.loadingStatus(2, filename);
-                },
-                statusCode: {
-                    503: function () {
-                        view.auth(0, filename);
+                    if (xhr.status === 503) {
+                        return view.auth(0, filename);
                     }
+                    view.loadingStatus(2, filename);
                 }
             });
         };
