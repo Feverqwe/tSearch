@@ -8,3 +8,6 @@
 /build_opera/
 /build_for_firefox/
 build_for_firefox.xpi
+ff/lib/mono.js
+ff/lib/background.js
+ff/lib/lang.js
