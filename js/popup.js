@@ -153,6 +153,7 @@ var popup = function() {
         }
     })
 };
+mono.pageId = 'popup';
 mono.localStorage(function() {
    $(function(){
         popup();
