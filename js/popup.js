@@ -8,6 +8,7 @@ var popup = function() {
     };
     var ajax = function(obj) {
         var url = obj.url;
+
         var method = obj.type || 'GET';
         method.toUpperCase();
 
@@ -15,11 +16,11 @@ var popup = function() {
 
         if (data && typeof data !== "string") {
             data = $.param(data);
-        }
 
-        if (method === 'GET') {
-            url += ( (url.indexOf('?') === -1)?'?':'&' ) + data;
-            data = undefined;
+            if (method === 'GET') {
+                url += ( (url.indexOf('?') === -1)?'?':'&' ) + data;
+                data = undefined;
+            }
         }
 
         if (obj.cache === false) {
@@ -38,7 +39,16 @@ var popup = function() {
         }
 
         if (obj.contentType) {
-            xhr.setRequestHeader("Content-Type", obj.contentType);
+            if (!obj.headers) {
+                obj.headers = {};
+            }
+            obj.headers["Content-Type"] = obj.contentType;
+        }
+
+        if (obj.headers) {
+            for (var key in obj.headers) {
+                xhr.setRequestHeader(key, obj.headers[key]);
+            }
         }
 
         xhr.open(method, url, true);

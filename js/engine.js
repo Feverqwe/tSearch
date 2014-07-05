@@ -594,7 +594,16 @@ var engine = function() {
         }
 
         if (obj.contentType) {
-            xhr.setRequestHeader("Content-Type", obj.contentType);
+            if (!obj.headers) {
+                obj.headers = {};
+            }
+            obj.headers["Content-Type"] = obj.contentType;
+        }
+
+        if (obj.headers) {
+            for (var key in obj.headers) {
+                xhr.setRequestHeader(key, obj.headers[key]);
+            }
         }
 
         xhr.open(method, url, true);
