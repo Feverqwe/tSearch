@@ -78,11 +78,10 @@
             page[type].emit(defaultId, message);
             return;
         }
-        if (stateList[to] === false) {
-            return;
-        }
         for (var i = 0, page; page = route[to][i]; i++) {
-
+            if (stateList[page] === false) {
+                return;
+            }
             var type = page.isVirtual?'lib':'port';
             page[type].emit(to, message);
         }
@@ -178,7 +177,21 @@
         return obj;
     };
     exports.virtualAddon = monoVirtualPage;
-
+/*
+    var monoVirtulaPort = function(pageId) {
+        window.onmessage = function(e) {
+            var sepPos = e.data.indexOf(':');
+            var pageId = e.data.substr(0, sepPos);
+            var data = e.data.substr(sepPos+1);
+            self.port.emit(pageId, JSON.parse(data));
+            console.log('emit', pageId, data);
+        };
+        self.port.on(pageId, function(message) {
+            window.postMessage(pageId+':'+JSON.stringify(message), "*");
+        });
+    };
+    exports.virtulaPort = monoVirtulaPort;
+*/
     var sendAll = function(message, exPage) {
         for (var i = 0, page; page = route[defaultId][i]; i++) {
             if (page === exPage) {
@@ -194,7 +207,7 @@
             route[pageId] = [];
         }
 
-        stateList[pageId] = true;
+        stateList[page] = true;
 
         var type;
         if (page.isVirtual) {
@@ -202,16 +215,16 @@
         } else {
             type = 'port';
             page.on('pageshow', function() {
-                stateList[pageId] = true;
+                stateList[page] = true;
             });
             page.on('pagehide', function() {
-                stateList[pageId] = false;
+                stateList[page] = false;
             });
             page.on('attach', function() {
-                stateList[pageId] = true;
+                stateList[page] = true;
             });
             page.on('detach', function() {
-                stateList[pageId] = false;
+                stateList[page] = false;
             });
         }
 

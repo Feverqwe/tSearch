@@ -2482,16 +2482,14 @@ var view = function() {
         }
     };
 }();
-if (navigator.userAgent.indexOf('Firefox') === -1 || true) {
-    mono.localStorage(function () {
-        window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
-        engine.boot();
-        explore.boot();
-        $(function () {
-            if (parseInt(mono.localStorage.get('google_analytics') || 0) === 0) {
-                counter();
-            }
-            view.boot();
-        })
-    });
-}
+mono.localStorage(function () {
+    window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
+    engine.boot();
+    explore.boot();
+    $(function () {
+        if (parseInt(mono.localStorage.get('google_analytics') || 0) === 0) {
+            counter();
+        }
+        view.boot();
+    })
+});

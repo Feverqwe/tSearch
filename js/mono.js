@@ -28,9 +28,14 @@ var mono = function (env) {
             mono.isOpera = true;
         } else {
             addon = window.addon || window.self;
-            if (addon !== undefined) {
+            if (addon !== undefined && addon.port !== undefined) {
                 mono.isFF = true;
+            } else
+            if (navigator.userAgent.indexOf('Firefox') !== -1) {
+                mono.isFF = true;
+                mono.noAddon = true;
             }
+
         }
     }
     mono.addon = addon;
@@ -339,7 +344,24 @@ var mono = function (env) {
             }
         }
     }();
-
+/*
+    var ffVirtualPort = function() {
+        mono.addon = addon = {
+            port: {
+                emit: function(pageId, message) {
+                    window.postMessage(pageId+':'+JSON.stringify(message), "*");
+                },
+                on: function(pageId, onMessage) {
+                    window.onmessage(function(e) {
+                        var sepPos = e.data.indexOf(':');
+                        var data = e.data.substr(sepPos+1);
+                        onMessage(JSON.parese(data));
+                    });
+                }
+            }
+        }
+    };
+*/
     var ffMessaging = {
         send: function(message, cb) {
             msgTools.cbCollector(message, cb);
@@ -434,7 +456,12 @@ var mono = function (env) {
         mono.onMessage = chMessaging.on;
     } else
     if (mono.isFF) {
-        if (mono.addon === undefined || mono.addon.port === undefined) {
+        /*
+         if (mono.noAddon) {
+            ffVirtualPort();
+         }
+         */
+        if (mono.noAddon) {
             mono.sendMessage.send = mono.onMessage = function() {};
         } else {
             mono.sendMessage.send = ffMessaging.send;

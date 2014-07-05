@@ -4,12 +4,23 @@ var tabs = require("sdk/tabs");
 var monoLib = require("./monoLib.js");
 var lang = require("./lang.js");
 
+var pageMod = require("sdk/page-mod");
+pageMod.PageMod({
+    include: [
+        self.data.url('index.html'),
+        self.data.url('options.html'),
+        self.data.url('magic.html'),
+        self.data.url('history.html')
+    ],
+    contentScript: 'var vp = '+monoLib.virtulaPort.toString()+';vp("monoScope");',
+    onAttach: function(tab) {
+        monoLib.addPage('tab', tab);
+    }
+});
+
 var createTab = function() {
     var tab = tabs.open({
-        url: self.data.url("./index.html"),
-        onOpen: function onOpen(tab) {
-            // console.log(tab);
-        }
+        url: self.data.url("index.html")
     });
 };
 

@@ -213,11 +213,9 @@ var view = function() {
         }
     };
 }();
-if (navigator.userAgent.indexOf('Firefox') === -1) {
-    mono.localStorage(function () {
-        window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
-        $(function () {
-            view.begin();
-        });
+mono.localStorage(function () {
+    window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
+    $(function () {
+        view.begin();
     });
-}
+});
