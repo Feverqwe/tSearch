@@ -570,11 +570,11 @@ var engine = function() {
 
         if (data && typeof data !== "string") {
             data = $.param(data);
-        }
 
-        if (method === 'GET') {
-            url += ( (url.indexOf('?') === -1)?'?':'&' ) + data;
-            data = undefined;
+            if (method === 'GET') {
+                url += ( (url.indexOf('?') === -1)?'?':'&' ) + data;
+                data = undefined;
+            }
         }
 
         if (obj.cache === false) {
