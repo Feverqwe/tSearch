@@ -563,6 +563,7 @@ var engine = function() {
     };
     var ajax = function(obj) {
         var url = obj.url;
+
         var method = obj.type || 'GET';
         method.toUpperCase();
 
