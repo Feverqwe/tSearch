@@ -78,10 +78,10 @@
             page[type].emit(defaultId, message);
             return;
         }
+        if (stateList[to] === false) {
+            return;
+        }
         for (var i = 0, page; page = route[to][i]; i++) {
-            if (stateList[page] === false) {
-                return;
-            }
             var type = page.isVirtual?'lib':'port';
             page[type].emit(to, message);
         }
@@ -229,6 +229,8 @@
     exports.virtualAddon = monoVirtualPage;
 
     var monoVirtualPort = function() {
+        var vPageId = self.options.pageId+Math.floor((Math.random() * 10000) + 1);
+        self.port.emit('monoAttach', vPageId);
         window.addEventListener('message', function(e) {
             if (e.data[0] !== '>') {
                 return;
@@ -238,17 +240,25 @@
                 return;
             }
             var pageId = e.data.substr(1, sepPos - 1);
+            if (pageId === self.options.pageId) {
+                pageId = vPageId;
+            }
             var data = e.data.substr(sepPos+1);
-            self.port.emit(pageId, JSON.parse(data));
+            var json = JSON.parse(data);
+            if (json.monoFrom === self.options.pageId) {
+                json.monoFrom = vPageId;
+            }
+            self.port.emit(pageId, json);
         });
-        if (self.options.pageId !== undefined) {
-            self.port.on(self.options.pageId, function (message) {
-                var msg = '<'+self.options.pageId + ':' + JSON.stringify(message);
-                var event = document.createEvent("CustomEvent");
-                event.initCustomEvent("monoMessage", false, false, msg);
-                window.dispatchEvent(event);
-            });
-        }
+        self.port.on(vPageId, function (message) {
+            if (message.monoTo === vPageId) {
+                message.monoTo = self.options.pageId;
+            }
+            var msg = '<'+self.options.pageId + ':' + JSON.stringify(message);
+            var event = document.createEvent("CustomEvent");
+            event.initCustomEvent("monoMessage", false, false, msg);
+            window.dispatchEvent(event);
+        });
         self.port.on(self.options.defaultId, function (message) {
             var msg = '<'+self.options.defaultId + ':' + JSON.stringify(message);
             var event = document.createEvent("CustomEvent");
@@ -273,7 +283,7 @@
             route[pageId] = [];
         }
 
-        stateList[page] = true;
+        stateList[pageId] = true;
 
         var type;
         if (page.isVirtual) {
@@ -281,16 +291,16 @@
         } else {
             type = 'port';
             page.on('pageshow', function() {
-                stateList[page] = true;
+                stateList[pageId] = true;
             });
             page.on('pagehide', function() {
-                stateList[page] = false;
+                stateList[pageId] = false;
             });
             page.on('attach', function() {
-                stateList[page] = true;
+                stateList[pageId] = true;
             });
             page.on('detach', function() {
-                stateList[page] = false;
+                stateList[pageId] = false;
             });
         }
 

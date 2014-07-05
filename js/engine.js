@@ -605,7 +605,7 @@ var engine = function() {
 
         if (mono.isFF) {
             xhr.headers = obj.headers;
-            xhr.mimeType = xhr.mimeType;
+            xhr.mimeType = obj.mimeType;
             xhr.data = data;
             xhr.id = Math.floor((Math.random() * 10000) + 1);
 

@@ -320,7 +320,7 @@ var mono = function (env) {
             cbCaller: function(message, pageId) {
                 mono.debug.messages && mono('cbCaller', message);
                 if (cbObj[message.monoResponseId] === undefined) {
-                    return mono(pageId+':','Message response not found!', message);
+                    return mono('Message response not found!');
                 }
                 cbObj[message.monoResponseId](message.data);
                 delete cbObj[message.monoResponseId];
@@ -346,6 +346,7 @@ var mono = function (env) {
     }();
 
     var ffVirtualPort = function() {
+        var onCollector = [];
         mono.addon = addon = {
             port: {
                 emit: function(pageId, message) {
@@ -353,7 +354,11 @@ var mono = function (env) {
                     window.postMessage(msg, "*");
                 },
                 on: function(pageId, onMessage) {
-                    window.addEventListener('monoMessage', function(e) {
+                    onCollector.push(onMessage);
+                    if (onCollector.length !== 1) {
+                        return;
+                    }
+                    window.addEventListener('monoMessage', function (e) {
                         if (e.detail[0] !== '<') {
                             return;
                         }
@@ -361,12 +366,12 @@ var mono = function (env) {
                         if (sepPos === -1) {
                             return;
                         }
-                        var _pageId = e.detail.substr(1, sepPos - 1);
-                        if (pageId !== _pageId) {
-                            return;
-                        }
+                        // var pageId = e.detail.substr(1, sepPos - 1);
                         var data = e.detail.substr(sepPos + 1);
-                        onMessage(JSON.parse(data));
+                        var json = JSON.parse(data);
+                        for (var i = 0, item; item = onCollector[i]; i++) {
+                            item(json);
+                        }
                     });
                 }
             }
@@ -386,7 +391,7 @@ var mono = function (env) {
                 if (message.monoTo !== pageId && message.monoTo !== defaultId) {
                     return;
                 }
-                if (message.monoResponseId) {
+                if (firstOn === false && message.monoResponseId) {
                     return msgTools.cbCaller(message, pageId);
                 }
                 if (firstOn === false && message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
@@ -415,7 +420,7 @@ var mono = function (env) {
                 if (message.monoTo !== pageId && message.monoTo !== defaultId) {
                     return;
                 }
-                if (message.monoResponseId) {
+                if (firstOn === false && message.monoResponseId) {
                     return msgTools.cbCaller(message, pageId);
                 }
                 if (firstOn === false && message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
@@ -440,7 +445,7 @@ var mono = function (env) {
                 if (message.monoTo !== pageId && message.monoTo !== defaultId) {
                     return;
                 }
-                if (message.monoResponseId) {
+                if (firstOn === false && message.monoResponseId) {
                     return msgTools.cbCaller(message, pageId);
                 }
                 if (firstOn === false && message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {

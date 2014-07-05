@@ -20,7 +20,9 @@ pageMod.PageMod({
         defaultId: 'monoScope'
     },
     onAttach: function(tab) {
-        monoLib.addPage('tab', tab);
+        tab.port.on('monoAttach', function(message) {
+            monoLib.addPage(message, tab);
+        });
     }
 });
 
