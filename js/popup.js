@@ -23,7 +23,7 @@ var popup = function() {
             }
         }
 
-        if (obj.cache === false) {
+        if (obj.cache === false && ['GET','HEAD'].indexOf(method) !== -1) {
             var nc = '_=' + Date.now();
             url += ( (url.indexOf('?') === -1)?'?':'&' ) + nc;
         }
