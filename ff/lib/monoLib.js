@@ -76,19 +76,23 @@
     var sendTo = function(to, message) {
         if (typeof to !== "string") {
             var page = to;
-            var type = page.isVirtual?'lib':'port';
             if (stateList[page] === false) {
                 return;
             }
-            page[type].emit(defaultId, message);
+            var type = page.isVirtual?'lib':'port';
+            try {
+                page[type].emit(defaultId, message);
+            } catch (e) {}
             return;
         }
         for (var i = 0, page; page = route[to][i]; i++) {
-            var type = page.isVirtual?'lib':'port';
             if (stateList[page] === false) {
-                continuen;
+                continue;
             }
-            page[type].emit(to, message);
+            var type = page.isVirtual?'lib':'port';
+            try {
+                page[type].emit(to, message);
+            } catch (e) {}
         }
     };
 
@@ -306,8 +310,9 @@
             });
             page.on('detach', function() {
                 stateList[page] = false;
-                // delete route[pageId];
-                // delete stateList[pageId];
+                route[pageId].splice(route[pageId].indexOf(page), 1);
+                route[defaultId].splice(route[defaultId].indexOf(page), 1);
+                delete stateList[page];
             });
         }
 
