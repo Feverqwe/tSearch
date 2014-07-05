@@ -1,4 +1,6 @@
 if (typeof window === 'undefined') {
+    self = require("sdk/self");
+    var tabs = require("sdk/tabs");
     window = require("sdk/window/utils").getMostRecentBrowserWindow();
     window.isModule = true;
     mono = require('./mono.js');
@@ -8,11 +10,12 @@ var init = function (env, lang) {
         mono = mono.init(env);
         window.get_lang = lang.get_lang;
     }
+    mono.messageStack = 100;
     mono.pageId = 'bg';
     mono.localStorage(function() {
         bg.boot();
         bg.update();
-    });
+    }, 1);
 };
 var bg = function() {
     /**
@@ -27,7 +30,7 @@ var bg = function() {
      * @namespace chrome.browserAction.onClicked
      * @namespace chrome.browserAction.setPopup
      */
-    var _lang, btn_init;
+    var _lang, btn_init, var_cache = {};
     var add_in_omnibox = function() {
         var add_in_omnibox = parseInt(mono.localStorage.get('add_in_omnibox') || 1);
         if (add_in_omnibox === 0) {
@@ -43,7 +46,8 @@ var bg = function() {
         }
     };
     var update_context_menu = function() {
-        var context_menu = parseInt(mono.localStorage.get('context_menu') || 1);
+        var val = mono.localStorage.get('context_menu');
+        var context_menu = (val === undefined || val === null)?1:val;
         if (mono.isChrome) {
             chrome.contextMenus.removeAll(function () {
                 if (context_menu === 0) {
@@ -62,6 +66,45 @@ var bg = function() {
                         });
                     }
                 });
+            });
+        }
+        if (mono.isFF) {
+            var contentScript = (function() {
+                var onContext = function() {
+                    self.on("click", function() {
+                        var text = window.getSelection().toString();
+                        self.postMessage(text);
+                    });
+                };
+                var minifi = function(str) {
+                    var list = str.split('\n');
+                    var newList = [];
+                    list.forEach(function(line) {
+                        newList.push(line.trim());
+                    });
+                    return newList.join('');
+                };
+                var onClickString = onContext.toString();
+                var n_pos =  onClickString.indexOf('\n')+1;
+                onClickString = onClickString.substr(n_pos, onClickString.length - 1 - n_pos).trim();
+                return minifi(onClickString);
+            })();
+            var cm = require("sdk/context-menu");
+            if (var_cache.topLevel) {
+                var_cache.topLevel.parentMenu.removeItem(var_cache.topLevel);
+            }
+            if (context_menu === 0) {
+                var_cache.topLevel = undefined;
+                return;
+            }
+            var_cache.topLevel = cm.Item({
+                label: _lang.ctx_title,
+                context: cm.SelectionContext(),
+                image: self.data.url('./icons/icon-16.png'),
+                contentScript: contentScript,
+                onMessage: function (text) {
+                    tabs.open( self.data.url('index.html')+'#?search='+text );
+                }
             });
         }
     };

@@ -77,14 +77,17 @@
         if (typeof to !== "string") {
             var page = to;
             var type = page.isVirtual?'lib':'port';
+            if (stateList[page] === false) {
+                return;
+            }
             page[type].emit(defaultId, message);
-            return;
-        }
-        if (stateList[to] === false) {
             return;
         }
         for (var i = 0, page; page = route[to][i]; i++) {
             var type = page.isVirtual?'lib':'port';
+            if (stateList[page] === false) {
+                continuen;
+            }
             page[type].emit(to, message);
         }
     };
@@ -285,7 +288,7 @@
             route[pageId] = [];
         }
 
-        stateList[pageId] = true;
+        stateList[page] = true;
 
         var type;
         if (page.isVirtual) {
@@ -293,18 +296,18 @@
         } else {
             type = 'port';
             page.on('pageshow', function() {
-                stateList[pageId] = true;
+                stateList[page] = true;
             });
             page.on('pagehide', function() {
-                stateList[pageId] = false;
+                stateList[page] = false;
             });
             page.on('attach', function() {
-                stateList[pageId] = true;
+                stateList[page] = true;
             });
             page.on('detach', function() {
-                stateList[pageId] = false;
-                delete route[pageId];
-                delete stateList[pageId];
+                stateList[page] = false;
+                // delete route[pageId];
+                // delete stateList[pageId];
             });
         }
 

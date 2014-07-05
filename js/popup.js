@@ -191,7 +191,6 @@ var popup = function() {
     });
     if (mono.isFF) {
         mono.onMessage(function(message) {
-            console.log(message);
             if (message === 'show') {
                 dom_cache.search_input.focus();
             }

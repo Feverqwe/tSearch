@@ -136,6 +136,9 @@ var options = function() {
             mono.sendMessage('bg_update');
         }
         var fromIndex = (document.URL).replace(/.*options.html/, '');
+        if (mono.isFF) {
+            mono.sendMessage('bg_update');
+        }
         if (fromIndex.length > 0) {
             window.location = 'index.html';
         }
@@ -447,7 +450,8 @@ var options = function() {
             dom_cache.tracker_list = $('table.tr_table tbody');
             dom_cache.tracker_head = $('table.tr_table thead');
             dom_cache.custom_list = $('table.c_table tbody');
-            dom_cache.add_in_omnibox = $('input[name="context_menu"]');
+            dom_cache.context_menu = $('input[name="context_menu"]');
+            dom_cache.add_in_omnibox = $('input[name="add_in_omnibox"]');
             dom_cache.google_analytics = $('input[name="google_analytics"]');
             dom_cache.allow_favorites_sync = $('input[name="allow_favorites_sync"]');
             dom_cache.clear_cloud_btn = $('input[name="clear_cloud_btn"]');
