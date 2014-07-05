@@ -1,4 +1,4 @@
-var { ToggleButton } = require('sdk/ui/button/toggle');
+var ToggleButton = require('sdk/ui/button/toggle').ToggleButton;
 var self = require("sdk/self");
 var tabs = require("sdk/tabs");
 var monoLib = require("./monoLib.js");
@@ -12,7 +12,13 @@ pageMod.PageMod({
         self.data.url('magic.html'),
         self.data.url('history.html')
     ],
-    contentScript: 'var vp = '+monoLib.virtulaPort.toString()+';vp("monoScope");',
+    contentScript: '('+monoLib.virtualPort.toString()+')()',
+    contentScriptWhen: 'ready',
+    contentScriptOptions: {
+        monoVirtual: true,
+        pageId: 'tab',
+        defaultId: 'monoScope'
+    },
     onAttach: function(tab) {
         monoLib.addPage('tab', tab);
     }

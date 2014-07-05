@@ -177,21 +177,25 @@
         return obj;
     };
     exports.virtualAddon = monoVirtualPage;
-/*
-    var monoVirtulaPort = function(pageId) {
-        window.onmessage = function(e) {
+
+    var monoVirtualPort = function() {
+        window.addEventListener('message', function(e) {
             var sepPos = e.data.indexOf(':');
             var pageId = e.data.substr(0, sepPos);
             var data = e.data.substr(sepPos+1);
             self.port.emit(pageId, JSON.parse(data));
-            console.log('emit', pageId, data);
-        };
-        self.port.on(pageId, function(message) {
-            window.postMessage(pageId+':'+JSON.stringify(message), "*");
+        });
+        if (self.options.pageId !== undefined) {
+            self.port.on(self.options.pageId, function (message) {
+                self.postMessage(self.options.pageId + ':' + JSON.stringify(message), "*");
+            });
+        }
+        self.port.on(self.options.defaultId, function(message) {
+            self.postMessage(self.options.defaultId+':'+JSON.stringify(message), "*");
         });
     };
-    exports.virtulaPort = monoVirtulaPort;
-*/
+    exports.virtualPort = monoVirtualPort;
+
     var sendAll = function(message, exPage) {
         for (var i = 0, page; page = route[defaultId][i]; i++) {
             if (page === exPage) {

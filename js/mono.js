@@ -41,7 +41,7 @@ var mono = function (env) {
     mono.addon = addon;
     mono.pageId = defaultId;
     mono.debug = {
-        massages: false
+        messages: false
     };
 
     var messagesEnable = false;
@@ -306,7 +306,7 @@ var mono = function (env) {
         var id = 0;
         return {
             cbCollector: function (message, cb) {
-                mono.debug.message && mono('cbCollector', message);
+                mono.debug.messages && mono('cbCollector', message);
                 if (cb !== undefined) {
                     if (cbStack.length > 10) {
                         delete cbObj[cbStack.shift()];
@@ -318,7 +318,7 @@ var mono = function (env) {
                 }
             },
             cbCaller: function(message, pageId) {
-                mono.debug.message && mono('cbCaller', message);
+                mono.debug.messages && mono('cbCaller', message);
                 if (cbObj[message.monoResponseId] === undefined) {
                     return mono(pageId+':','Message response not found!', message);
                 }
@@ -327,7 +327,7 @@ var mono = function (env) {
                 cbStack.splice(cbStack.indexOf(message.monoResponseId), 1);
             },
             mkResponse: function(message, pageId) {
-                mono.debug.message && mono('mkResponse', message);
+                mono.debug.messages && mono('mkResponse', message);
                 var response;
                 if (message.monoCallbackId !== undefined) {
                     response = function(responseMessage) {
@@ -344,7 +344,7 @@ var mono = function (env) {
             }
         }
     }();
-/*
+
     var ffVirtualPort = function() {
         mono.addon = addon = {
             port: {
@@ -352,7 +352,7 @@ var mono = function (env) {
                     window.postMessage(pageId+':'+JSON.stringify(message), "*");
                 },
                 on: function(pageId, onMessage) {
-                    window.onmessage(function(e) {
+                    window.addEventListener('message', function(e) {
                         var sepPos = e.data.indexOf(':');
                         var data = e.data.substr(sepPos+1);
                         onMessage(JSON.parese(data));
@@ -361,7 +361,7 @@ var mono = function (env) {
             }
         }
     };
-*/
+
     var ffMessaging = {
         send: function(message, cb) {
             msgTools.cbCollector(message, cb);
@@ -447,7 +447,7 @@ var mono = function (env) {
             monoTo: to || defaultId,
             monoFrom: mono.pageId
         };
-        mono.debug.message && mono('sendMessage', 'to:', to, 'hasCallback', !!cb, message);
+        mono.debug.messages && mono('sendMessage', 'to:', to, 'hasCallback', !!cb, message);
         mono.sendMessage.send(message, cb);
     };
 
@@ -456,23 +456,16 @@ var mono = function (env) {
         mono.onMessage = chMessaging.on;
     } else
     if (mono.isFF) {
-        /*
-         if (mono.noAddon) {
-            ffVirtualPort();
-         }
-         */
         if (mono.noAddon) {
-            mono.sendMessage.send = mono.onMessage = function() {};
-        } else {
-            mono.sendMessage.send = ffMessaging.send;
-            mono.onMessage = ffMessaging.on;
+            ffVirtualPort();
         }
+        mono.sendMessage.send = ffMessaging.send;
+        mono.onMessage = ffMessaging.on;
     } else
     if (mono.isOpera) {
         mono.sendMessage.send = opMessaging.send;
         mono.onMessage = opMessaging.on;
     }
-
 
     if (!mono.isModule) {
         window.mono = mono;

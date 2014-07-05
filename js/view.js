@@ -2482,6 +2482,7 @@ var view = function() {
         }
     };
 }();
+mono.pageId = 'tab';
 mono.localStorage(function () {
     window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
     engine.boot();
@@ -2491,5 +2492,5 @@ mono.localStorage(function () {
             counter();
         }
         view.boot();
-    })
+    });
 });
