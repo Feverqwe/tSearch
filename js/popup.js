@@ -203,6 +203,9 @@ var popup = function(enable_ac) {
             }
         });
         dom_cache.search_input.focus();
+
+        dom_cache.search_input.css('float','left');
+        dom_cache.submit.css('float','right');
     }
 };
 mono.pageId = 'popup';

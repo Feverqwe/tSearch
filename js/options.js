@@ -466,10 +466,6 @@ var options = function() {
                 // Opera 12
                 dom_cache.search_popup.closest('ul').hide();
             }
-            if (mono.isChrome && !mono.isChromeApp) {
-                //Chromeum extension
-                dom_cache.search_popup.closest('ul').hide();
-            }
             if (mono.isChrome) {
                 // Chromeum with storage
                 dom_cache.clear_cloud.on('click', function() {
