@@ -2475,8 +2475,8 @@ var view = function() {
                         {title: _lang.table.leechs[1], text: _lang.table.leechs[0], type: 'leechs', size: 30}
                     ];
 
-                    var_cache.table_sort_colum = storage.table_sort_colum;
-                    var_cache.table_sort_by = storage.table_sort_by;
+                    var_cache.table_sort_colum = storage.table_sort_colum || var_cache.table_sort_colum;
+                    var_cache.table_sort_by = storage.table_sort_by || var_cache.table_sort_by;
 
                     view.begin();
                 });

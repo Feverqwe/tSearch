@@ -6,6 +6,12 @@ var counter = function() {
     ga.type = 'text/javascript';
     ga.async = true;
     ga.src = 'https://ssl.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(ga, s);
+    engine.ajax({
+        type: 'HEAD',
+        url: ga.src,
+        success: function() {
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        }
+    });
 };

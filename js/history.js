@@ -77,7 +77,7 @@ var view = function() {
                 return;
             }
             var_cache.history.splice(index,1);
-            mono.storage.set({history: JSON.stringify(var_cache.history)});
+            mono.storage.set({history: var_cache.history});
             //writeHistory();
             return;
         }
@@ -165,7 +165,7 @@ var view = function() {
                 }, 200);
             });
             mono.storage.get(['history', 'click_history'], function(storage){
-                var_cache.history = JSON.parse(storage.history || '[]');
+                var_cache.history = storage.history || [];
                 var_cache.click_history = JSON.parse(storage.click_history || '{}');
                 writeHistory();
                 writeClickHistory();
