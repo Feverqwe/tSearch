@@ -755,6 +755,14 @@ var options = function() {
         boot: function() {
             mono.storage.get(['currentProfile', 'listOptions'], function(storage) {
                 current_profile = storage.currentProfile;
+
+                if (engine.profileList[current_profile] === undefined) {
+                    for (var item in engine.profileList) {
+                        current_profile = item;
+                        break;
+                    }
+                }
+
                 settings = $.extend({}, engine.settings);
                 profileList = $.extend(true, {}, engine.profileList);
                 listOptions = JSON.parse(storage.listOptions || '{}');
