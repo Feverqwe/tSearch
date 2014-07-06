@@ -66,6 +66,9 @@ var engine = function() {
         /*
          * загружает пользовательский модуль.
          */
+        if (torrent_lib[uid] !== undefined) {
+            return;
+        }
         torrent_lib[uid] = function() {
             var me = code;
             var icon = (me.icon !== undefined) ? me.icon : '';
@@ -590,7 +593,19 @@ var engine = function() {
         search: search,
         stop: stop,
         //need options:
+        defaultProfileTorrentList: defaultProfileTorrentList,
         loadSettings: loadSettings,
+        reloadCustomTorrentList: function(cb) {
+            mono.storage.get(['customTorrentList'], function(storage) {
+                if (storage.customTorrentList) {
+                    var torrentList = storage.customTorrentList;
+                    for (var uid in torrentList) {
+                        loadModule(uid, torrentList[uid]);
+                    }
+                    cb && cb();
+                }
+            });
+        },
         boot: function(cb) {
             if (mono.isChrome) {
                 var_cache.historyLimit = 200;

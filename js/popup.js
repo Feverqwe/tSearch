@@ -93,7 +93,7 @@ var popup = function(enable_ac) {
          * Отдает массив поисковых запросов из истории
          */
         mono.storage.get('history', function(storage) {
-            var history = JSON.parse(storage.history || "[]");
+            var history = storage.history || [];
             history.sort(function(a,b){
                 if (a.count === b.count) {
                     return 0;

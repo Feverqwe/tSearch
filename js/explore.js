@@ -30,7 +30,7 @@ var explore = function() {
 
     var dom_cache = {};
     var settings = {};
-    var listOptions;
+    var listOptions = {};
     var content_options = {
         favorites: {
             title: undefined,
