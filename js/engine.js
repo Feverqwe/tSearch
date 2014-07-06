@@ -706,7 +706,8 @@ var engine = function() {
                 } else {
                     def_listOptions.imdb_in_cinema.e = 0;
                     def_listOptions.imdb_popular.e = 0;
-                    def_listOptions.imdb_serials.e = 0;
+                    def_listOptions.imdb_serials.e = 1;
+                    def_listOptions.kp_serials.e = 0;
                 }
 
                 if (typeof storage.history === 'string') {
