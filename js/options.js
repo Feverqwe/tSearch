@@ -452,7 +452,6 @@ var options = function() {
             });
             if (mono.isFF) {
                 //FF
-                dom_cache.magic_btn.hide();
                 dom_cache.add_in_omnibox.closest('ul').hide();
             }
             if (!mono.isChrome) {
@@ -466,8 +465,12 @@ var options = function() {
                 // Opera 12
                 dom_cache.search_popup.closest('ul').hide();
             }
+            if (mono.isChrome && mono.isChromeApp) {
+                //Chromeum app
+                dom_cache.search_popup.closest('ul').hide();
+            }
             if (mono.isChrome) {
-                // Chromeum with storage
+                // Chromeum
                 dom_cache.clear_cloud.on('click', function() {
                     mono.storage.sync.clear();
                     dom_cache.get_from_cloud.prop('disabled', true);
