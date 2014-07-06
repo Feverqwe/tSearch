@@ -691,7 +691,8 @@ var engine = function() {
                 }
             }
 
-            mono.storage.get(['customTorrentList', 'profileList', 'history', 'lang', 'google_analytics'], function(storage) {
+            mono.storage.get(['customTorrentList', 'profileList',
+                'history', 'lang', 'google_analytics'], function(storage) {
 
                 storage.google_analytics !== 1 && window.counter && counter();
 
