@@ -935,7 +935,7 @@ var explore = function() {
             var_cache.mode = 1;
             $.each(engine.def_listOptions, function(key, value){
                 if (listOptions.hasOwnProperty(key) === false) {
-                    listOptions[key] = value;
+                    listOptions[key] = $.extend({},value);
                 }
             });
             dom_cache.explore = $('div.explore');
