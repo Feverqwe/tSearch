@@ -207,4 +207,4 @@ mono.storage.get(['lang', 'AutoComplite_opt'],function(storage) {
     $(function(){
         popup(storage.AutoComplite_opt);
     });
-}, 1);
+});
