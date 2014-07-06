@@ -721,7 +721,7 @@ var explore = function() {
         var_cache['exp_cache_'+type].content = content;
         var storage = {};
         storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-        var storageType = (type === 'favorites')?'sync':'local';
+        var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
         mono.storage[storageType].set(storage);
     };
     var xhr_send = function(type, source, page, page_mode) {
@@ -1221,7 +1221,7 @@ var explore = function() {
                             var_cache['exp_cache_'+type] = {keepAlive: 0, content: content};
                             var storage = {};
                             storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-                            var storageType = (type === 'favorites')?'sync':'local';
+                            var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
                             mono.storage[storageType].set(storage);
                             $this.removeClass('loading');
                         },
@@ -1243,7 +1243,7 @@ var explore = function() {
                 content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                 var storage = {};
                 storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-                var storageType = (type === 'favorites')?'sync':'local';
+                var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
                 mono.storage[storageType].set(storage);
             });
             dom_cache.explore_ul.on('click', 'div.picture > div.rmFavorite', function(e){
@@ -1255,7 +1255,7 @@ var explore = function() {
                 content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                 var storage = {};
                 storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-                var storageType = (type === 'favorites')?'sync':'local';
+                var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
                 mono.storage[storageType].set(storage);
             });
             dom_cache.explore_ul.on('click', 'div.picture > div.edit', function(e){
@@ -1278,7 +1278,7 @@ var explore = function() {
                         content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                         var storage = {};
                         storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-                        var storageType = (type === 'favorites')?'sync':'local';
+                        var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
                         mono.storage[storageType].set(storage);
                     });
             });
@@ -1404,7 +1404,7 @@ var explore = function() {
                     content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                     var storage = {};
                     storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-                    var storageType = (type === 'favorites')?'sync':'local';
+                    var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
                     mono.storage[storageType].set(storage);
                 }
             });
