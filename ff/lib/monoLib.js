@@ -6,6 +6,7 @@
  * @namespace require
  * @namespace exports
  */
+var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
 (function() {
     var self = require("sdk/self");
     var tabs = require("sdk/tabs");
@@ -129,7 +130,6 @@
         }
     };
 
-    XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     var xhrList = {};
     serviceList['service'] = function(message) {
         var to = message.monoFrom;
