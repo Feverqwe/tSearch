@@ -389,7 +389,7 @@ var engine = function() {
     var stop = function() {
         lastTrackerList.forEach(function(tracker) {
             torrent_lib[tracker].stop();
-            view.loadingStatus(1, k);
+            view.loadingStatus(1, tracker);
         });
     };
 
