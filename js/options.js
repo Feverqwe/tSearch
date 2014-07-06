@@ -125,12 +125,12 @@ var options = function() {
     var load_costume_torrents = function() {
         dom_cache.custom_list.get(0).textContent = '';
         mono.storage.get('customTorrentList', function(storage) {
-            var customTorrentList = storage.customTorrentList;
-            var count = 0;
-            var content = [];
-            if (customTorrentList !== undefined) {
-                for (var cId in customTorrentList) {
-                    var data = customTorrentList[cId];
+            var customTorrentList = storage.customTorrentList || [];
+            mono.storage.get(customTorrentList, function(storage) {
+                var count = 0;
+                var content = [];
+                for (var cId in storage) {
+                    var data = storage[cId];
 
                     var tracker_icon = $('<div>', {'class': 'tracker_icon'});
                     if (!data.icon) {
@@ -152,12 +152,12 @@ var options = function() {
 
                     count++;
                 }
-            }
-            if (count === 0) {
-                dom_cache.custom_list.append( $('<td>', {colspan: 4, 'class': 'notorrent', 'data-lang': 51, text: _lang.settings[51]}) );
-                return;
-            }
-            dom_cache.custom_list.append( content );
+                if (count === 0) {
+                    dom_cache.custom_list.append( $('<td>', {colspan: 4, 'class': 'notorrent', 'data-lang': 51, text: _lang.settings[51]}) );
+                    return;
+                }
+                dom_cache.custom_list.append( content );
+            });
         });
     };
 
@@ -275,6 +275,10 @@ var options = function() {
                 var data = JSON.parse(text);
             } catch (err) {
                 alert(_lang.str33 + "\n" + err);
+                return;
+            }
+            if (data.costume_tr !== undefined) {
+                engine.fastMigration(data);
                 return;
             }
             mono.storage.clear();
@@ -650,14 +654,18 @@ var options = function() {
                     alert(_lang.settings[56]);
                     return;
                 }
-                mono.storage.get('customTorrentList', function(storage) {
-                    var customTorrentList = storage.customTorrentList || {};
-                    if (customTorrentList['ct_'+code.uid] !== undefined) {
+                var id = 'ct_'+code.uid;
+                mono.storage.get([id, 'customTorrentList'], function(storage) {
+                    if (storage[id] !== undefined) {
                         alert(_lang.settings[54]);
                         return;
                     }
-                    customTorrentList['ct_'+code.uid] = code;
-                    mono.storage.set({customTorrentList: customTorrentList}, function() {
+                    storage[id] = code;
+                    if (storage.customTorrentList === undefined) {
+                        storage.customTorrentList = [];
+                    }
+                    storage.customTorrentList.push(id);
+                    mono.storage.set(storage, function() {
                         load_costume_torrents();
                         engine.reloadCustomTorrentList(function() {
                             writeTrackerList();
@@ -671,8 +679,8 @@ var options = function() {
                 dom_cache.custom_edit_btn.parent().show();
                 dom_cache.custom_add_btn.parent().hide();
                 var uid = $(this).closest('tr').data('id');
-                mono.storage.get('customTorrentList', function(storage) {
-                    var code = storage.customTorrentList['ct_'+uid];
+                mono.storage.get('ct_'+uid, function(storage) {
+                    var code = storage['ct_'+uid];
                     dom_cache.custom_textarea.val( JSON.stringify(code) );
                     dom_cache.custom_popup.data('id', uid).show();
                 });
@@ -691,26 +699,25 @@ var options = function() {
                 if (uid !== code.uid) {
                     code.uid = parseInt(uid);
                 }
-                mono.storage.get('customTorrentList', function(storage) {
-                    var customTorrentList = storage.customTorrentList;
-                    customTorrentList['ct_' + code.uid] = code;
-                    mono.storage.set({customTorrentList: customTorrentList}, function() {
-                        load_costume_torrents();
-                        engine.reloadCustomTorrentList(function() {
-                            writeTrackerList();
-                            loadProfile(current_profile);
-                            dom_cache.custom_close_btn.trigger('click');
-                        });
+                var obj = {};
+                obj['ct_' + code.uid] = code;
+                mono.storage.set(obj, function() {
+                    load_costume_torrents();
+                    engine.reloadCustomTorrentList(function() {
+                        writeTrackerList();
+                        loadProfile(current_profile);
+                        dom_cache.custom_close_btn.trigger('click');
                     });
                 });
             });
             dom_cache.custom_list.on('click', 'input[name=rm_ctr]', function() {
                 var uid = $(this).closest('tr').data('id');
+                var id = 'ct_' + uid;
+                mono.storage.remove(id);
                 mono.storage.get('customTorrentList', function(storage) {
-                    var customTorrentList = storage.customTorrentList;
-                    delete customTorrentList['ct_' + uid];
-                    delete torrent_lib['ct_' + uid];
-                    mono.storage.set({customTorrentList: customTorrentList}, function() {
+                    storage.customTorrentList.splice( storage.customTorrentList.indexOf(id), 1 );
+                    delete torrent_lib[id];
+                    mono.storage.set(storage, function() {
                         load_costume_torrents();
                         engine.reloadCustomTorrentList(function() {
                             writeTrackerList();

@@ -582,6 +582,79 @@ var engine = function() {
         }
     };
 
+    var fastMigration = function(lStorage) {
+        var settings = {};
+        for (var key in engine.def_settings) {
+            var def_item = engine.def_settings[key];
+            var value = lStorage[key];
+            if (value === undefined) {
+                value = def_item.v;
+            }
+            var value = parseInt(value);
+            if (!isNaN(value)) {
+                settings[key] = value;
+            }
+        }
+
+        try {
+            var customTorrentList = [];
+            var costume_tr = lStorage.costume_tr;
+            if (costume_tr) {
+                costume_tr = JSON.parse(costume_tr);
+                costume_tr.forEach(function (tracker) {
+                    var code = lStorage['ct_' + tracker];
+                    try {
+                        var obj = JSON.parse(code);
+                        customTorrentList.push('ct_' + obj.uid);
+                        settings['ct_' + obj.uid] = obj;
+                    } catch (e) {
+
+                    }
+                });
+            }
+            settings.customTorrentList = customTorrentList;
+        } catch (e) {};
+
+        if (['ru', 'en'].indexOf(lStorage.lang) !== -1) {
+            settings.lang = lStorage.lang;
+        }
+
+        try {
+            var listOptions = lStorage.listOptions;
+            listOptions = JSON.parse(listOptions);
+            settings.listOptions = JSON.stringify( listOptions );
+        } catch (e) {};
+
+        var profileList = {};
+        try {
+            var profiles = JSON.parse(lStorage.profileList);
+            for (var item in profiles) {
+                profileList[item] = [];
+                if (!profiles[item]) {
+                    continue;
+                }
+                for (var key in profiles[item]) {
+                    if (profiles[item][key] !== 1) {
+                        continue;
+                    }
+                    profileList[item].push(key);
+                }
+            }
+            settings.profileList = JSON.stringify( profileList );
+        } catch (e) {};
+
+        var currentProfile = lStorage.currentProfile;
+        if (profileList[currentProfile]) {
+            settings.currentProfile = currentProfile;
+        }
+
+        mono.storage.set(settings, function() {
+            lStorage.migrated = true;
+            return;
+            window.location.reload();
+        });
+    };
+
     return {
         //need modules
         contentFilter: contentFilter,
@@ -595,22 +668,31 @@ var engine = function() {
         search: search,
         stop: stop,
         //need options:
+        fastMigration: fastMigration,
         defaultProfileTorrentList: defaultProfileTorrentList,
         loadSettings: loadSettings,
         reloadCustomTorrentList: function(cb) {
-            mono.storage.get(['customTorrentList'], function(storage) {
-                if (storage.customTorrentList) {
-                    var torrentList = storage.customTorrentList;
-                    for (var uid in torrentList) {
-                        loadModule(uid, torrentList[uid]);
+            mono.storage.get('customTorrentList', function(storage) {
+
+                var torrentList = storage.customTorrentList || [];
+                mono.storage.get(torrentList, function(storage) {
+                    for (var uid in storage) {
+                        loadModule(uid, storage[uid]);
                     }
                     cb && cb();
-                }
+                });
+
             });
         },
         boot: function(cb) {
             if (mono.isChrome) {
                 var_cache.historyLimit = 200;
+            }
+
+            if (mono.isChrome || mono.isOpera) {
+                if (!localStorage.migrated) {
+                    fastMigration(localStorage);
+                }
             }
 
             mono.storage.get(['customTorrentList', 'profileList', 'history', 'lang', 'google_analytics'], function(storage) {
@@ -640,16 +722,18 @@ var engine = function() {
                 engine.profileList = profileList = JSON.parse( storage.profileList || '{}' );
                 prepareProfileList();
 
-                if (storage.customTorrentList) {
-                    var torrentList = storage.customTorrentList;
-                    for (var uid in torrentList) {
-                        loadModule(uid, torrentList[uid]);
-                    }
-                }
 
                 loadSettings(function (_settings) {
                     engine.settings = settings = _settings;
-                    cb && cb();
+
+                    var torrentList = storage.customTorrentList || [];
+                    mono.storage.get(torrentList, function(storage) {
+                        for (var uid in storage) {
+                            loadModule(uid, storage[uid]);
+                        }
+                        cb && cb();
+                    });
+
                 });
             });
         }

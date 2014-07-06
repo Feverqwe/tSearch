@@ -102,6 +102,10 @@ var view = function() {
 
         engine.profileList[currentProfile].forEach(function(trackerName) {
             var torrent = torrent_lib[trackerName];
+            if (!torrent) {
+                console.log('torrent not found!', trackerName);
+                return 1;
+            }
             if (!torrent.class_name) {
                 torrent.class_name = trackerName.replace(/[^A-Za-z0-9]/g, '_');
             }
@@ -2465,6 +2469,13 @@ var view = function() {
                     options.trListHeight = storage.torrent_list_h;
                     var_cache.click_history = JSON.parse( storage.click_history || '{}' );
                     currentProfile = storage.currentProfile || _lang.label_def_profile;
+
+                    if (engine.profileList[currentProfile] === undefined) {
+                        for (var item in engine.profileList) {
+                            currentProfile = item;
+                            break;
+                        }
+                    }
 
                     table_colums = [
                         {title: _lang.table.time, text: _lang.table.time, type: 'time', size: 125},
