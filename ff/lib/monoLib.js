@@ -306,17 +306,43 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
             });
             page.on('attach', function() {
                 stateList[page.randId] = true;
+                var ex = false;
+                if (route[pageId] === undefined) {
+                    route[pageId] = [];
+                } else {
+                    for (var i = 0, _page; _page = route[pageId][i]; i++) {
+                        if (page.randId === _page.randId) {
+                            ex = true;
+                            break;
+                        }
+                    }
+                }
+                if (ex === false) {
+                    route[pageId].push(page);
+                }
+                var ex = false;
+                for (var i = 0, _page; _page = route[defaultId][i]; i++) {
+                    if (page.randId === _page.randId) {
+                        ex = true;
+                        break;
+                    }
+                }
+                if (ex === false) {
+                    route[defaultId].push(page);
+                }
                 // console.log('attach', pageId);
             });
             page.on('detach', function() {
                 stateList[page.randId] = false;
-                for (var i = 0, _page; _page = route[pageId][i]; i++) {
-                    if (page.randId === _page.randId) {
-                        route[pageId].splice(i, 1);
-                        if (route[pageId].length === 0) {
-                            delete route[pageId];
+                if (route[pageId] !== undefined) {
+                    for (var i = 0, _page; _page = route[pageId][i]; i++) {
+                        if (page.randId === _page.randId) {
+                            route[pageId].splice(i, 1);
+                            if (route[pageId].length === 0) {
+                                delete route[pageId];
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
                 for (var i = 0, _page; _page = route[defaultId][i]; i++) {
