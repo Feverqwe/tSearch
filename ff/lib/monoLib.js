@@ -82,7 +82,10 @@
             var type = page.isVirtual?'lib':'port';
             try {
                 page[type].emit(defaultId, message);
-            } catch (e) {}
+            } catch (e) {
+                stateList[page] = false;
+                console.log('page ex', page.contentURL);
+            }
             return;
         }
         for (var i = 0, page; page = route[to][i]; i++) {
@@ -92,7 +95,10 @@
             var type = page.isVirtual?'lib':'port';
             try {
                 page[type].emit(to, message);
-            } catch (e) {}
+            } catch (e) {
+                stateList[page] = false;
+                console.log('page ex', page.contentURL);
+            }
         }
     };
 
