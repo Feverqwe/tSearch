@@ -404,13 +404,10 @@ var engine = function() {
         if (!title) {
             return;
         }
-        var trackers_names;
-        if (trackers !== undefined) {
-            trackers_names = [];
-            trackers.forEach(function(tracker) {
-                trackers_names.push( torrent_lib[tracker].name );
-            });
-        }
+        var trackers_names = [];
+        trackers.forEach(function(tracker) {
+            trackers_names.push( torrent_lib[tracker].name );
+        });
         var found = false;
         var oldest_time;
         var oldest_item;
@@ -632,6 +629,10 @@ var engine = function() {
                     def_listOptions.imdb_in_cinema.e = 0;
                     def_listOptions.imdb_popular.e = 0;
                     def_listOptions.imdb_serials.e = 0;
+                }
+
+                if (typeof storage.history === 'string') {
+                    storage.history = JSON.parse(storage.history);
                 }
 
                 engine.history = history = storage.history || [];

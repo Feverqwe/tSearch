@@ -756,6 +756,11 @@ var explore = function() {
     };
     var load_content = function(type) {
         mono.storage.get('exp_cache_'+type, function(storage) {
+
+            if (typeof storage['exp_cache_'+type] === 'string') {
+                storage['exp_cache_'+type] = JSON.parse(storage['exp_cache_'+type]);
+            }
+
             var cache = storage['exp_cache_'+type] || {};
             var_cache['exp_cache_'+type] = cache;
             if (type === 'kp_favorites' || type === 'favorites') {
@@ -792,6 +797,11 @@ var explore = function() {
     };
     var load_topList = function() {
         mono.storage.get('topList', function(storage) {
+
+            if (typeof storage.topList === 'string') {
+                storage.topList = JSON.parse(storage.topList);
+            }
+
             var cache = storage.topList || {};
             var_cache.topList = cache;
             var date = getCacheDate([0,1,2,3,4,5,6]);
@@ -1493,6 +1503,14 @@ var explore = function() {
                 var_cache.qualityBoxCache_limit = 200;
             }
             mono.storage.get(['qualityCache', 'qualityBoxCache', 'listOptions'], function(storage) {
+
+                if (typeof storage.qualityCache === 'string') {
+                    storage.qualityCache = JSON.parse(storage.qualityCache);
+                }
+                if (typeof storage.qualityBoxCache === 'string') {
+                    storage.qualityBoxCache = JSON.parse(storage.qualityBoxCache);
+                }
+
                 var_cache.qualityCache = storage.qualityCache || {};
                 var_cache.qualityBoxCache = storage.qualityBoxCache || {};
 
