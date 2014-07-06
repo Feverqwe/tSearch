@@ -4,7 +4,7 @@ body {
     margin: 0;
 }
 textarea {
-    border-color: #ccc;
+    border: 1px solid #ccc;
 }
 th {
     font-weight: normal;

@@ -6,6 +6,7 @@ var popup = function(enable_ac) {
     var options = {
         autoComplete: enable_ac
     };
+
     var ajax = function(obj) {
         var url = obj.url;
 
@@ -41,11 +42,16 @@ var popup = function(enable_ac) {
             xhr.responseType = obj.dataType.toLowerCase();
         }
 
+        if (!obj.headers) {
+            obj.headers = {};
+        }
+
         if (obj.contentType) {
-            if (!obj.headers) {
-                obj.headers = {};
-            }
             obj.headers["Content-Type"] = obj.contentType;
+        }
+
+        if (data && !obj.headers["Content-Type"]) {
+            obj.headers["Content-Type"] = 'application/x-www-form-urlencoded; charset=UTF-8';
         }
 
         if (mono.isFF) {
@@ -88,6 +94,7 @@ var popup = function(enable_ac) {
 
         return xhr;
     };
+
     var getHistory = function (cb) {
         /*
          * Отдает массив поисковых запросов из истории
@@ -121,7 +128,7 @@ var popup = function(enable_ac) {
     dom_cache.form_search.submit(function(e) {
         e.preventDefault();
         var text = dom_cache.search_input.val();
-        var url = 'index.html' + ( (text.length > 0) ? '#?search=' + text : '' );
+        var url = 'index.html' + ( (text) ? '#?search=' + text : '' );
         if (mono.isChrome) {
             chrome.tabs.create({
                 url: url
@@ -199,6 +206,7 @@ var popup = function(enable_ac) {
     }
 };
 mono.pageId = 'popup';
+mono.isFF && mono.onMessage(function() {});
 mono.storage.get(['lang', 'AutoComplite_opt'],function(storage) {
     window._lang = get_lang(storage.lang || navigator.language.substr(0, 2));
     if (storage.AutoComplite_opt === undefined) {

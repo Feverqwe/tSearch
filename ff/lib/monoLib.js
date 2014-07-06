@@ -84,7 +84,6 @@
                 page[type].emit(defaultId, message);
             } catch (e) {
                 stateList[page] = false;
-                console.log('page ex', page.contentURL);
             }
             return;
         }
@@ -97,7 +96,6 @@
                 page[type].emit(to, message);
             } catch (e) {
                 stateList[page] = false;
-                console.log('page ex', page.contentURL);
             }
         }
     };
