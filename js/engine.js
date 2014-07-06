@@ -597,7 +597,7 @@ var engine = function() {
         }
 
         try {
-            var customTorrentList = [];
+            var customTorrentList = {};
             var costume_tr = lStorage.costume_tr;
             if (costume_tr) {
                 costume_tr = JSON.parse(costume_tr);
@@ -605,8 +605,7 @@ var engine = function() {
                     var code = lStorage['ct_' + tracker];
                     try {
                         var obj = JSON.parse(code);
-                        customTorrentList.push('ct_' + obj.uid);
-                        settings['ct_' + obj.uid] = obj;
+                        customTorrentList['ct_' + obj.uid] = obj;
                     } catch (e) {
 
                     }
@@ -672,16 +671,14 @@ var engine = function() {
         defaultProfileTorrentList: defaultProfileTorrentList,
         loadSettings: loadSettings,
         reloadCustomTorrentList: function(cb) {
-            mono.storage.get('customTorrentList', function(storage) {
-
-                var torrentList = storage.customTorrentList || [];
-                mono.storage.get(torrentList, function(storage) {
-                    for (var uid in storage) {
-                        loadModule(uid, storage[uid]);
+            mono.storage.get(['customTorrentList'], function(storage) {
+                if (storage.customTorrentList) {
+                    var torrentList = storage.customTorrentList;
+                    for (var uid in torrentList) {
+                        loadModule(uid, torrentList[uid]);
                     }
-                    cb && cb();
-                });
-
+                }
+                cb && cb();
             });
         },
         boot: function(cb) {
@@ -722,18 +719,16 @@ var engine = function() {
                 engine.profileList = profileList = JSON.parse( storage.profileList || '{}' );
                 prepareProfileList();
 
+                if (storage.customTorrentList) {
+                    var torrentList = storage.customTorrentList;
+                    for (var uid in torrentList) {
+                        loadModule(uid, torrentList[uid]);
+                    }
+                }
 
                 loadSettings(function (_settings) {
                     engine.settings = settings = _settings;
-
-                    var torrentList = storage.customTorrentList || [];
-                    mono.storage.get(torrentList, function(storage) {
-                        for (var uid in storage) {
-                            loadModule(uid, storage[uid]);
-                        }
-                        cb && cb();
-                    });
-
+                    cb && cb();
                 });
             });
         }
