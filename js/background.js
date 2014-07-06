@@ -131,7 +131,7 @@ var bg = function() {
     return {
         boot: function() {
             mono.storage.get('lang', function(storage) {
-                _lang = get_lang( storage.lang || window.navigator.language.substr(0, 2) );
+                _lang = window.get_lang( storage.lang || window.navigator.language.substr(0, 2) );
                 mono.onMessage(function(message) {
                     if (message === 'bg_update') {
                         bg.update();
