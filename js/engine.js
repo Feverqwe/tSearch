@@ -649,7 +649,6 @@ var engine = function() {
 
         mono.storage.set(settings, function() {
             lStorage.migrated = true;
-            return;
             window.location.reload();
         });
     };
