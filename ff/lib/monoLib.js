@@ -77,27 +77,19 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     var sendTo = function(to, message) {
         if (typeof to !== "string") {
             var page = to;
-            if (stateList[page] === false) {
+            if (stateList[page.randId] === false) {
                 return;
             }
             var type = page.isVirtual?'lib':'port';
-            try {
-                page[type].emit(defaultId, message);
-            } catch (e) {
-                stateList[page] = false;
-            }
+            page[type].emit(defaultId, message);
             return;
         }
         for (var i = 0, page; page = route[to][i]; i++) {
-            if (stateList[page] === false) {
+            if (stateList[page.randId] === false) {
                 continue;
             }
             var type = page.isVirtual?'lib':'port';
-            try {
-                page[type].emit(to, message);
-            } catch (e) {
-                stateList[page] = false;
-            }
+            page[type].emit(to, message);
         }
     };
 
@@ -295,8 +287,9 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         if (route[pageId] === undefined) {
             route[pageId] = [];
         }
+        page.randId = Math.floor((Math.random() * 10000) + 1);
 
-        stateList[page] = true;
+        stateList[page.randId] = true;
 
         var type;
         if (page.isVirtual) {
@@ -304,19 +297,35 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         } else {
             type = 'port';
             page.on('pageshow', function() {
-                stateList[page] = true;
+                stateList[page.randId] = true;
+                // console.log('pageshow', pageId);
             });
             page.on('pagehide', function() {
-                stateList[page] = false;
+                stateList[page.randId] = false;
+                // console.log('pagehide', pageId);
             });
             page.on('attach', function() {
-                stateList[page] = true;
+                stateList[page.randId] = true;
+                // console.log('attach', pageId);
             });
             page.on('detach', function() {
-                stateList[page] = false;
-                route[pageId].splice(route[pageId].indexOf(page), 1);
-                route[defaultId].splice(route[defaultId].indexOf(page), 1);
-                delete stateList[page];
+                stateList[page.randId] = false;
+                for (var i = 0, _page; _page = route[pageId][i]; i++) {
+                    if (page.randId === _page.randId) {
+                        route[pageId].splice(i, 1);
+                        if (route[pageId].length === 0) {
+                            delete route[pageId];
+                        }
+                        break;
+                    }
+                }
+                for (var i = 0, _page; _page = route[defaultId][i]; i++) {
+                    if (page.randId === _page.randId) {
+                        route[defaultId].splice(i, 1);
+                    }
+                }
+                delete stateList[page.randId];
+                // console.log('detach', pageId);
             });
         }
 

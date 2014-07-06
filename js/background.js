@@ -49,7 +49,7 @@ var bg = function() {
         }
         if (mono.isChrome) {
             chrome.contextMenus.removeAll(function () {
-                if (enable !== 1) {
+                if (!enable) {
                     return;
                 }
                 chrome.contextMenus.create({
@@ -68,6 +68,9 @@ var bg = function() {
             });
         }
         if (mono.isFF) {
+            if (enable && var_cache.cm_state) {
+                return;
+            }
             var contentScript = (function() {
                 var onContext = function() {
                     self.on("click", function() {
@@ -89,13 +92,17 @@ var bg = function() {
                 return minifi(onClickString);
             })();
             var cm = require("sdk/context-menu");
+
             if (var_cache.topLevel) {
                 var_cache.topLevel.parentMenu.removeItem(var_cache.topLevel);
             }
-            if (enable !== 1) {
+
+            if (!enable) {
+                var_cache.cm_state = false;
                 var_cache.topLevel = undefined;
                 return;
             }
+
             var_cache.topLevel = cm.Item({
                 label: _lang.ctx_title,
                 context: cm.SelectionContext(),
@@ -105,6 +112,7 @@ var bg = function() {
                     tabs.open( self.data.url('index.html')+'#?search='+text );
                 }
             });
+            var_cache.cm_state = true;
         }
     };
     var init_btn_action = function(enable) {

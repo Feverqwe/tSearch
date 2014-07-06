@@ -46,7 +46,6 @@ var mono = function (env) {
     };
 
     var messagesEnable = false;
-    var serviceList = {};
 
     var externalStorage = {
         get: function(src, cb) {
@@ -290,9 +289,6 @@ var mono = function (env) {
                 if (firstOn === false && message.monoResponseId) {
                     return msgTools.cbCaller(message, pageId);
                 }
-                if (firstOn === false && message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
-                    return serviceList[message.monoFrom].onMessage(message.data);
-                }
                 var response = msgTools.mkResponse(message, pageId);
                 cb(message.data, response);
             };
@@ -319,9 +315,6 @@ var mono = function (env) {
                 if (firstOn === false && message.monoResponseId) {
                     return msgTools.cbCaller(message, pageId);
                 }
-                if (firstOn === false && message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
-                    return serviceList[message.monoFrom].onMessage(message.data);
-                }
                 var response = msgTools.mkResponse(message, pageId);
                 cb(message.data, response);
             });
@@ -343,9 +336,6 @@ var mono = function (env) {
                 }
                 if (firstOn === false && message.monoResponseId) {
                     return msgTools.cbCaller(message, pageId);
-                }
-                if (firstOn === false && message.monoService !== undefined && serviceList[message.monoFrom] !== undefined) {
-                    return serviceList[message.monoFrom].onMessage(message.data);
                 }
                 var response = msgTools.mkResponse(message, pageId);
                 cb(message.data, response);
