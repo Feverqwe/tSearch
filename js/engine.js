@@ -106,7 +106,7 @@ var engine = function() {
                 var ex_encode = (me.encode !== undefined) ? 1 : 0;
                 var ex_post = (me.post !== undefined) ? 1 : 0;
                 var ex_charset = (me.charset !== undefined) ? 1 : 0;
-                if (me.cat_alt !== undefined) {
+                if (me.cat_alt) {
                     me.cat_attr = 'alt';
                     delete me.cat_alt;
                 }
