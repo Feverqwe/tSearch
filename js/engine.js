@@ -12,7 +12,7 @@ var engine = function() {
         search_popup: {v: 1, t: "checkbox"},
         AutoComplite_opt: {v: 1, t: "checkbox"},
         use_english_postername: {v: 0, t: "checkbox"},
-        google_analytics: {v: 1, t: "checkbox"},
+        google_analytics: {v: 0, t: "checkbox"},
         autoSetCat: {v: 1, t: "checkbox"},
         allow_get_description: {v: 1, t: "checkbox"},
         allow_favorites_sync: {v: 1, t: "checkbox"},
@@ -495,11 +495,16 @@ var engine = function() {
             xhr.responseType = obj.dataType.toLowerCase();
         }
 
+        if (!obj.headers) {
+            obj.headers = {};
+        }
+
         if (obj.contentType) {
-            if (!obj.headers) {
-                obj.headers = {};
-            }
             obj.headers["Content-Type"] = obj.contentType;
+        }
+
+        if (data && !obj.headers["Content-Type"]) {
+            obj.headers["Content-Type"] = 'application/x-www-form-urlencoded; charset=UTF-8';
         }
 
         if (mono.isFF) {
@@ -613,7 +618,7 @@ var engine = function() {
 
             mono.storage.get(['customTorrentList', 'profileList', 'history', 'lang', 'google_analytics'], function(storage) {
 
-                storage.google_analytics !== 0 && window.counter && counter();
+                storage.google_analytics !== 1 && window.counter && counter();
 
                 _lang = get_lang(storage.lang || navigator.language.substr(0, 2));
 

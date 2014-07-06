@@ -78,7 +78,7 @@ var options = function() {
         $.each(engine.def_settings, function(key, value) {
             if (value.t === "text" || value.t === "number") {
                 var val = $('input[name="' + key + '"]').val();
-                if (!val) {
+                if (val.length === 0) {
                     val = value.v;
                 }
                 if (value.t === "number") {
@@ -91,12 +91,13 @@ var options = function() {
             } else
             if (value.t === "checkbox") {
                 var val = ($('input[name="' + key + '"]').prop('checked')) ? 1 : 0;
-                changes[key] = settings[key];
+                changes[key] = parseInt(val);
             } else
             if (value.t === "radio") {
                 var val = $('input[name="' + key + '"]:checked').val();
-                changes[key] = val;
+                changes[key] = parseInt(val);
             }
+            settings[key] = changes[key];
         });
         $.each(listOptions, function(key){
             var value = $('input[name='+key+']').prop('checked')?1:0;
@@ -127,29 +128,30 @@ var options = function() {
             var customTorrentList = storage.customTorrentList;
             var count = 0;
             var content = [];
-            for (var cId in customTorrentList) {
-                var data = customTorrentList[cId];
+            if (customTorrentList !== undefined) {
+                for (var cId in customTorrentList) {
+                    var data = customTorrentList[cId];
 
-                var tracker_icon = $('<div>', {'class': 'tracker_icon'});
-                if (!data.icon) {
-                    tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
-                } else
-                if (data.icon[0] === '#') {
-                    tracker_icon.css({'background-color': data.icon, 'border-radius': '8px'});
-                } else {
-                    tracker_icon.css('background-image', 'url(' + data.icon + ')');
+                    var tracker_icon = $('<div>', {'class': 'tracker_icon'});
+                    if (!data.icon) {
+                        tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
+                    } else if (data.icon[0] === '#') {
+                        tracker_icon.css({'background-color': data.icon, 'border-radius': '8px'});
+                    } else {
+                        tracker_icon.css('background-image', 'url(' + data.icon + ')');
+                    }
+                    content.push($('<tr>', {'data-id': data.uid}).append(
+                        $('<td>').append(tracker_icon),
+                        $('<td>').append($('<a>', {href: data.root_url, target: '_blank', text: data.name})),
+                        $('<td>', {'class': 'desc', text: data.about || ''}),
+                        $('<td>', {'class': 'action'}).append(
+                            $('<input>', {type: 'button', name: 'edit_ctr', value: _lang.settings[52], 'data-lang': 52}),
+                            $('<input>', {type: 'button', name: 'rm_ctr', value: _lang.settings[53], 'data-lang': 53})
+                        )
+                    ));
+
+                    count++;
                 }
-                content.push($('<tr>', {'data-id': data.uid}).append(
-                    $('<td>').append(tracker_icon),
-                    $('<td>').append($('<a>', {href: data.root_url, target: '_blank', text: data.name})),
-                    $('<td>', {'class': 'desc', text: data.about || ''}),
-                    $('<td>', {'class': 'action'}).append(
-                        $('<input>', {type: 'button', name: 'edit_ctr', value: _lang.settings[52], 'data-lang': 52}),
-                        $('<input>', {type: 'button', name: 'rm_ctr', value: _lang.settings[53], 'data-lang': 53})
-                    )
-                ));
-
-                count++;
             }
             if (count === 0) {
                 dom_cache.custom_list.append( $('<td>', {colspan: 4, 'class': 'notorrent', 'data-lang': 51, text: _lang.settings[51]}) );
@@ -253,12 +255,19 @@ var options = function() {
         });
         dom_cache.tracker_list.append(content);
     };
-    var getBackup = function() {
-        var data;
-        data = $.extend({}, mono.localStorage.get());
-        var json = JSON.stringify(data);
-        dom_cache.textarea_backup.val(json);
-        return json;
+    var getBackup = function(cb) {
+        mono.storage.get(undefined, function(storage) {
+            delete storage.history;
+            delete storage.click_history;
+            for (var key in storage) {
+                if (key === 'topList' || key.substr(0,9) === 'exp_cache') {
+                    delete storage[key];
+                }
+            }
+            var json = JSON.stringify(storage);
+            dom_cache.textarea_backup.val(json);
+            cb && cb(json);
+        });
     };
     var settingsRestore = function(text) {
         mono.storage.get(['history', 'click_history'], function(storage) {
@@ -268,9 +277,7 @@ var options = function() {
                 alert(_lang.str33 + "\n" + err);
                 return;
             }
-            mono.storage.local.clear();
-            mono.storage.local.set(storage);
-            mono.localStorage.clear();
+            mono.storage.clear();
             for (var item in data) {
                 if (data.hasOwnProperty(item) === false) {
                     continue;
@@ -279,9 +286,11 @@ var options = function() {
                 if (value === undefined) {
                     continue;
                 }
-                mono.localStorage.set(item, value);
+                storage[item] = value;
             }
-            window.location.reload();
+            mono.storage.set(storage, function() {
+                window.location.reload();
+            });
         });
     };
     var checkTrList = function(list) {
@@ -319,6 +328,7 @@ var options = function() {
         obj[chank + arr_l] = "END";
         mono.storage.sync.set(obj, cb);
     };
+
     var clear_broken = function(chank, obj, len) {
         var chank_len = chank.length;
         var rm_list = [];
@@ -466,16 +476,18 @@ var options = function() {
                 });
                 dom_cache.save_in_cloud.on('click', function() {
                     var _this = this;
-                    savePartedBackup("bk_ch_", getBackup(), function(){
-                        getPartedBackup("bk_ch_", function(content){
-                            if (content === undefined) {
-                                dom_cache.get_from_cloud.prop('disabled', true);
-                            }
-                            $(_this).val(_lang.settings[70]);
-                            setTimeout(function() {
-                                dom_cache.save_in_cloud.val(_lang.settings[68]);
-                            }, 3000);
-                            dom_cache.get_from_cloud.prop('disabled', false);
+                    getBackup(function(json) {
+                        savePartedBackup("bk_ch_", json, function(){
+                            getPartedBackup("bk_ch_", function(content){
+                                if (content === undefined) {
+                                    dom_cache.get_from_cloud.prop('disabled', true);
+                                }
+                                $(_this).val(_lang.settings[70]);
+                                setTimeout(function() {
+                                    dom_cache.save_in_cloud.val(_lang.settings[68]);
+                                }, 3000);
+                                dom_cache.get_from_cloud.prop('disabled', false);
+                            });
                         });
                     });
                 });
@@ -639,7 +651,7 @@ var options = function() {
                     return;
                 }
                 mono.storage.get('customTorrentList', function(storage) {
-                    var customTorrentList = storage.customTorrentList;
+                    var customTorrentList = storage.customTorrentList || {};
                     if (customTorrentList['ct_'+code.uid] !== undefined) {
                         alert(_lang.settings[54]);
                         return;
@@ -661,7 +673,7 @@ var options = function() {
                 var uid = $(this).closest('tr').data('id');
                 mono.storage.get('customTorrentList', function(storage) {
                     var code = storage.customTorrentList['ct_'+uid];
-                    dom_cache.custom_textarea.val(code);
+                    dom_cache.custom_textarea.val( JSON.stringify(code) );
                     dom_cache.custom_popup.data('id', uid).show();
                 });
             });
@@ -697,6 +709,7 @@ var options = function() {
                 mono.storage.get('customTorrentList', function(storage) {
                     var customTorrentList = storage.customTorrentList;
                     delete customTorrentList['ct_' + uid];
+                    delete torrent_lib['ct_' + uid];
                     mono.storage.set({customTorrentList: customTorrentList}, function() {
                         load_costume_torrents();
                         engine.reloadCustomTorrentList(function() {
@@ -744,6 +757,7 @@ var options = function() {
         boot: function() {
             mono.storage.get(['currentProfile', 'listOptions'], function(storage) {
                 current_profile = storage.currentProfile;
+                settings = $.extend({}, engine.settings);
                 profileList = $.extend(true, {}, engine.profileList);
                 listOptions = JSON.parse(storage.listOptions || '{}');
 

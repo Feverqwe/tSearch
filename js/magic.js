@@ -1058,9 +1058,9 @@ var magic = function() {
 }();
 mono.pageId = 'tab';
 mono.noAddon && mono.onMessage(function() {});
-mono.storage.get('lang',function (storage) {
+mono.storage.get('lang', function (storage) {
     window._lang = get_lang(storage.lang || navigator.language.substr(0, 2));
     $(function () {
         magic.begin();
     });
-}, 1);
+});
