@@ -1,10 +1,10 @@
-var popup = function() {
+var popup = function(enable_ac) {
     var var_cache = {
         suggest_xhr: undefined
     };
     var dom_cache = {};
     var options = {
-        autoComplete: parseInt(mono.localStorage.get('AutoComplite_opt') || 1)
+        autoComplete: enable_ac
     };
     var ajax = function(obj) {
         var url = obj.url;
@@ -199,9 +199,12 @@ var popup = function() {
     }
 };
 mono.pageId = 'popup';
-mono.localStorage(function() {
-    window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
-   $(function(){
-        popup();
-   });
+mono.storage.get(['lang', 'AutoComplite_opt'],function(storage) {
+    window._lang = get_lang(storage.lang || navigator.language.substr(0, 2));
+    if (storage.AutoComplite_opt === undefined) {
+        storage.AutoComplite_opt = 1;
+    }
+    $(function(){
+        popup(storage.AutoComplite_opt);
+    });
 }, 1);

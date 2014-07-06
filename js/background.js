@@ -10,12 +10,8 @@ var init = function (env, lang) {
         mono = mono.init(env);
         window.get_lang = lang.get_lang;
     }
-    mono.messageStack = 100;
     mono.pageId = 'bg';
-    mono.localStorage(function() {
-        bg.boot();
-        bg.update();
-    }, 1);
+    bg.boot();
 };
 var bg = function() {
     /**
@@ -31,9 +27,11 @@ var bg = function() {
      * @namespace chrome.browserAction.setPopup
      */
     var _lang, btn_init, var_cache = {};
-    var add_in_omnibox = function() {
-        var add_in_omnibox = parseInt(mono.localStorage.get('add_in_omnibox') || 1);
-        if (add_in_omnibox === 0) {
+    var add_in_omnibox = function(enable) {
+        if (enable === undefined) {
+            enable = 1;
+        }
+        if (enable !== 1) {
             return;
         }
         if (mono.isChrome) {
@@ -45,12 +43,13 @@ var bg = function() {
             });
         }
     };
-    var update_context_menu = function() {
-        var val = mono.localStorage.get('context_menu');
-        var context_menu = (val === undefined || val === null)?1:val;
+    var update_context_menu = function(enable) {
+        if (enable === undefined) {
+            enable = 1;
+        }
         if (mono.isChrome) {
             chrome.contextMenus.removeAll(function () {
-                if (context_menu === 0) {
+                if (enable !== 1) {
                     return;
                 }
                 chrome.contextMenus.create({
@@ -93,7 +92,7 @@ var bg = function() {
             if (var_cache.topLevel) {
                 var_cache.topLevel.parentMenu.removeItem(var_cache.topLevel);
             }
-            if (context_menu === 0) {
+            if (enable !== 1) {
                 var_cache.topLevel = undefined;
                 return;
             }
@@ -108,41 +107,47 @@ var bg = function() {
             });
         }
     };
-    var init_btn_action = function() {
+    var init_btn_action = function(enable) {
         chrome.browserAction.onClicked.addListener(function() {
-            var show_popup = parseInt(mono.localStorage.get('search_popup') || 1);
-            if (!show_popup) {
+            if (!enable) {
                 chrome.tabs.create({
                     url: 'index.html'
                 });
             }
         });
     };
-    var update_btn_action = function() {
+    var update_btn_action = function(enable) {
+        if (enable === undefined) {
+            enable = 1;
+        }
         if (!btn_init) {
-            init_btn_action();
+            init_btn_action(enable);
             btn_init = true;
         }
-        var show_popup = parseInt(mono.localStorage.get('search_popup') || 1);
         chrome.browserAction.setPopup({
-            popup: (show_popup)?'popup.html':''
+            popup: (enable)?'popup.html':''
         });
     };
     return {
         boot: function() {
-            _lang = window.get_lang( mono.localStorage.get('lang') || window.navigator.language.substr(0, 2) );
-            mono.onMessage(function(message) {
-                if (message === 'bg_update') {
-                    bg.update();
-                }
+            mono.storage.get('lang', function(storage) {
+                _lang = get_lang( storage.lang || window.navigator.language.substr(0, 2) );
+                mono.onMessage(function(message) {
+                    if (message === 'bg_update') {
+                        bg.update();
+                    }
+                });
+                bg.update();
             });
         },
         update: function() {
-            add_in_omnibox();
-            update_context_menu();
-            if (mono.isChrome && !mono.isChromeApp) {
-                update_btn_action();
-            }
+            mono.storage.get(['add_in_omnibox', 'context_menu', 'search_popup'], function(storage) {
+                add_in_omnibox(storage.add_in_omnibox);
+                update_context_menu(storage.context_menu);
+                if (mono.isChrome && !mono.isChromeApp) {
+                    update_btn_action(storage.search_popup);
+                }
+            });
         }
     };
 }();

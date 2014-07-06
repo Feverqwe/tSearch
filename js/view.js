@@ -83,52 +83,50 @@ var view = function() {
         click_history_limit: 10,
         click_history_item_limit: 20
     };
+    var settings = {};
     var dom_cache = {};
-    var HideLeech;
-    var HideSeed;
-    var ShowIcons;
-    var HideZeroSeed;
-    var AdvFiltration;
-    var TeaserFilter;
-    var SubCategoryFilter;
-    var autoSetCat;
+    var table_colums = [];
+    var options = {
+        single_filter_mode: true
+    };
 
-    var table_colums;
+    var currentProfile = undefined;
 
-    var options;
-    var writeTrackerList = function(trList) {
-        dom_cache.torrent_list.find('option[value="'+mono.localStorage.get('currentProfile')+'"]').prop('selected', true);
+    var writeTrackerList = function(currentProfile) {
+        dom_cache.torrent_list.find('option[value="'+currentProfile+'"]').prop('selected', true);
         var_cache.trackers = {};
         dom_cache.trackers_ul.empty();
         dom_cache.body.children('style.tracker_icons').remove();
         var items = [];
         var style = '';
-        $.each(trList, function(key, item) {
-            if (item === undefined) {
-                console.log('Torrent not loaded! ',key);
-                return 1;
+
+        engine.profileList[currentProfile].forEach(function(trackerName) {
+            var torrent = torrent_lib[trackerName];
+            if (!torrent.class_name) {
+                torrent.class_name = trackerName.replace(/[^A-Za-z0-9]/g, '_');
             }
-            item.class_name = key.replace(/[^A-Za-z0-9]/g,'_');
-            var icon = $('<div>', {'class': 'tracker_icon '+item.class_name});
+            var icon = $('<div>', {'class': 'tracker_icon '+torrent.class_name});
             var i = $('<i>', {text: 0});
-            var link = $('<a>', {text: item.name, href: '#'}).data('tracker', key);
+            var link = $('<a>', {text: torrent.name, href: '#'}).data('tracker', trackerName);
             var li = $('<li>').append(icon, link, i);
-            var_cache.trackers[key] = {icon: 1, link: link, i: i, count: 0, count_val: 0, tracker: item, li: li, auth: 1};
+            var_cache.trackers[trackerName] = {icon: 1, link: link, i: i, count: 0, count_val: 0, tracker: torrent, li: li, auth: 1};
             items.push( li );
             var icon_style;
-            if (item.icon.length === 0) {
+            if (!torrent.icon) {
                 icon_style = 'background-color:#ddd;border-radius: 8px;';
             } else
-            if (item.icon[0] === '#') {
-                icon_style = 'background-color:'+item.icon+';border-radius: 8px;';
+            if (torrent.icon[0] === '#') {
+                icon_style = 'background-color:'+torrent.icon+';border-radius: 8px;';
             } else {
-                icon_style = 'background-image:url('+item.icon+');';
+                icon_style = 'background-image:url('+torrent.icon+');';
             }
-            style += 'div.tracker_icon.'+item.class_name+'{'+icon_style+'}';
+            style += 'div.tracker_icon.'+torrent.class_name+'{'+icon_style+'}';
         });
         dom_cache.trackers_ul.append(items);
         dom_cache.body.append($('<style>', {'class':'tracker_icons', text: style}));
+        mono.storage.set({currentProfile: currentProfile});
     };
+
     var writeProfileList = function(profileList) {
         var $select = $('<select>', {'title': _lang.label_profile});
         var count = 0;
@@ -141,6 +139,7 @@ var view = function() {
         }
         dom_cache.trackers_ul.before($('<div>', {'class': 'profile'}).append($select));
     };
+
     var writeTrackerAuth = function(state, id) {
         /**
          * @namespace gui.li
@@ -160,7 +159,7 @@ var view = function() {
                 $('<a>', {href: gui.tracker.login_url, target: '_blank', text: _lang.btn_login})
             ) );
             gui.li.append( $auth_ul );
-            if (options.resizableTrList === 1) {
+            if (engine.settings.torrent_list_r === 1) {
                 scrool_to($auth_ul);
             }
         } else {
@@ -236,7 +235,7 @@ var view = function() {
             var_cache.tableIsEmpty = 0;
         }
         clear_table();
-        if (options.allow_get_description === 1) {
+        if (engine.settings.allow_get_description === 1) {
             explore.getDescription(request);
         }
         var_cache.tableIsEmpty = 0;
@@ -245,7 +244,13 @@ var view = function() {
         dom_cache.search_input.autocomplete( "close" );
         dom_cache.search_input.autocomplete( "disable" );
         engine.stop();
-        engine.search(request, var_cache.currentTrackerList);
+        var trackerList = var_cache.currentTrackerList.slice(0);
+        if (trackerList.length === 0) {
+            for (var key in var_cache.trackers) {
+                trackerList.push(key);
+            }
+        }
+        engine.search(request, trackerList);
         var_cache.currentRequest = request;
         setPage(request);
         setTimeout(function() {
@@ -259,8 +264,14 @@ var view = function() {
         var_cache.counter = {};
         updateCounts();
         syntaxCacheRequest(request);
+        var trackerList = [];
+        if (trackerList.length === 0) {
+            for (var key in var_cache.trackers) {
+                trackerList.push(key);
+            }
+        }
         engine.stop();
-        engine.search(request, [], 1);
+        engine.search(request, trackerList, 1);
         var_cache.currentRequest = request;
         _gaq.push(['_trackEvent', 'Quality', 'keyword', request]);
     };
@@ -666,7 +677,7 @@ var view = function() {
         var filter = [0, 0, 0, 0, 0];
         if (var_cache.keywordFilter !== undefined) {
             var title = item.title;
-            if (SubCategoryFilter && item.category !== undefined) {
+            if (engine.settings.SubCategoryFilter && item.category !== undefined) {
                 title += ' ' + item.category;
             }
             if (calcKeywordFilter(title)) {
@@ -683,12 +694,12 @@ var view = function() {
                 filter[2] = 1;
             }
         }
-        if (HideSeed === 0 && var_cache.seedFilter !== undefined) {
+        if (engine.settings.HideSeed === 0 && var_cache.seedFilter !== undefined) {
             if (calcSeedFilter(item.seeds)) {
                 filter[3] = 1;
             }
         }
-        if (HideLeech === 0 && var_cache.peerFilter !== undefined) {
+        if (engine.settings.HideLeech === 0 && var_cache.peerFilter !== undefined) {
             if (calcPeerFilter(item.leechs)) {
                 filter[4] = 1;
             }
@@ -818,10 +829,10 @@ var view = function() {
                 console.error('Item in tracker ' + tracker.name + ' have critical problem! Torrent skipped!', item);
                 continue;
             }
-            if (HideZeroSeed === 1 && item.seeds === 0) {
+            if (engine.settings.HideZeroSeed === 1 && item.seeds === 0) {
                 continue;
             }
-            if (TeaserFilter === 1 && teaserFilter(item.title + item.category.title) === 1) {
+            if (engine.settings.TeaserFilter === 1 && teaserFilter(item.title + item.category.title) === 1) {
                 continue;
             }
             item.title = $.trim(item.title);
@@ -832,7 +843,7 @@ var view = function() {
             var rate = title_highLight.rate;
             var quality = checkRate(rate, item);
             title_highLight = title_highLight.hl_name;
-            if (autoSetCat === 1 && item.category.id < 0 && item.category.title !== undefined) {
+            if (engine.settings.autoSetCat === 1 && item.category.id < 0 && item.category.title !== undefined) {
                 item.category.id = autosetCategory(quality, item.category.title);
             }
             var item_id = var_cache.table_dom.length;
@@ -840,7 +851,7 @@ var view = function() {
             var filter = itemFilter(table_dom_item);
             table_dom_item.filter = filter.join(',');
             var td_icon = '';
-            if (ShowIcons === 1) {
+            if (engine.settings.ShowIcons === 1) {
                 td_icon = $('<div>', {'class': 'tracker_icon ' + tracker.class_name, title: tracker.name});
             }
             var td_category = '';
@@ -856,7 +867,7 @@ var view = function() {
             }
             var td_download;
             if (item.dl !== undefined) {
-                var isBlank = options.no_blank_dl_link!==1;//(item.dl.substr(0, 7).toLowerCase() !== 'magnet:');
+                var isBlank = engine.settings.no_blank_dl_link!==1;//(item.dl.substr(0, 7).toLowerCase() !== 'magnet:');
                 td_download = $('<td>', {'class': 'size'}).append(
                     $('<div>').append( $('<a>', {href: item.dl, target: (isBlank === true)?'_blank':'', text: bytesToSize(item.size) + ' ↓'}) )
                 );
@@ -879,8 +890,8 @@ var view = function() {
                     ), td_category
                 ),
                 td_download,
-                (HideSeed === 1) ? '' : $('<td>', {'class': 'seeds'}).append( $('<div>', {text: item.seeds}) ),
-                (HideLeech === 1) ? '' : $('<td>', {'class': 'leechs'}).append( $('<div>', {text: item.leechs}) )
+                (engine.settings.HideSeed === 1) ? '' : $('<td>', {'class': 'seeds'}).append( $('<div>', {text: item.seeds}) ),
+                (engine.settings.HideLeech === 1) ? '' : $('<td>', {'class': 'leechs'}).append( $('<div>', {text: item.leechs}) )
             );
             var_cache.table_dom.push(table_dom_item);
             if (var_cache.counter[id][item.category.id] === undefined) {
@@ -1162,7 +1173,7 @@ var view = function() {
     };
     var sub_select = function(name) {
         //выделяет то, что в скобках
-        if (options.parenthetical_select_enable === 0) {
+        if (engine.settings.sub_select_enable === 0) {
             return name.replace(var_cache.rm_retry,'$1$2');
         }
         name = name.replace(var_cache.found_parenthetical, '<span class="sub_name">$1</span>');
@@ -1647,8 +1658,8 @@ var view = function() {
         table_sort(colum, by);
         var_cache.table_sort_colum = colum;
         var_cache.table_sort_by = by;
-        mono.localStorage.set('table_sort_colum', colum);
-        mono.localStorage.set('table_sort_by', by);
+        mono.storage.set({table_sort_colum: colum});
+        mono.storage.set({table_sort_by: by});
     };
     var initResizeble = function() {
         dom_cache.torrent_list.resizable({
@@ -1659,7 +1670,7 @@ var view = function() {
                 ul.css('height', ui.size.height - top + 'px');
             },
             stop: function(e, ui) {
-                mono.localStorage.set('torrent_list_h', ui.size.height);
+                mono.storage.set({torrent_list_h: ui.size.height});
                 options.trListHeight = ui.size.height;
             },
             create: function(e, ui) {
@@ -1693,7 +1704,7 @@ var view = function() {
         };
         dom_cache.search_input.autocomplete({
             source: function(a, response) {
-                if (a.term.length === 0 || options.autoComplete === 0) {
+                if (a.term.length === 0 || engine.settings.AutoComplite_opt === 0) {
                     response(getHistory());
                 } else {
                     if (var_cache.suggest_xhr !== undefined) {
@@ -1731,7 +1742,7 @@ var view = function() {
         var style = '';
         var sortBy = (var_cache.table_sort_by === 0)?'sortUp':'sortDown';
         for (var i = 0, item; item = table_colums[i]; i++) {
-            if ((item.type === 'seeds' && HideSeed === 1) || item.type === 'leechs' && HideLeech === 1) {
+            if ((item.type === 'seeds' && engine.settings.HideSeed === 1) || item.type === 'leechs' && engine.settings.HideLeech === 1) {
                 continue;
             }
             tr.append( $('<th>', {'class': item.type+((var_cache.table_sort_colum === item.type)?' '+sortBy:''), title: item.title})
@@ -1935,7 +1946,7 @@ var view = function() {
             }
         });
         var_cache.click_history = new_obj;
-        mono.storage.set({click_history: JSON.stringify(new_obj)});
+        mono.storage.set({click_history: JSON.stringify( new_obj ) });
     };
     var write_language = function() {
         dom_cache.form_search.children('.button').val(_lang['btn_form']);
@@ -1997,40 +2008,41 @@ var view = function() {
             dom_cache.html_body = $('html, body');
             dom_cache.search_input.focus();
             dom_cache.ad = $('div.ad');
+
             write_language();
             $.each(_lang.time_f_s, function(value, text) {
                 dom_cache.time_filter_select.append(
                     $('<option>',{value: value, text: text, selected: (value === 'all')})
                 );
             });
-            if (mono.localStorage.get('table_sort_colum') !== undefined) {
-                var_cache.table_sort_colum = mono.localStorage.get('table_sort_colum');
-            }
-            if (mono.localStorage.get('table_sort_by') !== undefined) {
-                var_cache.table_sort_by = parseInt(mono.localStorage.get('table_sort_by'));
-            }
-            if (HideSeed === 1) {
+
+            if (engine.settings.HideSeed === 1) {
                 dom_cache.seed_filter.hide();
             }
-            if (HideLeech === 1) {
+
+            if (engine.settings.HideLeech === 1) {
                 dom_cache.peer_filter.hide();
             }
+
             writeTableHead();
             writeCategory();
-            writeProfileList(engine.getProfileList());
-            engine.loadProfile(undefined, writeTrackerList);
-            if (options.filter_panel_to_left === 1) {
+
+            writeProfileList(engine.profileList);
+
+            writeTrackerList(currentProfile);
+
+            if (engine.settings.filter_panel_to_left === 1) {
                 $("div.content div.right").css({"float": "left", "padding-left": "5px", "padding-right": '0'});
                 $("div.content div.left").css({"margin-left": "180px", "margin-right": "0"});
                 dom_cache.topbtn.css({"right": "auto"});
             }
             var style;
-            if (options.noTransition === 1 || options.noTransitionLinks === 1) {
+            if (engine.settings.noTransition === 1 || engine.settings.noTransitionLinks === 1) {
                 style = 'div.result_panel > table td div.title a' +
                     '{transition: none;}';
                 dom_cache.body.append($('<style>', {text: style}));
             }
-            if (options.noTransition === 1) {
+            if (engine.settings.noTransition === 1) {
                 style = 'div.result_panel > table div.tracker_icon,' +
                     'div.result_panel > table div.tracker_icon,' +
                     'div.tracker_list a.setup' +
@@ -2084,7 +2096,7 @@ var view = function() {
             dom_cache.torrent_list.on('change', 'div.profile > select', function() {
                 clear_tracker_filter();
                 engine.stop();
-                engine.loadProfile(this.value, writeTrackerList);
+                writeTrackerList(this.value);
             });
             dom_cache.thead.on('click', 'th', function(e) {
                 e.preventDefault();
@@ -2141,14 +2153,14 @@ var view = function() {
                 if (e.target.tagName === "A" || e.target.tagName === "SELECT") {
                     return;
                 }
-                if (options.resizableTrList === 1) {
-                    options.resizableTrList = 0;
+                if (engine.settings.torrent_list_r === 1) {
+                    engine.settings.torrent_list_r = 0;
                     dom_cache.torrent_list.resizable("disable");
                     dom_cache.torrent_list.css('height', 'auto');
                     dom_cache.trackers_ul.css('height', 'auto');
                     dom_cache.torrent_list.children("div.ui-resizable-s").hide();
                 } else {
-                    options.resizableTrList = 1;
+                    engine.settings.torrent_list_r = 1;
                     if (dom_cache.torrent_list.hasClass('ui-resizable') === false) {
                         initResizeble();
                     } else {
@@ -2157,7 +2169,7 @@ var view = function() {
                         dom_cache.torrent_list.resizable("enable");
                     }
                 }
-                mono.localStorage.set('torrent_list_r', options.resizableTrList);
+                mono.storage.set({torrent_list_r: engine.settings.torrent_list_r});
             });
             dom_cache.word_filter.on('keyup', function() {
                 var value = $(this).val();
@@ -2180,7 +2192,7 @@ var view = function() {
                 }
                 var exc = [];
                 var inc = [];
-                value = value.split((AdvFiltration === 0)?',':' ');
+                value = value.split((engine.settings.AdvFiltration === 0)?',':' ');
                 var safe_item;
                 for (var i = 0, item; item = value[i]; i++) {
                     if (item.length === 0) {
@@ -2206,10 +2218,10 @@ var view = function() {
                 } else {
                     var_cache.keywordFilter.include = undefined;
                 }
-                if (AdvFiltration === 1) {
+                if (engine.settings.AdvFiltration === 1) {
                     var_cache.keywordFilter.inc_len = 1;
                 }
-                if (AdvFiltration === 2) {
+                if (engine.settings.AdvFiltration === 2) {
                     var_cache.keywordFilter.inc_len = inc.length;
                 }
                 if (inc.length === 0 && exc.length === 0) {
@@ -2358,7 +2370,7 @@ var view = function() {
                 startFiltering();
             });
             dom_cache.seed_filter.on('keyup', 'input', function() {
-                if (HideSeed) {
+                if (engine.settings.HideSeed) {
                     return;
                 }
                 if (var_cache.seedFilter === undefined) {
@@ -2391,7 +2403,7 @@ var view = function() {
                 $(this).val('').trigger('keyup');
             });
             dom_cache.peer_filter.on('keyup', 'input', function() {
-                if (HideLeech) {
+                if (engine.settings.HideLeech) {
                     return;
                 }
                 if (var_cache.peerFilter === undefined) {
@@ -2424,7 +2436,7 @@ var view = function() {
                 $(this).val('').trigger('keyup');
             });
             $('div.content').removeClass('loading');
-            if (options.resizableTrList === 1) {
+            if (engine.settings.torrent_list_r === 1) {
                 initResizeble();
             }
             if ( Math.random()<.5 ) {
@@ -2446,54 +2458,38 @@ var view = function() {
                 var_cache.click_history_limit = 50;
                 var_cache.click_history_item_limit = 20;
             }
-            mono.storage.get('click_history', function(storage) {
-                var_cache.click_history = JSON.parse(storage.click_history || '{}');
+            engine.loadSettings(function(_settings) {
+                settings = _settings;
+                mono.storage.get(['table_sort_colum', 'table_sort_by', 'click_history', 'torrent_list_h', 'currentProfile'], function(storage) {
+
+                    options.trListHeight = storage.torrent_list_h;
+                    var_cache.click_history = JSON.parse( storage.click_history || '{}' );
+                    currentProfile = storage.currentProfile || _lang.label_def_profile;
+
+                    table_colums = [
+                        {title: _lang.table.time, text: _lang.table.time, type: 'time', size: 125},
+                        {title: _lang.table.quality[1], text: _lang.table.quality[0], type: 'quality', size: 31},
+                        {title: _lang.table.title, text: _lang.table.title, type: 'title'},
+                        {title: _lang.table.size, text: _lang.table.size, type: 'size', size: 80},
+                        {title: _lang.table.seeds[1], text: _lang.table.seeds[0], type: 'seeds', size: 30},
+                        {title: _lang.table.leechs[1], text: _lang.table.leechs[0], type: 'leechs', size: 30}
+                    ];
+
+                    var_cache.table_sort_colum = storage.table_sort_colum;
+                    var_cache.table_sort_by = storage.table_sort_by;
+
+                    view.begin();
+                });
             });
-
-            HideLeech = parseInt(mono.localStorage.get('HideLeech') || 1);
-            HideSeed = parseInt(mono.localStorage.get('HideSeed') || 0);
-            ShowIcons = parseInt(mono.localStorage.get('ShowIcons') || 1);
-            HideZeroSeed = parseInt(mono.localStorage.get('HideZeroSeed') || 0);
-            AdvFiltration = parseInt(mono.localStorage.get('AdvFiltration') || 2);
-            TeaserFilter = parseInt(mono.localStorage.get('TeaserFilter') || 1);
-            SubCategoryFilter = parseInt(mono.localStorage.get('SubCategoryFilter') || 0);
-            autoSetCat = parseInt(mono.localStorage.get('autoSetCat') || 1);
-
-            options = {
-                single_filter_mode: true,
-                filter_panel_to_left: parseInt(mono.localStorage.get('filter_panel_to_left') || 1),
-                resizableTrList: parseInt(mono.localStorage.get('torrent_list_r') || 0),
-                trListHeight: mono.localStorage.get('torrent_list_h'),
-                parenthetical_select_enable: parseInt(mono.localStorage.get('sub_select_enable') || 1),
-                autoComplete: parseInt(mono.localStorage.get('AutoComplite_opt') || 1),
-                allow_get_description: parseInt(mono.localStorage.get('allow_get_description') || 1),
-                no_blank_dl_link: parseInt(mono.localStorage.get('no_blank_dl_link') || 0),
-                noTransitionLinks: parseInt(mono.localStorage.get('noTransitionLinks') || 1),
-                noTransition: parseInt(mono.localStorage.get('noTransition') || 0)
-            };
-
-            table_colums = [
-                {title: _lang.table.time, text: _lang.table.time, type: 'time', size: 125},
-                {title: _lang.table.quality[1], text: _lang.table.quality[0], type: 'quality', size: 31},
-                {title: _lang.table.title, text: _lang.table.title, type: 'title'},
-                {title: _lang.table.size, text: _lang.table.size, type: 'size', size: 80},
-                {title: _lang.table.seeds[1], text: _lang.table.seeds[0], type: 'seeds', size: 30},
-                {title: _lang.table.leechs[1], text: _lang.table.leechs[0], type: 'leechs', size: 30}
-            ];
-            view.begin();
         }
     };
 }();
 mono.pageId = 'tab';
 mono.noAddon && mono.onMessage(function() {});
-mono.localStorage(function () {
-    window._lang = get_lang(mono.localStorage.get('lang') || navigator.language.substr(0, 2));
-    engine.boot();
-    explore.boot();
-    $(function () {
-        if (parseInt(mono.localStorage.get('google_analytics') || 0) === 0) {
-            counter();
-        }
-        view.boot();
+engine.boot(function() {
+    explore.boot(function() {
+        $(function() {
+            view.boot();
+        });
     });
-}, 1);
+});

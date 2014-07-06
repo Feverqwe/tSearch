@@ -12,7 +12,7 @@ var engine = function() {
         search_popup: {v: 1, t: "checkbox"},
         AutoComplite_opt: {v: 1, t: "checkbox"},
         use_english_postername: {v: 0, t: "checkbox"},
-        google_analytics: {v: 0, t: "checkbox"},
+        google_analytics: {v: 1, t: "checkbox"},
         autoSetCat: {v: 1, t: "checkbox"},
         allow_get_description: {v: 1, t: "checkbox"},
         allow_favorites_sync: {v: 1, t: "checkbox"},
@@ -22,7 +22,8 @@ var engine = function() {
         hideTopSearch: {v: 0, t: "checkbox"},
         no_blank_dl_link: {v: 0, t: "checkbox"},
         noTransitionLinks: {v: 1, t: "checkbox"},
-        noTransition: {v: 0, t: "checkbox"}
+        noTransition: {v: 0, t: "checkbox"},
+        torrent_list_r: {v: 0, t: 'hidden'}
     };
     var def_listOptions = {
         favorites: { e: 1, s: 1, w: 100, c: 1 },
@@ -44,29 +45,29 @@ var engine = function() {
         rn: new RegExp('[\\r\\n]+','g'),
         historyLimit: 500
     };
-    var historyList = [];
-    var currentTrList = {};
-    var profileList;
-    var getDefaultList = function () {
+
+    var history = [];
+    var profileList = {};
+    var settings = {};
+
+    var lastTrackerList = [];
+
+    var defaultProfileTorrentList = function () {
         var list;
         if (_lang.t === "ru") {
-            list = {'nnm-club': 1, rutracker: 1, kinozal: 1, rutor: 1, hdclub: 1, tfile: 1, 'fast-torrent': 1, opensharing: 1, btdigg: 1};
+            list = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'hdclub', 'tfile', 'fast-torrent', 'opensharing', 'btdigg'];
         } else {
-            list = {bitsnoop: 1, extratorrent: 1, fenopy: 1, torrentz: 1, thepiratebay: 1, kickass: 1};
+            list = ['bitsnoop', 'extratorrent', 'fenopy', 'torrentz', 'thepiratebay', 'kickass'];
         }
         return list;
     };
-    var loadModule = function(uid) {
+
+    var loadModule = function(uid, code) {
         /*
          * загружает пользовательский модуль.
          */
-        var ct = mono.localStorage.get(uid);
-        if (ct === undefined || ct === 'undefined') {
-            return;
-        }
-        ct = JSON.parse(ct);
         torrent_lib[uid] = function() {
-            var me = $.extend({},ct);
+            var me = code;
             var icon = (me.icon !== undefined) ? me.icon : '';
             var name = (me.name !== undefined) ? me.name : '-no name-';
             var about = (me.about !== undefined) ? me.about : '';
@@ -362,93 +363,7 @@ var engine = function() {
             };
         }();
     };
-    var wrapAllCustomTrList = function (list) {
-        var _list = $.extend({}, list);
-        var custom_list = JSON.parse(mono.localStorage.get('costume_tr') || '[]');
-        custom_list.forEach(function(item) {
-            var key = 'ct_'+item;
-            if (_list[key] === undefined) {
-                _list[key] = 0;
-            }
-            if (window.torrent_lib[key] === undefined) {
-                loadModule(key);
-            }
-        });
-        for (var key in window.torrent_lib) {
-            if (window.torrent_lib.hasOwnProperty(key) === false) {
-                continue;
-            }
-            if (_list[key] === undefined) {
-                _list[key] = 0;
-            }
-        }
-        return _list;
-    };
-    var loadTrList = function(trList) {
-        /*
-         * Загружает можули из массива торрентов профиля.
-         */
-        if (trList === undefined) {
-            trList = getDefaultList();
-        }
-        var noSkip = false;
-        if (window.options !== undefined) {
-            trList = wrapAllCustomTrList(trList);
-            noSkip = true;
-        }
-        currentTrList = {};
-        $.each(trList, function(k, v){
-            if (v === 0 && noSkip === false) {
-                return 1;
-            }
-            if (window.torrent_lib[k] === undefined) {
-                loadModule(k);
-            }
-            if (window.torrent_lib[k] !== undefined) {
-                currentTrList[k] = window.torrent_lib[k];
-            }
-        });
-    };
-    var createProfile = function(title) {
-        if (title === undefined) {
-            title = _lang.label_def_profile;
-        }
-        profileList[title] = undefined;
-        mono.localStorage.set('profileList', JSON.stringify(profileList));
-        return title;
-    };
-    var loadProfile = function(title, cb) {
-        /*
-         * загрузка профиля
-         */
-        if (title === undefined) {
-            title = mono.localStorage.get('currentProfile');
-        }
-        if (title === undefined) {
-            var first;
-            for (var key in profileList) {
-                if (profileList.hasOwnProperty(key) === false) {
-                    continue;
-                }
-                if (first === undefined) {
-                    first = key;
-                }
-            }
-            if (first === undefined) {
-                title = createProfile(title);
-            } else {
-                title = first;
-            }
-        }
-        loadTrList(profileList[title]);
-        mono.localStorage.set('currentProfile', title);
-        if (cb !== undefined) {
-            cb(currentTrList);
-        }
-    };
-    var getProfileList = function() {
-        return profileList;
-    };
+
     var search = function(text, trackers, nohistory) {
         /*
          * функция выполняет многопоточный поиск по трекерам
@@ -456,70 +371,47 @@ var engine = function() {
          * tracker_id - id трекера, если нету - поиск во всех трекерах в списке.
          * nohistory - если 1 то история не пишется.
          */
-        if (trackers === undefined || trackers.length === 0) {
-            $.each(currentTrList, function(k, tracker) {
-                try {
-                    view.loadingStatus(0, k);
-                    tracker.find(text);
-                } catch (err) {
-                    view.loadingStatus(2, k);
-                }
-            });
-        } else {
-            trackers.forEach(function(tracker) {
-                try {
-                    view.loadingStatus(0, tracker);
-                    currentTrList[tracker].find(text);
-                } catch (err) {
-                    view.loadingStatus(2, tracker);
-                }
-            });
-        }
-        if (nohistory === undefined) {
-            if (historyList.length === 0) {
-                mono.storage.get('history', function(storage){
-                    if (historyList.length === 0) {
-                        historyList = JSON.parse(storage.history || '[]');
-                        if (engine !== undefined && engine.history !== undefined) {
-                            engine.history = historyList;
-                        }
-                    }
-                    updateHistory(text, trackers);
-                });
-            } else {
-                updateHistory(text, trackers);
+        lastTrackerList = trackers.slice(0);
+        trackers.forEach(function(tracker) {
+            try {
+                view.loadingStatus(0, tracker);
+                torrent_lib[tracker].find(text);
+            } catch (err) {
+                view.loadingStatus(2, tracker);
             }
+        });
+        if (nohistory) {
+            return;
         }
+        updateHistory(text, trackers);
     };
+
     var stop = function() {
-        $.each(currentTrList, function(k, tracker) {
-            tracker.stop();
+        lastTrackerList.forEach(function(tracker) {
+            torrent_lib[tracker].stop();
             view.loadingStatus(1, k);
         });
     };
+
     var updateHistory = function(title, trackers) {
         /*
          * добавляет поисковый запрос в историю.
          * если такой запрос уже есть - увеличивает кол-во попаданий и обновляет дату запроса.
          */
-        if (title.length === 0) {
+        if (!title) {
             return;
         }
-        var trackers = (trackers.length > 0)?trackers:undefined;
         var trackers_names;
         if (trackers !== undefined) {
             trackers_names = [];
-            trackers.forEach(function(item) {
-                if (currentTrList[item] === undefined) {
-                    return 1;
-                }
-                trackers_names.push( currentTrList[item].name );
+            trackers.forEach(function(tracker) {
+                trackers_names.push( torrent_lib[tracker].name );
             });
         }
         var found = false;
         var oldest_time;
         var oldest_item;
-        for (var i = 0, item; item = historyList[i]; i++) {
+        for (var i = 0, item; item = history[i]; i++) {
             if (found === false && item.title === title) {
                 item.count += 1;
                 item.time = parseInt(Date.now() / 1000);
@@ -533,7 +425,7 @@ var engine = function() {
             }
         }
         if (found === false) {
-            historyList.push({
+            history.push({
                 title: title,
                 count: 1,
                 time: parseInt(Date.now() / 1000),
@@ -541,26 +433,30 @@ var engine = function() {
                 trackers_names: trackers_names
             });
         }
-        var historyList_len = historyList.length;
-        if (historyList.length > var_cache.historyLimit) {
-            historyList.splice(oldest_item, 1);
+        var historyList_len = history.length;
+        if (historyList_len > var_cache.historyLimit) {
+            history.splice(oldest_item, 1);
         }
         if (historyList_len - 1 > var_cache.historyLimit) {
-            historyList = historyList.slice(-var_cache.historyLimit);
+            history.splice(var_cache.historyLimit);
         }
-        mono.storage.set({history: JSON.stringify(historyList)});
+        mono.storage.set({history: history});
     };
+
     var contentFilter = function(content) {
         return content.replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
     };
+
     var contentUnFilter = function(content) {
         return content.replace(var_cache.unblock_src, '').replace(var_cache.unblock_href, '//');
     };
+
     var load_in_sandbox = function(content) {
         var $safe_content;
         $safe_content = $($.parseHTML(content));
         return $safe_content;
     };
+
     var ajax = function(obj) {
         var url = obj.url;
 
@@ -643,47 +539,98 @@ var engine = function() {
 
         return xhr;
     };
+
+    var loadSettings = function(cb) {
+        var settings = {};
+        var changes = [];
+        for (var key in def_settings) {
+            changes.push(key);
+        }
+        mono.storage.get(changes, function(storage) {
+            for (var key in engine.def_settings) {
+                var def_item = engine.def_settings[key];
+                var value = storage[key];
+                if (value === undefined) {
+                    value = def_item.v;
+                }
+                if (['checkbox', 'radio', 'number'].indexOf(def_item.t) !== -1 ) {
+                    settings[key] = parseInt(value);
+                } else {
+                    settings[key] = value;
+                }
+            }
+        });
+        cb && cb(settings);
+    };
+
+    var prepareProfileList = function () {
+        var first = undefined;
+        for (var profile in profileList) {
+            first = profile;
+            break;
+        }
+        if (first === undefined) {
+            first = _lang.label_def_profile;
+        }
+        if (profileList[first] === undefined) {
+            profileList[first] = defaultProfileTorrentList();
+        }
+    };
+
     return {
         //need modules
         contentFilter: contentFilter,
         contentUnFilter: contentUnFilter,
         load_in_sandbox: load_in_sandbox,
+        ajax: ajax,
         //need view and options
-        loadProfile: loadProfile,
         def_settings: def_settings,
         def_listOptions: def_listOptions,
         //need view
-        getProfileList: getProfileList,
         search: search,
         stop: stop,
-        history: historyList,
         //need options:
-        getDefList: function () {
-            return wrapAllCustomTrList(getDefaultList());
-        },
-        boot: function() {
-            if ( _lang.t === 'en' ) {
-                def_settings.hideTopSearch.v = 1;
-                def_listOptions.kp_favorites.e = 0;
-                def_listOptions.kp_in_cinema.e = 0;
-                def_listOptions.kp_popular.e = 0;
-                def_listOptions.kp_serials.e = 0;
-            } else {
-                def_listOptions.imdb_in_cinema.e = 0;
-                def_listOptions.imdb_popular.e = 0;
-                def_listOptions.imdb_serials.e = 0;
-            }
-            profileList = JSON.parse(mono.localStorage.get('profileList') || '{}');
-            mono.storage.get('history', function(storage){
-                historyList = JSON.parse(storage.history || '[]');
-                if (engine !== undefined && engine.history !== undefined) {
-                    engine.history = historyList;
-                }
-            });
+        loadSettings: loadSettings,
+        boot: function(cb) {
             if (mono.isChrome) {
                 var_cache.historyLimit = 200;
             }
-        },
-        ajax: ajax
+
+            mono.storage.get(['customTorrentList', 'profileList', 'history', 'lang', 'google_analytics'], function(storage) {
+
+                storage.google_analytics !== 0 && window.counter && counter();
+
+                _lang = get_lang(storage.lang || navigator.language.substr(0, 2));
+
+                if ( _lang.t === 'en' ) {
+                    def_settings.hideTopSearch.v = 1;
+                    def_listOptions.kp_favorites.e = 0;
+                    def_listOptions.kp_in_cinema.e = 0;
+                    def_listOptions.kp_popular.e = 0;
+                    def_listOptions.kp_serials.e = 0;
+                } else {
+                    def_listOptions.imdb_in_cinema.e = 0;
+                    def_listOptions.imdb_popular.e = 0;
+                    def_listOptions.imdb_serials.e = 0;
+                }
+
+                engine.history = history = storage.history || [];
+
+                engine.profileList = profileList = JSON.parse( storage.profileList || '{}' );
+                prepareProfileList();
+
+                if (storage.customTorrentList) {
+                    var torrentList = storage.customTorrentList;
+                    for (var uid in torrentList) {
+                        loadModule(uid, torrentList[uid]);
+                    }
+                }
+
+                loadSettings(function (_settings) {
+                    engine.settings = settings = _settings;
+                    cb && cb();
+                });
+            });
+        }
     };
 }();

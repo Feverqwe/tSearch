@@ -4,24 +4,30 @@ var options = function() {
     var var_cache = {
         window_scroll_timer: undefined
     };
-    var loadSettings = function() {
-        var settings = {};
-        $.each(engine.def_settings, function(type, attr) {
-            var val = mono.localStorage.get(type);
-            if (attr.t === 'checkbox' || attr.t === 'radio' || attr.t === 'number') {
-                settings[type] = parseInt( (val === undefined || val === null)?attr.v:val );
-                if (isNaN(settings[type])) {
-                    settings[type] = attr.v;
+    var settings = {};
+    var loadSettings = function(cb) {
+        var changes = [];
+        for (var key in engine.def_settings) {
+            changes.push(key);
+        }
+        mono.storage.get(changes, function(storage) {
+            for (var key in engine.def_settings) {
+                var item = engine.def_settings[key];
+                var value = storage[key];
+                if (value === undefined) {
+                    value = item.v;
                 }
-            } else {
-                settings[type] =  (val === undefined || val === null)?attr.v:val ;
+                if (['checkbox', 'radio', 'number'].indexOf(item.t) !== -1 ) {
+                    settings[key] = parseInt(value);
+                } else {
+                    settings[key] = value;
+                }
             }
         });
-        return settings;
+        cb && cb();
     };
-    var settings;
-    var profile;
-    var current_profile;
+    var profile = {};
+    var current_profile = undefined;
     var set_place_holder = function() {
         $.each(engine.def_settings, function(k, v) {
             if (settings[k] === undefined) {
@@ -46,10 +52,6 @@ var options = function() {
         });
     };
     var write_language = function(language) {
-        var selected = (language !== undefined) ? 1 : 0;
-        if (language === undefined) {
-            language = mono.localStorage.get('lang');
-        }
         if (language === undefined) {
             language = navigator.language.substr(0,2);
         }
@@ -91,9 +93,7 @@ var options = function() {
         } else {
             dom_cache.use_english_postername.parents().eq(1).show();
         }
-        if (selected) {
-            dom_cache.select_profileList.trigger("change");
-        }
+        dom_cache.select_profileList.trigger("change");
     };
     var saveAll = function() {
         mono.localStorage.set('lang', dom_cache.select_language.val());
@@ -146,50 +146,74 @@ var options = function() {
     };
     var load_costume_torrents = function() {
         dom_cache.custom_list.get(0).textContent = '';
-        var customList = JSON.parse(mono.localStorage.get('costume_tr') || "[]");
-        if (customList.length === 0) {
-            dom_cache.custom_list.append($('<td>', {colspan: 4, 'class': 'notorrent', 'data-lang': 51, text: _lang.settings[51]}));
-            return;
-        }
-        var rm_list = [];
-        var content = [];
-        for (var i = 0, id; id = customList[i]; i++) {
-            var json = mono.localStorage.get('ct_' + id);
-            if (json === undefined) {
-                rm_list.push(id);
-                continue;
+
+        mono.storage.get(['costume_tr'], function(storage) {
+            storage.costume_tr = storage.costume_tr || '[]';
+            var customList = JSON.parse(storage.costume_tr);
+
+            if (customList.length === 0) {
+                dom_cache.custom_list.append($('<td>', {colspan: 4, 'class': 'notorrent', 'data-lang': 51, text: _lang.settings[51]}));
+                return;
             }
-            var customTr = JSON.parse(mono.localStorage.get('ct_' + id));
-            if (customTr.uid === undefined) {
-                rm_list.push(id);
-                continue;
-            }
-            var tracker_icon = $('<div>', {'class': 'tracker_icon'});
-            if (customTr.icon.length === 0) {
-                tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
-            } else
-            if (customTr.icon[0] === '#') {
-                tracker_icon.css({'background-color': customTr.icon, 'border-radius': '8px'});
-            } else {
-                tracker_icon.css('background-image', 'url(' + customTr.icon + ')');
-            }
-            content.push($('<tr>', {'data-id': customTr.uid}).append(
-                $('<td>').append(tracker_icon),
-                $('<td>').append($('<a>', {href: customTr.root_url, target: '_blank', text: customTr.name})),
-                $('<td>', {'class': 'desc', text: customTr.about || ''}),
-                $('<td>', {'class': 'action'}).append(
-                    $('<input>', {type: 'button', name: 'edit_ctr', value: _lang.settings[52], 'data-lang': 52}),
-                    $('<input>', {type: 'button', name: 'rm_ctr', value: _lang.settings[53], 'data-lang': 53})
-                )
-            ));
-        }
-        if (rm_list.length > 0) {
-            rm_list.forEach(function(id) {
-                customList.splice(customList.indexOf(id),1);
+
+            var list = customList.slice(0);
+            list.map(function(item, index) {
+                list[index] = 'ct_' + item;
             });
-            mono.localStorage.set('costume_tr', JSON.stringify(customList));
-        }
-        dom_cache.custom_list.append( content );
+
+            var customTrList = {};
+            mono.storage.get(list, function(customTrList) {
+
+
+                var rm_list = [];
+                var content = [];
+
+                for (var key in customTrList) {
+                    var json = customTrList[key];
+                    var id = key.substr(3);
+
+                    if (json === undefined) {
+                        rm_list.push(id);
+                        continue;
+                    }
+
+                    var customTr = JSON.parse( json );
+                    if (customTr.uid === undefined) {
+                        rm_list.push(id);
+                        continue;
+                    }
+
+                    var tracker_icon = $('<div>', {'class': 'tracker_icon'});
+                    if (customTr.icon.length === 0) {
+                        tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
+                    } else
+                    if (customTr.icon[0] === '#') {
+                        tracker_icon.css({'background-color': customTr.icon, 'border-radius': '8px'});
+                    } else {
+                        tracker_icon.css('background-image', 'url(' + customTr.icon + ')');
+                    }
+                    content.push($('<tr>', {'data-id': customTr.uid}).append(
+                        $('<td>').append(tracker_icon),
+                        $('<td>').append($('<a>', {href: customTr.root_url, target: '_blank', text: customTr.name})),
+                        $('<td>', {'class': 'desc', text: customTr.about || ''}),
+                        $('<td>', {'class': 'action'}).append(
+                            $('<input>', {type: 'button', name: 'edit_ctr', value: _lang.settings[52], 'data-lang': 52}),
+                            $('<input>', {type: 'button', name: 'rm_ctr', value: _lang.settings[53], 'data-lang': 53})
+                        )
+                    ));
+
+                }
+
+                if (rm_list.length > 0) {
+                    rm_list.forEach(function(id) {
+                        customList.splice(customList.indexOf(id),1);
+                    });
+                    mono.storage.set({costume_tr: JSON.stringify(customList)});
+                }
+
+                dom_cache.custom_list.append( content );
+            });
+        });
     };
     var saveCurrentProfile = function() {
         var current = current_profile;
@@ -219,26 +243,8 @@ var options = function() {
         dom_cache.select_profileList.append(content);
     };
     var loadProfile = function(current) {
-        if (current === undefined) {
-            current = mono.localStorage.get('currentProfile');
-        }
-        if (profile.hasOwnProperty(current)) {
-            if (profile[current] === undefined) {
-                profile[current] = engine.getDefList();
-            }
-        } else {
-            current = undefined;
-            $.each(profile, function(a){
-                current = a;
-                return 0;
-            });
-            if (current === undefined) {
-                console.warn('can\'t found profile');
-                return;
-            }
-            if (profile[current] === undefined) {
-                profile[current] = engine.getDefList();
-            }
+        if (profile[current] === undefined) {
+            profile[current] = engine.getDefList();
         }
         current_profile = current;
         dom_cache.select_profileList.children('option[value="'+current+'"]').prop('selected', true);
@@ -443,7 +449,7 @@ var options = function() {
     };
     return {
         begin: function() {
-            engine.loadProfile(undefined);
+            engine.loadProfile(current_profile);
             dom_cache.window = $(window);
             dom_cache.body = $('body');
             dom_cache.ul_menu = $('ul.menu');
@@ -488,7 +494,7 @@ var options = function() {
                     listOptions[key] = value;
                 }
             });
-            
+
             write_language();
             dom_cache.ul_menu.on('click', 'a', function(e) {
                 e.preventDefault();
@@ -598,7 +604,7 @@ var options = function() {
             });
             dom_cache.select_language.on('change', function(e) {
                 e.preventDefault();
-                write_language($(this).val());
+                write_language(this.value);
             });
             dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(0).on("click", function(e) {
                 e.preventDefault();
@@ -655,9 +661,23 @@ var options = function() {
             });
             dom_cache.profile_rmlist.on('click', function(e) {
                 e.preventDefault();
+                var nextOne = undefined;
+                for (var key in profile) {
+                    if (key === profile[key]) {
+                        break;
+                    }
+                    nextOne = profile[key];
+                }
                 delete profile[dom_cache.select_profileList.val()];
+                if (nextOne === undefined) {
+                    for (var key in profile) {
+                        nextOne = profile[key];
+                        break;
+                    }
+                }
+                profile[_lang.label_def_profile] = undefined;
                 writeProfileList(profile);
-                loadProfile();
+                loadProfile(_lang.label_def_profile);
             });
             dom_cache.add_code_btn.on('click', function() {
                 dom_cache.custom_add_btn.parent().show();
@@ -781,10 +801,21 @@ var options = function() {
             });
         },
         boot: function() {
-            listOptions = JSON.parse(mono.localStorage.get('listOptions') || "{}");
-            settings = loadSettings();
-            profile = $.extend(true,{},engine.getProfileList());
-            current_profile = mono.localStorage.get('currentProfile');
+            loadSettings(function () {
+                mono.storage.get(['currentProfile'], function(storage) {
+                    current_profile = mono.localStorage.get('currentProfile');
+                    listOptions = JSON.parse(mono.localStorage.get('listOptions') || "{}");
+                    profile = $.extend(true,{},engine.getProfileList());
+                    var first = undefined;
+                    for (var key in profile) {
+                        first = profile[key];
+                        break;
+                    }
+                    if (first === undefined) {
+                        profile[_lang.label_def_profile] = undefined;
+                    }
+                });
+            });
         }
     };
 }();
