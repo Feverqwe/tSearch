@@ -106,7 +106,7 @@ var options = function() {
         changes.listOptions = JSON.stringify(listOptions);
         saveCurrentProfile();
 
-        if (settings.profileListSync === 1) {
+        if (engine.settings.profileListSync === 1 && settings.profileListSync === 1) {
             mono.storage.sync.set({profileList: JSON.stringify(profileList)});
         }
         changes.profileList = JSON.stringify(profileList);
