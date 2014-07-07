@@ -11,10 +11,8 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     var self = require("sdk/self");
     var tabs = require("sdk/tabs");
     var serviceList = {};
-    var route = {};
-    var stateList = {};
+    var map = {};
     var defaultId = 'monoScope';
-    route[defaultId] = [];
 
     var monoStorage = function() {
         var ss = require("sdk/simple-storage");
@@ -74,38 +72,36 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     }();
     exports.storage = monoStorage;
 
-    var sendTo = function(to, message) {
-        if (typeof to !== "string") {
-            var page = to;
-            if (stateList[page.randId] === false) {
-                return;
-            }
-            var type = page.isVirtual?'lib':'port';
-            page[type].emit(defaultId, message);
-            return;
-        }
-        for (var i = 0, page; page = route[to][i]; i++) {
-            if (stateList[page.randId] === false) {
+    var sendAll = function(message, fromPage) {
+        for (var randId in map) {
+            if (fromPage && randId === fromPage.randId) {
                 continue;
             }
-            var type = page.isVirtual?'lib':'port';
-            page[type].emit(to, message);
+            sendToPage(map[randId], message);
         }
     };
+    exports.sendAll = sendAll;
 
-    serviceList['monoStorage'] = function(message) {
-        var to = message.monoFrom;
+    var sendToPage = function(page, message) {
+        if (page.active === false) {
+            return;
+        }
+        var type = (page.isVirtual)?'lib':'port';
+        page[type].emit('mono', message);
+    };
+
+    serviceList['monoStorage'] = function(page, message) {
         var msg = message.data;
         var response;
         if (message.monoCallbackId !== undefined) {
             response = function(responseMessage) {
                 responseMessage = {
                     data: responseMessage,
-                    monoTo: to,
+                    monoTo: message.monoFrom,
                     monoFrom: 'monoStorage',
                     monoResponseId: message.monoCallbackId
                 };
-                sendTo(to, responseMessage);
+                sendToPage(page, responseMessage);
             }
         }
         if (msg.action === 'get') {
@@ -123,30 +119,31 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     };
 
     var xhrList = {};
-    serviceList['service'] = function(message) {
-        var to = message.monoFrom;
+    serviceList['service'] = function(page, message) {
         var msg = message.data;
         var response;
         if (message.monoCallbackId !== undefined) {
             response = function(responseMessage) {
                 responseMessage = {
                     data: responseMessage,
-                    monoTo: to,
+                    monoTo: message.monoFrom,
                     monoFrom: 'monoStorage',
                     monoResponseId: message.monoCallbackId
                 };
-                sendTo(to, responseMessage);
+                sendToPage(page, responseMessage);
             }
         }
         if (msg.action === 'resize') {
-            return route[to].forEach(function(page) {
-                if (msg.width) {
-                    page.width = msg.width;
-                }
-                if (msg.height) {
-                    page.height = msg.height;
-                }
-            });
+            if (page.active === false) {
+                return;
+            }
+            if (msg.width) {
+                page.width = msg.width;
+            }
+            if (msg.height) {
+                page.height = msg.height;
+            }
+            return;
         }
         if (msg.action === 'openTab') {
             return tabs.open( (msg.dataUrl)?self.data.url(msg.url):msg.url );
@@ -189,6 +186,24 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         }
     };
 
+    var monoOnMessage = function(page, message) {
+        if (serviceList[message.monoTo]) {
+            return serviceList[message.monoTo](page, message);
+        }
+        if (virtualPageList[message.monoTo]) {
+            return virtualPageList[message.monoTo].lib.emit('mono', message);
+        }
+        if (message.monoTo === defaultId) {
+            return sendAll(message, page);
+        }
+        for (var randId in map) {
+            var _page = map[randId];
+            if (_page.id === message.monoTo) {
+                sendToPage(_page, message);
+            }
+        }
+    };
+
     var virtualPageList = {};
     var monoVirtualPage = function(pageId) {
         var subscribClientList = {};
@@ -202,12 +217,6 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
                     subscribClientList[to].push(cb);
                 },
                 emit: function(to, message) {
-                    if (to === defaultId) {
-                        return sendAll(message, virtualPageList[pageId]);
-                    }
-                    if (route[to] !== undefined) {
-                        return sendTo(to, message);
-                    }
                     subscribServerList[to].forEach(function(item) {
                         item(message);
                     });
@@ -240,32 +249,17 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
             if (e.data[0] !== '>') {
                 return;
             }
-            var sepPos = e.data.indexOf(':');
-            if (sepPos === -1) {
-                return;
-            }
-            var pageId = e.data.substr(1, sepPos - 1);
-            if (pageId === self.options.pageId) {
-                pageId = vPageId;
-            }
-            var data = e.data.substr(sepPos+1);
-            var json = JSON.parse(data);
+            var json = JSON.parse(e.data.substr(1));
             if (json.monoFrom === self.options.pageId) {
                 json.monoFrom = vPageId;
             }
-            self.port.emit(pageId, json);
+            self.port.emit('mono', json);
         });
-        self.port.on(vPageId, function (message) {
+        self.port.on('mono', function (message) {
             if (message.monoTo === vPageId) {
                 message.monoTo = self.options.pageId;
             }
-            var msg = '<'+self.options.pageId + ':' + JSON.stringify(message);
-            var event = document.createEvent("CustomEvent");
-            event.initCustomEvent("monoMessage", false, false, msg);
-            window.dispatchEvent(event);
-        });
-        self.port.on(self.options.defaultId, function (message) {
-            var msg = '<'+self.options.defaultId + ':' + JSON.stringify(message);
+            var msg = '<' + JSON.stringify(message);
             var event = document.createEvent("CustomEvent");
             event.initCustomEvent("monoMessage", false, false, msg);
             window.dispatchEvent(event);
@@ -273,110 +267,33 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     };
     exports.virtualPort = monoVirtualPort;
 
-    var sendAll = function(message, exPage) {
-        for (var i = 0, page; page = route[defaultId][i]; i++) {
-            if (page === exPage) {
-                continue;
-            }
-            sendTo(page, message);
-        }
-    };
-    exports.sendAll = sendAll;
 
     exports.addPage = function(pageId, page) {
-        if (route[pageId] === undefined) {
-            route[pageId] = [];
-        }
-        page.randId = Math.floor((Math.random() * 10000) + 1);
+        var randId = Math.floor((Math.random() * 10000) + 1);
+        page.id = pageId;
+        page.randId = randId;
+        page.active = true;
+        map[randId] = page;
 
-        stateList[page.randId] = true;
-
-        var type;
-        if (page.isVirtual) {
-            type = 'lib';
-        } else {
-            type = 'port';
+        if (!page.isVirtual) {
             page.on('pageshow', function() {
-                stateList[page.randId] = true;
-                // console.log('pageshow', pageId);
+                page.active = true;
             });
             page.on('pagehide', function() {
-                stateList[page.randId] = false;
-                // console.log('pagehide', pageId);
+                page.active = false;
             });
             page.on('attach', function() {
-                stateList[page.randId] = true;
-                var ex = false;
-                if (route[pageId] === undefined) {
-                    route[pageId] = [];
-                } else {
-                    for (var i = 0, _page; _page = route[pageId][i]; i++) {
-                        if (page.randId === _page.randId) {
-                            ex = true;
-                            break;
-                        }
-                    }
-                }
-                if (ex === false) {
-                    route[pageId].push(page);
-                }
-                var ex = false;
-                for (var i = 0, _page; _page = route[defaultId][i]; i++) {
-                    if (page.randId === _page.randId) {
-                        ex = true;
-                        break;
-                    }
-                }
-                if (ex === false) {
-                    route[defaultId].push(page);
-                }
-                // console.log('attach', pageId);
+                page.active = true;
+                map[page.randId] = page;
             });
             page.on('detach', function() {
-                stateList[page.randId] = false;
-                if (route[pageId] !== undefined) {
-                    for (var i = 0, _page; _page = route[pageId][i]; i++) {
-                        if (page.randId === _page.randId) {
-                            route[pageId].splice(i, 1);
-                            if (route[pageId].length === 0) {
-                                delete route[pageId];
-                            }
-                            break;
-                        }
-                    }
-                }
-                for (var i = 0, _page; _page = route[defaultId][i]; i++) {
-                    if (page.randId === _page.randId) {
-                        route[defaultId].splice(i, 1);
-                    }
-                }
-                delete stateList[page.randId];
-                // console.log('detach', pageId);
+                delete map[page.randId];
+                page.active = false;
             });
         }
-
-        route[pageId].push(page);
-        if (route[defaultId].indexOf(page) !== -1) {
-            return;
-        }
-        route[defaultId].push(page);
-
-        page[type].on(defaultId, function(message) {
-            sendAll(message, page);
+        var type = (page.isVirtual)?'lib':'port';
+        page[type].on('mono', function(message) {
+            monoOnMessage(page, message);
         });
-
-        for (var serviceName in serviceList) {
-            page[type].on(serviceName, serviceList[serviceName]);
-        }
-
-        for (var virtualPageName in virtualPageList) {
-            var vPage = virtualPageList[virtualPageName];
-            if (vPage === page) {
-                continue;
-            }
-            page.port.on(virtualPageName, function(message) {
-                vPage.lib.emit(virtualPageName, message);
-            });
-        }
     }
 })();

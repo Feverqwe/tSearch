@@ -111,6 +111,7 @@ var mono = function (env) {
             cb && cb();
         }
     };
+
     var monoStorage = function() {
         var ss = require("sdk/simple-storage");
         return {
@@ -166,6 +167,7 @@ var mono = function (env) {
             }
         }
     };
+
     var storage_fn = function(mode) {
         if (mono.isModule) {
             if (monoStorage.get === undefined) {
@@ -241,7 +243,7 @@ var mono = function (env) {
         mono.addon = addon = {
             port: {
                 emit: function(pageId, message) {
-                    var msg = '>'+pageId+':'+JSON.stringify(message);
+                    var msg = '>'+JSON.stringify(message);
                     window.postMessage(msg, "*");
                 },
                 on: function(pageId, onMessage) {
@@ -257,12 +259,7 @@ var mono = function (env) {
                         if (e.detail[0] !== '<') {
                             return;
                         }
-                        var sepPos = e.detail.indexOf(':');
-                        if (sepPos === -1) {
-                            return;
-                        }
-                        var pageId = e.detail.substr(1, sepPos - 1);
-                        var data = e.detail.substr(sepPos + 1);
+                        var data = e.detail.substr(1);
                         var json = JSON.parse(data);
                         for (var i = 0, item; item = onCollector[pageId][i]; i++) {
                             item(json);
@@ -276,7 +273,7 @@ var mono = function (env) {
     var ffMessaging = {
         send: function(message, cb) {
             msgTools.cbCollector(message, cb);
-            addon.port.emit(message.monoTo, message);
+            addon.port.emit('mono', message);
         },
         on: function(cb) {
             var firstOn = messagesEnable;
@@ -292,10 +289,7 @@ var mono = function (env) {
                 var response = msgTools.mkResponse(message, pageId);
                 cb(message.data, response);
             };
-            if (pageId !== defaultId) {
-                addon.port.on(pageId, onMessage);
-            }
-            addon.port.on(defaultId, onMessage);
+            addon.port.on('mono', onMessage);
         }
     };
 

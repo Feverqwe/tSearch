@@ -44,9 +44,9 @@ var button = ToggleButton({
         if (!state.checked) {
             return;
         }
-        monoLib.storage.get('monoLocalStorage', function(ls) {
+        monoLib.storage.get('search_popup', function(ls) {
             var createPopup = true;
-            if (ls.monoLocalStorage && ls.monoLocalStorage.search_popup === 0) {
+            if (ls.search_popup === 0) {
                 createPopup = false;
             }
             if (createPopup) {
