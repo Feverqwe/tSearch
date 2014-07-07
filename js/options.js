@@ -224,14 +224,14 @@ var options = function() {
         if (tracker === undefined) {
             tracker = {
                 name: id,
-                uid: 1,
-                about: _lang.trackerNotFound
+                about: _lang.trackerNotFound,
+                notFound: 1
             };
         }
         if (tracker_icon === undefined) {
-            tracker_icon = $('<div>', {'class': 'tracker_icon'}).css({'background-color': '#ccc', 'border-radius': '8px'});
+            tracker_icon = $('<div>', {'class': 'tracker_icon'}).css({'background-color': ( (tracker.notFound !== undefined) ?'rgb(253, 0, 0)':'#ccc' ), 'border-radius': '8px'});
         }
-        return $('<tr>',{'data-id': id, 'class':((tracker.uid !== undefined)?'custom':'')}).append(
+        return $('<tr>',{'data-id': id, 'class':( (tracker.uid !== undefined)?'custom':((tracker.notFound !== undefined)?'not_found': '') )}).append(
             $('<td>').append(tracker_icon),
             $('<td>').append(
                 $('<a>', {href: tracker.url, target: '_blank', text: tracker.name})

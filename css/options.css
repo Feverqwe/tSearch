@@ -218,6 +218,9 @@ table tbody tr {
 table tbody tr.custom {
     background-color: #FDFAEC;
 }
+table tbody tr.not_found {
+    background-color: #FFD2D2 !important;
+}
 table tbody tr.checked {
     background-color: #F9F0FD;
 }
