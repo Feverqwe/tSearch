@@ -407,7 +407,7 @@ var explore = function() {
             google: function(content, request) {
                 content = engine.contentFilter(content);
                 var $content = engine.load_in_sandbox(content);
-                $content = $content.find('#rhs_block').find('.rhsvw.kno-inline').eq(0).children('div');
+                $content = $content.find('#rhs_block').find('ol').eq(0);
                 //content = undefined;
                 if ($content.length === 0) {
                     return;

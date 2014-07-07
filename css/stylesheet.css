@@ -752,8 +752,9 @@ div.donate > div.block {
 }
 div.donate .logo {
     background-image: url(../images/pig.png);
-    width: 64px;
-    height: 64px;
+    background-size: 48px;
+    width: 48px;
+    height: 48px;
 }
 div.donate a {
     color: #0051D8;
