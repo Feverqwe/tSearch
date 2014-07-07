@@ -755,7 +755,8 @@ var explore = function() {
         return parseInt(currentDate.getTime() / 1000) - day*24*60*60 - hours*60*60 - minutes*60 - seconds;
     };
     var load_content = function(type) {
-        mono.storage.get('exp_cache_'+type, function(storage) {
+        var storage_type = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
+        mono.storage[storage_type].get('exp_cache_'+type, function(storage) {
 
             if (typeof storage['exp_cache_'+type] === 'string') {
                 storage['exp_cache_'+type] = JSON.parse(storage['exp_cache_'+type]);
