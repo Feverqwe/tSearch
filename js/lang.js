@@ -160,6 +160,7 @@ var get_lang = function (lang) {
         seed_filter: "Seeds",
         peer_filter: "Peers",
         settings_saved: "Saved!",
+        trackerNotFound: "Tracker not found!",
         settings: {
             1: "The list of torrents",
             2: "Options",
@@ -471,6 +472,7 @@ var get_lang = function (lang) {
         seed_filter: "Сиды",
         peer_filter: "Пиры",
         settings_saved: "Сохранено!",
+        trackerNotFound: "Трекер не найден!",
         settings: {
             1: "Список торрентов",
             2: "Опции",

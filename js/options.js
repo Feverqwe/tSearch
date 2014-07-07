@@ -195,7 +195,11 @@ var options = function() {
         dom_cache.tracker_list.children('tr.checked').removeClass('checked').find('input').removeAttr('checked');
         var content = [];
         profileList[profileName].forEach(function(tracker) {
-            var $item = dom_cache.tracker_list.children('tr[data-id="'+tracker+'"]').addClass('checked');
+            var $tracker = dom_cache.tracker_list.children('tr[data-id="'+tracker+'"]');
+            if ($tracker.length === 0) {
+                dom_cache.tracker_list.append( $tracker = getTrackerDom(tracker) );
+            }
+            var $item = $tracker.addClass('checked');
             var checkbox = $item.children('td.status').children('input');
             checkbox.prop('checked', true);
             content.push($item);
@@ -215,6 +219,30 @@ var options = function() {
             content.push(item);
         }
         dom_cache.tracker_list.prepend(content);
+    };
+    var getTrackerDom = function( id, tracker, tracker_icon, flags ) {
+        if (tracker === undefined) {
+            tracker = {
+                name: id,
+                about: _lang.trackerNotFound
+            };
+        }
+        if (tracker_icon === undefined) {
+            tracker_icon = $('<div>', {'class': 'tracker_icon'}).css({'background-color': '#ccc', 'border-radius': '8px'});
+        }
+        return $('<tr>',{'data-id': id, 'class':((tracker.uid !== undefined)?'custom':'')}).append(
+            $('<td>').append(tracker_icon),
+            $('<td>').append(
+                $('<a>', {href: tracker.url, target: '_blank', text: tracker.name})
+            ),
+            $('<td>', {'class': 'desc'}).append(
+                flags,
+                $('<span>', {text: tracker.about})
+            ),
+            $('<td>', {'class': 'status'}).append(
+                $('<input>', {type: 'checkbox'})
+            )
+        )
     };
     var writeTrackerList = function() {
         dom_cache.tracker_list.get(0).textContent = '';
@@ -242,19 +270,7 @@ var options = function() {
             } else {
                 tracker_icon.css('background-image', 'url(' + tracker.icon + ')');
             }
-            content.push( $('<tr>',{'data-id': id, 'class':((tracker.uid !== undefined)?'custom':'')}).append(
-                $('<td>').append(tracker_icon),
-                $('<td>').append(
-                    $('<a>', {href: tracker.url, target: '_blank', text: tracker.name})
-                ),
-                $('<td>', {'class': 'desc'}).append(
-                    flags,
-                    $('<span>', {text: tracker.about})
-                ),
-                $('<td>', {'class': 'status'}).append(
-                    $('<input>', {type: 'checkbox'})
-                )
-            ));
+            content.push( getTrackerDom( id, tracker, tracker_icon, flags ) );
         });
         dom_cache.tracker_list.append(content);
     };
