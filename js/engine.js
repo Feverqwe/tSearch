@@ -687,7 +687,7 @@ var engine = function() {
             }
 
             if (mono.isChrome || mono.isOpera) {
-                if ( window.localStorage && !localStorage.migrated ) {
+                if ( window.localStorage && localStorage.length > 0 && !localStorage.migrated ) {
                     fastMigration(localStorage);
                 }
             }
