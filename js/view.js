@@ -81,7 +81,9 @@ var view = function() {
         backgroundMode: undefined,
         time_cache: undefined,
         click_history_limit: 10,
-        click_history_item_limit: 20
+        click_history_item_limit: 20,
+        // сдвиг списка трекеров сверху
+        tracker_ui_offset_top: undefined
     };
     var settings = {};
     var dom_cache = {};
@@ -178,7 +180,7 @@ var view = function() {
         if (el.offset() === undefined) {
             return;
         }
-        dom_cache.trackers_ul.scrollTop(el.offset().top + dom_cache.trackers_ul.scrollTop() - (dom_cache.trackers_ul.height() / 2));
+        dom_cache.trackers_ul.scrollTop(el.offset().top + dom_cache.trackers_ul.scrollTop() - (dom_cache.trackers_ul.height() / 2) - var_cache.tracker_ui_offset_top);
     };
     var setTrackerLoadingState = function(state, id) {
         var gui = var_cache.trackers[id];
@@ -2035,6 +2037,7 @@ var view = function() {
 
             writeTrackerList(currentProfile);
 
+            var_cache.tracker_ui_offset_top = dom_cache.trackers_ul.offset().top;
             if (engine.settings.filter_panel_to_left === 1) {
                 $("div.content div.right").css({"float": "left", "padding-left": "5px", "padding-right": '0'});
                 $("div.content div.left").css({"margin-left": "180px", "margin-right": "0"});
