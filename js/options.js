@@ -721,7 +721,7 @@ var options = function() {
                     code.uid = parseInt(uid);
                 }
                 mono.storage.get('customTorrentList', function(storage) {
-                    var customTorrentList = storage.customTorrentList;
+                    var customTorrentList = storage.customTorrentList || {};
                     customTorrentList['ct_' + code.uid] = code;
                     mono.storage.set({customTorrentList: customTorrentList}, function() {
                         load_costume_torrents();
@@ -736,7 +736,7 @@ var options = function() {
             dom_cache.custom_list.on('click', 'input[name=rm_ctr]', function() {
                 var uid = $(this).closest('tr').data('id');
                 mono.storage.get('customTorrentList', function(storage) {
-                    var customTorrentList = storage.customTorrentList;
+                    var customTorrentList = storage.customTorrentList || {};
                     delete customTorrentList['ct_' + uid];
                     delete torrent_lib['ct_' + uid];
                     mono.storage.set({customTorrentList: customTorrentList}, function() {
