@@ -198,7 +198,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         }
         for (var randId in map) {
             var _page = map[randId];
-            if (_page.id === message.monoTo) {
+            if (_page.id.indexOf(message.monoTo) !== -1) {
                 sendToPage(_page, message);
             }
         }
@@ -270,7 +270,13 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
 
     exports.addPage = function(pageId, page) {
         var randId = Math.floor((Math.random() * 10000) + 1);
-        page.id = pageId;
+        if (page.id === undefined) {
+            page.id = [];
+        }
+        page.id.push(pageId);
+        if (page.randId !== undefined) {
+            return;
+        }
         page.randId = randId;
         page.active = true;
         map[randId] = page;
