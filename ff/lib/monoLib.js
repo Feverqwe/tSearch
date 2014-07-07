@@ -13,6 +13,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     var serviceList = {};
     var map = {};
     var defaultId = 'monoScope';
+    var pageIndex = 0;
 
     var monoStorage = function() {
         var ss = require("sdk/simple-storage");
@@ -73,11 +74,11 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     exports.storage = monoStorage;
 
     var sendAll = function(message, fromPage) {
-        for (var randId in map) {
-            if (fromPage && randId === fromPage.randId) {
+        for (var index in map) {
+            if (fromPage && index === fromPage.index) {
                 continue;
             }
-            sendToPage(map[randId], message);
+            sendToPage(map[index], message);
         }
     };
     exports.sendAll = sendAll;
@@ -127,7 +128,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
                 responseMessage = {
                     data: responseMessage,
                     monoTo: message.monoFrom,
-                    monoFrom: 'monoStorage',
+                    monoFrom: 'service',
                     monoResponseId: message.monoCallbackId
                 };
                 sendToPage(page, responseMessage);
@@ -196,8 +197,8 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         if (message.monoTo === defaultId) {
             return sendAll(message, page);
         }
-        for (var randId in map) {
-            var _page = map[randId];
+        for (var index in map) {
+            var _page = map[index];
             if (_page.id.indexOf(message.monoTo) !== -1) {
                 sendToPage(_page, message);
             }
@@ -210,16 +211,16 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         var subscribServerList = {};
         var obj = {
             port: {
+                emit: function(to, message) {
+                    subscribServerList[to].forEach(function(item) {
+                        item(message);
+                    });
+                },
                 on: function(to, cb) {
                     if (subscribClientList[to] === undefined) {
                         subscribClientList[to] = [];
                     }
                     subscribClientList[to].push(cb);
-                },
-                emit: function(to, message) {
-                    subscribServerList[to].forEach(function(item) {
-                        item(message);
-                    });
                 }
             },
             lib: {
@@ -243,22 +244,15 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     exports.virtualAddon = monoVirtualPage;
 
     var monoVirtualPort = function() {
-        var vPageId = self.options.pageId+Math.floor((Math.random() * 10000) + 1);
-        self.port.emit('monoAttach', vPageId);
+        self.port.emit('monoAttach', self.options.pageId);
         window.addEventListener('message', function(e) {
             if (e.data[0] !== '>') {
                 return;
             }
             var json = JSON.parse(e.data.substr(1));
-            if (json.monoFrom === self.options.pageId) {
-                json.monoFrom = vPageId;
-            }
             self.port.emit('mono', json);
         });
         self.port.on('mono', function (message) {
-            if (message.monoTo === vPageId) {
-                message.monoTo = self.options.pageId;
-            }
             var msg = '<' + JSON.stringify(message);
             var event = document.createEvent("CustomEvent");
             event.initCustomEvent("monoMessage", false, false, msg);
@@ -269,17 +263,18 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
 
 
     exports.addPage = function(pageId, page) {
-        var randId = Math.floor((Math.random() * 10000) + 1);
+        pageIndex++;
+        var index = pageIndex;
         if (page.id === undefined) {
             page.id = [];
         }
         page.id.push(pageId);
-        if (page.randId !== undefined) {
+        if (page.index !== undefined) {
             return;
         }
-        page.randId = randId;
+        page.index = index;
         page.active = true;
-        map[randId] = page;
+        map[index] = page;
 
         if (!page.isVirtual) {
             page.on('pageshow', function() {
@@ -290,10 +285,10 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
             });
             page.on('attach', function() {
                 page.active = true;
-                map[page.randId] = page;
+                map[page.index] = page;
             });
             page.on('detach', function() {
-                delete map[page.randId];
+                delete map[page.index];
                 page.active = false;
             });
         }
