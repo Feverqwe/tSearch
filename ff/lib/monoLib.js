@@ -244,7 +244,6 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     exports.virtualAddon = monoVirtualPage;
 
     var monoVirtualPort = function() {
-        self.port.emit('monoAttach', self.options.pageId);
         window.addEventListener('message', function(e) {
             if (e.data[0] !== '>') {
                 return;

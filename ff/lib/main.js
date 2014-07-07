@@ -13,15 +13,8 @@ pageMod.PageMod({
     exclude: self.data.url("popup.html"),
     contentScript: '('+monoLib.virtualPort.toString()+')()',
     contentScriptWhen: 'start',
-    contentScriptOptions: {
-        monoVirtual: true,
-        pageId: 'tab',
-        defaultId: 'monoScope'
-    },
     onAttach: function(tab) {
-        tab.port.on('monoAttach', function(message) {
-            monoLib.addPage(message, tab);
-        });
+        monoLib.addPage('tab', tab);
     }
 });
 
