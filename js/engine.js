@@ -565,8 +565,8 @@ var engine = function() {
                     settings[key] = value;
                 }
             }
+            cb && cb(settings);
         });
-        cb && cb(settings);
     };
 
     var prepareProfileList = function () {
