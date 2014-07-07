@@ -224,6 +224,7 @@ var options = function() {
         if (tracker === undefined) {
             tracker = {
                 name: id,
+                uid: 1,
                 about: _lang.trackerNotFound
             };
         }
