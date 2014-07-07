@@ -875,35 +875,21 @@ var explore = function() {
             var move_name = 'moveble' + '_' + size + '_' + str_w;
             var_cache.calculateMovebleCache[text] = move_name;
             if (dom_cache.body.children('style.' + move_name).length === 0) {
+                var keyframeStyle = '{'
+                    +   '0%{margin-left:2px;}'
+                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
+                    +   '90%{margin-left:6px;}'
+                    +   '100%{margin-left:2px;}'
+                    + '}';
                 styles.push(
                     $('<style>', {'class': move_name, text: '@-webkit-keyframes a_' + move_name
-                    + '{'
-                    +   '0%{margin-left:2px;}'
-                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
-                    +   '90%{margin-left:6px;}'
-                    +   '100%{margin-left:2px;}'
-                    + '}'
+                    + keyframeStyle
                     + '@keyframes a_' + move_name
-                    + '{'
-                    +   '0%{margin-left:2px;}'
-                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
-                    +   '90%{margin-left:6px;}'
-                    +   '100%{margin-left:2px;}'
-                    + '}'
+                    + keyframeStyle
                     + '@-moz-keyframes a_' + move_name
-                    + '{'
-                    +   '0%{margin-left:2px;}'
-                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
-                    +   '90%{margin-left:6px;}'
-                    +   '100%{margin-left:2px;}'
-                    + '}'
+                    + keyframeStyle
                     + '@-o-keyframes a_' + move_name
-                    + '{'
-                    +   '0%{margin-left:2px;}'
-                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
-                    +   '90%{margin-left:6px;}'
-                    +   '100%{margin-left:2px;}'
-                    + '}'
+                    + keyframeStyle
                     + 'div.' + move_name + ':hover > span {'
                     +   'overflow: visible;'
                     +   '-webkit-animation:a_' + move_name + ' ' + time_calc + 's;'
