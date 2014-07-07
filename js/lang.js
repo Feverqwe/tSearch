@@ -161,6 +161,7 @@ var get_lang = function (lang) {
         peer_filter: "Peers",
         settings_saved: "Saved!",
         trackerNotFound: "Tracker not found!",
+        findNotFound: "To find!",
         settings: {
             1: "The list of torrents",
             2: "Options",
@@ -473,6 +474,7 @@ var get_lang = function (lang) {
         peer_filter: "Пиры",
         settings_saved: "Сохранено!",
         trackerNotFound: "Трекер не найден!",
+        findNotFound: "Найти!",
         settings: {
             1: "Список торрентов",
             2: "Опции",

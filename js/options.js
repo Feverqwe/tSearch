@@ -222,11 +222,15 @@ var options = function() {
     };
     var getTrackerDom = function( id, tracker, tracker_icon, flags ) {
         if (tracker === undefined) {
+            var uid = (id.substr(0, 3) === 'ct_')?id.substr(3):undefined;
             tracker = {
                 name: id,
                 about: _lang.trackerNotFound,
                 notFound: 1
             };
+            if (uid !== undefined) {
+                flags = $('<a>', {href: 'http://code-tms.blogspot.ru/search?q=' + uid, text: _lang.findNotFound, target: "_blank"});
+            }
         }
         if (tracker_icon === undefined) {
             tracker_icon = $('<div>', {'class': 'tracker_icon'}).css({'background-color': ( (tracker.notFound !== undefined) ?'rgb(253, 0, 0)':'#ccc' ), 'border-radius': '8px'});
