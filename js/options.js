@@ -424,6 +424,7 @@ var options = function() {
             dom_cache.add_in_omnibox = $('input[name="add_in_omnibox"]');
             dom_cache.google_analytics = $('input[name="google_analytics"]');
             dom_cache.allow_favorites_sync = $('input[name="allow_favorites_sync"]');
+            dom_cache.profileListSync = $('input[name="profileListSync"]');
             dom_cache.clear_cloud_btn = $('input[name="clear_cloud_btn"]');
             dom_cache.clear_cloud = $('input[name="clear_cloud"]');
             dom_cache.search_popup = $('input[name="search_popup"]');
@@ -481,6 +482,7 @@ var options = function() {
                 dom_cache.add_in_omnibox.closest('ul').hide();
                 dom_cache.google_analytics.closest('fieldset').hide();
                 dom_cache.allow_favorites_sync.closest('ul').hide();
+                dom_cache.profileListSync.closest('ul').hide();
                 dom_cache.clear_cloud_btn.hide();
             }
             if (mono.isOpera) {
