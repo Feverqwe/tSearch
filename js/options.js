@@ -105,7 +105,12 @@ var options = function() {
         });
         changes.listOptions = JSON.stringify(listOptions);
         saveCurrentProfile();
+
+        if (settings.profileListSync === 1) {
+            mono.storage.sync.set({profileList: JSON.stringify(profileList)});
+        }
         changes.profileList = JSON.stringify(profileList);
+
         changes.currentProfile = current_profile;
         mono.storage.set(changes, function() {
             if (mono.isChrome) {

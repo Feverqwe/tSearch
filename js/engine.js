@@ -1,29 +1,30 @@
 var engine = function() {
     var def_settings = {
-        HideLeech: {v: 1, t: "checkbox"},
-        HideSeed: {v: 0, t: "checkbox"},
-        ShowIcons: {v: 1, t: "checkbox"},
-        SubCategoryFilter: {v: 1, t: "checkbox"},
-        HideZeroSeed: {v: 0, t: "checkbox"},
+        HideLeech: {v: 1, t: 'checkbox'},
+        HideSeed: {v: 0, t: 'checkbox'},
+        ShowIcons: {v: 1, t: 'checkbox'},
+        SubCategoryFilter: {v: 1, t: 'checkbox'},
+        HideZeroSeed: {v: 0, t: 'checkbox'},
         AdvFiltration: {v: 2, t: "radio"},
-        TeaserFilter: {v: 1, t: "checkbox"},
-        add_in_omnibox: {v: 1, t: "checkbox"},
-        context_menu: {v: 1, t: "checkbox"},
-        search_popup: {v: 1, t: "checkbox"},
-        AutoComplite_opt: {v: 1, t: "checkbox"},
-        use_english_postername: {v: 0, t: "checkbox"},
-        google_analytics: {v: 0, t: "checkbox"},
-        autoSetCat: {v: 1, t: "checkbox"},
-        allow_get_description: {v: 1, t: "checkbox"},
-        allow_favorites_sync: {v: 1, t: "checkbox"},
-        sub_select_enable: {v: 1, t: "checkbox"},
+        TeaserFilter: {v: 1, t: 'checkbox'},
+        add_in_omnibox: {v: 1, t: 'checkbox'},
+        context_menu: {v: 1, t: 'checkbox'},
+        search_popup: {v: 1, t: 'checkbox'},
+        AutoComplite_opt: {v: 1, t: 'checkbox'},
+        use_english_postername: {v: 0, t: 'checkbox'},
+        google_analytics: {v: 0, t: 'checkbox'},
+        autoSetCat: {v: 1, t: 'checkbox'},
+        allow_get_description: {v: 1, t: 'checkbox'},
+        allow_favorites_sync: {v: 1, t: 'checkbox'},
+        sub_select_enable: {v: 1, t: 'checkbox'},
         kinopoisk_f_id: {v: 1, t: "number"},
-        filter_panel_to_left: {v: 1, t: "checkbox"},
-        hideTopSearch: {v: 0, t: "checkbox"},
-        no_blank_dl_link: {v: 0, t: "checkbox"},
-        noTransitionLinks: {v: 1, t: "checkbox"},
-        noTransition: {v: 0, t: "checkbox"},
-        torrent_list_r: {v: 0, t: 'hidden'}
+        filter_panel_to_left: {v: 1, t: 'checkbox'},
+        hideTopSearch: {v: 0, t: 'checkbox'},
+        no_blank_dl_link: {v: 0, t: 'checkbox'},
+        noTransitionLinks: {v: 1, t: 'checkbox'},
+        noTransition: {v: 0, t: 'checkbox'},
+        torrent_list_r: {v: 0, t: 'hidden'},
+        profileListSync: {v: 0, t: 'checkbox'}
     };
     var def_listOptions = {
         favorites: { e: 1, s: 1, w: 100, c: 1 },
@@ -690,47 +691,59 @@ var engine = function() {
                     fastMigration(localStorage);
                 }
             }
+            loadSettings(function (_settings) {
+                engine.settings = settings = _settings;
 
-            mono.storage.get(['customTorrentList', 'profileList',
-                'history', 'lang', 'google_analytics'], function(storage) {
+                var storageType = (engine.settings.profileListSync === 1)?'sync':'local';
 
-                storage.google_analytics !== 1 && window.counter && counter();
+                mono.storage[storageType].get('profileList', function(syncStorage) {
 
-                _lang = get_lang(storage.lang || navigator.language.substr(0, 2));
+                    mono.storage.get(['customTorrentList', 'profileList',
+                        'history', 'lang', 'google_analytics'], function(storage) {
 
-                if ( _lang.t === 'en' ) {
-                    def_settings.hideTopSearch.v = 1;
-                    def_listOptions.kp_favorites.e = 0;
-                    def_listOptions.kp_in_cinema.e = 0;
-                    def_listOptions.kp_popular.e = 0;
-                    def_listOptions.kp_serials.e = 0;
-                } else {
-                    def_listOptions.imdb_in_cinema.e = 0;
-                    def_listOptions.imdb_popular.e = 0;
-                    def_listOptions.imdb_serials.e = 1;
-                    def_listOptions.kp_serials.e = 0;
-                }
+                        if (syncStorage.profileList === undefined) {
+                            storage.profileList = storage.profileList;
+                        } else {
+                            storage.profileList = syncStorage.profileList;
+                        }
 
-                if (typeof storage.history === 'string') {
-                    storage.history = JSON.parse(storage.history);
-                }
+                        storage.google_analytics !== 1 && window.counter && counter();
 
-                engine.history = history = storage.history || [];
+                        _lang = get_lang(storage.lang || navigator.language.substr(0, 2));
 
-                engine.profileList = profileList = JSON.parse( storage.profileList || '{}' );
-                prepareProfileList();
+                        if ( _lang.t === 'en' ) {
+                            def_settings.hideTopSearch.v = 1;
+                            def_listOptions.kp_favorites.e = 0;
+                            def_listOptions.kp_in_cinema.e = 0;
+                            def_listOptions.kp_popular.e = 0;
+                            def_listOptions.kp_serials.e = 0;
+                        } else {
+                            def_listOptions.imdb_in_cinema.e = 0;
+                            def_listOptions.imdb_popular.e = 0;
+                            def_listOptions.imdb_serials.e = 1;
+                            def_listOptions.kp_serials.e = 0;
+                        }
 
-                if (storage.customTorrentList) {
-                    var torrentList = storage.customTorrentList;
-                    for (var uid in torrentList) {
-                        loadModule(uid, torrentList[uid]);
-                    }
-                }
+                        if (typeof storage.history === 'string') {
+                            storage.history = JSON.parse(storage.history);
+                        }
 
-                loadSettings(function (_settings) {
-                    engine.settings = settings = _settings;
-                    cb && cb();
+                        engine.history = history = storage.history || [];
+
+                        engine.profileList = profileList = JSON.parse( storage.profileList || '{}' );
+                        prepareProfileList();
+
+                        if (storage.customTorrentList) {
+                            var torrentList = storage.customTorrentList;
+                            for (var uid in torrentList) {
+                                loadModule(uid, torrentList[uid]);
+                            }
+                        }
+                        cb && cb();
+                    });
+
                 });
+
             });
         }
     };

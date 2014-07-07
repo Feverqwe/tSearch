@@ -93,6 +93,7 @@ ul.item > li {
     padding: 6px 12px;
 }
 .page.options ul.item > li:last-child {
+    max-width: 645px;
 }
 div.backup_form {
     margin-top: 10px;

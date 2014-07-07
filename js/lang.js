@@ -240,7 +240,8 @@ var get_lang = function (lang) {
             77: "Show sections:",
             78: "Don't to open a new page when click download link ↓",
             79: "Disable animation links",
-            80: "Disable all animations"
+            80: "Disable all animations",
+            81: "Allow synchronization of the list of trackers (custom trackers must add it manually)"
         },
         magic: {
             1: 'Loading error!',
@@ -550,7 +551,8 @@ var get_lang = function (lang) {
             77: "Показывать секции:",
             78: "Не открывать новую страницу при нажатии на ссылку загрузки ↓",
             79: "Отключить анимацию ссылок",
-            80: "Отключить всю анимацию"
+            80: "Отключить всю анимацию",
+            81: "Разрешить синхронизацию списка трекеров (пользовательские трекеры нужно добавлять вручную)"
         },
         magic: {
             1: 'Ошибка загрузки!',
