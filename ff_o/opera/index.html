@@ -3,7 +3,7 @@
     <head>
         <title>Torrents MultiSearch</title>
         <meta charset="utf-8" />
-        <script src="build/js/storage.js"></script>
+        <script src="build/js/mono.js"></script>
         <script src="build/js/lang.js"></script>
         <script>
             window.addEventListener('load', function() {
@@ -20,15 +20,20 @@
                 theButton = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
                 opera.contexts.toolbar.addItem(theButton);
             }, false);
-            if (parseInt(GetSettings('context_menu') || 1) === 1) {
-                window.addEventListener('DOMContentLoaded', function() {
-                    // Check the Context Menu API is supported
-                    if (!opera.contexts.menu) {
-                        return;
+            var updateContextMenu = function() {
+                if (!opera.contexts.menu) {
+                    return;
+                }
+                mono.storage.get(['context_menu'], function(storage) {
+                    if (storage.context_menu === undefined) {
+                        storage.context_menu = 1;
                     }
                     var menu = opera.contexts.menu;
                     if (menu.length > 0) {
                         menu.removeItem(0);
+                    }
+                    if (storage.context_menu !== 1) {
+                        return;
                     }
                     // Create a menu item properties object
                     var itemProps = {
@@ -38,15 +43,21 @@
                         onclick: function(event) {
                             var query = encodeURIComponent(event.selectionText);
                             var tabProps = {
-                                url: 'build/index.html' + ((query.length > 0)?'#?search=' + query:'')
+                                url: 'build/index.html' + ((query)?'#?search=' + query:'')
                             };
                             opera.extension.tabs.create(tabProps);
                         }
                     };
                     var item = menu.createItem(itemProps);
                     menu.addItem(item);
-                }, false);
-            }
+                });
+            };
+            window.addEventListener('DOMContentLoaded', function() {
+                mono.storage.get(['lang'], function (storage) {
+                    window._lang = get_lang(storage.lang || navigator.language.substr(0, 2));
+                    updateContextMenu();
+                });
+            });
         </script>
     </head>
     <body>

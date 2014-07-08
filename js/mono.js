@@ -118,7 +118,7 @@ var mono = function (env) {
             var key, value, obj = {};
             if (src === undefined || src === null) {
                 for (key in localStorage) {
-                    if (!localStorage.hasOwnProperty(key)) {
+                    if (!localStorage.hasOwnProperty(key) || key === 'length') {
                         continue;
                     }
                     if (key.substr(0, localStorageMode.chunkLen) === localStorageMode.chunkPrefix) {
