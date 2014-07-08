@@ -154,7 +154,7 @@ var mono = function (env) {
             for (key in obj) {
                 var value = obj[key];
                 if (value === undefined) {
-                    delete localStorage[key];
+                    localStorageMode.remove(key);
                 } else
                 if (typeof value === 'object') {
                     localStorageMode.setObj(key, value);
