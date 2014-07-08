@@ -117,6 +117,9 @@ var mono = function (env) {
                     }
                     if (value === localStorageMode.chunkItem) {
                         value = localStorageMode.getObj(key)
+                    } else
+                    if (value !== undefined) {
+                        value = (value[0] === 'i')?parseInt( value.substr(1) ):value.substr(1);
                     }
                     obj[key] = value;
                 }
@@ -131,6 +134,9 @@ var mono = function (env) {
                     value = localStorage[key];
                     if (value === localStorageMode.chunkItem) {
                         value = localStorageMode.getObj(key)
+                    } else
+                    if (value !== undefined) {
+                        value = (value[0] === 'i')?parseInt( value.substr(1) ):value.substr(1);
                     }
                     obj[key] = value;
                 }
@@ -139,6 +145,9 @@ var mono = function (env) {
                     value = localStorage[key];
                     if (value === localStorageMode.chunkItem) {
                         value = localStorageMode.getObj(key)
+                    } else
+                    if (value !== undefined) {
+                        value = (value[0] === 'i')?parseInt( value.substr(1) ):value.substr(1);
                     }
                     obj[key] = value;
                 }
@@ -155,6 +164,11 @@ var mono = function (env) {
                 if (typeof value === 'object') {
                     localStorageMode.setObj(key, value);
                 } else {
+                    if (typeof value === 'number') {
+                        value = 'i'+value;
+                    } else {
+                        value = 's'+value;
+                    }
                     localStorage[key] = value;
                 }
             }
@@ -237,7 +251,6 @@ var mono = function (env) {
     };
 
     var storage_fn = function(mode) {
-        return localStorageMode;
         if (mono.isModule) {
             if (monoStorage.get === undefined) {
                 monoStorage = monoStorage();
