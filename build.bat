@@ -55,3 +55,7 @@ del .\build_chrome_ext.zip
 7za a -tzip .\build_chrome.zip .\build\*
 7za a -tzip .\build_opera.oex .\build_opera\*
 7za a -tzip .\build_chrome_ext.zip .\build_chrome_ext\*
+
+:: Opera Next
+
+copy .\build_chrome_ext.zip .\build_opera_nex.nex
