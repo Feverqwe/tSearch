@@ -165,6 +165,11 @@ var view = function() {
                 }, 200);
             });
             mono.storage.get(['history', 'click_history'], function(storage){
+
+                if (typeof storage.history === 'string') {
+                    storage.history = JSON.parse(storage.history);
+                }
+
                 var_cache.history = storage.history || [];
                 var_cache.click_history = JSON.parse(storage.click_history || '{}');
                 writeHistory();
