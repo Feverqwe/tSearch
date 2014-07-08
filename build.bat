@@ -12,9 +12,7 @@ xcopy .\css .\build\css\ /E
 copy .\*.html .\build\.
 copy .\*.json .\build\.
 
-
-
-java -jar compiler.jar --js .\js\background.js --js_output_file .\build\js\background.js
+:: java -jar compiler.jar --js .\js\background.js --js_output_file .\build\js\background.js
 java -jar compiler.jar --js .\js\counter.js --js_output_file .\build\js\counter.js
 java -jar compiler.jar --js .\js\engine.js --js_output_file .\build\js\engine.js
 java -jar compiler.jar --js .\js\ex_kit.js --js_output_file .\build\js\ex_kit.js
@@ -47,7 +45,7 @@ xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
 
 :: chrome app
 
-del .\build_opera\build\js\popup.js
+del .\build\build\js\popup.js
 
 :: building
 
