@@ -633,11 +633,15 @@ var engine = function() {
                 if (!profiles[item]) {
                     continue;
                 }
-                for (var key in profiles[item]) {
-                    if (profiles[item][key] !== 1) {
-                        continue;
+                if (Array.isArray(profiles[item])) {
+                    profileList[item] = profiles[item];
+                } else {
+                    for (var key in profiles[item]) {
+                        if (profiles[item][key] !== 1) {
+                            continue;
+                        }
+                        profileList[item].push(key);
                     }
-                    profileList[item].push(key);
                 }
             }
             settings.profileList = JSON.stringify( profileList );

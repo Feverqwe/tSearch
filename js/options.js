@@ -797,8 +797,9 @@ var options = function() {
                 settings = $.extend({}, engine.settings);
                 profileList = $.extend(true, {}, engine.profileList);
                 listOptions = JSON.parse(storage.listOptions || '{}');
-
-                options.begin();
+                $(function(){
+                    options.begin();
+                });
             });
         }
     };

@@ -61,15 +61,64 @@ var mono = function (env) {
             mono.sendMessage({action: 'clear'}, cb, 'monoStorage');
         }
     };
+
     var localStorageMode = {
+        getObj: function(key) {
+            var index = 0;
+            var keyPrefix = localStorageMode.chunkPrefix+key;
+            var chunk = localStorage[keyPrefix+index];
+            var data = '';
+            while (chunk !== undefined) {
+                data += chunk;
+                index++;
+                chunk = localStorage[keyPrefix+index];
+            }
+            return JSON.parse(data);
+        },
+        setObj: function(key, value) {
+            value = JSON.stringify(value);
+            var keyPrefix = localStorageMode.chunkPrefix+key;
+            var chunkLen = 1024 - keyPrefix.length - 3;
+            if (localStorageMode.regexp === undefined) {
+                localStorageMode.regexp = new RegExp('.{1,'+chunkLen+'}', 'g');
+            }
+            var valueLen = value.length;
+            var number_of_part = Math.floor( valueLen / chunkLen );
+            if (number_of_part >= 512) {
+                mono('localStorage','Can\'t save item', key,', very big!');
+                return;
+            }
+            var dataList = value.match(localStorageMode.regexp);
+            var dataListLen = dataList.length;
+            for (var i = 0, item; i < dataListLen; i++) {
+                item = dataList[i];
+                localStorage[keyPrefix+i] = item;
+            }
+            localStorage[key] = localStorageMode.chunkItem;
+
+            var overflow = dataListLen;
+            var data = localStorage[keyPrefix+overflow];
+            while (data !== undefined) {
+                delete localStorage[keyPrefix+overflow];
+                overflow++;
+                data = localStorage[keyPrefix+overflow];
+            }
+        },
         get: function (src, cb) {
-            var key, obj = {};
+            var key, value, obj = {};
             if (src === undefined || src === null) {
                 for (key in localStorage) {
                     if (!localStorage.hasOwnProperty(key)) {
                         continue;
                     }
-                    obj[key] = localStorage[key];
+                    value = localStorage[key];
+                    if (key.substr(0, localStorageMode.chunkLen) === localStorageMode.chunkPrefix) {
+                        continue;
+                    }
+                    if (value === localStorageMode.chunkItem) {
+                        value = localStorageMode.getObj(key)
+                    }
+                    obj[key] = value;
                 }
                 return cb(obj);
             }
@@ -79,11 +128,19 @@ var mono = function (env) {
             if (Array.isArray(src) === true) {
                 for (var i = 0, len = src.length; i < len; i++) {
                     key = src[i];
-                    obj[key] = localStorage[key];
+                    value = localStorage[key];
+                    if (value === localStorageMode.chunkItem) {
+                        value = localStorageMode.getObj(key)
+                    }
+                    obj[key] = value;
                 }
             } else {
                 for (key in src) {
-                    obj[key] = localStorage[key];
+                    value = localStorage[key];
+                    if (value === localStorageMode.chunkItem) {
+                        value = localStorageMode.getObj(key)
+                    }
+                    obj[key] = value;
                 }
             }
             cb(obj);
@@ -91,7 +148,15 @@ var mono = function (env) {
         set: function (obj, cb) {
             var key;
             for (key in obj) {
-                localStorage[key] = obj[key];
+                var value = obj[key];
+                if (value === undefined) {
+                    delete localStorage[key];
+                } else
+                if (typeof value === 'object') {
+                    localStorageMode.setObj(key, value);
+                } else {
+                    localStorage[key] = value;
+                }
             }
             cb && cb();
         },
@@ -111,6 +176,9 @@ var mono = function (env) {
             cb && cb();
         }
     };
+    localStorageMode.chunkPrefix = 'mCh_';
+    localStorageMode.chunkLen = localStorageMode.chunkPrefix.length;
+    localStorageMode.chunkItem = 'monoChunk';
 
     var monoStorage = function() {
         var ss = require("sdk/simple-storage");
@@ -169,6 +237,7 @@ var mono = function (env) {
     };
 
     var storage_fn = function(mode) {
+        return localStorageMode;
         if (mono.isModule) {
             if (monoStorage.get === undefined) {
                 monoStorage = monoStorage();
