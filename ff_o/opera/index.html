@@ -5,61 +5,7 @@
         <meta charset="utf-8" />
         <script src="build/js/mono.js"></script>
         <script src="build/js/lang.js"></script>
-        <script>
-            window.addEventListener('load', function() {
-                var theButton;
-                var ToolbarUIItemProperties = {
-                    disabled: false,
-                    title: "Torrents MultiSearch",
-                    icon: "icons/icon-18.png",
-                    onclick: function() {
-                        var tab = opera.extension.tabs.create({url: 'build/index.html'});
-                        tab.focus();
-                    }
-                };
-                theButton = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
-                opera.contexts.toolbar.addItem(theButton);
-            }, false);
-            var updateContextMenu = function() {
-                if (!opera.contexts.menu) {
-                    return;
-                }
-                mono.storage.get(['context_menu'], function(storage) {
-                    if (storage.context_menu === undefined) {
-                        storage.context_menu = 1;
-                    }
-                    var menu = opera.contexts.menu;
-                    if (menu.length > 0) {
-                        menu.removeItem(0);
-                    }
-                    if (storage.context_menu !== 1) {
-                        return;
-                    }
-                    // Create a menu item properties object
-                    var itemProps = {
-                        title: _lang.ctx_title,
-                        contexts: ['selection'],
-                        icon: 'icons/icon-16.png',
-                        onclick: function(event) {
-                            var query = encodeURIComponent(event.selectionText);
-                            var tabProps = {
-                                url: 'build/index.html' + ((query)?'#?search=' + query:'')
-                            };
-                            opera.extension.tabs.create(tabProps);
-                        }
-                    };
-                    var item = menu.createItem(itemProps);
-                    menu.addItem(item);
-                });
-            };
-            window.addEventListener('DOMContentLoaded', function() {
-                mono.storage.get(['lang'], function (storage) {
-                    window._lang = get_lang(storage.lang || navigator.language.substr(0, 2));
-                    updateContextMenu();
-                });
-            });
-        </script>
+        <script src="background.js"></script>
     </head>
-    <body>
-    </body>
+    <body></body>
 </html>
