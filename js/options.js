@@ -484,7 +484,6 @@ var options = function() {
             if (!mono.isChrome) {
                 //opera 12 and firefox
                 dom_cache.add_in_omnibox.closest('ul').hide();
-                dom_cache.google_analytics.closest('fieldset').hide();
                 dom_cache.allow_favorites_sync.closest('ul').hide();
                 dom_cache.profileListSync.closest('ul').hide();
                 dom_cache.clear_cloud_btn.hide();
