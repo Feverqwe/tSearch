@@ -104,6 +104,16 @@ var mono = function (env) {
                 data = localStorage[keyPrefix+overflow];
             }
         },
+        readValue: function(key, value) {
+            if (value === localStorageMode.chunkItem) {
+                value = localStorageMode.getObj(key)
+            } else
+            if (value !== undefined) {
+                var data = value.substr(1);
+                value = (value[0] === 'i')?parseInt(data):data;
+            }
+            return value;
+        },
         get: function (src, cb) {
             var key, value, obj = {};
             if (src === undefined || src === null) {
@@ -111,17 +121,10 @@ var mono = function (env) {
                     if (!localStorage.hasOwnProperty(key)) {
                         continue;
                     }
-                    value = localStorage[key];
                     if (key.substr(0, localStorageMode.chunkLen) === localStorageMode.chunkPrefix) {
                         continue;
                     }
-                    if (value === localStorageMode.chunkItem) {
-                        value = localStorageMode.getObj(key)
-                    } else
-                    if (value !== undefined) {
-                        value = (value[0] === 'i')?parseInt( value.substr(1) ):value.substr(1);
-                    }
-                    obj[key] = value;
+                    obj[key] = localStorageMode.readValue(key, localStorage[key]);
                 }
                 return cb(obj);
             }
@@ -131,25 +134,11 @@ var mono = function (env) {
             if (Array.isArray(src) === true) {
                 for (var i = 0, len = src.length; i < len; i++) {
                     key = src[i];
-                    value = localStorage[key];
-                    if (value === localStorageMode.chunkItem) {
-                        value = localStorageMode.getObj(key)
-                    } else
-                    if (value !== undefined) {
-                        value = (value[0] === 'i')?parseInt( value.substr(1) ):value.substr(1);
-                    }
-                    obj[key] = value;
+                    obj[key] = localStorageMode.readValue(key, localStorage[key]);
                 }
             } else {
                 for (key in src) {
-                    value = localStorage[key];
-                    if (value === localStorageMode.chunkItem) {
-                        value = localStorageMode.getObj(key)
-                    } else
-                    if (value !== undefined) {
-                        value = (value[0] === 'i')?parseInt( value.substr(1) ):value.substr(1);
-                    }
-                    obj[key] = value;
+                    obj[key] = localStorageMode.readValue(key, localStorage[key]);
                 }
             }
             cb(obj);
