@@ -73,23 +73,23 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     }();
     exports.storage = monoStorage;
 
+    var sendToPage = function(page, message) {
+        if (page.active === false) {
+            return;
+        }
+        var type = (page.isVirtual !== undefined)?'lib':'port';
+        page[type].emit('mono', message);
+    };
+
     var sendAll = function(message, fromPage) {
         for (var index in map) {
-            if (fromPage && index === fromPage.index) {
+            if (fromPage !== undefined && fromPage.index === index) {
                 continue;
             }
             sendToPage(map[index], message);
         }
     };
     exports.sendAll = sendAll;
-
-    var sendToPage = function(page, message) {
-        if (page.active === false) {
-            return;
-        }
-        var type = (page.isVirtual)?'lib':'port';
-        page[type].emit('mono', message);
-    };
 
     serviceList['monoStorage'] = function(page, message) {
         var msg = message.data;
@@ -188,10 +188,10 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     };
 
     var monoOnMessage = function(page, message) {
-        if (serviceList[message.monoTo]) {
+        if (serviceList[message.monoTo] !== undefined) {
             return serviceList[message.monoTo](page, message);
         }
-        if (virtualPageList[message.monoTo]) {
+        if (virtualPageList[message.monoTo] !== undefined) {
             return virtualPageList[message.monoTo].lib.emit('mono', message);
         }
         if (message.monoTo === defaultId) {
@@ -275,7 +275,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         page.active = true;
         map[index] = page;
 
-        if (!page.isVirtual) {
+        if (page.isVirtual === undefined) {
             page.on('pageshow', function() {
                 page.active = true;
             });
@@ -291,7 +291,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
                 page.active = false;
             });
         }
-        var type = (page.isVirtual)?'lib':'port';
+        var type = (page.isVirtual !== undefined)?'lib':'port';
         page[type].on('mono', function(message) {
             monoOnMessage(page, message);
         });
