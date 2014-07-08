@@ -113,13 +113,8 @@ var options = function() {
 
         changes.currentProfile = current_profile;
         mono.storage.set(changes, function() {
-            if (mono.isChrome) {
-                mono.sendMessage('bg_update');
-            }
+            mono.sendMessage('bg_update');
             var fromIndex = (document.URL).replace(/.*options.html/, '');
-            if (mono.isFF) {
-                mono.sendMessage('bg_update');
-            }
             if (fromIndex.length > 0) {
                 window.location = 'index.html';
             }
@@ -487,10 +482,6 @@ var options = function() {
                 dom_cache.allow_favorites_sync.closest('ul').hide();
                 dom_cache.profileListSync.closest('ul').hide();
                 dom_cache.clear_cloud_btn.hide();
-            }
-            if (mono.isOpera) {
-                // Opera 12
-                dom_cache.search_popup.closest('ul').hide();
             }
             if (mono.isChrome && mono.isChromeApp) {
                 //Chromeum app

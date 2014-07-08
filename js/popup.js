@@ -117,6 +117,7 @@ var popup = function(enable_ac) {
             cb(list)
         });
     };
+    dom_cache.body = $(document.body);
     dom_cache.search_input = $('input[type="text"]');
     dom_cache.submit = $('input[type="submit"]');
     dom_cache.form_search = $('form');
@@ -141,6 +142,9 @@ var popup = function(enable_ac) {
             dom_cache.clear.hide();
 
             return mono.addon.postMessage('closeMe');
+        }
+        if (mono.isOpera) {
+            mono.sendMessage({action: 'tab', url: 'build/index.html' + ( (text)?'#?search=' + text:'') });
         }
         window.close();
     });
@@ -191,9 +195,21 @@ var popup = function(enable_ac) {
         },
         open: function() {
             mono.sendMessage({action: 'resize', height: 220 }, undefined, "service");
+            if (mono.isOpera) {
+                dom_cache.search_input.focus();
+                setTimeout(function() {
+                    dom_cache.search_input.focus();
+                }, 100);
+            }
         },
         close: function() {
             mono.sendMessage({action: 'resize', height: 66 }, undefined, "service");
+            if (mono.isOpera) {
+                dom_cache.search_input.focus();
+                setTimeout(function() {
+                    dom_cache.search_input.focus();
+                }, 100);
+            }
         }
     });
     if (mono.isFF) {
@@ -206,6 +222,21 @@ var popup = function(enable_ac) {
 
         dom_cache.search_input.css('float','left');
         dom_cache.submit.css('float','right');
+    }
+    if (mono.isOpera) {
+        dom_cache.body.css({
+            margin: '-5px',
+            marginTop: '4px',
+            padding: 0,
+            overflow: 'hidden'
+        });
+        dom_cache.search_input.css('float','left');
+        dom_cache.submit.css('float','right');
+        mono.sendMessage({action: 'resize', height: 66 });
+        dom_cache.search_input.focus();
+        setTimeout(function() {
+            dom_cache.search_input.focus();
+        }, 100);
     }
 };
 mono.pageId = 'popup';

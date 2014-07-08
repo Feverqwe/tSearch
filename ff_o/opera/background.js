@@ -1,4 +1,5 @@
 (function() {
+    mono.pageId = 'service';
     var var_cache = {};
     var updateButton = function(active) {
         if (var_cache.button) {
@@ -12,7 +13,7 @@
         if (active) {
             ToolbarUIItemProperties.popup = {
                 href: 'build/popup.html',
-                    width: 600,
+                    width: 610,
                     height: 66
             }
         } else {
@@ -52,14 +53,25 @@
         menu.addItem(item);
     };
     mono.onMessage(function(message) {
-        console.log('message!', message);
-        if (message !== 'bg_update') {
+        if (message.action === 'tab') {
+            var tab = opera.extension.tabs.create({url: message.url});
+            tab.focus();
             return;
         }
-        mono.storage.get(['context_menu', 'search_popup'], function (storage) {
-            updateContextMenu( storage.context_menu );
-            updateButton( storage.search_popup );
-        });
+        if (message.action === 'resize') {
+            if (message.height) {
+                var_cache.button.popup.height = message.height;
+            }
+            if (message.width) {
+                var_cache.button.popup.width = message.width;
+            }
+        }
+        if (message === 'bg_update') {
+            mono.storage.get(['context_menu', 'search_popup'], function (storage) {
+                updateContextMenu( storage.context_menu );
+                updateButton( storage.search_popup );
+            });
+        }
     });
     window.addEventListener('DOMContentLoaded', function() {
         mono.storage.get(['lang', 'context_menu', 'search_popup'], function (storage) {

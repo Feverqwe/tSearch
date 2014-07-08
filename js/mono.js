@@ -395,7 +395,8 @@ var mono = function (env) {
             var firstOn = messagesEnable;
             messagesEnable = true;
             var pageId = mono.pageId;
-            opera.extension.onmessage = function(message) {
+            opera.extension.onmessage = function(event) {
+                var message = event.data;
                 if (message.monoTo !== pageId && message.monoTo !== defaultId) {
                     return;
                 }

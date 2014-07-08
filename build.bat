@@ -34,7 +34,6 @@ java -jar compiler.jar --js .\js\view.js --js_output_file .\build\js\view.js
 xcopy .\build .\build_opera\build\ /E
 del .\build_opera\build\manifest.json
 del .\build_opera\build\js\background.js
-del .\build_opera\build\js\popup.js
 rd /S /Q .\build_opera\build\_locales
 xcopy .\ff_o\opera\* .\build_opera\. /E
 
@@ -56,7 +55,3 @@ del .\build_chrome_ext.zip
 7za a -tzip .\build_chrome.zip .\build\*
 7za a -tzip .\build_opera.oex .\build_opera\*
 7za a -tzip .\build_chrome_ext.zip .\build_chrome_ext\*
-
-:: Opera Next
-
-copy .\build_chrome_ext.zip .\build_opera_nex.nex
