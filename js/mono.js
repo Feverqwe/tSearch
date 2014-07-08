@@ -96,12 +96,18 @@ var mono = function (env) {
             }
             localStorage[key] = localStorageMode.chunkItem;
 
-            var overflow = dataListLen;
-            var data = localStorage[keyPrefix+overflow];
+            localStorageMode.rmObj(key, dataListLen);
+        },
+        rmObj: function(key, index) {
+            var keyPrefix = localStorageMode.chunkPrefix+key;
+            if (index === undefined) {
+                index = 0;
+            }
+            var data = localStorage[keyPrefix+index];
             while (data !== undefined) {
-                delete localStorage[keyPrefix+overflow];
-                overflow++;
-                data = localStorage[keyPrefix+overflow];
+                delete localStorage[keyPrefix+index];
+                index++;
+                data = localStorage[keyPrefix+index];
             }
         },
         readValue: function(key, value) {
@@ -167,9 +173,15 @@ var mono = function (env) {
             if (Array.isArray(obj)) {
                 for (var i = 0, len = obj.length; i < len; i++) {
                     var key = obj[i];
+                    if (localStorage[key] === localStorageMode.chunkItem) {
+                        localStorageMode.rmObj(key);
+                    }
                     delete localStorage[key];
                 }
             } else {
+                if (localStorage[obj] === localStorageMode.chunkItem) {
+                    localStorageMode.rmObj(obj);
+                }
                 delete localStorage[obj];
             }
             cb && cb();
