@@ -63,7 +63,7 @@ torrent_lib.hdclub = function () {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
-            xhr = $.ajax({
+            xhr = engine.ajax({
                 type: 'GET',
                 url: url + '?search=' + ex_kit.in_cp1251(text),
                 cache: false,

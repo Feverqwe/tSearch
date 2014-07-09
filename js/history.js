@@ -77,7 +77,7 @@ var view = function() {
                 return;
             }
             var_cache.history.splice(index,1);
-            SetStorageSettings({history: JSON.stringify(var_cache.history)});
+            mono.storage.set({history: var_cache.history});
             //writeHistory();
             return;
         }
@@ -88,7 +88,7 @@ var view = function() {
         var list_len = list.length;
         if (list_len === 1) {
             delete var_cache.click_history[request];
-            SetStorageSettings({click_history: JSON.stringify(var_cache.click_history)});
+            mono.storage.set({click_history: JSON.stringify(var_cache.click_history)});
             //writeClickHistory();
             return;
         }
@@ -102,7 +102,7 @@ var view = function() {
             return;
         }
         list.splice(index,1);
-        SetStorageSettings({click_history: JSON.stringify(var_cache.click_history)});
+        mono.storage.set({click_history: JSON.stringify(var_cache.click_history)});
         //writeClickHistory();
     };
     var u2ddmmyyyy = function(shtamp) {
@@ -164,8 +164,13 @@ var view = function() {
                     scrollTop: 0
                 }, 200);
             });
-            GetStorageSettings(['history', 'click_history'], function(storage){
-                var_cache.history = JSON.parse(storage.history || '[]');
+            mono.storage.get(['history', 'click_history'], function(storage){
+
+                if (typeof storage.history === 'string') {
+                    storage.history = JSON.parse(storage.history);
+                }
+
+                var_cache.history = storage.history || [];
                 var_cache.click_history = JSON.parse(storage.click_history || '{}');
                 writeHistory();
                 writeClickHistory();
@@ -195,7 +200,7 @@ var view = function() {
                 for (var i = 0, item; item = click_history[i]; i++) {
                     if (item.href === href) {
                         item.count += 1;
-                        item.time = parseInt((new Date()).getTime() / 1000);
+                        item.time = parseInt(Date.now() / 1000);
                         break;
                     }
                 }
@@ -207,12 +212,17 @@ var view = function() {
                     }
                 });
                 var_cache.click_history = new_obj;
-                SetStorageSettings({click_history: JSON.stringify(new_obj)});
+                mono.storage.set({click_history: JSON.stringify(new_obj)});
             });
             $('div.content').removeClass('loading');
         }
     };
 }();
-$(function() {
-    view.begin();
+mono.pageId = 'tab';
+mono.noAddon && mono.onMessage(function() {});
+mono.storage.get('lang', function(storage) {
+    window._lang = get_lang(storage.lang || navigator.language.substr(0, 2));
+    $(function () {
+        view.begin();
+    });
 });

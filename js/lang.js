@@ -160,6 +160,8 @@ var get_lang = function (lang) {
         seed_filter: "Seeds",
         peer_filter: "Peers",
         settings_saved: "Saved!",
+        trackerNotFound: "Tracker not found!",
+        findNotFound: "To find!",
         settings: {
             1: "The list of torrents",
             2: "Options",
@@ -240,7 +242,8 @@ var get_lang = function (lang) {
             77: "Show sections:",
             78: "Don't to open a new page when click download link ↓",
             79: "Disable animation links",
-            80: "Disable all animations"
+            80: "Disable all animations",
+            81: "Allow synchronization of the list of trackers (custom trackers must add it manually)"
         },
         magic: {
             1: 'Loading error!',
@@ -470,6 +473,8 @@ var get_lang = function (lang) {
         seed_filter: "Сиды",
         peer_filter: "Пиры",
         settings_saved: "Сохранено!",
+        trackerNotFound: "Трекер не найден!",
+        findNotFound: "Найти!",
         settings: {
             1: "Список торрентов",
             2: "Опции",
@@ -550,7 +555,8 @@ var get_lang = function (lang) {
             77: "Показывать секции:",
             78: "Не открывать новую страницу при нажатии на ссылку загрузки ↓",
             79: "Отключить анимацию ссылок",
-            80: "Отключить всю анимацию"
+            80: "Отключить всю анимацию",
+            81: "Разрешить синхронизацию списка трекеров (пользовательские трекеры нужно добавлять вручную)"
         },
         magic: {
             1: 'Ошибка загрузки!',
@@ -619,27 +625,12 @@ var get_lang = function (lang) {
             64: "Кодировка страницы"
         }
     };
-    if (lang === undefined) {
-        lang = GetSettings('lang');
-    }
-    if (lang === undefined) {
-        lang = 'en';
-        if ( (window.chrome !== undefined && chrome.i18n && chrome.i18n.getMessage("lang") === 'ru') ||
-             (navigator.language && navigator.language.substr(0,2) === 'ru')
-          ) {
-            lang = 'ru';
-        }
-    }
     if (lang === 'ru') {
         return lang_arr_ru;
     } else {
         return lang_arr_en;
     }
 };
-window._lang = get_lang();
-window.addEventListener("load",function(){
-    if (window.options !== undefined) {
-        return;
-    }
-    window.get_lang = undefined;
-});
+if (typeof window === 'undefined') {
+    exports.get_lang = get_lang;
+}

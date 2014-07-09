@@ -76,7 +76,7 @@ var ex_kit = function() {
         f = parseInt(f);
         t = t.toLowerCase();
         if ((var_cache.today_now).test(t)) {
-            return Math.round((new Date()).getTime() / 1000);
+            return Math.round(Date.now() / 1000);
         }
         var tt = new Date();
         var tty = new Date((Math.round(tt.getTime() / 1000) - 24 * 60 * 60) * 1000);
@@ -157,7 +157,7 @@ var ex_kit = function() {
         }
         if (f === 2) { //  || f === 'n day ago') {
             var old = parseFloat(t.replace(var_cache.ex_num, '')) * 24 * 60 * 60;
-            return Math.round((new Date()).getTime() / 1000) - old;
+            return Math.round(Date.now() / 1000) - old;
         }
         if (f === 3) { //  || f === '04-31-2013[[[ 07]:03]:27]') {
             var dd = t.replace(var_cache.ex_num, ' ').replace(var_cache.spaces, ' ').trim().split(' ');

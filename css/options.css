@@ -4,7 +4,7 @@ body {
     margin: 0;
 }
 textarea {
-    border-color: #ccc;
+    border: 1px solid #ccc;
 }
 th {
     font-weight: normal;
@@ -93,6 +93,7 @@ ul.item > li {
     padding: 6px 12px;
 }
 .page.options ul.item > li:last-child {
+    max-width: 645px;
 }
 div.backup_form {
     margin-top: 10px;
@@ -216,6 +217,9 @@ table tbody tr {
 }
 table tbody tr.custom {
     background-color: #FDFAEC;
+}
+table tbody tr.not_found {
+    background-color: #FFD2D2 !important;
 }
 table tbody tr.checked {
     background-color: #F9F0FD;

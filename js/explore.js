@@ -27,34 +27,18 @@ var explore = function() {
         qualityCache_limit: 30,
         qualityBoxCache_limit: 100
     };
-    if (window.chrome !== undefined) {
-        var_cache.qualityCache_limit = 100;
-        var_cache.qualityBoxCache_limit = 200;
-    }
-    GetStorageSettings(['qualityCache', 'qualityBoxCache'], function(storage){
-        var_cache.qualityCache = JSON.parse( storage.qualityCache || '{}' );
-        var_cache.qualityBoxCache = JSON.parse( storage.qualityBoxCache || '{}' );
-    });
+
     var dom_cache = {};
-    var options = {
-        use_english_postername: parseInt(GetSettings('use_english_postername') || 0),
-        top_cache: JSON.parse(GetSettings('topCache') || "{}"),
-        kp_folder_id: parseInt(GetSettings('kinopoisk_f_id') || 1),
-        hideTopSearch: parseInt(GetSettings('hideTopSearch') || engine.def_settings.hideTopSearch.v),
-        allow_favorites_sync: parseInt(GetSettings('allow_favorites_sync') || 1),
-        noTransitionLinks: parseInt(GetSettings('noTransitionLinks') || 1),
-        noTransition: parseInt(GetSettings('noTransition') || 0)
-    };
-    var isFF = window.Application !== undefined && Application.name === "Firefox";
-    var listOptions = JSON.parse(GetSettings('listOptions') || "{}");
+    var settings = {};
+    var listOptions = {};
     var content_options = {
         favorites: {
-            title: _lang.exp_items.favorites,
+            title: undefined,
             root_url: undefined,
             max_w: 120
         },
         kp_favorites: {
-            title: _lang.exp_items.kp_favorites,
+            title: undefined,
             root_url: 'http://www.kinopoisk.ru',
             max_w: 120,
             url: 'http://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
@@ -63,7 +47,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         kp_in_cinema: {//new in cinema
-            title: _lang.exp_items.kp_in_cinema,
+            title: undefined,
             root_url: 'http://www.kinopoisk.ru',
             max_w: 120,
             url: 'http://www.kinopoisk.ru/afisha/new/page/%page%/',
@@ -75,7 +59,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         kp_popular: {
-            title: _lang.exp_items.kp_popular,
+            title: undefined,
             root_url: 'http://www.kinopoisk.ru',
             max_w: 120,
             url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
@@ -85,7 +69,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         kp_serials: {
-            title: _lang.exp_items.kp_serials,
+            title: undefined,
             root_url: 'http://www.kinopoisk.ru',
             max_w: 120,
             url: 'http://www.kinopoisk.ru/top/lists/45/',
@@ -95,7 +79,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         imdb_in_cinema: {
-            title: _lang.exp_items.imdb_in_cinema,
+            title: undefined,
             root_url: 'http://www.imdb.com',
             max_w: 120,
             url: 'http://www.imdb.com/movies-in-theaters/',
@@ -105,7 +89,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         imdb_popular: {
-            title: _lang.exp_items.imdb_popular,
+            title: undefined,
             root_url: 'http://www.imdb.com',
             max_w: 120,
             url: 'http://www.imdb.com/search/title?count=100&title_type=feature',
@@ -115,7 +99,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         imdb_serials: {
-            title: _lang.exp_items.imdb_serials,
+            title: undefined,
             root_url: 'http://www.imdb.com',
             max_w: 120,
             url: 'http://www.imdb.com/search/title?count=100&title_type=tv_series',
@@ -125,7 +109,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
         },
         gg_games_top: {//best
-            title: _lang.exp_items.gg_games_top,
+            title: undefined,
             root_url: 'http://gameguru.ru',
             max_w: 120,
             url: 'http://gameguru.ru/pc/games/rate_week/page%page%/list.html',
@@ -137,7 +121,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=220&rewriteMime=image/jpeg&url='
         },
         gg_games_new: {//new
-            title: _lang.exp_items.gg_games_new,
+            title: undefined,
             root_url: 'http://gameguru.ru',
             max_w: 120,
             url: 'http://gameguru.ru/pc/games/new/page%page%/list.html',
@@ -149,6 +133,7 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=220&rewriteMime=image/jpeg&url='
         }
     };
+
     var content_parser = function () {
         var check_item = function(item) {
             if (item.url === undefined) {
@@ -422,7 +407,7 @@ var explore = function() {
             google: function(content, request) {
                 content = engine.contentFilter(content);
                 var $content = engine.load_in_sandbox(content);
-                $content = $content.find('#rhs_block').find('.rhsvw.kno-inline').eq(0).children('div');
+                $content = $content.find('#rhs_block').find('ol').eq(0);
                 //content = undefined;
                 if ($content.length === 0) {
                     return;
@@ -576,7 +561,7 @@ var explore = function() {
         var_cache.qulityList[type] = {};
         for (var index = from; index < end; index++) {
             var title;
-            if ((_lang.t === 'en' || options.use_english_postername === 1) && content[index].title_en !== undefined) {
+            if ((_lang.t === 'en' || engine.settings.use_english_postername === 1) && content[index].title_en !== undefined) {
                 title = content[index].title_en;
             } else {
                 title = content[index].title;
@@ -735,13 +720,14 @@ var explore = function() {
         content_write(type, content);
         var_cache['exp_cache_'+type].content = content;
         var storage = {};
-        storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-        SetStorageSettings(storage);
+        storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
+        var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
+        mono.storage[storageType].set(storage);
     };
     var xhr_send = function(type, source, page, page_mode) {
         source.xhr_wait_count++;
         source.xhr.push(
-            $.ajax({
+            engine.ajax({
                 url: (page_mode)?source.url.replace('%page%', page):source.url,
                 success: function(data) {
                     source.xhr_content.push([page,content_parser[type](data)]);
@@ -769,8 +755,14 @@ var explore = function() {
         return parseInt(currentDate.getTime() / 1000) - day*24*60*60 - hours*60*60 - minutes*60 - seconds;
     };
     var load_content = function(type) {
-        GetStorageSettings('exp_cache_'+type, function(storage) {
-            var cache = JSON.parse(storage['exp_cache_'+type] || '{}');
+        var storage_type = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
+        mono.storage[storage_type].get('exp_cache_'+type, function(storage) {
+
+            if (typeof storage['exp_cache_'+type] === 'string') {
+                storage['exp_cache_'+type] = JSON.parse(storage['exp_cache_'+type]);
+            }
+
+            var cache = storage['exp_cache_'+type] || {};
             var_cache['exp_cache_'+type] = cache;
             if (type === 'kp_favorites' || type === 'favorites') {
                 content_write(type, cache.content);
@@ -805,8 +797,13 @@ var explore = function() {
         });
     };
     var load_topList = function() {
-        GetStorageSettings('topList', function(storage) {
-            var cache = JSON.parse(storage.topList || '{}');
+        mono.storage.get('topList', function(storage) {
+
+            if (typeof storage.topList === 'string') {
+                storage.topList = JSON.parse(storage.topList);
+            }
+
+            var cache = storage.topList || {};
             var_cache.topList = cache;
             var date = getCacheDate([0,1,2,3,4,5,6]);
             if (cache.keepAlive === date || navigator.onLine === false) {
@@ -814,7 +811,7 @@ var explore = function() {
                 return;
             }
             var_cache.topList.keepAlive = date;
-            $.ajax({
+            engine.ajax({
                 url: "http://antoshka.on.ufanet.ru/top.json",
                 dataType: 'JSON',
                 cache: false,
@@ -831,7 +828,7 @@ var explore = function() {
                     });
                     var_cache.topList.content = keywords;
                     topList_write();
-                    SetStorageSettings({topList: JSON.stringify(var_cache.topList)});
+                    mono.storage.set({topList: var_cache.topList});
                 },
                 error: function() {
                     if (var_cache.topList.content === undefined) {
@@ -878,35 +875,21 @@ var explore = function() {
             var move_name = 'moveble' + '_' + size + '_' + str_w;
             var_cache.calculateMovebleCache[text] = move_name;
             if (dom_cache.body.children('style.' + move_name).length === 0) {
+                var keyframeStyle = '{'
+                    +   '0%{margin-left:2px;}'
+                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
+                    +   '90%{margin-left:6px;}'
+                    +   '100%{margin-left:2px;}'
+                    + '}';
                 styles.push(
                     $('<style>', {'class': move_name, text: '@-webkit-keyframes a_' + move_name
-                    + '{'
-                    +   '0%{margin-left:2px;}'
-                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
-                    +   '90%{margin-left:6px;}'
-                    +   '100%{margin-left:2px;}'
-                    + '}'
+                    + keyframeStyle
                     + '@keyframes a_' + move_name
-                    + '{'
-                    +   '0%{margin-left:2px;}'
-                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
-                    +   '90%{margin-left:6px;}'
-                    +   '100%{margin-left:2px;}'
-                    + '}'
+                    + keyframeStyle
                     + '@-moz-keyframes a_' + move_name
-                    + '{'
-                    +   '0%{margin-left:2px;}'
-                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
-                    +   '90%{margin-left:6px;}'
-                    +   '100%{margin-left:2px;}'
-                    + '}'
+                    + keyframeStyle
                     + '@-o-keyframes a_' + move_name
-                    + '{'
-                    +   '0%{margin-left:2px;}'
-                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
-                    +   '90%{margin-left:6px;}'
-                    +   '100%{margin-left:2px;}'
-                    + '}'
+                    + keyframeStyle
                     + 'div.' + move_name + ':hover > span {'
                     +   'overflow: visible;'
                     +   '-webkit-animation:a_' + move_name + ' ' + time_calc + 's;'
@@ -973,7 +956,7 @@ var explore = function() {
          */
         var quality_len = quality.length;
         if (quality_len !== 0 && cache === undefined) {
-            if (window.chrome !== undefined || type === 'favorites' || type === 'kp_favorites') {
+            if (mono.isChrome || type === 'favorites' || type === 'kp_favorites') {
                 var_cache.qualityCache[request] = quality;
             }
             var_cache.qualityBoxCache[request] = quality[0].qualityBox;
@@ -982,9 +965,9 @@ var explore = function() {
                 limitObjSize(var_cache.qualityCache, var_cache.qualityCache_limit);
                 limitObjSize(var_cache.qualityBoxCache, var_cache.qualityBoxCache_limit);
                 var storage = {};
-                storage['qualityCache'] = JSON.stringify(var_cache.qualityCache);
-                storage['qualityBoxCache'] = JSON.stringify(var_cache.qualityBoxCache);
-                SetStorageSettings(storage);
+                storage.qualityCache = var_cache.qualityCache;
+                storage.qualityBoxCache =var_cache.qualityBoxCache;
+                mono.storage.set(storage);
             }, 1000);
         }
         if (var_cache.qulityList[type][index] === undefined) {
@@ -1029,8 +1012,11 @@ var explore = function() {
             view.setDescription(var_cache.about_cache[request]);
             return;
         }
-        $.get('https://www.google.com/search?q='+request, function(data){
-            content_parser.google(data, request);
+        engine.ajax({
+            url: 'https://www.google.com/search?q='+request,
+            success: function(data) {
+                content_parser.google(data, request);
+            }
         });
     };
     return {
@@ -1047,7 +1033,7 @@ var explore = function() {
             var_cache.mode = 1;
             $.each(engine.def_listOptions, function(key, value){
                 if (listOptions.hasOwnProperty(key) === false) {
-                    listOptions[key] = value;
+                    listOptions[key] = $.extend({},value);
                 }
             });
             dom_cache.explore = $('div.explore');
@@ -1060,7 +1046,7 @@ var explore = function() {
             dom_cache.explore.addClass('loading');
 
             var_cache.window_width = dom_cache.window.width();
-            if (options.hideTopSearch === 0) {
+            if (engine.settings.hideTopSearch === 0) {
                 load_topList();
             }
             $.each(listOptions, function(type, item){
@@ -1071,7 +1057,7 @@ var explore = function() {
                 var custom_menu = [];
                 if (type === 'kp_favorites') {
                     custom_menu.push(
-                        $('<a>', {'class': 'open', href: source.url.replace('%page%', 1).replace('%category%', options.kp_folder_id), target: '_blank', title: _lang.exp_btn_open}).data('type', type),
+                        $('<a>', {'class': 'open', href: source.url.replace('%page%', 1).replace('%category%', engine.settings.kinopoisk_f_id), target: '_blank', title: _lang.exp_btn_open}).data('type', type),
                         $('<div>', {'class': 'update', title: _lang.exp_btn_sync}).data('type', type)
                     );
                 }
@@ -1113,7 +1099,7 @@ var explore = function() {
                 dom_cache.explore.removeClass('loading');
             }, 30);
 
-            dom_cache.explore_ul.on( isFF ? 'mouseenter ' : 'mouseover', 'ul.page_body > li', function () {
+            dom_cache.explore_ul.on('mouseover', 'ul.page_body > li', function () {
                 var $this = $(this);
                 var page = $this.data('page');
                 var type = $this.data('type');
@@ -1147,7 +1133,7 @@ var explore = function() {
                         load_content(type);
                     }
                 }
-                SetSettings('listOptions', JSON.stringify(listOptions));
+                mono.storage.set({listOptions: JSON.stringify(listOptions) });
             });
             dom_cache.explore_ul.on('click', 'div.action > div.setup', function (e){
                 e.preventDefault();
@@ -1170,7 +1156,7 @@ var explore = function() {
                         calculateSize(type);
                         var_cache.source[type].body.css('min-height', 'auto');
                         content_write(type, content, page, 1);
-                        SetSettings('listOptions', JSON.stringify(listOptions));
+                        mono.storage.set({listOptions: JSON.stringify(listOptions) });
                     }
                 });
                 setup_body.toggleClass('show');
@@ -1194,8 +1180,8 @@ var explore = function() {
                 var w_check_obj = {};
                 var content = [];
                 var load_page = function(page) {
-                    source.xhr = $.ajax({
-                        url: source.url.replace('%page%', page).replace('%category%', options.kp_folder_id),
+                    source.xhr = engine.ajax({
+                        url: source.url.replace('%page%', page).replace('%category%', engine.settings.kinopoisk_f_id),
                         success: function(data) {
                             data = content_parser.kp_favorites(data);
                             if (data === undefined) {
@@ -1221,8 +1207,9 @@ var explore = function() {
                             content_write(type, content, current_page, 1);
                             var_cache['exp_cache_'+type] = {keepAlive: 0, content: content};
                             var storage = {};
-                            storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                            SetStorageSettings(storage);
+                            storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
+                            var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
+                            mono.storage[storageType].set(storage);
                             $this.removeClass('loading');
                         },
                         error: function(){
@@ -1242,8 +1229,9 @@ var explore = function() {
                 var page = var_cache.source[type].current_page;
                 content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                 var storage = {};
-                storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                SetStorageSettings(storage);
+                storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
+                var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
+                mono.storage[storageType].set(storage);
             });
             dom_cache.explore_ul.on('click', 'div.picture > div.rmFavorite', function(e){
                 var $this = $(this);
@@ -1253,8 +1241,9 @@ var explore = function() {
                 var page = var_cache.source[type].current_page;
                 content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                 var storage = {};
-                storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                SetStorageSettings(storage);
+                storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
+                var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
+                mono.storage[storageType].set(storage);
             });
             dom_cache.explore_ul.on('click', 'div.picture > div.edit', function(e){
                 var $this = $(this);
@@ -1275,8 +1264,9 @@ var explore = function() {
                         var page = var_cache.source[type].current_page;
                         content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                         var storage = {};
-                        storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                        SetStorageSettings(storage);
+                        storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
+                        var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
+                        mono.storage[storageType].set(storage);
                     });
             });
             dom_cache.explore_ul.on('click', 'div.picture > a.link', function(e){
@@ -1291,7 +1281,7 @@ var explore = function() {
                 $this.children('span').text('*');
                 view.getQuality(title, type, index);
             });
-            dom_cache.explore_ul.on(isFF ? 'mouseenter ' : 'mouseover', 'div.quality', function(e) {
+            dom_cache.explore_ul.on('mouseover', 'div.quality', function(e) {
                 var $this = $(this);
                 var title = $this.data('title');
                 if (var_cache.qualityCache[title] === undefined) {
@@ -1301,7 +1291,7 @@ var explore = function() {
                 var index = $this.data('index');
                 setQuality(type, index, var_cache.qualityCache[title], title, 1);
             });
-            dom_cache.explore_ul.on(isFF ? 'mouseenter ' : 'mouseover', 'div.quality > div.info_popup', function(e) {
+            dom_cache.explore_ul.on('mouseover', 'div.quality > div.info_popup', function(e) {
                 e.stopPropagation();
             });
             dom_cache.explore_ul.on('click', 'div.quality > div.info_popup', function(e) {
@@ -1322,7 +1312,7 @@ var explore = function() {
                 listOptions[type].c = parseInt(this.value);
                 var_cache.source[type].body.css('min-height', 'auto');
                 content_write(type, content, page, 1);
-                SetSettings('listOptions', JSON.stringify(listOptions));
+                mono.storage.set({listOptions: JSON.stringify(listOptions) });
             });
             dom_cache.explore_ul.on('click','div.setup_body > div.default_size', function(e){
                 e.preventDefault();
@@ -1336,7 +1326,7 @@ var explore = function() {
                 calculateSize(type);
                 var_cache.source[type].body.css('min-height', 'auto');
                 content_write(type, content, page, 1);
-                SetSettings('listOptions', JSON.stringify(listOptions));
+                mono.storage.set({listOptions: JSON.stringify(listOptions) });
             });
             dom_cache.explore_ul.sortable({
                 axis: 'y',
@@ -1363,7 +1353,7 @@ var explore = function() {
                         }
                     });
                     listOptions = lo;
-                    SetSettings('listOptions', JSON.stringify(listOptions));
+                    mono.storage.set({listOptions: JSON.stringify(listOptions) });
                 }
             });
             dom_cache.explore.sortable({
@@ -1400,8 +1390,9 @@ var explore = function() {
                     var page = var_cache.source[type].current_page;
                     content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                     var storage = {};
-                    storage['exp_cache_'+type] = JSON.stringify(var_cache['exp_cache_'+type]);
-                    SetStorageSettings(storage);
+                    storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
+                    var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
+                    mono.storage[storageType].set(storage);
                 }
             });
             dom_cache.window.on('resize', function(e) {
@@ -1419,7 +1410,7 @@ var explore = function() {
                     var_cache.window_width = dom_cache.window.width();
                     var_cache.conteiner_width = var_cache.window_width - 180;
                     var columns_num = (var_cache.conteiner_width > 1275) ? 4 : 3;
-                    if (options.hideTopSearch === 0 && var_cache.top_columns_num !== columns_num) {
+                    if (engine.settings.hideTopSearch === 0 && var_cache.top_columns_num !== columns_num) {
                         topList_write();
                     }
                     for (var type in listOptions) {
@@ -1450,7 +1441,7 @@ var explore = function() {
                     var_cache.resize_timer_work = 0;
                 }, 250);
             });
-            if (options.allow_favorites_sync === 1 && window.chrome !== undefined && chrome.storage !== undefined) {
+            if (mono.isChrome && engine.settings.allow_favorites_sync === 1) {
                 chrome.storage.onChanged.addListener(function(changes) {
                     for (var key in changes) {
                         if (changes.hasOwnProperty(key) === false) {
@@ -1460,7 +1451,7 @@ var explore = function() {
                             continue;
                         }
                         var type = 'favorites';
-                        var_cache['exp_cache_'+type] = JSON.parse(changes[key].newValue);
+                        var_cache['exp_cache_'+type] = changes[key].newValue;
                         if (var_cache.source[type].body === undefined || var_cache.mode === 0) {
                             continue;
                         }
@@ -1470,13 +1461,13 @@ var explore = function() {
                 });
             }
             var style;
-            if (options.noTransition === 1 || options.noTransitionLinks === 1) {
+            if (engine.settings.noTransition === 1 || engine.settings.noTransitionLinks === 1) {
                 style = 'div.explore div.top_search a,' +
                     'div.explore div.popup div.content a' +
                     '{transition: none;}';
                 dom_cache.body.append($('<style>', {text: style}));
             }
-            if (options.noTransition === 1) {
+            if (engine.settings.noTransition === 1) {
                 style = 'div.explore ul > li.collapsing > div > div.action,' +
                     'div.explore div.head div.action > div.setup,' +
                     'div.explore ul.body li div.picture > *' +
@@ -1492,6 +1483,40 @@ var explore = function() {
             dom_cache.explore.hide();
         },
         getDescription: getDescription,
-        setQuality: setQuality
+        setQuality: setQuality,
+        boot: function(cb) {
+            if (mono.isChrome) {
+                var_cache.qualityCache_limit = 100;
+                var_cache.qualityBoxCache_limit = 200;
+            }
+            mono.storage.get(['qualityCache', 'qualityBoxCache', 'listOptions'], function(storage) {
+
+                if (typeof storage.qualityCache === 'string') {
+                    storage.qualityCache = JSON.parse(storage.qualityCache);
+                }
+                if (typeof storage.qualityBoxCache === 'string') {
+                    storage.qualityBoxCache = JSON.parse(storage.qualityBoxCache);
+                }
+
+                var_cache.qualityCache = storage.qualityCache || {};
+                var_cache.qualityBoxCache = storage.qualityBoxCache || {};
+
+                listOptions = JSON.parse(storage.listOptions || '{}');
+                settings = engine.settings;
+
+                content_options.favorites.title = _lang.exp_items.favorites;
+                content_options.kp_favorites.title = _lang.exp_items.kp_favorites;
+                content_options.kp_in_cinema.title = _lang.exp_items.kp_in_cinema;
+                content_options.kp_popular.title = _lang.exp_items.kp_popular;
+                content_options.kp_serials.title = _lang.exp_items.kp_serials;
+                content_options.imdb_in_cinema.title = _lang.exp_items.imdb_in_cinema;
+                content_options.imdb_popular.title = _lang.exp_items.imdb_popular;
+                content_options.imdb_serials.title = _lang.exp_items.imdb_serials;
+                content_options.gg_games_top.title = _lang.exp_items.gg_games_top;
+                content_options.gg_games_new.title = _lang.exp_items.gg_games_new;
+
+                cb && cb();
+            });
+        }
     };
 }();

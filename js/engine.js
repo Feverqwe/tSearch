@@ -1,28 +1,30 @@
 var engine = function() {
     var def_settings = {
-        HideLeech: {v: 1, t: "checkbox"},
-        HideSeed: {v: 0, t: "checkbox"},
-        ShowIcons: {v: 1, t: "checkbox"},
-        SubCategoryFilter: {v: 1, t: "checkbox"},
-        HideZeroSeed: {v: 0, t: "checkbox"},
+        HideLeech: {v: 1, t: 'checkbox'},
+        HideSeed: {v: 0, t: 'checkbox'},
+        ShowIcons: {v: 1, t: 'checkbox'},
+        SubCategoryFilter: {v: 1, t: 'checkbox'},
+        HideZeroSeed: {v: 0, t: 'checkbox'},
         AdvFiltration: {v: 2, t: "radio"},
-        TeaserFilter: {v: 1, t: "checkbox"},
-        add_in_omnibox: {v: 1, t: "checkbox"},
-        context_menu: {v: 1, t: "checkbox"},
-        search_popup: {v: 1, t: "checkbox"},
-        AutoComplite_opt: {v: 1, t: "checkbox"},
-        use_english_postername: {v: 0, t: "checkbox"},
-        google_analytics: {v: 0, t: "checkbox"},
-        autoSetCat: {v: 1, t: "checkbox"},
-        allow_get_description: {v: 1, t: "checkbox"},
-        allow_favorites_sync: {v: 1, t: "checkbox"},
-        sub_select_enable: {v: 1, t: "checkbox"},
+        TeaserFilter: {v: 1, t: 'checkbox'},
+        add_in_omnibox: {v: 1, t: 'checkbox'},
+        context_menu: {v: 1, t: 'checkbox'},
+        search_popup: {v: 1, t: 'checkbox'},
+        AutoComplite_opt: {v: 1, t: 'checkbox'},
+        use_english_postername: {v: 0, t: 'checkbox'},
+        google_analytics: {v: 0, t: 'checkbox'},
+        autoSetCat: {v: 1, t: 'checkbox'},
+        allow_get_description: {v: 1, t: 'checkbox'},
+        allow_favorites_sync: {v: 1, t: 'checkbox'},
+        sub_select_enable: {v: 1, t: 'checkbox'},
         kinopoisk_f_id: {v: 1, t: "number"},
-        filter_panel_to_left: {v: 1, t: "checkbox"},
-        hideTopSearch: {v: 0, t: "checkbox"},
-        no_blank_dl_link: {v: 0, t: "checkbox"},
-        noTransitionLinks: {v: 1, t: "checkbox"},
-        noTransition: {v: 0, t: "checkbox"}
+        filter_panel_to_left: {v: 1, t: 'checkbox'},
+        hideTopSearch: {v: 0, t: 'checkbox'},
+        no_blank_dl_link: {v: 0, t: 'checkbox'},
+        noTransitionLinks: {v: 1, t: 'checkbox'},
+        noTransition: {v: 0, t: 'checkbox'},
+        torrent_list_r: {v: 0, t: 'hidden'},
+        profileListSync: {v: 0, t: 'checkbox'}
     };
     var def_listOptions = {
         favorites: { e: 1, s: 1, w: 100, c: 1 },
@@ -36,180 +38,40 @@ var engine = function() {
         gg_games_top: { e: 1, s: 1, w: 100, c: 1 },
         gg_games_new: { e: 1, s: 1, w: 100, c: 1 }
     };
-    if (window._lang !== undefined) {
-        if ( _lang.t === 'en' ) {
-            def_settings.hideTopSearch.v = 1;
-            def_listOptions.kp_favorites.e = 0;
-            def_listOptions.kp_in_cinema.e = 0;
-            def_listOptions.kp_popular.e = 0;
-            def_listOptions.kp_serials.e = 0;
-        } else {
-            def_listOptions.imdb_in_cinema.e = 0;
-            def_listOptions.imdb_popular.e = 0;
-            def_listOptions.imdb_serials.e = 0;
-        }
-    }
     var var_cache = {
         block_href:  new RegExp('\\/\\/','img'),
         block_src:   new RegExp(' src=([\'"]?)','img'),
         unblock_src: new RegExp('data:image\\/gif,base64#blockrurl#','mg'),
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
-        rn: new RegExp('[\\r\\n]+','g')
+        rn: new RegExp('[\\r\\n]+','g'),
+        historyLimit: 500
     };
-    var historyList = [];
-    var isFF = window.Application !== undefined && Application.name === "Firefox";
-    var currentTrList = {};
-    var profileList = JSON.parse(GetSettings('profileList') || '{}');
-    var getDefaultList = function () {
+
+    var history = [];
+    var profileList = {};
+    var settings = {};
+
+    var lastTrackerList = [];
+
+    var defaultProfileTorrentList = function () {
         var list;
         if (_lang.t === "ru") {
-            list = {'nnm-club': 1, rutracker: 1, kinozal: 1, rutor: 1, hdclub: 1, tfile: 1, 'fast-torrent': 1, opensharing: 1, btdigg: 1};
+            list = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'hdclub', 'tfile', 'fast-torrent', 'opensharing', 'btdigg'];
         } else {
-            list = {bitsnoop: 1, extratorrent: 1, fenopy: 1, torrentz: 1, thepiratebay: 1, kickass: 1};
+            list = ['bitsnoop', 'extratorrent', 'fenopy', 'torrentz', 'thepiratebay', 'kickass'];
         }
         return list;
     };
-    var migrate = function() {
-        var storage;
-        if (isFF) {
-            storage = $.extend({},localStorage2);
-        } else {
-            storage = $.extend({},localStorage);
-        }
-        var new_storage = {};
-        var favoritesList = JSON.parse(storage.favoritesList || '[]');
-        if (favoritesList.length > 0) {
-            var exp_cache_favorites = {content:[]};
-            favoritesList.forEach(function(item) {
-                exp_cache_favorites.content.push({title: item.name, url: item.url, img: item.img});
-            });
-            new_storage.exp_cache_favorites = JSON.stringify(exp_cache_favorites);
-        }
-        if (storage.search_history !== null || storage.search_history !== undefined) {
-            new_storage.history = storage.search_history;
-        }
-        $.each(storage, function(key, value) {
-            if (key.substr(0, 3) === 'ct_') {
-                if (value !== null && value !== undefined) {
-                    new_storage[key] = value;
-                }
-            } else if ( ['hideTopSearch', 'filter_panel_to_left', 'kinopoisk_f_id',
-                'sub_select_enable', 'allow_favorites_sync', 'allow_get_description',
-                'autoSetCat', 'use_english_postername', 'AutoComplite_opt',
-                'search_popup', 'context_menu', 'add_in_omnibox', 'TeaserFilter',
-                'AdvFiltration', 'HideZeroSeed', 'SubCategoryFilter', 'ShowIcons',
-                'HideSeed', 'HideLeech', 'costume_tr', 'lang', 'torrent_list_r', 'torrent_list_h'
-            ].indexOf(key) !== -1) {
-                if (value !== null && value !== undefined) {
-                    new_storage[key] = value;
-                }
-            }
-        });
-        var newProfiles = {};
-        var new_profile_len = 0;
-        var trList = JSON.parse(storage.trackerProfiles || '[]');
-        trList.forEach(function(item){
-            if (item.Title === undefined) {
-                return 1;
-            }
-            var len = 0;
-            var list = {};
-            if (item.Trackers !== null) {
-                item.Trackers.forEach(function(itm){
-                    if (itm.e === undefined || itm.n === undefined || itm.e !== 1) {
-                        return 1;
-                    }
-                    list[itm.n] = 1;
-                    len++;
-                });
-            }
-            if (len === 0) {
-                return 1;
-            }
-            newProfiles[item.Title] = list;
-            new_profile_len++;
-        });
-        if ( new_profile_len > 0 ){
-            new_storage.profileList = JSON.stringify(newProfiles);
-        }
-        if (window.chrome !== undefined) {
-            chrome.storage.local.clear();
-            chrome.storage.sync.clear();
-        }
-        if (isFF) {
-            localStorage2.clear();
-        } else {
-            localStorage.clear();
-        }
-        $.each(new_storage, function(key, value){
-            if (value === undefined) {
-                return 1;
-            }
-            if (isFF) {
-                localStorage2[key] = value;
-            } else {
-                localStorage[key] = value;
-            }
-        });
-        window.location.reload();
-    };
-    if ( GetSettings('defProfile') !== undefined ) {
-        migrate();
-        return;
-    }
-    var migrate2 = function() {
-        var pre = 'exp_cache_';
-        var storage = {};
-        storage[pre+'kp_favorites'] = GetSettings(pre+'kp_favorites');
-        storage['qualityBoxCache'] = GetSettings('qualityBoxCache');
-        storage['qualityCache'] = GetSettings('qualityCache');
-        storage['click_history'] = GetSettings('click_history');
-        storage['history'] = GetSettings('history');
-        SetStorageSettings({'exp_cache_favorites': GetSettings('exp_cache_favorites')});
-        SetStorageSettings(storage, function(){
-            SetSettings(pre+'favorites', undefined);
-            SetSettings(pre+'kp_favorites', undefined);
-            SetSettings(pre+'kp_in_cinema', undefined);
-            SetSettings(pre+'kp_popular', undefined);
-            SetSettings(pre+'kp_serials', undefined);
-            SetSettings(pre+'imdb_in_cinema', undefined);
-            SetSettings(pre+'imdb_popular', undefined);
-            SetSettings(pre+'imdb_serials', undefined);
-            SetSettings(pre+'gg_games_top', undefined);
-            SetSettings(pre+'gg_games_new', undefined);
-            SetSettings('topList', undefined);
-            SetSettings('qualityBoxCache', undefined);
-            SetSettings('qualityCache', undefined);
-            SetSettings('click_history', undefined);
-            SetSettings('history', undefined);
-            window.location.reload();
-        });
-    };
-    if ( window.chrome !== undefined && (
-                GetSettings('click_history') !== undefined ||
-                GetSettings('history') !== undefined ||
-                GetSettings('gg_games_new') !== undefined
-            )
-        ) {
-        migrate2();
-    }
-    GetStorageSettings('history', function(storage){
-        historyList = JSON.parse(storage.history || '[]');
-        if (engine !== undefined && engine.history !== undefined) {
-            engine.history = historyList;
-        }
-    });
-    var loadModule = function(uid) {
+
+    var loadModule = function(uid, code) {
         /*
          * загружает пользовательский модуль.
          */
-        var ct = GetSettings(uid);
-        if (ct === undefined || ct === 'undefined') {
+        if (torrent_lib[uid] !== undefined) {
             return;
         }
-        ct = JSON.parse(ct);
         torrent_lib[uid] = function() {
-            var me = $.extend({},ct);
+            var me = code;
             var icon = (me.icon !== undefined) ? me.icon : '';
             var name = (me.name !== undefined) ? me.name : '-no name-';
             var about = (me.about !== undefined) ? me.about : '';
@@ -248,7 +110,7 @@ var engine = function() {
                 var ex_encode = (me.encode !== undefined) ? 1 : 0;
                 var ex_post = (me.post !== undefined) ? 1 : 0;
                 var ex_charset = (me.charset !== undefined) ? 1 : 0;
-                if (me.cat_alt !== undefined) {
+                if (me.cat_alt) {
                     me.cat_attr = 'alt';
                     delete me.cat_alt;
                 }
@@ -472,15 +334,13 @@ var engine = function() {
                         }
                     };
                     if (ex_charset) {
-                        obj_req.beforeSend = function(xhr) {
-                            xhr.overrideMimeType("text/plain; charset="+me.charset);
-                        }
+                        obj_req.mimeType = "text/plain; charset="+me.charset;
                     }
                     if (ex_post === 1) {
                         obj_req.type = 'POST';
                         obj_req.data = me.post.replace('%search%', request);
                     }
-                    xhr = $.ajax(obj_req);
+                    xhr = engine.ajax(obj_req);
                 };
                 return {
                     getPage: loadPage
@@ -507,93 +367,7 @@ var engine = function() {
             };
         }();
     };
-    var wrapAllCustomTrList = function (list) {
-        var _list = $.extend({}, list);
-        var custom_list = JSON.parse(GetSettings('costume_tr') || '[]');
-        custom_list.forEach(function(item) {
-            var key = 'ct_'+item;
-            if (_list[key] === undefined) {
-                _list[key] = 0;
-            }
-            if (window.torrent_lib[key] === undefined) {
-                loadModule(key);
-            }
-        });
-        for (var key in window.torrent_lib) {
-            if (window.torrent_lib.hasOwnProperty(key) === false) {
-                continue;
-            }
-            if (_list[key] === undefined) {
-                _list[key] = 0;
-            }
-        }
-        return _list;
-    };
-    var loadTrList = function(trList) {
-        /*
-         * Загружает можули из массива торрентов профиля.
-         */
-        if (trList === undefined) {
-            trList = getDefaultList();
-        }
-        var noSkip = false;
-        if (window.options !== undefined) {
-            trList = wrapAllCustomTrList(trList);
-            noSkip = true;
-        }
-        currentTrList = {};
-        $.each(trList, function(k, v){
-            if (v === 0 && noSkip === false) {
-                return 1;
-            }
-            if (window.torrent_lib[k] === undefined) {
-                loadModule(k);
-            }
-            if (window.torrent_lib[k] !== undefined) {
-                currentTrList[k] = window.torrent_lib[k];
-            }
-        });
-    };
-    var createProfile = function(title) {
-        if (title === undefined) {
-            title = _lang.label_def_profile;
-        }
-        profileList[title] = undefined;
-        SetSettings('profileList', JSON.stringify(profileList));
-        return title;
-    };
-    var loadProfile = function(title, cb) {
-        /*
-         * загрузка профиля
-         */
-        if (title === undefined) {
-            title = GetSettings('currentProfile');
-        }
-        if (title === undefined) {
-            var first;
-            for (var key in profileList) {
-                if (profileList.hasOwnProperty(key) === false) {
-                    continue;
-                }
-                if (first === undefined) {
-                    first = key;
-                }
-            }
-            if (first === undefined) {
-                title = createProfile(title);
-            } else {
-                title = first;
-            }
-        }
-        loadTrList(profileList[title]);
-        SetSettings('currentProfile', title);
-        if (cb !== undefined) {
-            cb(currentTrList);
-        }
-    };
-    var getProfileList = function() {
-        return profileList;
-    };
+
     var search = function(text, trackers, nohistory) {
         /*
          * функция выполняет многопоточный поиск по трекерам
@@ -601,77 +375,47 @@ var engine = function() {
          * tracker_id - id трекера, если нету - поиск во всех трекерах в списке.
          * nohistory - если 1 то история не пишется.
          */
-        if (trackers === undefined || trackers.length === 0) {
-            $.each(currentTrList, function(k, tracker) {
-                try {
-                    view.loadingStatus(0, k);
-                    tracker.find(text);
-                } catch (err) {
-                    view.loadingStatus(2, k);
-                }
-            });
-        } else {
-            trackers.forEach(function(tracker) {
-                try {
-                    view.loadingStatus(0, tracker);
-                    currentTrList[tracker].find(text);
-                } catch (err) {
-                    view.loadingStatus(2, tracker);
-                }
-            });
-        }
-        if (nohistory === undefined) {
-            if (historyList.length === 0) {
-                GetStorageSettings('history', function(storage){
-                    if (historyList.length === 0) {
-                        historyList = JSON.parse(storage.history || '[]');
-                        if (engine !== undefined && engine.history !== undefined) {
-                            engine.history = historyList;
-                        }
-                    }
-                    updateHistory(text, trackers);
-                });
-            } else {
-                updateHistory(text, trackers);
+        lastTrackerList = trackers.slice(0);
+        trackers.forEach(function(tracker) {
+            try {
+                view.loadingStatus(0, tracker);
+                torrent_lib[tracker].find(text);
+            } catch (err) {
+                view.loadingStatus(2, tracker);
             }
+        });
+        if (nohistory) {
+            return;
         }
+        updateHistory(text, (trackers.length === 1) ? trackers : []);
     };
+
     var stop = function() {
-        $.each(currentTrList, function(k, tracker) {
-            tracker.stop();
-            view.loadingStatus(1, k);
+        lastTrackerList.forEach(function(tracker) {
+            torrent_lib[tracker].stop();
+            view.loadingStatus(1, tracker);
         });
     };
+
     var updateHistory = function(title, trackers) {
-        var limit = 100;
-        if (window.chrome !== undefined) {
-            limit = 500;
-        }
         /*
          * добавляет поисковый запрос в историю.
          * если такой запрос уже есть - увеличивает кол-во попаданий и обновляет дату запроса.
          */
-        if (title.length === 0) {
+        if (!title) {
             return;
         }
-        var trackers = (trackers.length > 0)?trackers:undefined;
-        var trackers_names;
-        if (trackers !== undefined) {
-            trackers_names = [];
-            trackers.forEach(function(item) {
-                if (currentTrList[item] === undefined) {
-                    return 1;
-                }
-                trackers_names.push( currentTrList[item].name );
-            });
-        }
+        var trackers_names = [];
+        trackers.forEach(function(tracker) {
+            trackers_names.push( torrent_lib[tracker].name );
+        });
         var found = false;
         var oldest_time;
         var oldest_item;
-        for (var i = 0, item; item = historyList[i]; i++) {
+        for (var i = 0, item; item = history[i]; i++) {
             if (found === false && item.title === title) {
                 item.count += 1;
-                item.time = parseInt((new Date()).getTime() / 1000);
+                item.time = parseInt(Date.now() / 1000);
                 item.trackers = trackers;
                 item.trackers_names = trackers_names;
                 found = true;
@@ -682,82 +426,327 @@ var engine = function() {
             }
         }
         if (found === false) {
-            historyList.push({
+            history.push({
                 title: title,
                 count: 1,
-                time: parseInt((new Date()).getTime() / 1000),
+                time: parseInt(Date.now() / 1000),
                 trackers: trackers,
                 trackers_names: trackers_names
             });
         }
-        var historyList_len = historyList.length;
-        if (historyList.length > limit) {
-            historyList.splice(oldest_item, 1);
+        var historyList_len = history.length;
+        if (historyList_len > var_cache.historyLimit) {
+            history.splice(oldest_item, 1);
         }
-        if (historyList_len - 1 > limit) {
-            historyList = historyList.slice(-limit);
+        if (historyList_len - 1 > var_cache.historyLimit) {
+            history.splice(var_cache.historyLimit);
         }
-        SetStorageSettings({history: JSON.stringify(historyList)});
+        mono.storage.set({history: history});
     };
+
     var contentFilter = function(content) {
         return content.replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
     };
+
     var contentUnFilter = function(content) {
         return content.replace(var_cache.unblock_src, '').replace(var_cache.unblock_href, '//');
     };
-    if (isFF) {
-        var parseHTML = function(doc, html, allowStyle, baseURI, isXML) {
-            var PARSER_UTILS = "@mozilla.org/parserutils;1";
-            // User the newer nsIParserUtils on versions that support it.
-            if (PARSER_UTILS in Components.classes) {
-                var parser = Components.classes[PARSER_UTILS]
-                    .getService(Components.interfaces.nsIParserUtils);
-                if ("parseFragment" in parser)
-                    return parser.parseFragment(html, allowStyle ? parser.SanitizerAllowStyle : 0,
-                        !!isXML, baseURI, doc.documentElement);
-            }
-            return Components.classes["@mozilla.org/feed-unescapehtml;1"]
-                .getService(Components.interfaces.nsIScriptableUnescapeHTML)
-                .parseFragment(html, !!isXML, baseURI, doc.documentElement);
-        };
-    }
+
     var load_in_sandbox = function(content) {
         var $safe_content;
-        if (isFF) {
-            content = content.replace(/href=/img, "data-href=");
-            var safe_content = parseHTML(document, content);
-            $safe_content = $('<html>').append(safe_content);
-            var links = $safe_content.find('a');
-            for (var n = 0, links_len = links.length; n < links_len; n++) {
-                var link = links.eq(n);
-                link.attr('href', link.attr('data-href')).removeAttr('data-href');
-            }
-        } else {
-            $safe_content = $($.parseHTML(content));
-        }
+        $safe_content = $($.parseHTML(content));
         return $safe_content;
     };
+
+    var ajax = function(obj) {
+        var url = obj.url;
+
+        var method = obj.type || 'GET';
+        method.toUpperCase();
+
+        var data = obj.data;
+
+        if (data && typeof data !== "string") {
+            data = $.param(data);
+
+            if (method === 'GET') {
+                url += ( (url.indexOf('?') === -1)?'?':'&' ) + data;
+                data = undefined;
+            }
+        }
+
+        if (obj.cache === false && ['GET','HEAD'].indexOf(method) !== -1) {
+            var nc = '_=' + Date.now();
+            url += ( (url.indexOf('?') === -1)?'?':'&' ) + nc;
+        }
+
+        var xhr;
+        if (mono.isFF) {
+            xhr = {};
+            xhr.open = [method, url, true];
+        } else {
+            xhr = new XMLHttpRequest();
+            xhr.open(method, url, true);
+        }
+
+        if (obj.dataType) {
+            xhr.responseType = obj.dataType.toLowerCase();
+        }
+
+        if (!obj.headers) {
+            obj.headers = {};
+        }
+
+        if (obj.contentType) {
+            obj.headers["Content-Type"] = obj.contentType;
+        }
+
+        if (data && !obj.headers["Content-Type"]) {
+            obj.headers["Content-Type"] = 'application/x-www-form-urlencoded; charset=UTF-8';
+        }
+
+        if (mono.isFF) {
+            xhr.headers = obj.headers;
+            xhr.mimeType = obj.mimeType;
+            xhr.data = data;
+            xhr.id = Math.floor((Math.random() * 10000) + 1);
+
+            mono.sendMessage({action: 'xhr', data: xhr}, function(_xhr) {
+                xhr.status = _xhr.status;
+                xhr.statusText = _xhr.statusText;
+                xhr.response = _xhr.response;
+                if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+                    return obj.success && obj.success(xhr.response);
+                }
+                obj.error && obj.error();
+            }, "service");
+
+            xhr.abort = function() {
+                mono.sendMessage({action: 'xhrAbort', data: xhr.id}, undefined, "service");
+            }
+        } else {
+            if (obj.mimeType) {
+                xhr.overrideMimeType(obj.mimeType);
+            }
+            if (obj.headers) {
+                for (var key in obj.headers) {
+                    xhr.setRequestHeader(key, obj.headers[key]);
+                }
+            }
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+                    return obj.success && obj.success((obj.dataType) ? xhr.response : xhr.responseText);
+                }
+                obj.error && obj.error();
+            };
+            xhr.onerror = obj.error;
+            xhr.send(data);
+        }
+
+        return xhr;
+    };
+
+    var loadSettings = function(cb) {
+        var settings = {};
+        var changes = [];
+        for (var key in def_settings) {
+            changes.push(key);
+        }
+        mono.storage.get(changes, function(storage) {
+            for (var key in engine.def_settings) {
+                var def_item = engine.def_settings[key];
+                var value = storage[key];
+                if (value === undefined) {
+                    value = def_item.v;
+                }
+                if (['checkbox', 'radio', 'number'].indexOf(def_item.t) !== -1 ) {
+                    settings[key] = parseInt(value);
+                } else {
+                    settings[key] = value;
+                }
+            }
+            cb && cb(settings);
+        });
+    };
+
+    var prepareProfileList = function () {
+        var first = undefined;
+        for (var profile in profileList) {
+            first = profile;
+            break;
+        }
+        if (first === undefined) {
+            first = _lang.label_def_profile;
+        }
+        if (profileList[first] === undefined) {
+            profileList[first] = defaultProfileTorrentList();
+        }
+    };
+
+    var fastMigration = function(lStorage) {
+        var settings = {};
+        for (var key in engine.def_settings) {
+            var def_item = engine.def_settings[key];
+            var value = lStorage[key];
+            if (value === undefined) {
+                value = def_item.v;
+            }
+            var value = parseInt(value);
+            if (!isNaN(value)) {
+                settings[key] = value;
+            }
+        }
+
+        try {
+            var customTorrentList = {};
+            var costume_tr = lStorage.costume_tr;
+            if (costume_tr) {
+                costume_tr = JSON.parse(costume_tr);
+                costume_tr.forEach(function (tracker) {
+                    var code = lStorage['ct_' + tracker];
+                    try {
+                        var obj = JSON.parse(code);
+                        customTorrentList['ct_' + obj.uid] = obj;
+                    } catch (e) {
+
+                    }
+                });
+            }
+            settings.customTorrentList = customTorrentList;
+        } catch (e) {};
+
+        if (['ru', 'en'].indexOf(lStorage.lang) !== -1) {
+            settings.lang = lStorage.lang;
+        }
+
+        try {
+            var listOptions = lStorage.listOptions;
+            listOptions = JSON.parse(listOptions);
+            settings.listOptions = JSON.stringify( listOptions );
+        } catch (e) {};
+
+        var profileList = {};
+        try {
+            var profiles = JSON.parse(lStorage.profileList);
+            for (var item in profiles) {
+                profileList[item] = [];
+                if (!profiles[item]) {
+                    continue;
+                }
+                if (Array.isArray(profiles[item])) {
+                    profileList[item] = profiles[item];
+                } else {
+                    for (var key in profiles[item]) {
+                        if (profiles[item][key] !== 1) {
+                            continue;
+                        }
+                        profileList[item].push(key);
+                    }
+                }
+            }
+            settings.profileList = JSON.stringify( profileList );
+        } catch (e) {};
+
+        var currentProfile = lStorage.currentProfile;
+        if (profileList[currentProfile]) {
+            settings.currentProfile = currentProfile;
+        }
+
+        mono.storage.set(settings, function() {
+            lStorage.migrated = true;
+            window.location.reload();
+        });
+    };
+
     return {
         //need modules
         contentFilter: contentFilter,
         contentUnFilter: contentUnFilter,
         load_in_sandbox: load_in_sandbox,
+        ajax: ajax,
         //need view and options
-        loadProfile: loadProfile,
         def_settings: def_settings,
         def_listOptions: def_listOptions,
         //need view
-        getProfileList: getProfileList,
         search: search,
         stop: stop,
-        history: historyList,
         //need options:
-        getDefList: function () {
-            return wrapAllCustomTrList(getDefaultList());
+        fastMigration: fastMigration,
+        defaultProfileTorrentList: defaultProfileTorrentList,
+        loadSettings: loadSettings,
+        reloadCustomTorrentList: function(cb) {
+            mono.storage.get(['customTorrentList'], function(storage) {
+                var torrentList = storage.customTorrentList || {};
+                for (var uid in torrentList) {
+                    loadModule(uid, torrentList[uid]);
+                }
+                cb && cb();
+            });
+        },
+        boot: function(cb) {
+            if (mono.isChrome) {
+                var_cache.historyLimit = 200;
+            }
+
+            if (mono.isChrome || mono.isOpera) {
+                if ( window.localStorage && localStorage.length > 0 && !localStorage.migrated ) {
+                    fastMigration(localStorage);
+                }
+            }
+            loadSettings(function (_settings) {
+                engine.settings = settings = _settings;
+
+                var storageType = (engine.settings.profileListSync === 1)?'sync':'local';
+
+                mono.storage[storageType].get('profileList', function(syncStorage) {
+
+                    mono.storage.get(['customTorrentList', 'profileList',
+                        'history', 'lang', 'google_analytics'], function(storage) {
+
+                        if (syncStorage.profileList === undefined) {
+                            storage.profileList = storage.profileList;
+                        } else {
+                            storage.profileList = syncStorage.profileList;
+                        }
+
+                        storage.google_analytics !== 1 && window.counter && counter();
+
+                        _lang = get_lang(storage.lang || navigator.language.substr(0, 2));
+
+                        if ( _lang.t === 'en' ) {
+                            def_settings.hideTopSearch.v = 1;
+                            def_listOptions.kp_favorites.e = 0;
+                            def_listOptions.kp_in_cinema.e = 0;
+                            def_listOptions.kp_popular.e = 0;
+                            def_listOptions.kp_serials.e = 0;
+                        } else {
+                            def_listOptions.imdb_in_cinema.e = 0;
+                            def_listOptions.imdb_popular.e = 0;
+                            def_listOptions.imdb_serials.e = 1;
+                            def_listOptions.kp_serials.e = 0;
+                        }
+
+                        if (typeof storage.history === 'string') {
+                            storage.history = JSON.parse(storage.history);
+                        }
+
+                        engine.history = history = storage.history || [];
+
+                        engine.profileList = profileList = JSON.parse( storage.profileList || '{}' );
+                        prepareProfileList();
+
+                        if (storage.customTorrentList) {
+                            var torrentList = storage.customTorrentList;
+                            for (var uid in torrentList) {
+                                loadModule(uid, torrentList[uid]);
+                            }
+                        }
+                        cb && cb();
+                    });
+
+                });
+
+            });
         }
     };
 }();
-$.ajaxSetup({
-    global: true,
-    jsonp: false
-});

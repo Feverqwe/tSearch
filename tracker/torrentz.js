@@ -80,7 +80,7 @@ torrent_lib.torrentz = function () {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
-            xhr = $.ajax({
+            xhr = engine.ajax({
                 type: 'GET',
                 url: url,
                 cache: false,

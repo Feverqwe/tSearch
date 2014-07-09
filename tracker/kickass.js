@@ -93,7 +93,7 @@ torrent_lib.kickass = function () {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
-            xhr = $.ajax({
+            xhr = engine.ajax({
                 type: 'POST',
                 url: (text.length === 0) ? blank_url : url + text + '/',
                 success: function (data) {

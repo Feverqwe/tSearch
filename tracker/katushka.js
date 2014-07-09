@@ -102,7 +102,7 @@ torrent_lib.katushka = function () {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
-            xhr = $.ajax({
+            xhr = engine.ajax({
                 type: 'GET',
                 url: url + '?tags=&search=' + ex_kit.in_cp1251(text) + '&type_search=groups&incldead=0&sorting=0&type_sort=desc',
                 cache: false,
