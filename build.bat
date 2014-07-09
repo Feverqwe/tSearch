@@ -1,11 +1,11 @@
 rd /S /Q .\build
 rd /S /Q .\build_chrome_ext
 rd /S /Q .\build_opera
-rd /S /Q .\build_firefox_skd
+rd /S /Q .\build_firefox_sdk
 mkdir .\build
 mkdir .\build_chrome_ext
 mkdir .\build_opera
-mkdir .\build_firefox_skd
+mkdir .\build_firefox_sdk
 
 xcopy .\_locales .\build\_locales\ /E
 xcopy .\js .\build\js\ /E
@@ -17,16 +17,16 @@ copy .\*.json .\build\.
 :: firefox addon sdk
 :: need create folder symbol link to addon-sdk\bin and run cfx xpi
 
-mkdir .\build_firefox_skd\data
-xcopy .\build .\build_firefox_skd\data\ /E
-rd /S /Q .\build_firefox_skd\data\_locales
-del .\build_firefox_skd\data\manifest.json
-xcopy .\ff_o\firefox\* .\build_firefox_skd\. /E
-xcopy .\js\background.js .\build_firefox_skd\lib\. /E
-xcopy .\js\mono.js .\build_firefox_skd\lib\. /E
-xcopy .\js\lang.js .\build_firefox_skd\lib\. /E
-del .\build_firefox_skd\data\js\background.js
-del .\build_firefox_skd\data\js\torrent_lib.js
+mkdir .\build_firefox_sdk\data
+xcopy .\build .\build_firefox_sdk\data\ /E
+rd /S /Q .\build_firefox_sdk\data\_locales
+del .\build_firefox_sdk\data\manifest.json
+xcopy .\ff_o\firefox\* .\build_firefox_sdk\. /E
+xcopy .\js\background.js .\build_firefox_sdk\lib\. /E
+xcopy .\js\mono.js .\build_firefox_sdk\lib\. /E
+xcopy .\js\lang.js .\build_firefox_sdk\lib\. /E
+del .\build_firefox_sdk\data\js\background.js
+del .\build_firefox_sdk\data\js\torrent_lib.js
 
 :: base
 
@@ -81,4 +81,4 @@ copy .\build_chrome_ext.zip .\build_opera.nex
 
 pause
 
-copy .\build_firefox_skd\torrents_multisearch.xpi build_firefox.xpi
+copy .\build_firefox_sdk\torrents_multisearch.xpi build_firefox.xpi

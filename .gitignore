@@ -1,7 +1,7 @@
 /.idea/
 /build/
 /build_chrome_ext/
-/build_firefox_skd/
+/build_firefox_sdk/
 /build_opera/
 build_chrome.zip
 build_chrome_ext.zip
