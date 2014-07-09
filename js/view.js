@@ -1725,13 +1725,6 @@ var view = function() {
                     });
                 }
             },
-            /*
-             * experimental API
-             */
-            messages: {
-                noResults: '',
-                results: function() {}
-            },
             minLength: 0,
             select: function(event, ui) {
                 this.value = ui.item.value;
@@ -1740,6 +1733,33 @@ var view = function() {
             },
             position: {
                 collision: "bottom"
+            },
+            create: function() {
+                var ul = document.querySelector('ul.ui-autocomplete');
+                ul.addEventListener('wheel', function(e) {
+                    if (e.wheelDeltaY > 0 && this.scrollTop === 0) {
+                        e.preventDefault();
+                    } else
+                    if (e.wheelDeltaY < 0 && this.scrollHeight - (this.offsetHeight + this.scrollTop) <= 0) {
+                        e.preventDefault();
+                    }
+                });
+                var hasTopShadow = false;
+                ul.addEventListener('scroll', function(e) {
+                    if (this.scrollTop !== 0) {
+                        if (hasTopShadow) {
+                            return;
+                        }
+                        hasTopShadow = true;
+                        this.style.boxShadow = 'rgba(0, 0, 0, 0.40) -2px 1px 2px 0px inset';
+                    } else {
+                        if (!hasTopShadow) {
+                            return;
+                        }
+                        hasTopShadow = false;
+                        this.style.boxShadow = '';
+                    }
+                });
             }
         });
     };

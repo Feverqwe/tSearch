@@ -95,14 +95,18 @@ ul.ui-autocomplete {
 }
 
 ul.ui-autocomplete li {
-    margin-bottom: 1px;
+    padding-top: 3px;
+    padding-bottom: 3px;
     padding-left: 5px;
     padding-right: 5px;
     cursor: pointer;
-    padding-bottom: 1px;
 }
 
 ul.ui-autocomplete li:hover, ul.ui-autocomplete li.ui-state-focus {
     background-color: #337AF8;
     color: #fff;
+}
+
+span.ui-helper-hidden-accessible {
+    display: none;
 }
