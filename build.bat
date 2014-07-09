@@ -62,15 +62,14 @@ xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
 
 :: chrome app
 
-del .\build\build\js\popup.js
-del .\build\build\popup.html
+del .\build\js\popup.js
+del .\build\popup.html
 
 :: building
 
 del .\build_chrome.zip
 del .\build_opera.oex
 del .\build_chrome_ext.zip
-del .\build_firefox.zip
 
 7za a -tzip .\build_chrome.zip .\build\*
 7za a -tzip .\build_opera.oex .\build_opera\*
