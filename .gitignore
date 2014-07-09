@@ -1,13 +1,5 @@
-/nbproject/
 /.idea/
 /build/
 /build_chrome_ext/
-/build_chrome_ext_cens/
-/build_chrome_cens/
-/build_firefox/
+/build_firefox_skd/
 /build_opera/
-/build_for_firefox/
-build_for_firefox.xpi
-ff/lib/mono.js
-ff/lib/lang.js
-ff/lib/background.js

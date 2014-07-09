@@ -1,9 +1,11 @@
 rd /S /Q .\build
 rd /S /Q .\build_chrome_ext
 rd /S /Q .\build_opera
+rd /S /Q .\build_firefox_skd
 mkdir .\build
 mkdir .\build_chrome_ext
 mkdir .\build_opera
+mkdir .\build_firefox_skd
 
 xcopy .\_locales .\build\_locales\ /E
 xcopy .\js .\build\js\ /E
@@ -11,6 +13,21 @@ xcopy .\images .\build\images\ /E
 xcopy .\css .\build\css\ /E
 copy .\*.html .\build\.
 copy .\*.json .\build\.
+
+:: firefox addon sdk
+
+mkdir .\build_firefox_skd\data
+xcopy .\build .\build_firefox_skd\data\ /E
+rd /S /Q .\build_firefox_skd\data\_locales
+del .\build_firefox_skd\data\manifest.json
+xcopy .\ff_o\firefox\* .\build_firefox_skd\. /E
+xcopy .\js\background.js .\build_firefox_skd\lib\. /E
+xcopy .\js\mono.js .\build_firefox_skd\lib\. /E
+xcopy .\js\lang.js .\build_firefox_skd\lib\. /E
+del .\build_firefox_skd\data\js\background.js
+del .\build_firefox_skd\data\js\torrent_lib.js
+
+:: base
 
 :: java -jar compiler.jar --js .\js\background.js --js_output_file .\build\js\background.js
 java -jar compiler.jar --js .\js\counter.js --js_output_file .\build\js\counter.js
@@ -45,6 +62,7 @@ xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
 :: chrome app
 
 del .\build\build\js\popup.js
+del .\build\build\popup.html
 
 :: building
 
