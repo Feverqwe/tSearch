@@ -15,6 +15,7 @@ copy .\*.html .\build\.
 copy .\*.json .\build\.
 
 :: firefox addon sdk
+:: need create folder symbol link to addon-sdk\bin and run cfx xpi
 
 mkdir .\build_firefox_skd\data
 xcopy .\build .\build_firefox_skd\data\ /E
@@ -29,7 +30,7 @@ del .\build_firefox_skd\data\js\torrent_lib.js
 
 :: base
 
-:: java -jar compiler.jar --js .\js\background.js --js_output_file .\build\js\background.js
+java -jar compiler.jar --jscomp_warning=const --js .\js\background.js --js_output_file .\build\js\background.js
 java -jar compiler.jar --js .\js\counter.js --js_output_file .\build\js\counter.js
 java -jar compiler.jar --js .\js\engine.js --js_output_file .\build\js\engine.js
 java -jar compiler.jar --js .\js\ex_kit.js --js_output_file .\build\js\ex_kit.js
@@ -69,6 +70,7 @@ del .\build\build\popup.html
 del .\build_chrome.zip
 del .\build_opera.oex
 del .\build_chrome_ext.zip
+del .\build_firefox.zip
 
 7za a -tzip .\build_chrome.zip .\build\*
 7za a -tzip .\build_opera.oex .\build_opera\*
@@ -76,4 +78,8 @@ del .\build_chrome_ext.zip
 
 :: Opera Next
 
-copy .\build_chrome_ext.zip .\build_opera_nex.nex
+copy .\build_chrome_ext.zip .\build_opera.nex
+
+pause
+
+copy .\build_firefox_skd\torrents_multisearch.xpi build_firefox.xpi
