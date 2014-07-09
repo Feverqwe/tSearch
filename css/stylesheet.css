@@ -514,7 +514,7 @@ ul.ui-autocomplete li {
     cursor: pointer;
 }
 
-ul.ui-autocomplete li:hover, ul.ui-autocomplete li.ui-state-focus {
+ul.ui-autocomplete li.ui-state-focus {
     background-color: #337AF8;
     color: #fff;
 }
