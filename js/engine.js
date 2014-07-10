@@ -591,7 +591,7 @@ var engine = function() {
             if (value === undefined) {
                 value = def_item.v;
             }
-            var value = parseInt(value);
+            value = parseInt(value);
             if (!isNaN(value)) {
                 settings[key] = value;
             }
