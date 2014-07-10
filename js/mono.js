@@ -296,6 +296,9 @@ var mono = function (env) {
             cbCaller: function(message, pageId) {
                 mono.debug.messages && mono('cbCaller', message);
                 if (cbObj[message.monoResponseId] === undefined) {
+                    if (message.monoResponseId.indexOf(idPrefix) === -1) {
+                        return;
+                    }
                     return mono('Send to', pageId, 'Id', message.monoResponseId,'Message response not found!');
                 }
                 cbObj[message.monoResponseId](message.data);
