@@ -278,6 +278,7 @@ var mono = function (env) {
         var cbObj = mono.debug.cbStack = {};
         var cbStack = [];
         var id = 0;
+        var idPrefix = Math.floor(Math.random()*1000)+'_';
         return {
             cbCollector: function (message, cb) {
                 mono.debug.messages && mono('cbCollector', message);
@@ -287,9 +288,9 @@ var mono = function (env) {
                         delete cbObj[cbStack.shift()];
                     }
                     id++;
-                    message.monoCallbackId = id;
-                    cbObj[id] = cb;
-                    cbStack.push(id);
+                    message.monoCallbackId = idPrefix+id;
+                    cbObj[idPrefix+id] = cb;
+                    cbStack.push(idPrefix+id);
                 }
             },
             cbCaller: function(message, pageId) {
