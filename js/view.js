@@ -5,7 +5,7 @@ var view = function() {
     var var_cache = {
         year: (new Date()).getFullYear(),
         syntaxCache: {},
-        quality_regexp: new RegExp("Blu-ray|Blu-Ray|BD-Remux|BDRemux|1080p|1080i|BDRip-AVC|BD-Rip|BDRip|CAMRip|" +
+        quality_regexp: new RegExp("Blu-ray|Blu-Ray|BD-Remux|BDRemux|2160p|2160i|1080p|1080i|BDRip-AVC|BD-Rip|BDRip|CAMRip|" +
             "CamRip-AVC|CamRip|HDTV-Rip|HQRip-AVC|HDTVrip|HDTVRip|DTheater-Rip|720p|LowHDRip|HDTV|HDRip-AVC|HDRip|" +
             "DVD-Rip|DVDRip-AVC|DVDRip|DVD5|2xDVD9|DVD9|DVD-9|DVDScr|DVDScreener|HD-DVD|NoDVD|DVD|SatRip|HQSATRip|" +
             "HQRip|TVRip|WEBRip|WEB-DLRip-AV​C|WebDL-Rip|AVC|WEB-DLRip|WEB-DL|SATRip|DVB|IPTVRip|TeleSynch|" +
@@ -461,7 +461,9 @@ var view = function() {
          * Расчет качетсва по сидам
          * Перерасчет соотношения качества видео и размера раздачи
          */
-        quality.seed = (v.seeds > 50) ? 70 : (v.seeds > 30) ? 50 : (v.seeds > 20) ? 40 : (v.seeds > 10) ? 30 : (v.seeds > 0) ? 10 : 0;
+
+        //(v.seeds > 50) ? 70 : (v.seeds > 30) ? 50 : (v.seeds > 20) ? 40 : (v.seeds > 10) ? 30 :
+        quality.seed = (v.seeds > 0) ? 50 : 0;
         if (v.size < 524288000 && quality.video > 45)
             quality.video = Math.round(parseInt(quality.video) / 10);
         else
@@ -1117,6 +1119,9 @@ var view = function() {
         }
         if (word === "h.264" || word === "h264" || word === "mp4" || word === "m4v") {
             rate.video += 2;
+        } else
+        if (word === "2160p" || word === "2160i") {
+            rate.video += 20;
         } else
         if (word === "1080p" || word === "1080i") {
             rate.video += 20;
