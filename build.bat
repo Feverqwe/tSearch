@@ -55,7 +55,7 @@ del .\build_opera\build\js\background.js
 rd /S /Q .\build_opera\build\_locales
 xcopy .\ff_o\opera\* .\build_opera\. /E
 
-:: chrome extension
+:: chrome extension, opera next
 
 xcopy .\build .\build_chrome_ext\ /E
 xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
@@ -74,10 +74,6 @@ del .\build_chrome_ext.zip
 7za a -tzip .\build_chrome.zip .\build\*
 7za a -tzip .\build_opera.oex .\build_opera\*
 7za a -tzip .\build_chrome_ext.zip .\build_chrome_ext\*
-
-:: Opera Next
-
-copy .\build_chrome_ext.zip .\build_opera.nex
 
 pause
 
