@@ -2000,8 +2000,10 @@ var view = function() {
         right_panel.find('span.from').text(_lang['size_filter_f']);
         right_panel.find('span.to').text(_lang['size_filter_t']);
         dom_cache.topbtn.attr('title', _lang['btn_up']);
-        $('div.y-money > a').text(_lang.y_money)
-        $('div.donate > div.logo').attr('title', _lang.donate)
+        $('div.y-money > a').text(_lang.y_money);
+        $('div.donate > div.logo').attr('title', _lang.donate);
+        $('div.feedback > div.mail_icon').attr('title', _lang.feedback);
+        $('div.feedback > a').text(_lang.feedback);
     };
     var setDescription = function(content) {
         dom_cache.about_panel.append(content);

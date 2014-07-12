@@ -740,10 +740,13 @@ table.ui-datepicker-calendar td.ui-datepicker-week-end:hover > a {
     -webkit-filter: invert(0.5);
 }
 
-div.donate {
-    text-align: center;
+div.donate,
+div.feedback {
+    margin-left: 5px;
+    margin-right: 5px;
 }
-div.donate > div {
+div.donate > div,
+div.feedback > * {
     display: inline-block;
     vertical-align: middle;
 }
@@ -756,10 +759,21 @@ div.donate .logo {
     width: 48px;
     height: 48px;
 }
-div.donate a {
+div.feedback a {
+    width: 110px;
+}
+div.donate a,
+div.feedback a {
     color: #0051D8;
 }
 div.donate div.block > div {
     padding-bottom: 2px;
     padding-top: 3px;
+}
+
+div.feedback div.mail_icon {
+    background-image: url(../images/mail.png);
+    background-size: 48px;
+    width: 48px;
+    height: 48px;
 }
