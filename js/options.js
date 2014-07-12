@@ -320,7 +320,10 @@ var options = function() {
         dom_cache.tracker_list.children('tr.checked').removeClass('checked').find('input').removeAttr('checked');
         var content = [];
         list.forEach(function(tracker) {
-            var $item = dom_cache.tracker_list.children('tr[data-id="' + tracker + '"]')
+            var $item = dom_cache.tracker_list.children('tr[data-id="' + tracker + '"]');
+            if ($item.length === 0) {
+                dom_cache.tracker_list.append( $item = getTrackerDom(tracker) );
+            }
             $item.addClass('checked').children('td.status').children('input').prop('checked', true);
             content.push($item);
         });
