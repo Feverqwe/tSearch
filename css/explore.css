@@ -156,7 +156,7 @@ div.explore div.setup_body {
 div.explore div.setup_body > div {
     display: inline-block;
 }
-div.explore div.setup_body > div.slider {
+div.explore div.setup_body > .slider {
     background-color: #EEE;
     border: 1px solid #DDD;
     border-radius: 4px;
@@ -170,7 +170,7 @@ div.explore div.setup_body > div.slider {
     display: inline-block;
     margin-bottom: 1px;
 }
-div.explore div.setup_body > div.slider > a {
+div.explore div.setup_body > .slider > .ui-slider-handle {
     background-color: #FFF;
     border: 1px solid #CCC;
     border-radius: 4px;
