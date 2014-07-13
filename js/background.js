@@ -129,6 +129,16 @@ var bg = function() {
     };
     return {
         boot: function() {
+            if ( mono.isChromeFullApp) {
+                chrome.app.runtime.onLaunched.addListener(function(launchData) {
+                    chrome.app.window.create('index.html', {
+                        bounds: {width: 1024, height: 768},
+                        resizable: true,
+                        id: 'tms-main-window'
+                    });
+                });
+                return;
+            }
             mono.storage.get('lang', function(storage) {
                 _lang = window.get_lang( storage.lang || window.navigator.language.substr(0, 2) );
                 mono.onMessage(function(message) {

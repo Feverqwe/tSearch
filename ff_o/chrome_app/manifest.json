@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    "name": "__MSG_appName__",
+    "description": "__MSG_appDesc__",
+    "icons": {
+        "128": "images/icon_128.png",
+        "16": "images/icon_16.png"
+    },
+    "app": {
+        "background": {
+            "scripts": ["js/mono.js","js/lang.js","js/background.js"]
+        }
+    },
+    "offline_enabled": true,
+    "permissions": ["storage", "contextMenus", "http://*/*", "https://*/*", "unlimitedStorage" ],
+    "default_locale": "en",
+    "version": "1.0.12"
+}

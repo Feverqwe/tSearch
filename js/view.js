@@ -1693,6 +1693,15 @@ var view = function() {
         });
     };
     var addAutocomplete = function() {
+        if (mono.isChromeFullApp) {
+            var orig_e_add = $.event.add;
+            $.event.add = function () {
+                if (arguments[1] !== undefined && arguments[1].indexOf('beforeunload') !== -1) {
+                    return;
+                }
+                orig_e_add.apply(null, arguments);
+            };
+        }
         var getHistory = function () {
             /*
              * Отдает массив поисковых запросов из истории
@@ -2106,7 +2115,7 @@ var view = function() {
                 }
                 readUrl();
             }, false);
-            if (window.opera !== undefined) {
+            if (mono.isOpera || mono.isChromeFullApp) {
                 dom_cache.window.on('hashchange', function() {
                     if (window.location.hash === var_cache.oldlocationHash){
                         return;
@@ -2481,6 +2490,13 @@ var view = function() {
                     'transform: scaleX(-1);' +
                     '}'})
                 );
+            }
+            if (mono.isChromeFullApp) {
+                window.history.replaceState = function() {};
+                window.history.pushState = function() {};
+                document.body.style.height = '100%';
+                var html = document.getElementsByTagName("html")[0];
+                html.style.height = '100%';
             }
             window.history.replaceState({
                 hash: window.location.hash
