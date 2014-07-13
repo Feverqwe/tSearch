@@ -458,7 +458,7 @@ var engine = function() {
         return $safe_content;
     };
 
-    var ajax = function(obj, noRedirect) {
+    var ajax = function(obj) {
         var url = obj.url;
 
         var method = obj.type || 'GET';
@@ -540,13 +540,14 @@ var engine = function() {
                 obj.error && obj.error();
             };
             xhr.onerror = function() {
-                if (mono.isOpera && xhr.status === 0 && noRedirect === undefined) {
+                if (mono.isOpera && xhr.status === 0 && obj.noRedirect === undefined) {
                     var location = xhr.getResponseHeader('Location');
                     if (!location) {
                         return;
                     }
                     obj.url = location;
-                    var _xhr = engine.ajax(obj, 1);
+                    obj.noRedirect = 1;
+                    var _xhr = engine.ajax(obj);
                     xhr.abort = _xhr.abort;
                     return;
                 }
