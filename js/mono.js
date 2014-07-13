@@ -20,7 +20,7 @@ var mono = function (env) {
     } else {
         if (window.chrome !== undefined) {
             mono.isChrome = true;
-            if (!window.chrome.app.getDetails) {
+            if (window.chrome.app.getDetails === undefined) {
                 mono.isChromeApp = true;
                 mono.isChromeFullApp = true;
             } else
