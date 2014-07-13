@@ -1693,15 +1693,6 @@ var view = function() {
         });
     };
     var addAutocomplete = function() {
-        if (mono.isChromeFullApp) {
-            var orig_e_add = $.event.add;
-            $.event.add = function () {
-                if (arguments[1] !== undefined && arguments[1].indexOf('beforeunload') !== -1) {
-                    return;
-                }
-                orig_e_add.apply(null, arguments);
-            };
-        }
         var getHistory = function () {
             /*
              * Отдает массив поисковых запросов из истории
@@ -2107,10 +2098,6 @@ var view = function() {
             });
             $('input.button.history').on("click", function(e) {
                 e.preventDefault();
-                if (mono.isChromeFullApp) {
-                    mono.sendMessage({action: 'getHistory'});
-                    return;
-                }
                 window.location = 'history.html';
             });
             window.addEventListener('popstate', function(){
@@ -2119,7 +2106,7 @@ var view = function() {
                 }
                 readUrl();
             }, false);
-            if (mono.isOpera || mono.isChromeFullApp) {
+            if (mono.isOpera) {
                 dom_cache.window.on('hashchange', function() {
                     if (window.location.hash === var_cache.oldlocationHash){
                         return;
@@ -2495,17 +2482,6 @@ var view = function() {
                     '}'})
                 );
             }
-            if (mono.isChromeFullApp) {
-                window.history.replaceState = function() {};
-                window.history.pushState = function() {};
-                document.body.style.height = '100%';
-                var html = document.getElementsByTagName("html")[0];
-                html.style.height = '100%';
-                $('div.tracker_list a.setup').on('click', function(e) {
-                    e.preventDefault();
-                    mono.sendMessage({action: 'getOptions'});
-                });
-            }
             window.history.replaceState({
                 hash: window.location.hash
             }, document.title, window.location.href);
@@ -2515,13 +2491,6 @@ var view = function() {
             if (mono.isChrome) {
                 var_cache.click_history_limit = 50;
                 var_cache.click_history_item_limit = 20;
-            }
-            if (mono.isChromeFullApp) {
-                mono.onMessage(function(message) {
-                    if (message.action === 'tmp-search' && message.data) {
-                        window.location = window.location.origin + '/index.html' + '#?search='+message.data;
-                    }
-                });
             }
             engine.loadSettings(function(_settings) {
                 settings = _settings;
