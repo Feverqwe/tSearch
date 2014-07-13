@@ -25,7 +25,13 @@ var explore = function() {
         needResize: 0,
         about_cache: {},
         qualityCache_limit: 30,
-        qualityBoxCache_limit: 100
+        qualityBoxCache_limit: 100,
+        empty_src: 'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=',
+        // List of third-party images DOM elements
+        externalImgList: [],
+        // Obj cache of url and blob url
+        externalUrl2BlobList: {},
+        extImgXhrCount: 0
     };
 
     var dom_cache = {};
@@ -133,7 +139,53 @@ var explore = function() {
             g_proxy: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=220&rewriteMime=image/jpeg&url='
         }
     };
-
+    var createExternalImg = function(src, alt) {
+        var img = document.createElement('img');
+        if (mono.isChromeApp) {
+            if (var_cache.externalUrl2BlobList[src] !== undefined) {
+                img.src = var_cache.externalUrl2BlobList[src];
+            } else {
+                img.src = var_cache.empty_src;
+                img.setAttribute('data-src', src);
+                var_cache.externalImgList.push({el: img, src: src});
+            }
+        } else {
+            img.src = src;
+        }
+        if (alt !== undefined) {
+            img.alt = alt;
+        }
+        return img;
+    };
+    var renderGetImg = function() {
+        var item = var_cache.externalImgList.shift();
+        if (item === undefined) {
+            return;
+        }
+        var url = item.src;
+        engine.ajax({
+            url: url,
+            dataType: 'blob',
+            success: function (blob) {
+                var blob_url = URL.createObjectURL(blob);
+                var_cache.externalUrl2BlobList[url] = blob_url;
+                item.el.src = blob_url;
+                var_cache.extImgXhrCount--;
+                renderExternalImg();
+            },
+            error: function () {
+                item.el.src = 'images/no_poster.png';
+                var_cache.extImgXhrCount--;
+                renderExternalImg();
+            }
+        });
+    };
+    var renderExternalImg = function () {
+        while(var_cache.extImgXhrCount < 5 && var_cache.externalImgList.length > 0) {
+            var_cache.extImgXhrCount++;
+            renderGetImg();
+        }
+    };
     var content_parser = function () {
         var check_item = function(item) {
             if (item.url === undefined) {
@@ -462,9 +514,7 @@ var explore = function() {
                     return '';
                 }
                 if (info.img !== undefined) {
-                    content_info.append($('<div>', {'class': 'a-poster'}).append($('<img>', {src: google_proxy + info.img, alt: info.title}).on('error', function(){
-                        $(this).css('display', 'none');
-                    })));
+                    content_info.append( $('<div>', {'class': 'a-poster'}).append( createExternalImg(google_proxy + info.img, info.title) ) );
                 }
                 if (info.title !== undefined) {
                     content_info.append($('<div>', {'class': 'a-title', text: info.title}));
@@ -486,6 +536,7 @@ var explore = function() {
                 }
                 limitObjSize(var_cache.about_cache, 10);
                 var_cache.about_cache[request] = '<div>'+content_info.html()+'</div>';
+                renderExternalImg();
                 view.setDescription(content_info);
             }
         };
@@ -609,9 +660,7 @@ var explore = function() {
                         quality,
                         $('<a>', {'class': 'link', href: url, target: '_blank', title: _lang.exp_more}).data('title', title),
                         $('<a>',{href: search_link, title: title}).append(
-                            $('<img>', {src: img_url}).on('error', function(){
-                                this.src = 'images/no_poster.png';
-                            })
+                            createExternalImg( img_url )
                         )
                     ),
                     $('<div>',{'class': title_className}).append(
@@ -636,6 +685,7 @@ var explore = function() {
         }
         vc_source.current_page = page;
         vc_source.body.get(0).textContent = '';
+        renderExternalImg();
         vc_source.body.append(content_body);
         if (spanList.length > 0) {
             calculateMoveble(spanList, _options.w, 'title');
