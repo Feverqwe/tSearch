@@ -26,19 +26,17 @@ var bg = function() {
      * @namespace chrome.browserAction.onClicked
      * @namespace chrome.browserAction.setPopup
      */
-    var _lang, btn_init, var_cache = {};
+    var _lang, var_cache = {};
     var add_in_omnibox = function(enable) {
         if (enable !== 1) {
             return;
         }
-        if (mono.isChrome) {
-            chrome.omnibox.onInputEntered.addListener(function (text) {
-                chrome.tabs.create({
-                    url: "index.html" + ( (text.length > 0) ? '#?search=' + text : ''),
-                    selected: true
-                });
+        chrome.omnibox.onInputEntered.addListener(function (text) {
+            chrome.tabs.create({
+                url: "index.html" + ( (text.length > 0) ? '#?search=' + text : ''),
+                selected: true
             });
-        }
+        });
     };
     var update_context_menu = function(enable) {
         if (mono.isChrome) {
@@ -109,19 +107,16 @@ var bg = function() {
             var_cache.cm_state = true;
         }
     };
-    var init_btn_action = function() {
-        chrome.browserAction.onClicked.addListener(function() {
-            if (!var_cache.popup) {
-                chrome.tabs.create({
-                    url: 'index.html'
-                });
-            }
-        });
-    };
     var update_btn_action = function() {
-        if (!btn_init) {
-            init_btn_action();
-            btn_init = true;
+        if (!var_cache.btn_init) {
+            chrome.browserAction.onClicked.addListener(function() {
+                if (!var_cache.popup) {
+                    chrome.tabs.create({
+                        url: 'index.html'
+                    });
+                }
+            });
+            var_cache.btn_init = true;
         }
         chrome.browserAction.setPopup({
             popup: (var_cache.popup)?'popup.html':''
@@ -150,11 +145,13 @@ var bg = function() {
                 if (storage.search_popup === undefined) {
                     storage.search_popup = 1;
                 }
-                add_in_omnibox(storage.add_in_omnibox);
                 update_context_menu(storage.context_menu);
-                if (mono.isChrome && !mono.isChromeWebApp) {
-                    var_cache.popup = storage.search_popup;
-                    update_btn_action();
+                if (mono.isChrome) {
+                    add_in_omnibox(storage.add_in_omnibox);
+                    if (!mono.isChromeWebApp) {
+                        var_cache.popup = storage.search_popup;
+                        update_btn_action();
+                    }
                 }
             });
         }
