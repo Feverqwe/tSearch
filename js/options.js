@@ -777,6 +777,12 @@ var options = function() {
             });
         },
         boot: function() {
+            if (mono.isChromeFullApp) {
+                document.body.style.height = '100%';
+                document.body.style.overflowY = 'scroll';
+                var html = document.getElementsByTagName("html")[0];
+                html.style.height = '100%';
+            }
             mono.storage.get(['currentProfile', 'listOptions'], function(storage) {
                 current_profile = storage.currentProfile;
 

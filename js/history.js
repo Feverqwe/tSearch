@@ -30,16 +30,23 @@ var view = function() {
                     trackers_dom.push( $('<span>', {'class': 'tracker', text: item}) );
                 });
             }
+            var link = undefined;
             content.push(
                 $('<li>').append(
                     $('<div>', {'class': 'remove', title: _lang.his_rm_btn}).data('title',item.title),
                     $('<div>', {'class': 'time', title: u2ddmmyyyy_title(item.time), text: u2ddmmyyyy_title(item.time)}),
                     $('<div>', {'class': 'title'}).append(
-                        $('<a>', {text: item.title, href:'index.html#?search='+item.title+trackers})
+                        link = $('<a>', {text: item.title, href:'index.html#?search='+item.title+trackers})
                     ),
                     trackers_dom
                 )
             );
+            if (mono.isChromeFullApp) {
+                link.on('click', function(e) {
+                    e.preventDefault();
+                    mono.sendMessage({action: 'search', data: item.title+trackers});
+                });
+            }
         });
         dom_cache.history.empty().append( content );
     };
@@ -57,10 +64,17 @@ var view = function() {
                     )
                 ));
             });
+            var link = undefined;
             content.push($('<li>').append(
                 $('<div>', {'class': 'icon'}),
-                $('<a>',{text: (request.length === 0)?'""':request, href:'index.html#?search='+request}), $('<ol>',{'class': 'items'}).append(items_dom)
+                link = $('<a>',{text: (request.length === 0)?'""':request, href:'index.html#?search='+request}), $('<ol>',{'class': 'items'}).append(items_dom)
             ));
+            if (mono.isChromeFullApp) {
+                link.on('click', function(e) {
+                    e.preventDefault();
+                    mono.sendMessage({action: 'search', data: request});
+                });
+            }
         });
         dom_cache.click_history.empty().append(content);
     };
@@ -214,6 +228,15 @@ var view = function() {
                 var_cache.click_history = new_obj;
                 mono.storage.set({click_history: JSON.stringify(new_obj)});
             });
+            if (mono.isChromeFullApp) {
+                window.history.replaceState = function() {};
+                window.history.pushState = function() {};
+                document.body.style.height = '100%';
+                document.body.style.overflowY = 'scroll';
+                var html = document.getElementsByTagName("html")[0];
+                html.style.height = '100%';
+                $('a.button.main').hide();
+            }
             $('div.content').removeClass('loading');
         }
     };

@@ -2107,6 +2107,10 @@ var view = function() {
             });
             $('input.button.history').on("click", function(e) {
                 e.preventDefault();
+                if (mono.isChromeFullApp) {
+                    mono.sendMessage({action: 'getHistory'});
+                    return;
+                }
                 window.location = 'history.html';
             });
             window.addEventListener('popstate', function(){
@@ -2497,6 +2501,10 @@ var view = function() {
                 document.body.style.height = '100%';
                 var html = document.getElementsByTagName("html")[0];
                 html.style.height = '100%';
+                $('div.tracker_list a.setup').on('click', function(e) {
+                    e.preventDefault();
+                    mono.sendMessage({action: 'getOptions'});
+                });
             }
             window.history.replaceState({
                 hash: window.location.hash
@@ -2507,6 +2515,13 @@ var view = function() {
             if (mono.isChrome) {
                 var_cache.click_history_limit = 50;
                 var_cache.click_history_item_limit = 20;
+            }
+            if (mono.isChromeFullApp) {
+                mono.onMessage(function(message) {
+                    if (message.action === 'tmp-search' && message.data) {
+                        window.location = window.location.origin + '/index.html' + '#?search='+message.data;
+                    }
+                });
             }
             engine.loadSettings(function(_settings) {
                 settings = _settings;

@@ -127,15 +127,63 @@ var bg = function() {
             popup: (var_cache.popup)?'popup.html':''
         });
     };
+    var getOptions = function() {
+        var id = 'tms-options-window';
+        var win = chrome.app.window.get(id);
+        if (win !== null) {
+            return win.focus();
+        }
+        var mainWin = chrome.app.window.get('tms-main-window');
+        if (mainWin !== null) {
+            mainWin.close();
+        }
+        chrome.app.window.create('options.html', {
+            bounds: {width: 1024, height: 768},
+            resizable: true,
+            id: id
+        });
+    };
+    var getHistory = function() {
+        var id = 'tms-history-window';
+        var win = chrome.app.window.get(id);
+        if (win !== null) {
+            return win.focus();
+        }
+        chrome.app.window.create('history.html', {
+            bounds: {width: 1024, height: 768},
+            resizable: true,
+            id: id
+        });
+    };
+    var getSearch = function(query) {
+        var id = 'tms-main-window';
+        var win = chrome.app.window.get(id);
+        if (win !== null) {
+            mono.sendMessage({action: 'tmp-search', data: query});
+            return win.focus();
+        }
+        chrome.app.window.create('index.html'+( query?'#?search='+query:'' ), {
+            bounds: {width: 1024, height: 768},
+            resizable: true,
+            id: id
+        });
+    };
     return {
         boot: function() {
             if ( mono.isChromeFullApp) {
-                chrome.app.runtime.onLaunched.addListener(function(launchData) {
-                    chrome.app.window.create('index.html', {
-                        bounds: {width: 1024, height: 768},
-                        resizable: true,
-                        id: 'tms-main-window'
-                    });
+                chrome.app.runtime.onLaunched.addListener(function() {
+                    getSearch();
+                });
+                mono.onMessage(function(message) {
+                    if (message.action === 'search') {
+                        return getSearch(message.data);
+                    }
+                    if (message.action === 'getHistory') {
+                        return getHistory();
+                    }
+                    if (message.action === 'getOptions') {
+                        return getOptions();
+                    }
                 });
                 return;
             }
