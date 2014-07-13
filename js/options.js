@@ -486,7 +486,7 @@ var options = function() {
                 dom_cache.profileListSync.closest('ul').hide();
                 dom_cache.clear_cloud_btn.hide();
             }
-            if (mono.isChrome && mono.isChromeApp) {
+            if (mono.isChrome && mono.isChromeWebApp) {
                 //Chromeum app
                 dom_cache.search_popup.closest('ul').hide();
             }

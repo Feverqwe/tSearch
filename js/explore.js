@@ -141,7 +141,7 @@ var explore = function() {
     };
     var createExternalImg = function(src, alt) {
         var img = document.createElement('img');
-        if (mono.isChromeApp) {
+        if (mono.isChromeWebApp) {
             if (var_cache.externalUrl2BlobList[src] !== undefined) {
                 img.src = var_cache.externalUrl2BlobList[src];
             } else {

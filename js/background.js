@@ -152,7 +152,7 @@ var bg = function() {
                 }
                 add_in_omnibox(storage.add_in_omnibox);
                 update_context_menu(storage.context_menu);
-                if (mono.isChrome && !mono.isChromeApp) {
+                if (mono.isChrome && !mono.isChromeWebApp) {
                     var_cache.popup = storage.search_popup;
                     update_btn_action();
                 }

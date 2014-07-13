@@ -22,10 +22,9 @@ var mono = function (env) {
             mono.isChrome = true;
             if (window.chrome.app.getDetails === undefined) {
                 mono.isChromeApp = true;
-                mono.isChromeFullApp = true;
             } else
             if (window.chrome.app.getDetails().app !== undefined) {
-                mono.isChromeApp = true;
+                mono.isChromeWebApp = true;
             }
         } else
         if (window.opera !== undefined) {
