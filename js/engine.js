@@ -540,11 +540,14 @@ var engine = function() {
                 obj.error && obj.error();
             };
             xhr.onerror = function() {
-                if (mono.isOpera && xhr.status === 0 && obj.noRedirect === undefined) {
+                if (mono.isOpera && xhr.status === 0 ) {
+                    if (obj.noRedirect === undefined) {
+                        obj.noRedirect = 0;
+                    }
                     var location = xhr.getResponseHeader('Location');
-                    if (location) {
+                    if (location && obj.noRedirect < 5) {
                         obj.url = location;
-                        obj.noRedirect = 1;
+                        obj.noRedirect++;
                         var _xhr = engine.ajax(obj);
                         xhr.abort = _xhr.abort;
                         return;
