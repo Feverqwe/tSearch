@@ -542,14 +542,13 @@ var engine = function() {
             xhr.onerror = function() {
                 if (mono.isOpera && xhr.status === 0 && obj.noRedirect === undefined) {
                     var location = xhr.getResponseHeader('Location');
-                    if (!location) {
+                    if (location) {
+                        obj.url = location;
+                        obj.noRedirect = 1;
+                        var _xhr = engine.ajax(obj);
+                        xhr.abort = _xhr.abort;
                         return;
                     }
-                    obj.url = location;
-                    obj.noRedirect = 1;
-                    var _xhr = engine.ajax(obj);
-                    xhr.abort = _xhr.abort;
-                    return;
                 }
                 obj.error && obj.error.apply(null, arguments);
             };
