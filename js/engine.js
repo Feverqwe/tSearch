@@ -539,7 +539,19 @@ var engine = function() {
                 }
                 obj.error && obj.error();
             };
-            xhr.onerror = obj.error;
+            xhr.onerror = function() {
+                if (mono.isOpera && xhr.status === 0) {
+                    var location = xhr.getResponseHeader('Location');
+                    if (!location) {
+                        return;
+                    }
+                    obj.url = location;
+                    var _xhr = engine.ajax(obj);
+                    xhr.abort = _xhr.abort;
+                    return;
+                }
+                obj.error && obj.error.apply(null, arguments);
+            };
             xhr.send(data);
         }
 
