@@ -27,10 +27,7 @@ var bg = function() {
      * @namespace chrome.browserAction.setPopup
      */
     var _lang, var_cache = {};
-    var add_in_omnibox = function(enable) {
-        if (enable !== 1) {
-            return;
-        }
+    var add_in_omnibox = function() {
         chrome.omnibox.onInputEntered.addListener(function (text) {
             chrome.tabs.create({
                 url: "index.html" + ( (text.length > 0) ? '#?search=' + text : ''),
@@ -107,10 +104,10 @@ var bg = function() {
             var_cache.cm_state = true;
         }
     };
-    var update_btn_action = function() {
+    var update_btn_action = function(enable) {
         if (!var_cache.btn_init) {
             chrome.browserAction.onClicked.addListener(function() {
-                if (!var_cache.popup) {
+                if (!enable) {
                     chrome.tabs.create({
                         url: 'index.html'
                     });
@@ -119,7 +116,7 @@ var bg = function() {
             var_cache.btn_init = true;
         }
         chrome.browserAction.setPopup({
-            popup: (var_cache.popup)?'popup.html':''
+            popup: (enable)?'popup.html':''
         });
     };
     return {
@@ -147,10 +144,11 @@ var bg = function() {
                 }
                 update_context_menu(storage.context_menu);
                 if (mono.isChrome) {
-                    add_in_omnibox(storage.add_in_omnibox);
+                    if (storage.add_in_omnibox === 1) {
+                        add_in_omnibox();
+                    }
                     if (!mono.isChromeWebApp) {
-                        var_cache.popup = storage.search_popup;
-                        update_btn_action();
+                        update_btn_action(storage.search_popup);
                     }
                 }
             });
