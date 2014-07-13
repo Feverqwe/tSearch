@@ -540,7 +540,7 @@ var engine = function() {
                 obj.error && obj.error();
             };
             xhr.onerror = function() {
-                if (mono.isOpera && xhr.status === 0 ) {
+                if ( mono.isOpera && xhr.status === 0 ) {
                     if (obj.noRedirect === undefined) {
                         obj.noRedirect = 0;
                     }
