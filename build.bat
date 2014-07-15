@@ -21,7 +21,7 @@ mkdir .\build_firefox_sdk\data
 xcopy .\build .\build_firefox_sdk\data\ /E
 rd /S /Q .\build_firefox_sdk\data\_locales
 del .\build_firefox_sdk\data\manifest.json
-xcopy .\ff_o\firefox\* .\build_firefox_sdk\. /E
+xcopy .\ff_o\firefox\* .\build_firefox_sdk\. /E /Y
 xcopy .\js\background.js .\build_firefox_sdk\lib\. /E
 xcopy .\js\mono.js .\build_firefox_sdk\lib\. /E
 xcopy .\js\lang.js .\build_firefox_sdk\lib\. /E
