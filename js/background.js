@@ -82,7 +82,7 @@ var bg = function() {
             })();
             var cm = require("sdk/context-menu");
 
-            if (var_cache.topLevel) {
+            if (var_cache.topLevel && var_cache.topLevel.parentMenu) {
                 var_cache.topLevel.parentMenu.removeItem(var_cache.topLevel);
             }
 
