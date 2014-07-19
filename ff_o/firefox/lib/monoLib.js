@@ -80,6 +80,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         var type = (page.isVirtual !== undefined)?'lib':'port';
         page[type].emit('mono', message);
     };
+    exports.sendToPage = sendToPage;
 
     var sendAll = function(message, fromPage) {
         for (var index in map) {
