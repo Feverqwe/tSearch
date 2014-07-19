@@ -185,6 +185,21 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
                 delete xhrList[msg.data];
             }
         }
+        if (msg.action === 'toActiveTab') {
+            var pageInMap = undefined;
+            var currentPageUrl = tabs.activeTab.url;
+            for (var index in map) {
+                if (map[index].url === currentPageUrl) {
+                    pageInMap = map[index];
+                    break;
+                }
+            }
+            if (pageInMap === undefined) {
+                return;
+            }
+            msg.message.monoTo = pageInMap.id[0];
+            sendToPage(pageInMap, msg.message);
+        }
     };
 
     var monoOnMessage = function(page, message) {
