@@ -197,7 +197,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
             if (pageInMap === undefined) {
                 return;
             }
-            msg.message.monoTo = pageInMap.id[0];
+            msg.message.monoTo = defaultId;
             sendToPage(pageInMap, msg.message);
         }
     };

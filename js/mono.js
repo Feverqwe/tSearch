@@ -413,7 +413,7 @@ var mono = function (env) {
                     msgTools.rmCaller(message.monoResponseId);
                     return;
                 }
-                message.monoTo = 'monoScope';
+                message.monoTo = defaultId;
                 chrome.tabs.sendMessage(tabs[0].id, message);
             });
         },
@@ -449,7 +449,7 @@ var mono = function (env) {
         cbList: [],
         currentTab: function (message) {
             var currentTab = opera.extension.tabs.getSelected();
-            message.monoTo = 'monoScope';
+            message.monoTo = defaultId;
             currentTab.postMessage(message);
         },
         send: function(message) {
@@ -494,7 +494,7 @@ var mono = function (env) {
                 msgTools.rmCaller(message.monoResponseId);
                 return;
             }
-            message.monoTo = 'monoScope';
+            message.monoTo = defaultId;
             currentTab.page.dispatchMessage("message", message);
         },
         send: function (message) {
