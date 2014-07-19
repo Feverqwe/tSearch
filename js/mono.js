@@ -342,6 +342,13 @@ var mono = function (env) {
                     }
                 }
                 return response;
+            },
+            rmCaller: function(monoResponseId) {
+                if (monoResponseId === undefined) {
+                    return;
+                }
+                delete cbObj[monoResponseId];
+                cbStack.splice(cbStack.indexOf(monoResponseId), 1);
             }
         }
     }();
@@ -375,8 +382,10 @@ var mono = function (env) {
     };
 
     var ffMessaging = {
-        send: function(message, cb) {
-            msgTools.cbCollector(message, cb);
+        currentTab: function (message) {
+            mono.sendMessage({action: 'toActiveTab', message: message}, undefined, 'service');
+        },
+        send: function(message) {
             addon.port.emit('mono', message);
         },
         on: function(cb) {
@@ -398,8 +407,17 @@ var mono = function (env) {
     };
 
     var chMessaging = {
-        send: function(message, cb) {
-            msgTools.cbCollector(message, cb);
+        currentTab: function (message) {
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                if (tabs[0] === undefined) {
+                    msgTools.rmCaller(message.monoResponseId);
+                    return;
+                }
+                message.monoTo = 'monoScope';
+                chrome.tabs.sendMessage(tabs[0].id, message);
+            });
+        },
+        send: function(message) {
             var tabId = message.tabId;
             if (tabId !== undefined) {
                 delete message.tabId;
@@ -429,8 +447,12 @@ var mono = function (env) {
 
     var opMessaging = {
         cbList: [],
-        send: function(message, cb) {
-            msgTools.cbCollector(message, cb);
+        currentTab: function (message) {
+            var currentTab = opera.extension.tabs.getSelected();
+            message.monoTo = 'monoScope';
+            currentTab.postMessage(message);
+        },
+        send: function(message) {
             var source = message.source;
             if (source !== undefined) {
                 delete message.source;
@@ -466,8 +488,16 @@ var mono = function (env) {
     };
 
     var sfMessaging = {
-        send: function (message, cb) {
-            msgTools.cbCollector(message, cb);
+        currentTab: function (message) {
+            var currentTab = safari.application.activeBrowserWindow.activeTab;
+            if (currentTab.page === undefined) {
+                msgTools.rmCaller(message.monoResponseId);
+                return;
+            }
+            message.monoTo = 'monoScope';
+            currentTab.page.dispatchMessage("message", message);
+        },
+        send: function (message) {
             var source = message.source;
             if (source !== undefined) {
                 delete message.source;
@@ -524,11 +554,16 @@ var mono = function (env) {
             monoFrom: mono.pageId
         };
         mono.debug.messages && mono('sendMessage', 'to:', to, 'hasCallback', !!cb, message);
-        mono.sendMessage.send(message, cb);
+        msgTools.cbCollector(message, cb);
+        if (to === 'activeTab') {
+            return mono.sendMessage.currentTab(message);
+        }
+        mono.sendMessage.send(message);
     };
 
     if (mono.isChrome) {
         mono.sendMessage.send = chMessaging.send;
+        mono.sendMessage.currentTab = chMessaging.currentTab;
         mono.onMessage = chMessaging.on;
     } else
     if (mono.isFF) {
@@ -536,14 +571,17 @@ var mono = function (env) {
             ffVirtualPort();
         }
         mono.sendMessage.send = ffMessaging.send;
+        mono.sendMessage.currentTab = ffMessaging.currentTab;
         mono.onMessage = ffMessaging.on;
     } else
     if (mono.isOpera) {
         mono.sendMessage.send = opMessaging.send;
+        mono.sendMessage.currentTab = opMessaging.currentTab;
         mono.onMessage = opMessaging.on;
     } else
     if (mono.isSafari) {
         mono.sendMessage.send = sfMessaging.send;
+        mono.sendMessage.currentTab = sfMessaging.currentTab;
         mono.onMessage = sfMessaging.on;
     }
 
