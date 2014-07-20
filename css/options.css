@@ -202,6 +202,7 @@ div.icons > div.rus {
 div.icons > div.cirilic {
     background: url(../images/cyrillic.png) center center;
 }
+
 table a {
     color: #0051D8;
     padding: 0px 4px;
@@ -306,4 +307,8 @@ div.topbtn {
 }
 div.topbtn:hover {
     background-color: #ddd;
+}
+
+input[name="proxyURL"] {
+    width: 500px;
 }

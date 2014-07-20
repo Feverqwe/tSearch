@@ -8,7 +8,8 @@ torrent_lib.anidub = function () {
     var flags = {
         a: 1,
         l: 1,
-        rs: 1
+        rs: 1,
+        proxy: 1
     };
     var xhr = undefined;
     var web = function () {
@@ -72,6 +73,7 @@ torrent_lib.anidub = function () {
             if (xhr !== undefined)
                 xhr.abort();
             xhr = engine.ajax({
+                tracker: filename,
                 type: 'GET',
                 url: url + '?noscript=0&ajax=1&search=' + encodeURIComponent(text) + '&view=0&incldead=0&trailer=no&date=0',
                 cache: false,

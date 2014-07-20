@@ -13,7 +13,8 @@ torrent_lib.katushka = function () {
     var flags = {
         a: 0,
         l: 1,
-        rs: 1
+        rs: 1,
+        proxy: 1
     };
     var xhr = undefined;
     var web = function () {
@@ -103,6 +104,7 @@ torrent_lib.katushka = function () {
             if (xhr !== undefined)
                 xhr.abort();
             xhr = engine.ajax({
+                tracker: filename,
                 type: 'GET',
                 url: url + '?tags=&search=' + ex_kit.in_cp1251(text) + '&type_search=groups&incldead=0&sorting=0&type_sort=desc',
                 cache: false,

@@ -82,6 +82,7 @@ torrent_lib['torrents.freedom'] = function () {
             if (xhr !== undefined)
                 xhr.abort();
             xhr = engine.ajax({
+                tracker: filename,
                 type: 'POST',
                 url: url + '?nm=' + ex_kit.in_cp1251(text),
                 cache: false,

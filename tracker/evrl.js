@@ -70,6 +70,7 @@ torrent_lib.evrl = function () {
             if (xhr !== undefined)
                 xhr.abort();
             xhr = engine.ajax({
+                tracker: filename,
                 type: 'POST',
                 contentType: 'application/json',
                 url: url + '?search="' + text + '"',

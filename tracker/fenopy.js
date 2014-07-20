@@ -8,7 +8,8 @@ torrent_lib.fenopy = function () {
     var flags = {
         a: 0,
         l: 0,
-        rs: 0
+        rs: 0,
+        proxy: 1
     };
     var xhr = undefined;
     var web = function () {
@@ -93,6 +94,7 @@ torrent_lib.fenopy = function () {
             if (xhr !== undefined)
                 xhr.abort();
             xhr = engine.ajax({
+                tracker: filename,
                 type: 'GET',
                 url: url,
                 cache: false,

@@ -78,6 +78,7 @@ torrent_lib.piratca = function () {
             if (xhr !== undefined)
                 xhr.abort();
             xhr = engine.ajax({
+                tracker: filename,
                 type: 'POST',
                 url: url,
                 cache: false,

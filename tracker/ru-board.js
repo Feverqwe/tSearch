@@ -116,6 +116,7 @@ torrent_lib['ru-board'] = function () {
                 xhr.abort();
             }
             xhr = engine.ajax({
+                tracker: filename,
                 type: 'POST',
                 url: url,
                 cache: false,

@@ -8,7 +8,8 @@ torrent_lib.torrentz = function () {
     var flags = {
         a: 0,
         l: 0,
-        rs: 1
+        rs: 1,
+        proxy: 1
     };
     var xhr = undefined;
     var web = function () {
@@ -81,6 +82,7 @@ torrent_lib.torrentz = function () {
             if (xhr !== undefined)
                 xhr.abort();
             xhr = engine.ajax({
+                tracker: filename,
                 type: 'GET',
                 url: url,
                 cache: false,

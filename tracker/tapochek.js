@@ -14,7 +14,8 @@ torrent_lib.tapochek = function () {
     var flags = {
         a: 1,
         l: 1,
-        rs: 1
+        rs: 1,
+        proxy: 1
     };
     var xhr = undefined;
     var web = function () {
@@ -78,6 +79,7 @@ torrent_lib.tapochek = function () {
             if (xhr !== undefined)
                 xhr.abort();
             xhr = engine.ajax({
+                tracker: filename,
                 mimeType: "text/plain; charset=windows-1251",
                 type: 'GET',
                 url: url + '?nm=' + ex_kit.in_cp1251(text),

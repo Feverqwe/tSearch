@@ -6,6 +6,7 @@ var options = function() {
     };
 
     var settings = {};
+    var proxyList = [];
     var profileList = {};
     var current_profile = undefined;
 
@@ -110,6 +111,7 @@ var options = function() {
             mono.storage.sync.set({profileList: JSON.stringify(profileList)});
         }
         changes.profileList = JSON.stringify(profileList);
+        changes.proxyList = proxyList;
 
         changes.currentProfile = current_profile;
         mono.storage.set(changes, function() {
@@ -161,13 +163,21 @@ var options = function() {
 
     var saveCurrentProfile = function() {
         var current = current_profile;
-        var $active = dom_cache.tracker_list.find('input:checked');
+        var $active = dom_cache.tracker_list.find('input.tracker_state:checked');
         var active = [];
         for (var i = 0, len = $active.length; i < len; i++) {
             var id = $active.eq(i).closest('tr').data('id');
             active.push(id);
         }
         profileList[current] = active;
+
+        var useProxyList = [];
+        var $useProxylist = dom_cache.tracker_list.find('input.use_proxy:checked');
+        for (i = 0, len = $useProxylist.length; i < len; i++) {
+            var id = $useProxylist.eq(i).data('tracker');
+            useProxyList.push(id);
+        }
+        proxyList = useProxyList;
     };
 
     var writeProfileList = function(list) {
@@ -187,7 +197,7 @@ var options = function() {
     var loadProfile = function(profileName) {
         current_profile = profileName;
         dom_cache.select_profileList.children('option[value="'+profileName+'"]').prop('selected', true);
-        dom_cache.tracker_list.children('tr.checked').removeClass('checked').find('input').removeAttr('checked');
+        dom_cache.tracker_list.children('tr.checked').removeClass('checked').find('input.tracker_state').prop('checked', false);
         var content = [];
         profileList[profileName].forEach(function(tracker) {
             var $tracker = dom_cache.tracker_list.children('tr[data-id="'+tracker+'"]');
@@ -195,7 +205,7 @@ var options = function() {
                 dom_cache.tracker_list.append( $tracker = getTrackerDom(tracker) );
             }
             var $item = $tracker.addClass('checked');
-            var checkbox = $item.children('td.status').children('input');
+            var checkbox = $item.find('input.tracker_state');
             checkbox.prop('checked', true);
             content.push($item);
         });
@@ -207,7 +217,7 @@ var options = function() {
         var content = [];
         for (var i = 0, len = dom_list.length; i < len; i++) {
             var item = dom_list.eq(i);
-            var state = item.children('td.status').children('input').prop('checked');
+            var state = item.find('input.tracker_state').prop('checked');
             if (state === false) {
                 continue;
             }
@@ -240,7 +250,7 @@ var options = function() {
                 $('<span>', {text: tracker.about})
             ),
             $('<td>', {'class': 'status'}).append(
-                $('<input>', {type: 'checkbox'})
+                $('<input>', {type: 'checkbox', class: "tracker_state"})
             )
         )
     };
@@ -257,6 +267,17 @@ var options = function() {
             }
             if (tracker.flags.l) {
                 flags.push($('<div>', {'class': 'rus', title: _lang.flag.rus}));
+            }
+            if (tracker.flags.proxy) {
+                var useProxyBox;
+                flags.push(
+                    $('<div>', {'class': 'proxy', title: _lang.flag.proxy}).append(
+                        useProxyBox = $('<input type="checkbox" class="use_proxy" data-tracker="'+id+'">')
+                    )
+                );
+                if (proxyList.indexOf(id) !== -1) {
+                    useProxyBox.prop('checked', true);
+                }
             }
             if (flags.length > 0) {
                 flags = $('<div>', {'class': 'icons'}).append(flags);
@@ -317,14 +338,14 @@ var options = function() {
         });
     };
     var checkTrList = function(list) {
-        dom_cache.tracker_list.children('tr.checked').removeClass('checked').find('input').removeAttr('checked');
+        dom_cache.tracker_list.children('tr.checked').removeClass('checked').find('input.tracker_state').prop('checked', false);
         var content = [];
         list.forEach(function(tracker) {
             var $item = dom_cache.tracker_list.children('tr[data-id="' + tracker + '"]');
             if ($item.length === 0) {
                 dom_cache.tracker_list.append( $item = getTrackerDom(tracker) );
             }
-            $item.addClass('checked').children('td.status').children('input').prop('checked', true);
+            $item.addClass('checked').find('input.tracker_state').prop('checked', true);
             content.push($item);
         });
         dom_cache.tracker_list.prepend(content);
@@ -572,12 +593,12 @@ var options = function() {
             });
             dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(0).on("click", function(e) {
                 e.preventDefault();
-                dom_cache.tracker_list.children('tr').addClass('checked').find('input').prop('checked', true);
+                dom_cache.tracker_list.children('tr').addClass('checked').find('input.tracker_state').prop('checked', true);
                 saveCurrentProfile();
             });
             dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(1).on("click", function(e) {
                 e.preventDefault();
-                dom_cache.tracker_list.children('tr').removeClass('checked').find('input').removeAttr('checked');
+                dom_cache.tracker_list.children('tr').removeClass('checked').find('input.tracker_state').prop('checked', false);
                 saveCurrentProfile();
             });
             dom_cache.tracker_head.children('tr').children('th:eq(3)').children('a').eq(2).on("click", function(e) {
@@ -586,7 +607,7 @@ var options = function() {
                 checkTrList(list);
                 saveCurrentProfile();
             });
-            dom_cache.tracker_list.on('change', 'input', function(e) {
+            dom_cache.tracker_list.on('change', 'input.tracker_state', function(e) {
                 e.preventDefault();
                 var $this = $(this);
                 if ($this.prop('checked') === true) {
@@ -777,8 +798,12 @@ var options = function() {
             });
         },
         boot: function() {
-            mono.storage.get(['currentProfile', 'listOptions'], function(storage) {
+            mono.storage.get(['currentProfile', 'listOptions', 'proxyList'], function(storage) {
                 current_profile = storage.currentProfile;
+
+                if (storage.proxyList !== undefined) {
+                    proxyList = storage.proxyList;
+                }
 
                 if (engine.profileList[current_profile] === undefined) {
                     for (var item in engine.profileList) {

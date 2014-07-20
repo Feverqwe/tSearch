@@ -24,7 +24,9 @@ var engine = function() {
         noTransitionLinks: {v: 1, t: 'checkbox'},
         noTransition: {v: 0, t: 'checkbox'},
         torrent_list_r: {v: 0, t: 'hidden'},
-        profileListSync: {v: 0, t: 'checkbox'}
+        profileListSync: {v: 0, t: 'checkbox'},
+        proxyURL: {v: 'http://www.gmodules.com/ig/proxy?url={url}', t: 'text'},
+        proxyUrlFixSpaces: {v: 1, t: 'checkbox'}
     };
     var def_listOptions = {
         favorites: { e: 1, s: 1, w: 100, c: 1 },
@@ -46,6 +48,8 @@ var engine = function() {
         rn: new RegExp('[\\r\\n]+','g'),
         historyLimit: 500
     };
+
+    var proxyList = []
 
     var history = [];
     var profileList = {};
@@ -109,6 +113,9 @@ var engine = function() {
                 var ex_auth_f = (me.auth_f !== undefined) ? 1 : 0;
                 var ex_encode = (me.encode !== undefined) ? 1 : 0;
                 var ex_post = (me.post !== undefined) ? 1 : 0;
+                if (ex_post === 0 && me.search_path.substr(0, 5).toLowerCase() !== 'https') {
+                    flags.proxy = 1;
+                }
                 var ex_charset = (me.charset !== undefined) ? 1 : 0;
                 if (me.cat_alt) {
                     me.cat_attr = 'alt';
@@ -323,6 +330,7 @@ var engine = function() {
                     if (xhr !== undefined)
                         xhr.abort();
                     var obj_req = {
+                        tracker: custom_id,
                         type: 'GET',
                         url: me.search_path.replace('%search%', request),
                         cache: false,
@@ -480,6 +488,13 @@ var engine = function() {
             url += ( (url.indexOf('?') === -1)?'?':'&' ) + nc;
         }
 
+        if (method === 'GET' && proxyList.indexOf(obj.tracker) !== -1) {
+            if (settings.proxyUrlFixSpaces) {
+                url = url.replace(/[\t\s]+/g, '%20');
+            }
+            url = settings.proxyURL.replace('{url}', encodeURIComponent(url));
+        }
+
         var xhr;
         if (mono.isFF) {
             xhr = {};
@@ -518,7 +533,7 @@ var engine = function() {
                 if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
                     return obj.success && obj.success(xhr.response);
                 }
-                obj.error && obj.error();
+                obj.error && obj.error(xhr);
             }, "service");
 
             xhr.abort = function() {
@@ -533,27 +548,40 @@ var engine = function() {
                     xhr.setRequestHeader(key, obj.headers[key]);
                 }
             }
+
+            if (mono.isOpera) {
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState > 1 && (xhr.status === 302 || xhr.status === 0)) {
+                        // Opera xhr redirect
+                        if (obj.noRedirect === undefined) {
+                            obj.noRedirect = 0;
+                        }
+                        var location = xhr.getResponseHeader('Location');
+                        if (location && obj.noRedirect < 5) {
+                            obj.noRedirect++;
+                            var _obj = {};
+                            for (var key in obj) {
+                                _obj[key] = obj[key];
+                            }
+                            _obj.url = location;
+                            delete obj.success;
+                            delete obj.error;
+                            var _xhr = mono.ajax(_obj);
+                            xhr.abort = _xhr.abort;
+                        }
+                    }
+                };
+            }
+
             xhr.onload = function () {
-                if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+                if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304 ||
+                    (mono.isOpera && xhr.status === 0 && xhr.response) ) {
                     return obj.success && obj.success((obj.dataType) ? xhr.response : xhr.responseText);
                 }
-                obj.error && obj.error();
+                obj.error && obj.error(xhr);
             };
             xhr.onerror = function() {
-                if ( mono.isOpera && xhr.status === 0 ) {
-                    if (obj.noRedirect === undefined) {
-                        obj.noRedirect = 0;
-                    }
-                    var location = xhr.getResponseHeader('Location');
-                    if (location && obj.noRedirect < 5) {
-                        obj.url = location;
-                        obj.noRedirect++;
-                        var _xhr = engine.ajax(obj);
-                        xhr.abort = _xhr.abort;
-                        return;
-                    }
-                }
-                obj.error && obj.error.apply(null, arguments);
+                obj.error && obj.error(xhr);
             };
             xhr.send(data);
         }
@@ -716,7 +744,11 @@ var engine = function() {
                 mono.storage[storageType].get('profileList', function(syncStorage) {
 
                     mono.storage.get(['customTorrentList', 'profileList',
-                        'history', 'lang', 'google_analytics'], function(storage) {
+                        'history', 'lang', 'google_analytics', 'proxyList'], function(storage) {
+
+                        if (storage.proxyList !== undefined) {
+                            proxyList = storage.proxyList;
+                        }
 
                         if (syncStorage.profileList === undefined) {
                             storage.profileList = storage.profileList;

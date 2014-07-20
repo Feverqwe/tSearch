@@ -122,7 +122,8 @@ var get_lang = function (lang) {
         flag: {
             cirilic: 'Unsupport cyrillic',
             auth: 'Requires authorization',
-            rus: 'Russian language tracker'
+            rus: 'Russian language tracker',
+            proxy: 'Search via proxy'
         },
         stp_span_24: 'Enable AutoComplete from Google',
         stp_legend_25: 'Other',
@@ -244,7 +245,10 @@ var get_lang = function (lang) {
             78: "Don't to open a new page when click download link ↓",
             79: "Disable animation links",
             80: "Disable all animations",
-            81: "Allow synchronization of the list of trackers (custom trackers must add it manually)"
+            81: "Allow synchronization of the list of trackers (custom trackers must add it manually)",
+            82: 'Proxy work only for GET search request and HTTP protocol!',
+            83: 'Proxy url',
+            84: 'Escape white spaces'
         },
         magic: {
             1: 'Loading error!',
@@ -436,7 +440,8 @@ var get_lang = function (lang) {
         flag: {
             cirilic: 'Не поддерживает кириллицу',
             auth: 'Требуется авторизация',
-            rus: 'Русскоязычный трекер'
+            rus: 'Русскоязычный трекер',
+            proxy: 'Искать через proxy'
         },
         stp_span_24: 'Включить автозаполнение от Google',
         stp_legend_25: 'Прочее',
@@ -558,7 +563,10 @@ var get_lang = function (lang) {
             78: "Не открывать новую страницу при нажатии на ссылку загрузки ↓",
             79: "Отключить анимацию ссылок",
             80: "Отключить всю анимацию",
-            81: "Разрешить синхронизацию списка трекеров (пользовательские трекеры нужно добавлять вручную)"
+            81: "Разрешить синхронизацию списка трекеров (пользовательские трекеры нужно добавлять вручную)",
+            82: 'Proxy работает только для GET запросов и HTTP протокола!',
+            83: 'Proxy url',
+            84: 'Экранировать пробелы'
         },
         magic: {
             1: 'Ошибка загрузки!',
