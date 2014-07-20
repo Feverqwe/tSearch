@@ -76,7 +76,7 @@ torrent_lib.hurtom = function () {
                 xhr.abort();
             xhr = engine.ajax({
                 tracker: filename,
-                type: 'POST',
+                type: 'GET',
                 url: url,
                 cache: false,
                 data: {

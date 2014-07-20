@@ -13,7 +13,8 @@ torrent_lib.bestrepack = function () {
     var flags = {
         a: 1,
         l: 1,
-        rs: 1
+        rs: 1,
+        proxy: 1
     };
     var xhr = undefined;
     var web = function () {
@@ -68,12 +69,10 @@ torrent_lib.bestrepack = function () {
                 xhr.abort();
             xhr = engine.ajax({
                 tracker: filename,
-                type: 'POST',
+                type: 'GET',
                 url: url,
                 cache: false,
                 data: {
-                    max: 1,
-                    to: 1,
                     nm: text
                 },
                 success: function (data) {

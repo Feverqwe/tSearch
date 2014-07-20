@@ -74,7 +74,7 @@ torrent_lib['free-torrents'] = function () {
                 xhr.abort();
             xhr = engine.ajax({
                 tracker: filename,
-                type: 'POST',
+                type: 'GET',
                 mimeType: "text/plain; charset=windows-1251",
                 url: url + '?nm=' + ex_kit.in_cp1251(text),
                 cache: false,

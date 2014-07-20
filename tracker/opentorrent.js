@@ -9,7 +9,8 @@ torrent_lib.opentorrent = function () {
     var flags = {
         a: 1,
         l: 1,
-        rs: 1
+        rs: 1,
+        proxy: 1
     };
     var xhr = undefined;
     var web = function () {
@@ -78,7 +79,7 @@ torrent_lib.opentorrent = function () {
                 xhr.abort();
             xhr = engine.ajax({
                 tracker: filename,
-                type: 'POST',
+                type: 'GET',
                 url: url,
                 cache: false,
                 data: {
