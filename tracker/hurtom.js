@@ -13,7 +13,8 @@ torrent_lib.hurtom = function () {
     var flags = {
         a: 1,
         l: 0,
-        rs: 1
+        rs: 1,
+        proxy: 1
     };
     var xhr = undefined;
     var web = function () {
