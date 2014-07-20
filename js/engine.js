@@ -113,7 +113,7 @@ var engine = function() {
                 var ex_auth_f = (me.auth_f !== undefined) ? 1 : 0;
                 var ex_encode = (me.encode !== undefined) ? 1 : 0;
                 var ex_post = (me.post !== undefined) ? 1 : 0;
-                if (ex_post === 0 && me.search_path.substr(0, 5).toLowerCase() !== 'https') {
+                if (ex_post === 0) {
                     flags.proxy = 1;
                 }
                 var ex_charset = (me.charset !== undefined) ? 1 : 0;
