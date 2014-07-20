@@ -566,7 +566,7 @@ var engine = function() {
                             _obj.url = location;
                             delete obj.success;
                             delete obj.error;
-                            var _xhr = mono.ajax(_obj);
+                            var _xhr = engine.ajax(_obj);
                             xhr.abort = _xhr.abort;
                         }
                     }
