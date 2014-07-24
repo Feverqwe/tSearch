@@ -5,7 +5,7 @@
   "description": "Torrents MultiSearch - поиск по нескольки трекерам сразу!",
   "author": "Anton V.",
   "license": "MPL 2.0",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "permissions": {
     "cross-domain-content": ["http://*", "https://*"]
   },

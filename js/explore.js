@@ -732,6 +732,7 @@ var explore = function() {
         source.xhr.push(
             engine.ajax({
                 url: (page_mode)?source.url.replace('%page%', page):source.url,
+                safe: true,
                 success: function(data) {
                     source.xhr_content.push([page,content_parser[type](data)]);
                     xhr_dune(type, source);
@@ -1017,6 +1018,7 @@ var explore = function() {
         }
         engine.ajax({
             url: 'https://www.google.com/search?q='+request,
+            safe: true,
             success: function(data) {
                 content_parser.google(data, request);
             }
@@ -1185,6 +1187,7 @@ var explore = function() {
                 var load_page = function(page) {
                     source.xhr = engine.ajax({
                         url: source.url.replace('%page%', page).replace('%category%', engine.settings.kinopoisk_f_id),
+                        safe: true,
                         success: function(data) {
                             data = content_parser.kp_favorites(data);
                             if (data === undefined) {

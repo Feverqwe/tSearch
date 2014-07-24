@@ -488,6 +488,10 @@ var engine = function() {
             url += ( (url.indexOf('?') === -1)?'?':'&' ) + nc;
         }
 
+        if (mono.isFF && obj.tracker) {
+            obj.safe = true;
+        }
+
         if (method === 'GET' && proxyList.indexOf(obj.tracker) !== -1) {
             if (settings.proxyUrlFixSpaces) {
                 url = url.replace(/[\t\s]+/g, '%20');
@@ -525,6 +529,7 @@ var engine = function() {
             xhr.mimeType = obj.mimeType;
             xhr.data = data;
             xhr.id = Math.floor((Math.random() * 10000) + 1);
+            xhr.safe = !!obj.safe;
 
             mono.sendMessage({action: 'xhr', data: xhr}, function(_xhr) {
                 xhr.status = _xhr.status;

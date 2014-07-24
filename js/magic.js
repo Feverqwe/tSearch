@@ -460,6 +460,7 @@ var magic = function() {
             obj_req.type = 'POST';
             obj_req.data = post;
         }
+        obj_req.safe = true;
         var_cache.xhr = engine.ajax(obj_req);
     };
     var loadDom = function(itemName, value, parent, empty) {
