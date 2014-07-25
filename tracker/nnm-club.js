@@ -39,7 +39,6 @@ torrent_lib['nnm-club'] = function () {
             c = engine.contentFilter(c);
             var t = engine.load_in_sandbox(c);
             t = t.find('table.forumline.tablesorter').children('tbody').children('tr');
-            console.log(t)
             var l = t.length;
             var arr = [];
             for (var i = 0; i < l; i++) {
