@@ -8,8 +8,7 @@ torrent_lib.anidub = function () {
     var flags = {
         a: 1,
         l: 1,
-        rs: 1,
-        proxy: 1
+        rs: 1
     };
     var xhr = undefined;
     var web = function () {
