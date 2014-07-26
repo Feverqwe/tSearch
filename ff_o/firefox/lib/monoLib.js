@@ -329,7 +329,8 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         if (mPage.index !== undefined) {
             return;
         }
-        mPage.index = pageIndex++;
+        pageIndex++;
+        mPage.index = pageIndex;
         mPage.active = true;
         map[pageIndex] = mPage;
 
