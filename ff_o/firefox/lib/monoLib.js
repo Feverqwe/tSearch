@@ -19,9 +19,11 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     var sanitizeRegExp = [/href=/img, /data-safe-href=/img];
 
     var getPageFromWrapper = function(page) {
+        var mPage = undefined;
         for (var item in pageWrapper) {
-            if (pageWrapper[item].page === page) {
-                return pageWrapper[item];
+            mPage = pageWrapper[item];
+            if (mPage.page === page) {
+                return mPage;
             }
         }
         return undefined;
@@ -36,17 +38,17 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         return pageWrapper[pageWrapperIndex];
     };
     var delPageFromWrapper = function(page) {
-        var exItem = undefined;
-        for (var item in pageWrapper) {
-            if (pageWrapper[item].page === page) {
-                exItem = item;
+        var item = undefined;
+        for (var i in pageWrapper) {
+            if (pageWrapper[i].page === page) {
+                item = i;
                 break;
             }
         }
-        if (exItem === undefined) {
+        if (item === undefined) {
             return;
         }
-        delete pageWrapper[exItem];
+        delete pageWrapper[item];
     };
 
     var monoStorage = function() {
