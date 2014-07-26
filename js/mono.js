@@ -18,6 +18,9 @@ var mono = function (env) {
         mono.isFF = true;
         addon = env;
     } else {
+        if (typeof GM_getValue !== 'undefined') {
+            mono.isGM = true;
+        } else
         if (window.chrome !== undefined) {
             mono.isChrome = true;
             if (chrome.app.getDetails === undefined) {
@@ -262,6 +265,59 @@ var mono = function (env) {
         }
     };
 
+    var gmStorage = {
+        get: function (src, cb) {
+            var key, obj = {};
+            if (src === undefined || src === null) {
+                var nameList = GM_listValues();
+                for (key in nameList) {
+                    obj[key] = GM_getValue(key);
+                }
+                return cb(obj);
+            }
+            if (typeof src === 'string') {
+                src = [src];
+            }
+            if (Array.isArray(src) === true) {
+                for (var i = 0, len = src.length; i < len; i++) {
+                    key = src[i];
+                    obj[key] = GM_getValue(key);
+                }
+            } else {
+                for (key in src) {
+                    obj[key] = GM_getValue(key);
+                }
+            }
+            cb(obj);
+        },
+        set: function (obj, cb) {
+            var key;
+            for (key in obj) {
+                GM_setValue(key, obj[key]);
+            }
+            cb && cb();
+        },
+        remove: function (obj, cb) {
+            if (Array.isArray(obj)) {
+                for (var i = 0, len = obj.length; i < len; i++) {
+                    var key = obj[i];
+                    delete GM_deleteValue(key);
+                }
+            } else {
+                delete GM_deleteValue(obj);
+            }
+            cb && cb();
+        },
+        clear: function (cb) {
+            var key;
+            var nameList = GM_listValues();
+            for (key in nameList) {
+                GM_deleteValue(key);
+            }
+            cb && cb();
+        }
+    };
+
     var storage_fn = function(mode) {
         if (mono.isModule) {
             if (monoStorage.get === undefined) {
@@ -279,6 +335,9 @@ var mono = function (env) {
             // remove false if need use prefs
             localStorage = widget.preferences;
             return localStorageMode;
+        } else
+        if (mono.isGM) {
+            return gmStorage;
         } else
         if (window.localStorage !== undefined) {
             localStorage = window.localStorage;
@@ -338,6 +397,7 @@ var mono = function (env) {
                         if (message.source !== undefined) {
                             responseMessage.source = message.source;
                         }
+                        mono.debug.messages && mono('sendResponse', responseMessage);
                         mono.sendMessage.send(responseMessage);
                     }
                 }
@@ -515,6 +575,9 @@ var mono = function (env) {
             if (mono.isSafariBgPage) {
                 return safari.application.browserWindows.forEach(function(window) {
                     window.tabs.forEach(function(tab) {
+                        if (!tab.page || !tab.page.dispatchMessage) {
+                            return 1;
+                        }
                         tab.page.dispatchMessage("message", message);
                     });
                 });
@@ -544,6 +607,39 @@ var mono = function (env) {
                 return safari.application.addEventListener("message", onMessage, false);
             }
             safari.self.addEventListener("message", onMessage, false);
+        }
+    };
+
+    var gmMessaging = {
+        cbList: [],
+        gotMsg: function() {},
+        currentTab: function (message) {
+            gmMessaging.gotMsg(message);
+        },
+        send: function (message) {
+            gmMessaging.gotMsg(message);
+        },
+        on: function (cb) {
+            if (this) {
+                cb.filter = this.filter;
+            }
+            opMessaging.cbList.push(cb);
+            if (opMessaging.cbList.length > 1) {
+                return;
+            }
+            messagesEnable = true;
+            gmMessaging.gotMsg = function (message) {
+                if (message.monoResponseId) {
+                    return msgTools.cbCaller(message, message.monoTo);
+                }
+                var response = msgTools.mkResponse(message, message.monoTo);
+                opMessaging.cbList.forEach(function(cb) {
+                    if ( cb.filter !== undefined && message.monoTo !== defaultId && cb.filter !== message.monoTo ) {
+                        return 1;
+                    }
+                    cb(message.data, response);
+                });
+            };
         }
     };
 
@@ -583,6 +679,11 @@ var mono = function (env) {
         mono.sendMessage.send = sfMessaging.send;
         mono.sendMessage.currentTab = sfMessaging.currentTab;
         mono.onMessage = sfMessaging.on;
+    } else
+    if (mono.isGM) {
+        mono.sendMessage.send = gmMessaging.send;
+        mono.sendMessage.currentTab = gmMessaging.currentTab;
+        mono.onMessage = gmMessaging.on;
     }
 
     return mono;
