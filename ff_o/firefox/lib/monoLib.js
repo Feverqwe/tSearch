@@ -13,30 +13,40 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     var serviceList = {};
     var map = {};
     var pageWrapper = {};
+    var pageWrapperIndex = 0;
     var defaultId = 'monoScope';
     var pageIndex = 0;
-    var pageList = [];
     var sanitizeRegExp = [/href=/img, /data-safe-href=/img];
 
     var getPageFromWrapper = function(page) {
-        return pageWrapper[pageList.indexOf(page)];
+        for (var item in pageWrapper) {
+            if (pageWrapper[item].page === page) {
+                return pageWrapper[item];
+            }
+        }
+        return undefined;
     };
     var addPageInWrapper = function(page) {
-        if (pageList.indexOf(page) !== -1) {
-            return getPageFromWrapper(page);
+        var mPage = getPageFromWrapper(page);
+        if (mPage !== undefined) {
+            return mPage;
         }
-        var id = pageList.length;
-        pageList.push(page);
-        pageWrapper[id] = {page: page};
-        return pageWrapper[id];
+        pageWrapperIndex++;
+        pageWrapper[pageWrapperIndex] = {page: page};
+        return pageWrapper[pageWrapperIndex];
     };
     var delPageFromWrapper = function(page) {
-        var id = pageList.indexOf(page);
-        if (id === -1) {
+        var exItem = undefined;
+        for (var item in pageWrapper) {
+            if (pageWrapper[item].page === page) {
+                exItem = item;
+                break;
+            }
+        }
+        if (exItem === undefined) {
             return;
         }
-        pageList.splice(id, 1);
-        delete pageWrapper[id];
+        delete pageWrapper[exItem];
     };
 
     var monoStorage = function() {

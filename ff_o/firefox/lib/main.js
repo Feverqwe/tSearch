@@ -6,15 +6,6 @@ var monoLib = require("./monoLib.js");
 var lang = require("./lang.js");
 var pageMod = require("sdk/page-mod");
 
-pageMod.PageMod({
-    include: self.data.url('options.html'),
-    contentScript: '('+monoLib.virtualPort.toString()+')()',
-    contentScriptWhen: 'start',
-    onAttach: function(tab) {
-        monoLib.addPage('tab', tab);
-    }
-});
-
 var sp = require("sdk/simple-prefs");
 sp.on("settingsBtn", function() {
     var tabs = require("sdk/tabs");
