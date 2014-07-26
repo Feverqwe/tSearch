@@ -12,43 +12,17 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     var tabs = require("sdk/tabs");
     var serviceList = {};
     var map = {};
-    var pageWrapper = {};
-    var pageWrapperIndex = 0;
     var defaultId = 'monoScope';
     var pageIndex = 0;
     var sanitizeRegExp = [/href=/img, /data-safe-href=/img];
 
-    var getPageFromWrapper = function(page) {
-        var mPage = undefined;
-        for (var item in pageWrapper) {
-            mPage = pageWrapper[item];
-            if (mPage.page === page) {
-                return mPage;
+    var getMonoPage = function(page) {
+        for (var index in map) {
+            if (map[index].page === page) {
+                return map[index];
             }
         }
         return undefined;
-    };
-    var addPageInWrapper = function(page) {
-        var mPage = getPageFromWrapper(page);
-        if (mPage !== undefined) {
-            return mPage;
-        }
-        pageWrapperIndex++;
-        pageWrapper[pageWrapperIndex] = {page: page};
-        return pageWrapper[pageWrapperIndex];
-    };
-    var delPageFromWrapper = function(page) {
-        var item = undefined;
-        for (var i in pageWrapper) {
-            if (pageWrapper[i].page === page) {
-                item = i;
-                break;
-            }
-        }
-        if (item === undefined) {
-            return;
-        }
-        delete pageWrapper[item];
     };
 
     var monoStorage = function() {
@@ -111,7 +85,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
 
     var sendToPage = function(mPage, message) {
         if (mPage.port !== undefined) {
-            mPage = getPageFromWrapper(mPage);
+            mPage = getMonoPage(mPage);
             if (mPage === undefined) {
                 return;
             }
@@ -124,15 +98,15 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     };
     exports.sendToPage = sendToPage;
 
-    var sendAll = function(message, fromPage) {
-        if (fromPage !== undefined && fromPage.port !== undefined) {
-            fromPage = getPageFromWrapper(fromPage);
-            if (fromPage === undefined) {
+    var sendAll = function(message, fromMonoPage) {
+        if (fromMonoPage !== undefined && fromMonoPage.port !== undefined) {
+            fromMonoPage = getMonoPage(fromMonoPage);
+            if (fromMonoPage === undefined) {
                 return;
             }
         }
         for (var index in map) {
-            if (fromPage !== undefined && fromPage.index === index) {
+            if (fromMonoPage !== undefined && fromMonoPage.index === index) {
                 continue;
             }
             sendToPage(map[index], message);
@@ -277,9 +251,9 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
             return sendAll(message, mPage);
         }
         for (var index in map) {
-            var _page = map[index];
-            if (_page.id.indexOf(message.monoTo) !== -1) {
-                sendToPage(_page, message);
+            var _mPage = map[index];
+            if (_mPage.id.indexOf(message.monoTo) !== -1) {
+                sendToPage(_mPage, message);
             }
         }
     };
@@ -345,10 +319,10 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     exports.virtualPort = monoVirtualPort;
 
     exports.addPage = function(pageId, page) {
-        var mPage = getPageFromWrapper(page);
+        var mPage = getMonoPage(page);
         pageIndex++;
         if ( mPage === undefined ) {
-            mPage = addPageInWrapper(page);
+            mPage = {page: page};
         }
         var index = pageIndex;
         if (mPage.id === undefined) {
@@ -372,15 +346,10 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
             page.on('attach', function() {
                 mPage.active = true;
                 map[mPage.index] = mPage;
-                var p = addPageInWrapper(page);
-                p.id = mPage.id;
-                p.index = mPage.index;
-                p.active = mPage.active;
             });
             page.on('detach', function() {
                 delete map[mPage.index];
                 mPage.active = false;
-                delPageFromWrapper(page);
             });
         }
         var type = (page.isVirtual !== undefined)?'lib':'port';
