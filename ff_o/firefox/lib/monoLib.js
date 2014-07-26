@@ -146,7 +146,6 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         var chrome = require('chrome');
         var Cc = chrome.Cc;
         var Ci = chrome.Ci;
-        var Cu = chrome.Cu;
 
         var flags = 2;
 
@@ -259,7 +258,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     };
 
     var virtualPageList = {};
-    var monoVirtualPage = function(pageId) {
+    var monoVirtualAddon = function(pageId) {
         var subscribClientList = {};
         var subscribServerList = {};
         var obj = {
@@ -300,7 +299,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         virtualPageList[pageId] = obj;
         return obj;
     };
-    exports.virtualAddon = monoVirtualPage;
+    exports.virtualAddon = monoVirtualAddon;
 
     var monoVirtualPort = function() {
         window.addEventListener('message', function(e) {
@@ -320,11 +319,9 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
 
     exports.addPage = function(pageId, page) {
         var mPage = getMonoPage(page);
-        pageIndex++;
         if ( mPage === undefined ) {
             mPage = {page: page};
         }
-        var index = pageIndex;
         if (mPage.id === undefined) {
             mPage.id = [];
         }
@@ -332,9 +329,9 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         if (mPage.index !== undefined) {
             return;
         }
-        mPage.index = index;
+        mPage.index = pageIndex++;
         mPage.active = true;
-        map[index] = mPage;
+        map[pageIndex] = mPage;
 
         if (page.isVirtual === undefined) {
             page.on('pageshow', function() {
