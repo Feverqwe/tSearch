@@ -621,6 +621,7 @@ var mono = function (env) {
         },
         on: function (cb) {
             if (this) {
+                cb.private = this.private;
                 cb.filter = this.filter;
             }
             opMessaging.cbList.push(cb);
@@ -634,7 +635,12 @@ var mono = function (env) {
                 }
                 var response = msgTools.mkResponse(message, message.monoTo);
                 opMessaging.cbList.forEach(function(cb) {
-                    if ( cb.filter !== undefined && message.monoTo !== defaultId && cb.filter !== message.monoTo ) {
+                    if (message.monoTo === defaultId) {
+                        if (cb.private !== undefined) {
+                            return 1;
+                        }
+                    } else
+                    if (cb.filter !== undefined && cb.filter !== message.monoTo) {
                         return 1;
                     }
                     cb(message.data, response);
