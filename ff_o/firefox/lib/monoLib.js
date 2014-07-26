@@ -113,7 +113,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     exports.sendToPage = sendToPage;
 
     var sendAll = function(message, fromPage) {
-        if (fromPage.port !== undefined) {
+        if (fromPage !== undefined && fromPage.port !== undefined) {
             fromPage = getPageFromWrapper(fromPage);
             if (fromPage === undefined) {
                 return;
