@@ -12,9 +12,32 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     var tabs = require("sdk/tabs");
     var serviceList = {};
     var map = {};
+    var pageWrapper = {};
     var defaultId = 'monoScope';
     var pageIndex = 0;
+    var pageList = [];
     var sanitizeRegExp = [/href=/img, /data-safe-href=/img];
+
+    var getPageFromWrapper = function(page) {
+        return pageWrapper[pageList.indexOf(page)];
+    };
+    var addPageInWrapper = function(page) {
+        if (pageList.indexOf(page) !== -1) {
+            return getPageFromWrapper(page);
+        }
+        var id = pageList.length;
+        pageList.push(page);
+        pageWrapper[id] = {page: page};
+        return pageWrapper[id];
+    };
+    var delPageFromWrapper = function(page) {
+        var id = pageList.indexOf(page);
+        if (id === -1) {
+            return;
+        }
+        pageList.splice(id, 1);
+        delete pageWrapper[id];
+    };
 
     var monoStorage = function() {
         var ss = require("sdk/simple-storage");
@@ -74,16 +97,28 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     }();
     exports.storage = monoStorage;
 
-    var sendToPage = function(page, message) {
-        if (page.active === false) {
+    var sendToPage = function(mPage, message) {
+        if (mPage.port !== undefined) {
+            mPage = getPageFromWrapper(mPage);
+            if (mPage === undefined) {
+                return;
+            }
+        }
+        if (mPage.active === false) {
             return;
         }
-        var type = (page.isVirtual !== undefined)?'lib':'port';
-        page[type].emit('mono', message);
+        var type = (mPage.page.isVirtual !== undefined)?'lib':'port';
+        mPage.page[type].emit('mono', message);
     };
     exports.sendToPage = sendToPage;
 
     var sendAll = function(message, fromPage) {
+        if (fromPage.port !== undefined) {
+            fromPage = getPageFromWrapper(fromPage);
+            if (fromPage === undefined) {
+                return;
+            }
+        }
         for (var index in map) {
             if (fromPage !== undefined && fromPage.index === index) {
                 continue;
@@ -93,7 +128,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     };
     exports.sendAll = sendAll;
 
-    serviceList['monoStorage'] = function(page, message) {
+    serviceList['monoStorage'] = function(mPage, message) {
         var msg = message.data;
         var response;
         if (message.monoCallbackId !== undefined) {
@@ -104,7 +139,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
                     monoFrom: 'monoStorage',
                     monoResponseId: message.monoCallbackId
                 };
-                sendToPage(page, responseMessage);
+                sendToPage(mPage, responseMessage);
             }
         }
         if (msg.action === 'get') {
@@ -137,7 +172,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
     };
 
     var xhrList = {};
-    serviceList['service'] = function(page, message) {
+    serviceList['service'] = function(mPage, message) {
         var msg = message.data;
         var response;
         if (message.monoCallbackId !== undefined) {
@@ -148,18 +183,18 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
                     monoFrom: 'service',
                     monoResponseId: message.monoCallbackId
                 };
-                sendToPage(page, responseMessage);
+                sendToPage(mPage, responseMessage);
             }
         }
         if (msg.action === 'resize') {
-            if (page.active === false) {
+            if (mPage.active === false) {
                 return;
             }
             if (msg.width) {
-                page.width = msg.width;
+                mPage.page.width = msg.width;
             }
             if (msg.height) {
-                page.height = msg.height;
+                mPage.page.height = msg.height;
             }
             return;
         }
@@ -206,7 +241,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
             var pageInMap = undefined;
             var currentPageUrl = tabs.activeTab.url;
             for (var index in map) {
-                if (map[index].url === currentPageUrl) {
+                if (map[index].page.url === currentPageUrl) {
                     pageInMap = map[index];
                     break;
                 }
@@ -219,15 +254,15 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         }
     };
 
-    var monoOnMessage = function(page, message) {
+    var monoOnMessage = function(mPage, message) {
         if (serviceList[message.monoTo] !== undefined) {
-            return serviceList[message.monoTo](page, message);
+            return serviceList[message.monoTo](mPage, message);
         }
         if (virtualPageList[message.monoTo] !== undefined) {
             return virtualPageList[message.monoTo].lib.emit('mono', message);
         }
         if (message.monoTo === defaultId) {
-            return sendAll(message, page);
+            return sendAll(message, mPage);
         }
         for (var index in map) {
             var _page = map[index];
@@ -244,6 +279,9 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         var obj = {
             port: {
                 emit: function(to, message) {
+                    if (subscribServerList[to] === undefined) {
+                        return console.log('Drop message to', to);
+                    }
                     subscribServerList[to].forEach(function(item) {
                         item(message);
                     });
@@ -257,6 +295,9 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
             },
             lib: {
                 emit: function(to, message) {
+                    if (subscribClientList[to] === undefined) {
+                        return console.log('Drop message to', to);
+                    }
                     subscribClientList[to].forEach(function(item) {
                         item(message);
                     });
@@ -285,47 +326,54 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         });
         self.port.on('mono', function (message) {
             var msg = '<' + JSON.stringify(message);
-            var event = document.createEvent("CustomEvent");
-            event.initCustomEvent("monoMessage", false, false, msg);
+            var event = new CustomEvent("monoMessage", {detail: msg});
             window.dispatchEvent(event);
         });
     };
     exports.virtualPort = monoVirtualPort;
 
-
     exports.addPage = function(pageId, page) {
+        var mPage = getPageFromWrapper(page);
         pageIndex++;
-        var index = pageIndex;
-        if (page.id === undefined) {
-            page.id = [];
+        if ( mPage === undefined ) {
+            mPage = addPageInWrapper(page);
         }
-        page.id.push(pageId);
-        if (page.index !== undefined) {
+        var index = pageIndex;
+        if (mPage.id === undefined) {
+            mPage.id = [];
+        }
+        mPage.id.push(pageId);
+        if (mPage.index !== undefined) {
             return;
         }
-        page.index = index;
-        page.active = true;
-        map[index] = page;
+        mPage.index = index;
+        mPage.active = true;
+        map[index] = mPage;
 
         if (page.isVirtual === undefined) {
             page.on('pageshow', function() {
-                page.active = true;
+                mPage.active = true;
             });
             page.on('pagehide', function() {
-                page.active = false;
+                mPage.active = false;
             });
             page.on('attach', function() {
-                page.active = true;
-                map[page.index] = page;
+                mPage.active = true;
+                map[mPage.index] = mPage;
+                var p = addPageInWrapper(page);
+                p.id = mPage.id;
+                p.index = mPage.index;
+                p.active = mPage.active;
             });
             page.on('detach', function() {
-                delete map[page.index];
-                page.active = false;
+                delete map[mPage.index];
+                mPage.active = false;
+                delPageFromWrapper(page);
             });
         }
         var type = (page.isVirtual !== undefined)?'lib':'port';
         page[type].on('mono', function(message) {
-            monoOnMessage(page, message);
+            monoOnMessage(mPage, message);
         });
     }
 })();
