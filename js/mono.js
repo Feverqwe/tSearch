@@ -301,10 +301,10 @@ var mono = function (env) {
             if (Array.isArray(obj)) {
                 for (var i = 0, len = obj.length; i < len; i++) {
                     var key = obj[i];
-                    delete GM_deleteValue(key);
+                    GM_deleteValue(key);
                 }
             } else {
-                delete GM_deleteValue(obj);
+                GM_deleteValue(obj);
             }
             cb && cb();
         },
