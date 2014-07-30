@@ -444,7 +444,6 @@ var options = function() {
             dom_cache.tracker_head = $('table.tr_table thead');
             dom_cache.custom_list = $('table.c_table tbody');
             dom_cache.context_menu = $('input[name="context_menu"]');
-            dom_cache.add_in_omnibox = $('input[name="add_in_omnibox"]');
             dom_cache.google_analytics = $('input[name="google_analytics"]');
             dom_cache.allow_favorites_sync = $('input[name="allow_favorites_sync"]');
             dom_cache.profileListSync = $('input[name="profileListSync"]');
@@ -496,13 +495,8 @@ var options = function() {
                 dom_cache.body.find('div.page.active').removeClass('active');
                 dom_cache.body.find('div.' + page).addClass('active');
             });
-            if (mono.isFF) {
-                //FF
-                dom_cache.add_in_omnibox.closest('ul').hide();
-            }
             if (!mono.isChrome) {
                 //opera 12 and firefox
-                dom_cache.add_in_omnibox.closest('ul').hide();
                 dom_cache.allow_favorites_sync.closest('ul').hide();
                 dom_cache.profileListSync.closest('ul').hide();
                 dom_cache.clear_cloud_btn.hide();

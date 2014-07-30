@@ -132,10 +132,7 @@ var bg = function() {
             });
         },
         update: function() {
-            mono.storage.get(['add_in_omnibox', 'context_menu', 'search_popup'], function(storage) {
-                if (storage.add_in_omnibox === undefined) {
-                    storage.add_in_omnibox = 1;
-                }
+            mono.storage.get(['context_menu', 'search_popup'], function(storage) {
                 if (storage.context_menu === undefined) {
                     storage.context_menu = 1;
                 }
@@ -144,9 +141,7 @@ var bg = function() {
                 }
                 update_context_menu(storage.context_menu);
                 if (mono.isChrome) {
-                    if (storage.add_in_omnibox === 1) {
-                        add_in_omnibox();
-                    }
+                    add_in_omnibox();
                     if (!mono.isChromeWebApp) {
                         update_btn_action(storage.search_popup);
                     }
