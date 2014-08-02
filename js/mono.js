@@ -672,9 +672,9 @@ var mono = function (env) {
         mono.debug.messages && mono('sendMessage', 'to:', to, 'hasCallback', !!cb, message);
         msgTools.cbCollector(message, cb);
         if (to === 'activeTab') {
-            return mono.sendMessage.currentTab(message, cb);
+            return mono.sendMessage.currentTab(message);
         }
-        mono.sendMessage.send(message, cb);
+        mono.sendMessage.send(message);
     };
 
     if (mono.isChrome) {
