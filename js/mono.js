@@ -86,16 +86,10 @@ var mono = function (env) {
                 index++;
                 chunk = localStorage[keyPrefix+index];
             }
-            var value;
+            var value = undefined;
             try {
                 value = JSON.parse(data);
-            } catch (e) {
-                if (data[0] === '[' || data.slice(-1) === ']') {
-                    value = [];
-                } else {
-                    value = {};
-                }
-            }
+            } catch (e) {}
             return value;
         },
         setObj: function(key, value) {
@@ -522,9 +516,7 @@ var mono = function (env) {
             message.monoTo = defaultId;
             try {
                 currentTab.postMessage(message);
-            } catch (e) {
-
-            }
+            } catch (e) {}
         },
         send: function(message) {
             var source = message.source;
