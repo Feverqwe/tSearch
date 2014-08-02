@@ -520,7 +520,11 @@ var mono = function (env) {
         currentTab: function (message) {
             var currentTab = opera.extension.tabs.getSelected();
             message.monoTo = defaultId;
-            currentTab.postMessage(message);
+            try {
+                currentTab.postMessage(message);
+            } catch (e) {
+
+            }
         },
         send: function(message) {
             var source = message.source;
@@ -668,9 +672,9 @@ var mono = function (env) {
         mono.debug.messages && mono('sendMessage', 'to:', to, 'hasCallback', !!cb, message);
         msgTools.cbCollector(message, cb);
         if (to === 'activeTab') {
-            return mono.sendMessage.currentTab(message);
+            return mono.sendMessage.currentTab(message, cb);
         }
-        mono.sendMessage.send(message);
+        mono.sendMessage.send(message, cb);
     };
 
     if (mono.isChrome) {
