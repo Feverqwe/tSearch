@@ -86,7 +86,17 @@ var mono = function (env) {
                 index++;
                 chunk = localStorage[keyPrefix+index];
             }
-            return JSON.parse(data);
+            var value;
+            try {
+                value = JSON.parse(data);
+            } catch (e) {
+                if (data[0] === '[' || data.splice(-1) === ']') {
+                    value = [];
+                } else {
+                    value = {};
+                }
+            }
+            return value;
         },
         setObj: function(key, value) {
             value = JSON.stringify(value);

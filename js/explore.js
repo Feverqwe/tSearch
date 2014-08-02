@@ -763,7 +763,11 @@ var explore = function() {
         mono.storage[storage_type].get('exp_cache_'+type, function(storage) {
 
             if (typeof storage['exp_cache_'+type] === 'string') {
-                storage['exp_cache_'+type] = JSON.parse(storage['exp_cache_'+type]);
+                try {
+                    storage['exp_cache_' + type] = JSON.parse(storage['exp_cache_' + type]);
+                } catch (e) {
+                    storage['exp_cache_' + type] = undefined;
+                }
             }
 
             var cache = storage['exp_cache_'+type] || {};
@@ -804,7 +808,11 @@ var explore = function() {
         mono.storage.get('topList', function(storage) {
 
             if (typeof storage.topList === 'string') {
-                storage.topList = JSON.parse(storage.topList);
+                try {
+                    storage.topList = JSON.parse(storage.topList);
+                } catch (e) {
+                    storage.topList = undefined;
+                }
             }
 
             var cache = storage.topList || {};
@@ -1498,16 +1506,28 @@ var explore = function() {
             mono.storage.get(['qualityCache', 'qualityBoxCache', 'listOptions'], function(storage) {
 
                 if (typeof storage.qualityCache === 'string') {
-                    storage.qualityCache = JSON.parse(storage.qualityCache);
+                    try {
+                        storage.qualityCache = JSON.parse(storage.qualityCache);
+                    } catch (e) {
+                        storage.qualityCache = undefined;
+                    }
                 }
                 if (typeof storage.qualityBoxCache === 'string') {
-                    storage.qualityBoxCache = JSON.parse(storage.qualityBoxCache);
+                    try {
+                        storage.qualityBoxCache = JSON.parse(storage.qualityBoxCache);
+                    } catch (e) {
+                        storage.qualityBoxCache = undefined;
+                    }
                 }
 
                 var_cache.qualityCache = storage.qualityCache || {};
                 var_cache.qualityBoxCache = storage.qualityBoxCache || {};
 
-                listOptions = JSON.parse(storage.listOptions || '{}');
+                try {
+                    listOptions = JSON.parse(storage.listOptions || '{}');
+                } catch (e) {
+                    listOptions = {};
+                }
                 settings = engine.settings;
 
                 content_options.favorites.title = _lang.exp_items.favorites;

@@ -167,11 +167,19 @@ var view = function() {
             mono.storage.get(['history', 'click_history'], function(storage){
 
                 if (typeof storage.history === 'string') {
-                    storage.history = JSON.parse(storage.history);
+                    try {
+                        storage.history = JSON.parse(storage.history);
+                    } catch (e) {
+                        storage.history = undefined;
+                    }
                 }
 
                 var_cache.history = storage.history || [];
-                var_cache.click_history = JSON.parse(storage.click_history || '{}');
+                try {
+                    var_cache.click_history = JSON.parse(storage.click_history || '{}');
+                } catch (e) {
+                    var_cache.click_history = {};
+                }
                 writeHistory();
                 writeClickHistory();
             });

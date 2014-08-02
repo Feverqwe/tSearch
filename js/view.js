@@ -2489,7 +2489,7 @@ var view = function() {
         },
         boot: function() {
             if (mono.isChrome) {
-                var_cache.click_history_limit = 50;
+                var_cache.click_history_limit = 20;
                 var_cache.click_history_item_limit = 20;
             }
             engine.loadSettings(function(_settings) {
@@ -2497,7 +2497,11 @@ var view = function() {
                 mono.storage.get(['table_sort_colum', 'table_sort_by', 'click_history', 'torrent_list_h', 'currentProfile'], function(storage) {
 
                     options.trListHeight = storage.torrent_list_h;
-                    var_cache.click_history = JSON.parse( storage.click_history || '{}' );
+                    try {
+                        var_cache.click_history = JSON.parse(storage.click_history || '{}');
+                    } catch (e) {
+                        var_cache.click_history = {};
+                    }
                     currentProfile = storage.currentProfile || _lang.label_def_profile;
 
                     if (engine.profileList[currentProfile] === undefined) {

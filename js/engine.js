@@ -46,7 +46,7 @@ var engine = function() {
         unblock_src: new RegExp('data:image\\/gif,base64#blockrurl#','mg'),
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
         rn: new RegExp('[\\r\\n]+','g'),
-        historyLimit: 500
+        historyLimit: 100
     };
 
     var proxyList = []
@@ -779,12 +779,20 @@ var engine = function() {
                         }
 
                         if (typeof storage.history === 'string') {
-                            storage.history = JSON.parse(storage.history);
+                            try {
+                                storage.history = JSON.parse(storage.history);
+                            } catch (e) {
+                                storage.history = undefined;
+                            }
                         }
 
                         engine.history = history = storage.history || [];
 
-                        engine.profileList = profileList = JSON.parse( storage.profileList || '{}' );
+                        try {
+                            engine.profileList = profileList = JSON.parse(storage.profileList || '{}');
+                        } catch (e) {
+                            engine.profileList = profileList = {};
+                        }
                         prepareProfileList();
 
                         if (storage.customTorrentList) {
