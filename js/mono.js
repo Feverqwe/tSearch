@@ -4,6 +4,15 @@
  * Mono cross-browser engine.
  */
 var mono = function (env) {
+    /**
+     * @namespace chrome
+     * @namespace chrome.app
+     * @namespace chrome.app.getDetails
+     *
+     * @namespace safari.self.identifier
+     *
+     * @namespace addon
+     */
     var mono = function() {
         // mono like console.log
         var args = Array.prototype.slice.call(arguments);
@@ -138,7 +147,7 @@ var mono = function (env) {
             return value;
         },
         get: function (src, cb) {
-            var key, value, obj = {};
+            var key, obj = {};
             if (src === undefined || src === null) {
                 for (key in localStorage) {
                     if (!localStorage.hasOwnProperty(key) || key === 'length') {
@@ -213,6 +222,9 @@ var mono = function (env) {
     localStorageMode.chunkItem = 'monoChunk';
 
     var monoStorage = function() {
+        /**
+         * @namespace require
+         */
         var ss = require("sdk/simple-storage");
         return {
             get: function (src, cb) {
@@ -270,6 +282,12 @@ var mono = function (env) {
     };
 
     var gmStorage = {
+        /**
+         * @namespace GM_listValues
+         * @namespace GM_getValue
+         * @namespace GM_setValue
+         * @namespace GM_deleteValue
+         */
         get: function (src, cb) {
             var key, obj = {};
             if (src === undefined || src === null) {
@@ -323,6 +341,9 @@ var mono = function (env) {
     };
 
     var storage_fn = function(mode) {
+        /**
+         * @namespace widget.preferences
+         */
         if (mono.isModule) {
             if (monoStorage.get === undefined) {
                 monoStorage = monoStorage();
@@ -361,16 +382,18 @@ var mono = function (env) {
         return {
             cbCollector: function (message, cb) {
                 mono.debug.messages && mono('cbCollector', message);
-                if (cb !== undefined) {
-                    if (cbStack.length > mono.messageStack) {
-                        mono('Stack overflow!');
-                        delete cbObj[cbStack.shift()];
-                    }
-                    id++;
-                    message.monoCallbackId = idPrefix+id;
-                    cbObj[idPrefix+id] = cb;
-                    cbStack.push(idPrefix+id);
+                if (cb === undefined) {
+                    return;
                 }
+                !messagesEnable && mono.onMessage(function(){});
+                if (cbStack.length > mono.messageStack) {
+                    mono('Stack overflow!');
+                    delete cbObj[cbStack.shift()];
+                }
+                id++;
+                message.monoCallbackId = idPrefix+id;
+                cbObj[idPrefix+id] = cb;
+                cbStack.push(idPrefix+id);
             },
             cbCaller: function(message, pageId) {
                 mono.debug.messages && mono('cbCaller', message);
@@ -439,6 +462,9 @@ var mono = function (env) {
     }();
 
     var ffVirtualPort = function() {
+        /**
+         * @namespace postMessage
+         */
         var onCollector = [];
         mono.addon = addon = {
             port: {
@@ -493,6 +519,10 @@ var mono = function (env) {
     };
 
     var chMessaging = {
+        /**
+         * @namespace chrome.runtime
+         * @namespace chrome.tabs.query
+         */
         currentTab: function (message) {
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
                 if (tabs[0] === undefined) {
@@ -533,6 +563,12 @@ var mono = function (env) {
     };
 
     var opMessaging = {
+        /**
+         * @namespace opera.extension
+         * @namespace opera.extension.tabs
+         * @namespace opera.extension.tabs.getSelected
+         * @namespace opera.extension.broadcastMessage
+         */
         cbList: [],
         currentTab: function (message) {
             var currentTab = opera.extension.tabs.getSelected();
@@ -577,6 +613,12 @@ var mono = function (env) {
     };
 
     var sfMessaging = {
+        /**
+         * @namespace safari.application
+         * @namespace safari.application.activeBrowserWindow.activeTab
+         * @namespace safari.extension.globalPage
+         * @namespace safari.application.browserWindows
+         */
         currentTab: function (message) {
             var currentTab = safari.application.activeBrowserWindow.activeTab;
             if (currentTab.page === undefined) {
