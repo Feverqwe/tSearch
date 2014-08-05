@@ -7,6 +7,7 @@ ga.l = 1 * new Date();
 ga('create', 'UA-10717861-22', 'auto');
 ga('set', 'forceSSL', true);
 ga('set', 'checkProtocolTask', null);
+ga('require', 'displayfeatures');
 ga('send', 'pageview');
 
 var counter = function() {
