@@ -1285,7 +1285,7 @@ var explore = function() {
             });
             dom_cache.explore_ul.on('click', 'div.picture > a.link', function(e){
                 var $this = $(this);
-                _gaq.push(['_trackEvent', 'About', 'keyword', $this.data('title')]);
+                ga('send', 'event', 'About', 'keyword', $this.data('title'));
             });
             dom_cache.explore_ul.on('click', 'div.quality', function(e) {
                 var $this = $(this);

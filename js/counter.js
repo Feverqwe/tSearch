@@ -1,17 +1,24 @@
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-10717861-22']);
-_gaq.push(['_trackPageview']);
+window.GoogleAnalyticsObject = 'ga';
+var ga = window.ga = window.ga || function() {
+    (window.ga.q = window.ga.q || []).push(arguments)
+};
+ga.l = 1 * new Date();
+
+ga('create', 'UA-10717861-22', 'auto');
+ga('set', 'forceSSL', true);
+ga('set', 'checkProtocolTask', null);
+ga('send', 'pageview');
+
 var counter = function() {
-    var ga = document.createElement('script');
-    ga.type = 'text/javascript';
-    ga.async = true;
-    ga.src = 'https://ssl.google-analytics.com/ga.js';
+    var gas = document.createElement('script');
+    gas.async = 1;
+    gas.src = 'https://www.google-analytics.com/analytics.js';
     engine.ajax({
         type: 'HEAD',
-        url: ga.src,
+        url: gas.src,
         success: function() {
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
+            var pos = document.getElementsByTagName('script')[0];
+            pos.parentNode.insertBefore(gas, pos);
         }
     });
 };

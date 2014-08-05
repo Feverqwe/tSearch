@@ -1,1 +1,1 @@
-var _gaq = _gaq || [];
+var ga = window.ga = function() {};

@@ -279,7 +279,7 @@ var view = function() {
         engine.stop();
         engine.search(request, trackerList, 1);
         var_cache.currentRequest = request;
-        _gaq.push(['_trackEvent', 'Quality', 'keyword', request]);
+        ga('send', 'event', 'Quality', 'keyword', request);
     };
     var blankPage = function(noClearTrackerFilters){
         homeMode();
@@ -1819,11 +1819,14 @@ var view = function() {
             return;
         }
         if (request !== undefined) {
-            _gaq.push(['_trackEvent', 'Search', 'keyword', request]);
+            ga('send', 'event', 'Search', 'keyword', request);
         }
-        _gaq.push(['_trackPageview', url+hash]);
-        var_cache.oldlocationHash = hash;
         var title = updateTitle();
+        ga('send', 'pageview', {
+            page: url+hash,
+            title: title
+        });
+        var_cache.oldlocationHash = hash;
         if (!window.history.state) {
             window.history.replaceState({
                 hash: hash

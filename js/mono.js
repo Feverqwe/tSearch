@@ -686,6 +686,7 @@ var mono = function (env) {
         cbList: [],
         gotMsg: function() {},
         currentTab: function (message) {
+            message.monoTo = defaultId;
             gmMessaging.gotMsg(message);
         },
         send: function (message) {
@@ -693,8 +694,8 @@ var mono = function (env) {
         },
         on: function (cb) {
             msgTools.readFilter(this, cb);
-            opMessaging.cbList.push(cb);
-            if (opMessaging.cbList.length > 1) {
+            gmMessaging.cbList.push(cb);
+            if (gmMessaging.cbList.length > 1) {
                 return;
             }
             messagesEnable = true;
