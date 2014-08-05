@@ -2,7 +2,7 @@ window.GoogleAnalyticsObject = 'ga';
 var ga = window.ga = window.ga || function() {
     (window.ga.q = window.ga.q || []).push(arguments)
 };
-ga.l = 1 * new Date();
+ga.l = Date.now();
 
 ga('create', 'UA-10717861-22', 'auto');
 ga('set', 'forceSSL', true);
