@@ -1,11 +1,5 @@
 {
-    "appName": {
-        "message": "TMS - Поиск торрентов"
-    },
-    "appDesc": {
-        "message": "Torrents MultiSearch - поиск по нескольки трекерам сразу!"
-    },
-    "lang": {
-    	"message": "ru"
-    }
+    "appName": {"message": "TMS - Поиск торрентов"},
+    "appDesc": {"message": "Torrents MultiSearch - поиск по нескольки трекерам сразу!"},
+    "lang": {"message": "ru"}
 }

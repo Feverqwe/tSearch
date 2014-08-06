@@ -260,7 +260,6 @@ var popup = function(enable_ac) {
     }
 };
 mono.pageId = 'popup';
-mono.isFF && mono.onMessage(function() {});
 mono.storage.get(['lang', 'AutoComplite_opt'],function(storage) {
     window._lang = get_lang(storage.lang || navigator.language.substr(0, 2));
     if (storage.AutoComplite_opt === undefined) {

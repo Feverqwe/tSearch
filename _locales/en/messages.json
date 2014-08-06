@@ -1,11 +1,5 @@
 {
-    "appName": {
-        "message": "TMS - Torrent search"
-    },
-    "appDesc": {
-        "message": "Torrents MultiSearch - search on some of the trackers at once!"
-    },
-    "lang": {
-    	"message": "en"
-    }
+    "appName": {"message": "TMS - Torrent search"},
+    "appDesc": {"message": "Torrents MultiSearch - search on some of the trackers at once!"},
+    "lang": {"message": "en"}
 }

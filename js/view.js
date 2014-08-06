@@ -2533,7 +2533,6 @@ var view = function() {
     };
 }();
 mono.pageId = 'tab';
-mono.noAddon && mono.onMessage(function() {});
 engine.boot(function() {
     explore.boot(function() {
         $(function() {
