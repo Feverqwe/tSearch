@@ -2119,7 +2119,7 @@ var view = function() {
             }
             dom_cache.search_btn_clear.on("click", function(event) {
                 event.preventDefault();
-                $(this).hide();
+                this.style.display = 'none';
                 dom_cache.search_input.val('').trigger('keyup').focus();
             });
             dom_cache.search_input.on('keyup', function() {
@@ -2209,7 +2209,7 @@ var view = function() {
                 mono.storage.set({torrent_list_r: engine.settings.torrent_list_r});
             });
             dom_cache.word_filter.on('keyup', function() {
-                var value = $(this).val();
+                var value = this.value;
                 var value_len = value.length;
                 if (var_cache.keywordFilter === undefined) {
                     if (value_len === 0) {
@@ -2280,13 +2280,13 @@ var view = function() {
                         to: 0
                     };
                 }
-                var value = parseFloat($(this).val());
+                var value = parseFloat( this.value );
                 if (isNaN(value) || value < 0) {
                     value = 0;
                 }
                 value = value * 1024 * 1024 * 1024;
                 var type = 1;
-                if ($(this).attr('name') === "f_v") {
+                if (this.getAttribute('name') === "f_v") {
                     type = 0;
                 }
                 if (type === 1) {
@@ -2317,7 +2317,7 @@ var view = function() {
                 hideIfNoPrevNext: true,
                 dateFormat: "dd/mm/yy",
                 onClose: function(date, b) {
-                    if ($(b.input[0]).attr("name") === "start") {
+                    if (b.input[0].getAttribute("name") === "start") {
                         dom_cache.time_filter.find('input[name=end]').datepicker("option", "minDate", date);
                     } else {
                         dom_cache.time_filter.find('input[name=start]').datepicker("option", "maxDate", date);
@@ -2343,7 +2343,7 @@ var view = function() {
                 }
             });
             dom_cache.time_filter.on('dblclick', 'input', function() {
-                $(this).val('');
+                this.value = '';
                 var dateList = $('.time_filter').find('input');
                 var st = ex_kit.format_date(1, dateList.eq(0).val());
                 var en = ex_kit.format_date(1, dateList.eq(1).val());
@@ -2416,12 +2416,12 @@ var view = function() {
                         to: -1
                     };
                 }
-                var value = parseInt($(this).val());
+                var value = parseInt( this.value );
                 if (isNaN(value) || value < 0) {
                     value = -1;
                 }
                 var type = 1;
-                if ($(this).attr('name') === "start") {
+                if ( this.getAttribute('name') === "start") {
                     type = 0;
                 }
                 if (type === 1) {
@@ -2449,12 +2449,12 @@ var view = function() {
                         to: -1
                     };
                 }
-                var value = parseInt($(this).val());
+                var value = parseInt( this.value );
                 if (isNaN(value) || value < 0) {
                     value = -1;
                 }
                 var type = 1;
-                if ($(this).attr('name') === "start") {
+                if ( this.getAttribute('name') === "start") {
                     type = 0;
                 }
                 if (type === 1) {
