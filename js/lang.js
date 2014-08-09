@@ -337,7 +337,7 @@ var get_lang = function (lang) {
         categoryXXX: 'XXX',
         categoryOther: 'Прочее',
         categoryAll: 'Всё',
-        
+
         search_btn: 'Найти',
         btn_main: 'Главная',
         btn_history: 'История поиска',
