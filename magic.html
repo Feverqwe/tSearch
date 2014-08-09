@@ -13,7 +13,7 @@
 </head>
 <body>
 <div class="tools">
-    <ul class="menu">
+    <ul class="menu" id="menu">
         <li class="active"><a href="#search" data-page="search" data-lang="2">Поиск</a></li>
         <li><a href="#selectors" data-page="selectors" data-lang="3">Селекторы</a></li>
         <li><a href="#convert" data-page="convert" data-lang="4">Конвертация</a></li>
@@ -21,7 +21,7 @@
         <li><a href="#desk" data-page="desk" data-lang="6">Описание</a></li>
         <li><a href="#save" data-page="save" data-lang="7">Сохранить \ Загрузить</a></li>
     </ul>
-    <div class="body">
+    <div class="body" id="container">
         <fieldset class="page search active">
             <legend data-lang="8">Результаты поиска</legend>
             <ul>
@@ -312,7 +312,7 @@
             </div>
         </fieldset>
     </div>
-    <div class="status_bar"></div>
+    <div class="status_bar" id="status_bar"></div>
 </div>
 <iframe sandbox="allow-same-origin allow-scripts"></iframe>
 </body>

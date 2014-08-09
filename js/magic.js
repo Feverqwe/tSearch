@@ -977,11 +977,11 @@ var magic = function() {
 
             write_language();
             dom_cache.window = $(window);
-            dom_cache.body = $('body');
-            dom_cache.menu = $('ul.menu');
-            dom_cache.pages = $('div.body');
+            dom_cache.body = $(document.body);
+            dom_cache.menu = $( document.getElementById('menu') );
+            dom_cache.pages = $( document.getElementById('container') );
             dom_cache.iframe = $('iframe');
-            dom_cache.status_bar = $('div.status_bar');
+            dom_cache.status_bar = $( document.getElementById('status_bar') );
             dom_cache.select_time_format = $('select[name=time_format]');
             $.each(input_list, function(item, value){
                 if (item === 'selectors' || item === 'convert' || item === 'desk' || item === 'save') {
