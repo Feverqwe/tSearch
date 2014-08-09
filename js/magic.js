@@ -286,7 +286,7 @@ var magic = function() {
         try {
             code = JSON.parse(input_list.save.code.textarea.val());
         } catch (e) {
-            alert(_lang.magic[1] + "\n" + e);
+            alert(_lang.magic_1 + "\n" + e);
         }
         if (code === undefined) {
             return;
@@ -952,21 +952,21 @@ var magic = function() {
         return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
     };
     var write_language = function() {
-        $.each(_lang.magic, function(k, v) {
-        var el = $('[data-lang=' + k + ']');
-        if (el.length === 0) {
-                return true;
+        var lang = document.querySelectorAll('[data-lang]');
+        for (var i = 0, el; el = lang[i]; i++) {
+            var text = _lang['magic_'+i];
+            if (text === undefined) {
+                return;
             }
-        var t = el.prop("tagName");
-        if (t === "A" || t === "LEGEND" || t === "SPAN" || t === "LI" || t === "TH") {
-                el.text(v);
+            if (['A', 'LEGEND', 'SPAN', 'LI', 'TH'].indexOf(el.tagName) !== -1) {
+                el.textContent = text;
             } else
-            if (t === "INPUT") {
-                el.val(v);
+            if (['INPUT'].indexOf(el.tagName) !== -1) {
+                el.value = text;
             } else {
-                console.log(t);
+                console.log('Tag name not found!', el.tagName);
             }
-        });
+        }
     };
     return {
         begin: function() {
