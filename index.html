@@ -28,12 +28,12 @@
                 </form>
             </div>
             <div class="right">
-                <input type="button" class="button main" value="" title="Главная" />
-                <input type="button" class="button history" value="" title="История поиска" />
+                <input type="button" class="button main" value="" title="Главная" id="go_home_btn" />
+                <input type="button" class="button history" value="" title="История поиска" id="history_btn" />
             </div>
         </div>
-        <div class="content loading">
-            <div class="right">
+        <div class="content loading" id="main_container">
+            <div class="right" id="options_column">
                 <div class="tracker_list" id="tracker_list_container">
                     <p>Трекеры<a class="setup" href="options.html#back" title="Настройки" id="setup_btn"></a></p>
                     <ul class="trackers" id="tracker_list"></ul>
@@ -76,7 +76,7 @@
                     <a target="_blank" href="http://bug-report-blog.blogspot.ru/2012/09/torrents-multisearch.html">Feedback</a>
                 </div>
             </div>
-            <div class="left">
+            <div class="left" id="search_result_column">
                 <div class="explore loading">
                     <div class="top_search"></div>
                     <ul></ul>

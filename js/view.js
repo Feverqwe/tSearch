@@ -1655,7 +1655,7 @@ var view = function() {
         }
     };
     var setColumSort = function (el) {
-        dom_cache.result_table_head.children().children('th.' + var_cache.table_sort_colum).removeClass('sortDown').removeClass('sortUp');
+        dom_cache.result_table_head.find('th.' + var_cache.table_sort_colum).removeClass('sortDown').removeClass('sortUp');
         var colum = el.data('type');
         var by = var_cache.table_sort_by;
         if (var_cache.table_sort_colum === colum) {
@@ -1920,11 +1920,11 @@ var view = function() {
 
         dom_cache.word_filter_input.val('');
         dom_cache.word_filter_clear_btn.hide();
-        dom_cache.size_filter_container.children('div').children('input').val('');
+        dom_cache.size_filter_container.find('input').val('');
         dom_cache.time_filter_select.children().eq(0).prop('selected', true);
-        dom_cache.time_filter_container.children('div.range').hide().children('input').val('');
-        dom_cache.seed_filter_container.children('div').children('input').val('');
-        dom_cache.peer_filter_container.children('div').children('input').val('');
+        dom_cache.time_filter_container.find('input').val('');
+        dom_cache.seed_filter_container.find('input').val('');
+        dom_cache.peer_filter_container.find('input').val('');
 
         startFiltering();
         startFilterByCategory();
@@ -2021,7 +2021,6 @@ var view = function() {
         begin: function() {
             dom_cache.window = $(window);
             dom_cache.body = $(document.body);
-            dom_cache.title = $(document.head).children('title');
             dom_cache.tracker_list_container = $( document.getElementById('tracker_list_container') );
             dom_cache.tracker_list = $( document.getElementById('tracker_list') );
             dom_cache.search_form = $( document.getElementById('search_form') );
@@ -2042,6 +2041,7 @@ var view = function() {
             dom_cache.peer_filter_container = $( document.getElementById('peer_filter_container') );
             dom_cache.setup_btn = $( document.getElementById('setup_btn') );
             dom_cache.search_input = $( document.getElementById('search_input') );
+            dom_cache.time_filter_range_container = $('.time_filter').children('.range');
 
             dom_cache.search_input.focus();
 
@@ -2069,14 +2069,20 @@ var view = function() {
 
             var_cache.tracker_ui_offset_top = dom_cache.tracker_list.offset().top;
             if (engine.settings.filter_panel_to_left === 1) {
-                $("div.content div.right").css({"float": "left", "padding-left": "5px", "padding-right": '0'});
-                $("div.content div.left").css({"margin-left": "180px", "margin-right": "0"});
+                $( document.getElementById('options_column') ).css({
+                    "float": "left",
+                    "padding-left": "5px",
+                    "padding-right": '0'
+                });
+                $( document.getElementById('search_result_column') ).css({
+                    "margin-left": "180px",
+                    "margin-right": "0"
+                });
                 dom_cache.scroll_to_top_btn.css({"right": "auto"});
             }
             var style;
             if (engine.settings.noTransition === 1) {
                 style = 'div.result_panel > table div.tracker_icon,' +
-                    'div.result_panel > table div.tracker_icon,' +
                     'div.tracker_list a.setup' +
                     '{transition: none;}';
                 dom_cache.body.append($('<style>', {text: style}));
@@ -2090,11 +2096,11 @@ var view = function() {
                 e.preventDefault();
                 search(dom_cache.search_input.val());
             });
-            $('input.button.main').on("click", function(e) {
+            $( document.getElementById('go_home_btn') ).on("click", function(e) {
                 e.preventDefault();
                 blankPage();
             });
-            $('input.button.history').on("click", function(e) {
+            $( document.getElementById('history_btn') ).on("click", function(e) {
                 e.preventDefault();
                 window.location = 'history.html';
             });
@@ -2151,7 +2157,7 @@ var view = function() {
                     scrollTop: 0
                 }, 200);
             });
-            dom_cache.result_category_container.on('click', 'li', function(e){
+            dom_cache.result_category_container.on('click', 'li', function(e) {
                 e.preventDefault();
                 var $this = $(this);
                 var category = $this.data('id');
@@ -2163,7 +2169,7 @@ var view = function() {
                 var_cache.currentCategory = category;
                 startFilterByCategory();
             });
-            dom_cache.tracker_list_container.on('click','ul.trackers>li>a', function(e) {
+            dom_cache.tracker_list_container.on('click', 'ul.trackers>li>a', function(e) {
                 e.preventDefault();
                 var $this = $(this);
                 var type = $this.data('tracker');
@@ -2361,9 +2367,9 @@ var view = function() {
             dom_cache.time_filter_select.on('change', function() {
                 var value = this.value;
                 if (value === "range") {
-                    $('.time_filter').children('.range').show();
+                    dom_cache.time_filter_range_container.show();
                 } else {
-                    $('.time_filter').children('.range').hide();
+                    dom_cache.time_filter_range_container.hide();
                 }
                 var utime = 0;
                 var date = ((new Date).getTime() / 1000);
@@ -2467,12 +2473,13 @@ var view = function() {
             }).on('dblclick', 'input', function() {
                 $(this).val('').trigger('keyup');
             });
-            $('div.content').removeClass('loading');
+            document.getElementById('main_container').classList.remove('loading');
             if (engine.settings.torrent_list_r === 1) {
                 initResizeble();
             }
             if ( Math.random()<.5 ) {
-                dom_cache.body.append( $('<style>', {text: 'div.donate > div.logo {' +
+                dom_cache.body.append(
+                    $('<style>', {text: 'div.donate > div.logo {' +
                     '-moz-transform: scaleX(-1);' +
                     '-o-transform: scaleX(-1);' +
                     '-webkit-transform: scaleX(-1);' +
