@@ -689,8 +689,8 @@ var explore = function() {
             }
             num++;
         }
-        dom_cache.top.get(0).textContent = '';
-        dom_cache.top.append(content);
+        dom_cache.top_search.get(0).textContent = '';
+        dom_cache.top_search.append(content);
     };
     var xhr_dune = function(type, source) {
         source.xhr_wait_count--;
@@ -992,7 +992,7 @@ var explore = function() {
         }
         $quality.children('span').text( quality[0].qualityBox );
         if ($quality.children('info_popup').length === 0) {
-            $quality.append( dom_cache.popup );
+            $quality.append( dom_cache.info_popup );
             var btn_offset = $quality.offset();
             var top = btn_offset.top+17;
             var left = btn_offset.left - 150 + 8;
@@ -1005,8 +1005,8 @@ var explore = function() {
                 left_pos = 0;
                 corner_pos = btn_offset.left + 8;
             }
-            dom_cache.popup.offset({top: top, left: left_pos});
-            var popup = dom_cache.popup.children();
+            dom_cache.info_popup.offset({top: top, left: left_pos});
+            var popup = dom_cache.info_popup.children();
             popup.children('div.corner').css('left',(corner_pos === 0)?'50%':(corner_pos+'px'));
         }
         var ul = popup.children('div.content').children('ul');
@@ -1034,13 +1034,13 @@ var explore = function() {
     };
     return {
         show: function() {
-            if (dom_cache.explore !== undefined) {
+            if (dom_cache.explore_container !== undefined) {
                 var_cache.mode = 1;
                 if (var_cache.needResize === 1) {
                     var_cache.needResize = 0;
                     dom_cache.window.trigger('resize');
                 }
-                dom_cache.explore.show();
+                dom_cache.explore_container.show();
                 return;
             }
             var_cache.mode = 1;
@@ -1049,20 +1049,18 @@ var explore = function() {
                     listOptions[key] = $.extend({},value);
                 }
             });
-            dom_cache.explore = $('div.explore');
-            dom_cache.explore_ul = dom_cache.explore.children('ul');
-            dom_cache.top = dom_cache.explore.children('div.top_search');
-            dom_cache.body = $('body');
-            dom_cache.window = $(window);
-            dom_cache.popup = dom_cache.explore.children('div.info_popup');
-
-            dom_cache.explore.addClass('loading');
+            dom_cache.explore_container = $( document.getElementById('explore_container') );
+            dom_cache.explore_gallery = $( document.getElementById('explore_gallery') );
+            dom_cache.top_search = $( document.getElementById('top_search') );
+            dom_cache.body = $( document.body );
+            dom_cache.window = $( window );
+            dom_cache.info_popup = $( document.getElementById('info_popup') );
 
             var_cache.window_width = dom_cache.window.width();
             if (engine.settings.hideTopSearch === 0) {
                 load_topList();
             }
-            $.each(listOptions, function(type, item){
+            $.each(listOptions, function(type, item) {
                 if (item.e === 0) {
                     return 1;
                 }
@@ -1102,17 +1100,17 @@ var explore = function() {
                 );
                 var_cache.source[type].li.append(var_cache.source[type].title);
                 calculateSize(type);
-                dom_cache.explore_ul.append(var_cache.source[type].li);
+                dom_cache.explore_gallery.append(var_cache.source[type].li);
                 if (item.s === 1) {
                     load_content(type);
                 }
             });
 
             setTimeout(function(){
-                dom_cache.explore.removeClass('loading');
+                dom_cache.explore_container.removeClass('loading');
             }, 30);
 
-            dom_cache.explore_ul.on('mouseover', 'ul.page_body > li', function () {
+            dom_cache.explore_gallery.on('mouseover', 'ul.page_body > li', function () {
                 var $this = $(this);
                 var page = $this.data('page');
                 var type = $this.data('type');
@@ -1122,7 +1120,7 @@ var explore = function() {
                 var content = var_cache['exp_cache_'+type].content;
                 content_write(type, content, page);
             });
-            dom_cache.explore_ul.on('click', 'div.collapses', function(e) {
+            dom_cache.explore_gallery.on('click', 'div.collapses', function(e) {
                 e.preventDefault();
                 var $this = $(this);
                 var type = $this.data('type');
@@ -1148,7 +1146,7 @@ var explore = function() {
                 }
                 mono.storage.set({listOptions: JSON.stringify(listOptions) });
             });
-            dom_cache.explore_ul.on('click', 'div.action > div.setup', function (e){
+            dom_cache.explore_gallery.on('click', 'div.action > div.setup', function (e){
                 e.preventDefault();
                 var $this = $(this);
                 var type = $this.data('type');
@@ -1174,7 +1172,7 @@ var explore = function() {
                 });
                 setup_body.toggleClass('show');
             });
-            dom_cache.explore_ul.on('click', 'div.action > div.update', function(e){
+            dom_cache.explore_gallery.on('click', 'div.action > div.update', function(e){
                 var $this = $(this);
                 var type = $this.data('type');
                 if (navigator.onLine === false) {
@@ -1233,7 +1231,7 @@ var explore = function() {
                 };
                 load_page(1);
             });
-            dom_cache.explore_ul.on('click', 'div.picture > div.inFavorite', function(e){
+            dom_cache.explore_gallery.on('click', 'div.picture > div.inFavorite', function(e){
                 var $this = $(this);
                 var type = 'favorites';
                 if (var_cache['exp_cache_'+type].content === undefined) {
@@ -1247,7 +1245,7 @@ var explore = function() {
                 var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
                 mono.storage[storageType].set(storage);
             });
-            dom_cache.explore_ul.on('click', 'div.picture > div.rmFavorite', function(e){
+            dom_cache.explore_gallery.on('click', 'div.picture > div.rmFavorite', function(e){
                 var $this = $(this);
                 var type = 'favorites';
                 var index = $this.data('index');
@@ -1259,7 +1257,7 @@ var explore = function() {
                 var storageType = ( engine.settings.allow_favorites_sync === 1 && type === 'favorites' )?'sync':'local';
                 mono.storage[storageType].set(storage);
             });
-            dom_cache.explore_ul.on('click', 'div.picture > div.edit', function(e){
+            dom_cache.explore_gallery.on('click', 'div.picture > div.edit', function(e){
                 var $this = $(this);
                 var type = 'favorites';
                 var index = $this.data('index');
@@ -1283,11 +1281,11 @@ var explore = function() {
                         mono.storage[storageType].set(storage);
                     });
             });
-            dom_cache.explore_ul.on('click', 'div.picture > a.link', function(e){
+            dom_cache.explore_gallery.on('click', 'div.picture > a.link', function(e){
                 var $this = $(this);
                 ga('send', 'event', 'About', 'keyword', $this.data('title'));
             });
-            dom_cache.explore_ul.on('click', 'div.quality', function(e) {
+            dom_cache.explore_gallery.on('click', 'div.quality', function(e) {
                 var $this = $(this);
                 var type = $this.data('type');
                 var index = $this.data('index');
@@ -1295,7 +1293,7 @@ var explore = function() {
                 $this.children('span').text('*');
                 view.getQuality(title, type, index);
             });
-            dom_cache.explore_ul.on('mouseover', 'div.quality', function(e) {
+            dom_cache.explore_gallery.on('mouseover', 'div.quality', function(e) {
                 var $this = $(this);
                 var title = $this.data('title');
                 if (var_cache.qualityCache[title] === undefined) {
@@ -1305,19 +1303,19 @@ var explore = function() {
                 var index = $this.data('index');
                 setQuality(type, index, var_cache.qualityCache[title], title, 1);
             });
-            dom_cache.explore_ul.on('mouseover', 'div.quality > div.info_popup', function(e) {
+            dom_cache.explore_gallery.on('mouseover', 'div.quality > div.info_popup', function(e) {
                 e.stopPropagation();
             });
-            dom_cache.explore_ul.on('click', 'div.quality > div.info_popup', function(e) {
+            dom_cache.explore_gallery.on('click', 'div.quality > div.info_popup', function(e) {
                 e.stopPropagation();
             });
-            dom_cache.explore_ul.on('click', 'div.quality > div.info_popup a', function() {
+            dom_cache.explore_gallery.on('click', 'div.quality > div.info_popup a', function() {
                 var title = $(this).data('title');
                 var request = $(this).data('request');
                 var href = $(this).data('href');
                 view.addInClickHistory(request, title, href);
             });
-            dom_cache.explore_ul.on('change', 'div.setup_body > select.item_count', function(e){
+            dom_cache.explore_gallery.on('change', 'div.setup_body > select.item_count', function(e){
                 e.preventDefault();
                 var $this = $(this);
                 var type = $this.data('type');
@@ -1328,7 +1326,7 @@ var explore = function() {
                 content_write(type, content, page, 1);
                 mono.storage.set({listOptions: JSON.stringify(listOptions) });
             });
-            dom_cache.explore_ul.on('click','div.setup_body > div.default_size', function(e){
+            dom_cache.explore_gallery.on('click','div.setup_body > div.default_size', function(e){
                 e.preventDefault();
                 var $this = $(this);
                 var type = $this.data('type');
@@ -1342,21 +1340,21 @@ var explore = function() {
                 content_write(type, content, page, 1);
                 mono.storage.set({listOptions: JSON.stringify(listOptions) });
             });
-            dom_cache.explore_ul.sortable({
+            dom_cache.explore_gallery.sortable({
                 axis: 'y',
                 handle: 'div.head > div.move',
                 scroll: false,
                 start: function(e, ui) {
                     window.scrollTo(0,0);
-                    dom_cache.explore_ul.addClass('sort_mode');
+                    dom_cache.explore_gallery.addClass('sort_mode');
                     var type = $(e.toElement).data('type');
                     $(this).data('type', type).sortable("refreshPositions");
                     ui.type = type;
                 },
                 stop: function(e, ui) {
-                    dom_cache.explore_ul.removeClass('sort_mode');
+                    dom_cache.explore_gallery.removeClass('sort_mode');
                     var lo = {};
-                    var $li = dom_cache.explore_ul.children('li');
+                    var $li = dom_cache.explore_gallery.children('li');
                     for (var i = 0, len = $li.length; i < len; i++) {
                         var type = $li.eq(i).data('type');
                         lo[type] = listOptions[type];
@@ -1370,7 +1368,7 @@ var explore = function() {
                     mono.storage.set({listOptions: JSON.stringify(listOptions) });
                 }
             });
-            dom_cache.explore.sortable({
+            dom_cache.explore_container.sortable({
                 handle: 'div.picture > div.move',
                 items: "li.favorites > ul.body > li",
                 opacity: 0.8,
@@ -1490,11 +1488,11 @@ var explore = function() {
             }
         },
         hide: function(){
-            if (dom_cache.explore === undefined) {
+            if (dom_cache.explore_container === undefined) {
                 return;
             }
             var_cache.mode = 0;
-            dom_cache.explore.hide();
+            dom_cache.explore_container.hide();
         },
         getDescription: getDescription,
         setQuality: setQuality,
