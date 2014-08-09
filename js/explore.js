@@ -1262,10 +1262,10 @@ var explore = function() {
                 var type = 'favorites';
                 var index = $this.data('index');
                 var item = var_cache['exp_cache_'+type].content[index];
-                notify([{type: 'input',value: item.title, text: _lang.exp_edit_fav_label[0]},
-                    {type: 'input',value: item.img, text: _lang.exp_edit_fav_label[1]},
-                    {type: 'input',value: item.url, text: _lang.exp_edit_fav_label[2]}],
-                    _lang.apprise_btns[0],_lang.apprise_btns[1], function(arr){
+                notify([{type: 'input',value: item.title, text: _lang.exp_edit_fav_label0},
+                    {type: 'input',value: item.img, text: _lang.exp_edit_fav_label1},
+                    {type: 'input',value: item.url, text: _lang.exp_edit_fav_label2}],
+                    _lang.apprise_btns0,_lang.apprise_btns1, function(arr){
                         if (arr === undefined) {
                             return;
                         }
@@ -1528,16 +1528,16 @@ var explore = function() {
                 }
                 settings = engine.settings;
 
-                content_options.favorites.title = _lang.exp_items.favorites;
-                content_options.kp_favorites.title = _lang.exp_items.kp_favorites;
-                content_options.kp_in_cinema.title = _lang.exp_items.kp_in_cinema;
-                content_options.kp_popular.title = _lang.exp_items.kp_popular;
-                content_options.kp_serials.title = _lang.exp_items.kp_serials;
-                content_options.imdb_in_cinema.title = _lang.exp_items.imdb_in_cinema;
-                content_options.imdb_popular.title = _lang.exp_items.imdb_popular;
-                content_options.imdb_serials.title = _lang.exp_items.imdb_serials;
-                content_options.gg_games_top.title = _lang.exp_items.gg_games_top;
-                content_options.gg_games_new.title = _lang.exp_items.gg_games_new;
+                content_options.favorites.title = _lang.exp_items_favorites;
+                content_options.kp_favorites.title = _lang.exp_items_kp_favorites;
+                content_options.kp_in_cinema.title = _lang.exp_items_kp_in_cinema;
+                content_options.kp_popular.title = _lang.exp_items_kp_popular;
+                content_options.kp_serials.title = _lang.exp_items_kp_serials;
+                content_options.imdb_in_cinema.title = _lang.exp_items_imdb_in_cinema;
+                content_options.imdb_popular.title = _lang.exp_items_imdb_popular;
+                content_options.imdb_serials.title = _lang.exp_items_imdb_serials;
+                content_options.gg_games_top.title = _lang.exp_items_gg_games_top;
+                content_options.gg_games_new.title = _lang.exp_items_gg_games_new;
 
                 cb && cb();
             });

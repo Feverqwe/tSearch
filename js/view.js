@@ -1459,10 +1459,10 @@ var view = function() {
         var minutes = Math.floor((i - day_sec - hour * 60 * 60) / 60);
         var seconds = Math.floor((i - day_sec - hour * 60 * 60 - minutes * 60));
         day = Math.floor(day - 7 * week);
-        var str_day = ' ' + ((day < 5) ? (day < 2) ? (day < 1) ? _lang.times.day1 : _lang.times.day2 : _lang.times.day3 : _lang.times.day4);
-        var str_hour = ' ' + ((hour < 5) ? (hour < 2) ? (hour < 1) ? _lang.times.hour1 : _lang.times.hour2 : _lang.times.hour3 : _lang.times.hour4);
-        var str_minutes = ' ' + _lang.times.min;
-        var str_seconds = ' ' + _lang.times.sec;
+        var str_day = ' ' + ((day < 5) ? (day < 2) ? (day < 1) ? _lang.time_day1 : _lang.time_day2 : _lang.time_day3 : _lang.time_day4);
+        var str_hour = ' ' + ((hour < 5) ? (hour < 2) ? (hour < 1) ? _lang.time_hour1 : _lang.time_hour2 : _lang.time_hour3 : _lang.time_hour4);
+        var str_minutes = ' ' + _lang.time_min;
+        var str_seconds = ' ' + _lang.time_sec;
         var d_te = (new Date()).getDate();
         var t_te = (new Date(utime * 1000)).getDate();
         if (day === 0 && d_te !== t_te) {
@@ -1470,23 +1470,23 @@ var view = function() {
         }
         if (day > 0) {
             if (day === 1) {
-                return _lang.times.yest + ' ' + u2hhmm(utime);
+                return _lang.time_yest + ' ' + u2hhmm(utime);
             } else {
-                return day + str_day + ' ' + _lang.times.old;
+                return day + str_day + ' ' + _lang.time_old;
             }
         }
         if (hour > 0) {
             if (hour > 1) {
-                return _lang.times.today + ' ' + u2hhmm(utime);
+                return _lang.time_today + ' ' + u2hhmm(utime);
             } else {
-                return hour + str_hour + ' ' + _lang.times.old;
+                return hour + str_hour + ' ' + _lang.time_old;
             }
         }
         if (minutes > 0) {
-            return minutes + str_minutes + ' ' + _lang.times.old;
+            return minutes + str_minutes + ' ' + _lang.time_old;
         }
         if (seconds > 0) {
-            return seconds + str_seconds + ' ' + _lang.times.old;
+            return seconds + str_seconds + ' ' + _lang.time_old;
         }
         return u2ddmmyyyy(utime);
     };
@@ -1556,7 +1556,20 @@ var view = function() {
          * загрузка списка категорий
          */
         var_cache.categorys = {};
-        var categoryList = _lang.categorys;
+        var categoryList = [
+            [3, _lang.categoryFilms],
+            [0, _lang.categorySerials],
+            [7, _lang.categoryAnime],
+            [8, _lang.categoryDocHum],
+            [1, _lang.categoryMusic],
+            [2, _lang.categoryGames],
+            [5, _lang.categoryBooks],
+            [4, _lang.categoryCartoons],
+            [6, _lang.categorySoft],
+            [9, _lang.categorySport],
+            [10, _lang.categoryXXX],
+            [-1, _lang.categoryOther]
+        ];
         var content = [];
         var counter;
         var li;
@@ -2046,11 +2059,17 @@ var view = function() {
             dom_cache.search_input.focus();
 
             write_language();
-            $.each(_lang.time_f_s, function(value, text) {
-                dom_cache.time_filter_select.append(
-                    $('<option>',{value: value, text: text, selected: (value === 'all')})
-                );
-            });
+
+            dom_cache.time_filter_select.append(
+                $('<option>',{value: 'all', text: _lang.time_f_s_all, selected: true}),
+                $('<option>',{value: '1h', text: _lang.time_f_s_1h}),
+                $('<option>',{value: '24h', text: _lang.time_f_s_24h}),
+                $('<option>',{value: '72h', text: _lang.time_f_s_72h}),
+                $('<option>',{value: '1w', text: _lang.time_f_s_1w}),
+                $('<option>',{value: '1m', text: _lang.time_f_s_1m}),
+                $('<option>',{value: '1y', text: _lang.time_f_s_1y}),
+                $('<option>',{value: 'range', text: _lang.time_f_s_range})
+            );
 
             if (engine.settings.HideSeed === 1) {
                 dom_cache.seed_filter_container.hide();
@@ -2516,13 +2535,23 @@ var view = function() {
                         }
                     }
 
+                    if (typeof _lang.size_list === 'string') {
+                        _lang.size_list = JSON.parse(_lang.size_list);
+                    }
+                    if (typeof _lang.time_f_d === 'string') {
+                        _lang.time_f_d = JSON.parse(_lang.time_f_d);
+                    }
+                    if (typeof _lang.time_f_m === 'string') {
+                        _lang.time_f_m = JSON.parse(_lang.time_f_m);
+                    }
+
                     table_colums = [
-                        {title: _lang.table.time, text: _lang.table.time, type: 'time', size: 125},
-                        {title: _lang.table.quality[1], text: _lang.table.quality[0], type: 'quality', size: 31},
-                        {title: _lang.table.title, text: _lang.table.title, type: 'title'},
-                        {title: _lang.table.size, text: _lang.table.size, type: 'size', size: 80},
-                        {title: _lang.table.seeds[1], text: _lang.table.seeds[0], type: 'seeds', size: 30},
-                        {title: _lang.table.leechs[1], text: _lang.table.leechs[0], type: 'leechs', size: 30}
+                        {title: _lang.columnTime, text: _lang.columnTime, type: 'time', size: 125},
+                        {title: _lang.columnQuality, text: _lang.columnQualityShort, type: 'quality', size: 31},
+                        {title: _lang.columnTitle, text: _lang.columnTitle, type: 'title'},
+                        {title: _lang.columnSize, text: _lang.columnSize, type: 'size', size: 80},
+                        {title: _lang.columnSeeds, text: _lang.columnSeedsShort, type: 'seeds', size: 30},
+                        {title: _lang.columnLeechs, text: _lang.columnLeechsShort, type: 'leechs', size: 30}
                     ];
 
                     var_cache.table_sort_colum = storage.table_sort_colum || var_cache.table_sort_colum;

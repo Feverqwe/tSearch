@@ -62,7 +62,7 @@ var options = function() {
                 $('<li>').append(
                     $('<input>',{type: 'checkbox', name: key, checked: value.e === 1, disabled: key === 'favorites'})
                 ),
-                $('<li>').append( _lang.exp_items[key] )
+                $('<li>').append( _lang['exp_items_'+key] )
             ));
         });
         if (_lang.t !== "ru") {
@@ -260,18 +260,18 @@ var options = function() {
         $.each(torrent_lib, function(id, tracker) {
             var flags = [];
             if (!tracker.flags.rs) {
-                flags.push($('<div>', {'class': 'cirilic', title: _lang.flag.cirilic}));
+                flags.push($('<div>', {'class': 'cirilic', title: _lang.flag_cirilic}));
             }
             if (tracker.flags.a) {
-                flags.push($('<div>', {'class': 'auth', title: _lang.flag.auth}));
+                flags.push($('<div>', {'class': 'auth', title: _lang.flag_auth}));
             }
             if (tracker.flags.l) {
-                flags.push($('<div>', {'class': 'rus', title: _lang.flag.rus}));
+                flags.push($('<div>', {'class': 'rus', title: _lang.flag_rus}));
             }
             if (tracker.flags.proxy) {
                 var useProxyBox;
                 flags.push(
-                    $('<div>', {'class': 'proxy', title: _lang.flag.proxy}).append(
+                    $('<div>', {'class': 'proxy', title: _lang.flag_proxy}).append(
                         useProxyBox = $('<input type="checkbox" class="use_proxy" data-tracker="'+id+'">')
                     )
                 );

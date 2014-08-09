@@ -970,6 +970,11 @@ var magic = function() {
     };
     return {
         begin: function() {
+
+            if (typeof _lang.size_list === 'string') {
+                _lang.size_list = JSON.parse(_lang.size_list);
+            }
+
             write_language();
             dom_cache.window = $(window);
             dom_cache.body = $('body');
