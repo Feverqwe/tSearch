@@ -1581,7 +1581,7 @@ var view = function() {
             content.push( li );
         }
         counter = $('<i>', {text: 0});
-        li = $('<li>', {'class':'selected'}).append($('<a>',{text: _lang['cat_all'], href: '#'}), counter);
+        li = $('<li>', {'class':'selected'}).append($('<a>',{text: _lang.categoryAll, href: '#'}), counter);
         var_cache.categorys[undefined] = { i: counter, li: li, count: 0, hide: 0 };
         content.unshift( li );
         dom_cache.result_category_container.append(content);
@@ -1996,30 +1996,39 @@ var view = function() {
         mono.storage.set({click_history: JSON.stringify( new_obj ) });
     };
     var write_language = function() {
-        dom_cache.search_form.children('.button').val(_lang['btn_form']);
-        var search_panel = $('div.search_panel');
-        search_panel.children('div.right').children('.main').attr('title', _lang['btn_main']);
-        search_panel.children('div.right').children('.history').attr('title', _lang['btn_history']);
-        search_panel.find('div.btn.clear').attr('title', _lang['btn_filter']);
-        dom_cache.setup_btn.attr('title',_lang['btn_tracker_list']);
-        var p = dom_cache.tracker_list_container.children('p')[0];
-        p.replaceChild(document.createTextNode(_lang['tracker_list']), p.firstChild);
-        var word_filter_form = dom_cache.word_filter_input.parent();
-        word_filter_form.children('p').text(_lang['filter']);
-        word_filter_form.children('div.btn.clear').attr('title', _lang['btn_filter']);
-        dom_cache.time_filter_container.children('p').eq(0).text(_lang['time_filter']);
-        dom_cache.size_filter_container.children('p').text(_lang['size_filter']);
-        dom_cache.size_filter_container.find('span.g').eq(0).text(_lang['size_filter_g']);
-        dom_cache.seed_filter_container.children('p').eq(0).text(_lang['seed_filter']);
-        dom_cache.peer_filter_container.children('p').eq(0).text(_lang['peer_filter']);
-        var right_panel = dom_cache.word_filter_input.parent().parent();
-        right_panel.find('span.from').text(_lang['size_filter_f']);
-        right_panel.find('span.to').text(_lang['size_filter_t']);
-        dom_cache.scroll_to_top_btn.attr('title', _lang['btn_up']);
-        $('div.y-money > a').text(_lang.y_money);
-        $('div.donate > div.logo').attr('title', _lang.donate);
-        $('div.feedback > div.mail_icon').attr('title', _lang.feedback);
-        $('div.feedback > a').text(_lang.feedback);
+        var elList = document.querySelectorAll('[data-lang]');
+        for (var i = 0, el; el = elList[i]; i++) {
+            var args = el.dataset.lang.split(',');
+            var locale = _lang[args.shift()];
+            if (locale === undefined) {
+                console.log('Lang not found!', el.dataset.lang);
+                continue;
+            }
+            if (args.length !== 0) {
+                args.forEach(function(item) {
+                    if (item === 'text') {
+                        item.textContent = locale;
+                        return 1;
+                    }
+                    if (item === 'html') {
+                        item.innerHTML = locale;
+                        return 1;
+                    }
+                    el.setAttribute(item, locale);
+                });
+            } else
+            if (el.tagName === 'DIV') {
+                el.setAttribute('title', locale);
+            } else
+            if (['A', 'LEGEND', 'SPAN', 'LI', 'TH', 'P', 'OPTION'].indexOf(el.tagName) !== -1) {
+                el.textContent = locale;
+            } else
+            if (el.tagName === 'INPUT') {
+                el.value = locale;
+            } else {
+                console.log('Tag name not found!', el.tagName);
+            }
+        }
     };
     var setDescription = function(content) {
         dom_cache.request_desc_container.append(content);
@@ -2059,17 +2068,6 @@ var view = function() {
             dom_cache.search_input.focus();
 
             write_language();
-
-            dom_cache.time_filter_select.append(
-                $('<option>',{value: 'all', text: _lang.time_f_s_all, selected: true}),
-                $('<option>',{value: '1h', text: _lang.time_f_s_1h}),
-                $('<option>',{value: '24h', text: _lang.time_f_s_24h}),
-                $('<option>',{value: '72h', text: _lang.time_f_s_72h}),
-                $('<option>',{value: '1w', text: _lang.time_f_s_1w}),
-                $('<option>',{value: '1m', text: _lang.time_f_s_1m}),
-                $('<option>',{value: '1y', text: _lang.time_f_s_1y}),
-                $('<option>',{value: 'range', text: _lang.time_f_s_range})
-            );
 
             if (engine.settings.HideSeed === 1) {
                 dom_cache.seed_filter_container.hide();

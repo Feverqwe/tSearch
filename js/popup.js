@@ -123,8 +123,8 @@ var popup = function(enable_ac) {
     dom_cache.form_search = $('form');
     dom_cache.clear = $('div.btn.clear');
 
-    dom_cache.submit.val(_lang['btn_form']);
-    dom_cache.clear.attr('title', _lang.btn_filter);
+    dom_cache.submit.val(_lang.search_btn);
+    dom_cache.clear.attr('title', _lang.clear_btn);
 
     dom_cache.form_search.submit(function(e) {
         e.preventDefault();

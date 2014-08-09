@@ -952,17 +952,18 @@ var magic = function() {
         return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
     };
     var write_language = function() {
-        var lang = document.querySelectorAll('[data-lang]');
-        for (var i = 0, el; el = lang[i]; i++) {
-            var text = _lang['magic_'+i];
-            if (text === undefined) {
-                return;
+        var elList = document.querySelectorAll('[data-lang]');
+        for (var i = 0, el; el = elList[i]; i++) {
+            var locale = _lang['magic_'+el.dataset.lang];
+            if (locale === undefined) {
+                console.log('Lang not found!', el.dataset.lang, el);
+                continue;
             }
             if (['A', 'LEGEND', 'SPAN', 'LI', 'TH'].indexOf(el.tagName) !== -1) {
-                el.textContent = text;
+                el.textContent = locale;
             } else
             if (['INPUT'].indexOf(el.tagName) !== -1) {
-                el.value = text;
+                el.value = locale;
             } else {
                 console.log('Tag name not found!', el.tagName);
             }
