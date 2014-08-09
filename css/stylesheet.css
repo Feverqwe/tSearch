@@ -136,7 +136,6 @@ div.result_panel > table td div.title a {
     line-height: 130%;
     padding-bottom: 1px;
     border-bottom: 1px solid transparent;
-    transition: border-bottom-color .2s;
 }
 div.result_panel > table td div.title a:link {
     color: #1A3DC1;

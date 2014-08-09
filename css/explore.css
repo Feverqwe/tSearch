@@ -408,7 +408,6 @@ div.explore div.top_search a {
     color: #0051D8;
     text-decoration: none;
     border-bottom: 1px solid transparent;
-    transition: border-bottom-color .2s;
 }
 div.explore div.top_search a:hover {
     border-bottom-color: #0051D8;
@@ -547,7 +546,6 @@ div.explore div.popup div.content a {
     color: #0051D8;
     text-decoration: none;
     border-bottom: 1px solid transparent;
-    transition: border-bottom-color .2s;
 }
 div.explore div.popup div.content a:link {
     color: #1A3DC1;

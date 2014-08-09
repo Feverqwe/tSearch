@@ -21,9 +21,9 @@
     <body>
         <div class="search_panel">
             <div class="left">
-                <form name="search">
-                    <input type="text" name="s" class="request" />
-                    <div class="btn clear" title="Очистить"></div>
+                <form name="search" id="search_form" >
+                    <input type="text" name="s" class="request" id="search_input" />
+                    <div class="btn clear" title="Очистить" id="search_clear_btn" ></div>
                     <input type="submit" class="button" value="Найти" />
                 </form>
             </div>
@@ -34,29 +34,29 @@
         </div>
         <div class="content loading">
             <div class="right">
-                <div class="tracker_list">
-                    <p>Трекеры<a class="setup" href="options.html#back" title="Настройки"></a></p>
-                    <ul class="trackers"></ul>
+                <div class="tracker_list" id="tracker_list_container">
+                    <p>Трекеры<a class="setup" href="options.html#back" title="Настройки" id="setup_btn"></a></p>
+                    <ul class="trackers" id="tracker_list"></ul>
                 </div>
                 <div class="word_filter">
                     <p>Фильтр слов</p>
-                    <input type="text" />
-                    <div class="btn clear" title="Очистить"></div>
+                    <input type="text" id="word_filter_input" />
+                    <div class="btn clear" title="Очистить" id="word_filter_clear_btn"></div>
                 </div>
-                <div class="size_filter">
+                <div class="size_filter" id="size_filter_container">
                     <p>Размер</p>
                     <div><span class="from">от</span> <input name="f_v" type="text" /> <span class="to">до</span> <input name="t_v" type="text" /><span class="g">гб</span></div>
                 </div>
-                <div class="time_filter">
+                <div class="time_filter" id="time_filter_container">
                     <p>Дата</p>
-                    <div><select></select></div>
+                    <div><select id="time_filter_select"></select></div>
                     <div class="range"><input name="start" type="text" /> – <input name="end" type="text" /></div>
                 </div>
-                <div class="seed_filter">
+                <div class="seed_filter" id="seed_filter_container">
                     <p>Сиды</p>
                     <div><span class="from">от</span> <input name="start" type="text" /> <span class="to">до</span> <input name="end" type="text" /></div>
                 </div>
-                <div class="peer_filter">
+                <div class="peer_filter" id="peer_filter_container">
                     <p>Пиры</p>
                     <div><span class="from">от</span> <input name="start" type="text" /> <span class="to">до</span> <input name="end" type="text" /></div>
                 </div>
@@ -87,16 +87,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="result_panel">
-                    <div class="about_panel"></div>
-                    <ul class="categorys"></ul>
-                    <table>
-                        <thead></thead>
-                        <tbody></tbody>
+                <div class="result_panel" id="result_container">
+                    <div class="about_panel" id="request_description_container" ></div>
+                    <ul class="categorys" id="result_category_container"></ul>
+                    <table id="result_table">
+                        <thead id="result_table_head"></thead>
+                        <tbody id="result_table_body"></tbody>
                     </table>
                 </div>
             </div>
-            <div class="topbtn" title="Вверх!"></div>
+            <div class="topbtn" title="Вверх!" id="scroll_to_top_btn"></div>
         </div>
     </body>
 </html>

@@ -1988,9 +1988,9 @@ var view = function() {
         search_panel.children('div.right').children('.main').attr('title', _lang['btn_main']);
         search_panel.children('div.right').children('.history').attr('title', _lang['btn_history']);
         search_panel.find('div.btn.clear').attr('title', _lang['btn_filter']);
-        var tracker_list = $('div.tracker_list');
-        var setup = tracker_list.children('p').children('a').attr('title',_lang['btn_tracker_list']);
-        tracker_list.children('p').empty().append( _lang['tracker_list'], setup );
+        dom_cache.setupBtn.attr('title',_lang['btn_tracker_list']);
+        var p = dom_cache.tracker_list.children('p')[0];
+        p.replaceChild(document.createTextNode(_lang['tracker_list']), p.firstChild);
         var word_filter_form = dom_cache.word_filter.parent();
         word_filter_form.children('p').text(_lang['filter']);
         word_filter_form.children('div.btn.clear').attr('title', _lang['btn_filter']);
@@ -2019,31 +2019,32 @@ var view = function() {
         setDescription: setDescription,
         addInClickHistory: addInClickHistory,
         begin: function() {
-            dom_cache.body = $('body');
-            dom_cache.title = $('head').children('title');
-            dom_cache.trackers_ul = $('ul.trackers');
-            dom_cache.form_search = $('form[name="search"]');
-            dom_cache.search_input = dom_cache.form_search.children('input.request');
-            dom_cache.search_btn_clear = dom_cache.form_search.children('div.btn.clear');
-            dom_cache.result_panel = $('div.result_panel');
-            dom_cache.about_panel = dom_cache.result_panel.children('div.about_panel');
-            dom_cache.table = dom_cache.result_panel.children('table');
-            dom_cache.thead = dom_cache.table.children('thead');
-            dom_cache.tbody = dom_cache.table.children('tbody');
-            dom_cache.time_filter = $('.time_filter');
-            dom_cache.time_filter_select = dom_cache.time_filter.find('select');
-            dom_cache.word_filter = $('div.word_filter input');
-            dom_cache.word_filter_btn = $('div.word_filter div.btn.clear');
-            dom_cache.categorys = $('ul.categorys');
-            dom_cache.torrent_list = dom_cache.trackers_ul.parent();
             dom_cache.window = $(window);
-            dom_cache.topbtn = $('div.topbtn');
-            dom_cache.size_filter = $('div.size_filter');
-            dom_cache.seed_filter = $('div.seed_filter');
-            dom_cache.peer_filter = $('div.peer_filter');
-            dom_cache.html_body = $('html, body');
+            dom_cache.body = $(document.body);
+            dom_cache.title = $(document.head).children('title');
+            dom_cache.trackers_ul = $( document.getElementById('tracker_list') );
+            dom_cache.form_search = $( document.getElementById('search_form') );
+            dom_cache.search_input = $( document.getElementById('search_input') );
+            dom_cache.search_btn_clear = $( document.getElementById('search_clear_btn') );
+            dom_cache.result_panel = $( document.getElementById('result_container') );
+            dom_cache.about_panel = $( document.getElementById('request_description_container') );
+            dom_cache.table = $( document.getElementById('result_table') );
+            dom_cache.thead = $( document.getElementById('result_table_head') );
+            dom_cache.tbody = $( document.getElementById('result_table_body') );
+            dom_cache.time_filter = $( document.getElementById('time_filter_container') );
+            dom_cache.time_filter_select = $( document.getElementById('time_filter_select') );
+            dom_cache.word_filter = $( document.getElementById('word_filter_input') );
+            dom_cache.word_filter_btn = $( document.getElementById('word_filter_clear_btn') );
+            dom_cache.categorys = $( document.getElementById('result_category_container') );
+            dom_cache.torrent_list = $( document.getElementById('tracker_list_container') );
+            dom_cache.tracker_list = dom_cache.torrent_list;
+            dom_cache.topbtn = $( document.getElementById('scroll_to_top_btn') );
+            dom_cache.size_filter = $( document.getElementById('size_filter_container') );
+            dom_cache.seed_filter = $( document.getElementById('seed_filter_container') );
+            dom_cache.peer_filter = $( document.getElementById('peer_filter_container') );
+            dom_cache.setupBtn = $( document.getElementById('setup_btn') );
             dom_cache.search_input.focus();
-            dom_cache.ad = $('div.ad');
+
 
             write_language();
             $.each(_lang.time_f_s, function(value, text) {
@@ -2074,11 +2075,6 @@ var view = function() {
                 dom_cache.topbtn.css({"right": "auto"});
             }
             var style;
-            if (engine.settings.noTransition === 1 || engine.settings.noTransitionLinks === 1) {
-                style = 'div.result_panel > table td div.title a' +
-                    '{transition: none;}';
-                dom_cache.body.append($('<style>', {text: style}));
-            }
             if (engine.settings.noTransition === 1) {
                 style = 'div.result_panel > table div.tracker_icon,' +
                     'div.result_panel > table div.tracker_icon,' +
@@ -2152,7 +2148,7 @@ var view = function() {
             dom_cache.topbtn.on("click", function(e) {
                 e.preventDefault();
                 window.scrollTo(window.scrollX, 200);
-                dom_cache.html_body.animate({
+                $('html, body').animate({
                     scrollTop: 0
                 }, 200);
             });
