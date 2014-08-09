@@ -29,6 +29,7 @@ var mono = function (env) {
     } else {
         if (typeof GM_getValue !== 'undefined') {
             mono.isGM = true;
+            mono.isTM = navigator.userAgent.indexOf('Firefox') === -1;
         } else
         if (window.chrome !== undefined) {
             mono.isChrome = true;
