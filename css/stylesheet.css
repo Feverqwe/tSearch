@@ -922,6 +922,12 @@ div.feedback div.mail_icon {
     margin-top: 1px;
     margin-bottom: 1px;
 }
+#trackerListManager .mgr_tracker_list .tracker_item.custom {
+    background-color: #FFF1A8;
+}
+#trackerListManager .mgr_tracker_list .tracker_item.not_found {
+    background-color: #FFE0E0;
+}
 #trackerListManager .mgr_tracker_list .tracker_item:hover {
     background-color: #DDD;
 }

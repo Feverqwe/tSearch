@@ -2214,9 +2214,10 @@ var view = function() {
             elList = trackerList.children('div').filter(function(index, el) {
                 var id = el.dataset.id;
                 var text = descCache[id];
+                var url = el.childNodes[1].firstChild.getAttribute('href') || '';
                 if (text === undefined) {
                     text = el.childNodes[1].textContent.toLowerCase();
-                    text += ' ' + el.childNodes[1].firstChild.getAttribute('href').toLowerCase();
+                    text += ' ' + url.toLowerCase();
                     text += ' ' + el.childNodes[2].firstChild.textContent.toLowerCase();
                     descCache[id] = text;
                 }
@@ -2248,7 +2249,7 @@ var view = function() {
         trackerList.on('click', 'div.tracker_item', function(e) {
             var $this = $(this);
             var checkbox = $this.find('input.tracker_state');
-            if (['INPUT', 'LABEL'].indexOf(e.target.tagName) !== -1) {
+            if (['INPUT', 'LABEL', 'A'].indexOf(e.target.tagName) !== -1) {
                 return;
             }
             checkbox[0].checked = !checkbox[0].checked;
@@ -2281,6 +2282,7 @@ var view = function() {
         });
 
         var getTrackerDom = function( id, tracker, tracker_icon, options ) {
+            var link = undefined;
             if (tracker === undefined) {
                 var uid = (id.substr(0, 3) === 'ct_')?id.substr(3):undefined;
                 tracker = {
@@ -2289,9 +2291,7 @@ var view = function() {
                     notFound: 1
                 };
                 if (uid !== undefined) {
-                    options.push(
-                        $('<a>', {href: 'http://code-tms.blogspot.ru/search?q=' + uid, text: _lang.findNotFound, target: "_blank"})
-                    )
+                    link = [' ',$('<a>', {href: 'http://code-tms.blogspot.ru/search?q=' + uid, text: _lang.findNotFound, target: "_blank"})];
                 }
             }
             if (tracker_icon === undefined) {
@@ -2326,6 +2326,7 @@ var view = function() {
                 ),
                 $('<div>', {'class': 'desc', title: tracker.about}).append(
                     tracker.about,
+                    link,
                     $('<div>', {class: 'options'}).append(options)
                 ),
                 $('<div>', {'class': 'status'}).append(
@@ -2358,6 +2359,11 @@ var view = function() {
             if (!custom && editMode === 1) {
                 engine.profileList[selfCurrentProfile].forEach(function (id) {
                     var el = trackerList.children('div[data-id="' + id + '"]');
+                    if (el.length === 0) {
+                        trackerList.append(
+                            el = getTrackerDom( id )
+                        );
+                    }
                     list.push(el);
                 });
             } else {
