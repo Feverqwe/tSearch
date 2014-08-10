@@ -173,6 +173,20 @@ var get_lang = function (lang) {
         feedback: 'Feedback',
 
         word_add: 'Add...',
+        editTrackerList: 'Edit tracker list',
+        mgrTitleNew: 'Add a new tracker list',
+        mgrTitleEdit: 'Editing a list of trackers',
+        word_close: 'Close',
+        mgrNewListName: 'Name',
+        mgrRemoveList: 'Delete list',
+        word_all: 'All',
+        mgtWithoutList: 'Without a list',
+        word_selected: 'Selected',
+        mgrQuickSearch: 'Quick search',
+        mgrNothingSelected: 'Nothing is selected',
+        mgrSelectedN: 'Selected items:',
+        word_save: 'Save',
+        mgrUseProxy: 'Use proxy',
 
         settings: {
             1: "The list of torrents",
@@ -501,6 +515,20 @@ var get_lang = function (lang) {
         feedback: 'Сообщить о проблеме...',
 
         word_add: 'Добавить...',
+        editTrackerList: 'Редактировать список трекеров',
+        mgrTitleNew: 'Добавление нового списка трекеров',
+        mgrTitleEdit: 'Редактирование списка трекеров',
+        word_close: 'Закрыть',
+        mgrNewListName: 'Название списка',
+        mgrRemoveList: 'Удалить список',
+        word_all: 'Все',
+        mgtWithoutList: 'Без списка',
+        word_selected: 'Выбранные',
+        mgrQuickSearch: 'Быстрый поиск',
+        mgrNothingSelected: 'Ничего не выбрано',
+        mgrSelectedN: 'Выбрано элементов:',
+        word_save: 'Сохранить',
+        mgrUseProxy: 'Использовать прокси',
 
         settings: {
             1: "Список торрентов",

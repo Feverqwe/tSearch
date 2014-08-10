@@ -2128,15 +2128,15 @@ var view = function() {
         var numbersUpdate = function() {
             var selectCount = trackerList.children('.selected').length;
             if (!selectCount) {
-                footerCounter.text('Ничего не выбрано');
+                footerCounter.text(_lang.mgrNothingSelected);
             } else {
-                footerCounter.text('Выбрано элементов: '+selectCount);
+                footerCounter.text(_lang.mgrSelectedN+' '+selectCount);
             }
 
             var links = filterContainer.children('a');
             for (var i = 0, el; el = links[i]; i++) {
                 var type = el.dataset.type;
-                var numContainer = el.querySelector('span');
+                var numContainer = el.querySelectorAll('span')[1];
                 if (type === 'all') {
                     numContainer.textContent = trackerList.children().length;
                 } else
@@ -2376,7 +2376,7 @@ var view = function() {
                 }
                 var useProxy = undefined;
                 if (tracker.flags.proxy) {
-                    useProxy = $('<label>', {text: 'Использовать прокси', class: 'useProxy'}).prepend(
+                    useProxy = $('<label>', {text: _lang.mgrUseProxy, class: 'useProxy'}).prepend(
                         $('<input>', {
                             type: "checkbox",
                             class: "use_proxy",
@@ -2441,12 +2441,12 @@ var view = function() {
                 editMode = isEditMode;
                 if (!editMode) {
                     selfCurrentProfile = undefined;
-                    title.text('Добавление нового списка трекеров');
+                    title.text(_lang.mgrTitleNew);
                     removeListBtn.hide();
                     listName.val('');
                 } else {
                     selfCurrentProfile = currentProfile;
-                    title.text('Редактирование списка трекеров');
+                    title.text(_lang.mgrTitleEdit);
                     var n = 0;
                     for (var item in engine.profileList) {
                         n++;
@@ -2496,7 +2496,7 @@ var view = function() {
         if (profileName === 7) {
             // was removed
             // update list
-            for (name in engine.profileList) {
+            for (var name in engine.profileList) {
                 profileName = name;
                 break;
             }
