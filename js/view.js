@@ -2095,7 +2095,7 @@ var view = function() {
 
             var proxyList = [];
             elList = trackerList.find('input.use_proxy:checked');
-            for (i = 0, el; el = elList[i]; i++) {
+            for (var i = 0, el; el = elList[i]; i++) {
                 id = el.dataset.tracker;
                 proxyList.push(id);
             }
