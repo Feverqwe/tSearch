@@ -2053,13 +2053,6 @@ var view = function() {
         var descCache = {};
         var editMode = 1;
 
-        removeListBtn.on('click', function(e) {
-            e.preventDefault();
-            if (editMode) {
-                delete engine.profileList[selfCurrentProfile];
-            }
-            onHide(2);
-        });
         closeBtn.on('click', function(e) {
             e.preventDefault();
             onHide(1);
@@ -2079,23 +2072,43 @@ var view = function() {
                 + '}'
             }) );
         });
+        removeListBtn.on('click', function(e) {
+            e.preventDefault();
+            if (editMode) {
+                delete engine.profileList[selfCurrentProfile];
+
+                var changes = {};
+                changes.profileList = JSON.stringify(engine.profileList);
+                mono.storage.set(changes);
+            }
+            onHide(2);
+        });
         saveBtn.on('click', function(e) {
             e.preventDefault();
+
             var elList = trackerList.children('.selected');
             var list = [];
-            var proxyList = [];
             for (var i = 0, el; el = elList[i]; i++) {
                 var id = el.dataset.id;
                 list.push(id);
-                var proxy = el.querySelector('input.use_proxy');
-                if (proxy && proxy.checked) {
-                    proxyList.push(id);
-                }
             }
+
+            var proxyList = [];
+            elList = trackerList.find('input.use_proxy:checked');
+            for (i = 0, el; el = elList[i]; i++) {
+                id = el.dataset.tracker;
+                proxyList.push(id);
+            }
+
             var newListName = listName.val();
             if (!newListName) {
-                return onHide(1);
+                listName.addClass('error');
+                setTimeout(function() {
+                    listName.removeClass('error');
+                }, 1500);
+                return;
             }
+
             if (selfCurrentProfile !== newListName) {
                 delete engine.profileList[selfCurrentProfile];
                 selfCurrentProfile = newListName;
@@ -2103,6 +2116,12 @@ var view = function() {
             engine.profileList[selfCurrentProfile] = list;
             engine.proxyList.splice(0);
             Array.prototype.push.apply(engine.proxyList, proxyList);
+
+            var changes = {};
+            changes.profileList = JSON.stringify(engine.profileList);
+            changes.proxyList = proxyList;
+            mono.storage.set(changes);
+
             onHide(selfCurrentProfile);
         });
 
@@ -2398,12 +2417,8 @@ var view = function() {
             if (wordFilterStyle !== undefined) {
                 wordFilterStyle.remove();
             }
-            if (advancedStyle !== undefined) {
-                advancedStyle.remove();
-            }
             filterStyle = undefined;
             wordFilterStyle = undefined;
-            advancedStyle = undefined;
 
             filterContainer.children('a.selected').removeClass('selected');
             filterContainer.children('a:eq(2)').addClass('selected');
@@ -2417,7 +2432,7 @@ var view = function() {
         var selfHide = function(e) {
             document.body.removeEventListener('click', selfHide);
             onHide(1);
-        }
+        };
 
         return {
             show: function(isEditMode, cb) {

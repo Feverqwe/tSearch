@@ -834,6 +834,10 @@ div.feedback div.mail_icon {
     padding-left: 4px;
     padding-right: 4px;
     width: 140px;
+    transition: border-color 1s;
+}
+#trackerListManager .mgr_sub_header input.error {
+    border-color: red;
 }
 #trackerListManager .mgr_tracker_list_filter {
     padding: 16px;
