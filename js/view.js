@@ -2080,6 +2080,10 @@ var view = function() {
                 var changes = {};
                 changes.profileList = JSON.stringify(engine.profileList);
                 mono.storage.set(changes);
+
+                if (engine.settings.profileListSync === 1) {
+                    mono.storage.sync.set({profileList: JSON.stringify(engine.profileList)});
+                }
             }
             onHide(2);
         });
@@ -2121,6 +2125,10 @@ var view = function() {
             changes.profileList = JSON.stringify(engine.profileList);
             changes.proxyList = proxyList;
             mono.storage.set(changes);
+
+            if (engine.settings.profileListSync === 1) {
+                mono.storage.sync.set({profileList: JSON.stringify(engine.profileList)});
+            }
 
             onHide(selfCurrentProfile);
         });
