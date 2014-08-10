@@ -859,7 +859,7 @@ div.feedback div.mail_icon {
     border-radius: 3px;
     color: #000;
 }
-#trackerListManager .mgr_tracker_list_filter a > span {
+#trackerListManager .mgr_tracker_list_filter a > span:last-child {
     color: #949494;
 }
 #trackerListManager .mgr_tracker_list_filter a.selected {
