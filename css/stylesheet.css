@@ -791,7 +791,7 @@ div.feedback div.mail_icon {
 }
 
 #trackerListManager {
-    position: fixed;
+    position: absolute;
     display: block;
     width: 700px;
     height: 640px;
@@ -799,7 +799,7 @@ div.feedback div.mail_icon {
     border: 1px solid #ccc;
     z-index: 90;
     left: calc(50% - 350px);
-    top: 66px;
+    top: -1px;
     box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);
     display: none;
 }
