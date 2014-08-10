@@ -2406,6 +2406,8 @@ var view = function() {
             onHideCb && onHideCb(state);
             onHideCb = undefined;
 
+            filterInput.val('');
+
             selfCurrentProfile = '-';
 
             document.body.removeEventListener('click', selfHide);
