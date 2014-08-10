@@ -35,7 +35,10 @@
         <div class="content loading" id="main_container">
             <div class="right" id="options_column">
                 <div class="tracker_list" id="tracker_list_container">
-                    <p><span data-lang="tracker_list">Трекеры</span><a class="setup" href="options.html#back" title="Настройки" id="setup_btn" data-lang="setup_btn,title"></a></p>
+                    <p>
+                        <select id="profileList" data-lang="label_profile,title"></select>
+                        <a class="editTrackerList" href="#" title="Редактировать список" id="editTrackerList"></a>
+                    </p>
                     <ul class="trackers" id="tracker_list"></ul>
                 </div>
                 <div class="word_filter">
@@ -106,6 +109,28 @@
                 </div>
             </div>
             <div class="topbtn" title="Вверх!" id="scroll_to_top_btn" data-lang="btn_up"></div>
+            <div id="trackerListManager">
+                <div class="mgr_header">
+                    <span class="title">Добавление нового списка трекеров</span>
+                    <a href="#" class="close">Закрыть</a>
+                </div>
+                <div class="mgr_sub_header">
+                    <input type="text" placeholder="Название списка" class="list_name" />
+                    <a href="#" class="remove_list">Удалить список</a>
+                </div>
+                <div class="mgr_tracker_list_filter">
+                    <a href="#" data-type="all">Все <span>0</span></a>
+                    <a href="#" data-type="unused">Без списка <span>0</span></a>
+                    <a href="#" class="selected" data-type="selected">Выбранные <span>0</span></a>
+                    <input type="text" placeholder="Быстрый поиск" />
+                </div>
+                <div class="mgr_tracker_list"></div>
+                <div class="mgr_footer">
+                    <input type="button" value="" class="advanced">
+                    <span class="couter">Ничего не выбрано</span>
+                    <input type="button" value="Сохранить" class="button save">
+                </div>
+            </div>
         </div>
     </body>
 </html>

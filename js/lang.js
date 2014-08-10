@@ -171,6 +171,9 @@ var get_lang = function (lang) {
         trackerNotFound: "Tracker not found!",
         findNotFound: "To find!",
         feedback: 'Feedback',
+
+        word_add: 'Add...',
+
         settings: {
             1: "The list of torrents",
             2: "Options",
@@ -496,6 +499,9 @@ var get_lang = function (lang) {
         trackerNotFound: "Трекер не найден!",
         findNotFound: "Найти!",
         feedback: 'Сообщить о проблеме...',
+
+        word_add: 'Добавить...',
+
         settings: {
             1: "Список торрентов",
             2: "Опции",

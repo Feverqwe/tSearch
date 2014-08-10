@@ -730,6 +730,7 @@ var engine = function() {
                 cb && cb();
             });
         },
+        proxyList: proxyList,
         boot: function(cb) {
             if (mono.isChrome) {
                 var_cache.historyLimit = 200;
@@ -751,7 +752,8 @@ var engine = function() {
                         'history', 'lang', 'google_analytics', 'proxyList'], function(storage) {
 
                         if (storage.proxyList !== undefined) {
-                            proxyList = storage.proxyList;
+                            proxyList.splice(0);
+                            Array.prototype.push.apply(proxyList, storage.proxyList);
                         }
 
                         if (syncStorage.profileList === undefined) {

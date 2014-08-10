@@ -51,7 +51,7 @@ div.search_panel form input.button {
 }
 
 input.button {
-    height: 26px !important;
+    height: 26px;
     background-color: #ffffff;
     color: #333333;
     border-radius: 3px;
@@ -290,18 +290,17 @@ div.tracker_list div.profile {
 div.tracker_list div.profile select {
     max-width: 162px;
 }
-div.tracker_list a.setup {
-    background: url(../images/settings.png) center center no-repeat;
+div.tracker_list a.editTrackerList {
+    background: url(../images/edit_list.png) center center no-repeat;
     width: 16px;
     height: 16px;
     z-index: 1;
     opacity: 0.5;
     display: inline-block;
-    margin-left: 2px;
     margin-bottom: -3px;
     transition: opacity .2s;
 }
-div.tracker_list a.setup:hover {
+div.tracker_list a.editTrackerList:hover {
     opacity: 1;
 }
 
@@ -775,4 +774,240 @@ div.feedback div.mail_icon {
     background-size: 48px;
     width: 48px;
     height: 48px;
+}
+
+#profileList {
+    border-width: 0;
+    margin: 1px;
+    padding-right: 1px;
+    margin-right: 0;
+}
+#profileList:hover,
+#profileList:focus,
+#profileList:active {
+    border-width: 1px;
+    margin: 0;
+    padding-right: 0;
+}
+
+#trackerListManager {
+    position: fixed;
+    display: block;
+    width: 700px;
+    height: 640px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    z-index: 90;
+    left: calc(50% - 350px);
+    top: 65px;
+    box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);
+    display: none;
+}
+
+#trackerListManager a {
+    color: #0051D8;
+}
+
+#trackerListManager .mgr_header {
+    padding: 14px;
+    background-color: #E7E7E7;
+}
+#trackerListManager .mgr_header .title {
+    font-size: 16px;
+}
+#trackerListManager .mgr_header a {
+    float: right;
+    margin-top: 2px;
+}
+#trackerListManager .mgr_sub_header {
+    padding: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+#trackerListManager .mgr_sub_header a {
+    float: right;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+#trackerListManager .mgr_sub_header input {
+    font-size: 16px;
+    padding-left: 4px;
+    padding-right: 4px;
+    width: 140px;
+}
+#trackerListManager .mgr_tracker_list_filter {
+    padding: 16px;
+    border: 1px dashed #CACACA;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-left: 0;
+    border-right: 0;
+}
+#trackerListManager .mgr_tracker_list_filter a {
+    line-height: 22px;
+    font-weight: bolder;
+    font-size: smaller;
+    margin-right: 30px;
+    padding: 2px;
+    text-decoration: none;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 3px;
+    color: #000;
+}
+#trackerListManager .mgr_tracker_list_filter a > span {
+    color: #949494;
+}
+#trackerListManager .mgr_tracker_list_filter a.selected {
+    background-color: #337AF8;
+    color: #fff;
+}
+#trackerListManager .mgr_tracker_list_filter a.selected > span {
+    color: #fff;
+}
+#trackerListManager .mgr_tracker_list_filter input {
+    float: right;
+    font-size: 14px;
+    padding-left: 24px;
+    padding-right: 4px;
+    width: 140px;
+    margin-top: 1px;
+    background-image: url(../images/mini_search.png);
+    background-position: 4px center;
+    background-repeat: no-repeat;
+}
+#trackerListManager .mgr_tracker_list {
+    height: 457px;
+    overflow: auto;
+}
+#trackerListManager .mgr_footer {
+    padding: 16px;
+    border-top: 1px dashed #ccc;
+}
+#trackerListManager .mgr_footer input.save {
+    float: right;
+    margin-top: -3px;
+    height: 22px;
+}
+#trackerListManager .mgr_footer input.advanced {
+    height: 22px;
+    width: 22px;
+    background-color: #ffffff;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid #cccccc;
+    outline-color: rgb(81, 136, 255);
+    float: left;
+    margin-top: -3px;
+    margin-right: 10px;
+    background-image: url(../images/glass.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+#trackerListManager .mgr_footer input.advanced.checked {
+    outline: 0;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+#trackerListManager .mgr_tracker_list .tracker_item {
+    padding: 6px;
+    padding-bottom: 4px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    border-left: 0;
+    border-right: 0;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+#trackerListManager .mgr_tracker_list .tracker_item:hover {
+    background-color: #DDD;
+}
+#trackerListManager .mgr_tracker_list .tracker_item.selected {
+    background-color: #337AF8;
+    color: #fff
+}
+#trackerListManager .mgr_tracker_list .tracker_item > div {
+    display: inline-block;
+    margin: 2px;
+    vertical-align: middle;
+}
+#trackerListManager .mgr_tracker_list .tracker_item .tracker_icon {
+    margin: 0;
+    margin-left: 5px;
+    margin-right: 9px;
+    display: block;
+    padding: 1px;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: move;
+}
+#trackerListManager .mgr_tracker_list .tracker_item > div.title {
+    width: 125px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+    font-size: 14px;
+}
+#trackerListManager .mgr_tracker_list .tracker_item.selected a {
+    color: #fff;
+    text-decoration: underline;
+}
+#trackerListManager .mgr_tracker_list .tracker_item > div.desc {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 470px;
+    overflow: hidden;
+    font-size: 13px;
+}
+#trackerListManager .mgr_tracker_list .tracker_item > div.status input {
+    display: block;
+    margin: 0;
+}
+#trackerListManager .mgr_tracker_list .ui-sortable-helper {
+    background-color:#fff !important;
+    border-radius: 4px;
+    opacity: 0.9;
+    display: block !important;
+    color: #000 !important;
+}
+#trackerListManager .mgr_tracker_list .ui-sortable-helper a {
+    color: #000 !important;
+}
+#trackerListManager .mgr_tracker_list .ui-state-highlight {
+    background-color:#E7E7E7 !important;
+    height: 37px;
+    display: block !important;
+    border: 1px dashed #CACACA;
+    border-left: 0;
+    border-right: 0;
+}
+
+#trackerListManager .mgr_tracker_list .options {
+    display: none;
+}
+
+#trackerListManager .mgr_tracker_list div.icons {
+    float: right;
+}
+#trackerListManager .mgr_tracker_list div.icons > div {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+}
+#trackerListManager .mgr_tracker_list div.icons > div:hover {
+    opacity: 1;
+}
+#trackerListManager .mgr_tracker_list div.icons > div.auth {
+    background: url(../images/need_auth.png) center center;
+}
+#trackerListManager .mgr_tracker_list div.icons > div.rus {
+    background: url(../images/russian.png) center center;
+}
+#trackerListManager .mgr_tracker_list div.icons > div.cirilic {
+    background: url(../images/cyrillic.png) center center;
+}
+#trackerListManager .mgr_tracker_list label.useProxy {
+    line-height: 19px;
+    vertical-align: top;
 }

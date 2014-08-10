@@ -94,15 +94,16 @@ var view = function() {
 
     var currentProfile = undefined;
 
-    var writeTrackerList = function(currentProfile) {
-        dom_cache.tracker_list_container.find('option[value="'+currentProfile+'"]').prop('selected', true);
+    var writeTrackerList = function(_currentProfile) {
+        currentProfile = _currentProfile;
+        dom_cache.profileList.children('option[value="'+_currentProfile+'"]').prop('selected', true);
         var_cache.trackers = {};
         dom_cache.tracker_list.empty();
         dom_cache.body.children('style.tracker_icons').remove();
         var items = [];
         var style = '';
 
-        engine.profileList[currentProfile].forEach(function(trackerName) {
+        engine.profileList[_currentProfile].forEach(function(trackerName) {
             var torrent = torrent_lib[trackerName];
             if (!torrent) {
                 console.log('torrent not found!', trackerName);
@@ -130,20 +131,17 @@ var view = function() {
         });
         dom_cache.tracker_list.append(items);
         dom_cache.body.append($('<style>', {'class':'tracker_icons', text: style}));
-        mono.storage.set({currentProfile: currentProfile});
+        mono.storage.set({currentProfile: _currentProfile});
     };
 
     var writeProfileList = function(profileList) {
-        var $select = $('<select>', {'title': _lang.label_profile});
-        var count = 0;
+        dom_cache.profileList.empty();
+        var optionList = [];
         $.each(profileList, function(key) {
-            $select.append( $('<option>', {text: key, value: key}) );
-            count++;
+            optionList.push( $('<option>', {text: key, value: key}) );
         });
-        if (count < 2) {
-            return;
-        }
-        dom_cache.tracker_list.before($('<div>', {'class': 'profile'}).append($select));
+        dom_cache.profileList.append( optionList );
+        dom_cache.profileList.append( $('<option>', {'data-service': 'new', text: _lang.word_add}) );
     };
 
     var writeTrackerAuth = function(state, id) {
@@ -1995,8 +1993,8 @@ var view = function() {
         var_cache.click_history = new_obj;
         mono.storage.set({click_history: JSON.stringify( new_obj ) });
     };
-    var write_language = function() {
-        var elList = document.querySelectorAll('[data-lang]');
+    var write_language = function(body) {
+        var elList = (body || document).querySelectorAll('[data-lang]');
         for (var i = 0, el; el = elList[i]; i++) {
             var args = el.dataset.lang.split(',');
             var locale = _lang[args.shift()];
@@ -2033,6 +2031,465 @@ var view = function() {
     var setDescription = function(content) {
         dom_cache.request_desc_container.append(content);
     };
+
+    var trackerListManager = function() {
+        var trackerListManager = $( document.getElementById('trackerListManager') );
+        var trackerList = trackerListManager.find('.mgr_tracker_list');
+        var filterContainer = trackerListManager.find('.mgr_tracker_list_filter');
+        var filterStyle = undefined;
+        var wordFilterStyle = undefined;
+        var advancedStyle = undefined;
+        var filterInput = filterContainer.children('input');
+        var footerCounter = trackerListManager.find('.mgr_footer > span');
+        var title = trackerListManager.find('.mgr_header .title');
+        var closeBtn = trackerListManager.find('.mgr_header > a.close');
+        var removeListBtn = trackerListManager.find('.mgr_sub_header > a.remove_list');
+        var advancedView = trackerListManager.find('.mgr_footer > input.advanced');
+        var saveBtn = trackerListManager.find('.mgr_footer > input.save');
+        var listName = trackerListManager.find('.mgr_sub_header > input');
+
+        var selfCurrentProfile = '';
+        var onHideCb = undefined;
+        var descCache = {};
+        var editMode = 1;
+
+        removeListBtn.on('click', function(e) {
+            e.preventDefault();
+            if (editMode) {
+                delete engine.profileList[selfCurrentProfile];
+            }
+            onHide(2);
+        });
+        closeBtn.on('click', function(e) {
+            e.preventDefault();
+            onHide(1);
+        });
+        advancedView.on('click', function() {
+            if (advancedStyle !== undefined) {
+                advancedStyle.remove();
+            }
+            if (this.classList.contains('checked')) {
+                this.classList.remove('checked');
+                return;
+            }
+            this.classList.add('checked');
+            dom_cache.body.append( advancedStyle = $('<style>', {text: '#trackerListManager '
+                + '.mgr_tracker_list .options {'
+                + 'display: block;'
+                + '}'
+            }) );
+        });
+        saveBtn.on('click', function(e) {
+            e.preventDefault();
+            var elList = trackerList.children('.selected');
+            var list = [];
+            var proxyList = [];
+            for (var i = 0, el; el = elList[i]; i++) {
+                var id = el.dataset.id;
+                list.push(id);
+                var proxy = el.querySelector('input.use_proxy');
+                if (proxy && proxy.checked) {
+                    proxyList.push(id);
+                }
+            }
+            var newListName = listName.val();
+            if (!newListName) {
+                return onHide(1);
+            }
+            if (selfCurrentProfile !== newListName) {
+                delete engine.profileList[selfCurrentProfile];
+                selfCurrentProfile = newListName;
+            }
+            engine.profileList[selfCurrentProfile] = list;
+            engine.proxyList.splice(0);
+            Array.prototype.push.apply(engine.proxyList, proxyList);
+            onHide(selfCurrentProfile);
+        });
+
+        var numbersUpdate = function() {
+            var selectCount = trackerList.children('.selected').length;
+            if (!selectCount) {
+                footerCounter.text('Ничего не выбрано');
+            } else {
+                footerCounter.text('Выбрано элементов: '+selectCount);
+            }
+
+            var links = filterContainer.children('a');
+            for (var i = 0, el; el = links[i]; i++) {
+                var type = el.dataset.type;
+                var numContainer = el.querySelector('span');
+                if (type === 'all') {
+                    numContainer.textContent = trackerList.children().length;
+                } else
+                if (type === 'selected') {
+                    numContainer.textContent = selectCount;
+                } else
+                if (type === 'unused') {
+                    numContainer.textContent = trackerList.children('[data-used="false"]').length;
+                }
+            }
+        };
+
+        var filterListBy = function(type) {
+            var_cache.mgrFilterBy = type;
+            if (filterStyle !== undefined) {
+                filterStyle.remove();
+            }
+            if (type === 'all') {
+                filterStyle = undefined;
+            } else
+            if (type === 'selected') {
+                dom_cache.body.append(
+                    filterStyle = $('<style>', {text: '#trackerListManager '
+                        + '.mgr_tracker_list > div:not(.selected) {'
+                        + 'display: none;'
+                        + '}'
+                        + '#trackerListManager '
+                        + '.mgr_tracker_list > div.tmp_selected {'
+                        + 'display: block;'
+                        + '}'
+                    })
+                );
+            } else
+            if (type === 'unused') {
+                dom_cache.body.append(
+                    filterStyle = $('<style>', {text: '#trackerListManager '
+                        + '.mgr_tracker_list > div[data-used="true"] {'
+                        + 'display: none;'
+                        + '}'
+                        + '#trackerListManager '
+                        + '.mgr_tracker_list > div.tmp_used[data-used="true"] {'
+                        + 'display: block;'
+                        + '}'
+                    })
+                );
+            }
+        };
+
+        filterInput.on('input', function() {
+            var elList;
+            if (wordFilterStyle !== undefined) {
+                wordFilterStyle.remove();
+                elList = trackerList.children('div[data-filtered="true"]');
+                for (var i = 0, el; el = elList[i]; i++) {
+                    el.dataset.filtered = false;
+                }
+            }
+            var request = this.value.toLowerCase();
+            if (!request) {
+                return;
+            }
+            if (var_cache.mgrFilterBy === 'selected') {
+                filterContainer.children('a.selected').removeClass('selected');
+                filterContainer.children('a:eq(0)').addClass('selected');
+                filterListBy(filterContainer.children('a.selected').data('type'));
+            }
+            elList = trackerList.children('div').filter(function(index, el) {
+                var id = el.dataset.id;
+                var text = descCache[id];
+                if (text === undefined) {
+                    text = el.childNodes[1].textContent.toLowerCase();
+                    text += ' ' + el.childNodes[1].firstChild.getAttribute('href').toLowerCase();
+                    text += ' ' + el.childNodes[2].firstChild.textContent.toLowerCase();
+                    descCache[id] = text;
+                }
+                return text.indexOf(request) !== -1;
+            });
+            for (var i = 0, el; el = elList[i]; i++) {
+                el.dataset.filtered = true;
+            }
+            dom_cache.body.append(wordFilterStyle = $('<style>', {text: '#trackerListManager '
+                + '.mgr_tracker_list > div:not([data-filtered="true"]) {'
+                + 'display: none;'
+                + '}'
+            }) );
+        });
+        filterInput.on('dblclick', function() {
+            filterInput.val('').trigger('input');
+        });
+
+
+        filterContainer.on('click', 'a', function(e) {
+            e.preventDefault();
+            filterContainer.children('a.selected').removeClass('selected');
+            this.classList.add('selected');
+            orderTrackerList(1);
+            filterListBy(this.dataset.type);
+            filterInput.val('').trigger('input');
+        });
+
+        trackerList.on('click', 'div.tracker_item', function(e) {
+            var $this = $(this);
+            var checkbox = $this.find('input.tracker_state');
+            if (['INPUT', 'LABEL'].indexOf(e.target.tagName) !== -1) {
+                return;
+            }
+            checkbox[0].checked = !checkbox[0].checked;
+            checkbox.trigger('change');
+        });
+
+        var hasTopShadow = false;
+        trackerList[0].addEventListener('wheel', function(e) {
+            if (e.wheelDeltaY > 0 && this.scrollTop === 0) {
+                e.preventDefault();
+            } else
+            if (e.wheelDeltaY < 0 && this.scrollHeight - (this.offsetHeight + this.scrollTop) <= 0) {
+                e.preventDefault();
+            }
+        });
+        trackerList[0].addEventListener('scroll', function(e) {
+            if (this.scrollTop !== 0) {
+                if (hasTopShadow) {
+                    return;
+                }
+                hasTopShadow = true;
+                this.style.boxShadow = 'rgba(0, 0, 0, 0.40) -2px 1px 2px 0px inset';
+            } else {
+                if (!hasTopShadow) {
+                    return;
+                }
+                hasTopShadow = false;
+                this.style.boxShadow = '';
+            }
+        });
+
+        var getTrackerDom = function( id, tracker, tracker_icon, options ) {
+            if (tracker === undefined) {
+                var uid = (id.substr(0, 3) === 'ct_')?id.substr(3):undefined;
+                tracker = {
+                    name: id,
+                    about: _lang.trackerNotFound,
+                    notFound: 1
+                };
+                if (uid !== undefined) {
+                    options.push(
+                        $('<a>', {href: 'http://code-tms.blogspot.ru/search?q=' + uid, text: _lang.findNotFound, target: "_blank"})
+                    )
+                }
+            }
+            if (tracker_icon === undefined) {
+                tracker_icon = $('<div>', {'class': 'tracker_icon'}).css({'background-color': ( (tracker.notFound !== undefined) ?'rgb(253, 0, 0)':'#ccc' ), 'border-radius': '8px'});
+            }
+
+            var useState = false;
+            for (var profile in engine.profileList) {
+                if (engine.profileList[profile].indexOf(id) !== -1) {
+                    useState = true;
+                    break;
+                }
+            }
+
+            var selected = false;
+            if (editMode) {
+                if (engine.profileList[selfCurrentProfile].indexOf(id) !== -1) {
+                    selected = true;
+                }
+            } else {
+                var defList = engine.defaultProfileTorrentList();
+                if (defList.indexOf(id) !== -1) {
+                    selected = true;
+                }
+            }
+
+            var $item = undefined;
+            return $item = $('<div>',{'data-used': useState, 'data-id': id, 'class':'tracker_item'+(selected?' selected':'')+( (tracker.uid !== undefined)?' custom':((tracker.notFound !== undefined)?' not_found': '') )}).append(
+                $('<div>').append(tracker_icon.attr('title', tracker.name)),
+                $('<div>', {class: 'title', title: tracker.name}).append(
+                    $('<a>', {href: tracker.url, target: '_blank', text: tracker.name})
+                ),
+                $('<div>', {'class': 'desc', title: tracker.about}).append(
+                    tracker.about,
+                    $('<div>', {class: 'options'}).append(options)
+                ),
+                $('<div>', {'class': 'status'}).append(
+                    $('<input>', {type: 'checkbox', class: "tracker_state", checked: selected}).on('change', function() {
+                        if (this.checked) {
+                            $item.addClass('selected');
+                            $item.removeClass('tmp_selected');
+                            $item[0].dataset.used = true;
+                            $item.addClass('tmp_used');
+                        } else {
+                            $item.removeClass('selected');
+                            $item.addClass('tmp_selected');
+                            $item.removeClass('tmp_used');
+                            $item[0].dataset.used = false;
+                        }
+                        numbersUpdate();
+                    })
+                )
+            )
+        };
+
+        var orderTrackerList = function(custom) {
+            var tmp_list = trackerList.children('div');
+            for (var i = 0, el; el = tmp_list[i]; i++) {
+                el.classList.remove('tmp_selected');
+                el.classList.remove('tmp_used');
+            }
+
+            var list = [];
+            if (!custom && editMode === 1) {
+                engine.profileList[selfCurrentProfile].forEach(function (id) {
+                    var el = trackerList.children('div[data-id="' + id + '"]');
+                    list.push(el);
+                });
+            } else {
+                list = trackerList.children('.selected');
+            }
+            trackerList.prepend(list);
+        };
+
+        var writeTrackerList = function() {
+            var list = [];
+            $.each(torrent_lib, function(id, tracker) {
+                var flags = [];
+                if (!tracker.flags.rs) {
+                    flags.push($('<div>', {'class': 'cirilic', title: _lang.flag_cirilic}));
+                }
+                if (tracker.flags.a) {
+                    flags.push($('<div>', {'class': 'auth', title: _lang.flag_auth}));
+                }
+                if (tracker.flags.l) {
+                    flags.push($('<div>', {'class': 'rus', title: _lang.flag_rus}));
+                }
+                if (flags.length > 0) {
+                    flags = $('<div>', {'class': 'icons'}).append(flags);
+                }
+                var useProxy = undefined;
+                if (tracker.flags.proxy) {
+                    useProxy = $('<label>', {text: 'Использовать прокси', class: 'useProxy'}).prepend(
+                        $('<input>', {
+                            type: "checkbox",
+                            class: "use_proxy",
+                            'data-tracker': id,
+                            checked: engine.proxyList.indexOf(id) !== -1
+                        })
+                    );
+                }
+                var tracker_icon = $('<div>', {'class': 'tracker_icon'});
+                if (tracker.icon.length === 0) {
+                    tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
+                } else
+                if (tracker.icon[0] === '#') {
+                    tracker_icon.css({'background-color': tracker.icon, 'border-radius': '8px'});
+                } else {
+                    tracker_icon.css('background-image', 'url(' + tracker.icon + ')');
+                }
+                list.push( getTrackerDom( id, tracker, tracker_icon, [flags, useProxy] ) );
+            });
+            trackerList.append(list);
+        };
+
+        var onHide = function(state) {
+            if (typeof state === 'number') {
+                state += editMode?5:0;
+            }
+            onHideCb && onHideCb(state);
+            onHideCb = undefined;
+
+            selfCurrentProfile = '-';
+
+            document.body.removeEventListener('click', selfHide);
+
+            trackerList.empty();
+            if (filterStyle !== undefined) {
+                filterStyle.remove();
+            }
+            if (wordFilterStyle !== undefined) {
+                wordFilterStyle.remove();
+            }
+            if (advancedStyle !== undefined) {
+                advancedStyle.remove();
+            }
+            filterStyle = undefined;
+            wordFilterStyle = undefined;
+            advancedStyle = undefined;
+
+            filterContainer.children('a.selected').removeClass('selected');
+            filterContainer.children('a:eq(2)').addClass('selected');
+            filterListBy(filterContainer.children('a.selected').data('type'));
+
+            numbersUpdate();
+
+            trackerListManager.hide();
+        };
+
+        var selfHide = function(e) {
+            document.body.removeEventListener('click', selfHide);
+            onHide(1);
+        }
+
+        return {
+            show: function(isEditMode, cb) {
+
+                onHideCb = cb;
+                editMode = isEditMode;
+                if (!editMode) {
+                    selfCurrentProfile = undefined;
+                    title.text('Добавление нового списка трекеров');
+                    removeListBtn.hide();
+                    listName.val('');
+                } else {
+                    selfCurrentProfile = currentProfile;
+                    title.text('Редактирование списка трекеров');
+                    var n = 0;
+                    for (var item in engine.profileList) {
+                        n++;
+                        if (n > 1) {
+                            break;
+                        }
+                    }
+                    if (n > 1) {
+                        removeListBtn.show();
+                    } else {
+                        removeListBtn.hide();
+                    }
+                    listName.val(selfCurrentProfile);
+                }
+
+
+                writeTrackerList();
+                orderTrackerList();
+                numbersUpdate();
+
+                filterListBy(filterContainer.children('a.selected').data('type'));
+
+                trackerList.sortable({placeholder: "ui-state-highlight"});
+
+                trackerListManager[0].addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+
+                setTimeout(function() {
+                    document.body.addEventListener('click', selfHide);
+                }, 100);
+
+                trackerListManager.show();
+            }
+        }
+    };
+
+    var onTrackerListChange = function(profileName) {
+        dom_cache.profileList.children('option:selected').prop('selected', false);
+        if (profileName === 1 || profileName === 6) {
+            // windows closed
+            dom_cache.profileList.children('option[value="' + currentProfile + '"]').prop('selected', true);
+            dom_cache.profileList.trigger('change');
+            return;
+        }
+        writeProfileList(engine.profileList);
+        if (profileName === 7) {
+            // was removed
+            // update list
+            for (name in engine.profileList) {
+                profileName = name;
+                break;
+            }
+        }
+        dom_cache.profileList.children('option[value="' + profileName + '"]').prop('selected', true);
+        dom_cache.profileList.trigger('change');
+    };
+
     return {
         result: writeResult,
         auth: writeTrackerAuth,
@@ -2061,9 +2518,10 @@ var view = function() {
             dom_cache.size_filter_container = $( document.getElementById('size_filter_container') );
             dom_cache.seed_filter_container = $( document.getElementById('seed_filter_container') );
             dom_cache.peer_filter_container = $( document.getElementById('peer_filter_container') );
-            dom_cache.setup_btn = $( document.getElementById('setup_btn') );
+            dom_cache.editTrackerList = $( document.getElementById('editTrackerList') );
             dom_cache.search_input = $( document.getElementById('search_input') );
             dom_cache.time_filter_range_container = $('.time_filter').children('.range');
+            dom_cache.profileList = $( document.getElementById('profileList') );
 
             dom_cache.search_input.focus();
 
@@ -2135,6 +2593,7 @@ var view = function() {
                     readUrl();
                 });
             }
+
             dom_cache.search_clear_btn.on("click", function(event) {
                 event.preventDefault();
                 this.style.display = 'none';
@@ -2148,9 +2607,25 @@ var view = function() {
                 }
             });
             addAutocomplete();
-            dom_cache.tracker_list_container.on('change', 'div.profile > select', function() {
+
+            dom_cache.editTrackerList.on('click', function(e) {
+                e.preventDefault();
+                if (!trackerListManager.show) {
+                    trackerListManager = trackerListManager();
+                }
+                trackerListManager.show(1, onTrackerListChange);
+            });
+            dom_cache.profileList.on('change', function() {
                 clear_tracker_filter();
                 engine.stop();
+                var option = dom_cache.profileList.children('option:selected');
+                if (option[0].dataset.service === 'new') {
+                    if (!trackerListManager.show) {
+                        trackerListManager = trackerListManager();
+                    }
+                    trackerListManager.show(0, onTrackerListChange);
+                    return;
+                }
                 writeTrackerList(this.value);
             });
             dom_cache.result_table_head.on('click', 'th', function(e) {
@@ -2556,6 +3031,7 @@ var view = function() {
                     var_cache.table_sort_by = storage.table_sort_by || var_cache.table_sort_by;
 
                     view.begin();
+
                 });
             });
         }
