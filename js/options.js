@@ -667,6 +667,10 @@ var options = function() {
                 dom_cache.custom_add_btn.parent().show();
                 dom_cache.custom_edit_btn.parent().hide();
                 dom_cache.custom_popup.toggle();
+
+                if (mono.isOpera) {
+                    dom_cache.custom_popup.css('left', ((dom_cache.body.width() - dom_cache.custom_popup.width()) / 2) + 'px' );
+                }
             });
 
             dom_cache.custom_close_btn.on('click', function() {

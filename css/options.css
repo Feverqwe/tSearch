@@ -246,6 +246,7 @@ div.popup {
     left: calc(50% - 200px);
 }
 div.popup textarea[name=code] {
+    width: 100%;
     width: calc(100% - 7px);
     height: 235px;
     max-height: 235px;

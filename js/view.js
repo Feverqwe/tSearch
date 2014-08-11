@@ -2496,6 +2496,10 @@ var view = function() {
                 }, 100);
 
                 trackerListManager.show();
+
+                if (mono.isOpera) {
+                    trackerListManager.css('left', ((dom_cache.body.width() - trackerListManager.width()) / 2) + 'px' );
+                }
             }
         }
     };
