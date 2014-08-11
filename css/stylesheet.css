@@ -802,6 +802,7 @@ div.feedback div.mail_icon {
     top: -1px;
     box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);
     display: none;
+    -webkit-user-select: none;
 }
 
 #trackerListManager a {
