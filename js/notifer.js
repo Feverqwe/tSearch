@@ -115,6 +115,9 @@ var notify = function () {
                 }
             });
         }
+        if (mono.isOpera) {
+            notifi.css('left', ((body.width() - notifi.width()) / 2) + 'px' );
+        }
     };
     return function (array, textOk, textNo, _cb) {
         if (layer !== undefined || notifi !== undefined) {
