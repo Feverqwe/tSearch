@@ -143,7 +143,15 @@ var mono = function (env) {
             } else
             if (value !== undefined) {
                 var data = value.substr(1);
-                value = (value[0] === 'i')?parseInt(data):data;
+                var type = value[0];
+                if (type === 'i') {
+                    value = parseInt(data);
+                } else
+                if (type === 'b') {
+                    value = data === 'true';
+                } else {
+                    value = data;
+                }
             }
             return value;
         },
@@ -186,7 +194,11 @@ var mono = function (env) {
                 if (typeof value === 'object') {
                     localStorageMode.setObj(key, value);
                 } else {
-                    if (typeof value === 'number') {
+                    var type = typeof value;
+                    if (type === 'boolean') {
+                        value = 'b'+value;
+                    } else
+                    if (type === 'number') {
                         value = 'i'+value;
                     } else {
                         value = 's'+value;
