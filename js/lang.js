@@ -187,6 +187,15 @@ var get_lang = function (lang) {
         mgrSelectedN: 'Selected items:',
         word_save: 'Save',
         mgrUseProxy: 'Use proxy',
+        advanced_options: 'Advanced options',
+
+        external_tracker: 'External',
+        add_custom_code: 'Add',
+        create_custom_code: 'Create',
+        external_html: 'Add external trackers from the <a href="http://code-tms.blogspot.ru/" target="_blank">official website</a>!',
+        custom_tracker_edit: 'Edit',
+        custom_tracker_remove: 'Delete',
+        enter_tracker_code: 'Copy and paste the tracker code:',
 
         settings: {
             1: "The list of torrents",
@@ -529,6 +538,15 @@ var get_lang = function (lang) {
         mgrSelectedN: 'Выбрано элементов:',
         word_save: 'Сохранить',
         mgrUseProxy: 'Использовать прокси',
+        advanced_options: 'Расширенные опции',
+
+        external_tracker: 'Внешние',
+        add_custom_code: 'Добавить',
+        create_custom_code: 'Создать',
+        external_html: 'Добавь внешние трекеры с <a href="http://code-tms.blogspot.ru/" target="_blank">официального сайта</a>!',
+        custom_tracker_edit: 'Редактировать',
+        custom_tracker_remove: 'Удалить',
+        enter_tracker_code: 'Скопируйте и вставьте код трекера:',
 
         settings: {
             1: "Список торрентов",

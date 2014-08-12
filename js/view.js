@@ -2005,11 +2005,11 @@ var view = function() {
             if (args.length !== 0) {
                 args.forEach(function(item) {
                     if (item === 'text') {
-                        item.textContent = locale;
+                        el.textContent = locale;
                         return 1;
                     }
                     if (item === 'html') {
-                        item.innerHTML = locale;
+                        el.innerHTML = locale;
                         return 1;
                     }
                     el.setAttribute(item, locale);
@@ -2313,7 +2313,7 @@ var view = function() {
 
         var add_custom_tracker = function(e) {
             e.preventDefault();
-            notify([{type: 'textarea', text: 'Скопируйте и вставьте код трекера:'}], _lang.apprise_btns0, _lang.apprise_btns1,
+            notify([{type: 'textarea', text: _lang.enter_tracker_code}], _lang.apprise_btns0, _lang.apprise_btns1,
                 function(arr) {
                     if (!arr || !arr[0]) {
                         return;
@@ -2352,7 +2352,7 @@ var view = function() {
             mono.storage.get('customTorrentList', function(storage) {
                 var customTorrentList = storage.customTorrentList;
                 var code = JSON.stringify(customTorrentList[id]);
-                notify([{type: 'textarea', value: code, text: 'Скопируйте и вставьте код трекера:'}], _lang.apprise_btns0, _lang.apprise_btns1,
+                notify([{type: 'textarea', value: code, text: _lang.enter_tracker_code}], _lang.apprise_btns0, _lang.apprise_btns1,
                     function(arr) {
                         if (!arr || !arr[0]) {
                             return;
@@ -2409,8 +2409,8 @@ var view = function() {
             var customActionList = undefined;
             if (isCustom) {
                 customActionList = $('<div>', {class: 'actionList'}).append(
-                    $('<a>', {class: 'custom_tracker_edit', 'data-id': id, href: '#'}).on('click', edit_custom_tracker),
-                    $('<a>', {class: 'custom_tracker_remove', 'data-id': id, href: '#'}).on('click', remove_custom_tracker)
+                    $('<a>', {class: 'custom_tracker_edit', 'data-id': id, href: '#', title: _lang.custom_tracker_edit}).on('click', edit_custom_tracker),
+                    $('<a>', {class: 'custom_tracker_remove', 'data-id': id, href: '#', title: _lang.custom_tracker_remove}).on('click', remove_custom_tracker)
                 )
             }
 
