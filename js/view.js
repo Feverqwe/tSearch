@@ -2553,7 +2553,7 @@ var view = function() {
             wordFilterStyle = undefined;
 
             filterContainer.children('a.selected').removeClass('selected');
-            filterContainer.children('a:eq(2)').addClass('selected');
+            filterContainer.children('a:eq(3)').addClass('selected');
             filterListBy(filterContainer.children('a.selected').data('type'));
 
             numbersUpdate();
