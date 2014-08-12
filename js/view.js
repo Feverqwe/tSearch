@@ -2713,7 +2713,7 @@ var view = function() {
                     '{transition: none;}';
                 dom_cache.body.append($('<style>', {text: style}));
             }
-            dom_cache.result_table_body.on('click', 'div.title > span > a', function() {
+            dom_cache.result_table_body.on('mousedown', 'div.title > span > a', function() {
                 var title = this.innerHTML;
                 var href = this.getAttribute('href');
                 addInClickHistory(var_cache.currentRequest, title, href);
