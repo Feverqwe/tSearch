@@ -1,5 +1,7 @@
 div.explore {
     -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 }
 
 div.explore.loading {
@@ -338,7 +340,7 @@ div.explore ul.body li div.picture > a.link:hover {
 
 .nf-layer {
     position: fixed;
-    z-index: 3;
+    z-index: 100;
     top: 0;
     left: 0;
     height: 100%;
@@ -346,7 +348,7 @@ div.explore ul.body li div.picture > a.link:hover {
 }
 .nf-notifi {
     position: fixed;
-    z-index: 10;
+    z-index: 110;
     margin-left: calc(50% - 175px);
     width: 350px;
     top: 0;
@@ -358,9 +360,17 @@ div.explore ul.body li div.picture > a.link:hover {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     border-top-width: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 }
 .nf-notifi .btn_cancel {
     float: right;
+    margin-right: 9px;
+}
+.nf-notifi .btn_ok {
+    float: right;
+    margin-right: 15px;
 }
 .nf-notifi button {
     min-width: 70px;
@@ -375,6 +385,11 @@ div.explore ul.body li div.picture > a.link:hover {
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 2px;
+}
+.nf-notifi textarea {
+    width: 344px;
+    height: 200px;
+    margin-top: 5px
 }
 .nf-notifi .item input,
 .nf-notifi .item select{

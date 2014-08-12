@@ -35,6 +35,8 @@ div.search_panel h1 {
 div.search_panel {
     border-bottom: 1px solid #ccc;
     -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 }
 div.search_panel > div {
     margin-top: 20px;

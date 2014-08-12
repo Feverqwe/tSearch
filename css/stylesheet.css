@@ -8,6 +8,8 @@ body {
 div.search_panel {
     border-bottom: 1px solid #ccc;
     -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 }
 
 input[type=text] {
@@ -63,7 +65,7 @@ input.button {
     cursor: pointer;
     border: 1px solid #cccccc;
     font-size: 1em;
-    outline-color: rgb(81, 136, 255);
+    outline: 0;
 }
 
 input.button:hover {
@@ -94,6 +96,8 @@ div.content div.right {
     padding-top: 5px;
     padding-right: 5px;
     -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 }
 
 div.result_panel > table {
@@ -235,6 +239,8 @@ div.result_panel ul.categorys {
     margin: 0;
     margin-left: 4px;
     -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 }
 
 div.result_panel ul.categorys li {
@@ -650,6 +656,8 @@ div.peer_filter input {
     border-radius: 3px;
     box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
     -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
     display: none;
 }
 
@@ -803,6 +811,8 @@ div.feedback div.mail_icon {
     box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);
     display: none;
     -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 }
 
 #trackerListManager a {
@@ -885,6 +895,26 @@ div.feedback div.mail_icon {
     height: 457px;
     overflow: auto;
 }
+#trackerListManager .mgr_custom_tools {
+    display: none;
+    padding: 16px;
+}
+#trackerListManager.show_tools .mgr_custom_tools {
+    display: block;
+    border-bottom: 1px dashed #CACACA;
+}
+#trackerListManager.show_tools .mgr_custom_tools span {
+    float: right;
+}
+#trackerListManager.show_tools .mgr_custom_tools .button {
+    height: 22px;
+    margin-top: -3px;
+    margin-bottom: -3px;
+    display: inline-block;
+}
+#trackerListManager.show_tools .mgr_tracker_list {
+    height: 408px;
+}
 #trackerListManager .mgr_footer {
     padding: 16px;
     border-top: 1px dashed #ccc;
@@ -894,23 +924,25 @@ div.feedback div.mail_icon {
     margin-top: -3px;
     height: 22px;
 }
-#trackerListManager .mgr_footer input.advanced {
+#trackerListManager button.actionBtn,
+#trackerListManager input.actionBtn {
     height: 22px;
     width: 22px;
     background-color: #ffffff;
     border-radius: 3px;
     cursor: pointer;
     border: 1px solid #cccccc;
-    outline-color: rgb(81, 136, 255);
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+#trackerListManager .mgr_footer input.advanced {
     float: left;
     margin-top: -3px;
     margin-right: 10px;
     background-image: url(../images/glass.png);
-    background-position: center center;
-    background-repeat: no-repeat;
+    outline: 0;
 }
 #trackerListManager .mgr_footer input.advanced.checked {
-    outline: 0;
     box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 #trackerListManager .mgr_tracker_list .tracker_item {
@@ -922,9 +954,6 @@ div.feedback div.mail_icon {
     border-right: 0;
     margin-top: 1px;
     margin-bottom: 1px;
-}
-#trackerListManager .mgr_tracker_list .tracker_item.custom {
-    background-color: #FFF1A8;
 }
 #trackerListManager .mgr_tracker_list .tracker_item.not_found {
     background-color: #FFE0E0;
@@ -963,12 +992,52 @@ div.feedback div.mail_icon {
     color: #fff;
     text-decoration: underline;
 }
-#trackerListManager .mgr_tracker_list .tracker_item > div.desc {
+#trackerListManager .mgr_tracker_list .tracker_item > div.infoContainer {
+    font-size: 13px;
+}
+#trackerListManager .mgr_tracker_list .tracker_item > div.infoContainer .description {
+    display: inline-block;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 470px;
     overflow: hidden;
-    font-size: 13px;
+    width: 470px;
+}
+#trackerListManager.show_tools .mgr_tracker_list .tracker_item:not(.not_found) > div.infoContainer .description {
+    width: 422px;
+}
+#trackerListManager .mgr_tracker_list .tracker_item.custom div.actionList {
+    display: none;
+    float: right;
+    margin-top: 1px;
+    margin-bottom: -2px;
+}
+#trackerListManager.show_tools .mgr_tracker_list .tracker_item.custom div.actionList {
+    display: inline-block;
+}
+#trackerListManager .mgr_tracker_list .tracker_item div.actionList a {
+    margin-right: 8px;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    border-radius: 3px;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+#trackerListManager .mgr_tracker_list .tracker_item.selected div.actionList a {
+    filter: invert(100%);
+    -webkit-filter: invert(1);
+    opacity: 0.8;
+}
+#trackerListManager .mgr_tracker_list .tracker_item div.actionList a:hover {
+    opacity: 1;
+}
+#trackerListManager .mgr_tracker_list .tracker_item div.actionList a.custom_tracker_remove {
+    background-image: url(../images/remove.png);
+}
+#trackerListManager .mgr_tracker_list .tracker_item div.actionList a.custom_tracker_edit {
+    background-image: url(../images/edit_list.png);
 }
 #trackerListManager .mgr_tracker_list .tracker_item > div.status input {
     display: block;

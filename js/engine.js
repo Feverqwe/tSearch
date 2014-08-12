@@ -722,9 +722,10 @@ var engine = function() {
         defaultProfileTorrentList: defaultProfileTorrentList,
         loadSettings: loadSettings,
         reloadCustomTorrentList: function(cb) {
-            mono.storage.get(['customTorrentList'], function(storage) {
+            mono.storage.get('customTorrentList', function(storage) {
                 var torrentList = storage.customTorrentList || {};
                 for (var uid in torrentList) {
+                    torrent_lib[uid] = undefined;
                     loadModule(uid, torrentList[uid]);
                 }
                 cb && cb();

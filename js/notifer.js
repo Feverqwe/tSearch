@@ -68,19 +68,31 @@ var notify = function () {
             inputs.push(input);
             count++;
         } else if (type === 'buttons') {
-            $('<button>', {'class': 'btn_ok', text: _item.textOk}).on('click',function () {
-                cb(getValues());
-                close();
-            }).appendTo(item);
-            $('<button>', {'class': 'btn_cancel', text: _item.textNo}).on('click',function () {
+            $('<button>', {'class': 'btn_cancel', text: _item.textNo}).on('click',function (e) {
+                e.preventDefault();
+                e.stopPropagation();
                 close();
                 cb();
             }).appendTo(item);
+            $('<button>', {'class': 'btn_ok', text: _item.textOk}).on('click',function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                cb(getValues());
+                close();
+            }).appendTo(item);
+        } else if (type === 'textarea') {
+            var input = $('<textarea>',{text: _item.value});
+            item.append(input);
+            inputs.push(input);
+            count++;
         }
         return item;
     };
     var createNotifi = function (array, textOk, textNo) {
         notifi = $('<div>', {'class': _prefix + '-notifi'});
+        notifi.on('click', function(e) {
+            e.stopPropagation();
+        });
         array.forEach(function (item) {
             notifi.append(createType(item));
         });
@@ -91,6 +103,9 @@ var notify = function () {
                 inp.focus();
             }
             inp.on('keydown', function (e) {
+                if (e.target.tagName === 'TEXTAREA') {
+                    return;
+                }
                 if (e.keyCode === 13) {
                     e.preventDefault();
                     notifi.find('button.btn_ok').trigger('click');
