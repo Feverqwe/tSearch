@@ -580,7 +580,12 @@ var engine = function() {
             xhr.onload = function () {
                 if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304 ||
                     (mono.isOpera && xhr.status === 0 && xhr.response) ) {
-                    return obj.success && obj.success((obj.dataType) ? xhr.response : xhr.responseText);
+                    var response = (obj.dataType) ? xhr.response : xhr.responseText;
+                    if (mono.isOpera && obj.dataType === 'json' && typeof response === 'string' && xhr.responseText) {
+                        // Opera mobile 2012 fix
+                        response = JSON.parse(xhr.responseText);
+                    }
+                    return obj.success && obj.success(response);
                 }
                 obj.error && obj.error(xhr);
             };
