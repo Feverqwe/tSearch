@@ -114,9 +114,8 @@ var view = function() {
             }
             var icon = $('<div>', {'class': 'tracker_icon '+torrent.class_name});
             var i = $('<i>', {text: 0});
-            var link = $('<a>', {href: '#'}).data('tracker', trackerName).append($('<span>', {text: torrent.name}));
-            link.append(i);
-            var li = $('<li>').append(icon, link);
+            var link = $('<a>', {href: '#', text: torrent.name}).data('tracker', trackerName);
+            var li = $('<li>').append(icon, link, i);
             var_cache.trackers[trackerName] = {icon: 1, link: link, i: i, count: 0, count_val: 0, tracker: torrent, li: li, auth: 1};
             items.push( li );
             var icon_style;

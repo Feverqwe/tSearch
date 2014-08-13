@@ -392,30 +392,30 @@ div.tracker_list > ul.trackers li > div.tracker_icon {
     width: 24px;
 }
 div.tracker_list > ul.trackers li > a {
-    position: relative;
     padding: 2px;
     padding-bottom: 3px;
     text-decoration: none;
-    width: calc(100% - 28px);
+    width: calc(100% - 52px);
 }
 div.tracker_list > ul.trackers > li > a > * {
     vertical-align: middle;
     display: inline-block;
 }
-div.tracker_list > ul.trackers > li > a:hover {
+div.tracker_list > ul.trackers > li > a:hover,
+div.tracker_list > ul.trackers > li > a:hover + i{
     background-color: #ddd;
 }
-div.tracker_list > ul.trackers > li > a.selected {
+div.tracker_list > ul.trackers > li > a.selected,
+div.tracker_list > ul.trackers > li > a.selected + i{
     background-color: #337AF8;
     color: #fff;
-}
-div.tracker_list > ul.trackers > li > a > span {
-    width: calc(100% - 24px);
 }
 div.tracker_list > ul.trackers > li i {
     text-align: center;
     width: 24px;
     word-wrap: break-word;
+    padding-top: 2px;
+    padding-bottom: 3px;
 }
 
 div.tracker_list > div.ui-resizable-s {
