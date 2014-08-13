@@ -47,8 +47,8 @@
                     <div class="btn clear" title="Очистить" id="word_filter_clear_btn" data-lang="clear_btn"></div>
                 </div>
                 <div class="size_filter" id="size_filter_container">
-                    <p data-lang="size_filter">Размер</p>
-                    <div><span class="from" data-lang="word_from">от</span> <input name="f_v" type="text" /> <span class="to" data-lang="word_to">до</span> <input name="t_v" type="text" /><span class="g" data-lang="size_filter_g">гб</span></div>
+                    <p><span data-lang="size_filter">Размер</span> <span class="g" data-lang="size_filter_g">Гб</span></p>
+                    <div><input name="f_v" type="text" data-lang="word_from,placeholder" /> — <input name="t_v" type="text" data-lang="word_to,placeholder" /></div>
                 </div>
                 <div class="time_filter" id="time_filter_container">
                     <p data-lang="time_filter">Дата</p>
@@ -62,15 +62,15 @@
                         <option value="1y" data-lang="time_f_s_1y"></option>
                         <option value="range" data-lang="time_f_s_range"></option>
                     </select></div>
-                    <div class="range"><input name="start" type="text" /> – <input name="end" type="text" /></div>
+                    <div class="range"><input name="start" type="text" data-lang="word_from,placeholder" /> - <input name="end" type="text" data-lang="word_to,placeholder" /></div>
                 </div>
                 <div class="seed_filter" id="seed_filter_container">
                     <p data-lang="seed_filter">Сиды</p>
-                    <div><span class="from" data-lang="word_from">от</span> <input name="start" type="text" /> <span class="to" data-lang="word_to">до</span> <input name="end" type="text" /></div>
+                    <div><input name="start" type="text" data-lang="word_from,placeholder" /> — <input name="end" type="text" data-lang="word_to,placeholder" /></div>
                 </div>
                 <div class="peer_filter" id="peer_filter_container">
                     <p data-lang="peer_filter">Пиры</p>
-                    <div><span class="from" data-lang="word_from">от</span> <input name="start" type="text" /> <span class="to" data-lang="word_to">до</span> <input name="end" type="text" /></div>
+                    <div><input name="start" type="text" data-lang="word_from,placeholder" /> — <input name="end" type="text" data-lang="word_to,placeholder" /></div>
                 </div>
                 <div class="donate">
                     <div class="logo" title="Donate me :)" data-lang="donate"></div>
