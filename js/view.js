@@ -114,8 +114,9 @@ var view = function() {
             }
             var icon = $('<div>', {'class': 'tracker_icon '+torrent.class_name});
             var i = $('<i>', {text: 0});
-            var link = $('<a>', {text: torrent.name, href: '#'}).data('tracker', trackerName);
-            var li = $('<li>').append(icon, link, i);
+            var link = $('<a>', {href: '#'}).data('tracker', trackerName).append($('<span>', {text: torrent.name}));
+            link.append(i);
+            var li = $('<li>').append(icon, link);
             var_cache.trackers[trackerName] = {icon: 1, link: link, i: i, count: 0, count_val: 0, tracker: torrent, li: li, auth: 1};
             items.push( li );
             var icon_style;
@@ -190,9 +191,9 @@ var view = function() {
         }
         dom_cache.body.children('style.icon_'+gui.tracker.class_name).remove();
         if (state === 2) {
-            dom_cache.body.append( $('<style>', {'class': 'icon_'+gui.tracker.class_name, text: 'ul.trackers>li>div.tracker_icon.'+gui.tracker.class_name+'{background:url(images/error.png) center center #fff;}'}) );
+            dom_cache.body.append( $('<style>', {'class': 'icon_'+gui.tracker.class_name, text: 'ul.trackers>li>div.tracker_icon.'+gui.tracker.class_name+'{background:url(images/error.png) no-repeat center center #fff;}'}) );
         } else if (state === 0) {
-            dom_cache.body.append( $('<style>', {'class': 'icon_'+gui.tracker.class_name, text: 'ul.trackers>li>div.tracker_icon.'+gui.tracker.class_name+'{background:url(images/loading.gif) center center #fff;}'}) );
+            dom_cache.body.append( $('<style>', {'class': 'icon_'+gui.tracker.class_name, text: 'ul.trackers>li>div.tracker_icon.'+gui.tracker.class_name+'{background:url(images/loading.gif) no-repeat center center #fff;}'}) );
         }
         gui.icon = state;
     };
@@ -1996,35 +1997,35 @@ var view = function() {
     var write_language = function(body) {
         var elList = (body || document).querySelectorAll('[data-lang]');
         for (var i = 0, el; el = elList[i]; i++) {
-            var args = el.dataset.lang.split(',');
-            var locale = _lang[args.shift()];
-            if (locale === undefined) {
-                console.log('Lang not found!', el.dataset.lang);
-                continue;
-            }
-            if (args.length !== 0) {
-                args.forEach(function(item) {
-                    if (item === 'text') {
-                        el.textContent = locale;
-                        return 1;
-                    }
-                    if (item === 'html') {
-                        el.innerHTML = locale;
-                        return 1;
-                    }
-                    el.setAttribute(item, locale);
-                });
-            } else
-            if (el.tagName === 'DIV') {
-                el.setAttribute('title', locale);
-            } else
-            if (['A', 'LEGEND', 'SPAN', 'LI', 'TH', 'P', 'OPTION'].indexOf(el.tagName) !== -1) {
-                el.textContent = locale;
-            } else
-            if (el.tagName === 'INPUT') {
-                el.value = locale;
-            } else {
-                console.log('Tag name not found!', el.tagName);
+            var langList = el.dataset.lang.split('|');
+            for (var m = 0, lang; lang = langList[m]; m++) {
+                var args = lang.split(',');
+                var locale = _lang[args.shift()];
+                if (locale === undefined) {
+                    console.log('Lang not found!', el.dataset.lang);
+                    continue;
+                }
+                if (args.length !== 0) {
+                    args.forEach(function (item) {
+                        if (item === 'text') {
+                            el.textContent = locale;
+                            return 1;
+                        }
+                        if (item === 'html') {
+                            el.innerHTML = locale;
+                            return 1;
+                        }
+                        el.setAttribute(item, locale);
+                    });
+                } else if (el.tagName === 'DIV') {
+                    el.setAttribute('title', locale);
+                } else if (['A', 'LEGEND', 'SPAN', 'LI', 'TH', 'P', 'OPTION'].indexOf(el.tagName) !== -1) {
+                    el.textContent = locale;
+                } else if (el.tagName === 'INPUT') {
+                    el.value = locale;
+                } else {
+                    console.log('Tag name not found!', el.tagName);
+                }
             }
         }
     };

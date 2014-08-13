@@ -364,34 +364,43 @@ div.tracker_list > ul.trackers {
     list-style: none;
     margin: 0;
     padding: 0;
-    margin-left: 7px;
+    margin-left: 2px;
     padding-bottom: 2px;
-    overflow-x: hidden;
+    overflow: hidden;
     border: 0 solid #fff;
     border-top-width: 1px;
     border-bottom-width: 1px;
     height: auto;
-    overflow-y: hidden;
 }
-div.tracker_list > ul.trackers > li > ul {
-    list-style: none;
-    padding-left: 16px;
-}
-div.tracker_list > ul.trackers > li > ul div.tracker_icon {
-    margin-right: 3px;
-}
-div.tracker_list[aria-disabled="false"] > ul.trackers:hover {
+div.tracker_list.ui-resizable:not(.ui-resizable-disabled) > ul.trackers:hover {
     border-top-color: #ddd;
     border-bottom-color: #ddd;
     overflow-y: auto;
 }
-div.tracker_list > ul.trackers > li > a {
-    text-decoration: none;
-    margin-left: 2px;
-    color: #000;
+div.tracker_list > ul.trackers li {
+    display: block;
+}
+div.tracker_list > ul.trackers li > * {
+    display: inline-block;
+    vertical-align: middle;
+}
+div.tracker_list > ul.trackers > li > ul {
+      margin-left: -24px;
+}
+div.tracker_list > ul.trackers li > div.tracker_icon {
+    margin: 0;
+    width: 24px;
+}
+div.tracker_list > ul.trackers li > a {
+    position: relative;
     padding: 2px;
-    padding-top: 1px;
-    border-radius: 4px;
+    padding-bottom: 3px;
+    text-decoration: none;
+    width: calc(100% - 28px);
+}
+div.tracker_list > ul.trackers > li > a > * {
+    vertical-align: middle;
+    display: inline-block;
 }
 div.tracker_list > ul.trackers > li > a:hover {
     background-color: #ddd;
@@ -400,10 +409,13 @@ div.tracker_list > ul.trackers > li > a.selected {
     background-color: #337AF8;
     color: #fff;
 }
-div.tracker_list > ul.trackers > li > i {
-    display: inline-block;
-    margin-left: 2px;
-    cursor: default;
+div.tracker_list > ul.trackers > li > a > span {
+    width: calc(100% - 24px);
+}
+div.tracker_list > ul.trackers > li i {
+    text-align: center;
+    width: 24px;
+    word-wrap: break-word;
 }
 
 div.tracker_list > div.ui-resizable-s {
