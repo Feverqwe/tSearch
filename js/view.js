@@ -2568,6 +2568,9 @@ var view = function() {
 
         return {
             show: function(isEditMode, cb) {
+                if (trackerListManager[0].style.display === 'block') {
+                    return;
+                }
 
                 onHideCb = cb;
                 editMode = isEditMode;
@@ -2607,6 +2610,7 @@ var view = function() {
                     e.stopPropagation();
                 });
 
+                document.body.removeEventListener('click', selfHide);
                 setTimeout(function() {
                     document.body.addEventListener('click', selfHide);
                 }, 100);
