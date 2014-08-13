@@ -1,5 +1,10 @@
-var ToggleButton = require('sdk/ui/button/toggle').ToggleButton;
-var panels = require("sdk/panel");
+var mobileMode = false;
+try {
+    var ToggleButton = require('sdk/ui/button/toggle').ToggleButton;
+    var panels = require("sdk/panel");
+} catch (e) {
+    mobileMode = true;
+}
 var self = require("sdk/self");
 var tabs = require("sdk/tabs");
 var monoLib = require("./monoLib.js");
@@ -10,6 +15,10 @@ var sp = require("sdk/simple-prefs");
 sp.on("settingsBtn", function() {
     var tabs = require("sdk/tabs");
     tabs.open( self.data.url('options.html') );
+});
+sp.on("openBtn", function() {
+    var tabs = require("sdk/tabs");
+    tabs.open( self.data.url('index.html') );
 });
 
 pageMod.PageMod({
@@ -31,7 +40,7 @@ var createTab = function() {
     });
 };
 
-var button = ToggleButton({
+var button = mobileMode?undefined:ToggleButton({
     id: "tTMSOpenBtn",
     label: "Torrents MultiSearch",
     icon: {
@@ -63,7 +72,7 @@ var button = ToggleButton({
     }
 });
 
-var popup = function() {
+var popup = mobileMode?undefined:function() {
     var popup = panels.Panel({
         width: 620,
         height: 66,
@@ -97,4 +106,4 @@ var bg_addon = monoLib.virtualAddon('bg');
 
 monoLib.addPage('bg', bg_addon);
 
-bg.init(bg_addon, lang);
+bg.init(bg_addon, lang, button);

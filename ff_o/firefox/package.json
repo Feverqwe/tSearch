@@ -6,6 +6,12 @@
     "preferences": [
         {
             "type": "control",
+            "label": "Open",
+            "name": "openBtn",
+            "title": ""
+        },
+        {
+            "type": "control",
             "label": "Settings",
             "name": "settingsBtn",
             "title": ""

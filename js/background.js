@@ -5,10 +5,11 @@ if (typeof window === 'undefined') {
     window.isModule = true;
     mono = require('./mono.js');
 }
-var init = function (env, lang) {
+var init = function (env, lang, ffButton) {
     if (env) {
         mono = mono.init(env);
         window.get_lang = lang.get_lang;
+        window.hasButton = !!ffButton;
     }
     mono.pageId = 'bg';
     bg.boot();
@@ -56,7 +57,7 @@ var bg = function() {
                 });
             });
         }
-        if (mono.isFF) {
+        if (mono.isFF && window.hasButton) {
             if (enable && var_cache.cm_state) {
                 return;
             }
