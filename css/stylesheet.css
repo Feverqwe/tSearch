@@ -556,6 +556,11 @@ div.topbtn:hover {
     background-color: #ddd;
 }
 
+div.about_panel {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
 div.about_panel > div {
     margin-bottom: 3px;
     overflow: hidden;
