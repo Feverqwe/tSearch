@@ -416,6 +416,7 @@ div.tracker_list > ul.trackers > li i {
     word-wrap: break-word;
     padding-top: 2px;
     padding-bottom: 3px;
+    font-style: normal;
 }
 
 div.tracker_list > div.ui-resizable-s {
