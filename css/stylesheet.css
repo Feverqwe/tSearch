@@ -350,8 +350,6 @@ div.tracker_icon.login {
     height: auto;
 }
 #tracker_list_container.ui-resizable:not(.ui-resizable-disabled) > #tracker_list:hover {
-    border-top-color: #ddd;
-    border-bottom-color: #ddd;
     overflow-y: auto;
 }
 #tracker_list li {
