@@ -3,6 +3,7 @@ body {
     font-size: 0.875em;
     margin: 0;
 }
+
 input[type=text] {
     border: 1px solid #cccccc;
     outline: none;
@@ -17,39 +18,19 @@ input[type=text]:focus {
     border: 1px solid #3366ff !important;
 }
 
-div.search_panel {
-    white-space: nowrap;
-}
-
-div.search_panel > form {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
-    position: relative;
-}
-div.search_panel input.request {
-    height: 22px !important;
-    width: 477px;
-    padding-left: 5px;
-    padding-right: 20px;
-    font-size: 1.143em;
-}
-
 input.button {
-    height: 26px !important;
-    background-color: #ffffff;
+    background-color: transparent;
     color: #333333;
-    border-radius: 3px;
+    border-radius: 2px;
     display: inline-block;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    padding: 2px 8px;
+    padding: 4px 8px;
+    margin: 0;
     text-decoration: none;
-    margin-top: 0;
     cursor: pointer;
     border: 1px solid #cccccc;
-    font-size: 1em;
-    outline-color: rgb(81, 136, 255);
+    font-size: 14px;
+    outline: 0;
 }
 
 input.button:hover {
@@ -62,8 +43,7 @@ input.button:active {
     box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 
-
-div.btn.clear {
+.btn.clear {
     background: url(../images/clear.png) center center no-repeat;
     width: 16px;
     height: 16px;
@@ -71,14 +51,68 @@ div.btn.clear {
     cursor: pointer;
     z-index: 1;
     display: none;
+    opacity: 0.5;
+    transition: opacity .2s;
+}
+.btn.clear:hover {
+    opacity: 1;
 }
 
-div.search_panel div.btn.clear {
-    left: 485px;
-    top: 5px;
+div.search_panel {
+    min-width: 600px;
+    text-align: center;
+    padding: 21px;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+div.search_panel > * {
+    display: inline-block;
+    vertical-align: middle;
 }
 
-ul.ui-autocomplete {
+div.search_panel .searchForm {
+    position: relative;
+}
+div.search_panel .searchForm > input {
+    display: inline-block;
+    vertical-align: middle;
+}
+div.search_panel .searchForm input#search_input {
+    height: 24px;
+    width: 487px;
+    padding-left: 5px;
+    padding-right: 20px;
+    font-size: 1.143em;
+}
+div.search_panel .searchForm .btn.clear {
+    left: 495px;
+    top: 6px;
+}
+div.search_panel .searchForm input.search {
+    background-color: #337AF8;
+    border-color: #337AF8;
+    color: #fff;
+    padding: 5px;
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 28px !important;
+    line-height: 14px;
+}
+div.search_panel .searchForm input.search:hover {
+    background-color: #337AF8;
+    border-color: #2B68C1;
+    color: #fff;
+    box-shadow: 0 1px 0 rgba(0,0,0,.15);
+}
+div.search_panel .searchForm input.search:active {
+    border-color: #2B68C1;
+    color: #fff;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+.ui-autocomplete {
     border: 1px solid silver;
     background: #FFF;
     color: #333;
@@ -91,22 +125,25 @@ ul.ui-autocomplete {
     max-height: 153px;
     overflow-y: auto;
     z-index: 100;
-    margin-bottom: 0;
+    position: absolute;
 }
 
-ul.ui-autocomplete li {
+.ui-autocomplete {
+    position: relative;
+    margin: 0;
+}
+
+.ui-autocomplete li {
     padding-top: 3px;
     padding-bottom: 3px;
     padding-left: 5px;
     padding-right: 5px;
     cursor: pointer;
 }
-
-ul.ui-autocomplete li.ui-state-focus {
+.ui-autocomplete li.ui-state-focus {
     background-color: #337AF8;
     color: #fff;
 }
-
-span.ui-helper-hidden-accessible {
+.ui-helper-hidden-accessible {
     display: none;
 }

@@ -581,8 +581,7 @@ var engine = function() {
                 if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304 ||
                     (mono.isOpera && xhr.status === 0 && xhr.response) ) {
                     var response = (obj.dataType) ? xhr.response : xhr.responseText;
-                    if (mono.isOpera && obj.dataType === 'json' && typeof response === 'string' && xhr.responseText) {
-                        // Opera mobile 2012 fix
+                    if (obj.dataType === 'json' && typeof response !== 'object' && xhr.responseText) {
                         response = JSON.parse(xhr.responseText);
                     }
                     return obj.success && obj.success(response);

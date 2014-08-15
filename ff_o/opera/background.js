@@ -13,8 +13,8 @@
         if (active) {
             ToolbarUIItemProperties.popup = {
                 href: 'build/popup.html',
-                    width: 610,
-                    height: 66
+                    width: 650,
+                    height: 70
             }
         } else {
             ToolbarUIItemProperties.onclick = function() {
