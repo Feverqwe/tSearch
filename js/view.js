@@ -1746,7 +1746,7 @@ var view = function() {
             select: function(event, ui) {
                 this.value = ui.item.value;
                 $(this).trigger('keyup');
-                dom_cache.search_form.trigger('submit');
+                dom_cache.search_btn.trigger('click');
             },
             position: {
                 collision: "bottom"
@@ -2658,7 +2658,8 @@ var view = function() {
             dom_cache.body = $(document.body);
             dom_cache.tracker_list_container = $( document.getElementById('tracker_list_container') );
             dom_cache.tracker_list = $( document.getElementById('tracker_list') );
-            dom_cache.search_form = $( document.getElementById('search_form') );
+            dom_cache.search_btn = $( document.getElementById('search_btn') );
+            dom_cache.search_input = $( document.getElementById('search_input') );
             dom_cache.search_clear_btn = $( document.getElementById('search_clear_btn') );
             dom_cache.result_container = $( document.getElementById('result_container') );
             dom_cache.request_desc_container = $( document.getElementById('request_desc_container') );
@@ -2675,7 +2676,6 @@ var view = function() {
             dom_cache.seed_filter_container = $( document.getElementById('seed_filter_container') );
             dom_cache.peer_filter_container = $( document.getElementById('peer_filter_container') );
             dom_cache.editTrackerList = $( document.getElementById('editTrackerList') );
-            dom_cache.search_input = $( document.getElementById('search_input') );
             dom_cache.time_filter_range_container = $('.time_filter').children('.range');
             dom_cache.profileList = $( document.getElementById('profileList') );
 
@@ -2723,7 +2723,13 @@ var view = function() {
                 var href = this.getAttribute('href');
                 addInClickHistory(var_cache.currentRequest, title, href);
             });
-            dom_cache.search_form.on('submit', function(e){
+            dom_cache.search_input.on('keypress', function(e) {
+                if (e.keyCode !== 13) {
+                    return;
+                }
+                search(this.value);
+            });
+            dom_cache.search_btn.on('click', function(e){
                 e.preventDefault();
                 search(dom_cache.search_input.val());
             });

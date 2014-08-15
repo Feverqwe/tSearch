@@ -20,14 +20,12 @@
     </head>
     <body>
         <div class="search_panel">
-            <div class="left">
-                <form name="search" id="search_form" >
-                    <input type="text" name="s" class="request" id="search_input" />
-                    <div class="btn clear" title="Очистить" id="search_clear_btn" data-lang="clear_btn" ></div>
-                    <input type="submit" class="button" value="Найти" data-lang="search_btn,title,value" id="search_btn" />
-                </form>
+            <div class="searchForm">
+                <input type="text" name="s" class="request" id="search_input" />
+                <div class="btn clear" title="Очистить" id="search_clear_btn" data-lang="clear_btn" ></div>
+                <input type="button" class="button search" value="Найти" data-lang="search_btn,title,value" id="search_btn" />
             </div>
-            <div class="right">
+            <div class="buttonList">
                 <input type="button" class="button main" value="" data-lang="btn_main,title" title="Главная" id="go_home_btn" />
                 <input type="button" class="button history" value="" data-lang="btn_history,title" title="История поиска" id="history_btn" />
             </div>
