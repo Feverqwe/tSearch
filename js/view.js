@@ -884,8 +884,9 @@ var view = function() {
                 $('<td>', {'class': 'time', title: u2ddmmyyyy_title(item.time)}).append( $('<div>', {text: u2timeago(item.time)}) ),
                 $('<td>', {'class': 'quality'/*, 'data-value': quality.value, 'data-qgame': quality.game, 'data-qseed': quality.seed, 'data-qname': quality.name, 'data-qvideo': quality.video, 'data-qmusic': quality.music, 'data-qbook': quality.book*/}).append(
                     $('<div>', {'class': 'progress'}).append(
-                        $('<div>').css('width', parseInt(quality.value / 15) + 'px'),
-                        $('<span>', {title: quality.value, text: quality.value})
+                        $('<div>').css('width', parseInt(quality.value / 15) + 'px').append(
+                            $('<span>', {title: quality.value, text: quality.value})
+                        )
                     )
                 ),
                 $('<td>', {'class': 'title'}).append(
