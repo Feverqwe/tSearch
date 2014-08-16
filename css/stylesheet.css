@@ -797,14 +797,6 @@ div.donate a {
     margin-bottom: 5px;
     color: #0051D8;
 }
-div.donate a:after {
-    display: inline-block;
-    content: '';
-    background: url(../images/external.png) no-repeat top center;
-    width: 16px;
-    height: 14px;
-    opacity: 0.5;
-}
 div.donate a.yandexMoney {
     background-image: url(../images/yandexMoney.png);
 }
