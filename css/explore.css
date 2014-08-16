@@ -274,6 +274,11 @@ div.explore div.head div.action > a.open {
     background: url(../images/external.png) no-repeat top center;
     margin-bottom: -2px;
     display: inline-block;
+    opacity: 0.5;
+    transition: opacity .2s;
+}
+div.explore div.head div.action > a.open:hover {
+    opacity: 1;
 }
 div.explore ul.body div.picture > div.quality > span {
     white-space: nowrap;
@@ -446,7 +451,7 @@ div.explore div.top_search ul.c4 li {
 div.explore div.top_search a {
     color: #0051D8;
     text-decoration: none;
-    border-bottom: 1px solid transparent;
+    border-bottom: 1px dashed transparent;
 }
 div.explore div.top_search a:hover {
     border-bottom-color: #0051D8;
