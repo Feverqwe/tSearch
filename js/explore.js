@@ -1120,9 +1120,17 @@ var explore = function() {
                 var content = var_cache['exp_cache_'+type].content;
                 content_write(type, content, page);
             });
-            dom_cache.explore_gallery.on('click', 'div.collapses', function(e) {
+            dom_cache.explore_gallery.on('click', 'div.head', function(e) {
+                var isHead = e.target.classList.contains('head');
+                var isBtn = e.target.classList.contains('collapses');
+                if (!isBtn && !isHead) {
+                    return;
+                }
                 e.preventDefault();
-                var $this = $(this);
+                var $this = $(e.target);
+                if (isHead) {
+                    $this = $this.children('div.collapses');
+                }
                 var type = $this.data('type');
                 if (var_cache.isCollapsing === 1) {
                     return;

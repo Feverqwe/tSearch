@@ -14,6 +14,10 @@ div.explore ul {
     margin: 0;
 }
 
+div.explore div.head > * {
+    cursor: default;
+}
+
 div.explore div.head > div {
     display: inline-block;
 }
@@ -53,7 +57,7 @@ div.explore ul.body > li {
 }
 div.explore div.head {
     border-bottom: 1px solid #ccc;
-    cursor: default;
+    cursor: pointer;
 }
 div.explore div.head > div.move {
     width: 16px;
@@ -63,6 +67,12 @@ div.explore div.head > div.move {
     margin-top: 1px;
     margin-bottom: -1px;
     cursor: move;
+    transition: opacity 0.2s;
+    opacity: 0.5;
+}
+div.explore div.head > div.move:hover,
+div.explore li.ui-sortable-helper div.head > div.move{
+    opacity: 1;
 }
 div.explore div.head > div.title {
     font-size: 21px;
@@ -100,14 +110,16 @@ div.explore div.head div.collapses {
     background: url(../images/show_hide.png) bottom center no-repeat;
     cursor: pointer;
     transition: all 0.2s;
+    opacity: 0.5;
+}
+div.explore div.head div.collapses:hover {
+    opacity: 1;
 }
 div.explore div.head div.collapses.down {
     transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
 }
 div.explore div.head div.collapses.up {
     transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
 }
 div.explore ul.page_body {
     margin-top: 2px;
@@ -236,10 +248,12 @@ div.explore div.head div.action > div.update {
     margin-bottom: -2px;
     cursor: pointer;
     transition: all 0.5s;
+    opacity: 0.5;
 }
 div.explore div.head div.action > div.update:hover {
     transform: rotate(360deg);
     -webkit-transform: rotate(360deg);
+    opacity: 1;
 }
 div.explore div.head div.action > div.update.loading {
     background: url(../images/loading.gif) no-repeat center;
