@@ -100,6 +100,12 @@ div.explore div.head div.setup_body.show {
 div.explore div.head > div.setup_body {
     display: none;
 }
+div.explore div.head:hover div.collapses {
+    opacity: 1;
+}
+div.explore div.head > *:hover ~ div.collapses {
+    opacity: 0.5;
+}
 div.explore div.head div.collapses {
     float: right;
     display: inline-block;
