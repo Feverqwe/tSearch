@@ -319,6 +319,18 @@ var popup = function(enable_ac) {
             dom_cache.search_input.focus();
         }, 100);
     }
+    if (mono.isFF || mono.isOpera) {
+        mono.onMessage(function(message) {
+            if (message !== 'popupUpdate') {
+                return;
+            }
+            mono.storage.get(['lang', 'AutoComplite_opt'],function(storage) {
+                options.autoComplete = storage.AutoComplite_opt;
+                _lang = get_lang(storage.lang || navigator.language.substr(0, 2));
+                write_language();
+            });
+        });
+    }
 };
 mono.pageId = 'popup';
 mono.storage.get(['lang', 'AutoComplite_opt'],function(storage) {

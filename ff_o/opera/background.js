@@ -13,7 +13,7 @@
         if (active) {
             ToolbarUIItemProperties.popup = {
                 href: 'build/popup.html',
-                    width: 650,
+                    width: 640,
                     height: 70
             }
         } else {

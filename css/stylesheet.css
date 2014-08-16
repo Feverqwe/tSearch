@@ -483,10 +483,12 @@ div.search_panel .searchForm input.search {
     border-color: #337AF8;
     color: #fff;
     padding: 5px;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 3px;
+    padding-right: 3px;
     height: 28px !important;
     line-height: 14px;
+    text-align: center;
+    width: 74px;
 }
 div.search_panel .searchForm input.search:hover {
     background-color: #337AF8;

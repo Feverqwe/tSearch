@@ -116,6 +116,9 @@ var options = function() {
         changes.currentProfile = current_profile;
         mono.storage.set(changes, function() {
             mono.sendMessage('bg_update');
+            if (mono.isFF || mono.isOpera) {
+                mono.sendMessage('popupUpdate', undefined, 'popup');
+            }
             var fromIndex = (document.URL).replace(/.*options.html/, '');
             if (fromIndex.length > 0) {
                 window.location = 'index.html';

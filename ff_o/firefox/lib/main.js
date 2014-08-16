@@ -74,7 +74,7 @@ var button = mobileMode?undefined:ToggleButton({
 
 var popup = mobileMode?undefined:function() {
     var popup = panels.Panel({
-        width: 664,
+        width: 642,
         height: 70,
         contentURL: self.data.url("popup.html"),
         onHide: function () {
