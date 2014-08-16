@@ -292,7 +292,6 @@ div.explore ul.body div.picture > div.quality {
     line-height: 18px;
     cursor: pointer;
     z-index: 1;
-    box-shadow: 0 0 1px #000;
     transition: background-color .2s;
 }
 div.explore ul.body div.picture:hover > div.quality {

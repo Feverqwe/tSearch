@@ -403,7 +403,8 @@ div.tracker_icon.login {
     bottom: -10px;
     cursor: s-resize;
     background: url(../images/resize.png) no-repeat center center;
-    opacity: 0.2;
+    opacity: 0.5;
+    transition: opacity 0.2s;
 }
 #tracker_list_container > .ui-resizable-s:hover {
     opacity: 1;
