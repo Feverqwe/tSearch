@@ -453,7 +453,7 @@ div.explore div.top_search ul.c4 li {
 div.explore div.top_search a {
     color: #0051D8;
     text-decoration: none;
-    border-bottom: 1px dashed transparent;
+    border-bottom: 1px solid transparent;
 }
 div.explore div.top_search a:hover {
     border-bottom-color: #0051D8;
