@@ -24,6 +24,7 @@ div.explore div.head > div {
 
 div.explore ul > li.loading div.head div.move {
     background: url(../images/loading.gif) no-repeat center;
+    opacity: 1;
 }
 div.explore ul.page_body.hide {
     display: none;
@@ -263,6 +264,7 @@ div.explore div.head div.action > div.update:hover {
 }
 div.explore div.head div.action > div.update.loading {
     background: url(../images/loading.gif) no-repeat center;
+    opacity: 1;
 }
 div.explore div.head div.action > div.update.error {
     background: url(../images/error.png) no-repeat center;
