@@ -10,7 +10,9 @@ input[type=text] {
     border: 1px solid #cccccc;
     outline: none;
     font-size: 1em;
-    line-height: 20px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-top: 1px;
 }
 input[type=text]:hover {
     border: 1px solid #999999;
@@ -309,7 +311,7 @@ input.button:active {
 }
 
 #word_filter_container > .btn.clear {
-    top: 22px;
+    top: 20px;
     right: 15px;
 }
 @-moz-document url-prefix() {
