@@ -226,13 +226,35 @@ var options = function() {
     var getBackupJson = function(cb) {
         mono.storage.get(null, function(storage) {
             for (key in storage) {
-                if (key.substr(0, 9) === 'exp_cache' || key === 'topList') {
+                if (key.substr(0, 9) === 'exp_cache' ||
+                    key === 'topList' ||
+                    key === 'click_history' ||
+                    key === 'history' ||
+                    key === 'optMigrated') {
                     delete storage[key];
                 }
             }
             cb && cb(JSON.stringify(storage));
         });
     }
+
+    var gcPartedBackup = function(prefix, max) {
+        mono.storage.sync.get(null, function(storage) {
+            var rmList = [];
+            for (var key in storage) {
+                var pref = key.substr(0, prefix.length);
+                var value = key.substr(prefix.length);
+                if (value === 'inf') {
+                    continue;
+                }
+                value = parseInt(value);
+                if (key.substr(0, prefix.length) === prefix && (isNaN(value) || value >= max)) {
+                    rmList.push(key);
+                }
+            }
+            mono.storage.sync.remove(rmList);
+        });
+    };
 
     var savePartedBackup = function(prefix, json, cb) {
         chrome.runtime.lasterror = undefined;
@@ -253,6 +275,7 @@ var options = function() {
             obj[prefix+i] = item;
         }
         obj[prefix+'inf'] = dataListLen;
+        gcPartedBackup(prefix, dataListLen);
         mono.storage.sync.set(obj, function() {
             if (chrome.runtime.lasterror !== undefined) {
                 var message = "\n" + (chrome.runtime.lasterror ? chrome.runtime.lasterror.message : '');
