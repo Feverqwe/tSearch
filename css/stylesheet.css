@@ -312,6 +312,11 @@ input.button:active {
     top: 22px;
     right: 15px;
 }
+@-moz-document url-prefix() {
+    #word_filter_container > .btn.clear {
+        top: 21px;
+    }
+}
 #word_filter_container > .btn.clear.loading {
     background-image: url(../images/loading.gif);
 }
