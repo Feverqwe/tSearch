@@ -82,12 +82,10 @@ div.container > .left a {
     margin: 0;
     padding: 0.8em 0.3em;
     text-decoration: none;
-    font-weight: bolder;
 }
 div.container > .left a.active {
     border-bottom-color: #b6b6b6;
-    color: #000;
-    font-weight: bolder;
+    color: #0051D8;
 }
 div.container > .right {
     margin-left: 185px;
