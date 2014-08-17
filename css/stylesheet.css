@@ -513,6 +513,9 @@ div.search_panel > div.buttonList .button {
     width: 28px;
     height: 28px;
 }
+div.search_panel > div.buttonList .button.settings {
+    background-image: url(../images/settings2.png);
+}
 div.search_panel > div.buttonList .button.history {
     background-image: url(../images/history.png);
 }

@@ -2730,9 +2730,13 @@ var view = function() {
                 e.preventDefault();
                 blankPage();
             });
-            $( document.getElementById('history_btn') ).on("click", function(e) {
+            document.getElementById('history_btn').addEventListener("click", function(e) {
                 e.preventDefault();
                 window.location = 'history.html';
+            });
+            document.getElementById('settings_btn').addEventListener("click", function(e) {
+                e.preventDefault();
+                window.location = 'options.html';
             });
             window.addEventListener('popstate', function(){
                 if (window.location.hash === var_cache.oldlocationHash){

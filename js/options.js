@@ -335,6 +335,11 @@ var options = function() {
             dom_cache.backupInp = $('#backupInp');
             dom_cache.restoreInp = $('#restoreInp');
 
+            document.getElementById('go_home_btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location = 'index.html';
+            });
+
             if (!mono.isChrome) {
                 dom_cache.saveInCloudBtn.parent().hide();
                 dom_cache.getFromCloudBtn.parent().hide();
