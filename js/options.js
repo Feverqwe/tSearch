@@ -2,6 +2,8 @@ var options = function() {
     var activePage = undefined;
     var activeItem = undefined;
     var dom_cache = {};
+    var listOptions = undefined;
+    var saveInputTimer = {};
 
     var write_language = function(body) {
         var elList = (body || document).querySelectorAll('[data-lang]');
@@ -66,7 +68,7 @@ var options = function() {
                     el.value = '';
                 }
                 if (defaultValue || defaultValue === '') {
-                    el.setAttribute("placeholder", defaultValue);
+                    el.placeholder = defaultValue;
                 }
             } else if (el.type === "checkbox") {
                 el.checked = !!engine.settings[key];
@@ -77,6 +79,21 @@ var options = function() {
                 }
                 el.checked = true;
             }
+        });
+
+        mono.storage.get('listOptions', function(storage) {
+            listOptions = storage.listOptions;
+            try {
+                listOptions = JSON.parse(storage.listOptions || '{}');
+            } catch (e) {
+                listOptions = {};
+            }
+            $.each(engine.def_listOptions, function(key, value) {
+                if (listOptions.hasOwnProperty(key) === false) {
+                    listOptions[key] = $.extend({},value);
+                }
+            });
+            writeExploreSections(listOptions);
         });
     };
 
@@ -95,6 +112,9 @@ var options = function() {
             return;
         }
         var key = el.dataset.option;
+        if (!key) {
+            return;
+        }
         var value = undefined;
         if (el.type === 'checkbox') {
             value = el.checked ? 1 : 0;
@@ -114,6 +134,80 @@ var options = function() {
         mono.storage.set(obj);
     };
 
+    var listOptionsSave = function(e) {
+        e.stopPropagation();
+        var el = e.target;
+        if (el.tagName !== 'INPUT') {
+            return;
+        }
+        var key = el.dataset.listOption;
+        if (!key || listOptions.hasOwnProperty(key) === false) {
+            return;
+        }
+        listOptions[key].e = el.checked ? 1 : 0;
+
+        mono.storage.set({listOptions: JSON.stringify(listOptions)});
+    };
+
+    var writeExploreSections = function(listOptions) {
+        var list = [];
+        $.each(listOptions, function(key, value){
+            if (key === 'favorites') {
+                return 1;
+            }
+            list.push(
+                $('<label>', {text: _lang['exp_items_'+key]}).prepend(
+                    $('<input>', {type: 'checkbox', 'data-list-option': key, 'data-option': '', checked: value.e === 1})
+                )
+            );
+        });
+        dom_cache.sectionList.empty().append(list);
+    };
+
+    var saveTextInput = function(e) {
+        var _this = this;
+        var key = _this.dataset.option;
+        if (!key) {
+            return;
+        }
+        clearTimeout(saveInputTimer[key]);
+        saveInputTimer[key] = setTimeout(function() {
+            var value = _this.value;
+            if (value.length === 0) {
+                value = _this.placeholder;
+            }
+            if (_this.type === 'number') {
+                value = parseInt(value);
+            }
+            var obj = {};
+            obj[key] = value;
+            mono.storage.set(obj);
+        }, 500);
+    };
+
+    var bindTextInput = function() {
+        var list = document.querySelectorAll('input');
+        for (var i = 0, len = list.length; i < len; i++) {
+            var item = list[i];
+            if ( ['text', 'number', 'password'].indexOf(item.type) !== -1 ) {
+                item.addEventListener('input', saveTextInput);
+            }
+        }
+    };
+
+    var makeBackupForm = function() {
+        dom_cache.backupUpdateBtn.on('click', function() {
+            mono.storage.get(null, function(storage) {
+                for (key in storage) {
+                    if (key.substr(0, 9) === 'exp_cache' || key === 'topList') {
+                        delete storage[key];
+                    }
+                }
+                dom_cache.backupInp.val( JSON.stringify(storage) );
+            });
+        });
+    };
+
     return {
         boot: function() {
             $(options.begin);
@@ -123,6 +217,25 @@ var options = function() {
             set_place_holder();
             dom_cache.container = $('.div.container');
             dom_cache.menu = $('.menu');
+            dom_cache.sectionList = $('.sectionList');
+
+            dom_cache.backupUpdateBtn = $('#backupUpdate');
+            dom_cache.saveInCloudBtn = $('#saveInCloud');
+            dom_cache.restoreBtn = $('#restoreBtn');
+            dom_cache.getFromCloudBtn = $('#getFromCloudBtn');
+            dom_cache.clearCloudStorageBtn = $('#clearCloudStorage');
+            dom_cache.backupInp = $('#backupInp');
+            dom_cache.restoreInp = $('#restoreInp');
+
+            if (!mono.isChrome) {
+                dom_cache.saveInCloudBtn.parent().hide();
+                dom_cache.getFromCloudBtn.parent().hide();
+                dom_cache.clearCloudStorageBtn.parent().hide();
+            }
+
+            bindTextInput();
+            makeBackupForm();
+
             dom_cache.menu .on('click', 'a', function(e) {
                 if (this.classList.contains('active')) {
                     return;
@@ -131,14 +244,19 @@ var options = function() {
                 this.classList.add('active');
                 activeItem = this;
                 activePage && activePage.removeClass('active');
-                var currentPage = $('.page.' + this.dataset.page);
+                var page = this.dataset.page;
+                var currentPage = $('.page.' + page);
                 currentPage.addClass('active');
                 activePage = currentPage;
+                if (page === 'backup') {
+                    dom_cache.backupUpdateBtn.trigger('click');
+                }
             });
             window.addEventListener("hashchange", onHashChange);
             onHashChange();
             dom_cache.container.removeClass('loading');
 
+            dom_cache.sectionList[0].addEventListener('click', listOptionsSave);
             document.body.addEventListener('click', saveChange);
         }
     }

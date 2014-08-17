@@ -1516,7 +1516,7 @@ var explore = function() {
                 var_cache.qualityBoxCache = storage.qualityBoxCache || {};
 
                 try {
-                    listOptions = JSON.parse(storage.listOptions || '{}');
+                    enableHighlight = JSON.parse(storage.listOptions || '{}');
                 } catch (e) {
                     listOptions = {};
                 }

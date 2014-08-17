@@ -136,3 +136,8 @@ div.info a {
 .btnList {
     margin-bottom: 10px;
 }
+.sectionList label {
+    display: inline-block;
+    width: 300px;
+    margin: 5px;
+}

@@ -186,6 +186,7 @@ var get_lang = function (lang) {
         optSaveInCloud: 'Save in the cloud',
         optGetFromCloud: 'Get the settings from the cloud',
         optClearCloudStorage: 'Clear the settings in the cloud',
+        optShowSection: 'Show section:',
 
         magic_1: 'Loading error!',
         magic_2: "Search",
@@ -442,6 +443,7 @@ var get_lang = function (lang) {
         optSaveInCloud: 'Сохранить в облаке',
         optGetFromCloud: 'Получить настройки из облака',
         optClearCloudStorage: 'Очистить настройки в облаке',
+        optShowSection: 'Показывать секции:',
 
         magic_1: 'Ошибка загрузки!',
         magic_2: "Поиск",

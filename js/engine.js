@@ -16,7 +16,7 @@ var engine = function() {
         allowGetDescription: 1,
         enableFavoriteSync: 1,
         enableHighlight: 1,
-        kinopoiskFolderId: 1,
+        kinopoiskFolderId: '1',
         rightPanel: 0,
         hideTopSearch: 0,
         noBlankPageOnDownloadClick: 0,
