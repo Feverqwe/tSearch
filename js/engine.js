@@ -595,22 +595,77 @@ var engine = function() {
         return xhr;
     };
 
-    var loadSettings = function(cb) {
-        var settings = {};
-        var changes = [];
-        for (var key in def_settings) {
-            changes.push(key);
+    var optionsMigration = function(cb) {
+        var map = {
+            HideLeech: 'hidePeerColumn',
+            HideSeed: 'hideSeedColumn',
+            ShowIcons: 'hideTrackerIcons',
+            SubCategoryFilter: 'subCategoryFilter',
+            HideZeroSeed: 'hideZeroSeed',
+            AdvFiltration: 'advFiltration',
+            TeaserFilter: 'enableTeaserFilter',
+            context_menu: 'contextMenu',
+            search_popup: 'searchPopup',
+            AutoComplite_opt: 'autoComplite',
+            use_english_postername: 'useEnglishPosterName',
+            google_analytics: 'doNotSendStatistics',
+            autoSetCat: 'defineCategory',
+            allow_get_description: 'allowGetDescription',
+            allow_favorites_sync: 'enableFavoriteSync',
+            sub_select_enable: 'enableHighlight',
+            kinopoisk_f_id: 'kinopoiskFolderId',
+            filter_panel_to_left: 'rightPanel',
+            no_blank_dl_link: 'noBlankPageOnDownloadClick',
+            torrent_list_r: 'torrentListHeight'
         }
-        mono.storage.get(changes, function(storage) {
-            for (var key in engine.def_settings) {
-                var defaultValue = engine.def_settings[key];
-                var value = storage[key];
-                if (value === undefined) {
-                    value = defaultValue;
-                }
-                settings[key] = value;
+        mono.storage.get('optMigrated', function(storage) {
+            if (storage.optMigrated) {
+                return cb();
             }
-            cb && cb(settings);
+            var keys = [];
+            for (var item in map) {
+                keys.push(item);
+            }
+            mono.storage.get(keys, function(storage) {
+                var newKeys = {
+                    optMigrated: 1
+                };
+                for (var item in storage) {
+                    if (storage[item] === undefined) {
+                        continue;
+                    }
+                    if (item === 'ShowIcons' || item === 'filter_panel_to_left') {
+                        storage[item] = (!storage[item])?1:0;
+                    }
+                    newKeys[ map[item] ] = storage[item];
+                }
+                mono.storage.set(newKeys, function() {
+                    mono.storage.remove(keys);
+                    cb && cb();
+                });
+            });
+        });
+        // ShowIcons, rightPanel
+    };
+
+    var loadSettings = function(cb) {
+        optionsMigration(function() {
+            var settings = {};
+            var changes = [];
+            for (var key in def_settings) {
+                changes.push(key);
+            }
+            mono.storage.get(changes, function(storage) {
+                for (var key in engine.def_settings) {
+                    var defaultValue = engine.def_settings[key];
+                    var value = storage[key];
+                    if (value === undefined) {
+                        value = defaultValue;
+                    }
+                    settings[key] = value;
+                }
+                cb && cb(settings);
+            });
         });
     };
 
@@ -665,7 +720,6 @@ var engine = function() {
                 var storageType = (engine.settings.profileListSync === 1)?'sync':'local';
 
                 mono.storage[storageType].get('profileList', function(syncStorage) {
-
                     mono.storage.get(['customTorrentList', 'profileList',
                         'history', 'lang', 'doNotSendStatistics', 'proxyList'], function(storage) {
 
@@ -722,9 +776,7 @@ var engine = function() {
                         }
                         cb && cb();
                     });
-
                 });
-
             });
         }
     };
