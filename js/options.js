@@ -277,7 +277,7 @@ var options = function() {
             data[item] = value;
         }
         mono.storage.set(data, function() {
-            // window.location.reload();
+            window.location.reload();
         });
     };
 
