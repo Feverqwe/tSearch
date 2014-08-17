@@ -350,7 +350,6 @@ var options = function() {
         },
         begin: function() {
             write_language();
-            set_place_holder();
             dom_cache.container = $('.div.container');
             dom_cache.menu = $('.menu');
             dom_cache.sectionList = $('.sectionList');
@@ -362,6 +361,8 @@ var options = function() {
             dom_cache.clearCloudStorageBtn = $('#clearCloudStorage');
             dom_cache.backupInp = $('#backupInp');
             dom_cache.restoreInp = $('#restoreInp');
+
+            set_place_holder();
 
             document.getElementById('go_home_btn').addEventListener('click', function(e) {
                 e.preventDefault();
