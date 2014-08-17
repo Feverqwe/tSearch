@@ -620,7 +620,7 @@ var engine = function() {
         }
         mono.storage.get('optMigrated', function(storage) {
             if (storage.optMigrated) {
-                return cb();
+                return cb && cb();
             }
             var keys = [];
             for (var item in map) {
@@ -645,7 +645,6 @@ var engine = function() {
                 });
             });
         });
-        // ShowIcons, rightPanel
     };
 
     var loadSettings = function(cb) {
