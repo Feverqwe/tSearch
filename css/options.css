@@ -86,7 +86,7 @@ div.container > .left a {
 }
 div.container > .left a.active {
     border-bottom-color: #b6b6b6;
-    color: #4d4d4d;
+    color: #000;
     font-weight: bolder;
 }
 div.container > .right {
