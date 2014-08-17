@@ -1,8 +1,8 @@
 var engine = function() {
     var def_settings = {
-        HideLeech: 1,
+        hidePeerColumn: 1,
         HideSeed: 0,
-        ShowIcons: 1,
+        hideTrackerIcons: 0,
         SubCategoryFilter: 1,
         HideZeroSeed: 0,
         AdvFiltration: 2,

@@ -20,7 +20,7 @@
                 <h1>Torrents MultiSearch</h1>
             </div>
             <div class="left menu">
-                <a href="#main" data-page="main" data-lang="optMain">Основные</a>
+                <a href="#main" data-page="main" data-lang="optMain">Общие</a>
                 <a href="#explore" data-page="explore" data-lang="optMainPage">Главная страница</a>
                 <a href="#other" data-page="other" data-lang="optOther">Прочие</a>
                 <a href="#backup" data-page="backup" data-lang="word_backup">Архивирование</a>
@@ -29,9 +29,9 @@
             <div class="right">
                 <div class="page main">
                     <h2 data-lang="optMain">Общие</h2>
-                    <label data-lang="optShowIcons,sub,text"><input type="checkbox" data-option="ShowIcons"/>Скрыть иконки трекеров в выдаче</label>
+                    <label data-lang="optHideTrackerIcons,sub,text"><input type="checkbox" data-option="hideTrackerIcons"/>Скрыть иконки трекеров в выдаче</label>
                     <label data-lang="optHideZeroSeed,sub,text"><input type="checkbox" data-option="HideZeroSeed"/>Скрыть раздачи без раздающих</label>
-                    <label data-lang="optHideLeech,sub,text"><input type="checkbox" data-option="HideLeech"/>Скрыть столбец количеста скачивающих</label>
+                    <label data-lang="optHidePeerColumn,sub,text"><input type="checkbox" data-option="hidePeerColumn"/>Скрыть столбец количеста скачивающих</label>
                     <label data-lang="optHideSeed,sub,text"><input type="checkbox" data-option="HideSeed"/>Скрыть столбец количеста раздающих</label>
                     <label data-lang="optTeaserFilter,sub,text"><input type="checkbox" data-option="TeaserFilter"/>Скрыть тизеры и трейлеры в результатах поиска</label>
                     <label data-lang="optAutoSetCat,sub,text"><input type="checkbox" data-option="autoSetCat"/>Определять категорию автоматически</label>
@@ -55,9 +55,9 @@
                 </div>
                 <div class="page other">
                     <h2 data-lang="optListFilter">Фильтрация списка</h2>
-                    <label data-lang="optAdvFiltration0,sub,text"><input type="radio" data-option="AdvFiltration" value="0"/>Ищет полное совпадение фразы</label>
-                    <label data-lang="optAdvFiltration1,sub,text"><input type="radio" data-option="AdvFiltration" value="1"/>Ищет совпадение с одним из введенных слов</label>
-                    <label data-lang="optAdvFiltration2,sub,text"><input type="radio" data-option="AdvFiltration" value="2"/>Ищет совпадение всех введенных слов</label>
+                    <label data-lang="optAdvFiltration0,sub,text"><input type="radio" name="AdvFiltration" data-option="AdvFiltration" value="0"/>Ищет полное совпадение фразы</label>
+                    <label data-lang="optAdvFiltration1,sub,text"><input type="radio" name="AdvFiltration" data-option="AdvFiltration" value="1"/>Ищет совпадение с одним из введенных слов</label>
+                    <label data-lang="optAdvFiltration2,sub,text"><input type="radio" name="AdvFiltration" data-option="AdvFiltration" value="2"/>Ищет совпадение всех введенных слов</label>
                     <label data-lang="optSubCategoryFilter,sub,text"><input type="checkbox" data-option="SubCategoryFilter"/>Учитывать подкатегории</label>
                     <h2 data-lang="optProxyTitle">Проксирование запросов</h2>
                     <div class="info">

@@ -59,7 +59,7 @@ var options = function() {
             if (el === null) {
                 return console.log('El not found!', key);
             }
-            if (el.type === "text" || el.type === "number" || el.type === "password") {
+            if (['text', 'number', 'password'].indexOf(el.type) !== -1) {
                 if (engine.settings[key] !== defaultValue) {
                     el.value = engine.settings[key];
                 } else {
@@ -78,6 +78,40 @@ var options = function() {
                 el.checked = true;
             }
         });
+    };
+
+    var onHashChange = function() {
+        var hash = location.hash.substr(1) || 'main';
+        var $activeItem = $('a[data-page="'+hash+'"]');
+        if ($activeItem.length === 0) {
+            $activeItem = $('a[data-page="main"]');
+        }
+        $activeItem.trigger('click');
+    };
+
+    var saveChange = function(e) {
+        var el = e.target;
+        if (el.tagName !== 'INPUT') {
+            return;
+        }
+        var key = el.dataset.option;
+        var value = undefined;
+        if (el.type === 'checkbox') {
+            value = el.checked ? 1 : 0;
+        } else
+        if (el.type === 'radio') {
+            value = parseInt(el.value);
+        } else
+        if (el.type === 'number') {
+            value = parseInt(el.value);
+        } else
+        if (['text', 'password'].indexOf(el.type) !== -1) {
+            value = el.value;
+        }
+
+        var obj = {};
+        obj[key] = value;
+        mono.storage.set(obj);
     };
 
     return {
@@ -101,14 +135,11 @@ var options = function() {
                 currentPage.addClass('active');
                 activePage = currentPage;
             });
-            var hash = location.hash.substr(1) || 'main';
-            var $activeItem = $('a[data-page="'+hash+'"]');
-            if ($activeItem.length === 0) {
-                $activeItem = $('a[data-page="main"]');
-            }
-            $activeItem.trigger('click');
-
+            window.addEventListener("hashchange", onHashChange);
+            onHashChange();
             dom_cache.container.removeClass('loading');
+
+            document.body.addEventListener('click', saveChange);
         }
     }
 }();

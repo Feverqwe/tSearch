@@ -6,6 +6,8 @@ body {
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
+
+    min-width: 920px;
 }
 
 h1 {
@@ -22,10 +24,10 @@ h2 {
     font-weight: normal;
     margin-top: 8px;
 
-    width: 680px;
+    width: 665px;
 }
 textarea {
-    width: 680px;
+    width: 658px;
     height: 400px;
 }
 

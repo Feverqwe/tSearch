@@ -705,7 +705,7 @@ var view = function() {
                 filter[3] = 1;
             }
         }
-        if (engine.settings.HideLeech === 0 && var_cache.peerFilter !== undefined) {
+        if (engine.settings.hidePeerColumn === 0 && var_cache.peerFilter !== undefined) {
             if (calcPeerFilter(item.leechs)) {
                 filter[4] = 1;
             }
@@ -857,7 +857,7 @@ var view = function() {
             var filter = itemFilter(table_dom_item);
             table_dom_item.filter = filter.join(',');
             var td_icon = '';
-            if (engine.settings.ShowIcons === 1) {
+            if (engine.settings.hideTrackerIcons === 0) {
                 td_icon = $('<div>', {'class': 'tracker_icon ' + tracker.class_name, title: tracker.name});
             }
             var td_category = '';
@@ -898,7 +898,7 @@ var view = function() {
                 ),
                 td_download,
                 (engine.settings.HideSeed === 1) ? '' : $('<td>', {'class': 'seeds'}).append( $('<div>', {text: item.seeds}) ),
-                (engine.settings.HideLeech === 1) ? '' : $('<td>', {'class': 'leechs'}).append( $('<div>', {text: item.leechs}) )
+                (engine.settings.hidePeerColumn === 1) ? '' : $('<td>', {'class': 'leechs'}).append( $('<div>', {text: item.leechs}) )
             );
             var_cache.table_dom.push(table_dom_item);
             if (var_cache.counter[id][item.category.id] === undefined) {
@@ -1785,7 +1785,7 @@ var view = function() {
         var style = '';
         var sortBy = (var_cache.table_sort_by === 0)?'sortUp':'sortDown';
         for (var i = 0, item; item = table_colums[i]; i++) {
-            if ((item.type === 'seeds' && engine.settings.HideSeed === 1) || item.type === 'leechs' && engine.settings.HideLeech === 1) {
+            if ((item.type === 'seeds' && engine.settings.HideSeed === 1) || item.type === 'leechs' && engine.settings.hidePeerColumn === 1) {
                 continue;
             }
             tr.append( $('<th>', {'class': item.type+((var_cache.table_sort_colum === item.type)?' '+sortBy:''), title: item.title})
@@ -2687,7 +2687,7 @@ var view = function() {
                 dom_cache.seed_filter_container.hide();
             }
 
-            if (engine.settings.HideLeech === 1) {
+            if (engine.settings.hidePeerColumn === 1) {
                 dom_cache.peer_filter_container.hide();
             }
 
@@ -3088,7 +3088,7 @@ var view = function() {
                 $(this).val('').trigger('keyup');
             });
             dom_cache.peer_filter_container.on('keyup', 'input', function() {
-                if (engine.settings.HideLeech) {
+                if (engine.settings.hidePeerColumn) {
                     return;
                 }
                 if (var_cache.peerFilter === undefined) {
