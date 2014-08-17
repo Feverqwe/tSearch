@@ -20,7 +20,7 @@ var engine = function() {
         rightPanel: 0,
         hideTopSearch: 0,
         noBlankPageOnDownloadClick: 0,
-        torrent_list_r: 0,
+        torrentListHeight: 0,
         profileListSync: 0,
         proxyURL: 'http://www.gmodules.com/ig/proxy?url={url}',
         proxyUrlFixSpaces: 1

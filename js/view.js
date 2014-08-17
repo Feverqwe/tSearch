@@ -163,7 +163,7 @@ var view = function() {
                 $('<a>', {href: gui.tracker.login_url, target: '_blank', text: _lang.btn_login})
             ) );
             gui.li.append( $auth_ul );
-            if (engine.settings.torrent_list_r === 1) {
+            if (engine.settings.torrentListHeight === 1) {
                 scrool_to($auth_ul);
             }
         } else {
@@ -2838,14 +2838,14 @@ var view = function() {
                 if (e.target.tagName === "A" || e.target.tagName === "SELECT") {
                     return;
                 }
-                if (engine.settings.torrent_list_r === 1) {
-                    engine.settings.torrent_list_r = 0;
+                if (engine.settings.torrentListHeight === 1) {
+                    engine.settings.torrentListHeight = 0;
                     dom_cache.tracker_list_container.resizable("disable");
                     dom_cache.tracker_list_container.css('height', 'auto');
                     dom_cache.tracker_list.css('height', 'auto');
                     dom_cache.tracker_list_container.children("div.ui-resizable-s").hide();
                 } else {
-                    engine.settings.torrent_list_r = 1;
+                    engine.settings.torrentListHeight = 1;
                     if (dom_cache.tracker_list_container.hasClass('ui-resizable') === false) {
                         initResizeble();
                     } else {
@@ -2854,7 +2854,7 @@ var view = function() {
                         dom_cache.tracker_list_container.resizable("enable");
                     }
                 }
-                mono.storage.set({torrent_list_r: engine.settings.torrent_list_r});
+                mono.storage.set({torrentListHeight: engine.settings.torrentListHeight});
             });
             dom_cache.word_filter_input.on('keyup', function() {
                 var value = this.value;
@@ -3121,7 +3121,7 @@ var view = function() {
                 $(this).val('').trigger('keyup');
             });
             document.getElementById('main_container').classList.remove('loading');
-            if (engine.settings.torrent_list_r === 1) {
+            if (engine.settings.torrentListHeight === 1) {
                 initResizeble();
             }
             if ( Math.random()<.5 ) {
