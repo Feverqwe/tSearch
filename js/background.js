@@ -105,10 +105,10 @@ var bg = function() {
             var_cache.cm_state = true;
         }
     };
-    var update_btn_action = function(enable) {
+    var update_btn_action = function() {
         if (!var_cache.btn_init) {
             chrome.browserAction.onClicked.addListener(function() {
-                if (!enable) {
+                if (!var_cache.searchPopup) {
                     chrome.tabs.create({
                         url: 'index.html'
                     });
@@ -117,7 +117,7 @@ var bg = function() {
             var_cache.btn_init = true;
         }
         chrome.browserAction.setPopup({
-            popup: (enable)?'popup.html':''
+            popup: (var_cache.searchPopup)?'popup.html':''
         });
     };
     return {
@@ -144,7 +144,8 @@ var bg = function() {
                 if (mono.isChrome) {
                     add_in_omnibox();
                     if (!mono.isChromeWebApp) {
-                        update_btn_action(storage.searchPopup);
+                        var_cache.searchPopup = storage.searchPopup;
+                        update_btn_action();
                     }
                 }
             });

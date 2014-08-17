@@ -53,10 +53,7 @@ var button = mobileMode?undefined:ToggleButton({
             return;
         }
         monoLib.storage.get('searchPopup', function(ls) {
-            var createPopup = true;
-            if (ls.searchPopup === 0) {
-                createPopup = false;
-            }
+            var createPopup = ls.searchPopup !== 0;
             if (createPopup) {
                 if (popup.show === undefined) {
                     popup = popup();
