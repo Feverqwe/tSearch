@@ -195,17 +195,125 @@ var options = function() {
         }
     };
 
-    var makeBackupForm = function() {
-        dom_cache.backupUpdateBtn.on('click', function() {
-            mono.storage.get(null, function(storage) {
-                for (key in storage) {
-                    if (key.substr(0, 9) === 'exp_cache' || key === 'topList') {
-                        delete storage[key];
-                    }
+    var getBackupJson = function(cb) {
+        mono.storage.get(null, function(storage) {
+            for (key in storage) {
+                if (key.substr(0, 9) === 'exp_cache' || key === 'topList') {
+                    delete storage[key];
                 }
-                dom_cache.backupInp.val( JSON.stringify(storage) );
+            }
+            cb && cb(JSON.stringify(storage));
+        });
+    }
+
+    var savePartedBackup = function(prefix, json, cb) {
+        chrome.runtime.lasterror = undefined;
+        json = 'LZ' + LZString.compressToBase64(json);
+        var chunkLen = 1024 - prefix.length - 3;
+        var regexp = new RegExp('.{1,'+chunkLen+'}', 'g');
+        var jsonLen = json.length;
+        var number_of_part = Math.floor( jsonLen / chunkLen );
+        if (number_of_part >= 512) {
+            mono('savePartedBackup','Can\'t save item', prefix,', very big!');
+            return;
+        }
+        var dataList = json.match(regexp);
+        var dataListLen = dataList.length;
+        var obj = {};
+        for (var i = 0, item; i < dataListLen; i++) {
+            item = dataList[i];
+            obj[prefix+i] = item;
+        }
+        obj[prefix+'inf'] = dataListLen;
+        mono.storage.sync.set(obj, function() {
+            if (chrome.runtime.lasterror !== undefined) {
+                var message = "\n" + (chrome.runtime.lasterror ? chrome.runtime.lasterror.message : '');
+                return alert(_lang.optRestoreError + message);
+            }
+            cb && cb();
+        });
+    };
+
+    var readPartedBackup = function(prefix, cb) {
+        mono.storage.sync.get(prefix+'inf', function(storage) {
+            var len = storage[prefix+'inf'];
+            if (len === undefined) {
+                alert(_lang.optRestoreError);
+                return;
+            }
+            var keyList = [];
+            for (var i = 0; i < len; i++) {
+                keyList.push(prefix+i);
+            }
+            mono.storage.sync.get(keyList, function(storage) {
+                var data = undefined;
+                try {
+                    var json = '';
+                    for (var i = 0; i < len; i++) {
+                        json += storage[prefix + i];
+                    }
+                    if (json.substr(0, 2) === 'LZ') {
+                        json = LZString.decompressFromBase64(json.substr(2));
+                    } else {
+                        json = window.atob(json);
+                    }
+                    data = JSON.parse(json);
+                } catch (error) {
+                    return alert(_lang.optRestoreError + "\n" + error);
+                }
+                cb(data);
             });
         });
+    };
+
+    var restoreSettings = function(storage) {
+        mono.storage.clear();
+        var data = {};
+        for (var item in storage) {
+            var value = storage[item];
+            if (storage.hasOwnProperty(item) === false || value === null) {
+                continue;
+            }
+            data[item] = value;
+        }
+        mono.storage.set(data, function() {
+            // window.location.reload();
+        });
+    };
+
+    var makeBackupForm = function() {
+        dom_cache.backupUpdateBtn.on('click', function() {
+            getBackupJson(function(json) {
+                dom_cache.backupInp.val( json );
+            });
+        });
+        dom_cache.restoreBtn.on('click', function() {
+            mono.storage.get(['history', 'click_history'], function(storage) {
+                try {
+                    var data = JSON.parse(dom_cache.restoreInp.val());
+                } catch (error) {
+                    return alert(_lang.optRestoreError + "\n" + error);
+                }
+                data = $.extend(storage, data);
+                restoreSettings(data);
+            });
+        });
+        dom_cache.clearCloudStorageBtn.on('click', function() {
+            mono.storage.sync.clear();
+            dom_cache.getFromCloudBtn.prop('disabled', true);
+        });
+        dom_cache.saveInCloudBtn.on('click', function() {
+            getBackupJson(function(json) {
+                savePartedBackup('bk_ch_', json);
+                dom_cache.getFromCloudBtn.prop('disabled', false);
+            });
+        });
+        dom_cache.getFromCloudBtn.on('click', function() {
+            readPartedBackup('bk_ch_', function(data) {
+                dom_cache.restoreInp.val( JSON.stringify(data) );
+            });
+        });
+
     };
 
     return {
@@ -220,8 +328,8 @@ var options = function() {
             dom_cache.sectionList = $('.sectionList');
 
             dom_cache.backupUpdateBtn = $('#backupUpdate');
-            dom_cache.saveInCloudBtn = $('#saveInCloud');
             dom_cache.restoreBtn = $('#restoreBtn');
+            dom_cache.saveInCloudBtn = $('#saveInCloud');
             dom_cache.getFromCloudBtn = $('#getFromCloudBtn');
             dom_cache.clearCloudStorageBtn = $('#clearCloudStorage');
             dom_cache.backupInp = $('#backupInp');
@@ -250,6 +358,14 @@ var options = function() {
                 activePage = currentPage;
                 if (page === 'backup') {
                     dom_cache.backupUpdateBtn.trigger('click');
+                }
+                if (page === 'restore') {
+                    mono.storage.sync.get("bk_ch_inf", function(storage) {
+                        if (storage.bk_ch_inf !== undefined) {
+                            return;
+                        }
+                        dom_cache.getFromCloudBtn.prop('disabled', true);
+                    });
                 }
             });
             window.addEventListener("hashchange", onHashChange);

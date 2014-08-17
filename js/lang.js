@@ -187,6 +187,8 @@ var get_lang = function (lang) {
         optGetFromCloud: 'Get the settings from the cloud',
         optClearCloudStorage: 'Clear the settings in the cloud',
         optShowSection: 'Show section:',
+        optRestoreError: 'Failed to restore settings!',
+        optCloudBackupError: 'Error saving settings!',
 
         magic_1: 'Loading error!',
         magic_2: "Search",
@@ -444,6 +446,8 @@ var get_lang = function (lang) {
         optGetFromCloud: 'Получить настройки из облака',
         optClearCloudStorage: 'Очистить настройки в облаке',
         optShowSection: 'Показывать секции:',
+        optRestoreError: 'Ошибка восстановления настроек!',
+        optCloudBackupError: 'Ошибка сохранения настроек!',
 
         magic_1: 'Ошибка загрузки!',
         magic_2: "Поиск",
