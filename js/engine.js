@@ -1,25 +1,25 @@
 var engine = function() {
     var def_settings = {
         hidePeerColumn: 1,
-        HideSeed: 0,
+        hideSeedColumn: 0,
         hideTrackerIcons: 0,
-        SubCategoryFilter: 1,
-        HideZeroSeed: 0,
-        AdvFiltration: 2,
-        TeaserFilter: 1,
-        context_menu: 1,
-        search_popup: 1,
-        AutoComplite_opt: 1,
-        use_english_postername: 0,
-        google_analytics: 0,
-        autoSetCat: 1,
-        allow_get_description: 1,
-        allow_favorites_sync: 1,
-        sub_select_enable: 1,
-        kinopoisk_f_id: 1,
-        filter_panel_to_left: 1,
+        subCategoryFilter: 1,
+        hideZeroSeed: 0,
+        advFiltration: 2,
+        enableTeaserFilter: 1,
+        contextMenu: 1,
+        searchPopup: 1,
+        autoComplite: 1,
+        useEnglishPosterName: 0,
+        doNotSendStatistics: 0,
+        defineCategory: 1,
+        allowGetDescription: 1,
+        enableFavoriteSync: 1,
+        enableHighlight: 1,
+        kinopoiskFolderId: 1,
+        rightPanel: 0,
         hideTopSearch: 0,
-        no_blank_dl_link: 0,
+        noBlankPageOnDownloadClick: 0,
         torrent_list_r: 0,
         profileListSync: 0,
         proxyURL: 'http://www.gmodules.com/ig/proxy?url={url}',
@@ -667,7 +667,7 @@ var engine = function() {
                 mono.storage[storageType].get('profileList', function(syncStorage) {
 
                     mono.storage.get(['customTorrentList', 'profileList',
-                        'history', 'lang', 'google_analytics', 'proxyList'], function(storage) {
+                        'history', 'lang', 'doNotSendStatistics', 'proxyList'], function(storage) {
 
                         if (storage.proxyList !== undefined) {
                             proxyList.splice(0);
@@ -680,7 +680,7 @@ var engine = function() {
                             storage.profileList = syncStorage.profileList;
                         }
 
-                        storage.google_analytics !== 1 && window.counter && counter();
+                        storage.doNotSendStatistics !== 1 && window.counter && counter();
 
                         _lang = get_lang(storage.lang || navigator.language.substr(0, 2));
 

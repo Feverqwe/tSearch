@@ -67,23 +67,23 @@
             }
         }
         if (message === 'bg_update') {
-            mono.storage.get(['context_menu', 'search_popup'], function (storage) {
-                updateContextMenu( storage.context_menu );
-                updateButton( storage.search_popup );
+            mono.storage.get(['contextMenu', 'searchPopup'], function (storage) {
+                updateContextMenu( storage.contextMenu );
+                updateButton( storage.searchPopup );
             });
         }
     });
     window.addEventListener('DOMContentLoaded', function() {
-        mono.storage.get(['lang', 'context_menu', 'search_popup'], function (storage) {
-            if (storage.context_menu === undefined) {
-                storage.context_menu = 1;
+        mono.storage.get(['lang', 'contextMenu', 'searchPopup'], function (storage) {
+            if (storage.contextMenu === undefined) {
+                storage.contextMenu = 1;
             }
-            if (storage.search_popup === undefined) {
-                storage.search_popup = 1;
+            if (storage.searchPopup === undefined) {
+                storage.searchPopup = 1;
             }
             window._lang = get_lang(storage.lang || navigator.language.substr(0, 2));
-            updateContextMenu( storage.context_menu );
-            updateButton( storage.search_popup );
+            updateContextMenu( storage.contextMenu );
+            updateButton( storage.searchPopup );
         });
     });
 })();

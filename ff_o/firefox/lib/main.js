@@ -52,9 +52,9 @@ var button = mobileMode?undefined:ToggleButton({
         if (!state.checked) {
             return;
         }
-        monoLib.storage.get('search_popup', function(ls) {
+        monoLib.storage.get('searchPopup', function(ls) {
             var createPopup = true;
-            if (ls.search_popup === 0) {
+            if (ls.searchPopup === 0) {
                 createPopup = false;
             }
             if (createPopup) {

@@ -239,7 +239,7 @@ var view = function() {
             var_cache.tableIsEmpty = 0;
         }
         clear_table();
-        if (engine.settings.allow_get_description === 1) {
+        if (engine.settings.allowGetDescription === 1) {
             explore.getDescription(request);
         }
         var_cache.tableIsEmpty = 0;
@@ -683,7 +683,7 @@ var view = function() {
         var filter = [0, 0, 0, 0, 0];
         if (var_cache.keywordFilter !== undefined) {
             var title = item.title;
-            if (engine.settings.SubCategoryFilter && item.category !== undefined) {
+            if (engine.settings.subCategoryFilter && item.category !== undefined) {
                 title += ' ' + item.category;
             }
             if (calcKeywordFilter(title)) {
@@ -700,7 +700,7 @@ var view = function() {
                 filter[2] = 1;
             }
         }
-        if (engine.settings.HideSeed === 0 && var_cache.seedFilter !== undefined) {
+        if (engine.settings.hideSeedColumn === 0 && var_cache.seedFilter !== undefined) {
             if (calcSeedFilter(item.seeds)) {
                 filter[3] = 1;
             }
@@ -835,10 +835,10 @@ var view = function() {
                 console.error('Item in tracker ' + tracker.name + ' have critical problem! Torrent skipped!', item);
                 continue;
             }
-            if (engine.settings.HideZeroSeed === 1 && item.seeds === 0) {
+            if (engine.settings.hideZeroSeed === 1 && item.seeds === 0) {
                 continue;
             }
-            if (engine.settings.TeaserFilter === 1 && teaserFilter(item.title + item.category.title) === 1) {
+            if (engine.settings.enableTeaserFilter === 1 && teaserFilter(item.title + item.category.title) === 1) {
                 continue;
             }
             item.title = $.trim(item.title);
@@ -849,7 +849,7 @@ var view = function() {
             var rate = title_highLight.rate;
             var quality = checkRate(rate, item);
             title_highLight = title_highLight.hl_name;
-            if (engine.settings.autoSetCat === 1 && item.category.id < 0 && item.category.title !== undefined) {
+            if (engine.settings.defineCategory === 1 && item.category.id < 0 && item.category.title !== undefined) {
                 item.category.id = autosetCategory(quality, item.category.title);
             }
             var item_id = var_cache.table_dom.length;
@@ -873,7 +873,7 @@ var view = function() {
             }
             var td_download;
             if (item.dl !== undefined) {
-                var isBlank = engine.settings.no_blank_dl_link!==1;//(item.dl.substr(0, 7).toLowerCase() !== 'magnet:');
+                var isBlank = engine.settings.noBlankPageOnDownloadClick !== 1;//(item.dl.substr(0, 7).toLowerCase() !== 'magnet:');
                 td_download = $('<td>', {'class': 'size'}).append(
                     $('<div>').append( $('<a>', {href: item.dl, target: (isBlank === true)?'_blank':'', text: bytesToSize(item.size) + ' ↓'}) )
                 );
@@ -897,7 +897,7 @@ var view = function() {
                     ), td_category
                 ),
                 td_download,
-                (engine.settings.HideSeed === 1) ? '' : $('<td>', {'class': 'seeds'}).append( $('<div>', {text: item.seeds}) ),
+                (engine.settings.hideSeedColumn === 1) ? '' : $('<td>', {'class': 'seeds'}).append( $('<div>', {text: item.seeds}) ),
                 (engine.settings.hidePeerColumn === 1) ? '' : $('<td>', {'class': 'leechs'}).append( $('<div>', {text: item.leechs}) )
             );
             var_cache.table_dom.push(table_dom_item);
@@ -1183,7 +1183,7 @@ var view = function() {
     };
     var sub_select = function(name) {
         //выделяет то, что в скобках
-        if (engine.settings.sub_select_enable === 0) {
+        if (engine.settings.enableHighlight === 0) {
             return name.replace(var_cache.rm_retry,'$1$2');
         }
         name = name.replace(var_cache.found_parenthetical, '<span class="sub_name">$1</span>');
@@ -1727,7 +1727,7 @@ var view = function() {
         };
         dom_cache.search_input.autocomplete({
             source: function(a, response) {
-                if (a.term.length === 0 || engine.settings.AutoComplite_opt === 0) {
+                if (a.term.length === 0 || engine.settings.autoComplite === 0) {
                     response(getHistory());
                 } else {
                     if (var_cache.suggest_xhr !== undefined) {
@@ -1785,7 +1785,7 @@ var view = function() {
         var style = '';
         var sortBy = (var_cache.table_sort_by === 0)?'sortUp':'sortDown';
         for (var i = 0, item; item = table_colums[i]; i++) {
-            if ((item.type === 'seeds' && engine.settings.HideSeed === 1) || item.type === 'leechs' && engine.settings.hidePeerColumn === 1) {
+            if ((item.type === 'seeds' && engine.settings.hideSeedColumn === 1) || item.type === 'leechs' && engine.settings.hidePeerColumn === 1) {
                 continue;
             }
             tr.append( $('<th>', {'class': item.type+((var_cache.table_sort_colum === item.type)?' '+sortBy:''), title: item.title})
@@ -2683,7 +2683,7 @@ var view = function() {
 
             write_language();
 
-            if (engine.settings.HideSeed === 1) {
+            if (engine.settings.hideSeedColumn === 1) {
                 dom_cache.seed_filter_container.hide();
             }
 
@@ -2699,7 +2699,7 @@ var view = function() {
             writeTrackerList(currentProfile);
 
             var_cache.tracker_ui_offset_top = dom_cache.tracker_list.offset().top;
-            if (engine.settings.filter_panel_to_left === 1) {
+            if (engine.settings.rightPanel === 0) {
                 $( document.getElementById('options_column') ).css({
                     "float": "left",
                     "padding-left": "5px",
@@ -2877,7 +2877,7 @@ var view = function() {
                 }
                 var exc = [];
                 var inc = [];
-                value = value.split((engine.settings.AdvFiltration === 0)?',':' ');
+                value = value.split((engine.settings.advFiltration === 0)?',':' ');
                 var safe_item;
                 for (var i = 0, item; item = value[i]; i++) {
                     if (item.length === 0) {
@@ -2903,10 +2903,10 @@ var view = function() {
                 } else {
                     var_cache.keywordFilter.include = undefined;
                 }
-                if (engine.settings.AdvFiltration === 1) {
+                if (engine.settings.advFiltration === 1) {
                     var_cache.keywordFilter.inc_len = 1;
                 }
-                if (engine.settings.AdvFiltration === 2) {
+                if (engine.settings.advFiltration === 2) {
                     var_cache.keywordFilter.inc_len = inc.length;
                 }
                 if (inc.length === 0 && exc.length === 0) {
@@ -3055,7 +3055,7 @@ var view = function() {
                 startFiltering();
             });
             dom_cache.seed_filter_container.on('keyup', 'input', function() {
-                if (engine.settings.HideSeed) {
+                if (engine.settings.hideSeedColumn) {
                     return;
                 }
                 if (var_cache.seedFilter === undefined) {

@@ -324,8 +324,8 @@ var popup = function(enable_ac) {
             if (message !== 'popupUpdate') {
                 return;
             }
-            mono.storage.get(['lang', 'AutoComplite_opt'],function(storage) {
-                options.autoComplete = storage.AutoComplite_opt;
+            mono.storage.get(['lang', 'autoComplite'],function(storage) {
+                options.autoComplete = storage.autoComplite;
                 _lang = get_lang(storage.lang || navigator.language.substr(0, 2));
                 write_language();
             });
@@ -333,12 +333,12 @@ var popup = function(enable_ac) {
     }
 };
 mono.pageId = 'popup';
-mono.storage.get(['lang', 'AutoComplite_opt'],function(storage) {
+mono.storage.get(['lang', 'autoComplite'],function(storage) {
     _lang = get_lang(storage.lang || navigator.language.substr(0, 2));
-    if (storage.AutoComplite_opt === undefined) {
-        storage.AutoComplite_opt = 1;
+    if (storage.autoComplite === undefined) {
+        storage.autoComplite = 1;
     }
     $(function(){
-        popup(storage.AutoComplite_opt);
+        popup(storage.autoComplite);
     });
 });

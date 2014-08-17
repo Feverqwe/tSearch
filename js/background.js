@@ -133,18 +133,18 @@ var bg = function() {
             });
         },
         update: function() {
-            mono.storage.get(['context_menu', 'search_popup'], function(storage) {
-                if (storage.context_menu === undefined) {
-                    storage.context_menu = 1;
+            mono.storage.get(['contextMenu', 'searchPopup'], function(storage) {
+                if (storage.contextMenu === undefined) {
+                    storage.contextMenu = 1;
                 }
-                if (storage.search_popup === undefined) {
-                    storage.search_popup = 1;
+                if (storage.searchPopup === undefined) {
+                    storage.searchPopup = 1;
                 }
-                update_context_menu(storage.context_menu);
+                update_context_menu(storage.contextMenu);
                 if (mono.isChrome) {
                     add_in_omnibox();
                     if (!mono.isChromeWebApp) {
-                        update_btn_action(storage.search_popup);
+                        update_btn_action(storage.searchPopup);
                     }
                 }
             });
