@@ -10,6 +10,14 @@ body {
     min-width: 920px;
 }
 
+a {
+    color: #0051D8;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
 h1 {
     margin: 0;
     font-weight: normal;
