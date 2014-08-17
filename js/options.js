@@ -227,10 +227,7 @@ var options = function() {
         mono.storage.get(null, function(storage) {
             for (key in storage) {
                 if (key.substr(0, 9) === 'exp_cache' ||
-                    key === 'topList' ||
-                    key === 'click_history' ||
-                    key === 'history' ||
-                    key === 'optMigrated') {
+                    ['topList', 'click_history', 'history', 'optMigrated', 'qualityBoxCache', 'qualityCache'].indexOf(key) !== -1) {
                     delete storage[key];
                 }
             }
