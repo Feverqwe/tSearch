@@ -1,29 +1,29 @@
 var engine = function() {
     var def_settings = {
-        HideLeech: {v: 1, t: 'checkbox'},
-        HideSeed: {v: 0, t: 'checkbox'},
-        ShowIcons: {v: 1, t: 'checkbox'},
-        SubCategoryFilter: {v: 1, t: 'checkbox'},
-        HideZeroSeed: {v: 0, t: 'checkbox'},
-        AdvFiltration: {v: 2, t: "radio"},
-        TeaserFilter: {v: 1, t: 'checkbox'},
-        context_menu: {v: 1, t: 'checkbox'},
-        search_popup: {v: 1, t: 'checkbox'},
-        AutoComplite_opt: {v: 1, t: 'checkbox'},
-        use_english_postername: {v: 0, t: 'checkbox'},
-        google_analytics: {v: 0, t: 'checkbox'},
-        autoSetCat: {v: 1, t: 'checkbox'},
-        allow_get_description: {v: 1, t: 'checkbox'},
-        allow_favorites_sync: {v: 1, t: 'checkbox'},
-        sub_select_enable: {v: 1, t: 'checkbox'},
-        kinopoisk_f_id: {v: 1, t: "number"},
-        filter_panel_to_left: {v: 1, t: 'checkbox'},
-        hideTopSearch: {v: 0, t: 'checkbox'},
-        no_blank_dl_link: {v: 0, t: 'checkbox'},
-        torrent_list_r: {v: 0, t: 'hidden'},
-        profileListSync: {v: 0, t: 'checkbox'},
-        proxyURL: {v: 'http://www.gmodules.com/ig/proxy?url={url}', t: 'text'},
-        proxyUrlFixSpaces: {v: 1, t: 'checkbox'}
+        HideLeech: 1,
+        HideSeed: 0,
+        ShowIcons: 1,
+        SubCategoryFilter: 1,
+        HideZeroSeed: 0,
+        AdvFiltration: 2,
+        TeaserFilter: 1,
+        context_menu: 1,
+        search_popup: 1,
+        AutoComplite_opt: 1,
+        use_english_postername: 0,
+        google_analytics: 0,
+        autoSetCat: 1,
+        allow_get_description: 1,
+        allow_favorites_sync: 1,
+        sub_select_enable: 1,
+        kinopoisk_f_id: 1,
+        filter_panel_to_left: 1,
+        hideTopSearch: 0,
+        no_blank_dl_link: 0,
+        torrent_list_r: 0,
+        profileListSync: 0,
+        proxyURL: 'http://www.gmodules.com/ig/proxy?url={url}',
+        proxyUrlFixSpaces: 1
     };
     var def_listOptions = {
         favorites: { e: 1, s: 1, w: 100, c: 1 },
@@ -603,10 +603,10 @@ var engine = function() {
         }
         mono.storage.get(changes, function(storage) {
             for (var key in engine.def_settings) {
-                var def_item = engine.def_settings[key];
+                var defaultValue = engine.def_settings[key];
                 var value = storage[key];
                 if (value === undefined) {
-                    value = def_item.v;
+                    value = defaultValue;
                 }
                 settings[key] = value;
             }
@@ -685,7 +685,7 @@ var engine = function() {
                         _lang = get_lang(storage.lang || navigator.language.substr(0, 2));
 
                         if ( _lang.t === 'en' ) {
-                            def_settings.hideTopSearch.v = 1;
+                            def_settings.hideTopSearch = 1;
                             def_listOptions.kp_favorites.e = 0;
                             def_listOptions.kp_in_cinema.e = 0;
                             def_listOptions.kp_popular.e = 0;

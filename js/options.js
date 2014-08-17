@@ -54,8 +54,7 @@ var options = function() {
     };
 
     var set_place_holder = function() {
-        $.each(engine.def_settings, function(key, item) {
-            var defaultValue = item.v;
+        $.each(engine.def_settings, function(key, defaultValue) {
             var el = document.querySelector('input[data-option="' + key + '"]');
             if (el === null) {
                 return console.log('El not found!', key);
@@ -72,7 +71,10 @@ var options = function() {
             } else if (el.type === "checkbox") {
                 el.checked = !!engine.settings[key];
             } else if (el.type === "radio") {
-                el = document.querySelector('input[data-option="' + key + '"][value="'+engine.settings[key]+'"]');
+                var _el = document.querySelector('input[data-option="' + key + '"][value="'+engine.settings[key]+'"]');
+                if (_el !== null) {
+                    el = _el;
+                }
                 el.checked = true;
             }
         });
