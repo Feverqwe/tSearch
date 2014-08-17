@@ -9,9 +9,8 @@ body {
 input[type=text] {
     border: 1px solid #cccccc;
     outline: none;
-    padding-bottom: 1px;
-    padding-top: 1px;
     font-size: 1em;
+    line-height: 20px;
 }
 input[type=text]:hover {
     border: 1px solid #999999;
@@ -292,7 +291,6 @@ input.button:active {
 #word_filter_container > input {
     width: 142px;
     padding-right: 18px;
-    height: 19px;
 }
 
 .btn.clear {
@@ -311,7 +309,7 @@ input.button:active {
 }
 
 #word_filter_container > .btn.clear {
-    top: 19px;
+    top: 22px;
     right: 15px;
 }
 #word_filter_container > .btn.clear.loading {
