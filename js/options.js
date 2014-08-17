@@ -228,7 +228,7 @@ var options = function() {
         mono.storage.sync.set(obj, function() {
             if (chrome.runtime.lasterror !== undefined) {
                 var message = "\n" + (chrome.runtime.lasterror ? chrome.runtime.lasterror.message : '');
-                return alert(_lang.optRestoreError + message);
+                return alert(_lang.optCloudBackupError + message);
             }
             cb && cb();
         });
