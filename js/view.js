@@ -2711,13 +2711,6 @@ var view = function() {
                 });
                 dom_cache.scroll_to_top_btn.css({"right": "auto"});
             }
-            var style;
-            if (engine.settings.noTransition === 1) {
-                style = 'div.result_panel > table div.tracker_icon,' +
-                    'div.tracker_list a.setup' +
-                    '{transition: none;}';
-                dom_cache.body.append($('<style>', {text: style}));
-            }
             dom_cache.result_table_body.on('mousedown', 'div.title > span > a', function() {
                 var title = this.innerHTML;
                 var href = this.getAttribute('href');

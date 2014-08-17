@@ -21,7 +21,6 @@ var engine = function() {
         filter_panel_to_left: {v: 1, t: 'checkbox'},
         hideTopSearch: {v: 0, t: 'checkbox'},
         no_blank_dl_link: {v: 0, t: 'checkbox'},
-        noTransition: {v: 0, t: 'checkbox'},
         torrent_list_r: {v: 0, t: 'hidden'},
         profileListSync: {v: 0, t: 'checkbox'},
         proxyURL: {v: 'http://www.gmodules.com/ig/proxy?url={url}', t: 'text'},

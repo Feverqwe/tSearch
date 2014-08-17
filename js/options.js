@@ -1,4 +1,100 @@
 var options = function() {
+    var activePage = undefined;
+    var activeItem = undefined;
+    var dom_cache = {};
+
+    var write_language = function(body) {
+        var elList = (body || document).querySelectorAll('[data-lang]');
+        for (var i = 0, el; el = elList[i]; i++) {
+            var langList = el.dataset.lang.split('|');
+            for (var m = 0, lang; lang = langList[m]; m++) {
+                var args = lang.split(',');
+                var locale = _lang[args.shift()];
+                if (locale === undefined) {
+                    console.log('Lang not found!', el.dataset.lang);
+                    continue;
+                }
+                if (args.length !== 0) {
+                    args.forEach(function (item) {
+                        if (item === 'sub') {
+                            var _el = null;
+                            while ( _el === null ? _el = el.firstChild : _el = _el.nextSibling) {
+                                if (_el.nodeType === 3) {
+                                    break;
+                                }
+                            }
+                            if (_el !== null) {
+                                el = _el;
+                            } else {
+                                console.log('Text node not found!', el.dataset.lang);
+                            }
+                            return 1;
+                        } else
+                        if (item === 'text') {
+                            el.textContent = locale;
+                            return 1;
+                        } else
+                        if (item === 'html') {
+                            el.innerHTML = locale;
+                            return 1;
+                        }
+                        el.setAttribute(item, locale);
+                    });
+                } else if (el.tagName === 'DIV') {
+                    el.setAttribute('title', locale);
+                } else if (['A', 'LEGEND', 'SPAN', 'LI', 'TH', 'P', 'OPTION', 'H1', 'H2'].indexOf(el.tagName) !== -1) {
+                    el.textContent = locale;
+                } else if (el.tagName === 'INPUT') {
+                    el.value = locale;
+                } else {
+                    console.log('Tag name not found!', el.tagName);
+                }
+            }
+        }
+    };
+
+    return {
+        boot: function() {
+            $(options.begin);
+        },
+        begin: function() {
+            write_language();
+            dom_cache.container = $('.div.container');
+            dom_cache.menu = $('.menu');
+            dom_cache.menu .on('click', 'a', function(e) {
+                if (this.classList.contains('active')) {
+                    return;
+                }
+                activeItem && activeItem.classList.remove('active');
+                this.classList.add('active');
+                activeItem = this;
+                activePage && activePage.removeClass('active');
+                var currentPage = $('.page.' + this.dataset.page);
+                currentPage.addClass('active');
+                activePage = currentPage;
+            });
+            var hash = location.hash.substr(1) || 'main';
+            var $activeItem = $('a[data-page="'+hash+'"]');
+            if ($activeItem.length === 0) {
+                $activeItem = $('a[data-page="main"]');
+            }
+            $activeItem.trigger('click');
+
+            dom_cache.container.removeClass('loading');
+        }
+    }
+}();
+
+mono.pageId = 'tab';
+mono.storage.get('lang' ,function (storage) {
+    window._lang = get_lang(storage.lang || navigator.language.substr(0, 2));
+    engine.boot(function() {
+        options.boot();
+    });
+});
+/*
+
+var options = function() {
     var listOptions;
     var dom_cache = {};
     var var_cache = {
@@ -834,3 +930,4 @@ mono.storage.get('lang' ,function (storage) {
         options.boot();
     });
 });
+    */

@@ -2,7 +2,7 @@
 <html>
     <head> 	
         <meta charset="utf-8" />
-        <title>Torrents MultiSearch</title>
+        <title>Torrents MultiSearch options</title>
         <link rel="shortcut icon" href="images/settings.png">
         <link rel="stylesheet" type="text/css" href="css/options.css">
         <script src="js/jquery-2.1.1.min.js"></script>
@@ -15,175 +15,78 @@
         <script src="js/options.js"></script>
     </head>
     <body>
-        <div class="title">
-            <h1>Torrents MultiSearch</h1>
-        </div>
-        <ul class="menu">
-            <li><a href="#torrent_list" data-page="torrent_list" data-lang="1" class="active">Список торрентов</a></li>
-            <li><a href="#tk" data-page="tk" data-lang="57">Инструменты</a></li>
-            <li><a href="#options" data-page="options" data-lang="2">Опции</a></li>
-            <li><a href="#backup" data-page="backup" data-lang="3">Восст. наcтроек</a></li>
-            <li class="save_btn"><a href="#save" data-lang="45">Сохранить</a></li>
-        </ul>
-        <div class="page torrent_list active">
-            <fieldset class="lang">
-                <legend data-lang="4">Язык</legend>
-                <div>
-                    <select name="language"><option value="en">English</option><option value="ru">Русский</option></select>
+        <div class="container">
+            <div class="search_panel">
+                <h1>Torrents MultiSearch</h1>
+            </div>
+            <div class="left menu">
+                <a href="#main" data-page="main" data-lang="optMain">Основные</a>
+                <a href="#explore" data-page="explore" data-lang="optMainPage">Главная страница</a>
+                <a href="#other" data-page="other" data-lang="optOther">Прочие</a>
+                <a href="#backup" data-page="backup" data-lang="word_backup">Архивирование</a>
+                <a href="#restore" data-page="restore" data-lang="word_restore">Восстановление</a>
+            </div>
+            <div class="right">
+                <div class="page main">
+                    <h2 data-lang="optMain">Общие</h2>
+                    <label data-lang="ShowIcons,sub,text"><input type="checkbox" data-option="ShowIcons"/>Скрыть иконки трекеров в выдаче</label>
+                    <label data-lang="HideZeroSeed,sub,text"><input type="checkbox" data-option="HideZeroSeed"/>Скрыть раздачи без раздающих</label>
+                    <label data-lang="HideLeech,sub,text"><input type="checkbox" data-option="HideLeech"/>Скрыть столбец количеста скачивающих</label>
+                    <label data-lang="HideSeed,sub,text"><input type="checkbox" data-option="HideSeed"/>Скрыть столбец количеста раздающих</label>
+                    <label data-lang="TeaserFilter,sub,text"><input type="checkbox" data-option="TeaserFilter"/>Скрыть тизеры и трейлеры в результатах поиска</label>
+                    <label data-lang="autoSetCat,sub,text"><input type="checkbox" data-option="autoSetCat"/>Определять категорию автоматически</label>
+                    <label data-lang="sub_select_enable,sub,text"><input type="checkbox" data-option="sub_select_enable"/>Подсвечивать результаты поиска</label>
+                    <label data-lang="no_blank_dl_link,sub,text"><input type="checkbox" data-option="no_blank_dl_link"/>Не открывать новую страницу при скачивании ↓</label>
+                    <label data-lang="allow_get_description,sub,text"><input type="checkbox" data-option="allow_get_description"/>Получать описание поискового запроса</label>
+                    <label data-lang="context_menu,sub,text"><input type="checkbox" data-option="context_menu"/>Добавить поиск в контекстное меню</label>
+                    <label data-lang="search_popup,sub,text"><input type="checkbox" data-option="search_popup"/>Не показывать поисковую строку при нажатии на иконку</label>
+                    <label data-lang="AutoComplite_opt,sub,text"><input type="checkbox" data-option="AutoComplite_opt"/>Включить автозаполнение</label>
+                    <label data-lang="profileListSync,sub,text"><input type="checkbox" data-option="profileListSync"/>Синхронизировать список трекеров</label>
+                    <label data-lang="filter_panel_to_left,sub,text"><input type="checkbox" data-option="filter_panel_to_left"/>Переместить панель фильтров вправо</label>
+                    <label data-lang="google_analytics,sub,text"><input type="checkbox" data-option="google_analytics"/>Не отправлять статистику</label>
                 </div>
-            </fieldset>
-            <fieldset>
-                <legend data-lang="5">Списки торрентов</legend>
-                <ul>
-                    <li><ul class="item"><li><select name="tr_lists"></select></li><li><input data-lang="6" name="rm_list" type="button" value="Удалить" /></li></ul></li>
-                    <li><ul class="item"><li data-lang="50" >Название</li>: <li><input name="list_name" type="text" /></li><li><input name="add_list" type="button" value="Добавить" data-lang="7" /></li></ul></li>
-                </ul>
-            </fieldset>
-            <fieldset>
-                <legend data-lang="8">Торрент трекеры</legend>
-                <table class="tr_table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th data-lang="9">Торрент трекер</th>
-                            <th data-lang="10">Описание</th>
-                            <th class="status"><a href="#" data-lang="11">Вкл</a><br/><a href="#" data-lang="12">Выкл</a><br/><a href="#" data-lang="13">Станд.</a></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </fieldset>
-        </div>
-        <div class="page tk">
-            <fieldset class="info">
-                <ul class="item">
-                    <li data-lang="65">Пользовательские коды торрент трекеров выложены</li> <li><a href="http://code-tms.blogspot.ru/" target="_blank" data-lang="66">на этом сайте</a></li>
-                </ul>
-            </fieldset>
-            <fieldset>
-                <legend data-lang="58">Управление пользовательскими торрент-трекерами</legend>
-                <ul class="item">
-                    <li><input type="button" data-lang="59" name="add_code" value="Добавить код торрента"/></li><li><a href="magic.html" target="_blank"><input type="button" name="create_code" value="Создать" data-lang="60"/></a></li>
-                </ul>
-                <table class="c_table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th data-lang="9">Торрент трекер</th>
-                            <th data-lang="10">Описание</th>
-                            <th data-lang="73" class="action">Действие</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>  
-            </fieldset>
-        </div>
-        <div class="page options">
-            <fieldset>
-                <legend data-lang="14">Дополнительные настройки</legend>
-                <ul>
-                    <li><ul class="item"><li><input type="checkbox" name="ShowIcons"/></li><li data-lang="15">Показывать иконки торрент-трекеров в выдаче</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="HideZeroSeed"/></li><li data-lang="16">Скрывать раздачи без сидеров (раздающих)</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="HideLeech"/></li><li data-lang="17">Скрыть столбец личеров (скачивающих)</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="HideSeed"/></li><li data-lang="18">Скрыть столбец сидов (раздающих)</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="AutoComplite_opt"/></li><li data-lang="20">Включить автозаполнение от Google</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="TeaserFilter"/></li><li data-lang="21">Не показывать тизеры\трейлеры в результатах поиска</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="context_menu"/></li><li data-lang="23">Добавить поиск в контекстное меню</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="search_popup"/></li><li data-lang="24">Показывать поиск при нажатии на иконку расширения</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="autoSetCat"/></li><li data-lang="25">Автоматически определить категорию раздачи</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="allow_get_description"/></li><li data-lang="27">Получать описание поискового запроса из Google. (каждый запрос будет искаться в google!)</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="sub_select_enable"/></li><li data-lang="67">Подсвечивать пояснения в названии раздачи</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="filter_panel_to_left"/></li><li data-lang="74">Переместить панель фильтров влево</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="no_blank_dl_link"/></li><li data-lang="78">Не открывать новую страницу при нажатии загрузить ↓</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="noTransition"/></li><li data-lang="80">Отключить всю анимацию</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="profileListSync"/></li><li data-lang="81">Разрешить синхронизацию списка трекеров (пользовательские трекеры нужно добавлять вручную)</li></ul></li>
-                </ul>
-            </fieldset>
-            <fieldset>
-                <legend data-lang="76">Главная страница</legend>
-                <ul>
-                    <li><ul class="item"><li><input type="checkbox" name="use_english_postername"/></li><li data-lang="26">Отображать имена фильмов\сериалов на английском на главной странице</li></ul></li>
-                    <li><ul class="item"><li><input type="number" name="kinopoisk_f_id"/></li><li data-lang="72">ID "категории" из кинопоиска (1 - избранное)</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="hideTopSearch"/></li><li data-lang="75">Скрыть Топ-40 поисковых запросов</li></ul></li>
-                    <li><ul class="item"><li><input type="checkbox" name="allow_favorites_sync"/></li><li data-lang="28">Разрешить синхронизацию списка избранного</li></ul></li>
-                    <li class="main_items">
-                        <span data-lang="77">Показывать:</span>
-                        <ul class="main_item_body"></ul>
-                    </li>
-                </ul>
-            </fieldset>
-            <fieldset>
-                <legend data-lang="29">Фильтрация списка</legend>
-                <ul>
-                    <li><ul class="item"><li><input name="AdvFiltration" type="radio" value="0"/></li><li data-lang="30">Ищет полное совпадение фразы (более 1 фразы можно разделить запятой)</li></ul></li>
-                    <li><ul class="item"><li><input name="AdvFiltration" type="radio" value="1"/></li><li data-lang="31">Ищет совпадение с одним из введенных слов</li></ul></li>
-                    <li><ul class="item"><li><input name="AdvFiltration" type="radio" value="2"/></li><li data-lang="32">Ищет совпадение всех введенных слов</li></ul></li>
-                </ul>
-                <ul>
-                    <li><ul class="item"><li><input name="SubCategoryFilter" type="checkbox"/></li><li data-lang="33">Учитывать подкатегории</li></ul></li>
-                </ul>
-            </fieldset>
-            <fieldset>
-                <legend data-lang=34>Прочие</legend>
-                <ul>
-                    <li><ul class="item"><li><input name="google_analytics" type="checkbox"/></li><li data-lang="36">Отключить Google-Analytics</li></ul></li>
-                </ul>
-            </fieldset>
-            <fieldset>
-                <fieldset class="info">
-                    <span data-lang="82">Proxy work only for GET search request and HTTP protocol!</span>
-                </fieldset>
-                <ul>
-                    <li><ul class="item">
-                        <li data-lang="83">Proxy url</li>
-                        <!-- alternative https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&container=pos -->
-                        <li><input name="proxyURL" type="text" value=""/></li>
-                    </ul></li>
-                    <li><ul class="item"><li><input name="proxyUrlFixSpaces" type="checkbox"/></li><li data-lang="84">Экронировать пробелы</li></ul></li>
-                </ul>
-            </fieldset>
-        </div>
-        <div class="page backup">
-            <fieldset>
-                <legend data-lang="37">Разервное копирование и восстановление настроек</legend>
-                <div class="backup_form">
-                    <div>
-                        <a data-lang="38" href="#" class="backup_tab">Бэкап</a>
-                        <a data-lang="39" href="#" class="restore_tab active">Восстановление</a>
-                    </div>
-                    <div class="backup">
-                        <textarea rows="10" name="backup"></textarea>
-                        <input data-lang="41" type="button" value="Обновить" name="backup">
-                        <input data-lang="68" type="button" value="Сохранить в облаке" name="save_in_cloud"/>
-                    </div>
-                    <div class="restore">
-                        <textarea rows="10" name="restore"></textarea>
-                        <input data-lang="43" type="button" value="Восстановить" name="restore"/>
-                        <input data-lang="69" type="button" value="Получить из облака" name="get_from_cloud"/>
-                        <input data-lang="44" type="button" value="Очистить настройки в облаке" name="clear_cloud"/>
-                    </div>
+                <div class="page explore">
+                    <h2 data-lang="optMainPage">Главная страница</h2>
+                    <label data-lang="use_english_postername,sub,text"><input type="checkbox" data-option="use_english_postername"/>Отображать названия на английском</label>
+                    <label data-lang="hideTopSearch,sub,text"><input type="checkbox" data-option="hideTopSearch"/>Скрыть Топ-40 поисковых запросов</label>
+                    <label data-lang="allow_favorites_sync,sub,text"><input type="checkbox" data-option="allow_favorites_sync"/>Синхронизировать списка избранного</label>
+                    <label data-lang="kinopoisk_f_id,sub,text">ID категории кинопоиска <input type="text" data-option="kinopoisk_f_id"/></label>
+                    <div class="sectionList"></div>
                 </div>
-            </fieldset>
+                <div class="page other">
+                    <h2 data-lang="optOther">Фильтрация списка</h2>
+                    <label data-lang="AdvFiltration,sub,text"><input type="radio" data-option="AdvFiltration" value="0"/>Ищет полное совпадение фразы</label>
+                    <label data-lang="AdvFiltration,sub,text"><input type="radio" data-option="AdvFiltration" value="1"/>Ищет совпадение с одним из введенных слов</label>
+                    <label data-lang="AdvFiltration,sub,text"><input type="radio" data-option="AdvFiltration" value="2"/>Ищет совпадение всех введенных слов</label>
+                    <label data-lang="SubCategoryFilter,sub,text"><input type="checkbox" data-option="SubCategoryFilter"/>Учитывать подкатегории</label>
+                    <h2 data-lang="optProxyTitle">Проксирование запросов</h2>
+                    <div class="info">
+                        <span data-lang="optProxyInfo">Proxy work only for GET search request and HTTP protocol!</span>
+                    </div>
+                    <label data-lang="proxyURL,sub,text">URL<input id="proxyURL" type="text" data-option="proxyURL" value="https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&amp;container=pos"/></label>
+                    <label data-lang="proxyUrlFixSpaces,sub,text"><input type="checkbox" data-option="proxyUrlFixSpaces"/>Экранировать пробелы</label>
+                </div>
+                <div class="page backup">
+                    <h2 data-lang="word_backup">Архивирование</h2>
+                    <div class="btnList">
+                        <input type="button" id="backupUpdate" value="Обновить" data-lang="word_update"/>
+                        <input type="button" id="saveInCloud" value="Сохранить в облаке" data-lang="optSaveInCloud"/>
+                    </div>
+                    <textarea id="backupInp"></textarea>
+                </div>
+                <div class="page restore">
+                    <h2 data-lang="word_restore">Восстановление</h2>
+                    <div class="btnList">
+                        <input type="button" id="restoreBtn" value="Восстановить" data-lang="word_restore"/>
+                        <input type="button" id="getFromCloudBtn" value="Получить из облака" data-lang="optGetFromCloud"/>
+                        <input type="button" id="clearCloudStorage" value="Очистить настройки в облаке" data-lang="optClearCloudStorage"/>
+                    </div>
+                    <textarea id="restoreInp"></textarea>
+                </div>
+            </div>
+            <div class="bottom">
+                <div class="author"><a href="mailto:leonardspbox@gmail.com">Anton</a>, 2013</div>
+            </div>
         </div>
-        <div class="page save">
-            <input data-lang="45" type="button" value="Сохранить все!" name="save">
-            <div class="status"></div>
-        </div>
-        <div class="bottom">
-            <div class="donate"></div>
-            <div class="author"><a href="mailto:leonardspbox@gmail.com">Anton</a>, 2013</div>
-        </div>
-        <div class="popup">
-            <span data-lang="61">Код трекера</span>
-            <textarea name="code"></textarea>
-            <ul class="item">
-                <li><input type="button" value="Добавить" name="ctr_add" data-lang="62"/></li>
-                <li><input type="button" value="Изменить" name="ctr_edit" data-lang="63"/></li>
-                <li><input type="button" value="Закрыть" name="close_popup"  data-lang="64"/></li>
-            </ul>
-        </div>
-        <div class="topbtn" title="Вверх!"></div>
     </body>
 </html>

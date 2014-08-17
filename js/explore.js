@@ -1480,20 +1480,6 @@ var explore = function() {
                     }
                 });
             }
-            var style;
-            if (engine.settings.noTransition === 1 || engine.settings.noTransitionLinks === 1) {
-                style = 'div.explore div.top_search a,' +
-                    'div.explore div.popup div.content a' +
-                    '{transition: none;}';
-                dom_cache.body.append($('<style>', {text: style}));
-            }
-            if (engine.settings.noTransition === 1) {
-                style = 'div.explore ul > li.collapsing > div > div.action,' +
-                    'div.explore div.head div.action > div.setup,' +
-                    'div.explore ul.body li div.picture > *' +
-                    '{transition: none !important;}';
-                dom_cache.body.append($('<style>', {text: style}));
-            }
         },
         hide: function(){
             if (dom_cache.explore_container === undefined) {
