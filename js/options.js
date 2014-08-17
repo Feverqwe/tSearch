@@ -132,6 +132,34 @@ var options = function() {
         var obj = {};
         obj[key] = value;
         mono.storage.set(obj);
+        if (key === 'profileListSync') {
+            mono.storage.sync.get('profileList', function(storage) {
+                if (storage.hasOwnProperty('profileList')) {
+                    return;
+                }
+                mono.storage.get('profileList', function(storage) {
+                    mono.storage.sync(storage);
+                });
+            });
+        }
+        if (key === 'enableFavoriteSync') {
+            mono.storage.sync.get('exp_cache_favorites', function(storage) {
+                if (storage.hasOwnProperty('exp_cache_favorites')) {
+                    return;
+                }
+                mono.storage.get('exp_cache_favorites', function(storage) {
+                    mono.storage.sync(storage);
+                });
+            });
+        }
+
+        if (key === 'contextMenu' || key === 'searchPopup' || key === 'lang' || key === 'autoComplite') {
+            mono.sendMessage('bg_update');
+            if (mono.isFF || mono.isOpera) {
+                mono.sendMessage('popupUpdate', undefined, 'popup');
+            }
+        }
+
     };
 
     var listOptionsSave = function(e) {
@@ -341,9 +369,22 @@ var options = function() {
             });
 
             if (!mono.isChrome) {
-                dom_cache.saveInCloudBtn.parent().hide();
-                dom_cache.getFromCloudBtn.parent().hide();
-                dom_cache.clearCloudStorageBtn.parent().hide();
+                dom_cache.saveInCloudBtn.hide();
+                dom_cache.getFromCloudBtn.hide();
+                dom_cache.clearCloudStorageBtn.hide();
+                $('input[data-option="enableFavoriteSync"]').parent().hide();
+                $('input[data-option="profileListSync"]').parent().hide();
+            }
+            if (mono.isChrome && mono.isChromeWebApp) {
+                //Chromeum app
+                $('input[data-option="searchPopup"]').parent().hide();
+            }
+            if (mono.isFF) {
+                $('input[data-option="optDoNotSendStatistics"]').parent().hide();
+            }
+
+            if (_lang.t === 'en') {
+                $('input[data-option="useEnglishPosterName"]').parent().hide();
             }
 
             bindTextInput();
