@@ -2754,7 +2754,7 @@ var view = function() {
                 this.style.display = 'none';
                 dom_cache.search_input.val('').trigger('keyup').focus();
             });
-            dom_cache.search_input.on('keyup', function() {
+            dom_cache.search_input.on('input', function() {
                 if (this.value.length > 0) {
                     dom_cache.search_clear_btn.show();
                 } else {

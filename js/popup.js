@@ -292,7 +292,7 @@ var popup = function(enable_ac) {
         dom_cache.search_input.val('').focus();
         $(this).hide();
     });
-    dom_cache.search_input.on('keyup', function() {
+    dom_cache.search_input.on('input', function() {
         if (this.value.length > 0) {
             dom_cache.search_clear_btn.show();
         } else {
