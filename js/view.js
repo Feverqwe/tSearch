@@ -1396,16 +1396,15 @@ var view = function() {
     };
     var bytesToSize = function(bytes, nan) {
         //переводит байты в строчки
-        var sizes = _lang.size_list;
         if (nan === undefined)
             nan = 'n/a';
         if (bytes <= 0)
             return nan;
         var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
         if (i === 0) {
-            return (bytes / Math.pow(1024, i)) + ' ' + sizes[i];
+            return (bytes / Math.pow(1024, i)) + ' ' + _lang['size_list_'+i];
         }
-        return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+        return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + _lang['size_list_'+i];
     };
     var u2ddmmyyyy = function(shtamp) {
         //преврящает TimeShtamp в строчку
@@ -2963,8 +2962,20 @@ var view = function() {
                 numberOfMonths: 1,
                 prevText: "",
                 nextText: "",
-                monthNamesShort: _lang.time_f_m,
-                dayNamesMin: _lang.time_f_d,
+                monthNamesShort: (function() {
+                    var arr = [];
+                    for (var i = 0; i < 12; i++) {
+                        arr.push(_lang['time_f_m_'+i]);
+                    }
+                    return arr;
+                })(),
+                dayNamesMin: (function() {
+                    var arr = [];
+                    for (var i = 0; i < 7; i++) {
+                        arr.push(_lang['time_f_d_'+i]);
+                    }
+                    return arr;
+                })(),
                 firstDay: 1,
                 maxDate: "+1d",
                 hideIfNoPrevNext: true,
@@ -3166,16 +3177,6 @@ var view = function() {
                             currentProfile = item;
                             break;
                         }
-                    }
-
-                    if (typeof _lang.size_list === 'string') {
-                        _lang.size_list = JSON.parse(_lang.size_list);
-                    }
-                    if (typeof _lang.time_f_d === 'string') {
-                        _lang.time_f_d = JSON.parse(_lang.time_f_d);
-                    }
-                    if (typeof _lang.time_f_m === 'string') {
-                        _lang.time_f_m = JSON.parse(_lang.time_f_m);
                     }
 
                     table_colums = [

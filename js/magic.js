@@ -940,16 +940,15 @@ var magic = function() {
     };
     var bytesToSize = function(bytes, nan) {
         //переводит байты в строчки
-        var sizes = _lang.size_list;
         if (nan === undefined)
             nan = 'n/a';
         if (bytes <= 0)
             return nan;
         var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
         if (i === 0) {
-            return (bytes / Math.pow(1024, i)) + ' ' + sizes[i];
+            return (bytes / Math.pow(1024, i)) + ' ' + _lang['size_list_'+i];
         }
-        return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+        return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + _lang['size_list_'+i];
     };
     var write_language = function() {
         var elList = document.querySelectorAll('[data-lang]');
@@ -971,11 +970,6 @@ var magic = function() {
     };
     return {
         begin: function() {
-
-            if (typeof _lang.size_list === 'string') {
-                _lang.size_list = JSON.parse(_lang.size_list);
-            }
-
             write_language();
             dom_cache.window = $(window);
             dom_cache.body = $(document.body);
