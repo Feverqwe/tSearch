@@ -724,8 +724,11 @@ var explore = function() {
         var_cache['exp_cache_'+type].content = content;
         var storage = {};
         storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-        var storageType = ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' )?'sync':'local';
-        mono.storage[storageType].set(storage);
+        mono.storage.set(storage, function() {
+            if ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' ) {
+                mono.storage.sync.set(storage);
+            }
+        });
     };
     var xhr_send = function(type, source, page, page_mode) {
         source.xhr_wait_count++;
@@ -1228,8 +1231,11 @@ var explore = function() {
                             var_cache['exp_cache_'+type] = {keepAlive: 0, content: content};
                             var storage = {};
                             storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-                            var storageType = ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' )?'sync':'local';
-                            mono.storage[storageType].set(storage);
+                            mono.storage.set(storage, function() {
+                                if ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' ) {
+                                    mono.storage.sync.set(storage);
+                                }
+                            });
                             $this.removeClass('loading');
                         },
                         error: function(){
@@ -1250,8 +1256,11 @@ var explore = function() {
                 content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                 var storage = {};
                 storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-                var storageType = ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' )?'sync':'local';
-                mono.storage[storageType].set(storage);
+                mono.storage.set(storage, function() {
+                    if ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' ) {
+                        mono.storage.sync.set(storage);
+                    }
+                });
             });
             dom_cache.explore_gallery.on('click', 'div.picture > div.rmFavorite', function(e){
                 var $this = $(this);
@@ -1262,8 +1271,11 @@ var explore = function() {
                 content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                 var storage = {};
                 storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-                var storageType = ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' )?'sync':'local';
-                mono.storage[storageType].set(storage);
+                mono.storage.set(storage, function() {
+                    if ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' ) {
+                        mono.storage.sync.set(storage);
+                    }
+                });
             });
             dom_cache.explore_gallery.on('click', 'div.picture > div.edit', function(e){
                 var $this = $(this);
@@ -1285,8 +1297,11 @@ var explore = function() {
                         content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                         var storage = {};
                         storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-                        var storageType = ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' )?'sync':'local';
-                        mono.storage[storageType].set(storage);
+                        mono.storage.set(storage, function() {
+                            if ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' ) {
+                                mono.storage.sync.set(storage);
+                            }
+                        });
                     });
             });
             dom_cache.explore_gallery.on('click', 'div.picture > a.link', function(e){
@@ -1411,8 +1426,11 @@ var explore = function() {
                     content_write(type, var_cache['exp_cache_'+type].content, page, 1);
                     var storage = {};
                     storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-                    var storageType = ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' )?'sync':'local';
-                    mono.storage[storageType].set(storage);
+                    mono.storage.set(storage, function() {
+                        if ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' ) {
+                            mono.storage.sync.set(storage);
+                        }
+                    });
                 }
             });
             dom_cache.window.on('resize', function(e) {
