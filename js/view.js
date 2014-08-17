@@ -2260,6 +2260,7 @@ var view = function() {
             orderTrackerList(1);
             filterListBy(this.dataset.type);
             filterInput.val('').trigger('input');
+            trackerList.scrollTop(0);
         });
 
         trackerList.on('click', 'div.tracker_item', function(e) {
