@@ -16,11 +16,11 @@
         "keyword" : "tms"
     },
     "background": {
-        "scripts": ["js/mono.js","js/lang.js","js/background.js"]
+        "scripts": ["js/mono.js","js/background.js"]
     },
     "content_security_policy": "script-src 'self' https://www.google-analytics.com/analytics.js; object-src 'self'",
     "name": "__MSG_appName__",
     "description": "__MSG_appDesc__",
     "default_locale": "en",
-    "version": "1.0.48"
+    "version": "1.0.49"
 }

@@ -8,7 +8,6 @@ try {
 var self = require("sdk/self");
 var tabs = require("sdk/tabs");
 var monoLib = require("./monoLib.js");
-var lang = require("./lang.js");
 var pageMod = require("sdk/page-mod");
 
 var sp = require("sdk/simple-prefs");
@@ -103,4 +102,4 @@ var bg_addon = monoLib.virtualAddon('bg');
 
 monoLib.addPage('bg', bg_addon);
 
-bg.init(bg_addon, lang, button);
+bg.init(bg_addon, button);

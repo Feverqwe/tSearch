@@ -153,7 +153,7 @@ var options = function() {
             });
         }
 
-        if (key === 'contextMenu' || key === 'searchPopup' || key === 'lang' || key === 'autoComplite') {
+        if (key === 'contextMenu' || key === 'searchPopup' || key === 'autoComplite') {
             mono.sendMessage('bg_update');
             if (mono.isFF || mono.isOpera) {
                 mono.sendMessage('popupUpdate', undefined, 'popup');
@@ -446,7 +446,4 @@ var options = function() {
 }();
 
 mono.pageId = 'tab';
-mono.storage.get('lang' ,function (storage) {
-    window._lang = get_lang(storage.lang || navigator.language.substr(0, 2));
-    engine.boot(options.boot);
-});
+engine.boot(options.boot);

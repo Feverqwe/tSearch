@@ -5,10 +5,9 @@ if (typeof window === 'undefined') {
     window.isModule = true;
     mono = require('./mono.js');
 }
-var init = function (env, lang, ffButton) {
+var init = function (env, ffButton) {
     if (env) {
         mono = mono.init(env);
-        window.get_lang = lang.get_lang;
         window.hasButton = !!ffButton;
     }
     mono.pageId = 'bg';
@@ -27,7 +26,7 @@ var bg = function() {
      * @namespace chrome.browserAction.onClicked
      * @namespace chrome.browserAction.setPopup
      */
-    var _lang, var_cache = {};
+    var _lang = {}, var_cache = {};
     var add_in_omnibox = function() {
         chrome.omnibox.onInputEntered.addListener(function (text) {
             chrome.tabs.create({
@@ -120,10 +119,59 @@ var bg = function() {
             popup: (var_cache.searchPopup)?'popup.html':''
         });
     };
+
+    var loadLanguage = function(cb, force) {
+        var url = '_locales/{lang}/messages.json';
+        var lang;
+        if (mono.isChrome) {
+            lang = chrome.i18n.getMessage('lang');
+        } else {
+            lang = window.navigator.language.substr(0, 2);
+        }
+
+        url = url.replace('{lang}', force || lang);
+        if (mono.isFF) {
+            var data;
+            try {
+                data = self.data.load(url);
+                data = JSON.parse(data);
+            } catch (e) {
+                if (force) {
+                    return cb();
+                }
+                return loadLanguage(cb, 'en');
+            }
+            for (var item in data) {
+                _lang[item] = data[item].message;
+            }
+            return cb();
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'json';
+        xhr.onload = function() {
+            var data = xhr.response;
+            for (var item in data) {
+                _lang[item] = data[item].message;
+            }
+            cb();
+        };
+        xhr.onerror = function() {
+            if (force) {
+                return cb();
+            }
+            loadLanguage(cb, 'en');
+        };
+        try {
+            xhr.send();
+        } catch (e) {
+            xhr.onerror();
+        }
+    };
+
     return {
         boot: function() {
-            mono.storage.get('lang', function(storage) {
-                _lang = window.get_lang( storage.lang || window.navigator.language.substr(0, 2) );
+            loadLanguage(function() {
                 mono.onMessage(function(message) {
                     if (message === 'bg_update') {
                         bg.update();

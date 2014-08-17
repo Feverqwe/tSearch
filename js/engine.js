@@ -650,22 +650,27 @@ var engine = function() {
     };
 
     var loadSettings = function(cb) {
-        optionsMigration(function() {
-            var settings = {};
-            var changes = [];
-            for (var key in def_settings) {
-                changes.push(key);
+        loadLanguage(function() {
+            if (_lang.t !== 'ru') {
+                def_settings.hideTopSearch = 1;
             }
-            mono.storage.get(changes, function(storage) {
-                for (var key in engine.def_settings) {
-                    var defaultValue = engine.def_settings[key];
-                    var value = storage[key];
-                    if (value === undefined) {
-                        value = defaultValue;
-                    }
-                    settings[key] = value;
+            optionsMigration(function() {
+                var settings = {};
+                var changes = [];
+                for (var key in def_settings) {
+                    changes.push(key);
                 }
-                cb && cb(settings);
+                mono.storage.get(changes, function(storage) {
+                    for (var key in engine.def_settings) {
+                        var defaultValue = engine.def_settings[key];
+                        var value = storage[key];
+                        if (value === undefined) {
+                            value = defaultValue;
+                        }
+                        settings[key] = value;
+                    }
+                    cb && cb(settings);
+                });
             });
         });
     };
@@ -684,8 +689,46 @@ var engine = function() {
         }
     };
 
+    var loadLanguage = function(cb, force) {
+        var url = '_locales/{lang}/messages.json';
+        var lang;
+        if (mono.isChrome) {
+            lang = chrome.i18n.getMessage('lang');
+        } else {
+            lang = navigator.language.substr(0, 2);
+        }
+
+        if (window._lang && window._lang.lang === lang) {
+            return cb();
+        }
+        url = url.replace('{lang}', force || lang);
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'json';
+        xhr.onload = function() {
+            var data = xhr.response;
+            window._lang = {};
+            for (var item in data) {
+                window._lang[item] = data[item].message;
+            }
+            cb();
+        };
+        xhr.onerror = function() {
+            if (force) {
+                return cb();
+            }
+            loadLanguage(cb, 'en');
+        };
+        try {
+            xhr.send();
+        } catch (e) {
+            xhr.onerror();
+        }
+    };
+
     return {
         //need modules
+        loadLanguage: loadLanguage,
         contentFilter: contentFilter,
         contentUnFilter: contentUnFilter,
         load_in_sandbox: load_in_sandbox,
@@ -737,10 +780,7 @@ var engine = function() {
 
                         storage.doNotSendStatistics !== 1 && window.counter && counter();
 
-                        _lang = get_lang(storage.lang || navigator.language.substr(0, 2));
-
                         if ( _lang.t === 'en' ) {
-                            def_settings.hideTopSearch = 1;
                             def_listOptions.kp_favorites.e = 0;
                             def_listOptions.kp_in_cinema.e = 0;
                             def_listOptions.kp_popular.e = 0;

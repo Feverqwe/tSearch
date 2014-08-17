@@ -1058,8 +1058,7 @@ var magic = function() {
     };
 }();
 mono.pageId = 'tab';
-mono.storage.get('lang', function (storage) {
-    window._lang = get_lang(storage.lang || navigator.language.substr(0, 2));
+engine.loadLanguage(function() {
     $(function () {
         magic.begin();
     });

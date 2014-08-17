@@ -19,12 +19,10 @@ copy .\*.json .\build\.
 
 mkdir .\build_firefox_sdk\data
 xcopy .\build .\build_firefox_sdk\data\ /E
-rd /S /Q .\build_firefox_sdk\data\_locales
 del .\build_firefox_sdk\data\manifest.json
 xcopy .\ff_o\firefox\* .\build_firefox_sdk\. /E /Y
 xcopy .\js\background.js .\build_firefox_sdk\lib\. /E
 xcopy .\js\mono.js .\build_firefox_sdk\lib\. /E
-xcopy .\js\lang.js .\build_firefox_sdk\lib\. /E
 del .\build_firefox_sdk\data\js\background.js
 del .\build_firefox_sdk\data\js\torrent_lib.js
 
@@ -36,7 +34,6 @@ java -jar compiler.jar --js .\js\engine.js --js_output_file .\build\js\engine.js
 java -jar compiler.jar --js .\js\ex_kit.js --js_output_file .\build\js\ex_kit.js
 java -jar compiler.jar --js .\js\explore.js --js_output_file .\build\js\explore.js
 java -jar compiler.jar --js .\js\history.js --js_output_file .\build\js\history.js
-java -jar compiler.jar --js .\js\lang.js --js_output_file .\build\js\lang.js
 java -jar compiler.jar --js .\js\lz-string-1.3.3.js --js_output_file .\build\js\lz-string-1.3.3.js
 java -jar compiler.jar --js .\js\magic.js --js_output_file .\build\js\magic.js
 java -jar compiler.jar --js .\js\mono.js --js_output_file .\build\js\mono.js
@@ -52,7 +49,6 @@ java -jar compiler.jar --js .\js\view.js --js_output_file .\build\js\view.js
 xcopy .\build .\build_opera\build\ /E
 del .\build_opera\build\manifest.json
 del .\build_opera\build\js\background.js
-rd /S /Q .\build_opera\build\_locales
 xcopy .\ff_o\opera\* .\build_opera\. /E
 
 :: chrome extension, opera next
