@@ -134,21 +134,21 @@ var options = function() {
         mono.storage.set(obj);
         if (key === 'profileListSync') {
             mono.storage.sync.get('profileList', function(storage) {
-                if (storage.hasOwnProperty('profileList')) {
+                if (storage.profileList) {
                     return;
                 }
                 mono.storage.get('profileList', function(storage) {
-                    mono.storage.sync(storage);
+                    mono.storage.sync.set(storage);
                 });
             });
         }
         if (key === 'enableFavoriteSync') {
             mono.storage.sync.get('exp_cache_favorites', function(storage) {
-                if (storage.hasOwnProperty('exp_cache_favorites')) {
+                if (storage.exp_cache_favorites) {
                     return;
                 }
                 mono.storage.get('exp_cache_favorites', function(storage) {
-                    mono.storage.sync(storage);
+                    mono.storage.sync.set(storage);
                 });
             });
         }
