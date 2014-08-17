@@ -53,12 +53,38 @@ var options = function() {
         }
     };
 
+    var set_place_holder = function() {
+        $.each(engine.def_settings, function(key, item) {
+            var defaultValue = item.v;
+            var el = document.querySelector('input[data-option="' + key + '"]');
+            if (el === null) {
+                return console.log('El not found!', key);
+            }
+            if (el.type === "text" || el.type === "number" || el.type === "password") {
+                if (engine.settings[key] !== defaultValue) {
+                    el.value = engine.settings[key];
+                } else {
+                    el.value = '';
+                }
+                if (defaultValue || defaultValue === '') {
+                    el.setAttribute("placeholder", defaultValue);
+                }
+            } else if (el.type === "checkbox") {
+                el.checked = !!engine.settings[key];
+            } else if (el.type === "radio") {
+                el = document.querySelector('input[data-option="' + key + '"][value="'+engine.settings[key]+'"]');
+                el.checked = true;
+            }
+        });
+    };
+
     return {
         boot: function() {
             $(options.begin);
         },
         begin: function() {
             write_language();
+            set_place_holder();
             dom_cache.container = $('.div.container');
             dom_cache.menu = $('.menu');
             dom_cache.menu .on('click', 'a', function(e) {
@@ -88,9 +114,7 @@ var options = function() {
 mono.pageId = 'tab';
 mono.storage.get('lang' ,function (storage) {
     window._lang = get_lang(storage.lang || navigator.language.substr(0, 2));
-    engine.boot(function() {
-        options.boot();
-    });
+    engine.boot(options.boot);
 });
 /*
 

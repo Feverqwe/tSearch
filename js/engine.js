@@ -7,7 +7,6 @@ var engine = function() {
         HideZeroSeed: {v: 0, t: 'checkbox'},
         AdvFiltration: {v: 2, t: "radio"},
         TeaserFilter: {v: 1, t: 'checkbox'},
-        add_in_omnibox: {v: 1, t: 'checkbox'},
         context_menu: {v: 1, t: 'checkbox'},
         search_popup: {v: 1, t: 'checkbox'},
         AutoComplite_opt: {v: 1, t: 'checkbox'},
@@ -609,11 +608,7 @@ var engine = function() {
                 if (value === undefined) {
                     value = def_item.v;
                 }
-                if (['checkbox', 'radio', 'number'].indexOf(def_item.t) !== -1 ) {
-                    settings[key] = parseInt(value);
-                } else {
-                    settings[key] = value;
-                }
+                settings[key] = value;
             }
             cb && cb(settings);
         });
@@ -633,81 +628,6 @@ var engine = function() {
         }
     };
 
-    var fastMigration = function(lStorage) {
-        var settings = {};
-        for (var key in engine.def_settings) {
-            var def_item = engine.def_settings[key];
-            var value = lStorage[key];
-            if (value === undefined) {
-                value = def_item.v;
-            }
-            value = parseInt(value);
-            if (!isNaN(value)) {
-                settings[key] = value;
-            }
-        }
-
-        try {
-            var customTorrentList = {};
-            var costume_tr = lStorage.costume_tr;
-            if (costume_tr) {
-                costume_tr = JSON.parse(costume_tr);
-                costume_tr.forEach(function (tracker) {
-                    var code = lStorage['ct_' + tracker];
-                    try {
-                        var obj = JSON.parse(code);
-                        customTorrentList['ct_' + obj.uid] = obj;
-                    } catch (e) {
-
-                    }
-                });
-            }
-            settings.customTorrentList = customTorrentList;
-        } catch (e) {};
-
-        if (['ru', 'en'].indexOf(lStorage.lang) !== -1) {
-            settings.lang = lStorage.lang;
-        }
-
-        try {
-            var listOptions = lStorage.listOptions;
-            listOptions = JSON.parse(listOptions);
-            settings.listOptions = JSON.stringify( listOptions );
-        } catch (e) {};
-
-        var profileList = {};
-        try {
-            var profiles = JSON.parse(lStorage.profileList);
-            for (var item in profiles) {
-                profileList[item] = [];
-                if (!profiles[item]) {
-                    continue;
-                }
-                if (Array.isArray(profiles[item])) {
-                    profileList[item] = profiles[item];
-                } else {
-                    for (var key in profiles[item]) {
-                        if (profiles[item][key] !== 1) {
-                            continue;
-                        }
-                        profileList[item].push(key);
-                    }
-                }
-            }
-            settings.profileList = JSON.stringify( profileList );
-        } catch (e) {};
-
-        var currentProfile = lStorage.currentProfile;
-        if (profileList[currentProfile]) {
-            settings.currentProfile = currentProfile;
-        }
-
-        mono.storage.set(settings, function() {
-            lStorage.migrated = true;
-            window.location.reload();
-        });
-    };
-
     return {
         //need modules
         contentFilter: contentFilter,
@@ -721,7 +641,6 @@ var engine = function() {
         search: search,
         stop: stop,
         //need options:
-        fastMigration: fastMigration,
         defaultProfileTorrentList: defaultProfileTorrentList,
         loadSettings: loadSettings,
         reloadCustomTorrentList: function(cb) {
@@ -740,11 +659,6 @@ var engine = function() {
                 var_cache.historyLimit = 200;
             }
 
-            if (mono.isChrome || mono.isOpera) {
-                if ( window.localStorage && localStorage.length > 0 && !localStorage.migrated ) {
-                    fastMigration(localStorage);
-                }
-            }
             loadSettings(function (_settings) {
                 engine.settings = settings = _settings;
 
