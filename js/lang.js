@@ -330,9 +330,9 @@ var get_lang = function (lang) {
         size_list_3: "Гб",
         size_list_4: "Тб",
         size_list_5: "Пб",
-        size_list_6: "Eb",
-        size_list_7: "Zb",
-        size_list_8: "Yb",
+        size_list_6: "Эб",
+        size_list_7: "Зб",
+        size_list_8: "Йб",
 
 
         time_yest: "Вчера",
