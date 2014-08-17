@@ -430,7 +430,7 @@ var get_lang = function (lang) {
         optDoNotSendStatistics: 'Не отправлять статистику',
         optUseEnglishPosterName: 'Отображать названия на английском',
         optHideTopSearch: 'Скрыть Топ-40 поисковых запросов',
-        optEnableFavoriteSync: 'Синхронизировать списка избранного',
+        optEnableFavoriteSync: 'Синхронизировать список избранного',
         optKinopoiskFolderId: 'ID категории кинопоиска: ',
         optListFilter: 'Фильтрация списка',
         optAdvFiltration0: 'Ищет полное совпадение фразы',
