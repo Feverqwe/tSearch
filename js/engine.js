@@ -630,10 +630,12 @@ var engine = function() {
                 var newKeys = {
                     optMigrated: 1
                 };
+                var keys = [];
                 for (var item in storage) {
                     if (storage[item] === undefined) {
                         continue;
                     }
+                    keys.push(item);
                     if (item === 'ShowIcons' || item === 'filter_panel_to_left') {
                         storage[item] = (!storage[item])?1:0;
                     }
