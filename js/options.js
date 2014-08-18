@@ -351,6 +351,11 @@ var options = function() {
             dom_cache.getFromCloudBtn.prop('disabled', true);
         });
         dom_cache.saveInCloudBtn.on('click', function() {
+            var _this = this;
+            _this.disabled = true;
+            setTimeout(function() {
+                _this.disabled = false;
+            }, 750);
             getBackupJson(function(json) {
                 savePartedBackup('bk_ch_', json);
                 dom_cache.getFromCloudBtn.prop('disabled', false);
