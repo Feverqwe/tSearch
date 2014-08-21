@@ -35,24 +35,40 @@ var bg = function() {
             });
         });
     };
+    var checkExtExists = function(cb) {
+        "use strict";
+        if (!mono.isChromeWebApp) {
+            return cb();
+        }
+        var xhr = new XMLHttpRequest();
+        var url = 'chrome-extension://ngcldkkokhibdmeamidppdknbhegmhdh/images/icon_16.png';
+        xhr.open('GET', url, true);
+        xhr.onerror = function() {
+            cb();
+        };
+        xhr.send();
+    };
     var update_context_menu = function(enable) {
         if (mono.isChrome) {
             chrome.contextMenus.removeAll(function () {
                 if (!enable) {
                     return;
                 }
-                chrome.contextMenus.create({
-                    type: "normal",
-                    id: "item",
-                    title: _lang.ctx_title,
-                    contexts: ["selection"],
-                    onclick: function (info) {
-                        var text = info.selectionText;
-                        chrome.tabs.create({
-                            url: 'index.html' + ( (text.length > 0) ? '#?search=' + text : ''),
-                            selected: true
-                        });
-                    }
+                checkExtExists(function() {
+                    "use strict";
+                    chrome.contextMenus.create({
+                        type: "normal",
+                        id: "item",
+                        title: _lang.ctx_title,
+                        contexts: ["selection"],
+                        onclick: function (info) {
+                            var text = info.selectionText;
+                            chrome.tabs.create({
+                                url: 'index.html' + ( (text.length > 0) ? '#?search=' + text : ''),
+                                selected: true
+                            });
+                        }
+                    });
                 });
             });
         }
