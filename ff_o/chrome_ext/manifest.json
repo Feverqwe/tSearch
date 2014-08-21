@@ -24,5 +24,5 @@
     "name": "__MSG_extName__",
     "description": "__MSG_extDesc__",
     "default_locale": "en",
-    "version": "1.0.49"
+    "version": "1.0.50"
 }
