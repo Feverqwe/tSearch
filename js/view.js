@@ -2646,6 +2646,37 @@ var view = function() {
         dom_cache.profileList.trigger('change');
     };
 
+    var showExtensionInfo = function() {
+        "use strict";
+        var closeBtn = undefined;
+        var popup = undefined;
+        dom_cache.body.append( popup = $('<div>', {class: 'extInfoContainer'}).append(
+            $('<a>', {title: _lang.extPopupInstall, href: 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh', target: '_blank'}).append(
+                $('<img>', {src: 'images/extAd_'+_lang.lang+'.png'})
+            ).on('click', function() {
+                closeBtn.trigger('click');
+            }),
+            $('<div>', {class: 'info_head'}).append(
+                $('<span>', {class: 'text', text: _lang.extPopupInfo}).append(
+                    ' ', $('<a>', {text: _lang.extPopupInstall, href: 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh', target: '_blank'})
+                ).on('click', function() {
+                    closeBtn.trigger('click');
+                }),
+                closeBtn = $('<a>', {class: 'close', href: '#', text: _lang.word_close}).on('click', function(e) {
+                    e.preventDefault();
+                    mono.storage.set({extensionPopup: 1});
+                    popup.css('opacity', 0);
+                    setTimeout(function() {
+                        popup.remove();
+                    }, 1000);
+                })
+            )
+        ) );
+        setTimeout(function() {
+            popup.css('opacity', 1);
+        }, 500);
+    };
+
     return {
         result: writeResult,
         auth: writeTrackerAuth,
@@ -3154,6 +3185,15 @@ var view = function() {
                 hash: window.location.hash
             }, document.title, window.location.href);
             readUrl();
+
+            if (mono.isChrome && mono.isChromeWebApp) {
+                mono.storage.get('extensionPopup', function(storage) {
+                    "use strict";
+                    if (storage.extensionPopup !== 1) {
+                        showExtensionInfo();
+                    }
+                });
+            }
         },
         boot: function() {
             if (mono.isChrome) {
@@ -3192,7 +3232,6 @@ var view = function() {
                     var_cache.table_sort_by = storage.table_sort_by || var_cache.table_sort_by;
 
                     view.begin();
-
                 });
             });
         }

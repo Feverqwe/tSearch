@@ -1123,3 +1123,39 @@ div.donate a.feedback {
     line-height: 19px;
     vertical-align: top;
 }
+
+.extInfoContainer {
+    opacity: 0;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    transition: opacity 0.2s;
+
+    box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    z-index: 90;
+}
+.extInfoContainer a {
+    color: #0051D8;
+}
+.extInfoContainer img {
+    cursor: pointer;
+}
+.extInfoContainer .info_head {
+    padding: 5px;
+    padding-top: 0;
+}
+.extInfoContainer .info_head > * {
+    display: inline-block;
+    vertical-align: middle;
+}
+.extInfoContainer .text {
+    font-size: 16px;
+}
+.extInfoContainer .close {
+    float: right;
+}

@@ -285,5 +285,8 @@
     "magic_61": {"message": "Table"},
     "magic_62": {"message": "Attribute"},
     "magic_63": {"message": "Replace the words of today\\yesterday\\now"},
-    "magic_64": {"message": "Page charset"}
+    "magic_64": {"message": "Page charset"},
+
+    "extPopupInfo": {"message": "Add the search icon in your browser!"},
+    "extPopupInstall": {"message": "Download the extension!"}
 }
