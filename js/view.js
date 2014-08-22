@@ -30,7 +30,7 @@ var view = function() {
         rn: new RegExp('[\\r\\n]+','g'),
         getYear: new RegExp('[1-2]{1}[0-9]{3}'),
 
-        serachBBold: new RegExp('\\&#60;(/?)b\\&#62;','gm'),
+        serachBBold: new RegExp('\\&lt;(/?)b\\&gt;','gm'),
         serachBreketsL: new RegExp('<','gm'),
         serachBreketsR: new RegExp('>','gm'),
 
@@ -1190,8 +1190,8 @@ var view = function() {
         //выделяет то, что в скобках
         name = name.replace(var_cache.rm_retry,'$1$2');
 
-        name = name.replace(var_cache.serachBreketsL, '&#60;');
-        name = name.replace(var_cache.serachBreketsR, '&#62;');
+        name = name.replace(var_cache.serachBreketsL, '&lt;');
+        name = name.replace(var_cache.serachBreketsR, '&gt;');
         name = name.replace(var_cache.serachBBold, '<$1b>');
 
         if (engine.settings.enableHighlight === 0) {
