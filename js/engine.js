@@ -619,7 +619,7 @@ var engine = function() {
             filter_panel_to_left: 'rightPanel',
             no_blank_dl_link: 'noBlankPageOnDownloadClick',
             torrent_list_r: 'torrentListHeight'
-        }
+        };
         mono.storage.get('optMigrated', function(storage) {
             if (storage.optMigrated) {
                 return cb && cb();
@@ -774,9 +774,7 @@ var engine = function() {
                             Array.prototype.push.apply(proxyList, storage.proxyList);
                         }
 
-                        if (syncStorage.profileList === undefined) {
-                            storage.profileList = storage.profileList;
-                        } else {
+                        if (syncStorage.profileList !== undefined) {
                             storage.profileList = syncStorage.profileList;
                         }
 
@@ -824,3 +822,6 @@ var engine = function() {
         }
     };
 }();
+$.ajaxSetup({
+    jsonp: false
+});
