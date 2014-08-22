@@ -43,10 +43,11 @@ var engine = function() {
         unblock_src: new RegExp('data:image\\/gif,base64#blockrurl#','mg'),
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
         rn: new RegExp('[\\r\\n]+','g'),
+        searchJs: new RegExp('javascript:', 'img'),
         historyLimit: 100
     };
 
-    var proxyList = []
+    var proxyList = [];
 
     var history = [];
     var profileList = {};
@@ -450,6 +451,7 @@ var engine = function() {
     };
 
     var contentFilter = function(content) {
+        content = content.replace(var_cache.searchJs, '');
         return content.replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
     };
 

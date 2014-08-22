@@ -29,6 +29,11 @@ var view = function() {
         teaser_regexp: new RegExp('Трейлер|Тизер|Teaser|Trailer','i'),
         rn: new RegExp('[\\r\\n]+','g'),
         getYear: new RegExp('[1-2]{1}[0-9]{3}'),
+
+        serachBBold: new RegExp('\\&#60;(/?)b\\&#62;','gm'),
+        serachBreketsL: new RegExp('<','gm'),
+        serachBreketsR: new RegExp('>','gm'),
+
         // массив содержащий всю информацию и dom элемент торрентов
         table_dom: [],
         // сортировка по возрастанию или убыванию
@@ -1183,8 +1188,14 @@ var view = function() {
     };
     var sub_select = function(name) {
         //выделяет то, что в скобках
+        name = name.replace(var_cache.rm_retry,'$1$2');
+
+        name = name.replace(var_cache.serachBreketsL, '&#60;');
+        name = name.replace(var_cache.serachBreketsR, '&#62;');
+        name = name.replace(var_cache.serachBBold, '<$1b>');
+
         if (engine.settings.enableHighlight === 0) {
-            return name.replace(var_cache.rm_retry,'$1$2');
+            return name;
         }
         name = name.replace(var_cache.found_parenthetical, '<span class="sub_name">$1</span>');
         return name.replace(var_cache.rm_retry,'$1$2');
