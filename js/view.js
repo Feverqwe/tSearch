@@ -20,7 +20,7 @@ var view = function() {
             "телеп|эрот|xxx|porn|порно|сайтр|тв[\-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
             "утилит|book|game|tv |tv$|manga", "g"),
         rm_pre_tag_regexp: new RegExp("\\(.*\\)|\\[.*\\]", 'g'),
-        found_parenthetical: new RegExp('(\\[[^\\]]*\\]|\\([^\\)]*\\))','g'),
+        found_parenthetical: new RegExp('(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\{[^\\}]*\\})','g'),
         text2safe_regexp_text: new RegExp('([{})(\\][\\\\\\.^$\\|\\?\\+])','g'),
         rm_retry: new RegExp('<\\/span>(.?)<span class="sub_name">|<\\/b>(.?)<b>', 'g'),
         rm_spaces: new RegExp('\\s+','g'),
@@ -1186,6 +1186,46 @@ var view = function() {
         }
         return '';
     };
+    var angleSelect = function(name) {
+        "use strict";
+        if (name.indexOf('&lt;') === -1 || name.indexOf('&gt;') === -1) {
+            return name;
+        }
+        var charStart = undefined;
+        var charEnd = undefined;
+        for (var i = 35; i < 48; i++) {
+            var specChar = String.fromCharCode(i);
+            if (name.indexOf( specChar ) === -1) {
+                if (charStart === undefined) {
+                    charStart = specChar;
+                } else
+                if (charEnd === undefined) {
+                    charEnd = specChar;
+                } else {
+                    break;
+                }
+            }
+        }
+        if (charStart === undefined || charEnd === undefined) {
+            return name;
+        }
+        name = name.replace(/&lt;/g, charStart);
+        name = name.replace(/&gt;/g, charEnd);
+        var cacheName = 'sebSelectAngleCache_'+charStart+'_'+charEnd;
+        if (var_cache[cacheName] === undefined) {
+            var_cache[cacheName] = new RegExp('(\\' + charStart + '[^\\' + charEnd + ']*\\' + charEnd + ')', 'g');
+        }
+        if (var_cache[cacheName+'AngleStart'] === undefined) {
+            var_cache[cacheName+'AngleStart'] = new RegExp('\\' + charStart, 'g');
+        }
+        if (var_cache[cacheName+'AngleEnd'] === undefined) {
+            var_cache[cacheName+'AngleEnd'] = new RegExp('\\' + charEnd, 'g');
+        }
+        name = name.replace(var_cache[cacheName], '<span class="sub_name">$1</span>');
+        name = name.replace(var_cache[cacheName+'AngleStart'], '&lt;');
+        name = name.replace(var_cache[cacheName+'AngleEnd'], '&gt;');
+        return name;
+    };
     var sub_select = function(name) {
         //выделяет то, что в скобках
         name = name.replace(var_cache.rm_retry,'$1$2');
@@ -1197,6 +1237,7 @@ var view = function() {
         if (engine.settings.enableHighlight === 0) {
             return name;
         }
+        name = angleSelect(name);
         name = name.replace(var_cache.found_parenthetical, '<span class="sub_name">$1</span>');
         return name.replace(var_cache.rm_retry,'$1$2');
     };
