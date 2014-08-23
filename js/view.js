@@ -1226,18 +1226,22 @@ var view = function() {
         name = name.replace(var_cache[cacheName+'AngleEnd'], '&gt;');
         return name;
     };
-    var sub_select = function(name) {
+    var sub_select = function(name, hasAngle) {
         //выделяет то, что в скобках
         name = name.replace(var_cache.rm_retry,'$1$2');
 
-        name = name.replace(var_cache.serachBreketsL, '&lt;');
-        name = name.replace(var_cache.serachBreketsR, '&gt;');
-        name = name.replace(var_cache.serachBBold, '<$1b>');
+        if (hasAngle) {
+            name = name.replace(var_cache.serachBreketsL, '&lt;');
+            name = name.replace(var_cache.serachBreketsR, '&gt;');
+            name = name.replace(var_cache.serachBBold, '<$1b>');
+        }
 
         if (engine.settings.enableHighlight === 0) {
             return name;
         }
-        name = angleSelect(name);
+        if (hasAngle) {
+            name = angleSelect(name);
+        }
         name = name.replace(var_cache.found_parenthetical, '<span class="sub_name">$1</span>');
         return name.replace(var_cache.rm_retry,'$1$2');
     };
@@ -1279,6 +1283,7 @@ var view = function() {
          * Выставляет рейтинг заголовку раздачи
          * Подсвечивает найденный текст в заголовке
          */
+        var hasAngle = name.indexOf('<') !== -1 || name.indexOf('>') !== -1;
         var bonus = 0;
         var words_len = var_cache.syntaxCache.words_len;
         var word_rate = var_cache.syntaxCache.word_rate;
@@ -1290,7 +1295,7 @@ var view = function() {
         name.replace(var_cache.quality_regexp, cal_rate);
         if (var_cache.syntaxCache.normalize_request.length === 0) {
             return {
-                hl_name: sub_select(name),
+                hl_name: sub_select(name, hasAngle),
                 rate: rate
             };
         }
@@ -1403,7 +1408,7 @@ var view = function() {
                 return '<b>'+word+'</b>';
             });
             return {
-                hl_name: sub_select(hl_name),
+                hl_name: sub_select(hl_name, hasAngle),
                 rate: rate
             };
         }
@@ -1442,7 +1447,7 @@ var view = function() {
             rate.name = 0;
         }
         return {
-            hl_name: sub_select(hl_name),
+            hl_name: sub_select(hl_name, hasAngle),
             rate: rate
         };
     };
