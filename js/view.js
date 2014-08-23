@@ -1201,7 +1201,6 @@ var view = function() {
                 } else
                 if (charEnd === undefined) {
                     charEnd = specChar;
-                } else {
                     break;
                 }
             }
