@@ -30,7 +30,7 @@ var bg = function() {
     var add_in_omnibox = function() {
         chrome.omnibox.onInputEntered.addListener(function (text) {
             chrome.tabs.create({
-                url: "index.html" + ( (text.length > 0) ? '#?search=' + text : ''),
+                url: "index.html" + ( text ? '#?search=' + encodeURIComponent(text) : ''),
                 selected: true
             });
         });
@@ -64,7 +64,7 @@ var bg = function() {
                         onclick: function (info) {
                             var text = info.selectionText;
                             chrome.tabs.create({
-                                url: 'index.html' + ( (text.length > 0) ? '#?search=' + text : ''),
+                                url: 'index.html' + ( text ? '#?search=' + encodeURIComponent(text) : ''),
                                 selected: true
                             });
                         }
@@ -114,7 +114,7 @@ var bg = function() {
                 image: self.data.url('./icons/icon-16.png'),
                 contentScript: contentScript,
                 onMessage: function (text) {
-                    tabs.open( self.data.url('index.html')+'#?search='+text );
+                    tabs.open( self.data.url('index.html')+'#?search='+encodeURIComponent(text) );
                 }
             });
             var_cache.cm_state = true;

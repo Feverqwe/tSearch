@@ -26,7 +26,7 @@ var view = function() {
             var trackers = '';
             var trackers_dom = [];
             if (item.trackers !== undefined && item.trackers.length > 0) {
-                trackers = '&tracker='+JSON.stringify(item.trackers);
+                trackers = '&tracker='+encodeURIComponent(JSON.stringify(item.trackers));
                 item.trackers_names.forEach(function(item) {
                     trackers_dom.push( $('<span>', {'class': 'tracker', text: item}) );
                 });
@@ -36,7 +36,7 @@ var view = function() {
                     $('<div>', {'class': 'remove', title: _lang.his_rm_btn}).data('title',item.title),
                     $('<div>', {'class': 'time', title: u2ddmmyyyy_title(item.time), text: u2ddmmyyyy_title(item.time)}),
                     $('<div>', {'class': 'title'}).append(
-                        $('<a>', {text: item.title, href:'index.html#?search='+item.title+trackers})
+                        $('<a>', {text: item.title, href:'index.html#?search='+encodeURIComponent(item.title)+trackers})
                     ),
                     trackers_dom
                 )
@@ -73,7 +73,7 @@ var view = function() {
             });
             content.push($('<li>').append(
                 $('<div>', {'class': 'icon'}),
-                $('<a>',{text: (request.length === 0)?'""':request, href:'index.html#?search='+request}),
+                $('<a>',{text: request ? request : '""', href:'index.html#?search='+encodeURIComponent(request)}),
                 $('<ol>',{'class': 'items'}).append(items_dom)
             ));
         });

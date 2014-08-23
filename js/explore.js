@@ -569,7 +569,7 @@ var explore = function() {
             } else {
                 title = content[index].title;
             }
-            var search_link = 'index.html#?search='+title;
+            var search_link = 'index.html#?search='+encodeURIComponent(title);
             var span = $('<span>').append(
                 $('<a>',{href: search_link, text: title, title: title})
             );
@@ -680,7 +680,7 @@ var explore = function() {
                 $('<li>', {'class': 'l' + column}).append(
                     dot,
                     $('<span>', {title: request}).append(
-                        $('<a>', {href: '#?search=' + request, text: item.text})
+                        $('<a>', {href: '#?search=' + encodeURIComponent(request), text: item.text})
                     )
                 )
             );

@@ -195,7 +195,7 @@ var popup = function(enable_ac) {
 
     dom_cache.search_btn.on('click', function(e) {
         var text = dom_cache.search_input.val();
-        var url = 'index.html' + ( (text) ? '#?search=' + text : '' );
+        var url = 'index.html' + ( text ? '#?search=' + encodeURIComponent(text) : '' );
         if (mono.isChrome) {
             chrome.tabs.create({
                 url: url
@@ -210,7 +210,7 @@ var popup = function(enable_ac) {
             return mono.addon.postMessage('closeMe');
         }
         if (mono.isOpera) {
-            mono.sendMessage({action: 'tab', url: 'build/index.html' + ( (text)?'#?search=' + text:'') });
+            mono.sendMessage({action: 'tab', url: 'build/index.html' + ( text ? '#?search=' + encodeURIComponent(text):'') });
         }
         window.close();
     });

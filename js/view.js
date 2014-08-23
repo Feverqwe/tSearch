@@ -1893,7 +1893,7 @@ var view = function() {
             if (var_cache.currentTrackerList.length > 0) {
                 trackers = JSON.stringify(var_cache.currentTrackerList);
             }
-            hash = '#?search='+request+((trackers !== undefined)?'&tracker='+trackers:'');
+            hash = '#?search='+encodeURIComponent(request)+((trackers !== undefined)?'&tracker='+encodeURIComponent(trackers):'');
         }
         if (var_cache.oldlocationHash === hash) {
             return;
@@ -1938,8 +1938,6 @@ var view = function() {
             var key = item.substr(0, pos);
             if (key === 'search' || key === 'tracker') {
                 params[key] = item.substr(pos+1);
-            } else if (params.search !== undefined) {
-                params.search += '&' + item;
             }
         }
         if (params.search !== undefined) {
@@ -1971,7 +1969,7 @@ var view = function() {
     var readUrl = function() {
         var hash = window.location.hash;
         if (hash.substr(0, 3) === '#s=') {
-            hash = '#?search='+hash.substr(3);
+            hash = '#?search='+encodeURIComponent(hash.substr(3));
         }
         var params = readHash(hash);
         if (params.search !== undefined) {
