@@ -321,6 +321,7 @@ input.button:active {
     }
 }
 #word_filter_container > .btn.clear.loading {
+    opacity: 1;
     background-image: url(../images/loading.gif);
 }
 
