@@ -348,7 +348,6 @@ div.tracker_icon.login {
     list-style: none;
     margin: 0;
     padding: 0;
-    margin-left: 2px;
     padding-bottom: 2px;
     overflow: hidden;
     border: 0 solid #fff;
@@ -377,7 +376,7 @@ div.tracker_icon.login {
     padding: 2px;
     padding-bottom: 3px;
     text-decoration: none;
-    width: calc(100% - 52px);
+    width: calc(100% - 54px);
 }
 #tracker_list > li > a > * {
     vertical-align: middle;
