@@ -2038,8 +2038,8 @@ var view = function() {
                 title: title,
                 href: href,
                 count: 1,
-                time: parseInt(Date.now() / 1000),
-                tracker: tracker
+                time: parseInt(Date.now() / 1000)
+                // tracker: tracker
             });
         }
         if (click_history.length > var_cache.click_history_item_limit) {
