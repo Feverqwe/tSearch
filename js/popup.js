@@ -242,7 +242,7 @@ var popup = function(enable_ac) {
         select: function(event, ui) {
             var $this = $(this);
             this.value = ui.item.value;
-            $this.trigger('input');
+            $this.trigger('keyup');
             dom_cache.search_btn.trigger('click');
         },
         position: {
@@ -292,7 +292,7 @@ var popup = function(enable_ac) {
         dom_cache.search_input.val('').focus();
         $(this).hide();
     });
-    dom_cache.search_input.on('input', function() {
+    dom_cache.search_input.on('input keyup', function() {
         if (this.value.length > 0) {
             dom_cache.search_clear_btn.show();
         } else {
