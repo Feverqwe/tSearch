@@ -178,7 +178,7 @@
     "external_tracker": {"message": "Внешние"},
     "add_custom_code": {"message": "Добавить"},
     "create_custom_code": {"message": "Создать"},
-    "external_html": {"message": "Добавь внешние трекеры с <a href=\"http://code-tms.blogspot.ru/\" target=\"_blank\">официального сайта</a>!"},
+    "external_html": {"message": "Добавь внешние трекеры с <a href=\"http://code-tms.blogspot.ru/?utm_source=TMS\" target=\"_blank\">официального сайта</a>!"},
     "custom_tracker_edit": {"message": "Редактировать"},
     "custom_tracker_remove": {"message": "Удалить"},
     "enter_tracker_code": {"message": "Скопируйте и вставьте код трекера:"},

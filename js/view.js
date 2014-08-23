@@ -2720,15 +2720,17 @@ var view = function() {
         "use strict";
         var closeBtn = undefined;
         var popup = undefined;
+        // utm_source
+        var url = 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh?utm_source=TmsInfoPopup';
         dom_cache.body.append( popup = $('<div>', {class: 'extInfoContainer'}).append(
-            $('<a>', {title: _lang.extPopupInstall, href: 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh', target: '_blank'}).append(
+            $('<a>', {title: _lang.extPopupInstall, href: url + '&utm_content=img', target: '_blank'}).append(
                 $('<img>', {src: 'images/extAd_'+_lang.lang+'.png'})
             ).on('click', function() {
                 closeBtn.trigger('click');
             }),
             $('<div>', {class: 'info_head'}).append(
                 $('<span>', {class: 'text', text: _lang.extPopupInfo}).append(
-                    ' ', $('<a>', {text: _lang.extPopupInstall, href: 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh', target: '_blank'})
+                    ' ', $('<a>', {text: _lang.extPopupInstall, href: url + '&utm_content=link', target: '_blank'})
                 ).on('click', function() {
                     closeBtn.trigger('click');
                 }),

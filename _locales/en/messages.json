@@ -175,7 +175,7 @@
     "external_tracker": {"message": "External"},
     "add_custom_code": {"message": "Add"},
     "create_custom_code": {"message": "Create"},
-    "external_html": {"message": "Add external trackers from the <a href=\"http://code-tms.blogspot.ru/\" target=\"_blank\">official website</a>!"},
+    "external_html": {"message": "Add external trackers from the <a href=\"http://code-tms.blogspot.ru/?utm_source=TMS\" target=\"_blank\">official website</a>!"},
     "custom_tracker_edit": {"message": "Edit"},
     "custom_tracker_remove": {"message": "Delete"},
     "enter_tracker_code": {"message": "Copy and paste the tracker code:"},
