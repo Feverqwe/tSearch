@@ -1191,38 +1191,38 @@ var view = function() {
         if (name.indexOf('&lt;') === -1 || name.indexOf('&gt;') === -1) {
             return name;
         }
-        var charStart = undefined;
-        var charEnd = undefined;
+        var angleLeft = undefined;
+        var angleRight = undefined;
         for (var i = 35; i < 48; i++) {
             var specChar = String.fromCharCode(i);
             if (name.indexOf( specChar ) === -1) {
-                if (charStart === undefined) {
-                    charStart = specChar;
+                if (angleLeft === undefined) {
+                    angleLeft = specChar;
                 } else
-                if (charEnd === undefined) {
-                    charEnd = specChar;
+                if (angleRight === undefined) {
+                    angleRight = specChar;
                     break;
                 }
             }
         }
-        if (charStart === undefined || charEnd === undefined) {
+        if (angleLeft === undefined || angleRight === undefined) {
             return name;
         }
-        name = name.replace(/&lt;/g, charStart);
-        name = name.replace(/&gt;/g, charEnd);
-        var cacheName = 'sebSelectAngleCache_'+charStart+'_'+charEnd;
+        name = name.replace(/&lt;/g, angleLeft);
+        name = name.replace(/&gt;/g, angleRight);
+        var cacheName = 'selectAngleCache_'+angleLeft+'_'+angleRight;
         if (var_cache[cacheName] === undefined) {
-            var_cache[cacheName] = new RegExp('(\\' + charStart + '[^\\' + charEnd + ']*\\' + charEnd + ')', 'g');
+            var_cache[cacheName] = new RegExp('(\\' + angleLeft + '[^\\' + angleRight + ']*\\' + angleRight + ')', 'g');
         }
-        if (var_cache[cacheName+'AngleStart'] === undefined) {
-            var_cache[cacheName+'AngleStart'] = new RegExp('\\' + charStart, 'g');
+        if (var_cache[cacheName+'Left'] === undefined) {
+            var_cache[cacheName+'Left'] = new RegExp('\\' + angleLeft, 'g');
         }
-        if (var_cache[cacheName+'AngleEnd'] === undefined) {
-            var_cache[cacheName+'AngleEnd'] = new RegExp('\\' + charEnd, 'g');
+        if (var_cache[cacheName+'Right'] === undefined) {
+            var_cache[cacheName+'Right'] = new RegExp('\\' + angleRight, 'g');
         }
         name = name.replace(var_cache[cacheName], '<span class="sub_name">$1</span>');
-        name = name.replace(var_cache[cacheName+'AngleStart'], '&lt;');
-        name = name.replace(var_cache[cacheName+'AngleEnd'], '&gt;');
+        name = name.replace(var_cache[cacheName+'Left'], '&lt;');
+        name = name.replace(var_cache[cacheName+'Right'], '&gt;');
         return name;
     };
     var sub_select = function(name, hasAngle) {
