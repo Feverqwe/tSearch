@@ -65,7 +65,7 @@ torrent_lib.rutor = function () {
                 xhr.abort();
             var _url;
             if (text.length === 0) {
-                _url = 'http://rutor.org/browse/';
+                _url = root_url + '/browse/';
             } else {
                 _url = url + text;
             }
