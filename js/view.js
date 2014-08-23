@@ -225,7 +225,7 @@ var view = function() {
         dom_cache.result_container.hide();
         clear_table();
         var_cache.currentRequest = undefined;
-        dom_cache.search_input.val('').trigger('keyup');
+        dom_cache.search_input.val('').trigger('input');
         engine.stop();
         explore.show();
     };
@@ -1813,7 +1813,7 @@ var view = function() {
             minLength: 0,
             select: function(event, ui) {
                 this.value = ui.item.value;
-                $(this).trigger('keyup');
+                $(this).trigger('input');
                 dom_cache.search_btn.trigger('click');
             },
             position: {
@@ -1973,7 +1973,7 @@ var view = function() {
         }
         var params = readHash(hash);
         if (params.search !== undefined) {
-            dom_cache.search_input.val(params.search).trigger('keyup');
+            dom_cache.search_input.val(params.search).trigger('input');
             search(params.search);
         } else {
             if (params.tracker !== undefined) {
@@ -2858,7 +2858,7 @@ var view = function() {
             dom_cache.search_clear_btn.on("click", function(event) {
                 event.preventDefault();
                 this.style.display = 'none';
-                dom_cache.search_input.val('').trigger('keyup').focus();
+                dom_cache.search_input.val('').trigger('input').focus();
             });
             dom_cache.search_input.on('input', function() {
                 if (this.value.length > 0) {

@@ -242,7 +242,7 @@ var popup = function(enable_ac) {
         select: function(event, ui) {
             var $this = $(this);
             this.value = ui.item.value;
-            $this.trigger('keyup');
+            $this.trigger('input');
             dom_cache.search_btn.trigger('click');
         },
         position: {
