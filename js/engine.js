@@ -393,7 +393,8 @@ var engine = function() {
         if (nohistory) {
             return;
         }
-        updateHistory(text, (trackers.length > 0) ? trackers : []);
+        // bug, trackers.length === 1 , > 0 - add all in history
+        updateHistory(text, (trackers.length === 1) ? trackers : []);
     };
 
     var stop = function() {
