@@ -45,7 +45,10 @@ var view = function() {
         dom_cache.history.empty().append( content );
     };
     var checkTitle = function(title) {
-        title = title.replace(/<(\/?)([^>]*)>/g, function(str, bSlash, tagName) {
+        if (var_cache.angleRegExp === undefined) {
+            var_cache.angleRegExp = new RegExp('<(\\/?)([^>]*)>', 'g');
+        }
+        title = title.replace(var_cache.angleRegExp, function(str, bSlash, tagName) {
             if (tagName !== 'b' && tagName.substr(0, 4) !== 'span') {
                 return '&lt;'+bSlash+tagName+'&gt;'
             }
