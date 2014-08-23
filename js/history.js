@@ -1,4 +1,5 @@
 var view = function() {
+    "use strict";
     var dom_cache = {};
     var var_cache = {
         history: [],
@@ -43,23 +44,34 @@ var view = function() {
         });
         dom_cache.history.empty().append( content );
     };
+    var checkTitle = function(title) {
+        title = title.replace(/<(\/?)([^>]*)>/g, function(str, bSlash, tagName) {
+            if (tagName !== 'b' && tagName.substr(0, 4) !== 'span') {
+                return '&lt;'+bSlash+tagName+'&gt;'
+            }
+            return '<'+bSlash+tagName+'>';
+        });
+        return title;
+    };
     var writeClickHistory = function() {
         var content = [];
         $.each(var_cache.click_history, function(request, items) {
             var items_dom = [];
             items.sort(onsort);
             items.forEach(function(item){
+                var title = checkTitle(item.title);
                 items_dom.push( $('<li>').append(
-                    $('<div>', {'class': 'remove', title: _lang.his_rm_btn}).data('title',item.title).data('request',request),
+                    $('<div>', {'class': 'remove', title: _lang.his_rm_btn}).data('title',title).data('request',request),
                     $('<div>', {'class': 'time', title: u2ddmmyyyy_title(item.time), text: u2ddmmyyyy_title(item.time)}),
                     $('<div>', {'class': 'title'}).append(
-                        $('<a>',{href: item.href, target: '_blank'}).data('request',request).data('href', item.href).html(item.title)
+                        $('<a>',{href: item.href, target: '_blank'}).data('request',request).data('href', item.href).html(title)
                     )
                 ));
             });
             content.push($('<li>').append(
                 $('<div>', {'class': 'icon'}),
-                $('<a>',{text: (request.length === 0)?'""':request, href:'index.html#?search='+request}), $('<ol>',{'class': 'items'}).append(items_dom)
+                $('<a>',{text: (request.length === 0)?'""':request, href:'index.html#?search='+request}),
+                $('<ol>',{'class': 'items'}).append(items_dom)
             ));
         });
         dom_cache.click_history.empty().append(content);

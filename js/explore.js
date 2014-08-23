@@ -1015,7 +1015,7 @@ var explore = function() {
         var ul = popup.children('div.content').children('ul');
         var content = [];
         for (var i = 0, item; item = quality[i]; i++) {
-            var a = $('<a>',{href: item.url, target: '_blank'}).data('title', item.hlTitle).data('href', item.url).data('request', request).html(item.hlTitle);
+            var a = $('<a>',{href: item.url, target: '_blank'}).data('title', item.hlTitle).data('href', item.url).data('request', request).data('tracker', item.tracker).html(item.hlTitle);
             a.attr('title', a.text());
             content.push( $('<li>').append(a) );
         }
@@ -1336,7 +1336,8 @@ var explore = function() {
                 var title = $(this).data('title');
                 var request = $(this).data('request');
                 var href = $(this).data('href');
-                view.addInClickHistory(request, title, href);
+                var tracker = $(this).data('tracker');
+                view.addInClickHistory(request, title, href, tracker);
             });
             dom_cache.explore_gallery.on('change', 'div.setup_body > select.item_count', function(e){
                 e.preventDefault();

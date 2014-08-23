@@ -804,7 +804,17 @@ var view = function() {
             if (item.category.id < 0 && item.category.title !== undefined) {
                 item.category.id = autosetCategory(quality, item.category.title);
             }
-            var table_dom_item = {qualityBox: quality.qbox, time: item.time, quality_obj: quality, quality: quality.value, url: item.url, hlTitle: title_highLight, sizeText: bytesToSize(item.size), category_id: item.category.id};
+            var table_dom_item = {
+                qualityBox: quality.qbox,
+                time: item.time,
+                quality_obj: quality,
+                quality: quality.value,
+                url: item.url,
+                hlTitle: title_highLight,
+                sizeText: bytesToSize(item.size),
+                category_id: item.category.id,
+                tracker: tracker.name
+            };
             var_cache.table_dom.push(table_dom_item);
             if (var_cache.counter[id][item.category.id] === undefined) {
                 var_cache.counter[id][item.category.id] = 0;
@@ -897,7 +907,7 @@ var view = function() {
                 $('<td>', {'class': 'title'}).append(
                     $('<div>', {'class': 'title'}).append(
                         $('<span>').append(
-                            $('<a>', {href: item.url, target: "_blank"}).append(title_highLight)
+                            $('<a>', {href: item.url, 'data-tracker': tracker.name, target: "_blank"}).append(title_highLight)
                         ), (item.category.title === undefined) ? td_icon : ''
                     ), td_category
                 ),
@@ -1996,7 +2006,7 @@ var view = function() {
         startFiltering();
         startFilterByCategory();
     };
-    var addInClickHistory = function(request, title, href) {
+    var addInClickHistory = function(request, title, href, tracker) {
         if (request === undefined) {
             request = '';
         }
@@ -2028,7 +2038,8 @@ var view = function() {
                 title: title,
                 href: href,
                 count: 1,
-                time: parseInt(Date.now() / 1000)
+                time: parseInt(Date.now() / 1000),
+                tracker: tracker
             });
         }
         if (click_history.length > var_cache.click_history_item_limit) {
@@ -2801,7 +2812,8 @@ var view = function() {
             dom_cache.result_table_body.on('mousedown', 'div.title > span > a', function() {
                 var title = this.innerHTML;
                 var href = this.getAttribute('href');
-                addInClickHistory(var_cache.currentRequest, title, href);
+                var tracker = this.dataset.tracker;
+                addInClickHistory(var_cache.currentRequest, title, href, tracker);
             });
             dom_cache.search_input.on('keypress', function(e) {
                 if (e.keyCode !== 13) {
