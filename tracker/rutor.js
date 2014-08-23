@@ -36,17 +36,50 @@ torrent_lib.rutor = function () {
             }
             return arr;
         };
+        var readLast = function(c) {
+            c = engine.contentFilter(c);
+            var t = engine.load_in_sandbox(c);
+            t = t.find('#index>table>tbody>tr');
+            var l = t.length;
+            var arr = new Array(l);
+            for (var i = 1; i < l; i++) {
+                var td = t.eq(i).children('td');
+                arr[i - 1] = {
+                    category: {
+                        id: -1
+                    },
+                    title: td.eq(1).children('a').eq(1).text(),
+                    url: root_url + td.eq(1).children('a').eq(1).attr('href'),
+                    size: ex_kit.format_size(td.eq(-2).text()),
+                    dl: td.eq(1).children('a').eq(0).attr('href'),
+                    seeds: td.eq(-1).children('span.green').text(),
+                    leechs: td.eq(-1).children('span.red').text(),
+                    time: ex_kit.format_date(1, ex_kit.month_replace(td.eq(0).text()))
+                };
+            }
+            return arr;
+        };
         var loadPage = function (text) {
             var t = text;
             if (xhr !== undefined)
                 xhr.abort();
+            var _url;
+            if (text.length === 0) {
+                _url = 'http://rutor.org/browse/';
+            } else {
+                _url = url + text;
+            }
             xhr = engine.ajax({
                 tracker: filename,
                 type: 'GET',
-                url: url + text,
+                url: _url,
                 cache: false,
                 success: function (data) {
-                    view.result(filename, readCode(data), t);
+                    if (text.length === 0) {
+                        view.result(filename, readLast(data), t);
+                    } else {
+                        view.result(filename, readCode(data), t);
+                    }
                 },
                 error: function () {
                     view.loadingStatus(2, filename);

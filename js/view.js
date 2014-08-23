@@ -1501,6 +1501,9 @@ var view = function() {
         if (minutes < 10) {
             minutes = '0'+minutes;
         }
+        if (parseInt(hour) + parseInt(minutes) === 0) {
+            return '';
+        }
         return hour + ':' + minutes;
     };
     var u2timeago = function(utime) {
