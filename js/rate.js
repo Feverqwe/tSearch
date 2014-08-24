@@ -1,16 +1,406 @@
 var wordRate = function() {
     "use strict";
+    var qBirtate = [
+        {
+            list: ['32'],
+            rate: {music: -2}
+        },
+        {
+            list: ['64'],
+            rate: {music: 0}
+        },
+        {
+            list: ['96'],
+            rate: {music: 2}
+        },
+        {
+            list: ['128'],
+            rate: {music: 5}
+        },
+        {
+            list: ['192'],
+            rate: {music: 10}
+        },
+        {
+            list: ['320'],
+            rate: {music: 15}
+        }
+    ];
     var var_cache = {
-        quality_regexp: new RegExp("Blu-ray|Blu-Ray|BD-Remux|BDRemux|2160p|2160i|1080p|1080i|BDRip-AVC|BD-Rip|BDRip|CAMRip|" +
-            "CamRip-AVC|CamRip|HDTV-Rip|HQRip-AVC|HDTVrip|HDTVRip|DTheater-Rip|720p|LowHDRip|HDTV|HDRip-AVC|HDRip|" +
-            "DVD-Rip|DVDRip-AVC|DVDRip|DVD5|2xDVD9|DVD9|DVD-9|DVDScr|DVDScreener|HD-DVD|NoDVD|DVD|SatRip|HQSATRip|" +
-            "HQRip|TVRip|WEBRip|WEB-DLRip-AV​C|WebDL-Rip|AVC|WEB-DLRip|WEB-DL|SATRip|DVB|IPTVRip|TeleSynch|" +
-            "[Зз]{1}вук с TS|TS|АП|ЛО|ЛД|AVO|MVO|VO|DUB|2xDub|Dub|ДБ|ПМ|ПД|ПО|СТ|[Ss]{1}ubs|SUB|[sS]{1}ub|FLAC|flac|" +
-            "ALAC|alac|[lL]{1}oss[lL]{1}ess(?! repack)|\\(PS2\\)|PS3|Xbox|XBOX|Repack|RePack|\\[Native\\]|" +
-            "Lossless Repack|Steam-Rip|\\(Lossy Rip\/|{Rip}|[лЛ]{1}ицензия|RELOADED|\\[Rip\\]|\\[RiP\\]|\\{L\\}|" +
-            "\\(L\\)|\\[L\\]|[Ss]{1}eason(?=[s|:]?)|[Сс]{1}езон(?=[ы|:]?)|CUE|(?=\.)cue|MP3|128|192|320|\\(P\\)|" +
-            "\\[P\\]|PC \\(Windows\\)|Soundtrack|soundtrack|H\\\.?264|mp4|MP4|M4V|FB2|PDF|RTF|EPUB|fb2|DJVU|djvu|" +
-            "epub|pdf|rtf|[мМ]{1}ультфильм|iTunes Russia", 'g'),
+        subList: [],
+        qualityList: [
+            /*
+            {
+                list: [],
+                listCase: [],
+                rate: {
+                    video: 0,
+                    music: 0,
+                    game: 0,
+                    serial: 0,
+                    mult: 0,
+                    book: 0
+                },
+                name: '',
+                sub: [],
+                subAfter: [],
+                subBefore: []
+            }
+            */
+            {
+                list: ['blu-ray'],
+                rate: {
+                    video: 100
+                },
+                name: 'Blu-ray'
+            },
+            {
+                list: ['bd-remux', 'bd remux', 'BDRemux'],
+                rate: {
+                    video: 90
+                },
+                name: 'BDRemux'
+            },
+            {
+                list: ['BDRip-AVC', 'BD-Rip', 'BDRip'],
+                rate: {
+                    video: 80
+                },
+                name: 'BDRip'
+            },
+            {
+                list: ['CAMRip', 'CamRip-AVC'],
+                rate: {
+                    video: 10
+                },
+                name: 'CAMRip'
+            },
+            {
+                list: ['HDTV-Rip', 'HDTVRip'],
+                rate: {
+                    video: 70
+                },
+                name: 'HDTV-Rip'
+            },
+            {
+                list: ['DTheater-Rip'],
+                rate: {
+                    video: 70
+                },
+                name: 'DTheater-Rip'
+            },
+            {
+                list: ['LowHDRip', 'VHSRip'],
+                rate: {
+                    video: 10
+                },
+                name: 'LowHDRip'
+            },
+            {
+                list: ['HDRip', 'HDRip-AVC'],
+                listCase: ['HDTV'],
+                rate: {
+                    video: 60
+                },
+                name: 'HDTV'
+            },
+            {
+                list: ['DVDRip', 'DVD-Rip', 'DVDRip-AVC'],
+                rate: {
+                    video: 60
+                },
+                name: 'DVD-Rip'
+            },
+            {
+                list: ['HD-DVD'],
+                rate: {
+                    video: 68
+                },
+                name: 'DVD'
+            },
+            {
+                list: ['2xDVD9'],
+                rate: {
+                    video: 65
+                },
+                name: 'DVD'
+            },
+            {
+                list: ['DVD9', 'DVD-9'],
+                rate: {
+                    video: 62
+                },
+                name: 'DVD'
+            },
+            {
+                list: ['DVD5'],
+                listCase: ['DVD'],
+                rate: {
+                    video: 50
+                },
+                name: 'DVD'
+            },
+            {
+                list: ['HQSATRip', 'HQRip', 'HQRip-AVC'],
+                rate: {
+                    video: 44
+                },
+                name: 'HDrip'
+            },
+            {
+                list: ['TVRip', 'IPTVRip'],
+                rate: {
+                    video: 40
+                },
+                name: 'TV-Rip'
+            },
+            {
+                list: ['WEBRip'],
+                rate: {
+                    video: 40
+                },
+                name: 'WebRip'
+            },
+            {
+                list: ['WEB-DLRip-AVC', 'WebDL-Rip', 'WEB-DLRip', 'WEB-DL'],
+                rate: {
+                    video: 40
+                },
+                name: 'WEB-DL'
+            },
+            {
+                list: ['SATRip'],
+                rate: {
+                    video: 40
+                },
+                name: 'SAT-Rip'
+            },
+            {
+                listCase: ['DVB'],
+                rate: {
+                    video: 40
+                },
+                name: 'DVB'
+            },
+            {
+                list: ['TeleSynch'],
+                listCase: ['TS'],
+                rate: {
+                    video: 20
+                },
+                name: 'Telesync'
+            },
+            {
+                list: ['DVDScr', 'DVDScreener'],
+                rate: {
+                    video: 20
+                },
+                name: 'DVD-Screener'
+            },
+            {
+                list: ['lossless'],
+                rate: {
+                    music: 100
+                },
+                name: 'lossless',
+                subAfter: [
+                    {
+                        list: ['repack'],
+                        rate: {
+                            music: -100
+                        }
+                    }
+                ]
+            },
+            {
+                list: ['FLAC', 'ALAC'],
+                rate: {
+                    music: 100
+                },
+                name: 'lossless'
+            },
+            {
+                list: ['MP3'],
+                rate: {
+                    music: 80
+                },
+                name: 'MP3',
+                subAfter: qBirtate
+            },
+            {
+                list: ['AAC'],
+                rate: {
+                    music: 85
+                },
+                name: 'AAC',
+                subAfter: qBirtate
+            },
+            {
+                listCase: ['PS3'],
+                rate: {
+                    game: 80
+                },
+                name: 'PS3'
+            },
+            {
+                list: ['XBOX'],
+                rate: {
+                    game: 80
+                },
+                name: 'XBox'
+            },
+            {
+                list: ['(ps2)'],
+                listCase: ['PS2'],
+                rate: {
+                    game: 80
+                },
+                name: 'PS2'
+            },
+            {
+                list: ['[p]', '{p}', '(p)'],
+                rate: {
+                    game: 20
+                },
+                name: 'P'
+            },
+            {
+                list: ['repack', 'lossless repack', 'steam-rip', '(lossy rip)', 'reloaded'],
+                rate: {
+                    game: 60
+                },
+                name: 'RePack'
+            },
+            {
+                list: ['[Native]'],
+                rate: {
+                    game: 100
+                },
+                name: 'Native'
+            },
+            {
+                list: ['[rip]', '{rip}', '(rip)'],
+                rate: {
+                    game: 80
+                },
+                name: 'Rip'
+            },
+            {
+                listCase: ['[L]', '{L}', '(L)'],
+                list: ['лицензия'],
+                rate: {
+                    game: 100
+                },
+                name: 'L'
+            },
+            {
+                list: ['fb2', 'pdf', 'djvu', 'rtf', 'epub', 'doc', 'docx'],
+                rate: {
+                    book: 100
+                },
+                name: 'Book'
+            },
+            {
+                list: ['h.264', 'h264', 'mp4', 'm4v'],
+                rate: {
+                    video: 2
+                }
+            },
+            {
+                list: ['2160p', '2160i'],
+                rate: {
+                    video: 20
+                }
+            },
+            {
+                list: ['1080p', '1080i'],
+                rate: {
+                    video: 20
+                }
+            },
+            {
+                list: ['720p'],
+                rate: {
+                    video: 10
+                }
+            },
+            {
+                list: ['720p-LQ'],
+                rate: {
+                    video: -5
+                }
+            },
+            {
+                list: ['звук с ts'],
+                rate: {
+                    video: -50
+                }
+            },
+            {
+                listCase: ['СТ'],
+                list: ['sub', 'subs'],
+                rate: {
+                    video: 1
+                }
+            },
+            {
+                list: ['itunes russia', 'itunes lp'],
+                rate: {
+                    video: 10
+                }
+            },
+            {
+                listCase: ['DUB', 'Dub', 'ДБ', 'ПО', 'ПД'],
+                list: ['2xDub'],
+                rate: {
+                    video: 3
+                }
+            },
+            {
+                listCase: ['ПМ'],
+                rate: {
+                    video: 2
+                }
+            },
+            {
+                listCase: ['АП', 'ЛО', 'ЛД', 'VO'],
+                rate: {
+                    video: 1
+                }
+            },
+            {
+                list: ['pc (windows)'],
+                rate: {
+                    game: 5
+                }
+            },
+            {
+                list: ['сезон', 'season'],
+                rate: {
+                    serial: 1
+                }
+            },
+            {
+                list: ['.cue'],
+                listCase: ['CUE'],
+                rate: {
+                    music: 20
+                }
+            },
+            {
+                list: ['soundtrack'],
+                rate: {
+                    music: 1
+                }
+            },
+            {
+                list: ['мультфильм'],
+                rate: {
+                    mult: 1
+                }
+            }
+        ],
+
         cat_regexp: new RegExp("фильмы без сюжета|документальные|мультим|мульт|сериа|комикс|видео для [моб|смарт|" +
             "устр]{1}|мобильное|аудиокниги|беллетр|книг|фильм|игр|3gp|soundtrack|саундтрек|anim|аним|докумел|литер|" +
             "телеп|эрот|xxx|porn|порно|сайтр|тв[\-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
@@ -27,6 +417,71 @@ var wordRate = function() {
         rm_retry: new RegExp('<\\/span>(.?)<span class="sub_name">|<\\/b>(.?)<b>', 'g'),
         syntaxCache: {}
     };
+    var initWordCache = function(_words) {
+        var words = [];
+        var wordsCase = [];
+        var wordObj = {};
+        _words.forEach(function(item) {
+            if (item.list !== undefined) {
+                item.list.forEach(function(word) {
+                    word = word.toLocaleLowerCase();
+                    if (wordObj[word] !== undefined) {
+                        console.log('Word conflict!', word);
+                    }
+                    wordObj[word] = item;
+                    words.push(word.replace(var_cache.text2safe_regexp_text, "\\$1"));
+                });
+            }
+            if (item.listCase !== undefined) {
+                item.listCase.forEach(function(word) {
+                    if (wordObj[word] !== undefined) {
+                        console.log('Word conflict!', word);
+                    }
+                    wordObj[word] = item;
+                    wordsCase.push(word.replace(var_cache.text2safe_regexp_text, "\\$1"));
+                });
+            }
+            var list;
+            if (item.sub !== undefined) {
+                var_cache.subList.indexOf('sub') === -1 && var_cache.subList.push('sub');
+                list = initWordCache(item.sub);
+                item.words_sub = list[0];
+                item.wordsCase_sub = list[1];
+                item.wordObj_sub = list[2];
+            }
+            if (item.subAfter !== undefined) {
+                var_cache.subList.indexOf('subAfter') === -1 && var_cache.subList.push('subAfter');
+                list = initWordCache(item.subAfter);
+                item.words_subAfter = list[0];
+                item.wordsCase_subAfter = list[1];
+                item.wordObj_subAfter = list[2];
+            }
+            if (item.subBefore !== undefined) {
+                var_cache.subList.indexOf('subBefore') === -1 && var_cache.subList.push('subBefore');
+                list = initWordCache(item.subBefore);
+                item.words_subBefore = list[0];
+                item.wordsCase_subBefore = list[1];
+                item.wordObj_subBefore = list[2];
+            }
+        });
+        if (words.length > 0) {
+            words = new RegExp(words.join('|'), 'g');
+        } else {
+            words = undefined;
+        }
+        if (wordsCase.length > 0) {
+            wordsCase = new RegExp(wordsCase.join('|'), 'g');
+        } else {
+            wordsCase = undefined;
+        }
+        return [words, wordsCase, wordObj];
+    };
+    (function() {
+        var list = initWordCache(var_cache.qualityList);
+        var_cache.words = list[0];
+        var_cache.wordsCase = list[1];
+        var_cache.wordObj = list[2];
+    })();
     var syntaxCacheRequest = function(request, _syntaxCache) {
         var year = request.match(var_cache.getYear);
         if (year !== null) {
@@ -87,250 +542,6 @@ var wordRate = function() {
     var checkLeftRightSymbol = function(word, pos, string) {
         return (checkForSymbol(string[pos - 1] || '') !== 0 && checkForSymbol(string[pos + word.length] || '') !== 0);
     };
-    var cal_rate = function(word, position, string) {
-        var rate = var_cache.syntax_rate;
-        word = word.toLowerCase();
-        //проверяет что это не фрагмент слова (проверка слева и справа)
-        if (rate.m.indexOf(word) !== -1 || checkLeftRightSymbol(word, position, string) === false) {
-            return '';
-        }
-        rate.m.push(word);
-        if (rate.block.length === 0) {
-            if (word === "blu-ray") {
-                rate.video += 100;
-                rate.block.push("video");
-                rate.qbox = "Blu-ray";
-            } else
-            if (word === "bd-remux" || word === "bdremux") {
-                rate.video += 90;
-                rate.block.push("video");
-                rate.qbox = "Remux";
-            } else
-            if (word === "bd-rip" || word === "bdrip" || word === "bdrip-avc") {
-                rate.video += 80;
-                rate.block.push("video");
-                rate.qbox = "BDRip";
-            } else
-            if (word === "camrip" || word === "camrip-avc") {
-                rate.video += 10;
-                rate.block.push("video");
-                rate.qbox = "CAMRip";
-            } else
-            if (word === "hdtv-rip" || word === "hdtvrip") {
-                rate.video += 70;
-                rate.block.push("video");
-                rate.qbox = "HDTV-Rip";
-            } else
-            if (word === "dtheater-rip") {
-                rate.video += 70;
-                rate.block.push("video");
-                rate.qbox = "DTheater-Rip";
-            } else
-            if (word === "lowhdrip") {
-                rate.video += 10;
-                rate.block.push("video");
-                rate.qbox = "LowHDRip";
-            } else
-            if (word === "hdtv") {
-                rate.video += 60;
-                rate.block.push("video");
-                rate.qbox = "HDTV";
-            } else
-            if (word === "hdrip" || word === "hdrip-avc") {
-                rate.video += 60;
-                rate.block.push("video");
-                rate.qbox = "HDRip";
-            } else
-            if (word === "dvdrip" || word === "dvd-rip" || word === "dvdrip-avc") {
-                rate.video += 60;
-                rate.block.push("video");
-                rate.qbox = "DVD-Rip";
-            } else
-            if (word === "hd-dvd") {
-                rate.video += 68;
-                rate.block.push("video");
-                rate.qbox = "DVD";
-            } else
-            if (word === "2xdvd9") {
-                rate.video += 65;
-                rate.block.push("video");
-                rate.qbox = "DVD";
-            } else
-            if (word === "dvd9" || word === "dvd-9") {
-                rate.video += 62;
-                rate.block.push("video");
-                rate.qbox = "DVD";
-            } else
-            if (word === "dvd" || word === "dvd5") {
-                rate.video += 50;
-                rate.block.push("video");
-                rate.qbox = "DVD";
-            } else
-            if (word === "hqsatrip" || word === "hqrip" || word === "hqrip-avc") {
-                rate.video += 44;
-                rate.block.push("video");
-                rate.qbox = "HDrip";
-            } else
-            if (word === "tvrip" || word === "iptvrip") {
-                rate.video += 40;
-                rate.block.push("video");
-                rate.qbox = "TV-Rip";
-            } else
-            if (word === "webrip") {
-                rate.video += 40;
-                rate.block.push("video");
-                rate.qbox = "WebRip";
-            } else
-            if (word === "web-dlrip-avc" || word === "webdl-rip" || word === "web-dlrip" || word === "web-dl") {
-                rate.video += 40;
-                rate.block.push("video");
-                rate.qbox = "WEB-DL";
-            } else
-            if (word === "satrip") {
-                rate.video += 40;
-                rate.block.push("video");
-                rate.qbox = "SAT-Rip";
-            } else
-            if (word === "dvb") {
-                rate.video += 40;
-                rate.block.push("video");
-                rate.qbox = "DVB";
-            } else
-            if (word === "telesynch" || word === "ts") {
-                rate.video += 20;
-                rate.block.push("video");
-                rate.qbox = "Telesync";
-            }
-            if (word === "dvdscr" || word === "dvdscreener") {
-                rate.video += 20;
-                rate.block.push("video");
-                rate.qbox = "DVD-Screener";
-            }
-            if (word === "flac" || word === "alac" || word === "lossless") {
-                rate.music += 100;
-                rate.block.push("music");
-                rate.qbox = "lossless";
-            } else
-            if (word === "mp3") {
-                rate.music += 80;
-                rate.qbox = "MP3";
-            } else
-            if (word === "ps3") {
-                rate.game += 80;
-                rate.block.push("game");
-                rate.qbox = "PS3";
-            } else
-            if (word === "xbox") {
-                rate.game += 80;
-                rate.block.push("game");
-                rate.qbox = "XBox";
-            } else
-            if (word === "(ps2)") {
-                rate.game += 80;
-                rate.block.push("game");
-                rate.qbox = "PS2";
-            } else
-            if (word === "[p]" || word === "{p}" || word === "(p)") {
-                rate.game += 20;
-                rate.block.push("game");
-                rate.qbox = "P";
-            } else
-            if (word === "repack" || word === "lossless repack" || word === "steam-rip" || word === "(lossy rip)" || word === "reloaded") {
-                rate.game += 60;
-                rate.block.push("game");
-                rate.qbox = "RePack";
-            } else
-            if (word === "[native]") {
-                rate.game += 100;
-                rate.block.push("game");
-                rate.qbox = "Native";
-            } else
-            if (word === "[rip]" || word === "{rip}" || word === "(rip)") {
-                rate.game += 80;
-                rate.block.push("game");
-                rate.qbox = "Rip";
-            } else
-            if (word === "[l]" || word === "{l}" || word === "(l)") {
-                rate.game += 100;
-                rate.block.push("game");
-                rate.qbox = "L";
-            } else
-            if (word === "лицензия") {
-                rate.game += 100;
-                rate.block.push("game");
-                rate.qbox = "L";
-            } else
-            if (word === "fb2" || word === "pdf" || word === "dejvu" || word === "rtf" || word === "epub") {
-                rate.book += 100;
-                rate.block.push("book");
-                rate.qbox = word;
-            }
-        }
-        if (word === "h.264" || word === "h264" || word === "mp4" || word === "m4v") {
-            rate.video += 2;
-        } else
-        if (word === "2160p" || word === "2160i") {
-            rate.video += 20;
-        } else
-        if (word === "1080p" || word === "1080i") {
-            rate.video += 20;
-        } else
-        if (word === "720p") {
-            rate.video += 10;
-        } else
-        if (word === "звук с ts") {
-            rate.video -= 50;
-        } else
-        if (word === "ст" || word === "sub" || word === "subs") {
-            rate.video += 1;
-        } else
-        if (word === "itunes russia") {
-            rate.video += 10;
-        } else
-        if (word === "dub" || word === "пд" || word === "по" || word === "дб" || word === "2xdub") {
-            rate.video += 3;
-        } else
-        if (word === "пм") {
-            rate.video += 2;
-        } else
-        if (word === "ап" || word === "ло" || word === "лд" || word === "vo") {
-            rate.video += 1;
-        } else
-        if (word === "pc (windows)") {
-            rate.game += 5;
-        } else
-        if (word === "сезон" || word === "season") {
-            rate.serial++;
-        } else
-        if (word === "cue") {
-            rate.music += 20;
-        } else
-        if (word === "soundtrack") {
-            rate.music++;
-        } else
-        if (word === "32" && rate.m.indexOf('mp3') !== -1) {
-            rate.music -= 2;
-        } else
-        if (word === "64" && rate.m.indexOf('mp3') !== -1) {
-            rate.music += 0;
-        } else
-        if (word === "96" && rate.m.indexOf('mp3') !== -1) {
-            rate.music += 2;
-        } else
-        if (word === "128" && rate.m.indexOf('mp3') !== -1) {
-            rate.music += 5;
-        } else
-        if (word === "192" && rate.m.indexOf('mp3') !== -1) {
-            rate.music += 10;
-        } else
-        if (word === "320" && rate.m.indexOf('mp3') !== -1) {
-            rate.music += 15;
-        } else
-        if (word === "мультфильм") {
-            rate.mult++;
-        }
-        return '';
-    };
 
     var angleSelect = function(name) {
         if (name.indexOf('&lt;') === -1 || name.indexOf('&gt;') === -1) {
@@ -389,6 +600,76 @@ var wordRate = function() {
         name = name.replace(var_cache.found_parenthetical, '<span class="sub_name">$1</span>');
         return name.replace(var_cache.rm_retry,'$1$2');
     };
+
+    var rateWord = function(word, pos) {
+        var rate = this.syntaxRate;
+        if (checkLeftRightSymbol(word, pos, this.text) === false) {
+            return '';
+        }
+        var item = this.wordObj[word];
+        if (item.dbl === undefined) {
+            if (rate.m.indexOf(word) !== -1) {
+                return '';
+            } else {
+                rate.m.push(word);
+            }
+        }
+
+        if (rate.block === 1 && item.name !== undefined) {
+            return '';
+        }
+
+        if (item.name !== undefined) {
+            rate.block = 1;
+            rate.qbox = item.name;
+        }
+
+        for (var key in item.rate) {
+            rate[key] += item.rate[key];
+        }
+
+        for (var m = 0, subName; subName = var_cache.subList[m]; m++) {
+            if (item['wordObj_'+subName] === undefined) {
+                continue;
+            }
+            var _rateWord = rateWord.bind({
+                text: this.text,
+                textLower: this.textLower,
+                wordObj: item['wordObj_'+subName],
+                syntaxRate: rate
+            });
+            if (item['words_'+subName] !== undefined) {
+                var subTextLower = undefined;
+                if (subName === 'subAfter') {
+                    subTextLower = this.textLower.substr(pos + word.length);
+                } else
+                if (subName === 'subBefore') {
+                    subTextLower = this.textLower.substr(0, pos);
+                } else {
+                    subTextLower = this.textLower;
+                }
+                if (subTextLower.length > 0) {
+                    subTextLower.replace(item['words_' + subName], _rateWord);
+                }
+            }
+            if (item['wordsCase_'+subName] !== undefined) {
+                var subText = undefined;
+                if (subName === 'subAfter') {
+                    subText = this.text.substr(pos + word.length);
+                } else
+                if (subName === 'subBefore') {
+                    subText = this.text.substr(0, pos);
+                } else {
+                    subText = this.text;
+                }
+                if (subText.length > 0) {
+                    subText.replace(item['wordsCase_' + subName], _rateWord);
+                }
+            }
+        }
+        return '';
+    };
+
     var titleHighLight = function(name) {
         /*
          * Выставляет рейтинг заголовку раздачи
@@ -401,9 +682,21 @@ var wordRate = function() {
         var bonus_value = Math.round(word_rate / 2);
         var first_word_rate = var_cache.syntaxCache.first_word_rate;
         var year = var_cache.syntaxCache.year;
-        var rate = var_cache.syntax_rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0, block: [], qbox: "+"};
+        var rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0, block: 0, qbox: "+"};
         var name_low = name.toLowerCase();
-        name.replace(var_cache.quality_regexp, cal_rate);
+        var _rateWord = rateWord.bind({
+            text: name,
+            textLower: name_low,
+            wordObj: var_cache.wordObj,
+            syntaxRate: rate
+        });
+        if (var_cache.words !== undefined) {
+            name_low.replace(var_cache.words, _rateWord);
+        }
+        if (var_cache.wordsCase !== undefined) {
+            name.replace(var_cache.wordsCase, _rateWord);
+        }
+
         if (var_cache.syntaxCache.normalize_request.length === 0) {
             return {
                 hl_name: sub_select(name, hasAngle),

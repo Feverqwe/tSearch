@@ -1994,7 +1994,9 @@ var view = function() {
                     var n = 0;
                     for (var item in engine.profileList) {
                         n++;
-                        break;
+                        if (n > 1) {
+                            break;
+                        }
                     }
                     if (n > 1) {
                         removeListBtn.show();
