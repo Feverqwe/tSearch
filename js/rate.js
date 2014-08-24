@@ -26,397 +26,378 @@ var wordRate = function() {
             rate: {music: 15}
         }
     ];
-    var var_cache = {
-        subList: [],
-        qualityList: [
-            /*
-            {
-                list: [],
-                listCase: [],
-                rate: {
-                    video: 0,
-                    music: 0,
-                    game: 0,
-                    serial: 0,
-                    mult: 0,
-                    book: 0
-                },
-                name: '',
-                sub: [],
-                subAfter: [],
-                subBefore: []
-            }
-            */
-            {
-                list: ['blu-ray'],
-                rate: {
-                    video: 100
-                },
-                name: 'Blu-ray'
+    var qualityList = [
+        /*
+         {
+         list: [],
+         listCase: [],
+         rate: {
+         video: 0,
+         music: 0,
+         game: 0,
+         serial: 0,
+         mult: 0,
+         book: 0
+         },
+         name: '',
+         sub: [],
+         subAfter: [],
+         subBefore: []
+         }
+         */
+        {
+            list: ['blu-ray'],
+            rate: {
+                video: 100
             },
-            {
-                list: ['bd-remux', 'bd remux', 'BDRemux'],
-                rate: {
-                    video: 90
-                },
-                name: 'BDRemux'
+            name: 'Blu-ray'
+        },
+        {
+            list: ['bd-remux', 'bd remux', 'BDRemux'],
+            rate: {
+                video: 90
             },
-            {
-                list: ['BDRip-AVC', 'BD-Rip', 'BDRip'],
-                rate: {
-                    video: 80
-                },
-                name: 'BDRip'
+            name: 'BDRemux'
+        },
+        {
+            list: ['BDRip-AVC', 'BD-Rip', 'BDRip'],
+            rate: {
+                video: 80
             },
-            {
-                list: ['CAMRip', 'CamRip-AVC'],
-                rate: {
-                    video: 10
-                },
-                name: 'CAMRip'
+            name: 'BDRip'
+        },
+        {
+            list: ['CAMRip', 'CamRip-AVC'],
+            rate: {
+                video: 10
             },
-            {
-                list: ['HDTV-Rip', 'HDTVRip'],
-                rate: {
-                    video: 70
-                },
-                name: 'HDTV-Rip'
+            name: 'CAMRip'
+        },
+        {
+            list: ['HDTV-Rip', 'HDTVRip'],
+            rate: {
+                video: 70
             },
-            {
-                list: ['DTheater-Rip'],
-                rate: {
-                    video: 70
-                },
-                name: 'DTheater-Rip'
+            name: 'HDTV-Rip'
+        },
+        {
+            list: ['DTheater-Rip'],
+            rate: {
+                video: 70
             },
-            {
-                list: ['LowHDRip', 'VHSRip'],
-                rate: {
-                    video: 10
-                },
-                name: 'LowHDRip'
+            name: 'DTheater-Rip'
+        },
+        {
+            list: ['LowHDRip', 'VHSRip'],
+            rate: {
+                video: 10
             },
-            {
-                list: ['HDRip', 'HDRip-AVC'],
-                listCase: ['HDTV'],
-                rate: {
-                    video: 60
-                },
-                name: 'HDTV'
+            name: 'LowHDRip'
+        },
+        {
+            list: ['HDRip', 'HDRip-AVC'],
+            listCase: ['HDTV'],
+            rate: {
+                video: 60
             },
-            {
-                list: ['DVDRip', 'DVD-Rip', 'DVDRip-AVC'],
-                rate: {
-                    video: 60
-                },
-                name: 'DVD-Rip'
+            name: 'HDTV'
+        },
+        {
+            list: ['DVDRip', 'DVD-Rip', 'DVDRip-AVC'],
+            rate: {
+                video: 60
             },
-            {
-                list: ['HD-DVD'],
-                rate: {
-                    video: 68
-                },
-                name: 'DVD'
+            name: 'DVD-Rip'
+        },
+        {
+            list: ['HD-DVD'],
+            rate: {
+                video: 68
             },
-            {
-                list: ['2xDVD9'],
-                rate: {
-                    video: 65
-                },
-                name: 'DVD'
+            name: 'DVD'
+        },
+        {
+            list: ['2xDVD9'],
+            rate: {
+                video: 65
             },
-            {
-                list: ['DVD9', 'DVD-9'],
-                rate: {
-                    video: 62
-                },
-                name: 'DVD'
+            name: 'DVD'
+        },
+        {
+            list: ['DVD9', 'DVD-9'],
+            rate: {
+                video: 62
             },
-            {
-                list: ['DVD5'],
-                listCase: ['DVD'],
-                rate: {
-                    video: 50
-                },
-                name: 'DVD'
+            name: 'DVD'
+        },
+        {
+            list: ['DVD5'],
+            listCase: ['DVD'],
+            rate: {
+                video: 50
             },
-            {
-                list: ['HQSATRip', 'HQRip', 'HQRip-AVC'],
-                rate: {
-                    video: 44
-                },
-                name: 'HDrip'
+            name: 'DVD'
+        },
+        {
+            list: ['HQSATRip', 'HQRip', 'HQRip-AVC'],
+            rate: {
+                video: 44
             },
-            {
-                list: ['TVRip', 'IPTVRip'],
-                rate: {
-                    video: 40
-                },
-                name: 'TV-Rip'
+            name: 'HDrip'
+        },
+        {
+            list: ['TVRip', 'IPTVRip'],
+            rate: {
+                video: 40
             },
-            {
-                list: ['WEBRip'],
-                rate: {
-                    video: 40
-                },
-                name: 'WebRip'
+            name: 'TV-Rip'
+        },
+        {
+            list: ['WEBRip'],
+            rate: {
+                video: 40
             },
-            {
-                list: ['WEB-DLRip-AVC', 'WebDL-Rip', 'WEB-DLRip', 'WEB-DL'],
-                rate: {
-                    video: 40
-                },
-                name: 'WEB-DL'
+            name: 'WebRip'
+        },
+        {
+            list: ['WEB-DLRip-AVC', 'WebDL-Rip', 'WEB-DLRip', 'WEB-DL'],
+            rate: {
+                video: 40
             },
-            {
-                list: ['SATRip'],
-                rate: {
-                    video: 40
-                },
-                name: 'SAT-Rip'
+            name: 'WEB-DL'
+        },
+        {
+            list: ['SATRip'],
+            rate: {
+                video: 40
             },
-            {
-                listCase: ['DVB'],
-                rate: {
-                    video: 40
-                },
-                name: 'DVB'
+            name: 'SAT-Rip'
+        },
+        {
+            listCase: ['DVB'],
+            rate: {
+                video: 40
             },
-            {
-                list: ['TeleSynch'],
-                listCase: ['TS'],
-                rate: {
-                    video: 20
-                },
-                name: 'Telesync'
+            name: 'DVB'
+        },
+        {
+            list: ['TeleSynch'],
+            listCase: ['TS'],
+            rate: {
+                video: 20
             },
-            {
-                list: ['DVDScr', 'DVDScreener'],
-                rate: {
-                    video: 20
-                },
-                name: 'DVD-Screener'
+            name: 'Telesync'
+        },
+        {
+            list: ['DVDScr', 'DVDScreener'],
+            rate: {
+                video: 20
             },
-            {
-                list: ['lossless'],
-                rate: {
-                    music: 100
-                },
-                name: 'lossless',
-                subAfter: [
-                    {
-                        list: ['repack'],
-                        rate: {
-                            music: -100
-                        }
+            name: 'DVD-Screener'
+        },
+        {
+            list: ['lossless'],
+            rate: {
+                music: 100
+            },
+            name: 'lossless',
+            subAfter: [
+                {
+                    list: ['repack'],
+                    rate: {
+                        music: -100
                     }
-                ]
-            },
-            {
-                list: ['FLAC', 'ALAC'],
-                rate: {
-                    music: 100
-                },
-                name: 'lossless'
-            },
-            {
-                list: ['MP3'],
-                rate: {
-                    music: 80
-                },
-                name: 'MP3',
-                subAfter: qBirtate
-            },
-            {
-                list: ['AAC'],
-                rate: {
-                    music: 85
-                },
-                name: 'AAC',
-                subAfter: qBirtate
-            },
-            {
-                listCase: ['PS3'],
-                rate: {
-                    game: 80
-                },
-                name: 'PS3'
-            },
-            {
-                list: ['XBOX'],
-                rate: {
-                    game: 80
-                },
-                name: 'XBox'
-            },
-            {
-                list: ['(ps2)'],
-                listCase: ['PS2'],
-                rate: {
-                    game: 80
-                },
-                name: 'PS2'
-            },
-            {
-                list: ['[p]', '{p}', '(p)'],
-                rate: {
-                    game: 20
-                },
-                name: 'P'
-            },
-            {
-                list: ['repack', 'lossless repack', 'steam-rip', '(lossy rip)', 'reloaded'],
-                rate: {
-                    game: 60
-                },
-                name: 'RePack'
-            },
-            {
-                list: ['[Native]'],
-                rate: {
-                    game: 100
-                },
-                name: 'Native'
-            },
-            {
-                list: ['[rip]', '{rip}', '(rip)'],
-                rate: {
-                    game: 80
-                },
-                name: 'Rip'
-            },
-            {
-                listCase: ['[L]', '{L}', '(L)'],
-                list: ['лицензия'],
-                rate: {
-                    game: 100
-                },
-                name: 'L'
-            },
-            {
-                list: ['fb2', 'pdf', 'djvu', 'rtf', 'epub', 'doc', 'docx'],
-                rate: {
-                    book: 100
-                },
-                name: 'Book'
-            },
-            {
-                list: ['h.264', 'h264', 'mp4', 'm4v'],
-                rate: {
-                    video: 2
                 }
+            ]
+        },
+        {
+            list: ['FLAC', 'ALAC'],
+            rate: {
+                music: 100
             },
-            {
-                list: ['2160p', '2160i'],
-                rate: {
-                    video: 20
-                }
+            name: 'lossless'
+        },
+        {
+            list: ['MP3'],
+            rate: {
+                music: 80
             },
-            {
-                list: ['1080p', '1080i'],
-                rate: {
-                    video: 20
-                }
+            name: 'MP3',
+            subAfter: qBirtate
+        },
+        {
+            list: ['AAC'],
+            rate: {
+                music: 85
             },
-            {
-                list: ['720p'],
-                rate: {
-                    video: 10
-                }
+            name: 'AAC',
+            subAfter: qBirtate
+        },
+        {
+            listCase: ['PS3'],
+            rate: {
+                game: 80
             },
-            {
-                list: ['720p-LQ'],
-                rate: {
-                    video: -5
-                }
+            name: 'PS3'
+        },
+        {
+            list: ['XBOX'],
+            rate: {
+                game: 80
             },
-            {
-                list: ['звук с ts'],
-                rate: {
-                    video: -50
-                }
+            name: 'XBox'
+        },
+        {
+            list: ['(ps2)'],
+            listCase: ['PS2'],
+            rate: {
+                game: 80
             },
-            {
-                listCase: ['СТ'],
-                list: ['sub', 'subs'],
-                rate: {
-                    video: 1
-                }
+            name: 'PS2'
+        },
+        {
+            list: ['[p]', '{p}', '(p)'],
+            rate: {
+                game: 20
             },
-            {
-                list: ['itunes russia', 'itunes lp'],
-                rate: {
-                    video: 10
-                }
+            name: 'P'
+        },
+        {
+            list: ['repack', 'lossless repack', 'steam-rip', '(lossy rip)', 'reloaded'],
+            rate: {
+                game: 60
             },
-            {
-                listCase: ['DUB', 'Dub', 'ДБ', 'ПО', 'ПД'],
-                list: ['2xDub'],
-                rate: {
-                    video: 3
-                }
+            name: 'RePack'
+        },
+        {
+            list: ['[Native]'],
+            rate: {
+                game: 100
             },
-            {
-                listCase: ['ПМ'],
-                rate: {
-                    video: 2
-                }
+            name: 'Native'
+        },
+        {
+            list: ['[rip]', '{rip}', '(rip)'],
+            rate: {
+                game: 80
             },
-            {
-                listCase: ['АП', 'ЛО', 'ЛД', 'VO'],
-                rate: {
-                    video: 1
-                }
+            name: 'Rip'
+        },
+        {
+            listCase: ['[L]', '{L}', '(L)'],
+            list: ['лицензия'],
+            rate: {
+                game: 100
             },
-            {
-                list: ['pc (windows)'],
-                rate: {
-                    game: 5
-                }
+            name: 'L'
+        },
+        {
+            list: ['fb2', 'pdf', 'djvu', 'rtf', 'epub', 'doc', 'docx'],
+            rate: {
+                book: 100
             },
-            {
-                list: ['сезон', 'season'],
-                rate: {
-                    serial: 1
-                }
-            },
-            {
-                list: ['.cue'],
-                listCase: ['CUE'],
-                rate: {
-                    music: 20
-                }
-            },
-            {
-                list: ['soundtrack'],
-                rate: {
-                    music: 1
-                }
-            },
-            {
-                list: ['мультфильм'],
-                rate: {
-                    mult: 1
-                }
+            name: 'Book'
+        },
+        {
+            list: ['h.264', 'h264', 'mp4', 'm4v'],
+            rate: {
+                video: 2
             }
-        ],
-
-        cat_regexp: new RegExp("фильмы без сюжета|документальные|мультим|мульт|сериа|комикс|видео для [моб|смарт|" +
-            "устр]{1}|мобильное|аудиокниги|беллетр|книг|фильм|игр|3gp|soundtrack|саундтрек|anim|аним|докумел|литер|" +
-            "телеп|эрот|xxx|porn|порно|сайтр|тв[\-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
-            "утилит|book|game|tv |tv$|manga", "g"),
-        year: (new Date()).getFullYear(),
-        getYear: new RegExp('[1-2]{1}[0-9]{3}'),
-        rm_spaces: new RegExp('\\s+','g'),
-        text2safe_regexp_text: new RegExp('([{})(\\][\\\\\\.^$\\|\\?\\+])','g'),
-        rm_pre_tag_regexp: new RegExp("\\(.*\\)|\\[.*\\]", 'g'),
-        searchTextAngle: new RegExp('\\&lt;(/?)b\\&gt;','gm'),
-        searchAngleL: new RegExp('<','gm'),
-        searchAngleR: new RegExp('>','gm'),
-        found_parenthetical: new RegExp('(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\{[^\\}]*\\})','g'),
-        rm_retry: new RegExp('<\\/span>(.?)<span class="sub_name">|<\\/b>(.?)<b>', 'g'),
-        syntaxCache: {}
-    };
+        },
+        {
+            list: ['2160p', '2160i'],
+            rate: {
+                video: 20
+            }
+        },
+        {
+            list: ['1080p', '1080i'],
+            rate: {
+                video: 20
+            }
+        },
+        {
+            list: ['720p'],
+            rate: {
+                video: 10
+            }
+        },
+        {
+            list: ['720p-LQ'],
+            rate: {
+                video: -5
+            }
+        },
+        {
+            list: ['звук с ts'],
+            rate: {
+                video: -50
+            }
+        },
+        {
+            listCase: ['СТ'],
+            list: ['sub', 'subs'],
+            rate: {
+                video: 1
+            }
+        },
+        {
+            list: ['itunes russia', 'itunes lp'],
+            rate: {
+                video: 10
+            }
+        },
+        {
+            listCase: ['DUB', 'Dub', 'ДБ', 'ПО', 'ПД'],
+            list: ['2xDub'],
+            rate: {
+                video: 3
+            }
+        },
+        {
+            listCase: ['ПМ'],
+            rate: {
+                video: 2
+            }
+        },
+        {
+            listCase: ['АП', 'ЛО', 'ЛД', 'VO'],
+            rate: {
+                video: 1
+            }
+        },
+        {
+            list: ['pc (windows)'],
+            rate: {
+                game: 5
+            }
+        },
+        {
+            list: ['сезон', 'season'],
+            rate: {
+                serial: 1
+            }
+        },
+        {
+            list: ['.cue'],
+            listCase: ['CUE'],
+            rate: {
+                music: 20
+            }
+        },
+        {
+            list: ['soundtrack'],
+            rate: {
+                music: 1
+            }
+        },
+        {
+            list: ['мультфильм'],
+            rate: {
+                mult: 1
+            }
+        }
+    ];
     var initWordCache = function(_words) {
         var words = [];
         var wordsCase = [];
@@ -477,11 +458,31 @@ var wordRate = function() {
         return [words, wordsCase, wordObj];
     };
     (function() {
-        var list = initWordCache(var_cache.qualityList);
+        var list = initWordCache(qualityList);
         var_cache.words = list[0];
         var_cache.wordsCase = list[1];
         var_cache.wordObj = list[2];
     })();
+
+    var var_cache = {
+        subList: [],
+
+        cat_regexp: new RegExp("фильмы без сюжета|документальные|мультим|мульт|сериа|комикс|видео для [моб|смарт|" +
+            "устр]{1}|мобильное|аудиокниги|беллетр|книг|фильм|игр|3gp|soundtrack|саундтрек|anim|аним|докумел|литер|" +
+            "телеп|эрот|xxx|porn|порно|сайтр|тв[\-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
+            "утилит|book|game|tv |tv$|manga", "g"),
+        year: (new Date()).getFullYear(),
+        getYear: new RegExp('[1-2]{1}[0-9]{3}'),
+        rm_spaces: new RegExp('\\s+','g'),
+        text2safe_regexp_text: new RegExp('([{})(\\][\\\\\\.^$\\|\\?\\+])','g'),
+        rm_pre_tag_regexp: new RegExp("\\(.*\\)|\\[.*\\]", 'g'),
+        searchTextAngle: new RegExp('\\&lt;(/?)b\\&gt;','gm'),
+        searchAngleL: new RegExp('<','gm'),
+        searchAngleR: new RegExp('>','gm'),
+        found_parenthetical: new RegExp('(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\{[^\\}]*\\})','g'),
+        rm_retry: new RegExp('<\\/span>(.?)<span class="sub_name">|<\\/b>(.?)<b>', 'g'),
+        syntaxCache: {}
+    };
     var syntaxCacheRequest = function(request, _syntaxCache) {
         var year = request.match(var_cache.getYear);
         if (year !== null) {
@@ -968,6 +969,7 @@ var wordRate = function() {
     return {
         syntaxCacheRequest: syntaxCacheRequest,
         titleHighLight: titleHighLight,
-        autosetCategory: autosetCategory
+        autosetCategory: autosetCategory,
+        qualityList: qualityList
     }
 }();
