@@ -194,15 +194,37 @@ input.button {
     height: 560px;
 }
 #qualityList .rateItem {
-    border-bottom: 1px solid #CCCCCC;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-    padding-left: 2px;
-    padding-right: 2px;
+    border-bottom: 1px solid #DFDFDF;
+    padding: 2px;
+    margin-top: -1px;
+}
+#qualityList .rateItem .label {
+    padding: 4px;
+    cursor: pointer;
+}
+#qualityList .rateItem.show,
+#qualityList .rateItem:hover {
+    border-color: #b6b6b6;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 2px 0px inset;
+}
+#qualityList .rateItem.show .label,
+#qualityList .rateItem:hover .label {
+    background-color: #eee;
+}
+#qualityList .rateItem.show .configList {
+    display: block;
+}
+#qualityList .rateItem .configList {
+    padding-left: 3px;
+    padding-right: 3px;
 }
 #qualityList .rateItem h4 {
     margin-top: 10px;
     margin-bottom: 0;
+}
+#qualityList .configList {
+    display: none;
+    padding-bottom: 5px;
 }
 #qualityList .item > * {
     display: inline-block;
@@ -262,7 +284,7 @@ input.button {
 
 #qualityList .wordList .item {
     display: inline-block;
-    width: 211px;
+    width: 210px;
     text-align: center;
     margin: 1px;
 }
@@ -272,7 +294,7 @@ input.button {
 
 #qualityList .rateList .item {
     display: inline-block;
-    width: 211px;
+    width: 210px;
     text-align: center;
     margin: 1px;
 }

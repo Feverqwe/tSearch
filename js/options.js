@@ -459,11 +459,25 @@ var options = function() {
             var rate = createRates(item.rate);
             var name = createName(item.name);
 
-            return $('<div>', {class: 'rateItem'}).append(list, listCase, rate, name);
+            var labelWords = Array.prototype.concat(item.list || [], item.listCase || []);
+            labelWords = labelWords.join(', ');
+
+            return $('<div>', {class: 'rateItem'}).append(
+                $('<div>', {class: 'label', text: labelWords}),
+                $('<div>', {class: 'configList'}).append(list, listCase, rate, name)
+            );
         };
         for (var item in defaultRate) {
             container.push(createItem(defaultRate[item]));
         }
+        dom_cache.qualityList.on('click', '.label', function() {
+            var parent = this.parentNode;
+            if (parent.classList.contains('show')) {
+                parent.classList.remove('show');
+            } else {
+                parent.classList.add('show');
+            }
+        });
         dom_cache.qualityList.append(container);
     };
 
