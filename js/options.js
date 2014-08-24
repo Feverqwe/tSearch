@@ -1,4 +1,5 @@
 var options = function() {
+    "use strict";
     var activePage = undefined;
     var activeItem = undefined;
     var dom_cache = {};
@@ -225,7 +226,7 @@ var options = function() {
 
     var getBackupJson = function(cb) {
         mono.storage.get(null, function(storage) {
-            for (key in storage) {
+            for (var key in storage) {
                 if (key.substr(0, 9) === 'exp_cache' ||
                     ['topList', 'click_history', 'history', 'optMigrated', 'qualityBoxCache', 'qualityCache'].indexOf(key) !== -1) {
                     delete storage[key];
@@ -233,7 +234,7 @@ var options = function() {
             }
             cb && cb(JSON.stringify(storage));
         });
-    }
+    };
 
     var gcPartedBackup = function(prefix, max) {
         mono.storage.sync.get(null, function(storage) {
@@ -245,7 +246,7 @@ var options = function() {
                     continue;
                 }
                 value = parseInt(value);
-                if (key.substr(0, prefix.length) === prefix && (isNaN(value) || value >= max)) {
+                if (pref === prefix && (isNaN(value) || value >= max)) {
                     rmList.push(key);
                 }
             }
@@ -369,6 +370,103 @@ var options = function() {
 
     };
 
+    var mgrQuality = function() {
+        var defaultRate = wordRate.qualityList;
+        var container = [];
+        var createWord = function(word) {
+            var container = $('<div>', {class: 'item'});
+            container.append(
+                $('<input>', {type: 'text', value: word}),
+                $('<a>', {type: 'button', value: '', class: 'button remove'}).append('<i>')
+            );
+            return container;
+        };
+        var createWords = function(list, type) {
+            var container = $('<div>', {class: 'wordList', 'data-type': 'list'+type});
+            if (type) {
+                container.append($('<h4>', {text: 'Words with case:'}));
+            } else {
+                container.append($('<h4>', {text: 'Words:'}));
+            }
+            if (list !== undefined) {
+                list.forEach(function (word) {
+                    container.append(createWord(word));
+                });
+            }
+            container.append(
+                $('<div>', {class: 'item'}).append($('<input>', {type: 'button', value: 'Add item', class: 'button new'}))
+            );
+            return container;
+        };
+        var getRateOptions = function(optionName) {
+            var optionList = ['video', 'music', 'game', 'serial', 'mult', 'book'];
+            var list = [];
+            for (var i = 0, name; name = optionList[i]; i++) {
+                list.push(
+                    $('<option>', {value: name, selected: optionName === name, text: name})
+                );
+            }
+            return list;
+        };
+        var createRate = function(key, value) {
+            var container = $('<div>', {class: 'item'});
+            container.append(
+                $('<select>').append(
+                    getRateOptions(key)
+                ),
+                $('<input>', {type: 'number', value: value, placeholder: '0'}),
+                $('<a>', {type: 'button', value: '', class: 'button remove'}).append('<i>')
+            );
+            return container;
+        };
+        var createRates = function(rateList) {
+            var container = $('<div>', {class: 'rateList'});
+            container.append(
+                $('<h4>', {text: 'Rate list:'})
+            );
+            if (rateList !== undefined) {
+                for (var item in rateList) {
+                    container.append(createRate(item, rateList[item]));
+                }
+            }
+            container.append(
+                $('<div>', {class: 'item'}).append($('<input>', {type: 'button', value: 'Add item', class: 'button new'}))
+            );
+            return container;
+        };
+        var createName = function(name) {
+            var container = $('<div>', {class: 'nameItem'});
+            container.append(
+                $('<h4>', {text: 'Item name:'})
+            );
+            if (name === undefined) {
+                container.append(
+                    $('<div>', {class: 'item'}).append($('<input>', {type: 'button', value: 'Add name', class: 'button new'}))
+                );
+            } else {
+                container.append(
+                    $('<div>', {class: 'item'}).append(
+                        $('<input>', {type: 'text', value: name}),
+                        $('<a>', {type: 'button', value: '', class: 'button remove'}).append('<i>')
+                    )
+                );
+            }
+            return container;
+        };
+        var createItem = function(item) {
+            var list = createWords(item.list, '');
+            var listCase = createWords(item.listCase, 'Case');
+            var rate = createRates(item.rate);
+            var name = createName(item.name);
+
+            return $('<div>', {class: 'rateItem'}).append(list, listCase, rate, name);
+        };
+        for (var item in defaultRate) {
+            container.push(createItem(defaultRate[item]));
+        }
+        dom_cache.qualityList.append(container);
+    };
+
     return {
         boot: function() {
             $(options.begin);
@@ -386,6 +484,7 @@ var options = function() {
             dom_cache.clearCloudStorageBtn = $('#clearCloudStorage');
             dom_cache.backupInp = $('#backupInp');
             dom_cache.restoreInp = $('#restoreInp');
+            dom_cache.qualityList = $('#qualityList');
 
             set_place_holder();
 
@@ -442,6 +541,7 @@ var options = function() {
             });
             window.addEventListener("hashchange", onHashChange);
             onHashChange();
+            mgrQuality();
             dom_cache.container.removeClass('loading');
 
             dom_cache.sectionList[0].addEventListener('click', listOptionsSave);

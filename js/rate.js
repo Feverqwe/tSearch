@@ -29,20 +29,20 @@ var wordRate = function() {
     var qualityList = [
         /*
          {
-         list: [],
-         listCase: [],
-         rate: {
-         video: 0,
-         music: 0,
-         game: 0,
-         serial: 0,
-         mult: 0,
-         book: 0
-         },
-         name: '',
-         sub: [],
-         subAfter: [],
-         subBefore: []
+             list: [],
+             listCase: [],
+             rate: {
+                 video: 0,
+                 music: 0,
+                 game: 0,
+                 serial: 0,
+                 mult: 0,
+                 book: 0
+             },
+             name: '',
+             sub: [],
+             subAfter: [],
+             subBefore: []
          }
          */
         {
@@ -418,7 +418,7 @@ var wordRate = function() {
         rm_retry: new RegExp('<\\/span>(.?)<span class="sub_name">|<\\/b>(.?)<b>', 'g'),
         syntaxCache: {}
     };
-    
+
     var initWordCache = function(_words) {
         var words = [];
         var wordsCase = [];

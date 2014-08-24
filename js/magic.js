@@ -1,4 +1,5 @@
 var magic = function() {
+    "use strict";
     var dom_cache = {};
     var var_cache = {
         xhr: undefined,

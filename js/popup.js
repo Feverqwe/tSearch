@@ -1,4 +1,5 @@
 var popup = function(enable_ac) {
+    "use strict";
     var var_cache = {
         suggest_xhr: undefined
     };

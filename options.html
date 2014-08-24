@@ -12,6 +12,7 @@
         <script src="js/torrent_lib.min.js"></script>
         <script src="js/engine.js"></script>
         <script src="js/options.js"></script>
+        <script src="js/rate.js"></script>
     </head>
     <body>
         <div class="container">
@@ -22,6 +23,7 @@
                 <a href="#main" data-page="main" data-lang="optMain">Общие</a>
                 <a href="#explore" data-page="explore" data-lang="optMainPage">Главная страница</a>
                 <a href="#other" data-page="other" data-lang="optOther">Прочие</a>
+                <a href="#quality" data-page="quality" data-lang="optQuality">Определение качества</a>
                 <a href="#backup" data-page="backup" data-lang="word_backup">Архивирование</a>
                 <a href="#restore" data-page="restore" data-lang="word_restore">Восстановление</a>
             </div>
@@ -65,6 +67,10 @@
                     </div>
                     <label data-lang="optProxyURL,sub,text">URL<input id="proxyURL" type="text" data-option="proxyURL" value="https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&amp;container=pos"/></label>
                     <label data-lang="optProxyUrlFixSpaces,sub,text"><input type="checkbox" data-option="proxyUrlFixSpaces"/>Экранировать пробелы</label>
+                </div>
+                <div class="page quality">
+                    <h2 data-lang="optQuality">Определение качества</h2>
+                    <div id="qualityList"></div>
                 </div>
                 <div class="page backup">
                     <h2 data-lang="word_backup">Архивирование</h2>

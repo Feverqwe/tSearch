@@ -11,6 +11,7 @@ ga('require', 'displayfeatures');
 ga('send', 'pageview');
 
 var counter = function() {
+    "use strict";
     var gas = document.createElement('script');
     gas.async = 1;
     gas.src = 'https://www.google-analytics.com/analytics.js';

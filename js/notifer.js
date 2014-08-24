@@ -1,4 +1,5 @@
 var notify = function () {
+    "use strict";
     var _prefix = 'nf';
     var notifi;
     var layer;

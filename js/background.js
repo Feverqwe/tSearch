@@ -14,6 +14,7 @@ var init = function (env, ffButton) {
     bg.boot();
 };
 var bg = function() {
+    "use strict";
     /**
      * @namespace chrome
      * @namespace chrome.omnibox

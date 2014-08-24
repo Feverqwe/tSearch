@@ -1,4 +1,5 @@
 var explore = function() {
+    "use strict";
     var var_cache = {
         // dom cache for items
         source: {},

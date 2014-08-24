@@ -1,4 +1,5 @@
 var engine = function() {
+    "use strict";
     var def_settings = {
         hidePeerColumn: 1,
         hideSeedColumn: 0,
