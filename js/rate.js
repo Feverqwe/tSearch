@@ -398,6 +398,27 @@ var wordRate = function() {
             }
         }
     ];
+
+    var var_cache = {
+        subList: [],
+
+        cat_regexp: new RegExp("фильмы без сюжета|документальные|мультим|мульт|сериа|комикс|видео для [моб|смарт|" +
+            "устр]{1}|мобильное|аудиокниги|беллетр|книг|фильм|игр|3gp|soundtrack|саундтрек|anim|аним|докумел|литер|" +
+            "телеп|эрот|xxx|porn|порно|сайтр|тв[\-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
+            "утилит|book|game|tv |tv$|manga", "g"),
+        year: (new Date()).getFullYear(),
+        getYear: new RegExp('[1-2]{1}[0-9]{3}'),
+        rm_spaces: new RegExp('\\s+','g'),
+        text2safe_regexp_text: new RegExp('([{})(\\][\\\\\\.^$\\|\\?\\+])','g'),
+        rm_pre_tag_regexp: new RegExp("\\(.*\\)|\\[.*\\]", 'g'),
+        searchTextAngle: new RegExp('\\&lt;(/?)b\\&gt;','gm'),
+        searchAngleL: new RegExp('<','gm'),
+        searchAngleR: new RegExp('>','gm'),
+        found_parenthetical: new RegExp('(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\{[^\\}]*\\})','g'),
+        rm_retry: new RegExp('<\\/span>(.?)<span class="sub_name">|<\\/b>(.?)<b>', 'g'),
+        syntaxCache: {}
+    };
+    
     var initWordCache = function(_words) {
         var words = [];
         var wordsCase = [];
@@ -464,25 +485,6 @@ var wordRate = function() {
         var_cache.wordObj = list[2];
     })();
 
-    var var_cache = {
-        subList: [],
-
-        cat_regexp: new RegExp("фильмы без сюжета|документальные|мультим|мульт|сериа|комикс|видео для [моб|смарт|" +
-            "устр]{1}|мобильное|аудиокниги|беллетр|книг|фильм|игр|3gp|soundtrack|саундтрек|anim|аним|докумел|литер|" +
-            "телеп|эрот|xxx|porn|порно|сайтр|тв[\-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
-            "утилит|book|game|tv |tv$|manga", "g"),
-        year: (new Date()).getFullYear(),
-        getYear: new RegExp('[1-2]{1}[0-9]{3}'),
-        rm_spaces: new RegExp('\\s+','g'),
-        text2safe_regexp_text: new RegExp('([{})(\\][\\\\\\.^$\\|\\?\\+])','g'),
-        rm_pre_tag_regexp: new RegExp("\\(.*\\)|\\[.*\\]", 'g'),
-        searchTextAngle: new RegExp('\\&lt;(/?)b\\&gt;','gm'),
-        searchAngleL: new RegExp('<','gm'),
-        searchAngleR: new RegExp('>','gm'),
-        found_parenthetical: new RegExp('(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\{[^\\}]*\\})','g'),
-        rm_retry: new RegExp('<\\/span>(.?)<span class="sub_name">|<\\/b>(.?)<b>', 'g'),
-        syntaxCache: {}
-    };
     var syntaxCacheRequest = function(request, _syntaxCache) {
         var year = request.match(var_cache.getYear);
         if (year !== null) {
