@@ -43,6 +43,7 @@ java -jar compiler.jar --js .\js\popup.js --js_output_file .\build\js\popup.js
 del .\build\js\torrent_lib.js
 java -jar compiler.jar --js .\js\torrent_lib.min.js --js_output_file .\build\js\torrent_lib.min.js
 java -jar compiler.jar --js .\js\view.js --js_output_file .\build\js\view.js
+java -jar compiler.jar --js .\js\rate.js --js_output_file .\build\js\rate.js
 
 :: opera
 
