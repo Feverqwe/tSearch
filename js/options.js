@@ -372,7 +372,7 @@ var options = function() {
 
     var mgrQuality = function() {
         var defaultRate = wordRate.qualityList;
-        var container = [];
+        var optionList = ['video', 'music', 'game', 'serial', 'mult', 'book'];
         var createWord = function(word) {
             var container = $('<div>', {class: 'item'});
             container.append(
@@ -399,7 +399,6 @@ var options = function() {
             return container;
         };
         var getRateOptions = function(optionName) {
-            var optionList = ['video', 'music', 'game', 'serial', 'mult', 'book'];
             var list = [];
             for (var i = 0, name; name = optionList[i]; i++) {
                 list.push(
@@ -453,23 +452,57 @@ var options = function() {
             }
             return container;
         };
-        var createItem = function(item) {
+        var addCreateRateItemBtn = function(type) {
+            var container = $('<div>', {class: 'rateItem new', 'data-type': type});
+            container.append(
+                $('<select>').append(
+                    $('<option>', {value: 'sub', text: 'sub'}),
+                    $('<option>', {value: 'subBefore', text: 'subBefore'}),
+                    $('<option>', {value: 'subAfter', text: 'subAfter'})
+                ),
+                $('<input>', {type: 'button', value: 'Add name', class: 'button new'})
+            );
+            return container;
+        };
+        var createItem = function(item, type) {
+            var container = $('<div>', {class: 'rateItem', 'data-type': type});
+            var configList = $('<div>', {class: 'configList'});
             var list = createWords(item.list, '');
             var listCase = createWords(item.listCase, 'Case');
             var rate = createRates(item.rate);
             var name = createName(item.name);
 
-            var labelWords = Array.prototype.concat(item.list || [], item.listCase || []);
-            labelWords = labelWords.join(', ');
+            configList.append(list, listCase, rate, name);
 
-            return $('<div>', {class: 'rateItem'}).append(
-                $('<div>', {class: 'label', text: labelWords}),
-                $('<div>', {class: 'configList'}).append(list, listCase, rate, name)
+            configList.append(
+                $('<div>', {class: 'subItems'}).append(
+                    createRateItems(item.sub, 'sub'),
+                    createRateItems(item.subBefore, 'subBefore'),
+                    createRateItems(item.subAfter, 'subAfter'),
+                    addCreateRateItemBtn()
+                )
             );
+
+            var labelWords = Array.prototype.concat(item.list || [], item.listCase || []);
+            labelWords = (type?(type + ': '):'') + labelWords.join(', ');
+
+            container.append(
+                $('<div>', {class: 'label', text: labelWords}),
+                configList
+            );
+            return container;
         };
-        for (var item in defaultRate) {
-            container.push(createItem(defaultRate[item]));
-        }
+        var createRateItems = function(list, type) {
+            var itemList = [];
+            if (list === undefined) {
+                return;
+            }
+            for (var i = 0, item; item = list[i]; i++) {
+                itemList.push(createItem(item, type));
+            }
+            return itemList;
+        };
+        dom_cache.qualityList.append(createRateItems(wordRate.qualityList));
         dom_cache.qualityList.on('click', '.label', function() {
             var parent = this.parentNode;
             if (parent.classList.contains('show')) {
@@ -478,7 +511,6 @@ var options = function() {
                 parent.classList.add('show');
             }
         });
-        dom_cache.qualityList.append(container);
     };
 
     return {

@@ -198,20 +198,23 @@ input.button {
     padding: 2px;
     margin-top: -1px;
 }
+#qualityList .rateItem.new {
+    border: 0;
+}
 #qualityList .rateItem .label {
     padding: 4px;
     cursor: pointer;
 }
 #qualityList .rateItem.show,
-#qualityList .rateItem:hover {
+#qualityList .rateItem:not(.new):hover {
     border-color: #b6b6b6;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 2px 0px inset;
 }
-#qualityList .rateItem.show .label,
-#qualityList .rateItem:hover .label {
+#qualityList .rateItem.show  >.label,
+#qualityList .rateItem:hover > .label {
     background-color: #eee;
 }
-#qualityList .rateItem.show .configList {
+#qualityList .rateItem.show > .configList {
     display: block;
 }
 #qualityList .rateItem .configList {
@@ -282,21 +285,19 @@ input.button {
     box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 
+#qualityList .nameItem .item,
+#qualityList .rateList .item,
 #qualityList .wordList .item {
     display: inline-block;
     width: 210px;
     text-align: center;
     margin: 1px;
 }
+#qualityList .nameItem .item {
+    text-align: left;
+}
 #qualityList .wordList .item input[type="text"] {
     width: 182px;
-}
-
-#qualityList .rateList .item {
-    display: inline-block;
-    width: 210px;
-    text-align: center;
-    margin: 1px;
 }
 #qualityList .rateList .item select {
     height: 23px;
@@ -308,4 +309,8 @@ input.button {
 
 #qualityList .nameItem input[type="text"] {
     width: 100px;
+}
+#qualityList .subItems {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
