@@ -29,7 +29,9 @@ var mono = function (env) {
     } else {
         if (typeof GM_getValue !== 'undefined') {
             mono.isGM = true;
-            mono.isTM = navigator.userAgent.indexOf('Firefox') === -1;
+            if (window.chrome !== undefined) {
+                mono.isTM = true;
+            }
         } else
         if (window.chrome !== undefined) {
             mono.isChrome = true;
@@ -41,14 +43,17 @@ var mono = function (env) {
                     mono.isChromeWebApp = true;
                 }
             }
+            mono.isChromeInject = chrome.tabs === undefined;
         } else
         if (window.safari !== undefined) {
             mono.isSafari = true;
             mono.isSafariPopup = safari.self.identifier === 'popup';
             mono.isSafariBgPage = safari.self.addEventListener === undefined;
+            mono.isSafariInject = !mono.isSafariPopup && safari.application === undefined;
         } else
         if (window.opera !== undefined) {
             mono.isOpera = true;
+            mono.isOperaInject = opera.extension.broadcastMessage === undefined;
         } else {
             addon = window.addon || window.self;
             if (addon !== undefined && addon.port !== undefined) {
@@ -70,8 +75,8 @@ var mono = function (env) {
     var messagesEnable = false;
 
     var externalStorage = {
-        get: function(src, cb) {
-            mono.sendMessage({action: 'get', data: src}, cb, 'monoStorage');
+        get: function(obj, cb) {
+            mono.sendMessage({action: 'get', data: obj}, cb, 'monoStorage');
         },
         set: function(obj, cb) {
             mono.sendMessage({action: 'set', data: obj}, cb, 'monoStorage');
@@ -82,6 +87,27 @@ var mono = function (env) {
         clear: function(cb) {
             mono.sendMessage({action: 'clear'}, cb, 'monoStorage');
         }
+    };
+
+    mono.externalStorageActivate = function() {
+        if (!mono.isChrome && !mono.isSafari && !mono.isOpera) {
+            return;
+        }
+        !messagesEnable && mono.onMessage(function(){});
+        mono.onMessage.call({filter: 'monoStorage', private: true}, function(message, response) {
+            if (message.action === 'get') {
+                return mono.storage.get(message.data, response);
+            } else
+            if (message.action === 'set') {
+                return mono.storage.set(message.data, response);
+            } else
+            if (message.action === 'remove') {
+                return mono.storage.remove(message.data, response);
+            } else
+            if (message.action === 'clear') {
+                return mono.storage.clear(response);
+            }
+        })
     };
 
     var localStorage = {};
@@ -363,9 +389,6 @@ var mono = function (env) {
             }
             return monoStorage;
         } else
-        if (mono.isFF) {
-            return externalStorage;
-        } else
         if (mono.isChrome && chrome.storage !== undefined) {
             return chrome.storage[mode];
         } else
@@ -376,6 +399,9 @@ var mono = function (env) {
         } else
         if (mono.isGM) {
             return gmStorage;
+        } else
+        if (mono.isFF || mono.isChromeInject || mono.isOperaInject || mono.isSafariInject) {
+            return externalStorage;
         } else
         if (window.localStorage !== undefined) {
             localStorage = window.localStorage;
@@ -538,7 +564,7 @@ var mono = function (env) {
          */
         currentTab: function (message) {
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                if (tabs[0] === undefined) {
+                if (tabs[0] === undefined || tabs[0].id < 0) {
                     msgTools.rmCaller(message.monoResponseId);
                     return;
                 }
@@ -548,7 +574,7 @@ var mono = function (env) {
         },
         send: function(message) {
             var tabId = message.tabId;
-            if (tabId !== undefined) {
+            if (tabId !== undefined && tabId > -1) {
                 delete message.tabId;
                 return chrome.tabs.sendMessage(tabId, message);
             }
