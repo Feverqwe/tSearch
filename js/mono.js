@@ -4,6 +4,7 @@
  * Mono cross-browser engine.
  */
 var mono = function (env) {
+    "use strict";
     /**
      * @namespace chrome
      * @namespace chrome.app
