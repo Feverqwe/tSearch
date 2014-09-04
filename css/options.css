@@ -193,17 +193,30 @@ input.button {
     overflow: auto;
     height: 560px;
 }
+#qualityList input[type="text"],
+#qualityList input[type="number"] {
+    height: 18px;
+    padding: 0;
+}
+#qualityList select {
+    height: 22px;
+    vertical-align: top;
+}
 #qualityList .rateItem {
     border-bottom: 1px solid #DFDFDF;
-    padding: 2px;
+    padding: 2px 0;
     margin-top: -1px;
 }
 #qualityList .rateItem.new {
     border: 0;
+    padding-right: 2px;
+    padding-left: 2px;
 }
 #qualityList .rateItem .label {
     padding: 4px;
     cursor: pointer;
+    margin-left: 1px;
+    margin-right: 1px;
 }
 #qualityList .rateItem.show,
 #qualityList .rateItem:not(.new):hover {
@@ -300,7 +313,6 @@ input.button {
     width: 182px;
 }
 #qualityList .rateList .item select {
-    height: 23px;
     width: 85px;
 }
 #qualityList .rateList .item input[type="number"] {
@@ -313,4 +325,6 @@ input.button {
 #qualityList .subItems {
     margin-top: 5px;
     margin-bottom: 5px;
+    margin-left: -3px;
+    margin-right: -3px;
 }

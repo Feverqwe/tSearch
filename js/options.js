@@ -460,7 +460,7 @@ var options = function() {
                     $('<option>', {value: 'subBefore', text: 'subBefore'}),
                     $('<option>', {value: 'subAfter', text: 'subAfter'})
                 ),
-                $('<input>', {type: 'button', value: 'Add name', class: 'button new'})
+                $('<input>', {type: 'button', value: 'Add new rule', class: 'button new'})
             );
             return container;
         };
