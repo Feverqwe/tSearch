@@ -1162,6 +1162,9 @@ var view = function() {
             create: function() {
                 var ul = document.querySelector('ul.ui-autocomplete');
                 ul.addEventListener('wheel', function(e) {
+                    if (this.scrollHeight === this.clientHeight) {
+                        return;
+                    }
                     if (e.wheelDeltaY > 0 && this.scrollTop === 0) {
                         e.preventDefault();
                     } else
@@ -1682,6 +1685,9 @@ var view = function() {
 
         var hasTopShadow = false;
         trackerList[0].addEventListener('wheel', function(e) {
+            if (this.scrollHeight === this.clientHeight) {
+                return;
+            }
             if (e.wheelDeltaY > 0 && this.scrollTop === 0) {
                 e.preventDefault();
             } else
