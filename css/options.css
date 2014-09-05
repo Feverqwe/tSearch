@@ -51,7 +51,7 @@ input[type="text"] {
 div.search_panel {
     padding: 21px;
     height: 28px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid transparent;
 }
 div.search_panel > * {
     display: inline-block;
