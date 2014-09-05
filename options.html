@@ -19,75 +19,77 @@
             <div class="search_panel">
                 <h1>Torrents MultiSearch</h1><input type="button" class="button main" value="" data-lang="btn_main,title" title="Главная" id="go_home_btn" />
             </div>
-            <div class="left menu">
-                <a href="#main" data-page="main" data-lang="optMain">Общие</a>
-                <a href="#explore" data-page="explore" data-lang="optMainPage">Главная страница</a>
-                <a href="#other" data-page="other" data-lang="optOther">Прочие</a>
-                <a href="#quality" data-page="quality" data-lang="optQuality">Определение качества</a>
-                <a href="#backup" data-page="backup" data-lang="word_backup">Архивирование</a>
-                <a href="#restore" data-page="restore" data-lang="word_restore">Восстановление</a>
-            </div>
-            <div class="right">
-                <div class="page main">
-                    <h2 data-lang="optMain">Общие</h2>
-                    <label data-lang="optHideTrackerIcons,sub,text"><input type="checkbox" data-option="hideTrackerIcons"/>Скрыть иконки трекеров в выдаче</label>
-                    <label data-lang="optHideZeroSeed,sub,text"><input type="checkbox" data-option="hideZeroSeed"/>Скрыть раздачи без раздающих</label>
-                    <label data-lang="optHidePeerColumn,sub,text"><input type="checkbox" data-option="hidePeerColumn"/>Скрыть столбец количеста скачивающих</label>
-                    <label data-lang="optHideSeedColumn,sub,text"><input type="checkbox" data-option="hideSeedColumn"/>Скрыть столбец количеста раздающих</label>
-                    <label data-lang="optEnableTeaserFilter,sub,text"><input type="checkbox" data-option="enableTeaserFilter"/>Скрыть тизеры и трейлеры в результатах поиска</label>
-                    <label data-lang="optDefineCategory,sub,text"><input type="checkbox" data-option="defineCategory"/>Определять категорию автоматически</label>
-                    <label data-lang="optEnableHighlight,sub,text"><input type="checkbox" data-option="enableHighlight"/>Выделять результаты поиска</label>
-                    <label data-lang="optNoBlankPageOnDownloadClick,sub,text"><input type="checkbox" data-option="noBlankPageOnDownloadClick"/>Не открывать новую страницу при скачивании ↓</label>
-                    <label data-lang="optAllowGetDescription,sub,text"><input type="checkbox" data-option="allowGetDescription"/>Получать описание поискового запроса</label>
-                    <label data-lang="optContextMenu,sub,text"><input type="checkbox" data-option="contextMenu"/>Добавить поиск в контекстное меню</label>
-                    <label data-lang="optSearchPopup,sub,text"><input type="checkbox" data-option="searchPopup"/>Показывать поисковую строку при нажатии на иконку</label>
-                    <label data-lang="optAutoComplite,sub,text"><input type="checkbox" data-option="autoComplite"/>Включить автозаполнение</label>
-                    <label data-lang="optProfileListSync,sub,text"><input type="checkbox" data-option="profileListSync"/>Синхронизировать список трекеров</label>
-                    <label data-lang="optRightPanel,sub,text"><input type="checkbox" data-option="rightPanel"/>Переместить панель фильтров вправо</label>
-                    <label data-lang="optDoNotSendStatistics,sub,text"><input type="checkbox" data-option="doNotSendStatistics"/>Не отправлять статистику</label>
+            <div class="content">
+                <div class="left menu">
+                    <a href="#main" data-page="main" data-lang="optMain">Общие</a>
+                    <a href="#explore" data-page="explore" data-lang="optMainPage">Главная страница</a>
+                    <a href="#other" data-page="other" data-lang="optOther">Прочие</a>
+                    <a href="#quality" data-page="quality" data-lang="optQuality">Определение качества</a>
+                    <a href="#backup" data-page="backup" data-lang="word_backup">Архивирование</a>
+                    <a href="#restore" data-page="restore" data-lang="word_restore">Восстановление</a>
                 </div>
-                <div class="page explore">
-                    <h2 data-lang="optMainPage">Главная страница</h2>
-                    <label data-lang="optUseEnglishPosterName,sub,text"><input type="checkbox" data-option="useEnglishPosterName"/>Отображать названия на английском</label>
-                    <label data-lang="optHideTopSearch,sub,text"><input type="checkbox" data-option="hideTopSearch"/>Скрыть Топ-40 поисковых запросов</label>
-                    <label data-lang="optEnableFavoriteSync,sub,text"><input type="checkbox" data-option="enableFavoriteSync"/>Синхронизировать списка избранного</label>
-                    <label data-lang="optKinopoiskFolderId,sub,text">ID категории кинопоиска <input type="text" data-option="kinopoiskFolderId"/></label>
-                    <h2 data-lang="optShowSection">Показывать секции:</h2>
-                    <div class="sectionList"></div>
-                </div>
-                <div class="page other">
-                    <h2 data-lang="optListFilter">Фильтрация списка</h2>
-                    <label data-lang="optAdvFiltration0,sub,text"><input type="radio" name="advFiltration" data-option="advFiltration" value="0"/>Ищет полное совпадение фразы</label>
-                    <label data-lang="optAdvFiltration1,sub,text"><input type="radio" name="advFiltration" data-option="advFiltration" value="1"/>Ищет совпадение с одним из введенных слов</label>
-                    <label data-lang="optAdvFiltration2,sub,text"><input type="radio" name="advFiltration" data-option="advFiltration" value="2"/>Ищет совпадение всех введенных слов</label>
-                    <label data-lang="optSubCategoryFilter,sub,text"><input type="checkbox" data-option="subCategoryFilter"/>Учитывать подкатегории</label>
-                    <h2 data-lang="optProxyTitle">Проксирование запросов</h2>
-                    <div class="info">
-                        <span data-lang="optProxyInfo">Proxy work only for GET search request.</span>
+                <div class="right">
+                    <div class="page main">
+                        <h2 data-lang="optMain">Общие</h2>
+                        <label data-lang="optHideTrackerIcons,sub,text"><input type="checkbox" data-option="hideTrackerIcons"/>Скрыть иконки трекеров в выдаче</label>
+                        <label data-lang="optHideZeroSeed,sub,text"><input type="checkbox" data-option="hideZeroSeed"/>Скрыть раздачи без раздающих</label>
+                        <label data-lang="optHidePeerColumn,sub,text"><input type="checkbox" data-option="hidePeerColumn"/>Скрыть столбец количеста скачивающих</label>
+                        <label data-lang="optHideSeedColumn,sub,text"><input type="checkbox" data-option="hideSeedColumn"/>Скрыть столбец количеста раздающих</label>
+                        <label data-lang="optEnableTeaserFilter,sub,text"><input type="checkbox" data-option="enableTeaserFilter"/>Скрыть тизеры и трейлеры в результатах поиска</label>
+                        <label data-lang="optDefineCategory,sub,text"><input type="checkbox" data-option="defineCategory"/>Определять категорию автоматически</label>
+                        <label data-lang="optEnableHighlight,sub,text"><input type="checkbox" data-option="enableHighlight"/>Выделять результаты поиска</label>
+                        <label data-lang="optNoBlankPageOnDownloadClick,sub,text"><input type="checkbox" data-option="noBlankPageOnDownloadClick"/>Не открывать новую страницу при скачивании ↓</label>
+                        <label data-lang="optAllowGetDescription,sub,text"><input type="checkbox" data-option="allowGetDescription"/>Получать описание поискового запроса</label>
+                        <label data-lang="optContextMenu,sub,text"><input type="checkbox" data-option="contextMenu"/>Добавить поиск в контекстное меню</label>
+                        <label data-lang="optSearchPopup,sub,text"><input type="checkbox" data-option="searchPopup"/>Показывать поисковую строку при нажатии на иконку</label>
+                        <label data-lang="optAutoComplite,sub,text"><input type="checkbox" data-option="autoComplite"/>Включить автозаполнение</label>
+                        <label data-lang="optProfileListSync,sub,text"><input type="checkbox" data-option="profileListSync"/>Синхронизировать список трекеров</label>
+                        <label data-lang="optRightPanel,sub,text"><input type="checkbox" data-option="rightPanel"/>Переместить панель фильтров вправо</label>
+                        <label data-lang="optDoNotSendStatistics,sub,text"><input type="checkbox" data-option="doNotSendStatistics"/>Не отправлять статистику</label>
                     </div>
-                    <label data-lang="optProxyURL,sub,text">URL<input id="proxyURL" type="text" data-option="proxyURL" value="https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&amp;container=pos"/></label>
-                    <label data-lang="optProxyUrlFixSpaces,sub,text"><input type="checkbox" data-option="proxyUrlFixSpaces"/>Экранировать пробелы</label>
-                </div>
-                <div class="page quality">
-                    <h2 data-lang="optQuality">Определение качества</h2>
-                    <div id="qualityList"></div>
-                </div>
-                <div class="page backup">
-                    <h2 data-lang="word_backup">Архивирование</h2>
-                    <div class="btnList">
-                        <input type="button" id="backupUpdate" value="Обновить" data-lang="word_update"/>
-                        <input type="button" id="saveInCloud" value="Сохранить в облаке" data-lang="optSaveInCloud"/>
+                    <div class="page explore">
+                        <h2 data-lang="optMainPage">Главная страница</h2>
+                        <label data-lang="optUseEnglishPosterName,sub,text"><input type="checkbox" data-option="useEnglishPosterName"/>Отображать названия на английском</label>
+                        <label data-lang="optHideTopSearch,sub,text"><input type="checkbox" data-option="hideTopSearch"/>Скрыть Топ-40 поисковых запросов</label>
+                        <label data-lang="optEnableFavoriteSync,sub,text"><input type="checkbox" data-option="enableFavoriteSync"/>Синхронизировать списка избранного</label>
+                        <label data-lang="optKinopoiskFolderId,sub,text">ID категории кинопоиска <input type="text" data-option="kinopoiskFolderId"/></label>
+                        <h2 data-lang="optShowSection">Показывать секции:</h2>
+                        <div class="sectionList"></div>
                     </div>
-                    <textarea id="backupInp"></textarea>
-                </div>
-                <div class="page restore">
-                    <h2 data-lang="word_restore">Восстановление</h2>
-                    <div class="btnList">
-                        <input type="button" id="restoreBtn" value="Восстановить" data-lang="word_to_restore"/>
-                        <input type="button" id="getFromCloudBtn" value="Получить настройки из облака" data-lang="optGetFromCloud"/>
-                        <input type="button" id="clearCloudStorage" value="Очистить настройки в облаке" data-lang="optClearCloudStorage"/>
+                    <div class="page other">
+                        <h2 data-lang="optListFilter">Фильтрация списка</h2>
+                        <label data-lang="optAdvFiltration0,sub,text"><input type="radio" name="advFiltration" data-option="advFiltration" value="0"/>Ищет полное совпадение фразы</label>
+                        <label data-lang="optAdvFiltration1,sub,text"><input type="radio" name="advFiltration" data-option="advFiltration" value="1"/>Ищет совпадение с одним из введенных слов</label>
+                        <label data-lang="optAdvFiltration2,sub,text"><input type="radio" name="advFiltration" data-option="advFiltration" value="2"/>Ищет совпадение всех введенных слов</label>
+                        <label data-lang="optSubCategoryFilter,sub,text"><input type="checkbox" data-option="subCategoryFilter"/>Учитывать подкатегории</label>
+                        <h2 data-lang="optProxyTitle">Проксирование запросов</h2>
+                        <div class="info">
+                            <span data-lang="optProxyInfo">Proxy work only for GET search request.</span>
+                        </div>
+                        <label data-lang="optProxyURL,sub,text">URL<input id="proxyURL" type="text" data-option="proxyURL" value="https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&amp;container=pos"/></label>
+                        <label data-lang="optProxyUrlFixSpaces,sub,text"><input type="checkbox" data-option="proxyUrlFixSpaces"/>Экранировать пробелы</label>
                     </div>
-                    <textarea id="restoreInp"></textarea>
+                    <div class="page quality">
+                        <h2 data-lang="optQuality">Определение качества</h2>
+                        <div id="qualityList"></div>
+                    </div>
+                    <div class="page backup">
+                        <h2 data-lang="word_backup">Архивирование</h2>
+                        <div class="btnList">
+                            <input type="button" id="backupUpdate" value="Обновить" data-lang="word_update"/>
+                            <input type="button" id="saveInCloud" value="Сохранить в облаке" data-lang="optSaveInCloud"/>
+                        </div>
+                        <textarea id="backupInp"></textarea>
+                    </div>
+                    <div class="page restore">
+                        <h2 data-lang="word_restore">Восстановление</h2>
+                        <div class="btnList">
+                            <input type="button" id="restoreBtn" value="Восстановить" data-lang="word_to_restore"/>
+                            <input type="button" id="getFromCloudBtn" value="Получить настройки из облака" data-lang="optGetFromCloud"/>
+                            <input type="button" id="clearCloudStorage" value="Очистить настройки в облаке" data-lang="optClearCloudStorage"/>
+                        </div>
+                        <textarea id="restoreInp"></textarea>
+                    </div>
                 </div>
             </div>
             <div class="bottom">

@@ -561,7 +561,7 @@ var options = function() {
             bindTextInput();
             makeBackupForm();
 
-            dom_cache.menu .on('click', 'a', function(e) {
+            dom_cache.menu.on('click', 'a', function(e) {
                 if (this.classList.contains('active')) {
                     return;
                 }

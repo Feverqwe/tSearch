@@ -30,9 +30,9 @@ h2 {
     padding-bottom: 5px;
 
     font-weight: normal;
-    margin-top: 8px;
+    margin-top: 9px;
 
-    width: 665px;
+    width: 100%;
 }
 textarea {
     width: 658px;
@@ -45,43 +45,48 @@ input[type="text"] {
 
 #proxyURL {
     display: block;
-    width: 100%;
+    width: 80%;
 }
 
 div.search_panel {
-    padding: 19px;
+    padding: 21px;
     height: 28px;
+    border-bottom: 1px solid #ccc;
 }
 div.search_panel > * {
     display: inline-block;
     vertical-align: middle;
 }
 
-div.container {
-    position: relative;
-    overflow: hidden;
-
-    margin: 0 auto;
-    max-width: 880px;
-    padding: 2.4em 1.5em;
-    padding-top: 0;
-}
 div.container.loading {
     visibility: hidden;
 }
-div.container > .left,
-div.container > .right {
-    min-height: 600px;
-
+div.container > .content {
     position: relative;
+    margin: 0 auto;
+    width: 920px;
+    width: calc(100%);
 }
-div.container > .left {
-    float: left;
+div.container > .content > .left,
+div.container > .content > .right {
+    display: inline-block;
+    width: 720px;
+    width: calc(100% - 200px);
+}
+div.container > .content > .left {
     padding-left: 5px;
     padding-right: 0px;
     width: 180px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 10;
 }
-div.container > .left a {
+div.container > .content > .right {
+    padding-left: 200px;
+    position: relative;
+}
+div.container > .content > .left a {
     display: block;
 
     border-bottom: 1px solid gainsboro;
@@ -91,34 +96,21 @@ div.container > .left a {
     padding: 0.8em 0.3em;
     text-decoration: none;
 }
-div.container > .left a.active {
+div.container > .content > .left a.active {
     border-bottom-color: #b6b6b6;
     color: #0051D8;
 }
-div.container > .right {
-    margin-left: 185px;
-    padding-left: 30px;
-}
 
 div.page {
-    opacity: 0;
-    transition: all 0.15s;
-    margin-left: -10px;
-    visibility: hidden;
-
-    position: absolute;
-    top: 0;
+    display: none;
 }
 
 div.page.active {
-    margin-left: 0;
-    opacity: 1;
-    visibility: visible;
+    display: block;
 }
 
 label {
-    display: inline-block;
-    width: 100%;
+    display: block;
     margin: 5px;
 }
 
@@ -141,7 +133,7 @@ div.info a {
 }
 .sectionList label {
     display: inline-block;
-    width: 300px;
+    width: 30%;
     margin: 5px;
 }
 
@@ -183,7 +175,8 @@ input.button {
 }
 
 .bottom {
-    float: right;
+    padding: 2.5em;
+    text-align: right;
 }
 
 .page.quality h2 {
@@ -191,7 +184,6 @@ input.button {
 }
 #qualityList {
     overflow: auto;
-    height: 560px;
 }
 #qualityList input[type="text"],
 #qualityList input[type="number"] {
