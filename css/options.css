@@ -26,7 +26,7 @@ h1 {
 h2 {
     font-size: 1.5em;
 
-    border-bottom: 1px solid gainsboro;
+    border-bottom: 1px solid #b6b6b6;
     padding-bottom: 5px;
 
     font-weight: normal;
@@ -83,14 +83,15 @@ div.container > .content > .left {
     z-index: 10;
 }
 div.container > .content > .right {
-    padding-left: 200px;
+    padding-left: 195px;
     position: relative;
+    padding-right: 5px;
 }
 div.container > .content > .left a {
     display: block;
 
     border-bottom: 1px solid gainsboro;
-    color: #999;
+    color: #000;
     cursor: pointer;
     margin: 0;
     padding: 0.8em 0.3em;
@@ -99,6 +100,9 @@ div.container > .content > .left a {
 div.container > .content > .left a.active {
     border-bottom-color: #b6b6b6;
     color: #0051D8;
+}
+div.container > .content > .left a:hover {
+    border-bottom-color: #b6b6b6;
 }
 
 div.page {
@@ -175,8 +179,11 @@ input.button {
 }
 
 .bottom {
-    padding: 2.5em;
-    text-align: right;
+    padding-bottom: 2em;
+    bottom: 0;
+    position: fixed;
+    width: 180px;
+    text-align: center;
 }
 
 .page.quality h2 {
