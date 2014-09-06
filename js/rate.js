@@ -693,7 +693,7 @@ var wordRate = function() {
             wordObj: var_cache.wordObj,
             syntaxRate: rate
         });
-        
+
         if (var_cache.wordsCase !== undefined) {
             name.replace(var_cache.wordsCase, _rateWord);
         }

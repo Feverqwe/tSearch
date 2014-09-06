@@ -200,10 +200,6 @@ input.button.main {
     background-color: #eee;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 2px 0px inset;
 }
-#qualityList .item:hover .header {
-    background-color: #777;
-    color: #fff;
-}
 #qualityList .item.show {
     box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 2px 0px inset;
 }
@@ -277,7 +273,7 @@ input.button.main {
     background-repeat: no-repeat;
     opacity: 0.5;
     position: relative;
-    margin-left: 2px;
+    margin-left: 3px;
     margin-top: 2px;
 }
 #qualityList a.button.remove:hover i {
@@ -287,11 +283,13 @@ input.button.main {
     margin: 0;
     margin: 2px;
 }
-#qualityList .wordForm > * {
+#qualityList .wordForm > *,
+#qualityList .rateForm > * {
     display: inline-block !important;
     vertical-align: middle;
 }
-#qualityList .wordForm a.button {
+#qualityList .wordForm a.button,
+#qualityList .rateForm a.button {
     border-left: 0;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
@@ -299,13 +297,25 @@ input.button.main {
 #qualityList .wordForm input {
     width: 150px;
 }
-#qualityList .wordForm input[type="button"] {
+#qualityList .rateForm input {
+    width: 40px;
+}
+#qualityList .rateForm select {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    margin: 0;
+    margin-right: 5px;
+    width: 60px;
+}
+#qualityList .wordForm input[type="button"],
+#qualityList .rateForm input[type="button"] {
     height: initial;
     width: initial;
     line-height: 19px;
     padding: 0 10px;
 }
-#qualityList .wordForm {
+#qualityList .wordForm,
+#qualityList .rateForm {
     display: inline-block;
     padding: 5px;
     padding-top: 0;

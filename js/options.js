@@ -408,13 +408,13 @@ var options = function() {
             return list;
         };
         var createRate = function(key, value) {
-            var container = $('<div>', {class: 'item'});
+            var container = $('<div>', {class: 'rateForm'});
             container.append(
                 $('<select>').append(
                     getRateOptions(key)
                 ),
                 $('<input>', {type: 'number', value: value, placeholder: '0'}),
-                $('<a>', {type: 'button', value: '', class: 'button remove'}).append('<i>')
+                $('<a>', {class: 'button remove'}).append('<i>')
             );
             return container;
         };
@@ -429,7 +429,7 @@ var options = function() {
                 }
             }
             container.append(
-                $('<div>', {class: 'item'}).append($('<input>', {type: 'button', value: 'Add item', class: 'button new'}))
+                $('<div>', {class: 'rateForm'}).append($('<input>', {type: 'button', value: 'Add item', class: 'button new'}))
             );
             return container;
         };
@@ -440,11 +440,11 @@ var options = function() {
             );
             if (name === undefined) {
                 container.append(
-                    $('<div>', {class: 'item'}).append($('<input>', {type: 'button', value: 'Add name', class: 'button new'}))
+                    $('<div>', {class: 'wordForm'}).append($('<input>', {type: 'button', value: 'Add name', class: 'button new'}))
                 );
             } else {
                 container.append(
-                    $('<div>', {class: 'item'}).append(
+                    $('<div>', {class: 'wordForm'}).append(
                         $('<input>', {type: 'text', value: name}),
                         $('<a>', {type: 'button', value: '', class: 'button remove'}).append('<i>')
                     )
@@ -479,8 +479,13 @@ var options = function() {
                 var el = e.target;
                 var isAngle = el.classList.contains('collapses');
                 var isHeader = el.classList.contains('header');
-                if (!isAngle && !isHeader) {
+                var isTitle = el.classList.contains('title');
+                if (!isAngle && !isHeader && !isTitle) {
                     return;
+                }
+                if (isTitle) {
+                    el = el.parentNode;
+                    isHeader = true;
                 }
                 if (isHeader) {
                     el = el.childNodes[2];
