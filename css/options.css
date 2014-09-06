@@ -173,7 +173,7 @@ input.button {
     width: 28px;
     height: 28px;
 }
-.button.main {
+input.button.main {
     background-image: url(../images/main.png);
     float: right;
 }
@@ -189,141 +189,124 @@ input.button {
 .page.quality h2 {
     margin-bottom: 0;
 }
-#qualityList {
-    overflow: auto;
-}
-#qualityList input[type="text"],
-#qualityList input[type="number"] {
-    height: 18px;
-    padding: 0;
-}
-#qualityList select {
-    height: 22px;
-    vertical-align: top;
-}
-#qualityList .rateItem {
-    border-bottom: 1px solid #DFDFDF;
-    padding: 2px 0;
-    margin-top: -1px;
-}
-#qualityList .rateItem.new {
-    border: 0;
-    padding-right: 2px;
-    padding-left: 2px;
-}
-#qualityList .rateItem .label {
-    padding: 4px;
+
+#qualityList .header {
     cursor: pointer;
-    margin-left: 1px;
-    margin-right: 1px;
-}
-#qualityList .rateItem.show,
-#qualityList .rateItem:not(.new):hover {
-    border-color: #b6b6b6;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 1px 2px 0px inset;
-}
-#qualityList .rateItem.show  >.label,
-#qualityList .rateItem:hover > .label {
-    background-color: #eee;
-}
-#qualityList .rateItem.show > .configList {
-    display: block;
-}
-#qualityList .rateItem .configList {
-    padding-left: 3px;
-    padding-right: 3px;
-}
-#qualityList .rateItem h4 {
-    margin-top: 10px;
-    margin-bottom: 0;
-}
-#qualityList .configList {
-    display: none;
+    padding-top: 5px;
     padding-bottom: 5px;
 }
-#qualityList .item > * {
+#qualityList .item.show .header,
+#qualityList .item:hover .header {
+    background-color: #eee;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 2px 0px inset;
+}
+#qualityList .item:hover .header {
+    background-color: #777;
+    color: #fff;
+}
+#qualityList .item.show {
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 2px 0px inset;
+}
+
+#qualityList .header > * {
     display: inline-block;
-    margin: 0;
     vertical-align: middle;
 }
 
-#qualityList .button {
-    cursor: pointer;
-    display: inline-block;
-    height: 22px;
-    border-radius: 2px;
-    margin: 0;
-    border: 1px solid #A2A2A2;
-    outline: 0;
-    background-color: transparent;
-    padding: 0;
+#qualityList .moveIcon {
+    width: 16px;
+    height: 16px;
+    background: url(../images/moveble.png) center center no-repeat;
+    margin-left: 5px;
+    margin-right: 5px;
+    cursor: move;
+    transition: opacity 0.2s;
+    opacity: 0.5;
+}
+#qualityList .moveIcon:hover,
+#qualityList.ui-sortable-helper .moveIcon {
+    opacity: 1;
 }
 
-#qualityList .remove {
-    height: 20px;
-    width: 20px;
-    border-left-width: 0;
-    border-bottom-left-radius: 0;
-    border-top-left-radius: 0;
+#qualityList .header > *:hover ~ .collapses {
+    opacity: 0.5;
 }
-#qualityList .remove i {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
+#qualityList .header:hover .collapses {
+    opacity: 1;
+}
+
+#qualityList .collapses {
+    float: right;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    background: url(../images/show_hide.png) bottom center no-repeat;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.5;
+    transform: rotate(90deg);
+    margin-top: 2px;
+}
+#qualityList .collapses.down {
+    transform: rotate(0deg);
+}
+
+#qualityList .content {
+    padding: 4px;
+    display: none;
+}
+#qualityList .item.show .content {
+    display: block;
+}
+
+#qualityList a.button {
+    display: block;
+    cursor: pointer;
+    height: 19px;
+    width: 19px;
+    border-radius: 2px;
+    border: 1px solid #A2A2A2;
+    background-color: transparent;
+}
+#qualityList a.button.remove i {
+    height: 14px;
+    width: 14px;
+    display: block;
     background-image: url("../images/clear.png");
     background-position: center;
     background-repeat: no-repeat;
-    background-color: transparent;
     opacity: 0.5;
+    position: relative;
+    margin-left: 2px;
+    margin-top: 2px;
 }
-#qualityList .remove:hover i {
-    opacity: 0.8;
+#qualityList a.button.remove:hover i {
+    opacity: 1;
 }
-
-#qualityList input.new {
-    width: 90px;
-    border-radius: 2px;
+#qualityList h4 {
+    margin: 0;
+    margin: 2px;
 }
-#qualityList input[type="number"] {
-    width: 92px;
+#qualityList .wordForm > * {
+    display: inline-block !important;
+    vertical-align: middle;
 }
-
-#qualityList .button:hover {
-    background-color: #ebebeb;
-    border-color: #adadad;
+#qualityList .wordForm a.button {
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
-#qualityList .button:active {
-    outline: 0;
-    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+#qualityList .wordForm input {
+    width: 150px;
 }
-
-#qualityList .nameItem .item,
-#qualityList .rateList .item,
-#qualityList .wordList .item {
+#qualityList .wordForm input[type="button"] {
+    height: initial;
+    width: initial;
+    line-height: 19px;
+    padding: 0 10px;
+}
+#qualityList .wordForm {
     display: inline-block;
-    width: 210px;
-    text-align: center;
-    margin: 1px;
-}
-#qualityList .nameItem .item {
-    text-align: left;
-}
-#qualityList .wordList .item input[type="text"] {
-    width: 182px;
-}
-#qualityList .rateList .item select {
-    width: 85px;
-}
-#qualityList .rateList .item input[type="number"] {
-    margin-left: 5px;
-}
-
-#qualityList .nameItem input[type="text"] {
-    width: 100px;
-}
-#qualityList .subItems {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-left: -3px;
-    margin-right: -3px;
+    padding: 5px;
+    padding-top: 0;
 }

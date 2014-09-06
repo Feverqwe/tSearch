@@ -374,7 +374,7 @@ var options = function() {
         var defaultRate = wordRate.qualityList;
         var optionList = ['video', 'music', 'game', 'serial', 'mult', 'book'];
         var createWord = function(word) {
-            var container = $('<div>', {class: 'item'});
+            var container = $('<div>', {class: 'wordForm'});
             container.append(
                 $('<input>', {type: 'text', value: word}),
                 $('<a>', {type: 'button', value: '', class: 'button remove'}).append('<i>')
@@ -394,7 +394,7 @@ var options = function() {
                 });
             }
             container.append(
-                $('<div>', {class: 'item'}).append($('<input>', {type: 'button', value: 'Add item', class: 'button new'}))
+                $('<div>', {class: 'wordForm'}).append($('<input>', {type: 'button', value: 'Add item', class: 'button new'}))
             );
             return container;
         };
@@ -465,6 +465,50 @@ var options = function() {
             return container;
         };
         var createItem = function(item, type) {
+            var body = $('<div>', {class: 'item', 'data-type': type});
+
+            var labelWords = Array.prototype.concat(item.list || [], item.listCase || []);
+            labelWords = (type?(type + ': '):'') + labelWords.join(', ');
+
+            body.append($('<div>', {class: 'header'}).append(
+                $('<i>', {class: 'moveIcon'}),
+                $('<span>', {class: 'title', text: labelWords}),
+                $('<i>', {class: 'collapses'})
+            ));
+            body.on('click', function(e) {
+                var el = e.target;
+                var isAngle = el.classList.contains('collapses');
+                var isHeader = el.classList.contains('header');
+                if (!isAngle && !isHeader) {
+                    return;
+                }
+                if (isHeader) {
+                    el = el.childNodes[2];
+                }
+                e.stopPropagation();
+                var item = el.parentNode.parentNode;
+                if (el.classList.contains('down')) {
+                    el.classList.remove('down');
+                    item.classList.remove('show');
+                } else {
+                    el.classList.add('down');
+                    item.classList.add('show');
+                }
+
+            });
+            var list = createWords(item.list, '');
+            var listCase = createWords(item.listCase, 'Case');
+            var rate = createRates(item.rate);
+            var name = createName(item.name);
+
+            body.append(
+                $('<div>', {class: 'content'}).append(
+                    list, listCase, rate, name
+                )
+            );
+
+            return body;
+            /*
             var container = $('<div>', {class: 'rateItem', 'data-type': type});
             var configList = $('<div>', {class: 'configList'});
             var list = createWords(item.list, '');
@@ -476,9 +520,9 @@ var options = function() {
 
             configList.append(
                 $('<div>', {class: 'subItems'}).append(
-                    createRateItems(item.sub, 'sub'),
-                    createRateItems(item.subBefore, 'subBefore'),
-                    createRateItems(item.subAfter, 'subAfter'),
+                    getItemList(item.sub, 'sub'),
+                    getItemList(item.subBefore, 'subBefore'),
+                    getItemList(item.subAfter, 'subAfter'),
                     addCreateRateItemBtn()
                 )
             );
@@ -491,8 +535,9 @@ var options = function() {
                 configList
             );
             return container;
+            */
         };
-        var createRateItems = function(list, type) {
+        var getItemList = function(list, type) {
             var itemList = [];
             if (list === undefined) {
                 return;
@@ -502,7 +547,8 @@ var options = function() {
             }
             return itemList;
         };
-        dom_cache.qualityList.append(createRateItems(wordRate.qualityList));
+        dom_cache.qualityList.append(getItemList(wordRate.qualityList));
+        /*
         dom_cache.qualityList.on('click', '.label', function() {
             var parent = this.parentNode;
             if (parent.classList.contains('show')) {
@@ -511,6 +557,7 @@ var options = function() {
                 parent.classList.add('show');
             }
         });
+        */
     };
 
     return {
