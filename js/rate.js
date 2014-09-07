@@ -35,9 +35,9 @@ var wordRate = function() {
                  video: 0,
                  music: 0,
                  games: 0,
+                 books: 0,
                  serials: 0,
                  cartoons: 0,
-                 books: 0,
                  xxx: 0
              },
              name: '',
