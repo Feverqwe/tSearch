@@ -445,14 +445,14 @@ var view = function() {
          * Перерасчет соотношения качества видео и размера раздачи
          */
 
-        //(v.seeds > 50) ? 70 : (v.seeds > 30) ? 50 : (v.seeds > 20) ? 40 : (v.seeds > 10) ? 30 :
         quality.seed = (v.seeds > 0) ? 50 : 0;
-        if (v.size < 524288000 && quality.video > 45)
+        if (v.size < 524288000 && quality.video > 45) {
             quality.video = Math.round(parseInt(quality.video) / 10);
-        else
-        if (v.size < 1363148800 && quality.video > 65)
+        } else
+        if (v.size < 1363148800 && quality.video > 65) {
             quality.video = Math.round(parseInt(quality.video) / 2);
-        quality.value = quality.seed + quality.name + quality.video + quality.music + quality.game;
+        }
+        quality.value = quality.seed + quality.name + quality.video + quality.music + quality.games + quality.books;
         return quality;
     };
 
@@ -658,7 +658,6 @@ var view = function() {
             }
             var title_highLight = wordRate.titleHighLight(item.title);
             var rate = title_highLight.rate;
-            rate.music = 0;
             var quality = checkRate(rate, item);
 
             if (var_cache.syntaxCache.year === undefined) {

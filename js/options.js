@@ -372,12 +372,13 @@ var options = function() {
 
     var mgrQuality = function() {
         var isEmpty = '<empty>';
-        var optionList = ['video', 'music', 'game', 'serial', 'mult', 'book'];
+        var optionList = ['video', 'music', 'games', 'books', 'serials', 'cartoons', 'xxx'];
+        var onlyCategory = ['serials', 'cartoons', 'xxx'];
         var createWord = function(word) {
             var container = $('<div>', {class: 'wordForm'});
             container.append(
                 $('<input>', {type: 'text', value: word}),
-                $('<a>', {class: 'button remove wordFormRemove'}).append('<i>')
+                $('<a>', {class: 'button remove wordFormRemove', title: _lang.his_rm_btn}).append('<i>')
             );
             return container;
         };
@@ -403,8 +404,12 @@ var options = function() {
         var getRateOptions = function(optionName) {
             var list = [];
             for (var i = 0, name; name = optionList[i]; i++) {
+                var text = name;
+                if (onlyCategory.indexOf(name) !== -1) {
+                    text += '*';
+                }
                 list.push(
-                    $('<option>', {value: name, selected: optionName === name, text: name})
+                    $('<option>', {value: name, selected: optionName === name, text: text})
                 );
             }
             return list;
@@ -416,7 +421,7 @@ var options = function() {
                     getRateOptions(key)
                 ),
                 $('<input>', {type: 'number', value: value, placeholder: '0'}),
-                $('<a>', {class: 'button remove rateFormRemove'}).append('<i>')
+                $('<a>', {class: 'button remove rateFormRemove', title: _lang.his_rm_btn}).append('<i>')
             );
             return container;
         };
@@ -457,7 +462,7 @@ var options = function() {
         var getNewItemForm = function(type) {
             var container = $('<div>', {class: 'newSubItemForm', 'data-type': type});
             container.append(
-                $('<input>', {type: 'button', value: _lang.qAddRule+(type?' '+type:''), class: 'button new NewItemBtn', 'data-type': type})
+                $('<input>', {type: 'button', value: _lang.qAddRule+(type?' '+_lang['qRule_'+type]:''), class: 'button new NewItemBtn', 'data-type': type})
             );
             return container;
         };
@@ -466,7 +471,7 @@ var options = function() {
             if (labelWords.length === 0) {
                 labelWords.push(isEmpty);
             }
-            labelWords = (type?(type + ': '):'') + labelWords.join(', ');
+            labelWords = labelWords.join(', ');
             return labelWords;
         };
         var createItem = function(item, type) {
@@ -475,7 +480,7 @@ var options = function() {
             var title = undefined;
             body.append($('<div>', {class: 'header'}).append(
                 $('<i>', {class: 'moveIcon'}),
-                $('<a>', {class: 'button remove itemRemove'}).append($('<i>')),
+                $('<a>', {class: 'button remove itemRemove', title: _lang.his_rm_btn}).append($('<i>')),
                 title = $('<span>', {class: 'title', text: getTitle(item, type)}),
                 $('<i>', {class: 'collapses'})
             ));

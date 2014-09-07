@@ -34,10 +34,11 @@ var wordRate = function() {
              rate: {
                  video: 0,
                  music: 0,
-                 game: 0,
-                 serial: 0,
-                 mult: 0,
-                 book: 0
+                 games: 0,
+                 serials: 0,
+                 cartoons: 0,
+                 books: 0,
+                 xxx: 0
              },
              name: '',
              sub: [],
@@ -236,14 +237,14 @@ var wordRate = function() {
         {
             listCase: ['PS3'],
             rate: {
-                game: 80
+                games: 80
             },
             name: 'PS3'
         },
         {
             list: ['XBOX'],
             rate: {
-                game: 80
+                games: 80
             },
             name: 'XBox'
         },
@@ -251,35 +252,35 @@ var wordRate = function() {
             list: ['(ps2)'],
             listCase: ['PS2'],
             rate: {
-                game: 80
+                games: 80
             },
             name: 'PS2'
         },
         {
             list: ['[p]', '{p}', '(p)'],
             rate: {
-                game: 20
+                games: 20
             },
             name: 'P'
         },
         {
             list: ['repack', 'lossless repack', 'steam-rip', '(lossy rip)', 'reloaded'],
             rate: {
-                game: 60
+                games: 60
             },
             name: 'RePack'
         },
         {
             list: ['[Native]'],
             rate: {
-                game: 100
+                games: 100
             },
             name: 'Native'
         },
         {
             list: ['[rip]', '{rip}', '(rip)'],
             rate: {
-                game: 80
+                games: 80
             },
             name: 'Rip'
         },
@@ -287,14 +288,14 @@ var wordRate = function() {
             listCase: ['[L]', '{L}', '(L)'],
             list: ['лицензия'],
             rate: {
-                game: 100
+                games: 100
             },
             name: 'L'
         },
         {
             list: ['fb2', 'pdf', 'djvu', 'rtf', 'epub', 'doc', 'docx'],
             rate: {
-                book: 100
+                books: 100
             },
             name: 'Book'
         },
@@ -369,13 +370,13 @@ var wordRate = function() {
         {
             list: ['pc (windows)'],
             rate: {
-                game: 5
+                games: 5
             }
         },
         {
             list: ['сезон', 'season'],
             rate: {
-                serial: 1
+                serials: 1
             }
         },
         {
@@ -394,7 +395,7 @@ var wordRate = function() {
         {
             list: ['мультфильм'],
             rate: {
-                mult: 1
+                cartoons: 1
             }
         }
     ];
@@ -686,7 +687,22 @@ var wordRate = function() {
         var bonus_value = Math.round(word_rate / 2);
         var first_word_rate = var_cache.syntaxCache.first_word_rate;
         var year = var_cache.syntaxCache.year;
-        var rate = {name: 0, video: 0, game: 0, music: 0, serial: 0, book: 0, mult: 0, m: [], seed: 0, value: 0, year: 0, block: 0, qbox: "+"};
+        var rate = {
+            name: 0,
+
+            video: 0,
+            games: 0,
+            music: 0,
+            serials: 0,
+            books: 0,
+            cartoons: 0,
+            xxx: 0,
+
+            m: [],
+            // block enable primary keys
+            block: 0,
+            qbox: "+"
+        };
         var name_low = name.toLowerCase();
         var _rateWord = rateWord.bind({
             text: name,
@@ -925,7 +941,21 @@ var wordRate = function() {
         /*
          * Алгоритм определения категории
          */
-        var rate = var_cache.catRate = {films: 0, serials: 0, anime: 0, dochumor: 0, music: 0, games: 0, books: 0, cartoons: 0, software: 0, sport: 0, xxx: 0, other: 0, m: []};
+        var rate = var_cache.catRate = {
+            films: 0,
+            serials: 0,
+            anime: 0,
+            dochumor: 0,
+            music: 0,
+            games: 0,
+            books: 0,
+            cartoons: 0,
+            software: 0,
+            sport: 0,
+            xxx: 0,
+            other: 0,
+            m: []
+        };
         category.toLowerCase().replace(var_cache.cat_regexp, cal_cat_rate);
         var qual_cat = [];
         $.each(rate, function(k, v) {
@@ -950,22 +980,25 @@ var wordRate = function() {
                 return pos;
             }
         }
-        if (quality.book) {
+        if (quality.xxx) {
+            return 10;
+        } else
+        if (quality.books) {
             return 5;
         } else
-        if (quality.serial) {
+        if (quality.serials) {
             return 0;
         } else
-        if (quality.mult) {
+        if (quality.cartoons) {
             return 4;
         } else
-        if (quality.video > quality.music && quality.video > quality.game) {
+        if (quality.video > quality.music && quality.video > quality.games) {
             return 3;
         } else
-        if (quality.music > quality.video && quality.music > quality.game) {
+        if (quality.music > quality.video && quality.music > quality.games) {
             return 1;
         } else
-        if (quality.game > quality.music && quality.game > quality.video) {
+        if (quality.games > quality.music && quality.games > quality.video) {
             return 2;
         }
         return -1;
