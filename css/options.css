@@ -177,10 +177,6 @@ input.button.main {
     text-align: center;
 }
 
-.page.quality h2 {
-    margin-bottom: 0;
-}
-
 #qualityList .header {
     cursor: pointer;
     padding-top: 5px;
@@ -301,7 +297,7 @@ input.button.main {
     width: 150px;
 }
 #qualityList .rateForm input {
-    width: 40px;
+    width: 60px;
 }
 #qualityList .rateForm select {
     padding-top: 1px;
@@ -331,4 +327,11 @@ input.button.main {
 #qualityList .newSubItemForm {
     padding: 5px;
     display: block;
+}
+
+#qualityList .nameItem,
+#qualityList .wordList,
+#qualityList .rateList {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }

@@ -371,23 +371,22 @@ var options = function() {
     };
 
     var mgrQuality = function() {
+        var isEmpty = '<empty>';
         var optionList = ['video', 'music', 'game', 'serial', 'mult', 'book'];
         var createWord = function(word) {
             var container = $('<div>', {class: 'wordForm'});
             container.append(
                 $('<input>', {type: 'text', value: word}),
-                $('<a>', {class: 'button remove'}).on('click', function(e) {
-                    this.parentNode.parentNode.removeChild(this.parentNode);
-                }).append('<i>')
+                $('<a>', {class: 'button remove wordFormRemove'}).append('<i>')
             );
             return container;
         };
         var createWords = function(list, type) {
             var container = $('<div>', {class: 'wordList', 'data-type': 'list'+type});
             if (type) {
-                container.append($('<h4>', {text: 'Words with case:'}));
+                container.append($('<h4>', {text: _lang.qWordsWithCase}));
             } else {
-                container.append($('<h4>', {text: 'Words:'}));
+                container.append($('<h4>', {text: _lang.qWordsWithoutCase}));
             }
             if (list !== undefined) {
                 list.forEach(function (word) {
@@ -396,9 +395,7 @@ var options = function() {
             }
             container.append(
                 $('<div>', {class: 'wordForm'}).append(
-                    $('<input>', {type: 'button', value: 'Add item', class: 'button new'}).on('click', function(e) {
-                        this.parentNode.parentNode.insertBefore(createWord('')[0] ,this.parentNode);
-                    })
+                    $('<input>', {type: 'button', value: _lang.qAddWord, class: 'button new wordFormNew'})
                 )
             );
             return container;
@@ -419,16 +416,14 @@ var options = function() {
                     getRateOptions(key)
                 ),
                 $('<input>', {type: 'number', value: value, placeholder: '0'}),
-                $('<a>', {class: 'button remove'}).on('click', function(e) {
-                    this.parentNode.parentNode.removeChild(this.parentNode);
-                }).append('<i>')
+                $('<a>', {class: 'button remove rateFormRemove'}).append('<i>')
             );
             return container;
         };
         var createRates = function(rateList) {
             var container = $('<div>', {class: 'rateList'});
             container.append(
-                $('<h4>', {text: 'Rate list:'})
+                $('<h4>', {text: _lang.qRateList})
             );
             if (rateList !== undefined) {
                 for (var item in rateList) {
@@ -437,9 +432,7 @@ var options = function() {
             }
             container.append(
                 $('<div>', {class: 'rateForm'}).append(
-                    $('<input>', {type: 'button', value: 'Add item', class: 'button new'}).on('click', function(e) {
-                        this.parentNode.parentNode.insertBefore(createRate('', 0)[0] ,this.parentNode);
-                    })
+                    $('<input>', {type: 'button', value: _lang.qAddItem, class: 'button new rateFormNew'})
                 )
             );
             return container;
@@ -449,13 +442,13 @@ var options = function() {
             var body = $('<div>', {class: 'nameItem'});
             body.append(
                 $('<label>').append(
-                    $('<input>', {type: 'checkbox', class: 'is primary', checked: !!name}).on('change', function(e) {
+                    $('<input>', {type: 'checkbox', name: 'is primary', checked: !!name}).on('change', function(e) {
                         input[0].disabled = !this.checked;
                     }),
-                    'is primary'
+                    _lang.qIsPrimary
                 ),
                 $('<div>').append(
-                    $('<h4>', {text: 'Item name:'}),
+                    $('<h4>', {text: _lang.qLabel}),
                     $('<div>', {class: 'wordForm'}).append(input = $('<input>', {type: 'text', value: name || '', disabled: !name}))
                 )
             );
@@ -464,19 +457,14 @@ var options = function() {
         var getNewItemForm = function(type) {
             var container = $('<div>', {class: 'newSubItemForm', 'data-type': type});
             container.append(
-                $('<input>', {type: 'button', value: 'Add new rule'+(type?' '+type:''), class: 'button new'}).on('click', function(e) {
-                    this.parentNode.parentNode.insertBefore(createItem({
-                        list: [],
-                        rate: {}
-                    }, type)[0] ,this.parentNode);
-                })
+                $('<input>', {type: 'button', value: _lang.qAddRule+(type?' '+type:''), class: 'button new NewItemBtn', 'data-type': type})
             );
             return container;
         };
         var getTitle = function(item, type) {
             var labelWords = Array.prototype.concat(item.list || [], item.listCase || []);
             if (labelWords.length === 0) {
-                labelWords.push('<empty>');
+                labelWords.push(isEmpty);
             }
             labelWords = (type?(type + ': '):'') + labelWords.join(', ');
             return labelWords;
@@ -487,10 +475,7 @@ var options = function() {
             var title = undefined;
             body.append($('<div>', {class: 'header'}).append(
                 $('<i>', {class: 'moveIcon'}),
-                $('<a>', {class: 'button remove'}).append($('<i>')).on('click', function(e) {
-                    var body = this.parentNode.parentNode;
-                    body.parentNode.removeChild(body)
-                }),
+                $('<a>', {class: 'button remove itemRemove'}).append($('<i>')),
                 title = $('<span>', {class: 'title', text: getTitle(item, type)}),
                 $('<i>', {class: 'collapses'})
             ));
@@ -555,7 +540,98 @@ var options = function() {
             itemList.push(newItem);
             return itemList;
         };
-        dom_cache.qualityList.append(getItemList(wordRate.qualityList));
+        var saveChilds = function(el) {
+            var rList = [];
+            var elList = undefined;
+            if (el.selector === '#qualityList') {
+                elList = el.children('.item');
+            } else {
+                elList = el;
+            }
+            for (var i = 0, el; el = elList[i]; i++) {
+                var item = $(el).find('.content');
+
+                var name = undefined;
+                var body = item.find('.nameItem').eq(0);
+                var isPromary = body.find('input[name="is primary"]');
+                if (isPromary.prop('checked')) {
+                    name = body.find('.wordForm > input').val();
+                }
+
+                var list = [];
+                body = item.find('.wordList[data-type="list"]').eq(0);
+                body.find('.wordForm > input').each(function(index, el) {
+                    if (el.type !== 'text') {
+                        return 1;
+                    }
+                    var value = el.value;
+                    if (!value) {
+                        return 1;
+                    }
+                    list.push(value);
+                });
+
+                var listCase = [];
+                body = item.find('.wordList[data-type="listCase"]').eq(0);
+                body.find('.wordForm > input').each(function(index, el) {
+                    if (el.type !== 'text') {
+                        return 1;
+                    }
+                    var value = el.value;
+                    if (!value) {
+                        return 1;
+                    }
+                    listCase.push(value);
+                });
+
+                var rate = {};
+                var rateisEmpty = true;
+                body = item.find('.rateList').eq(0);
+                body.find('.rateForm').each(function(index, el) {
+                    var item = $(el);
+                    var sel = item.children('select');
+                    var inp = item.children('input');
+                    var obj = {};
+                    var val = parseInt(inp.val());
+                    if (isNaN(val)) {
+                        return 1;
+                    }
+                    rate[sel.val()] = val;
+                    rateisEmpty = false;
+                });
+
+                var sub = saveChilds(item.find('.itemList .item[data-type="sub"]'));
+                var subBefore = saveChilds(item.find('.itemList .item[data-type="subBefore"]'));
+                var subAfter = saveChilds(item.find('.itemList .item[data-type="subAfter"]'));
+
+                var rObj = {};
+                if (list.length !== 0) {
+                    rObj.list = list;
+                }
+                if (listCase.length !== 0) {
+                    rObj.listCase = listCase;
+                }
+                if (!rateisEmpty) {
+                    rObj.rate = rate;
+                }
+                if (name !== undefined) {
+                    rObj.name = name;
+                }
+                if (sub.length !== 0) {
+                    rObj.sub = sub;
+                }
+                if (subAfter.length !== 0) {
+                    rObj.subAfter = subAfter;
+                }
+                if (subBefore.length !== 0) {
+                    rObj.subBefore = subBefore;
+                }
+
+                rList.push(rObj);
+            }
+            return rList;
+        };
+        dom_cache.qualityList.empty().append(getItemList(wordRate.qualityList));
         dom_cache.qualityList.parent().find('.itemList').sortable({
             axis: 'y',
             handle: '.moveIcon',
@@ -568,7 +644,35 @@ var options = function() {
             }
         });
         dom_cache.qualityList.on('save', function() {
-            // saving...
+            var list = saveChilds(dom_cache.qualityList);
+            wordRate.setTitleQualityList( list );
+            mono.storage.set({ titleQualityList: JSON.stringify(list) });
+            dom_cache.qualityList.empty().append(getItemList(wordRate.qualityList));
+        });
+        dom_cache.qualityList.on('reset', function() {
+            mono.storage.remove('titleQualityList');
+            wordRate.setTitleQualityList( wordRate.def_qualityList );
+            dom_cache.qualityList.empty().append(getItemList(wordRate.qualityList));
+        });
+        dom_cache.qualityList.on('click', '.NewItemBtn', function(e) {
+            var type = this.dataset.type;
+            this.parentNode.parentNode.insertBefore(createItem({
+                list: [],
+                rate: {}
+            }, type)[0] ,this.parentNode);
+        });
+        dom_cache.qualityList.on('click', '.wordFormRemove, .rateFormRemove', function(e) {
+            this.parentNode.parentNode.removeChild(this.parentNode);
+        });
+        dom_cache.qualityList.on('click', '.rateFormNew', function(e) {
+            this.parentNode.parentNode.insertBefore(createRate('', 0)[0] ,this.parentNode);
+        });
+        dom_cache.qualityList.on('click', '.wordFormNew', function(e) {
+            this.parentNode.parentNode.insertBefore(createWord('')[0] ,this.parentNode);
+        });
+        dom_cache.qualityList.on('click', '.itemRemove', function(e) {
+            var body = this.parentNode.parentNode;
+            body.parentNode.removeChild(body)
         });
     };
 
@@ -589,7 +693,17 @@ var options = function() {
             dom_cache.clearCloudStorageBtn = $('#clearCloudStorage');
             dom_cache.backupInp = $('#backupInp');
             dom_cache.restoreInp = $('#restoreInp');
+
             dom_cache.qualityList = $('#qualityList');
+            dom_cache.qualitySave = $('#qualitySave');
+            dom_cache.qualityReset = $('#qualityReset');
+
+            dom_cache.qualitySave.on('click', function(e) {
+                dom_cache.qualityList.trigger('save');
+            });
+            dom_cache.qualityReset.on('click', function(e) {
+                dom_cache.qualityList.trigger('reset');
+            });
 
             set_place_holder();
 

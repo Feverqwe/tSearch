@@ -26,7 +26,7 @@ var wordRate = function() {
             rate: {music: 15}
         }
     ];
-    var qualityList = [
+    var def_qualityList = [
         /*
          {
              list: [],
@@ -398,6 +398,7 @@ var wordRate = function() {
             }
         }
     ];
+    var qualityList = def_qualityList.slice(0);
 
     var var_cache = {
         subList: [],
@@ -478,12 +479,12 @@ var wordRate = function() {
         }
         return [words, wordsCase, wordObj];
     };
-    (function() {
+    var updateCache = function() {
         var list = initWordCache(qualityList);
         var_cache.words = list[0];
         var_cache.wordsCase = list[1];
         var_cache.wordObj = list[2];
-    })();
+    };
 
     var syntaxCacheRequest = function(request, _syntaxCache) {
         var year = request.match(var_cache.getYear);
@@ -973,6 +974,12 @@ var wordRate = function() {
         syntaxCacheRequest: syntaxCacheRequest,
         titleHighLight: titleHighLight,
         autosetCategory: autosetCategory,
-        qualityList: qualityList
+        qualityList: qualityList,
+        def_qualityList: def_qualityList,
+        setTitleQualityList: function(titleQualityList) {
+            qualityList.splice(0);
+            Array.prototype.push.apply(qualityList, titleQualityList);
+        },
+        updateCache: updateCache
     }
 }();

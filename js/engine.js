@@ -768,7 +768,7 @@ var engine = function() {
 
                 mono.storage[storageType].get('profileList', function(syncStorage) {
                     mono.storage.get(['customTorrentList', 'profileList',
-                        'history', 'lang', 'doNotSendStatistics', 'proxyList'], function(storage) {
+                        'history', 'lang', 'doNotSendStatistics', 'proxyList', 'titleQualityList'], function(storage) {
 
                         if (storage.proxyList !== undefined) {
                             proxyList.splice(0);
@@ -792,6 +792,13 @@ var engine = function() {
                             def_listOptions.imdb_serials.e = 1;
                             def_listOptions.kp_serials.e = 0;
                         }
+
+                        if (storage.titleQualityList !== undefined) {
+                            try {
+                                wordRate.setTitleQualityList( JSON.parse(storage.titleQualityList) );
+                            } catch (e) {}
+                        }
+                        wordRate.updateCache();
 
                         if (typeof storage.history === 'string') {
                             try {
