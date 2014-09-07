@@ -406,7 +406,7 @@ var wordRate = function() {
 
         cat_regexp: new RegExp("фильмы без сюжета|документальные|мультим|мульт|сериа|комикс|видео для [моб|смарт|" +
             "устр]{1}|мобильное|аудиокниги|беллетр|книг|фильм|игр|3gp|soundtrack|саундтрек|anim|аним|докумел|литер|" +
-            "телеп|эрот|xxx|porn|порно|сайтр|тв[\-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
+            "телеп|эрот|xxx|porn|порно|сайтр|тв[-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
             "утилит|book|game|tv |tv$|manga", "g"),
         year: (new Date()).getFullYear(),
         getYear: new RegExp('[1-2]{1}[0-9]{3}'),
@@ -1003,7 +1003,7 @@ var wordRate = function() {
         }
         return -1;
     };
-    
+
     var sizeSeedRate = function(quality, item) {
         /*
          * Расчет качетсва по сидам
