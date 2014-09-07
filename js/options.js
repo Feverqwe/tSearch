@@ -637,27 +637,32 @@ var options = function() {
             return rList;
         };
         dom_cache.qualityList.empty().append(getItemList(wordRate.qualityList));
-        dom_cache.qualityList.parent().find('.itemList').sortable({
-            axis: 'y',
-            handle: '.moveIcon',
-            scroll: false,
-            start: function(e, ui) {
+        var bindOrder = function() {
+            dom_cache.qualityList.parent().find('.itemList').sortable({
+                axis: 'y',
+                handle: '> .header > .moveIcon',
+                scroll: false,
+                start: function (e, ui) {
 
-            },
-            stop: function(e, ui) {
+                },
+                stop: function (e, ui) {
 
-            }
-        });
+                }
+            });
+        };
+        bindOrder();
         dom_cache.qualityList.on('save', function() {
             var list = saveChilds(dom_cache.qualityList);
             wordRate.setTitleQualityList( list );
             mono.storage.set({ titleQualityList: JSON.stringify(list) });
             dom_cache.qualityList.empty().append(getItemList(wordRate.qualityList));
+            bindOrder();
         });
         dom_cache.qualityList.on('reset', function() {
             mono.storage.remove('titleQualityList');
             wordRate.setTitleQualityList( wordRate.def_qualityList );
             dom_cache.qualityList.empty().append(getItemList(wordRate.qualityList));
+            bindOrder();
         });
         dom_cache.qualityList.on('click', '.NewItemBtn', function(e) {
             var type = this.dataset.type;
