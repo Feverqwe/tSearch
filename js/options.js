@@ -371,7 +371,7 @@ var options = function() {
     };
 
     var mgrQuality = function() {
-        var isEmpty = '<empty>';
+        var isEmpty = '<new>';
         var optionList = ['video', 'music', 'games', 'books', 'serials', 'cartoons', 'xxx'];
         var onlyCategory = ['serials', 'cartoons', 'xxx'];
         var createWord = function(word) {
