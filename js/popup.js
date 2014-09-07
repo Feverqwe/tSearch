@@ -368,7 +368,7 @@ var loadLanguage = function(cb, force) {
 
 mono.pageId = 'popup';
 loadLanguage(function() {
-    mono.storage.get(['autoComplite'],function(storage) {
+    mono.storage.get(['autoComplite'], function(storage) {
         if (storage.autoComplite === undefined) {
             storage.autoComplite = 1;
         }

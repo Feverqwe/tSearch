@@ -1,5 +1,6 @@
 (function() {
     mono.pageId = 'service';
+    mono.externalStorageActivate();
     var var_cache = {};
     var updateButton = function(active) {
         if (var_cache.button) {

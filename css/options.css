@@ -246,10 +246,8 @@ input.button.main {
 #qualityList a.button {
     display: block;
     cursor: pointer;
-    height: 17px;
-    width: 17px;
-    border-radius: 2px;
-    border: 1px solid #A2A2A2;
+    height: 16px;
+    width: 16px;
     background-color: transparent;
     padding-left: 2px;
     padding-top: 2px;
@@ -288,9 +286,7 @@ input.button.main {
 #qualityList .newSubItemForm a.button,
 #qualityList .wordForm a.button,
 #qualityList .rateForm a.button {
-    border-left: 0;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    margin-left: 2px;
 }
 #qualityList .wordForm input {
     width: 150px;
@@ -308,6 +304,8 @@ input.button.main {
 #qualityList .newSubItemForm input[type="button"],
 #qualityList .wordForm input[type="button"],
 #qualityList .rateForm input[type="button"] {
+    width: auto;
+    height: auto;
     height: initial;
     width: initial;
     line-height: 19px;
