@@ -371,13 +371,14 @@ var options = function() {
     };
 
     var mgrQuality = function() {
-        var defaultRate = wordRate.qualityList;
         var optionList = ['video', 'music', 'game', 'serial', 'mult', 'book'];
         var createWord = function(word) {
             var container = $('<div>', {class: 'wordForm'});
             container.append(
                 $('<input>', {type: 'text', value: word}),
-                $('<a>', {type: 'button', value: '', class: 'button remove'}).append('<i>')
+                $('<a>', {class: 'button remove'}).on('click', function(e) {
+                    this.parentNode.parentNode.removeChild(this.parentNode);
+                }).append('<i>')
             );
             return container;
         };
@@ -394,7 +395,11 @@ var options = function() {
                 });
             }
             container.append(
-                $('<div>', {class: 'wordForm'}).append($('<input>', {type: 'button', value: 'Add item', class: 'button new'}))
+                $('<div>', {class: 'wordForm'}).append(
+                    $('<input>', {type: 'button', value: 'Add item', class: 'button new'}).on('click', function(e) {
+                        this.parentNode.parentNode.insertBefore(createWord('')[0] ,this.parentNode);
+                    })
+                )
             );
             return container;
         };
@@ -414,7 +419,9 @@ var options = function() {
                     getRateOptions(key)
                 ),
                 $('<input>', {type: 'number', value: value, placeholder: '0'}),
-                $('<a>', {class: 'button remove'}).append('<i>')
+                $('<a>', {class: 'button remove'}).on('click', function(e) {
+                    this.parentNode.parentNode.removeChild(this.parentNode);
+                }).append('<i>')
             );
             return container;
         };
@@ -429,52 +436,69 @@ var options = function() {
                 }
             }
             container.append(
-                $('<div>', {class: 'rateForm'}).append($('<input>', {type: 'button', value: 'Add item', class: 'button new'}))
+                $('<div>', {class: 'rateForm'}).append(
+                    $('<input>', {type: 'button', value: 'Add item', class: 'button new'}).on('click', function(e) {
+                        this.parentNode.parentNode.insertBefore(createRate('', 0)[0] ,this.parentNode);
+                    })
+                )
             );
             return container;
         };
         var createName = function(name) {
-            var container = $('<div>', {class: 'nameItem'});
-            container.append(
-                $('<h4>', {text: 'Item name:'})
+            var input = undefined;
+            var body = $('<div>', {class: 'nameItem'});
+            body.append(
+                $('<label>').append(
+                    $('<input>', {type: 'checkbox', class: 'is primary', checked: !!name}).on('change', function(e) {
+                        input[0].disabled = !this.checked;
+                    }),
+                    'is primary'
+                ),
+                $('<div>').append(
+                    $('<h4>', {text: 'Item name:'}),
+                    $('<div>', {class: 'wordForm'}).append(input = $('<input>', {type: 'text', value: name || '', disabled: !name}))
+                )
             );
-            if (name === undefined) {
-                container.append(
-                    $('<div>', {class: 'wordForm'}).append($('<input>', {type: 'button', value: 'Add name', class: 'button new'}))
-                );
-            } else {
-                container.append(
-                    $('<div>', {class: 'wordForm'}).append(
-                        $('<input>', {type: 'text', value: name}),
-                        $('<a>', {type: 'button', value: '', class: 'button remove'}).append('<i>')
-                    )
-                );
-            }
+            return body;
+        };
+        var getNewItemForm = function(type) {
+            var container = $('<div>', {class: 'newSubItemForm', 'data-type': type});
+            container.append(
+                $('<input>', {type: 'button', value: 'Add new rule'+(type?' '+type:''), class: 'button new'}).on('click', function(e) {
+                    this.parentNode.parentNode.insertBefore(createItem({
+                        list: [],
+                        rate: {}
+                    }, type)[0] ,this.parentNode);
+                })
+            );
             return container;
         };
-        var addCreateRateItemBtn = function(type) {
-            var container = $('<div>', {class: 'rateItem new', 'data-type': type});
-            container.append(
-                $('<select>').append(
-                    $('<option>', {value: 'sub', text: 'sub'}),
-                    $('<option>', {value: 'subBefore', text: 'subBefore'}),
-                    $('<option>', {value: 'subAfter', text: 'subAfter'})
-                ),
-                $('<input>', {type: 'button', value: 'Add new rule', class: 'button new'})
-            );
-            return container;
+        var getTitle = function(item, type) {
+            var labelWords = Array.prototype.concat(item.list || [], item.listCase || []);
+            if (labelWords.length === 0) {
+                labelWords.push('<empty>');
+            }
+            labelWords = (type?(type + ': '):'') + labelWords.join(', ');
+            return labelWords;
         };
         var createItem = function(item, type) {
             var body = $('<div>', {class: 'item', 'data-type': type});
 
-            var labelWords = Array.prototype.concat(item.list || [], item.listCase || []);
-            labelWords = (type?(type + ': '):'') + labelWords.join(', ');
-
+            var title = undefined;
             body.append($('<div>', {class: 'header'}).append(
                 $('<i>', {class: 'moveIcon'}),
-                $('<span>', {class: 'title', text: labelWords}),
+                $('<a>', {class: 'button remove'}).append($('<i>')).on('click', function(e) {
+                    var body = this.parentNode.parentNode;
+                    body.parentNode.removeChild(body)
+                }),
+                title = $('<span>', {class: 'title', text: getTitle(item, type)}),
                 $('<i>', {class: 'collapses'})
             ));
+
+            body.on('updateTitle', function() {
+                title.text(getTitle(item, type));
+            });
+
             body.on('click', function(e) {
                 var el = e.target;
                 var isAngle = el.classList.contains('collapses');
@@ -488,7 +512,7 @@ var options = function() {
                     isHeader = true;
                 }
                 if (isHeader) {
-                    el = el.childNodes[2];
+                    el = el.childNodes[3];
                 }
                 e.stopPropagation();
                 var item = el.parentNode.parentNode;
@@ -501,68 +525,51 @@ var options = function() {
                 }
 
             });
+            var name = createName(item.name);
             var list = createWords(item.list, '');
             var listCase = createWords(item.listCase, 'Case');
             var rate = createRates(item.rate);
-            var name = createName(item.name);
 
             body.append(
                 $('<div>', {class: 'content'}).append(
-                    list, listCase, rate, name
+                    name, list, listCase, rate,
+                    $('<div>', {class: 'itemList'}).append(
+                        getItemList(item.sub, 'sub'),
+                        getItemList(item.subBefore, 'subBefore'),
+                        getItemList(item.subAfter, 'subAfter')
+                    )
                 )
             );
 
             return body;
-            /*
-            var container = $('<div>', {class: 'rateItem', 'data-type': type});
-            var configList = $('<div>', {class: 'configList'});
-            var list = createWords(item.list, '');
-            var listCase = createWords(item.listCase, 'Case');
-            var rate = createRates(item.rate);
-            var name = createName(item.name);
-
-            configList.append(list, listCase, rate, name);
-
-            configList.append(
-                $('<div>', {class: 'subItems'}).append(
-                    getItemList(item.sub, 'sub'),
-                    getItemList(item.subBefore, 'subBefore'),
-                    getItemList(item.subAfter, 'subAfter'),
-                    addCreateRateItemBtn()
-                )
-            );
-
-            var labelWords = Array.prototype.concat(item.list || [], item.listCase || []);
-            labelWords = (type?(type + ': '):'') + labelWords.join(', ');
-
-            container.append(
-                $('<div>', {class: 'label', text: labelWords}),
-                configList
-            );
-            return container;
-            */
         };
         var getItemList = function(list, type) {
             var itemList = [];
+            var newItem = getNewItemForm(type);
             if (list === undefined) {
-                return;
+                return newItem
             }
             for (var i = 0, item; item = list[i]; i++) {
                 itemList.push(createItem(item, type));
             }
+            itemList.push(newItem);
             return itemList;
         };
         dom_cache.qualityList.append(getItemList(wordRate.qualityList));
-        /*
-        dom_cache.qualityList.on('click', '.label', function() {
-            var parent = this.parentNode;
-            if (parent.classList.contains('show')) {
-                parent.classList.remove('show');
-            } else {
-                parent.classList.add('show');
+        dom_cache.qualityList.parent().find('.itemList').sortable({
+            axis: 'y',
+            handle: '.moveIcon',
+            scroll: false,
+            start: function(e, ui) {
+
+            },
+            stop: function(e, ui) {
+
             }
         });
-        */
+        dom_cache.qualityList.on('save', function() {
+            // saving...
+        });
     };
 
     return {

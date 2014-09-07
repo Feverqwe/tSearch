@@ -58,9 +58,6 @@ div.search_panel > * {
     vertical-align: middle;
 }
 
-div.container.loading {
-    visibility: hidden;
-}
 div.container > .content {
     position: relative;
     margin: 0 auto;
@@ -126,12 +123,6 @@ div.info {
     padding: 10px;
 
 }
-div.info a {
-    color: #c7254e;
-    padding: 2px 4px;
-    border-radius: 4px;
-    background-color: #fff;
-}
 .btnList {
     margin-bottom: 10px;
 }
@@ -195,9 +186,10 @@ input.button.main {
     padding-top: 5px;
     padding-bottom: 5px;
 }
-#qualityList .item.show .header,
-#qualityList .item:hover .header {
-    background-color: #eee;
+#qualityList .item.show > .header,
+#qualityList .item:hover > .header {
+    background-color: #52AFFF;
+    color: #fff;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 2px 0px inset;
 }
 #qualityList .item.show {
@@ -251,30 +243,39 @@ input.button.main {
     padding: 4px;
     display: none;
 }
-#qualityList .item.show .content {
+#qualityList .item.show > .content {
     display: block;
 }
 
 #qualityList a.button {
     display: block;
     cursor: pointer;
-    height: 19px;
-    width: 19px;
+    height: 17px;
+    width: 17px;
     border-radius: 2px;
     border: 1px solid #A2A2A2;
     background-color: transparent;
+    padding-left: 2px;
+    padding-top: 2px;
 }
 #qualityList a.button.remove i {
-    height: 14px;
-    width: 14px;
+    height: 15px;
+    width: 15px;
     display: block;
     background-image: url("../images/clear.png");
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0.5;
-    position: relative;
-    margin-left: 3px;
-    margin-top: 2px;
+    background-size: 15px;
+}
+#qualityList .header a.button {
+    display: inline-block;
+    border: 0;
+    height: 15px;
+    width: 15px;
+    vertical-align: middle;
+    padding: 0;
+    margin-right: 5px;
 }
 #qualityList a.button.remove:hover i {
     opacity: 1;
@@ -283,11 +284,13 @@ input.button.main {
     margin: 0;
     margin: 2px;
 }
+#qualityList .newSubItemForm > *,
 #qualityList .wordForm > *,
 #qualityList .rateForm > * {
     display: inline-block !important;
     vertical-align: middle;
 }
+#qualityList .newSubItemForm a.button,
 #qualityList .wordForm a.button,
 #qualityList .rateForm a.button {
     border-left: 0;
@@ -305,8 +308,9 @@ input.button.main {
     padding-bottom: 1px;
     margin: 0;
     margin-right: 5px;
-    width: 60px;
+    width: 80px;
 }
+#qualityList .newSubItemForm input[type="button"],
 #qualityList .wordForm input[type="button"],
 #qualityList .rateForm input[type="button"] {
     height: initial;
@@ -314,9 +318,17 @@ input.button.main {
     line-height: 19px;
     padding: 0 10px;
 }
+#qualityList .newSubItemForm,
 #qualityList .wordForm,
 #qualityList .rateForm {
     display: inline-block;
     padding: 5px;
     padding-top: 0;
+}
+#qualityList .rateForm {
+    display: block;
+}
+#qualityList .newSubItemForm {
+    padding: 5px;
+    display: block;
 }
