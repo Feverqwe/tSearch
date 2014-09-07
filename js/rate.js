@@ -1003,6 +1003,7 @@ var wordRate = function() {
         }
         return -1;
     };
+    
     var sizeSeedRate = function(quality, item) {
         /*
          * Расчет качетсва по сидам
