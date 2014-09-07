@@ -255,14 +255,13 @@ input.button.main {
     padding-top: 2px;
 }
 #qualityList a.button.remove i {
-    height: 15px;
-    width: 15px;
+    height: 14px;
+    width: 14px;
     display: block;
     background-image: url("../images/clear.png");
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0.5;
-    background-size: 15px;
 }
 #qualityList .header a.button {
     display: inline-block;

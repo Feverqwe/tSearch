@@ -765,7 +765,7 @@ var options = function() {
             });
             window.addEventListener("hashchange", onHashChange);
             onHashChange();
-            mgrQuality();
+            setTimeout(mgrQuality);
             dom_cache.container.removeClass('loading');
 
             dom_cache.sectionList[0].addEventListener('click', listOptionsSave);
