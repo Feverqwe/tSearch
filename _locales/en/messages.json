@@ -288,5 +288,18 @@
     "magic_64": {"message": "Page charset"},
 
     "extPopupInfo": {"message": "Add a quick search in your browser!"},
-    "extPopupInstall": {"message": "Download the extension!"}
+    "extPopupInstall": {"message": "Download the extension!"},
+
+    "optQuality": {"message": "Definition of quality"},
+    "qWordsWithCase": {"message": "Words are case sensitive:"},
+    "qWordsWithoutCase": {"message": "Words are case-insensitive:"},
+    "qRateList": {"message": "The list of points:"},
+    "qLabel": {"message": "The name of the label"},
+    "qIsPrimary": {"message": "Main"},
+    "qAddWord": {"message": "Add the word"},
+    "qAddItem": {"message": "Add entry"},
+    "qAddRule": {"message": "Add rule"},
+    "qRule_sub": {"message": "(look around the title)"},
+    "qRule_subBefore": {"message": "(look up words found)"},
+    "qRule_subAfter": {"message": "(look after the found word)"}
 }

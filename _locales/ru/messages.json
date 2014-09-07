@@ -291,5 +291,18 @@
     "magic_64": {"message": "Кодировка страницы"},
 
     "extPopupInfo": {"message": "Добавь быстрый поиск в свой браузер!"},
-    "extPopupInstall": {"message": "Скачай расширение!"}
+    "extPopupInstall": {"message": "Скачай расширение!"},
+
+    "optQuality": {"message": "Определение качества"},
+    "qWordsWithCase": {"message": "Слова с учетом регистра:"},
+    "qWordsWithoutCase": {"message": "Слова без учета регистра:"},
+    "qRateList": {"message": "Список баллов:"},
+    "qLabel": {"message": "Название ярлыка"},
+    "qIsPrimary": {"message": "Основное"},
+    "qAddWord": {"message": "Добавить слово"},
+    "qAddItem": {"message": "Добавить запись"},
+    "qAddRule": {"message": "Добавить правило"},
+    "qRule_sub": {"message": "(искать во всем заголовке)"},
+    "qRule_subBefore": {"message": "(искать до найденного слова)"},
+    "qRule_subAfter": {"message": "(искать после найденного слова)"}
 }
