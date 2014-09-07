@@ -1003,10 +1003,27 @@ var wordRate = function() {
         }
         return -1;
     };
+    var sizeSeedRate = function(quality, item) {
+        /*
+         * Расчет качетсва по сидам
+         * Перерасчет соотношения качества видео и размера раздачи
+         */
+
+        quality.seed = (item.seeds > 0) ? 50 : 0;
+        if (item.size < 524288000 && quality.video > 45) {
+            quality.video = Math.round(parseInt(quality.video) / 10);
+        } else
+        if (item.size < 1363148800 && quality.video > 65) {
+            quality.video = Math.round(parseInt(quality.video) / 2);
+        }
+        quality.value = quality.seed + quality.name + quality.video + quality.music + quality.games + quality.books;
+        return quality;
+    };
     return {
         syntaxCacheRequest: syntaxCacheRequest,
         titleHighLight: titleHighLight,
         autosetCategory: autosetCategory,
+        sizeSeedRate: sizeSeedRate,
         qualityList: qualityList,
         def_qualityList: def_qualityList,
         setTitleQualityList: function(titleQualityList) {

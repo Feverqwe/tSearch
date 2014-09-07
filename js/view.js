@@ -439,22 +439,6 @@ var view = function() {
          */
         return ((var_cache.teaser_regexp).test(title)) ? 1 : 0;
     };
-    var checkRate = function(quality, v) {
-        /*
-         * Расчет качетсва по сидам
-         * Перерасчет соотношения качества видео и размера раздачи
-         */
-
-        quality.seed = (v.seeds > 0) ? 50 : 0;
-        if (v.size < 524288000 && quality.video > 45) {
-            quality.video = Math.round(parseInt(quality.video) / 10);
-        } else
-        if (v.size < 1363148800 && quality.video > 65) {
-            quality.video = Math.round(parseInt(quality.video) / 2);
-        }
-        quality.value = quality.seed + quality.name + quality.video + quality.music + quality.games + quality.books;
-        return quality;
-    };
 
     var table_sort_insert_in_list = function(list) {
         var list_len = list.length;
@@ -657,8 +641,7 @@ var view = function() {
                 item.category.title = $.trim(item.category.title);
             }
             var title_highLight = wordRate.titleHighLight(item.title);
-            var rate = title_highLight.rate;
-            var quality = checkRate(rate, item);
+            var quality = wordRate.sizeSeedRate(title_highLight.rate, item);
 
             if (var_cache.syntaxCache.year === undefined) {
                 if (item.time > var_cache.time_cache.week_ago) {
@@ -732,8 +715,7 @@ var view = function() {
                 item.category.title = $.trim(item.category.title);
             }
             var title_highLight = wordRate.titleHighLight(item.title);
-            var rate = title_highLight.rate;
-            var quality = checkRate(rate, item);
+            var quality = wordRate.sizeSeedRate(title_highLight.rate, item);
             title_highLight = title_highLight.hl_name;
             if (engine.settings.defineCategory === 1 && item.category.id < 0 && item.category.title !== undefined) {
                 item.category.id = wordRate.autosetCategory(quality, item.category.title);
