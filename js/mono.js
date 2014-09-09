@@ -523,9 +523,9 @@ var mono = function (env) {
                         }
                         var data = e.detail.substr(1);
                         var json = JSON.parse(data);
-                        onCollector.forEach(function(cb) {
+                        for (var i = 0, cb; cb = onCollector[i]; i++) {
                             cb(json);
-                        });
+                        }
                     });
                 }
             }

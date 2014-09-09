@@ -264,12 +264,13 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         var obj = {
             port: {
                 emit: function(to, message) {
-                    if (subscribServerList[to] === undefined) {
+                    var list = subscribServerList[to];
+                    if (list === undefined) {
                         return console.log('Drop message to', to);
                     }
-                    subscribServerList[to].forEach(function(item) {
+                    for (var i = 0, item; item = list[i]; i++) {
                         item(message);
-                    });
+                    }
                 },
                 on: function(to, cb) {
                     if (subscribClientList[to] === undefined) {
@@ -280,12 +281,13 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
             },
             lib: {
                 emit: function(to, message) {
-                    if (subscribClientList[to] === undefined) {
+                    var list = subscribClientList[to];
+                    if (list === undefined) {
                         return console.log('Drop message to', to);
                     }
-                    subscribClientList[to].forEach(function(item) {
+                    for (var i = 0, item; item = list[i]; i++) {
                         item(message);
-                    });
+                    }
                 },
                 on: function(to, cb) {
                     if (subscribServerList[to] === undefined) {
