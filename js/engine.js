@@ -44,7 +44,7 @@ var engine = function() {
         unblock_src: new RegExp('data:image\\/gif,base64#blockrurl#','mg'),
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
         rn: new RegExp('[\\r\\n]+','g'),
-        searchJs: new RegExp('javascript:', 'img'),
+        searchJs: new RegExp('href=([\'"])javascript:', 'img'),
         historyLimit: 100
     };
 
@@ -453,7 +453,7 @@ var engine = function() {
     };
 
     var contentFilter = function(content) {
-        return content.replace(var_cache.searchJs, '').replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
+        return content.replace(var_cache.searchJs, 'href=$1').replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
     };
 
     var contentUnFilter = function(content) {
