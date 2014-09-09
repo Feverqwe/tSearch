@@ -44,7 +44,7 @@ var engine = function() {
         unblock_src: new RegExp('data:image\\/gif,base64#blockrurl#','mg'),
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
         rn: new RegExp('[\\r\\n]+','g'),
-        searchJs: new RegExp('href=([\'"])javascript:', 'img'),
+        searchJs: new RegExp('href=([\'"]?)javascript:', 'img'),
         historyLimit: 100
     };
 
