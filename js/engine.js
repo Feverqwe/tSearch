@@ -453,7 +453,7 @@ var engine = function() {
     };
 
     var contentFilter = function(content) {
-        return content.replace(var_cache.searchJs, 'href=$1').replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
+        return content.replace(var_cache.searchJs, 'data-bad-href=$1').replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
     };
 
     var contentUnFilter = function(content) {

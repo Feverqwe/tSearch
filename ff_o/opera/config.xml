@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget id="leonardspbox@gmail.com" version="1.0.62.1" xmlns="http://www.w3.org/ns/widgets">
+<widget id="leonardspbox@gmail.com" version="1.0.63.1" xmlns="http://www.w3.org/ns/widgets">
     <name>Torrents MultiSearch</name>
     <description xml:lang="ru">Torrents MultiSearch - поиск по нескольки трекерам сразу!</description>
     <description xml:lang="en">Torrents MultiSearch - search on some of the trackers at once!</description>
