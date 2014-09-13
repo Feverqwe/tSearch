@@ -421,10 +421,10 @@ var mono = function (env) {
         var idPrefix = Math.floor(Math.random()*1000)+'_';
         return {
             cbCollector: function (message, cb) {
-                mono.debug.messages && mono('cbCollector', message);
                 if (cb === undefined) {
                     return;
                 }
+                mono.debug.messages && mono('cbCollector', message);
                 !messagesEnable && mono.onMessage(function(){});
                 if (cbStack.length > mono.messageStack) {
                     mono('Stack overflow!');
@@ -434,6 +434,20 @@ var mono = function (env) {
                 message.monoCallbackId = idPrefix+id;
                 cbObj[idPrefix+id] = cb;
                 cbStack.push(idPrefix+id);
+
+                var timeout = message.timeout;
+                if (timeout !== undefined) {
+                    delete message.timeout;
+                    setTimeout(function() {
+                        if (cbObj[idPrefix+id] === undefined) {
+                            return;
+                        }
+                        msgTools.cbCaller({
+                            data: null,
+                            monoResponseId: idPrefix+id
+                        });
+                    }, timeout);
+                }
             },
             cbCaller: function(message, pageId) {
                 mono.debug.messages && mono('cbCaller', message);
@@ -448,27 +462,26 @@ var mono = function (env) {
                 cbStack.splice(cbStack.indexOf(message.monoResponseId), 1);
             },
             mkResponse: function(message, pageId) {
-                mono.debug.messages && mono('mkResponse', message);
-                var response;
-                if (message.monoCallbackId !== undefined) {
-                    response = function(responseMessage) {
-                        responseMessage = {
-                            data: responseMessage,
-                            monoResponseId: message.monoCallbackId,
-                            monoTo: message.monoFrom,
-                            monoFrom: pageId
-                        };
-                        if (message.tabId !== undefined) {
-                            responseMessage.tabId = message.tabId;
-                        }
-                        if (message.source !== undefined) {
-                            responseMessage.source = message.source;
-                        }
-                        mono.debug.messages && mono('sendResponse', responseMessage);
-                        mono.sendMessage.send(responseMessage);
-                    }
+                if (message.monoCallbackId === undefined) {
+                    return undefined;
                 }
-                return response;
+                mono.debug.messages && mono('mkResponse', message);
+                return function(responseMessage) {
+                    responseMessage = {
+                        data: responseMessage,
+                        monoResponseId: message.monoCallbackId,
+                        monoTo: message.monoFrom,
+                        monoFrom: pageId
+                    };
+                    if (message.tabId !== undefined) {
+                        responseMessage.tabId = message.tabId;
+                    }
+                    if (message.source !== undefined) {
+                        responseMessage.source = message.source;
+                    }
+                    mono.debug.messages && mono('sendResponse', responseMessage);
+                    mono.sendMessage.send(responseMessage);
+                };
             },
             rmCaller: function(monoResponseId) {
                 if (monoResponseId === undefined) {
@@ -490,10 +503,12 @@ var mono = function (env) {
             filter: function(message, cb) {
                 if (message.monoTo === defaultId) {
                     if (cb.private !== undefined) {
+                        mono.debug.messages && mono('filterDrop', message);
                         return 1;
                     }
                 } else
                 if (cb.filter.indexOf(message.monoTo) === -1) {
+                    mono.debug.messages && mono('filterDrop', message);
                     return 1;
                 }
                 return undefined;
@@ -545,11 +560,11 @@ var mono = function (env) {
             msgTools.readFilter(this, cb);
             var pageId = cb.filter[0];
             var onMessage = function(message) {
-                if (msgTools.filter(message, cb)) {
-                    return;
-                }
                 if (firstEvent === false && message.monoResponseId) {
                     return msgTools.cbCaller(message, pageId);
+                }
+                if (msgTools.filter(message, cb)) {
+                    return;
                 }
                 var response = msgTools.mkResponse(message, pageId);
                 cb(message.data, response);
@@ -587,14 +602,14 @@ var mono = function (env) {
             msgTools.readFilter(this, cb);
             var pageId = cb.filter[0];
             chrome.runtime.onMessage.addListener(function(message, sender) {
+                if (firstEvent === false && message.monoResponseId) {
+                    return msgTools.cbCaller(message, pageId);
+                }
                 if (msgTools.filter(message, cb)) {
                     return;
                 }
                 if (sender.tab !== undefined) {
                     message.tabId = sender.tab.id;
-                }
-                if (firstEvent === false && message.monoResponseId) {
-                    return msgTools.cbCaller(message, pageId);
                 }
                 var response = msgTools.mkResponse(message, pageId);
                 cb(message.data, response);
@@ -621,7 +636,10 @@ var mono = function (env) {
             var source = message.source;
             if (source !== undefined) {
                 delete message.source;
-                return source.postMessage(message);
+                try {
+                    source.postMessage(message);
+                } catch (e) {}
+                return;
             }
             if (opera.extension.postMessage !== undefined) {
                 return opera.extension.postMessage(message);
@@ -637,10 +655,10 @@ var mono = function (env) {
             messagesEnable = true;
             opera.extension.onmessage = function(event) {
                 var message = event.data;
-                message.source = event.source;
                 if (message.monoResponseId) {
                     return msgTools.cbCaller(message, message.monoTo);
                 }
+                message.source = event.source;
                 var response = msgTools.mkResponse(message, message.monoTo);
                 for (var i = 0, itemCb; itemCb = opMessaging.cbList[i]; i++) {
                     if (msgTools.filter(message, itemCb)) {
@@ -684,14 +702,15 @@ var mono = function (env) {
                     }}}});
             }
             if (mono.isSafariBgPage) {
-                return safari.application.browserWindows.forEach(function(window) {
-                    window.tabs.forEach(function(tab) {
+                for (var w = 0, window; window = safari.application.browserWindows[w]; w++) {
+                    for (var t = 0, tab; tab = window.tabs[t]; t++) {
                         if (!tab.page || !tab.page.dispatchMessage) {
-                            return 1;
+                            continue;
                         }
                         tab.page.dispatchMessage("message", message);
-                    });
-                });
+                    }
+                }
+                return;
             }
             safari.self.tab.dispatchMessage("message", message);
         },
@@ -702,13 +721,13 @@ var mono = function (env) {
             var pageId = cb.filter[0];
             var onMessage = function(event) {
                 var message = event.message;
+                if (firstEvent === false && message.monoResponseId) {
+                    return msgTools.cbCaller(message, pageId);
+                }
                 if (msgTools.filter(message, cb)) {
                     return;
                 }
                 message.source = event.target;
-                if (firstEvent === false && message.monoResponseId) {
-                    return msgTools.cbCaller(message, pageId);
-                }
                 var response = msgTools.mkResponse(message, pageId);
                 cb(message.data, response);
             };
@@ -760,6 +779,9 @@ var mono = function (env) {
             monoTo: to || defaultId,
             monoFrom: mono.pageId
         };
+        if (this.timeout !== undefined) {
+            message.timeout = this.timeout;
+        }
         mono.debug.messages && mono('sendMessage', 'to:', to, 'hasCallback', !!cb, message);
         msgTools.cbCollector(message, cb);
         if (to === 'activeTab') {
@@ -803,5 +825,6 @@ var mono = function (env) {
 if (typeof window !== "undefined") {
     mono = mono(window);
 } else {
+    setTimeout = require("sdk/timers").setTimeout;
     exports.init = mono;
 }

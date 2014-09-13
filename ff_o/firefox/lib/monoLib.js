@@ -106,8 +106,13 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
             }
         }
         for (var index in map) {
-            if (fromMonoPage !== undefined && fromMonoPage.index === index) {
-                continue;
+            if (fromMonoPage !== undefined) {
+                if (fromMonoPage.index === index) {
+                    continue;
+                }
+                if (fromMonoPage.isInject !== undefined && map[index].isInject !== undefined) {
+                    continue;
+                }
             }
             sendToPage(map[index], message);
         }
@@ -224,9 +229,9 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         }
         if (msg.action === 'toActiveTab') {
             var pageInMap = undefined;
-            var currentPageUrl = tabs.activeTab.url;
+            var currentTab = tabs.activeTab;
             for (var index in map) {
-                if (map[index].page.url === currentPageUrl) {
+                if (map[index].page.tab === currentTab) {
                     pageInMap = map[index];
                     break;
                 }
@@ -251,6 +256,9 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         }
         for (var index in map) {
             var _mPage = map[index];
+            if (mPage.isInject !== undefined && _mPage.isInject !== undefined) {
+                continue;
+            }
             if (_mPage.id.indexOf(message.monoTo) !== -1) {
                 sendToPage(_mPage, message);
             }
@@ -323,6 +331,9 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         var mPage = getMonoPage(page);
         if ( mPage === undefined ) {
             mPage = {page: page};
+            if (page.url && page.url.indexOf(self.data.url()) !== 0) {
+                mPage.isInject = 1;
+            }
         }
         if (mPage.id === undefined) {
             mPage.id = [];
