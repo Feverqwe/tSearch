@@ -110,7 +110,10 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
                 if (fromMonoPage.index === index) {
                     continue;
                 }
-                if (fromMonoPage.isInject !== undefined && map[index].isInject !== undefined) {
+                if (fromMonoPage.isInject !== undefined && map[index].isVirtual === undefined) {
+                    continue;
+                }
+                if (fromMonoPage.isInject === undefined && map[index].isInject !== undefined && message.monoResponseId === undefined) {
                     continue;
                 }
             }
@@ -231,7 +234,8 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
             var pageInMap = undefined;
             var currentTab = tabs.activeTab;
             for (var index in map) {
-                if (map[index].page.tab === currentTab) {
+                if (map[index].page.tab === currentTab &&
+                    map[index].page.url === currentTab.url) {
                     pageInMap = map[index];
                     break;
                 }
@@ -256,7 +260,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         }
         for (var index in map) {
             var _mPage = map[index];
-            if (mPage.isInject !== undefined && _mPage.isInject !== undefined) {
+            if (mPage.isInject !== undefined && _mPage.isVirtual === undefined) {
                 continue;
             }
             if (_mPage.id.indexOf(message.monoTo) !== -1) {

@@ -22,7 +22,7 @@ var mono = function (env) {
     };
 
     var defaultId = 'monoScope';
-    var addon;
+    var addon = undefined;
     if (typeof window === 'undefined') {
         mono.isModule = true;
         mono.isFF = true;
@@ -139,7 +139,7 @@ var mono = function (env) {
             var valueLen = value.length;
             var number_of_part = Math.floor( valueLen / chunkLen );
             if (number_of_part >= 512) {
-                mono('localStorage','Can\'t save item', key,', very big!');
+                console.log(mono.pageId, 'monoLog:', 'localStorage','Can\'t save item', key,', very big!');
                 return;
             }
             var dataList = value.match(localStorageMode.regexp);
@@ -424,10 +424,10 @@ var mono = function (env) {
                 if (cb === undefined) {
                     return;
                 }
-                mono.debug.messages && mono('cbCollector', message);
+                mono.debug.messages && console.log(mono.pageId, 'monoLog:', 'cbCollector', message);
                 !messagesEnable && mono.onMessage(function(){});
                 if (cbStack.length > mono.messageStack) {
-                    mono('Stack overflow!');
+                    console.log(mono.pageId, 'monoLog:', 'Stack overflow!');
                     delete cbObj[cbStack.shift()];
                 }
                 id++;
@@ -449,29 +449,32 @@ var mono = function (env) {
                     }, timeout);
                 }
             },
-            cbCaller: function(message, pageId) {
-                mono.debug.messages && mono('cbCaller', message);
+            cbCaller: function(message) {
+                mono.debug.messages && console.log(mono.pageId, 'monoLog:', 'cbCaller', message);
                 if (cbObj[message.monoResponseId] === undefined) {
                     if (message.monoResponseId.indexOf(idPrefix) === -1) {
                         return;
                     }
-                    return mono('Send to', pageId, 'Id', message.monoResponseId,'Message response not found!');
+                    return console.log(mono.pageId, 'monoLog:', 'Send to', message.monoTo, 'Id', message.monoResponseId,'Message response not found!');
                 }
                 cbObj[message.monoResponseId](message.data);
                 delete cbObj[message.monoResponseId];
                 cbStack.splice(cbStack.indexOf(message.monoResponseId), 1);
             },
-            mkResponse: function(message, pageId) {
+            mkResponse: function(message) {
                 if (message.monoCallbackId === undefined) {
                     return undefined;
                 }
-                mono.debug.messages && mono('mkResponse', message);
+                mono.debug.messages && console.log(mono.pageId, 'monoLog:', 'mkResponse', message);
                 return function(responseMessage) {
+                    if (message.dead === 1) {
+                        return console.log(mono.pageId, 'monoLog:', 'mkResponse', 'dead response', message);
+                    }
                     responseMessage = {
                         data: responseMessage,
                         monoResponseId: message.monoCallbackId,
                         monoTo: message.monoFrom,
-                        monoFrom: pageId
+                        monoFrom: message.monoTo
                     };
                     if (message.tabId !== undefined) {
                         responseMessage.tabId = message.tabId;
@@ -479,8 +482,9 @@ var mono = function (env) {
                     if (message.source !== undefined) {
                         responseMessage.source = message.source;
                     }
-                    mono.debug.messages && mono('sendResponse', responseMessage);
+                    mono.debug.messages && console.log(mono.pageId, 'monoLog:', 'sendResponse', responseMessage);
                     mono.sendMessage.send(responseMessage);
+                    message.dead = 1;
                 };
             },
             rmCaller: function(monoResponseId) {
@@ -503,12 +507,12 @@ var mono = function (env) {
             filter: function(message, cb) {
                 if (message.monoTo === defaultId) {
                     if (cb.private !== undefined) {
-                        mono.debug.messages && mono('filterDrop', message);
+                        mono.debug.messages && console.log(mono.pageId, 'monoLog:', 'filterDrop', message);
                         return 1;
                     }
                 } else
                 if (cb.filter.indexOf(message.monoTo) === -1) {
-                    mono.debug.messages && mono('filterDrop', message);
+                    mono.debug.messages && console.log(mono.pageId, 'monoLog:', 'filterDrop', message);
                     return 1;
                 }
                 return undefined;
@@ -548,6 +552,7 @@ var mono = function (env) {
     };
 
     var ffMessaging = {
+        cbList: [],
         currentTab: function (message) {
             mono.sendMessage({action: 'toActiveTab', message: message}, undefined, 'service');
         },
@@ -555,19 +560,23 @@ var mono = function (env) {
             addon.port.emit('mono', message);
         },
         on: function(cb) {
-            var firstEvent = messagesEnable;
-            messagesEnable = true;
             msgTools.readFilter(this, cb);
-            var pageId = cb.filter[0];
+            ffMessaging.cbList.push(cb);
+            if (ffMessaging.cbList.length > 1) {
+                return;
+            }
+            messagesEnable = true;
             var onMessage = function(message) {
-                if (firstEvent === false && message.monoResponseId) {
-                    return msgTools.cbCaller(message, pageId);
+                if (message.monoResponseId !== undefined) {
+                    return msgTools.cbCaller(message);
                 }
-                if (msgTools.filter(message, cb)) {
-                    return;
+                var response = msgTools.mkResponse(message);
+                for (var i = 0, itemCb; itemCb = ffMessaging.cbList[i]; i++) {
+                    if (msgTools.filter(message, itemCb)) {
+                        continue;
+                    }
+                    itemCb(message.data, response);
                 }
-                var response = msgTools.mkResponse(message, pageId);
-                cb(message.data, response);
             };
             addon.port.on('mono', onMessage);
         }
@@ -578,6 +587,7 @@ var mono = function (env) {
          * @namespace chrome.runtime
          * @namespace chrome.tabs.query
          */
+        cbList: [],
         currentTab: function (message) {
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
                 if (tabs[0] === undefined || tabs[0].id < 0) {
@@ -597,22 +607,26 @@ var mono = function (env) {
             chrome.runtime.sendMessage(message);
         },
         on: function(cb) {
-            var firstEvent = messagesEnable;
-            messagesEnable = true;
             msgTools.readFilter(this, cb);
-            var pageId = cb.filter[0];
+            chMessaging.cbList.push(cb);
+            if (chMessaging.cbList.length > 1) {
+                return;
+            }
+            messagesEnable = true;
             chrome.runtime.onMessage.addListener(function(message, sender) {
-                if (firstEvent === false && message.monoResponseId) {
-                    return msgTools.cbCaller(message, pageId);
-                }
-                if (msgTools.filter(message, cb)) {
-                    return;
+                if (message.monoResponseId !== undefined) {
+                    return msgTools.cbCaller(message);
                 }
                 if (sender.tab !== undefined) {
                     message.tabId = sender.tab.id;
                 }
-                var response = msgTools.mkResponse(message, pageId);
-                cb(message.data, response);
+                var response = msgTools.mkResponse(message);
+                for (var i = 0, itemCb; itemCb = chMessaging.cbList[i]; i++) {
+                    if (msgTools.filter(message, itemCb)) {
+                        continue;
+                    }
+                    itemCb(message.data, response);
+                }
             });
         }
     };
@@ -655,11 +669,11 @@ var mono = function (env) {
             messagesEnable = true;
             opera.extension.onmessage = function(event) {
                 var message = event.data;
-                if (message.monoResponseId) {
-                    return msgTools.cbCaller(message, message.monoTo);
+                if (message.monoResponseId !== undefined) {
+                    return msgTools.cbCaller(message);
                 }
                 message.source = event.source;
-                var response = msgTools.mkResponse(message, message.monoTo);
+                var response = msgTools.mkResponse(message);
                 for (var i = 0, itemCb; itemCb = opMessaging.cbList[i]; i++) {
                     if (msgTools.filter(message, itemCb)) {
                         continue;
@@ -677,6 +691,7 @@ var mono = function (env) {
          * @namespace safari.extension.globalPage
          * @namespace safari.application.browserWindows
          */
+        cbList: [],
         currentTab: function (message) {
             var currentTab = safari.application.activeBrowserWindow.activeTab;
             if (currentTab.page === undefined) {
@@ -715,21 +730,25 @@ var mono = function (env) {
             safari.self.tab.dispatchMessage("message", message);
         },
         on: function (cb) {
-            var firstEvent = messagesEnable;
-            messagesEnable = true;
             msgTools.readFilter(this, cb);
-            var pageId = cb.filter[0];
+            sfMessaging.cbList.push(cb);
+            if (sfMessaging.cbList.length > 1) {
+                return;
+            }
+            messagesEnable = true;
             var onMessage = function(event) {
                 var message = event.message;
-                if (firstEvent === false && message.monoResponseId) {
-                    return msgTools.cbCaller(message, pageId);
-                }
-                if (msgTools.filter(message, cb)) {
-                    return;
+                if (message.monoResponseId !== undefined) {
+                    return msgTools.cbCaller(message);
                 }
                 message.source = event.target;
-                var response = msgTools.mkResponse(message, pageId);
-                cb(message.data, response);
+                var response = msgTools.mkResponse(message);
+                for (var i = 0, itemCb; itemCb = sfMessaging.cbList[i]; i++) {
+                    if (msgTools.filter(message, itemCb)) {
+                        continue;
+                    }
+                    itemCb(message.data, response);
+                }
             };
             if ( (mono.isSafariPopup || mono.isSafariBgPage) && mono.safariDirectOnMessage === undefined ) {
                 mono.safariDirectOnMessage = onMessage;
@@ -759,10 +778,10 @@ var mono = function (env) {
             }
             messagesEnable = true;
             gmMessaging.gotMsg = function (message) {
-                if (message.monoResponseId) {
-                    return msgTools.cbCaller(message, message.monoTo);
+                if (message.monoResponseId !== undefined) {
+                    return msgTools.cbCaller(message);
                 }
-                var response = msgTools.mkResponse(message, message.monoTo);
+                var response = msgTools.mkResponse(message);
                 for (var i = 0, itemCb; itemCb = gmMessaging.cbList[i]; i++) {
                     if (msgTools.filter(message, itemCb)) {
                         continue;
@@ -779,10 +798,13 @@ var mono = function (env) {
             monoTo: to || defaultId,
             monoFrom: mono.pageId
         };
+        if (this.from !== undefined) {
+            message.monoFrom = this.from;
+        }
         if (this.timeout !== undefined) {
             message.timeout = this.timeout;
         }
-        mono.debug.messages && mono('sendMessage', 'to:', to, 'hasCallback', !!cb, message);
+        mono.debug.messages && console.log(mono.pageId, 'monoLog:', 'sendMessage', 'to:', to, message);
         msgTools.cbCollector(message, cb);
         if (to === 'activeTab') {
             return mono.sendMessage.currentTab(message);
