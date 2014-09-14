@@ -565,7 +565,7 @@ var explore = function() {
         var_cache.qulityList[type] = {};
         for (var index = from; index < end; index++) {
             var title;
-            if ((_lang.t === 'en' || engine.settings.useEnglishPosterName === 1) && content[index].title_en !== undefined) {
+            if ((_lang.lang === 'en' || engine.settings.useEnglishPosterName === 1) && content[index].title_en !== undefined) {
                 title = content[index].title_en;
             } else {
                 title = content[index].title;

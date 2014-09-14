@@ -737,7 +737,7 @@ var options = function() {
                 $('input[data-option="optDoNotSendStatistics"]').parent().hide();
             }
 
-            if (_lang.t === 'en') {
+            if (_lang.lang === 'en') {
                 $('input[data-option="useEnglishPosterName"]').parent().hide();
             }
 

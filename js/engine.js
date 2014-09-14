@@ -58,7 +58,7 @@ var engine = function() {
 
     var defaultProfileTorrentList = function () {
         var list;
-        if (_lang.t === "ru") {
+        if (_lang.lang === "ru") {
             list = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'hdclub', 'tfile', 'fast-torrent', 'opensharing', 'btdigg'];
         } else {
             list = ['bitsnoop', 'extratorrent', 'fenopy', 'torrentz', 'thepiratebay', 'kickass'];
@@ -654,7 +654,7 @@ var engine = function() {
 
     var loadSettings = function(cb) {
         loadLanguage(function() {
-            if (_lang.t !== 'ru') {
+            if (_lang.lang !== 'ru') {
                 def_settings.hideTopSearch = 1;
             }
             optionsMigration(function() {
@@ -781,7 +781,7 @@ var engine = function() {
 
                         storage.doNotSendStatistics !== 1 && window.counter && counter();
 
-                        if ( _lang.t === 'en' ) {
+                        if ( _lang.lang === 'en' ) {
                             def_listOptions.kp_favorites.e = 0;
                             def_listOptions.kp_in_cinema.e = 0;
                             def_listOptions.kp_popular.e = 0;
