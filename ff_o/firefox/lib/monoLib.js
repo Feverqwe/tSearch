@@ -110,7 +110,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
                 if (fromMonoPage.index === index) {
                     continue;
                 }
-                if (fromMonoPage.isInject !== undefined && map[index].isVirtual === undefined) {
+                if (fromMonoPage.isInject !== undefined && map[index].page.isVirtual === undefined) {
                     continue;
                 }
                 if (fromMonoPage.isInject === undefined && map[index].isInject !== undefined && message.monoResponseId === undefined) {
@@ -260,7 +260,7 @@ var XMLHttpRequest = require('sdk/net/xhr').XMLHttpRequest;
         }
         for (var index in map) {
             var _mPage = map[index];
-            if (mPage.isInject !== undefined && _mPage.isVirtual === undefined) {
+            if (mPage.isInject !== undefined && _mPage.page.isVirtual === undefined) {
                 continue;
             }
             if (_mPage.id.indexOf(message.monoTo) !== -1) {
