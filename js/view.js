@@ -1338,7 +1338,7 @@ var view = function() {
         if (title.length === 0 || href.length === 0) {
             return;
         }
-        request = $.trim(request.toLocaleLowerCase());
+        request = $.trim(request.toLowerCase());
         if (var_cache.click_history[request] === undefined) {
             var_cache.click_history[request] = [];
         }

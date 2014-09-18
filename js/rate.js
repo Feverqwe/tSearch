@@ -428,7 +428,7 @@ var wordRate = function() {
         _words.forEach(function(item) {
             if (item.list !== undefined) {
                 item.list.forEach(function(word) {
-                    word = word.toLocaleLowerCase();
+                    word = word.toLowerCase();
                     if (wordObj[word] !== undefined) {
                         console.log('Word conflict!', word);
                     }
