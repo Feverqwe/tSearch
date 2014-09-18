@@ -221,6 +221,9 @@ div.explore div.setup_body > div.default_size {
 div.explore div.setup_body > div.default_size:hover {
     opacity: 1;
 }
+div.explore div.setup_body > select.item_count {
+    margin-bottom: -1px;
+}
 div.explore > ul.sort_mode div.collapses,
 div.explore > ul.sort_mode div.action,
 div.explore > ul.sort_mode ul.body,
