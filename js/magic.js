@@ -795,7 +795,7 @@ var magic = function() {
                 path = path.replace(var_cache.stripPath, '$1>tr');
             }
             var_cache.list_input_dom = var_cache.pageDOM.find(path);
-            if (!var_cache.list_input_dom) {
+            if (var_cache.list_input_dom.length === 0) {
                 console.log('Path in DOM not found!', path);
                 return [];
             }
@@ -809,7 +809,7 @@ var magic = function() {
                 path = path.replace(var_cache.list_input_value, '').replace(var_cache.stripPathSel,'$1');
             }
             var el = var_cache.list_input_dom.eq(input_list.selectors.skip.first.val()).find(path);
-            if (!el){
+            if (el.length === 0){
                 return [];
             }
             var text;
