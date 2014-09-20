@@ -1900,40 +1900,38 @@ var view = function() {
                 if (flags.length > 0) {
                     flags = $('<div>', {'class': 'icons'}).append(flags);
                 }
-                var useProxy = undefined;
-                if (tracker.flags.proxy) {
-                    useProxy = $('<form>').prepend(
-                        _lang.mgrUseProxy, ':',
-                        $('<label>', {text: 'No'}).prepend(
-                            $('<input>', {
-                                type: "radio",
-                                name: "use_proxy",
-                                'data-tracker': id,
-                                value: "0",
-                                checked: engine.proxyList[id] === undefined
-                            })
-                        ),
-                        $('<label>', {text: 'URL'}).prepend(
-                            $('<input>', {
-                                type: "radio",
-                                name: "use_proxy",
-                                'data-tracker': id,
-                                value: "1",
-                                checked: engine.proxyList[id] === 1
-                            })
-                        ),
-                        $('<label>', {text: 'Host'}).prepend(
-                            $('<input>', {
-                                type: "radio",
-                                name: "use_proxy",
-                                'data-tracker': id,
-                                value: "2",
-                                checked: engine.proxyList[id] === 2,
-                                disabled: engine.settings.proxyHost?false:true
-                            })
-                        )
-                    );
-                }
+                var useProxy = $('<form>').prepend(
+                    _lang.mgrUseProxy, ':',
+                    $('<label>', {text: 'No'}).prepend(
+                        $('<input>', {
+                            type: "radio",
+                            name: "use_proxy",
+                            'data-tracker': id,
+                            value: "0",
+                            checked: engine.proxyList[id] === undefined
+                        })
+                    ),
+                    $('<label>', {text: 'URL'}).prepend(
+                        $('<input>', {
+                            type: "radio",
+                            name: "use_proxy",
+                            'data-tracker': id,
+                            value: "1",
+                            checked: engine.proxyList[id] === 1,
+                            disabled: (tracker.flags.proxy)?false:true
+                        })
+                    ),
+                    $('<label>', {text: 'Host'}).prepend(
+                        $('<input>', {
+                            type: "radio",
+                            name: "use_proxy",
+                            'data-tracker': id,
+                            value: "2",
+                            checked: engine.proxyList[id] === 2,
+                            disabled: engine.settings.proxyHost?false:true
+                        })
+                    )
+                );
                 var tracker_icon = $('<div>', {'class': 'tracker_icon'});
                 if (tracker.icon.length === 0) {
                     tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
