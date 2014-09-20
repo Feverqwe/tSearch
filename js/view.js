@@ -143,9 +143,13 @@ var view = function() {
             return;
         }
         if (state === 0) {
+            var url = gui.tracker.login_url;
+            if (engine.settings.proxyHostLinks === 1 && engine.proxyList[id] === 2) {
+                url = engine.changeUrlHostProxy(url);
+            }
             var $auth_ul = $('<ul>').append( $('<li>').append(
                 $('<div>',{'class': 'tracker_icon login'}),
-                $('<a>', {href: gui.tracker.login_url, target: '_blank', text: _lang.btn_login})
+                $('<a>', {href: url, target: '_blank', text: _lang.btn_login})
             ) );
             gui.li.append( $auth_ul );
             if (engine.settings.torrentListHeight === 1) {
@@ -698,6 +702,7 @@ var view = function() {
             bgReadResult(id, result, request);
             return;
         }
+        var setProxyUrl = engine.settings.proxyHostLinks === 1 && engine.proxyList[id] === 2 ? 1 : 0;
         var tr_count = 0;
         for (var i = 0, item; item = result[i]; i++) {
             if (itemCheck(item, errors) === 0) {
@@ -733,6 +738,9 @@ var view = function() {
                 if (item.category.url === undefined) {
                     td_category = $('<div>', {'class': 'category', text: item.category.title}).append(td_icon);
                 } else {
+                    if (setProxyUrl === 1) {
+                        item.category.url = engine.changeUrlHostProxy(item.category.url);
+                    }
                     td_category = $('<div>', {'class': 'category'}).append(
                         $('<a>', {href: item.category.url, target: "_blank", text: item.category.title}),
                         td_icon
@@ -741,12 +749,18 @@ var view = function() {
             }
             var td_download;
             if (item.dl !== undefined) {
+                if (setProxyUrl === 1) {
+                    item.dl = engine.changeUrlHostProxy(item.dl);
+                }
                 var isBlank = engine.settings.noBlankPageOnDownloadClick !== 1;//(item.dl.substr(0, 7).toLowerCase() !== 'magnet:');
                 td_download = $('<td>', {'class': 'size'}).append(
                     $('<div>').append( $('<a>', {href: item.dl, target: (isBlank === true)?'_blank':'', text: bytesToSize(item.size) + ' ↓'}) )
                 );
             } else {
                 td_download = $('<td>', {'class': 'size'}).append( $('<div>', {text: bytesToSize(item.size)}) );
+            }
+            if (setProxyUrl === 1) {
+                item.url = engine.changeUrlHostProxy(item.url);
             }
             table_dom_item.node = $('<tr>', {'data-filter': table_dom_item.filter, 'data-tracker': tracker.class_name, 'data-category': item.category.id}).data('id', item_id).append(
                 $('<td>', {'class': 'time', title: u2ddmmyyyy_title(item.time)}).append( $('<div>', {text: u2timeago(item.time)}) ),

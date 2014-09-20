@@ -25,7 +25,8 @@ var engine = function() {
         profileListSync: 0,
         proxyURL: 'http://www.gmodules.com/ig/proxy?url={url}',
         proxyHost: '',
-        proxyUrlFixSpaces: 1
+        proxyUrlFixSpaces: 1,
+        proxyHostLinks: 0
     };
     var def_listOptions = {
         favorites: { e: 1, s: 1, w: 100, c: 1 },
@@ -385,14 +386,14 @@ var engine = function() {
         trackers.forEach(function(tracker) {
             try {
                 view.loadingStatus(0, tracker);
-                torrent_lib[tracker].find(text, function() {
-                    if (arguments[0] === 1) {
+                torrent_lib[tracker].find(text, function(type, arg) {
+                    if (type === 1) {
                         // result list
-                        view.result(tracker, arguments[1], text);
+                        view.result(tracker, arg, text);
                     } else
-                    if (arguments[0] === 2) {
+                    if (type === 2) {
                         // error?
-                        view.loadingStatus(arguments[1], tracker);
+                        view.loadingStatus(arg, tracker);
                     }
                 });
             } catch (err) {
@@ -479,6 +480,12 @@ var engine = function() {
 
     var changeUrlHostProxy = function(url) {
         if (!settings.proxyHost) {
+            return url;
+        }
+        if (url[6] !== '/') {
+            return url;
+        }
+        if (url.indexOf(settings.proxyHost) !== -1) {
             return url;
         }
         var sPos = url.indexOf('//');
@@ -773,6 +780,7 @@ var engine = function() {
         //need view
         search: search,
         stop: stop,
+        changeUrlHostProxy: changeUrlHostProxy,
         //need options:
         defaultProfileTorrentList: defaultProfileTorrentList,
         loadSettings: loadSettings,
