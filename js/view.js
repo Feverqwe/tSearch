@@ -1902,7 +1902,7 @@ var view = function() {
                 }
                 var useProxy = $('<form>').prepend(
                     _lang.mgrUseProxy, ':',
-                    $('<label>', {text: 'No'}).prepend(
+                    $('<label>', {text: _lang.word_no}).prepend(
                         $('<input>', {
                             type: "radio",
                             name: "use_proxy",
