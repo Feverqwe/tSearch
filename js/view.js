@@ -646,6 +646,8 @@ var view = function() {
             }
             var title_highLight = wordRate.titleHighLight(item.title);
             var quality = wordRate.sizeSeedRate(title_highLight.rate, item);
+            quality.value -= title_highLight.rate.music;
+            quality.value -= title_highLight.rate.books;
 
             if (var_cache.syntaxCache.year === undefined) {
                 if (item.time > var_cache.time_cache.week_ago) {
