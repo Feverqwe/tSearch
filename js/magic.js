@@ -185,15 +185,16 @@ var magic = function() {
                 rs: (input_list.desk.tracker.isCirilic.prop('checked')) ? 1 : 0
             }
         };
-        if (code.icon.length === 0) {
+        if (!code.icon) {
             code.icon = '#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
         }
         code.post = input_list.search.post.val();
-        if (code.post.length === 0) {
+        if (!code.post) {
             delete code.post;
         }
-        if (input_list.search.charset.val().length > 0) {
-            code.charset = input_list.search.charset.val();
+        code.charset = input_list.search.charset.val();
+        if (!code.charset) {
+            delete code.charset;
         }
         if (input_list.search.cp1251.prop('checked')) {
             code.encode = 1;
@@ -271,11 +272,13 @@ var magic = function() {
         if (input_list.selectors.skip.last.val() > 0) {
             code.sl = parseInt(input_list.selectors.skip.last.val());
         }
-        if (input_list.auth.url.val().length > 0) {
-            code.auth = input_list.auth.url.val();
+        code.auth = input_list.auth.url.val();
+        if (!code.auth) {
+            delete code.auth;
         }
-        if (input_list.auth.input.val().length > 0) {
-            code.auth_f = input_list.auth.input.val();
+        code.auth_f = input_list.auth.input.val();
+        if (!code.auth_f) {
+            delete code.auth_f;
         }
         code.uid = hashCode(JSON.stringify(code));
         var tracker_code = JSON.stringify(code);
@@ -423,7 +426,7 @@ var magic = function() {
         dom_cache.menu.children().eq(0).children('a').trigger('click');
     };
     var loadUrl = function(url, type) {
-        if (url.length === 0) {
+        if (!url) {
             return;
         }
         if (var_cache.xhr !== undefined) {
@@ -442,7 +445,7 @@ var magic = function() {
             success: function(data) {
                 var_cache.ifContent = undefined;
                 var_cache.pageDOM = $($.parseHTML(data));
-                if (var_cache.list_input_value !== undefined && var_cache.list_input_value.length > 0) {
+                if (var_cache.list_input_value) {
                     var_cache.list_input_dom = var_cache.pageDOM.find(var_cache.list_input_value);
                 }
                 dom_cache.iframe[0].contentDocument.all[0].innerHTML = contentFilter(data) +
@@ -454,10 +457,10 @@ var magic = function() {
             }
         };
         var charset = input_list.search.charset.val();
-        if (charset.length > 0) {
+        if (charset) {
             obj_req.mimeType = "text/plain; charset="+charset;
         }
-        if (post.length > 0) {
+        if (post) {
             obj_req.type = 'POST';
             obj_req.data = post;
         }
@@ -549,7 +552,7 @@ var magic = function() {
                         item = input_list[itemName];
                     }
                     item.input.removeClass('error');
-                    if (this.value.length === 0) {
+                    if (!this.value) {
                         return;
                     }
                     var path_text = onPathChange(this.value, itemName, parent, 1);
@@ -724,7 +727,7 @@ var magic = function() {
         var isTodayReplace = input_list.convert.time.today.prop('checked');
         var isMonthReplace = input_list.convert.time.month.prop('checked');
         var timeFormat = parseInt(input_list.convert.time.format.val());
-        if (value_regexp.length > 0) {
+        if (value_regexp) {
             var regexp = new RegExp(value_regexp, 'ig');
             text = text.replace(regexp, value_regexp_text);
         }
@@ -746,7 +749,7 @@ var magic = function() {
         var value_regexp = input_list.convert.size.regexp.val();
         var value_regexp_text = input_list.convert.size.regexp_text.val();
         var isConvert = input_list.convert.size.convert.prop('checked');
-        if (value_regexp.length > 0) {
+        if (value_regexp) {
             var regexp = new RegExp(value_regexp, 'ig');
             text = text.replace(regexp, value_regexp_text);
         }
@@ -761,7 +764,7 @@ var magic = function() {
         input_list.convert.peer.original.val( text );
         var value_regexp = input_list.convert.peer.regexp.val();
         var value_regexp_text = input_list.convert.peer.regexp_text.val();
-        if (value_regexp.length > 0) {
+        if (value_regexp) {
             var regexp = new RegExp(value_regexp, 'ig');
             text = text.replace(regexp, value_regexp_text);
         }
@@ -773,7 +776,7 @@ var magic = function() {
         input_list.convert.seed.original.val( text );
         var value_regexp = input_list.convert.seed.regexp.val();
         var value_regexp_text = input_list.convert.seed.regexp_text.val();
-        if (value_regexp.length > 0) {
+        if (value_regexp) {
             var regexp = new RegExp(value_regexp, 'ig');
             text = text.replace(regexp, value_regexp_text);
         }
@@ -792,7 +795,7 @@ var magic = function() {
                 path = path.replace(var_cache.stripPath, '$1>tr');
             }
             var_cache.list_input_dom = var_cache.pageDOM.find(path);
-            if (var_cache.list_input_dom.length === 0) {
+            if (!var_cache.list_input_dom) {
                 console.log('Path in DOM not found!', path);
                 return [];
             }
@@ -806,13 +809,13 @@ var magic = function() {
                 path = path.replace(var_cache.list_input_value, '').replace(var_cache.stripPathSel,'$1');
             }
             var el = var_cache.list_input_dom.eq(input_list.selectors.skip.first.val()).find(path);
-            if (el.length === 0){
+            if (!el){
                 return [];
             }
             var text;
             if (item.attr_enable !== undefined && item.attr_enable.prop('checked')) {
                 var attr = item.attr.val();
-                if (attr.length === 0) {
+                if (!attr) {
                     return [];
                 }
                 text = el.attr(attr);
@@ -883,7 +886,7 @@ var magic = function() {
             }
             var parent = node.parent();
             var tag = name;
-            if (realNode.id !== undefined && realNode.id.length > 0) {
+            if (realNode.id) {
                 if (content !== undefined) {
                     if (tag !== 'TR' && content.find('#' + realNode.id).length === 1) {
                         return '#' + realNode.id + (path !== undefined ? '>' + path : '');
@@ -896,7 +899,7 @@ var magic = function() {
             } else if (realNode.className !== undefined) {
                 var classList = realNode.className.split(/\s+/);
                 classList = classList.filter(function(a){
-                    if (a === 'kit_select' || a.length === 0) {
+                    if (a === 'kit_select' || !a) {
                         return 0;
                     }
                     var s = (/[^\w-]{1,}/).test(a);
