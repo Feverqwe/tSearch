@@ -24,6 +24,7 @@ var engine = function() {
         torrentListHeight: 0,
         profileListSync: 0,
         proxyURL: 'http://www.gmodules.com/ig/proxy?url={url}',
+        proxyHost: '',
         proxyUrlFixSpaces: 1
     };
     var def_listOptions = {
@@ -48,7 +49,7 @@ var engine = function() {
         historyLimit: 100
     };
 
-    var proxyList = [];
+    var proxyList = {};
 
     var history = [];
     var profileList = {};
@@ -466,6 +467,22 @@ var engine = function() {
         return $safe_content;
     };
 
+    var changeUrlHostProxy = function(url) {
+        if (!settings.proxyHost) {
+            return url;
+        }
+        var sPos = url.indexOf('//');
+        if (sPos === -1) {
+            return url;
+        }
+        sPos += 2;
+        sPos = url.indexOf('/', sPos);
+        if (sPos === -1) {
+            sPos = url.length;
+        }
+        return url.substr(0, sPos) + '.' + settings.proxyHost + url.substr(sPos);
+    };
+
     var ajax = function(obj) {
         var url = obj.url;
 
@@ -476,11 +493,11 @@ var engine = function() {
 
         if (data && typeof data !== "string") {
             data = $.param(data);
+        }
 
-            if (method === 'GET') {
-                url += ( (url.indexOf('?') === -1)?'?':'&' ) + data;
-                data = undefined;
-            }
+        if (method === 'GET') {
+            url += ( (url.indexOf('?') === -1)?'?':'&' ) + data;
+            data = undefined;
         }
 
         if (obj.cache === false && ['GET','HEAD'].indexOf(method) !== -1) {
@@ -492,11 +509,15 @@ var engine = function() {
             obj.safe = true;
         }
 
-        if (method === 'GET' && proxyList.indexOf(obj.tracker) !== -1) {
+        if (method === 'GET' && proxyList[obj.tracker] === 1) {
             if (settings.proxyUrlFixSpaces) {
                 url = url.replace(/[\t\s]+/g, '%20');
             }
             url = settings.proxyURL.replace('{url}', encodeURIComponent(url));
+        }
+
+        if (proxyList[obj.tracker] === 2) {
+            url = changeUrlHostProxy(url);
         }
 
         var xhr;
@@ -756,6 +777,20 @@ var engine = function() {
             });
         },
         proxyList: proxyList,
+        setProxyList: function(newList) {
+            var delList = [], item, i;
+            for (item in proxyList) {
+                if (newList[item] === undefined) {
+                    delList.push(item);
+                }
+            }
+            for (item in newList) {
+                proxyList[item] = newList[item];
+            }
+            for (i = 0, item; item = delList[i]; i++) {
+                delete proxyList[item];
+            }
+        },
         boot: function(cb) {
             if (mono.isChrome) {
                 var_cache.historyLimit = 200;
@@ -771,8 +806,14 @@ var engine = function() {
                         'history', 'lang', 'doNotSendStatistics', 'proxyList', 'titleQualityList'], function(storage) {
 
                         if (storage.proxyList !== undefined) {
-                            proxyList.splice(0);
-                            Array.prototype.push.apply(proxyList, storage.proxyList);
+                            if (Array.isArray(storage.proxyList)) {
+                                var newList = {};
+                                storage.proxyList.forEach(function(item) {
+                                    newList[item] = 1;
+                                });
+                                storage.proxyList = newList;
+                            }
+                            engine.setProxyList(storage.proxyList);
                         }
 
                         if (syncStorage.profileList !== undefined) {

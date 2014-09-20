@@ -214,7 +214,9 @@
     "optSubCategoryFilter": {"message": "Учитывать подкатегории"},
     "optProxyTitle": {"message": "Проксирование запросов"},
     "optProxyInfo": {"message": "Прокси работает только для GET запросов."},
+    "optProxyHostInfo": {"message": "HTTP<b>S</b> запросы могут не поддерживаться."},
     "optProxyURL": {"message": "URL"},
+    "optProxyHost": {"message": "Host"},
     "optProxyUrlFixSpaces": {"message": "Экранировать пробелы"},
     "word_update": {"message": "Обновить"},
     "optSaveInCloud": {"message": "Сохранить в облаке"},
@@ -223,6 +225,8 @@
     "optShowSection": {"message": "Показывать секции:"},
     "optRestoreError": {"message": "Ошибка восстановления настроек!"},
     "optCloudBackupError": {"message": "Ошибка сохранения настроек!"},
+    "word_for_example": {"message": "Например:"},
+    "word_no": {"message": "Нет"},
 
     "magic_1": {"message": "Ошибка загрузки!"},
     "magic_2": {"message": "Поиск"},

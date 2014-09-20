@@ -10,6 +10,12 @@ body {
     min-width: 920px;
 }
 
+.user-select {
+    -webkit-user-select: initial;
+    -moz-user-select: initial;
+    user-select: initial;
+}
+
 a {
     color: #0051D8;
     text-decoration: none;
@@ -43,7 +49,7 @@ input[type="text"] {
     width: 80px;
 }
 
-#proxyURL {
+#proxyURL, #proxyHost {
     display: block;
     width: 658px;
 }

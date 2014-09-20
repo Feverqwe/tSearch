@@ -211,7 +211,9 @@
     "optSubCategoryFilter": {"message": "Consider the subcategory"},
     "optProxyTitle": {"message": "Proxying requests"},
     "optProxyInfo": {"message": "Proxy only works for GET requests."},
+    "optProxyHostInfo": {"message": "HTTP<b>S</b> requests may not be supported."},
     "optProxyURL": {"message": "URL"},
+    "optProxyHost": {"message": "Host"},
     "optProxyUrlFixSpaces": {"message": "To escape spaces"},
     "word_update": {"message": "Refresh"},
     "optSaveInCloud": {"message": "Save in the cloud"},
@@ -220,6 +222,8 @@
     "optShowSection": {"message": "Show section:"},
     "optRestoreError": {"message": "Failed to restore settings!"},
     "optCloudBackupError": {"message": "Error saving settings!"},
+    "word_for_example": {"message": "For example:"},
+    "word_no": {"message": "No"},
 
     "magic_1": {"message": "Loading error!"},
     "magic_2": {"message": "Search"},

@@ -63,11 +63,26 @@
                         <label data-lang="optAdvFiltration2,sub,text"><input type="radio" name="advFiltration" data-option="advFiltration" value="2"/>Ищет совпадение всех введенных слов</label>
                         <label data-lang="optSubCategoryFilter,sub,text"><input type="checkbox" data-option="subCategoryFilter"/>Учитывать подкатегории</label>
                         <h2 data-lang="optProxyTitle">Проксирование запросов</h2>
+                        <h3>URL</h3>
                         <div class="info">
                             <span data-lang="optProxyInfo">Proxy work only for GET search request.</span>
+                            <p data-lang="word_for_example">Example:</p>
+                            <ul class="user-select">
+                                <li>http<b>s</b>://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&amp;container=pos</li>
+                                <li>http://www.gmodules.com/ig/proxy?url={url}</li>
+                            </ul>
                         </div>
                         <label data-lang="optProxyURL,sub,text">URL<input id="proxyURL" type="text" data-option="proxyURL" value="https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&amp;container=pos"/></label>
                         <label data-lang="optProxyUrlFixSpaces,sub,text"><input type="checkbox" data-option="proxyUrlFixSpaces"/>Экранировать пробелы</label>
+                        <h3>Host</h3>
+                        <div class="info">
+                            <span data-lang="optProxyHostInfo,html">HTTP<b>S</b> requests may not be supported.</span>
+                            <p data-lang="word_for_example">Example:</p>
+                            <ul class="user-select">
+                                <li>example.org</li>
+                            </ul>
+                        </div>
+                        <label data-lang="optProxyHost,sub,text">Host<input id="proxyHost" type="text" data-option="proxyHost" value=""/></label>
                     </div>
                     <div class="page quality">
                         <h2 data-lang="optQuality">Определение качества</h2>

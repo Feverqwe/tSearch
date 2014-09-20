@@ -1490,11 +1490,12 @@ var view = function() {
                 list.push(id);
             }
 
-            var proxyList = [];
-            elList = trackerList.find('input.use_proxy:checked');
+            var proxyList = {};
+            elList = trackerList.find('input[name="use_proxy"]:checked');
             for (var i = 0, el; el = elList[i]; i++) {
                 id = el.dataset.tracker;
-                proxyList.push(id);
+                var value = parseInt(el.value);
+                proxyList[id] = (value > 0) ? value : undefined;
             }
 
             var newListName = listName.val();
@@ -1511,8 +1512,7 @@ var view = function() {
                 selfCurrentProfile = newListName;
             }
             engine.profileList[selfCurrentProfile] = list;
-            engine.proxyList.splice(0);
-            Array.prototype.push.apply(engine.proxyList, proxyList);
+            engine.setProxyList(proxyList);
 
             var changes = {};
             changes.profileList = JSON.stringify(engine.profileList);
@@ -1902,13 +1902,36 @@ var view = function() {
                 }
                 var useProxy = undefined;
                 if (tracker.flags.proxy) {
-                    useProxy = $('<label>', {text: _lang.mgrUseProxy, class: 'useProxy'}).prepend(
-                        $('<input>', {
-                            type: "checkbox",
-                            class: "use_proxy",
-                            'data-tracker': id,
-                            checked: engine.proxyList.indexOf(id) !== -1
-                        })
+                    useProxy = $('<form>').prepend(
+                        _lang.mgrUseProxy, ':',
+                        $('<label>', {text: 'No'}).prepend(
+                            $('<input>', {
+                                type: "radio",
+                                name: "use_proxy",
+                                'data-tracker': id,
+                                value: "0",
+                                checked: engine.proxyList[id] === undefined
+                            })
+                        ),
+                        $('<label>', {text: 'URL'}).prepend(
+                            $('<input>', {
+                                type: "radio",
+                                name: "use_proxy",
+                                'data-tracker': id,
+                                value: "1",
+                                checked: engine.proxyList[id] === 1
+                            })
+                        ),
+                        $('<label>', {text: 'Host'}).prepend(
+                            $('<input>', {
+                                type: "radio",
+                                name: "use_proxy",
+                                'data-tracker': id,
+                                value: "2",
+                                checked: engine.proxyList[id] === 2,
+                                disabled: engine.settings.proxyHost?false:true
+                            })
+                        )
                     );
                 }
                 var tracker_icon = $('<div>', {'class': 'tracker_icon'});
