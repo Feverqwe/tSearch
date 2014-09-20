@@ -76,47 +76,47 @@ var engine = function() {
         }
         torrent_lib[uid] = function() {
             var me = code;
-            var icon = (me.icon !== undefined) ? me.icon : '';
-            var name = (me.name !== undefined) ? me.name : '-no name-';
-            var about = (me.about !== undefined) ? me.about : '';
-            var root_url = (me.root_url !== undefined) ? me.root_url : '';
-            var short_url = (me.root_url !== undefined) ? me.root_url.replace(/http(s?):\/\/([^\/]*)\/?.*$/, 'http$1://$2') : '';
-            var login_url = (me.auth !== undefined) ? me.auth : '';
+            var icon = (me.icon) ? me.icon : '';
+            var name = (me.name) ? me.name : '-no name-';
+            var about = (me.about) ? me.about : '';
+            var root_url = (me.root_url) ? me.root_url : '';
+            var short_url = (me.root_url) ? me.root_url.replace(/http(s?):\/\/([^\/]*)\/?.*$/, 'http$1://$2') : '';
+            var login_url = (me.auth) ? me.auth : '';
             var uid = me.uid;
             var custom_id = 'ct_' + me.uid;
             var tests = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-            var flags = (me.flags !== undefined) ? me.flags : {
+            var flags = (me.flags) ? me.flags : {
                 a: 0,
                 l: 0,
                 rs: 1
             };
             var xhr = undefined;
             var kit = function() {
-                var ex_cat = (me.cat_name !== undefined) ? 1 : 0;
-                var ex_link = (me.cat_link !== undefined) ? 1 : 0;
-                var ex_link_r = (me.cat_link_r !== undefined) ? 1 : 0;
-                var ex_tr_link_r = (me.tr_link_r !== undefined) ? 1 : 0;
-                var ex_tr_size = (me.tr_size !== undefined) ? 1 : 0;
-                var ex_tr_size_c = (me.s_c !== undefined) ? 1 : 0;
-                var ex_tr_dl = (me.tr_dl !== undefined) ? 1 : 0;
-                var ex_tr_dl_r = (me.tr_dl_r !== undefined) ? 1 : 0;
-                var ex_seed = (me.seed !== undefined) ? 1 : 0;
-                var ex_peer = (me.peer !== undefined) ? 1 : 0;
-                var ex_date = (me.date !== undefined) ? 1 : 0;
-                var ex_date_regexp = (me.t_r !== undefined && me.t_r_r !== undefined) ? 1 : 0; //t_r t_r_r
-                var ex_size_regexp = (me.size_r !== undefined && me.size_rp !== undefined) ? 1 : 0;
-                var ex_seed_regexp = (me.seed_r !== undefined && me.seed_rp !== undefined) ? 1 : 0;
-                var ex_peer_regexp = (me.peer_r !== undefined && me.peer_rp !== undefined) ? 1 : 0;
-                var ex_t_m_r = (me.t_m_r !== undefined) ? 1 : 0;
-                var ex_t_t_r = (me.t_t_r !== undefined) ? 1 : 0;
+                var ex_cat = (me.cat_name) ? 1 : 0;
+                var ex_link = (me.cat_link) ? 1 : 0;
+                var ex_link_r = (me.cat_link_r) ? 1 : 0;
+                var ex_tr_link_r = (me.tr_link_r) ? 1 : 0;
+                var ex_tr_size = (me.tr_size) ? 1 : 0;
+                var ex_tr_size_c = (me.s_c) ? 1 : 0;
+                var ex_tr_dl = (me.tr_dl) ? 1 : 0;
+                var ex_tr_dl_r = (me.tr_dl_r) ? 1 : 0;
+                var ex_seed = (me.seed) ? 1 : 0;
+                var ex_peer = (me.peer) ? 1 : 0;
+                var ex_date = (me.date) ? 1 : 0;
+                var ex_date_regexp = (me.t_r && me.t_r_r !== undefined) ? 1 : 0; //t_r t_r_r
+                var ex_size_regexp = (me.size_r && me.size_rp !== undefined) ? 1 : 0;
+                var ex_seed_regexp = (me.seed_r && me.seed_rp !== undefined) ? 1 : 0;
+                var ex_peer_regexp = (me.peer_r && me.peer_rp !== undefined) ? 1 : 0;
+                var ex_t_m_r = (me.t_m_r) ? 1 : 0;
+                var ex_t_t_r = (me.t_t_r) ? 1 : 0;
                 var ex_t_f = (me.t_f !== undefined && me.t_f !== "-1") ? 1 : 0; //me.t_f is string from JSON
-                var ex_auth_f = (me.auth_f !== undefined) ? 1 : 0;
-                var ex_encode = (me.encode !== undefined) ? 1 : 0;
-                var ex_post = (me.post !== undefined) ? 1 : 0;
+                var ex_auth_f = (me.auth_f) ? 1 : 0;
+                var ex_encode = (me.encode) ? 1 : 0;
+                var ex_post = (me.post) ? 1 : 0;
                 if (ex_post === 0) {
                     flags.proxy = 1;
                 }
-                var ex_charset = (me.charset !== undefined) ? 1 : 0;
+                var ex_charset = (me.charset) ? 1 : 0;
                 if (me.cat_alt) {
                     me.cat_attr = 'alt';
                     delete me.cat_alt;
