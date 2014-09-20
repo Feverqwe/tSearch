@@ -401,6 +401,9 @@ var engine = function() {
 
     var stop = function() {
         lastTrackerList.forEach(function(tracker) {
+            if (torrent_lib[tracker] === undefined) {
+                return 1;
+            }
             torrent_lib[tracker].stop();
             view.loadingStatus(1, tracker);
         });
