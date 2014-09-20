@@ -1264,11 +1264,8 @@ var view = function() {
                 params[key] = item.substr(pos+1);
             }
         }
-        if (params.search !== undefined) {
+        if (params.search) {
             params.search = decodeURIComponent(params.search);
-            if (!params.search) {
-                delete params.search;
-            }
         }
         try {
             if (params.tracker !== undefined) {
