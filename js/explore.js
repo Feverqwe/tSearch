@@ -150,10 +150,10 @@ var explore = function() {
                     item.img = engine.contentUnFilter(item.img);
                 }
             }
-            if (item.title.length === 0) {
+            if (!item.title) {
                 return 0;
             }
-            if (item.title_en !== undefined && item.title_en.length === 0) {
+            if (!item.title_en) {
                 return 0;
             }
             return 1;
@@ -261,7 +261,7 @@ var explore = function() {
                     obj.img = kp_img_url2(obj.img);
                     var year = getYear(obj.title_en);
                     obj.title_en = rmYear(obj.title_en);
-                    if (obj.title_en.length === 0) {
+                    if (!obj.title_en) {
                         obj.title_en = undefined;
                     }
                     if (!isNaN(year)) {
@@ -287,7 +287,7 @@ var explore = function() {
                         title_en: item.children('i').text(),
                         url: item.children('a').attr('href')
                     };
-                    if (obj.title_en.length === 0) {
+                    if (!obj.title_en) {
                         obj.title_en = undefined;
                     }
                     if (check_item(obj) === 0) {
@@ -327,7 +327,7 @@ var explore = function() {
                     obj.img = kp_img_url(obj.img);
                     obj.title = rmSerial(obj.title);
                     obj.title_en = rmYear(obj.title_en);
-                    if (obj.title_en.length === 0) {
+                    if (!obj.title_en) {
                         obj.title_en = undefined;
                     }
                     arr.push(obj);
@@ -458,7 +458,7 @@ var explore = function() {
                 info.desc = dom_desc.text();
                 info.other = $content.find('div.kno-fb-ctx');
                 var content_info = $('<div>');
-                if (info.title.length === 0 || info.desc.length === 0) {
+                if (!info.title || !info.desc) {
                     return '';
                 }
                 if (info.img !== undefined) {
@@ -483,7 +483,7 @@ var explore = function() {
                     var val = $(item).children('.kno-fv');
                     var k = val.prev().text();
                     var v = val.text();
-                    if (v.length === 0 || k.length === 0) {
+                    if (!v || !k) {
                         continue;
                     }
                     content_info.append($('<div>', {'class': 'a-table'}).append($('<span>', {'class': 'key', text: k}), $('<span>', {'class': 'value', text: v})));
