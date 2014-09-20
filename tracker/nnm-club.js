@@ -66,8 +66,7 @@ torrent_lib['nnm-club'] = function () {
             }
             return arr;
         };
-        var loadPage = function (text) {
-            var t = text;
+        var loadPage = function (text, cb) {
             if (xhr != undefined)
                 xhr.abort();
             xhr = engine.ajax({
@@ -77,26 +76,19 @@ torrent_lib['nnm-club'] = function () {
                 url: url + '?nm=' + encodeURIComponent(text) + '&f[]=-1&prev_sd=0&prev_a=0&prev_my=0&prev_n=0&prev_shc=0&prev_shf=1&prev_sha=1&prev_shs=0&prev_shr=0&prev_sht=0&f[]=-1&o=1&s=2&tm=-1&shf=1&sha=1&ta=-1&sns=-1&sds=-1',
                 cache: false,
                 success: function (data) {
-                    view.result(filename, readCode(data), t);
+                    cb(1, readCode(data));
                 },
                 error: function () {
-                    view.loadingStatus(2, filename);
+                    cb(2, 2);
                 }
             });
         };
         return {
-            getPage: function (a) {
-                return loadPage(a);
-            }
+            getPage: loadPage
         }
     }();
-    var find = function (text) {
-        return web.getPage(text);
-    };
     return {
-        find: function (a) {
-            return find(a);
-        },
+        find: web.getPage,
         stop: function(){
             if (xhr !== undefined) {
                 xhr.abort();

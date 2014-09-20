@@ -72,15 +72,7 @@ torrent_lib.btdigg = function () {
             }
             return arr;
         };
-        var res_count = 0;
-        var loadPage = function (text, page) {
-            if (page === undefined) {
-                res_count = 0;
-                page = 0;
-            } else {
-                view.loadingStatus(0, filename);
-            }
-            var t = text;
+        var loadPage = function (text, cb) {
             var hash = '';
             if (text.length === 40 && (/[^a-zA-Z0-9]/).test(text) === false)
                 hash = text;
@@ -94,39 +86,23 @@ torrent_lib.btdigg = function () {
                 data: {
                     info_hash: hash,
                     q: text,
-                    p: page,
+                    p: 0,
                     order: 0
                 },
                 success: function (data) {
-                    var arr = readCode(data);
-                    var c = arr.length;
-                    res_count += c;
-                    if (hash.length === 0 && c === 10 && page < 0) {
-                        view.result(filename, arr, t, res_count);
-                        page++;
-                        loadPage(text, page);
-                    } else {
-                        view.result(filename, arr, t, res_count);
-                    }
+                    cb(1, readCode(data));
                 },
                 error: function () {
-                    view.loadingStatus(2, filename);
+                    cb(2, 2);
                 }
             });
         };
         return {
-            getPage: function (a) {
-                return loadPage(a);
-            }
+            getPage: loadPage
         }
     }();
-    var find = function (text) {
-        return web.getPage(text);
-    };
     return {
-        find: function (a) {
-            return find(a);
-        },
+        find: web.getPage,
         stop: function(){
             if (xhr !== undefined) {
                 xhr.abort();

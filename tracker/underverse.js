@@ -68,8 +68,7 @@ torrent_lib.underverse = function () {
             }
             return arr;
         };
-        var loadPage = function (text) {
-            var t = text;
+        var loadPage = function (text, cb) {
             if (xhr !== undefined)
                 xhr.abort();
             xhr = engine.ajax({
@@ -78,26 +77,19 @@ torrent_lib.underverse = function () {
                 url: url + '?nm=' + ex_kit.in_cp1251(text),
                 cache: false,
                 success: function (data) {
-                    view.result(filename, readCode(data), t);
+                    cb(1, readCode(data));
                 },
                 error: function () {
-                    view.loadingStatus(2, filename);
+                    cb(2, 2);
                 }
             });
         };
         return {
-            getPage: function (a) {
-                return loadPage(a);
-            }
+            getPage: loadPage
         }
     }();
-    var find = function (text) {
-        return web.getPage(text);
-    };
     return {
-        find: function (a) {
-            return find(a);
-        },
+        find: web.getPage,
         stop: function(){
             if (xhr !== undefined) {
                 xhr.abort();

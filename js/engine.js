@@ -325,7 +325,7 @@ var engine = function() {
                     }
                     return arr;
                 };
-                var loadPage = function(text) {
+                var loadPage = function(text, cb) {
                     var request = (ex_encode === 1) ? ex_kit.in_cp1251(text) : text;
                     if (xhr !== undefined)
                         xhr.abort();
@@ -335,10 +335,10 @@ var engine = function() {
                         url: me.search_path.replace('%search%', request),
                         cache: false,
                         success: function(data) {
-                            view.result(custom_id, readCode(data), text);
+                            cb(1, readCode(data));
                         },
                         error: function() {
-                            view.loadingStatus(2, custom_id);
+                            cb(2, 2);
                         }
                     };
                     if (ex_charset) {
@@ -385,7 +385,16 @@ var engine = function() {
         trackers.forEach(function(tracker) {
             try {
                 view.loadingStatus(0, tracker);
-                torrent_lib[tracker].find(text);
+                torrent_lib[tracker].find(text, function() {
+                    if (arguments[0] === 1) {
+                        // result list
+                        view.result(tracker, arguments[1], text);
+                    } else
+                    if (arguments[0] === 2) {
+                        // error?
+                        view.loadingStatus(arguments[1], tracker);
+                    }
+                });
             } catch (err) {
                 view.loadingStatus(2, tracker);
             }
