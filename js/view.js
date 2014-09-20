@@ -1266,6 +1266,8 @@ var view = function() {
         }
         if (params.search) {
             params.search = decodeURIComponent(params.search);
+        } else {
+            delete params.search;
         }
         try {
             if (params.tracker !== undefined) {

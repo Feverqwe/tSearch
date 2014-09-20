@@ -355,9 +355,7 @@ var engine = function() {
                 };
             }();
             return {
-                find: function(text) {
-                    kit.getPage(text);
-                },
+                find: kit.getPage,
                 stop: function(){
                     if (xhr !== undefined) {
                         xhr.abort();
