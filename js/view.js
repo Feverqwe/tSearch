@@ -277,7 +277,7 @@ var view = function() {
         /*
          * Проверка тестов
          */
-        if (typeof (item.title) !== 'string' || typeof (item.url) !== 'string' || item.title.length === 0 || item.url.length === 0) {
+        if (typeof (item.title) !== 'string' || typeof (item.url) !== 'string' || !item.title || !item.url) {
             return 0;
         } else {
             if (item.title.indexOf('\n') !== -1) {
@@ -302,7 +302,7 @@ var view = function() {
             };
             er[0] += 1;
         }
-        if (typeof item.category.title !== 'string' || item.category.title.length === 0) {
+        if (typeof item.category.title !== 'string' || !item.category.title) {
             item.category.title = undefined;
             er[1] += 1;
         } else {
@@ -317,7 +317,7 @@ var view = function() {
                 item.category.title = item.category.title.match(var_cache.split_long_string).join(' ');
             }
         }
-        if (typeof item.category.url !== 'string' || item.category.url.length === 0) {
+        if (typeof item.category.url !== 'string' || !item.category.url) {
             item.category.url = undefined;
             er[2] += 1;
         } else {
@@ -343,7 +343,7 @@ var view = function() {
                 er[4] += 1;
             }
         }
-        if (typeof item.dl !== 'string' || item.dl.length === 0) {
+        if (typeof item.dl !== 'string' || !item.dl) {
             item.dl = undefined;
             er[5] += 1;
         } else {
@@ -1116,7 +1116,7 @@ var view = function() {
         };
         dom_cache.search_input.autocomplete({
             source: function(a, response) {
-                if (a.term.length === 0 || engine.settings.autoComplite === 0) {
+                if (!a.term || engine.settings.autoComplite === 0) {
                     response(getHistory());
                 } else {
                     if (var_cache.suggest_xhr !== undefined) {
@@ -1193,7 +1193,7 @@ var view = function() {
     };
     var updateTitle = function() {
         var title;
-        if (var_cache.currentRequest === undefined || var_cache.currentRequest.length === 0) {
+        if (!var_cache.currentRequest) {
             title = 'Torrents MultiSearch';
             document.title = title;
             return title;
@@ -1251,7 +1251,7 @@ var view = function() {
     };
     var readHash = function(hash) {
         var params = {};
-        if (hash.length === 0) {
+        if (!hash) {
             return params;
         }
         hash = hash.substr(hash.indexOf('?')+1);
@@ -1266,7 +1266,7 @@ var view = function() {
         }
         if (params.search !== undefined) {
             params.search = decodeURIComponent(params.search);
-            if (params.search.length === 0) {
+            if (!params.search) {
                 delete params.search;
             }
         }
@@ -1335,7 +1335,7 @@ var view = function() {
         if (request === undefined) {
             request = '';
         }
-        if (title.length === 0 || href.length === 0) {
+        if (!title || !href) {
             return;
         }
         request = $.trim(request.toLowerCase());
@@ -1933,7 +1933,7 @@ var view = function() {
                     )
                 );
                 var tracker_icon = $('<div>', {'class': 'tracker_icon'});
-                if (tracker.icon.length === 0) {
+                if (!tracker.icon) {
                     tracker_icon.css({'background-color': '#ccc', 'border-radius': '8px'});
                 } else
                 if (tracker.icon[0] === '#') {
