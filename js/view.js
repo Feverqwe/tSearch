@@ -1914,7 +1914,7 @@ var view = function() {
                     flags = $('<div>', {'class': 'icons'}).append(flags);
                 }
                 var useProxy = $('<form>').prepend(
-                    _lang.mgrUseProxy, ':',
+                    _lang.mgrUseProxy + ':',
                     $('<label>', {text: _lang.word_no}).prepend(
                         $('<input>', {
                             type: "radio",

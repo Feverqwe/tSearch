@@ -512,7 +512,7 @@ var engine = function() {
             data = $.param(data);
         }
 
-        if (method === 'GET') {
+        if (data && method === 'GET') {
             url += ( (url.indexOf('?') === -1)?'?':'&' ) + data;
             data = undefined;
         }
