@@ -170,7 +170,7 @@ var engine = function() {
                             } else {
                                 obj.category.title = (item.find(me.cat_name)).text();
                             }
-                            if (obj.category.title === undefined || obj.category.title.length === 0) {
+                            if (!obj.category.title) {
                                 obj.category.title = undefined;
                                 er[0] += 1;
                             } else if (ex_link === 1) {
@@ -187,7 +187,7 @@ var engine = function() {
                             }
                         }
                         obj.title = (item.find(me.tr_name)).text();
-                        if (obj.title.length === 0) {
+                        if (!obj.title) {
                             er[2] += 1;
                             continue;
                         }
@@ -210,7 +210,7 @@ var engine = function() {
                             } else {
                                 obj.size = (item.find(me.tr_size)).text();
                             }
-                            if (obj.size !== undefined && obj.size.length !== 0) {
+                            if (obj.size) {
                                 obj.size = obj.size.replace(var_cache.rn, ' ');
                                 if (ex_size_regexp === 1) {
                                     obj.size = obj.size.replace(me.size_r, me.size_rp);
@@ -243,7 +243,7 @@ var engine = function() {
                         }
                         if (ex_seed === 1) {
                             obj.seeds = (item.find(me.seed)).text();
-                            if (obj.seeds.length !== 0) {
+                            if (obj.seeds) {
                                 obj.seeds = obj.seeds.replace(var_cache.rn, ' ');
                                 if (ex_seed_regexp === 1) {
                                     obj.seeds = obj.seeds.replace(me.seed_r, me.seed_rp);
@@ -258,7 +258,7 @@ var engine = function() {
                         }
                         if (ex_peer === 1) {
                             obj.leechs = (item.find(me.peer)).text();
-                            if (obj.leechs.length !== 0) {
+                            if (obj.leechs) {
                                 obj.leechs = obj.leechs.replace(var_cache.rn, ' ');
                                 if (ex_peer_regexp === 1) {
                                     obj.leechs = obj.leechs.replace(me.peer_r, me.peer_rp);
@@ -277,7 +277,7 @@ var engine = function() {
                             } else {
                                 obj.time = (item.find(me.date)).text();
                             }
-                            if (obj.time !== undefined && obj.time.length !== 0) {
+                            if (obj.time) {
                                 obj.time = obj.time.replace(var_cache.rn, ' ');
                                 if (ex_date_regexp === 1) {
                                     obj.time = obj.time.replace(me.t_r, me.t_r_r);
