@@ -444,7 +444,72 @@ var view = function() {
         return ((var_cache.teaser_regexp).test(title)) ? 1 : 0;
     };
 
-    var table_sort_insert_in_list = function(list) {
+    var table_sort_insert_in_list = function(sortedList) {
+        var currentList = var_cache.table_sort_pos.slice(0);
+        var newPaste = [];
+        var fromIndex = undefined;
+        var elList = undefined;
+
+        for (var i = 0, item; item = sortedList[i]; i++) {
+            if (currentList[i] === item.id) {
+                continue;
+            }
+            fromIndex = i;
+
+            elList = document.createDocumentFragment();
+            var id= undefined;
+            while (sortedList[i] !== undefined && (id = sortedList[i].id) !== currentList[i]) {
+                var pos = currentList.indexOf(id, i);
+                if (pos !== -1) {
+                    currentList.splice(pos, 1);
+                }
+                currentList.splice(i, 0, id);
+
+                // var_cache.table_dom[id].node[0].dataset.dbgId = id;
+
+                elList.appendChild(var_cache.table_dom[id].node[0]);
+                i++;
+            }
+
+            newPaste.push({
+                pos: fromIndex,
+                list: elList
+            });
+        }
+
+        var table = dom_cache.result_table_body[0];
+        for (i = 0, item; item = newPaste[i]; i++) {
+            if (item.pos === 0) {
+                var firstChild = table.firstChild;
+                if (firstChild === null) {
+                    table.appendChild(item.list);
+                } else {
+                    table.insertBefore(item.list, firstChild)
+                }
+            } else
+            if (table.childNodes[item.pos] !== undefined) {
+                table.insertBefore(item.list, table.childNodes[item.pos]);
+            } else {
+                table.appendChild(item.list);
+            }
+        }
+
+        /*
+        var dbgList = [];
+        for (i = 0, item; item = sortedList[i]; i++) {
+            dbgList.push(item.id);
+        }
+        var dbgDom = [];
+        for (i = 0, item; item = table.childNodes[i]; i++) {
+            dbgDom.push(item.dataset.dbgId);
+        }
+        console.log(dbgList.toString() === currentList.toString());
+        console.log(dbgDom.toString() === currentList.toString());
+        console.log(dbgList.toString() === currentList.toString());
+        */
+        var_cache.table_sort_pos = currentList;
+    };
+    var _table_sort_insert_in_list = function(list) {
         var list_len = list.length;
         var indexs = var_cache.table_sort_pos.slice(0);
         var dune = false;
