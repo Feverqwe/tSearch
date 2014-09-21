@@ -153,7 +153,7 @@ var explore = function() {
             if (!item.title) {
                 return 0;
             }
-            if (!item.title_en) {
+            if (item.title_en !== undefined && item.title_en.length === 0) {
                 return 0;
             }
             return 1;
