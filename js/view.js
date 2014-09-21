@@ -505,7 +505,7 @@ var view = function() {
         }
         console.log(dbgList.toString() === currentList.toString());
         console.log(dbgDom.toString() === currentList.toString());
-        console.log(dbgList.toString() === currentList.toString());
+        console.log(dbgList.toString() === dbgDom.toString());
         */
         var_cache.table_sort_pos = currentList;
     };
