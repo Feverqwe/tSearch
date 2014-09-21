@@ -509,7 +509,7 @@ var view = function() {
         */
         var_cache.table_sort_pos = currentList;
     };
-    var _table_sort_insert_in_list = function(list) {
+    var table_sort_insert_in_list_ = function(list) {
         var list_len = list.length;
         var indexs = var_cache.table_sort_pos.slice(0);
         var dune = false;
