@@ -2101,7 +2101,10 @@ var view = function() {
 
                 filterListBy(filterContainer.children('a.selected').data('type'));
 
-                trackerList.sortable({placeholder: "ui-state-highlight"});
+                trackerList.sortable({
+                    placeholder: "ui-state-highlight",
+                    delay: 150
+                });
 
                 trackerListManager[0].addEventListener('click', function(e) {
                     e.stopPropagation();
