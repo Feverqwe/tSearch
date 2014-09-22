@@ -1,6 +1,7 @@
 div.explore {
     -webkit-user-select: none;
     -moz-user-select: none;
+    -o-user-select: none;
     user-select: none;
 }
 
@@ -396,6 +397,7 @@ div.explore ul.body li div.picture > a.link:hover {
     border-top-width: 0;
     -webkit-user-select: none;
     -moz-user-select: none;
+    -o-user-select: none;
     user-select: none;
 }
 .nf-notifi .btn_cancel {

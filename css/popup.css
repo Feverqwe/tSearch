@@ -65,6 +65,7 @@ div.search_panel {
 
     -webkit-user-select: none;
     -moz-user-select: none;
+    -o-user-select: none;
     user-select: none;
 }
 div.search_panel > * {
