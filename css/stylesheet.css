@@ -819,6 +819,9 @@ div.donate a.payPal {
 div.donate a.feedback {
     background-image: url(../images/info.png);
 }
+div.donate a.social.vk {
+    background-image: url(../images/vk.png);
+}
 
 #profileList {
     border-width: 0;

@@ -156,6 +156,7 @@
     "trackerNotFound": {"message": "Трекер не найден!"},
     "findNotFound": {"message": "Найти!"},
     "feedback": {"message": "Сообщить о проблеме..."},
+    "socialVk": {"message": "Группа в ВК"},
 
     "word_add": {"message": "Добавить..."},
     "editTrackerList": {"message": "Редактировать список трекеров"},

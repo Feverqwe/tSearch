@@ -153,6 +153,7 @@
     "trackerNotFound": {"message": "Tracker not found!"},
     "findNotFound": {"message": "To find!"},
     "feedback": {"message": "Feedback"},
+    "socialVk": {"message": "Group in VK"},
 
     "word_add": {"message": "Add..."},
     "editTrackerList": {"message": "Edit tracker list"},
