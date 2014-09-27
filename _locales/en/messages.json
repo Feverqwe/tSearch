@@ -216,6 +216,7 @@
     "optProxyHost": {"message": "Host"},
     "optProxyUrlFixSpaces": {"message": "To escape spaces"},
     "optProxyHostLinks": {"message": "Change the address in the search results"},
+    "optCalcSeedCount": {"message": "Consider the number of seeders"},
     "word_update": {"message": "Refresh"},
     "optSaveInCloud": {"message": "Save in the cloud"},
     "optGetFromCloud": {"message": "Get the settings from the cloud"},

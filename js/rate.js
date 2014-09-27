@@ -1010,7 +1010,10 @@ var wordRate = function() {
          * Перерасчет соотношения качества видео и размера раздачи
          */
 
-        quality.seed = (item.seeds > 0) ? 50 : 0;
+        quality.seed = 0;
+        if (engine.settings.calcSeedCount === 1) {
+            quality.seed = (item.seeds > 0) ? 50 : 0;
+        }
         if (item.size < 524288000 && quality.video > 45) {
             quality.video = Math.round(parseInt(quality.video) / 10);
         } else

@@ -219,6 +219,7 @@
     "optProxyHost": {"message": "Host"},
     "optProxyUrlFixSpaces": {"message": "Экранировать пробелы"},
     "optProxyHostLinks": {"message": "Поменять адрес в результатах поиска"},
+    "optCalcSeedCount": {"message": "Учитывать количество сидов (раздающих)"},
     "word_update": {"message": "Обновить"},
     "optSaveInCloud": {"message": "Сохранить в облаке"},
     "optGetFromCloud": {"message": "Получить настройки из облака"},

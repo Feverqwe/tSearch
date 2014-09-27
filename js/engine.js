@@ -26,7 +26,8 @@ var engine = function() {
         proxyURL: 'http://www.gmodules.com/ig/proxy?url={url}',
         proxyHost: '',
         proxyUrlFixSpaces: 1,
-        proxyHostLinks: 0
+        proxyHostLinks: 0,
+        calcSeedCount: 1
     };
     var def_listOptions = {
         favorites: { e: 1, s: 1, w: 100, c: 1 },
