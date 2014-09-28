@@ -717,7 +717,7 @@ var explore = function() {
                 content = var_cache['exp_cache_'+type].content;
             } else {
                 var_cache.source[type].li.removeClass('loading');
-                return;
+                var_cache.source[type].li.addClass('timeout');
             }
         }
         var_cache.source[type].li.removeClass('loading');
@@ -725,6 +725,10 @@ var explore = function() {
         var_cache['exp_cache_'+type].content = content;
         var storage = {};
         storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
+        if (content.length === 0) {
+            storage['exp_cache_'+type].errorTimeout = parseInt(Date.now() / 1000 + 60 * 60 * 2);
+            delete storage['exp_cache_'+type].keepAlive;
+        }
         mono.storage.set(storage, function() {
             if ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' ) {
                 mono.storage.sync.set(storage);
@@ -748,6 +752,9 @@ var explore = function() {
         );
     };
     var getCacheDate = function(keepAlive) {
+        if (!keepAlive) {
+            return undefined;
+        }
         var currentDate = new Date();
         var day = currentDate.getDay();
         var hours = currentDate.getHours();
@@ -782,6 +789,10 @@ var explore = function() {
             }
             var source = content_options[type];
             var date = getCacheDate(source.keepAlive);
+            if (cache.errorTimeout !== undefined && cache.errorTimeout > parseInt(Date.now() / 1000) ) {
+                var_cache.source[type].li.addClass('timeout');
+                return;
+            }
             if (cache.keepAlive === date || navigator.onLine === false) {
                 content_write(type, cache.content);
                 return;

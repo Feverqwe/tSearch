@@ -27,6 +27,10 @@ div.explore ul > li.loading div.head div.move {
     background: url(../images/loading.gif) no-repeat center;
     opacity: 1;
 }
+div.explore ul > li.timeout div.head div.move {
+    background: url(../images/timeout.png) no-repeat center;
+    opacity: 1;
+}
 div.explore ul.page_body.hide {
     display: none;
 }
