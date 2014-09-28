@@ -841,7 +841,66 @@ var mono = function (env) {
         mono.onMessage = gmMessaging.on;
     }
 
+    monoUtils(mono);
+
     return mono;
+};
+
+var monoUtils = function(mono) {
+    "use strict";
+    mono.loadLanguage = function(cb, force) {
+        var language = {};
+        var url = '_locales/{lang}/messages.json';
+        if (mono.isOpera && !mono.isOperaInject) {
+            url = 'build/' + url;
+        }
+        if (mono.isModule) {
+            var window = require("sdk/window/utils").getMostRecentBrowserWindow();
+        }
+        var lang, data;
+        if (mono.isChrome) {
+            lang = chrome.i18n.getMessage('lang');
+        } else {
+            lang = ((typeof navigator !== 'undefined') ? navigator : window.navigator).language.substr(0, 2);
+        }
+
+        url = url.replace('{lang}', force || lang);
+        if (mono.isModule) {
+            try {
+                data = JSON.parse(self.data.load(url));
+            } catch (e) {
+                if (force) {
+                    return cb();
+                }
+                return mono.loadLanguage(cb, 'en');
+            }
+            for (var item in data) {
+                language[item] = data[item].message;
+            }
+            return cb(language);
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'json';
+        xhr.onload = function() {
+            var data = xhr.response;
+            for (var item in data) {
+                language[item] = data[item].message;
+            }
+            cb(language);
+        };
+        xhr.onerror = function() {
+            if (force) {
+                return cb();
+            }
+            mono.loadLanguage(cb, 'en');
+        };
+        try {
+            xhr.send();
+        } catch (e) {
+            xhr.onerror();
+        }
+    };
 };
 
 if (typeof window !== "undefined") {

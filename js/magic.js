@@ -1062,7 +1062,8 @@ var magic = function() {
     };
 }();
 mono.pageId = 'tab';
-engine.loadLanguage(function() {
+mono.loadLanguage(function(language) {
+    window._lang = language;
     $(function () {
         magic.begin();
     });

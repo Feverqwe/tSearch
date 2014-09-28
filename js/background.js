@@ -137,58 +137,10 @@ var bg = function() {
         });
     };
 
-    var loadLanguage = function(cb, force) {
-        var url = '_locales/{lang}/messages.json';
-        var lang;
-        if (mono.isChrome) {
-            lang = chrome.i18n.getMessage('lang');
-        } else {
-            lang = window.navigator.language.substr(0, 2);
-        }
-
-        url = url.replace('{lang}', force || lang);
-        if (mono.isFF) {
-            var data;
-            try {
-                data = self.data.load(url);
-                data = JSON.parse(data);
-            } catch (e) {
-                if (force) {
-                    return cb();
-                }
-                return loadLanguage(cb, 'en');
-            }
-            for (var item in data) {
-                _lang[item] = data[item].message;
-            }
-            return cb();
-        }
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.responseType = 'json';
-        xhr.onload = function() {
-            var data = xhr.response;
-            for (var item in data) {
-                _lang[item] = data[item].message;
-            }
-            cb();
-        };
-        xhr.onerror = function() {
-            if (force) {
-                return cb();
-            }
-            loadLanguage(cb, 'en');
-        };
-        try {
-            xhr.send();
-        } catch (e) {
-            xhr.onerror();
-        }
-    };
-
     return {
         boot: function() {
-            loadLanguage(function() {
+            mono.loadLanguage(function(language) {
+                _lang = language;
                 mono.onMessage(function(message) {
                     if (message === 'bg_update') {
                         bg.update();

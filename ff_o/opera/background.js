@@ -54,35 +54,6 @@
         menu.addItem(item);
     };
 
-    var loadLanguage = function(cb, force) {
-        var url = 'build/_locales/{lang}/messages.json';
-        var lang = navigator.language.substr(0, 2);
-
-        url = url.replace('{lang}', force || lang);
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.responseType = 'json';
-        xhr.onload = function() {
-            var data = xhr.response;
-            window._lang = {};
-            for (var item in data) {
-                window._lang[item] = data[item].message;
-            }
-            cb();
-        };
-        xhr.onerror = function() {
-            if (force) {
-                return cb();
-            }
-            loadLanguage(cb, 'en');
-        };
-        try {
-            xhr.send();
-        } catch (e) {
-            xhr.onerror();
-        }
-    };
-
     mono.onMessage(function(message) {
         if (message.action === 'tab') {
             var tab = opera.extension.tabs.create({url: message.url});
@@ -112,7 +83,8 @@
             if (storage.searchPopup === undefined) {
                 storage.searchPopup = 1;
             }
-            loadLanguage(function() {
+            mono.loadLanguage(function(language) {
+                _lang = language;
                 updateContextMenu( storage.contextMenu );
                 updateButton( storage.searchPopup );
             });

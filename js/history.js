@@ -242,42 +242,9 @@ var view = function() {
     };
 }();
 
-var loadLanguage = function(cb, force) {
-    var url = '_locales/{lang}/messages.json';
-    var lang;
-    if (mono.isChrome) {
-        lang = chrome.i18n.getMessage('lang');
-    } else {
-        lang = navigator.language.substr(0, 2);
-    }
-
-    url = url.replace('{lang}', force || lang);
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.responseType = 'json';
-    xhr.onload = function() {
-        var data = xhr.response;
-        window._lang = {};
-        for (var item in data) {
-            window._lang[item] = data[item].message;
-        }
-        cb();
-    };
-    xhr.onerror = function() {
-        if (force) {
-            return cb();
-        }
-        loadLanguage(cb, 'en');
-    };
-    try {
-        xhr.send();
-    } catch (e) {
-        xhr.onerror();
-    }
-};
-
 mono.pageId = 'tab';
-loadLanguage(function() {
+mono.loadLanguage(function(language) {
+    window._lang = language;
     $(function () {
         view.begin();
     });
