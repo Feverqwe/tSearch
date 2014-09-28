@@ -716,7 +716,6 @@ var explore = function() {
             if (var_cache['exp_cache_'+type].content !== undefined) {
                 content = var_cache['exp_cache_'+type].content;
             } else {
-                var_cache.source[type].li.removeClass('loading');
                 var_cache.source[type].li.addClass('timeout');
             }
         }
