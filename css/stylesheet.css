@@ -841,7 +841,7 @@ div.donate a.social.vk {
     position: absolute;
     display: block;
     width: 700px;
-    height: 640px;
+    height: 590px;
     background-color: #fff;
     border: 1px solid #ccc;
     z-index: 90;
@@ -932,7 +932,7 @@ div.donate a.social.vk {
     background-repeat: no-repeat;
 }
 #trackerListManager .mgr_tracker_list {
-    height: 457px;
+    height: 407px;
     overflow: auto;
 }
 #trackerListManager .mgr_custom_tools {
