@@ -856,6 +856,7 @@ var monoUtils = function(mono) {
         }
         if (mono.isModule) {
             var window = require("sdk/window/utils").getMostRecentBrowserWindow();
+            var self = require("sdk/self");
         }
         var lang, data;
         if (mono.isChrome) {
