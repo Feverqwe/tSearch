@@ -26,6 +26,9 @@ xcopy .\js\mono.js .\build_firefox_sdk\lib\. /E
 del .\build_firefox_sdk\data\js\background.js
 del .\build_firefox_sdk\data\js\torrent_lib.js
 
+del .\build_firefox_sdk\data\js\magic.js
+del .\build_firefox_sdk\data\magic.html
+
 :: base
 
 java -jar compiler.jar --jscomp_warning=const --js .\js\background.js --js_output_file .\build\js\background.js

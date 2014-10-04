@@ -161,14 +161,15 @@ var explore = function() {
         var gg_games_new = function(content) {
             content = engine.contentFilter(content);
             var $content = engine.load_in_sandbox(content);
-            $content = $content.find('td.enc-box-list').children('div.enc-item');
+            $content = $content.find('.GGN__list-games .GGN__list-blocks').children('div');
             var arr = [];
             for (var i = 0, len = $content.length; i < len; i++) {
                 var item = $content.eq(i);
+                var href = item.find('.GGN_content-unit-title').find('a').eq(0);
                 var obj = {
-                    img: item.children('div.e-title').children('div.im').find('img').attr('src'),
-                    title: item.children('div.e-title').find('a').eq(0).text(),
-                    url: item.children('div.e-title').find('a').eq(0).attr('href')
+                    img: item.find('.GGN_content-unit-img').find('img').attr('src'),
+                    title: href.text(),
+                    url: href.attr('href')
                 };
                 if (check_item(obj) === 0) {
                     console.log("Explorer gg_games_new have problem!");

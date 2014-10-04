@@ -1520,6 +1520,11 @@ var view = function() {
         var saveBtn = trackerListManager.find('.mgr_footer > input.save');
         var listName = trackerListManager.find('.mgr_sub_header > input');
         var addCustomTracker = trackerListManager.find('.mgr_custom_tools > .add_custom_tracker');
+        var createCustomTracker = trackerListManager.find('.mgr_custom_tools .create_custom_tracker').parent();
+
+        if (mono.isFF) {
+            createCustomTracker.css('display', 'none');
+        }
 
         var selfCurrentProfile = '';
         var onHideCb = undefined;
