@@ -9,5 +9,5 @@ type .\js\torrent_lib.js^
  .\tracker\opentorrent.js .\tracker\torrents.local.js .\tracker\free-torrents.js^
  .\tracker\piratbit.js .\tracker\torrentz.js .\tracker\hdclub.js .\tracker\piratca.js^
  .\tracker\underverse.js .\tracker\hurtom.js .\tracker\x-torrents.js .\tracker\inmac.js^
- .\tracker\rgfootball.js .\tracker\riperam.js .\tracker\ru-board.js^
+ .\tracker\rgfootball.js .\tracker\riperam.js .\tracker\ru-board.js .\tracker\kaztorka.js^
  > .\js\torrent_lib.min.js
