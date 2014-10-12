@@ -771,7 +771,12 @@ var explore = function() {
     };
     var load_content = function(type) {
         var storage_type = ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' )?'sync':'local';
-        mono.storage[storage_type].get('exp_cache_'+type, function(storage) {
+        mono.storage[storage_type].get('exp_cache_'+type, function onGetFromStorage(storage) {
+
+            if (type === 'favorites' && storage_type === 'sync' && storage['exp_cache_'+type] === undefined) {
+                storage_type = 'local';
+                return mono.storage.local.get('exp_cache_'+type, onGetFromStorage);
+            }
 
             if (typeof storage['exp_cache_'+type] === 'string') {
                 try {
