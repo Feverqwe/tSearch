@@ -227,7 +227,7 @@ var options = function() {
     var getBackupJson = function(cb) {
         mono.storage.get(null, function(storage) {
             for (var key in storage) {
-                if (key.substr(0, 9) === 'exp_cache' ||
+                if ((key.substr(0, 9) === 'exp_cache' && key !== 'exp_cache_favorites') ||
                     ['topList', 'click_history', 'history', 'optMigrated', 'qualityBoxCache', 'qualityCache'].indexOf(key) !== -1) {
                     delete storage[key];
                 }
