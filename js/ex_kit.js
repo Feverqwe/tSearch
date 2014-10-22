@@ -13,7 +13,8 @@ var ex_kit = function() {
         today_today: new RegExp('сегодня|today'),
         today_yest: new RegExp('вчера|yesterday'),
         ex_num: new RegExp('[^0-9]','g'),
-        spaces: new RegExp('\\s+','g')
+        spaces: new RegExp('\\s+','g'),
+        timeFormat4: /([0-9]{1,2}d)?[^0-9]*([0-9]{1,2}h)?[^0-9]*([0-9]{1,2}m)?[^0-9]*([0-9]{1,2}s)?/
     };
     var in_cp1251 = function(sValue) {
         var text = "", Ucode, ExitValue, s;
@@ -105,7 +106,7 @@ var ex_kit = function() {
     }
     var format_date = function(f, t) {
         if (f === undefined) {
-            return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago', '04-31-2013[[[ 07]:03]:27]'];
+            return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago', '04-31-2013[[[ 07]:03]:27]', '2d 1h 0m 0s ago'];
         }
         f = parseInt(f);
         if (f === 0) { // || f === '2013-04-31[[[ 07]:03]:27]') {
@@ -183,6 +184,21 @@ var ex_kit = function() {
                 dd[2] = '20' + dd[2];
             }
             return Math.round((new Date(dd[2], dd[0] - 1, dd[1], dd[3], dd[4], dd[5])).getTime() / 1000);
+        }
+        if (f === 4) { //  || f === '2d 1h 0m 0s ago') {
+            var match = t.match(var_cache.timeFormat4);
+            if (match) {
+                var d = parseInt(match[1]) || 0;
+                var h = parseInt(match[2]) || 0;
+                var m = parseInt(match[3]) || 0;
+                var s = parseInt(match[4]) || 0;
+                var time = d*24*60*60 + h*60*60 + m*60 + s;
+                if (time === 0) {
+                    return 0;
+                }
+                return parseInt(Date.now() / 1000) - time;
+            }
+            return 0;
         }
     };
     var isNumber = function(n) {
