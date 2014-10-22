@@ -378,6 +378,7 @@ var magic = function() {
         }
         if (code.date !== undefined) {
             input_list.selectors.time.input.val(code.date);
+            input_list.selectors.time.enable.prop('checked', false).trigger('click');
             if (code.t_r !== undefined) {
                 input_list.convert.time.regexp.val(code.t_r);
                 input_list.convert.time.regexp_text.val(code.t_r_r);
@@ -395,7 +396,6 @@ var magic = function() {
                 input_list.selectors.time.attr_enable.prop('checked', false).trigger('click');
                 input_list.selectors.time.attr.val(code.date_attr);
             }
-            input_list.selectors.time.enable.prop('checked', false).trigger('click');
         }
         if (code.sf !== undefined) {
             input_list.selectors.skip.first.val(code.sf);
