@@ -47,6 +47,13 @@ var wordRate = function() {
          }
          */
         {
+            list: ['blu-ray cee'],
+            rate: {
+                video: 105
+            },
+            name: 'Blu-ray CEE'
+        },
+        {
             list: ['blu-ray'],
             rate: {
                 video: 100
@@ -115,24 +122,63 @@ var wordRate = function() {
             rate: {
                 video: 68
             },
-            name: 'DVD'
+            name: 'HD-DVD'
         },
         {
-            list: ['2xDVD9'],
+            list: (function(){
+                var list = [];
+                for (var i = 2; i < 10; i++) {
+                    list.push(i+'xDVD9');
+                    list.push(i+'xDVD-9');
+                    list.push(i+' x DVD-9');
+                    list.push(i+' x DVD9');
+                    list.push(i+'хDVD9');
+                    list.push(i+'хDVD-9');
+                    list.push(i+' х DVD-9');
+                    list.push(i+' х DVD9');
+                }
+                return list;
+            })(),
             rate: {
                 video: 65
             },
-            name: 'DVD'
+            name: 'DVD-9'
         },
         {
-            list: ['DVD9', 'DVD-9'],
+            list: ['DVD9', 'DVD-9', '1xDVD9', '1xDVD-9'],
             rate: {
                 video: 62
+            },
+            name: 'DVD-9'
+        },
+        {
+            list: (function(){
+                var list = [];
+                for (var i = 2; i < 10; i++) {
+                    list.push(i+'xDVD5');
+                    list.push(i+'xDVD-5');
+                    list.push(i+' x DVD-5');
+                    list.push(i+' x DVD5');
+                    list.push(i+'хDVD5');
+                    list.push(i+'хDVD-5');
+                    list.push(i+' х DVD-5');
+                    list.push(i+' х DVD5');
+                }
+                return list;
+            })(),
+            rate: {
+                video: 53
+            },
+            name: 'DVD-5'
+        },
+        {
+            list: ['DVD5', 'DVD-5', '1xDVD5', '1xDVD-5'],
+            rate: {
+                video: 50
             },
             name: 'DVD'
         },
         {
-            list: ['DVD5'],
             listCase: ['DVD'],
             rate: {
                 video: 50
@@ -396,6 +442,12 @@ var wordRate = function() {
             list: ['мультфильм'],
             rate: {
                 cartoons: 1
+            }
+        },
+        {
+            list: ['чистый звук'],
+            rate: {
+                video: 2
             }
         }
     ];
@@ -710,12 +762,12 @@ var wordRate = function() {
             wordObj: var_cache.wordObj,
             syntaxRate: rate
         });
+        if (var_cache.words !== undefined) {
+            name_low.replace(var_cache.words, _rateWord);
+        }
 
         if (var_cache.wordsCase !== undefined) {
             name.replace(var_cache.wordsCase, _rateWord);
-        }
-        if (var_cache.words !== undefined) {
-            name_low.replace(var_cache.words, _rateWord);
         }
 
         if (var_cache.syntaxCache.normalize_request.length === 0) {

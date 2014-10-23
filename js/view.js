@@ -831,7 +831,7 @@ var view = function() {
             }
             table_dom_item.node = $('<tr>', {'data-filter': table_dom_item.filter, 'data-tracker': tracker.class_name, 'data-category': item.category.id}).data('id', item_id).append(
                 $('<td>', {'class': 'time', title: u2ddmmyyyy_title(item.time)}).append( $('<div>', {text: u2timeago(item.time)}) ),
-                $('<td>', {'class': 'quality'/*, 'data-value': quality.value, 'data-qgame': quality.game, 'data-qseed': quality.seed, 'data-qname': quality.name, 'data-qvideo': quality.video, 'data-qmusic': quality.music, 'data-qbook': quality.book*/}).append(
+                $('<td>', {'class': 'quality'/*, 'data-quality': JSON.stringify(quality)*/}).append(
                     $('<div>', {'class': 'progress'}).append(
                         $('<div>').css('width', parseInt(quality.value / 15) + 'px').append(
                             $('<span>', {title: quality.value, text: quality.value})
