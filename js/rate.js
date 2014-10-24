@@ -132,10 +132,6 @@ var wordRate = function() {
                     list.push(i+'xDVD-9');
                     list.push(i+' x DVD-9');
                     list.push(i+' x DVD9');
-                    list.push(i+'хDVD9');
-                    list.push(i+'хDVD-9');
-                    list.push(i+' х DVD-9');
-                    list.push(i+' х DVD9');
                 }
                 return list;
             })(),
@@ -159,10 +155,6 @@ var wordRate = function() {
                     list.push(i+'xDVD-5');
                     list.push(i+' x DVD-5');
                     list.push(i+' x DVD5');
-                    list.push(i+'хDVD5');
-                    list.push(i+'хDVD-5');
-                    list.push(i+' х DVD-5');
-                    list.push(i+' х DVD5');
                 }
                 return list;
             })(),
