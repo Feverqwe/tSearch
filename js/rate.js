@@ -445,7 +445,7 @@ var wordRate = function() {
         {
             list: ['обновляемая'],
             rate: {
-                video: 5
+                serials: 5
             }
         }
     ];
