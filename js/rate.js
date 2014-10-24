@@ -302,7 +302,7 @@ var wordRate = function() {
             name: 'P'
         },
         {
-            list: ['repack', 'lossless repack', 'steam-rip', '(lossy rip)', 'reloaded'],
+            list: ['repack', 'lossless repack', 'steamrip', 'steam-rip', '(lossy rip)', 'reloaded'],
             rate: {
                 games: 60
             },
@@ -440,6 +440,12 @@ var wordRate = function() {
             list: ['чистый звук'],
             rate: {
                 video: 2
+            }
+        },
+        {
+            list: ['обновляемая'],
+            rate: {
+                video: 5
             }
         }
     ];
