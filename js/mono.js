@@ -842,6 +842,7 @@
         mono.onMessage = gmMessaging.on;
     }
 
+    //> utils
     mono.loadLanguage = function(cb, force) {
         var language = {};
         var url = '_locales/{lang}/messages.json';
@@ -896,6 +897,7 @@
             xhr.onerror();
         }
     };
+    //<utils
 
     return mono;
 }));
