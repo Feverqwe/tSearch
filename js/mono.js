@@ -14,7 +14,12 @@
 
     var g = {};
     var defaultId = 'monoScope';
-    var mono = {};
+    var mono = function() {
+        // mono like console.log
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift(mono.pageId,'monoLog:');
+        console.log.apply(console, args);
+    };
 
     if (typeof window === 'undefined') {
         mono.isModule = true;
