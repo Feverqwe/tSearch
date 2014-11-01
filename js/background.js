@@ -15,7 +15,13 @@ if (typeof window === 'undefined') {
 }
 var init = function (env, ffButton) {
     if (env) {
-        mono = mono.init(env);
+        mono = mono.init(env, {
+            XMLHttpRequest: require('sdk/net/xhr').XMLHttpRequest,
+            setTimeout: require("sdk/timers").setTimeout,
+            simpleStorage: require("sdk/simple-storage"),
+            window: window,
+            self: self
+        });
         window.hasButton = !!ffButton;
     }
     mono.pageId = 'bg';

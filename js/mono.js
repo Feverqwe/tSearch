@@ -4,15 +4,17 @@
  * Mono cross-browser engine.
  */
 
+var mono = (typeof mono === 'undefined') ? undefined : mono;
+
 (function( global, factory ) {
-    if (typeof mono !== 'undefined') {
+    if (mono) {
         return;
     }
-    return global ? factory() : exports.init = factory;
-}(typeof window !== "undefined" ? window : undefined, function ( addon ) {
-    "use strict";
-
-    var g = {};
+    if (global) {
+        return mono = factory();
+    }
+    return exports.init = factory;
+}(typeof window !== "undefined" ? window : undefined, function ( addon, depList ) {
     var defaultId = 'monoScope';
     var mono = function() {
         // mono like console.log
@@ -25,10 +27,9 @@
         mono.isModule = true;
         mono.isFF = true;
         mono.addon = addon;
-        g.setTimeout = require("sdk/timers").setTimeout;
+        setTimeout = depList.setTimeout;
     } else {
         window.mono = mono;
-        g.setTimeout = window.setTimeout;
         if (typeof GM_getValue !== 'undefined') {
             mono.isGM = true;
             if (window.chrome !== undefined) {
@@ -263,10 +264,7 @@
     localStorageMode.chunkItem = 'monoChunk';
 
     var monoStorage = function() {
-        /**
-         * @namespace require
-         */
-        var ss = require("sdk/simple-storage");
+        var ss = depList.simpleStorage;
         return {
             get: function (src, cb) {
                 var key, obj = {};
@@ -439,7 +437,7 @@
                 var timeout = message.timeout;
                 if (timeout !== undefined) {
                     delete message.timeout;
-                    g.setTimeout(function() {
+                    setTimeout(function() {
                         if (cbObj[idPrefix+id] === undefined) {
                             return;
                         }
@@ -850,8 +848,8 @@
             url = 'build/' + url;
         }
         if (mono.isModule) {
-            var window = require("sdk/window/utils").getMostRecentBrowserWindow();
-            var self = require("sdk/self");
+            var window = depList.window;
+            var self = depList.self;
         }
         var lang, data;
         if (mono.isChrome) {
