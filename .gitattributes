@@ -10,3 +10,4 @@
 *.md text eol=lf
 *.bat text eol=crlf
 *.path text eol=crlf
+jquery*.js text eol=auto
