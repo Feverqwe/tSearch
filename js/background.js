@@ -3,7 +3,15 @@ if (typeof window === 'undefined') {
     var tabs = require("sdk/tabs");
     window = require("sdk/window/utils").getMostRecentBrowserWindow();
     window.isModule = true;
-    mono = require('./mono.js');
+    mono = require('toolkit/loader').main(require('toolkit/loader').Loader({
+        paths: {
+            'sdk/': 'resource://gre/modules/commonjs/sdk/',
+            'data/': self.data.url('js/'),
+            '': 'resource:///modules/'
+        },
+        name: self.name,
+        prefixURI: 'resource://'+self.id.slice(1, -1)+'/'
+    }), "data/mono");
 }
 var init = function (env, ffButton) {
     if (env) {

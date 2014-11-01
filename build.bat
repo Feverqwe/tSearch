@@ -22,7 +22,6 @@ xcopy .\build .\build_firefox_sdk\data\ /E
 del .\build_firefox_sdk\data\manifest.json
 xcopy .\ff_o\firefox\* .\build_firefox_sdk\. /E /Y
 xcopy .\js\background.js .\build_firefox_sdk\lib\. /E
-xcopy .\js\mono.js .\build_firefox_sdk\lib\. /E
 del .\build_firefox_sdk\data\js\background.js
 del .\build_firefox_sdk\data\js\torrent_lib.js
 
