@@ -215,7 +215,7 @@
     "optSubCategoryFilter": {"message": "Учитывать подкатегории"},
     "optProxyTitle": {"message": "Проксирование запросов"},
     "optProxyInfo": {"message": "Прокси работает только для GET запросов."},
-    "optProxyHostInfo": {"message": "HTTP<b>S</b> запросы могут не поддерживаться. Пример работы: {protocol}://{host}.example.org/{path}"},
+    "optProxyHostInfo": {"message": "HTTP<b>S</b> запросы могут не поддерживаться. Пример работы: {protocol}://{host}.3s3s.org/{path}"},
     "optProxyURL": {"message": "URL"},
     "optProxyHost": {"message": "Host"},
     "optProxyUrlFixSpaces": {"message": "Экранировать пробелы"},

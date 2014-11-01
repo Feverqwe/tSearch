@@ -212,7 +212,7 @@
     "optSubCategoryFilter": {"message": "Consider the subcategory"},
     "optProxyTitle": {"message": "Proxying requests"},
     "optProxyInfo": {"message": "Proxy only works for GET requests."},
-    "optProxyHostInfo": {"message": "HTTP<b>S</b> requests may not be supported. Work example: {protocol}://{host}.example.org/{path}"},
+    "optProxyHostInfo": {"message": "HTTP<b>S</b> requests may not be supported. Work example: {protocol}://{host}.3s3s.org/{path}"},
     "optProxyURL": {"message": "URL"},
     "optProxyHost": {"message": "Host"},
     "optProxyUrlFixSpaces": {"message": "To escape spaces"},

@@ -24,7 +24,7 @@ var engine = function() {
         torrentListHeight: 0,
         profileListSync: 0,
         proxyURL: 'http://www.gmodules.com/ig/proxy?url={url}',
-        proxyHost: '',
+        proxyHost: '3s3s.org',
         proxyUrlFixSpaces: 1,
         proxyHostLinks: 0,
         calcSeedCount: 1
