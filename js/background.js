@@ -5,9 +5,7 @@ if (typeof window === 'undefined') {
     window.isModule = true;
     mono = require('toolkit/loader').main(require('toolkit/loader').Loader({
         paths: {
-            'sdk/': 'resource://gre/modules/commonjs/sdk/',
-            'data/': self.data.url('js/'),
-            '': 'resource:///modules/'
+            'data/': self.data.url('js/')
         },
         name: self.name,
         prefixURI: 'resource://'+self.id.slice(1, -1)+'/'
