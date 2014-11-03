@@ -1,25 +1,36 @@
 if (typeof window === 'undefined') {
-    self = require("sdk/self");
-    var tabs = require("sdk/tabs");
-    window = require("sdk/window/utils").getMostRecentBrowserWindow();
+    self = require('sdk/self');
+    var tabs = require('sdk/tabs');
+    window = require('sdk/window/utils').getMostRecentBrowserWindow();
     window.isModule = true;
     mono = require('toolkit/loader').main(require('toolkit/loader').Loader({
         paths: {
             'data/': self.data.url('js/')
         },
         name: self.name,
-        prefixURI: 'resource://'+self.id.slice(1, -1)+'/'
+        prefixURI: 'resource://'+self.id.slice(1, -1)+'/',
+        globals: {
+            console: console,
+            _require: function(path) {
+                switch (path) {
+                    case 'sdk/timers':
+                        return require('sdk/timers');
+                    case 'sdk/simple-storage':
+                        return require('sdk/simple-storage');
+                    case 'sdk/window/utils':
+                        return require('sdk/window/utils');
+                    case 'sdk/self':
+                        return require('sdk/self');
+                    default:
+                        console.log('Module not found!', path);
+                }
+            }
+        }
     }), "data/mono");
 }
 var init = function (env, ffButton) {
     if (env) {
-        mono = mono.init(env, {
-            XMLHttpRequest: require('sdk/net/xhr').XMLHttpRequest,
-            setTimeout: require("sdk/timers").setTimeout,
-            simpleStorage: require("sdk/simple-storage"),
-            window: window,
-            self: self
-        });
+        mono = mono.init(env);
         window.hasButton = !!ffButton;
     }
     mono.pageId = 'bg';

@@ -14,7 +14,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         return mono = factory();
     }
     return exports.init = factory;
-}(typeof window !== "undefined" ? window : undefined, function ( addon, depList ) {
+}(typeof window !== "undefined" ? window : undefined, function ( addon ) {
     var defaultId = 'monoScope';
     var mono = function() {
         // mono like console.log
@@ -24,10 +24,11 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     };
 
     if (typeof window === 'undefined') {
+        var require = _require;
         mono.isModule = true;
         mono.isFF = true;
         mono.addon = addon;
-        setTimeout = depList.setTimeout;
+        setTimeout = require('sdk/timers').setTimeout;
     } else {
         window.mono = mono;
         if (typeof GM_getValue !== 'undefined') {
@@ -264,7 +265,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     localStorageMode.chunkItem = 'monoChunk';
 
     var monoStorage = function() {
-        var ss = depList.simpleStorage;
+        var ss = require('sdk/simple-storage');
         return {
             get: function (src, cb) {
                 var key, obj = {};
@@ -848,8 +849,8 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
             url = 'build/' + url;
         }
         if (mono.isModule) {
-            var window = depList.window;
-            var self = depList.self;
+            var window = require('sdk/window/utils').getMostRecentBrowserWindow();
+            var self = require('sdk/self');
         }
         var lang, data;
         if (mono.isChrome) {
