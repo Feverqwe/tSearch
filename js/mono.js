@@ -267,7 +267,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     localStorageMode.chunkLen = localStorageMode.chunkPrefix.length;
     localStorageMode.chunkItem = 'monoChunk';
 
-    var monoStorage = function() {
+    var monoStorage = !mono.isModule ? undefined : function() {
         var ss = require('sdk/simple-storage');
         return {
             get: function (src, cb) {
@@ -324,7 +324,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
     };
 
-    var gmStorage = {
+    var gmStorage = !mono.isGM ? undefined : {
         /**
          * @namespace GM_listValues
          * @namespace GM_getValue
@@ -523,7 +523,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
     }();
 
-    var ffVirtualPort = function() {
+    var ffVirtualPort = !(mono.isFF && mono.noAddon) ? undefined : function() {
         /**
          * @namespace postMessage
          */
@@ -554,7 +554,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
     };
 
-    var ffMessaging = {
+    var ffMessaging = !mono.isFF ? undefined : {
         cbList: [],
         currentTab: function (message) {
             mono.sendMessage({action: 'toActiveTab', message: message}, undefined, 'service');
@@ -585,7 +585,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
     };
 
-    var chMessaging = {
+    var chMessaging = !mono.isChrome ? undefined : {
         /**
          * @namespace chrome.runtime
          * @namespace chrome.tabs.query
@@ -634,7 +634,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
     };
 
-    var opMessaging = {
+    var opMessaging = !mono.isOpera ? undefined : {
         /**
          * @namespace opera.extension
          * @namespace opera.extension.tabs
@@ -687,7 +687,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
     };
 
-    var sfMessaging = {
+    var sfMessaging = !mono.isSafari ? undefined : {
         /**
          * @namespace safari.application
          * @namespace safari.application.activeBrowserWindow.activeTab
@@ -763,7 +763,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
     };
 
-    var gmMessaging = {
+    var gmMessaging = !mono.isGM ? undefined : {
         cbList: [],
         gotMsg: function() {},
         currentTab: function (message) {
