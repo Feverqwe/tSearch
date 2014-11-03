@@ -1,3 +1,6 @@
+/**
+ * @namespace require
+ */
 if (typeof window === 'undefined') {
     self = require('sdk/self');
     var tabs = require('sdk/tabs');

@@ -24,6 +24,9 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     };
 
     if (typeof window === 'undefined') {
+        /**
+         * @namespace _require
+         */
         var require = _require;
         mono.isModule = true;
         mono.isFF = true;
