@@ -843,31 +843,41 @@ var explore = function() {
                 return;
             }
             var_cache.topList.keepAlive = date;
+            var onSuccess = function(data) {
+                var keywords = data.keywords;
+                keywords.sort(function(a, b) {
+                    if (a.weight === b.weight) {
+                        return 0;
+                    } else
+                    if (a.weight > b.weight) {
+                        return -1;
+                    }
+                    return 1;
+                });
+                var_cache.topList.content = keywords;
+                topList_write();
+                mono.storage.set({topList: var_cache.topList});
+            };
+            var oldStatic = function() {
+                engine.ajax({
+                    url: "http://antoshka.on.ufanet.ru/top.json",
+                    dataType: 'json',
+                    cache: false,
+                    success: onSuccess,
+                    error: function() {
+                        if (var_cache.topList.content === undefined) {
+                            return;
+                        }
+                        topList_write();
+                    }
+                });
+            };
             engine.ajax({
-                url: "http://antoshka.on.ufanet.ru/top.json",
+                url: "http://static.tms.mooo.com/top.json",
                 dataType: 'json',
                 cache: false,
-                success: function(data) {
-                    var keywords = data.keywords;
-                    keywords.sort(function(a, b) {
-                        if (a.weight === b.weight) {
-                            return 0;
-                        } else
-                        if (a.weight > b.weight) {
-                            return -1;
-                        }
-                        return 1;
-                    });
-                    var_cache.topList.content = keywords;
-                    topList_write();
-                    mono.storage.set({topList: var_cache.topList});
-                },
-                error: function() {
-                    if (var_cache.topList.content === undefined) {
-                        return;
-                    }
-                    topList_write();
-                }
+                success: onSuccess,
+                error: oldStatic
             });
         });
     };
