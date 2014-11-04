@@ -77,7 +77,7 @@ var popup = function(enable_ac) {
         }
 
         if (obj.dataType) {
-            xhr.responseType = obj.dataType.toLowerCase();
+            xhr.responseType = obj.dataType = obj.dataType.toLowerCase();
         }
 
         if (!obj.headers) {

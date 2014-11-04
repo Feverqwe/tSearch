@@ -548,7 +548,7 @@ var engine = function() {
         }
 
         if (obj.dataType) {
-            xhr.responseType = obj.dataType.toLowerCase();
+            xhr.responseType = obj.dataType = obj.dataType.toLowerCase();
         }
 
         if (!obj.headers) {

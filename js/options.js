@@ -729,7 +729,10 @@ var options = function() {
                 $('input[data-option="enableFavoriteSync"]').parent().hide();
                 $('input[data-option="profileListSync"]').parent().hide();
             }
-            if (mono.isChrome && mono.isChromeWebApp) {
+            if (mono.isMaxthon) {
+                $('input[data-option="contextMenu"]').parent().hide();
+            }
+            if (mono.isChrome && mono.isChromeWebApp || mono.isMaxthon) {
                 //Chromeum app
                 $('input[data-option="searchPopup"]').parent().hide();
             }

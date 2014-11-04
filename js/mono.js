@@ -61,6 +61,9 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         if (window.opera !== undefined) {
             mono.isOpera = true;
             mono.isOperaInject = opera.extension.broadcastMessage === undefined;
+        } else
+        if (window.mx !== undefined) {
+            mono.isMaxthon = true;
         } else {
             mono.addon = window.addon || window.self;
             if (mono.addon !== undefined && mono.addon.port !== undefined) {
@@ -842,6 +845,8 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         mono.sendMessage.send = gmMessaging.send;
         mono.sendMessage.currentTab = gmMessaging.currentTab;
         mono.onMessage = gmMessaging.on;
+    } else {
+        mono.sendMessage.send = mono.sendMessage.currentTab = mono.onMessage = function() {};
     }
 
     //> utils
@@ -882,6 +887,9 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         xhr.responseType = 'json';
         xhr.onload = function() {
             var data = xhr.response;
+            if (mono.isMaxthon && typeof data === 'string') {
+                data = JSON.parse(data);
+            }
             for (var item in data) {
                 language[item] = data[item].message;
             }
