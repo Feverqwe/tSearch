@@ -2216,6 +2216,10 @@ var view = function() {
             dom_cache.time_filter_range_container = $('.time_filter').children('.range');
             dom_cache.profileList = $( document.getElementById('profileList') );
 
+            if (mono.isChrome) {
+                dom_cache.profileList.removeClass('hideBorder');
+            }
+
             dom_cache.search_input.focus();
 
             write_language();

@@ -823,15 +823,15 @@ div.donate a.social.vk {
     background-image: url(../images/vk.png);
 }
 
-#profileList {
+#profileList.hideBorder {
     border-width: 0;
     margin: 1px;
     padding-right: 1px;
     margin-right: 0;
 }
-#profileList:hover,
-#profileList:focus,
-#profileList:active {
+#profileList.hideBorder:hover,
+#profileList.hideBorder:focus,
+#profileList.hideBorder:active {
     border-width: 1px;
     margin: 0;
     padding-right: 0;

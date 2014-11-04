@@ -231,8 +231,10 @@ var popup = function(enable_ac) {
             tab.url = safari.extension.baseURI + url;
             tab.activate();
 
-            dom_cache.search_input.val('').focus();
-            dom_cache.search_clear_btn.hide();
+            setTimeout(function() {
+                dom_cache.search_input.val('').focus();
+                dom_cache.search_clear_btn.hide();
+            },  500);
 
             safari.extension.popovers[0].hide();
         }
