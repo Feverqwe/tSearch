@@ -798,36 +798,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
     };
 
-    var mxMessaging = !mono.isMaxthon ? undefined : {
-        cbList: [],
-        currentTab: function(message) {
-            mx.app.runtime.post('mono', message);
-        },
-        send: function(message) {
-            mx.app.runtime.post('mono', message);
-        },
-        on: function(cb) {
-            msgTools.readFilter(this, cb);
-            mxMessaging.cbList.push(cb);
-            if (mxMessaging.cbList.length > 1) {
-                return;
-            }
-            messagesEnable = true;
-            mx.app.runtime.listen('mono', function(message) {
-                if (message.monoResponseId !== undefined) {
-                    return msgTools.cbCaller(message);
-                }
-                var response = msgTools.mkResponse(message);
-                for (var i = 0, itemCb; itemCb = mxMessaging.cbList[i]; i++) {
-                    if (msgTools.filter(message, itemCb)) {
-                        continue;
-                    }
-                    itemCb(message.data, response);
-                }
-            });
-        }
-    };
-
     mono.sendMessage = function(message, cb, to) {
         message = {
             data: message,
@@ -875,11 +845,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         mono.sendMessage.send = gmMessaging.send;
         mono.sendMessage.currentTab = gmMessaging.currentTab;
         mono.onMessage = gmMessaging.on;
-    } else
-    if (mono.isMaxthon) {
-        mono.sendMessage.send = mxMessaging.send;
-        mono.sendMessage.currentTab = mxMessaging.currentTab;
-        mono.onMessage = mxMessaging.on;
     } else {
         mono.sendMessage.send = mono.sendMessage.currentTab = mono.onMessage = function() {};
     }
