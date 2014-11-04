@@ -18,7 +18,7 @@
             {
                 "type": "panel",
                 "entryPoints": [
-                    "toolbar", "sidebar"
+                    "sidebar"
                 ],
                 "main": "popup.html",
                 "stopOnClose": true,
@@ -30,6 +30,13 @@
                 "height": {
                     "default": 70
                 }
+            },
+            {
+                "type": "page",
+                "entryPoints": [
+                    "toolbar"
+                ],
+                "main": "index.html"
             }
         ],
         "'permissions'": {
