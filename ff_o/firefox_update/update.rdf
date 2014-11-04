@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<RDF:RDF xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <!-- This Description resource includes all the update and compatibility information for
+       a single add-on with the id foobar@developer.mozilla.org. You can list multiple
+       add-ons information in the same RDF file. -->
+  <RDF:Description about="urn:mozilla:extension:{d03fdff0-d3a0-11e0-baa5-14d64d08fdac}">
+    <em:updates>
+      <RDF:Seq>
+
+        <RDF:li>
+          <RDF:Description>
+            <em:version>1.0.80</em:version>
+            <em:targetApplication>
+              <RDF:Description>
+                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+                <em:minVersion>29.0</em:minVersion>
+                <em:maxVersion>37.0</em:maxVersion>
+                <em:updateLink>http://static.tms.mooo.com/firefox/build_firefox.xpi</em:updateLink>
+                <em:updateHash>sha1:BDFA66E36104737C98B70BE32085DCC25B4F9CEC</em:updateHash>
+              </RDF:Description>
+            </em:targetApplication>
+            <em:targetApplication>
+              <RDF:Description>
+                <em:id>{aa3c5121-dab2-40e2-81ca-7ea25febc110}</em:id>
+                <em:minVersion>29.0</em:minVersion>
+                <em:maxVersion>37.0</em:maxVersion>
+                <em:updateLink>http://static.tms.mooo.com/firefox/build_firefox.xpi</em:updateLink>
+                <em:updateHash>sha1:BDFA66E36104737C98B70BE32085DCC25B4F9CEC</em:updateHash>
+              </RDF:Description>
+            </em:targetApplication>
+          </RDF:Description>
+        </RDF:li>
+
+      </RDF:Seq>
+    </em:updates>
+
+  </RDF:Description>
+</RDF:RDF>
