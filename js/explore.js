@@ -845,7 +845,7 @@ var explore = function() {
             var_cache.topList.keepAlive = date;
             engine.ajax({
                 url: "http://antoshka.on.ufanet.ru/top.json",
-                dataType: 'JSON',
+                dataType: 'json',
                 cache: false,
                 success: function(data) {
                     var keywords = data.keywords;

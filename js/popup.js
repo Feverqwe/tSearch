@@ -225,6 +225,17 @@ var popup = function(enable_ac) {
 
             mx.browser.newTab({url: url, activate: true});
         }
+        if (mono.isSafari) {
+            var sWindow = safari.application.activeBrowserWindow;
+            var tab = sWindow.openTab();
+            tab.url = safari.extension.baseURI + url;
+            tab.activate();
+
+            dom_cache.search_input.val('').focus();
+            dom_cache.search_clear_btn.hide();
+
+            safari.extension.popovers[0].hide();
+        }
         window.close();
     });
 
@@ -244,7 +255,7 @@ var popup = function(enable_ac) {
                 }
                 var_cache.suggest_xhr = ajax({
                     url: 'http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(a.term),
-                    dataType: 'JSON',
+                    dataType: 'json',
                     success: function(data) {
                         response(data[1]);
                     }
@@ -280,6 +291,9 @@ var popup = function(enable_ac) {
                     dom_cache.search_input.autocomplete( "enable" );
                 }, 500);
             }
+            if (mono.isSafari) {
+                safari.extension.popovers[0].height = 224;
+            }
         },
         close: function() {
             if (mono.isFF || mono.isOpera) {
@@ -295,6 +309,9 @@ var popup = function(enable_ac) {
                 var rt = window.external.mxGetRuntime();
                 var aa = rt.getActionByName("Torrents MultiSearch");
                 aa.resize(642, 70);
+            }
+            if (mono.isSafari) {
+                safari.extension.popovers[0].height = 70;
             }
         },
         create: function() {

@@ -729,10 +729,10 @@ var options = function() {
                 $('input[data-option="enableFavoriteSync"]').parent().hide();
                 $('input[data-option="profileListSync"]').parent().hide();
             }
-            if (mono.isMaxthon) {
+            if (mono.isMaxthon || mono.isSafari) {
                 $('input[data-option="contextMenu"]').parent().hide();
             }
-            if (mono.isChrome && mono.isChromeWebApp || mono.isMaxthon) {
+            if (mono.isChrome && mono.isChromeWebApp || mono.isMaxthon || mono.isSafari) {
                 //Chromeum app
                 $('input[data-option="searchPopup"]').parent().hide();
             }

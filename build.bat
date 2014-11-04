@@ -3,11 +3,13 @@ rd /S /Q .\build_chrome_ext
 rd /S /Q .\build_opera
 rd /S /Q .\build_firefox_sdk
 rd /S /Q .\build_maxthon
+rd /S /Q .\build_safari.safariextension
 mkdir .\build
 mkdir .\build_chrome_ext
 mkdir .\build_opera
 mkdir .\build_firefox_sdk
 mkdir .\build_maxthon
+mkdir .\build_safari.safariextension
 
 xcopy .\_locales .\build\_locales\ /E
 xcopy .\js .\build\js\ /E
@@ -30,13 +32,20 @@ del .\build_firefox_sdk\data\js\torrent_lib.js
 del .\build_firefox_sdk\data\js\magic.js
 del .\build_firefox_sdk\data\magic.html
 
+:: safari
+
+xcopy .\build .\build_safari.safariextension\ /E
+del .\build_safari.safariextension\manifest.json
+xcopy .\ff_o\safari\* .\build_safari.safariextension\. /E /Y
+del .\build_safari.safariextension\js\torrent_lib.js
+
 :: maxthon
 
 xcopy .\build .\build_maxthon\ /E
 del .\build_maxthon\manifest.json
 xcopy .\ff_o\maxthon\* .\build_maxthon\. /E /Y
-del .\maxthon\js\torrent_lib.js
-del .\maxthon\js\background.js
+del .\build_maxthon\js\torrent_lib.js
+del .\build_maxthon\js\background.js
 
 :: base
 

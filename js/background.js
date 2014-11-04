@@ -165,6 +165,18 @@ var bg = function() {
 
     return {
         boot: function() {
+            if (mono.isSafariBgPage) {
+                mono.externalStorageActivate();
+                safari.extension.settings.addEventListener('change', function(event){
+                    if (event.key !== 'open_options') {
+                        return;
+                    }
+                    var sWindow = safari.application.activeBrowserWindow;
+                    var tab = sWindow.openTab();
+                    tab.url = safari.extension.baseURI + 'options.html';
+                    tab.activate();
+                });
+            }
             mono.loadLanguage(function(language) {
                 _lang = language;
                 mono.onMessage(function(message) {

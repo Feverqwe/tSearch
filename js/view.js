@@ -1205,7 +1205,7 @@ var view = function() {
                     }
                     var_cache.suggest_xhr = engine.ajax({
                         url: 'http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(a.term),
-                        dataType: 'JSON',
+                        dataType: 'json',
                         success: function(data) {
                             response(data[1]);
                         }
