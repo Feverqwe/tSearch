@@ -36,10 +36,7 @@ xcopy .\build .\build_maxthon\ /E
 del .\build_maxthon\manifest.json
 xcopy .\ff_o\maxthon\* .\build_maxthon\. /E /Y
 del .\maxthon\js\torrent_lib.js
-del .\maxthon\data\js\background.js
-
-del .\maxthon\data\js\popup.js
-del .\maxthon\data\popup.html
+del .\maxthon\js\background.js
 
 :: base
 

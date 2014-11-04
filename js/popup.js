@@ -213,6 +213,18 @@ var popup = function(enable_ac) {
         if (mono.isOpera) {
             mono.sendMessage({action: 'tab', url: 'build/index.html' + ( text ? '#?search=' + encodeURIComponent(text):'') });
         }
+        if (mono.isMaxthon) {
+            var rt = window.external.mxGetRuntime();
+            url = rt.getPrivateUrl() + url;
+            mx.browser.tabs();
+
+            setTimeout(function() {
+                dom_cache.search_input.val('').focus();
+                dom_cache.search_clear_btn.hide();
+            },  500);
+
+            mx.browser.newTab({url: url, activate: true});
+        }
         window.close();
     });
 
@@ -250,21 +262,39 @@ var popup = function(enable_ac) {
             collision: "bottom"
         },
         open: function() {
-            mono.sendMessage({action: 'resize', height: 224 }, undefined, "service");
+            if (mono.isFF || mono.isOpera) {
+                mono.sendMessage({action: 'resize', height: 224}, undefined, "service");
+            }
             if (mono.isOpera) {
                 dom_cache.search_input.focus();
                 setTimeout(function() {
                     dom_cache.search_input.focus();
                 }, 100);
             }
+            if (mono.isMaxthon) {
+                var rt = window.external.mxGetRuntime();
+                var aa = rt.getActionByName("Torrents MultiSearch");
+                dom_cache.search_input.autocomplete( "disable" );
+                aa.resize(642, 224);
+                setTimeout(function() {
+                    dom_cache.search_input.autocomplete( "enable" );
+                }, 500);
+            }
         },
         close: function() {
-            mono.sendMessage({action: 'resize', height: 70 }, undefined, "service");
+            if (mono.isFF || mono.isOpera) {
+                mono.sendMessage({action: 'resize', height: 70}, undefined, "service");
+            }
             if (mono.isOpera) {
                 dom_cache.search_input.focus();
                 setTimeout(function() {
                     dom_cache.search_input.focus();
                 }, 100);
+            }
+            if (mono.isMaxthon) {
+                var rt = window.external.mxGetRuntime();
+                var aa = rt.getActionByName("Torrents MultiSearch");
+                aa.resize(642, 70);
             }
         },
         create: function() {
