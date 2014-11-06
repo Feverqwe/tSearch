@@ -39,7 +39,7 @@
 				<key>Identifier</key>
 				<string>tms-btn</string>
 				<key>Image</key>
-				<string>images/icon_16.png</string>
+				<string>Icon-18.png</string>
 				<key>Label</key>
 				<string>Torrents MultiSearch</string>
 				<key>Popover</key>
