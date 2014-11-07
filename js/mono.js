@@ -34,6 +34,9 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         setTimeout = require('sdk/timers').setTimeout;
     } else {
         window.mono = mono;
+        if (location.host === 'static.tms.mooo.com') {
+            mono.isWebApp = true;
+        } else
         if (typeof GM_getValue !== 'undefined') {
             mono.isGM = true;
             if (window.chrome !== undefined) {
