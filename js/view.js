@@ -243,8 +243,8 @@ var view = function() {
                 trackerList.push(key);
             }
         }
-        var_cache.currentRequest = request;
         engine.search(request, trackerList);
+        var_cache.currentRequest = request;
         setPage(request);
         setTimeout(function() {
             dom_cache.search_input.autocomplete( "enable" );
@@ -264,8 +264,8 @@ var view = function() {
             }
         }
         engine.stop();
-        var_cache.currentRequest = request;
         engine.search(request, trackerList, 1);
+        var_cache.currentRequest = request;
         ga('send', 'event', 'Quality', 'keyword', request);
     };
     var blankPage = function(noClearTrackerFilters){
@@ -2745,8 +2745,7 @@ var view = function() {
                     view.begin();
                 });
             });
-        },
-        var_cache: var_cache
+        }
     };
 }();
 mono.pageId = 'tab';

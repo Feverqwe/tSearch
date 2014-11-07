@@ -538,10 +538,6 @@ var engine = function() {
             url = changeUrlHostProxy(url);
         }
 
-        if (mono.isWebApp && obj.tracker) {
-            url = '/app/getPage/'+obj.tracker+'/'+(view.var_cache.currentRequest || '');
-        }
-
         var xhr;
         if (mono.isFF) {
             xhr = {};
@@ -783,14 +779,7 @@ var engine = function() {
             }
 
             loadSettings(function (_settings) {
-                if (mono.isWebApp) {
-                    _settings.allowGetDescription = 0;
-                    _settings.autoComplite = 0;
-                    _settings.doNotSendStatistics = 1;
-                }
-
                 engine.settings = settings = _settings;
-
 
                 var storageType = (engine.settings.profileListSync === 1)?'sync':'local';
 
@@ -798,10 +787,6 @@ var engine = function() {
                     mono.storage.get(['customTorrentList', 'profileList',
                         'history', 'lang', 'doNotSendStatistics', 'proxyList', 'titleQualityList'], function(storage) {
 
-                        if (mono.isWebApp) {
-                            storage.doNotSendStatistics = 1;
-                        }
-                        
                         if (storage.proxyList !== undefined) {
                             if (Array.isArray(storage.proxyList)) {
                                 var newList = {};
