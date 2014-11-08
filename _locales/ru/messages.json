@@ -310,5 +310,7 @@
     "qAddRule": {"message": "Добавить правило"},
     "qRule_sub": {"message": "(искать во всем заголовке)"},
     "qRule_subBefore": {"message": "(искать до найденного слова)"},
-    "qRule_subAfter": {"message": "(искать после найденного слова)"}
+    "qRule_subAfter": {"message": "(искать после найденного слова)"},
+
+    "downloadExtensionTitle": {"message": "Скачай расширение для своего браузера!"}
 }

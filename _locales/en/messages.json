@@ -307,5 +307,7 @@
     "qAddRule": {"message": "Add rule"},
     "qRule_sub": {"message": "(look around the title)"},
     "qRule_subBefore": {"message": "(look up words found)"},
-    "qRule_subAfter": {"message": "(look after the found word)"}
+    "qRule_subAfter": {"message": "(look after the found word)"},
+
+    "downloadExtensionTitle": {"message": "Install the extension for your browser!"}
 }
