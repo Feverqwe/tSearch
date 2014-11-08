@@ -1164,28 +1164,9 @@ var explore = function() {
                         })())
                     ])
                 );
-                var browser = getBrowserName();
-                currentBrowser.append(domList[browser] || $('<img>', {
+                currentBrowser.append(domList[getBrowserName()] || $('<img>', {
                     src: 'images/icon_128.png'
                 }));
-                /*
-                if (browser === 'chrome') {
-                    var url = 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh';
-                    $(document.head).append($('<link>', {
-                        rel: 'chrome-webstore-item',
-                        href: url
-                    }));
-                    domList[browser].on('click', function(e) {
-                        e.preventDefault();
-                        chrome.webstore.install(url, function(){
-                            console.log('a', arguments);
-                        },
-                        function() {
-                            console.log('b', arguments);
-                        });
-                    });
-                }
-                */
             }
 
             $.each(listOptions, function(type, item) {
