@@ -66,6 +66,9 @@ var engine = function() {
         } else {
             list = ['bitsnoop', 'extratorrent', 'fenopy', 'torrentz', 'thepiratebay', 'kickass'];
         }
+        if (mono.isWebApp) {
+            list = ['nnm-club', 'kinozal', 'hdclub', 'tfile', 'fast-torrent', 'opensharing', 'btdigg'];
+        }
         return list;
     };
 
@@ -538,6 +541,10 @@ var engine = function() {
             url = changeUrlHostProxy(url);
         }
 
+        if (mono.isWebApp && !obj.localXhr) {
+            url = '/app/via?url='+encodeURIComponent(url)
+        }
+
         var xhr;
         if (mono.isFF) {
             xhr = {};
@@ -780,6 +787,10 @@ var engine = function() {
 
             loadSettings(function (_settings) {
                 engine.settings = settings = _settings;
+
+                if (mono.isWebApp) {
+                    _settings.allowGetDescription = 0;
+                }
 
                 var storageType = (engine.settings.profileListSync === 1)?'sync':'local';
 

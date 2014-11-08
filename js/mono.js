@@ -34,6 +34,9 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         setTimeout = require('sdk/timers').setTimeout;
     } else {
         window.mono = mono;
+        if (location.host === 'static.tms.mooo.com') {
+            mono.isWebApp = true;
+        } else
         if (typeof GM_getValue !== 'undefined') {
             mono.isGM = true;
             if (window.chrome !== undefined) {
@@ -866,6 +869,9 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         } else {
             lang = ((typeof navigator !== 'undefined') ? navigator : window.navigator).language.substr(0, 2);
         }
+        if (['ru', 'en'].indexOf(lang) === -1) {
+            lang = 'en';
+        }
 
         url = url.replace('{lang}', force || lang);
         if (mono.isModule) {
@@ -887,7 +893,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         xhr.responseType = 'json';
         xhr.onload = function() {
             var data = xhr.response;
-            if (mono.isMaxthon && typeof data === 'string') {
+            if (typeof data === 'string') {
                 data = JSON.parse(data);
             }
             for (var item in data) {

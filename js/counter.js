@@ -15,12 +15,16 @@ var counter = function() {
     var gas = document.createElement('script');
     gas.async = 1;
     gas.src = 'https://www.google-analytics.com/analytics.js';
+    var success = function() {
+        var pos = document.getElementsByTagName('script')[0];
+        pos.parentNode.insertBefore(gas, pos);
+    };
+    if (mono.isWebApp) {
+        return success();
+    }
     engine.ajax({
         type: 'HEAD',
         url: gas.src,
-        success: function() {
-            var pos = document.getElementsByTagName('script')[0];
-            pos.parentNode.insertBefore(gas, pos);
-        }
+        success: success
     });
 };

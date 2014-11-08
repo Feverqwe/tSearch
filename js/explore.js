@@ -873,6 +873,7 @@ var explore = function() {
                 });
             };
             engine.ajax({
+                localXhr: true,
                 url: "http://static.tms.mooo.com/top.json",
                 dataType: 'json',
                 cache: false,
@@ -1090,6 +1091,11 @@ var explore = function() {
             if (engine.settings.hideTopSearch === 0) {
                 load_topList();
             }
+
+            if (mono.isWebApp) {
+                listOptions = {};
+            }
+
             $.each(listOptions, function(type, item) {
                 if (item.e === 0) {
                     return 1;
