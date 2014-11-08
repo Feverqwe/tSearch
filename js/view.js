@@ -2304,13 +2304,14 @@ var view = function() {
                 }
                 window.location = 'options.html';
             });
-            window.addEventListener('popstate', function(){
-                if (window.location.hash === var_cache.oldlocationHash){
-                    return;
-                }
-                readUrl();
-            }, false);
-            if (mono.isOpera) {
+            if (window.onpopstate) {
+                window.addEventListener('popstate', function () {
+                    if (window.location.hash === var_cache.oldlocationHash) {
+                        return;
+                    }
+                    readUrl();
+                }, false);
+            } else {
                 dom_cache.window.on('hashchange', function() {
                     if (window.location.hash === var_cache.oldlocationHash){
                         return;
