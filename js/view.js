@@ -1570,6 +1570,7 @@ var view = function() {
 
             if (mono.isWebApp) {
                 notify.call({focusYes: true}, [{type: 'note', html: _lang.webAppFunctionUnavailable}], _lang.wordYes, _lang.wordNoNotNow, function() {
+                    if (arguments[0] === undefined) return;
                     $(document).trigger('installExtensionMenu');
                 });
                 return;
@@ -2287,6 +2288,7 @@ var view = function() {
                 e.preventDefault();
                 if (mono.isWebApp) {
                     notify.call({focusYes: true}, [{type: 'note', html: _lang.webAppFunctionUnavailable}], _lang.wordYes, _lang.wordNoNotNow, function() {
+                        if (arguments[0] === undefined) return;
                         $(document).trigger('installExtensionMenu');
                     });
                     return;
