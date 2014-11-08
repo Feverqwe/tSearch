@@ -309,5 +309,9 @@
     "qRule_subBefore": {"message": "(look up words found)"},
     "qRule_subAfter": {"message": "(look after the found word)"},
 
-    "downloadExtensionTitle": {"message": "Install the extension for your browser!"}
+    "wordYes": {"message": "Yes"},
+    "wordNoNotNow": {"message": "No, don't now"},
+
+    "downloadExtensionTitle": {"message": "Install the extension for your browser!"},
+    "webAppFunctionUnavailable": {"message": "<img style='float: left;margin-right: 10px;' src='images/icon_48.png'/>Sorry but the web version of the application this function is not available.<br/><br/><br/>Want to install the extension in the browser?"}
 }

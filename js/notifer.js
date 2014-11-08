@@ -40,7 +40,12 @@ var notify = function () {
         var type = _item.type;
         var item = $('<div>', {'class': 'item ' + type});
         if (type !== 'buttons') {
-            item.append($('<span>', {text: _item.text}));
+            if (_item.text) {
+                item.append($('<span>', {text: _item.text}));
+            }
+            if (_item.html) {
+                item.append($('<span>', {html: _item.html}));
+            }
         }
         if (type === 'note') {
             count++;
@@ -69,13 +74,13 @@ var notify = function () {
             inputs.push(input);
             count++;
         } else if (type === 'buttons') {
-            $('<button>', {'class': 'btn_cancel', text: _item.textNo}).on('click',function (e) {
+            $('<button>', {'class': 'btn_cancel', text: _item.textNo}).on('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 close();
                 cb();
             }).appendTo(item);
-            $('<button>', {'class': 'btn_ok', text: _item.textOk}).on('click',function (e) {
+            $('<button>', {'class': 'btn_ok', text: _item.textOk}).on('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 cb(getValues());
@@ -99,6 +104,12 @@ var notify = function () {
         });
         notifi.append(createType({type: 'buttons', textOk: textOk, textNo: textNo}))
             .appendTo(body);
+        if (this.focusNo) {
+            notifi.find('.btn_cancel').focus();
+        }
+        if (this.focusYes) {
+            notifi.find('.btn_ok').focus();
+        }
         for (var i = 0, inp; inp = inputs[i]; i++) {
             if (i === 0) {
                 inp.focus();
@@ -129,7 +140,7 @@ var notify = function () {
             body = $('body');
         }
         createLayer();
-        createNotifi(array, textOk, textNo);
+        createNotifi.call(this || {}, array, textOk, textNo);
         cb = _cb;
         if (count === 0) {
             cb(getValues());

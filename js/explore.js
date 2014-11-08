@@ -1117,8 +1117,9 @@ var explore = function() {
                 listOptions = {};
                 var currentBrowser = undefined;
                 var domList = {};
+                var dlExBody = undefined;
                 dom_cache.explore_gallery.after(
-                    $('<div>', {id: 'explore_download_extension'}).append([
+                    dlExBody = $('<div>', {id: 'explore_download_extension'}).append([
                         $('<h1>', {
                             text: _lang.downloadExtensionTitle
                         }),
@@ -1167,6 +1168,17 @@ var explore = function() {
                 currentBrowser.append(domList[getBrowserName()] || $('<img>', {
                     src: 'images/icon_128.png'
                 }));
+                $(document).on('installExtensionMenu', function() {
+                    dlExBody.addClass('popupMode');
+                    var stopProp = function(e) {
+                        e.stopPropagation();
+                    };
+                    dlExBody.on('click', stopProp);
+                    $(document).on('click', function() {
+                        dlExBody.removeClass('popupMode');
+                        dlExBody.off('click', stopProp);
+                    });
+                });
             }
 
             $.each(listOptions, function(type, item) {

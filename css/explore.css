@@ -412,6 +412,10 @@ div.explore ul.body li div.picture > a.link:hover {
     float: right;
     margin-right: 15px;
 }
+.nf-notifi .btn_cancel:focus,
+.nf-notifi .btn_ok:focus {
+    outline: rgb(77, 144, 254) auto 5px;
+}
 .nf-notifi button {
     min-width: 70px;
 }
@@ -670,4 +674,12 @@ div.explore div.popup div.content a:visited:hover {
     font-size: 3em;
     margin: 0;
     margin-left: 20px;
+}
+#explore_download_extension.popupMode {
+    z-index: 9999;
+    box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);
+    width: 960px;
+    position: absolute;
+    padding-bottom: 30px;
+    background-color: rgb(255, 255, 255);
 }

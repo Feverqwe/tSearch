@@ -1568,6 +1568,13 @@ var view = function() {
         saveBtn.on('click', function(e) {
             e.preventDefault();
 
+            if (mono.isWebApp) {
+                notify.call({focusYes: true}, [{type: 'note', html: _lang.webAppFunctionUnavailable}], _lang.wordYes, _lang.wordNoNotNow, function() {
+                    $(document).trigger('installExtensionMenu');
+                });
+                return;
+            }
+
             var elList = trackerList.children('.selected');
             var list = [];
             for (var i = 0, el; el = elList[i]; i++) {
@@ -2278,6 +2285,12 @@ var view = function() {
             });
             document.getElementById('settings_btn').addEventListener("click", function(e) {
                 e.preventDefault();
+                if (mono.isWebApp) {
+                    notify.call({focusYes: true}, [{type: 'note', html: _lang.webAppFunctionUnavailable}], _lang.wordYes, _lang.wordNoNotNow, function() {
+                        $(document).trigger('installExtensionMenu');
+                    });
+                    return;
+                }
                 window.location = 'options.html';
             });
             window.addEventListener('popstate', function(){
