@@ -2,16 +2,18 @@
     {
         "type": "extension",
         "frameworkVersion":"1.0.0",
-        "version":"1.0.1",
+        "version":"1.0.2",
         "guid": "{0801fdd9-011e-4fae-8ca9-70fd93113708}",
         "name": "Torrents MultiSearch",
         "title": {
             "en": "Torrents MultiSearch",
-            "ru": "Torrents MultiSearch"
+            "ru": "Torrents MultiSearch",
+            "zh-cn": "Torrents MultiSearch"
         },
         "description": {
             "en": "Torrents MultiSearch - search on some of the trackers at once!",
-            "ru": "Torrents MultiSearch - поиск по нескольким трекерам сразу!"
+            "ru": "Torrents MultiSearch - поиск по нескольким трекерам сразу!",
+            "zh-cn": "Torrents MultiSearch - search on some of the trackers at once!"
         },
         "icon": "icon",
         "actions": [
