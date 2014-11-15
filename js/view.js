@@ -1574,16 +1574,31 @@ var view = function() {
             }
             onHide(2);
         });
-        saveBtn.on('click', function(e) {
-            e.preventDefault();
-
-            if (mono.isWebApp) {
-                notify.call({focusYes: true}, [{type: 'note', html: _lang.webAppFunctionUnavailable}], _lang.wordYes, _lang.wordNoNotNow, function() {
+        var webAppFilterList = !mono.isWebApp ? undefined : function(list, proxyList) {
+            var webAppAllowList = engine.webAppSupportList().all;
+            var rmList = [];
+            var i, item;
+            for (i = 0; item = list[i]; i++) {
+                if ( webAppAllowList.indexOf(item) === -1 && proxyList[item] === undefined ) {
+                    rmList.push(item);
+                }
+            }
+            for (i = 0; item = rmList[i]; i++) {
+                list.splice(list.indexOf(item), 1);
+            }
+            if (rmList.length > 0) {
+                notify.call({focusYes: true}, [{
+                    type: 'note',
+                    html: _lang.webAppTrackersUnavailable
+                }], _lang.wordYes, _lang.wordNoNotNow, function () {
                     if (arguments[0] === undefined) return;
                     $(document).trigger('installExtensionMenu');
                 });
-                return;
             }
+            return list;
+        };
+        saveBtn.on('click', function(e) {
+            e.preventDefault();
 
             var elList = trackerList.children('.selected');
             var list = [];
@@ -1598,6 +1613,10 @@ var view = function() {
                 id = el.dataset.tracker;
                 var value = parseInt(el.value);
                 proxyList[id] = (value > 0) ? value : undefined;
+            }
+
+            if (mono.isWebApp) {
+                list = webAppFilterList(list, proxyList);
             }
 
             var newListName = listName.val();
@@ -2295,13 +2314,6 @@ var view = function() {
             });
             document.getElementById('settings_btn').addEventListener("click", function(e) {
                 e.preventDefault();
-                if (mono.isWebApp) {
-                    notify.call({focusYes: true}, [{type: 'note', html: _lang.webAppFunctionUnavailable}], _lang.wordYes, _lang.wordNoNotNow, function() {
-                        if (arguments[0] === undefined) return;
-                        $(document).trigger('installExtensionMenu');
-                    });
-                    return;
-                }
                 window.location = 'options.html';
             });
             if (window.onpopstate) {

@@ -316,5 +316,6 @@
     "wordNoNotNow": {"message": "Нет, не сейчас"},
 
     "downloadExtensionTitle": {"message": "Скачай расширение для своего браузера!"},
-    "webAppFunctionUnavailable": {"message": "<img style='float: left;margin-right: 10px;' src='images/icon_48.png'/>Увы в веб версии приложения эта функция не доступна.<br/><br/><br/>Хотите установить расширение в браузер?"}
+    "webAppFunctionUnavailable": {"message": "<img style='float: left;margin-right: 10px;' src='images/icon_48.png'/>Увы в веб версии приложения эта функция не доступна.<br/><br/><br/>Хотите установить расширение в браузер?"},
+    "webAppTrackersUnavailable": {"message": "<img style='float: left;margin-right: 10px;' src='images/icon_48.png'/>Некотрые трекеры не доступны в веб версии.<br/><br/><br/>Хотите установить расширение в браузер?"}
 }

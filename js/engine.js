@@ -59,15 +59,27 @@ var engine = function() {
 
     var lastTrackerList = [];
 
+    var webAppSupportList = function() {
+        var list = {
+            ru: ['nnm-club', 'kinozal', 'hdclub', 'tfile', 'fast-torrent', 'opensharing', 'btdigg'],
+            en: ['bitsnoop', 'extratorrent', 'fenopy', 'torrentz', 'thepiratebay', 'kickass']
+        };
+        list.all = list.ru.concat(list.en);
+        return list
+    };
+
     var defaultProfileTorrentList = function () {
         var list;
         if (_lang.lang === "ru") {
             list = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'hdclub', 'tfile', 'fast-torrent', 'opensharing', 'btdigg'];
+            if (mono.isWebApp) {
+                list = webAppSupportList().ru;
+            }
         } else {
             list = ['bitsnoop', 'extratorrent', 'fenopy', 'torrentz', 'thepiratebay', 'kickass'];
-        }
-        if (mono.isWebApp) {
-            list = ['nnm-club', 'kinozal', 'hdclub', 'tfile', 'fast-torrent', 'opensharing', 'btdigg'];
+            if (mono.isWebApp) {
+                list = webAppSupportList().en;
+            }
         }
         return list;
     };
@@ -504,6 +516,17 @@ var engine = function() {
         return url.substr(0, sPos) + '.' + settings.proxyHost + url.substr(sPos);
     };
 
+    var setWebAppUrl = function(url, proxyType) {
+        var webAppUrl = '/app/via?url=' + encodeURIComponent(url);
+        if (proxyType !== undefined) {
+            if (proxyType === 2 && def_settings.proxyHost === settings.proxyHost) {
+                return webAppUrl;
+            }
+            return url;
+        }
+        return webAppUrl;
+    };
+
     var ajax = function(obj) {
         var url = obj.url;
 
@@ -530,19 +553,20 @@ var engine = function() {
             obj.safe = true;
         }
 
-        if (method === 'GET' && proxyList[obj.tracker] === 1) {
+        var proxyType = proxyList[obj.tracker];
+        if (method === 'GET' && proxyType === 1) {
             if (settings.proxyUrlFixSpaces) {
                 url = url.replace(/[\t\s]+/g, '%20');
             }
             url = settings.proxyURL.replace('{url}', encodeURIComponent(url));
         }
 
-        if (proxyList[obj.tracker] === 2) {
+        if (proxyType === 2) {
             url = changeUrlHostProxy(url);
         }
 
         if (mono.isWebApp && !obj.localXhr) {
-            url = '/app/via?url='+encodeURIComponent(url)
+            url = setWebAppUrl(url, proxyType);
         }
 
         var xhr;
@@ -754,6 +778,7 @@ var engine = function() {
         changeUrlHostProxy: changeUrlHostProxy,
         //need options:
         defaultProfileTorrentList: defaultProfileTorrentList,
+        webAppSupportList: webAppSupportList,
         loadSettings: loadSettings,
         reloadCustomTorrentList: function(cb) {
             mono.storage.get('customTorrentList', function(storage) {
