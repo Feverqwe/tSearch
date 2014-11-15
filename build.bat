@@ -4,12 +4,14 @@ rd /S /Q .\build_opera
 rd /S /Q .\build_firefox_sdk
 rd /S /Q .\build_maxthon
 rd /S /Q .\build_safari.safariextension
+rd /S /Q .\build_web
 mkdir .\build
 mkdir .\build_chrome_ext
 mkdir .\build_opera
 mkdir .\build_firefox_sdk
 mkdir .\build_maxthon
 mkdir .\build_safari.safariextension
+mkdir .\build_web
 
 xcopy .\_locales .\build\_locales\ /E
 xcopy .\js .\build\js\ /E
@@ -82,6 +84,14 @@ xcopy .\ff_o\chrome_ext\* .\build_chrome_ext\. /E /Y
 
 del .\build\js\popup.js
 del .\build\popup.html
+
+:: web app
+
+xcopy .\build .\build_web\ /E
+xcopy .\ff_o\web\* .\build_web\. /E /Y
+
+del .\build_web\magic.html
+del .\build_web\manifest.json
 
 :: building
 
