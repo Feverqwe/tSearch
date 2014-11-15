@@ -230,6 +230,8 @@
     "optCloudBackupError": {"message": "Ошибка сохранения настроек!"},
     "word_for_example": {"message": "Например:"},
     "word_no": {"message": "Нет"},
+    "word_error": {"message": "Ошибка!"},
+    "codeExists": {"message": "Этот код уже добавлен."},
 
     "magic_1": {"message": "Ошибка загрузки!"},
     "magic_2": {"message": "Поиск"},

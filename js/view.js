@@ -1839,17 +1839,17 @@ var view = function() {
                     try {
                         code = JSON.parse(arr[0]);
                     } catch (e) {
-                        alert(_lang.settings[55] + "\n" + e);
+                        alert(_lang.magic_1 + "\n" + e);
                         return;
                     }
                     if (code.uid === undefined) {
-                        alert(_lang.settings[56]);
+                        alert(_lang.word_error);
                         return;
                     }
                     mono.storage.get('customTorrentList', function(storage) {
                         var customTorrentList = storage.customTorrentList || {};
                         if (customTorrentList['ct_'+code.uid] !== undefined) {
-                            alert(_lang.settings[54]);
+                            alert(_lang.codeExists);
                             return;
                         }
                         customTorrentList['ct_'+code.uid] = code;
@@ -1878,7 +1878,7 @@ var view = function() {
                         try {
                             code = JSON.parse(arr[0]);
                         } catch (e) {
-                            alert(_lang.settings[55] + "\n" + e);
+                            alert(_lang.magic_1 + "\n" + e);
                             return;
                         }
                         if (uid !== code.uid) {
