@@ -105,4 +105,5 @@ del .\build_chrome_ext.zip
 
 pause
 
-copy .\build_firefox_sdk\torrents_multisearch.xpi build_firefox.xpi
+copy .\build_firefox_sdk\torrents_multisearch_no_store.xpi build_firefox.xpi
+copy .\build_firefox_sdk\torrents_multisearch.xpi build_firefox_store.xpi
