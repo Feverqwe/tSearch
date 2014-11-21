@@ -2252,7 +2252,7 @@ var view = function() {
             dom_cache.time_filter_range_container = $('.time_filter').children('.range');
             dom_cache.profileList = $( document.getElementById('profileList') );
 
-            if (!mono.isChrome && !mono.isMaxthon) {
+            if (!(mono.isChrome && navigator.platform.indexOf('Mac') !== 0) && !mono.isMaxthon) {
                 dom_cache.profileList.removeClass('hideBorder');
             }
 
