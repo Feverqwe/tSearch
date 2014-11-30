@@ -12,14 +12,14 @@
 
         <RDF:li>
           <RDF:Description>
-            <em:version>1.0.82</em:version>
+            <em:version>1.0.83</em:version>
             <em:targetApplication>
               <RDF:Description>
                 <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
                 <em:minVersion>29.0</em:minVersion>
                 <em:maxVersion>37.0</em:maxVersion>
                 <em:updateLink>http://static.tms.mooo.com/firefox/build_firefox.xpi</em:updateLink>
-                <em:updateHash>sha1:DA2AB8DBED6E47FE7615E35A1C335FA0B7614953</em:updateHash>
+                <em:updateHash>sha1:E15B83DE9658A702077DE7F970AEF8F0E7FA1CBE</em:updateHash>
               </RDF:Description>
             </em:targetApplication>
             <em:targetApplication>
@@ -28,7 +28,7 @@
                 <em:minVersion>29.0</em:minVersion>
                 <em:maxVersion>37.0</em:maxVersion>
                 <em:updateLink>http://static.tms.mooo.com/firefox/build_firefox.xpi</em:updateLink>
-                <em:updateHash>sha1:DA2AB8DBED6E47FE7615E35A1C335FA0B7614953</em:updateHash>
+                <em:updateHash>sha1:E15B83DE9658A702077DE7F970AEF8F0E7FA1CBE</em:updateHash>
               </RDF:Description>
             </em:targetApplication>
           </RDF:Description>

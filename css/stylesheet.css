@@ -380,6 +380,9 @@ div.tracker_icon.login {
     text-decoration: none;
     width: calc(100% - 54px);
 }
+#tracker_list li > ul > li > a:hover {
+    text-decoration: underline;
+}
 #tracker_list > li > a > * {
     vertical-align: middle;
     display: inline-block;
