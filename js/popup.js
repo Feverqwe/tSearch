@@ -275,10 +275,11 @@ var popup = function(enable_ac) {
             collision: "bottom"
         },
         open: function() {
-            if (mono.isFF || mono.isOpera) {
+            if (mono.isFF) {
                 mono.sendMessage({action: 'resize', height: 224}, undefined, "service");
             }
             if (mono.isOpera) {
+                mono.sendMessage({action: 'resize', height: 224});
                 dom_cache.search_input.focus();
                 setTimeout(function() {
                     dom_cache.search_input.focus();
@@ -298,10 +299,11 @@ var popup = function(enable_ac) {
             }
         },
         close: function() {
-            if (mono.isFF || mono.isOpera) {
+            if (mono.isFF) {
                 mono.sendMessage({action: 'resize', height: 70}, undefined, "service");
             }
             if (mono.isOpera) {
+                mono.sendMessage({action: 'resize', height: 70});
                 dom_cache.search_input.focus();
                 setTimeout(function() {
                     dom_cache.search_input.focus();
@@ -363,7 +365,7 @@ var popup = function(enable_ac) {
         dom_cache.body.css({
             overflow: 'hidden'
         });
-        mono.sendMessage({action: 'resize', height: 70 });
+        mono.sendMessage({action: 'resize', height: 70});
         dom_cache.search_input.focus();
         setTimeout(function() {
             dom_cache.search_input.focus();
@@ -381,7 +383,6 @@ var popup = function(enable_ac) {
     }
 };
 
-mono.pageId = 'popup';
 mono.loadLanguage(function(language) {
     window._lang = language;
     mono.storage.get(['autoComplite'], function(storage) {

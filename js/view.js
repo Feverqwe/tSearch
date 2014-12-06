@@ -2785,7 +2785,6 @@ var view = function() {
         }
     };
 }();
-mono.pageId = 'tab';
 engine.boot(function() {
     explore.boot(function() {
         $(function() {

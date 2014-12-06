@@ -1,11 +1,11 @@
 /**
  * @namespace require
  */
-if (typeof window === 'undefined') {
-    self = require('sdk/self');
-    var tabs = require('sdk/tabs');
+(function() {
+    if (typeof window !== 'undefined') return;
     window = require('sdk/window/utils').getMostRecentBrowserWindow();
     window.isModule = true;
+    var self = require('sdk/self');
     mono = require('toolkit/loader').main(require('toolkit/loader').Loader({
         paths: {
             'data/': self.data.url('js/')
@@ -16,8 +16,6 @@ if (typeof window === 'undefined') {
             console: console,
             _require: function(path) {
                 switch (path) {
-                    case 'sdk/timers':
-                        return require('sdk/timers');
                     case 'sdk/simple-storage':
                         return require('sdk/simple-storage');
                     case 'sdk/window/utils':
@@ -30,13 +28,12 @@ if (typeof window === 'undefined') {
             }
         }
     }), "data/mono");
-}
-var init = function (env, ffButton) {
-    if (env) {
-        mono = mono.init(env);
+})();
+var init = function (addon, ffButton) {
+    if (addon) {
+        mono = mono.init(addon);
         window.hasButton = !!ffButton;
     }
-    mono.pageId = 'bg';
     bg.boot();
 };
 var bg = function() {
@@ -103,6 +100,7 @@ var bg = function() {
             if (enable && var_cache.cm_state) {
                 return;
             }
+            var self = require('sdk/self');
             var contentScript = (function() {
                 var onContext = function() {
                     self.on("click", function() {
@@ -141,6 +139,7 @@ var bg = function() {
                 image: self.data.url('./icons/icon-16.png'),
                 contentScript: contentScript,
                 onMessage: function (text) {
+                    var tabs = require('sdk/tabs');
                     tabs.open( self.data.url('index.html')+'#?search='+encodeURIComponent(text) );
                 }
             });
@@ -166,7 +165,6 @@ var bg = function() {
     return {
         boot: function() {
             if (mono.isSafariBgPage) {
-                mono.externalStorageActivate();
                 safari.extension.settings.addEventListener('change', function(event){
                     if (event.key !== 'open_options') {
                         return;

@@ -157,7 +157,7 @@ var options = function() {
         if (key === 'contextMenu' || key === 'searchPopup' || key === 'autoComplite') {
             mono.sendMessage('bg_update');
             if (mono.isFF || mono.isOpera) {
-                mono.sendMessage('popupUpdate', undefined, 'popup');
+                mono.sendMessage('popupUpdate');
             }
         }
 
@@ -782,5 +782,4 @@ var options = function() {
     }
 }();
 
-mono.pageId = 'tab';
 engine.boot(options.boot);
