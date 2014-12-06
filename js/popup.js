@@ -371,7 +371,7 @@ var popup = function(enable_ac) {
             dom_cache.search_input.focus();
         }, 100);
     }
-    if (mono.isFF || mono.isOpera) {
+    if (mono.isFF) {
         mono.onMessage(function(message) {
             if (message === 'popupUpdate') {
                 mono.storage.get(['autoComplite'],function(storage) {
@@ -379,6 +379,13 @@ var popup = function(enable_ac) {
                 });
             }
         });
+    }
+    if (mono.isSafari) {
+        popup.update = function() {
+            mono.storage.get(['autoComplite'],function(storage) {
+                options.autoComplete = storage.autoComplite;
+            });
+        };
     }
 };
 

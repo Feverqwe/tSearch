@@ -202,7 +202,7 @@ var bg = function() {
                     }
                 }
                 if (mono.isSafari) {
-                    safari.extension.popovers[0].contentWindow.location.reload();
+                    safari.extension.popovers[0].contentWindow.popup.update();
                 }
             });
         }
