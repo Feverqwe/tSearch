@@ -373,12 +373,11 @@ var popup = function(enable_ac) {
     }
     if (mono.isFF || mono.isOpera) {
         mono.onMessage(function(message) {
-            if (message !== 'popupUpdate') {
-                return;
+            if (message === 'popupUpdate') {
+                mono.storage.get(['autoComplite'],function(storage) {
+                    options.autoComplete = storage.autoComplite;
+                });
             }
-            mono.storage.get(['autoComplite'],function(storage) {
-                options.autoComplete = storage.autoComplite;
-            });
         });
     }
 };

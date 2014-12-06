@@ -201,6 +201,9 @@ var bg = function() {
                         update_btn_action();
                     }
                 }
+                if (mono.isSafari) {
+                    safari.extension.popovers[0].contentWindow.location.reload();
+                }
             });
         }
     };

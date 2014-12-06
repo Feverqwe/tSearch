@@ -156,7 +156,7 @@ var options = function() {
 
         if (key === 'contextMenu' || key === 'searchPopup' || key === 'autoComplite') {
             mono.sendMessage('bg_update');
-            if (mono.isFF || mono.isOpera) {
+            if (mono.isFF) {
                 mono.sendMessage('popupUpdate');
             }
         }
