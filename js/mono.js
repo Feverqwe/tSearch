@@ -103,7 +103,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     id: 0,
     idPrefix: Math.floor(Math.random()*1000)+'_',
     addCb: function(message, cb) {
-      !mono.onMessage.inited && mono.onMessage(function(){});
+      mono.onMessage.inited === undefined && mono.onMessage(function(){});
       
       if (msgTools.cbStack.length > mono.messageStack) {
         delete msgTools.cbObj[msgTools.cbStack.shift()];

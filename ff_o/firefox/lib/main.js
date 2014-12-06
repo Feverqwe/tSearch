@@ -77,7 +77,7 @@
             button.state('window', {checked: false});
         },
         onShow: function () {
-            popup.emit('mono', {
+            popup.port.emit('mono', {
                 data: 'show'
             });
         },
