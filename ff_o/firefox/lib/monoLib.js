@@ -299,7 +299,6 @@ var serviceList = {
 };
 
 var sanitizerHTML = function (html) {
-  var self = require("sdk/self");
   var chrome = require('chrome');
   var Cc = chrome.Cc;
   var Ci = chrome.Ci;
@@ -307,17 +306,16 @@ var sanitizerHTML = function (html) {
   var flags = 2;
 
   if (sanitizerHTML.regexpList === undefined) {
-    sanitizerHTML.regexpList = [];
-  }
-  var sanitizeRegExp = sanitizerHTML.regexpList;
-
-  if (!sanitizeRegExp[1]) {
+    var self = require("sdk/self");
     var id = self.id.replace(/[^\w\d]/g, '_');
-    sanitizeRegExp[1] = new RegExp('http:\\/\\/'+id+'#', 'gm');
-    sanitizeRegExp[0] = /href=(['"]{1})([^'"]*)(?:['"]{1})/img;
-    sanitizeRegExp[2] = /javascript/i;
-    sanitizeRegExp[3] = id;
+    sanitizerHTML.regexpList = [];
+    sanitizerHTML.regexpList[1] = new RegExp('http:\\/\\/'+id+'#', 'gm');
+    sanitizerHTML.regexpList[0] = /href=(['"]{1})([^'"]*)(?:['"]{1})/img;
+    sanitizerHTML.regexpList[2] = /javascript/i;
+    sanitizerHTML.regexpList[3] = id;
   }
+
+  var sanitizeRegExp = sanitizerHTML.regexpList;
 
   html = html.replace(sanitizeRegExp[0], function(str, arg1, arg2) {
     "use strict";
