@@ -133,6 +133,23 @@
       }
       message.to = pageId;
       monoOnMessage(message);
+    },
+    popupWin: function(message) {
+      var self = require("sdk/self");
+      var url = 'resource://'+self.id.slice(1, -1)+'/';
+      var pageId;
+      for (var index in map) {
+        var page = map[index].page;
+        if (page.isShowing !== undefined && page.tab === null && page.url.indexOf(url) === 0) {
+          pageId = map[index].id;
+          break;
+        }
+      }
+      if (pageId === undefined) {
+        return;
+      }
+      message.to = pageId;
+      monoOnMessage(message);
     }
   };
 
