@@ -85,11 +85,9 @@
             if (msg === 'closeMe') {
                 popup.hide();
             }
-        },
-        onAttach: function() {
-            monoLib.addPage(popup);
         }
     });
+    popup && monoLib.addPage(popup);
 
 
     var bgAddon = monoLib.virtualAddon();
