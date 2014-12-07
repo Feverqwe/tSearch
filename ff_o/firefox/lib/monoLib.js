@@ -7,6 +7,7 @@
 
 (function() {
   var map = {};
+  var enableLocalScope = false;
   /**
    * @namespace exports
    * @namespace require
@@ -105,14 +106,18 @@
     var onAttach = function() {
       mPage.active = true;
       map[mPage.id] = mPage;
+
+      page.on('pageshow', onPageShow);
+      page.on('pagehide', onPageHide);
     };
     var onDetach = function() {
       delete map[mPage.id];
       mPage.active = false;
+
+      page.off('pageshow', onPageShow);
+      page.off('pagehide', onPageHide);
     };
 
-    page.on('pageshow', onPageShow);
-    page.on('pagehide', onPageHide);
     page.on('attach', onAttach);
     page.on('detach', onDetach);
   };
@@ -172,8 +177,19 @@
     for (var i = 0, item; item = virtualPageList[i]; i++) {
       item.lib.emit('mono', message);
     }
+    if (enableLocalScope && message.from !== undefined) {
+      var fmPage = map[message.from];
+      if (fmPage !== undefined && (fmPage.isLocal || fmPage.isVirtual)) {
+        for (var index in map) {
+          var mPage = map[index];
+          if (fmPage === mPage || mPage.isLocal === false || mPage.active === false) continue;
+          mPage.page.port.emit('mono', message);
+        }
+      }
+    }
   };
 
+  var localUrl = require("sdk/self").data.url().match(/([^:]+:\/\/[^/]+)\//)[1];
   exports.addPage = function(page) {
     var mPage = getMonoPage(page);
     if (mPage) {
@@ -182,7 +198,8 @@
     mPage = {
       page: page,
       id: getPageId(),
-      active: true
+      active: true,
+      isLocal: page.isVirtual === undefined && page.url && page.url.indexOf(localUrl) === 0
     };
     map[mPage.id] = mPage;
 
@@ -254,6 +271,8 @@ exports.storage = ffSimpleStorage;
 sendHook.monoStorage = function(message) {
   var msg = message.data || {};
   var response = function(responseMessage) {
+    if (message.callbackId === undefined) return;
+
     responseMessage = {
       data: responseMessage,
       to: message.from,
@@ -388,6 +407,8 @@ sendHook.service = function(message) {
   var msg = message.data || {};
 
   var response = function(responseMessage) {
+    if (message.callbackId === undefined) return;
+
     responseMessage = {
       data: responseMessage,
       to: message.from,

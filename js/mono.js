@@ -104,7 +104,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     idPrefix: Math.floor(Math.random()*1000)+'_',
     addCb: function(message, cb) {
       mono.onMessage.inited === undefined && mono.onMessage(function(){});
-      
+
       if (msgTools.cbStack.length > mono.messageStack) {
         delete msgTools.cbObj[msgTools.cbStack.shift()];
       }
@@ -120,6 +120,8 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
       cb(message.data);
     },
     mkResponse: function(response, callbackId, responseMessage) {
+      if (callbackId === undefined) return;
+
       responseMessage = {
         data: responseMessage,
         responseId: callbackId
@@ -160,8 +162,11 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         return msgTools.callCb(message);
       }
       var mResponse = msgTools.mkResponse.bind(_this, response, message.callbackId);
-      if (mono.sendHook[message.hook] !== undefined) {
-        return mono.sendHook[message.hook](message.data, mResponse);
+      if (message.hook !== undefined) {
+        var hookFunc = mono.sendHook[message.hook];
+        if (hookFunc !== undefined) {
+          return mono.sendHook[message.hook](message.data, mResponse);
+        }
       }
       cb.call(_this, message.data, mResponse);
     });
