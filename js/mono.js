@@ -85,14 +85,20 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     mono.addon = window.addon || window.self;
     if (mono.addon !== undefined && mono.addon.port !== undefined) {
       mono.isFF = true;
-    } else
+      return;
+    }
     if (navigator.userAgent.indexOf('Firefox') !== -1) {
       mono.isFF = true;
       mono.noAddon = true;
-    } else
-    if (navigator.userAgent.indexOf('Safari/') !== -1) {
-      mono.isSafari = true;
+      return;
     }
+    if (navigator.userAgent.indexOf('Safari/') !== -1) {
+      // Safari bug!
+      mono.isSafari = true;
+      return;
+    }
+    
+    console.error('Mono: can\'t define browser!');
   })();
 
   mono.messageStack = 50;
@@ -175,7 +181,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
   mono.storage = undefined;
 
 (function() {
-  if (!mono.isChrome) return;
+  if (!mono.isChrome || !(chrome.runtime && chrome.runtime.onMessage)) return;
 
   var chromeMsg = {
     cbList: [],
@@ -325,6 +331,66 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
   mono.onMessage.on = firefoxMsg.on;
   mono.sendMessage.send = firefoxMsg.send;
   mono.sendMessage.sendToActiveTab = firefoxMsg.sendToActiveTab;
+})();
+
+(function() {
+  if (!mono.isChrome || (chrome.runtime && chrome.runtime.onMessage)) return;
+
+  var chromeMsg = {
+    cbList: [],
+    mkResponse: function(sender, _response) {
+      if (sender.tab && sender.tab.id > -1) {
+        // send to tab
+        return function(message) {
+          chromeMsg.sendTo(message, sender.tab.id);
+        }
+      }
+
+      return function(message) {
+        // send to extension
+        _response(message);
+      }
+    },
+    sendTo: function(message, tabId) {
+      chrome.tabs.sendRequest(tabId, message, function(message) {
+        if (message.responseId !== undefined) {
+          return msgTools.callCb(message);
+        }
+      });
+    },
+    onMessage: function(message, sender, _response) {
+      var response = chromeMsg.mkResponse(sender, _response);
+      for (var i = 0, cb; cb = chromeMsg.cbList[i]; i++) {
+        cb(message, response);
+      }
+    },
+    on: function(cb) {
+      chromeMsg.cbList.push(cb);
+      if (chromeMsg.cbList.length !== 1) {
+        return;
+      }
+      chrome.extension.onRequest.addListener(chromeMsg.onMessage);
+    },
+    sendToActiveTab: function(message) {
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        if (tabs[0] === undefined || tabs[0].id < 0) {
+          return;
+        }
+        chromeMsg.sendTo(message, tabs[0].id);
+      });
+    },
+    send: function(message) {
+      chrome.extension.sendRequest(message, function(message) {
+        if (message.responseId !== undefined) {
+          return msgTools.callCb(message);
+        }
+      });
+    }
+  };
+
+  mono.onMessage.on = chromeMsg.on;
+  mono.sendMessage.send = chromeMsg.send;
+  mono.sendMessage.sendToActiveTab = chromeMsg.sendToActiveTab;
 })();
 
 (function() {

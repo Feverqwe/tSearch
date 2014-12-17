@@ -7,7 +7,9 @@
 
 (function() {
   var map = {};
-  var enableLocalScope = false;
+  var flags = exports.flags = {
+    enableLocalScope: false
+  };
   /**
    * @namespace exports
    * @namespace require
@@ -177,9 +179,9 @@
     for (var i = 0, item; item = virtualPageList[i]; i++) {
       item.lib.emit('mono', message);
     }
-    if (enableLocalScope && message.from !== undefined) {
+    if (flags.enableLocalScope && message.from !== undefined) {
       var fmPage = map[message.from];
-      if (fmPage !== undefined && (fmPage.isLocal || fmPage.isVirtual)) {
+      if (fmPage !== undefined && (fmPage.isLocal || fmPage.page.isVirtual)) {
         for (var index in map) {
           var mPage = map[index];
           if (fmPage === mPage || mPage.isLocal === false || mPage.active === false) continue;
