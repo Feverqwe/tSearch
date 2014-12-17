@@ -155,9 +155,11 @@ var options = function() {
         }
 
         if (key === 'contextMenu' || key === 'searchPopup' || key === 'autoComplite') {
-            mono.sendMessage('bg_update');
-            if (mono.isFF) {
-                mono.sendMessage('popupUpdate', undefined, "popupWin");
+            if (!mono.isMaxthon && !mono.isWebApp) {
+                mono.sendMessage('bg_update');
+                if (mono.isFF) {
+                    mono.sendMessage('popupUpdate', undefined, "popupWin");
+                }
             }
         }
 

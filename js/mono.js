@@ -40,7 +40,9 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     window.mono = mono;
     if (location.host === 'static.tms.mooo.com') {
       mono.isWebApp = true;
-    } else
+      return;
+    }
+
     if (typeof GM_getValue !== 'undefined') {
       mono.isGM = true;
       if (window.chrome !== undefined) {
