@@ -113,7 +113,7 @@ var explore = function() {
             title: undefined,
             root_url: 'http://gameguru.ru',
             max_w: 120,
-            url: 'http://gameguru.ru/pc/games/rate_week/page%page%/list.html',
+            url: 'http://gameguru.ru/pc/games/rated/page%page%/list.html',
             keepAlive: [0],
             page_end: 5,
             page_start: 1,
@@ -125,7 +125,7 @@ var explore = function() {
             title: undefined,
             root_url: 'http://gameguru.ru',
             max_w: 120,
-            url: 'http://gameguru.ru/pc/games/new/page%page%/list.html',
+            url: 'http://gameguru.ru/pc/games/released/page%page%/list.html',
             keepAlive: [2, 4],
             page_end: 5,
             page_start: 1,
@@ -161,13 +161,13 @@ var explore = function() {
         var gg_games_new = function(content) {
             content = engine.contentFilter(content);
             var $content = engine.load_in_sandbox(content);
-            $content = $content.find('.GGN__list-games .GGN__list-blocks').children('div');
+            $content = $content.find('.cnt-box-td .enc-tab1 .enc-box-list').children('.enc-item');
             var arr = [];
             for (var i = 0, len = $content.length; i < len; i++) {
                 var item = $content.eq(i);
-                var href = item.find('.GGN_content-unit-title').find('a').eq(0);
+                var href = item.find('.e-title').find('a').eq(0);
                 var obj = {
-                    img: item.find('.GGN_content-unit-img').find('img').attr('src'),
+                    img: item.find('.im').find('img').attr('src'),
                     title: href.text(),
                     url: href.attr('href')
                 };
