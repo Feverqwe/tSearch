@@ -49,14 +49,11 @@ torrent_lib.piratca = function () {
                 return [];
             } else
                 view.auth(1, filename);
-            t = t.find('#main_content').find('#tor-tbl').children('tbody').children('tr');
+            t = t.find('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(4).children('div').attr('href') === undefined) {
-                    continue;
-                }
                 arr.push({
                     category: {
                         title: td.eq(1).children('a').text(),
@@ -66,7 +63,7 @@ torrent_lib.piratca = function () {
                     title: td.eq(2).children('a').text(),
                     url: root_url + td.eq(2).children('a').attr('href'),
                     size: td.eq(4).children('u').text(),
-                    dl: root_url + td.eq(4).children('div').attr('href'),
+                    dl: td.eq(4).children('a').attr('href'),
                     seeds: td.eq(5).children('b.seedmed').text(),
                     leechs: td.eq(5).children('b.leechmed').text(),
                     time: td.eq(6).children('u').text()
