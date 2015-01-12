@@ -54,6 +54,12 @@ torrent_lib.piratca = function () {
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
+                var href = td.eq(4).children('a').attr('href');
+                if (href && href.substr(0, 4) === 'http') {
+                    href = undefined;
+                } else {
+                    href = root_url + href;
+                }
                 arr.push({
                     category: {
                         title: td.eq(1).children('a').text(),
@@ -63,7 +69,7 @@ torrent_lib.piratca = function () {
                     title: td.eq(2).children('a').text(),
                     url: root_url + td.eq(2).children('a').attr('href'),
                     size: td.eq(4).children('u').text(),
-                    dl: td.eq(4).children('a').attr('href'),
+                    dl: href,
                     seeds: td.eq(5).children('b.seedmed').text(),
                     leechs: td.eq(5).children('b.leechmed').text(),
                     time: td.eq(6).children('u').text()

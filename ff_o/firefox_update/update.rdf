@@ -19,7 +19,7 @@
                 <em:minVersion>29.0</em:minVersion>
                 <em:maxVersion>37.0</em:maxVersion>
                 <em:updateLink>http://static.tms.mooo.com/firefox/build_firefox.xpi</em:updateLink>
-                <em:updateHash>sha1:7A3C609275C9545D108251504E8DCFCFFA898FB6</em:updateHash>
+                <em:updateHash>sha1:6284863B097212C81F4DD73D16A375EB90DE8EA8</em:updateHash>
               </RDF:Description>
             </em:targetApplication>
             <em:targetApplication>
@@ -28,7 +28,7 @@
                 <em:minVersion>29.0</em:minVersion>
                 <em:maxVersion>37.0</em:maxVersion>
                 <em:updateLink>http://static.tms.mooo.com/firefox/build_firefox.xpi</em:updateLink>
-                <em:updateHash>sha1:7A3C609275C9545D108251504E8DCFCFFA898FB6</em:updateHash>
+                <em:updateHash>sha1:6284863B097212C81F4DD73D16A375EB90DE8EA8</em:updateHash>
               </RDF:Description>
             </em:targetApplication>
           </RDF:Description>
