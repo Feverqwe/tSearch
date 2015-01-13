@@ -142,19 +142,26 @@ torrent_lib.thepiratebay = function () {
                     continue;
                 }
                 if (td_len === 4) {
+                    var size = td.eq(1).children('.detDesc').text();
+                    if (size) {
+                        var sizeMatch = size.match('Size ([^,]+),');
+                        if (sizeMatch !== null) {
+                            size = ex_kit.format_size(sizeMatch[1]);
+                        }
+                    }
                     arr.push({
                         category: {
                             title: td.eq(0).children().children('a').eq(1).text(),
-                            url: root_url + td.eq(0).children().children('a').eq(1).attr('href'),
+                            url: undefined,
                             id: calculateCategory(String(td.eq(0).children().children('a').eq(1).attr('href')).replace(/(.*)\/([0-9]*)/i, "$2"))
                         },
                         title: td.eq(1).children('div.detName').children('a').text(),
                         url: root_url + td.eq(1).children('div.detName').children('a').attr('href'),
-                        size: calculateSize(td.eq(1).children('font.detDesc').text()),
+                        size: size,
                         dl: td.eq(1).children('a').eq(0).attr('href'),
                         seeds: td.eq(2).text(),
                         leechs: td.eq(3).text(),
-                        time: calculateTime(td.eq(1).children('font.detDesc').text())
+                        time: undefined
                     });
                 } else if (td_len === 7) {
                     arr.push({
@@ -209,6 +216,6 @@ torrent_lib.thepiratebay = function () {
         url: root_url,
         filename: filename,
         flags: flags,
-        tests: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        tests: [0, 0, 1, 0, 0, 0, 0, 0, 1]
     }
 }();

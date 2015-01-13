@@ -44,12 +44,12 @@ torrent_lib['free-torrents'] = function () {
                 return [];
             }
             view.auth(1, filename);
-            t = t.find('#main_content_wrap').children('#tor-tbl').children('tbody').children('tr');
+            t = t.find('#tor-tbl').children('tbody').children('tr');
             var l = t.length;
             var arr = [];
             for (var i = 0; i < l; i++) {
                 var td = t.eq(i).children('td');
-                if (td.eq(5).children('a').attr('href') === undefined) {
+                if (td.eq(5).find('a').attr('href') === undefined) {
                     continue;
                 }
                 arr.push({
@@ -60,11 +60,11 @@ torrent_lib['free-torrents'] = function () {
                     },
                     title: td.eq(3).children('a').text(),
                     url: td.eq(3).children('a').attr('href'),
-                    size: td.eq(6).children('u').text(),
-                    dl: td.eq(5).children('a').attr('href'),
-                    seeds: td.eq(7).children('b').text(),
-                    leechs: td.eq(8).children('b').text(),
-                    time: td.eq(10).children('u').text()
+                    size: td.eq(5).children('u').text(),
+                    dl: undefined,
+                    seeds: td.eq(6).children('b').text(),
+                    leechs: td.eq(7).children('b').text(),
+                    time: td.eq(9).children('u').text()
                 });
             }
             return arr;
@@ -106,6 +106,6 @@ torrent_lib['free-torrents'] = function () {
         url: root_url,
         filename: filename,
         flags: flags,
-        tests: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        tests: [0, 0, 0, 0, 0, 1, 0, 0, 0]
     }
 }();

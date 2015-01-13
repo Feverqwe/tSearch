@@ -66,18 +66,18 @@ torrent_lib.kickass = function () {
             var arr = new Array(l);
             for (var i = 1; i < l; i++) {
                 var td = t.eq(i).children('td');
-                var span_l = td.eq(0).children('div').eq(1).children('span').find('span').length - 1;
                 var category = td.eq(0).children('div.torrentname').children('div').children('span').children('span');
                 var cat_href = category.find('a').eq(0).attr('href');
                 var link = td.eq(0).children('div.torrentname').children('div').children('a');
+                var catId = -1;
                 if (cat_href !== undefined) {
-                    cat_href = calculateCategory(cat_href.replace(/\/(.*)\/$/, "$1"));
+                    catId = calculateCategory(cat_href.replace(/\/(.*)\/$/, "$1"));
                 }
                 arr[i - 1] = {
                     category: {
                         title: category.text(),
                         url: root_url + cat_href,
-                        id: cat_href
+                        id: catId
                     },
                     title: link.text(),
                     url: root_url + link.attr('href'),
