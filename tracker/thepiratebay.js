@@ -2,8 +2,8 @@ torrent_lib.thepiratebay = function () {
     var name = 'ThePirateBay';
     var filename = 'thepiratebay';
     var icon = 'data:image/png;base64,Qk04AwAAAAAAADYAAAAoAAAAEAAAABAAAAABABgAAAAAAAAAAADgTAAA4EwAAAAAAAAAAAAA/////////////////////////////////////////////////////v7+/////////////Pz8vb297Ozs////////////////////////////////4uLiSUlJ3d3d////////8/PzEhIScnJy8fHx////////////////////8fHxwsLCWFhYAAAAyMjI////////5+fnEBAQICAgQkJCV1dXZWVli4uLiYmJUlJSKioqPT09bm5uHh4eYWFhwcHBubm5bGxsQEBAp6end3d3FBQUAAAAFBQUOTk5ISEhGRkZPT09WVlZQkJCKioqJycnenp6AAAAQUFBPz8/YGBgjo6O0dHR+/v7////////7+/vxcXFnZ2dg4ODExMTQEBAv7+/AAAAgoKCjo6OpaWltra2qqqqpqampaWlpKSkra2tr6+vsbGx5eXll5eXW1tb1NTUcXFxmJiYAwMDAAAANzc3VFRUGxsbAAAAX19fPDw8ERERAAAAQUFB/v7+/Pz8////////nJycAAAAAAAAAAAAHx8fCwsLAAAAJiYmBQUFAAAAAAAAKysr+vr6////////////nJycAAAAAAAADw8PAAAAAAAAAAAAAAAADQ0NAwMDAAAANjY2+vr6////////////rq6uAAAANjY25eXlWVlZHx8fJycnIyMj0dHRhoaGAAAAV1dX////////////////r6+vAAAALS0t0tLSX19fsrKy2dnZZWVlsrKyiIiIAAAAWVlZ////////////////r6+vAAAAAAAABQUFAgICExMTEBAQAwMDAwMDAQEBAAAAWlpa////////////////q6urAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVFRU////////////////19fXSUlJQUFBQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQkJCQkJCqKio/////////////////////////v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+////////////AAA%3D';
-    var url = 'http://thepiratebay.cr/search/';
-    var root_url = 'http://thepiratebay.cr';
+    var url = 'http://thepiratebay.se/search/';
+    var root_url = 'http://thepiratebay.se';
     var about = 'Download music, movies, games, software and much more. The Pirate Bay is the world\'s largest bittorrent tracker.';
     var flags = {
         a: 0,
@@ -142,26 +142,19 @@ torrent_lib.thepiratebay = function () {
                     continue;
                 }
                 if (td_len === 4) {
-                    var size = td.eq(1).children('.detDesc').text();
-                    if (size) {
-                        var sizeMatch = size.match('Size ([^,]+),');
-                        if (sizeMatch !== null) {
-                            size = ex_kit.format_size(sizeMatch[1]);
-                        }
-                    }
                     arr.push({
                         category: {
                             title: td.eq(0).children().children('a').eq(1).text(),
-                            url: undefined,
+                            url: root_url + td.eq(0).children().children('a').eq(1).attr('href'),
                             id: calculateCategory(String(td.eq(0).children().children('a').eq(1).attr('href')).replace(/(.*)\/([0-9]*)/i, "$2"))
                         },
                         title: td.eq(1).children('div.detName').children('a').text(),
                         url: root_url + td.eq(1).children('div.detName').children('a').attr('href'),
-                        size: size,
+                        size: calculateSize(td.eq(1).children('font.detDesc').text()),
                         dl: td.eq(1).children('a').eq(0).attr('href'),
                         seeds: td.eq(2).text(),
                         leechs: td.eq(3).text(),
-                        time: undefined
+                        time: calculateTime(td.eq(1).children('font.detDesc').text())
                     });
                 } else if (td_len === 7) {
                     arr.push({
@@ -216,6 +209,6 @@ torrent_lib.thepiratebay = function () {
         url: root_url,
         filename: filename,
         flags: flags,
-        tests: [0, 0, 1, 0, 0, 0, 0, 0, 1]
+        tests: [0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
 }();

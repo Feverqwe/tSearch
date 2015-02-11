@@ -2,7 +2,7 @@ torrent_lib.katushka = function () {
     var name = 'Катушка';
     var filename = 'katushka';
     var icon = 'data:image/x-icon;base64,R0lGODlhEAAQAMQAAO7u7oWFhbKysqurq4GBgfr6+pqamn19fZeXl46Ojr29vZOTk5+fn4KCgoeHh6Ghob+/v5iYmIqKivDw8OPj45GRkcXFxXV1dYmJib6+vnx8fIuLi4+Pj5WVlYaGhv///yH5BAAAAAAALAAAAAAQABAAAAWa4Cd+gMJ0HaMAY5s1modhntZk7TdcW+VxHE9lcxmMMheByOLxWESCC25C2LRQrQ1hAtFUWhFEq6KBMALO5UHz/DADjIUk2IkcLBQPohPgYBZydBEaFB8OCQYYG39naW4eAUofFBtwXV8jBgQFIzsZVFaZDZwiDxosSJIWDh4DnBYXCp08PkCHHEU5LzEYEg4HBLI5JCYoKiwjIQA7';
-    var url = 'http://katushka.net/torrents/';
+    var url = 'http://katushka.net/torrent/';
     var root_url = 'http://katushka.net';
     var about = 'Катушка, торрент трекер, торрент, torrent, кино, фильмы, музыка, софт, программы, сериалы, mp3, видео, скачать, бесплатно';
     /*
@@ -105,7 +105,7 @@ torrent_lib.katushka = function () {
             xhr = engine.ajax({
                 tracker: filename,
                 type: 'GET',
-                url: url + '?tags=&search=' + ex_kit.in_cp1251(text) + '&type_search=groups&incldead=0&sorting=0&type_sort=desc',
+                url: url + '?tags=&search=' + text + '&type_search=groups&incldead=0&sorting=0&type_sort=desc',
                 cache: false,
                 success: function (data) {
                     cb(1, readCode(data));

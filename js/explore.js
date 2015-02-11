@@ -1051,6 +1051,9 @@ var explore = function() {
         ul.append( content );
     };
     var getDescription = function(request) {
+        if (!request) {
+            return;
+        }
         if (var_cache.about_cache[request] !== undefined) {
             view.setDescription(var_cache.about_cache[request]);
             return;
