@@ -11,4 +11,4 @@
 *.bat text eol=crlf
 *.path text eol=crlf
 jquery*.js text eol=auto
-/ff_o/firefox_tools/template/* text eol=lf
+/vendor/firefox_tools/template/* text eol=lf
