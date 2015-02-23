@@ -26,7 +26,8 @@ var explore = function() {
         needResize: 0,
         about_cache: {},
         qualityCache_limit: 30,
-        qualityBoxCache_limit: 100
+        qualityBoxCache_limit: 100,
+        spaceR: /[\s\xA0]/g
     };
 
     var dom_cache = {};
@@ -156,6 +157,10 @@ var explore = function() {
             if (item.title_en !== undefined && item.title_en.length === 0) {
                 return 0;
             }
+            item.title = spaceReplace(item.title);
+            if (item.title_en) {
+                item.title_en = spaceReplace(item.title_en);
+            }
             return 1;
         };
         var gg_games_new = function(content) {
@@ -199,6 +204,9 @@ var explore = function() {
         };
         var rmSerial = function(text) {
             return text.replace(' (сериал)', '').trim();
+        };
+        var spaceReplace = function(text) {
+            return text.replace(var_cache.spaceR, ' ');
         };
         return {
             kp_favorites: function(content) {
@@ -570,7 +578,8 @@ var explore = function() {
             } else {
                 title = content[index].title;
             }
-            var search_link = 'index.html#?search='+encodeURIComponent(title);
+            title = title.replace(var_cache.spaceR,' ');
+            var search_link = 'index.html#?search='+(encodeURIComponent(title));
             var span = $('<span>').append(
                 $('<a>',{href: search_link, text: title, title: title})
             );
