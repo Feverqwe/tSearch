@@ -954,27 +954,9 @@ var magic = function() {
         }
         return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + _lang['size_list_'+i];
     };
-    var write_language = function() {
-        var elList = document.querySelectorAll('[data-lang]');
-        for (var i = 0, el; el = elList[i]; i++) {
-            var locale = _lang['magic_'+el.dataset.lang];
-            if (locale === undefined) {
-                console.log('Lang not found!', el.dataset.lang, el);
-                continue;
-            }
-            if (['A', 'LEGEND', 'SPAN', 'LI', 'TH'].indexOf(el.tagName) !== -1) {
-                el.textContent = locale;
-            } else
-            if (['INPUT'].indexOf(el.tagName) !== -1) {
-                el.value = locale;
-            } else {
-                console.log('Tag name not found!', el.tagName);
-            }
-        }
-    };
     return {
         begin: function() {
-            write_language();
+            mono.writeLanguage(_lang);
             dom_cache.window = $(window);
             dom_cache.body = $(document.body);
             dom_cache.menu = $( document.getElementById('menu') );

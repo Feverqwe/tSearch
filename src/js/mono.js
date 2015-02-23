@@ -1058,6 +1058,42 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
         return fragment;
     };
+    mono.writeLanguage = function(language, body) {
+        var elList = (body || document).querySelectorAll('[data-lang]');
+        for (var i = 0, el; el = elList[i]; i++) {
+            var langList = el.dataset.lang.split('|');
+            for (var m = 0, lang; lang = langList[m]; m++) {
+                var args = lang.split(',');
+                var locale = language[args.shift()];
+                if (locale === undefined) {
+                    console.log('Lang not found!', el.dataset.lang);
+                    continue;
+                }
+                if (args.length !== 0) {
+                    args.forEach(function (item) {
+                        if (item === 'text') {
+                            el.textContent = locale;
+                            return 1;
+                        } else
+                        if (item === 'tmpl') {
+                            el.textContent = '';
+                            el.appendChild(mono.parseTemplate(locale));
+                            return 1;
+                        }
+                        el.setAttribute(item, locale);
+                    });
+                } else if (el.tagName === 'DIV') {
+                    el.setAttribute('title', locale);
+                } else if (['A', 'LEGEND', 'SPAN', 'LI', 'TH', 'P', 'OPTION', 'H1', 'H2'].indexOf(el.tagName) !== -1) {
+                    el.textContent = locale;
+                } else if (el.tagName === 'INPUT') {
+                    el.value = locale;
+                } else {
+                    console.log('Tag name not found!', el.tagName);
+                }
+            }
+        }
+    };
 
 
   return mono;

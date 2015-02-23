@@ -6,57 +6,6 @@ var options = function() {
     var listOptions = undefined;
     var saveInputTimer = {};
 
-    var write_language = function(body) {
-        var elList = (body || document).querySelectorAll('[data-lang]');
-        for (var i = 0, el; el = elList[i]; i++) {
-            var langList = el.dataset.lang.split('|');
-            for (var m = 0, lang; lang = langList[m]; m++) {
-                var args = lang.split(',');
-                var locale = _lang[args.shift()];
-                if (locale === undefined) {
-                    console.log('Lang not found!', el.dataset.lang);
-                    continue;
-                }
-                if (args.length !== 0) {
-                    args.forEach(function (item) {
-                        if (item === 'sub') {
-                            var _el = null;
-                            while ( _el === null ? _el = el.firstChild : _el = _el.nextSibling) {
-                                if (_el.nodeType === 3) {
-                                    break;
-                                }
-                            }
-                            if (_el !== null) {
-                                el = _el;
-                            } else {
-                                console.log('Text node not found!', el.dataset.lang);
-                            }
-                            return 1;
-                        } else
-                        if (item === 'text') {
-                            el.textContent = locale;
-                            return 1;
-                        } else
-                        if (item === 'tmpl') {
-                            el.textContent = '';
-                            el.appendChild(mono.parseTemplate(locale));
-                            return 1;
-                        }
-                        el.setAttribute(item, locale);
-                    });
-                } else if (el.tagName === 'DIV') {
-                    el.setAttribute('title', locale);
-                } else if (['A', 'LEGEND', 'SPAN', 'LI', 'TH', 'P', 'OPTION', 'H1', 'H2'].indexOf(el.tagName) !== -1) {
-                    el.textContent = locale;
-                } else if (el.tagName === 'INPUT') {
-                    el.value = locale;
-                } else {
-                    console.log('Tag name not found!', el.tagName);
-                }
-            }
-        }
-    };
-
     var set_place_holder = function() {
         $.each(engine.def_settings, function(key, defaultValue) {
             var el = document.querySelector('input[data-option="' + key + '"]');
@@ -694,7 +643,7 @@ var options = function() {
             $(options.begin);
         },
         begin: function() {
-            write_language();
+            mono.writeLanguage(_lang);
             dom_cache.container = $('.div.container');
             dom_cache.menu = $('.menu');
             dom_cache.sectionList = $('.sectionList');
