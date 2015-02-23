@@ -175,7 +175,7 @@
     "external_tracker": {"message": "External"},
     "add_custom_code": {"message": "Add"},
     "create_custom_code": {"message": "Create"},
-    "external_html": {"message": "Add external trackers from the <a href=\"http://code-tms.blogspot.ru/?utm_source=TMS\" target=\"_blank\">official website</a>!"},
+    "external_html": {"message": "['Add external trackers from the ', {a: {href:'http://code-tms.blogspot.ru/?utm_source=TMS', target:'_blank', text:'official website'}}, '!']"},
     "custom_tracker_edit": {"message": "Edit"},
     "custom_tracker_remove": {"message": "Delete"},
     "enter_tracker_code": {"message": "Copy and paste the tracker code:"},
@@ -212,7 +212,7 @@
     "optSubCategoryFilter": {"message": "Consider the subcategory"},
     "optProxyTitle": {"message": "Proxying requests"},
     "optProxyInfo": {"message": "Proxy only works for GET requests."},
-    "optProxyHostInfo": {"message": "HTTP<b>S</b> requests may not be supported. Work example: {protocol}://{host}.3s3s.org/{path}"},
+    "optProxyHostInfo": {"message": "['HTTP', {b: {text: 'S'}},' requests may not be supported. Work example: {protocol}://{host}.3s3s.org/{path}']"},
     "optProxyURL": {"message": "URL"},
     "optProxyHost": {"message": "Host"},
     "optProxyUrlFixSpaces": {"message": "To escape spaces"},
@@ -313,6 +313,6 @@
     "wordNoNotNow": {"message": "No, don't now"},
 
     "downloadExtensionTitle": {"message": "Install the extension for your browser!"},
-    "webAppFunctionUnavailable": {"message": "<img style='float: left;margin-right: 10px;' src='images/icon_48.png'/>Sorry but the web version of the application this function is not available.<br/><br/><br/>Want to install the extension in the browser?"},
-    "webAppTrackersUnavailable": {"message": "<img style='float: left;margin-right: 10px;' src='images/icon_48.png'/>Some trackers are not available in the web version.<br/><br/><br/>Want to install the extension in the browser?"}
+    "webAppFunctionUnavailable": {"message": "[{img: {style: 'float: left;margin-right: 10px;', src: 'images/icon_48.png'}}, 'Sorry but the web version of the application this function is not available.', {br:{}}, {br:{}}, {br:{}}, 'Want to install the extension in the browser?']"},
+    "webAppTrackersUnavailable": {"message": "[{img: {style: 'float: left;margin-right: 10px;', src: 'images/icon_48.png'}}, 'Some trackers are not available in the web version.', {br:{}}, {br:{}}, {br:{}}, 'Want to install the extension in the browser?']"}
 }

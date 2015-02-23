@@ -24,9 +24,10 @@ var popup = function(enable_ac) {
                         if (item === 'text') {
                             el.textContent = locale;
                             return 1;
-                        }
-                        if (item === 'html') {
-                            el.innerHTML = locale;
+                        } else
+                        if (item === 'tmpl') {
+                            el.textContent = '';
+                            el.appendChild(mono.parseTemplate(locale));
                             return 1;
                         }
                         el.setAttribute(item, locale);

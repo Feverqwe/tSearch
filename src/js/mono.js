@@ -947,5 +947,118 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
   };
   //<utils
 
+
+    mono.create = (function() {
+        var createHook = {
+            text: function(el, value) {
+                el.textContent = value;
+            },
+            data: function(el, value) {
+                for (var item in value) {
+                    el.dataset[item] = value[item];
+                }
+            },
+            class: function(el, value) {
+                if (typeof value !== 'string') {
+                    for (var i = 0, len = value.length; i < len; i++) {
+                        var className = value[i];
+                        el.classList.add(className);
+                    }
+                    return;
+                }
+                el.setAttribute('class', value);
+            },
+            style: function(el, value) {
+                if (typeof value !== 'string') {
+                    for (var item in value) {
+                        el.style[item] = value[item];
+                    }
+                    return;
+                }
+                el.setAttribute('style', value);
+            },
+            append: function(el, value) {
+                if (Array.isArray(value)) {
+                    for (var i = 0, len = value.length; i < len; i++) {
+                        var subEl = value[i];
+                        if (!subEl) {
+                            continue;
+                        }
+                        if (typeof (subEl) === 'string') {
+                            subEl = document.createTextNode(subEl);
+                        }
+                        el.appendChild(subEl);
+                    }
+                    return;
+                }
+                el.appendChild(value);
+            },
+            on: function(el, args) {
+                if (typeof args[0] !== 'string') {
+                    for (var i = 0, len = args.length; i < len; i++) {
+                        var subArgs = args[i];
+                        mono.on(el, subArgs[0], subArgs[1], subArgs[2]);
+                    }
+                    return;
+                }
+                //type, onEvent, useCapture
+                mono.on(el, args[0], args[1], args[2]);
+            },
+            onCreate: function(el, value) {
+                value(el);
+            }
+        };
+
+        return function(tagName, obj) {
+            var el;
+            if ( typeof tagName === 'string') {
+                el = document.createElement(tagName);
+            } else {
+                el = tagName;
+            }
+            if (obj !== undefined) {
+                for (var attr in obj) {
+                    var value = obj[attr];
+                    if (createHook[attr]) {
+                        createHook[attr](el, value);
+                        continue;
+                    }
+                    el[attr] = value;
+                }
+            }
+            return el;
+        }
+    })();
+    mono.parseTemplate = function(list, fragment) {
+        if (typeof list === "string") {
+            list = list.replace(/"/g, '\\"').replace(/\\'/g, '\\u0027').replace(/'/g, '"').replace(/([{,]{1})\s*([a-zA-Z0-9]+):/g, '$1"$2":');
+            try {
+                list = JSON.parse(list);
+            } catch (e) {
+                return document.createTextNode(list);
+            }
+        }
+        fragment = fragment || document.createDocumentFragment();
+        for (var i = 0, len = list.length; i < len; i++) {
+            var item = list[i];
+            if (typeof item === 'object') {
+                for (var tagName in item) {
+                    var el = item[tagName];
+                    var append = el.append;
+                    delete el.append;
+                    var dEl;
+                    fragment.appendChild(dEl = mono.create(tagName, el));
+                    if (append !== undefined) {
+                        mono.parseTemplate(append, dEl);
+                    }
+                }
+            } else {
+                fragment.appendChild(document.createTextNode(item));
+            }
+        }
+        return fragment;
+    };
+
+
   return mono;
 }));

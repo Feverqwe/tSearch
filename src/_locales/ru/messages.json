@@ -178,7 +178,7 @@
     "external_tracker": {"message": "Внешние"},
     "add_custom_code": {"message": "Добавить"},
     "create_custom_code": {"message": "Создать"},
-    "external_html": {"message": "Добавь внешние трекеры с <a href=\"http://code-tms.blogspot.ru/?utm_source=TMS\" target=\"_blank\">официального сайта</a>!"},
+    "external_html": {"message": "['Добавь внешние трекеры с ', {a: {href:'http://code-tms.blogspot.ru/?utm_source=TMS', target:'_blank', text:'официального сайта'}}, '!']"},
     "custom_tracker_edit": {"message": "Редактировать"},
     "custom_tracker_remove": {"message": "Удалить"},
     "enter_tracker_code": {"message": "Скопируйте и вставьте код трекера:"},
@@ -215,7 +215,7 @@
     "optSubCategoryFilter": {"message": "Учитывать подкатегории"},
     "optProxyTitle": {"message": "Проксирование запросов"},
     "optProxyInfo": {"message": "Прокси работает только для GET запросов."},
-    "optProxyHostInfo": {"message": "HTTP<b>S</b> запросы могут не поддерживаться. Пример работы: {protocol}://{host}.3s3s.org/{path}"},
+    "optProxyHostInfo": {"message": "['HTTP', {b: {text: 'S'}},' запросы могут не поддерживаться. Пример работы: {protocol}://{host}.3s3s.org/{path}']"},
     "optProxyURL": {"message": "URL"},
     "optProxyHost": {"message": "Host"},
     "optProxyUrlFixSpaces": {"message": "Экранировать пробелы"},
@@ -318,6 +318,6 @@
     "wordNoNotNow": {"message": "Нет, не сейчас"},
 
     "downloadExtensionTitle": {"message": "Скачай расширение для своего браузера!"},
-    "webAppFunctionUnavailable": {"message": "<img style='float: left;margin-right: 10px;' src='images/icon_48.png'/>Увы в веб версии приложения эта функция не доступна.<br/><br/><br/>Хотите установить расширение в браузер?"},
-    "webAppTrackersUnavailable": {"message": "<img style='float: left;margin-right: 10px;' src='images/icon_48.png'/>Некотрые трекеры не доступны в веб версии.<br/><br/><br/>Хотите установить расширение в браузер?"}
+    "webAppFunctionUnavailable": {"message": "[{img: {style: 'float: left;margin-right: 10px;', src: 'images/icon_48.png'}}, 'Увы в веб версии приложения эта функция не доступна.', {br:{}}, {br:{}}, {br:{}}, 'Хотите установить расширение в браузер?']"},
+    "webAppTrackersUnavailable": {"message": "[{img: {style: 'float: left;margin-right: 10px;', src: 'images/icon_48.png'}}, 'Некотрые трекеры не доступны в веб версии.', {br:{}}, {br:{}}, {br:{}}, 'Хотите установить расширение в браузер?']"}
 }

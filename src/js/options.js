@@ -37,8 +37,9 @@ var options = function() {
                             el.textContent = locale;
                             return 1;
                         } else
-                        if (item === 'html') {
-                            el.innerHTML = locale;
+                        if (item === 'tmpl') {
+                            el.textContent = '';
+                            el.appendChild(mono.parseTemplate(locale));
                             return 1;
                         }
                         el.setAttribute(item, locale);
