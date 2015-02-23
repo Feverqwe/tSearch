@@ -1,13 +1,4 @@
 /.idea/
-/build/
-/build_chrome_ext/
-/build_firefox_sdk/
-/build_opera/
-/build_maxthon/
-/build_safari.safariextension/
-/build_web/
-build_chrome.zip
-build_chrome_ext.zip
-build_opera.nex
-build_opera.oex
-build_firefox_store.xpi
+/node_modules/
+/output/
+env.json

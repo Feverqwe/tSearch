@@ -1,0 +1,1 @@
+cmd.exe /k "call d:/msysgit/msys.bat"

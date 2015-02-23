@@ -12,23 +12,23 @@
 
         <RDF:li>
           <RDF:Description>
-            <em:version>1.0.88</em:version>
+            <em:version>%extVersion%</em:version>
             <em:targetApplication>
               <RDF:Description>
                 <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-                <em:minVersion>29.0</em:minVersion>
-                <em:maxVersion>37.0</em:maxVersion>
-                <em:updateLink>http://static.tms.mooo.com/firefox/build_firefox.xpi</em:updateLink>
-                <em:updateHash>sha1:5BB0E7264579792E56DD9B589E16C9BA585BE3CE</em:updateHash>
+                <em:minVersion>%ffMinVersion%</em:minVersion>
+                <em:maxVersion>%ffMaxVersion%</em:maxVersion>
+                <em:updateLink>http://static.tms.mooo.com/firefox/%buildName%.xpi</em:updateLink>
+                <em:updateHash>sha1:%sha1hash%</em:updateHash>
               </RDF:Description>
             </em:targetApplication>
             <em:targetApplication>
               <RDF:Description>
                 <em:id>{aa3c5121-dab2-40e2-81ca-7ea25febc110}</em:id>
-                <em:minVersion>29.0</em:minVersion>
-                <em:maxVersion>37.0</em:maxVersion>
-                <em:updateLink>http://static.tms.mooo.com/firefox/build_firefox.xpi</em:updateLink>
-                <em:updateHash>sha1:5BB0E7264579792E56DD9B589E16C9BA585BE3CE</em:updateHash>
+                <em:minVersion>%ffMMinVersion%</em:minVersion>
+                <em:maxVersion>%ffMMaxVersion%</em:maxVersion>
+                <em:updateLink>http://static.tms.mooo.com/firefox/%buildName%.xpi</em:updateLink>
+                <em:updateHash>sha1:%sha1hash%</em:updateHash>
               </RDF:Description>
             </em:targetApplication>
           </RDF:Description>
