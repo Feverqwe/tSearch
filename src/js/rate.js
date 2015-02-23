@@ -463,11 +463,9 @@ var wordRate = function() {
         rm_spaces: new RegExp('\\s+','g'),
         text2safe_regexp_text: new RegExp('([{})(\\][\\\\\\.^$\\|\\?\\+])','g'),
         rm_pre_tag_regexp: new RegExp("\\(.*\\)|\\[.*\\]", 'g'),
-        searchTextAngle: new RegExp('\\&lt;(/?)b\\&gt;','gm'),
-        searchAngleL: new RegExp('<','gm'),
-        searchAngleR: new RegExp('>','gm'),
         found_parenthetical: new RegExp('(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\{[^\\}]*\\})','g'),
-        rm_retry: new RegExp('<\\/span>(.?)<span class="sub_name">|<\\/b>(.?)<b>', 'g'),
+        test_angle: /[<>]/,
+        rm_retry: new RegExp('<\\/span>(\\s*)<span>|<\\/b>(\\s*)<b>', 'g'),
         syntaxCache: {}
     };
 
@@ -598,62 +596,66 @@ var wordRate = function() {
         return (checkForSymbol(string[pos - 1] || '') !== 0 && checkForSymbol(string[pos + word.length] || '') !== 0);
     };
 
-    var angleSelect = function(name) {
-        if (name.indexOf('&lt;') === -1 || name.indexOf('&gt;') === -1) {
-            return name;
-        }
-        var angleLeft = undefined;
-        var angleRight = undefined;
-        for (var i = 35; i < 48; i++) {
-            var specChar = String.fromCharCode(i);
-            if (name.indexOf( specChar ) === -1) {
-                if (angleLeft === undefined) {
-                    angleLeft = specChar;
-                } else
-                if (angleRight === undefined) {
-                    angleRight = specChar;
-                    break;
-                }
+    var code2array = function(code) {
+        var list = [];
+        var lasPos = 0;
+        code.replace(/<(\/?)(span|b)>/gm, function(tag, close, tagName, pos) {
+            if (pos > 0) {
+                var str = code.substr(lasPos, pos - lasPos);
+                list.push(str);
             }
-        }
-        if (angleLeft === undefined || angleRight === undefined) {
-            return name;
-        }
-        name = name.replace(/&lt;/g, angleLeft);
-        name = name.replace(/&gt;/g, angleRight);
-        var cacheName = 'selectAngleCache_'+angleLeft+'_'+angleRight;
-        if (var_cache[cacheName] === undefined) {
-            var_cache[cacheName] = new RegExp('(\\' + angleLeft + '[^\\' + angleRight + ']*\\' + angleRight + ')', 'g');
-        }
-        if (var_cache[cacheName+'Left'] === undefined) {
-            var_cache[cacheName+'Left'] = new RegExp('\\' + angleLeft, 'g');
-        }
-        if (var_cache[cacheName+'Right'] === undefined) {
-            var_cache[cacheName+'Right'] = new RegExp('\\' + angleRight, 'g');
-        }
-        name = name.replace(var_cache[cacheName], '<span class="sub_name">$1</span>');
-        name = name.replace(var_cache[cacheName+'Left'], '&lt;');
-        name = name.replace(var_cache[cacheName+'Right'], '&gt;');
-        return name;
+            lasPos = pos + tag.length;
+            list.push( [close.length === 1 ? 1 : 0, tagName] );
+        });
+
+        var str = code.substr(lasPos);
+        list.push(str);
+
+        return list;
     };
-    var sub_select = function(name, hasAngle) {
+
+    var code2fragment = function(code) {
+        var list = code2array(code);
+
+        var fragment, root;
+        fragment = root = document.createDocumentFragment();
+        for (var i = 0, len = list.length; i < len; i++) {
+            var item = list[i];
+            if (typeof item === 'string') {
+                item.length > 0 && fragment.appendChild(document.createTextNode(item));
+                continue;
+            }
+            if (item[0] === 1) {
+                fragment = fragment.parentNode || root;
+                continue;
+            }
+            var el = mono.create(item[1]);
+            if (item[1] === 'span') {
+                el.classList.add('sub_name');
+            }
+            fragment.appendChild(el);
+            fragment = el;
+        }
+        return root;
+    };
+    var sub_select = function(name) {
         //выделяет то, что в скобках
-        name = name.replace(var_cache.rm_retry,'$1$2');
-
-        if (hasAngle) {
-            name = name.replace(var_cache.searchAngleL, '&lt;');
-            name = name.replace(var_cache.searchAngleR, '&gt;');
-            name = name.replace(var_cache.searchTextAngle, '<$1b>');
-        }
-
         if (engine.settings.enableHighlight === 0) {
-            return name;
+            name = name.replace(var_cache.rm_retry,'$1$2');
+            return code2fragment(name);
         }
-        if (hasAngle) {
-            name = angleSelect(name);
+
+        var a = replaceAngle.char1;
+        var b = replaceAngle.char2;
+        if (b !== undefined) {
+            name = name.replace(new RegExp('(\\'+a+'[^\\'+b+']+\\'+b+')', 'g'), '<span>$1</span>');
+            name = name.replace(new RegExp('\\'+a, 'g'), '<');
+            name = name.replace(new RegExp('\\'+b, 'g'), '>');
         }
-        name = name.replace(var_cache.found_parenthetical, '<span class="sub_name">$1</span>');
-        return name.replace(var_cache.rm_retry,'$1$2');
+
+        name = name.replace(var_cache.found_parenthetical, '<span>$1</span>');
+        name = name.replace(var_cache.rm_retry,'$1$2');
+        return code2fragment(name);
     };
 
     var rateWord = function(word, pos) {
@@ -725,12 +727,37 @@ var wordRate = function() {
         return '';
     };
 
+    var replaceAngle = function(name) {
+        var char1, char2;
+        if (var_cache.test_angle.test(name)) {
+            for (var i = 35; i < 48; i++) {
+                var specChar = String.fromCharCode(i);
+                if (name.indexOf(specChar) === -1) {
+                    if (char1 === undefined) {
+                        char1 = specChar;
+                    } else if (char2 === undefined) {
+                        char2 = specChar;
+                        break;
+                    }
+                }
+            }
+            if (char2 === undefined) {
+                char1 = undefined;
+            } else {
+                name = name.replace(/</g, char1).replace(/>/g, char2);
+            }
+        }
+        replaceAngle.char1 = char1;
+        replaceAngle.char2 = char2;
+
+        return name;
+    };
+
     var titleHighLight = function(name) {
         /*
          * Выставляет рейтинг заголовку раздачи
          * Подсвечивает найденный текст в заголовке
          */
-        var hasAngle = name.indexOf('<') !== -1 || name.indexOf('>') !== -1;
         var bonus = 0;
         var words_len = var_cache.syntaxCache.words_len;
         var word_rate = var_cache.syntaxCache.word_rate;
@@ -753,6 +780,7 @@ var wordRate = function() {
             block: 0,
             qbox: "+"
         };
+        name = replaceAngle(name);
         var name_low = name.toLowerCase();
         var _rateWord = rateWord.bind({
             text: name,
@@ -770,7 +798,7 @@ var wordRate = function() {
 
         if (var_cache.syntaxCache.normalize_request.length === 0) {
             return {
-                hl_name: sub_select(name, hasAngle),
+                hl_name: sub_select(name),
                 rate: rate
             };
         }
@@ -883,7 +911,7 @@ var wordRate = function() {
                 return '<b>'+word+'</b>';
             });
             return {
-                hl_name: sub_select(hl_name, hasAngle),
+                hl_name: sub_select(hl_name),
                 rate: rate
             };
         }
@@ -922,7 +950,7 @@ var wordRate = function() {
             rate.name = 0;
         }
         return {
-            hl_name: sub_select(hl_name, hasAngle),
+            hl_name: sub_select(hl_name),
             rate: rate
         };
     };

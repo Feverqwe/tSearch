@@ -43,8 +43,8 @@ var notify = function () {
             if (_item.text) {
                 item.append($('<span>', {text: _item.text}));
             }
-            if (_item.html) {
-                item.append($('<span>', {html: _item.html}));
+            if (_item.fragment) {
+                item.append($('<span>').append(_item.fragment));
             }
         }
         if (type === 'note') {

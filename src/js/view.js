@@ -1494,7 +1494,7 @@ var view = function() {
         if (mono.isWebApp) {
             createCustomTracker.on('click', function(e) {
                 e.preventDefault();
-                notify.call({focusYes: true}, [{type: 'note', html: _lang.webAppFunctionUnavailable}], _lang.wordYes, _lang.wordNoNotNow, function() {
+                notify.call({focusYes: true}, [{type: 'note', fragment: mono.parseTemplate(_lang.webAppFunctionUnavailable)}], _lang.wordYes, _lang.wordNoNotNow, function() {
                     if (arguments[0] === undefined) return;
                     $(document).trigger('installExtensionMenu');
                 });
@@ -1555,7 +1555,7 @@ var view = function() {
             if (rmList.length > 0) {
                 notify.call({focusYes: true}, [{
                     type: 'note',
-                    html: _lang.webAppTrackersUnavailable
+                    fragment: mono.parseTemplate(_lang.webAppTrackersUnavailable)
                 }], _lang.wordYes, _lang.wordNoNotNow, function () {
                     if (arguments[0] === undefined) return;
                     $(document).trigger('installExtensionMenu');
