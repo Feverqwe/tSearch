@@ -726,6 +726,11 @@ var view = function() {
                 }
             }
             title_highLight = title_highLight.hl_name;
+
+            title_highLight = mono.create('span', {
+                append: title_highLight
+            }).innerHTML;
+
             if (item.category.id < 0 && item.category.title !== undefined) {
                 item.category.id = wordRate.autosetCategory(quality, item.category.title);
             }

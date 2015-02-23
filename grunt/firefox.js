@@ -149,6 +149,15 @@ exports.run = function (grunt) {
     });
 
     grunt.registerTask('firefoxStore', function () {
+        grunt.registerTask('ffRmUpdateKey', function() {
+            var installPath = grunt.config('output') + grunt.config('vendor') + '../template/install.rdf';
+            var content = grunt.file.read(installPath);
+            var p1 = content.indexOf('<em:updateKey>');
+            var p2 = content.indexOf('</em:updateKey>');
+            content = content.substr(0, p1) + content.substr(p2 + 15);
+            grunt.file.write(installPath, content);
+        });
+
         grunt.config.merge({
             vendor: 'firefoxStore/src/',
             libFolder: 'lib/',
@@ -165,6 +174,7 @@ exports.run = function (grunt) {
             'ffPackage',
             'json-format:ffPackage',
             'copy:ffTemplateDir',
+            'ffRmUpdateKey',
             'exec:buildFF',
             'ffRenameBuild',
             'fixFfJsJs'

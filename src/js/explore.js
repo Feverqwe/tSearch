@@ -5,7 +5,7 @@ var explore = function() {
         source: {},
         // resize_timer
         resize_timer: undefined,
-        calculateMovebleCache: {},
+        movebleStyleList: {},
         resize_timer_work: 0,
         conteiner_width: undefined,
         window_width: undefined,
@@ -562,7 +562,6 @@ var explore = function() {
         if (end > content_len) {
             end = content_len;
         }
-        var spanList = [];
         var_cache.qulityList[type] = {};
         for (var index = from; index < end; index++) {
             var title;
@@ -576,12 +575,6 @@ var explore = function() {
                 $('<a>',{href: search_link, text: title, title: title})
             );
             var title_className = 'title';
-            var moveble_class = var_cache.calculateMovebleCache[title];
-            if (moveble_class === undefined) {
-                spanList.push([span, title]);
-            } else {
-                title_className += ' '+moveble_class;
-            }
             var img_url = content[index].img;
             if (img_url[6] !== '/' && source.img_url !== undefined) {
                 img_url = source.img_url+img_url;
@@ -620,7 +613,9 @@ var explore = function() {
                         )
                     ),
                     $('<div>',{'class': title_className}).append(
-                        span
+                        span.one('mouseenter', function reCaclSize() {
+                            calculateMoveble(this, _options.w);
+                        })
                     )
                 )
             );
@@ -642,9 +637,6 @@ var explore = function() {
         vc_source.current_page = page;
         vc_source.body.get(0).textContent = '';
         vc_source.body.append(content_body);
-        if (spanList.length > 0) {
-            calculateMoveble(spanList, _options.w, 'title');
-        }
     };
     var topList_write = function() {
         if (var_cache.conteiner_width === undefined) {
@@ -882,70 +874,66 @@ var explore = function() {
             });
         });
     };
-    var calculateMoveble = function (title, size, classname) {
-        /*
-         * Расчитывает стиль прокрутки длиных имен.
-         */
-        if (classname === undefined) {
-            classname = 'title';
+    var calculateMoveble = function(el, width) {
+        var styleList = undefined;
+
+        var elWidth = el.offsetWidth;
+        if (elWidth <= width) {
+            return;
         }
-        var styles = [];
-        var title_l = title.length;
-        for (var i = 0; i < title_l; i++) {
-            var item = title[i][0];
-            var text = title[i][1];
-            var str_w = item.width();
-            if (str_w <= size) {
-                if (str_w !== 0) {
-                    var_cache.calculateMovebleCache[text] = '';
+        elWidth = Math.ceil(elWidth / 10);
+        if (elWidth > 10) {
+            if (elWidth < 100) {
+                var t1 = Math.round(elWidth / 10);
+                if (t1 > elWidth / 10) {
+                    elWidth = t1 * 10 * 10;
+                } else {
+                    elWidth = (t1 * 10 + 5) * 10;
                 }
-                item.parent().attr('class', classname);
-                continue;
+            } else {
+                elWidth = elWidth * 10;
             }
-            str_w = Math.ceil(str_w / 10);
-            if (str_w > 10) {
-                if (str_w < 100) {
-                    var t1 = Math.round(str_w / 10);
-                    if (t1 > str_w / 10)
-                        str_w = t1 * 10 * 10;
-                    else
-                        str_w = (t1 * 10 + 5) * 10;
-                } else
-                    str_w = str_w * 10;
-            } else
-                str_w = str_w * 10;
-            var time_calc = Math.round(parseInt(str_w) / parseInt(size) * 3.5);
-            var move_name = 'moveble' + '_' + size + '_' + str_w;
-            var_cache.calculateMovebleCache[text] = move_name;
-            if (dom_cache.body.children('style.' + move_name).length === 0) {
-                var keyframeStyle = '{'
-                    +   '0%{margin-left:2px;}'
-                    +   '50%{margin-left:-' + (str_w - size) + 'px;}'
-                    +   '90%{margin-left:6px;}'
-                    +   '100%{margin-left:2px;}'
-                    + '}';
-                styles.push(
-                    $('<style>', {'class': move_name, text: '@-webkit-keyframes a_' + move_name
-                    + keyframeStyle
-                    + '@keyframes a_' + move_name
-                    + keyframeStyle
-                    + '@-moz-keyframes a_' + move_name
-                    + keyframeStyle
-                    + '@-o-keyframes a_' + move_name
-                    + keyframeStyle
-                    + 'div.' + move_name + ':hover > span {'
-                    +   'overflow: visible;'
-                    +   '-webkit-animation:a_' + move_name + ' ' + time_calc + 's;'
-                    +   '-moz-animation:a_' + move_name + ' ' + time_calc + 's;'
-                    +   '-o-animation:a_' + move_name + ' ' + time_calc + 's;'
-                    +   'animation:a_' + move_name + ' ' + time_calc + 's;'
-                    + '}'})
-                );
-            }
-            item.parent().attr('class', classname + ' ' + move_name);
+        } else {
+            elWidth = elWidth * 10;
         }
-        if (styles.length > 0) {
-            dom_cache.body.append(styles);
+
+        var timeCalc = Math.round(parseInt(elWidth) / parseInt(width) * 3.5);
+        var moveName = 'moveble' + '_' + width + '_' + elWidth;
+        if (var_cache.movebleStyleList['style.' + moveName] === undefined) {
+            if (styleList === undefined) {
+                styleList = document.createDocumentFragment();
+            }
+            var keyFrames = ''
+                + '{'
+                + '0%{margin-left:2px;}'
+                + '50%{margin-left:-' + (elWidth - width) + 'px;}'
+                + '90%{margin-left:6px;}'
+                + '100%{margin-left:2px;}'
+                + '}';
+            styleList.appendChild(var_cache.movebleStyleList['style.' + moveName] = mono.create('style', {
+                class: moveName,
+                text: ''
+                + '@-webkit-keyframes a_' + moveName
+                + keyFrames
+                + '@keyframes a_' + moveName
+                + keyFrames
+                + '@-moz-keyframes a_' + moveName
+                + keyFrames
+                + '@-o-keyframes a_' + moveName
+                + keyFrames
+                + 'div.' + moveName + ':hover > span {'
+                + 'overflow: visible;'
+                + '-webkit-animation:a_' + moveName + ' ' + timeCalc + 's;'
+                + '-moz-animation:a_' + moveName + ' ' + timeCalc + 's;'
+                + '-o-animation:a_' + moveName + ' ' + timeCalc + 's;'
+                + 'animation:a_' + moveName + ' ' + timeCalc + 's;'
+                + '}'
+            }));
+        }
+        el.parentNode.classList.add(moveName);
+
+        if (styleList !== undefined) {
+            document.body.appendChild(styleList);
         }
     };
     var width2fontSize = function(type, width) {
@@ -1043,7 +1031,7 @@ var explore = function() {
         var ul = popup.children('div.content').children('ul');
         var content = [];
         for (var i = 0, item; item = quality[i]; i++) {
-            var a = $('<a>',{href: item.url, target: '_blank'}).data('title', item.hlTitle).data('href', item.url).data('request', request).data('tracker', item.tracker).html(item.hlTitle);
+            var a = $('<a>',{href: item.url, target: '_blank'}).data('title', item.hlTitle).data('href', item.url).data('request', request).data('tracker', item.tracker).append(item.hlTitle);
             a.attr('title', a.text());
             content.push( $('<li>').append(a) );
         }

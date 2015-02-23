@@ -466,7 +466,8 @@ var wordRate = function() {
         found_parenthetical: new RegExp('(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\{[^\\}]*\\})','g'),
         test_angle: /[<>]/,
         rm_retry: new RegExp('<\\/span>(\\s*)<span>|<\\/b>(\\s*)<b>', 'g'),
-        syntaxCache: {}
+        syntaxCache: {},
+        tagSearch: /<(\/?)(span|b)>/g
     };
 
     var initWordCache = function(_words) {
@@ -599,7 +600,7 @@ var wordRate = function() {
     var code2array = function(code) {
         var list = [];
         var lasPos = 0;
-        code.replace(/<(\/?)(span|b)>/gm, function(tag, close, tagName, pos) {
+        code.replace(var_cache.tagSearch, function(tag, close, tagName, pos) {
             if (pos > 0) {
                 var str = code.substr(lasPos, pos - lasPos);
                 list.push(str);
