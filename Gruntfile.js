@@ -23,7 +23,14 @@ module.exports = function (grunt) {
     grunt.initConfig({
         env: grunt.file.readJSON('env.json'),
         pkg: grunt.file.readJSON('package.json'),
-        clean: ['<%= output %>'],
+        clean: {
+            output: '<%= output %>',
+            builds: [
+                'build_firefox.xpi',
+                'build_maxthon.mxaddon',
+                'build_safari.safariextz'
+            ]
+        },
         copy: {
             background: {
                 expand: true,
@@ -82,7 +89,7 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('rmPopup', function() {
-        grunt.file.delete(grunt.config('output') + grunt.config('dataJsFolder') + 'popup.js');
+        grunt.file.delete(grunt.config('output') + grunt.config('vendor') + grunt.config('dataJsFolder') + 'popup.js');
         grunt.file.delete(grunt.config('output') + grunt.config('vendor') + grunt.config('dataFolder') + 'popup.html');
     });
 
@@ -149,7 +156,8 @@ module.exports = function (grunt) {
     require('./grunt/maxthon.js').run(grunt);
 
     grunt.registerTask('default', [
-        'clean',
+        'clean:output',
+        'clean:builds',
         'chrome',
         'chromeApp',
         'firefox',
