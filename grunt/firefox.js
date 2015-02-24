@@ -149,6 +149,11 @@ exports.run = function (grunt) {
     });
 
     grunt.registerTask('firefoxStore', function () {
+        if (!grunt.config('env.addonSdkPath')) {
+            console.error("Add-on SDK is not found!");
+            return;
+        }
+
         grunt.registerTask('ffRmUpdateKey', function() {
             var installPath = grunt.config('output') + grunt.config('vendor') + '../template/install.rdf';
             var content = grunt.file.read(installPath);
@@ -208,6 +213,11 @@ exports.run = function (grunt) {
     });
 
     grunt.registerTask('firefox', function () {
+        if (!grunt.config('env.addonSdkPath')) {
+            console.error("Add-on SDK is not found!");
+            return;
+        }
+
         grunt.config.merge({
             copy: {
                 ffCopyBuildToRoot: {
