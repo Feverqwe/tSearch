@@ -39,10 +39,10 @@ exports.run = function (grunt) {
                         {
                             expand: true,
                             filter: 'isFile',
-                            src: '<%= output %><%= vendor %>/**',
+                            src: '<%= output %><%= vendor %>../**',
                             dest: './',
                             rename: function () {
-                                return arguments[0] + arguments[1].substr((grunt.config('output') + grunt.config('vendor')).length);
+                                return arguments[0] + arguments[1].substr((grunt.config('output') + grunt.config('vendor') + '../').length);
                             }
                         }
                     ]
