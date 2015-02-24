@@ -21,7 +21,7 @@ module.exports = function (grunt) {
         'src/js/lz-string-1.3.3.js'
     ];
     grunt.initConfig({
-        env: grunt.file.readJSON('env.json'),
+        env: grunt.file.exists('env.json') ? grunt.file.readJSON('env.json') : {},
         pkg: grunt.file.readJSON('package.json'),
         clean: {
             output: '<%= output %>',
@@ -111,9 +111,8 @@ module.exports = function (grunt) {
         for (var i = 0, item; item = jsList[i]; i++) {
             if (item.indexOf('jquery') !== -1) continue;
 
-            var isBg = bgJsList.indexOf(item) !== -1;
-            var jsFolderTemplate = ( isBg ? '<%= libFolder %>' : '<%= dataJsFolder %>' );
-            var jsFolder = ( isBg ? grunt.config('libFolder') : grunt.config('dataJsFolder') );
+            var jsFolderType = (bgJsList.indexOf(item) !== -1) ? 'libFolder' : 'dataJsFolder';
+            var jsFolder = grunt.config(jsFolderType);
 
             var cacheDir = grunt.config('output') + 'cache/' + jsFolder;
             if (!grunt.file.exists(cacheDir)) {
@@ -128,10 +127,10 @@ module.exports = function (grunt) {
             taskListObj.copy[taskName] = {
                 flatten: true,
                 src: '<%= output %>cache/'+jsFolder+jsFile,
-                dest: '<%= output %><%= vendor %>'+jsFolderTemplate+jsFile
+                dest: '<%= output %><%= vendor %>'+'<%= '+jsFolderType+' %>'+jsFile
             };
             taskListObj.exec[taskName] = {
-                command: 'java -jar compiler.jar --language_in ECMASCRIPT5 --js <%= output %><%= vendor %><%= dataJsFolder %>'+jsFile+' --js_output_file <%= output %>cache/'+jsFolder+jsFile
+                command: 'java -jar compiler.jar --language_in ECMASCRIPT5 --js <%= output %><%= vendor %><%= '+jsFolderType+' %>'+jsFile+' --js_output_file <%= output %>cache/'+jsFolder+jsFile
             };
         }
         grunt.config.merge(taskListObj);
