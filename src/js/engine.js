@@ -48,7 +48,8 @@ var engine = function() {
         unblock_href:new RegExp('\\/\\/about:blank#blockurl#','mg'),
         rn: new RegExp('[\\r\\n]+','g'),
         searchJs: new RegExp('href=([\'"]?)javascript:', 'img'),
-        historyLimit: 100
+        historyLimit: 100,
+        spaceR: /[\s\xA0]/g
     };
 
     var proxyList = {};
@@ -398,6 +399,7 @@ var engine = function() {
          * tracker_id - id трекера, если нету - поиск во всех трекерах в списке.
          * nohistory - если 1 то история не пишется.
          */
+        text = text.replace(var_cache.spaceR, ' ');
         lastTrackerList = trackers.slice(0);
         trackers.forEach(function(tracker) {
             try {
