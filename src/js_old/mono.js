@@ -19,40 +19,10 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
   if (window) {
     return mono = factory();
   }
-  exports.isFF = true;
-  exports.isModule = true;
-  exports.init = factory;
+  return exports.init = factory;
 }(typeof window !== "undefined" ? window : undefined, function ( addon ) {
   var require;
 
-  /**
-   * Mono
-   * @type {{
-   * isModule: Boolean,
-   * isFF: Boolean,
-   * isGM: Boolean,
-   * isTM: Boolean,
-   * isChrome: Boolean,
-   * isChromeApp: Boolean,
-   * isChromeWebApp: Boolean,
-   * isChromeInject: Boolean,
-   * isSafari: Boolean,
-   * isSafariPopup: Boolean,
-   * isSafariBgPage: Boolean,
-   * isSafariInject: Boolean,
-   * isOpera: Boolean,
-   * isOperaInject: Boolean,
-   * messageStack: number,
-   * cloneObj: Function,
-   * msgClearStack: Function,
-   * msgRemoveCbById: Function,
-   * sendMessage: Function,
-   * sendMessageToActiveTab: Function,
-   * sendHook: Object,
-   * onMessage: Function
-   * storage: Object
-   * }}
-   */
   var mono = {};
 
   (function() {
@@ -68,6 +38,11 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     }
 
     window.mono = mono;
+    if (location.host === 'static.tms.mooo.com') {
+      mono.isWebApp = true;
+      return;
+    }
+
     if (typeof GM_getValue !== 'undefined') {
       mono.isGM = true;
       if (window.chrome !== undefined) {
@@ -86,7 +61,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
           mono.isChromeWebApp = true;
         }
       }
-      mono.isChromeInject = !chrome.hasOwnProperty('tabs');
+      mono.isChromeInject = chrome.tabs === undefined;
       return;
     }
 
@@ -101,6 +76,11 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     if (window.opera !== undefined) {
       mono.isOpera = true;
       mono.isOperaInject = opera.extension.broadcastMessage === undefined;
+      return;
+    }
+
+    if (window.mx !== undefined) {
+      mono.isMaxthon = true;
       return;
     }
 
@@ -125,11 +105,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
 
   mono.messageStack = 50;
 
-  /**
-   * Clone array or object via JSON
-   * @param {object|Array} obj
-   * @returns {object|Array}
-   */
   mono.cloneObj = function(obj) {
     return JSON.parse(JSON.stringify(obj));
   };
@@ -139,38 +114,23 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     cbStack: [],
     id: 0,
     idPrefix: Math.floor(Math.random()*1000)+'_',
-    /**
-     * Add callback function in cbObj and cbStack
-     * @param {object} message - Message
-     * @param {function} cb - Callback function
-     */
     addCb: function(message, cb) {
       mono.onMessage.inited === undefined && mono.onMessage(function(){});
 
       if (msgTools.cbStack.length > mono.messageStack) {
-        msgTools.clean();
+        delete msgTools.cbObj[msgTools.cbStack.shift()];
       }
       var id = message.callbackId = msgTools.idPrefix+(++msgTools.id);
-      msgTools.cbObj[id] = {fn: cb, time: Date.now()};
+      msgTools.cbObj[id] = cb;
       msgTools.cbStack.push(id);
     },
-    /**
-     * Call function from callback list
-     * @param {object} message
-     */
     callCb: function(message) {
       var cb = msgTools.cbObj[message.responseId];
       if (cb === undefined) return;
       delete msgTools.cbObj[message.responseId];
       msgTools.cbStack.splice(msgTools.cbStack.indexOf(message.responseId), 1);
-      cb.fn(message.data);
+      cb(message.data);
     },
-    /**
-     * Response function
-     * @param {function} response
-     * @param {string} callbackId
-     * @param {*} responseMessage
-     */
     mkResponse: function(response, callbackId, responseMessage) {
       if (callbackId === undefined) return;
 
@@ -179,96 +139,33 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         responseId: callbackId
       };
       response.call(this, responseMessage);
-    },
-    /**
-     * Clear callback stack
-     */
-    clearCbStack: function() {
-      for (var item in msgTools.cbObj) {
-        delete msgTools.cbObj[item];
-      }
-      msgTools.cbStack.splice(0);
-    },
-    /**
-     * Remove item from cbObj and cbStack by cbId
-     * @param {string} cbId - Callback id
-     */
-    removeCb: function(cbId) {
-      var cb = msgTools.cbObj[cbId];
-      if (cb === undefined) return;
-      delete msgTools.cbObj[cbId];
-      msgTools.cbStack.splice(msgTools.cbStack.indexOf(cbId), 1);
-    },
-    /**
-     * Remove old callback from cbObj
-     * @param {number} aliveTime - Keep alive time
-     */
-    clean: function(aliveTime) {
-      var now = Date.now();
-      aliveTime = aliveTime || 120*1000;
-      for (var item in msgTools.cbObj) {
-        if (msgTools.cbObj[item].time + aliveTime < now) {
-          delete msgTools.cbObj[item];
-          msgTools.cbStack.splice(msgTools.cbStack.indexOf(item), 1);
-        }
-      }
     }
   };
 
-  mono.msgClearStack = msgTools.clearCbStack;
-  mono.msgRemoveCbById = msgTools.removeCb;
-  mono.msgClean = msgTools.clean;
-
-  /**
-   * Send message if background page - to local pages, or to background page
-   * @param {*} message - Message
-   * @param {function} [cb] - Callback function
-   * @param {string} [hook] - Hook string
-   * @returns {*|callbackId} - callback id
-   */
   mono.sendMessage = function(message, cb, hook) {
     message = {
       data: message,
       hook: hook
     };
-    if (cb) {
+    if (cb !== undefined) {
       msgTools.addCb(message, cb.bind(this));
     }
     mono.sendMessage.send.call(this, message);
-
-    return message.callbackId;
   };
 
-  /**
-   * Send message to active page, background page only
-   * @param {*} message - Message
-   * @param {function} [cb] - Callback function
-   * @param {string} [hook] - Hook string
-   * @returns {*|callbackId} - callback id
-   */
   mono.sendMessageToActiveTab = function(message, cb, hook) {
     message = {
       data: message,
       hook: hook
     };
-    if (cb) {
+    if (cb !== undefined) {
       msgTools.addCb(message, cb.bind(this));
     }
     mono.sendMessage.sendToActiveTab.call(this, message);
-
-    return message.callbackId;
   };
 
-  /**
-   * Mono message hooks
-   * @type {{}}
-   */
   mono.sendHook = {};
 
-  /**
-   * Listen messages and call callback function
-   * @param {function} cb - Callback function
-   */
   mono.onMessage = function(cb) {
     var _this = this;
     mono.onMessage.inited = 1;
@@ -290,9 +187,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
   mono.storage = undefined;
 
 (function() {
-  if (!mono.isChrome || !(chrome.hasOwnProperty('runtime') && chrome.runtime.onMessage)) return;
-
-  var lowLevelHook = {};
+  if (!mono.isChrome || !(chrome.runtime && chrome.runtime.onMessage)) return;
 
   var chromeMsg = {
     cbList: [],
@@ -316,24 +211,10 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     sendTo: function(message, tabId) {
       chrome.tabs.sendMessage(tabId, message);
     },
-    onMessage: function(message, sender, _response) {
-      if (mono.isChromeBgPage === 1) {
-        if (message.fromBgPage === 1) {
-          // block msg's from bg page to bg page.
-          return;
-        }
-      } else if (message.toBgPage === 1) {
-        // block msg to bg page not in bg page.
+    onMessage: function(message, sender) {
+      if (sender.tab && mono.isChromeBgPage !== 1) {
         return;
       }
-
-      if (message.hook !== undefined) {
-        var hookFunc = lowLevelHook[message.hook];
-        if (hookFunc !== undefined) {
-          return hookFunc(message, sender, _response);
-        }
-      }
-
       var response = chromeMsg.mkResponse(sender);
       for (var i = 0, cb; cb = chromeMsg.cbList[i]; i++) {
         cb(message, response);
@@ -355,27 +236,18 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
       });
     },
     send: function(message) {
-      if (mono.isChromeBgPage) {
-        message.fromBgPage = 1;
-      } else {
-        message.toBgPage = 1;
-      }
       chrome.runtime.sendMessage(message);
     }
   };
 
-  chromeMsg.on.lowLevelHook = lowLevelHook;
-
   (function() {
-    if (!chrome.runtime.hasOwnProperty('getBackgroundPage')) return;
+    if (chrome.runtime.getBackgroundPage === undefined) return;
 
-    mono.isChromeBgPage = location.href.indexOf('_generated_background_page.html') !== -1;
+    mono.isChromeBgPage = 1;
 
     chrome.runtime.getBackgroundPage(function(bgWin) {
       if (bgWin !== window) {
-        delete mono.isChromeBgPage;
-      } else {
-        mono.isChromeBgPage = 1;
+        delete  mono.isChromeBgPage;
       }
 
       if (!mono.isChromeBgPage) {
@@ -468,9 +340,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
 })();
 
 (function() {
-  if (!mono.isChrome || (chrome.hasOwnProperty('runtime') && chrome.runtime.onMessage)) return;
-
-  var lowLevelHook = {};
+  if (!mono.isChrome || (chrome.runtime && chrome.runtime.onMessage)) return;
 
   var chromeMsg = {
     cbList: [],
@@ -489,29 +359,12 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     },
     sendTo: function(message, tabId) {
       chrome.tabs.sendRequest(tabId, message, function(message) {
-        if (message && message.responseId !== undefined) {
+        if (message.responseId !== undefined) {
           return msgTools.callCb(message);
         }
       });
     },
     onMessage: function(message, sender, _response) {
-      if (mono.isChromeBgPage === 1) {
-        if (message.fromBgPage === 1) {
-          // block msg's from bg page to bg page.
-          return;
-        }
-      } else if (message.toBgPage === 1) {
-        // block msg to bg page not in bg page.
-        return;
-      }
-
-      if (message.hook !== undefined) {
-        var hookFunc = lowLevelHook[message.hook];
-        if (hookFunc !== undefined) {
-          return hookFunc(message, sender, _response);
-        }
-      }
-
       var response = chromeMsg.mkResponse(sender, _response);
       for (var i = 0, cb; cb = chromeMsg.cbList[i]; i++) {
         cb(message, response);
@@ -533,38 +386,13 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
       });
     },
     send: function(message) {
-      if (mono.isChromeBgPage) {
-        message.fromBgPage = 1;
-      } else {
-        message.toBgPage = 1;
-      }
       chrome.extension.sendRequest(message, function(message) {
-        if (message && message.responseId !== undefined) {
+        if (message.responseId !== undefined) {
           return msgTools.callCb(message);
         }
       });
     }
   };
-
-  chromeMsg.on.lowLevelHook = lowLevelHook;
-
-  (function() {
-    try {
-      if (chrome.runtime.getBackgroundPage === undefined) return;
-    } catch (e) {
-      return;
-    }
-
-    mono.isChromeBgPage = location.href.indexOf('_generated_background_page.html') !== -1;
-
-    chrome.runtime.getBackgroundPage(function(bgWin) {
-      if (bgWin !== window) {
-        delete mono.isChromeBgPage;
-      } else {
-        mono.isChromeBgPage = 1;
-      }
-    });
-  })();
 
   mono.onMessage.on = chromeMsg.on;
   mono.sendMessage.send = chromeMsg.send;
@@ -573,12 +401,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
 
 (function() {
   if (!mono.isSafari) return;
-
-  var localUrl, localUrlLen;
-  if (mono.isSafariBgPage && window.location && window.location.href) {
-    localUrl = window.location.href.substr(0, window.location.href.indexOf('/', 19));
-    localUrlLen = localUrl.length;
-  }
 
   var safariMsg = {
     cbList: [],
@@ -633,23 +455,9 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
       });
     } : mono.isSafariBgPage ? function(message) {
-      for (var p = 0, popup; popup = safari.extension.popovers[p]; p++) {
-        popup.contentWindow.mono.safariDirectOnMessage({
-          message: mono.cloneObj(message),
-          target: {
-            page: {
-              dispatchMessage: function(name, message) {
-                mono.safariDirectOnMessage({message: mono.cloneObj(message)});
-              }
-            }
-          }
-        });
-      }
       for (var w = 0, window; window = safari.application.browserWindows[w]; w++) {
         for (var t = 0, tab; tab = window.tabs[t]; t++) {
-          if (tab.url && tab.url.substr(0, localUrlLen) === localUrl) {
-            safariMsg.sendTo(message, tab);
-          }
+          safariMsg.sendTo(message, tab);
         }
       }
     } : function(message) {
@@ -664,8 +472,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
 
 (function() {
   if (!mono.isOpera) return;
-
-  var inLocalScope = window.location && window.location.href && window.location.href.substr(0, 9) === 'widget://';
 
   var operaMsg = {
     cbList: [],
@@ -686,7 +492,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
       }
       opera.extension.onmessage = function(event) {
         var message = event.data;
-        if (message.toLocalScope === 1 && inLocalScope === false) return;
         var response = operaMsg.mkResponse(event.source);
         for (var i = 0, cb; cb = operaMsg.cbList[i]; i++) {
           cb(message, response);
@@ -700,7 +505,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     send: mono.isOperaInject ? function(message) {
       operaMsg.sendTo(message, opera.extension);
     } : function(message) {
-      message.toLocalScope = 1;
       opera.extension.broadcastMessage(message);
     }
   };
@@ -734,53 +538,27 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
 
   mono.onMessage.on = gmMsg.on;
   mono.sendMessage.send = gmMsg.send;
-  mono.sendMessage.sendToActiveTab = gmMsg.onMessage.bind({isBg: true});
+  mono.sendMessage.sendToActiveTab = gmMsg.send;
 })();
 
 (function() {
-  if (!mono.isChrome || !chrome.hasOwnProperty('storage')) return;
+  if (!mono.isChrome || !chrome.storage) return;
 
-  /**
-   * Chrome storage mode
-   * @param {string} mode - Local/Sync
-   * @returns {{get: Function, set: Function, remove: Function, clear: Function}}
-   */
   var chStorage = function(mode) {
     return chrome.storage[mode];
   };
 
-  /**
-   * Chrome storage
-   * @type {{get: Function, set: Function, remove: Function, clear: Function}}
-   */
   mono.storage = chStorage('local');
-  /**
-   * Chrome local
-   * @type {{get: Function, set: Function, remove: Function, clear: Function}|mono.storage|*}
-   */
   mono.storage.local = mono.storage;
-  /**
-   * Chrome sync storage
-   * @type {{get: Function, set: Function, remove: Function, clear: Function}}
-   */
   mono.storage.sync = chStorage('sync');
 })();
 
 (function() {
   if (!mono.isFF || !mono.isModule) return;
 
-  /**
-   * Firefox simple storage
-   * @returns {{get: Function, set: Function, remove: Function, clear: Function}}
-   */
   var ffSimpleStorage = function() {
     var ss = require('sdk/simple-storage');
     return {
-      /**
-       * Get item from storage
-       * @param {string|null|undefined|Array|Object} src - Item's, null/undefined - all items
-       * @param {function} cb - Callback function
-       */
       get: function (src, cb) {
         var key, obj = {};
         if (src === undefined || src === null) {
@@ -798,37 +576,21 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         if (Array.isArray(src) === true) {
           for (var i = 0, len = src.length; i < len; i++) {
             key = src[i];
-            if (!ss.storage.hasOwnProperty(key)) {
-              continue;
-            }
             obj[key] = ss.storage[key];
           }
         } else {
           for (key in src) {
-            if (!ss.storage.hasOwnProperty(key)) {
-              continue;
-            }
             obj[key] = ss.storage[key];
           }
         }
         cb(obj);
       },
-      /**
-       * Set item in storage
-       * @param {Object} obj
-       * @param {function} [cb]
-       */
       set: function (obj, cb) {
         for (var key in obj) {
           ss.storage[key] = obj[key];
         }
         cb && cb();
       },
-      /**
-       * Remove item from storage
-       * @param {Array|string} obj
-       * @param {function} [cb]
-       */
       remove: function (obj, cb) {
         if (Array.isArray(obj)) {
           for (var i = 0, len = obj.length; i < len; i++) {
@@ -840,10 +602,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
         cb && cb();
       },
-      /**
-       * Clear storage
-       * @param {function} [cb]
-       */
       clear: function (cb) {
         for (var key in ss.storage) {
           delete ss.storage[key];
@@ -853,10 +611,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     }
   };
 
-  /**
-   * FF Storage
-   * @type {{get: Function, set: Function, remove: Function, clear: Function}}
-   */
   mono.storage = ffSimpleStorage();
   mono.storage.local = mono.storage.sync = mono.storage;
 })();
@@ -864,10 +618,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
 (function() {
   if (!mono.isGM) return;
 
-  /**
-   * GM storage
-   * @type {{get: Function, set: Function, remove: Function, clear: Function}}
-   */
   var storage = {
     /**
      * @namespace GM_listValues
@@ -875,14 +625,8 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
      * @namespace GM_setValue
      * @namespace GM_deleteValue
      */
-
-    /**
-     * Get item from storage
-     * @param {string|null|undefined|Array|Object} src - Item's, null/undefined - all items
-     * @param {function} cb - Callback function
-     */
     get: function (src, cb) {
-      var key, value, obj = {};
+      var key, obj = {};
       if (src === undefined || src === null) {
         var nameList = GM_listValues();
         for (key in nameList) {
@@ -896,37 +640,21 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
       if (Array.isArray(src) === true) {
         for (var i = 0, len = src.length; i < len; i++) {
           key = src[i];
-          value = GM_getValue(key);
-          if (value !== undefined) {
-            obj[key] = value;
-          }
+          obj[key] = GM_getValue(key);
         }
       } else {
         for (key in src) {
-          value = GM_getValue(key);
-          if (value !== undefined) {
-            obj[key] = value;
-          }
+          obj[key] = GM_getValue(key);
         }
       }
       cb(obj);
     },
-    /**
-     * Set item in storage
-     * @param {Object} obj
-     * @param {function} [cb]
-     */
     set: function (obj, cb) {
       for (var key in obj) {
         GM_setValue(key, obj[key]);
       }
       cb && cb();
     },
-    /**
-     * Remove item from storage
-     * @param {Array|string} obj
-     * @param {function} [cb]
-     */
     remove: function (obj, cb) {
       if (Array.isArray(obj)) {
         for (var i = 0, len = obj.length; i < len; i++) {
@@ -938,10 +666,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
       }
       cb && cb();
     },
-    /**
-     * Clear storage
-     * @param {function} [cb]
-     */
     clear: function (cb) {
       var nameList = GM_listValues();
       for (var key in nameList) {
@@ -951,10 +675,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     }
   };
 
-  /**
-   * GM Storage
-   * @type {{get: Function, set: Function, remove: Function, clear: Function}}
-   */
   mono.storage = storage;
   mono.storage.local = mono.storage.sync = mono.storage;
 })();
@@ -962,23 +682,8 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
 (function() {
   if (mono.storage) return;
 
-  /**
-   * localStorage mode
-   * @param {object} localStorage - Storage type
-   * @returns {{get: Function, set: Function, remove: Function, clear: Function}}
-   */
   var getLocalStorage = function(localStorage) {
-    /**
-     * localStorage mode
-     * @type {{getObj: Function, setObj: Function, rmObj: Function, readValue: Function
-     * get: Function, set: Function, remove: Function, clear: Function}}
-     */
     var localStorageMode = {
-      /**
-       * Get object from localStorage
-       * @param {string} key
-       * @returns {*}
-       */
       getObj: function(key) {
         var index = 0;
         var keyPrefix = localStorageMode.chunkPrefix + key;
@@ -996,11 +701,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
         return value;
       },
-      /**
-       * Set object in localStorage
-       * @param {string} key
-       * @param {*} value
-       */
       setObj: function(key, value) {
         value = JSON.stringify(value);
         var keyPrefix = localStorageMode.chunkPrefix + key;
@@ -1024,11 +724,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
 
         localStorageMode.rmObj(key, dataListLen);
       },
-      /**
-       * Remove object from localStorage
-       * @param {string} key
-       * @param {number} index - Chunk index
-       */
       rmObj: function(key, index) {
         var keyPrefix = localStorageMode.chunkPrefix + key;
         if (index === undefined) {
@@ -1041,12 +736,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
           data = localStorage[keyPrefix + index];
         }
       },
-      /**
-       * Read value from localStorage
-       * @param key
-       * @param value
-       * @returns {*}
-       */
       readValue: function(key, value) {
         if (value === localStorageMode.chunkItem) {
           value = localStorageMode.getObj(key)
@@ -1063,11 +752,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
         return value;
       },
-      /**
-       * Get item from storage
-       * @param {string|null|undefined|Array|Object} src - Item's, null/undefined - all items
-       * @param {function} cb - Callback function
-       */
       get: function(src, cb) {
         var key, obj = {};
         if (src === undefined || src === null) {
@@ -1088,26 +772,15 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         if (Array.isArray(src) === true) {
           for (var i = 0, len = src.length; i < len; i++) {
             key = src[i];
-            if (!localStorage.hasOwnProperty(key)) {
-              continue;
-            }
             obj[key] = localStorageMode.readValue(key, localStorage[key]);
           }
         } else {
           for (key in src) {
-            if (!localStorage.hasOwnProperty(key)) {
-              continue;
-            }
             obj[key] = localStorageMode.readValue(key, localStorage[key]);
           }
         }
         cb(obj);
       },
-      /**
-       * Set item in storage
-       * @param {Object} obj
-       * @param {function} [cb]
-       */
       set: function(obj, cb) {
         var key;
         for (key in obj) {
@@ -1130,11 +803,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
         cb && cb();
       },
-      /**
-       * Remove item from storage
-       * @param {Array|string} obj
-       * @param {function} [cb]
-       */
       remove: function(obj, cb) {
         if (Array.isArray(obj)) {
           for (var i = 0, len = obj.length; i < len; i++) {
@@ -1152,10 +820,6 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
         }
         cb && cb();
       },
-      /**
-       * Clear storage
-       * @param {function} [cb]
-       */
       clear: function(cb) {
         localStorage.clear();
         cb && cb();
@@ -1167,49 +831,21 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     return localStorageMode;
   };
 
-  /**
-   * External storage mode
-   * @type {{get: Function, set: Function, remove: Function, clear: Function}}
-   */
   var externalStorage = {
-    /**
-     * Get item from storage
-     * @param {string|null|undefined|Array|Object} obj - Item's, null/undefined - all items
-     * @param {function} cb - Callback function
-     */
     get: function(obj, cb) {
       mono.sendMessage({action: 'get', data: obj}, cb, 'monoStorage');
     },
-    /**
-     * Set item in storage
-     * @param {Object} obj
-     * @param {function} [cb]
-     */
     set: function(obj, cb) {
       mono.sendMessage({action: 'set', data: obj}, cb, 'monoStorage');
     },
-    /**
-     * Remove item from storage
-     * @param {Array|string} obj
-     * @param {function} [cb]
-     */
     remove: function(obj, cb) {
       mono.sendMessage({action: 'remove', data: obj}, cb, 'monoStorage');
     },
-    /**
-     * Clear storage
-     * @param {function} [cb]
-     */
     clear: function(cb) {
       mono.sendMessage({action: 'clear'}, cb, 'monoStorage');
     }
   };
 
-  /**
-   *
-   * @param {object} message
-   * @param {function} [response]
-   */
   var externalStorageHook = function(message, response) {
     if (message.action === 'get') {
       return mono.storage.get(message.data, response);
@@ -1227,28 +863,16 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
 
   if (false && mono.isOpera && window.widget) {
     // remove false if need use prefs
-    /**
-     * Opera storage
-     * @type {{get: Function, set: Function, remove: Function, clear: Function}}
-     */
     mono.storage = getLocalStorage(window.widget.preferences);
     mono.storage.local = mono.storage.sync = mono.storage;
     return;
   }
   if (mono.isFF || mono.isChromeInject || mono.isOperaInject || mono.isSafariInject) {
-    /**
-     * Firefox bridge storage
-     * @type {{get: Function, set: Function, remove: Function, clear: Function}}
-     */
     mono.storage = externalStorage;
     mono.storage.local = mono.storage.sync = mono.storage;
     return;
   }
   if (window.localStorage) {
-    /**
-     * LocalStorage
-     * @type {{get: Function, set: Function, remove: Function, clear: Function}}
-     */
     mono.storage = getLocalStorage(window.localStorage);
     mono.storage.local = mono.storage.sync = mono.storage;
     if (mono.isChrome || mono.isSafari || mono.isOpera) {
@@ -1259,6 +883,218 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
   }
   console.error('Can\'t detect storage!');
 })();
+
+//> utils
+  mono.loadLanguage = function(cb, force) {
+    var language = {};
+    var url = '_locales/{lang}/messages.json';
+    if (mono.isOpera && !mono.isOperaInject) {
+      url = 'build/' + url;
+    }
+    if (mono.isModule) {
+      var window = require('sdk/window/utils').getMostRecentBrowserWindow();
+      var self = require('sdk/self');
+    }
+    var lang, data;
+    if (mono.isChrome) {
+      lang = chrome.i18n.getMessage('lang');
+    } else {
+      lang = ((typeof navigator !== 'undefined') ? navigator : window.navigator).language.substr(0, 2);
+    }
+    if (['ru', 'en'].indexOf(lang) === -1) {
+      lang = 'en';
+    }
+
+    url = url.replace('{lang}', force || lang);
+    if (mono.isModule) {
+      try {
+        data = JSON.parse(self.data.load(url));
+      } catch (e) {
+        if (force) {
+          return cb();
+        }
+        return mono.loadLanguage(cb, 'en');
+      }
+      for (var item in data) {
+        language[item] = data[item].message;
+      }
+      return cb(language);
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var data = xhr.response;
+      if (typeof data === 'string') {
+        data = JSON.parse(data);
+      }
+      for (var item in data) {
+        language[item] = data[item].message;
+      }
+      cb(language);
+    };
+    xhr.onerror = function() {
+      if (force) {
+        return cb();
+      }
+      mono.loadLanguage(cb, 'en');
+    };
+    try {
+      xhr.send();
+    } catch (e) {
+      xhr.onerror();
+    }
+  };
+  //<utils
+
+
+    mono.create = (function() {
+        var createHook = {
+            text: function(el, value) {
+                el.textContent = value;
+            },
+            data: function(el, value) {
+                for (var item in value) {
+                    el.dataset[item] = value[item];
+                }
+            },
+            class: function(el, value) {
+                if (typeof value !== 'string') {
+                    for (var i = 0, len = value.length; i < len; i++) {
+                        var className = value[i];
+                        el.classList.add(className);
+                    }
+                    return;
+                }
+                el.setAttribute('class', value);
+            },
+            style: function(el, value) {
+                if (typeof value !== 'string') {
+                    for (var item in value) {
+                        el.style[item] = value[item];
+                    }
+                    return;
+                }
+                el.setAttribute('style', value);
+            },
+            append: function(el, value) {
+                if (Array.isArray(value)) {
+                    for (var i = 0, len = value.length; i < len; i++) {
+                        var subEl = value[i];
+                        if (!subEl) {
+                            continue;
+                        }
+                        if (typeof (subEl) === 'string') {
+                            subEl = document.createTextNode(subEl);
+                        }
+                        el.appendChild(subEl);
+                    }
+                    return;
+                }
+                el.appendChild(value);
+            },
+            on: function(el, args) {
+                if (typeof args[0] !== 'string') {
+                    for (var i = 0, len = args.length; i < len; i++) {
+                        var subArgs = args[i];
+                        mono.on(el, subArgs[0], subArgs[1], subArgs[2]);
+                    }
+                    return;
+                }
+                //type, onEvent, useCapture
+                mono.on(el, args[0], args[1], args[2]);
+            },
+            onCreate: function(el, value) {
+                value(el);
+            }
+        };
+
+        return function(tagName, obj) {
+            var el;
+            if ( typeof tagName === 'string') {
+                el = document.createElement(tagName);
+            } else {
+                el = tagName;
+            }
+            if (obj !== undefined) {
+                for (var attr in obj) {
+                    var value = obj[attr];
+                    if (createHook[attr]) {
+                        createHook[attr](el, value);
+                        continue;
+                    }
+                    el[attr] = value;
+                }
+            }
+            return el;
+        }
+    })();
+    mono.parseTemplate = function(list, fragment) {
+        if (typeof list === "string") {
+            list = list.replace(/"/g, '\\"').replace(/\\'/g, '\\u0027').replace(/'/g, '"').replace(/([{,]{1})\s*([a-zA-Z0-9]+):/g, '$1"$2":');
+            try {
+                list = JSON.parse(list);
+            } catch (e) {
+                return document.createTextNode(list);
+            }
+        }
+        fragment = fragment || document.createDocumentFragment();
+        for (var i = 0, len = list.length; i < len; i++) {
+            var item = list[i];
+            if (typeof item === 'object') {
+                for (var tagName in item) {
+                    var el = item[tagName];
+                    var append = el.append;
+                    delete el.append;
+                    var dEl;
+                    fragment.appendChild(dEl = mono.create(tagName, el));
+                    if (append !== undefined) {
+                        mono.parseTemplate(append, dEl);
+                    }
+                }
+            } else {
+                fragment.appendChild(document.createTextNode(item));
+            }
+        }
+        return fragment;
+    };
+    mono.writeLanguage = function(language, body) {
+        var elList = (body || document).querySelectorAll('[data-lang]');
+        for (var i = 0, el; el = elList[i]; i++) {
+            var langList = el.dataset.lang.split('|');
+            for (var m = 0, lang; lang = langList[m]; m++) {
+                var args = lang.split(',');
+                var locale = language[args.shift()];
+                if (locale === undefined) {
+                    console.log('Lang not found!', el.dataset.lang);
+                    continue;
+                }
+                if (args.length !== 0) {
+                    args.forEach(function (item) {
+                        if (item === 'text') {
+                            el.textContent = locale;
+                            return 1;
+                        } else
+                        if (item === 'tmpl') {
+                            el.textContent = '';
+                            el.appendChild(mono.parseTemplate(locale));
+                            return 1;
+                        }
+                        el.setAttribute(item, locale);
+                    });
+                } else if (el.tagName === 'DIV') {
+                    el.setAttribute('title', locale);
+                } else if (['A', 'LEGEND', 'SPAN', 'LI', 'TH', 'P', 'OPTION', 'H1', 'H2'].indexOf(el.tagName) !== -1) {
+                    el.textContent = locale;
+                } else if (el.tagName === 'INPUT') {
+                    el.value = locale;
+                } else {
+                    console.log('Tag name not found!', el.tagName);
+                }
+            }
+        }
+    };
+
 
   return mono;
 }));
