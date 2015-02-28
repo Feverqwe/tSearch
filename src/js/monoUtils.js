@@ -198,9 +198,7 @@ mono.readChromeLocale = function(lang) {
 };
 mono.getLanguage = function(cb, force) {
     "use strict";
-    var lang = mono.checkAvailableLanguage(force || engine.detectLanguage());
-
-    engine.settings.lang = engine.settings.lang || lang;
+    var lang = mono.checkAvailableLanguage(force || mono.detectLanguage());
 
     var url = '_locales/' + lang + '/messages.json';
     if (mono.isModule) {
@@ -230,4 +228,11 @@ mono.getLanguage = function(cb, force) {
             console.error('Can\'t load language!');
         }
     });
+};
+mono.isEmptyObject = function(obj) {
+    "use strict";
+    for (var item in obj) {
+        return false;
+    }
+    return true;
 };

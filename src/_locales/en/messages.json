@@ -4,7 +4,7 @@
     "extName": {"message": "TMS - Torrent search, extension"},
     "extDesc": {"message": "Torrents MultiSearch - search on some of the trackers at once!"},
 
-    "lang": {"message": "en"},
+    "langCode": {"message": "en"},
 
     "categoryFilms": {"message": "Films"},
     "categorySerials": {"message": "Serials"},

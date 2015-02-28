@@ -4,7 +4,7 @@
     "extName": {"message": "TMS - Поиск торрентов, расширение"},
     "extDesc": {"message": "Torrents MultiSearch - поиск по нескольким трекерам сразу!"},
 
-    "lang": {"message": "ru"},
+    "langCode": {"message": "ru"},
 
     "categoryFilms": {"message": "Фильмы"},
     "categorySerials": {"message": "Сериалы"},
