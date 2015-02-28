@@ -63,7 +63,7 @@ var engine = {
         return list;
     },
 
-    onGetProfileList: function(currentProfile, storage) {
+    prepareProfileList: function(currentProfile, storage) {
         "use strict";
         var profileList = engine.profileList = storage.profileList || {};
         if (mono.isEmptyObject(profileList)) {
@@ -78,13 +78,12 @@ var engine = {
         engine.currentProfile = currentProfile;
     },
 
-    getProfileList: function(storage) {
+    getProfileList: function(storage, cb) {
         "use strict";
-        var onGetProfileList = engine.onGetProfileList.bind(null, storage.currentProfile);
         if (storage.profileListSync) {
-            mono.storage.sync.get('profileList', onGetProfileList);
+            mono.storage.sync.get('profileList', cb);
         } else {
-            onGetProfileList(storage);
+            cb(storage);
         }
     },
 
@@ -113,9 +112,11 @@ var engine = {
             engine.settings = settings;
 
             mono.loadLanguage(function() {
-                engine.getProfileList(storage);
+                engine.getProfileList(storage, function(syncStorage) {
+                    engine.prepareProfileList(storage.currentProfile, syncStorage);
 
-                return cb();
+                    return cb();
+                });
             }, settings.langCode);
         });
     },
