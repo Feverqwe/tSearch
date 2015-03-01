@@ -33,17 +33,67 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
 })();
 
 var bg = {
-    setBtnAction: function() {
+    setBtnAction: mono.isChrome ? function ch(state) {
+        "use strict";
+        ch.lastState = state;
+        if (!ch.inited) {
+            chrome.browserAction.onClicked.addListener(function() {
+                if (ch.lastState) return;
+                chrome.tabs.create({
+                    url: 'index.html'
+                });
+            });
+            ch.inited = 1;
+        }
+        chrome.browserAction.setPopup({
+            popup: state ? 'popup.html' : ''
+        });
+    } : function() {
         "use strict";
 
     },
-    setCtxMenu: function() {
+    setCtxMenu: mono.isChrome ? function(state) {
+        "use strict";
+        chrome.contextMenus.removeAll(function () {
+            if (!state) return;
+            chrome.contextMenus.create({
+                type: "normal",
+                id: "item",
+                title: mono.language.ctx_title,
+                contexts: ["selection"],
+                onclick: function (info) {
+                    var text = info.selectionText;
+                    chrome.tabs.create({
+                        url: 'index.html' + ( text ? '#?search=' + encodeURIComponent(text) : ''),
+                        selected: true
+                    });
+                }
+            });
+        });
+    } : function() {
         "use strict";
 
     },
     onMessage: function(msg, cb) {
         "use strict";
 
+    },
+    run: function() {
+        "use strict";
+
+        mono.storage.get(['contextMenu', 'searchPopup', 'langCode'], function(storage) {
+            if (!storage.hasOwnProperty('contextMenu')) {
+                storage.contextMenu = 1;
+            }
+            if (!storage.hasOwnProperty('searchPopup')) {
+                storage.searchPopup = 1;
+            }
+
+            mono.getLanguage(function() {
+                bg.setBtnAction(storage.searchPopup);
+                bg.setCtxMenu(storage.contextMenu);
+            }, storage.langCode);
+        });
     }
 };
 
@@ -59,11 +109,10 @@ var bg = {
         }
 
         mono.onMessage(bg.onMessage);
-        engine.run();
+        bg.run();
     };
-    if (mono.isModule) {
-        exports.init = init;
-    } else {
-        init();
+    if (!mono.isModule) {
+        return init();
     }
+    exports.init = init;
 })();

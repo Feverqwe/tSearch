@@ -65,6 +65,9 @@ var engine = {
 
     prepareProfileList: function(currentProfile, storage) {
         "use strict";
+        if (typeof storage.profileList !== "object") {
+            storage.profileList = undefined;
+        }
         var profileList = engine.profileList = storage.profileList || {};
         if (mono.isEmptyObject(profileList)) {
             profileList[currentProfile = '%defaultProfileName%'] = engine.getDefaultProfileList();
@@ -85,6 +88,49 @@ var engine = {
         } else {
             cb(storage);
         }
+    },
+
+    defaultPrepare: function(langCode) {
+        "use strict";
+        if ( langCode === 'en' ) {
+            engine.defaultExplorerOptions.kp_favorites.e = 0;
+            engine.defaultExplorerOptions.kp_in_cinema.e = 0;
+            engine.defaultExplorerOptions.kp_popular.e = 0;
+            engine.defaultExplorerOptions.kp_serials.e = 0;
+        } else {
+            engine.defaultExplorerOptions.imdb_in_cinema.e = 0;
+            engine.defaultExplorerOptions.imdb_popular.e = 0;
+            engine.defaultExplorerOptions.imdb_serials.e = 1;
+            engine.defaultExplorerOptions.kp_serials.e = 0;
+        }
+    },
+
+    setProxyList: function(proxyList) {
+        "use strict";
+        proxyList = proxyList || {};
+
+        if (Array.isArray(proxyList)) {
+            var newList = {};
+            proxyList.forEach(function(item) {
+                newList[item] = 1;
+            });
+            proxyList = newList;
+        }
+
+        var delList = [], item, i;
+        for (item in proxyList) {
+            if (newList[item] === undefined) {
+                delList.push(item);
+            }
+        }
+        for (item in newList) {
+            proxyList[item] = newList[item];
+        }
+        for (i = 0, item; item = delList[i]; i++) {
+            delete proxyList[item];
+        }
+
+        engine.proxyList = proxyList;
     },
 
     loadSettings: function(cb) {
@@ -111,7 +157,15 @@ var engine = {
             }
             engine.settings = settings;
 
+            engine.setProxyList(storage.proxyList);
+
+            if (Array.isArray(storage.history)) {
+                engine.history = storage.history;
+            }
+
             mono.loadLanguage(function() {
+                engine.defaultPrepare(mono.language.langCode);
+
                 engine.getProfileList(storage, function(syncStorage) {
                     engine.prepareProfileList(storage.currentProfile, syncStorage);
 

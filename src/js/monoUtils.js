@@ -176,11 +176,11 @@ mono.getLocale = function() {
 };
 mono.detectLanguage = mono.isChrome ? function() {
     "use strict";
-    return chrome.i18n.getMessage('lang');
+    return chrome.i18n.getMessage('langCode');
 } : window.isModule ? function () {
     "use strict";
-    var lang = require("sdk/l10n").get('lang');
-    if (lang !== 'lang') {
+    var lang = require("sdk/l10n").get('langCode');
+    if (lang !== 'langCode') {
         return lang;
     }
     return mono.getLocale();
@@ -196,6 +196,11 @@ mono.readChromeLocale = function(lang) {
     }
     return language;
 };
+/**
+ * @param {function} cb
+ * @param {string} force
+ * @returns {undefined}
+ */
 mono.getLanguage = function(cb, force) {
     "use strict";
     var lang = mono.checkAvailableLanguage(force || mono.detectLanguage());
@@ -229,10 +234,182 @@ mono.getLanguage = function(cb, force) {
         }
     });
 };
+/**
+ * @param {object} obj
+ * @returns {boolean}
+ */
 mono.isEmptyObject = function(obj) {
     "use strict";
     for (var item in obj) {
         return false;
     }
     return true;
+};
+/**
+ * Create new element
+ * @param {Element|String} tagName
+ * @param {Object} obj
+ * @returns {Element}
+ */
+mono.create = function create(tagName, obj) {
+    "use strict";
+    var el;
+    if ( typeof tagName === 'string') {
+        el = document.createElement(tagName);
+    } else {
+        el = tagName;
+    }
+    if (obj !== undefined) {
+        for (var attr in obj) {
+            var value = obj[attr];
+            if (create.hook[attr]) {
+                create.hook[attr](el, value);
+                continue;
+            }
+            el[attr] = value;
+        }
+    }
+    return el;
+};
+mono.create.hook = {
+    text: function(el, value) {
+        "use strict";
+        el.textContent = value;
+    },
+    data: function(el, value) {
+        "use strict";
+        for (var item in value) {
+            el.dataset[item] = value[item];
+        }
+    },
+    class: function(el, value) {
+        "use strict";
+        if (Array.isArray(value)) {
+            for (var i = 0, len = value.length; i < len; i++) {
+                var className = value[i];
+                el.classList.add(className);
+            }
+            return;
+        }
+        el.setAttribute('class', value);
+    },
+    style: function(el, value) {
+        "use strict";
+        if (typeof value === 'object') {
+            for (var item in value) {
+                el.style[item] = value[item];
+            }
+            return;
+        }
+        el.setAttribute('style', value);
+    },
+    append: function(el, value) {
+        "use strict";
+        if (Array.isArray(value)) {
+            for (var i = 0, len = value.length; i < len; i++) {
+                var subEl = value[i];
+                if (!subEl) {
+                    continue;
+                }
+                if (typeof (subEl) === 'string') {
+                    subEl = document.createTextNode(subEl);
+                }
+                el.appendChild(subEl);
+            }
+            return;
+        }
+        el.appendChild(value);
+    },
+    on: function(el, args) {
+        "use strict";
+        if (Array.isArray(args[0])) {
+            for (var i = 0, len = args.length; i < len; i++) {
+                var subArgs = args[i];
+                el.addEventListener(subArgs[0], subArgs[1], subArgs[2]);
+            }
+            return;
+        }
+        //type, onEvent, useCapture
+        el.addEventListener(args[0], args[1], args[2]);
+    },
+    onCreate: function(el, value) {
+        "use strict";
+        value(el);
+    }
+};
+/**
+ * @param {String|Array} list
+ * @param {DocumentFragment} [fragment]
+ * @returns {DocumentFragment|Element}
+ */
+mono.parseTemplate = function(list, fragment) {
+    "use strict";
+    if (typeof list === "string") {
+        list = list.replace(/"/g, '\\"').replace(/\\'/g, '\\u0027').replace(/'/g, '"').replace(/([{,]{1})\s*([a-zA-Z0-9]+):/g, '$1"$2":');
+        try {
+            list = JSON.parse(list);
+        } catch (e) {
+            return document.createTextNode(list);
+        }
+    }
+    fragment = fragment || document.createDocumentFragment();
+    for (var i = 0, len = list.length; i < len; i++) {
+        var item = list[i];
+        if (typeof item === 'object') {
+            for (var tagName in item) {
+                var el = item[tagName];
+                var append = el.append;
+                delete el.append;
+                var dEl;
+                fragment.appendChild(dEl = mono.create(tagName, el));
+                if (append !== undefined) {
+                    mono.parseTemplate(append, dEl);
+                }
+            }
+        } else {
+            fragment.appendChild(document.createTextNode(item));
+        }
+    }
+    return fragment;
+};
+/**
+ * @param {object} language
+ * @param {Element} [body]
+ */
+mono.writeLanguage = function(language, body) {
+    "use strict";
+    var elList = (body || document).querySelectorAll('[data-lang]');
+    for (var i = 0, el; el = elList[i]; i++) {
+        var langList = el.dataset.lang.split('|');
+        for (var m = 0, lang; lang = langList[m]; m++) {
+            var args = lang.split(',');
+            var locale = language[args.shift()];
+            if (locale === undefined) {
+                console.log('Lang not found!', el.dataset.lang);
+                continue;
+            }
+            if (args.length !== 0) {
+                args.forEach(function (item) {
+                    if (item === 'text') {
+                        el.textContent = locale;
+                        return 1;
+                    } else
+                    if (item === 'tmpl') {
+                        el.textContent = '';
+                        el.appendChild(mono.parseTemplate(locale));
+                        return 1;
+                    }
+                    el.setAttribute(item, locale);
+                });
+            } else if (el.tagName === 'DIV') {
+                el.setAttribute('title', locale);
+            } else if (['A', 'LEGEND', 'SPAN', 'LI', 'TH', 'P', 'OPTION', 'H1', 'H2'].indexOf(el.tagName) !== -1) {
+                el.textContent = locale;
+            } else if (el.tagName === 'INPUT') {
+                el.value = locale;
+            } else {
+                console.log('Tag name not found!', el.tagName);
+            }
+        }
+    }
 };
