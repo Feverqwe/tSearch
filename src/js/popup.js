@@ -5,29 +5,32 @@ var popup = {
     domCache: {
         searchForm: document.getElementById('searchForm'),
         requestInput: document.getElementById('requestInput'),
-        cleanBtn: document.getElementById('cleanBtn'),
+        clearBtn: document.getElementById('clearBtn'),
         searchBtn: document.getElementById('searchBtn')
     },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
 
-        popup.domCache.addEventListener('click', function() {
-            popup.domCache.requestInput.value = "";
-            popup.domCache.requestInput.d
+        popup.domCache.requestInput.focus();
+
+        popup.domCache.clearBtn.addEventListener('click', function() {
+            popup.domCache.requestInput.value = '';
+            popup.domCache.requestInput.dispatchEvent(new CustomEvent('input'));
+            popup.domCache.requestInput.focus();
         });
 
-        popup.domCache.searchForm.addEventListener('input', function() {
+        popup.domCache.requestInput.addEventListener('input', function() {
             if (this.value.length > 0) {
-                popup.domCache.classList.remove('hide');
+                popup.domCache.clearBtn.classList.add('show');
             } else {
-                popup.domCache.classList.add('hide');
+                popup.domCache.clearBtn.classList.remove('show');
             }
         });
     },
     onUiReady: function() {
         "use strict";
-
+        
     }
 };
 
