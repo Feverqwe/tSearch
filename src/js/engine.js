@@ -163,7 +163,7 @@ var engine = {
                 engine.history = storage.history;
             }
 
-            mono.loadLanguage(function() {
+            mono.getLanguage(function() {
                 engine.defaultPrepare(mono.language.langCode);
 
                 engine.getProfileList(storage, function(syncStorage) {
