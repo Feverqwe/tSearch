@@ -334,7 +334,7 @@ mono.create.hook = {
     },
     onCreate: function(el, value) {
         "use strict";
-        value(el);
+        value.call(el);
     }
 };
 /**

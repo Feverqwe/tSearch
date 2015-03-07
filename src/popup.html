@@ -9,12 +9,10 @@
         <script src="js/monoUtils.js"></script>
     </head>
     <body>
-        <div class="search_panel">
-            <div class="searchForm">
-                <input type="text" name="s" class="request" id="search_input" autofocus />
-                <div class="btn clear" title="Очистить" id="search_clear_btn" data-lang="clear_btn" ></div>
-                <input type="button" class="button search" value="Найти" data-lang="search_btn,title,value" id="search_btn" />
-            </div>
+        <div id="searchForm">
+            <input type="text" id="requestInput" autofocus/>
+            <div class="clean btn" data-lang="clear_btn" id="cleanBtn" ></div>
+            <input type="button" data-lang="search_btn,title,value" id="searchBtn"/>
         </div>
         <script src="js/popup.js"></script>
     </body>
