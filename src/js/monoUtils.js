@@ -414,3 +414,60 @@ mono.writeLanguage = function(language, body) {
         }
     }
 };
+
+mono.openTab = mono.isChrome ? function(url) {
+    "use strict";
+    chrome.tabs.create({url: url});
+} : mono.isFF ? function(url) {
+    "use strict";
+    mono.sendMessage({action: 'openTab', dataUrl: true, url: url}, undefined, 'service');
+} : mono.isOpera ? function(url) {
+    "use strict";
+    mono.sendMessage({action: 'tab', url: url });
+} : mono.isSafari ? function(url) {
+    "use strict";
+    var tab = safari.application.activeBrowserWindow.openTab();
+    tab.url = safari.extension.baseURI + url;
+    tab.activate();
+} : mono.isMaxthon ? function(url) {
+    "use strict";
+    url = window.external.mxGetRuntime().getPrivateUrl() + url;
+    mx.browser.tabs();
+    mx.browser.newTab({url: url, activate: true});
+} : function() {
+    "use strict";
+    console.error('openTab is not supported!');
+};
+
+mono.closePopup = mono.isFF ? function() {
+    "use strict";
+    return mono.addon.postMessage('closeMe');
+} : mono.isSafari ? function() {
+    "use strict";
+    safari.extension.popovers[0].hide();
+} : function() {
+    "use strict";
+    console.error('closePopup is not supported!');
+};
+
+mono.resizePopup = mono.isFF ? function(w, h) {
+    "use strict";
+    mono.sendMessage({action: 'resize', height: h, width: w}, undefined, "service");
+} : mono.isOpera ? function(w, h) {
+    "use strict";
+    mono.sendMessage({action: 'resize', height: h, width: w});
+} : mono.isSafari ? function(w, h) {
+    "use strict";
+    if (w !== undefined) {
+        safari.extension.popovers[0].width = w;
+    }
+    if (h !== undefined) {
+        safari.extension.popovers[0].height = h;
+    }
+} : mono.isMaxthon ? function(w, h) {
+    "use strict";
+    window.external.mxGetRuntime().getActionByName("Torrents MultiSearch").resize(w, h);
+} : mono.isChrome ? function(){} : function(w, h) {
+    "use strict";
+    console.error('resizePopup is not supported!');
+};

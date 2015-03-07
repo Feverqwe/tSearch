@@ -70,7 +70,7 @@ var engine = {
         }
         var profileList = engine.profileList = storage.profileList || {};
         if (mono.isEmptyObject(profileList)) {
-            profileList[currentProfile = '%defaultProfileName%'] = engine.getDefaultProfileList();
+            profileList['%defaultProfileName%'] = engine.getDefaultProfileList();
         }
         if (!profileList.hasOwnProperty(currentProfile)) {
             for (var item in profileList) {

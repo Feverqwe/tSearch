@@ -31,6 +31,23 @@ var popup = {
                 popup.domCache.clearBtn.classList.remove('show');
             }
         });
+
+        popup.domCache.requestInput.addEventListener('keypress', function(e) {
+            if (e.keyCode === 13) {
+                popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click'));
+            }
+        });
+
+        popup.domCache.searchBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var request = popup.domCache.requestInput.value.trim();
+            var url = 'index.html' + (request && '#?search=' + encodeURIComponent(request));
+            mono.openTab(url);
+            if (mono.isFF || mono.isSafari) {
+                mono.closePopup();
+            }
+            popup.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
+        });
     },
     getHistory: function() {
         "use strict";
@@ -78,26 +95,11 @@ var popup = {
                 popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click'));
             },
             close: function() {
-                console.log(document.body.clientHeight);
-                // TODO: fox me!
-                return;
-                if (mono.isFF) {
-                    mono.sendMessage({action: 'resize', height: 70}, undefined, "service");
-                }
+                mono.resizePopup(undefined, document.body.clientHeight);
                 if (mono.isOpera) {
-                    mono.sendMessage({action: 'resize', height: 70});
-                    dom_cache.search_input.focus();
                     setTimeout(function() {
-                        dom_cache.search_input.focus();
+                        popup.domCache.requestInput.focus();
                     }, 100);
-                }
-                if (mono.isMaxthon) {
-                    var rt = window.external.mxGetRuntime();
-                    var aa = rt.getActionByName("Torrents MultiSearch");
-                    aa.resize(642, 70);
-                }
-                if (mono.isSafari) {
-                    safari.extension.popovers[0].height = 70;
                 }
             },
             create: function() {
@@ -127,9 +129,23 @@ var popup = {
                 results: function() {}
             }
         }).data('ui-autocomplete')._resizeMenu = function() {
-            // TODO: fix me!
-            console.log(document.body.clientHeight);
+            mono.resizePopup(undefined, document.body.clientHeight);
+            if (mono.isOpera) {
+                setTimeout(function() {
+                    popup.domCache.requestInput.focus();
+                }, 100);
+            }
         };
+    },
+    loadHistory: function(cb) {
+        "use strict";
+        mono.storage.get('history', function(storage) {
+            popup.varCache.history = storage.history || [];
+            cb && cb();
+        });
+    },
+    onShow: function() {
+        popup.loadHistory();
     }
 };
 
@@ -141,22 +157,26 @@ var define = function(name, func) {
     }
     if (name[0] === 'jquery') {
         func(jQuery);
-        mono.storage.get('history', function(storage) {
-            popup.varCache.history = storage.history || [];
-            popup.onUiReady();
-        });
+        popup.loadHistory(popup.onUiReady);
     }
 };
 define.amd = {};
 
+mono.onMessage(function(msg) {
+    "use strict";
+    if (msg.action === 'reloadPopup') {
+        document.location.reload();
+    }
+});
+
 mono.storage.get(['autoComplite', 'langCode'], function(storage) {
     "use strict";
-    mono.getLanguage(function() {
+    mono.getLanguage(function () {
+        popup.once();
+
         if (!storage.hasOwnProperty('autoComplite')) {
             storage.autoComplite = 1;
         }
-        popup.once();
-
         if (storage.autoComplite) {
             document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
         }
