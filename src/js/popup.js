@@ -7,10 +7,10 @@ var popup = {
         suggestXhr: undefined
     },
     domCache: {
-        searchForm: document.getElementById('searchForm'),
-        requestInput: document.getElementById('requestInput'),
-        clearBtn: document.getElementById('clearBtn'),
-        searchBtn: document.getElementById('searchBtn')
+        searchForm: document.getElementById('search_form'),
+        requestInput: document.getElementById('request_input'),
+        clearBtn: document.getElementById('clear_btn'),
+        searchBtn: document.getElementById('search_btn')
     },
     once: function() {
         "use strict";
@@ -92,6 +92,7 @@ var popup = {
                 });
             },
             select: function() {
+                popup.domCache.requestInput.value = arguments[1].item.value;
                 popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click'));
             },
             close: function() {
@@ -145,6 +146,7 @@ var popup = {
         });
     },
     onShow: function() {
+        "use strict";
         popup.loadHistory();
     }
 };
