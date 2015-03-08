@@ -112,36 +112,3 @@ body {
 #result_table th {
     font-weight: normal;
 }
-
-#result_category_container {
-    padding-left: 0;
-    margin: 0;
-    margin-left: 4px;
-}
-#result_category_container li {
-    display: inline-block;
-    margin-right: 3px;
-    border: 1px #c0c0c0 solid;
-    background-color: #fff;
-    border-radius: 3px;
-    padding: 3px;
-    cursor: pointer;
-    font-size: 12px;
-}
-#result_category_container li.hide {
-    // display: none;
-}
-#result_category_container li a {
-    text-decoration: none;
-    margin-right: 2px;
-    color: #000;
-}
-#result_category_container li.selected {
-    background-color: #337AF8;
-    color: #fff;
-    cursor: default;
-    border: 1px solid #337AF8;
-}
-#result_category_container li.selected a {
-    color: #fff;
-}

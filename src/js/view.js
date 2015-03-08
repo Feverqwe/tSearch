@@ -11,23 +11,6 @@ var view = {
         resultCategoryContainer: document.getElementById('result_category_container')
     },
     varCache: {
-        categoryList: [
-            {id: undefined, lang: 'categoryAll'},
-            {id:  3, lang: 'categoryFilms'},
-            {id:  0, lang: 'categorySerials'},
-            {id:  7, lang: 'categoryAnime'},
-            {id:  8, lang: 'categoryDocumentary'},
-            {id: 11, lang: 'categoryHumor'},
-            {id:  1, lang: 'categoryMusic'},
-            {id:  2, lang: 'categoryGames'},
-            {id:  5, lang: 'categoryBooks'},
-            {id:  4, lang: 'categoryCartoons'},
-            {id:  6, lang: 'categorySoft'},
-            {id:  9, lang: 'categorySport'},
-            {id: 10, lang: 'categoryXXX'},
-            {id: -1, lang: 'categoryOther'}
-        ],
-        categoryObj: {},
         resultTableColumnList: [
             {id: 'time',    size: 125, lang: 'columnTime'},
             {id: 'quality', size: 31,  lang: 'columnQuality'},
@@ -78,39 +61,6 @@ var view = {
             text: style
         }));
     },
-    writeCategory: function() {
-        "use strict";
-        mono.create(view.domCache.resultCategoryContainer, {
-            append: (function() {
-                var elList = [];
-                for (var i = 0, item; item = view.varCache.categoryList[i]; i++) {
-                    view.varCache.categoryObj[item.id] = item;
-                    item.count = 0;
-                    item.isHidden = 1;
-                    var className = 'hide';
-                    var data = {};
-                    if (item.id === undefined) {
-                        data.id = item.id;
-                        className = 'selected'
-                    }
-                    elList.push(item.itemEl = mono.create('li', {
-                        class: className,
-                        data: data,
-                        append: [
-                            mono.create('a', {
-                                href: '#',
-                                text: mono.language[item.lang]
-                            }),
-                            item.countEl = mono.create('i', {
-                                text: 0
-                            })
-                        ]
-                    }));
-                }
-                return elList;
-            })()
-        });
-    },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
@@ -118,7 +68,6 @@ var view = {
         view.domCache.requestInput.focus();
 
         view.writeTableHead();
-        view.writeCategory();
 
         if (engine.settings.hideSeedColumn === 1) {
             view.domCache.seedFilter.style.display = 'none';
