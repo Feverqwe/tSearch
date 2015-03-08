@@ -1,7 +1,13 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
+    font-size: 14px;
 }
+
+.loading {
+    display: none;
+}
+
 #search_form {
     white-space: nowrap;
     padding: 21px;
@@ -59,8 +65,10 @@ body {
     text-align: center;
     font-size: 14px;
     margin-left: 2px;
-    line-height: 24px;
+    line-height: 26px;
     text-decoration: none;
+    vertical-align: top;
+    outline-color: #3802FD;
 }
 #search_btn:hover {
     background-color: #337AF8;

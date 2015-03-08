@@ -16,6 +16,8 @@ var popup = {
         "use strict";
         mono.writeLanguage(mono.language);
 
+        document.body.classList.remove('loading');
+
         popup.domCache.requestInput.focus();
 
         popup.domCache.clearBtn.addEventListener('click', function() {

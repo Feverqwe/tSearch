@@ -7,8 +7,9 @@
         <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
         <link rel="stylesheet" type="text/css" href="css/explore.css">
         <script src="js/mono.js"></script>
+        <script src="js/monoUtils.js"></script>
     </head>
-    <body>
+    <body class="loading">
         <div class="head">
             <div id="search_form">
                 <input type="text" id="request_input" autofocus/>
@@ -22,12 +23,12 @@
             </div>
         </div>
         <div class="content">
-            <div class="left-column">
+            <div class="additional-column">
+                <div class="profile-select-block">
+                    <select id="profile_select" data-lang="label_profile,title" title="{profile select}"></select>
+                    <a id="edit_profile" href="#" data-lang="editTrackerList,title" title="{edit profile}"></a>
+                </div>
                 <div class="tracker-list-block">
-                    <div>
-                        <select id="profile_select" data-lang="label_profile,title" title="{profile select}"></select>
-                        <a id="edit_profile" href="#" data-lang="editTrackerList,title" title="{edit profile}"></a>
-                    </div>
                     <ul id="tracker_list"></ul>
                 </div>
                 <div class="filter-block">
@@ -37,7 +38,7 @@
                         <div id="word_filter_clear_btn" data-lang="clear_btn" title="{clear}"></div>
                     </div>
                     <p data-lang="size_filter">{size filter}</p>
-                    <div id="size_filter">
+                    <div id="size_filter" class="range">
                         <input id="size_filter_from" type="text" data-lang="word_from,placeholder" placeholder="{from}"/> — <input id="size_filter_to" type="text" data-lang="word_to,placeholder" placeholder="{to}"/>
                     </div>
                     <p data-lang="time_filter">{time filter}</p>
@@ -53,20 +54,28 @@
                             <option value="range" data-lang="time_f_s_range">{custom range}</option>
                         </select>
                     </div>
-                    <div id="time_filter_range">
-                        <input id="time_filter_from" type="text" data-lang="word_from,placeholder" value="{from}"/> - <input id="time_filter_to" type="text" data-lang="word_to,placeholder" value="{to}"/>
+                    <div id="time_filter_range" class="range">
+                        <input id="time_filter_from" type="text" data-lang="word_from,placeholder" placeholder="{from}"/> — <input id="time_filter_to" type="text" data-lang="word_to,placeholder" placeholder="{to}"/>
                     </div>
-                    <p data-lang="seed_filter"></p>
-                    <div id="seed_filter">
-                        <input id="seed_filter_from" type="text" data-lang="word_from,placeholder" value="{from}"/> — <input id="seed_filter_to" type="text" data-lang="word_to,placeholder" value="{to}"/>
+                    <p data-lang="seed_filter">{seed filter}</p>
+                    <div id="seed_filter" class="range">
+                        <input id="seed_filter_from" type="text" data-lang="word_from,placeholder" placeholder="{from}"/> — <input id="seed_filter_to" type="text" data-lang="word_to,placeholder" placeholder="{to}"/>
                     </div>
-                    <p data-lang="peer_filter"></p>
-                    <div id="peer_filter">
-                        <input id="peer_filter_from" type="text" data-lang="word_from,placeholder" value="{from}"/> — <input id="peer_filter_to" type="text" data-lang="word_to,placeholder" value="{to}"/>
+                    <p data-lang="peer_filter">{peer filter}</p>
+                    <div id="peer_filter" class="range">
+                        <input id="peer_filter_from" type="text" data-lang="word_from,placeholder" placeholder="{from}"/> — <input id="peer_filter_to" type="text" data-lang="word_to,placeholder" placeholder="{to}"/>
                     </div>
                 </div>
             </div>
-            <div class="right-column">
+            <div class="main-column">
+                <div id="result_block">
+                    <div class="about-panel" id="request_desc_container" ></div>
+                    <ul class="categorys" id="result_category_container"></ul>
+                    <table id="result_table">
+                        <thead id="result_table_head"></thead>
+                        <tbody id="result_table_body"></tbody>
+                    </table>
+                </div>
                 <div id="explore_block">
                     <div id="top_search"></div>
                     <ul id="explore_gallery"></ul>
@@ -77,44 +86,38 @@
                         </div>
                     </div>
                 </div>
-                <div id="result_block">
-                    <div class="about-panel" id="request_desc_container" ></div>
-                    <ul class="categorys" id="result_category_container"></ul>
-                    <table id="result_table">
-                        <thead id="result_table_head"></thead>
-                        <tbody id="result_table_body"></tbody>
-                    </table>
-                </div>
-            </div>
-            <div id="scroll_to_top_btn" data-lang="btn_up" title="{up}"></div>
-            <div id="tracker_list_manager">
-                <div class="mgr-header">
-                    <span class="title" data-lang="mgrTitleNew">{new profile name}</span>
-                    <a href="#" class="close" data-lang="word_close">{close}</a>
-                </div>
-                <div class="mgr-sub-header">
-                    <input type="text" class="list-name" data-lang="mgrNewListName,placeholder" placeholder="{list name}"/>
-                    <a href="#" class="remove-list" data-lang="mgrRemoveList">{remove}</a>
-                </div>
-                <div class="mgr-tracker-list-filter">
-                    <a href="#" data-type="all"><span data-lang="word_all">{all}</span> <span>0</span></a>
-                    <a href="#" data-type="unused"><span data-lang="mgtWithoutList">{without list}</span> <span>0</span></a>
-                    <a href="#" data-type="custom"><span data-lang="external_tracker">{external}</span> <span>0</span></a>
-                    <a href="#" class="selected" data-type="selected"><span data-lang="word_selected">{selected}</span> <span>0</span></a>
-                    <input type="text" placeholder="{quick search}" data-lang="mgrQuickSearch,placeholder" />
-                </div>
-                <div class="mgr-custom-tools">
-                    <input class="add-custom-tracker button" data-lang="add_custom_code" type="button" value="{add}">
-                    <a href="magic.html" target="_blank"><input class="create-custom-tracker button" data-lang="create_custom_code" type="button" value="{create}"></a>
-                    <span data-lang="external_html,tmpl">{add new trackers form official site}</span>
-                </div>
-                <div class="mgr-tracker-list"></div>
-                <div class="mgr-footer">
-                    <input type="button" class="advanced actionBtn" data-lang="advanced_options,title" title="{show advanced options}">
-                    <span class="couter" data-lang="mgrNothingSelected">{selected nothing}</span>
-                    <input type="button" value="{save}" class="button save" data-lang="word_save">
-                </div>
             </div>
         </div>
+        <div id="scroll_to_top_btn" data-lang="btn_up" title="{up}"></div>
+        <div id="tracker_list_manager">
+            <div class="mgr-header">
+                <span class="title" data-lang="mgrTitleNew">{new profile name}</span>
+                <a href="#" class="close" data-lang="word_close">{close}</a>
+            </div>
+            <div class="mgr-sub-header">
+                <input type="text" class="list-name" data-lang="mgrNewListName,placeholder" placeholder="{list name}"/>
+                <a href="#" class="remove-list" data-lang="mgrRemoveList">{remove}</a>
+            </div>
+            <div class="mgr-tracker-list-filter">
+                <a href="#" data-type="all"><span data-lang="word_all">{all}</span> <span>0</span></a>
+                <a href="#" data-type="unused"><span data-lang="mgtWithoutList">{without list}</span> <span>0</span></a>
+                <a href="#" data-type="custom"><span data-lang="external_tracker">{external}</span> <span>0</span></a>
+                <a href="#" class="selected" data-type="selected"><span data-lang="word_selected">{selected}</span> <span>0</span></a>
+                <input type="text" data-lang="mgrQuickSearch,placeholder" placeholder="{quick search}" />
+            </div>
+            <div class="mgr-custom-tools">
+                <input class="add-custom-tracker button" data-lang="add_custom_code" type="button" value="{add}">
+                <a href="magic.html" target="_blank"><input class="create-custom-tracker button" data-lang="create_custom_code" type="button" value="{create}"></a>
+                <span data-lang="external_html,tmpl">{add new trackers form official site}</span>
+            </div>
+            <div class="mgr-tracker-list"></div>
+            <div class="mgr-footer">
+                <input type="button" class="advanced actionBtn" data-lang="advanced_options,title" title="{show advanced options}">
+                <span class="couter" data-lang="mgrNothingSelected">{selected nothing}</span>
+                <input type="button" value="{save}" class="button save" data-lang="word_save">
+            </div>
+        </div>
+        <script src="js/engine.js"></script>
+        <script src="js/view.js"></script>
     </body>
 </html>
