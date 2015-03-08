@@ -288,6 +288,9 @@ mono.create.hook = {
         if (Array.isArray(value)) {
             for (var i = 0, len = value.length; i < len; i++) {
                 var className = value[i];
+                if (className === null || className === undefined) {
+                    continue;
+                }
                 el.classList.add(className);
             }
             return;
