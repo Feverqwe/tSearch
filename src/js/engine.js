@@ -81,6 +81,11 @@ var engine = {
         engine.currentProfile = currentProfile;
     },
 
+    prepareTrackerList: function(profileName, cb) {
+        "use strict";
+
+    },
+
     getProfileList: function(storage, cb) {
         "use strict";
         if (storage.profileListSync) {

@@ -92,8 +92,9 @@ var view = {
         view.domCache.profileSelect.selectedIndex = option.index;
 
         view.domCache.trackerList.textContent = '';
+        engine.prepareTrackerList(key, function(trackerList) {
 
-        
+        });
     },
     once: function() {
         "use strict";
@@ -115,8 +116,28 @@ var view = {
             view.domCache.peerFilter.style.display = 'none';
             view.domCache.peerFilter.previousElementSibling.style.display = 'none';
         }
+
+        document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
+    },
+    onUiReady: function() {
+        "use strict";
+
     }
 };
+
+var define = function(name, func) {
+    "use strict";
+    if (name === 'jquery') {
+        document.body.appendChild(mono.create('script', {src: 'js/jquery-ui.min.js'}));
+        return;
+    }
+    if (name[0] === 'jquery') {
+        func(jQuery);
+        view.onUiReady();
+    }
+};
+define.amd = {};
+
 engine.init(function() {
     "use strict";
     view.once();
