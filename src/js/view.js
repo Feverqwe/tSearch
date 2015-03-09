@@ -8,7 +8,9 @@ var view = {
         peerFilter: document.getElementById('peer_filter'),
         resultTableHead: document.getElementById('result_table_head'),
         resultTableBody: document.getElementById('result_table_body'),
-        resultCategoryContainer: document.getElementById('result_category_container')
+        resultCategoryContainer: document.getElementById('result_category_container'),
+        profileSelect: document.getElementById('profile_select'),
+        trackerList: document.getElementById('tracker_list')
     },
     varCache: {
         resultTableColumnList: [
@@ -61,6 +63,38 @@ var view = {
             text: style
         }));
     },
+    writeProfileList: function() {
+        "use strict";
+        view.domCache.profileSelect.textContent = '';
+        mono.create(view.domCache.profileSelect, {
+            append: (function(){
+                var elList = [];
+                for (var key in engine.profileList) {
+                    elList.push(mono.create('option', {
+                        text: key.replace('%defaultProfileName%', mono.language.label_def_profile),
+                        value: key
+                    }));
+                }
+                elList.push(mono.create('option', {
+                    data: {
+                        service: 'new'
+                    },
+                    text: mono.language.word_add
+                }));
+                return elList;
+            })()
+        });
+    },
+    selectProfile: function(key) {
+        "use strict";
+        var option = view.domCache.profileSelect.querySelector('option[value="'+key+'"]');
+        if (!option) return;
+        view.domCache.profileSelect.selectedIndex = option.index;
+
+        view.domCache.trackerList.textContent = '';
+
+        
+    },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
@@ -68,6 +102,9 @@ var view = {
         view.domCache.requestInput.focus();
 
         view.writeTableHead();
+        view.writeProfileList();
+
+        view.selectProfile(engine.currentProfile);
 
         if (engine.settings.hideSeedColumn === 1) {
             view.domCache.seedFilter.style.display = 'none';
