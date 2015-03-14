@@ -2,39 +2,6 @@
  * Created by Anton on 09.03.2015.
  */
 var exKit = {
-    cp1251: function (string) {
-        "use strict";
-        var output = '', charCode, ExitValue, char;
-        for (var i = 0, len = string.length; i < len; i++) {
-            char = string.charAt(i);
-            charCode = char.charCodeAt(0);
-            var Acode = charCode;
-            if (charCode > 1039 && charCode < 1104) {
-                Acode -= 848;
-                ExitValue = '%' + Acode.toString(16);
-            }
-            else if (charCode === 1025) {
-                Acode = 168;
-                ExitValue = '%' + Acode.toString(16);
-            }
-            else if (charCode === 1105) {
-                Acode = 184;
-                ExitValue = '%' + Acode.toString(16);
-            }
-            else if (charCode === 32) {
-                Acode = 32;
-                ExitValue = '%' + Acode.toString(16);
-            }
-            else if (charCode === 10) {
-                ExitValue = '%0A';
-            }
-            else {
-                ExitValue = char;
-            }
-            output = output + ExitValue;
-        }
-        return output;
-    },
     legacy: {
         varCache: {
             size_check: new RegExp('[^0-9.,кбмгтkmgtb]', 'g'),
@@ -210,20 +177,65 @@ var exKit = {
         hasEndSlash:/\/$/
     },
     funcList: {
-
+        encodeURIComponent: encodeURIComponent,
+        decodeURIComponent: decodeURIComponent,
+        encodeCp1251: function (string) {
+            "use strict";
+            var output = '', charCode, ExitValue, char;
+            for (var i = 0, len = string.length; i < len; i++) {
+                char = string.charAt(i);
+                charCode = char.charCodeAt(0);
+                var Acode = charCode;
+                if (charCode > 1039 && charCode < 1104) {
+                    Acode -= 848;
+                    ExitValue = '%' + Acode.toString(16);
+                }
+                else if (charCode === 1025) {
+                    Acode = 168;
+                    ExitValue = '%' + Acode.toString(16);
+                }
+                else if (charCode === 1105) {
+                    Acode = 184;
+                    ExitValue = '%' + Acode.toString(16);
+                }
+                else if (charCode === 32) {
+                    Acode = 32;
+                    ExitValue = '%' + Acode.toString(16);
+                }
+                else if (charCode === 10) {
+                    ExitValue = '%0A';
+                }
+                else {
+                    ExitValue = char;
+                }
+                output = output + ExitValue;
+            }
+            return output;
+        },
+        strContain: function(text, value) {
+            "use strict";
+            return value.indexOf(text) === -1;
+        }
     },
-    funcList2func: function(list, value, el) {
+    funcList2func: function(list) {
         "use strict";
         var func;
+        var args = Array.prototype.slice.call(arguments).slice(1);
         for (var i = 0, item; item = list[i]; i++) {
-            if (typeof item === 'function') {
-                value = item.call(this, value, el);
+            var type = typeof item;
+            if (type === 'function') {
+                args[0] = item.apply(this, args);
+            } else
+            if (type === 'object' && (func = exKit.funcList[item[0]]) !== undefined) {
+                list[i] = func.bind.apply(func, [this].concat(item.slice(1)));
+                --i;
             } else
             if ((func = exKit.funcList[item]) !== undefined) {
-                value = func.call(this, value, el);
+                list[i] = func.bind.apply(func, [this]);
+                --i;
             }
         }
-        return value;
+        return args[0];
     },
     bindFunc: function(tracker, obj, key1) {
         "use strict";
@@ -249,6 +261,7 @@ var exKit = {
         }
         exKit.bindFunc(tracker, tracker.search, 'onGetRequest');
         exKit.bindFunc(tracker, tracker.search, 'onGetListItem');
+        exKit.bindFunc(tracker, tracker.search, 'onResponseUrl');
 
         if (!tracker.search.rootUrl) {
             tracker.search.rootUrl = tracker.search.searchUrl.substr(0, tracker.search.searchUrl.indexOf('/', tracker.search.searchUrl.indexOf('//') + 2) + 1);
@@ -263,11 +276,6 @@ var exKit = {
             tracker.search.baseUrl = tracker.search.baseUrl + '/';
         }
         return tracker;
-    },
-    requestPrepare: function(tracker, request) {
-        "use strict";
-        if (tracker.search.onGetRequest === undefined) return request;
-        return tracker.search.onGetRequest(request);
     },
     parseHtml: function(html) {
         "use strict";
@@ -375,7 +383,7 @@ var exKit = {
                 }
                 if (value.length === 0) {
                     trObj.error[key] = value;
-                    trObj.error[key+'!'] = 'Value is empty!';
+                    trObj.error[key+'!'] = 'Text content is empty!';
                     continue;
                 }
 
@@ -413,17 +421,20 @@ var exKit = {
     parseResponse: function(tracker, request, cb, data, xhr) {
         "use strict";
         if (tracker.search.onResponseUrl !== undefined && !tracker.search.onResponseUrl(xhr.responseURL, cb)) {
-            return;
+            return cb({requireAuth: 1});
         }
         data = exKit.contentFilter(data);
         return exKit.parseDom(tracker, request, exKit.parseHtml(data), cb);
     },
     search: function(tracker, request) {
         "use strict";
-        request = exKit.requestPrepare(tracker, request);
+        if (tracker.search.onGetRequest !== undefined) {
+            request = tracker.search.onGetRequest(request);
+        }
         var xhr = mono.ajax({
             url: tracker.search.searchUrl.replace('%search%', request),
             type: tracker.search.requestType,
+            mimeType: tracker.search.requestMimeType,
             dataType: tracker.search.requestDataType,
             data: (tracker.search.requestData || '').replace('%search%', request),
             success: (tracker.search.parseResponse || exKit.parseResponse).bind(null, tracker, request, function(data) {
