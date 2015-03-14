@@ -214,7 +214,36 @@ var exKit = {
         },
         strContain: function(text, value) {
             "use strict";
-            return value.indexOf(text) === -1;
+            return value.indexOf(text) !== -1;
+        },
+        substr: function(start, len, value) {
+            "use strict";
+            if (typeof value !== 'string') {
+                value = len;
+                len = undefined;
+            }
+            return value.substr(start, len);
+        },
+        equal: function(a, b) {
+            "use strict";
+            return a === b;
+        },
+        indexOf: function(word, position, value) {
+            "use strict";
+            if (typeof value !== 'string') {
+                value = position;
+                position = undefined;
+            }
+            return value.indexOf(word, position)
+        },
+        replace: function(sValue, rValue, value) {
+            "use strict";
+            if (sValue.substr(0, 7) === 'RegExp:') {
+                var rStart = sValue.indexOf(':', 7) + 1;
+                var flags = sValue.substr(7, rStart - 1 - 7);
+                sValue = new RegExp(sValue.substr(rStart), flags);
+            }
+            return value.replace(sValue, rValue);
         },
         setVar: function(name, value) {
             "use strict";
@@ -232,10 +261,24 @@ var exKit = {
             this.scope.return = 1;
             return bool;
         },
-        console: function() {
+        console: function(value) {
             "use strict";
             console.log('>', arguments);
+            return value;
         }
+    },
+    getArgs: function(args) {
+        "use strict";
+        var list = [];
+        for (var i = 0, len = args.length; i < len; i++) {
+            var arg = args[i];
+            if (typeof arg === 'string' && arg[0] === ':') {
+                list.push(this.scope[arg.substr(1)]);
+                continue;
+            }
+            list.push(arg);
+        }
+        return list;
     },
     funcList2func: function(list) {
         "use strict";
@@ -250,18 +293,36 @@ var exKit = {
             if (type === 'function') {
                 args[0] = item.apply(this, args);
             } else
+            if (item.func !== undefined) {
+                type = typeof item.func;
+                if (type === 'function') {
+                    var itemArgs = item.args !== undefined ? exKit.getArgs.call(this, item.args) : args;
+                    var out = item.func.apply(this, itemArgs);
+                    if (item.not !== undefined) {
+                        out = !out;
+                    }
+                    if (item.var !== undefined) {
+                        this.scope[item.var] = out;
+                    } else {
+                        args[0] = out;
+                    }
+                } else {
+                    item.func = exKit.funcList2func.bind(this, item.func);
+                    --i;
+                }
+            } else
             if (item.bool !== undefined) {
                 type = typeof item.bool;
                 if (type === 'function') {
                     if (item.bool.apply(this, args)) {
-                        args[0] = item.boolTrue.apply(this, args);
+                        args[0] = item.true.apply(this, args);
                     } else {
-                        args[0] = item.boolFalse.apply(this, args);
+                        args[0] = item.false.apply(this, args);
                     }
                 } else {
                     item.bool = exKit.funcList2func.bind(this, item.bool);
-                    item.boolTrue = exKit.funcList2func.bind(this, item.boolTrue || ['return', 1]);
-                    item.boolFalse = exKit.funcList2func.bind(this, item.boolFalse || ['return', 0]);
+                    item.true = exKit.funcList2func.bind(this, item.true || ['return', 1]);
+                    item.false = exKit.funcList2func.bind(this, item.false || ['return', 0]);
                     --i;
                 }
             } else
@@ -469,7 +530,7 @@ var exKit = {
     },
     parseResponse: function(tracker, request, cb, data, xhr) {
         "use strict";
-        if (tracker.search.onResponseUrl !== undefined && !tracker.search.onResponseUrl(xhr.responseURL, cb)) {
+        if (tracker.search.onResponseUrl !== undefined && !tracker.search.onResponseUrl(xhr.responseURL)) {
             return cb({requireAuth: 1});
         }
         data = exKit.contentFilter(data);
