@@ -224,8 +224,12 @@ var exKit = {
             "use strict";
             return this.scope[name];
         },
-        return: function(bool) {
+        return: function(bool, value) {
             "use strict";
+            if (bool === undefined) {
+                bool = value;
+            }
+            this.scope.return = 1;
             return bool;
         },
         console: function() {
@@ -246,7 +250,7 @@ var exKit = {
             if (type === 'function') {
                 args[0] = item.apply(this, args);
             } else
-            if (item.bool) {
+            if (item.bool !== undefined) {
                 type = typeof item.bool;
                 if (type === 'function') {
                     if (item.bool.apply(this, args)) {
@@ -268,6 +272,9 @@ var exKit = {
             if ((func = exKit.funcList[item]) !== undefined) {
                 list[i] = func.bind.apply(func, [this]);
                 --i;
+            }
+            if (this.scope.return === 1) {
+                break;
             }
         }
         if (isOwnScope === 1) {
