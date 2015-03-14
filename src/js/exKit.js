@@ -224,10 +224,6 @@ var exKit = {
             }
             return value.substr(start, len);
         },
-        equal: function(a, b) {
-            "use strict";
-            return a === b;
-        },
         indexOf: function(word, position, value) {
             "use strict";
             if (typeof value !== 'string') {
@@ -265,6 +261,69 @@ var exKit = {
             "use strict";
             console.log('>', arguments);
             return value;
+        },
+        setTimeout: function(func, timeout) {
+            "use strict";
+            return setTimeout(func, timeout);
+        },
+        inc: function(name) {
+            "use strict";
+            this.scope[name]++;
+        },
+        dec: function(name) {
+            "use strict";
+            this.scope[name]++;
+        },
+        operator: function(a, char, b) {
+            "use strict";
+            if (char === '===') {
+                return a === b;
+            } else
+            if (char === '!==') {
+                return a !== b;
+            } else
+            if (char === '>') {
+                return a > b;
+            } else
+            if (char === '<') {
+                return a > b;
+            } else
+            if (char === '+') {
+                return a + b;
+            } else
+            if (char === '-') {
+                return a - b;
+            } else
+            if (char === '||') {
+                return a || b;
+            } else
+            if (char === '&&') {
+                return a && b;
+            } else
+            if (char === '/') {
+                return a / b;
+            } else
+            if (char === '*') {
+                return a * b;
+            } else
+            if (char === '%') {
+                return a % b;
+            } else
+            if (char === '&') {
+                return a && b;
+            } else
+            if (char === '|') {
+                return a | b;
+            } else
+            if (char === '==') {
+                return a == b;
+            } else
+            if (char === '!=') {
+                return a != b;
+            }
+        },
+        pass: function(value) {
+            "use strict";
         }
     },
     getArgs: function(args) {
@@ -288,6 +347,9 @@ var exKit = {
         }
         var func;
         var args = Array.prototype.slice.call(arguments).slice(1);
+        if (typeof list === 'string' || !Array.isArray(list)) {
+            list = [list];
+        }
         for (var i = 0, item; item = list[i]; i++) {
             var type = typeof item;
             if (type === 'function') {
@@ -311,18 +373,27 @@ var exKit = {
                     --i;
                 }
             } else
-            if (item.bool !== undefined) {
-                type = typeof item.bool;
+            if (item.func !== undefined) {
+                type = typeof item.func;
                 if (type === 'function') {
-                    if (item.bool.apply(this, args)) {
+                    this.scope[item.var] = item.func;
+                } else {
+                    item.func = exKit.funcList2func.bind(this, item.func);
+                    --i;
+                }
+            } else
+            if (item.if !== undefined) {
+                type = typeof item.if;
+                if (type === 'function') {
+                    if (item.if.apply(this, args)) {
                         args[0] = item.true.apply(this, args);
                     } else {
                         args[0] = item.false.apply(this, args);
                     }
                 } else {
-                    item.bool = exKit.funcList2func.bind(this, item.bool);
-                    item.true = exKit.funcList2func.bind(this, item.true || ['return', 1]);
-                    item.false = exKit.funcList2func.bind(this, item.false || ['return', 0]);
+                    item.if = exKit.funcList2func.bind(this, item.if);
+                    item.true = exKit.funcList2func.bind(this, item.true || 'pass');
+                    item.false = exKit.funcList2func.bind(this, item.false || 'pass');
                     --i;
                 }
             } else
@@ -333,8 +404,12 @@ var exKit = {
             if ((func = exKit.funcList[item]) !== undefined) {
                 list[i] = func.bind.apply(func, [this]);
                 --i;
+            } else
+            if ((func = this.scope[item]) !== undefined) {
+                list[i] = func.bind.apply(func, [this]);
+                --i;
             }
-            if (this.scope.return === 1) {
+            if (this.scope.hasOwnProperty('return')) {
                 break;
             }
         }
@@ -346,14 +421,15 @@ var exKit = {
     bindFunc: function(tracker, obj, key1) {
         "use strict";
         if (obj[key1] === undefined) return;
+        var type = typeof obj[key1];
         var context = {
             tracker: tracker,
             scope: undefined
         };
-        if (Array.isArray(obj[key1])) {
-            obj[key1] = exKit.funcList2func.bind(context, obj[key1]);
-        } else {
+        if (type === 'function') {
             obj[key1] = obj[key1].bind(context);
+        } else {
+            obj[key1] = exKit.funcList2func.bind(context, obj[key1]);
         }
     },
     prepareTracker: function(tracker) {
@@ -548,6 +624,7 @@ var exKit = {
             dataType: tracker.search.requestDataType,
             data: (tracker.search.requestData || '').replace('%search%', request),
             success: (tracker.search.parseResponse || exKit.parseResponse).bind(null, tracker, request, function(data) {
+                console.log(data);
                 engine.search.onSuccess(tracker, data);
             }),
             error: function(xhr) {

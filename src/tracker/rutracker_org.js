@@ -19,8 +19,8 @@ engine.trackerLib['rutracker'] = {
         baseUrl: 'http://rutracker.org/forum/',
         requestType: 'POST',
         requestData: 'nm=%search%',
-        onGetRequest: ['encodeURIComponent'],
-        onResponseUrl: [{not: 1, exec: [['strContain', 'login.php']]}],
+        onGetRequest: 'encodeURIComponent',
+        onResponseUrl: {not: 1, exec: [['strContain', 'login.php']]},
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td.row1.f-name>div>a',
