@@ -215,16 +215,51 @@ var exKit = {
         strContain: function(text, value) {
             "use strict";
             return value.indexOf(text) === -1;
+        },
+        setVar: function(name, value) {
+            "use strict";
+            return this.scope[name] = value;
+        },
+        getVar: function(name) {
+            "use strict";
+            return this.scope[name];
+        },
+        return: function(bool) {
+            "use strict";
+            return bool;
+        },
+        console: function() {
+            "use strict";
+            console.log('>', arguments);
         }
     },
     funcList2func: function(list) {
         "use strict";
+        var isOwnScope;
+        if (isOwnScope = this.scope === undefined ? 1 : 0) {
+            this.scope = {};
+        }
         var func;
         var args = Array.prototype.slice.call(arguments).slice(1);
         for (var i = 0, item; item = list[i]; i++) {
             var type = typeof item;
             if (type === 'function') {
                 args[0] = item.apply(this, args);
+            } else
+            if (item.bool) {
+                type = typeof item.bool;
+                if (type === 'function') {
+                    if (item.bool.apply(this, args)) {
+                        args[0] = item.boolTrue.apply(this, args);
+                    } else {
+                        args[0] = item.boolFalse.apply(this, args);
+                    }
+                } else {
+                    item.bool = exKit.funcList2func.bind(this, item.bool);
+                    item.boolTrue = exKit.funcList2func.bind(this, item.boolTrue || ['return', 1]);
+                    item.boolFalse = exKit.funcList2func.bind(this, item.boolFalse || ['return', 0]);
+                    --i;
+                }
             } else
             if (type === 'object' && (func = exKit.funcList[item[0]]) !== undefined) {
                 list[i] = func.bind.apply(func, [this].concat(item.slice(1)));
@@ -235,15 +270,22 @@ var exKit = {
                 --i;
             }
         }
+        if (isOwnScope === 1) {
+            this.scope = undefined;
+        }
         return args[0];
     },
     bindFunc: function(tracker, obj, key1) {
         "use strict";
         if (obj[key1] === undefined) return;
+        var context = {
+            tracker: tracker,
+            scope: undefined
+        };
         if (Array.isArray(obj[key1])) {
-            obj[key1] = exKit.funcList2func.bind(tracker, obj[key1]);
+            obj[key1] = exKit.funcList2func.bind(context, obj[key1]);
         } else {
-            obj[key1] = obj[key1].bind(tracker);
+            obj[key1] = obj[key1].bind(context);
         }
     },
     prepareTracker: function(tracker) {
