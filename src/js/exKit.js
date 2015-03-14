@@ -293,11 +293,11 @@ var exKit = {
             if (type === 'function') {
                 args[0] = item.apply(this, args);
             } else
-            if (item.func !== undefined) {
-                type = typeof item.func;
+            if (item.exec !== undefined) {
+                type = typeof item.exec;
                 if (type === 'function') {
                     var itemArgs = item.args !== undefined ? exKit.getArgs.call(this, item.args) : args;
-                    var out = item.func.apply(this, itemArgs);
+                    var out = item.exec.apply(this, itemArgs);
                     if (item.not !== undefined) {
                         out = !out;
                     }
@@ -307,7 +307,7 @@ var exKit = {
                         args[0] = out;
                     }
                 } else {
-                    item.func = exKit.funcList2func.bind(this, item.func);
+                    item.exec = exKit.funcList2func.bind(this, item.exec);
                     --i;
                 }
             } else
