@@ -22,7 +22,8 @@ var view = {
             {id: 'leechs',  size: 30,  lang: 'columnLeechs'}
         ],
         resultSortBy: 1,
-        tableSortColumn: 'quality'
+        tableSortColumn: 'quality',
+        trackerList: {}
     },
     writeTableHead: function() {
         "use strict";
@@ -92,8 +93,30 @@ var view = {
         view.domCache.profileSelect.selectedIndex = option.index;
 
         view.domCache.trackerList.textContent = '';
+        view.varCache.trackerList = {};
         engine.prepareTrackerList(key, function(trackerList) {
-
+            for (var i = 0, tracker; tracker = trackerList[i]; i++) {
+                var trackerObj = view.varCache.trackerList[tracker.id] = {};
+                trackerObj.count = 0;
+                view.domCache.trackerList.appendChild(trackerObj.liEl = mono.create('li', {
+                    data: {
+                        id: tracker.id
+                    },
+                    append: [
+                        mono.create('i', {
+                            class: 'icon'
+                        }),
+                        mono.create('span', {
+                            class: 'title',
+                            text: tracker.title
+                        }),
+                        trackerObj.countEl = mono.create('i', {
+                            class: 'count',
+                            text: '0'
+                        })
+                    ]
+                }));
+            }
         });
     },
     once: function() {

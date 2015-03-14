@@ -125,6 +125,7 @@ mono.ajax.xhr = mono.isModule ? require('sdk/net/xhr').XMLHttpRequest : !mono.is
         mono.sendMessage({action: 'xhr', data: xhr}, function(xhr) {
             vXhr.status = xhr.status;
             vXhr.statusText = xhr.statusText;
+            vXhr.responseURL = xhr.responseURL;
 
             if (xhr.responseType) {
                 vXhr.response = xhr.response;
@@ -473,4 +474,15 @@ mono.resizePopup = mono.isFF ? function(w, h) {
 } : mono.isChrome ? function(){} : function(w, h) {
     "use strict";
     console.error('resizePopup is not supported!');
+};
+
+mono.expand = function() {
+    "use strict";
+    for (var i = 1, item; item = arguments[i]; i++) {
+        for (var key in item) {
+            if (!item.hasOwnProperty(key)) continue;
+            arguments[0][key] = item[key];
+        }
+    }
+    return arguments[0];
 };

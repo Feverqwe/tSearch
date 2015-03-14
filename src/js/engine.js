@@ -83,7 +83,14 @@ var engine = {
 
     prepareTrackerList: function(profileName, cb) {
         "use strict";
-
+        var trackerList = [];
+        var list = engine.profileList[profileName];
+        for (var i = 0, item; item = list[i]; i++) {
+            var tracker = engine.trackerLib[item];
+            if (tracker === undefined) continue;
+            trackerList.push(exKit.prepareTracker(tracker));
+        }
+        cb(trackerList);
     },
 
     getProfileList: function(storage, cb) {
@@ -185,5 +192,17 @@ var engine = {
         engine.loadSettings(function() {
             cb && cb();
         });
+    },
+
+    trackerLib: {},
+
+    search: {
+        onSuccess: function(torrentList) {
+            "use strict";
+        },
+        onError: function(tracker, error) {
+            "use strict";
+
+        }
     }
 };

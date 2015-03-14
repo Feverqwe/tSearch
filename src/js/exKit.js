@@ -206,94 +206,236 @@ var exKit = {
             return !isNaN(parseFloat(n)) && isFinite(n);
         }
     },
-    toContextFunc: function(code) {
-        "use strict";
-        var context = {};
-        var run = this.exec(code, {
-            getValue: function() {
-                return context.value;
-            }
-        });
-        code = null;
-        return function() {
-            context = this;
-            return run();
-        };
-    },
-    prepareTracker: function(tracker) {
-        "use strict";
-        /*var prepare = tracker.search.prepare || {};
-        for (var key in prepare) {
-            var item = prepare[key];
-            if (Array.isArray(item)) {
-                for (var i = 0, len = item.length; i < len; i++) {
-                    var arrItem = item[i];
-                    if (typeof arrItem === 'string' && arrItem.substr(0, 8) === 'function') {
-                        var func = arrItem.substr(arrItem.indexOf('{') + 1);
-                        func = arrItem.substr(0, arrItem.lastIndexOf('}') - 1);
-                        item[i] = this.toContextFunc(item[i])
-                    }
-                }
-            }
-        }*/
-        return tracker;
+    prepareTrackerR: {
+        hasEndSlash:/\/$/
     },
     funcList: {
 
     },
-    requestPrepare: function(tracker, request) {
+    funcList2func: function(list, value, el) {
         "use strict";
-        var requestPrepare = tracker.search.requestPrepare;
-        if (!requestPrepare) return request;
-        for (var i = 0, item; item = requestPrepare[i]; i++) {
-            var type = typeof item;
-            if (type === 'string') {
-                var func = this.funcList[type];
-                if (func !== undefined) {
-                    request = func(request);
-                }
+        var func;
+        for (var i = 0, item; item = list[i]; i++) {
+            if (typeof item === 'function') {
+                value = item.call(this, value, el);
             } else
-            if (type === 'function') {
-                request = item(request);
+            if ((func = exKit.funcList[item]) !== undefined) {
+                value = func.call(this, value, el);
             }
         }
-        return request;
+        return value;
+    },
+    bindFunc: function(tracker, obj, key1) {
+        "use strict";
+        if (obj[key1] === undefined) return;
+        if (Array.isArray(obj[key1])) {
+            obj[key1] = exKit.funcList2func.bind(tracker, obj[key1]);
+        } else {
+            obj[key1] = obj[key1].bind(tracker);
+        }
+    },
+    prepareTracker: function(tracker) {
+        "use strict";
+        var itemList = ['onGetValue', 'onFindSelector', 'onSelectorIsNotFound', 'onEmptySelectorValue'];
+        for (var i = 0, item; item = itemList[i]; i++) {
+            if (!tracker.search[item]) {
+                tracker.search[item] = {};
+            }
+        }
+        for (var key in tracker.search.torrentSelector) {
+            for (var i = 0, item; item = itemList[i]; i++) {
+                exKit.bindFunc(tracker, tracker.search[item], key);
+            }
+        }
+        exKit.bindFunc(tracker, tracker.search, 'onGetRequest');
+        exKit.bindFunc(tracker, tracker.search, 'onGetListItem');
+
+        if (!tracker.search.rootUrl) {
+            tracker.search.rootUrl = tracker.search.searchUrl.substr(0, tracker.search.searchUrl.indexOf('/', tracker.search.searchUrl.indexOf('//') + 2) + 1);
+        }
+        if (!tracker.search.baseUrl) {
+            tracker.search.baseUrl = tracker.search.searchUrl.substr(0, tracker.search.searchUrl.lastIndexOf('/'));
+        }
+        if (!exKit.prepareTrackerR.hasEndSlash.test(tracker.search.rootUrl)) {
+            tracker.search.rootUrl = tracker.search.rootUrl + '/';
+        }
+        if (!exKit.prepareTrackerR.hasEndSlash.test(tracker.search.baseUrl)) {
+            tracker.search.baseUrl = tracker.search.baseUrl + '/';
+        }
+        return tracker;
+    },
+    requestPrepare: function(tracker, request) {
+        "use strict";
+        if (tracker.search.onGetRequest === undefined) return request;
+        return tracker.search.onGetRequest(request);
+    },
+    parseHtml: function(html) {
+        "use strict";
+        var fragment = document.createDocumentFragment();
+        var div = document.createElement('div');
+        div.innerHTML = html;
+        var el;
+        while (el = div.firstChild) {
+            fragment.appendChild(el);
+        }
+        return fragment;
+    },
+    contentFilterR: {
+        searchJs: /javascript/ig,
+        blockHref: /\/\//,
+        blockSrc: /src=(['"]?)/ig,
+        blockOnEvent: /on(\w+)=/ig
+    },
+    contentFilter: function(content) {
+        "use strict";
+        return content.replace(exKit.contentFilterR.searchJs, 'tms-block-javascript')
+            .replace(exKit.contentFilterR.blockHref, '//about:blank#blockurl#')
+            .replace(exKit.contentFilterR.blockSrc, 'src=$1data:image/gif,base64#blockurl#')
+            .replace(exKit.contentFilterR.blockOnEvent, 'data-block-event-$1=');
+    },
+    contentUnFilter: function(content) {
+        "use strict";
+        return content.replace(/data:image\/gif,base64#blockurl#/g, '')
+            .replace(/\/\/about:blank#blockurl#/g, '')
+            .replace(/tms-block-javascript/g, 'javascript');
+    },
+    intList: ['categoryId','size','seed','peer', 'date'],
+    isUrlList: ['categoryUrl', 'url', 'downloadUrl'],
+    unFilterKeyList: ['categoryTitle', 'categoryUrl', 'title', 'url', 'downloadUrl'],
+    urlCheck: function(tracker, value) {
+        "use strict";
+        if (value.substr(0, 4) === 'http') {
+            return value;
+        }
+        if (value[0] === '/') {
+            return tracker.search.rootUrl + value;
+        }
+        if (value.substr(0, 2) === './') {
+            return tracker.search.baseUrl + value.substr(2);
+        }
+        return tracker.search.baseUrl + value;
+    },
+    parseDom: function(tracker, request, dom, cb) {
+        "use strict";
+        var $dom = $(dom);
+        if (tracker.search.loginFormSelector !== undefined && $dom.find(tracker.search.loginFormSelector).length) {
+            return cb({requireAuth: 1});
+        }
+        var torrentList = [];
+        var torrentElList = $dom.find(tracker.search.listItemSelector);
+        for (var i = 0, len = torrentElList.length; i < len; i++) {
+            var el = torrentElList.eq(i);
+            if (tracker.search.onGetListItem !== undefined && !tracker.search.onGetListItem(el)) {
+                continue;
+            }
+            var trObj = {
+                column: {},
+                error: {}
+            };
+            var cache = {};
+            for (var key in tracker.search.torrentSelector) {
+                var item = tracker.search.torrentSelector[key];
+                if (typeof item === 'string') {
+                    item = {selector: item};
+                }
+
+                if (cache[item.selector] === undefined) {
+                    cache[item.selector] = el.find(item.selector).get(0);
+                }
+                var value = cache[item.selector];
+
+                if (value === undefined && tracker.search.onSelectorIsNotFound[key] !== undefined) {
+                    value = tracker.search.onSelectorIsNotFound[key](el);
+                }
+
+                if (value === undefined) {
+                    trObj.error[key] = value;
+                    trObj.error[key+'!'] = 'Selector is not found!';
+                    trObj.error[key+'Selector'] = item.selector;
+                    continue;
+                }
+
+                if (tracker.search.onFindSelector[key] !== undefined) {
+                    value = tracker.search.onFindSelector[key](value);
+                } else
+                if (item.attr !== undefined) {
+                    value = value.getAttribute(item.attr);
+                } else {
+                    value = value.textContent;
+                }
+
+                if ((value === null || value.length === 0) && tracker.search.onEmptySelectorValue[key] !== undefined) {
+                    value = tracker.search.onEmptySelectorValue[key](el);
+                }
+
+                if (value === null) {
+                    trObj.error[key] = value;
+                    trObj.error[key+'!'] = 'Attribute is not found!';
+                    continue;
+                }
+                if (value.length === 0) {
+                    trObj.error[key] = value;
+                    trObj.error[key+'!'] = 'Value is empty!';
+                    continue;
+                }
+
+                if (tracker.search.onGetValue[key] !== undefined) {
+                    value = tracker.search.onGetValue[key](value, el);
+                }
+                if (exKit.intList.indexOf(key) !== -1) {
+                    var intValue = parseInt(value);
+                    if (isNaN(intValue)) {
+                        intValue = -1;
+                        trObj.error[key] = value;
+                        trObj.error[key+'!'] = 'isNaN';
+                    }
+                    value = intValue;
+                }
+                if (exKit.unFilterKeyList.indexOf(key) !== -1) {
+                    value = exKit.contentUnFilter(value);
+                }
+                if (exKit.isUrlList.indexOf(key) !== -1) {
+                    value = exKit.urlCheck(tracker, value);
+                }
+                trObj.column[key] = value;
+            }
+            if (!trObj.column.title || !trObj.column.url) {
+                console.debug('Skip torrent:', trObj);
+                continue;
+            }
+            if (!mono.isEmptyObject(trObj.error)) {
+                console.debug('Torrent has problems:', trObj);
+            }
+            torrentList.push(trObj.column);
+        }
+        cb({success: 1, torrentList: torrentList});
+    },
+    parseResponse: function(tracker, request, cb, data, xhr) {
+        "use strict";
+        if (tracker.search.onResponseUrl !== undefined && !tracker.search.onResponseUrl(xhr.responseURL, cb)) {
+            return;
+        }
+        data = exKit.contentFilter(data);
+        return exKit.parseDom(tracker, request, exKit.parseHtml(data), cb);
     },
     search: function(tracker, request) {
         "use strict";
-        request = this.requestPrepare(tracker, request);
-        var requestData = tracker.search.requestData;
-        if (requestData !== undefined) {
-            requestData = requestData.replace('%search%', request);
-        }
+        request = exKit.requestPrepare(tracker, request);
         var xhr = mono.ajax({
             url: tracker.search.searchUrl.replace('%search%', request),
             type: tracker.search.requestType,
-            data: requestData,
-            success: engine.search.onSuccess.bind(tracker, request),
+            dataType: tracker.search.requestDataType,
+            data: (tracker.search.requestData || '').replace('%search%', request),
+            success: (tracker.search.parseResponse || exKit.parseResponse).bind(null, tracker, request, function(data) {
+                engine.search.onSuccess(tracker, data);
+            }),
             error: function(xhr) {
-                engine.search.onError.call(tracker, xhr.status, xhr.statusText);
+                engine.search.onError(tracker, xhr.status, xhr.statusText);
             }
         });
         return {
             tracker: tracker,
             abort: xhr.abort
         }
-    },
-    wrapFunc: function() {
-        "use strict";
-        return this.interpreter.createPrimitive(this.func.apply(null, arguments));
-    },
-    initEnvFunc: function(funcList, interpreter, scope) {
-        "use strict";
-        if (!funcList) return;
-        for (var funcName in funcList) {
-            if (!funcList.hasOwnProperty(funcName)) continue;
-            interpreter.setProperty(scope, funcName, interpreter.createNativeFunction(this.wrapFunc.bind({func: funcList[funcName], interpreter: interpreter})));
-        }
-    },
-    exec: function(code, funcList) {
-        "use strict";
-        return (new Interpreter(code, this.initEnvFunc.bind(exKit, funcList))).run;
     }
 };
