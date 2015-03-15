@@ -412,6 +412,22 @@ var exKit = {
         }
         return list;
     },
+    prepareFuncList: function(list) {
+        "use strict";
+        if (typeof list !== "object" || !Array.isArray(list)) {
+            list = [list];
+        }
+        return list;
+    },
+    args2list: function(args) {
+        "use strict";
+        var len = args.length - 1;
+        var list = new Array(len);
+        for (var i = 0; i < len; i++) {
+            list[i] = args[i + 1];
+        }
+        return list;
+    },
     funcList2func: function(list) {
         "use strict";
         var isOwnScope;
@@ -419,20 +435,17 @@ var exKit = {
             this.scope = {};
         }
         var func;
-        var args = Array.prototype.slice.call(arguments).slice(1);
-        if (typeof list !== 'object' || !Array.isArray(list)) {
-            list = [list];
-        }
+        var args = exKit.args2list(arguments);
         for (var i = 0, item; item = list[i]; i++) {
             var type = typeof item;
             if (type === 'function') {
                 this.scope.context = item.apply(this, args);
             } else
             if (item.exec !== undefined) {
-                type = typeof item.exec;
-                if (type !== 'function') {
+                if (typeof item.exec !== 'function') {
+                    item.exec = exKit.prepareFuncList(item.exec);
                     if (item.cb !== undefined) {
-                        item.cb = exKit.funcList2func.bind(this, item.cb);
+                        item.cb = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.cb));
                         item.exec = exKit.funcList2func.bind(this, item.exec, item.cb);
                     } else {
                         item.exec = exKit.funcList2func.bind(this, item.exec);
@@ -460,9 +473,8 @@ var exKit = {
                 this.scope[item.var] = out;
             } else
             if (item.func !== undefined) {
-                type = typeof item.func;
-                if (type !== 'function') {
-                    item.func = exKit.funcList2func.bind(this, item.func);
+                if (typeof item.func !== 'function') {
+                    item.func = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.func));
                     --i;
                     continue;
                 }
@@ -470,11 +482,10 @@ var exKit = {
                 this.scope[item.var] = item.func;
             } else
             if (item.if !== undefined) {
-                type = typeof item.if;
-                if (type !== 'function') {
-                    item.if = exKit.funcList2func.bind(this, item.if);
-                    item.true && (item.true = exKit.funcList2func.bind(this, item.true));
-                    item.false && (item.false = exKit.funcList2func.bind(this, item.false));
+                if (typeof item.if !== 'function') {
+                    item.if = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.if));
+                    item.true && (item.true = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.true)));
+                    item.false && (item.false = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.false)));
                     --i;
                     continue;
                 }
@@ -522,7 +533,7 @@ var exKit = {
         if (type === 'function') {
             obj[key1] = obj[key1].bind(context);
         } else {
-            obj[key1] = exKit.funcList2func.bind(context, obj[key1]);
+            obj[key1] = exKit.funcList2func.bind(context, exKit.prepareFuncList(obj[key1]));
         }
     },
     prepareTracker: function(tracker) {
@@ -667,7 +678,9 @@ var exKit = {
                 }
 
                 if (tracker.search.onGetValue[key] !== undefined) {
+                    console.time('categoryId');
                     value = tracker.search.onGetValue[key](value, el);
+                    console.timeEnd('categoryId');
                 }
                 if (exKit.intList.indexOf(key) !== -1) {
                     var intValue = parseInt(value);
