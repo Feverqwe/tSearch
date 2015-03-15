@@ -371,6 +371,21 @@ var exKit = {
                 }
             }
             return -1;
+        },
+        idInCategoryListInt: function(cId) {
+            "use strict";
+            if (cId === undefined) {
+                return - 1;
+            }
+            cId = parseInt(cId);
+            return exKit.funcList.idInCategoryList.call(this, cId);
+        },
+        idInCategoryListStr: function(cId) {
+            "use strict";
+            if (cId === undefined) {
+                return - 1;
+            }
+            return exKit.funcList.idInCategoryList.call(this, cId);
         }
     },
     getArgs: function(globalArgs, args) {

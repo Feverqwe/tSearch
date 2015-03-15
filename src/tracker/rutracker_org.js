@@ -47,30 +47,10 @@ engine.trackerLib['rutracker'] = {
             date: 'td.row4.small.nowrap:eq(1)>u'
         },
         onGetValue: {
-            categoryId: function(value) {
-                "use strict";
-                var cId = value.match(/f=([0-9]+)/);
-                if (cId === null) {
-                    return -1;
-                }
-                cId = parseInt(cId[1]);
-                var list = this.tracker.categoryList;
-                for (var i = 0, item; item = list[i]; i++) {
-                    if (item.indexOf(cId) !== -1) {
-                        return i;
-                    }
-                }
-                return -1;
-            }
-            /*,
             categoryId: [
                 {var: 'cId', exec: 'firstMatch', args: [{arg: 0}, {regexp: 'f=([0-9]+)', flags: ''}]},
-                {if: {exec: 'operator', args: [{var: 'cId'}, '===', undefined]},
-                    true: {exec: 'return', args: -1}
-                },
-                {var: 'cId', exec: 'parseInt', args: {var: 'cId'}},
-                {exec: 'idInCategoryList', args: {var: 'cId'}}
-            ]*/
+                {exec: 'idInCategoryListInt', args: {var: 'cId'}}
+            ]
         }
     }
 };
