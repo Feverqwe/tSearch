@@ -460,12 +460,7 @@ var exKit = {
                     continue;
                 }
 
-                var itemArgs;
-                if (item.args !== undefined) {
-                    itemArgs = exKit.getArgs.call(this, args, item.args);
-                } else {
-                    itemArgs = args;
-                }
+                var itemArgs = item.args === undefined ? args : exKit.getArgs.call(this, args, item.args);
                 var out = item.exec.apply(this, itemArgs);
                 if (item.not !== undefined) {
                     out = !out;
