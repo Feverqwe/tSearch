@@ -61,7 +61,8 @@ engine.trackerLib['rutracker'] = {
                     }
                 }
                 return -1;
-            },
+            }
+            /*,
             categoryId: [
                 {var: 'cId', exec: 'firstMatch', args: [{arg: 0}, {regexp: 'f=([0-9]+)', flags: ''}]},
                 {if: {exec: 'operator', args: [{var: 'cId'}, '===', undefined]},
@@ -69,7 +70,7 @@ engine.trackerLib['rutracker'] = {
                 },
                 {var: 'cId', exec: 'parseInt', args: {var: 'cId'}},
                 {exec: 'idInCategoryList', args: {var: 'cId'}}
-            ]
+            ]*/
         }
     }
 };
