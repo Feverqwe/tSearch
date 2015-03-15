@@ -272,7 +272,7 @@ var exKit = {
         },
         callItem: function(list, item, args) {
             "use strict";
-            return list[item].apply(null, args);
+            return list[item].apply(list, args);
         },
         return: function(value) {
             "use strict";
@@ -455,14 +455,17 @@ var exKit = {
             if (type === 'object' && (func = exKit.funcList[item[0]]) !== undefined) {
                 list[i] = func.bind.apply(func, [this].concat(exKit.getArgs.call(this, args, item.slice(1))));
                 --i;
+                continue;
             } else
             if ((func = exKit.funcList[item]) !== undefined) {
                 list[i] = func.bind.apply(func, [this]);
                 --i;
+                continue;
             } else
             if ((func = this.scope[item]) !== undefined) {
                 list[i] = func.bind.apply(func, [this]);
                 --i;
+                continue;
             }
             if (this.scope.hasOwnProperty('return')) {
                 this.scope.context = this.scope.return;
