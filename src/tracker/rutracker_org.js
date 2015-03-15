@@ -48,7 +48,7 @@ engine.trackerLib['rutracker'] = {
         },
         onGetValue: {
             categoryId: [
-                {var: 'cId', exec: 'firstMatch', args: [{arg: 0}, {regexp: 'f=([0-9]+)', flags: ''}]},
+                {var: 'cId', exec: 'firstMatch', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]},
                 {exec: 'idInCategoryListInt', args: {var: 'cId'}}
             ]
         }
