@@ -236,10 +236,27 @@ var exKit = {
             "use strict";
             if (sValue.substr(0, 7) === 'RegExp:') {
                 var rStart = sValue.indexOf(':', 7) + 1;
-                var flags = sValue.substr(7, rStart - 1 - 7);
+                var flags = undefined;
+                if (rStart !== 0) {
+                    flags = sValue.substr(7, rStart - 1 - 7);
+                } else {
+                    rStart = 7;
+                }
                 sValue = new RegExp(sValue.substr(rStart), flags);
             }
             return value.replace(sValue, rValue);
+        },
+        match: function(sValue, value) {
+            "use strict";
+            var rStart = sValue.indexOf(':', 7) + 1;
+            var flags = undefined;
+            if (rStart !== 0) {
+                flags = sValue.substr(7, rStart - 1 - 7);
+            } else {
+                rStart = 7;
+            }
+            sValue = new RegExp(sValue.substr(rStart), flags);
+            return value.match(sValue);
         },
         setVar: function(name, value) {
             "use strict";
@@ -249,22 +266,38 @@ var exKit = {
             "use strict";
             return this.scope[name];
         },
-        return: function(bool, value) {
+        getItem: function(list, item) {
             "use strict";
-            if (bool === undefined) {
-                bool = value;
-            }
-            this.scope.return = 1;
-            return bool;
+            return list[item];
+        },
+        callItem: function(list, item, args) {
+            "use strict";
+            return list[item].apply(null, args);
+        },
+        return: function(value) {
+            "use strict";
+            this.scope.return = value;
+        },
+        parseInt: function(value) {
+            "use strict";
+            return parseInt(value);
+        },
+        parseFloat: function(value) {
+            "use strict";
+            return parseFloat(value);
+        },
+        String: function(value) {
+            "use strict";
+            return String(value);
+        },
+        isNaN: function(value) {
+            "use strict";
+            return isNaN(value);
         },
         console: function(value) {
             "use strict";
             console.log('>', arguments);
             return value;
-        },
-        setTimeout: function(func, timeout) {
-            "use strict";
-            return setTimeout(func, timeout);
         },
         inc: function(name) {
             "use strict";
@@ -272,7 +305,7 @@ var exKit = {
         },
         dec: function(name) {
             "use strict";
-            this.scope[name]++;
+            this.scope[name]--;
         },
         operator: function(a, char, b) {
             "use strict";
@@ -326,13 +359,25 @@ var exKit = {
             "use strict";
         }
     },
-    getArgs: function(args) {
+    getArgs: function(globalArgs, args) {
         "use strict";
+        if (typeof args !== 'object') {
+            args = [args];
+        }
         var list = [];
         for (var i = 0, len = args.length; i < len; i++) {
             var arg = args[i];
             if (typeof arg === 'string' && arg[0] === ':') {
-                list.push(this.scope[arg.substr(1)]);
+                if (arg[1] === ':') {
+                    arg = arg.substr(2);
+                    if (arg === 'scope') {
+                        list.push(this.scope);
+                    } else {
+                        list.push(globalArgs[parseInt(arg)]);
+                    }
+                } else {
+                    list.push(this.scope[arg.substr(1)]);
+                }
                 continue;
             }
             list.push(arg);
@@ -347,58 +392,66 @@ var exKit = {
         }
         var func;
         var args = Array.prototype.slice.call(arguments).slice(1);
-        if (typeof list === 'string' || !Array.isArray(list)) {
+        if (typeof list !== 'object' || !Array.isArray(list)) {
             list = [list];
         }
         for (var i = 0, item; item = list[i]; i++) {
             var type = typeof item;
             if (type === 'function') {
-                args[0] = item.apply(this, args);
+                this.scope.context = item.apply(this, args);
             } else
             if (item.exec !== undefined) {
                 type = typeof item.exec;
-                if (type === 'function') {
-                    var itemArgs = item.args !== undefined ? exKit.getArgs.call(this, item.args) : args;
-                    var out = item.exec.apply(this, itemArgs);
-                    if (item.not !== undefined) {
-                        out = !out;
-                    }
-                    if (item.var !== undefined) {
-                        this.scope[item.var] = out;
-                    } else {
-                        args[0] = out;
-                    }
-                } else {
+                if (type !== 'function') {
                     item.exec = exKit.funcList2func.bind(this, item.exec);
                     --i;
+                    continue;
+                }
+
+                var itemArgs;
+                if (item.args !== undefined) {
+                    itemArgs = exKit.getArgs.call(this, args, item.args);
+                } else {
+                    itemArgs = args;
+                }
+                var out = item.exec.apply(this, itemArgs);
+                if (item.not !== undefined) {
+                    out = !out;
+                }
+                if (item.var !== undefined) {
+                    this.scope[item.var] = out;
+                } else {
+                    this.scope.context = out;
                 }
             } else
             if (item.func !== undefined) {
                 type = typeof item.func;
-                if (type === 'function') {
-                    this.scope[item.var] = item.func;
-                } else {
+                if (type !== 'function') {
                     item.func = exKit.funcList2func.bind(this, item.func);
                     --i;
+                    continue;
                 }
+
+                this.scope[item.var] = item.func;
             } else
             if (item.if !== undefined) {
                 type = typeof item.if;
-                if (type === 'function') {
-                    if (item.if.apply(this, args)) {
-                        args[0] = item.true.apply(this, args);
-                    } else {
-                        args[0] = item.false.apply(this, args);
-                    }
-                } else {
+                if (type !== 'function') {
                     item.if = exKit.funcList2func.bind(this, item.if);
-                    item.true = exKit.funcList2func.bind(this, item.true || 'pass');
-                    item.false = exKit.funcList2func.bind(this, item.false || 'pass');
+                    item.true && (item.true = exKit.funcList2func.bind(this, item.true));
+                    item.false && (item.false = exKit.funcList2func.bind(this, item.false));
                     --i;
+                    continue;
+                }
+
+                if (item.if.apply(this, args)) {
+                    item.true && (this.scope.context = item.true.apply(this, args));
+                } else {
+                    item.false && (this.scope.context = item.false.apply(this, args));
                 }
             } else
             if (type === 'object' && (func = exKit.funcList[item[0]]) !== undefined) {
-                list[i] = func.bind.apply(func, [this].concat(item.slice(1)));
+                list[i] = func.bind.apply(func, [this].concat(exKit.getArgs.call(this, args, item.slice(1))));
                 --i;
             } else
             if ((func = exKit.funcList[item]) !== undefined) {
@@ -410,13 +463,15 @@ var exKit = {
                 --i;
             }
             if (this.scope.hasOwnProperty('return')) {
+                this.scope.context = this.scope.return;
                 break;
             }
         }
+        var outResult = this.scope.context;
         if (isOwnScope === 1) {
             this.scope = undefined;
         }
-        return args[0];
+        return outResult;
     },
     bindFunc: function(tracker, obj, key1) {
         "use strict";

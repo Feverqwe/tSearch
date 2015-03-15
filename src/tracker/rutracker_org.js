@@ -20,7 +20,7 @@ engine.trackerLib['rutracker'] = {
         requestType: 'POST',
         requestData: 'nm=%search%',
         onGetRequest: 'encodeURIComponent',
-        onResponseUrl: {not: 1, exec: [['strContain', 'login.php']]},
+        onResponseUrl: {not: 1, exec: 'strContain', args: ['login.php', '::0']},
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td.row1.f-name>div>a',
@@ -35,18 +35,19 @@ engine.trackerLib['rutracker'] = {
             date: 'td.row4.small.nowrap:eq(1)>u'
         },
         onGetValue: {
-            categoryId: function(value) {
-                "use strict";
-                var cId = value.match(/f=([0-9]+)/);
-                if (cId === null) {
-                    return -1;
-                }
-                cId = parseInt(cId[1]);
-                if (isNaN(cId)) {
-                    return -1;
-                }
-                return cId;
-            }
+            categoryId: [
+                {var: 'cId', exec: 'match', args: ['RegExp:f=([0-9]+)', '::0']},
+                {if: {exec: 'operator', args: [':cId', '===', null]},
+                    true: ['return', -1]
+                },
+                {var: 'cId', exec: 'getItem', args: [':cId', 1]},
+                {var: 'cId', exec: 'parseInt', args: ':cId'},
+                {
+                    if: {exec: 'isNaN', args: ':cId'},
+                    true: ['return', -1]
+                },
+                {exec: 'return', args: ':cId'}
+            ]
         }
     }
 };
