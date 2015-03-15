@@ -176,6 +176,10 @@ var exKit = {
     prepareTrackerR: {
         hasEndSlash:/\/$/
     },
+    parseRegExp: function(regexp, flags) {
+        "use strict";
+        return new RegExp(regexp, flags);
+    },
     funcList: {
         encodeURIComponent: encodeURIComponent,
         decodeURIComponent: decodeURIComponent,
@@ -226,29 +230,17 @@ var exKit = {
         },
         replace: function(value, sValue, rValue) {
             "use strict";
-            if (sValue.substr(0, 7) === 'RegExp:') {
-                var rStart = sValue.indexOf(':', 7) + 1;
-                var flags = undefined;
-                if (rStart !== 0) {
-                    flags = sValue.substr(7, rStart - 1 - 7);
-                } else {
-                    rStart = 7;
-                }
-                sValue = new RegExp(sValue.substr(rStart), flags);
-            }
             return value.replace(sValue, rValue);
         },
         match: function(value, sValue) {
             "use strict";
-            var rStart = sValue.indexOf(':', 7) + 1;
-            var flags = undefined;
-            if (rStart !== 0) {
-                flags = sValue.substr(7, rStart - 1 - 7);
-            } else {
-                rStart = 7;
-            }
-            sValue = new RegExp(sValue.substr(rStart), flags);
             return value.match(sValue);
+        },
+        firstMatch: function(value, sValue) {
+            "use strict";
+            var m = value.match(sValue);
+            if (m === null) return;
+            return m[1];
         },
         setVar: function(name, value) {
             "use strict";
@@ -370,29 +362,36 @@ var exKit = {
                     break;
                 }
             }
+        },
+        idInCategoryList: function(cId) {
+            "use strict";
+            for (var i = 0, item; item = this.tracker.categoryList[i]; i++) {
+                if (item.indexOf(cId) !== -1) {
+                    return i;
+                }
+            }
+            return -1;
         }
     },
     getArgs: function(globalArgs, args) {
         "use strict";
-        if (!Array.isArray(args)) {
-            args = [args];
-        }
         var list = [];
         for (var i = 0, len = args.length; i < len; i++) {
             var arg = args[i];
-            if (typeof arg === 'object' && arg !== null) {
+            var type = typeof arg;
+            if (type === 'object' && arg !== null) {
                 if (arg.var !== undefined) {
-                    list.push(this.scope[arg.var]);
+                    arg = this.scope[arg.var];
                 } else
                 if (arg.arg !== undefined) {
-                    list.push(globalArgs[arg.arg]);
+                    arg = globalArgs[arg.arg];
                 } else
                 if (arg.scope !== undefined) {
-                    list.push(this.scope);
-                } else {
-                    list.push(arg);
+                    arg = this.scope;
+                } else
+                if (arg.regexp !== undefined) {
+                    arg = args[i] = exKit.parseRegExp(arg.regexp, arg.flags);
                 }
-                continue;
             }
             list.push(arg);
         }
@@ -422,6 +421,9 @@ var exKit = {
                         item.exec = exKit.funcList2func.bind(this, item.exec, item.cb);
                     } else {
                         item.exec = exKit.funcList2func.bind(this, item.exec);
+                    }
+                    if (item.args !== undefined && !Array.isArray(item.args)) {
+                        item.args = [item.args];
                     }
                     if (item.var === undefined) {
                         item.var = 'context';
