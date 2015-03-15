@@ -393,8 +393,7 @@ var exKit = {
         var list = [];
         for (var i = 0, len = args.length; i < len; i++) {
             var arg = args[i];
-            var type = typeof arg;
-            if (type === 'object' && arg !== null) {
+            if (typeof arg === 'object' && arg !== null) {
                 if (arg.var !== undefined) {
                     arg = this.scope[arg.var];
                 } else
