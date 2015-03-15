@@ -212,27 +212,19 @@ var exKit = {
             }
             return output;
         },
-        strContain: function(text, value) {
+        strContain: function(value, text) {
             "use strict";
             return value.indexOf(text) !== -1;
         },
-        substr: function(start, len, value) {
+        substr: function(value, start, len) {
             "use strict";
-            if (typeof value !== 'string') {
-                value = len;
-                len = undefined;
-            }
             return value.substr(start, len);
         },
-        indexOf: function(word, position, value) {
+        indexOf: function(value, word, position) {
             "use strict";
-            if (typeof value !== 'string') {
-                value = position;
-                position = undefined;
-            }
             return value.indexOf(word, position)
         },
-        replace: function(sValue, rValue, value) {
+        replace: function(value, sValue, rValue) {
             "use strict";
             if (sValue.substr(0, 7) === 'RegExp:') {
                 var rStart = sValue.indexOf(':', 7) + 1;
@@ -246,7 +238,7 @@ var exKit = {
             }
             return value.replace(sValue, rValue);
         },
-        match: function(sValue, value) {
+        match: function(value, sValue) {
             "use strict";
             var rStart = sValue.indexOf(':', 7) + 1;
             var flags = undefined;
@@ -355,12 +347,29 @@ var exKit = {
                 return a != b;
             }
         },
-        pass: function(value) {
+        pass: function() {
             "use strict";
         },
         typeof: function(value) {
             "use strict";
             return typeof value;
+        },
+        each: function(cb, list) {
+            "use strict";
+            if (Array.isArray(list)) {
+                for (var i = 0, len = list.length; i < len; i++) {
+                    cb(i, list[i]);
+                    if (this.scope.hasOwnProperty('return')) {
+                        break;
+                    }
+                }
+            } else
+            for (var key in list) {
+                cb(key, list[key]);
+                if (this.scope.hasOwnProperty('return')) {
+                    break;
+                }
+            }
         }
     },
     getArgs: function(globalArgs, args) {
@@ -380,6 +389,8 @@ var exKit = {
                 } else
                 if (arg.scope !== undefined) {
                     list.push(this.scope);
+                } else {
+                    list.push(arg);
                 }
                 continue;
             }
@@ -406,7 +417,12 @@ var exKit = {
             if (item.exec !== undefined) {
                 type = typeof item.exec;
                 if (type !== 'function') {
-                    item.exec = exKit.funcList2func.bind(this, item.exec);
+                    if (item.cb !== undefined) {
+                        item.cb = exKit.funcList2func.bind(this, item.cb);
+                        item.exec = exKit.funcList2func.bind(this, item.exec, item.cb);
+                    } else {
+                        item.exec = exKit.funcList2func.bind(this, item.exec);
+                    }
                     if (item.var === undefined) {
                         item.var = 'context';
                     }
