@@ -390,8 +390,9 @@ var exKit = {
     },
     getArgs: function(globalArgs, args) {
         "use strict";
-        var list = [];
-        for (var i = 0, len = args.length; i < len; i++) {
+        var len = args.length;
+        var list = new Array(len);
+        for (var i = 0; i < len; i++) {
             var arg = args[i];
             if (typeof arg === 'object' && arg !== null) {
                 if (arg.var !== undefined) {
@@ -407,7 +408,7 @@ var exKit = {
                     arg = args[i] = exKit.parseRegExp(arg.regexp, arg.flags);
                 }
             }
-            list.push(arg);
+            list[i] = arg;
         }
         return list;
     },
