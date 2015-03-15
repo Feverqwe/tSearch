@@ -589,7 +589,7 @@ var exKit = {
     contentUnFilter: function(content) {
         "use strict";
         return content.replace(/data:image\/gif,base64#blockurl#/g, '')
-            .replace(/\/\/about:blank#blockurl#/g, '')
+            .replace(/about:blank#blockurl#/g, '')
             .replace(/tms-block-javascript/g, 'javascript');
     },
     intList: ['categoryId','size','seed','peer', 'date'],
