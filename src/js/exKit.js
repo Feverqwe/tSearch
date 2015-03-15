@@ -673,9 +673,7 @@ var exKit = {
                 }
 
                 if (tracker.search.onGetValue[key] !== undefined) {
-                    console.time('categoryId');
                     value = tracker.search.onGetValue[key](value, el);
-                    console.timeEnd('categoryId');
                 }
                 if (exKit.intList.indexOf(key) !== -1) {
                     var intValue = parseInt(value);
