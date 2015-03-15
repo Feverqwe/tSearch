@@ -357,26 +357,29 @@ var exKit = {
         },
         pass: function(value) {
             "use strict";
+        },
+        typeof: function(value) {
+            "use strict";
+            return typeof value;
         }
     },
     getArgs: function(globalArgs, args) {
         "use strict";
-        if (typeof args !== 'object') {
+        if (!Array.isArray(args)) {
             args = [args];
         }
         var list = [];
         for (var i = 0, len = args.length; i < len; i++) {
             var arg = args[i];
-            if (typeof arg === 'string' && arg[0] === ':') {
-                if (arg[1] === ':') {
-                    arg = arg.substr(2);
-                    if (arg === 'scope') {
-                        list.push(this.scope);
-                    } else {
-                        list.push(globalArgs[parseInt(arg)]);
-                    }
-                } else {
-                    list.push(this.scope[arg.substr(1)]);
+            if (typeof arg === 'object' && arg !== null) {
+                if (arg.var !== undefined) {
+                    list.push(this.scope[arg.var]);
+                } else
+                if (arg.arg !== undefined) {
+                    list.push(globalArgs[arg.arg]);
+                } else
+                if (arg.scope !== undefined) {
+                    list.push(this.scope);
                 }
                 continue;
             }
@@ -404,6 +407,9 @@ var exKit = {
                 type = typeof item.exec;
                 if (type !== 'function') {
                     item.exec = exKit.funcList2func.bind(this, item.exec);
+                    if (item.var === undefined) {
+                        item.var = 'context';
+                    }
                     --i;
                     continue;
                 }
@@ -418,11 +424,7 @@ var exKit = {
                 if (item.not !== undefined) {
                     out = !out;
                 }
-                if (item.var !== undefined) {
-                    this.scope[item.var] = out;
-                } else {
-                    this.scope.context = out;
-                }
+                this.scope[item.var] = out;
             } else
             if (item.func !== undefined) {
                 type = typeof item.func;
