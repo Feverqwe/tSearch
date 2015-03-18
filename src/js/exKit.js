@@ -372,16 +372,18 @@ var exKit = {
             }
             return -1;
         },
-        idInCategoryListInt: function(cId) {
+        idInCategoryListInt: function(url, regexp) {
             "use strict";
+            var cId = exKit.funcList.firstMatch(url, regexp);
             if (cId === undefined) {
                 return - 1;
             }
             cId = parseInt(cId);
             return exKit.funcList.idInCategoryList.call(this, cId);
         },
-        idInCategoryListStr: function(cId) {
+        idInCategoryListStr: function(url, regexp) {
             "use strict";
+            var cId = exKit.funcList.firstMatch(url, regexp);
             if (cId === undefined) {
                 return - 1;
             }

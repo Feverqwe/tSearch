@@ -13,6 +13,23 @@ var view = {
         trackerList: document.getElementById('tracker_list')
     },
     varCache: {
+        categoryList: [
+            {id: undefined, lang: 'categoryAll'},
+            {id:  3, lang: 'categoryFilms'},
+            {id:  0, lang: 'categorySerials'},
+            {id:  7, lang: 'categoryAnime'},
+            {id:  8, lang: 'categoryDocumentary'},
+            {id: 11, lang: 'categoryHumor'},
+            {id:  1, lang: 'categoryMusic'},
+            {id:  2, lang: 'categoryGames'},
+            {id:  5, lang: 'categoryBooks'},
+            {id:  4, lang: 'categoryCartoons'},
+            {id:  6, lang: 'categorySoft'},
+            {id:  9, lang: 'categorySport'},
+            {id: 10, lang: 'categoryXXX'},
+            {id: -1, lang: 'categoryOther'}
+        ],
+        categoryObj: {},
         resultTableColumnList: [
             {id: 'time',    size: 125, lang: 'columnTime'},
             {id: 'quality', size: 31,  lang: 'columnQuality'},
@@ -92,23 +109,30 @@ var view = {
         if (!option) return;
         view.domCache.profileSelect.selectedIndex = option.index;
 
+        var styleContent = '';
         view.domCache.trackerList.textContent = '';
         view.varCache.trackerList = {};
         engine.prepareTrackerList(key, function(trackerList) {
+            if (view.varCache.trackerListStyle) {
+                view.varCache.trackerListStyle.parentNode.removeChild(view.varCache.trackerListStyle);
+            }
             for (var i = 0, tracker; tracker = trackerList[i]; i++) {
                 var trackerObj = view.varCache.trackerList[tracker.id] = {};
                 trackerObj.count = 0;
-                view.domCache.trackerList.appendChild(trackerObj.liEl = mono.create('li', {
+                view.domCache.trackerList.appendChild(trackerObj.liEl = mono.create('div', {
                     data: {
                         id: tracker.id
                     },
                     append: [
                         mono.create('i', {
-                            class: 'icon'
+                            data: {
+                                id: tracker.id
+                            },
+                            class: ['icon', 'tracker-icon']
                         }),
-                        mono.create('span', {
-                            class: 'title',
-                            text: tracker.title
+                        mono.create('a', {
+                            text: tracker.title,
+                            href: '#'
                         }),
                         trackerObj.countEl = mono.create('i', {
                             class: 'count',
@@ -116,7 +140,44 @@ var view = {
                         })
                     ]
                 }));
+                styleContent += '.tracker-icon[data-id="' + tracker.id + '"] {' +
+                    'background-image: url('+ tracker.icon +')' +
+                '}';
             }
+            document.body.appendChild(view.varCache.trackerListStyle = mono.create('style', {text: styleContent}));
+        });
+    },
+    writeCategory: function() {
+        "use strict";
+        mono.create(view.domCache.resultCategoryContainer, {
+            append: (function() {
+                var elList = [];
+                for (var i = 0, item; item = view.varCache.categoryList[i]; i++) {
+                    view.varCache.categoryObj[item.id] = item;
+                    item.count = 0;
+                    item.isHidden = 1;
+                    var className = 'hide';
+                    var data = {};
+                    if (item.id === undefined) {
+                        data.id = item.id;
+                        className = 'selected'
+                    }
+                    elList.push(item.itemEl = mono.create('div', {
+                        class: className,
+                        data: data,
+                        append: [
+                            mono.create('a', {
+                                href: '#',
+                                text: mono.language[item.lang]
+                            }),
+                            item.countEl = mono.create('i', {
+                                text: 0
+                            })
+                        ]
+                    }));
+                }
+                return elList;
+            })()
         });
     },
     once: function() {
@@ -127,8 +188,19 @@ var view = {
 
         view.writeTableHead();
         view.writeProfileList();
+        view.writeCategory();
 
         view.selectProfile(engine.currentProfile);
+        view.domCache.profileSelect.addEventListener('change', function() {
+            var service = this.childNodes[this.selectedIndex].dataset.service;
+            if (service) {
+                var option = this.querySelector('option[value="'+engine.currentProfile+'"]');
+                if (!option) return;
+                this.selectedIndex = option.index;
+                return;
+            }
+            view.selectProfile(this.value);
+        });
 
         if (engine.settings.hideSeedColumn === 1) {
             view.domCache.seedFilter.style.display = 'none';
