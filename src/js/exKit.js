@@ -695,11 +695,11 @@ var exKit = {
                 trObj.column[key] = value;
             }
             if (!trObj.column.title || !trObj.column.url) {
-                console.debug('Skip torrent:', trObj);
+                console.debug('[' + tracker.id + ']', 'Skip torrent:', trObj);
                 continue;
             }
             if (!mono.isEmptyObject(trObj.error)) {
-                console.debug('Torrent has problems:', trObj);
+                console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
             }
             torrentList.push(trObj.column);
         }
@@ -733,13 +733,15 @@ var exKit = {
                 onSearch.onError(tracker, xhr.status, xhr.statusText);
             },
             onTimeout: function(xhr) {
-                onSearch.onDune(tracker);
+                onSearch.onDone(tracker);
                 onSearch.onError(tracker, xhr.status, xhr.statusText);
             }
         });
         return {
             tracker: tracker,
-            abort: xhr.abort
+            abort: function() {
+                xhr.abort();
+            }
         }
     },
     searchProgressList: {},
@@ -756,10 +758,10 @@ var exKit = {
     },
     searchProgressListBind: function(onSearch) {
         var progressList = exKit.searchProgressList;
-        var onDune = onSearch.onDune;
-        onSearch.onDune = function(tracker) {
+        var onDone = onSearch.onDone;
+        onSearch.onDone = function(tracker) {
             delete progressList[tracker];
-            onDune && onDune.apply(null, arguments);
+            onDone && onDone.apply(null, arguments);
         };
         onSearch = null;
     },
@@ -767,7 +769,8 @@ var exKit = {
         exKit.searchProgressListClear();
         exKit.searchProgressListBind(onSearch);
         for (var i = 0, len = trackerList.length; i < len; i++) {
-            exKit.searchProgressList[trackerList[i]] = exKit.search(trackerList[i], request, onSearch);
+            var tracker = trackerList[i];
+            exKit.searchProgressList[tracker] = exKit.search(engine.trackerLib[tracker], request, onSearch);
         }
     }
 };

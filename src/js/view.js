@@ -189,16 +189,16 @@ var view = {
         }
         return trackerList;
     },
-    onSearchComplete: function(tracker, data) {
-        console.log(tracker, data);
+    onSearchSuccess: function(tracker, data) {
+        console.log(tracker.id, data);
     },
     onSearchError: function(tracker, xhrStatus, xhrStatusText) {
-        console.error(tracker, xhrStatus, xhrStatusText);
+        console.error(tracker.id, xhrStatus, xhrStatusText);
     },
     search: function(request) {
         var trackerList = view.getTrackerList();
         exKit.searchList(trackerList, request, {
-            onComplete: view.onSearchComplete,
+            onSuccess: view.onSearchSuccess,
             onError: view.onSearchError
         })
     },
