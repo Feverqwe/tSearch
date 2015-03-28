@@ -715,6 +715,7 @@ var exKit = {
     },
     search: function(tracker, request, onSearch) {
         "use strict";
+        onSearch.onBegin && onSearch.onBegin(tracker.id);
         if (tracker.search.onGetRequest !== undefined) {
             request = tracker.search.onGetRequest(request);
         }
@@ -734,7 +735,7 @@ var exKit = {
             },
             onTimeout: function(xhr) {
                 onSearch.onDone(tracker);
-                onSearch.onError(tracker, xhr.status, xhr.statusText);
+                onSearch.onError(tracker, xhr.status, "Request timeout");
             }
         });
         return {
@@ -746,30 +747,29 @@ var exKit = {
     },
     searchProgressList: {},
     searchProgressListClear: function() {
-        var rmList = [];
+        "use strict";
         var progressList = exKit.searchProgressList;
         for (var tracker in progressList) {
+            if (progressList[tracker] === undefined) continue;
             progressList[tracker].abort();
-            rmList.push(tracker);
-        }
-        for (var i = 0, len = rmList.length; i < len; i++) {
-            delete progressList[rmList[i]];
+            progressList[tracker] = undefined;
         }
     },
     searchProgressListBind: function(onSearch) {
+        "use strict";
         var progressList = exKit.searchProgressList;
         var onDone = onSearch.onDone;
         onSearch.onDone = function(tracker) {
-            delete progressList[tracker];
+            progressList[tracker] = undefined;
             onDone && onDone.apply(null, arguments);
         };
         onSearch = null;
     },
     searchList: function(trackerList, request, onSearch) {
+        "use strict";
         exKit.searchProgressListClear();
         exKit.searchProgressListBind(onSearch);
-        for (var i = 0, len = trackerList.length; i < len; i++) {
-            var tracker = trackerList[i];
+        for (var i = 0, tracker; tracker = trackerList[i]; i++) {
             exKit.searchProgressList[tracker] = exKit.search(engine.trackerLib[tracker], request, onSearch);
         }
     }

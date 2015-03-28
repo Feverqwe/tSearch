@@ -327,6 +327,17 @@ mono.create.hook = {
         }
         el.appendChild(value);
     },
+    after: function(el, value) {
+        "use strict";
+        var hasNextEl = el.nextElementSibling;
+        var elList;
+        this.append(elList = document.createDocumentFragment(), value);
+        if (hasNextEl !== null) {
+            el.parentNode.insertBefore(hasNextEl, elList);
+        } else {
+            el.parentNode.appendChild(elList);
+        }
+    },
     on: function(el, args) {
         "use strict";
         if (Array.isArray(args[0])) {

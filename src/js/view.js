@@ -119,14 +119,16 @@ var view = {
                 view.varCache.trackerListStyle.parentNode.removeChild(view.varCache.trackerListStyle);
             }
             for (var i = 0, tracker; tracker = trackerList[i]; i++) {
-                var trackerObj = view.varCache.trackerList[tracker.id] = {};
+                var trackerObj = view.varCache.trackerList[tracker.id] = {
+                    status: {}
+                };
                 trackerObj.count = 0;
-                view.domCache.trackerList.appendChild(trackerObj.liEl = mono.create('div', {
+                view.domCache.trackerList.appendChild(trackerObj.itemEl = mono.create('div', {
                     data: {
                         id: tracker.id
                     },
                     append: [
-                        mono.create('i', {
+                        trackerObj.iconEl = mono.create('i', {
                             data: {
                                 id: tracker.id
                             },
@@ -183,6 +185,7 @@ var view = {
         });
     },
     getTrackerList: function() {
+        "use strict";
         var trackerList = [];
         for (var key in view.varCache.trackerList) {
             trackerList.push(key);
@@ -190,16 +193,86 @@ var view = {
         return trackerList;
     },
     onSearchSuccess: function(tracker, data) {
+        "use strict";
+        view.clearTrackerStatus(tracker.id);
+        if (data.requireAuth === 1) {
+            return view.setTrackerStatus(tracker.id, 'auth', {
+                url: tracker.search.loginUrl
+            });
+        }
         console.log(tracker.id, data);
     },
     onSearchError: function(tracker, xhrStatus, xhrStatusText) {
-        console.error(tracker.id, xhrStatus, xhrStatusText);
+        "use strict";
+        view.clearTrackerStatus(tracker.id);
+        view.setTrackerStatus(tracker.id, 'error', {
+            status: xhrStatus,
+            statusText: xhrStatusText
+        });
+    },
+    clearTrackerStatus: function(tracker) {
+        "use strict";
+        var trackerItem = view.varCache.trackerList[tracker];
+        for (var status in trackerItem.status) {
+            if (trackerItem.status[status] === undefined) continue;
+            trackerItem.status[status].disable();
+            trackerItem.status[status] = undefined;
+        }
+    },
+    setTrackerStatus: function(tracker, status, data) {
+        "use strict";
+        var trackerItem = view.varCache.trackerList[tracker];
+        view.clearTrackerStatus(tracker);
+        if (status === 'auth') {
+            trackerItem.status[status] = (function(itemEl, data) {
+                var authEl;
+                mono.create(itemEl, {
+                   after: authEl = mono.create('div', {
+                       class: 'authItem',
+                       append: [
+                           mono.create('i', {
+                               class: ['icon', 'auth']
+                           }),
+                           mono.create('a', {
+                               text: '{login}',
+                               href: data.url,
+                               target: '_blank'
+                           })
+                       ]
+                   })
+                });
+                return {
+                    disable: function() {
+                        authEl.parentNode.removeChild(authEl);
+                    }
+                }
+            })(trackerItem.itemEl, data);
+        } else
+        if (status === 'loading' || status === 'error') {
+            trackerItem.status[status] = (function(iconEl, data) {
+                iconEl.classList.add(status);
+                data && (iconEl.title = data.statusText + '(' + data.status + ')');
+                return {
+                    disable: function() {
+                        iconEl.classList.remove(status);
+                        data && (iconEl.title = '');
+                    }
+                }
+            })(trackerItem.iconEl, data);
+        }
+        trackerItem = null;
+    },
+    onSearchBegin: function(tracker) {
+        "use strict";
+        view.setTrackerStatus(tracker, 'loading');
     },
     search: function(request) {
+        "use strict";
         var trackerList = view.getTrackerList();
         exKit.searchList(trackerList, request, {
             onSuccess: view.onSearchSuccess,
-            onError: view.onSearchError
+            onError: view.onSearchError,
+            onBegin: view.onSearchBegin
         })
     },
     once: function() {
