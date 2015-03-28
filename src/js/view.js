@@ -105,16 +105,16 @@ var view = {
             })()
         });
     },
-    selectProfile: function(key) {
+    selectProfile: function(profileName) {
         "use strict";
-        var option = view.domCache.profileSelect.querySelector('option[value="'+key+'"]');
+        var option = view.domCache.profileSelect.querySelector('option[value="'+profileName+'"]');
         if (!option) return;
         view.domCache.profileSelect.selectedIndex = option.index;
 
         var styleContent = '';
         view.domCache.trackerList.textContent = '';
         view.varCache.trackerList = {};
-        engine.prepareTrackerList(key, function(trackerList) {
+        engine.prepareTrackerList(profileName, function(trackerList) {
             if (view.varCache.trackerListStyle) {
                 view.varCache.trackerListStyle.parentNode.removeChild(view.varCache.trackerListStyle);
             }
@@ -194,12 +194,13 @@ var view = {
     },
     onSearchSuccess: function(tracker, data) {
         "use strict";
-        view.clearTrackerStatus(tracker.id);
         if (data.requireAuth === 1) {
+            view.clearTrackerStatus(tracker.id, ['auth']);
             return view.setTrackerStatus(tracker.id, 'auth', {
                 url: tracker.search.loginUrl
             });
         }
+        view.clearTrackerStatus(tracker.id);
         console.log(tracker.id, data);
     },
     onSearchError: function(tracker, xhrStatus, xhrStatusText) {
@@ -210,19 +211,20 @@ var view = {
             statusText: xhrStatusText
         });
     },
-    clearTrackerStatus: function(tracker) {
+    clearTrackerStatus: function(trackerId, except) {
         "use strict";
-        var trackerItem = view.varCache.trackerList[tracker];
+        var trackerItem = view.varCache.trackerList[trackerId];
         for (var status in trackerItem.status) {
+            if (except && except.indexOf(status) !== -1) continue;
             if (trackerItem.status[status] === undefined) continue;
             trackerItem.status[status].disable();
             trackerItem.status[status] = undefined;
         }
     },
-    setTrackerStatus: function(tracker, status, data) {
+    setTrackerStatus: function(trackerId, status, data) {
         "use strict";
-        var trackerItem = view.varCache.trackerList[tracker];
-        view.clearTrackerStatus(tracker);
+        var trackerItem = view.varCache.trackerList[trackerId];
+        if (trackerItem.status[status] !== undefined) return;
         if (status === 'auth') {
             trackerItem.status[status] = (function(itemEl, data) {
                 var authEl;
@@ -264,7 +266,8 @@ var view = {
     },
     onSearchBegin: function(tracker) {
         "use strict";
-        view.setTrackerStatus(tracker, 'loading');
+        view.clearTrackerStatus(tracker.id, ['auth']);
+        view.setTrackerStatus(tracker.id, 'loading');
     },
     search: function(request) {
         "use strict";

@@ -715,7 +715,7 @@ var exKit = {
     },
     search: function(tracker, request, onSearch) {
         "use strict";
-        onSearch.onBegin && onSearch.onBegin(tracker.id);
+        onSearch.onBegin && onSearch.onBegin(tracker);
         if (tracker.search.onGetRequest !== undefined) {
             request = tracker.search.onGetRequest(request);
         }
@@ -749,10 +749,10 @@ var exKit = {
     searchProgressListClear: function() {
         "use strict";
         var progressList = exKit.searchProgressList;
-        for (var tracker in progressList) {
-            if (progressList[tracker] === undefined) continue;
-            progressList[tracker].abort();
-            progressList[tracker] = undefined;
+        for (var trackerId in progressList) {
+            if (progressList[trackerId] === undefined) continue;
+            progressList[trackerId].abort();
+            progressList[trackerId] = undefined;
         }
     },
     searchProgressListBind: function(onSearch) {
@@ -760,7 +760,7 @@ var exKit = {
         var progressList = exKit.searchProgressList;
         var onDone = onSearch.onDone;
         onSearch.onDone = function(tracker) {
-            progressList[tracker] = undefined;
+            progressList[tracker.id] = undefined;
             onDone && onDone.apply(null, arguments);
         };
         onSearch = null;
@@ -769,8 +769,8 @@ var exKit = {
         "use strict";
         exKit.searchProgressListClear();
         exKit.searchProgressListBind(onSearch);
-        for (var i = 0, tracker; tracker = trackerList[i]; i++) {
-            exKit.searchProgressList[tracker] = exKit.search(engine.trackerLib[tracker], request, onSearch);
+        for (var i = 0, trackerId; trackerId = trackerList[i]; i++) {
+            exKit.searchProgressList[trackerId] = exKit.search(engine.trackerLib[trackerId], request, onSearch);
         }
     }
 };
