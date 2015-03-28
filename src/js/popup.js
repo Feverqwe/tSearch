@@ -36,7 +36,7 @@ var popup = {
 
         popup.domCache.requestInput.addEventListener('keypress', function(e) {
             if (e.keyCode === 13) {
-                popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click'));
+                popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
             }
         });
 
@@ -95,7 +95,7 @@ var popup = {
             },
             select: function() {
                 popup.domCache.requestInput.value = arguments[1].item.value;
-                popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click'));
+                popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
             },
             close: function() {
                 mono.resizePopup(undefined, document.body.clientHeight);

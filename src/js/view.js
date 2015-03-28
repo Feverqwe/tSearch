@@ -236,7 +236,7 @@ var view = {
                                class: ['icon', 'auth']
                            }),
                            mono.create('a', {
-                               text: '{login}',
+                               text: mono.language.btn_login,
                                href: data.url,
                                target: '_blank'
                            })
@@ -300,7 +300,7 @@ var view = {
 
         view.domCache.requestInput.addEventListener('keypress', function(e) {
             if (e.keyCode === 13) {
-                view.domCache.searchBtn.dispatchEvent(new CustomEvent('click'));
+                view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
             }
         });
 
