@@ -735,7 +735,7 @@ var exKit = {
             },
             onTimeout: function(xhr) {
                 onSearch.onDone(tracker);
-                onSearch.onError(tracker, xhr.status, "Request timeout");
+                onSearch.onError(tracker, xhr.status, xhr.statusText);
             }
         });
         return {
