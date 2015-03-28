@@ -713,7 +713,7 @@ var exKit = {
         data = exKit.contentFilter(data);
         return exKit.parseDom(tracker, request, exKit.parseHtml(data), cb);
     },
-    search: function(tracker, request) {
+    search: function(tracker, request, onSearch) {
         "use strict";
         if (tracker.search.onGetRequest !== undefined) {
             request = tracker.search.onGetRequest(request);
@@ -725,16 +725,49 @@ var exKit = {
             dataType: tracker.search.requestDataType,
             data: (tracker.search.requestData || '').replace('%search%', request),
             success: (tracker.search.parseResponse || exKit.parseResponse).bind(null, tracker, request, function(data) {
-                console.log(data);
-                engine.search.onSuccess(tracker, data);
+                onSearch.onDone(tracker);
+                onSearch.onSuccess(tracker, data);
             }),
             error: function(xhr) {
-                engine.search.onError(tracker, xhr.status, xhr.statusText);
+                onSearch.onDone(tracker);
+                onSearch.onError(tracker, xhr.status, xhr.statusText);
+            },
+            onTimeout: function(xhr) {
+                onSearch.onDune(tracker);
+                onSearch.onError(tracker, xhr.status, xhr.statusText);
             }
         });
         return {
             tracker: tracker,
             abort: xhr.abort
+        }
+    },
+    searchProgressList: {},
+    searchProgressListClear: function() {
+        var rmList = [];
+        var progressList = exKit.searchProgressList;
+        for (var tracker in progressList) {
+            progressList[tracker].abort();
+            rmList.push(tracker);
+        }
+        for (var i = 0, len = rmList.length; i < len; i++) {
+            delete progressList[rmList[i]];
+        }
+    },
+    searchProgressListBind: function(onSearch) {
+        var progressList = exKit.searchProgressList;
+        var onDune = onSearch.onDune;
+        onSearch.onDune = function(tracker) {
+            delete progressList[tracker];
+            onDune && onDune.apply(null, arguments);
+        };
+        onSearch = null;
+    },
+    searchList: function(trackerList, request, onSearch) {
+        exKit.searchProgressListClear();
+        exKit.searchProgressListBind(onSearch);
+        for (var i = 0, len = trackerList.length; i < len; i++) {
+            exKit.searchProgressList[trackerList[i]] = exKit.search(trackerList[i], request, onSearch);
         }
     }
 };

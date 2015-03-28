@@ -194,15 +194,5 @@ var engine = {
         });
     },
 
-    trackerLib: {},
-
-    search: {
-        onSuccess: function(torrentList) {
-            "use strict";
-        },
-        onError: function(tracker, error) {
-            "use strict";
-
-        }
-    }
+    trackerLib: {}
 };

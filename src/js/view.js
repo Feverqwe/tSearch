@@ -4,6 +4,8 @@
 var view = {
     domCache: {
         requestInput: document.getElementById('request_input'),
+        clearBtn: document.getElementById('clear_btn'),
+        searchBtn: document.getElementById('search_btn'),
         seedFilter: document.getElementById('seed_filter'),
         peerFilter: document.getElementById('peer_filter'),
         resultTableHead: document.getElementById('result_table_head'),
@@ -180,11 +182,57 @@ var view = {
             })()
         });
     },
+    getTrackerList: function() {
+        var trackerList = [];
+        for (var key in view.varCache.trackerList) {
+            trackerList.push(key);
+        }
+        return trackerList;
+    },
+    onSearchComplete: function(tracker, data) {
+        console.log(tracker, data);
+    },
+    onSearchError: function(tracker, xhrStatus, xhrStatusText) {
+        console.error(tracker, xhrStatus, xhrStatusText);
+    },
+    search: function(request) {
+        var trackerList = view.getTrackerList();
+        exKit.searchList(trackerList, request, {
+            onComplete: view.onSearchComplete,
+            onError: view.onSearchError
+        })
+    },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
         document.body.classList.remove('loading');
         view.domCache.requestInput.focus();
+
+        view.domCache.clearBtn.addEventListener('click', function() {
+            view.domCache.requestInput.value = '';
+            view.domCache.requestInput.dispatchEvent(new CustomEvent('input'));
+            view.domCache.requestInput.focus();
+        });
+
+        view.domCache.requestInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                view.domCache.clearBtn.classList.add('show');
+            } else {
+                view.domCache.clearBtn.classList.remove('show');
+            }
+        });
+
+        view.domCache.requestInput.addEventListener('keypress', function(e) {
+            if (e.keyCode === 13) {
+                view.domCache.searchBtn.dispatchEvent(new CustomEvent('click'));
+            }
+        });
+
+        view.domCache.searchBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var request = view.domCache.requestInput.value.trim();
+            view.search(request);
+        });
 
         view.writeTableHead();
         view.writeProfileList();

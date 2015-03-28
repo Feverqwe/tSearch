@@ -69,7 +69,9 @@ mono.ajax = function(obj) {
     }
 
     if (obj.onTimeout !== undefined) {
-        xhr.ontimeout = obj.onTimeout;
+        xhr.ontimeout = function() {
+            obj.onTimeout(xhr);
+        }
     }
 
     xhr.onload = function () {
