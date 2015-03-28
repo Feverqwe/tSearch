@@ -170,11 +170,28 @@ body {
     word-wrap: break-word;
 }
 
+#tracker_list div.authItem > a {
+    width: calc(100% - 24px);
+}
+
+#tracker_list div.authItem {
+    margin-left: 24px;
+}
+
 #tracker_list div > i.count {
     width: 24px;
 }
 
-.tracker-icon {
+.icon {
     background-position: center;
     background-repeat: no-repeat;
+}
+.icon.loading {
+    background-image: url(../img/loading.gif) !important;
+}
+.icon.error {
+    background-image: url(../img/timeout.png) !important;
+}
+.icon.auth {
+    background-image: url(../img/login.png) !important;
 }

@@ -333,7 +333,7 @@ mono.create.hook = {
         var elList;
         this.append(elList = document.createDocumentFragment(), value);
         if (hasNextEl !== null) {
-            el.parentNode.insertBefore(hasNextEl, elList);
+            el.parentNode.insertBefore(elList, hasNextEl);
         } else {
             el.parentNode.appendChild(elList);
         }
