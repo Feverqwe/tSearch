@@ -187,10 +187,17 @@ var view = {
     getTrackerList: function() {
         "use strict";
         var trackerList = [];
+        var trackerSelectedList = [];
         for (var key in view.varCache.trackerList) {
+            if (view.varCache.trackerList[key].selected === 1) {
+                trackerSelectedList.push(key);
+            }
             trackerList.push(key);
         }
-        return trackerList;
+        if (trackerSelectedList.length === 0) {
+            trackerSelectedList = null;
+        }
+        return trackerSelectedList || trackerList;
     },
     onSearchSuccess: function(tracker, data) {
         "use strict";
@@ -253,7 +260,7 @@ var view = {
         if (status === 'loading' || status === 'error') {
             trackerItem.status[status] = (function(iconEl, data) {
                 iconEl.classList.add(status);
-                data && data.statusText && data.status && (iconEl.title = data.statusText + '(' + data.status + ')');
+                data && data.statusText && data.status && (iconEl.title = data.statusText + ' (' + data.status + ')');
                 return {
                     disable: function() {
                         iconEl.classList.remove(status);
@@ -277,6 +284,28 @@ var view = {
             onError: view.onSearchError,
             onBegin: view.onSearchBegin
         })
+    },
+    onTrackerListItemClick: function(e) {
+        "use strict";
+        e.preventDefault();
+        var trackerId = this.dataset.id;
+
+        for (var _trackerId in view.varCache.trackerList) {
+            if (_trackerId === trackerId) continue;
+            var tracker = view.varCache.trackerList[_trackerId];
+            if (tracker.selected === 1) {
+                tracker.itemEl.classList.remove('selected');
+                tracker.selected = 0;
+            }
+        }
+
+        if (this.classList.contains('selected')) {
+            this.classList.remove('selected');
+            view.varCache.trackerList[trackerId].selected = 0;
+        } else {
+            this.classList.add('selected');
+            view.varCache.trackerList[trackerId].selected = 1;
+        }
     },
     once: function() {
         "use strict";
@@ -308,6 +337,19 @@ var view = {
             e.preventDefault();
             var request = view.domCache.requestInput.value.trim();
             view.search(request);
+        });
+
+        view.domCache.trackerList.addEventListener('click', function(e) {
+            var el = e.target;
+            if (this === el) return;
+            while (el.parentNode !== this) {
+                el = el.parentNode;
+            }
+
+            if (!el.dataset.id) {
+                return;
+            }
+            view.onTrackerListItemClick.call(el, e);
         });
 
         view.writeTableHead();

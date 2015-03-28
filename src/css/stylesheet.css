@@ -124,6 +124,7 @@ body {
     background-color: #fff;
     border-radius: 3px;
     padding: 3px;
+    padding-bottom: 2px;
     cursor: pointer;
     font-size: 12px;
 }
@@ -147,14 +148,24 @@ body {
 
 #tracker_list div {
     display: block;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    line-height: 20px;
+    line-height: 22px;
+    height: 22px;
 }
 
 #tracker_list div > * {
     vertical-align: middle;
     display: inline-block;
+}
+
+#tracker_list div:hover > a,
+#tracker_list div:hover > i.count {
+    background-color: #ddd;
+}
+
+#tracker_list div.selected > a,
+#tracker_list div.selected > i.count {
+    background-color: #337AF8;
+    color: #fff;
 }
 
 #tracker_list div > i.icon {
@@ -163,15 +174,16 @@ body {
 }
 
 #tracker_list div > a {
-    width: 122px;
-    width: calc(100% - 48px);
+    width: 120px;
+    width: calc(100% - 50px);
     text-decoration: none;
     color: #000;
     word-wrap: break-word;
+    padding-left: 2px;
 }
 
 #tracker_list div.authItem > a {
-    width: calc(100% - 24px);
+    width: calc(100% - 26px);
 }
 
 #tracker_list div.authItem {

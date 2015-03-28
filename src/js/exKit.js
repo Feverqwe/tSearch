@@ -703,7 +703,7 @@ var exKit = {
             }
             torrentList.push(trObj.column);
         }
-        cb({success: 1, torrentList: torrentList});
+        cb({torrentList: torrentList});
     },
     parseResponse: function(tracker, request, cb, data, xhr) {
         "use strict";
