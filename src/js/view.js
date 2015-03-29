@@ -609,7 +609,8 @@ var view = {
 
         for (var i = 0, list = ['wordFilter', 'sizeFilterMin',
             'sizeFilterMax', 'timeFilterMin',
-            'timeFilterMax', 'seedFilterMin', 'seedFilterMax', 'peerFilterMin', 'peerFilterMax'], type; type = list[i]; i++) {
+            'timeFilterMax', 'seedFilterMin', 'seedFilterMax',
+            'peerFilterMin', 'peerFilterMax'], type; type = list[i]; i++) {
             view.domCache[type].addEventListener('keyup', mono.throttle(view.onChangeFilter.bind(view.domCache[type], type), 500));
         }
 
