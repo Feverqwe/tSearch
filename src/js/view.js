@@ -62,7 +62,7 @@ var view = {
             category: undefined,
             word: undefined,
             size: undefined,
-            data: undefined,
+            date: undefined,
             seed: undefined,
             peer: undefined
         }
@@ -574,6 +574,9 @@ var view = {
             if (view.varCache.filter[key] === undefined) {
                 view.varCache.filter[key] = [null, null];
             }
+            if (isNaN(value)) {
+                value = null;
+            }
             view.varCache.filter[key][index] = value;
         }
         // TODO: Update filter
@@ -653,7 +656,7 @@ var view = {
             var value = this.value;
             if (value === 'range') {
                 view.domCache.timeFilterRange.classList.add('show');
-                view.varCache.filter.data = [null, null];
+                view.varCache.filter.date = [null, null];
             } else {
                 view.domCache.timeFilterRange.classList.remove('show');
                 var date = parseInt(Date.now() / 1000);
@@ -672,7 +675,7 @@ var view = {
                 } else if (value === "1y") {
                     date -= 60 * 60 * 24 * 365;
                 }
-                view.varCache.filter.data = date;
+                view.varCache.filter.date = date;
             }
 
             // TODO: Update filter
