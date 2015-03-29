@@ -107,6 +107,74 @@ var view = {
             })()
         });
     },
+    setTrackerCount: function(trackerObj, count) {
+        "use strict";
+        if (trackerObj.count === count) return;
+        trackerObj.count = count;
+        trackerObj.countEl.textContent = count;
+    },
+    setTrackerStatus: function(trackerObj, status, data) {
+        "use strict";
+        if (trackerObj.status[status] !== undefined) return;
+        if (status === 'auth') {
+            trackerObj.status[status] = (function(itemEl, data) {
+                var authEl;
+                mono.create(itemEl, {
+                    after: authEl = mono.create('div', {
+                        class: 'authItem',
+                        append: [
+                            mono.create('i', {
+                                class: ['icon', 'auth']
+                            }),
+                            mono.create('a', {
+                                text: mono.language.btn_login,
+                                href: data.url,
+                                target: '_blank'
+                            })
+                        ]
+                    })
+                });
+                return {
+                    disable: function() {
+                        authEl.parentNode.removeChild(authEl);
+                    }
+                }
+            })(trackerObj.itemEl, data);
+        } else
+        if (status === 'loading' || status === 'error') {
+            trackerObj.status[status] = (function(iconEl, status, data) {
+                iconEl.classList.add(status);
+                data && data.statusText && data.status && (iconEl.title = data.statusText + ' (' + data.status + ')');
+                return {
+                    disable: function() {
+                        iconEl.classList.remove(status);
+                        data && (iconEl.title = '');
+                    }
+                }
+            })(trackerObj.iconEl, status, data);
+        }
+        trackerObj = null;
+    },
+    resetTrackerStatus: function(trackerObj, except) {
+        "use strict";
+        for (var status in trackerObj.status) {
+            if (except !== undefined && except.indexOf(status) !== -1) continue;
+            if (trackerObj.status[status] === undefined) continue;
+            trackerObj.status[status].disable();
+            trackerObj.status[status] = undefined;
+        }
+    },
+    setTrackerSelect: function(trackerObj, state) {
+        "use strict";
+        if (state === trackerObj.selected) return;
+        if (state) {
+            this.classList.remove('selected');
+            trackerObj.selected = 0;
+        } else {
+            this.classList.add('selected');
+            trackerObj.selected = 1;
+        }
+    },
     selectProfile: function(profileName) {
         "use strict";
         var option = view.domCache.profileSelect.querySelector('option[value="'+profileName+'"]');
@@ -146,12 +214,30 @@ var view = {
                         })
                     ]
                 }));
+                trackerObj.setCount = view.setTrackerCount.bind(null, trackerObj);
+                trackerObj.setStatus = view.setTrackerStatus.bind(null, trackerObj);
+                trackerObj.resetStatus = view.resetTrackerStatus.bind(null, trackerObj);
+                trackerObj.setSelect = view.setTrackerSelect.bind(null, trackerObj);
                 styleContent += '.tracker-icon[data-id="' + tracker.id + '"] {' +
                     'background-image: url('+ tracker.icon +')' +
                 '}';
             }
             document.body.appendChild(view.varCache.trackerListStyle = mono.create('style', {text: styleContent}));
         });
+    },
+    setCategoryCount: function(categoryObj, count) {
+        "use strict";
+        if (categoryObj.count === count) return;
+
+        categoryObj.count = count;
+        categoryObj.countEl.textContent = count;
+        if (count === 0) {
+            categoryObj.isHidden = 1;
+            categoryObj.itemEl.classList.add('hide');
+        } else {
+            categoryObj.isHidden = 0;
+            categoryObj.itemEl.classList.remove('hide');
+        }
     },
     writeCategory: function() {
         "use strict";
@@ -181,6 +267,7 @@ var view = {
                             })
                         ]
                     }));
+                    categoryObj.setCount = view.setCategoryCount.bind(null, categoryObj);
                 }
                 return elList;
             })()
@@ -295,79 +382,36 @@ var view = {
     onSearchSuccess: function(tracker, request, data) {
         "use strict";
         if (data.requireAuth === 1) {
-            view.clearTrackerStatus(tracker.id, ['auth']);
-            return view.setTrackerStatus(tracker.id, 'auth', {
+            view.resetTrackerStatusById(tracker.id, ['auth']);
+            return view.setTrackerStatusById(tracker.id, 'auth', {
                 url: tracker.search.loginUrl
             });
         }
-        view.clearTrackerStatus(tracker.id);
+        view.resetTrackerStatusById(tracker.id);
         view.writeResultList(tracker, request, data.torrentList);
     },
-    clearTrackerStatus: function(trackerId, except) {
+    resetTrackerStatusById: function(trackerId, except) {
         "use strict";
-        var trackerItem = view.varCache.trackerList[trackerId];
-        for (var status in trackerItem.status) {
-            if (except && except.indexOf(status) !== -1) continue;
-            if (trackerItem.status[status] === undefined) continue;
-            trackerItem.status[status].disable();
-            trackerItem.status[status] = undefined;
-        }
+        var trackerObj = view.varCache.trackerList[trackerId];
+        trackerObj.resetStatus(except);
     },
-    setTrackerStatus: function(trackerId, status, data) {
+    setTrackerStatusById: function(trackerId, status, data) {
         "use strict";
-        var trackerItem = view.varCache.trackerList[trackerId];
-        if (trackerItem.status[status] !== undefined) return;
-        if (status === 'auth') {
-            trackerItem.status[status] = (function(itemEl, data) {
-                var authEl;
-                mono.create(itemEl, {
-                   after: authEl = mono.create('div', {
-                       class: 'authItem',
-                       append: [
-                           mono.create('i', {
-                               class: ['icon', 'auth']
-                           }),
-                           mono.create('a', {
-                               text: mono.language.btn_login,
-                               href: data.url,
-                               target: '_blank'
-                           })
-                       ]
-                   })
-                });
-                return {
-                    disable: function() {
-                        authEl.parentNode.removeChild(authEl);
-                    }
-                }
-            })(trackerItem.itemEl, data);
-        } else
-        if (status === 'loading' || status === 'error') {
-            trackerItem.status[status] = (function(iconEl, data) {
-                iconEl.classList.add(status);
-                data && data.statusText && data.status && (iconEl.title = data.statusText + ' (' + data.status + ')');
-                return {
-                    disable: function() {
-                        iconEl.classList.remove(status);
-                        data && (iconEl.title = '');
-                    }
-                }
-            })(trackerItem.iconEl, data);
-        }
-        trackerItem = null;
+        var trackerObj = view.varCache.trackerList[trackerId];
+        trackerObj.setStatus(status, data);
     },
     onSearchError: function(tracker, xhrStatus, xhrStatusText) {
         "use strict";
-        view.clearTrackerStatus(tracker.id);
-        view.setTrackerStatus(tracker.id, 'error', {
+        view.resetTrackerStatusById(tracker.id);
+        view.setTrackerStatusById(tracker.id, 'error', {
             status: xhrStatus,
             statusText: xhrStatusText
         });
     },
     onSearchBegin: function(tracker) {
         "use strict";
-        view.clearTrackerStatus(tracker.id, ['auth']);
-        view.setTrackerStatus(tracker.id, 'loading');
+        view.resetTrackerStatusById(tracker.id, ['auth']);
+        view.setTrackerStatusById(tracker.id, 'loading');
 
         view.varCache.searchResultCounter.tracker[tracker.id] = 0;
     },
@@ -379,10 +423,7 @@ var view = {
         for (var trackerId in trackerList) {
             var trackerObj = trackerList[trackerId];
             count = searchResultCounter.tracker[trackerId] || 0;
-            if (trackerObj.count !== count) {
-                trackerObj.count = count;
-                trackerObj.countEl.textContent = count;
-            }
+            trackerObj.setCount(count);
         }
 
         var categoryObjList = view.varCache.categoryObjList;
@@ -393,16 +434,7 @@ var view = {
             } else {
                 count = searchResultCounter.category[categoryId] || 0;
             }
-            if (categoryObj.count !== count) {
-                categoryObj.count = count;
-                categoryObj.countEl.textContent = count;
-                categoryObj.isHidden = count === 0 ? 1 : 0;
-                if (categoryObj.isHidden) {
-                    categoryObj.itemEl.classList.add('hide');
-                } else {
-                    categoryObj.itemEl.classList.remove('hide');
-                }
-            }
+            categoryObj.setCount(count);
         }
     },
     resultCounterReset: function() {
@@ -440,23 +472,14 @@ var view = {
         "use strict";
         e.preventDefault();
         var trackerId = this.dataset.id;
+        var trackerObj = view.varCache.trackerList[trackerId];
 
         for (var _trackerId in view.varCache.trackerList) {
             if (_trackerId === trackerId) continue;
-            var tracker = view.varCache.trackerList[_trackerId];
-            if (tracker.selected === 1) {
-                tracker.itemEl.classList.remove('selected');
-                tracker.selected = 0;
-            }
+            view.varCache.trackerList[_trackerId].setSelect(0);
         }
 
-        if (this.classList.contains('selected')) {
-            this.classList.remove('selected');
-            view.varCache.trackerList[trackerId].selected = 0;
-        } else {
-            this.classList.add('selected');
-            view.varCache.trackerList[trackerId].selected = 1;
-        }
+        trackerObj.setSelect(trackerObj.selected ? 0 : 1);
     },
     once: function() {
         "use strict";
