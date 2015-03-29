@@ -42,7 +42,9 @@ var view = {
         ],
         resultSortBy: 1,
         tableSortColumn: 'quality',
-        trackerList: {}
+        trackerList: {},
+        searchResultCounter: {},
+        searchResultCache: []
     },
     writeTableHead: function() {
         "use strict";
@@ -199,7 +201,63 @@ var view = {
         }
         return trackerSelectedList || trackerList;
     },
-    onSearchSuccess: function(tracker, data) {
+    writeResultList: function(tracker, request, torrentList) {
+        "use strict";
+        var searchResultCache = view.varCache.searchResultCache;
+        var container = document.createDocumentFragment();
+        for (var i = 0, item; item = torrentList[i]; i++) {
+            if (engine.settings.hideZeroSeed === 1 && item.seed === 0) {
+                continue;
+            }
+            var cacheItemIndex = searchResultCache.length;
+            var cacheItem = {
+                id: cacheItemIndex,
+                api: item,
+                node: mono.create('tr', {
+                    data: {
+                        id: tracker.id,
+                        category: tracker.categoryId,
+                        index: cacheItemIndex
+                    },
+                    append: [
+                        mono.create('td', {
+                            class: 'time',
+                            title: item.date,
+                            text: item.date
+                        }),
+                        mono.create('td', {
+                            class: 'quality',
+                            text: 0
+                        }),
+                        mono.create('td', {
+                            class: 'title',
+                            text: item.title
+                        }),
+                        mono.create('td', {
+                            class: 'size',
+                            text: item.size
+                        }),
+                        engine.settings.hideSeedColumn === 1 ? undefined : mono.create('td', {
+                            class: 'seed',
+                            text: item.seed
+                        }),
+                        engine.settings.hidePeerColumn === 1 ? undefined : mono.create('td', {
+                            class: 'peer',
+                            text: item.peer
+                        })
+                    ]
+                })
+            };
+            searchResultCache.push(cacheItem);
+            container.appendChild(cacheItem.node);
+
+            view.varCache.searchResultCounter.tracker[tracker.id]++;
+            view.varCache.searchResultCounter.category[item.categoryId]++;
+            view.varCache.searchResultCounter.sum++;
+        }
+        view.domCache.resultTableBody.appendChild(container);
+    },
+    onSearchSuccess: function(tracker, request, data) {
         "use strict";
         if (data.requireAuth === 1) {
             view.clearTrackerStatus(tracker.id, ['auth']);
@@ -208,15 +266,7 @@ var view = {
             });
         }
         view.clearTrackerStatus(tracker.id);
-        console.log(tracker.id, data);
-    },
-    onSearchError: function(tracker, xhrStatus, xhrStatusText) {
-        "use strict";
-        view.clearTrackerStatus(tracker.id);
-        view.setTrackerStatus(tracker.id, 'error', {
-            status: xhrStatus,
-            statusText: xhrStatusText
-        });
+        view.writeResultList(tracker, request, data.torrentList);
     },
     clearTrackerStatus: function(trackerId, except) {
         "use strict";
@@ -271,19 +321,51 @@ var view = {
         }
         trackerItem = null;
     },
+    onSearchError: function(tracker, xhrStatus, xhrStatusText) {
+        "use strict";
+        view.clearTrackerStatus(tracker.id);
+        view.setTrackerStatus(tracker.id, 'error', {
+            status: xhrStatus,
+            statusText: xhrStatusText
+        });
+    },
     onSearchBegin: function(tracker) {
         "use strict";
         view.clearTrackerStatus(tracker.id, ['auth']);
         view.setTrackerStatus(tracker.id, 'loading');
+
+        view.varCache.searchResultCounter.tracker[tracker.id] = 0;
+    },
+    resetResultCounter: function() {
+        "use strict";
+        view.varCache.searchResultCache = [];
+        view.varCache.searchResultCounter = {
+            tracker: {},
+            category: (function() {
+                "use strict";
+                var obj = {};
+                var categoryList = view.varCache.categoryList;
+                for (var item in categoryList) {
+                    var id = categoryList[item].id;
+                    obj[id] = 0;
+                }
+                return obj;
+            })(),
+            sum: 0
+        };
+
+        //TODO: Update dom
     },
     search: function(request) {
         "use strict";
+        view.domCache.resultTableBody.textContent = '';
+        view.resetResultCounter();
         var trackerList = view.getTrackerList();
         exKit.searchList(trackerList, request, {
             onSuccess: view.onSearchSuccess,
             onError: view.onSearchError,
             onBegin: view.onSearchBegin
-        })
+        });
     },
     onTrackerListItemClick: function(e) {
         "use strict";

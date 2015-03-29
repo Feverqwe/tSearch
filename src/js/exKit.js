@@ -388,6 +388,10 @@ var exKit = {
                 return - 1;
             }
             return exKit.funcList.idInCategoryList.call(this, cId);
+        },
+        trim: function(string) {
+            "use strict";
+            return $.trim(string);
         }
     },
     getArgs: function(globalArgs, args) {
@@ -659,6 +663,10 @@ var exKit = {
                     value = value.textContent;
                 }
 
+                if (value !== null) {
+                    value = $.trim(value);
+                }
+
                 if ((value === null || value.length === 0) && tracker.search.onEmptySelectorValue[key] !== undefined) {
                     value = tracker.search.onEmptySelectorValue[key](el);
                 }
@@ -701,6 +709,9 @@ var exKit = {
             if (!mono.isEmptyObject(trObj.error)) {
                 console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
             }
+            if (trObj.column.categoryId === undefined) {
+                trObj.column.categoryId = -1;
+            }
             torrentList.push(trObj.column);
         }
         cb({torrentList: torrentList});
@@ -727,7 +738,7 @@ var exKit = {
             data: (tracker.search.requestData || '').replace('%search%', request),
             success: (tracker.search.parseResponse || exKit.parseResponse).bind(null, tracker, request, function(data) {
                 onSearch.onDone(tracker);
-                onSearch.onSuccess(tracker, data);
+                onSearch.onSuccess(tracker, request, data);
             }),
             error: function(xhr) {
                 onSearch.onDone(tracker);
