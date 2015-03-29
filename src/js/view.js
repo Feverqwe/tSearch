@@ -216,7 +216,7 @@ var view = {
                 node: mono.create('tr', {
                     data: {
                         id: tracker.id,
-                        category: tracker.categoryId,
+                        category: item.categoryId,
                         index: cacheItemIndex
                     },
                     append: [
