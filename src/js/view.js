@@ -10,7 +10,7 @@ var view = {
         peerFilter: document.getElementById('peer_filter'),
         resultTableHead: document.getElementById('result_table_head'),
         resultTableBody: document.getElementById('result_table_body'),
-        resultCategoryContainer: document.getElementById('result_category_container'),
+        categoryContainer: document.getElementById('result_category_container'),
         profileSelect: document.getElementById('profile_select'),
         trackerList: document.getElementById('tracker_list')
     },
@@ -44,7 +44,17 @@ var view = {
         tableSortColumn: 'quality',
         trackerList: {},
         searchResultCounter: {},
-        searchResultCache: []
+        searchResultCache: [],
+        trackerListStyle: undefined,
+        filter: {
+            trackerList: undefined,
+            category: undefined,
+            word: undefined,
+            size: undefined,
+            data: undefined,
+            seed: undefined,
+            peer: undefined
+        }
     },
     writeTableHead: function() {
         "use strict";
@@ -167,12 +177,20 @@ var view = {
     setTrackerSelect: function(trackerObj, state) {
         "use strict";
         if (state === trackerObj.selected) return;
+        if (view.varCache.filter.trackerList === undefined) {
+            view.varCache.filter.trackerList = [];
+        }
+        var pos = view.varCache.filter.trackerList.indexOf(trackerObj.id);
         if (state) {
-            this.classList.remove('selected');
-            trackerObj.selected = 0;
-        } else {
-            this.classList.add('selected');
+            trackerObj.itemEl.classList.add('selected');
             trackerObj.selected = 1;
+
+            (pos === -1) && view.varCache.filter.trackerList.push(trackerObj.id);
+        } else {
+            trackerObj.itemEl.classList.remove('selected');
+            trackerObj.selected = 0;
+
+            (pos !== -1) && view.varCache.filter.trackerList.splice(pos, 1);
         }
     },
     selectProfile: function(profileName) {
@@ -192,7 +210,9 @@ var view = {
                 var trackerObj = view.varCache.trackerList[tracker.id] = {
                     status: {}
                 };
+                trackerObj.id = tracker.id;
                 trackerObj.count = 0;
+                trackerObj.selected = 0;
                 view.domCache.trackerList.appendChild(trackerObj.itemEl = mono.create('div', {
                     data: {
                         id: tracker.id
@@ -239,9 +259,23 @@ var view = {
             categoryObj.itemEl.classList.remove('hide');
         }
     },
+    setCategorySelect: function(categoryObj, state) {
+        "use strict";
+        if (state === categoryObj.selected) return;
+        if (state) {
+            categoryObj.itemEl.classList.add('selected');
+            categoryObj.selected = 1;
+            view.varCache.filter.category = categoryObj.id;
+
+            //TODO: Filer update!
+        } else {
+            categoryObj.itemEl.classList.remove('selected');
+            categoryObj.selected = 0;
+        }
+    },
     writeCategory: function() {
         "use strict";
-        mono.create(view.domCache.resultCategoryContainer, {
+        mono.create(view.domCache.categoryContainer, {
             append: (function() {
                 var elList = [];
                 for (var i = 0, categoryObj; categoryObj = view.varCache.categoryList[i]; i++) {
@@ -251,8 +285,9 @@ var view = {
                     var className = 'hide';
                     var data = {};
                     if (categoryObj.id === undefined) {
-                        data.id = categoryObj.id;
                         className = 'selected'
+                    } else {
+                        data.id = categoryObj.id;
                     }
                     elList.push(categoryObj.itemEl = mono.create('div', {
                         class: className,
@@ -268,6 +303,7 @@ var view = {
                         ]
                     }));
                     categoryObj.setCount = view.setCategoryCount.bind(null, categoryObj);
+                    categoryObj.setSelect = view.setCategorySelect.bind(null, categoryObj);
                 }
                 return elList;
             })()
@@ -481,6 +517,19 @@ var view = {
 
         trackerObj.setSelect(trackerObj.selected ? 0 : 1);
     },
+    onCategoryListItemClick: function(e) {
+        "use strict";
+        e.preventDefault();
+        var categoryId = this.dataset.id;
+        var categoryObj = view.varCache.categoryObjList[categoryId];
+
+        for (var _categoryObj in view.varCache.categoryObjList) {
+            if (_categoryObj === categoryId) continue;
+            view.varCache.categoryObjList[_categoryObj].setSelect(0);
+        }
+
+        categoryObj.setSelect(1);
+    },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
@@ -518,6 +567,16 @@ var view = {
                 return;
             }
             view.onTrackerListItemClick.call(el, e);
+        });
+
+        view.domCache.categoryContainer.addEventListener('click', function(e) {
+            var el = e.target;
+            if (this === el) return;
+            while (el.parentNode !== this) {
+                el = el.parentNode;
+            }
+
+            view.onCategoryListItemClick.call(el, e);
         });
 
         view.writeTableHead();
