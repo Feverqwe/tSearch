@@ -581,6 +581,18 @@ var view = {
         }
         // TODO: Update filter
     },
+    rmChildTextNodes: function(el) {
+        "use strict";
+        var index = 0;
+        var node;
+        while (node = el.childNodes[index]) {
+            if (node.nodeType !== 3) {
+                index++;
+                continue;
+            }
+            el.removeChild(node);
+        }
+    },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
@@ -653,29 +665,16 @@ var view = {
             view.selectProfile(this.value);
         });
 
+        view.rmChildTextNodes(view.domCache.timeFilterSelect);
         view.domCache.timeFilterSelect.addEventListener('change', function() {
-            var value = this.value;
-            if (value === 'range') {
+            if (this.value === 'range') {
                 view.domCache.timeFilterRange.classList.add('show');
                 view.varCache.filter.date = [null, null];
             } else {
                 view.domCache.timeFilterRange.classList.remove('show');
                 var date = parseInt(Date.now() / 1000);
-                if (value === "all") {
-                    date = 0;
-                } else if (value === "1h") {
-                    date -= 60 * 60;
-                } else if (value === "24h") {
-                    date -= 60 * 60 * 24;
-                } else if (value === "72h") {
-                    date -= 60 * 60 * 24 * 3;
-                } else if (value === "1w") {
-                    date -= 60 * 60 * 24 * 7;
-                } else if (value === "1m") {
-                    date -= 60 * 60 * 24 * 30;
-                } else if (value === "1y") {
-                    date -= 60 * 60 * 24 * 365;
-                }
+                var seconds = parseInt(this.childNodes[this.selectedIndex].dataset.seconds);
+                date -= seconds;
                 view.varCache.filter.date = date;
             }
 
