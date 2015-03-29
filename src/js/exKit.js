@@ -539,7 +539,7 @@ var exKit = {
     },
     prepareTracker: function(tracker) {
         "use strict";
-        var itemList = ['onGetValue', 'onFindSelector', 'onSelectorIsNotFound', 'onEmptySelectorValue'];
+        var itemList = ['onGetValue', 'onFindSelector', 'onSelectorIsNotFound', 'onSelectorIsNotFoundSkip', 'onEmptySelectorValue'];
         for (var i = 0, item; item = itemList[i]; i++) {
             if (!tracker.search[item]) {
                 tracker.search[item] = {};
@@ -642,6 +642,10 @@ var exKit = {
                     cache[item.selector] = el.find(item.selector).get(0);
                 }
                 var value = cache[item.selector];
+
+                if (value === undefined && tracker.search.onSelectorIsNotFoundSkip[key]) {
+                    continue;
+                }
 
                 if (value === undefined && tracker.search.onSelectorIsNotFound[key] !== undefined) {
                     value = tracker.search.onSelectorIsNotFound[key](el);

@@ -53,6 +53,9 @@ engine.trackerLib['rutracker'] = {
         },
         onEmptySelectorValue: {
             seed: {exec: 'return', args: 0}
+        },
+        onSelectorIsNotFoundSkip: {
+            downloadUrl: 1
         }
     }
 };
