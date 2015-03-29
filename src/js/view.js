@@ -6,13 +6,24 @@ var view = {
         requestInput: document.getElementById('request_input'),
         clearBtn: document.getElementById('clear_btn'),
         searchBtn: document.getElementById('search_btn'),
-        seedFilter: document.getElementById('seed_filter'),
-        peerFilter: document.getElementById('peer_filter'),
         resultTableHead: document.getElementById('result_table_head'),
         resultTableBody: document.getElementById('result_table_body'),
         categoryContainer: document.getElementById('result_category_container'),
         profileSelect: document.getElementById('profile_select'),
-        trackerList: document.getElementById('tracker_list')
+        trackerList: document.getElementById('tracker_list'),
+        wordFilter: document.getElementById('wordFilter'),
+        sizeFilterMin: document.getElementById('size_filter_from'),
+        sizeFilterMax: document.getElementById('size_filter_to'),
+        timeFilterSelect: document.getElementById('time_filter_select'),
+        timeFilterRange: document.getElementById('time_filter_range'),
+        timeFilterMin: document.getElementById('time_filter_from'),
+        timeFilterMax: document.getElementById('time_filter_to'),
+        seedFilter: document.getElementById('seed_filter'),
+        peerFilter: document.getElementById('peer_filter'),
+        seedFilterMin: document.getElementById('seed_filter_from'),
+        seedFilterMax: document.getElementById('seed_filter_to'),
+        peerFilterMin: document.getElementById('peer_filter_from'),
+        peerFilterMax: document.getElementById('peer_filter_to')
     },
     varCache: {
         categoryList: [
@@ -530,6 +541,43 @@ var view = {
 
         categoryObj.setSelect(1);
     },
+    onChangeFilter: function(type) {
+        "use strict";
+        var isRange;
+        var index = 0;
+        var key;
+        var value;
+        if (type === 'wordFilter') {
+            view.varCache.filter.wordFilter = this.value;
+        } else
+        if (type === 'sizeFilterMin' || (type === 'sizeFilterMax' && (index = 1))) {
+            isRange = 1;
+            key = 'size';
+            value = parseFloat(this.value);
+        } else
+        if (type === 'timeFilterMin' || (type === 'timeFilterMax' && (index = 1))) {
+            isRange = 1;
+            key = 'date';
+            value = parseInt(this.dataset.date);
+        } else
+        if (type === 'seedFilterMin' || (type === 'seedFilterMax' && (index = 1))) {
+            isRange = 1;
+            key = 'seed';
+            value = parseInt(this.value);
+        } else
+        if (type === 'peerFilterMin' || (type === 'peerFilterMax' && (index = 1))) {
+            isRange = 1;
+            key = 'peer';
+            value = parseInt(this.value);
+        }
+        if (isRange) {
+            if (view.varCache.filter[key] === undefined) {
+                view.varCache.filter[key] = [null, null];
+            }
+            view.varCache.filter[key][index] = value;
+        }
+        // TODO: Update filter
+    },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
@@ -555,6 +603,12 @@ var view = {
                 view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
             }
         });
+
+        for (var i = 0, list = ['wordFilter', 'sizeFilterMin',
+            'sizeFilterMax', 'timeFilterMin',
+            'timeFilterMax', 'seedFilterMin', 'seedFilterMax', 'peerFilterMin', 'peerFilterMax'], type; type = list[i]; i++) {
+            view.domCache[type].addEventListener('keyup', mono.throttle(view.onChangeFilter.bind(view.domCache[type], type), 500));
+        }
 
         view.domCache.trackerList.addEventListener('click', function(e) {
             var el = e.target;
@@ -593,6 +647,35 @@ var view = {
                 return;
             }
             view.selectProfile(this.value);
+        });
+
+        view.domCache.timeFilterSelect.addEventListener('change', function() {
+            var value = this.value;
+            if (value === 'range') {
+                view.domCache.timeFilterRange.classList.add('show');
+                view.varCache.filter.data = [null, null];
+            } else {
+                view.domCache.timeFilterRange.classList.remove('show');
+                var date = parseInt(Date.now() / 1000);
+                if (value === "all") {
+                    date = 0;
+                } else if (value === "1h") {
+                    date -= 60 * 60;
+                } else if (value === "24h") {
+                    date -= 60 * 60 * 24;
+                } else if (value === "72h") {
+                    date -= 60 * 60 * 24 * 3;
+                } else if (value === "1w") {
+                    date -= 60 * 60 * 24 * 7;
+                } else if (value === "1m") {
+                    date -= 60 * 60 * 24 * 30;
+                } else if (value === "1y") {
+                    date -= 60 * 60 * 24 * 365;
+                }
+                view.varCache.filter.data = date;
+            }
+
+            // TODO: Update filter
         });
 
         if (engine.settings.hideSeedColumn === 1) {
