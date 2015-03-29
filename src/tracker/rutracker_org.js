@@ -50,6 +50,9 @@ engine.trackerLib['rutracker'] = {
         },
         onGetValue: {
             categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]}
+        },
+        onEmptySelectorValue: {
+            seed: {exec: 'return', args: 0}
         }
     }
 };

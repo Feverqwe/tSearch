@@ -201,6 +201,20 @@ var view = {
         }
         return trackerSelectedList || trackerList;
     },
+    formatSeedPeer: function(value) {
+        "use strict";
+        if (value === undefined) {
+            value = '-';
+        }
+        return value;
+    },
+    formatSize: function(value) {
+        "use strict";
+        if (value === undefined) {
+            value = 'n/a';
+        }
+        return value;
+    },
     writeResultList: function(tracker, request, torrentList) {
         "use strict";
         var searchResultCache = view.varCache.searchResultCache;
@@ -208,6 +222,9 @@ var view = {
         for (var i = 0, item; item = torrentList[i]; i++) {
             if (engine.settings.hideZeroSeed === 1 && item.seed === 0) {
                 continue;
+            }
+            if (item.categoryId === undefined) {
+                item.categoryId = -1;
             }
             var cacheItemIndex = searchResultCache.length;
             var cacheItem = {
@@ -248,9 +265,9 @@ var view = {
                         mono.create('td', {
                             class: 'size',
                             append: [
-                                !item.downloadUrl ? item.size : mono.create('a', {
+                                !item.downloadUrl ? view.formatSize(item.size) : mono.create('a', {
                                     class: 'download',
-                                    text: item.size,
+                                    text: view.formatSize(item.size) + ' ↓',
                                     href: item.downloadUrl,
                                     target: '_blank'
                                 })
@@ -258,11 +275,11 @@ var view = {
                         }),
                         engine.settings.hideSeedColumn === 1 ? undefined : mono.create('td', {
                             class: 'seed',
-                            text: item.seed
+                            text: view.formatSeedPeer(item.seed)
                         }),
                         engine.settings.hidePeerColumn === 1 ? undefined : mono.create('td', {
                             class: 'peer',
-                            text: item.peer
+                            text: view.formatSeedPeer(item.peer)
                         })
                     ]
                 })

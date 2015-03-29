@@ -485,16 +485,16 @@ var exKit = {
             if (item.if !== undefined) {
                 if (typeof item.if !== 'function') {
                     item.if = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.if));
-                    item.true && (item.true = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.true)));
-                    item.false && (item.false = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.false)));
+                    item.then && (item.then = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.then)));
+                    item.else && (item.else = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.else)));
                     --i;
                     continue;
                 }
 
                 if (item.if.apply(this, args)) {
-                    item.true && (this.scope.context = item.true.apply(this, args));
+                    item.then && (this.scope.context = item.then.apply(this, args));
                 } else {
-                    item.false && (this.scope.context = item.false.apply(this, args));
+                    item.else && (this.scope.context = item.else.apply(this, args));
                 }
             } else
             if (type === 'object' && (func = exKit.funcList[item[0]]) !== undefined) {
@@ -708,9 +708,6 @@ var exKit = {
             }
             if (!mono.isEmptyObject(trObj.error)) {
                 console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
-            }
-            if (trObj.column.categoryId === undefined) {
-                trObj.column.categoryId = -1;
             }
             torrentList.push(trObj.column);
         }
