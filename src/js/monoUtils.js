@@ -318,7 +318,7 @@ mono.create.hook = {
                 if (!subEl) {
                     continue;
                 }
-                if (typeof (subEl) === 'string') {
+                if (typeof (subEl) !== 'object') {
                     subEl = document.createTextNode(subEl);
                 }
                 el.appendChild(subEl);

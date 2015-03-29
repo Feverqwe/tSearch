@@ -31,7 +31,7 @@ var view = {
             {id: 10, lang: 'categoryXXX'},
             {id: -1, lang: 'categoryOther'}
         ],
-        categoryObj: {},
+        categoryObjList: {},
         resultTableColumnList: [
             {id: 'time',    size: 125, lang: 'columnTime'},
             {id: 'quality', size: 31,  lang: 'columnQuality'},
@@ -158,25 +158,25 @@ var view = {
         mono.create(view.domCache.resultCategoryContainer, {
             append: (function() {
                 var elList = [];
-                for (var i = 0, item; item = view.varCache.categoryList[i]; i++) {
-                    view.varCache.categoryObj[item.id] = item;
-                    item.count = 0;
-                    item.isHidden = 1;
+                for (var i = 0, categoryObj; categoryObj = view.varCache.categoryList[i]; i++) {
+                    view.varCache.categoryObjList[categoryObj.id] = categoryObj;
+                    categoryObj.count = 0;
+                    categoryObj.isHidden = 1;
                     var className = 'hide';
                     var data = {};
-                    if (item.id === undefined) {
-                        data.id = item.id;
+                    if (categoryObj.id === undefined) {
+                        data.id = categoryObj.id;
                         className = 'selected'
                     }
-                    elList.push(item.itemEl = mono.create('div', {
+                    elList.push(categoryObj.itemEl = mono.create('div', {
                         class: className,
                         data: data,
                         append: [
                             mono.create('a', {
                                 href: '#',
-                                text: mono.language[item.lang]
+                                text: mono.language[categoryObj.lang]
                             }),
-                            item.countEl = mono.create('i', {
+                            categoryObj.countEl = mono.create('i', {
                                 text: 0
                             })
                         ]
@@ -230,12 +230,31 @@ var view = {
                             text: 0
                         }),
                         mono.create('td', {
-                            class: 'title',
-                            text: item.title
+                            append: [
+                                mono.create('a', {
+                                    class: 'title',
+                                    text: item.title,
+                                    href: item.url,
+                                    target: '_blank'
+                                }),
+                                !item.categoryTitle ? undefined : mono.create('a', {
+                                    class: 'category',
+                                    text: item.categoryTitle,
+                                    href: item.categoryUrl,
+                                    target: '_blank'
+                                })
+                            ]
                         }),
                         mono.create('td', {
                             class: 'size',
-                            text: item.size
+                            append: [
+                                !item.downloadUrl ? item.size : mono.create('a', {
+                                    class: 'download',
+                                    text: item.size,
+                                    href: item.downloadUrl,
+                                    target: '_blank'
+                                })
+                            ]
                         }),
                         engine.settings.hideSeedColumn === 1 ? undefined : mono.create('td', {
                             class: 'seed',
@@ -256,6 +275,7 @@ var view = {
             view.varCache.searchResultCounter.sum++;
         }
         view.domCache.resultTableBody.appendChild(container);
+        view.resultCounterUpdate();
     },
     onSearchSuccess: function(tracker, request, data) {
         "use strict";
@@ -336,7 +356,41 @@ var view = {
 
         view.varCache.searchResultCounter.tracker[tracker.id] = 0;
     },
-    resetResultCounter: function() {
+    resultCounterUpdate: function() {
+        "use strict";
+        var count;
+        var searchResultCounter = view.varCache.searchResultCounter;
+        var trackerList = view.varCache.trackerList;
+        for (var trackerId in trackerList) {
+            var trackerObj = trackerList[trackerId];
+            count = searchResultCounter.tracker[trackerId] || 0;
+            if (trackerObj.count !== count) {
+                trackerObj.count = count;
+                trackerObj.countEl.textContent = count;
+            }
+        }
+
+        var categoryObjList = view.varCache.categoryObjList;
+        for (var categoryId in view.varCache.categoryObjList) {
+            var categoryObj = categoryObjList[categoryId];
+            if (categoryId === 'undefined') {
+                count = searchResultCounter.sum;
+            } else {
+                count = searchResultCounter.category[categoryId] || 0;
+            }
+            if (categoryObj.count !== count) {
+                categoryObj.count = count;
+                categoryObj.countEl.textContent = count;
+                categoryObj.isHidden = count === 0 ? 1 : 0;
+                if (categoryObj.isHidden) {
+                    categoryObj.itemEl.classList.add('hide');
+                } else {
+                    categoryObj.itemEl.classList.remove('hide');
+                }
+            }
+        }
+    },
+    resultCounterReset: function() {
         "use strict";
         view.varCache.searchResultCache = [];
         view.varCache.searchResultCounter = {
@@ -354,12 +408,12 @@ var view = {
             sum: 0
         };
 
-        //TODO: Update dom
+        view.resultCounterUpdate();
     },
     search: function(request) {
         "use strict";
         view.domCache.resultTableBody.textContent = '';
-        view.resetResultCounter();
+        view.resultCounterReset();
         var trackerList = view.getTrackerList();
         exKit.searchList(trackerList, request, {
             onSuccess: view.onSearchSuccess,
@@ -415,12 +469,6 @@ var view = {
             }
         });
 
-        view.domCache.searchBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            var request = view.domCache.requestInput.value.trim();
-            view.search(request);
-        });
-
         view.domCache.trackerList.addEventListener('click', function(e) {
             var el = e.target;
             if (this === el) return;
@@ -462,6 +510,14 @@ var view = {
 
         document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
     },
+    onJqReady: function() {
+        "use strict";
+        view.domCache.searchBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var request = view.domCache.requestInput.value.trim();
+            view.search(request);
+        });
+    },
     onUiReady: function() {
         "use strict";
 
@@ -471,6 +527,7 @@ var view = {
 var define = function(name, func) {
     "use strict";
     if (name === 'jquery') {
+        view.onJqReady();
         document.body.appendChild(mono.create('script', {src: 'js/jquery-ui.min.js'}));
         return;
     }
