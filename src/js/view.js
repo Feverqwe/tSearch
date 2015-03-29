@@ -223,9 +223,7 @@ var view = {
             if (engine.settings.hideZeroSeed === 1 && item.seed === 0) {
                 continue;
             }
-            if (item.categoryId === undefined) {
-                item.categoryId = -1;
-            }
+            var itemCategoryId = item.categoryId === undefined ? -1 : item.categoryId;
             var cacheItemIndex = searchResultCache.length;
             var cacheItem = {
                 id: cacheItemIndex,
@@ -233,7 +231,7 @@ var view = {
                 node: mono.create('tr', {
                     data: {
                         id: tracker.id,
-                        category: item.categoryId,
+                        category: itemCategoryId,
                         index: cacheItemIndex
                     },
                     append: [
@@ -288,7 +286,7 @@ var view = {
             container.appendChild(cacheItem.node);
 
             view.varCache.searchResultCounter.tracker[tracker.id]++;
-            view.varCache.searchResultCounter.category[item.categoryId]++;
+            view.varCache.searchResultCounter.category[itemCategoryId]++;
             view.varCache.searchResultCounter.sum++;
         }
         view.domCache.resultTableBody.appendChild(container);
