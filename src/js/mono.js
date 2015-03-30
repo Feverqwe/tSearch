@@ -72,6 +72,9 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
       mono.isGM = true;
       if (window.chrome !== undefined) {
         mono.isTM = true;
+      } else
+      if (navigator.userAgent.indexOf('Maxthon/') !== -1) {
+        mono.isVM = true;
       }
       return;
     }
@@ -224,7 +227,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
    * @param {*} message - Message
    * @param {function} [cb] - Callback function
    * @param {string} [hook] - Hook string
-   * @returns {*|callbackId} - callback id
+   * @returns {*|string} - callback id
    */
   mono.sendMessage = function(message, cb, hook) {
     message = {
@@ -244,7 +247,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
    * @param {*} message - Message
    * @param {function} [cb] - Callback function
    * @param {string} [hook] - Hook string
-   * @returns {*|callbackId} - callback id
+   * @returns {*|string} - callback id
    */
   mono.sendMessageToActiveTab = function(message, cb, hook) {
     message = {
@@ -280,7 +283,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
       if (message.hook !== undefined) {
         var hookFunc = mono.sendHook[message.hook];
         if (hookFunc !== undefined) {
-          return mono.sendHook[message.hook](message.data, mResponse);
+          return hookFunc(message.data, mResponse);
         }
       }
       cb.call(_this, message.data, mResponse);
@@ -1054,7 +1057,7 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
           var data = value.substr(1);
           var type = value[0];
           if (type === 'i') {
-            value = parseInt(data);
+            value = parseFloat(data);
           } else if (type === 'b') {
             value = data === 'true';
           } else {
@@ -1225,13 +1228,13 @@ var mono = (typeof mono === 'undefined') ? undefined : mono;
     }
   };
 
-  if (false && mono.isOpera && window.widget) {
+  if (false && mono.isOpera && typeof widget !== 'undefined') {
     // remove false if need use prefs
     /**
      * Opera storage
      * @type {{get: Function, set: Function, remove: Function, clear: Function}}
      */
-    mono.storage = getLocalStorage(window.widget.preferences);
+    mono.storage = getLocalStorage(widget.preferences);
     mono.storage.local = mono.storage.sync = mono.storage;
     return;
   }

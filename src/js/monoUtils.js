@@ -253,7 +253,7 @@ mono.isEmptyObject = function(obj) {
  * Create new element
  * @param {Element|String} tagName
  * @param {Object} obj
- * @returns {Element}
+ * @returns {Element|Node}
  */
 mono.create = function create(tagName, obj) {
     "use strict";
