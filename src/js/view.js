@@ -11,7 +11,7 @@ var view = {
         categoryContainer: document.getElementById('result_category_container'),
         profileSelect: document.getElementById('profile_select'),
         trackerList: document.getElementById('tracker_list'),
-        wordFilter: document.getElementById('wordFilter'),
+        wordFilterInput: document.getElementById('word_filter_input'),
         sizeFilterMin: document.getElementById('size_filter_from'),
         sizeFilterMax: document.getElementById('size_filter_to'),
         timeFilterSelect: document.getElementById('time_filter_select'),
@@ -65,7 +65,8 @@ var view = {
             date: undefined,
             seed: undefined,
             peer: undefined
-        }
+        },
+        filterStyle: undefined
     },
     writeTableHead: function() {
         "use strict";
@@ -127,6 +128,46 @@ var view = {
                 return elList;
             })()
         });
+    },
+    filterUpdate: function() {
+        "use strict";
+        var searchResultCache = view.varCache.searchResultCache;
+        var hasChange = false;
+        var filter;
+        for (var i = 0, cacheItem; cacheItem = searchResultCache[i]; i++) {
+            filter = view.getFilterState(cacheItem.api);
+            if (filter === cacheItem.filter) {
+                continue;
+            }
+            cacheItem.node.dataset.filter = filter;
+            hasChange = true;
+        }
+
+        if (!hasChange) return;
+
+        filter = view.getFilterStyleState();
+
+        var trackerList = view.varCache.filter.trackerList || [];
+        trackerList = trackerList.map(function(trackerId) {
+            return ':not([data-id="'+trackerId+'"])';
+        });
+        trackerList = trackerList.join('');
+
+        var stylePath = '#result_table_body ';
+        var styleText = (!filter ? '' : stylePath+'tr:not([data-filter="'+filter+'"]){display: none;}') +
+            (!view.varCache.filter.category ? '' : stylePath+'tr:not([data-category="'+view.varCache.filter.category+'"]){display: none;}') +
+            (!trackerList ? '' : stylePath+'tr'+trackerList+'{display: none;}');
+
+        if (view.varCache.filterStyle) {
+            view.varCache.filterStyle.parentNode.removeChild(view.varCache.filterStyle);
+            view.varCache.filterStyle = undefined;
+        }
+
+        if (!styleText) return;
+
+        document.body.appendChild(view.varCache.filterStyle = mono.create('style', {
+            text: styleText
+        }));
     },
     setTrackerCount: function(trackerObj, count) {
         "use strict";
@@ -203,6 +244,7 @@ var view = {
 
             (pos !== -1) && view.varCache.filter.trackerList.splice(pos, 1);
         }
+        view.filterUpdate();
     },
     selectProfile: function(profileName) {
         "use strict";
@@ -278,7 +320,7 @@ var view = {
             categoryObj.selected = 1;
             view.varCache.filter.category = categoryObj.id;
 
-            //TODO: Filer update!
+            view.filterUpdate();
         } else {
             categoryObj.itemEl.classList.remove('selected');
             categoryObj.selected = 0;
@@ -320,20 +362,20 @@ var view = {
             })()
         });
     },
-    getTrackerList: function() {
+    getTrackerList: function(selected) {
         "use strict";
         var trackerList = [];
         var trackerSelectedList = [];
-        for (var key in view.varCache.trackerList) {
-            if (view.varCache.trackerList[key].selected === 1) {
-                trackerSelectedList.push(key);
+        for (var trackerId in view.varCache.trackerList) {
+            if (view.varCache.trackerList[trackerId].selected === 1) {
+                trackerSelectedList.push(trackerId);
             }
-            trackerList.push(key);
+            trackerList.push(trackerId);
         }
         if (trackerSelectedList.length === 0) {
             trackerSelectedList = null;
         }
-        return trackerSelectedList || trackerList;
+        return trackerSelectedList || selected || trackerList;
     },
     formatSeedPeer: function(value) {
         "use strict";
@@ -359,24 +401,47 @@ var view = {
         var includeList = [];
         var excludeList = [];
         var typeList;
+        var isEmpty = true;
         for (var i = 0, len = wordList.length; i < len; i++) {
             mWord = wordList[i].replace(/&nbsp;/g, ' ');
             if (mWord.length > 1 && ['-', '!'].indexOf(mWord[0]) !== -1) {
                 mWord = mWord.substr(1);
                 typeList = excludeList;
             } else
-            if (mWord) {
+            if (mWord.length > 0) {
                 typeList = includeList;
             } else {
                 continue;
             }
             mWord = mWord.replace(view.filterWordR.text2safeR, '\\$1');
             typeList.push(mWord);
+            isEmpty = false;
         }
-        return [new RegExp(excludeList.join('|')), new RegExp(includeList.join('|'), 'g'), includeList.length, word];
+        if (isEmpty) return;
+
+        return [excludeList.length === 0 ? null : new RegExp(excludeList.join('|')), includeList.length === 0 ? null : new RegExp(includeList.join('|'), 'g'), includeList.length, word];
     },
     arrUnique: function (value, index, self) {
         return self.indexOf(value) === index;
+    },
+    getFilterStyleState: function() {
+        "use strict";
+        var list = [0,0,0,0,0];
+
+        var noZero = false;
+        var filter = view.varCache.filter;
+        var cList = ['word', 'size', 'date', 'seed', 'peer'];
+        for (var i = 0, type; type = cList[i]; i++) {
+            var item = filter[type];
+            if (item === undefined) continue;
+            if (typeof item === 'object' && item[0] === null && item[1] === null) {
+                continue;
+            }
+            list[i] = 1;
+            noZero = true;
+        }
+
+        return noZero ? list : undefined;
     },
     getFilterState: function(torrentObj) {
         "use strict";
@@ -388,20 +453,21 @@ var view = {
         }
         if (filter.word !== undefined) {
             var includeCount;
-            if (!filter.word[0].test(torrentObj.lowerTitle) && (includeCount = filter.word[1].match(torrentObj.lowerTitle))) {
-                if (includeCount.filter(view.arrUnique) === filter.word[2]) {
-                    list = 1;
+            if ((filter.word[0] === null || !filter.word[0].test(torrentObj.lowerTitle)) && (filter.word[1] === null || (includeCount = torrentObj.lowerTitle.match(filter.word[1])))) {
+                if (includeCount.filter(view.arrUnique).length === filter.word[2]) {
+                    list[0] = 1;
                 }
             }
         }
         var cList = ['size', undefined, 'seed', 'peer'];
-        if (typeof filter.date === 'number') {
-            list[2] = torrentObj.date >= filter.date;
+        if (typeof filter.date === 'number' && torrentObj.date >= filter.date) {
+            list[2] = 1;
         } else {
             cList[1] = 'date';
         }
         for (var i = 0, item; item = cList[i]; i++) {
             if (filter[item] !== undefined &&
+                (filter[item][0] !== null || filter[item][1] !== null) &&
                 (filter[item][0] === null || torrentObj[item] >= filter[item][0]) &&
                 (filter[item][1] === null || torrentObj[item] <= filter[item][1])) {
                 list[i + 1] = 1;
@@ -431,7 +497,8 @@ var view = {
                 data: {
                     id: tracker.id,
                     category: itemCategoryId,
-                    index: cacheItemIndex
+                    index: cacheItemIndex,
+                    filter: cacheItem.filter
                 },
                 append: [
                     mono.create('td', {
@@ -611,13 +678,13 @@ var view = {
         var index = 0;
         var key;
         var value;
-        if (type === 'wordFilter') {
-            view.varCache.filter.word = this.value;
+        if (type === 'wordFilterInput') {
+            view.varCache.filter.word = this.value || undefined;
         } else
         if (type === 'sizeFilterMin' || (type === 'sizeFilterMax' && (index = 1))) {
             isRange = 1;
             key = 'size';
-            value = parseFloat(this.value);
+            value = parseFloat(this.value) * 1024 * 1024 * 1024;
         } else
         if (type === 'timeFilterMin' || (type === 'timeFilterMax' && (index = 1))) {
             isRange = 1;
@@ -628,11 +695,17 @@ var view = {
             isRange = 1;
             key = 'seed';
             value = parseInt(this.value);
+            if (value <= 0) {
+                value = null;
+            }
         } else
         if (type === 'peerFilterMin' || (type === 'peerFilterMax' && (index = 1))) {
             isRange = 1;
             key = 'peer';
             value = parseInt(this.value);
+            if (value <= 0) {
+                value = null;
+            }
         }
         if (isRange) {
             if (view.varCache.filter[key] === undefined) {
@@ -643,7 +716,7 @@ var view = {
             }
             view.varCache.filter[key][index] = value;
         }
-        // TODO: Update filter
+        view.filterUpdate();
     },
     rmChildTextNodes: function(el) {
         "use strict";
@@ -683,11 +756,11 @@ var view = {
             }
         });
 
-        for (var i = 0, list = ['wordFilter', 'sizeFilterMin',
+        for (var i = 0, list = ['wordFilterInput', 'sizeFilterMin',
             'sizeFilterMax', 'timeFilterMin',
             'timeFilterMax', 'seedFilterMin', 'seedFilterMax',
             'peerFilterMin', 'peerFilterMax'], type; type = list[i]; i++) {
-            view.domCache[type].addEventListener('keyup', mono.throttle(view.onChangeFilter.bind(view.domCache[type], type), 500));
+            view.domCache[type].addEventListener('keyup', mono.throttle(view.onChangeFilter.bind(view.domCache[type], type), 250));
         }
 
         view.domCache.trackerList.addEventListener('click', function(e) {
@@ -736,13 +809,16 @@ var view = {
                 view.varCache.filter.date = [null, null];
             } else {
                 view.domCache.timeFilterRange.classList.remove('show');
-                var date = parseInt(Date.now() / 1000);
+                var date;
                 var seconds = parseInt(this.childNodes[this.selectedIndex].dataset.seconds);
-                date -= seconds;
+                if (seconds === 0) {
+                    date = undefined
+                } else {
+                    date = parseInt(Date.now() / 1000) - seconds;
+                }
                 view.varCache.filter.date = date;
             }
-
-            // TODO: Update filter
+            view.filterUpdate();
         });
 
         if (engine.settings.hideSeedColumn === 1) {
