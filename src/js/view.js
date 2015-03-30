@@ -349,73 +349,137 @@ var view = {
         }
         return value;
     },
+    filterWordR: {
+        text2safeR: /([{})(\][\\\.^$\|\?\+])/g
+    },
+    filterWordToReg: function(word) {
+        "use strict";
+        var mWord = word.toLowerCase().replace(/\\\s/g, '&nbsp;');
+        var wordList = mWord.split(/\s+/);
+        var includeList = [];
+        var excludeList = [];
+        var typeList;
+        for (var i = 0, len = wordList.length; i < len; i++) {
+            mWord = wordList[i].replace(/&nbsp;/g, ' ');
+            if (mWord.length > 1 && ['-', '!'].indexOf(mWord[0]) !== -1) {
+                mWord = mWord.substr(1);
+                typeList = excludeList;
+            } else
+            if (mWord) {
+                typeList = includeList;
+            } else {
+                continue;
+            }
+            mWord = mWord.replace(view.filterWordR.text2safeR, '\\$1');
+            typeList.push(mWord);
+        }
+        return [new RegExp(excludeList.join('|')), new RegExp(includeList.join('|'), 'g'), includeList.length, word];
+    },
+    arrUnique: function (value, index, self) {
+        return self.indexOf(value) === index;
+    },
+    getFilterState: function(torrentObj) {
+        "use strict";
+        var list = [0,0,0,0,0];
+
+        var filter = view.varCache.filter;
+        if (typeof filter.word === 'string') {
+            filter.word = view.filterWordToReg(filter.word);
+        }
+        if (filter.word !== undefined) {
+            var includeCount;
+            if (!filter.word[0].test(torrentObj.lowerTitle) && (includeCount = filter.word[1].match(torrentObj.lowerTitle))) {
+                if (includeCount.filter(view.arrUnique) === filter.word[2]) {
+                    list = 1;
+                }
+            }
+        }
+        var cList = ['size', undefined, 'seed', 'peer'];
+        if (typeof filter.date === 'number') {
+            list[2] = torrentObj.date >= filter.date;
+        } else {
+            cList[1] = 'date';
+        }
+        for (var i = 0, item; item = cList[i]; i++) {
+            if (filter[item] !== undefined &&
+                (filter[item][0] === null || torrentObj[item] >= filter[item][0]) &&
+                (filter[item][1] === null || torrentObj[item] <= filter[item][1])) {
+                list[i + 1] = 1;
+            }
+        }
+
+        return list;
+    },
     writeResultList: function(tracker, request, torrentList) {
         "use strict";
         var searchResultCache = view.varCache.searchResultCache;
         var container = document.createDocumentFragment();
-        for (var i = 0, item; item = torrentList[i]; i++) {
-            if (engine.settings.hideZeroSeed === 1 && item.seed === 0) {
+        for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
+            if (engine.settings.hideZeroSeed === 1 && torrentObj.seed === 0) {
                 continue;
             }
-            var itemCategoryId = item.categoryId === undefined ? -1 : item.categoryId;
+            var itemCategoryId = torrentObj.categoryId === undefined ? -1 : torrentObj.categoryId;
             var cacheItemIndex = searchResultCache.length;
             var cacheItem = {
                 id: cacheItemIndex,
-                api: item,
-                node: mono.create('tr', {
-                    data: {
-                        id: tracker.id,
-                        category: itemCategoryId,
-                        index: cacheItemIndex
-                    },
-                    append: [
-                        mono.create('td', {
-                            class: 'time',
-                            title: item.date,
-                            text: item.date
-                        }),
-                        mono.create('td', {
-                            class: 'quality',
-                            text: 0
-                        }),
-                        mono.create('td', {
-                            append: [
-                                mono.create('a', {
-                                    class: 'title',
-                                    text: item.title,
-                                    href: item.url,
-                                    target: '_blank'
-                                }),
-                                !item.categoryTitle ? undefined : mono.create('a', {
-                                    class: 'category',
-                                    text: item.categoryTitle,
-                                    href: item.categoryUrl,
-                                    target: '_blank'
-                                })
-                            ]
-                        }),
-                        mono.create('td', {
-                            class: 'size',
-                            append: [
-                                !item.downloadUrl ? view.formatSize(item.size) : mono.create('a', {
-                                    class: 'download',
-                                    text: view.formatSize(item.size) + ' ↓',
-                                    href: item.downloadUrl,
-                                    target: '_blank'
-                                })
-                            ]
-                        }),
-                        engine.settings.hideSeedColumn === 1 ? undefined : mono.create('td', {
-                            class: 'seed',
-                            text: view.formatSeedPeer(item.seed)
-                        }),
-                        engine.settings.hidePeerColumn === 1 ? undefined : mono.create('td', {
-                            class: 'peer',
-                            text: view.formatSeedPeer(item.peer)
-                        })
-                    ]
-                })
+                api: torrentObj
             };
+            torrentObj.lowerTitle = torrentObj.title.toLowerCase();
+            torrentObj.lowerCategoryTitle = torrentObj.categoryTitle.toLowerCase();
+            cacheItem.filter = view.getFilterState(torrentObj);
+            cacheItem.node = mono.create('tr', {
+                data: {
+                    id: tracker.id,
+                    category: itemCategoryId,
+                    index: cacheItemIndex
+                },
+                append: [
+                    mono.create('td', {
+                        class: 'time',
+                        title: torrentObj.date,
+                        text: torrentObj.date
+                    }),
+                    mono.create('td', {
+                        class: 'quality',
+                        text: 0
+                    }),
+                    mono.create('td', {
+                        append: [
+                            mono.create('a', {
+                                class: 'title',
+                                text: torrentObj.title,
+                                href: torrentObj.url,
+                                target: '_blank'
+                            }),
+                            !torrentObj.categoryTitle ? undefined : mono.create('a', {
+                                class: 'category',
+                                text: torrentObj.categoryTitle,
+                                href: torrentObj.categoryUrl,
+                                target: '_blank'
+                            })
+                        ]
+                    }),
+                    mono.create('td', {
+                        class: 'size',
+                        append: [
+                            !torrentObj.downloadUrl ? view.formatSize(torrentObj.size) : mono.create('a', {
+                                class: 'download',
+                                text: view.formatSize(torrentObj.size) + ' ↓',
+                                href: torrentObj.downloadUrl,
+                                target: '_blank'
+                            })
+                        ]
+                    }),
+                    engine.settings.hideSeedColumn === 1 ? undefined : mono.create('td', {
+                        class: 'seed',
+                        text: view.formatSeedPeer(torrentObj.seed)
+                    }),
+                    engine.settings.hidePeerColumn === 1 ? undefined : mono.create('td', {
+                        class: 'peer',
+                        text: view.formatSeedPeer(torrentObj.peer)
+                    })
+                ]
+            });
             searchResultCache.push(cacheItem);
             container.appendChild(cacheItem.node);
 
@@ -548,7 +612,7 @@ var view = {
         var key;
         var value;
         if (type === 'wordFilter') {
-            view.varCache.filter.wordFilter = this.value;
+            view.varCache.filter.word = this.value;
         } else
         if (type === 'sizeFilterMin' || (type === 'sizeFilterMax' && (index = 1))) {
             isRange = 1;
