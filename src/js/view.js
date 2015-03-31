@@ -418,7 +418,7 @@ var view = {
         if (value === undefined) {
             value = 'n/a';
         }
-        return view.bytesToString(value);
+        return view.bytesToString(value, 'n/a');
     },
     arrUnique: function (value, index, self) {
         return self.indexOf(value) === index;
