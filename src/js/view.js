@@ -144,8 +144,8 @@ var view = {
         for (var i = 0, cacheItem; cacheItem = searchResultCache[i]; i++) {
             var _filter = view.getFilterState(cacheItem.api);
             if (filter === undefined || _filter === filter) {
-                searchResultCounter.tracker[cacheItem.trackerId]++;
-                if (trackerList.length === 0 || trackerList.indexOf(cacheItem.trackerId) !== -1) {
+                searchResultCounter.tracker[cacheItem.id]++;
+                if (trackerList.length === 0 || trackerList.indexOf(cacheItem.id) !== -1) {
                     searchResultCounter.category[cacheItem.api.categoryId]++;
                     searchResultCounter.sum++;
                 }
@@ -469,9 +469,9 @@ var view = {
             var itemCategoryId = torrentObj.categoryId === undefined ? -1 : torrentObj.categoryId;
             var cacheItemIndex = searchResultCache.length;
             var cacheItem = {
-                id: cacheItemIndex,
+                index: cacheItemIndex,
                 api: torrentObj,
-                trackerId: tracker.id
+                id: tracker.id
             };
             torrentObj.lowerTitle = torrentObj.title.toLowerCase();
             torrentObj.lowerCategoryTitle = torrentObj.categoryTitle.toLowerCase();
