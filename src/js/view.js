@@ -152,8 +152,6 @@ var view = {
             cacheItem.node.dataset.filter = cacheItem.filter = _filter;
         }
 
-        view.resultCounterUpdate();
-
         trackerList = trackerList.map(function(trackerId) {
             return ':not([data-id="'+trackerId+'"])';
         });
@@ -163,6 +161,8 @@ var view = {
         var styleText = (!filter ? '' : stylePath+'tr:not([data-filter="'+filter+'"]){display: none;}') +
             (view.varCache.filter.category === undefined ? '' : stylePath+'tr:not([data-category="'+view.varCache.filter.category+'"]){display: none;}') +
             (!trackerList ? '' : stylePath+'tr'+trackerList+'{display: none;}');
+
+        view.resultCounterUpdate();
 
         if (view.varCache.filterStyle) {
             if (view.varCache.filterStyle.textContent === styleText) {
