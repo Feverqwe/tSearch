@@ -1,7 +1,7 @@
 @import "popup.css";
 body {
     min-width: 960px;
-    -webkit-user-select: none;
+    user-select: none;
 }
 
 .head {
@@ -104,15 +104,6 @@ body {
     width: 163px;
 }
 
-#result_table {
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 2px;
-}
-#result_table th {
-    font-weight: normal;
-}
-
 #result_category_container {
     margin-left: 4px;
     margin-bottom: 2px;
@@ -206,4 +197,110 @@ body {
 }
 .icon.auth {
     background-image: url(../img/login.png) !important;
+}
+
+#result_table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 2px;
+    user-select: text;
+    font-size: 12px;
+}
+#result_table th {
+    font-weight: normal;
+    border-bottom: 1px solid #c0c0c0;
+    color: #000 !important;
+}
+
+#result_table a {
+    text-decoration: none;
+}
+
+#result_table td.title-column {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-size: 14px;
+}
+
+#result_table .title-column > span {
+    display: block;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+#result_table .title a {
+    line-height: 130%;
+    padding-bottom: 1px;
+    border-bottom: 1px solid transparent;
+}
+#result_table .title a:link {
+    color: #1A3DC1;
+}
+#result_table .title a:visited {
+    color: #609;
+}
+#result_table .title a:link:hover {
+    border-bottom-color: #1A3DC1;
+}
+
+#result_table .title a:visited:hover {
+    border-bottom-color: #609;
+}
+
+#result_table .category {
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+#result_table .category > * {
+    vertical-align: middle;
+}
+
+#result_table .category a {
+    padding-left: 4px;
+    color: #093;
+    display: inline-block;
+}
+
+#result_table .category a:hover {
+    text-decoration: underline;
+}
+
+#result_table .icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 5px;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+#result_table .icon:hover {
+    opacity: 1;
+}
+
+#result_table .date-column {
+    text-align: left;
+    color: #666;
+}
+
+#result_table .seed-column,
+#result_table .peer-column{
+    text-align: center;
+}
+
+#result_table .quality-column {
+    text-align: center;
+}
+
+#result_table .size-column {
+    text-align: center;
+}
+
+#result_table .size-column a {
+    color: #000;
+}
+
+#result_table .size-column a:hover {
+    text-decoration: underline;
 }

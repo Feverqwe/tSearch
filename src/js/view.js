@@ -44,12 +44,12 @@ var view = {
         ],
         categoryObjList: {},
         resultTableColumnList: [
-            {id: 'time',    size: 125, lang: 'columnTime'},
+            {id: 'date',    size: 125, lang: 'columnTime'},
             {id: 'quality', size: 31,  lang: 'columnQuality'},
             {id: 'title',   size: 0,   lang: 'columnTitle'},
             {id: 'size',    size: 80,  lang: 'columnSize'},
-            {id: 'seeds',   size: 30,  lang: 'columnSeeds'},
-            {id: 'leechs',  size: 30,  lang: 'columnLeechs'}
+            {id: 'seed',   size: 30,  lang: 'columnSeeds'},
+            {id: 'peer',  size: 30,  lang: 'columnLeechs'}
         ],
         resultSortBy: 1,
         tableSortColumn: 'quality',
@@ -81,10 +81,10 @@ var view = {
                 var thList = [];
                 var hideList = [];
                 if (engine.settings.hideSeedColumn) {
-                    hideList.push('seeds');
+                    hideList.push('seed');
                 }
                 if (engine.settings.hidePeerColumn) {
-                    hideList.push('leechs');
+                    hideList.push('peer');
                 }
                 for (var i = 0, item; item = view.varCache.resultTableColumnList[i]; i++) {
                     if (hideList.indexOf(item.id) !== -1) continue;
@@ -94,13 +94,13 @@ var view = {
                             type: item.id
                         },
                         title: mono.language[item.lang],
-                        class: [item.id, order],
+                        class: [item.id + '-column', order],
                         append: mono.create('span', {
                             text: mono.language[item.lang + 'Short'] || mono.language[item.lang]
                         })
                     }));
                     if (item.size) {
-                        style += '#result_table_head th.'+item.id+'{width:'+item.size+'px;}';
+                        style += '#result_table_head th.'+item.id+'-column'+'{width:'+item.size+'px;}';
                     }
                 }
                 return thList;
@@ -624,32 +624,46 @@ var view = {
                 },
                 append: [
                     mono.create('td', {
-                        class: 'time',
+                        class: 'date-column',
                         title: view.timeStampToDate(torrentObj.date, 'hh:mm' + ' ' + mono.language.dateFormatL),
                         text: view.timeStampToTimeAgo(torrentObj.date)
                     }),
                     mono.create('td', {
-                        class: 'quality',
+                        class: 'quality-column',
                         text: 0
                     }),
                     mono.create('td', {
+                        class: 'title-column',
                         append: [
-                            mono.create('a', {
+                            mono.create('span', {
                                 class: 'title',
-                                text: torrentObj.title,
-                                href: torrentObj.url,
-                                target: '_blank'
+                                append: mono.create('a', {
+                                    text: torrentObj.title,
+                                    href: torrentObj.url,
+                                    target: '_blank'
+                                })
                             }),
-                            !torrentObj.categoryTitle ? undefined : mono.create('a', {
+                            !torrentObj.categoryTitle ? undefined : mono.create('span', {
                                 class: 'category',
-                                text: torrentObj.categoryTitle,
-                                href: torrentObj.categoryUrl,
-                                target: '_blank'
+                                append: [
+                                    mono.create('a', {
+                                        text: torrentObj.categoryTitle,
+                                        href: torrentObj.categoryUrl,
+                                        target: '_blank'
+                                    }),
+                                    mono.create('i', {
+                                        class: ['icon', 'tracker-icon'],
+                                        title: tracker.title,
+                                        data: {
+                                            id: tracker.id
+                                        }
+                                    })
+                                ]
                             })
                         ]
                     }),
                     mono.create('td', {
-                        class: 'size',
+                        class: 'size-column',
                         append: [
                             !torrentObj.downloadUrl ? view.formatSize(torrentObj.size) : mono.create('a', {
                                 class: 'download',
@@ -660,11 +674,11 @@ var view = {
                         ]
                     }),
                     engine.settings.hideSeedColumn === 1 ? undefined : mono.create('td', {
-                        class: 'seed',
+                        class: 'seed-column',
                         text: view.formatSeedPeer(torrentObj.seed)
                     }),
                     engine.settings.hidePeerColumn === 1 ? undefined : mono.create('td', {
-                        class: 'peer',
+                        class: 'peer-column',
                         text: view.formatSeedPeer(torrentObj.peer)
                     })
                 ]
@@ -906,6 +920,7 @@ var view = {
     },
     once: function() {
         "use strict";
+        mono.language.size_filter += ' ' + mono.language.sizeList.split(',')[3];
         mono.writeLanguage(mono.language);
         document.body.classList.remove('loading');
         view.domCache.requestInput.focus();
