@@ -756,6 +756,15 @@ var view = {
             el.removeChild(node);
         }
     },
+    bindFilterRange: function() {
+        "use strict";
+        for (var i = 0, list = ['wordFilterInput', 'sizeFilterMin',
+            'sizeFilterMax', 'timeFilterMin',
+            'timeFilterMax', 'seedFilterMin', 'seedFilterMax',
+            'peerFilterMin', 'peerFilterMax'], type; type = list[i]; i++) {
+            view.domCache[type].addEventListener('keyup', mono.throttle(view.onChangeFilter.bind(view.domCache[type], type), 250));
+        }
+    },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
@@ -782,12 +791,7 @@ var view = {
             }
         });
 
-        for (var i = 0, list = ['wordFilterInput', 'sizeFilterMin',
-            'sizeFilterMax', 'timeFilterMin',
-            'timeFilterMax', 'seedFilterMin', 'seedFilterMax',
-            'peerFilterMin', 'peerFilterMax'], type; type = list[i]; i++) {
-            view.domCache[type].addEventListener('keyup', mono.throttle(view.onChangeFilter.bind(view.domCache[type], type), 250));
-        }
+        view.bindFilterRange();
 
         view.domCache.trackerList.addEventListener('click', function(e) {
             var el = e.target;
