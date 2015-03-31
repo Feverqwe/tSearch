@@ -637,11 +637,20 @@ var view = {
                         append: [
                             mono.create('span', {
                                 class: 'title',
-                                append: mono.create('a', {
-                                    text: torrentObj.title,
-                                    href: torrentObj.url,
-                                    target: '_blank'
-                                })
+                                append: [
+                                    mono.create('a', {
+                                        text: torrentObj.title,
+                                        href: torrentObj.url,
+                                        target: '_blank'
+                                    }),
+                                    torrentObj.categoryTitle ? undefined : mono.create('i', {
+                                        class: ['icon', 'tracker-icon'],
+                                        title: tracker.title,
+                                        data: {
+                                            id: tracker.id
+                                        }
+                                    })
+                                ]
                             }),
                             !torrentObj.categoryTitle ? undefined : mono.create('span', {
                                 class: 'category',

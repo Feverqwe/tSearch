@@ -232,6 +232,7 @@ body {
     line-height: 130%;
     padding-bottom: 1px;
     border-bottom: 1px solid transparent;
+    vertical-align: middle;
 }
 #result_table .title a:link {
     color: #1A3DC1;
@@ -252,14 +253,11 @@ body {
     margin-top: 3px;
 }
 
-#result_table .category > * {
-    vertical-align: middle;
-}
-
 #result_table .category a {
     padding-left: 4px;
     color: #093;
     display: inline-block;
+    vertical-align: middle;
 }
 
 #result_table .category a:hover {
@@ -273,6 +271,7 @@ body {
     margin-left: 5px;
     opacity: 0.5;
     transition: opacity 0.2s;
+    vertical-align: middle;
 }
 
 #result_table .icon:hover {
