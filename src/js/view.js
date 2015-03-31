@@ -730,7 +730,7 @@ var view = {
             }
         }
         if (isRange) {
-            if (view.varCache.filter[key] === undefined) {
+            if (typeof view.varCache.filter[key] !== 'object') {
                 view.varCache.filter[key] = [null, null];
             }
             if (isNaN(value)) {
@@ -832,18 +832,18 @@ var view = {
         view.domCache.timeFilterSelect.addEventListener('change', function() {
             if (this.value === 'range') {
                 view.domCache.timeFilterRange.classList.add('show');
-                view.varCache.filter.date = undefined;
-            } else {
-                view.domCache.timeFilterRange.classList.remove('show');
-                var date;
-                var seconds = parseInt(this.childNodes[this.selectedIndex].dataset.seconds);
-                if (seconds === 0) {
-                    date = undefined
-                } else {
-                    date = parseInt(Date.now() / 1000) - seconds;
-                }
-                view.varCache.filter.date = date;
+                view.domCache.timeFilterMin.dispatchEvent(new CustomEvent('keyup'));
+                return;
             }
+            view.domCache.timeFilterRange.classList.remove('show');
+            var date;
+            var seconds = parseInt(this.childNodes[this.selectedIndex].dataset.seconds);
+            if (seconds === 0) {
+                date = undefined
+            } else {
+                date = parseInt(Date.now() / 1000) - seconds;
+            }
+            view.varCache.filter.date = date;
             view.filterUpdate();
         });
 
