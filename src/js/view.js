@@ -132,22 +132,28 @@ var view = {
     filterUpdate: function() {
         "use strict";
         var searchResultCache = view.varCache.searchResultCache;
-        var hasChange = false;
-        var filter;
+        var trackerList = view.varCache.filter.trackerList || [];
+        var searchResultCounter = view.varCache.searchResultCounter;
+        view.resultCounterCategoryReset();
+        view.resultCounterTrackerReset();
+        var filter = view.getFilterStyleState();
         for (var i = 0, cacheItem; cacheItem = searchResultCache[i]; i++) {
-            filter = view.getFilterState(cacheItem.api);
-            if (filter === cacheItem.filter) {
+            var _filter = view.getFilterState(cacheItem.api);
+            if (filter === undefined || _filter === filter) {
+                searchResultCounter.tracker[cacheItem.trackerId]++;
+                if (trackerList.length === 0 || trackerList.indexOf(cacheItem.trackerId) !== -1) {
+                    searchResultCounter.category[cacheItem.api.categoryId]++;
+                    searchResultCounter.sum++;
+                }
+            }
+            if (_filter === cacheItem.filter) {
                 continue;
             }
-            cacheItem.node.dataset.filter = filter;
-            hasChange = true;
+            cacheItem.node.dataset.filter = cacheItem.filter = _filter;
         }
 
-        if (!hasChange) return;
+        view.resultCounterUpdate();
 
-        filter = view.getFilterStyleState();
-
-        var trackerList = view.varCache.filter.trackerList || [];
         trackerList = trackerList.map(function(trackerId) {
             return ':not([data-id="'+trackerId+'"])';
         });
@@ -155,10 +161,13 @@ var view = {
 
         var stylePath = '#result_table_body ';
         var styleText = (!filter ? '' : stylePath+'tr:not([data-filter="'+filter+'"]){display: none;}') +
-            (!view.varCache.filter.category ? '' : stylePath+'tr:not([data-category="'+view.varCache.filter.category+'"]){display: none;}') +
+            (view.varCache.filter.category === undefined ? '' : stylePath+'tr:not([data-category="'+view.varCache.filter.category+'"]){display: none;}') +
             (!trackerList ? '' : stylePath+'tr'+trackerList+'{display: none;}');
 
         if (view.varCache.filterStyle) {
+            if (view.varCache.filterStyle.textContent === styleText) {
+                return;
+            }
             view.varCache.filterStyle.parentNode.removeChild(view.varCache.filterStyle);
             view.varCache.filterStyle = undefined;
         }
@@ -441,7 +450,7 @@ var view = {
             noZero = true;
         }
 
-        return noZero ? list : undefined;
+        return noZero ? list.join() : undefined;
     },
     getFilterState: function(torrentObj) {
         "use strict";
@@ -474,10 +483,11 @@ var view = {
             }
         }
 
-        return list;
+        return list.join();
     },
     writeResultList: function(tracker, request, torrentList) {
         "use strict";
+        var searchResultCounter = view.varCache.searchResultCounter;
         var searchResultCache = view.varCache.searchResultCache;
         var container = document.createDocumentFragment();
         for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
@@ -488,7 +498,8 @@ var view = {
             var cacheItemIndex = searchResultCache.length;
             var cacheItem = {
                 id: cacheItemIndex,
-                api: torrentObj
+                api: torrentObj,
+                trackerId: tracker.id
             };
             torrentObj.lowerTitle = torrentObj.title.toLowerCase();
             torrentObj.lowerCategoryTitle = torrentObj.categoryTitle.toLowerCase();
@@ -550,9 +561,9 @@ var view = {
             searchResultCache.push(cacheItem);
             container.appendChild(cacheItem.node);
 
-            view.varCache.searchResultCounter.tracker[tracker.id]++;
-            view.varCache.searchResultCounter.category[itemCategoryId]++;
-            view.varCache.searchResultCounter.sum++;
+            searchResultCounter.tracker[tracker.id]++;
+            searchResultCounter.category[itemCategoryId]++;
+            searchResultCounter.sum++;
         }
         view.domCache.resultTableBody.appendChild(container);
         view.resultCounterUpdate();
@@ -615,29 +626,39 @@ var view = {
             categoryObj.setCount(count);
         }
     },
+    resultCounterTrackerReset: function() {
+        "use strict";
+        for (var trackerId in view.varCache.trackerList) {
+            view.varCache.searchResultCounter.tracker[trackerId] = 0;
+        }
+    },
+    resultCounterCategoryReset: function() {
+        "use strict";
+        view.varCache.searchResultCounter.category = (function() {
+            var obj = {};
+            var categoryList = view.varCache.categoryList;
+            for (var item in categoryList) {
+                var id = categoryList[item].id;
+                obj[id] = 0;
+            }
+            return obj;
+        })();
+        view.varCache.searchResultCounter.sum = 0;
+    },
     resultCounterReset: function() {
         "use strict";
-        view.varCache.searchResultCache = [];
         view.varCache.searchResultCounter = {
             tracker: {},
-            category: (function() {
-                "use strict";
-                var obj = {};
-                var categoryList = view.varCache.categoryList;
-                for (var item in categoryList) {
-                    var id = categoryList[item].id;
-                    obj[id] = 0;
-                }
-                return obj;
-            })(),
+            category: {},
             sum: 0
         };
-
+        view.resultCounterCategoryReset();
         view.resultCounterUpdate();
     },
     search: function(request) {
         "use strict";
         view.domCache.resultTableBody.textContent = '';
+        view.varCache.searchResultCache = [];
         view.resultCounterReset();
         var trackerList = view.getTrackerList();
         exKit.searchList(trackerList, request, {
