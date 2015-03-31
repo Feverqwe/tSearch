@@ -316,5 +316,6 @@
     "webAppFunctionUnavailable": {"message": "[{img: {style: 'float: left;margin-right: 10px;', src: 'images/icon_48.png'}}, 'Sorry but the web version of the application this function is not available.', {br:{}}, {br:{}}, {br:{}}, 'Want to install the extension in the browser?']"},
     "webAppTrackersUnavailable": {"message": "[{img: {style: 'float: left;margin-right: 10px;', src: 'images/icon_48.png'}}, 'Some trackers are not available in the web version.', {br:{}}, {br:{}}, {br:{}}, 'Want to install the extension in the browser?']"},
 
-    "dateFormatL": {"message": "DD/MM/YYYY"}
+    "dateFormatL": {"message": "DD/MM/YYYY"},
+    "sizeList": {"message": "b,kB,MB,GB,TB,PB,EB,ZB,YB"}
 }

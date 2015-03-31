@@ -397,12 +397,24 @@ var view = {
         }
         return value;
     },
+    bytesToString: function(sizeList, bytes, nan) {
+        "use strict";
+        nan = nan || 'n/a';
+        if (bytes <= 0) {
+            return nan;
+        }
+        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+        if (i === 0) {
+            return (bytes / Math.pow(1024, i)) + ' ' + sizeList[i];
+        }
+        return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizeList[i];
+    },
     formatSize: function(value) {
         "use strict";
         if (value === undefined) {
             value = 'n/a';
         }
-        return value;
+        return view.bytesToString(value);
     },
     arrUnique: function (value, index, self) {
         return self.indexOf(value) === index;
@@ -893,6 +905,8 @@ var view = {
         mono.writeLanguage(mono.language);
         document.body.classList.remove('loading');
         view.domCache.requestInput.focus();
+
+        view.bytesToString = view.bytesToString.bind(null, mono.language.sizeList.split(','));
 
         view.domCache.clearBtn.addEventListener('click', function() {
             view.domCache.requestInput.value = '';

@@ -29,7 +29,7 @@ engine.trackerLib['nnm-club'] = {
     search: {
         searchUrl: 'http://nnm-club.me/forum/tracker.php',
         baseUrl: 'http://nnm-club.me/forum/',
-        requestType: 'POST',
+        requestType: 'GET',
         requestData: 'nm=%search%&f=-1',
         requestMimeType: 'text/html; charset=windows-1251',
         onGetRequest: 'encodeURIComponent',
