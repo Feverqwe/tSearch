@@ -462,7 +462,11 @@ var view = {
         }
         if (filter.word !== undefined) {
             var includeCount;
-            if ((filter.word[0] === null || !filter.word[0].test(torrentObj.lowerTitle)) && (filter.word[1] === null || (includeCount = torrentObj.lowerTitle.match(filter.word[1])))) {
+            var filterString = torrentObj.lowerTitle;
+            if (engine.settings.subCategoryFilter === 1) {
+                filterString += ' ' + torrentObj.lowerCategoryTitle;
+            }
+            if ((filter.word[0] === null || !filter.word[0].test(filterString)) && (filter.word[1] === null || (includeCount = filterString.match(filter.word[1])))) {
                 if (includeCount.filter(view.arrUnique).length === filter.word[2]) {
                     list[0] = 1;
                 }
