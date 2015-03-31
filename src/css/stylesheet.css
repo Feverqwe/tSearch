@@ -120,7 +120,7 @@ body {
     font-size: 12px;
 }
 #result_category_container div.hide {
-    // display: none;
+    display: none;
 }
 #result_category_container div a {
     text-decoration: none;
