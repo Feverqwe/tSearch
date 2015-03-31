@@ -413,9 +413,6 @@ var view = {
         for (var i = 0, type; type = cList[i]; i++) {
             var item = filter[type];
             if (item === undefined) continue;
-            if (typeof item === 'object' && item[0] === null && item[1] === null) {
-                continue;
-            }
             list[i] = 1;
             noZero = true;
         }
@@ -448,7 +445,6 @@ var view = {
         for (var i = 0, len = cList.length; i < len; i++) {
             var item = cList[i];
             if (filter[item] !== undefined &&
-                (filter[item][0] !== null || filter[item][1] !== null) &&
                 (filter[item][0] === null || torrentObj[item] >= filter[item][0]) &&
                 (filter[item][1] === null || torrentObj[item] <= filter[item][1])) {
                 list[i + 1] = 1;
@@ -741,6 +737,10 @@ var view = {
                 value = null;
             }
             view.varCache.filter[key][index] = value;
+
+            if (view.varCache.filter[key][0] === null && view.varCache.filter[key][1] === null) {
+                view.varCache.filter[key] = undefined;
+            }
         }
         view.filterUpdate();
     },
@@ -832,7 +832,7 @@ var view = {
         view.domCache.timeFilterSelect.addEventListener('change', function() {
             if (this.value === 'range') {
                 view.domCache.timeFilterRange.classList.add('show');
-                view.varCache.filter.date = [null, null];
+                view.varCache.filter.date = undefined;
             } else {
                 view.domCache.timeFilterRange.classList.remove('show');
                 var date;
