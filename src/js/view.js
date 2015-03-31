@@ -400,36 +400,6 @@ var view = {
         }
         return value;
     },
-    filterWordR: {
-        text2safeR: /([{})(\][\\\.^$\|\?\+])/g
-    },
-    filterWordToReg: function(word) {
-        "use strict";
-        var mWord = word.toLowerCase().replace(/\\\s/g, '&nbsp;');
-        var wordList = mWord.split(/\s+/);
-        var includeList = [];
-        var excludeList = [];
-        var typeList;
-        var isEmpty = true;
-        for (var i = 0, len = wordList.length; i < len; i++) {
-            mWord = wordList[i].replace(/&nbsp;/g, ' ');
-            if (mWord.length > 1 && ['-', '!'].indexOf(mWord[0]) !== -1) {
-                mWord = mWord.substr(1);
-                typeList = excludeList;
-            } else
-            if (mWord.length > 0) {
-                typeList = includeList;
-            } else {
-                continue;
-            }
-            mWord = mWord.replace(view.filterWordR.text2safeR, '\\$1');
-            typeList.push(mWord);
-            isEmpty = false;
-        }
-        if (isEmpty) return;
-
-        return [excludeList.length === 0 ? null : new RegExp(excludeList.join('|')), includeList.length === 0 ? null : new RegExp(includeList.join('|'), 'g'), includeList.length, word];
-    },
     arrUnique: function (value, index, self) {
         return self.indexOf(value) === index;
     },
@@ -457,9 +427,6 @@ var view = {
         var list = [0,0,0,0,0];
 
         var filter = view.varCache.filter;
-        if (typeof filter.word === 'string') {
-            filter.word = view.filterWordToReg(filter.word);
-        }
         if (filter.word !== undefined) {
             var includeCount = null;
             var filterString = torrentObj.lowerTitle;
@@ -478,7 +445,8 @@ var view = {
         } else {
             cList[1] = 'date';
         }
-        for (var i = 0, item; item = cList[i]; i++) {
+        for (var i = 0, len = cList.length; i < len; i++) {
+            var item = cList[i];
             if (filter[item] !== undefined &&
                 (filter[item][0] !== null || filter[item][1] !== null) &&
                 (filter[item][0] === null || torrentObj[item] >= filter[item][0]) &&
@@ -697,6 +665,36 @@ var view = {
 
         categoryObj.setSelect(1);
     },
+    filterWordR: {
+        text2safeR: /([{})(\][\\\.^$\|\?\+])/g
+    },
+    filterWordToReg: function(word) {
+        "use strict";
+        var mWord = word.toLowerCase().replace(/\\\s/g, '&nbsp;');
+        var wordList = mWord.split(/\s+/);
+        var includeList = [];
+        var excludeList = [];
+        var typeList;
+        var isEmpty = true;
+        for (var i = 0, len = wordList.length; i < len; i++) {
+            mWord = wordList[i].replace(/&nbsp;/g, ' ');
+            if (mWord.length > 1 && ['-', '!'].indexOf(mWord[0]) !== -1) {
+                mWord = mWord.substr(1);
+                typeList = excludeList;
+            } else
+            if (mWord.length > 0) {
+                typeList = includeList;
+            } else {
+                continue;
+            }
+            mWord = mWord.replace(view.filterWordR.text2safeR, '\\$1');
+            typeList.push(mWord);
+            isEmpty = false;
+        }
+        if (isEmpty) return;
+
+        return [excludeList.length === 0 ? null : new RegExp(excludeList.join('|')), includeList.length === 0 ? null : new RegExp(includeList.join('|'), 'g'), includeList.length, word];
+    },
     onChangeFilter: function(type) {
         "use strict";
         var isRange;
@@ -705,6 +703,9 @@ var view = {
         var value;
         if (type === 'wordFilterInput') {
             view.varCache.filter.word = this.value || undefined;
+            if (view.varCache.filter.word !== undefined) {
+                view.varCache.filter.word = view.filterWordToReg(view.varCache.filter.word);
+            }
         } else
         if (type === 'sizeFilterMin' || (type === 'sizeFilterMax' && (index = 1))) {
             isRange = 1;
