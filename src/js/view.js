@@ -609,7 +609,7 @@ var view = {
                 append: [
                     mono.create('td', {
                         class: 'time',
-                        title: torrentObj.date,
+                        title: view.timeStampToDate(torrentObj.date, 'hh:mm' + ' ' + mono.language.dateFormatL),
                         text: view.timeStampToTimeAgo(torrentObj.date)
                     }),
                     mono.create('td', {
