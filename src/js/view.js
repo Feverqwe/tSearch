@@ -54,7 +54,11 @@ var view = {
         resultSortBy: 1,
         tableSortColumn: 'quality',
         trackerList: {},
-        searchResultCounter: {},
+        searchResultCounter: {
+            tracker: {},
+            category: {},
+            sum: 0
+        },
         searchResultCache: [],
         trackerListStyle: undefined,
         filter: {
@@ -615,11 +619,7 @@ var view = {
     },
     resultCounterReset: function() {
         "use strict";
-        view.varCache.searchResultCounter = {
-            tracker: {},
-            category: {},
-            sum: 0
-        };
+        view.varCache.searchResultCounter.tracker = {};
         view.resultCounterCategoryReset();
         view.resultCounterUpdate();
     },
@@ -861,6 +861,7 @@ var view = {
     },
     onJqReady: function() {
         "use strict";
+        $(document).off('mouseup');
         view.domCache.searchBtn.addEventListener('click', function(e) {
             e.preventDefault();
             var request = view.domCache.requestInput.value.trim();
@@ -869,15 +870,16 @@ var view = {
     },
     onUiReady: function() {
         "use strict";
-
     }
 };
 
-var define = function(name, func) {
+var define = function(name, func, getFunc) {
     "use strict";
     if (name === 'jquery') {
-        view.onJqReady();
-        document.body.appendChild(mono.create('script', {src: 'js/jquery-ui.min.js'}));
+        getFunc()(document).ready(function() {
+            view.onJqReady();
+            document.body.appendChild(mono.create('script', {src: 'js/jquery-ui.min.js'}));
+        });
         return;
     }
     if (name[0] === 'jquery') {
