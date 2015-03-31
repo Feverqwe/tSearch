@@ -533,3 +533,8 @@ mono.debounce = function(fn, delay) {
         }, delay);
     };
 };
+
+mono.capitalize = function(str) {
+    "use strict";
+    return str[0].toUpperCase() + str.substr(1);
+};

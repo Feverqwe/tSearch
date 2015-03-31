@@ -457,6 +457,129 @@ var view = {
 
         return list.join();
     },
+    timeStampToDate: function(seconds, format) {
+        "use strict";
+        format = format || mono.language.dateFormatL;
+        var _date = new Date(seconds * 1000);
+        var month = _date.getMonth() + 1;
+        var date = _date.getDate();
+        if (month < 10) {
+            month = '0'+month;
+        }
+        if (date < 10) {
+            date = '0'+date;
+        }
+        var hour = _date.getHours();
+        if (hour < 10) {
+            hour = '0'+hour;
+        }
+        var minutes = _date.getMinutes();
+        if (minutes < 10) {
+            minutes = '0'+minutes;
+        }
+
+        var list = {'MM': month, 'DD': date, 'YYYY': _date.getFullYear(), 'hh': hour, 'mm': minutes};
+        for (var key in list) {
+            format = format.replace(key, list[key]);
+        }
+        return format;
+    },
+    timeAgoEn: function(d, h, m, s, seconds) {
+        "use strict";
+        var strDay = (d === 1) ? 'day' : 'days';
+        var strHour = ([1,21].indexOf(h) !== -1) ? 'hour' : 'hours';
+        var strMinutes = 'minutes';
+        var strSeconds = 'seconds';
+        var ago = 'ago';
+        if (d > 0) {
+            if (d === 1) {
+                return 'Yesterday' + ' ' + view.timeStampToDate(seconds, 'hh:mm');
+            } else if (d === 1) {
+                return mono.capitalize(strDay) + ' ' + ago;
+            } else {
+                return d + ' ' + strDay + ' ' + ago;
+            }
+        }
+        if (h > 0) {
+            if (h > 3) {
+                return 'Today' + ' ' + view.timeStampToDate(seconds, 'hh:mm');
+            } else
+            if (h === 1) {
+                return mono.capitalize(strHour) + ' ' + ago;
+            } else {
+                return h + ' ' + strHour + ' ' + ago;
+            }
+        }
+        if (m > 0) {
+            return m + ' ' + strMinutes + ' ' + ago;
+        }
+        if (s > 0) {
+            return s + ' ' + strSeconds + ' ' + ago;
+        }
+        return view.timeStampToDate(seconds);
+    },
+    timeAgoRu: function(d, h, m, s, seconds) {
+        "use strict";
+        var strDay = (d === 1) ? 'день' : (d < 5) ? 'дня' : 'дней';
+        var strHour = ([1,21].indexOf(h) !== -1) ? 'час' : ([2,3,4,22,23,24].indexOf(h) !== -1) ? 'часа' : 'часов';
+        var strMinutes = 'мин.';
+        var strSeconds = 'сек.';
+        var ago = 'назад';
+        if (d > 0) {
+            if (d === 1) {
+                return 'Вчера' + ' ' + view.timeStampToDate(seconds, 'hh:mm');
+            } else if (d === 1) {
+                return mono.capitalize(strDay) + ' ' + ago;
+            } else {
+                return d + ' ' + strDay + ' ' + ago;
+            }
+        }
+        if (h > 0) {
+            if (h > 3) {
+                return 'Сегодня' + ' ' + view.timeStampToDate(seconds, 'hh:mm');
+            } else
+            if (h === 1) {
+                return mono.capitalize(strHour) + ' ' + ago;
+            } else {
+                return h + ' ' + strHour + ' ' + ago;
+            }
+        }
+        if (m > 0) {
+            return m + ' ' + strMinutes + ' ' + ago;
+        }
+        if (s > 0) {
+            return s + ' ' + strSeconds + ' ' + ago;
+        }
+        return view.timeStampToDate(seconds);
+    },
+    timeStampToTimeAgo: function(seconds) {
+        "use strict";
+        if (seconds <= 0) {
+            return '∞';
+        }
+        var now = parseInt(Date.now() / 1000);
+        var diff = now - seconds;
+        if (diff < 0) {
+            return view.timeStampToDate(seconds);
+        }
+        var countDays = Math.floor(diff / 60 / 60 / 24);
+        var countWeek = Math.floor(countDays / 7);
+        if (countWeek > 0) {
+            return view.timeStampToDate(seconds);
+        }
+        var countDaysSeconds = countDays * 60 * 60 * 24;
+        var countHour = Math.floor((diff - countDaysSeconds) / 60 / 60);
+        var countHourSeconds = countHour * 60 * 60;
+        var countMinutes = Math.floor((diff - countDaysSeconds - countHourSeconds) / 60);
+        var countMinutesSeconds = countMinutes * 60;
+        var countSeconds = Math.floor(diff - countDaysSeconds - countHourSeconds - countMinutesSeconds);
+
+        if (mono.language.langCode === 'ru') {
+            return view.timeAgoRu(countDays, countHour, countMinutes, countSeconds, seconds);
+        } else {
+            return view.timeAgoEn(countDays, countHour, countMinutes, countSeconds, seconds);
+        }
+    },
     writeResultList: function(tracker, request, torrentList) {
         "use strict";
         var searchResultCounter = view.varCache.searchResultCounter;
@@ -487,7 +610,7 @@ var view = {
                     mono.create('td', {
                         class: 'time',
                         title: torrentObj.date,
-                        text: torrentObj.date
+                        text: view.timeStampToTimeAgo(torrentObj.date)
                     }),
                     mono.create('td', {
                         class: 'quality',
@@ -884,8 +1007,7 @@ var define = function(name, func, getFunc) {
             view.onJqReady();
             document.body.appendChild(mono.create('script', {src: 'js/jquery-ui.min.js'}));
         });
-        return;
-    }
+    } else
     if (name[0] === 'jquery') {
         func(jQuery);
         view.onUiReady();
