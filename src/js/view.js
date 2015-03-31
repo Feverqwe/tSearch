@@ -407,7 +407,11 @@ var view = {
         if (i === 0) {
             return (bytes / Math.pow(1024, i)) + ' ' + sizeList[i];
         }
-        return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizeList[i];
+        var toFixed = 0;
+        if (i > 2) {
+            toFixed = 2;
+        }
+        return (bytes / Math.pow(1024, i)).toFixed(toFixed) + ' ' + sizeList[i];
     },
     formatSize: function(value) {
         "use strict";
