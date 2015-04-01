@@ -735,9 +735,8 @@ var view = {
         view.sortInsertList(sortedList, view.varCache.lastSortedList);
     },
     hlCodeToArrayR: {
-        tagList: '(<[{>]})',
-        closeTagList: '>]})',
-        tagListR: /\)|\(|>|]|}|<|\[|{/g,
+        closeTagList: ['>',']','}',')','[/b]'],
+        tagListR: /\[\/?b]|\)|\(|>|]|}|<|\[|{/g,
         noSpace: /\S/
     },
     hlCodeToArray: function(code) {
@@ -748,19 +747,21 @@ var view = {
         code.replace(view.hlCodeToArrayR.tagListR, function(tag, pos) {
             if (pos > 0 && lasPos !== pos) {
                 var str = code.substr(lasPos, pos - lasPos);
-                if (lastListEl !== undefined && !view.hlCodeToArrayR.noSpace.test(str)) {
+                if (lastListEl !== undefined && lastListEl[2] === 0 && !view.hlCodeToArrayR.noSpace.test(str)) {
                     lastListEl[1] += str;
                 } else {
                     list.push(str);
                     lastListEl = undefined;
                 }
             }
-            lasPos = pos + tag.length;
-            if (lastListEl !== undefined) {
+            var tagLen = tag.length;
+            lasPos = pos + tagLen;
+            var isTag = tagLen > 2 ? 1 : 0;
+            if (lastListEl !== undefined && lastListEl[2] === 0 && isTag === 0) {
                 list.splice(-1, 1, lastListEl[1]+tag);
                 lastListEl = undefined;
             } else {
-                list.push(lastListEl = [view.hlCodeToArrayR.closeTagList.indexOf(tag) !== -1 ? 1 : 0, tag]);
+                list.push(lastListEl = [view.hlCodeToArrayR.closeTagList.indexOf(tag) !== -1 ? 1 : 0, tag, isTag]);
             }
         });
 
@@ -772,6 +773,7 @@ var view = {
     },
     hlTextToFragment: function(code) {
         "use strict";
+
         var list = view.hlCodeToArray(code);
 
         var base = '';
@@ -790,13 +792,19 @@ var view = {
                 continue;
             }
             if (item[0] === 1) {
-                fragment.appendChild(document.createTextNode(item[1]));
+                if (item[2] === 0) {
+                    fragment.appendChild(document.createTextNode(item[1]));
+                }
                 fragment = fragment.parentNode || root;
                 level--;
                 continue;
             }
-            fragment.appendChild(fragment = mono.create('span'));
-            fragment.appendChild(document.createTextNode(item[1]));
+            if (item[2] === 1) {
+                fragment.appendChild(fragment = mono.create(item[1][1]));
+            } else {
+                fragment.appendChild(fragment = mono.create('span'));
+                fragment.appendChild(document.createTextNode(item[1]));
+            }
             level++;
         }
         return {node: root, base: base, desc: desc};
