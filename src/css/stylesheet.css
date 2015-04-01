@@ -242,6 +242,11 @@ body {
     border-bottom: 1px solid transparent;
     vertical-align: middle;
 }
+
+#result_table .title a span {
+    color: #000;
+}
+
 #result_table .title a:link {
     color: #1A3DC1;
 }

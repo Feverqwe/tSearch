@@ -734,6 +734,63 @@ var view = {
 
         view.sortInsertList(sortedList, view.varCache.lastSortedList);
     },
+    hlCodeToArrayR: {
+        tagList: '(<[{>]})',
+        tagListR: /\)|\(|>|]|}|<|\[|{/g,
+        noSpace: /\S/
+    },
+    hlCodeToArray: function(code) {
+        "use strict";
+        var list = [];
+        var lastListEl = undefined;
+        var lasPos = 0;
+        code.replace(view.hlCodeToArrayR.tagListR, function(tag, pos) {
+            if (pos > 0 && lasPos !== pos) {
+                var str = code.substr(lasPos, pos - lasPos);
+                if (lastListEl !== undefined && !view.hlCodeToArrayR.noSpace.test(str)) {
+                    lastListEl[1] += str;
+                } else {
+                    list.push(str);
+                    lastListEl = undefined;
+                }
+            }
+            lasPos = pos + tag.length;
+            if (lastListEl !== undefined) {
+                list.splice(-1, 1, lastListEl[1]+tag);
+                return;
+            }
+            list.push(lastListEl = [view.hlCodeToArrayR.tagList.indexOf(tag) > 3 ? 1 : 0, tag]);
+        });
+
+        var str = code.substr(lasPos);
+        list.push(str);
+
+        return list;
+    },
+    hlTextToFragment: function(code) {
+        "use strict";
+        var list = view.hlCodeToArray(code);
+
+        var fragment, root;
+        fragment = root = document.createDocumentFragment();
+        for (var i = 0, len = list.length; i < len; i++) {
+            var item = list[i];
+            if (typeof item === 'string') {
+                item.length > 0 && fragment.appendChild(document.createTextNode(item));
+                continue;
+            }
+            if (item[0] === 1) {
+                fragment.appendChild(document.createTextNode(item[1]));
+                fragment = fragment.parentNode || root;
+                continue;
+            }
+            var el = mono.create('span');
+            fragment.appendChild(el);
+            fragment = el;
+            fragment.appendChild(document.createTextNode(item[1]));
+        }
+        return root;
+    },
     writeResultList: function(tracker, request, torrentList) {
         "use strict";
         var searchResultCounter = view.varCache.searchResultCounter;
@@ -752,6 +809,7 @@ var view = {
             torrentObj.lowerTitle = torrentObj.title.toLowerCase();
             torrentObj.lowerCategoryTitle = torrentObj.categoryTitle.toLowerCase();
             cacheItem.filter = view.getFilterState(torrentObj);
+
             cacheItem.node = mono.create('tr', {
                 data: {
                     id: tracker.id,
@@ -776,7 +834,7 @@ var view = {
                                 class: 'title',
                                 append: [
                                     mono.create('a', {
-                                        text: torrentObj.title,
+                                        append: view.hlTextToFragment(torrentObj.title),
                                         href: torrentObj.url,
                                         target: '_blank'
                                     }),
@@ -793,9 +851,9 @@ var view = {
                                 class: 'category',
                                 append: [
                                     mono.create('a', {
-                                        text: torrentObj.categoryTitle,
                                         href: torrentObj.categoryUrl,
-                                        target: '_blank'
+                                        target: '_blank',
+                                        text: torrentObj.categoryTitle
                                     }),
                                     mono.create('i', {
                                         class: ['icon', 'tracker-icon'],
