@@ -251,7 +251,7 @@ mono.isEmptyObject = function(obj) {
 };
 /**
  * Create new element
- * @param {Element|String} tagName
+ * @param {Element|Node|String} tagName
  * @param {Object} obj
  * @returns {Element|Node}
  */
