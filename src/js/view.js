@@ -396,7 +396,7 @@ var view = {
                     var className = 'hide';
                     var data = {};
                     if (categoryObj.id === undefined) {
-                        className = 'selected'
+                        className = 'selected';
                         options.selectedId = categoryObj.id;
                     } else {
                         data.id = categoryObj.id;
