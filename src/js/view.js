@@ -735,7 +735,7 @@ var view = {
         view.sortInsertList(sortedList, view.varCache.lastSortedList);
     },
     hlCodeToArrayR: {
-        closeTagList: ['>',']','}',')','[/b]'],
+        closeTagList: '>]})',
         tagListR: /\[\/?b]|\)|\(|>|]|}|<|\[|{/g,
         noSpace: /\S/
     },
@@ -743,11 +743,13 @@ var view = {
         "use strict";
         var list = [];
         var lastListEl = undefined;
-        var lasPos = 0;
+        var lastPos = 0;
+        var noSpace = view.hlCodeToArrayR.noSpace;
+        var closeTagList = view.hlCodeToArrayR.closeTagList;
         code.replace(view.hlCodeToArrayR.tagListR, function(tag, pos) {
-            if (pos > 0 && lasPos !== pos) {
-                var str = code.substr(lasPos, pos - lasPos);
-                if (lastListEl !== undefined && lastListEl[2] === 0 && !view.hlCodeToArrayR.noSpace.test(str)) {
+            if (pos > 0 && lastPos !== pos) {
+                var str = code.substr(lastPos, pos - lastPos);
+                if (lastListEl !== undefined && lastListEl[2] === 0 && !noSpace.test(str)) {
                     lastListEl[1] += str;
                 } else {
                     list.push(str);
@@ -755,18 +757,19 @@ var view = {
                 }
             }
             var tagLen = tag.length;
-            lasPos = pos + tagLen;
+            lastPos = pos + tagLen;
             var isTag = tagLen > 2 ? 1 : 0;
+            var isClose = isTag === 1 ? tag[1] === '/' ? 1 : 0 : closeTagList.indexOf(tag) !== -1 ? 1 : 0;
             if (lastListEl !== undefined && lastListEl[2] === 0 && isTag === 0) {
                 list.splice(-1, 1, lastListEl[1]+tag);
                 lastListEl = undefined;
             } else {
-                list.push(lastListEl = [view.hlCodeToArrayR.closeTagList.indexOf(tag) !== -1 ? 1 : 0, tag, isTag]);
+                list.push(lastListEl = [isClose, tag, isTag]);
             }
         });
 
-        if (lasPos !== code.length) {
-            list.push(code.substr(lasPos));
+        if (lastPos !== code.length) {
+            list.push(code.substr(lastPos));
         }
 
         return list;
