@@ -734,13 +734,19 @@ var view = {
         charList: /(\([^\)]*\)|\[[^\]]*]|<[^>]*>)/g,
         tagListR: /{\/?[bs]}|&#123;|&#125;/g,
         fAngle: /{([^}]*)}/g,
-        deDbl: /\{\/s}(\s*)\{s}|\{\/b}(\s*)\{b}/g
+        deDbl: /\{\/s}(\s*)\{s}|\{\/b}(\s*)\{b}/g,
+        bTagList: ['{b}', '{/b}']
     },
     hlCodeToArray: function(code) {
         "use strict";
-        code = code.replace(view.hlCodeToArrayR.fAngle, '&#123;$1&#125;');
+        code = code.replace(view.hlCodeToArrayR.fAngle, function(tag) {
+            if (view.hlCodeToArrayR.bTagList.indexOf(tag) !== -1) {
+                return tag;
+            }
+            return '&#123;'+tag+'&#125;';
+        });
         code = code.replace(view.hlCodeToArrayR.charList, '{s}$1{/s}');
-        code = code.replace(view.hlCodeToArrayR.deDbl, '$1');
+        code = code.replace(view.hlCodeToArrayR.deDbl, '$1$2');
 
         var list = [];
         var lastPos = 0;
