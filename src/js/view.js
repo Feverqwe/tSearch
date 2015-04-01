@@ -739,8 +739,9 @@ var view = {
     },
     hlCodeToArray: function(code) {
         "use strict";
+        var bTagList = view.hlCodeToArrayR.bTagList;
         code = code.replace(view.hlCodeToArrayR.fAngle, function(tag) {
-            if (view.hlCodeToArrayR.bTagList.indexOf(tag) !== -1) {
+            if (bTagList.indexOf(tag) !== -1) {
                 return tag;
             }
             return '&#123;'+tag+'&#125;';
