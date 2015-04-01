@@ -773,7 +773,6 @@ var view = {
     },
     hlTextToFragment: function(code) {
         "use strict";
-
         var list = view.hlCodeToArray(code);
 
         var base = '';
@@ -785,7 +784,7 @@ var view = {
             if (typeof item === 'string') {
                 fragment.appendChild(document.createTextNode(item));
                 if (level === 0) {
-                    base += item + ' ';
+                    base += item;
                 } else {
                     desc += item + ' ';
                 }
@@ -794,9 +793,9 @@ var view = {
             if (item[0] === 1) {
                 if (item[2] === 0) {
                     fragment.appendChild(document.createTextNode(item[1]));
+                    level--;
                 }
                 fragment = fragment.parentNode || root;
-                level--;
                 continue;
             }
             if (item[2] === 1) {
@@ -804,8 +803,8 @@ var view = {
             } else {
                 fragment.appendChild(fragment = mono.create('span'));
                 fragment.appendChild(document.createTextNode(item[1]));
+                level++;
             }
-            level++;
         }
         return {node: root, base: base, desc: desc};
     },
