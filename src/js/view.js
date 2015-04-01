@@ -353,7 +353,14 @@ var view = {
     setCategorySelect: function(categoryObj, state) {
         "use strict";
         if (state === categoryObj.selected) return;
+
         if (state) {
+            var selectedItem = view.varCache.categoryObjList[this.selectedId];
+            if (selectedItem) {
+                selectedItem.setSelect(0);
+            }
+            this.selectedId = categoryObj.id;
+
             categoryObj.itemEl.classList.add('selected');
             categoryObj.selected = 1;
             view.varCache.filter.category = categoryObj.id;
@@ -366,6 +373,7 @@ var view = {
     },
     writeCategory: function() {
         "use strict";
+        var options = {};
         mono.create(view.domCache.categoryContainer, {
             append: (function() {
                 var elList = [];
@@ -377,6 +385,7 @@ var view = {
                     var data = {};
                     if (categoryObj.id === undefined) {
                         className = 'selected'
+                        options.selectedId = categoryObj.id;
                     } else {
                         data.id = categoryObj.id;
                     }
@@ -394,7 +403,7 @@ var view = {
                         ]
                     }));
                     categoryObj.setCount = view.setCategoryCount.bind(null, categoryObj);
-                    categoryObj.setSelect = view.setCategorySelect.bind(null, categoryObj);
+                    categoryObj.setSelect = view.setCategorySelect.bind(options, categoryObj);
                 }
                 return elList;
             })()
@@ -840,11 +849,6 @@ var view = {
         e.preventDefault();
         var categoryId = this.dataset.id;
         var categoryObj = view.varCache.categoryObjList[categoryId];
-
-        for (var _categoryObj in view.varCache.categoryObjList) {
-            if (_categoryObj === categoryId) continue;
-            view.varCache.categoryObjList[_categoryObj].setSelect(0);
-        }
 
         categoryObj.setSelect(1);
     },
