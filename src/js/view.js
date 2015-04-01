@@ -92,7 +92,7 @@ var view = {
         view.varCache.tableSortColumnId = columnObj.id;
         columnObj.node.classList.add(classList[columnObj.orderIndex]);
 
-        view.sortResults();
+        view.sortResults(columnObj.id, columnObj.orderIndex);
     },
     writeTableHead: function() {
         "use strict";
