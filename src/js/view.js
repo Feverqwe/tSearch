@@ -92,7 +92,7 @@ var view = {
         view.varCache.tableSortColumnId = columnObj.id;
         columnObj.node.classList.add(classList[columnObj.orderIndex]);
 
-        view.sortResults(columnObj.id, columnObj.orderIndex);
+        view.sortResults();
     },
     writeTableHead: function() {
         "use strict";
@@ -721,12 +721,8 @@ var view = {
     },
     sortResults: function(columnId, orderIndex) {
         "use strict";
-        if (columnId === undefined) {
-            columnId = view.varCache.tableSortColumnId;
-        }
-        if (orderIndex === undefined) {
-            orderIndex = view.varCache.tableOrderIndex;
-        }
+        columnId = view.varCache.tableSortColumnId;
+        orderIndex = view.varCache.tableOrderIndex;
 
         var searchResultCache = view.varCache.searchResultCache;
         var sortedList = searchResultCache.slice(0);
