@@ -774,23 +774,32 @@ var view = {
         "use strict";
         var list = view.hlCodeToArray(code);
 
-        var fragment, root;
+        var base = '';
+        var desc = '';
+        var fragment, root, level = 0;
         fragment = root = document.createDocumentFragment();
         for (var i = 0, len = list.length; i < len; i++) {
             var item = list[i];
             if (typeof item === 'string') {
                 fragment.appendChild(document.createTextNode(item));
+                if (level === 0) {
+                    base += item + ' ';
+                } else {
+                    desc += item + ' ';
+                }
                 continue;
             }
             if (item[0] === 1) {
                 fragment.appendChild(document.createTextNode(item[1]));
                 fragment = fragment.parentNode || root;
+                level--;
                 continue;
             }
             fragment.appendChild(fragment = mono.create('span'));
             fragment.appendChild(document.createTextNode(item[1]));
+            level++;
         }
-        return root;
+        return {node: root, base: base, desc: desc};
     },
     writeResultList: function(tracker, request, torrentList) {
         "use strict";
@@ -810,6 +819,8 @@ var view = {
             torrentObj.lowerTitle = torrentObj.title.toLowerCase();
             torrentObj.lowerCategoryTitle = torrentObj.categoryTitle.toLowerCase();
             cacheItem.filter = view.getFilterState(torrentObj);
+
+            var titleObj = view.hlTextToFragment(torrentObj.title);
 
             cacheItem.node = mono.create('tr', {
                 data: {
@@ -835,7 +846,7 @@ var view = {
                                 class: 'title',
                                 append: [
                                     mono.create('a', {
-                                        append: view.hlTextToFragment(torrentObj.title),
+                                        append: titleObj.node,
                                         href: torrentObj.url,
                                         target: '_blank'
                                     }),
