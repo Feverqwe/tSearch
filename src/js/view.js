@@ -48,8 +48,8 @@ var view = {
             {id: 'quality', size: 31,  lang: 'columnQuality'},
             {id: 'title',   size: 0,   lang: 'columnTitle'},
             {id: 'size',    size: 80,  lang: 'columnSize'},
-            {id: 'seed',   size: 30,  lang: 'columnSeeds'},
-            {id: 'peer',  size: 30,  lang: 'columnLeechs'}
+            {id: 'seed',    size: 30,  lang: 'columnSeeds'},
+            {id: 'peer',    size: 30,  lang: 'columnLeechs'}
         ],
         tableHeadColumnObjList: {},
         tableOrderIndex: 0,
