@@ -43,7 +43,7 @@ var view = {
             {id: -1, lang: 'categoryOther'}
         ],
         categoryObjList: {},
-        resultTableColumnList: [
+        tableHeadColumnList: [
             {id: 'date',    size: 125, lang: 'columnTime'},
             {id: 'quality', size: 31,  lang: 'columnQuality'},
             {id: 'title',   size: 0,   lang: 'columnTitle'},
@@ -51,8 +51,9 @@ var view = {
             {id: 'seed',   size: 30,  lang: 'columnSeeds'},
             {id: 'peer',  size: 30,  lang: 'columnLeechs'}
         ],
-        resultSortBy: 1,
-        tableSortColumn: 'quality',
+        tableHeadColumnObjList: {},
+        tableOrderIndex: 0,
+        tableSortColumnId: 'quality',
         trackerList: {},
         searchResultCounter: {
             tracker: {},
@@ -72,10 +73,27 @@ var view = {
         },
         filterStyle: undefined
     },
+    setColumnOrder: function (columnObj) {
+        var tableHeadList = view.varCache.tableHeadColumnObjList;
+        var classList = ['sortDown', 'sortUp'];
+        var currentColumnId = view.varCache.tableSortColumnId;
+        var currentColumn;
+        if (columnObj.id !== currentColumnId && (currentColumn = tableHeadList[currentColumnId])) {
+            columnObj.orderIndex = currentColumn.orderIndex;
+            currentColumn.orderIndex = undefined;
+            currentColumn.node.classList.remove(classList[columnObj.orderIndex]);
+        } else {
+            columnObj.node.classList.remove(classList[columnObj.orderIndex]);
+            columnObj.orderIndex = columnObj.orderIndex ? 0 : 1;
+        }
+
+        columnObj.orderIndex = view.varCache.tableOrderIndex = columnObj.orderIndex ? 1 : 0;
+        view.varCache.tableSortColumnId = columnObj.id;
+        columnObj.node.classList.add(classList[columnObj.orderIndex]);
+    },
     writeTableHead: function() {
         "use strict";
         var style = '';
-        var sortBy = view.varCache.resultSortBy ? 'sortDown' : 'sortUp';
         view.domCache.resultTableHead.appendChild(mono.create('tr', {
             append: (function(){
                 var thList = [];
@@ -86,19 +104,26 @@ var view = {
                 if (engine.settings.hidePeerColumn) {
                     hideList.push('peer');
                 }
-                for (var i = 0, item; item = view.varCache.resultTableColumnList[i]; i++) {
+                var columnObjList = view.varCache.tableHeadColumnObjList;
+                for (var i = 0, item; item = view.varCache.tableHeadColumnList[i]; i++) {
                     if (hideList.indexOf(item.id) !== -1) continue;
-                    var order = view.varCache.tableSortColumn === item.id ? sortBy : null;
-                    thList.push(mono.create('th', {
+                    var orderIndex = view.varCache.tableSortColumnId !== item.id ? undefined : view.varCache.tableOrderIndex;
+                    var columnObj = columnObjList[item.id] = {
+                        id: item.id,
+                        orderIndex: orderIndex
+                    };
+                    thList.push(columnObj.node = mono.create('th', {
                         data: {
-                            type: item.id
+                            id: item.id
                         },
                         title: mono.language[item.lang],
-                        class: [item.id + '-column', order],
+                        class: item.id + '-column',
                         append: mono.create('span', {
                             text: mono.language[item.lang + 'Short'] || mono.language[item.lang]
                         })
                     }));
+                    columnObj.setOrder = view.setColumnOrder.bind(null, columnObj);
+                    orderIndex !== undefined && columnObj.setOrder();
                     if (item.size) {
                         style += '#result_table_head th.'+item.id+'-column'+'{width:'+item.size+'px;}';
                     }
@@ -927,6 +952,12 @@ var view = {
             view.domCache[type].addEventListener('keyup', mono.throttle(view.onChangeFilter.bind(view.domCache[type], type), 250));
         }
     },
+    onTableHeadColumnClick: function(e) {
+        "use strict";
+        e.preventDefault();
+        var id = this.dataset.id;
+        view.varCache.tableHeadColumnObjList[id].setOrder();
+    },
     once: function() {
         "use strict";
         mono.language.size_filter += ' ' + mono.language.sizeList.split(',')[3];
@@ -979,6 +1010,17 @@ var view = {
             }
 
             view.onCategoryListItemClick.call(el, e);
+        });
+
+        view.domCache.resultTableHead.addEventListener('click', function(e) {
+            var el = e.target;
+            var _this = this.firstChild;
+            if (this === el) return;
+            while (el.parentNode !== _this) {
+                el = el.parentNode;
+            }
+
+            view.onTableHeadColumnClick.call(el, e);
         });
 
         view.writeTableHead();
