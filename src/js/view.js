@@ -273,11 +273,13 @@ var view = {
 
         var pos = view.varCache.filter.trackerList.indexOf(trackerObj.id);
         if (state) {
+            /* single tracekr select mode >>> */
             var lastSelectedTracker = view.varCache.trackerList[this.lastSelectId];
             if (lastSelectedTracker) {
                 lastSelectedTracker.setSelect(0);
             }
             this.lastSelectId = trackerObj.id;
+            /* <<< */
 
             trackerObj.itemEl.classList.add('selected');
             trackerObj.selected = 1;
