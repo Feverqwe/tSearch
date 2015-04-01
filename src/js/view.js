@@ -270,8 +270,15 @@ var view = {
         if (view.varCache.filter.trackerList === undefined) {
             view.varCache.filter.trackerList = [];
         }
+
         var pos = view.varCache.filter.trackerList.indexOf(trackerObj.id);
         if (state) {
+            var lastSelectedTracker = view.varCache.trackerList[this.lastSelectId];
+            if (lastSelectedTracker) {
+                lastSelectedTracker.setSelect(0);
+            }
+            this.lastSelectId = trackerObj.id;
+
             trackerObj.itemEl.classList.add('selected');
             trackerObj.selected = 1;
 
@@ -290,6 +297,9 @@ var view = {
         if (!option) return;
         view.domCache.profileSelect.selectedIndex = option.index;
 
+        var options = {
+            lastSelectId: undefined
+        };
         var styleContent = '';
         view.domCache.trackerList.textContent = '';
         view.varCache.trackerList = {};
@@ -328,7 +338,7 @@ var view = {
                 trackerObj.setCount = view.setTrackerCount.bind(null, trackerObj);
                 trackerObj.setStatus = view.setTrackerStatus.bind(null, trackerObj);
                 trackerObj.resetStatus = view.resetTrackerStatus.bind(null, trackerObj);
-                trackerObj.setSelect = view.setTrackerSelect.bind(null, trackerObj);
+                trackerObj.setSelect = view.setTrackerSelect.bind(options, trackerObj);
                 styleContent += '.tracker-icon[data-id="' + tracker.id + '"] {' +
                     'background-image: url('+ tracker.icon +')' +
                 '}';
@@ -836,11 +846,6 @@ var view = {
         e.preventDefault();
         var trackerId = this.dataset.id;
         var trackerObj = view.varCache.trackerList[trackerId];
-
-        for (var _trackerId in view.varCache.trackerList) {
-            if (_trackerId === trackerId) continue;
-            view.varCache.trackerList[_trackerId].setSelect(0);
-        }
 
         trackerObj.setSelect(trackerObj.selected ? 0 : 1);
     },
