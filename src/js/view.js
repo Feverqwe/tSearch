@@ -736,6 +736,7 @@ var view = {
     },
     hlCodeToArrayR: {
         tagList: '(<[{>]})',
+        closeTagList: '>]})',
         tagListR: /\)|\(|>|]|}|<|\[|{/g,
         noSpace: /\S/
     },
@@ -757,9 +758,10 @@ var view = {
             lasPos = pos + tag.length;
             if (lastListEl !== undefined) {
                 list.splice(-1, 1, lastListEl[1]+tag);
-                return;
+                lastListEl = undefined;
+            } else {
+                list.push(lastListEl = [view.hlCodeToArrayR.closeTagList.indexOf(tag) !== -1 ? 1 : 0, tag]);
             }
-            list.push(lastListEl = [view.hlCodeToArrayR.tagList.indexOf(tag) > 3 ? 1 : 0, tag]);
         });
 
         var str = code.substr(lasPos);
