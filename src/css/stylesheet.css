@@ -2,6 +2,7 @@
 body {
     min-width: 960px;
     user-select: none;
+    -webkit-user-select: none;
 }
 
 .head {
@@ -204,8 +205,15 @@ body {
     border-collapse: collapse;
     border-spacing: 2px;
     user-select: text;
+    -webkit-user-select: text;
     font-size: 12px;
 }
+
+#result_table thead {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 #result_table th {
     font-weight: normal;
     border-bottom: 1px solid #c0c0c0;
