@@ -731,7 +731,8 @@ var view = {
         view.sortInsertList(sortedList, view.varCache.lastSortedList);
     },
     hlCodeToArrayR: {
-        closeTagList: '>]})',
+        closeCharList: '>]})',
+        openCharList: '<[{(',
         tagListR: /\[\/?b]|\)|\(|>|]|}|<|\[|{/g,
         noSpace: /\S/
     },
@@ -741,7 +742,9 @@ var view = {
         var lastListEl = undefined;
         var lastPos = 0;
         var noSpace = view.hlCodeToArrayR.noSpace;
-        var closeTagList = view.hlCodeToArrayR.closeTagList;
+        var closeCharList = view.hlCodeToArrayR.closeCharList;
+        var openCharList = view.hlCodeToArrayR.openCharList;
+        var charStackList = [];
         code.replace(view.hlCodeToArrayR.tagListR, function(tag, pos) {
             if (pos > 0 && lastPos !== pos) {
                 var str = code.substr(lastPos, pos - lastPos);
@@ -755,7 +758,22 @@ var view = {
             var tagLen = tag.length;
             lastPos = pos + tagLen;
             var isTag = tagLen > 2 ? 1 : 0;
-            var isClose = isTag === 1 ? tag[1] === '/' ? 1 : 0 : closeTagList.indexOf(tag) !== -1 ? 1 : 0;
+            var tagIndex = isTag === 1 ? undefined : closeCharList.indexOf(tag);
+            var isClose = isTag === 1 ? tag[1] === '/' ? 1 : 0 : tagIndex !== -1 ? 1 : 0;
+            if (isTag === 0) {
+                if (isClose === 1) {
+                    var openChar = openCharList[tagIndex];
+                    var stackIndex = charStackList.indexOf(openChar);
+                    if (stackIndex === -1) {
+                        list.push(tag);
+                        return;
+                    } else {
+                        charStackList.splice(stackIndex, 1);
+                    }
+                } else {
+                    charStackList.push(tag);
+                }
+            }
             if (lastListEl !== undefined && lastListEl[2] === 0 && isTag === 0) {
                 list.splice(-1, 1, lastListEl[1]+tag);
                 lastListEl = undefined;
