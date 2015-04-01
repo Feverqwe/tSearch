@@ -731,37 +731,56 @@ var view = {
         view.sortInsertList(sortedList, view.varCache.lastSortedList);
     },
     hlCodeToArrayR: {
-        closeTagList: '>]})',
-        tagListR: /\[\/?b]|\)|\(|>|]|}|<|\[|{/g,
-        noSpace: /\S/
+        charList: /(\([^\)]*\)|\[[^\]]*]|<[^>]*>)/g,
+        tagListR: /{\/?[bs]}|&#123;|&#125;/g,
+        fAngle: /{([^}]*)}/g,
+        deDbl: /\{\/s}(\s*)\{s}|\{\/b}(\s*)\{b}/g
     },
     hlCodeToArray: function(code) {
         "use strict";
+        code = code.replace(view.hlCodeToArrayR.fAngle, '&#123;$1&#125;');
+        code = code.replace(view.hlCodeToArrayR.charList, '{s}$1{/s}');
+        code = code.replace(view.hlCodeToArrayR.deDbl, '$1');
+
         var list = [];
-        var lastListEl = undefined;
         var lastPos = 0;
-        var noSpace = view.hlCodeToArrayR.noSpace;
-        var closeTagList = view.hlCodeToArrayR.closeTagList;
         code.replace(view.hlCodeToArrayR.tagListR, function(tag, pos) {
             if (pos > 0 && lastPos !== pos) {
                 var str = code.substr(lastPos, pos - lastPos);
-                if (lastListEl !== undefined && lastListEl[2] === 0 && !noSpace.test(str)) {
-                    lastListEl[1] += str;
-                } else {
-                    list.push(str);
-                    lastListEl = undefined;
-                }
+                list.push(str);
             }
+
             var tagLen = tag.length;
             lastPos = pos + tagLen;
-            var isTag = tagLen > 2 ? 1 : 0;
-            var isClose = isTag === 1 ? tag[1] === '/' ? 1 : 0 : closeTagList.indexOf(tag) !== -1 ? 1 : 0;
-            if (lastListEl !== undefined && lastListEl[2] === 0 && isTag === 0) {
-                list.splice(-1, 1, lastListEl[1]+tag);
-                lastListEl = undefined;
-            } else {
-                list.push(lastListEl = [isClose, tag, isTag]);
+            var isClose = 0;
+
+            if (tag[0] === '&') {
+                if (tag[4] === '3') {
+                    tag = 'span';
+                    list.push([isClose, tag]);
+                    list.push('{');
+                    return;
+                } else
+                if (tag[4] === '5') {
+                    list.push('}');
+                    tag = 'span';
+                    isClose = 1;
+                    list.push([isClose, tag]);
+                    return;
+                }
             }
+
+            var index = 0;
+            if (tag[1] === '/') {
+                isClose = 1;
+                index += 1;
+            }
+            if (tag[index + 1] === 's') {
+                tag = 'span';
+            } else {
+                tag = 'b';
+            }
+            list.push([isClose, tag]);
         });
 
         if (lastPos !== code.length) {
@@ -790,18 +809,14 @@ var view = {
                 continue;
             }
             if (item[0] === 1) {
-                if (item[2] === 0) {
-                    fragment.appendChild(document.createTextNode(item[1]));
+                fragment = fragment.parentNode || root;
+                if (item[1] !== 'b') {
                     level--;
                 }
-                fragment = fragment.parentNode || root;
                 continue;
             }
-            if (item[2] === 1) {
-                fragment.appendChild(fragment = mono.create(item[1][1]));
-            } else {
-                fragment.appendChild(fragment = mono.create('span'));
-                fragment.appendChild(document.createTextNode(item[1]));
+            fragment.appendChild(fragment = mono.create(item[1]));
+            if (item[1] !== 'b') {
                 level++;
             }
         }
