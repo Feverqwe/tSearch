@@ -764,8 +764,9 @@ var view = {
             }
         });
 
-        var str = code.substr(lasPos);
-        list.push(str);
+        if (lasPos !== code.length) {
+            list.push(code.substr(lasPos));
+        }
 
         return list;
     },
@@ -778,7 +779,7 @@ var view = {
         for (var i = 0, len = list.length; i < len; i++) {
             var item = list[i];
             if (typeof item === 'string') {
-                item.length > 0 && fragment.appendChild(document.createTextNode(item));
+                fragment.appendChild(document.createTextNode(item));
                 continue;
             }
             if (item[0] === 1) {
@@ -786,9 +787,7 @@ var view = {
                 fragment = fragment.parentNode || root;
                 continue;
             }
-            var el = mono.create('span');
-            fragment.appendChild(el);
-            fragment = el;
+            fragment.appendChild(fragment = mono.create('span'));
             fragment.appendChild(document.createTextNode(item[1]));
         }
         return root;

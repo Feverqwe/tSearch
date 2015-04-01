@@ -250,9 +250,11 @@ body {
 #result_table .title a:link {
     color: #1A3DC1;
 }
-#result_table .title a:visited {
+#result_table .title a:visited,
+#result_table .title a:visited span {
     color: #609;
 }
+
 #result_table .title a:link:hover {
     border-bottom-color: #1A3DC1;
 }
