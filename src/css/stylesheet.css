@@ -311,3 +311,19 @@ body {
 #result_table .size-column a:hover {
     text-decoration: underline;
 }
+
+#result_table th.sortDown {
+    background-image: url('../img/down.png');
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    background-color: #ccc;
+}
+
+#result_table th.sortUp {
+    background-image: url('../img/up.png');
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    background-color: #ccc;
+}

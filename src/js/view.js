@@ -52,7 +52,7 @@ var view = {
             {id: 'peer',    size: 30,  lang: 'columnLeechs'}
         ],
         tableHeadColumnObjList: {},
-        tableOrderIndex: 0,
+        tableOrderIndex: 1,
         tableSortColumnId: 'quality',
         trackerList: {},
         searchResultCounter: {
@@ -71,11 +71,12 @@ var view = {
             seed: undefined,
             peer: undefined
         },
-        filterStyle: undefined
+        filterStyle: undefined,
+        lastSortedList: []
     },
     setColumnOrder: function (columnObj) {
         var tableHeadList = view.varCache.tableHeadColumnObjList;
-        var classList = ['sortDown', 'sortUp'];
+        var classList = ['sortUp', 'sortDown'];
         var currentColumnId = view.varCache.tableSortColumnId;
         var currentColumn;
         if (columnObj.id !== currentColumnId && (currentColumn = tableHeadList[currentColumnId])) {
@@ -90,6 +91,8 @@ var view = {
         columnObj.orderIndex = view.varCache.tableOrderIndex = columnObj.orderIndex ? 1 : 0;
         view.varCache.tableSortColumnId = columnObj.id;
         columnObj.node.classList.add(classList[columnObj.orderIndex]);
+
+        view.sortResults();
     },
     writeTableHead: function() {
         "use strict";
@@ -642,11 +645,99 @@ var view = {
             return view.timeAgoEn(countDays, countHour, countMinutes, countSeconds, seconds);
         }
     },
+    onSort: function(columnId, by, A, B) {
+        "use strict";
+        var a = A.api[columnId];
+        var b = B.api[columnId];
+
+        if (a === b) {
+            return 0;
+        } else
+        if (a === undefined) {
+            return (by === 1) ? -1 : 1;
+        } else
+        if (a === -1) {
+            if (b === undefined) {
+                return (by === 1) ? 1 : -1;
+            } else {
+                return (by === 1) ? -1 : 1;
+            }
+        } else
+        if (a < b) {
+            return (by === 1) ? -1 : 1;
+        } else
+        if (a > b) {
+            return (by === 1) ? 1 : -1;
+        }
+    },
+    sortInsertList: function(sortedList, currentList) {
+        "use strict";
+        var newPaste = [];
+        var fromIndex = null;
+        var elList = null;
+
+        for (var i = 0, item; item = sortedList[i]; i++) {
+            if (currentList[i] === item) {
+                continue;
+            }
+            fromIndex = i;
+
+            elList = document.createDocumentFragment();
+            while (sortedList[i] !== undefined && sortedList[i] !== currentList[i]) {
+                var pos = currentList.indexOf(sortedList[i], i);
+                if (pos !== -1) {
+                    currentList.splice(pos, 1);
+                }
+                currentList.splice(i, 0, sortedList[i]);
+
+                elList.appendChild(sortedList[i].node);
+                i++;
+            }
+
+            newPaste.push({
+                pos: fromIndex,
+                list: elList
+            });
+        }
+
+        var table = view.domCache.resultTableBody;
+        for (var n = 0, item; item = newPaste[n]; n++) {
+            if (item.pos === 0) {
+                var firstChild = table.firstChild;
+                if (firstChild === null) {
+                    table.appendChild(item.list);
+                } else {
+                    table.insertBefore(item.list, firstChild)
+                }
+            } else
+            if (table.childNodes[item.pos] !== undefined) {
+                table.insertBefore(item.list, table.childNodes[item.pos]);
+            } else {
+                table.appendChild(item.list);
+            }
+        }
+
+        view.varCache.lastSortedList = currentList;
+    },
+    sortResults: function(columnId, orderIndex) {
+        "use strict";
+        if (columnId === undefined) {
+            columnId = view.varCache.tableSortColumnId;
+        }
+        if (orderIndex === undefined) {
+            orderIndex = view.varCache.tableOrderIndex;
+        }
+
+        var searchResultCache = view.varCache.searchResultCache;
+        var sortedList = searchResultCache.slice(0);
+        sortedList.sort(view.onSort.bind(undefined, columnId, orderIndex));
+
+        view.sortInsertList(sortedList, view.varCache.lastSortedList);
+    },
     writeResultList: function(tracker, request, torrentList) {
         "use strict";
         var searchResultCounter = view.varCache.searchResultCounter;
         var searchResultCache = view.varCache.searchResultCache;
-        var container = document.createDocumentFragment();
         for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
             if (engine.settings.hideZeroSeed === 1 && torrentObj.seed === 0) {
                 continue;
@@ -739,13 +830,12 @@ var view = {
                 ]
             });
             searchResultCache.push(cacheItem);
-            container.appendChild(cacheItem.node);
 
             searchResultCounter.tracker[tracker.id]++;
             searchResultCounter.category[itemCategoryId]++;
             searchResultCounter.sum++;
         }
-        view.domCache.resultTableBody.appendChild(container);
+        view.sortResults();
         view.resultCounterUpdate();
     },
     onSearchSuccess: function(tracker, request, data) {
@@ -1083,7 +1173,6 @@ var view = {
     },
     onJqReady: function() {
         "use strict";
-        $(document).off('mouseup');
         view.domCache.searchBtn.addEventListener('click', function(e) {
             e.preventDefault();
             var request = view.domCache.requestInput.value.trim();
@@ -1092,6 +1181,7 @@ var view = {
     },
     onUiReady: function() {
         "use strict";
+        $(document).off('mouseup');
     }
 };
 
