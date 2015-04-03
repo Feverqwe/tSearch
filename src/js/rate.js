@@ -451,7 +451,7 @@ var rate = {
      *
      * @param [qualityList] Array
      * @param [type] String
-     * @returns {{wordsR: object, scope: object, scopeCase: object}}
+     * @returns {{}|{wordsR: object, scope: object, scopeCase: object}}
      */
     readQualityList: function(qualityList, type) {
         "use strict";
