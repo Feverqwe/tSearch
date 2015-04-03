@@ -468,7 +468,7 @@ var rate = {
                          * List item in qualityList
                          * @type {{word: String, caseSens: Number, regexp: Number}}
                          */
-                        wordItem = {word: wordItem};
+                        wordItem = {word: wordItem, caseSens: 0};
                     }
                     if (wordItem.caseSens !== 0) {
                         if (scopeCase[wordItem.word] !== undefined) {
@@ -561,6 +561,9 @@ var rate = {
         var qualityObj;
         if (this.qualityList.scopeCase === undefined || (qualityObj = this.qualityList.scopeCase[word]) === undefined) {
             word = word.toLowerCase();
+            if (this.qualityList.scope === undefined) {
+                return '';
+            }
             qualityObj = this.qualityList.scope[word];
         }
         if (qualityObj === undefined) {
