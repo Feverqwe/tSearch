@@ -553,8 +553,9 @@ var rate = {
     checkLeftRightSymbol: function(word, wordLen, pos, string) {
         return (this.charIsSymbol(string[pos - 1]) !== 0 && this.charIsSymbol(string[pos + wordLen]) !== 0) ? 1 : 0;
     },
-    onRateRegexp: function (word) {
+    onRateRegexp: function () {
         var argLen = arguments.length;
+        var word = arguments[0];
         var pos = arguments[argLen - 2];
         var text = arguments[argLen - 1];
         var wordLen = word.length;
