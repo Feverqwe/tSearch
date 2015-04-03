@@ -849,6 +849,7 @@ var view = {
             cacheItem.filter = view.getFilterState(torrentObj);
 
             var titleObj = view.hlTextToFragment(torrentObj.title);
+            var rateObj = rate.rateText(titleObj, torrentObj);
 
             cacheItem.node = mono.create('tr', {
                 data: {
@@ -1266,6 +1267,8 @@ var view = {
             view.domCache.peerFilter.style.display = 'none';
             view.domCache.peerFilter.previousElementSibling.style.display = 'none';
         }
+
+        rate.init();
 
         document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
     },
