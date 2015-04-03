@@ -447,6 +447,12 @@ var rate = {
     regexpList: {
         text2safeR: /([{})(\][\\\.^$\|\?\+])/g
     },
+    /**
+     *
+     * @param [qualityList] Array
+     * @param [type] String
+     * @returns {{wordsR: object, scope: object, scopeCase: object}}
+     */
     readQualityList: function(qualityList, type) {
         "use strict";
         type = type || '';
@@ -457,20 +463,30 @@ var rate = {
         qualityList.forEach(function(qualityObj) {
             if (qualityObj.list !== undefined) {
                 qualityObj.list.forEach(function(wordItem) {
-                    if (typeof wordItem === 'object') {
+                    if (typeof wordItem === 'string') {
+                        /**
+                         * List item in qualityList
+                         * @type {{word: String, caseSens: Number, regexp: Number}}
+                         */
+                        wordItem = {word: wordItem};
+                    }
+                    if (wordItem.caseSens !== 0) {
                         if (scopeCase[wordItem.word] !== undefined) {
                             console.log('Word case conflict!', wordItem);
                         }
                         scopeCase[wordItem.word] = qualityObj;
+                    } else {
+                        wordItem.word = wordItem.word.toLowerCase();
+                        if (scope[wordItem.word] !== undefined) {
+                            console.log('Word conflict!', wordItem);
+                        }
+                        scope[wordItem.word] = qualityObj;
+                    }
+                    if (wordItem.regexp === 1) {
+                        wordsR.push(wordItem.word);
+                    } else {
                         wordsR.push(wordItem.word.replace(rate.regexpList.text2safeR, "\\$1"));
-                        return true;
                     }
-                    wordItem = wordItem.toLowerCase();
-                    if (scope[wordItem] !== undefined) {
-                        console.log('Word conflict!', wordItem);
-                    }
-                    scope[wordItem] = qualityObj;
-                    wordsR.push(wordItem.replace(rate.regexpList.text2safeR, "\\$1"));
                 });
             }
             var subList = [];
@@ -617,6 +633,9 @@ var rate = {
         }
     },
     init: function () {
+        /**
+         * @type {{wordsR: Object, scope: Object, scopeCase: Object}}
+         */
         this.baseQualityList = this.readQualityList();
         this.charIsSymbol.stat = [0,0,0,0,0,0,0,0];
     }
