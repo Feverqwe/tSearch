@@ -611,9 +611,74 @@ var rate = {
             }
         }
     },
+    onBaseTitleRegexpR: {
+        onlySpace: /^[\s\t]*$/
+    },
+    onBaseTitleRegexp: function (word, pos, text) {
+        if (this.requestObj.hlWordLowList.length <= this.index) {
+            return '';
+        }
+        var wordLen = word.length;
+        if (wordLen === 0 || rate.checkLeftRightSymbol(word, wordLen, pos, text) === 0) {
+            return '';
+        }
+
+        var inCaseList = 0;
+        var firstWordBonus = 1.25;
+        var nextWordBonus = 0.10;
+        if (word === this.requestObj.hlWordList[this.index]) {
+            firstWordBonus += 0.10;
+            nextWordBonus += 0.05;
+            inCaseList = 1;
+        }
+
+        word = word.toLowerCase();
+        if (inCaseList === 1 || word === this.requestObj.hlWordLowList[this.index]) {
+            this.rate.title += this.requestObj.hlWordRate;
+            if (this.index === 0 && (pos === 0 || rate.onBaseTitleRegexpR.onlySpace.test(text.substr(0, pos))) ) {
+                this.rate.title *= firstWordBonus;
+            }
+            if (this.index > 0 && pos - this.lastPos < 3) {
+                this.rate.title += this.requestObj.hlWordSpaceBonus * nextWordBonus
+            }
+        } else {
+            if (this.fWordList[word] !== undefined) {
+                return '';
+            }
+            this.rate.title += this.requestObj.hlWordRate;
+        }
+
+        this.lastPos = pos + wordLen;
+        this.fWordList[word] = 1;
+        this.index++;
+    },
+    onDescTitleRegexp: function (word, pos, text) {
+        var wordLen = word.length;
+        if (wordLen === 0 || rate.checkLeftRightSymbol(word, wordLen, pos, text) === 0) {
+            return '';
+        }
+
+        word = word.toLowerCase();
+        if (this.fWordList[word] !== undefined) {
+            return '';
+        }
+        this.fWordList[word] = 1;
+
+        this.rate.title += this.requestObj.hlWordRate;
+    },
+    onTitleYearRegexp: function (word, pos, text) {
+        if (this.requestObj.year.length <= this.index) {
+            return '';
+        }
+        var wordLen = word.length;
+        if (wordLen === 0 || rate.checkLeftRightSymbol(word, wordLen, pos, text) === 0) {
+            return '';
+        }
+        this.rate.title += this.requestObj.hlWordRate;
+        this.index++;
+    },
     rateText: function (requestObj, titleObj, torrentObj) {
         var rating = {
-            text: 0,
             quality: undefined,
 
             rate: {
@@ -623,8 +688,11 @@ var rate = {
                 books: 0,
                 serials: 0,
                 cartoons: 0,
-                xxx: 0
-            }
+                xxx: 0,
+
+                title: 0
+            },
+            sum: 0
         };
         var onRateRegexp = this.onRateRegexp.bind({
             rating: rating,
@@ -637,11 +705,43 @@ var rate = {
             rating.quality = '+';
         }
 
-
-
-        return {
-            rating: rating
+        if (requestObj.hlWordNoYearR !== undefined) {
+            var fWordList = {};
+            var onBaseTitleRegexp = rate.onBaseTitleRegexp.bind({
+                rate: rating.rate,
+                requestObj: requestObj,
+                index: 0,
+                lastPos: 0,
+                fWordList: fWordList
+            });
+            titleObj.base.replace(requestObj.hlWordNoYearR, onBaseTitleRegexp);
+            var onDescTitleRegexp = rate.onDescTitleRegexp.bind({
+                rate: rating.rate,
+                requestObj: requestObj,
+                index: 0,
+                lastPos: 0,
+                fWordList: fWordList
+            });
+            titleObj.desc.toLowerCase().replace(requestObj.hlWordNoYearR, onDescTitleRegexp);
         }
+
+        if (requestObj.yearR !== undefined) {
+            var onTitleYearRegexp = rate.onTitleYearRegexp.bind({
+                rate: rating.rate,
+                requestObj: requestObj,
+                index: 0
+            });
+            torrentObj.title.replace(requestObj.yearR, onTitleYearRegexp);
+        }
+
+        console.log(rating.rate.title, torrentObj.title);
+
+        rating.sum = rating.rate.title;
+        /*for (var item in rating.rate) {
+            rating.sum += rating.rate[item];
+        }*/
+
+        return rating
     },
     onHlRequestRegexp: function(word, pos, text) {
         "use strict";

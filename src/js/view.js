@@ -851,7 +851,8 @@ var view = {
             cacheItem.filter = view.getFilterState(torrentObj);
 
             var titleObj = view.hlTextToFragment(torrentObj.title, view.varCache.requestObj);
-            var rateObj = rate.rateText(view.varCache.requestObj, titleObj, torrentObj);
+            var ratingObj = rate.rateText(view.varCache.requestObj, titleObj, torrentObj);
+            torrentObj.quality = ratingObj.sum;
 
             cacheItem.node = mono.create('tr', {
                 data: {
@@ -868,7 +869,7 @@ var view = {
                     }),
                     mono.create('td', {
                         class: 'quality-column',
-                        text: 0
+                        text: torrentObj.quality
                     }),
                     mono.create('td', {
                         class: 'title-column',
@@ -1036,14 +1037,19 @@ var view = {
         var currentYear = (new Date).getFullYear();
         var yearList = [];
         var hlWordList = [];
+        var hlWordLowList = [];
         var hlWordListR = [];
+        var hlWordCaseListR = [];
         var hlWordNoYearList = [];
         var hlWordNoYearListR = [];
         var wordList = request.split(prep.splitR);
         for (var i = 0, len = wordList.length; i < len; i++) {
             var word = wordList[i];
             if (word.length === 0) continue;
+            var wordLow = word.toLowerCase();
             var rWord = word.replace(view.filterWordR.text2safeR, '\\$1');
+            hlWordCaseListR.push(rWord.toLowerCase());
+            hlWordLowList.push(wordLow);
             hlWordListR.push(rWord);
             hlWordList.push(word);
             var isYear = prep.yearR.test(word);
@@ -1057,15 +1063,19 @@ var view = {
         }
 
         obj.request = request;
+
         if (hlWordList.length > 0) {
             obj.hlWordList = hlWordList;
-            obj.hlWordR = new RegExp(hlWordListR.join('|'), 'ig');
+            obj.hlWordLowList = hlWordLowList;
+            obj.hlWordR = new RegExp(hlWordCaseListR.join('|'), 'ig');
             obj.hlWordCaseR = new RegExp(hlWordListR.join('|'), 'g');
+            obj.hlWordRate = 200 / hlWordList.length;
+            obj.hlWordSpaceBonus = (obj.hlWordRate / 2 / hlWordList.length - 1);
         }
         if (hlWordNoYearList.length > 0) {
             obj.hlWordNoYear = hlWordNoYearList;
-            obj.hlWordNoYearR = new RegExp(hlWordNoYearList.join('|'), 'ig');
-            obj.hlWordNoYearCaseR = new RegExp(hlWordNoYearList.join('|'), 'g');
+            obj.hlWordNoYearR = new RegExp(hlWordNoYearListR.join('|'), 'ig');
+            obj.hlWordNoYearCaseR = new RegExp(hlWordNoYearListR.join('|'), 'g');
         }
         if (yearList.length > 0) {
             obj.year = yearList;
