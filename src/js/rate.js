@@ -583,7 +583,7 @@ var rate = {
         }
 
         for (var key in qualityObj.rate) {
-            this.rating[key] += qualityObj.rate[key];
+            this.rating.rate[key] += qualityObj.rate[key];
         }
 
         var onSubRateRegexp, subText;
@@ -616,13 +616,15 @@ var rate = {
             text: 0,
             quality: undefined,
 
-            video: 0,
-            music: 0,
-            games: 0,
-            books: 0,
-            serials: 0,
-            cartoons: 0,
-            xxx: 0
+            rate: {
+                video: 0,
+                music: 0,
+                games: 0,
+                books: 0,
+                serials: 0,
+                cartoons: 0,
+                xxx: 0
+            }
         };
         var onRateRegexp = this.onRateRegexp.bind({
             rating: rating,
@@ -635,9 +637,26 @@ var rate = {
             rating.quality = '+';
         }
 
+
+
         return {
             rating: rating
         }
+    },
+    onHlRequestRegexp: function(word, pos, text) {
+        "use strict";
+        var wordLen = word.length;
+        if (rate.checkLeftRightSymbol(word, wordLen, pos, text) === 0) {
+            return word;
+        }
+
+        return '{b}'+word+'{/b}';
+    },
+    hlRequest: function (code, requestObj) {
+        if (requestObj.hlWordR === undefined) {
+            return code;
+        }
+        return code.replace(requestObj.hlWordR, this.onHlRequestRegexp);
     },
     init: function () {
         /**

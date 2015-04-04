@@ -73,8 +73,8 @@ var view = {
         },
         filterStyle: undefined,
         lastSortedList: [],
-        requestObj: {}}
-    ,
+        requestObj: {}
+    },
     setColumnOrder: function (columnObj) {
         var tableHeadList = view.varCache.tableHeadColumnObjList;
         var classList = ['sortUp', 'sortDown'];
@@ -797,8 +797,9 @@ var view = {
 
         return list;
     },
-    hlTextToFragment: function(code) {
+    hlTextToFragment: function(code, requestObj) {
         "use strict";
+        code = rate.hlRequest(code, requestObj);
         var list = view.hlCodeToArray(code);
 
         var base = '';
@@ -830,7 +831,7 @@ var view = {
         }
         return {node: root, base: base, desc: desc};
     },
-    writeResultList: function(tracker, request, torrentList) {
+    writeResultList: function(tracker, torrentList) {
         "use strict";
         var searchResultCounter = view.varCache.searchResultCounter;
         var searchResultCache = view.varCache.searchResultCache;
@@ -849,8 +850,8 @@ var view = {
             torrentObj.lowerCategoryTitle = torrentObj.categoryTitle.toLowerCase();
             cacheItem.filter = view.getFilterState(torrentObj);
 
-            var titleObj = view.hlTextToFragment(torrentObj.title);
-            var rateObj = rate.rateText(request, titleObj, torrentObj);
+            var titleObj = view.hlTextToFragment(torrentObj.title, view.varCache.requestObj);
+            var rateObj = rate.rateText(view.varCache.requestObj, titleObj, torrentObj);
 
             cacheItem.node = mono.create('tr', {
                 data: {
@@ -947,7 +948,7 @@ var view = {
             });
         }
         view.resetTrackerStatusById(tracker.id);
-        view.writeResultList(tracker, request, data.torrentList);
+        view.writeResultList(tracker, data.torrentList);
     },
     resetTrackerStatusById: function(trackerId, except) {
         "use strict";
@@ -1031,28 +1032,45 @@ var view = {
         var prep = view.prepareRequestR;
         request = $.trim(request.replace(prep.spaceR, ' '));
 
+        var obj = view.varCache.requestObj = {};
         var currentYear = (new Date).getFullYear();
         var yearList = [];
-        var boldWordList = [];
+        var hlWordList = [];
+        var hlWordListR = [];
+        var hlWordNoYearList = [];
+        var hlWordNoYearListR = [];
         var wordList = request.split(prep.splitR);
         for (var i = 0, len = wordList.length; i < len; i++) {
             var word = wordList[i];
             if (word.length === 0) continue;
-            var isYear = word.test(prep.yearR);
+            var rWord = word.replace(view.filterWordR.text2safeR, '\\$1');
+            hlWordListR.push(rWord);
+            hlWordList.push(word);
+            var isYear = prep.yearR.test(word);
             if (isYear) {
                 if (word > currentYear) continue;
                 yearList.push(word);
-                boldWordList.push(word);
                 continue;
             }
-            boldWordList.push(word);
+            hlWordNoYearList.push(word);
+            hlWordNoYearListR.push(rWord);
         }
 
-        view.varCache.requestObj = {
-            request: request,
-            hlWordList: boldWordList,
-            yearList: yearList
-        };
+        obj.request = request;
+        if (hlWordList.length > 0) {
+            obj.hlWordList = hlWordList;
+            obj.hlWordR = new RegExp(hlWordListR.join('|'), 'ig');
+            obj.hlWordCaseR = new RegExp(hlWordListR.join('|'), 'g');
+        }
+        if (hlWordNoYearList.length > 0) {
+            obj.hlWordNoYear = hlWordNoYearList;
+            obj.hlWordNoYearR = new RegExp(hlWordNoYearList.join('|'), 'ig');
+            obj.hlWordNoYearCaseR = new RegExp(hlWordNoYearList.join('|'), 'g');
+        }
+        if (yearList.length > 0) {
+            obj.year = yearList;
+            obj.yearR = new RegExp(yearList.join('|'), 'g');
+        }
 
         return request;
     },
