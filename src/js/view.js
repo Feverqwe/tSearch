@@ -72,8 +72,9 @@ var view = {
             peer: undefined
         },
         filterStyle: undefined,
-        lastSortedList: []
-    },
+        lastSortedList: [],
+        requestObj: {}}
+    ,
     setColumnOrder: function (columnObj) {
         var tableHeadList = view.varCache.tableHeadColumnObjList;
         var classList = ['sortUp', 'sortDown'];
@@ -849,7 +850,7 @@ var view = {
             cacheItem.filter = view.getFilterState(torrentObj);
 
             var titleObj = view.hlTextToFragment(torrentObj.title);
-            var rateObj = rate.rateText(titleObj, torrentObj);
+            var rateObj = rate.rateText(request, titleObj, torrentObj);
 
             cacheItem.node = mono.create('tr', {
                 data: {
@@ -1020,11 +1021,47 @@ var view = {
         view.resultCounterCategoryReset();
         view.resultCounterUpdate();
     },
+    prepareRequestR: {
+        spaceR: /[\s\xA0]/g,
+        yearR: /^(?:19|2[01])[0-9]{2}$/g,
+        splitR: /\s+/
+    },
+    prepareRequest: function(request) {
+        "use strict";
+        var prep = view.prepareRequestR;
+        request = $.trim(request.replace(prep.spaceR, ' '));
+
+        var currentYear = (new Date).getFullYear();
+        var yearList = [];
+        var boldWordList = [];
+        var wordList = request.split(prep.splitR);
+        for (var i = 0, len = wordList.length; i < len; i++) {
+            var word = wordList[i];
+            if (word.length === 0) continue;
+            var isYear = word.test(prep.yearR);
+            if (isYear) {
+                if (word > currentYear) continue;
+                yearList.push(word);
+                boldWordList.push(word);
+                continue;
+            }
+            boldWordList.push(word);
+        }
+
+        view.varCache.requestObj = {
+            request: request,
+            hlWordList: boldWordList,
+            yearList: yearList
+        };
+
+        return request;
+    },
     search: function(request) {
         "use strict";
         view.domCache.resultTableBody.textContent = '';
         view.varCache.searchResultCache = [];
         view.resultCounterReset();
+        request = view.prepareRequest(request);
         var trackerList = view.getTrackerList();
         exKit.searchList(trackerList, request, {
             onSuccess: view.onSearchSuccess,

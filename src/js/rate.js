@@ -611,7 +611,7 @@ var rate = {
             }
         }
     },
-    rateText: function (titleObj, torrentObj) {
+    rateText: function (requestObj, titleObj, torrentObj) {
         var rating = {
             text: 0,
             quality: undefined,
