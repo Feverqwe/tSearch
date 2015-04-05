@@ -91,7 +91,7 @@ body {
     max-height: 153px;
     overflow-y: auto;
     z-index: 100;
-    width: 512px;
+    width: 512px !important;
     padding-left: 0;
     font-size: 14px;
     outline: none;

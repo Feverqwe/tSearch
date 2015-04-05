@@ -623,35 +623,28 @@ var rate = {
         var wordLow = word.toLowerCase();
 
         var caseIndex = this.requestObj.hlWordList.indexOf(word);
-        var firstWordBonus = 1.15;
-        var nextWordBonus = 1.10;
-        var caseBonus = 0;
-        if (caseIndex !== -1) {
-            firstWordBonus += 0.05;
-            nextWordBonus += 0.05;
-            caseBonus = 1.05;
-        }
+        var pref = caseIndex === -1 ? '' : 'Case';
+        var wordRate = this.requestObj['unOrderWord' + pref + 'Rate'];
+        var unOrderWordRate = this.requestObj['unOrderWord' + pref + 'Rate'];
+        var notFirstWordRate = this.requestObj['notFirstWord' + pref + 'Rate'];
+        var notSpaceSlitRate = this.requestObj['notSpaceSlit' + pref + 'Rate'];
 
         if (this.outList === 0 && (caseIndex === this.index || wordLow === this.requestObj.hlWordLowList[this.index])) {
-            this.rate.title += this.requestObj.hlWordRate * caseBonus;
+            this.rate.title += wordRate;
             if (this.index === 0) {
-                if (pos === 0) {
-                    this.rate.title *= firstWordBonus;
+                if (pos !== 0) {
+                    this.rate.title -= notFirstWordRate;
                 }
             } else
-            if (pos - this.lastPos < 3) {
-                this.rate.title += this.requestObj.hlWordSpaceBonus * nextWordBonus
+            if (pos - this.lastPos > 2) {
+                this.rate.title -= notSpaceSlitRate;
             }
         } else {
             this.outList = 1;
             if (this.fWordList[wordLow] !== undefined) {
                 return '';
             }
-            if (caseIndex !== -1) {
-                this.rate.title += this.requestObj.hlWordRate * caseBonus;
-            } else {
-                this.rate.title += this.requestObj.hlWordRate;
-            }
+            this.rate.title += unOrderWordRate;
         }
 
         this.lastPos = pos + wordLen;
@@ -670,12 +663,11 @@ var rate = {
         }
         this.fWordList[wordLow] = 1;
 
-        var caseBonus = this.requestObj.hlWordList.indexOf(word) === -1 ? 0 : 1.05;
-        if (caseBonus !== 0) {
-            this.rate.title += this.requestObj.hlWordRate * caseBonus;
-        } else {
-            this.rate.title += this.requestObj.hlWordRate;
-        }
+        var caseIndex = this.requestObj.hlWordList.indexOf(word);
+        var pref = caseIndex === -1 ? '' : 'Case';
+        var unOrderWordRate = this.requestObj['unOrderWord' + pref + 'Rate'];
+
+        this.rate.title += unOrderWordRate;
     },
     onTitleYearRegexp: function (word, pos, text) {
         if (this.requestObj.year.length <= this.index) {
@@ -685,7 +677,7 @@ var rate = {
         if (wordLen === 0 || rate.checkLeftRightSymbol(word, wordLen, pos, text) === 0) {
             return '';
         }
-        this.rate.title += this.requestObj.hlWordRate;
+        this.rate.title += this.requestObj.hlWordCaseRate;
         this.index++;
     },
     sizeSeedRate: function(rating, torrentObj) {

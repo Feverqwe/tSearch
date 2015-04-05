@@ -3,6 +3,7 @@
  */
 var view = {
     domCache: {
+        searchForm: document.getElementById('search_form'),
         requestInput: document.getElementById('request_input'),
         clearBtn: document.getElementById('clear_btn'),
         searchBtn: document.getElementById('search_btn'),
@@ -44,7 +45,7 @@ var view = {
         ],
         categoryObjList: {},
         tableHeadColumnList: [
-            {id: 'date',    size: 125, lang: 'columnTime'},
+            {id: 'date',    size: 100, lang: 'columnTime'},
             {id: 'quality', size: 31,  lang: 'columnQuality'},
             {id: 'title',   size: 0,   lang: 'columnTitle'},
             {id: 'size',    size: 80,  lang: 'columnSize'},
@@ -73,7 +74,8 @@ var view = {
         },
         filterStyle: undefined,
         lastSortedList: [],
-        requestObj: {}
+        requestObj: {},
+        suggestXhr: undefined
     },
     setColumnOrder: function (columnObj) {
         var tableHeadList = view.varCache.tableHeadColumnObjList;
@@ -1045,7 +1047,6 @@ var view = {
         var yearList = [];
         var hlWordList = [];
         var hlWordLowList = [];
-        var hlWordListR = [];
         var hlWordCaseListR = [];
         var hlWordNoYearList = [];
         var hlWordNoYearListR = [];
@@ -1057,7 +1058,6 @@ var view = {
             var rWord = word.replace(view.filterWordR.text2safeR, '\\$1');
             hlWordCaseListR.push(rWord.toLowerCase());
             hlWordLowList.push(wordLow);
-            hlWordListR.push(rWord);
             hlWordList.push(word);
             var isYear = prep.yearR.test(word);
             if (isYear) {
@@ -1074,9 +1074,19 @@ var view = {
         if (hlWordList.length > 0) {
             obj.hlWordList = hlWordList;
             obj.hlWordLowList = hlWordLowList;
-            obj.hlWordR = new RegExp(hlWordCaseListR.join('|'), 'ig');
-            obj.hlWordRate = 200 / hlWordList.length;
-            obj.hlWordSpaceBonus = (obj.hlWordRate / 2 / hlWordList.length - 1);
+            obj.hlWordR = new RegExp(hlWordCaseListR.sort(function(a,b){return a.length > b.length ? 0 : 1}).join('|'), 'ig');
+
+            obj.hlWordCaseRate = 200 / hlWordList.length;
+            obj.hlWordRate = obj.hlWordCaseRate * 0.95;
+
+            obj.unOrderWordCaseRate =  obj.hlWordCaseRate * 0.70;
+            obj.unOrderWordRate = obj.hlWordRate * 0.60;
+
+            obj.notFirstWordCaseRate = obj.hlWordCaseRate * 0.90;
+            obj.notFirstWordRate = obj.hlWordRate * 0.80;
+
+            obj.notSpaceSlitCaseRate = obj.hlWordCaseRate * 0.90;
+            obj.notSpaceSlitRate = obj.hlWordRate * 0.80;
         }
         if (hlWordNoYearList.length > 0) {
             obj.hlWordNoYearR = new RegExp(hlWordNoYearListR.join('|'), 'ig');
@@ -1227,6 +1237,24 @@ var view = {
         var id = this.dataset.id;
         view.varCache.tableHeadColumnObjList[id].setOrder();
     },
+    getHistory: function() {
+        "use strict";
+        var history = view.varCache.history;
+        history.sort(function(a,b){
+            if (a.count === b.count) {
+                return 0;
+            } else if (a.count < b.count) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+        var list = [];
+        for (var i = 0, item; item = history[i]; i++) {
+            list.push(item.title);
+        }
+        return list;
+    },
     once: function() {
         "use strict";
         mono.language.size_filter += ' ' + mono.language.sizeList.split(',')[3];
@@ -1352,6 +1380,68 @@ var view = {
     onUiReady: function() {
         "use strict";
         $(document).off('mouseup');
+        view.varCache.history = engine.history;
+
+        $(view.domCache.requestInput).autocomplete({
+            minLength: 0,
+            position: {
+                collision: "bottom"
+            },
+            source: function(request, cb) {
+                var value = request.term;
+                if (value.length === 0) {
+                    return cb(view.getHistory());
+                }
+                if (view.varCache.suggestXhr) {
+                    view.varCache.suggestXhr.abort();
+                }
+                view.varCache.suggestXhr = mono.ajax({
+                    url: 'http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(value),
+                    dataType: 'json',
+                    success: function(data) {
+                        cb(data[1]);
+                    }
+                });
+            },
+            select: function() {
+                view.domCache.requestInput.value = arguments[1].item.value;
+                view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
+            },
+            close: function() {
+                mono.resizePopup(undefined, document.body.clientHeight);
+                if (mono.isOpera) {
+                    setTimeout(function() {
+                        view.domCache.requestInput.focus();
+                    }, 100);
+                }
+            },
+            create: function() {
+                var hasTopShadow = 0;
+                mono.create(document.querySelector('ul.ui-autocomplete'), {
+                    on: ['scroll', function() {
+                        if (this.scrollTop !== 0) {
+                            if (hasTopShadow === 1) {
+                                return;
+                            }
+                            hasTopShadow = 1;
+
+                            this.style.boxShadow = 'rgba(0, 0, 0, 0.40) -2px 1px 2px 0px inset';
+                            return;
+                        }
+                        if (hasTopShadow === 0) {
+                            return;
+                        }
+                        hasTopShadow = 0;
+
+                        this.style.boxShadow = null;
+                    }]
+                });
+            },
+            messages: {
+                noResults: '',
+                results: function() {}
+            }
+        })
     }
 };
 
