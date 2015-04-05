@@ -765,8 +765,6 @@ var rate = {
             rating.sum += rating.rate[item];
         }
 
-        rating.sum = parseInt(rating.sum);
-
         return rating
     },
     onHlRequestRegexp: function(word, pos, text) {

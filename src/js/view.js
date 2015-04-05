@@ -852,7 +852,7 @@ var view = {
 
             var titleObj = view.hlTextToFragment(torrentObj.title, view.varCache.requestObj);
             var ratingObj = rate.rateText(view.varCache.requestObj, titleObj, torrentObj);
-            torrentObj.quality = ratingObj.sum;
+            torrentObj.quality = ratingObj;
 
             cacheItem.node = mono.create('tr', {
                 data: {
@@ -869,7 +869,7 @@ var view = {
                     }),
                     mono.create('td', {
                         class: 'quality-column',
-                        text: torrentObj.quality
+                        text: parseInt(torrentObj.quality.sum)
                     }),
                     mono.create('td', {
                         class: 'title-column',
