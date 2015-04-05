@@ -19,6 +19,18 @@ input[type=text]:focus {
     border: 1px solid #3366ff !important;
 }
 
+body #explore_block {
+    display: none;
+}
+
+body.home #explore_block {
+    display: block;
+}
+
+body.home #result_block {
+    display: none;
+}
+
 .head {
     position: relative;
     border-bottom: 1px solid #ddd;
@@ -45,11 +57,11 @@ input[type=text]:focus {
     outline-color: #3802FD;
 }
 .quick-menu > a:hover{
-    background-color: #ebebeb;
     border-color: #adadad;
 }
 .quick-menu > a:active {
-    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    background-color: #ebebeb;
+    border-color: #adadad;
 }
 
 #main_btn {

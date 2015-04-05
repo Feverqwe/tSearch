@@ -24,7 +24,8 @@ var view = {
         seedFilterMin: document.getElementById('seed_filter_from'),
         seedFilterMax: document.getElementById('seed_filter_to'),
         peerFilterMin: document.getElementById('peer_filter_from'),
-        peerFilterMax: document.getElementById('peer_filter_to')
+        peerFilterMax: document.getElementById('peer_filter_to'),
+        mainBtn: document.getElementById('main_btn')
     },
     varCache: {
         categoryList: [
@@ -75,7 +76,11 @@ var view = {
         filterStyle: undefined,
         lastSortedList: [],
         requestObj: {},
-        suggestXhr: undefined
+        suggestXhr: undefined,
+        filterRangeList: ['wordFilterInput', 'sizeFilterMin',
+            'sizeFilterMax', 'timeFilterMin',
+            'timeFilterMax', 'seedFilterMin', 'seedFilterMax',
+            'peerFilterMin', 'peerFilterMax']
     },
     setColumnOrder: function (columnObj) {
         var tableHeadList = view.varCache.tableHeadColumnObjList;
@@ -1100,6 +1105,7 @@ var view = {
     },
     search: function(request) {
         "use strict";
+        view.setSearchState();
         view.domCache.resultTableBody.textContent = '';
         view.varCache.searchResultCache = [];
         view.resultCounterReset();
@@ -1222,12 +1228,25 @@ var view = {
             el.removeChild(node);
         }
     },
+    clearFilter: function() {
+        "use strict";
+        for (var i = 0, list = view.varCache.filterRangeList, type; type = list[i]; i++) {
+            view.domCache[type].value = '';
+        }
+        view.domCache.wordFilterInput.value = '';
+        view.domCache.timeFilterSelect.selectedIndex = 0;
+        view.domCache.timeFilterSelect.dispatchEvent(new CustomEvent('change'));
+
+        for (var trackerId in view.varCache.trackerList) {
+            var trackerObj = view.varCache.trackerList[trackerId];
+            trackerObj.setSelect(0);
+        }
+
+        view.filterUpdate();
+    },
     bindFilterRange: function() {
         "use strict";
-        for (var i = 0, list = ['wordFilterInput', 'sizeFilterMin',
-            'sizeFilterMax', 'timeFilterMin',
-            'timeFilterMax', 'seedFilterMin', 'seedFilterMax',
-            'peerFilterMin', 'peerFilterMax'], type; type = list[i]; i++) {
+        for (var i = 0, list = view.varCache.filterRangeList, type; type = list[i]; i++) {
             view.domCache[type].addEventListener('keyup', mono.throttle(view.onChangeFilter.bind(view.domCache[type], type), 250));
         }
     },
@@ -1255,6 +1274,20 @@ var view = {
         }
         return list;
     },
+    setSearchState: function() {
+        "use strict";
+        document.body.classList.remove('home');
+    },
+    setMainState: function() {
+        "use strict";
+
+        view.varCache.searchResultCache.splice(0);
+        view.varCache.lastSortedList.splice(0);
+
+        view.clearFilter();
+        document.body.classList.add('home');
+        view.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
+    },
     once: function() {
         "use strict";
         mono.language.size_filter += ' ' + mono.language.sizeList.split(',')[3];
@@ -1263,6 +1296,12 @@ var view = {
         view.domCache.requestInput.focus();
 
         view.bytesToString = view.bytesToString.bind(null, mono.language.sizeList.split(','));
+
+        view.domCache.mainBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            view.setMainState();
+        });
 
         view.domCache.clearBtn.addEventListener('click', function() {
             view.domCache.requestInput.value = '';
