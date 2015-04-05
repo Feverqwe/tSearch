@@ -632,7 +632,7 @@ var rate = {
         if (caseIndex !== -1) {
             firstWordBonus += 0.05;
             nextWordBonus += 0.05;
-            caseBonus += 0.10;
+            caseBonus += 0.05;
         }
 
         if (this.outList === 0 && (caseIndex === this.index || wordLow === this.requestObj.hlWordLowList[this.index])) {
@@ -674,7 +674,7 @@ var rate = {
         var caseIndex = this.requestObj.hlWordList.indexOf(word);
         var caseBonus = 1;
         if (caseIndex !== -1) {
-            caseBonus += 0.10;
+            caseBonus += 0.05;
             this.rate.title += this.requestObj.hlWordRate * caseBonus;
         } else {
             this.rate.title += this.requestObj.hlWordRate;
@@ -690,6 +690,19 @@ var rate = {
         }
         this.rate.title += this.requestObj.hlWordRate;
         this.index++;
+    },
+    sizeSeedRate: function(rating, torrentObj) {
+        var rate = rating.rate;
+        rate.seed = 0;
+        if (engine.settings.calcSeedCount === 1) {
+            rate.seed = (torrentObj.seed > 0) ? 50 : 0;
+        }
+        if (torrentObj.size < 524288000 && rate.video > 45) {
+            rate.video = rate.video / 10;
+        } else
+        if (torrentObj.size < 1363148800 && rate.video > 65) {
+            rate.video = rate.video / 2;
+        }
     },
     rateText: function (requestObj, titleObj, torrentObj) {
         var rating = {
@@ -714,6 +727,8 @@ var rate = {
             matchedList: {}
         });
         torrentObj.title.replace(this.baseQualityList.wordsR, onRateRegexp);
+
+        rate.sizeSeedRate(rating, torrentObj);
 
         if (rating.quality === undefined) {
             rating.quality = '+';
@@ -749,12 +764,11 @@ var rate = {
             torrentObj.title.replace(requestObj.yearR, onTitleYearRegexp);
         }
 
-        console.log(rating.rate.title, torrentObj.title);
-
-        rating.sum = rating.rate.title;
-        /*for (var item in rating.rate) {
+        for (var item in rating.rate) {
             rating.sum += rating.rate[item];
-        }*/
+        }
+
+        rating.sum = parseInt(rating.sum);
 
         return rating
     },
