@@ -1068,14 +1068,11 @@ var view = {
             obj.hlWordList = hlWordList;
             obj.hlWordLowList = hlWordLowList;
             obj.hlWordR = new RegExp(hlWordCaseListR.join('|'), 'ig');
-            obj.hlWordCaseR = new RegExp(hlWordListR.join('|'), 'g');
             obj.hlWordRate = 200 / hlWordList.length;
             obj.hlWordSpaceBonus = (obj.hlWordRate / 2 / hlWordList.length - 1);
         }
         if (hlWordNoYearList.length > 0) {
-            obj.hlWordNoYear = hlWordNoYearList;
             obj.hlWordNoYearR = new RegExp(hlWordNoYearListR.join('|'), 'ig');
-            obj.hlWordNoYearCaseR = new RegExp(hlWordNoYearListR.join('|'), 'g');
         }
         if (yearList.length > 0) {
             obj.year = yearList;
