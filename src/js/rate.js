@@ -545,7 +545,7 @@ var rate = {
         if (code > 122 && code < 127) {
             return 1;
         }
-        if ([171, 187, 8222, 8221, 8220].indexOf(code) !== -1) {
+        if ([171, 174, 169, 187, 8222, 8221, 8220].indexOf(code) !== -1) {
             return 1;
         }
         return 0;
@@ -623,18 +623,20 @@ var rate = {
             return '';
         }
 
-        var inCaseList = 0;
-        var firstWordBonus = 1.25;
-        var nextWordBonus = 0.10;
-        if (word === this.requestObj.hlWordList[this.index]) {
-            firstWordBonus += 0.10;
+        var wordLow = word.toLowerCase();
+
+        var caseIndex = this.requestObj.hlWordList.indexOf(word);
+        var firstWordBonus = 1.15;
+        var nextWordBonus = 1.10;
+        var caseBonus = 1;
+        if (caseIndex !== -1) {
+            firstWordBonus += 0.05;
             nextWordBonus += 0.05;
-            inCaseList = 1;
+            caseBonus += 0.10;
         }
 
-        word = word.toLowerCase();
-        if (inCaseList === 1 || word === this.requestObj.hlWordLowList[this.index]) {
-            this.rate.title += this.requestObj.hlWordRate;
+        if (this.outList === 0 && (caseIndex === this.index || wordLow === this.requestObj.hlWordLowList[this.index])) {
+            this.rate.title += this.requestObj.hlWordRate * caseBonus;
             if (this.index === 0 && (pos === 0 || rate.onBaseTitleRegexpR.onlySpace.test(text.substr(0, pos))) ) {
                 this.rate.title *= firstWordBonus;
             }
@@ -642,14 +644,19 @@ var rate = {
                 this.rate.title += this.requestObj.hlWordSpaceBonus * nextWordBonus
             }
         } else {
-            if (this.fWordList[word] !== undefined) {
+            this.outList = 1;
+            if (this.fWordList[wordLow] !== undefined) {
                 return '';
             }
-            this.rate.title += this.requestObj.hlWordRate;
+            if (caseIndex !== -1) {
+                this.rate.title += this.requestObj.hlWordRate * caseBonus;
+            } else {
+                this.rate.title += this.requestObj.hlWordRate;
+            }
         }
 
         this.lastPos = pos + wordLen;
-        this.fWordList[word] = 1;
+        this.fWordList[wordLow] = 1;
         this.index++;
     },
     onDescTitleRegexp: function (word, pos, text) {
@@ -658,13 +665,20 @@ var rate = {
             return '';
         }
 
-        word = word.toLowerCase();
-        if (this.fWordList[word] !== undefined) {
+        var wordLow = word.toLowerCase();
+        if (this.fWordList[wordLow] !== undefined) {
             return '';
         }
-        this.fWordList[word] = 1;
+        this.fWordList[wordLow] = 1;
 
-        this.rate.title += this.requestObj.hlWordRate;
+        var caseIndex = this.requestObj.hlWordList.indexOf(word);
+        var caseBonus = 1;
+        if (caseIndex !== -1) {
+            caseBonus += 0.10;
+            this.rate.title += this.requestObj.hlWordRate * caseBonus;
+        } else {
+            this.rate.title += this.requestObj.hlWordRate;
+        }
     },
     onTitleYearRegexp: function (word, pos, text) {
         if (this.requestObj.year.length <= this.index) {
@@ -712,7 +726,8 @@ var rate = {
                 requestObj: requestObj,
                 index: 0,
                 lastPos: 0,
-                fWordList: fWordList
+                fWordList: fWordList,
+                outList: 0
             });
             titleObj.base.replace(requestObj.hlWordNoYearR, onBaseTitleRegexp);
             var onDescTitleRegexp = rate.onDescTitleRegexp.bind({
