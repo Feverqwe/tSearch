@@ -122,9 +122,14 @@ var view = {
                         },
                         title: mono.language[item.lang],
                         class: item.id + '-column',
-                        append: mono.create('span', {
-                            text: mono.language[item.lang + 'Short'] || mono.language[item.lang]
-                        })
+                        append: [
+                            mono.create('span', {
+                                text: mono.language[item.lang + 'Short'] || mono.language[item.lang]
+                            }),
+                            mono.create('i', {
+                                class: 'arrow'
+                            })
+                        ]
                     }));
                     columnObj.setOrder = view.setColumnOrder.bind(null, columnObj);
                     orderIndex !== undefined && columnObj.setOrder();

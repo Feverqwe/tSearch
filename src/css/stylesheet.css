@@ -218,6 +218,8 @@ body {
     font-weight: normal;
     border-bottom: 1px solid #c0c0c0;
     color: #000 !important;
+    cursor: pointer;
+    position: relative;
 }
 
 #result_table a {
@@ -319,18 +321,35 @@ body {
     text-decoration: underline;
 }
 
-#result_table th.sortDown {
-    background-image: url('../img/down.png');
-    background-position: right center;
+#result_table th i.arrow {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    right: 0;
+    display: block;
+    transition: transform 0.2s;
+    background-position: center;
     background-repeat: no-repeat;
     background-origin: content-box;
+    background-size: 27px;
+}
+
+#result_table th.sortDown {
     background-color: #ccc;
 }
 
 #result_table th.sortUp {
-    background-image: url('../img/up.png');
-    background-position: right center;
-    background-repeat: no-repeat;
-    background-origin: content-box;
     background-color: #ccc;
+}
+#result_table th.sortDown i.arrow {
+    background-image: url('../img/arrow_up.svg');
+    opacity: 0.5;
+}
+
+#result_table th.sortUp i.arrow {
+    background-image: url('../img/arrow_up.svg');
+    transform: rotate(180deg);
+    background-position-y: -5px;
+    opacity: 0.5;
 }
