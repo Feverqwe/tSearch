@@ -7,7 +7,7 @@ body {
 
 .head {
     position: relative;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #ddd;
 }
 
 .quick-menu {
@@ -24,7 +24,7 @@ body {
     display: inline-block;
     width: 28px;
     height: 28px;
-    border: 1px solid #cccccc;
+    border: 1px solid #ddd;
     border-radius: 2px;
     background-position: center;
     background-repeat: no-repeat;
@@ -68,6 +68,8 @@ body {
 
 .profile-select-block {
     position: relative;
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 #edit_profile {
@@ -92,9 +94,14 @@ body {
     margin: 0;
     margin-top: 10px;
     margin-bottom: 2px;
+    line-height: 19px;
 }
 #time_filter_range {
-    margin-top: 2px;
+    margin-top: 7px;
+    display: none;
+}
+#time_filter_range.show {
+    display: block;
 }
 
 .range input {
@@ -106,8 +113,10 @@ body {
 }
 
 #result_category_container {
+    margin: 10px;
+    margin-top: 5px;
     margin-left: 4px;
-    margin-bottom: 2px;
+    font-size: 13px;
 }
 #result_category_container div {
     display: inline-block;
@@ -116,10 +125,13 @@ body {
     background-color: #fff;
     border-radius: 3px;
     padding: 2px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
     cursor: pointer;
-    line-height: 18px;
+    line-height: 19px;
+    margin: 5px;
+    margin-left: 0;
+    margin-right: 10px;
 }
 #result_category_container div.hide {
     display: none;
@@ -207,7 +219,7 @@ body {
     border-spacing: 2px;
     user-select: text;
     -webkit-user-select: text;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 #result_table thead {
@@ -217,18 +229,20 @@ body {
 
 #result_table th {
     font-weight: normal;
-    border-bottom: 2px solid transparent;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
     color: #000 !important;
     cursor: pointer;
     position: relative;
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 21px;
 }
 
 #result_table th i.arrow {
     position: absolute;
     width: 16px;
     height: 16px;
-    top: 0;
+    top: 4px;
     right: -8px;
     display: block;
     transition: transform 0.2s;
@@ -245,6 +259,7 @@ body {
 #result_table th.sortDown,
 #result_table th.sortUp {
     border-bottom-color: #3366ff;
+    border-bottom-width: 2px;
 }
 #result_table th.sortDown i.arrow {
     background-image: url('../img/arrow_up.svg');
@@ -300,8 +315,8 @@ body {
 }
 
 #result_table .category {
-    font-size: 12px;
     margin-top: 3px;
+    font-size: 13px;
 }
 
 #result_table .category a {

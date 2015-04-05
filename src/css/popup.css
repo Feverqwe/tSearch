@@ -42,11 +42,11 @@ body {
     font-size: 16px;
     padding-left: 5px;
     padding-right: 26px;
-    border: 1px solid #cccccc;
+    border: 1px solid #ccc;
     width: 481px;
 }
 #request_input:hover {
-    border: 1px solid #999999;
+    border: 1px solid #999;
 }
 #request_input:focus {
     border: 1px solid #3366ff;
