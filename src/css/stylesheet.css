@@ -115,10 +115,11 @@ body {
     border: 1px #c0c0c0 solid;
     background-color: #fff;
     border-radius: 3px;
-    padding: 3px;
-    padding-bottom: 2px;
+    padding: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
     cursor: pointer;
-    font-size: 12px;
+    line-height: 18px;
 }
 #result_category_container div.hide {
     display: none;
@@ -216,10 +217,43 @@ body {
 
 #result_table th {
     font-weight: normal;
-    border-bottom: 1px solid #c0c0c0;
+    border-bottom: 2px solid transparent;
     color: #000 !important;
     cursor: pointer;
     position: relative;
+    font-size: 14px;
+}
+
+#result_table th i.arrow {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    right: -8px;
+    display: block;
+    transition: transform 0.2s;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    background-size: 27px;
+}
+
+#result_table th:last-child i.arrow {
+    left: -8px;
+}
+
+#result_table th.sortDown,
+#result_table th.sortUp {
+    border-bottom-color: #3366ff;
+}
+#result_table th.sortDown i.arrow {
+    background-image: url('../img/arrow_up.svg');
+}
+
+#result_table th.sortUp i.arrow {
+    background-image: url('../img/arrow_up.svg');
+    transform: rotate(180deg);
+    background-position-y: -5px;
 }
 
 #result_table a {
@@ -319,35 +353,4 @@ body {
 
 #result_table .size-column a:hover {
     text-decoration: underline;
-}
-
-#result_table th i.arrow {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    top: 0;
-    right: 0;
-    display: block;
-    transition: transform 0.2s;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-origin: content-box;
-    background-size: 27px;
-}
-
-#result_table th.sortDown {
-    background-color: #ccc;
-}
-
-#result_table th.sortUp {
-    background-color: #ccc;
-}
-#result_table th.sortDown i.arrow {
-    background-image: url('../img/arrow_up.svg');
-}
-
-#result_table th.sortUp i.arrow {
-    background-image: url('../img/arrow_up.svg');
-    transform: rotate(180deg);
-    background-position-y: -5px;
 }
