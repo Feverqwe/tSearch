@@ -5,6 +5,20 @@ body {
     -webkit-user-select: none;
 }
 
+input[type=text] {
+    border: 1px solid #cccccc;
+    padding-left: 2px;
+    line-height: 18px;
+    font-size: 14px
+}
+input[type=text]:hover {
+    border: 1px solid #999999;
+}
+input[type=text]:focus {
+    outline: none;
+    border: 1px solid #3366ff !important;
+}
+
 .head {
     position: relative;
     border-bottom: 1px solid #ddd;
@@ -110,6 +124,7 @@ body {
 
 #word_filter_input {
     width: 163px;
+    padding-left: 0;
 }
 
 #result_category_container {
@@ -138,8 +153,10 @@ body {
 }
 #result_category_container div a {
     text-decoration: none;
-    margin-right: 2px;
     color: #000;
+}
+#result_category_container div i {
+    font-style: normal;
 }
 #result_category_container div.selected {
     background-color: #337AF8;
@@ -197,6 +214,7 @@ body {
 
 #tracker_list div > i.count {
     width: 24px;
+    font-style: normal;
 }
 
 .icon {
@@ -236,6 +254,10 @@ body {
     position: relative;
     font-size: 13px;
     line-height: 21px;
+}
+
+#result_table th:first-child {
+    padding-left: 10px;
 }
 
 #result_table th i.arrow {

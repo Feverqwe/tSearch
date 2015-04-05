@@ -418,6 +418,7 @@ var view = {
                                 href: '#',
                                 text: mono.language[categoryObj.lang]
                             }),
+                            ' ',
                             categoryObj.countEl = mono.create('i', {
                                 text: 0
                             })
