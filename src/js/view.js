@@ -829,7 +829,7 @@ var view = {
                 level++;
             }
         }
-        return {node: root, base: base, desc: desc};
+        return {node: root, base: $.trim(base), desc: desc};
     },
     writeResultList: function(tracker, torrentList) {
         "use strict";

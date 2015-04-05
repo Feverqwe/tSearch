@@ -637,7 +637,7 @@ var rate = {
 
         if (this.outList === 0 && (caseIndex === this.index || wordLow === this.requestObj.hlWordLowList[this.index])) {
             this.rate.title += this.requestObj.hlWordRate * caseBonus;
-            if (this.index === 0 && (pos === 0 || rate.onBaseTitleRegexpR.onlySpace.test(text.substr(0, pos))) ) {
+            if (this.index === 0 && pos === 0) {
                 this.rate.title *= firstWordBonus;
             }
             if (this.index > 0 && pos - this.lastPos < 3) {
