@@ -611,9 +611,6 @@ var rate = {
             }
         }
     },
-    onBaseTitleRegexpR: {
-        onlySpace: /^[\s\t]*$/
-    },
     onBaseTitleRegexp: function (word, pos, text) {
         if (this.requestObj.hlWordLowList.length <= this.index) {
             return '';
@@ -628,19 +625,21 @@ var rate = {
         var caseIndex = this.requestObj.hlWordList.indexOf(word);
         var firstWordBonus = 1.15;
         var nextWordBonus = 1.10;
-        var caseBonus = 1;
+        var caseBonus = 0;
         if (caseIndex !== -1) {
             firstWordBonus += 0.05;
             nextWordBonus += 0.05;
-            caseBonus += 0.05;
+            caseBonus = 1.05;
         }
 
         if (this.outList === 0 && (caseIndex === this.index || wordLow === this.requestObj.hlWordLowList[this.index])) {
             this.rate.title += this.requestObj.hlWordRate * caseBonus;
-            if (this.index === 0 && pos === 0) {
-                this.rate.title *= firstWordBonus;
-            }
-            if (this.index > 0 && pos - this.lastPos < 3) {
+            if (this.index === 0) {
+                if (pos === 0) {
+                    this.rate.title *= firstWordBonus;
+                }
+            } else
+            if (pos - this.lastPos < 3) {
                 this.rate.title += this.requestObj.hlWordSpaceBonus * nextWordBonus
             }
         } else {
@@ -671,10 +670,8 @@ var rate = {
         }
         this.fWordList[wordLow] = 1;
 
-        var caseIndex = this.requestObj.hlWordList.indexOf(word);
-        var caseBonus = 1;
-        if (caseIndex !== -1) {
-            caseBonus += 0.05;
+        var caseBonus = this.requestObj.hlWordList.indexOf(word) === -1 ? 0 : 1.05;
+        if (caseBonus !== 0) {
             this.rate.title += this.requestObj.hlWordRate * caseBonus;
         } else {
             this.rate.title += this.requestObj.hlWordRate;
