@@ -753,6 +753,10 @@ var rate = {
             torrentObj.title.replace(requestObj.yearR, onTitleYearRegexp);
         }
 
+        if (requestObj.hlWordList !== undefined && rating.rate.title === 0) {
+            rating.rate.title -= 400;
+        }
+
         for (var item in rating.rate) {
             rating.sum += rating.rate[item];
         }
