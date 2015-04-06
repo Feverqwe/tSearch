@@ -100,6 +100,11 @@ var view = {
         view.varCache.tableSortColumnId = columnObj.id;
         columnObj.node.classList.add(classList[columnObj.orderIndex]);
 
+        mono.storage.set({
+            sortColumn: columnObj.id,
+            sortOrder: columnObj.orderIndex
+        });
+
         view.sortResults();
     },
     writeTableHead: function() {
@@ -1293,6 +1298,8 @@ var view = {
     },
     once: function() {
         "use strict";
+        view.varCache.tableSortColumnId = engine.settings.sortColumn;
+        view.varCache.tableOrderIndex = engine.settings.sortOrder ? 0 : 1;
         mono.language.size_filter += ' ' + mono.language.sizeList.split(',')[3];
         mono.writeLanguage(mono.language);
         document.body.classList.remove('loading');

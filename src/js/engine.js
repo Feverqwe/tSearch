@@ -30,7 +30,9 @@ var engine = {
         proxyUrlFixSpaces: 1,
         proxyHostLinks: 0,
         calcSeedCount: 1,
-        langCode: undefined
+        langCode: undefined,
+        sortColumn: 'quality',
+        sortOrder: 1
     },
     settings: {},
     defaultExplorerOptions: {
