@@ -846,6 +846,7 @@ var view = {
     },
     writeResultList: function(tracker, torrentList) {
         "use strict";
+        var filter = view.getFilterStyleState();
         var searchResultCounter = view.varCache.searchResultCounter;
         var searchResultCache = view.varCache.searchResultCache;
         for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
@@ -947,9 +948,11 @@ var view = {
             });
             searchResultCache.push(cacheItem);
 
-            searchResultCounter.tracker[tracker.id]++;
-            searchResultCounter.category[itemCategoryId]++;
-            searchResultCounter.sum++;
+            if (filter === undefined || cacheItem.filter === filter) {
+                searchResultCounter.tracker[tracker.id]++;
+                searchResultCounter.category[itemCategoryId]++;
+                searchResultCounter.sum++;
+            }
         }
         view.sortResults();
         view.resultCounterUpdate();

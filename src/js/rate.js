@@ -624,7 +624,7 @@ var rate = {
 
         var caseIndex = this.requestObj.hlWordList.indexOf(word);
         var pref = caseIndex === -1 ? '' : 'Case';
-        var wordRate = this.requestObj['unOrderWord' + pref + 'Rate'];
+        var wordRate = this.requestObj['hlWord' + pref + 'Rate'];
         var unOrderWordRate = this.requestObj['unOrderWord' + pref + 'Rate'];
         var notFirstWordRate = this.requestObj['notFirstWord' + pref + 'Rate'];
         var notSpaceSlitRate = this.requestObj['notSpaceSlit' + pref + 'Rate'];
