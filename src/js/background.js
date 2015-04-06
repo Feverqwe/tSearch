@@ -103,9 +103,9 @@ var bg = function() {
             var self = require('sdk/self');
             var contentScript = (function() {
                 var onContext = function() {
-                    self.on("click", function() {
+                    "self".on("click", function() {
                         var text = window.getSelection().toString();
-                        self.postMessage(text);
+                        "self".postMessage(text);
                     });
                 };
                 var minifi = function(str) {
@@ -116,8 +116,8 @@ var bg = function() {
                     });
                     return newList.join('');
                 };
-                var onClickString = onContext.toString();
-                var n_pos =  onClickString.indexOf('\n')+1;
+                var onClickString = onContext.toString().replace(/"self"/g, 'self');
+                var n_pos =  onClickString.indexOf('{')+1;
                 onClickString = onClickString.substr(n_pos, onClickString.length - 1 - n_pos).trim();
                 return minifi(onClickString);
             })();
