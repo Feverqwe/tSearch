@@ -82,7 +82,8 @@ var view = {
             'timeFilterMax', 'seedFilterMin', 'seedFilterMax',
             'peerFilterMin', 'peerFilterMax'],
         selectBox: undefined,
-        timeFilterSelectBox: undefined
+        timeFilterSelectBox: undefined,
+        $requestInput: undefined
     },
     setColumnOrder: function (columnObj) {
         var tableHeadList = view.varCache.tableHeadColumnObjList;
@@ -1434,6 +1435,12 @@ var view = {
             e.preventDefault();
             var request = view.domCache.requestInput.value.trim();
             view.search(request);
+
+            view.varCache.$requestInput.autocomplete( "close" );
+            view.varCache.$requestInput.autocomplete( "disable" );
+            setTimeout(function() {
+                view.varCache.$requestInput.autocomplete( "enable" );
+            }, 1000);
         });
     },
     onUiReady: function() {
@@ -1441,7 +1448,7 @@ var view = {
         $(document).off('mouseup');
         view.varCache.history = engine.history;
 
-        $(view.domCache.requestInput).autocomplete({
+        (view.varCache.$requestInput = $(view.domCache.requestInput)).autocomplete({
             minLength: 0,
             position: {
                 collision: "bottom"
