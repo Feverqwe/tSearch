@@ -85,7 +85,9 @@ var view = {
         timeFilterSelectBox: undefined,
         $requestInput: undefined,
         historyObj: {},
-        historyList: []
+        historyList: [],
+        historyLimit: 50,
+        historyLinksListLimit: 20
     },
     setColumnOrder: function (columnObj) {
         var tableHeadList = view.varCache.tableHeadColumnObjList;
@@ -1121,22 +1123,28 @@ var view = {
     },
     inHistory: function() {
         "use strict";
+        var historyList = view.varCache.historyList;
         var requestObj = view.varCache.requestObj;
         var now = parseInt(Date.now() / 1000);
         var history = view.varCache.historyObj;
         var historyObj;
         if ((historyObj = history[requestObj.historyKey]) === undefined) {
-            view.varCache.historyList.push(historyObj = history[requestObj.historyKey] = {
+            historyList.splice(view.varCache.historyLimit);
+            historyList.unshift(historyObj = history[requestObj.historyKey] = {
+                key: requestObj.historyKey,
                 linkList: [],
-                createTime: now,
+                // createTime: now,
                 count: 0
             });
+        } else {
+            historyList.splice(historyList.indexOf(historyObj), 1);
+            historyList.unshift(historyObj);
         }
         historyObj.request = requestObj.request;
         historyObj.lastRequestTime = now;
         historyObj.count++;
 
-        mono.storage.set({searchHistory: history});
+        mono.storage.set({searchHistory: historyList});
     },
     inLinkHistory: function(torrentObj) {
         "use strict";
@@ -1145,29 +1153,34 @@ var view = {
         var historyObj = history[requestObj.historyKey];
         if (historyObj === undefined) return;
 
-        var linkObj;
+        var linkObj, linkObjPos;
         for (var i = 0, item; item = historyObj.linkList[i]; i++) {
             if (item.url === torrentObj.api.url) {
                 linkObj = item;
+                linkObjPos = i;
                 break;
             }
         }
 
         var now = parseInt(Date.now() / 1000);
         if (linkObj === undefined) {
-            historyObj.linkList.push(linkObj = {
+            historyObj.linkList.splice(view.varCache.historyLinksListLimit);
+            historyObj.linkList.unshift(linkObj = {
                 id: torrentObj.id,
-                url: torrentObj.api.url,
-                insertTime: now,
-                count: 0
+                url: torrentObj.api.url
+                // insertTime: now,
+                // count: 0
             });
+        } else {
+            historyObj.linkList.splice(linkObjPos, 1);
+            historyObj.linkList.unshift(linkObj);
         }
 
         linkObj.title = torrentObj.api.title;
         linkObj.clickTime = now;
-        linkObj.count++;
+        // linkObj.count++;
 
-        mono.storage.set({searchHistory: history});
+        mono.storage.set({searchHistory: view.varCache.historyList});
     },
     search: function(request) {
         "use strict";
@@ -1356,6 +1369,14 @@ var view = {
         document.body.classList.add('home');
         view.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
     },
+    prepareHistory: function() {
+        "use strict";
+        var historyList = view.varCache.historyList = engine.history;
+        var historyObj = view.varCache.historyObj;
+        for (var i = 0, item; item = historyList[i]; i++) {
+            historyObj[item.key] = item;
+        }
+    },
     once: function() {
         "use strict";
         view.varCache.tableSortColumnId = engine.settings.sortColumn;
@@ -1430,7 +1451,6 @@ var view = {
         });
 
         view.domCache.resultTableBody.addEventListener('click', function(e) {
-            e.preventDefault();
             var el = e.target;
             while (el !== this && el.tagName !== 'A') {
                 el = el.parentNode;
@@ -1517,16 +1537,6 @@ var view = {
                 view.varCache.$requestInput.autocomplete( "enable" );
             }, 1000);
         });
-    },
-    prepareHistory: function() {
-        "use strict";
-        view.varCache.historyObj = engine.searchHistory;
-        var history = view.varCache.historyObj;
-        var historyList = view.varCache.historyList;
-        for (var key in history) {
-            if (history[key].request.length === 0) continue;
-            historyList.push(history[key]);
-        }
     },
     onUiReady: function() {
         "use strict";

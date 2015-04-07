@@ -47,12 +47,9 @@ var engine = {
         gg_games_top: { e: 1, s: 1, w: 100, c: 1 },
         gg_games_new: { e: 1, s: 1, w: 100, c: 1 }
     },
-    varCache: {
-        historyLimit: mono.isChrome ? 200 : 100
-    },
     profileList: {},
     currentProfile: undefined,
-    searchHistory: {},
+    history: [],
 
     getDefaultProfileList: function() {
         "use strict";
@@ -173,8 +170,8 @@ var engine = {
 
             engine.setProxyList(storage.proxyList);
 
-            if (typeof storage.searchHistory === 'object') {
-                engine.searchHistory = storage.searchHistory;
+            if (Array.isArray(storage.searchHistory)) {
+                engine.history = storage.searchHistory;
             }
 
             mono.getLanguage(function() {
