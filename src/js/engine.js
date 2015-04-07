@@ -8,7 +8,6 @@ var engine = {
         hideTrackerIcons: 0,
         subCategoryFilter: 1,
         hideZeroSeed: 0,
-        advFiltration: 2,
         enableTeaserFilter: 1,
         contextMenu: 1,
         searchPopup: 1,
