@@ -80,7 +80,9 @@ var view = {
         filterRangeList: ['wordFilterInput', 'sizeFilterMin',
             'sizeFilterMax', 'timeFilterMin',
             'timeFilterMax', 'seedFilterMin', 'seedFilterMax',
-            'peerFilterMin', 'peerFilterMax']
+            'peerFilterMin', 'peerFilterMax'],
+        selectBox: undefined,
+        timeFilterSelectBox: undefined
     },
     setColumnOrder: function (columnObj) {
         var tableHeadList = view.varCache.tableHeadColumnObjList;
@@ -178,6 +180,7 @@ var view = {
                 return elList;
             })()
         });
+        view.varCache.selectBox && view.varCache.selectBox.update();
     },
     filterUpdate: function() {
         "use strict";
@@ -319,6 +322,7 @@ var view = {
         var option = view.domCache.profileSelect.querySelector('option[value="'+profileName+'"]');
         if (!option) return;
         view.domCache.profileSelect.selectedIndex = option.index;
+        view.varCache.selectBox && view.varCache.selectBox.update();
 
         var options = {
             lastSelectId: undefined
@@ -1244,6 +1248,7 @@ var view = {
         view.domCache.wordFilterInput.value = '';
         view.domCache.timeFilterSelect.selectedIndex = 0;
         view.domCache.timeFilterSelect.dispatchEvent(new CustomEvent('change'));
+        view.varCache.timeFilterSelectBox.update();
 
         for (var trackerId in view.varCache.trackerList) {
             var trackerObj = view.varCache.trackerList[trackerId];
@@ -1380,6 +1385,7 @@ var view = {
                 var option = this.querySelector('option[value="'+engine.currentProfile+'"]');
                 if (!option) return;
                 this.selectedIndex = option.index;
+                view.varCache.selectBox && view.varCache.selectBox.update();
                 return;
             }
             view.selectProfile(this.value);
@@ -1404,6 +1410,8 @@ var view = {
             view.filterUpdate();
         });
 
+        view.varCache.timeFilterSelectBox = selectBox.wrap(view.domCache.timeFilterSelect);
+
         if (engine.settings.hideSeedColumn === 1) {
             view.domCache.seedFilter.style.display = 'none';
             view.domCache.seedFilter.previousElementSibling.style.display = 'none';
@@ -1413,6 +1421,8 @@ var view = {
             view.domCache.peerFilter.style.display = 'none';
             view.domCache.peerFilter.previousElementSibling.style.display = 'none';
         }
+
+        view.varCache.selectBox = selectBox.wrap(view.domCache.profileSelect);
 
         rate.init();
 

@@ -1,4 +1,6 @@
 @import "popup.css";
+@import "selectBox.css";
+
 body {
     min-width: 960px;
     user-select: none;
@@ -106,8 +108,8 @@ body.home #result_block {
     opacity: 0.5;
     display: inline-block;
     transition: opacity .2s;
-    vertical-align: middle;
-    margin-top: -3px;
+    vertical-align: top;
+    margin: 5px;
 }
 #edit_profile:hover {
     opacity: 1;
@@ -148,7 +150,7 @@ body.home #result_block {
 #result_category_container div {
     display: inline-block;
     margin-right: 3px;
-    border: 1px #c0c0c0 solid;
+    border: 1px #ccc solid;
     background-color: #fff;
     border-radius: 3px;
     padding: 2px;
