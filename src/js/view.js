@@ -1090,6 +1090,7 @@ var view = {
         }
 
         obj.request = request;
+        obj.historyKey = $.trim(request.toLowerCase());
 
         if (hlWordList.length > 0) {
             obj.hlWordList = hlWordList;
@@ -1118,20 +1119,20 @@ var view = {
 
         return request;
     },
-    inHistory: function(request) {
+    inHistory: function() {
         "use strict";
+        var requestObj = view.varCache.requestObj;
         var now = parseInt(Date.now() / 1000);
         var history = view.varCache.historyObj;
-        var lowRequest = $.trim(request.toLowerCase());
         var historyObj;
-        if ((historyObj = history[lowRequest]) === undefined) {
-            view.varCache.historyList.push(historyObj = history[lowRequest] = {
+        if ((historyObj = history[requestObj.historyKey]) === undefined) {
+            view.varCache.historyList.push(historyObj = history[requestObj.historyKey] = {
                 linkList: [],
                 createTime: now,
                 count: 0
             });
         }
-        historyObj.request = request;
+        historyObj.request = requestObj.request;
         historyObj.lastRequestTime = now;
         historyObj.count++;
 
@@ -1144,7 +1145,7 @@ var view = {
         view.varCache.searchResultCache = [];
         view.resultCounterReset();
         request = view.prepareRequest(request);
-        view.inHistory(request);
+        view.inHistory();
         var trackerList = view.getTrackerList();
         exKit.searchList(trackerList, request, {
             onSuccess: view.onSearchSuccess,
