@@ -143,8 +143,10 @@ var popup = {
     },
     loadHistory: function(cb) {
         "use strict";
-        mono.storage.get('history', function(storage) {
-            popup.varCache.history = storage.history || [];
+        mono.storage.get('searchHistory', function(storage) {
+            if (Array.isArray(storage.searchHistory)) {
+                popup.varCache.history = storage.searchHistory;
+            }
             cb && cb();
         });
     },
