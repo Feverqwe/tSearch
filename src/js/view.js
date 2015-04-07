@@ -1123,16 +1123,17 @@ var view = {
         var now = parseInt(Date.now() / 1000);
         var history = view.varCache.historyObj;
         var lowRequest = $.trim(request.toLowerCase());
-        if (history[lowRequest] === undefined) {
-            view.varCache.historyList.push(history[lowRequest] = {
+        var historyObj;
+        if ((historyObj = history[lowRequest]) === undefined) {
+            view.varCache.historyList.push(historyObj = history[lowRequest] = {
                 linkList: [],
                 createTime: now,
                 count: 0
             });
         }
-        history[lowRequest].request = request;
-        history[lowRequest].lastRequestTime = now;
-        history[lowRequest].count++;
+        historyObj.request = request;
+        historyObj.lastRequestTime = now;
+        historyObj.count++;
 
         mono.storage.set({searchHistory: history});
     },
