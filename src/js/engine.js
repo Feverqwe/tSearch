@@ -32,7 +32,7 @@ var engine = {
         calcSeedCount: 1,
         langCode: undefined,
         sortColumn: 'quality',
-        sortOrder: 1
+        sortOrder: 0
     },
     settings: {},
     defaultExplorerOptions: {

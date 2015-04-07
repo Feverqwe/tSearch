@@ -1148,7 +1148,7 @@ var view = {
         var linkObj;
         for (var i = 0, item; item = historyObj.linkList[i]; i++) {
             if (item.url === torrentObj.api.url) {
-                linkObj = torrentObj;
+                linkObj = item;
                 break;
             }
         }
@@ -1158,12 +1158,14 @@ var view = {
             historyObj.linkList.push(linkObj = {
                 id: torrentObj.id,
                 url: torrentObj.api.url,
-                insertTime: now
+                insertTime: now,
+                count: 0
             });
         }
 
         linkObj.title = torrentObj.api.title;
         linkObj.clickTime = now;
+        linkObj.count++;
 
         mono.storage.set({searchHistory: history});
     },
