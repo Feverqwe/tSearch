@@ -83,7 +83,9 @@ var view = {
             'peerFilterMin', 'peerFilterMax'],
         selectBox: undefined,
         timeFilterSelectBox: undefined,
-        $requestInput: undefined
+        $requestInput: undefined,
+        historyObj: {},
+        historyList: []
     },
     setColumnOrder: function (columnObj) {
         var tableHeadList = view.varCache.tableHeadColumnObjList;
@@ -1116,6 +1118,24 @@ var view = {
 
         return request;
     },
+    inHistory: function(request) {
+        "use strict";
+        var now = parseInt(Date.now() / 1000);
+        var history = view.varCache.historyObj;
+        var lowRequest = $.trim(request.toLowerCase());
+        if (history[lowRequest] === undefined) {
+            view.varCache.historyList.push(history[lowRequest] = {
+                linkList: [],
+                createTime: now,
+                count: 0
+            });
+        }
+        history[lowRequest].request = request;
+        history[lowRequest].lastRequestTime = now;
+        history[lowRequest].count++;
+
+        mono.storage.set({searchHistory: history});
+    },
     search: function(request) {
         "use strict";
         view.setSearchState();
@@ -1123,6 +1143,7 @@ var view = {
         view.varCache.searchResultCache = [];
         view.resultCounterReset();
         request = view.prepareRequest(request);
+        view.inHistory(request);
         var trackerList = view.getTrackerList();
         exKit.searchList(trackerList, request, {
             onSuccess: view.onSearchSuccess,
@@ -1272,7 +1293,7 @@ var view = {
     },
     getHistory: function() {
         "use strict";
-        var history = view.varCache.history;
+        var history = view.varCache.historyList;
         history.sort(function(a,b){
             if (a.count === b.count) {
                 return 0;
@@ -1284,7 +1305,7 @@ var view = {
         });
         var list = [];
         for (var i = 0, item; item = history[i]; i++) {
-            list.push(item.title);
+            list.push(item.request);
         }
         return list;
     },
@@ -1443,10 +1464,19 @@ var view = {
             }, 1000);
         });
     },
+    prepareHistory: function() {
+        "use strict";
+        view.varCache.historyObj = engine.searchHistory;
+        var history = view.varCache.historyObj;
+        var historyList = view.varCache.historyList;
+        for (var key in history) {
+            historyList.push(history[key]);
+        }
+    },
     onUiReady: function() {
         "use strict";
         $(document).off('mouseup');
-        view.varCache.history = engine.history;
+        view.prepareHistory();
 
         (view.varCache.$requestInput = $(view.domCache.requestInput)).autocomplete({
             minLength: 0,

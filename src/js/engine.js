@@ -52,7 +52,7 @@ var engine = {
     },
     profileList: {},
     currentProfile: undefined,
-    history: [],
+    searchHistory: {},
 
     getDefaultProfileList: function() {
         "use strict";
@@ -158,7 +158,7 @@ var engine = {
 
         optionsList.push('customTorrentList');
         optionsList.push('profileList');
-        optionsList.push('history');
+        optionsList.push('searchHistory');
         optionsList.push('doNotSendStatistics');
         optionsList.push('proxyList');
         optionsList.push('titleQualityList');
@@ -173,8 +173,8 @@ var engine = {
 
             engine.setProxyList(storage.proxyList);
 
-            if (Array.isArray(storage.history)) {
-                engine.history = storage.history;
+            if (typeof storage.searchHistory === 'object') {
+                engine.searchHistory = storage.searchHistory;
             }
 
             mono.getLanguage(function() {
