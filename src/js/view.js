@@ -1138,6 +1138,35 @@ var view = {
 
         mono.storage.set({searchHistory: history});
     },
+    inLinkHistory: function(torrentObj) {
+        "use strict";
+        var history = view.varCache.historyObj;
+        var requestObj = view.varCache.requestObj;
+        var historyObj = history[requestObj.historyKey];
+        if (historyObj === undefined) return;
+
+        var linkObj;
+        for (var i = 0, item; item = historyObj.linkList[i]; i++) {
+            if (item.url === torrentObj.api.url) {
+                linkObj = torrentObj;
+                break;
+            }
+        }
+
+        var now = parseInt(Date.now() / 1000);
+        if (linkObj === undefined) {
+            historyObj.linkList.push(linkObj = {
+                id: torrentObj.id,
+                url: torrentObj.api.url,
+                insertTime: now
+            });
+        }
+
+        linkObj.title = torrentObj.api.title;
+        linkObj.clickTime = now;
+
+        mono.storage.set({searchHistory: history});
+    },
     search: function(request) {
         "use strict";
         view.setSearchState();
@@ -1398,6 +1427,27 @@ var view = {
             view.onTableHeadColumnClick.call(el, e);
         });
 
+        view.domCache.resultTableBody.addEventListener('click', function(e) {
+            e.preventDefault();
+            var el = e.target;
+            while (el !== this && el.tagName !== 'A') {
+                el = el.parentNode;
+            }
+
+            if (el === this) return;
+            if (!el.classList.contains('download') && !el.parentNode.classList.contains('title')) {
+                return;
+            }
+
+            while (el.parentNode !== this) {
+                el = el.parentNode;
+            }
+
+            var index = el.dataset.index;
+            var searchResultCache = view.varCache.searchResultCache;
+            view.inLinkHistory(searchResultCache[index]);
+        });
+
         view.writeTableHead();
         view.writeProfileList();
         view.writeCategory();
@@ -1472,6 +1522,7 @@ var view = {
         var history = view.varCache.historyObj;
         var historyList = view.varCache.historyList;
         for (var key in history) {
+            if (history[key].request.length === 0) continue;
             historyList.push(history[key]);
         }
     },
