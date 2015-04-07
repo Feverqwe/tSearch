@@ -1377,6 +1377,15 @@ var view = {
             historyObj[item.key] = item;
         }
     },
+    freezAutocomplete: function() {
+        "use strict";
+        if (!view.varCache.$requestInput) return;
+        view.varCache.$requestInput.autocomplete('close');
+        view.varCache.$requestInput.autocomplete('disable');
+        setTimeout(function() {
+            view.varCache.$requestInput.autocomplete('enable');
+        }, 1000);
+    },
     once: function() {
         "use strict";
         view.varCache.tableSortColumnId = engine.settings.sortColumn;
@@ -1391,6 +1400,7 @@ var view = {
         view.domCache.mainBtn.addEventListener('click', function(e) {
             e.preventDefault();
 
+            view.freezAutocomplete();
             view.setMainState();
         });
 
@@ -1531,11 +1541,7 @@ var view = {
             var request = view.domCache.requestInput.value.trim();
             view.search(request);
 
-            view.varCache.$requestInput.autocomplete( "close" );
-            view.varCache.$requestInput.autocomplete( "disable" );
-            setTimeout(function() {
-                view.varCache.$requestInput.autocomplete( "enable" );
-            }, 1000);
+            view.freezAutocomplete();
         });
     },
     onUiReady: function() {
