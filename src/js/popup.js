@@ -65,7 +65,8 @@ var popup = {
         });
         var list = [];
         for (var i = 0, item; item = history[i]; i++) {
-            list.push(item.title);
+            if (item.request.length === 0) continue;
+            list.push(item.request);
         }
         return list;
     },
