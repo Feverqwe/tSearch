@@ -1351,6 +1351,7 @@ var view = {
         });
         var list = [];
         for (var i = 0, item; item = history[i]; i++) {
+            if (item.request.length === 0) continue;
             list.push(item.request);
         }
         return list;
@@ -1380,6 +1381,7 @@ var view = {
     freezAutocomplete: function() {
         "use strict";
         if (!view.varCache.$requestInput) return;
+
         view.varCache.$requestInput.autocomplete('close');
         view.varCache.$requestInput.autocomplete('disable');
         setTimeout(function() {
