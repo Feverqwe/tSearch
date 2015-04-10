@@ -326,6 +326,9 @@ var view = {
         "use strict";
         var option = view.domCache.profileSelect.querySelector('option[value="'+profileName+'"]');
         if (!option) return;
+
+        exKit.searchProgressListClear();
+
         view.domCache.profileSelect.selectedIndex = option.index;
         view.varCache.selectBox && view.varCache.selectBox.update();
 
@@ -1494,6 +1497,8 @@ var view = {
                 if (!option) return;
                 this.selectedIndex = option.index;
                 view.varCache.selectBox && view.varCache.selectBox.update();
+
+                profileManager.add();
                 return;
             }
             view.selectProfile(this.value);

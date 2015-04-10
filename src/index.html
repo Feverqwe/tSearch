@@ -5,7 +5,7 @@
         <meta charset="utf-8" />
         <link rel="shortcut icon" href="img/icon_16.png">
         <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
-        <link rel="stylesheet" type="text/css" href="css/explore.css">
+        <link rel="stylesheet" type="text/css" href="css/profileManager.css">
         <script src="js/mono.js"></script>
         <script src="js/monoUtils.js"></script>
     </head>
@@ -89,32 +89,32 @@
             </div>
         </div>
         <div id="scroll_to_top_btn" data-lang="btn_up" title="{up}"></div>
-        <div id="tracker_list_manager">
+        <div id="manager">
             <div class="mgr-header">
-                <span class="title" data-lang="mgrTitleNew">{new profile name}</span>
-                <a href="#" class="close" data-lang="word_close">{close}</a>
+                <span id="manager_title" data-lang="mgrTitleNew">{new profile name}</span>
+                <a href="#" id="manager_close" data-lang="word_close">{close}</a>
             </div>
             <div class="mgr-sub-header">
-                <input type="text" class="list-name" data-lang="mgrNewListName,placeholder" placeholder="{list name}"/>
-                <a href="#" class="remove-list" data-lang="mgrRemoveList">{remove}</a>
+                <input id="manager_list_title" type="text" data-lang="mgrNewListName,placeholder" placeholder="{list name}"/>
+                <a href="#" id="manager_remove_list" data-lang="mgrRemoveList">{remove}</a>
             </div>
             <div class="mgr-tracker-list-filter">
-                <a href="#" data-type="all"><span data-lang="word_all">{all}</span> <span>0</span></a>
-                <a href="#" data-type="unused"><span data-lang="mgtWithoutList">{without list}</span> <span>0</span></a>
-                <a href="#" data-type="custom"><span data-lang="external_tracker">{external}</span> <span>0</span></a>
-                <a href="#" class="selected" data-type="selected"><span data-lang="word_selected">{selected}</span> <span>0</span></a>
-                <input type="text" data-lang="mgrQuickSearch,placeholder" placeholder="{quick search}" />
+                <a href="#" data-type="all"><span data-lang="word_all">{all}</span> <i>0</i></a>
+                <a href="#" data-type="unused"><span data-lang="mgtWithoutList">{without list}</span> <i>0</i></a>
+                <a href="#" data-type="custom"><span data-lang="external_tracker">{external}</span> <i>0</i></a>
+                <a href="#" class="selected" data-type="selected"><span data-lang="word_selected">{selected}</span> <i>0</i></a>
+                <input type="text" id="manager_search" data-lang="mgrQuickSearch,placeholder" placeholder="{quick search}" />
             </div>
             <div class="mgr-custom-tools">
-                <input class="add-custom-tracker button" data-lang="add_custom_code" type="button" value="{add}">
-                <a href="magic.html" target="_blank"><input class="create-custom-tracker button" data-lang="create_custom_code" type="button" value="{create}"></a>
+                <a href="#" id="manager_add_custom" class="btn" data-lang="add_custom_code">{add}</a>
+                <a href="magic.html" id="manager_create_custom" data-lang="create_custom_code" target="_blank">{create}</a>
                 <span data-lang="external_html,tmpl">{add new trackers form official site}</span>
             </div>
             <div class="mgr-tracker-list"></div>
             <div class="mgr-footer">
-                <input type="button" class="advanced actionBtn" data-lang="advanced_options,title" title="{show advanced options}">
-                <span class="couter" data-lang="mgrNothingSelected">{selected nothing}</span>
-                <input type="button" value="{save}" class="button save" data-lang="word_save">
+                <a href="#" id="manager_advanced_view" class="adv btn" data-lang="advanced_options,title" title="{show advanced options}"></a>
+                <span id="manager_counter" data-lang="mgrNothingSelected">{selected nothing}</span>
+                <a href="#" id="manager_save" class="btn" data-lang="word_save">{save}</a>
             </div>
         </div>
         <script src="js/engine.js"></script>
@@ -123,6 +123,7 @@
         <script src="js/exKit.js"></script>
         <script src="js/rate.js"></script>
         <script src="js/selectBox.js"></script>
+        <script src="js/profileManager.js"></script>
         <script src="js/view.js"></script>
     </body>
 </html>

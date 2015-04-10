@@ -1,0 +1,302 @@
+#manager {
+    display: none;
+
+    position: absolute;
+    width: 700px;
+    height: 590px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    z-index: 90;
+    left: calc(50% - 350px);
+    box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);
+}
+
+#manager.show {
+    display: block;
+}
+
+#manager a {
+    color: #0051D8;
+}
+
+#manager .mgr-header {
+    padding: 14px;
+    background-color: #E7E7E7;
+}
+#manager .mgr-header span {
+    font-size: 16px;
+}
+#manager .mgr-header a {
+    float: right;
+    margin-top: 2px;
+}
+
+#manager .mgr-sub-header {
+    padding: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+#manager .mgr-sub-header a {
+    float: right;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+#manager .mgr-sub-header input {
+    font-size: 16px;
+    padding-left: 4px;
+    padding-right: 4px;
+    width: 140px;
+    transition: border-color 1s;
+}
+#manager .mgr-sub-header input.error {
+    border-color: red;
+}
+
+#manager .mgr-tracker-list-filter {
+    padding: 16px;
+    border: 1px dashed #CACACA;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-left: 0;
+    border-right: 0;
+}
+#manager .mgr-tracker-list-filter a {
+    line-height: 22px;
+    font-weight: bolder;
+    font-size: 12px;
+    margin-right: 30px;
+    padding: 2px;
+    text-decoration: none;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 3px;
+    color: #000;
+}
+#manager .mgr-tracker-list-filter a i {
+    font-style: normal;
+    color: #949494;
+}
+#manager .mgr-tracker-list-filter a.selected {
+    background-color: #337AF8;
+    color: #fff;
+}
+#manager .mgr-tracker-list-filter a.selected i {
+    color: #fff;
+}
+#manager .mgr-tracker-list-filter input {
+    float: right;
+    font-size: 14px;
+    padding-left: 24px;
+    padding-right: 4px;
+    width: 140px;
+    margin-top: 1px;
+    background-image: url(../img/mini_search.png);
+    background-position: 4px center;
+    background-repeat: no-repeat;
+}
+
+#manager .mgr-tracker-list {
+    height: 407px;
+    overflow: auto;
+}
+
+#manager .mgr-custom-tools {
+    display: none;
+    padding: 16px;
+}
+#manager.show-tools .mgr-custom-tools {
+    display: block;
+    border-bottom: 1px dashed #CACACA;
+}
+#manager.show-tools .mgr-custom-tools span {
+    float: right;
+}
+#manager.show-tools .mgr-custom-tools a {
+    line-height: 12px;
+    margin-top: -3px;
+    margin-bottom: -3px;
+    display: inline-block;
+}
+
+#manager.show-tools .mgr-tracker-list {
+    height: 358px;
+}
+
+#manager .mgr-footer {
+    padding: 16px;
+    border-top: 1px dashed #ccc;
+}
+#manager .mgr-footer #manager_save {
+    float: right;
+    margin-top: -3px;
+}
+
+#manager a.btn {
+    display: inline-block;
+    line-height: 26px;
+    height: 26px;
+    padding-left: 14px;
+    padding-right: 14px;
+    text-decoration: none;
+    background-color: #ffffff;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid #cccccc;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+#manager .adv.btn {
+    float: left;
+    margin-top: -3px;
+    margin-right: 12px;
+    background-image: url(../img/glass.png);
+}
+#manager .adv.btn.checked {
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+#manager .mgr-tracker-list .tracker-item {
+    padding: 6px;
+    padding-bottom: 4px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    border-left: 0;
+    border-right: 0;
+    margin-bottom: 1px;
+}
+#manager .mgr-tracker-list .tracker-item.not_found {
+    background-color: #FFE0E0;
+}
+#manager .mgr-tracker-list .tracker-item:hover {
+    background-color: #eee;
+}
+#manager .mgr-tracker-list .tracker-item.selected {
+    background-color: #337AF8;
+    color: #fff
+}
+#manager .mgr-tracker-list .tracker-item.selected {
+    color: #fff;
+}
+#manager .mgr-tracker-list .tracker-item.selected a {
+    color: #fff;
+    text-decoration: underline;
+}
+#manager .mgr-tracker-list .tracker-item > * {
+    display: inline-block;
+    margin: 2px;
+    vertical-align: middle;
+}
+#manager .mgr-tracker-list .tracker-item .icon {
+    width: 18px;
+    height: 18px;
+
+    margin-left: 5px;
+    margin-right: 9px;
+
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: move;
+}
+#manager .mgr-tracker-list .tracker-item .title {
+    width: 125px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+    font-size: 14px;
+}
+#manager .mgr-tracker-list .tracker-item .desc {
+    font-size: 13px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 470px;
+}
+#manager.show-tools .mgr-tracker-list .tracker-item:not(.not_found) .desc {
+    width: 422px;
+}
+
+#manager .mgr-tracker-list .tracker-item.custom div.actionList {
+    display: none;
+    float: right;
+    margin-top: 1px;
+    margin-bottom: -2px;
+}
+#manager.show-tools .mgr-tracker-list .tracker-item.custom div.actionList {
+    display: inline-block;
+}
+#manager .mgr-tracker-list .tracker-item div.actionList a {
+    margin-right: 8px;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    border-radius: 3px;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+#manager .mgr-tracker-list .tracker-item.selected div.actionList a {
+    filter: invert(100%);
+    -webkit-filter: invert(1);
+    opacity: 0.8;
+}
+#manager .mgr-tracker-list .tracker-item div.actionList a:hover {
+    opacity: 1;
+}
+#manager .mgr-tracker-list .tracker-item div.actionList a.custom_tracker_remove {
+    background-image: url(../img/remove.png);
+}
+#manager .mgr-tracker-list .tracker-item div.actionList a.custom_tracker_edit {
+    background-image: url(../img/edit_list.png);
+}
+#manager .mgr-tracker-list .tracker-item > div.status input {
+    display: block;
+    margin: 0;
+}
+#manager .mgr-tracker-list .ui-sortable-helper {
+    background-color:#fff !important;
+    border-radius: 4px;
+    opacity: 0.9;
+    display: block !important;
+    color: #000 !important;
+}
+#manager .mgr-tracker-list .ui-sortable-helper a {
+    color: #000 !important;
+}
+#manager .mgr-tracker-list .ui-state-highlight {
+    background-color:#E7E7E7 !important;
+    height: 37px;
+    display: block !important;
+    border: 1px dashed #CACACA;
+    border-left: 0;
+    border-right: 0;
+}
+
+#manager .mgr-tracker-list .options {
+    display: none;
+}
+
+#manager .mgr-tracker-list div.icons {
+    float: right;
+}
+#manager .mgr-tracker-list div.icons > div {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+}
+#manager .mgr-tracker-list div.icons > div:hover {
+    opacity: 1;
+}
+#manager .mgr-tracker-list div.icons > div.auth {
+    background: url(../img/need_auth.png) center center;
+}
+#manager .mgr-tracker-list div.icons > div.rus {
+    background: url(../img/russian.png) center center;
+}
+#manager .mgr-tracker-list div.icons > div.cirilic {
+    background: url(../img/cyrillic.png) center center;
+}

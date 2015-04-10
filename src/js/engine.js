@@ -100,6 +100,16 @@ var engine = {
         }
     },
 
+    setProfileList: function(storage, cb) {
+        "use strict";
+        mono.storage.set(storage, function() {
+            if (storage.profileListSync) {
+                return mono.storage.sync.set(storage, cb);
+            }
+            cb();
+        });
+    },
+
     defaultPrepare: function(langCode) {
         "use strict";
         if ( langCode === 'en' ) {

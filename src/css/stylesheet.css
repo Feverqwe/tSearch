@@ -90,10 +90,6 @@ body.home #result_block {
     margin-left: 180px;
 }
 
-#tracker_list_manager {
-    display: none;
-}
-
 .profile-select-block {
     position: relative;
     margin-top: 10px;
