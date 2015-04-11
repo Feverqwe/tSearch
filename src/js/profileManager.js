@@ -18,11 +18,17 @@ var profileManager = {
         createCustomTrackerBtn: document.getElementById('manager_create_custom')
     },
     varCache: {
+        filterList: {
+            all: {lang: 'word_all'},
+            hasList: {selected: 1, lang: 'mgtWithoutList'},
+            custom: {lang: 'external_tracker'},
+            selected: {lang: 'word_selected'}
+        },
         filter: undefined,
         filterStyle: undefined,
         wordFilterCache: undefined,
         wordFilterStyle: undefined,
-        filterEl: null
+        trackerList: {}
     },
     updateProfileList: function(currentProfile, changes, cb) {
         "use strict";
@@ -34,86 +40,42 @@ var profileManager = {
             cb && cb();
         });
     },
-    numbersUpdate: function() {
-        var $trackerList = $(this.domCache.trackerList);
-        var selectCount = $trackerList.children('.selected').length;
+    filterValueUpdate: function() {
+        var trackerList = this.domCache.trackerList;
+        var selectCount = trackerList.querySelectorAll('.tracker-item.selected').length;
         if (!selectCount) {
-            this.domCache.counter.text(mono.language.mgrNothingSelected);
+            this.domCache.counter.textContent = mono.language.mgrNothingSelected;
         } else {
-            this.domCache.counter.text(mono.language.mgrSelectedN + ' ' + selectCount);
+            this.domCache.counter.textContent = mono.language.mgrSelectedN + ' ' + selectCount;
         }
 
-        var elList = this.domCache.filterContainer.querySelectorAll('a[data-type] > i');
-        for (var i = 0, el; el = elList[i]; i++) {
-            var type = el.parentNode.dataset.type;
+        for (var type in this.varCache.filterList) {
+            var filterObj = this.varCache.filterList[type];
             if (type === 'all') {
-                el.textContent = $trackerList.children().length;
+                filterObj.setValue(trackerList.querySelectorAll('.tracker-item').length);
             } else
             if (type === 'selected') {
-                el.textContent = selectCount;
+                filterObj.setValue(selectCount);
             } else
-            if (type === 'unused') {
-                el.textContent = $trackerList.children(':not(.inList)').length;
+            if (type === 'hasList') {
+                filterObj.setValue(trackerList.querySelectorAll('.tracker-item:not(.hasList)').length);
             } else
             if (type === 'custom') {
-                el.textContent = $trackerList.children('.custom').length;
+                filterObj.setValue(trackerList.querySelectorAll('.tracker-item.custom').length);
             }
         }
     },
-    filterBy: function(type) {
-        this.varCache.filter = type;
-        this.domCache.managerBody.classList.remove('show-tools');
-        if (this.varCache.filterStyle) {
-            this.varCache.filterStyle.parentNode.removeChild(this.varCache.filterStyle);
-            this.varCache.filterStyle = undefined;
-        }
-
-        if (type === 'selected') {
-            this.varCache.filterStyle = mono.create('style', {
-                text: '#manager '
-                + '.mgr-tracker-list > div:not(.selected) {'
-                    + 'display: none;'
-                + '}'
-                + '#manager '
-                + '.mgr-tracker-list > div.tmp-selected {'
-                    + 'display: block;'
-                + '}'
-            });
-        } else
-        if (type === 'unused') {
-            this.varCache.filterStyle = mono.create('style', {
-                text: '#manager '
-                + '.mgr-tracker-list > div.inList {'
-                + 'display: none;'
-                + '}'
-                + '#manager '
-                + '.mgr-tracker-list > div.inList.tmp-used {'
-                + 'display: block;'
-                + '}'
-            });
-        } else
-        if (type === 'custom') {
-            this.varCache.filterStyle = mono.create('style', {
-                text: '#manager '
-                + '.mgr-tracker-list > div:not(.custom) {'
-                + 'display: none;'
-                + '}'
-            });
-            this.domCache.managerBody.classList.add('show-tools');
-        }
-
-        this.varCache.filterStyle && document.body.appendChild(this.varCache.filterStyle);
-    },
     orderTrackerList: function (custom, editMode) {
         var trackerList = this.domCache.trackerList;
-        var childNodes = trackerList.childNodes;
-        for (var i = 0, el; el = childNodes[i]; i++) {
-            el.classList.remove('tmp_selected');
-            el.classList.remove('tmp_used');
+
+        var tmpSelectedList = trackerList.querySelectorAll(['.tmp-selected', '.tmp-hasList']);
+        for (var i = 0, el; el = tmpSelectedList[i]; i++) {
+            el.classList.remove('tmp-selected');
+            el.classList.remove('tmp-hasList');
         }
 
         var list = document.createDocumentFragment();
-        if (!custom && editMode === 1) {
+        /*if (!custom && editMode === 1) {
             engine.profileList[engine.currentProfile].forEach(function (id) {
                 var el = trackerList.querySelector('div[data-id="' + id + '"]');
                 if (el === null) {
@@ -123,36 +85,78 @@ var profileManager = {
                 }
                 list.appendChild(el);
             });
-        } else {
-            var selectedList = trackerList.querySelectorAll('.selected');
+        } else {*/
+            var selectedList = trackerList.querySelectorAll('.tracker-item.selected');
             for (i = 0, el; el = selectedList[i]; i++) {
                 list.appendChild(el);
             }
-        }
+        /*}*/
         if (trackerList.firstChild !== null) {
             trackerList.insertBefore(list, trackerList.firstChild);
         } else {
             trackerList.appendChild(list);
         }
     },
-    onFilter: function (el, type) {
-        if (this.varCache.filterEl !== null) {
-            this.varCache.filterEl.classList.remove('selected');
+    trackerHasListUpdate: function (trackerObj) {
+        var state;
+        if (trackerObj.selected) {
+            state = 1;
+        } else {
+            for (var profileName in engine.profileList) {
+                var trackerList = engine.profileList[profileName];
+                if (trackerList.indexOf(trackerObj.id) !== -1) {
+                    break;
+                }
+            }
         }
-        this.varCache.filterEl = el;
-        el.classList.add('selected');
-        this.orderTrackerList(1);
-        this.filterBy(type);
-        this.domCache.filterInput.value = '';
-        this.domCache.filterInput.dispatchEvent(new CustomEvent('keyup'));
-        this.domCache.trackerList.scrollTop = 0;
+
+        if (trackerObj.hasList === state) return;
+
+        if (trackerObj.hasList) {
+            trackerObj.el.classList.remove('hasList');
+        } else {
+            trackerObj.el.classList.add('hasList');
+            if (this.varCache.selectedFilter.type === 'hasList') {
+                trackerObj.el.classList.add('tmp-hasList');
+            }
+        }
+        trackerObj.hasList = state;
     },
-    getTrackerEl: function(trackerObj, selected, inList) {
+    trackerObjSelect: function(trackerObj, state) {
         "use strict";
+        if (trackerObj.selected === state) return;
+
+        if (trackerObj.selected) {
+            trackerObj.el.classList.remove('selected');
+            if (this.varCache.selectedFilter.type === 'selected') {
+                trackerObj.el.classList.add('tmp-selected');
+            }
+        } else {
+            trackerObj.el.classList.add('selected');
+        }
+        trackerObj.selected = state;
+        trackerObj.checkbox.checked = !!state;
+
+        trackerObj.hasListUpdate();
+
+        this.filterValueUpdate();
+    },
+    getTrackerEl: function(trackerObj, selected, hasList) {
+        "use strict";
+        this.varCache.trackerList[trackerObj.id] = trackerObj;
         var classList = ['tracker-item'];
-        selected && classList.push('selected');
-        inList && classList.push('inList');
-        return mono.create('div', {
+        if (selected) {
+            trackerObj.selected = 1;
+            classList.push('selected');
+        } else {
+            trackerObj.selected = 0;
+        }
+        if (hasList) {
+            classList.push('hasList');
+        }
+        trackerObj.hasList = hasList;
+
+        trackerObj.el = mono.create('div', {
             class: classList,
             data: {
                 id: trackerObj.id
@@ -162,20 +166,23 @@ var profileManager = {
                     class: 'icon',
                     style: 'background-image: url('+trackerObj.icon+')'
                 }),
-                mono.create('a', {
+                mono.create('div', {
                     class: 'title',
-                    title: trackerObj.title,
-                    text: trackerObj.title,
-                    href: trackerObj.search.baseUrl,
-                    target: '_blank'
+                    append: mono.create('a', {
+                        title: trackerObj.title,
+                        text: trackerObj.title,
+                        href: trackerObj.search.baseUrl,
+                        target: '_blank'
+                    })
                 }),
-                mono.create('span', {
+                trackerObj.desc = mono.create('span', {
                     class: 'desc',
                     text: trackerObj.desc
                 }),
                 mono.create('div', {
+                    class: 'action',
                     append: [
-                        mono.create('input', {
+                        trackerObj.checkbox = mono.create('input', {
                             type: 'checkbox',
                             checked: !!selected
                         }),
@@ -191,6 +198,9 @@ var profileManager = {
                 })
             ]
         });
+        trackerObj.select = this.trackerObjSelect.bind(this, trackerObj);
+        trackerObj.hasListUpdate = this.trackerHasListUpdate.bind(this, trackerObj);
+        return trackerObj.el;
     },
     writeTrackerList: function() {
         "use strict";
@@ -202,26 +212,140 @@ var profileManager = {
                 for (var trackerId in engine.trackerLib) {
                     var trackerObj = engine.trackerLib[trackerId];
 
-                    var inList = false;
+                    var hasList = false;
                     for (var profileName in engine.profileList) {
                         if (engine.profileList[profileName].indexOf(trackerObj.id) !== -1) {
-                            inList = true;
+                            hasList = true;
                             break;
                         }
                     }
 
                     var selected = currentProfile.indexOf(trackerObj.id) !== -1;
 
-                    list.push(this.getTrackerEl(trackerObj, selected, inList));
+                    list.push(this.getTrackerEl(trackerObj, selected, hasList));
                 }
                 return list;
             }.call(this)
         });
     },
+    getSelectedTrackerList: function() {
+        "use strict";
+        var elList = this.domCache.trackerList.querySelectorAll('.tracker-item.selected');
+        var list = [];
+        for (var i = 0, el; el = elList[i]; i++) {
+            list.push(el.dataset.id);
+        }
+        return list;
+    },
+    filterBy: function(type) {
+        this.varCache.filterList[type].select(1);
+
+        if (this.varCache.filterStyle) {
+            this.varCache.filterStyle.parentNode.removeChild(this.varCache.filterStyle);
+            this.varCache.filterStyle = undefined;
+        }
+
+        if (type === 'selected') {
+            this.varCache.filterStyle = mono.create('style', {
+                text: '#manager '
+                + '.mgr-tracker-list > div:not(.selected) {'
+                +    'display: none;'
+                + '}'
+                + '#manager '
+                +    '.mgr-tracker-list > div.tmp-selected {'
+                +    'display: block;'
+                + '}'
+            });
+        } else
+        if (type === 'hasList') {
+            this.varCache.filterStyle = mono.create('style', {
+                text: '#manager '
+                + '.mgr-tracker-list > div.hasList {'
+                +   'display: none;'
+                + '}'
+                + '#manager '
+                +   '.mgr-tracker-list > div.hasList.tmp-hasList {'
+                +   'display: block;'
+                + '}'
+            });
+        } else
+        if (type === 'custom') {
+            this.varCache.filterStyle = mono.create('style', {
+                text: '#manager '
+                + '.mgr-tracker-list > div:not(.custom) {'
+                +   'display: none;'
+                + '}'
+            });
+            this.domCache.managerBody.classList.add('show-tools');
+        }
+
+        this.varCache.filterStyle && document.body.appendChild(this.varCache.filterStyle);
+    },
+    filterSetValue: function(filterObj, value) {
+        "use strict";
+        if (filterObj.value === value) return;
+
+        filterObj.value = value;
+        filterObj.valueEl.textContent = value;
+    },
+    filterSelect: function(filterObj, state) {
+        "use strict";
+        if (filterObj.selected === state) return;
+
+        this.varCache.selectedFilter.selected = 0;
+        this.varCache.selectedFilter.el.classList.remove('selected');
+
+        if (this.varCache.selectedFilter.type === 'custom') {
+            this.domCache.managerBody.classList.remove('show-tools');
+        }
+
+        this.varCache.selectedFilter = filterObj;
+        filterObj.selected = state;
+        this.varCache.selectedFilter.el.classList.add('selected');
+
+        if (state && filterObj.type === 'custom') {
+            this.domCache.managerBody.classList.add('show-tools');
+        }
+
+        // TODO: update filter
+    },
+    writeFilterList: function() {
+        "use strict";
+        var filterContainer = this.domCache.filterContainer;
+        var list = document.createDocumentFragment();
+        for (var type in this.varCache.filterList) {
+            var filterObj = this.varCache.filterList[type];
+            var classList = [];
+            if (filterObj.selected) {
+                classList.push('selected');
+                this.varCache.selectedFilter = filterObj;
+            } else {
+                filterObj.selected = 0;
+            }
+            list.appendChild(filterObj.el = mono.create('a', {
+                class: classList,
+                data: {
+                    type: type
+                },
+                href: '#',
+                text: mono.language[filterObj.lang] + ' ',
+                append: filterObj.valueEl = mono.create('i', {
+                    text: 0
+                })
+            }));
+            filterObj.type = type;
+            filterObj.value = 0;
+            filterObj.setValue = this.filterSetValue.bind(this, filterObj);
+            filterObj.select = this.filterSelect.bind(this, filterObj);
+        }
+        filterContainer.insertBefore(list, filterContainer.firstChild);
+    },
     once: function() {
         "use strict";
         if (this.once.ready) return;
         this.once.ready = 1;
+
+        this.writeFilterList();
 
         this.domCache.closeBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -230,12 +354,6 @@ var profileManager = {
 
         this.domCache.saveBtn.addEventListener('click', function(e) {
             e.preventDefault();
-
-            var elList = this.domCache.trackerList.querySelectorAll('.selected');
-            var list = [];
-            for (var i = 0, el; el = elList[i]; i++) {
-                list.push(el.dataset.id);
-            }
 
             var profileName = $.trim(this.domCache.profileName.value);
             if (!profileName) {
@@ -246,7 +364,7 @@ var profileManager = {
                 return;
             }
 
-            engine.profileList[profileName] = list;
+            engine.profileList[profileName] = this.getSelectedTrackerList();
 
             var changes = {
                 profileList: engine.profileList
@@ -270,7 +388,6 @@ var profileManager = {
             }.bind(this));
         }.bind(this));
 
-        this.varCache.filterEl = this.domCache.filterContainer.querySelector('.selected');
         this.domCache.filterContainer.addEventListener('click', function(e) {
             var el = e.target;
             if (this === el) return;
@@ -280,10 +397,25 @@ var profileManager = {
 
             e.preventDefault();
             var _this = profileManager;
-            _this.onFilter(el, el.dataset.type);
+            _this.orderTrackerList();
+            _this.filterBy(el.dataset.type);
         });
 
-        this.domCache.filterInput.addEventListener('keyup', function() {
+        this.domCache.trackerList.addEventListener('click', function(e) {
+            var el = e.target;
+            if (el.tagName === 'A') return;
+
+            if (this === el) return;
+            while (el.parentNode !== this) {
+                el = el.parentNode;
+            }
+
+            var _this = profileManager;
+            var trackerObj = _this.varCache.trackerList[el.dataset.id];
+            trackerObj.select(!trackerObj.selected ? 1 : 0)
+        });
+
+        /*this.domCache.filterInput.addEventListener('keyup', function() {
             var _this = profileManager;
 
             if (_this.varCache.wordFilterStyle !== undefined) {
@@ -302,9 +434,9 @@ var profileManager = {
             }
 
             if (_this.varCache.filter === 'selected') {
-                _this.varCache.filterEl.classList.remove('selected');
-                _this.varCache.filterEl = _this.domCache.filterContainer.querySelector('a');
-                _this.varCache.filterEl.dispatchEvent(new CustomEvent('click'));
+                _this.varCache.selectedFilterEl.classList.remove('selected');
+                _this.varCache.selectedFilterEl = _this.domCache.filterContainer.querySelector('a');
+                _this.varCache.selectedFilterEl.dispatchEvent(new CustomEvent('click'));
             }
 
             var $trackerList = $(_this.domCache.trackerList);
@@ -334,12 +466,11 @@ var profileManager = {
                 + '}'
             }));
         });
+
         this.domCache.filterInput.addEventListener('dblclick', function() {
             this.value = '';
             this.dispatchEvent(new CustomEvent('keyup'));
-        });
-
-
+        });*/
     },
     onHide: function() {
         "use strict";

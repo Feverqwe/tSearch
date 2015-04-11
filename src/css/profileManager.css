@@ -157,8 +157,6 @@
 }
 
 #manager .mgr-tracker-list .tracker-item {
-    padding: 6px;
-    padding-bottom: 4px;
     border: 1px solid transparent;
     cursor: pointer;
     border-left: 0;
@@ -184,7 +182,8 @@
 }
 #manager .mgr-tracker-list .tracker-item > * {
     display: inline-block;
-    margin: 2px;
+    padding: 2px;
+    line-height: 28px;
     vertical-align: middle;
 }
 #manager .mgr-tracker-list .tracker-item .icon {
@@ -213,6 +212,13 @@
     white-space: nowrap;
     overflow: hidden;
     width: 470px;
+    line-height: normal;
+}
+#manager .mgr-tracker-list .tracker-item .action {
+    cursor: default;
+}
+#manager .mgr-tracker-list .tracker-item .action input[type="checkbox"] {
+    margin-top: 4px;
 }
 #manager.show-tools .mgr-tracker-list .tracker-item:not(.not_found) .desc {
     width: 422px;
