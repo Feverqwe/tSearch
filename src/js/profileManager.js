@@ -24,11 +24,11 @@ var profileManager = {
             custom: {lang: 'external_tracker'},
             selected: {selected: 1, lang: 'word_selected'}
         },
-        filter: undefined,
         filterStyle: undefined,
-        wordFilterCache: undefined,
+        wordFilterCache: {},
         wordFilterStyle: undefined,
-        trackerList: {}
+        trackerList: {},
+        selectedFilter: undefined
     },
     updateProfileList: function(currentProfile, changes, cb) {
         "use strict";
@@ -143,20 +143,20 @@ var profileManager = {
     },
     getTrackerEl: function(trackerObj, selected, hasList) {
         "use strict";
-        this.varCache.trackerList[trackerObj.id] = trackerObj;
+        var trackerItem = this.varCache.trackerList[trackerObj.id] = {};
         var classList = ['tracker-item'];
         if (selected) {
-            trackerObj.selected = 1;
+            trackerItem.selected = 1;
             classList.push('selected');
         } else {
-            trackerObj.selected = 0;
+            trackerItem.selected = 0;
         }
         if (hasList) {
             classList.push('hasList');
         }
-        trackerObj.hasList = hasList;
+        trackerItem.hasList = hasList;
 
-        trackerObj.el = mono.create('div', {
+        trackerItem.el = mono.create('div', {
             class: classList,
             data: {
                 id: trackerObj.id
@@ -175,14 +175,14 @@ var profileManager = {
                         target: '_blank'
                     })
                 }),
-                trackerObj.desc = mono.create('span', {
+                trackerItem.desc = mono.create('span', {
                     class: 'desc',
                     text: trackerObj.desc
                 }),
                 mono.create('div', {
                     class: 'action',
                     append: [
-                        trackerObj.checkbox = mono.create('input', {
+                        trackerItem.checkbox = mono.create('input', {
                             type: 'checkbox',
                             checked: !!selected
                         }),
@@ -198,9 +198,9 @@ var profileManager = {
                 })
             ]
         });
-        trackerObj.select = this.trackerObjSelect.bind(this, trackerObj);
-        trackerObj.hasListUpdate = this.trackerHasListUpdate.bind(this, trackerObj);
-        return trackerObj.el;
+        trackerItem.select = this.trackerObjSelect.bind(this, trackerItem);
+        trackerItem.hasListUpdate = this.trackerHasListUpdate.bind(this, trackerItem);
+        return trackerItem.el;
     },
     writeTrackerList: function() {
         "use strict";
@@ -306,8 +306,6 @@ var profileManager = {
         if (state && filterObj.type === 'custom') {
             this.domCache.managerBody.classList.add('show-tools');
         }
-
-        // TODO: update filter
     },
     writeFilterList: function() {
         "use strict";
@@ -340,12 +338,67 @@ var profileManager = {
         }
         filterContainer.insertBefore(list, filterContainer.firstChild);
     },
+    onFilterKeyUp: function() {
+        "use strict";
+        if (this.varCache.wordFilterStyle !== undefined) {
+            this.varCache.wordFilterStyle.parentNode.removeChild(this.varCache.wordFilterStyle);
+            this.varCache.wordFilterStyle = undefined;
+
+            var elList = this.domCache.trackerList.querySelectorAll('div[data-filtered="true"]');
+            for (var i = 0, el; el = elList[i]; i++) {
+                el.dataset.filtered = false;
+            }
+        }
+
+        var request = this.domCache.filterInput.value.toLowerCase().trim();
+        if (!request) {
+            return;
+        }
+
+        if (this.varCache.selectedFilter.type === 'selected') {
+            this.filterBy('all');
+        }
+
+        var trackerItemList = this.varCache.trackerList;
+        var trackerLib = engine.trackerLib;
+        var trackerObjList = Array.prototype.slice.call(this.domCache.trackerList.querySelectorAll('.tracker-item'));
+        trackerObjList.filter(function(el) {
+            var id = el.dataset.id;
+            var trackerObj = trackerLib[id];
+            var trackerItem = trackerItemList[id];
+
+            var text = this.varCache.wordFilterCache[id];
+            if (text === undefined) {
+                text = (trackerObj.desc || '').toLowerCase();
+                text += ' ' + (trackerObj.search.baseUrl || '').toLowerCase();
+                text += ' ' + (trackerObj.title || '').toLowerCase();
+                this.varCache.wordFilterCache[id] = text;
+            }
+
+            if (text.indexOf(request) !== -1) {
+                trackerItem.el.dataset.filtered = true;
+                return true;
+            }
+            return false;
+        }.bind(this));
+
+        document.body.appendChild(this.varCache.wordFilterStyle = mono.create('style', {
+            text: ''
+            + '#manager .mgr-tracker-list > div:not([data-filtered="true"]) {'
+            +   'display: none;'
+            + '}'
+        }));
+    },
     once: function() {
         "use strict";
         if (this.once.ready) return;
         this.once.ready = 1;
 
         this.writeFilterList();
+
+        this.domCache.managerBody.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
 
         this.domCache.closeBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -395,10 +448,13 @@ var profileManager = {
                 el = el.parentNode;
             }
 
+            var type = el.dataset.type;
+            if (!type) return;
+
             e.preventDefault();
             var _this = profileManager;
             _this.orderTrackerList();
-            _this.filterBy(el.dataset.type);
+            _this.filterBy(type);
         });
 
         this.domCache.trackerList.addEventListener('click', function(e) {
@@ -425,62 +481,19 @@ var profileManager = {
             }
         });
 
-        /*this.domCache.filterInput.addEventListener('keyup', function() {
-            var _this = profileManager;
-
-            if (_this.varCache.wordFilterStyle !== undefined) {
-                _this.varCache.wordFilterStyle.parentNode.removeChild(_this.varCache.wordFilterStyle);
-                _this.varCache.wordFilterStyle = undefined;
-
-                var elList = _this.domCache.trackerList.querySelectorAll('div[data-filtered="true"]');
-                for (var i = 0, el; el = elList[i]; i++) {
-                    el.dataset.filtered = false;
-                }
-            }
-
-            var request = $.trim(this.value.toLowerCase());
-            if (!request) {
-                return;
-            }
-
-            if (_this.varCache.filter === 'selected') {
-                _this.varCache.selectedFilterEl.classList.remove('selected');
-                _this.varCache.selectedFilterEl = _this.domCache.filterContainer.querySelector('a');
-                _this.varCache.selectedFilterEl.dispatchEvent(new CustomEvent('click'));
-            }
-
-            var $trackerList = $(_this.domCache.trackerList);
-            $trackerList.children('div').filter(function(index, el) {
-                var id = el.dataset.id;
-                var url = el.childNodes[1].firstChild.getAttribute('href') || '';
-
-                var text = this.varCache.wordFilterCache[id];
-                if (text === undefined) {
-                    text = el.childNodes[1].textContent.toLowerCase();
-                    text += ' ' + url.toLowerCase();
-                    text += ' ' + el.childNodes[2].firstChild.textContent.toLowerCase();
-                    this.varCache.wordFilterCache[id] = text;
-                }
-
-                if (text.indexOf(request) !== -1) {
-                    el.dataset.filtered = true;
-                    return true;
-                }
-                return false;
-            }.bind(_this));
-
-            document.body.append(_this.varCache.wordFilterStyle = mono.create('style', {
-                text: '#manager '
-                + '.mgr-tracker-list > div:not([data-filtered="true"]) {'
-                + 'display: none;'
-                + '}'
-            }));
-        });
+        this.domCache.filterInput.addEventListener('keyup', mono.throttle(profileManager.onFilterKeyUp, 250, this));
 
         this.domCache.filterInput.addEventListener('dblclick', function() {
             this.value = '';
             this.dispatchEvent(new CustomEvent('keyup'));
-        });*/
+        });
+    },
+    onShow: function() {
+        "use strict";
+        document.body.addEventListener('click', function onBodyClick() {
+            document.body.removeEventListener('click', onBodyClick);
+            this.onHide();
+        }.bind(this));
     },
     onHide: function() {
         "use strict";
@@ -489,6 +502,8 @@ var profileManager = {
     add: function() {
         "use strict";
         this.once();
+        this.onShow();
+
         this.domCache.managerBody.classList.add('show');
 
         this.writeTrackerList();
