@@ -20,9 +20,9 @@ var profileManager = {
     varCache: {
         filterList: {
             all: {lang: 'word_all'},
-            hasList: {selected: 1, lang: 'mgtWithoutList'},
+            hasList: {lang: 'mgtWithoutList'},
             custom: {lang: 'external_tracker'},
-            selected: {lang: 'word_selected'}
+            selected: {selected: 1, lang: 'word_selected'}
         },
         filter: undefined,
         filterStyle: undefined,
@@ -482,5 +482,7 @@ var profileManager = {
         this.domCache.managerBody.classList.add('show');
 
         this.writeTrackerList();
+        this.filterValueUpdate();
+        this.filterBy(this.varCache.selectedFilter.type);
     }
 };

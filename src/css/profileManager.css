@@ -102,7 +102,7 @@
 
 #manager .mgr-custom-tools {
     display: none;
-    padding: 16px;
+    padding: 5px;
 }
 #manager.show-tools .mgr-custom-tools {
     display: block;
@@ -110,16 +110,15 @@
 }
 #manager.show-tools .mgr-custom-tools span {
     float: right;
+    line-height: 26px;
 }
-#manager.show-tools .mgr-custom-tools a {
-    line-height: 12px;
-    margin-top: -3px;
-    margin-bottom: -3px;
+#manager.show-tools .mgr-custom-tools > * {
     display: inline-block;
+    vertical-align: middle;
 }
 
 #manager.show-tools .mgr-tracker-list {
-    height: 358px;
+    height: 368px;
 }
 
 #manager .mgr-footer {
