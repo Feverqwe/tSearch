@@ -538,3 +538,9 @@ mono.capitalize = function(str) {
     "use strict";
     return str[0].toUpperCase() + str.substr(1);
 };
+
+
+mono.nodeListToArray = function(nodeList) {
+    "use strict";
+    return Array.prototype.slice.call(nodeList);
+};

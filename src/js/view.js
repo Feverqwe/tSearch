@@ -378,7 +378,7 @@ var view = {
                 trackerObj.resetStatus = view.resetTrackerStatus.bind(null, trackerObj);
                 trackerObj.setSelect = view.setTrackerSelect.bind(options, trackerObj);
                 styleContent += '.tracker-icon[data-id="' + tracker.id + '"] {' +
-                    'background-image: url('+ tracker.icon +')' +
+                    'background-image: url('+ exKit.getTrackerIconUrl(tracker.icon) +')' +
                 '}';
             }
             document.body.appendChild(view.varCache.trackerListStyle = mono.create('style', {text: styleContent}));

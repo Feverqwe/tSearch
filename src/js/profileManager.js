@@ -36,7 +36,7 @@ var profileManager = {
         engine.setProfileList(changes, function() {
             engine.prepareProfileList(currentProfile, changes);
             view.writeProfileList();
-            view.selectProfile(currentProfile);
+            view.selectProfile(currentProfile || engine.currentProfile);
             cb && cb();
         });
     },
@@ -65,7 +65,7 @@ var profileManager = {
             }
         }
     },
-    orderTrackerList: function (custom, editMode) {
+    orderTrackerList: function () {
         var trackerList = this.domCache.trackerList;
 
         var tmpSelectedList = trackerList.querySelectorAll(['.tmp-selected', '.tmp-hasList']);
@@ -75,22 +75,11 @@ var profileManager = {
         }
 
         var list = document.createDocumentFragment();
-        /*if (!custom && editMode === 1) {
-            engine.profileList[engine.currentProfile].forEach(function (id) {
-                var el = trackerList.querySelector('div[data-id="' + id + '"]');
-                if (el === null) {
-                    trackerList.appendChild(
-                        el = this.getTrackerEl(id)
-                    );
-                }
-                list.appendChild(el);
-            });
-        } else {*/
-            var selectedList = trackerList.querySelectorAll('.tracker-item.selected');
-            for (i = 0, el; el = selectedList[i]; i++) {
-                list.appendChild(el);
-            }
-        /*}*/
+        var selectedList = mono.nodeListToArray(trackerList.querySelectorAll('.tracker-item.selected:not(.not-found)'));
+        selectedList = selectedList.concat(mono.nodeListToArray(trackerList.querySelectorAll('.tracker-item.selected.not-found')));
+        for (i = 0, el; el = selectedList[i]; i++) {
+            list.appendChild(el);
+        }
         if (trackerList.firstChild !== null) {
             trackerList.insertBefore(list, trackerList.firstChild);
         } else {
@@ -141,7 +130,7 @@ var profileManager = {
 
         this.filterValueUpdate();
     },
-    getTrackerEl: function(trackerObj, selected, hasList) {
+    getTrackerEl: function(trackerObj, selected, hasList, notFound) {
         "use strict";
         var trackerItem = this.varCache.trackerList[trackerObj.id] = {};
         var classList = ['tracker-item'];
@@ -156,6 +145,8 @@ var profileManager = {
         }
         trackerItem.hasList = hasList;
 
+        notFound && classList.push('not-found');
+
         trackerItem.el = mono.create('div', {
             class: classList,
             data: {
@@ -164,7 +155,7 @@ var profileManager = {
             append: [
                 mono.create('i', {
                     class: 'icon',
-                    style: 'background-image: url('+trackerObj.icon+')'
+                    style: 'background-image: url('+ exKit.getTrackerIconUrl(trackerObj.icon) +')'
                 }),
                 mono.create('div', {
                     class: 'title',
@@ -209,20 +200,35 @@ var profileManager = {
         mono.create(this.domCache.trackerList, {
             append: function() {
                 var list = [];
+                var trackerObj, trackerId, profileName, selected, hasList;
                 for (var trackerId in engine.trackerLib) {
-                    var trackerObj = engine.trackerLib[trackerId];
+                    trackerObj = engine.trackerLib[trackerId];
 
-                    var hasList = false;
-                    for (var profileName in engine.profileList) {
+                    hasList = false;
+                    for (profileName in engine.profileList) {
                         if (engine.profileList[profileName].indexOf(trackerObj.id) !== -1) {
                             hasList = true;
                             break;
                         }
                     }
 
-                    var selected = currentProfile.indexOf(trackerObj.id) !== -1;
+                    selected = currentProfile.indexOf(trackerObj.id) !== -1;
 
                     list.push(this.getTrackerEl(trackerObj, selected, hasList));
+                }
+                for (var i = 0, trackerId; trackerId = currentProfile[i]; i++) {
+                    if (engine.trackerLib.hasOwnProperty(trackerId)) continue;
+                    trackerObj = {
+                        id: trackerId,
+                        icon: '#skull',
+                        title: trackerId,
+                        search: {
+                            baseUrl: 'http://code-tms.blogspot.ru/search?q=' + encodeURIComponent(trackerId)
+                        },
+                        desc: mono.language.trackerNotFound
+                    };
+
+                    list.push(this.getTrackerEl(trackerObj, true, true, true));
                 }
                 return list;
             }.call(this)
@@ -361,7 +367,7 @@ var profileManager = {
 
         var trackerItemList = this.varCache.trackerList;
         var trackerLib = engine.trackerLib;
-        var trackerObjList = Array.prototype.slice.call(this.domCache.trackerList.querySelectorAll('.tracker-item'));
+        var trackerObjList = mono.nodeListToArray(this.domCache.trackerList.querySelectorAll('.tracker-item'));
         trackerObjList.filter(function(el) {
             var id = el.dataset.id;
             var trackerObj = trackerLib[id];
@@ -535,7 +541,7 @@ var profileManager = {
 
         this.domCache.title.textContent = mono.language.mgrTitleEdit;
         this.varCache.currentProfileName = profileName;
-        this.domCache.profileName.value = profileName;
+        this.domCache.profileName.value = profileName.replace('%defaultProfileName%', mono.language.label_def_profile);
         this.domCache.removeListBtn.classList.remove('hide');
 
         this.writeTrackerList(profileName);

@@ -175,7 +175,7 @@
     border-right: 0;
     margin-bottom: 1px;
 }
-#manager .mgr-tracker-list .tracker-item.not_found {
+#manager .mgr-tracker-list .tracker-item.not-found {
     background-color: #FFE0E0;
 }
 #manager .mgr-tracker-list .tracker-item:hover {
@@ -206,8 +206,8 @@
     margin-right: 9px;
 
     border-radius: 4px;
-    background-color: #fff;
     cursor: move;
+    background-color: #fff;
 }
 #manager .mgr-tracker-list .tracker-item .title {
     width: 125px;
