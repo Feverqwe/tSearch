@@ -12,7 +12,7 @@ var profileManager = {
         profileName: document.getElementById('manager_list_title'),
         closeBtn: document.getElementById('manager_close'),
         removeListBtn: document.getElementById('manager_remove_list'),
-        advancedView: document.getElementById('manager_advanced_view'),
+        extendView: document.getElementById('manager_extend_view'),
         saveBtn: document.getElementById('manager_save'),
         addCustomTrackerBtn: document.getElementById('manager_add_custom'),
         createCustomTrackerBtn: document.getElementById('manager_create_custom')
@@ -413,6 +413,16 @@ var profileManager = {
             var _this = profileManager;
             var trackerObj = _this.varCache.trackerList[el.dataset.id];
             trackerObj.select(!trackerObj.selected ? 1 : 0)
+        });
+
+        this.domCache.extendView.addEventListener('click', function(e) {
+            if (this.classList.contains('checked')) {
+                profileManager.domCache.managerBody.classList.remove('extend');
+                this.classList.remove('checked');
+            } else {
+                profileManager.domCache.managerBody.classList.add('extend');
+                this.classList.add('checked');
+            }
         });
 
         /*this.domCache.filterInput.addEventListener('keyup', function() {

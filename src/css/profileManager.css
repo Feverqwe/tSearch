@@ -49,7 +49,6 @@
 #manager .mgr-sub-header input {
     font-size: 16px;
     width: 140px;
-    transition: border-color 1s;
 }
 #manager .mgr-sub-header input.error {
     border-color: red;
@@ -157,12 +156,16 @@
     background-repeat: no-repeat;
 }
 
-#manager .mgr-footer .adv.btn {
+#manager a.btn:hover {
+    border-color: #adadad;
+}
+
+#manager .mgr-footer .extend.btn {
     background-image: url(../img/glass.png);
     margin-right: 6px;
 }
-#manager .mgr-footer .adv.btn.checked {
-    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+#manager .mgr-footer .extend.btn.checked {
+    background-color: #eee;
 }
 
 #manager .mgr-tracker-list .tracker-item {
