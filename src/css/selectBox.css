@@ -49,11 +49,7 @@
     white-space: nowrap;
 }
 .simple-select-box:hover {
-    border-color: #999999;
-}
-
-.simple-select-box:hover > .arrow {
-    border-color: #999999;
+    border-color: #bbb;
 }
 
 .simple-select-box > div {

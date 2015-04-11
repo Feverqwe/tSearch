@@ -482,6 +482,7 @@ var profileManager = {
         });
 
         this.domCache.extendView.addEventListener('click', function(e) {
+            e.preventDefault();
             if (this.classList.contains('checked')) {
                 profileManager.domCache.managerBody.classList.remove('extend');
                 this.classList.remove('checked');
@@ -524,6 +525,9 @@ var profileManager = {
     add: function() {
         "use strict";
         this.once();
+        if (this.isShow()) {
+            this.onHide();
+        }
         this.onShow();
 
         this.domCache.title.textContent = mono.language.mgrTitleNew;
@@ -537,6 +541,9 @@ var profileManager = {
     edit: function(profileName) {
         "use strict";
         this.once();
+        if (this.isShow()) {
+            this.onHide();
+        }
         this.onShow();
 
         this.domCache.title.textContent = mono.language.mgrTitleEdit;
