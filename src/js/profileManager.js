@@ -370,7 +370,7 @@ var profileManager = {
         var trackerObjList = mono.nodeListToArray(this.domCache.trackerList.querySelectorAll('.tracker-item'));
         trackerObjList.filter(function(el) {
             var id = el.dataset.id;
-            var trackerObj = trackerLib[id];
+            var trackerObj = trackerLib[id] || {search: {}};
             var trackerItem = trackerItemList[id];
 
             var text = this.varCache.wordFilterCache[id];
