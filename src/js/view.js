@@ -88,7 +88,8 @@ var view = {
         historyObj: {},
         historyList: [],
         historyLimit: 50,
-        historyLinksListLimit: 20
+        historyLinksListLimit: 20,
+        locationHash: undefined
     },
     setColumnOrder: function (columnObj) {
         var tableHeadList = view.varCache.tableHeadColumnObjList;
@@ -325,7 +326,7 @@ var view = {
         }
         view.filterUpdate();
     },
-    selectProfile: function(profileName) {
+    selectProfile: function(profileName, cb) {
         "use strict";
         var option = view.domCache.profileSelect.querySelector('option[value="'+profileName+'"]');
         if (!option) return;
@@ -382,6 +383,9 @@ var view = {
                 '}';
             }
             document.body.appendChild(view.varCache.trackerListStyle = mono.create('style', {text: styleContent}));
+
+            mono.storage.set({currentProfile: engine.currentProfile = profileName});
+            cb && cb();
         });
     },
     setCategoryCount: function(categoryObj, count) {
@@ -1147,6 +1151,8 @@ var view = {
             historyList.unshift(historyObj);
         }
         historyObj.request = requestObj.request;
+        historyObj.profileName = engine.currentProfile;
+        historyObj.trackerList = this.varCache.filter.trackerList;
         historyObj.lastRequestTime = now;
         historyObj.count++;
 
@@ -1188,7 +1194,73 @@ var view = {
 
         mono.storage.set({searchHistory: view.varCache.historyList});
     },
-    search: function(request) {
+    setLocationUrl: function(hash, title, baseUrl) {
+        var previewHash = this.varCache.locationHash;
+        this.varCache.locationHash = hash;
+        if (history.state === null || previewHash.length < 2) {
+            history.replaceState({hash: hash}, title, baseUrl);
+        } else
+        if (history.state.hash !== hash) {
+            history.pushState({hash: hash}, title, baseUrl);
+        }
+    },
+    setLocation: function(request, params) {
+        "use strict";
+        var base = 'index.html';
+        var hash = '#';
+        if (request === undefined) {
+            this.setLocationUrl(hash, document.title, base+hash);
+            return;
+        }
+        hash += '?' + mono.param({
+            search: request,
+            params: JSON.stringify(params)
+        });
+        this.setLocationUrl(hash, document.title, base+hash);
+    },
+    onUrlChange: function() {
+        "use strict";
+        this.varCache.locationHash = location.hash;
+        var args = mono.parseParam(location.hash);
+        try {
+            args.params = !args.params ? {} : JSON.parse(args.params);
+        } catch (e) {
+            args.params = {};
+        }
+
+        view.selectProfile(args.params.profileName || engine.currentProfile, function() {
+            if (args.params.trackerList) {
+                for (var i = 0, trackerId; trackerId = args.params.trackerList[i]; i++) {
+                    var trackerObj = this.varCache.trackerList[trackerId];
+                    if (trackerObj === undefined) continue;
+                    trackerObj.setSelect(1);
+                }
+            }
+            if (!args.search) {
+                return this.setMainState(1);
+            }
+            this.freezAutocomplete();
+            view.domCache.requestInput.value = args.search;
+            view.search(args.search, 1);
+        }.bind(this));
+    },
+    setDocumentTitle: function(fromHistory, request, trackerList) {
+        "use strict";
+        if (request === undefined) {
+            document.title = mono.language.appTitle;
+            !fromHistory && this.setLocation();
+            return;
+        }
+        var trackerList = trackerList.map(function(trackerId) {
+            return engine.trackerLib[trackerId].title;
+        }).join(', ');
+        document.title = request + ' :: ' + trackerList + ' :: TMS';
+        !fromHistory && this.setLocation(request, {
+            profileName: engine.currentProfile,
+            trackerList: this.varCache.filter.trackerList
+        });
+    },
+    search: function(request, fromHistory) {
         "use strict";
         view.setSearchState();
         view.domCache.resultTableBody.textContent = '';
@@ -1197,6 +1269,7 @@ var view = {
         request = view.prepareRequest(request);
         view.inHistory();
         var trackerList = view.getTrackerList();
+        this.setDocumentTitle(fromHistory, request, trackerList);
         exKit.searchList(trackerList, request, {
             onSuccess: view.onSearchSuccess,
             onError: view.onSearchError,
@@ -1366,14 +1439,16 @@ var view = {
         "use strict";
         document.body.classList.remove('home');
     },
-    setMainState: function() {
+    setMainState: function(fromHistory) {
         "use strict";
+        this.setDocumentTitle(fromHistory);
 
         view.varCache.searchResultCache.splice(0);
         view.varCache.lastSortedList.splice(0);
 
         view.clearFilter();
         document.body.classList.add('home');
+        this.freezAutocomplete();
         view.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
     },
     prepareHistory: function() {
@@ -1550,6 +1625,23 @@ var view = {
         view.varCache.selectBox = selectBox.wrap(view.domCache.profileSelect);
 
         rate.init();
+        view.prepareHistory();
+
+        if (window.onpopstate === null) {
+            window.addEventListener('popstate', function() {
+                if (location.hash === this.varCache.locationHash) {
+                    return;
+                }
+                this.onUrlChange();
+            }.bind(this), false);
+        } else {
+            window.addEventListener('hashchange', function() {
+                if (location.hash === this.varCache.locationHash){
+                    return;
+                }
+                this.onUrlChange();
+            }.bind(this));
+        }
 
         document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
     },
@@ -1557,16 +1649,17 @@ var view = {
         "use strict";
         view.domCache.searchBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            var request = view.domCache.requestInput.value.trim();
-            view.search(request);
+            var request = this.domCache.requestInput.value.trim();
+            this.search(request);
 
-            view.freezAutocomplete();
-        });
+            this.freezAutocomplete();
+        }.bind(this));
+
+        this.onUrlChange();
     },
     onUiReady: function() {
         "use strict";
         $(document).off('mouseup');
-        view.prepareHistory();
 
         (view.varCache.$requestInput = $(view.domCache.requestInput)).autocomplete({
             minLength: 0,

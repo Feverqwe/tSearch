@@ -90,7 +90,13 @@ var view = {
                                         }),
                                         mono.create('a', {
                                             text: (!historyObj.request) ? '""' : historyObj.request,
-                                            href: 'index.html#?search=' + encodeURIComponent(historyObj.request)
+                                            href: 'index.html#?' + mono.param({
+                                                search: historyObj.request,
+                                                params: JSON.stringify({
+                                                    profileName: historyObj.profileName,
+                                                    trackerList: historyObj.trackerList
+                                                })
+                                            })
                                         })
                                     ]
                                 }),

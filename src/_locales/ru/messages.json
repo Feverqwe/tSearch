@@ -1,4 +1,5 @@
 {
+    "appTitle": {"message": "Torrents MultiSearch"},
     "appName": {"message": "TMS - Поиск торрентов"},
     "appDesc": {"message": "Torrents MultiSearch - поиск по нескольким трекерам сразу!"},
     "extName": {"message": "TMS - Поиск торрентов, расширение"},

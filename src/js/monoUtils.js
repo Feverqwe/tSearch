@@ -544,3 +544,39 @@ mono.nodeListToArray = function(nodeList) {
     "use strict";
     return Array.prototype.slice.call(nodeList);
 };
+
+mono.parseParam = function(url, options) {
+    options = options || {};
+    var startFrom = url.indexOf('?');
+    var query = url;
+    if (!options.argsOnly && startFrom !== -1) {
+        query = url.substr(startFrom + 1);
+    }
+    var sep = options.sep || '&';
+    var dblParamList = query.split(sep);
+    var params = {};
+    for (var i = 0, len = dblParamList.length; i < len; i++) {
+        var item = dblParamList[i];
+        var ab = item.split('=');
+        if (options.skipDecode) {
+            params[ab[0]] = ab[1] || '';
+        } else {
+            params[ab[0]] = decodeURIComponent(ab[1] || '');
+        }
+    }
+    return params;
+};
+
+mono.trigger = function(el, type, data) {
+    if (data === undefined) {
+        data = {};
+    }
+    if (data.bubbles === undefined) {
+        data.bubbles = false;
+    }
+    if (data.cancelable === undefined) {
+        data.cancelable = false;
+    }
+    var event = new CustomEvent(type, data);
+    el.dispatchEvent(event);
+};
