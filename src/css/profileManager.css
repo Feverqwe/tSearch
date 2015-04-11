@@ -315,3 +315,7 @@
 #manager .mgr-tracker-list div.icons > div.cirilic {
     background: url(../img/cyrillic.png) center center;
 }
+
+#manager #manager_remove_list.hide {
+    display: none;
+}

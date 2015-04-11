@@ -53,6 +53,7 @@ var selectBox = {
         options.childNodes[currentBox.selectedIndex].classList.add('over');
 
         var hideOnClick = function hideOnClick(e) {
+            if (currentBox.control.contains(e.target)) return;
             document.body.removeEventListener('click', hideOnClick);
             selectBox.hideOptions(currentBox);
         };
@@ -170,7 +171,6 @@ var selectBox = {
             ],
             on: [
                 ['click', function (e) {
-                    e.stopPropagation();
                     e.preventDefault();
                     if (currentBox.isOpen) {
                         return self.select();

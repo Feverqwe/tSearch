@@ -28,15 +28,15 @@ var profileManager = {
         wordFilterCache: {},
         wordFilterStyle: undefined,
         trackerList: {},
-        selectedFilter: undefined
+        selectedFilter: undefined,
+        currentProfileName: undefined
     },
     updateProfileList: function(currentProfile, changes, cb) {
         "use strict";
         engine.setProfileList(changes, function() {
-            engine.prepareProfileList(engine.currentProfile, changes);
+            engine.prepareProfileList(currentProfile, changes);
             view.writeProfileList();
-            view.selectProfile(engine.currentProfile);
-
+            view.selectProfile(currentProfile);
             cb && cb();
         });
     },
@@ -185,7 +185,7 @@ var profileManager = {
                         trackerItem.checkbox = mono.create('input', {
                             type: 'checkbox',
                             checked: !!selected
-                        }),
+                        })/*,
                         mono.create('a', {
                             class: 'edit',
                             href: '#',
@@ -193,7 +193,7 @@ var profileManager = {
                                 e.preventDefault();
                                 // TODO: Fix me!
                             }]
-                        })
+                        })*/
                     ]
                 })
             ]
@@ -202,9 +202,9 @@ var profileManager = {
         trackerItem.hasListUpdate = this.trackerHasListUpdate.bind(this, trackerItem);
         return trackerItem.el;
     },
-    writeTrackerList: function() {
+    writeTrackerList: function(profileName) {
         "use strict";
-        var currentProfile = engine.profileList[engine.currentProfile] || [];
+        var currentProfile = engine.profileList[profileName] || [];
         this.domCache.trackerList.textContent = '';
         mono.create(this.domCache.trackerList, {
             append: function() {
@@ -408,15 +408,18 @@ var profileManager = {
         this.domCache.saveBtn.addEventListener('click', function(e) {
             e.preventDefault();
 
-            var profileName = $.trim(this.domCache.profileName.value);
+            var profileName = this.domCache.profileName.value.trim();
             if (!profileName) {
-                this.domCache.profileName.addClass('error');
+                this.domCache.profileName.classList.add('error');
                 setTimeout(function() {
-                    this.domCache.profileName.removeClass('error');
+                    this.domCache.profileName.classList.remove('error');
                 }.bind(this), 1500);
                 return;
             }
 
+            if (this.varCache.currentProfileName) {
+                delete engine.profileList[this.varCache.currentProfileName];
+            }
             engine.profileList[profileName] = this.getSelectedTrackerList();
 
             var changes = {
@@ -424,19 +427,20 @@ var profileManager = {
             };
 
             this.updateProfileList(profileName, changes, function () {
-                onHide();
-            });
+                this.onHide();
+            }.bind(this));
         }.bind(this));
 
         this.domCache.removeListBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            delete engine.profileList[engine.currentProfile];
+
+            delete engine.profileList[this.varCache.currentProfileName];
 
             var changes = {
                 profileList: engine.profileList
             };
 
-            this.updateProfileList(engine.currentProfile, changes, function () {
+            this.updateProfileList(undefined, changes, function () {
                 this.onHide();
             }.bind(this));
         }.bind(this));
@@ -488,8 +492,13 @@ var profileManager = {
             this.dispatchEvent(new CustomEvent('keyup'));
         });
     },
+    isShow: function() {
+        "use strict";
+        return this.domCache.managerBody.classList.contains('show');
+    },
     onShow: function() {
         "use strict";
+        this.domCache.managerBody.classList.add('show');
         document.body.addEventListener('click', function onBodyClick() {
             document.body.removeEventListener('click', onBodyClick);
             this.onHide();
@@ -498,16 +507,39 @@ var profileManager = {
     onHide: function() {
         "use strict";
         this.domCache.managerBody.classList.remove('show');
+        this.varCache.currentProfileName = undefined;
+        this.domCache.trackerList.textContent = '';
+        this.domCache.profileName.value = '';
+        this.domCache.filterInput.dispatchEvent(new CustomEvent('dblclick'));
+        if (this.domCache.extendView.classList.contains('checked')) {
+            this.domCache.extendView.dispatchEvent(new CustomEvent('click'));
+        }
     },
     add: function() {
         "use strict";
         this.once();
         this.onShow();
 
-        this.domCache.managerBody.classList.add('show');
+        this.domCache.title.textContent = mono.language.mgrTitleNew;
+        this.domCache.removeListBtn.classList.add('hide');
+        this.domCache.profileName.focus();
 
         this.writeTrackerList();
         this.filterValueUpdate();
-        this.filterBy(this.varCache.selectedFilter.type);
+        this.filterBy('all');
+    },
+    edit: function(profileName) {
+        "use strict";
+        this.once();
+        this.onShow();
+
+        this.domCache.title.textContent = mono.language.mgrTitleEdit;
+        this.varCache.currentProfileName = profileName;
+        this.domCache.profileName.value = profileName;
+        this.domCache.removeListBtn.classList.remove('hide');
+
+        this.writeTrackerList(profileName);
+        this.filterValueUpdate();
+        this.filterBy('selected');
     }
 };

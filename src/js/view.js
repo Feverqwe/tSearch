@@ -25,7 +25,8 @@ var view = {
         seedFilterMax: document.getElementById('seed_filter_to'),
         peerFilterMin: document.getElementById('peer_filter_from'),
         peerFilterMax: document.getElementById('peer_filter_to'),
-        mainBtn: document.getElementById('main_btn')
+        mainBtn: document.getElementById('main_btn'),
+        editProfile: document.getElementById('edit_profile')
     },
     varCache: {
         categoryList: [
@@ -166,6 +167,7 @@ var view = {
     },
     writeProfileList: function() {
         "use strict";
+        view.varCache.filter.trackerList = undefined;
         view.domCache.profileSelect.textContent = '';
         mono.create(view.domCache.profileSelect, {
             append: (function(){
@@ -185,6 +187,7 @@ var view = {
                 return elList;
             })()
         });
+        view.filterUpdate();
         view.varCache.selectBox && view.varCache.selectBox.update();
     },
     filterUpdate: function() {
@@ -1502,6 +1505,15 @@ var view = {
                 return;
             }
             view.selectProfile(this.value);
+        });
+
+        view.domCache.editProfile.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (profileManager.isShow()) {
+                return profileManager.onHide();
+            }
+            profileManager.edit(view.domCache.profileSelect.value);
         });
 
         view.rmChildTextNodes(view.domCache.timeFilterSelect);
