@@ -1331,6 +1331,9 @@ var view = {
                 continue;
             }
             mWord = mWord.replace(view.filterWordR.text2safeR, '\\$1');
+            if (typeList.indexOf(mWord) !== -1) {
+                continue;
+            }
             typeList.push(mWord);
             isEmpty = false;
         }
