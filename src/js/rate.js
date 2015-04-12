@@ -516,7 +516,9 @@ var rate = {
             }
         });
         if (wordsR.length > 0) {
-            wordsR = new RegExp(wordsR.join('|'), 'ig');
+            wordsR = new RegExp(wordsR.sort(function(a, b) {
+                return String(a).length > String(b).length ? 0 : 1
+            }).join('|'), 'ig');
         } else {
             wordsR = undefined;
         }
