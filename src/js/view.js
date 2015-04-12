@@ -14,6 +14,7 @@ var view = {
         trackerList: document.getElementById('tracker_list'),
         trackerListBlock: document.querySelector('.tracker-list-block'),
         wordFilterInput: document.getElementById('word_filter_input'),
+        clearWordFilterBtn: document.getElementById('word_filter_clear_btn'),
         sizeFilterMin: document.getElementById('size_filter_from'),
         sizeFilterMax: document.getElementById('size_filter_to'),
         timeFilterSelect: document.getElementById('time_filter_select'),
@@ -1477,14 +1478,6 @@ var view = {
             view.varCache.$requestInput.autocomplete('enable');
         }, 1000);
     },
-    onRequestInput: function() {
-        "use strict";
-        if (view.domCache.requestInput.value.length > 0) {
-            view.domCache.clearBtn.classList.add('show');
-        } else {
-            view.domCache.clearBtn.classList.remove('show');
-        }
-    },
     once: function() {
         "use strict";
         view.varCache.tableSortColumnId = engine.settings.sortColumn;
@@ -1509,11 +1502,31 @@ var view = {
             view.domCache.requestInput.focus();
         });
 
-        view.domCache.requestInput.addEventListener('keyup', view.onRequestInput);
+        view.domCache.requestInput.addEventListener('keyup', function() {
+            if (this.value.length > 0) {
+                view.domCache.clearBtn.classList.add('show');
+            } else {
+                view.domCache.clearBtn.classList.remove('show');
+            }
+        });
 
         view.domCache.requestInput.addEventListener('keypress', function(e) {
             if (e.keyCode === 13) {
                 view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
+            }
+        });
+
+        this.domCache.clearWordFilterBtn.addEventListener('click', function() {
+            view.domCache.wordFilterInput.value = '';
+            view.domCache.wordFilterInput.dispatchEvent(new CustomEvent('keyup'));
+            view.domCache.wordFilterInput.focus();
+        });
+
+        this.domCache.wordFilterInput.addEventListener('keyup', function() {
+            if (this.value.length > 0) {
+                view.domCache.clearWordFilterBtn.classList.add('show');
+            } else {
+                view.domCache.clearWordFilterBtn.classList.remove('show');
             }
         });
 

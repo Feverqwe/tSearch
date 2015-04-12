@@ -14,6 +14,7 @@ body {
     padding-left: 25px;
     padding-right: 25px;
 }
+#word_filter_clear_btn,
 #clear_btn {
     display: inline-block;
     width: 24px;
@@ -26,6 +27,7 @@ body {
     opacity: 0;
     pointer-events: none;
 }
+#word_filter_clear_btn.show,
 #clear_btn.show {
     opacity: 0.5;
     cursor: pointer;

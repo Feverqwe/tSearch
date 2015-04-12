@@ -133,8 +133,9 @@ body.home #result_block {
 }
 
 #word_filter_input {
-    width: 163px;
+    width: 146px;
     padding-left: 0;
+    padding-right: 18px;
 }
 
 #result_category_container {
@@ -502,4 +503,12 @@ body.home #result_block {
     background: url(../img/back.png) center left no-repeat;
     transform: rotate(180deg);
     margin-top: 1px;
+}
+
+#word_filter_clear_btn {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    margin-left: -26px;
+    margin-top: 0;
 }
