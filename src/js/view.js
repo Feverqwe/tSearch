@@ -1571,7 +1571,6 @@ var view = {
 
         this.domCache.trackerListBlock.style.height = engine.settings.trackerListHeight + 'px';
         this.domCache.trackerList.style.height = engine.settings.trackerListHeight - 9 + 'px';
-        this.domCache.trackerList.style.overflow = 'auto';
         view.writeProfileList();
 
         view.writeCategory();
@@ -1732,7 +1731,7 @@ var view = {
         });
 
         (this.domCache.$trackerListBlock = $(this.domCache.trackerListBlock)).resizable({
-            minHeight: 44,
+            minHeight: 56,
             handles: 's',
             alsoResize: this.domCache.trackerList,
             stop: function(e, ui) {
