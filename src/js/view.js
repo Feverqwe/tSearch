@@ -12,6 +12,7 @@ var view = {
         categoryContainer: document.getElementById('result_category_container'),
         profileSelect: document.getElementById('profile_select'),
         trackerList: document.getElementById('tracker_list'),
+        trackerListBlock: document.querySelector('.tracker-list-block'),
         wordFilterInput: document.getElementById('word_filter_input'),
         sizeFilterMin: document.getElementById('size_filter_from'),
         sizeFilterMax: document.getElementById('size_filter_to'),
@@ -1509,7 +1510,7 @@ var view = {
                 view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
             }
         });
-        
+
         view.bindFilterRange();
 
         view.domCache.trackerList.addEventListener('click', function(e) {
@@ -1567,7 +1568,12 @@ var view = {
         });
 
         view.writeTableHead();
+
+        this.domCache.trackerListBlock.style.height = engine.settings.trackerListHeight + 'px';
+        this.domCache.trackerList.style.height = engine.settings.trackerListHeight - 9 + 'px';
+        this.domCache.trackerList.style.overflow = 'auto';
         view.writeProfileList();
+
         view.writeCategory();
 
         view.selectProfile(engine.currentProfile);
@@ -1723,7 +1729,16 @@ var view = {
                 noResults: '',
                 results: function() {}
             }
-        })
+        });
+
+        (this.domCache.$trackerListBlock = $(this.domCache.trackerListBlock)).resizable({
+            minHeight: 44,
+            handles: 's',
+            alsoResize: this.domCache.trackerList,
+            stop: function(e, ui) {
+                mono.storage.set({trackerListHeight: ui.size.height});
+            }
+        });
     }
 };
 

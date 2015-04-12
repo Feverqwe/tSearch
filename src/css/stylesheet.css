@@ -178,10 +178,25 @@ body.home #result_block {
     color: #fff;
 }
 
+.tracker-list-block .ui-resizable-s {
+    cursor: s-resize;
+    background: url(../img/resize.png) no-repeat center center;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    width: 100%;
+    height: 9px;
+}
+.tracker-list-block .ui-resizable-s:hover {
+    opacity: 1;
+}
+
+#tracker_list {
+    overflow: auto;
+}
+
 #tracker_list div {
     display: block;
     line-height: 22px;
-    height: 22px;
 }
 
 #tracker_list div > * {

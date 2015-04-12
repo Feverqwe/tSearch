@@ -22,7 +22,7 @@ var engine = {
         rightPanel: 0,
         hideTopSearch: 0,
         noBlankPageOnDownloadClick: 0,
-        torrentListHeight: 0,
+        trackerListHeight: 200,
         profileListSync: 0,
         proxyURL: 'http://www.gmodules.com/ig/proxy?url={url}',
         proxyHost: '3s3s.org',
