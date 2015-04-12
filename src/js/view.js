@@ -1730,12 +1730,45 @@ var view = {
             }
         });
 
-        (this.domCache.$trackerListBlock = $(this.domCache.trackerListBlock)).resizable({
+        $(this.domCache.trackerListBlock).resizable({
             minHeight: 56,
             handles: 's',
             alsoResize: this.domCache.trackerList,
             stop: function(e, ui) {
                 mono.storage.set({trackerListHeight: ui.size.height});
+            }
+        });
+
+        $(this.domCache.timeFilterRange).find('input[type="text"]').datepicker({
+            defaultDate: '0',
+            changeMonth: true,
+            numberOfMonths: 1,
+            prevText: '',
+            nextText: '',
+            monthNamesShort: (function() {
+                var arr = [];
+                for (var i = 0; i < 12; i++) {
+                    arr.push(mono.language['time_f_m_'+i]);
+                }
+                return arr;
+            })(),
+            dayNamesMin: (function() {
+                var arr = [];
+                for (var i = 0; i < 7; i++) {
+                    arr.push(mono.language['time_f_d_'+i]);
+                }
+                return arr;
+            })(),
+            firstDay: 1,
+            maxDate: "+1d",
+            hideIfNoPrevNext: true,
+            dateFormat: "dd/mm/yy",
+            onClose: function(date, ui) {
+                var el = ui.input[0];
+                var dateList = date.split('/');
+                var uTime = Math.round((new Date(dateList[2], dateList[1] - 1, dateList[0])).getTime() / 1000);
+                el.dataset.date = uTime;
+                el.dispatchEvent(new CustomEvent('keyup'));
             }
         });
     }
