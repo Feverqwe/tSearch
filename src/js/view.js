@@ -1136,7 +1136,7 @@ var view = {
             obj.notSpaceSlitRate = obj.hlWordRate * 0.80;
         }
         if (hlWordNoYearList.length > 0) {
-            obj.hlWordNoYearR = new RegExp(hlWordNoYearListR.sort(function(a, b){return a.length > b.length ? 0 : 1}).join('|'), 'ig');
+            obj.hlWordNoYearR = new RegExp(hlWordNoYearListR.join('|'), 'ig');
         }
         if (yearList.length > 0) {
             obj.year = yearList;
