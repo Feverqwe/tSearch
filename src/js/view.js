@@ -1228,7 +1228,8 @@ var view = {
             args.params = {};
         }
 
-        view.selectProfile(args.params.profileName || engine.currentProfile, function() {
+        var profileName = engine.profileList[args.params.profileName] ? args.params.profileName : engine.currentProfile;
+        view.selectProfile(profileName, function() {
             if (args.params.trackerList) {
                 for (var i = 0, trackerId; trackerId = args.params.trackerList[i]; i++) {
                     var trackerObj = this.varCache.trackerList[trackerId];
@@ -1254,7 +1255,8 @@ var view = {
         var trackerList = trackerList.map(function(trackerId) {
             return engine.trackerLib[trackerId].title;
         }).join(', ');
-        document.title = request + ' :: ' + trackerList + ' :: TMS';
+        var titleRequest = !request ? '""' : request;
+        document.title = titleRequest + ' :: ' + trackerList + ' :: TMS';
         !fromHistory && this.setLocation(request, {
             profileName: engine.currentProfile,
             trackerList: this.varCache.filter.trackerList
@@ -1448,7 +1450,6 @@ var view = {
 
         view.clearFilter();
         document.body.classList.add('home');
-        this.freezAutocomplete();
         view.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
     },
     prepareHistory: function() {
@@ -1468,6 +1469,14 @@ var view = {
         setTimeout(function() {
             view.varCache.$requestInput.autocomplete('enable');
         }, 1000);
+    },
+    onRequestInput: function() {
+        "use strict";
+        if (view.domCache.requestInput.value.length > 0) {
+            view.domCache.clearBtn.classList.add('show');
+        } else {
+            view.domCache.clearBtn.classList.remove('show');
+        }
     },
     once: function() {
         "use strict";
@@ -1489,24 +1498,18 @@ var view = {
 
         view.domCache.clearBtn.addEventListener('click', function() {
             view.domCache.requestInput.value = '';
-            view.domCache.requestInput.dispatchEvent(new CustomEvent('input'));
+            view.domCache.requestInput.dispatchEvent(new CustomEvent('keyup'));
             view.domCache.requestInput.focus();
         });
 
-        view.domCache.requestInput.addEventListener('input', function() {
-            if (this.value.length > 0) {
-                view.domCache.clearBtn.classList.add('show');
-            } else {
-                view.domCache.clearBtn.classList.remove('show');
-            }
-        });
+        view.domCache.requestInput.addEventListener('keyup', view.onRequestInput);
 
         view.domCache.requestInput.addEventListener('keypress', function(e) {
             if (e.keyCode === 13) {
                 view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
             }
         });
-
+        
         view.bindFilterRange();
 
         view.domCache.trackerList.addEventListener('click', function(e) {

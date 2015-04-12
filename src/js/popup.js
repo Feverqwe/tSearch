@@ -12,6 +12,14 @@ var popup = {
         clearBtn: document.getElementById('clear_btn'),
         searchBtn: document.getElementById('search_btn')
     },
+    onRequestInput: function() {
+        "use strict";
+        if (popup.domCache.requestInput.value.length > 0) {
+            popup.domCache.clearBtn.classList.add('show');
+        } else {
+            popup.domCache.clearBtn.classList.remove('show');
+        }
+    },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
@@ -22,17 +30,11 @@ var popup = {
 
         popup.domCache.clearBtn.addEventListener('click', function() {
             popup.domCache.requestInput.value = '';
-            popup.domCache.requestInput.dispatchEvent(new CustomEvent('input'));
+            popup.domCache.requestInput.dispatchEvent(new CustomEvent('keyup'));
             popup.domCache.requestInput.focus();
         });
 
-        popup.domCache.requestInput.addEventListener('input', function() {
-            if (this.value.length > 0) {
-                popup.domCache.clearBtn.classList.add('show');
-            } else {
-                popup.domCache.clearBtn.classList.remove('show');
-            }
-        });
+        popup.domCache.requestInput.addEventListener('keyup', popup.onRequestInput);
 
         popup.domCache.requestInput.addEventListener('keypress', function(e) {
             if (e.keyCode === 13) {
