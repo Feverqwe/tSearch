@@ -1411,6 +1411,12 @@ var view = {
         "use strict";
         for (var i = 0, list = view.varCache.filterRangeList, type; type = list[i]; i++) {
             view.domCache[type].addEventListener('keyup', mono.throttle(view.onChangeFilter.bind(view.domCache[type], type), 250));
+            if (type !== 'wordFilterInput') {
+                view.domCache[type].addEventListener('dblclick', function (e) {
+                    this.value = '';
+                    this.dispatchEvent(new CustomEvent('keyup'));
+                });
+            }
         }
     },
     onTableHeadColumnClick: function(e) {
