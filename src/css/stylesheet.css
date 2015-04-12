@@ -512,3 +512,26 @@ body.home #result_block {
     margin-left: -26px;
     margin-top: 0;
 }
+
+.progress-bar {
+    display: block;
+    position: relative;
+    height: 14px;
+    border-radius: 2px;
+    background-color: #ccc;
+    color: #ccc;
+    overflow: hidden;
+}
+
+.progress-bar > i {
+    display: block;
+    height: 14px;
+    width: 50%;
+    background-color: #337AF8;
+    position: absolute;
+    top: 0;
+    border-radius: 2px;
+}
+.progress-bar > span {
+    position: relative;
+}

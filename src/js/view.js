@@ -910,7 +910,19 @@ var view = {
                     }),
                     mono.create('td', {
                         class: 'quality-column',
-                        text: parseInt(torrentObj.quality)
+                        append: mono.create('i', {
+                            class: 'progress-bar',
+                            append: [
+                                mono.create('i', {
+                                    style: {
+                                        width: parseInt(100 / 400 * torrentObj.quality) + '%'
+                                    }
+                                }),
+                                mono.create('span', {
+                                    text: parseInt(torrentObj.quality)
+                                })
+                            ]
+                        })
                     }),
                     mono.create('td', {
                         class: 'title-column',
