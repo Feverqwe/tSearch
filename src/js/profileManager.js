@@ -498,6 +498,11 @@ var profileManager = {
             this.value = '';
             this.dispatchEvent(new CustomEvent('keyup'));
         });
+
+        $(this.domCache.trackerList).sortable({
+            placeholder: "ui-state-highlight",
+            delay: 150
+        });
     },
     isShow: function() {
         "use strict";

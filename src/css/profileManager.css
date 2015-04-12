@@ -274,13 +274,12 @@
 }
 #manager .mgr-tracker-list .ui-sortable-helper {
     background-color:#fff !important;
-    border-radius: 4px;
     opacity: 0.9;
     display: block !important;
     color: #000 !important;
 }
 #manager .mgr-tracker-list .ui-sortable-helper a {
-    color: #000 !important;
+    color: #0051D8 !important;
 }
 #manager .mgr-tracker-list .ui-state-highlight {
     background-color:#E7E7E7 !important;
