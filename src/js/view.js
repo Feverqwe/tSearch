@@ -28,7 +28,8 @@ var view = {
         peerFilterMin: document.getElementById('peer_filter_from'),
         peerFilterMax: document.getElementById('peer_filter_to'),
         mainBtn: document.getElementById('main_btn'),
-        editProfile: document.getElementById('edit_profile')
+        editProfile: document.getElementById('edit_profile'),
+        topBtn: document.getElementById('top_btn')
     },
     varCache: {
         categoryList: [
@@ -1684,6 +1685,19 @@ var view = {
                 this.onUrlChange();
             }.bind(this));
         }
+
+        window.addEventListener('scroll', mono.throttle(function (e) {
+            if (window.scrollY > 100) {
+                this.domCache.topBtn.classList.add('show');
+            } else {
+                this.domCache.topBtn.classList.remove('show');
+            }
+        }.bind(this), 250));
+
+        this.domCache.topBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo(0, 0);
+        });
 
         document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
     },

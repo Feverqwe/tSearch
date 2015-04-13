@@ -535,3 +535,21 @@ body.home #result_block {
 .progress-bar > span {
     position: relative;
 }
+
+#top_btn {
+    display: none;
+    bottom: 0;
+    width: 50px;
+    background: url(../img/go_top.png) no-repeat center bottom;
+    position: fixed;
+    left: 0;
+    z-index: 10;
+    height: 100%;
+    opacity: 0.9;
+}
+#top_btn:hover {
+    background-color: #ddd;
+}
+#top_btn.show {
+    display: block;
+}
