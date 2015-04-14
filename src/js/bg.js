@@ -59,7 +59,7 @@ var bg = {
             chrome.contextMenus.create({
                 type: "normal",
                 id: "item",
-                title: mono.language.ctx_title,
+                title: mono.language.ctxMenuTitle,
                 contexts: ["selection"],
                 onclick: function (info) {
                     var text = info.selectionText;

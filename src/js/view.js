@@ -178,7 +178,7 @@ var view = {
                 var elList = [];
                 for (var key in engine.profileList) {
                     elList.push(mono.create('option', {
-                        text: key.replace('%defaultProfileName%', mono.language.label_def_profile),
+                        text: key.replace('%defaultProfileName%', mono.language.defaultProfileName),
                         value: key
                     }));
                 }
@@ -186,7 +186,7 @@ var view = {
                     data: {
                         service: 'new'
                     },
-                    text: mono.language.word_add
+                    text: mono.language.add
                 }));
                 return elList;
             })()
@@ -263,7 +263,7 @@ var view = {
                                 class: ['icon', 'auth']
                             }),
                             mono.create('a', {
-                                text: mono.language.btn_login,
+                                text: mono.language.login,
                                 href: data.url,
                                 target: '_blank'
                             })
@@ -565,7 +565,7 @@ var view = {
     },
     timeStampToDate: function(seconds, format) {
         "use strict";
-        format = format || mono.language.dateFormatL;
+        format = format || mono.language.dateFormat;
         var _date = new Date(seconds * 1000);
         var month = _date.getMonth() + 1;
         var date = _date.getDate();
@@ -906,7 +906,7 @@ var view = {
                 append: [
                     mono.create('td', {
                         class: 'date-column',
-                        title: view.timeStampToDate(torrentObj.date, 'hh:mm' + ' ' + mono.language.dateFormatL),
+                        title: view.timeStampToDate(torrentObj.date, 'hh:mm' + ' ' + mono.language.dateFormat),
                         text: view.timeStampToTimeAgo(torrentObj.date)
                     }),
                     mono.create('td', {
@@ -1498,7 +1498,7 @@ var view = {
         "use strict";
         view.varCache.tableSortColumnId = engine.settings.sortColumn;
         view.varCache.tableOrderIndex = engine.settings.sortOrder ? 0 : 1;
-        mono.language.size_filter += ' ' + mono.language.sizeList.split(',')[3];
+        mono.language.sizeFilter += ' ' + mono.language.sizeList.split(',')[3];
         mono.writeLanguage(mono.language);
         document.body.classList.remove('loading');
         view.domCache.requestInput.focus();
@@ -1794,18 +1794,10 @@ var view = {
             prevText: '',
             nextText: '',
             monthNamesShort: (function() {
-                var arr = [];
-                for (var i = 0; i < 12; i++) {
-                    arr.push(mono.language['time_f_m_'+i]);
-                }
-                return arr;
+                return mono.language.monthNameList.split(',');
             })(),
             dayNamesMin: (function() {
-                var arr = [];
-                for (var i = 0; i < 7; i++) {
-                    arr.push(mono.language['time_f_d_'+i]);
-                }
-                return arr;
+                return mono.language.dayNameList.split(',');
             })(),
             firstDay: 1,
             maxDate: "+1d",

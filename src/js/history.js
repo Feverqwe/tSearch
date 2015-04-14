@@ -7,7 +7,7 @@ var view = {
     },
     timeStampToDate: function(seconds, format) {
         "use strict";
-        format = format || mono.language.dateFormatL;
+        format = format || mono.language.dateFormat;
         var _date = new Date(seconds * 1000);
         var month = _date.getMonth() + 1;
         var date = _date.getDate();
@@ -71,7 +71,7 @@ var view = {
                                         }),
                                         mono.create('span', {
                                             class: 'date',
-                                            text: view.timeStampToDate(linkObj.clickTime, mono.language.dateFormatL + ' hh:mm')
+                                            text: view.timeStampToDate(linkObj.clickTime, mono.language.dateFormat + ' hh:mm')
                                         }),
                                         mono.create('a', {
                                             text: linkObj.title,

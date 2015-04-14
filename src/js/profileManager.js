@@ -19,10 +19,10 @@ var profileManager = {
     },
     varCache: {
         filterList: {
-            all: {lang: 'word_all'},
-            hasList: {lang: 'mgtWithoutList'},
-            custom: {lang: 'external_tracker'},
-            selected: {selected: 1, lang: 'word_selected'}
+            all: {lang: 'all'},
+            hasList: {lang: 'withoutList'},
+            custom: {lang: 'externalList'},
+            selected: {selected: 1, lang: 'selectedItems'}
         },
         filterStyle: undefined,
         wordFilterCache: {},
@@ -44,9 +44,9 @@ var profileManager = {
         var trackerList = this.domCache.trackerList;
         var selectCount = trackerList.querySelectorAll('.tracker-item.selected').length;
         if (!selectCount) {
-            this.domCache.counter.textContent = mono.language.mgrNothingSelected;
+            this.domCache.counter.textContent = mono.language.selectedNothing;
         } else {
-            this.domCache.counter.textContent = mono.language.mgrSelectedN + ' ' + selectCount;
+            this.domCache.counter.textContent = mono.language.selectedCount + ' ' + selectCount;
         }
 
         for (var type in this.varCache.filterList) {
@@ -225,7 +225,7 @@ var profileManager = {
                         search: {
                             baseUrl: 'http://code-tms.blogspot.ru/search?q=' + encodeURIComponent(trackerId)
                         },
-                        desc: mono.language.trackerNotFound
+                        desc: mono.language.trackerIsNotFound
                     };
 
                     list.push(this.getTrackerEl(trackerObj, true, true, true));
@@ -535,7 +535,7 @@ var profileManager = {
         }
         this.onShow();
 
-        this.domCache.title.textContent = mono.language.mgrTitleNew;
+        this.domCache.title.textContent = mono.language.addTrackerList;
         this.domCache.removeListBtn.classList.add('hide');
         this.domCache.profileName.focus();
 
@@ -551,9 +551,9 @@ var profileManager = {
         }
         this.onShow();
 
-        this.domCache.title.textContent = mono.language.mgrTitleEdit;
+        this.domCache.title.textContent = mono.language.editTrackerList;
         this.varCache.currentProfileName = profileName;
-        this.domCache.profileName.value = profileName.replace('%defaultProfileName%', mono.language.label_def_profile);
+        this.domCache.profileName.value = profileName.replace('%defaultProfileName%', mono.language.defaultProfileName);
         this.domCache.removeListBtn.classList.remove('hide');
 
         this.writeTrackerList(profileName);

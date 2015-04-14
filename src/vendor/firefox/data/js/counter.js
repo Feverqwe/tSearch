@@ -1,1 +1,0 @@
-var ga = window.ga = function() {};

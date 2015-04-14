@@ -13,57 +13,57 @@
         <div class="head">
             <div id="search_form">
                 <input type="text" id="request_input" autofocus/>
-                <div data-lang="clear_btn" id="clear_btn" title="{clear}"></div>
-                <a href="#" data-lang="search_btn,title,text" id="search_btn">{search}</a>
+                <div data-lang="clear" id="clear_btn" title="{clear}"></div>
+                <a href="#" data-lang="search,title,text" id="search_btn">{search}</a>
             </div>
             <div class="quick-menu">
-                <a href="#" data-lang="btn_main,title" id="main_btn" title="{main}"></a>
-                <a href="history.html" data-lang="btn_history,title" id="history_btn" title="{history}"></a>
-                <a href="#" data-lang="setup_btn,title" id="settings_btn" title="{setup}"></a>
+                <a href="#" data-lang="main,title" id="main_btn" title="{main}"></a>
+                <a href="history.html" data-lang="searchHistory,title" id="history_btn" title="{history}"></a>
+                <a href="#" data-lang="options,title" id="settings_btn" title="{options}"></a>
             </div>
         </div>
         <div class="content">
             <div class="additional-column">
                 <div class="profile-select-block">
-                    <select id="profile_select" data-lang="label_profile,title" title="{profile select}"></select>
-                    <a id="edit_profile" href="#" data-lang="editTrackerList,title" title="{edit profile}"></a>
+                    <select id="profile_select"></select>
+                    <a id="edit_profile" href="#" data-lang="editProfile,title" title="{edit profile}"></a>
                 </div>
                 <div class="tracker-list-block">
                     <div id="tracker_list"></div>
                 </div>
                 <div class="filter-block">
-                    <p data-lang="word_filter">{word filter}</p>
+                    <p data-lang="wordFilter">{word filter}</p>
                     <div id="wordFilter">
                         <input type="text" id="word_filter_input" />
-                        <div id="word_filter_clear_btn" data-lang="clear_btn" title="{clear}"></div>
+                        <div id="word_filter_clear_btn" data-lang="clear" title="{clear}"></div>
                     </div>
-                    <p data-lang="size_filter">{size filter}</p>
+                    <p data-lang="sizeFilter">{size filter}</p>
                     <div id="size_filter" class="range">
-                        <input id="size_filter_from" type="text" data-lang="word_from,placeholder" placeholder="{from}"/> — <input id="size_filter_to" type="text" data-lang="word_to,placeholder" placeholder="{to}"/>
+                        <input id="size_filter_from" type="text" data-lang="from,placeholder" placeholder="{from}"/> — <input id="size_filter_to" type="text" data-lang="to,placeholder" placeholder="{to}"/>
                     </div>
-                    <p data-lang="time_filter">{time filter}</p>
+                    <p data-lang="timeFilter">{time filter}</p>
                     <div id="time_filter">
                         <select id="time_filter_select">
-                            <option data-seconds="0" data-lang="time_f_s_all" selected>{all}</option>
-                            <option data-seconds="3600" data-lang="time_f_s_1h">{1h}</option>
-                            <option data-seconds="86400" data-lang="time_f_s_24h">{24h}</option>
-                            <option data-seconds="259200" data-lang="time_f_s_72h">{72h}</option>
-                            <option data-seconds="604800" data-lang="time_f_s_1w">{1w}</option>
-                            <option data-seconds="2592000" data-lang="time_f_s_1m">{1m}</option>
-                            <option data-seconds="31536000" data-lang="time_f_s_1y">{1y}</option>
-                            <option value="range" data-lang="time_f_s_range">{custom range}</option>
+                            <option data-seconds="0" data-lang="timeFilterAll" selected>{all}</option>
+                            <option data-seconds="3600" data-lang="timeFilter1h">{1h}</option>
+                            <option data-seconds="86400" data-lang="timeFilter24h">{24h}</option>
+                            <option data-seconds="259200" data-lang="timeFilter72h">{72h}</option>
+                            <option data-seconds="604800" data-lang="timeFilter1w">{1w}</option>
+                            <option data-seconds="2592000" data-lang="timeFilter1m">{1m}</option>
+                            <option data-seconds="31536000" data-lang="timeFilter1y">{1y}</option>
+                            <option value="range" data-lang="timeFilterRange">{custom range}</option>
                         </select>
                     </div>
                     <div id="time_filter_range" class="range">
-                        <input id="time_filter_from" type="text" data-lang="word_from,placeholder" placeholder="{from}"/> — <input id="time_filter_to" type="text" data-lang="word_to,placeholder" placeholder="{to}"/>
+                        <input id="time_filter_from" type="text" data-lang="from,placeholder" placeholder="{from}"/> — <input id="time_filter_to" type="text" data-lang="to,placeholder" placeholder="{to}"/>
                     </div>
-                    <p data-lang="seed_filter">{seed filter}</p>
+                    <p data-lang="seedFilter">{seed filter}</p>
                     <div id="seed_filter" class="range">
-                        <input id="seed_filter_from" type="text" data-lang="word_from,placeholder" placeholder="{from}"/> — <input id="seed_filter_to" type="text" data-lang="word_to,placeholder" placeholder="{to}"/>
+                        <input id="seed_filter_from" type="text" data-lang="from,placeholder" placeholder="{from}"/> — <input id="seed_filter_to" type="text" data-lang="to,placeholder" placeholder="{to}"/>
                     </div>
-                    <p data-lang="peer_filter">{peer filter}</p>
+                    <p data-lang="peerFilter">{peer filter}</p>
                     <div id="peer_filter" class="range">
-                        <input id="peer_filter_from" type="text" data-lang="word_from,placeholder" placeholder="{from}"/> — <input id="peer_filter_to" type="text" data-lang="word_to,placeholder" placeholder="{to}"/>
+                        <input id="peer_filter_from" type="text" data-lang="from,placeholder" placeholder="{from}"/> — <input id="peer_filter_to" type="text" data-lang="to,placeholder" placeholder="{to}"/>
                     </div>
                 </div>
             </div>
@@ -88,28 +88,28 @@
                 </div>
             </div>
         </div>
-        <a id="top_btn" data-lang="btn_up,title" href="#" title="{up}"></a>
+        <a id="top_btn" data-lang="up,title" href="#" title="{up}"></a>
         <div id="manager">
             <div class="mgr-header">
-                <span id="manager_title" data-lang="mgrTitleNew">{new profile name}</span>
-                <a href="#" id="manager_close" data-lang="word_close">{close}</a>
+                <span id="manager_title" data-lang="addTrackerList">{new profile name}</span>
+                <a href="#" id="manager_close" data-lang="close">{close}</a>
             </div>
             <div class="mgr-sub-header">
-                <input id="manager_list_title" type="text" data-lang="mgrNewListName,placeholder" placeholder="{list name}"/>
-                <a href="#" id="manager_remove_list" data-lang="mgrRemoveList">{remove}</a>
+                <input id="manager_list_title" type="text" data-lang="listName,placeholder" placeholder="{list name}"/>
+                <a href="#" id="manager_remove_list" data-lang="removeList">{remove}</a>
             </div>
             <div class="mgr-tracker-list-filter">
-                <input type="text" id="manager_search" data-lang="mgrQuickSearch,placeholder" placeholder="{quick search}" />
+                <input type="text" id="manager_search" data-lang="quickSearch,placeholder" placeholder="{quick search}" />
             </div>
             <div class="mgr-custom-tools">
-                <a href="#" id="manager_add_custom" class="btn" data-lang="add_custom_code">{add}</a>
-                <a href="magic.html" id="manager_create_custom" class="btn" data-lang="create_custom_code" target="_blank">{create}</a>
+                <a href="#" id="manager_add_custom" class="btn" data-lang="add">{add}</a>
+                <a href="magic.html" id="manager_create_custom" class="btn" data-lang="create" target="_blank">{create}</a>
                 <span data-lang="external_html,tmpl">{add new trackers form official site}</span>
             </div>
             <div class="mgr-tracker-list"></div>
             <div class="mgr-footer">
                 <a href="#" id="manager_extend_view" class="extend btn" data-lang="advanced_options,title" title="{show advanced options}"></a>
-                <span id="manager_counter" data-lang="mgrNothingSelected">{selected nothing}</span>
+                <span id="manager_counter" data-lang="selectedNothing">{selected nothing}</span>
                 <a href="#" id="manager_save" class="btn" data-lang="word_save">{save}</a>
             </div>
         </div>
