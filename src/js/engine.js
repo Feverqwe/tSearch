@@ -165,7 +165,6 @@ var engine = {
         optionsList.push('customTorrentList');
         optionsList.push('profileList');
         optionsList.push('searchHistory');
-        optionsList.push('doNotSendStatistics');
         optionsList.push('proxyList');
         optionsList.push('titleQualityList');
         optionsList.push('currentProfile');
@@ -176,6 +175,8 @@ var engine = {
                 settings[item] = storage.hasOwnProperty(item) ? storage[item] : defaultSettings[item];
             }
             engine.settings = settings;
+
+            !settings.doNotSendStatistics && engine.initCounter();
 
             engine.setProxyList(storage.proxyList);
 

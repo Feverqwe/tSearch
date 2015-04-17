@@ -1279,7 +1279,6 @@ var view = {
     },
     search: function(request, fromHistory) {
         "use strict";
-        view.setSearchState();
         view.domCache.resultTableBody.textContent = '';
         view.varCache.searchResultCache = [];
         view.resultCounterReset();
@@ -1287,6 +1286,8 @@ var view = {
         view.inHistory();
         var trackerList = view.getTrackerList();
         this.setDocumentTitle(fromHistory, request, trackerList);
+        view.setSearchState();
+        request && ga('send', 'event', 'Search', 'keyword', request);
         exKit.searchList(trackerList, request, {
             onSuccess: view.onSearchSuccess,
             onError: view.onSearchError,
@@ -1464,6 +1465,11 @@ var view = {
     setSearchState: function() {
         "use strict";
         document.body.classList.remove('home');
+
+        ga('send', 'pageview', {
+            page: location.href,
+            title: document.title
+        });
     },
     setMainState: function(fromHistory) {
         "use strict";
@@ -1475,6 +1481,11 @@ var view = {
         view.clearFilter();
         document.body.classList.add('home');
         view.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
+
+        ga('send', 'pageview', {
+            page: location.href,
+            title: document.title
+        });
     },
     prepareHistory: function() {
         "use strict";
