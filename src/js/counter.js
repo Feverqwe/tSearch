@@ -25,7 +25,7 @@ engine.initCounter = function() {
         // TODO: Fix me!
         // pos.parentNode.insertBefore(gas, pos);
     };
-    engine.ajax({
+    mono.ajax({
         type: 'HEAD',
         url: gas.src,
         success: success

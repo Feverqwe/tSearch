@@ -1,0 +1,239 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.875em;
+    margin: 0;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+    min-width: 780px;
+}
+
+.user-select {
+    -webkit-user-select: initial;
+    -moz-user-select: initial;
+    -o-user-select: none;
+    user-select: initial;
+}
+
+a {
+    color: #0051D8;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+h1 {
+    margin: 0;
+    font-weight: normal;
+}
+
+h2 {
+    font-size: 1.5em;
+
+    border-bottom: 1px solid #b6b6b6;
+    padding-bottom: 5px;
+
+    font-weight: normal;
+    margin-top: 9px;
+
+    width: 100%;
+}
+
+h3 {
+    font-size: 1.2em;
+
+    border-bottom: 1px solid #b6b6b6;
+    padding-bottom: 5px;
+
+    font-weight: normal;
+    margin-top: 9px;
+
+    width: 100%;
+}
+
+textarea {
+    width: 580px;
+    height: 400px;
+}
+
+input[type="number"] {
+    width: 60px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 140px;
+}
+
+div.search_panel {
+    padding: 21px;
+    height: 28px;
+    border-bottom: 1px solid transparent;
+}
+div.search_panel > * {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.container {
+    min-height: 500px;
+}
+
+div.container > .content {
+    position: relative;
+    margin: 0 auto;
+    width: 920px;
+    width: calc(100%);
+}
+div.container > .content > .left,
+div.container > .content > .right {
+    display: inline-block;
+    width: 720px;
+    width: calc(100% - 200px);
+}
+div.container > .content > .left {
+    padding-left: 5px;
+    padding-right: 0px;
+    width: 180px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 10;
+}
+div.container > .content > .right {
+    padding-left: 195px;
+    position: relative;
+    padding-right: 5px;
+}
+div.container > .content > .left a {
+    display: block;
+
+    border-bottom: 1px solid gainsboro;
+    color: #000;
+    cursor: pointer;
+    margin: 0;
+    padding: 0.8em 0.3em;
+    text-decoration: none;
+}
+div.container > .content > .left a.active {
+    border-bottom-color: #b6b6b6;
+    color: #0051D8;
+}
+div.container > .content > .left a:hover {
+    border-bottom-color: #b6b6b6;
+}
+
+div.page {
+    display: none;
+}
+
+div.page.active {
+    display: block;
+}
+
+label,
+div.optionItem {
+    display: block;
+    margin: 5px;
+}
+.client label > span:first-child {
+    min-width: 150px;
+    display: inline-block;
+}
+.main label > span:first-child {
+    min-width: 400px;
+    display: inline-block;
+}
+.notify label > span:first-child {
+    min-width: 450px;
+    display: inline-block;
+}
+
+div.info {
+    background-color: #f0f7fd;
+
+    border: 1px solid #d0e3f0;
+    border-left-width: 5px;
+    padding: 10px;
+
+}
+.btnList {
+    margin-bottom: 10px;
+}
+.sectionList label {
+    display: inline-block;
+    width: 30%;
+    margin: 5px;
+}
+
+
+input.button {
+    background-color: transparent;
+    color: #333333;
+    border-radius: 2px;
+    display: inline-block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    padding: 4px 8px;
+    margin: 0;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid #cccccc;
+    font-size: 14px;
+    outline: 0;
+}
+
+input.button:hover {
+    background-color: #ebebeb;
+    border-color: #adadad;
+}
+
+input.button:active {
+    outline: 0;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+input.button {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 28px;
+    height: 28px;
+}
+
+.bottom {
+    padding-bottom: 2em;
+    bottom: 0;
+    position: fixed;
+    width: 180px;
+    text-align: center;
+}
+
+#dirList {
+    min-width: 200px;
+}
+
+#checkContainer {
+    text-align: center;
+}
+
+#folderList, #labelList {
+    width: 400px;
+    height: 100px;
+}
+
+#clientStatus {
+    height: 30px;
+}
+#clientStatus > span {
+    margin-top: 6px;
+    display: block;
+}
+ol.help li {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+.helpImgContainer {
+    text-align: center;
+}
