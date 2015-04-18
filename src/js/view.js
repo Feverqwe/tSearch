@@ -555,7 +555,7 @@ var view = {
         for (var i = 0, len = cList.length; i < len; i++) {
             var item = cList[i];
             var value;
-            if (filter[item] === undefined || (value = torrentObj[item] === undefined)) {
+            if (filter[item] === undefined || (value = torrentObj[item]) === undefined) {
                 continue;
             }
             if ((filter[item][0] === null || value >= filter[item][0]) &&
