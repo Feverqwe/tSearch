@@ -1,18 +1,12 @@
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 0;
-    font-size: 14px;
+@import "popup.css";
 
+body {
     -webkit-user-select: none;
     -moz-user-select: none;
     -o-user-select: none;
     user-select: none;
 
     min-width: 780px;
-}
-
-.loading {
-    display: none;
 }
 
 .user-select {

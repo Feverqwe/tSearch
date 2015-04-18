@@ -5,7 +5,7 @@ body {
 }
 
 .loading {
-    display: none;
+    visibility: hidden;
 }
 
 #search_form {

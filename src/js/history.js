@@ -115,6 +115,8 @@ var view = {
     once: function () {
         "use strict";
         mono.writeLanguage(mono.language);
+        document.body.classList.remove('loading');
+        
         view.domCache.historyList.addEventListener('click', function(e) {
             var el = e.target;
             if (!el.classList.contains('del')) {
@@ -136,7 +138,6 @@ var view = {
 
             view.writeHistory();
         });
-        document.body.classList.remove('loading');
         view.writeHistory();
     }
 };
