@@ -161,66 +161,66 @@ var options = {
     },
     once: function() {
         "use strict";
-        engine.init(function() {
-            this.settings = engine.settings;
+        this.settings = engine.settings;
 
-            mono.rmChildTextNodes(this.domCache.langSelect);
-            this.domCache.langSelect.selectedIndex = this.domCache.langSelect.querySelector('[value="'+mono.language.langCode+'"]').index;
-            this.domCache.langSelect.addEventListener('change', function() {
-                var option = this.childNodes[this.selectedIndex];
-                var langCode = option.value;
-                mono.storage.set({langCode: langCode}, function () {
-                    location.reload();
-                });
+        mono.rmChildTextNodes(this.domCache.langSelect);
+        this.domCache.langSelect.selectedIndex = this.domCache.langSelect.querySelector('[value="'+mono.language.langCode+'"]').index;
+        this.domCache.langSelect.addEventListener('change', function() {
+            var option = this.childNodes[this.selectedIndex];
+            var langCode = option.value;
+            mono.storage.set({langCode: langCode}, function () {
+                location.reload();
             });
+        });
 
-            mono.writeLanguage(mono.language);
+        mono.writeLanguage(mono.language);
 
-            this.set_place_holder();
+        this.set_place_holder();
 
-            if (!mono.isChrome) {
-                this.domCache.saveInCloudBtn.style.display = 'none';
-                this.domCache.getFromCloudBtn.style.display = 'none';
-                this.domCache.clearCloudStorageBtn.style.display = 'none';
+        if (!mono.isChrome) {
+            this.domCache.saveInCloudBtn.style.display = 'none';
+            this.domCache.getFromCloudBtn.style.display = 'none';
+            this.domCache.clearCloudStorageBtn.style.display = 'none';
+        }
+
+        this.bindBackupForm();
+
+        this.domCache.menu = document.querySelector('.menu');
+        this.domCache.menu.addEventListener('click', function(e) {
+            if (e.detail === 'force') {
+                e.preventDefault();
             }
+            var el = e.target;
+            if (el.tagName !== 'A') return;
 
-            this.bindBackupForm();
-
-            this.domCache.menu = document.querySelector('.menu');
-            this.domCache.menu.addEventListener('click', function(e) {
-                if (e.detail === 'force') {
-                    e.preventDefault();
-                }
-                var el = e.target;
-                if (el.tagName !== 'A') return;
-
-                if (el.classList.contains('active')) {
-                    return;
-                }
-                this.activeItem && this.activeItem.classList.remove('active');
-                this.activeItem = el;
-                el.classList.add('active');
-                this.activePage && this.activePage.classList.remove('active');
-                var page = el.dataset.page;
-                this.activePage = document.querySelector('.page.' + page);
-                this.activePage.classList.add('active');
-                if (page === 'backup') {
-                    this.domCache.backupUpdateBtn.dispatchEvent(new CustomEvent('click'));
-                }
-                if (page === 'restore') {
-                    mono.storage.sync.get('backup', function(storage) {
-                        if (storage.backup !== undefined) {
-                            return;
-                        }
-                        this.domCache.getFromCloudBtn.disabled = true;
-                    }.bind(this));
-                }
-            }.bind(this));
-            window.addEventListener("hashchange", this.onHashChange);
-            this.onHashChange();
-
-            document.body.addEventListener('click', this.saveChange);
+            if (el.classList.contains('active')) {
+                return;
+            }
+            this.activeItem && this.activeItem.classList.remove('active');
+            this.activeItem = el;
+            el.classList.add('active');
+            this.activePage && this.activePage.classList.remove('active');
+            var page = el.dataset.page;
+            this.activePage = document.querySelector('.page.' + page);
+            this.activePage.classList.add('active');
+            if (page === 'backup') {
+                this.domCache.backupUpdateBtn.dispatchEvent(new CustomEvent('click'));
+            }
+            if (page === 'restore') {
+                mono.storage.sync.get('backup', function(storage) {
+                    if (storage.backup !== undefined) {
+                        return;
+                    }
+                    this.domCache.getFromCloudBtn.disabled = true;
+                }.bind(this));
+            }
         }.bind(this));
+        window.addEventListener("hashchange", this.onHashChange);
+        this.onHashChange();
+
+        document.body.addEventListener('click', this.saveChange);
     }
 };
-options.once();
+engine.init(function() {
+    options.once();
+});
