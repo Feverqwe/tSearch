@@ -52,7 +52,7 @@ var options = {
         if (activeItem === null) {
             activeItem = document.querySelector('a[data-page="'+defaultPage+'"]');
         }
-        activeItem.dispatchEvent(new CustomEvent('click', {bubbles: true}));
+        activeItem.dispatchEvent(new CustomEvent('click', {bubbles: true, cancelable: true, detail: 'force'}));
     },
     saveChange: function(e) {
         "use strict";
@@ -188,6 +188,9 @@ var options = {
 
             this.domCache.menu = document.querySelector('.menu');
             this.domCache.menu.addEventListener('click', function(e) {
+                if (e.detail === 'force') {
+                    e.preventDefault();
+                }
                 var el = e.target;
                 if (el.tagName !== 'A') return;
 
