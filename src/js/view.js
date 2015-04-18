@@ -1257,6 +1257,7 @@ var view = {
             }
             this.freezAutocomplete();
             view.domCache.requestInput.value = args.search;
+            view.domCache.requestInput.dispatchEvent(new CustomEvent('keyup'));
             view.search(args.search, 1);
         }.bind(this));
     },
