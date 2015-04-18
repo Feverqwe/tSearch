@@ -8,42 +8,41 @@
         <script src="js/mono.js"></script>
         <script src="js/monoUtils.js"></script>
     </head>
-    <body>
+    <body class="loading">
         <div class="container">
             <div class="search_panel">
                 <h1>Torrents MultiSearch</h1>
             </div>
             <div class="content">
                 <div class="left menu">
-                    <a href="#main" data-page="general" data-lang="general">Общие</a>
-                    <a href="#backup" data-page="backup" data-lang="backup">Архивирование</a>
-                    <a href="#restore" data-page="restore" data-lang="restore">Восстановление</a>
+                    <a href="#main" data-page="general" data-lang="general">{General}</a>
+                    <a href="#backup" data-page="backup" data-lang="backup">{Backup}</a>
+                    <a href="#restore" data-page="restore" data-lang="restore">{Restore}</a>
                 </div>
                 <div class="right">
                     <div class="page general">
-                        <h2 data-lang="general">Общие</h2>
+                        <h2 data-lang="general">{General}</h2>
                         <label><span>Language</span>
                             <select id="language" data-option="language">
                                 <option value="ru">Русский</option>
-                                <option value="en">English</option>
                             </select>
                         </label>
-                        <label><span data-lang="showFreeSpace">Отображать количество свободного места на диске</span><input type="checkbox" data-option="showFreeSpace"/></label>
+                        <label><span data-lang="showFreeSpace">{showFreeSpace}</span><input type="checkbox" data-option="showFreeSpace"/></label>
                     </div>
                     <div class="page backup">
-                        <h2 data-lang="backup">Архивирование</h2>
+                        <h2 data-lang="backup">{Backup}</h2>
                         <div class="btnList">
-                            <input type="button" id="backupUpdate" value="Обновить" data-lang="update"/>
-                            <input type="button" id="saveInCloud" value="Сохранить в облаке" data-lang="saveInCloud"/>
+                            <input type="button" id="backupUpdate" value="{update}" data-lang="update"/>
+                            <input type="button" id="saveInCloud" value="{saveInCloud}" data-lang="saveInCloud"/>
                         </div>
                         <textarea id="backupInp"></textarea>
                     </div>
                     <div class="page restore">
-                        <h2 data-lang="restore">Восстановление</h2>
+                        <h2 data-lang="restore">{restore}</h2>
                         <div class="btnList">
-                            <input type="button" id="restoreBtn" value="Восстановить" data-lang="toRestore"/>
-                            <input type="button" id="getFromCloudBtn" value="Получить настройки из облака" data-lang="getFromCloud"/>
-                            <input type="button" id="clearCloudStorage" value="Очистить настройки в облаке" data-lang="clearCloudStorage"/>
+                            <input type="button" id="restoreBtn" value="{toRestore}" data-lang="toRestore"/>
+                            <input type="button" id="getFromCloudBtn" value="{getFromCloud}" data-lang="getFromCloud"/>
+                            <input type="button" id="clearCloudStorage" value="{clearCloudStorage}" data-lang="clearCloudStorage"/>
                         </div>
                         <textarea id="restoreInp"></textarea>
                     </div>

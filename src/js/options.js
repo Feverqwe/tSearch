@@ -146,7 +146,7 @@ var options = {
             setTimeout(function() {
                 this.disabled = false;
             }.bind(this), 750);
-            
+
             var _this = options;
             _this.getBackupJson(function(json) {
                 mono.storage.sync.set({backup: json}, function() {
@@ -162,6 +162,9 @@ var options = {
     },
     once: function() {
         "use strict";
+        mono.writeLanguage(mono.language);
+        document.body.classList.remove('loading');
+
         this.settings = engine.settings;
 
         mono.rmChildTextNodes(this.domCache.langSelect);
@@ -173,8 +176,6 @@ var options = {
                 location.reload();
             });
         });
-
-        mono.writeLanguage(mono.language);
 
         this.set_place_holder();
 
