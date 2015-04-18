@@ -86,5 +86,15 @@
 
     "external_html": {"message": "['Добавь внешние трекеры с ', {a: {href:'http://code-tms.blogspot.ru/?utm_source=TMS', target:'_blank', text:'официального сайта'}}, '!']"},
     "advanced_options": {"message": "Расширенные опции"},
-    "word_save": {"message": "Сохранить"}
+    "word_save": {"message": "Сохранить"},
+
+    "general": {"message": "Общие"},
+    "backup": {"message": "Архивирование"},
+    "restore": {"message": "Восстановление"},
+    "update": {"message": "Обновить"},
+    "saveInCloud": {"message": "Сохранить в облаке"},
+    "toRestore": {"message": "Восстановить"},
+    "getFromCloud": {"message": "Получить настройки из облака"},
+    "clearCloudStorage": {"message": "Очистить настройки в облаке"},
+    "error": {"message": "Ошибка"}
 }

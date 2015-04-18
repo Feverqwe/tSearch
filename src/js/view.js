@@ -1396,18 +1396,6 @@ var view = {
         }
         view.filterUpdate();
     },
-    rmChildTextNodes: function(el) {
-        "use strict";
-        var index = 0;
-        var node;
-        while (node = el.childNodes[index]) {
-            if (node.nodeType !== 3) {
-                index++;
-                continue;
-            }
-            el.removeChild(node);
-        }
-    },
     clearFilter: function() {
         "use strict";
         for (var i = 0, list = view.varCache.filterRangeList, type; type = list[i]; i++) {
@@ -1645,7 +1633,7 @@ var view = {
             profileManager.edit(view.domCache.profileSelect.value);
         });
 
-        view.rmChildTextNodes(view.domCache.timeFilterSelect);
+        mono.rmChildTextNodes(view.domCache.timeFilterSelect);
         view.domCache.timeFilterSelect.addEventListener('change', function() {
             if (this.value === 'range') {
                 view.domCache.timeFilterRange.classList.add('show');

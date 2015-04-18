@@ -15,15 +15,18 @@
             </div>
             <div class="content">
                 <div class="left menu">
-                    <a href="#main" data-page="main" data-lang="optMain">Общие</a>
+                    <a href="#main" data-page="main" data-lang="general">Общие</a>
                     <a href="#backup" data-page="backup" data-lang="backup">Архивирование</a>
                     <a href="#restore" data-page="restore" data-lang="restore">Восстановление</a>
                 </div>
                 <div class="right">
                     <div class="page main">
-                        <h2 data-lang="optMain">Общие</h2>
+                        <h2 data-lang="general">Общие</h2>
                         <label><span>Language</span>
-                            <select id="language" data-option="language"><option value="ru">Русский</option><option value="en">English</option></select>
+                            <select id="language" data-option="language">
+                                <option value="ru">Русский</option>
+                                <option value="en">English</option>
+                            </select>
                         </label>
                         <label><span data-lang="showFreeSpace">Отображать количество свободного места на диске</span><input type="checkbox" data-option="showFreeSpace"/></label>
                     </div>
@@ -31,7 +34,7 @@
                         <h2 data-lang="backup">Архивирование</h2>
                         <div class="btnList">
                             <input type="button" id="backupUpdate" value="Обновить" data-lang="update"/>
-                            <input type="button" id="saveInCloud" value="Сохранить в облаке" data-lang="optSaveInCloud"/>
+                            <input type="button" id="saveInCloud" value="Сохранить в облаке" data-lang="saveInCloud"/>
                         </div>
                         <textarea id="backupInp"></textarea>
                     </div>
@@ -39,8 +42,8 @@
                         <h2 data-lang="restore">Восстановление</h2>
                         <div class="btnList">
                             <input type="button" id="restoreBtn" value="Восстановить" data-lang="toRestore"/>
-                            <input type="button" id="getFromCloudBtn" value="Получить настройки из облака" data-lang="optGetFromCloud"/>
-                            <input type="button" id="clearCloudStorage" value="Очистить настройки в облаке" data-lang="optClearCloudStorage"/>
+                            <input type="button" id="getFromCloudBtn" value="Получить настройки из облака" data-lang="getFromCloud"/>
+                            <input type="button" id="clearCloudStorage" value="Очистить настройки в облаке" data-lang="clearCloudStorage"/>
                         </div>
                         <textarea id="restoreInp"></textarea>
                     </div>

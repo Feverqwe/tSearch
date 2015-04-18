@@ -580,3 +580,16 @@ mono.trigger = function(el, type, data) {
     var event = new CustomEvent(type, data);
     el.dispatchEvent(event);
 };
+
+mono.rmChildTextNodes = function(el) {
+    "use strict";
+    var index = 0;
+    var node;
+    while (node = el.childNodes[index]) {
+        if (node.nodeType !== 3) {
+            index++;
+            continue;
+        }
+        el.removeChild(node);
+    }
+};
