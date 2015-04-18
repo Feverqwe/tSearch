@@ -554,9 +554,12 @@ var view = {
         }
         for (var i = 0, len = cList.length; i < len; i++) {
             var item = cList[i];
-            if (filter[item] !== undefined &&
-                (filter[item][0] === null || torrentObj[item] >= filter[item][0]) &&
-                (filter[item][1] === null || torrentObj[item] <= filter[item][1])) {
+            var value;
+            if (filter[item] === undefined || (value = torrentObj[item] === undefined)) {
+                continue;
+            }
+            if ((filter[item][0] === null || value >= filter[item][0]) &&
+                (filter[item][1] === null || value <= filter[item][1])) {
                 list[i + 1] = 1;
             }
         }

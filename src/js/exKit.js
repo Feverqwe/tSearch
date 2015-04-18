@@ -638,6 +638,12 @@ var exKit = {
             var cache = {};
             for (var key in tracker.search.torrentSelector) {
                 var item = tracker.search.torrentSelector[key];
+                var value;
+                if (typeof item === 'function') {
+                    value = item(el);
+                    trObj.column[key] = value;
+                    continue;
+                }
                 if (typeof item === 'string') {
                     item = {selector: item};
                 }
@@ -645,7 +651,7 @@ var exKit = {
                 if (cache[item.selector] === undefined) {
                     cache[item.selector] = el.find(item.selector).get(0);
                 }
-                var value = cache[item.selector];
+                value = cache[item.selector];
 
                 if (value === undefined && tracker.search.onSelectorIsNotFoundSkip[key]) {
                     continue;
