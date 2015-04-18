@@ -551,6 +551,7 @@ var exKit = {
             }
         }
         exKit.bindFunc(tracker, tracker.search, 'onGetRequest');
+        exKit.bindFunc(tracker, tracker.search, 'onAfterDomParse');
         exKit.bindFunc(tracker, tracker.search, 'onGetListItem');
         exKit.bindFunc(tracker, tracker.search, 'onResponseUrl');
 
@@ -617,6 +618,9 @@ var exKit = {
     parseDom: function(tracker, request, dom, cb) {
         "use strict";
         var $dom = $(dom);
+        if (tracker.search.onAfterDomParse !== undefined) {
+            $dom = tracker.search.onAfterDomParse($dom);
+        }
         if (tracker.search.loginFormSelector !== undefined && $dom.find(tracker.search.loginFormSelector).length) {
             return cb({requireAuth: 1});
         }
