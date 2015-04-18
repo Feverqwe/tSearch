@@ -4,7 +4,7 @@ body {
     font-size: 14px;
 }
 
-.loading {
+body.loading {
     visibility: hidden;
 }
 
