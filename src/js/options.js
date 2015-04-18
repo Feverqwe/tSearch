@@ -142,11 +142,12 @@ var options = {
             this.domCache.getFromCloudBtn.disabled = true;
         }.bind(this));
         this.domCache.saveInCloudBtn.addEventListener('click', function() {
-            var _this = options;
             this.disabled = true;
             setTimeout(function() {
                 this.disabled = false;
             }.bind(this), 750);
+            
+            var _this = options;
             _this.getBackupJson(function(json) {
                 mono.storage.sync.set({backup: json}, function() {
                     _this.domCache.getFromCloudBtn.disabled = false;
