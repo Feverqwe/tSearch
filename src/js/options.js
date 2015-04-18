@@ -122,41 +122,42 @@ var options = {
             });
         });
     },
-    makeBackupForm: function() {
+    bindBackupForm: function() {
         "use strict";
-        options.domCache.backupUpdateBtn.addEventListener('click', function() {
-            options.getBackupJson(function(json) {
-                options.domCache.backupInp.value = json;
-            });
-        });
-        options.domCache.restoreBtn.addEventListener('click', function() {
+        this.domCache.backupUpdateBtn.addEventListener('click', function() {
+            this.getBackupJson(function(json) {
+                this.domCache.backupInp.value = json;
+            }.bind(this));
+        }.bind(this));
+        this.domCache.restoreBtn.addEventListener('click', function() {
             try {
-                var data = JSON.parse(options.domCache.restoreInp.value);
+                var data = JSON.parse(this.domCache.restoreInp.value);
             } catch (error) {
                 return alert(mono.language.error + "\n" + error);
             }
-            options.restoreSettings(data);
-        });
-        options.domCache.clearCloudStorageBtn.addEventListener('click', function() {
+            this.restoreSettings(data);
+        }.bind(this));
+        this.domCache.clearCloudStorageBtn.addEventListener('click', function() {
             mono.storage.sync.clear();
-            options.domCache.getFromCloudBtn.disabled = true;;
-        });
-        options.domCache.saveInCloudBtn.addEventListener('click', function() {
+            this.domCache.getFromCloudBtn.disabled = true;
+        }.bind(this));
+        this.domCache.saveInCloudBtn.addEventListener('click', function() {
+            var _this = options;
             this.disabled = true;
             setTimeout(function() {
                 this.disabled = false;
             }.bind(this), 750);
-            options.getBackupJson(function(json) {
+            _this.getBackupJson(function(json) {
                 mono.storage.sync.set({backup: json}, function() {
-                    options.domCache.getFromCloudBtn.disabled = false;
+                    _this.domCache.getFromCloudBtn.disabled = false;
                 });
             });
         });
-        options.domCache.getFromCloudBtn.addEventListener('click', function() {
+        this.domCache.getFromCloudBtn.addEventListener('click', function() {
             mono.storage.sync.get('backup', function(storage) {
-                options.domCache.restoreInp.value = storage.backup;
-            });
-        });
+                this.domCache.restoreInp.value = storage.backup;
+            }.bind(this));
+        }.bind(this));
     },
     once: function() {
         "use strict";
@@ -183,7 +184,7 @@ var options = {
                 this.domCache.clearCloudStorageBtn.style.display = 'none';
             }
 
-            this.makeBackupForm();
+            this.bindBackupForm();
 
             this.domCache.menu = document.querySelector('.menu');
             this.domCache.menu.addEventListener('click', function(e) {
