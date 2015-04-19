@@ -33,6 +33,14 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
 })();
 
 var bg = {
+    omnibox: function () {
+        chrome.omnibox.onInputEntered.addListener(function (text) {
+            chrome.tabs.create({
+                url: "index.html" + ( text ? '#?search=' + encodeURIComponent(text) : ''),
+                selected: true
+            });
+        });
+    },
     setBtnAction: mono.isChrome ? function ch(state) {
         "use strict";
         ch.lastState = state;
@@ -78,6 +86,11 @@ var bg = {
         "use strict";
 
     },
+    once: function() {
+        "use strict";
+        mono.isChrome && bg.omnibox();
+        bg.run();
+    },
     run: function() {
         "use strict";
 
@@ -109,7 +122,7 @@ var bg = {
         }
 
         mono.onMessage(bg.onMessage);
-        bg.run();
+        bg.once();
     };
     if (!mono.isModule) {
         return init();
