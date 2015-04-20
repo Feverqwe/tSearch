@@ -67,6 +67,7 @@ var view = {
                                     },
                                     append: [
                                         mono.create('i', {
+                                            title: mono.language.delete,
                                             class: 'icon del'
                                         }),
                                         mono.create('span', {
@@ -86,6 +87,7 @@ var view = {
                                     class: 'request title',
                                     append: [
                                         mono.create('i', {
+                                            title: mono.language.delete,
                                             class: 'icon del'
                                         }),
                                         mono.create('a', {

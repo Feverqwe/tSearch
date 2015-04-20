@@ -96,5 +96,6 @@
     "toRestore": {"message": "Восстановить"},
     "getFromCloud": {"message": "Получить настройки из облака"},
     "clearCloudStorage": {"message": "Очистить настройки в облаке"},
-    "error": {"message": "Ошибка"}
+    "error": {"message": "Ошибка"},
+    "delete": {"message": "Удалить"}
 }
