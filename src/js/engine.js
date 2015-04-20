@@ -155,7 +155,7 @@ var engine = {
 
     loadSettings: function(cb) {
         "use strict";
-        var defaultSettings = engine.defaultSettings;
+        var defaultSettings = this.defaultSettings;
 
         var optionsList = [];
         for (var item in defaultSettings) {
@@ -174,31 +174,31 @@ var engine = {
             for (var item in defaultSettings) {
                 settings[item] = storage.hasOwnProperty(item) ? storage[item] : defaultSettings[item];
             }
-            engine.settings = settings;
+            this.settings = settings;
 
-            !settings.doNotSendStatistics && engine.initCounter();
+            !settings.doNotSendStatistics && this.initCounter();
 
-            engine.setProxyList(storage.proxyList);
+            this.setProxyList(storage.proxyList);
 
             if (Array.isArray(storage.searchHistory)) {
-                engine.history = storage.searchHistory;
+                this.history = storage.searchHistory;
             }
 
             mono.getLanguage(function() {
-                engine.defaultPrepare(mono.language.langCode);
+                this.defaultPrepare(mono.language.langCode);
 
-                engine.getProfileList(storage, function(syncStorage) {
-                    engine.prepareProfileList(storage.currentProfile, syncStorage);
+                this.getProfileList(storage, function(syncStorage) {
+                    this.prepareProfileList(storage.currentProfile, syncStorage);
 
                     return cb();
-                });
-            }, settings.langCode);
-        });
+                }.bind(this));
+            }.bind(this), settings.langCode);
+        }.bind(this));
     },
 
     init: function(cb) {
         "use strict";
-        engine.loadSettings(function() {
+        this.loadSettings(function() {
             cb && cb();
         });
     },
