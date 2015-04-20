@@ -92,7 +92,8 @@ var view = {
         historyList: [],
         historyLimit: 50,
         historyLinksListLimit: 20,
-        locationHash: undefined
+        locationHash: undefined,
+        autocompleteCache: {}
     },
     setColumnOrder: function (columnObj) {
         var tableHeadList = view.varCache.tableHeadColumnObjList;
@@ -1733,16 +1734,19 @@ var view = {
                 if (view.varCache.suggestXhr) {
                     view.varCache.suggestXhr.abort();
                 }
+                if (view.varCache.autocompleteCache[value] !== undefined) {
+                    return cb(view.varCache.autocompleteCache[value]);
+                }
                 view.varCache.suggestXhr = mono.ajax({
                     url: 'http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(value),
                     dataType: 'json',
                     success: function(data) {
+                        view.varCache.autocompleteCache[value] = data[1];
                         cb(data[1]);
                     }
                 });
             },
             select: function() {
-                view.domCache.requestInput.value = arguments[1].item.value;
                 view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
             },
             close: function() {

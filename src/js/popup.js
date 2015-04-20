@@ -4,7 +4,8 @@
 var popup = {
     varCache: {
         history: [],
-        suggestXhr: undefined
+        suggestXhr: undefined,
+        autocompleteCache: {}
     },
     domCache: {
         searchForm: document.getElementById('search_form'),
@@ -86,16 +87,19 @@ var popup = {
                 if (popup.varCache.suggestXhr) {
                     popup.varCache.suggestXhr.abort();
                 }
+                if (popup.varCache.autocompleteCache[value] !== undefined) {
+                    return cb(popup.varCache.autocompleteCache[value]);
+                }
                 popup.varCache.suggestXhr = mono.ajax({
                     url: 'http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(value),
                     dataType: 'json',
                     success: function(data) {
+                        popup.varCache.autocompleteCache[value] = data[1];
                         cb(data[1]);
                     }
                 });
             },
             select: function() {
-                popup.domCache.requestInput.value = arguments[1].item.value;
                 popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
             },
             close: function() {

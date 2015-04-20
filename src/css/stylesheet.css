@@ -66,6 +66,10 @@ body.home #result_block {
     border-color: #adadad;
 }
 
+.ui-autocomplete {
+    position: absolute;
+}
+
 #main_btn {
     background-image: url(../img/main.png);
 }
