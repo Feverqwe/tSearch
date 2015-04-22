@@ -8,7 +8,7 @@ var magic = {
     },
     once: function() {
         "use strict";
-
+        document.body.classList.remove('loading');
     }
 };
 
