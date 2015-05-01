@@ -537,6 +537,131 @@ var exKit = {
             obj[key1] = exKit.funcList2func.bind(context, exKit.prepareFuncList(obj[key1]));
         }
     },
+    prepareCustomTracker: function(trackerJson) {
+        "use strict";
+        if (trackerJson.version === 1) {
+            var id;
+            var tracker = engine.trackerLib[id = 'ct_'+trackerJson.uid] = {};
+            tracker.code = JSON.stringify(trackerJson);
+            tracker.icon = trackerJson.icon;
+            tracker.id = id;
+            tracker.title = trackerJson.name;
+            tracker.desc = trackerJson.about;
+            tracker.flags = !trackerJson.flags ? {} : {
+                auth: trackerJson.a,
+                language:  trackerJson.l ? 'ru' : undefined,
+                cyrillic: trackerJson.rs ? 1 : 0,
+                allowProxy: trackerJson.post ? 0 : 1
+            };
+            var search = tracker.search = {};
+            var torrentSelector = search.torrentSelector = {};
+            var onGetValue = search.onGetValue = {};
+            search.searchUrl = trackerJson.search_path;
+            if (trackerJson.root_url) {
+                search.rootUrl = trackerJson.root_url;
+            }
+            if (trackerJson.auth) {
+                search.loginUrl = trackerJson.auth;
+            }
+            if (trackerJson.post) {
+                search.requestType = 'POST';
+                search.requestData = trackerJson.post;
+            }
+            if (trackerJson.encode) {
+                search.onGetRequest = 'encodeCp1251';
+            }
+            search.listItemSelector = trackerJson.items;
+            if (trackerJson.charset) {
+                search.requestMimeType = 'text/html; charset=' + trackerJson.charset;
+            }
+            if (trackerJson.cat_alt) {
+                trackerJson.cat_attr = 'alt';
+                trackerJson.cat_alt = undefined;
+            }
+            if (trackerJson.auth_f) {
+                search.loginFormSelector = trackerJson.auth_f;
+            }
+            if (trackerJson.sf || trackerJson.sl) {
+                search.listItemSplice = [trackerJson.sf || 0, trackerJson.sl || 0];
+            }
+            torrentSelector.title = trackerJson.tr_name;
+            torrentSelector.url = trackerJson.tr_link;
+            if (trackerJson.cat_name) {
+                torrentSelector.categoryTitle = trackerJson.cat_name;
+                if (trackerJson.cat_attr) {
+                    torrentSelector.categoryTitle = {selector: torrentSelector.categoryTitle, attr: trackerJson.cat_attr};
+                }
+                if (trackerJson.cat_link) {
+                    torrentSelector.categoryUrl = trackerJson.cat_link;
+                }
+            }
+            if (trackerJson.tr_size) {
+                torrentSelector.size = trackerJson.tr_size;
+                if (trackerJson.size_attr) {
+                    torrentSelector.size = {selector: torrentSelector.size, attr: trackerJson.size_attr};
+                }
+                if (trackerJson.size_r && trackerJson.size_rp !== undefined) {
+                    onGetValue.size = [{exec: 'replace', args: [{arg: 0}, {regexp: trackerJson.size_r, flags: 'ig'}]}];
+                    if (trackerJson.s_c) {
+                        onGetValue.size.push({var: 'context', exec: function(value) {
+                            return exKit.legacy.sizeFormat(value);
+                        }, args: [{scope: 'context'}]});
+                    }
+                }
+            }
+            if (trackerJson.tr_dl) {
+                torrentSelector.downloadUrl = {selector: trackerJson.tr_dl, arrt: 'href'};
+            }
+            if (trackerJson.seed) {
+                torrentSelector.seed = trackerJson.seed;
+                if (trackerJson.seed_r && trackerJson.seed_rp) {
+                    onGetValue.seed = {exec: 'replace', args: [{arg: 0}, {regexp: trackerJson.seed_r, flags: 'ig'}]};
+                }
+            }
+            if (trackerJson.peer) {
+                torrentSelector.peer = trackerJson.peer;
+                if (trackerJson.peer_r && trackerJson.peer_rp) {
+                    onGetValue.peer = {exec: 'replace', args: [{arg: 0}, {regexp: trackerJson.peer_r, flags: 'ig'}]};
+                }
+            }
+            if (trackerJson.date) {
+                torrentSelector.date = trackerJson.date;
+                if (trackerJson.date_attr) {
+                    torrentSelector.date = {selector: torrentSelector.date, attr: trackerJson.date_attr};
+                }
+                var dateFuncList = [];
+                if (trackerJson.t_r && trackerJson.t_r_r) {
+                    var t_r = new RegExp(trackerJson.t_r, "ig");
+                    dateFuncList.push(function(value) {
+                        return value.replace(t_r, trackerJson.t_r_r);
+                    });
+                }
+                if (trackerJson.t_t_r) {
+                    dateFuncList.push(function(value) {
+                        return exKit.legacy.todayReplace(value, trackerJson.t_f);
+                    });
+                }
+                if (trackerJson.me.t_m_r) {
+                    dateFuncList.push(function(value) {
+                        return exKit.legacy.monthReplace(value);
+                    });
+                }
+                if (trackerJson.t_f !== undefined && trackerJson.t_f !== "-1") {
+                    dateFuncList.push(function(value) {
+                        return exKit.legacy.dateFormat(trackerJson.t_f, value);
+                    });
+                }
+                if (dateFuncList.length) {
+                    onGetValue.date = function (value) {
+                        for (var i = 0, func; func = dateFuncList[i]; i++) {
+                            value = func(value);
+                        }
+                        return value;
+                    };
+                }
+            }
+        }
+    },
     prepareTracker: function(tracker) {
         "use strict";
         var itemList = ['onGetValue', 'onFindSelector', 'onSelectorIsNotFound', 'onSelectorIsNotFoundSkip', 'onEmptySelectorValue'];
@@ -626,6 +751,14 @@ var exKit = {
         }
         var torrentList = [];
         var torrentElList = $dom.find(tracker.search.listItemSelector);
+        if (tracker.search.listItemSplice !== undefined) {
+            if (tracker.search.listItemSplice[0] > 0) {
+                torrentElList.splice(0, tracker.search.listItemSplice[0]);
+            }
+            if (tracker.search.listItemSplice[1] > 0) {
+                torrentElList.splice(-tracker.search.listItemSplice[1]);
+            }
+        }
         for (var i = 0, len = torrentElList.length; i < len; i++) {
             var el = torrentElList.eq(i);
             if (tracker.search.onGetListItem !== undefined && !tracker.search.onGetListItem(el)) {

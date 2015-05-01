@@ -168,6 +168,7 @@ var engine = {
         optionsList.push('proxyList');
         optionsList.push('titleQualityList');
         optionsList.push('currentProfile');
+        optionsList.push('customTorrentList');
 
         mono.storage.get(optionsList, function(storage) {
             var settings = {};
@@ -182,6 +183,12 @@ var engine = {
 
             if (Array.isArray(storage.searchHistory)) {
                 this.history = storage.searchHistory;
+            }
+
+            if (typeof storage.customTorrentList === 'object') {
+                for (var id in storage.customTorrentList) {
+                    exKit.prepareCustomTracker(storage.customTorrentList[id]);
+                }
             }
 
             mono.getLanguage(function() {
