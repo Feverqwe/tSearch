@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Magic Kit</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/magic.css">
+    <script src="../js/jquery-2.1.3.min.js"></script>
+    <script src="../js/mono.js"></script>
+    <script src="../js/monoUtils.js"></script>
+    <script src="../js/engine.js"></script>
+    <script src="js/ex_kit.js"></script>
+    <script src="js/magic.js"></script>
+</head>
+<body>
+<div class="tools">
+    <ul class="menu" id="menu">
+        <li class="active"><a href="#search" data-page="search" data-lang="magic_2">Поиск</a></li>
+        <li><a href="#selectors" data-page="selectors" data-lang="magic_3">Селекторы</a></li>
+        <li><a href="#convert" data-page="convert" data-lang="magic_4">Конвертация</a></li>
+        <li><a href="#auth" data-page="auth" data-lang="magic_5">Авторизация</a></li>
+        <li><a href="#desk" data-page="desk" data-lang="magic_6">Описание</a></li>
+        <li><a href="#save" data-page="save" data-lang="magic_7">Сохранить \ Загрузить</a></li>
+    </ul>
+    <div class="body" id="container">
+        <fieldset class="page search active">
+            <legend data-lang="magic_8">Результаты поиска</legend>
+            <ul>
+                <li>
+                    <span data-lang="magic_9">URL страницы с результатами</span>
+                    <input type="text" name="search_url"/>
+                    <input type="button" value="Открыть" name="search_open" data-lang="magic_10"/>
+                </li>
+                <li>
+                    <span data-lang="magic_11">Запрос поиска (в параметрах запроса используйте переменную %search%)</span>
+                    <input type="text" name="search_request"/>
+                </li>
+                <li>
+                    <input type="checkbox" name="search_cp1251">
+                    <span data-lang="magic_12">Конвертировать кириллицу в cp1251</span>
+                </li>
+                <li>
+                    <span data-lang="magic_64">Custom charset</span>
+                    <input type="text" name="search_charset" placeholder="auto">
+                </li>
+                <li>
+                    <span data-lang="magic_13">POST запрос</span>
+                    <input type="text" name="search_post" placeholder="key=value&key2=value2"/>
+                </li>
+                <li>
+                    <span data-lang="magic_14">Основной url</span>
+                    <input type="text" name="search_root"/>
+                </li>
+            </ul>
+        </fieldset>
+        <fieldset class="page auth">
+            <legend data-lang="magic_15">Определение страницы авторизации</legend>
+            <ul>
+                <li>
+                    <span data-lang="magic_16">URL страницы входа</span>
+                    <input type="text" name="auth_url"/>
+                    <input type="button" value="Открыть" name="auth_open" data-lang="magic_17"/>
+                </li>
+                <li>
+                    <span data-lang="magic_18">Форма входа</span>
+                    <input type="text" name="auth_input"/>
+                    <input type="button" name="auth_btn" value="Выбрать" data-lang="magic_19"/>
+                </li>
+            </ul>
+        </fieldset>
+        <fieldset class="page selectors">
+            <legend data-lang="magic_20">Селекторы</legend>
+            <ul>
+                <li>
+                    <span data-lang="magic_21">Строка в траблице</span>
+                    <input type="text" name="list_input"/>
+                    <input type="checkbox" name="list_table_mode"/>
+                    <span data-lang="magic_61">Таблица</span>
+                    <input type="button" name="list_btn" value="Выбрать" data-lang="magic_19"/>
+                </li>
+                <li>
+                    <input type="checkbox" name="category_name_enable"/>
+                    <span data-lang="magic_22">Название категории</span>
+                    <input type="text" name="category_name_input"/>
+                    <input type="text" name="category_name_output"/>
+                    <input type="checkbox" name="category_name_attr_enable"/>
+                    <span data-lang="magic_62">Атрибут</span>
+                    <input type="text" name="category_name_attr"/>
+                    <input type="button" name="category_name_btn" value="Выбрать" data-lang="magic_19"/>
+                </li>
+                <li>
+                    <input type="checkbox" name="category_link_enable"/>
+                    <span data-lang="magic_23">Ссылка на категорию</span>
+                    <input type="text" name="category_link_input"/>
+                    <input type="text" name="category_link_output"/>
+                    <input type="checkbox" name="category_link_add_root"/>
+                    <span data-lang="magic_24">Добавить основной url</span>
+                    <input type="button" name="category_link_btn" value="Выбрать" data-lang="magic_19"/>
+                </li>
+                <li>
+                    <span data-lang="magic_25">Название раздачи</span>
+                    <input type="text" name="torrent_name_input"/>
+                    <input type="text" name="torrent_name_output"/>
+                    <input type="button" name="torrent_name_btn" value="Выбрать" data-lang="magic_19"/>
+                </li>
+                <li>
+                    <span data-lang="magic_26">Ссылка на раздачу</span>
+                    <input type="text" name="torrent_link_input"/>
+                    <input type="text" name="torrent_link_output"/>
+                    <input type="checkbox" name="torrent_link_add_root"/>
+                    <span data-lang="magic_27">Добавить основной url</span>
+                    <input type="button" name="torrent_link_btn" value="Выбрать" data-lang="magic_19"/>
+                </li>
+                <li>
+                    <input type="checkbox" name="torrent_size_enable"/>
+                    <span data-lang="magic_28">Размер раздачи</span>
+                    <input type="text" name="torrent_size_input"/>
+                    <input type="text" name="torrent_size_output"/>
+                    <input type="checkbox" name="torrent_size_attr_enable"/>
+                    <span data-lang="magic_62">Атрибут</span>
+                    <input type="text" name="torrent_size_attr"/>
+                    <input type="button" name="torrent_size_btn" value="Выбрать" data-lang="magic_19"/>
+                </li>
+                <li>
+                    <input type="checkbox" name="torrent_dl_enable"/>
+                    <span data-lang="magic_29">Ссылка на скачку раздачи</span>
+                    <input type="text" name="torrent_dl_input"/>
+                    <input type="text" name="torrent_dl_output"/>
+                    <input type="checkbox" name="torrent_dl_add_root"/>
+                    <span data-lang="magic_30">Добавить основной url</span>
+                    <input type="button" name="torrent_dl_btn" value="Выбрать" data-lang="magic_19"/>
+                </li>
+                <li>
+                    <input type="checkbox" name="seed_enable"/>
+                    <span data-lang="magic_31">Количество сидов</span>
+                    <input type="text" name="seed_input"/>
+                    <input type="text" name="seed_output"/>
+                    <input type="button" name="seed_btn" value="Выбрать" data-lang="magic_19"/>
+                </li>
+                <li>
+                    <input type="checkbox" name="peer_enable"/>
+                    <span data-lang="magic_32">Количество пиров</span>
+                    <input type="text" name="peer_input"/>
+                    <input type="text" name="peer_output"/>
+                    <input type="button" name="peer_btn" value="Выбрать" data-lang="magic_19"/>
+                </li>
+                <li>
+                    <input type="checkbox" name="time_enable"/>
+                    <span data-lang="magic_33">Дата добавления раздачи</span>
+                    <input type="text" name="time_input"/>
+                    <input type="text" name="time_output"/>
+                    <input type="checkbox" name="time_attr_enable"/>
+                    <span data-lang="magic_62">Атрибут</span>
+                    <input type="text" name="time_attr"/>
+                    <input type="button" name="time_btn" value="Выбрать" data-lang="magic_19"/>
+                </li>
+                <li>
+                    <span data-lang="magic_34">Пропустить первые n строк</span>
+                    <input type="number" name="skip_first" value="0"/>
+                </li>
+                <li>
+                    <span data-lang="magic_35">Пропустить последнии n строк</span>
+                    <input type="number" name="skip_last" value="0"/>
+                </li>
+            </ul>
+        </fieldset>
+        <fieldset class="page convert">
+            <legend data-lang="magic_36">Конвертрование</legend>
+            <fieldset>
+                <legend data-lang="magic_37">Дата добавления раздачи</legend>
+                <ul>
+                    <li>
+                        <span data-lang="magic_38">Применить regexp</span>
+                        <input name="time_regexp" type="text"/>
+                        <span data-lang="magic_39">заменить на</span>
+                        <input name="time_regexp_text" type="text"/>
+                    </li>
+                    <li>
+                        <input name="time_today" type="checkbox"/>
+                        <span data-lang="magic_63">Заменить слова сегодня\вчера\сейчас</span>
+                    </li>
+                    <li>
+                        <input name="time_month" type="checkbox"/>
+                        <span data-lang="magic_40">Заменить название месяца на число</span>
+                    </li>
+                    <li>
+                        <span data-lang="magic_41">Конвернтировать время в Unix timestamp из формата</span>
+                        <select name="time_format"></select>
+                    </li>
+                    <li>
+                        <span data-lang="magic_42">Исходная строка</span>
+                        <input name="time_original" type="text"/>
+                        <span data-lang="magic_43">Конвертированная</span>
+                        <input name="time_converted" type="text"/>
+                    </li>
+                    <li>
+                        <span data-lang="magic_44">Итог</span>
+                        <input name="time_result" type="text"/>
+                    </li>
+                </ul>
+            </fieldset>
+            <fieldset>
+                <legend data-lang="magic_45">Размер торрента</legend>
+                <ul>
+                    <li>
+                        <span data-lang="magic_38">Применить regexp</span>
+                        <input name="size_regexp" type="text"/>
+                        <span data-lang="magic_39">заменить на</span>
+                        <input name="size_regexp_text" type="text"/>
+                    </li>
+                    <li>
+                        <input name="size_convert" type="checkbox"/>
+                        <span data-lang="magic_46">Преобразовать</span>
+                    </li>
+                    <li>
+                        <span data-lang="magic_47">Исходная строка</span>
+                        <input name="size_original" type="text"/>
+                        <span data-lang="magic_48">Конвертированная</span>
+                        <input name="size_converted" type="text"/>
+                    </li>
+                    <li>
+                        <span data-lang="magic_44">Итог</span>
+                        <input name="size_result" type="text"/>
+                    </li>
+                </ul>
+            </fieldset>
+            <fieldset>
+                <legend data-lang="magic_59">Сиды</legend>
+                <ul>
+                    <li>
+                        <span data-lang="magic_38">Применить regexp</span>
+                        <input name="seed_regexp" type="text"/>
+                        <span data-lang="magic_39">заменить на</span>
+                        <input name="seed_regexp_text" type="text"/>
+                    </li>
+                    <li>
+                        <span data-lang="magic_47">Исходная строка</span>
+                        <input name="seed_original" type="text"/>
+                        <span data-lang="magic_48">Конвертированная</span>
+                        <input name="seed_converted" type="text"/>
+                    </li>
+                    <li>
+                        <span data-lang="magic_44">Итог</span>
+                        <input name="seed_result" type="text"/>
+                    </li>
+                </ul>
+            </fieldset>
+            <fieldset>
+                <legend data-lang="magic_60">Пиры</legend>
+                <ul>
+                    <li>
+                        <span data-lang="magic_38">Применить regexp</span>
+                        <input name="peer_regexp" type="text"/>
+                        <span data-lang="magic_39">заменить на</span>
+                        <input name="peer_regexp_text" type="text"/>
+                    </li>
+                    <li>
+                        <span data-lang="magic_47">Исходная строка</span>
+                        <input name="peer_original" type="text"/>
+                        <span data-lang="magic_48">Конвертированная</span>
+                        <input name="peer_converted" type="text"/>
+                    </li>
+                    <li>
+                        <span data-lang="magic_44">Итог</span>
+                        <input name="peer_result" type="text"/>
+                    </li>
+                </ul>
+            </fieldset>
+        </fieldset>
+        <fieldset class="page desk">
+            <legend data-lang="magic_49">Описание торрент-трекера</legend>
+            <div>
+                <ul>
+                    <li>
+                        <span data-lang="magic_50">base64 иконка (16x16px)</span>
+                        <input type="text" name="tracker_icon" placeholder="data:image/png,base64:"/>
+                    </li>
+                    <li>
+                        <span data-lang="magic_51">Название торрента</span>
+                        <input type="text" name="tracker_title"/>
+                    </li>
+                    <li>
+                        <span data-lang="magic_52">Описание торрента</span>
+                        <input type="text" name="tracker_desk"/>
+                    </li>
+                    <li>
+                        <input type="checkbox" name="tracker_isCirilic"/>
+                        <span data-lang="magic_53">Поддержка кириллицы</span>
+                    </li>
+                    <li>
+                        <input type="checkbox" name="tracker_needAuth"/>
+                        <span data-lang="magic_54">Требуется авторизация</span>
+                    </li>
+                    <li>
+                        <input type="checkbox" name="tracker_isRus"/>
+                        <span data-lang="magic_55">Русскоязычный трекер</span>
+                    </li>
+                </ul>
+            </div>
+        </fieldset>
+        <fieldset class="page save">
+            <legend data-lang="magic_56">Сохранить\Загрузить</legend>
+            <div>
+                <ul>
+                    <li>
+                        <input type="button" name="code_write" value="Получить код" data-lang="magic_57"/>
+                        <input type="button" name="code_read" value="Загрузить код" data-lang="magic_58"/>
+                    </li>
+                    <li>
+                        <textarea name="code_textarea"></textarea>
+                    </li>
+                </ul>
+            </div>
+        </fieldset>
+    </div>
+    <div class="status_bar" id="status_bar"></div>
+</div>
+<iframe sandbox="allow-same-origin allow-scripts"></iframe>
+</body>
+</html>

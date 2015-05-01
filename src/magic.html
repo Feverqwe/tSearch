@@ -10,7 +10,26 @@
     </head>
     <body class="loading">
         <div class="top">
-            <div id="container"></div>
+            <div id="container">
+                <div id="base">
+                    <label>{Base}</label>
+                    <p><span>{title}</span> <input id="title" type="text"/></p>
+                    <p><span>{description}</span> <input id="desc" type="text"/></p>
+                    <p><span>{icon}</span> <input id="icon" type="text"/></p>
+                </div>
+                <div id="search">
+                    <label>{Search}</label>
+                    <p><span>{Search url}</span> <input id="search_url" type="text"/></p>
+                    <p><span>{Search request}</span> <input id="search_request" type="text"/></p>
+                    <p><label><input id="encode_cp1251" type="checkbox"/><span>{enbale encode request in cp1251}</span></label></p>
+                    <p><span>{Page encoding}</span><input id="encoding" type="text"/></p>
+                    <p><span>{POST request}</span><input id="post_request" type="text"/></p>
+                    <p><span>{Base url}</span><input id="base_url" type="text"/></p>
+                </div>
+                <div id="selector"></div>
+                <div id="auth"></div>
+                <div id="code"></div>
+            </div>
         </div>
         <div class="frame">
             <iframe id="frame" sandbox="allow-same-origin allow-scripts"></iframe>
