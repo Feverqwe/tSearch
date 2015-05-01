@@ -540,20 +540,23 @@ var exKit = {
     prepareCustomTracker: function(trackerJson) {
         "use strict";
         if (trackerJson.version === 1) {
-            var id;
-            var tracker = engine.trackerLib[id = 'ct_'+trackerJson.uid] = {};
-            tracker.code = JSON.stringify(trackerJson);
-            tracker.icon = trackerJson.icon;
-            tracker.id = id;
-            tracker.title = trackerJson.name;
-            tracker.desc = trackerJson.about;
-            tracker.flags = !trackerJson.flags ? {} : {
+            var id = 'ct_'+trackerJson.uid;
+            if (engine.trackerLib[id]) {
+                return;
+            }
+            var trackerObj = engine.trackerLib[id] = {};
+            trackerObj.code = JSON.stringify(trackerJson);
+            trackerObj.icon = trackerJson.icon;
+            trackerObj.id = id;
+            trackerObj.title = trackerJson.name;
+            trackerObj.desc = trackerJson.about;
+            trackerObj.flags = !trackerJson.flags ? {} : {
                 auth: trackerJson.a ? 1 : 0,
                 language:  trackerJson.l ? 'ru' : undefined,
                 cyrillic: trackerJson.rs ? 1 : 0,
                 allowProxy: trackerJson.post ? 0 : 1
             };
-            var search = tracker.search = {};
+            var search = trackerObj.search = {};
             var torrentSelector = search.torrentSelector = {};
             var onGetValue = search.onGetValue = {};
             search.searchUrl = trackerJson.search_path;
@@ -664,6 +667,7 @@ var exKit = {
                     };
                 }
             }
+            return trackerObj;
         }
     },
     prepareTracker: function(tracker) {

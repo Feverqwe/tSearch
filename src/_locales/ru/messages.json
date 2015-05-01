@@ -101,5 +101,6 @@
 
     "copyAndEnterTrackerCode": {"message": "Скопируйте и вставьте код трекера:"},
     "trackerCodeReadError": {"message": "Ошибка разбора кода трекера"},
+    "trackerExists": {"message": "Торрент-трекер уже добавлен!"},
     "cancel": {"message": "Отменить"}
 }

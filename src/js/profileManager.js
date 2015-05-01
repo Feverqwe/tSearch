@@ -196,6 +196,14 @@ var profileManager = {
         trackerItem.hasListUpdate = this.trackerHasListUpdate.bind(this, trackerItem);
         return trackerItem.el;
     },
+    trackerInList: function(trackerObj) {
+        "use strict";
+        for (var profileName in engine.profileList) {
+            if (engine.profileList[profileName].indexOf(trackerObj.id) !== -1) {
+                return true;
+            }
+        }
+    },
     writeTrackerList: function(profileName) {
         "use strict";
         var currentProfile = engine.profileList[profileName] || [];
@@ -207,13 +215,7 @@ var profileManager = {
                 for (var trackerId in engine.trackerLib) {
                     trackerObj = engine.trackerLib[trackerId];
 
-                    hasList = false;
-                    for (profileName in engine.profileList) {
-                        if (engine.profileList[profileName].indexOf(trackerObj.id) !== -1) {
-                            hasList = true;
-                            break;
-                        }
-                    }
+                    hasList = this.trackerInList(trackerObj);
 
                     selected = currentProfile.indexOf(trackerObj.id) !== -1;
 
@@ -520,9 +522,17 @@ var profileManager = {
 
                         this.close();
 
-                        exKit.prepareCustomTracker(json);
+                        var trackerObj = exKit.prepareCustomTracker(json);
+                        if (!trackerObj) {
+                            alert(mono.language.trackerExists);
+                            return;
+                        }
 
-                        _this.writeTrackerList(_this.varCache.currentProfileName);
+                        var hasList = _this.trackerInList(trackerObj);
+                        var currentProfile = engine.profileList[_this.varCache.currentProfileName] || [];
+                        var selected = currentProfile.indexOf(trackerObj.id) !== -1;
+                        _this.domCache.trackerList.appendChild(_this.getTrackerEl(trackerObj, selected, hasList));
+
                         _this.filterValueUpdate();
                         _this.filterBy('custom');
 
