@@ -1730,6 +1730,7 @@ var view = {
 
         (view.varCache.$requestInput = $(view.domCache.requestInput)).autocomplete({
             minLength: 0,
+            delay: 50,
             position: {
                 collision: "bottom"
             },
@@ -1755,14 +1756,6 @@ var view = {
             },
             select: function() {
                 view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
-            },
-            close: function() {
-                mono.resizePopup(undefined, document.body.clientHeight);
-                if (mono.isOpera) {
-                    setTimeout(function() {
-                        view.domCache.requestInput.focus();
-                    }, 100);
-                }
             },
             create: function() {
                 var hasTopShadow = 0;

@@ -75,6 +75,7 @@ var popup = {
         "use strict";
         $(popup.domCache.requestInput).autocomplete({
             minLength: 0,
+            delay: 50,
             position: {
                 collision: "bottom"
             },
