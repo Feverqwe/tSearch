@@ -143,6 +143,9 @@ var profileManager = {
         if (hasList) {
             classList.push('hasList');
         }
+        if (trackerObj.code) {
+            classList.push('custom');
+        }
         trackerItem.hasList = hasList;
 
         notFound && classList.push('not-found');
@@ -176,15 +179,15 @@ var profileManager = {
                         trackerItem.checkbox = mono.create('input', {
                             type: 'checkbox',
                             checked: !!selected
-                        })/*,
-                        mono.create('a', {
+                        }),
+                        !trackerItem.code ? undefined : mono.create('a', {
                             class: 'edit',
                             href: '#',
                             on: ['click', function(e) {
                                 e.preventDefault();
                                 // TODO: Fix me!
                             }]
-                        })*/
+                        })
                     ]
                 })
             ]
@@ -491,6 +494,55 @@ var profileManager = {
                 this.classList.add('checked');
             }
         });
+
+        this.domCache.addCustomTrackerBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var _this = this;
+            var $body = showNotification([
+                [{label: {text: mono.language.copyAndEnterTrackerCode}}],
+                {textarea: {name: 'code'}},
+                [
+                    {input: {type: "button", value: mono.language.add, name: 'yesBtn', on: ['click', function(e) {
+                        e.stopPropagation();
+                        var formData = this.getFormData();
+
+                        try {
+                            var json = JSON.parse(formData.code);
+                        } catch (e) {
+                            alert(mono.language.trackerCodeReadError + "\n" + e);
+                            return;
+                        }
+
+                        if (!json.uid) {
+                            alert(mono.language.trackerCodeReadError);
+                            return;
+                        }
+
+                        this.close();
+
+                        exKit.prepareCustomTracker(json);
+
+                        _this.writeTrackerList(_this.varCache.currentProfileName);
+                        _this.filterValueUpdate();
+                        _this.filterBy('custom');
+
+                        mono.storage.get('customTorrentList', function(storage) {
+                            var customTorrentList = storage.customTorrentList || {};
+                            customTorrentList[json.uid] = json;
+                            mono.storage.set({customTorrentList: customTorrentList});
+                        });
+                    }]}},
+                    {input: {type: "button", value: mono.language.cancel, name: 'noBtn', on: ['click', function(e) {
+                        e.stopPropagation();
+                        this.close();
+                    }]}}
+                ]
+            ]);
+            $body.addClass('custom-tracker');
+            $body.on('click', function(e) {
+                e.stopPropagation();
+            });
+        }.bind(this));
 
         this.domCache.filterInput.addEventListener('keyup', mono.throttle(profileManager.onFilterKeyUp, 250, this));
 

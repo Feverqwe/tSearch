@@ -1,0 +1,68 @@
+.nf-layer {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+.nf-notifi {
+    position: fixed;
+    z-index: 110;
+    width: 230px;
+    margin-left: calc(50% - 115px);
+    top: 0;
+    background-color: #fff;
+    box-shadow: 0 2px 10px 0 rgba(0,0,0,0.2);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 6px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top-width: 0;
+    text-align: center;
+}
+.nf-notifi .nf-subItem {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.nf-notifi .nf-subItem label {
+    display: block;
+    color: #333;
+    margin: 2px;
+    text-align: left;
+}
+.nf-notifi .nf-subItem input,
+.nf-notifi .nf-subItem select{
+    width: 224px;;
+    padding: 1px 1px 2px 1px;
+}
+.nf-notifi .nf-subItem input {
+    width: 218px;
+}
+.nf-notifi input[type="button"],
+.nf-notifi button {
+    width: 87px;
+    height: 22px;
+}
+.nf-notifi .nf-subItem input[type="button"]:first-child,
+.nf-notifi .nf-subItem button:first-child {
+    float: left;
+}
+.nf-notifi .nf-subItem input[type="button"]:last-child,
+.nf-notifi .nf-subItem button:last-child {
+    float: right;
+}
+.nf-notifi .fileName {
+    word-wrap: break-word;
+}
+
+.nf-notifi.custom-tracker {
+    width: 410px;
+    margin-left: calc(50% - 205px);
+}
+
+.nf-notifi.custom-tracker textarea {
+    width: 400px;
+    height: 250px;
+}

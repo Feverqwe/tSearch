@@ -507,7 +507,7 @@ var view = {
     formatSize: function(value) {
         "use strict";
         if (value === undefined) {
-            value = 'n/a';
+            return 'n/a';
         }
         return view.bytesToString(value, 'n/a');
     },
@@ -569,6 +569,10 @@ var view = {
     },
     timeStampToDate: function(seconds, format) {
         "use strict";
+        if (!seconds) {
+            return '-';
+        }
+
         format = format || mono.language.dateFormat;
         var _date = new Date(seconds * 1000);
         var month = _date.getMonth() + 1;
@@ -892,7 +896,7 @@ var view = {
                 id: tracker.id
             };
             torrentObj.lowerTitle = torrentObj.title.toLowerCase();
-            torrentObj.lowerCategoryTitle = torrentObj.categoryTitle.toLowerCase();
+            torrentObj.lowerCategoryTitle = !torrentObj.categoryTitle ? '' : torrentObj.categoryTitle.toLowerCase();
             cacheItem.filter = view.getFilterState(torrentObj);
 
             var titleObj = view.hlTextToFragment(torrentObj.title, view.varCache.requestObj);
@@ -952,7 +956,9 @@ var view = {
                             !torrentObj.categoryTitle ? undefined : mono.create('span', {
                                 class: 'category',
                                 append: [
-                                    mono.create('a', {
+                                    !torrentObj.categoryUrl ? mono.create('span', {
+                                        text: torrentObj.categoryTitle
+                                    }) : mono.create('a', {
                                         href: torrentObj.categoryUrl,
                                         target: '_blank',
                                         text: torrentObj.categoryTitle
@@ -1703,6 +1709,7 @@ var view = {
             window.scrollTo(0, 0);
         });
 
+        document.body.appendChild(mono.create('script', {src: 'js/notifer.js'}));
         document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
     },
     onJqReady: function() {

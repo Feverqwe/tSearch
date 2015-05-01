@@ -18,24 +18,24 @@ var exKit = {
         },
         sizeFormat: function (s) {
             "use strict";
-            var size = s.toLowerCase().replace(exKit.varCache.size_check, '').replace(',', '.');
-            var t = size.replace(exKit.varCache.size_kb, '');
+            var size = s.toLowerCase().replace(exKit.legacy.varCache.size_check, '').replace(',', '.');
+            var t = size.replace(exKit.legacy.varCache.size_kb, '');
             var size_len = size.length;
             if (t.length !== size_len) {
                 t = parseFloat(t);
                 return Math.round(t * 1024);
             }
-            t = size.replace(exKit.varCache.size_mb, '');
+            t = size.replace(exKit.legacy.varCache.size_mb, '');
             if (t.length !== size_len) {
                 t = parseFloat(t);
                 return Math.round(t * 1024 * 1024);
             }
-            t = size.replace(exKit.varCache.size_gb, '');
+            t = size.replace(exKit.legacy.varCache.size_gb, '');
             if (t.length !== size_len) {
                 t = parseFloat(t);
                 return Math.round(t * 1024 * 1024 * 1024);
             }
-            t = size.replace(exKit.varCache.size_tb, '');
+            t = size.replace(exKit.legacy.varCache.size_tb, '');
             if (t.length !== size_len) {
                 t = parseFloat(t);
                 return Math.round(t * 1024 * 1024 * 1024 * 1024);
@@ -57,7 +57,7 @@ var exKit = {
             "use strict";
             f = parseInt(f);
             t = t.toLowerCase();
-            if ((exKit.varCache.today_now).test(t)) {
+            if ((exKit.legacy.varCache.today_now).test(t)) {
                 return Math.round(Date.now() / 1000);
             }
             var tt = new Date();
@@ -71,7 +71,7 @@ var exKit = {
                 today = tt.getDate() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getFullYear() + ' ';
                 yesterday = tty.getDate() + ' ' + (tty.getMonth() + 1) + ' ' + tty.getFullYear() + ' ';
             }
-            t = t.replace(exKit.varCache.today_today, today).replace(exKit.varCache.today_yest, yesterday);
+            t = t.replace(exKit.legacy.varCache.today_today, today).replace(exKit.legacy.varCache.today_yest, yesterday);
             return t;
         },
         dateFormat: function (f, t) {
@@ -81,7 +81,7 @@ var exKit = {
             }
             f = parseInt(f);
             if (f === 0) { // || f === '2013-04-31[[[ 07]:03]:27]') {
-                var dd = t.replace(exKit.varCache.ex_num, ' ').replace(exKit.varCache.spaces, ' ').trim().split(' ');
+                var dd = t.replace(exKit.legacy.varCache.ex_num, ' ').replace(exKit.legacy.varCache.spaces, ' ').trim().split(' ');
                 for (var i = 0; i < 6; i++) {
                     if (dd[i] === undefined) {
                         dd[i] = 0;
@@ -104,7 +104,7 @@ var exKit = {
                 return Math.round((new Date(dd[0], dd[1] - 1, dd[2], dd[3], dd[4], dd[5])).getTime() / 1000);
             }
             if (f === 1) { //  || f === '31-04-2013[[[ 07]:03]:27]') {
-                var dd = t.replace(exKit.varCache.ex_num, ' ').replace(exKit.varCache.spaces, ' ').trim().split(' ');
+                var dd = t.replace(exKit.legacy.varCache.ex_num, ' ').replace(exKit.legacy.varCache.spaces, ' ').trim().split(' ');
                 for (var i = 0; i < 6; i++) {
                     if (dd[i] === undefined) {
                         dd[i] = 0;
@@ -127,11 +127,11 @@ var exKit = {
                 return Math.round((new Date(dd[2], dd[1] - 1, dd[0], dd[3], dd[4], dd[5])).getTime() / 1000);
             }
             if (f === 2) { //  || f === 'n day ago') {
-                var old = parseFloat(t.replace(exKit.varCache.ex_num, '')) * 24 * 60 * 60;
+                var old = parseFloat(t.replace(exKit.legacy.varCache.ex_num, '')) * 24 * 60 * 60;
                 return Math.round(Date.now() / 1000) - old;
             }
             if (f === 3) { //  || f === '04-31-2013[[[ 07]:03]:27]') {
-                var dd = t.replace(exKit.varCache.ex_num, ' ').replace(exKit.varCache.spaces, ' ').trim().split(' ');
+                var dd = t.replace(exKit.legacy.varCache.ex_num, ' ').replace(exKit.legacy.varCache.spaces, ' ').trim().split(' ');
                 for (var i = 0; i < 6; i++) {
                     if (dd[i] === undefined) {
                         dd[i] = 0;
@@ -154,7 +154,7 @@ var exKit = {
                 return Math.round((new Date(dd[2], dd[0] - 1, dd[1], dd[3], dd[4], dd[5])).getTime() / 1000);
             }
             if (f === 4) { //  || f === '2d 1h 0m 0s ago') {
-                var match = t.match(exKit.varCache.timeFormat4);
+                var match = t.match(exKit.legacy.varCache.timeFormat4);
                 if (match) {
                     var d = parseInt(match[1]) || 0;
                     var h = parseInt(match[2]) || 0;
@@ -548,7 +548,7 @@ var exKit = {
             tracker.title = trackerJson.name;
             tracker.desc = trackerJson.about;
             tracker.flags = !trackerJson.flags ? {} : {
-                auth: trackerJson.a,
+                auth: trackerJson.a ? 1 : 0,
                 language:  trackerJson.l ? 'ru' : undefined,
                 cyrillic: trackerJson.rs ? 1 : 0,
                 allowProxy: trackerJson.post ? 0 : 1
@@ -558,7 +558,7 @@ var exKit = {
             var onGetValue = search.onGetValue = {};
             search.searchUrl = trackerJson.search_path;
             if (trackerJson.root_url) {
-                search.rootUrl = trackerJson.root_url;
+                search.baseUrl = trackerJson.root_url;
             }
             if (trackerJson.auth) {
                 search.loginUrl = trackerJson.auth;
@@ -585,14 +585,14 @@ var exKit = {
                 search.listItemSplice = [trackerJson.sf || 0, trackerJson.sl || 0];
             }
             torrentSelector.title = trackerJson.tr_name;
-            torrentSelector.url = trackerJson.tr_link;
+            torrentSelector.url = {selector: trackerJson.tr_link, attr: 'href'};
             if (trackerJson.cat_name) {
                 torrentSelector.categoryTitle = trackerJson.cat_name;
                 if (trackerJson.cat_attr) {
                     torrentSelector.categoryTitle = {selector: torrentSelector.categoryTitle, attr: trackerJson.cat_attr};
                 }
                 if (trackerJson.cat_link) {
-                    torrentSelector.categoryUrl = trackerJson.cat_link;
+                    torrentSelector.categoryUrl = {selector: trackerJson.cat_link, attr: 'href'};
                 }
             }
             if (trackerJson.tr_size) {
@@ -600,28 +600,32 @@ var exKit = {
                 if (trackerJson.size_attr) {
                     torrentSelector.size = {selector: torrentSelector.size, attr: trackerJson.size_attr};
                 }
+                var sizeList = [{exec: 'setVar', args: ['context', {arg: 0}]}];
                 if (trackerJson.size_r && trackerJson.size_rp !== undefined) {
-                    onGetValue.size = [{exec: 'replace', args: [{arg: 0}, {regexp: trackerJson.size_r, flags: 'ig'}]}];
-                    if (trackerJson.s_c) {
-                        onGetValue.size.push({var: 'context', exec: function(value) {
-                            return exKit.legacy.sizeFormat(value);
-                        }, args: [{scope: 'context'}]});
-                    }
+                    sizeList.push({var: 'context', exec: 'replace', args: [{var: 'context'}, {regexp: trackerJson.size_r, flags: 'ig'}, trackerJson.size_rp]});
+                }
+                if (trackerJson.s_c) {
+                    sizeList.push({var: 'context', exec: function(value) {
+                        return exKit.legacy.sizeFormat(value);
+                    }, args: [{var: 'context'}]});
+                }
+                if (sizeList.length > 1) {
+                    onGetValue.size = sizeList;
                 }
             }
             if (trackerJson.tr_dl) {
-                torrentSelector.downloadUrl = {selector: trackerJson.tr_dl, arrt: 'href'};
+                torrentSelector.downloadUrl = {selector: trackerJson.tr_dl, attr: 'href'};
             }
             if (trackerJson.seed) {
                 torrentSelector.seed = trackerJson.seed;
-                if (trackerJson.seed_r && trackerJson.seed_rp) {
-                    onGetValue.seed = {exec: 'replace', args: [{arg: 0}, {regexp: trackerJson.seed_r, flags: 'ig'}]};
+                if (trackerJson.seed_r && trackerJson.seed_rp !== undefined) {
+                    onGetValue.seed = {exec: 'replace', args: [{arg: 0}, {regexp: trackerJson.seed_r, flags: 'ig'}, trackerJson.seed_rp]};
                 }
             }
             if (trackerJson.peer) {
                 torrentSelector.peer = trackerJson.peer;
-                if (trackerJson.peer_r && trackerJson.peer_rp) {
-                    onGetValue.peer = {exec: 'replace', args: [{arg: 0}, {regexp: trackerJson.peer_r, flags: 'ig'}]};
+                if (trackerJson.peer_r && trackerJson.peer_rp !== undefined) {
+                    onGetValue.peer = {exec: 'replace', args: [{arg: 0}, {regexp: trackerJson.peer_r, flags: 'ig'}, trackerJson.peer_rp]};
                 }
             }
             if (trackerJson.date) {
@@ -630,7 +634,7 @@ var exKit = {
                     torrentSelector.date = {selector: torrentSelector.date, attr: trackerJson.date_attr};
                 }
                 var dateFuncList = [];
-                if (trackerJson.t_r && trackerJson.t_r_r) {
+                if (trackerJson.t_r && trackerJson.t_r_r !== undefined) {
                     var t_r = new RegExp(trackerJson.t_r, "ig");
                     dateFuncList.push(function(value) {
                         return value.replace(t_r, trackerJson.t_r_r);
@@ -641,7 +645,7 @@ var exKit = {
                         return exKit.legacy.todayReplace(value, trackerJson.t_f);
                     });
                 }
-                if (trackerJson.me.t_m_r) {
+                if (trackerJson.t_m_r) {
                     dateFuncList.push(function(value) {
                         return exKit.legacy.monthReplace(value);
                     });
@@ -729,11 +733,14 @@ var exKit = {
     unFilterKeyList: ['categoryTitle', 'categoryUrl', 'title', 'url', 'downloadUrl'],
     urlCheck: function(tracker, value) {
         "use strict";
+        if (value.substr(0, 7) === 'magnet:') {
+            return value;
+        }
         if (value.substr(0, 4) === 'http') {
             return value;
         }
         if (value[0] === '/') {
-            return tracker.search.rootUrl + value;
+            return tracker.search.rootUrl + value.substr(1);
         }
         if (value.substr(0, 2) === './') {
             return tracker.search.baseUrl + value.substr(2);

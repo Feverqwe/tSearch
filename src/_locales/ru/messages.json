@@ -97,5 +97,9 @@
     "getFromCloud": {"message": "Получить настройки из облака"},
     "clearCloudStorage": {"message": "Очистить настройки в облаке"},
     "error": {"message": "Ошибка"},
-    "delete": {"message": "Удалить"}
+    "delete": {"message": "Удалить"},
+
+    "copyAndEnterTrackerCode": {"message": "Скопируйте и вставьте код трекера:"},
+    "trackerCodeReadError": {"message": "Ошибка разбора кода трекера"},
+    "cancel": {"message": "Отменить"}
 }
