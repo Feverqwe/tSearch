@@ -182,6 +182,7 @@ var profileManager = {
                             title: mono.language.edit,
                             on: ['click', function(e) {
                                 e.preventDefault();
+                                e.stopPropagation();
                                 // TODO: Fix me!
                             }]
                         }),
@@ -191,12 +192,13 @@ var profileManager = {
                             title: mono.language.delete,
                             on: ['click', function(e) {
                                 e.preventDefault();
+                                e.stopPropagation();
 
                                 var container = this.parentNode.parentNode;
                                 var id = container.dataset.id;
 
                                 delete engine.trackerLib[id];
-                                profileManager.updateTrackerItem(id);
+                                profileManager.updateTrackerItem(id, 1);
 
                                 profileManager.filterValueUpdate();
                                 profileManager.filterBy('custom');
@@ -229,7 +231,7 @@ var profileManager = {
             }
         }
     },
-    updateTrackerItem: function(trackerId) {
+    updateTrackerItem: function(trackerId, isRemove) {
         "use strict";
         var el = this.domCache.trackerList.querySelector('div[data-id="' + trackerId + '"]');
 
@@ -252,7 +254,7 @@ var profileManager = {
         var hasList = notFound ? true : this.trackerInList(trackerObj);
 
         var currentProfile = engine.profileList[this.varCache.currentProfileName] || [];
-        var selected = notFound ? true : currentProfile.indexOf(trackerObj.id) !== -1;
+        var selected = currentProfile.indexOf(trackerObj.id) !== -1;
 
         var newEl = this.getTrackerEl(trackerObj, selected, hasList, notFound);
 
@@ -260,6 +262,9 @@ var profileManager = {
             this.domCache.trackerList.appendChild(newEl);
         } else {
             this.domCache.trackerList.replaceChild(newEl, el);
+        }
+        if (isRemove && !selected) {
+            this.domCache.trackerList.removeChild(newEl);
         }
     },
     writeTrackerList: function(profileName) {
