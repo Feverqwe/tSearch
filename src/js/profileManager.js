@@ -176,17 +176,42 @@ var profileManager = {
                 mono.create('div', {
                     class: 'action',
                     append: [
-                        trackerItem.checkbox = mono.create('input', {
-                            type: 'checkbox',
-                            checked: !!selected
-                        }),
-                        !trackerItem.code ? undefined : mono.create('a', {
-                            class: 'edit',
+                        !trackerObj.code ? undefined : mono.create('a', {
+                            class: ['act-btn', 'edit'],
                             href: '#',
+                            title: mono.language.edit,
                             on: ['click', function(e) {
                                 e.preventDefault();
                                 // TODO: Fix me!
                             }]
+                        }),
+                        !trackerObj.code ? undefined : mono.create('a', {
+                            class: ['act-btn', 'remove'],
+                            href: '#',
+                            title: mono.language.delete,
+                            on: ['click', function(e) {
+                                e.preventDefault();
+
+                                var container = this.parentNode.parentNode;
+                                var id = container.dataset.id;
+
+                                delete engine.trackerLib[id];
+                                profileManager.updateTrackerItem(id);
+
+                                profileManager.filterValueUpdate();
+                                profileManager.filterBy('custom');
+
+                                mono.storage.get('customTorrentList', function(storage) {
+                                    var customTorrentList = storage.customTorrentList || {};
+                                    delete customTorrentList[id];
+                                    mono.storage.set({customTorrentList: customTorrentList});
+                                });
+                                // TODO: Fix me!
+                            }]
+                        }),
+                        trackerItem.checkbox = mono.create('input', {
+                            type: 'checkbox',
+                            checked: !!selected
                         })
                     ]
                 })
@@ -202,6 +227,39 @@ var profileManager = {
             if (engine.profileList[profileName].indexOf(trackerObj.id) !== -1) {
                 return true;
             }
+        }
+    },
+    updateTrackerItem: function(trackerId) {
+        "use strict";
+        var el = this.domCache.trackerList.querySelector('div[data-id="' + trackerId + '"]');
+
+        var trackerObj = engine.trackerLib[trackerId];
+
+        var notFound;
+        if (!trackerObj) {
+            trackerObj = {
+                id: trackerId,
+                icon: '#skull',
+                title: trackerId,
+                search: {
+                    baseUrl: 'http://code-tms.blogspot.ru/search?q=' + encodeURIComponent(trackerId)
+                },
+                code: trackerId.substr(0, 3) === 'ct_' ? '{}' : undefined,
+                desc: mono.language.trackerIsNotFound
+            };
+            notFound = true;
+        }
+        var hasList = notFound ? true : this.trackerInList(trackerObj);
+
+        var currentProfile = engine.profileList[this.varCache.currentProfileName] || [];
+        var selected = notFound ? true : currentProfile.indexOf(trackerObj.id) !== -1;
+
+        var newEl = this.getTrackerEl(trackerObj, selected, hasList, notFound);
+
+        if (!el) {
+            this.domCache.trackerList.appendChild(newEl);
+        } else {
+            this.domCache.trackerList.replaceChild(newEl, el);
         }
     },
     writeTrackerList: function(profileName) {
@@ -230,6 +288,7 @@ var profileManager = {
                         search: {
                             baseUrl: 'http://code-tms.blogspot.ru/search?q=' + encodeURIComponent(trackerId)
                         },
+                        code: trackerId.substr(0, 3) === 'ct_' ? '{}' : undefined,
                         desc: mono.language.trackerIsNotFound
                     };
 
@@ -528,17 +587,14 @@ var profileManager = {
                             return;
                         }
 
-                        var hasList = _this.trackerInList(trackerObj);
-                        var currentProfile = engine.profileList[_this.varCache.currentProfileName] || [];
-                        var selected = currentProfile.indexOf(trackerObj.id) !== -1;
-                        _this.domCache.trackerList.appendChild(_this.getTrackerEl(trackerObj, selected, hasList));
+                        profileManager.updateTrackerItem(trackerObj.id);
 
                         _this.filterValueUpdate();
                         _this.filterBy('custom');
 
                         mono.storage.get('customTorrentList', function(storage) {
                             var customTorrentList = storage.customTorrentList || {};
-                            customTorrentList[json.uid] = json;
+                            customTorrentList[trackerObj.id] = json;
                             mono.storage.set({customTorrentList: customTorrentList});
                         });
                     }]}},

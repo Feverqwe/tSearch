@@ -23,9 +23,10 @@ body.loading {
     margin-left: -29px;
     margin-top: 2px;
     background-color: #ddd;
-    background: url(../img/clear.png) center center no-repeat;
+    background: url(../img/delete.svg) center center no-repeat;
     opacity: 0;
     pointer-events: none;
+    background-size: 16px;
 }
 #word_filter_clear_btn.show,
 #clear_btn.show {

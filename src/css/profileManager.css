@@ -96,9 +96,11 @@
     padding-left: 24px;
     padding-right: 4px;
     width: 140px;
-    background-image: url(../img/mini_search.png);
+    background-image: url(../img/mini_search.svg);
     background-position: 4px center;
     background-repeat: no-repeat;
+
+    background-size: 12px;
 }
 
 #manager .mgr-tracker-list {
@@ -224,50 +226,50 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    width: 470px;
+    width: 490px;
     line-height: normal;
 }
 #manager .mgr-tracker-list .tracker-item .action {
     cursor: default;
 }
-#manager.show-tools .mgr-tracker-list .tracker-item:not(.not_found) .desc {
-    width: 422px;
+#manager .mgr-tracker-list .tracker-item .action input[type="checkbox"] {
+    vertical-align: middle;
+    margin-top: 0px;
 }
+#manager .mgr-tracker-list .tracker-item .action .act-btn {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
 
-#manager .mgr-tracker-list .tracker-item.custom div.actionList {
-    display: none;
-    float: right;
-    margin-top: 1px;
-    margin-bottom: -2px;
-}
-#manager.show-tools .mgr-tracker-list .tracker-item.custom div.actionList {
-    display: inline-block;
-}
-#manager .mgr-tracker-list .tracker-item div.actionList a {
-    margin-right: 8px;
-    display: inline-block;
-    height: 16px;
-    width: 16px;
-    border-radius: 3px;
-    background-repeat: no-repeat;
     background-position: center;
+    background-repeat: no-repeat;
+
+    margin-right: 5px;
+    vertical-align: middle;
+    margin-top: -3px;
+
     opacity: 0.6;
     transition: opacity 0.2s;
 }
-#manager .mgr-tracker-list .tracker-item.selected div.actionList a {
-    filter: invert(100%);
-    -webkit-filter: invert(1);
-    opacity: 0.8;
-}
-#manager .mgr-tracker-list .tracker-item div.actionList a:hover {
+#manager .mgr-tracker-list .tracker-item .action .act-btn:hover {
     opacity: 1;
 }
-#manager .mgr-tracker-list .tracker-item div.actionList a.custom_tracker_remove {
-    background-image: url(../img/remove.png);
+#manager .mgr-tracker-list .tracker-item .action .act-btn.edit {
+    background-image: url(../img/edit.svg);
+    background-size: 16px;
 }
-#manager .mgr-tracker-list .tracker-item div.actionList a.custom_tracker_edit {
-    background-image: url(../img/edit_list.png);
+#manager .mgr-tracker-list .tracker-item .action .act-btn.remove {
+    background-image: url(../img/delete.svg);
+    background-size: 16px;
 }
+
+#manager:not(.show-tools) .mgr-tracker-list .tracker-item .action .act-btn {
+    display: none;
+}
+#manager.show-tools .mgr-tracker-list .tracker-item:not(.not_found) .desc {
+    width: 444px;
+}
+
 #manager .mgr-tracker-list .tracker-item > div.status input {
     display: block;
     margin: 0;

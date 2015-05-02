@@ -101,7 +101,7 @@ body.home #result_block {
 }
 
 #edit_profile {
-    background: url(../img/edit_list.png) center center no-repeat;
+    background: url(../img/edit.svg) center center no-repeat;
     width: 16px;
     height: 16px;
     z-index: 1;
@@ -110,6 +110,7 @@ body.home #result_block {
     transition: opacity .2s;
     vertical-align: top;
     margin: 5px;
+    background-size: 16px;
 }
 #edit_profile:hover {
     opacity: 1;
