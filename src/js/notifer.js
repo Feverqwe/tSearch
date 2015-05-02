@@ -73,8 +73,16 @@ var showNotification = function(template, onClose) {
                         delete attrList.focus;
                     }
 
+                    if (attrList.text) {
+                        var textContent = attrList.text;
+                        delete attrList.text;
+                    }
+
                     nodeCounter++;
                     var $el = nodeCache[attrList.name || 'node'+nodeCounter] = $('<' + tagName + '>', attrList);
+                    if (textContent) {
+                        $el.text(textContent);
+                    }
                     if (hasFocus) {
                         focusEl = $el;
                     }

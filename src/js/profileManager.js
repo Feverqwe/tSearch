@@ -183,7 +183,61 @@ var profileManager = {
                             on: ['click', function(e) {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                // TODO: Fix me!
+
+                                var container = this.parentNode.parentNode;
+                                var id = container.dataset.id;
+
+                                var _this = profileManager;
+                                var $body = showNotification([
+                                    [{label: {text: mono.language.copyAndEnterTrackerCode}}],
+                                    {textarea: {name: 'code', text: engine.trackerLib[id].code}},
+                                    [
+                                        {input: {type: "button", value: mono.language.change, name: 'yesBtn', on: ['click', function(e) {
+                                            e.stopPropagation();
+                                            var formData = this.getFormData();
+
+                                            try {
+                                                var json = JSON.parse(formData.code);
+                                            } catch (e) {
+                                                alert(mono.language.trackerCodeReadError + "\n" + e);
+                                                return;
+                                            }
+
+                                            if (!json.uid) {
+                                                alert(mono.language.trackerCodeReadError);
+                                                return;
+                                            }
+
+                                            delete engine.trackerLib[id];
+                                            if (id.substr(0,3) === 'ct_') {
+                                                json.uid = parseInt(id.substr(3));
+                                            }
+
+                                            this.close();
+
+                                            var trackerObj = exKit.prepareCustomTracker(json);
+
+                                            _this.updateTrackerItem(trackerObj.id);
+
+                                            _this.filterValueUpdate();
+                                            _this.filterBy('custom');
+
+                                            mono.storage.get('customTorrentList', function(storage) {
+                                                var customTorrentList = storage.customTorrentList || {};
+                                                customTorrentList[trackerObj.id] = json;
+                                                mono.storage.set({customTorrentList: customTorrentList});
+                                            });
+                                        }]}},
+                                        {input: {type: "button", value: mono.language.cancel, name: 'noBtn', on: ['click', function(e) {
+                                            e.stopPropagation();
+                                            this.close();
+                                        }]}}
+                                    ]
+                                ]);
+                                $body.addClass('custom-tracker');
+                                $body.on('click', function(e) {
+                                    e.stopPropagation();
+                                });
                             }]
                         }),
                         !trackerObj.code ? undefined : mono.create('a', {
@@ -208,7 +262,6 @@ var profileManager = {
                                     delete customTorrentList[id];
                                     mono.storage.set({customTorrentList: customTorrentList});
                                 });
-                                // TODO: Fix me!
                             }]
                         }),
                         trackerItem.checkbox = mono.create('input', {
@@ -592,7 +645,7 @@ var profileManager = {
                             return;
                         }
 
-                        profileManager.updateTrackerItem(trackerObj.id);
+                        _this.updateTrackerItem(trackerObj.id);
 
                         _this.filterValueUpdate();
                         _this.filterBy('custom');

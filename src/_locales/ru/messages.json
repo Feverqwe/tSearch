@@ -103,5 +103,6 @@
     "trackerCodeReadError": {"message": "Ошибка разбора кода трекера"},
     "trackerExists": {"message": "Торрент-трекер уже добавлен!"},
     "cancel": {"message": "Отменить"},
-    "edit": {"message": "Редактировать"}
+    "edit": {"message": "Редактировать"},
+    "change": {"message": "Изменить"}
 }
