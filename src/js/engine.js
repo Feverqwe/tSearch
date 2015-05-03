@@ -160,6 +160,8 @@ var engine = {
 
             if (Array.isArray(storage.explorerOptions)) {
                 this.explorerOptions = storage.explorerOptions;
+            } else {
+                this.explorerOptions = mono.cloneObj(this.defaultExplorerOptions);
             }
 
             if (typeof storage.customTorrentList === 'object') {

@@ -115,5 +115,9 @@
     "imdbPopular": {"message": "IMDB: Фильмы"},
     "imdbSerials": {"message": "IMDB: Сериалы"},
     "ggGamesTop": {"message": "Игры: Лучшие"},
-    "ggGamesNew": {"message": "Игры: Новые"}
+    "ggGamesNew": {"message": "Игры: Новые"},
+
+    "goToTheWebsite": {"message": "Перейти на сайт"},
+    "setupView": {"message": "Настроить вид"},
+    "default": {"message": "По умолчанию"}
 }
