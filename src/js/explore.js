@@ -96,9 +96,12 @@ var explore = {
     loadTopList: function() {
         "use strict";
         var cache = engine.topList;
+
+        this.writeTopList(cache.content);
+
         var date = this.getCacheDate([0,1,2,3,4,5,6]);
         if (cache.keepAlive === date || !navigator.onLine) {
-            return this.writeTopList(cache.content);
+            return;
         }
 
         mono.ajax({
@@ -117,14 +120,11 @@ var explore = {
                         return 1;
                     });
 
+                    this.writeTopList(cache.content);
+
                     cache.keepAlive = date;
                     mono.storage.set({topList: cache});
                 }
-
-                this.writeTopList(cache.content);
-            }.bind(this),
-            error: function() {
-                this.writeTopList(cache.content);
             }.bind(this)
         });
     },
@@ -160,5 +160,7 @@ var explore = {
                 onResize.lock = false;
             }.bind(this), 250));
         }
+
+
     }
 };
