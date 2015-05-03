@@ -1481,6 +1481,8 @@ var view = {
         document.body.classList.add('home');
         view.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
 
+        explore.show();
+
         ga('send', 'pageview', {
             page: location.href,
             title: document.title

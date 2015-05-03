@@ -104,5 +104,16 @@
     "trackerExists": {"message": "Торрент-трекер уже добавлен!"},
     "cancel": {"message": "Отменить"},
     "edit": {"message": "Редактировать"},
-    "change": {"message": "Изменить"}
+    "change": {"message": "Изменить"},
+
+    "favoriteList": {"message": "Избранное"},
+    "kpFavoriteList": {"message": "Кинопоиск: Избранное"},
+    "kpInCinema": {"message": "Сейчас в кино"},
+    "kpPopular": {"message": "Фильмы"},
+    "kpSerials": {"message": "Сериалы"},
+    "imdbInCinema": {"message": "IMDB: Сейчас в кино"},
+    "imdbPopular": {"message": "IMDB: Фильмы"},
+    "imdbSerials": {"message": "IMDB: Сериалы"},
+    "ggGamesTop": {"message": "Игры: Лучшие"},
+    "ggGamesNew": {"message": "Игры: Новые"}
 }

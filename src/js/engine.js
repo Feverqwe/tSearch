@@ -24,7 +24,7 @@ var engine = {
         noBlankPageOnDownloadClick: 0,
         trackerListHeight: 200,
         profileListSync: 0,
-        proxyURL: 'http://www.gmodules.com/ig/proxy?url={url}',
+        proxyURL: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&container=pos',
         proxyHost: '3s3s.org',
         proxyUrlFixSpaces: 1,
         proxyHostLinks: 0,
@@ -34,21 +34,23 @@ var engine = {
         sortOrder: 0
     },
     settings: {},
-    defaultExplorerOptions: {
-        favorites: { e: 1, s: 1, w: 100, c: 1 },
-        kp_favorites: { e: 1, s: 1, w: 100, c: 1 },
-        kp_in_cinema: { e: 1, s: 1, w: 100, c: 1 },
-        kp_popular: { e: 1, s: 1, w: 100, c: 2 },
-        kp_serials: { e: 1, s: 1, w: 100, c: 1 },
-        imdb_in_cinema: { e: 1, s: 1, w: 100, c: 1 },
-        imdb_popular: { e: 1, s: 1, w: 100, c: 2 },
-        imdb_serials: { e: 1, s: 1, w: 100, c: 1 },
-        gg_games_top: { e: 1, s: 1, w: 100, c: 1 },
-        gg_games_new: { e: 1, s: 1, w: 100, c: 1 }
-    },
+    defaultExplorerOptions: [
+        {type: 'favorites',      enable: 1, show: 1, width: 100, lineCount: 1, lang: 'favoriteList'},     //0
+        {type: 'kp_favorites',   enable: 1, show: 1, width: 100, lineCount: 1, lang: 'kpFavoriteList'},  //1
+        {type: 'kp_in_cinema',   enable: 1, show: 1, width: 100, lineCount: 1, lang: 'kpInCinema'},  //2
+        {type: 'kp_popular',     enable: 1, show: 1, width: 100, lineCount: 2, lang: 'kpPopular'},    //3
+        {type: 'kp_serials',     enable: 1, show: 1, width: 100, lineCount: 1, lang: 'kpSerials'},    //4
+        {type: 'imdb_in_cinema', enable: 1, show: 1, width: 100, lineCount: 1, lang: 'imdbInCinema'},//5
+        {type: 'imdb_popular',   enable: 1, show: 1, width: 100, lineCount: 2, lang: 'imdbPopular'},  //6
+        {type: 'imdb_serials',   enable: 1, show: 1, width: 100, lineCount: 1, lang: 'imdbSerials'},  //7
+        {type: 'gg_games_top',   enable: 1, show: 1, width: 100, lineCount: 1, lang: 'ggGamesTop'},  //8
+        {type: 'gg_games_new',   enable: 1, show: 1, width: 100, lineCount: 1, lang: 'ggGamesNew'}   //9
+    ],
+    explorerOptions: [],
     profileList: {},
     currentProfile: undefined,
     history: [],
+    topList: {},
 
     getDefaultProfileList: function() {
         "use strict";
@@ -112,45 +114,19 @@ var engine = {
 
     defaultPrepare: function(langCode) {
         "use strict";
-        if ( langCode === 'en' ) {
-            engine.defaultExplorerOptions.kp_favorites.e = 0;
-            engine.defaultExplorerOptions.kp_in_cinema.e = 0;
-            engine.defaultExplorerOptions.kp_popular.e = 0;
-            engine.defaultExplorerOptions.kp_serials.e = 0;
+        var typeList;
+        if (langCode === 'en') {
+            typeList = ['imdb_in_cinema', 'imdb_popular', 'imdb_serials', 'kp_serials'];
         } else {
-            engine.defaultExplorerOptions.imdb_in_cinema.e = 0;
-            engine.defaultExplorerOptions.imdb_popular.e = 0;
-            engine.defaultExplorerOptions.imdb_serials.e = 1;
-            engine.defaultExplorerOptions.kp_serials.e = 0;
+            typeList = ['favorites', 'kp_favorites', 'kp_popular', 'kp_serials'];
         }
-    },
-
-    setProxyList: function(proxyList) {
-        "use strict";
-        proxyList = proxyList || {};
-
-        if (Array.isArray(proxyList)) {
-            var newList = {};
-            proxyList.forEach(function(item) {
-                newList[item] = 1;
-            });
-            proxyList = newList;
-        }
-
-        var delList = [], item, i;
-        for (item in proxyList) {
-            if (newList[item] === undefined) {
-                delList.push(item);
+        for (var type in typeList) {
+            for (var i = 0, item; item = this.defaultExplorerOptions[i]; i++) {
+                if (item.type === type) {
+                    item.enable = 0;
+                }
             }
         }
-        for (item in newList) {
-            proxyList[item] = newList[item];
-        }
-        for (i = 0, item; item = delList[i]; i++) {
-            delete proxyList[item];
-        }
-
-        engine.proxyList = proxyList;
     },
 
     loadSettings: function(cb) {
@@ -165,10 +141,9 @@ var engine = {
         optionsList.push('customTorrentList');
         optionsList.push('profileList');
         optionsList.push('searchHistory');
-        optionsList.push('proxyList');
-        optionsList.push('titleQualityList');
         optionsList.push('currentProfile');
-        optionsList.push('customTorrentList');
+        optionsList.push('explorerOptions');
+        optionsList.push('topList');
 
         mono.storage.get(optionsList, function(storage) {
             var settings = {};
@@ -179,16 +154,22 @@ var engine = {
 
             !settings.doNotSendStatistics && this.initCounter();
 
-            this.setProxyList(storage.proxyList);
-
             if (Array.isArray(storage.searchHistory)) {
                 this.history = storage.searchHistory;
+            }
+
+            if (Array.isArray(storage.explorerOptions)) {
+                this.explorerOptions = storage.explorerOptions;
             }
 
             if (typeof storage.customTorrentList === 'object') {
                 for (var id in storage.customTorrentList) {
                     exKit.prepareCustomTracker(storage.customTorrentList[id]);
                 }
+            }
+
+            if (typeof storage.topList === 'object') {
+                this.topList = storage.topList;
             }
 
             mono.getLanguage(function() {
