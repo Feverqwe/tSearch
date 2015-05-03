@@ -65,6 +65,7 @@ var explore = {
                 request += ' ' + item.year;
             }
             body.appendChild(mono.create('li', {
+                class: ['l'+line],
                 append: [
                     lineIcon,
                     mono.create('span', {

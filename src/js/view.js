@@ -1465,6 +1465,8 @@ var view = {
         "use strict";
         document.body.classList.remove('home');
 
+        explore.hide();
+
         ga('send', 'pageview', {
             page: location.href,
             title: document.title
