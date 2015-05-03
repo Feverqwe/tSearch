@@ -31,12 +31,15 @@ var explore = {
         day = day - lastDay;
         return parseInt(currentDate.getTime() / 1000) - day*24*60*60 - hours*60*60 - minutes*60 - seconds;
     },
+    getTopListColumnCount: function() {
+        var width = document.body.clientWidth;
+        return width > 1275 ? 4 : 3;
+    },
     writeTopList: function(content) {
         "use strict";
         if (!content || !content.length) return;
 
-        var width = document.body.clientWidth;
-        var columnCount = width > 1275 ? 4 : 3;
+        var columnCount = this.getTopListColumnCount();
 
         var lineIcon;
         var lineIconStyle;
@@ -147,6 +150,15 @@ var explore = {
 
         if (!engine.settings.hideTopSearch) {
             this.loadTopList();
+            window.addEventListener('resize', mono.throttle(function onResize() {
+                if (onResize.lock) return;
+                onResize.lock = true;
+
+                if (this.varCache.topListColumnCount !== this.getTopListColumnCount()) {
+                    this.writeTopList(engine.topList.content);
+                }
+                onResize.lock = false;
+            }.bind(this), 250));
         }
     }
 };
