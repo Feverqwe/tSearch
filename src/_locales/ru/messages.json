@@ -119,5 +119,10 @@
 
     "goToTheWebsite": {"message": "Перейти на сайт"},
     "setupView": {"message": "Настроить вид"},
-    "default": {"message": "По умолчанию"}
+    "default": {"message": "По умолчанию"},
+    "addInFavorite": {"message": "В избранное"},
+    "removeFromFavorite": {"message": "Удалить из избранного"},
+    "move": {"message": "Переместить"},
+    "requestQuality": {"message": "Узнать качество"},
+    "readMore": {"message": "Подробнее"}
 }

@@ -107,6 +107,7 @@ var explore = {
         }
     },
     content_parser: function () {
+        "use strict";
         var prepareObj = function(obj) {
             for (var key in item) {
                 var item = obj[key];
@@ -677,8 +678,187 @@ var explore = {
 
         this.domCache.container.classList.add('hide');
     },
-    writeCategoryContent: function () {
+    writeCategoryContent: function(type, content, page, update_pages) {
         "use strict";
+        page = page || 0;
+        content = content || [];
+        var contentLen = content.length;
+        var explorerOptions = engine.explorerOptions[type];
+        var lineCount = explorerOptions.lineCount;
+        var categoryObj = this.varCache.categoryList[type];
+        var sourceOptions = this.sourceOptions[type];
+        var width = document.body.clientWidth - 180;
+        var itemCount = Math.ceil(width / (explorerOptions.width + 10*2)) - 1;
+        var displayItemCount = itemCount * lineCount;
+        categoryObj.displayItemCount = displayItemCount;
+        if (!categoryObj.pages || update_pages) {
+            var coef = contentLen / displayItemCount;
+            var pageCount = Math.floor(coef);
+            if (coef % 1 === 0) {
+                pageCount--;
+            }
+            categoryObj.currentPage = page;
+            var pageItems = document.createDocumentFragment();
+            if (pageCount === Infinity) {
+                pageCount = 0;
+            }
+            for (var i = 0; i <= pageCount; i++) {
+                pageItems.appendChild(mono.create('li', {
+                    data: {
+                        page: i,
+                        type: type
+                    },
+                    class: ['page_' + i, page === i ? 'active' : undefined],
+                    text: i + 1
+                }));
+            }
+            if (categoryObj.pages !== undefined) {
+                categoryObj.pages.textContent = '';
+                categoryObj.pages.appendChild(pageItems);
+            } else {
+                categoryObj.pages = mono.create('ul', {
+                    class: 'page_body',
+                    append: pageItems
+                });
+                // todo: fix me!
+            }
+            if (!pageItems.childNodes.length) {
+                categoryObj.pages.addClass('hide');
+            } else {
+                categoryObj.pages.removeClass('hide');
+            }
+        }
+
+        if (categoryObj.currentPage !== page) {
+            var activePage = categoryObj.pages.querySelector('li.active');
+            activePage && activePage.classList.remove('active');
+            var activePage = categoryObj.pages.querySelector('li.page_'+page);
+            activePage && activePage.classList.add('active');
+        }
+
+        if (categoryObj.body === undefined) {
+            categoryObj.body = mono.create('ul', {class: 'body'});
+            // todo: fix me!
+            categoryObj.body_height = 0;
+        }
+
+        var contentBody = document.createDocumentFragment();
+        var form = displayItemCount * page;
+        var end = form + displayItemCount;
+        if (end > contentLen) {
+            end = contentLen;
+        }
+        for (var index = form; index < end; index++) {
+            var title;
+            if ((mono.language.langCode === 'en' || engine.settings.useEnglishPosterName) && content[index].title_en) {
+                title = content[index].title_en;
+            } else {
+                title = content[index].title;
+            }
+            var search_link = 'index.html#?search='+(encodeURIComponent(title));
+            var span = mono.create('span', {
+                append: mono.create('a', {
+                    href: search_link,
+                    text: title,
+                    title: title
+                })
+            });
+            var titleClassName = ['title'];
+            var img_url = content[index].img;
+            if (img_url[6] !== '/' && sourceOptions.imgUrl) {
+                img_url = sourceOptions.imgUrl+img_url;
+            }
+            var url = (sourceOptions.root_url ? sourceOptions.root_url : '') + content[index].url;
+            var menu = document.createDocumentFragment();
+            if ( type === 'favorites') {
+                mono.create(menu, {
+                    append: [
+                        mono.create('div', {
+                            class: 'rmFavorite',
+                            title: mono.language.removeFromFavorite
+                        }),
+                        mono.create('div', {
+                            class: 'move',
+                            title: mono.language.move
+                        }),
+                        mono.create('div', {
+                            class: 'edit',
+                            title: mono.language.edit
+                        })
+                    ]
+                });
+            } else {
+                mono.create(menu, {
+                    append: [
+                        mono.create('div', {
+                            class: 'inFavorite',
+                            title: mono.language.addInFavorite
+                        })
+                    ]
+                });
+            }
+            var qualityText = '?';
+            var quality = mono.create('div', {
+                class: 'quality',
+                title: mono.language.requestQuality,
+                append: [
+                    mono.create('span', {
+                        text: qualityText
+                    })
+                ]
+            });
+            mono.create(contentBody.appendChild, {
+                append: [
+                    mono.create('li', {
+                        append: [
+                            mono.create('div', {
+                                class: 'picture',
+                                append: [
+                                    menu,
+                                    quality,
+                                    mono.create('a', {
+                                        class: 'link',
+                                        href: url,
+                                        target: '_blank',
+                                        title: mono.language.readMore
+                                    }),
+                                    mono.create('a', {
+                                        href: search_link,
+                                        title: title,
+                                        append: mono.create('img', {
+                                            srt: img_url,
+                                            on: ['error', function() {
+                                                this.src = 'images/no_poster.png';
+                                            }]
+                                        })
+                                    })
+                                ]
+                            }),
+                            mono.create('div', {
+                                class: titleClassName,
+                                append: span
+                            })
+                        ]
+                    })
+                ]
+            });
+        }
+        var contentBodyLen = categoryObj.childNodes.length;
+        if (!contentBodyLen) {
+            if (page > 0) {
+                page--;
+                return this.writeCategoryContent(type, content, page, update_pages);
+            }
+            if (type === 'favorites') {
+                categoryObj.li.classList.add('no_items');
+            }
+        } else
+        if (type === 'favorites' && categoryObj.li.classList.contains('no_items')) {
+            categoryObj.li.classList.remove('no_items');
+        }
+        categoryObj.currentPage = page;
+        categoryObj.body.textContent = '';
+        categoryObj.body.appendChild(contentBody);
     },
     limitObjSize: function(obj, count) {
         "use strict";
