@@ -109,22 +109,26 @@ var explore = {
     content_parser: function () {
         "use strict";
         var prepareObj = function(obj) {
-            for (var key in item) {
+            for (var key in obj) {
                 var item = obj[key];
-                if (typeof item !== 'string' || !item) return;
-                obj[key] = exKit.contentUnFilter(spaceReplace(obj[key]));
+                if (typeof item !== 'string' || !item) {
+                    if (key === 'title_en') {
+                        console.log('English title is not found!', obj);
+                        continue;
+                    }
+                    return;
+                }
+                obj[key] = spaceReplace(exKit.contentUnFilter(item));
             }
             return 1;
         };
         var kp_img_url = function(url) {
-            return url.replace(/\/film\/([0-9]*)\//, '$1.jpg');
+            var m = url.match(/film\/(\d+)/);
+            return m && m[1] + '.jpg' || url;
         };
-        var kp_img_url2 = function(url) {
-            return url.replace(/.*film\/([0-9]*)\.jpg/, '$1.jpg');
-        };
-        var imdb_img_url = function(i) {
-            i = i.replace(/.*\/images\/(.*)_V1.*/, '$1_V1_SX120_.jpg');
-            return i;
+        var imdb_img_url = function(url) {
+            var m = url.match(/images\/(.+)_V1/);
+            return m && m[1] + '_V1_SX120_.jpg' || url;
         };
         var getYear = function(text) {
             return parseInt(text.replace(/.*\([^\(]*([1-2]{1}[0-9]{3})[^\)]*\).*/g, '$1'));
@@ -203,7 +207,7 @@ var explore = {
                         continue;
                     }
 
-                    obj.img = kp_img_url2('http://st.kinopoisk.ru' + obj.img);
+                    obj.img = kp_img_url('http://st.kinopoisk.ru' + obj.img);
                     title = obj.title;
                     obj.title = rmSerial(obj.title);
                     var isSerial = (title !== obj.title);
@@ -259,7 +263,7 @@ var explore = {
                         continue;
                     }
 
-                    obj.img = kp_img_url2(obj.img);
+                    obj.img = kp_img_url(obj.img);
                     var year = getYear(obj.title_en);
                     obj.title_en = rmYear(obj.title_en);
                     if (!obj.title_en) {
@@ -281,17 +285,17 @@ var explore = {
                 var elList = dom.querySelectorAll('div.stat > div.el');
                 var arr = [];
                 for (var i = 0, el; el = elList[i]; i++) {
-                    var img = el.querySelector('a');
-                    img !== null && (img = img.getAttribute('href'));
+                    var img = el.querySelectorAll('a')[1];
+                    img && (img = img.getAttribute('href'));
 
-                    var title = el.querySelector('a');
-                    title !== null && (title = title.textContent);
+                    var title = el.querySelectorAll('a')[1];
+                    title && (title = title.textContent);
 
                     var titleEn = el.querySelector('i');
                     titleEn !== null && (titleEn = titleEn.textContent);
 
-                    var url = el.querySelector('a');
-                    url !== null && (url = url.getAttribute('href'));
+                    var url = el.querySelectorAll('a')[1];
+                    url && (url = url.getAttribute('href'));
 
                     var obj = {
                         img: img,
@@ -326,7 +330,7 @@ var explore = {
                     var img = el.querySelector('td > div > a');
                     img !== null && (img = img.getAttribute('href'));
 
-                    var title = el.querySelector('td > div > a');
+                    var title = el.querySelector('td~td > div > a');
                     title !== null && (title = title.textContent);
 
                     var titleEn = el.querySelector('td > div > span');
@@ -678,100 +682,102 @@ var explore = {
 
         this.domCache.container.classList.add('hide');
     },
+    onSetPage: function setPage(categoryObj, page) {
+        if (categoryObj.currentPage === page) return;
+        categoryObj.currentPage = page;
+        setPage.lastEl && setPage.lastEl.classList.remove('active');
+        setPage.lastEl = categoryObj.pages.querySelector('li.page_'+page);
+        setPage.lastEl && setPage.lastEl.classList.add('active');
+    },
+    getPageListBody: function (categoryObj, content) {
+        "use strict";
+        var contentLen = content.length;
+        var coefficient = contentLen / categoryObj.displayItemCount;
+        var pageCount = Math.floor(coefficient);
+        if (coefficient % 1 === 0) {
+            pageCount--;
+        }
+        if (pageCount === Infinity) {
+            pageCount = 0;
+        }
+
+        var pageItems = document.createDocumentFragment();
+        for (var i = 0; i <= pageCount; i++) {
+            pageItems.appendChild(mono.create('li', {
+                data: {
+                    page: i,
+                    type: categoryObj.type
+                },
+                class: ['page_' + i],
+                text: i + 1
+            }));
+        }
+
+        categoryObj.pageEl.textContent = '';
+        categoryObj.pageEl.appendChild(pageItems);
+
+        if (pageCount === 0) {
+            categoryObj.pageEl.classList.add('hide');
+        } else {
+            categoryObj.pageEl.classList.remove('hide');
+        }
+
+        categoryObj.setPage = this.onSetPage.bind(categoryObj);
+    },
+    getExplorerOptions: function(type) {
+        "use strict";
+        for (var i = 0, item; item = engine.explorerOptions[i]; i++) {
+            if (item.type === type) {
+                return item;
+            }
+        }
+    },
     writeCategoryContent: function(type, content, page, update_pages) {
         "use strict";
         page = page || 0;
         content = content || [];
         var contentLen = content.length;
-        var explorerOptions = engine.explorerOptions[type];
-        var lineCount = explorerOptions.lineCount;
         var categoryObj = this.varCache.categoryList[type];
+        var explorerOptions = this.getExplorerOptions(type);
         var sourceOptions = this.sourceOptions[type];
+
+        var lineCount = explorerOptions.lineCount;
         var width = document.body.clientWidth - 180;
         var itemCount = Math.ceil(width / (explorerOptions.width + 10*2)) - 1;
         var displayItemCount = itemCount * lineCount;
         categoryObj.displayItemCount = displayItemCount;
-        if (!categoryObj.pages || update_pages) {
-            var coef = contentLen / displayItemCount;
-            var pageCount = Math.floor(coef);
-            if (coef % 1 === 0) {
-                pageCount--;
-            }
-            categoryObj.currentPage = page;
-            var pageItems = document.createDocumentFragment();
-            if (pageCount === Infinity) {
-                pageCount = 0;
-            }
-            for (var i = 0; i <= pageCount; i++) {
-                pageItems.appendChild(mono.create('li', {
-                    data: {
-                        page: i,
-                        type: type
-                    },
-                    class: ['page_' + i, page === i ? 'active' : undefined],
-                    text: i + 1
-                }));
-            }
-            if (categoryObj.pages !== undefined) {
-                categoryObj.pages.textContent = '';
-                categoryObj.pages.appendChild(pageItems);
-            } else {
-                categoryObj.pages = mono.create('ul', {
-                    class: 'page_body',
-                    append: pageItems
-                });
-                // todo: fix me!
-            }
-            if (!pageItems.childNodes.length) {
-                categoryObj.pages.addClass('hide');
-            } else {
-                categoryObj.pages.removeClass('hide');
-            }
-        }
-
-        if (categoryObj.currentPage !== page) {
-            var activePage = categoryObj.pages.querySelector('li.active');
-            activePage && activePage.classList.remove('active');
-            var activePage = categoryObj.pages.querySelector('li.page_'+page);
-            activePage && activePage.classList.add('active');
-        }
-
-        if (categoryObj.body === undefined) {
-            categoryObj.body = mono.create('ul', {class: 'body'});
-            // todo: fix me!
-            categoryObj.body_height = 0;
-        }
-
-        var contentBody = document.createDocumentFragment();
         var form = displayItemCount * page;
         var end = form + displayItemCount;
         if (end > contentLen) {
             end = contentLen;
         }
+
+        var contentBody = document.createDocumentFragment();
         for (var index = form; index < end; index++) {
-            var title;
-            if ((mono.language.langCode === 'en' || engine.settings.useEnglishPosterName) && content[index].title_en) {
+            var title = content[index].title;
+            if (content[index].title_en && (mono.language.langCode === 'en' || engine.settings.useEnglishPosterName)) {
                 title = content[index].title_en;
-            } else {
-                title = content[index].title;
             }
-            var search_link = 'index.html#?search='+(encodeURIComponent(title));
-            var span = mono.create('span', {
+
+            var search_link = 'index.html#?search=' + encodeURIComponent(title);
+            var titleEl = mono.create('span', {
                 append: mono.create('a', {
                     href: search_link,
                     text: title,
                     title: title
                 })
             });
-            var titleClassName = ['title'];
-            var img_url = content[index].img;
-            if (img_url[6] !== '/' && sourceOptions.imgUrl) {
-                img_url = sourceOptions.imgUrl+img_url;
+
+            var imgUrl = content[index].img;
+            if (imgUrl[6] !== '/' && sourceOptions.imgUrl) {
+                imgUrl = sourceOptions.imgUrl+imgUrl;
             }
-            var url = (sourceOptions.root_url ? sourceOptions.root_url : '') + content[index].url;
-            var menu = document.createDocumentFragment();
+
+            var readMoreUrl = (sourceOptions.root_url ? sourceOptions.root_url : '') + content[index].url;
+
+            var actionList = document.createDocumentFragment();
             if ( type === 'favorites') {
-                mono.create(menu, {
+                mono.create(actionList, {
                     append: [
                         mono.create('div', {
                             class: 'rmFavorite',
@@ -788,15 +794,12 @@ var explore = {
                     ]
                 });
             } else {
-                mono.create(menu, {
-                    append: [
-                        mono.create('div', {
-                            class: 'inFavorite',
-                            title: mono.language.addInFavorite
-                        })
-                    ]
-                });
+                actionList.appendChild(mono.create('div', {
+                    class: 'inFavorite',
+                    title: mono.language.addInFavorite
+                }));
             }
+
             var qualityText = '?';
             var quality = mono.create('div', {
                 class: 'quality',
@@ -807,44 +810,41 @@ var explore = {
                     })
                 ]
             });
-            mono.create(contentBody.appendChild, {
+
+            contentBody.appendChild(mono.create('li', {
                 append: [
-                    mono.create('li', {
+                    mono.create('div', {
+                        class: 'picture',
                         append: [
-                            mono.create('div', {
-                                class: 'picture',
-                                append: [
-                                    menu,
-                                    quality,
-                                    mono.create('a', {
-                                        class: 'link',
-                                        href: url,
-                                        target: '_blank',
-                                        title: mono.language.readMore
-                                    }),
-                                    mono.create('a', {
-                                        href: search_link,
-                                        title: title,
-                                        append: mono.create('img', {
-                                            srt: img_url,
-                                            on: ['error', function() {
-                                                this.src = 'images/no_poster.png';
-                                            }]
-                                        })
-                                    })
-                                ]
+                            actionList,
+                            quality,
+                            mono.create('a', {
+                                class: 'link',
+                                href: readMoreUrl,
+                                target: '_blank',
+                                title: mono.language.readMore
                             }),
-                            mono.create('div', {
-                                class: titleClassName,
-                                append: span
+                            mono.create('a', {
+                                href: search_link,
+                                title: title,
+                                append: mono.create('img', {
+                                    src: imgUrl,
+                                    on: ['error', function () {
+                                        this.src = 'img/no_poster.png';
+                                    }]
+                                })
                             })
                         ]
+                    }),
+                    mono.create('div', {
+                        class: ['title'],
+                        append: titleEl
                     })
                 ]
-            });
+            }));
         }
-        var contentBodyLen = categoryObj.childNodes.length;
-        if (!contentBodyLen) {
+
+        if (contentBody.childNodes.length === 0) {
             if (page > 0) {
                 page--;
                 return this.writeCategoryContent(type, content, page, update_pages);
@@ -856,7 +856,12 @@ var explore = {
         if (type === 'favorites' && categoryObj.li.classList.contains('no_items')) {
             categoryObj.li.classList.remove('no_items');
         }
-        categoryObj.currentPage = page;
+
+        if (!categoryObj.setPage || update_pages) {
+            this.getPageListBody(categoryObj, content);
+        }
+
+        categoryObj.setPage(page);
         categoryObj.body.textContent = '';
         categoryObj.body.appendChild(contentBody);
     },
@@ -974,6 +979,38 @@ var explore = {
             this.xhr_send(type, source, i, page_mode);
         }
     },
+    getSetupBody: function() {
+        "use strict";
+        return mono.create('div', {
+            class: ['setupBody'],
+            append: [
+                mono.create('input', {
+                    type: 'range',
+                    name: 'imageWidth'
+                }),
+                mono.create('div', {
+                    class: ['defaultSize'],
+                    title: mono.language.default
+                }),
+                mono.create('select', {
+                    class: ['lineCount'],
+                    append: (function(){
+                        "use strict";
+                        var list = [];
+                        for (var i = 1; i < 7; i++) {
+                            list.push(
+                                mono.create('option', {
+                                    text: i,
+                                    value: i
+                                })
+                            );
+                        }
+                        return list;
+                    })()
+                })
+            ]
+        });
+    },
     writeCategoryList: function () {
         "use strict";
         for (var i = 0, item; item = engine.explorerOptions[i]; i++) {
@@ -1000,16 +1037,14 @@ var explore = {
                 });
             }
 
-            mono.create(actionList, {
-                append: [
-                    mono.create('div', {
-                        class: ['setup'],
-                        title: mono.language.setupView
-                    })
-                ]
-            });
+            actionList.appendChild(mono.create('div', {
+                class: ['setup'],
+                title: mono.language.setupView
+            }));
 
             var categoryObj = this.varCache.categoryList[item.type] = {};
+            categoryObj.type = item.type;
+
             this.domCache.gallery.appendChild(categoryObj.li = mono.create('li', {
                 class: [!item.show ? 'collapsed' : undefined],
                 data: {
@@ -1031,39 +1066,14 @@ var explore = {
                                 append: actionList
                             }),
                             mono.create('div', {
-                                class: ['setupBody'],
-                                append: [
-                                    mono.create('input', {
-                                        type: 'range',
-                                        name: 'imageWidth'
-                                    }),
-                                    mono.create('div', {
-                                        class: ['defaultSize'],
-                                        title: mono.language.default
-                                    }),
-                                    mono.create('select', {
-                                        class: ['lineCount'],
-                                        append: (function(){
-                                            "use strict";
-                                            var list = [];
-                                            for (var i = 1; i < 7; i++) {
-                                                list.push(
-                                                    mono.create('option', {
-                                                        text: i,
-                                                        value: i
-                                                    })
-                                                );
-                                            }
-                                            return list;
-                                        })()
-                                    })
-                                ]
-                            }),
-                            mono.create('div', {
                                 class: ['collapses', item.show ? 'down' : undefined]
                             })
                         ]
-                    })
+                    }),
+                    categoryObj.pageEl = mono.create('ul', {
+                        class: 'page_body'
+                    }),
+                    categoryObj.body = mono.create('ul', {class: 'body'})
                 ]
             }));
 
