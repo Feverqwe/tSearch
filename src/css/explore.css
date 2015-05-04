@@ -93,3 +93,325 @@
 #top_search .l5 a:hover {
     border-color: #8C5FFF;
 }
+
+ul#explore_gallery {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+
+ul#explore_gallery {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+ul#explore_gallery div.head > * {
+    cursor: default;
+}
+
+ul#explore_gallery div.head > div {
+    display: inline-block;
+}
+
+ul#explore_gallery > li.loading div.head div.move {
+    background: url(../img/loading.gif) no-repeat center;
+    opacity: 1;
+}
+ul#explore_gallery > li.timeout div.head div.move {
+    background: url(../img/timeout.png) no-repeat center;
+    opacity: 1;
+}
+ul#explore_gallery ul.page_body.hide {
+    display: none;
+}
+ul#explore_gallery ul.page_body > li {
+    display: inline-block;
+}
+ul#explore_gallery > li.collapsed > ul {
+    display: none;
+}
+ul#explore_gallery > li.collapsing > div,
+ul#explore_gallery > li.collapsed > div {
+    border-bottom: 0;
+}
+ul#explore_gallery > li.collapsing > ul,
+ul#explore_gallery > li.collapsed > div > div.action {
+    display: none;
+}
+ul#explore_gallery > li.collapsing > div > div.action {
+    opacity: 0;
+    transition: opacity .2s;
+}
+ul#explore_gallery > li.no_items {
+    display: none;
+}
+ul#explore_gallery ul.body a {
+    text-decoration: none;
+}
+ul#explore_gallery ul.body > li {
+    display: inline-block;
+}
+ul#explore_gallery div.head {
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+ul#explore_gallery div.head > div.move {
+    width: 16px;
+    height: 16px;
+    background: url(../img/moveble.png) center center no-repeat;
+    margin-right: 5px;
+    margin-top: 1px;
+    margin-bottom: -1px;
+    cursor: move;
+    transition: opacity 0.2s;
+    opacity: 0.5;
+}
+ul#explore_gallery div.head > div.move:hover,
+ul#explore_gallery li.ui-sortable-helper div.head > div.move{
+    opacity: 1;
+}
+ul#explore_gallery div.head > div.title {
+    font-size: 21px;
+}
+ul#explore_gallery div.head div.action > div {
+    display: inline-block;
+}
+ul#explore_gallery div.head div.action > div.setup {
+    background: url(../images/settings.png) center center no-repeat;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    opacity: 0.5;
+    margin-left: 5px;
+    margin-bottom: -2px;
+    transition: opacity .2s;
+}
+ul#explore_gallery div.head div.action > div.setup:hover {
+    opacity: 1;
+}
+ul#explore_gallery div.head div.setup_body.show {
+    display: inline-block;
+    margin-bottom: -1px;
+}
+ul#explore_gallery div.head > div.setup_body {
+    display: none;
+}
+ul#explore_gallery div.head:hover div.collapses {
+    opacity: 1;
+}
+ul#explore_gallery div.head > *:hover ~ div.collapses {
+    opacity: 0.5;
+}
+ul#explore_gallery div.head div.action > div.update {
+    width: 16px;
+    height: 16px;
+    background: url(../img/sync.png) no-repeat center;
+    margin-left: 5px;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: all 0.5s;
+    opacity: 0.5;
+}
+ul#explore_gallery div.head div.action > div.update:hover {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    opacity: 1;
+}
+ul#explore_gallery div.head div.action > div.update.loading {
+    background: url(../img/loading.gif) no-repeat center;
+    opacity: 1;
+}
+ul#explore_gallery div.head div.action > div.update.error {
+    background: url(../img/error.png) no-repeat center;
+}
+
+ul#explore_gallery div.head div.action > a.open {
+    width: 16px;
+    height: 16px;
+    background: url(../img/external.png) no-repeat top center;
+    margin-bottom: -2px;
+    display: inline-block;
+    opacity: 0.5;
+    transition: opacity .2s;
+}
+ul#explore_gallery div.head div.action > a.open:hover {
+    opacity: 1;
+}
+ul#explore_gallery div.head div.collapses {
+    float: right;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    margin-top: 6px;
+    background: url(../images/show_hide.png) bottom center no-repeat;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.5;
+}
+ul#explore_gallery div.head div.collapses:hover {
+    opacity: 1;
+}
+ul#explore_gallery div.head div.collapses.down {
+    transform: rotate(0deg);
+}
+ul#explore_gallery div.head div.collapses.up {
+    transform: rotate(90deg);
+}
+ul#explore_gallery ul.page_body {
+    margin-top: 2px;
+    text-align: center;
+    margin-bottom: 2px;
+}
+ul#explore_gallery ul.page_body > li {
+    display: inline-block;
+    border-radius: 4px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-left: 2px;
+    min-width: 24px;
+    height: 16px;
+    cursor: default;
+}
+ul#explore_gallery ul.page_body > li.active {
+    background-color: #337af8;
+    color: #fff;
+}
+ul#explore_gallery ul.body li {
+    position: relative;
+    margin: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+ul#explore_gallery ul.body div.picture {
+    text-align: center;
+    position: relative;
+}
+
+ul#explore_gallery ul.body div.picture img {
+    max-width: 100%;
+    box-shadow: 0 0 1px rgba(0,0,0,0.8);
+}
+ul#explore_gallery ul.body div.title {
+    position: relative;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 0.857em;
+}
+
+ul#explore_gallery.sort_mode div.collapses,
+ul#explore_gallery.sort_mode div.action,
+ul#explore_gallery.sort_mode ul.body,
+ul#explore_gallery.sort_mode ul.page_body {
+    display: none;
+}
+ul#explore_gallery.sort_mode > li > div.head {
+    border-bottom-width: 0;
+}
+ul#explore_gallery li.ui-sortable-helper {
+    background-color: #fff;
+    border-radius: 3px;
+    opacity: 0.8;
+    padding-top: 2px;
+    box-shadow: 0 0 1px rgba(0,0,0,0.8);
+    height: auto !important;
+}
+ul#explore_gallery > li.ui-sortable-placeholder {
+    height: 40px !important;
+}
+
+ul#explore_gallery .ui-sortable-placeholder {
+    background-color: #337AF8;
+    visibility: visible !important;
+    border-radius: 3px;
+}
+ul#explore_gallery ul.body div.picture > div.quality > span {
+    white-space: nowrap;
+    font-size: .857em;
+}
+ul#explore_gallery ul.body div.picture > div.quality {
+    position: absolute;
+    visibility: hidden;
+    bottom: -5px;
+    left: -5px;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.7);
+    min-width: 16px;
+    padding-left: 2px;
+    padding-right: 2px;
+    line-height: 18px;
+    cursor: pointer;
+    z-index: 1;
+    transition: background-color .2s;
+}
+ul#explore_gallery ul.body div.picture:hover > div.quality {
+    z-index: 14;
+    visibility: visible;
+}
+ul#explore_gallery ul.body div.picture > div.quality:hover {
+    background-color: #fff;
+}
+ul#explore_gallery ul.body div.picture > div.quality:hover div.info_popup {
+    visibility: visible;
+}
+ul#explore_gallery ul.body div.picture > a.link {
+    top: 0px;
+    background: url(../img/external.png) no-repeat center center;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+}
+ul#explore_gallery ul.body div.picture > div.inFavorite {
+    top: 20px;
+    background: url(../img/favorite.png) no-repeat center center;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+ul#explore_gallery ul.body div.picture > div.rmFavorite {
+    top: 20px;
+    background: url(../img/rmfavorite.png) no-repeat center center;
+}
+ul#explore_gallery ul.body div.picture > div.edit {
+    top: 40px;
+    background: url(../img/edit.png) no-repeat center center;
+    background-position-x: 3px;
+}
+ul#explore_gallery ul.body div.picture > div.move {
+    top: 60px;
+    background: url(../img/move.png) no-repeat center center;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+ul#explore_gallery ul.body li div.picture > div.inFavorite,
+ul#explore_gallery ul.body li div.picture > div.rmFavorite,
+ul#explore_gallery ul.body li div.picture > div.move,
+ul#explore_gallery ul.body li div.picture > div.edit,
+ul#explore_gallery ul.body li div.picture > a.link {
+    position: absolute;
+    right: -10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 1;
+    visibility: hidden;
+    transition: background-color .2s;
+}
+ul#explore_gallery ul.body li div.picture:hover > div.inFavorite,
+ul#explore_gallery ul.body li div.picture:hover > div.rmFavorite,
+ul#explore_gallery ul.body li div.picture:hover > div.move,
+ul#explore_gallery ul.body li div.picture:hover > div.edit,
+ul#explore_gallery ul.body li div.picture:hover > a.link {
+    visibility: visible;
+}
+ul#explore_gallery ul.body li div.picture > div.inFavorite:hover,
+ul#explore_gallery ul.body li div.picture > div.rmFavorite:hover,
+ul#explore_gallery ul.body li div.picture > div.move:hover,
+ul#explore_gallery ul.body li div.picture > div.edit:hover,
+ul#explore_gallery ul.body li div.picture > a.link:hover {
+    background-color: #fff;
+}
