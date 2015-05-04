@@ -93,15 +93,6 @@ var engine = {
         cb(trackerList);
     },
 
-    getProfileList: function(storage, cb) {
-        "use strict";
-        if (storage.profileListSync) {
-            mono.storage.sync.get('profileList', cb);
-        } else {
-            cb(storage);
-        }
-    },
-
     setProfileList: function(storage, cb) {
         "use strict";
         mono.storage.set(storage, function() {
@@ -138,8 +129,8 @@ var engine = {
             optionsList.push(item);
         }
 
-        optionsList.push('customTorrentList');
         optionsList.push('profileList');
+        optionsList.push('customTorrentList');
         optionsList.push('searchHistory');
         optionsList.push('currentProfile');
         optionsList.push('explorerOptions');
@@ -154,6 +145,10 @@ var engine = {
 
             !settings.doNotSendStatistics && this.initCounter();
 
+            var syncOptionsList = [];
+            settings.profileListSync && syncOptionsList.push('profileList');
+            settings.enableFavoriteSync && syncOptionsList.push('expCache_' + 'favorites');
+
             if (Array.isArray(storage.searchHistory)) {
                 this.history = storage.searchHistory;
             }
@@ -162,6 +157,13 @@ var engine = {
                 this.explorerOptions = storage.explorerOptions;
             } else {
                 this.explorerOptions = mono.cloneObj(this.defaultExplorerOptions);
+            }
+
+            var cacheList = [];
+            for (var i = 0, item; item = this.explorerOptions[i]; i++) {
+                var itemKey = 'expCache_' + item.type;
+                optionsList.push(itemKey);
+                cacheList.push(itemKey);
             }
 
             if (typeof storage.customTorrentList === 'object') {
@@ -175,10 +177,22 @@ var engine = {
             }
 
             mono.getLanguage(function() {
-                this.defaultPrepare(mono.language.langCode);
+                mono.storage.sync.get(syncOptionsList, function(syncStorage) {
+                    for (var i = 0, item; item = syncOptionsList[i]; i++) {
+                        storage[item] = syncStorage[item];
+                    }
 
-                this.getProfileList(storage, function(syncStorage) {
-                    this.prepareProfileList(storage.currentProfile, syncStorage);
+                    for (var i = 0, item; item = cacheList[i]; i++) {
+                        if (!storage[item] || typeof storage[item] !== 'object') {
+                            storage[item] = {};
+                        }
+
+                        this.exploreCache[item] = storage[item];
+                    }
+
+                    this.defaultPrepare(mono.language.langCode);
+
+                    this.prepareProfileList(storage.currentProfile, storage);
 
                     return cb();
                 }.bind(this));
@@ -192,6 +206,8 @@ var engine = {
             cb && cb();
         });
     },
+
+    exploreCache: {},
 
     trackerLib: {}
 };
