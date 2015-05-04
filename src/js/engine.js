@@ -136,6 +136,13 @@ var engine = {
         optionsList.push('explorerOptions');
         optionsList.push('topList');
 
+        var cacheList = [];
+        for (var i = 0, item; item = this.defaultExplorerOptions[i]; i++) {
+            var itemKey = 'expCache_' + item.type;
+            optionsList.push(itemKey);
+            cacheList.push(itemKey);
+        }
+
         mono.storage.get(optionsList, function(storage) {
             var settings = {};
             for (var item in defaultSettings) {
@@ -157,13 +164,6 @@ var engine = {
                 this.explorerOptions = storage.explorerOptions;
             } else {
                 this.explorerOptions = mono.cloneObj(this.defaultExplorerOptions);
-            }
-
-            var cacheList = [];
-            for (var i = 0, item; item = this.explorerOptions[i]; i++) {
-                var itemKey = 'expCache_' + item.type;
-                optionsList.push(itemKey);
-                cacheList.push(itemKey);
             }
 
             if (typeof storage.customTorrentList === 'object') {

@@ -13,7 +13,7 @@ var explore = {
         topListColumnCount: undefined,
         categoryList: {}
     },
-    contentOptions: {
+    sourceOptions: {
         favorites: {
             maxWidth: 120,
             noAutoUpdate: 1
@@ -333,7 +333,7 @@ var explore = {
                 var arr = [];
                 for (var i = 0, el; el = elList[i]; i++) {
                     var img = el.querySelector('img.poster[title]');
-                    img !== null && (img = kp_img_url2('http://st.kinopoisk.ru' + img.title));
+                    img !== null && (img = img.getAttribute('title'));
 
                     var title = el.querySelector('div.info > a.name');
                     title !== null && (title = title.textContent);
@@ -356,6 +356,7 @@ var explore = {
                         continue;
                     }
 
+                    obj.img = kp_img_url2('http://st.kinopoisk.ru' + obj.img);
                     title = obj.title;
                     obj.title = rmSerial(obj.title);
                     var isSerial = (title !== obj.title);
@@ -704,20 +705,12 @@ var explore = {
         if (source.xhr_wait_count !== 0) {
             return;
         }
-        source.xhr_content.sort(function(a,b){
-            if (a[0] === b[0]){
-                return 0;
-            }
-            if (a[0] > b[0]){
-                return 1;
-            } else {
-                return -1;
-            }
-        });
+
         var cache = engine.exploreCache['expCache_' + type];
         var categoryObj = this.varCache.categoryList[type];
 
         var content = [];
+        source.xhr_content.sort(function(a,b){return a[0] > b[0] ? 1 : -1;});
         for (var i = 0, list; list = source.xhr_content[i]; i++) {
             content = content.concat(list[1]);
         }
@@ -764,7 +757,7 @@ var explore = {
     getCategoryContent: function(type) {
         "use strict";
         var cache = engine.exploreCache['expCache_' + type];
-        var source = this.contentOptions[type];
+        var source = this.sourceOptions[type];
         if (source.noAutoUpdate) {
             this.writeCategoryContent(type, cache.content);
             return;
@@ -806,7 +799,7 @@ var explore = {
         for (var i = 0, item; item = engine.explorerOptions[i]; i++) {
             if (!item.enable) continue;
 
-            var source = this.contentOptions[item.type];
+            var source = this.sourceOptions[item.type];
 
             var actionList = document.createDocumentFragment();
 
