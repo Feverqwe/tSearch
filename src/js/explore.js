@@ -682,12 +682,12 @@ var explore = {
 
         this.domCache.container.classList.add('hide');
     },
-    onSetPage: function setPage(categoryObj, page) {
-        if (categoryObj.currentPage === page) return;
-        categoryObj.currentPage = page;
-        setPage.lastEl && setPage.lastEl.classList.remove('active');
-        setPage.lastEl = categoryObj.pages.querySelector('li.page_'+page);
-        setPage.lastEl && setPage.lastEl.classList.add('active');
+    onSetPage: function (page) {
+        if (this.currentPage === page) return;
+        this.currentPage = page;
+        this.currentPageEl && this.currentPageEl.classList.remove('active');
+        this.currentPageEl = this.pageEl.querySelector('li.page_'+page);
+        this.currentPageEl && this.currentPageEl.classList.add('active');
     },
     getPageListBody: function (categoryObj, content) {
         "use strict";
@@ -891,8 +891,8 @@ var explore = {
             return;
         }
 
-        var cache = engine.exploreCache['expCache_' + type];
         var categoryObj = this.varCache.categoryList[type];
+        var cache = engine.exploreCache[categoryObj.cacheName];
 
         var content = [];
         source.xhr_content.sort(function(a,b){return a[0] > b[0] ? 1 : -1;});
@@ -916,7 +916,7 @@ var explore = {
         this.writeCategoryContent(type, content);
 
         var storage = {};
-        storage['expCache_'+type] = cache;
+        storage[categoryObj.cacheName] = cache;
         mono.storage.set(storage, function() {
             if (engine.settings.enableFavoriteSync === 1 && type === 'favorites') {
                 mono.storage.sync.set(storage);
@@ -941,14 +941,14 @@ var explore = {
     },
     getCategoryContent: function(type) {
         "use strict";
-        var cache = engine.exploreCache['expCache_' + type];
+        var categoryObj = this.varCache.categoryList[type];
+        var cache = engine.exploreCache[categoryObj.cacheName];
         var source = this.sourceOptions[type];
         if (source.noAutoUpdate) {
             this.writeCategoryContent(type, cache.content);
             return;
         }
         var date = this.getCacheDate(source.keepAlive);
-        var categoryObj = this.varCache.categoryList[type];
         if (cache.errorTimeout && cache.errorTimeout > parseInt(Date.now() / 1000)) {
             categoryObj.li.classList.add('timeout');
             return;
@@ -1044,6 +1044,7 @@ var explore = {
 
             var categoryObj = this.varCache.categoryList[item.type] = {};
             categoryObj.type = item.type;
+            categoryObj.cacheName = 'expCache_' + item.type;
 
             this.domCache.gallery.appendChild(categoryObj.li = mono.create('li', {
                 class: [!item.show ? 'collapsed' : undefined],
