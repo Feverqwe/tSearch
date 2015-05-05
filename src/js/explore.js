@@ -607,7 +607,7 @@ var explore = {
                 request += ' ' + item.year;
             }
             body.appendChild(mono.create('li', {
-                class: ['l'+line],
+                class: 'l'+line,
                 append: [
                     lineIcon,
                     mono.create('span', {
@@ -708,7 +708,7 @@ var explore = {
                     page: i,
                     type: categoryObj.type
                 },
-                class: ['page_' + i],
+                class: 'page_' + i,
                 text: i + 1
             }));
         }
@@ -837,7 +837,7 @@ var explore = {
                         ]
                     }),
                     mono.create('div', {
-                        class: ['title'],
+                        class: 'title',
                         append: titleEl
                     })
                 ]
@@ -982,18 +982,18 @@ var explore = {
     getSetupBody: function() {
         "use strict";
         return mono.create('div', {
-            class: ['setupBody'],
+            class: 'setupBody',
             append: [
                 mono.create('input', {
                     type: 'range',
                     name: 'imageWidth'
                 }),
                 mono.create('div', {
-                    class: ['defaultSize'],
+                    class: 'defaultSize',
                     title: mono.language.default
                 }),
                 mono.create('select', {
-                    class: ['lineCount'],
+                    class: 'lineCount',
                     append: (function(){
                         "use strict";
                         var list = [];
@@ -1024,13 +1024,13 @@ var explore = {
                 mono.create(actionList, {
                     append: [
                         mono.create('a', {
-                            class: ['open'],
+                            class: 'open',
                             target: '_blank',
                             title: mono.language.goToTheWebsite,
                             href: source.url.replace('%page%', 1).replace('%category%', engine.settings.kinopoiskFolderId)
                         }),
                         mono.create('div', {
-                            class: ['update'],
+                            class: 'update',
                             title: mono.language.update
                         })
                     ]
@@ -1038,7 +1038,7 @@ var explore = {
             }
 
             actionList.appendChild(mono.create('div', {
-                class: ['setup'],
+                class: 'setup',
                 title: mono.language.setupView
             }));
 
@@ -1047,23 +1047,23 @@ var explore = {
             categoryObj.cacheName = 'expCache_' + item.type;
 
             this.domCache.gallery.appendChild(categoryObj.li = mono.create('li', {
-                class: [!item.show ? 'collapsed' : undefined],
+                class: !item.show ? 'collapsed' : undefined,
                 data: {
                     type: item.type
                 },
                 append: [
                     categoryObj.head = mono.create('div', {
-                        class: ['head'],
+                        class: 'head',
                         append: [
                             mono.create('div', {
-                                class: ['move']
+                                class: 'move'
                             }),
                             mono.create('div', {
-                                class: ['title'],
+                                class: 'title',
                                 text: item.title || mono.language[item.lang]
                             }),
                             mono.create('div', {
-                                class: ['action'],
+                                class: 'actionList',
                                 append: actionList
                             }),
                             mono.create('div', {

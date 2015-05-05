@@ -144,13 +144,13 @@ ul#explore_gallery div.head div.title {
     font-size: 21px;
 }
 
-ul#explore_gallery li.collapsed div.head div.action {
+ul#explore_gallery li.collapsed div.head div.actionList {
     display: none;
 }
-ul#explore_gallery div.head div.action div {
+ul#explore_gallery div.head div.actionList div {
     display: inline-block;
 }
-ul#explore_gallery div.head div.action div.setup {
+ul#explore_gallery div.head div.actionList div.setup {
     background: url(../img/settings.png) center center no-repeat;
     width: 16px;
     height: 16px;
@@ -160,10 +160,10 @@ ul#explore_gallery div.head div.action div.setup {
     margin-bottom: -2px;
     transition: opacity .2s;
 }
-ul#explore_gallery div.head div.action div.setup:hover {
+ul#explore_gallery div.head div.actionList div.setup:hover {
     opacity: 1;
 }
-ul#explore_gallery div.head div.action div.update {
+ul#explore_gallery div.head div.actionList div.update {
     width: 16px;
     height: 16px;
     background: url(../img/sync.png) no-repeat center;
@@ -173,20 +173,20 @@ ul#explore_gallery div.head div.action div.update {
     transition: all 0.5s;
     opacity: 0.5;
 }
-ul#explore_gallery div.head div.action div.update:hover {
+ul#explore_gallery div.head div.actionList div.update:hover {
     transform: rotate(360deg);
     -webkit-transform: rotate(360deg);
     opacity: 1;
 }
-ul#explore_gallery div.head div.action div.update.loading {
+ul#explore_gallery div.head div.actionList div.update.loading {
     background: url(../img/loading.gif) no-repeat center;
     opacity: 1;
 }
-ul#explore_gallery div.head div.action div.update.error {
+ul#explore_gallery div.head div.actionList div.update.error {
     background: url(../img/error.png) no-repeat center;
 }
 
-ul#explore_gallery div.head div.action a.open {
+ul#explore_gallery div.head div.actionList a.open {
     width: 16px;
     height: 16px;
     background: url(../img/external.png) no-repeat top center;
@@ -195,7 +195,7 @@ ul#explore_gallery div.head div.action a.open {
     opacity: 0.5;
     transition: opacity .2s;
 }
-ul#explore_gallery div.head div.action a.open:hover {
+ul#explore_gallery div.head div.actionList a.open:hover {
     opacity: 1;
 }
 
@@ -288,7 +288,7 @@ ul#explore_gallery ul.body div.title {
 }
 
 ul#explore_gallery.sort_mode div.collapses,
-ul#explore_gallery.sort_mode div.action,
+ul#explore_gallery.sort_mode div.actionList,
 ul#explore_gallery.sort_mode ul.body,
 ul#explore_gallery.sort_mode ul.page_body {
     display: none;
