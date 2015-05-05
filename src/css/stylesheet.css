@@ -5,6 +5,7 @@ body {
     min-width: 960px;
     user-select: none;
     -webkit-user-select: none;
+    overflow-y: scroll;
 }
 
 input[type=text] {

@@ -732,6 +732,38 @@ var explore = {
             }
         }
     },
+    width2fontSize: function(type, width) {
+        var min = 10;
+        var max = 13.5;
+        var maxWidth = this.sourceOptions[type].maxWidth;
+        if (width >= 60) {
+            width -= 60;
+            maxWidth -= 60;
+        } else {
+            return;
+        }
+        var coefficient = width/maxWidth * 100;
+        return (min+((max-min)/100 * coefficient)).toFixed(6);
+    },
+    calculateSize: function(type) {
+        var options = this.getExplorerOptions(type);
+        var categoryObj = this.varCache.categoryList[type];
+        var fontSize = this.width2fontSize(type, options.width);
+
+        var base = 'ul#explore_gallery li[data-type="'+type+'"] > ul.body > li';
+
+        var imgSize = base + '{width: '+options.width+'px;}';
+
+        var fontStyle = base + ' > div.title{' + (fontSize ? 'font-size:'+fontSize+'px;' : 'display:none;') + '}';
+
+        if (categoryObj.style === undefined) {
+            document.body.appendChild(categoryObj.style = mono.create('style', {
+                text: imgSize+fontStyle
+            }));
+        } else {
+            categoryObj.style.textContent = imgSize+fontStyle;
+        }
+    },
     writeCategoryContent: function(type, content, page, update_pages) {
         "use strict";
         page = page || 0;
@@ -1018,7 +1050,9 @@ var explore = {
 
             var source = this.sourceOptions[item.type];
 
-            var actionList = document.createDocumentFragment();
+            var actionList = mono.create('div', {
+                class: 'actionList'
+            });
 
             if (item.type === 'kp_favorites') {
                 mono.create(actionList, {
@@ -1062,22 +1096,20 @@ var explore = {
                                 class: 'title',
                                 text: item.title || mono.language[item.lang]
                             }),
+                            actionList,
                             mono.create('div', {
-                                class: 'actionList',
-                                append: actionList
-                            }),
-                            mono.create('div', {
-                                class: ['collapses', item.show ? 'down' : undefined]
+                                class: 'collapses'
                             })
                         ]
                     }),
                     categoryObj.pageEl = mono.create('ul', {
-                        class: 'page_body'
+                        class: 'pageList'
                     }),
                     categoryObj.body = mono.create('ul', {class: 'body'})
                 ]
             }));
 
+            this.calculateSize(item.type);
             item.show && this.getCategoryContent(item.type);
         }
     },

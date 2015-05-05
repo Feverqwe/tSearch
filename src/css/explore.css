@@ -222,10 +222,7 @@ ul#explore_gallery div.head div.collapses {
 ul#explore_gallery div.head div.collapses:hover {
     opacity: 1;
 }
-ul#explore_gallery div.head div.collapses.down {
-    transform: rotate(0deg);
-}
-ul#explore_gallery div.head div.collapses.up {
+ul#explore_gallery li.collapsed div.head div.collapses.up {
     transform: rotate(90deg);
 }
 ul#explore_gallery div.head:hover div.collapses {
@@ -235,15 +232,15 @@ ul#explore_gallery div.head > *:hover ~ div.collapses {
     opacity: 0.5;
 }
 
-ul#explore_gallery ul.page_body {
+ul#explore_gallery ul.pageList {
     margin-top: 2px;
     text-align: center;
     margin-bottom: 2px;
 }
-ul#explore_gallery ul.page_body.hide {
+ul#explore_gallery ul.pageList.hide {
     display: none;
 }
-ul#explore_gallery ul.page_body > li {
+ul#explore_gallery ul.pageList > li {
     display: inline-block;
     border-radius: 4px;
     padding-top: 2px;
@@ -253,7 +250,7 @@ ul#explore_gallery ul.page_body > li {
     height: 16px;
     cursor: default;
 }
-ul#explore_gallery ul.page_body > li.active {
+ul#explore_gallery ul.pageList > li.active {
     background-color: #337af8;
     color: #fff;
 }
@@ -290,7 +287,7 @@ ul#explore_gallery ul.body div.title {
 ul#explore_gallery.sort_mode div.collapses,
 ul#explore_gallery.sort_mode div.actionList,
 ul#explore_gallery.sort_mode ul.body,
-ul#explore_gallery.sort_mode ul.page_body {
+ul#explore_gallery.sort_mode ul.pageList {
     display: none;
 }
 ul#explore_gallery.sort_mode > li > div.head {
