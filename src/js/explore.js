@@ -683,7 +683,7 @@ var explore = {
 
         this.domCache.container.classList.add('hide');
     },
-    onSetPage: function (content, page) {
+    onSetPage: function (page) {
         if (this.currentPage === page) return;
         this.currentPage = page;
         this.currentPageEl && this.currentPageEl.classList.remove('active');
@@ -692,13 +692,16 @@ var explore = {
 
 
         var height = this.body.clientHeight;
-        if (this.minHeight !== height) {
+        if ((this.minHeight || 0) < height) {
             this.body.style.minHeight = height + 'px';
             this.minHeight = height;
         }
 
 
-        explore.writeCategoryContent(this.type, content, page);
+        var cache = engine.exploreCache[this.cacheName];
+        if (cache && cache.content) {
+            explore.writeCategoryContent(this.type, cache.content, page);
+        }
     },
     getPageListBody: function (categoryObj, content, page) {
         "use strict";
@@ -738,7 +741,7 @@ var explore = {
             categoryObj.pageEl.classList.remove('hide');
         }
 
-        categoryObj.setPage = this.onSetPage.bind(categoryObj, content);
+        categoryObj.setPage = this.onSetPage.bind(categoryObj);
     },
     getExplorerOptions: function(type) {
         "use strict";
@@ -864,6 +867,7 @@ var explore = {
         }
 
         var contentBody = document.createDocumentFragment();
+        var elCount = 0;
         for (var index = form; index < end; index++) {
             var title = content[index].title;
             if (content[index].title_en && (mono.language.langCode === 'en' || engine.settings.useEnglishPosterName)) {
@@ -888,7 +892,7 @@ var explore = {
                 imgUrl = sourceOptions.imgUrl+imgUrl;
             }
 
-            var readMoreUrl = (sourceOptions.root_url ? sourceOptions.root_url : '') + content[index].url;
+            var readMoreUrl = (sourceOptions.rootUrl ? sourceOptions.rootUrl : '') + content[index].url;
 
             var actionList = document.createDocumentFragment();
             if ( type === 'favorites') {
@@ -957,9 +961,10 @@ var explore = {
                     })
                 ]
             }));
+            elCount++;
         }
 
-        if (contentBody.childNodes.length === 0) {
+        if (elCount === 0) {
             if (page > 0) {
                 page--;
                 return this.writeCategoryContent(type, content, page, update_pages);
