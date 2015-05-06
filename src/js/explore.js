@@ -1139,7 +1139,7 @@ var explore = {
         }
 
         var type = this.dataset.type;
-        var page = el.dataset.page;
+        var page = parseInt(el.dataset.page);
         var categoryObj = explore.varCache.categoryList[type];
 
         if (!categoryObj) return;
