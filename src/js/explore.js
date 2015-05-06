@@ -11,7 +11,8 @@ var explore = {
     varCache: {
         isHidden: true,
         topListColumnCount: undefined,
-        categoryList: {}
+        categoryList: {},
+        movebleStyleList: {}
     },
     sourceOptions: {
         favorites: {
@@ -732,7 +733,68 @@ var explore = {
             }
         }
     },
+    calculateMoveble: function(el, width) {
+        "use strict";
+        var styleEl;
+
+        var elWidth = el.offsetWidth;
+        if (elWidth <= width) {
+            return;
+        }
+        elWidth = Math.ceil(elWidth / 10);
+        if (elWidth > 10) {
+            if (elWidth < 100) {
+                var t1 = Math.round(elWidth / 10);
+                if (t1 > elWidth / 10) {
+                    elWidth = t1 * 10 * 10;
+                } else {
+                    elWidth = (t1 * 10 + 5) * 10;
+                }
+            } else {
+                elWidth = elWidth * 10;
+            }
+        } else {
+            elWidth = elWidth * 10;
+        }
+
+        var timeCalc = Math.round(parseInt(elWidth) / parseInt(width) * 3.5);
+        var moveName = 'moveble' + '_' + width + '_' + elWidth;
+        if (this.varCache.movebleStyleList['style.' + moveName] === undefined) {
+            var keyFrames = ''
+                + '{'
+                + '0%{margin-left:2px;}'
+                + '50%{margin-left:-' + (elWidth - width) + 'px;}'
+                + '90%{margin-left:6px;}'
+                + '100%{margin-left:2px;}'
+                + '}';
+            this.varCache.movebleStyleList['style.' + moveName] = styleEl = mono.create('style', {
+                class: moveName,
+                text: ''
+                + '@-webkit-keyframes a_' + moveName
+                + keyFrames
+                + '@keyframes a_' + moveName
+                + keyFrames
+                + '@-moz-keyframes a_' + moveName
+                + keyFrames
+                + '@-o-keyframes a_' + moveName
+                + keyFrames
+                + 'div.' + moveName + ':hover > span {'
+                + 'overflow: visible;'
+                + '-webkit-animation:a_' + moveName + ' ' + timeCalc + 's;'
+                + '-moz-animation:a_' + moveName + ' ' + timeCalc + 's;'
+                + '-o-animation:a_' + moveName + ' ' + timeCalc + 's;'
+                + 'animation:a_' + moveName + ' ' + timeCalc + 's;'
+                + '}'
+            });
+        }
+        el.parentNode.classList.add(moveName);
+
+        if (styleEl !== undefined) {
+            document.body.appendChild(styleEl);
+        }
+    },
     width2fontSize: function(type, width) {
+        "use strict";
         var min = 10;
         var max = 13.5;
         var maxWidth = this.sourceOptions[type].maxWidth;
@@ -746,6 +808,7 @@ var explore = {
         return (min+((max-min)/100 * coefficient)).toFixed(6);
     },
     calculateSize: function(type) {
+        "use strict";
         var options = this.getExplorerOptions(type);
         var categoryObj = this.varCache.categoryList[type];
         var fontSize = this.width2fontSize(type, options.width);
@@ -758,6 +821,7 @@ var explore = {
 
         if (categoryObj.style === undefined) {
             document.body.appendChild(categoryObj.style = mono.create('style', {
+                class: 'categoryStyle',
                 text: imgSize+fontStyle
             }));
         } else {
@@ -797,7 +861,11 @@ var explore = {
                     href: search_link,
                     text: title,
                     title: title
-                })
+                }),
+                on: ['mouseenter', function onMouseEnter(e) {
+                    explore.calculateMoveble(this, explorerOptions.width);
+                    this.removeEventListener('mouseenter', onMouseEnter);
+                }]
             });
 
             var imgUrl = content[index].img;
