@@ -683,14 +683,24 @@ var explore = {
 
         this.domCache.container.classList.add('hide');
     },
-    onSetPage: function (page) {
+    onSetPage: function (content, page) {
         if (this.currentPage === page) return;
         this.currentPage = page;
         this.currentPageEl && this.currentPageEl.classList.remove('active');
-        this.currentPageEl = this.pageEl.querySelector('li.page_'+page);
+        this.currentPageEl = this.pageEl.querySelector('li[data-page="'+page+'"]');
         this.currentPageEl && this.currentPageEl.classList.add('active');
+
+
+        var height = this.body.clientHeight;
+        if (this.minHeight !== height) {
+            this.body.style.minHeight = height + 'px';
+            this.minHeight = height;
+        }
+
+
+        explore.writeCategoryContent(this.type, content, page);
     },
-    getPageListBody: function (categoryObj, content) {
+    getPageListBody: function (categoryObj, content, page) {
         "use strict";
         var contentLen = content.length;
         var coefficient = contentLen / categoryObj.displayItemCount;
@@ -704,14 +714,19 @@ var explore = {
 
         var pageItems = document.createDocumentFragment();
         for (var i = 0; i <= pageCount; i++) {
-            pageItems.appendChild(mono.create('li', {
+            var isActive = page === i;
+            var node;
+            pageItems.appendChild(node = mono.create('li', {
+                class: [isActive ? 'active' : undefined],
                 data: {
-                    page: i,
-                    type: categoryObj.type
+                    page: i
                 },
-                class: 'page_' + i,
                 text: i + 1
             }));
+            if (isActive) {
+                categoryObj.currentPageEl = node;
+                categoryObj.currentPage = i;
+            }
         }
 
         categoryObj.pageEl.textContent = '';
@@ -723,7 +738,7 @@ var explore = {
             categoryObj.pageEl.classList.remove('hide');
         }
 
-        categoryObj.setPage = this.onSetPage.bind(categoryObj);
+        categoryObj.setPage = this.onSetPage.bind(categoryObj, content);
     },
     getExplorerOptions: function(type) {
         "use strict";
@@ -958,10 +973,9 @@ var explore = {
         }
 
         if (!categoryObj.setPage || update_pages) {
-            this.getPageListBody(categoryObj, content);
+            this.getPageListBody(categoryObj, content, page);
         }
 
-        categoryObj.setPage(page);
         categoryObj.body.textContent = '';
         categoryObj.body.appendChild(contentBody);
     },
@@ -1111,6 +1125,22 @@ var explore = {
             ]
         });
     },
+    onPageListMouseEnter: function(e) {
+        "use strict";
+        var el = e.target;
+        if (this === el) return;
+        while (el.parentNode !== this) {
+            el = el.parentNode;
+        }
+
+        var type = this.dataset.type;
+        var page = el.dataset.page;
+        var categoryObj = explore.varCache.categoryList[type];
+
+        if (!categoryObj) return;
+
+        categoryObj.setPage(page);
+    },
     writeCategoryList: function () {
         "use strict";
         for (var i = 0, item; item = engine.explorerOptions[i]; i++) {
@@ -1149,7 +1179,7 @@ var explore = {
             categoryObj.cacheName = 'expCache_' + item.type;
 
             this.domCache.gallery.appendChild(categoryObj.li = mono.create('li', {
-                class: !item.show ? 'collapsed' : undefined,
+                class: [!item.show ? 'collapsed' : undefined],
                 data: {
                     type: item.type
                 },
@@ -1171,7 +1201,11 @@ var explore = {
                         ]
                     }),
                     categoryObj.pageEl = mono.create('ul', {
-                        class: 'pageList'
+                        class: 'pageList',
+                        data: {
+                            type: item.type
+                        },
+                        on: ['mouseover', this.onPageListMouseEnter]
                     }),
                     categoryObj.body = mono.create('ul', {class: 'body'})
                 ]
