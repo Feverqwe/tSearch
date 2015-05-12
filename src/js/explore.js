@@ -1094,7 +1094,16 @@ var explore = {
         "use strict";
         var options = engine.explorerOptionsObj[type];
         var source = this.sourceOptions[type];
+        var categoryObj = this.varCache.categoryList[type];
 
+        var updateContent = function() {
+            categoryObj.body.style.minHeight = '';
+            categoryObj.minHeight = '';
+            var cache = engine.exploreCache[categoryObj.cacheName];
+            explore.writeCategoryContent(type, cache.content, categoryObj.currentPage, 1);
+        };
+
+        var onChangeRange = null;
         var range;
         return mono.create('div', {
             class: 'setupBody',
@@ -1104,7 +1113,17 @@ var explore = {
                     name: 'imageWidth',
                     value: options.width,
                     min: 20,
-                    max: source.maxWidth
+                    max: source.maxWidth,
+                    on: ['input', function(e) {
+                        var value = this.value;
+                        options.width = parseInt(value);
+                        explore.calculateSize(type);
+
+                        clearTimeout(onChangeRange);
+                        onChangeRange = setTimeout(function() {
+                            updateContent();
+                        }, 250);
+                    }]
                 }),
                 mono.create('div', {
                     class: 'defaultSize',
@@ -1113,6 +1132,7 @@ var explore = {
                         e.preventDefault();
                         var defaultOptions = engine.defaultExplorerOptionsObj[type];
                         range.value = defaultOptions.width;
+                        range.dispatchEvent(new CustomEvent('input'));
                     }]
                 }),
                 mono.create('select', {
@@ -1132,7 +1152,12 @@ var explore = {
                     })(),
                     onCreate: function() {
                         this.selectedIndex = options.lineCount - 1;
-                    }
+                    },
+                    on: ['change', function() {
+                        var value = parseInt(this.value);
+                        options.lineCount = parseInt(value);
+                        updateContent();
+                    }]
                 })
             ]
         });
