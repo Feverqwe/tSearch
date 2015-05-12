@@ -119,7 +119,17 @@ var engine = {
             }
         }
     },
-
+    explorerOptionsObj: {},
+    defaultExplorerOptionsObj: {},
+    prepareExploreOptionsObj: function() {
+        "use strict";
+        for (var i = 0, item; item = engine.defaultExplorerOptions[i]; i++) {
+            this.defaultExplorerOptionsObj[item.type] = item;
+        }
+        for (i = 0, item; item = engine.explorerOptions[i]; i++) {
+            this.explorerOptionsObj[item.type] = item;
+        }
+    },
     loadSettings: function(cb) {
         "use strict";
         var defaultSettings = this.defaultSettings;
@@ -165,6 +175,8 @@ var engine = {
             } else {
                 this.explorerOptions = mono.cloneObj(this.defaultExplorerOptions);
             }
+
+            this.prepareExploreOptionsObj();
 
             if (typeof storage.customTorrentList === 'object') {
                 for (var id in storage.customTorrentList) {

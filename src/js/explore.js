@@ -743,14 +743,6 @@ var explore = {
 
         categoryObj.setPage = this.onSetPage.bind(categoryObj);
     },
-    getExplorerOptions: function(type) {
-        "use strict";
-        for (var i = 0, item; item = engine.explorerOptions[i]; i++) {
-            if (item.type === type) {
-                return item;
-            }
-        }
-    },
     calculateMoveble: function(el, width) {
         "use strict";
         var styleEl;
@@ -827,7 +819,7 @@ var explore = {
     },
     calculateSize: function(type) {
         "use strict";
-        var options = this.getExplorerOptions(type);
+        var options = engine.explorerOptionsObj[type];
         var categoryObj = this.varCache.categoryList[type];
         var fontSize = this.width2fontSize(type, options.width);
 
@@ -852,7 +844,7 @@ var explore = {
         content = content || [];
         var contentLen = content.length;
         var categoryObj = this.varCache.categoryList[type];
-        var explorerOptions = this.getExplorerOptions(type);
+        var explorerOptions = engine.explorerOptionsObj[type];
         var sourceOptions = this.sourceOptions[type];
 
         var lineCount = explorerOptions.lineCount;
@@ -1098,18 +1090,30 @@ var explore = {
             this.xhr_send(type, source, i, page_mode);
         }
     },
-    getSetupBody: function() {
+    getSetupBody: function(type) {
         "use strict";
+        var options = engine.explorerOptionsObj[type];
+        var source = this.sourceOptions[type];
+
+        var range;
         return mono.create('div', {
             class: 'setupBody',
             append: [
-                mono.create('input', {
+                range = mono.create('input', {
                     type: 'range',
-                    name: 'imageWidth'
+                    name: 'imageWidth',
+                    value: options.width,
+                    min: 20,
+                    max: source.maxWidth
                 }),
                 mono.create('div', {
                     class: 'defaultSize',
-                    title: mono.language.default
+                    title: mono.language.default,
+                    on: ['click', function(e) {
+                        e.preventDefault();
+                        var defaultOptions = engine.defaultExplorerOptionsObj[type];
+                        range.value = defaultOptions.width;
+                    }]
                 }),
                 mono.create('select', {
                     class: 'lineCount',
@@ -1125,7 +1129,10 @@ var explore = {
                             );
                         }
                         return list;
-                    })()
+                    })(),
+                    onCreate: function() {
+                        this.selectedIndex = options.lineCount - 1;
+                    }
                 })
             ]
         });
@@ -1145,6 +1152,24 @@ var explore = {
         if (!categoryObj) return;
 
         categoryObj.setPage(page);
+    },
+    onSetupClick: function(e) {
+        "use strict";
+        e.preventDefault();
+        var parent = this.parentNode;
+
+        var nextEl = this.nextElementSibling;
+        if (nextEl && nextEl.classList.contains('setupBody')) {
+            parent.removeChild(nextEl);
+            return;
+        }
+
+        var li = this.parentNode;
+        while (li.tagName !== 'LI') {
+            li = li.parentNode;
+        }
+        var setupBody =  explore.getSetupBody(li.dataset.type);
+        parent.appendChild(setupBody);
     },
     writeCategoryList: function () {
         "use strict";
@@ -1176,7 +1201,8 @@ var explore = {
 
             actionList.appendChild(mono.create('div', {
                 class: 'setup',
-                title: mono.language.setupView
+                title: mono.language.setupView,
+                on: ['click', this.onSetupClick]
             }));
 
             var categoryObj = this.varCache.categoryList[item.type] = {};
