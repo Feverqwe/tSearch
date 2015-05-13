@@ -129,7 +129,7 @@ ul#explore_gallery li.timeout div.head div.move {
     opacity: 1;
 }
 ul#explore_gallery div.head div.move {
-    width: 16px;
+    width: 24px;
     height: 24px;
     background: url(../img/moveble.png) center center no-repeat;
     cursor: move;
@@ -142,7 +142,6 @@ ul#explore_gallery li.ui-sortable-helper div.head div.move{
 }
 ul#explore_gallery div.head div.title {
     font-size: 21px;
-    padding-left: 5px;
 }
 ul#explore_gallery li.collapsed div.head div.actionList {
     display: none;
@@ -155,21 +154,19 @@ ul#explore_gallery div.head div.actionList div {
 }
 ul#explore_gallery div.head div.actionList div.setup {
     background: url(../img/settings.png) center center no-repeat;
-    width: 16px;
+    width: 24px;
     height: 24px;
     cursor: pointer;
     opacity: 0.5;
-    margin-left: 5px;
     transition: opacity .2s;
 }
 ul#explore_gallery div.head div.actionList div.setup:hover {
     opacity: 1;
 }
 ul#explore_gallery div.head div.actionList div.update {
-    width: 16px;
+    width: 24px;
     height: 24px;
     background: url(../img/sync.png) no-repeat center;
-    margin-left: 5px;
     cursor: pointer;
     transition: transform 0.5s;
     opacity: 0.5;
@@ -188,7 +185,7 @@ ul#explore_gallery div.head div.actionList div.update.error {
 }
 
 ul#explore_gallery div.head div.actionList a.open {
-    width: 16px;
+    width: 24px;
     height: 24px;
     background: url(../img/external.png) no-repeat top center;
     display: inline-block;
@@ -215,7 +212,7 @@ ul#explore_gallery div.head .setupBody input[type="range"] {
 }
 
 ul#explore_gallery div.head .setupBody .defaultSize {
-    width: 16px;
+    width: 24px;
     height: 24px;
     cursor: pointer;
     display: inline-block;
