@@ -838,6 +838,15 @@ var explore = {
             categoryObj.style.textContent = imgSize+fontStyle;
         }
     },
+    getCategoryDisplayItemCount: function(type) {
+        "use strict";
+        var explorerOptions = engine.explorerOptionsObj[type];
+        var lineCount = explorerOptions.lineCount;
+        var width = document.body.clientWidth - 180;
+        var itemCount = Math.ceil(width / (explorerOptions.width + 10*2)) - 1;
+
+        return itemCount * lineCount;
+    },
     writeCategoryContent: function(type, content, page, update_pages) {
         "use strict";
         page = page || 0;
@@ -847,11 +856,8 @@ var explore = {
         var explorerOptions = engine.explorerOptionsObj[type];
         var sourceOptions = this.sourceOptions[type];
 
-        var lineCount = explorerOptions.lineCount;
-        var width = document.body.clientWidth - 180;
-        var itemCount = Math.ceil(width / (explorerOptions.width + 10*2)) - 1;
-        var displayItemCount = itemCount * lineCount;
-        categoryObj.displayItemCount = displayItemCount;
+
+        var displayItemCount = categoryObj.displayItemCount = this.getCategoryDisplayItemCount(type);
         var form = displayItemCount * page;
         var end = form + displayItemCount;
         if (end > contentLen) {
@@ -1090,6 +1096,14 @@ var explore = {
             this.xhr_send(type, source, i, page_mode);
         }
     },
+    updateCategoryContent: function(type) {
+        "use strict";
+        var categoryObj = this.varCache.categoryList[type];
+        categoryObj.body.style.minHeight = '';
+        categoryObj.minHeight = '';
+        var cache = engine.exploreCache[categoryObj.cacheName];
+        this.writeCategoryContent(categoryObj.type, cache.content, categoryObj.currentPage, 1);
+    },
     getSetupBody: function(type) {
         "use strict";
         var options = engine.explorerOptionsObj[type];
@@ -1097,10 +1111,6 @@ var explore = {
         var categoryObj = this.varCache.categoryList[type];
 
         var updateContent = function() {
-            categoryObj.body.style.minHeight = '';
-            categoryObj.minHeight = '';
-            var cache = engine.exploreCache[categoryObj.cacheName];
-            explore.writeCategoryContent(type, cache.content, categoryObj.currentPage, 1);
         };
 
         var onChangeRange = null;
@@ -1121,7 +1131,8 @@ var explore = {
 
                         clearTimeout(onChangeRange);
                         onChangeRange = setTimeout(function() {
-                            updateContent();
+                            explore.updateCategoryContent(type);
+                            // todo: save options!
                         }, 250);
                     }]
                 }),
@@ -1156,7 +1167,8 @@ var explore = {
                     on: ['change', function() {
                         var value = parseInt(this.value);
                         options.lineCount = parseInt(value);
-                        updateContent();
+                        explore.updateCategoryContent(type);
+                        // todo: save options!
                     }]
                 })
             ]
@@ -1254,7 +1266,28 @@ var explore = {
                             mono.create('div', {
                                 class: 'collapses'
                             })
-                        ]
+                        ],
+                        on: ['click', function(e) {
+                            var el = e.target;
+                            if (el !== this && !el.classList.contains('collapses')) {
+                                return;
+                            }
+
+                            var li = this.parentNode;
+                            var type = li.dataset.type;
+                            var categoryObj = explore.varCache.categoryList[type];
+                            var options = engine.explorerOptionsObj[type];
+
+                            if (options.show) {
+                                options.show = 0;
+                                categoryObj.li.classList.add('collapsed');
+                            } else {
+                                options.show = 1;
+                                categoryObj.li.classList.remove('collapsed');
+
+                                explore.updateCategoryContent(type);
+                            }
+                        }]
                     }),
                     categoryObj.pageEl = mono.create('ul', {
                         class: 'pageList',
@@ -1285,9 +1318,26 @@ var explore = {
                 if (this.varCache.topListColumnCount !== this.getTopListColumnCount()) {
                     this.writeTopList(engine.topList.content);
                 }
+
                 onResize.lock = false;
             }.bind(this), 250));
         }
+
+
+        window.addEventListener('resize', mono.debounce(function onResizeCategoryList() {
+            if (onResizeCategoryList.lock) return;
+            onResizeCategoryList.lock = true;
+
+            for (var type in this.varCache.categoryList) {
+                var categoryObj = this.varCache.categoryList[type];
+                var options = engine.explorerOptionsObj[type];
+                if (options.show && categoryObj.displayItemCount !== this.getCategoryDisplayItemCount(type)) {
+                    this.updateCategoryContent(type);
+                }
+            }
+
+            onResizeCategoryList.lock = false;
+        }.bind(this), 300));
 
         this.writeCategoryList();
     }
