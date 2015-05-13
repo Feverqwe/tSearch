@@ -107,8 +107,10 @@ ul#explore_gallery li.empty {
 }
 
 ul#explore_gallery li div.head {
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #ddd;
     cursor: pointer;
+    line-height: 24px;
+    height: 24px;
 }
 ul#explore_gallery li.collapsed div.head {
     border-bottom: 0;
@@ -116,6 +118,7 @@ ul#explore_gallery li.collapsed div.head {
 ul#explore_gallery div.head > * {
     display: inline-block;
     cursor: default;
+    vertical-align: middle;
 }
 ul#explore_gallery li.loading div.head div.move {
     background: url(../img/loading.gif) no-repeat center;
@@ -127,11 +130,8 @@ ul#explore_gallery li.timeout div.head div.move {
 }
 ul#explore_gallery div.head div.move {
     width: 16px;
-    height: 16px;
+    height: 24px;
     background: url(../img/moveble.png) center center no-repeat;
-    margin-right: 5px;
-    margin-top: 1px;
-    margin-bottom: -1px;
     cursor: move;
     transition: opacity 0.2s;
     opacity: 0.5;
@@ -142,10 +142,13 @@ ul#explore_gallery li.ui-sortable-helper div.head div.move{
 }
 ul#explore_gallery div.head div.title {
     font-size: 21px;
+    padding-left: 5px;
 }
-
 ul#explore_gallery li.collapsed div.head div.actionList {
     display: none;
+}
+ul#explore_gallery li div.head div.actionList > * {
+    vertical-align: bottom;
 }
 ul#explore_gallery div.head div.actionList div {
     display: inline-block;
@@ -153,11 +156,10 @@ ul#explore_gallery div.head div.actionList div {
 ul#explore_gallery div.head div.actionList div.setup {
     background: url(../img/settings.png) center center no-repeat;
     width: 16px;
-    height: 16px;
+    height: 24px;
     cursor: pointer;
     opacity: 0.5;
     margin-left: 5px;
-    margin-bottom: -2px;
     transition: opacity .2s;
 }
 ul#explore_gallery div.head div.actionList div.setup:hover {
@@ -165,12 +167,11 @@ ul#explore_gallery div.head div.actionList div.setup:hover {
 }
 ul#explore_gallery div.head div.actionList div.update {
     width: 16px;
-    height: 16px;
+    height: 24px;
     background: url(../img/sync.png) no-repeat center;
     margin-left: 5px;
-    margin-bottom: -2px;
     cursor: pointer;
-    transition: all 0.5s;
+    transition: transform 0.5s;
     opacity: 0.5;
 }
 ul#explore_gallery div.head div.actionList div.update:hover {
@@ -188,9 +189,8 @@ ul#explore_gallery div.head div.actionList div.update.error {
 
 ul#explore_gallery div.head div.actionList a.open {
     width: 16px;
-    height: 16px;
+    height: 24px;
     background: url(../img/external.png) no-repeat top center;
-    margin-bottom: -2px;
     display: inline-block;
     opacity: 0.5;
     transition: opacity .2s;
@@ -201,23 +201,22 @@ ul#explore_gallery div.head div.actionList a.open:hover {
 
 ul#explore_gallery div.head .setupBody {
     display: inline-block;
-    overflow: visible;
-    vertical-align: top;
-    height: 21px;
-    margin-top: -2px;
+    height: 24px;
+    vertical-align: bottom;
 }
 
 ul#explore_gallery div.head .setupBody input[type="range"] {
-    vertical-align: top;
-    margin-top: -1px;
+    vertical-align: bottom;
     width: 120px;
+    margin: 0;
     margin-right: 5px;
     margin-left: 5px;
+    height: 24px;
 }
 
 ul#explore_gallery div.head .setupBody .defaultSize {
     width: 16px;
-    height: 16px;
+    height: 24px;
     cursor: pointer;
     display: inline-block;
     opacity: 0.5;
@@ -227,20 +226,15 @@ ul#explore_gallery div.head .setupBody .defaultSize {
     margin-right: 5px;
 }
 
-ul#explore_gallery div.head .setupBody .lineCount {
-    vertical-align: middle;
-}
-
 ul#explore_gallery div.head div.collapses {
     float: right;
     display: inline-block;
-    width: 12px;
-    height: 12px;
+    width: 24px;
+    height: 24px;
     margin-right: 5px;
-    margin-top: 6px;
-    background: url(../img/show_hide.png) bottom center no-repeat;
+    background: url(../img/show_hide.png) center center no-repeat;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: transform 0.2s;
     opacity: 0.5;
 }
 ul#explore_gallery div.head div.collapses:hover {

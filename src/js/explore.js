@@ -1196,19 +1196,18 @@ var explore = {
         "use strict";
         e.preventDefault();
         var parent = this.parentNode;
+        var head = parent.parentNode;
 
-        var nextEl = this.nextElementSibling;
+        var nextEl = parent.nextElementSibling;
         if (nextEl && nextEl.classList.contains('setupBody')) {
-            parent.removeChild(nextEl);
+            head.removeChild(nextEl);
             return;
         }
 
-        var li = this.parentNode;
-        while (li.tagName !== 'LI') {
-            li = li.parentNode;
-        }
-        var setupBody =  explore.getSetupBody(li.dataset.type);
-        parent.appendChild(setupBody);
+        var li = head.parentNode;
+
+        var setupBody = explore.getSetupBody(li.dataset.type);
+        head.insertBefore(setupBody, nextEl);
     },
     writeCategoryList: function () {
         "use strict";
