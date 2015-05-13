@@ -127,8 +127,8 @@
 }
 
 #manager.show-tools .mgr-tracker-list {
-    min-height: 368px;
-    max-height: 368px;
+    min-height: 370px;
+    max-height: 370px;
 }
 
 #manager .mgr-footer {
@@ -146,8 +146,8 @@
 
 #manager a.btn {
     display: inline-block;
-    line-height: 26px;
-    height: 26px;
+    line-height: 24px;
+    height: 24px;
     padding-left: 14px;
     padding-right: 14px;
     text-decoration: none;

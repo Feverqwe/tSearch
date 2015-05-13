@@ -45,8 +45,18 @@
     min-width: 87px;
     line-height: 26px;
     height: 26px;
+    padding: 0;
     padding-left: 14px;
     padding-right: 14px;
+    background-color: #ffffff;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid #cccccc;
+    vertical-align: middle;
+}
+.nf-notifi input[type="button"]:hover,
+.nf-notifi button:hover {
+    border-color: #adadad;
 }
 .nf-notifi .nf-subItem input[type="button"]:first-child,
 .nf-notifi .nf-subItem button:first-child {
