@@ -968,11 +968,11 @@ var explore = {
                 return this.writeCategoryContent(type, content, page, update_pages);
             }
             if (type === 'favorites') {
-                categoryObj.li.classList.add('no_items');
+                categoryObj.li.classList.add('empty');
             }
         } else
-        if (type === 'favorites' && categoryObj.li.classList.contains('no_items')) {
-            categoryObj.li.classList.remove('no_items');
+        if (type === 'favorites' && categoryObj.li.classList.contains('empty')) {
+            categoryObj.li.classList.remove('empty');
         }
 
         if (!categoryObj.setPage || update_pages) {

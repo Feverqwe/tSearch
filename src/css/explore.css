@@ -102,7 +102,7 @@ ul#explore_gallery {
 ul#explore_gallery li.collapsed > ul {
     display: none;
 }
-ul#explore_gallery li.no_items {
+ul#explore_gallery li.empty {
     display: none;
 }
 
