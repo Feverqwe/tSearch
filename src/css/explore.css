@@ -426,3 +426,11 @@ ul#explore_gallery ul.body li div.picture > div.edit:hover,
 ul#explore_gallery ul.body li div.picture > a.link:hover {
     background-color: #fff;
 }
+
+.nf-notifi.favoriteItemEdit {
+    width: 300px;
+}
+
+.nf-notifi.favoriteItemEdit input[type="text"] {
+    width: 290px;
+}

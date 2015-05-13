@@ -1346,6 +1346,12 @@ var explore = {
         item.img = this.addRootUrl(item.img, sourceOptions.imgUrl);
         item.url = this.addRootUrl(item.url, sourceOptions.rootUrl);
 
+        if (item.title_en && (mono.language.langCode === 'en' || engine.settings.useEnglishPosterName)) {
+            item.title = item.title_en;
+        }
+
+        delete item.title_en;
+
         var fCategoryObj = this.varCache.categoryList.favorites;
         var fCache = engine.exploreCache[fCategoryObj.cacheName];
         if (!fCache.content) {
@@ -1371,6 +1377,48 @@ var explore = {
 
         this.updateCategoryContent('favorites');
         this.saveFavorites();
+    },
+    onEditItem: function(el, e) {
+        "use strict";
+        e.preventDefault();
+        el = el.parentNode;
+
+        var type = 'favorites';
+        var index = parseInt(el.dataset.index);
+
+        var categoryObj = this.varCache.categoryList[type];
+        var cache = engine.exploreCache[categoryObj.cacheName];
+
+        var item = cache.content[index];
+
+        var $body = showNotification([
+            [{label: {text: mono.language.title}}],
+            {input: {type: "text", value: item.title, placeholder: item.title, name: 'title'}},
+            [{label: {text: mono.language.imageUrl}}],
+            {input: {type: "text", value: item.img, placeholder: item.img, name: 'img'}},
+            [{label: {text: mono.language.descUrl}}],
+            {input: {type: "text", value: item.url, placeholder: item.url, name: 'url'}},
+            [
+                {input: {type: "button", value: mono.language.change, name: 'yesBtn', on: ['click', function(e) {
+                    e.stopPropagation();
+                    var formData = this.getFormData();
+
+                    formData.title && (item.title = formData.title);
+                    formData.img && (item.img = formData.img);
+                    formData.url && (item.url = formData.url);
+
+                    this.close();
+
+                    explore.updateCategoryContent('favorites');
+                    explore.saveFavorites();
+                }]}},
+                {input: {type: "button", value: mono.language.cancel, name: 'noBtn', on: ['click', function(e) {
+                    e.stopPropagation();
+                    this.close();
+                }]}}
+            ]
+        ]);
+        $body.addClass('favoriteItemEdit');
     },
     once: function once() {
         "use strict";
@@ -1414,6 +1462,9 @@ var explore = {
             }
             if (el.classList.contains('rmFavorite')) {
                 return this.onRmFavorite(el, e);
+            }
+            if (el.classList.contains('edit')) {
+                return this.onEditItem(el, e);
             }
         }.bind(this));
 

@@ -124,5 +124,9 @@
     "removeFromFavorite": {"message": "Удалить из избранного"},
     "move": {"message": "Переместить"},
     "requestQuality": {"message": "Узнать качество"},
-    "readMore": {"message": "Подробнее"}
+    "readMore": {"message": "Подробнее"},
+
+    "title": {"message": "Заголовок"},
+    "imageUrl": {"message": "URL изображения"},
+    "descUrl": {"message": "URL описания"}
 }

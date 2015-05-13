@@ -32,18 +32,21 @@
     margin: 2px;
     text-align: left;
 }
-.nf-notifi .nf-subItem input,
+.nf-notifi .nf-subItem input[type="text"],
 .nf-notifi .nf-subItem select{
     width: 224px;;
     padding: 1px 1px 2px 1px;
 }
-.nf-notifi .nf-subItem input {
+.nf-notifi .nf-subItem input[type="text"] {
     width: 218px;
 }
 .nf-notifi input[type="button"],
 .nf-notifi button {
-    width: 87px;
-    height: 22px;
+    min-width: 87px;
+    line-height: 26px;
+    height: 26px;
+    padding-left: 14px;
+    padding-right: 14px;
 }
 .nf-notifi .nf-subItem input[type="button"]:first-child,
 .nf-notifi .nf-subItem button:first-child {
