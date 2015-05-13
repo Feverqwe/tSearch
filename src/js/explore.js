@@ -847,6 +847,13 @@ var explore = {
 
         return itemCount * lineCount;
     },
+    addRootUrl: function(url, root) {
+        "use strict";
+        if (root && !/^https?:\/\//.test(url)) {
+            url = root+url;
+        }
+        return url;
+    },
     writeCategoryContent: function(type, content, page, update_pages) {
         "use strict";
         page = page || 0;
@@ -885,12 +892,8 @@ var explore = {
                 }]
             });
 
-            var imgUrl = content[index].img;
-            if (imgUrl[6] !== '/' && sourceOptions.imgUrl) {
-                imgUrl = sourceOptions.imgUrl+imgUrl;
-            }
-
-            var readMoreUrl = (sourceOptions.rootUrl ? sourceOptions.rootUrl : '') + content[index].url;
+            var imgUrl = this.addRootUrl(content[index].img, sourceOptions.imgUrl);
+            var readMoreUrl = this.addRootUrl(content[index].url, sourceOptions.rootUrl);
 
             var actionList = document.createDocumentFragment();
             if ( type === 'favorites') {
@@ -931,6 +934,9 @@ var explore = {
             contentBody.appendChild(mono.create('li', {
                 append: [
                     mono.create('div', {
+                        data: {
+                            index: index
+                        },
                         class: 'picture',
                         append: [
                             actionList,
@@ -1307,6 +1313,65 @@ var explore = {
             item.show && this.getCategoryContent(item.type);
         }
     },
+    saveFavorites: function () {
+        "use strict";
+        var fCategoryObj = this.varCache.categoryList.favorites;
+        var fCache = engine.exploreCache[fCategoryObj.cacheName];
+
+        var storage = {};
+        storage[fCategoryObj.cacheName] = fCache;
+        mono.storage.set(storage);
+        if (engine.settings.enableFavoriteSync) {
+            mono.storage.sync.set(storage);
+        }
+    },
+    onInFavorite: function(el, e) {
+        "use strict";
+        e.preventDefault();
+        el = el.parentNode;
+
+        var li = el.parentNode;
+        while (li.tagName !== 'LI' || !li.dataset.type) {
+            li = li.parentNode;
+        }
+
+        var type = li.dataset.type;
+        var index = parseInt(el.dataset.index);
+
+        var sourceOptions = this.sourceOptions[type];
+        var categoryObj = this.varCache.categoryList[type];
+        var cache = engine.exploreCache[categoryObj.cacheName];
+        var item = mono.cloneObj(cache.content[index]);
+
+        item.img = this.addRootUrl(item.img, sourceOptions.imgUrl);
+        item.url = this.addRootUrl(item.url, sourceOptions.rootUrl);
+
+        var fCategoryObj = this.varCache.categoryList.favorites;
+        var fCache = engine.exploreCache[fCategoryObj.cacheName];
+        if (!fCache.content) {
+            fCache.content = [];
+        }
+        fCache.content.push(item);
+        this.updateCategoryContent('favorites');
+
+        this.saveFavorites();
+    },
+    onRmFavorite: function(el, e) {
+        "use strict";
+        e.preventDefault();
+        el = el.parentNode;
+
+        var type = 'favorites';
+        var index = parseInt(el.dataset.index);
+
+        var categoryObj = this.varCache.categoryList[type];
+        var cache = engine.exploreCache[categoryObj.cacheName];
+
+        cache.content.splice(index, 1);
+
+        this.updateCategoryContent('favorites');
+        this.saveFavorites();
+    },
     once: function once() {
         "use strict";
         if (once.inited) return;
@@ -1341,6 +1406,16 @@ var explore = {
 
             onResizeCategoryList.lock = false;
         }.bind(this), 300));
+
+        this.domCache.gallery.addEventListener('click', function(e) {
+            var el = e.target;
+            if (el.classList.contains('inFavorite')) {
+                return this.onInFavorite(el, e);
+            }
+            if (el.classList.contains('rmFavorite')) {
+                return this.onRmFavorite(el, e);
+            }
+        }.bind(this));
 
         this.writeCategoryList();
     },
