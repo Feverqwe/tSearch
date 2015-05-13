@@ -113,7 +113,7 @@ ul#explore_gallery li div.head {
     height: 24px;
 }
 ul#explore_gallery li.collapsed div.head {
-    border-bottom: 0;
+    border-bottom-color: transparent;
 }
 ul#explore_gallery div.head > * {
     display: inline-block;
@@ -226,6 +226,10 @@ ul#explore_gallery div.head .setupBody .defaultSize {
     margin-right: 5px;
 }
 
+ul#explore_gallery div.head .setupBody .defaultSize:hover {
+    opacity: 1;
+}
+
 ul#explore_gallery div.head div.collapses {
     float: right;
     display: inline-block;
@@ -251,9 +255,7 @@ ul#explore_gallery div.head > *:hover ~ div.collapses {
 }
 
 ul#explore_gallery ul.pageList {
-    margin-top: 2px;
     text-align: center;
-    margin-bottom: 2px;
 }
 ul#explore_gallery ul.pageList.hide {
     display: none;
@@ -261,12 +263,15 @@ ul#explore_gallery ul.pageList.hide {
 ul#explore_gallery ul.pageList > li {
     display: inline-block;
     border-radius: 4px;
-    padding-top: 2px;
-    padding-bottom: 2px;
     margin-left: 2px;
     min-width: 24px;
     height: 16px;
     cursor: default;
+
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 ul#explore_gallery ul.pageList > li.active {
     background-color: #337af8;
@@ -331,7 +336,7 @@ ul#explore_gallery li.ui-sortable-helper {
     height: auto !important;
 }
 ul#explore_gallery > li.ui-sortable-placeholder {
-    height: 40px !important;
+    height: 25px !important;
 }
 
 ul#explore_gallery .ui-sortable-placeholder {
