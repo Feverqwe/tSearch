@@ -1132,7 +1132,8 @@ var explore = {
                         clearTimeout(onChangeRange);
                         onChangeRange = setTimeout(function() {
                             explore.updateCategoryContent(type);
-                            // todo: save options!
+
+                            mono.storage.set({explorerOptions: engine.explorerOptions});
                         }, 250);
                     }]
                 }),
@@ -1168,7 +1169,8 @@ var explore = {
                         var value = parseInt(this.value);
                         options.lineCount = parseInt(value);
                         explore.updateCategoryContent(type);
-                        // todo: save options!
+
+                        mono.storage.set({explorerOptions: engine.explorerOptions});
                     }]
                 })
             ]
@@ -1287,6 +1289,8 @@ var explore = {
 
                                 explore.updateCategoryContent(type);
                             }
+
+                            mono.storage.set({explorerOptions: engine.explorerOptions});
                         }]
                     }),
                     categoryObj.pageEl = mono.create('ul', {
@@ -1340,5 +1344,81 @@ var explore = {
         }.bind(this), 300));
 
         this.writeCategoryList();
+    },
+    onUiReady: function() {
+        "use strict";
+        (this.domCache.$gallery = $(this.domCache.gallery)).sortable({
+            axis: 'y',
+            handle: '.head .move',
+            scroll: false,
+            start: function() {
+                window.scrollTo(0,0);
+                this.domCache.gallery.classList.add('sortMode');
+
+                this.domCache.$gallery.sortable("refreshPositions");
+            }.bind(this),
+            stop: function() {
+                this.domCache.gallery.classList.remove('sortMode');
+
+                var typeList = [];
+                var explorerOptions = [];
+                var type;
+                for (var i = 0, node, childNodes = this.domCache.gallery.childNodes; node = childNodes[i]; i++) {
+                    type = node.dataset.type;
+                    typeList.push(type);
+                    explorerOptions.push(engine.explorerOptionsObj[type]);
+                }
+                for (type in engine.explorerOptionsObj) {
+                    if (typeList.indexOf(type) === -1) {
+                        explorerOptions.push(engine.explorerOptionsObj[type]);
+                    }
+                }
+                engine.explorerOptions = explorerOptions;
+
+                mono.storage.set({explorerOptions: engine.explorerOptions});
+            }.bind(this)
+        });
+        /*$(this.domCache.gallery).sortable({
+            handle: '.body .move',
+            items: 'li[data-type="favorites"] .body li',
+            opacity: 0.8,
+            stop: function(event, ui) {
+                /!*var index = ui.item.data('index');
+                var prev = ui.item.prev().data('index');
+                var next = ui.item.next().data('index');
+                var type = 'favorites';
+                var content = var_cache['exp_cache_'+type].content;
+                var item = content[index];
+                if (prev === undefined && next === undefined) {
+                    return;
+                } else
+                if (prev !== undefined) {
+                    if (prev < index) {
+                        content.splice(index, 1);
+                        content.splice(prev + 1, 0, item);
+                    } else {
+                        content.splice(prev + 1, 0, item);
+                        content.splice(index, 1);
+                    }
+                } else {
+                    if (next < index) {
+                        content.splice(index, 1);
+                        content.splice(next, 0, item);
+                    } else {
+                        content.splice(next, 0, item);
+                        content.splice(index, 1);
+                    }
+                }
+                var page = var_cache.source[type].current_page;
+                content_write(type, var_cache['exp_cache_'+type].content, page, 1);
+                var storage = {};
+                storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
+                mono.storage.set(storage, function() {
+                    if ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' ) {
+                        mono.storage.sync.set(storage);
+                    }
+                });*!/
+            }
+        });*/
     }
 };

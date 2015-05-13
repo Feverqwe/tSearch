@@ -318,13 +318,14 @@ ul#explore_gallery ul.body div.title a {
     color: #000;
 }
 
-ul#explore_gallery.sort_mode div.collapses,
-ul#explore_gallery.sort_mode div.actionList,
-ul#explore_gallery.sort_mode ul.body,
-ul#explore_gallery.sort_mode ul.pageList {
-    display: none;
+ul#explore_gallery.sortMode .collapses,
+ul#explore_gallery.sortMode .actionList,
+ul#explore_gallery.sortMode .setupBody,
+ul#explore_gallery.sortMode ul.body,
+ul#explore_gallery.sortMode ul.pageList {
+    display: none !important;
 }
-ul#explore_gallery.sort_mode > li > div.head {
+ul#explore_gallery.sortMode > li > .head {
     border-bottom-width: 0;
 }
 ul#explore_gallery li.ui-sortable-helper {

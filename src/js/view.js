@@ -1836,6 +1836,7 @@ var define = function(name, func, getFunc) {
     if (name[0] === 'jquery') {
         func(jQuery);
         view.onUiReady();
+        explore.onUiReady();
     }
 };
 define.amd = {};
