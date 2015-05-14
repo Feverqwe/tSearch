@@ -1300,7 +1300,7 @@ var explore = {
                         data: {
                             type: item.type
                         },
-                        on: ['mouseover', this.onPageListMouseEnter.bind(this, categoryObj)]
+                        on: ['mouseenter', this.onPageListMouseEnter.bind(this, categoryObj), true]
                     }),
                     categoryObj.body = mono.create('ul', {class: 'body'})
                 ]
