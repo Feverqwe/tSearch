@@ -933,6 +933,8 @@ var explore = {
                 text: qualityText
             });
 
+            quality.addEventListener('mouseenter', this.onMouseEnterQuality.bind(this, quality, type, index));
+
             contentBody.appendChild(mono.create('li', {
                 append: [
                     mono.create('div', {
@@ -1184,19 +1186,12 @@ var explore = {
             ]
         });
     },
-    onPageListMouseEnter: function(e) {
+    onPageListMouseEnter: function(categoryObj, e) {
         "use strict";
         var el = e.target;
-        if (this === el) return;
-        while (el.parentNode !== this) {
-            el = el.parentNode;
-        }
+        if (el === categoryObj.pageEl) return;
 
-        var type = this.dataset.type;
         var page = parseInt(el.dataset.page);
-        var categoryObj = explore.varCache.categoryList[type];
-
-        if (!categoryObj) return;
 
         categoryObj.setPage(page);
     },
@@ -1305,7 +1300,7 @@ var explore = {
                         data: {
                             type: item.type
                         },
-                        on: ['mouseover', this.onPageListMouseEnter]
+                        on: ['mouseover', this.onPageListMouseEnter.bind(this, categoryObj)]
                     }),
                     categoryObj.body = mono.create('ul', {class: 'body'})
                 ]
@@ -1419,6 +1414,14 @@ var explore = {
         ]);
         $body.addClass('favoriteItemEdit');
     },
+    onClickQuality: function(el, e) {
+        "use strict";
+        console.log('mouse click');
+    },
+    onMouseEnterQuality: function(el, type, index) {
+        "use strict";
+        console.log('mouse enter', type, index);
+    },
     once: function once() {
         "use strict";
         if (once.inited) return;
@@ -1464,6 +1467,9 @@ var explore = {
             }
             if (el.classList.contains('edit')) {
                 return this.onEditItem(el, e);
+            }
+            if (el.classList.contains('quality')) {
+                return this.onClickQuality(el, e);
             }
         }.bind(this));
 
