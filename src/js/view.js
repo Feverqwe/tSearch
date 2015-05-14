@@ -1713,133 +1713,173 @@ var view = {
             window.scrollTo(0, 0);
         });
 
-        document.body.appendChild(mono.create('script', {src: 'js/notifer.js'}));
-        document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
-    },
-    onJqReady: function() {
-        "use strict";
-        view.domCache.searchBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            var request = this.domCache.requestInput.value.trim();
-            this.search(request);
+        define.on('jquery', function() {
+            view.domCache.searchBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var request = this.domCache.requestInput.value.trim();
+                this.search(request);
 
-            this.freezAutocomplete();
+                this.freezAutocomplete();
+            }.bind(this));
+
+            this.onUrlChange();
         }.bind(this));
 
-        this.onUrlChange();
-    },
-    onUiReady: function() {
-        "use strict";
-        $(document).off('mouseup');
+        define.on('jqueryui', function() {
+            $(document).off('mouseup');
 
-        (view.varCache.$requestInput = $(view.domCache.requestInput)).autocomplete({
-            minLength: 0,
-            delay: 50,
-            position: {
-                collision: "bottom"
-            },
-            source: function(request, cb) {
-                var value = request.term;
-                if (value.length === 0) {
-                    return cb(view.getHistory());
-                }
-                if (view.varCache.suggestXhr) {
-                    view.varCache.suggestXhr.abort();
-                }
-                if (view.varCache.autocompleteCache[value] !== undefined) {
-                    return cb(view.varCache.autocompleteCache[value]);
-                }
-                view.varCache.suggestXhr = mono.ajax({
-                    url: 'http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(value),
-                    dataType: 'json',
-                    success: function(data) {
-                        view.varCache.autocompleteCache[value] = data[1];
-                        cb(data[1]);
+            (view.varCache.$requestInput = $(view.domCache.requestInput)).autocomplete({
+                minLength: 0,
+                delay: 50,
+                position: {
+                    collision: "bottom"
+                },
+                source: function(request, cb) {
+                    var value = request.term;
+                    if (value.length === 0) {
+                        return cb(view.getHistory());
                     }
-                });
-            },
-            select: function() {
-                view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
-            },
-            create: function() {
-                var hasTopShadow = 0;
-                mono.create(document.querySelector('ul.ui-autocomplete'), {
-                    on: ['scroll', function() {
-                        if (this.scrollTop !== 0) {
-                            if (hasTopShadow === 1) {
+                    if (view.varCache.suggestXhr) {
+                        view.varCache.suggestXhr.abort();
+                    }
+                    if (view.varCache.autocompleteCache[value] !== undefined) {
+                        return cb(view.varCache.autocompleteCache[value]);
+                    }
+                    view.varCache.suggestXhr = mono.ajax({
+                        url: 'http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(value),
+                        dataType: 'json',
+                        success: function(data) {
+                            view.varCache.autocompleteCache[value] = data[1];
+                            cb(data[1]);
+                        }
+                    });
+                },
+                select: function() {
+                    view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
+                },
+                create: function() {
+                    var hasTopShadow = 0;
+                    mono.create(document.querySelector('ul.ui-autocomplete'), {
+                        on: ['scroll', function() {
+                            if (this.scrollTop !== 0) {
+                                if (hasTopShadow === 1) {
+                                    return;
+                                }
+                                hasTopShadow = 1;
+
+                                this.style.boxShadow = 'rgba(0, 0, 0, 0.40) -2px 1px 2px 0px inset';
                                 return;
                             }
-                            hasTopShadow = 1;
+                            if (hasTopShadow === 0) {
+                                return;
+                            }
+                            hasTopShadow = 0;
 
-                            this.style.boxShadow = 'rgba(0, 0, 0, 0.40) -2px 1px 2px 0px inset';
-                            return;
-                        }
-                        if (hasTopShadow === 0) {
-                            return;
-                        }
-                        hasTopShadow = 0;
+                            this.style.boxShadow = null;
+                        }]
+                    });
+                },
+                messages: {
+                    noResults: '',
+                    results: function() {}
+                }
+            });
 
-                        this.style.boxShadow = null;
-                    }]
-                });
-            },
-            messages: {
-                noResults: '',
-                results: function() {}
-            }
-        });
+            $(this.domCache.trackerListBlock).resizable({
+                minHeight: 56,
+                handles: 's',
+                alsoResize: this.domCache.trackerList,
+                stop: function(e, ui) {
+                    mono.storage.set({trackerListHeight: ui.size.height});
+                }
+            });
 
-        $(this.domCache.trackerListBlock).resizable({
-            minHeight: 56,
-            handles: 's',
-            alsoResize: this.domCache.trackerList,
-            stop: function(e, ui) {
-                mono.storage.set({trackerListHeight: ui.size.height});
-            }
-        });
+            $(this.domCache.timeFilterRange).find('input[type="text"]').datepicker({
+                defaultDate: '0',
+                changeMonth: true,
+                numberOfMonths: 1,
+                prevText: '',
+                nextText: '',
+                monthNamesShort: (function() {
+                    return mono.language.monthNameList.split(',');
+                })(),
+                dayNamesMin: (function() {
+                    return mono.language.dayNameList.split(',');
+                })(),
+                firstDay: 1,
+                maxDate: "+1d",
+                hideIfNoPrevNext: true,
+                dateFormat: "dd/mm/yy",
+                onClose: function(date, ui) {
+                    var el = ui.input[0];
+                    var dateList = date.split('/');
+                    var uTime = Math.round((new Date(dateList[2], dateList[1] - 1, dateList[0])).getTime() / 1000);
+                    el.dataset.date = uTime;
+                    el.dispatchEvent(new CustomEvent('keyup'));
+                }
+            });
+        }.bind(this));
 
-        $(this.domCache.timeFilterRange).find('input[type="text"]').datepicker({
-            defaultDate: '0',
-            changeMonth: true,
-            numberOfMonths: 1,
-            prevText: '',
-            nextText: '',
-            monthNamesShort: (function() {
-                return mono.language.monthNameList.split(',');
-            })(),
-            dayNamesMin: (function() {
-                return mono.language.dayNameList.split(',');
-            })(),
-            firstDay: 1,
-            maxDate: "+1d",
-            hideIfNoPrevNext: true,
-            dateFormat: "dd/mm/yy",
-            onClose: function(date, ui) {
-                var el = ui.input[0];
-                var dateList = date.split('/');
-                var uTime = Math.round((new Date(dateList[2], dateList[1] - 1, dateList[0])).getTime() / 1000);
-                el.dataset.date = uTime;
-                el.dispatchEvent(new CustomEvent('keyup'));
-            }
-        });
+        document.body.appendChild(mono.create('script', {src: 'js/notifer.js'}));
+        document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
     }
 };
 
-var define = function(name, func, getFunc) {
+var define = function(name, deps, callback) {
     "use strict";
+    //Allow for anonymous modules
+    if (typeof name !== 'string') {
+        //Adjust args appropriately
+        callback = deps;
+        deps = name;
+        name = null;
+    }
+
+    //This module may not have dependencies
+    if (!Array.isArray(deps)) {
+        callback = deps;
+        deps = null;
+    }
+
+    if (!deps) {
+        deps = [];
+    }
+
+    var type = name;
+    var amd = define.amd;
+    var stack = define.stack;
     if (name === 'jquery') {
-        getFunc()(document).ready(function() {
-            view.onJqReady();
+        callback()(document).ready(function() {
+            amd[type] = true;
+
             document.body.appendChild(mono.create('script', {src: 'js/jquery-ui.min.js'}));
         });
     } else
-    if (name[0] === 'jquery') {
-        func(jQuery);
-        view.onUiReady();
-        explore.onUiReady();
+    if (!name && deps.toString() === 'jquery') {
+        callback(jQuery);
+        type = 'jqueryui';
+        amd[type] = true;
+    }
+
+    if (stack[type]) {
+        while (stack[type].length) {
+            stack[type].splice(0, 1)[0]();
+        }
     }
 };
 define.amd = {};
+define.stack = {};
+define.on = function(name, cb) {
+    "use strict";
+    if (define.stack[name] === undefined) {
+        define.stack[name] = [];
+    }
+    if (!define.amd[name]) {
+        return define.stack[name].push(cb);
+    }
+
+    return cb();
+};
 
 engine.init(function() {
     "use strict";
