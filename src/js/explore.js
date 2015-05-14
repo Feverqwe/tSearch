@@ -1507,43 +1507,31 @@ var explore = {
                 handle: '.move',
                 items: 'li',
                 opacity: 0.8,
-                stop: function(event, ui) {
-                    /*var index = ui.item.data('index');
-                    var prev = ui.item.prev().data('index');
-                    var next = ui.item.next().data('index');
+                stop: function(e, ui) {
+                    var li = ui.item[0];
                     var type = 'favorites';
-                    var content = var_cache['exp_cache_'+type].content;
-                    var item = content[index];
-                    if (prev === undefined && next === undefined) {
-                        return;
-                    } else
-                    if (prev !== undefined) {
-                        if (prev < index) {
-                            content.splice(index, 1);
-                            content.splice(prev + 1, 0, item);
-                        } else {
-                            content.splice(prev + 1, 0, item);
-                            content.splice(index, 1);
-                        }
+                    var pic = li.firstChild;
+                    var nextLi = li.nextElementSibling;
+                    var index = parseInt(pic.dataset.index);
+
+                    var categoryObj = this.varCache.categoryList[type];
+                    var cache = engine.exploreCache[categoryObj.cacheName];
+
+                    var item = cache.content.splice(index, 1)[0];
+                    if (!nextLi) {
+                        cache.content.push(item);
                     } else {
-                        if (next < index) {
-                            content.splice(index, 1);
-                            content.splice(next, 0, item);
-                        } else {
-                            content.splice(next, 0, item);
-                            content.splice(index, 1);
+                        var nextPic = nextLi.firstChild;
+                        var nextIndex = parseInt(nextPic.dataset.index);
+                        if (index < nextIndex) {
+                            nextIndex--;
                         }
+                        cache.content.splice(nextIndex, 0, item);
                     }
-                    var page = var_cache.source[type].current_page;
-                    content_write(type, var_cache['exp_cache_'+type].content, page, 1);
-                    var storage = {};
-                    storage['exp_cache_'+type] = var_cache['exp_cache_'+type];
-                    mono.storage.set(storage, function() {
-                        if ( engine.settings.enableFavoriteSync === 1 && type === 'favorites' ) {
-                            mono.storage.sync.set(storage);
-                        }
-                    });*/
-                }
+
+                    this.updateCategoryContent('favorites');
+                    this.saveFavorites();
+                }.bind(this)
             });
         }.bind(this));
     }
