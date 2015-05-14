@@ -1847,13 +1847,15 @@ var define = function(name, deps, callback) {
 
     var type = name;
     var amd = define.amd;
-    var stack = define.stack;
     if (name === 'jquery') {
         callback()(document).ready(function() {
             amd[type] = true;
 
+            define.stack(type);
+
             document.body.appendChild(mono.create('script', {src: 'js/jquery-ui.min.js'}));
         });
+        return;
     } else
     if (!name && deps.toString() === 'jquery') {
         callback(jQuery);
@@ -1861,14 +1863,18 @@ var define = function(name, deps, callback) {
         amd[type] = true;
     }
 
+    define.stack(type);
+};
+define.amd = {};
+define.stack = function(type) {
+    "use strict";
+    var stack = define.stack;
     if (stack[type]) {
         while (stack[type].length) {
             stack[type].splice(0, 1)[0]();
         }
     }
 };
-define.amd = {};
-define.stack = {};
 define.on = function(name, cb) {
     "use strict";
     if (define.stack[name] === undefined) {
