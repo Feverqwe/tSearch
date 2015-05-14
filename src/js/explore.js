@@ -862,6 +862,7 @@ var explore = {
         } else {
             title = item.title;
         }
+        return title;
     },
     writeCategoryContent: function(type, content, page, update_pages) {
         "use strict";
