@@ -341,10 +341,6 @@ ul#explore_gallery .ui-sortable-placeholder {
     visibility: visible !important;
     border-radius: 3px;
 }
-ul#explore_gallery ul.body div.picture > div.quality > span {
-    white-space: nowrap;
-    font-size: .857em;
-}
 ul#explore_gallery ul.body div.picture > div.quality {
     position: absolute;
     visibility: hidden;
@@ -359,6 +355,9 @@ ul#explore_gallery ul.body div.picture > div.quality {
     cursor: pointer;
     z-index: 1;
     transition: background-color .2s;
+
+    white-space: nowrap;
+    font-size: .857em;
 }
 ul#explore_gallery ul.body div.picture:hover > div.quality {
     z-index: 14;

@@ -854,6 +854,15 @@ var explore = {
         }
         return url;
     },
+    getCategoryItemTitle: function(item) {
+        "use strict";
+        var title;
+        if (item.title_en && (mono.language.langCode === 'en' || engine.settings.useEnglishPosterName)) {
+            title = item.title_en;
+        } else {
+            title = item.title;
+        }
+    },
     writeCategoryContent: function(type, content, page, update_pages) {
         "use strict";
         page = page || 0;
@@ -874,10 +883,7 @@ var explore = {
         var contentBody = document.createDocumentFragment();
         var elCount = 0;
         for (var index = form; index < end; index++) {
-            var title = content[index].title;
-            if (content[index].title_en && (mono.language.langCode === 'en' || engine.settings.useEnglishPosterName)) {
-                title = content[index].title_en;
-            }
+            var title = this.getCategoryItemTitle(content[index]);
 
             var search_link = 'index.html#?search=' + encodeURIComponent(title);
             var titleEl = mono.create('span', {
@@ -920,15 +926,11 @@ var explore = {
                 }));
             }
 
-            var qualityText = '?';
+            var qualityText = engine.explorerQualityList[title] && engine.explorerQualityList[title].label || '?';
             var quality = mono.create('div', {
                 class: 'quality',
                 title: mono.language.requestQuality,
-                append: [
-                    mono.create('span', {
-                        text: qualityText
-                    })
-                ]
+                text: qualityText
             });
 
             contentBody.appendChild(mono.create('li', {
@@ -1345,10 +1347,7 @@ var explore = {
 
         item.img = this.addRootUrl(item.img, sourceOptions.imgUrl);
         item.url = this.addRootUrl(item.url, sourceOptions.rootUrl);
-
-        if (item.title_en && (mono.language.langCode === 'en' || engine.settings.useEnglishPosterName)) {
-            item.title = item.title_en;
-        }
+        item.title = this.getCategoryItemTitle(item);
 
         delete item.title_en;
 

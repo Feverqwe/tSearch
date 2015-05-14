@@ -145,6 +145,7 @@ var engine = {
         optionsList.push('currentProfile');
         optionsList.push('explorerOptions');
         optionsList.push('topList');
+        optionsList.push('explorerQualityList');
 
         var cacheList = [];
         for (var i = 0, item; item = this.defaultExplorerOptions[i]; i++) {
@@ -174,6 +175,10 @@ var engine = {
                 this.explorerOptions = storage.explorerOptions;
             } else {
                 this.explorerOptions = mono.cloneObj(this.defaultExplorerOptions);
+            }
+
+            if (typeof storage.explorerQualityList === 'object') {
+                this.explorerQualityList = storage.explorerQualityList;
             }
 
             this.prepareExploreOptionsObj();
@@ -220,6 +225,7 @@ var engine = {
     },
 
     exploreCache: {},
+    explorerQualityList: {},
 
     trackerLib: {}
 };
