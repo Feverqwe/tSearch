@@ -6,13 +6,16 @@ var explore = {
         container: document.getElementById('explore_block'),
         gallery: document.getElementById('explore_gallery'),
         topSearch: document.getElementById('top_search'),
-        infoPopup: document.getElementById('info_popup')
+        infoPopup: document.getElementById('info_popup'),
+        infoPopupCorner: document.querySelector('#info_popup .corner'),
+        infoPopupList: document.querySelector('#info_popup ul')
     },
     varCache: {
         isHidden: true,
         topListColumnCount: undefined,
         categoryList: {},
-        movebleStyleList: {}
+        movebleStyleList: {},
+        quickSearchResultList: []
     },
     sourceOptions: {
         favorites: {
@@ -903,7 +906,7 @@ var explore = {
             var readMoreUrl = this.addRootUrl(content[index].url, sourceOptions.rootUrl);
 
             var actionList = document.createDocumentFragment();
-            if ( type === 'favorites') {
+            if (type === 'favorites') {
                 mono.create(actionList, {
                     append: [
                         mono.create('div', {
@@ -1415,13 +1418,163 @@ var explore = {
         ]);
         $body.addClass('favoriteItemEdit');
     },
+    getTorrentWeight: function(ratingObj) {
+        "use strict";
+        ratingObj.sum -= (ratingObj.rate.seed + ratingObj.rate.music + ratingObj.rate.books + ratingObj.rate.xxx);
+        return ratingObj.sum;
+    },
+    getTop5Response: function(torrentList) {
+        "use strict";
+        var now = Date.now();
+        var maxTime = 180*24*60*60*1000;
+        var hYearAgo = now - maxTime;
+
+        var quickSearchResultList = this.varCache.quickSearchResultList;
+        for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
+            if (engine.settings.hideZeroSeed === 1 && torrentObj.seed === 0) {
+                continue;
+            }
+            torrentObj.lowerCategoryTitle = !torrentObj.categoryTitle ? '' : torrentObj.categoryTitle.toLowerCase();
+            if (engine.settings.teaserFilter && view.teaserFilter(torrentObj.lowerCategoryTitle)) {
+                continue;
+            }
+            if (torrentObj.date < hYearAgo) {
+                torrentObj.quality += 100 * (hYearAgo - torrentObj.date) / maxTime;
+            }
+            var titleObj = view.hlTextToFragment(torrentObj.title, view.varCache.requestObj);
+            var ratingObj = rate.rateText(view.varCache.requestObj, titleObj, torrentObj);
+
+            torrentObj.quality = this.getTorrentWeight(ratingObj);
+
+            torrentObj.rating = ratingObj;
+            torrentObj.titleObj = titleObj;
+
+            quickSearchResultList.push(torrentObj);
+        }
+
+        quickSearchResultList.sort(function(a,b) {
+            if (a.quality > b.quality) {
+                return -1;
+            } else
+            if (a.quality === b.quality) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
+
+        quickSearchResultList.splice(5);
+        return quickSearchResultList;
+    },
+    updateInfoPopup: function(qualityLabel, top5) {
+        "use strict";
+        var label = '-';
+        if (top5.length > 0) {
+            label = top5[0].rating.quality;
+        }
+        qualityLabel.replaceChild(document.createTextNode(label), qualityLabel.firstChild);
+
+        if (this.domCache.infoPopup.parentNode !== qualityLabel) {
+            return;
+        }
+        var list = document.createDocumentFragment();
+        for (var i = 0, torrentObj; torrentObj = top5[i]; i++) {
+            list.appendChild(mono.create('li', {
+                append: mono.create('a', {
+                    append: torrentObj.titleObj.node,
+                    href: torrentObj.url,
+                    target: '_blank'
+                })
+            }));
+        }
+
+        this.domCache.infoPopupList.textContent = '';
+        this.domCache.infoPopupList.appendChild(list);
+    },
+    onSearchSuccess: function(qualityLabel, tracker, request, data) {
+        "use strict";
+        view.setOnSuccessStatus(tracker, data);
+        if (data.requireAuth === 1) return;
+
+        var torrentList = data.torrentList;
+        var top5 = this.getTop5Response(torrentList);
+        this.updateInfoPopup(qualityLabel, top5);
+    },
     onClickQuality: function(el, e) {
         "use strict";
-        console.log('mouse click');
+        e.preventDefault();
+        var qualityLabel = el;
+        el = el.parentNode;
+
+        var li = el.parentNode;
+        while (li.tagName !== 'LI' || !li.dataset.type) {
+            li = li.parentNode;
+        }
+
+        var type = li.dataset.type;
+        var index = parseInt(el.dataset.index);
+
+        var categoryObj = this.varCache.categoryList[type];
+        var cache = engine.exploreCache[categoryObj.cacheName];
+        var item = cache.content[index];
+
+        var request = this.getCategoryItemTitle(item);
+
+        var trackerList = view.getTrackerList();
+
+        this.varCache.quickSearchResultList = [];
+        exKit.searchList(trackerList, request, {
+            onSuccess: this.onSearchSuccess.bind(this, qualityLabel),
+            onError: view.onSearchError,
+            onBegin: view.onSearchBegin
+        });
+    },
+    setInfoPopupPos: function(el, infoPopup, corner) {
+        "use strict";
+        var width = 300;
+
+        var parent = el;
+        var labelPos = {
+            left: 0,
+            top: 0
+        };
+        while (parent.offsetParent !== null) {
+            labelPos.left += parent.offsetLeft;
+            labelPos.top += parent.offsetTop;
+            parent = parent.offsetParent;
+        }
+        var rLabelPos = mono.getPosition(el);
+
+        var labelSize = mono.getSize(el);
+
+        var docWidth = document.body.clientWidth;
+        var anglPos = labelPos.left + labelSize.width / 2;
+        var rigthPos = anglPos + width / 2;
+        var leftPos = anglPos - width / 2;
+        if (rigthPos > docWidth) {
+            rigthPos = docWidth - width / 2;
+            leftPos = docWidth - width;
+        }
+        if (leftPos < 0) {
+            leftPos = 0;
+            rigthPos = width;
+        }
+
+        var cornerPersent = 100 * (anglPos - leftPos) / width;
+
+        leftPos -= rLabelPos.left;
+        labelPos.top -= rLabelPos.top;
+
+        corner.style.left = cornerPersent + '%';
+        infoPopup.style.left = leftPos + 'px';
+        infoPopup.style.top = (labelPos.top + labelSize.height - 5) + 'px';
     },
     onMouseEnterQuality: function(el, type, index) {
         "use strict";
-        console.log('mouse enter', type, index);
+        var infoPopup = this.domCache.infoPopup;
+        var infoPopupCorner = this.domCache.infoPopupCorner;
+        this.setInfoPopupPos(el, infoPopup, infoPopupCorner);
+        el.appendChild(infoPopup);
     },
     once: function once() {
         "use strict";

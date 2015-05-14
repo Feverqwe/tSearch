@@ -879,13 +879,18 @@ var view = {
         }
         return {node: root, base: $.trim(base), desc: desc};
     },
+    teaserFilterR: /Трейлер|Тизер|Teaser|Trailer/i,
+    teaserFilter: function(title) {
+        "use strict";
+        return this.teaserFilterR.test(title);
+    },
     writeResultList: function(tracker, torrentList) {
         "use strict";
         var filter = view.getFilterStyleState();
         var searchResultCounter = view.varCache.searchResultCounter;
         var searchResultCache = view.varCache.searchResultCache;
         for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
-            if (engine.settings.hideZeroSeed === 1 && torrentObj.seed === 0) {
+            if (engine.settings.hideZeroSeed && torrentObj.seed === 0) {
                 continue;
             }
             var itemCategoryId = torrentObj.categoryId === undefined ? -1 : torrentObj.categoryId;
@@ -897,6 +902,9 @@ var view = {
             };
             torrentObj.lowerTitle = torrentObj.title.toLowerCase();
             torrentObj.lowerCategoryTitle = !torrentObj.categoryTitle ? '' : torrentObj.categoryTitle.toLowerCase();
+            if (engine.settings.teaserFilter && this.teaserFilter(torrentObj.lowerCategoryTitle)) {
+                continue;
+            }
             cacheItem.filter = view.getFilterState(torrentObj);
 
             var titleObj = view.hlTextToFragment(torrentObj.title, view.varCache.requestObj);
@@ -1006,7 +1014,7 @@ var view = {
         view.sortResults();
         view.resultCounterUpdate();
     },
-    onSearchSuccess: function(tracker, request, data) {
+    setOnSuccessStatus: function (tracker, data) {
         "use strict";
         if (data.requireAuth === 1) {
             view.resetTrackerStatusById(tracker.id, ['auth']);
@@ -1015,6 +1023,11 @@ var view = {
             });
         }
         view.resetTrackerStatusById(tracker.id);
+    },
+    onSearchSuccess: function(tracker, request, data) {
+        "use strict";
+        view.setOnSuccessStatus(tracker, data);
+        if (data.requireAuth === 1) return;
         view.writeResultList(tracker, data.torrentList);
     },
     resetTrackerStatusById: function(trackerId, except) {

@@ -366,7 +366,7 @@ ul#explore_gallery ul.body div.picture:hover > div.quality {
 ul#explore_gallery ul.body div.picture > div.quality:hover {
     background-color: #fff;
 }
-ul#explore_gallery ul.body div.picture > div.quality:hover div.info_popup {
+ul#explore_gallery ul.body div.picture > div.quality:hover #info_popup {
     visibility: visible;
 }
 ul#explore_gallery ul.body div.picture > a.link {
@@ -432,4 +432,72 @@ ul#explore_gallery ul.body li div.picture > a.link:hover {
 
 .nf-notifi.favoriteItemEdit input[type="text"] {
     width: 290px;
+}
+
+#explore_gallery #info_popup:hover {
+    visibility: visible;
+}
+#explore_gallery #info_popup {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    z-index: 12;
+    width: 300px;
+    visibility: hidden;
+    padding-top: 11px;
+    text-align: left;
+    font-size: 0.929em;
+    cursor: default;
+}
+#explore_gallery div.popup {
+    background-color: #fff;
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+#explore_gallery #info_popup .corner2 {
+    border: 8px solid transparent;
+    border-bottom: 10px solid #fff;
+    border-top: 0;
+    width: 0;
+    top: 1px;
+    position: absolute;
+    left: 50%;
+    margin-left: -8px;
+}
+#explore_gallery #info_popup .corner {
+    border: 8px solid transparent;
+    border-bottom: 10px solid rgb(192, 187, 187);
+    border-top: 0;
+    width: 0;
+    top: 2px;
+    position: absolute;
+    left: 50%;
+    margin-left: -8px;
+
+}
+#explore_gallery #info_popup .content {
+    padding: 6px;
+}
+#explore_gallery #info_popup ul {
+    list-style-type: lower-greek;
+    padding-left: 20px;
+    margin: 0;
+    word-wrap: break-word;
+}
+#explore_gallery #info_popup li {
+    margin: 0;
+    margin-bottom: 6px;
+    line-height: normal;
+}
+#explore_gallery #info_popup li:first-child {
+    border-bottom: 1px dashed rgb(111, 111, 111);
+    margin-bottom: 3px;
+    padding-bottom: 3px;
+    font-size: 1.071em;
+}
+#explore_gallery #info_popup li:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
 }

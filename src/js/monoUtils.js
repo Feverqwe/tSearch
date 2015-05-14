@@ -593,3 +593,17 @@ mono.rmChildTextNodes = function(el) {
         el.removeChild(node);
     }
 };
+
+mono.getPosition = function(node) {
+    var box = node.getBoundingClientRect();
+    return {
+        top: Math.round(box.top + window.pageYOffset),
+        left: Math.round(box.left + window.pageXOffset),
+        width: box.width,
+        height: box.height
+    }
+};
+
+mono.getSize = function(node) {
+    return {width: node.offsetWidth, height: node.offsetHeight};
+};

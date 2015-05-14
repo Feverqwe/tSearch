@@ -8,7 +8,7 @@ var engine = {
         hideTrackerIcons: 0,
         subCategoryFilter: 1,
         hideZeroSeed: 0,
-        enableTeaserFilter: 1,
+        teaserFilter: 1,
         contextMenu: 1,
         searchPopup: 1,
         autoComplite: 1,
