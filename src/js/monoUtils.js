@@ -607,3 +607,51 @@ mono.getPosition = function(node) {
 mono.getSize = function(node) {
     return {width: node.offsetWidth, height: node.offsetHeight};
 };
+
+mono.domToTemplate = function(fragment, list) {
+    "use strict";
+    list = list || [];
+    for (var i = 0, el; el = fragment.childNodes[i]; i++) {
+        if (el.nodeType === 3) {
+            list.push(el.textContent);
+            continue;
+        }
+        var tagName = el.tagName;
+        var obj = {};
+        var item = [tagName, obj];
+
+        if (tagName === 'A') {
+            obj.href = el.getAttribute('href');
+            obj.target = el.getAttribute('target') || undefined;
+        }
+
+        if (el.childNodes.length > 0) {
+            if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
+                obj.text = el.childNodes[0].textContent;
+            } else {
+                obj.appendList = [];
+                mono.domToTemplate(el, obj.appendList);
+            }
+        }
+        list.push(item);
+    }
+    return list;
+};
+
+mono.parseTemplate = function(list, fragment) {
+    fragment = fragment || document.createDocumentFragment();
+    for (var i = 0, len = list.length; i < len; i++) {
+        var item = list[i];
+        if (Array.isArray(item)) {
+            var el = item[1];
+            var dEl;
+            fragment.appendChild(dEl = mono.create.apply(null, item));
+            if (el.appendList !== undefined) {
+                mono.parseTemplate(el.appendList, dEl);
+            }
+        } else {
+            fragment.appendChild(document.createTextNode(item));
+        }
+    }
+    return fragment;
+};

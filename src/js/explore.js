@@ -15,7 +15,8 @@ var explore = {
         topListColumnCount: undefined,
         categoryList: {},
         movebleStyleList: {},
-        quickSearchResultList: []
+        quickSearchResultList: [],
+        requestObj: {}
     },
     sourceOptions: {
         favorites: {
@@ -1443,8 +1444,8 @@ var explore = {
             if (torrentObj.date < hYearAgo) {
                 torrentObj.quality += 100 * (hYearAgo - torrentObj.date) / maxTime;
             }
-            var titleObj = view.hlTextToFragment(torrentObj.title, view.varCache.requestObj);
-            var ratingObj = rate.rateText(view.varCache.requestObj, titleObj, torrentObj);
+            var titleObj = view.hlTextToFragment(torrentObj.title, this.varCache.requestObj);
+            var ratingObj = rate.rateText(this.varCache.requestObj, titleObj, torrentObj);
 
             torrentObj.quality = this.getTorrentWeight(ratingObj);
 
@@ -1472,32 +1473,43 @@ var explore = {
         });
 
         quickSearchResultList.splice(5);
-        return quickSearchResultList;
+
+        var top5List = [];
+        for (i = 0, torrentObj; torrentObj = quickSearchResultList[i]; i++) {
+            top5List.push({
+                quality: torrentObj.rating.quality,
+                titleObj: mono.domToTemplate(torrentObj.titleObj.node),
+                url: torrentObj.url
+            });
+        }
+        return top5List;
     },
-    updateInfoPopup: function(qualityLabel, top5) {
+    updateInfoPopup: function(qualityLabel, top5, request) {
         "use strict";
         var label = '-';
         if (top5.length > 0) {
-            label = top5[0].rating.quality;
+            label = top5[0].quality;
         }
         qualityLabel.replaceChild(document.createTextNode(label), qualityLabel.firstChild);
 
-        if (this.domCache.infoPopup.parentNode !== qualityLabel) {
+        this.domCache.infoPopup.style.display = 'none';
+        this.domCache.infoPopupList.textContent = '';
+        if (this.domCache.infoPopup.parentNode !== qualityLabel || top5.length === 0) {
             return;
         }
         var list = document.createDocumentFragment();
         for (var i = 0, torrentObj; torrentObj = top5[i]; i++) {
             list.appendChild(mono.create('li', {
                 append: mono.create('a', {
-                    append: torrentObj.titleObj.node,
+                    append: mono.parseTemplate(torrentObj.titleObj),
                     href: torrentObj.url,
                     target: '_blank'
                 })
             }));
         }
 
-        this.domCache.infoPopupList.textContent = '';
         this.domCache.infoPopupList.appendChild(list);
+        this.domCache.infoPopup.style.display = 'block';
     },
     onSearchSuccess: function(qualityLabel, tracker, request, data) {
         "use strict";
@@ -1506,7 +1518,10 @@ var explore = {
 
         var torrentList = data.torrentList;
         var top5 = this.getTop5Response(torrentList, tracker);
-        this.updateInfoPopup(qualityLabel, top5);
+        this.updateInfoPopup(qualityLabel, top5, request);
+
+        engine.explorerQualityList[request] = top5;
+        mono.storage.set({explorerQualityList: engine.explorerQualityList});
     },
     onClickQuality: function(el, e) {
         "use strict";
@@ -1527,7 +1542,7 @@ var explore = {
         var item = cache.content[index];
 
         var request = this.getCategoryItemTitle(item);
-        request = view.prepareRequest(request);
+        request = view.prepareRequest.call(this, request);
 
         var trackerList = view.getTrackerList();
 
@@ -1584,7 +1599,16 @@ var explore = {
         var infoPopup = this.domCache.infoPopup;
         var infoPopupCorner = this.domCache.infoPopupCorner;
         this.setInfoPopupPos(el, infoPopup, infoPopupCorner);
+
+        var categoryObj = this.varCache.categoryList[type];
+        var cache = engine.exploreCache[categoryObj.cacheName];
+        var item = cache.content[index];
+
+        var request = this.getCategoryItemTitle(item);
+        request = view.prepareRequest(request, 1);
+        var top5 = engine.explorerQualityList[request] || [];
         el.appendChild(infoPopup);
+        this.updateInfoPopup(el, top5, request);
     },
     once: function once() {
         "use strict";

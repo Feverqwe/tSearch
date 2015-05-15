@@ -502,3 +502,9 @@ ul#explore_gallery ul.body li div.picture > a.link:hover {
     padding-bottom: 0;
     border-bottom: 0;
 }
+#explore_gallery #info_popup li a span {
+    color: #000;
+}
+#explore_gallery #info_popup li a:hover {
+    text-decoration: underline;
+}

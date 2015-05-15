@@ -1107,12 +1107,15 @@ var view = {
         yearR: /^(?:19|2[01])[0-9]{2}$/g,
         splitR: /\s+/
     },
-    prepareRequest: function(request) {
+    prepareRequest: function(request, requestOnly) {
         "use strict";
         var prep = view.prepareRequestR;
         request = $.trim(request.replace(prep.spaceR, ' '));
+        if (requestOnly) {
+            return request;
+        }
 
-        var obj = view.varCache.requestObj = {};
+        var obj = this.varCache.requestObj = {};
         var currentYear = (new Date).getFullYear();
         var yearList = [];
         var hlWordList = [];

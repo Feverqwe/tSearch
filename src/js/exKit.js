@@ -881,16 +881,17 @@ var exKit = {
     },
     search: function(tracker, request, onSearch) {
         "use strict";
+        var trackerRequest = request;
         onSearch.onBegin && onSearch.onBegin(tracker);
         if (tracker.search.onGetRequest !== undefined) {
-            request = tracker.search.onGetRequest(request);
+            trackerRequest = tracker.search.onGetRequest(request);
         }
         var xhr = mono.ajax({
-            url: tracker.search.searchUrl.replace('%search%', request),
+            url: tracker.search.searchUrl.replace('%search%', trackerRequest),
             type: tracker.search.requestType,
             mimeType: tracker.search.requestMimeType,
             dataType: tracker.search.requestDataType,
-            data: (tracker.search.requestData || '').replace('%search%', request),
+            data: (tracker.search.requestData || '').replace('%search%', trackerRequest),
             success: (tracker.search.parseResponse || exKit.parseResponse).bind(null, tracker, request, function(data) {
                 onSearch.onDone(tracker);
                 onSearch.onSuccess(tracker, request, data);
