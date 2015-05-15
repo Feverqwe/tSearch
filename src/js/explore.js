@@ -1495,13 +1495,11 @@ var explore = {
     },
     updateInfoPopup: function(qualityLabel, top5, request) {
         "use strict";
-        if (top5) {
-            var label = '-';
-            if (top5.length > 0) {
-                label = top5[0].quality;
-            }
-            qualityLabel.replaceChild(document.createTextNode(label), qualityLabel.firstChild);
+        var label = !top5 ? '?' : '-';
+        if (top5 && top5.length > 0) {
+            label = top5[0].quality;
         }
+        qualityLabel.replaceChild(document.createTextNode(label), qualityLabel.firstChild);
 
         if (this.domCache.infoPopup.parentNode !== qualityLabel) {
             return;
@@ -1545,6 +1543,8 @@ var explore = {
         e.preventDefault();
         var qualityLabel = el;
         el = el.parentNode;
+
+        qualityLabel.replaceChild(document.createTextNode('*'), qualityLabel.firstChild);
 
         var li = el.parentNode;
         while (li.tagName !== 'LI' || !li.dataset.type) {
