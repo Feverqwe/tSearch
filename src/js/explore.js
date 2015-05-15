@@ -1495,7 +1495,7 @@ var explore = {
     },
     updateInfoPopup: function(qualityLabel, top5, request) {
         "use strict";
-        var label = !top5 ? '?' : '-';
+        var label = top5 ? '-' : '?';
         if (top5 && top5.length > 0) {
             label = top5[0].quality;
         }
