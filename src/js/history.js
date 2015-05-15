@@ -75,7 +75,7 @@ var view = {
                                             text: view.timeStampToDate(linkObj.clickTime, mono.language.dateFormat + ' hh:mm')
                                         }),
                                         mono.create('a', {
-                                            append: mono.parseTemplate(linkObj.title),
+                                            append: mono.templateToDom(linkObj.title),
                                             href: linkObj.url,
                                             target: '_blank'
                                         })

@@ -638,7 +638,7 @@ mono.domToTemplate = function(fragment, list) {
     return list;
 };
 
-mono.parseTemplate = function(list, fragment) {
+mono.templateToDom = function(list, fragment) {
     fragment = fragment || document.createDocumentFragment();
     for (var i = 0, len = list.length; i < len; i++) {
         var item = list[i];
@@ -647,7 +647,7 @@ mono.parseTemplate = function(list, fragment) {
             var dEl;
             fragment.appendChild(dEl = mono.create.apply(null, item));
             if (el.appendList !== undefined) {
-                mono.parseTemplate(el.appendList, dEl);
+                mono.templateToDom(el.appendList, dEl);
             }
         } else {
             fragment.appendChild(document.createTextNode(item));

@@ -1522,7 +1522,7 @@ var explore = {
                     data: {
                         index: i
                     },
-                    append: mono.parseTemplate(torrentObj.titleObj),
+                    append: mono.templateToDom(torrentObj.titleObj),
                     href: torrentObj.url,
                     target: '_blank',
                     onCreate: function() {
