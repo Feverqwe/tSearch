@@ -868,6 +868,15 @@ var explore = {
         }
         return title;
     },
+    getItemQualityLabel: function (title) {
+        "use strict";
+        var label = '?';
+        var qList = engine.explorerQualityList[title];
+        if (qList && qList.length > 0) {
+            label = qList[0].quality;
+        }
+        return label;
+    },
     writeCategoryContent: function(type, content, page, update_pages) {
         "use strict";
         page = page || 0;
@@ -931,7 +940,7 @@ var explore = {
                 }));
             }
 
-            var qualityText = engine.explorerQualityList[title] && engine.explorerQualityList[title].label || '?';
+            var qualityText = this.getItemQualityLabel(title);
             var quality = mono.create('div', {
                 class: 'quality',
                 title: mono.language.requestQuality,
@@ -1492,11 +1501,12 @@ var explore = {
         }
         qualityLabel.replaceChild(document.createTextNode(label), qualityLabel.firstChild);
 
-        this.domCache.infoPopup.style.display = 'none';
-        this.domCache.infoPopupList.textContent = '';
         if (this.domCache.infoPopup.parentNode !== qualityLabel || top5.length === 0) {
             return;
         }
+
+        this.domCache.infoPopup.style.display = 'none';
+        this.domCache.infoPopupList.textContent = '';
         var list = document.createDocumentFragment();
         for (var i = 0, torrentObj; torrentObj = top5[i]; i++) {
             list.appendChild(mono.create('li', {
