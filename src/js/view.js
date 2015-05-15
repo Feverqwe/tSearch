@@ -947,7 +947,7 @@ var view = {
                             mono.create('span', {
                                 class: 'title',
                                 append: [
-                                    mono.create('a', {
+                                    cacheItem.titleEl = mono.create('a', {
                                         append: titleObj.node,
                                         href: torrentObj.url,
                                         target: '_blank'
@@ -1107,7 +1107,7 @@ var view = {
         yearR: /^(?:19|2[01])[0-9]{2}$/g,
         splitR: /\s+/
     },
-    prepareRequest: function(request, requestOnly) {
+    prepareRequest: function(request, requestOnly, requestObj) {
         "use strict";
         var prep = view.prepareRequestR;
         request = $.trim(request.replace(prep.spaceR, ' '));
@@ -1115,7 +1115,7 @@ var view = {
             return request;
         }
 
-        var obj = this.varCache.requestObj = {};
+        var obj = requestObj || (this.varCache.requestObj = {});
         var currentYear = (new Date).getFullYear();
         var yearList = [];
         var hlWordList = [];
@@ -1172,10 +1172,10 @@ var view = {
 
         return request;
     },
-    inHistory: function() {
+    inHistory: function(requestObj) {
         "use strict";
         var historyList = view.varCache.historyList;
-        var requestObj = view.varCache.requestObj;
+        requestObj = requestObj || view.varCache.requestObj;
         var now = parseInt(Date.now() / 1000);
         var history = view.varCache.historyObj;
         var historyObj;
@@ -1199,10 +1199,10 @@ var view = {
 
         mono.storage.set({searchHistory: historyList});
     },
-    inLinkHistory: function(torrentObj) {
+    inLinkHistory: function(torrentObj, requestObj) {
         "use strict";
         var history = view.varCache.historyObj;
-        var requestObj = view.varCache.requestObj;
+        requestObj = requestObj || view.varCache.requestObj;
         var historyObj = history[requestObj.historyKey];
         if (historyObj === undefined) return;
 
@@ -1229,7 +1229,7 @@ var view = {
             historyObj.linkList.unshift(linkObj);
         }
 
-        linkObj.title = torrentObj.api.title;
+        linkObj.title = mono.domToTemplate(torrentObj.titleEl);
         linkObj.clickTime = now;
         // linkObj.count++;
 

@@ -871,10 +871,8 @@ var explore = {
     getItemQualityLabel: function (title) {
         "use strict";
         var label = '?';
-        var qList = engine.explorerQualityList[title];
-        if (qList && qList.length > 0) {
-            label = qList[0].quality;
-        }
+        var qualityObj = engine.explorerQualityList[title];
+        label = qualityObj && qualityObj.label || label;
         return label;
     },
     writeCategoryContent: function(type, content, page, update_pages) {
@@ -1461,6 +1459,13 @@ var explore = {
             torrentObj.rating = ratingObj;
             torrentObj.titleObj = titleObj;
 
+            torrentObj.size && mono.create(titleObj.node, {
+                append: [
+                    ', ',
+                    view.formatSize(torrentObj.size)
+                ]
+            });
+
             quickSearchResultList.push(torrentObj);
 
             searchResultCounter.tracker[tracker.id]++;
@@ -1486,6 +1491,7 @@ var explore = {
         var top5List = [];
         for (i = 0, torrentObj; torrentObj = quickSearchResultList[i]; i++) {
             top5List.push({
+                id: tracker.id,
                 quality: torrentObj.rating.quality,
                 titleObj: mono.domToTemplate(torrentObj.titleObj.node),
                 url: torrentObj.url
@@ -1493,12 +1499,9 @@ var explore = {
         }
         return top5List;
     },
-    updateInfoPopup: function(qualityLabel, top5, request) {
+    updateInfoPopup: function(qualityLabel, qualityObj, request) {
         "use strict";
-        var label = top5 ? '-' : '?';
-        if (top5 && top5.length > 0) {
-            label = top5[0].quality;
-        }
+        var label = qualityObj && qualityObj.label || '?';
         qualityLabel.replaceChild(document.createTextNode(label), qualityLabel.firstChild);
 
         if (this.domCache.infoPopup.parentNode !== qualityLabel) {
@@ -1508,17 +1511,23 @@ var explore = {
         this.domCache.infoPopup.style.display = 'none';
         this.domCache.infoPopupList.textContent = '';
 
-        if (!top5 || top5.length === 0) {
+        if (!qualityObj || qualityObj.list.length === 0) {
             return;
         }
 
         var list = document.createDocumentFragment();
-        for (var i = 0, torrentObj; torrentObj = top5[i]; i++) {
+        for (var i = 0, torrentObj; torrentObj = qualityObj.list[i]; i++) {
             list.appendChild(mono.create('li', {
                 append: mono.create('a', {
+                    data: {
+                        index: i
+                    },
                     append: mono.parseTemplate(torrentObj.titleObj),
                     href: torrentObj.url,
-                    target: '_blank'
+                    target: '_blank',
+                    onCreate: function() {
+                        this.title = this.textContent;
+                    }
                 })
             }));
         }
@@ -1532,10 +1541,15 @@ var explore = {
         if (data.requireAuth === 1) return;
 
         var torrentList = data.torrentList;
-        var top5 = this.getTop5Response(torrentList, tracker);
-        this.updateInfoPopup(qualityLabel, top5, request);
+        var topList = this.getTop5Response(torrentList, tracker);
+        var qualityObj = {
+            list: topList,
+            label: topList.length > 0 && topList[0].quality || undefined
+        };
 
-        engine.explorerQualityList[request] = top5;
+        this.updateInfoPopup(qualityLabel, qualityObj, request);
+
+        engine.explorerQualityList[request] = qualityObj;
         mono.storage.set({explorerQualityList: engine.explorerQualityList});
     },
     onClickQuality: function(el, e) {
@@ -1559,7 +1573,10 @@ var explore = {
         var item = cache.content[index];
 
         var request = this.getCategoryItemTitle(item);
-        request = view.prepareRequest.call(this, request);
+        this.varCache.requestObj = {};
+        request = view.prepareRequest(request, undefined, this.varCache.requestObj);
+
+        view.inHistory(this.varCache.requestObj);
 
         var trackerList = view.getTrackerList();
 
@@ -1614,6 +1631,13 @@ var explore = {
     onMouseEnterQuality: function(el, type, index) {
         "use strict";
         var infoPopup = this.domCache.infoPopup;
+
+        if (infoPopup.dataset.type === type && parseInt(infoPopup.dataset.index) === index) {
+            return;
+        }
+        infoPopup.dataset.type = type;
+        infoPopup.dataset.index = index;
+
         var infoPopupCorner = this.domCache.infoPopupCorner;
         this.setInfoPopupPos(el, infoPopup, infoPopupCorner);
 
@@ -1623,9 +1647,12 @@ var explore = {
 
         var request = this.getCategoryItemTitle(item);
         request = view.prepareRequest(request, 1);
-        var top5 = engine.explorerQualityList[request];
+
+        var qualityObj = engine.explorerQualityList[request];
+
         el.appendChild(infoPopup);
-        this.updateInfoPopup(el, top5, request);
+
+        this.updateInfoPopup(el, qualityObj, request);
     },
     once: function once() {
         "use strict";
@@ -1677,6 +1704,52 @@ var explore = {
                 return this.onClickQuality(el, e);
             }
         }.bind(this));
+
+        this.domCache.infoPopup.addEventListener('click', function(e) {
+            var el = e.target;
+
+            while (el !== this && el.tagName !== 'A') {
+                el = el.parentNode;
+            }
+            if (el === this) {
+                return;
+            }
+
+            var type = this.dataset.type;
+            var index = parseInt(this.dataset.index);
+
+            var categoryObj = explore.varCache.categoryList[type];
+            var cache = engine.exploreCache[categoryObj.cacheName];
+            var item = mono.cloneObj(cache.content[index]);
+
+            var request = explore.getCategoryItemTitle(item);
+            var requestObj = {};
+            request = view.prepareRequest(request, undefined, requestObj);
+
+            var requestObj = varCache.requestObj;
+
+            var listIndex = parseInt(el.dataset.index);
+
+            var qualityObj = engine.explorerQualityList[request];
+
+            if (!qualityObj) return;
+
+            var listItem = qualityObj.list[listIndex];
+
+            if (!listItem) return;
+
+            if (!view.varCache.historyObj[requestObj.historyKey]) {
+                view.inHistory(requestObj);
+            }
+
+            view.inLinkHistory({
+                id: listItem.id,
+                api: {
+                    url: listItem.url,
+                    title: listItem.titleObj
+                }
+            }, requestObj);
+        });
 
         this.writeCategoryList();
 

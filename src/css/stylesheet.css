@@ -341,6 +341,7 @@ body.home #result_block {
     padding-right: 4px;
 }
 
+#info_popup li a,
 #result_table .title a {
     line-height: 130%;
     padding-bottom: 1px;
@@ -348,22 +349,29 @@ body.home #result_block {
     vertical-align: middle;
 }
 
+#info_popup li a span,
 #result_table .title a span {
     color: #000;
 }
 
+#info_popup li a:link,
 #result_table .title a:link {
     color: #1A3DC1;
 }
+
+#info_popup li a:visited,
+#info_popup li a:visited span,
 #result_table .title a:visited,
 #result_table .title a:visited span {
     color: #609;
 }
 
+#info_popup li a:link:hover,
 #result_table .title a:link:hover {
     border-bottom-color: #1A3DC1;
 }
 
+#info_popup li a:visited:hover,
 #result_table .title a:visited:hover {
     border-bottom-color: #609;
 }
