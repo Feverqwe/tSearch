@@ -1229,7 +1229,7 @@ var view = {
             historyObj.linkList.unshift(linkObj);
         }
 
-        linkObj.title = mono.domToTemplate(torrentObj.titleEl);
+        linkObj.title = torrentObj.titleTemplate || mono.domToTemplate(torrentObj.titleEl);
         linkObj.clickTime = now;
         // linkObj.count++;
 

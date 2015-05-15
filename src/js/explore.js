@@ -1726,8 +1726,6 @@ var explore = {
             var requestObj = {};
             request = view.prepareRequest(request, undefined, requestObj);
 
-            var requestObj = varCache.requestObj;
-
             var listIndex = parseInt(el.dataset.index);
 
             var qualityObj = engine.explorerQualityList[request];
@@ -1745,9 +1743,9 @@ var explore = {
             view.inLinkHistory({
                 id: listItem.id,
                 api: {
-                    url: listItem.url,
-                    title: listItem.titleObj
-                }
+                    url: listItem.url
+                },
+                titleTemplate: listItem.titleObj
             }, requestObj);
         });
 
