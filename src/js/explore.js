@@ -1423,13 +1423,15 @@ var explore = {
         ratingObj.sum -= (ratingObj.rate.seed + ratingObj.rate.music + ratingObj.rate.books + ratingObj.rate.xxx);
         return ratingObj.sum;
     },
-    getTop5Response: function(torrentList) {
+    getTop5Response: function(torrentList, tracker) {
         "use strict";
         var now = Date.now();
         var maxTime = 180*24*60*60*1000;
         var hYearAgo = now - maxTime;
 
         var quickSearchResultList = this.varCache.quickSearchResultList;
+        var searchResultCounter = view.varCache.searchResultCounter;
+
         for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
             if (engine.settings.hideZeroSeed === 1 && torrentObj.seed === 0) {
                 continue;
@@ -1450,7 +1452,13 @@ var explore = {
             torrentObj.titleObj = titleObj;
 
             quickSearchResultList.push(torrentObj);
+
+            searchResultCounter.tracker[tracker.id]++;
+            searchResultCounter.category[undefined]++;
+            searchResultCounter.sum++;
         }
+
+        view.resultCounterUpdate();
 
         quickSearchResultList.sort(function(a,b) {
             if (a.quality > b.quality) {
@@ -1497,7 +1505,7 @@ var explore = {
         if (data.requireAuth === 1) return;
 
         var torrentList = data.torrentList;
-        var top5 = this.getTop5Response(torrentList);
+        var top5 = this.getTop5Response(torrentList, tracker);
         this.updateInfoPopup(qualityLabel, top5);
     },
     onClickQuality: function(el, e) {
@@ -1519,9 +1527,11 @@ var explore = {
         var item = cache.content[index];
 
         var request = this.getCategoryItemTitle(item);
+        request = view.prepareRequest(request);
 
         var trackerList = view.getTrackerList();
 
+        view.resultCounterReset();
         this.varCache.quickSearchResultList = [];
         exKit.searchList(trackerList, request, {
             onSuccess: this.onSearchSuccess.bind(this, qualityLabel),

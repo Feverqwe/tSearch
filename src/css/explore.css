@@ -284,7 +284,7 @@ ul#explore_gallery ul.body {
 ul#explore_gallery ul.body a {
     text-decoration: none;
 }
-ul#explore_gallery ul.body li {
+ul#explore_gallery ul.body > li {
     display: inline-block;
     position: relative;
     margin: 10px;
@@ -446,8 +446,9 @@ ul#explore_gallery ul.body li div.picture > a.link:hover {
     visibility: hidden;
     padding-top: 11px;
     text-align: left;
-    font-size: 0.929em;
     cursor: default;
+    font-size: 13px;
+    white-space: normal;
 }
 #explore_gallery div.popup {
     background-color: #fff;
@@ -494,7 +495,7 @@ ul#explore_gallery ul.body li div.picture > a.link:hover {
     border-bottom: 1px dashed rgb(111, 111, 111);
     margin-bottom: 3px;
     padding-bottom: 3px;
-    font-size: 1.071em;
+    font-size: 14px;
 }
 #explore_gallery #info_popup li:last-child {
     margin-bottom: 0;
