@@ -685,7 +685,7 @@ var rate = {
     sizeSeedRate: function(rating, torrentObj) {
         var rate = rating.rate;
         rate.seed = 0;
-        if (engine.settings.calcSeedCount === 1) {
+        if (engine.settings.calcSeedCount) {
             rate.seed = (torrentObj.seed > 0) ? 50 : 0;
         }
         if (torrentObj.size < 524288000 && rate.video > 45) {

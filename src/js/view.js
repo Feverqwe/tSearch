@@ -847,6 +847,8 @@ var view = {
     },
     hlTextToFragment: function(code, requestObj) {
         "use strict";
+        var disableHighlight = !engine.settings.enableHighlight;
+
         code = rate.hlRequest(code, requestObj);
         var list = view.hlCodeToArray(code);
 
@@ -856,6 +858,9 @@ var view = {
         fragment = root = document.createDocumentFragment();
         for (var i = 0, len = list.length; i < len; i++) {
             var item = list[i];
+            if (disableHighlight && typeof item !== 'string' && item[1] === 'span') {
+                continue;
+            }
             if (typeof item === 'string') {
                 fragment.appendChild(document.createTextNode(item));
                 if (level === 0) {
@@ -890,9 +895,6 @@ var view = {
         var searchResultCounter = view.varCache.searchResultCounter;
         var searchResultCache = view.varCache.searchResultCache;
         for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
-            if (engine.settings.hideZeroSeed && torrentObj.seed === 0) {
-                continue;
-            }
             var itemCategoryId = torrentObj.categoryId === undefined ? -1 : torrentObj.categoryId;
             var cacheItemIndex = searchResultCache.length;
             var cacheItem = {
@@ -1530,6 +1532,11 @@ var view = {
         view.varCache.tableOrderIndex = engine.settings.sortOrder ? 0 : 1;
         mono.language.sizeFilter += ' ' + mono.language.sizeList.split(',')[3];
         mono.writeLanguage(mono.language);
+
+        if (engine.settings.rightPanel) {
+            document.body.classList.add('right');
+        }
+
         document.body.classList.remove('loading');
         view.domCache.requestInput.focus();
 

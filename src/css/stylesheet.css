@@ -90,9 +90,16 @@ body.home #result_block {
     width: 170px;
     padding-left: 5px;
 }
+.right .additional-column {
+    float: right;
+}
 .main-column {
     padding-top: 5px;
     margin-left: 180px;
+}
+.right .main-column {
+    margin-right: 180px;
+    margin-left: 0;
 }
 
 .profile-select-block {
@@ -560,6 +567,10 @@ body.home #result_block {
     z-index: 10;
     height: 100%;
     opacity: 0.9;
+}
+.right #top_btn {
+    left: inherit;
+    right: 0;
 }
 #top_btn:hover {
     background-color: #ddd;

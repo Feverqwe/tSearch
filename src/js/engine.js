@@ -5,9 +5,7 @@ var engine = {
     defaultSettings: {
         hidePeerColumn: 1,
         hideSeedColumn: 0,
-        hideTrackerIcons: 0,
         subCategoryFilter: 1,
-        hideZeroSeed: 0,
         teaserFilter: 1,
         contextMenu: 1,
         searchPopup: 1,
@@ -21,7 +19,6 @@ var engine = {
         kinopoiskFolderId: '1',
         rightPanel: 0,
         hideTopSearch: 0,
-        noBlankPageOnDownloadClick: 0,
         trackerListHeight: 200,
         profileListSync: 0,
         proxyURL: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&container=pos',

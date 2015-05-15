@@ -885,7 +885,7 @@ var explore = {
     getCategoryItemTitle: function(item) {
         "use strict";
         var title;
-        if (item.title_en && (mono.language.langCode === 'en' || engine.settings.useEnglishPosterName)) {
+        if (item.title_en && (mono.language.langCode !== 'ru' || engine.settings.useEnglishPosterName)) {
             title = item.title_en;
         } else {
             title = item.title;
@@ -1532,9 +1532,6 @@ var explore = {
         var searchResultCounter = view.varCache.searchResultCounter;
 
         for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
-            if (engine.settings.hideZeroSeed === 1 && torrentObj.seed === 0) {
-                continue;
-            }
             torrentObj.lowerCategoryTitle = !torrentObj.categoryTitle ? '' : torrentObj.categoryTitle.toLowerCase();
             if (engine.settings.teaserFilter && view.teaserFilter(torrentObj.lowerCategoryTitle)) {
                 continue;
