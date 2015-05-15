@@ -66,20 +66,18 @@ body {
     vertical-align: middle;
 }
 
+.title a span {
+    color: #000;
+}
+
+.title a:visited,
 .title a:link {
     color: #1A3DC1;
 }
-.title a:visited,
-.title a:visited span {
-    color: #609;
-}
 
+.title a:visited:hover,
 .title a:link:hover {
     border-bottom-color: #1A3DC1;
-}
-
-.title a:visited:hover {
-    border-bottom-color: #609;
 }
 
 .icon {
