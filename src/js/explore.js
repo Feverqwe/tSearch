@@ -118,7 +118,8 @@ var explore = {
                 var item = obj[key];
                 if (typeof item !== 'string' || !item) {
                     if (key === 'title_en') {
-                        console.log('English title is not found!', obj);
+                        // console.log('English title is not found!', obj);
+                        obj[key] = undefined;
                         continue;
                     }
                     return;
@@ -127,14 +128,26 @@ var explore = {
             }
             return 1;
         };
-        var kp_img_url = function(url) {
+        var kpGetImgFileName = function(url) {
             var m = url.match(/film\/(\d+)/);
             return m && m[1] + '.jpg' || url;
         };
-        var imdb_img_url = function(url) {
+        var imdbGetImgFilename = function(url) {
             var m = url.match(/images\/(.+)_V1/);
             return m && m[1] + '_V1_SX120_.jpg' || url;
         };
+
+        var kpGetYear = function(text) {
+            var m = text.match(/\s+\(.*([1-2]\d{3}).*\)/);
+            return m && parseInt(m[1]);
+        };
+        var kpRmYear = function(text) {
+            return text.replace(/(.*)\s+\(.*([1-2]\d{3}).*\).*/, '$1').trim();
+        };
+        var kpRmDesc = function(text) {
+            return text.replace(/(.*)\s+\(.*\)$/, '$1').trim();
+        }
+
         var getYear = function(text) {
             return parseInt(text.replace(/.*\([^\(]*([1-2]{1}[0-9]{3})[^\)]*\).*/g, '$1'));
         };
@@ -173,6 +186,7 @@ var explore = {
                     console.log("Explorer gg_games_new have problem!");
                     continue;
                 }
+
                 obj.img = obj.img.replace('/f/games/','');
                 obj.title = obj.title.trim();
                 arr.push(obj);
@@ -212,22 +226,18 @@ var explore = {
                         continue;
                     }
 
-                    obj.img = kp_img_url('http://st.kinopoisk.ru' + obj.img);
-                    title = obj.title;
-                    obj.title = rmSerial(obj.title);
-                    var isSerial = (title !== obj.title);
-                    var year = getYear(obj.title_en);
-                    obj.title_en = rmYear(obj.title_en);
-                    if (obj.title_en.length > 0) {
-                        if (!isSerial && !isNaN(year)) {
-                            obj.title_en += ' '+year;
+                    obj.img = kpGetImgFileName(obj.img);
+
+                    var year;
+                    if (obj.title_en) {
+                        year = kpGetYear(obj.title_en);
+                        if (year) {
+                            obj.title_en = kpRmYear(obj.title_en);
+                            obj.title_en += ' ' + year;
+                            obj.title += ' ' + year;
                         }
-                    } else {
-                        obj.title_en = undefined;
                     }
-                    if (!isSerial && !isNaN(year)) {
-                        obj.title += ' '+year;
-                    }
+
                     arr.push(obj);
                 }
                 return arr;
@@ -268,18 +278,18 @@ var explore = {
                         continue;
                     }
 
-                    obj.img = kp_img_url(obj.img);
-                    var year = getYear(obj.title_en);
-                    obj.title_en = rmYear(obj.title_en);
-                    if (!obj.title_en) {
-                        obj.title_en = undefined;
-                    }
-                    if (!isNaN(year)) {
-                        if (obj.title_en !== undefined) {
-                            obj.title_en += ' '+year;
+                    obj.img = kpGetImgFileName(obj.img);
+
+                    var year;
+                    if (obj.title_en) {
+                        year = kpGetYear(obj.title_en);
+                        if (year) {
+                            obj.title_en = kpRmYear(obj.title_en);
+                            obj.title_en += ' ' + year;
+                            obj.title += ' ' + year;
                         }
-                        obj.title += ' '+year;
                     }
+
                     arr.push(obj);
                 }
                 return arr;
@@ -313,15 +323,18 @@ var explore = {
                         console.log("Explorer kp_popular have problem!");
                         continue;
                     }
-                    obj.img = kp_img_url(obj.img);
-                    var year = getYear(obj.title);
-                    obj.title = rmYear(obj.title);
-                    if (!isNaN(year)) {
-                        obj.title += ' '+year;
-                        if (obj.title_en !== null) {
-                            obj.title_en += ' '+year;
+
+                    obj.img = kpGetImgFileName(obj.img);
+
+                    var year = kpGetYear(obj.title);
+                    if (year) {
+                        obj.title = kpRmYear(obj.title);
+                        obj.title += ' ' + year;
+                        if (obj.title_en) {
+                            obj.title_en += ' ' + year;
                         }
                     }
+
                     arr.push(obj);
                 }
                 return arr;
@@ -356,12 +369,14 @@ var explore = {
                         continue;
                     }
 
-                    obj.img = kp_img_url(obj.img);
-                    obj.title = rmSerial(obj.title);
-                    obj.title_en = rmYear(obj.title_en);
-                    if (!obj.title_en) {
-                        obj.title_en = undefined;
+                    obj.img = kpGetImgFileName(obj.img);
+
+                    obj.title = kpRmDesc(obj.title);
+
+                    if (obj.title_en) {
+                        obj.title_en = kpRmYear(obj.title_en);
                     }
+
                     arr.push(obj);
                 }
                 return arr;
@@ -392,12 +407,17 @@ var explore = {
                         continue;
                     }
 
-                    obj.img = imdb_img_url(obj.img);
-                    var year = getYear(obj.title);
-                    obj.title = rmYear(obj.title);
-                    if (!isNaN(year)) {
+                    obj.img = imdbGetImgFilename(obj.img);
+
+                    var year = kpGetYear(obj.title);
+                    obj.title = kpRmYear(obj.title);
+
+                    if (year) {
                         obj.title += ' '+year;
                     }
+
+                    obj.url = obj.url.replace(/\?ref.*$/, '');
+
                     arr.push(obj);
                 }
                 return arr;
@@ -427,7 +447,9 @@ var explore = {
                         console.log("Explorer imdb_popular have problem!");
                         continue;
                     }
-                    obj.img = imdb_img_url(obj.img);
+
+                    obj.img = imdbGetImgFilename(obj.img);
+
                     arr.push(obj);
                 }
                 return arr;
@@ -457,7 +479,9 @@ var explore = {
                         console.log("Explorer imdb_serials have problem!");
                         continue;
                     }
-                    obj.img = imdb_img_url(obj.img);
+
+                    obj.img = imdbGetImgFilename(obj.img);
+
                     arr.push(obj);
                 }
                 return arr;
@@ -1224,6 +1248,72 @@ var explore = {
         var setupBody = explore.getSetupBody(li.dataset.type);
         head.insertBefore(setupBody, nextEl);
     },
+    onUpdateKpFavorites: function(e) {
+        "use strict";
+        e.preventDefault();
+
+        var type = 'kp_favorites';
+        var source = this.sourceOptions[type];
+        var categoryObj = this.varCache.categoryList[type];
+
+        categoryObj.li.classList.remove('error');
+        if (source.xhr) {
+            source.xhr.abort();
+            source.xhr = null;
+        }
+        categoryObj.li.classList.add('loading');
+
+        var limit = 20;
+        var deDbtlUrl = [];
+        var contentList = [];
+
+        var onErrorStatus = function() {
+            categoryObj.li.classList.remove('loading');
+            categoryObj.li.classList.add('error');
+        }
+
+        var urlTemplate = source.url.replace('%category%', engine.settings.kinopoiskFolderId);
+        (function getPage(page) {
+            source.xhr = mono.ajax({
+                url: urlTemplate.replace('%page%', page),
+                success: function(data) {
+                    var pContent = explore.content_parser.kp_favorites(data);
+                    if (!pContent) {
+                        return onErrorStatus();
+                    }
+                    if (pContent.requireAuth) {
+                        return onErrorStatus();
+                    }
+                    var newCount = 0;
+                    for (var i = 0, item; item = pContent[i]; i++) {
+                        if (deDbtlUrl.indexOf(item.url) !== -1) {
+                            continue;
+                        }
+                        deDbtlUrl.push(item.url);
+                        contentList.push(item);
+                        newCount++;
+                    }
+
+                    if (newCount && limit) {
+                        limit--;
+                        return getPage(++page);
+                    }
+
+                    var currentPage = categoryObj.currentPage;
+                    explore.writeCategoryContent(type, contentList, currentPage, 1);
+
+                    var storage = {};
+                    engine.exploreCache[categoryObj.cacheName] = storage[categoryObj.cacheName] = {
+                        content: contentList
+                    }
+                    mono.storage.set(storage);
+
+                    categoryObj.li.classList.remove('loading');
+                },
+                error: onErrorStatus
+            });
+        })(1);
+    },
     writeCategoryList: function () {
         "use strict";
         for (var i = 0, item; item = engine.explorerOptions[i]; i++) {
@@ -1246,7 +1336,8 @@ var explore = {
                         }),
                         mono.create('div', {
                             class: 'update',
-                            title: mono.language.update
+                            title: mono.language.update,
+                            on: ['click', this.onUpdateKpFavorites.bind(this)]
                         })
                     ]
                 });
@@ -1301,7 +1392,7 @@ var explore = {
                                 options.show = 1;
                                 categoryObj.li.classList.remove('collapsed');
 
-                                explore.updateCategoryContent(type);
+                                explore.getCategoryContent(type);
                             }
 
                             mono.storage.set({explorerOptions: engine.explorerOptions});
