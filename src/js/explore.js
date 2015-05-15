@@ -1495,18 +1495,25 @@ var explore = {
     },
     updateInfoPopup: function(qualityLabel, top5, request) {
         "use strict";
-        var label = '-';
-        if (top5.length > 0) {
-            label = top5[0].quality;
+        if (top5) {
+            var label = '-';
+            if (top5.length > 0) {
+                label = top5[0].quality;
+            }
+            qualityLabel.replaceChild(document.createTextNode(label), qualityLabel.firstChild);
         }
-        qualityLabel.replaceChild(document.createTextNode(label), qualityLabel.firstChild);
 
-        if (this.domCache.infoPopup.parentNode !== qualityLabel || top5.length === 0) {
+        if (this.domCache.infoPopup.parentNode !== qualityLabel) {
             return;
         }
 
         this.domCache.infoPopup.style.display = 'none';
         this.domCache.infoPopupList.textContent = '';
+
+        if (!top5 || top5.length === 0) {
+            return;
+        }
+
         var list = document.createDocumentFragment();
         for (var i = 0, torrentObj; torrentObj = top5[i]; i++) {
             list.appendChild(mono.create('li', {
@@ -1616,7 +1623,7 @@ var explore = {
 
         var request = this.getCategoryItemTitle(item);
         request = view.prepareRequest(request, 1);
-        var top5 = engine.explorerQualityList[request] || [];
+        var top5 = engine.explorerQualityList[request];
         el.appendChild(infoPopup);
         this.updateInfoPopup(el, top5, request);
     },
