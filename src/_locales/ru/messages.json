@@ -128,5 +128,8 @@
 
     "title": {"message": "Заголовок"},
     "imageUrl": {"message": "URL изображения"},
-    "descUrl": {"message": "URL описания"}
+    "descUrl": {"message": "URL описания"},
+
+    "direct": {"message": "Напрямую"},
+    "requestContentVia": {"message": "Запросить контент через:"}
 }

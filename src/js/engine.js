@@ -21,10 +21,10 @@ var engine = {
         hideTopSearch: 0,
         trackerListHeight: 200,
         profileListSync: 0,
-        proxyURL: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&container=pos',
-        proxyHost: '3s3s.org',
-        proxyUrlFixSpaces: 1,
-        proxyHostLinks: 0,
+        proxyList: [
+            {label: 'Google user content', url: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&container=pos', type: 0, fixSpaces: 1},
+            {label: '3s3s.org', url: '3s3s.org', type: 1}
+        ],
         calcSeedCount: 1,
         langCode: undefined,
         sortColumn: 'quality',
@@ -83,9 +83,17 @@ var engine = {
         var trackerList = [];
         var list = engine.profileList[profileName];
         for (var i = 0, item; item = list[i]; i++) {
-            var tracker = engine.trackerLib[item];
+            var trackerId = item;
+            if (typeof trackerId === 'object') {
+                trackerId = item.id;
+            }
+            var tracker = engine.trackerLib[trackerId];
             if (tracker === undefined) continue;
-            trackerList.push(exKit.prepareTracker(tracker));
+            var trackerObj = exKit.prepareTracker(tracker);
+
+            trackerObj.proxyIndex = item.proxyIndex || 0;
+
+            trackerList.push(trackerObj);
         }
         cb(trackerList);
     },

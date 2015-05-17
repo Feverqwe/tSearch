@@ -86,14 +86,32 @@ var profileManager = {
             trackerList.appendChild(list);
         }
     },
+    trackerInProfile: function(profileList, trackerId) {
+        "use strict";
+        for (var i = 0, item; item = profileList[i]; i++) {
+            if (typeof item === 'object') {
+                if (item.id === trackerId) {
+                    return true;
+                }
+            } else
+            if (item === trackerId) {
+                return true;
+            }
+        }
+        return false;
+    },
     trackerHasListUpdate: function (trackerObj) {
         var state;
         if (trackerObj.selected) {
             state = 1;
         } else {
             for (var profileName in engine.profileList) {
+                if (profileName === this.varCache.currentProfileName) {
+                    continue;
+                }
                 var trackerList = engine.profileList[profileName];
-                if (trackerList.indexOf(trackerObj.id) !== -1) {
+                if (this.trackerInProfile(trackerList, trackerObj.id)) {
+                    state = 1;
                     break;
                 }
             }
@@ -133,6 +151,8 @@ var profileManager = {
     getTrackerEl: function(trackerObj, selected, hasList, notFound) {
         "use strict";
         var trackerItem = this.varCache.trackerList[trackerObj.id] = {};
+        trackerItem.id = trackerObj.id;
+        trackerItem.proxyIndex = trackerObj.proxyIndex || 0;
         var classList = ['tracker-item'];
         if (selected) {
             trackerItem.selected = 1;
@@ -169,9 +189,39 @@ var profileManager = {
                         target: '_blank'
                     })
                 }),
-                trackerItem.desc = mono.create('span', {
+                trackerItem.desc = mono.create('div', {
                     class: 'desc',
-                    text: trackerObj.desc
+                    append: [
+                        mono.create('div', {
+                            text: trackerObj.desc
+                        }),
+                        mono.create('div', {
+                            class: 'extend',
+                            append: [
+                                mono.language.requestContentVia,
+                                mono.create('select', {
+                                    name: 'proxyIndex',
+                                    append: (function(proxyList) {
+                                        var list = [];
+                                        var option;
+                                        for (var i = 0, item; item = proxyList[i]; i++) {
+                                            list.push(option = mono.create('option', {
+                                                text: item.label,
+                                                value: i
+                                            }));
+                                        }
+                                        return list;
+                                    })([{label: mono.language.direct}].concat(engine.settings.proxyList)),
+                                    onCreate: function() {
+                                        this.selectedIndex = trackerItem.proxyIndex;
+                                    },
+                                    on: ['change', function(e) {
+                                        trackerItem.proxyIndex = parseInt(this.value);
+                                    }]
+                                })
+                            ]
+                        })
+                    ]
                 }),
                 mono.create('div', {
                     class: 'action',
@@ -279,7 +329,7 @@ var profileManager = {
     trackerInList: function(trackerObj) {
         "use strict";
         for (var profileName in engine.profileList) {
-            if (engine.profileList[profileName].indexOf(trackerObj.id) !== -1) {
+            if (this.trackerInProfile(engine.profileList[profileName], trackerObj.id)) {
                 return true;
             }
         }
@@ -306,8 +356,7 @@ var profileManager = {
         }
         var hasList = notFound ? true : this.trackerInList(trackerObj);
 
-        var currentProfile = engine.profileList[this.varCache.currentProfileName] || [];
-        var selected = currentProfile.indexOf(trackerObj.id) !== -1;
+        var selected = el && el.classList.contains('selected');
 
         var newEl = this.getTrackerEl(trackerObj, selected, hasList, notFound);
 
@@ -327,17 +376,20 @@ var profileManager = {
         mono.create(this.domCache.trackerList, {
             append: function() {
                 var list = [];
-                var trackerObj, trackerId, profileName, selected, hasList;
+                var trackerObj, trackerId, selected, hasList;
                 for (var trackerId in engine.trackerLib) {
                     trackerObj = engine.trackerLib[trackerId];
 
                     hasList = this.trackerInList(trackerObj);
 
-                    selected = currentProfile.indexOf(trackerObj.id) !== -1;
+                    selected = this.trackerInProfile(currentProfile, trackerObj.id);
 
                     list.push(this.getTrackerEl(trackerObj, selected, hasList));
                 }
                 for (var i = 0, trackerId; trackerId = currentProfile[i]; i++) {
+                    if (typeof trackerId === 'object') {
+                        trackerId = trackerId.id;
+                    }
                     if (engine.trackerLib.hasOwnProperty(trackerId)) continue;
                     trackerObj = {
                         id: trackerId,
@@ -361,7 +413,12 @@ var profileManager = {
         var elList = this.domCache.trackerList.querySelectorAll('.tracker-item.selected');
         var list = [];
         for (var i = 0, el; el = elList[i]; i++) {
-            list.push(el.dataset.id);
+            var trackerObj = this.varCache.trackerList[el.dataset.id];
+            if (trackerObj.proxyIndex) {
+                list.push({id: trackerObj.id, proxyIndex: trackerObj.proxyIndex});
+                continue;
+            }
+            list.push(trackerObj.id);
         }
         return list;
     },
@@ -591,7 +648,7 @@ var profileManager = {
 
         this.domCache.trackerList.addEventListener('click', function(e) {
             var el = e.target;
-            if (el.tagName === 'A') return;
+            if (el.tagName === 'A' || el.tagName === 'SELECT') return;
 
             if (this === el) return;
             while (el.parentNode !== this) {

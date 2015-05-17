@@ -688,6 +688,11 @@ var exKit = {
         exKit.bindFunc(tracker, tracker.search, 'onGetListItem');
         exKit.bindFunc(tracker, tracker.search, 'onResponseUrl');
 
+        if (!tracker.search.requestType) {
+            tracker.search.requestType = 'GET';
+        } else {
+            tracker.search.requestType = tracker.search.requestType.toUpperCase();
+        }
         if (!tracker.search.rootUrl) {
             tracker.search.rootUrl = tracker.search.searchUrl.substr(0, tracker.search.searchUrl.indexOf('/', tracker.search.searchUrl.indexOf('//') + 2) + 1);
         }
@@ -750,6 +755,14 @@ var exKit = {
             return tracker.search.baseUrl + value.substr(2);
         }
         return tracker.search.baseUrl + value;
+    },
+    setHostProxyUrl: function(url, proxyIndex) {
+        "use strict";
+        var proxy = engine.settings.proxyList[proxyIndex - 1];
+        if (proxy.type !== 1 || url.substr(0, 4) !== 'http') {
+            return url;
+        }
+        return url.replace(/(https?:\/\/[^\/]+)(.*)/, '$1.' + proxy.url + '$2');
     },
     parseDom: function(tracker, request, dom, cb) {
         "use strict";
@@ -857,6 +870,9 @@ var exKit = {
                 }
                 if (exKit.isUrlList.indexOf(key) !== -1) {
                     value = exKit.urlCheck(tracker, value);
+                    if (tracker.proxyIndex > 0) {
+                        value = this.setHostProxyUrl(value, tracker.proxyIndex);
+                    }
                 }
                 trObj.column[key] = value;
             }
@@ -892,6 +908,23 @@ var exKit = {
             mimeType: tracker.search.requestMimeType,
             dataType: tracker.search.requestDataType,
             data: (tracker.search.requestData || '').replace('%search%', trackerRequest),
+            changeUrl: function(url, method) {
+                var proxy;
+                if (tracker.proxyIndex > 0 && (proxy = engine.settings.proxyList[tracker.proxyIndex - 1])) {
+                    if (proxy.type === 0) {
+                        if (method === 'GET') {
+                            if (proxy.fixSpaces) {
+                                url = url.replace(/[\t\s]+/g, '%20');
+                            }
+                            url = proxy.url.replace('{url}', encodeURIComponent(url));
+                        }
+                    }
+                    if (proxy.type === 1) {
+                        url = this.setHostProxyUrl(url, tracker.proxyIndex);
+                    }
+                }
+                return url;
+            }.bind(this),
             success: (tracker.search.parseResponse || exKit.parseResponse).bind(null, tracker, request, function(data) {
                 onSearch.onDone(tracker);
                 onSearch.onSuccess(tracker, request, data);

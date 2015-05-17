@@ -36,6 +36,10 @@ mono.ajax = function(obj) {
         url += (url.indexOf('?') === -1 ? '?' : '&') + nc;
     }
 
+    if (obj.changeUrl !== undefined) {
+        url = obj.changeUrl(url, method);
+    }
+
     var xhr = new mono.ajax.xhr();
 
     xhr.open(method, url, true);
