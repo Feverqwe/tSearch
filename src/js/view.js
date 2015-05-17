@@ -895,7 +895,6 @@ var view = {
         var searchResultCounter = view.varCache.searchResultCounter;
         var searchResultCache = view.varCache.searchResultCache;
         for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
-            var itemCategoryId = torrentObj.categoryId === undefined ? -1 : torrentObj.categoryId;
             var cacheItemIndex = searchResultCache.length;
             var cacheItem = {
                 index: cacheItemIndex,
@@ -911,8 +910,13 @@ var view = {
 
             var titleObj = view.hlTextToFragment(torrentObj.title, view.varCache.requestObj);
             var ratingObj = rate.rateText(view.varCache.requestObj, titleObj, torrentObj);
+            if (engine.settings.defineCategory && torrentObj.categoryId === -1) {
+                torrentObj.categoryId = rate.categoryDefine(ratingObj, torrentObj.lowerCategoryTitle);
+            }
             torrentObj.quality = ratingObj.sum;
             cacheItem.rating = ratingObj;
+
+            var itemCategoryId = torrentObj.categoryId === undefined ? -1 : torrentObj.categoryId;
 
             cacheItem.node = mono.create('tr', {
                 data: {

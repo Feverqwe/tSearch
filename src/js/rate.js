@@ -785,6 +785,134 @@ var rate = {
          * @type {{wordsR: Object, scope: Object, scopeCase: Object}}
          */
         this.baseQualityList = this.readQualityList();
-        this.charIsSymbol.stat = [0,0,0,0,0,0,0,0];
     }
+};
+rate.categoryDefineRegexp = new RegExp("фильмы без сюжета|документальные|мультим|мульт|сериа|комикс|видео для [моб|смарт|" +
+    "устр]{1}|мобильное|аудиокниги|беллетр|книг|фильм|игр|3gp|soundtrack|саундтрек|anim|аним|докумел|литер|" +
+    "телеп|эрот|xxx|porn|порно|сайтр|тв[-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
+    "утилит|book|game|tv |tv$|manga", "g");
+rate.onCategoryDefineRateRegexp = function(word, position, string) {
+    if (this.m.indexOf(word) === -1) {
+        this.m.push(word);
+    } else {
+        return '';
+    }
+    if (rate.charIsSymbol(string[position - 1] || '') === 0) {
+        return '';
+    }
+    if (word === "эрот" || word === "xxx" || word === "porn" || word === "порно" || word === "фильмы без сюжета" || word === "hentai" || word === "хентай") {
+        this.xxx += 10;
+    }
+    if (word === "мультим") {
+        this.software += 2;
+    }
+    if (word === "мульт") {
+        this.cartoons += 2;
+    }
+    if (word === "сериа") {
+        this.serials += 2;
+    }
+    if (word === "книг" || word === "аудиокниги" || word === "литер" || word === "беллетр" || word === "журнал" || word === "book") {
+        this.books += 1;
+    }
+    if (word === "фильм") {
+        this.films += 1;
+    }
+    if (word === "soundtrack" || word === "музыка" || word === "саундтрек") {
+        this.music += 2;
+    }
+    if (word === "игр" || word === "psp" || word === "xbox" || word === "game") {
+        this.games += 1;
+    }
+    if (word === "аним" || word === "anim" || word === "manga") {
+        this.anime += 2;
+    }
+    if (word === "софт" || word === "soft" || word === "утилит") {
+        this.software += 1;
+    }
+    if (word === "комикс") {
+        this.other += 1;
+    }
+    if (word === "документальные") {
+        this.dochumor += 3;
+    }
+    if (word === "спорт") {
+        this.sport += 1;
+    }
+    if (word === "докумел" || word === "телеп" || word === "тв " || word === "тв" || word === "тв-" || word === "tv" || word === "tv ") {
+        this.dochumor += 2;
+    }
+    if (word === "юмор") {
+        this.dochumor += 1;
+    }
+    if (word === "видео для моб" || word === "видео для смарт" || word === "видео для устр" || word === "Мобильное" || word === "3gp") {
+        this.other += 1;
+    }
+    return '';
+};
+rate.categoryDefine = function(ratingObj, categoryTitle) {
+    /*
+     * Category define function
+     */
+    var rate = {
+        other: 0,
+        serials: 0,
+        music: 0,
+        games: 0,
+        films: 0,
+        cartoons: 0,
+        books: 0,
+        software: 0,
+        anime: 0,
+        doc: 0,
+        sport: 0,
+        xxx: 0,
+        humor: 0,
+        m: []
+    };
+    if (categoryTitle) {
+        categoryTitle.replace(this.categoryDefineRegexp, this.onCategoryDefineRateRegexp.bind(rate));
+        var qCat = [];
+        var index = -1;
+        $.each(rate, function (k, v) {
+            if (k !== 'm') {
+                qCat.push([v, index]);
+                index++;
+            }
+        });
+        qCat.sort(function (a, b) {
+            if (a[0] > b[0]) {
+                return -1;
+            } else if (a[0] === b[0]) {
+                return 0;
+            } else
+                return 1;
+        });
+        if (qCat[0][0] > 0) {
+            return qCat[0][1];
+        }
+    }
+    var titleRate = ratingObj.rate;
+    if (titleRate.xxx) {
+        return 10;
+    } else
+    if (titleRate.books) {
+        return 5;
+    } else
+    if (titleRate.serials) {
+        return 0;
+    } else
+    if (titleRate.cartoons) {
+        return 4;
+    } else
+    if (titleRate.video > titleRate.music && titleRate.video > titleRate.games) {
+        return 3;
+    } else
+    if (titleRate.music > titleRate.video && titleRate.music > titleRate.games) {
+        return 1;
+    } else
+    if (titleRate.games > titleRate.music && titleRate.games > titleRate.video) {
+        return 2;
+    }
+    return -1;
 };
