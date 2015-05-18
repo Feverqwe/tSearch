@@ -103,7 +103,7 @@ var profileManager = {
     trackerHasListUpdate: function (trackerObj) {
         var state;
         if (trackerObj.selected) {
-            state = 1;
+            state = true;
         } else {
             for (var profileName in engine.profileList) {
                 if (profileName === this.varCache.currentProfileName) {
@@ -111,13 +111,13 @@ var profileManager = {
                 }
                 var trackerList = engine.profileList[profileName];
                 if (this.trackerInProfile(trackerList, trackerObj.id)) {
-                    state = 1;
+                    state = true;
                     break;
                 }
             }
         }
 
-        if (!!trackerObj.hasList === !!state) return;
+        if (trackerObj.hasList === state) return;
 
         if (trackerObj.hasList) {
             trackerObj.el.classList.remove('hasList');
