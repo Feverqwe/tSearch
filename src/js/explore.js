@@ -1158,7 +1158,7 @@ var explore = {
             if (cache.content !== undefined) {
                 content = cache.content;
             } else {
-                categoryObj.li.classList.add('timeout');
+                categoryObj.li.classList.add('error');
             }
             cache.keepAlive = undefined;
             cache.errorTimeout = parseInt(Date.now() / 1000 + 60 * 60 * 2);
@@ -1204,7 +1204,7 @@ var explore = {
         }
         var date = this.getCacheDate(source.keepAlive);
         if (cache.errorTimeout && cache.errorTimeout > parseInt(Date.now() / 1000)) {
-            categoryObj.li.classList.add('timeout');
+            categoryObj.li.classList.add('error');
             return;
         }
         if (cache.keepAlive === date || !navigator.onLine) {
@@ -1348,6 +1348,7 @@ var explore = {
         var categoryObj = this.varCache.categoryList[type];
 
         categoryObj.li.classList.remove('error');
+        categoryObj.li.classList.remove('login');
         if (source.xhr) {
             source.xhr.abort();
             source.xhr = null;
@@ -1358,9 +1359,11 @@ var explore = {
         var deDbtlUrl = [];
         var contentList = [];
 
-        var onErrorStatus = function() {
+        var onErrorStatus = function(className) {
             categoryObj.li.classList.remove('loading');
-            categoryObj.li.classList.add('error');
+            categoryObj.li.classList.remove('error');
+            categoryObj.li.classList.remove('login');
+            categoryObj.li.classList.add(className);
         }
 
         var urlTemplate = source.url.replace('%category%', engine.settings.kinopoiskFolderId);
@@ -1370,10 +1373,10 @@ var explore = {
                 success: function(data) {
                     var pContent = explore.content_parser.kp_favorites(data);
                     if (!pContent) {
-                        return onErrorStatus();
+                        return onErrorStatus('error');
                     }
                     if (pContent.requireAuth) {
-                        return onErrorStatus();
+                        return onErrorStatus('login');
                     }
                     var newCount = 0;
                     for (var i = 0, item; item = pContent[i]; i++) {

@@ -124,7 +124,11 @@ ul#explore_gallery li.loading div.head div.move {
     background: url(../img/loading.gif) no-repeat center;
     opacity: 1;
 }
-ul#explore_gallery li.timeout div.head div.move {
+ul#explore_gallery li.login div.head div.move {
+    background: url(../img/login.png) no-repeat center;
+    opacity: 1;
+}
+ul#explore_gallery li.error div.head div.move {
     background: url(../img/timeout.png) no-repeat center;
     opacity: 1;
 }
