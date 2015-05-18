@@ -169,7 +169,10 @@ var engine = {
             !settings.doNotSendStatistics && this.initCounter();
 
             var syncOptionsList = [];
-            settings.profileListSync && syncOptionsList.push('profileList');
+            if (settings.profileListSync) {
+                syncOptionsList.push('profileList');
+                syncOptionsList.push('proxyList');
+            }
             settings.enableFavoriteSync && syncOptionsList.push('expCache_' + 'favorites');
 
             if (Array.isArray(storage.searchHistory)) {

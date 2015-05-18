@@ -376,8 +376,8 @@ var profileManager = {
         mono.create(this.domCache.trackerList, {
             append: function() {
                 var list = [];
-                var trackerObj, trackerId, selected, hasList;
-                for (var trackerId in engine.trackerLib) {
+                var trackerObj, trackerId, selected, hasList, i;
+                for (trackerId in engine.trackerLib) {
                     trackerObj = engine.trackerLib[trackerId];
 
                     hasList = this.trackerInList(trackerObj);
@@ -386,12 +386,14 @@ var profileManager = {
 
                     list.push(this.getTrackerEl(trackerObj, selected, hasList));
                 }
-                for (var i = 0, trackerId; trackerId = currentProfile[i]; i++) {
+                for (i = 0, trackerObj; trackerObj = currentProfile[i]; i++) {
+                    trackerId = trackerObj;
                     if (typeof trackerId === 'object') {
                         trackerId = trackerId.id;
                     }
                     if (engine.trackerLib.hasOwnProperty(trackerId)) continue;
                     trackerObj = {
+                        proxyIndex: trackerObj.proxyIndex || 0,
                         id: trackerId,
                         icon: '#skull',
                         title: trackerId,
