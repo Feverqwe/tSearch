@@ -117,7 +117,7 @@ var profileManager = {
             }
         }
 
-        if (trackerObj.hasList === state) return;
+        if (!!trackerObj.hasList === !!state) return;
 
         if (trackerObj.hasList) {
             trackerObj.el.classList.remove('hasList');
