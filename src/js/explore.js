@@ -1622,6 +1622,8 @@ var explore = {
         var maxTime = 180*24*60*60*1000;
         var hYearAgo = now - maxTime;
 
+        var minTitleRate = 170;
+
         var quickSearchResultList = this.varCache.quickSearchResultList;
         var searchResultCounter = view.varCache.searchResultCounter;
 
@@ -1635,6 +1637,10 @@ var explore = {
             }
             var titleObj = view.hlTextToFragment(torrentObj.title, this.varCache.requestObj);
             var ratingObj = rate.rateText(this.varCache.requestObj, titleObj, torrentObj);
+
+            if (ratingObj.rate.title < minTitleRate) {
+                continue;
+            }
 
             torrentObj.quality = this.getTorrentWeight(ratingObj);
 
