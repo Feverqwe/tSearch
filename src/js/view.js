@@ -9,6 +9,7 @@ var view = {
         searchBtn: document.getElementById('search_btn'),
         resultTableHead: document.getElementById('result_table_head'),
         resultTableBody: document.getElementById('result_table_body'),
+        requestDescContainer: document.getElementById('request_desc_container'),
         categoryContainer: document.getElementById('result_category_container'),
         profileSelect: document.getElementById('profile_select'),
         trackerList: document.getElementById('tracker_list'),
@@ -1054,7 +1055,7 @@ var view = {
             statusText: xhrStatusText
         });
     },
-    onSearchBegin: function(tracker) {
+    onSearchBegin: function(tracker, request) {
         "use strict";
         view.resetTrackerStatusById(tracker.id, ['auth']);
         view.setTrackerStatusById(tracker.id, 'loading');
@@ -1322,10 +1323,20 @@ var view = {
         view.setSearchState();
         request && ga('send', 'event', 'Search', 'keyword', request);
         exKit.searchList(trackerList, request, {
-            onSuccess: view.onSearchSuccess,
-            onError: view.onSearchError,
-            onBegin: view.onSearchBegin
+            onSuccess: view.onSearchSuccess.bind(this),
+            onError: view.onSearchError.bind(this),
+            onBegin: view.onSearchBegin.bind(this)
         });
+
+        if (engine.settings.allowGetDescription) {
+            this.domCache.requestDescContainer.textContent = '';
+            setTimeout(function () {
+                var container = this.domCache.requestDescContainer;
+                explore.getDescription(request, function (fragment) {
+                    container.appendChild(fragment);
+                })
+            }.bind(this));
+        }
     },
     onTrackerListItemClick: function(e) {
         "use strict";

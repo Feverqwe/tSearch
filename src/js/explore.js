@@ -16,7 +16,8 @@ var explore = {
         categoryList: {},
         movebleStyleList: {},
         quickSearchResultList: [],
-        requestObj: {}
+        requestObj: {},
+        aboutCache: {}
     },
     sourceOptions: {
         favorites: {
@@ -29,7 +30,6 @@ var explore = {
             url: 'http://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
             baseUrl: 'http://www.kinopoisk.ru/film/',
             imgUrl: 'http://st.kinopoisk.ru/images/film/',
-            proxyUrl: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url=',
             noAutoUpdate: 1
         },
         kp_in_cinema: {//new in cinema
@@ -40,8 +40,7 @@ var explore = {
             pageEnd: 2,
             pageStart: 0,
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/',
-            proxyUrl: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+            imgUrl: 'http://st.kinopoisk.ru/images/film/'
         },
         kp_popular: {
             rootUrl: 'http://www.kinopoisk.ru',
@@ -49,8 +48,7 @@ var explore = {
             url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
             keepAlive: [0, 3],
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/',
-            proxyUrl: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+            imgUrl: 'http://st.kinopoisk.ru/images/film/'
         },
         kp_serials: {
             rootUrl: 'http://www.kinopoisk.ru',
@@ -58,8 +56,7 @@ var explore = {
             url: 'http://www.kinopoisk.ru/top/lists/45/',
             keepAlive: [0],
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/',
-            proxyUrl: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+            imgUrl: 'http://st.kinopoisk.ru/images/film/'
         },
         imdb_in_cinema: {
             rootUrl: 'http://www.imdb.com',
@@ -67,8 +64,7 @@ var explore = {
             url: 'http://www.imdb.com/movies-in-theaters/',
             keepAlive: [2, 4, 6],
             baseUrl: 'http://www.imdb.com/title/',
-            imgUrl: 'http://ia.media-imdb.com/images/',
-            proxyUrl: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+            imgUrl: 'http://ia.media-imdb.com/images/'
         },
         imdb_popular: {
             rootUrl: 'http://www.imdb.com',
@@ -76,8 +72,7 @@ var explore = {
             url: 'http://www.imdb.com/search/title?count=100&title_type=feature',
             keepAlive: [0 , 2],
             baseUrl: 'http://www.imdb.com/title/',
-            imgUrl: 'http://ia.media-imdb.com/images/',
-            proxyUrl: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+            imgUrl: 'http://ia.media-imdb.com/images/'
         },
         imdb_serials: {
             rootUrl: 'http://www.imdb.com',
@@ -85,8 +80,7 @@ var explore = {
             url: 'http://www.imdb.com/search/title?count=100&title_type=tv_series',
             keepAlive: [0],
             baseUrl: 'http://www.imdb.com/title/',
-            imgUrl: 'http://ia.media-imdb.com/images/',
-            proxyUrl: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=130&rewriteMime=image/jpeg&url='
+            imgUrl: 'http://ia.media-imdb.com/images/'
         },
         gg_games_top: {//best
             rootUrl: 'http://gameguru.ru',
@@ -96,8 +90,7 @@ var explore = {
             pageEnd: 5,
             pageStart: 1,
             baseUrl: 'http://gameguru.ru/pc/games/',
-            imgUrl: 'http://gameguru.ru/f/games/',
-            proxyUrl: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=220&rewriteMime=image/jpeg&url='
+            imgUrl: 'http://gameguru.ru/f/games/'
         },
         gg_games_new: {//new
             rootUrl: 'http://gameguru.ru',
@@ -107,8 +100,7 @@ var explore = {
             pageEnd: 5,
             pageStart: 1,
             baseUrl: 'http://gameguru.ru/pc/games/',
-            imgUrl: 'http://gameguru.ru/f/games/',
-            proxyUrl: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=220&rewriteMime=image/jpeg&url='
+            imgUrl: 'http://gameguru.ru/f/games/'
         }
     },
     content_parser: function () {
@@ -192,6 +184,18 @@ var explore = {
                 arr.push(obj);
             }
             return arr;
+        };
+        var onGooglePosterError = function(picList) {
+            var index = parseInt(this.dataset.index);
+            this.dataset.index = ++index;
+
+            var src;
+            if (!(src = picList[index])) {
+                this.style.display = 'none';
+                return;
+            }
+
+            this.src = src;
         };
         return {
             kp_favorites: function(content) {
@@ -488,97 +492,184 @@ var explore = {
             },
             gg_games_new: gg_games_new,
             gg_games_top: gg_games_new,
-            google: function(content, request) {
-                content = exKit.contentFilter(content);
-                var $content = $(exKit.parseHtml(content));
-                $content = $content.find('#rhs_block').find('ol').eq(0);
-                //content = undefined;
-                if ($content.length === 0) {
+            google: function(content, request, cb) {
+                var urlObj = {
+                    search: {
+                        rootUrl: 'http://google.com/',
+                        baseUrl: 'http://google.com/'
+                    }
+                };
+                var dom = exKit.parseHtml(exKit.contentFilter(content));
+                content = dom.querySelectorAll('#rhs_block ol')[0];
+                if (!content) {
                     return;
                 }
-                var links = $content.find('a');
-                for (var i = 0, len = links.length; i < len; i++) {
-                    if (links.eq(i).attr('href') === undefined) {
+
+                var url;
+                var linkList = content.querySelectorAll('a');
+                for (var i = 0, node; node = linkList[i]; i++) {
+                    url = node.href;
+                    if (!url) {
                         continue;
                     }
-                    if (links.eq(i).attr('href')[0] === '/') {
-                        links.eq(i).attr('href', 'http://google.com' + links.eq(i).attr('href'));
-                    }
-                    links.eq(i).attr('target', '_blank');
+                    url = exKit.urlCheck(urlObj, url);
+                    node.setAttribute('href', url);
                 }
-                var images = [];
-                var imgList = $content.find('a > img');
-                for (var i = 0, len = imgList.length; i < len; i++) {
-                    var parent_a = imgList.eq(i).parent('a');
-                    var href = parent_a.attr('href');
-                    if (href === undefined) {
-                        parent_a.remove();
-                        continue;
-                    } else {
-                        href = decodeURIComponent(href);
-                    }
-                    if (href.indexOf("imgres") === -1) {
-                        continue;
-                    }
-                    images.push(href.replace(/.*=http(.*)&imgref.*/, 'http$1'));
-                }
+
                 var info = {};
-                var google_proxy = "https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=400&rewriteMime=image/jpeg&url=";
-                if (images.length > 0) {
-                    info.img = exKit.contentUnFilter(images[0]);
-                }
-                info.title = $content.find('div.kno-ecr-pt').text();
-                info.type = $content.find('div.kno-ecr-st').text();
-                var dom_desc = $content.find('div.kno-rdesc');
-                info.desc_link_a = dom_desc.find('a').eq(-1);
-                info.desc_link_title = info.desc_link_a.text();
-                info.desc_link = info.desc_link_a.attr('href');
-                if (info.desc_link !== undefined) {
-                    info.desc_link = $('<a>', {href: exKit.contentUnFilter(info.desc_link), text: info.desc_link_title, target: '_blank'});
-                    info.desc_link_a.remove();
-                } else {
-                    info.desc_link = '';
-                }
-                info.desc = dom_desc.text();
-                info.other = $content.find('div.kno-fb-ctx');
-                var content_info = $('<div>');
-                if (!info.title || !info.desc) {
-                    return '';
-                }
-                if (info.img !== undefined) {
-                    content_info.append($('<div>', {'class': 'a-poster'})
-                            .append($('<img>', {src: google_proxy + info.img, alt: info.title})
-                                .on('error', function(){
-                                    $(this).css('display', 'none');
-                                })
-                        )
-                    );
-                }
-                if (info.title !== undefined) {
-                    content_info.append($('<div>', {'class': 'a-title', text: info.title}));
-                }
-                if (info.type !== undefined) {
-                    content_info.append($('<div>', {'class': 'a-type', text: info.type}));
-                }
-                if (info.desc !== undefined) {
-                    content_info.append($('<div>', {'class': 'a-desc', text: info.desc}).append(info.desc_link));
-                }
-                for (var i = 0, item; item = info.other[i]; i++) {
-                    var val = $(item).children('.kno-fv');
-                    var k = val.prev().text();
-                    var v = val.text();
-                    if (!v || !k) {
+
+                var params;
+                var picUrlList = [];
+                var picList = content.querySelectorAll('a > img');
+                for (i = 0, node; node = picList[i]; i++) {
+                    var parentNode = node.parentNode;
+                    url = parentNode.href;
+                    if (!url) {
+                        parentNode.removeChild(node);
                         continue;
                     }
-                    content_info.append($('<div>', {'class': 'a-table'}).append($('<span>', {'class': 'key', text: k}), $('<span>', {'class': 'value', text: v})));
+                    url = exKit.contentUnFilter(url);
+                    params = mono.parseParam(url);
+                    if (params.imgurl) {
+                        if (params.imgurl.substr(0, 4) !== 'http') {
+                            continue;
+                        }
+                        picUrlList.push(params.imgurl);
+                    }
                 }
-                explore.limitObjSize(explore.varCache.about_cache, 10);
-                explore.varCache.about_cache[request] = '<div>'+content_info.html()+'</div>';
-                // view.setDescription(content_info);
-                // todo: fix me
+                info.picList = picUrlList;
+
+                var titelNode;
+                info.title = titelNode = content.querySelector('div.kno-ecr-pt');
+                info.title !== null && (info.title = info.title.textContent);
+                if (!info.title) {
+                    return;
+                }
+
+                info.type = titelNode.nextElementSibling || content.querySelector('div.kno-ecr-st');
+                info.type !== null && (info.type = info.type.textContent);
+
+                var descNode = content.querySelector('div.kno-rdesc');
+                if (!descNode) {
+                    return;
+                }
+
+                var wikiLink = descNode.querySelectorAll('a');
+                if (wikiLink.length > 0 && (wikiLink = wikiLink[wikiLink.length - 1])) {
+                    url = wikiLink.dataset.href;
+                    if (!url) {
+                        url = wikiLink.href;
+                    }
+                    if (url) {
+                        url = exKit.contentUnFilter(url);
+                    }
+                    info.wikiLink = mono.create('a', {
+                        text: wikiLink.textContent,
+                        href: url,
+                        target: '_blank'
+                    });
+                    wikiLink.parentNode.removeChild(wikiLink);
+                }
+
+                info.desc = descNode.textContent;
+                if (!info.desc) {
+                    return;
+                }
+
+                info.otherItems = document.createDocumentFragment();
+                var otherItems = content.querySelectorAll('div.kno-fb-ctx > .kno-fv');
+                for (i = 0, node; node = otherItems[i]; i++) {
+                    var prevEl = node.previousElementSibling;
+
+                    var lastEl = node.lastElementChild;
+                    if (lastEl && lastEl.tagName === 'A' && lastEl.firstChild.nodeType === 1) {
+                        var lP = lastEl.previousElementSibling;
+                        if (lP && lP.textContent === ' ') {
+                            var lPP = lP.previousElementSibling;
+                            if (lPP && lPP.textContent === ',') {
+                                node.removeChild(lastEl);
+                                node.removeChild(lPP);
+                                node.removeChild(lP);
+                            }
+                        }
+                    }
+
+                    var value = node.textContent;
+                    if (!prevEl || !value) continue;
+                    var key = prevEl.textContent;
+                    if (!key) {
+                        continue;
+                    }
+                    info.otherItems.appendChild(mono.create('div', {
+                        class: 'table',
+                        append: [
+                            mono.create('span', {
+                                class: 'key',
+                                text: key
+                            }),
+                            mono.create('span', {
+                                class: 'value',
+                                text: value
+                            })
+                        ]
+                    }))
+                }
+                if (!info.otherItems.firstChild) {
+                    info.otherItems = undefined;
+                }
+
+                var fragment = document.createDocumentFragment();
+                if (info.picList.length > 0) {
+                    fragment.appendChild(mono.create('div', {
+                        class: 'poster',
+                        append: [
+                            mono.create('img', {
+                                data: {
+                                    index: 0
+                                },
+                                src: info.picList[0],
+                                alt: info.title,
+                                onCreate: function() {
+                                    this.addEventListener('error', onGooglePosterError.bind(this, info.picList))
+                                }
+                            })
+                        ]
+                    }));
+                }
+
+                fragment.appendChild(mono.create('h1', {
+                    class: 'title',
+                    text: info.title
+                }));
+
+                info.type && fragment.appendChild(mono.create('div', {
+                    class: 'type',
+                    text: info.type
+                }));
+
+                fragment.appendChild(mono.create('div', {
+                    class: 'desc',
+                    text: info.desc,
+                    append: info.wikiLink
+                }));
+
+                info.otherItems && fragment.appendChild(info.otherItems);
+
+                return cb(fragment);
             }
         }
     }(),
+    getDescription: function(request, cb) {
+        if (!request) {
+            return;
+        }
+        mono.ajax({
+            url: 'https://www.google.com/search?q='+request,
+            success: function(data) {
+                this.content_parser.google(data, request, cb);
+            }.bind(this)
+        });
+    },
     getCacheDate: function(keepAlive) {
         "use strict";
         if (!keepAlive) {
@@ -718,13 +809,11 @@ var explore = {
         this.currentPageEl = this.pageEl.querySelector('li[data-page="'+page+'"]');
         this.currentPageEl && this.currentPageEl.classList.add('active');
 
-
         var height = this.body.clientHeight;
         if ((this.minHeight || 0) < height) {
             this.body.style.minHeight = height + 'px';
             this.minHeight = height;
         }
-
 
         var cache = engine.exploreCache[this.cacheName];
         if (cache && cache.content) {
