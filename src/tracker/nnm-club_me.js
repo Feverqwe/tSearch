@@ -44,7 +44,7 @@ engine.trackerLib['nnm-club'] = {
             downloadUrl: {selector: 'td:eq(4)>a', attr: 'href'},
             seed: 'td.seedmed',
             peer: 'td.leechmed',
-            date: 'td.gensmall:eq(2)>u'
+            date: 'td.gensmall:eq(3)>u'
         },
         onGetValue: {
             categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]}
