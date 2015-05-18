@@ -588,6 +588,7 @@ body.home #result_block {
 #request_desc_container .poster {
     float: right;
     margin-left: 5px;
+    padding: 1px;
 }
 
 #request_desc_container .poster img {
