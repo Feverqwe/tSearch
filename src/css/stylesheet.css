@@ -127,6 +127,31 @@ body.home #result_block {
     max-width: 149px;
 }
 
+.link-block {
+    position: relative;
+    margin-top: 10px;
+}
+.link-block a {
+    display: block;
+    padding-left: 22px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    line-height: 18px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: #0051D8;
+    text-decoration: none;
+}
+.link-block a:hover {
+    text-decoration: underline;
+}
+.link-block .feedback {
+    background-image: url(../img/info.png);
+}
+.link-block .vk-group {
+    background-image: url(../img/vk.png);
+}
+
 .filter-block > p {
     margin: 0;
     margin-top: 10px;
