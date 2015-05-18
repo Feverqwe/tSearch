@@ -131,5 +131,5 @@
     "descUrl": {"message": "URL описания"},
 
     "direct": {"message": "Напрямую"},
-    "requestContentVia": {"message": "Запросить контент через:"}
+    "requestContentVia": {"message": "Получать контент через:"}
 }
