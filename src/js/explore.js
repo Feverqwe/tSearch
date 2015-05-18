@@ -587,14 +587,12 @@ var explore = {
 
                     var lastEl = node.lastElementChild;
                     if (lastEl && lastEl.tagName === 'A' && lastEl.firstChild.nodeType === 1) {
-                        var lP = lastEl.previousElementSibling;
-                        if (lP && lP.textContent === ' ') {
-                            var lPP = lP.previousElementSibling;
-                            if (lPP && lPP.textContent === ',') {
+                        var lPP, lP;
+                        if ((lP = lastEl.previousElementSibling) && lP.textContent === ' ' &&
+                            (lPP = lP.previousElementSibling) && lPP.textContent === ',') {
                                 node.removeChild(lastEl);
                                 node.removeChild(lPP);
                                 node.removeChild(lP);
-                            }
                         }
                     }
 
