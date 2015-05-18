@@ -1108,6 +1108,7 @@ var view = {
         view.varCache.searchResultCounter.tracker = {};
         view.resultCounterCategoryReset();
         view.resultCounterUpdate();
+        view.varCache.categoryObjList[undefined].setSelect(1);
     },
     prepareRequestR: {
         spaceR: /[\s\xA0]/g,
