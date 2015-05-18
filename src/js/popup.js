@@ -168,7 +168,7 @@ mono.onMessage(function(msg) {
     }
 });
 
-mono.storage.get(['autoComplite', 'langCode', searchHistory], function(storage) {
+mono.storage.get(['autoComplite', 'langCode', 'searchHistory'], function(storage) {
     "use strict";
     if (Array.isArray(storage.searchHistory)) {
         popup.varCache.history = storage.searchHistory;
