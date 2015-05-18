@@ -537,7 +537,11 @@ var explore = {
                         picUrlList.push(params.imgurl);
                     }
                 }
-                info.picList = picUrlList;
+                var viaProxyLinkList = [];
+                for (i = 0, url; url = picUrlList[i]; i++) {
+                    viaProxyLinkList.push('https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=400&rewriteMime=image/jpeg&url=' + encodeURIComponent(url));
+                }
+                info.picList = viaProxyLinkList.concat(picUrlList);
 
                 var titelNode;
                 info.title = titelNode = content.querySelector('div.kno-ecr-pt');
