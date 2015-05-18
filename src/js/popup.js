@@ -145,19 +145,6 @@ var popup = {
                 }, 100);
             }
         };
-    },
-    loadHistory: function(cb) {
-        "use strict";
-        mono.storage.get('searchHistory', function(storage) {
-            if (Array.isArray(storage.searchHistory)) {
-                popup.varCache.history = storage.searchHistory;
-            }
-            cb && cb();
-        });
-    },
-    onShow: function() {
-        "use strict";
-        popup.loadHistory();
     }
 };
 
@@ -169,7 +156,7 @@ var define = function(name, func) {
     }
     if (name[0] === 'jquery') {
         func(jQuery);
-        popup.loadHistory(popup.onUiReady);
+        popup.onUiReady();
     }
 };
 define.amd = {};
@@ -181,8 +168,11 @@ mono.onMessage(function(msg) {
     }
 });
 
-mono.storage.get(['autoComplite', 'langCode'], function(storage) {
+mono.storage.get(['autoComplite', 'langCode', searchHistory], function(storage) {
     "use strict";
+    if (Array.isArray(storage.searchHistory)) {
+        popup.varCache.history = storage.searchHistory;
+    }
     mono.getLanguage(function () {
         popup.once();
 
