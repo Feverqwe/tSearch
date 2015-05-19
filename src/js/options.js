@@ -97,7 +97,11 @@ var options = {
         var obj = {};
         obj[key] = value;
 
-        mono.storage.set(obj);
+        mono.storage.set(obj, function() {
+            if (obj.hasOwnProperty('contextMenu') || obj.hasOwnProperty('searchPopup')) {
+                mono.sendMessage('reloadSettings');
+            }
+        });
     },
     getBackupJson: function(cb) {
         "use strict";
@@ -117,7 +121,7 @@ var options = {
             data[item] = value;
         }
         mono.storage.set(data, function() {
-            mono.sendMessage({action: 'reloadSettings'}, function() {
+            mono.sendMessage('reloadSettings', function() {
                 window.location.reload();
             });
         });

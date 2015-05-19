@@ -1778,6 +1778,9 @@ var view = {
                     if (value.length === 0) {
                         return cb(view.getHistory());
                     }
+                    if (!engine.settings.autoComplite) {
+                        return cb();
+                    }
                     if (view.varCache.suggestXhr) {
                         view.varCache.suggestXhr.abort();
                     }

@@ -33,37 +33,25 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
 })();
 
 var bg = {
-    omnibox: function () {
-        chrome.omnibox.onInputEntered.addListener(function (text) {
-            chrome.tabs.create({
-                url: "index.html" + ( text ? '#?search=' + encodeURIComponent(text) : ''),
-                selected: true
-            });
-        });
+    settings: {
+        contextMenu: 1,
+        searchPopup: 1
     },
-    setBtnAction: mono.isChrome ? function ch(state) {
+    updateBtnAction: mono.isChrome ? function() {
         "use strict";
-        ch.lastState = state;
-        if (!ch.inited) {
-            chrome.browserAction.onClicked.addListener(function() {
-                if (ch.lastState) return;
-                chrome.tabs.create({
-                    url: 'index.html'
-                });
-            });
-            ch.inited = 1;
-        }
         chrome.browserAction.setPopup({
-            popup: state ? 'popup.html' : ''
+            popup: bg.settings.searchPopup ? 'popup.html' : ''
         });
     } : function() {
         "use strict";
 
     },
-    setCtxMenu: mono.isChrome ? function(state) {
+    updateContextMenu: mono.isChrome ? function() {
         "use strict";
         chrome.contextMenus.removeAll(function () {
-            if (!state) return;
+            if (!bg.settings.contextMenu) {
+                return;
+            }
             chrome.contextMenus.create({
                 type: "normal",
                 id: "item",
@@ -84,27 +72,44 @@ var bg = {
     },
     onMessage: function(msg, cb) {
         "use strict";
-
+        if (msg === 'reloadSettings') {
+            bg.run();
+            return cb();
+        }
     },
     once: function() {
         "use strict";
-        mono.isChrome && bg.omnibox();
+        if (mono.isChrome) {
+            chrome.omnibox.onInputEntered.addListener(function (text) {
+                chrome.tabs.create({
+                    url: "index.html" + ( text ? '#?search=' + encodeURIComponent(text) : ''),
+                    selected: true
+                });
+            });
+            chrome.browserAction.onClicked.addListener(function() {
+                if (bg.settings.searchPopup) {
+                    return;
+                }
+                chrome.tabs.create({
+                    url: 'index.html'
+                });
+            });
+        }
         bg.run();
     },
     run: function() {
         "use strict";
-
         mono.storage.get(['contextMenu', 'searchPopup', 'langCode'], function(storage) {
-            if (!storage.hasOwnProperty('contextMenu')) {
-                storage.contextMenu = 1;
+            if (storage.hasOwnProperty('contextMenu')) {
+                bg.settings.contextMenu = storage.contextMenu;
             }
-            if (!storage.hasOwnProperty('searchPopup')) {
-                storage.searchPopup = 1;
+            if (storage.hasOwnProperty('searchPopup')) {
+                bg.settings.searchPopup = storage.searchPopup;
             }
 
             mono.getLanguage(function() {
-                bg.setBtnAction(storage.searchPopup);
-                bg.setCtxMenu(storage.contextMenu);
+                bg.updateContextMenu();
+                bg.updateBtnAction();
             }, storage.langCode);
         });
     }

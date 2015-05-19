@@ -85,6 +85,9 @@ var popup = {
                 if (value.length === 0) {
                     return cb(popup.getHistory());
                 }
+                if (!popup.varCache.autoComplite) {
+                    return cb();
+                }
                 if (popup.varCache.suggestXhr) {
                     popup.varCache.suggestXhr.abort();
                 }
@@ -179,8 +182,9 @@ mono.storage.get(['autoComplite', 'langCode', 'searchHistory'], function(storage
         if (!storage.hasOwnProperty('autoComplite')) {
             storage.autoComplite = 1;
         }
-        if (storage.autoComplite) {
-            document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
-        }
+
+        popup.varCache.autoComplite = storage.autoComplite;
+
+        document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
     }, storage.langCode);
 });

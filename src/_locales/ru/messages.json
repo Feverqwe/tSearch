@@ -133,5 +133,24 @@
     "direct": {"message": "Напрямую"},
     "requestContentVia": {"message": "Получать контент через:"},
     "VkGroup": {"message": "Группа в ВК"},
-    "feedback": {"message": "Сообщить о проблеме"}
+    "feedback": {"message": "Сообщить о проблеме"},
+
+    "hidePeerColumn": {"message": "Скрыть столбец пиров (скачивающих)"},
+    "hideSeedColumn": {"message": "Скрыть столбец сидов (раздающих)"},
+    "subCategoryFilter": {"message": "Учитывать категорию при фильтрации по словам"},
+    "teaserFilter": {"message": "Не отображать тизеры и трилеры"},
+    "contextMenu": {"message": "Добавить поиск в контекстное меню"},
+    "searchPopup": {"message": "Отображать окно поиска при нажати на иконку расширения"},
+    "autoComplite": {"message": "Добавить автозаполнение в строку поиска"},
+    "useEnglishPosterName": {"message": "Отображать название фильмов на главной странице на английском языке"},
+    "doNotSendStatistics": {"message": "Не отправлять статистику"},
+    "defineCategory": {"message": "Автоматически определять категорию раздачи"},
+    "allowGetDescription": {"message": "Получать описание поискового запроса из Google"},
+    "enableFavoriteSync": {"message": "Включить синхронизацию списка избранного"},
+    "enableHighlight": {"message": "Подсвечивать результаты поиска"},
+    "kinopoiskFolderId": {"message": "Id категории изранного на сайте Кинопоиск, для синхронизации"},
+    "rightPanel": {"message": "Отображать панель со списком торрентов справа"},
+    "hideTopSearch": {"message": "Не отображать топ-30 поисковых запросов"},
+    "profileListSync": {"message": "Включить синхронизацию списка профилей"},
+    "calcSeedCount": {"message": "Учитывать количество сидов (раздающих) при сортировке по качеству"}
 }
