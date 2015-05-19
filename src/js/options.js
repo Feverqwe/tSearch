@@ -225,6 +225,8 @@ var options = {
         this.onHashChange();
 
         document.body.addEventListener('click', this.saveChange);
+
+        document.querySelector('input[data-option="kinopoiskFolderId"]').addEventListener('change', mono.debounce(this.saveChange));
     }
 };
 engine.init(function() {

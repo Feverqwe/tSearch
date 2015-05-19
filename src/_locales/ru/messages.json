@@ -148,7 +148,7 @@
     "allowGetDescription": {"message": "Получать описание поискового запроса из Google"},
     "enableFavoriteSync": {"message": "Включить синхронизацию списка избранного"},
     "enableHighlight": {"message": "Подсвечивать результаты поиска"},
-    "kinopoiskFolderId": {"message": "Id категории изранного на сайте Кинопоиск, для синхронизации"},
+    "kinopoiskFolderId": {"message": "Id категории избранного на сайте Кинопоиск, для синхронизации"},
     "rightPanel": {"message": "Отображать панель со списком торрентов справа"},
     "hideTopSearch": {"message": "Не отображать топ-30 поисковых запросов"},
     "profileListSync": {"message": "Включить синхронизацию списка профилей"},
