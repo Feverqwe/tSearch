@@ -385,6 +385,10 @@ var options = {
             })()
         });
     },
+    writeQualityList: function() {
+        "use strict";
+
+    },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
