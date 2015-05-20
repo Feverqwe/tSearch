@@ -314,6 +314,9 @@ input[data-option="kinopoiskFolderId"] {
     width: 540px;
     margin-left: 5px;
 }
+.proxyList form {
+    margin: 5px;
+}
 .proxyList .proxy-type > * {
     display: inline-block;
 }
