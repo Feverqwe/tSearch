@@ -11,7 +11,8 @@ var options = {
         restoreInp: document.getElementById('restoreInp'),
         langSelect: document.getElementById("language"),
         sectionList: document.querySelector('.sectionList'),
-        proxyList: document.querySelector('.proxyList')
+        proxyList: document.querySelector('.proxyList'),
+        qualityList: document.querySelector('.qualityList')
     },
 
     defaultSettings: {},

@@ -161,5 +161,6 @@
     "fixSpaces": {"message": "Экранировать пробелы"},
     "label": {"message": "Название:"},
     "workExample": {"message": "Пример работы:"},
-    "onlyGetMethod": {"message": "Только для GET запросов"}
+    "onlyGetMethod": {"message": "Только для GET запросов"},
+    "qualityDefine": {"message": "Определение качества"}
 }
