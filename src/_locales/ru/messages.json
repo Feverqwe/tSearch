@@ -159,5 +159,7 @@
     "proxy": {"message": "Проксирование запросов"},
     "type": {"message": "Тип:"},
     "fixSpaces": {"message": "Экранировать пробелы"},
-    "label": {"message": "Название:"}
+    "label": {"message": "Название:"},
+    "workExample": {"message": "Пример работы:"},
+    "onlyGetMethod": {"message": "Только для GET запросов"}
 }

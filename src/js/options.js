@@ -190,10 +190,39 @@ var options = {
             append: (function() {
                 var list = [];
                 engine.settings.proxyList.forEach(function(item, index) {
-                    var optionsHost, formEl, fixSpacesEl;
-                    list.push(mono.create('div', {
+                    var itemEl;
+                    list.push(itemEl = mono.create('div', {
                         class: 'item',
                         append: [
+                            mono.create('div', {
+                                class: 'host-options',
+                                append: [
+                                    mono.create('div', {
+                                        class: 'info',
+                                        append: [
+                                            mono.create('span', {
+                                                text: mono.language.workExample + ' '
+                                            }),
+                                            mono.create('span', {
+                                                text: '{protocol}://{host}.3s3s.org/{path}'
+                                            })
+                                        ]
+                                    })
+                                ]
+                            }),
+                            mono.create('div', {
+                                class: 'url-options',
+                                append: [
+                                    mono.create('div', {
+                                        class: 'info',
+                                        append: [
+                                            mono.create('span', {
+                                                text: mono.language.onlyGetMethod
+                                            })
+                                        ]
+                                    })
+                                ]
+                            }),
                             mono.create('label', {
                                 append: [
                                     mono.create('span', {
@@ -237,7 +266,7 @@ var options = {
                                     })
                                 ]
                             }),
-                            formEl = mono.create('form', {
+                            mono.create('form', {
                                 class: 'proxy-type',
                                 append: [
                                     mono.create('span', {
@@ -274,9 +303,11 @@ var options = {
                                     var el = e.target;
                                     if (el.name === 'proxyType') {
                                         if (el.value === '0') {
-                                            optionsHost.classList.add('show');
+                                            itemEl.classList.add('url-show');
+                                            itemEl.classList.remove('host-show');
                                         } else {
-                                            optionsHost.classList.remove('show');
+                                            itemEl.classList.remove('url-show');
+                                            itemEl.classList.add('host-show');
                                         }
                                     }
                                     if (isNaN(parseInt(el.value))) {
@@ -286,7 +317,7 @@ var options = {
                                     options.saveProxyList();
                                 }]
                             }),
-                            optionsHost = mono.create('div', {
+                            mono.create('div', {
                                 class: 'host-options',
                                 append: [
                                     mono.create('label', {
@@ -317,7 +348,9 @@ var options = {
                         ],
                         onCreate: function() {
                             if (item.type === 0) {
-                                optionsHost.classList.add('show');
+                                this.classList.add('url-show');
+                            } else {
+                                this.classList.add('host-show');
                             }
                         }
                     }));

@@ -297,9 +297,11 @@ input[data-option="kinopoiskFolderId"] {
     width: 50px;
 }
 
+.proxyList {
+    width: 620px;
+}
 .proxyList .item {
     padding: 5px;
-    width: 600px;
     border-bottom: 1px dashed #848484;
 }
 .proxyList .label {
@@ -315,14 +317,17 @@ input[data-option="kinopoiskFolderId"] {
 .proxyList .proxy-type > * {
     display: inline-block;
 }
+.proxyList .url-options,
 .proxyList .host-options {
     display: none;
 }
-.proxyList .host-options.show {
+.proxyList .url-show .url-options,
+.proxyList .host-show .host-options {
     display: block;
 }
 .proxyList a.add {
     margin: 5px;
+    float: right;
 }
 
 .proxyList a {
