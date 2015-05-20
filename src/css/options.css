@@ -101,6 +101,17 @@ textarea {
     height: 400px;
 }
 
+label.hasChanges::before {
+    content: '';
+    display: inline-block;
+    background: url(../img/dot.svg) center no-repeat;
+    background-size: 6px;
+    width: 10px;
+    height: 10px;
+    margin-left: -10px;
+    vertical-align: middle;
+}
+
 input[type="number"] {
     width: 60px;
 }
@@ -175,22 +186,15 @@ div.page.active {
     display: block;
 }
 
-label,
-div.optionItem {
+label {
     display: block;
     margin: 5px;
 }
-.client label > span:first-child {
-    min-width: 150px;
-    display: inline-block;
-}
-.main label > span:first-child {
-    min-width: 400px;
-    display: inline-block;
-}
-.notify label > span:first-child {
-    min-width: 450px;
-    display: inline-block;
+
+label > input,
+label > span,
+label > select {
+    vertical-align: middle;
 }
 
 div.info {
@@ -277,4 +281,8 @@ ol.help li {
 }
 .helpImgContainer {
     text-align: center;
+}
+
+input[data-option="kinopoiskFolderId"] {
+    width: 50px;
 }

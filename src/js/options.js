@@ -9,7 +9,8 @@ var options = {
         clearCloudStorageBtn: document.getElementById('clearCloudStorage'),
         backupInp: document.getElementById('backupInp'),
         restoreInp: document.getElementById('restoreInp'),
-        langSelect: document.getElementById("language")
+        langSelect: document.getElementById("language"),
+        sectionList: document.querySelector('.sectionList')
     },
 
     defaultSettings: {},
@@ -61,6 +62,19 @@ var options = {
             return;
         }
         var key = el.dataset.option;
+        if (!key) {
+            var section = el.dataset.section;
+            engine.explorerOptionsObj[section].enable = el.checked ? 1 : 0;
+            mono.storage.set({explorerOptions: engine.explorerOptions});
+        }
+        if (key && el.type === 'checkbox' || section) {
+            var label = el.parentNode;
+            if (label.classList.contains('hasChanges')) {
+                label.classList.remove('hasChanges');
+            } else {
+                label.classList.add('hasChanges');
+            }
+        }
         if (!key) {
             return;
         }
@@ -170,6 +184,33 @@ var options = {
         document.body.classList.remove('loading');
 
         this.settings = engine.settings;
+
+        engine.explorerOptions.concat(engine.defaultExplorerOptions).forEach(function createSection(item) {
+            if (createSection.list === undefined) {
+                createSection.list = [];
+            }
+            if (createSection.list.indexOf(item.type) !== -1) {
+                return;
+            }
+            createSection.list.push(item.type);
+            if (item.type === 'favorites') {
+                return;
+            }
+            this.domCache.sectionList.appendChild(mono.create('label', {
+                append: [
+                    mono.create('input', {
+                        type: 'checkbox',
+                        data: {
+                            section: item.type
+                        },
+                        checked: !!item.enable
+                    }),
+                    mono.create('span', {
+                        text: mono.language[item.lang]
+                    })
+                ]
+            }));
+        }.bind(this));
 
         mono.rmChildTextNodes(this.domCache.langSelect);
         this.domCache.langSelect.selectedIndex = this.domCache.langSelect.querySelector('[value="'+mono.language.langCode+'"]').index;
