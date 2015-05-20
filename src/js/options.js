@@ -194,7 +194,7 @@ var options = {
                     list.push(mono.create('div', {
                         class: 'item',
                         append: [
-                            mono.create('div', {
+                            mono.create('label', {
                                 append: [
                                     mono.create('span', {
                                         text: mono.language.label + ' '
@@ -221,7 +221,7 @@ var options = {
                                     })
                                 ]
                             }),
-                            mono.create('div', {
+                            mono.create('label', {
                                 append: [
                                     mono.create('span', {
                                         text: 'URL:'
