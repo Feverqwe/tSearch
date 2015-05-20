@@ -659,3 +659,16 @@ mono.templateToDom = function(list, fragment) {
     }
     return fragment;
 };
+
+mono.getChild = function (node, cb) {
+    var childNodes = node.childNodes;
+    for (var i = 0, el; el = childNodes[i]; i++) {
+        if (el.nodeType !== 1) {
+            continue;
+        }
+        if (cb(el)) {
+            return el;
+        }
+    }
+    return null;
+};

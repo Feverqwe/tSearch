@@ -6,27 +6,27 @@ var rate = {
         bitrate: [
             {
                 list: ['32'],
-                rate: {music: -2}
+                rate: {audio: -2}
             },
             {
                 list: ['64'],
-                rate: {music: 0}
+                rate: {audio: 0}
             },
             {
                 list: ['96'],
-                rate: {music: 2}
+                rate: {audio: 2}
             },
             {
                 list: ['128'],
-                rate: {music: 5}
+                rate: {audio: 5}
             },
             {
                 list: ['192'],
-                rate: {music: 10}
+                rate: {audio: 10}
             },
             {
                 list: ['320'],
-                rate: {music: 15}
+                rate: {audio: 15}
             }
         ]
     },
@@ -236,14 +236,14 @@ var rate = {
         {
             list: ['lossless'],
             rate: {
-                music: 100
+                audio: 100
             },
             name: 'lossless',
             subAfter: [
                 {
                     list: ['repack'],
                     rate: {
-                        music: -100
+                        audio: -100
                     }
                 }
             ]
@@ -266,7 +266,7 @@ var rate = {
         {
             list: ['AAC'],
             rate: {
-                music: 85
+                audio: 85
             },
             name: 'AAC',
             subAfter: "bitrate"
@@ -456,7 +456,6 @@ var rate = {
     readQualityList: function(qualityList, type) {
         "use strict";
         type = type || '';
-        qualityList = qualityList || this.defaultQualityList;
         var wordsR = [];
         var scope = {};
         var scopeCase = {};
@@ -784,7 +783,10 @@ var rate = {
         /**
          * @type {{wordsR: Object, scope: Object, scopeCase: Object}}
          */
-        this.baseQualityList = this.readQualityList();
+        if (mono.isEmptyObject(this.qualityList)) {
+            this.qualityList = this.defaultQualityList;
+        }
+        this.baseQualityList = this.readQualityList(this.qualityList);
     }
 };
 rate.categoryDefineRegexp = new RegExp("фильмы без сюжета|документальные|мультим|мульт|сериа|комикс|видео для [моб|смарт|" +

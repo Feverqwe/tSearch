@@ -162,5 +162,8 @@
     "label": {"message": "Название:"},
     "workExample": {"message": "Пример работы:"},
     "onlyGetMethod": {"message": "Только для GET запросов"},
-    "qualityDefine": {"message": "Определение качества"}
+    "qualityDefine": {"message": "Определение качества"},
+    "wordList": {"message": "Списк слов"},
+    "rateList": {"message": "Список весов:"},
+    "base": {"message": "Основное"}
 }

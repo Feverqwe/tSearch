@@ -387,7 +387,376 @@ var options = {
     },
     writeQualityList: function() {
         "use strict";
+        var isEmpty = '<new>';
+        var optionList = ['video', 'audio'];
+        var categoryList = ['other','serials','music','games','films',
+            'cartoons','books','software','anime',
+            'doc','sport','xxx','humor'
+        ];
+        var createWord = function(word) {
+            return mono.create('div', {
+                class: 'wordForm',
+                append: [
+                    mono.create('input', {
+                        type: 'text',
+                        value: word
+                    }),
+                    mono.create('a', {
+                        class: ['button','remove','wordFormRemove'],
+                        title: mono.language.delete,
+                        append: [
+                            mono.create('i')
+                        ]
+                    })
+                ]
+            });
+        };
+        var createWords = function(list) {
+            list = list || [];
+            return mono.create('div', {
+                class: 'wordList',
+                data: {
+                    type: 'list'
+                },
+                append: (function() {
+                    var nodeList = [];
+                    nodeList.push(mono.create('h4', {
+                        text: mono.language.wordList
+                    }));
+                    list.forEach(function (word) {
+                        nodeList.push(createWord(word));
+                    });
+                    nodeList.push(mono.create('div', {
+                        class: 'wordForm',
+                        append: mono.create('input', {
+                            type: 'button',
+                            value: mono.language.add,
+                            class: ['button','new','wordFormNew']
+                        })
+                    }));
+                    return nodeList;
+                })()
+            });
+        };
+        var getRateOptions = function(optionName) {
+            var list = document.createDocumentFragment();
+            for (var i = 0, name; name = optionList[i]; i++) {
+                var text = name;
+                if (categoryList.indexOf(name) !== -1) {
+                    text += '*';
+                }
+                list.appendChild(mono.create('option', {
+                        value: name,
+                        text: text,
+                        onCreate: function() {
+                            if (optionName === name) {
+                                this.selected = true;
+                            }
+                        }
+                    })
+                );
+            }
+            return list;
+        };
+        var createRate = function(key, value) {
+            return mono.create('div', {
+                class: 'rateForm',
+                append: [
+                    mono.create('select', {
+                        append: getRateOptions(key)
+                    }),
+                    mono.create('input', {
+                        type: 'number',
+                        value: value,
+                        placeholder: '0'
+                    }),
+                    mono.create('a', {
+                        class: ['button','remove','rateFormRemove'],
+                        title: mono.language.delete,
+                        append: mono.create('i')
+                    })
+                ]
+            });
+        };
+        var createRates = function(rateList) {
+            rateList = rateList || {};
+            return mono.create('div', {
+                class: 'rateList',
+                append: (function(){
+                    var list = [];
+                    list.push(mono.create('h4', {
+                        text: mono.language.rateList
+                    }));
+                    for (var item in rateList) {
+                        list.push(createRate(item, rateList[item]));
+                    }
+                    list.push(mono.create('div', {
+                        class: 'rateList',
+                        append: mono.create('input', {
+                            type: 'button',
+                            value: mono.language.add,
+                            class: ['button','new','rateFormNew']
+                        })
+                    }));
+                    return list;
+                })()
+            });
+        };
+        var createName = function(name) {
+            name = name || '';
+            var input = mono.create('input', {type: 'text', value: name, disabled: !name});
+            return mono.create('div', {
+                class: 'nameItem',
+                append: [
+                    mono.create('label', {
+                        append: [
+                            mono.create('input', {
+                                type: 'checkbox',
+                                name: 'is primary',
+                                checked: !!name,
+                                on: ['change', function() {
+                                    input.disabled = !this.checked;
+                                }]
+                            }),
+                            mono.language.base
+                        ]
+                    }),
+                    mono.create('div', {
+                        append: [
+                            mono.create('h4', {
+                                text: mono.language.label
+                            }),
+                            mono.create('div', {
+                                class: 'wordForm',
+                                append: input
+                            })
+                        ]
+                    })
+                ]
+            });
+        };
+        var getNewItemForm = function(type) {
+            return mono.create('div', {
+                class: 'newSubItemForm',
+                data: {
+                    type: type
+                },
+                append: mono.create('input', {
+                    type: 'button',
+                    value: mono.language.add + ' ' + type,
+                    class: ['button','new','NewItemBtn'],
+                    data: {
+                        type: type
+                    }
+                })
+            });
+        };
+        var getTitle = function(item) {
+            var labelWords = item.list || [];
+            if (labelWords.length === 0) {
+                labelWords.push(isEmpty);
+            }
+            labelWords = labelWords.join(', ');
+            return labelWords;
+        };
+        var createItem = function(item) {
+            var title = mono.create('span', {
+                class: 'title',
+                text: getTitle(item)
+            });
+            return mono.create('div', {
+                class: 'item',
+                append: (function () {
+                    var list = [];
+                    list.push(mono.create('div', {
+                        class: 'header',
+                        append: [
+                            mono.create('i', {class: 'moveIcon'}),
+                            mono.create('a', {
+                                class: ['button','remove','itemRemove'],
+                                title: mono.language.delete,
+                                append: mono.create('i')
+                            }),
+                            title,
+                            mono.create('i', {class: 'collapses'})
+                        ]
+                    }));
+                    list.push(mono.create('div', {
+                        class: 'content',
+                        append: [
+                            createName(item.name),
+                            createWords(item.list),
+                            createRates(item.rate),
+                            mono.create('div', {
+                                class: 'itemList',
+                                append: [
+                                    getItemList(item.sub, 'sub'),
+                                    getItemList(item.subBefore, 'subBefore'),
+                                    getItemList(item.subAfter, 'subAfter')
+                                ]
+                            })
+                        ]
+                    }));
+                    return list;
+                })(),
+                on: [
+                    ['updateTitle', function() {
+                        title.textContent = getTitle(item)
+                    }],
+                    ['click', function(e) {
+                        var el = e.target;
+                        var isAngle = el.classList.contains('collapses');
+                        var isHeader = el.classList.contains('header');
+                        var isTitle = el.classList.contains('title');
+                        if (!isAngle && !isHeader && !isTitle) {
+                            return;
+                        }
+                        if (isTitle) {
+                            el = el.parentNode;
+                            isHeader = true;
+                        }
+                        if (isHeader) {
+                            el = el.childNodes[3];
+                        }
+                        e.stopPropagation();
+                        var item = el.parentNode.parentNode;
+                        if (el.classList.contains('down')) {
+                            el.classList.remove('down');
+                            item.classList.remove('show');
+                        } else {
+                            el.classList.add('down');
+                            item.classList.add('show');
+                        }
+                    }]
+                ]
+            });
+        };
+        var getItemList = function(list, type) {
+            var itemList = document.createDocumentFragment();
+            var newItem = getNewItemForm(type);
+            if (list === undefined) {
+                return newItem
+            }
+            for (var i = 0, item; item = list[i]; i++) {
+                itemList.appendChild(createItem(item));
+            }
+            itemList.appendChild(newItem);
+            return itemList;
+        };
+        var saveChilds = function(el) {
+            var rList = [];
+            var elList = el;
+            if (el === options.domCache.qualityList) {
+                elList = el.parentNode.querySelectorAll('.qualityList > .item');
+            }
+            for (var i = 0, el; el = elList[i]; i++) {
+                var item = el.querySelector('.content');
 
+                var name = undefined;
+                var body = item.querySelector('.nameItem');
+                var isPrimary = body.querySelector('input[name="is primary"]');
+                if (isPrimary.checked) {
+                    name = body.querySelector('.wordForm > input').value;
+                }
+
+                var list = [];
+                body = item.querySelector('.wordList[data-type="list"]');
+                var nodeList = body.querySelectorAll('.wordForm > input');
+                for (var n = 0, node; node = nodeList[n]; n++) {
+                    if (node.type !== 'text') {
+                        continue;
+                    }
+                    var value;
+                    if (!(value = el.value)) {
+                        continue;
+                    }
+                    list.push(value);
+                }
+
+                var rate = {};
+                var rateIsEmpty = true;
+                body = item.querySelector('.rateList');
+                nodeList = body.querySelectorAll('.rateForm');
+                for (n = 0, node; node = nodeList[n]; n++) {
+                    var sel = mono.getChild(node, function(el){return el.tagName === 'SELECT'});
+                    var inp = mono.getChild(node, function(el){return el.tagName === 'INPUT'});
+                    var val = parseInt(inp.value);
+                    if (isNaN(val)) {
+                        continue;
+                    }
+                    rate[sel.value] = val;
+                    rateIsEmpty = false;
+                }
+
+                var sub = saveChilds(item.querySelector('.itemList .item[data-type="sub"]'));
+                var subBefore = saveChilds(item.querySelector('.itemList .item[data-type="subBefore"]'));
+                var subAfter = saveChilds(item.querySelector('.itemList .item[data-type="subAfter"]'));
+
+                var rObj = {};
+                if (list.length !== 0) {
+                    rObj.list = list;
+                }
+                if (!rateIsEmpty) {
+                    rObj.rate = rate;
+                }
+                if (name !== undefined) {
+                    rObj.name = name;
+                }
+                if (sub.length !== 0) {
+                    rObj.sub = sub;
+                }
+                if (subAfter.length !== 0) {
+                    rObj.subAfter = subAfter;
+                }
+                if (subBefore.length !== 0) {
+                    rObj.subBefore = subBefore;
+                }
+
+                rList.push(rObj);
+            }
+            return rList;
+        };
+        options.domCache.qualityList.textContent = '';
+        mono.create(options.domCache.qualityList, {
+            append: getItemList(rate.qualityList),
+            on: [
+                ['save', function() {
+                    var list = saveChilds(this);
+                    rate.readQualityList(list);
+                    mono.storage.set({titleQualityList: JSON.stringify(list)});
+                    options.domCache.qualityList.textContent = '';
+                    options.domCache.qualityList.appendChild(getItemList(rate.qualityList));
+                }],
+                ['reset', function() {
+                    mono.storage.remove('titleQualityList');
+                    rate.readQualityList(rate.defaultQualityList);
+                    options.domCache.qualityList.textContent = '';
+                    options.domCache.qualityList.appendChild(getItemList(rate.qualityList));
+                }],
+                ['click', function(e) {
+                    var el = e.target;
+                    if (el.classList.contains('NewItemBtn')) {
+                        var type = el.dataset.type;
+                        el.parentNode.parentNode.insertBefore(createItem({
+                            list: [],
+                            rate: {}
+                        }, type)[0] ,el.parentNode);
+                    } else
+                    if (el.classList.contains('wordFormRemove') || el.classList.contains('rateFormRemove')) {
+                        el.parentNode.parentNode.removeChild(el.parentNode);
+                    } else
+                    if (el.classList.contains('rateFormNew')) {
+                        el.parentNode.parentNode.insertBefore(createRate('', 0)[0] ,el.parentNode);
+                    } else
+                    if (el.classList.contains('wordFormNew')) {
+                        el.parentNode.parentNode.insertBefore(createWord('')[0] ,el.parentNode);
+                    } else
+                    if (el.classList.contains('itemRemove')) {
+                        el.parentNode.parentNode.parentNode.removeChild(el.parentNode.parentNode);
+                    }
+                }]
+            ]
+        });
     },
     once: function() {
         "use strict";
@@ -481,6 +850,11 @@ var options = {
         document.body.addEventListener('click', this.saveChange);
 
         document.querySelector('input[data-option="kinopoiskFolderId"]').addEventListener('change', mono.debounce(this.saveChange));
+
+        setTimeout(function() {
+            rate.init();
+            options.writeQualityList();
+        });
     }
 };
 engine.init(function() {
