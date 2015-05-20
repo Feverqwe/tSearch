@@ -328,7 +328,7 @@ var options = {
                                 }]
                             }),
                             mono.create('div', {
-                                class: 'host-options',
+                                class: 'url-options',
                                 append: [
                                     mono.create('label', {
                                         append: [
