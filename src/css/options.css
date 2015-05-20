@@ -309,7 +309,8 @@ input[data-option="kinopoiskFolderId"] {
     margin-left: 5px;
 }
 .proxyList .url {
-    width: 580px;
+    width: 550px;
+    margin-left: 5px;
 }
 .proxyList .proxy-type > * {
     display: inline-block;
