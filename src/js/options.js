@@ -121,7 +121,17 @@ var options = {
     getBackupJson: function(cb) {
         "use strict";
         mono.storage.get(null, function(storage) {
-            cb && cb(JSON.stringify(storage));
+            var objList = {};
+            for (var key in storage) {
+                if (['searchHistory', 'explorerQualityList', 'topList'].indexOf(key) !== -1) {
+                    continue;
+                }
+                if (key.substr(0, 8) === 'expCache') {
+                    continue;
+                }
+                objList[key] = storage[key];
+            }
+            cb && cb(JSON.stringify(objList));
         });
     },
     restoreSettings: function(storage) {
