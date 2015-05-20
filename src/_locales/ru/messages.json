@@ -156,5 +156,8 @@
     "home": {"message": "Главная страница"},
     "showSections": {"message": "Отображать секции:"},
     "other": {"message": "Прочие"},
-    "proxy": {"message": "Проксирование запросов"}
+    "proxy": {"message": "Проксирование запросов"},
+    "type": {"message": "Тип:"},
+    "fixSpaces": {"message": "Экранировать пробелы"},
+    "label": {"message": "Название:"}
 }

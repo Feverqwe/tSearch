@@ -120,6 +120,16 @@ input[type="text"], input[type="password"] {
     width: 140px;
 }
 
+input[type=text] {
+    border: 1px solid #cccccc;
+    padding-left: 2px;
+    line-height: 18px;
+    font-size: 14px;
+}
+input[type=text]:hover {
+    border: 1px solid #999999;
+}
+
 div.search_panel {
     padding: 21px;
     height: 28px;
@@ -285,4 +295,52 @@ ol.help li {
 
 input[data-option="kinopoiskFolderId"] {
     width: 50px;
+}
+
+.proxyList .item {
+    padding: 5px;
+    width: 600px;
+    border-bottom: 1px dashed #848484;
+}
+.proxyList .label {
+    width: 200px;
+}
+.proxyList .delete {
+    margin-left: 5px;
+}
+.proxyList .url {
+    width: 580px;
+}
+.proxyList .proxy-type > * {
+    display: inline-block;
+}
+.proxyList .host-options {
+    display: none;
+}
+.proxyList .host-options.show {
+    display: block;
+}
+.proxyList a.add {
+    margin: 5px;
+}
+
+.proxyList a {
+    color: #0051D8;
+}
+.proxyList a.btn {
+    display: inline-block;
+    line-height: 24px;
+    height: 24px;
+    padding-left: 14px;
+    padding-right: 14px;
+    text-decoration: none;
+    background-color: #ffffff;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid #cccccc;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+.proxyList a.btn:hover {
+    border-color: #adadad;
 }
