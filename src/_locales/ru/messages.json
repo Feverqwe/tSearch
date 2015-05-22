@@ -86,7 +86,7 @@
 
     "external_html": {"message": "['Добавь внешние трекеры с ', {a: {href:'http://code-tms.blogspot.ru/?utm_source=TMS', target:'_blank', text:'официального сайта'}}, '!']"},
     "advanced_options": {"message": "Расширенные опции"},
-    "word_save": {"message": "Сохранить"},
+    "save": {"message": "Сохранить"},
 
     "general": {"message": "Общие"},
     "backup": {"message": "Архивирование"},
@@ -171,5 +171,6 @@
     "addRule": {"message": "Добавить правило"},
     "addRuleSubItem": {"message": "Добавить правило (искать во всем заголовке)"},
     "addRuleBeforeItem": {"message": "Добавить правило (искать до найденного слова)"},
-    "addRuleAfterItem": {"message": "Добавить правило (искать после найденного слова)"}
+    "addRuleAfterItem": {"message": "Добавить правило (искать после найденного слова)"},
+    "resetSettings": {"message": "Сбросить настройки"}
 }

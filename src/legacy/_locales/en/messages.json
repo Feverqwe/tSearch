@@ -169,7 +169,7 @@
     "mgrQuickSearch": {"message": "Quick search"},
     "mgrNothingSelected": {"message": "Nothing is selected"},
     "mgrSelectedN": {"message": "Selected items:"},
-    "word_save": {"message": "Save"},
+    "save": {"message": "Save"},
     "mgrUseProxy": {"message": "Use proxy"},
     "advanced_options": {"message": "Advanced options"},
 

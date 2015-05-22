@@ -172,7 +172,7 @@
     "mgrQuickSearch": {"message": "Быстрый поиск"},
     "mgrNothingSelected": {"message": "Ничего не выбрано"},
     "mgrSelectedN": {"message": "Выбрано элементов:"},
-    "word_save": {"message": "Сохранить"},
+    "save": {"message": "Сохранить"},
     "mgrUseProxy": {"message": "Использовать прокси"},
     "advanced_options": {"message": "Расширенные опции"},
 
