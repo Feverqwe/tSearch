@@ -287,6 +287,9 @@ mono.create.hook = {
     data: function(el, value) {
         "use strict";
         for (var item in value) {
+            if (value[item] === undefined || value[item] === null) {
+                continue;
+            }
             el.dataset[item] = value[item];
         }
     },

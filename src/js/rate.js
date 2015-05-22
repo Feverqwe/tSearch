@@ -125,50 +125,18 @@ var rate = {
             name: 'HD-DVD'
         },
         {
-            list: (function(){
-                var list = [];
-                for (var i = 2; i < 10; i++) {
-                    list.push(i+'xDVD9');
-                    list.push(i+'xDVD-9');
-                    list.push(i+' x DVD-9');
-                    list.push(i+' x DVD9');
-                }
-                return list;
-            })(),
+            list: [{regexp: 1, word: '\\d\\s?[x\\*]\\s?DVD\\-?9', caseSens: 0}],
             rate: {
                 video: 65
             },
             name: 'DVD-9'
         },
         {
-            list: ['DVD9', 'DVD-9', '1xDVD9', '1xDVD-9'],
-            rate: {
-                video: 62
-            },
-            name: 'DVD-9'
-        },
-        {
-            list: (function(){
-                var list = [];
-                for (var i = 2; i < 10; i++) {
-                    list.push(i+'xDVD5');
-                    list.push(i+'xDVD-5');
-                    list.push(i+' x DVD-5');
-                    list.push(i+' x DVD5');
-                }
-                return list;
-            })(),
+            list: [{regexp: 1, word: '\\d\\s?[x\\*]\\s?DVD\\-?5', caseSens: 0}],
             rate: {
                 video: 53
             },
             name: 'DVD-5'
-        },
-        {
-            list: ['DVD5', 'DVD-5', '1xDVD5', '1xDVD-5'],
-            rate: {
-                video: 50
-            },
-            name: 'DVD'
         },
         {
             list: [{word: 'DVD'}],
@@ -459,8 +427,7 @@ var rate = {
         var wordsR = [];
         var scope = {};
         var scopeCase = {};
-        var scopeRegexp = [];
-        var scopeRegexpIndex = [];
+        var tmpScopeRegexp = [];
         qualityList.forEach(function(qualityObj) {
             if (qualityObj.list !== undefined) {
                 qualityObj.list.forEach(function(wordItem) {
@@ -473,12 +440,11 @@ var rate = {
                     }
                     if (wordItem.regexp === 1) {
                         wordsR.push(wordItem.word);
-                        var caseSans = 'g';
+                        var caseSens = 'g';
                         if (wordItem.caseSens !== 0) {
-                            caseSans += 'i';
+                            caseSens += 'i';
                         }
-                        scopeRegexpIndex[scopeRegexp.length] = qualityObj;
-                        scopeRegexp.push(new RegExp(wordItem.word, caseSans));
+                        tmpScopeRegexp.push([new RegExp(wordItem.word, caseSens), qualityObj]);
                     } else {
                         if (wordItem.caseSens !== 0) {
                             if (scopeCase[wordItem.word] !== undefined) {
@@ -522,18 +488,27 @@ var rate = {
                 qualityObj.subList = subList;
             }
         });
-        var sortRegExp = function(a, b) {
-            return String(a).length > String(b).length ? -1 : 1
-        };
         if (wordsR.length > 0) {
-            wordsR = new RegExp(wordsR.sort(sortRegExp).join('|'), 'ig');
+            wordsR = new RegExp(wordsR.sort(function(a, b) {
+                return String(a).length > String(b).length ? -1 : 1
+            }).join('|'), 'ig');
         } else {
             wordsR = undefined;
         }
-        if (scopeRegexp.length > 0) {
-            scopeRegexp.sort(sortRegExp);
-        } else {
-            scopeRegexp = undefined;
+
+        var scopeRegexpIndex;
+        var scopeRegexp;
+        if (tmpScopeRegexp.length > 0) {
+            scopeRegexp = [];
+            scopeRegexpIndex = [];
+            tmpScopeRegexp.sort(function(a, b) {
+                return String(a[0]).length > String(b[0]).length ? -1 : 1
+            });
+            for (var i = 0, item; item = tmpScopeRegexp[i]; i++) {
+                scopeRegexp.push(item[0]);
+                scopeRegexpIndex.push(item[1]);
+            }
+            tmpScopeRegexp = null;
         }
         var rObj = {};
         wordsR && (rObj['wordsR'+type] = wordsR);

@@ -495,3 +495,9 @@ input[data-option="kinopoiskFolderId"] {
 .qualityList .itemList .newSubItemForm {
     background-color: #fff;
 }
+
+.qualityControls {
+    text-align: right;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}

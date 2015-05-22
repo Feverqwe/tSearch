@@ -598,13 +598,16 @@ var options = {
             });
             return wordList.join(', ');
         };
-        var createItem = function(item) {
+        var createItem = function(item, type) {
             var title = mono.create('span', {
                 class: 'title',
                 text: getTitle(item)
             });
             return mono.create('div', {
                 class: 'item',
+                data: {
+                    type: type
+                },
                 append: (function () {
                     var list = [];
                     list.push(mono.create('div', {
@@ -683,6 +686,9 @@ var options = {
         };
         var saveChilds = function(el) {
             var rList = [];
+            if (el === null) {
+                return rList;
+            }
             var elList = el;
             if (el === options.domCache.qualityList) {
                 elList = el.parentNode.querySelectorAll('.qualityList > .item');
@@ -705,11 +711,11 @@ var options = {
                         continue;
                     }
                     var value;
-                    if (!(value = el.value)) {
+                    if (!(value = node.value)) {
                         continue;
                     }
                     var wordObj = {word: value};
-                    var parent = this.parentNode;
+                    var parent = node.parentNode;
                     var hasOptions = false;
                     if (parent.classList.contains('useCaseSens')) {
                         wordObj.caseSens = 1;
@@ -777,13 +783,15 @@ var options = {
                 ['save', function() {
                     var list = saveChilds(this);
                     rate.readQualityList(list);
-                    mono.storage.set({titleQualityList: JSON.stringify(list)});
+                    rate.qualityList = list;
+                    mono.storage.set({qualityObj: list});
                     options.domCache.qualityList.textContent = '';
                     options.domCache.qualityList.appendChild(getItemList(rate.qualityList));
                 }],
                 ['reset', function() {
-                    mono.storage.remove('titleQualityList');
+                    mono.storage.remove('qualityObj');
                     rate.readQualityList(rate.defaultQualityList);
+                    rate.qualityList = rate.defaultQualityList;
                     options.domCache.qualityList.textContent = '';
                     options.domCache.qualityList.appendChild(getItemList(rate.qualityList));
                 }],
@@ -836,12 +844,33 @@ var options = {
             ]
         });
     },
+    bingQualityControls: function() {
+        "use strict";
+        var onQualityControlsClick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var el = e.target;
+                if (el === this) return;
+            if (el.classList.contains('save')) {
+                options.domCache.qualityList.dispatchEvent(new CustomEvent('save'));
+            } else
+            if (el.classList.contains('reset')) {
+                options.domCache.qualityList.dispatchEvent(new CustomEvent('reset'));
+            }
+        };
+        var nodeList = document.querySelectorAll('.qualityControls');
+        for (var node, i = 0; node = nodeList[i]; i++) {
+            node.addEventListener('click', onQualityControlsClick);
+        }
+    },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
         document.body.classList.remove('loading');
 
         this.settings = engine.settings;
+
+        this.bingQualityControls();
 
         engine.explorerOptions.concat(engine.defaultExplorerOptions).forEach(function createSection(item) {
             if (createSection.list === undefined) {

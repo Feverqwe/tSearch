@@ -151,6 +151,7 @@ var engine = {
         optionsList.push('explorerOptions');
         optionsList.push('topList');
         optionsList.push('explorerQualityList');
+        optionsList.push('qualityObj');
 
         var cacheList = [];
         for (var i = 0, item; item = this.defaultExplorerOptions[i]; i++) {
@@ -177,6 +178,10 @@ var engine = {
 
             if (Array.isArray(storage.searchHistory)) {
                 this.history = storage.searchHistory;
+            }
+
+            if (Array.isArray(storage.qualityObj)) {
+                rate.qualityList = storage.qualityObj;
             }
 
             if (Array.isArray(storage.explorerOptions)) {
