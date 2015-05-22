@@ -516,9 +516,10 @@ var options = {
             name = name || '';
             var input = mono.create('input', {type: 'text', name: 'title', value: name, disabled: !name});
             return mono.create('div', {
-                class: ['nameItem', name ? 'hasTitle' : undefined],
+                class: ['nameItem'],
                 append: [
                     mono.create('label', {
+                        class: [name ? 'hasTitle' : undefined],
                         append: [
                             mono.create('input', {
                                 type: 'checkbox',
@@ -526,9 +527,9 @@ var options = {
                                 on: ['change', function() {
                                     input.disabled = !this.checked;
                                     if (this.checked) {
-                                        this.parentNode.parentNode.classList.add('hasTitle');
+                                        this.parentNode.classList.add('hasTitle');
                                     } else {
-                                        this.parentNode.parentNode.classList.remove('hasTitle');
+                                        this.parentNode.classList.remove('hasTitle');
                                     }
                                 }]
                             }),
@@ -691,9 +692,9 @@ var options = {
 
                 var name = undefined;
                 var body = item.querySelector('.nameItem');
-                var hasTitle = body.classList.contains('hasTitle');
-                if (hasTitle) {
-                    name = body.querySelector('input[name="title"]').value;
+                body = body.querySelector('.hasTitle input[name="title"]');
+                if (body) {
+                    name = body.value;
                 }
 
                 var list = [];
