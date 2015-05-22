@@ -232,6 +232,8 @@ var explore = {
 
                     obj.img = kpGetImgFileName(obj.img);
 
+                    obj.title = kpRmDesc(obj.title);
+
                     var year;
                     if (obj.title_en) {
                         year = kpGetYear(obj.title_en);
