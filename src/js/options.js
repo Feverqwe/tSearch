@@ -402,11 +402,24 @@ var options = {
                         value: word
                     }),
                     mono.create('a', {
+                        class: ['button','isRegexp','wordFormRegexp'],
+                        title: mono.language.regexp,
+                        href: '#'
+                    }),
+                    mono.create('a', {
+                        class: ['button','caseSens','wordFormCaseSens'],
+                        title: mono.language.caseSens,
+                        href: '#'
+                    }),
+                    mono.create('a', {
                         class: ['button','remove','wordFormRemove'],
                         title: mono.language.delete,
-                        append: [
-                            mono.create('i')
-                        ]
+                        href: '#'
+                    }),
+                    mono.create('a', {
+                        class: ['button','new','wordFormNew'],
+                        title: mono.language.add,
+                        href: '#'
                     })
                 ]
             });
@@ -420,27 +433,21 @@ var options = {
                 },
                 append: (function() {
                     var nodeList = [];
-                    nodeList.push(mono.create('h4', {
+                    nodeList.push(mono.create('span', {
+                        class: 'subTitle',
                         text: mono.language.wordList
                     }));
                     list.forEach(function (word) {
                         nodeList.push(createWord(word));
                     });
-                    nodeList.push(mono.create('div', {
-                        class: 'wordForm',
-                        append: mono.create('input', {
-                            type: 'button',
-                            value: mono.language.add,
-                            class: ['button','new','wordFormNew']
-                        })
-                    }));
                     return nodeList;
                 })()
             });
         };
         var getRateOptions = function(optionName) {
             var list = document.createDocumentFragment();
-            for (var i = 0, name; name = optionList[i]; i++) {
+            var itemList = optionList.concat(categoryList);
+            for (var i = 0, name; name = itemList[i]; i++) {
                 var text = name;
                 if (categoryList.indexOf(name) !== -1) {
                     text += '*';
@@ -473,7 +480,12 @@ var options = {
                     mono.create('a', {
                         class: ['button','remove','rateFormRemove'],
                         title: mono.language.delete,
-                        append: mono.create('i')
+                        href: '#'
+                    }),
+                    mono.create('a', {
+                        class: ['button','new','rateFormNew'],
+                        title: mono.language.add,
+                        href: '#'
                     })
                 ]
             });
@@ -484,27 +496,20 @@ var options = {
                 class: 'rateList',
                 append: (function(){
                     var list = [];
-                    list.push(mono.create('h4', {
+                    list.push(mono.create('span', {
+                        class: 'subTitle',
                         text: mono.language.rateList
                     }));
                     for (var item in rateList) {
                         list.push(createRate(item, rateList[item]));
                     }
-                    list.push(mono.create('div', {
-                        class: 'rateList',
-                        append: mono.create('input', {
-                            type: 'button',
-                            value: mono.language.add,
-                            class: ['button','new','rateFormNew']
-                        })
-                    }));
                     return list;
                 })()
             });
         };
         var createName = function(name) {
             name = name || '';
-            var input = mono.create('input', {type: 'text', value: name, disabled: !name});
+            var input = mono.create('input', {type: 'text', name: 'title', value: name, disabled: !name});
             return mono.create('div', {
                 class: 'nameItem',
                 append: [
@@ -512,24 +517,17 @@ var options = {
                         append: [
                             mono.create('input', {
                                 type: 'checkbox',
-                                name: 'is primary',
+                                name: 'hasTitle',
                                 checked: !!name,
-                                on: ['change', function() {
+                                on: ['change', function(e) {
                                     input.disabled = !this.checked;
                                 }]
                             }),
-                            mono.language.base
-                        ]
-                    }),
-                    mono.create('div', {
-                        append: [
-                            mono.create('h4', {
+                            mono.create('span', {
                                 text: mono.language.label
                             }),
-                            mono.create('div', {
-                                class: 'wordForm',
-                                append: input
-                            })
+                            ' ',
+                            input
                         ]
                     })
                 ]
@@ -571,11 +569,10 @@ var options = {
                     list.push(mono.create('div', {
                         class: 'header',
                         append: [
-                            mono.create('i', {class: 'moveIcon'}),
                             mono.create('a', {
                                 class: ['button','remove','itemRemove'],
                                 title: mono.language.delete,
-                                append: mono.create('i')
+                                href: '#'
                             }),
                             title,
                             mono.create('i', {class: 'collapses'})
@@ -616,7 +613,7 @@ var options = {
                             isHeader = true;
                         }
                         if (isHeader) {
-                            el = el.childNodes[3];
+                            el = el.querySelector('.collapses');
                         }
                         e.stopPropagation();
                         var item = el.parentNode.parentNode;
@@ -654,9 +651,9 @@ var options = {
 
                 var name = undefined;
                 var body = item.querySelector('.nameItem');
-                var isPrimary = body.querySelector('input[name="is primary"]');
-                if (isPrimary.checked) {
-                    name = body.querySelector('.wordForm > input').value;
+                var hasTitle = body.querySelector('input[name="hasTitle"]');
+                if (hasTitle.checked) {
+                    name = body.querySelector('input[name="title"]').value;
                 }
 
                 var list = [];
@@ -734,25 +731,43 @@ var options = {
                     options.domCache.qualityList.appendChild(getItemList(rate.qualityList));
                 }],
                 ['click', function(e) {
+                    e.stopPropagation();
                     var el = e.target;
+                    if (el.tagName === 'A') {
+                        e.preventDefault();
+                    }
+                    var dblParent = el.parentNode.parentNode;
                     if (el.classList.contains('NewItemBtn')) {
                         var type = el.dataset.type;
-                        el.parentNode.parentNode.insertBefore(createItem({
+                        dblParent.insertBefore(createItem({
                             list: [],
                             rate: {}
-                        }, type)[0] ,el.parentNode);
+                        }, type) ,el.parentNode);
                     } else
                     if (el.classList.contains('wordFormRemove') || el.classList.contains('rateFormRemove')) {
-                        el.parentNode.parentNode.removeChild(el.parentNode);
+                        if (dblParent.childNodes.length === 2) {
+                            return;
+                        }
+                        dblParent.removeChild(el.parentNode);
                     } else
                     if (el.classList.contains('rateFormNew')) {
-                        el.parentNode.parentNode.insertBefore(createRate('', 0)[0] ,el.parentNode);
+                        var nextEl = el.parentNode.nextElementSibling;
+                        if (nextEl) {
+                            dblParent.insertBefore(createRate('', 0), nextEl);
+                        } else {
+                            dblParent.appendChild(createRate('', 0));
+                        }
                     } else
                     if (el.classList.contains('wordFormNew')) {
-                        el.parentNode.parentNode.insertBefore(createWord('')[0] ,el.parentNode);
+                        nextEl = el.parentNode.nextElementSibling;
+                        if (nextEl) {
+                            dblParent.insertBefore(createWord(''), nextEl);
+                        } else {
+                            dblParent.appendChild(createWord(''));
+                        }
                     } else
                     if (el.classList.contains('itemRemove')) {
-                        el.parentNode.parentNode.parentNode.removeChild(el.parentNode.parentNode);
+                        dblParent.parentNode.removeChild(dblParent);
                     }
                 }]
             ]
