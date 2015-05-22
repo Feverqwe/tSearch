@@ -522,18 +522,24 @@ var rate = {
                 qualityObj.subList = subList;
             }
         });
+        var sortRegExp = function(a, b) {
+            return String(a).length > String(b).length ? -1 : 1
+        };
         if (wordsR.length > 0) {
-            wordsR = new RegExp(wordsR.sort(function(a, b) {
-                return String(a).length > String(b).length ? -1 : 1
-            }).join('|'), 'ig');
+            wordsR = new RegExp(wordsR.sort(sortRegExp).join('|'), 'ig');
         } else {
             wordsR = undefined;
+        }
+        if (scopeRegexp.length > 0) {
+            scopeRegexp.sort(sortRegExp);
+        } else {
+            scopeRegexp = undefined;
         }
         var rObj = {};
         wordsR && (rObj['wordsR'+type] = wordsR);
         !mono.isEmptyObject(scope) && (rObj['scope'+type] = scope);
         !mono.isEmptyObject(scopeCase) && (rObj['scopeCase'+type] = scopeCase);
-        if (scopeRegexp.length > 0) {
+        if (scopeRegexp) {
             rObj['scopeRegexp'+type] = scopeRegexp;
             rObj['scopeRegexpIndex'+type] = scopeRegexpIndex;
         }
@@ -722,13 +728,22 @@ var rate = {
             quality: undefined,
 
             rate: {
+                audio: 0,
                 video: 0,
+
+                other: 0,
+                serials: 0,
                 music: 0,
                 games: 0,
-                books: 0,
-                serials: 0,
+                films: 0,
                 cartoons: 0,
+                books: 0,
+                software: 0,
+                anime: 0,
+                doc: 0,
+                sport: 0,
                 xxx: 0,
+                humor: 0,
 
                 title: 0
             },
@@ -859,16 +874,16 @@ rate.onCategoryDefineRateRegexp = function(word, position, string) {
         this.other += 1;
     }
     if (word === "документальные") {
-        this.dochumor += 3;
+        this.doc += 3;
     }
     if (word === "спорт") {
         this.sport += 1;
     }
     if (word === "докумел" || word === "телеп" || word === "тв " || word === "тв" || word === "тв-" || word === "tv" || word === "tv ") {
-        this.dochumor += 2;
+        this.doc += 2;
     }
     if (word === "юмор") {
-        this.dochumor += 1;
+        this.humor += 1;
     }
     if (word === "видео для моб" || word === "видео для смарт" || word === "видео для устр" || word === "Мобильное" || word === "3gp") {
         this.other += 1;
@@ -881,6 +896,7 @@ rate.categoryDefine = function(ratingObj, categoryTitle) {
      */
     var rate = {
         other: 0,
+
         serials: 0,
         music: 0,
         games: 0,
@@ -893,6 +909,7 @@ rate.categoryDefine = function(ratingObj, categoryTitle) {
         sport: 0,
         xxx: 0,
         humor: 0,
+
         m: []
     };
     if (categoryTitle) {
