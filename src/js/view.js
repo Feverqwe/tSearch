@@ -1797,7 +1797,10 @@ var view = {
                     });
                 },
                 select: function() {
-                    view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
+                    setTimeout(function() {
+                        view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
+                    }, 50);
+
                 },
                 create: function() {
                     var hasTopShadow = 0;

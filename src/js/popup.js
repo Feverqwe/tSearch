@@ -104,7 +104,9 @@ var popup = {
                 });
             },
             select: function() {
-                popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
+                setTimeout(function() {
+                    popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
+                }, 50);
             },
             close: function() {
                 mono.resizePopup(undefined, document.body.clientHeight);
