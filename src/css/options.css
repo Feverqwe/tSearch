@@ -438,11 +438,11 @@ input[data-option="kinopoiskFolderId"] {
     vertical-align: middle;
 }
 
-.qualityList a.button.isRegexp {
+.qualityList a.button.regexp {
     text-decoration: none;
     text-align: center;
 }
-.qualityList a.button.isRegexp::after {
+.qualityList a.button.regexp::after {
     content: '.*';
     font-size: 14px;
     font-weight: bold;
@@ -453,8 +453,8 @@ input[data-option="kinopoiskFolderId"] {
     opacity: 1;
 }
 
-.qualityList a.button.caseSens.active,
-.qualityList .useRegexp a.button.isRegexp {
+.qualityList .useCaseSens a.button.caseSens,
+.qualityList .useRegexp a.button.regexp {
     opacity: 1;
     color: #0051D8;
 }

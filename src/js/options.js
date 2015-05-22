@@ -394,15 +394,20 @@ var options = {
             'doc','sport','xxx','humor'
         ];
         var createWord = function(word) {
+            if (typeof word === 'object') {
+                var useCaseSens = word.caseSens !== 0 ? 'useCaseSens' : undefined;
+                var useRegexp = word.regexp === 1 ? 'useRegexp' : undefined;
+                word = word.word;
+            }
             return mono.create('div', {
-                class: 'wordForm',
+                class: ['wordForm', useRegexp, useCaseSens],
                 append: [
                     mono.create('input', {
                         type: 'text',
                         value: word
                     }),
                     mono.create('a', {
-                        class: ['button','isRegexp','wordFormRegexp'],
+                        class: ['button','regexp','wordFormRegexp'],
                         title: mono.language.regexp,
                         href: '#'
                     }),
@@ -511,16 +516,20 @@ var options = {
             name = name || '';
             var input = mono.create('input', {type: 'text', name: 'title', value: name, disabled: !name});
             return mono.create('div', {
-                class: 'nameItem',
+                class: ['nameItem', name ? 'hasTitle' : undefined],
                 append: [
                     mono.create('label', {
                         append: [
                             mono.create('input', {
                                 type: 'checkbox',
-                                name: 'hasTitle',
                                 checked: !!name,
-                                on: ['change', function(e) {
+                                on: ['change', function() {
                                     input.disabled = !this.checked;
+                                    if (this.checked) {
+                                        this.parentNode.parentNode.classList.add('hasTitle');
+                                    } else {
+                                        this.parentNode.parentNode.classList.remove('hasTitle');
+                                    }
                                 }]
                             }),
                             mono.create('span', {
@@ -534,6 +543,19 @@ var options = {
             });
         };
         var getNewItemForm = function(type) {
+            var typeTitle = '';
+            if (!type) {
+                typeTitle = mono.language.addRule
+            } else
+            if (type === 'sub') {
+                typeTitle = mono.language.addRuleSubItem
+            } else
+            if (type === 'subBefore') {
+                typeTitle = mono.language.addRuleBeforeItem
+            } else
+            if (type === 'subAfter') {
+                typeTitle = mono.language.addRuleAfterItem
+            }
             return mono.create('div', {
                 class: 'newSubItemForm',
                 data: {
@@ -541,7 +563,7 @@ var options = {
                 },
                 append: mono.create('input', {
                     type: 'button',
-                    value: mono.language.add + ' ' + type,
+                    value: typeTitle,
                     class: ['button','new','NewItemBtn'],
                     data: {
                         type: type
@@ -554,8 +576,26 @@ var options = {
             if (labelWords.length === 0) {
                 labelWords.push(isEmpty);
             }
-            labelWords = labelWords.join(', ');
-            return labelWords;
+            var wordList = [];
+            labelWords.forEach(function(current) {
+                var flagList = [];
+                var flags = '';
+                var word = current;
+                if (typeof current === 'object') {
+                    word = current.word;
+                    if (current.caseSens !== 0) {
+                        flagList.push('Aa');
+                    }
+                    if (current.regexp === 1) {
+                        flagList.push('.*');
+                    }
+                }
+                if (flagList.length) {
+                    flags = '[' + flagList.join(',') + ']';
+                }
+                wordList.push(word + flags);
+            });
+            return wordList.join(', ');
         };
         var createItem = function(item) {
             var title = mono.create('span', {
@@ -651,8 +691,8 @@ var options = {
 
                 var name = undefined;
                 var body = item.querySelector('.nameItem');
-                var hasTitle = body.querySelector('input[name="hasTitle"]');
-                if (hasTitle.checked) {
+                var hasTitle = body.classList.contains('hasTitle');
+                if (hasTitle) {
                     name = body.querySelector('input[name="title"]').value;
                 }
 
@@ -667,7 +707,23 @@ var options = {
                     if (!(value = el.value)) {
                         continue;
                     }
-                    list.push(value);
+                    var wordObj = {word: value};
+                    var parent = this.parentNode;
+                    var hasOptions = false;
+                    if (parent.classList.contains('useCaseSens')) {
+                        wordObj.caseSens = 1;
+                        hasOptions = true;
+                    } else {
+                        wordObj.caseSens = 0;
+                    }
+                    if (parent.classList.contains('useRegexp')) {
+                        wordObj.regexp = 1;
+                        hasOptions = true;
+                    }
+                    if (!hasOptions) {
+                        wordObj = wordObj.word;
+                    }
+                    list.push(wordObj);
                 }
 
                 var rate = {};
@@ -675,8 +731,8 @@ var options = {
                 body = item.querySelector('.rateList');
                 nodeList = body.querySelectorAll('.rateForm');
                 for (n = 0, node; node = nodeList[n]; n++) {
-                    var sel = mono.getChild(node, function(el){return el.tagName === 'SELECT'});
-                    var inp = mono.getChild(node, function(el){return el.tagName === 'INPUT'});
+                    var sel = node.querySelector('select');
+                    var inp = node.querySelector('input');
                     var val = parseInt(inp.value);
                     if (isNaN(val)) {
                         continue;
@@ -768,6 +824,12 @@ var options = {
                     } else
                     if (el.classList.contains('itemRemove')) {
                         dblParent.parentNode.removeChild(dblParent);
+                    } else
+                    if (el.classList.contains('wordFormRegexp')) {
+                        el.parentNode.classList.toggle('useRegexp');
+                    } else
+                    if (el.classList.contains('wordFormCaseSens')) {
+                        el.parentNode.classList.toggle('useCaseSens');
                     }
                 }]
             ]

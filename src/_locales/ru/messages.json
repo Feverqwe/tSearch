@@ -166,5 +166,10 @@
     "wordList": {"message": "Списк слов:"},
     "rateList": {"message": "Список весов:"},
     "regexp": {"message": "Регулярное выражение"},
-    "caseSens": {"message": "Учитывать регист"}
+    "caseSens": {"message": "Учитывать регист"},
+
+    "addRule": {"message": "Добавить правило"},
+    "addRuleSubItem": {"message": "Добавить правило (искать во всем заголовке)"},
+    "addRuleBeforeItem": {"message": "Добавить правило (искать до найденного слова)"},
+    "addRuleAfterItem": {"message": "Добавить правило (искать после найденного слова)"}
 }
