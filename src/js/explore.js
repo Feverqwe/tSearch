@@ -232,15 +232,20 @@ var explore = {
 
                     obj.img = kpGetImgFileName(obj.img);
 
-                    obj.title = kpRmDesc(obj.title);
-
-                    var year;
-                    if (obj.title_en) {
-                        year = kpGetYear(obj.title_en);
-                        if (year) {
-                            obj.title_en = kpRmYear(obj.title_en);
-                            obj.title_en += ' ' + year;
-                            obj.title += ' ' + year;
+                    var isSerial = kpRmDesc(obj.title);
+                    if (obj.title !== isSerial) {
+                        // isSerial
+                        obj.title = isSerial;
+                        obj.title_en && (obj.title_en = kpRmYear(obj.title_en));
+                    } else {
+                        var year;
+                        if (obj.title_en) {
+                            year = kpGetYear(obj.title_en);
+                            if (year) {
+                                obj.title_en = kpRmYear(obj.title_en);
+                                obj.title_en += ' ' + year;
+                                obj.title += ' ' + year;
+                            }
                         }
                     }
 
