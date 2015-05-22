@@ -459,6 +459,8 @@ var rate = {
         var wordsR = [];
         var scope = {};
         var scopeCase = {};
+        var scopeRegexp = [];
+        var scopeRegexpIndex = [];
         qualityList.forEach(function(qualityObj) {
             if (qualityObj.list !== undefined) {
                 qualityObj.list.forEach(function(wordItem) {
@@ -469,21 +471,27 @@ var rate = {
                          */
                         wordItem = {word: wordItem, caseSens: 0};
                     }
-                    if (wordItem.caseSens !== 0) {
-                        if (scopeCase[wordItem.word] !== undefined) {
-                            console.log('Word case conflict!', wordItem);
-                        }
-                        scopeCase[wordItem.word] = qualityObj;
-                    } else {
-                        wordItem.word = wordItem.word.toLowerCase();
-                        if (scope[wordItem.word] !== undefined) {
-                            console.log('Word conflict!', wordItem);
-                        }
-                        scope[wordItem.word] = qualityObj;
-                    }
                     if (wordItem.regexp === 1) {
                         wordsR.push(wordItem.word);
+                        var caseSans = 'g';
+                        if (wordItem.caseSens !== 0) {
+                            caseSans += 'i';
+                        }
+                        scopeRegexpIndex[scopeRegexp.length] = qualityObj;
+                        scopeRegexp.push(new RegExp(wordItem.word, caseSans));
                     } else {
+                        if (wordItem.caseSens !== 0) {
+                            if (scopeCase[wordItem.word] !== undefined) {
+                                console.log('Word case conflict!', wordItem);
+                            }
+                            scopeCase[wordItem.word] = qualityObj;
+                        } else {
+                            wordItem.word = wordItem.word.toLowerCase();
+                            if (scope[wordItem.word] !== undefined) {
+                                console.log('Word conflict!', wordItem);
+                            }
+                            scope[wordItem.word] = qualityObj;
+                        }
                         wordsR.push(wordItem.word.replace(rate.regexpList.text2safeR, "\\$1"));
                     }
                 });
@@ -516,7 +524,7 @@ var rate = {
         });
         if (wordsR.length > 0) {
             wordsR = new RegExp(wordsR.sort(function(a, b) {
-                return String(a).length > String(b).length ? 0 : 1
+                return String(a).length > String(b).length ? -1 : 1
             }).join('|'), 'ig');
         } else {
             wordsR = undefined;
@@ -525,6 +533,10 @@ var rate = {
         wordsR && (rObj['wordsR'+type] = wordsR);
         !mono.isEmptyObject(scope) && (rObj['scope'+type] = scope);
         !mono.isEmptyObject(scopeCase) && (rObj['scopeCase'+type] = scopeCase);
+        if (scopeRegexp.length > 0) {
+            rObj['scopeRegexp'+type] = scopeRegexp;
+            rObj['scopeRegexpIndex'+type] = scopeRegexpIndex;
+        }
         return rObj;
     },
     baseQualityList: {},
@@ -564,13 +576,22 @@ var rate = {
             return '';
         }
         var qualityObj;
+        var wordLowCase;
         if (this.qualityList.scopeCase === undefined || (qualityObj = this.qualityList.scopeCase[word]) === undefined) {
-            word = word.toLowerCase();
-            if (this.qualityList.scope === undefined) {
-                return '';
+            wordLowCase = word.toLowerCase();
+            qualityObj = this.qualityList.scope && this.qualityList.scope[wordLowCase] || undefined;
+            if (qualityObj !== undefined) {
+                word = wordLowCase;
             }
-            qualityObj = this.qualityList.scope[word];
         }
+        this.qualityList.scopeRegexp !== undefined && this.qualityList.scopeRegexp.some(function(regexp, index) {
+            "use strict";
+            if (regexp.test(word)) {
+                qualityObj = this.qualityList.scopeRegexpIndex[index];
+                return true;
+            }
+            return false;
+        }.bind(this));
         if (qualityObj === undefined) {
             return '';
         }
@@ -603,7 +624,9 @@ var rate = {
                         rating: this.rating,
                         qualityList: {
                             scope: qualityObj['scope'+type],
-                            scopeCase: qualityObj['scopeCase'+type]
+                            scopeCase: qualityObj['scopeCase'+type],
+                            scopeRegexp: qualityObj['scopeRegexp'+type],
+                            scopeRegexpIndex: qualityObj['scopeRegexpIndex'+type]
                         },
                         matchedList: this.matchedList
                     });

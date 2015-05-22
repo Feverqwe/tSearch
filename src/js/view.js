@@ -1156,7 +1156,7 @@ var view = {
         if (hlWordList.length > 0) {
             obj.hlWordList = hlWordList;
             obj.hlWordLowList = hlWordLowList;
-            obj.hlWordR = new RegExp(hlWordCaseListR.sort(function(a, b){return a.length > b.length ? 0 : 1}).join('|'), 'ig');
+            obj.hlWordR = new RegExp(hlWordCaseListR.sort(function(a, b){return a.length > b.length ? -1 : 1}).join('|'), 'ig');
 
             obj.hlWordCaseRate = 200 / hlWordList.length;
             obj.hlWordRate = obj.hlWordCaseRate * 0.95;
@@ -1386,7 +1386,7 @@ var view = {
         }
         if (isEmpty) return;
 
-        return [excludeList.length === 0 ? null : new RegExp(excludeList.sort(function(a, b){return a.length > b.length ? 0 : 1}).join('|')), includeList.length === 0 ? null : new RegExp(includeList.sort(function(a, b){return a.length > b.length ? 0 : 1}).join('|'), 'g'), includeList.length, word];
+        return [excludeList.length === 0 ? null : new RegExp(excludeList.sort(function(a, b){return a.length > b.length ? -1 : 1}).join('|')), includeList.length === 0 ? null : new RegExp(includeList.sort(function(a, b){return a.length > b.length ? -1 : 1}).join('|'), 'g'), includeList.length, word];
     },
     onChangeFilter: function(type) {
         "use strict";
