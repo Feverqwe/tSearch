@@ -29,6 +29,7 @@ engine.trackerLib.inmac = {
     search: {
         searchUrl: 'https://inmac.org/tracker.php',
         baseUrl: 'https://inmac.org/',
+        loginUrl: 'https://inmac.org/login.php',
         requestType: 'GET',
         requestData: 'nm=%search%',
         onGetRequest: 'encodeURIComponent',
