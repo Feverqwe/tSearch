@@ -33,7 +33,7 @@ engine.trackerLib.filebase = {
         requestData: 'search=%search%&c=0&t=liveonly',
         onGetRequest: 'encodeURIComponent',
         listItemSelector: '#torrents_list>tbody>tr',
-        listItemSlice: [1, 0],
+        listItemSplice: [1, 0],
         torrentSelector: {
             categoryTitle: {selector: 'td:eq(0)>a>img', attr: 'alt'},
             categoryUrl: {selector: 'td:eq(0)>a', attr: 'href'},
