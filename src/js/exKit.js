@@ -783,10 +783,10 @@ var exKit = {
         var torrentList = [];
         var torrentElList = $dom.find(tracker.search.listItemSelector);
         if (tracker.search.listItemSplice !== undefined) {
-            if (tracker.search.listItemSplice[0] > 0) {
+            if (tracker.search.listItemSplice[0] !== 0) {
                 torrentElList.splice(0, tracker.search.listItemSplice[0]);
             }
-            if (tracker.search.listItemSplice[1] > 0) {
+            if (tracker.search.listItemSplice[1] !== 0) {
                 torrentElList.splice(tracker.search.listItemSplice[1]);
             }
         }
