@@ -46,7 +46,7 @@ engine.trackerLib['bigfangroup'] = {
             date: {selector: 'td:eq(3)>img:eq(-1)', attr: 'title'}
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListStr', args: [{arg: 0}, {regexp: '\\/([^\\/]+)\\/$'}]},
+            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'cat=([0-9]+)'}]},
             date: function(value) {
                 "use strict";
                 value = exKit.funcList.monthReplace(value);
