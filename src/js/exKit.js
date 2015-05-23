@@ -59,7 +59,7 @@ var exKit = {
             t = t.toLowerCase();
             var tt = new Date();
             if ((exKit.legacy.varCache.today_now).test(t)) {
-                return 'today '+tt.getHours() + ':' + tt.getMinutes();
+                t = 'today '+tt.getHours() + ':' + tt.getMinutes();
             }
             var tty = new Date((Math.round(tt.getTime() / 1000) - 24 * 60 * 60) * 1000);
             var today;
