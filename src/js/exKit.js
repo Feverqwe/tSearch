@@ -837,8 +837,8 @@ var exKit = {
                     continue;
                 }
 
-                if (item.nodeIndex !== undefined) {
-                    value = value.childNodes[item.nodeIndex];
+                if (item.childNodeIndex !== undefined) {
+                    value = value.childNodes[item.childNodeIndex];
                 }
 
                 if (item.attr !== undefined) {
