@@ -411,13 +411,21 @@ body.home #result_block {
 #result_table .category {
     margin-top: 3px;
     font-size: 13px;
+    color: #093;
 }
 
-#result_table .category a {
-    padding-left: 4px;
+#result_table .category span {
     color: #093;
     display: inline-block;
     vertical-align: middle;
+    padding-left: 4px;
+}
+
+#result_table .category a {
+    color: #093;
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 4px;
 }
 
 #result_table .category a:hover {
