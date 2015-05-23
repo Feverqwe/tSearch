@@ -902,6 +902,9 @@ var exKit = {
                 console.debug('[' + tracker.id + ']', 'Skip torrent:', trObj);
                 continue;
             }
+            if (trObj.column.categoryId === undefined) {
+                trObj.column.categoryId = -1;
+            }
             if (!mono.isEmptyObject(trObj.error)) {
                 console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
             }

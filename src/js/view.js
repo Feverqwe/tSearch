@@ -921,12 +921,10 @@ var view = {
             torrentObj.quality = ratingObj.sum;
             cacheItem.rating = ratingObj;
 
-            var itemCategoryId = torrentObj.categoryId === undefined ? -1 : torrentObj.categoryId;
-
             cacheItem.node = mono.create('tr', {
                 data: {
                     id: tracker.id,
-                    category: itemCategoryId,
+                    category: torrentObj.categoryId,
                     index: cacheItemIndex,
                     filter: cacheItem.filter
                 },
@@ -1018,7 +1016,7 @@ var view = {
 
             if (filter === undefined || cacheItem.filter === filter) {
                 searchResultCounter.tracker[tracker.id]++;
-                searchResultCounter.category[itemCategoryId]++;
+                searchResultCounter.category[torrentObj.categoryId]++;
                 searchResultCounter.sum++;
             }
         }
