@@ -837,6 +837,10 @@ var exKit = {
                     continue;
                 }
 
+                if (item.nodeIndex !== undefined) {
+                    value = value.childNodes[item.nodeIndex];
+                }
+
                 if (item.attr !== undefined) {
                     value = value.getAttribute(item.attr);
                 } else {
