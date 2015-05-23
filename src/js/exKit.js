@@ -585,7 +585,7 @@ var exKit = {
                 search.loginFormSelector = trackerJson.auth_f;
             }
             if (trackerJson.sf || trackerJson.sl) {
-                search.listItemSplice = [trackerJson.sf || 0, trackerJson.sl || 0];
+                search.listItemSplice = [trackerJson.sf || 0, -(trackerJson.sl || 0)];
             }
             torrentSelector.title = trackerJson.tr_name;
             torrentSelector.url = {selector: trackerJson.tr_link, attr: 'href'};
@@ -672,7 +672,7 @@ var exKit = {
     },
     prepareTracker: function(tracker) {
         "use strict";
-        var itemList = ['onGetValue', 'onFindSelector', 'onSelectorIsNotFound', 'onSelectorIsNotFoundSkip', 'onEmptySelectorValue'];
+        var itemList = ['onGetValue', 'onSelectorIsNotFound', 'onEmptySelectorValue'];
         for (var i = 0, item; item = itemList[i]; i++) {
             if (!tracker.search[item]) {
                 tracker.search[item] = {};
@@ -767,8 +767,15 @@ var exKit = {
     parseDom: function(tracker, request, dom, cb) {
         "use strict";
         var $dom = $(dom);
+        var env = {
+            skipSelector: false,
+            skipItem: false,
+            $dom: $dom,
+            el: null
+        };
+        tracker.env = env;
         if (tracker.search.onAfterDomParse !== undefined) {
-            $dom = tracker.search.onAfterDomParse($dom);
+            tracker.search.onAfterDomParse();
         }
         if (tracker.search.loginFormSelector !== undefined && $dom.find(tracker.search.loginFormSelector).length) {
             return cb({requireAuth: 1});
@@ -780,25 +787,30 @@ var exKit = {
                 torrentElList.splice(0, tracker.search.listItemSplice[0]);
             }
             if (tracker.search.listItemSplice[1] > 0) {
-                torrentElList.splice(-tracker.search.listItemSplice[1]);
+                torrentElList.splice(tracker.search.listItemSplice[1]);
             }
         }
         for (var i = 0, len = torrentElList.length; i < len; i++) {
+            env.skipItem = false;
             var el = torrentElList.eq(i);
-            if (tracker.search.onGetListItem !== undefined && !tracker.search.onGetListItem(el)) {
+            env.el = el;
+            if (tracker.search.onGetListItem !== undefined) {
+                tracker.search.onGetListItem();
+            }
+            if (env.skipItem) {
                 continue;
             }
-            var trObj = {
+
+            var trObj = env.trObj = {
                 column: {},
                 error: {}
             };
             var cache = {};
             for (var key in tracker.search.torrentSelector) {
+                env.skipSelector = false;
                 var item = tracker.search.torrentSelector[key];
-                var value;
                 if (typeof item === 'function') {
-                    value = item(el);
-                    trObj.column[key] = value;
+                    item();
                     continue;
                 }
                 if (typeof item === 'string') {
@@ -808,14 +820,14 @@ var exKit = {
                 if (cache[item.selector] === undefined) {
                     cache[item.selector] = el.find(item.selector).get(0);
                 }
-                value = cache[item.selector];
-
-                if (value === undefined && tracker.search.onSelectorIsNotFoundSkip[key]) {
-                    continue;
-                }
+                var value = cache[item.selector];
 
                 if (value === undefined && tracker.search.onSelectorIsNotFound[key] !== undefined) {
-                    value = tracker.search.onSelectorIsNotFound[key](el);
+                    value = tracker.search.onSelectorIsNotFound[key](env);
+                }
+
+                if (env.skipSelector) {
+                    continue;
                 }
 
                 if (value === undefined) {
@@ -825,9 +837,6 @@ var exKit = {
                     continue;
                 }
 
-                if (tracker.search.onFindSelector[key] !== undefined) {
-                    value = tracker.search.onFindSelector[key](value);
-                } else
                 if (item.attr !== undefined) {
                     value = value.getAttribute(item.attr);
                 } else {
@@ -839,7 +848,11 @@ var exKit = {
                 }
 
                 if ((value === null || value.length === 0) && tracker.search.onEmptySelectorValue[key] !== undefined) {
-                    value = tracker.search.onEmptySelectorValue[key](el);
+                    value = tracker.search.onEmptySelectorValue[key]();
+                }
+
+                if (env.skipSelector) {
+                    continue;
                 }
 
                 if (value === null) {
@@ -854,8 +867,13 @@ var exKit = {
                 }
 
                 if (tracker.search.onGetValue[key] !== undefined) {
-                    value = tracker.search.onGetValue[key](value, el);
+                    value = tracker.search.onGetValue[key](value);
                 }
+
+                if (env.skipSelector) {
+                    continue;
+                }
+
                 if (exKit.intList.indexOf(key) !== -1) {
                     var intValue = parseInt(value);
                     if (isNaN(intValue)) {
@@ -886,10 +904,12 @@ var exKit = {
             torrentList.push(trObj.column);
         }
         cb({torrentList: torrentList});
+        tracker.env = null;
     },
     parseResponse: function(tracker, request, cb, data, xhr) {
         "use strict";
-        if (tracker.search.onResponseUrl !== undefined && !tracker.search.onResponseUrl(xhr.responseURL)) {
+        if (tracker.search.onResponseUrl !== undefined) {
+            !tracker.search.onResponseUrl(xhr.responseURL);
             return cb({requireAuth: 1});
         }
         data = exKit.contentFilter(data);
@@ -990,3 +1010,7 @@ var exKit = {
         return svg;
     }
 };
+exKit.funcList.dateFormat = exKit.legacy.dateFormat;
+exKit.funcList.monthReplace = exKit.legacy.monthReplace;
+exKit.funcList.sizeFormat = exKit.legacy.sizeFormat;
+exKit.funcList.todayReplace = exKit.legacy.todayReplace;
