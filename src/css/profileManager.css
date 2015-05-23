@@ -226,7 +226,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    width: 490px;
+    width: 480px;
     line-height: normal;
 }
 #manager .mgr-tracker-list .tracker-item .desc .extend {

@@ -912,8 +912,7 @@ var exKit = {
     },
     parseResponse: function(tracker, request, cb, data, xhr) {
         "use strict";
-        if (tracker.search.onResponseUrl !== undefined) {
-            !tracker.search.onResponseUrl(xhr.responseURL);
+        if (tracker.search.onResponseUrl !== undefined && !tracker.search.onResponseUrl(xhr.responseURL)) {
             return cb({requireAuth: 1});
         }
         data = exKit.contentFilter(data);
