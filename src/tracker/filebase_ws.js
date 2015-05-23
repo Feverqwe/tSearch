@@ -46,7 +46,7 @@ engine.trackerLib.filebase = {
             date: 'td:eq(3)'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: '\\/([^\\/]+)\\/$'}]},
+            categoryId: {exec: 'idInCategoryListStr', args: [{arg: 0}, {regexp: '\\/([^\\/]+)\\/$'}]},
             size: function(value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)
