@@ -32,7 +32,6 @@ engine.trackerLib['anidub'] = {
         requestData: 'do=search&subaction=search&showposts=1&story=%search%',
         onGetRequest: 'encodeURIComponent',
         listItemSelector: '#dle-content>div.dpad.searchitem',
-        listItemSplice: [0, -1],
         torrentSelector: {
             categoryTitle: 'a:eq(1)',
             categoryUrl: {selector: 'a:eq(1)', attr: 'href'},
