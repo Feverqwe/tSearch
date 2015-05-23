@@ -795,7 +795,7 @@ var view = {
             if (bTagList.indexOf(tag) !== -1) {
                 return tag;
             }
-            return '&#123;'+tag+'&#125;';
+            return '&#123;'+tag.slice(1, -1)+'&#125;';
         });
         code = code.replace(view.hlCodeToArrayR.charList, '{s}$1{/s}');
         code = code.replace(view.hlCodeToArrayR.deDbl, '$1$2');
