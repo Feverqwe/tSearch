@@ -18,7 +18,7 @@
         "keyword" : "tms"
     },
     "background": {
-        "scripts": ["js/mono.js", "js/monoUtils.js","js/bg.js"]
+        "scripts": ["js/mono.js", "js/bg.js"]
     },
     "name": "__MSG_extName__",
     "description": "__MSG_extDesc__",
