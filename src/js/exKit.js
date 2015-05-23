@@ -933,7 +933,7 @@ var exKit = {
                 onSearch.onDone(tracker);
                 onSearch.onError(tracker, xhr.status, xhr.statusText);
             },
-            onTimeout: function(xhr) {
+            timeout: function(xhr) {
                 onSearch.onDone(tracker);
                 onSearch.onError(tracker, xhr.status, xhr.statusText);
             }

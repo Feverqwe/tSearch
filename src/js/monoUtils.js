@@ -72,9 +72,15 @@ mono.ajax = function(obj) {
         xhr.setRequestHeader(key, obj.headers[key]);
     }
 
-    if (obj.onTimeout !== undefined) {
+    if (obj.timeout !== undefined) {
         xhr.ontimeout = function() {
-            obj.onTimeout(xhr);
+            obj.timeout(xhr);
+        }
+    }
+
+    if (obj.abort !== undefined) {
+        xhr.onabort = function() {
+            obj.abort(xhr);
         }
     }
 

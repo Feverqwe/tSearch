@@ -94,7 +94,8 @@ var view = {
         historyLimit: 50,
         historyLinksListLimit: 20,
         locationHash: undefined,
-        autocompleteCache: {}
+        autocompleteCache: {},
+        autocompleteLastSelect: ''
     },
     setColumnOrder: function (columnObj) {
         var tableHeadList = view.varCache.tableHeadColumnObjList;
@@ -1769,7 +1770,7 @@ var view = {
 
             (view.varCache.$requestInput = $(view.domCache.requestInput)).autocomplete({
                 minLength: 0,
-                delay: 50,
+                delay: 100,
                 position: {
                     collision: "bottom"
                 },
@@ -1796,11 +1797,12 @@ var view = {
                         }
                     });
                 },
+                focus: function() {
+                    view.varCache.autocompleteLastFocus = arguments[1].item.value;
+                },
                 select: function() {
-                    setTimeout(function() {
-                        view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
-                    }, 50);
-
+                    arguments[1].item.value = view.varCache.autocompleteLastFocus;
+                    view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
                 },
                 create: function() {
                     var hasTopShadow = 0;
@@ -1828,6 +1830,9 @@ var view = {
                     noResults: '',
                     results: function() {}
                 }
+            });
+            view.domCache.requestInput.addEventListener('keyup', function() {
+                view.varCache.autocompleteLastFocus = this.value;
             });
 
             $(this.domCache.trackerListBlock).resizable({

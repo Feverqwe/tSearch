@@ -5,7 +5,8 @@ var popup = {
     varCache: {
         history: [],
         suggestXhr: undefined,
-        autocompleteCache: {}
+        autocompleteCache: {},
+        autocompleteLastFocus: ''
     },
     domCache: {
         searchForm: document.getElementById('search_form'),
@@ -75,7 +76,7 @@ var popup = {
         "use strict";
         $(popup.domCache.requestInput).autocomplete({
             minLength: 0,
-            delay: 50,
+            delay: 100,
             position: {
                 collision: "bottom"
             },
@@ -103,10 +104,12 @@ var popup = {
                     }
                 });
             },
+            focus: function() {
+                popup.varCache.autocompleteLastFocus = arguments[1].item.value;
+            },
             select: function() {
-                setTimeout(function() {
-                    popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
-                }, 50);
+                arguments[1].item.value = popup.varCache.autocompleteLastFocus;
+                popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
             },
             close: function() {
                 mono.resizePopup(undefined, document.body.clientHeight);
@@ -150,6 +153,9 @@ var popup = {
                 }, 100);
             }
         };
+        popup.domCache.requestInput.addEventListener('keyup', function() {
+            popup.varCache.autocompleteLastFocus = this.value;
+        });
     }
 };
 
