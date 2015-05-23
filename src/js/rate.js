@@ -758,6 +758,10 @@ var rate = {
             titleObj.desc.toLowerCase().replace(requestObj.hlWordNoYearR, onDescTitleRegexp);
         }
 
+        if (requestObj.hlWordList !== undefined && requestObj.hlWordNoYearR !== undefined && rating.rate.title === 0) {
+            rating.rate.title -= 400;
+        }
+
         if (requestObj.yearR !== undefined) {
             var onTitleYearRegexp = rate.onTitleYearRegexp.bind({
                 rate: rating.rate,
@@ -765,10 +769,6 @@ var rate = {
                 index: 0
             });
             torrentObj.title.replace(requestObj.yearR, onTitleYearRegexp);
-        }
-
-        if (requestObj.hlWordList !== undefined && rating.rate.title === 0) {
-            rating.rate.title -= 400;
         }
 
         for (var item in rating.rate) {
