@@ -1,169 +1,187 @@
 module.exports = function (grunt) {
-    var bgJsList = [
-        'src/js/background.js'
+    var baseDataList = [
+        '_locales/**',
+        'css/**',
+        'img/**',
+        'index.html',
+        'popup.html',
+        'history.html',
+        'options.html'
     ];
     var dataJsList = [
-        'src/js/mono.js',
-        'src/js/view.js',
-        'src/js/rate.js',
-        'src/js/explore.js',
-        'src/js/notifer.js',
-        'src/js/counter.js',
+        'explore.js',
+        'exKit.js',
+        'history.js',
+        'jquery-2.1.1.min.js',
+        'jquery-ui.min.js',
+        'notifer.js',
+        'options.js',
+        'popup.js',
+        'profileManager.js',
+        'rate.js',
+        'selectBox.js',
+        'view.js'
+    ];
+    var engineJsList = [
         'src/js/engine.js',
-        'src/js/history.js',
-        'src/js/magic.js',
-        'src/js/options.js',
-        'src/js/popup.js',
-        'src/js/ex_kit.js',
-        'src/js/torrent_lib.min.js',
-        'src/js/jquery-2.1.1.min.js',
-        'src/js/jquery-ui.min.js',
-        'src/js/lz-string-1.3.3.js'
+        'src/js/counter.js'
+    ];
+    var bgJsList = [
+        'bg.js'
+    ];
+    var monoJsList = [
+        'mono.js',
+        'monoUtils.js'
     ];
     grunt.initConfig({
         env: grunt.file.exists('env.json') ? grunt.file.readJSON('env.json') : {},
         pkg: grunt.file.readJSON('package.json'),
         clean: {
-            output: '<%= output %>',
-            builds: [
-                'build_firefox.xpi',
-                'build_maxthon.mxaddon',
-                'build_safari.safariextz'
-            ]
+            output: '<%= output %>'
+        },
+        concat: {
+            options: {
+                separator: '\n'
+            },
+            engine: {
+                files: {
+                    '<%= output %><%= vendor %><%= dataJsFolder %>engine.js': engineJsList
+                }
+            },
+            trackerLib: {
+                files: {
+                    '<%= output %><%= vendor %><%= dataJsFolder %>trackerLib.js': 'src/tracker/*.js'
+                }
+            }
         },
         copy: {
-            background: {
+            bg: {
+                cwd: 'src/js/',
                 expand: true,
-                flatten: true,
                 src: bgJsList,
                 dest: '<%= output %><%= vendor %><%= libFolder %>'
             },
 
             dataJs: {
+                cwd: 'src/js/',
                 expand: true,
-                flatten: true,
                 src: dataJsList,
                 dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
             },
 
-            locales: {
+            baseData: {
+                cwd: 'src/',
                 expand: true,
-                src: 'src/_locales/**',
-                dest: '<%= output %><%= vendor %><%= dataFolder %>',
-                rename: function () {
-                    return arguments[0] + arguments[1].substr('src/'.length);
-                }
+                src: baseDataList,
+                dest: '<%= output %><%= vendor %><%= dataFolder %>'
             },
 
-            baseData: {
+            legacy: {
+                cwd: 'src/',
                 expand: true,
                 src: [
-                    'src/css/*',
-                    'src/images/*',
-                    'src/index.html',
-                    'src/popup.html',
-                    'src/history.html',
-                    'src/options.html',
-                    'src/magic.html'
+                    'legacy/**'
                 ],
-                dest: '<%= output %><%= vendor %><%= dataFolder %>',
-                rename: function () {
-                    return arguments[0] + arguments[1].substr('src/'.length);
-                }
+                dest: '<%= output %><%= vendor %><%= dataFolder %>'
             }
         },
-
-        // vars
+        insert: {
+            mono: {
+                cwd: 'src/js/',
+                expand: true,
+                src: monoJsList,
+                dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
+            }
+        },
+        watch: {
+            options: {
+                spawn: false
+            },
+            trackerLib: {
+                files: [
+                    'src/tracker/*.js'
+                ],
+                tasks: ['concat:trackerLib']
+            },
+            monoJs: {
+                files: monoJsList.map(function(item) {
+                    "use strict";
+                    return 'src/js/'+item
+                }),
+                tasks: ['insert:mono']
+            },
+            bgJs: {
+                files: bgJsList.map(function(item) {
+                    "use strict";
+                    return 'src/js/'+item
+                }),
+                tasks: ['copy:bg']
+            },
+            engineJs: {
+                files: engineJsList,
+                tasks: ['concat:engine']
+            },
+            dataJs: {
+                files: dataJsList.map(function(item) {
+                    "use strict";
+                    return 'src/js/'+item
+                }),
+                tasks: ['copy:dataJs']
+            },
+            legacy: {
+                files: ['src/legacy/**'],
+                tasks: ['copy:legacy']
+            },
+            baseData: {
+                files: baseDataList.map(function(item) {
+                    "use strict";
+                    return 'src/'+item
+                }),
+                tasks: ['copy:baseData']
+            }
+        },
         root: process.cwd().replace(/\\/g, '/') + '/',
         output: '<%= pkg.outputDir %>'
     });
 
-    grunt.registerTask('rmMagic', function () {
-        grunt.file.delete(grunt.config('output') + grunt.config('vendor') + grunt.config('dataJsFolder') + 'magic.js');
-        grunt.file.delete(grunt.config('output') + grunt.config('vendor') + grunt.config('dataFolder') + 'magic.html');
+    grunt.registerMultiTask('insert', 'Insert file in file, lik concat but in current position', function() {
+        "use strict";
+        var options = this.options({
+            word: '//@insert'
+        });
+        var baseFile = this.files.shift();
+
+        var content = grunt.file.read(baseFile.src[0]);
+        var pos = content.indexOf(options.word);
+        var list = [content.substr(0, pos)];
+        var end = content.substr(pos);
+
+        this.files.forEach(function(filePair) {
+            filePair.src.forEach(function(src) {
+                list.push(grunt.file.read(src));
+            });
+        });
+
+        list.push(end);
+
+        grunt.file.write(baseFile.dest, list.join('\n'));
     });
 
-    grunt.registerTask('rmBg', function() {
-        grunt.file.delete(grunt.config('output') + grunt.config('vendor') + grunt.config('libFolder') + 'background.js');
-    });
+    grunt.registerTask('extensionBase', ['copy:baseData', 'copy:legacy', 'copy:dataJs', 'insert:mono', 'copy:bg', 'concat:engine', 'concat:trackerLib']);
 
-
-    grunt.registerTask('rmPopup', function() {
-        grunt.file.delete(grunt.config('output') + grunt.config('vendor') + grunt.config('dataJsFolder') + 'popup.js');
-        grunt.file.delete(grunt.config('output') + grunt.config('vendor') + grunt.config('dataFolder') + 'popup.html');
-    });
-
-    var compressJsCopyTaskList = [];
-    grunt.registerTask('compressJs', function() {
-        if (compressJsCopyTaskList.length > 0) {
-            grunt.task.run(compressJsCopyTaskList);
-            return;
-        }
-
-
-        var jsList = Array.prototype.concat(dataJsList, bgJsList);
-        var taskList = [];
-        var taskListObj = {
-            exec: {},
-            copy: {}
-        };
-
-        for (var i = 0, item; item = jsList[i]; i++) {
-            if (item.indexOf('jquery') !== -1) continue;
-
-            var jsFolderType = (bgJsList.indexOf(item) !== -1) ? 'libFolder' : 'dataJsFolder';
-            var jsFolder = grunt.config(jsFolderType);
-
-            var cacheDir = grunt.config('output') + 'cache/' + jsFolder;
-            if (!grunt.file.exists(cacheDir)) {
-                grunt.file.mkdir(cacheDir);
-            }
-
-            var jsFile = item.replace('src/js/', '');
-            var taskName = 'compressJs_file_'+jsFile;
-            taskList.push('exec:'+taskName);
-
-            compressJsCopyTaskList.push('copy:'+taskName);
-            taskListObj.copy[taskName] = {
-                flatten: true,
-                src: '<%= output %>cache/'+jsFolder+jsFile,
-                dest: '<%= output %><%= vendor %>'+'<%= '+jsFolderType+' %>'+jsFile
-            };
-            taskListObj.exec[taskName] = {
-                command: 'java -jar compiler.jar --language_in ECMASCRIPT5 --js <%= output %><%= vendor %><%= '+jsFolderType+' %>'+jsFile+' --js_output_file <%= output %>cache/'+jsFolder+jsFile
-            };
-        }
-        grunt.config.merge(taskListObj);
-        grunt.task.run(taskList);
-        grunt.task.run(compressJsCopyTaskList);
-    });
-
+    grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-json-format');
-    grunt.loadNpmTasks('grunt-exec');
-    grunt.loadNpmTasks('grunt-contrib-compress');
-
-    grunt.registerTask('extensionBase', ['copy:background', 'copy:dataJs', 'copy:baseData', 'copy:locales']);
-    grunt.registerTask('extensionBaseMin', ['extensionBase', 'compressJs']);
 
     require('./grunt/chrome.js').run(grunt);
-    require('./grunt/firefox.js').run(grunt);
-    require('./grunt/opera12.js').run(grunt);
-    require('./grunt/web.js').run(grunt);
-    require('./grunt/safari.js').run(grunt);
-    require('./grunt/maxthon.js').run(grunt);
+
+    grunt.registerTask('dev', ['chrome', 'watch']);
 
     grunt.registerTask('default', [
         'clean:output',
-        'clean:builds',
-        'chrome',
-        'chromeApp',
-        'firefox',
-        'firefoxStore',
-        'opera12',
-        'safari',
-        'maxthon',
-        'web'
+        'chrome'
     ]);
 };
