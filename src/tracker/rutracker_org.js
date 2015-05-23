@@ -49,7 +49,14 @@ engine.trackerLib['rutracker'] = {
             date: 'td.row4.small.nowrap:eq(1)>u'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]}
+            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]},
+            peer: function(value) {
+                "use strict";
+                if (value < 0) {
+                    value = 0;
+                }
+                return value;
+            }
         },
         onEmptySelectorValue: {
             seed: {exec: 'return', args: 0}

@@ -905,6 +905,9 @@ var exKit = {
             if (trObj.column.categoryId === undefined) {
                 trObj.column.categoryId = -1;
             }
+            if (trObj.column.date === undefined) {
+                trObj.column.date = -1;
+            }
             if (!mono.isEmptyObject(trObj.error)) {
                 console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
             }
