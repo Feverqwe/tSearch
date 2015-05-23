@@ -598,6 +598,9 @@ var view = {
         for (var key in list) {
             format = format.replace(key, list[key]);
         }
+        if (format === '00:00') {
+            return '';
+        }
         return format;
     },
     timeAgoEn: function(d, h, m, s, seconds) {
