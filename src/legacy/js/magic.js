@@ -865,69 +865,61 @@ var magic = function() {
             cb(path, itemName, parent);
         })
     };
-    var getPath = function(node) {
-        if (node.length !== 1) {
+    var getPath = function($node) {
+        if ($node.length !== 1) {
             return;
         }
-        var content = var_cache.ifContent;
+        var container = var_cache.ifContent;
         var path;
-        while (node.length !== 0) {
-            var realNode = node[0];
-            var name = (
-                    // IE9 and non-IE
-                    realNode.localName ||
-                    // IE <= 8
-                    realNode.tagName ||
-                    realNode.nodeName
-                );
-            // on IE8, nodeName is '#document' at the top level, but we don't need that
-            if (name === undefined || name === '#document') {
+        while ($node.length !== 0) {
+            var node = $node[0];
+            if (node.nodeType !== 1) {
                 break;
             }
-            var parent = node.parent();
-            var tag = name;
-            if (realNode.id) {
-                if (content !== undefined) {
-                    if (tag !== 'TR' && content.find('#' + realNode.id).length === 1) {
-                        return '#' + realNode.id + (path !== undefined ? '>' + path : '');
-                    } else if (parent.children(tag).length !== 1) {
-                        name += '[id=' + realNode.id + ']';
+            var tagName = $node.prop('tagName').toLowerCase();
+            var tag = tagName;
+            // on IE8, nodeName is '#document' at the top level, but we don't need that
+            var parent = $node.parent();
+            var cacheParentFindTag = parent.find(tag);
+            if (node.id) {
+                if (container !== undefined) {
+                    if (tag !== 'TR' && container.find('#' + node.id).length === 1) {
+                        return '#' + node.id + (path !== undefined ? '>' + path : '');
+                    } else if (cacheParentFindTag.length !== 1) {
+                        tagName += '[id=' + node.id + ']';
                     }
                 } else {
-                    return name + '#' + realNode.id + (path !== undefined ? '>' + path : '');
+                    return tagName + '#' + node.id + (path !== undefined ? '>' + path : '');
                 }
-            } else if (realNode.className !== undefined) {
-                var classList = realNode.className.split(/\s+/);
+            } else if (node.className !== undefined) {
+                var classList = node.className.split(/\s+/);
                 classList = classList.filter(function(a){
-                    if (a === 'kit_select' || !a) {
+                    if (!a || a === 'kit_select') {
                         return 0;
                     }
-                    var s = (/[^\w-]{1,}/).test(a);
-                    return s === false;
+                    return node.classList.contains(a);
                 });
                 if (classList.length > 0) {
-                    name += ('.' + classList.join('.'));
-                    if (name !== tag) {
-                        if (content.find(name).length === 1){
-                            return name + (path !== undefined ? '>' + path : '');
-                        }
+                    tagName += '.' + classList.join('.');
+                    if (container.find(tagName).length === 1){
+                        return tagName + (path !== undefined ? '>' + path : '');
                     }
                 }
             }
-            if (parent.children(tag).length === 1) {
-                name = tag;
+            if (cacheParentFindTag.length === 1) {
+                tagName = tag;
             } else {
-                var childs = parent.children(name);
+                var childs = parent.find(tagName);
                 if (childs.length !== 1) {
-                    var index = childs.index(node);
-                    if (parent.children(tag).index(node) === index) {
-                        name = tag;
+                    var index = childs.index($node);
+                    if (cacheParentFindTag.index($node) === index) {
+                        tagName = tag;
                     }
-                    name += ':eq(' + index + ')';
+                    tagName += ':eq(' + index + ')';
                 }
             }
-            path = name + (path ? '>' + path : '');
-            node = parent;
+            path = tagName + (path ? '>' + path : '');
+            $node = parent;
         }
         return path;
     };
