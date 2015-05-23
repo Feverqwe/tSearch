@@ -57,10 +57,10 @@ var exKit = {
             "use strict";
             f = parseInt(f);
             t = t.toLowerCase();
-            if ((exKit.legacy.varCache.today_now).test(t)) {
-                return Math.round(Date.now() / 1000);
-            }
             var tt = new Date();
+            if ((exKit.legacy.varCache.today_now).test(t)) {
+                return 'today '+tt.getHours() + ':' + tt.getMinutes();
+            }
             var tty = new Date((Math.round(tt.getTime() / 1000) - 24 * 60 * 60) * 1000);
             var today;
             var yesterday;

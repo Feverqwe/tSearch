@@ -58,7 +58,7 @@ engine.trackerLib.kickass = {
             categoryId: {exec: 'idInCategoryListStr', args: [{arg: 0}, {regexp: '\\/([^\\/]+)\\/$'}]},
             size: function(value) {
                 "use strict";
-                return exKit.funcList.sizeFormat(value)
+                return exKit.funcList.sizeFormat(value);
             }
         }
     }
