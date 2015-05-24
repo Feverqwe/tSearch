@@ -1,0 +1,55 @@
+[
+    {
+        "type": "extension",
+        "frameworkVersion":"1.0.0",
+        "version":"1.0.8",
+        "guid": "{0801fdd9-011e-4fae-8ca9-70fd93113708}",
+        "name": "Torrents MultiSearch",
+        "title": {
+            "en": "Torrents MultiSearch",
+            "ru": "Torrents MultiSearch",
+            "zh-cn": "Torrents MultiSearch"
+        },
+        "description": {
+            "en": "Torrents MultiSearch - search on some of the trackers at once!",
+            "ru": "Torrents MultiSearch - поиск по нескольким трекерам сразу!",
+            "zh-cn": "Torrents MultiSearch - search on some of the trackers at once!"
+        },
+        "icon": "icon",
+        "actions": [
+            {
+                "type": "panel",
+                "entryPoints": [
+                    "sidebar"
+                ],
+                "main": "popup.html",
+                "stopOnClose": true,
+                "allowPin": false,
+                "resizable": false,
+                "width": {
+                    "default": 642
+                },
+                "height": {
+                    "default": 70
+                }
+            },
+            {
+                "type": "page",
+                "entryPoints": [
+                    "toolbar"
+                ],
+                "main": "index.html"
+            }
+        ],
+        "'permissions'": {
+            "httpRequest": [
+                "*.*"
+            ]
+        },
+        "config": "options.html",
+        "author": {
+            "name": "Anton V.",
+            "email": "leonardspbox@gmail.com"
+        }
+    }
+]

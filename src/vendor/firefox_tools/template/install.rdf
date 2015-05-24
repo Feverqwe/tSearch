@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?><!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. --><RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+    <Description about="urn:mozilla:install-manifest">
+        <em:id>{d03fdff0-d3a0-11e0-baa5-14d64d08fdac}</em:id>
+        <em:version>%extVersion%</em:version>
+        <em:type>2</em:type>
+        <em:bootstrap>true</em:bootstrap>
+        <em:unpack>false</em:unpack>
+
+        <!-- Firefox -->
+        <em:targetApplication>
+            <Description>
+                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+                <em:minVersion>%ffMinVersion%</em:minVersion>
+                <em:maxVersion>%ffMaxVersion%</em:maxVersion>
+            </Description>
+        </em:targetApplication>
+
+        <!-- Firefox mobile -->
+        <em:targetApplication>
+            <Description>
+                <em:id>{aa3c5121-dab2-40e2-81ca-7ea25febc110}</em:id>
+                <em:minVersion>%ffMMinVersion%</em:minVersion>
+                <em:maxVersion>%ffMMaxVersion%</em:maxVersion>
+            </Description>
+        </em:targetApplication>
+
+        <!-- Front End MetaData -->
+        <em:name>Torrents MultiSearch</em:name>
+        <em:description>Torrents MultiSearch - search on some of the trackers at once!</em:description>
+        <em:creator>Anton V.</em:creator>
+        <em:optionsType>2</em:optionsType>
+        <em:updateURL></em:updateURL>
+        <em:homepageURL>http://bug-report-blog.blogspot.ru/</em:homepageURL>
+        <em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDaPMxKGUu9BUptO1WKf7/18H
+            TUJFsMwSk8GipbMBy1GyMBi+2XXANF2YCfJefYJVo3KxitDvMEwqISbEYhucdZ6FNNNNcaDT
+            vmd5slDG748Xg8/4fUcspeWEq105h+94Xv8+iVkTOPwnGwD5dJmtcS7+n4EpypkCFlPLfaCk
+            l+cQIDAQAB</em:updateKey>
+
+    </Description>
+</RDF>
