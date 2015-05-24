@@ -137,7 +137,21 @@ var engine = {
     },
     loadSettings: function(cb) {
         "use strict";
+        var browserLocale = String(navigator.language).substr(0, 2).toLowerCase();
+
         var defaultSettings = this.defaultSettings;
+
+        if (browserLocale !== 'ru') {
+            defaultSettings.hideTopSearch = 1;
+            this.defaultExplorerOptions[1].enable = 0;
+            this.defaultExplorerOptions[2].enable = 0;
+            this.defaultExplorerOptions[3].enable = 0;
+            this.defaultExplorerOptions[4].enable = 0;
+        } else {
+            this.defaultExplorerOptions[5].enable = 0;
+            this.defaultExplorerOptions[6].enable = 0;
+            this.defaultExplorerOptions[4].enable = 0;
+        }
 
         var optionsList = [];
         for (var item in defaultSettings) {

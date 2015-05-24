@@ -866,6 +866,11 @@ var options = {
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
+
+        if (mono.language.langCode !== 'ru') {
+            document.querySelector('input[data-option="useEnglishPosterName"]').parentNode.style.display = 'none';
+        }
+
         document.body.classList.remove('loading');
 
         this.settings = engine.settings;
