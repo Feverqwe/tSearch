@@ -830,15 +830,15 @@ var exKit = {
                     continue;
                 }
 
+                if (item.childNodeIndex !== undefined) {
+                    value = value && value.childNodes[item.childNodeIndex];
+                }
+
                 if (value === undefined) {
                     trObj.error[key] = value;
                     trObj.error[key+'!'] = 'Selector is not found!';
                     trObj.error[key+'Selector'] = item.selector;
                     continue;
-                }
-
-                if (item.childNodeIndex !== undefined) {
-                    value = value.childNodes[item.childNodeIndex];
                 }
 
                 if (item.attr !== undefined) {
