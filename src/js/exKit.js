@@ -973,6 +973,10 @@ var exKit = {
             timeout: function(xhr) {
                 onSearch.onDone(tracker);
                 onSearch.onError(tracker, xhr.status, xhr.statusText);
+            },
+            abort: function(xhr) {
+                onSearch.onDone(tracker);
+                onSearch.onError(tracker, xhr.status, xhr.statusText);
             }
         });
         return {
