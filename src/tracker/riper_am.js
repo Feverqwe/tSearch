@@ -34,9 +34,10 @@ engine.trackerLib.riperam = {
         },
         onGetValue: {
             size: {exec: 'sizeFormat', args: [{arg: 0}]},
+            dateR: /»([^,]+, \d+:\d+)/,
             date: function(value) {
                 "use strict";
-                var m = value.match(/»([^,]+, \d+:\d+)/);
+                var m = value.match(this.tracker.search.onGetValue.dateR);
                 if (!m) {
                     return;
                 }

@@ -84,10 +84,11 @@ engine.trackerLib.thepiratebay = {
         },
         onGetValue: {
             categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: '\\/([0-9]+)$'}]},
+            sizeR: /[^\s]+\s([^,]+),\s[^\s]+\s([^,]+)/,
             size: function(value) {
                 "use strict";
                 if (this.tracker.search.mode === 'dbl') {
-                    var m = value.match(/[^\s]+\s([^,]+),\s[^\s]+\s([^,]+)/);
+                    var m = value.match(this.tracker.search.onGetValue.sizeR);
                     if (!m) {
                         return;
                     }
@@ -112,7 +113,7 @@ engine.trackerLib.thepiratebay = {
                     return false;
                 };
                 if (this.tracker.search.mode === 'dbl') {
-                    var m = value.match(/[^\s]+\s([^,]+),\s[^\s]+\s([^,]+)/);
+                    var m = value.match(this.tracker.search.onGetValue.sizeR);
                     if (!m) {
                         return;
                     }

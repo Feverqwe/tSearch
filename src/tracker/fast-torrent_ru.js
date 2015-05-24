@@ -25,13 +25,15 @@ engine.trackerLib['fast-torrent'] = {
             date: 'div.film-foot>em:eq(2)'
         },
         onGetValue: {
+            categoryTitleR: /\s+/g,
             categoryTitle: function(value) {
                 "use strict";
-                return value.replace(/\s+/g, ' ');
+                return value.replace(this.tracker.search.onGetValue.categoryTitleR, ' ');
             },
+            dateR: /:\s(.+)/,
             date: function(value) {
                 "use strict";
-                var m = value.match(/:\s(.+)/);
+                var m = value.match(this.tracker.search.onGetValue.dateR);
                 if (m) {
                     value = exKit.funcList.dateFormat(1, m[1]);
                 }

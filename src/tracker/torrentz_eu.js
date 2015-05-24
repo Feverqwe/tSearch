@@ -31,41 +31,54 @@ engine.trackerLib.torrentz = {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);
             },
+            dateR: {
+                today: /today/,
+                yesterday: /yesterday/,
+                d: /(\d+)/,
+                second: /second/,
+                minute: /minute/,
+                hour: /hour/,
+                day: /day/,
+                week: /week/,
+                month: /month/,
+                year: /year/
+            },
             date: function(value) {
                 "use strict";
+                var rObj = this.tracker.search.onGetValue.dateR;
                 var date = new Date();
-                if ((/today/).test(value)) {
+                if ((rObj.today).test(value)) {
                     return parseInt(Date.now() / 1000) - (date.getHours() * 60 * 60 + date.getMinutes() * 60);
                 } else
-                if ((/yesterday/).test(value)) {
+                if ((rObj.yesterday).test(value)) {
                     return parseInt(Date.now() / 1000) - (date.getHours() * 60 * 60 + date.getMinutes() * 60 + 24 * 60 * 60);
                 } else {
-                    var time = value.match(/(\d+)/);
+                    var time = value.match(rObj.d);
                     if (!time) {
                         return;
                     }
                     time = parseInt(time[1]);
 
                     var now = parseInt(Date.now() / 1000);
-                    if ((/second/).test(value)) {
+                    if (rObj.second.test(value)) {
                         return now - time;
                     } else
-                    if ((/minute/).test(value)) {
+                    if (rObj.minute.test(value)) {
                         return now - time * 60;
                     } else
-                    if ((/hour/).test(value)) {
+                    if (rObj.hour.test(value)) {
                         return now - time * 60 * 60;
                     } else
-                    if ((/day/).test(value)) {
+                    if (rObj.day.test(value)) {
                         return now - time * 60 * 60 * 24;
                     } else
-                    if ((/week/).test(value)) {
+                    if (rObj.week.test(value)) {
                         return now - time * 60 * 60 * 24 * 7;
                     } else
-                    if ((/month/).test(value)) {
+                    if (rObj.month.test(value)) {
                         return now - time * 60 * 60 * 24 * 30;
                     } else
-                    if ((/year/).test(value)) {
+                    if (rObj.year.test(value)) {
                         return now - time * 60 * 60 * 24 * 365;
                     }
                 }

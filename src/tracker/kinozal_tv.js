@@ -124,9 +124,10 @@ engine.trackerLib.kinozal = {
             date: 'td.s:eq(2)'
         },
         onGetValue: {
+            categoryIdR: /\/([0-9]+)\./,
             categoryTitle: function(value) {
                 "use strict";
-                var id = value.match(/\/([0-9]+)\./);
+                var id = value.match(this.tracker.search.onGetValue.categoryIdR);
                 if (!id) {
                     return '';
                 }
@@ -135,7 +136,7 @@ engine.trackerLib.kinozal = {
             },
             categoryUrl: function(value) {
                 "use strict";
-                var id = value.match(/\/([0-9]+)\./);
+                var id = value.match(this.tracker.search.onGetValue.categoryIdR);
                 if (!id) {
                     return '';
                 }
@@ -144,7 +145,7 @@ engine.trackerLib.kinozal = {
             },
             categoryId: function(value) {
                 "use strict";
-                var id = value.match(/\/([0-9]+)\./);
+                var id = value.match(this.tracker.search.onGetValue.categoryIdR);
                 if (!id) {
                     return '';
                 }
