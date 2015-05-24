@@ -54,6 +54,7 @@ exports.run = function (grunt) {
             'extensionBase',
             'chromeManifest',
             'json-format:chromeManifestFormat',
+            'compressJs',
             'compress:chrome'
         ]);
     });
@@ -80,6 +81,7 @@ exports.run = function (grunt) {
             'chromeAppManifest',
             'rmPopup',
             'json-format:chromeManifestFormat',
+            'compressJs',
             'compress:chrome'
         ]);
     });

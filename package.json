@@ -13,7 +13,8 @@
     "grunt-contrib-copy": "",
     "grunt-json-format": "",
     "grunt-exec": "",
-    "grunt": ""
+    "grunt": "",
+    "fs": ""
   },
   "outputDir": "output/",
   "extVersion": "1.2"

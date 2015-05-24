@@ -144,6 +144,37 @@ module.exports = function (grunt) {
         output: '<%= pkg.outputDir %>'
     });
 
+    grunt.registerTask('compressJs', function() {
+        var ccTask = {
+            closurecompiler: {
+                minify: {
+                    files: null,
+                    options: {
+                        jscomp_warning: 'const',
+                        language_in: 'ECMASCRIPT5',
+                        max_processes: 2
+                    }
+                }
+            }
+        };
+        grunt.config.merge(ccTask);
+        ccTask.closurecompiler.minify.files = {};
+        
+        var fs = require('fs');
+        var jsFolder = grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>');
+        var files = fs.readdirSync(jsFolder);
+
+        var jsList = grunt.file.match('*.js', files);
+
+        for (var i = 0, jsFile; jsFile = jsList[i]; i++) {
+            if (jsFile.indexOf('.min.js') !== -1) continue;
+            ccTask.closurecompiler.minify.files['<%= output %><%= vendor %><%= dataJsFolder %>'+jsFile] = '<%= output %><%= vendor %><%= dataJsFolder %>'+jsFile;
+        }
+
+        grunt.config.merge(ccTask);
+        grunt.task.run('closurecompiler:minify');
+    });
+
     grunt.registerMultiTask('insert', 'Insert file in file, lik concat but in current position', function() {
         "use strict";
         var options = this.options({
@@ -170,6 +201,7 @@ module.exports = function (grunt) {
     grunt.registerTask('extensionBase', ['copy:baseData', 'copy:legacy', 'copy:dataJs', 'insert:mono', 'copy:bg', 'concat:engine', 'concat:trackerLib']);
 
     grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.loadNpmTasks('grunt-closurecompiler');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-watch');
