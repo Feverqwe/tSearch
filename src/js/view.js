@@ -1548,35 +1548,58 @@ var view = {
     },
     showExtensionInfo: function() {
         "use strict";
-        //todo: fix me!
-        var closeBtn = undefined;
-        var popup = undefined;
-        // utm_source
-        var url = 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh?utm_source=TmsInfoPopup';
-        $(document.body).append(popup = $('<div>', {class: 'extInfoContainer'}).append(
-            $('<a>', {title: _lang.extPopupInstall, href: url + '&utm_content=img', target: '_blank'}).append(
-                $('<img>', {src: 'images/extAd_'+_lang.lang+'.png'})
-            ).on('click', function() {
-                    closeBtn.trigger('click');
-                }),
-            $('<div>', {class: 'info_head'}).append(
-                $('<span>', {class: 'text', text: _lang.extPopupInfo}).append(
-                    ' ', $('<a>', {text: _lang.extPopupInstall, href: url + '&utm_content=link', target: '_blank'})
-                ).on('click', function() {
-                        closeBtn.trigger('click');
+        var popup, closeBtn;
+        var extUrl = 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh?utm_source=TmsInfoPopup';
+        document.body.appendChild(popup = mono.create('div', {
+            class: 'extInfoContainer',
+            append: [
+                mono.create('a', {
+                    title: mono.language.extPopupInstall,
+                    href: extUrl + '&utm_content=img',
+                    target: '_blank',
+                    append: mono.create('img', {
+                        src: 'img/extAd_'+mono.language.langCode+'.png'
                     }),
-                closeBtn = $('<a>', {class: 'close', href: '#', text: _lang.word_close}).on('click', function(e) {
-                    e.preventDefault();
-                    mono.storage.set({extensionPopup: 1});
-                    popup.css('opacity', 0);
-                    setTimeout(function() {
-                        popup.remove();
-                    }, 1000);
+                    on: ['click', function() {
+                        closeBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
+                    }]
+                }),
+                mono.create('div', {
+                    class: 'info-head',
+                    append: [
+                        mono.create('span', {
+                            class: 'text',
+                            append: [
+                                mono.language.extPopupInfo + ' ',
+                                mono.create('a', {
+                                    text: mono.language.extPopupInstall,
+                                    href: extUrl + '&utm_content=link',
+                                    target: '_blank',
+                                    on: ['click', function() {
+                                        closeBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
+                                    }]
+                                })
+                            ]
+                        }),
+                        closeBtn = mono.create('a', {
+                            class: 'close',
+                            href: '#',
+                            text: mono.language.close,
+                            on: ['click', function(e) {
+                                e.preventDefault();
+                                mono.storage.set({extensionPopup: 1});
+                                popup.style.opacity = 0;
+                                setTimeout(function() {
+                                    popup.parentNode.removeChild(popup);
+                                }, 1000);
+                            }]
+                        })
+                    ]
                 })
-            )
-        ));
+            ]
+        }));
         setTimeout(function() {
-            popup.css('opacity', 1);
+            popup.style.opacity = 1;
         }, 500);
     },
     once: function() {
