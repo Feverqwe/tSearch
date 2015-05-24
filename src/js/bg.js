@@ -235,6 +235,9 @@ var bg = {
             };
             for (var key in storage) {
                 if (key.substr(0, 10) === 'exp_cache_') {
+                    if (key === 'exp_cache_favorites') {
+                        inList.expCache_favorites = storage[key];
+                    }
                     rmList.push(key);
                 }
                 if (key === 'enableTeaserFilter') {
@@ -253,6 +256,16 @@ var bg = {
 
             mono.storage.remove(rmList, function() {
                 mono.storage.set(inList);
+                if (mono.isChrome) {
+                    var syncList = {};
+                    if (storage.profileListSync) {
+                        syncList.profileList = inList.profileList;
+                    }
+                    if (storage.enableFavoriteSync) {
+                        syncList.expCache_favorites = inList.expCache_favorites;
+                    }
+                    mono.storage.sync.set(syncList);
+                }
             });
         });
     },
