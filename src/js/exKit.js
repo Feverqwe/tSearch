@@ -837,7 +837,7 @@ var exKit = {
                 if (item.childNodeIndex !== undefined && value !== undefined) {
                     var childNodeIndex = item.childNodeIndex;
                     if (childNodeIndex < 0) {
-                        childNodeIndex = value.childNodes.length - item.childNodeIndex;
+                        childNodeIndex = value.childNodes.length + item.childNodeIndex;
                     }
                     value = value.childNodes[childNodeIndex];
                 }
