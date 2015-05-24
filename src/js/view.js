@@ -348,6 +348,8 @@ var view = {
         var styleContent = '';
         view.domCache.trackerList.textContent = '';
         view.varCache.trackerList = {};
+        view.varCache.filter.trackerList = undefined;
+        view.filterUpdate();
         engine.prepareTrackerList(profileName, function(trackerList) {
             if (view.varCache.trackerListStyle) {
                 view.varCache.trackerListStyle.parentNode.removeChild(view.varCache.trackerListStyle);
@@ -1513,6 +1515,8 @@ var view = {
     setMainState: function(fromHistory) {
         "use strict";
         this.setDocumentTitle(fromHistory);
+
+        exKit.searchProgressListClear();
 
         view.varCache.searchResultCache.splice(0);
         view.varCache.lastSortedList.splice(0);

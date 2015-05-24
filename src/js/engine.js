@@ -109,7 +109,7 @@ var engine = {
     setProfileList: function(storage, cb) {
         "use strict";
         mono.storage.set(storage, function() {
-            if (storage.profileListSync) {
+            if (engine.settings.profileListSync) {
                 return mono.storage.sync.set(storage, cb);
             }
             cb();
