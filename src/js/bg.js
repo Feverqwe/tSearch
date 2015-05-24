@@ -171,8 +171,94 @@ var bg = {
         }
         bg.run();
     },
+    fastMigration: function() {
+        "use strict";
+        var migrateProfileList = function(value, storage) {
+            if (typeof value !== 'string') {
+                return;
+            }
+            try {
+                var obj = JSON.parse(value);
+                storage.profileList = obj;
+            } catch (e) {}
+        };
+        var migrateExploreOptions = function(value, storage) {
+            if (typeof value !== 'string') {
+                return;
+            }
+            var langMap = {
+                favorites: 'favoriteList',
+                kp_favorites: 'kpFavoriteList',
+                kp_in_cinema: 'kpInCinema',
+                kp_popular: 'kpPopular',
+                kp_serials: 'kpSerials',
+                imdb_in_cinema: 'imdbInCinema',
+                imdb_popular: 'imdbPopular',
+                imdb_serials: 'imdbSerials',
+                gg_games_top: 'ggGamesTop',
+                gg_games_new: 'ggGamesNew'
+            };
+            try {
+                var obj = JSON.parse(value);
+                var explorerOptions = [];
+                for (var key in obj) {
+                    var p = obj[key];
+                    explorerOptions.push({
+                        enable: p.e ? 1 : 0,
+                        lang: langMap[key],
+                        lineCount: parseInt(p.c) || 1,
+                        show: p.s ? 1 : 0,
+                        type: key,
+                        width: parseInt(p.w) || 100
+                    });
+                }
+                storage.explorerOptions = explorerOptions;
+            } catch (e) {}
+        };
+
+        mono.storage.get(null, function(storage) {
+            if (storage.isMigrated) {
+                return;
+            }
+            var rmList = [
+                'add_in_omnibox', 'advFiltration', 'click_history',
+                'hideTrackerIcons', 'enableTeaserFilter', 'hideZeroSeed',
+                'history', 'lang', 'listOptions',
+                'noBlankPageOnDownloadClick', 'noTransition', 'noTransitionLinks',
+                'optMigrated', 'proxyHost', 'proxyList',
+                'proxyURL', 'proxyUrlFixSpaces', 'qualityBoxCache',
+                'qualityCache', 'table_sort_by', 'table_sort_colum',
+                'torrentListHeight', 'torrent_list_h'
+            ];
+            var inList = {
+                isMigrated: 1
+            };
+            for (var key in storage) {
+                if (key.substr(0, 10) === 'exp_cache_') {
+                    rmList.push(key);
+                }
+                if (key === 'enableTeaserFilter') {
+                    inList.teaserFilter = !!storage[key] ? 1 : 0;
+                }
+                if (key === 'lang') {
+                    inList.langCode = storage[key];
+                }
+                if (key === 'profileList') {
+                    migrateProfileList(storage[key], inList);
+                }
+                if (key === 'listOptions') {
+                    migrateExploreOptions(storage[key], inList);
+                }
+            }
+
+            mono.storage.remove(rmList, function() {
+                mono.storage.set(inList);
+            });
+        });
+    },
     run: function() {
         "use strict";
+        this.fastMigration();
         mono.storage.get(['contextMenu', 'searchPopup', 'langCode'], function(storage) {
             if (storage.hasOwnProperty('contextMenu')) {
                 bg.settings.contextMenu = storage.contextMenu;
