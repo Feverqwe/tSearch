@@ -91,8 +91,9 @@ engine.trackerLib.thepiratebay = {
                     if (!m) {
                         return;
                     }
-                    value = m[2].replace('i', '');
+                    value = m[2];
                 }
+                value = value.replace('i', '');
                 return exKit.funcList.sizeFormat(value);
             },
             date: function(value) {
@@ -122,7 +123,7 @@ engine.trackerLib.thepiratebay = {
                 if (minAgo !== false) {
                     return minAgo;
                 }
-                
+
                 value = exKit.funcList.todayReplace(value, 3);
                 return exKit.funcList.dateFormat(3, value);
             }
