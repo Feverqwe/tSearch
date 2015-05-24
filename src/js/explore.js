@@ -2043,8 +2043,11 @@ var explore = {
                 if (!changes.hasOwnProperty('expCache_favorites')) {
                     return;
                 }
-                var cache = changes.expCache_favorites;
+                var cache = changes.expCache_favorites.newValue;
                 var type = 'favorites';
+                if (JSON.stringify(engine.exploreCache.expCache_favorites) === JSON.stringify(cache)) {
+                    return;
+                }
                 engine.exploreCache.expCache_favorites = cache;
                 var options = engine.explorerOptionsObj[type];
                 if (options.enable && options.show) {
