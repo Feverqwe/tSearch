@@ -160,14 +160,16 @@ var bg = {
                     selected: true
                 });
             });
-            chrome.browserAction.onClicked.addListener(function() {
-                if (bg.settings.searchPopup) {
-                    return;
-                }
-                chrome.tabs.create({
-                    url: 'index.html'
+            if (!mono.isChromeWebApp) {
+                chrome.browserAction.onClicked.addListener(function () {
+                    if (bg.settings.searchPopup) {
+                        return;
+                    }
+                    chrome.tabs.create({
+                        url: 'index.html'
+                    });
                 });
-            });
+            }
         }
         bg.run();
     },

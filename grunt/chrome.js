@@ -28,6 +28,11 @@ exports.run = function (grunt) {
         }
     });
 
+    grunt.registerTask('rmPopup', function() {
+        grunt.file.delete(grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>') + 'popup.js');
+        grunt.file.delete(grunt.template.process('<%= output %><%= vendor %><%= dataFolder %>') + 'popup.html');
+    });
+
     grunt.registerTask('chrome', function () {
         grunt.registerTask('chromeManifest', function() {
             var manifestPath = grunt.config('output') + grunt.config('vendor') + 'manifest.json';
@@ -54,25 +59,26 @@ exports.run = function (grunt) {
     });
 
     grunt.registerTask('chromeApp', function () {
-        grunt.registerTask('chromeManifest', function() {
+        grunt.registerTask('chromeAppManifest', function() {
             var manifestPath = grunt.config('output') + grunt.config('vendor') + 'manifest.json';
-            var content = grunt.file.readJSON('src/manifest.json');
+            var content = grunt.file.readJSON('src/vendor/chromeApp/manifest.json');
             content.version = grunt.config('pkg.extVersion');
             grunt.file.write(manifestPath, JSON.stringify(content));
         });
 
         grunt.config.merge({
-            vendor: 'chrome/src/',
+            vendor: 'chromeApp/src/',
             libFolder: 'js/',
             dataJsFolder: 'js/',
             includesFolder: 'includes/',
             dataFolder: '',
-            buildName: 'tms_<%= pkg.extVersion %>'
+            buildName: 'tms_app_<%= pkg.extVersion %>'
         });
 
         grunt.task.run([
             'extensionBase',
-            'chromeManifest',
+            'chromeAppManifest',
+            'rmPopup',
             'json-format:chromeManifestFormat',
             'compress:chrome'
         ]);

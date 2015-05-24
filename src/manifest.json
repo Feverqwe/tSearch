@@ -20,8 +20,12 @@
     "background": {
         "scripts": ["js/mono.js", "js/bg.js"]
     },
+    "content_security_policy": "script-src 'self' https://www.google-analytics.com/analytics.js; object-src 'self'",
     "name": "__MSG_extName__",
     "description": "__MSG_extDesc__",
     "default_locale": "en",
+    "web_accessible_resources": [
+        "images/icon_16.png"
+    ],
     "version": "1.0.88"
 }
