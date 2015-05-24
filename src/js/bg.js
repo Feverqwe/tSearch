@@ -225,10 +225,10 @@ var bg = {
                 'hideTrackerIcons', 'enableTeaserFilter', 'hideZeroSeed',
                 'history', 'lang', 'listOptions',
                 'noBlankPageOnDownloadClick', 'noTransition', 'noTransitionLinks',
-                'optMigrated', 'proxyHost', 'proxyList',
+                'optMigrated', 'proxyHost', 'proxyHostLinks', 'proxyList',
                 'proxyURL', 'proxyUrlFixSpaces', 'qualityBoxCache',
                 'qualityCache', 'table_sort_by', 'table_sort_colum',
-                'torrentListHeight', 'torrent_list_h'
+                'torrentListHeight', 'torrent_list_h', 'titleQualityList'
             ];
             var inList = {
                 isMigrated: 1
