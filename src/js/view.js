@@ -897,6 +897,7 @@ var view = {
     writeResultList: function(tracker, torrentList) {
         "use strict";
         var filter = view.getFilterStyleState();
+        var filterTrackerList = view.varCache.filter.trackerList || [];
         var searchResultCounter = view.varCache.searchResultCounter;
         var searchResultCache = view.varCache.searchResultCache;
         for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
@@ -1014,7 +1015,8 @@ var view = {
             });
             searchResultCache.push(cacheItem);
 
-            if (filter === undefined || cacheItem.filter === filter) {
+            if ((filter === undefined || cacheItem.filter === filter)
+                && (filterTrackerList.length === 0 || filterTrackerList.indexOf(tracker.id) !== -1)) {
                 searchResultCounter.tracker[tracker.id]++;
                 searchResultCounter.category[torrentObj.categoryId]++;
                 searchResultCounter.sum++;
