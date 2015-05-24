@@ -1453,6 +1453,7 @@ var view = {
             view.domCache[type].value = '';
         }
         view.domCache.wordFilterInput.value = '';
+        view.domCache.clearWordFilterBtn.classList.remove('show');
         view.domCache.timeFilterSelect.selectedIndex = 0;
         view.domCache.timeFilterSelect.dispatchEvent(new CustomEvent('change'));
         view.varCache.timeFilterSelectBox.update();
@@ -1460,6 +1461,10 @@ var view = {
         for (var trackerId in view.varCache.trackerList) {
             var trackerObj = view.varCache.trackerList[trackerId];
             trackerObj.setSelect(0);
+        }
+
+        for (var key in view.varCache.filter) {
+            view.varCache.filter[key] = undefined;
         }
 
         view.filterUpdate();

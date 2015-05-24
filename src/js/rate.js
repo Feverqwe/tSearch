@@ -289,7 +289,7 @@ var rate = {
             name: 'Rip'
         },
         {
-            list: [{word: '[L]'}, {word: '{L}'}, {word: '(L)'}, 'лицензия', 'license'],
+            list: [{word: '[L]'}, {word: '{L}'}, {word: '(L)'}],
             rate: {
                 games: 100
             },

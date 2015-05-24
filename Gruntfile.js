@@ -159,7 +159,7 @@ module.exports = function (grunt) {
         };
         grunt.config.merge(ccTask);
         ccTask.closurecompiler.minify.files = {};
-        
+
         var fs = require('fs');
         var jsFolder = grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>');
         var files = fs.readdirSync(jsFolder);
