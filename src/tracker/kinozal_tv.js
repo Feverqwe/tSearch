@@ -158,9 +158,6 @@ engine.trackerLib.kinozal = {
             date: function(value) {
                 "use strict";
                 value = exKit.funcList.todayReplace(value, 1);
-                if (typeof value === 'number') {
-                    return value;
-                }
                 return exKit.funcList.dateFormat(1, value)
             }
         }
