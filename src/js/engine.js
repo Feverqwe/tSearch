@@ -49,11 +49,19 @@ var engine = {
     history: [],
     topList: {},
 
+    webAppSupportTrackerList: [
+        'nnm-club', 'kinozal', 'rutor', 'hdclub', 'tfile', 'fast-torrent', 'btdigg',
+        'bitsnoop', 'extratorrent', 'torrentz', 'thepiratebay', 'kickass'
+    ],
+
     getDefaultProfileList: function() {
         "use strict";
         var list;
         if (mono.language.langCode === 'ru') {
             list = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'hdclub', 'tfile', 'fast-torrent', 'btdigg'];
+            if (mono.isWebApp) {
+                list.splice(list.indexOf('rutracker'), 1);
+            }
         } else {
             list = ['bitsnoop', 'extratorrent', 'torrentz', 'thepiratebay', 'kickass'];
         }
@@ -151,6 +159,9 @@ var engine = {
             this.defaultExplorerOptions[5].enable = 0;
             this.defaultExplorerOptions[6].enable = 0;
             this.defaultExplorerOptions[4].enable = 0;
+        }
+        if (mono.isWebApp) {
+            defaultSettings.allowGetDescription = 0;
         }
 
         var optionsList = [];

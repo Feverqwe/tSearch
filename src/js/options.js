@@ -114,6 +114,9 @@ var options = {
         obj[key] = value;
 
         mono.storage.set(obj, function() {
+            if (mono.isMaxthon) {
+                return;
+            }
             if (obj.hasOwnProperty('contextMenu') || obj.hasOwnProperty('searchPopup')) {
                 mono.sendMessage('reloadSettings');
             }
@@ -147,6 +150,10 @@ var options = {
             data[item] = value;
         }
         mono.storage.set(data, function() {
+            if (mono.isMaxthon) {
+                window.location.reload();
+                return;
+            }
             mono.sendMessage('reloadSettings', function() {
                 window.location.reload();
             });
@@ -866,6 +873,24 @@ var options = {
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
+
+        if (!mono.isChrome) {
+            this.domCache.saveInCloudBtn.display.style = 'none';
+            this.domCache.getFromCloudBtn.display.style = 'none';
+            this.domCache.clearCloudStorageBtn.display.style = 'none';
+            document.querySelector('input[data-option="enableFavoriteSync"]').parentNode.style.display = 'none';
+            document.querySelector('input[data-option="profileListSync"]').parentNode.style.display = 'none';
+        }
+        if (mono.isMaxthon || mono.isSafari) {
+            document.querySelector('input[data-option="contextMenu"]').parentNode.style.display = 'none';
+        }
+        if (mono.isChrome && mono.isChromeWebApp || mono.isMaxthon || mono.isSafari) {
+            //Chromeum app
+            document.querySelector('input[data-option="searchPopup"]').parentNode.style.display = 'none';
+        }
+        if (mono.isFF) {
+            document.querySelector('input[data-option="doNotSendStatistics"]').parentNode.style.display = 'none';
+        }
 
         if (mono.language.langCode !== 'ru') {
             document.querySelector('input[data-option="useEnglishPosterName"]').parentNode.style.display = 'none';

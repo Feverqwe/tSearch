@@ -583,6 +583,21 @@ var profileManager = {
 
         this.writeFilterList();
 
+        if (mono.isFF) {
+            this.domCache.createCustomTrackerBtn.style.display = 'none';
+        }
+
+        if (mono.isWebApp) {
+            // todo: fix me!
+            this.domCache.createCustomTrackerBtn.on('click', function(e) {
+                e.preventDefault();
+                notify.call({focusYes: true}, [{type: 'note', fragment: mono.parseTemplate(_lang.webAppFunctionUnavailable)}], _lang.wordYes, _lang.wordNoNotNow, function() {
+                    if (arguments[0] === undefined) return;
+                    $(document).trigger('installExtensionMenu');
+                });
+            });
+        }
+
         this.domCache.managerBody.addEventListener('click', function(e) {
             e.stopPropagation();
         });

@@ -1868,6 +1868,98 @@ var explore = {
             }.bind(this), 250));
         }
 
+        if (mono.isWebApp) {
+            define.on('jquery', function() {
+                // todo: fix me!
+                var getBrowserName = function() {
+                    var browser = '';
+                    if(navigator && navigator.userAgent) {
+                        if(navigator.userAgent.indexOf('OPR\/') !== -1) {
+                            browser = 'opera';
+                        } else
+                        if(navigator.userAgent.indexOf('Opera\/') !== -1) {
+                            browser = 'opera';
+                        } else
+                        if(navigator.userAgent.indexOf('Firefox\/') !== -1) {
+                            browser = 'firefox';
+                        } else
+                        if(navigator.userAgent.indexOf('Chrome\/') !== -1) {
+                            browser = 'chrome';
+                        } else
+                        if(navigator.userAgent.indexOf('Safari\/') !== -1) {
+                            browser = 'safari';
+                        }
+                    }
+                    return browser;
+                };
+
+                var currentBrowser = undefined;
+                var domList = {};
+                var dlExBody = undefined;
+                explore.domCache.gallery.after(
+                    dlExBody = $('<div>', {id: 'explore_download_extension'}).append([
+                        $('<h1>', {
+                            text: _lang.downloadExtensionTitle
+                        }),
+                        currentBrowser = $('<div>', {
+                            class: 'currentBrowser'
+                        }),
+                        $('<div>', {
+                            class: 'browserList'
+                        }).append((function(){
+                            var obj = {
+                                safari: {
+                                    title: 'Safari',
+                                    link: 'http://static.tms.mooo.com/safari/build_safari.safariextz'
+                                },
+                                chrome: {
+                                    title: 'Chrome',
+                                    link: 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh'
+                                },
+                                firefox: {
+                                    title: 'Firefox',
+                                    link: 'http://static.tms.mooo.com/firefox/build_firefox.xpi'
+                                },
+                                opera: {
+                                    title: 'Opera',
+                                    link: 'https://addons.opera.com/ru/extensions/details/torrents-multisearch/'
+                                }
+                            };
+                            var list = [];
+                            for (var key in obj) {
+                                var item = obj[key];
+                                list.push(domList[key] = $('<a>', {
+                                    href: item.link,
+                                    class: key,
+                                    target: '_blank'
+                                }).append([
+                                    $('<img>', {src: 'web/'+key+'.png'}),
+                                    $('<p>', {
+                                        text: item.title
+                                    })
+                                ]));
+                            }
+                            return list;
+                        })())
+                    ])
+                );
+                currentBrowser.append(domList[getBrowserName()] || $('<img>', {
+                        src: 'images/icon_128.png'
+                    }));
+                $(document).on('installExtensionMenu', function() {
+                    dlExBody.addClass('popupMode');
+                    var stopProp = function(e) {
+                        e.stopPropagation();
+                    };
+                    dlExBody.on('click', stopProp);
+                    $(document).on('click', function() {
+                        dlExBody.removeClass('popupMode');
+                        dlExBody.off('click', stopProp);
+                    });
+                });
+            });
+            return;
+        }
 
         window.addEventListener('resize', mono.debounce(function onResizeCategoryList() {
             if (onResizeCategoryList.lock) return;
@@ -1945,6 +2037,21 @@ var explore = {
         });
 
         this.writeCategoryList();
+
+        if (mono.isChrome && engine.settings.enableFavoriteSync) {
+            chrome.storage.onChanged.addListener(function(changes) {
+                if (!changes.hasOwnProperty('expCache_favorites')) {
+                    return;
+                }
+                var cache = changes.expCache_favorites;
+                var type = 'favorites';
+                engine.exploreCache.expCache_favorites = cache;
+                var options = engine.explorerOptionsObj[type];
+                if (options.enable && options.show) {
+                    explore.updateCategoryContent(type);
+                }
+            });
+        }
 
         define.on('jqueryui', function() {
             (this.domCache.$gallery = $(this.domCache.gallery)).sortable({

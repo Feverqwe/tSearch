@@ -37,7 +37,10 @@ var bg = {
         contextMenu: 1,
         searchPopup: 1
     },
-    updateBtnAction: mono.isChrome ? function() {
+    updateBtnAction: mono.isChromeWebApp ? function() {
+        "use strict";
+
+    } : mono.isChrome ? function() {
         "use strict";
         chrome.browserAction.setPopup({
             popup: bg.settings.searchPopup ? 'popup.html' : ''
@@ -46,25 +49,86 @@ var bg = {
         "use strict";
 
     },
+    ffContextMenu: null,
+    checkExtExists: function(cb) {
+        "use strict";
+        if (!mono.isChromeWebApp) {
+            return cb();
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'chrome-extension://ngcldkkokhibdmeamidppdknbhegmhdh/img/icon_16.png', true);
+        xhr.onerror = function() {
+            cb();
+        };
+        xhr.send();
+    },
     updateContextMenu: mono.isChrome ? function() {
         "use strict";
         chrome.contextMenus.removeAll(function () {
             if (!bg.settings.contextMenu) {
                 return;
             }
-            chrome.contextMenus.create({
-                type: "normal",
-                id: "item",
-                title: mono.language.ctxMenuTitle,
-                contexts: ["selection"],
-                onclick: function (info) {
-                    var text = info.selectionText;
-                    chrome.tabs.create({
-                        url: 'index.html' + ( text ? '#?search=' + encodeURIComponent(text) : ''),
-                        selected: true
-                    });
-                }
+            bg.checkExtExists(function() {
+                chrome.contextMenus.create({
+                    type: "normal",
+                    id: "item",
+                    title: mono.language.ctxMenuTitle,
+                    contexts: ["selection"],
+                    onclick: function (info) {
+                        var text = info.selectionText;
+                        chrome.tabs.create({
+                            url: 'index.html' + ( text ? '#?search=' + encodeURIComponent(text) : ''),
+                            selected: true
+                        });
+                    }
+                });
             });
+        });
+    } : (mono.isFF && mono.ffButton) ? function() {
+        "use strict";
+
+        var contentScript = (function() {
+            var onContext = function() {
+                "self".on("click", function() {
+                    var text = window.getSelection().toString();
+                    "self".postMessage(text);
+                });
+            };
+            var minifi = function(str) {
+                var list = str.split('\n');
+                var newList = [];
+                list.forEach(function(line) {
+                    newList.push(line.trim());
+                });
+                return newList.join('');
+            };
+            var onClickString = onContext.toString().replace(/"self"/g, 'self');
+            var n_pos =  onClickString.indexOf('{')+1;
+            onClickString = onClickString.substr(n_pos, onClickString.length - 1 - n_pos).trim();
+            return minifi(onClickString);
+        })();
+
+        var self = require('sdk/self');
+
+        if (bg.ffContextMenu) {
+            bg.ffContextMenu.parentMenu.removeItem(bg.ffContextMenu);
+            bg.ffContextMenu = null;
+        }
+
+        if (!bg.settings.contextMenu) {
+            return;
+        }
+
+        var contextMenu = require("sdk/context-menu");
+        bg.ffContextMenu = contextMenu.Item({
+            label: mono.language.ctxMenuTitle,
+            context: contextMenu.SelectionContext(),
+            image: self.data.url('./icons/icon-16.png'),
+            contentScript: contentScript,
+            onMessage: function (text) {
+                var tabs = require('sdk/tabs');
+                tabs.open(self.data.url('index.html') + '#?search=' + encodeURIComponent(text));
+            }
         });
     } : function() {
         "use strict";
@@ -79,6 +143,16 @@ var bg = {
     },
     once: function() {
         "use strict";
+        if (mono.isSafariBgPage) {
+            safari.extension.settings.addEventListener('change', function(event){
+                if (event.key !== 'open_options') {
+                    return;
+                }
+                var tab = safari.application.activeBrowserWindow.openTab();
+                tab.url = safari.extension.baseURI + 'options.html';
+                tab.activate();
+            });
+        }
         if (mono.isChrome) {
             chrome.omnibox.onInputEntered.addListener(function (text) {
                 chrome.tabs.create({
@@ -111,6 +185,11 @@ var bg = {
                 bg.updateContextMenu();
                 bg.updateBtnAction();
             }, storage.langCode);
+
+            if (mono.isSafari) {
+                // update popup window
+                safari.extension.popovers[0].contentWindow.popup.update();
+            }
         });
     }
 };

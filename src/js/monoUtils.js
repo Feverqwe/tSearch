@@ -14,6 +14,10 @@ mono.param = function(params) {
     }
     return args.join('&');
 };
+mono.wrapWebAppUrl = function(url) {
+    "use strict";
+    return '/app/via?url=' + encodeURIComponent(url);
+};
 mono.ajax = function(obj) {
     var url = obj.url;
 
@@ -38,6 +42,10 @@ mono.ajax = function(obj) {
 
     if (obj.changeUrl !== undefined) {
         url = obj.changeUrl(url, method);
+    }
+
+    if (mono.isWebApp) {
+        url = mono.wrapWebAppUrl(url);
     }
 
     var xhr = new mono.ajax.xhr();
@@ -82,6 +90,31 @@ mono.ajax = function(obj) {
         xhr.onabort = function() {
             obj.abort(xhr);
         }
+    }
+
+    if (mono.isOpera) {
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState <= 1 || [302, 0].indexOf(xhr.status) === -1) {
+                return;
+            }
+
+            // Opera xhr redirect
+            if (obj.noRedirect === undefined) {
+                obj.noRedirect = 5;
+            }
+            var location = xhr.getResponseHeader('Location');
+            if (!location || obj.noRedirect < 1) {
+                return;
+            }
+
+            obj.noRedirect--;
+            var _obj = mono.expand({}, obj);
+            _obj.url = location;
+            obj.success = undefined;
+            obj.error = undefined;
+            var _xhr = mono.ajax(_obj);
+            xhr.abort = _xhr.abort;
+        };
     }
 
     xhr.onload = function () {

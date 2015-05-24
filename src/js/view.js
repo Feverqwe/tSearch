@@ -1546,6 +1546,39 @@ var view = {
             view.varCache.$requestInput.autocomplete('enable');
         }, 1000);
     },
+    showExtensionInfo: function() {
+        "use strict";
+        //todo: fix me!
+        var closeBtn = undefined;
+        var popup = undefined;
+        // utm_source
+        var url = 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh?utm_source=TmsInfoPopup';
+        $(document.body).append(popup = $('<div>', {class: 'extInfoContainer'}).append(
+            $('<a>', {title: _lang.extPopupInstall, href: url + '&utm_content=img', target: '_blank'}).append(
+                $('<img>', {src: 'images/extAd_'+_lang.lang+'.png'})
+            ).on('click', function() {
+                    closeBtn.trigger('click');
+                }),
+            $('<div>', {class: 'info_head'}).append(
+                $('<span>', {class: 'text', text: _lang.extPopupInfo}).append(
+                    ' ', $('<a>', {text: _lang.extPopupInstall, href: url + '&utm_content=link', target: '_blank'})
+                ).on('click', function() {
+                        closeBtn.trigger('click');
+                    }),
+                closeBtn = $('<a>', {class: 'close', href: '#', text: _lang.word_close}).on('click', function(e) {
+                    e.preventDefault();
+                    mono.storage.set({extensionPopup: 1});
+                    popup.css('opacity', 0);
+                    setTimeout(function() {
+                        popup.remove();
+                    }, 1000);
+                })
+            )
+        ));
+        setTimeout(function() {
+            popup.css('opacity', 1);
+        }, 500);
+    },
     once: function() {
         "use strict";
         view.varCache.tableSortColumnId = engine.settings.sortColumn;
@@ -1875,6 +1908,15 @@ var view = {
 
         document.body.appendChild(mono.create('script', {src: 'js/notifer.js'}));
         document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
+
+        if (mono.isChrome && mono.isChromeWebApp) {
+            mono.storage.get('extensionPopup', function(storage) {
+                "use strict";
+                if (!storage.extensionPopup) {
+                    view.showExtensionInfo();
+                }
+            });
+        }
     }
 };
 

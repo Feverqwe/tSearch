@@ -1,9 +1,5 @@
 window.GoogleAnalyticsObject = 'ga';
 var ga = window.ga = window.ga || function() {
-    var list = [];
-    for (var i = 0, len = arguments.length; i < len; i++) {
-        list.push(JSON.stringify(arguments[i]));
-    }
     (window.ga.q = window.ga.q || []).push(arguments);
 };
 
@@ -20,9 +16,12 @@ engine.initCounter = function() {
     gas.async = 1;
     gas.src = 'https://www.google-analytics.com/analytics.js';
     var success = function() {
-        var firstSctipt = document.getElementsByTagName('script')[0];
-        firstSctipt.parentNode.insertBefore(gas, firstSctipt);
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(gas, firstScript);
     };
+    if (mono.isWebApp) {
+        return success();
+    }
     mono.ajax({
         type: 'HEAD',
         url: gas.src,
