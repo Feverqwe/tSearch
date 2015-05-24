@@ -26,7 +26,7 @@ engine.trackerLib.riperam = {
             categoryUrl: {selector: 'dl>dt>a:eq(3)', attr: 'href'},
             title: 'dl>dt>a.topictitle',
             url: {selector: 'dl>dt>a.topictitle', attr: 'href'},
-            size: 'dl>dt>b:eq(1)',
+            size: 'dl>dt>b:eq(-2)',
             downloadUrl: {selector: 'dl>dt>a:eq(0)', attr: 'href'},
             seed: 'dl>dd.posts>span.my_tt.seed',
             peer: 'dl>dd.posts>span.my_tt.leech',
