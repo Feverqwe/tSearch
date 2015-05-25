@@ -45,6 +45,9 @@ var popup = {
         popup.domCache.searchBtn.addEventListener('click', function(e) {
             e.preventDefault();
             var request = popup.domCache.requestInput.value.trim();
+            if (typeof e.detail === 'string' && e.detail) {
+                request = e.detail.trim();
+            }
             var url = 'index.html' + (request && '#?search=' + encodeURIComponent(request));
             mono.openTab(url);
             if (mono.isFF || mono.isSafari) {
@@ -109,7 +112,7 @@ var popup = {
             },
             select: function() {
                 arguments[1].item.value = popup.varCache.autocompleteLastFocus;
-                popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
+                popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true, detail: arguments[1].item.value}));
             },
             close: function() {
                 mono.resizePopup(undefined, document.body.clientHeight);

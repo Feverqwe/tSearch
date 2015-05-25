@@ -1825,6 +1825,9 @@ var view = {
             view.domCache.searchBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 var request = this.domCache.requestInput.value.trim();
+                if (typeof e.detail === 'string' && e.detail) {
+                    request = e.detail.trim();
+                }
                 this.search(request);
 
                 this.freezAutocomplete();
@@ -1870,7 +1873,7 @@ var view = {
                 },
                 select: function() {
                     arguments[1].item.value = view.varCache.autocompleteLastFocus;
-                    view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
+                    view.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true, detail: arguments[1].item.value}));
                 },
                 create: function() {
                     var hasTopShadow = 0;
