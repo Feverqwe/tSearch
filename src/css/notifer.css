@@ -6,12 +6,19 @@
     height: 100%;
     width: 100%;
 }
-.nf-notifi {
-    position: fixed;
+.nf-notifi-container {
+    display: block;
     z-index: 110;
-    width: 230px;
-    margin-left: calc(50% - 115px);
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    height: 0;
+}
+.nf-notifi {
+    display: inline-block;
+    width: 230px;
     background-color: #fff;
     box-shadow: 0 2px 10px 0 rgba(0,0,0,0.2);
     border: 1px solid #ccc;
@@ -72,7 +79,6 @@
 
 .nf-notifi.custom-tracker {
     width: 410px;
-    margin-left: calc(50% - 205px);
 }
 
 .nf-notifi.custom-tracker textarea {

@@ -123,9 +123,10 @@ var showNotification = function(template, onClose) {
     };
 
     createLayer();
-    nodeCache.body = $('<div>', {'class': prefix + '-notifi'});
+    nodeCache.container = $('<div>', {'class': prefix + '-notifi-container'});
+    nodeCache.container.append(nodeCache.body = $('<div>', {'class': prefix + '-notifi'}));
     readTemplate.call(nodeCache.body, template);
-    $(document.body).append(nodeCache.body);
+    $(document.body).append(nodeCache.container);
     if (focusEl) {
         focusEl.focus();
     }
