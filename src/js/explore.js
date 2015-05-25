@@ -1636,7 +1636,7 @@ var explore = {
 
         for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
             torrentObj.lowerCategoryTitle = !torrentObj.categoryTitle ? '' : torrentObj.categoryTitle.toLowerCase();
-            if (engine.settings.teaserFilter && view.teaserFilter(torrentObj.lowerCategoryTitle)) {
+            if (engine.settings.teaserFilter && view.teaserFilter(torrentObj.title + ' ' + torrentObj.lowerCategoryTitle)) {
                 continue;
             }
             if (torrentObj.date < hYearAgo) {
