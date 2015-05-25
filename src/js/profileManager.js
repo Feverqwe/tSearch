@@ -786,7 +786,7 @@ var profileManager = {
         this.domCache.profileName.value = '';
         this.domCache.filterInput.dispatchEvent(new CustomEvent('dblclick'));
         if (this.domCache.extendView.classList.contains('checked')) {
-            this.domCache.extendView.dispatchEvent(new CustomEvent('click'));
+            this.domCache.extendView.dispatchEvent(new CustomEvent('click', {cancelable: true}));
         }
     },
     add: function() {
