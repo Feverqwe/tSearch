@@ -529,7 +529,7 @@ var exKit = {
     },
     bindFunc: function(tracker, obj, key1) {
         "use strict";
-        if (obj[key1] === undefined) return;
+        if (obj[key1] === undefined || obj[key1].hasBind) return;
         var type = typeof obj[key1];
         var context = {
             tracker: tracker,
@@ -540,6 +540,7 @@ var exKit = {
         } else {
             obj[key1] = exKit.funcList2func.bind(context, exKit.prepareFuncList(obj[key1]));
         }
+        obj[key1].hasBind = true;
     },
     prepareCustomTracker: function(trackerJson) {
         "use strict";
