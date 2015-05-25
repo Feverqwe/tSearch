@@ -1,4 +1,5 @@
 module.exports = function (grunt) {
+    var devMode = false;
     var baseDataList = [
         '_locales/**',
         'css/**',
@@ -145,6 +146,10 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('compressJs', function() {
+        "use strict";
+        if (devMode) {
+            return;
+        }
         var ccTask = {
             closurecompiler: {
                 minify: {
@@ -210,7 +215,12 @@ module.exports = function (grunt) {
 
     require('./grunt/chrome.js').run(grunt);
 
-    grunt.registerTask('dev', ['chrome', 'watch']);
+    grunt.registerTask('devMode', function() {
+        "use strict";
+        devMode = true;
+    });
+
+    grunt.registerTask('dev', ['devMode', 'chrome', 'watch']);
 
     grunt.registerTask('default', [
         'clean:output',
