@@ -911,7 +911,7 @@ var view = {
             };
             torrentObj.lowerTitle = torrentObj.title.toLowerCase();
             torrentObj.lowerCategoryTitle = !torrentObj.categoryTitle ? '' : torrentObj.categoryTitle.toLowerCase();
-            if (engine.settings.teaserFilter && this.teaserFilter(torrentObj.lowerCategoryTitle)) {
+            if (engine.settings.teaserFilter && this.teaserFilter(torrentObj.lowerTitle+' '+torrentObj.lowerCategoryTitle)) {
                 continue;
             }
             cacheItem.filter = view.getFilterState(torrentObj);
