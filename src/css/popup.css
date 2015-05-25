@@ -63,8 +63,6 @@ body.loading {
     background-color: #337AF8;
     border: 1px solid #337AF8;
     color: #fff;
-    padding-left: 15px;
-    padding-right: 15px;
     text-align: center;
     font-size: 14px;
     margin-left: 2px;
@@ -72,6 +70,7 @@ body.loading {
     text-decoration: none;
     vertical-align: top;
     outline-color: #3802FD;
+    width: 75px;
 }
 #search_btn:hover {
     background-color: #337AF8;
