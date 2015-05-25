@@ -99,6 +99,7 @@ engine.trackerLib.thepiratebay = {
             },
             date: function(value) {
                 "use strict";
+                var m;
                 var minAgoFunc = function(tracker, value) {
                     var dateSelector = tracker.search.torrentSelector.date.selector || tracker.search.torrentSelector.date;
                     var minAgo = tracker.env.el.find(dateSelector).children('b').text();
@@ -113,7 +114,7 @@ engine.trackerLib.thepiratebay = {
                     return false;
                 };
                 if (this.tracker.search.mode === 'dbl') {
-                    var m = value.match(this.tracker.search.onGetValue.sizeR);
+                    m = value.match(this.tracker.search.onGetValue.sizeR);
                     if (!m) {
                         return;
                     }
@@ -123,6 +124,11 @@ engine.trackerLib.thepiratebay = {
                 var minAgo = minAgoFunc(this.tracker, value);
                 if (minAgo !== false) {
                     return minAgo;
+                }
+
+                if (m = value.match(/(\d{1,2})-(\d{1,2})\s(\d{1,2}:\d{1,2})/)) {
+                    // dd-mm hh-mm
+                    value = m[1]+'-'+m[2]+' '+(new Date()).getFullYear() + ' '+m[3];
                 }
 
                 value = exKit.funcList.todayReplace(value, 3);
