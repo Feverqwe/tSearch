@@ -175,5 +175,12 @@
     "resetSettings": {"message": "Сбросить настройки"},
 
     "extPopupInfo": {"message": "Добавь быстрый поиск в свой браузер!"},
-    "extPopupInstall": {"message": "Скачай расширение!"}
+    "extPopupInstall": {"message": "Скачай расширение!"},
+
+    "downloadExtensionTitle": {"message": "Скачай расширение для своего браузера!"},
+    "webAppFunctionUnavailable": {"message": "[{img: {style: 'float: left;margin-right: 10px;', src: 'img/icon_48.png'}}, 'Увы в веб версии приложения эта функция не доступна.', {br:{}}, {br:{}}, 'Хотите установить расширение в браузер?']"},
+    "webAppTrackersUnavailable": {"message": "[{img: {style: 'float: left;margin-right: 10px;', src: 'img/icon_48.png'}}, 'Некотрые трекеры не доступны в веб версии.', {br:{}}, {br:{}}, 'Хотите установить расширение в браузер?']"},
+
+    "ok": {"message": "OK"},
+    "notNow": {"message": "Не сейчас"}
 }

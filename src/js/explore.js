@@ -1896,65 +1896,70 @@ var explore = {
                 var currentBrowser = undefined;
                 var domList = {};
                 var dlExBody = undefined;
-                explore.domCache.gallery.after(
-                    dlExBody = $('<div>', {id: 'explore_download_extension'}).append([
-                        $('<h1>', {
-                            text: _lang.downloadExtensionTitle
-                        }),
-                        currentBrowser = $('<div>', {
-                            class: 'currentBrowser'
-                        }),
-                        $('<div>', {
-                            class: 'browserList'
-                        }).append((function(){
-                            var obj = {
-                                safari: {
-                                    title: 'Safari',
-                                    link: 'http://static.tms.mooo.com/safari/build_safari.safariextz'
-                                },
-                                chrome: {
-                                    title: 'Chrome',
-                                    link: 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh'
-                                },
-                                firefox: {
-                                    title: 'Firefox',
-                                    link: 'http://static.tms.mooo.com/firefox/build_firefox.xpi'
-                                },
-                                opera: {
-                                    title: 'Opera',
-                                    link: 'https://addons.opera.com/ru/extensions/details/torrents-multisearch/'
-                                }
-                            };
-                            var list = [];
-                            for (var key in obj) {
-                                var item = obj[key];
-                                list.push(domList[key] = $('<a>', {
-                                    href: item.link,
-                                    class: key,
-                                    target: '_blank'
-                                }).append([
-                                    $('<img>', {src: 'web/'+key+'.png'}),
-                                    $('<p>', {
-                                        text: item.title
-                                    })
-                                ]));
-                            }
-                            return list;
-                        })())
-                    ])
+                explore.domCache.gallery.parentNode.appendChild(
+                    dlExBody = mono.create('div', {
+                        id: 'explore_download_extension',
+                        append: [
+                            mono.create('h1', {
+                                text: mono.language.downloadExtensionTitle
+                            }),
+                            currentBrowser = mono.create('div', {
+                                class: 'currentBrowser'
+                            }),
+                            mono.create('div', {
+                                class: 'browserList',
+                                append: (function(){
+                                    var obj = {
+                                        safari: {
+                                            title: 'Safari',
+                                            link: 'http://static.tms.mooo.com/safari/build_safari.safariextz'
+                                        },
+                                        chrome: {
+                                            title: 'Chrome',
+                                            link: 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh'
+                                        },
+                                        firefox: {
+                                            title: 'Firefox',
+                                            link: 'http://static.tms.mooo.com/firefox/build_firefox.xpi'
+                                        },
+                                        opera: {
+                                            title: 'Opera',
+                                            link: 'https://addons.opera.com/ru/extensions/details/torrents-multisearch/'
+                                        }
+                                    };
+                                    var list = [];
+                                    for (var key in obj) {
+                                        var item = obj[key];
+                                        list.push(domList[key] = mono.create('a', {
+                                            href: item.link,
+                                            class: key,
+                                            target: '_blank',
+                                            append: [
+                                                mono.create('img', {
+                                                    src: 'web/'+key+'.png'
+                                                }),
+                                                mono.create('p', {
+                                                    text: item.title
+                                                })
+                                            ]
+                                        }));
+                                    }
+                                    return list;
+                                })()
+                            })
+                        ]
+                    })
                 );
-                currentBrowser.append(domList[getBrowserName()] || $('<img>', {
-                        src: 'images/icon_128.png'
-                    }));
-                $(document).on('installExtensionMenu', function() {
-                    dlExBody.addClass('popupMode');
+                currentBrowser.appendChild(domList[getBrowserName()] || mono.create('img', {src: 'img/icon_128.png'}));
+                document.addEventListener('installExtensionMenu', function() {
+                    dlExBody.classList.add('popupMode');
                     var stopProp = function(e) {
                         e.stopPropagation();
                     };
-                    dlExBody.on('click', stopProp);
-                    $(document).on('click', function() {
-                        dlExBody.removeClass('popupMode');
-                        dlExBody.off('click', stopProp);
+                    dlExBody.addEventListener('click', stopProp);
+                    document.addEventListener('click', function() {
+                        dlExBody.classList.remove('popupMode');
+                        dlExBody.removeEventListener('click', stopProp);
                     });
                 });
             });

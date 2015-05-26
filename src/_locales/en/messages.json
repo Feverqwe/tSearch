@@ -175,5 +175,12 @@
     "resetSettings": {"message": "Reset rules"},
 
     "extPopupInfo": {"message": "Add a quick search in your browser!"},
-    "extPopupInstall": {"message": "Download the extension!"}
+    "extPopupInstall": {"message": "Download the extension!"},
+
+    "downloadExtensionTitle": {"message": "Install the extension for your browser!"},
+    "webAppFunctionUnavailable": {"message": "[{img: {style: 'float: left;margin-right: 10px;', src: 'img/icon_48.png'}}, 'Sorry but the web version of the application this function is not available.', {br:{}}, {br:{}}, 'Want to install the extension in the browser?']"},
+    "webAppTrackersUnavailable": {"message": "[{img: {style: 'float: left;margin-right: 10px;', src: 'img/icon_48.png'}}, 'Some trackers are not available in the web version.', {br:{}}, {br:{}}, 'Want to install the extension in the browser?']"},
+
+    "ok": {"message": "OK"},
+    "notNow": {"message": "Not now"}
 }

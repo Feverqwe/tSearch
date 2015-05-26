@@ -506,3 +506,74 @@ ul#explore_gallery ul.body li div.picture > a.link:hover {
     padding-bottom: 0;
     border-bottom: 0;
 }
+
+#explore_download_extension {
+    text-align: center;
+    position: relative;
+}
+#explore_download_extension h1 {
+    color: #5F5F5F;
+}
+#explore_download_extension a {
+    color: #0051D8;
+    text-decoration: none !important;
+    font-size: 1.2em;
+}
+#explore_download_extension .currentBrowser {
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+#explore_download_extension .currentBrowser > a,
+#explore_download_extension .browserList > a {
+    display: inline-block;
+    width: 180px;
+    height: 180px;
+    margin: 40px;
+    padding-top: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
+#explore_download_extension .browserList > a {
+    height: 148px;
+    border: 1px dashed #999;
+}
+#explore_download_extension .browserList > a img {
+    height: 96px;
+    width: 96px;
+}
+#explore_download_extension .currentBrowser > a:hover,
+#explore_download_extension .browserList > a:hover {
+    background-color: #ccc;
+}
+#explore_download_extension .currentBrowser > a:hover {
+    background-color: #ddd;
+}
+#explore_download_extension .currentBrowser > a {
+    width: auto;
+    height: 150px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+#explore_download_extension .currentBrowser > a > * {
+    display: inline-block;
+    vertical-align: middle;
+}
+#explore_download_extension .currentBrowser > a p {
+    font-size: 3em;
+    margin: 0;
+    margin-left: 20px;
+}
+#explore_download_extension.popupMode {
+    z-index: 9999;
+    box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);
+    width: 960px;
+    position: absolute;
+    padding-bottom: 30px;
+    background-color: rgb(255, 255, 255);
+}
+
+.nf-notifi.functionUnavailable {
+    text-align: left;
+
+}

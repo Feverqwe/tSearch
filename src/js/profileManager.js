@@ -600,13 +600,23 @@ var profileManager = {
         }
 
         if (mono.isWebApp) {
-            // todo: fix me!
-            this.domCache.createCustomTrackerBtn.on('click', function(e) {
+            this.domCache.createCustomTrackerBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                notify.call({focusYes: true}, [{type: 'note', fragment: mono.parseTemplate(_lang.webAppFunctionUnavailable)}], _lang.wordYes, _lang.wordNoNotNow, function() {
-                    if (arguments[0] === undefined) return;
-                    $(document).trigger('installExtensionMenu');
-                });
+                var body = showNotification([
+                    [{div: {append: mono.parseTemplate(mono.language.webAppFunctionUnavailable)}}],
+                    [
+                        {input: {type: "button", value: mono.language.ok, name: 'yesBtn', on: ['click', function(e) {
+                            e.stopPropagation();
+                            this.close();
+                            document.dispatchEvent(new CustomEvent('installExtensionMenu'));
+                        }]}},
+                        {input: {type: "button", value: mono.language.notNow, name: 'noBtn', on: ['click', function(e) {
+                            e.stopPropagation();
+                            this.close();
+                        }]}}
+                    ]
+                ]);
+                body.addClass('functionUnavailable');
             });
         }
 
