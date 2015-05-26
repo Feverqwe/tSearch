@@ -145,6 +145,15 @@ module.exports = function (grunt) {
         output: '<%= pkg.outputDir %>'
     });
 
+    grunt.registerTask('setAppInfo', function() {
+        "use strict";
+        var enginePath = grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>engine.js');
+        var content = grunt.file.read(enginePath);
+        content = content.replace(/\{appId\}/g, grunt.config('appId'));
+        content = content.replace(/\{appVersion\}/g, grunt.config('pkg.extVersion'));
+        grunt.file.write(enginePath, content);
+    });
+
     grunt.registerTask('compressJs', function() {
         "use strict";
         if (devMode) {

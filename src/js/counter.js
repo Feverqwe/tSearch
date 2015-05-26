@@ -9,6 +9,11 @@ ga('set', 'forceSSL', true);
 ga('set', 'checkProtocolTask', null);
 ga('require', 'displayfeatures');
 ga('send', 'pageview');
+ga('send', 'screenview', {
+    'appName': 'tms',
+    'appId': '{appId}',
+    'appVersion': '{appVersion}'
+});
 
 engine.initCounter = function() {
     "use strict";

@@ -47,13 +47,15 @@ exports.run = function (grunt) {
             dataJsFolder: 'js/',
             includesFolder: 'includes/',
             dataFolder: '',
-            buildName: 'tms_<%= pkg.extVersion %>'
+            buildName: 'tms_<%= pkg.extVersion %>',
+            appId: 'chromeExt'
         });
 
         grunt.task.run([
             'extensionBase',
             'chromeManifest',
             'json-format:chromeManifestFormat',
+            'setAppInfo',
             'compressJs',
             'compress:chrome'
         ]);
@@ -73,7 +75,8 @@ exports.run = function (grunt) {
             dataJsFolder: 'js/',
             includesFolder: 'includes/',
             dataFolder: '',
-            buildName: 'tms_app_<%= pkg.extVersion %>'
+            buildName: 'tms_app_<%= pkg.extVersion %>',
+            appId: 'chromeApp'
         });
 
         grunt.task.run([
@@ -81,6 +84,7 @@ exports.run = function (grunt) {
             'chromeAppManifest',
             'rmPopup',
             'json-format:chromeManifestFormat',
+            'setAppInfo',
             'compressJs',
             'compress:chrome'
         ]);
