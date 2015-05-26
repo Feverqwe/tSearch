@@ -1,1 +1,4 @@
-<?xml version="1.0" ?><svg height="80px" viewBox="0 0 80 80" width="80px" xmlns="http://www.w3.org/2000/svg" ><polygon points="61,37 43,37 43,19 37,19 37,37 19,37 19,43 37,43 37,61 43,61 43,43 61,43 "/></svg>
+<?xml version="1.0" ?>
+<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" >
+<polygon points="61,37 43,37 43,19 37,19 37,37 19,37 19,43 37,43 37,61 43,61 43,43 61,43 "/>
+</svg>
