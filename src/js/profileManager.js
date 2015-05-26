@@ -387,7 +387,7 @@ var profileManager = {
                     var trackerObj = engine.trackerLib[trackerId];
                     if (!trackerObj) {
                         trackerObj = {
-                            proxyIndex: trackerObj.proxyIndex || 0,
+                            proxyIndex: trackerItem.proxyIndex || 0,
                             id: trackerId,
                             icon: '#skull',
                             title: trackerId,
