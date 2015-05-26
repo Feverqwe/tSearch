@@ -16,6 +16,9 @@ mono.param = function(params) {
 };
 mono.wrapWebAppUrl = function(url) {
     "use strict";
+    if (url.substr(0, 8) === '_locales') {
+        return url;
+    }
     return '/app/via?url=' + encodeURIComponent(url);
 };
 mono.ajax = function(obj) {

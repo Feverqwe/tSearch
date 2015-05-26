@@ -1869,7 +1869,7 @@ var explore = {
         }
 
         if (mono.isWebApp) {
-            define.on('jquery', function() {
+            return (function() {
                 var getBrowserName = function() {
                     var browser = '';
                     if(navigator && navigator.userAgent) {
@@ -1915,7 +1915,7 @@ var explore = {
                                         },
                                         chrome: {
                                             title: 'Chrome',
-                                            link: 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh'
+                                            link: 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh?utm_source=webApp'
                                         },
                                         firefox: {
                                             title: 'Firefox',
@@ -1961,8 +1961,7 @@ var explore = {
                         dlExBody.removeEventListener('click', stopProp);
                     });
                 });
-            });
-            return;
+            })();
         }
 
         window.addEventListener('resize', mono.debounce(function onResizeCategoryList() {
