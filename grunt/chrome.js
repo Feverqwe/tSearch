@@ -47,7 +47,7 @@ exports.run = function (grunt) {
             dataJsFolder: 'js/',
             includesFolder: 'includes/',
             dataFolder: '',
-            buildName: 'tms_<%= pkg.extVersion %>',
+            buildName: 'tmsExt_<%= pkg.extVersion %>',
             appId: 'chromeExt'
         });
 
@@ -75,7 +75,7 @@ exports.run = function (grunt) {
             dataJsFolder: 'js/',
             includesFolder: 'includes/',
             dataFolder: '',
-            buildName: 'tms_app_<%= pkg.extVersion %>',
+            buildName: 'tmsApp_<%= pkg.extVersion %>',
             appId: 'chromeApp'
         });
 
