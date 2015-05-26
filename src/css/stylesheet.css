@@ -382,6 +382,7 @@ body.home #result_block {
     padding-bottom: 1px;
     border-bottom: 1px solid transparent;
     vertical-align: middle;
+    padding-top: 1px;
 }
 
 #info_popup li a span,
