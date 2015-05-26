@@ -17,7 +17,8 @@ var explore = {
         movebleStyleList: {},
         quickSearchResultList: [],
         requestObj: {},
-        aboutCache: {}
+        aboutCache: {},
+        qualityListLimit: 50
     },
     sourceOptions: {
         favorites: {
@@ -1729,6 +1730,24 @@ var explore = {
         this.domCache.infoPopupList.appendChild(list);
         this.domCache.infoPopup.style.display = 'block';
     },
+    limitQualityList: function(obj) {
+        "use strict";
+        var list = [];
+        for (var key in obj) {
+            list.push([key, obj[key].createTime || 0]);
+        }
+        list.sort(function(a,b) {
+            if (a[1] < b[1]) {
+                return -1;
+            } else {
+                return 1;
+            }
+        });
+        list.splice(this.varCache.qualityListLimit);
+        for (var i = 0, item; item = list[i]; i++) {
+            delete obj[item[0]];
+        }
+    },
     onSearchSuccess: function(qualityLabel, tracker, request, data) {
         "use strict";
         view.setOnSuccessStatus(tracker, data);
@@ -1737,6 +1756,7 @@ var explore = {
         var torrentList = data.torrentList;
         var topList = this.getTop5Response(torrentList, tracker);
         var qualityObj = {
+            createTime: parseInt(Date.now() / 1000),
             list: topList,
             label: topList.length > 0 && topList[0].quality || undefined
         };
@@ -1744,6 +1764,11 @@ var explore = {
         this.updateInfoPopup(qualityLabel, qualityObj, request);
 
         engine.explorerQualityList[request] = qualityObj;
+
+        if (Object.keys(engine.explorerQualityList).length > this.varCache.qualityListLimit) {
+            this.limitQualityList(engine.explorerQualityList);
+        }
+
         mono.storage.set({explorerQualityList: engine.explorerQualityList});
     },
     onClickQuality: function(el, e) {
