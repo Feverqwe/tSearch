@@ -588,6 +588,38 @@ var profileManager = {
             + '}'
         }));
     },
+    webAppFilterList: function(trackerList) {
+        "use strict";
+        var supportTrackerList = engine.webAppSupportTrackerList;
+        var rmList = [];
+        var i, item;
+        for (i = 0; item = trackerList[i]; i++) {
+            var id = typeof item === 'string' ? item : item.id;
+            if ( supportTrackerList.indexOf(id) === -1 ) {
+                rmList.push(item);
+            }
+        }
+        for (i = 0; item = rmList[i]; i++) {
+            trackerList.splice(trackerList.indexOf(item), 1);
+        }
+        if (rmList.length > 0) {
+            var body = showNotification([
+                [{div: {append: mono.parseTemplate(mono.language.webAppTrackersUnavailable)}}],
+                [
+                    {input: {type: "button", value: mono.language.ok, name: 'yesBtn', on: ['click', function(e) {
+                        e.stopPropagation();
+                        this.close();
+                        document.dispatchEvent(new CustomEvent('installExtensionMenu'));
+                    }]}},
+                    {input: {type: "button", value: mono.language.notNow, name: 'noBtn', on: ['click', function(e) {
+                        e.stopPropagation();
+                        this.close();
+                    }]}}
+                ]
+            ]);
+        }
+        return trackerList;
+    },
     once: function() {
         "use strict";
         if (this.once.ready) return;
@@ -641,10 +673,11 @@ var profileManager = {
                 return;
             }
 
-            if (this.varCache.currentProfileName) {
-                delete engine.profileList[this.varCache.currentProfileName];
-            }
-            engine.profileList[profileName] = this.getSelectedTrackerList();
+            var trackerList = this.getSelectedTrackerList();
+
+            mono.isWebApp && this.webAppFilterList(trackerList);
+
+            engine.profileList[profileName] = trackerList;
 
             var changes = {
                 profileList: engine.profileList
