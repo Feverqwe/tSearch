@@ -1870,7 +1870,6 @@ var explore = {
 
         if (mono.isWebApp) {
             define.on('jquery', function() {
-                // todo: fix me!
                 var getBrowserName = function() {
                     var browser = '';
                     if(navigator && navigator.userAgent) {
