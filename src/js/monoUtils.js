@@ -717,5 +717,3 @@ mono.getChild = function (node, cb) {
     }
     return null;
 };
-
-mono.isWebApp = true;
