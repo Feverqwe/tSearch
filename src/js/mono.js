@@ -72,6 +72,11 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
         }
         //@strip_firefox_<
 
+        if (location.host === 'static.tms.mooo.com') {
+            mono.isWebApp = true;
+            return;
+        }
+
         //@strip_gm_>
         if (typeof GM_getValue !== 'undefined') {
             mono.isGM = true;
