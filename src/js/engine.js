@@ -234,7 +234,9 @@ var engine = {
             mono.getLanguage(function() {
                 mono.storage.sync.get(syncOptionsList, function(syncStorage) {
                     for (var i = 0, item; item = syncOptionsList[i]; i++) {
-                        storage[item] = syncStorage[item];
+                        if (syncStorage.hasOwnProperty(item)) {
+                            storage[item] = syncStorage[item];
+                        }
                     }
 
                     for (var i = 0, item; item = cacheList[i]; i++) {
