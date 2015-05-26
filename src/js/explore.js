@@ -1178,11 +1178,10 @@ var explore = {
 
         var storage = {};
         storage[categoryObj.cacheName] = cache;
-        mono.storage.set(storage, function() {
-            if (engine.settings.enableFavoriteSync === 1 && type === 'favorites') {
-                mono.storage.sync.set(storage);
-            }
-        });
+        mono.storage.set(storage);
+        if (engine.settings.enableFavoriteSync === 1 && type === 'favorites') {
+            mono.storage.sync.set(storage);
+        }
     },
     xhr_send: function(type, source, page, page_mode) {
         "use strict";

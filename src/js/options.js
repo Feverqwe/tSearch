@@ -200,6 +200,9 @@ var options = {
     saveProxyList: function() {
         "use strict";
         mono.storage.set({proxyList: engine.settings.proxyList});
+        if (engine.settings.profileListSync) {
+            mono.storage.sync.set({proxyList: engine.settings.proxyList});
+        }
     },
     writeProxyList: function() {
         "use strict";
