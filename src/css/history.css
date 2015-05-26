@@ -101,7 +101,8 @@ body {
 
 *:hover > .icon.del {
     cursor: pointer;
-    background-image: url(../img/clear.png);
+    background: url(../img/delete.svg) center no-repeat;
+    background-size: 14px;
 }
 
 .request {

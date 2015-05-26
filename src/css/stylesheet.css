@@ -79,7 +79,8 @@ body.home #result_block {
     background-image: url(../img/history.png);
 }
 #settings_btn    {
-    background-image: url(../img/settings2.png);
+    background: url(../img/settings.svg) center no-repeat;
+    background-size: 16px;
 }
 
 .content {
@@ -220,7 +221,8 @@ body.home #result_block {
 
 .tracker-list-block .ui-resizable-s {
     cursor: s-resize;
-    background: url(../img/resize.png) no-repeat center center;
+    background: url(../img/three_dots.svg) no-repeat center;
+    background-size: 12px;
     opacity: 0.5;
     transition: opacity 0.2s;
     width: 100%;

@@ -172,7 +172,8 @@
 }
 
 #manager .mgr-footer .extend.btn {
-    background-image: url(../img/glass.png);
+    background: url(../img/view.svg) center no-repeat;
+    background-size: 16px;
     margin-right: 6px;
 }
 #manager .mgr-footer .extend.btn.checked {
@@ -309,28 +310,6 @@
 
 #manager .mgr-tracker-list .options {
     display: none;
-}
-
-#manager .mgr-tracker-list div.icons {
-    float: right;
-}
-#manager .mgr-tracker-list div.icons > div {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    opacity: 0.6;
-}
-#manager .mgr-tracker-list div.icons > div:hover {
-    opacity: 1;
-}
-#manager .mgr-tracker-list div.icons > div.auth {
-    background: url(../img/need_auth.png) center center;
-}
-#manager .mgr-tracker-list div.icons > div.rus {
-    background: url(../img/russian.png) center center;
-}
-#manager .mgr-tracker-list div.icons > div.cirilic {
-    background: url(../img/cyrillic.png) center center;
 }
 
 #manager #manager_remove_list.hide {
