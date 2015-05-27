@@ -138,7 +138,12 @@ var view = {
                 view.delLink(itemIndex, historyObjIndex);
             }
 
-            view.writeHistory();
+            mono.storage.get('searchHistory', function(storage) {
+                if (Array.isArray(storage.searchHistory)) {
+                    engine.history = storage.searchHistory;
+                }
+                view.writeHistory();
+            });
         });
         view.writeHistory();
     }

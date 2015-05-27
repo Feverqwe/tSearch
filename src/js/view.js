@@ -1324,7 +1324,9 @@ var view = {
         view.varCache.searchResultCache = [];
         view.resultCounterReset();
         request = view.prepareRequest(request);
-        view.inHistory();
+        this.updHistory(function() {
+            view.inHistory();
+        });
         var trackerList = view.getTrackerList();
         this.setDocumentTitle(fromHistory, request, trackerList);
         view.setSearchState();
@@ -1537,6 +1539,16 @@ var view = {
             title: document.title
         });
     },
+    updHistory: function(cb) {
+        "use strict";
+        mono.storage.get('searchHistory', function(storage) {
+            if (Array.isArray(storage.searchHistory)) {
+                engine.history = storage.searchHistory;
+                this.prepareHistory();
+            }
+            cb();
+        }.bind(this));
+    },
     prepareHistory: function() {
         "use strict";
         var historyList = view.varCache.historyList = engine.history;
@@ -1721,7 +1733,10 @@ var view = {
 
             var index = el.dataset.index;
             var searchResultCache = view.varCache.searchResultCache;
-            view.inLinkHistory(searchResultCache[index]);
+
+            this.updHistory(function() {
+                view.inLinkHistory(searchResultCache[index]);
+            });
         });
 
         view.writeTableHead();
