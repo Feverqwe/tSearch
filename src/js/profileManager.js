@@ -679,8 +679,10 @@ var profileManager = {
 
             engine.profileList[profileName] = trackerList;
 
+            engine.updProfileArr();
+
             var changes = {
-                profileList: engine.profileList
+                profileList: engine.profileArr
             };
 
             this.updateProfileList(profileName, changes, function () {
@@ -693,8 +695,10 @@ var profileManager = {
 
             delete engine.profileList[this.varCache.currentProfileName];
 
+            engine.updProfileArr();
+
             var changes = {
-                profileList: engine.profileList
+                profileList: engine.profileArr
             };
 
             this.updateProfileList(undefined, changes, function () {

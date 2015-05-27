@@ -181,7 +181,13 @@ var bg = {
             }
             try {
                 var obj = JSON.parse(value);
-                storage.profileList = obj;
+                if (typeof obj === 'object') {
+                    var profileArr = [];
+                    for (var key in obj) {
+                        profileArr.push({name: key, trackerList: obj[key]});
+                    }
+                    storage.profileList = profileArr;
+                }
             } catch (e) {}
         };
         var migrateExploreOptions = function(value, storage) {

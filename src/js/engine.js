@@ -45,6 +45,7 @@ var engine = {
     ],
     explorerOptions: [],
     profileList: {},
+    profileArr: [],
     currentProfile: undefined,
     history: [],
     topList: {},
@@ -68,20 +69,39 @@ var engine = {
         return list;
     },
 
+    updProfileArr: function() {
+        "use strict";
+        engine.profileArr.splice(0);
+        for (var key in engine.profileList) {
+            engine.profileArr.push({name: key, trackerList: engine.profileList[key]});
+        }
+    },
+
     prepareProfileList: function(currentProfile, storage) {
         "use strict";
-        if (typeof storage.profileList !== "object") {
-            storage.profileList = undefined;
-        }
-        var profileList = engine.profileList = storage.profileList || {};
-        if (mono.isEmptyObject(profileList)) {
-            profileList['%defaultProfileName%'] = engine.getDefaultProfileList();
-        }
-        if (!profileList.hasOwnProperty(currentProfile)) {
-            for (var item in profileList) {
-                currentProfile = item;
-                break;
+        var profileObj = {};
+        var profileArr = [];
+        if (typeof storage.profileList === "object") {
+            if (!Array.isArray(storage.profileList)) {
+                profileObj = storage.profileList;
+                for (var key in profileObj) {
+                    profileArr.push({name: key, trackerList: profileObj[key]});
+                }
+            } else {
+                profileArr = storage.profileList;
+                for (var i = 0, item; item = profileArr[i]; i++) {
+                    profileObj[item.name] = item.trackerList;
+                }
             }
+        }
+        engine.profileList = profileObj;
+        engine.profileArr = profileArr;
+        if (profileArr.length === 0) {
+            profileObj['%defaultProfileName%'] = engine.getDefaultProfileList();
+            profileArr.push({name: '%defaultProfileName%', trackerList: profileObj['%defaultProfileName%']});
+        }
+        if (!profileObj.hasOwnProperty(currentProfile)) {
+            currentProfile = profileArr[0].name;
         }
         engine.currentProfile = currentProfile;
     },
