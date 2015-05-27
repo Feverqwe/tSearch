@@ -1737,13 +1737,13 @@ var explore = {
             list.push([key, obj[key].createTime || 0]);
         }
         list.sort(function(a,b) {
-            if (a[1] < b[1]) {
+            if (a[1] > b[1]) {
                 return -1;
             } else {
                 return 1;
             }
         });
-        list.splice(this.varCache.qualityListLimit);
+        list.splice(0, this.varCache.qualityListLimit);
         for (var i = 0, item; item = list[i]; i++) {
             delete obj[item[0]];
         }
