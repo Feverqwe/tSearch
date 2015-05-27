@@ -232,11 +232,13 @@
 #manager .mgr-tracker-list .tracker-item .desc {
     font-size: 13px;
     display: inline-block;
+    width: 480px;
+    line-height: normal;
+}
+#manager .mgr-tracker-list .tracker-item .desc .text {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    width: 480px;
-    line-height: normal;
 }
 #manager .mgr-tracker-list .tracker-item .desc .extend {
     margin-top: 2px;

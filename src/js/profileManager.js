@@ -193,6 +193,7 @@ var profileManager = {
                     class: 'desc',
                     append: [
                         mono.create('div', {
+                            class: 'text',
                             text: trackerObj.desc
                         }),
                         mono.create('div', {
