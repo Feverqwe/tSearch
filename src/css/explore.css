@@ -125,8 +125,8 @@ ul#explore_gallery li.loading div.head div.move {
     background-size: 14px;
     opacity: 0.8;
 
-    -moz-animation: loadingIcon 0.7s linear infinite;
-    animation: loadingIcon 0.7s linear infinite;
+    -moz-animation: loadingIcon 0.8s linear infinite;
+    animation: loadingIcon 0.8s linear infinite;
 }
 ul#explore_gallery li.login div.head div.move {
     background: url(../img/login.png) no-repeat center;
@@ -192,8 +192,8 @@ ul#explore_gallery div.head div.actionList div.update.loading {
     background-size: 14px;
     opacity: 0.8;
 
-    -moz-animation: loadingIcon 0.7s linear infinite;
-    animation: loadingIcon 0.7s linear infinite;
+    -moz-animation: loadingIcon 0.8s linear infinite;
+    animation: loadingIcon 0.8s linear infinite;
 }
 ul#explore_gallery div.head div.actionList div.update.error {
     background: url(../img/error.png) no-repeat center;

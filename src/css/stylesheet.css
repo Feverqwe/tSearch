@@ -296,8 +296,8 @@ body.home #result_block {
     background-size: 14px !important;
     opacity: 0.8;
 
-    -moz-animation: loadingIcon 0.7s linear infinite;
-    animation: loadingIcon 0.7s linear infinite;
+    -moz-animation: loadingIcon 0.8s linear infinite;
+    animation: loadingIcon 0.8s linear infinite;
 }
 .icon.error {
     background-image: url(../img/timeout.png) !important;
