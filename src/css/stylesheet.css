@@ -288,8 +288,16 @@ body.home #result_block {
     background-position: center;
     background-repeat: no-repeat;
 }
+
+@-moz-keyframes loadingIcon { 100% { -moz-transform: rotate(360deg); } }
+@keyframes loadingIcon { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 .icon.loading {
-    background-image: url(../img/loading.gif) !important;
+    background: url(../img/refresh.svg) no-repeat center !important;
+    background-size: 14px !important;
+    opacity: 0.8;
+
+    -moz-animation: loadingIcon 0.7s linear infinite;
+    animation: loadingIcon 0.7s linear infinite;
 }
 .icon.error {
     background-image: url(../img/timeout.png) !important;

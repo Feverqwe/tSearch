@@ -121,8 +121,12 @@ ul#explore_gallery div.head > * {
     vertical-align: middle;
 }
 ul#explore_gallery li.loading div.head div.move {
-    background: url(../img/loading.gif) no-repeat center;
-    opacity: 1;
+    background: url(../img/refresh.svg) no-repeat center;
+    background-size: 14px;
+    opacity: 0.8;
+
+    -moz-animation: loadingIcon 0.7s linear infinite;
+    animation: loadingIcon 0.7s linear infinite;
 }
 ul#explore_gallery li.login div.head div.move {
     background: url(../img/login.png) no-repeat center;
@@ -184,8 +188,12 @@ ul#explore_gallery div.head div.actionList div.update:hover {
     opacity: 1;
 }
 ul#explore_gallery div.head div.actionList div.update.loading {
-    background: url(../img/loading.gif) no-repeat center;
-    opacity: 1;
+    background: url(../img/refresh.svg) no-repeat center;
+    background-size: 14px;
+    opacity: 0.8;
+
+    -moz-animation: loadingIcon 0.7s linear infinite;
+    animation: loadingIcon 0.7s linear infinite;
 }
 ul#explore_gallery div.head div.actionList div.update.error {
     background: url(../img/error.png) no-repeat center;
