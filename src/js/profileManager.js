@@ -194,7 +194,8 @@ var profileManager = {
                     append: [
                         mono.create('div', {
                             class: 'text',
-                            text: trackerObj.desc
+                            text: trackerObj.desc,
+                            title: trackerObj.desc
                         }),
                         mono.create('div', {
                             class: 'extend',
