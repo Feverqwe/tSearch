@@ -149,12 +149,12 @@ body.home #result_block {
 }
 .link-block .feedback {
     background: url(../img/info.svg) center left no-repeat;
-    background-size: 6px;
-    background-position-x: 5px;
+    background-size: 16px;
+    background-position-x: 2px;
 }
 .link-block .vk-group {
     background: url(../img/vk.svg) center left no-repeat;
-    background-size: 20px;
+    background-size: 16px
     background-position-x: 0px;
 }
 
