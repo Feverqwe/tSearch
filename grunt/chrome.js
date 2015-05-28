@@ -33,14 +33,14 @@ exports.run = function (grunt) {
         grunt.file.delete(grunt.template.process('<%= output %><%= vendor %><%= dataFolder %>') + 'popup.html');
     });
 
-    grunt.registerTask('chrome', function () {
-        grunt.registerTask('chromeManifest', function() {
-            var manifestPath = grunt.config('output') + grunt.config('vendor') + 'manifest.json';
-            var content = grunt.file.readJSON('src/manifest.json');
-            content.version = grunt.config('pkg.extVersion');
-            grunt.file.write(manifestPath, JSON.stringify(content));
-        });
+    grunt.registerTask('chromeManifest', function() {
+        var manifestPath = grunt.config('output') + grunt.config('vendor') + 'manifest.json';
+        var content = grunt.file.readJSON('src/manifest.json');
+        content.version = grunt.config('pkg.extVersion');
+        grunt.file.write(manifestPath, JSON.stringify(content));
+    });
 
+    grunt.registerTask('chrome', function () {
         grunt.config.merge({
             vendor: 'chrome/src/',
             libFolder: 'js/',
@@ -49,6 +49,27 @@ exports.run = function (grunt) {
             dataFolder: '',
             buildName: 'tmsExt_<%= pkg.extVersion %>',
             appId: 'chromeExt'
+        });
+
+        grunt.task.run([
+            'extensionBase',
+            'chromeManifest',
+            'json-format:chromeManifestFormat',
+            'setAppInfo',
+            'compressJs',
+            'compress:chrome'
+        ]);
+    });
+
+    grunt.registerTask('opera', function () {
+        grunt.config.merge({
+            vendor: 'opera/src/',
+            libFolder: 'js/',
+            dataJsFolder: 'js/',
+            includesFolder: 'includes/',
+            dataFolder: '',
+            buildName: 'tmsExt_opera_<%= pkg.extVersion %>',
+            appId: 'operaExt'
         });
 
         grunt.task.run([

@@ -126,6 +126,7 @@ ul#explore_gallery li.loading div.head div.move {
     opacity: 0.8;
 
     -moz-animation: loadingIcon 0.8s linear infinite;
+    -webkit-animation: loadingIcon 0.8s linear infinite;
     animation: loadingIcon 0.8s linear infinite;
 }
 ul#explore_gallery li.login div.head div.move {
@@ -193,6 +194,7 @@ ul#explore_gallery div.head div.actionList div.update.loading {
     opacity: 0.8;
 
     -moz-animation: loadingIcon 0.8s linear infinite;
+    -webkit-animation: loadingIcon 0.8s linear infinite;
     animation: loadingIcon 0.8s linear infinite;
 }
 ul#explore_gallery div.head div.actionList div.update.error {

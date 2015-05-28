@@ -1,4 +1,5 @@
 exports.run = function (grunt) {
+    return;
     grunt.registerTask('opera12', function () {
         grunt.config.merge({
             copy: {

@@ -294,6 +294,7 @@ body.home #result_block {
 }
 
 @-moz-keyframes loadingIcon { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes loadingIcon { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 @keyframes loadingIcon { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 .icon.loading {
     background: url(../img/refresh.svg) no-repeat center !important;
@@ -301,6 +302,7 @@ body.home #result_block {
     opacity: 0.8;
 
     -moz-animation: loadingIcon 0.8s linear infinite;
+    -webkit-animation: loadingIcon 0.8s linear infinite;
     animation: loadingIcon 0.8s linear infinite;
 }
 .icon.error {

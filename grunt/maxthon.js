@@ -1,4 +1,5 @@
 exports.run = function (grunt) {
+    return;
     grunt.registerTask('mxDef', function() {
         var packagePath = grunt.config('output') + grunt.config('vendor') + 'def.json';
         var content = grunt.file.readJSON(packagePath);

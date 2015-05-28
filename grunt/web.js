@@ -1,4 +1,5 @@
 exports.run = function (grunt) {
+    return;
     grunt.registerTask('web', function () {
         grunt.config.merge({
             copy: {

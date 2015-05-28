@@ -1,4 +1,5 @@
 exports.run = function (grunt) {
+    return;
     var replaceContent = function (content, sha1) {
         content = content.replace('%extVersion%', grunt.config('pkg.extVersion'));
 

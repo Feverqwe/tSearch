@@ -1,4 +1,5 @@
 exports.run = function(grunt) {
+  return;
   grunt.registerTask('makeSafariUpdateFile', function() {
     var vendor = grunt.config('output') + grunt.config('vendor') + '../';
     var fileName = 'update.plist';
