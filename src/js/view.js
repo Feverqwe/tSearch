@@ -1734,7 +1734,7 @@ var view = {
             var index = el.dataset.index;
             var searchResultCache = view.varCache.searchResultCache;
 
-            this.updHistory(function() {
+            view.updHistory(function() {
                 view.inLinkHistory(searchResultCache[index]);
             });
         });
