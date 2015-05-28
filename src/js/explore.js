@@ -1620,7 +1620,7 @@ var explore = {
     },
     getTorrentWeight: function(ratingObj) {
         "use strict";
-        ratingObj.sum -= (ratingObj.rate.seed + ratingObj.rate.music + ratingObj.rate.books + ratingObj.rate.xxx);
+        ratingObj.sum -= (ratingObj.rate.seed + ratingObj.rate.music + ratingObj.rate.audio + ratingObj.rate.books + ratingObj.rate.xxx);
         return ratingObj.sum;
     },
     getTop5Response: function(torrentList, tracker) {
