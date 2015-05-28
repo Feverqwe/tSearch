@@ -7,6 +7,7 @@
   "ffMaxVersion": "39.0",
   "devDependencies": {
     "grunt-contrib-compress": "",
+    "grunt-closurecompiler": "",
     "grunt-contrib-concat": "",
     "grunt-contrib-watch": "",
     "grunt-contrib-clean": "",
