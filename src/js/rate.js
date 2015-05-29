@@ -581,8 +581,12 @@ var rate = {
         }
         this.matchedList[word] = 1;
 
-        if (this.rating.quality === undefined && qualityObj.name !== undefined) {
-            this.rating.quality = qualityObj.name;
+        if (qualityObj.name !== undefined) {
+            if (this.rating.quality === undefined) {
+                this.rating.quality = qualityObj.name;
+            } else {
+                return;
+            }
         }
 
         for (var key in qualityObj.rate) {
