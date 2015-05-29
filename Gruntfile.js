@@ -166,7 +166,7 @@ module.exports = function (grunt) {
                     options: {
                         jscomp_warning: 'const',
                         language_in: 'ECMASCRIPT5',
-                        max_processes: 2
+                        max_processes: 1
                     }
                 }
             }
