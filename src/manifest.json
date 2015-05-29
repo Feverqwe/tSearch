@@ -25,7 +25,7 @@
     "description": "__MSG_extDesc__",
     "default_locale": "en",
     "web_accessible_resources": [
-        "images/icon_16.png"
+        "img/icon_16.png"
     ],
     "version": "1.0.88"
 }
