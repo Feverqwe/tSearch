@@ -22,6 +22,11 @@ var popup = {
 
         popup.domCache.requestInput.focus();
 
+        window.addEventListener('resize', function(e) {
+            console.error('window resize');
+            mono.resizePopup(document.body.scrollWidth, document.body.scrollHeight);
+        });
+
         popup.domCache.clearBtn.addEventListener('click', function() {
             popup.domCache.requestInput.value = '';
             popup.domCache.requestInput.dispatchEvent(new CustomEvent('keyup'));
