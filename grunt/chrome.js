@@ -48,11 +48,13 @@ exports.run = function (grunt) {
             includesFolder: 'includes/',
             dataFolder: '',
             buildName: 'tmsExt_<%= pkg.extVersion %>',
-            appId: 'chromeExt'
+            appId: 'chromeExt',
+            browser: 'chrome'
         });
 
         grunt.task.run([
             'extensionBase',
+            'buildJs',
             'chromeManifest',
             'json-format:chromeManifestFormat',
             'setAppInfo',
@@ -69,11 +71,13 @@ exports.run = function (grunt) {
             includesFolder: 'includes/',
             dataFolder: '',
             buildName: 'tmsExt_opera_<%= pkg.extVersion %>',
-            appId: 'operaExt'
+            appId: 'operaExt',
+            browser: 'chrome'
         });
 
         grunt.task.run([
             'extensionBase',
+            'buildJs',
             'chromeManifest',
             'json-format:chromeManifestFormat',
             'setAppInfo',
@@ -97,11 +101,13 @@ exports.run = function (grunt) {
             includesFolder: 'includes/',
             dataFolder: '',
             buildName: 'tmsApp_<%= pkg.extVersion %>',
-            appId: 'chromeApp'
+            appId: 'chromeApp',
+            browser: 'chrome'
         });
 
         grunt.task.run([
             'extensionBase',
+            'buildJs',
             'chromeAppManifest',
             'rmPopup',
             'json-format:chromeManifestFormat',

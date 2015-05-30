@@ -158,14 +158,18 @@ exports.run = function (grunt) {
             includesFolder: 'data/includes/',
             dataFolder: 'data/',
             ffUpdateUrl: '',
-            buildName: 'tms_<%= pkg.extVersion %>_store'
+            buildName: 'tms_<%= pkg.extVersion %>_store',
+            appId: 'firefoxStoreExt',
+            browser: 'firefox'
         });
         grunt.task.run([
             'extensionBase',
             'copy:ffBase',
+            'buildJs',
             'clean:magic',
             'ffPackage',
             'json-format:ffPackage',
+            'setAppInfo',
             'copy:ffTemplateDir',
             'ffRmUpdateKey',
             'exec:buildFF',
@@ -221,15 +225,19 @@ exports.run = function (grunt) {
             includesFolder: 'data/includes/',
             dataFolder: 'data/',
             ffUpdateUrl: '<%= pkg.ffUpdateUrl %>',
-            buildName: 'build_firefox'
+            buildName: 'build_firefox',
+            appId: 'firefoxExt',
+            browser: 'firefox'
         });
 
         grunt.task.run([
             'extensionBase',
             'copy:ffBase',
+            'buildJs',
             'clean:magic',
             'ffPackage',
             'json-format:ffPackage',
+            'setAppInfo',
             'compressJs',
             'copy:ffTemplateDir',
             'exec:buildFF',

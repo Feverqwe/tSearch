@@ -25,8 +25,8 @@ module.exports = function (grunt) {
         'view.js'
     ];
     var engineJsList = [
-        'src/js/engine.js',
-        'src/js/counter.js'
+        'engine.js',
+        'counter.js'
     ];
     var bgJsList = [
         'bg.js'
@@ -40,7 +40,13 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         clean: {
             output: '<%= output %>',
-            magic: '<%= output %><%= vendor %><%= dataFolder %>legacy'
+            magic: '<%= output %><%= vendor %><%= dataFolder %>legacy',
+            mono: monoJsList.slice(1).map(function(item) {
+                return '<%= output %><%= vendor %><%= dataJsFolder %>' + item;
+            }),
+            engine: engineJsList.slice(1).map(function(item) {
+                return '<%= output %><%= vendor %><%= dataJsFolder %>' + item;
+            })
         },
         concat: {
             options: {
@@ -48,7 +54,9 @@ module.exports = function (grunt) {
             },
             engine: {
                 files: {
-                    '<%= output %><%= vendor %><%= dataJsFolder %>engine.js': engineJsList
+                    '<%= output %><%= vendor %><%= dataJsFolder %>engine.js': engineJsList.map(function(item) {
+                        return '<%= output %><%= vendor %><%= dataJsFolder %>' + item;
+                    })
                 }
             },
             trackerLib: {
@@ -58,6 +66,27 @@ module.exports = function (grunt) {
             }
         },
         copy: {
+            monoJs: {
+                cwd: 'src/vendor/<%= browser %>/<%= dataJsFolder %>',
+                expand: true,
+                src: ['mono.js'],
+                dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
+            },
+
+            mono: {
+                cwd: 'src/js/',
+                expand: true,
+                src: monoJsList,
+                dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
+            },
+
+            engine: {
+                cwd: 'src/js/',
+                expand: true,
+                src: engineJsList,
+                dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
+            },
+
             bg: {
                 cwd: 'src/js/',
                 expand: true,
@@ -90,7 +119,7 @@ module.exports = function (grunt) {
         },
         insert: {
             mono: {
-                cwd: 'src/js/',
+                cwd: '<%= output %><%= vendor %><%= dataJsFolder %>',
                 expand: true,
                 src: monoJsList,
                 dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
@@ -110,7 +139,7 @@ module.exports = function (grunt) {
                 files: monoJsList.map(function(item) {
                     return 'src/js/'+item
                 }),
-                tasks: ['insert:mono']
+                tasks: ['copy:mono', 'insert:mono', 'clean:mono']
             },
             bgJs: {
                 files: bgJsList.map(function(item) {
@@ -119,8 +148,10 @@ module.exports = function (grunt) {
                 tasks: ['copy:bg']
             },
             engineJs: {
-                files: engineJsList,
-                tasks: ['concat:engine']
+                files: engineJsList.map(function(item) {
+                    return 'src/js/' + item;
+                }),
+                tasks: ['copy:engine', 'concat:engine', 'clean:engine']
             },
             dataJs: {
                 files: dataJsList.map(function(item) {
@@ -214,7 +245,33 @@ module.exports = function (grunt) {
         grunt.file.write(baseFile.dest, list.join('\n'));
     });
 
-    grunt.registerTask('extensionBase', ['copy:baseData', 'copy:legacy', 'copy:dataJs', 'insert:mono', 'copy:bg', 'concat:engine', 'concat:trackerLib']);
+    grunt.registerTask('makeMono', function() {
+        var browser = grunt.config('browser');
+        var monoPath = 'src/vendor/' + browser + '/' + grunt.config('dataJsFolder');
+
+        var list = monoJsList.map(function(file) {
+            var dest;
+            if (file === 'mono.js') {
+                dest = monoPath;
+            } else {
+                dest = 'src/js/';
+            }
+            return {
+                src: [dest + file],
+                dest: grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>' + file)
+            }
+        });
+
+        insert.call({
+            options: function(def) {
+                return def;
+            },
+            files: list
+        });
+    });
+
+    grunt.registerTask('extensionBase', ['copy:baseData', 'copy:legacy', 'copy:dataJs', 'copy:bg', 'copy:engine', 'copy:mono', 'copy:monoJs', 'concat:trackerLib']);
+    grunt.registerTask('buildJs', ['concat:engine', 'insert:mono', 'clean:mono', 'clean:engine']);
 
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-closurecompiler');
