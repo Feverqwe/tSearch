@@ -83,11 +83,6 @@
             onHide: function () {
                 button.state('window', {checked: false});
             },
-            onShow: function () {
-                popup.port.emit('mono', {
-                    data: 'show'
-                });
-            },
             onMessage: function (msg) {
                 if (msg === 'hidePopup') {
                     popup.hide();
