@@ -666,7 +666,7 @@ var profileManager = {
         this.domCache.saveBtn.addEventListener('click', function(e) {
             e.preventDefault();
 
-            var profileName = this.domCache.profileName.value.trim();
+            var profileName = this.varCache.currentProfileName || this.domCache.profileName.value.trim();
             if (!profileName) {
                 this.domCache.profileName.classList.add('error');
                 setTimeout(function() {
