@@ -23,7 +23,11 @@ var popup = {
         popup.domCache.requestInput.focus();
 
         window.addEventListener('resize', function(e) {
-            mono.resizePopup(650, document.body.scrollHeight);
+            var height = document.body.scrollHeight;
+            if (height < 72) {
+                height = 72;
+            }
+            mono.resizePopup(650, height);
             if (mono.isOpera) {
                 setTimeout(function() {
                     popup.domCache.requestInput.focus();
