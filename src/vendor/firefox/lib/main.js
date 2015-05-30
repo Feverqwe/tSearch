@@ -1,4 +1,4 @@
-(function() {
+(function () {
     var mobileMode = false;
     try {
         var ToggleButton = require('sdk/ui/button/toggle').ToggleButton;
@@ -12,27 +12,27 @@
     var pageMod = require("sdk/page-mod");
 
     var sp = require("sdk/simple-prefs");
-    sp.on("settingsBtn", function() {
+    sp.on("settingsBtn", function () {
         var tabs = require("sdk/tabs");
-        tabs.open( self.data.url('options.html') );
+        tabs.open(self.data.url('options.html'));
     });
-    sp.on("openBtn", function() {
+    sp.on("openBtn", function () {
         var tabs = require("sdk/tabs");
-        tabs.open( self.data.url('index.html') );
+        tabs.open(self.data.url('index.html'));
     });
 
     pageMod.PageMod({
         include: [
-            self.data.url()+'*'
+            self.data.url() + '*'
         ],
-        contentScript: '('+monoLib.virtualPort.toString()+')()',
+        contentScript: '(' + monoLib.virtualPort.toString() + ')()',
         contentScriptWhen: 'start',
-        onAttach: function(tab) {
+        onAttach: function (tab) {
             monoLib.addPage(tab);
         }
     });
 
-    var createTab = function() {
+    var createTab = function () {
         var tabs = require("sdk/tabs");
         button.state('window', {checked: false});
         tabs.open({
@@ -40,8 +40,8 @@
         });
     };
 
-    var button = mobileMode?undefined:ToggleButton({
-        id: "tTMSOpenBtn",
+    var button = mobileMode ? undefined : ToggleButton({
+        id: "TmsBtn",
         label: "Torrents MultiSearch",
         icon: {
             "16": "./icons/icon-16.png",
@@ -52,26 +52,22 @@
             if (!state.checked) {
                 return;
             }
-            monoLib.storage.get('searchPopup', function(ls) {
-                var createPopup = ls.searchPopup !== 0;
-                if (createPopup) {
-                    if (popup.show === undefined) {
-                        popup = popup();
-                    } else {
-                        popup.show({
-                            position: button
-                        });
-                    }
+            monoLib.storage.get('searchPopup', function (storage) {
+                if (!storage.searchPopup) {
+                    return createTab();
+                }
+                if (popup.show === undefined) {
+                    popup = popup();
                 } else {
-                    createTab();
+                    popup.show({
+                        position: button
+                    });
                 }
             });
         }
     });
 
-    var popup = mobileMode?undefined:panels.Panel({
-        width: 642,
-        height: 70,
+    var popup = mobileMode ? undefined : panels.Panel({
         contentURL: self.data.url("popup.html"),
         onHide: function () {
             button.state('window', {checked: false});
@@ -82,7 +78,7 @@
             });
         },
         onMessage: function (msg) {
-            if (msg === 'closeMe') {
+            if (msg === 'hidePopup') {
                 popup.hide();
             }
         }

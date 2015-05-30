@@ -177,7 +177,7 @@ define.amd = {};
 
 mono.onMessage(function(msg) {
     "use strict";
-    if (msg.action === 'reloadPopup') {
+    if (msg.action === 'reload') {
         document.location.reload();
     }
 });
