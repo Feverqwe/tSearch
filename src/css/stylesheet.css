@@ -467,6 +467,7 @@ body.home #result_block {
 #result_table .date-column {
     text-align: left;
     color: #666;
+    padding-left: 5px;
 }
 
 #result_table .seed-column,
