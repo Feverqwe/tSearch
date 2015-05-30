@@ -1181,7 +1181,7 @@ var explore = {
         var storage = {};
         storage[categoryObj.cacheName] = cache;
         mono.storage.set(storage);
-        if (engine.settings.enableFavoriteSync === 1 && type === 'favorites') {
+        if (engine.settings.enableFavoriteSync && type === 'favorites') {
             mono.storage.sync.set(storage);
         }
     },
@@ -2069,11 +2069,15 @@ var explore = {
         this.writeCategoryList();
 
         if (mono.isChrome && engine.settings.enableFavoriteSync) {
-            chrome.storage.onChanged.addListener(function(changes) {
+            chrome.storage.onChanged.addListener(function(changes, areaName) {
+                var aName = engine.settings.enableFavoriteSync ? 'sync' : 'local';
+                if (areaName !== aName) {
+                    return;
+                }
                 if (!changes.hasOwnProperty('expCache_favorites')) {
                     return;
                 }
-                var cache = changes.expCache_favorites.newValue;
+                var cache = changes.expCache_favorites.newValue || {};
                 var type = 'favorites';
                 if (JSON.stringify(engine.exploreCache.expCache_favorites) === JSON.stringify(cache)) {
                     return;
