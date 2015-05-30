@@ -941,6 +941,7 @@ var exKit = {
             trackerRequest = tracker.search.onGetRequest(request);
         }
         var xhr = mono.ajax({
+            safe: true,
             url: tracker.search.searchUrl.replace('%search%', trackerRequest),
             type: tracker.search.requestType,
             mimeType: tracker.search.requestMimeType,

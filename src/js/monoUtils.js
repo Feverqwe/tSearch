@@ -132,6 +132,10 @@ mono.ajax = function(obj) {
         obj.error && obj.error(xhr);
     };
 
+    if (mono.isFF && obj.safe) {
+        xhr.safe = obj.safe;
+    }
+
     xhr.send(data);
 
     return xhr;
@@ -165,6 +169,7 @@ mono.ajax.xhr = mono.isModule ? require('sdk/net/xhr').XMLHttpRequest : !mono.is
         xhr.data = data;
         xhr.timeout = vXhr.timeout;
         xhr.responseType = vXhr.responseType;
+        xhr.safe = vXhr.safe;
 
         mono.sendMessage({action: 'xhr', data: xhr}, function(xhr) {
             vXhr.status = xhr.status;

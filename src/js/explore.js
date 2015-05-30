@@ -674,6 +674,7 @@ var explore = {
             return;
         }
         mono.ajax({
+            safe: true,
             url: 'https://www.google.com/search?q='+request,
             success: function(data) {
                 this.content_parser.google(data, request, cb);
@@ -1189,6 +1190,7 @@ var explore = {
         source.xhr_wait_count++;
         source.xhr.push(
             mono.ajax({
+                safe: true,
                 url: (page_mode)?source.url.replace('%page%', page):source.url,
                 success: function(data) {
                     source.xhr_content.push([page, this.content_parser[type](data)]);
@@ -1376,6 +1378,7 @@ var explore = {
         var urlTemplate = source.url.replace('%category%', engine.settings.kinopoiskFolderId);
         (function getPage(page) {
             source.xhr = mono.ajax({
+                safe: true,
                 url: urlTemplate.replace('%page%', page),
                 success: function(data) {
                     var pContent = explore.content_parser.kp_favorites(data);
