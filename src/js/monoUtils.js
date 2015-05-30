@@ -227,7 +227,7 @@ mono.getLocale = function() {
 mono.detectLanguage = mono.isChrome ? function() {
     "use strict";
     return chrome.i18n.getMessage('langCode');
-} : window.isModule ? function () {
+} : mono.isModule ? function () {
     "use strict";
     var lang = require("sdk/l10n").get('langCode');
     if (lang !== 'langCode') {
