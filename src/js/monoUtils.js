@@ -506,7 +506,7 @@ mono.openTab = mono.isChrome ? function(url) {
 
 mono.closePopup = mono.isFF ? function() {
     "use strict";
-    return mono.addon.postMessage('closeMe');
+    return mono.addon.postMessage('hidePopup');
 } : mono.isSafari ? function() {
     "use strict";
     safari.extension.popovers[0].hide();
