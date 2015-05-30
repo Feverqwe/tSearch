@@ -149,7 +149,7 @@ mono.ajax.xhr = mono.isModule ? require('sdk/net/xhr').XMLHttpRequest : !mono.is
     var vXhr = {};
     vXhr.abort = function() {
         if (vXhr.hasOwnProperty('status')) return;
-        mono.sendMessage({action: 'xhrAbort', data: xhr.id}, undefined, "service");
+        mono.sendMessage({action: 'xhrAbort', id: xhr.id}, undefined, "service");
     };
     vXhr.open = function(method, url, async) {
         xhr.method = method;

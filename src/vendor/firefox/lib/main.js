@@ -149,10 +149,13 @@
         var xhrList = {};
         monoLib.serviceList.xhr = function(message, response) {
             "use strict";
+            var wait = true;
             var getVXhr = function(cbType) {
-                if (!xhrList.hasOwnProperty(id)) {
+                if (!wait) {
                     return;
                 }
+                wait = false;
+
                 delete xhrList[id];
 
                 vXhr.status = xhr.status;
@@ -196,7 +199,7 @@
 
             xhr.send(vXhr.data);
         };
-        monoLib.serviceList.xhrAbort = function(message, response) {
+        monoLib.serviceList.xhrAbort = function(message) {
             "use strict";
             var data = message.data;
             var id = data.id;
