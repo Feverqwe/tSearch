@@ -212,7 +212,7 @@ exports.run = function (grunt) {
                     cwd: '<%= output %><%= vendor %>../',
                     expand: true,
                     src: '<%= buildName %>.xpi',
-                    dest: 'build_firefox.xpi'
+                    dest: ''
                 }
             },
             vendor: 'firefox/src/',
@@ -230,6 +230,7 @@ exports.run = function (grunt) {
             'clean:magic',
             'ffPackage',
             'json-format:ffPackage',
+            'compressJs',
             'copy:ffTemplateDir',
             'exec:buildFF',
             'ffRenameBuild',

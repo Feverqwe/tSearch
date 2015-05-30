@@ -1,4 +1,5 @@
 module.exports = function (grunt) {
+    "use strict";
     var devMode = false;
     var baseDataList = [
         '_locales/**',
@@ -107,14 +108,12 @@ module.exports = function (grunt) {
             },
             monoJs: {
                 files: monoJsList.map(function(item) {
-                    "use strict";
                     return 'src/js/'+item
                 }),
                 tasks: ['insert:mono']
             },
             bgJs: {
                 files: bgJsList.map(function(item) {
-                    "use strict";
                     return 'src/js/'+item
                 }),
                 tasks: ['copy:bg']
@@ -125,7 +124,6 @@ module.exports = function (grunt) {
             },
             dataJs: {
                 files: dataJsList.map(function(item) {
-                    "use strict";
                     return 'src/js/'+item
                 }),
                 tasks: ['copy:dataJs']
@@ -136,7 +134,6 @@ module.exports = function (grunt) {
             },
             baseData: {
                 files: baseDataList.map(function(item) {
-                    "use strict";
                     return 'src/'+item
                 }),
                 tasks: ['copy:baseData']
@@ -147,7 +144,6 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('setAppInfo', function() {
-        "use strict";
         var enginePath = grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>engine.js');
         var content = grunt.file.read(enginePath);
         content = content.replace(/\{appId\}/g, grunt.config('appId'));
@@ -156,14 +152,13 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('compressJs', function() {
-        "use strict";
         if (devMode) {
             return;
         }
         var ccTask = {
             closurecompiler: {
                 minify: {
-                    files: null,
+                    files: 'empty',
                     options: {
                         jscomp_warning: 'const',
                         language_in: 'ECMASCRIPT5',
@@ -176,22 +171,28 @@ module.exports = function (grunt) {
         ccTask.closurecompiler.minify.files = {};
 
         var fs = require('fs');
-        var jsFolder = grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>');
-        var files = fs.readdirSync(jsFolder);
+        ['dataJsFolder', 'libFolder'].forEach(function(folder, index) {
+            if (index !== 0 && grunt.config('libFolder') === grunt.config('dataJsFolder')) {
+                return;
+            }
+            var jsFolder = grunt.template.process('<%= output %><%= vendor %><%= ' + folder + ' %>');
+            var files = fs.readdirSync(jsFolder);
 
-        var jsList = grunt.file.match('*.js', files);
+            var jsList = grunt.file.match('*.js', files);
 
-        for (var i = 0, jsFile; jsFile = jsList[i]; i++) {
-            if (jsFile.indexOf('.min.js') !== -1) continue;
-            ccTask.closurecompiler.minify.files['<%= output %><%= vendor %><%= dataJsFolder %>'+jsFile] = '<%= output %><%= vendor %><%= dataJsFolder %>'+jsFile;
-        }
+            for (var i = 0, jsFile; jsFile = jsList[i]; i++) {
+                if (jsFile.indexOf('.min.js') !== -1) {
+                    continue;
+                }
+                ccTask.closurecompiler.minify.files['<%= output %><%= vendor %><%= ' + folder + ' %>'+jsFile] = '<%= output %><%= vendor %><%= ' + folder + ' %>' + jsFile;
+            }
+        });
 
         grunt.config.merge(ccTask);
         grunt.task.run('closurecompiler:minify');
     });
 
     grunt.registerMultiTask('insert', 'Insert file in file, lik concat but in current position', function() {
-        "use strict";
         var options = this.options({
             word: '//@insert'
         });
@@ -228,7 +229,6 @@ module.exports = function (grunt) {
     require('./grunt/firefox.js').run(grunt);
 
     grunt.registerTask('devMode', function() {
-        "use strict";
         devMode = true;
     });
 
@@ -238,6 +238,8 @@ module.exports = function (grunt) {
         'clean:output',
         'chrome',
         'opera',
-        'chromeApp'
+        'chromeApp',
+        'firefoxStore',
+        'firefox'
     ]);
 };

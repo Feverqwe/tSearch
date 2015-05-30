@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "ffUpdateUrl": "http://static.tms.mooo.com/firefox/update.rdf",
   "ffMinVersion": "29.0",
-  "ffMaxVersion": "39.0",
+  "ffMaxVersion": "42.0",
   "devDependencies": {
     "grunt-contrib-compress": "",
     "grunt-closurecompiler": "",
@@ -14,7 +14,9 @@
     "grunt-contrib-copy": "",
     "grunt-json-format": "",
     "grunt-exec": "",
+    "crypto": "",
     "grunt": "",
+    "unzip": "",
     "fs": ""
   },
   "outputDir": "output/",
