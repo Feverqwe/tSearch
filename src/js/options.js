@@ -878,9 +878,9 @@ var options = {
         mono.writeLanguage(mono.language);
 
         if (!mono.isChrome) {
-            this.domCache.saveInCloudBtn.display.style = 'none';
-            this.domCache.getFromCloudBtn.display.style = 'none';
-            this.domCache.clearCloudStorageBtn.display.style = 'none';
+            this.domCache.saveInCloudBtn.style.display = 'none';
+            this.domCache.getFromCloudBtn.style.display = 'none';
+            this.domCache.clearCloudStorageBtn.style.display = 'none';
             document.querySelector('input[data-option="enableFavoriteSync"]').parentNode.style.display = 'none';
             document.querySelector('input[data-option="profileListSync"]').parentNode.style.display = 'none';
         }
