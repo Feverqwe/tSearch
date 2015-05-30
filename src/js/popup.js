@@ -86,7 +86,7 @@ var popup = {
     },
     onUiReady: function() {
         "use strict";
-        $(popup.domCache.requestInput).autocomplete({
+        (popup.domCache.$requestInput = $(popup.domCache.requestInput)).autocomplete({
             minLength: 0,
             delay: 100,
             position: {
@@ -176,6 +176,10 @@ define.amd = {};
 
 mono.onMessage(function(msg) {
     "use strict";
+    if (msg.action === 'empty') {
+        popup.domCache.$requestInput.autocomplete('close');
+        popup.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
+    } else
     if (msg.action === 'reload') {
         document.location.reload();
     }

@@ -83,6 +83,11 @@
             onHide: function () {
                 button.state('window', {checked: false});
             },
+            onShow: function () {
+                popup.port.emit('mono', {
+                    data: {action: 'empty'}
+                });
+            },
             onMessage: function (msg) {
                 if (msg === 'hidePopup') {
                     popup.hide();
@@ -91,7 +96,6 @@
         });
         monoLib.addPage(popup);
     };
-
 
     var bgAddon = monoLib.virtualAddon();
     monoLib.addPage(bgAddon);
