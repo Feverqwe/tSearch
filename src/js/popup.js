@@ -158,6 +158,19 @@ var popup = {
         popup.domCache.requestInput.addEventListener('keyup', function() {
             popup.varCache.autocompleteLastFocus = this.value;
         });
+    },
+    update: function() {
+        "use strict";
+        mono.storage.get(['langCode', 'searchHistory'], function(storage) {
+            if (Array.isArray(storage.searchHistory)) {
+                popup.varCache.history = storage.searchHistory;
+            }
+            if (storage.hasOwnProperty('langCode') && storage.langCode !== mono.language.langCode) {
+                mono.getLanguage(function () {
+                    mono.writeLanguage(mono.language);
+                }, storage.langCode);
+            }
+        });
     }
 };
 
@@ -179,6 +192,7 @@ mono.onMessage(function(msg) {
     if (msg.action === 'empty') {
         popup.domCache.$requestInput.autocomplete('close');
         popup.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
+        popup.update();
     } else
     if (msg.action === 'reload') {
         document.location.reload();
