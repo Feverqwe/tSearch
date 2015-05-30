@@ -166,10 +166,6 @@ mono.ajax.xhr = mono.isModule ? require('sdk/net/xhr').XMLHttpRequest : !mono.is
         xhr.timeout = vXhr.timeout;
         xhr.responseType = vXhr.responseType;
 
-        if (xhr.hasOwnProperty('ontimeout')) {
-            console.error('ffXHR ontimeout is not supported!');
-        }
-
         mono.sendMessage({action: 'xhr', data: xhr}, function(xhr) {
             vXhr.status = xhr.status;
             vXhr.statusText = xhr.statusText;

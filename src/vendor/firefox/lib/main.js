@@ -78,6 +78,7 @@
             return;
         }
         popup = panels.Panel({
+            contextMenu: true,
             contentURL: self.data.url("popup.html"),
             onHide: function () {
                 button.state('window', {checked: false});

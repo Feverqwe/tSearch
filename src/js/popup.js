@@ -23,8 +23,12 @@ var popup = {
         popup.domCache.requestInput.focus();
 
         window.addEventListener('resize', function(e) {
-            console.error('window resize');
-            mono.resizePopup(document.body.scrollWidth, document.body.scrollHeight);
+            mono.resizePopup(650, document.body.scrollHeight);
+            if (mono.isOpera) {
+                setTimeout(function() {
+                    popup.domCache.requestInput.focus();
+                }, 100);
+            }
         });
 
         popup.domCache.clearBtn.addEventListener('click', function() {
@@ -120,12 +124,7 @@ var popup = {
                 popup.domCache.searchBtn.dispatchEvent(new CustomEvent('click', {cancelable: true, detail: arguments[1].item.value}));
             },
             close: function() {
-                mono.resizePopup(undefined, document.body.clientHeight);
-                if (mono.isOpera) {
-                    setTimeout(function() {
-                        popup.domCache.requestInput.focus();
-                    }, 100);
-                }
+                window.dispatchEvent(new CustomEvent('resize'));
             },
             create: function() {
                 var hasTopShadow = 0;
@@ -154,12 +153,7 @@ var popup = {
                 results: function() {}
             }
         }).data('ui-autocomplete')._resizeMenu = function() {
-            mono.resizePopup(undefined, document.body.clientHeight);
-            if (mono.isOpera) {
-                setTimeout(function() {
-                    popup.domCache.requestInput.focus();
-                }, 100);
-            }
+            window.dispatchEvent(new CustomEvent('resize'));
         };
         popup.domCache.requestInput.addEventListener('keyup', function() {
             popup.varCache.autocompleteLastFocus = this.value;
