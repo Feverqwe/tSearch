@@ -88,8 +88,11 @@ var bg = {
                 });
             });
         });
-    } : (mono.isFF && mono.ffButton) ? function() {
+    } : mono.isFF ? function() {
         "use strict";
+        if (!mono.ffButton) {
+            return;
+        }
 
         var contentScript = (function() {
             var onContext = function() {
@@ -136,7 +139,6 @@ var bg = {
         });
     } : function() {
         "use strict";
-
     },
     onMessage: function(msg, cb) {
         "use strict";
