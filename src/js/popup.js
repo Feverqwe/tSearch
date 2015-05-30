@@ -213,6 +213,6 @@ mono.storage.get(['autoComplite', 'langCode', 'searchHistory'], function(storage
 
         popup.varCache.autoComplite = storage.autoComplite;
 
-        document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
+        document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.4.min.js'}));
     }, storage.langCode);
 });

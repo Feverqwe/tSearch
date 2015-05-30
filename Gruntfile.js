@@ -14,7 +14,7 @@ module.exports = function (grunt) {
         'explore.js',
         'exKit.js',
         'history.js',
-        'jquery-2.1.3.min.js',
+        'jquery-2.1.4.min.js',
         'jquery-ui.min.js',
         'notifer.js',
         'options.js',

@@ -1957,7 +1957,7 @@ var view = {
         }.bind(this));
 
         document.body.appendChild(mono.create('script', {src: 'js/notifer.js'}));
-        document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.3.min.js'}));
+        document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.4.min.js'}));
 
         if (mono.isChrome && mono.isChromeWebApp) {
             mono.storage.get('extensionPopup', function(storage) {
