@@ -182,6 +182,7 @@ mono.onMessage(function(msg) {
     }
 });
 
+
 mono.storage.get(['autoComplite', 'langCode', 'searchHistory'], function(storage) {
     "use strict";
     if (Array.isArray(storage.searchHistory)) {
@@ -189,7 +190,6 @@ mono.storage.get(['autoComplite', 'langCode', 'searchHistory'], function(storage
     }
     mono.getLanguage(function () {
         popup.once();
-
         if (!storage.hasOwnProperty('autoComplite')) {
             storage.autoComplite = 1;
         }

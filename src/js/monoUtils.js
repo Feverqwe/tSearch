@@ -136,7 +136,7 @@ mono.ajax = function(obj) {
 
     return xhr;
 };
-mono.ajax.xhr = mono.isModule ? require('sdk/net/xhr').XMLHttpRequest : !mono.isFF ? XMLHttpRequest : function ffMsgXHR() {
+mono.ajax.xhr = mono.isModule ? require('sdk/net/xhr').XMLHttpRequest : !mono.isFF ? XMLHttpRequest : function () {
     "use strict";
     var xhr = {
         id: Date.now() + '_' + Math.floor((Math.random() * 10000) + 1)
@@ -178,10 +178,14 @@ mono.ajax.xhr = mono.isModule ? require('sdk/net/xhr').XMLHttpRequest : !mono.is
             if (xhr.responseType) {
                 vXhr.response = xhr.response;
             } else {
-                vXhr.responseText = xhr.response;
+                vXhr.responseText = xhr.responseText;
             }
 
-            vXhr.onload && vXhr.onload();
+            if (!vXhr[xhr.cbType]) {
+                return;
+            }
+
+            vXhr[xhr.cbType] && vXhr[xhr.cbType](vXhr);
         }, "service");
     };
     return vXhr;
@@ -261,7 +265,6 @@ mono.getLanguage = function(cb, force) {
             mono.language = mono.readChromeLocale(JSON.parse(require('sdk/self').data.load(url)));
             cb();
         } catch (e) {
-            console.log(e);
             if (lang !== 'en') {
                 return mono.getLanguage(cb, 'en');
             }

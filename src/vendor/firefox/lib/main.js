@@ -1,4 +1,5 @@
 (function () {
+    "use strict";
     var mobileMode = false;
     try {
         var ToggleButton = require('sdk/ui/button/toggle').ToggleButton;
@@ -101,4 +102,64 @@
 
     var bg = require("./bg.js");
     bg.init(bgAddon, button, initPopup);
+
+    (function() {
+        var xhrList = {};
+        monoLib.serviceList.xhr = function(message, response) {
+            "use strict";
+            var getVXhr = function(cbType) {
+                if (!xhrList.hasOwnProperty(id)) {
+                    return;
+                }
+                delete xhrList[id];
+
+                vXhr.status = xhr.status;
+                vXhr.statusText = xhr.statusText;
+                vXhr.responseURL = xhr.responseURL;
+
+                if (vXhr.responseType) {
+                    vXhr.response = xhr.response;
+                } else {
+                    vXhr.responseText = xhr.responseText;
+                }
+                vXhr.cbType = cbType;
+
+                response(vXhr);
+            };
+
+            var vXhr = message.data.data;
+            var id = vXhr.id;
+            var xhr = xhrList[id] = new (require('sdk/net/xhr').XMLHttpRequest)();
+            if (vXhr.url.substr(0, 4) !== 'http') {
+                vXhr.url = (require("sdk/self")).data.url(vXhr.url);
+            }
+            xhr.open(vXhr.method, vXhr.url, vXhr.async);
+            vXhr.mimeType && xhr.overrideMimeType(vXhr.mimeType);
+            for (var key in vXhr.headers) {
+                xhr.setRequestHeader(key, vXhr.headers[key]);
+            }
+            if (vXhr.timeout) {
+                xhr.timeout = vXhr.timeout;
+                xhr.ontimeout = getVXhr.bind(null, 'ontimeout')
+            }
+            if (vXhr.responseType) {
+                xhr.responseType = vXhr.responseType;
+            }
+
+            xhr.onload = getVXhr.bind(null, 'onload');
+
+            xhr.onerror = getVXhr.bind(null, 'onerror');
+
+            xhr.send(vXhr.data);
+        };
+        monoLib.serviceList.xhrAbort = function(message, response) {
+            "use strict";
+            var data = message.data;
+            var id = data.id;
+            if (xhrList.hasOwnProperty(id)) {
+                xhrList[id].abort();
+                delete xhrList[id];
+            }
+        };
+    })();
 })();
