@@ -53,6 +53,9 @@
                 return;
             }
             monoLib.storage.get('searchPopup', function (storage) {
+                if (!storage.hasOwnProperty('searchPopup')) {
+                    storage.searchPopup = 1;
+                }
                 if (!storage.searchPopup) {
                     return createTab();
                 }
@@ -67,28 +70,35 @@
         }
     });
 
-    var popup = mobileMode ? undefined : panels.Panel({
-        contentURL: self.data.url("popup.html"),
-        onHide: function () {
-            button.state('window', {checked: false});
-        },
-        onShow: function () {
-            popup.port.emit('mono', {
-                data: 'show'
-            });
-        },
-        onMessage: function (msg) {
-            if (msg === 'hidePopup') {
-                popup.hide();
-            }
+    var popup;
+    var initPopup = function() {
+        "use strict";
+        if (mobileMode) {
+            return;
         }
-    });
-    popup && monoLib.addPage(popup);
+        popup = panels.Panel({
+            contentURL: self.data.url("popup.html"),
+            onHide: function () {
+                button.state('window', {checked: false});
+            },
+            onShow: function () {
+                popup.port.emit('mono', {
+                    data: 'show'
+                });
+            },
+            onMessage: function (msg) {
+                if (msg === 'hidePopup') {
+                    popup.hide();
+                }
+            }
+        });
+        monoLib.addPage(popup);
+    };
 
 
     var bgAddon = monoLib.virtualAddon();
     monoLib.addPage(bgAddon);
 
-    var bg = require("./background.js");
-    bg.init(bgAddon, button);
+    var bg = require("./bg.js");
+    bg.init(bgAddon, button, initPopup);
 })();

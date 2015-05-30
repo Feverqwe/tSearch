@@ -23,8 +23,12 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
                         return require('sdk/window/utils');
                     case 'sdk/self':
                         return require('sdk/self');
+                    case 'sdk/net/xhr':
+                        return require('sdk/net/xhr');
+                    case 'sdk/l10n':
+                        return require('sdk/l10n');
                     default:
-                        console.log('Module not found!', path);
+                        console.error('Module not found!', path);
                 }
             }
         }
@@ -302,11 +306,12 @@ var bg = {
 };
 
 (function() {
-    var init = function(addon, button) {
+    var init = function(addon, button, initPopup) {
         "use strict";
         if (addon) {
             mono = mono.init(addon);
             mono.ffButton = button;
+            initPopup();
             mono.ajax.xhr = require('sdk/net/xhr').XMLHttpRequest;
         } else {
             mono.ajax.xhr = XMLHttpRequest;

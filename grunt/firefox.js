@@ -1,5 +1,4 @@
 exports.run = function (grunt) {
-    return;
     var replaceContent = function (content, sha1) {
         content = content.replace('%extVersion%', grunt.config('pkg.extVersion'));
 
@@ -27,27 +26,21 @@ exports.run = function (grunt) {
                         mode: 'zip',
                         archive: '<%= output %><%= vendor %>../<%= buildName %>.xpi'
                     },
-                    files: [
-                        {
-                            expand: true,
-                            filter: 'isFile',
-                            src: '<%= output %><%= vendor %>../unzip/**',
-                            dest: './',
-                            rename: function () {
-                                return arguments[0] + arguments[1].substr((grunt.config('output') + grunt.config('vendor') + '../unzip/').length);
-                            }
-                        }
-                    ]
+                    files: [{
+                        expand: true,
+                        filter: 'isFile',
+                        cwd: '<%= output %><%= vendor %>../unzip/',
+                        src: '**',
+                        dest: ''
+                    }]
                 }
             },
             'json-format': {
                 ffHarnessOptions: {
                     expand: true,
-                    src: '<%= output %><%= vendor %>../unzip/harness-options.json',
+                    cwd: '<%= output %><%= vendor %>../unzip/',
+                    src: 'harness-options.json',
                     dest: '<%= output %><%= vendor %>../unzip/',
-                    rename: function () {
-                        return arguments[0] + arguments[1].substr((grunt.config('output') + grunt.config('vendor') + '../unzip/').length);
-                    },
                     options: {
                         indent: 2
                     }
@@ -56,7 +49,7 @@ exports.run = function (grunt) {
         });
 
         var done = this.async();
-        var vendor = grunt.config('output') + grunt.config('vendor') + '../';
+        var vendor = grunt.template.process('<%= output %><%= vendor %>../');
         var buildPath = vendor + grunt.config('buildName') + '.xpi';
         var unZipPath = vendor + 'unzip/';
 
@@ -84,14 +77,14 @@ exports.run = function (grunt) {
     });
 
     grunt.registerTask('ffRenameBuild', function () {
-        var vendor = grunt.config('output') + grunt.config('vendor') + '../';
+        var vendor = grunt.template.process('<%= output %><%= vendor %>../');
         var path = vendor + 'torrents_multisearch.xpi';
         grunt.file.copy(path, vendor + grunt.config('buildName') + '.xpi');
         grunt.file.delete(path);
     });
 
     grunt.registerTask('ffPackage', function() {
-        var packagePath = grunt.config('output') + grunt.config('vendor') + 'package.json';
+        var packagePath = grunt.template.process('<%= output %><%= vendor %>package.json');
         var content = grunt.file.readJSON('src/vendor/firefox/package.json');
         content.version = grunt.config('pkg.extVersion');
         grunt.file.write(packagePath, JSON.stringify(content));
@@ -101,24 +94,20 @@ exports.run = function (grunt) {
         copy: {
             ffBase: {
                 expand: true,
+                cwd: 'src/vendor/firefox/',
                 src: [
-                    'src/vendor/firefox/locale/*',
-                    'src/vendor/firefox/lib/*',
-                    'src/vendor/firefox/data/**'
+                    'locale/*',
+                    'lib/*',
+                    'data/**'
                 ],
-                dest: '<%= output %><%= vendor %>',
-                rename: function () {
-                    return arguments[0] + arguments[1].substr('src/vendor/firefox/'.length);
-                }
+                dest: '<%= output %><%= vendor %>'
             },
 
             ffTemplateDir: {
                 expand: true,
-                src: 'src/vendor/firefox_tools/template/**',
+                cwd: 'src/vendor/firefox_tools/template/',
+                src: '**',
                 dest: '<%= output %><%= vendor %>/../template/',
-                rename: function () {
-                    return arguments[0] + arguments[1].substr('src/vendor/firefox_tools/template/'.length);
-                },
                 options: {
                     process: function (content, src) {
                         if (src.indexOf('install.rdf') !== -1) {
@@ -132,11 +121,9 @@ exports.run = function (grunt) {
         'json-format': {
             ffPackage: {
                 expand: true,
-                src: '<%= output %><%= vendor %>package.json',
+                cwd: '<%= output %><%= vendor %>',
+                src: 'package.json',
                 dest: '<%= output %><%= vendor %>',
-                rename: function () {
-                    return arguments[0] + arguments[1].substr((grunt.config('output') + grunt.config('vendor')).length);
-                },
                 options: {
                     indent: 4
                 }
@@ -156,7 +143,7 @@ exports.run = function (grunt) {
         }
 
         grunt.registerTask('ffRmUpdateKey', function() {
-            var installPath = grunt.config('output') + grunt.config('vendor') + '../template/install.rdf';
+            var installPath = grunt.template.process('<%= output %><%= vendor %>../template/install.rdf');
             var content = grunt.file.read(installPath);
             var p1 = content.indexOf('<em:updateKey>');
             var p2 = content.indexOf('</em:updateKey>');
@@ -176,7 +163,7 @@ exports.run = function (grunt) {
         grunt.task.run([
             'extensionBase',
             'copy:ffBase',
-            'rmMagic',
+            'clean:magic',
             'ffPackage',
             'json-format:ffPackage',
             'copy:ffTemplateDir',
@@ -189,7 +176,7 @@ exports.run = function (grunt) {
 
     grunt.registerTask('getHash', function () {
         var done = this.async();
-        var vendor = grunt.config('output') + grunt.config('vendor') + '../';
+        var vendor = grunt.template.process('<%= output %><%= vendor %>../');
         var buildPath = vendor + grunt.config('buildName') + '.xpi';
 
         var fs = require('fs');
@@ -222,9 +209,10 @@ exports.run = function (grunt) {
         grunt.config.merge({
             copy: {
                 ffCopyBuildToRoot: {
-                    flatten: true,
-                    src: '<%= output %><%= vendor %>../<%= buildName %>.xpi',
-                    dest: './build_firefox.xpi'
+                    cwd: '<%= output %><%= vendor %>../',
+                    expand: true,
+                    src: '<%= buildName %>.xpi',
+                    dest: 'build_firefox.xpi'
                 }
             },
             vendor: 'firefox/src/',
@@ -237,9 +225,9 @@ exports.run = function (grunt) {
         });
 
         grunt.task.run([
-            'extensionBaseMin',
+            'extensionBase',
             'copy:ffBase',
-            'rmMagic',
+            'clean:magic',
             'ffPackage',
             'json-format:ffPackage',
             'copy:ffTemplateDir',

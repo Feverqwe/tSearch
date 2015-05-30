@@ -38,7 +38,8 @@ module.exports = function (grunt) {
         env: grunt.file.exists('env.json') ? grunt.file.readJSON('env.json') : {},
         pkg: grunt.file.readJSON('package.json'),
         clean: {
-            output: '<%= output %>'
+            output: '<%= output %>',
+            magic: '<%= output %><%= vendor %><%= dataFolder %>legacy'
         },
         concat: {
             options: {
@@ -221,8 +222,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-json-format');
+    grunt.loadNpmTasks('grunt-exec');
 
     require('./grunt/chrome.js').run(grunt);
+    require('./grunt/firefox.js').run(grunt);
 
     grunt.registerTask('devMode', function() {
         "use strict";
