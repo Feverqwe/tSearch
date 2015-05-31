@@ -144,6 +144,7 @@ ul#explore_gallery div.head div.move {
     background-size: 16px;
     cursor: move;
     -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
     opacity: 0.5;
 }
@@ -171,6 +172,7 @@ ul#explore_gallery div.head div.actionList div.setup {
     cursor: pointer;
     opacity: 0.5;
     -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
 }
 ul#explore_gallery div.head div.actionList div.setup:hover {
@@ -183,11 +185,13 @@ ul#explore_gallery div.head div.actionList div.update {
     background-size: 14px;
     cursor: pointer;
     -webkit-transition: -webkit-transform 0.5s;
+    -moz-transition: -moz-transform 0.5s;
     transition: transform 0.5s;
     opacity: 0.5;
 }
 ul#explore_gallery div.head div.actionList div.update:hover {
     -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
     transform: rotate(360deg);
     opacity: 1;
 }
@@ -212,6 +216,7 @@ ul#explore_gallery div.head div.actionList a.open {
     display: inline-block;
     opacity: 0.5;
     -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
 }
 ul#explore_gallery div.head div.actionList a.open:hover {
@@ -240,6 +245,7 @@ ul#explore_gallery div.head .setupBody .defaultSize {
     display: inline-block;
     opacity: 0.5;
     -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
     background: url(../img/delete.svg) center no-repeat;
     background-size: 14px;
@@ -261,6 +267,7 @@ ul#explore_gallery div.head div.collapses {
     background-size: 17px;
     cursor: pointer;
     -webkit-transition: -webkit-transition 0.2s;
+    -moz-transition: -moz-transition 0.2s;
     transition: transform 0.2s;
     opacity: 0.5;
 }
@@ -269,6 +276,7 @@ ul#explore_gallery div.head div.collapses:hover {
 }
 ul#explore_gallery li.collapsed div.head div.collapses {
     -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
     transform: rotate(90deg);
 }
 ul#explore_gallery div.head:hover div.collapses {
@@ -382,6 +390,7 @@ ul#explore_gallery ul.body div.picture > div.quality {
     cursor: pointer;
     z-index: 1;
     -webkit-transition: background-color 0.2s;
+    -moz-transition: background-color 0.2s;
     transition: background-color 0.2s;
 
     white-space: nowrap;
@@ -441,6 +450,7 @@ ul#explore_gallery ul.body li div.picture > a.link {
     z-index: 1;
     visibility: hidden;
     -webkit-transition: background-color 0.2s;
+    -moz-transition: background-color 0.2s;
     transition: background-color 0.2s;
 }
 ul#explore_gallery ul.body li div.picture > div.move {

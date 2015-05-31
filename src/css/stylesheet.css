@@ -121,6 +121,7 @@ body.home #result_block {
     opacity: 0.5;
     display: inline-block;
     -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
     vertical-align: top;
     margin: 5px;
@@ -233,6 +234,7 @@ body.home #result_block {
     background-size: 12px;
     opacity: 0.5;
     -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
     width: 100%;
     height: 9px;
@@ -359,6 +361,7 @@ body.home #result_block {
     right: -8px;
     display: block;
     -webkit-transition: -webkit-transform 0.2s;
+    -moz-transition: -moz-transform 0.2s;
     transition: transform 0.2s;
     background-position: center;
     background-repeat: no-repeat;
@@ -382,6 +385,7 @@ body.home #result_block {
 #result_table th.sortUp i.arrow {
     background-image: url('../img/arrow_up.svg');
     -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
     transform: rotate(180deg);
     background-position-y: -5px;
 }
@@ -469,6 +473,7 @@ body.home #result_block {
     margin-left: 5px;
     opacity: 0.5;
     -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
     vertical-align: middle;
 }
@@ -588,6 +593,7 @@ body.home #result_block {
     cursor: pointer;
     background: url(../img/back.png) center left no-repeat;
     -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
     transform: rotate(180deg);
     margin-top: 1px;
 }
@@ -713,6 +719,7 @@ body.home #result_block {
     background-color: #fff;
     border: 1px solid #ccc;
     -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
 
     box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);

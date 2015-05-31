@@ -79,11 +79,13 @@
     background-repeat: no-repeat;
 
     -webkit-transition: -webkit-transform 0.2s;
+    -moz-transition: -moz-transform 0.2s;
     transition: transform 0.2s;
 }
 
 .simple-select-box.is-open > .arrow > span {
     -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
     transform: rotate(180deg);
 }
 

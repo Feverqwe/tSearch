@@ -98,6 +98,7 @@ body {
     margin-right: 5px;
     opacity: 0.5;
     -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
     vertical-align: middle;
 }

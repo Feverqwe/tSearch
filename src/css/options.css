@@ -388,12 +388,15 @@ input[data-option="kinopoiskFolderId"] {
     cursor: pointer;
     opacity: 0.5;
     -webkit-transition: -webkit-transform 0.2s;
+    -moz-transition: -moz-transform 0.2s;
     transition: transform 0.2s;
     -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
     transform: rotate(90deg);
 }
 .qualityList .collapses.down {
     -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
     transform: rotate(0deg);
 }
 
@@ -415,6 +418,7 @@ input[data-option="kinopoiskFolderId"] {
     background-repeat: no-repeat;
     opacity: 0.5;
     -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
     color: #000;
 }
