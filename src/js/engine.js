@@ -51,8 +51,8 @@ var engine = {
     topList: {},
 
     webAppSupportTrackerList: [
-        'nnm-club', 'kinozal', 'rutor', 'hdclub', 'tfile', 'fast-torrent', 'btdigg',
-        'bitsnoop', 'extratorrent', 'torrentz', 'thepiratebay', 'kickass'
+        'nnm-club', 'kinozal', 'hdclub', 'tfile', 'fast-torrent', 'btdigg',
+        'bitsnoop', 'extratorrent', 'torrentz', 'kickass'
     ],
 
     getDefaultProfileList: function() {
