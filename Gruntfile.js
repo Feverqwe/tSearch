@@ -285,6 +285,7 @@ module.exports = function (grunt) {
     require('./grunt/chrome.js').run(grunt);
     require('./grunt/firefox.js').run(grunt);
     require('./grunt/safari.js').run(grunt);
+    require('./grunt/opera12.js').run(grunt);
 
     grunt.registerTask('devMode', function() {
         devMode = true;

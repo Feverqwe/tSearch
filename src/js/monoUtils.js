@@ -493,7 +493,7 @@ mono.openTab = mono.isChrome ? function(url) {
     mono.sendMessage({action: 'openTab', dataUrl: true, url: url}, undefined, 'service');
 } : mono.isOpera ? function(url) {
     "use strict";
-    mono.sendMessage({action: 'tab', url: url });
+    mono.sendMessage({action: 'openTab', url: 'build/' + url });
 } : mono.isSafari ? function(url) {
     "use strict";
     var tab = safari.application.activeBrowserWindow.openTab();

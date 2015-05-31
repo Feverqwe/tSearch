@@ -49,6 +49,31 @@ var bg = {
         chrome.browserAction.setPopup({
             popup: bg.settings.searchPopup ? 'popup.html' : ''
         });
+    } : mono.isOpera ? function() {
+        "use strict";
+        if (bg.operaBtn) {
+            opera.contexts.toolbar.removeItem(bg.operaBtn);
+            bg.operaBtn = null;
+        }
+        var ToolbarUIItemProperties = {
+            disabled: false,
+            title: "Torrents MultiSearch",
+            icon: "icons/icon-18.png"
+        };
+        if (bg.settings.searchPopup) {
+            ToolbarUIItemProperties.popup = {
+                href: 'build/popup.html',
+                width: 640,
+                height: 70
+            }
+        } else {
+            ToolbarUIItemProperties.onclick = function() {
+                var tab = opera.extension.tabs.create({url: 'build/index.html'});
+                tab.focus();
+            }
+        }
+        bg.operaBtn = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
+        opera.contexts.toolbar.addItem(bg.operaBtn);
     } : function() {
         "use strict";
 
@@ -137,6 +162,33 @@ var bg = {
                 tabs.open(self.data.url('index.html') + '#?search=' + encodeURIComponent(text));
             }
         });
+    } : mono.isOpera ? function() {
+        "use strict";
+        var menu = opera.contexts.menu;
+        if (!menu) {
+            return;
+        }
+        if (menu.length > 0) {
+            menu.removeItem(0);
+        }
+        if (!bg.settings.contextMenu) {
+            return;
+        }
+        // Create a menu item properties object
+        var itemProps = {
+            title: mono.language.ctxMenuTitle,
+            contexts: ['selection'],
+            icon: 'icons/icon-16.png',
+            onclick: function(event) {
+                var query = encodeURIComponent(event.selectionText);
+                var tabProps = {
+                    url: 'build/index.html' + (query?'#?search=' + query:'')
+                };
+                var tab = opera.extension.tabs.create(tabProps);
+                tab.focus();
+            }
+        };
+        menu.addItem(menu.createItem(itemProps));
     } : function() {
         "use strict";
     },
@@ -145,6 +197,14 @@ var bg = {
         if (msg === 'reloadSettings') {
             bg.run();
             return cb();
+        } else
+        if (msg.action === 'openTab') {
+            var tab = opera.extension.tabs.create({url: msg.url});
+            tab.focus();
+        } else
+        if (msg.action === 'resize') {
+            msg.height && (bg.operaBtn.popup.height = msg.height);
+            msg.width && (bg.operaBtn.popup.width = msg.width);
         }
     },
     once: function() {

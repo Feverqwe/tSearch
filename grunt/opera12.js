@@ -1,13 +1,12 @@
 exports.run = function (grunt) {
-    return;
     grunt.registerTask('opera12', function () {
         grunt.config.merge({
             copy: {
                 vendorOpera12: {
                     expand: true,
-                    flatten: true,
+                    cwd: 'src/vendor/opera/',
                     src: [
-                        'src/vendor/opera/*'
+                        '**'
                     ],
                     dest: '<%= output %><%= vendor %>../',
                     options: {
@@ -20,14 +19,12 @@ exports.run = function (grunt) {
                     }
                 },
                 oIcons: {
+                    cwd: 'src/vendor/opera/',
                     expand: true,
                     src: [
-                        'src/vendor/opera/icons/*'
+                        'icons/**'
                     ],
-                    dest: '<%= output %><%= vendor %>../',
-                    rename: function () {
-                        return arguments[0] + arguments[1].substr('src/vendor/opera/'.length);
-                    }
+                    dest: '<%= output %><%= vendor %>../'
                 }
             },
             compress: {
@@ -40,11 +37,9 @@ exports.run = function (grunt) {
                         {
                             expand: true,
                             filter: 'isFile',
-                            src: '<%= output %><%= vendor %>../**',
-                            dest: './',
-                            rename: function () {
-                                return arguments[0] + arguments[1].substr((grunt.config('output') + grunt.config('vendor') + '../').length);
-                            }
+                            cwd: '<%= output %><%= vendor %>../',
+                            src: '**',
+                            dest: ''
                         }
                     ]
                 }
@@ -55,13 +50,17 @@ exports.run = function (grunt) {
             includesFolder: 'includes/',
             dataFolder: '',
             localExtVersion: '<%= pkg.extVersion %>.1',
-            buildName: 'tms_<%= localExtVersion %>'
+            buildName: 'tms_<%= localExtVersion %>',
+            appId: 'opera12Ext',
+            browser: 'opera'
         });
         grunt.task.run([
-            'extensionBaseMin',
+            'extensionBase',
             'copy:vendorOpera12',
+            'buildJs',
+            'setAppInfo',
+            // 'compressJs',
             'copy:oIcons',
-            'rmBg',
             'compress:buildOpera12'
         ]);
     });
