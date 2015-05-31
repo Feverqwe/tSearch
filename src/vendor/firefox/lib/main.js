@@ -118,7 +118,7 @@
 
             var regexpList = sanitizerHTML.regexpList;
 
-            html = html.replace(regexpList.findUrl, function(str, arg1, arg2) {
+            html = html.replace(regexpList.findUrl, function(str, arg1, arg2, arg3) {
                 "use strict";
                 var data = arg2;
                 if (arg2.search(regexpList.findeJs) === 0) {
@@ -127,7 +127,7 @@
                 if (arg2[0] === '/' || arg2.substr(0, 4) !== 'http') {
                     data = 'http://'+regexpList.id+'#' + arg2
                 }
-                return 'href='+arg1+data+arg1;
+                return 'href='+arg1+data+arg3;
             });
 
             var parser = Cc["@mozilla.org/parserutils;1"].getService(Ci.nsIParserUtils);
@@ -141,7 +141,7 @@
         var id = (require("sdk/self")).id.replace(/[^\w\d]/g, '_');
         sanitizerHTML.regexpList = {};
         sanitizerHTML.regexpList.rmBaseUrl = new RegExp('http:\\/\\/'+id+'#', 'gm');
-        sanitizerHTML.regexpList.findUrl = /href=(['"]{1})([^'"]*)(?:['"]{1})/img;
+        sanitizerHTML.regexpList.findUrl = /href=(['"])([^'"]+)(['"])/img;
         sanitizerHTML.regexpList.findeJs = /javascript/i;
         sanitizerHTML.regexpList.id = id;
         id = undefined;
