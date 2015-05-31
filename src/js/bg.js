@@ -159,7 +159,11 @@ var bg = {
             contentScript: contentScript,
             onMessage: function (text) {
                 var tabs = require('sdk/tabs');
-                tabs.open(self.data.url('index.html') + '#?search=' + encodeURIComponent(text));
+                if (text) {
+                    text = text.replace(/:/g, '');
+                    text = '#?search=' + encodeURIComponent(text);
+                }
+                tabs.open(self.data.url('index.html') + text);
             }
         });
     } : mono.isOpera ? function() {

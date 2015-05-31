@@ -61,7 +61,13 @@ var popup = {
             if (typeof e.detail === 'string' && e.detail) {
                 request = e.detail.trim();
             }
-            var url = 'index.html' + (request && '#?search=' + encodeURIComponent(request));
+            if (request) {
+                if (mono.isFF) {
+                    request = request.replace(/:/g, '');
+                }
+                request = '#?search=' + encodeURIComponent(request);
+            }
+            var url = 'index.html' + request;
             mono.openTab(url);
             if (mono.isFF || mono.isSafari) {
                 mono.closePopup();
