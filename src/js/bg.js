@@ -104,9 +104,14 @@ var bg = {
                     title: mono.language.ctxMenuTitle,
                     contexts: ["selection"],
                     onclick: function (info) {
-                        var text = info.selectionText;
+                        var request = info.selectionText;
+                        if (request) {
+                            request = '#?' + mono.hashParam({
+                                search: request
+                            });
+                        }
                         chrome.tabs.create({
-                            url: 'index.html' + ( text ? '#?search=' + encodeURIComponent(text) : ''),
+                            url: 'index.html' + request,
                             selected: true
                         });
                     }
@@ -157,13 +162,14 @@ var bg = {
             context: contextMenu.SelectionContext(),
             image: self.data.url('./icons/icon-16.png'),
             contentScript: contentScript,
-            onMessage: function (text) {
+            onMessage: function (request) {
                 var tabs = require('sdk/tabs');
-                if (text) {
-                    text = text.replace(/:/g, '');
-                    text = '#?search=' + encodeURIComponent(text);
+                if (request) {
+                    request = '#?' + mono.hashParam({
+                        search: request
+                    });
                 }
-                tabs.open(self.data.url('index.html') + text);
+                tabs.open(self.data.url('index.html') + request);
             }
         });
     } : mono.isOpera ? function() {
@@ -184,9 +190,14 @@ var bg = {
             contexts: ['selection'],
             icon: 'icons/icon-16.png',
             onclick: function(event) {
-                var query = encodeURIComponent(event.selectionText);
+                var request = event.selectionText;
+                if (request) {
+                    request = '#?' + mono.hashParam({
+                        search: request
+                    });
+                }
                 var tabProps = {
-                    url: 'build/index.html' + (query?'#?search=' + query:'')
+                    url: 'build/index.html' + request
                 };
                 var tab = opera.extension.tabs.create(tabProps);
                 tab.focus();
@@ -227,9 +238,14 @@ var bg = {
             });
         }
         if (mono.isChrome) {
-            chrome.omnibox.onInputEntered.addListener(function (text) {
+            chrome.omnibox.onInputEntered.addListener(function (request) {
+                if (request) {
+                    request = '#?' + mono.hashParam({
+                        search: request
+                    });
+                }
                 chrome.tabs.create({
-                    url: "index.html" + ( text ? '#?search=' + encodeURIComponent(text) : ''),
+                    url: "index.html" + request,
                     selected: true
                 });
             });

@@ -92,7 +92,7 @@ var view = {
                                         }),
                                         mono.create('a', {
                                             text: (!historyObj.request) ? '""' : historyObj.request,
-                                            href: 'index.html#?' + mono.param({
+                                            href: 'index.html#?' + mono.hashParam({
                                                 search: historyObj.request,
                                                 params: JSON.stringify({
                                                     profileName: historyObj.profileName,

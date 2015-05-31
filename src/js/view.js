@@ -1267,7 +1267,7 @@ var view = {
             this.setLocationUrl(hash, document.title, base+hash);
             return;
         }
-        hash += '?' + mono.param({
+        hash += '?' + mono.hashParam({
             search: request,
             params: JSON.stringify(params)
         });
@@ -1276,7 +1276,7 @@ var view = {
     onUrlChange: function() {
         "use strict";
         this.varCache.locationHash = location.hash;
-        var args = mono.parseParam(location.hash);
+        var args = mono.hashParseParam(location.hash);
         try {
             args.params = !args.params ? {} : JSON.parse(args.params);
         } catch (e) {

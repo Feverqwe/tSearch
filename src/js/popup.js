@@ -62,10 +62,9 @@ var popup = {
                 request = e.detail.trim();
             }
             if (request) {
-                if (mono.isFF) {
-                    request = request.replace(/:/g, '');
-                }
-                request = '#?search=' + encodeURIComponent(request);
+                request = '#?' + mono.hashParam({
+                    search: request
+                });
             }
             var url = 'index.html' + request;
             mono.openTab(url);

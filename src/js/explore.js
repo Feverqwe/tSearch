@@ -745,7 +745,9 @@ var explore = {
                         title: request,
                         append: [
                             mono.create('a', {
-                                href: '#?search=' + encodeURIComponent(request),
+                                href: '#?' + mono.hashParam({
+                                    search: request
+                                }),
                                 text: item.text
                             })
                         ]
@@ -1020,8 +1022,9 @@ var explore = {
         var elCount = 0;
         for (var index = form; index < end; index++) {
             var title = this.getCategoryItemTitle(content[index]);
-
-            var search_link = 'index.html#?search=' + encodeURIComponent(title);
+            var search_link = 'index.html#?' + mono.hashParam({
+                search: title
+            });
             var titleEl = mono.create('span', {
                 append: mono.create('a', {
                     href: search_link,
