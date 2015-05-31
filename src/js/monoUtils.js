@@ -727,7 +727,7 @@ mono.getChild = function (node, cb) {
 
 mono.hashParam = function(params) {
     "use strict";
-    if (mono.isFF) {
+    if (mono.isFF || mono.isWebApp) {
         for (var key in params) {
             params[key] = btoa(unescape(encodeURIComponent(params[key])));
         }
