@@ -299,6 +299,9 @@ var engine = {
             }
 
             mono.sendMessage({action: 'ping'}, function() {
+                if (dune) {
+                    return;
+                }
                 dune = true;
                 cb();
             });
