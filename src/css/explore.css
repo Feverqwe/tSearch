@@ -266,8 +266,8 @@ ul#explore_gallery div.head div.collapses {
     background: url(../img/arrow_down.svg) center no-repeat;
     background-size: 17px;
     cursor: pointer;
-    -webkit-transition: -webkit-transition 0.2s;
-    -moz-transition: -moz-transition 0.2s;
+    -webkit-transition: -webkit-transform 0.2s;
+    -moz-transition: -moz-transform 0.2s;
     transition: transform 0.2s;
     opacity: 0.5;
 }
