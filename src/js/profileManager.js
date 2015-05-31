@@ -242,7 +242,7 @@ var profileManager = {
                                 var _this = profileManager;
                                 var $body = showNotification([
                                     [{label: {text: mono.language.copyAndEnterTrackerCode}}],
-                                    {textarea: {name: 'code', text: engine.trackerLib[id].code}},
+                                    {textarea: {name: 'code', text: engine.trackerLib[id] && engine.trackerLib[id].code || ''}},
                                     [
                                         {input: {type: "button", value: mono.language.change, name: 'yesBtn', on: ['click', function(e) {
                                             e.stopPropagation();
@@ -336,24 +336,40 @@ var profileManager = {
             }
         }
     },
+    getRemovedTrackerObj: function(trackerId, proxyIndex) {
+        "use strict";
+        var customId = trackerId.substr(0, 3) === 'ct_' ? trackerId.substr(3) : trackerId;
+        return {
+            proxyIndex: proxyIndex || 0,
+            id: trackerId,
+            icon: '#skull',
+            title: trackerId,
+            search: {
+                baseUrl: 'http://code-tms.blogspot.ru/search?q=' + encodeURIComponent(customId)
+            },
+            code: trackerId.substr(0, 3) === 'ct_' ? '{}' : undefined,
+            desc: mono.language.trackerIsNotFound
+        };
+    },
     updateTrackerItem: function(trackerId, isRemove) {
         "use strict";
         var el = this.domCache.trackerList.querySelector('div[data-id="' + trackerId + '"]');
 
         var trackerObj = engine.trackerLib[trackerId];
 
+        var proxyIndex;
+        var proxySelect = el && el.querySelector('select[name="proxyIndex"]');
+        if (proxySelect) {
+            proxyIndex = proxySelect.selectedIndex;
+            if (trackerObj && proxyIndex) {
+                trackerObj.proxyIndex = proxyIndex;
+            }
+            proxySelect = null;
+        }
+
         var notFound;
         if (!trackerObj) {
-            trackerObj = {
-                id: trackerId,
-                icon: '#skull',
-                title: trackerId,
-                search: {
-                    baseUrl: 'http://code-tms.blogspot.ru/search?q=' + encodeURIComponent(trackerId)
-                },
-                code: trackerId.substr(0, 3) === 'ct_' ? '{}' : undefined,
-                desc: mono.language.trackerIsNotFound
-            };
+            trackerObj = this.getRemovedTrackerObj(trackerId, proxyIndex);
             notFound = true;
         }
         var hasList = notFound ? true : this.trackerInList(trackerObj);
@@ -388,17 +404,7 @@ var profileManager = {
                     hasIdList.push(trackerId);
                     var trackerObj = engine.trackerLib[trackerId];
                     if (!trackerObj) {
-                        trackerObj = {
-                            proxyIndex: trackerItem.proxyIndex || 0,
-                            id: trackerId,
-                            icon: '#skull',
-                            title: trackerId,
-                            search: {
-                                baseUrl: 'http://code-tms.blogspot.ru/search?q=' + encodeURIComponent(trackerId)
-                            },
-                            code: trackerId.substr(0, 3) === 'ct_' ? '{}' : undefined,
-                            desc: mono.language.trackerIsNotFound
-                        };
+                        trackerObj = this.getRemovedTrackerObj(trackerId, trackerItem.proxyIndex);
                         hasList = true;
                         selected = true;
                         notFound = true;
