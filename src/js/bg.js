@@ -301,7 +301,10 @@ var bg = {
 
             if (mono.isSafari) {
                 // update popup window
-                safari.extension.popovers[0].contentWindow.popup.update();
+                safari.extension.popovers.forEach(function(popup) {
+                    var func = popup.contentWindow.popup && popup.contentWindow.popup.update;
+                    func && func();
+                });
             }
         });
     }
