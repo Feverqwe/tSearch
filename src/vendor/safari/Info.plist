@@ -19,7 +19,7 @@
 	<key>Chrome</key>
 	<dict>
 		<key>Global Page</key>
-		<string>background.html</string>
+		<string>bg.html</string>
 		<key>Popovers</key>
 		<array>
 			<dict>
@@ -30,7 +30,7 @@
 				<key>Identifier</key>
 				<string>popup</string>
 				<key>Width</key>
-				<real>642</real>
+				<real>650</real>
 			</dict>
 		</array>
 		<key>Toolbar Items</key>

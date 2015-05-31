@@ -284,6 +284,7 @@ module.exports = function (grunt) {
 
     require('./grunt/chrome.js').run(grunt);
     require('./grunt/firefox.js').run(grunt);
+    require('./grunt/safari.js').run(grunt);
 
     grunt.registerTask('devMode', function() {
         devMode = true;
@@ -297,6 +298,7 @@ module.exports = function (grunt) {
         'opera',
         'chromeApp',
         'firefoxStore',
-        'firefox'
+        'firefox',
+        'safari'
     ]);
 };
