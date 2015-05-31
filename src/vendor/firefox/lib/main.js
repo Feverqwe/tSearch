@@ -141,7 +141,7 @@
         var id = (require("sdk/self")).id.replace(/[^\w\d]/g, '_');
         sanitizerHTML.regexpList = {};
         sanitizerHTML.regexpList.rmBaseUrl = new RegExp('http:\\/\\/'+id+'#', 'gm');
-        sanitizerHTML.regexpList.findUrl = /href=(['"]{1})([^'"]*)(?:['"]{1})/img;
+        sanitizerHTML.regexpList.findUrl = /href=(['"])([^'"]+)\1/img;
         sanitizerHTML.regexpList.findeJs = /javascript/i;
         sanitizerHTML.regexpList.id = id;
         id = undefined;
