@@ -41,6 +41,10 @@ module.exports = function (grunt) {
         clean: {
             output: '<%= output %>',
             magic: '<%= output %><%= vendor %><%= dataFolder %>legacy',
+            popup: [
+                '<%= output %><%= vendor %>popup.html',
+                '<%= output %><%= vendor %><%= dataJsFolder %>popup.js'
+            ],
             mono: monoJsList.slice(1).map(function(item) {
                 return '<%= output %><%= vendor %><%= dataJsFolder %>' + item;
             }),
@@ -286,6 +290,7 @@ module.exports = function (grunt) {
     require('./grunt/firefox.js').run(grunt);
     require('./grunt/safari.js').run(grunt);
     require('./grunt/opera12.js').run(grunt);
+    require('./grunt/web.js').run(grunt);
 
     grunt.registerTask('devMode', function() {
         devMode = true;
@@ -300,6 +305,7 @@ module.exports = function (grunt) {
         'chromeApp',
         'firefoxStore',
         'firefox',
-        'safari'
+        'safari',
+        'web'
     ]);
 };

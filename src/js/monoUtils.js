@@ -16,7 +16,10 @@ mono.param = function(params) {
 };
 mono.wrapWebAppUrl = function(url) {
     "use strict";
-    if (url.substr(0, 8) === '_locales') {
+    if (url.substr(0, 4) !== 'http') {
+        return url;
+    }
+    if (url.indexOf('http://static.tms.mooo.com/') === 0) {
         return url;
     }
     return '/app/via?url=' + encodeURIComponent(url);

@@ -62,9 +62,13 @@ var engine = {
             list = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'hdclub', 'tfile', 'fast-torrent', 'btdigg'];
             if (mono.isWebApp) {
                 list.splice(list.indexOf('rutracker'), 1);
+                list.splice(list.indexOf('rutor'), 1);
             }
         } else {
             list = ['bitsnoop', 'extratorrent', 'torrentz', 'thepiratebay', 'kickass'];
+            if (mono.isWebApp) {
+                list.splice(list.indexOf('thepiratebay'), 1);
+            }
         }
         return list;
     },

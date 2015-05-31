@@ -59,7 +59,7 @@ exports.run = function (grunt) {
             'copy:vendorOpera12',
             'buildJs',
             'setAppInfo',
-            // 'compressJs',
+            'compressJs',
             'copy:oIcons',
             'compress:buildOpera12'
         ]);
