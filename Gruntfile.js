@@ -186,7 +186,24 @@ module.exports = function (grunt) {
         grunt.file.write(enginePath, content);
     });
 
+    var getHash = function(path, cb) {
+        var fs = require('fs');
+        var crypto = require('crypto');
+
+        var fd = fs.createReadStream(path);
+        var hash = crypto.createHash('sha1');
+        hash.setEncoding('hex');
+
+        fd.on('end', function () {
+            hash.end();
+            cb(hash.read());
+        });
+
+        fd.pipe(hash);
+    };
+
     grunt.registerTask('compressJs', function() {
+        var done = this.async();
         if (devMode) {
             return;
         }
@@ -197,13 +214,17 @@ module.exports = function (grunt) {
                     options: {
                         jscomp_warning: 'const',
                         language_in: 'ECMASCRIPT5',
-                        max_processes: 4
+                        max_processes: 1
                     }
                 }
             }
         };
         grunt.config.merge(ccTask);
         ccTask.closurecompiler.minify.files = {};
+
+        var wait = 0;
+        var ready = 0;
+        var list = {};
 
         var fs = require('fs');
         ['dataJsFolder', 'libFolder'].forEach(function(folder, index) {
@@ -215,16 +236,47 @@ module.exports = function (grunt) {
 
             var jsList = grunt.file.match('*.js', files);
 
-            for (var i = 0, jsFile; jsFile = jsList[i]; i++) {
-                if (jsFile.indexOf('.min.js') !== -1) {
-                    continue;
+            var copyList = [];
+            var onReady = function() {
+                ready++;
+                if (wait !== ready) {
+                    return;
                 }
-                ccTask.closurecompiler.minify.files['<%= output %><%= vendor %><%= ' + folder + ' %>'+jsFile] = '<%= output %><%= vendor %><%= ' + folder + ' %>' + jsFile;
-            }
-        });
 
-        grunt.config.merge(ccTask);
-        grunt.task.run('closurecompiler:minify');
+                var hashFolder = grunt.template.process('<%= output %>hash/');
+                for (var hash in list) {
+                    var item = list[hash];
+                    var jsFolder = grunt.template.process('<%= output %><%= vendor %><%= ' + item[0] + ' %>');
+                    var hashName = hashFolder + hash + '.js';
+                    if (!grunt.file.exists(hashName)) {
+                        ccTask.closurecompiler.minify.files[hashName] = '<%= output %><%= vendor %><%= ' + item[0] + ' %>'+item[1];
+                    }
+                    copyList.push([hashName, jsFolder + item[1]]);
+                }
+
+                grunt.config.merge(ccTask);
+                grunt.registerTask('copyFromCache', function() {
+                    copyList.forEach(function(item) {
+                        grunt.file.copy(item[0], item[1]);
+                    });
+                });
+
+                grunt.task.run(['closurecompiler:minify', 'copyFromCache']);
+
+                done();
+            };
+
+            jsList.forEach(function(jsFile) {
+                if (jsFile.indexOf('.min.js') !== -1) {
+                    return;
+                }
+                wait++;
+                getHash(jsFolder + jsFile, function(hash) {
+                    list[hash] = [folder, jsFile];
+                    onReady();
+                });
+            });
+        });
     });
 
     grunt.registerMultiTask('insert', 'Insert file in file, lik concat but in current position', function() {
