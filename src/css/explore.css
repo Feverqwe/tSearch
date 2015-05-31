@@ -143,6 +143,7 @@ ul#explore_gallery div.head div.move {
     background: url(../img/moveble.svg) center no-repeat;
     background-size: 16px;
     cursor: move;
+    -webkit-transition: opacity 0.2s;
     transition: opacity 0.2s;
     opacity: 0.5;
 }
@@ -169,7 +170,8 @@ ul#explore_gallery div.head div.actionList div.setup {
     height: 24px;
     cursor: pointer;
     opacity: 0.5;
-    transition: opacity .2s;
+    -webkit-transition: opacity 0.2s;
+    transition: opacity 0.2s;
 }
 ul#explore_gallery div.head div.actionList div.setup:hover {
     opacity: 1;
@@ -180,12 +182,13 @@ ul#explore_gallery div.head div.actionList div.update {
     background: url(../img/refresh.svg) no-repeat center;
     background-size: 14px;
     cursor: pointer;
+    -webkit-transition: -webkit-transform 0.5s;
     transition: transform 0.5s;
     opacity: 0.5;
 }
 ul#explore_gallery div.head div.actionList div.update:hover {
-    transform: rotate(360deg);
     -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
     opacity: 1;
 }
 ul#explore_gallery div.head div.actionList div.update.loading {
@@ -208,7 +211,8 @@ ul#explore_gallery div.head div.actionList a.open {
     background-size: 10px;
     display: inline-block;
     opacity: 0.5;
-    transition: opacity .2s;
+    -webkit-transition: opacity 0.2s;
+    transition: opacity 0.2s;
 }
 ul#explore_gallery div.head div.actionList a.open:hover {
     opacity: 1;
@@ -235,7 +239,8 @@ ul#explore_gallery div.head .setupBody .defaultSize {
     cursor: pointer;
     display: inline-block;
     opacity: 0.5;
-    transition: opacity .2s;
+    -webkit-transition: opacity 0.2s;
+    transition: opacity 0.2s;
     background: url(../img/delete.svg) center no-repeat;
     background-size: 14px;
     vertical-align: middle;
@@ -255,6 +260,7 @@ ul#explore_gallery div.head div.collapses {
     background: url(../img/arrow_down.svg) center no-repeat;
     background-size: 17px;
     cursor: pointer;
+    -webkit-transition: -webkit-transition 0.2s;
     transition: transform 0.2s;
     opacity: 0.5;
 }
@@ -262,6 +268,7 @@ ul#explore_gallery div.head div.collapses:hover {
     opacity: 1;
 }
 ul#explore_gallery li.collapsed div.head div.collapses {
+    -webkit-transform: rotate(90deg);
     transform: rotate(90deg);
 }
 ul#explore_gallery div.head:hover div.collapses {
@@ -374,7 +381,8 @@ ul#explore_gallery ul.body div.picture > div.quality {
     line-height: 18px;
     cursor: pointer;
     z-index: 1;
-    transition: background-color .2s;
+    -webkit-transition: background-color 0.2s;
+    transition: background-color 0.2s;
 
     white-space: nowrap;
     font-size: .857em;
@@ -432,7 +440,8 @@ ul#explore_gallery ul.body li div.picture > a.link {
     cursor: pointer;
     z-index: 1;
     visibility: hidden;
-    transition: background-color .2s;
+    -webkit-transition: background-color 0.2s;
+    transition: background-color 0.2s;
 }
 ul#explore_gallery ul.body li div.picture > div.move {
     cursor: move;

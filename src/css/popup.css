@@ -40,6 +40,7 @@ body.loading {
     padding-bottom: 1px;
     padding-top: 1px;
     outline: none;
+    margin: 0;
 }
 #request_input {
     font-size: 16px;
