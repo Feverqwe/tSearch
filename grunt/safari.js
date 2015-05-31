@@ -46,7 +46,7 @@ exports.run = function(grunt) {
       'copy:vendorSafari',
       'buildJs',
       'setAppInfo',
-      // 'compressJs',
+      'compressJs',
       'safariChangeVersion',
       'makeSafariUpdateFile'
     ]);

@@ -1,12 +1,12 @@
 @import "popup.css";
 
 body {
+    min-width: 780px;
+
     -webkit-user-select: none;
     -moz-user-select: none;
     -o-user-select: none;
     user-select: none;
-
-    min-width: 780px;
 }
 
 .head {
@@ -53,10 +53,10 @@ body {
 }
 
 .user-select {
-    -webkit-user-select: initial;
-    -moz-user-select: initial;
-    -o-user-select: none;
-    user-select: initial;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    user-select: text;
 }
 
 a {

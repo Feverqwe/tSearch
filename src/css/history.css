@@ -2,9 +2,12 @@
 
 body {
     min-width: 960px;
-    user-select: none;
-    -webkit-user-select: none;
     font-size: 14px;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .head {
@@ -56,8 +59,11 @@ body {
 
 .content {
     position: relative;
-    user-select: text;
+
     -webkit-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    user-select: text;
 }
 
 .title a {

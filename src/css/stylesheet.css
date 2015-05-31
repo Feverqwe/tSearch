@@ -3,10 +3,13 @@
 
 body {
     min-width: 960px;
-    user-select: none;
-    -webkit-user-select: none;
     overflow-y: scroll;
     min-height: 648px;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 input[type=text] {
@@ -318,14 +321,19 @@ body.home #result_block {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 2px;
-    user-select: text;
-    -webkit-user-select: text;
     font-size: 13px;
+
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    user-select: text;
 }
 
 #result_table thead {
-    user-select: none;
     -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 #result_table th {
@@ -641,6 +649,11 @@ body.home #result_block {
     padding: 5px;
     padding-top: 0;
     overflow: hidden;
+
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    user-select: text;
 }
 
 #request_desc_container .poster {
@@ -703,11 +716,12 @@ body.home #result_block {
     transition: opacity 0.2s;
 
     box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);
+    z-index: 90;
+
     -webkit-user-select: none;
     -moz-user-select: none;
     -o-user-select: none;
     user-select: none;
-    z-index: 90;
 }
 .extInfoContainer a {
     color: #0051D8;
