@@ -729,7 +729,7 @@ mono.hashParam = function(params) {
     "use strict";
     if (mono.isFF) {
         for (var key in params) {
-            params[key] = btoa(encodeURIComponent(params[key]));
+            params[key] = btoa(unescape(encodeURIComponent(params[key])));
         }
         params.base64 = 1;
     }
@@ -743,7 +743,7 @@ mono.hashParseParam = function(string) {
         delete params.base64;
         for (var key in params) {
             try {
-                params[key] = decodeURIComponent(atob(params[key]));
+                params[key] = decodeURIComponent(escape(atob(params[key])));
             } catch (e) {
                 console.error('Error decode param', key, params[key]);
             }
