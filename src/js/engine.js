@@ -281,11 +281,41 @@ var engine = {
         }.bind(this));
     },
 
+    ping: function(cb) {
+        "use strict";
+        if (!mono.isFF) {
+            return cb();
+        }
+        var dune = false;
+        var limit = 10;
+        (function ping() {
+            if (dune) {
+                return;
+            }
+
+            limit--;
+            if (limit === 0) {
+                return document.location.reload();
+            }
+
+            mono.sendMessage({action: 'ping'}, function() {
+                dune = true;
+                cb();
+            });
+
+            setTimeout(function() {
+                ping();
+            }, 100);
+        })();
+    },
+
     init: function(cb) {
         "use strict";
-        this.loadSettings(function() {
-            cb && cb();
-        });
+        this.ping(function() {
+            this.loadSettings(function() {
+                cb && cb();
+            });
+        }.bind(this));
     },
 
     exploreCache: {},

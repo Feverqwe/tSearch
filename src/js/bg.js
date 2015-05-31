@@ -205,6 +205,9 @@ var bg = {
         if (msg.action === 'resize') {
             msg.height && (bg.operaBtn.popup.height = msg.height);
             msg.width && (bg.operaBtn.popup.width = msg.width);
+        } else
+        if (msg.action === 'ping') {
+            return cb('pong');
         }
     },
     once: function() {
