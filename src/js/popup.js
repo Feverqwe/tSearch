@@ -23,7 +23,7 @@ var popup = {
         popup.domCache.requestInput.focus();
 
         window.addEventListener('resize', function(e) {
-            var height = document.body.scrollHeight;
+            var height = !mono.isSafari ? document.body.scrollHeight : document.body.clientHeight;
             if (height < 72) {
                 height = 72;
             }
