@@ -727,12 +727,11 @@ mono.getChild = function (node, cb) {
 
 mono.hashParam = function(params) {
     "use strict";
-    if (mono.isFF || mono.isWebApp) {
-        for (var key in params) {
-            params[key] = btoa(unescape(encodeURIComponent(params[key])));
-        }
-        params.base64 = 1;
+    var _btoa = !mono.isModule ? btoa : require("sdk/base64").encode;
+    for (var key in params) {
+        params[key] = _btoa(unescape(encodeURIComponent(params[key])));
     }
+    params.base64 = 1;
     return mono.param(params);
 };
 
@@ -740,10 +739,11 @@ mono.hashParseParam = function(string) {
     "use strict";
     var params = mono.parseParam(string);
     if (params.hasOwnProperty('base64')) {
+        var _atob = !mono.isModule ? atob : require("sdk/base64").decode;
         delete params.base64;
         for (var key in params) {
             try {
-                params[key] = decodeURIComponent(escape(atob(params[key])));
+                params[key] = decodeURIComponent(escape(_atob(params[key])));
             } catch (e) {
                 console.error('Error decode param', key, params[key]);
             }

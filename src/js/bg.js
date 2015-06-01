@@ -27,6 +27,8 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
                         return require('sdk/net/xhr');
                     case 'sdk/l10n':
                         return require('sdk/l10n');
+                    case 'sdk/base64':
+                        return require('sdk/base64');
                     default:
                         console.error('Module not found!', path);
                 }
