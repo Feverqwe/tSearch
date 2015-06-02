@@ -90,6 +90,14 @@ exports.run = function (grunt) {
         grunt.file.write(packagePath, JSON.stringify(content));
     });
 
+    grunt.registerTask('setInstallRdf', function() {
+        "use strict";
+        var patch = grunt.template.process('<%= output %><%= vendor %>/../template/install.rdf');
+        var content = grunt.file.read(patch);
+        content = replaceContent(content);
+        grunt.file.write(patch, content);
+    });
+
     grunt.config.merge({
         copy: {
             ffBase: {
@@ -107,15 +115,7 @@ exports.run = function (grunt) {
                 expand: true,
                 cwd: 'src/vendor/firefox_tools/template/',
                 src: '**',
-                dest: '<%= output %><%= vendor %>/../template/',
-                options: {
-                    process: function (content, src) {
-                        if (src.indexOf('install.rdf') !== -1) {
-                            content = replaceContent(content);
-                        }
-                        return content;
-                    }
-                }
+                dest: '<%= output %><%= vendor %>/../template/'
             }
         },
         'json-format': {
@@ -171,6 +171,7 @@ exports.run = function (grunt) {
             'json-format:ffPackage',
             'setAppInfo',
             'copy:ffTemplateDir',
+            'setInstallRdf',
             'ffRmUpdateKey',
             'exec:buildFF',
             'ffRenameBuild',
@@ -210,6 +211,25 @@ exports.run = function (grunt) {
             return;
         }
 
+        var oldId = '{d03fdff0-d3a0-11e0-baa5-14d64d08fdac}';
+        var newId = '{0A06D1B2-08D1-11E5-B948-D1FE1C5D46B0}';
+
+        grunt.registerTask('setPackageId', function() {
+            "use strict";
+            var patch = grunt.template.process('<%= output %><%= vendor %>package.json');
+            var content = grunt.file.read(patch);
+            content = content.replace(oldId, newId);
+            grunt.file.write(patch, content);
+        });
+
+        grunt.registerTask('setUpdateId', function() {
+            "use strict";
+            var patch = grunt.template.process('<%= output %><%= vendor %>../update.rdf');
+            var content = grunt.file.read(patch);
+            content = content.replace(oldId, newId);
+            grunt.file.write(patch, content);
+        });
+
         grunt.config.merge({
             copy: {
                 ffCopyBuildToRoot: {
@@ -236,14 +256,17 @@ exports.run = function (grunt) {
             'buildJs',
             'clean:magic',
             'ffPackage',
+            'setPackageId',
             'json-format:ffPackage',
             'setAppInfo',
             'compressJs',
             'copy:ffTemplateDir',
+            'setInstallRdf',
             'exec:buildFF',
             'ffRenameBuild',
             'fixFfJsJs',
             'getHash',
+            'setUpdateId',
             'copy:ffCopyBuildToRoot'
         ]);
     });
