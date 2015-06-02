@@ -259,7 +259,7 @@ exports.run = function (grunt) {
             'setPackageId',
             'json-format:ffPackage',
             'setAppInfo',
-            'compressJs',
+            // 'compressJs',
             'copy:ffTemplateDir',
             'setInstallRdf',
             'exec:buildFF',
