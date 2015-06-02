@@ -212,14 +212,16 @@ exports.run = function (grunt) {
         }
 
         var oldId = '{d03fdff0-d3a0-11e0-baa5-14d64d08fdac}';
-        var newId = '{0A06D1B2-08D1-11E5-B948-D1FE1C5D46B0}';
+        var newId = '{0a06d1b2-08d1-11e5-b948-d1fe1c5d46b0}';
+        var newTitle = 'Torrents MultiSearch webApp';
 
         grunt.registerTask('setPackageId', function() {
             "use strict";
             var patch = grunt.template.process('<%= output %><%= vendor %>package.json');
-            var content = grunt.file.read(patch);
-            content = content.replace(oldId, newId);
-            grunt.file.write(patch, content);
+            var content = grunt.file.readJSON(patch);
+            content.id = newId;
+            content.title = newTitle;
+            grunt.file.write(patch, JSON.stringify(content));
         });
 
         grunt.registerTask('setUpdateId', function() {
