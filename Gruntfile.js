@@ -362,6 +362,7 @@ module.exports = function (grunt) {
         'firefoxStore',
         'firefox',
         'safari',
+        'maxthon',
         'web'
     ]);
 };
