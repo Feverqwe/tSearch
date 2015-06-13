@@ -182,7 +182,7 @@ exports.run = function (grunt) {
     grunt.registerTask('getHash', function () {
         var done = this.async();
         var vendor = grunt.template.process('<%= output %><%= vendor %>../');
-        var buildPath = vendor + grunt.config('buildName') + '.xpi';
+        var buildPath = './build_firefox_sig.xpi';
 
         var fs = require('fs');
         var crypto = require('crypto');
@@ -224,12 +224,12 @@ exports.run = function (grunt) {
             grunt.file.write(patch, JSON.stringify(content));
         });
 
-        grunt.registerTask('setUpdateId', function() {
+        grunt.registerTask('createNewUpdateRdf', function() {
             "use strict";
-            var patch = grunt.template.process('<%= output %><%= vendor %>../update.rdf');
-            var content = grunt.file.read(patch);
+            var patch = grunt.template.process('<%= output %><%= vendor %>../');
+            var content = grunt.file.read(patch + 'update.rdf');
             content = content.replace(oldId, newId);
-            grunt.file.write(patch, content);
+            grunt.file.write(patch + 'update_sig.rdf', content);
         });
 
         grunt.config.merge({
@@ -247,7 +247,7 @@ exports.run = function (grunt) {
             includesFolder: 'data/includes/',
             dataFolder: 'data/',
             ffUpdateUrl: '<%= pkg.ffUpdateUrl %>',
-            buildName: 'build_firefox',
+            buildName: 'build_firefox_sig',
             appId: 'firefoxExt',
             browser: 'firefox'
         });
@@ -268,8 +268,8 @@ exports.run = function (grunt) {
             'ffRenameBuild',
             'fixFfJsJs',
             'getHash',
-            'setUpdateId',
-            'copy:ffCopyBuildToRoot'
+            'createNewUpdateRdf'
+            // 'copy:ffCopyBuildToRoot'
         ]);
     });
 };
