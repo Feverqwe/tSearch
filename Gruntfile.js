@@ -50,7 +50,10 @@ module.exports = function (grunt) {
             }),
             engine: engineJsList.slice(1).map(function(item) {
                 return '<%= output %><%= vendor %><%= dataJsFolder %>' + item;
-            })
+            }),
+            bg: [
+                '<%= output %><%= vendor %>js/bg.js'
+            ]
         },
         concat: {
             options: {
@@ -342,6 +345,7 @@ module.exports = function (grunt) {
     require('./grunt/firefox.js').run(grunt);
     require('./grunt/safari.js').run(grunt);
     require('./grunt/opera12.js').run(grunt);
+    require('./grunt/maxthon.js').run(grunt);
     require('./grunt/web.js').run(grunt);
 
     grunt.registerTask('devMode', function() {

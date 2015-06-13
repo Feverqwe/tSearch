@@ -23,7 +23,7 @@ var popup = {
         popup.domCache.requestInput.focus();
 
         window.addEventListener('resize', function(e) {
-            var height = !mono.isSafari ? document.body.scrollHeight : document.body.clientHeight;
+            var height = (!mono.isSafari && !mono.isMaxthon) ? document.body.scrollHeight : document.body.clientHeight;
             if (height < 72) {
                 height = 72;
             }
@@ -167,6 +167,10 @@ var popup = {
         popup.domCache.requestInput.addEventListener('keyup', function() {
             popup.varCache.autocompleteLastFocus = this.value;
         });
+
+        if (mono.isMaxthon) {
+            $(popup.domCache.$requestInput).off('blur');
+        }
     },
     update: function() {
         "use strict";

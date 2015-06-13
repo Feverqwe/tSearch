@@ -126,6 +126,11 @@ mono.ajax = function(obj) {
     xhr.onload = function () {
         if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304 || xhr.status === 0) {
             var response = (obj.dataType) ? xhr.response : xhr.responseText;
+
+            if (mono.isMaxthon && obj.dataType === 'json') {
+                response = JSON.parse(response);
+            }
+
             return obj.success && obj.success(response, xhr);
         }
         obj.error && obj.error(xhr);
