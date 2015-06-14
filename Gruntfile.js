@@ -1,167 +1,366 @@
 module.exports = function (grunt) {
-    var bgJsList = [
-        'src/js/background.js'
+    "use strict";
+    var devMode = false;
+    var baseDataList = [
+        '_locales/**',
+        'css/**',
+        'img/**',
+        'index.html',
+        'popup.html',
+        'history.html',
+        'options.html'
     ];
     var dataJsList = [
-        'src/js/mono.js',
-        'src/js/view.js',
-        'src/js/rate.js',
-        'src/js/explore.js',
-        'src/js/notifer.js',
-        'src/js/counter.js',
-        'src/js/engine.js',
-        'src/js/history.js',
-        'src/js/magic.js',
-        'src/js/options.js',
-        'src/js/popup.js',
-        'src/js/ex_kit.js',
-        'src/js/torrent_lib.min.js',
-        'src/js/jquery-2.1.1.min.js',
-        'src/js/jquery-ui.min.js',
-        'src/js/lz-string-1.3.3.js'
+        'explore.js',
+        'exKit.js',
+        'history.js',
+        'jquery-2.1.4.min.js',
+        'jquery-ui.min.js',
+        'notifer.js',
+        'options.js',
+        'popup.js',
+        'profileManager.js',
+        'rate.js',
+        'selectBox.js',
+        'view.js'
+    ];
+    var engineJsList = [
+        'engine.js',
+        'counter.js'
+    ];
+    var bgJsList = [
+        'bg.js'
+    ];
+    var monoJsList = [
+        'mono.js',
+        'monoUtils.js'
     ];
     grunt.initConfig({
         env: grunt.file.exists('env.json') ? grunt.file.readJSON('env.json') : {},
         pkg: grunt.file.readJSON('package.json'),
         clean: {
             output: '<%= output %>',
-            builds: [
-                'build_firefox.xpi',
-                'build_maxthon.mxaddon',
-                'build_safari.safariextz'
+            magic: '<%= output %><%= vendor %><%= dataFolder %>legacy',
+            popup: [
+                '<%= output %><%= vendor %>popup.html',
+                '<%= output %><%= vendor %><%= dataJsFolder %>popup.js'
+            ],
+            mono: monoJsList.slice(1).map(function(item) {
+                return '<%= output %><%= vendor %><%= dataJsFolder %>' + item;
+            }),
+            engine: engineJsList.slice(1).map(function(item) {
+                return '<%= output %><%= vendor %><%= dataJsFolder %>' + item;
+            }),
+            bg: [
+                '<%= output %><%= vendor %>js/bg.js'
             ]
         },
+        concat: {
+            options: {
+                separator: '\n'
+            },
+            engine: {
+                files: {
+                    '<%= output %><%= vendor %><%= dataJsFolder %>engine.js': engineJsList.map(function(item) {
+                        return '<%= output %><%= vendor %><%= dataJsFolder %>' + item;
+                    })
+                }
+            },
+            trackerLib: {
+                files: {
+                    '<%= output %><%= vendor %><%= dataJsFolder %>trackerLib.js': 'src/tracker/*.js'
+                }
+            }
+        },
         copy: {
-            background: {
+            monoJs: {
+                cwd: 'src/vendor/<%= browser %>/<%= dataJsFolder %>',
                 expand: true,
-                flatten: true,
+                src: ['mono.js'],
+                dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
+            },
+
+            mono: {
+                cwd: 'src/js/',
+                expand: true,
+                src: monoJsList,
+                dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
+            },
+
+            engine: {
+                cwd: 'src/js/',
+                expand: true,
+                src: engineJsList,
+                dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
+            },
+
+            bg: {
+                cwd: 'src/js/',
+                expand: true,
                 src: bgJsList,
                 dest: '<%= output %><%= vendor %><%= libFolder %>'
             },
 
             dataJs: {
+                cwd: 'src/js/',
                 expand: true,
-                flatten: true,
                 src: dataJsList,
                 dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
             },
 
-            locales: {
+            baseData: {
+                cwd: 'src/',
                 expand: true,
-                src: 'src/_locales/**',
-                dest: '<%= output %><%= vendor %><%= dataFolder %>',
-                rename: function () {
-                    return arguments[0] + arguments[1].substr('src/'.length);
-                }
+                src: baseDataList,
+                dest: '<%= output %><%= vendor %><%= dataFolder %>'
             },
 
-            baseData: {
+            legacy: {
+                cwd: 'src/',
                 expand: true,
                 src: [
-                    'src/css/*',
-                    'src/images/*',
-                    'src/index.html',
-                    'src/popup.html',
-                    'src/history.html',
-                    'src/options.html',
-                    'src/magic.html'
+                    'legacy/**'
                 ],
-                dest: '<%= output %><%= vendor %><%= dataFolder %>',
-                rename: function () {
-                    return arguments[0] + arguments[1].substr('src/'.length);
-                }
+                dest: '<%= output %><%= vendor %><%= dataFolder %>'
             }
         },
-
-        // vars
+        insert: {
+            mono: {
+                cwd: '<%= output %><%= vendor %><%= dataJsFolder %>',
+                expand: true,
+                src: monoJsList,
+                dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
+            }
+        },
+        watch: {
+            options: {
+                spawn: false
+            },
+            trackerLib: {
+                files: [
+                    'src/tracker/*.js'
+                ],
+                tasks: ['concat:trackerLib']
+            },
+            monoJs: {
+                files: monoJsList.map(function(item) {
+                    return 'src/js/'+item
+                }),
+                tasks: ['copy:mono', 'insert:mono', 'clean:mono']
+            },
+            bgJs: {
+                files: bgJsList.map(function(item) {
+                    return 'src/js/'+item
+                }),
+                tasks: ['copy:bg']
+            },
+            engineJs: {
+                files: engineJsList.map(function(item) {
+                    return 'src/js/' + item;
+                }),
+                tasks: ['copy:engine', 'concat:engine', 'clean:engine']
+            },
+            dataJs: {
+                files: dataJsList.map(function(item) {
+                    return 'src/js/'+item
+                }),
+                tasks: ['copy:dataJs']
+            },
+            legacy: {
+                files: ['src/legacy/**'],
+                tasks: ['copy:legacy']
+            },
+            baseData: {
+                files: baseDataList.map(function(item) {
+                    return 'src/'+item
+                }),
+                tasks: ['copy:baseData']
+            }
+        },
         root: process.cwd().replace(/\\/g, '/') + '/',
         output: '<%= pkg.outputDir %>'
     });
 
-    grunt.registerTask('rmMagic', function () {
-        grunt.file.delete(grunt.config('output') + grunt.config('vendor') + grunt.config('dataJsFolder') + 'magic.js');
-        grunt.file.delete(grunt.config('output') + grunt.config('vendor') + grunt.config('dataFolder') + 'magic.html');
+    grunt.registerTask('setAppInfo', function() {
+        var enginePath = grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>engine.js');
+        var content = grunt.file.read(enginePath);
+        content = content.replace(/\{appId\}/g, grunt.config('appId'));
+        content = content.replace(/\{appVersion\}/g, grunt.config('pkg.extVersion'));
+        grunt.file.write(enginePath, content);
     });
 
-    grunt.registerTask('rmBg', function() {
-        grunt.file.delete(grunt.config('output') + grunt.config('vendor') + grunt.config('libFolder') + 'background.js');
-    });
+    var getHash = function(path, cb) {
+        var fs = require('fs');
+        var crypto = require('crypto');
 
+        var fd = fs.createReadStream(path);
+        var hash = crypto.createHash('sha1');
+        hash.setEncoding('hex');
 
-    grunt.registerTask('rmPopup', function() {
-        grunt.file.delete(grunt.config('output') + grunt.config('vendor') + grunt.config('dataJsFolder') + 'popup.js');
-        grunt.file.delete(grunt.config('output') + grunt.config('vendor') + grunt.config('dataFolder') + 'popup.html');
-    });
+        fd.on('end', function () {
+            hash.end();
+            cb(hash.read());
+        });
 
-    var compressJsCopyTaskList = [];
+        fd.pipe(hash);
+    };
+
     grunt.registerTask('compressJs', function() {
-        if (compressJsCopyTaskList.length > 0) {
-            grunt.task.run(compressJsCopyTaskList);
-            return;
+        var done = this.async();
+        if (devMode) {
+            return done();
         }
-
-
-        var jsList = Array.prototype.concat(dataJsList, bgJsList);
-        var taskList = [];
-        var taskListObj = {
-            exec: {},
-            copy: {}
-        };
-
-        for (var i = 0, item; item = jsList[i]; i++) {
-            if (item.indexOf('jquery') !== -1) continue;
-
-            var jsFolderType = (bgJsList.indexOf(item) !== -1) ? 'libFolder' : 'dataJsFolder';
-            var jsFolder = grunt.config(jsFolderType);
-
-            var cacheDir = grunt.config('output') + 'cache/' + jsFolder;
-            if (!grunt.file.exists(cacheDir)) {
-                grunt.file.mkdir(cacheDir);
+        var ccTask = {
+            closurecompiler: {
+                minify: {
+                    files: 'empty',
+                    options: {
+                        jscomp_warning: 'const',
+                        language_in: 'ECMASCRIPT5',
+                        max_processes: 2
+                    }
+                }
             }
+        };
+        grunt.config.merge(ccTask);
+        ccTask.closurecompiler.minify.files = {};
 
-            var jsFile = item.replace('src/js/', '');
-            var taskName = 'compressJs_file_'+jsFile;
-            taskList.push('exec:'+taskName);
+        var wait = 0;
+        var ready = 0;
+        var list = {};
 
-            compressJsCopyTaskList.push('copy:'+taskName);
-            taskListObj.copy[taskName] = {
-                flatten: true,
-                src: '<%= output %>cache/'+jsFolder+jsFile,
-                dest: '<%= output %><%= vendor %>'+'<%= '+jsFolderType+' %>'+jsFile
+        var fs = require('fs');
+        ['dataJsFolder', 'libFolder'].forEach(function(folder, index) {
+            if (index !== 0 && grunt.config('libFolder') === grunt.config('dataJsFolder')) {
+                return;
+            }
+            var jsFolder = grunt.template.process('<%= output %><%= vendor %><%= ' + folder + ' %>');
+            var files = fs.readdirSync(jsFolder);
+
+            var jsList = grunt.file.match('*.js', files);
+
+            var copyList = [];
+            var onReady = function() {
+                ready++;
+                if (wait !== ready) {
+                    return;
+                }
+
+                var hashFolder = grunt.template.process('<%= output %>hash/');
+                for (var hash in list) {
+                    var item = list[hash];
+                    var jsFolder = grunt.template.process('<%= output %><%= vendor %><%= ' + item[0] + ' %>');
+                    var hashName = hashFolder + hash + '.js';
+                    if (!grunt.file.exists(hashName)) {
+                        ccTask.closurecompiler.minify.files[hashName] = '<%= output %><%= vendor %><%= ' + item[0] + ' %>'+item[1];
+                    }
+                    copyList.push([hashName, jsFolder + item[1]]);
+                }
+
+                grunt.config.merge(ccTask);
+                grunt.registerTask('copyFromCache', function() {
+                    copyList.forEach(function(item) {
+                        grunt.file.copy(item[0], item[1]);
+                    });
+                });
+
+                grunt.task.run(['closurecompiler:minify', 'copyFromCache']);
+
+                done();
             };
-            taskListObj.exec[taskName] = {
-                command: 'java -jar compiler.jar --language_in ECMASCRIPT5 --js <%= output %><%= vendor %><%= '+jsFolderType+' %>'+jsFile+' --js_output_file <%= output %>cache/'+jsFolder+jsFile
-            };
-        }
-        grunt.config.merge(taskListObj);
-        grunt.task.run(taskList);
-        grunt.task.run(compressJsCopyTaskList);
+
+            jsList.forEach(function(jsFile) {
+                if (jsFile.indexOf('.min.js') !== -1) {
+                    return;
+                }
+                wait++;
+                getHash(jsFolder + jsFile, function(hash) {
+                    list[hash] = [folder, jsFile];
+                    onReady();
+                });
+            });
+        });
     });
 
+    grunt.registerMultiTask('insert', 'Insert file in file, lik concat but in current position', function() {
+        var options = this.options({
+            word: '//@insert'
+        });
+        var baseFile = this.files.shift();
+
+        var content = grunt.file.read(baseFile.src[0]);
+        var pos = content.indexOf(options.word);
+        var list = [content.substr(0, pos)];
+        var end = content.substr(pos);
+
+        this.files.forEach(function(filePair) {
+            filePair.src.forEach(function(src) {
+                list.push(grunt.file.read(src));
+            });
+        });
+
+        list.push(end);
+
+        grunt.file.write(baseFile.dest, list.join('\n'));
+    });
+
+    grunt.registerTask('makeMono', function() {
+        var browser = grunt.config('browser');
+        var monoPath = 'src/vendor/' + browser + '/' + grunt.config('dataJsFolder');
+
+        var list = monoJsList.map(function(file) {
+            var dest;
+            if (file === 'mono.js') {
+                dest = monoPath;
+            } else {
+                dest = 'src/js/';
+            }
+            return {
+                src: [dest + file],
+                dest: grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>' + file)
+            }
+        });
+
+        insert.call({
+            options: function(def) {
+                return def;
+            },
+            files: list
+        });
+    });
+
+    grunt.registerTask('extensionBase', ['copy:baseData', 'copy:legacy', 'copy:dataJs', 'copy:bg', 'copy:engine', 'copy:mono', 'copy:monoJs', 'concat:trackerLib']);
+    grunt.registerTask('buildJs', ['concat:engine', 'insert:mono', 'clean:mono', 'clean:engine']);
+
+    grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.loadNpmTasks('grunt-closurecompiler');
+    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-json-format');
     grunt.loadNpmTasks('grunt-exec');
-    grunt.loadNpmTasks('grunt-contrib-compress');
-
-    grunt.registerTask('extensionBase', ['copy:background', 'copy:dataJs', 'copy:baseData', 'copy:locales']);
-    grunt.registerTask('extensionBaseMin', ['extensionBase', 'compressJs']);
 
     require('./grunt/chrome.js').run(grunt);
     require('./grunt/firefox.js').run(grunt);
-    require('./grunt/opera12.js').run(grunt);
-    require('./grunt/web.js').run(grunt);
     require('./grunt/safari.js').run(grunt);
+    require('./grunt/opera12.js').run(grunt);
     require('./grunt/maxthon.js').run(grunt);
+    require('./grunt/web.js').run(grunt);
+
+    grunt.registerTask('devMode', function() {
+        devMode = true;
+    });
+
+    grunt.registerTask('dev', ['devMode', 'chrome', 'watch']);
 
     grunt.registerTask('default', [
         'clean:output',
-        'clean:builds',
         'chrome',
+        'opera',
         'chromeApp',
-        'firefox',
         'firefoxStore',
-        'opera12',
+        'firefox',
         'safari',
         'maxthon',
         'web'

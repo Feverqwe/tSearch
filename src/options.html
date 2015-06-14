@@ -1,121 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
     <head> 	
         <meta charset="utf-8" />
-        <title>Torrents MultiSearch options</title>
-        <link rel="shortcut icon" href="images/settings.png">
+        <title>Options :: TMS</title>
+        <link rel="shortcut icon" href="img/settings.png">
         <link rel="stylesheet" type="text/css" href="css/options.css">
-        <script src="js/jquery-2.1.1.min.js"></script>
-        <script src="js/jquery-ui.min.js"></script>
-        <script src="js/lz-string-1.3.3.js"></script>
         <script src="js/mono.js"></script>
-        <script src="js/torrent_lib.min.js"></script>
-        <script src="js/engine.js"></script>
-        <script src="js/options.js"></script>
-        <script src="js/rate.js"></script>
     </head>
-    <body>
-        <div class="container">
-            <div class="search_panel">
-                <h1>Torrents MultiSearch</h1><input type="button" class="button main" value="" data-lang="btn_main,title" title="Главная" id="go_home_btn" />
+    <body class="loading">
+        <div class="head">
+            <div id="search_form">
+                <span>Torrents MultiSearch</span>
             </div>
+            <div class="quick-menu">
+                <a href="index.html" data-lang="main,title" id="main_btn" title="{main}"></a>
+            </div>
+        </div>
+        <div class="container">
             <div class="content">
                 <div class="left menu">
-                    <a href="#main" data-page="main" data-lang="optMain">Общие</a>
-                    <a href="#explore" data-page="explore" data-lang="optMainPage">Главная страница</a>
-                    <a href="#other" data-page="other" data-lang="optOther">Прочие</a>
-                    <a href="#quality" data-page="quality" data-lang="optQuality">Определение качества</a>
-                    <a href="#backup" data-page="backup" data-lang="word_backup">Архивирование</a>
-                    <a href="#restore" data-page="restore" data-lang="word_restore">Восстановление</a>
+                    <a href="#main" data-page="general" data-lang="general">{General}</a>
+                    <a href="#home" data-page="home" data-lang="home">{Home}</a>
+                    <a href="#other" data-page="other" data-lang="other">{Other}</a>
+                    <a href="#quality" data-page="quality" data-lang="qualityDefine">{qualityDefine}</a>
+                    <a href="#backup" data-page="backup" data-lang="backup">{Backup}</a>
+                    <a href="#restore" data-page="restore" data-lang="restore">{Restore}</a>
                 </div>
                 <div class="right">
-                    <div class="page main">
-                        <h2 data-lang="optMain">Общие</h2>
-                        <label><input type="checkbox" data-option="hideTrackerIcons"/><span data-lang="optHideTrackerIcons">Скрыть иконки трекеров в выдаче</span></label>
-                        <label><input type="checkbox" data-option="hideZeroSeed"/><span data-lang="optHideZeroSeed">Скрыть раздачи без раздающих</span></label>
-                        <label><input type="checkbox" data-option="hidePeerColumn"/><span data-lang="optHidePeerColumn">Скрыть столбец количеста скачивающих</span></label>
-                        <label><input type="checkbox" data-option="hideSeedColumn"/><span data-lang="optHideSeedColumn">Скрыть столбец количеста раздающих</span></label>
-                        <label><input type="checkbox" data-option="enableTeaserFilter"/><span data-lang="optEnableTeaserFilter">Скрыть тизеры и трейлеры в результатах поиска</span></label>
-                        <label><input type="checkbox" data-option="defineCategory"/><span data-lang="optDefineCategory">Определять категорию автоматически</span></label>
-                        <label><input type="checkbox" data-option="enableHighlight"/><span data-lang="optEnableHighlight">Выделять результаты поиска</span></label>
-                        <label><input type="checkbox" data-option="noBlankPageOnDownloadClick"/><span data-lang="optNoBlankPageOnDownloadClick">Не открывать новую страницу при скачивании ↓</span></label>
-                        <label><input type="checkbox" data-option="allowGetDescription"/><span data-lang="optAllowGetDescription">Получать описание поискового запроса</span></label>
-                        <label><input type="checkbox" data-option="contextMenu"/><span data-lang="optContextMenu">Добавить поиск в контекстное меню</span></label>
-                        <label><input type="checkbox" data-option="searchPopup"/><span data-lang="optSearchPopup">Показывать поисковую строку при нажатии на иконку</span></label>
-                        <label><input type="checkbox" data-option="autoComplite"/><span data-lang="optAutoComplite">Включить автозаполнение</span></label>
-                        <label><input type="checkbox" data-option="profileListSync"/><span data-lang="optProfileListSync">Синхронизировать список трекеров</span></label>
-                        <label><input type="checkbox" data-option="rightPanel"/><span data-lang="optRightPanel">Переместить панель фильтров вправо</span></label>
-                        <label><input type="checkbox" data-option="doNotSendStatistics"/><span data-lang="optDoNotSendStatistics">Не отправлять статистику</span></label>
+                    <div class="page general">
+                        <h2 data-lang="general">{General}</h2>
+                        <label><span>Language</span>
+                            <select id="language" data-option="language">
+                                <option value="ru">Русский</option>
+                                <option value="en">English</option>
+                            </select>
+                        </label>
+                        <label><input type="checkbox" data-option="hidePeerColumn"/><span data-lang="hidePeerColumn">{hidePeerColumn}</span></label>
+                        <label><input type="checkbox" data-option="hideSeedColumn"/><span data-lang="hideSeedColumn">{hideSeedColumn}</span></label>
+                        <label><input type="checkbox" data-option="subCategoryFilter"/><span data-lang="subCategoryFilter">{subCategoryFilter}</span></label>
+                        <label><input type="checkbox" data-option="teaserFilter"/><span data-lang="teaserFilter">{teaserFilter}</span></label>
+                        <label><input type="checkbox" data-option="defineCategory"/><span data-lang="defineCategory">{defineCategory}</span></label>
+                        <label><input type="checkbox" data-option="allowGetDescription"/><span data-lang="allowGetDescription">{allowGetDescription}</span></label>
+                        <label><input type="checkbox" data-option="enableHighlight"/><span data-lang="enableHighlight">{enableHighlight}</span></label>
+                        <label><input type="checkbox" data-option="profileListSync"/><span data-lang="profileListSync">{profileListSync}</span></label>
+                        <label><input type="checkbox" data-option="contextMenu"/><span data-lang="contextMenu">{contextMenu}</span></label>
+                        <label><input type="checkbox" data-option="searchPopup"/><span data-lang="searchPopup">{searchPopup}</span></label>
+                        <label><input type="checkbox" data-option="autoComplite"/><span data-lang="autoComplite">{autoComplite}</span></label>
+                        <label><input type="checkbox" data-option="rightPanel"/><span data-lang="rightPanel">{rightPanel}</span></label>
+                        <label><input type="checkbox" data-option="doNotSendStatistics"/><span data-lang="doNotSendStatistics">{doNotSendStatistics}</span></label>
                     </div>
-                    <div class="page explore">
-                        <h2 data-lang="optMainPage">Главная страница</h2>
-                        <label><input type="checkbox" data-option="useEnglishPosterName"/><span data-lang="optUseEnglishPosterName">Отображать названия на английском</span></label>
-                        <label><input type="checkbox" data-option="hideTopSearch"/><span data-lang="optHideTopSearch">Скрыть Топ-40 поисковых запросов</span></label>
-                        <label><input type="checkbox" data-option="enableFavoriteSync"/><span data-lang="optEnableFavoriteSync">Синхронизировать списка избранного</span></label>
-                        <label><span data-lang="optKinopoiskFolderId">ID категории кинопоиска</span> <input type="text" data-option="kinopoiskFolderId"/></label>
-                        <h2 data-lang="optShowSection">Показывать секции:</h2>
+                    <div class="page home">
+                        <h2 data-lang="home">{Home}</h2>
+                        <label><input type="checkbox" data-option="useEnglishPosterName"/><span data-lang="useEnglishPosterName">{useEnglishPosterName}</span></label>
+                        <label><input type="checkbox" data-option="hideTopSearch"/><span data-lang="hideTopSearch">{hideTopSearch}</span></label>
+                        <label><input type="checkbox" data-option="enableFavoriteSync"/><span data-lang="enableFavoriteSync">{enableFavoriteSync}</span></label>
+                        <label><input type="text" data-option="kinopoiskFolderId"> <span data-lang="kinopoiskFolderId">{kinopoiskFolderId}</span></label>
+                        <h2 data-lang="showSections">{Show sections}</h2>
                         <div class="sectionList"></div>
                     </div>
                     <div class="page other">
-                        <h2 data-lang="optListFilter">Фильтрация списка</h2>
-                        <label><input type="radio" name="advFiltration" data-option="advFiltration" value="0"/><span data-lang="optAdvFiltration0">Ищет полное совпадение фразы</span></label>
-                        <label><input type="radio" name="advFiltration" data-option="advFiltration" value="1"/><span data-lang="optAdvFiltration1">Ищет совпадение с одним из введенных слов</span></label>
-                        <label><input type="radio" name="advFiltration" data-option="advFiltration" value="2"/><span data-lang="optAdvFiltration2">Ищет совпадение всех введенных слов</span></label>
-                        <label><input type="checkbox" data-option="subCategoryFilter"/><span data-lang="optSubCategoryFilter">Учитывать подкатегории</span></label>
-                        <h2 data-lang="optProxyTitle">Проксирование запросов</h2>
-                        <h3>URL</h3>
-                        <div class="info">
-                            <span data-lang="optProxyInfo">Proxy work only for GET search request.</span>
-                            <p data-lang="word_for_example">Example:</p>
-                            <ul class="user-select">
-                                <li>http<b>s</b>://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&amp;container=pos</li>
-                                <li>http://www.gmodules.com/ig/proxy?url={url}</li>
-                            </ul>
-                        </div>
-                        <label><span data-lang="optProxyURL">URL</span><input id="proxyURL" type="text" data-option="proxyURL" value="https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&amp;container=pos"/></label>
-                        <label><input type="checkbox" data-option="proxyUrlFixSpaces"/><span data-lang="optProxyUrlFixSpaces">Экранировать пробелы</span></label>
-                        <h3>Host</h3>
-                        <div class="info">
-                            <span data-lang="optProxyHostInfo,tmpl">HTTP<b>S</b> requests may not be supported.</span>
-                            <p data-lang="word_for_example">Example:</p>
-                            <ul class="user-select">
-                                <li>3s3s.org</li>
-                            </ul>
-                        </div>
-                        <label><span data-lang="optProxyHost">Host</span><input id="proxyHost" type="text" data-option="proxyHost" value=""/></label>
-                        <label><input type="checkbox" data-option="proxyHostLinks"/><span data-lang="optProxyHostLinks">Поменять адрес в рузультатах поиска</span></label>
+                        <h2 data-lang="proxy">{Proxy}</h2>
+                        <div class="proxyList"></div>
                     </div>
                     <div class="page quality">
-                        <h2 data-lang="optQuality">Определение качества</h2>
-                        <div class="btnList">
-                            <input type="button" id="qualitySave" value="Сохранить" data-lang="word_save"/>
-                            <input type="button" id="qualityReset" value="По умолчанию" data-lang="exp_default"/>
+                        <h2 data-lang="qualityDefine">{qualityDefine}</h2>
+                        <label><input type="checkbox" data-option="calcSeedCount"/><span data-lang="calcSeedCount">{calcSeedCount}</span></label>
+                        <div class="qualityControls">
+                            <input type="button" class="btn save" data-lang="save"/>
+                            <input type="button" class="btn reset" data-lang="resetSettings"/>
                         </div>
-                        <label><input type="checkbox" data-option="calcSeedCount"/><span data-lang="optCalcSeedCount">Учитывать количество сидов (раздающих)</span></label>
-                        <div id="qualityList" class="itemList"></div>
+                        <div class="qualityList"></div>
+                        <div class="qualityControls">
+                            <input type="button" class="btn save" data-lang="save"/>
+                            <input type="button" class="btn reset" data-lang="resetSettings"/>
+                        </div>
                     </div>
                     <div class="page backup">
-                        <h2 data-lang="word_backup">Архивирование</h2>
+                        <h2 data-lang="backup">{Backup}</h2>
                         <div class="btnList">
-                            <input type="button" id="backupUpdate" value="Обновить" data-lang="word_update"/>
-                            <input type="button" id="saveInCloud" value="Сохранить в облаке" data-lang="optSaveInCloud"/>
+                            <input type="button" id="backupUpdate" value="{update}" data-lang="update"/>
+                            <input type="button" id="saveInCloud" value="{saveInCloud}" data-lang="saveInCloud"/>
                         </div>
                         <textarea id="backupInp"></textarea>
                     </div>
                     <div class="page restore">
-                        <h2 data-lang="word_restore">Восстановление</h2>
+                        <h2 data-lang="restore">{restore}</h2>
                         <div class="btnList">
-                            <input type="button" id="restoreBtn" value="Восстановить" data-lang="word_to_restore"/>
-                            <input type="button" id="getFromCloudBtn" value="Получить настройки из облака" data-lang="optGetFromCloud"/>
-                            <input type="button" id="clearCloudStorage" value="Очистить настройки в облаке" data-lang="optClearCloudStorage"/>
+                            <input type="button" id="restoreBtn" value="{toRestore}" data-lang="toRestore"/>
+                            <input type="button" id="getFromCloudBtn" value="{getFromCloud}" data-lang="getFromCloud"/>
+                            <input type="button" id="clearCloudStorage" value="{clearCloudStorage}" data-lang="clearCloudStorage"/>
                         </div>
                         <textarea id="restoreInp"></textarea>
                     </div>
                 </div>
             </div>
             <div class="bottom">
-                <div class="author"><a title="email: leonardspbox@gmail.com" href="mailto:leonardspbox@gmail.com">Anton</a>, 2014</div>
+                <div class="author"><a title="email: leonardspbox@gmail.com" href="mailto:leonardspbox@gmail.com">Anton</a>, 2015</div>
             </div>
         </div>
+        <script src="js/engine.js"></script>
+        <script src="js/exKit.js"></script>
+        <script src="js/rate.js"></script>
+        <script src="js/options.js"></script>
     </body>
 </html>

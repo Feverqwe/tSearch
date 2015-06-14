@@ -1,1 +1,1 @@
-var ga = window.ga = function() {};
+var ga = window.ga = engine.initCounter = function() {};

@@ -1,6 +1,6 @@
 exports.run = function(grunt) {
   grunt.registerTask('makeSafariUpdateFile', function() {
-    var vendor = grunt.config('output') + grunt.config('vendor') + '../';
+    var vendor = grunt.template.process('<%= output %><%= vendor %>../');
     var fileName = 'update.plist';
     var content = grunt.file.read('src/vendor/safari/' + fileName);
     content = content.replace('%buildName%', grunt.config('buildName'));
@@ -10,7 +10,7 @@ exports.run = function(grunt) {
   });
 
   grunt.registerTask('safariChangeVersion', function() {
-    var configPath = grunt.config('output') + grunt.config('vendor') + 'Info.plist';
+    var configPath = grunt.template.process('<%= output %><%= vendor %>Info.plist');
     var content = grunt.file.read(configPath);
     content = content.replace('%extVersion%', grunt.config('pkg.extVersion'));
     content = content.replace('%extVersion%', grunt.config('pkg.extVersion'));
@@ -21,17 +21,15 @@ exports.run = function(grunt) {
     grunt.config.merge({
       copy: {
         vendorSafari: {
+          cwd: 'src/vendor/safari/',
           expand: true,
           src: [
-            'src/vendor/safari/background.html',
-            'src/vendor/safari/*.png',
-            'src/vendor/safari/Info.plist',
-            'src/vendor/safari/Settings.plist'
+            'bg.html',
+            '*.png',
+            'Info.plist',
+            'Settings.plist'
           ],
-          dest: '<%= output %><%= vendor %>',
-          rename: function() {
-            return arguments[0] + arguments[1].substr('src/vendor/safari/'.length);
-          }
+          dest: '<%= output %><%= vendor %>'
         }
       },
       buildName: 'build_safari',
@@ -39,11 +37,16 @@ exports.run = function(grunt) {
       libFolder: 'js/',
       dataJsFolder: 'js/',
       includesFolder: 'includes/',
-      dataFolder: ''
+      dataFolder: '',
+      appId: 'safariExt',
+      browser: 'safari'
     });
     grunt.task.run([
-      'extensionBaseMin',
+      'extensionBase',
       'copy:vendorSafari',
+      'buildJs',
+      'setAppInfo',
+      'compressJs',
       'safariChangeVersion',
       'makeSafariUpdateFile'
     ]);

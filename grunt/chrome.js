@@ -2,12 +2,10 @@ exports.run = function (grunt) {
     grunt.config.merge({
         'json-format': {
             chromeManifestFormat: {
+                cwd: '<%= output %><%= vendor %>',
                 expand: true,
-                src: '<%= output %><%= vendor %>manifest.json',
+                src: ['manifest.json'],
                 dest: '<%= output %><%= vendor %>',
-                rename: function () {
-                    return arguments[0] + arguments[1].substr((grunt.config('output') + grunt.config('vendor')).length);
-                },
                 options: {
                     indent: 4
                 }
@@ -20,39 +18,70 @@ exports.run = function (grunt) {
                     archive: '<%= output %><%= vendor %>../<%= buildName %>.zip'
                 },
                 files: [{
+                    cwd: '<%= output %><%= vendor %>',
                     expand: true,
                     filter: 'isFile',
-                    src: '<%= output %><%= vendor %>/**',
-                    dest: './',
-                    rename: function () {
-                        return arguments[0] + arguments[1].substr((grunt.config('output') + grunt.config('vendor')).length);
-                    }
+                    src: '**',
+                    dest: ''
                 }]
             }
         }
     });
 
-    grunt.registerTask('chrome', function () {
-        grunt.registerTask('chromeManifest', function() {
-            var manifestPath = grunt.config('output') + grunt.config('vendor') + 'manifest.json';
-            var content = grunt.file.readJSON('src/manifest.json');
-            content.version = grunt.config('pkg.extVersion');
-            grunt.file.write(manifestPath, JSON.stringify(content));
-        });
+    grunt.registerTask('rmPopup', function() {
+        grunt.file.delete(grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>') + 'popup.js');
+        grunt.file.delete(grunt.template.process('<%= output %><%= vendor %><%= dataFolder %>') + 'popup.html');
+    });
 
+    grunt.registerTask('chromeManifest', function() {
+        var manifestPath = grunt.config('output') + grunt.config('vendor') + 'manifest.json';
+        var content = grunt.file.readJSON('src/manifest.json');
+        content.version = grunt.config('pkg.extVersion');
+        grunt.file.write(manifestPath, JSON.stringify(content));
+    });
+
+    grunt.registerTask('chrome', function () {
         grunt.config.merge({
             vendor: 'chrome/src/',
             libFolder: 'js/',
             dataJsFolder: 'js/',
             includesFolder: 'includes/',
             dataFolder: '',
-            buildName: 'tms_<%= pkg.extVersion %>'
+            buildName: 'tmsExt_<%= pkg.extVersion %>',
+            appId: 'chromeExt',
+            browser: 'chrome'
         });
 
         grunt.task.run([
-            'extensionBaseMin',
+            'extensionBase',
+            'buildJs',
             'chromeManifest',
             'json-format:chromeManifestFormat',
+            'setAppInfo',
+            'compressJs',
+            'compress:chrome'
+        ]);
+    });
+
+    grunt.registerTask('opera', function () {
+        grunt.config.merge({
+            vendor: 'opera/src/',
+            libFolder: 'js/',
+            dataJsFolder: 'js/',
+            includesFolder: 'includes/',
+            dataFolder: '',
+            buildName: 'tmsExt_opera_<%= pkg.extVersion %>',
+            appId: 'operaExt',
+            browser: 'chrome'
+        });
+
+        grunt.task.run([
+            'extensionBase',
+            'buildJs',
+            'chromeManifest',
+            'json-format:chromeManifestFormat',
+            'setAppInfo',
+            'compressJs',
             'compress:chrome'
         ]);
     });
@@ -60,9 +89,9 @@ exports.run = function (grunt) {
     grunt.registerTask('chromeApp', function () {
         grunt.registerTask('chromeAppManifest', function() {
             var manifestPath = grunt.config('output') + grunt.config('vendor') + 'manifest.json';
-            var manifest = grunt.file.readJSON('src/vendor/chromeApp/manifest.json');
-            manifest.version = grunt.config('pkg.extVersion');
-            grunt.file.write(manifestPath, JSON.stringify(manifest));
+            var content = grunt.file.readJSON('src/vendor/chromeApp/manifest.json');
+            content.version = grunt.config('pkg.extVersion');
+            grunt.file.write(manifestPath, JSON.stringify(content));
         });
 
         grunt.config.merge({
@@ -71,14 +100,19 @@ exports.run = function (grunt) {
             dataJsFolder: 'js/',
             includesFolder: 'includes/',
             dataFolder: '',
-            buildName: 'tms_<%= pkg.extVersion %>'
+            buildName: 'tmsApp_<%= pkg.extVersion %>',
+            appId: 'chromeApp',
+            browser: 'chrome'
         });
 
         grunt.task.run([
-            'extensionBaseMin',
+            'extensionBase',
+            'buildJs',
             'chromeAppManifest',
             'rmPopup',
             'json-format:chromeManifestFormat',
+            'setAppInfo',
+            'compressJs',
             'compress:chrome'
         ]);
     });

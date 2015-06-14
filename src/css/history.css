@@ -1,169 +1,140 @@
-/*
-    Document   : history
-    Created on : 12.07.2012, 11:53:36
-    Author     : anton
-    Description:
-        Purpose of the stylesheet follows.
-*/
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.875em;
-    margin: 0;
-    min-width: 960px;
-}
-a span.sub_name {
-    color: #181818;
-}
-a {
-    text-decoration: none;
-    color: #1A3DC1;
-}
-a:link:hover {
-    text-decoration: underline;
-}
+@import "popup.css";
 
-div.content.loading {
-    visibility: hidden;
-}
-div.search_panel h1 {
-    margin: 0;
-    padding: 0;
-    font-size: 1.571em;
-    font-weight: normal;
-    cursor: default;
-}
-div.search_panel {
-    border-bottom: 1px solid #ccc;
+body {
+    min-width: 960px;
+    font-size: 14px;
+
     -webkit-user-select: none;
     -moz-user-select: none;
     -o-user-select: none;
     user-select: none;
 }
-div.search_panel > div {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-div.search_panel > div.left {
-    display: inline-block;
+
+.head {
     position: relative;
-    margin-left: 20px;
-}
-div.search_panel > div.right {
-    display: inline-block;
-    float: right;
-    position: relative;
-    margin-right: 20px;
+    border-bottom: 1px solid #ddd;
 }
 
-a.button {
-    height: 26px !important;
-    background-color: #ffffff;
-    color: #333333;
-    border-radius: 3px;
-    display: inline-block;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    text-decoration: none;
-    margin-top: 0;
-    cursor: pointer;
-    border: 1px solid #cccccc;
-    font-size: 1em;
-    outline-color: rgb(81, 136, 255);
+.quick-menu {
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    padding: 21px;
+    padding-left: 25px;
+    padding-right: 25px;
 }
-a.button:hover {
+
+.quick-menu > a {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    background-position: center;
+    background-repeat: no-repeat;
+    outline-color: #3802FD;
+}
+.quick-menu > a:hover{
+    border-color: #adadad;
+}
+.quick-menu > a:active {
     background-color: #ebebeb;
     border-color: #adadad;
 }
-a.button:active {
-    outline: 0;
-    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+
+#search_form span {
+    height: 28px;
+    line-height: 28px;
+    font-size: 25px;
 }
 
-div.search_panel > div.right a {
-    display: inline-block;
-    background-repeat: no-repeat;
+#main_btn {
+    background-image: url(../img/main.png);
+}
+
+#history_list a {
+    text-decoration: none;
+}
+
+.content {
+    position: relative;
+
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    user-select: text;
+}
+
+.title a {
+    padding-bottom: 1px;
+    border-bottom: 1px solid transparent;
+    vertical-align: middle;
+}
+
+.title a span {
+    color: #000;
+}
+
+.title a:visited,
+.title a:link {
+    color: #1A3DC1;
+}
+
+.title a:visited:hover,
+.title a:link:hover {
+    border-bottom-color: #1A3DC1;
+}
+
+.icon {
     background-position: center;
-    width: 26px;
-    height: 26px;
+    background-repeat: no-repeat;
 }
-div.search_panel > div.right a.main {
-    background-image: url(../images/main.png);
-}
-div.topbtn {
-    display: none;
-    bottom: 0;
-    width: 50px;
-    background: url(../images/go_top.png) no-repeat center bottom;
-    position: fixed;
-    right: 0;
-    z-index: 10;
-    cursor: pointer;
-    height: 100%;
-    opacity: 0.9;
-}
-div.topbtn:hover {
-    background-color: #ddd;
-}
-ol.click_history {
-    margin-left: 3px;
-}
-ol > li {
-    list-style: none;
-}
-ol.click_history > li > a {
-    font-size: 1.214em;
-}
-ol.history {
-    padding-left: 0;
-    margin-left: 3px;
-}
-ol.history li {
-    margin-left: 17px;
-}
-ol.items div {
-    display:  inline-block;
-}
-ol.items div.remove {
+
+.icon {
+    display: inline-block;
     width: 16px;
     height: 16px;
-    background-image: url(../images/clear.png);
-    margin-bottom: -3px;
-    opacity: 0;
-    cursor: pointer;
-    transition: opacity .2s;
     margin-right: 5px;
+    opacity: 0.5;
+    -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
+    transition: opacity 0.2s;
+    vertical-align: middle;
 }
-ol.items li {
-    margin-bottom: 5px;
-    margin-top: 5px;
-}
-ol.items li:hover div.remove {
+
+.icon:hover {
     opacity: 1;
 }
-ol.items div.time {
-    color: #666666;
-    cursor: default;
+
+*:hover > .icon.del {
+    cursor: pointer;
+    background: url(../img/delete.svg) center no-repeat;
+    background-size: 14px;
 }
-ol.items div.title {
-    display: inline;
-    margin-left: 5px;
+
+.request {
+    margin: 10px;
+    margin-left: 40px;
+    margin-right: 40px;
+    font-size: 17px;
 }
-ol.items span.tracker {
-    padding: 2px;
-    padding-top: 0;
-    padding-bottom: 0;
-    border-radius: 4px;
-    background-color: #337AF8;
-    color: #fff;
-    cursor: default;
-    margin-left: 5px;
-}
-li > .icon {
-    display: inline-block;
-    height: 16px;
-    width: 16px;
+
+.icon {
     border-radius: 4px;
     border: 1px dashed rgb(165, 165, 165);
-    margin-bottom: -4px;
+}
+
+.date {
+    color: #666;
     margin-right: 5px;
-    margin-left: 2px;
+}
+
+.linkList {
+    margin-left: 70px;
+    margin-right: 70px;
+}
+
+.linkList .link {
+    margin: 5px;
 }

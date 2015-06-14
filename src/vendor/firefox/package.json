@@ -20,9 +20,6 @@
     "author": "Anton V.",
     "license": "MPL 2.0",
     "version": "1.0.88",
-    "permissions": {
-        "cross-domain-content": ["http://*", "https://*"]
-    },
     "icon": "data/icons/icon-48.png",
     "icon64": "data/icons/icon-64.png"
 }

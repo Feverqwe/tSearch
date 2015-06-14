@@ -10,24 +10,20 @@ exports.run = function (grunt) {
         grunt.config.merge({
             copy: {
                 vendorMaxthon: {
+                    cwd: 'src/vendor/maxthon/',
                     expand: true,
                     src: [
-                        'src/vendor/maxthon/**'
+                        '**'
                     ],
-                    dest: '<%= output %><%= vendor %>',
-                    rename: function () {
-                        return arguments[0] + arguments[1].substr('src/vendor/maxthon/'.length);
-                    }
+                    dest: '<%= output %><%= vendor %>'
                 }
             },
             'json-format': {
                 mxDef: {
+                    cwd: '<%= output %><%= vendor %>',
                     expand: true,
-                    src: '<%= output %><%= vendor %>def.json',
+                    src: 'def.json',
                     dest: '<%= output %><%= vendor %>',
-                    rename: function () {
-                        return arguments[0] + arguments[1].substr((grunt.config('output') + grunt.config('vendor')).length);
-                    },
                     options: {
                         indent: 4
                     }
@@ -40,11 +36,13 @@ exports.run = function (grunt) {
             dataFolder: ''
         });
         grunt.task.run([
-            'extensionBaseMin',
+            'extensionBase',
             'copy:vendorMaxthon',
-            'rmBg',
+            'buildJs',
+            'clean:bg',
             'mxDef',
-            'json-format:mxDef'
+            'json-format:mxDef',
+            'compressJs'
         ]);
     });
 };

@@ -1,28 +1,33 @@
 window.GoogleAnalyticsObject = 'ga';
 var ga = window.ga = window.ga || function() {
-    (window.ga.q = window.ga.q || []).push(arguments)
+    (window.ga.q = window.ga.q || []).push(arguments);
 };
-ga.l = Date.now();
 
+ga.l = Date.now();
 ga('create', 'UA-10717861-22', 'auto');
 ga('set', 'forceSSL', true);
 ga('set', 'checkProtocolTask', null);
 ga('require', 'displayfeatures');
 ga('send', 'pageview');
+ga('send', 'screenview', {
+    'appName': 'tms',
+    'appId': '{appId}',
+    'appVersion': '{appVersion}'
+});
 
-var counter = function() {
+engine.initCounter = function() {
     "use strict";
     var gas = document.createElement('script');
     gas.async = 1;
     gas.src = 'https://www.google-analytics.com/analytics.js';
     var success = function() {
-        var pos = document.getElementsByTagName('script')[0];
-        pos.parentNode.insertBefore(gas, pos);
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(gas, firstScript);
     };
     if (mono.isWebApp) {
         return success();
     }
-    engine.ajax({
+    mono.ajax({
         type: 'HEAD',
         url: gas.src,
         success: success

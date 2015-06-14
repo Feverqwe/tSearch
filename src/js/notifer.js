@@ -1,150 +1,138 @@
-var notify = function () {
-    "use strict";
-    var _prefix = 'nf';
-    var notifi;
-    var layer;
-    var body;
-    var cb;
-    var close = function () {
-        layer.remove();
-        notifi.remove();
-        layer = undefined;
-        notifi = undefined;
-        inputs = [];
-        count = 0;
+var showNotification = function(template, onClose) {
+    var prefix = 'nf';
+    var nodeCache = {};
+    var nodeCounter = 0;
+    var focusEl = null;
+    var clearNodeCache = function() {
+        var rmList = [];
+        for (var key in nodeCache) {
+            nodeCache[key].remove();
+            rmList.push(key);
+        }
+        for (var i = 0, item; item = rmList[i]; i++) {
+            delete nodeCache[item];
+        }
     };
-    var inputs = [];
-    var count = 0;
-    var getValues = function () {
-        var vals = [];
-        inputs.forEach(function (item) {
-            var val = item.val();
-            if (val === undefined) {
-                val = undefined;
-            } else if (val === null) {
-                val = undefined;
-            } else if (val.length === 0) {
-                val = undefined;
+    var close = function() {
+        clearNodeCache();
+        onClose && onClose();
+    };
+    var getFormData = function() {
+        var formData = {};
+        for (var name in nodeCache) {
+            var el = nodeCache[name];
+            if (el[0].tagName === 'INPUT') {
+                if (el[0].type === 'text') {
+                    formData[name] = el[0].value;
+                }
+            } else
+            if (el[0].tagName === 'SELECT') {
+                if (el[0].selectedIndex === -1) {
+                    continue;
+                }
+                formData[name] = el[0].value;
+            } else
+            if (el[0].tagName === 'TEXTAREA') {
+                formData[name] = el[0].value;
             }
-            vals.push(val);
-        });
-        return vals;
+        }
+        return formData;
     };
     var createLayer = function () {
-        layer = $('<div>', {'class': _prefix + '-layer'}).on('mousedown',function () {
+        nodeCache.bgLayer = $('<div>', {'class': prefix + '-layer'}).on('mousedown',function () {
             close();
-            cb();
-        }).appendTo(body);
+        }).appendTo(document.body);
     };
-    var createType = function (_item) {
-        var type = _item.type;
-        var item = $('<div>', {'class': 'item ' + type});
-        if (type !== 'buttons') {
-            if (_item.text) {
-                item.append($('<span>', {text: _item.text}));
+    var readTemplate = function(template) {
+        for (var i = 0, len = template.length; i < len; i++) {
+            var el = template[i];
+            if (Array.isArray(el)) {
+                nodeCounter++;
+                var subSection = $('<div>', {class: prefix + '-subItem'}).appendTo(this);
+                readTemplate.call(subSection, el);
+                continue;
             }
-            if (_item.fragment) {
-                item.append($('<span>').append(_item.fragment));
-            }
-        }
-        if (type === 'note') {
-            count++;
-        }
-        if (type === 'select') {
-            var select = $('<select>');
-            $.each(_item.options, function (key, value) {
-                if (_item.o === 'folders') {
-                    select.append($('<option>', {text: value[1], value: key}));
-                } else {
-                    select.append($('<option>', {text: value, value: key}));
+            if (typeof el === "object") {
+                for (var tagName in el) {
+                    var attrList = el[tagName];
+
+                    var on = attrList.on;
+                    delete attrList.on;
+                    var after = attrList.after;
+                    delete attrList.after;
+
+                    var before = attrList.before;
+                    delete attrList.before;
+
+                    var append = attrList.append;
+                    delete attrList.append;
+
+                    var hasFocus = false;
+                    if (attrList.focus) {
+                        hasFocus = true;
+                        delete attrList.focus;
+                    }
+
+                    if (attrList.text) {
+                        var textContent = attrList.text;
+                        delete attrList.text;
+                    }
+
+                    nodeCounter++;
+                    var $el = nodeCache[attrList.name || 'node'+nodeCounter] = $('<' + tagName + '>', attrList);
+                    if (textContent) {
+                        $el.text(textContent);
+                    }
+                    if (hasFocus) {
+                        focusEl = $el;
+                    }
+                    if (on) {
+                        if (typeof on[0] === "string") {
+                            $el.on(on[0], on[1].bind({
+                                close: close,
+                                getFormData: getFormData,
+                                nodeCache: nodeCache
+                            }));
+                        } else {
+                            for (var n = 0, subOn; subOn = on[n]; n++) {
+                                $el.on(subOn[0], subOn[1].bind({
+                                    close: close,
+                                    getFormData: getFormData,
+                                    nodeCache: nodeCache
+                                }));
+                            }
+                        }
+                    }
+                    if (append) {
+                        $el.append(append);
+                    }
+                    this.append($el);
+                    if (after) {
+                        $el.after(after);
+                    }
+                    if (before) {
+                        $el.before(before);
+                    }
                 }
-            });
-            if (_item.empty) {
-                select.append($('<option>', {text: '', value: '', selected: true}));
+                continue;
             }
-            item.append(select);
-            inputs.push(select);
-            if (_item.options.length === 0) {
-                return '';
+            if (typeof el === "function") {
+                el(this);
             }
-            count++;
-        } else if (type === 'input') {
-            var input = $('<input>',{value: _item.value});
-            item.append(input);
-            inputs.push(input);
-            count++;
-        } else if (type === 'buttons') {
-            $('<button>', {'class': 'btn_cancel', text: _item.textNo}).on('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                close();
-                cb();
-            }).appendTo(item);
-            $('<button>', {'class': 'btn_ok', text: _item.textOk}).on('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                cb(getValues());
-                close();
-            }).appendTo(item);
-        } else if (type === 'textarea') {
-            var input = $('<textarea>',{text: _item.value});
-            item.append(input);
-            inputs.push(input);
-            count++;
-        }
-        return item;
-    };
-    var createNotifi = function (array, textOk, textNo) {
-        notifi = $('<div>', {'class': _prefix + '-notifi'});
-        notifi.on('click', function(e) {
-            e.stopPropagation();
-        });
-        array.forEach(function (item) {
-            notifi.append(createType(item));
-        });
-        notifi.append(createType({type: 'buttons', textOk: textOk, textNo: textNo}))
-            .appendTo(body);
-        if (this.focusNo) {
-            notifi.find('.btn_cancel').focus();
-        }
-        if (this.focusYes) {
-            notifi.find('.btn_ok').focus();
-        }
-        for (var i = 0, inp; inp = inputs[i]; i++) {
-            if (i === 0) {
-                inp.focus();
-            }
-            inp.on('keydown', function (e) {
-                if (e.target.tagName === 'TEXTAREA') {
-                    return;
-                }
-                if (e.keyCode === 13) {
-                    e.preventDefault();
-                    notifi.find('button.btn_ok').trigger('click');
-                } else if (e.keyCode === 27) {
-                    e.preventDefault();
-                    notifi.find('button.btn_cancel').trigger('click');
-                }
-            });
-        }
-        if (mono.isOpera) {
-            notifi.css('left', ((body.width() - notifi.width()) / 2) + 'px' );
         }
     };
-    return function (array, textOk, textNo, _cb) {
-        if (layer !== undefined || notifi !== undefined) {
-            close();
-            cb();
-        }
-        if (body === undefined) {
-            body = $('body');
-        }
-        createLayer();
-        createNotifi.call(this || {}, array, textOk, textNo);
-        cb = _cb;
-        if (count === 0) {
-            cb(getValues());
-            close();
-        }
+
+    createLayer();
+    nodeCache.container = $('<div>', {'class': prefix + '-notifi-container'});
+    nodeCache.container.append(nodeCache.body = $('<div>', {'class': prefix + '-notifi'}));
+    readTemplate.call(nodeCache.body, template);
+    $(document.body).append(nodeCache.container);
+    if (focusEl) {
+        focusEl.focus();
     }
-}();
+
+    return nodeCache.body;
+};
+if (typeof define !== "undefined" && define.amd) {
+    define('quickNotification');
+}

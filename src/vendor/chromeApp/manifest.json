@@ -6,9 +6,9 @@
         }
     },
     "icons": {
-        "128": "images/icon_128_ch.png",
-        "48": "images/icon_48.png",
-        "16": "images/icon_16.png"
+        "128": "img/icon_128_ch.png",
+        "48": "img/icon_48.png",
+        "16": "img/icon_16.png"
     },
     "options_page": "options.html",
     "permissions": ["storage", "contextMenus", "http://*/*", "https://*/*", "unlimitedStorage" ],
@@ -16,7 +16,7 @@
         "keyword" : "tms"
     },
     "background": {
-        "scripts": ["js/mono.js","js/background.js"]
+        "scripts": ["js/mono.js","js/bg.js"]
     },
     "content_security_policy": "script-src 'self' https://www.google-analytics.com/analytics.js; object-src 'self'",
     "name": "__MSG_appName__",

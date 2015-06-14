@@ -1,51 +1,52 @@
-var wordRate = function() {
-    "use strict";
-    var qBirtate = [
-        {
-            list: ['32'],
-            rate: {music: -2}
-        },
-        {
-            list: ['64'],
-            rate: {music: 0}
-        },
-        {
-            list: ['96'],
-            rate: {music: 2}
-        },
-        {
-            list: ['128'],
-            rate: {music: 5}
-        },
-        {
-            list: ['192'],
-            rate: {music: 10}
-        },
-        {
-            list: ['320'],
-            rate: {music: 15}
-        }
-    ];
-    var def_qualityList = [
-        /*
-         {
-             list: [],
-             listCase: [],
-             rate: {
-                 video: 0,
-                 music: 0,
-                 games: 0,
-                 books: 0,
-                 serials: 0,
-                 cartoons: 0,
-                 xxx: 0
-             },
-             name: '',
-             sub: [],
-             subAfter: [],
-             subBefore: []
-         }
-         */
+/**
+ * Created by Anton on 02.04.2015.
+ */
+var rate = {
+    template: {
+        bitrate: [
+            {
+                list: ['32'],
+                rate: {audio: -2}
+            },
+            {
+                list: ['64'],
+                rate: {audio: 0}
+            },
+            {
+                list: ['96'],
+                rate: {audio: 2}
+            },
+            {
+                list: ['128'],
+                rate: {audio: 5}
+            },
+            {
+                list: ['192'],
+                rate: {audio: 10}
+            },
+            {
+                list: ['320'],
+                rate: {audio: 15}
+            }
+        ]
+    },
+    defaultQualityList: [
+        /*{
+            list: [],
+            rate: {
+                video: 0,
+                music: 0,
+                games: 0,
+                books: 0,
+                serials: 0,
+                cartoons: 0,
+                xxx: 0
+            },
+            name: '',
+            sub: [],
+            subAfter: [],
+            subBefore: []
+        },*/
         {
             list: ['blu-ray cee'],
             rate: {
@@ -103,8 +104,7 @@ var wordRate = function() {
             name: 'LowHDRip'
         },
         {
-            list: ['HDRip', 'HDRip-AVC'],
-            listCase: ['HDTV'],
+            list: [{word: 'HDTV'}, 'HDRip', 'HDRip-AVC'],
             rate: {
                 video: 60
             },
@@ -125,53 +125,21 @@ var wordRate = function() {
             name: 'HD-DVD'
         },
         {
-            list: (function(){
-                var list = [];
-                for (var i = 2; i < 10; i++) {
-                    list.push(i+'xDVD9');
-                    list.push(i+'xDVD-9');
-                    list.push(i+' x DVD-9');
-                    list.push(i+' x DVD9');
-                }
-                return list;
-            })(),
+            list: [{regexp: 1, word: '\\d\\s?[x\\*]\\s?DVD\\-?9', caseSens: 0}],
             rate: {
                 video: 65
             },
             name: 'DVD-9'
         },
         {
-            list: ['DVD9', 'DVD-9', '1xDVD9', '1xDVD-9'],
-            rate: {
-                video: 62
-            },
-            name: 'DVD-9'
-        },
-        {
-            list: (function(){
-                var list = [];
-                for (var i = 2; i < 10; i++) {
-                    list.push(i+'xDVD5');
-                    list.push(i+'xDVD-5');
-                    list.push(i+' x DVD-5');
-                    list.push(i+' x DVD5');
-                }
-                return list;
-            })(),
+            list: [{regexp: 1, word: '\\d\\s?[x\\*]\\s?DVD\\-?5', caseSens: 0}],
             rate: {
                 video: 53
             },
             name: 'DVD-5'
         },
         {
-            list: ['DVD5', 'DVD-5', '1xDVD5', '1xDVD-5'],
-            rate: {
-                video: 50
-            },
-            name: 'DVD'
-        },
-        {
-            listCase: ['DVD'],
+            list: [{word: 'DVD'}],
             rate: {
                 video: 50
             },
@@ -213,15 +181,14 @@ var wordRate = function() {
             name: 'SAT-Rip'
         },
         {
-            listCase: ['DVB'],
+            list: [{word: 'DVB'}],
             rate: {
                 video: 40
             },
             name: 'DVB'
         },
         {
-            list: ['TeleSynch'],
-            listCase: ['TS'],
+            list: [{word: 'TS'}, 'TeleSynch'],
             rate: {
                 video: 20
             },
@@ -237,14 +204,14 @@ var wordRate = function() {
         {
             list: ['lossless'],
             rate: {
-                music: 100
+                audio: 100
             },
             name: 'lossless',
             subAfter: [
                 {
                     list: ['repack'],
                     rate: {
-                        music: -100
+                        audio: -100
                     }
                 }
             ]
@@ -262,18 +229,18 @@ var wordRate = function() {
                 music: 80
             },
             name: 'MP3',
-            subAfter: qBirtate
+            subAfter: "bitrate"
         },
         {
             list: ['AAC'],
             rate: {
-                music: 85
+                audio: 85
             },
             name: 'AAC',
-            subAfter: qBirtate
+            subAfter: "bitrate"
         },
         {
-            listCase: ['PS3'],
+            list: [{word: 'PS3'}],
             rate: {
                 games: 80
             },
@@ -287,8 +254,7 @@ var wordRate = function() {
             name: 'XBox'
         },
         {
-            list: ['(ps2)'],
-            listCase: ['PS2'],
+            list: [{word: 'PS2'}, '(ps2)'],
             rate: {
                 games: 80
             },
@@ -323,8 +289,7 @@ var wordRate = function() {
             name: 'Rip'
         },
         {
-            listCase: ['[L]', '{L}', '(L)'],
-            list: ['лицензия'],
+            list: [{word: '[L]'}, {word: '{L}'}, {word: '(L)'}],
             rate: {
                 games: 100
             },
@@ -374,8 +339,7 @@ var wordRate = function() {
             }
         },
         {
-            listCase: ['СТ'],
-            list: ['sub', 'subs'],
+            list: [{word: 'СТ'}, 'sub', 'subs'],
             rate: {
                 video: 1
             }
@@ -387,20 +351,19 @@ var wordRate = function() {
             }
         },
         {
-            listCase: ['DUB', 'Dub', 'ДБ', 'ПО', 'ПД'],
-            list: ['2xDub'],
+            list: [{word: 'DUB'}, {word: 'Dub'}, {word: 'ДБ'}, {word: 'ПО'}, {word: 'ПД'}, '2xDub'],
             rate: {
                 video: 3
             }
         },
         {
-            listCase: ['ПМ'],
+            list: [{word: 'ПМ'}],
             rate: {
                 video: 2
             }
         },
         {
-            listCase: ['АП', 'ЛО', 'ЛД', 'VO'],
+            list: [{word: 'АП'}, {word: 'ЛО'}, {word: 'ЛД'}, {word: 'VO'}],
             rate: {
                 video: 1
             }
@@ -418,8 +381,7 @@ var wordRate = function() {
             }
         },
         {
-            list: ['.cue'],
-            listCase: ['CUE'],
+            list: [{word: 'CUE'}, '.cue'],
             rate: {
                 music: 20
             }
@@ -448,136 +410,125 @@ var wordRate = function() {
                 serials: 5
             }
         }
-    ];
-    var qualityList = def_qualityList.slice(0);
-
-    var var_cache = {
-        subList: [],
-
-        cat_regexp: new RegExp("фильмы без сюжета|документальные|мультим|мульт|сериа|комикс|видео для [моб|смарт|" +
-            "устр]{1}|мобильное|аудиокниги|беллетр|книг|фильм|игр|3gp|soundtrack|саундтрек|anim|аним|докумел|литер|" +
-            "телеп|эрот|xxx|porn|порно|сайтр|тв[-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
-            "утилит|book|game|tv |tv$|manga", "g"),
-        year: (new Date()).getFullYear(),
-        getYear: new RegExp('[1-2]{1}[0-9]{3}'),
-        rm_spaces: new RegExp('\\s+','g'),
-        text2safe_regexp_text: new RegExp('([{})(\\][\\\\\\.^$\\|\\?\\+])','g'),
-        rm_pre_tag_regexp: new RegExp("\\(.*\\)|\\[.*\\]", 'g'),
-        found_parenthetical: new RegExp('(\\[[^\\]]*\\]|\\([^\\)]*\\)|\\{[^\\}]*\\})','g'),
-        test_angle: /[<>]/,
-        rm_retry: new RegExp('<\\/span>(\\s*)<span>|<\\/b>(\\s*)<b>', 'g'),
-        syntaxCache: {},
-        tagSearch: /<(\/?)(span|b)>/g
-    };
-
-    var initWordCache = function(_words) {
-        var words = [];
-        var wordsCase = [];
-        var wordObj = {};
-        _words.forEach(function(item) {
-            if (item.list !== undefined) {
-                item.list.forEach(function(word) {
-                    word = word.toLowerCase();
-                    if (wordObj[word] !== undefined) {
-                        console.log('Word conflict!', word);
+    ],
+    qualityList: {},
+    regexpList: {
+        text2safeR: /([{})(\][\\\.^$\|\?\+])/g
+    },
+    /**
+     *
+     * @param [qualityList] Array
+     * @param [type] String
+     * @returns {{}|{wordsR: object, scope: object, scopeCase: object}}
+     */
+    readQualityList: function(qualityList, type) {
+        "use strict";
+        type = type || '';
+        var wordsR = [];
+        var scope = {};
+        var scopeCase = {};
+        var tmpScopeRegexp = [];
+        qualityList.forEach(function(qualityObj) {
+            if (qualityObj.list !== undefined) {
+                qualityObj.list.forEach(function(wordItem) {
+                    if (typeof wordItem === 'string') {
+                        /**
+                         * List item in qualityList
+                         * @type {{word: String, caseSens: Number, regexp: Number}}
+                         */
+                        wordItem = {word: wordItem, caseSens: 0};
                     }
-                    wordObj[word] = item;
-                    words.push(word.replace(var_cache.text2safe_regexp_text, "\\$1"));
+                    if (wordItem.regexp === 1) {
+                        wordsR.push(wordItem.word);
+                        var caseSens = 'g';
+                        if (wordItem.caseSens !== 0) {
+                            caseSens += 'i';
+                        }
+                        tmpScopeRegexp.push([new RegExp(wordItem.word, caseSens), qualityObj]);
+                    } else {
+                        if (wordItem.caseSens !== 0) {
+                            if (scopeCase[wordItem.word] !== undefined) {
+                                console.log('Word case conflict!', wordItem);
+                            }
+                            scopeCase[wordItem.word] = qualityObj;
+                        } else {
+                            wordItem.word = wordItem.word.toLowerCase();
+                            if (scope[wordItem.word] !== undefined) {
+                                console.log('Word conflict!', wordItem);
+                            }
+                            scope[wordItem.word] = qualityObj;
+                        }
+                        wordsR.push(wordItem.word.replace(rate.regexpList.text2safeR, "\\$1"));
+                    }
                 });
             }
-            if (item.listCase !== undefined) {
-                item.listCase.forEach(function(word) {
-                    if (wordObj[word] !== undefined) {
-                        console.log('Word conflict!', word);
-                    }
-                    wordObj[word] = item;
-                    wordsCase.push(word.replace(var_cache.text2safe_regexp_text, "\\$1"));
-                });
+            var subList = [];
+            if (qualityObj.sub !== undefined) {
+                if (typeof qualityObj.sub === 'string') {
+                    qualityObj.sub = rate.template[qualityObj.sub];
+                }
+                mono.expand(qualityObj, rate.readQualityList(qualityObj.sub, 'sub'));
+                subList.push('sub');
             }
-            var list;
-            if (item.sub !== undefined) {
-                var_cache.subList.indexOf('sub') === -1 && var_cache.subList.push('sub');
-                list = initWordCache(item.sub);
-                item.words_sub = list[0];
-                item.wordsCase_sub = list[1];
-                item.wordObj_sub = list[2];
+            if (qualityObj.subAfter !== undefined) {
+                if (typeof qualityObj.subAfter === 'string') {
+                    qualityObj.subAfter = rate.template[qualityObj.subAfter];
+                }
+                mono.expand(qualityObj, rate.readQualityList(qualityObj.subAfter, 'subAfter'));
+                subList.push('subAfter');
             }
-            if (item.subAfter !== undefined) {
-                var_cache.subList.indexOf('subAfter') === -1 && var_cache.subList.push('subAfter');
-                list = initWordCache(item.subAfter);
-                item.words_subAfter = list[0];
-                item.wordsCase_subAfter = list[1];
-                item.wordObj_subAfter = list[2];
+            if (qualityObj.subBefore !== undefined) {
+                if (typeof qualityObj.subBefore === 'string') {
+                    qualityObj.subBefore = rate.template[qualityObj.subBefore];
+                }
+                mono.expand(qualityObj, rate.readQualityList(qualityObj.subBefore, 'subBefore'));
+                subList.push('subBefore');
             }
-            if (item.subBefore !== undefined) {
-                var_cache.subList.indexOf('subBefore') === -1 && var_cache.subList.push('subBefore');
-                list = initWordCache(item.subBefore);
-                item.words_subBefore = list[0];
-                item.wordsCase_subBefore = list[1];
-                item.wordObj_subBefore = list[2];
+            if (subList.length !== 0) {
+                qualityObj.subList = subList;
             }
         });
-        if (words.length > 0) {
-            words = new RegExp(words.join('|'), 'g');
+        if (wordsR.length > 0) {
+            wordsR = new RegExp(wordsR.sort(function(a, b) {
+                return String(a).length > String(b).length ? -1 : 1
+            }).join('|'), 'ig');
         } else {
-            words = undefined;
+            wordsR = undefined;
         }
-        if (wordsCase.length > 0) {
-            wordsCase = new RegExp(wordsCase.join('|'), 'g');
-        } else {
-            wordsCase = undefined;
-        }
-        return [words, wordsCase, wordObj];
-    };
-    var updateCache = function() {
-        var list = initWordCache(qualityList);
-        var_cache.words = list[0];
-        var_cache.wordsCase = list[1];
-        var_cache.wordObj = list[2];
-    };
 
-    var syntaxCacheRequest = function(request, _syntaxCache) {
-        var year = request.match(var_cache.getYear);
-        if (year !== null) {
-            year = Math.max.apply(Math, year);
-            if (year > var_cache.year + 5) {
-                year = null;
+        var scopeRegexpIndex;
+        var scopeRegexp;
+        if (tmpScopeRegexp.length > 0) {
+            scopeRegexp = [];
+            scopeRegexpIndex = [];
+            tmpScopeRegexp.sort(function(a, b) {
+                return String(a[0]).length > String(b[0]).length ? -1 : 1
+            });
+            for (var i = 0, item; item = tmpScopeRegexp[i]; i++) {
+                scopeRegexp.push(item[0]);
+                scopeRegexpIndex.push(item[1]);
             }
-            if (year < 1900) {
-                year = null;
-            }
+            tmpScopeRegexp = null;
         }
-        delete _syntaxCache.year;
-        var_cache.syntaxCache = {};
-        var_cache.syntaxCache.normalize_request = $.trim(request).replace(var_cache.rm_spaces, " ");
-        var_cache.syntaxCache.normalize_request_len = var_cache.syntaxCache.normalize_request.length;
-        var safe_regexp = var_cache.syntaxCache.normalize_request.replace(var_cache.text2safe_regexp_text,"\\$1");
-        var_cache.syntaxCache.words = safe_regexp.toLowerCase().split(' ');
-        var_cache.syntaxCache.normalize_request_low = var_cache.syntaxCache.normalize_request.toLowerCase();
-        var_cache.syntaxCache.normalize_request_low_len = var_cache.syntaxCache.normalize_request_low.length;
-        var_cache.syntaxCache.words_len = var_cache.syntaxCache.words.length;
-        var_cache.syntaxCache.words_is_regexp = new RegExp(var_cache.syntaxCache.words.join('|'), "ig");
-        if (year !== null) {
-            var_cache.syntaxCache.year = _syntaxCache.year = year;
-            var_cache.syntaxCache.normalize_request_no_year = $.trim(var_cache.syntaxCache.normalize_request.replace(new RegExp('\\s?'+year+'\\s?','g'),' ').replace(var_cache.rm_spaces, " "));
-            var_cache.syntaxCache.normalize_request_no_year_len = var_cache.syntaxCache.normalize_request_no_year.length;
-            var_cache.syntaxCache.normalize_request_no_year_low = var_cache.syntaxCache.normalize_request_no_year.toLowerCase();
-            var_cache.syntaxCache.normalize_request_no_year_low_len = var_cache.syntaxCache.normalize_request_no_year_low.length;
+        var rObj = {};
+        wordsR && (rObj['wordsR'+type] = wordsR);
+        !mono.isEmptyObject(scope) && (rObj['scope'+type] = scope);
+        !mono.isEmptyObject(scopeCase) && (rObj['scopeCase'+type] = scopeCase);
+        if (scopeRegexp) {
+            rObj['scopeRegexp'+type] = scopeRegexp;
+            rObj['scopeRegexpIndex'+type] = scopeRegexpIndex;
         }
-        var_cache.syntaxCache.word_rate = Math.round(200 / var_cache.syntaxCache.words_len);
-        var_cache.syntaxCache.first_word_rate = Math.round( var_cache.syntaxCache.word_rate*1.25 );
-    };
-
-    var checkForSymbol = function(_char) {
-        var code = _char.charCodeAt(0);
-        if (isNaN(code)) {
+        return rObj;
+    },
+    baseQualityList: {},
+    charIsSymbol: function(char) {
+        if (char === undefined) return 1;
+        var code = char.charCodeAt(0);
+        if (code > 31 && code < 48) {
             return 1;
         }
         if (code > 126 || code < 31) {
             return 0;
-        }
-        if (code > 31 && code < 48) {
-            return 1;
         }
         if (code > 57 && code < 65) {
             return 1;
@@ -588,531 +539,401 @@ var wordRate = function() {
         if (code > 122 && code < 127) {
             return 1;
         }
-        if (code === 171 || code === 187) {
+        if ([171, 174, 169, 187, 8222, 8221, 8220].indexOf(code) !== -1) {
             return 1;
         }
         return 0;
-    };
-    var checkLeftRightSymbol = function(word, pos, string) {
-        return (checkForSymbol(string[pos - 1] || '') !== 0 && checkForSymbol(string[pos + word.length] || '') !== 0);
-    };
-
-    var code2array = function(code) {
-        var list = [];
-        var lasPos = 0;
-        code.replace(var_cache.tagSearch, function(tag, close, tagName, pos) {
-            if (pos > 0) {
-                var str = code.substr(lasPos, pos - lasPos);
-                list.push(str);
-            }
-            lasPos = pos + tag.length;
-            list.push( [close.length === 1 ? 1 : 0, tagName] );
-        });
-
-        var str = code.substr(lasPos);
-        list.push(str);
-
-        return list;
-    };
-
-    var code2fragment = function(code) {
-        var list = code2array(code);
-
-        var fragment, root;
-        fragment = root = document.createDocumentFragment();
-        for (var i = 0, len = list.length; i < len; i++) {
-            var item = list[i];
-            if (typeof item === 'string') {
-                item.length > 0 && fragment.appendChild(document.createTextNode(item));
-                continue;
-            }
-            if (item[0] === 1) {
-                fragment = fragment.parentNode || root;
-                continue;
-            }
-            var el = mono.create(item[1]);
-            if (item[1] === 'span') {
-                el.classList.add('sub_name');
-            }
-            fragment.appendChild(el);
-            fragment = el;
-        }
-        return root;
-    };
-    var sub_select = function(name) {
-        //выделяет то, что в скобках
-        if (engine.settings.enableHighlight === 0) {
-            name = name.replace(var_cache.rm_retry,'$1$2');
-            return code2fragment(name);
-        }
-
-        var a = replaceAngle.char1;
-        var b = replaceAngle.char2;
-        if (b !== undefined) {
-            name = name.replace(new RegExp('(\\'+a+'[^\\'+b+']+\\'+b+')', 'g'), '<span>$1</span>');
-            name = name.replace(new RegExp('\\'+a, 'g'), '<');
-            name = name.replace(new RegExp('\\'+b, 'g'), '>');
-        }
-
-        name = name.replace(var_cache.found_parenthetical, '<span>$1</span>');
-        name = name.replace(var_cache.rm_retry,'$1$2');
-        return code2fragment(name);
-    };
-
-    var rateWord = function(word, pos) {
-        var rate = this.syntaxRate;
-        if (checkLeftRightSymbol(word, pos, this.text) === false) {
+    },
+    checkLeftRightSymbol: function(word, wordLen, pos, string) {
+        return (this.charIsSymbol(string[pos - 1]) !== 0 && this.charIsSymbol(string[pos + wordLen]) !== 0) ? 1 : 0;
+    },
+    onRateRegexp: function () {
+        var argLen = arguments.length;
+        var word = arguments[0];
+        var pos = arguments[argLen - 2];
+        var text = arguments[argLen - 1];
+        var wordLen = word.length;
+        if (wordLen === 0 || rate.checkLeftRightSymbol(word, wordLen, pos, text) === 0) {
             return '';
         }
-        var item = this.wordObj[word];
-        if (item.dbl === undefined) {
-            if (rate.m.indexOf(word) !== -1) {
+        var qualityObj;
+        var wordLowCase;
+        if (this.qualityList.scopeCase === undefined || (qualityObj = this.qualityList.scopeCase[word]) === undefined) {
+            wordLowCase = word.toLowerCase();
+            qualityObj = this.qualityList.scope && this.qualityList.scope[wordLowCase] || undefined;
+            if (qualityObj !== undefined) {
+                word = wordLowCase;
+            }
+        }
+        this.qualityList.scopeRegexp !== undefined && this.qualityList.scopeRegexp.some(function(regexp, index) {
+            "use strict";
+            if (regexp.test(word)) {
+                qualityObj = this.qualityList.scopeRegexpIndex[index];
+                return true;
+            }
+            return false;
+        }.bind(this));
+        if (qualityObj === undefined) {
+            return '';
+        }
+        if (this.matchedList[word] !== undefined) {
+            return '';
+        }
+        this.matchedList[word] = 1;
+
+        if (qualityObj.name !== undefined) {
+            if (this.rating.quality === undefined) {
+                this.rating.quality = qualityObj.name;
+            } else {
+                return;
+            }
+        }
+
+        for (var key in qualityObj.rate) {
+            this.rating.rate[key] += qualityObj.rate[key];
+        }
+
+        var onSubRateRegexp, subText;
+        if (qualityObj.subList !== undefined) {
+            for (var m = 0, type; type = qualityObj.subList[m]; m++) {
+                if (type === 'subAfter') {
+                    subText = text.substr(pos + wordLen);
+                } else
+                if (type === 'subBefore') {
+                    subText = text.substr(0, pos);
+                } else {
+                    subText = text;
+                }
+                if (subText.length !== 0) {
+                    onSubRateRegexp = rate.onRateRegexp.bind({
+                        rating: this.rating,
+                        qualityList: {
+                            scope: qualityObj['scope'+type],
+                            scopeCase: qualityObj['scopeCase'+type],
+                            scopeRegexp: qualityObj['scopeRegexp'+type],
+                            scopeRegexpIndex: qualityObj['scopeRegexpIndex'+type]
+                        },
+                        matchedList: this.matchedList
+                    });
+                    subText.replace(qualityObj['wordsR' + type], onSubRateRegexp);
+                }
+            }
+        }
+    },
+    onBaseTitleRegexp: function (word, pos, text) {
+        if (this.requestObj.hlWordLowList.length <= this.index) {
+            return '';
+        }
+        var wordLen = word.length;
+        if (wordLen === 0 || rate.checkLeftRightSymbol(word, wordLen, pos, text) === 0) {
+            return '';
+        }
+
+        var wordLow = word.toLowerCase();
+
+        var caseIndex = this.requestObj.hlWordList.indexOf(word);
+        var pref = caseIndex === -1 ? '' : 'Case';
+        var wordRate = this.requestObj['hlWord' + pref + 'Rate'];
+        var unOrderWordRate = this.requestObj['unOrderWord' + pref + 'Rate'];
+        var notFirstWordRate = this.requestObj['notFirstWord' + pref + 'Rate'];
+        var notSpaceSlitRate = this.requestObj['notSpaceSlit' + pref + 'Rate'];
+
+        if (this.outList === 0 && (caseIndex === this.index || wordLow === this.requestObj.hlWordLowList[this.index])) {
+            this.rate.title += wordRate;
+            if (this.index === 0) {
+                if (pos !== 0) {
+                    this.rate.title -= notFirstWordRate;
+                }
+            } else
+            if (pos - this.lastPos > 2) {
+                this.rate.title -= notSpaceSlitRate;
+            }
+        } else {
+            this.outList = 1;
+            if (this.fWordList[wordLow] !== undefined) {
                 return '';
-            } else {
-                rate.m.push(word);
             }
+            this.rate.title += unOrderWordRate;
         }
 
-        if (rate.block === 1 && item.name !== undefined) {
+        this.lastPos = pos + wordLen;
+        this.fWordList[wordLow] = 1;
+        this.index++;
+    },
+    onDescTitleRegexp: function (word, pos, text) {
+        var wordLen = word.length;
+        if (wordLen === 0 || rate.checkLeftRightSymbol(word, wordLen, pos, text) === 0) {
             return '';
         }
 
-        if (item.name !== undefined) {
-            rate.block = 1;
-            rate.qbox = item.name;
+        var wordLow = word.toLowerCase();
+        if (this.fWordList[wordLow] !== undefined) {
+            return '';
         }
+        this.fWordList[wordLow] = 1;
 
-        for (var key in item.rate) {
-            rate[key] += item.rate[key];
+        var caseIndex = this.requestObj.hlWordList.indexOf(word);
+        var pref = caseIndex === -1 ? '' : 'Case';
+        var unOrderWordRate = this.requestObj['unOrderWord' + pref + 'Rate'];
+
+        this.rate.title += unOrderWordRate;
+    },
+    onTitleYearRegexp: function (word, pos, text) {
+        if (this.requestObj.year.length <= this.index) {
+            return '';
         }
-
-        for (var m = 0, subName; subName = var_cache.subList[m]; m++) {
-            if (item['wordObj_'+subName] === undefined) {
-                continue;
-            }
-            var _rateWord = rateWord.bind({
-                text: this.text,
-                textLower: this.textLower,
-                wordObj: item['wordObj_'+subName],
-                syntaxRate: rate
-            });
-            if (item['words_'+subName] !== undefined) {
-                var subTextLower = undefined;
-                if (subName === 'subAfter') {
-                    subTextLower = this.textLower.substr(pos + word.length);
-                } else
-                if (subName === 'subBefore') {
-                    subTextLower = this.textLower.substr(0, pos);
-                } else {
-                    subTextLower = this.textLower;
-                }
-                if (subTextLower.length > 0) {
-                    subTextLower.replace(item['words_' + subName], _rateWord);
-                }
-            }
-            if (item['wordsCase_'+subName] !== undefined) {
-                var subText = undefined;
-                if (subName === 'subAfter') {
-                    subText = this.text.substr(pos + word.length);
-                } else
-                if (subName === 'subBefore') {
-                    subText = this.text.substr(0, pos);
-                } else {
-                    subText = this.text;
-                }
-                if (subText.length > 0) {
-                    subText.replace(item['wordsCase_' + subName], _rateWord);
-                }
-            }
+        var wordLen = word.length;
+        if (wordLen === 0 || rate.checkLeftRightSymbol(word, wordLen, pos, text) === 0) {
+            return '';
         }
-        return '';
-    };
-
-    var replaceAngle = function(name) {
-        var char1, char2;
-        if (var_cache.test_angle.test(name)) {
-            for (var i = 35; i < 48; i++) {
-                var specChar = String.fromCharCode(i);
-                if (name.indexOf(specChar) === -1) {
-                    if (char1 === undefined) {
-                        char1 = specChar;
-                    } else if (char2 === undefined) {
-                        char2 = specChar;
-                        break;
-                    }
-                }
-            }
-            if (char2 === undefined) {
-                char1 = undefined;
-            } else {
-                name = name.replace(/</g, char1).replace(/>/g, char2);
-            }
+        this.rate.title += this.requestObj.hlWordCaseRate;
+        this.index++;
+    },
+    sizeSeedRate: function(rating, torrentObj) {
+        var rate = rating.rate;
+        rate.seed = 0;
+        if (engine.settings.calcSeedCount) {
+            rate.seed = (torrentObj.seed > 0) ? 50 : 0;
         }
-        replaceAngle.char1 = char1;
-        replaceAngle.char2 = char2;
+        if (torrentObj.size < 524288000 && rate.video > 45) {
+            rate.video = rate.video / 10;
+        } else
+        if (torrentObj.size < 1363148800 && rate.video > 65) {
+            rate.video = rate.video / 2;
+        }
+    },
+    rateText: function (requestObj, titleObj, torrentObj) {
+        var rating = {
+            quality: undefined,
 
-        return name;
-    };
+            rate: {
+                audio: 0,
+                video: 0,
 
-    var titleHighLight = function(name) {
-        /*
-         * Выставляет рейтинг заголовку раздачи
-         * Подсвечивает найденный текст в заголовке
-         */
-        var bonus = 0;
-        var words_len = var_cache.syntaxCache.words_len;
-        var word_rate = var_cache.syntaxCache.word_rate;
-        var bonus_value = Math.round(word_rate / 2);
-        var first_word_rate = var_cache.syntaxCache.first_word_rate;
-        var year = var_cache.syntaxCache.year;
-        var rate = {
-            name: 0,
+                other: 0,
+                serials: 0,
+                music: 0,
+                games: 0,
+                films: 0,
+                cartoons: 0,
+                books: 0,
+                software: 0,
+                anime: 0,
+                doc: 0,
+                sport: 0,
+                xxx: 0,
+                humor: 0,
 
-            video: 0,
-            games: 0,
-            music: 0,
-            serials: 0,
-            books: 0,
-            cartoons: 0,
-            xxx: 0,
-
-            m: [],
-            // block enable primary keys
-            block: 0,
-            qbox: "+"
+                title: 0
+            },
+            sum: 0
         };
-        name = replaceAngle(name);
-        var name_low = name.toLowerCase();
-        var _rateWord = rateWord.bind({
-            text: name,
-            textLower: name_low,
-            wordObj: var_cache.wordObj,
-            syntaxRate: rate
+        var onRateRegexp = this.onRateRegexp.bind({
+            rating: rating,
+            qualityList: this.baseQualityList,
+            matchedList: {}
         });
-        if (var_cache.words !== undefined) {
-            name_low.replace(var_cache.words, _rateWord);
+        torrentObj.title.replace(this.baseQualityList.wordsR, onRateRegexp);
+
+        rate.sizeSeedRate(rating, torrentObj);
+
+        if (rating.quality === undefined) {
+            rating.quality = '+';
         }
 
-        if (var_cache.wordsCase !== undefined) {
-            name.replace(var_cache.wordsCase, _rateWord);
-        }
-
-        if (var_cache.syntaxCache.normalize_request.length === 0) {
-            return {
-                hl_name: sub_select(name),
-                rate: rate
-            };
-        }
-        var exists_year = year !== undefined;
-        var has_year = false;
-        if (exists_year) {
-            var year_pos = name.indexOf(year);
-            if (year_pos !== -1) {
-                has_year = checkLeftRightSymbol(year, year_pos, name);
-            }
-        }
-        var symbol;
-        var has_fullName = -1;
-        if (year !== undefined) {
-            has_fullName = name.indexOf(var_cache.syntaxCache.normalize_request_no_year);
-            if (has_fullName !== -1) {
-                if (checkLeftRightSymbol(var_cache.syntaxCache.normalize_request_no_year, has_fullName, name) === false) {
-                    has_fullName = -1;
-                }
-            }
-            if (has_fullName !== -1) {
-                symbol = name[has_fullName+var_cache.syntaxCache.normalize_request_no_year_len+1];
-                if ( symbol === '/' || symbol === '(' || symbol === '|') {
-                    bonus += bonus_value;
-                }
-            }
-        } else {
-            has_fullName = name.indexOf(var_cache.syntaxCache.normalize_request);
-            if (has_fullName !== -1) {
-                if (checkLeftRightSymbol(var_cache.syntaxCache.normalize_request, has_fullName, name) === false) {
-                    has_fullName = -1;
-                }
-            }
-            if (has_fullName !== -1) {
-                symbol = name[has_fullName+var_cache.syntaxCache.normalize_request_len+1];
-                if ( symbol === '/' || symbol === '(' || symbol === '|') {
-                    bonus += bonus_value;
-                }
-            }
-        }
-        var pre_word;
-        if (has_fullName > 0) {
-            pre_word = $.trim(name.substr(0, has_fullName).replace(var_cache.rm_pre_tag_regexp, ''));
-            if (pre_word.length === 0){
-                has_fullName = 0;
-            }
-        }
-        var has_fullLowName = -1;
-        if (has_fullName === -1) {
-            if (year !== undefined) {
-                has_fullLowName = name_low.indexOf(var_cache.syntaxCache.normalize_request_no_year_low);
-                if (has_fullLowName !== -1) {
-                    if (checkLeftRightSymbol(var_cache.syntaxCache.normalize_request_no_year_low, has_fullLowName, name) === false) {
-                        has_fullLowName = -1;
-                    }
-                }
-                if (has_fullLowName !== -1) {
-                    symbol = name_low[has_fullLowName+var_cache.syntaxCache.normalize_request_no_year_low_len+1];
-                    if ( symbol === '/' || symbol === '(' || symbol === '|') {
-                        bonus += bonus_value;
-                    }
-                }
-            } else {
-                has_fullLowName = name_low.indexOf(var_cache.syntaxCache.normalize_request_low);
-                if (has_fullLowName !== -1) {
-                    if (checkLeftRightSymbol(var_cache.syntaxCache.normalize_request_low, has_fullLowName, name) === false) {
-                        has_fullLowName = -1;
-                    }
-                }
-                if (has_fullLowName !== -1) {
-                    symbol = name_low[has_fullLowName+var_cache.syntaxCache.normalize_request_low_len+1];
-                    if ( symbol === '/' || symbol === '(' || symbol === '|') {
-                        bonus += bonus_value;
-                    }
-                }
-            }
-            if (has_fullLowName > 0) {
-                pre_word = $.trim(name_low.substr(0, has_fullLowName).replace(var_cache.rm_pre_tag_regexp, ''));
-                if (pre_word.length === 0){
-                    has_fullLowName = 0;
-                }
-            }
-        }
-        var rateSet = false;
-        if (has_year === true) {
-            if (has_fullName === 0 || has_fullLowName === 0) {
-                rate.name = (words_len - 1) * word_rate + first_word_rate + bonus;
-                rateSet = true;
-            } else
-            if (has_fullName !== -1 || has_fullLowName !== -1) {
-                rate.name = words_len * word_rate + bonus;
-                rateSet = true;
-            }
-        } else {
-            if (has_fullName === 0 || has_fullLowName === 0) {
-                rate.name = (words_len - 1) * word_rate + first_word_rate - ((exists_year)?word_rate:0) + bonus;
-                rateSet = true;
-            } else
-            if (has_fullName !== -1 || has_fullLowName !== -1) {
-                rate.name = words_len * word_rate - ((exists_year)?word_rate:0) + bonus;
-                rateSet = true;
-            }
-        }
-        var hl_name;
-        if (rateSet) {
-            hl_name = name.replace(var_cache.syntaxCache.words_is_regexp, function(word, position, string){
-                if (checkLeftRightSymbol(word, position, string) === false) {
-                    return word;
-                }
-                return '<b>'+word+'</b>';
+        if (requestObj.hlWordNoYearR !== undefined) {
+            var fWordList = {};
+            var onBaseTitleRegexp = rate.onBaseTitleRegexp.bind({
+                rate: rating.rate,
+                requestObj: requestObj,
+                index: 0,
+                lastPos: 0,
+                fWordList: fWordList,
+                outList: 0
             });
-            return {
-                hl_name: sub_select(hl_name),
-                rate: rate
-            };
+            titleObj.base.replace(requestObj.hlWordNoYearR, onBaseTitleRegexp);
+            var onDescTitleRegexp = rate.onDescTitleRegexp.bind({
+                rate: rating.rate,
+                requestObj: requestObj,
+                index: 0,
+                lastPos: 0,
+                fWordList: fWordList
+            });
+            titleObj.desc.toLowerCase().replace(requestObj.hlWordNoYearR, onDescTitleRegexp);
         }
-        var hl_word_count = 0;
-        var year_found = 0;
-        if (has_year) {
-            hl_word_count += 1;
-            rate.name += word_rate;
-        }
-        var cal_word_rate = function(word, position, string) {
-            //функ-я подсвечивает слова поиска в заголовке
-            //hl_word_count - счетчик подсвеченных слов
-            //year_found - если 1 то значит год в названии найден
-            if (checkLeftRightSymbol(word, position, string) === false) {
-                return word;
-            }
-            if (hl_word_count < words_len) {
-                if (year === word) {
-                    year_found = 1;
-                    return '<b>' + word + '</b>';
-                }
-                if (position === 0 && word.toLowerCase() === var_cache.syntaxCache.words[0]) {
-                    rate.name += first_word_rate;
-                } else {
-                    rate.name += word_rate;
-                }
-            }
-            hl_word_count++;
-            return '<b>' + word + '</b>';
-        };
-        hl_name = name.replace(var_cache.syntaxCache.words_is_regexp, cal_word_rate);
-        if (has_year && year_found === 0) {
-            hl_name = hl_name.replace(new RegExp(year,'g'), cal_word_rate);
-        }
-        if (year_found === 1 && hl_word_count === 1) {
-            rate.name = 0;
-        }
-        return {
-            hl_name: sub_select(hl_name),
-            rate: rate
-        };
-    };
 
-    var cal_cat_rate = function(word, position, string) {
-        var rate = var_cache.catRate;
-        if (rate.m.indexOf(word) === -1) {
-            rate.m.push(word);
-        } else {
-            return '';
+        if (requestObj.hlWordList !== undefined && requestObj.hlWordNoYearR !== undefined && rating.rate.title === 0) {
+            rating.rate.title -= 400;
         }
-        if (checkForSymbol(string[position - 1] || '') === 0) {
-            return '';
+
+        if (requestObj.yearR !== undefined) {
+            var onTitleYearRegexp = rate.onTitleYearRegexp.bind({
+                rate: rating.rate,
+                requestObj: requestObj,
+                index: 0
+            });
+            torrentObj.title.replace(requestObj.yearR, onTitleYearRegexp);
         }
-        if (word === "эрот" || word === "xxx" || word === "porn" || word === "порно" || word === "фильмы без сюжета" || word === "hentai" || word === "хентай") {
-            rate.xxx += 10;
+
+        for (var item in rating.rate) {
+            rating.sum += rating.rate[item];
         }
-        if (word === "мультим") {
-            rate.software += 2;
+
+        return rating
+    },
+    onHlRequestRegexp: function(word, pos, text) {
+        "use strict";
+        var wordLen = word.length;
+        if (rate.checkLeftRightSymbol(word, wordLen, pos, text) === 0) {
+            return word;
         }
-        if (word === "мульт") {
-            rate.cartoons += 2;
+
+        return '{b}'+word+'{/b}';
+    },
+    hlRequest: function (code, requestObj) {
+        if (requestObj.hlWordR === undefined) {
+            return code;
         }
-        if (word === "сериа") {
-            rate.serials += 2;
-        }
-        if (word === "книг" || word === "аудиокниги" || word === "литер" || word === "беллетр" || word === "журнал" || word === "book") {
-            rate.books += 1;
-        }
-        if (word === "фильм") {
-            rate.films += 1;
-        }
-        if (word === "soundtrack" || word === "музыка" || word === "саундтрек") {
-            rate.music += 2;
-        }
-        if (word === "игр" || word === "psp" || word === "xbox" || word === "game") {
-            rate.games += 1;
-        }
-        if (word === "аним" || word === "anim" || word === "manga") {
-            rate.anime += 2;
-        }
-        if (word === "софт" || word === "soft" || word === "утилит") {
-            rate.software += 1;
-        }
-        if (word === "комикс") {
-            rate.other += 1;
-        }
-        if (word === "документальные") {
-            rate.dochumor += 3;
-        }
-        if (word === "спорт") {
-            rate.sport += 1;
-        }
-        if (word === "докумел" || word === "телеп" || word === "тв " || word === "тв" || word === "тв-" || word === "tv" || word === "tv ") {
-            rate.dochumor += 2;
-        }
-        if (word === "юмор") {
-            rate.dochumor += 1;
-        }
-        if (word === "видео для моб" || word === "видео для смарт" || word === "видео для устр" || word === "Мобильное" || word === "3gp") {
-            rate.other += 1;
-        }
-        return '';
-    };
-    var autosetCategory = function(quality, category) {
-        /*
-         * Алгоритм определения категории
+        return code.replace(requestObj.hlWordR, this.onHlRequestRegexp);
+    },
+    init: function () {
+        /**
+         * @type {{wordsR: Object, scope: Object, scopeCase: Object}}
          */
-        var rate = var_cache.catRate = {
-            films: 0,
-            serials: 0,
-            anime: 0,
-            dochumor: 0,
-            music: 0,
-            games: 0,
-            books: 0,
-            cartoons: 0,
-            software: 0,
-            sport: 0,
-            xxx: 0,
-            other: 0,
-            m: []
-        };
-        category.toLowerCase().replace(var_cache.cat_regexp, cal_cat_rate);
-        var qual_cat = [];
-        $.each(rate, function(k, v) {
+        if (mono.isEmptyObject(this.qualityList)) {
+            this.qualityList = this.defaultQualityList;
+        }
+        this.baseQualityList = this.readQualityList(this.qualityList);
+    }
+};
+rate.categoryDefineRegexp = new RegExp("фильмы без сюжета|документальные|мультим|мульт|сериа|комикс|видео для [моб|смарт|" +
+    "устр]{1}|мобильное|аудиокниги|беллетр|книг|фильм|игр|3gp|soundtrack|саундтрек|anim|аним|докумел|литер|" +
+    "телеп|эрот|xxx|porn|порно|сайтр|тв[-]{1}|тв$|музыка|hentai|хентай|psp|xbox|журнал|софт|soft|спорт|юмор|" +
+    "утилит|book|game|tv |tv$|manga", "g");
+rate.onCategoryDefineRateRegexp = function(word, position, string) {
+    if (this.m.indexOf(word) === -1) {
+        this.m.push(word);
+    } else {
+        return '';
+    }
+    if (rate.charIsSymbol(string[position - 1] || '') === 0) {
+        return '';
+    }
+    if (word === "эрот" || word === "xxx" || word === "porn" || word === "порно" || word === "фильмы без сюжета" || word === "hentai" || word === "хентай") {
+        this.xxx += 10;
+    }
+    if (word === "мультим") {
+        this.software += 2;
+    }
+    if (word === "мульт") {
+        this.cartoons += 2;
+    }
+    if (word === "сериа") {
+        this.serials += 2;
+    }
+    if (word === "книг" || word === "аудиокниги" || word === "литер" || word === "беллетр" || word === "журнал" || word === "book") {
+        this.books += 1;
+    }
+    if (word === "фильм") {
+        this.films += 1;
+    }
+    if (word === "soundtrack" || word === "музыка" || word === "саундтрек") {
+        this.music += 2;
+    }
+    if (word === "игр" || word === "psp" || word === "xbox" || word === "game") {
+        this.games += 1;
+    }
+    if (word === "аним" || word === "anim" || word === "manga") {
+        this.anime += 2;
+    }
+    if (word === "софт" || word === "soft" || word === "утилит") {
+        this.software += 1;
+    }
+    if (word === "комикс") {
+        this.other += 1;
+    }
+    if (word === "документальные") {
+        this.doc += 3;
+    }
+    if (word === "спорт") {
+        this.sport += 1;
+    }
+    if (word === "докумел" || word === "телеп" || word === "тв " || word === "тв" || word === "тв-" || word === "tv" || word === "tv ") {
+        this.doc += 2;
+    }
+    if (word === "юмор") {
+        this.humor += 1;
+    }
+    if (word === "видео для моб" || word === "видео для смарт" || word === "видео для устр" || word === "Мобильное" || word === "3gp") {
+        this.other += 1;
+    }
+    return '';
+};
+rate.categoryDefine = function(ratingObj, categoryTitle) {
+    /*
+     * Category define function
+     */
+    var rate = {
+        other: 0,
+
+        serials: 0,
+        music: 0,
+        games: 0,
+        films: 0,
+        cartoons: 0,
+        books: 0,
+        software: 0,
+        anime: 0,
+        doc: 0,
+        sport: 0,
+        xxx: 0,
+        humor: 0,
+
+        m: []
+    };
+    if (categoryTitle) {
+        categoryTitle.replace(this.categoryDefineRegexp, this.onCategoryDefineRateRegexp.bind(rate));
+        var qCat = [];
+        var index = -1;
+        $.each(rate, function (k, v) {
             if (k !== 'm') {
-                qual_cat.push([v, k]);
+                qCat.push([v, index]);
+                index++;
             }
         });
-        qual_cat.sort(function(a, b) {
+        qCat.sort(function (a, b) {
             if (a[0] > b[0]) {
                 return -1;
-            } else
-            if (a[0] === b[0]) {
+            } else if (a[0] === b[0]) {
                 return 0;
             } else
                 return 1;
         });
-        if (qual_cat[0][0] > 0) {
-            var pos = ['serials', 'music', 'games', 'films', 'cartoons', 'books', 'software', 'anime', 'dochumor', 'sport', 'xxx', 'other'].indexOf(qual_cat[0][1]);
-            if (pos === 11) {
-                return -1;
-            } else {
-                return pos;
-            }
+        if (qCat[0][0] > 0) {
+            return qCat[0][1];
         }
-        if (quality.xxx) {
-            return 10;
-        } else
-        if (quality.books) {
-            return 5;
-        } else
-        if (quality.serials) {
-            return 0;
-        } else
-        if (quality.cartoons) {
-            return 4;
-        } else
-        if (quality.video > quality.music && quality.video > quality.games) {
-            return 3;
-        } else
-        if (quality.music > quality.video && quality.music > quality.games) {
-            return 1;
-        } else
-        if (quality.games > quality.music && quality.games > quality.video) {
-            return 2;
-        }
-        return -1;
-    };
-
-    var sizeSeedRate = function(quality, item) {
-        /*
-         * Расчет качетсва по сидам
-         * Перерасчет соотношения качества видео и размера раздачи
-         */
-
-        quality.seed = 0;
-        if (engine.settings.calcSeedCount === 1) {
-            quality.seed = (item.seeds > 0) ? 50 : 0;
-        }
-        if (item.size < 524288000 && quality.video > 45) {
-            quality.video = Math.round(parseInt(quality.video) / 10);
-        } else
-        if (item.size < 1363148800 && quality.video > 65) {
-            quality.video = Math.round(parseInt(quality.video) / 2);
-        }
-        quality.value = quality.seed + quality.name + quality.video + quality.music + quality.games + quality.books;
-        return quality;
-    };
-    return {
-        syntaxCacheRequest: syntaxCacheRequest,
-        titleHighLight: titleHighLight,
-        autosetCategory: autosetCategory,
-        sizeSeedRate: sizeSeedRate,
-        qualityList: qualityList,
-        def_qualityList: def_qualityList,
-        setTitleQualityList: function(titleQualityList) {
-            qualityList.splice(0);
-            Array.prototype.push.apply(qualityList, titleQualityList);
-        },
-        updateCache: updateCache
     }
-}();
+    var titleRate = ratingObj.rate;
+    if (titleRate.xxx) {
+        return 10;
+    } else
+    if (titleRate.books) {
+        return 5;
+    } else
+    if (titleRate.serials) {
+        return 0;
+    } else
+    if (titleRate.cartoons) {
+        return 4;
+    } else
+    if (titleRate.video > titleRate.music && titleRate.video > titleRate.games) {
+        return 3;
+    } else
+    if (titleRate.music > titleRate.video && titleRate.music > titleRate.games) {
+        return 1;
+    } else
+    if (titleRate.games > titleRate.music && titleRate.games > titleRate.video) {
+        return 2;
+    }
+    return -1;
+};

@@ -3,20 +3,16 @@
     <head>
         <title>Torrents MultiSearch extension</title>
         <meta charset="utf-8" />
-        <link rel="shortcut icon" href="images/icon_16.png">
+        <link rel="shortcut icon" href="img/icon_16.png">
         <link rel="stylesheet" type="text/css" href="css/popup.css">
-        <script src="js/jquery-2.1.1.min.js"></script>
-        <script src="js/jquery-ui.min.js"></script>
         <script src="js/mono.js"></script>
-        <script src="js/popup.js"></script>
     </head>
-    <body>
-        <div class="search_panel">
-            <div class="searchForm">
-                <input type="text" name="s" class="request" id="search_input" autofocus />
-                <div class="btn clear" title="Очистить" id="search_clear_btn" data-lang="clear_btn" ></div>
-                <input type="button" class="button search" value="Найти" data-lang="search_btn,title,value" id="search_btn" />
-            </div>
+    <body class="loading">
+        <div id="search_form">
+            <input type="text" id="request_input" autofocus/>
+            <div data-lang="clear" id="clear_btn" title="{clear}"></div>
+            <a href="#" data-lang="search,title,text" id="search_btn">{search}</a>
         </div>
+        <script src="js/popup.js"></script>
     </body>
 </html>
