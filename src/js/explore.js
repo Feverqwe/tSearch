@@ -1031,10 +1031,13 @@ var explore = {
                     text: title,
                     title: title
                 }),
-                on: ['mouseenter', function onMouseEnter(e) {
-                    explore.calculateMoveble(this, explorerOptions.width);
-                    this.removeEventListener('mouseenter', onMouseEnter);
-                }]
+                onCreate: function() {
+                    var $this = $(this);
+                    $this.on('mouseenter', function onMouseEnter(e) {
+                        explore.calculateMoveble(this, explorerOptions.width);
+                        $this.off('mouseenter', onMouseEnter);
+                    });
+                }
             });
 
             var imgUrl = this.addRootUrl(content[index].img, sourceOptions.imgUrl);
@@ -1072,7 +1075,7 @@ var explore = {
                 text: qualityText
             });
 
-            quality.addEventListener('mouseenter', this.onMouseEnterQuality.bind(this, quality, type, index));
+            $(quality).on('mouseenter', this.onMouseEnterQuality.bind(this, quality, type, index));
 
             contentBody.appendChild(mono.create('li', {
                 append: [
@@ -1509,12 +1512,13 @@ var explore = {
                         class: 'pageList',
                         data: {
                             type: item.type
-                        },
-                        on: ['mouseenter', this.onPageListMouseEnter.bind(this, categoryObj), true]
+                        }
                     }),
                     categoryObj.body = mono.create('ul', {class: 'body'})
                 ]
             }));
+
+            $(categoryObj.pageEl).on('mouseenter', 'li', this.onPageListMouseEnter.bind(this, categoryObj));
 
             this.calculateSize(item.type);
             item.show && this.getCategoryContent(item.type);

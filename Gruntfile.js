@@ -208,7 +208,7 @@ module.exports = function (grunt) {
     grunt.registerTask('compressJs', function() {
         var done = this.async();
         if (devMode) {
-            return;
+            return done();
         }
         var ccTask = {
             closurecompiler: {
