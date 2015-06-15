@@ -413,7 +413,7 @@ var rate = {
     ],
     qualityList: {},
     regexpList: {
-        text2safeR: /([{})(\][\\\.^$\|\?\+])/g
+        text2safeR: /[\-\[\]{}()*+?.,\\\^$|#\s]/g
     },
     /**
      *
@@ -458,7 +458,7 @@ var rate = {
                             }
                             scope[wordItem.word] = qualityObj;
                         }
-                        wordsR.push(wordItem.word.replace(rate.regexpList.text2safeR, "\\$1"));
+                        wordsR.push(wordItem.word.replace(rate.regexpList.text2safeR, "\\$&"));
                     }
                 });
             }

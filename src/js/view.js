@@ -1142,7 +1142,7 @@ var view = {
             var word = wordList[i];
             if (word.length === 0) continue;
             var wordLow = word.toLowerCase();
-            var rWord = word.replace(view.filterWordR.text2safeR, '\\$1');
+            var rWord = word.replace(view.filterWordR.text2safeR, '\\$&');
             hlWordCaseListR.push(rWord.toLowerCase());
             hlWordLowList.push(wordLow);
             hlWordList.push(word);
@@ -1364,7 +1364,7 @@ var view = {
         categoryObj.setSelect(1);
     },
     filterWordR: {
-        text2safeR: /([{})(\][\\\.^$\|\?\+])/g
+        text2safeR: /[\-\[\]{}()*+?.,\\\^$|#\s]/g
     },
     filterWordToReg: function(word) {
         "use strict";
@@ -1385,7 +1385,7 @@ var view = {
             } else {
                 continue;
             }
-            mWord = mWord.replace(view.filterWordR.text2safeR, '\\$1');
+            mWord = mWord.replace(view.filterWordR.text2safeR, '\\$&');
             if (typeList.indexOf(mWord) !== -1) {
                 continue;
             }
