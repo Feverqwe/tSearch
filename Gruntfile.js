@@ -363,6 +363,7 @@ module.exports = function (grunt) {
         'opera',
         'chromeApp',
         'firefoxStore',
+        'firefox-sig',
         'firefox',
         'safari',
         'maxthon',

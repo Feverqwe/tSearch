@@ -182,7 +182,7 @@ exports.run = function (grunt) {
     grunt.registerTask('getHash', function () {
         var done = this.async();
         var vendor = grunt.template.process('<%= output %><%= vendor %>../');
-        var buildPath = './build_firefox_sig.xpi';
+        var buildPath = grunt.config('hashFile');
 
         var fs = require('fs');
         var crypto = require('crypto');
@@ -206,6 +206,52 @@ exports.run = function (grunt) {
     });
 
     grunt.registerTask('firefox', function () {
+        if (!grunt.config('env.addonSdkPath')) {
+            console.error("Add-on SDK is not found!");
+            return;
+        }
+
+        grunt.config.merge({
+            copy: {
+                ffCopyBuildToRoot: {
+                    cwd: '<%= output %><%= vendor %>../',
+                    expand: true,
+                    src: '<%= buildName %>.xpi',
+                    dest: ''
+                }
+            },
+            vendor: 'firefox/src/',
+            libFolder: 'lib/',
+            dataJsFolder: 'data/js/',
+            includesFolder: 'data/includes/',
+            dataFolder: 'data/',
+            ffUpdateUrl: '<%= pkg.ffUpdateUrl %>',
+            buildName: 'build_firefox',
+            hashFile: '<%= output %><%= vendor %>../<%= buildName %>.xpi',
+            appId: 'firefoxExt',
+            browser: 'firefox'
+        });
+
+        grunt.task.run([
+            'extensionBase',
+            'copy:ffBase',
+            'buildJs',
+            'clean:magic',
+            'ffPackage',
+            'json-format:ffPackage',
+            'setAppInfo',
+            'compressJs',
+            'copy:ffTemplateDir',
+            'setInstallRdf',
+            'exec:buildFF',
+            'ffRenameBuild',
+            'fixFfJsJs',
+            'getHash',
+            'copy:ffCopyBuildToRoot'
+        ]);
+    });
+
+    grunt.registerTask('firefox-sig', function () {
         if (!grunt.config('env.addonSdkPath')) {
             console.error("Add-on SDK is not found!");
             return;
@@ -241,13 +287,14 @@ exports.run = function (grunt) {
                     dest: ''
                 }
             },
-            vendor: 'firefox/src/',
+            vendor: 'firefox-sig/src/',
             libFolder: 'lib/',
             dataJsFolder: 'data/js/',
             includesFolder: 'data/includes/',
             dataFolder: 'data/',
-            ffUpdateUrl: '<%= pkg.ffUpdateUrl %>',
+            ffUpdateUrl: '<%= pkg.ffUpdateUrlSig %>',
             buildName: 'build_firefox_sig',
+            hashFile: './build_firefox_sig.xpi',
             appId: 'firefoxExt',
             browser: 'firefox'
         });
@@ -261,7 +308,6 @@ exports.run = function (grunt) {
             'setPackageId',
             'json-format:ffPackage',
             'setAppInfo',
-            // 'compressJs',
             'copy:ffTemplateDir',
             'setInstallRdf',
             'exec:buildFF',
@@ -269,7 +315,6 @@ exports.run = function (grunt) {
             'fixFfJsJs',
             'getHash',
             'createNewUpdateRdf'
-            // 'copy:ffCopyBuildToRoot'
         ]);
     });
 };
