@@ -144,6 +144,7 @@
     "autoComplite": {"message": "Add autoComplete in search box"},
     "useEnglishPosterName": {"message": "To display the names in English"},
     "doNotSendStatistics": {"message": "Do not send statistics"},
+    "invertIcon": {"message": "To invert the color of the icon"},
     "defineCategory": {"message": "Trying to define the category"},
     "allowGetDescription": {"message": "Find description of a search query via Google"},
     "enableFavoriteSync": {"message": "Synchronize the favorites list"},

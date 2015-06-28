@@ -117,7 +117,7 @@ var options = {
             if (mono.isMaxthon) {
                 return;
             }
-            if (obj.hasOwnProperty('contextMenu') || obj.hasOwnProperty('searchPopup')) {
+            if (obj.hasOwnProperty('contextMenu') || obj.hasOwnProperty('searchPopup') || obj.hasOwnProperty('invertIcon')) {
                 mono.sendMessage('reloadSettings');
             }
         });
@@ -893,6 +893,10 @@ var options = {
         }
         if (mono.isFF) {
             document.querySelector('input[data-option="doNotSendStatistics"]').parentNode.style.display = 'none';
+        }
+
+        if ((!mono.isChrome || mono.isChrome && mono.isChromeApp) && !mono.isFF) {
+            document.querySelector('input[data-option="invertIcon"]').parentNode.style.display = 'none';
         }
 
         if (mono.language.langCode !== 'ru') {

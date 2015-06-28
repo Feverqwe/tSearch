@@ -28,7 +28,8 @@ var engine = {
         calcSeedCount: 1,
         langCode: undefined,
         sortColumn: 'quality',
-        sortOrder: 0
+        sortOrder: 0,
+        invertIcon: 0
     },
     settings: {},
     defaultExplorerOptions: [

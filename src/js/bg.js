@@ -41,8 +41,31 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
 var bg = {
     settings: {
         contextMenu: 1,
-        searchPopup: 1
+        searchPopup: 1,
+        invertIcon: 0
     },
+    updateIcon: mono.isFF ? function() {
+        "use strict";
+        if (!mono.ffButton) {
+            return;
+        }
+
+        var prefix = bg.settings.invertIcon ? '-i' : '';
+        mono.ffButton.icon = {
+            16: './icons/icon-16' + prefix + '.png',
+            32: './icons/icon-32' + prefix + '.png',
+            64: './icons/icon-64' + prefix + '.png'
+        };
+    } : mono.isChrome && !mono.isChromeApp ? function() {
+        "use strict";
+        var prefix = bg.settings.invertIcon ? '_i' : '';
+        chrome.browserAction.setIcon({
+            path: {
+                19: 'img/icon_19' + prefix + '.png',
+                38: 'img/icon_38' + prefix + '.png'
+            }
+        });
+    } : function() {},
     updateBtnAction: mono.isChromeWebApp ? function() {
         "use strict";
 
@@ -371,12 +394,15 @@ var bg = {
     run: function() {
         "use strict";
         this.fastMigration();
-        mono.storage.get(['contextMenu', 'searchPopup', 'langCode'], function(storage) {
+        mono.storage.get(['contextMenu', 'searchPopup', 'langCode', 'invertIcon'], function(storage) {
             if (storage.hasOwnProperty('contextMenu')) {
                 bg.settings.contextMenu = storage.contextMenu;
             }
             if (storage.hasOwnProperty('searchPopup')) {
                 bg.settings.searchPopup = storage.searchPopup;
+            }
+            if (storage.hasOwnProperty('invertIcon')) {
+                bg.settings.invertIcon = storage.invertIcon;
             }
 
             mono.getLanguage(function() {
@@ -390,6 +416,10 @@ var bg = {
                     var func = popup.contentWindow.popup && popup.contentWindow.popup.update;
                     func && func();
                 });
+            }
+
+            if ((mono.isChrome && !mono.isChromeApp) || mono.isFF) {
+                bg.updateIcon();
             }
         });
     }

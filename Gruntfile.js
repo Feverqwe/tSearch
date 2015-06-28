@@ -39,7 +39,10 @@ module.exports = function (grunt) {
         env: grunt.file.exists('env.json') ? grunt.file.readJSON('env.json') : {},
         pkg: grunt.file.readJSON('package.json'),
         clean: {
-            output: '<%= output %>',
+            output: [
+                '<%= output %>/*',
+                '!<%= output %>/hash'
+            ],
             magic: '<%= output %><%= vendor %><%= dataFolder %>legacy',
             popup: [
                 '<%= output %><%= vendor %>popup.html',
@@ -194,7 +197,7 @@ module.exports = function (grunt) {
         var crypto = require('crypto');
 
         var fd = fs.createReadStream(path);
-        var hash = crypto.createHash('sha1');
+        var hash = crypto.createHash('sha256');
         hash.setEncoding('hex');
 
         fd.on('end', function () {

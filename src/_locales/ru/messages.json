@@ -144,6 +144,7 @@
     "autoComplite": {"message": "Добавить автозаполнение в строку поиска"},
     "useEnglishPosterName": {"message": "Отображать названия на английском языке"},
     "doNotSendStatistics": {"message": "Не отправлять статистику"},
+    "invertIcon": {"message": "Инвертировать цвет иконки расширения"},
     "defineCategory": {"message": "Автоматически определять категорию раздачи"},
     "allowGetDescription": {"message": "Получать описание поискового запроса из Google"},
     "enableFavoriteSync": {"message": "Включить синхронизацию списка избранного"},
