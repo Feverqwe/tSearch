@@ -293,8 +293,8 @@ exports.run = function (grunt) {
             includesFolder: 'data/includes/',
             dataFolder: 'data/',
             ffUpdateUrl: '<%= pkg.ffUpdateUrlSig %>',
-            buildName: 'build_firefox_sig',
-            hashFile: './build_firefox_sig.xpi',
+            buildName: 'build_firefox-sig',
+            hashFile: './build_firefox-sig.xpi',
             appId: 'firefoxExt',
             browser: 'firefox'
         });
