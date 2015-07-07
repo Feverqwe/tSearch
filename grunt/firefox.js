@@ -1,19 +1,19 @@
 exports.run = function (grunt) {
     var replaceContent = function (content, sha1) {
-        content = content.replace('%extVersion%', grunt.config('pkg.extVersion'));
+        content = content.replace(/%extVersion%/g, grunt.config('pkg.extVersion'));
 
-        content = content.replace('%ffMinVersion%', grunt.config('pkg.ffMinVersion'));
-        content = content.replace('%ffMaxVersion%', grunt.config('pkg.ffMaxVersion'));
+        content = content.replace(/%ffMinVersion%/g, grunt.config('pkg.ffMinVersion'));
+        content = content.replace(/%ffMaxVersion%/g, grunt.config('pkg.ffMaxVersion'));
 
-        content = content.replace('%ffMMinVersion%', grunt.config('pkg.ffMinVersion'));
-        content = content.replace('%ffMMaxVersion%', grunt.config('pkg.ffMaxVersion'));
+        content = content.replace(/%ffMMinVersion%/g, grunt.config('pkg.ffMinVersion'));
+        content = content.replace(/%ffMMaxVersion%/g, grunt.config('pkg.ffMaxVersion'));
 
         if (sha1) {
-            content = content.replace('%buildName%', grunt.config('buildName'));
-            content = content.replace('%sha1hash%', sha1);
+            content = content.replace(/%buildName%/g, grunt.config('buildName'));
+            content = content.replace(/%sha1hash%/g, sha1);
 
-            content = content.replace('%buildName%', grunt.config('buildName'));
-            content = content.replace('%sha1hash%', sha1);
+            content = content.replace(/%buildName%/g, grunt.config('buildName'));
+            content = content.replace(/%sha1hash%/g, sha1);
         }
         return content;
     };
@@ -257,7 +257,6 @@ exports.run = function (grunt) {
             return;
         }
 
-        var oldId = '{d03fdff0-d3a0-11e0-baa5-14d64d08fdac}';
         var newId = '{0a06d1b2-08d1-11e5-b948-d1fe1c5d46b0}';
         var newTitle = 'Torrents MultiSearch webApp';
 
@@ -268,14 +267,6 @@ exports.run = function (grunt) {
             content.id = newId;
             content.title = newTitle;
             grunt.file.write(patch, JSON.stringify(content));
-        });
-
-        grunt.registerTask('createNewUpdateRdf', function() {
-            "use strict";
-            var patch = grunt.template.process('<%= output %><%= vendor %>../');
-            var content = grunt.file.read(patch + 'update.rdf');
-            content = content.replace(oldId, newId);
-            grunt.file.write(patch + 'update_sig.rdf', content);
         });
 
         grunt.config.merge({
@@ -292,8 +283,8 @@ exports.run = function (grunt) {
             dataJsFolder: 'data/js/',
             includesFolder: 'data/includes/',
             dataFolder: 'data/',
-            ffUpdateUrl: '<%= pkg.ffUpdateUrlSig %>',
-            buildName: 'build_firefox-sig',
+            ffUpdateUrl: '<%= pkg.ffUpdateUrl %>',
+            buildName: 'build_firefox',
             hashFile: './build_firefox-sig.xpi',
             appId: 'firefoxExt',
             browser: 'firefox'
@@ -313,8 +304,7 @@ exports.run = function (grunt) {
             'exec:buildFF',
             'ffRenameBuild',
             'fixFfJsJs',
-            'getHash',
-            'createNewUpdateRdf'
+            'getHash'
         ]);
     });
 };

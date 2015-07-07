@@ -3,7 +3,6 @@
   "id": "jid1-LvizCaettR4MOg",
   "version": "1.0.0",
   "ffUpdateUrl": "http://static.tms.mooo.com/firefox/update.rdf",
-  "ffUpdateUrlSig": "http://static.tms.mooo.com/firefox/update_sig.rdf",
   "ffMinVersion": "29.0",
   "ffMaxVersion": "42.0",
   "devDependencies": {
