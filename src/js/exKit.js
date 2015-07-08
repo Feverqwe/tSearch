@@ -764,7 +764,7 @@ var exKit = {
     setHostProxyUrl: function(url, proxyIndex) {
         "use strict";
         var proxy = engine.settings.proxyList[proxyIndex - 1];
-        if (proxy.type !== 1 || url.substr(0, 4) !== 'http') {
+        if (!proxy || proxy.type !== 1 || url.substr(0, 4) !== 'http') {
             return url;
         }
         return url.replace(/(https?:\/\/[^\/]+)(.*)/, '$1.' + proxy.url + '$2');
