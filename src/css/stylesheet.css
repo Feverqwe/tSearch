@@ -82,7 +82,7 @@ body.home #result_block {
     background-image: url(../img/history.png);
 }
 #settings_btn    {
-    background: url(../img/settings.svg) center no-repeat;
+    background: url(../img/settings-btn.svg) center no-repeat;
     background-size: 16px;
 }
 
