@@ -712,12 +712,8 @@ var view = {
         if (a === undefined) {
             return (by === 1) ? -1 : 1;
         } else
-        if (a === -1) {
-            if (b === undefined) {
-                return (by === 1) ? 1 : -1;
-            } else {
-                return (by === 1) ? -1 : 1;
-            }
+        if (b === undefined) {
+            return (by === 1) ? 1 : -1;
         } else
         if (a < b) {
             return (by === 1) ? -1 : 1;
@@ -1711,6 +1707,9 @@ var view = {
             if (this === el) return;
             while (el.parentNode !== _this) {
                 el = el.parentNode;
+                if (el === null) {
+                    return;
+                }
             }
 
             view.onTableHeadColumnClick.call(el, e);
