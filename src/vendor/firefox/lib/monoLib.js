@@ -20,11 +20,9 @@
      * @returns {number}
      */
     var getPageId = function() {
-        if (getPageId.value === undefined) {
-            getPageId.value = -1;
-        }
-        return ++getPageId.value;
+        return getPageId.value++;
     };
+    getPageId.value = 0;
 
     /**
      * Get mono page from map
@@ -74,6 +72,17 @@
                         subscribClientList[to] = [];
                     }
                     subscribClientList[to].push(cb);
+                },
+                removeListener: function(to, cb) {
+                    var cbList;
+                    if ((cbList = subscribClientList[to]) === undefined) {
+                        return;
+                    }
+                    var pos = cbList.indexOf(cb);
+                    if (pos === -1) {
+                        return;
+                    }
+                    cbList.splice(pos, 1);
                 }
             },
             lib: {
@@ -101,6 +110,17 @@
                         subscribServerList[to] = [];
                     }
                     subscribServerList[to].push(cb);
+                },
+                removeListener: function(to, cb) {
+                    var cbList;
+                    if ((cbList = subscribServerList[to]) === undefined) {
+                        return;
+                    }
+                    var pos = cbList.indexOf(cb);
+                    if (pos === -1) {
+                        return;
+                    }
+                    cbList.splice(pos, 1);
                 }
             },
             isVirtual: true
@@ -130,32 +150,43 @@
     };
 
     var bindPage = function(mPage) {
-        var page = mPage.page;
-        if (page.isVirtual) return;
+        if (mPage.page.isVirtual) {
+            mPage.active = true;
+            map[mPage.id] = mPage;
+            return;
+        }
 
         var onPageShow = function() {
             mPage.active = true;
         };
+
         var onPageHide = function() {
             mPage.active = false;
         };
+
         var onAttach = function() {
             mPage.active = true;
             map[mPage.id] = mPage;
 
-            page.on('pageshow', onPageShow);
-            page.on('pagehide', onPageHide);
+            mPage.page.removeListener('pagehide', onPageHide);
+            mPage.page.removeListener('pageshow', onPageShow);
+            mPage.page.removeListener('detach', onDetach);
+            mPage.page.on('detach', onDetach);
+            mPage.page.on('pageshow', onPageShow);
+            mPage.page.on('pagehide', onPageHide);
         };
+
         var onDetach = function() {
             delete map[mPage.id];
             mPage.active = false;
 
-            page.off('pageshow', onPageShow);
-            page.off('pagehide', onPageHide);
+            mPage.page.removeListener('pagehide', onPageHide);
+            mPage.page.removeListener('pageshow', onPageShow);
+            mPage.page.removeListener('attach', onAttach);
+            mPage.page.on('attach', onAttach);
         };
 
-        page.on('attach', onAttach);
-        page.on('detach', onDetach);
+        onAttach();
     };
 
     var sendHook = {
@@ -164,7 +195,7 @@
             var currentTab = tabs.activeTab;
             var pageIdList = [];
             for (var index in map) {
-                if (map[index].page.tab === currentTab && map[index].page.url === currentTab.url) {
+                if (map[index].page.tab === currentTab && map[index].page.tab && map[index].page.tab.url === currentTab.url) {
                     pageIdList.push(map[index].id);
                 }
             }
@@ -236,10 +267,8 @@
         mPage = {
             page: page,
             id: getPageId(),
-            active: true,
             isLocal: page.isVirtual === undefined && page.url && page.url.indexOf(localUrl) === 0
         };
-        map[mPage.id] = mPage;
 
         bindPage(mPage);
 
@@ -264,46 +293,43 @@
                     }
                     return cb(obj);
                 }
-                if (typeof src === 'string') {
+                if (Array.isArray(src) === false) {
                     src = [src];
                 }
-                if (Array.isArray(src) === true) {
-                    for (var i = 0, len = src.length; i < len; i++) {
-                        key = src[i];
-                        if (!ss.storage.hasOwnProperty(key)) {
-                            continue;
-                        }
-                        obj[key] = ss.storage[key];
+                for (var i = 0, len = src.length; i < len; i++) {
+                    key = src[i];
+                    if (!ss.storage.hasOwnProperty(key)) {
+                        continue;
                     }
-                } else {
-                    for (key in src) {
-                        if (!ss.storage.hasOwnProperty(key)) {
-                            continue;
-                        }
-                        obj[key] = ss.storage[key];
-                    }
+                    obj[key] = ss.storage[key];
                 }
                 cb(obj);
             },
             set: function(obj, cb) {
                 for (var key in obj) {
-                    ss.storage[key] = obj[key];
+                    if (obj[key] === undefined) {
+                        delete ss.storage[key];
+                    } else {
+                        ss.storage[key] = obj[key];
+                    }
                 }
                 cb && cb();
             },
-            remove: function(obj, cb) {
-                if (Array.isArray(obj)) {
-                    for (var i = 0, len = obj.length; i < len; i++) {
-                        var key = obj[i];
-                        delete ss.storage[key];
-                    }
-                } else {
-                    delete ss.storage[obj];
+            remove: function(arr, cb) {
+                if (Array.isArray(arr) === false) {
+                    arr = [arr];
+                }
+                for (var i = 0, len = arr.length; i < len; i++) {
+                    var key = arr[i];
+                    delete ss.storage[key];
                 }
                 cb && cb();
             },
             clear: function(cb) {
                 for (var key in ss.storage) {
+                    if (!ss.storage.hasOwnProperty(key)) {
+                        continue;
+                    }
                     delete ss.storage[key];
                 }
                 cb && cb();
@@ -326,6 +352,14 @@
         };
         var func = ffSimpleStorage[msg.action];
         if (func === undefined) return;
+        if (msg.action === 'set') {
+            for (var i = 0, len = msg.keys.length; i < len; i++) {
+                var key = msg.keys[i];
+                if (!msg.data.hasOwnProperty(key)) {
+                    msg.data[key] = undefined;
+                }
+            }
+        }
         if (msg.action === 'clear') {
             func(response);
         } else {
