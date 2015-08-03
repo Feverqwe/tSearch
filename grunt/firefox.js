@@ -272,6 +272,10 @@ exports.run = function (grunt) {
         grunt.registerTask('copySsFigVersion', function() {
             "use strict";
             grunt.file.copy(
+                grunt.template.process('<%= output %><%= vendor %>../<%= buildName %>.xpi'),
+                grunt.template.process('<%= output %><%= vendor %>../<%= noSigBuildName %>.xpi')
+            );
+            grunt.file.copy(
                 grunt.template.process('<%= hashFile %>'),
                 grunt.template.process('<%= output %><%= vendor %>../<%= sigBuildName %>.xpi')
             );
@@ -284,7 +288,8 @@ exports.run = function (grunt) {
             includesFolder: 'data/includes/',
             dataFolder: 'data/',
             ffUpdateUrl: '<%= pkg.ffUpdateUrl %>',
-            buildName: 'build_firefox-no-sig',
+            buildName: 'build_firefox',
+            noSigBuildName: 'build_firefox-no-sig',
             sigBuildName: 'build_firefox',
             hashFile: './build_firefox-sig.xpi',
             appId: 'firefoxExt',
