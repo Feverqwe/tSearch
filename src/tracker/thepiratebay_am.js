@@ -28,8 +28,8 @@ engine.trackerLib.thepiratebay = {
     ],
     search: {
         mode: '',
-        searchUrl: 'https://thepiratebay.am/search/%search%/0/99/0',
-        baseUrl: 'https://thepiratebay.am/',
+        searchUrl: 'https://thepiratebay.la/search/%search%/0/99/0',
+        baseUrl: 'https://thepiratebay.la/',
         requestType: 'GET',
         onGetRequest: 'encodeURIComponent',
         onAfterDomParse: function() {
