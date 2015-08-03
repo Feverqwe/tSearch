@@ -192,23 +192,23 @@ module.exports = function (grunt) {
         grunt.file.write(enginePath, content);
     });
 
-    var getHash = function(path, cb) {
-        var fs = require('fs');
-        var crypto = require('crypto');
-
-        var fd = fs.createReadStream(path);
-        var hash = crypto.createHash('sha256');
-        hash.setEncoding('hex');
-
-        fd.on('end', function () {
-            hash.end();
-            cb(hash.read());
-        });
-
-        fd.pipe(hash);
-    };
-
     grunt.registerTask('compressJs', function() {
+        var getHash = function(path, cb) {
+            var fs = require('fs');
+            var crypto = require('crypto');
+
+            var fd = fs.createReadStream(path);
+            var hash = crypto.createHash('sha256');
+            hash.setEncoding('hex');
+
+            fd.on('end', function () {
+                hash.end();
+                cb(hash.read());
+            });
+
+            fd.pipe(hash);
+        };
+
         var done = this.async();
         if (devMode) {
             return done();
@@ -230,17 +230,21 @@ module.exports = function (grunt) {
 
         var wait = 0;
         var ready = 0;
-        var list = {};
+        var hashList = {};
 
         var fs = require('fs');
-        ['dataJsFolder', 'libFolder'].forEach(function(folder, index) {
-            if (index !== 0 && grunt.config('libFolder') === grunt.config('dataJsFolder')) {
+        var ddblFolderList = [];
+        ['dataJsFolder', 'libFolder'].forEach(function(folder) {
+            if (ddblFolderList.indexOf(grunt.config(folder)) !== -1) {
                 return;
             }
-            var jsFolder = grunt.template.process('<%= output %><%= vendor %><%= ' + folder + ' %>');
-            var files = fs.readdirSync(jsFolder);
+            ddblFolderList.push(grunt.config(folder));
 
+            var jsFolder = grunt.template.process('<%= output %><%= vendor %><%= ' + folder + ' %>');
+
+            var files = fs.readdirSync(jsFolder);
             var jsList = grunt.file.match('*.js', files);
+            files = null;
 
             var copyList = [];
             var onReady = function() {
@@ -250,8 +254,8 @@ module.exports = function (grunt) {
                 }
 
                 var hashFolder = grunt.template.process('<%= output %>hash/');
-                for (var hash in list) {
-                    var item = list[hash];
+                for (var hash in hashList) {
+                    var item = hashList[hash];
                     var jsFolder = grunt.template.process('<%= output %><%= vendor %><%= ' + item[0] + ' %>');
                     var hashName = hashFolder + hash + '.js';
                     if (!grunt.file.exists(hashName)) {
@@ -278,7 +282,7 @@ module.exports = function (grunt) {
                 }
                 wait++;
                 getHash(jsFolder + jsFile, function(hash) {
-                    list[hash] = [folder, jsFile];
+                    hashList[hash] = [folder, jsFile];
                     onReady();
                 });
             });
