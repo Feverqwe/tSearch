@@ -269,22 +269,23 @@ exports.run = function (grunt) {
             grunt.file.write(patch, JSON.stringify(content));
         });
 
+        grunt.registerTask('copySsFigVersion', function() {
+            "use strict";
+            grunt.file.copy(
+                grunt.template.process('<%= hashFile %>'),
+                grunt.template.process('<%= output %><%= vendor %>../<%= sigBuildName %>.xpi')
+            );
+        });
+
         grunt.config.merge({
-            copy: {
-                ffCopyBuildToRoot: {
-                    cwd: '<%= output %><%= vendor %>../',
-                    expand: true,
-                    src: '<%= buildName %>.xpi',
-                    dest: ''
-                }
-            },
             vendor: 'firefox-sig/src/',
             libFolder: 'lib/',
             dataJsFolder: 'data/js/',
             includesFolder: 'data/includes/',
             dataFolder: 'data/',
             ffUpdateUrl: '<%= pkg.ffUpdateUrl %>',
-            buildName: 'build_firefox',
+            buildName: 'build_firefox-no-sig',
+            sigBuildName: 'build_firefox',
             hashFile: './build_firefox-sig.xpi',
             appId: 'firefoxExt',
             browser: 'firefox'
@@ -304,7 +305,8 @@ exports.run = function (grunt) {
             'exec:buildFF',
             'ffRenameBuild',
             'fixFfJsJs',
-            'getHash'
+            'getHash',
+            'copySsFigVersion'
         ]);
     });
 };
