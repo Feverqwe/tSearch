@@ -33,7 +33,7 @@ engine.trackerLib.inmac = {
         requestType: 'GET',
         requestData: 'nm=%search%',
         onGetRequest: 'encodeURIComponent',
-        onResponseUrl: {not: 1, exec: 'strContain', args: [{arg: 0}, 'login.php']},
+        onResponseUrl: {not: 1, exec: 'strContain', args: [{arg: 0}, '/auth/']},
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td:eq(2)>a',
