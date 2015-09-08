@@ -27,8 +27,8 @@ engine.trackerLib.hurtom = {
         /*Humor  */[]
     ],
     search: {
-        searchUrl: 'http://toloka.hurtom.com/tracker.php',
-        baseUrl: 'http://toloka.hurtom.com/',
+        searchUrl: 'http://toloka.to/tracker.php',
+        baseUrl: 'http://toloka.to/',
         requestType: 'GET',
         requestData: 'nm=%search%',
         onGetRequest: 'encodeURIComponent',
