@@ -45,7 +45,6 @@ engine.trackerLib.thepiratebay = {
             }
         },
         listItemSelector: '#searchResult>tbody>tr',
-        listItemSplice: [0, -1],
         torrentSelector: {
             categoryTitle: null,
             categoryUrl: null,
