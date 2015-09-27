@@ -13,9 +13,9 @@ engine.trackerLib.riperam = {
         allowProxy: 1
     },
     search: {
-        loginUrl: 'http://riper.am/ucp.php?mode=login',
-        searchUrl: 'http://riper.am/search.php',
-        baseUrl: 'http://riper.am/',
+        loginUrl: 'http://www.riper.am/ucp.php?mode=login',
+        searchUrl: 'http://www.riper.am/search.php',
+        baseUrl: 'http://www.riper.am/',
         requestType: 'GET',
         onResponseUrl: {not: 1, exec: 'strContain', args: [{arg: 0}, 'ucp.php?mode=login']},
         requestData: 'keywords=%search%&sr=topics&sf=titleonly&fp=1&tracker_search=torrent',

@@ -65,8 +65,7 @@ engine.trackerLib.katushka = {
         torrentSelectorGallery: {
             categoryTitle: 'div.descr>div.tags',
             title: 'div.descr>div.torr_name>a:eq(1)',
-            url: {selector: 'div.descr>div.torr_name>a:eq(1)', attr: 'href'},
-            date: 'div.descr>div.date'
+            url: {selector: 'div.descr>div.torr_name>a:eq(1)', attr: 'href'}
         },
         onGetValue: {
             categoryId: {exec: 'idInCategoryListStr', args: [{arg: 0}, {regexp: '\\/([^\\/]+)\\/$'}]},

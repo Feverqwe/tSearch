@@ -41,7 +41,6 @@ engine.trackerLib.tfile = {
             title: 'td:eq(2)>a',
             url: {selector: 'td:eq(2)>a', attr: 'href'},
             size: 'td:eq(3)',
-            downloadUrl: {selector: 'td:eq(3)>a', attr: 'href'},
             seed: 'td:eq(4)',
             peer: 'td:eq(5)',
             date: 'td:eq(-1)'
