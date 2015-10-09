@@ -139,7 +139,7 @@ var explore = {
         };
         var kpRmDesc = function(text) {
             return text.replace(/(.*)\s+\(.*\)$/, '$1').trim();
-        }
+        };
 
         var getYear = function(text) {
             return parseInt(text.replace(/.*\([^\(]*([1-2]{1}[0-9]{3})[^\)]*\).*/g, '$1'));
@@ -200,59 +200,75 @@ var explore = {
         };
         return {
             kp_favorites: function(content) {
+                var slice = [].slice;
                 var dom = exKit.parseHtml(exKit.contentFilter(content));
-                if (dom.querySelector('#login')) {
-                    return {requireAuth: 1};
+                var collectionDetail = dom.querySelector('div.collection-detail');
+                if (!collectionDetail) {
+                    return;
                 }
-                var elList = dom.querySelectorAll('#itemList > li.item');
-                var arr = [];
-                for (var i = 0, el; el = elList[i]; i++) {
-                    var img = el.querySelector('img.poster[title]');
-                    img !== null && (img = img.getAttribute('title'));
 
-                    var title = el.querySelector('div.info > a.name');
-                    title !== null && (title = title.textContent);
+                var collection = [];
+                slice.call(collectionDetail.querySelectorAll('div.film-snippet')).forEach(function(filmSnippet) {
+                    try {
+                        var data = JSON.parse(filmSnippet.dataset.bem)['film-snippet'];
+                    } catch(e) {
+                        return;
+                    }
 
-                    var titleEn = el.querySelector('div.info > span');
-                    titleEn !== null && (titleEn = titleEn.textContent);
+                    var title = filmSnippet.querySelector('meta[itemprop="name"]');
+                    title = title && title.getAttribute('cdata-block-event-tent');
 
-                    var url = el.querySelector('div.info > a.name');
-                    url !== null && (url = url.getAttribute('href'));
+                    var titleAlt = filmSnippet.querySelector('meta[itemprop="alternateName"]');
+                    titleAlt = titleAlt && titleAlt.getAttribute('cdata-block-event-tent');
+
+                    /*var img = filmSnippet.querySelector('img.image');
+                    if (img) {
+                        var srcList = (img.getAttribute('srcset') || '').split(/,\s+/);
+                        srcList = srcList.map(function(src) {
+                            var url = src.split(/\s+/)[0];
+                            if (url.substr(0, 2) === '//') {
+                                url = 'http:' + url;
+                            }
+                            return url;
+                        });
+                        img = srcList[1] || srcList[0];
+                    }*/
+
+                    if (!data.movieId) {
+                        console.log("Explorer kp_favorites have problem!", 'movieId is not exists!');
+                        return;
+                    }
+
+                    var img = data.movieId+'.jpg';
+
+                    var link = filmSnippet.querySelector('a.link');
+                    link = link && link.getAttribute('href');
 
                     var obj = {
                         img: img,
                         title: title,
-                        title_en: titleEn,
-                        url: url
+                        title_en: titleAlt,
+                        url: link
                     };
 
                     if (!prepareObj(obj)) {
                         console.log("Explorer kp_favorites have problem!");
-                        continue;
+                        return;
                     }
 
-                    obj.img = kpGetImgFileName(obj.img);
-
-                    var isSerial = kpRmDesc(obj.title);
-                    if (obj.title !== isSerial) {
-                        // isSerial
-                        obj.title = isSerial;
-                        obj.title_en && (obj.title_en = kpRmYear(obj.title_en));
-                    } else {
-                        var year;
-                        if (obj.title_en) {
-                            year = kpGetYear(obj.title_en);
-                            if (year) {
-                                obj.title_en = kpRmYear(obj.title_en);
-                                obj.title_en += ' ' + year;
-                                obj.title += ' ' + year;
-                            }
+                    if (data.argument && !data.argument.series) {
+                        var year = filmSnippet.querySelector('.film-snippet__info');
+                        year = year && year.textContent;
+                        if (year) {
+                            obj.title_en += ' ' + year;
+                            obj.title += ' ' + year;
                         }
                     }
 
-                    arr.push(obj);
-                }
-                return arr;
+                    collection.push(obj);
+                });
+
+                return collection;
             },
             kp_in_cinema: function(content) {
                 var dom = exKit.parseHtml(exKit.contentFilter(content));
@@ -1354,6 +1370,98 @@ var explore = {
         var setupBody = explore.getSetupBody(li.dataset.type);
         head.insertBefore(setupBody, nextEl);
     },
+    getKpUserId: function(source, cb) {
+        "use strict";
+        source.xhr = mono.ajax({
+            url: 'http://www.kinopoisk.ru/',
+            success: function(data) {
+                var userId = data.match(/\/user\/(\d+)\//);
+                userId = userId && userId[1];
+                cb(userId);
+            },
+            error: function() {
+                cb();
+            }
+        });
+    },
+    getKpCollectionId: function(source, userId, cb) {
+        "use strict";
+        source.xhr = mono.ajax({
+            safe: true,
+            url: 'http://www.kinopoisk.ru/user/'+userId+'/collections/own/',
+            success: function(data) {
+                var slice = [].slice;
+                var dom = exKit.parseHtml(exKit.contentFilter(data));
+                var collections = slice.call(dom.querySelectorAll('div.collection'));
+                var collectionId = null;
+                collections.some(function(item) {
+                    try {
+                        var bem = JSON.parse(item.dataset.bem);
+                    } catch(e) {
+                        return;
+                    }
+
+                    if (!bem.collection || !bem.collection.collectionId) {
+                        return;
+                    }
+
+                    if (!collectionId) {
+                        collectionId = bem.collection.collectionId;
+                    }
+
+                    if (String(bem.collection.collectionId) === String(engine.settings.kinopoiskFolderId)) {
+                        collectionId = bem.collection.collectionId;
+                        return true;
+                    }
+                });
+
+                if (!collectionId) {
+                    return cb();
+                }
+
+                return cb(collectionId);
+            },
+            error: function() {
+                cb();
+            }
+        });
+    },
+    getKpFavorites: function(source, userId, collectionId, cb, pageId) {
+        "use strict";
+        var limit = 10;
+        if (!pageId) {
+            pageId = 1;
+        }
+        if (!source.chunks) {
+            source.chunks = [];
+        }
+        source.xhr = mono.ajax({
+            url: 'http://www.kinopoisk.ru/user/'+userId+'/collections/'+collectionId+'/?page='+pageId+'&chunkOnly=1&_='+Date.now(),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data && data.content) {
+                    source.chunks.push(data.content);
+
+                    if (pageId <= limit) {
+                        return explore.getKpFavorites(source, userId, collectionId, cb, ++pageId);
+                    }
+                }
+
+                var content = source.chunks.join('');
+                source.chunks = null;
+
+                content = '<div><div class="collection-detail">' + content + '</div></div>';
+
+                return cb(explore.content_parser.kp_favorites(content));
+            },
+            error: function() {
+                cb();
+            }
+        });
+    },
     onUpdateKpFavorites: function(e) {
         "use strict";
         e.preventDefault();
@@ -1370,43 +1478,26 @@ var explore = {
         }
         categoryObj.li.classList.add('loading');
 
-        var limit = 20;
-        var deDbtlUrl = [];
-        var contentList = [];
-
         var onErrorStatus = function(className) {
             categoryObj.li.classList.remove('loading');
             categoryObj.li.classList.remove('error');
             categoryObj.li.classList.remove('login');
             categoryObj.li.classList.add(className);
-        }
+        };
 
-        var urlTemplate = source.url.replace('%category%', engine.settings.kinopoiskFolderId);
-        (function getPage(page) {
-            source.xhr = mono.ajax({
-                safe: true,
-                url: urlTemplate.replace('%page%', page),
-                success: function(data) {
-                    var pContent = explore.content_parser.kp_favorites(data);
-                    if (!pContent) {
+        return this.getKpUserId(source, function(userId) {
+            if (!userId || userId === '1') {
+                return onErrorStatus('login');
+            }
+
+            this.getKpCollectionId(source, userId, function(collectionId) {
+                if (!collectionId) {
+                    return onErrorStatus('error');
+                }
+
+                this.getKpFavorites(source, userId, collectionId, function(contentList) {
+                    if (!contentList) {
                         return onErrorStatus('error');
-                    }
-                    if (pContent.requireAuth) {
-                        return onErrorStatus('login');
-                    }
-                    var newCount = 0;
-                    for (var i = 0, item; item = pContent[i]; i++) {
-                        if (deDbtlUrl.indexOf(item.url) !== -1) {
-                            continue;
-                        }
-                        deDbtlUrl.push(item.url);
-                        contentList.push(item);
-                        newCount++;
-                    }
-
-                    if (newCount && limit) {
-                        limit--;
-                        return getPage(++page);
                     }
 
                     var currentPage = categoryObj.currentPage;
@@ -1415,14 +1506,13 @@ var explore = {
                     var storage = {};
                     engine.exploreCache[categoryObj.cacheName] = storage[categoryObj.cacheName] = {
                         content: contentList
-                    }
+                    };
                     mono.storage.set(storage);
 
                     categoryObj.li.classList.remove('loading');
-                },
-                error: onErrorStatus
-            });
-        })(1);
+                });
+            }.bind(this));
+        }.bind(this));
     },
     writeCategoryList: function () {
         "use strict";

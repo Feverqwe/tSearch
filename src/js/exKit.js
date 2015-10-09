@@ -727,6 +727,7 @@ var exKit = {
         searchJs: /javascript/ig,
         blockHref: /\/\//,
         blockSrc: /src=(['"]?)/ig,
+        blockSrcSet: /srcset=(['"]?)/ig,
         blockOnEvent: /on(\w+)=/ig
     },
     contentFilter: function(content) {
@@ -734,6 +735,7 @@ var exKit = {
         return content.replace(exKit.contentFilterR.searchJs, 'tms-block-javascript')
             .replace(exKit.contentFilterR.blockHref, '//about:blank#blockurl#')
             .replace(exKit.contentFilterR.blockSrc, 'src=$1data:image/gif,base64#blockurl#')
+            .replace(exKit.contentFilterR.blockSrcSet, 'srcset=$1data:image/gif,base64#blockurl#')
             .replace(exKit.contentFilterR.blockOnEvent, 'data-block-event-$1=');
     },
     contentUnFilter: function(content) {
