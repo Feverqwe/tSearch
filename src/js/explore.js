@@ -39,7 +39,8 @@ var explore = {
             url: 'http://www.kinopoisk.ru/catalogue/?where=%D0%B2%20%D0%BA%D0%B8%D0%BD%D0%BE&sort=METRIKA&page=%page%&chunkOnly=1&skipSeen=&skipFilters=true',
             keepAlive: [2, 4, 6],
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/'
+            imgUrl: 'http://st.kinopoisk.ru/images/film/',
+            maxPage: 10
         },
         kp_popular: {
             rootUrl: 'http://www.kinopoisk.ru',
@@ -48,7 +49,7 @@ var explore = {
             keepAlive: [0, 3],
             baseUrl: 'http://www.kinopoisk.ru/film/',
             imgUrl: 'http://st.kinopoisk.ru/images/film/',
-            pageEnd: 20,
+            pageEnd: 10,
             pageStart: 1,
             xhrExpand: {
                 headers: {
@@ -1185,13 +1186,24 @@ var explore = {
                         source.xhr_content.push([pageId, _this.content_parser[type](data.content)]);
                     }
 
-                    if (data.hasMore && (source.maxPage && source.maxPage > pageId)) {
+                    if (data.hasMore && source.maxPage > pageId) {
                         return _this.contentLoader[type](type, source, ++pageId);
                     }
 
                     _this.xhr_dune(type, source);
                 },
-                error: function() {
+                error: function(xhr) {
+                    var data = xhr.response;
+                    if (data && data.error === 'needRefresh' && !source.reloaded) {
+                        return mono.ajax({
+                            url: data.location,
+                            success: function() {
+                                source.reloaded = true;
+                                mono.storage.remove(['expCache_kp_popular']);
+                                return _this.contentLoader[type](type, source, pageId);
+                            }
+                        })
+                    }
                     _this.xhr_dune(type, source);
                 }
             }));
