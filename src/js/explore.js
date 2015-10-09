@@ -28,7 +28,7 @@ var explore = {
         kp_favorites: {
             rootUrl: 'http://www.kinopoisk.ru',
             maxWidth: 120,
-            url: 'http://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
+            url: 'http://www.kinopoisk.ru/',
             baseUrl: 'http://www.kinopoisk.ru/film/',
             imgUrl: 'http://st.kinopoisk.ru/images/film/',
             noAutoUpdate: 1
