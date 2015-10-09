@@ -134,6 +134,10 @@ var explore = {
             var m = text.match(/\s+\(.*([1-2]\d{3}).*\)/);
             return m && parseInt(m[1]);
         };
+        var kpGetYear2 = function(text) {
+            var m = text.match(/([1-2]\d{3})$/);
+            return m && parseInt(m[1]);
+        };
         var kpRmYear = function(text) {
             return text.replace(/(.*)\s+\(.*([1-2]\d{3}).*\).*/, '$1').trim();
         };
@@ -256,10 +260,11 @@ var explore = {
                         return;
                     }
 
-                    if (data.argument && !data.argument.series) {
+                    if (!data.series) {
                         var year = filmSnippet.querySelector('.film-snippet__info');
                         year = year && year.textContent;
                         if (year) {
+                            year = kpGetYear2(year);
                             obj.title_en += ' ' + year;
                             obj.title += ' ' + year;
                         }
