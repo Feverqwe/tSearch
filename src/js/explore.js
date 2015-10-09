@@ -36,10 +36,8 @@ var explore = {
         kp_in_cinema: {//new in cinema
             rootUrl: 'http://www.kinopoisk.ru',
             maxWidth: 120,
-            url: 'http://www.kinopoisk.ru/afisha/new/page/%page%/',
+            url: 'http://www.kinopoisk.ru/catalogue/?where=%D0%B2%20%D0%BA%D0%B8%D0%BD%D0%BE&sort=METRIKA&page=%page%&chunkOnly=1&skipFilters=true',
             keepAlive: [2, 4, 6],
-            pageEnd: 2,
-            pageStart: 0,
             baseUrl: 'http://www.kinopoisk.ru/film/',
             imgUrl: 'http://st.kinopoisk.ru/images/film/'
         },
@@ -276,55 +274,60 @@ var explore = {
                 return collection;
             },
             kp_in_cinema: function(content) {
+                var slice = [].slice;
+                var arr = [];
+
                 var dom = exKit.parseHtml(exKit.contentFilter(content));
 
-                var threeD = dom.querySelectorAll('div.filmsListNew > div.item div.threeD');
-                for (var i = 0, el; el = threeD[i]; i++) {
-                    var parent = threeD.parentNode;
-                    parent && parent.removeChild(threeD);
-                }
+                var filmListChunk = dom.querySelector('div.film-list__chunk');
+                slice.call(filmListChunk.querySelectorAll('div.film-snippet')).forEach(function(filmSnippet) {
+                    try {
+                        var data = JSON.parse(filmSnippet.dataset.bem)['film-snippet'];
+                    } catch(e) {
+                        return;
+                    }
 
-                var elList = dom.querySelectorAll('div.filmsListNew > div.item');
-                var arr = [];
-                for (var i = 0, el; el = elList[i]; i++) {
-                    var img = el.querySelector('div > a > img');
-                    img !== null && (img = img.getAttribute('src'));
+                    var title = filmSnippet.querySelector('meta[itemprop="name"]');
+                    title = title && title.getAttribute('cdata-block-event-tent');
 
-                    var title = el.querySelector('div > div.name > a');
-                    title !== null && (title = title.textContent);
+                    var titleAlt = filmSnippet.querySelector('meta[itemprop="alternateName"]');
+                    titleAlt = titleAlt && titleAlt.getAttribute('cdata-block-event-tent');
 
-                    var titleEn = el.querySelector('div > div.name > span');
-                    titleEn !== null && (titleEn = titleEn = titleEn.textContent);
+                    if (!data.movieId) {
+                        console.log("Explorer kp_favorites have problem!", 'movieId is not exists!');
+                        return;
+                    }
 
-                    var url = el.querySelector('div > div.name > a');
-                    url !== null && (url = url.getAttribute('href'));
+                    var img = data.movieId+'.jpg';
+
+                    var link = filmSnippet.querySelector('a.link');
+                    link = link && link.getAttribute('href');
 
                     var obj = {
                         img: img,
                         title: title,
-                        title_en: titleEn,
-                        url: url
+                        title_en: titleAlt,
+                        url: link
                     };
 
                     if (!prepareObj(obj)) {
-                        console.log("Explorer kp_in_cinema have problem!");
-                        continue;
+                        console.log("Explorer kp_favorites have problem!");
+                        return;
                     }
 
-                    obj.img = kpGetImgFileName(obj.img);
-
-                    var year;
-                    if (obj.title_en) {
-                        year = kpGetYear(obj.title_en);
+                    if (!data.series) {
+                        var year = filmSnippet.querySelector('.film-snippet__info');
+                        year = year && year.textContent;
                         if (year) {
-                            obj.title_en = kpRmYear(obj.title_en);
+                            year = kpGetYear2(year);
                             obj.title_en += ' ' + year;
                             obj.title += ' ' + year;
                         }
                     }
 
                     arr.push(obj);
-                }
+                });
+
                 return arr;
             },
             kp_popular: function(content) {
@@ -1229,6 +1232,41 @@ var explore = {
             })
         );
     },
+    contentLoader: {
+        kp_in_cinema: function(type, source, pageId) {
+            var _this = explore;
+            "use strict";
+            if (!pageId) {
+                pageId = 1;
+            }
+            source.xhr_wait_count = 1;
+            source.xhr.push(mono.ajax({
+                url: source.url.replace('%page%', pageId),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (!data) {
+                        return;
+                    }
+
+                    if (data.content) {
+                        source.xhr_content.push([pageId, _this.content_parser[type](data.content)]);
+                    }
+
+                    if (data.hasMore) {
+                        return _this.contentLoader[type](type, source, ++pageId);
+                    }
+
+                    _this.xhr_dune(type, source);
+                },
+                error: function() {
+                    _this.xhr_dune(type, source);
+                }
+            }));
+        }
+    },
     getCategoryContent: function(type) {
         "use strict";
         var categoryObj = this.varCache.categoryList[type];
@@ -1250,13 +1288,7 @@ var explore = {
         categoryObj.li.classList.add('loading');
         cache.keepAlive = date;
 
-        var page_mode = false;
-        if (source.pageStart !== undefined && source.pageEnd !== undefined) {
-            page_mode = true;
-        } else {
-            source.pageStart = 0;
-            source.pageEnd = 0;
-        }
+
         if (source.xhr) {
             source.xhr.forEach(function(item){
                 item.abort();
@@ -1265,6 +1297,18 @@ var explore = {
         source.xhr = [];
         source.xhr_wait_count = 0;
         source.xhr_content = [];
+
+        if (this.contentLoader[type]) {
+            return this.contentLoader[type](type, source);
+        }
+
+        var page_mode = false;
+        if (source.pageStart !== undefined && source.pageEnd !== undefined) {
+            page_mode = true;
+        } else {
+            source.pageStart = 0;
+            source.pageEnd = 0;
+        }
         for (var i = source.pageStart; i <= source.pageEnd; i++) {
             this.xhr_send(type, source, i, page_mode);
         }
