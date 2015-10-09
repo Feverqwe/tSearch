@@ -36,7 +36,7 @@ var explore = {
         kp_in_cinema: {//new in cinema
             rootUrl: 'http://www.kinopoisk.ru',
             maxWidth: 120,
-            url: 'http://www.kinopoisk.ru/catalogue/?where=%D0%B2%20%D0%BA%D0%B8%D0%BD%D0%BE&sort=METRIKA&page=%page%&chunkOnly=1&skipFilters=true',
+            url: 'http://www.kinopoisk.ru/catalogue/?where=%D0%B2%20%D0%BA%D0%B8%D0%BD%D0%BE&sort=METRIKA&page=%page%&chunkOnly=1&skipSeen=&skipFilters=true',
             keepAlive: [2, 4, 6],
             baseUrl: 'http://www.kinopoisk.ru/film/',
             imgUrl: 'http://st.kinopoisk.ru/images/film/'
@@ -44,18 +44,27 @@ var explore = {
         kp_popular: {
             rootUrl: 'http://www.kinopoisk.ru',
             maxWidth: 120,
-            url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
+            url: 'http://www.kinopoisk.ru/popular/?page=%page%&chunkOnly=1',
             keepAlive: [0, 3],
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/'
+            imgUrl: 'http://st.kinopoisk.ru/images/film/',
+            pageEnd: 20,
+            pageStart: 1,
+            xhrExpand: {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                dataType: 'json'
+            }
         },
         kp_serials: {
             rootUrl: 'http://www.kinopoisk.ru',
             maxWidth: 120,
-            url: 'http://www.kinopoisk.ru/top/lists/45/',
+            url: 'http://www.kinopoisk.ru/catalogue/?what=%D1%81%D0%B5%D1%80%D0%B8%D0%B0%D0%BB&years=%3E2010&page=%page%&skipFilters=true&chunkOnly=1&skipSeen=',
             keepAlive: [0],
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/'
+            imgUrl: 'http://st.kinopoisk.ru/images/film/',
+            maxPage: 10
         },
         imdb_in_cinema: {
             rootUrl: 'http://www.imdb.com',
@@ -200,6 +209,63 @@ var explore = {
 
             this.src = src;
         };
+        var kpSearchParser = function(content) {
+            var slice = [].slice;
+            var arr = [];
+
+            var dom = exKit.parseHtml(exKit.contentFilter(content));
+
+            var filmListChunk = dom.querySelector('div.film-list__chunk') || dom;
+            slice.call(filmListChunk.querySelectorAll('div.film-snippet')).forEach(function(filmSnippet) {
+                try {
+                    var data = JSON.parse(filmSnippet.dataset.bem)['film-snippet'];
+                } catch(e) {
+                    return;
+                }
+
+                var title = filmSnippet.querySelector('meta[itemprop="name"]');
+                title = title && title.getAttribute('cdata-block-event-tent');
+
+                var titleAlt = filmSnippet.querySelector('meta[itemprop="alternateName"]');
+                titleAlt = titleAlt && titleAlt.getAttribute('cdata-block-event-tent');
+
+                if (!data.movieId) {
+                    console.log("Explorer kp_favorites have problem!", 'movieId is not exists!');
+                    return;
+                }
+
+                var img = data.movieId+'.jpg';
+
+                var link = filmSnippet.querySelector('a.link');
+                link = link && link.getAttribute('href');
+
+                var obj = {
+                    img: img,
+                    title: title,
+                    title_en: titleAlt,
+                    url: link
+                };
+
+                if (!prepareObj(obj)) {
+                    console.log("Explorer kp_favorites have problem!");
+                    return;
+                }
+
+                if (!data.series) {
+                    var year = filmSnippet.querySelector('.film-snippet__info');
+                    year = year && year.textContent;
+                    if (year) {
+                        year = kpGetYear2(year);
+                        obj.title_en += ' ' + year;
+                        obj.title += ' ' + year;
+                    }
+                }
+
+                arr.push(obj);
+            });
+
+            return arr;
+        };
         return {
             kp_favorites: function(content) {
                 var slice = [].slice;
@@ -273,150 +339,14 @@ var explore = {
 
                 return collection;
             },
-            kp_in_cinema: function(content) {
-                var slice = [].slice;
-                var arr = [];
-
-                var dom = exKit.parseHtml(exKit.contentFilter(content));
-
-                var filmListChunk = dom.querySelector('div.film-list__chunk');
-                slice.call(filmListChunk.querySelectorAll('div.film-snippet')).forEach(function(filmSnippet) {
-                    try {
-                        var data = JSON.parse(filmSnippet.dataset.bem)['film-snippet'];
-                    } catch(e) {
-                        return;
-                    }
-
-                    var title = filmSnippet.querySelector('meta[itemprop="name"]');
-                    title = title && title.getAttribute('cdata-block-event-tent');
-
-                    var titleAlt = filmSnippet.querySelector('meta[itemprop="alternateName"]');
-                    titleAlt = titleAlt && titleAlt.getAttribute('cdata-block-event-tent');
-
-                    if (!data.movieId) {
-                        console.log("Explorer kp_favorites have problem!", 'movieId is not exists!');
-                        return;
-                    }
-
-                    var img = data.movieId+'.jpg';
-
-                    var link = filmSnippet.querySelector('a.link');
-                    link = link && link.getAttribute('href');
-
-                    var obj = {
-                        img: img,
-                        title: title,
-                        title_en: titleAlt,
-                        url: link
-                    };
-
-                    if (!prepareObj(obj)) {
-                        console.log("Explorer kp_favorites have problem!");
-                        return;
-                    }
-
-                    if (!data.series) {
-                        var year = filmSnippet.querySelector('.film-snippet__info');
-                        year = year && year.textContent;
-                        if (year) {
-                            year = kpGetYear2(year);
-                            obj.title_en += ' ' + year;
-                            obj.title += ' ' + year;
-                        }
-                    }
-
-                    arr.push(obj);
-                });
-
-                return arr;
-            },
-            kp_popular: function(content) {
-                var dom = exKit.parseHtml(exKit.contentFilter(content));
-
-                var elList = dom.querySelectorAll('div.stat > div.el');
-                var arr = [];
-                for (var i = 0, el; el = elList[i]; i++) {
-                    var img = el.querySelectorAll('a')[1];
-                    img && (img = img.getAttribute('href'));
-
-                    var title = el.querySelectorAll('a')[1];
-                    title && (title = title.textContent);
-
-                    var titleEn = el.querySelector('i');
-                    titleEn !== null && (titleEn = titleEn.textContent);
-
-                    var url = el.querySelectorAll('a')[1];
-                    url && (url = url.getAttribute('href'));
-
-                    var obj = {
-                        img: img,
-                        title: title,
-                        title_en: titleEn,
-                        url: url
-                    };
-
-                    if (!prepareObj(obj)) {
-                        console.log("Explorer kp_popular have problem!");
-                        continue;
-                    }
-
-                    obj.img = kpGetImgFileName(obj.img);
-
-                    var year = kpGetYear(obj.title);
-                    if (year) {
-                        obj.title = kpRmYear(obj.title);
-                        obj.title += ' ' + year;
-                        if (obj.title_en) {
-                            obj.title_en += ' ' + year;
-                        }
-                    }
-
-                    arr.push(obj);
+            kp_in_cinema: kpSearchParser,
+            kp_popular: function(data) {
+                if (!data || !data.content) {
+                    return [];
                 }
-                return arr;
+                return kpSearchParser(data.content)
             },
-            kp_serials : function(content) {
-                var dom = exKit.parseHtml(exKit.contentFilter(content));
-
-                var elList = dom.querySelectorAll('#itemList > tbody > tr');
-                var arr = [];
-                for (var i = 0, el; el = elList[i]; i++) {
-                    var img = el.querySelector('td > div > a');
-                    img !== null && (img = img.getAttribute('href'));
-
-                    var title = el.querySelector('td~td > div > a');
-                    title !== null && (title = title.textContent);
-
-                    var titleEn = el.querySelector('td > div > span');
-                    titleEn !== null && (titleEn = titleEn.textContent);
-
-                    var url = el.querySelector('td > div > a');
-                    url !== null && (url = url.getAttribute('href'));
-
-                    var obj = {
-                        img: img,
-                        title: title,
-                        title_en: titleEn,
-                        url: url
-                    };
-
-                    if (!prepareObj(obj)) {
-                        console.log("Explorer kp_serials have problem!");
-                        continue;
-                    }
-
-                    obj.img = kpGetImgFileName(obj.img);
-
-                    obj.title = kpRmDesc(obj.title);
-
-                    if (obj.title_en) {
-                        obj.title_en = kpRmYear(obj.title_en);
-                    }
-
-                    arr.push(obj);
-                }
-                return arr;
-            },
+            kp_serials : kpSearchParser,
             imdb_in_cinema: function(content) {
                 var dom = exKit.parseHtml(exKit.contentFilter(content));
 
@@ -1219,7 +1149,7 @@ var explore = {
         "use strict";
         source.xhr_wait_count++;
         source.xhr.push(
-            mono.ajax({
+            mono.ajax(mono.expand({
                 safe: true,
                 url: (page_mode)?source.url.replace('%page%', page):source.url,
                 success: function(data) {
@@ -1229,11 +1159,11 @@ var explore = {
                 error: function() {
                     this.xhr_dune(type, source);
                 }.bind(this)
-            })
+            }, source.xhrExpand))
         );
     },
-    contentLoader: {
-        kp_in_cinema: function(type, source, pageId) {
+    contentLoader: (function(){
+        var kpLoader = function(type, source, pageId) {
             var _this = explore;
             "use strict";
             if (!pageId) {
@@ -1255,7 +1185,7 @@ var explore = {
                         source.xhr_content.push([pageId, _this.content_parser[type](data.content)]);
                     }
 
-                    if (data.hasMore) {
+                    if (data.hasMore && (source.maxPage && source.maxPage > pageId)) {
                         return _this.contentLoader[type](type, source, ++pageId);
                     }
 
@@ -1265,8 +1195,12 @@ var explore = {
                     _this.xhr_dune(type, source);
                 }
             }));
+        };
+        return {
+            kp_in_cinema: kpLoader,
+            kp_serials: kpLoader
         }
-    },
+    })(),
     getCategoryContent: function(type) {
         "use strict";
         var categoryObj = this.varCache.categoryList[type];

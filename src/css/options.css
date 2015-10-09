@@ -292,7 +292,7 @@ ol.help li {
 }
 
 input[data-option="kinopoiskFolderId"] {
-    width: 50px;
+    width: 100px;
 }
 
 .proxyList {
