@@ -1201,8 +1201,11 @@ var explore = {
                                 source.reloaded = true;
                                 mono.storage.remove(['expCache_kp_popular']);
                                 return _this.contentLoader[type](type, source, pageId);
+                            },
+                            error: function() {
+                                _this.xhr_dune(type, source);
                             }
-                        })
+                        });
                     }
                     _this.xhr_dune(type, source);
                 }
