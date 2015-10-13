@@ -28,7 +28,7 @@ var explore = {
         kp_favorites: {
             rootUrl: 'http://www.kinopoisk.ru',
             maxWidth: 120,
-            url: 'http://www.kinopoisk.ru/',
+            url: 'http://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
             baseUrl: 'http://www.kinopoisk.ru/film/',
             imgUrl: 'http://st.kinopoisk.ru/images/film/',
             noAutoUpdate: 1
@@ -36,36 +36,28 @@ var explore = {
         kp_in_cinema: {//new in cinema
             rootUrl: 'http://www.kinopoisk.ru',
             maxWidth: 120,
-            url: 'http://www.kinopoisk.ru/catalogue/?where=%D0%B2%20%D0%BA%D0%B8%D0%BD%D0%BE&sort=METRIKA&page=%page%&chunkOnly=1&skipSeen=&skipFilters=true',
+            url: 'http://www.kinopoisk.ru/afisha/new/page/%page%/',
             keepAlive: [2, 4, 6],
+            pageEnd: 2,
+            pageStart: 0,
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/',
-            maxPage: 10
+            imgUrl: 'http://st.kinopoisk.ru/images/film/'
         },
         kp_popular: {
             rootUrl: 'http://www.kinopoisk.ru',
             maxWidth: 120,
-            url: 'http://www.kinopoisk.ru/popular/?page=%page%&chunkOnly=1',
+            url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
             keepAlive: [0, 3],
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/',
-            pageEnd: 10,
-            pageStart: 1,
-            xhrExpand: {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                dataType: 'json'
-            }
+            imgUrl: 'http://st.kinopoisk.ru/images/film/'
         },
         kp_serials: {
             rootUrl: 'http://www.kinopoisk.ru',
             maxWidth: 120,
-            url: 'http://www.kinopoisk.ru/catalogue/?what=%D1%81%D0%B5%D1%80%D0%B8%D0%B0%D0%BB&years=%3E2010&page=%page%&skipFilters=true&chunkOnly=1&skipSeen=',
+            url: 'http://www.kinopoisk.ru/top/lists/45/',
             keepAlive: [0],
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/',
-            maxPage: 10
+            imgUrl: 'http://st.kinopoisk.ru/images/film/'
         },
         imdb_in_cinema: {
             rootUrl: 'http://www.imdb.com',
@@ -142,16 +134,12 @@ var explore = {
             var m = text.match(/\s+\(.*([1-2]\d{3}).*\)/);
             return m && parseInt(m[1]);
         };
-        var kpGetYear2 = function(text) {
-            var m = text.match(/([1-2]\d{3})$/);
-            return m && parseInt(m[1]);
-        };
         var kpRmYear = function(text) {
             return text.replace(/(.*)\s+\(.*([1-2]\d{3}).*\).*/, '$1').trim();
         };
         var kpRmDesc = function(text) {
             return text.replace(/(.*)\s+\(.*\)$/, '$1').trim();
-        };
+        }
 
         var getYear = function(text) {
             return parseInt(text.replace(/.*\([^\(]*([1-2]{1}[0-9]{3})[^\)]*\).*/g, '$1'));
@@ -210,144 +198,201 @@ var explore = {
 
             this.src = src;
         };
-        var kpSearchParser = function(content) {
-            var slice = [].slice;
+        return {
+            kp_favorites: function(content) {
+                var dom = exKit.parseHtml(exKit.contentFilter(content));
+                if (dom.querySelector('#login')) {
+                    return {requireAuth: 1};
+                }
+                var elList = dom.querySelectorAll('#itemList > li.item');
             var arr = [];
+                for (var i = 0, el; el = elList[i]; i++) {
+                    var img = el.querySelector('img.poster[title]');
+                    img !== null && (img = img.getAttribute('title'));
 
-            var dom = exKit.parseHtml(exKit.contentFilter(content));
+                    var title = el.querySelector('div.info > a.name');
+                    title !== null && (title = title.textContent);
 
-            var filmListChunk = dom.querySelector('div.film-list__chunk') || dom;
-            slice.call(filmListChunk.querySelectorAll('div.film-snippet')).forEach(function(filmSnippet) {
-                try {
-                    var data = JSON.parse(filmSnippet.dataset.bem)['film-snippet'];
-                } catch(e) {
-                    return;
-                }
+                    var titleEn = el.querySelector('div.info > span');
+                    titleEn !== null && (titleEn = titleEn.textContent);
 
-                var title = filmSnippet.querySelector('meta[itemprop="name"]');
-                title = title && title.getAttribute('cdata-block-event-tent');
-
-                var titleAlt = filmSnippet.querySelector('meta[itemprop="alternateName"]');
-                titleAlt = titleAlt && titleAlt.getAttribute('cdata-block-event-tent');
-
-                if (!data.movieId) {
-                    console.log("Explorer kp_favorites have problem!", 'movieId is not exists!');
-                    return;
-                }
-
-                var img = data.movieId+'.jpg';
-
-                var link = filmSnippet.querySelector('a.link');
-                link = link && link.getAttribute('href');
+                    var url = el.querySelector('div.info > a.name');
+                    url !== null && (url = url.getAttribute('href'));
 
                 var obj = {
                     img: img,
                     title: title,
-                    title_en: titleAlt,
-                    url: link
+                        title_en: titleEn,
+                        url: url
                 };
 
                 if (!prepareObj(obj)) {
                     console.log("Explorer kp_favorites have problem!");
-                    return;
+                        continue;
                 }
 
-                if (!data.series) {
-                    var year = filmSnippet.querySelector('.film-snippet__info');
-                    year = year && year.textContent;
+                    obj.img = kpGetImgFileName(obj.img);
+
+                    var isSerial = kpRmDesc(obj.title);
+                    if (obj.title !== isSerial) {
+                        // isSerial
+                        obj.title = isSerial;
+                        obj.title_en && (obj.title_en = kpRmYear(obj.title_en));
+                    } else {
+                        var year;
+                        if (obj.title_en) {
+                            year = kpGetYear(obj.title_en);
                     if (year) {
-                        year = kpGetYear2(year);
+                                obj.title_en = kpRmYear(obj.title_en);
                         obj.title_en += ' ' + year;
                         obj.title += ' ' + year;
                     }
                 }
+                    }
 
                 arr.push(obj);
-            });
-
-            return arr;
-        };
-        return {
-            kp_favorites: function(content) {
-                var slice = [].slice;
-                var dom = exKit.parseHtml(exKit.contentFilter(content));
-                var collectionDetail = dom.querySelector('div.collection-detail');
-                if (!collectionDetail) {
-                    return;
                 }
+            return arr;
+            },
+            kp_in_cinema: function(content) {
+                var dom = exKit.parseHtml(exKit.contentFilter(content));
 
-                var collection = [];
-                slice.call(collectionDetail.querySelectorAll('div.film-snippet')).forEach(function(filmSnippet) {
-                    try {
-                        var data = JSON.parse(filmSnippet.dataset.bem)['film-snippet'];
-                    } catch(e) {
-                        return;
+                var threeD = dom.querySelectorAll('div.filmsListNew > div.item div.threeD');
+                for (var i = 0, el; el = threeD[i]; i++) {
+                    var parent = threeD.parentNode;
+                    parent && parent.removeChild(threeD);
                     }
 
-                    var title = filmSnippet.querySelector('meta[itemprop="name"]');
-                    title = title && title.getAttribute('cdata-block-event-tent');
+                var elList = dom.querySelectorAll('div.filmsListNew > div.item');
+                var arr = [];
+                for (var i = 0, el; el = elList[i]; i++) {
+                    var img = el.querySelector('div > a > img');
+                    img !== null && (img = img.getAttribute('src'));
 
-                    var titleAlt = filmSnippet.querySelector('meta[itemprop="alternateName"]');
-                    titleAlt = titleAlt && titleAlt.getAttribute('cdata-block-event-tent');
+                    var title = el.querySelector('div > div.name > a');
+                    title !== null && (title = title.textContent);
 
-                    /*var img = filmSnippet.querySelector('img.image');
-                    if (img) {
-                        var srcList = (img.getAttribute('srcset') || '').split(/,\s+/);
-                        srcList = srcList.map(function(src) {
-                            var url = src.split(/\s+/)[0];
-                            if (url.substr(0, 2) === '//') {
-                                url = 'http:' + url;
-                            }
-                            return url;
-                        });
-                        img = srcList[1] || srcList[0];
-                    }*/
+                    var titleEn = el.querySelector('div > div.name > span');
+                    titleEn !== null && (titleEn = titleEn = titleEn.textContent);
 
-                    if (!data.movieId) {
-                        console.log("Explorer kp_favorites have problem!", 'movieId is not exists!');
-                        return;
-                    }
-
-                    var img = data.movieId+'.jpg';
-
-                    var link = filmSnippet.querySelector('a.link');
-                    link = link && link.getAttribute('href');
+                    var url = el.querySelector('div > div.name > a');
+                    url !== null && (url = url.getAttribute('href'));
 
                     var obj = {
                         img: img,
                         title: title,
-                        title_en: titleAlt,
-                        url: link
+                        title_en: titleEn,
+                        url: url
                     };
 
                     if (!prepareObj(obj)) {
-                        console.log("Explorer kp_favorites have problem!");
-                        return;
+                        console.log("Explorer kp_in_cinema have problem!");
+                        continue;
                     }
 
-                    if (!data.series) {
-                        var year = filmSnippet.querySelector('.film-snippet__info');
-                        year = year && year.textContent;
+                    obj.img = kpGetImgFileName(obj.img);
+
+                    var year;
+                    if (obj.title_en) {
+                        year = kpGetYear(obj.title_en);
                         if (year) {
-                            year = kpGetYear2(year);
+                            obj.title_en = kpRmYear(obj.title_en);
                             obj.title_en += ' ' + year;
                             obj.title += ' ' + year;
                         }
                     }
 
-                    collection.push(obj);
-                });
-
-                return collection;
-            },
-            kp_in_cinema: kpSearchParser,
-            kp_popular: function(data) {
-                if (!data || !data.content) {
-                    return [];
+                    arr.push(obj);
                 }
-                return kpSearchParser(data.content)
+                return arr;
             },
-            kp_serials : kpSearchParser,
+            kp_popular: function(content) {
+                var dom = exKit.parseHtml(exKit.contentFilter(content));
+
+                var elList = dom.querySelectorAll('div.stat > div.el');
+                var arr = [];
+                for (var i = 0, el; el = elList[i]; i++) {
+                    var img = el.querySelectorAll('a')[1];
+                    img && (img = img.getAttribute('href'));
+
+                    var title = el.querySelectorAll('a')[1];
+                    title && (title = title.textContent);
+
+                    var titleEn = el.querySelector('i');
+                    titleEn !== null && (titleEn = titleEn.textContent);
+
+                    var url = el.querySelectorAll('a')[1];
+                    url && (url = url.getAttribute('href'));
+
+                    var obj = {
+                        img: img,
+                        title: title,
+                        title_en: titleEn,
+                        url: url
+                    };
+
+                    if (!prepareObj(obj)) {
+                        console.log("Explorer kp_popular have problem!");
+                        continue;
+                    }
+
+                    obj.img = kpGetImgFileName(obj.img);
+
+                    var year = kpGetYear(obj.title);
+                    if (year) {
+                        obj.title = kpRmYear(obj.title);
+                        obj.title += ' ' + year;
+                        if (obj.title_en) {
+                            obj.title_en += ' ' + year;
+                        }
+                    }
+
+                    arr.push(obj);
+                }
+                return arr;
+            },
+            kp_serials : function(content) {
+                var dom = exKit.parseHtml(exKit.contentFilter(content));
+
+                var elList = dom.querySelectorAll('#itemList > tbody > tr');
+                var arr = [];
+                for (var i = 0, el; el = elList[i]; i++) {
+                    var img = el.querySelector('td > div > a');
+                    img !== null && (img = img.getAttribute('href'));
+
+                    var title = el.querySelector('td~td > div > a');
+                    title !== null && (title = title.textContent);
+
+                    var titleEn = el.querySelector('td > div > span');
+                    titleEn !== null && (titleEn = titleEn.textContent);
+
+                    var url = el.querySelector('td > div > a');
+                    url !== null && (url = url.getAttribute('href'));
+
+                    var obj = {
+                        img: img,
+                        title: title,
+                        title_en: titleEn,
+                        url: url
+                    };
+
+                    if (!prepareObj(obj)) {
+                        console.log("Explorer kp_serials have problem!");
+                        continue;
+                }
+
+                    obj.img = kpGetImgFileName(obj.img);
+
+                    obj.title = kpRmDesc(obj.title);
+
+                    if (obj.title_en) {
+                        obj.title_en = kpRmYear(obj.title_en);
+                    }
+
+                    arr.push(obj);
+                }
+                return arr;
+            },
             imdb_in_cinema: function(content) {
                 var dom = exKit.parseHtml(exKit.contentFilter(content));
 
@@ -1150,7 +1195,7 @@ var explore = {
         "use strict";
         source.xhr_wait_count++;
         source.xhr.push(
-            mono.ajax(mono.expand({
+            mono.ajax({
                 safe: true,
                 url: (page_mode)?source.url.replace('%page%', page):source.url,
                 success: function(data) {
@@ -1160,62 +1205,9 @@ var explore = {
                 error: function() {
                     this.xhr_dune(type, source);
                 }.bind(this)
-            }, source.xhrExpand))
+            })
         );
     },
-    contentLoader: (function(){
-        var kpLoader = function(type, source, pageId) {
-            var _this = explore;
-            "use strict";
-            if (!pageId) {
-                pageId = 1;
-            }
-            source.xhr_wait_count = 1;
-            source.xhr.push(mono.ajax({
-                url: source.url.replace('%page%', pageId),
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                dataType: 'json',
-                success: function(data) {
-                    if (!data) {
-                        return;
-                    }
-
-                    if (data.content) {
-                        source.xhr_content.push([pageId, _this.content_parser[type](data.content)]);
-                    }
-
-                    if (data.hasMore && source.maxPage > pageId) {
-                        return _this.contentLoader[type](type, source, ++pageId);
-                    }
-
-                    _this.xhr_dune(type, source);
-                },
-                error: function(xhr) {
-                    var data = xhr.response;
-                    if (data && data.error === 'needRefresh' && !source.reloaded) {
-                        return mono.ajax({
-                            url: data.location,
-                            success: function() {
-                                source.reloaded = true;
-                                mono.storage.remove(['expCache_kp_popular']);
-                                return _this.contentLoader[type](type, source, pageId);
-                            },
-                            error: function() {
-                                _this.xhr_dune(type, source);
-                            }
-                        });
-                    }
-                    _this.xhr_dune(type, source);
-                }
-            }));
-        };
-        return {
-            kp_in_cinema: kpLoader,
-            kp_serials: kpLoader
-        }
-    })(),
     getCategoryContent: function(type) {
         "use strict";
         var categoryObj = this.varCache.categoryList[type];
@@ -1237,7 +1229,13 @@ var explore = {
         categoryObj.li.classList.add('loading');
         cache.keepAlive = date;
 
-
+        var page_mode = false;
+        if (source.pageStart !== undefined && source.pageEnd !== undefined) {
+            page_mode = true;
+        } else {
+            source.pageStart = 0;
+            source.pageEnd = 0;
+        }
         if (source.xhr) {
             source.xhr.forEach(function(item){
                 item.abort();
@@ -1246,18 +1244,6 @@ var explore = {
         source.xhr = [];
         source.xhr_wait_count = 0;
         source.xhr_content = [];
-
-        if (this.contentLoader[type]) {
-            return this.contentLoader[type](type, source);
-        }
-
-        var page_mode = false;
-        if (source.pageStart !== undefined && source.pageEnd !== undefined) {
-            page_mode = true;
-        } else {
-            source.pageStart = 0;
-            source.pageEnd = 0;
-        }
         for (var i = source.pageStart; i <= source.pageEnd; i++) {
             this.xhr_send(type, source, i, page_mode);
         }
@@ -1368,98 +1354,6 @@ var explore = {
         var setupBody = explore.getSetupBody(li.dataset.type);
         head.insertBefore(setupBody, nextEl);
     },
-    getKpUserId: function(source, cb) {
-        "use strict";
-        source.xhr = mono.ajax({
-            url: 'http://www.kinopoisk.ru/',
-            success: function(data) {
-                var userId = data.match(/\/user\/(\d+)\//);
-                userId = userId && userId[1];
-                cb(userId);
-            },
-            error: function() {
-                cb();
-            }
-        });
-    },
-    getKpCollectionId: function(source, userId, cb) {
-        "use strict";
-        source.xhr = mono.ajax({
-            safe: true,
-            url: 'http://www.kinopoisk.ru/user/'+userId+'/collections/own/',
-            success: function(data) {
-                var slice = [].slice;
-                var dom = exKit.parseHtml(exKit.contentFilter(data));
-                var collections = slice.call(dom.querySelectorAll('div.collection'));
-                var collectionId = null;
-                collections.some(function(item) {
-                    try {
-                        var bem = JSON.parse(item.dataset.bem);
-                    } catch(e) {
-                        return;
-                    }
-
-                    if (!bem.collection || !bem.collection.collectionId) {
-                        return;
-                    }
-
-                    if (!collectionId) {
-                        collectionId = bem.collection.collectionId;
-                    }
-
-                    if (String(bem.collection.collectionId) === String(engine.settings.kinopoiskFolderId)) {
-                        collectionId = bem.collection.collectionId;
-                        return true;
-                    }
-                });
-
-                if (!collectionId) {
-                    return cb();
-                }
-
-                return cb(collectionId);
-            },
-            error: function() {
-                cb();
-            }
-        });
-    },
-    getKpFavorites: function(source, userId, collectionId, cb, pageId) {
-        "use strict";
-        var limit = 10;
-        if (!pageId) {
-            pageId = 1;
-        }
-        if (!source.chunks) {
-            source.chunks = [];
-        }
-        source.xhr = mono.ajax({
-            url: 'http://www.kinopoisk.ru/user/'+userId+'/collections/'+collectionId+'/?page='+pageId+'&chunkOnly=1&_='+Date.now(),
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            dataType: 'json',
-            success: function(data) {
-                if (data && data.content) {
-                    source.chunks.push(data.content);
-
-                    if (pageId <= limit) {
-                        return explore.getKpFavorites(source, userId, collectionId, cb, ++pageId);
-                    }
-                }
-
-                var content = source.chunks.join('');
-                source.chunks = null;
-
-                content = '<div><div class="collection-detail">' + content + '</div></div>';
-
-                return cb(explore.content_parser.kp_favorites(content));
-            },
-            error: function() {
-                cb();
-            }
-        });
-    },
     onUpdateKpFavorites: function(e) {
         "use strict";
         e.preventDefault();
@@ -1476,26 +1370,43 @@ var explore = {
         }
         categoryObj.li.classList.add('loading');
 
+        var limit = 20;
+        var deDbtlUrl = [];
+        var contentList = [];
+
         var onErrorStatus = function(className) {
             categoryObj.li.classList.remove('loading');
             categoryObj.li.classList.remove('error');
             categoryObj.li.classList.remove('login');
             categoryObj.li.classList.add(className);
-        };
+        }
 
-        return this.getKpUserId(source, function(userId) {
-            if (!userId || userId === '1') {
+        var urlTemplate = source.url.replace('%category%', engine.settings.kinopoiskFolderId);
+        (function getPage(page) {
+            source.xhr = mono.ajax({
+                safe: true,
+                url: urlTemplate.replace('%page%', page),
+                success: function(data) {
+                    var pContent = explore.content_parser.kp_favorites(data);
+                    if (!pContent) {
+                        return onErrorStatus('error');
+                    }
+                    if (pContent.requireAuth) {
                 return onErrorStatus('login');
             }
-
-            this.getKpCollectionId(source, userId, function(collectionId) {
-                if (!collectionId) {
-                    return onErrorStatus('error');
+                    var newCount = 0;
+                    for (var i = 0, item; item = pContent[i]; i++) {
+                        if (deDbtlUrl.indexOf(item.url) !== -1) {
+                            continue;
                 }
+                        deDbtlUrl.push(item.url);
+                        contentList.push(item);
+                        newCount++;
+                    }
 
-                this.getKpFavorites(source, userId, collectionId, function(contentList) {
-                    if (!contentList) {
-                        return onErrorStatus('error');
+                    if (newCount && limit) {
+                        limit--;
+                        return getPage(++page);
                     }
 
                     var currentPage = categoryObj.currentPage;
@@ -1504,13 +1415,14 @@ var explore = {
                     var storage = {};
                     engine.exploreCache[categoryObj.cacheName] = storage[categoryObj.cacheName] = {
                         content: contentList
-                    };
+                    }
                     mono.storage.set(storage);
 
                     categoryObj.li.classList.remove('loading');
+                },
+                error: onErrorStatus
                 });
-            }.bind(this));
-        }.bind(this));
+        })(1);
     },
     writeCategoryList: function () {
         "use strict";
