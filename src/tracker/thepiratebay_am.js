@@ -31,7 +31,10 @@ engine.trackerLib.thepiratebay = {
         searchUrl: 'https://thepiratebay.la/search/%search%/0/99/0',
         baseUrl: 'https://thepiratebay.la/',
         requestType: 'GET',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         onAfterDomParse: function() {
             "use strict";
             var $dom = this.tracker.env.$dom;
@@ -82,7 +85,10 @@ engine.trackerLib.thepiratebay = {
             date: {selector: 'td:eq(1)>font'}
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: '\\/([0-9]+)$'}]},
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryListInt.call(this, value, /\/([0-9]+)$/);
+            },
             sizeR: /[^\s]+\s([^,]+),\s[^\s]+\s([^,]+)/,
             size: function(value) {
                 "use strict";

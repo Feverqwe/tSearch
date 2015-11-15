@@ -32,7 +32,10 @@ engine.trackerLib['nnm-club'] = {
         requestType: 'GET',
         requestData: 'nm=%search%&f=-1',
         requestMimeType: 'text/html; charset=windows-1251',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         listItemSelector: 'table.forumline.tablesorter>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td:eq(1)>a',
@@ -47,7 +50,10 @@ engine.trackerLib['nnm-club'] = {
             date: 'td.gensmall:eq(-1)>u'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]}
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryListInt.call(this, value, /f=([0-9]+)/);
+            }
         }
     }
 };

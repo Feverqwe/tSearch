@@ -31,7 +31,10 @@ engine.trackerLib['bigfangroup'] = {
         baseUrl: 'http://www.bigfangroup.org/',
         requestType: 'GET',
         requestData: 'search=%search%',
-        onGetRequest: 'encodeCp1251',
+        onGetRequest: function(value) {
+            "use strict";
+            return exKit.funcList.encodeCp1251(value);
+        },
         listItemSelector: '#highlighted>tr',
         torrentSelector: {
             categoryTitle: {selector: 'td:eq(0)>a img', attr: 'title'},
@@ -46,7 +49,10 @@ engine.trackerLib['bigfangroup'] = {
             date: {selector: 'td:eq(3)>img:eq(-1)', attr: 'title'}
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'cat=([0-9]+)'}]},
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryListInt.call(this, value, /cat=([0-9]+)/);
+            },
             date: function(value) {
                 "use strict";
                 value = exKit.funcList.monthReplace(value);

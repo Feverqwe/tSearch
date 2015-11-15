@@ -31,7 +31,10 @@ engine.trackerLib.hurtom = {
         baseUrl: 'http://toloka.to/',
         requestType: 'GET',
         requestData: 'nm=%search%',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         listItemSelector: '#form>table.forumline:eq(1)>tbody>tr',
         listItemSplice: [1, -1],
         torrentSelector: {
@@ -47,7 +50,10 @@ engine.trackerLib.hurtom = {
             date: 'td.gensmall:eq(-1)'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]},
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryListInt.call(this, value, /f=([0-9]+)/);
+            },
             size: function(value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)

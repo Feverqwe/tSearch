@@ -55,7 +55,10 @@ engine.trackerLib.kickass = {
             peer: 'td.red.lasttd.center'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListStr', args: [{arg: 0}, {regexp: '\\/([^\\/]+)\\/$'}]},
+            categoryId: function(url) {
+                "use strict";
+                return exKit.funcList.idInCategoryListStr.call(this, url, /\/([^\/]+)\/$/);
+            },
             size: function(value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);

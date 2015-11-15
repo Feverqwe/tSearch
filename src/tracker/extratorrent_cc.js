@@ -31,7 +31,10 @@ engine.trackerLib.extratorrent = {
         baseUrl: 'http://extratorrent.cc/',
         requestType: 'GET',
         requestData: 'search=%search%',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         listItemSelector: 'table.tl>tbody:eq(0)>tr',
         torrentSelector: {
             categoryTitle: 'td.tli>span>a',
@@ -45,7 +48,10 @@ engine.trackerLib.extratorrent = {
             peer: 'td:eq(5)'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: '\\/([0-9]*)\\/$'}]},
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryListInt.call(this, value, /\/([0-9]*)\/$/);
+            },
             size: function(value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)

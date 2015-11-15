@@ -39,7 +39,10 @@ engine.trackerLib.rutor = {
             date: 'td:eq(0)'
         },
         onGetValue: {
-            size: {exec: 'sizeFormat', args: [{arg: 0}]},
+            size: function(value) {
+                "use strict";
+                return exKit.funcList.sizeFormat(value);
+            },
             date: function(value) {
                 "use strict";
                 value = exKit.funcList.monthReplace(value, 1);

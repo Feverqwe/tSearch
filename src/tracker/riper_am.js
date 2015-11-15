@@ -17,9 +17,15 @@ engine.trackerLib.riperam = {
         searchUrl: 'http://www.riper.am/search.php',
         baseUrl: 'http://www.riper.am/',
         requestType: 'GET',
-        onResponseUrl: {not: 1, exec: 'strContain', args: [{arg: 0}, 'ucp.php?mode=login']},
+        onResponseUrl: function(value) {
+            "use strict";
+            return !exKit.funcList.strContain(value, 'ucp.php?mode=login');
+        },
         requestData: 'keywords=%search%&sr=topics&sf=titleonly&fp=1&tracker_search=torrent',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         listItemSelector: 'ul.topiclist.topics>li',
         torrentSelector: {
             categoryTitle: 'dl>dt>a:eq(3)',

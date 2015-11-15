@@ -17,7 +17,10 @@ engine.trackerLib.torrentz = {
         baseUrl: 'http://torrentz.eu/',
         requestType: 'GET',
         requestData: 'q=%search%',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         listItemSelector: 'div.results>dl',
         torrentSelector: {
             categoryTitle: {selector: 'dt', childNodeIndex: -1},

@@ -16,7 +16,10 @@ engine.trackerLib['fast-torrent'] = {
         searchUrl: 'http://fast-torrent.ru/search/%search%/1.html',
         baseUrl: 'http://fast-torrent.ru',
         requestType: 'GET',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         listItemSelector: 'div.film-list>div.film-item',
         torrentSelector: {
             categoryTitle: 'div.film-wrap>div.film-genre>div',

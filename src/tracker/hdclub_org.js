@@ -32,7 +32,10 @@ engine.trackerLib['hdclub'] = {
         requestType: 'GET',
         requestData: 'search=%search%',
         requestMimeType: 'text/html; charset=windows-1251',
-        onGetRequest: 'encodeCp1251',
+        onGetRequest: function(value) {
+            "use strict";
+            return exKit.funcList.encodeCp1251(value);
+        },
         listItemSelector: '#highlighted>tr',
         torrentSelector: {
             categoryTitle: {selector: 'td:eq(0)>a img', attr: 'alt'},
@@ -46,7 +49,10 @@ engine.trackerLib['hdclub'] = {
             date: '#cleft font'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryList', args: [{arg: 0}]},
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryList.call(this, value);
+            },
             size: function(value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)

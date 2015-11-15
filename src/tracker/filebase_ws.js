@@ -31,7 +31,10 @@ engine.trackerLib.filebase = {
         baseUrl: 'http://www.filebase.ws',
         requestType: 'GET',
         requestData: 'search=%search%&c=0&t=liveonly',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         listItemSelector: '#torrents_list>tbody>tr',
         listItemSplice: [1, 0],
         torrentSelector: {
@@ -46,7 +49,10 @@ engine.trackerLib.filebase = {
             date: 'td:eq(3)'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListStr', args: [{arg: 0}, {regexp: '\\/([^\\/]+)\\/$'}]},
+            categoryId: function(url) {
+                "use strict";
+                return exKit.funcList.idInCategoryListStr.call(this, url, /\/([^\/]+)\/$/);
+            },
             size: function(value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)

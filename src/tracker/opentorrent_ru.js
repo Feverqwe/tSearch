@@ -32,8 +32,14 @@ engine.trackerLib.opentorrent = {
         baseUrl: 'http://opentorrent.ru/',
         requestType: 'GET',
         requestData: 'nm=%search%',
-        onGetRequest: 'encodeURIComponent',
-        onResponseUrl: {not: 1, exec: 'strContain', args: [{arg: 0}, 'login.php']},
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
+        onResponseUrl: function(value) {
+            "use strict";
+            return !exKit.funcList.strContain(value, 'login.php');
+        },
         listItemSelector: 'table.forumline.tracker>tbody>tr',
         listItemSplice: [1, -1],
         torrentSelector: {
@@ -49,7 +55,10 @@ engine.trackerLib.opentorrent = {
             date: 'td.gensmall:eq(-1)'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]},
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryListInt.call(this, value, /f=([0-9]+)/);
+            },
             size: {exec: 'sizeFormat', args: [{arg: 0}]},
             date: function(value) {
                 "use strict";

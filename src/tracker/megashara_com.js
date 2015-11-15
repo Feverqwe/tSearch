@@ -31,7 +31,10 @@ engine.trackerLib.megashara = {
         baseUrl: 'http://megashara.com/',
         requestType: 'GET',
             requestData: 'text=%search%&sorting=seed&time=ALL&year=0&parent=0&where=title&all_words=1&order=added',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         listItemSelector: 'table.table-wide>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td:eq(0)',
@@ -44,7 +47,10 @@ engine.trackerLib.megashara = {
             peer: 'td.flat-result.color-red'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryList', args: [{arg: 0}]},
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryList.call(this, value);
+            },
             size: function(value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);

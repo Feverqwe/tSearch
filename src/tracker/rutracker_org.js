@@ -33,8 +33,14 @@ engine.trackerLib['rutracker'] = {
         baseUrl: 'http://rutracker.org/forum/',
         requestType: 'POST',
         requestData: 'nm=%search%',
-        onGetRequest: 'encodeURIComponent',
-        onResponseUrl: {not: 1, exec: 'strContain', args: [{arg: 0}, 'login.php']},
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
+        onResponseUrl: function(value) {
+            "use strict";
+            return !exKit.funcList.strContain(value, 'login.php');
+        },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td.row1.f-name>div>a',
@@ -49,7 +55,10 @@ engine.trackerLib['rutracker'] = {
             date: 'td.row4.small.nowrap:eq(1)>u'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]},
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryListInt.call(this, value, /f=([0-9]+)/);
+            },
             peer: function(value) {
                 "use strict";
                 if (value < 0) {
@@ -59,7 +68,10 @@ engine.trackerLib['rutracker'] = {
             }
         },
         onEmptySelectorValue: {
-            seed: {exec: 'return', args: 0}
+            seed: function() {
+                "use strict";
+                return 0;
+            }
         },
         onSelectorIsNotFound: {
             downloadUrl: function() {

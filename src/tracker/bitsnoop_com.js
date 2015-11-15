@@ -29,7 +29,10 @@ engine.trackerLib['bitsnoop'] = {
         searchUrl: 'http://bitsnoop.com/search/all/%search%/c/d/1/',
         baseUrl: 'http://bitsnoop.com',
         requestType: 'GET',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         listItemSelector: '#torrents>li',
         torrentSelector: {
             categoryTitle: {selector: '>span.icon', attr: 'title'},
@@ -41,7 +44,10 @@ engine.trackerLib['bitsnoop'] = {
             peer: 'div.torInfo>span.leechers'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListStr', args: [{arg: 0}, {regexp: 'icon cat_(.+)'}]},
+            categoryId: function(url) {
+                "use strict";
+                return exKit.funcList.idInCategoryListStr.call(this, url, /icon cat_(.+)/);
+            },
             size: function(value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)

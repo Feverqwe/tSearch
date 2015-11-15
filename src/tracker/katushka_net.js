@@ -31,7 +31,10 @@ engine.trackerLib.katushka = {
         baseUrl: 'http://katushka.net',
         requestType: 'GET',
         requestData: 'tags=&search=%search%&type_search=groups&incldead=0&sorting=0&type_sort=desc',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         onAfterDomParse: function() {
             "use strict";
             var $dom = this.tracker.env.$dom;
@@ -68,7 +71,10 @@ engine.trackerLib.katushka = {
             url: {selector: 'div.descr>div.torr_name>a:eq(1)', attr: 'href'}
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListStr', args: [{arg: 0}, {regexp: '\\/([^\\/]+)\\/$'}]},
+            categoryId: function(url) {
+                "use strict";
+                return exKit.funcList.idInCategoryListStr.call(this, url, /\/([^\/]+)\/$/);
+            },
             date: function(value) {
                 "use strict";
                 value = exKit.funcList.monthReplace(value);

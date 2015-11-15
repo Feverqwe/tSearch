@@ -32,8 +32,14 @@ engine.trackerLib.piratca = {
         baseUrl: 'http://pirat.ca/',
         requestType: 'GET',
         requestData: 'nm=%search%&to=1&max=1',
-        onGetRequest: 'encodeURIComponent',
-        onResponseUrl: {not: 1, exec: 'strContain', args: [{arg: 0}, 'login.php']},
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
+        onResponseUrl: function(value) {
+            "use strict";
+            return !exKit.funcList.strContain(value, 'login.php');
+        },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td:eq(1)>a',
@@ -48,7 +54,10 @@ engine.trackerLib.piratca = {
             date: 'td.row3.small.nowrap:eq(1)>u'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]}
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryListInt.call(this, value, /f=([0-9]+)/);
+            }
         }
     }
 };

@@ -31,7 +31,10 @@ engine.trackerLib.mininova = {
         baseUrl: 'http://www.mininova.org/',
         requestType: 'GET',
         requestData: 'search=%search%&cat=0',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         listItemSelector: 'table.maintable>tbody>tr',
         listItemSplice: [1, 0],
         torrentSelector: {
@@ -47,7 +50,10 @@ engine.trackerLib.mininova = {
             date: 'td:eq(0)'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'cat\\/([\d+])$'}]},
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryListInt.call(this, value, /cat\/([d+])$/);
+            },
             size: {exec: 'sizeFormat', args: [{arg: 0}]},
             date: function(value) {
                 "use strict";

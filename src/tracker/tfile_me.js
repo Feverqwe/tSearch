@@ -32,7 +32,10 @@ engine.trackerLib.tfile = {
         baseUrl: 'http://tfile.me/forum/',
         requestType: 'GET',
         requestData: 'q=%search%',
-        onGetRequest: 'encodeCp1251',
+        onGetRequest: function(value) {
+            "use strict";
+            return exKit.funcList.encodeCp1251(value);
+        },
         listItemSelector: '#topics>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td:eq(0)',
@@ -46,8 +49,14 @@ engine.trackerLib.tfile = {
             date: 'td:eq(-1)'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]},
-            size: {exec: 'sizeFormat', args: [{arg: 0}]},
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryListInt.call(this, value, /f=([0-9]+)/);
+            },
+            size: function(value) {
+                "use strict";
+                return exKit.funcList.sizeFormat(value);
+            },
             date: function(value) {
                 "use strict";
                 return exKit.funcList.dateFormat(0, value)

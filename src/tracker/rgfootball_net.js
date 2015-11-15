@@ -31,7 +31,10 @@ engine.trackerLib.rgfootball = {
         baseUrl: 'http://rgfootball.net/',
         requestType: 'GET',
         requestData: 'nm=%search%',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td:eq(2)>a',
@@ -46,7 +49,10 @@ engine.trackerLib.rgfootball = {
             date: 'td.small.nowrap:eq(1)>u'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]}
+            categoryId: function(value) {
+                "use strict";
+                return exKit.funcList.idInCategoryListInt.call(this, value, /f=([0-9]+)/);
+            }
         }
     }
 };

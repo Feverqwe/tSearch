@@ -109,7 +109,10 @@ engine.trackerLib.kinozal = {
         baseUrl: 'http://kinozal.tv',
         requestType: 'GET',
         requestData: 's=%search%',
-        onGetRequest: 'encodeURIComponent',
+        onGetRequest: function(value) {
+            "use strict";
+            return encodeURIComponent(value);
+        },
         listItemSelector: 'table.t_peer.w100p>tbody>tr',
         listItemSplice: [1, 0],
         torrentSelector: {

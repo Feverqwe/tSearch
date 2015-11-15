@@ -529,18 +529,22 @@ var exKit = {
     },
     bindFunc: function(tracker, obj, key1) {
         "use strict";
-        if (obj[key1] === undefined || obj[key1].hasBind) return;
+        var origItem = '_defaultItem_';
+        if (obj[key1] === undefined || obj[origItem + key1] !== undefined) {
+            return;
+        }
         var type = typeof obj[key1];
         var context = {
             tracker: tracker,
             scope: undefined
         };
         if (type === 'function') {
-            obj[key1] = obj[key1].bind(context);
+            obj[origItem + key1] = obj[key1];
+            obj[key1] = obj[origItem + key1].bind(context);
         } else {
+            obj[origItem + key1] = JSON.parse(JSON.stringify(obj[key1]));
             obj[key1] = exKit.funcList2func.bind(context, exKit.prepareFuncList(obj[key1]));
         }
-        obj[key1].hasBind = true;
     },
     prepareCustomTracker: function(trackerJson) {
         "use strict";
@@ -576,7 +580,10 @@ var exKit = {
                 search.requestData = trackerJson.post;
             }
             if (trackerJson.encode) {
-                search.onGetRequest = 'encodeCp1251';
+                search.onGetRequest = function(value) {
+                    "use strict";
+                    return exKit.funcList.encodeCp1251(value);
+                };
             }
             search.listItemSelector = trackerJson.items;
             if (trackerJson.charset) {
@@ -627,13 +634,19 @@ var exKit = {
             if (trackerJson.seed) {
                 torrentSelector.seed = trackerJson.seed;
                 if (trackerJson.seed_r && trackerJson.seed_rp !== undefined) {
-                    onGetValue.seed = {exec: 'replace', args: [{arg: 0}, {regexp: trackerJson.seed_r, flags: 'ig'}, trackerJson.seed_rp]};
+                    var seed_r = new RegExp(trackerJson.seed_r, 'ig');
+                    onGetValue.seed = function(value) {
+                        return value.replace(seed_r, trackerJson.seed_rp);
+                    };
                 }
             }
             if (trackerJson.peer) {
                 torrentSelector.peer = trackerJson.peer;
                 if (trackerJson.peer_r && trackerJson.peer_rp !== undefined) {
-                    onGetValue.peer = {exec: 'replace', args: [{arg: 0}, {regexp: trackerJson.peer_r, flags: 'ig'}, trackerJson.peer_rp]};
+                    var peer_r = new RegExp(trackerJson.peer_r, 'ig');
+                    onGetValue.peer = function(value) {
+                        return value.replace(peer_r, trackerJson.peer_rp);
+                    };
                 }
             }
             if (trackerJson.date) {
