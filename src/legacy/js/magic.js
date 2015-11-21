@@ -1032,12 +1032,6 @@ var magic = function() {
                 e.preventDefault();
                 read_code();
             });
-            if (mono.isOpera) {
-                dom_cache.window.on('resize', function(){
-                    dom_cache.iframe.css('height', dom_cache.window.height() - 304);
-                });
-                dom_cache.window.trigger('resize');
-            }
         }
     };
 }();

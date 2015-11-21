@@ -23,16 +23,11 @@ var popup = {
         popup.domCache.requestInput.focus();
 
         window.addEventListener('resize', function(e) {
-            var height = (!mono.isSafari && !mono.isMaxthon) ? document.body.scrollHeight : document.body.clientHeight;
+            var height = document.body.scrollHeight;
             if (height < 72) {
                 height = 72;
             }
             mono.resizePopup(650, height);
-            if (mono.isOpera) {
-                setTimeout(function() {
-                    popup.domCache.requestInput.focus();
-                }, 100);
-            }
         });
 
         popup.domCache.clearBtn.addEventListener('click', function() {
@@ -68,7 +63,7 @@ var popup = {
             }
             var url = 'index.html' + request;
             mono.openTab(url);
-            if (mono.isFF || mono.isSafari) {
+            if (mono.isFF) {
                 mono.closePopup();
             }
             popup.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
@@ -167,10 +162,6 @@ var popup = {
         popup.domCache.requestInput.addEventListener('keyup', function() {
             popup.varCache.autocompleteLastFocus = this.value;
         });
-
-        if (mono.isMaxthon) {
-            $(popup.domCache.$requestInput).off('blur');
-        }
     },
     update: function() {
         "use strict";

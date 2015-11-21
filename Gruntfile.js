@@ -364,13 +364,10 @@ module.exports = function (grunt) {
     grunt.registerTask('default', [
         'clean:output',
         'chrome',
-        'opera',
         'chromeApp',
         'firefoxStore',
         'firefox-sig',
         'firefox',
-        'safari',
-        'maxthon',
         'web'
     ]);
 };

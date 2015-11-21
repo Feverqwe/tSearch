@@ -98,38 +98,9 @@ mono.ajax = function(obj) {
         }
     }
 
-    if (mono.isOpera) {
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState <= 1 || [302, 0].indexOf(xhr.status) === -1) {
-                return;
-            }
-
-            // Opera xhr redirect
-            if (obj.noRedirect === undefined) {
-                obj.noRedirect = 5;
-            }
-            var location = xhr.getResponseHeader('Location');
-            if (!location || obj.noRedirect < 1) {
-                return;
-            }
-
-            obj.noRedirect--;
-            var _obj = mono.expand({}, obj);
-            _obj.url = location;
-            obj.success = undefined;
-            obj.error = undefined;
-            var _xhr = mono.ajax(_obj);
-            xhr.abort = _xhr.abort;
-        };
-    }
-
     xhr.onload = function () {
         if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304 || xhr.status === 0) {
             var response = (obj.dataType) ? xhr.response : xhr.responseText;
-
-            if (mono.isMaxthon && obj.dataType === 'json') {
-                response = JSON.parse(response);
-            }
 
             return obj.success && obj.success(response, xhr);
         }
@@ -499,19 +470,6 @@ mono.openTab = mono.isChrome ? function(url) {
 } : mono.isFF ? function(url) {
     "use strict";
     mono.sendMessage({action: 'openTab', dataUrl: true, url: url}, undefined, 'service');
-} : mono.isOpera ? function(url) {
-    "use strict";
-    mono.sendMessage({action: 'openTab', url: 'build/' + url });
-} : mono.isSafari ? function(url) {
-    "use strict";
-    var tab = safari.application.activeBrowserWindow.openTab();
-    tab.url = safari.extension.baseURI + url;
-    tab.activate();
-} : mono.isMaxthon ? function(url) {
-    "use strict";
-    url = window.external.mxGetRuntime().getPrivateUrl() + url;
-    mx.browser.tabs();
-    mx.browser.newTab({url: url, activate: true});
 } : function() {
     "use strict";
     console.error('openTab is not supported!');
@@ -520,9 +478,6 @@ mono.openTab = mono.isChrome ? function(url) {
 mono.closePopup = mono.isFF ? function() {
     "use strict";
     return mono.addon.postMessage('hidePopup');
-} : mono.isSafari ? function() {
-    "use strict";
-    safari.extension.popovers[0].hide();
 } : function() {
     "use strict";
     console.error('closePopup is not supported!');
@@ -531,20 +486,6 @@ mono.closePopup = mono.isFF ? function() {
 mono.resizePopup = mono.isFF ? function(w, h) {
     "use strict";
     mono.sendMessage({action: 'resize', height: h, width: w}, undefined, "service");
-} : mono.isOpera ? function(w, h) {
-    "use strict";
-    mono.sendMessage({action: 'resize', height: h, width: w});
-} : mono.isSafari ? function(w, h) {
-    "use strict";
-    if (w !== undefined) {
-        safari.extension.popovers[0].width = w;
-    }
-    if (h !== undefined) {
-        safari.extension.popovers[0].height = h;
-    }
-} : mono.isMaxthon ? function(w, h) {
-    "use strict";
-    window.external.mxGetRuntime().getActionByName("Torrents MultiSearch").resize(w, h);
 } : mono.isChrome ? function(){} : function(w, h) {
     "use strict";
     console.error('resizePopup is not supported!');

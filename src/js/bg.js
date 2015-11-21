@@ -74,31 +74,6 @@ var bg = {
         chrome.browserAction.setPopup({
             popup: bg.settings.searchPopup ? 'popup.html' : ''
         });
-    } : mono.isOpera ? function() {
-        "use strict";
-        if (bg.operaBtn) {
-            opera.contexts.toolbar.removeItem(bg.operaBtn);
-            bg.operaBtn = null;
-        }
-        var ToolbarUIItemProperties = {
-            disabled: false,
-            title: "Torrents MultiSearch",
-            icon: "icons/icon-18.png"
-        };
-        if (bg.settings.searchPopup) {
-            ToolbarUIItemProperties.popup = {
-                href: 'build/popup.html',
-                width: 640,
-                height: 70
-            }
-        } else {
-            ToolbarUIItemProperties.onclick = function() {
-                var tab = opera.extension.tabs.create({url: 'build/index.html'});
-                tab.focus();
-            }
-        }
-        bg.operaBtn = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
-        opera.contexts.toolbar.addItem(bg.operaBtn);
     } : function() {
         "use strict";
 
@@ -197,38 +172,6 @@ var bg = {
                 tabs.open(self.data.url('index.html') + request);
             }
         });
-    } : mono.isOpera ? function() {
-        "use strict";
-        var menu = opera.contexts.menu;
-        if (!menu) {
-            return;
-        }
-        if (menu.length > 0) {
-            menu.removeItem(0);
-        }
-        if (!bg.settings.contextMenu) {
-            return;
-        }
-        // Create a menu item properties object
-        var itemProps = {
-            title: mono.language.ctxMenuTitle,
-            contexts: ['selection'],
-            icon: 'icons/icon-16.png',
-            onclick: function(event) {
-                var request = event.selectionText;
-                if (request) {
-                    request = '#?' + mono.hashParam({
-                        search: request
-                    });
-                }
-                var tabProps = {
-                    url: 'build/index.html' + request
-                };
-                var tab = opera.extension.tabs.create(tabProps);
-                tab.focus();
-            }
-        };
-        menu.addItem(menu.createItem(itemProps));
     } : function() {
         "use strict";
     },
@@ -252,16 +195,6 @@ var bg = {
     },
     once: function() {
         "use strict";
-        if (mono.isSafariBgPage) {
-            safari.extension.settings.addEventListener('change', function(event){
-                if (event.key !== 'open_options') {
-                    return;
-                }
-                var tab = safari.application.activeBrowserWindow.openTab();
-                tab.url = safari.extension.baseURI + 'options.html';
-                tab.activate();
-            });
-        }
         if (mono.isChrome) {
             chrome.omnibox.onInputEntered.addListener(function (request) {
                 if (request) {
@@ -409,14 +342,6 @@ var bg = {
                 bg.updateContextMenu();
                 bg.updateBtnAction();
             }, storage.langCode);
-
-            if (mono.isSafari) {
-                // update popup window
-                safari.extension.popovers.forEach(function(popup) {
-                    var func = popup.contentWindow.popup && popup.contentWindow.popup.update;
-                    func && func();
-                });
-            }
 
             if ((mono.isChrome && !mono.isChromeApp) || mono.isFF) {
                 bg.updateIcon();
