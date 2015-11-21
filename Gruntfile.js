@@ -261,28 +261,6 @@ module.exports = function (grunt) {
         });
     });
 
-    grunt.registerMultiTask('insert', 'Insert file in file, lik concat but in current position', function() {
-        var options = this.options({
-            word: '//@insert'
-        });
-        var baseFile = this.files.shift();
-
-        var content = grunt.file.read(baseFile.src[0]);
-        var pos = content.indexOf(options.word);
-        var list = [content.substr(0, pos)];
-        var end = content.substr(pos);
-
-        this.files.forEach(function(filePair) {
-            filePair.src.forEach(function(src) {
-                list.push(grunt.file.read(src));
-            });
-        });
-
-        list.push(end);
-
-        grunt.file.write(baseFile.dest, list.join('\n'));
-    });
-
     grunt.registerTask('monoPrepare', function() {
         "use strict";
         var path = grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>');
