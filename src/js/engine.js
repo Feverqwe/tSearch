@@ -315,11 +315,14 @@ var engine = {
 
     init: function(cb) {
         "use strict";
-        this.ping(function() {
-            this.loadSettings(function() {
-                cb && cb();
+        var _this = this;
+        mono.onReady(function() {
+            _this.ping(function() {
+                _this.loadSettings(function() {
+                    cb && cb();
+                });
             });
-        }.bind(this));
+        });
     },
 
     exploreCache: {},

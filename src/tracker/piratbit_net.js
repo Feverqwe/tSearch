@@ -27,9 +27,9 @@ engine.trackerLib.piratbit = {
         /*Humor  */[]
     ],
     search: {
-        loginUrl: 'http://piratbit.net/login.php',
-        searchUrl: 'http://piratbit.net/tracker.php',
-        baseUrl: 'http://piratbit.net/',
+        loginUrl: 'http://pb.wtf/login.php',
+        searchUrl: 'http://pb.wtf/tracker.php',
+        baseUrl: 'http://pb.wtf/',
         requestType: 'GET',
         requestData: 'ss=%search%&max=1&to=1',
         onGetRequest: function(value) {
