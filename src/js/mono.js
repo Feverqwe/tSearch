@@ -246,7 +246,7 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
 
             //@if1 useWebApp=1>
             //@if1 oneMode!=1>
-            if (location.hostname === 'static.tms.mooo.com') {
+            if (true) {
                 //@if1 oneMode!=1<
                 mono.isWebApp = true;
                 return;
