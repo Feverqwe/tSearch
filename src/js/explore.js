@@ -1943,10 +1943,6 @@ var explore = {
                                 class: 'browserList',
                                 append: (function(){
                                     var obj = {
-                                        safari: {
-                                            title: 'Safari',
-                                            link: 'http://static.tms.mooo.com/safari/build_safari.safariextz'
-                                        },
                                         chrome: {
                                             title: 'Chrome',
                                             link: 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh?utm_source=webApp'
