@@ -244,6 +244,17 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
             //@if1 oneMode!=1<
             //@if1 useSafari=1<
 
+            //@if1 useWebApp=1>
+            //@if1 oneMode!=1>
+            if (location.hostname === 'static.tms.mooo.com') {
+                //@if1 oneMode!=1<
+                mono.isWebApp = true;
+                return;
+                //@if1 oneMode!=1>
+            }
+            //@if1 oneMode!=1<
+            //@if1 useWebApp=1<
+
             //@if1 oneMode!=1>
             console.error('Mono: can\'t define browser!');
             //@if1 oneMode!=1<
