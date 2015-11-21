@@ -27,10 +27,10 @@ engine.trackerLib.kickass = {
         /*Humor  */[]
     ],
     search: {
-        searchUrl: 'http://kat.cr/search/%search%/',
-        wordUrl: 'http://kat.cr/search/%search%/',
-        blankUrl: 'http://kat.cr/new/',
-        baseUrl: 'http://kat.cr/',
+        searchUrl: 'https://kat.cr/search/%search%/',
+        wordUrl: 'https://kat.cr/search/%search%/',
+        blankUrl: 'https://kat.cr/new/',
+        baseUrl: 'https://kat.cr/',
         requestType: 'GET',
         onGetRequest: function(value) {
             "use strict";

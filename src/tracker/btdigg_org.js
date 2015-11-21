@@ -53,7 +53,7 @@ engine.trackerLib.btdigg = {
         torrentSelectorText: {
             title: 'tr>td>a',
             url: {selector: 'tr>td>a', attr: 'href'},
-            size: 'tr>td:eq(3)>span:eq(1)',
+            size: 'tr>td:eq(2)>span:eq(1)',
             downloadUrl: {selector: 'tr>td:eq(0)>a', attr: 'href'},
             date: 'tr>td:eq(6)>span:eq(1)'
         },

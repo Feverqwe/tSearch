@@ -13,8 +13,8 @@ engine.trackerLib.torrentz = {
         allowProxy: 1
     },
     search: {
-        searchUrl: 'http://torrentz.eu/search',
-        baseUrl: 'http://torrentz.eu/',
+        searchUrl: 'https://torrentz.eu/search',
+        baseUrl: 'https://torrentz.eu/',
         requestType: 'GET',
         requestData: 'q=%search%',
         onGetRequest: function(value) {
