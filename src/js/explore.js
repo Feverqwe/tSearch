@@ -1386,19 +1386,19 @@ var explore = {
             source.xhr = mono.ajax({
                 safe: true,
                 url: urlTemplate.replace('%page%', page),
-                success: function(data) {
+                success: function (data) {
                     var pContent = explore.content_parser.kp_favorites(data);
                     if (!pContent) {
                         return onErrorStatus('error');
                     }
                     if (pContent.requireAuth) {
-                return onErrorStatus('login');
-            }
+                        return onErrorStatus('login');
+                    }
                     var newCount = 0;
                     for (var i = 0, item; item = pContent[i]; i++) {
                         if (deDbtlUrl.indexOf(item.url) !== -1) {
                             continue;
-                }
+                        }
                         deDbtlUrl.push(item.url);
                         contentList.push(item);
                         newCount++;

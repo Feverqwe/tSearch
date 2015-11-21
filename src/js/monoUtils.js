@@ -266,7 +266,7 @@ mono.getLanguage = function(cb, force) {
     }
     mono.ajax({
         url: url,
-        dataType: 'JSON',
+        dataType: 'json',
         success: function (data) {
             mono.language = mono.readChromeLocale(data);
             cb();
