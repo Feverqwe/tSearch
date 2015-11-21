@@ -881,9 +881,6 @@ var options = {
             //Chromeum app
             document.querySelector('input[data-option="searchPopup"]').parentNode.style.display = 'none';
         }
-        if (mono.isFF) {
-            document.querySelector('input[data-option="doNotSendStatistics"]').parentNode.style.display = 'none';
-        }
 
         if ((!mono.isChrome || mono.isChrome && mono.isChromeApp) && !mono.isFF) {
             document.querySelector('input[data-option="invertIcon"]').parentNode.style.display = 'none';

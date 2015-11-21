@@ -1,4 +1,12 @@
 exports.run = function (grunt) {
+    var monoParams = {
+        useChrome: 1,
+        oldChromeSupport: 1,
+        useLocalStorage: 0,
+        chromeForceDefineBgPage: 0,
+        oneMode: 1
+    };
+
     grunt.config.merge({
         'json-format': {
             chromeManifestFormat: {
@@ -41,6 +49,8 @@ exports.run = function (grunt) {
     });
 
     grunt.registerTask('chrome', function () {
+        grunt.config('monoParams', monoParams);
+
         grunt.config.merge({
             vendor: 'chrome/src/',
             libFolder: 'js/',
@@ -64,6 +74,8 @@ exports.run = function (grunt) {
     });
 
     grunt.registerTask('opera', function () {
+        grunt.config('monoParams', monoParams);
+
         grunt.config.merge({
             vendor: 'opera/src/',
             libFolder: 'js/',
@@ -87,6 +99,8 @@ exports.run = function (grunt) {
     });
 
     grunt.registerTask('chromeApp', function () {
+        grunt.config('monoParams', monoParams);
+
         grunt.registerTask('chromeAppManifest', function() {
             var manifestPath = grunt.config('output') + grunt.config('vendor') + 'manifest.json';
             var content = grunt.file.readJSON('src/vendor/chromeApp/manifest.json');

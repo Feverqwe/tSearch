@@ -48,12 +48,6 @@ module.exports = function (grunt) {
                 '<%= output %><%= vendor %>popup.html',
                 '<%= output %><%= vendor %><%= dataJsFolder %>popup.js'
             ],
-            mono: monoJsList.slice(1).map(function(item) {
-                return '<%= output %><%= vendor %><%= dataJsFolder %>' + item;
-            }),
-            engine: engineJsList.slice(1).map(function(item) {
-                return '<%= output %><%= vendor %><%= dataJsFolder %>' + item;
-            }),
             bg: [
                 '<%= output %><%= vendor %>js/bg.js'
             ]
@@ -65,7 +59,7 @@ module.exports = function (grunt) {
             engine: {
                 files: {
                     '<%= output %><%= vendor %><%= dataJsFolder %>engine.js': engineJsList.map(function(item) {
-                        return '<%= output %><%= vendor %><%= dataJsFolder %>' + item;
+                        return 'src/js/' + item;
                     })
                 }
             },
@@ -73,30 +67,16 @@ module.exports = function (grunt) {
                 files: {
                     '<%= output %><%= vendor %><%= dataJsFolder %>trackerLib.js': 'src/tracker/*.js'
                 }
+            },
+            mono: {
+                files: {
+                    '<%= output %><%= vendor %><%= dataJsFolder %>mono.js': monoJsList.map(function(item) {
+                        return 'src/js/' + item;
+                    })
+                }
             }
         },
         copy: {
-            monoJs: {
-                cwd: 'src/vendor/<%= browser %>/<%= dataJsFolder %>',
-                expand: true,
-                src: ['mono.js'],
-                dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
-            },
-
-            mono: {
-                cwd: 'src/js/',
-                expand: true,
-                src: monoJsList,
-                dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
-            },
-
-            engine: {
-                cwd: 'src/js/',
-                expand: true,
-                src: engineJsList,
-                dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
-            },
-
             bg: {
                 cwd: 'src/js/',
                 expand: true,
@@ -127,14 +107,6 @@ module.exports = function (grunt) {
                 dest: '<%= output %><%= vendor %><%= dataFolder %>'
             }
         },
-        insert: {
-            mono: {
-                cwd: '<%= output %><%= vendor %><%= dataJsFolder %>',
-                expand: true,
-                src: monoJsList,
-                dest: '<%= output %><%= vendor %><%= dataJsFolder %>'
-            }
-        },
         watch: {
             options: {
                 spawn: false
@@ -149,7 +121,7 @@ module.exports = function (grunt) {
                 files: monoJsList.map(function(item) {
                     return 'src/js/'+item
                 }),
-                tasks: ['copy:mono', 'insert:mono', 'clean:mono']
+                tasks: ['concat:mono']
             },
             bgJs: {
                 files: bgJsList.map(function(item) {
@@ -161,7 +133,7 @@ module.exports = function (grunt) {
                 files: engineJsList.map(function(item) {
                     return 'src/js/' + item;
                 }),
-                tasks: ['copy:engine', 'concat:engine', 'clean:engine']
+                tasks: ['concat:engine']
             },
             dataJs: {
                 files: dataJsList.map(function(item) {
@@ -311,33 +283,19 @@ module.exports = function (grunt) {
         grunt.file.write(baseFile.dest, list.join('\n'));
     });
 
-    grunt.registerTask('makeMono', function() {
-        var browser = grunt.config('browser');
-        var monoPath = 'src/vendor/' + browser + '/' + grunt.config('dataJsFolder');
-
-        var list = monoJsList.map(function(file) {
-            var dest;
-            if (file === 'mono.js') {
-                dest = monoPath;
-            } else {
-                dest = 'src/js/';
-            }
-            return {
-                src: [dest + file],
-                dest: grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>' + file)
-            }
-        });
-
-        insert.call({
-            options: function(def) {
-                return def;
-            },
-            files: list
-        });
+    grunt.registerTask('monoPrepare', function() {
+        "use strict";
+        var path = grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>');
+        var fileName = 'mono.js';
+        var content = grunt.file.read(path + fileName);
+        var ifStrip = require('./grunt/ifStrip.js').ifStrip;
+        content = ifStrip(content, grunt.config('monoParams') || {});
+        content = content.replace(/\n[\t\s]*\n/g, '\n\n');
+        grunt.file.write(path + fileName, content);
     });
 
-    grunt.registerTask('extensionBase', ['copy:baseData', 'copy:legacy', 'copy:dataJs', 'copy:bg', 'copy:engine', 'copy:mono', 'copy:monoJs', 'concat:trackerLib']);
-    grunt.registerTask('buildJs', ['concat:engine', 'insert:mono', 'clean:mono', 'clean:engine']);
+    grunt.registerTask('extensionBase', ['copy:baseData', 'copy:legacy', 'copy:dataJs', 'copy:bg', 'concat:trackerLib']);
+    grunt.registerTask('buildJs', ['concat:engine', 'concat:mono', 'monoPrepare']);
 
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-closurecompiler');
@@ -350,9 +308,6 @@ module.exports = function (grunt) {
 
     require('./grunt/chrome.js').run(grunt);
     require('./grunt/firefox.js').run(grunt);
-    require('./grunt/safari.js').run(grunt);
-    require('./grunt/opera12.js').run(grunt);
-    require('./grunt/maxthon.js').run(grunt);
     require('./grunt/web.js').run(grunt);
 
     grunt.registerTask('devMode', function() {
@@ -365,9 +320,7 @@ module.exports = function (grunt) {
         'clean:output',
         'chrome',
         'chromeApp',
-        'firefoxStore',
         'firefox-sig',
-        'firefox',
         'web'
     ]);
 };

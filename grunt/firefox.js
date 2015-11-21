@@ -1,4 +1,9 @@
 exports.run = function (grunt) {
+    var monoParams = {
+        useFf: 1,
+        oneMode: 1
+    };
+
     var replaceContent = function (content, sha1) {
         content = content.replace(/%extVersion%/g, grunt.config('pkg.extVersion'));
 
@@ -136,49 +141,6 @@ exports.run = function (grunt) {
         }
     });
 
-    grunt.registerTask('firefoxStore', function () {
-        if (!grunt.config('env.addonSdkPath')) {
-            console.error("Add-on SDK is not found!");
-            return;
-        }
-
-        grunt.registerTask('ffRmUpdateKey', function() {
-            var installPath = grunt.template.process('<%= output %><%= vendor %>../template/install.rdf');
-            var content = grunt.file.read(installPath);
-            var p1 = content.indexOf('<em:updateKey>');
-            var p2 = content.indexOf('</em:updateKey>');
-            content = content.substr(0, p1) + content.substr(p2 + 15);
-            grunt.file.write(installPath, content);
-        });
-
-        grunt.config.merge({
-            vendor: 'firefoxStore/src/',
-            libFolder: 'lib/',
-            dataJsFolder: 'data/js/',
-            includesFolder: 'data/includes/',
-            dataFolder: 'data/',
-            ffUpdateUrl: '',
-            buildName: 'tms_<%= pkg.extVersion %>_store',
-            appId: 'firefoxStoreExt',
-            browser: 'firefox'
-        });
-        grunt.task.run([
-            'extensionBase',
-            'copy:ffBase',
-            'buildJs',
-            'clean:magic',
-            'ffPackage',
-            'json-format:ffPackage',
-            'setAppInfo',
-            'copy:ffTemplateDir',
-            'setInstallRdf',
-            'ffRmUpdateKey',
-            'exec:buildFF',
-            'ffRenameBuild',
-            'fixFfJsJs'
-        ]);
-    });
-
     grunt.registerTask('getHash', function () {
         var done = this.async();
         var vendor = grunt.template.process('<%= output %><%= vendor %>../');
@@ -205,53 +167,9 @@ exports.run = function (grunt) {
         fd.pipe(hash);
     });
 
-    grunt.registerTask('firefox', function () {
-        if (!grunt.config('env.addonSdkPath')) {
-            console.error("Add-on SDK is not found!");
-            return;
-        }
-
-        grunt.config.merge({
-            copy: {
-                ffCopyBuildToRoot: {
-                    cwd: '<%= output %><%= vendor %>../',
-                    expand: true,
-                    src: '<%= buildName %>.xpi',
-                    dest: ''
-                }
-            },
-            vendor: 'firefox/src/',
-            libFolder: 'lib/',
-            dataJsFolder: 'data/js/',
-            includesFolder: 'data/includes/',
-            dataFolder: 'data/',
-            ffUpdateUrl: '<%= pkg.ffUpdateUrl %>',
-            buildName: 'build_firefox',
-            hashFile: '<%= output %><%= vendor %>../<%= buildName %>.xpi',
-            appId: 'firefoxExt',
-            browser: 'firefox'
-        });
-
-        grunt.task.run([
-            'extensionBase',
-            'copy:ffBase',
-            'buildJs',
-            'clean:magic',
-            'ffPackage',
-            'json-format:ffPackage',
-            'setAppInfo',
-            'compressJs',
-            'copy:ffTemplateDir',
-            'setInstallRdf',
-            'exec:buildFF',
-            'ffRenameBuild',
-            'fixFfJsJs',
-            'getHash',
-            'copy:ffCopyBuildToRoot'
-        ]);
-    });
-
     grunt.registerTask('firefox-sig', function () {
+        grunt.config('monoParams', monoParams);
+
         if (!grunt.config('env.addonSdkPath')) {
             console.error("Add-on SDK is not found!");
             return;
@@ -300,7 +218,6 @@ exports.run = function (grunt) {
             'extensionBase',
             'copy:ffBase',
             'buildJs',
-            'clean:magic',
             'ffPackage',
             'setPackageId',
             'json-format:ffPackage',

@@ -1,5 +1,13 @@
 exports.run = function (grunt) {
+    var monoParams = {
+        useWebApp: 1,
+        useLocalStorage: 1,
+        oneMode: 1
+    };
+
     grunt.registerTask('web', function () {
+        grunt.config('monoParams', monoParams);
+
         grunt.config.merge({
             copy: {
                 vendorWeb: {

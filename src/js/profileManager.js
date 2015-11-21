@@ -635,10 +635,6 @@ var profileManager = {
 
         this.writeFilterList();
 
-        if (mono.isFF) {
-            this.domCache.createCustomTrackerBtn.style.display = 'none';
-        }
-
         if (mono.isWebApp) {
             this.domCache.createCustomTrackerBtn.addEventListener('click', function(e) {
                 e.preventDefault();
