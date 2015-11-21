@@ -119,57 +119,69 @@ mono.ajax = function(obj) {
 
     return xhr;
 };
-mono.ajax.xhr = mono.isModule ? require('sdk/net/xhr').XMLHttpRequest : !mono.isFF ? XMLHttpRequest : function () {
+mono.onReady(function() {
     "use strict";
-    var xhr = {
-        id: Date.now() + '_' + Math.floor((Math.random() * 10000) + 1)
-    };
+    if (mono.isModule) {
+        mono.ajax.xhr = require('sdk/net/xhr').XMLHttpRequest;
+        return;
+    }
+    if (!mono.isFF) {
+        mono.ajax.xhr = XMLHttpRequest;
+        return;
+    }
+    mono.ajax.xhr = function () {
+        "use strict";
+        var xhr = {
+            id: Date.now() + '_' + Math.floor((Math.random() * 10000) + 1)
+        };
 
-    var vXhr = {};
-    vXhr.abort = function() {
-        if (vXhr.hasOwnProperty('status')) return;
-        mono.sendMessage({action: 'xhrAbort', id: xhr.id}, undefined, "service");
-    };
-    vXhr.open = function(method, url, async) {
-        xhr.method = method;
-        xhr.url = url;
-        xhr.async = async;
-    };
-    vXhr.overrideMimeType = function(mimeType) {
-        xhr.mimeType = mimeType;
-    };
-    vXhr.setRequestHeader = function(key, value) {
-        if (!xhr.headers) {
-            xhr.headers = {};
-        }
-        xhr.headers[key] = value;
-    };
-    vXhr.send = function(data) {
-        xhr.data = data;
-        xhr.timeout = vXhr.timeout;
-        xhr.responseType = vXhr.responseType;
-        xhr.safe = vXhr.safe;
-
-        mono.sendMessage({action: 'xhr', data: xhr}, function(xhr) {
-            vXhr.status = xhr.status;
-            vXhr.statusText = xhr.statusText;
-            vXhr.responseURL = xhr.responseURL;
-
-            if (xhr.responseType) {
-                vXhr.response = xhr.response;
-            } else {
-                vXhr.responseText = xhr.responseText;
+        var vXhr = {};
+        vXhr.abort = function() {
+            if (vXhr.hasOwnProperty('status')) return;
+            mono.sendMessage({action: 'xhrAbort', id: xhr.id}, undefined, "service");
+        };
+        vXhr.open = function(method, url, async) {
+            xhr.method = method;
+            xhr.url = url;
+            xhr.async = async;
+        };
+        vXhr.overrideMimeType = function(mimeType) {
+            xhr.mimeType = mimeType;
+        };
+        vXhr.setRequestHeader = function(key, value) {
+            if (!xhr.headers) {
+                xhr.headers = {};
             }
+            xhr.headers[key] = value;
+        };
+        vXhr.send = function(data) {
+            xhr.data = data;
+            xhr.timeout = vXhr.timeout;
+            xhr.responseType = vXhr.responseType;
+            xhr.safe = vXhr.safe;
 
-            if (!vXhr[xhr.cbType]) {
-                return;
-            }
+            mono.sendMessage({action: 'xhr', data: xhr}, function(xhr) {
+                vXhr.status = xhr.status;
+                vXhr.statusText = xhr.statusText;
+                vXhr.responseURL = xhr.responseURL;
 
-            vXhr[xhr.cbType] && vXhr[xhr.cbType](vXhr);
-        }, "service");
-    };
-    return vXhr;
-};
+                if (xhr.responseType) {
+                    vXhr.response = xhr.response;
+                } else {
+                    vXhr.responseText = xhr.responseText;
+                }
+
+                if (!vXhr[xhr.cbType]) {
+                    return;
+                }
+
+                vXhr[xhr.cbType] && vXhr[xhr.cbType](vXhr);
+            }, "service");
+        };
+        return vXhr;
+    }
+});
+mono.ajax.xhr = null;
 mono.checkAvailableLanguage = function(lang) {
     "use strict";
     lang = lang.substr(0, 2);
@@ -208,18 +220,18 @@ mono.getLocale = function() {
     }
     return mono.getLocale.locale = lang;
 };
-mono.detectLanguage = mono.isChrome ? function() {
+mono.detectLanguage = function() {
     "use strict";
-    return chrome.i18n.getMessage('langCode');
-} : mono.isModule ? function () {
-    "use strict";
-    var lang = require("sdk/l10n").get('langCode');
-    if (lang !== 'langCode') {
-        return lang;
+    if (mono.isChrome) {
+        return chrome.i18n.getMessage('langCode');
     }
-    return mono.getLocale();
-} : function () {
-    "use strict";
+    if (mono.isModule) {
+        var lang = require("sdk/l10n").get('langCode');
+        if (lang !== 'langCode') {
+            return lang;
+        }
+        return mono.getLocale();
+    }
     return mono.getLocale();
 };
 mono.readChromeLocale = function(lang) {
@@ -464,31 +476,28 @@ mono.writeLanguage = function(language, body) {
     }
 };
 
-mono.openTab = mono.isChrome ? function(url) {
+mono.openTab = function(url) {
     "use strict";
-    chrome.tabs.create({url: url});
-} : mono.isFF ? function(url) {
-    "use strict";
-    mono.sendMessage({action: 'openTab', dataUrl: true, url: url}, undefined, 'service');
-} : function() {
-    "use strict";
-    console.error('openTab is not supported!');
+    if (mono.isChrome) {
+        return chrome.tabs.create({url: url});
+    }
+    if (mono.isFF) {
+        return mono.sendMessage({action: 'openTab', dataUrl: true, url: url}, undefined, 'service');
+    }
 };
 
-mono.closePopup = mono.isFF ? function() {
+mono.closePopup = function() {
     "use strict";
-    return mono.addon.postMessage('hidePopup');
-} : function() {
-    "use strict";
-    console.error('closePopup is not supported!');
+    if (mono.isFF) {
+        return mono.addon.postMessage('hidePopup');
+    }
 };
 
-mono.resizePopup = mono.isFF ? function(w, h) {
+mono.resizePopup = function(w, h) {
     "use strict";
-    mono.sendMessage({action: 'resize', height: h, width: w}, undefined, "service");
-} : mono.isChrome ? function(){} : function(w, h) {
-    "use strict";
-    console.error('resizePopup is not supported!');
+    if (mono.isFF) {
+        return mono.sendMessage({action: 'resize', height: h, width: w}, undefined, "service");
+    }
 };
 
 mono.expand = function() {

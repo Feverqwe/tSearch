@@ -191,32 +191,35 @@ var define = function(name, func) {
 };
 define.amd = {};
 
-mono.onMessage(function(msg) {
-    "use strict";
-    if (msg.action === 'empty') {
-        popup.domCache.$requestInput.autocomplete('close');
-        popup.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
-        popup.update();
-    } else
-    if (msg.action === 'reload') {
-        document.location.reload();
-    }
-});
 
-
-mono.storage.get(['autoComplite', 'langCode', 'searchHistory'], function(storage) {
+mono.onReady(function() {
     "use strict";
-    if (Array.isArray(storage.searchHistory)) {
-        popup.varCache.history = storage.searchHistory;
-    }
-    mono.getLanguage(function () {
-        popup.once();
-        if (!storage.hasOwnProperty('autoComplite')) {
-            storage.autoComplite = 1;
+    mono.onMessage(function(msg) {
+        "use strict";
+        if (msg.action === 'empty') {
+            popup.domCache.$requestInput.autocomplete('close');
+            popup.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
+            popup.update();
+        } else
+        if (msg.action === 'reload') {
+            document.location.reload();
         }
+    });
 
-        popup.varCache.autoComplite = storage.autoComplite;
+    mono.storage.get(['autoComplite', 'langCode', 'searchHistory'], function(storage) {
+        "use strict";
+        if (Array.isArray(storage.searchHistory)) {
+            popup.varCache.history = storage.searchHistory;
+        }
+        mono.getLanguage(function () {
+            popup.once();
+            if (!storage.hasOwnProperty('autoComplite')) {
+                storage.autoComplite = 1;
+            }
 
-        document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.4.min.js'}));
-    }, storage.langCode);
+            popup.varCache.autoComplite = storage.autoComplite;
+
+            document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.4.min.js'}));
+        }, storage.langCode);
+    });
 });

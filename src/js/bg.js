@@ -44,39 +44,38 @@ var bg = {
         searchPopup: 1,
         invertIcon: 0
     },
-    updateIcon: mono.isFF ? function() {
+    updateIcon: function() {
         "use strict";
-        if (!mono.ffButton) {
-            return;
-        }
-
-        var prefix = bg.settings.invertIcon ? '-i' : '';
-        mono.ffButton.icon = {
-            16: './icons/icon-16' + prefix + '.png',
-            32: './icons/icon-32' + prefix + '.png',
-            64: './icons/icon-64' + prefix + '.png'
-        };
-    } : mono.isChrome && !mono.isChromeApp ? function() {
-        "use strict";
-        var prefix = bg.settings.invertIcon ? '_i' : '';
-        chrome.browserAction.setIcon({
-            path: {
-                19: 'img/icon_19' + prefix + '.png',
-                38: 'img/icon_38' + prefix + '.png'
+        var prefix;
+        if (mono.isFF) {
+            if (!mono.ffButton) {
+                return;
             }
-        });
-    } : function() {},
-    updateBtnAction: mono.isChromeWebApp ? function() {
-        "use strict";
 
-    } : mono.isChrome ? function() {
+            prefix = bg.settings.invertIcon ? '-i' : '';
+            mono.ffButton.icon = {
+                16: './icons/icon-16' + prefix + '.png',
+                32: './icons/icon-32' + prefix + '.png',
+                64: './icons/icon-64' + prefix + '.png'
+            };
+        }
+        if (mono.isChrome && !mono.isChromeApp) {
+            prefix = bg.settings.invertIcon ? '_i' : '';
+            chrome.browserAction.setIcon({
+                path: {
+                    19: 'img/icon_19' + prefix + '.png',
+                    38: 'img/icon_38' + prefix + '.png'
+                }
+            });
+        }
+    },
+    updateBtnAction: function() {
         "use strict";
-        chrome.browserAction.setPopup({
-            popup: bg.settings.searchPopup ? 'popup.html' : ''
-        });
-    } : function() {
-        "use strict";
-
+        if (mono.isChrome && !mono.isChromeWebApp) {
+            chrome.browserAction.setPopup({
+                popup: bg.settings.searchPopup ? 'popup.html' : ''
+            });
+        }
     },
     ffContextMenu: null,
     checkExtExists: function(cb) {
@@ -91,7 +90,7 @@ var bg = {
         };
         xhr.send();
     },
-    updateContextMenu: mono.isChrome ? function() {
+    chromeUpdateContextMenu: function() {
         "use strict";
         chrome.contextMenus.removeAll(function () {
             if (!bg.settings.contextMenu) {
@@ -107,8 +106,8 @@ var bg = {
                         var request = info.selectionText;
                         if (request) {
                             request = '#?' + mono.hashParam({
-                                search: request
-                            });
+                                    search: request
+                                });
                         }
                         chrome.tabs.create({
                             url: 'index.html' + request,
@@ -118,7 +117,8 @@ var bg = {
                 });
             });
         });
-    } : mono.isFF ? function() {
+    },
+    ffUpdateContextMenu: function() {
         "use strict";
         if (!mono.ffButton) {
             return;
@@ -166,14 +166,21 @@ var bg = {
                 var tabs = require('sdk/tabs');
                 if (request) {
                     request = '#?' + mono.hashParam({
-                        search: request
-                    });
+                            search: request
+                        });
                 }
                 tabs.open(self.data.url('index.html') + request);
             }
         });
-    } : function() {
+    },
+    updateContextMenu: function() {
         "use strict";
+        if (mono.isChrome) {
+            return this.chromeUpdateContextMenu();
+        }
+        if (mono.isFF) {
+            return this.ffUpdateContextMenu();
+        }
     },
     onMessage: function(msg, cb) {
         "use strict";
@@ -351,6 +358,7 @@ var bg = {
 };
 
 (function() {
+    "use strict";
     var init = function(addon, button, initPopup) {
         "use strict";
         if (addon) {
@@ -365,8 +373,11 @@ var bg = {
         mono.onMessage(bg.onMessage);
         bg.once();
     };
-    if (!mono.isModule) {
-        return init();
+    if (mono.isModule) {
+        exports.init = init;
+    } else {
+        mono.onReady(function() {
+            return init();
+        });
     }
-    exports.init = init;
 })();

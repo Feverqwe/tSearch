@@ -12,14 +12,14 @@
 
 var mono = (typeof mono !== 'undefined') ? mono : undefined;
 
-(function(window, factory) {
+(function(window, base, factory) {
     "use strict";
     if (mono && mono.isLoaded) {
         return;
     }
 
     if (typeof window !== "undefined") {
-        return mono = factory(null, mono);
+        return mono = base(factory.bind(null, null, factory), mono);
     }
 
     //@if0 useFf=1>
@@ -30,6 +30,57 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
     //@if0 useFf=1<
 }(
     typeof window !== "undefined" ? window : undefined,
+    function base(factory, _mono) {
+        if (['interactive', 'complete'].indexOf(document.readyState) !== -1) {
+            return factory(null, _mono);
+        }
+
+        //@if0 useGm=1>
+        if (typeof GM_getValue !== 'undefined') {
+            return factory(null, _mono);
+        }
+        //@if0 useGm=1<
+
+        var objCreate = function(o) {
+            if (typeof Object.create === 'function') {
+                return Object.create(o);
+            }
+            var a = function() {};
+            a.prototype = o;
+            return new a();
+        };
+
+        var base = objCreate({
+            isLoaded: true,
+            onReadyStack: [],
+            onReady: function() {
+                base.onReadyStack.push([this, arguments]);
+            }
+        });
+
+        var onLoad = function() {
+            document.removeEventListener('DOMContentLoaded', onLoad, false);
+            window.removeEventListener('load', onLoad, false);
+
+            mono = factory(null, _mono);
+
+            for (var key in base) {
+                if (base.hasOwnProperty(key)) {
+                    mono[key] = base[key];
+                }
+            }
+
+            var item;
+            while (item = base.onReadyStack.shift()) {
+                mono.onReady.apply(item[0], item[1]);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', onLoad, false);
+        window.addEventListener('load', onLoad, false);
+
+        return base;
+    },
     function initMono(_addon, _mono) {
         var require;
 
@@ -70,7 +121,10 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
             msgType: undefined,
             storageType: undefined,
             msgList: {},
-            storageList: {}
+            storageList: {},
+            onReady: function(cb) {
+                cb();
+            }
         };
 
         //@if0 true=false>
@@ -90,7 +144,9 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
             //@if1 useFf=1<
 
             //@if1 useGm=1>
+            //@if1 oneMode!=1>
             if (typeof GM_getValue !== 'undefined') {
+                //@if1 oneMode!=1<
                 mono.isGM = true;
                 mono.msgType = 'gm';
                 if (window.chrome !== undefined) {
@@ -102,11 +158,15 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
                     mono.isGmOnly = true;
                 }
                 return;
+                //@if1 oneMode!=1>
             }
+            //@if1 oneMode!=1<
             //@if1 useGm=1<
 
             //@if1 useChrome=1>
+            //@if1 oneMode!=1>
             if (window.chrome !== undefined) {
+                //@if1 oneMode!=1<
                 mono.isChrome = true;
                 mono.isChromeInject = !chrome.hasOwnProperty('tabs');
                 mono.msgType = 'chrome';
@@ -124,29 +184,35 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
 
                 //@if1 useChromeWebApp=1>
                 if (chrome.app.hasOwnProperty('getDetails')) {
-                    mono.isChromeWebApp = chrome.app.getDetails();
-                    if (mono.isChromeWebApp && mono.isChromeWebApp.hasOwnProperty('app')) {
+                    var details = chrome.app.getDetails();
+                    if (details && details.hasOwnProperty('app')) {
                         mono.isChromeWebApp = true;
-                    } else {
-                        delete mono.isChromeWebApp;
                     }
                 }
                 //@if1 useChromeWebApp=1<
                 return;
+                //@if1 oneMode!=1>
             }
+            //@if1 oneMode!=1<
             //@if1 useChrome=1<
 
             //@if1 useOpera=1>
+            //@if1 oneMode!=1>
             if (window.opera !== undefined) {
+                //@if1 oneMode!=1<
                 mono.isOpera = true;
                 mono.msgType = 'opera';
                 mono.isOperaInject = opera.extension.broadcastMessage === undefined;
                 return;
+                //@if1 oneMode!=1>
             }
+            //@if1 oneMode!=1<
             //@if1 useOpera=1<
 
             //@if1 useFf=1>
-            if (navigator.userAgent.indexOf('Firefox') !== -1) {
+            //@if1 oneMode!=1>
+            if (navigator.userAgent.indexOf('Firefox') !== -1 || typeof InstallTrigger !== 'undefined') {
+                //@if1 oneMode!=1<
                 mono.isFF = true;
                 mono.msgType = 'firefox';
                 if (typeof addon !== 'undefined' && addon.hasOwnProperty('port')) {
@@ -158,26 +224,29 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
                     mono.noAddon = true;
                 }
                 return;
+                //@if1 oneMode!=1>
             }
+            //@if1 oneMode!=1<
             //@if1 useFf=1<
 
             //@if1 useSafari=1>
+            //@if1 oneMode!=1>
             if (window.safari !== undefined) {
+                //@if1 oneMode!=1<
                 mono.isSafari = true;
                 mono.msgType = 'safari';
                 mono.isSafariPopup = safari.self.identifier === 'popup';
                 mono.isSafariBgPage = safari.self.addEventListener === undefined;
                 mono.isSafariInject = !mono.isSafariPopup && safari.application === undefined;
                 return;
+                //@if1 oneMode!=1>
             }
-            if (navigator.userAgent.indexOf('Safari/') !== -1) {
-                // Safari bug!
-                mono.isSafari = true;
-                return;
-            }
+            //@if1 oneMode!=1<
             //@if1 useSafari=1<
 
+            //@if1 oneMode!=1>
             console.error('Mono: can\'t define browser!');
+            //@if1 oneMode!=1<
         })();
 
         /**
@@ -273,9 +342,9 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
         };
 
         mono.messageStack = 50;
-        mono.msgClearStack = msgTools.clearCbStack;
-        mono.msgRemoveCbById = msgTools.removeCb;
-        mono.msgClean = msgTools.clean;
+        mono.msgClearStack = msgTools.clearCbStack.bind(msgTools);
+        mono.msgRemoveCbById = msgTools.removeCb.bind(msgTools);
+        mono.msgClean = msgTools.clean.bind(msgTools);
 
         /**
          * Send message if background page - to local pages, or to background page
@@ -774,8 +843,11 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
                     safari.self.removeEventListener("message", safariMsg.onMessage, false);
                 },
                 sendToActiveTab: function(message) {
-                    var currentTab = safari.application.activeBrowserWindow.activeTab;
-                    safariMsg.sendTo(message, currentTab);
+                    var activeTab = safari.application.activeBrowserWindow && safari.application.activeBrowserWindow.activeTab;
+                    if (!activeTab) {
+                        return;
+                    }
+                    safariMsg.sendTo(message, activeTab);
                 },
                 send: mono.isSafariPopup ? function(message) {
                     safari.extension.globalPage.contentWindow.mono.safariDirectOnMessage({
@@ -927,13 +999,13 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
         };
         //@if0 useGm=1<
 
-        var func = mono.msgList[mono.msgType];
-        if (func !== undefined) {
-            func();
+        var initFunc = mono.msgList[mono.msgType];
+        if (initFunc !== undefined) {
+            initFunc();
         } else {
             console.error('Msg transport is not defined!');
         }
-        func = undefined;
+        initFunc = undefined;
         mono.msgList = undefined;
 
         (function storageDefine() {
@@ -1147,12 +1219,7 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
                     var key, value, obj = {},
                         i, len;
                     if (src === undefined || src === null) {
-                        var nameList = GM_listValues();
-                        for (i = 0, len = nameList.length; i < len; i++) {
-                            key = nameList[i];
-                            obj[key] = GM_getValue(key);
-                        }
-                        return cb(obj);
+                        src = GM_listValues();
                     }
                     if (Array.isArray(src) === false) {
                         src = [src];
@@ -1176,11 +1243,17 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
                  * @param {function} [cb]
                  */
                 set: function(obj, cb) {
+                    var value;
                     for (var key in obj) {
-                        if (typeof obj[key] !== 'object') {
-                            GM_setValue(key, obj[key]);
+                        value = obj[key];
+                        if (typeof value !== 'object') {
+                            if (value === undefined) {
+                                storage.remove([key]);
+                            } else {
+                                GM_setValue(key, value);
+                            }
                         } else {
-                            GM_setValue(key, JSON.parse(JSON.stringify(obj[key])));
+                            GM_setValue(key, JSON.parse(JSON.stringify(value)));
                         }
                     }
                     cb && cb();
@@ -1205,11 +1278,7 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
                  * @param {function} [cb]
                  */
                 clear: function(cb) {
-                    var nameList = GM_listValues();
-                    for (var i = 0, len = nameList.length; i < len; i++) {
-                        var key = nameList[i];
-                        GM_deleteValue(key);
-                    }
+                    storage.remove(GM_listValues());
                     cb && cb();
                 }
             };
@@ -1558,13 +1627,13 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
         };
         //@if0 useLocalStorage=1||useOpera=1<
 
-        func = mono.storageList[mono.storageType];
-        if (func !== undefined) {
-            func();
+        initFunc = mono.storageList[mono.storageType];
+        if (initFunc !== undefined) {
+            initFunc();
         } else {
             console.error('Storage is not defined!');
         }
-        func = undefined;
+        initFunc = undefined;
         mono.storageList = undefined;
 
         //@insert
