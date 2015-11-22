@@ -185,10 +185,11 @@ module.exports = function (grunt) {
         if (devMode) {
             return done();
         }
-        var ccTask = {
+
+        var gruntTask = {
             closurecompiler: {
                 minify: {
-                    files: 'empty',
+                    files: {},
                     options: {
                         jscomp_warning: 'const',
                         language_in: 'ECMASCRIPT5',
@@ -197,66 +198,64 @@ module.exports = function (grunt) {
                 }
             }
         };
-        grunt.config.merge(ccTask);
-        ccTask.closurecompiler.minify.files = {};
+        grunt.config.merge({closurecompiler: {
+            minify: ''
+        }});
 
         var wait = 0;
         var ready = 0;
         var hashList = {};
 
-        var fs = require('fs');
-        var ddblFolderList = [];
-        ['dataJsFolder', 'libFolder'].forEach(function(folder) {
-            if (ddblFolderList.indexOf(grunt.config(folder)) !== -1) {
+        var fileList = grunt.file.expand(grunt.template.process('<%= output %><%= vendor %>') + '**/*.js');
+        fileList = fileList.filter(function(path) {
+            if (/\.min\.js$/.test(path)) {
+                return false;
+            }
+            return true;
+        });
+
+        var onReady = function() {
+            ready++;
+            if (wait !== ready) {
                 return;
             }
-            ddblFolderList.push(grunt.config(folder));
 
-            var jsFolder = grunt.template.process('<%= output %><%= vendor %><%= ' + folder + ' %>');
+            var copyFileList = [];
+            var hashFolder = grunt.template.process('<%= output %>hash/');
+            for (var hash in hashList) {
+                var pathList = hashList[hash];
+                var hashFilePath = hashFolder + hash + '.js';
 
-            var files = fs.readdirSync(jsFolder);
-            var jsList = grunt.file.match('*.js', files);
-            files = null;
-
-            var copyList = [];
-            var onReady = function() {
-                ready++;
-                if (wait !== ready) {
-                    return;
+                if (!grunt.file.exists(hashFilePath)) {
+                    gruntTask.closurecompiler.minify.files[hashFilePath] = pathList[0];
                 }
 
-                var hashFolder = grunt.template.process('<%= output %>hash/');
-                for (var hash in hashList) {
-                    var item = hashList[hash];
-                    var jsFolder = grunt.template.process('<%= output %><%= vendor %><%= ' + item[0] + ' %>');
-                    var hashName = hashFolder + hash + '.js';
-                    if (!grunt.file.exists(hashName)) {
-                        ccTask.closurecompiler.minify.files[hashName] = '<%= output %><%= vendor %><%= ' + item[0] + ' %>'+item[1];
-                    }
-                    copyList.push([hashName, jsFolder + item[1]]);
-                }
-
-                grunt.config.merge(ccTask);
-                grunt.registerTask('copyFromCache', function() {
-                    copyList.forEach(function(item) {
-                        grunt.file.copy(item[0], item[1]);
-                    });
+                pathList.forEach(function(path) {
+                    copyFileList.push({src: hashFilePath, dest: path});
                 });
+            }
 
-                grunt.task.run(['closurecompiler:minify', 'copyFromCache']);
+            grunt.config.merge(gruntTask);
 
-                done();
-            };
-
-            jsList.forEach(function(jsFile) {
-                if (jsFile.indexOf('.min.js') !== -1) {
-                    return;
-                }
-                wait++;
-                getHash(jsFolder + jsFile, function(hash) {
-                    hashList[hash] = [folder, jsFile];
-                    onReady();
+            grunt.registerTask('copyFromCache', function() {
+                copyFileList.forEach(function(item) {
+                    grunt.file.copy(item.src, item.dest);
                 });
+            });
+
+            grunt.task.run(['closurecompiler:minify', 'copyFromCache']);
+
+            done();
+        };
+
+        fileList.forEach(function(path) {
+            wait++;
+            getHash(path, function(hash) {
+                if (!hashList[hash]) {
+                    hashList[hash] = [];
+                }
+                hashList[hash].push(path);
+                onReady();
             });
         });
     });
