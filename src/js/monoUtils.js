@@ -119,6 +119,7 @@ mono.ajax = function(obj) {
 
     return xhr;
 };
+mono.ajax.xhr = null;
 mono.onReady(function() {
     "use strict";
     if (mono.isModule) {
@@ -181,7 +182,6 @@ mono.onReady(function() {
         return vXhr;
     }
 });
-mono.ajax.xhr = null;
 mono.checkAvailableLanguage = function(lang) {
     "use strict";
     lang = lang.substr(0, 2);

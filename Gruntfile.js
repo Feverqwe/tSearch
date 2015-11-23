@@ -67,13 +67,14 @@ module.exports = function (grunt) {
                 files: {
                     '<%= output %><%= vendor %><%= dataJsFolder %>trackerLib.js': 'src/tracker/*.js'
                 }
-            },
+            }
+        },
+        insert: {
             mono: {
-                files: {
-                    '<%= output %><%= vendor %><%= dataJsFolder %>mono.js': monoJsList.map(function(item) {
-                        return 'src/js/' + item;
-                    })
-                }
+                src: monoJsList.map(function(item) {
+                    return 'src/js/' + item;
+                }),
+                dest: '<%= output %><%= vendor %><%= dataJsFolder %>mono.js'
             }
         },
         copy: {
@@ -121,7 +122,7 @@ module.exports = function (grunt) {
                 files: monoJsList.map(function(item) {
                     return 'src/js/'+item
                 }),
-                tasks: ['concat:mono']
+                tasks: ['insert:mono']
             },
             bgJs: {
                 files: bgJsList.map(function(item) {
@@ -271,8 +272,32 @@ module.exports = function (grunt) {
         grunt.file.write(path + fileName, content);
     });
 
+    grunt.registerMultiTask('insert', 'Insert file in file, like concat but in current position', function() {
+        var options = this.options({
+            word: '//@insert'
+        });
+
+        this.files.forEach(function(filePair) {
+            var dest = filePair.dest;
+
+            var src = filePair.src.shift();
+            var content = grunt.file.read(src);
+            var pos = content.indexOf(options.word);
+            var list = [content.substr(0, pos)];
+            var end = content.substr(pos);
+
+            filePair.src.forEach(function(src, index) {
+                list.push(grunt.file.read(src));
+            });
+
+            list.push(end);
+
+            grunt.file.write(dest, list.join('\n'));
+        });
+    });
+
     grunt.registerTask('extensionBase', ['copy:baseData', 'copy:legacy', 'copy:dataJs', 'copy:bg', 'concat:trackerLib']);
-    grunt.registerTask('buildJs', ['concat:engine', 'concat:mono', 'monoPrepare']);
+    grunt.registerTask('buildJs', ['concat:engine', 'insert:mono', 'monoPrepare']);
 
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-closurecompiler');
