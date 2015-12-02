@@ -59,7 +59,7 @@ var bg = {
                 64: './icons/icon-64' + prefix + '.png'
             };
         }
-        if (mono.isChrome && !mono.isChromeApp) {
+        if (mono.isChrome && !mono.isChromeWebApp) {
             prefix = bg.settings.invertIcon ? '_i' : '';
             chrome.browserAction.setIcon({
                 path: {
@@ -350,7 +350,7 @@ var bg = {
                 bg.updateBtnAction();
             }, storage.langCode);
 
-            if ((mono.isChrome && !mono.isChromeApp) || mono.isFF) {
+            if ((mono.isChrome && !mono.isChromeWebApp) || mono.isFF) {
                 bg.updateIcon();
             }
         });

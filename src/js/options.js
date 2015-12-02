@@ -882,7 +882,7 @@ var options = {
             document.querySelector('input[data-option="searchPopup"]').parentNode.style.display = 'none';
         }
 
-        if ((!mono.isChrome || mono.isChrome && mono.isChromeApp) && !mono.isFF) {
+        if ((!mono.isChrome || mono.isChrome && mono.isChromeWebApp) && !mono.isFF) {
             document.querySelector('input[data-option="invertIcon"]').parentNode.style.display = 'none';
         }
 

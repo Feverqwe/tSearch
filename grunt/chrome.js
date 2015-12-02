@@ -5,7 +5,7 @@ exports.run = function (grunt) {
         useLocalStorage: 0,
         chromeForceDefineBgPage: 0,
         oneMode: 1,
-        useChromeApp: 1
+        useChromeWebApp: 1
     };
 
     grunt.config.merge({
