@@ -266,29 +266,11 @@ var exKit = {
 
         obj[origItem + key1] = obj[key1];
 
-        var type = typeof obj[key1];
-        if (type !== 'function') {
-            obj[key1] = new Function( 'return (' + obj[key1] + ').apply(this, arguments);');
-        }
-
         obj[key1] = obj[origItem + key1].bind(tracker);
     },
     prepareCustomTracker: function(trackerJson) {
         "use strict";
         var id = null;
-
-        if (trackerJson.version === 2) {
-            var uid = trackerJson.id;
-            if (uid.substr(0, 3) !== 'ct_') {
-                uid = 'ct_' + uid;
-                id = trackerJson.id = uid;
-            }
-            if (engine.trackerLib[id]) {
-                return;
-            }
-            engine.trackerLib[id] = trackerJson;
-            return trackerJson;
-        }
 
         if (trackerJson.version === 1) {
             id = 'ct_' + trackerJson.uid;
