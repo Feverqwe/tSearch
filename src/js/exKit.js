@@ -260,14 +260,17 @@ var exKit = {
     bindFunc: function(tracker, obj, key1) {
         "use strict";
         var origItem = '_defaultItem_';
-        if (obj[key1] === undefined) {
+        if (obj[key1] === undefined || obj[origItem + key1] !== undefined) {
             return;
-        }
-        if (obj[origItem + key1]) {
-            obj[key1] = obj[origItem + key1];
         }
 
         obj[origItem + key1] = obj[key1];
+
+        var type = typeof obj[key1];
+        if (type !== 'function') {
+            obj[key1] = new Function(obj[key1]);
+        }
+
         obj[key1] = obj[origItem + key1].bind(tracker);
     },
     prepareCustomTracker: function(trackerJson) {
@@ -435,6 +438,7 @@ var exKit = {
             }
         }
         exKit.bindFunc(tracker, tracker.search, 'onGetRequest');
+        exKit.bindFunc(tracker, tracker.search, 'onBeforeDomParse');
         exKit.bindFunc(tracker, tracker.search, 'onAfterDomParse');
         exKit.bindFunc(tracker, tracker.search, 'onGetListItem');
         exKit.bindFunc(tracker, tracker.search, 'onResponseUrl');
