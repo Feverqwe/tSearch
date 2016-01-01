@@ -519,6 +519,9 @@ var exKit = {
     },
     parseDom: function(tracker, request, dom, cb) {
         "use strict";
+        if (tracker.search.onBeforeDomParse !== undefined) {
+            dom = tracker.search.onBeforeDomParse(dom);
+        }
         var $dom = $(dom);
         var env = {
             skipSelector: false,
@@ -528,7 +531,7 @@ var exKit = {
         };
         tracker.env = env;
         if (tracker.search.onAfterDomParse !== undefined) {
-            tracker.search.onAfterDomParse();
+            tracker.search.onAfterDomParse($dom);
         }
         if (tracker.search.loginFormSelector !== undefined && $dom.find(tracker.search.loginFormSelector).length) {
             return cb({requireAuth: 1});
@@ -570,10 +573,10 @@ var exKit = {
                     item = {selector: item};
                 }
 
-                if (cache[item.selector] === undefined) {
-                    cache[item.selector] = el.find(item.selector).get(0);
-                }
                 var value = cache[item.selector];
+                if (value === undefined) {
+                    value = cache[item.selector] = el.find(item.selector).get(0);
+                }
 
                 if (value === undefined && tracker.search.onSelectorIsNotFound[key] !== undefined) {
                     value = tracker.search.onSelectorIsNotFound[key](env);
