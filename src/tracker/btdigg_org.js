@@ -17,29 +17,30 @@ engine.trackerLib.btdigg = {
         baseUrl: 'http://btdigg.org',
         requestType: 'GET',
         requestData: '%search%&p=0&order=0',
-        onResponseUrl: function (url) {
+        onResponseUrl: function (details) {
             "use strict";
-            this.lastResponseUrl = url;
+            details.tracker.lastResponseUrl = details.responseURL;
             return true;
         },
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
+            var value = details.request;
             var infoHash = '';
             var q = encodeURIComponent(value);
             if (value.length === 40 && /^[a-zA-Z0-9]+$/.test(value)) {
                 infoHash = value;
             }
-            return 'info_hash=' + infoHash + '&q=' + q;
+            details.request = 'info_hash=' + infoHash + '&q=' + q;
         },
-        onAfterDomParse: function () {
+        onAfterDomParse: function (details) {
             "use strict";
-            var $dom = this.env.$dom;
+            var $dom = details.env.$dom;
             if ($dom.find('#torrent_info').length) {
-                this.search.listItemSelector = this.search.listItemSelectorHash;
-                this.search.torrentSelector = this.search.torrentSelectorHash;
+                details.tracker.search.listItemSelector = details.tracker.search.listItemSelectorHash;
+                details.tracker.search.torrentSelector = details.tracker.search.torrentSelectorHash;
             } else {
-                this.search.listItemSelector = this.search.listItemSelectorText;
-                this.search.torrentSelector = this.search.torrentSelectorText;
+                details.tracker.search.listItemSelector = details.tracker.search.listItemSelectorText;
+                details.tracker.search.torrentSelector = details.tracker.search.torrentSelectorText;
             }
         },
         torrentSelector: {
@@ -66,19 +67,19 @@ engine.trackerLib.btdigg = {
             date: 'tbody>tr:eq(6)>td:eq(1)'
         },
         onGetValue: {
-            date: function (value) {
+            date: function (details, value) {
                 "use strict";
                 value = parseFloat(value);
                 return Date.now() / 1000 - value * 24 * 60 * 60;
             },
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)
             },
-            url: function (value) {
+            url: function (details, value) {
                 "use strict";
                 if (value.substr(0, 7) === 'magnet:') {
-                    return this.lastResponseUrl;
+                    return details.tracker.lastResponseUrl;
                 }
                 return value;
             }

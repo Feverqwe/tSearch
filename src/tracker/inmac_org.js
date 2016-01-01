@@ -32,13 +32,13 @@ engine.trackerLib.inmac = {
         loginUrl: 'https://inmac.org/login.php',
         requestType: 'GET',
         requestData: 'nm=%search%',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
-        onResponseUrl: function (value) {
+        onResponseUrl: function (details) {
             "use strict";
-            return !/\/login\//.test(value);
+            return !/\/login\//.test(details.responseUrl);
         },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
@@ -54,9 +54,9 @@ engine.trackerLib.inmac = {
             date: 'td.row4.small.nowrap:eq(1)>u'
         },
         onGetValue: {
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt(this, value, /f=([0-9]+)/);
+                return exKit.funcList.idInCategoryListInt(details.tracker, value, /f=([0-9]+)/);
             }
         }
     }

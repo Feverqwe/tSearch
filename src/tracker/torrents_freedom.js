@@ -33,13 +33,13 @@ engine.trackerLib['torrents.freedom'] = {
         requestType: 'POST',
         requestData: 'nm=%search%',
         requestMimeType: 'text/html; charset=windows-1251',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return exKit.funcList.encodeCp1251(value);
+            details.request = exKit.funcList.encodeCp1251(details.request);
         },
-        onResponseUrl: function (value) {
+        onResponseUrl: function (details) {
             "use strict";
-            return !/login\.php/.test(value);
+            return !/login\.php/.test(details.responseUrl);
         },
         listItemSelector: 'table.forumline tr',
         torrentSelector: {
@@ -55,17 +55,17 @@ engine.trackerLib['torrents.freedom'] = {
             date: 'td:eq(11)>p:eq(0)'
         },
         onGetValue: {
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt(this, value, /f=([0-9]+)/);
+                return exKit.funcList.idInCategoryListInt(details.tracker, value, /f=([0-9]+)/);
             },
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);
             },
-            date: function (value) {
+            date: function (details, value) {
                 "use strict";
-                var time = this.env.el.find('td:eq(11)>p:eq(1)').text();
+                var time = details.env.el.find('td:eq(11)>p:eq(1)').text();
                 value += ' ' + time;
                 value = exKit.funcList.monthReplace(value, 1);
                 return exKit.funcList.dateFormat(1, value)

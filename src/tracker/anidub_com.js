@@ -30,9 +30,9 @@ engine.trackerLib['anidub'] = {
         baseUrl: 'http://tr.anidub.com/',
         requestType: 'POST',
         requestData: 'do=search&subaction=search&showposts=1&story=%search%',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
         listItemSelector: '#dle-content>div.dpad.searchitem',
         torrentSelector: {
@@ -44,11 +44,11 @@ engine.trackerLib['anidub'] = {
             date: 'b'
         },
         onGetValue: {
-            categoryId: function (url) {
+            categoryId: function (details, url) {
                 "use strict";
-                return exKit.funcList.idInCategoryListStr(this, url, /\/([^\/]+)\/$/);
+                return exKit.funcList.idInCategoryListStr(details.tracker, url, /\/([^\/]+)\/$/);
             },
-            date: function (value) {
+            date: function (details, value) {
                 "use strict";
                 return exKit.funcList.dateFormat(1, value);
             }

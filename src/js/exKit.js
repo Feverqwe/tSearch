@@ -257,17 +257,6 @@ var exKit = {
             return this.idInCategoryList(tracker, cId);
         }
     },
-    bindFunc: function(tracker, obj, key1) {
-        "use strict";
-        var origItem = '_defaultItem_';
-        if (obj[key1] === undefined || obj[origItem + key1] !== undefined) {
-            return;
-        }
-
-        obj[origItem + key1] = obj[key1];
-
-        obj[key1] = obj[origItem + key1].bind(tracker);
-    },
     prepareCustomTracker: function(trackerJson) {
         "use strict";
         var id = null;
@@ -305,9 +294,9 @@ var exKit = {
                 search.requestData = trackerJson.post;
             }
             if (trackerJson.encode) {
-                search.onGetRequest = function(value) {
+                search.onGetRequest = function(details) {
                     "use strict";
-                    return exKit.funcList.encodeCp1251(value);
+                    details.request = exKit.funcList.encodeCp1251(details.request);
                 };
             }
             search.listItemSelector = trackerJson.items;
@@ -354,7 +343,7 @@ var exKit = {
                     });
                 }
                 if (sizeFuncList.length > 1) {
-                    onGetValue.size = function(value) {
+                    onGetValue.size = function(details, value) {
                         for (var i = 0, func; func = sizeFuncList[i]; i++) {
                             value = func(value);
                         }
@@ -369,7 +358,7 @@ var exKit = {
                 torrentSelector.seed = trackerJson.seed;
                 if (trackerJson.seed_r && trackerJson.seed_rp !== undefined) {
                     var seed_r = new RegExp(trackerJson.seed_r, 'ig');
-                    onGetValue.seed = function(value) {
+                    onGetValue.seed = function(details, value) {
                         return value.replace(seed_r, trackerJson.seed_rp);
                     };
                 }
@@ -378,7 +367,7 @@ var exKit = {
                 torrentSelector.peer = trackerJson.peer;
                 if (trackerJson.peer_r && trackerJson.peer_rp !== undefined) {
                     var peer_r = new RegExp(trackerJson.peer_r, 'ig');
-                    onGetValue.peer = function(value) {
+                    onGetValue.peer = function(details, value) {
                         return value.replace(peer_r, trackerJson.peer_rp);
                     };
                 }
@@ -391,22 +380,22 @@ var exKit = {
                 var dateFuncList = [];
                 if (trackerJson.t_r && trackerJson.t_r_r !== undefined) {
                     var t_r = new RegExp(trackerJson.t_r, "ig");
-                    dateFuncList.push(function(value) {
+                    dateFuncList.push(function(details, value) {
                         return value.replace(t_r, trackerJson.t_r_r);
                     });
                 }
                 if (trackerJson.t_t_r) {
-                    dateFuncList.push(function(value) {
+                    dateFuncList.push(function(details, value) {
                         return exKit.legacy.todayReplace(value, trackerJson.t_f);
                     });
                 }
                 if (trackerJson.t_m_r) {
-                    dateFuncList.push(function(value) {
+                    dateFuncList.push(function(details, value) {
                         return exKit.legacy.monthReplace(value);
                     });
                 }
                 if (trackerJson.t_f !== undefined && trackerJson.t_f !== "-1") {
-                    dateFuncList.push(function(value) {
+                    dateFuncList.push(function(details, value) {
                         return exKit.legacy.dateFormat(trackerJson.t_f, value);
                     });
                 }
@@ -430,16 +419,6 @@ var exKit = {
                 tracker.search[item] = {};
             }
         }
-        for (var key in tracker.search.torrentSelector) {
-            for (var i = 0, item; item = itemList[i]; i++) {
-                exKit.bindFunc(tracker, tracker.search[item], key);
-            }
-        }
-        exKit.bindFunc(tracker, tracker.search, 'onGetRequest');
-        exKit.bindFunc(tracker, tracker.search, 'onBeforeDomParse');
-        exKit.bindFunc(tracker, tracker.search, 'onAfterDomParse');
-        exKit.bindFunc(tracker, tracker.search, 'onGetListItem');
-        exKit.bindFunc(tracker, tracker.search, 'onResponseUrl');
 
         if (!tracker.search.requestType) {
             tracker.search.requestType = 'GET';
@@ -519,27 +498,34 @@ var exKit = {
         }
         return url.replace(/(https?:\/\/[^\/]+)(.*)/, '$1.' + proxy.url + '$2');
     },
-    parseDom: function(tracker, request, dom, cb) {
+    parseDom: function(tracker, details, cb) {
         "use strict";
         if (tracker.search.onBeforeDomParse !== undefined) {
-            dom = tracker.search.onBeforeDomParse(dom);
+            tracker.search.onBeforeDomParse(details);
         }
-        var $dom = $(dom);
-        var env = {
+
+        var dom = exKit.parseHtml(details.data);
+
+        var $dom = details.$dom = $(dom);
+
+        if (tracker.search.onAfterDomParse !== undefined) {
+            tracker.search.onAfterDomParse(details);
+        }
+
+        var env = details.env = {
             skipSelector: false,
             skipItem: false,
             $dom: $dom,
             el: null
         };
-        tracker.env = env;
-        if (tracker.search.onAfterDomParse !== undefined) {
-            tracker.search.onAfterDomParse($dom);
-        }
+
         if (tracker.search.loginFormSelector !== undefined && $dom.find(tracker.search.loginFormSelector).length) {
             return cb({requireAuth: 1});
         }
+
         var torrentList = [];
         var torrentElList = $dom.find(tracker.search.listItemSelector);
+
         if (tracker.search.listItemSplice !== undefined) {
             if (tracker.search.listItemSplice[0] !== 0) {
                 torrentElList.splice(0, tracker.search.listItemSplice[0]);
@@ -548,13 +534,17 @@ var exKit = {
                 torrentElList.splice(tracker.search.listItemSplice[1]);
             }
         }
+
         for (var i = 0, len = torrentElList.length; i < len; i++) {
-            env.skipItem = false;
             var el = torrentElList.eq(i);
             env.el = el;
+
+            env.skipItem = false;
+
             if (tracker.search.onGetListItem !== undefined) {
-                tracker.search.onGetListItem();
+                tracker.search.onGetListItem(details);
             }
+
             if (env.skipItem) {
                 continue;
             }
@@ -563,14 +553,12 @@ var exKit = {
                 column: {},
                 error: {}
             };
+
             var cache = {};
             for (var key in tracker.search.torrentSelector) {
                 env.skipSelector = false;
                 var item = tracker.search.torrentSelector[key];
-                if (typeof item === 'function') {
-                    item();
-                    continue;
-                }
+
                 if (typeof item === 'string') {
                     item = {selector: item};
                 }
@@ -580,8 +568,10 @@ var exKit = {
                     value = cache[item.selector] = el.find(item.selector).get(0);
                 }
 
-                if (value === undefined && tracker.search.onSelectorIsNotFound[key] !== undefined) {
-                    value = tracker.search.onSelectorIsNotFound[key](env);
+                if (value === undefined) {
+                    if (tracker.search.onSelectorIsNotFound[key] !== undefined) {
+                        value = tracker.search.onSelectorIsNotFound[key](details, env);
+                    }
                 }
 
                 if (env.skipSelector) {
@@ -614,7 +604,7 @@ var exKit = {
                 }
 
                 if ((value === null || value.length === 0) && tracker.search.onEmptySelectorValue[key] !== undefined) {
-                    value = tracker.search.onEmptySelectorValue[key]();
+                    value = tracker.search.onEmptySelectorValue[key](details);
                 }
 
                 if (env.skipSelector) {
@@ -626,6 +616,7 @@ var exKit = {
                     trObj.error[key+'!'] = 'Attribute is not found!';
                     continue;
                 }
+
                 if (value.length === 0) {
                     trObj.error[key] = value;
                     trObj.error[key+'!'] = 'Text content is empty!';
@@ -633,7 +624,7 @@ var exKit = {
                 }
 
                 if (tracker.search.onGetValue[key] !== undefined) {
-                    value = tracker.search.onGetValue[key](value);
+                    value = tracker.search.onGetValue[key](details, value);
                 }
 
                 if (env.skipSelector) {
@@ -660,46 +651,55 @@ var exKit = {
                 }
                 trObj.column[key] = value;
             }
+
             if (!trObj.column.title || !trObj.column.url) {
                 console.debug('[' + tracker.id + ']', 'Skip torrent:', trObj);
                 continue;
             }
+
             if (trObj.column.categoryId === undefined) {
                 trObj.column.categoryId = -1;
             }
+
             if (trObj.column.date === undefined) {
                 trObj.column.date = -1;
             }
+
             if (!mono.isEmptyObject(trObj.error)) {
                 console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
             }
+
             torrentList.push(trObj.column);
         }
-        cb({torrentList: torrentList});
         tracker.env = null;
+        cb({torrentList: torrentList});
     },
-    parseResponse: function(tracker, request, cb, data, xhr) {
+    parseResponse: function(tracker, details, cb, data, xhr) {
         "use strict";
-        if (tracker.search.onResponseUrl !== undefined && typeof xhr.responseURL === 'string' && !tracker.search.onResponseUrl(xhr.responseURL)) {
+        details.responseUrl = xhr.responseUrl;
+        if (tracker.search.onResponseUrl !== undefined && !tracker.search.onResponseUrl(details)) {
             return cb({requireAuth: 1});
         }
-        data = exKit.contentFilter(data);
-        return exKit.parseDom(tracker, request, exKit.parseHtml(data), cb);
+        return exKit.parseDom(tracker, details, cb);
     },
     search: function(tracker, request, onSearch) {
         "use strict";
-        var trackerRequest = request;
+        var _this = this;
+        var details = {
+            tracker: tracker,
+            request: request
+        };
         onSearch.onBegin && onSearch.onBegin(tracker);
         if (tracker.search.onGetRequest !== undefined) {
-            trackerRequest = tracker.search.onGetRequest(request);
+            tracker.search.onGetRequest(details);
         }
         var xhr = mono.ajax({
             safe: true,
-            url: tracker.search.searchUrl.replace('%search%', trackerRequest),
+            url: tracker.search.searchUrl.replace('%search%', details.request),
             type: tracker.search.requestType,
             mimeType: tracker.search.requestMimeType,
             dataType: tracker.search.requestDataType,
-            data: (tracker.search.requestData || '').replace('%search%', trackerRequest),
+            data: (tracker.search.requestData || '').replace('%search%', details.request),
             changeUrl: function(url, method) {
                 var proxy;
                 if (tracker.proxyIndex > 0 && (proxy = engine.settings.proxyList[tracker.proxyIndex - 1])) {
@@ -712,15 +712,19 @@ var exKit = {
                         }
                     }
                     if (proxy.type === 1) {
-                        url = this.setHostProxyUrl(url, tracker.proxyIndex);
+                        url = _this.setHostProxyUrl(url, tracker.proxyIndex);
                     }
                 }
                 return url;
-            }.bind(this),
-            success: (tracker.search.parseResponse || exKit.parseResponse).bind(null, tracker, request, function(data) {
-                onSearch.onDone(tracker);
-                onSearch.onSuccess(tracker, request, data);
-            }),
+            },
+            success: function(data) {
+                details.data = exKit.contentFilter(data);
+
+                exKit.parseResponse(tracker, details, function(data) {
+                    onSearch.onDone(tracker);
+                    onSearch.onSuccess(tracker, request, data);
+                });
+            },
             error: function(xhr) {
                 onSearch.onDone(tracker);
                 onSearch.onError(tracker, xhr.status, xhr.statusText);

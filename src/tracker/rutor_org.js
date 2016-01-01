@@ -18,14 +18,14 @@ engine.trackerLib.rutor = {
         searchUrl: 'http://zerkalo-rutor.org/search/0/0/100/0/%search%',
         baseUrl: 'http://zerkalo-rutor.org/',
         requestType: 'GET',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            if (!value) {
-                this.search.searchUrl = this.search.blankUrl;
+            if (!details.request) {
+                details.tracker.search.searchUrl = details.tracker.search.blankUrl;
             } else {
-                this.search.searchUrl = this.search.wordUrl;
+                details.tracker.search.searchUrl = details.tracker.search.wordUrl;
             }
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
         listItemSelector: '#index>table>tbody>tr',
         listItemSplice: [1, 0],
@@ -39,11 +39,11 @@ engine.trackerLib.rutor = {
             date: 'td:eq(0)'
         },
         onGetValue: {
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);
             },
-            date: function (value) {
+            date: function (details, value) {
                 "use strict";
                 value = exKit.funcList.monthReplace(value, 1);
                 return exKit.funcList.dateFormat(1, value)

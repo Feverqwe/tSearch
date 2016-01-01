@@ -32,15 +32,14 @@ engine.trackerLib.kickass = {
         blankUrl: 'https://kat.cr/new/',
         baseUrl: 'https://kat.cr/',
         requestType: 'GET',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            if (!value) {
-                this.search.searchUrl = this.search.blankUrl;
+            if (!details.request) {
+                details.tracker.search.searchUrl = details.tracker.search.blankUrl;
             } else {
-                this.search.searchUrl = this.search.wordUrl;
-                value = encodeURIComponent(value);
+                details.tracker.search.searchUrl = details.tracker.search.wordUrl;
+                details.request = encodeURIComponent(details.request);
             }
-            return value;
         },
         listItemSelector: '#mainSearchTable table tbody>tr',
         listItemSplice: [1, 0],
@@ -55,11 +54,11 @@ engine.trackerLib.kickass = {
             peer: 'td.red.lasttd.center'
         },
         onGetValue: {
-            categoryId: function (url) {
+            categoryId: function (details, url) {
                 "use strict";
-                return exKit.funcList.idInCategoryListStr(this, url, /\/([^\/]+)\/$/);
+                return exKit.funcList.idInCategoryListStr(details.tracker, url, /\/([^\/]+)\/$/);
             },
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);
             }

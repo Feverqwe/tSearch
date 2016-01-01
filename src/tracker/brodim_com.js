@@ -32,9 +32,9 @@ engine.trackerLib['brodim'] = {
         baseUrl: 'http://brodim.com/',
         requestType: 'GET',
         requestData: 'max=1&to=1&nm=%search%',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
         onResponseUrl: function (value) {
             "use strict";
@@ -54,9 +54,9 @@ engine.trackerLib['brodim'] = {
             date: 'td.row4.small.nowrap:eq(1)>u'
         },
         onGetValue: {
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt(this, value, /f=([0-9]+)/);
+                return exKit.funcList.idInCategoryListInt(details.tracker, value, /f=([0-9]+)/);
             }
         }
     }

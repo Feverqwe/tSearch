@@ -31,9 +31,9 @@ engine.trackerLib['bigfangroup'] = {
         baseUrl: 'http://www.bigfangroup.org/',
         requestType: 'GET',
         requestData: 'search=%search%',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return exKit.funcList.encodeCp1251(value);
+            details.request = exKit.funcList.encodeCp1251(details.request);
         },
         listItemSelector: '#highlighted>tr',
         torrentSelector: {
@@ -49,24 +49,24 @@ engine.trackerLib['bigfangroup'] = {
             date: {selector: 'td:eq(3)>img:eq(-1)', attr: 'title'}
         },
         onGetValue: {
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt(this, value, /cat=([0-9]+)/);
+                return exKit.funcList.idInCategoryListInt(details.tracker, value, /cat=([0-9]+)/);
             },
-            date: function (value) {
+            date: function (details, value) {
                 "use strict";
                 value = exKit.funcList.monthReplace(value);
                 return exKit.funcList.dateFormat(1, value)
             },
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)
             }
         },
         onSelectorIsNotFound: {
-            downloadUrl: function () {
+            downloadUrl: function (details) {
                 "use strict";
-                this.env.skipSelector = true;
+                details.env.skipSelector = true;
             }
         }
     }

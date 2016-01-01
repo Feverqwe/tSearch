@@ -31,19 +31,19 @@ engine.trackerLib.katushka = {
         baseUrl: 'http://katushka.net',
         requestType: 'GET',
         requestData: 'tags=&search=%search%&type_search=groups&incldead=0&sorting=0&type_sort=desc',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
-        onAfterDomParse: function () {
+        onAfterDomParse: function (details) {
             "use strict";
-            var $dom = this.env.$dom;
+            var $dom = details.tracker.env.$dom;
             if ($dom.find('table.data_table.torr_table>tbody>tr').length) {
-                this.search.listItemSelector = this.search.listItemSelectorTable;
-                this.search.torrentSelector = this.search.torrentSelectorTable;
+                details.tracker.search.listItemSelector = details.tracker.search.listItemSelectorTable;
+                details.tracker.search.torrentSelector = details.tracker.search.torrentSelectorTable;
             } else {
-                this.search.listItemSelector = this.search.listItemSelectorGallery;
-                this.search.torrentSelector = this.search.torrentSelectorGallery;
+                details.tracker.search.listItemSelector = details.tracker.search.listItemSelectorGallery;
+                details.tracker.search.torrentSelector = details.tracker.search.torrentSelectorGallery;
             }
         },
         torrentSelector: {
@@ -71,11 +71,11 @@ engine.trackerLib.katushka = {
             url: {selector: 'div.descr>div.torr_name>a:eq(1)', attr: 'href'}
         },
         onGetValue: {
-            categoryId: function (url) {
+            categoryId: function (details, url) {
                 "use strict";
-                return exKit.funcList.idInCategoryListStr(this, url, /\/([^\/]+)\/$/);
+                return exKit.funcList.idInCategoryListStr(details.tracker, url, /\/([^\/]+)\/$/);
             },
-            date: function (value) {
+            date: function (details, value) {
                 "use strict";
                 value = exKit.funcList.monthReplace(value);
                 return exKit.funcList.dateFormat(1, value)

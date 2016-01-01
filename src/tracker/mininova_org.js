@@ -31,9 +31,9 @@ engine.trackerLib.mininova = {
         baseUrl: 'http://www.mininova.org/',
         requestType: 'GET',
         requestData: 'search=%search%&cat=0',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
         listItemSelector: 'table.maintable>tbody>tr',
         listItemSplice: [1, 0],
@@ -50,15 +50,15 @@ engine.trackerLib.mininova = {
             date: 'td:eq(0)'
         },
         onGetValue: {
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt(this, value, /cat\/([d+])$/);
+                return exKit.funcList.idInCategoryListInt(details.tracker, value, /cat\/([d+])$/);
             },
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)
             },
-            date: function (value) {
+            date: function (details, value) {
                 "use strict";
                 value = exKit.funcList.monthReplace(value, 1);
                 return exKit.funcList.dateFormat(1, value)

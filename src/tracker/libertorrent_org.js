@@ -18,13 +18,13 @@ engine.trackerLib.libertorrent = {
         loginUrl: 'http://booktracker.org/login.php',
         requestType: 'GET',
         requestData: 'nm=%search%&to=1&max=1',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
-        onResponseUrl: function (value) {
+        onResponseUrl: function (details) {
             "use strict";
-            return !/login\.php/.test(value);
+            return !/login\.php/.test(details.responseUrl);
         },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {

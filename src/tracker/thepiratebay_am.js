@@ -31,20 +31,20 @@ engine.trackerLib.thepiratebay = {
         searchUrl: 'https://thepiratebay.se/search/%search%/0/99/0',
         baseUrl: 'https://thepiratebay.la/',
         requestType: 'GET',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
-        onAfterDomParse: function () {
+        onAfterDomParse: function (details) {
             "use strict";
-            var $dom = this.env.$dom;
-            var firstItem = $dom.find(this.search.listItemSelector).first();
+            var $dom = details.env.$dom;
+            var firstItem = $dom.find(details.tracker.search.listItemSelector).first();
             if (firstItem.children('td').length > 4) {
-                this.search.torrentSelector = this.search.torrentSelectorSingle;
-                this.search.mode = 'single';
+                details.tracker.search.torrentSelector = details.tracker.search.torrentSelectorSingle;
+                details.tracker.search.mode = 'single';
             } else {
-                this.search.torrentSelector = this.search.torrentSelectorDbl;
-                this.search.mode = 'dbl';
+                details.tracker.search.torrentSelector = details.tracker.search.torrentSelectorDbl;
+                details.tracker.search.mode = 'dbl';
             }
         },
         listItemSelector: '#searchResult>tbody>tr',
@@ -85,15 +85,15 @@ engine.trackerLib.thepiratebay = {
             date: {selector: 'td:eq(1)>font'}
         },
         onGetValue: {
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt(this, value, /\/([0-9]+)$/);
+                return exKit.funcList.idInCategoryListInt(details.tracker, value, /\/([0-9]+)$/);
             },
             sizeR: /[^\s]+\s([^,]+),\s[^\s]+\s([^,]+)/,
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
-                if (this.search.mode === 'dbl') {
-                    var m = value.match(this.search.onGetValue.sizeR);
+                if (details.tracker.search.mode === 'dbl') {
+                    var m = value.match(details.tracker.search.onGetValue.sizeR);
                     if (!m) {
                         return;
                     }
@@ -102,7 +102,7 @@ engine.trackerLib.thepiratebay = {
                 value = value.replace('i', '');
                 return exKit.funcList.sizeFormat(value);
             },
-            date: function (value) {
+            date: function (details, value) {
                 "use strict";
                 var m;
                 var minAgoFunc = function (tracker, value) {
@@ -118,15 +118,15 @@ engine.trackerLib.thepiratebay = {
                     }
                     return false;
                 };
-                if (this.mode === 'dbl') {
-                    m = value.match(this.search.onGetValue.sizeR);
+                if (details.tracker.mode === 'dbl') {
+                    m = value.match(details.tracker.search.onGetValue.sizeR);
                     if (!m) {
                         return;
                     }
                     value = m[1];
                 }
 
-                var minAgo = minAgoFunc(this, value);
+                var minAgo = minAgoFunc(details.tracker, value);
                 if (minAgo !== false) {
                     return minAgo;
                 }

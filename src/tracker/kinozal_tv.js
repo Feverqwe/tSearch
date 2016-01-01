@@ -74,9 +74,9 @@ engine.trackerLib.kinozal = {
         baseUrl: 'http://kinozal.tv',
         requestType: 'GET',
         requestData: 's=%search%',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
         listItemSelector: 'table.t_peer.w100p>tbody>tr',
         listItemSplice: [1, 0],
@@ -93,38 +93,38 @@ engine.trackerLib.kinozal = {
         },
         onGetValue: {
             categoryIdR: /\/([0-9]+)\./,
-            categoryTitle: function (value) {
+            categoryTitle: function (details, value) {
                 "use strict";
-                var id = value.match(this.search.onGetValue.categoryIdR);
+                var id = value.match(this.categoryIdR);
                 if (!id) {
                     return '';
                 }
                 id = parseInt(id[1]);
-                return this.categoryNameList(id);
+                return details.tracker.categoryNameList(id);
             },
-            categoryUrl: function (value) {
+            categoryUrl: function (details, value) {
                 "use strict";
-                var id = value.match(this.search.onGetValue.categoryIdR);
+                var id = value.match(this.categoryIdR);
                 if (!id) {
                     return '';
                 }
                 id = '?c=' + id[1];
                 return id;
             },
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                var id = value.match(this.search.onGetValue.categoryIdR);
+                var id = value.match(this.categoryIdR);
                 if (!id) {
                     return '';
                 }
                 id = parseInt(id[1]);
-                return exKit.funcList.idInCategoryList(this, id);
+                return exKit.funcList.idInCategoryList(details.tracker, id);
             },
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);
             },
-            date: function (value) {
+            date: function (details, value) {
                 "use strict";
                 value = exKit.funcList.todayReplace(value, 1);
                 return exKit.funcList.dateFormat(1, value)

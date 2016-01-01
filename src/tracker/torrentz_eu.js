@@ -17,9 +17,9 @@ engine.trackerLib.torrentz = {
         baseUrl: 'https://torrentz.eu/',
         requestType: 'GET',
         requestData: 'q=%search%',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
         listItemSelector: 'div.results>dl',
         torrentSelector: {
@@ -30,7 +30,7 @@ engine.trackerLib.torrentz = {
             date: 'dd>span.a'
         },
         onGetValue: {
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);
             },
@@ -46,9 +46,9 @@ engine.trackerLib.torrentz = {
                 month: /month/,
                 year: /year/
             },
-            date: function (value) {
+            date: function (details, value) {
                 "use strict";
-                var rObj = this.search.onGetValue.dateR;
+                var rObj = details.tracker.search.onGetValue.dateR;
                 var date = new Date();
                 if ((rObj.today).test(value)) {
                     return parseInt(Date.now() / 1000) - (date.getHours() * 60 * 60 + date.getMinutes() * 60);

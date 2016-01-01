@@ -33,13 +33,13 @@ engine.trackerLib['rutracker'] = {
         baseUrl: 'http://rutracker.org/forum/',
         requestType: 'POST',
         requestData: 'nm=%search%',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
-        onResponseUrl: function (value) {
+        onResponseUrl: function (details) {
             "use strict";
-            return !/login\.php/.test(value);
+            return !/login\.php/.test(details.responseUrl);
         },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
@@ -55,11 +55,11 @@ engine.trackerLib['rutracker'] = {
             date: 'td.row4.small.nowrap:eq(1)>u'
         },
         onGetValue: {
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt(this, value, /f=([0-9]+)/);
+                return exKit.funcList.idInCategoryListInt(details.tracker, value, /f=([0-9]+)/);
             },
-            peer: function (value) {
+            peer: function (details, value) {
                 "use strict";
                 if (value < 0) {
                     value = 0;
@@ -68,15 +68,15 @@ engine.trackerLib['rutracker'] = {
             }
         },
         onEmptySelectorValue: {
-            seed: function () {
+            seed: function (details) {
                 "use strict";
                 return 0;
             }
         },
         onSelectorIsNotFound: {
-            downloadUrl: function () {
+            downloadUrl: function (details) {
                 "use strict";
-                this.env.skipSelector = true;
+                details.env.skipSelector = true;
             }
         }
     }

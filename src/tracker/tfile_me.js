@@ -32,9 +32,9 @@ engine.trackerLib.tfile = {
         baseUrl: 'http://tfile.me/forum/',
         requestType: 'GET',
         requestData: 'q=%search%',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return exKit.funcList.encodeCp1251(value);
+            details.request = exKit.funcList.encodeCp1251(details.request);
         },
         listItemSelector: '#topics>tbody>tr',
         torrentSelector: {
@@ -49,15 +49,15 @@ engine.trackerLib.tfile = {
             date: 'td:eq(-1)'
         },
         onGetValue: {
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt(this, value, /f=([0-9]+)/);
+                return exKit.funcList.idInCategoryListInt(details.tracker, value, /f=([0-9]+)/);
             },
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);
             },
-            date: function (value) {
+            date: function (details, value) {
                 "use strict";
                 return exKit.funcList.dateFormat(0, value)
             }

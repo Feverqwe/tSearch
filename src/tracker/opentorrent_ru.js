@@ -32,13 +32,13 @@ engine.trackerLib.opentorrent = {
         baseUrl: 'http://opentorrent.ru/',
         requestType: 'GET',
         requestData: 'nm=%search%',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
-        onResponseUrl: function (value) {
+        onResponseUrl: function (details) {
             "use strict";
-            return !/login\.php/.test(value);
+            return !/login\.php/.test(details.responseUrl);
         },
         listItemSelector: 'table.forumline.tracker>tbody>tr',
         listItemSplice: [1, -1],
@@ -55,15 +55,15 @@ engine.trackerLib.opentorrent = {
             date: 'td.gensmall:eq(-1)'
         },
         onGetValue: {
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt(this, value, /f=([0-9]+)/);
+                return exKit.funcList.idInCategoryListInt(details.tracker, value, /f=([0-9]+)/);
             },
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)
             },
-            date: function (value) {
+            date: function (details, value) {
                 "use strict";
                 return exKit.funcList.dateFormat(1, value)
             }

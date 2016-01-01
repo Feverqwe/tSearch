@@ -31,9 +31,9 @@ engine.trackerLib.megashara = {
         baseUrl: 'http://megashara.com/',
         requestType: 'GET',
         requestData: 'text=%search%&sorting=seed&time=ALL&year=0&parent=0&where=title&all_words=1&order=added',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
         listItemSelector: 'table.table-wide>tbody>tr',
         torrentSelector: {
@@ -47,11 +47,11 @@ engine.trackerLib.megashara = {
             peer: 'td.flat-result.color-red'
         },
         onGetValue: {
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                return exKit.funcList.idInCategoryList(this, value);
+                return exKit.funcList.idInCategoryList(details.tracker, value);
             },
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);
             }

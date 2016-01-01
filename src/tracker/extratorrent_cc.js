@@ -31,9 +31,9 @@ engine.trackerLib.extratorrent = {
         baseUrl: 'http://extratorrent.cc/',
         requestType: 'GET',
         requestData: 'search=%search%',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return encodeURIComponent(value);
+            details.request = encodeURIComponent(details.request);
         },
         listItemSelector: 'table.tl>tbody:eq(0)>tr',
         torrentSelector: {
@@ -48,19 +48,19 @@ engine.trackerLib.extratorrent = {
             peer: 'td:eq(5)'
         },
         onGetValue: {
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt(this, value, /\/([0-9]*)\/$/);
+                return exKit.funcList.idInCategoryListInt(details.tracker, value, /\/([0-9]*)\/$/);
             },
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)
             },
-            peer: function (value) {
+            peer: function (details, value) {
                 "use strict";
                 return value === '---' ? 0 : value
             },
-            seed: function (value) {
+            seed: function (details, value) {
                 "use strict";
                 return value === '---' ? 0 : value
             }

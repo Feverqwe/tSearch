@@ -33,13 +33,13 @@ engine.trackerLib['free-torrents'] = {
         requestType: 'GET',
         requestData: 'nm=%search%',
         requestMimeType: 'text/html; charset=windows-1251',
-        onGetRequest: function (value) {
+        onGetRequest: function (details) {
             "use strict";
-            return exKit.funcList.encodeCp1251(value);
+            details.request = exKit.funcList.encodeCp1251(details.request);
         },
-        onResponseUrl: function (value) {
+        onResponseUrl: function (details) {
             "use strict";
-            return !/login\.php/.test(value);
+            return !/login\.php/.test(details.responseUrl);
         },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
@@ -54,9 +54,9 @@ engine.trackerLib['free-torrents'] = {
             date: 'td.small.nowrap:eq(1)>u'
         },
         onGetValue: {
-            categoryId: function (value) {
+            categoryId: function (details, value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt(this, value, /f=([0-9]+)/);
+                return exKit.funcList.idInCategoryListInt(details.tracker, value, /f=([0-9]+)/);
             }
         }
     }
