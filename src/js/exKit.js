@@ -268,7 +268,7 @@ var exKit = {
 
         var type = typeof obj[key1];
         if (type !== 'function') {
-            obj[key1] = new Function(obj[key1]);
+            obj[key1] = new Function( 'return (' + obj[key1] + ').apply(this, arguments);');
         }
 
         obj[key1] = obj[origItem + key1].bind(tracker);
