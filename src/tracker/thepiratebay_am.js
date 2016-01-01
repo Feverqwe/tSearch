@@ -12,39 +12,39 @@ engine.trackerLib.thepiratebay = {
         cyrillic: 1,
         allowProxy: 1
     },
-    categoryList: [
-        /*Serials*/[],
-        /*Music  */[101, 102, 103, 104, 199],
-        /*Games  */[504, 401, 402, 403, 404],
-        /*Films  */[201, 202, 203, 204, 205, 207, 208, 209, 299, 501, 502, 505, 506],
-        /*Cartoon*/[],
-        /*Books  */[601],
-        /*Soft   */[301, 302, 303],
-        /*Anime  */[],
-        /*Documen*/[],
-        /*Sport  */[],
-        /*XXX    */[],
-        /*Humor  */[]
-    ],
+    categoryList: {
+        serials: [],
+        music: [101, 102, 103, 104, 199],
+        games: [504, 401, 402, 403, 404],
+        films: [201, 202, 203, 204, 205, 207, 208, 209, 299, 501, 502, 505, 506],
+        cartoon: [],
+        books: [601],
+        soft: [301, 302, 303],
+        anime: [],
+        doc: [],
+        sport: [],
+        xxx: [],
+        humor: []
+    },
     search: {
         mode: '',
         searchUrl: 'https://thepiratebay.la/search/%search%/0/99/0',
         baseUrl: 'https://thepiratebay.la/',
         requestType: 'GET',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
-        onAfterDomParse: function() {
+        onAfterDomParse: function () {
             "use strict";
-            var $dom = this.tracker.env.$dom;
-            var firstItem = $dom.find(this.tracker.search.listItemSelector).first();
+            var $dom = this.env.$dom;
+            var firstItem = $dom.find(this.search.listItemSelector).first();
             if (firstItem.children('td').length > 4) {
-                this.tracker.search.torrentSelector = this.tracker.search.torrentSelectorSingle;
-                this.tracker.search.mode = 'single';
+                this.search.torrentSelector = this.search.torrentSelectorSingle;
+                this.search.mode = 'single';
             } else {
-                this.tracker.search.torrentSelector = this.tracker.search.torrentSelectorDbl;
-                this.tracker.search.mode = 'dbl';
+                this.search.torrentSelector = this.search.torrentSelectorDbl;
+                this.search.mode = 'dbl';
             }
         },
         listItemSelector: '#searchResult>tbody>tr',
@@ -85,15 +85,15 @@ engine.trackerLib.thepiratebay = {
             date: {selector: 'td:eq(1)>font'}
         },
         onGetValue: {
-            categoryId: function(value) {
+            categoryId: function (value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt.call(this, value, /\/([0-9]+)$/);
+                return exKit.funcList.idInCategoryListInt(this, value, /\/([0-9]+)$/);
             },
             sizeR: /[^\s]+\s([^,]+),\s[^\s]+\s([^,]+)/,
-            size: function(value) {
+            size: function (value) {
                 "use strict";
-                if (this.tracker.search.mode === 'dbl') {
-                    var m = value.match(this.tracker.search.onGetValue.sizeR);
+                if (this.search.mode === 'dbl') {
+                    var m = value.match(this.search.onGetValue.sizeR);
                     if (!m) {
                         return;
                     }
@@ -102,10 +102,10 @@ engine.trackerLib.thepiratebay = {
                 value = value.replace('i', '');
                 return exKit.funcList.sizeFormat(value);
             },
-            date: function(value) {
+            date: function (value) {
                 "use strict";
                 var m;
-                var minAgoFunc = function(tracker, value) {
+                var minAgoFunc = function (tracker, value) {
                     var dateSelector = tracker.search.torrentSelector.date.selector || tracker.search.torrentSelector.date;
                     var minAgo = tracker.env.el.find(dateSelector).children('b').text();
                     if (minAgo === value) {
@@ -118,22 +118,22 @@ engine.trackerLib.thepiratebay = {
                     }
                     return false;
                 };
-                if (this.tracker.search.mode === 'dbl') {
-                    m = value.match(this.tracker.search.onGetValue.sizeR);
+                if (this.mode === 'dbl') {
+                    m = value.match(this.search.onGetValue.sizeR);
                     if (!m) {
                         return;
                     }
                     value = m[1];
                 }
 
-                var minAgo = minAgoFunc(this.tracker, value);
+                var minAgo = minAgoFunc(this, value);
                 if (minAgo !== false) {
                     return minAgo;
                 }
 
                 if (m = value.match(/(\d{1,2})-(\d{1,2})\s(\d{1,2}:\d{1,2})/)) {
                     // dd-mm hh-mm
-                    value = m[1]+'-'+m[2]+' '+(new Date()).getFullYear() + ' '+m[3];
+                    value = m[1] + '-' + m[2] + ' ' + (new Date()).getFullYear() + ' ' + m[3];
                 }
 
                 value = exKit.funcList.todayReplace(value, 3);

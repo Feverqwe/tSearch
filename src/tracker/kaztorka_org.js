@@ -18,7 +18,7 @@ engine.trackerLib.kaztorka = {
         loginUrl: 'http://kaztorka.org/auth/login',
         requestType: 'GET',
         requestData: 'torrentName=%search%',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
@@ -37,11 +37,11 @@ engine.trackerLib.kaztorka = {
             date: 'td.lista.center:eq(3)'
         },
         onGetValue: {
-            date: function(value) {
+            date: function (value) {
                 "use strict";
                 return exKit.funcList.dateFormat(0, value)
             },
-            size: function(value) {
+            size: function (value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)
             }

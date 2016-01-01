@@ -12,27 +12,27 @@ engine.trackerLib['hdclub'] = {
         cyrillic: 1,
         allowProxy: 1
     },
-    categoryList: [
-        /*Serials*/[],
-        /*Music  */['HD Audio', 'Music Video'],
-        /*Games  */[],
-        /*Films  */['Movie'],
-        /*Cartoon*/['Animation'],
-        /*Books  */[],
-        /*Soft   */[],
-        /*Anime  */[],
-        /*Documen*/['Documentary', 'TV Show'],
-        /*Sport  */['Sport'],
-        /*XXX    */[],
-        /*Humor  */[]
-    ],
+    categoryList: {
+        serials: [],
+        music: ['HD Audio', 'Music Video'],
+        games: [],
+        films: ['Movie'],
+        cartoon: ['Animation'],
+        books: [],
+        soft: [],
+        anime: [],
+        doc: ['Documentary', 'TV Show'],
+        sport: ['Sport'],
+        xxx: [],
+        humor: []
+    },
     search: {
         searchUrl: 'http://hdclub.org/browse.php',
         baseUrl: 'http://hdclub.org/',
         requestType: 'GET',
         requestData: 'search=%search%',
         requestMimeType: 'text/html; charset=windows-1251',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return exKit.funcList.encodeCp1251(value);
         },
@@ -49,15 +49,15 @@ engine.trackerLib['hdclub'] = {
             date: '#cleft font'
         },
         onGetValue: {
-            categoryId: function(value) {
+            categoryId: function (value) {
                 "use strict";
-                return exKit.funcList.idInCategoryList.call(this, value);
+                return exKit.funcList.idInCategoryList(this, value);
             },
-            size: function(value) {
+            size: function (value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)
             },
-            date: function(value) {
+            date: function (value) {
                 "use strict";
                 return exKit.funcList.dateFormat(0, value)
             }

@@ -12,32 +12,32 @@ engine.trackerLib.kickass = {
         cyrillic: 0,
         allowProxy: 1
     },
-    categoryList: [
-        /*Serials*/[],
-        /*Music  */['music'],
-        /*Games  */[],
-        /*Films  */['movies', 'tv'],
-        /*Cartoon*/[],
-        /*Books  */['books'],
-        /*Soft   */['applications'],
-        /*Anime  */['anime'],
-        /*Documen*/[],
-        /*Sport  */[],
-        /*XXX    */['xxx'],
-        /*Humor  */[]
-    ],
+    categoryList: {
+        serials: [],
+        music: ['music'],
+        games: [],
+        films: ['movies', 'tv'],
+        cartoon: [],
+        books: ['books'],
+        soft: ['applications'],
+        anime: ['anime'],
+        doc: [],
+        sport: [],
+        xxx: ['xxx'],
+        humor: []
+    },
     search: {
         searchUrl: 'https://kat.cr/search/%search%/',
         wordUrl: 'https://kat.cr/search/%search%/',
         blankUrl: 'https://kat.cr/new/',
         baseUrl: 'https://kat.cr/',
         requestType: 'GET',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             if (!value) {
-                this.tracker.search.searchUrl = this.tracker.search.blankUrl;
+                this.search.searchUrl = this.search.blankUrl;
             } else {
-                this.tracker.search.searchUrl = this.tracker.search.wordUrl;
+                this.search.searchUrl = this.search.wordUrl;
                 value = encodeURIComponent(value);
             }
             return value;
@@ -55,11 +55,11 @@ engine.trackerLib.kickass = {
             peer: 'td.red.lasttd.center'
         },
         onGetValue: {
-            categoryId: function(url) {
+            categoryId: function (url) {
                 "use strict";
-                return exKit.funcList.idInCategoryListStr.call(this, url, /\/([^\/]+)\/$/);
+                return exKit.funcList.idInCategoryListStr(this, url, /\/([^\/]+)\/$/);
             },
-            size: function(value) {
+            size: function (value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);
             }

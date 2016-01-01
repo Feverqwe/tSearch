@@ -12,26 +12,26 @@ engine.trackerLib.filebase = {
         cyrillic: 1,
         allowProxy: 1
     },
-    categoryList: [
-        /*Serials*/['serials'],
-        /*Music  */['videoclips', 'eng-music', 'rus-music'],
-        /*Games  */['games'],
-        /*Films  */['dvd5', 'tv', 'action', 'comedy', 'thriller', 'classic', 'history', 'mystic', 'sci-fi', 'horror', 'drama', 'adventure', 'detective', 'concert', 'epic', 'dvd9', 'fantasy', 'hdtv', 'war', 'family', 'tales', 'catastroph'],
-        /*Cartoon*/['cartoons'],
-        /*Books  */['books'],
-        /*Soft   */['software'],
-        /*Anime  */['anime'],
-        /*Documen*/['documental'],
-        /*Sport  */['sport'],
-        /*XXX    */[],
-        /*Humor  */[]
-    ],
+    categoryList: {
+        serials: ['serials'],
+        music: ['videoclips', 'eng-music', 'rus-music'],
+        games: ['games'],
+        films: ['dvd5', 'tv', 'action', 'comedy', 'thriller', 'classic', 'history', 'mystic', 'sci-fi', 'horror', 'drama', 'adventure', 'detective', 'concert', 'epic', 'dvd9', 'fantasy', 'hdtv', 'war', 'family', 'tales', 'catastroph'],
+        cartoon: ['cartoons'],
+        books: ['books'],
+        soft: ['software'],
+        anime: ['anime'],
+        doc: ['documental'],
+        sport: ['sport'],
+        xxx: [],
+        humor: []
+    },
     search: {
         searchUrl: 'http://www.filebase.ws/torrents/search/',
         baseUrl: 'http://www.filebase.ws',
         requestType: 'GET',
         requestData: 'search=%search%&c=0&t=liveonly',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
@@ -49,15 +49,15 @@ engine.trackerLib.filebase = {
             date: 'td:eq(3)'
         },
         onGetValue: {
-            categoryId: function(url) {
+            categoryId: function (url) {
                 "use strict";
-                return exKit.funcList.idInCategoryListStr.call(this, url, /\/([^\/]+)\/$/);
+                return exKit.funcList.idInCategoryListStr(this, url, /\/([^\/]+)\/$/);
             },
-            size: function(value) {
+            size: function (value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)
             },
-            date: function(value) {
+            date: function (value) {
                 "use strict";
                 return exKit.funcList.dateFormat(1, value)
             }

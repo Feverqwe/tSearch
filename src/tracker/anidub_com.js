@@ -11,26 +11,26 @@ engine.trackerLib['anidub'] = {
         language: 'ru',
         cyrillic: 1
     },
-    categoryList: [
-        /*Serials*/[],
-        /*Music  */['ost'],
-        /*Games  */[],
-        /*Films  */['anime_movie'],
-        /*Cartoon*/[],
-        /*Books  */[],
-        /*Soft   */[],
-        /*Anime  */['anime_ova', 'dorama', 'manga', 'anime_tv'],
-        /*Documen*/[],
-        /*Sport  */[],
-        /*XXX    */[],
-        /*Humor  */[]
-    ],
+    categoryList: {
+        serials: [],
+        music: ['ost'],
+        games: [],
+        films: ['anime_movie'],
+        cartoon: [],
+        books: [],
+        soft: [],
+        anime: ['anime_ova', 'dorama', 'manga', 'anime_tv'],
+        doc: [],
+        sport: [],
+        xxx: [],
+        humor: []
+    },
     search: {
         searchUrl: 'http://tr.anidub.com/index.php?do=search',
         baseUrl: 'http://tr.anidub.com/',
         requestType: 'POST',
         requestData: 'do=search&subaction=search&showposts=1&story=%search%',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
@@ -44,11 +44,11 @@ engine.trackerLib['anidub'] = {
             date: 'b'
         },
         onGetValue: {
-            categoryId: function(url) {
+            categoryId: function (url) {
                 "use strict";
-                return exKit.funcList.idInCategoryListStr.call(this, url, /\/([^\/]+)\/$/);
+                return exKit.funcList.idInCategoryListStr(this, url, /\/([^\/]+)\/$/);
             },
-            date: function(value) {
+            date: function (value) {
                 "use strict";
                 return exKit.funcList.dateFormat(1, value);
             }

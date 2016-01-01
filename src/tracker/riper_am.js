@@ -17,12 +17,12 @@ engine.trackerLib.riperam = {
         searchUrl: 'http://www.riper.am/search.php',
         baseUrl: 'http://www.riper.am/',
         requestType: 'GET',
-        onResponseUrl: function(value) {
+        onResponseUrl: function (value) {
             "use strict";
-            return !exKit.funcList.strContain(value, 'ucp.php?mode=login');
+            return !/ucp.php\?mode=login/.test(value);
         },
         requestData: 'keywords=%search%&sr=topics&sf=titleonly&fp=1&tracker_search=torrent',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
@@ -39,11 +39,14 @@ engine.trackerLib.riperam = {
             date: {selector: 'dl>dt'}
         },
         onGetValue: {
-            size: {exec: 'sizeFormat', args: [{arg: 0}]},
-            dateR: /»([^,]+, \d+:\d+)/,
-            date: function(value) {
+            size: function (value) {
                 "use strict";
-                var m = value.match(this.tracker.search.onGetValue.dateR);
+                return exKit.funcList.sizeFormat(value)
+            },
+            dateR: /»([^,]+, \d+:\d+)/,
+            date: function (value) {
+                "use strict";
+                var m = value.match(this.search.onGetValue.dateR);
                 if (!m) {
                     return;
                 }

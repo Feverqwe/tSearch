@@ -18,19 +18,18 @@ engine.trackerLib.libertorrent = {
         loginUrl: 'http://booktracker.org/login.php',
         requestType: 'GET',
         requestData: 'nm=%search%&to=1&max=1',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
-        onResponseUrl: function(value) {
+        onResponseUrl: function (value) {
             "use strict";
-            return !exKit.funcList.strContain(value, 'login.php');
+            return !/login\.php/.test(value);
         },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td:eq(2)>a',
             categoryUrl: {selector: 'td:eq(2)>a', attr: 'href'},
-            // categoryId: {selector: 'td:eq(2)>a', attr: 'href'},
             title: 'td.row4.med.tLeft>a',
             url: {selector: 'td.row4.med.tLeft>a', attr: 'href'},
             size: 'td.row4.small.nowrap:eq(0)>u',
@@ -38,9 +37,6 @@ engine.trackerLib.libertorrent = {
             seed: 'td.row4.seedmed',
             peer: 'td.row4.leechmed',
             date: 'td.row4.small.nowrap:eq(1)>u'
-        },
-        onGetValue: {
-            // categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]}
         }
     }
 };

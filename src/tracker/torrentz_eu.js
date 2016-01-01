@@ -17,7 +17,7 @@ engine.trackerLib.torrentz = {
         baseUrl: 'https://torrentz.eu/',
         requestType: 'GET',
         requestData: 'q=%search%',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
@@ -30,7 +30,7 @@ engine.trackerLib.torrentz = {
             date: 'dd>span.a'
         },
         onGetValue: {
-            size: function(value) {
+            size: function (value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);
             },
@@ -46,14 +46,13 @@ engine.trackerLib.torrentz = {
                 month: /month/,
                 year: /year/
             },
-            date: function(value) {
+            date: function (value) {
                 "use strict";
-                var rObj = this.tracker.search.onGetValue.dateR;
+                var rObj = this.search.onGetValue.dateR;
                 var date = new Date();
                 if ((rObj.today).test(value)) {
                     return parseInt(Date.now() / 1000) - (date.getHours() * 60 * 60 + date.getMinutes() * 60);
-                } else
-                if ((rObj.yesterday).test(value)) {
+                } else if ((rObj.yesterday).test(value)) {
                     return parseInt(Date.now() / 1000) - (date.getHours() * 60 * 60 + date.getMinutes() * 60 + 24 * 60 * 60);
                 } else {
                     var time = value.match(rObj.d);
@@ -65,23 +64,17 @@ engine.trackerLib.torrentz = {
                     var now = parseInt(Date.now() / 1000);
                     if (rObj.second.test(value)) {
                         return now - time;
-                    } else
-                    if (rObj.minute.test(value)) {
+                    } else if (rObj.minute.test(value)) {
                         return now - time * 60;
-                    } else
-                    if (rObj.hour.test(value)) {
+                    } else if (rObj.hour.test(value)) {
                         return now - time * 60 * 60;
-                    } else
-                    if (rObj.day.test(value)) {
+                    } else if (rObj.day.test(value)) {
                         return now - time * 60 * 60 * 24;
-                    } else
-                    if (rObj.week.test(value)) {
+                    } else if (rObj.week.test(value)) {
                         return now - time * 60 * 60 * 24 * 7;
-                    } else
-                    if (rObj.month.test(value)) {
+                    } else if (rObj.month.test(value)) {
                         return now - time * 60 * 60 * 24 * 30;
-                    } else
-                    if (rObj.year.test(value)) {
+                    } else if (rObj.year.test(value)) {
                         return now - time * 60 * 60 * 24 * 365;
                     }
                 }

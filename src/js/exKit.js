@@ -4,38 +4,38 @@
 var exKit = {
     legacy: {
         varCache: {
-            size_check: new RegExp('[^0-9.,кбмгтkmgtb]', 'g'),
-            size_kb: new RegExp('кб|kb'),
-            size_mb: new RegExp('мб|mb'),
-            size_gb: new RegExp('гб|gb'),
-            size_tb: new RegExp('тб|tb'),
-            today_now: new RegExp('сейчас|now'),
-            today_today: new RegExp('сегодня|today'),
-            today_yest: new RegExp('вчера|yesterday'),
-            ex_num: new RegExp('[^0-9]', 'g'),
-            spaces: new RegExp('\\s+', 'g'),
+            size_check: /[^0-9.,кбмгтkmgtb]/g,
+            size_kb: /кб|kb/,
+            size_mb: /мб|mb/,
+            size_gb: /гб|gb/,
+            size_tb: /тб|tb/,
+            today_now: /сейчас|now/,
+            today_today: /сегодня|today/,
+            today_yest: /вчера|yesterday/,
+            ex_num: /[^0-9]/g,
+            spaces: /\s+/g,
             timeFormat4: /([0-9]{1,2}d)?[^0-9]*([0-9]{1,2}h)?[^0-9]*([0-9]{1,2}m)?[^0-9]*([0-9]{1,2}s)?/
         },
         sizeFormat: function (s) {
             "use strict";
-            var size = s.toLowerCase().replace(exKit.legacy.varCache.size_check, '').replace(',', '.');
-            var t = size.replace(exKit.legacy.varCache.size_kb, '');
+            var size = s.toLowerCase().replace(this.varCache.size_check, '').replace(',', '.');
+            var t = size.replace(this.varCache.size_kb, '');
             var size_len = size.length;
             if (t.length !== size_len) {
                 t = parseFloat(t);
                 return Math.round(t * 1024);
             }
-            t = size.replace(exKit.legacy.varCache.size_mb, '');
+            t = size.replace(this.varCache.size_mb, '');
             if (t.length !== size_len) {
                 t = parseFloat(t);
                 return Math.round(t * 1024 * 1024);
             }
-            t = size.replace(exKit.legacy.varCache.size_gb, '');
+            t = size.replace(this.varCache.size_gb, '');
             if (t.length !== size_len) {
                 t = parseFloat(t);
                 return Math.round(t * 1024 * 1024 * 1024);
             }
-            t = size.replace(exKit.legacy.varCache.size_tb, '');
+            t = size.replace(this.varCache.size_tb, '');
             if (t.length !== size_len) {
                 t = parseFloat(t);
                 return Math.round(t * 1024 * 1024 * 1024 * 1024);
@@ -58,7 +58,7 @@ var exKit = {
             f = parseInt(f);
             t = t.toLowerCase();
             var tt = new Date();
-            if ((exKit.legacy.varCache.today_now).test(t)) {
+            if ((this.varCache.today_now).test(t)) {
                 t = 'today '+tt.getHours() + ':' + tt.getMinutes();
             }
             var tty = new Date((Math.round(tt.getTime() / 1000) - 24 * 60 * 60) * 1000);
@@ -75,7 +75,7 @@ var exKit = {
                 today = tt.getDate() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getFullYear() + ' ';
                 yesterday = tty.getDate() + ' ' + (tty.getMonth() + 1) + ' ' + tty.getFullYear() + ' ';
             }
-            t = t.replace(exKit.legacy.varCache.today_today, today).replace(exKit.legacy.varCache.today_yest, yesterday);
+            t = t.replace(this.varCache.today_today, today).replace(this.varCache.today_yest, yesterday);
             return t;
         },
         dateFormat: function (f, t) {
@@ -85,7 +85,7 @@ var exKit = {
             }
             f = parseInt(f);
             if (f === 0) { // || f === '2013-04-31[[[ 07]:03]:27]') {
-                var dd = t.replace(exKit.legacy.varCache.ex_num, ' ').replace(exKit.legacy.varCache.spaces, ' ').trim().split(' ');
+                var dd = t.replace(this.varCache.ex_num, ' ').replace(this.varCache.spaces, ' ').trim().split(' ');
                 for (var i = 0; i < 6; i++) {
                     if (dd[i] === undefined) {
                         dd[i] = 0;
@@ -108,7 +108,7 @@ var exKit = {
                 return Math.round((new Date(dd[0], dd[1] - 1, dd[2], dd[3], dd[4], dd[5])).getTime() / 1000);
             }
             if (f === 1) { //  || f === '31-04-2013[[[ 07]:03]:27]') {
-                var dd = t.replace(exKit.legacy.varCache.ex_num, ' ').replace(exKit.legacy.varCache.spaces, ' ').trim().split(' ');
+                var dd = t.replace(this.varCache.ex_num, ' ').replace(this.varCache.spaces, ' ').trim().split(' ');
                 for (var i = 0; i < 6; i++) {
                     if (dd[i] === undefined) {
                         dd[i] = 0;
@@ -131,11 +131,11 @@ var exKit = {
                 return Math.round((new Date(dd[2], dd[1] - 1, dd[0], dd[3], dd[4], dd[5])).getTime() / 1000);
             }
             if (f === 2) { //  || f === 'n day ago') {
-                var old = parseFloat(t.replace(exKit.legacy.varCache.ex_num, '')) * 24 * 60 * 60;
+                var old = parseFloat(t.replace(this.varCache.ex_num, '')) * 24 * 60 * 60;
                 return Math.round(Date.now() / 1000) - old;
             }
             if (f === 3) { //  || f === '04-31-2013[[[ 07]:03]:27]') {
-                var dd = t.replace(exKit.legacy.varCache.ex_num, ' ').replace(exKit.legacy.varCache.spaces, ' ').trim().split(' ');
+                var dd = t.replace(this.varCache.ex_num, ' ').replace(this.varCache.spaces, ' ').trim().split(' ');
                 for (var i = 0; i < 6; i++) {
                     if (dd[i] === undefined) {
                         dd[i] = 0;
@@ -158,7 +158,7 @@ var exKit = {
                 return Math.round((new Date(dd[2], dd[0] - 1, dd[1], dd[3], dd[4], dd[5])).getTime() / 1000);
             }
             if (f === 4) { //  || f === '2d 1h 0m 0s ago') {
-                var match = t.match(exKit.legacy.varCache.timeFormat4);
+                var match = t.match(this.varCache.timeFormat4);
                 if (match) {
                     var d = parseInt(match[1]) || 0;
                     var h = parseInt(match[2]) || 0;
@@ -172,21 +172,12 @@ var exKit = {
                 }
                 return 0;
             }
-        },
-        isNumber: function (n) {
-            return !isNaN(parseFloat(n)) && isFinite(n);
         }
     },
     prepareTrackerR: {
         hasEndSlash:/\/$/
     },
-    parseRegExp: function(regexp, flags) {
-        "use strict";
-        return new RegExp(regexp, flags);
-    },
     funcList: {
-        encodeURIComponent: encodeURIComponent,
-        decodeURIComponent: decodeURIComponent,
         encodeCp1251: function (string) {
             "use strict";
             var output = '', charCode, ExitValue, char;
@@ -220,331 +211,64 @@ var exKit = {
             }
             return output;
         },
-        strContain: function(value, text) {
+        idInCategoryList: function(tracker, cId) {
             "use strict";
-            return value.indexOf(text) !== -1;
-        },
-        substr: function(value, start, len) {
-            "use strict";
-            return value.substr(start, len);
-        },
-        indexOf: function(value, word, position) {
-            "use strict";
-            return value.indexOf(word, position)
-        },
-        replace: function(value, sValue, rValue) {
-            "use strict";
-            return value.replace(sValue, rValue);
-        },
-        match: function(value, sValue) {
-            "use strict";
-            return value.match(sValue);
-        },
-        firstMatch: function(value, sValue) {
-            "use strict";
-            var m = value.match(sValue);
-            if (m === null) return;
-            return m[1];
-        },
-        setVar: function(name, value) {
-            "use strict";
-            return this.scope[name] = value;
-        },
-        getVar: function(name) {
-            "use strict";
-            return this.scope[name];
-        },
-        getItem: function(list, item) {
-            "use strict";
-            return list[item];
-        },
-        callItem: function(list, item, args) {
-            "use strict";
-            return list[item].apply(list, args);
-        },
-        return: function(value) {
-            "use strict";
-            this.scope.return = value;
-        },
-        parseInt: function(value) {
-            "use strict";
-            return parseInt(value);
-        },
-        parseFloat: function(value) {
-            "use strict";
-            return parseFloat(value);
-        },
-        String: function(value) {
-            "use strict";
-            return String(value);
-        },
-        isNaN: function(value) {
-            "use strict";
-            return isNaN(value);
-        },
-        console: function(value) {
-            "use strict";
-            console.log('>', arguments);
-            return value;
-        },
-        inc: function(name) {
-            "use strict";
-            this.scope[name]++;
-        },
-        dec: function(name) {
-            "use strict";
-            this.scope[name]--;
-        },
-        operator: function(a, char, b) {
-            "use strict";
-            if (char === '===') {
-                return a === b;
-            } else
-            if (char === '!==') {
-                return a !== b;
-            } else
-            if (char === '>') {
-                return a > b;
-            } else
-            if (char === '<') {
-                return a > b;
-            } else
-            if (char === '+') {
-                return a + b;
-            } else
-            if (char === '-') {
-                return a - b;
-            } else
-            if (char === '||') {
-                return a || b;
-            } else
-            if (char === '&&') {
-                return a && b;
-            } else
-            if (char === '/') {
-                return a / b;
-            } else
-            if (char === '*') {
-                return a * b;
-            } else
-            if (char === '%') {
-                return a % b;
-            } else
-            if (char === '&') {
-                return a && b;
-            } else
-            if (char === '|') {
-                return a | b;
-            } else
-            if (char === '==') {
-                return a == b;
-            } else
-            if (char === '!=') {
-                return a != b;
-            }
-        },
-        pass: function() {
-            "use strict";
-        },
-        typeof: function(value) {
-            "use strict";
-            return typeof value;
-        },
-        each: function(cb, list) {
-            "use strict";
-            if (Array.isArray(list)) {
-                for (var i = 0, len = list.length; i < len; i++) {
-                    cb(i, list[i]);
-                    if (this.scope.hasOwnProperty('return')) {
-                        break;
-                    }
-                }
-            } else
-            for (var key in list) {
-                cb(key, list[key]);
-                if (this.scope.hasOwnProperty('return')) {
-                    break;
+            var mapNameId = {
+                serials: 0,
+                music: 1,
+                games: 2,
+                films: 3,
+                cartoon: 4,
+                books: 5,
+                soft: 6,
+                anime: 7,
+                doc: 8,
+                sport: 9,
+                xxx: 10,
+                humor: 11
+            };
+
+            for (var key in tracker.categoryList) {
+                var list = tracker.categoryList[key];
+                if (list.indexOf(cId) !== -1) {
+                    return mapNameId[key];
                 }
             }
-        },
-        idInCategoryList: function(cId) {
-            "use strict";
-            for (var i = 0, item; item = this.tracker.categoryList[i]; i++) {
-                if (item.indexOf(cId) !== -1) {
-                    return i;
-                }
-            }
+
             return -1;
         },
-        idInCategoryListInt: function(url, regexp) {
+        idInCategoryListInt: function(tracker, url, regexp) {
             "use strict";
-            var cId = exKit.funcList.firstMatch(url, regexp);
-            if (cId === undefined) {
-                return - 1;
+            var cId = url.match(regexp);
+            cId = cId && cId[1];
+            if (cId === null) {
+                return -1;
             }
             cId = parseInt(cId);
-            return exKit.funcList.idInCategoryList.call(this, cId);
+            return this.idInCategoryList(tracker, cId);
         },
-        idInCategoryListStr: function(url, regexp) {
+        idInCategoryListStr: function(tracker, url, regexp) {
             "use strict";
-            var cId = exKit.funcList.firstMatch(url, regexp);
-            if (cId === undefined) {
-                return - 1;
+            var cId = url.match(regexp);
+            cId = cId && cId[1];
+            if (cId === null) {
+                return -1;
             }
-            return exKit.funcList.idInCategoryList.call(this, cId);
-        },
-        trim: function(string) {
-            "use strict";
-            return $.trim(string);
+            return this.idInCategoryList(tracker, cId);
         }
-    },
-    getArgs: function(globalArgs, args) {
-        "use strict";
-        var len = args.length;
-        var list = new Array(len);
-        for (var i = 0; i < len; i++) {
-            var arg = args[i];
-            if (typeof arg === 'object' && arg !== null) {
-                if (arg.var !== undefined) {
-                    arg = this.scope[arg.var];
-                } else
-                if (arg.arg !== undefined) {
-                    arg = globalArgs[arg.arg];
-                } else
-                if (arg.scope !== undefined) {
-                    arg = this.scope;
-                } else
-                if (arg.regexp !== undefined) {
-                    arg = args[i] = exKit.parseRegExp(arg.regexp, arg.flags);
-                }
-            }
-            list[i] = arg;
-        }
-        return list;
-    },
-    prepareFuncList: function(list) {
-        "use strict";
-        if (typeof list !== "object" || !Array.isArray(list)) {
-            list = [list];
-        }
-        return list;
-    },
-    args2list: function(args) {
-        "use strict";
-        var len = args.length - 1;
-        var list = new Array(len);
-        for (var i = 0; i < len; i++) {
-            list[i] = args[i + 1];
-        }
-        return list;
-    },
-    funcList2func: function(list) {
-        "use strict";
-        var isOwnScope;
-        if (isOwnScope = this.scope === undefined ? 1 : 0) {
-            this.scope = {};
-        }
-        var func;
-        var args = exKit.args2list(arguments);
-        for (var i = 0, item; item = list[i]; i++) {
-            var type = typeof item;
-            if (type === 'function') {
-                this.scope.context = item.apply(this, args);
-            } else
-            if (item.exec !== undefined) {
-                if (typeof item.exec !== 'function') {
-                    item.exec = exKit.prepareFuncList(item.exec);
-                    if (item.cb !== undefined) {
-                        item.cb = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.cb));
-                        item.exec = exKit.funcList2func.bind(this, item.exec, item.cb);
-                    } else {
-                        item.exec = exKit.funcList2func.bind(this, item.exec);
-                    }
-                    if (item.args !== undefined && !Array.isArray(item.args)) {
-                        item.args = [item.args];
-                    }
-                    if (item.var === undefined) {
-                        item.var = 'context';
-                    }
-                    --i;
-                    continue;
-                }
-
-                var itemArgs = item.args === undefined ? args : exKit.getArgs.call(this, args, item.args);
-                var out = item.exec.apply(this, itemArgs);
-                if (item.not !== undefined) {
-                    out = !out;
-                }
-                this.scope[item.var] = out;
-            } else
-            if (item.func !== undefined) {
-                if (typeof item.func !== 'function') {
-                    item.func = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.func));
-                    --i;
-                    continue;
-                }
-
-                this.scope[item.var] = item.func;
-            } else
-            if (item.if !== undefined) {
-                if (typeof item.if !== 'function') {
-                    item.if = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.if));
-                    item.then && (item.then = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.then)));
-                    item.else && (item.else = exKit.funcList2func.bind(this, exKit.prepareFuncList(item.else)));
-                    --i;
-                    continue;
-                }
-
-                if (item.if.apply(this, args)) {
-                    item.then && (this.scope.context = item.then.apply(this, args));
-                } else {
-                    item.else && (this.scope.context = item.else.apply(this, args));
-                }
-            } else
-            if (type === 'object' && (func = exKit.funcList[item[0]]) !== undefined) {
-                list[i] = func.bind.apply(func, [this].concat(exKit.getArgs.call(this, args, item.slice(1))));
-                --i;
-                continue;
-            } else
-            if ((func = exKit.funcList[item]) !== undefined) {
-                list[i] = func.bind.apply(func, [this]);
-                --i;
-                continue;
-            } else
-            if ((func = this.scope[item]) !== undefined) {
-                list[i] = func.bind.apply(func, [this]);
-                --i;
-                continue;
-            }
-            if (this.scope.hasOwnProperty('return')) {
-                this.scope.context = this.scope.return;
-                break;
-            }
-        }
-        var outResult = this.scope.context;
-        if (isOwnScope === 1) {
-            this.scope = undefined;
-        }
-        return outResult;
     },
     bindFunc: function(tracker, obj, key1) {
         "use strict";
         var origItem = '_defaultItem_';
-        if (obj[key1] === undefined || obj[origItem + key1] !== undefined) {
+        if (obj[key1] === undefined) {
             return;
         }
-        var type = typeof obj[key1];
-        var context = {
-            tracker: tracker,
-            scope: undefined
-        };
-        if (type === 'function') {
-            obj[origItem + key1] = obj[key1];
-            obj[key1] = obj[origItem + key1].bind(context);
-        } else {
-            obj[origItem + key1] = JSON.parse(JSON.stringify(obj[key1]));
-            obj[key1] = exKit.funcList2func.bind(context, exKit.prepareFuncList(obj[key1]));
+        if (obj[origItem + key1]) {
+            obj[key1] = obj[origItem + key1];
         }
+
+        obj[origItem + key1] = obj[key1];
+        obj[key1] = obj[origItem + key1].bind(tracker);
     },
     prepareCustomTracker: function(trackerJson) {
         "use strict";
@@ -615,17 +339,26 @@ var exKit = {
                 if (trackerJson.size_attr) {
                     torrentSelector.size = {selector: torrentSelector.size, attr: trackerJson.size_attr};
                 }
-                var sizeList = [{exec: 'setVar', args: ['context', {arg: 0}]}];
+
+                var sizeFuncList = [];
                 if (trackerJson.size_r && trackerJson.size_rp !== undefined) {
-                    sizeList.push({var: 'context', exec: 'replace', args: [{var: 'context'}, {regexp: trackerJson.size_r, flags: 'ig'}, trackerJson.size_rp]});
+                    var size_r = new RegExp(trackerJson.size_r, 'ig');
+                    sizeFuncList.push(function(value) {
+                        return value.replace(size_r, trackerJson.size_rp);
+                    });
                 }
                 if (trackerJson.s_c) {
-                    sizeList.push({var: 'context', exec: function(value) {
+                    sizeFuncList.push(function(value) {
                         return exKit.legacy.sizeFormat(value);
-                    }, args: [{var: 'context'}]});
+                    });
                 }
-                if (sizeList.length > 1) {
-                    onGetValue.size = sizeList;
+                if (sizeFuncList.length > 1) {
+                    onGetValue.size = function(value) {
+                        for (var i = 0, func; func = sizeFuncList[i]; i++) {
+                            value = func(value);
+                        }
+                        return value;
+                    };
                 }
             }
             if (trackerJson.tr_dl) {
@@ -1048,7 +781,7 @@ var exKit = {
         return svg;
     }
 };
-exKit.funcList.dateFormat = exKit.legacy.dateFormat;
-exKit.funcList.monthReplace = exKit.legacy.monthReplace;
-exKit.funcList.sizeFormat = exKit.legacy.sizeFormat;
-exKit.funcList.todayReplace = exKit.legacy.todayReplace;
+exKit.funcList.dateFormat = exKit.legacy.dateFormat.bind(exKit.legacy);
+exKit.funcList.monthReplace = exKit.legacy.monthReplace.bind(exKit.legacy);
+exKit.funcList.sizeFormat = exKit.legacy.sizeFormat.bind(exKit.legacy);
+exKit.funcList.todayReplace = exKit.legacy.todayReplace.bind(exKit.legacy);

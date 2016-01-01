@@ -11,25 +11,25 @@ engine.trackerLib['bitsnoop'] = {
         language: 'en',
         cyrillic: 1
     },
-    categoryList: [
-        /*Serials*/['tv'],
-        /*Music  */['audio'],
-        /*Games  */['games', 'game_pc', 'xbox'],
-        /*Films  */['video'],
-        /*Cartoon*/[],
-        /*Books  */['books', 'abooks'],
-        /*Soft   */['software'],
-        /*Anime  */[],
-        /*Documen*/[],
-        /*Sport  */[],
-        /*XXX    */[],
-        /*Humor  */['x3']
-    ],
+    categoryList: {
+        serials: ['tv'],
+        music: ['audio'],
+        games: ['games', 'game_pc', 'xbox'],
+        films: ['video'],
+        cartoon: [],
+        books: ['books', 'abooks'],
+        soft: ['software'],
+        anime: [],
+        doc: [],
+        sport: [],
+        xxx: [],
+        humor: ['x3']
+    },
     search: {
         searchUrl: 'http://bitsnoop.com/search/all/%search%/c/d/1/',
         baseUrl: 'http://bitsnoop.com',
         requestType: 'GET',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
@@ -44,11 +44,11 @@ engine.trackerLib['bitsnoop'] = {
             peer: 'div.torInfo>span.leechers'
         },
         onGetValue: {
-            categoryId: function(url) {
+            categoryId: function (url) {
                 "use strict";
-                return exKit.funcList.idInCategoryListStr.call(this, url, /icon cat_(.+)/);
+                return exKit.funcList.idInCategoryListStr(this, url, /icon cat_(.+)/);
             },
-            size: function(value) {
+            size: function (value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)
             }

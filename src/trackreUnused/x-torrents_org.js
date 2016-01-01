@@ -12,20 +12,20 @@ engine.trackerLib['x-torrents'] = {
         cyrillic: 1,
         allowProxy: 1
     },
-    categoryList: [
-        /*Serials*/['tv'],
-        /*Music  */['music', 'video-clips'],
-        /*Games  */['games', 'games_psp', 'pda-games'],
-        /*Films  */['films', 'dvd', 'hdtv'],
-        /*Cartoon*/['mult'],
-        /*Books  */['knigi'],
-        /*Soft   */['soft'],
-        /*Anime  */['anime'],
-        /*Documen*/['doc-films'],
-        /*Sport  */[],
-        /*XXX    */[],
-        /*Humor  */[]
-    ],
+    categoryList: {
+        serials: ['tv'],
+        music: ['music', 'video-clips'],
+        games: ['games', 'games_psp', 'pda-games'],
+        films: ['films', 'dvd', 'hdtv'],
+        cartoon: ['mult'],
+        books: ['knigi'],
+        soft: ['soft'],
+        anime: ['anime'],
+        doc: ['doc-films'],
+        sport: [],
+        xxx: [],
+        humor: []
+    },
     search: {
         loginUrl: 'http://x-torrents.org/login',
         searchUrl: 'http://x-torrents.org/browse.php',
@@ -48,7 +48,10 @@ engine.trackerLib['x-torrents'] = {
             date: 'td.gensmall:eq(-1)>u'
         },
         onGetValue: {
-            categoryId: {exec: 'idInCategoryListInt', args: [{arg: 0}, {regexp: 'f=([0-9]+)'}]}
+            categoryId: function (value) {
+                "use strict";
+                return exKit.funcList.idInCategoryListInt(this, value, /f=([0-9]+)/);
+            }
         }
     }
 };

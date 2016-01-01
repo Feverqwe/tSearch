@@ -12,26 +12,26 @@ engine.trackerLib.megashara = {
         cyrillic: 1,
         allowProxy: 1
     },
-    categoryList: [
-        /*Serials*/['Сериалы'],
-        /*Music  */['Музыка'],
-        /*Games  */['Игры', 'Онлайн игры.'],
-        /*Films  */['Фильмы', 'ТВ'],
-        /*Cartoon*/[],
-        /*Books  */[],
-        /*Soft   */[],
-        /*Anime  */[],
-        /*Documen*/[],
-        /*Sport  */[],
-        /*XXX    */[],
-        /*Humor  */[]
-    ],
+    categoryList: {
+        serials: ['Сериалы'],
+        music: ['Музыка'],
+        games: ['Игры', 'Онлайн игры.'],
+        films: ['Фильмы', 'ТВ'],
+        cartoon: [],
+        books: [],
+        soft: [],
+        anime: [],
+        doc: [],
+        sport: [],
+        xxx: [],
+        humor: []
+    },
     search: {
         searchUrl: 'http://megashara.com/search/',
         baseUrl: 'http://megashara.com/',
         requestType: 'GET',
-            requestData: 'text=%search%&sorting=seed&time=ALL&year=0&parent=0&where=title&all_words=1&order=added',
-        onGetRequest: function(value) {
+        requestData: 'text=%search%&sorting=seed&time=ALL&year=0&parent=0&where=title&all_words=1&order=added',
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
@@ -47,11 +47,11 @@ engine.trackerLib.megashara = {
             peer: 'td.flat-result.color-red'
         },
         onGetValue: {
-            categoryId: function(value) {
+            categoryId: function (value) {
                 "use strict";
-                return exKit.funcList.idInCategoryList.call(this, value);
+                return exKit.funcList.idInCategoryList(this, value);
             },
-            size: function(value) {
+            size: function (value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value);
             }

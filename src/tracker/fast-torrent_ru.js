@@ -16,7 +16,7 @@ engine.trackerLib['fast-torrent'] = {
         searchUrl: 'http://fast-torrent.ru/search/%search%/1.html',
         baseUrl: 'http://fast-torrent.ru',
         requestType: 'GET',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
@@ -29,14 +29,14 @@ engine.trackerLib['fast-torrent'] = {
         },
         onGetValue: {
             categoryTitleR: /\s+/g,
-            categoryTitle: function(value) {
+            categoryTitle: function (value) {
                 "use strict";
-                return value.replace(this.tracker.search.onGetValue.categoryTitleR, ' ');
+                return value.replace(this.search.onGetValue.categoryTitleR, ' ');
             },
             dateR: /:\s(.+)/,
-            date: function(value) {
+            date: function (value) {
                 "use strict";
-                var m = value.match(this.tracker.search.onGetValue.dateR);
+                var m = value.match(this.search.onGetValue.dateR);
                 if (m) {
                     value = exKit.funcList.dateFormat(1, m[1]);
                 }

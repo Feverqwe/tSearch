@@ -12,26 +12,26 @@ engine.trackerLib['bigfangroup'] = {
         cyrillic: 1,
         allowProxy: 1
     },
-    categoryList: [
-        /*Serials*/[11],
-        /*Music  */[44, 46, 43],
-        /*Games  */[5],
-        /*Films  */[13, 48, 45, 33, 39, 15, 21, 28, 18, 24, 36, 19, 31, 12, 29, 27, 47, 22],
-        /*Cartoon*/[],
-        /*Books  */[35, 38],
-        /*Soft   */[1],
-        /*Anime  */[],
-        /*Documen*/[32, 49, 25, 26, 23, 30, 14],
-        /*Sport  */[37],
-        /*XXX    */[42],
-        /*Humor  */[]
-    ],
+    categoryList: {
+        serials: [11],
+        music: [44, 46, 43],
+        games: [5],
+        films: [13, 48, 45, 33, 39, 15, 21, 28, 18, 24, 36, 19, 31, 12, 29, 27, 47, 22],
+        cartoon: [],
+        books: [35, 38],
+        soft: [1],
+        anime: [],
+        doc: [32, 49, 25, 26, 23, 30, 14],
+        sport: [37],
+        xxx: [42],
+        humor: []
+    },
     search: {
         searchUrl: 'http://www.bigfangroup.org/browse.php',
         baseUrl: 'http://www.bigfangroup.org/',
         requestType: 'GET',
         requestData: 'search=%search%',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return exKit.funcList.encodeCp1251(value);
         },
@@ -49,24 +49,24 @@ engine.trackerLib['bigfangroup'] = {
             date: {selector: 'td:eq(3)>img:eq(-1)', attr: 'title'}
         },
         onGetValue: {
-            categoryId: function(value) {
+            categoryId: function (value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt.call(this, value, /cat=([0-9]+)/);
+                return exKit.funcList.idInCategoryListInt(this, value, /cat=([0-9]+)/);
             },
-            date: function(value) {
+            date: function (value) {
                 "use strict";
                 value = exKit.funcList.monthReplace(value);
                 return exKit.funcList.dateFormat(1, value)
             },
-            size: function(value) {
+            size: function (value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)
             }
         },
         onSelectorIsNotFound: {
-            downloadUrl: function() {
+            downloadUrl: function () {
                 "use strict";
-                this.tracker.env.skipSelector = true;
+                this.env.skipSelector = true;
             }
         }
     }

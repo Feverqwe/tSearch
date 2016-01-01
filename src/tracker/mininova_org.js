@@ -12,26 +12,26 @@ engine.trackerLib.mininova = {
         cyrillic: 0,
         allowProxy: 1
     },
-    categoryList: [
-        /*Serials*/[8],
-        /*Music  */[5],
-        /*Games  */[3],
-        /*Films  */[4],
-        /*Cartoon*/[],
-        /*Books  */[2],
-        /*Soft   */[7],
-        /*Anime  */[1],
-        /*Documen*/[],
-        /*Sport  */[],
-        /*XXX    */[],
-        /*Humor  */[]
-    ],
+    categoryList: {
+        serials: [8],
+        music: [5],
+        games: [3],
+        films: [4],
+        cartoon: [],
+        books: [2],
+        soft: [7],
+        anime: [1],
+        doc: [],
+        sport: [],
+        xxx: [],
+        humor: []
+    },
     search: {
         searchUrl: 'http://www.mininova.org/search/',
         baseUrl: 'http://www.mininova.org/',
         requestType: 'GET',
         requestData: 'search=%search%&cat=0',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
@@ -50,12 +50,15 @@ engine.trackerLib.mininova = {
             date: 'td:eq(0)'
         },
         onGetValue: {
-            categoryId: function(value) {
+            categoryId: function (value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt.call(this, value, /cat\/([d+])$/);
+                return exKit.funcList.idInCategoryListInt(this, value, /cat\/([d+])$/);
             },
-            size: {exec: 'sizeFormat', args: [{arg: 0}]},
-            date: function(value) {
+            size: function (value) {
+                "use strict";
+                return exKit.funcList.sizeFormat(value)
+            },
+            date: function (value) {
                 "use strict";
                 value = exKit.funcList.monthReplace(value, 1);
                 return exKit.funcList.dateFormat(1, value)

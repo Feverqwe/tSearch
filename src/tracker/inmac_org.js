@@ -12,33 +12,33 @@ engine.trackerLib.inmac = {
         cyrillic: 1,
         allowProxy: 1
     },
-    categoryList: [
-        /*Serials*/[],
-        /*Music  */[331, 332, 333, 334, 335, 336, 337, 273],
-        /*Games  */[376, 17, 426, 414, 264, 369, 370, 371, 372, 373, 374, 348, 381],
-        /*Films  */[378, 457, 453, 454, 455],
-        /*Cartoon*/[],
-        /*Books  */[7, 105, 389],
-        /*Soft   */[452, 13, 438, 254, 14, 439, 256, 42, 351, 350, 255, 15, 211, 39, 46, 208, 70, 16, 380, 382, 383, 384, 385, 386, 388, 393, 368, 367, 199, 366, 11, 30],
-        /*Anime  */[],
-        /*Documen*/[],
-        /*Sport  */[],
-        /*XXX    */[],
-        /*Humor  */[]
-    ],
+    categoryList: {
+        serials: [],
+        music: [331, 332, 333, 334, 335, 336, 337, 273],
+        games: [376, 17, 426, 414, 264, 369, 370, 371, 372, 373, 374, 348, 381],
+        films: [378, 457, 453, 454, 455],
+        cartoon: [],
+        books: [7, 105, 389],
+        soft: [452, 13, 438, 254, 14, 439, 256, 42, 351, 350, 255, 15, 211, 39, 46, 208, 70, 16, 380, 382, 383, 384, 385, 386, 388, 393, 368, 367, 199, 366, 11, 30],
+        anime: [],
+        doc: [],
+        sport: [],
+        xxx: [],
+        humor: []
+    },
     search: {
         searchUrl: 'https://inmac.org/tracker.php',
         baseUrl: 'https://inmac.org/',
         loginUrl: 'https://inmac.org/login.php',
         requestType: 'GET',
         requestData: 'nm=%search%',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
-        onResponseUrl: function(value) {
+        onResponseUrl: function (value) {
             "use strict";
-            return !exKit.funcList.strContain(value, '/auth/');
+            return !/\/auth\//.test(value);
         },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
@@ -54,9 +54,9 @@ engine.trackerLib.inmac = {
             date: 'td.row4.small.nowrap:eq(1)>u'
         },
         onGetValue: {
-            categoryId: function(value) {
+            categoryId: function (value) {
                 "use strict";
-                return exKit.funcList.idInCategoryListInt.call(this, value, /f=([0-9]+)/);
+                return exKit.funcList.idInCategoryListInt(this, value, /f=([0-9]+)/);
             }
         }
     }

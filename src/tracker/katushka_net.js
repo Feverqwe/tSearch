@@ -12,38 +12,38 @@ engine.trackerLib.katushka = {
         cyrillic: 1,
         allowProxy: 1
     },
-    categoryList: [
-        /*Serials*/['serials'],
-        /*Music  */['music', 'clips'],
-        /*Games  */['games'],
-        /*Films  */['feature', 'films'],
-        /*Cartoon*/['animated'],
-        /*Books  */['books', 'audio', 'text'],
-        /*Soft   */['soft'],
-        /*Anime  */[],
-        /*Documen*/['documentary'],
-        /*Sport  */['sport'],
-        /*XXX    */['xxx'],
-        /*Humor  */[]
-    ],
+    categoryList: {
+        serials: ['serials'],
+        music: ['music', 'clips'],
+        games: ['games'],
+        films: ['feature', 'films'],
+        cartoon: ['animated'],
+        books: ['books', 'audio', 'text'],
+        soft: ['soft'],
+        anime: [],
+        doc: ['documentary'],
+        sport: ['sport'],
+        xxx: ['xxx'],
+        humor: []
+    },
     search: {
         searchUrl: 'http://katushka.net/torrent/',
         baseUrl: 'http://katushka.net',
         requestType: 'GET',
         requestData: 'tags=&search=%search%&type_search=groups&incldead=0&sorting=0&type_sort=desc',
-        onGetRequest: function(value) {
+        onGetRequest: function (value) {
             "use strict";
             return encodeURIComponent(value);
         },
-        onAfterDomParse: function() {
+        onAfterDomParse: function () {
             "use strict";
-            var $dom = this.tracker.env.$dom;
+            var $dom = this.env.$dom;
             if ($dom.find('table.data_table.torr_table>tbody>tr').length) {
-                this.tracker.search.listItemSelector = this.tracker.search.listItemSelectorTable;
-                this.tracker.search.torrentSelector = this.tracker.search.torrentSelectorTable;
+                this.search.listItemSelector = this.search.listItemSelectorTable;
+                this.search.torrentSelector = this.search.torrentSelectorTable;
             } else {
-                this.tracker.search.listItemSelector = this.tracker.search.listItemSelectorGallery;
-                this.tracker.search.torrentSelector = this.tracker.search.torrentSelectorGallery;
+                this.search.listItemSelector = this.search.listItemSelectorGallery;
+                this.search.torrentSelector = this.search.torrentSelectorGallery;
             }
         },
         torrentSelector: {
@@ -71,11 +71,11 @@ engine.trackerLib.katushka = {
             url: {selector: 'div.descr>div.torr_name>a:eq(1)', attr: 'href'}
         },
         onGetValue: {
-            categoryId: function(url) {
+            categoryId: function (url) {
                 "use strict";
-                return exKit.funcList.idInCategoryListStr.call(this, url, /\/([^\/]+)\/$/);
+                return exKit.funcList.idInCategoryListStr(this, url, /\/([^\/]+)\/$/);
             },
-            date: function(value) {
+            date: function (value) {
                 "use strict";
                 value = exKit.funcList.monthReplace(value);
                 return exKit.funcList.dateFormat(1, value)
