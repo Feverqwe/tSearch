@@ -38,7 +38,7 @@ engine.trackerLib.inmac = {
         },
         onResponseUrl: function (value) {
             "use strict";
-            return !/\/auth\//.test(value);
+            return !/\/login\//.test(value);
         },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
