@@ -275,11 +275,17 @@ var exKit = {
     },
     prepareCustomTracker: function(trackerJson) {
         "use strict";
+        var id = 'ct_'+trackerJson.uid;
+        if (engine.trackerLib[id]) {
+            return;
+        }
+
+        if (trackerJson.version === 2) {
+            engine.trackerLib[id] = trackerJson.tracker;
+            return engine.trackerLib[id];
+        }
+
         if (trackerJson.version === 1) {
-            var id = 'ct_'+trackerJson.uid;
-            if (engine.trackerLib[id]) {
-                return;
-            }
             var trackerObj = engine.trackerLib[id] = {};
             trackerObj.code = JSON.stringify(trackerJson);
             trackerObj.icon = trackerJson.icon;
