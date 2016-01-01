@@ -275,17 +275,27 @@ var exKit = {
     },
     prepareCustomTracker: function(trackerJson) {
         "use strict";
-        var id = 'ct_'+trackerJson.uid;
-        if (engine.trackerLib[id]) {
-            return;
-        }
+        var id = null;
 
         if (trackerJson.version === 2) {
-            engine.trackerLib[id] = trackerJson.tracker;
-            return engine.trackerLib[id];
+            var uid = trackerJson.id;
+            if (uid.substr(0, 3) !== 'ct_') {
+                uid = 'ct_' + uid;
+                id = trackerJson.id = uid;
+            }
+            if (engine.trackerLib[id]) {
+                return;
+            }
+            engine.trackerLib[id] = trackerJson;
+            return trackerJson;
         }
 
         if (trackerJson.version === 1) {
+            id = 'ct_' + trackerJson.uid;
+            if (engine.trackerLib[id]) {
+                return;
+            }
+
             var trackerObj = engine.trackerLib[id] = {};
             trackerObj.code = JSON.stringify(trackerJson);
             trackerObj.icon = trackerJson.icon;
