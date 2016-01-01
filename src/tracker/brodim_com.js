@@ -36,9 +36,9 @@ engine.trackerLib['brodim'] = {
             "use strict";
             details.request = encodeURIComponent(details.request);
         },
-        onResponseUrl: function (value) {
+        onResponseUrl: function (details) {
             "use strict";
-            return !/login\.php/.test(value);
+            return !/login\.php/.test(details.responseUrl);
         },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {

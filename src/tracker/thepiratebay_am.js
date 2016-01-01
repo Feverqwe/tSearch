@@ -93,7 +93,7 @@ engine.trackerLib.thepiratebay = {
             size: function (details, value) {
                 "use strict";
                 if (details.tracker.search.mode === 'dbl') {
-                    var m = value.match(details.tracker.search.onGetValue.sizeR);
+                    var m = value.match(this.sizeR);
                     if (!m) {
                         return;
                     }
@@ -119,7 +119,7 @@ engine.trackerLib.thepiratebay = {
                     return false;
                 };
                 if (details.tracker.mode === 'dbl') {
-                    m = value.match(details.tracker.search.onGetValue.sizeR);
+                    m = value.match(this.sizeR);
                     if (!m) {
                         return;
                     }

@@ -31,12 +31,12 @@ engine.trackerLib['fast-torrent'] = {
             categoryTitleR: /\s+/g,
             categoryTitle: function (details, value) {
                 "use strict";
-                return value.replace(details.tracker.search.onGetValue.categoryTitleR, ' ');
+                return value.replace(this.categoryTitleR, ' ');
             },
             dateR: /:\s(.+)/,
             date: function (details, value) {
                 "use strict";
-                var m = value.match(details.tracker.search.onGetValue.dateR);
+                var m = value.match(this.dateR);
                 if (m) {
                     value = exKit.funcList.dateFormat(1, m[1]);
                 }

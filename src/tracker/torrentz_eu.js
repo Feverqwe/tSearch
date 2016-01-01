@@ -48,7 +48,7 @@ engine.trackerLib.torrentz = {
             },
             date: function (details, value) {
                 "use strict";
-                var rObj = details.tracker.search.onGetValue.dateR;
+                var rObj = this.dateR;
                 var date = new Date();
                 if ((rObj.today).test(value)) {
                     return parseInt(Date.now() / 1000) - (date.getHours() * 60 * 60 + date.getMinutes() * 60);
