@@ -510,12 +510,18 @@ var exKit = {
         if (search.onBeforeDomParse) {
             search.onBeforeDomParse(details);
         }
+        if (details.result) {
+            return details.result;
+        }
 
         var dom = exKit.parseHtml(details.data);
         var $dom = details.$dom = $(dom);
 
         if (search.onAfterDomParse) {
             search.onAfterDomParse(details);
+        }
+        if (details.result) {
+            return details.result;
         }
 
         var iter = details.iter = {
@@ -546,7 +552,7 @@ var exKit = {
             if (search.onGetListItem) {
                 search.onGetListItem(details);
             }
-            if (details.iter.skipItem) {
+            if (iter.skipItem) {
                 continue;
             }
 
@@ -571,7 +577,7 @@ var exKit = {
 
                 if (!node && search.onSelectorIsNotFound[key]) {
                     node = search.onSelectorIsNotFound[key](details);
-                    if (details.iter.skipSelector) {
+                    if (iter.skipSelector) {
                         continue;
                     }
                 }
@@ -605,7 +611,7 @@ var exKit = {
 
                 if (!value && search.onEmptySelectorValue[key]) {
                     value = search.onEmptySelectorValue[key](details);
-                    if (details.iter.skipSelector) {
+                    if (iter.skipSelector) {
                         continue;
                     }
                 }
@@ -625,7 +631,7 @@ var exKit = {
 
                 if (search.onGetValue[key]) {
                     value = search.onGetValue[key](details, value);
-                    if (details.iter.skipSelector) {
+                    if (iter.skipSelector) {
                         continue;
                     }
                 }
