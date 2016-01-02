@@ -2006,6 +2006,13 @@ var define = function(name, deps, callback) {
         callback(jQuery);
         type = 'jqueryui';
         amd[type] = true;
+    } else
+    if (callback){
+        var r = callback();
+        if (r.Promise) {
+            type = 'promise';
+            window.Promise = r;
+        }
     }
 
     define.stack(type);
