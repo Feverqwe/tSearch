@@ -600,12 +600,13 @@ var exKit = {
 
                 var value = null;
                 if (item.attr !== undefined) {
-                    value = value.getAttribute(item.attr);
-                }
+                    value = node.getAttribute(item.attr);
+                    value = value.toString();
+                } else
                 if (item.html !== undefined){
-                    value = value.innerHTML;
+                    value = node.innerHTML;
                 } else {
-                    value = value.textContent;
+                    value = node.textContent;
                 }
                 if (value !== null) {
                     value = $.trim(value);
