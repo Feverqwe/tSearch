@@ -504,281 +504,174 @@ var exKit = {
         "use strict";
         var tracker = details.tracker;
         var search = tracker.search;
-        var promise = Promise.resolve();
-
-        var beforeDomParse = function() {
-            return Promise.try(function () {
-               return search.onBeforeDomParse(details);
-            }).then(function () {
-                if (details.result) {
-                    throw 'result';
-                }
-            });
-        };
-
-        var afterDomParse = function() {
-            return Promise.try(function() {
-                return search.onAfterDomParse(details);
-            }).then(function () {
-                if (details.result) {
-                    throw 'result';
-                }
-            });
-        };
-
-        var getListItem = function() {
-            return Promise.try(function() {
-                return search.onGetListItem(details);
-            }).then(function () {
-                if (details.iter.skipItem) {
-                    throw 'skip';
-                }
-            });
-        };
-
-        var selectorIsNotFound = function(key) {
-            return Promise.try(function() {
-                return search.onSelectorIsNotFound[key](details);
-            }).then(function (value) {
-                if (details.iter.skipSelector) {
-                    throw 'skip';
-                }
-                return value;
-            });
-        };
-
-        var emptySelectorValue = function(key) {
-            return Promise.try(function() {
-                return search.onEmptySelectorValue[key](details);
-            }).then(function (value) {
-                if (details.iter.skipSelector) {
-                    throw 'skip';
-                }
-                return value;
-            });
-        };
-
-        var getValue = function(key, value) {
-            return Promise.try(function() {
-                return search.onGetValue[key](details, value);
-            }).then(function (value) {
-                if (details.iter.skipSelector) {
-                    throw 'skip';
-                }
-                return value;
-            });
-        };
-
-        if (search.onBeforeDomParse) {
-            promise = promise.then(beforeDomParse);
-        }
-
-        promise = promise.then(function() {
-            var dom = exKit.parseHtml(details.data);
-            details.$dom = $(dom);
-        });
-
-        if (search.onAfterDomParse) {
-            promise = promise.then(afterDomParse);
-        }
 
         var torrentList = [];
-        promise = promise.then(function() {
-            var $dom = details.$dom;
-            var iter = details.iter = {
-                skipSelector: false,
-                skipItem: false,
-                el: null
+
+        if (search.onBeforeDomParse) {
+            search.onBeforeDomParse(details);
+        }
+
+        var dom = exKit.parseHtml(details.data);
+        var $dom = details.$dom = $(dom);
+
+        if (search.onAfterDomParse) {
+            search.onAfterDomParse(details);
+        }
+
+        var iter = details.iter = {
+            skipSelector: false,
+            skipItem: false,
+            $node: null
+        };
+
+        if (search.loginFormSelector !== undefined && $dom.find(search.loginFormSelector).length) {
+            return {requireAuth: 1};
+        }
+
+        var torrentElList = $dom.find(search.listItemSelector);
+
+        if (search.listItemSplice !== undefined) {
+            if (search.listItemSplice[0] !== 0) {
+                torrentElList.splice(0, search.listItemSplice[0]);
+            }
+            if (search.listItemSplice[1] !== 0) {
+                torrentElList.splice(search.listItemSplice[1]);
+            }
+        }
+
+        for (var i = 0, len = torrentElList.length; i < len; i++) {
+            iter.skipItem = false;
+            var $node = iter.$node = torrentElList.eq(i);
+
+            if (search.onGetListItem) {
+                search.onGetListItem(details);
+            }
+            if (details.iter.skipItem) {
+                continue;
+            }
+
+            var trObj = iter.trObj = {
+                column: {},
+                error: {}
             };
 
-            if (search.loginFormSelector !== undefined && $dom.find(search.loginFormSelector).length) {
-                details.result = {requireAuth: 1};
-                throw 'result';
-            }
-
-            var torrentElList = $dom.find(search.listItemSelector);
-
-            if (search.listItemSplice !== undefined) {
-                if (search.listItemSplice[0] !== 0) {
-                    torrentElList.splice(0, search.listItemSplice[0]);
+            var cache = {};
+            for (var key in search.torrentSelector) {
+                var item = search.torrentSelector[key];
+                if (typeof item === 'string') {
+                    item = {selector: item};
                 }
-                if (search.listItemSplice[1] !== 0) {
-                    torrentElList.splice(search.listItemSplice[1]);
+
+                iter.skipSelector = false;
+
+                var node = cache[item.selector];
+                if (node === undefined) {
+                    node = cache[item.selector] = $node.find(item.selector).get(0);
                 }
-            }
 
-            var promise = Promise.resolve();
-            for (var i = 0, len = torrentElList.length; i < len; i++) {
-                (function (i) {
-                    promise = promise.then(function () {
-                        iter.skipItem = false;
-
-                        iter.$node = torrentElList.eq(i);
-                    });
-
-                    if (search.onGetListItem) {
-                        promise = promise.then(getListItem);
+                if (!node && search.onSelectorIsNotFound[key]) {
+                    node = search.onSelectorIsNotFound[key](details);
+                    if (details.iter.skipSelector) {
+                        continue;
                     }
+                }
 
-                    var trObj = null;
-                    promise = promise.then(function () {
-                        trObj = iter.trObj = {
-                            column: {},
-                            error: {}
-                        };
+                if (item.childNodeIndex !== undefined && node) {
+                    var childNodeIndex = item.childNodeIndex;
+                    if (childNodeIndex < 0) {
+                        childNodeIndex = node.childNodes.length + item.childNodeIndex;
+                    }
+                    node = node.childNodes[childNodeIndex];
+                }
 
-                        var cache = {};
-                        var promise = Promise.resolve();
-                        for (var key in search.torrentSelector) {
-                            (function (key) {
-                                var item = search.torrentSelector[key];
-                                if (typeof item === 'string') {
-                                    item = {selector: item};
-                                }
+                if (node === undefined) {
+                    trObj.error[key] = node;
+                    trObj.error[key + '!'] = 'Selector is not found!';
+                    trObj.error[key + 'Selector'] = item.selector;
+                    continue;
+                }
 
-                                promise = promise.then(function () {
-                                    iter.skipSelector = false;
+                var value = null;
+                if (item.attr !== undefined) {
+                    value = node.getAttribute(item.attr);
+                } else if (item.html !== undefined) {
+                    value = node.innerHTML;
+                } else {
+                    value = node.textContent;
+                }
+                if (value !== null) {
+                    value = $.trim(value);
+                }
 
-                                    var node = cache[item.selector];
-                                    if (node === undefined) {
-                                        node = cache[item.selector] = iter.$node.find(item.selector).get(0);
-                                    }
+                if (!value && search.onEmptySelectorValue[key]) {
+                    value = search.onEmptySelectorValue[key](details);
+                    if (details.iter.skipSelector) {
+                        continue;
+                    }
+                }
 
-                                    if (!node && search.onSelectorIsNotFound[key]) {
-                                        return selectorIsNotFound(key);
-                                    }
-
-                                    return node;
-                                });
-
-                                promise = promise.then(function (node) {
-                                    if (item.childNodeIndex !== undefined && node) {
-                                        var childNodeIndex = item.childNodeIndex;
-                                        if (childNodeIndex < 0) {
-                                            childNodeIndex = node.childNodes.length + item.childNodeIndex;
-                                        }
-                                        node = node.childNodes[childNodeIndex];
-                                    }
-
-                                    if (node === undefined) {
-                                        trObj.error[key] = node;
-                                        trObj.error[key + '!'] = 'Selector is not found!';
-                                        trObj.error[key + 'Selector'] = item.selector;
-                                        throw 'skip';
-                                    }
-
-                                    var value = null;
-                                    if (item.attr !== undefined) {
-                                        value = node.getAttribute(item.attr);
-                                    } else if (item.html !== undefined) {
-                                        value = node.innerHTML;
-                                    } else {
-                                        value = node.textContent;
-                                    }
-                                    if (value !== null) {
-                                        value = $.trim(value);
-                                    }
-
-                                    if (!value && search.onEmptySelectorValue[key]) {
-                                        return emptySelectorValue(key);
-                                    }
-
-                                    return value;
-                                });
-
-                                promise = promise.then(function (value) {
-                                    if (!value && value !== 0) {
-                                        trObj.error[key] = value;
-                                        if (item.attr) {
-                                            trObj.error[key + '!'] = 'Attribute is not found!';
-                                        } else if (item.html) {
-                                            trObj.error[key + '!'] = 'Html content is empty!';
-                                        } else {
-                                            trObj.error[key + '!'] = 'Text content is empty!';
-                                        }
-                                        throw 'skip';
-                                    }
+                if (!value && value !== 0) {
+                    trObj.error[key] = value;
+                    if (item.attr) {
+                        trObj.error[key + '!'] = 'Attribute is not found!';
+                    } else if (item.html) {
+                        trObj.error[key + '!'] = 'Html content is empty!';
+                    } else {
+                        trObj.error[key + '!'] = 'Text content is empty!';
+                    }
+                    continue;
+                }
 
 
-                                    if (search.onGetValue[key]) {
-                                        return getValue(key, value);
-                                    }
+                if (search.onGetValue[key]) {
+                    value = search.onGetValue[key](details, value);
+                    if (details.iter.skipSelector) {
+                        continue;
+                    }
+                }
 
-                                    return value;
-                                });
-
-                                promise = promise.then(function (value) {
-                                    if (exKit.intList.indexOf(key) !== -1) {
-                                        var intValue = parseInt(value);
-                                        if (isNaN(intValue)) {
-                                            intValue = -1;
-                                            trObj.error[key] = value;
-                                            trObj.error[key + '!'] = 'isNaN';
-                                        }
-                                        value = intValue;
-                                    }
-                                    if (exKit.unFilterKeyList.indexOf(key) !== -1) {
-                                        value = exKit.contentUnFilter(value);
-                                    }
-                                    if (exKit.isUrlList.indexOf(key) !== -1) {
-                                        value = exKit.urlCheck(tracker, value);
-                                        if (tracker.proxyIndex > 0) {
-                                            value = this.setHostProxyUrl(value, tracker.proxyIndex);
-                                        }
-                                    }
-                                    trObj.column[key] = value;
-                                });
-
-                                promise = promise.catch(function (err) {
-                                    if (err !== 'skip') {
-                                        throw err;
-                                    }
-                                });
-                            })(key);
-                        }
-                        return promise;
-                    });
-
-                    promise = promise.then(function () {
-                        if (!trObj.column.title || !trObj.column.url) {
-                            console.debug('[' + tracker.id + ']', 'Skip torrent:', trObj);
-                            throw 'skip';
-                        }
-
-                        if (trObj.column.categoryId === undefined) {
-                            trObj.column.categoryId = -1;
-                        }
-
-                        if (trObj.column.date === undefined) {
-                            trObj.column.date = -1;
-                        }
-
-                        if (!mono.isEmptyObject(trObj.error)) {
-                            console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
-                        }
-
-                        torrentList.push(trObj.column);
-                    });
-
-                    promise = promise.catch(function (err) {
-                        if (err !== 'skip') {
-                            throw err;
-                        }
-                    });
-                })(i);
-            }
-            return promise;
-        });
-
-        return promise.then(function() {
-            return {torrentList: torrentList};
-        }).catch(function(err) {
-            if (err === 'result') {
-                return details.result;
+                if (exKit.intList.indexOf(key) !== -1) {
+                    var intValue = parseInt(value);
+                    if (isNaN(intValue)) {
+                        intValue = -1;
+                        trObj.error[key] = value;
+                        trObj.error[key + '!'] = 'isNaN';
+                    }
+                    value = intValue;
+                }
+                if (exKit.unFilterKeyList.indexOf(key) !== -1) {
+                    value = exKit.contentUnFilter(value);
+                }
+                if (exKit.isUrlList.indexOf(key) !== -1) {
+                    value = exKit.urlCheck(tracker, value);
+                    if (tracker.proxyIndex > 0) {
+                        value = this.setHostProxyUrl(value, tracker.proxyIndex);
+                    }
+                }
+                trObj.column[key] = value;
             }
 
-            throw err;
-        });
+            if (!trObj.column.title || !trObj.column.url) {
+                console.debug('[' + tracker.id + ']', 'Skip torrent:', trObj);
+                continue;
+            }
+
+            if (trObj.column.categoryId === undefined) {
+                trObj.column.categoryId = -1;
+            }
+
+            if (trObj.column.date === undefined) {
+                trObj.column.date = -1;
+            }
+
+            if (!mono.isEmptyObject(trObj.error)) {
+                console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
+            }
+
+            torrentList.push(trObj.column);
+        }
+
+        return {torrentList: torrentList};
     },
     search: function (tracker, query, onSearch) {
         "use strict";
@@ -793,11 +686,11 @@ var exKit = {
             onSearch.onBegin && onSearch.onBegin(tracker);
 
             if (tracker.search.onBeforeRequest !== undefined) {
-                return tracker.search.onBeforeRequest(details);
+                tracker.search.onBeforeRequest(details);
             } else {
                 details.query = encodeURIComponent(details.query);
             }
-        }).then(function() {
+
             return new Promise(function(resolve, reject) {
                 Promise.try(function() {
                     xhr = mono.ajax({
@@ -844,9 +737,9 @@ var exKit = {
             });
         }).then(function() {
             if (tracker.search.onAfterRequest !== undefined) {
-                return tracker.search.onAfterRequest(details);
+                tracker.search.onAfterRequest(details);
             }
-        }).then(function() {
+
             if (details.result) {
                 return details.result;
             }
