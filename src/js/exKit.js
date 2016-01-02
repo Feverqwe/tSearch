@@ -509,9 +509,9 @@ var exKit = {
 
         if (search.onBeforeDomParse) {
             search.onBeforeDomParse(details);
-        }
-        if (details.result) {
-            return details.result;
+            if (details.result) {
+                return details.result;
+            }
         }
 
         var dom = exKit.parseHtml(details.data);
@@ -519,9 +519,9 @@ var exKit = {
 
         if (search.onAfterDomParse) {
             search.onAfterDomParse(details);
-        }
-        if (details.result) {
-            return details.result;
+            if (details.result) {
+                return details.result;
+            }
         }
 
         var iter = details.iter = {
@@ -744,10 +744,9 @@ var exKit = {
         }).then(function() {
             if (tracker.search.onAfterRequest !== undefined) {
                 tracker.search.onAfterRequest(details);
-            }
-
-            if (details.result) {
-                return details.result;
+                if (details.result) {
+                    return details.result;
+                }
             }
 
             return exKit.parseDom(details);
