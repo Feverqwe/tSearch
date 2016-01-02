@@ -367,7 +367,7 @@ mono.create.hook = {
         "use strict";
         var hasNextEl = el.nextElementSibling;
         var elList = document.createDocumentFragment();
-        this.append(elList, value);
+        mono.create.hook.append(elList, value);
         if (hasNextEl !== null) {
             el.parentNode.insertBefore(elList, hasNextEl);
         } else {

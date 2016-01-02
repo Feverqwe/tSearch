@@ -530,7 +530,7 @@ var exKit = {
             $node: null
         };
 
-        if (search.loginFormSelector !== undefined && $dom.first(search.loginFormSelector).length) {
+        if (search.loginFormSelector !== undefined && $dom.find(search.loginFormSelector).length) {
             return {requireAuth: 1};
         }
 
@@ -572,7 +572,7 @@ var exKit = {
 
                 var node = cache[item.selector];
                 if (node === undefined) {
-                    node = cache[item.selector] = $node.first(item.selector).get(0);
+                    node = cache[item.selector] = $node.find(item.selector).get(0);
                 }
 
                 if (!node && search.onSelectorIsNotFound[key]) {
@@ -751,6 +751,9 @@ var exKit = {
         }).then(function(result) {
             onSearch.onSuccess(tracker, query, result);
         }).catch(function(err) {
+            if (err.message) {
+                err = err.message;
+            }
             onSearch.onError(tracker, err);
         }).then(function() {
             onSearch.onDone(tracker);
