@@ -382,22 +382,22 @@ var exKit = {
                 var dateFuncList = [];
                 if (trackerJson.t_r && trackerJson.t_r_r !== undefined) {
                     var t_r = new RegExp(trackerJson.t_r, "ig");
-                    dateFuncList.push(function (details, value) {
+                    dateFuncList.push(function (value) {
                         return value.replace(t_r, trackerJson.t_r_r);
                     });
                 }
                 if (trackerJson.t_t_r) {
-                    dateFuncList.push(function (details, value) {
+                    dateFuncList.push(function (value) {
                         return exKit.legacy.todayReplace(value, trackerJson.t_f);
                     });
                 }
                 if (trackerJson.t_m_r) {
-                    dateFuncList.push(function (details, value) {
+                    dateFuncList.push(function (value) {
                         return exKit.legacy.monthReplace(value);
                     });
                 }
                 if (trackerJson.t_f !== undefined && trackerJson.t_f !== "-1") {
-                    dateFuncList.push(function (details, value) {
+                    dateFuncList.push(function (value) {
                         return exKit.legacy.dateFormat(trackerJson.t_f, value);
                     });
                 }
