@@ -601,7 +601,6 @@ var exKit = {
                 var value = null;
                 if (item.attr !== undefined) {
                     value = node.getAttribute(item.attr);
-                    value = value.toString();
                 } else
                 if (item.html !== undefined){
                     value = node.innerHTML;
@@ -620,7 +619,7 @@ var exKit = {
                     continue;
                 }
 
-                if (!value) {
+                if (!value && value !== 0) {
                     trObj.error[key] = value;
                     if (item.attr) {
                         trObj.error[key + '!'] = 'Attribute is not found!';
