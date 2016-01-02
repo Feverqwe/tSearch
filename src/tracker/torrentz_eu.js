@@ -19,7 +19,7 @@ engine.trackerLib.torrentz = {
         requestData: 'q=%search%',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         listItemSelector: 'div.results>dl',
         torrentSelector: {

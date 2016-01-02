@@ -33,7 +33,7 @@ engine.trackerLib.katushka = {
         requestData: 'tags=&search=%search%&type_search=groups&incldead=0&sorting=0&type_sort=desc',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         onAfterDomParse: function (details) {
             "use strict";

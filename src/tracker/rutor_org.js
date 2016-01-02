@@ -20,12 +20,12 @@ engine.trackerLib.rutor = {
         requestType: 'GET',
         onGetRequest: function (details) {
             "use strict";
-            if (!details.request) {
+            if (!details.query) {
                 details.tracker.search.searchUrl = details.tracker.search.blankUrl;
             } else {
                 details.tracker.search.searchUrl = details.tracker.search.wordUrl;
             }
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         listItemSelector: '#index>table>tbody>tr',
         listItemSplice: [1, 0],

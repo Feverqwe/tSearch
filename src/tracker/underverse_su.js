@@ -34,7 +34,7 @@ engine.trackerLib.underverse = {
         requestMimeType: 'text/html; charset=windows-1251',
         onGetRequest: function (details) {
             "use strict";
-            details.request = exKit.funcList.encodeCp1251(details.request);
+            details.query = exKit.funcList.encodeCp1251(details.query);
         },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {

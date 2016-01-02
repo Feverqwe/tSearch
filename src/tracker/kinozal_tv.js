@@ -76,7 +76,7 @@ engine.trackerLib.kinozal = {
         requestData: 's=%search%',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         listItemSelector: 'table.t_peer.w100p>tbody>tr',
         listItemSplice: [1, 0],

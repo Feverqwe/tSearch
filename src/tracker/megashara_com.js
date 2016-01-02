@@ -33,7 +33,7 @@ engine.trackerLib.megashara = {
         requestData: 'text=%search%&sorting=seed&time=ALL&year=0&parent=0&where=title&all_words=1&order=added',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         listItemSelector: 'table.table-wide>tbody>tr',
         torrentSelector: {

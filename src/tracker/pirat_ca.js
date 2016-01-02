@@ -34,7 +34,7 @@ engine.trackerLib.piratca = {
         requestData: 'nm=%search%&to=1&max=1',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         onResponseUrl: function (details) {
             "use strict";

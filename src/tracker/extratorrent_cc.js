@@ -33,7 +33,7 @@ engine.trackerLib.extratorrent = {
         requestData: 'search=%search%',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         listItemSelector: 'table.tl>tbody:eq(0)>tr',
         torrentSelector: {

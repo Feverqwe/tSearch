@@ -33,7 +33,7 @@ engine.trackerLib.thepiratebay = {
         requestType: 'GET',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         onAfterDomParse: function (details) {
             "use strict";

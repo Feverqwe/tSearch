@@ -33,7 +33,7 @@ engine.trackerLib.mininova = {
         requestData: 'search=%search%&cat=0',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         listItemSelector: 'table.maintable>tbody>tr',
         listItemSplice: [1, 0],

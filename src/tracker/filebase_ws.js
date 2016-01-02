@@ -33,7 +33,7 @@ engine.trackerLib.filebase = {
         requestData: 'search=%search%&c=0&t=liveonly',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         listItemSelector: '#torrents_list>tbody>tr',
         listItemSplice: [1, 0],

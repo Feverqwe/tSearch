@@ -296,7 +296,7 @@ var exKit = {
             if (trackerJson.encode) {
                 search.onGetRequest = function(details) {
                     "use strict";
-                    details.request = exKit.funcList.encodeCp1251(details.request);
+                    details.query = exKit.funcList.encodeCp1251(details.query);
                 };
             }
             search.listItemSelector = trackerJson.items;
@@ -694,12 +694,12 @@ var exKit = {
 
         return exKit.parseDom(tracker, details, cb);
     },
-    search: function(tracker, request, onSearch) {
+    search: function(tracker, query, onSearch) {
         "use strict";
         var _this = this;
         var details = {
             tracker: tracker,
-            request: request
+            query: query
         };
         onSearch.onBegin && onSearch.onBegin(tracker);
         if (tracker.search.onGetRequest !== undefined) {
@@ -707,11 +707,11 @@ var exKit = {
         }
         var xhr = mono.ajax({
             safe: true,
-            url: tracker.search.searchUrl.replace('%search%', details.request),
+            url: tracker.search.searchUrl.replace('%search%', details.query),
             type: tracker.search.requestType,
             mimeType: tracker.search.requestMimeType,
             dataType: tracker.search.requestDataType,
-            data: (tracker.search.requestData || '').replace('%search%', details.request),
+            data: (tracker.search.requestData || '').replace('%search%', details.query),
             changeUrl: function(url, method) {
                 var proxy;
                 if (tracker.proxyIndex > 0 && (proxy = engine.settings.proxyList[tracker.proxyIndex - 1])) {
@@ -735,7 +735,7 @@ var exKit = {
 
                 exKit.parseResponse(tracker, details, function(data) {
                     onSearch.onDone(tracker);
-                    onSearch.onSuccess(tracker, request, data);
+                    onSearch.onSuccess(tracker, query, data);
                 });
             },
             error: function(xhr) {
@@ -779,12 +779,12 @@ var exKit = {
         };
         onSearch = null;
     },
-    searchList: function(trackerList, request, onSearch) {
+    searchList: function(trackerList, query, onSearch) {
         "use strict";
         exKit.searchProgressListClear();
         exKit.searchProgressListBind(onSearch);
         for (var i = 0, trackerId; trackerId = trackerList[i]; i++) {
-            exKit.searchProgressList[trackerId] = exKit.search(engine.trackerLib[trackerId], request, onSearch);
+            exKit.searchProgressList[trackerId] = exKit.search(engine.trackerLib[trackerId], query, onSearch);
         }
     },
     getTrackerIconUrl: function(icon) {

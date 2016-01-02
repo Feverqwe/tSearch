@@ -23,13 +23,13 @@ engine.trackerLib.btdigg = {
         },
         onGetRequest: function (details) {
             "use strict";
-            var value = details.request;
+            var value = details.query;
             var infoHash = '';
             var q = encodeURIComponent(value);
             if (value.length === 40 && /^[a-zA-Z0-9]+$/.test(value)) {
                 infoHash = value;
             }
-            details.request = 'info_hash=' + infoHash + '&q=' + q;
+            details.query = 'info_hash=' + infoHash + '&q=' + q;
         },
         onAfterDomParse: function (details) {
             "use strict";

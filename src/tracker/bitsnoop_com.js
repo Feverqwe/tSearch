@@ -31,7 +31,7 @@ engine.trackerLib['bitsnoop'] = {
         requestType: 'GET',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         listItemSelector: '#torrents>li',
         torrentSelector: {

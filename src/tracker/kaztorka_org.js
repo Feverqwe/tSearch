@@ -20,7 +20,7 @@ engine.trackerLib.kaztorka = {
         requestData: 'torrentName=%search%',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         listItemSelector: '#searchTable>tbody>tr',
         listItemSplice: [1, 0],

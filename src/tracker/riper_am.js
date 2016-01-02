@@ -26,7 +26,7 @@ engine.trackerLib.riperam = {
         requestData: 'keywords=%search%&sr=topics&sf=titleonly&fp=1&tracker_search=torrent',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         listItemSelector: 'ul.topiclist.topics>li',
         torrentSelector: {

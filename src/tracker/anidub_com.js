@@ -32,7 +32,7 @@ engine.trackerLib['anidub'] = {
         requestData: 'do=search&subaction=search&showposts=1&story=%search%',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         listItemSelector: '#dle-content>div.dpad.searchitem',
         torrentSelector: {

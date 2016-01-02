@@ -33,7 +33,7 @@ engine.trackerLib['bigfangroup'] = {
         requestData: 'search=%search%',
         onGetRequest: function (details) {
             "use strict";
-            details.request = exKit.funcList.encodeCp1251(details.request);
+            details.query = exKit.funcList.encodeCp1251(details.query);
         },
         listItemSelector: '#highlighted>tr',
         torrentSelector: {

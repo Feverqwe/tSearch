@@ -35,7 +35,7 @@ engine.trackerLib['torrents.freedom'] = {
         requestMimeType: 'text/html; charset=windows-1251',
         onGetRequest: function (details) {
             "use strict";
-            details.request = exKit.funcList.encodeCp1251(details.request);
+            details.query = exKit.funcList.encodeCp1251(details.query);
         },
         onResponseUrl: function (details) {
             "use strict";

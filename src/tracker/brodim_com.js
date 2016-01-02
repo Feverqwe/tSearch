@@ -34,7 +34,7 @@ engine.trackerLib['brodim'] = {
         requestData: 'max=1&to=1&nm=%search%',
         onGetRequest: function (details) {
             "use strict";
-            details.request = encodeURIComponent(details.request);
+            details.query = encodeURIComponent(details.query);
         },
         onResponseUrl: function (details) {
             "use strict";
