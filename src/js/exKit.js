@@ -605,7 +605,7 @@ var exKit = {
                 } else {
                     value = node.textContent;
                 }
-                if (value !== null) {
+                if (value) {
                     value = $.trim(value);
                 }
 
