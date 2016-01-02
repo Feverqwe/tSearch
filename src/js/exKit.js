@@ -500,8 +500,9 @@ var exKit = {
         }
         return url.replace(/(https?:\/\/[^\/]+)(.*)/, '$1.' + proxy.url + '$2');
     },
-    parseDom: function(tracker, details) {
+    parseDom: function(details) {
         "use strict";
+        var tracker = details.tracker;
         var search = tracker.search;
         var promise = Promise.resolve();
 
@@ -850,7 +851,7 @@ var exKit = {
                 return details.result;
             }
 
-            return exKit.parseDom(tracker, details);
+            return exKit.parseDom(details);
         }).then(function(result) {
             onSearch.onSuccess(tracker, query, result);
         }).catch(function(err) {
