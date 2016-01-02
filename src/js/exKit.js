@@ -502,8 +502,9 @@ var exKit = {
     },
     parseDom: function (tracker, details, cb) {
         "use strict";
-        if (tracker.search.onBeforeDomParse !== undefined) {
-            tracker.search.onBeforeDomParse(details);
+        var search = tracker.search;
+        if (search.onBeforeDomParse !== undefined) {
+            search.onBeforeDomParse(details);
         }
 
         if (details.result) {
@@ -514,8 +515,8 @@ var exKit = {
 
         var $dom = details.$dom = $(dom);
 
-        if (tracker.search.onAfterDomParse !== undefined) {
-            tracker.search.onAfterDomParse(details);
+        if (search.onAfterDomParse !== undefined) {
+            search.onAfterDomParse(details);
         }
 
         if (details.result) {
@@ -528,19 +529,19 @@ var exKit = {
             el: null
         };
 
-        if (tracker.search.loginFormSelector !== undefined && $dom.find(tracker.search.loginFormSelector).length) {
+        if (search.loginFormSelector !== undefined && $dom.find(search.loginFormSelector).length) {
             return cb({requireAuth: 1});
         }
 
         var torrentList = [];
-        var torrentElList = $dom.find(tracker.search.listItemSelector);
+        var torrentElList = $dom.find(search.listItemSelector);
 
-        if (tracker.search.listItemSplice !== undefined) {
-            if (tracker.search.listItemSplice[0] !== 0) {
-                torrentElList.splice(0, tracker.search.listItemSplice[0]);
+        if (search.listItemSplice !== undefined) {
+            if (search.listItemSplice[0] !== 0) {
+                torrentElList.splice(0, search.listItemSplice[0]);
             }
-            if (tracker.search.listItemSplice[1] !== 0) {
-                torrentElList.splice(tracker.search.listItemSplice[1]);
+            if (search.listItemSplice[1] !== 0) {
+                torrentElList.splice(search.listItemSplice[1]);
             }
         }
 
@@ -550,8 +551,8 @@ var exKit = {
             var $node = torrentElList.eq(i);
             iter.$node = $node;
 
-            if (tracker.search.onGetListItem !== undefined) {
-                tracker.search.onGetListItem(details);
+            if (search.onGetListItem !== undefined) {
+                search.onGetListItem(details);
             }
 
             if (iter.skipItem) {
@@ -564,10 +565,10 @@ var exKit = {
             };
 
             var cache = {};
-            for (var key in tracker.search.torrentSelector) {
+            for (var key in search.torrentSelector) {
                 iter.skipSelector = false;
 
-                var item = tracker.search.torrentSelector[key];
+                var item = search.torrentSelector[key];
                 if (typeof item === 'string') {
                     item = {selector: item};
                 }
@@ -577,8 +578,8 @@ var exKit = {
                     node = cache[item.selector] = $node.find(item.selector).get(0);
                 }
 
-                if (!node && tracker.search.onSelectorIsNotFound[key] !== undefined) {
-                    node = tracker.search.onSelectorIsNotFound[key](details, iter);
+                if (!node && search.onSelectorIsNotFound[key] !== undefined) {
+                    node = search.onSelectorIsNotFound[key](details, iter);
                 }
 
                 if (iter.skipSelector) {
@@ -612,8 +613,8 @@ var exKit = {
                     value = $.trim(value);
                 }
 
-                if (!value && tracker.search.onEmptySelectorValue[key] !== undefined) {
-                    value = tracker.search.onEmptySelectorValue[key](details);
+                if (!value && search.onEmptySelectorValue[key] !== undefined) {
+                    value = search.onEmptySelectorValue[key](details);
                 }
 
                 if (iter.skipSelector) {
@@ -632,8 +633,8 @@ var exKit = {
                     continue;
                 }
 
-                if (tracker.search.onGetValue[key] !== undefined) {
-                    value = tracker.search.onGetValue[key](details, value);
+                if (search.onGetValue[key] !== undefined) {
+                    value = search.onGetValue[key](details, value);
                 }
 
                 if (iter.skipSelector) {
