@@ -530,13 +530,13 @@ var exKit = {
             $node: null
         };
 
-        if (search.loginFormSelector !== undefined && $dom.find(search.loginFormSelector).length) {
+        if (search.loginFormSelector && $dom.find(search.loginFormSelector).length) {
             return {requireAuth: 1};
         }
 
         var torrentElList = $dom.find(search.listItemSelector);
 
-        if (search.listItemSplice !== undefined) {
+        if (search.listItemSplice) {
             if (search.listItemSplice[0] !== 0) {
                 torrentElList.splice(0, search.listItemSplice[0]);
             }
@@ -571,7 +571,7 @@ var exKit = {
                 iter.skipSelector = false;
 
                 var node = cache[item.selector];
-                if (node === undefined) {
+                if (!node) {
                     node = cache[item.selector] = $node.find(item.selector).get(0);
                 }
 
@@ -590,7 +590,7 @@ var exKit = {
                     node = node.childNodes[childNodeIndex];
                 }
 
-                if (node === undefined) {
+                if (!node) {
                     trObj.error[key] = node;
                     trObj.error[key + '!'] = 'Selector is not found!';
                     trObj.error[key + 'Selector'] = item.selector;
@@ -598,9 +598,9 @@ var exKit = {
                 }
 
                 var value = null;
-                if (item.attr !== undefined) {
+                if (item.attr) {
                     value = node.getAttribute(item.attr);
-                } else if (item.html !== undefined) {
+                } else if (item.html) {
                     value = node.innerHTML;
                 } else {
                     value = node.textContent;
@@ -663,11 +663,11 @@ var exKit = {
                 continue;
             }
 
-            if (trObj.column.categoryId === undefined) {
+            if (!trObj.column.categoryId && trObj.column.categoryId !== 0) {
                 trObj.column.categoryId = -1;
             }
 
-            if (trObj.column.date === undefined) {
+            if (!trObj.column.date) {
                 trObj.column.date = -1;
             }
 
