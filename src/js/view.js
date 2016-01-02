@@ -1957,7 +1957,12 @@ var view = {
 
         document.body.appendChild(mono.create('script', {src: 'js/notifer.js'}));
         document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.4.min.js'}));
-        document.body.appendChild(mono.create('script', {src: 'js/bluebird.min.js'}));
+        if (typeof Promise === 'undefined') {
+            document.body.appendChild(mono.create('script', {src: 'js/bluebird.min.js'}));
+        } else {
+            define.amd['promise'] = true;
+            define.stack('promise');
+        }
 
         if (mono.isChrome && mono.isChromeWebApp) {
             mono.storage.get('extensionPopup', function(storage) {
@@ -2011,6 +2016,7 @@ var define = function(name, deps, callback) {
         var r = callback();
         if (r.Promise) {
             type = 'promise';
+            amd[type] = true;
             window.Promise = r;
         }
     }

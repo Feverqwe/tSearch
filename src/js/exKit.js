@@ -688,7 +688,7 @@ var exKit = {
             query: query
         };
 
-        Promise.try(function() {
+        Promise.resolve().then(function() {
             onSearch.onBegin && onSearch.onBegin(tracker);
 
             if (tracker.search.onBeforeRequest !== undefined) {
@@ -698,7 +698,7 @@ var exKit = {
             }
 
             return new Promise(function(resolve, reject) {
-                Promise.try(function() {
+                Promise.resolve().then(function() {
                     xhr = mono.ajax({
                         safe: true,
                         url: tracker.search.searchUrl.replace('%search%', details.query),
@@ -755,7 +755,7 @@ var exKit = {
             onSearch.onSuccess(tracker, query, result);
         }).catch(function(err) {
             onSearch.onError(tracker, err);
-        }).finally(function() {
+        }).then(function() {
             onSearch.onDone(tracker);
         });
 
