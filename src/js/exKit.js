@@ -644,14 +644,15 @@ var exKit = {
                         trObj.error[key + '!'] = 'isNaN';
                     }
                     value = intValue;
-                }
-                if (exKit.unFilterKeyList.indexOf(key) !== -1) {
-                    value = exKit.contentUnFilter(value);
-                }
-                if (exKit.isUrlList.indexOf(key) !== -1) {
-                    value = exKit.urlCheck(tracker, value);
-                    if (tracker.proxyIndex > 0) {
-                        value = this.setHostProxyUrl(value, tracker.proxyIndex);
+                } else {
+                    if (exKit.unFilterKeyList.indexOf(key) !== -1) {
+                        value = exKit.contentUnFilter(value);
+                    }
+                    if (exKit.isUrlList.indexOf(key) !== -1) {
+                        value = exKit.urlCheck(tracker, value);
+                        if (tracker.proxyIndex > 0) {
+                            value = this.setHostProxyUrl(value, tracker.proxyIndex);
+                        }
                     }
                 }
                 trObj.column[key] = value;
