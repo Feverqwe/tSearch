@@ -660,7 +660,9 @@ var explore = {
                 fragment.appendChild(mono.create('div', {
                     class: 'desc',
                     text: info.desc,
-                    append: info.wikiLink
+                    append: [
+                        info.wikiLink
+                    ]
                 }));
 
                 info.otherItems && fragment.appendChild(info.otherItems);

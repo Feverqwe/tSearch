@@ -500,257 +500,365 @@ var exKit = {
         }
         return url.replace(/(https?:\/\/[^\/]+)(.*)/, '$1.' + proxy.url + '$2');
     },
-    parseDom: function (tracker, details, cb) {
+    parseDom: function(tracker, details) {
         "use strict";
         var search = tracker.search;
-        if (search.onBeforeDomParse !== undefined) {
-            search.onBeforeDomParse(details);
-        }
+        var promise = Promise.resolve();
 
-        if (details.result) {
-            return cb(details.result);
-        }
-
-        var dom = exKit.parseHtml(details.data);
-
-        var $dom = details.$dom = $(dom);
-
-        if (search.onAfterDomParse !== undefined) {
-            search.onAfterDomParse(details);
-        }
-
-        if (details.result) {
-            return cb(details.result);
-        }
-
-        var iter = details.iter = {
-            skipSelector: false,
-            skipItem: false,
-            el: null
+        var beforeDomParse = function() {
+            return Promise.try(function () {
+               return search.onBeforeDomParse(details);
+            }).then(function () {
+                if (details.result) {
+                    throw 'result';
+                }
+            });
         };
 
-        if (search.loginFormSelector !== undefined && $dom.find(search.loginFormSelector).length) {
-            return cb({requireAuth: 1});
+        var afterDomParse = function() {
+            return Promise.try(function() {
+                return search.onAfterDomParse(details);
+            }).then(function () {
+                if (details.result) {
+                    throw 'result';
+                }
+            });
+        };
+
+        var getListItem = function() {
+            return Promise.try(function() {
+                return search.onGetListItem(details);
+            }).then(function () {
+                if (details.iter.skipItem) {
+                    throw 'skip';
+                }
+            });
+        };
+
+        var selectorIsNotFound = function(key) {
+            return Promise.try(function() {
+                return search.onSelectorIsNotFound[key](details);
+            }).then(function (value) {
+                if (details.iter.skipSelector) {
+                    throw 'skip';
+                }
+                return value;
+            });
+        };
+
+        var emptySelectorValue = function(key) {
+            return Promise.try(function() {
+                return search.onEmptySelectorValue[key](details);
+            }).then(function (value) {
+                if (details.iter.skipSelector) {
+                    throw 'skip';
+                }
+                return value;
+            });
+        };
+
+        var getValue = function(key, value) {
+            return Promise.try(function() {
+                return search.onGetValue[key](details, value);
+            }).then(function (value) {
+                if (details.iter.skipSelector) {
+                    throw 'skip';
+                }
+                return value;
+            });
+        };
+
+        if (search.onBeforeDomParse) {
+            promise = promise.then(beforeDomParse);
+        }
+
+        promise = promise.then(function() {
+            var dom = exKit.parseHtml(details.data);
+            details.$dom = $(dom);
+        });
+
+        if (search.onAfterDomParse) {
+            promise = promise.then(afterDomParse);
         }
 
         var torrentList = [];
-        var torrentElList = $dom.find(search.listItemSelector);
-
-        if (search.listItemSplice !== undefined) {
-            if (search.listItemSplice[0] !== 0) {
-                torrentElList.splice(0, search.listItemSplice[0]);
-            }
-            if (search.listItemSplice[1] !== 0) {
-                torrentElList.splice(search.listItemSplice[1]);
-            }
-        }
-
-        for (var i = 0, len = torrentElList.length; i < len; i++) {
-            iter.skipItem = false;
-
-            var $node = torrentElList.eq(i);
-            iter.$node = $node;
-
-            if (search.onGetListItem !== undefined) {
-                search.onGetListItem(details);
-            }
-
-            if (iter.skipItem) {
-                continue;
-            }
-
-            var trObj = iter.trObj = {
-                column: {},
-                error: {}
+        promise = promise.then(function() {
+            var $dom = details.$dom;
+            var iter = details.iter = {
+                skipSelector: false,
+                skipItem: false,
+                el: null
             };
 
-            var cache = {};
-            for (var key in search.torrentSelector) {
-                iter.skipSelector = false;
+            if (search.loginFormSelector !== undefined && $dom.find(search.loginFormSelector).length) {
+                details.result = {requireAuth: 1};
+                throw 'result';
+            }
 
-                var item = search.torrentSelector[key];
-                if (typeof item === 'string') {
-                    item = {selector: item};
+            var torrentElList = $dom.find(search.listItemSelector);
+
+            if (search.listItemSplice !== undefined) {
+                if (search.listItemSplice[0] !== 0) {
+                    torrentElList.splice(0, search.listItemSplice[0]);
                 }
-
-                var node = cache[item.selector];
-                if (node === undefined) {
-                    node = cache[item.selector] = $node.find(item.selector).get(0);
+                if (search.listItemSplice[1] !== 0) {
+                    torrentElList.splice(search.listItemSplice[1]);
                 }
+            }
 
-                if (!node && search.onSelectorIsNotFound[key] !== undefined) {
-                    node = search.onSelectorIsNotFound[key](details, iter);
-                }
+            var promise = Promise.resolve();
+            for (var i = 0, len = torrentElList.length; i < len; i++) {
+                (function (i) {
+                    promise = promise.then(function () {
+                        iter.skipItem = false;
 
-                if (iter.skipSelector) {
-                    continue;
-                }
+                        iter.$node = torrentElList.eq(i);
+                    });
 
-                if (item.childNodeIndex !== undefined && node) {
-                    var childNodeIndex = item.childNodeIndex;
-                    if (childNodeIndex < 0) {
-                        childNodeIndex = node.childNodes.length + item.childNodeIndex;
+                    if (search.onGetListItem) {
+                        promise = promise.then(getListItem);
                     }
-                    node = node.childNodes[childNodeIndex];
-                }
 
-                if (node === undefined) {
-                    trObj.error[key] = node;
-                    trObj.error[key + '!'] = 'Selector is not found!';
-                    trObj.error[key + 'Selector'] = item.selector;
-                    continue;
-                }
+                    var trObj = null;
+                    promise = promise.then(function () {
+                        trObj = iter.trObj = {
+                            column: {},
+                            error: {}
+                        };
 
-                var value = null;
-                if (item.attr !== undefined) {
-                    value = node.getAttribute(item.attr);
-                } else if (item.html !== undefined) {
-                    value = node.innerHTML;
-                } else {
-                    value = node.textContent;
-                }
-                if (value !== null) {
-                    value = $.trim(value);
-                }
+                        var cache = {};
+                        var promise = Promise.resolve();
+                        for (var key in search.torrentSelector) {
+                            (function (key) {
+                                var item = search.torrentSelector[key];
+                                if (typeof item === 'string') {
+                                    item = {selector: item};
+                                }
 
-                if (!value && search.onEmptySelectorValue[key] !== undefined) {
-                    value = search.onEmptySelectorValue[key](details);
-                }
+                                promise = promise.then(function () {
+                                    iter.skipSelector = false;
 
-                if (iter.skipSelector) {
-                    continue;
-                }
+                                    var node = cache[item.selector];
+                                    if (node === undefined) {
+                                        node = cache[item.selector] = iter.$node.find(item.selector).get(0);
+                                    }
 
-                if (!value && value !== 0) {
-                    trObj.error[key] = value;
-                    if (item.attr) {
-                        trObj.error[key + '!'] = 'Attribute is not found!';
-                    } else if (item.html) {
-                        trObj.error[key + '!'] = 'Html content is empty!';
-                    } else {
-                        trObj.error[key + '!'] = 'Text content is empty!';
-                    }
-                    continue;
-                }
+                                    if (!node && search.onSelectorIsNotFound[key]) {
+                                        return selectorIsNotFound(key);
+                                    }
 
-                if (search.onGetValue[key] !== undefined) {
-                    value = search.onGetValue[key](details, value);
-                }
+                                    return node;
+                                });
 
-                if (iter.skipSelector) {
-                    continue;
-                }
+                                promise = promise.then(function (node) {
+                                    if (item.childNodeIndex !== undefined && node) {
+                                        var childNodeIndex = item.childNodeIndex;
+                                        if (childNodeIndex < 0) {
+                                            childNodeIndex = node.childNodes.length + item.childNodeIndex;
+                                        }
+                                        node = node.childNodes[childNodeIndex];
+                                    }
 
-                if (exKit.intList.indexOf(key) !== -1) {
-                    var intValue = parseInt(value);
-                    if (isNaN(intValue)) {
-                        intValue = -1;
-                        trObj.error[key] = value;
-                        trObj.error[key + '!'] = 'isNaN';
-                    }
-                    value = intValue;
-                }
-                if (exKit.unFilterKeyList.indexOf(key) !== -1) {
-                    value = exKit.contentUnFilter(value);
-                }
-                if (exKit.isUrlList.indexOf(key) !== -1) {
-                    value = exKit.urlCheck(tracker, value);
-                    if (tracker.proxyIndex > 0) {
-                        value = this.setHostProxyUrl(value, tracker.proxyIndex);
-                    }
-                }
-                trObj.column[key] = value;
+                                    if (node === undefined) {
+                                        trObj.error[key] = node;
+                                        trObj.error[key + '!'] = 'Selector is not found!';
+                                        trObj.error[key + 'Selector'] = item.selector;
+                                        throw 'skip';
+                                    }
+
+                                    var value = null;
+                                    if (item.attr !== undefined) {
+                                        value = node.getAttribute(item.attr);
+                                    } else if (item.html !== undefined) {
+                                        value = node.innerHTML;
+                                    } else {
+                                        value = node.textContent;
+                                    }
+                                    if (value !== null) {
+                                        value = $.trim(value);
+                                    }
+
+                                    if (!value && search.onEmptySelectorValue[key]) {
+                                        return emptySelectorValue(key);
+                                    }
+
+                                    return value;
+                                });
+
+                                promise = promise.then(function (value) {
+                                    if (!value && value !== 0) {
+                                        trObj.error[key] = value;
+                                        if (item.attr) {
+                                            trObj.error[key + '!'] = 'Attribute is not found!';
+                                        } else if (item.html) {
+                                            trObj.error[key + '!'] = 'Html content is empty!';
+                                        } else {
+                                            trObj.error[key + '!'] = 'Text content is empty!';
+                                        }
+                                        throw 'skip';
+                                    }
+
+
+                                    if (search.onGetValue[key]) {
+                                        return getValue(key, value);
+                                    }
+
+                                    return value;
+                                });
+
+                                promise = promise.then(function (value) {
+                                    if (exKit.intList.indexOf(key) !== -1) {
+                                        var intValue = parseInt(value);
+                                        if (isNaN(intValue)) {
+                                            intValue = -1;
+                                            trObj.error[key] = value;
+                                            trObj.error[key + '!'] = 'isNaN';
+                                        }
+                                        value = intValue;
+                                    }
+                                    if (exKit.unFilterKeyList.indexOf(key) !== -1) {
+                                        value = exKit.contentUnFilter(value);
+                                    }
+                                    if (exKit.isUrlList.indexOf(key) !== -1) {
+                                        value = exKit.urlCheck(tracker, value);
+                                        if (tracker.proxyIndex > 0) {
+                                            value = this.setHostProxyUrl(value, tracker.proxyIndex);
+                                        }
+                                    }
+                                    trObj.column[key] = value;
+                                });
+
+                                promise = promise.catch(function (err) {
+                                    if (err !== 'skip') {
+                                        throw err;
+                                    }
+                                });
+                            })(key);
+                        }
+                        return promise;
+                    });
+
+                    promise = promise.then(function () {
+                        if (!trObj.column.title || !trObj.column.url) {
+                            console.debug('[' + tracker.id + ']', 'Skip torrent:', trObj);
+                            throw 'skip';
+                        }
+
+                        if (trObj.column.categoryId === undefined) {
+                            trObj.column.categoryId = -1;
+                        }
+
+                        if (trObj.column.date === undefined) {
+                            trObj.column.date = -1;
+                        }
+
+                        if (!mono.isEmptyObject(trObj.error)) {
+                            console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
+                        }
+
+                        torrentList.push(trObj.column);
+                    });
+
+                    promise = promise.catch(function (err) {
+                        if (err !== 'skip') {
+                            throw err;
+                        }
+                    });
+                })(i);
+            }
+            return promise;
+        });
+
+        return promise.then(function() {
+            return {torrentList: torrentList};
+        }).catch(function(err) {
+            if (err === 'result') {
+                return details.result;
             }
 
-            if (!trObj.column.title || !trObj.column.url) {
-                console.debug('[' + tracker.id + ']', 'Skip torrent:', trObj);
-                continue;
-            }
-
-            if (trObj.column.categoryId === undefined) {
-                trObj.column.categoryId = -1;
-            }
-
-            if (trObj.column.date === undefined) {
-                trObj.column.date = -1;
-            }
-
-            if (!mono.isEmptyObject(trObj.error)) {
-                console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
-            }
-
-            torrentList.push(trObj.column);
-        }
-
-        cb({torrentList: torrentList});
+            throw err;
+        });
     },
     search: function (tracker, query, onSearch) {
         "use strict";
         var _this = this;
+        var xhr = null;
         var details = {
             tracker: tracker,
             query: query
         };
-        onSearch.onBegin && onSearch.onBegin(tracker);
-        if (tracker.search.onBeforeRequest !== undefined) {
-            tracker.search.onBeforeRequest(details);
-        } else {
-            details.query = encodeURIComponent(details.query);
-        }
-        var xhr = mono.ajax({
-            safe: true,
-            url: tracker.search.searchUrl.replace('%search%', details.query),
-            type: tracker.search.requestType,
-            mimeType: tracker.search.requestMimeType,
-            dataType: tracker.search.requestDataType,
-            data: (tracker.search.requestData || '').replace('%search%', details.query),
-            changeUrl: function (url, method) {
-                var proxy;
-                if (tracker.proxyIndex > 0 && (proxy = engine.settings.proxyList[tracker.proxyIndex - 1])) {
-                    if (proxy.type === 0) {
-                        if (method === 'GET') {
-                            if (proxy.fixSpaces) {
-                                url = url.replace(/[\t\s]+/g, '%20');
-                            }
-                            url = proxy.url.replace('{url}', encodeURIComponent(url));
-                        }
-                    }
-                    if (proxy.type === 1) {
-                        url = _this.setHostProxyUrl(url, tracker.proxyIndex);
-                    }
-                }
-                return url;
-            },
-            success: function (data, xhr) {
-                details.data = exKit.contentFilter(data);
-                details.responseUrl = xhr.responseUrl;
 
+        Promise.try(function() {
+            onSearch.onBegin && onSearch.onBegin(tracker);
 
-                if (tracker.search.onAfterRequest !== undefined) {
-                    tracker.search.onAfterRequest(details);
-                    if (details.result) {
-                        return cb(details.result);
-                    }
-                }
-
-                return exKit.parseDom(tracker, details, function (data) {
-                    onSearch.onDone(tracker);
-                    onSearch.onSuccess(tracker, query, data);
-                });
-            },
-            error: function (xhr) {
-                onSearch.onDone(tracker);
-                onSearch.onError(tracker, xhr.status, xhr.statusText);
-            },
-            timeout: function (xhr) {
-                onSearch.onDone(tracker);
-                onSearch.onError(tracker, xhr.status, xhr.statusText);
-            },
-            abort: function (xhr) {
-                onSearch.onDone(tracker);
-                onSearch.onError(tracker, xhr.status, xhr.statusText);
+            if (tracker.search.onBeforeRequest !== undefined) {
+                return tracker.search.onBeforeRequest(details);
+            } else {
+                details.query = encodeURIComponent(details.query);
             }
+        }).then(function() {
+            return new Promise(function(resolve, reject) {
+                Promise.try(function() {
+                    xhr = mono.ajax({
+                        safe: true,
+                        url: tracker.search.searchUrl.replace('%search%', details.query),
+                        type: tracker.search.requestType,
+                        mimeType: tracker.search.requestMimeType,
+                        dataType: tracker.search.requestDataType,
+                        data: (tracker.search.requestData || '').replace('%search%', details.query),
+                        changeUrl: function (url, method) {
+                            var proxy;
+                            if (tracker.proxyIndex > 0 && (proxy = engine.settings.proxyList[tracker.proxyIndex - 1])) {
+                                if (proxy.type === 0) {
+                                    if (method === 'GET') {
+                                        if (proxy.fixSpaces) {
+                                            url = url.replace(/[\t\s]+/g, '%20');
+                                        }
+                                        url = proxy.url.replace('{url}', encodeURIComponent(url));
+                                    }
+                                }
+                                if (proxy.type === 1) {
+                                    url = _this.setHostProxyUrl(url, tracker.proxyIndex);
+                                }
+                            }
+                            return url;
+                        },
+                        success: function (data, xhr) {
+                            details.data = exKit.contentFilter(data);
+                            details.responseUrl = xhr.responseUrl;
+
+                            resolve();
+                        },
+                        error: function (xhr) {
+                            reject(['Request error', xhr.status, xhr.statusText].join(' '));
+                        },
+                        timeout: function () {
+                            reject('Request timeout');
+                        },
+                        abort: function () {
+                            reject('Request aborted!');
+                        }
+                    });
+                }).catch(reject)
+            });
+        }).then(function() {
+            if (tracker.search.onAfterRequest !== undefined) {
+                return tracker.search.onAfterRequest(details);
+            }
+        }).then(function() {
+            if (details.result) {
+                return details.result;
+            }
+
+            return exKit.parseDom(tracker, details);
+        }).then(function(result) {
+            onSearch.onSuccess(tracker, query, result);
+        }).catch(function(err) {
+            onSearch.onError(tracker, err);
+        }).finally(function() {
+            onSearch.onDone(tracker);
         });
+
         return {
             tracker: tracker,
             abort: function () {

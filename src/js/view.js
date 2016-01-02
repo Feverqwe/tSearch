@@ -283,7 +283,7 @@ var view = {
         if (status === 'loading' || status === 'error') {
             trackerObj.status[status] = (function(iconEl, status, data) {
                 iconEl.classList.add(status);
-                data && data.statusText && data.status && (iconEl.title = data.statusText + ' (' + data.status + ')');
+                data && (iconEl.title = data);
                 return {
                     disable: function() {
                         iconEl.classList.remove(status);

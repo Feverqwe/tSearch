@@ -296,33 +296,29 @@ mono.isEmptyObject = function(obj) {
  * @param {Object} [obj]
  * @returns {Element|Node}
  */
-mono.create = function create(tagName, obj) {
-    "use strict";
+mono.create = function (tagName, obj) {
     var el;
-    if ( typeof tagName === 'string') {
+    var func;
+    if (typeof tagName !== 'object') {
         el = document.createElement(tagName);
     } else {
         el = tagName;
     }
-    if (obj !== undefined) {
-        for (var attr in obj) {
-            var value = obj[attr];
-            if (create.hook[attr]) {
-                create.hook[attr](el, value);
-                continue;
-            }
-            el[attr] = value;
+    for (var attr in obj) {
+        var value = obj[attr];
+        if (func = mono.create.hook[attr]) {
+            func(el, value);
+            continue;
         }
+        el[attr] = value;
     }
     return el;
 };
 mono.create.hook = {
-    text: function(el, value) {
-        "use strict";
+    text: function (el, value) {
         el.textContent = value;
     },
-    data: function(el, value) {
-        "use strict";
+    data: function (el, value) {
         for (var item in value) {
             if (value[item] === undefined || value[item] === null) {
                 continue;
@@ -330,8 +326,7 @@ mono.create.hook = {
             el.dataset[item] = value[item];
         }
     },
-    class: function(el, value) {
-        "use strict";
+    class: function (el, value) {
         if (Array.isArray(value)) {
             for (var i = 0, len = value.length; i < len; i++) {
                 var className = value[i];
@@ -340,63 +335,59 @@ mono.create.hook = {
                 }
                 el.classList.add(className);
             }
-            return;
+        } else {
+            el.setAttribute('class', value);
         }
-        el.setAttribute('class', value);
     },
-    style: function(el, value) {
-        "use strict";
+    style: function (el, value) {
         if (typeof value === 'object') {
             for (var item in value) {
                 el.style[item] = value[item];
             }
-            return;
+        } else {
+            el.setAttribute('style', value);
         }
-        el.setAttribute('style', value);
     },
-    append: function(el, value) {
-        "use strict";
-        if (Array.isArray(value)) {
-            for (var i = 0, len = value.length; i < len; i++) {
-                var subEl = value[i];
-                if (!subEl) {
-                    continue;
-                }
-                if (typeof (subEl) !== 'object') {
-                    subEl = document.createTextNode(subEl);
-                }
-                el.appendChild(subEl);
-            }
-            return;
+    append: function (el, value) {
+        if (!Array.isArray(value)) {
+            value = [value];
         }
-        el.appendChild(value);
+        for (var i = 0, len = value.length; i < len; i++) {
+            var node = value[i];
+            if (!node && node !== 0) {
+                continue;
+            }
+            if (typeof node !== 'object') {
+                node = document.createTextNode(node);
+            }
+            el.appendChild(node);
+        }
     },
     after: function(el, value) {
         "use strict";
         var hasNextEl = el.nextElementSibling;
-        var elList;
-        this.append(elList = document.createDocumentFragment(), value);
+        var elList = document.createDocumentFragment();
+        this.append(elList, value);
         if (hasNextEl !== null) {
             el.parentNode.insertBefore(elList, hasNextEl);
         } else {
             el.parentNode.appendChild(elList);
         }
     },
-    on: function(el, args) {
-        "use strict";
-        if (Array.isArray(args[0])) {
-            for (var i = 0, len = args.length; i < len; i++) {
-                var subArgs = args[i];
-                el.addEventListener(subArgs[0], subArgs[1], subArgs[2]);
-            }
-            return;
+    on: function (el, eventList) {
+        if (typeof eventList[0] !== 'object') {
+            eventList = [eventList];
         }
-        //type, onEvent, useCapture
-        el.addEventListener(args[0], args[1], args[2]);
+        for (var i = 0, len = eventList.length; i < len; i++) {
+            var args = eventList[i];
+            if (!Array.isArray(args)) {
+                continue;
+            }
+            el.addEventListener(args[0], args[1], args[2]);
+        }
     },
-    onCreate: function(el, value) {
-        "use strict";
-        value.call(el);
+    onCreate: function (el, value) {
+        value.call(el, el);
     }
 };
 /**
