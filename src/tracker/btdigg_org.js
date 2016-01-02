@@ -20,7 +20,6 @@ engine.trackerLib.btdigg = {
         onResponseUrl: function (details) {
             "use strict";
             details.tracker.lastResponseUrl = details.responseURL;
-            return true;
         },
         onGetRequest: function (details) {
             "use strict";
@@ -34,7 +33,7 @@ engine.trackerLib.btdigg = {
         },
         onAfterDomParse: function (details) {
             "use strict";
-            var $dom = details.env.$dom;
+            var $dom = details.$dom;
             if ($dom.find('#torrent_info').length) {
                 details.tracker.search.listItemSelector = details.tracker.search.listItemSelectorHash;
                 details.tracker.search.torrentSelector = details.tracker.search.torrentSelectorHash;

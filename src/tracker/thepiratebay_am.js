@@ -37,7 +37,7 @@ engine.trackerLib.thepiratebay = {
         },
         onAfterDomParse: function (details) {
             "use strict";
-            var $dom = details.env.$dom;
+            var $dom = details.$dom;
             var firstItem = $dom.find(details.tracker.search.listItemSelector).first();
             if (firstItem.children('td').length > 4) {
                 details.tracker.search.torrentSelector = details.tracker.search.torrentSelectorSingle;
@@ -107,7 +107,7 @@ engine.trackerLib.thepiratebay = {
                 var m;
                 var minAgoFunc = function (tracker, value) {
                     var dateSelector = tracker.search.torrentSelector.date.selector || tracker.search.torrentSelector.date;
-                    var minAgo = tracker.env.el.find(dateSelector).children('b').text();
+                    var minAgo = tracker.iter.$node.find(dateSelector).children('b').text();
                     if (minAgo === value) {
                         var minCount = value.match(/(\d+)/);
                         if (!minCount) {

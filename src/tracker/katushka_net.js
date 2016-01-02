@@ -37,7 +37,7 @@ engine.trackerLib.katushka = {
         },
         onAfterDomParse: function (details) {
             "use strict";
-            var $dom = details.tracker.env.$dom;
+            var $dom = details.tracker.$dom;
             if ($dom.find('table.data_table.torr_table>tbody>tr').length) {
                 details.tracker.search.listItemSelector = details.tracker.search.listItemSelectorTable;
                 details.tracker.search.torrentSelector = details.tracker.search.torrentSelectorTable;

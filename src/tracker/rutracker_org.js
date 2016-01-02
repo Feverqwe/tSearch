@@ -39,7 +39,9 @@ engine.trackerLib['rutracker'] = {
         },
         onResponseUrl: function (details) {
             "use strict";
-            return !/login\.php/.test(details.responseUrl);
+            if (/login\.php/.test(details.responseUrl)) {
+                details.result = {requireAuth: 1};
+            }
         },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
@@ -76,7 +78,7 @@ engine.trackerLib['rutracker'] = {
         onSelectorIsNotFound: {
             downloadUrl: function (details) {
                 "use strict";
-                details.env.skipSelector = true;
+                details.iter.skipSelector = true;
             }
         }
     }

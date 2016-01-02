@@ -39,7 +39,9 @@ engine.trackerLib['free-torrents'] = {
         },
         onResponseUrl: function (details) {
             "use strict";
-            return !/login\.php/.test(details.responseUrl);
+            if (/login\.php/.test(details.responseUrl)) {
+                details.result = {requireAuth: 1};
+            }
         },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {

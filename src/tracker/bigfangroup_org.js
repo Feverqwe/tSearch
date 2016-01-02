@@ -66,7 +66,7 @@ engine.trackerLib['bigfangroup'] = {
         onSelectorIsNotFound: {
             downloadUrl: function (details) {
                 "use strict";
-                details.env.skipSelector = true;
+                details.iter.skipSelector = true;
             }
         }
     }

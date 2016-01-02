@@ -19,7 +19,9 @@ engine.trackerLib.riperam = {
         requestType: 'GET',
         onResponseUrl: function (details) {
             "use strict";
-            return !/ucp.php\?mode=login/.test(details.responseUrl);
+            if (/ucp.php\?mode=login/.test(details.responseUrl)) {
+                details.result = {requireAuth: 1};
+            }
         },
         requestData: 'keywords=%search%&sr=topics&sf=titleonly&fp=1&tracker_search=torrent',
         onGetRequest: function (details) {

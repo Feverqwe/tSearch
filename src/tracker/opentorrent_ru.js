@@ -38,7 +38,9 @@ engine.trackerLib.opentorrent = {
         },
         onResponseUrl: function (details) {
             "use strict";
-            return !/login\.php/.test(details.responseUrl);
+            if (/login\.php/.test(details.responseUrl)) {
+                details.result = {requireAuth: 1};
+            }
         },
         listItemSelector: 'table.forumline.tracker>tbody>tr',
         listItemSplice: [1, -1],

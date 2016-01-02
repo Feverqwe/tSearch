@@ -39,7 +39,9 @@ engine.trackerLib['torrents.freedom'] = {
         },
         onResponseUrl: function (details) {
             "use strict";
-            return !/login\.php/.test(details.responseUrl);
+            if (/login\.php/.test(details.responseUrl)) {
+                details.result = {requireAuth: 1};
+            }
         },
         listItemSelector: 'table.forumline tr',
         torrentSelector: {
@@ -65,7 +67,7 @@ engine.trackerLib['torrents.freedom'] = {
             },
             date: function (details, value) {
                 "use strict";
-                var time = details.env.el.find('td:eq(11)>p:eq(1)').text();
+                var time = details.iter.$node.find('td:eq(11)>p:eq(1)').text();
                 value += ' ' + time;
                 value = exKit.funcList.monthReplace(value, 1);
                 return exKit.funcList.dateFormat(1, value)

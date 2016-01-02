@@ -504,6 +504,10 @@ var exKit = {
             tracker.search.onBeforeDomParse(details);
         }
 
+        if (details.result) {
+            return cb(details.result);
+        }
+
         var dom = exKit.parseHtml(details.data);
 
         var $dom = details.$dom = $(dom);
@@ -512,10 +516,13 @@ var exKit = {
             tracker.search.onAfterDomParse(details);
         }
 
-        var env = details.env = {
+        if (details.result) {
+            return cb(details.result);
+        }
+
+        var iter = details.iter = {
             skipSelector: false,
             skipItem: false,
-            $dom: $dom,
             el: null
         };
 
@@ -536,90 +543,92 @@ var exKit = {
         }
 
         for (var i = 0, len = torrentElList.length; i < len; i++) {
-            var el = torrentElList.eq(i);
-            env.el = el;
+            iter.skipItem = false;
 
-            env.skipItem = false;
+            var $node = torrentElList.eq(i);
+            iter.$node = $node;
 
             if (tracker.search.onGetListItem !== undefined) {
                 tracker.search.onGetListItem(details);
             }
 
-            if (env.skipItem) {
+            if (iter.skipItem) {
                 continue;
             }
 
-            var trObj = env.trObj = {
+            var trObj = iter.trObj = {
                 column: {},
                 error: {}
             };
 
             var cache = {};
             for (var key in tracker.search.torrentSelector) {
-                env.skipSelector = false;
-                var item = tracker.search.torrentSelector[key];
+                iter.skipSelector = false;
 
+                var item = tracker.search.torrentSelector[key];
                 if (typeof item === 'string') {
                     item = {selector: item};
                 }
 
-                var value = cache[item.selector];
-                if (value === undefined) {
-                    value = cache[item.selector] = el.find(item.selector).get(0);
+                var node = cache[item.selector];
+                if (node === undefined) {
+                    node = cache[item.selector] = $node.find(item.selector).get(0);
                 }
 
-                if (value === undefined) {
-                    if (tracker.search.onSelectorIsNotFound[key] !== undefined) {
-                        value = tracker.search.onSelectorIsNotFound[key](details, env);
-                    }
+                if (!node && tracker.search.onSelectorIsNotFound[key] !== undefined) {
+                    node = tracker.search.onSelectorIsNotFound[key](details, iter);
                 }
 
-                if (env.skipSelector) {
+                if (iter.skipSelector) {
                     continue;
                 }
 
-                if (item.childNodeIndex !== undefined && value !== undefined) {
+                if (item.childNodeIndex !== undefined && node) {
                     var childNodeIndex = item.childNodeIndex;
                     if (childNodeIndex < 0) {
-                        childNodeIndex = value.childNodes.length + item.childNodeIndex;
+                        childNodeIndex = node.childNodes.length + item.childNodeIndex;
                     }
-                    value = value.childNodes[childNodeIndex];
+                    node = node.childNodes[childNodeIndex];
                 }
 
-                if (value === undefined) {
-                    trObj.error[key] = value;
+                if (node === undefined) {
+                    trObj.error[key] = node;
                     trObj.error[key+'!'] = 'Selector is not found!';
                     trObj.error[key+'Selector'] = item.selector;
                     continue;
                 }
 
+                var value = null;
                 if (item.attr !== undefined) {
                     value = value.getAttribute(item.attr);
+                }
+                if (item.html !== undefined){
+                    value = value.innerHTML;
                 } else {
                     value = value.textContent;
                 }
-
                 if (value !== null) {
                     value = $.trim(value);
                 }
 
-                if ((value === null || value.length === 0) && tracker.search.onEmptySelectorValue[key] !== undefined) {
+                if (!value && tracker.search.onEmptySelectorValue[key] !== undefined) {
                     value = tracker.search.onEmptySelectorValue[key](details);
                 }
 
-                if (env.skipSelector) {
+                if (iter.skipSelector) {
                     continue;
                 }
 
-                if (value === null) {
+                if (!value) {
                     trObj.error[key] = value;
-                    trObj.error[key+'!'] = 'Attribute is not found!';
-                    continue;
-                }
-
-                if (value.length === 0) {
-                    trObj.error[key] = value;
-                    trObj.error[key+'!'] = 'Text content is empty!';
+                    if (item.attr) {
+                        trObj.error[key + '!'] = 'Attribute is not found!';
+                    } else
+                    if (item.html) {
+                        trObj.error[key + '!'] = 'Html content is empty!';
+                    } else {
+                        trObj.error[key+'!'] = 'Text content is empty!';
+                    }
                     continue;
                 }
 
@@ -627,7 +636,7 @@ var exKit = {
                     value = tracker.search.onGetValue[key](details, value);
                 }
 
-                if (env.skipSelector) {
+                if (iter.skipSelector) {
                     continue;
                 }
 
@@ -671,15 +680,18 @@ var exKit = {
 
             torrentList.push(trObj.column);
         }
-        tracker.env = null;
+
         cb({torrentList: torrentList});
     },
-    parseResponse: function(tracker, details, cb, data, xhr) {
+    parseResponse: function(tracker, details, cb) {
         "use strict";
-        details.responseUrl = xhr.responseUrl;
-        if (tracker.search.onResponseUrl !== undefined && !tracker.search.onResponseUrl(details)) {
-            return cb({requireAuth: 1});
+        if (tracker.search.onResponseUrl !== undefined) {
+            tracker.search.onResponseUrl(details);
+            if (details.result) {
+                return cb(details.result);
+            }
         }
+
         return exKit.parseDom(tracker, details, cb);
     },
     search: function(tracker, request, onSearch) {
@@ -717,8 +729,9 @@ var exKit = {
                 }
                 return url;
             },
-            success: function(data) {
+            success: function(data, xhr) {
                 details.data = exKit.contentFilter(data);
+                details.responseUrl = xhr.responseUrl;
 
                 exKit.parseResponse(tracker, details, function(data) {
                     onSearch.onDone(tracker);
@@ -741,7 +754,8 @@ var exKit = {
         return {
             tracker: tracker,
             abort: function() {
-                xhr.abort();
+                xhr && xhr.abort();
+                xhr = null;
             }
         }
     },
