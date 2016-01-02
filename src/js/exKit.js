@@ -551,9 +551,9 @@ var exKit = {
 
             if (search.onGetListItem) {
                 search.onGetListItem(details);
-            }
-            if (iter.skipItem) {
-                continue;
+                if (iter.skipItem) {
+                    continue;
+                }
             }
 
             var trObj = iter.trObj = {
