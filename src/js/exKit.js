@@ -59,7 +59,7 @@ var exKit = {
             t = t.toLowerCase();
             var tt = new Date();
             if ((this.varCache.today_now).test(t)) {
-                t = 'today '+tt.getHours() + ':' + tt.getMinutes();
+                t = 'today ' + tt.getHours() + ':' + tt.getMinutes();
             }
             var tty = new Date((Math.round(tt.getTime() / 1000) - 24 * 60 * 60) * 1000);
             var today;
@@ -67,8 +67,7 @@ var exKit = {
             if (f === 0) {
                 today = tt.getFullYear() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getDate() + ' ';
                 yesterday = tty.getFullYear() + ' ' + (tty.getMonth() + 1) + ' ' + tty.getDate() + ' ';
-            } else
-            if (f === 3) {
+            } else if (f === 3) {
                 today = (tt.getMonth() + 1) + ' ' + tt.getDate() + ' ' + tt.getFullYear() + ' ';
                 yesterday = (tty.getMonth() + 1) + ' ' + tty.getDate() + ' ' + tty.getFullYear() + ' ';
             } else {
@@ -175,7 +174,7 @@ var exKit = {
         }
     },
     prepareTrackerR: {
-        hasEndSlash:/\/$/
+        hasEndSlash: /\/$/
     },
     funcList: {
         encodeCp1251: function (string) {
@@ -211,7 +210,7 @@ var exKit = {
             }
             return output;
         },
-        idInCategoryList: function(tracker, cId) {
+        idInCategoryList: function (tracker, cId) {
             "use strict";
             var mapNameId = {
                 serials: 0,
@@ -237,7 +236,7 @@ var exKit = {
 
             return -1;
         },
-        idInCategoryListInt: function(tracker, url, regexp) {
+        idInCategoryListInt: function (tracker, url, regexp) {
             "use strict";
             var cId = url.match(regexp);
             cId = cId && cId[1];
@@ -247,7 +246,7 @@ var exKit = {
             cId = parseInt(cId);
             return this.idInCategoryList(tracker, cId);
         },
-        idInCategoryListStr: function(tracker, url, regexp) {
+        idInCategoryListStr: function (tracker, url, regexp) {
             "use strict";
             var cId = url.match(regexp);
             cId = cId && cId[1];
@@ -257,7 +256,7 @@ var exKit = {
             return this.idInCategoryList(tracker, cId);
         }
     },
-    prepareCustomTracker: function(trackerJson) {
+    prepareCustomTracker: function (trackerJson) {
         "use strict";
         var id = null;
 
@@ -275,7 +274,7 @@ var exKit = {
             trackerObj.desc = trackerJson.about;
             trackerObj.flags = !trackerJson.flags ? {} : {
                 auth: trackerJson.a ? 1 : 0,
-                language:  trackerJson.l ? 'ru' : undefined,
+                language: trackerJson.l ? 'ru' : undefined,
                 cyrillic: trackerJson.rs ? 1 : 0,
                 allowProxy: trackerJson.post ? 0 : 1
             };
@@ -294,7 +293,7 @@ var exKit = {
                 search.requestData = trackerJson.post;
             }
             if (trackerJson.encode) {
-                search.onGetRequest = function(details) {
+                search.onGetRequest = function (details) {
                     "use strict";
                     details.query = exKit.funcList.encodeCp1251(details.query);
                 };
@@ -318,7 +317,10 @@ var exKit = {
             if (trackerJson.cat_name) {
                 torrentSelector.categoryTitle = trackerJson.cat_name;
                 if (trackerJson.cat_attr) {
-                    torrentSelector.categoryTitle = {selector: torrentSelector.categoryTitle, attr: trackerJson.cat_attr};
+                    torrentSelector.categoryTitle = {
+                        selector: torrentSelector.categoryTitle,
+                        attr: trackerJson.cat_attr
+                    };
                 }
                 if (trackerJson.cat_link) {
                     torrentSelector.categoryUrl = {selector: trackerJson.cat_link, attr: 'href'};
@@ -333,17 +335,17 @@ var exKit = {
                 var sizeFuncList = [];
                 if (trackerJson.size_r && trackerJson.size_rp !== undefined) {
                     var size_r = new RegExp(trackerJson.size_r, 'ig');
-                    sizeFuncList.push(function(value) {
+                    sizeFuncList.push(function (value) {
                         return value.replace(size_r, trackerJson.size_rp);
                     });
                 }
                 if (trackerJson.s_c) {
-                    sizeFuncList.push(function(value) {
+                    sizeFuncList.push(function (value) {
                         return exKit.legacy.sizeFormat(value);
                     });
                 }
                 if (sizeFuncList.length > 1) {
-                    onGetValue.size = function(details, value) {
+                    onGetValue.size = function (details, value) {
                         for (var i = 0, func; func = sizeFuncList[i]; i++) {
                             value = func(value);
                         }
@@ -358,7 +360,7 @@ var exKit = {
                 torrentSelector.seed = trackerJson.seed;
                 if (trackerJson.seed_r && trackerJson.seed_rp !== undefined) {
                     var seed_r = new RegExp(trackerJson.seed_r, 'ig');
-                    onGetValue.seed = function(details, value) {
+                    onGetValue.seed = function (details, value) {
                         return value.replace(seed_r, trackerJson.seed_rp);
                     };
                 }
@@ -367,7 +369,7 @@ var exKit = {
                 torrentSelector.peer = trackerJson.peer;
                 if (trackerJson.peer_r && trackerJson.peer_rp !== undefined) {
                     var peer_r = new RegExp(trackerJson.peer_r, 'ig');
-                    onGetValue.peer = function(details, value) {
+                    onGetValue.peer = function (details, value) {
                         return value.replace(peer_r, trackerJson.peer_rp);
                     };
                 }
@@ -380,22 +382,22 @@ var exKit = {
                 var dateFuncList = [];
                 if (trackerJson.t_r && trackerJson.t_r_r !== undefined) {
                     var t_r = new RegExp(trackerJson.t_r, "ig");
-                    dateFuncList.push(function(details, value) {
+                    dateFuncList.push(function (details, value) {
                         return value.replace(t_r, trackerJson.t_r_r);
                     });
                 }
                 if (trackerJson.t_t_r) {
-                    dateFuncList.push(function(details, value) {
+                    dateFuncList.push(function (details, value) {
                         return exKit.legacy.todayReplace(value, trackerJson.t_f);
                     });
                 }
                 if (trackerJson.t_m_r) {
-                    dateFuncList.push(function(details, value) {
+                    dateFuncList.push(function (details, value) {
                         return exKit.legacy.monthReplace(value);
                     });
                 }
                 if (trackerJson.t_f !== undefined && trackerJson.t_f !== "-1") {
-                    dateFuncList.push(function(details, value) {
+                    dateFuncList.push(function (details, value) {
                         return exKit.legacy.dateFormat(trackerJson.t_f, value);
                     });
                 }
@@ -411,7 +413,7 @@ var exKit = {
             return trackerObj;
         }
     },
-    prepareTracker: function(tracker) {
+    prepareTracker: function (tracker) {
         "use strict";
         var itemList = ['onGetValue', 'onSelectorIsNotFound', 'onEmptySelectorValue'];
         for (var i = 0, item; item = itemList[i]; i++) {
@@ -439,7 +441,7 @@ var exKit = {
         }
         return tracker;
     },
-    parseHtml: function(html) {
+    parseHtml: function (html) {
         "use strict";
         var fragment = document.createDocumentFragment();
         var div = document.createElement('div');
@@ -457,7 +459,7 @@ var exKit = {
         blockSrcSet: /srcset=(['"]?)/ig,
         blockOnEvent: /on(\w+)=/ig
     },
-    contentFilter: function(content) {
+    contentFilter: function (content) {
         "use strict";
         return content.replace(exKit.contentFilterR.searchJs, 'tms-block-javascript')
             .replace(exKit.contentFilterR.blockHref, '//about:blank#blockurl#')
@@ -465,16 +467,16 @@ var exKit = {
             .replace(exKit.contentFilterR.blockSrcSet, 'data-block-attr-srcset=$1')
             .replace(exKit.contentFilterR.blockOnEvent, 'data-block-event-$1=');
     },
-    contentUnFilter: function(content) {
+    contentUnFilter: function (content) {
         "use strict";
         return content.replace(/data:image\/gif,base64#blockurl#/g, '')
             .replace(/about:blank#blockurl#/g, '')
             .replace(/tms-block-javascript/g, 'javascript');
     },
-    intList: ['categoryId','size','seed','peer', 'date'],
+    intList: ['categoryId', 'size', 'seed', 'peer', 'date'],
     isUrlList: ['categoryUrl', 'url', 'downloadUrl'],
     unFilterKeyList: ['categoryTitle', 'categoryUrl', 'title', 'url', 'downloadUrl'],
-    urlCheck: function(tracker, value) {
+    urlCheck: function (tracker, value) {
         "use strict";
         if (value.substr(0, 7) === 'magnet:') {
             return value;
@@ -490,7 +492,7 @@ var exKit = {
         }
         return tracker.search.baseUrl + value;
     },
-    setHostProxyUrl: function(url, proxyIndex) {
+    setHostProxyUrl: function (url, proxyIndex) {
         "use strict";
         var proxy = engine.settings.proxyList[proxyIndex - 1];
         if (!proxy || proxy.type !== 1 || url.substr(0, 4) !== 'http') {
@@ -498,7 +500,7 @@ var exKit = {
         }
         return url.replace(/(https?:\/\/[^\/]+)(.*)/, '$1.' + proxy.url + '$2');
     },
-    parseDom: function(tracker, details, cb) {
+    parseDom: function (tracker, details, cb) {
         "use strict";
         if (tracker.search.onBeforeDomParse !== undefined) {
             tracker.search.onBeforeDomParse(details);
@@ -593,16 +595,15 @@ var exKit = {
 
                 if (node === undefined) {
                     trObj.error[key] = node;
-                    trObj.error[key+'!'] = 'Selector is not found!';
-                    trObj.error[key+'Selector'] = item.selector;
+                    trObj.error[key + '!'] = 'Selector is not found!';
+                    trObj.error[key + 'Selector'] = item.selector;
                     continue;
                 }
 
                 var value = null;
                 if (item.attr !== undefined) {
                     value = node.getAttribute(item.attr);
-                } else
-                if (item.html !== undefined){
+                } else if (item.html !== undefined) {
                     value = node.innerHTML;
                 } else {
                     value = node.textContent;
@@ -623,11 +624,10 @@ var exKit = {
                     trObj.error[key] = value;
                     if (item.attr) {
                         trObj.error[key + '!'] = 'Attribute is not found!';
-                    } else
-                    if (item.html) {
+                    } else if (item.html) {
                         trObj.error[key + '!'] = 'Html content is empty!';
                     } else {
-                        trObj.error[key+'!'] = 'Text content is empty!';
+                        trObj.error[key + '!'] = 'Text content is empty!';
                     }
                     continue;
                 }
@@ -645,7 +645,7 @@ var exKit = {
                     if (isNaN(intValue)) {
                         intValue = -1;
                         trObj.error[key] = value;
-                        trObj.error[key+'!'] = 'isNaN';
+                        trObj.error[key + '!'] = 'isNaN';
                     }
                     value = intValue;
                 }
@@ -683,7 +683,7 @@ var exKit = {
 
         cb({torrentList: torrentList});
     },
-    parseResponse: function(tracker, details, cb) {
+    parseResponse: function (tracker, details, cb) {
         "use strict";
         if (tracker.search.onResponseUrl !== undefined) {
             tracker.search.onResponseUrl(details);
@@ -694,7 +694,7 @@ var exKit = {
 
         return exKit.parseDom(tracker, details, cb);
     },
-    search: function(tracker, query, onSearch) {
+    search: function (tracker, query, onSearch) {
         "use strict";
         var _this = this;
         var details = {
@@ -714,7 +714,7 @@ var exKit = {
             mimeType: tracker.search.requestMimeType,
             dataType: tracker.search.requestDataType,
             data: (tracker.search.requestData || '').replace('%search%', details.query),
-            changeUrl: function(url, method) {
+            changeUrl: function (url, method) {
                 var proxy;
                 if (tracker.proxyIndex > 0 && (proxy = engine.settings.proxyList[tracker.proxyIndex - 1])) {
                     if (proxy.type === 0) {
@@ -731,38 +731,38 @@ var exKit = {
                 }
                 return url;
             },
-            success: function(data, xhr) {
+            success: function (data, xhr) {
                 details.data = exKit.contentFilter(data);
                 details.responseUrl = xhr.responseUrl;
 
-                exKit.parseResponse(tracker, details, function(data) {
+                exKit.parseResponse(tracker, details, function (data) {
                     onSearch.onDone(tracker);
                     onSearch.onSuccess(tracker, query, data);
                 });
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 onSearch.onDone(tracker);
                 onSearch.onError(tracker, xhr.status, xhr.statusText);
             },
-            timeout: function(xhr) {
+            timeout: function (xhr) {
                 onSearch.onDone(tracker);
                 onSearch.onError(tracker, xhr.status, xhr.statusText);
             },
-            abort: function(xhr) {
+            abort: function (xhr) {
                 onSearch.onDone(tracker);
                 onSearch.onError(tracker, xhr.status, xhr.statusText);
             }
         });
         return {
             tracker: tracker,
-            abort: function() {
+            abort: function () {
                 xhr && xhr.abort();
                 xhr = null;
             }
         }
     },
     searchProgressList: {},
-    searchProgressListClear: function() {
+    searchProgressListClear: function () {
         "use strict";
         var progressList = exKit.searchProgressList;
         for (var trackerId in progressList) {
@@ -771,17 +771,17 @@ var exKit = {
             progressList[trackerId] = undefined;
         }
     },
-    searchProgressListBind: function(onSearch) {
+    searchProgressListBind: function (onSearch) {
         "use strict";
         var progressList = exKit.searchProgressList;
         var onDone = onSearch.onDone;
-        onSearch.onDone = function(tracker) {
+        onSearch.onDone = function (tracker) {
             progressList[tracker.id] = undefined;
             onDone && onDone.apply(null, arguments);
         };
         onSearch = null;
     },
-    searchList: function(trackerList, query, onSearch) {
+    searchList: function (trackerList, query, onSearch) {
         "use strict";
         exKit.searchProgressListClear();
         exKit.searchProgressListBind(onSearch);
@@ -789,9 +789,9 @@ var exKit = {
             exKit.searchProgressList[trackerId] = exKit.search(engine.trackerLib[trackerId], query, onSearch);
         }
     },
-    getTrackerIconUrl: function(icon) {
+    getTrackerIconUrl: function (icon) {
         "use strict";
-        icon  = icon || '#ccc';
+        icon = icon || '#ccc';
         if (icon[0] !== '#') {
             return icon;
         }
@@ -800,7 +800,7 @@ var exKit = {
         if (icon === '#skull') {
             data = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 48 48" version="1.1" viewBox="0 0 48 48" height="20px" width="20px"><g><g><path d="M33,46c-0.553,0-1-0.447-1-1V34h1c4.963,0,9-4.037,9-9v-5c0-9.925-8.075-18-18-18S6,10.075,6,20v5c0,4.963,4.037,9,9,9h1     v11c0,0.553-0.447,1-1,1s-1-0.447-1-1v-9.045C8.401,35.448,4,30.729,4,25v-5C4,8.972,12.972,0,24,0s20,8.972,20,20v5     c0,5.729-4.401,10.448-10,10.955V45C34,45.553,33.553,46,33,46z"/></g><g><path d="M21,46c-0.553,0-1-0.447-1-1V35c0-0.553,0.447-1,1-1s1,0.447,1,1v10C22,45.553,21.553,46,21,46z"/></g><g><path d="M27,46c-0.553,0-1-0.447-1-1V35c0-0.553,0.447-1,1-1s1,0.447,1,1v10C28,45.553,27.553,46,27,46z"/></g><g><path d="M33,32c-3.859,0-7-3.141-7-7s3.141-7,7-7s7,3.141,7,7S36.859,32,33,32z M33,20c-2.757,0-5,2.243-5,5s2.243,5,5,5     s5-2.243,5-5S35.757,20,33,20z"/></g><g><path d="M15,32c-3.859,0-7-3.141-7-7s3.141-7,7-7s7,3.141,7,7S18.859,32,15,32z M15,20c-2.757,0-5,2.243-5,5s2.243,5,5,5     s5-2.243,5-5S17.757,20,15,20z"/></g><g><path d="M5.236,18c-0.553,0-1-0.447-1-1s0.447-1,1-1C7.955,16,12,14.136,12,9c0-0.553,0.447-1,1-1s1,0.447,1,1     C14,14.908,9.592,18,5.236,18z"/></g><g><path d="M42.764,18C38.408,18,34,14.908,34,9c0-0.553,0.447-1,1-1s1,0.447,1,1c0,5.136,4.045,7,6.764,7c0.553,0,1,0.447,1,1     S43.316,18,42.764,18z"/></g><g><path d="M25.02,32c-0.005,0.001-0.012,0.001-0.02,0h-2c-0.347,0-0.668-0.18-0.851-0.475s-0.199-0.663-0.044-0.973l1-2     c0.34-0.678,1.449-0.678,1.789,0l0.92,1.84c0.129,0.168,0.205,0.379,0.205,0.607C26.02,31.553,25.572,32,25.02,32z"/></g></g></svg>';
         } else {
-            data = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 48 48" version="1.1" viewBox="0 0 48 48" height="20px" width="20px"><circle cx="24" cy="24" r="20" stroke="black" fill="'+icon+'" /></svg>';
+            data = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 48 48" version="1.1" viewBox="0 0 48 48" height="20px" width="20px"><circle cx="24" cy="24" r="20" stroke="black" fill="' + icon + '" /></svg>';
         }
         svg += btoa(data);
         return svg;
