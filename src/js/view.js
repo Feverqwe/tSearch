@@ -1957,6 +1957,7 @@ var view = {
 
         document.body.appendChild(mono.create('script', {src: 'js/notifer.js'}));
         document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.4.min.js'}));
+        document.body.appendChild(mono.create('script', {src: 'js/bluebird.min.js'}));
 
         if (mono.isChrome && mono.isChromeWebApp) {
             mono.storage.get('extensionPopup', function(storage) {

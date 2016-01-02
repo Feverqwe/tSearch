@@ -22,7 +22,8 @@ module.exports = function (grunt) {
         'profileManager.js',
         'rate.js',
         'selectBox.js',
-        'view.js'
+        'view.js',
+        'bluebird.min.js'
     ];
     var engineJsList = [
         'engine.js',
