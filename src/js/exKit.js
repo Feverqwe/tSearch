@@ -688,59 +688,57 @@ var exKit = {
             query: query
         };
 
-        Promise.resolve().then(function() {
-            onSearch.onBegin && onSearch.onBegin(tracker);
+        onSearch.onBegin && onSearch.onBegin(tracker);
 
-            if (tracker.search.onBeforeRequest !== undefined) {
-                tracker.search.onBeforeRequest(details);
-            } else {
-                details.query = encodeURIComponent(details.query);
-            }
+        if (tracker.search.onBeforeRequest !== undefined) {
+            tracker.search.onBeforeRequest(details);
+        } else {
+            details.query = encodeURIComponent(details.query);
+        }
 
-            return new Promise(function(resolve, reject) {
-                Promise.resolve().then(function() {
-                    xhr = mono.ajax({
-                        safe: true,
-                        url: tracker.search.searchUrl.replace('%search%', details.query),
-                        type: tracker.search.requestType,
-                        mimeType: tracker.search.requestMimeType,
-                        dataType: tracker.search.requestDataType,
-                        data: (tracker.search.requestData || '').replace('%search%', details.query),
-                        changeUrl: function (url, method) {
-                            var proxy;
-                            if (tracker.proxyIndex > 0 && (proxy = engine.settings.proxyList[tracker.proxyIndex - 1])) {
-                                if (proxy.type === 0) {
-                                    if (method === 'GET') {
-                                        if (proxy.fixSpaces) {
-                                            url = url.replace(/[\t\s]+/g, '%20');
-                                        }
-                                        url = proxy.url.replace('{url}', encodeURIComponent(url));
+        new Promise(function(resolve, reject) {
+            Promise.resolve().then(function() {
+                xhr = mono.ajax({
+                    safe: true,
+                    url: tracker.search.searchUrl.replace('%search%', details.query),
+                    type: tracker.search.requestType,
+                    mimeType: tracker.search.requestMimeType,
+                    dataType: tracker.search.requestDataType,
+                    data: (tracker.search.requestData || '').replace('%search%', details.query),
+                    changeUrl: function (url, method) {
+                        var proxy;
+                        if (tracker.proxyIndex > 0 && (proxy = engine.settings.proxyList[tracker.proxyIndex - 1])) {
+                            if (proxy.type === 0) {
+                                if (method === 'GET') {
+                                    if (proxy.fixSpaces) {
+                                        url = url.replace(/[\t\s]+/g, '%20');
                                     }
-                                }
-                                if (proxy.type === 1) {
-                                    url = _this.setHostProxyUrl(url, tracker.proxyIndex);
+                                    url = proxy.url.replace('{url}', encodeURIComponent(url));
                                 }
                             }
-                            return url;
-                        },
-                        success: function (data, xhr) {
-                            details.data = exKit.contentFilter(data);
-                            details.responseUrl = xhr.responseUrl;
-
-                            resolve();
-                        },
-                        error: function (xhr) {
-                            reject(['Request error', xhr.status, xhr.statusText].join(' '));
-                        },
-                        timeout: function () {
-                            reject('Request timeout');
-                        },
-                        abort: function () {
-                            reject('Request aborted!');
+                            if (proxy.type === 1) {
+                                url = _this.setHostProxyUrl(url, tracker.proxyIndex);
+                            }
                         }
-                    });
-                }).catch(reject)
-            });
+                        return url;
+                    },
+                    success: function (data, xhr) {
+                        details.data = exKit.contentFilter(data);
+                        details.responseUrl = xhr.responseUrl;
+
+                        resolve();
+                    },
+                    error: function (xhr) {
+                        reject(['Request error', xhr.status, xhr.statusText].join(' '));
+                    },
+                    timeout: function () {
+                        reject('Request timeout');
+                    },
+                    abort: function () {
+                        reject('Request aborted!');
+                    }
+                });
+            }).catch(reject)
         }).then(function() {
             if (tracker.search.onAfterRequest !== undefined) {
                 tracker.search.onAfterRequest(details);
