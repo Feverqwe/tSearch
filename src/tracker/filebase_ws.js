@@ -31,10 +31,6 @@ engine.trackerLib.filebase = {
         baseUrl: 'http://www.filebase.ws',
         requestType: 'GET',
         requestData: 'search=%search%&c=0&t=liveonly',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         listItemSelector: '#torrents_list>tbody>tr',
         listItemSplice: [1, 0],
         torrentSelector: {

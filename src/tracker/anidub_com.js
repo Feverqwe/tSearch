@@ -30,10 +30,6 @@ engine.trackerLib['anidub'] = {
         baseUrl: 'http://tr.anidub.com/',
         requestType: 'POST',
         requestData: 'do=search&subaction=search&showposts=1&story=%search%',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         listItemSelector: '#dle-content>div.dpad.searchitem',
         torrentSelector: {
             categoryTitle: 'a:eq(1)',

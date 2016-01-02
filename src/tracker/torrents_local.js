@@ -32,10 +32,6 @@ engine.trackerLib['torrents.local'] = {
         baseUrl: 'http://torrents.local/forum/',
         requestType: 'POST',
         requestData: 'nm=%search%&max=1&to=1',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         onResponseUrl: function (details) {
             "use strict";
             if (/login\.php/.test(details.responseUrl)) {

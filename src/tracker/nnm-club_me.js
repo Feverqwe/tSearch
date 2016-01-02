@@ -32,10 +32,6 @@ engine.trackerLib['nnm-club'] = {
         requestType: 'GET',
         requestData: 'nm=%search%&f=-1',
         requestMimeType: 'text/html; charset=windows-1251',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         listItemSelector: 'table.forumline.tablesorter>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td:eq(1)>a',

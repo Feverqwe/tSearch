@@ -31,10 +31,6 @@ engine.trackerLib.mininova = {
         baseUrl: 'http://www.mininova.org/',
         requestType: 'GET',
         requestData: 'search=%search%&cat=0',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         listItemSelector: 'table.maintable>tbody>tr',
         listItemSplice: [1, 0],
         torrentSelector: {

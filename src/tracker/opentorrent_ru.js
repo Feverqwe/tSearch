@@ -32,10 +32,6 @@ engine.trackerLib.opentorrent = {
         baseUrl: 'http://opentorrent.ru/',
         requestType: 'GET',
         requestData: 'nm=%search%',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         onResponseUrl: function (details) {
             "use strict";
             if (/login\.php/.test(details.responseUrl)) {

@@ -32,10 +32,6 @@ engine.trackerLib['brodim'] = {
         baseUrl: 'http://brodim.com/',
         requestType: 'GET',
         requestData: 'max=1&to=1&nm=%search%',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         onResponseUrl: function (details) {
             "use strict";
             if (/login\.php/.test(details.responseUrl)) {

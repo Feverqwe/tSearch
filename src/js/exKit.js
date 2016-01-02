@@ -704,6 +704,8 @@ var exKit = {
         onSearch.onBegin && onSearch.onBegin(tracker);
         if (tracker.search.onGetRequest !== undefined) {
             tracker.search.onGetRequest(details);
+        } else {
+            details.query = encodeURIComponent(details.query);
         }
         var xhr = mono.ajax({
             safe: true,

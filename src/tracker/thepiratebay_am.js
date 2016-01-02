@@ -31,10 +31,6 @@ engine.trackerLib.thepiratebay = {
         searchUrl: 'https://thepiratebay.se/search/%search%/0/99/0',
         baseUrl: 'https://thepiratebay.la/',
         requestType: 'GET',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         onAfterDomParse: function (details) {
             "use strict";
             var $dom = details.$dom;

@@ -29,10 +29,6 @@ engine.trackerLib['bitsnoop'] = {
         searchUrl: 'http://bitsnoop.com/search/all/%search%/c/d/1/',
         baseUrl: 'http://bitsnoop.com',
         requestType: 'GET',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         listItemSelector: '#torrents>li',
         torrentSelector: {
             categoryTitle: {selector: '>span.icon', attr: 'title'},

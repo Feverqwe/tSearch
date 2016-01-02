@@ -31,10 +31,6 @@ engine.trackerLib.rgfootball = {
         baseUrl: 'http://rgfootball.net/',
         requestType: 'GET',
         requestData: 'nm=%search%',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         listItemSelector: '#tor-tbl>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td:eq(2)>a',

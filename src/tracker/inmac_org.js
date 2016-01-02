@@ -32,10 +32,6 @@ engine.trackerLib.inmac = {
         loginUrl: 'https://inmac.org/login.php',
         requestType: 'GET',
         requestData: 'nm=%search%',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         onResponseUrl: function (details) {
             "use strict";
             if (/\/login\//.test(details.responseUrl)) {

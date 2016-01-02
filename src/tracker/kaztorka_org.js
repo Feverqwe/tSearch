@@ -18,10 +18,6 @@ engine.trackerLib.kaztorka = {
         loginUrl: 'http://kaztorka.org/auth/login',
         requestType: 'GET',
         requestData: 'torrentName=%search%',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         listItemSelector: '#searchTable>tbody>tr',
         listItemSplice: [1, 0],
         loginFormSelector: '#loginForm',

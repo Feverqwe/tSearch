@@ -25,7 +25,6 @@ engine.trackerLib.rutor = {
             } else {
                 details.tracker.search.searchUrl = details.tracker.search.wordUrl;
             }
-            details.query = encodeURIComponent(details.query);
         },
         listItemSelector: '#index>table>tbody>tr',
         listItemSplice: [1, 0],

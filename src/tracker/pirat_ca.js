@@ -32,10 +32,6 @@ engine.trackerLib.piratca = {
         baseUrl: 'http://pirat.ca/',
         requestType: 'GET',
         requestData: 'nm=%search%&to=1&max=1',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         onResponseUrl: function (details) {
             "use strict";
             if (/login\.php/.test(details.responseUrl)) {

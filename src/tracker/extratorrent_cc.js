@@ -31,10 +31,6 @@ engine.trackerLib.extratorrent = {
         baseUrl: 'http://extratorrent.cc/',
         requestType: 'GET',
         requestData: 'search=%search%',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         listItemSelector: 'table.tl>tbody:eq(0)>tr',
         torrentSelector: {
             categoryTitle: 'td.tli>span>a',

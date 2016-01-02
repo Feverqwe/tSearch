@@ -31,10 +31,6 @@ engine.trackerLib.megashara = {
         baseUrl: 'http://megashara.com/',
         requestType: 'GET',
         requestData: 'text=%search%&sorting=seed&time=ALL&year=0&parent=0&where=title&all_words=1&order=added',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         listItemSelector: 'table.table-wide>tbody>tr',
         torrentSelector: {
             categoryTitle: 'td:eq(0)',

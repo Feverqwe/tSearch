@@ -32,10 +32,6 @@ engine.trackerLib.piratbit = {
         baseUrl: 'http://pb.wtf/',
         requestType: 'GET',
         requestData: 'ss=%search%&max=1&to=1',
-        onGetRequest: function (details) {
-            "use strict";
-            details.query = encodeURIComponent(details.query);
-        },
         onResponseUrl: function (details) {
             "use strict";
             if (/login\.php/.test(details.responseUrl)) {

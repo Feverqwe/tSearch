@@ -38,7 +38,6 @@ engine.trackerLib.kickass = {
                 details.tracker.search.searchUrl = details.tracker.search.blankUrl;
             } else {
                 details.tracker.search.searchUrl = details.tracker.search.wordUrl;
-                details.query = encodeURIComponent(details.query);
             }
         },
         listItemSelector: '#mainSearchTable table tbody>tr',
