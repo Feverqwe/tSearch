@@ -293,7 +293,7 @@ var exKit = {
                 search.requestData = trackerJson.post;
             }
             if (trackerJson.encode) {
-                search.onGetRequest = function (details) {
+                search.onBeforeRequest = function (details) {
                     "use strict";
                     details.query = exKit.funcList.encodeCp1251(details.query);
                 };
@@ -684,17 +684,6 @@ var exKit = {
 
         cb({torrentList: torrentList});
     },
-    parseResponse: function (tracker, details, cb) {
-        "use strict";
-        if (tracker.search.onResponseUrl !== undefined) {
-            tracker.search.onResponseUrl(details);
-            if (details.result) {
-                return cb(details.result);
-            }
-        }
-
-        return exKit.parseDom(tracker, details, cb);
-    },
     search: function (tracker, query, onSearch) {
         "use strict";
         var _this = this;
@@ -703,8 +692,8 @@ var exKit = {
             query: query
         };
         onSearch.onBegin && onSearch.onBegin(tracker);
-        if (tracker.search.onGetRequest !== undefined) {
-            tracker.search.onGetRequest(details);
+        if (tracker.search.onBeforeRequest !== undefined) {
+            tracker.search.onBeforeRequest(details);
         } else {
             details.query = encodeURIComponent(details.query);
         }
@@ -736,7 +725,15 @@ var exKit = {
                 details.data = exKit.contentFilter(data);
                 details.responseUrl = xhr.responseUrl;
 
-                exKit.parseResponse(tracker, details, function (data) {
+
+                if (tracker.search.onAfterRequest !== undefined) {
+                    tracker.search.onAfterRequest(details);
+                    if (details.result) {
+                        return cb(details.result);
+                    }
+                }
+
+                return exKit.parseDom(tracker, details, function (data) {
                     onSearch.onDone(tracker);
                     onSearch.onSuccess(tracker, query, data);
                 });

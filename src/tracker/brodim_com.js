@@ -32,7 +32,7 @@ engine.trackerLib['brodim'] = {
         baseUrl: 'http://brodim.com/',
         requestType: 'GET',
         requestData: 'max=1&to=1&nm=%search%',
-        onResponseUrl: function (details) {
+        onAfterRequest: function (details) {
             "use strict";
             if (/login\.php/.test(details.responseUrl)) {
                 details.result = {requireAuth: 1};

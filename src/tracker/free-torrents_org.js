@@ -33,11 +33,11 @@ engine.trackerLib['free-torrents'] = {
         requestType: 'GET',
         requestData: 'nm=%search%',
         requestMimeType: 'text/html; charset=windows-1251',
-        onGetRequest: function (details) {
+        onBeforeRequest: function (details) {
             "use strict";
             details.query = exKit.funcList.encodeCp1251(details.query);
         },
-        onResponseUrl: function (details) {
+        onAfterRequest: function (details) {
             "use strict";
             if (/login\.php/.test(details.responseUrl)) {
                 details.result = {requireAuth: 1};

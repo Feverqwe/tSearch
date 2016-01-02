@@ -32,7 +32,7 @@ engine.trackerLib.opentorrent = {
         baseUrl: 'http://opentorrent.ru/',
         requestType: 'GET',
         requestData: 'nm=%search%',
-        onResponseUrl: function (details) {
+        onAfterRequest: function (details) {
             "use strict";
             if (/login\.php/.test(details.responseUrl)) {
                 details.result = {requireAuth: 1};

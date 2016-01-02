@@ -17,7 +17,7 @@ engine.trackerLib.riperam = {
         searchUrl: 'http://www.riper.am/search.php',
         baseUrl: 'http://www.riper.am/',
         requestType: 'GET',
-        onResponseUrl: function (details) {
+        onAfterRequest: function (details) {
             "use strict";
             if (/ucp.php\?mode=login/.test(details.responseUrl)) {
                 details.result = {requireAuth: 1};

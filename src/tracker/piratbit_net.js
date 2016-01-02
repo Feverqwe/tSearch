@@ -32,7 +32,7 @@ engine.trackerLib.piratbit = {
         baseUrl: 'http://pb.wtf/',
         requestType: 'GET',
         requestData: 'ss=%search%&max=1&to=1',
-        onResponseUrl: function (details) {
+        onAfterRequest: function (details) {
             "use strict";
             if (/login\.php/.test(details.responseUrl)) {
                 details.result = {requireAuth: 1};

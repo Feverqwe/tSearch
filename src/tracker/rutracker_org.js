@@ -33,7 +33,7 @@ engine.trackerLib['rutracker'] = {
         baseUrl: 'http://rutracker.org/forum/',
         requestType: 'POST',
         requestData: 'nm=%search%',
-        onResponseUrl: function (details) {
+        onAfterRequest: function (details) {
             "use strict";
             if (/login\.php/.test(details.responseUrl)) {
                 details.result = {requireAuth: 1};

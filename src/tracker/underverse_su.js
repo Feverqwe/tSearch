@@ -32,7 +32,7 @@ engine.trackerLib.underverse = {
         requestType: 'GET',
         requestData: 'nm=%search%',
         requestMimeType: 'text/html; charset=windows-1251',
-        onGetRequest: function (details) {
+        onBeforeRequest: function (details) {
             "use strict";
             details.query = exKit.funcList.encodeCp1251(details.query);
         },

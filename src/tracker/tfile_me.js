@@ -32,7 +32,7 @@ engine.trackerLib.tfile = {
         baseUrl: 'http://tfile.me/forum/',
         requestType: 'GET',
         requestData: 'q=%search%',
-        onGetRequest: function (details) {
+        onBeforeRequest: function (details) {
             "use strict";
             details.query = exKit.funcList.encodeCp1251(details.query);
         },

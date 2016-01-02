@@ -32,7 +32,7 @@ engine.trackerLib.piratca = {
         baseUrl: 'http://pirat.ca/',
         requestType: 'GET',
         requestData: 'nm=%search%&to=1&max=1',
-        onResponseUrl: function (details) {
+        onAfterRequest: function (details) {
             "use strict";
             if (/login\.php/.test(details.responseUrl)) {
                 details.result = {requireAuth: 1};

@@ -32,7 +32,7 @@ engine.trackerLib.kickass = {
         blankUrl: 'https://kat.cr/new/',
         baseUrl: 'https://kat.cr/',
         requestType: 'GET',
-        onGetRequest: function (details) {
+        onBeforeRequest: function (details) {
             "use strict";
             if (!details.query) {
                 details.tracker.search.searchUrl = details.tracker.search.blankUrl;

@@ -18,7 +18,7 @@ engine.trackerLib.rutor = {
         searchUrl: 'http://zerkalo-rutor.org/search/0/0/100/0/%search%',
         baseUrl: 'http://zerkalo-rutor.org/',
         requestType: 'GET',
-        onGetRequest: function (details) {
+        onBeforeRequest: function (details) {
             "use strict";
             if (!details.query) {
                 details.tracker.search.searchUrl = details.tracker.search.blankUrl;

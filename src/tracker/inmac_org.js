@@ -32,7 +32,7 @@ engine.trackerLib.inmac = {
         loginUrl: 'https://inmac.org/login.php',
         requestType: 'GET',
         requestData: 'nm=%search%',
-        onResponseUrl: function (details) {
+        onAfterRequest: function (details) {
             "use strict";
             if (/\/login\//.test(details.responseUrl)) {
                 details.result = {requireAuth: 1};

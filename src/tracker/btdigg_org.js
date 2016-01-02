@@ -17,11 +17,11 @@ engine.trackerLib.btdigg = {
         baseUrl: 'http://btdigg.org',
         requestType: 'GET',
         requestData: '%search%&p=0&order=0',
-        onResponseUrl: function (details) {
+        onAfterRequest: function (details) {
             "use strict";
             details.tracker.lastResponseUrl = details.responseURL;
         },
-        onGetRequest: function (details) {
+        onBeforeRequest: function (details) {
             "use strict";
             var value = details.query;
             var infoHash = '';

@@ -31,7 +31,7 @@ engine.trackerLib['bigfangroup'] = {
         baseUrl: 'http://www.bigfangroup.org/',
         requestType: 'GET',
         requestData: 'search=%search%',
-        onGetRequest: function (details) {
+        onBeforeRequest: function (details) {
             "use strict";
             details.query = exKit.funcList.encodeCp1251(details.query);
         },

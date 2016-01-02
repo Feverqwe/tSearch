@@ -32,7 +32,7 @@ engine.trackerLib['torrents.local'] = {
         baseUrl: 'http://torrents.local/forum/',
         requestType: 'POST',
         requestData: 'nm=%search%&max=1&to=1',
-        onResponseUrl: function (details) {
+        onAfterRequest: function (details) {
             "use strict";
             if (/login\.php/.test(details.responseUrl)) {
                 details.result = {requireAuth: 1};
