@@ -328,32 +328,24 @@ var magic = function() {
         obj_req.safe = true;
         var_cache.xhr = mono.ajax(obj_req);
     };
-    var loadDom = function(itemName, value, parent, empty) {
-        for (var i in value) {
-            if ( value.hasOwnProperty(i) === false ) {
-                continue;
-            }
-            var name = itemName+'_'+i;
-            value[i] = $('input[name='+name+'],select[name='+name+'],textarea[name='+name+']');
-            if (value[i].length !== 1) {
-                console.log('Error:', 'count:', value[i].length, name);
-                return;
-            }
+    var loadDom = function(itemName, nodeObj, parent, empty) {
+        for (var i in nodeObj) {
+            var $node = nodeObj[i];
             if (empty !== undefined) {
-                var tagName = value[i].get(0).tagName;
-                if (tagName === 'INPUT' && value[i].attr('type') === 'text' && i !== 'request') {
-                    value[i].val('').removeClass('error');
+                var tagName = $node.get(0).tagName;
+                if (tagName === 'INPUT' && $node.attr('type') === 'text' && i !== 'request') {
+                    $node.val('').removeClass('error');
                 } else if (tagName === 'SELECT') {
-                    value[i].children('option[value=-1]').prop('selected', true);
-                } else if (tagName === 'INPUT' && value[i].attr('type') === 'checkbox') {
-                    value[i].prop('checked', false);
-                } else if (tagName === 'INPUT' && value[i].attr('type') === 'number') {
-                    value[i].val(0);
+                    $node.children('option[value=-1]').prop('selected', true);
+                } else if (tagName === 'INPUT' && $node.attr('type') === 'checkbox') {
+                    $node.prop('checked', false);
+                } else if (tagName === 'INPUT' && $node.attr('type') === 'number') {
+                    $node.val(0);
                 }
                 continue;
             }
             if (i === 'btn') {
-                value[i].on('click', function(e){
+                $node.on('click', function(e){
                     e.preventDefault();
                     if (var_cache.pageDOM === undefined) {
                         return;
@@ -402,7 +394,7 @@ var magic = function() {
                     }, itemName, parent);
                 });
             } else if (i === 'input') {
-                value[i].on('keyup', function(){
+                $node.on('keyup', function(){
                     if (var_cache.pageDOM === undefined) {
                         return;
                     }
@@ -447,7 +439,7 @@ var magic = function() {
                     }
                 });
             } else if (i === 'enable') {
-                value[i].on('click', function(){
+                $node.on('click', function(){
                     var item;
                     if (parent !== undefined) {
                         item = input_list[parent][itemName];
@@ -456,15 +448,15 @@ var magic = function() {
                     }
                     item.btn.prop('disabled', !this.checked);
                     item.input.prop('disabled', !this.checked);
-                    if (value.attr_enable !== undefined) {
-                        value.attr_enable.prop('disabled', !this.checked);
+                    if (nodeObj.attr_enable !== undefined) {
+                        nodeObj.attr_enable.prop('disabled', !this.checked);
                     }
-                    if (value.add_root !== undefined) {
-                        value.add_root.prop('disabled', !this.checked);
+                    if (nodeObj.add_root !== undefined) {
+                        nodeObj.add_root.prop('disabled', !this.checked);
                     }
                 });
             } else if (i === 'attr_enable') {
-                value[i].on('click', function(){
+                $node.on('click', function(){
                     var item;
                     if (parent !== undefined) {
                         item = input_list[parent][itemName];
@@ -475,7 +467,7 @@ var magic = function() {
                     item.input.trigger('keyup');
                 });
             } else if (i === 'attr') {
-                value[i].on('keyup', function(){
+                $node.on('keyup', function(){
                     var item;
                     if (parent !== undefined) {
                         item = input_list[parent][itemName];
@@ -485,7 +477,7 @@ var magic = function() {
                     item.input.trigger('keyup');
                 });
             } else if (i === 'regexp') {
-                value[i].on('keyup', function(){
+                $node.on('keyup', function(){
                     if (itemName === 'time') {
                         updateTimeConverter();
                     } else if (itemName === 'size') {
@@ -497,7 +489,7 @@ var magic = function() {
                     }
                 });
             } else if (i === 'regexp_text') {
-                value[i].on('keyup', function(){
+                $node.on('keyup', function(){
                     if (itemName === 'time') {
                         updateTimeConverter();
                     } else if (itemName === 'size') {
@@ -509,59 +501,59 @@ var magic = function() {
                     }
                 });
             } else if (i === 'format') {
-                value[i].on('change', function(){
+                $node.on('change', function(){
                     updateTimeConverter();
                 });
             } else if (i === 'today') {
-                value[i].on('change', function(){
+                $node.on('change', function(){
                     updateTimeConverter();
                 });
             } else if (i === 'month') {
-                value[i].on('change', function(){
+                $node.on('change', function(){
                     updateTimeConverter();
                 });
             } else if (i === 'convert') {
-                value[i].on('change', function(){
+                $node.on('change', function(){
                     // for size
                     updateSizeConverter();
                 });
             }
         }
-        if (value.input !== undefined) {
-            value.input.addClass('input');
+        if (nodeObj.input !== undefined) {
+            nodeObj.input.addClass('input');
         }
-        if (value.enable !== undefined) {
-            value.enable.prop('checked', false);
-            value.input.prop('disabled', true);
-            value.btn.prop('disabled', true);
-            if (value.attr_enable !== undefined) {
-                value.attr_enable.prop('disabled', true);
-                value.attr.addClass('attr')
+        if (nodeObj.enable !== undefined) {
+            nodeObj.enable.prop('checked', false);
+            nodeObj.input.prop('disabled', true);
+            nodeObj.btn.prop('disabled', true);
+            if (nodeObj.attr_enable !== undefined) {
+                nodeObj.attr_enable.prop('disabled', true);
+                nodeObj.attr.addClass('attr')
             }
-            if (value.add_root !== undefined) {
-                value.add_root.prop('disabled', true);
+            if (nodeObj.add_root !== undefined) {
+                nodeObj.add_root.prop('disabled', true);
             }
         }
-        if (value.output !== undefined) {
-            value.output.prop('disabled', true);
-            value.output.addClass('output')
+        if (nodeObj.output !== undefined) {
+            nodeObj.output.prop('disabled', true);
+            nodeObj.output.addClass('output')
         }
-        if (value.attr_enable !== undefined) {
-            value.attr_enable.prop('checked', false);
-            value.attr.prop('disabled', true);
+        if (nodeObj.attr_enable !== undefined) {
+            nodeObj.attr_enable.prop('checked', false);
+            nodeObj.attr.prop('disabled', true);
         }
-        if (value.original !== undefined) {
-            value.original.prop('disabled', true);
-            value.converted.prop('disabled', true);
+        if (nodeObj.original !== undefined) {
+            nodeObj.original.prop('disabled', true);
+            nodeObj.converted.prop('disabled', true);
         }
-        if (value.result !== undefined) {
-            value.result.prop('disabled', true);
+        if (nodeObj.result !== undefined) {
+            nodeObj.result.prop('disabled', true);
         }
-        if (value.table_mode !== undefined) {
-            value.table_mode.prop('checked', true);
+        if (nodeObj.table_mode !== undefined) {
+            nodeObj.table_mode.prop('checked', true);
         }
-        if (value.cp1251 !== undefined) {
-            value.cp1251.prop('checked', false);
+        if (nodeObj.cp1251 !== undefined) {
+            nodeObj.cp1251.prop('checked', false);
         }
     };
     var form_empty = function() {
@@ -828,14 +820,14 @@ var magic = function() {
                     return item.replace(/([A-Z])/, '_$1').toLowerCase();
                 });
                 var key = id.pop();
-                var inputList = input_list;
+                var obj = input_list;
                 id.forEach(function(item) {
-                    if (!inputList[item]) {
-                        inputList[item] = {};
+                    if (!obj[item]) {
+                        obj[item] = {};
                     }
-                    inputList = inputList[item];
+                    obj = obj[item];
                 });
-                inputList[key] = node;
+                obj[key] = $(node);
             });
 
             $.each(input_list, function(item, value){
@@ -848,7 +840,7 @@ var magic = function() {
                 loadDom(item, value);
             });
 
-            mono.create(document.querySelector('select[name=time_format]'), {
+            mono.create(input_list.convert.time.format.get(0), {
                 append: (function(){
                     var list = [];
                     list.push(mono.create('option', {
