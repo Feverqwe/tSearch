@@ -959,7 +959,7 @@ var magic = function() {
 
             dom_cache.iframe = document.querySelector('iframe');
             dom_cache.status_bar = document.getElementById('status_bar');
-            dom_cache.select_time_format = $('select[name=time_format]');
+
             $.each(input_list, function(item, value){
                 if (item === 'selectors' || item === 'convert' || item === 'desk' || item === 'save') {
                     $.each(value, function(subItem, value){
@@ -969,19 +969,25 @@ var magic = function() {
                 }
                 loadDom(item, value);
             });
-            dom_cache.select_time_format.append(
-                $('<option>', {text: '-', value: -1}),
-                (function(){
+
+            mono.create(document.querySelector('select[name=time_format]'), {
+                append: (function(){
                     var list = [];
+                    list.push(mono.create('option', {
+                        text: '-',
+                        value: -1
+                    }));
                     var params = ex_kit.format_date();
                     for (var n = 0, item; item = params[n]; n++) {
-                        list.push(
-                            $('<option>',{value: n, text: item})
-                        );
+                        list.push(mono.create('option', {
+                            text: item,
+                            value: n
+                        }));
                     }
                     return list;
                 })()
-            );
+            });
+
             dom_cache.menu.on('click', 'a', function(e) {
                 e.preventDefault();
 
