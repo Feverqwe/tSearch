@@ -575,7 +575,7 @@ var exKit = {
         var promise = Promise.resolve(value);
 
         if (search.onGetValue[key]) {
-            promise = promise.then(function() {
+            promise = promise.then(function(value) {
                 return search.onGetValue[key](details, value);
             });
         }
