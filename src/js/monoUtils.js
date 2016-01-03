@@ -456,7 +456,7 @@ mono.writeLanguage = function(language, body) {
                 });
             } else if (el.tagName === 'DIV') {
                 el.setAttribute('title', locale);
-            } else if (['A', 'LEGEND', 'SPAN', 'LI', 'TH', 'P', 'OPTION', 'H1', 'H2'].indexOf(el.tagName) !== -1) {
+            } else if (['A', 'LEGEND', 'SPAN', 'LI', 'TH', 'P', 'OPTION', 'H1', 'H2', 'H3'].indexOf(el.tagName) !== -1) {
                 el.textContent = locale;
             } else if (el.tagName === 'INPUT') {
                 el.value = locale;

@@ -729,7 +729,7 @@ var magic = function() {
             if (node.nodeType !== 1) {
                 break;
             }
-            var tagName = $node.prop('tagName').toLowerCase();
+            var tagName = node.tagName.toLowerCase();
             var tag = tagName;
             // on IE8, nodeName is '#document' at the top level, but we don't need that
             var parent = $node.parent();
