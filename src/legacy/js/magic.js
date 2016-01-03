@@ -850,7 +850,7 @@ var magic = function() {
             if (path === undefined) {
                 return;
             }
-            dom_cache.status_bar.text(path);
+            dom_cache.status_bar.textContent = path;
             cb(path, itemName, parent);
         });
         var_cache.ifContent.on('click', function(e){
@@ -861,7 +861,7 @@ var magic = function() {
             if (path === undefined) {
                 return;
             }
-            dom_cache.status_bar.text(path);
+            dom_cache.status_bar.textContent = path;
             cb(path, itemName, parent);
         })
     };
@@ -958,7 +958,7 @@ var magic = function() {
             dom_cache.menu = $( document.getElementById('menu') );
 
             dom_cache.iframe = document.querySelector('iframe');
-            dom_cache.status_bar = $( document.getElementById('status_bar') );
+            dom_cache.status_bar = document.getElementById('status_bar');
             dom_cache.select_time_format = $('select[name=time_format]');
             $.each(input_list, function(item, value){
                 if (item === 'selectors' || item === 'convert' || item === 'desk' || item === 'save') {
