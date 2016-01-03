@@ -448,7 +448,7 @@ var magic = function() {
                 if (var_cache.list_input_value) {
                     var_cache.list_input_dom = var_cache.pageDOM.find(var_cache.list_input_value);
                 }
-                dom_cache.iframe[0].contentDocument.all[0].innerHTML = contentFilter(data) +
+                dom_cache.iframe.contentDocument.all[0].innerHTML = contentFilter(data) +
                     '<style>' +
                         '.kit_select {color:#000 !important;background-color:#FFCC33 !important; cursor:pointer;}' +
                         'td.kit_select { border: 1px dashed red !important; }' +
@@ -713,7 +713,7 @@ var magic = function() {
             }
             loadDom(item, value, undefined, 1);
         });
-        dom_cache.iframe[0].contentDocument.all[0].innerHTML = '';
+        dom_cache.iframe.contentDocument.all[0].innerHTML = '';
         var_cache.pageDOM = undefined;
         var_cache.ifContent = undefined;
         var_cache.writePath = undefined;
@@ -839,7 +839,7 @@ var magic = function() {
     };
     var selectMode = function(cb, itemName, parent) {
         if (var_cache.ifContent === undefined) {
-            var_cache.ifContent = $(dom_cache.iframe.contents());
+            var_cache.ifContent = $(dom_cache.iframe).contents();
         }
         var_cache.ifContent.off();
         var_cache.ifContent.on('mouseenter', '*', function(e){
@@ -957,7 +957,7 @@ var magic = function() {
 
             dom_cache.menu = $( document.getElementById('menu') );
 
-            dom_cache.iframe = $('iframe');
+            dom_cache.iframe = document.querySelector('iframe');
             dom_cache.status_bar = $( document.getElementById('status_bar') );
             dom_cache.select_time_format = $('select[name=time_format]');
             $.each(input_list, function(item, value){
