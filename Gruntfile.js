@@ -8,8 +8,7 @@ module.exports = function (grunt) {
         'index.html',
         'popup.html',
         'history.html',
-        'options.html',
-        'magic.html'
+        'options.html'
     ];
     var dataJsList = [
         'explore.js',
@@ -24,8 +23,7 @@ module.exports = function (grunt) {
         'rate.js',
         'selectBox.js',
         'view.js',
-        'bluebird.min.js',
-        'magic.js'
+        'bluebird.min.js'
     ];
     var engineJsList = [
         'engine.js',
