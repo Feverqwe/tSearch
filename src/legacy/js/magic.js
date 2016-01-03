@@ -328,7 +328,7 @@ var magic = function() {
         obj_req.safe = true;
         var_cache.xhr = mono.ajax(obj_req);
     };
-    var loadDom = function(itemName, nodeObj, parent, empty) {
+    var bindElements = function(itemName, nodeObj, parent, empty) {
         for (var i in nodeObj) {
             var $node = nodeObj[i];
             if (empty !== undefined) {
@@ -560,11 +560,11 @@ var magic = function() {
         $.each(input_list, function(item, value){
             if (item === 'selectors' || item === 'convert' || item === 'desk' || item === 'save') {
                 $.each(value, function(subItem, value){
-                    loadDom(subItem, value, item, 1);
+                    bindElements(subItem, value, item, 1);
                 });
                 return 1;
             }
-            loadDom(item, value, undefined, 1);
+            bindElements(item, value, undefined, 1);
         });
         dom_cache.iframe.contentDocument.all[0].innerHTML = '';
         var_cache.pageDOM = undefined;
@@ -833,11 +833,11 @@ var magic = function() {
             $.each(input_list, function(item, value){
                 if (item === 'selectors' || item === 'convert' || item === 'desk' || item === 'save') {
                     $.each(value, function(subItem, value){
-                        loadDom(subItem, value, item);
+                        bindElements(subItem, value, item);
                     });
                     return 1;
                 }
-                loadDom(item, value);
+                bindElements(item, value);
             });
 
             mono.create(input_list.convert.time.format.get(0), {
