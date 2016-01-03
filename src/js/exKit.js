@@ -808,11 +808,7 @@ var exKit = {
                 }
             }
 
-            console.time('search ' + tracker.id);
-            return exKit.parseDom(details).then(function(data) {
-                console.timeEnd('search ' + tracker.id);
-                return data;
-            });
+            return exKit.parseDom(details);
         }).then(function(result) {
             onSearch.onSuccess(tracker, query, result);
         }).catch(function(err) {
