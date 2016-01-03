@@ -674,15 +674,6 @@ var exKit = {
 
         return promise;
     },
-    sliceNodeList: function(search, torrentElList) {
-        "use strict";
-        if (search.listItemSplice[0] !== 0) {
-            torrentElList.splice(0, search.listItemSplice[0]);
-        }
-        if (search.listItemSplice[1] !== 0) {
-            torrentElList.splice(search.listItemSplice[1]);
-        }
-    },
     parseDom: function(details) {
         "use strict";
         var _this = this;
@@ -719,7 +710,12 @@ var exKit = {
             var torrentElList = $dom.find(search.listItemSelector);
 
             if (search.listItemSplice) {
-                _this.sliceNodeList(search, torrentElList);
+                if (search.listItemSplice[0] !== 0) {
+                    torrentElList.splice(0, search.listItemSplice[0]);
+                }
+                if (search.listItemSplice[1] !== 0) {
+                    torrentElList.splice(search.listItemSplice[1]);
+                }
             }
 
             var torrentList = [];
