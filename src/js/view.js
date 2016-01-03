@@ -1049,13 +1049,10 @@ var view = {
         var trackerObj = view.varCache.trackerList[trackerId];
         trackerObj.setStatus(status, data);
     },
-    onSearchError: function(tracker, xhrStatus, xhrStatusText) {
+    onSearchError: function(tracker, err) {
         "use strict";
         view.resetTrackerStatusById(tracker.id);
-        view.setTrackerStatusById(tracker.id, 'error', {
-            status: xhrStatus,
-            statusText: xhrStatusText
-        });
+        view.setTrackerStatusById(tracker.id, 'error', err);
     },
     onSearchBegin: function(tracker, request) {
         "use strict";
