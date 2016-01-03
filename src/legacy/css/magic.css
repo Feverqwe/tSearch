@@ -20,7 +20,7 @@ div.tools > .menu {
     padding: 0;
     font-size: 1.143em;
 }
-div.tools > .menu > li {
+div.tools > .menu > a {
     display: inline-block;
     padding-top: 1px;
     padding-bottom: 2px;
@@ -28,17 +28,13 @@ div.tools > .menu > li {
     padding-right: 5px;
     margin-left: 5px;
     margin-top: 3px;
-}
-div.tools > .menu > li a {
     text-decoration: none;
     color: #0051D8;
 }
-div.tools > .menu > li.active {
+div.tools > .menu > a.active {
     background-color: #fff;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-}
-div.tools > .menu > li.active a {
     color: #000;
 }
 

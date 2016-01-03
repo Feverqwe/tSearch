@@ -423,7 +423,7 @@ var magic = function() {
             input_list.desk.tracker.isRus.prop('checked', code.flags.l);
             input_list.desk.tracker.isCirilic.prop('checked', code.flags.rs);
         }
-        dom_cache.menu.children().eq(0).children('a').trigger('click');
+        dom_cache.menu.find('a').eq(0).trigger('click');
     };
     var loadUrl = function(url, type) {
         if (!url) {
@@ -955,8 +955,6 @@ var magic = function() {
             mono.writeLanguage(mono.language);
             bytesToSize = bytesToSize.bind(null, mono.language.sizeList.split(','));
 
-            dom_cache.window = $(window);
-            dom_cache.body = $(document.body);
             dom_cache.menu = $( document.getElementById('menu') );
             dom_cache.pages = $( document.getElementById('container') );
             dom_cache.iframe = $('iframe');
@@ -986,12 +984,13 @@ var magic = function() {
             );
             dom_cache.menu.on('click', 'a', function(e) {
                 e.preventDefault();
-                var $this = $(this);
-                var page = $this.data('page');
-                dom_cache.menu.children('.active').removeClass('active');
-                dom_cache.pages.children('.page.active').removeClass('active');
-                $this.parent().addClass('active');
-                dom_cache.pages.children('.page.'+page).addClass('active');
+
+                dom_cache.menu.find('.active').removeClass('active');
+                dom_cache.pages.find('.page.active').removeClass('active');
+
+                var pageName = this.dataset.page;
+                this.classList.add('active');
+                dom_cache.pages.find('.page.'+pageName).addClass('active');
             });
             input_list.search.open.on('click', function(e){
                 e.preventDefault();
