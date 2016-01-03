@@ -502,6 +502,7 @@ var exKit = {
     },
     matchTorrentSelector: function(trObj, details) {
         "use strict";
+        var _this = this;
         var key = details.key;
         var item = details.item;
         var env = details.env;
@@ -571,38 +572,47 @@ var exKit = {
             return;
         }
 
+        var promise = Promise.resolve();
 
         if (search.onGetValue[key]) {
-            value = search.onGetValue[key](details, value);
+            promise = promise.then(function() {
+                value = search.onGetValue[key](details, value);
+            });
+        }
+
+        promise = promise.then(function() {
             if (env.abort) {
                 return;
             }
-        }
 
-        if (exKit.intList.indexOf(key) !== -1) {
-            var intValue = parseInt(value);
-            if (isNaN(intValue)) {
-                intValue = -1;
-                trObj.error[key] = value;
-                trObj.error[key + '!'] = 'isNaN';
-            }
-            value = intValue;
-        } else {
-            if (exKit.unFilterKeyList.indexOf(key) !== -1) {
-                value = exKit.contentUnFilter(value);
-            }
-            if (exKit.isUrlList.indexOf(key) !== -1) {
-                value = exKit.urlCheck(tracker, value);
-                if (tracker.proxyIndex > 0) {
-                    value = this.setHostProxyUrl(value, tracker.proxyIndex);
+            if (exKit.intList.indexOf(key) !== -1) {
+                var intValue = parseInt(value);
+                if (isNaN(intValue)) {
+                    intValue = -1;
+                    trObj.error[key] = value;
+                    trObj.error[key + '!'] = 'isNaN';
+                }
+                value = intValue;
+            } else {
+                if (exKit.unFilterKeyList.indexOf(key) !== -1) {
+                    value = exKit.contentUnFilter(value);
+                }
+                if (exKit.isUrlList.indexOf(key) !== -1) {
+                    value = exKit.urlCheck(tracker, value);
+                    if (tracker.proxyIndex > 0) {
+                        value = _this.setHostProxyUrl(value, tracker.proxyIndex);
+                    }
                 }
             }
-        }
 
-        trObj.column[key] = value;
+            trObj.column[key] = value;
+        });
+
+        return promise;
     },
     matchTorrentItem: function($node, details) {
         "use strict";
+        var _this = this;
         var env = details.env = {
             abort: false,
             $node: $node
@@ -611,46 +621,58 @@ var exKit = {
         var tracker = details.tracker;
         var search = tracker.search;
 
+        var promise = Promise.resolve();
+
         if (search.onGetListItem) {
-            search.onGetListItem(details);
+            promise = promise.then(function() {
+                return search.onGetListItem(details);
+            });
+        }
+
+        promise = promise.then(function() {
             if (env.abort) {
                 return;
             }
-        }
 
-        var trObj = {
-            column: {},
-            error: {},
-            cache: {}
-        };
+            var trObj = {
+                column: {},
+                error: {},
+                cache: {}
+            };
 
-        for (var key in search.torrentSelector) {
-            var selDetails = Object.create(details);
+            var promiseList = [];
+            for (var key in search.torrentSelector) {
+                var selDetails = Object.create(details);
 
-            selDetails.item = search.torrentSelector[key];
-            selDetails.key = key;
+                selDetails.item = search.torrentSelector[key];
+                selDetails.key = key;
 
-            this.matchTorrentSelector(trObj, selDetails);
-        }
+                promiseList.push(_this.matchTorrentSelector(trObj, selDetails));
+            }
 
-        if (!trObj.column.title || !trObj.column.url) {
-            console.debug('[' + tracker.id + ']', 'Skip torrent:', trObj);
-            return;
-        }
+            return Promise.all(promiseList).then(function() {
+                if (!trObj.column.title || !trObj.column.url) {
+                    console.debug('[' + tracker.id + ']', 'Skip torrent:', trObj);
+                    return;
+                }
 
-        if (!trObj.column.categoryId && trObj.column.categoryId !== 0) {
-            trObj.column.categoryId = -1;
-        }
+                if (!trObj.column.categoryId && trObj.column.categoryId !== 0) {
+                    trObj.column.categoryId = -1;
+                }
 
-        if (!trObj.column.date) {
-            trObj.column.date = -1;
-        }
+                if (!trObj.column.date) {
+                    trObj.column.date = -1;
+                }
 
-        if (!mono.isEmptyObject(trObj.error)) {
-            console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
-        }
+                if (!mono.isEmptyObject(trObj.error)) {
+                    console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
+                }
 
-        return trObj.column;
+                return trObj.column;
+            });
+        });
+
+        return promise;
     },
     sliceNodeList: function(search, torrentElList) {
         "use strict";
@@ -663,46 +685,60 @@ var exKit = {
     },
     parseDom: function(details) {
         "use strict";
+        var _this = this;
         var tracker = details.tracker;
         var search = tracker.search;
 
+        var promise = Promise.resolve();
+
         if (search.onBeforeDomParse) {
-            search.onBeforeDomParse(details);
+            promise = promise.then(function() {
+                return search.onBeforeDomParse(details);
+            });
+        }
+
+        promise = promise.then(function() {
             if (details.result) {
                 return details.result;
             }
-        }
 
-        var dom = exKit.parseHtml(details.data);
-        var $dom = details.$dom = $(dom);
+            var dom = exKit.parseHtml(details.data);
+            var $dom = details.$dom = $(dom);
 
-        if (search.onAfterDomParse) {
-            search.onAfterDomParse(details);
-            if (details.result) {
-                return details.result;
+            if (search.onAfterDomParse) {
+                search.onAfterDomParse(details);
+                if (details.result) {
+                    return details.result;
+                }
             }
-        }
 
-        if (search.loginFormSelector && $dom.find(search.loginFormSelector).length) {
-            return {requireAuth: 1};
-        }
-
-        var torrentElList = $dom.find(search.listItemSelector);
-
-        if (search.listItemSplice) {
-            this.sliceNodeList(search, torrentElList);
-        }
-
-        var torrentList = [];
-
-        for (var i = 0, len = torrentElList.length; i < len; i++) {
-            var item = this.matchTorrentItem(torrentElList.eq(i), Object.create(details));
-            if (item) {
-                torrentList.push(item);
+            if (search.loginFormSelector && $dom.find(search.loginFormSelector).length) {
+                return {requireAuth: 1};
             }
-        }
 
-        return {torrentList: torrentList};
+            var torrentElList = $dom.find(search.listItemSelector);
+
+            if (search.listItemSplice) {
+                _this.sliceNodeList(search, torrentElList);
+            }
+
+            var torrentList = [];
+
+            var promiseList = [];
+            for (var i = 0, len = torrentElList.length; i < len; i++) {
+                var promise = _this.matchTorrentItem(torrentElList.eq(i), Object.create(details));
+                promise = promise.then(function(item) {
+                    item && torrentList.push(item);
+                });
+                promiseList.push(promise);
+            }
+
+            return Promise.all(promiseList).then(function() {
+                return {torrentList: torrentList};
+            });
+        });
+
+        return promise;
     },
     search: function (tracker, query, onSearch) {
         "use strict";
@@ -772,13 +808,15 @@ var exKit = {
                 }
             }
 
-            return exKit.parseDom(details);
+            console.time('search ' + tracker.id);
+            return exKit.parseDom(details).then(function(data) {
+                console.timeEnd('search ' + tracker.id);
+                return data;
+            });
         }).then(function(result) {
             onSearch.onSuccess(tracker, query, result);
         }).catch(function(err) {
-            if (err.message) {
-                err = err.message;
-            }
+            console.error('Search', tracker.id, err);
             onSearch.onError(tracker, err);
         }).then(function() {
             onSearch.onDone(tracker);
