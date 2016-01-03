@@ -572,15 +572,15 @@ var exKit = {
             return;
         }
 
-        var promise = Promise.resolve();
+        var promise = Promise.resolve(value);
 
         if (search.onGetValue[key]) {
             promise = promise.then(function() {
-                value = search.onGetValue[key](details, value);
+                return search.onGetValue[key](details, value);
             });
         }
 
-        promise = promise.then(function() {
+        promise = promise.then(function(value) {
             if (env.abort) {
                 return;
             }
