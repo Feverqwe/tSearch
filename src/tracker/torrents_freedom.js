@@ -67,7 +67,7 @@ engine.trackerLib['torrents.freedom'] = {
             },
             date: function (details, value) {
                 "use strict";
-                var time = details.iter.$node.find('td:eq(11)>p:eq(1)').text();
+                var time = details.env.$node.find('td:eq(11)>p:eq(1)').text();
                 value += ' ' + time;
                 value = exKit.funcList.monthReplace(value, 1);
                 return exKit.funcList.dateFormat(1, value)

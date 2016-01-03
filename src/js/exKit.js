@@ -500,12 +500,171 @@ var exKit = {
         }
         return url.replace(/(https?:\/\/[^\/]+)(.*)/, '$1.' + proxy.url + '$2');
     },
+    matchTorrentSelector: function(trObj, details) {
+        "use strict";
+        var key = details.key;
+        var item = details.item;
+        var env = details.env;
+        var $node = env.$node;
+        var tracker = details.tracker;
+        var search = tracker.search;
+
+        if (typeof item === 'string') {
+            item = {selector: item};
+        }
+
+        var node = trObj.cache[item.selector];
+        if (!node) {
+            node = trObj.cache[item.selector] = $node.find(item.selector).get(0);
+        }
+
+        if (!node && search.onSelectorIsNotFound[key]) {
+            node = search.onSelectorIsNotFound[key](details);
+            if (env.abort) {
+                return;
+            }
+        }
+
+        if (item.childNodeIndex !== undefined && node) {
+            var childNodeIndex = item.childNodeIndex;
+            if (childNodeIndex < 0) {
+                childNodeIndex = node.childNodes.length + item.childNodeIndex;
+            }
+            node = node.childNodes[childNodeIndex];
+        }
+
+        if (!node) {
+            trObj.error[key] = node;
+            trObj.error[key + '!'] = 'Selector is not found!';
+            trObj.error[key + 'Selector'] = item.selector;
+            return;
+        }
+
+        var value = null;
+        if (item.attr) {
+            value = node.getAttribute(item.attr);
+        } else if (item.html) {
+            value = node.innerHTML;
+        } else {
+            value = node.textContent;
+        }
+        if (value) {
+            value = $.trim(value);
+        }
+
+        if (!value && search.onEmptySelectorValue[key]) {
+            value = search.onEmptySelectorValue[key](details);
+            if (env.abort) {
+                return;
+            }
+        }
+
+        if (!value && value !== 0) {
+            trObj.error[key] = value;
+            if (item.attr) {
+                trObj.error[key + '!'] = 'Attribute is not found!';
+            } else if (item.html) {
+                trObj.error[key + '!'] = 'Html content is empty!';
+            } else {
+                trObj.error[key + '!'] = 'Text content is empty!';
+            }
+            return;
+        }
+
+
+        if (search.onGetValue[key]) {
+            value = search.onGetValue[key](details, value);
+            if (env.abort) {
+                return;
+            }
+        }
+
+        if (exKit.intList.indexOf(key) !== -1) {
+            var intValue = parseInt(value);
+            if (isNaN(intValue)) {
+                intValue = -1;
+                trObj.error[key] = value;
+                trObj.error[key + '!'] = 'isNaN';
+            }
+            value = intValue;
+        } else {
+            if (exKit.unFilterKeyList.indexOf(key) !== -1) {
+                value = exKit.contentUnFilter(value);
+            }
+            if (exKit.isUrlList.indexOf(key) !== -1) {
+                value = exKit.urlCheck(tracker, value);
+                if (tracker.proxyIndex > 0) {
+                    value = this.setHostProxyUrl(value, tracker.proxyIndex);
+                }
+            }
+        }
+
+        trObj.column[key] = value;
+    },
+    matchTorrentItem: function($node, details) {
+        "use strict";
+        var env = details.env = {
+            abort: false,
+            $node: $node
+        };
+
+        var tracker = details.tracker;
+        var search = tracker.search;
+
+        if (search.onGetListItem) {
+            search.onGetListItem(details);
+            if (env.abort) {
+                return;
+            }
+        }
+
+        var trObj = {
+            column: {},
+            error: {},
+            cache: {}
+        };
+
+        for (var key in search.torrentSelector) {
+            var selDetails = Object.create(details);
+
+            selDetails.item = search.torrentSelector[key];
+            selDetails.key = key;
+
+            this.matchTorrentSelector(trObj, selDetails);
+        }
+
+        if (!trObj.column.title || !trObj.column.url) {
+            console.debug('[' + tracker.id + ']', 'Skip torrent:', trObj);
+            return;
+        }
+
+        if (!trObj.column.categoryId && trObj.column.categoryId !== 0) {
+            trObj.column.categoryId = -1;
+        }
+
+        if (!trObj.column.date) {
+            trObj.column.date = -1;
+        }
+
+        if (!mono.isEmptyObject(trObj.error)) {
+            console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
+        }
+
+        return trObj.column;
+    },
+    sliceNodeList: function(search, torrentElList) {
+        "use strict";
+        if (search.listItemSplice[0] !== 0) {
+            torrentElList.splice(0, search.listItemSplice[0]);
+        }
+        if (search.listItemSplice[1] !== 0) {
+            torrentElList.splice(search.listItemSplice[1]);
+        }
+    },
     parseDom: function(details) {
         "use strict";
         var tracker = details.tracker;
         var search = tracker.search;
-
-        var torrentList = [];
 
         if (search.onBeforeDomParse) {
             search.onBeforeDomParse(details);
@@ -524,12 +683,6 @@ var exKit = {
             }
         }
 
-        var iter = details.iter = {
-            skipSelector: false,
-            skipItem: false,
-            $node: null
-        };
-
         if (search.loginFormSelector && $dom.find(search.loginFormSelector).length) {
             return {requireAuth: 1};
         }
@@ -537,145 +690,16 @@ var exKit = {
         var torrentElList = $dom.find(search.listItemSelector);
 
         if (search.listItemSplice) {
-            if (search.listItemSplice[0] !== 0) {
-                torrentElList.splice(0, search.listItemSplice[0]);
-            }
-            if (search.listItemSplice[1] !== 0) {
-                torrentElList.splice(search.listItemSplice[1]);
-            }
+            this.sliceNodeList(search, torrentElList);
         }
 
+        var torrentList = [];
+
         for (var i = 0, len = torrentElList.length; i < len; i++) {
-            iter.skipItem = false;
-            var $node = iter.$node = torrentElList.eq(i);
-
-            if (search.onGetListItem) {
-                search.onGetListItem(details);
-                if (iter.skipItem) {
-                    continue;
-                }
+            var item = this.matchTorrentItem(torrentElList.eq(i), Object.create(details));
+            if (item) {
+                torrentList.push(item);
             }
-
-            var trObj = iter.trObj = {
-                column: {},
-                error: {}
-            };
-
-            var cache = {};
-            for (var key in search.torrentSelector) {
-                var item = search.torrentSelector[key];
-                if (typeof item === 'string') {
-                    item = {selector: item};
-                }
-
-                iter.skipSelector = false;
-
-                var node = cache[item.selector];
-                if (!node) {
-                    node = cache[item.selector] = $node.find(item.selector).get(0);
-                }
-
-                if (!node && search.onSelectorIsNotFound[key]) {
-                    node = search.onSelectorIsNotFound[key](details);
-                    if (iter.skipSelector) {
-                        continue;
-                    }
-                }
-
-                if (item.childNodeIndex !== undefined && node) {
-                    var childNodeIndex = item.childNodeIndex;
-                    if (childNodeIndex < 0) {
-                        childNodeIndex = node.childNodes.length + item.childNodeIndex;
-                    }
-                    node = node.childNodes[childNodeIndex];
-                }
-
-                if (!node) {
-                    trObj.error[key] = node;
-                    trObj.error[key + '!'] = 'Selector is not found!';
-                    trObj.error[key + 'Selector'] = item.selector;
-                    continue;
-                }
-
-                var value = null;
-                if (item.attr) {
-                    value = node.getAttribute(item.attr);
-                } else if (item.html) {
-                    value = node.innerHTML;
-                } else {
-                    value = node.textContent;
-                }
-                if (value) {
-                    value = $.trim(value);
-                }
-
-                if (!value && search.onEmptySelectorValue[key]) {
-                    value = search.onEmptySelectorValue[key](details);
-                    if (iter.skipSelector) {
-                        continue;
-                    }
-                }
-
-                if (!value && value !== 0) {
-                    trObj.error[key] = value;
-                    if (item.attr) {
-                        trObj.error[key + '!'] = 'Attribute is not found!';
-                    } else if (item.html) {
-                        trObj.error[key + '!'] = 'Html content is empty!';
-                    } else {
-                        trObj.error[key + '!'] = 'Text content is empty!';
-                    }
-                    continue;
-                }
-
-
-                if (search.onGetValue[key]) {
-                    value = search.onGetValue[key](details, value);
-                    if (iter.skipSelector) {
-                        continue;
-                    }
-                }
-
-                if (exKit.intList.indexOf(key) !== -1) {
-                    var intValue = parseInt(value);
-                    if (isNaN(intValue)) {
-                        intValue = -1;
-                        trObj.error[key] = value;
-                        trObj.error[key + '!'] = 'isNaN';
-                    }
-                    value = intValue;
-                } else {
-                    if (exKit.unFilterKeyList.indexOf(key) !== -1) {
-                        value = exKit.contentUnFilter(value);
-                    }
-                    if (exKit.isUrlList.indexOf(key) !== -1) {
-                        value = exKit.urlCheck(tracker, value);
-                        if (tracker.proxyIndex > 0) {
-                            value = this.setHostProxyUrl(value, tracker.proxyIndex);
-                        }
-                    }
-                }
-                trObj.column[key] = value;
-            }
-
-            if (!trObj.column.title || !trObj.column.url) {
-                console.debug('[' + tracker.id + ']', 'Skip torrent:', trObj);
-                continue;
-            }
-
-            if (!trObj.column.categoryId && trObj.column.categoryId !== 0) {
-                trObj.column.categoryId = -1;
-            }
-
-            if (!trObj.column.date) {
-                trObj.column.date = -1;
-            }
-
-            if (!mono.isEmptyObject(trObj.error)) {
-                console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
-            }
-
-            torrentList.push(trObj.column);
         }
 
         return {torrentList: torrentList};
