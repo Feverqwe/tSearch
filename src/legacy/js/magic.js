@@ -20,146 +20,7 @@ var magic = function() {
         list_input_dom: undefined,
         pageDOM: undefined
     };
-    var input_list = {
-        search: {
-            url: undefined,
-            open: undefined,
-            request: undefined,
-            cp1251: undefined,
-            post: undefined,
-            root: undefined,
-            charset: undefined
-        },
-        auth: {
-            url: undefined,
-            open: undefined,
-            input: undefined,
-            btn: undefined
-        },
-        selectors: {
-            list: {
-                input: undefined,
-                table_mode: undefined,
-                btn: undefined
-            },
-            category_name: {
-                enable: undefined,
-                input: undefined,
-                output: undefined,
-                attr_enable: undefined,
-                attr: undefined,
-                btn: undefined
-            },
-            category_link: {
-                enable: undefined,
-                input: undefined,
-                output: undefined,
-                add_root: undefined,
-                btn: undefined
-            },
-            torrent_name: {
-                input: undefined,
-                output: undefined,
-                btn: undefined
-            },
-            torrent_link: {
-                input: undefined,
-                output: undefined,
-                add_root: undefined,
-                btn: undefined
-            },
-            torrent_size: {
-                enable: undefined,
-                input: undefined,
-                output: undefined,
-                attr_enable: undefined,
-                attr: undefined,
-                btn: undefined
-            },
-            torrent_dl: {
-                enable: undefined,
-                input: undefined,
-                output: undefined,
-                add_root: undefined,
-                btn: undefined
-            },
-            seed: {
-                enable: undefined,
-                input: undefined,
-                output: undefined,
-                btn: undefined
-            },
-            peer: {
-                enable: undefined,
-                input: undefined,
-                output: undefined,
-                btn: undefined
-            },
-            time: {
-                enable: undefined,
-                input: undefined,
-                output: undefined,
-                attr_enable: undefined,
-                attr: undefined,
-                btn: undefined
-            },
-            skip: {
-                first: undefined,
-                last: undefined
-            }
-        },
-        convert: {
-            time: {
-                regexp: undefined,
-                regexp_text: undefined,
-                today: undefined,
-                month: undefined,
-                format: undefined,
-                original: undefined,
-                converted: undefined,
-                result: undefined
-            },
-            size: {
-                regexp: undefined,
-                regexp_text: undefined,
-                convert: undefined,
-                original: undefined,
-                converted: undefined,
-                result: undefined
-            },
-            seed: {
-                regexp: undefined,
-                regexp_text: undefined,
-                original: undefined,
-                converted: undefined,
-                result: undefined
-            },
-            peer: {
-                regexp: undefined,
-                regexp_text: undefined,
-                original: undefined,
-                converted: undefined,
-                result: undefined
-            }
-        },
-        desk: {
-            tracker: {
-                icon: undefined,
-                title: undefined,
-                desk: undefined,
-                isCirilic: undefined,
-                needAuth: undefined,
-                isRus: undefined
-            }
-        },
-        save: {
-            code: {
-                write: undefined,
-                read: undefined,
-                textarea: undefined
-            }
-        }
-    };
+    var input_list = {};
     var contentFilter = function(content) {
         content = content.replace(var_cache.stScript, '<textarea data-script="1"');
         content = content.replace(var_cache.enScript, '</textarea');
@@ -959,6 +820,23 @@ var magic = function() {
 
             dom_cache.iframe = document.querySelector('iframe');
             dom_cache.status_bar = document.getElementById('status_bar');
+
+            var dataIdList = [].slice.call(document.querySelectorAll('[data-id]'));
+            dataIdList.forEach(function(node) {
+                var id = node.dataset.id;
+                id = id.split('_').map(function(item) {
+                    return item.replace(/([A-Z])/, '_$1').toLowerCase();
+                });
+                var key = id.pop();
+                var inputList = input_list;
+                id.forEach(function(item) {
+                    if (!inputList[item]) {
+                        inputList[item] = {};
+                    }
+                    inputList = inputList[item];
+                });
+                inputList[key] = node;
+            });
 
             $.each(input_list, function(item, value){
                 if (item === 'selectors' || item === 'convert' || item === 'desk' || item === 'save') {
