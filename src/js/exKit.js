@@ -844,11 +844,13 @@ var exKit = {
     },
     searchList: function (trackerList, query, onSearch) {
         "use strict";
-        exKit.searchProgressListClear();
-        exKit.searchProgressListBind(onSearch);
-        for (var i = 0, trackerId; trackerId = trackerList[i]; i++) {
-            exKit.searchProgressList[trackerId] = exKit.search(engine.trackerLib[trackerId], query, onSearch);
-        }
+        define.on(['jquery', 'promise'], function() {
+            exKit.searchProgressListClear();
+            exKit.searchProgressListBind(onSearch);
+            for (var i = 0, trackerId; trackerId = trackerList[i]; i++) {
+                exKit.searchProgressList[trackerId] = exKit.search(engine.trackerLib[trackerId], query, onSearch);
+            }
+        });
     },
     getTrackerIconUrl: function (icon) {
         "use strict";

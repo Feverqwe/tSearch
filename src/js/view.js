@@ -1835,7 +1835,7 @@ var view = {
             window.scrollTo(0, 0);
         });
 
-        define.on('jquery', function() {
+        define.on(['jquery', 'promise'], function() {
             view.domCache.searchBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 var request = this.domCache.requestInput.value.trim();
@@ -1850,7 +1850,7 @@ var view = {
             this.onUrlChange();
         }.bind(this));
 
-        define.on('jqueryui', function() {
+        define.on(['jquery', 'jqueryui'], function() {
             $(document).off('mouseup');
 
             (view.varCache.$requestInput = $(view.domCache.requestInput)).autocomplete({
@@ -2024,25 +2024,43 @@ var define = function(name, deps, callback) {
     define.stack(type);
 };
 define.amd = {};
-define.stack = function(type) {
+define.stackList = [];
+define.stack = function() {
     "use strict";
-    var stack = define.stack;
-    if (stack[type]) {
-        while (stack[type].length) {
-            stack[type].splice(0, 1)[0]();
+    var rmList = [];
+    define.stackList.forEach(function(item) {
+        var list = item[0];
+        var cb = item[1];
+
+        var isReady = list.every(function(name) {
+            return !!define.amd[name];
+        });
+
+        if (isReady) {
+            rmList.push(item);
+            return cb();
         }
-    }
+    });
+    rmList.forEach(function(item) {
+        var index = define.stackList.indexOf(item);
+        define.stackList.splice(index, 1);
+    });
 };
-define.on = function(name, cb) {
+define.on = function(list, cb) {
     "use strict";
-    if (define.stack[name] === undefined) {
-        define.stack[name] = [];
-    }
-    if (!define.amd[name]) {
-        return define.stack[name].push(cb);
+    if (!Array.isArray(list)) {
+        list = [list];
     }
 
-    return cb();
+    var isReady = list.every(function(name) {
+        return !!define.amd[name];
+    });
+
+    if (isReady) {
+        return cb();
+    }
+
+    define.stackList.push([list, cb]);
 };
 
 engine.init(function() {

@@ -2095,7 +2095,7 @@ var explore = {
             });
         }
 
-        define.on('jqueryui', function() {
+        define.on(['jquery', 'jqueryui'], function() {
             (this.domCache.$gallery = $(this.domCache.gallery)).sortable({
                 axis: 'y',
                 handle: '.head .move',
