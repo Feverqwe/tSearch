@@ -956,7 +956,7 @@ var magic = function() {
             bytesToSize = bytesToSize.bind(null, mono.language.sizeList.split(','));
 
             dom_cache.menu = $( document.getElementById('menu') );
-            dom_cache.pages = $( document.getElementById('container') );
+
             dom_cache.iframe = $('iframe');
             dom_cache.status_bar = $( document.getElementById('status_bar') );
             dom_cache.select_time_format = $('select[name=time_format]');
@@ -986,11 +986,11 @@ var magic = function() {
                 e.preventDefault();
 
                 dom_cache.menu.find('.active').removeClass('active');
-                dom_cache.pages.find('.page.active').removeClass('active');
+                $('.page.active').removeClass('active');
 
                 var pageName = this.dataset.page;
                 this.classList.add('active');
-                dom_cache.pages.find('.page.'+pageName).addClass('active');
+                $('.page.'+pageName).addClass('active');
             });
             input_list.search.open.on('click', function(e){
                 e.preventDefault();
