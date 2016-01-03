@@ -347,21 +347,19 @@ var magic = function() {
             if (i === 'btn') {
                 $node.on('click', function(e){
                     e.preventDefault();
-                    if (var_cache.pageDOM === undefined) {
+                    if (!var_cache.pageDOM) {
                         return;
                     }
-                    //включать выделятор
-                    // do...
                     selectMode(function(path, itemName, parent){
                         var path_text = onPathChange(path, itemName, parent);
                         var item;
-                        if (parent !== undefined) {
+                        if (parent) {
                             item = input_list[parent][itemName];
                         } else {
                             item = input_list[itemName];
                         }
                         item.input.removeClass('error');
-                        if (item.output !== undefined) {
+                        if (item.output) {
                             item.output.removeClass('error');
                             if (path_text[1] === undefined) {
                                 path_text[1] = '';
@@ -395,11 +393,11 @@ var magic = function() {
                 });
             } else if (i === 'input') {
                 $node.on('keyup', function(){
-                    if (var_cache.pageDOM === undefined) {
+                    if (!var_cache.pageDOM) {
                         return;
                     }
                     var item;
-                    if (parent !== undefined) {
+                    if (parent) {
                         item = input_list[parent][itemName];
                     } else {
                         item = input_list[itemName];
@@ -409,7 +407,7 @@ var magic = function() {
                         return;
                     }
                     var path_text = onPathChange(this.value, itemName, parent, 1);
-                    if (item.output !== undefined) {
+                    if (item.output) {
                         item.output.removeClass('error');
                         if (path_text[1] === undefined) {
                             path_text[1] = '';
@@ -434,31 +432,31 @@ var magic = function() {
                             updatePeerConverter();
                         }
                     }
-                    if (path_text[0] === undefined) {
+                    if (!path_text[0]) {
                         item.input.addClass('error');
                     }
                 });
             } else if (i === 'enable') {
                 $node.on('click', function(){
                     var item;
-                    if (parent !== undefined) {
+                    if (parent) {
                         item = input_list[parent][itemName];
                     } else {
                         item = input_list[itemName];
                     }
                     item.btn.prop('disabled', !this.checked);
                     item.input.prop('disabled', !this.checked);
-                    if (nodeObj.attr_enable !== undefined) {
+                    if (nodeObj.attr_enable) {
                         nodeObj.attr_enable.prop('disabled', !this.checked);
                     }
-                    if (nodeObj.add_root !== undefined) {
+                    if (nodeObj.add_root) {
                         nodeObj.add_root.prop('disabled', !this.checked);
                     }
                 });
             } else if (i === 'attr_enable') {
                 $node.on('click', function(){
                     var item;
-                    if (parent !== undefined) {
+                    if (parent) {
                         item = input_list[parent][itemName];
                     } else {
                         item = input_list[itemName];
@@ -469,7 +467,7 @@ var magic = function() {
             } else if (i === 'attr') {
                 $node.on('keyup', function(){
                     var item;
-                    if (parent !== undefined) {
+                    if (parent) {
                         item = input_list[parent][itemName];
                     } else {
                         item = input_list[itemName];
@@ -514,45 +512,44 @@ var magic = function() {
                 });
             } else if (i === 'convert') {
                 $node.on('change', function(){
-                    // for size
                     updateSizeConverter();
                 });
             }
         }
-        if (nodeObj.input !== undefined) {
+        if (nodeObj.input) {
             nodeObj.input.addClass('input');
         }
-        if (nodeObj.enable !== undefined) {
+        if (nodeObj.enable) {
             nodeObj.enable.prop('checked', false);
             nodeObj.input.prop('disabled', true);
             nodeObj.btn.prop('disabled', true);
-            if (nodeObj.attr_enable !== undefined) {
+            if (nodeObj.attr_enable) {
                 nodeObj.attr_enable.prop('disabled', true);
                 nodeObj.attr.addClass('attr')
             }
-            if (nodeObj.add_root !== undefined) {
+            if (nodeObj.add_root) {
                 nodeObj.add_root.prop('disabled', true);
             }
         }
-        if (nodeObj.output !== undefined) {
+        if (nodeObj.output) {
             nodeObj.output.prop('disabled', true);
             nodeObj.output.addClass('output')
         }
-        if (nodeObj.attr_enable !== undefined) {
+        if (nodeObj.attr_enable) {
             nodeObj.attr_enable.prop('checked', false);
             nodeObj.attr.prop('disabled', true);
         }
-        if (nodeObj.original !== undefined) {
+        if (nodeObj.original) {
             nodeObj.original.prop('disabled', true);
             nodeObj.converted.prop('disabled', true);
         }
-        if (nodeObj.result !== undefined) {
+        if (nodeObj.result) {
             nodeObj.result.prop('disabled', true);
         }
-        if (nodeObj.table_mode !== undefined) {
+        if (nodeObj.table_mode) {
             nodeObj.table_mode.prop('checked', true);
         }
-        if (nodeObj.cp1251 !== undefined) {
+        if (nodeObj.cp1251) {
             nodeObj.cp1251.prop('checked', false);
         }
     };
