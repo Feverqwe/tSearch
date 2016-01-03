@@ -39,12 +39,7 @@ var magic = function() {
             search_path: input_list.search.url.val(),
             items: input_list.selectors.list.input.val(),
             tr_name: input_list.selectors.torrent_name.input.val(),
-            tr_link: input_list.selectors.torrent_link.input.val(),
-            flags: {
-                a: (input_list.desk.tracker.needAuth.prop('checked')) ? 1 : 0,
-                l: (input_list.desk.tracker.isRus.prop('checked')) ? 1 : 0,
-                rs: (input_list.desk.tracker.isCirilic.prop('checked')) ? 1 : 0
-            }
+            tr_link: input_list.selectors.torrent_link.input.val()
         };
         if (!code.icon) {
             code.icon = '#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
@@ -278,11 +273,6 @@ var magic = function() {
         }
         if (code.about !== undefined) {
             input_list.desk.tracker.desk.val(code.about);
-        }
-        if (code.flags !== undefined) {
-            input_list.desk.tracker.needAuth.prop('checked', code.flags.a);
-            input_list.desk.tracker.isRus.prop('checked', code.flags.l);
-            input_list.desk.tracker.isCirilic.prop('checked', code.flags.rs);
         }
         dom_cache.menu.find('a').eq(0).trigger('click');
     };

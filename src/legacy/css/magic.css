@@ -8,6 +8,17 @@ body {
     min-width: 960px;
     height: 100%;
 }
+
+input[type=text] {
+    border: 1px solid #cccccc;
+    padding-left: 2px;
+    line-height: 18px;
+    font-size: 14px;
+}
+input[type=text]:hover {
+    border: 1px solid #999999;
+}
+
 div.tools {
     position: relative;
     height: 300px;
@@ -43,28 +54,42 @@ div.tools > div.body {
     height: 259px;
     width: 100%;
 }
-div.tools > div.body > fieldset {
+div.tools > div.body > .page {
     display: none;
-    border: 0;
-    margin-top: 4px;
 }
-div.tools > div.body > fieldset.active {
+div.tools > div.body > .page.active {
     display: block;
 }
-div.tools > div.body > fieldset > fieldset {
-    border: 0;
+
+h2 {
+    font-size: 1.5em;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 2px;
+    font-weight: normal;
+    margin-top: 5px;
+    margin-bottom: 6px;
+    padding-left: 4px;
 }
-div.tools > div.body ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    padding-left: 10px;
+
+h3 {
+    font-size: 18px;
+    margin-top: 4px;
+    margin-bottom: 2px;
+    font-weight: normal;
+    margin-left: 5px;
 }
-div.tools > div.body textarea[name="code_textarea"] {
-    height: 190px;
+
+div.tools > div.body label {
+    display: block;
+    margin: 5px;
+}
+
+div.tools > div.body textarea[data-id="save_code_textarea"] {
+    height: 180px;
     width: 600px;
     border-color: #ccc;
 }
+
 div.tools > div.status_bar {
     position: absolute;
     bottom: 0;
@@ -73,60 +98,64 @@ div.tools > div.status_bar {
     border-top: 1px solid #e6e6e6;
     background-color: #fff;
 }
+
 iframe {
     height: calc(100% - 304px);
     width: 100%;
     border: 0;
 }
+
 div.tools input.error {
     box-shadow: 0 0 2px 1px #FF0000;
     outline-color: red;
 }
-div.tools fieldset.selectors li > input[name=list_input] {
+
+div.tools .page.selectors label > input[data-id="selectors_list_input"] {
     width: 406px;
 }
-div.tools fieldset.selectors li > span:nth-child(2) {
+
+div.tools .page.selectors label > span:nth-child(2) {
     width: 175px;
     display: inline-block;
 }
-div.tools fieldset.selectors li > span:nth-child(1) {
+div.tools .page.selectors label > span:nth-child(1) {
     width: 199px;
     display: inline-block;
 }
-div.tools fieldset.selectors li > input[type=number] {
+div.tools .page.selectors label > input[type="number"] {
     width: 50px;
 }
-div.tools fieldset.search li > input[name=search_url] {
+div.tools .page.search label > input[data-id="search_url"] {
     width: 450px;
 }
-div.tools fieldset.search li > input[name=search_post],
-div.tools fieldset.search li > input[name=search_root] {
+div.tools .page.search label > input[data-id="search_post"],
+div.tools .page.search label > input[data-id="search_root"] {
     width: 450px;
 }
-div.tools fieldset.search li > input[name=search_charset] {
+div.tools .page.search label > input[data-id="search_charset"] {
     width: 150px;
 }
-div.tools fieldset.search li:nth-child(4) > span:nth-child(1),
-div.tools fieldset.search li:nth-child(5) > span:nth-child(1),
-div.tools fieldset.search li:nth-child(6) > span:nth-child(1){
+div.tools .page.search label:nth-child(5) > span:nth-child(1),
+div.tools .page.search label:nth-child(6) > span:nth-child(1),
+div.tools .page.search label:nth-child(7) > span:nth-child(1){
     width: 140px;
     display: inline-block;
 }
-div.tools fieldset.convert input[name=time_result] {
+div.tools .page.convert input[data-id="convert_time_result"] {
     width: 300px;
 }
-div.tools fieldset.auth input[type=text] {
+div.tools .page.auth input[type="text"] {
     width: 450px;
 }
-div.tools fieldset.auth li > span:nth-child(1) {
+div.tools .page.auth label > span:nth-child(1) {
     width: 160px;
     display: inline-block;
 }
-div.tools fieldset.desk li > span:nth-child(1) {
+div.tools .page.desk label > span:nth-child(1) {
     width: 180px;
     display: inline-block;
 }
-div.tools fieldset.desk input[type=text] {
+div.tools .page.desk input[type="text"] {
     width: 450px;
 }
 div.tools input.output {
