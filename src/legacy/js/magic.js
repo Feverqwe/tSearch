@@ -444,11 +444,17 @@ var magic = function() {
                     }
                     item.btn.disabled = !this.checked;
                     item.input.disabled = !this.checked;
-                    if (nodeObj.attr_enable) {
-                        nodeObj.attr_enable.disabled = !this.checked;
+                    if (item.attr_enable) {
+                        item.attr_enable.disabled = !this.checked;
+                        if (!this.checked) {
+                            item.attr.disabled = true;
+                        } else
+                        if (item.attr_enable.checked) {
+                            item.attr.disabled = false;
+                        }
                     }
-                    if (nodeObj.add_root) {
-                        nodeObj.add_root.disabled = !this.checked;
+                    if (item.add_root) {
+                        item.add_root.disabled = !this.checked;
                     }
                 });
             }
@@ -534,6 +540,7 @@ var magic = function() {
         if (nodeObj.input) {
             nodeObj.input.classList.add('input');
         }
+
         if (nodeObj.enable) {
             nodeObj.enable.checked = false;
             nodeObj.input.disabled = true;
@@ -546,24 +553,30 @@ var magic = function() {
                 nodeObj.add_root.disabled = true;
             }
         }
+
         if (nodeObj.output) {
             nodeObj.output.disabled = true;
             nodeObj.output.classList.add('output')
         }
+
         if (nodeObj.attr_enable) {
             nodeObj.attr_enable.checked = false;
             nodeObj.attr.disabled = true;
         }
+
         if (nodeObj.original) {
             nodeObj.original.disabled = true;
             nodeObj.converted.disabled = true;
         }
+
         if (nodeObj.result) {
             nodeObj.result.disabled = true;
         }
+
         if (nodeObj.table_mode) {
             nodeObj.table_mode.checked = true;
         }
+
         if (nodeObj.cp1251) {
             nodeObj.cp1251.checked = false;
         }
@@ -870,7 +883,7 @@ var magic = function() {
                 }
             }
 
-            mono.create(input_list.convert.time.format.get(0), {
+            mono.create(inputNodeList.convert.time.format, {
                 append: (function(){
                     var list = [];
                     list.push(mono.create('option', {
