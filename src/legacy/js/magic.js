@@ -1014,7 +1014,7 @@ var magic = function() {
                 abort: abort
             }
         },
-        bindSelector: function(selectorObj) {
+        bindSelector: function(selectorObj, key) {
             var _this = this;
             var input = selectorObj.input;
             var btn = selectorObj.btn;
@@ -1024,8 +1024,9 @@ var magic = function() {
             var addRoot = selectorObj.add_root;
             var tableMode = selectorObj.table_mode;
             var skipFirst = this.nodeList.selectors.skip.first;
+            var listInput = _this.nodeList.selectors.list.input;
 
-            var getCurrentItem = function(nodeList) {
+            var getStartIndex = function() {
                 var index = skipFirst.value;
                 index = parseInt(index);
                 if (index !== 0 && !index) {
@@ -1034,12 +1035,17 @@ var magic = function() {
                 } else {
                     skipFirst.classList.remove('error');
                 }
-                return nodeList[index];
+                return index;
             };
 
             var checkPath = function(path) {
+                var nodeList = null;
                 var $dom = _this.varCache.$frameDom;
-                var nodeList = $dom.find(path);
+                if (output) {
+                    nodeList = $dom.find(listInput.value).eq(getStartIndex()).find(path);
+                } else {
+                    nodeList = $dom.find(path);
+                }
                 if (!nodeList.length) {
                     input.classList.add('error');
                 } else {
@@ -1057,6 +1063,10 @@ var magic = function() {
                     }
                 }
 
+                if (output && path.indexOf(listInput.value) === 0) {
+                    path = path.substr(listInput.value.length).replace(/^:nth-child\(\d+\)\s*>\s*/, '');
+                }
+
                 input.value = path;
 
                 checkPath(path);
@@ -1070,6 +1080,9 @@ var magic = function() {
                         attr.classList.add('error');
                     }
                     output.value = value || '';
+                } else
+                if (['category_link', 'torrent_link', 'torrent_dl'].indexOf(key) !== -1) {
+                    output.value = node.getAttribute('href') || '';
                 } else {
                     output.value = node.textContent;
                 }
@@ -1092,6 +1105,10 @@ var magic = function() {
 
             attr && attr.addEventListener('keyup', function() {
                 checkPath(input.value);
+            });
+
+            tableMode && tableMode.addEventListener('change', function() {
+                setPath(input.value);
             });
 
             enable && enable.addEventListener('change', function() {
@@ -1120,7 +1137,7 @@ var magic = function() {
             for (var key in selectors) {
                 var item = selectors[key];
                 if (item.btn && item.input) {
-                    this.bindSelector(item);
+                    this.bindSelector(item, key);
                 }
             }
 
@@ -1163,7 +1180,6 @@ var magic = function() {
 
             search.open.addEventListener('click', function(e){
                 e.preventDefault();
-                var type = 'search';
                 updateRootUrl();
                 _this.openPage(search.url.value, search.post.value);
             });
