@@ -544,15 +544,20 @@ var magic = function() {
         }
     };
     var form_empty = function() {
-        $.each(input_list, function(item, value){
-            if (item === 'selectors' || item === 'convert' || item === 'desk' || item === 'save') {
-                $.each(value, function(subItem, value){
-                    bindElements(subItem, value, item, 1);
-                });
-                return 1;
+        for (var key in input_list) {
+            var item = input_list[key];
+            if (item.subSection) {
+                for (var subKey in item) {
+                    if (subKey === 'subSection') {
+                        continue;
+                    }
+                    var subItem = item[subKey];
+                    bindElements(subKey, subItem, key, 1);
+                }
+            } else {
+                bindElements(key, item, null, 1);
             }
-            bindElements(item, value, undefined, 1);
-        });
+        }
         dom_cache.iframe.contentDocument.all[0].innerHTML = '';
         var_cache.pageDOM = undefined;
         var_cache.ifContent = undefined;
@@ -802,30 +807,38 @@ var magic = function() {
 
             var dataIdList = [].slice.call(document.querySelectorAll('[data-id]'));
             dataIdList.forEach(function(node) {
-                var id = node.dataset.id;
-                id = id.split('_').map(function(item) {
+                var keyList = node.dataset.id;
+                keyList = keyList.split('_').map(function(item) {
                     return item.replace(/([A-Z])/, '_$1').toLowerCase();
                 });
-                var key = id.pop();
+                var key = keyList.pop();
                 var obj = input_list;
-                id.forEach(function(item) {
+                keyList.forEach(function(item, index) {
                     if (!obj[item]) {
                         obj[item] = {};
+                    }
+                    if (index > 0) {
+                        obj.subSection = true;
                     }
                     obj = obj[item];
                 });
                 obj[key] = $(node);
             });
 
-            $.each(input_list, function(item, value){
-                if (item === 'selectors' || item === 'convert' || item === 'desk' || item === 'save') {
-                    $.each(value, function(subItem, value){
-                        bindElements(subItem, value, item);
-                    });
-                    return 1;
+            for (var key in input_list) {
+                var item = input_list[key];
+                if (item.subSection) {
+                    for (var subKey in item) {
+                        if (subKey === 'subSection') {
+                            continue;
+                        }
+                        var subItem = item[subKey];
+                        bindElements(subKey, subItem, key);
+                    }
+                } else {
+                    bindElements(key, item);
                 }
-                bindElements(item, value);
-            });
+            }
 
             mono.create(input_list.convert.time.format.get(0), {
                 append: (function(){
