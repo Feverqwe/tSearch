@@ -274,48 +274,6 @@ var magic = function() {
         }
         dom_cache.menu.querySelector('a').dispatchEvent(new CustomEvent('click'));
     };
-    var loadUrl = function(url, type) {
-        if (!url) {
-            return;
-        }
-        if (var_cache.xhr !== undefined) {
-            var_cache.xhr.abort();
-        }
-        var post = (type === 'search')?input_list.search.post.val():'';
-        var request = input_list.search.request.val();
-        if (input_list.search.cp1251.prop('checked')) {
-            request = ex_kit.in_cp1251(request);
-        }
-        url = url.replace('%search%', request);
-        post = post.replace('%search%', request);
-        var obj_req = {
-            type: 'GET',
-            url: url,
-            success: function(data) {
-                var_cache.ifContent = undefined;
-                var_cache.pageDOM = $($.parseHTML(data));
-                if (var_cache.list_input_value) {
-                    var_cache.list_input_dom = var_cache.pageDOM.find(var_cache.list_input_value);
-                }
-                dom_cache.iframe.contentDocument.all[0].innerHTML = contentFilter(data) +
-                    '<style>' +
-                        '.kit_select {color:#000 !important;background-color:#FFCC33 !important; cursor:pointer;}' +
-                        'td.kit_select { border: 1px dashed red !important; }' +
-                        'textarea[data-script="1"] {display: none;}' +
-                    '</style>';
-            }
-        };
-        var charset = input_list.search.charset.val();
-        if (charset) {
-            obj_req.mimeType = "text/plain; charset="+charset;
-        }
-        if (post) {
-            obj_req.type = 'POST';
-            obj_req.data = post;
-        }
-        obj_req.safe = true;
-        var_cache.xhr = mono.ajax(obj_req);
-    };
     var bindNodeList = function(itemName, nodeObj, parent, empty) {
         for (var key in nodeObj) {
             var node = nodeObj[key];
@@ -853,6 +811,8 @@ var magic = function() {
             rmVisibilityHidden:       /visibility\s*:\s*['"]*hidden['"]*/gim,
             rootUrl: /([^:]+:\/\/[^\/]+)/,
             $frameDom: null,
+            frameDoc: null,
+            frameSelect: null
         },
         nodeList: {},
         contentFilter: function(content) {
@@ -893,14 +853,15 @@ var magic = function() {
                 url: url,
                 success: function(data) {
                     var domData = exKit.contentFilter(data);
+
                     var $frameDom = exKit.parseHtml(domData);
                     _this.varCache.$frameDom = $($frameDom);
 
-                    var frameData = _this.contentFilter(exKit.contentFilter(data));
-                    var frameDom = exKit.parseHtml(frameData);
+                    var frameDom = exKit.parseHtml(_this.contentFilter(domData));
                     _this.domFilter(frameDom);
 
                     var documentElement = _this.domCache.frame.contentDocument.documentElement;
+                    _this.varCache.frameDoc = documentElement;
                     documentElement.textContent = '';
                     documentElement.appendChild(frameDom);
                     documentElement.appendChild(mono.create('style', {
@@ -922,10 +883,255 @@ var magic = function() {
             }
             this.varCache.lastXhr = mono.ajax(params);
         },
+        getNodePath: function(node) {
+            var doc = this.varCache.frameDoc;
+            var path = [];
 
+            var next = function() {
+                node = parent;
+            };
+
+            var target = node;
+            while(node) {
+                var parent = node.parentNode;
+                if (!parent) {
+                    break;
+                }
+
+                if (node.id && doc.querySelectorAll('#' + node.id).length === 1) {
+                    path.unshift('#' + node.id);
+                    break;
+                }
+
+                var tagName = node.tagName;
+                var childNodes = [].slice.call(node.parentNode.childNodes);
+                var classList = [].slice.call(node.classList).filter(function(className) {
+                    return className !== 'kit_select';
+                });
+
+                var nodeList = childNodes.filter(function(node) {
+                    return node.tagName === tagName;
+                });
+
+                if (nodeList.length === 1 && nodeList[0] === node) {
+                    path.unshift(tagName.toLowerCase());
+                } else {
+                    var list = nodeList.filter(function(node) {
+                        return classList.every(function(className) {
+                            return node.classList.contains(className);
+                        });
+                    });
+
+                    if (list.length === 1 && list[0] === node) {
+                        path.unshift(tagName.toLowerCase() + '.' + classList.join('.').toLowerCase());
+                        next();
+                        continue;
+                    }
+
+                    var index = nodeList.indexOf(node) + 1;
+                    path.unshift(tagName.toLowerCase() + ':nth-child(' + index + ')');
+                }
+
+                next();
+            }
+
+            var strPath = path.join('>');
+
+            try {
+                var found = doc.querySelector(strPath);
+                if (found !== target) {
+                    console.error('Doc is not found! ', strPath);
+                    throw '';
+                }
+            } catch (e) {
+                strPath = '';
+            }
+
+            return strPath;
+        },
+        getSelectMode: function(details) {
+            var _this = this;
+            var selectClassName = 'kit_select';
+            var frameDoc = this.varCache.frameDoc;
+
+            var onMouseOver = function(e) {
+                var target = e.target;
+
+                if (target.nodeType !== 1) {
+                    return;
+                }
+
+                if (lastNode) {
+                    lastNode.classList.remove(selectClassName);
+                }
+
+                lastNode = target;
+
+                target.classList.add(selectClassName);
+
+                var path = _this.getNodePath(target);
+                lastPatch = path;
+
+                _this.domCache.statusBar.textContent = path;
+
+                details.onOver && details.onOver(target, path);
+            };
+
+            var stop = function() {
+                frameDoc.removeEventListener('mouseover', onMouseOver);
+                frameDoc.removeEventListener('click', onClick);
+            };
+
+            var onClick = function(e) {
+                e.preventDefault();
+                stop();
+
+                details.onClick && details.onClick(lastNode, lastPatch);
+            };
+
+            var abort = function() {
+                stop();
+
+                details.onAbort && details.onAbort();
+            };
+
+            var lastNode = null;
+            var lastPatch = null;
+
+            [].slice.call(frameDoc.querySelectorAll('.' + selectClassName)).forEach(function(node) {
+                node.classList.remove(selectClassName);
+            });
+
+            frameDoc.addEventListener('mouseover', onMouseOver);
+            frameDoc.addEventListener('click', onClick);
+
+            if (this.varCache.frameSelect) {
+                this.varCache.frameSelect.abort();
+                this.varCache.frameSelect = null;
+            }
+
+            this.varCache.frameSelect = {
+                abort: abort
+            }
+        },
         bindSelector: function(selectorObj) {
-            var btn = selectorObj.btn;
+            var _this = this;
             var input = selectorObj.input;
+            var btn = selectorObj.btn;
+            var enable = selectorObj.enable;
+            var output = selectorObj.output;
+            var attr = selectorObj.attr;
+            var addRoot = selectorObj.add_root;
+            var tableMode = selectorObj.table_mode;
+            var skipFirst = this.nodeList.selectors.skip.first;
+
+            var getCurrentItem = function(nodeList) {
+                var index = skipFirst.value;
+                index = parseInt(index);
+                if (index !== 0 && !index) {
+                    skipFirst.classList.add('error');
+                    index = 0;
+                } else {
+                    skipFirst.classList.remove('error');
+                }
+                return nodeList[index];
+            };
+
+            var checkPath = function(path) {
+                var $dom = _this.varCache.$frameDom;
+                var nodeList = $dom.find(path);
+                if (!nodeList.length) {
+                    input.classList.add('error');
+                } else {
+                    input.classList.remove('error');
+                    output && setOutput(nodeList[0]);
+                }
+            };
+
+            var setPath = function(path) {
+                if (tableMode && tableMode.checked) {
+                    var m = path.match(/(.+>\s*tr)/);
+                    m = m && m[1];
+                    if (m) {
+                        path = m;
+                    }
+                }
+
+                input.value = path;
+
+                checkPath(path);
+            };
+
+            var setOutput = function(node) {
+                attr && attr.classList.remove('error');
+                if (attr && attr.value) {
+                    var value = node.getAttribute(attr.value);
+                    if (value === null) {
+                        attr.classList.add('error');
+                    }
+                    output.value = value || '';
+                } else {
+                    output.value = node.textContent;
+                }
+            };
+
+            btn.addEventListener('click', function() {
+                _this.getSelectMode({
+                    onOver: function(node, path) {
+                        setPath(path);
+                    },
+                    onClick: function(node, path) {
+                        setPath(path);
+                    }
+                });
+            });
+
+            input.addEventListener('keyup', function() {
+                checkPath(input.value);
+            });
+
+            attr && attr.addEventListener('keyup', function() {
+                checkPath(input.value);
+            });
+
+            enable && enable.addEventListener('change', function() {
+                var checked = this.checked;
+                btn.disabled = !checked;
+                input.disabled = !checked;
+                if (attr) {
+                    attr.disabled = !checked;
+                }
+                if (addRoot) {
+                    addRoot.disabled = !checked;
+                }
+            });
+
+            enable && enable.dispatchEvent(new CustomEvent('change'));
+
+            if (output) {
+                output.disabled = true;
+                output.classList.add('output');
+            }
+        },
+        bindSelectorPage: function() {
+            var _this = this;
+            var selectors = this.nodeList.selectors;
+
+            for (var key in selectors) {
+                var item = selectors[key];
+                if (item.btn && item.input) {
+                    this.bindSelector(item);
+                }
+            }
+
+            selectors.skip.first.addEventListener('change', function(){
+                for (var key in selectors) {
+                    var item = selectors[key];
+                    if (item.input) {
+                        item.input.dispatchEvent(new CustomEvent('keyup'));
+                    }
+                }
+            });
         },
         bindAuthPage: function() {
             var _this = this;
@@ -1025,6 +1231,7 @@ var magic = function() {
 
             this.bindSearchPage();
             this.bindAuthPage();
+            this.bindSelectorPage();
 
             return;
 
@@ -1044,14 +1251,6 @@ var magic = function() {
                     }
                     return list;
                 })()
-            });
-
-            input_list.selectors.skip.first.on('change', function(){
-                $.each(input_list.selectors, function(itemName, item){
-                    if (item.output !== undefined) {
-                        item.input.trigger('keyup');
-                    }
-                });
             });
 
             input_list.save.code.write.on('click', function(e){
