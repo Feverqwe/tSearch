@@ -1162,16 +1162,94 @@ var magic = function() {
             });
         },
         bindConvertItem: function(convertObj, key) {
-            
+            var _this = this;
+            var regexp = convertObj.regexp;
+            var regexpText = convertObj.regexp_text;
+            var today = convertObj.today;
+            var month = convertObj.month;
+            var format = convertObj.format;
+            var original = convertObj.original;
+            var converted = convertObj.converted;
+            var convert = convertObj.convert;
+            var result = convertObj.result;
+
+            var updateTime = function() {
+                var value = _this.nodeList.selectors.time.output.value;
+                var rText = regexpText.value;
+                var formatValue = parseInt(format.value);
+
+                var _result = value;
+                if (regexp.value) {
+                    _result = _result.replace(new RegExp(regexp.value, 'ig'), rText);
+                }
+                if (today.checked) {
+                    _result = exKit.funcList.todayReplace(_result);
+                }
+                if (month.checked) {
+                    _result = exKit.funcList.monthReplace(_result);
+                }
+                if (formatValue !== -1) {
+                    _result = exKit.funcList.dateFormat(formatValue, _result)
+                }
+                original.value = value;
+                converted.value = _result;
+                result.value = new Date(_result * 1000);
+            };
+
+            regexp.addEventListener('keyup', function() {
+                this.classList.remove('error');
+                try {
+                    new RegExp(this.value, 'ig');
+                } catch (e) {
+                    this.classList.add('error');
+                    return;
+                }
+
+                updateTime();
+            });
+
+            regexpText.addEventListener('keyup', function() {
+                updateTime();
+            });
+
+            today && today.addEventListener('change', function() {
+                updateTime();
+            });
+
+            month && month.addEventListener('change', function() {
+                updateTime();
+            });
+
+            format && format.addEventListener('change', function() {
+                updateTime();
+            });
         },
         bindConvertPage: function() {
             var _this = this;
             var convert = this.nodeList.convert;
 
             for (var key in convert) {
-                var item = convert.key;
+                var item = convert[key];
                 this.bindConvertItem(item, key);
             }
+
+            mono.create(this.nodeList.convert.time.format, {
+                append: (function(){
+                    var list = [];
+                    list.push(mono.create('option', {
+                        text: '-',
+                        value: -1
+                    }));
+                    var params = exKit.funcList.dateFormat();
+                    for (var n = 0, item; item = params[n]; n++) {
+                        list.push(mono.create('option', {
+                            text: item,
+                            value: n
+                        }));
+                    }
+                    return list;
+                })()
+            });
         },
         bindAuthPage: function() {
             var _this = this;
@@ -1260,9 +1338,6 @@ var magic = function() {
                     if (!obj[item]) {
                         obj[item] = {};
                     }
-                    if (index > 0) {
-                        obj.subSection = true;
-                    }
                     obj = obj[item];
                 });
                 obj[key] = node;
@@ -1274,24 +1349,6 @@ var magic = function() {
             this.bindAuthPage();
 
             return;
-
-            mono.create(this.nodeList.convert.time.format, {
-                append: (function(){
-                    var list = [];
-                    list.push(mono.create('option', {
-                        text: '-',
-                        value: -1
-                    }));
-                    var params = ex_kit.format_date();
-                    for (var n = 0, item; item = params[n]; n++) {
-                        list.push(mono.create('option', {
-                            text: item,
-                            value: n
-                        }));
-                    }
-                    return list;
-                })()
-            });
 
             input_list.save.code.write.on('click', function(e){
                 e.preventDefault();
