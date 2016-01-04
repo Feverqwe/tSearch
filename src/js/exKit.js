@@ -444,7 +444,7 @@ var exKit = {
     parseHtml: function (html) {
         "use strict";
         var fragment = document.createDocumentFragment();
-        var div = document.createElement('div');
+        var div = document.createElement('html');
         div.innerHTML = html;
         var el;
         while (el = div.firstChild) {
