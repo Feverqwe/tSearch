@@ -1088,7 +1088,11 @@ var magic = function() {
                     result = node.textContent;
                 }
 
-                if (['seed', 'peer', 'torrent_size', 'time'].indexOf(key) !== -1) {
+                var convertItems = ['seed', 'peer', 'torrent_size', 'time'];
+                var convertMap = {
+                    torrent_size: 'size'
+                }
+                if (convertItems.indexOf(key) !== -1) {
                     if (isNaN(parseInt(result))) {
                         output.classList.add('error');
                     } else {
@@ -1097,6 +1101,11 @@ var magic = function() {
                 }
 
                 output.value = result;
+
+                if (convertItems.indexOf(key) !== -1) {
+                    var cKey = convertMap[key] || key;
+                    _this.nodeList.convert[cKey].regexp.dispatchEvent(new CustomEvent('keyup'));
+                }
             };
 
             btn.addEventListener('click', function() {
@@ -1161,6 +1170,22 @@ var magic = function() {
                 }
             });
         },
+        bytesToSize: function(sizeList, bytes, nan) {
+            "use strict";
+            nan = nan || 'n/a';
+            if (bytes <= 0) {
+                return nan;
+            }
+            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            if (i === 0) {
+                return (bytes / Math.pow(1024, i)) + ' ' + sizeList[i];
+            }
+            var toFixed = 0;
+            if (i > 2) {
+                toFixed = 2;
+            }
+            return (bytes / Math.pow(1024, i)).toFixed(toFixed) + ' ' + sizeList[i];
+        },
         bindConvertItem: function(convertObj, key) {
             var _this = this;
             var regexp = convertObj.regexp;
@@ -1196,6 +1221,35 @@ var magic = function() {
                 result.value = new Date(_result * 1000);
             };
 
+            var updateSize = function() {
+                var value = _this.nodeList.selectors.torrent_size.output.value;
+                var rText = regexpText.value;
+
+                var _result = value;
+                if (regexp.value) {
+                    _result = _result.replace(new RegExp(regexp.value, 'ig'), rText);
+                }
+                if (convert.checked) {
+                    _result = exKit.funcList.sizeFormat(_result);
+                }
+                original.value = value;
+                converted.value = _result;
+                result.value = _this.bytesToSize(_result);
+            };
+
+            var updateValue = function(type) {
+                var value = _this.nodeList.selectors[type].output.value;
+                var rText = regexpText.value;
+
+                var _result = value;
+                if (regexp.value) {
+                    _result = _result.replace(new RegExp(regexp.value, 'ig'), rText);
+                }
+                original.value = value;
+                converted.value = _result;
+                result.value = _result;
+            };
+
             regexp.addEventListener('keyup', function() {
                 this.classList.remove('error');
                 try {
@@ -1205,11 +1259,27 @@ var magic = function() {
                     return;
                 }
 
-                updateTime();
+                if (key === 'time') {
+                    updateTime();
+                } else
+                if (key === 'size') {
+                    updateSize();
+                } else
+                if (['seed', 'peer'].indexOf(key) !== -1) {
+                    updateValue(key);
+                }
             });
 
             regexpText.addEventListener('keyup', function() {
-                updateTime();
+                if (key === 'time') {
+                    updateTime();
+                } else
+                if (key === 'size') {
+                    updateSize();
+                } else
+                if (['seed', 'peer'].indexOf(key) !== -1) {
+                    updateValue(key);
+                }
             });
 
             today && today.addEventListener('change', function() {
@@ -1223,6 +1293,20 @@ var magic = function() {
             format && format.addEventListener('change', function() {
                 updateTime();
             });
+
+            convert && convert.addEventListener('change', function() {
+                updateSize();
+            });
+
+            if (result) {
+                result.disabled = true;
+            }
+            if (original) {
+                original.disabled = true;
+            }
+            if (converted) {
+                converted.disabled = true;
+            }
         },
         bindConvertPage: function() {
             var _this = this;
@@ -1322,7 +1406,7 @@ var magic = function() {
         one: function() {
             var _this = this;
             mono.writeLanguage(mono.language);
-            bytesToSize = bytesToSize.bind(null, mono.language.sizeList.split(','));
+            this.bytesToSize = this.bytesToSize.bind(null, mono.language.sizeList.split(','));
 
             this.bindMenu();
 
