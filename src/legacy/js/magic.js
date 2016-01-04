@@ -1161,6 +1161,18 @@ var magic = function() {
                 }
             });
         },
+        bindConvertItem: function(convertObj, key) {
+            
+        },
+        bindConvertPage: function() {
+            var _this = this;
+            var convert = this.nodeList.convert;
+
+            for (var key in convert) {
+                var item = convert.key;
+                this.bindConvertItem(item, key);
+            }
+        },
         bindAuthPage: function() {
             var _this = this;
             var auth = this.nodeList.auth;
@@ -1257,8 +1269,9 @@ var magic = function() {
             });
 
             this.bindSearchPage();
-            this.bindAuthPage();
             this.bindSelectorPage();
+            this.bindConvertPage();
+            this.bindAuthPage();
 
             return;
 
