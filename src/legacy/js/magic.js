@@ -1073,19 +1073,30 @@ var magic = function() {
             };
 
             var setOutput = function(node) {
+                var result = null;
                 attr && attr.classList.remove('error');
                 if (attr && attr.value) {
                     var value = node.getAttribute(attr.value);
                     if (value === null) {
                         attr.classList.add('error');
                     }
-                    output.value = value || '';
+                    result = value || '';
                 } else
                 if (['category_link', 'torrent_link', 'torrent_dl'].indexOf(key) !== -1) {
-                    output.value = node.getAttribute('href') || '';
+                    result = node.getAttribute('href') || '';
                 } else {
-                    output.value = node.textContent;
+                    result = node.textContent;
                 }
+
+                if (['seep', 'peer', 'torrent_size', 'time'].indexOf(key) === -1) {
+                    if (isNaN(parseInt(result))) {
+                        output.classList.add('error');
+                    } else {
+                        output.classList.remove('error');
+                    }
+                }
+
+                output.value = result;
             };
 
             btn.addEventListener('click', function() {
@@ -1144,7 +1155,7 @@ var magic = function() {
             selectors.skip.first.addEventListener('change', function(){
                 for (var key in selectors) {
                     var item = selectors[key];
-                    if (item.input) {
+                    if (item.input && (!item.enable || item.enable && item.enable.checked)) {
                         item.input.dispatchEvent(new CustomEvent('keyup'));
                     }
                 }
