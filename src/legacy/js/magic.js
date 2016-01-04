@@ -21,6 +21,7 @@ var magic = function() {
         pageDOM: undefined
     };
     var input_list = {};
+    var inputNodeList = {};
     var contentFilter = function(content) {
         content = content.replace(var_cache.stScript, '<textarea data-script="1"');
         content = content.replace(var_cache.enScript, '</textarea');
@@ -318,52 +319,56 @@ var magic = function() {
         obj_req.safe = true;
         var_cache.xhr = mono.ajax(obj_req);
     };
-    var bindElements = function(itemName, nodeObj, parent, empty) {
-        for (var i in nodeObj) {
-            var $node = nodeObj[i];
-            if (empty !== undefined) {
-                var tagName = $node.get(0).tagName;
-                if (tagName === 'INPUT' && $node.attr('type') === 'text' && i !== 'request') {
-                    $node.val('').removeClass('error');
-                } else if (tagName === 'SELECT') {
-                    $node.children('option[value=-1]').prop('selected', true);
-                } else if (tagName === 'INPUT' && $node.attr('type') === 'checkbox') {
-                    $node.prop('checked', false);
-                } else if (tagName === 'INPUT' && $node.attr('type') === 'number') {
-                    $node.val(0);
+    var bindNodeList = function(itemName, nodeObj, parent, empty) {
+        for (var key in nodeObj) {
+            var node = nodeObj[key];
+            if (empty) {
+                var tagName = node.tagName;
+                if (tagName === 'INPUT' && node.type === 'text' && key !== 'request') {
+                    node.value = '';
+                    node.classList.remove('error');
+                } else
+                if (tagName === 'INPUT' && node.type === 'checkbox') {
+                    node.checked = false;
+                } else
+                if (tagName === 'INPUT' && node.type === 'number') {
+                    node.value = 0;
+                } else
+                if (tagName === 'SELECT') {
+                    node.selectedIndex = 0;
                 }
                 continue;
             }
-            if (i === 'btn') {
-                $node.on('click', function(e){
+
+            if (key === 'btn') {
+                node.addEventListener('click', function(e) {
                     e.preventDefault();
                     if (!var_cache.pageDOM) {
                         return;
                     }
                     selectMode(function(path, itemName, parent){
                         var path_text = onPathChange(path, itemName, parent);
-                        var item;
+                        var item = null;
                         if (parent) {
-                            item = input_list[parent][itemName];
+                            item = inputNodeList[parent][itemName];
                         } else {
-                            item = input_list[itemName];
+                            item = inputNodeList[itemName];
                         }
-                        item.input.removeClass('error');
+                        item.input.classList.remove('error');
                         if (item.output) {
-                            item.output.removeClass('error');
-                            if (path_text[1] === undefined) {
-                                path_text[1] = '';
-                                item.output.addClass('error');
+                            item.output.classList.remove('error');
+                            if (!path_text[1]) {
+                                item.output.classList.add('error');
                             }
                             if (itemName === 'torrent_size' ||
                                 itemName === 'seed' ||
                                 itemName === 'peer' ||
                                 itemName === 'time') {
                                 if (isNaN(parseInt(path_text[1]))) {
-                                    item.output.addClass('error');
+                                    item.output.classList.add('error');
                                 }
                             }
-                            item.output.val(path_text[1]);
+                            item.output.value = path_text[1];
                             if (itemName === 'time') {
                                 updateTimeConverter();
                             } else if (itemName === 'torrent_size') {
@@ -374,44 +379,45 @@ var magic = function() {
                                 updatePeerConverter();
                             }
                         }
-                        if (path_text[0] === undefined) {
+                        if (!path_text[0]) {
                             path_text[0] = path;
-                            item.input.addClass('error');
+                            item.input.classList.add('error');
                         }
-                        item.input.val(path_text[0]);
+                        item.input.value = path_text[0];
                     }, itemName, parent);
                 });
-            } else if (i === 'input') {
-                $node.on('keyup', function(){
+            }
+
+            if (key === 'input') {
+                node.addEventListener('keyup', function(){
                     if (!var_cache.pageDOM) {
                         return;
                     }
-                    var item;
+                    var item = null;
                     if (parent) {
-                        item = input_list[parent][itemName];
+                        item = inputNodeList[parent][itemName];
                     } else {
-                        item = input_list[itemName];
+                        item = inputNodeList[itemName];
                     }
-                    item.input.removeClass('error');
+                    item.input.classList.remove('error');
                     if (!this.value) {
                         return;
                     }
                     var path_text = onPathChange(this.value, itemName, parent, 1);
                     if (item.output) {
-                        item.output.removeClass('error');
-                        if (path_text[1] === undefined) {
-                            path_text[1] = '';
-                            item.output.addClass('error');
+                        item.output.classList.remove('error');
+                        if (!path_text[1]) {
+                            item.output.classList.add('error');
                         }
                         if (itemName === 'torrent_size' ||
                             itemName === 'seed' ||
                             itemName === 'peer' ||
                             itemName === 'time') {
                             if (isNaN(parseInt(path_text[1]))) {
-                                item.output.addClass('error');
+                                item.output.classList.add('error');
                             }
                         }
-                        item.output.val(path_text[1]);
+                        item.output.value = path_text[1];
                         if (itemName === 'time') {
                             updateTimeConverter();
                         } else if (itemName === 'torrent_size') {
@@ -423,49 +429,57 @@ var magic = function() {
                         }
                     }
                     if (!path_text[0]) {
-                        item.input.addClass('error');
+                        item.input.classList.add('error');
                     }
                 });
-            } else if (i === 'enable') {
-                $node.on('click', function(){
-                    var item;
+            }
+
+            if (key === 'enable') {
+                node.addEventListener('change', function(){
+                    var item = null;
                     if (parent) {
-                        item = input_list[parent][itemName];
+                        item = inputNodeList[parent][itemName];
                     } else {
-                        item = input_list[itemName];
+                        item = inputNodeList[itemName];
                     }
-                    item.btn.prop('disabled', !this.checked);
-                    item.input.prop('disabled', !this.checked);
+                    item.btn.disabled = !this.checked;
+                    item.input.disabled = !this.checked;
                     if (nodeObj.attr_enable) {
-                        nodeObj.attr_enable.prop('disabled', !this.checked);
+                        nodeObj.attr_enable.disabled = !this.checked;
                     }
                     if (nodeObj.add_root) {
-                        nodeObj.add_root.prop('disabled', !this.checked);
+                        nodeObj.add_root.disabled = !this.checked;
                     }
                 });
-            } else if (i === 'attr_enable') {
-                $node.on('click', function(){
-                    var item;
+            }
+
+            if (key === 'attr_enable') {
+                node.addEventListener('change', function(){
+                    var item = null;
+                    if (parent) {
+                        item = inputNodeList[parent][itemName];
+                    } else {
+                        item = inputNodeList[itemName];
+                    }
+                    item.attr.disabled = !this.checked;
+                    item.input.dispatchEvent(new CustomEvent('keyup'));
+                });
+            }
+
+            if (key === 'attr') {
+                node.addEventListener('keyup', function(){
+                    var item = null;
                     if (parent) {
                         item = input_list[parent][itemName];
                     } else {
                         item = input_list[itemName];
                     }
-                    item.attr.prop('disabled', !this.checked);
-                    item.input.trigger('keyup');
+                    item.input.dispatchEvent(new CustomEvent('keyup'));
                 });
-            } else if (i === 'attr') {
-                $node.on('keyup', function(){
-                    var item;
-                    if (parent) {
-                        item = input_list[parent][itemName];
-                    } else {
-                        item = input_list[itemName];
-                    }
-                    item.input.trigger('keyup');
-                });
-            } else if (i === 'regexp') {
-                $node.on('keyup', function(){
+            }
+
+            if (key === 'regexp') {
+                node.addEventListener('keyup', function(){
                     if (itemName === 'time') {
                         updateTimeConverter();
                     } else if (itemName === 'size') {
@@ -476,8 +490,10 @@ var magic = function() {
                         updateSeedConverter();
                     }
                 });
-            } else if (i === 'regexp_text') {
-                $node.on('keyup', function(){
+            }
+
+            if (key === 'regexp_text') {
+                node.addEventListener('keyup', function(){
                     if (itemName === 'time') {
                         updateTimeConverter();
                     } else if (itemName === 'size') {
@@ -488,59 +504,68 @@ var magic = function() {
                         updateSeedConverter();
                     }
                 });
-            } else if (i === 'format') {
-                $node.on('change', function(){
+            }
+
+            if (key === 'format') {
+                node.addEventListener('change', function(){
                     updateTimeConverter();
                 });
-            } else if (i === 'today') {
-                $node.on('change', function(){
+            }
+
+            if (key === 'today') {
+                node.addEventListener('change', function(){
                     updateTimeConverter();
                 });
-            } else if (i === 'month') {
-                $node.on('change', function(){
+            }
+
+            if (key === 'month') {
+                node.addEventListener('change', function(){
                     updateTimeConverter();
                 });
-            } else if (i === 'convert') {
-                $node.on('change', function(){
+            }
+
+            if (key === 'convert') {
+                node.addEventListener('change', function(){
                     updateSizeConverter();
                 });
             }
         }
+
         if (nodeObj.input) {
-            nodeObj.input.addClass('input');
+            nodeObj.input.classList.add('input');
         }
         if (nodeObj.enable) {
-            nodeObj.enable.prop('checked', false);
-            nodeObj.input.prop('disabled', true);
-            nodeObj.btn.prop('disabled', true);
+            nodeObj.enable.checked = false;
+            nodeObj.input.disabled = true;
+            nodeObj.btn.disabled = true;
             if (nodeObj.attr_enable) {
-                nodeObj.attr_enable.prop('disabled', true);
-                nodeObj.attr.addClass('attr')
+                nodeObj.attr_enable.disabled = true;
+                nodeObj.attr.classList.add('attr');
             }
             if (nodeObj.add_root) {
-                nodeObj.add_root.prop('disabled', true);
+                nodeObj.add_root.disabled = true;
             }
         }
         if (nodeObj.output) {
-            nodeObj.output.prop('disabled', true);
-            nodeObj.output.addClass('output')
+            nodeObj.output.disabled = true;
+            nodeObj.output.classList.add('output')
         }
         if (nodeObj.attr_enable) {
-            nodeObj.attr_enable.prop('checked', false);
-            nodeObj.attr.prop('disabled', true);
+            nodeObj.attr_enable.checked = false;
+            nodeObj.attr.disabled = true;
         }
         if (nodeObj.original) {
-            nodeObj.original.prop('disabled', true);
-            nodeObj.converted.prop('disabled', true);
+            nodeObj.original.disabled = true;
+            nodeObj.converted.disabled = true;
         }
         if (nodeObj.result) {
-            nodeObj.result.prop('disabled', true);
+            nodeObj.result.disabled = true;
         }
         if (nodeObj.table_mode) {
-            nodeObj.table_mode.prop('checked', true);
+            nodeObj.table_mode.checked = true;
         }
         if (nodeObj.cp1251) {
-            nodeObj.cp1251.prop('checked', false);
+            nodeObj.cp1251.checked = false;
         }
     };
     var form_empty = function() {
@@ -552,10 +577,10 @@ var magic = function() {
                         continue;
                     }
                     var subItem = item[subKey];
-                    bindElements(subKey, subItem, key, 1);
+                    bindNodeList(subKey, subItem, key, 1);
                 }
             } else {
-                bindElements(key, item, null, 1);
+                bindNodeList(key, item, null, 1);
             }
         }
         dom_cache.iframe.contentDocument.all[0].innerHTML = '';
@@ -630,13 +655,13 @@ var magic = function() {
     };
     var onPathChange = function(path, itemName, parent, noStripPath) {
         var item;
-        if (parent !== undefined) {
-            item = input_list[parent][itemName];
+        if (parent) {
+            item = inputNodeList[parent][itemName];
         } else {
-            item = input_list[itemName];
+            item = inputNodeList[itemName];
         }
-        if (item.table_mode !== undefined) {
-            if (noStripPath === undefined && item.table_mode.prop('checked')) {
+        if (item.table_mode) {
+            if (!noStripPath && item.table_mode.checked) {
                 path = path.replace(var_cache.stripPath, '$1>tr');
             }
             var_cache.list_input_dom = var_cache.pageDOM.find(path);
@@ -646,20 +671,20 @@ var magic = function() {
             }
             var_cache.list_input_value = path;
         }
-        if (item.output !== undefined) {
-            if (var_cache.list_input_value === undefined) {
+        if (item.output) {
+            if (!var_cache.list_input_value) {
                 return [];
             }
-            if (noStripPath === undefined) {
+            if (!noStripPath) {
                 path = path.replace(var_cache.list_input_value, '').replace(var_cache.stripPathSel,'$1');
             }
-            var el = var_cache.list_input_dom.eq(input_list.selectors.skip.first.val()).find(path);
+            var el = var_cache.list_input_dom.eq(inputNodeList.selectors.skip.first.value).find(path);
             if (el.length === 0){
                 return [];
             }
-            var text;
-            if (item.attr_enable !== undefined && item.attr_enable.prop('checked')) {
-                var attr = item.attr.val();
+            var text = '';
+            if (item.attr_enable && item.attr_enable.checked) {
+                var attr = item.attr.value;
                 if (!attr) {
                     return [];
                 }
@@ -674,10 +699,10 @@ var magic = function() {
                 }
             }
         } else
-        if (item.table_mode === undefined) {
+        if (!item.table_mode) {
             if (var_cache.pageDOM.find(path).length === 0) {
-                console.log('error',path)
-                path = undefined;
+                console.log('error',path);
+                path = '';
             }
         }
         return [path, text];
@@ -812,31 +837,36 @@ var magic = function() {
                     return item.replace(/([A-Z])/, '_$1').toLowerCase();
                 });
                 var key = keyList.pop();
-                var obj = input_list;
+                var $obj = input_list;
+                var obj = inputNodeList;
                 keyList.forEach(function(item, index) {
-                    if (!obj[item]) {
+                    if (!$obj[item]) {
+                        $obj[item] = {};
                         obj[item] = {};
                     }
                     if (index > 0) {
+                        $obj.subSection = true;
                         obj.subSection = true;
                     }
+                    $obj = $obj[item];
                     obj = obj[item];
                 });
-                obj[key] = $(node);
+                obj[key] = node;
+                $obj[key] = $(node);
             });
 
-            for (var key in input_list) {
-                var item = input_list[key];
+            for (var key in inputNodeList) {
+                var item = inputNodeList[key];
                 if (item.subSection) {
                     for (var subKey in item) {
                         if (subKey === 'subSection') {
                             continue;
                         }
                         var subItem = item[subKey];
-                        bindElements(subKey, subItem, key);
+                        bindNodeList(subKey, subItem, key);
                     }
                 } else {
-                    bindElements(key, item);
+                    bindNodeList(key, item);
                 }
             }
 
