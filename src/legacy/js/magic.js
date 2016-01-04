@@ -1088,7 +1088,7 @@ var magic = function() {
                     result = node.textContent;
                 }
 
-                if (['seep', 'peer', 'torrent_size', 'time'].indexOf(key) === -1) {
+                if (['seed', 'peer', 'torrent_size', 'time'].indexOf(key) !== -1) {
                     if (isNaN(parseInt(result))) {
                         output.classList.add('error');
                     } else {
