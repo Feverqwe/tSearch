@@ -169,3 +169,11 @@ div.tools input.input {
 div.tools input.attr {
     width: 50px;
 }
+
+i.tracker_iconPic {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-size: 16px;
+    vertical-align: middle;
+}

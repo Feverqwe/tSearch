@@ -1,31 +1,5 @@
 var magic = function() {
     "use strict";
-    var var_cache = {
-        xhr: undefined,
-        block_href:  /\/\//gim,
-        block_src:   / src=(['"]?)/gim,
-        unblock_src: /data:image\/gif,base64#blockrurl#/gm,
-        unblock_href:/\/\/about:blank#blockurl#/gm,
-        stripPath:   /(.*)>tr.*$/,
-        stripPathSel:/^[^>]*>(.*)$/,
-        root:        /(.*)\/[^\/]*$/,
-        stScript:    /<script/gim,
-        enScript:    /<\/script/gim,
-        rmDisp:      /display[: ]+none/gim,
-        rmVis:       /visibility[: ]+hidden/gim,
-        ifContent: undefined,
-        writePath: undefined,
-        list_input_value: undefined,
-        list_input_dom: undefined,
-        pageDOM: undefined
-    };
-    var contentFilter = function(content) {
-        content = content.replace(var_cache.stScript, '<textarea data-script="1"');
-        content = content.replace(var_cache.enScript, '</textarea');
-        content = content.replace(var_cache.rmDisp, '').replace(var_cache.rmVis, '');
-        content = content.replace(var_cache.block_href, '//about:blank#blockurl#').replace(var_cache.block_src, ' src=$1data:image/gif,base64#blockrurl#');
-        return content;
-    };
     var make_code = function() {
         var code = {
             version: 1,
@@ -621,146 +595,6 @@ var magic = function() {
         input_list.convert.seed.converted.val( text );
         input_list.convert.seed.result.val( parseInt(text) );
     };
-    var onPathChange = function(path, itemName, parent, noStripPath) {
-        var item;
-        if (parent) {
-            item = inputNodeList[parent][itemName];
-        } else {
-            item = inputNodeList[itemName];
-        }
-        if (item.table_mode) {
-            if (!noStripPath && item.table_mode.checked) {
-                path = path.replace(var_cache.stripPath, '$1>tr');
-            }
-            var_cache.list_input_dom = var_cache.pageDOM.find(path);
-            if (var_cache.list_input_dom.length === 0) {
-                console.log('Path in DOM not found!', path);
-                return [];
-            }
-            var_cache.list_input_value = path;
-        }
-        if (item.output) {
-            if (!var_cache.list_input_value) {
-                return [];
-            }
-            if (!noStripPath) {
-                path = path.replace(var_cache.list_input_value, '').replace(var_cache.stripPathSel,'$1');
-            }
-            var el = var_cache.list_input_dom.eq(inputNodeList.selectors.skip.first.value).find(path);
-            if (el.length === 0){
-                return [];
-            }
-            var text = '';
-            if (item.attr_enable && item.attr_enable.checked) {
-                var attr = item.attr.value;
-                if (!attr) {
-                    return [];
-                }
-                text = el.attr(attr);
-            } else {
-                if (itemName === 'category_link' ||
-                    itemName === 'torrent_link' ||
-                    itemName === 'torrent_dl') {
-                    text = el.attr('href');
-                } else {
-                    text = el.text();
-                }
-            }
-        } else
-        if (!item.table_mode) {
-            if (var_cache.pageDOM.find(path).length === 0) {
-                console.log('error',path);
-                path = '';
-            }
-        }
-        return [path, text];
-    };
-    var selectMode = function(cb, itemName, parent) {
-        if (var_cache.ifContent === undefined) {
-            var_cache.ifContent = $(dom_cache.iframe).contents();
-        }
-        var_cache.ifContent.off();
-        var_cache.ifContent.on('mouseenter', '*', function(e){
-            e.preventDefault();
-            var path = getPath($(this));
-            var_cache.ifContent.find('.kit_select').removeClass('kit_select');
-            this.classList.add("kit_select");
-            if (path === undefined) {
-                return;
-            }
-            dom_cache.status_bar.textContent = path;
-            cb(path, itemName, parent);
-        });
-        var_cache.ifContent.on('click', function(e){
-            e.preventDefault();
-            var path = getPath($(this));
-            var_cache.ifContent.find('.kit_select').removeClass('kit_select');
-            var_cache.ifContent.off();
-            if (path === undefined) {
-                return;
-            }
-            dom_cache.status_bar.textContent = path;
-            cb(path, itemName, parent);
-        })
-    };
-    var getPath = function($node) {
-        if ($node.length !== 1) {
-            return;
-        }
-        var container = var_cache.ifContent;
-        var path;
-        while ($node.length !== 0) {
-            var node = $node[0];
-            if (node.nodeType !== 1) {
-                break;
-            }
-            var tagName = node.tagName.toLowerCase();
-            var tag = tagName;
-            // on IE8, nodeName is '#document' at the top level, but we don't need that
-            var parent = $node.parent();
-            var cacheParentFindTag = parent.find(tag);
-            if (node.id) {
-                if (container !== undefined) {
-                    if (tag !== 'TR' && container.find('#' + node.id).length === 1) {
-                        return '#' + node.id + (path !== undefined ? '>' + path : '');
-                    } else if (cacheParentFindTag.length !== 1) {
-                        tagName += '[id=' + node.id + ']';
-                    }
-                } else {
-                    return tagName + '#' + node.id + (path !== undefined ? '>' + path : '');
-                }
-            } else if (node.className !== undefined) {
-                var classList = node.className.split(/\s+/);
-                classList = classList.filter(function(a){
-                    if (!a || a === 'kit_select') {
-                        return 0;
-                    }
-                    return node.classList.contains(a);
-                });
-                if (classList.length > 0) {
-                    tagName += '.' + classList.join('.');
-                    if (container.find(tagName).length === 1){
-                        return tagName + (path !== undefined ? '>' + path : '');
-                    }
-                }
-            }
-            if (cacheParentFindTag.length === 1) {
-                tagName = tag;
-            } else {
-                var childs = parent.find(tagName);
-                if (childs.length !== 1) {
-                    var index = childs.index($node);
-                    if (cacheParentFindTag.index($node) === index) {
-                        tagName = tag;
-                    }
-                    tagName += ':eq(' + index + ')';
-                }
-            }
-            path = tagName + (path ? '>' + path : '');
-            $node = parent;
-        }
-        return path;
-    };
     var hashCode = function(s) {
         var hash = 0, i, char_;
         if (s.length === 0)
@@ -771,22 +605,6 @@ var magic = function() {
             hash = hash & hash; // Convert to 32bit integer
         }
         return (hash < 0) ? hash * -1 : hash;
-    };
-    var bytesToSize = function(sizeList, bytes, nan) {
-        "use strict";
-        nan = nan || 'n/a';
-        if (bytes <= 0) {
-            return nan;
-        }
-        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-        if (i === 0) {
-            return (bytes / Math.pow(1024, i)) + ' ' + sizeList[i];
-        }
-        var toFixed = 0;
-        if (i > 2) {
-            toFixed = 2;
-        }
-        return (bytes / Math.pow(1024, i)).toFixed(toFixed) + ' ' + sizeList[i];
     };
     return {
         domCache: {
@@ -882,6 +700,39 @@ var magic = function() {
                 this.varCache.lastXhr.abort();
             }
             this.varCache.lastXhr = mono.ajax(params);
+        },
+        bindDescPage: function() {
+            var _this = this;
+            var desc = this.nodeList.desk.tracker;
+
+            desc.icon_file.addEventListener('change', function() {
+                var file = this.files[0];
+                if (!file) {
+                    return;
+                }
+
+                var abort = function() {
+                    desc.icon.value = '';
+                    desc.icon_file.value = '';
+                    desc.icon_pic.style.backgroundImage = 'initial';
+                };
+
+                if (['image/jpeg', 'image/png', 'image/svg'].indexOf(file.type) === -1) {
+                    return abort();
+                }
+
+                if (file.size > 1024 * 1024) {
+                    return abort();
+                }
+
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                    desc.icon.value = reader.result;
+
+                    desc.icon_pic.style.backgroundImage = 'url('+reader.result+')';
+                };
+                reader.readAsDataURL(file);
+            });
         },
         getNodePath: function(node) {
             var doc = this.varCache.frameDoc;
@@ -1431,6 +1282,7 @@ var magic = function() {
             this.bindSelectorPage();
             this.bindConvertPage();
             this.bindAuthPage();
+            this.bindDescPage();
 
             return;
 
