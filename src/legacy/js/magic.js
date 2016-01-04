@@ -556,7 +556,7 @@ var magic = function() {
         input_list.convert.time.result.val( new Date(text * 1000) );
     };
     var updateSizeConverter = function() {
-        var text = input_list.selectors.torrent_size.output.val();
+        var text = input_list.selectors.size.output.val();
         input_list.convert.size.original.val( text );
         var value_regexp = input_list.convert.size.regexp.val();
         var value_regexp_text = input_list.convert.size.regexp_text.val();
@@ -700,6 +700,142 @@ var magic = function() {
                 this.varCache.lastXhr.abort();
             }
             this.varCache.lastXhr = mono.ajax(params);
+        },
+        getCode: function() {
+            var nodeList = this.nodeList;
+            var selectors = nodeList.selectors;
+            var convert = nodeList.convert;
+
+            var getCharset = function() {
+                var value = null;
+                if (nodeList.search.charset.value) {
+                    value = 'text/html; charset=' + nodeList.search.charset.value;
+                }
+                return value;
+            };
+
+            var getQueryEncoding = function() {
+                var list = [];
+                if (nodeList.search.cp1251.checked) {
+                    list.push({name: 'encode', type: 'cp1251'});
+                }
+
+                if (list.length === 0) {
+                    return null;
+                }
+
+                return list;
+            };
+
+            var getSelectorObj = function(key) {
+                var item = selectors[key];
+
+                if (item.enable && !item.enable.checked) {
+                    return null;
+                }
+
+                var obj = {selector: item.input.value};
+                if (item.attr && item.attr.value) {
+                    obj.attr = item.attr.value;
+                } else
+                if (['category_link', 'torrent_link', 'torrent_dl'].indexOf(key) !== -1) {
+                    obj.attr = 'href';
+                }
+
+                return obj;
+            };
+
+            var getOnGetValueObj = function(key) {
+                var selectorItem = selectors[key];
+                var convertItem = convert[key];
+                var list = [];
+
+                if (selectorItem.add_root && selectorItem.add_root.checked) {
+                    list.push('addBaseUrl');
+                }
+
+                if (convertItem) {
+                    if (convertItem.regexp && convertItem.regexp.value) {
+                        list.push({name: 'replaceRe', re: convertItem.regexp.value, text: convertItem.regexp_text.value});
+                    }
+                    if (convertItem.today && convertItem.today.checked) {
+                        list.push('replaceToday');
+                    }
+                    if (convertItem.month && convertItem.month.checked) {
+                        list.push('replaceMonth');
+                    }
+                    if (convertItem.format && parseInt(convertItem.format.value) !== -1) {
+                        list.push({name: 'timeFormat', format: parseInt(convertItem.format.value)});
+                    }
+                    if (convertItem.convert && convertItem.convert.checked) {
+                        list.push('convertSize');
+                    }
+                }
+
+                if (list.length === 0) {
+                    return null;
+                }
+
+                return list;
+            };
+
+            var code = {
+                version: 2,
+                type: 'kit',
+                title: nodeList.desk.tracker.title.value,
+                icon: nodeList.desk.tracker.icon.value,
+                desc: nodeList.desk.tracker.desk.value,
+                search: {
+                    loginUrl: nodeList.auth.url.value,
+                    loginFormSelector: nodeList.auth.input.value,
+                    searchUrl: nodeList.search.url.value,
+                    baseUrl: nodeList.search.root.value,
+                    requestType: nodeList.search.post.value ? 'POST' : 'GET',
+                    requestData: nodeList.search.post.value || null,
+                    requestMimeType: getCharset(),
+                    onBeforeRequest: getQueryEncoding(),
+                    listItemSelector: nodeList.selectors.list.input.value,
+                    listItemSplice: [
+                        parseInt(nodeList.selectors.skip.first.value),
+                        parseInt(nodeList.selectors.skip.last.value)
+                    ],
+                    torrentSelector: {
+                        categoryTitle: getSelectorObj('category_name'),
+                        categoryUrl: getSelectorObj('category_link'),
+                        title: getSelectorObj('torrent_name'),
+                        url: getSelectorObj('torrent_link'),
+                        size: getSelectorObj('size'),
+                        downloadUrl: getSelectorObj('torrent_dl'),
+                        seed: getSelectorObj('seed'),
+                        peer: getSelectorObj('peer'),
+                        date: getSelectorObj('time')
+                    },
+                    onGetValue: {
+                        categoryTitle: getOnGetValueObj('category_name'),
+                        categoryUrl: getOnGetValueObj('category_link'),
+                        title: getOnGetValueObj('torrent_name'),
+                        url: getOnGetValueObj('torrent_link'),
+                        size: getOnGetValueObj('size'),
+                        downloadUrl: getOnGetValueObj('torrent_dl'),
+                        seed: getOnGetValueObj('seed'),
+                        peer: getOnGetValueObj('peer'),
+                        date: getOnGetValueObj('time')
+                    }
+                }
+            };
+            return JSON.stringify(code);
+        },
+        bindSavePage: function() {
+            var _this = this;
+            this.nodeList.save.code.write.on('click', function(e){
+                e.preventDefault();
+                this.getCode();
+            });
+
+            this.nodeList.code.read.on('click', function(e){
+                e.preventDefault();
+                read_code();
+            });
         },
         bindDescPage: function() {
             var _this = this;
@@ -939,10 +1075,7 @@ var magic = function() {
                     result = node.textContent;
                 }
 
-                var convertItems = ['seed', 'peer', 'torrent_size', 'time'];
-                var convertMap = {
-                    torrent_size: 'size'
-                }
+                var convertItems = ['seed', 'peer', 'size', 'time'];
                 if (convertItems.indexOf(key) !== -1) {
                     if (isNaN(parseInt(result))) {
                         output.classList.add('error');
@@ -954,8 +1087,7 @@ var magic = function() {
                 output.value = result;
 
                 if (convertItems.indexOf(key) !== -1) {
-                    var cKey = convertMap[key] || key;
-                    _this.nodeList.convert[cKey].regexp.dispatchEvent(new CustomEvent('keyup'));
+                    _this.nodeList.convert[key].regexp.dispatchEvent(new CustomEvent('keyup'));
                 }
             };
 
@@ -1073,7 +1205,7 @@ var magic = function() {
             };
 
             var updateSize = function() {
-                var value = _this.nodeList.selectors.torrent_size.output.value;
+                var value = _this.nodeList.selectors.size.output.value;
                 var rText = regexpText.value;
 
                 var _result = value;
@@ -1283,18 +1415,7 @@ var magic = function() {
             this.bindConvertPage();
             this.bindAuthPage();
             this.bindDescPage();
-
-            return;
-
-            input_list.save.code.write.on('click', function(e){
-                e.preventDefault();
-                make_code();
-            });
-
-            input_list.save.code.read.on('click', function(e){
-                e.preventDefault();
-                read_code();
-            });
+            this.bindSavePage();
         }
     };
 }();
