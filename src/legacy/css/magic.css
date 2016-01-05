@@ -115,46 +115,32 @@ div.tools input.error {
 }
 
 div.tools .page.selectors label > input[data-id="selectors_list_input"] {
-    width: 406px;
+    width: 508px;
 }
 
-div.tools .page.selectors label > span:nth-child(1) {
+div.tools .page.selectors label > span:nth-child(1),
+div.tools .page.convert label > span:nth-child(1),
+div.tools .page.search label > span:nth-child(1),
+div.tools .page.auth label > span:nth-child(1),
+div.tools .page.desk label > span:nth-child(1) {
     width: 200px;
     display: inline-block;
 }
 div.tools .page.selectors label > input[type="number"] {
     width: 50px;
 }
-div.tools .page.search label > input[data-id="search_url"] {
-    width: 450px;
-}
+div.tools .page.search label > input[data-id="search_url"],
 div.tools .page.search label > input[data-id="search_post"],
-div.tools .page.search label > input[data-id="search_root"] {
+div.tools .page.search label > input[data-id="search_root"],
+div.tools .page.auth input[type="text"],
+div.tools .page.desk input[type="text"] {
     width: 450px;
 }
 div.tools .page.search label > input[data-id="search_charset"] {
     width: 150px;
 }
-div.tools .page.search label > span:nth-child(1) {
-    width: 200px;
-    display: inline-block;
-}
 div.tools .page.convert input[data-id="convert_time_result"] {
     width: 300px;
-}
-div.tools .page.auth input[type="text"] {
-    width: 450px;
-}
-div.tools .page.auth label > span:nth-child(1) {
-    width: 200px;
-    display: inline-block;
-}
-div.tools .page.desk label > span:nth-child(1) {
-    width: 200px;
-    display: inline-block;
-}
-div.tools .page.desk input[type="text"] {
-    width: 450px;
 }
 div.tools input.output {
     border: 1px dashed #B6B6B6;
