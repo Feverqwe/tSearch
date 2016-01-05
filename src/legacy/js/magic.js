@@ -880,14 +880,15 @@ var magic = function() {
                     return;
                 }
 
-                if (selectorItem.enable) {
-                    selectorItem.enable.checked = true;
-                }
-
                 selectorItem.input.value = obj.selector;
 
                 if (selectorItem.attr) {
                     selectorItem.attr.value = obj.attr || '';
+                }
+
+                if (selectorItem.enable) {
+                    selectorItem.enable.checked = true;
+                    selectorItem.enable.dispatchEvent(new CustomEvent('change'));
                 }
             };
 
@@ -1003,7 +1004,7 @@ var magic = function() {
                     desc.icon_file.value = '';
                 };
 
-                if (['image/jpeg', 'image/png', 'image/svg'].indexOf(file.type) === -1) {
+                if (['image/x-icon', 'image/jpeg', 'image/png', 'image/svg'].indexOf(file.type) === -1) {
                     return abort();
                 }
 
@@ -1081,7 +1082,7 @@ var magic = function() {
                     });
 
                     if (list.length === 1 && list[0] === node) {
-                        path.unshift(tagName.toLowerCase() + '.' + classList.join('.').toLowerCase());
+                        path.unshift(tagName.toLowerCase() + '.' + classList.join('.'));
                         next();
                         continue;
                     }
@@ -1306,6 +1307,10 @@ var magic = function() {
             if (output) {
                 output.disabled = true;
                 output.classList.add('output');
+            }
+
+            if (tableMode) {
+                tableMode.checked = true;
             }
         },
         bindSelectorPage: function() {
