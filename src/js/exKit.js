@@ -1000,6 +1000,7 @@ exKit.createWorker = function(script) {
         var data = JSON.parse(e.data);
         if (data.action === 'response') {
             var item = stack[data.id];
+            delete stack[data.id];
             var value = data.value;
             var details = data.details;
             for (var key in details) {
