@@ -324,6 +324,7 @@ var exKit = {
         var obj = {};
         obj.version = 2;
         obj.type = 'kit';
+        obj.uid = code.uid;
         obj.icon = code.icon;
         obj.title = code.name;
         obj.desc = code.about;
