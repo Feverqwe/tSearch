@@ -169,6 +169,10 @@ var magic = function() {
                     return null;
                 }
 
+                if (end !== 0) {
+                    end *= -1;
+                }
+
                 return [start, end];
             };
 
@@ -406,6 +410,9 @@ var magic = function() {
                     return;
                 }
                 nodeList.selectors.skip.first.value = arr[0];
+                if (arr[1] !== 0) {
+                    arr[1] *= -1;
+                }
                 nodeList.selectors.skip.last.value = arr[1];
             };
 
