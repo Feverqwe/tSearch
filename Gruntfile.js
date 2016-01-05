@@ -8,7 +8,8 @@ module.exports = function (grunt) {
         'index.html',
         'popup.html',
         'history.html',
-        'options.html'
+        'options.html',
+        'magic.html'
     ];
     var dataJsList = [
         'explore.js',
@@ -23,7 +24,8 @@ module.exports = function (grunt) {
         'rate.js',
         'selectBox.js',
         'view.js',
-        'bluebird.min.js'
+        'bluebird.min.js',
+        'magic.js'
     ];
     var engineJsList = [
         'engine.js',
@@ -44,7 +46,11 @@ module.exports = function (grunt) {
                 '<%= output %>/*',
                 '!<%= output %>/hash'
             ],
-            magic: '<%= output %><%= vendor %><%= dataFolder %>legacy',
+            magic: [
+                '<%= output %><%= vendor %>magic.html',
+                '<%= output %><%= vendor %><%= dataJsFolder %>magic.js',
+                '<%= output %><%= vendor %>css/magic.css'
+            ],
             popup: [
                 '<%= output %><%= vendor %>popup.html',
                 '<%= output %><%= vendor %><%= dataJsFolder %>popup.js'
@@ -98,15 +104,6 @@ module.exports = function (grunt) {
                 expand: true,
                 src: baseDataList,
                 dest: '<%= output %><%= vendor %><%= dataFolder %>'
-            },
-
-            legacy: {
-                cwd: 'src/',
-                expand: true,
-                src: [
-                    'legacy/**'
-                ],
-                dest: '<%= output %><%= vendor %><%= dataFolder %>'
             }
         },
         watch: {
@@ -142,10 +139,6 @@ module.exports = function (grunt) {
                     return 'src/js/'+item
                 }),
                 tasks: ['copy:dataJs']
-            },
-            legacy: {
-                files: ['src/legacy/**'],
-                tasks: ['copy:legacy']
             },
             baseData: {
                 files: baseDataList.map(function(item) {
@@ -297,7 +290,7 @@ module.exports = function (grunt) {
         });
     });
 
-    grunt.registerTask('extensionBase', ['copy:baseData', 'copy:legacy', 'copy:dataJs', 'copy:bg', 'concat:trackerLib']);
+    grunt.registerTask('extensionBase', ['copy:baseData', 'copy:dataJs', 'copy:bg', 'concat:trackerLib']);
     grunt.registerTask('buildJs', ['concat:engine', 'insert:mono', 'monoPrepare']);
 
     grunt.loadNpmTasks('grunt-contrib-compress');
