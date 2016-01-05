@@ -804,10 +804,12 @@ var magic = function() {
                     if (value === null) {
                         attr && attr.classList.add('error');
                     }
-                    result = exKit.contentUnFilter(value || '');
+                    result = value || '';
                 } else {
                     result = node.textContent;
                 }
+
+                result = exKit.contentUnFilter(result);
 
                 var convertItems = ['seed', 'peer', 'size', 'time'];
                 if (convertItems.indexOf(key) !== -1) {
