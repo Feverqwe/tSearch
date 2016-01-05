@@ -83,7 +83,8 @@ h3 {
     margin-left: 5px;
 }
 
-div.tools > div.body label {
+div.tools > div.body label,
+div.tools > div.body div.label {
     display: block;
     margin: 5px;
 }
@@ -125,6 +126,7 @@ div.tools .page.auth label > span:nth-child(1),
 div.tools .page.desk label > span:nth-child(1) {
     width: 200px;
     display: inline-block;
+    vertical-align: middle;
 }
 div.tools .page.selectors label > input[type="number"] {
     width: 50px;
@@ -140,7 +142,7 @@ div.tools .page.search label > input[data-id="search_charset"] {
     width: 150px;
 }
 div.tools .page.convert input[data-id="convert_time_result"] {
-    width: 300px;
+    width: 457px;
 }
 div.tools input.output {
     border: 1px dashed #B6B6B6;

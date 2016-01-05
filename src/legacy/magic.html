@@ -10,8 +10,8 @@
     <script src="../js/counter.js"></script>
     <script src="../js/exKit.js"></script>
 </head>
-<body>
-<div class="tools loading">
+<body class="loading">
+<div class="tools">
     <div class="menu" id="menu">
         <a class="active" href="#search" data-page="search" data-lang="kitSearch">{Search}</a>
         <a href="#selectors" data-page="selectors" data-lang="kitSelectors">{Selectors}</a>
@@ -29,11 +29,11 @@
                 <input type="button" data-id="search_open" data-lang="kitOpen" value="{Open}"/>
             </label>
             <label>
-                <span data-lang="kitQuery">{Search query}</span>
+                <span data-lang="kitSearchQuery">{Search query}</span>
                 <input type="text" data-id="search_request"/>
             </label>
             <label>
-                <span data-lang="kitQueryEncoding">{Query encoding}</span>
+                <span data-lang="kitSearchQueryEncoding">{Query encoding}</span>
                 <select data-id="search_queryEncoding">
                     <option value="utf-8" selected>utf-8</option>
                     <option value="cp1251">cp1251</option>
@@ -68,10 +68,10 @@
         <div class="page selectors">
             <h2 data-lang="kitSelectors">{Selectors}</h2>
             <label>
-                <span data-lang="kitListItem">{List item selector}</span>
+                <span data-lang="kitRowSelector">{List item selector}</span>
                 <input type="text" data-id="selectors_list_input"/>
                 <input type="checkbox" data-id="selectors_list_tableMode"/>
-                <span data-lang="kitTableMode">{Table mode}</span>
+                <span data-lang="kitTableRow">{Table mode}</span>
                 <input type="button" data-id="selectors_list_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
@@ -147,7 +147,7 @@
             <label>
                 <span>
                     <input type="checkbox" data-id="selectors_time_enable"/>
-                    <span data-lang="kitCreateTime">{Create time}</span>
+                    <span data-lang="kitAddTime">{Add time}</span>
                 </span>
                 <input type="text" data-id="selectors_time_input"/>
                 <input type="text" data-id="selectors_time_output"/>
@@ -156,22 +156,22 @@
                 <input type="button" data-id="selectors_time_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
-                <span data-lang="kitSkipFirstLine">{Skip first N lines}</span>
+                <span data-lang="kitSkipFirstRows">{Skip first N lines}</span>
                 <input type="number" data-id="selectors_skip_first" value="0"/>
             </label>
             <label>
-                <span data-lang="kitSkipLastLine">{Skip last N lines}</span>
+                <span data-lang="kitSkipLastRows">{Skip last N lines}</span>
                 <input type="number" data-id="selectors_skip_last" value="0"/>
             </label>
         </div>
         <div class="page convert">
             <h2 data-lang="kitConvert">{Convert}</h2>
 
-            <h3 data-lang="kitCreateTime">{Create time}</h3>
+            <h3 data-lang="kitAddTime">{Add time}</h3>
             <label>
                 <span data-lang="kitRegexpPattern">{Regexp pattern}</span>
                 <input data-id="convert_time_regexp" type="text"/>
-                <span data-lang="kitReplaceTo">{replace to}</span>
+                <span data-lang="kitReplaceString">{replace string}</span>
                 <input data-id="convert_time_regexpText" type="text"/>
             </label>
             <label>
@@ -183,7 +183,7 @@
                 <span data-lang="kitReplaceMonth">{Replace month name to number}</span>
             </label>
             <label>
-                <span data-lang="kitUseTimePatter">{Apply time pattern}</span>
+                <span data-lang="kitUseTemplate">{Apply time pattern}</span>
                 <select data-id="convert_time_format"></select>
             </label>
             <label>
@@ -201,12 +201,12 @@
             <label>
                 <span data-lang="kitRegexpPattern">{Regexp pattern}</span>
                 <input data-id="convert_size_regexp" type="text"/>
-                <span data-lang="kitReplaceTo">{replace to}</span>
+                <span data-lang="kitReplaceString">{replace string}</span>
                 <input data-id="convert_size_regexpText" type="text"/>
             </label>
             <label>
                 <input data-id="convert_size_convert" type="checkbox"/>
-                <span data-lang="kitConvert">{Convert}</span>
+                <span data-lang="kitConvertToNumber">{Convert}</span>
             </label>
             <label>
                 <span data-lang="kitSourceString">{Source string}</span>
@@ -223,7 +223,7 @@
             <label>
                 <span data-lang="kitRegexpPattern">{Regexp pattern}</span>
                 <input data-id="convert_seed_regexp" type="text"/>
-                <span data-lang="kitReplaceTo">{replace to}</span>
+                <span data-lang="kitReplaceString">{replace string}</span>
                 <input data-id="convert_seed_regexpText" type="text"/>
             </label>
             <label>
@@ -241,7 +241,7 @@
             <label>
                 <span data-lang="kitRegexpPattern">{Regexp pattern}</span>
                 <input data-id="convert_peer_regexp" type="text"/>
-                <span data-lang="kitReplaceTo">{replace to}</span>
+                <span data-lang="kitReplaceString">{replace string}</span>
                 <input data-id="convert_peer_regexpText" type="text"/>
             </label>
             <label>
@@ -264,7 +264,7 @@
                 <input type="hidden" data-id="desk_tracker_icon" placeholder="data:image/png,base64:"/>
             </label>
             <label>
-                <span data-lang="kitTrackerName">{Tracker name}</span>
+                <span data-lang="kitTrackerTitle">{Tracker title}</span>
                 <input type="text" data-id="desk_tracker_title"/>
             </label>
             <label>
@@ -274,9 +274,9 @@
         </div>
         <div class="page save">
             <h2 data-lang="kitSaveLoad">{Save\load code}</h2>
-            <div>
+            <div class="label">
                 <input type="button" data-id="save_code_write" value="{Get code}" data-lang="kitGetCode"/>
-                <input type="button" data-id="save_code_read" value="{Read code}" data-lang="kitWriteCode"/>
+                <input type="button" data-id="save_code_read" value="{Read code}" data-lang="kitReadCode"/>
             </div>
             <label>
                 <textarea data-id="save_code_textarea"></textarea>
