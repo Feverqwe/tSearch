@@ -863,6 +863,14 @@ var magic = function() {
                 output.classList.add('output');
             }
 
+            if (input) {
+                input.classList.add('input');
+            }
+
+            if (attr) {
+                attr.classList.add('attr');
+            }
+
             if (tableMode) {
                 tableMode.checked = true;
             }
@@ -1156,6 +1164,8 @@ var magic = function() {
             this.bindAuthPage();
             this.bindDescPage();
             this.bindSavePage();
+
+            document.body.classList.remove('loading');
         }
     };
 }();
@@ -1165,3 +1175,8 @@ engine.init(function() {
         magic.one();
     });
 });
+
+setTimeout(function() {
+    "use strict";
+    document.body.classList.remove('loading');
+}, 1000);

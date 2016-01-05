@@ -11,7 +11,7 @@
     <script src="../js/exKit.js"></script>
 </head>
 <body>
-<div class="tools">
+<div class="tools loading">
     <div class="menu" id="menu">
         <a class="active" href="#search" data-page="search" data-lang="kitSearch">{Search}</a>
         <a href="#selectors" data-page="selectors" data-lang="kitSelectors">{Selectors}</a>
@@ -75,8 +75,10 @@
                 <input type="button" data-id="selectors_list_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
-                <input type="checkbox" data-id="selectors_categoryName_enable"/>
-                <span data-lang="kitCategoryName">{Category name}</span>
+                <span>
+                    <input type="checkbox" data-id="selectors_categoryName_enable"/>
+                    <span data-lang="kitCategoryName">{Category name}</span>
+                </span>
                 <input type="text" data-id="selectors_categoryName_input"/>
                 <input type="text" data-id="selectors_categoryName_output"/>
                 <span data-lang="kitAttribute">{Attribute}</span>
@@ -84,8 +86,10 @@
                 <input type="button" data-id="selectors_categoryName_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
-                <input type="checkbox" data-id="selectors_categoryLink_enable"/>
-                <span data-lang="kitCategoryLink">{Category link}</span>
+                <span>
+                    <input type="checkbox" data-id="selectors_categoryLink_enable"/>
+                    <span data-lang="kitCategoryLink">{Category link}</span>
+                </span>
                 <input type="text" data-id="selectors_categoryLink_input"/>
                 <input type="text" data-id="selectors_categoryLink_output"/>
                 <input type="button" data-id="selectors_categoryLink_btn" value="{Select}" data-lang="kitSelect"/>
@@ -103,8 +107,10 @@
                 <input type="button" data-id="selectors_torrentLink_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
-                <input type="checkbox" data-id="selectors_size_enable"/>
-                <span data-lang="kitTorrentSize">{Torrent size}</span>
+                <span>
+                    <input type="checkbox" data-id="selectors_size_enable"/>
+                    <span data-lang="kitTorrentSize">{Torrent size}</span>
+                </span>
                 <input type="text" data-id="selectors_size_input"/>
                 <input type="text" data-id="selectors_size_output"/>
                 <span data-lang="kitAttribute">{Attribute}</span>
@@ -112,29 +118,37 @@
                 <input type="button" data-id="selectors_size_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
-                <input type="checkbox" data-id="selectors_torrentDl_enable"/>
-                <span data-lang="kitTorrentDownloadLink">{Torrent download link}</span>
+                <span>
+                    <input type="checkbox" data-id="selectors_torrentDl_enable"/>
+                    <span data-lang="kitTorrentDownloadLink">{Torrent download link}</span>
+                </span>
                 <input type="text" data-id="selectors_torrentDl_input"/>
                 <input type="text" data-id="selectors_torrentDl_output"/>
                 <input type="button" data-id="selectors_torrentDl_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
-                <input type="checkbox" data-id="selectors_seed_enable"/>
-                <span data-lang="kitSeedCount">{Seed count}</span>
+                <span>
+                    <input type="checkbox" data-id="selectors_seed_enable"/>
+                    <span data-lang="kitSeedCount">{Seed count}</span>
+                </span>
                 <input type="text" data-id="selectors_seed_input"/>
                 <input type="text" data-id="selectors_seed_output"/>
                 <input type="button" data-id="selectors_seed_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
-                <input type="checkbox" data-id="selectors_peer_enable"/>
-                <span data-lang="kitPeerCount">{Peer count}</span>
+                <span>
+                    <input type="checkbox" data-id="selectors_peer_enable"/>
+                    <span data-lang="kitPeerCount">{Peer count}</span>
+                </span>
                 <input type="text" data-id="selectors_peer_input"/>
                 <input type="text" data-id="selectors_peer_output"/>
                 <input type="button" data-id="selectors_peer_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
-                <input type="checkbox" data-id="selectors_time_enable"/>
-                <span data-lang="kitCreateTime">{Create time}</span>
+                <span>
+                    <input type="checkbox" data-id="selectors_time_enable"/>
+                    <span data-lang="kitCreateTime">{Create time}</span>
+                </span>
                 <input type="text" data-id="selectors_time_input"/>
                 <input type="text" data-id="selectors_time_output"/>
                 <span data-lang="kitAttribute">{Attribute}</span>
