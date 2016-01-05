@@ -1,515 +1,5 @@
 var magic = function() {
     "use strict";
-    var make_code = function() {
-        var code = {
-            version: 1,
-            type: 'kit',
-            name: input_list.desk.tracker.title.val(),
-            icon: input_list.desk.tracker.icon.val(),
-            about: input_list.desk.tracker.desk.val(),
-            root_url: input_list.search.root.val(),
-            search_path: input_list.search.url.val(),
-            items: input_list.selectors.list.input.val(),
-            tr_name: input_list.selectors.torrent_name.input.val(),
-            tr_link: input_list.selectors.torrent_link.input.val()
-        };
-        if (!code.icon) {
-            code.icon = '#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
-        }
-        code.post = input_list.search.post.val();
-        if (!code.post) {
-            delete code.post;
-        }
-        code.charset = input_list.search.charset.val();
-        if (!code.charset) {
-            delete code.charset;
-        }
-        if (input_list.search.cp1251.prop('checked')) {
-            code.encode = 1;
-        }
-        if (input_list.selectors.category_name.enable.prop('checked')) {
-            code.cat_name = input_list.selectors.category_name.input.val();
-            if (input_list.selectors.category_name.attr_enable.prop('checked')) {
-                code.cat_attr = input_list.selectors.category_name.attr.val();
-            }
-        }
-        if (input_list.selectors.category_link.enable.prop('checked')) {
-            code.cat_link = input_list.selectors.category_link.input.val();
-            if (input_list.selectors.category_link.add_root.prop('checked')) {
-                code.cat_link_r = 1;
-            }
-        }
-        if (input_list.selectors.torrent_link.add_root.prop('checked')) {
-            code.tr_link_r = 1;
-        }
-        if (input_list.selectors.torrent_size.enable.prop('checked')) {
-            code.tr_size = input_list.selectors.torrent_size.input.val();
-            if (input_list.convert.size.convert.prop('checked')) {
-                code.s_c = 1;
-            }
-            if (input_list.convert.size.regexp.val().length > 0) {
-                code.size_r = input_list.convert.size.regexp.val();
-                code.size_rp = input_list.convert.size.regexp_text.val();
-            }
-            if (input_list.selectors.torrent_size.attr_enable.prop('checked')) {
-                code.size_attr = input_list.selectors.torrent_size.attr.val();
-            }
-        }
-        if (input_list.selectors.torrent_dl.enable.prop('checked')) {
-            code.tr_dl = input_list.selectors.torrent_dl.input.val();
-            if (input_list.selectors.torrent_dl.add_root.prop('checked')) {
-                code.tr_dl_r = 1;
-            }
-        }
-        if (input_list.selectors.seed.enable.prop('checked')) {
-            code.seed = input_list.selectors.seed.input.val();
-            if (input_list.convert.seed.regexp.val().length > 0) {
-                code.seed_r = input_list.convert.seed.regexp.val();
-                code.seed_rp = input_list.convert.seed.regexp_text.val();
-            }
-        }
-        if (input_list.selectors.peer.enable.prop('checked')) {
-            code.peer = input_list.selectors.peer.input.val();
-            if (input_list.convert.peer.regexp.val().length > 0) {
-                code.peer_r = input_list.convert.peer.regexp.val();
-                code.peer_rp = input_list.convert.peer.regexp_text.val();
-            }
-        }
-        if (input_list.selectors.time.enable.prop('checked')) {
-            code.date = input_list.selectors.time.input.val();
-            if (input_list.selectors.time.attr_enable.prop('checked')) {
-                code.date_attr = input_list.selectors.time.attr.val();
-            }
-            if (input_list.convert.time.regexp.val().length > 0) {
-                code.t_r = input_list.convert.time.regexp.val();
-                code.t_r_r = input_list.convert.time.regexp_text.val();
-            }
-            if (input_list.convert.time.today.prop('checked')) {
-                code.t_t_r = 1;
-            }
-            if (input_list.convert.time.month.prop('checked')) {
-                code.t_m_r = 1;
-            }
-            if (input_list.convert.time.format.val() !== '-1') {
-                code.t_f = parseInt(input_list.convert.time.format.val());
-            }
-        }
-        if (input_list.selectors.skip.first.val() > 0) {
-            code.sf = parseInt(input_list.selectors.skip.first.val());
-        }
-        if (input_list.selectors.skip.last.val() > 0) {
-            code.sl = parseInt(input_list.selectors.skip.last.val());
-        }
-        code.auth = input_list.auth.url.val();
-        if (!code.auth) {
-            delete code.auth;
-        }
-        code.auth_f = input_list.auth.input.val();
-        if (!code.auth_f) {
-            delete code.auth_f;
-        }
-        code.uid = hashCode(JSON.stringify(code));
-        var tracker_code = JSON.stringify(code);
-        input_list.save.code.textarea.val(tracker_code);
-    };
-    var read_code = function() {
-        form_empty();
-        var code;
-        try {
-            code = JSON.parse(input_list.save.code.textarea.val());
-        } catch (e) {
-            alert(mono.language.magic_1 + "\n" + e);
-        }
-        if (code === undefined) {
-            return;
-        }
-        if (code.cat_name !== undefined) {
-            input_list.selectors.category_name.input.val(code.cat_name);
-            input_list.selectors.category_name.enable.prop('checked', false).trigger('click');
-            if (code.cat_alt !== undefined) {
-                input_list.selectors.category_name.attr_enable.prop('checked', false).trigger('click');
-                input_list.selectors.category_name.attr.val('alt');
-            }
-            if (code.cat_attr !== undefined) {
-                input_list.selectors.category_name.attr_enable.prop('checked', false).trigger('click');
-                input_list.selectors.category_name.attr.val(code.cat_attr);
-            }
-        }
-        if (code.cat_link !== undefined) {
-            input_list.selectors.category_link.input.val(code.cat_link);
-            input_list.selectors.category_link.add_root.prop('checked', code.cat_link_r !== undefined);
-            input_list.selectors.category_link.enable.prop('checked', false).trigger('click');
-        }
-        if (code.root_url !== undefined) {
-            input_list.search.root.val(code.root_url);
-        }
-        if (code.search_path !== undefined) {
-            input_list.search.url.val(code.search_path);
-        }
-        if (code.encode !== undefined) {
-            input_list.search.cp1251.prop('checked', code.encode);
-        }
-        if (code.charset !== undefined) {
-            input_list.search.charset.val(code.charset);
-        }
-        if (code.post !== undefined) {
-            input_list.search.post.val(code.post);
-        }
-        if (code.items !== undefined) {
-            input_list.selectors.list.input.val(code.items);
-            var_cache.list_input_value = code.items;
-        }
-        if (code.tr_name !== undefined) {
-            input_list.selectors.torrent_name.input.val(code.tr_name);
-        }
-        if (code.tr_link !== undefined) {
-            input_list.selectors.torrent_link.input.val(code.tr_link);
-        }
-        if (code.tr_link_r !== undefined) {
-            input_list.selectors.torrent_link.add_root.prop('checked', true);
-        }
-        if (code.tr_size !== undefined) {
-            input_list.selectors.torrent_size.input.val(code.tr_size);
-            if (code.s_c !== undefined) {
-                input_list.convert.size.convert.prop('checked', code.s_c);
-            }
-            input_list.selectors.torrent_size.enable.prop('checked', false).trigger('click');
-            if (code.size_r !== undefined) {
-                input_list.convert.size.regexp.val(code.size_r);
-                input_list.convert.size.regexp_text.val(code.size_rp);
-            }
-            if (code.size_attr !== undefined) {
-                input_list.selectors.torrent_size.attr_enable.prop('checked', false).trigger('click');
-                input_list.selectors.torrent_size.attr.val(code.size_attr);
-            }
-        }
-        if (code.tr_dl !== undefined) {
-            input_list.selectors.torrent_dl.input.val(code.tr_dl);
-            input_list.selectors.torrent_dl.add_root.prop('checked', code.tr_dl_r !== undefined);
-            input_list.selectors.torrent_dl.enable.prop('checked', false).trigger('click');
-        }
-        if (code.seed !== undefined) {
-            input_list.selectors.seed.input.val(code.seed);
-            input_list.selectors.seed.enable.prop('checked', false).trigger('click');
-            if (code.seed_r !== undefined) {
-                input_list.convert.seed.regexp.val(code.seed_r);
-                input_list.convert.seed.regexp_text.val(code.seed_rp);
-            }
-        }
-        if (code.peer !== undefined) {
-            input_list.selectors.peer.input.val(code.peer);
-            input_list.selectors.peer.enable.prop('checked', false).trigger('click');
-            if (code.peer_r !== undefined) {
-                input_list.convert.peer.regexp.val(code.peer_r);
-                input_list.convert.peer.regexp_text.val(code.peer_rp);
-            }
-        }
-        if (code.date !== undefined) {
-            input_list.selectors.time.input.val(code.date);
-            input_list.selectors.time.enable.prop('checked', false).trigger('click');
-            if (code.t_r !== undefined) {
-                input_list.convert.time.regexp.val(code.t_r);
-                input_list.convert.time.regexp_text.val(code.t_r_r);
-            }
-            if (code.t_t_r !== undefined) {
-                input_list.convert.time.today.prop('checked', code.t_t_r);
-            }
-            if (code.t_m_r !== undefined) {
-                input_list.convert.time.month.prop('checked', code.t_m_r);
-            }
-            if (code.t_f !== undefined) {
-                input_list.convert.time.format.children('option[value=' + code.t_f + ']').prop('selected', true);
-            }
-            if (code.date_attr !== undefined) {
-                input_list.selectors.time.attr_enable.prop('checked', false).trigger('click');
-                input_list.selectors.time.attr.val(code.date_attr);
-            }
-        }
-        if (code.sf !== undefined) {
-            input_list.selectors.skip.first.val(code.sf);
-        }
-        if (code.sl !== undefined) {
-            input_list.selectors.skip.last.val(code.sl);
-        }
-        if (code.auth !== undefined) {
-            input_list.auth.url.val(code.auth);
-        }
-        if (code.auth_f !== undefined) {
-            input_list.auth.input.val(code.auth_f);
-        }
-        if (code.icon !== undefined) {
-            input_list.desk.tracker.icon.val(code.icon);
-        }
-        if (code.name !== undefined) {
-            input_list.desk.tracker.title.val(code.name);
-        }
-        if (code.about !== undefined) {
-            input_list.desk.tracker.desk.val(code.about);
-        }
-        dom_cache.menu.querySelector('a').dispatchEvent(new CustomEvent('click'));
-    };
-    var bindNodeList = function(itemName, nodeObj, parent, empty) {
-        for (var key in nodeObj) {
-            var node = nodeObj[key];
-            if (empty) {
-                var tagName = node.tagName;
-                if (tagName === 'INPUT' && node.type === 'text' && key !== 'request') {
-                    node.value = '';
-                    node.classList.remove('error');
-                } else
-                if (tagName === 'INPUT' && node.type === 'checkbox') {
-                    node.checked = false;
-                } else
-                if (tagName === 'INPUT' && node.type === 'number') {
-                    node.value = 0;
-                } else
-                if (tagName === 'SELECT') {
-                    node.selectedIndex = 0;
-                }
-                continue;
-            }
-
-            if (key === 'btn') {
-                node.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (!var_cache.pageDOM) {
-                        return;
-                    }
-                    selectMode(function(path, itemName, parent){
-                        var path_text = onPathChange(path, itemName, parent);
-                        var item = null;
-                        if (parent) {
-                            item = inputNodeList[parent][itemName];
-                        } else {
-                            item = inputNodeList[itemName];
-                        }
-                        item.input.classList.remove('error');
-                        if (item.output) {
-                            item.output.classList.remove('error');
-                            if (!path_text[1]) {
-                                item.output.classList.add('error');
-                            }
-                            if (itemName === 'torrent_size' ||
-                                itemName === 'seed' ||
-                                itemName === 'peer' ||
-                                itemName === 'time') {
-                                if (isNaN(parseInt(path_text[1]))) {
-                                    item.output.classList.add('error');
-                                }
-                            }
-                            item.output.value = path_text[1];
-                            if (itemName === 'time') {
-                                updateTimeConverter();
-                            } else if (itemName === 'torrent_size') {
-                                updateSizeConverter();
-                            } else if (itemName === 'seed') {
-                                updateSeedConverter();
-                            } else if (itemName === 'peer') {
-                                updatePeerConverter();
-                            }
-                        }
-                        if (!path_text[0]) {
-                            path_text[0] = path;
-                            item.input.classList.add('error');
-                        }
-                        item.input.value = path_text[0];
-                    }, itemName, parent);
-                });
-            }
-
-            if (key === 'input') {
-                node.addEventListener('keyup', function(){
-                    if (!var_cache.pageDOM) {
-                        return;
-                    }
-                    var item = null;
-                    if (parent) {
-                        item = inputNodeList[parent][itemName];
-                    } else {
-                        item = inputNodeList[itemName];
-                    }
-                    item.input.classList.remove('error');
-                    if (!this.value) {
-                        return;
-                    }
-                    var path_text = onPathChange(this.value, itemName, parent, 1);
-                    if (item.output) {
-                        item.output.classList.remove('error');
-                        if (!path_text[1]) {
-                            item.output.classList.add('error');
-                        }
-                        if (itemName === 'torrent_size' ||
-                            itemName === 'seed' ||
-                            itemName === 'peer' ||
-                            itemName === 'time') {
-                            if (isNaN(parseInt(path_text[1]))) {
-                                item.output.classList.add('error');
-                            }
-                        }
-                        item.output.value = path_text[1];
-                        if (itemName === 'time') {
-                            updateTimeConverter();
-                        } else if (itemName === 'torrent_size') {
-                            updateSizeConverter();
-                        } else if (itemName === 'seed') {
-                            updateSeedConverter();
-                        } else if (itemName === 'peer') {
-                            updatePeerConverter();
-                        }
-                    }
-                    if (!path_text[0]) {
-                        item.input.classList.add('error');
-                    }
-                });
-            }
-
-            if (key === 'enable') {
-                node.addEventListener('change', function(){
-                    var item = null;
-                    if (parent) {
-                        item = inputNodeList[parent][itemName];
-                    } else {
-                        item = inputNodeList[itemName];
-                    }
-                    item.btn.disabled = !this.checked;
-                    item.input.disabled = !this.checked;
-                    if (item.attr_enable) {
-                        item.attr_enable.disabled = !this.checked;
-                        if (!this.checked) {
-                            item.attr.disabled = true;
-                        } else
-                        if (item.attr_enable.checked) {
-                            item.attr.disabled = false;
-                        }
-                    }
-                    if (item.add_root) {
-                        item.add_root.disabled = !this.checked;
-                    }
-                });
-            }
-
-            if (key === 'attr_enable') {
-                node.addEventListener('change', function(){
-                    var item = null;
-                    if (parent) {
-                        item = inputNodeList[parent][itemName];
-                    } else {
-                        item = inputNodeList[itemName];
-                    }
-                    item.attr.disabled = !this.checked;
-                    item.input.dispatchEvent(new CustomEvent('keyup'));
-                });
-            }
-
-            if (key === 'attr') {
-                node.addEventListener('keyup', function(){
-                    var item = null;
-                    if (parent) {
-                        item = input_list[parent][itemName];
-                    } else {
-                        item = input_list[itemName];
-                    }
-                    item.input.dispatchEvent(new CustomEvent('keyup'));
-                });
-            }
-
-            if (key === 'regexp') {
-                node.addEventListener('keyup', function(){
-                    if (itemName === 'time') {
-                        updateTimeConverter();
-                    } else if (itemName === 'size') {
-                        updateSizeConverter();
-                    } else if (itemName === 'peer') {
-                        updatePeerConverter();
-                    } else if (itemName === 'seed') {
-                        updateSeedConverter();
-                    }
-                });
-            }
-
-            if (key === 'regexp_text') {
-                node.addEventListener('keyup', function(){
-                    if (itemName === 'time') {
-                        updateTimeConverter();
-                    } else if (itemName === 'size') {
-                        updateSizeConverter();
-                    } else if (itemName === 'peer') {
-                        updatePeerConverter();
-                    } else if (itemName === 'seed') {
-                        updateSeedConverter();
-                    }
-                });
-            }
-
-            if (key === 'format') {
-                node.addEventListener('change', function(){
-                    updateTimeConverter();
-                });
-            }
-
-            if (key === 'today') {
-                node.addEventListener('change', function(){
-                    updateTimeConverter();
-                });
-            }
-
-            if (key === 'month') {
-                node.addEventListener('change', function(){
-                    updateTimeConverter();
-                });
-            }
-
-            if (key === 'convert') {
-                node.addEventListener('change', function(){
-                    updateSizeConverter();
-                });
-            }
-        }
-
-        if (nodeObj.input) {
-            nodeObj.input.classList.add('input');
-        }
-
-        if (nodeObj.enable) {
-            nodeObj.enable.checked = false;
-            nodeObj.input.disabled = true;
-            nodeObj.btn.disabled = true;
-            if (nodeObj.attr_enable) {
-                nodeObj.attr_enable.disabled = true;
-                nodeObj.attr.classList.add('attr');
-            }
-            if (nodeObj.add_root) {
-                nodeObj.add_root.disabled = true;
-            }
-        }
-
-        if (nodeObj.output) {
-            nodeObj.output.disabled = true;
-            nodeObj.output.classList.add('output')
-        }
-
-        if (nodeObj.attr_enable) {
-            nodeObj.attr_enable.checked = false;
-            nodeObj.attr.disabled = true;
-        }
-
-        if (nodeObj.original) {
-            nodeObj.original.disabled = true;
-            nodeObj.converted.disabled = true;
-        }
-
-        if (nodeObj.result) {
-            nodeObj.result.disabled = true;
-        }
-
-        if (nodeObj.table_mode) {
-            nodeObj.table_mode.checked = true;
-        }
-
-        if (nodeObj.cp1251) {
-            nodeObj.cp1251.checked = false;
-        }
-    };
     var form_empty = function() {
         for (var key in input_list) {
             var item = input_list[key];
@@ -538,18 +28,7 @@ var magic = function() {
             statusBar: document.getElementById('status_bar')
         },
         varCache: {
-            xhr: null,
-            block_href:  /\/\//gim,
-            block_src:   / src=(['"]?)/gim,
-            unblock_src: /data:image\/gif,base64#blockrurl#/gm,
-            unblock_href:/\/\/about:blank#blockurl#/gm,
-            stripPath:   /(.*)>tr.*$/,
-            stripPathSel:/^[^>]*>(.*)$/,
-            ifContent: null,
-            writePath: null,
-            list_input_value: null,
-            list_input_dom: null,
-
+            lastXhr: null,
             rmDisplayNode:      /display\s*:\s*['"]*none['"]*/gim,
             rmVisibilityHidden:       /visibility\s*:\s*['"]*hidden['"]*/gim,
             rootUrl: /([^:]+:\/\/[^\/]+)/,
@@ -813,6 +292,100 @@ var magic = function() {
 
             return JSON.stringify(code);
         },
+        clearForm: function() {
+            var _this = this;
+            var nodeList = this.nodeList;
+
+            this.varCache.$frameDom = null;
+            this.varCache.frameDoc = null;
+            this.varCache.frameSelect = null;
+
+            nodeList.search.url.value = '';
+            nodeList.search.request.value = '';
+            nodeList.search.query_encoding.selectedIndex = 0;
+            nodeList.search.charset.value = '';
+            nodeList.search.post.value = '';
+            nodeList.search.root.value = '';
+
+            nodeList.auth.url.value = '';
+            nodeList.auth.input.value = '';
+
+            nodeList.desk.tracker.icon.value = '';
+            nodeList.desk.tracker.icon_file.value = '';
+            nodeList.desk.tracker.icon_pic.dispatchEvent(new CustomEvent('updatePic'));
+            nodeList.desk.tracker.title.value = '';
+            nodeList.desk.tracker.desk.value = '';
+
+            [].slice.call(document.querySelectorAll('.error')).forEach(function(node) {
+                node.classList.remove('error');
+            });
+
+            var clearSelector = function(selectorItem) {
+                if (selectorItem.table_mode) {
+                    selectorItem.table_mode.checked = true;
+                }
+                if (selectorItem.input) {
+                    selectorItem.input.value = '';
+                }
+                if (selectorItem.output) {
+                    selectorItem.output.value = '';
+                }
+                if (selectorItem.add_root) {
+                    selectorItem.add_root.checked = false;
+                }
+                if (selectorItem.attr) {
+                    selectorItem.attr.value = '';
+                }
+                if (selectorItem.first) {
+                    selectorItem.first.value = 0;
+                }
+                if (selectorItem.last) {
+                    selectorItem.last.value = 0;
+                }
+                if (selectorItem.enable) {
+                    selectorItem.enable.checked = false;
+                    selectorItem.enable.dispatchEvent(new CustomEvent('change'));
+                }
+            };
+
+            var clearConvert = function(convertItem) {
+                if (convertItem.regexp) {
+                    convertItem.regexp.value = '';
+                    convertItem.regexp_text.value = '';
+                }
+                if (convertItem.today) {
+                    convertItem.today.checked = false;
+                }
+                if (convertItem.month) {
+                    convertItem.month.checked = false;
+                }
+                if (convertItem.format) {
+                    convertItem.format.selectedIndex = 0;
+                }
+                if (convertItem.convert) {
+                    convertItem.convert.checked = false;
+                }
+                if (convertItem.original) {
+                    convertItem.original.value = '';
+                }
+                if (convertItem.converted) {
+                    convertItem.converted.value = '';
+                }
+                if (convertItem.result) {
+                    convertItem.result.value = '';
+                }
+            };
+
+            for (var key in nodeList.selectors) {
+                var item = nodeList.selectors[key];
+                clearSelector(item);
+            }
+
+            for (var key in nodeList.convert) {
+                var item = nodeList.convert[key];
+                clearConvert(item);
+            }
+        },
         readCode: function(code) {
             var nodeList = this.nodeList;
             var selectors = nodeList.selectors;
@@ -827,7 +400,7 @@ var magic = function() {
             }
 
             var readCharset = function() {
-                var m = code.requestMimeType && code.requestMimeType.match(/charset=(.+)/);
+                var m = code.search.requestMimeType && code.search.requestMimeType.match(/charset=(.+)/);
                 m = m && m[1];
                 return m || '';
             };
@@ -839,9 +412,9 @@ var magic = function() {
                 }
                 onBeforeRequest.some(function(item) {
                     if (item.name === 'encode') {
-                        var node = search.query_encoding.querySelector('[value="'+item.type+'"]');
+                        var node = nodeList.search.query_encoding.querySelector('[value="'+item.type+'"]');
                         if (node) {
-                            search.query_encoding.index = node.index;
+                            nodeList.search.query_encoding.selectedIndex = node.index;
                             return true;
                         }
                     }
@@ -922,7 +495,10 @@ var magic = function() {
                     } else
                     if (item.name === 'timeFormat') {
                         if (convertItem.format) {
-                            convertItem.format.value = item.format;
+                            var node = convertItem.format.querySelector('[value="'+item.format+'"]');
+                            if (node) {
+                                convertItem.format.selectedIndex = node.index;
+                            }
                         }
                     } else
                     if (item === 'convertSize') {
@@ -985,6 +561,7 @@ var magic = function() {
                     return;
                 }
 
+                _this.clearForm();
                 _this.readCode(obj);
             });
         },
@@ -1200,12 +777,14 @@ var magic = function() {
             var checkPath = function(path) {
                 var nodeList = null;
                 var $dom = _this.varCache.$frameDom;
-                if (output) {
-                    nodeList = $dom.find(listInput.value).eq(getStartIndex()).find(path);
-                } else {
-                    nodeList = $dom.find(path);
-                }
-                if (!nodeList.length) {
+                try {
+                    if (output) {
+                        nodeList = $dom.find(listInput.value).eq(getStartIndex()).find(path);
+                    } else {
+                        nodeList = $dom.find(path);
+                    }
+                } catch (e) {}
+                if (!nodeList || !nodeList.length) {
                     input.classList.add('error');
                 } else {
                     input.classList.remove('error');
