@@ -44,7 +44,7 @@ engine.trackerLib['bitsnoop'] = {
                 "use strict";
                 return exKit.funcList.idInCategoryListStr(details.tracker, url, /icon cat_(.+)/);
             },
-            size: function (value) {
+            size: function (details, value) {
                 "use strict";
                 return exKit.funcList.sizeFormat(value)
             }
