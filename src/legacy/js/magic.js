@@ -177,7 +177,6 @@ var magic = function() {
             };
 
             var getOnGetValueObj = function(key) {
-                var selectorItem = selectors[key];
                 var convertItem = convert[key];
                 var list = [];
 
@@ -366,6 +365,10 @@ var magic = function() {
             var nodeList = this.nodeList;
             var selectors = nodeList.selectors;
             var convert = nodeList.convert;
+
+            if (code.version === 1) {
+                code = exKit.convertV1ToV2(code);
+            }
 
             if (code.version !== 2) {
                 return;

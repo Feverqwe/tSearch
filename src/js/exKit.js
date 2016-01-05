@@ -321,176 +321,163 @@ var exKit = {
             return value;
         }
     },
-    prepareCustomTracker: function (trackerJson) {
+    convertV1ToV2: function(code) {
+        "use strict";
+        var obj = {};
+        obj.version = 2;
+        obj.icon = code.icon;
+        obj.title = code.name;
+        obj.desc = code.about;
+        obj.flags = !code.flags ? {} : {
+            auth: code.a ? 1 : 0,
+            language: code.l ? 'ru' : undefined,
+            cyrillic: code.rs ? 1 : 0
+        };
+        var search = obj.search = {};
+        var torrentSelector = search.torrentSelector = {};
+        var onGetValue = search.onGetValue = {};
+        search.searchUrl = code.search_path;
+        if (code.root_url) {
+            search.baseUrl = code.root_url;
+        }
+        if (code.auth) {
+            search.loginUrl = code.auth;
+        }
+        if (code.post) {
+            search.requestType = 'POST';
+            search.requestData = code.post;
+        }
+        if (code.encode) {
+            search.onBeforeRequest = [{name: 'encode', type: 'cp1251'}];
+        }
+        search.listItemSelector = code.items;
+        if (code.charset) {
+            search.requestMimeType = 'text/html; charset=' + code.charset;
+        }
+        if (code.cat_alt) {
+            code.cat_attr = 'alt';
+            code.cat_alt = undefined;
+        }
+        if (code.auth_f) {
+            search.loginFormSelector = code.auth_f;
+        }
+        if (code.sf || code.sl) {
+            search.listItemSplice = [code.sf || 0, code.sl || 0];
+        }
+        torrentSelector.title = code.tr_name;
+        torrentSelector.url = {selector: code.tr_link, attr: 'href'};
+        if (code.cat_name) {
+            torrentSelector.categoryTitle = code.cat_name;
+            if (code.cat_attr) {
+                torrentSelector.categoryTitle = {
+                    selector: torrentSelector.categoryTitle,
+                    attr: code.cat_attr
+                };
+            }
+            if (code.cat_link) {
+                torrentSelector.categoryUrl = {selector: code.cat_link, attr: 'href'};
+            }
+        }
+        if (code.tr_size) {
+            torrentSelector.size = code.tr_size;
+            if (code.size_attr) {
+                torrentSelector.size = {selector: torrentSelector.size, attr: code.size_attr};
+            }
+
+            var sizeFuncList = [];
+            if (code.size_r && code.size_rp !== undefined) {
+                sizeFuncList.push({
+                    name: 'replaceRe',
+                    re: code.size_r,
+                    text: code.size_rp
+                });
+            }
+            if (code.s_c) {
+                sizeFuncList.push('convertSize');
+            }
+            if (sizeFuncList.length > 1) {
+                onGetValue.size = sizeFuncList;
+            }
+        }
+        if (code.tr_dl) {
+            torrentSelector.downloadUrl = {selector: code.tr_dl, attr: 'href'};
+        }
+        if (code.seed) {
+            torrentSelector.seed = code.seed;
+            if (code.seed_r && code.seed_rp !== undefined) {
+                onGetValue.seed = [
+                    {
+                        name: 'replaceRe',
+                        re: code.seed_r,
+                        text: code.seed_rp
+                    }
+                ];
+            }
+        }
+        if (code.peer) {
+            torrentSelector.peer = code.peer;
+            if (code.peer_r && code.peer_rp !== undefined) {
+                onGetValue.peer = [
+                    {
+                        name: 'replaceRe',
+                        re: code.peer_r,
+                        text: code.peer_rp
+                    }
+                ];
+            }
+        }
+        if (code.date) {
+            torrentSelector.date = code.date;
+            if (code.date_attr) {
+                torrentSelector.date = {selector: torrentSelector.date, attr: code.date_attr};
+            }
+            var dateFuncList = [];
+            if (code.t_r && code.t_r_r !== undefined) {
+                dateFuncList.push({
+                    name: 'replaceRe',
+                    re: code.t_r,
+                    text: code.t_r_r
+                });
+            }
+            if (code.t_t_r) {
+                dateFuncList.push('replaceToday');
+            }
+            if (code.t_m_r) {
+                dateFuncList.push('replaceMonth');
+            }
+            if (code.t_f !== undefined && code.t_f !== "-1") {
+                dateFuncList.push({name: 'timeFormat', format: parseInt(code.t_f)});
+            }
+            if (dateFuncList.length) {
+                onGetValue.date = dateFuncList;
+            }
+        }
+
+        return obj;
+    },
+    prepareCustomTracker: function (code) {
         "use strict";
         var trackerObj = null;
         var id = null;
 
-        if (trackerJson.version === 1) {
-            id = 'ct_' + trackerJson.uid;
-            if (engine.trackerLib[id]) {
-                return;
-            }
-
-            trackerObj = engine.trackerLib[id] = {};
-            trackerObj.code = JSON.stringify(trackerJson);
-            trackerObj.icon = trackerJson.icon;
-            trackerObj.id = id;
-            trackerObj.title = trackerJson.name;
-            trackerObj.desc = trackerJson.about;
-            trackerObj.flags = !trackerJson.flags ? {} : {
-                auth: trackerJson.a ? 1 : 0,
-                language: trackerJson.l ? 'ru' : undefined,
-                cyrillic: trackerJson.rs ? 1 : 0,
-                allowProxy: trackerJson.post ? 0 : 1
-            };
-            var search = trackerObj.search = {};
-            var torrentSelector = search.torrentSelector = {};
-            var onGetValue = search.onGetValue = {};
-            search.searchUrl = trackerJson.search_path;
-            if (trackerJson.root_url) {
-                search.baseUrl = trackerJson.root_url;
-            }
-            if (trackerJson.auth) {
-                search.loginUrl = trackerJson.auth;
-            }
-            if (trackerJson.post) {
-                search.requestType = 'POST';
-                search.requestData = trackerJson.post;
-            }
-            if (trackerJson.encode) {
-                search.onBeforeRequest = function (details) {
-                    "use strict";
-                    details.query = exKit.funcList.encodeCp1251(details.query);
-                };
-            }
-            search.listItemSelector = trackerJson.items;
-            if (trackerJson.charset) {
-                search.requestMimeType = 'text/html; charset=' + trackerJson.charset;
-            }
-            if (trackerJson.cat_alt) {
-                trackerJson.cat_attr = 'alt';
-                trackerJson.cat_alt = undefined;
-            }
-            if (trackerJson.auth_f) {
-                search.loginFormSelector = trackerJson.auth_f;
-            }
-            if (trackerJson.sf || trackerJson.sl) {
-                search.listItemSplice = [trackerJson.sf || 0, -(trackerJson.sl || 0)];
-            }
-            torrentSelector.title = trackerJson.tr_name;
-            torrentSelector.url = {selector: trackerJson.tr_link, attr: 'href'};
-            if (trackerJson.cat_name) {
-                torrentSelector.categoryTitle = trackerJson.cat_name;
-                if (trackerJson.cat_attr) {
-                    torrentSelector.categoryTitle = {
-                        selector: torrentSelector.categoryTitle,
-                        attr: trackerJson.cat_attr
-                    };
-                }
-                if (trackerJson.cat_link) {
-                    torrentSelector.categoryUrl = {selector: trackerJson.cat_link, attr: 'href'};
-                }
-            }
-            if (trackerJson.tr_size) {
-                torrentSelector.size = trackerJson.tr_size;
-                if (trackerJson.size_attr) {
-                    torrentSelector.size = {selector: torrentSelector.size, attr: trackerJson.size_attr};
-                }
-
-                var sizeFuncList = [];
-                if (trackerJson.size_r && trackerJson.size_rp !== undefined) {
-                    var size_r = new RegExp(trackerJson.size_r, 'ig');
-                    sizeFuncList.push(function (value) {
-                        return value.replace(size_r, trackerJson.size_rp);
-                    });
-                }
-                if (trackerJson.s_c) {
-                    sizeFuncList.push(function (value) {
-                        return exKit.legacy.sizeFormat(value);
-                    });
-                }
-                if (sizeFuncList.length > 1) {
-                    onGetValue.size = function (details, value) {
-                        for (var i = 0, func; func = sizeFuncList[i]; i++) {
-                            value = func(value);
-                        }
-                        return value;
-                    };
-                }
-            }
-            if (trackerJson.tr_dl) {
-                torrentSelector.downloadUrl = {selector: trackerJson.tr_dl, attr: 'href'};
-            }
-            if (trackerJson.seed) {
-                torrentSelector.seed = trackerJson.seed;
-                if (trackerJson.seed_r && trackerJson.seed_rp !== undefined) {
-                    var seed_r = new RegExp(trackerJson.seed_r, 'ig');
-                    onGetValue.seed = function (details, value) {
-                        return value.replace(seed_r, trackerJson.seed_rp);
-                    };
-                }
-            }
-            if (trackerJson.peer) {
-                torrentSelector.peer = trackerJson.peer;
-                if (trackerJson.peer_r && trackerJson.peer_rp !== undefined) {
-                    var peer_r = new RegExp(trackerJson.peer_r, 'ig');
-                    onGetValue.peer = function (details, value) {
-                        return value.replace(peer_r, trackerJson.peer_rp);
-                    };
-                }
-            }
-            if (trackerJson.date) {
-                torrentSelector.date = trackerJson.date;
-                if (trackerJson.date_attr) {
-                    torrentSelector.date = {selector: torrentSelector.date, attr: trackerJson.date_attr};
-                }
-                var dateFuncList = [];
-                if (trackerJson.t_r && trackerJson.t_r_r !== undefined) {
-                    var t_r = new RegExp(trackerJson.t_r, "ig");
-                    dateFuncList.push(function (value) {
-                        return value.replace(t_r, trackerJson.t_r_r);
-                    });
-                }
-                if (trackerJson.t_t_r) {
-                    dateFuncList.push(function (value) {
-                        return exKit.legacy.todayReplace(value, trackerJson.t_f);
-                    });
-                }
-                if (trackerJson.t_m_r) {
-                    dateFuncList.push(function (value) {
-                        return exKit.legacy.monthReplace(value);
-                    });
-                }
-                if (trackerJson.t_f !== undefined && trackerJson.t_f !== "-1") {
-                    dateFuncList.push(function (value) {
-                        return exKit.legacy.dateFormat(trackerJson.t_f, value);
-                    });
-                }
-                if (dateFuncList.length) {
-                    onGetValue.date = function (value) {
-                        for (var i = 0, func; func = dateFuncList[i]; i++) {
-                            value = func(value);
-                        }
-                        return value;
-                    };
-                }
-            }
-            return trackerObj;
+        if (code.version === 1) {
+            code = this.convertV1ToV2(code);
         }
 
-        if (trackerJson.version === 2) {
-            id = 'ct_' + trackerJson.uid;
+        if (code.version === 2) {
+            id = 'ct_' + code.uid;
             if (engine.trackerLib[id]) {
                 return;
             }
 
-            engine.trackerLib[id] = trackerObj = JSON.parse(JSON.stringify(trackerJson));
-            trackerObj.code = JSON.stringify(trackerJson);
+            engine.trackerLib[id] = trackerObj = JSON.parse(JSON.stringify(code));
+            trackerObj.code = JSON.stringify(code);
             trackerObj.id = id;
             trackerObj.flags = trackerObj.flags || {};
 
             trackerObj.search = trackerObj.search || {};
+
+            trackerObj.flags.allowProxy = trackerObj.search.requestData ? 0 : 1;
 
             trackerObj.search.onBeforeRequest = this.listToFunction('onBeforeRequest', trackerObj.search.onBeforeRequest);
 
