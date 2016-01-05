@@ -645,7 +645,11 @@ var magic = function() {
 
             return (hash < 0) ? hash * -1 : hash;
         },
+        getRandomColor: function() {
+            return '#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
+        },
         getCode: function() {
+            var _this = this;
             var nodeList = this.nodeList;
             var selectors = nodeList.selectors;
             var convert = nodeList.convert;
@@ -653,7 +657,7 @@ var magic = function() {
             var getIcon = function() {
                 var icon = nodeList.desk.tracker.icon.value;
                 if (!icon) {
-                    icon = '#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
+                    icon = _this.getRandomColor();
                 }
                 return icon;
             };
@@ -809,6 +813,158 @@ var magic = function() {
 
             return JSON.stringify(code);
         },
+        readCode: function(code) {
+            var nodeList = this.nodeList;
+            var selectors = nodeList.selectors;
+            var convert = nodeList.convert;
+
+            if (code.version !== 2) {
+                return;
+            }
+
+            if (!code.search) {
+                code.search = {};
+            }
+
+            var readCharset = function() {
+                var m = code.requestMimeType && code.requestMimeType.match(/charset=(.+)/);
+                m = m && m[1];
+                return m || '';
+            };
+
+            var readQueryEncoding = function() {
+                var onBeforeRequest = code.search.onBeforeRequest;
+                if (!Array.isArray(onBeforeRequest)) {
+                    return;
+                }
+                onBeforeRequest.some(function(item) {
+                    if (item.name === 'encode') {
+                        var node = search.query_encoding.querySelector('[value="'+item.type+'"]');
+                        if (node) {
+                            search.query_encoding.index = node.index;
+                            return true;
+                        }
+                    }
+                });
+            };
+
+            var readSplice = function() {
+                var arr = code.search.listItemSplice;
+                if (!Array.isArray(arr)) {
+                    return;
+                }
+                nodeList.selectors.skip.first.value = arr[0];
+                nodeList.selectors.skip.last.value = arr[1];
+            };
+
+            var selectorMap = {
+                categoryTitle: 'category_name',
+                categoryUrl: 'category_link',
+                title: 'torrent_name',
+                url: 'torrent_link',
+                size: 'size',
+                downloadUrl: 'torrent_dl',
+                seed: 'seed',
+                peer: 'peer',
+                date: 'time'
+            };
+
+            var readSelector = function(key, obj) {
+                var selectorItem = selectors[selectorMap[key]];
+
+                if (typeof obj === 'string') {
+                    obj = {selector: obj};
+                }
+
+                if (!obj.selector) {
+                    return;
+                }
+
+                if (selectorItem.enable) {
+                    selectorItem.enable.checked = true;
+                }
+
+                selectorItem.input.value = obj.selector;
+
+                if (selectorItem.attr) {
+                    selectorItem.attr.value = obj.attr || '';
+                }
+            };
+
+            var readOnGetValue = function(key, list) {
+                var selectorItem = selectors[selectorMap[key]];
+                var convertItem = convert[selectorMap[key]];
+
+                if (!Array.isArray(list)) {
+                    return;
+                }
+
+                list.forEach(function(item) {
+                    if (item === 'addBaseUrl') {
+                        if (selectorItem.add_root) {
+                            selectorItem.add_root.checked = true;
+                        }
+                    } else
+                    if (item.name === 'replaceRe') {
+                        convertItem.regexp.value = item.re;
+                        convertItem.regexp_text.value = item.text;
+                    } else
+                    if (item === 'replaceToday') {
+                        if (convertItem.today) {
+                            convertItem.today.checked = true;
+                        }
+                    } else
+                    if (item === 'replaceMonth') {
+                        if (convertItem.month) {
+                            convertItem.month.checked = true;
+                        }
+                    } else
+                    if (item.name === 'timeFormat') {
+                        if (convertItem.format) {
+                            convertItem.format.value = item.format;
+                        }
+                    } else
+                    if (item === 'convertSize') {
+                        if (convertItem.convert) {
+                            convertItem.convert.checked = true;
+                        }
+                    }
+                });
+            };
+
+            nodeList.desk.tracker.title.value = code.title || '';
+
+            nodeList.desk.tracker.icon.value = code.icon || '';
+            nodeList.desk.tracker.icon_pic.dispatchEvent(new CustomEvent('updatePic'));
+
+            nodeList.desk.tracker.desk.value = code.desc;
+
+            nodeList.auth.url.value = code.search.loginUrl || '';
+
+            nodeList.auth.input.value = code.search.loginFormSelector || '';
+
+            nodeList.search.url.value = code.search.searchUrl || '';
+
+            nodeList.search.root.value = code.search.baseUrl || '';
+
+            nodeList.search.post.value = code.search.requestData || '';
+
+            nodeList.search.charset.value = readCharset();
+
+            readQueryEncoding();
+
+            selectors.list.input.value = code.search.listItemSelector;
+
+            readSplice();
+
+            for (var key in code.search.torrentSelector) {
+                readSelector(key, code.search.torrentSelector[key]);
+            }
+
+            for (var key in code.search.onGetValue) {
+                readOnGetValue(key, code.search.onGetValue[key]);
+            }
+        },
         bindSavePage: function() {
             var _this = this;
             var save = this.nodeList.save.code;
@@ -820,7 +976,15 @@ var magic = function() {
 
             save.read.addEventListener('click', function(e){
                 e.preventDefault();
-                read_code();
+
+                try {
+                    var obj = JSON.parse(save.textarea.value);
+                } catch (e) {
+                    alert(mono.language.trackerCodeReadError + "\n" + e);
+                    return;
+                }
+
+                _this.readCode(obj);
             });
         },
         bindDescPage: function() {
@@ -835,8 +999,8 @@ var magic = function() {
 
                 var abort = function() {
                     desc.icon.value = '';
+                    desc.icon_pic.dispatchEvent(new CustomEvent('updatePic'));
                     desc.icon_file.value = '';
-                    desc.icon_pic.style.backgroundImage = 'initial';
                 };
 
                 if (['image/jpeg', 'image/png', 'image/svg'].indexOf(file.type) === -1) {
@@ -851,10 +1015,31 @@ var magic = function() {
                 reader.onloadend = function() {
                     desc.icon.value = reader.result;
 
-                    desc.icon_pic.style.backgroundImage = 'url('+reader.result+')';
+                    desc.icon_pic.dispatchEvent(new CustomEvent('updatePic'));
                 };
                 reader.readAsDataURL(file);
             });
+
+            desc.icon_pic.addEventListener('updatePic', function() {
+                var data = desc.icon.value;
+
+                if (!data) {
+                    data = _this.getRandomColor();
+                }
+
+                this.style.backgroundImage = 'url(' + exKit.getTrackerIconUrl(data) + ')';
+            });
+
+            desc.icon_pic.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                desc.icon.value = '';
+                desc.icon_file.value = '';
+
+                this.dispatchEvent(new CustomEvent('updatePic'));
+            });
+
+            desc.icon_pic.dispatchEvent(new CustomEvent('updatePic'));
         },
         getNodePath: function(node) {
             var doc = this.varCache.frameDoc;
@@ -1352,6 +1537,12 @@ var magic = function() {
                 updateRootUrl();
                 if (e.keyCode === 13) {
                     search.open.dispatchEvent(new CustomEvent('click'));
+                }
+            });
+
+            [].slice.call(search.query_encoding.childNodes).forEach(function(node) {
+                if (node.nodeType !== 1) {
+                    node.parentNode.removeChild(node);
                 }
             });
         },

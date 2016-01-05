@@ -173,8 +173,10 @@ div.tools input.attr {
 
 i.tracker_iconPic {
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     background-size: 16px;
     vertical-align: middle;
+    background-position: center;
+    background-repeat: no-repeat;
 }
