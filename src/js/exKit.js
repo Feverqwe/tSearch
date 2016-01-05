@@ -256,8 +256,74 @@ var exKit = {
             return this.idInCategoryList(tracker, cId);
         }
     },
+    listToFunction: function(key, list) {
+        "use strict";
+        if (!Array.isArray(list)) {
+            return null;
+        }
+
+        var funcList = [];
+        list.forEach(function(item) {
+            if (item.name === 'encode') {
+                if (item.type === 'cp1251') {
+                    funcList.push(function(details) {
+                        details.query = exKit.funcList.encodeCp1251(details.query);
+                    });
+                }
+            } else
+            if (item.name === 'replaceRe') {
+                var re = new RegExp(item.re, 'ig');
+                funcList.push(function(details, value) {
+                    return value.replace(re, item.text);
+                });
+            } else
+            if (item === 'replaceToday') {
+                funcList.push(function(details, value) {
+                    return exKit.funcList.todayReplace(value);
+                });
+            } else
+            if (item === 'replaceMonth') {
+                funcList.push(function(details, value) {
+                    return exKit.funcList.monthReplace(value);
+                });
+            } else
+            if (item.name === 'timeFormat') {
+                funcList.push(function(details, value) {
+                    return exKit.funcList.dateFormat(item.format, value);
+                });
+            } else
+            if (item === 'convertSize') {
+                funcList.push(function(details, value) {
+                    return exKit.funcList.sizeFormat(value);
+                });
+            } else
+            if (['onBeforeDomParse', 'onGetListItem', 'onGetValue'].indexOf(key) !== -1) {
+                if (item.substr(0, 0) === 'function') {
+                    // allow WebWorker mode function via Promise
+                }
+            }
+        });
+
+        if (!funcList.length) {
+            return null;
+        }
+
+        return function(details, value) {
+            for (var i = 0, _func; _func = funcList[i]; i++) {
+                try {
+                    value = _func(details, value);
+                } catch (e) {
+                    value = null;
+                    console.error('listToFunction error!', e);
+                    break;
+                }
+            }
+            return value;
+        }
+    },
     prepareCustomTracker: function (trackerJson) {
         "use strict";
+        var trackerObj = null;
         var id = null;
 
         if (trackerJson.version === 1) {
@@ -266,7 +332,7 @@ var exKit = {
                 return;
             }
 
-            var trackerObj = engine.trackerLib[id] = {};
+            trackerObj = engine.trackerLib[id] = {};
             trackerObj.code = JSON.stringify(trackerJson);
             trackerObj.icon = trackerJson.icon;
             trackerObj.id = id;
@@ -410,6 +476,30 @@ var exKit = {
                     };
                 }
             }
+            return trackerObj;
+        }
+
+        if (trackerJson.version === 2) {
+            id = 'ct_' + trackerJson.uid;
+            if (engine.trackerLib[id]) {
+                return;
+            }
+
+            engine.trackerLib[id] = trackerObj = JSON.parse(JSON.stringify(trackerJson));
+            trackerObj.code = JSON.stringify(trackerJson);
+            trackerObj.id = id;
+            trackerObj.flags = trackerObj.flags || {};
+
+            trackerObj.search = trackerObj.search || {};
+
+            trackerObj.search.onBeforeRequest = this.listToFunction('onBeforeRequest', trackerObj.search.onBeforeRequest);
+
+            trackerObj.search.onGetListItem = this.listToFunction('onGetListItem', trackerObj.search.onGetListItem);
+
+            for (var key in trackerObj.search.onGetValue) {
+                trackerObj.search.onGetValue[key] = this.listToFunction(key, trackerObj.search.onGetValue[key]);
+            }
+
             return trackerObj;
         }
     },
@@ -747,7 +837,7 @@ var exKit = {
 
         onSearch.onBegin && onSearch.onBegin(tracker);
 
-        if (tracker.search.onBeforeRequest !== undefined) {
+        if (tracker.search.onBeforeRequest) {
             tracker.search.onBeforeRequest(details);
         } else {
             details.query = encodeURIComponent(details.query);
@@ -797,7 +887,7 @@ var exKit = {
                 });
             }).catch(reject)
         }).then(function() {
-            if (tracker.search.onAfterRequest !== undefined) {
+            if (tracker.search.onAfterRequest) {
                 tracker.search.onAfterRequest(details);
                 if (details.result) {
                     return details.result;
