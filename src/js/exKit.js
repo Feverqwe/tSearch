@@ -297,10 +297,8 @@ var exKit = {
                     return exKit.funcList.sizeFormat(value);
                 });
             } else
-            if (['onBeforeDomParse', 'onGetListItem', 'onGetValue'].indexOf(key) !== -1) {
-                if (item.substr(0, 8) === 'function') {
-                    // allow WebWorker mode function via Promise
-                }
+            if (/^function.+};?$/.test(item) && ['onBeforeDomParse', 'onGetListItem', 'onGetValue'].indexOf(key) !== -1) {
+                // todo: allow WebWorker mode function via Promise
             }
         });
 
