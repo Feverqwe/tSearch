@@ -181,10 +181,6 @@ var magic = function() {
                 var convertItem = convert[key];
                 var list = [];
 
-                if (selectorItem.add_root && selectorItem.add_root.checked) {
-                    list.push('addBaseUrl');
-                }
-
                 if (convertItem) {
                     if (convertItem.regexp && convertItem.regexp.value) {
                         list.push({name: 'replaceRe', re: convertItem.regexp.value, text: convertItem.regexp_text.value});
@@ -312,9 +308,6 @@ var magic = function() {
                 }
                 if (selectorItem.output) {
                     selectorItem.output.value = '';
-                }
-                if (selectorItem.add_root) {
-                    selectorItem.add_root.checked = false;
                 }
                 if (selectorItem.attr) {
                     selectorItem.attr.value = '';
@@ -460,11 +453,6 @@ var magic = function() {
                 }
 
                 list.forEach(function(item) {
-                    if (item === 'addBaseUrl') {
-                        if (selectorItem.add_root) {
-                            selectorItem.add_root.checked = true;
-                        }
-                    } else
                     if (item.name === 'replaceRe') {
                         convertItem.regexp.value = item.re;
                         convertItem.regexp_text.value = item.text;
@@ -743,7 +731,6 @@ var magic = function() {
             var enable = selectorObj.enable;
             var output = selectorObj.output;
             var attr = selectorObj.attr;
-            var addRoot = selectorObj.add_root;
             var tableMode = selectorObj.table_mode;
             var skipFirst = this.nodeList.selectors.skip.first;
             var listInput = _this.nodeList.selectors.list.input;
@@ -863,9 +850,6 @@ var magic = function() {
                 input.disabled = !checked;
                 if (attr) {
                     attr.disabled = !checked;
-                }
-                if (addRoot) {
-                    addRoot.disabled = !checked;
                 }
             });
 
