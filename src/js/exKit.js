@@ -298,7 +298,7 @@ var exKit = {
                 });
             } else
             if (['onBeforeDomParse', 'onGetListItem', 'onGetValue'].indexOf(key) !== -1) {
-                if (item.substr(0, 0) === 'function') {
+                if (item.substr(0, 8) === 'function') {
                     // allow WebWorker mode function via Promise
                 }
             }
