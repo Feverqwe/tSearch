@@ -258,6 +258,7 @@ var exKit = {
     },
     listToFunction: function(key, list) {
         "use strict";
+        var promiseMode = false;
         if (!Array.isArray(list)) {
             return null;
         }
@@ -298,12 +299,28 @@ var exKit = {
                 });
             } else
             if (/^function.+};?$/.test(item) && ['onBeforeDomParse', 'onGetListItem', 'onGetValue'].indexOf(key) !== -1) {
-                // todo: allow WebWorker mode function via Promise
+                promiseMode = true;
+                funcList.push(exKit.createWorker(item));
             }
         });
 
         if (!funcList.length) {
             return null;
+        }
+
+        if (promiseMode) {
+            return function(details, value) {
+                var promise = Promise.resolve(value);
+                for (var i = 0, _func; _func = funcList[i]; i++) {
+                    promise = promise.then(function(_func, value) {
+                        return _func(details, value);
+                    }.bind(null, _func));
+                }
+                return promise.catch(function(err) {
+                    console.error('listToFunction error!', err);
+                    return null;
+                });
+            }
         }
 
         return function(details, value) {
@@ -487,7 +504,7 @@ var exKit = {
             ['onSelectorIsNotFound', 'onEmptySelectorValue', 'onGetValue'].forEach(function(sectionName) {
                 var section = trackerObj.search[sectionName];
                 for (var key in section) {
-                    section[key] = _this.listToFunction(key, section[key]);
+                    section[key] = _this.listToFunction(sectionName, section[key]);
                 }
             });
 
@@ -586,8 +603,7 @@ var exKit = {
         var _this = this;
         var key = details.key;
         var item = details.item;
-        var env = details.env;
-        var $node = env.$node;
+        var $node = details.$node;
         var tracker = details.tracker;
         var search = tracker.search;
 
@@ -602,7 +618,7 @@ var exKit = {
 
         if (!node && search.onSelectorIsNotFound[key]) {
             node = search.onSelectorIsNotFound[key](details);
-            if (env.abort) {
+            if (details.abort) {
                 return;
             }
         }
@@ -636,7 +652,7 @@ var exKit = {
 
         if (!value && search.onEmptySelectorValue[key]) {
             value = search.onEmptySelectorValue[key](details);
-            if (env.abort) {
+            if (details.abort) {
                 return;
             }
         }
@@ -662,7 +678,7 @@ var exKit = {
         }
 
         promise = promise.then(function(value) {
-            if (env.abort) {
+            if (details.abort) {
                 return;
             }
 
@@ -694,10 +710,8 @@ var exKit = {
     matchTorrentItem: function($node, details) {
         "use strict";
         var _this = this;
-        var env = details.env = {
-            abort: false,
-            $node: $node
-        };
+        details.abort = false;
+        details.$node = $node;
 
         var tracker = details.tracker;
         var search = tracker.search;
@@ -711,7 +725,7 @@ var exKit = {
         }
 
         promise = promise.then(function() {
-            if (env.abort) {
+            if (details.abort) {
                 return;
             }
 
@@ -954,3 +968,63 @@ exKit.funcList.dateFormat = exKit.legacy.dateFormat.bind(exKit.legacy);
 exKit.funcList.monthReplace = exKit.legacy.monthReplace.bind(exKit.legacy);
 exKit.funcList.sizeFormat = exKit.legacy.sizeFormat.bind(exKit.legacy);
 exKit.funcList.todayReplace = exKit.legacy.todayReplace.bind(exKit.legacy);
+
+exKit.createWorker = function(script) {
+    "use strict";
+    var index = 0;
+
+    var main = function() {
+        "use strict";
+        onmessage = function(e) {
+            var data = JSON.parse(e.data);
+
+            if (data.action === 'exec') {
+                var value = null;
+                var details = Object.create(data.details);
+                try {
+                    value = func(details, data.value);
+                } catch (e) {
+                    console.error('User script error!', e);
+                }
+                postMessage(JSON.stringify({action: 'response', id: data.id, value: value, details: details}));
+            }
+        };
+
+        var func = "{script}";
+    };
+
+    var blob = new Blob(['(' + main.toString().replace('"{script}"', script) + ')()' ], {type : 'application/javascript'});
+    var worker = new Worker(window.URL.createObjectURL(blob));
+    var stack = {};
+    worker.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        if (data.action === 'response') {
+            var item = stack[data.id];
+            var value = data.value;
+            var details = data.details;
+            for (var key in details) {
+                item.details[key] = details[key];
+            }
+            item.resolve(value);
+        }
+    };
+    return function(details, value) {
+        var id = ++index;
+        return new Promise(function(resolve, reject) {
+            stack[id] = {resolve: resolve, details: details};
+            Promise.resolve().then(function() {
+                var _details = {};
+                for (var key in details) {
+                    if (key[0] === '$') {
+                        continue;
+                    }
+                    _details[key] = details[key];
+                }
+                worker.postMessage(JSON.stringify({action: 'exec', id: id, value: value, details: _details}));
+            }).catch(function(err) {
+                delete stack[id];
+                reject(err);
+            });
+        });
+    }
+};
