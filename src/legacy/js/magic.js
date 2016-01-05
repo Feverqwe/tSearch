@@ -651,8 +651,8 @@ var magic = function() {
             var strPath = path.join('>');
 
             try {
-                var found = doc.querySelector(strPath);
-                if (found !== target) {
+                var found = $(doc).find(strPath);
+                if (found.get(0) !== target) {
                     console.error('Doc is not found! ', strPath);
                     throw '';
                 }
