@@ -402,7 +402,7 @@ var exKit = {
         }
         if (code.seed) {
             torrentSelector.seed = code.seed;
-            if (code.seed_r && code.seed_rp !== undefined) {
+            if (code.seed_r) {
                 onGetValue.seed = [
                     {
                         name: 'replaceRe',
@@ -414,7 +414,7 @@ var exKit = {
         }
         if (code.peer) {
             torrentSelector.peer = code.peer;
-            if (code.peer_r && code.peer_rp !== undefined) {
+            if (code.peer_r) {
                 onGetValue.peer = [
                     {
                         name: 'replaceRe',
@@ -430,7 +430,7 @@ var exKit = {
                 torrentSelector.date = {selector: torrentSelector.date, attr: code.date_attr};
             }
             var dateFuncList = [];
-            if (code.t_r && code.t_r_r !== undefined) {
+            if (code.t_r) {
                 dateFuncList.push({
                     name: 'replaceRe',
                     re: code.t_r,
@@ -444,7 +444,7 @@ var exKit = {
                 dateFuncList.push('replaceMonth');
             }
             if (code.t_f !== undefined && code.t_f !== "-1") {
-                dateFuncList.push({name: 'timeFormat', format: parseInt(code.t_f)});
+                dateFuncList.push({name: 'timeFormat', format: code.t_f});
             }
             if (dateFuncList.length) {
                 onGetValue.date = dateFuncList;

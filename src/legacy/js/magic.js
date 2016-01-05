@@ -190,8 +190,8 @@ var magic = function() {
                     if (convertItem.month && convertItem.month.checked) {
                         list.push('replaceMonth');
                     }
-                    if (convertItem.format && parseInt(convertItem.format.value) !== -1) {
-                        list.push({name: 'timeFormat', format: parseInt(convertItem.format.value)});
+                    if (convertItem.format && convertItem.format.value !== '-1') {
+                        list.push({name: 'timeFormat', format: convertItem.format.value});
                     }
                     if (convertItem.convert && convertItem.convert.checked) {
                         list.push('convertSize');
@@ -918,7 +918,7 @@ var magic = function() {
             var updateTime = function() {
                 var value = _this.nodeList.selectors.time.output.value;
                 var rText = regexpText.value;
-                var formatValue = parseInt(format.value);
+                var formatValue = format.value;
 
                 var _result = value;
                 if (regexp.value) {
@@ -930,7 +930,7 @@ var magic = function() {
                 if (month.checked) {
                     _result = exKit.funcList.monthReplace(_result);
                 }
-                if (formatValue !== -1) {
+                if (formatValue !== '-1') {
                     _result = exKit.funcList.dateFormat(formatValue, _result)
                 }
                 original.value = value;
