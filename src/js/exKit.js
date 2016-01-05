@@ -456,6 +456,7 @@ var exKit = {
     },
     prepareCustomTracker: function (code) {
         "use strict";
+        var _this = this;
         var trackerObj = null;
         var id = null;
 
@@ -478,13 +479,16 @@ var exKit = {
 
             trackerObj.flags.allowProxy = trackerObj.search.requestData ? 0 : 1;
 
-            trackerObj.search.onBeforeRequest = this.listToFunction('onBeforeRequest', trackerObj.search.onBeforeRequest);
+            ['onBeforeRequest', 'onAfterRequest', 'onBeforeDomParse', 'onAfterDomParse', 'onGetListItem'].forEach(function(key) {
+                trackerObj.search[key] = this.listToFunction(key, trackerObj.search[key]);
+            });
 
-            trackerObj.search.onGetListItem = this.listToFunction('onGetListItem', trackerObj.search.onGetListItem);
-
-            for (var key in trackerObj.search.onGetValue) {
-                trackerObj.search.onGetValue[key] = this.listToFunction(key, trackerObj.search.onGetValue[key]);
-            }
+            ['onSelectorIsNotFound', 'onEmptySelectorValue', 'onGetValue'].forEach(function(sectionName) {
+                var section = trackerObj.search[sectionName];
+                for (var key in section) {
+                    section[key] = _this.listToFunction(key, section[key]);
+                }
+            });
 
             return trackerObj;
         }
