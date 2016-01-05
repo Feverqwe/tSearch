@@ -993,7 +993,7 @@ exKit.createWorker = function(script) {
         var func = "{script}";
     };
 
-    var blob = new Blob(['(' + main.toString().replace('"{script}"', script) + ')()' ], {type : 'application/javascript'});
+    var blob = new Blob(['(' + main.toString().replace('"{script}"', script) + ')();' ], {type : 'application/javascript'});
     var worker = new Worker(window.URL.createObjectURL(blob));
     var stack = {};
     worker.onmessage = function(e) {
