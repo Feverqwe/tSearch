@@ -34,8 +34,11 @@
                 <input type="text" data-id="search_request"/>
             </label>
             <label>
-                <input type="checkbox" data-id="search_cp1251">
-                <span data-lang="magic_12">Конвертировать кириллицу в cp1251</span>
+                <span data-lang="kitQueryEncoding">{Query encoding}</span>
+                <select data-id="search_queryEncoding">
+                    <option value="utf-8" selected>utf-8</option>
+                    <option value="cp1251">cp1251</option>
+                </select>
             </label>
             <label>
                 <span data-lang="magic_64">Custom charset</span>

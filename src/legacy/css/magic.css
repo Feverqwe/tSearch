@@ -135,6 +135,7 @@ div.tools .page.search label > input[data-id="search_root"] {
 div.tools .page.search label > input[data-id="search_charset"] {
     width: 150px;
 }
+div.tools .page.search label:nth-child(4) > span:nth-child(1),
 div.tools .page.search label:nth-child(5) > span:nth-child(1),
 div.tools .page.search label:nth-child(6) > span:nth-child(1),
 div.tools .page.search label:nth-child(7) > span:nth-child(1){

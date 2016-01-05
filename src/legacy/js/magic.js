@@ -531,81 +531,6 @@ var magic = function() {
         var_cache.writePath = undefined;
         var_cache.list_input_dom = undefined;
     };
-    var updateTimeConverter = function() {
-        var text = input_list.selectors.time.output.val();
-        input_list.convert.time.original.val( text );
-        var value_regexp = input_list.convert.time.regexp.val();
-        var value_regexp_text = input_list.convert.time.regexp_text.val();
-        var isTodayReplace = input_list.convert.time.today.prop('checked');
-        var isMonthReplace = input_list.convert.time.month.prop('checked');
-        var timeFormat = parseInt(input_list.convert.time.format.val());
-        if (value_regexp) {
-            var regexp = new RegExp(value_regexp, 'ig');
-            text = text.replace(regexp, value_regexp_text);
-        }
-        if (isTodayReplace) {
-            text = ex_kit.today_replace(text, timeFormat);
-        }
-        if (isMonthReplace) {
-            text = ex_kit.month_replace(text);
-        }
-        if (timeFormat !== -1) {
-            text = ex_kit.format_date(timeFormat, text);
-        }
-        input_list.convert.time.converted.val(text);
-        input_list.convert.time.result.val( new Date(text * 1000) );
-    };
-    var updateSizeConverter = function() {
-        var text = input_list.selectors.size.output.val();
-        input_list.convert.size.original.val( text );
-        var value_regexp = input_list.convert.size.regexp.val();
-        var value_regexp_text = input_list.convert.size.regexp_text.val();
-        var isConvert = input_list.convert.size.convert.prop('checked');
-        if (value_regexp) {
-            var regexp = new RegExp(value_regexp, 'ig');
-            text = text.replace(regexp, value_regexp_text);
-        }
-        if (isConvert) {
-            text = ex_kit.format_size(text);
-        }
-        input_list.convert.size.converted.val( text );
-        input_list.convert.size.result.val( bytesToSize(text) );
-    };
-    var updatePeerConverter = function() {
-        var text = input_list.selectors.peer.output.val();
-        input_list.convert.peer.original.val( text );
-        var value_regexp = input_list.convert.peer.regexp.val();
-        var value_regexp_text = input_list.convert.peer.regexp_text.val();
-        if (value_regexp) {
-            var regexp = new RegExp(value_regexp, 'ig');
-            text = text.replace(regexp, value_regexp_text);
-        }
-        input_list.convert.peer.converted.val( text );
-        input_list.convert.peer.result.val( parseInt(text) );
-    };
-    var updateSeedConverter = function() {
-        var text = input_list.selectors.seed.output.val();
-        input_list.convert.seed.original.val( text );
-        var value_regexp = input_list.convert.seed.regexp.val();
-        var value_regexp_text = input_list.convert.seed.regexp_text.val();
-        if (value_regexp) {
-            var regexp = new RegExp(value_regexp, 'ig');
-            text = text.replace(regexp, value_regexp_text);
-        }
-        input_list.convert.seed.converted.val( text );
-        input_list.convert.seed.result.val( parseInt(text) );
-    };
-    var hashCode = function(s) {
-        var hash = 0, i, char_;
-        if (s.length === 0)
-            return hash;
-        for (i = 0; i < s.length; i++) {
-            char_ = s.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char_;
-            hash = hash & hash; // Convert to 32bit integer
-        }
-        return (hash < 0) ? hash * -1 : hash;
-    };
     return {
         domCache: {
             menu: document.getElementById('menu'),
@@ -660,9 +585,14 @@ var magic = function() {
             }
 
             var query = this.nodeList.search.request.value;
-            if (this.nodeList.search.cp1251.checked) {
-                query = exKit.funcList.encodeCp1251(query);
+
+            var encoding = this.nodeList.search.query_encoding.value;
+            if (encoding !== 'utf-8') {
+                if (encoding === 'cp1251') {
+                    query = exKit.funcList.encodeCp1251(query);
+                }
             }
+
             url = url.replace('%search%', query);
             post = post.replace('%search%', query);
 
@@ -701,10 +631,32 @@ var magic = function() {
             }
             this.varCache.lastXhr = mono.ajax(params);
         },
+        getHash: function(data) {
+            var hash = 0, char_ = null;
+            if (data.length === 0) {
+                return hash;
+            }
+
+            for (var i = 0, len = data.length; i < len; i++) {
+                char_ = data.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char_;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+
+            return (hash < 0) ? hash * -1 : hash;
+        },
         getCode: function() {
             var nodeList = this.nodeList;
             var selectors = nodeList.selectors;
             var convert = nodeList.convert;
+
+            var getIcon = function() {
+                var icon = nodeList.desk.tracker.icon.value;
+                if (!icon) {
+                    icon = '#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
+                }
+                return icon;
+            };
 
             var getCharset = function() {
                 var value = null;
@@ -716,8 +668,10 @@ var magic = function() {
 
             var getQueryEncoding = function() {
                 var list = [];
-                if (nodeList.search.cp1251.checked) {
-                    list.push({name: 'encode', type: 'cp1251'});
+
+                var encoding = nodeList.search.query_encoding.value;
+                if (encoding !== 'utf-8') {
+                    list.push({name: 'encode', type: encoding});
                 }
 
                 if (list.length === 0) {
@@ -743,6 +697,17 @@ var magic = function() {
                 }
 
                 return obj;
+            };
+
+            var getSplice = function() {
+                var start = parseInt(nodeList.selectors.skip.first.value);
+                var end = parseInt(nodeList.selectors.skip.last.value);
+
+                if (!start && !end) {
+                    return null;
+                }
+
+                return [start, end];
             };
 
             var getOnGetValueObj = function(key) {
@@ -783,7 +748,7 @@ var magic = function() {
                 version: 2,
                 type: 'kit',
                 title: nodeList.desk.tracker.title.value,
-                icon: nodeList.desk.tracker.icon.value,
+                icon: getIcon(),
                 desc: nodeList.desk.tracker.desk.value,
                 search: {
                     loginUrl: nodeList.auth.url.value,
@@ -795,10 +760,7 @@ var magic = function() {
                     requestMimeType: getCharset(),
                     onBeforeRequest: getQueryEncoding(),
                     listItemSelector: nodeList.selectors.list.input.value,
-                    listItemSplice: [
-                        parseInt(nodeList.selectors.skip.first.value),
-                        parseInt(nodeList.selectors.skip.last.value)
-                    ],
+                    listItemSplice: getSplice(),
                     torrentSelector: {
                         categoryTitle: getSelectorObj('category_name'),
                         categoryUrl: getSelectorObj('category_link'),
@@ -823,16 +785,40 @@ var magic = function() {
                     }
                 }
             };
+
+            (function iter(obj) {
+                for (var key in obj) {
+                    var item = obj[key];
+                    if (item === null) {
+                        delete obj[key];
+                        continue;
+                    }
+
+                    if (typeof item === 'object' && !Array.isArray(item)) {
+                        iter(item);
+
+                        if (!Object.keys(item).length) {
+                            delete obj[key];
+                            continue;
+                        }
+                    }
+                }
+            })(code);
+
+            code.uid = this.getHash(JSON.stringify(code));
+
             return JSON.stringify(code);
         },
         bindSavePage: function() {
             var _this = this;
-            this.nodeList.save.code.write.on('click', function(e){
+            var save = this.nodeList.save.code;
+            save.write.addEventListener('click', function(e){
                 e.preventDefault();
-                this.getCode();
+
+                save.textarea.value = _this.getCode();
             });
 
-            this.nodeList.code.read.on('click', function(e){
+            save.read.addEventListener('click', function(e){
                 e.preventDefault();
                 read_code();
             });
@@ -1061,16 +1047,20 @@ var magic = function() {
 
             var setOutput = function(node) {
                 var result = null;
+
                 attr && attr.classList.remove('error');
-                if (attr && attr.value) {
-                    var value = node.getAttribute(attr.value);
+
+                var attrValue = attr && attr.value;
+                if (!attrValue && ['category_link', 'torrent_link', 'torrent_dl'].indexOf(key) !== -1) {
+                    attrValue = 'href';
+                }
+
+                if (attrValue) {
+                    var value = node.getAttribute(attrValue);
                     if (value === null) {
-                        attr.classList.add('error');
+                        attr && attr.classList.add('error');
                     }
-                    result = value || '';
-                } else
-                if (['category_link', 'torrent_link', 'torrent_dl'].indexOf(key) !== -1) {
-                    result = node.getAttribute('href') || '';
+                    result = exKit.contentUnFilter(value || '');
                 } else {
                     result = node.textContent;
                 }
