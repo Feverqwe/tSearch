@@ -1,26 +1,5 @@
 var magic = function() {
     "use strict";
-    var form_empty = function() {
-        for (var key in input_list) {
-            var item = input_list[key];
-            if (item.subSection) {
-                for (var subKey in item) {
-                    if (subKey === 'subSection') {
-                        continue;
-                    }
-                    var subItem = item[subKey];
-                    bindNodeList(subKey, subItem, key, 1);
-                }
-            } else {
-                bindNodeList(key, item, null, 1);
-            }
-        }
-        dom_cache.iframe.contentDocument.all[0].innerHTML = '';
-        var_cache.pageDOM = undefined;
-        var_cache.ifContent = undefined;
-        var_cache.writePath = undefined;
-        var_cache.list_input_dom = undefined;
-    };
     return {
         domCache: {
             menu: document.getElementById('menu'),
