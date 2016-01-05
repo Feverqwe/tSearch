@@ -221,7 +221,7 @@
     "kitReplaceMonth": {"message": "Replace the names of the months in numbers"},
     "kitUseTemplate": {"message": "To apply a template to the string"},
     "kitSourceString": {"message": "Source string"},
-    "kitConvertedString": {"message": "Сonverted string"},
+    "kitConvertedString": {"message": "Converted string"},
     "kitResult": {"message": "Result"},
     "kitConvertToNumber": {"message": "Convert to a number"},
     "kitIcon": {"message": "Tracker icon (16x16)"},
