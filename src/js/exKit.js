@@ -480,7 +480,7 @@ var exKit = {
             trackerObj.flags.allowProxy = trackerObj.search.requestData ? 0 : 1;
 
             ['onBeforeRequest', 'onAfterRequest', 'onBeforeDomParse', 'onAfterDomParse', 'onGetListItem'].forEach(function(key) {
-                trackerObj.search[key] = this.listToFunction(key, trackerObj.search[key]);
+                trackerObj.search[key] = _this.listToFunction(key, trackerObj.search[key]);
             });
 
             ['onSelectorIsNotFound', 'onEmptySelectorValue', 'onGetValue'].forEach(function(sectionName) {
