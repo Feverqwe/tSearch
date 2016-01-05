@@ -876,8 +876,7 @@ var exKit = {
                     },
                     success: function (data, xhr) {
                         details.data = exKit.contentFilter(data);
-                        details.responseUrl = xhr.responseUrl;
-
+                        details.responseUrl = xhr.responseURL;
                         resolve();
                     },
                     error: function (xhr) {
