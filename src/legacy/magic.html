@@ -13,23 +13,23 @@
 <body>
 <div class="tools">
     <div class="menu" id="menu">
-        <a class="active" href="#search" data-page="search" data-lang="magic_2">Поиск</a>
-        <a href="#selectors" data-page="selectors" data-lang="magic_3">Селекторы</a>
-        <a href="#convert" data-page="convert" data-lang="magic_4">Конвертация</a>
-        <a href="#auth" data-page="auth" data-lang="magic_5">Авторизация</a>
-        <a href="#desk" data-page="desk" data-lang="magic_6">Описание</a>
-        <a href="#save" data-page="save" data-lang="magic_7">Сохранить \ Загрузить</a>
+        <a class="active" href="#search" data-page="search" data-lang="kitSearch">{Search}</a>
+        <a href="#selectors" data-page="selectors" data-lang="kitSelectors">{Selectors}</a>
+        <a href="#convert" data-page="convert" data-lang="kitConvert">{Convert}</a>
+        <a href="#auth" data-page="auth" data-lang="kitLogin">{Login}</a>
+        <a href="#desk" data-page="desk" data-lang="kitDesc">{Desc}</a>
+        <a href="#save" data-page="save" data-lang="kitSaveLoad">{Save\load code}</a>
     </div>
     <div class="body" id="container">
         <div class="page search active">
-            <h2 data-lang="magic_8">Результаты поиска</h2>
+            <h2 data-lang="kitSearch">{Search}</h2>
             <label>
-                <span data-lang="magic_9">URL страницы с результатами</span>
+                <span data-lang="kitSearchUrl">{Search results page url}</span>
                 <input type="text" data-id="search_url"/>
-                <input type="button" data-id="search_open" data-lang="magic_10" value="Открыть"/>
+                <input type="button" data-id="search_open" data-lang="kitOpen" value="{Open}"/>
             </label>
             <label>
-                <span data-lang="magic_11">Запрос поиска (в параметрах запроса используйте переменную %search%)</span>
+                <span data-lang="kitQuery">{Search query}</span>
                 <input type="text" data-id="search_request"/>
             </label>
             <label>
@@ -40,229 +40,229 @@
                 </select>
             </label>
             <label>
-                <span data-lang="magic_64">Custom charset</span>
+                <span data-lang="kitPageCharset">{Page charset}</span>
                 <input type="text" data-id="search_charset" placeholder="auto">
             </label>
             <label>
-                <span data-lang="magic_13">POST запрос</span>
+                <span data-lang="kitPostParams">{POST params}</span>
                 <input type="text" data-id="search_post" placeholder="key=value&key2=value2"/>
             </label>
             <label>
-                <span data-lang="magic_14">Основной url</span>
+                <span data-lang="kitBaseUrl">{Base url}</span>
                 <input type="text" data-id="search_root"/>
             </label>
         </div>
         <div class="page auth">
-            <h2 data-lang="magic_15">Определение страницы авторизации</h2>
+            <h2 data-lang="kitLogin">{Login}</h2>
             <label>
-                <span data-lang="magic_16">URL страницы входа</span>
+                <span data-lang="kitLoginUrl">{Login page url}</span>
                 <input type="text" data-id="auth_url"/>
-                <input type="button" data-id="auth_open" value="Открыть" data-lang="magic_17"/>
+                <input type="button" data-id="auth_open" value="{Open}" data-lang="kitOpen"/>
             </label>
             <label>
-                <span data-lang="magic_18">Форма входа</span>
+                <span data-lang="kitLoginFormSelector">{Login form selector}</span>
                 <input type="text" data-id="auth_input"/>
-                <input type="button" data-id="auth_btn" value="Выбрать" data-lang="magic_19"/>
+                <input type="button" data-id="auth_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
         </div>
         <div class="page selectors">
-            <h2 data-lang="magic_20">Селекторы</h2>
+            <h2 data-lang="kitSelectors">{Selectors}</h2>
             <label>
-                <span data-lang="magic_21">Строка в траблице</span>
+                <span data-lang="kitListItem">{List item selector}</span>
                 <input type="text" data-id="selectors_list_input"/>
                 <input type="checkbox" data-id="selectors_list_tableMode"/>
-                <span data-lang="magic_61">Таблица</span>
-                <input type="button" data-id="selectors_list_btn" value="Выбрать" data-lang="magic_19"/>
+                <span data-lang="kitTableMode">{Table mode}</span>
+                <input type="button" data-id="selectors_list_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
                 <input type="checkbox" data-id="selectors_categoryName_enable"/>
-                <span data-lang="magic_22">Название категории</span>
+                <span data-lang="kitCategoryName">{Category name}</span>
                 <input type="text" data-id="selectors_categoryName_input"/>
                 <input type="text" data-id="selectors_categoryName_output"/>
-                <span data-lang="magic_62">Атрибут</span>
+                <span data-lang="kitAttribute">{Attribute}</span>
                 <input type="text" data-id="selectors_categoryName_attr"/>
-                <input type="button" data-id="selectors_categoryName_btn" value="Выбрать" data-lang="magic_19"/>
+                <input type="button" data-id="selectors_categoryName_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
                 <input type="checkbox" data-id="selectors_categoryLink_enable"/>
-                <span data-lang="magic_23">Ссылка на категорию</span>
+                <span data-lang="kitCategoryLink">{Category link}</span>
                 <input type="text" data-id="selectors_categoryLink_input"/>
                 <input type="text" data-id="selectors_categoryLink_output"/>
-                <input type="button" data-id="selectors_categoryLink_btn" value="Выбрать" data-lang="magic_19"/>
+                <input type="button" data-id="selectors_categoryLink_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
-                <span data-lang="magic_25">Название раздачи</span>
+                <span data-lang="kitTorrentTitle">{Torrent title}</span>
                 <input type="text" data-id="selectors_torrentName_input"/>
                 <input type="text" data-id="selectors_torrentName_output"/>
-                <input type="button" data-id="selectors_torrentName_btn" value="Выбрать" data-lang="magic_19"/>
+                <input type="button" data-id="selectors_torrentName_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
-                <span data-lang="magic_26">Ссылка на раздачу</span>
+                <span data-lang="kitTorrentLink">{Torent link}</span>
                 <input type="text" data-id="selectors_torrentLink_input"/>
                 <input type="text" data-id="selectors_torrentLink_output"/>
-                <input type="button" data-id="selectors_torrentLink_btn" value="Выбрать" data-lang="magic_19"/>
+                <input type="button" data-id="selectors_torrentLink_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
                 <input type="checkbox" data-id="selectors_size_enable"/>
-                <span data-lang="magic_28">Размер раздачи</span>
+                <span data-lang="kitTorrentSize">{Torrent size}</span>
                 <input type="text" data-id="selectors_size_input"/>
                 <input type="text" data-id="selectors_size_output"/>
-                <span data-lang="magic_62">Атрибут</span>
+                <span data-lang="kitAttribute">{Attribute}</span>
                 <input type="text" data-id="selectors_size_attr"/>
-                <input type="button" data-id="selectors_size_btn" value="Выбрать" data-lang="magic_19"/>
+                <input type="button" data-id="selectors_size_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
                 <input type="checkbox" data-id="selectors_torrentDl_enable"/>
-                <span data-lang="magic_29">Ссылка на скачку раздачи</span>
+                <span data-lang="kitTorrentDownloadLink">{Torrent download link}</span>
                 <input type="text" data-id="selectors_torrentDl_input"/>
                 <input type="text" data-id="selectors_torrentDl_output"/>
-                <input type="button" data-id="selectors_torrentDl_btn" value="Выбрать" data-lang="magic_19"/>
+                <input type="button" data-id="selectors_torrentDl_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
                 <input type="checkbox" data-id="selectors_seed_enable"/>
-                <span data-lang="magic_31">Количество сидов</span>
+                <span data-lang="kitSeedCount">{Seed count}</span>
                 <input type="text" data-id="selectors_seed_input"/>
                 <input type="text" data-id="selectors_seed_output"/>
-                <input type="button" data-id="selectors_seed_btn" value="Выбрать" data-lang="magic_19"/>
+                <input type="button" data-id="selectors_seed_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
                 <input type="checkbox" data-id="selectors_peer_enable"/>
-                <span data-lang="magic_32">Количество пиров</span>
+                <span data-lang="kitPeerCount">{Peer count}</span>
                 <input type="text" data-id="selectors_peer_input"/>
                 <input type="text" data-id="selectors_peer_output"/>
-                <input type="button" data-id="selectors_peer_btn" value="Выбрать" data-lang="magic_19"/>
+                <input type="button" data-id="selectors_peer_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
                 <input type="checkbox" data-id="selectors_time_enable"/>
-                <span data-lang="magic_33">Дата добавления раздачи</span>
+                <span data-lang="kitCreateTime">{Create time}</span>
                 <input type="text" data-id="selectors_time_input"/>
                 <input type="text" data-id="selectors_time_output"/>
-                <span data-lang="magic_62">Атрибут</span>
+                <span data-lang="kitAttribute">{Attribute}</span>
                 <input type="text" data-id="selectors_time_attr"/>
-                <input type="button" data-id="selectors_time_btn" value="Выбрать" data-lang="magic_19"/>
+                <input type="button" data-id="selectors_time_btn" value="{Select}" data-lang="kitSelect"/>
             </label>
             <label>
-                <span data-lang="magic_34">Пропустить первые n строк</span>
+                <span data-lang="kitSkipFirstLine">{Skip first N lines}</span>
                 <input type="number" data-id="selectors_skip_first" value="0"/>
             </label>
             <label>
-                <span data-lang="magic_35">Пропустить последнии n строк</span>
+                <span data-lang="kitSkipLastLine">{Skip last N lines}</span>
                 <input type="number" data-id="selectors_skip_last" value="0"/>
             </label>
         </div>
         <div class="page convert">
-            <h2 data-lang="magic_36">Конвертрование</h2>
+            <h2 data-lang="kitConvert">{Convert}</h2>
 
-            <h3 data-lang="magic_37">Дата добавления раздачи</h3>
+            <h3 data-lang="kitCreateTime">{Create time}</h3>
             <label>
-                <span data-lang="magic_38">Применить regexp</span>
+                <span data-lang="kitRegexpPattern">{Regexp pattern}</span>
                 <input data-id="convert_time_regexp" type="text"/>
-                <span data-lang="magic_39">заменить на</span>
+                <span data-lang="kitReplaceTo">{replace to}</span>
                 <input data-id="convert_time_regexpText" type="text"/>
             </label>
             <label>
                 <input data-id="convert_time_today" type="checkbox"/>
-                <span data-lang="magic_63">Заменить слова сегодня\вчера\сейчас</span>
+                <span data-lang="kitReplaceToday">{Replace words now\today\yesterday}</span>
             </label>
             <label>
                 <input data-id="convert_time_month" type="checkbox"/>
-                <span data-lang="magic_40">Заменить название месяца на число</span>
+                <span data-lang="kitReplaceMonth">{Replace month name to number}</span>
             </label>
             <label>
-                <span data-lang="magic_41">Конвернтировать время в Unix timestamp из формата</span>
+                <span data-lang="kitUseTimePatter">{Apply time pattern}</span>
                 <select data-id="convert_time_format"></select>
             </label>
             <label>
-                <span data-lang="magic_42">Исходная строка</span>
+                <span data-lang="kitSourceString">{Source string}</span>
                 <input data-id="convert_time_original" type="text"/>
-                <span data-lang="magic_43">Конвертированная</span>
+                <span data-lang="kitConvertedString">{Сonverted string}</span>
                 <input data-id="convert_time_converted" type="text"/>
             </label>
             <label>
-                <span data-lang="magic_44">Итог</span>
+                <span data-lang="kitResult">{Result}</span>
                 <input data-id="convert_time_result" type="text"/>
             </label>
 
-            <h3 data-lang="magic_45">Размер торрента</h3>
+            <h3 data-lang="kitTorrentSize">{Torrent size}</h3>
             <label>
-                <span data-lang="magic_38">Применить regexp</span>
+                <span data-lang="kitRegexpPattern">{Regexp pattern}</span>
                 <input data-id="convert_size_regexp" type="text"/>
-                <span data-lang="magic_39">заменить на</span>
+                <span data-lang="kitReplaceTo">{replace to}</span>
                 <input data-id="convert_size_regexpText" type="text"/>
             </label>
             <label>
                 <input data-id="convert_size_convert" type="checkbox"/>
-                <span data-lang="magic_46">Преобразовать</span>
+                <span data-lang="kitConvert">{Convert}</span>
             </label>
             <label>
-                <span data-lang="magic_47">Исходная строка</span>
+                <span data-lang="kitSourceString">{Source string}</span>
                 <input data-id="convert_size_original" type="text"/>
-                <span data-lang="magic_48">Конвертированная</span>
+                <span data-lang="kitConvertedString">{Сonverted string}</span>
                 <input data-id="convert_size_converted" type="text"/>
             </label>
             <label>
-                <span data-lang="magic_44">Итог</span>
+                <span data-lang="kitResult">{Result}</span>
                 <input data-id="convert_size_result" type="text"/>
             </label>
 
-            <h3 data-lang="magic_59">Сиды</h3>
+            <h3 data-lang="kitSeedCount">{Seed count}</h3>
             <label>
-                <span data-lang="magic_38">Применить regexp</span>
+                <span data-lang="kitRegexpPattern">{Regexp pattern}</span>
                 <input data-id="convert_seed_regexp" type="text"/>
-                <span data-lang="magic_39">заменить на</span>
+                <span data-lang="kitReplaceTo">{replace to}</span>
                 <input data-id="convert_seed_regexpText" type="text"/>
             </label>
             <label>
-                <span data-lang="magic_47">Исходная строка</span>
+                <span data-lang="kitSourceString">{Source string}</span>
                 <input data-id="convert_seed_original" type="text"/>
-                <span data-lang="magic_48">Конвертированная</span>
+                <span data-lang="kitConvertedString">{Сonverted string}</span>
                 <input data-id="convert_seed_converted" type="text"/>
             </label>
             <label>
-                <span data-lang="magic_44">Итог</span>
+                <span data-lang="kitResult">{Result}</span>
                 <input data-id="convert_seed_result" type="text"/>
             </label>
 
-            <h3 data-lang="magic_60">Пиры</h3>
+            <h3 data-lang="kitPeerCount">{Peer count}</h3>
             <label>
-                <span data-lang="magic_38">Применить regexp</span>
+                <span data-lang="kitRegexpPattern">{Regexp pattern}</span>
                 <input data-id="convert_peer_regexp" type="text"/>
-                <span data-lang="magic_39">заменить на</span>
+                <span data-lang="kitReplaceTo">{replace to}</span>
                 <input data-id="convert_peer_regexpText" type="text"/>
             </label>
             <label>
-                <span data-lang="magic_47">Исходная строка</span>
+                <span data-lang="kitSourceString">{Source string}</span>
                 <input data-id="convert_peer_original" type="text"/>
-                <span data-lang="magic_48">Конвертированная</span>
+                <span data-lang="kitConvertedString">{Сonverted string}</span>
                 <input data-id="convert_peer_converted" type="text"/>
             </label>
             <label>
-                <span data-lang="magic_44">Итог</span>
+                <span data-lang="kitResult">{Result}</span>
                 <input data-id="convert_peer_result" type="text"/>
             </label>
         </div>
         <div class="page desk">
-            <h2 data-lang="magic_49">Описание торрент-трекера</h2>
+            <h2 data-lang="kitDesc">{Desc}</h2>
             <label>
-                <span data-lang="magic_50">base64 иконка (16x16px)</span>
+                <span data-lang="kitIcon">{Icon}</span>
                 <i class="tracker_iconPic" data-id="desk_tracker_iconPic"></i>
                 <input type="file" data-id="desk_tracker_iconFile"/>
                 <input type="hidden" data-id="desk_tracker_icon" placeholder="data:image/png,base64:"/>
             </label>
             <label>
-                <span data-lang="magic_51">Название торрента</span>
+                <span data-lang="kitTrackerName">{Tracker name}</span>
                 <input type="text" data-id="desk_tracker_title"/>
             </label>
             <label>
-                <span data-lang="magic_52">Описание торрента</span>
+                <span data-lang="kitTrackerDesc">{Tracker description}</span>
                 <input type="text" data-id="desk_tracker_desk"/>
             </label>
         </div>
         <div class="page save">
-            <h2 data-lang="magic_56">Сохранить\Загрузить</h2>
+            <h2 data-lang="kitSaveLoad">{Save\load code}</h2>
             <label>
-                <input type="button" data-id="save_code_write" value="Получить код" data-lang="magic_57"/>
-                <input type="button" data-id="save_code_read" value="Загрузить код" data-lang="magic_58"/>
+                <input type="button" data-id="save_code_write" value="{Get code}" data-lang="kitGetCode"/>
+                <input type="button" data-id="save_code_read" value="{Read code}" data-lang="kitWriteCode"/>
             </label>
             <label>
                 <textarea data-id="save_code_textarea"></textarea>
