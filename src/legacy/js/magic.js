@@ -641,8 +641,8 @@ var magic = function() {
                         continue;
                     }
 
-                    var index = nodeList.indexOf(node) + 1;
-                    path.unshift(tagName.toLowerCase() + ':nth-child(' + index + ')');
+                    var index = nodeList.indexOf(node);
+                    path.unshift(tagName.toLowerCase() + ':eq(' + index + ')');
                 }
 
                 next();
@@ -778,7 +778,7 @@ var magic = function() {
                 }
 
                 if (output && path.indexOf(listInput.value) === 0) {
-                    path = path.substr(listInput.value.length).replace(/^:nth-child\(\d+\)\s*>\s*/, '');
+                    path = path.substr(listInput.value.length).replace(/^:eq\(\d+\)\s*>\s*/, '');
                 }
 
                 input.value = path;
