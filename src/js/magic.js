@@ -292,7 +292,6 @@ var magic = function() {
             this.varCache.uid = null;
 
             nodeList.search.url.value = '';
-            nodeList.search.request.value = '';
             nodeList.search.query_encoding.selectedIndex = 0;
             nodeList.search.charset.value = '';
             nodeList.search.post.value = '';
