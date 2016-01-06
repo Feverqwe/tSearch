@@ -613,8 +613,6 @@ var magic = function() {
         getNodePath: function(node, container) {
             var doc = this.varCache.frameDoc;
             var $doc = this.varCache.$frameDoc;
-
-            var containerNode = container && container.node;
             var path = [];
 
             var next = function() {
@@ -628,7 +626,7 @@ var magic = function() {
                     break;
                 }
 
-                if (node === containerNode) {
+                if (node === container.node) {
                     path.unshift(container.path);
                     break;
                 }
@@ -884,15 +882,11 @@ var magic = function() {
             };
 
             btn.addEventListener('click', function() {
-                var container = null;
+                var container = {};
                 if (output) {
                     var $frameDoc = _this.varCache.$frameDoc;
-                    var path = listInput.value + ':eq(' + getStartIndex() + ')';
-                    var parent = $frameDoc.find(path).get(0);
-                    container = {
-                        path: path,
-                        node: parent
-                    };
+                    container.path = listInput.value + ':eq(' + getStartIndex() + ')';
+                    container.parent = $frameDoc.find(path).get(0);
                 }
                 _this.getSelectMode({
                     container: container,
