@@ -615,7 +615,7 @@ var magic = function() {
             var target = node;
             while(node) {
                 var parent = node.parentNode;
-                if (!parent) {
+                if (!parent || parent.nodeType !== 1) {
                     break;
                 }
 
@@ -670,6 +670,13 @@ var magic = function() {
 
             return strPath;
         },
+        rmDocKitSelect: function() {
+            var selectClassName = 'kit_select';
+            var frameDoc = this.varCache.frameDoc;
+            [].slice.call(frameDoc.querySelectorAll('.' + selectClassName)).forEach(function(node) {
+                node.classList.remove(selectClassName);
+            });
+        },
         getSelectMode: function(details) {
             var _this = this;
             var selectClassName = 'kit_select';
@@ -719,9 +726,7 @@ var magic = function() {
             var lastNode = null;
             var lastPatch = null;
 
-            [].slice.call(frameDoc.querySelectorAll('.' + selectClassName)).forEach(function(node) {
-                node.classList.remove(selectClassName);
-            });
+            this.rmDocKitSelect();
 
             frameDoc.addEventListener('mouseover', onMouseOver);
             frameDoc.addEventListener('click', onClick);
@@ -758,6 +763,24 @@ var magic = function() {
                 return index;
             };
 
+            var selectNode = function(path) {
+                var nodeList = null;
+                var $frameDoc = $(_this.varCache.frameDoc);
+                try {
+                    if (output) {
+                        nodeList = $frameDoc.find(listInput.value).eq(getStartIndex()).find(path);
+                    } else {
+                        nodeList = $frameDoc.find(path);
+                    }
+                } catch (e) {}
+
+                _this.rmDocKitSelect();
+
+                if (nodeList && nodeList.length) {
+                    nodeList[0].classList.add('kit_select');
+                }
+            };
+
             var checkPath = function(path) {
                 var nodeList = null;
                 var $dom = _this.varCache.$frameDom;
@@ -768,6 +791,7 @@ var magic = function() {
                         nodeList = $dom.find(path);
                     }
                 } catch (e) {}
+
                 if (!nodeList || !nodeList.length) {
                     input.classList.add('error');
                 } else {
@@ -845,10 +869,12 @@ var magic = function() {
 
             input.addEventListener('keyup', function() {
                 checkPath(input.value);
+                selectNode(input.value);
             });
 
             attr && attr.addEventListener('keyup', function() {
                 checkPath(input.value);
+                selectNode(input.value);
             });
 
             tableMode && tableMode.addEventListener('change', function() {
