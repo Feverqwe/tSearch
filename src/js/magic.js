@@ -37,7 +37,7 @@ var magic = function() {
                 node.removeAttribute('style');
             });
         },
-        openPage: function(url, post) {
+        openPage: function(url, post, cb) {
             var _this = this;
             post = post || '';
             if (!url) {
@@ -80,6 +80,11 @@ var magic = function() {
                     documentElement.appendChild(mono.create('style', {
                         text: '.kit_select{color:#000 !important;background-color:#FFCC33 !important;cursor:pointer;box-shadow: 0 0 3px red, inset 0 0 3px red !important;}'
                     }));
+
+                    cb && cb(true);
+                },
+                error: function() {
+                    cb && cb(false);
                 }
             };
             if (this.nodeList.search.charset.value) {
@@ -767,6 +772,7 @@ var magic = function() {
             var attr = selectorObj.attr;
             var tableMode = selectorObj.table_mode;
             var skipFirst = this.nodeList.selectors.skip.first;
+            var skipLast = this.nodeList.selectors.skip.last;
             var listInput = _this.nodeList.selectors.list.input;
 
             var getStartIndex = function() {
@@ -781,7 +787,21 @@ var magic = function() {
                 return index;
             };
 
-            var selectNode = function(path) {
+            var getEndIndex = function() {
+                var index = skipLast.value;
+                index = parseInt(index);
+                if (index !== 0 && !index) {
+                    skipLast.classList.add('error');
+                    index = 0;
+                } else {
+                    skipLast.classList.remove('error');
+                }
+                return index * -1;
+            };
+
+            var selectNode = function(path, nodeIndex) {
+                nodeIndex = nodeIndex || 0;
+
                 var nodeList = null;
                 var $frameDoc = _this.varCache.$frameDoc;
                 try {
@@ -792,7 +812,7 @@ var magic = function() {
                     }
                 } catch (e) {}
 
-                var firstNode = nodeList && nodeList[0];
+                var firstNode = nodeList && nodeList.eq(nodeIndex).get(0);
 
                 if (!firstNode || !firstNode.classList.contains('kit_select')) {
                     _this.rmDocKitSelect();
@@ -928,6 +948,16 @@ var magic = function() {
 
             enable && enable.dispatchEvent(new CustomEvent('change'));
 
+            if (key === 'list') {
+                input.addEventListener('selectFirstNode', function () {
+                    selectNode(input.value, getStartIndex());
+                });
+
+                input.addEventListener('selectLastNode', function () {
+                    selectNode(input.value, getEndIndex());
+                });
+            }
+
             if (output) {
                 output.disabled = true;
                 output.classList.add('output');
@@ -961,8 +991,23 @@ var magic = function() {
                     var item = selectors[key];
                     if (item.input && (!item.enable || item.enable && item.enable.checked)) {
                         item.input.dispatchEvent(new CustomEvent('test'));
+                        if (key === 'list') {
+                            item.input.dispatchEvent(new CustomEvent('selectFirstNode'));
+                        }
                     }
                 }
+            });
+
+            selectors.skip.first.addEventListener('keyup', function() {
+                selectors.list.input.dispatchEvent(new CustomEvent('selectFirstNode'));
+            });
+
+            selectors.skip.last.addEventListener('change', function(){
+                selectors.list.input.dispatchEvent(new CustomEvent('selectLastNode'));
+            });
+
+            selectors.skip.last.addEventListener('keyup', function() {
+                selectors.list.input.dispatchEvent(new CustomEvent('selectLastNode'));
             });
         },
         bytesToSize: function(sizeList, bytes, nan) {
@@ -1135,7 +1180,13 @@ var magic = function() {
             var auth = this.nodeList.auth;
             auth.open.addEventListener('click', function(e){
                 e.preventDefault();
-                _this.openPage(auth.url.value);
+                _this.openPage(auth.url.value, function(isSuccess) {
+                    if (isSuccess) {
+                        auth.url.classList.remove('error');
+                    } else {
+                        auth.url.classList.add('error');
+                    }
+                });
             });
 
             auth.url.addEventListener('keyup', function(e){
@@ -1161,7 +1212,13 @@ var magic = function() {
             search.open.addEventListener('click', function(e){
                 e.preventDefault();
                 updateRootUrl();
-                _this.openPage(search.url.value, search.post.value);
+                _this.openPage(search.url.value, search.post.value, function(isSuccess) {
+                    if (isSuccess) {
+                        search.url.classList.remove('error');
+                    } else {
+                        search.url.classList.add('error');
+                    }
+                });
             });
 
             search.request.addEventListener('keyup', function(e){
