@@ -778,7 +778,11 @@ var magic = function() {
                     }
                 } catch (e) {}
 
-                _this.rmDocKitSelect();
+                var forstNode = nodeList && nodeList.length;
+
+                if (!forstNode || !forstNode.classList.contains('kit_select')) {
+                    _this.rmDocKitSelect();
+                }
 
                 if (nodeList && nodeList.length) {
                     nodeList[0].classList.add('kit_select');
