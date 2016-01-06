@@ -54,6 +54,10 @@ var magic = function() {
             url = url.replace('%search%', query);
             post = post.replace('%search%', query);
 
+            if (_this.varCache.frameDoc) {
+                _this.varCache.frameDoc.textContent = '';
+            }
+
             var params = {
                 type: 'GET',
                 url: url,
@@ -273,6 +277,10 @@ var magic = function() {
         clearForm: function() {
             var _this = this;
             var nodeList = this.nodeList;
+
+            if (_this.varCache.frameDoc) {
+                _this.varCache.frameDoc.textContent = '';
+            }
 
             this.varCache.$frameDom = null;
             this.varCache.frameDoc = null;
