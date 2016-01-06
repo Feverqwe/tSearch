@@ -13,7 +13,8 @@ var magic = function() {
             rootUrl: /([^:]+:\/\/[^\/]+)/,
             $frameDom: null,
             frameDoc: null,
-            frameSelect: null
+            frameSelect: null,
+            uid: null
         },
         nodeList: {},
         contentFilter: function(content) {
@@ -270,7 +271,7 @@ var magic = function() {
                 }
             })(code);
 
-            code.uid = this.getHash(JSON.stringify(code));
+            code.uid = this.varCache.uid || this.getHash(JSON.stringify(code));
 
             return JSON.stringify(code);
         },
@@ -285,6 +286,7 @@ var magic = function() {
             this.varCache.$frameDom = null;
             this.varCache.frameDoc = null;
             this.varCache.frameSelect = null;
+            this.varCache.uid = null;
 
             nodeList.search.url.value = '';
             nodeList.search.request.value = '';
@@ -493,6 +495,8 @@ var magic = function() {
                     }
                 });
             };
+
+            this.varCache.uid = code.uid;
 
             nodeList.desk.tracker.title.value = code.title || '';
 
