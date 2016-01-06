@@ -579,6 +579,9 @@ var exKit = {
         if (value.substr(0, 7) === 'magnet:') {
             return value;
         }
+        if (value.substr(0, 2) === '//') {
+            value = value.replace(/^\/\/[^\/?#]+/, '');
+        }
         if (value.substr(0, 4) === 'http') {
             return value;
         }
