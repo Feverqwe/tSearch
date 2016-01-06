@@ -794,6 +794,9 @@ var magic = function() {
 
                 if (!nodeList || !nodeList.length) {
                     input.classList.add('error');
+                    if (output) {
+                        output.value = ''
+                    }
                 } else {
                     input.classList.remove('error');
                     output && setOutput(nodeList[0]);
