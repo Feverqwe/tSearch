@@ -613,6 +613,8 @@ var magic = function() {
         getNodePath: function(node, container) {
             var doc = this.varCache.frameDoc;
             var $doc = this.varCache.$frameDoc;
+
+            var containerNode = container && container.node;
             var path = [];
 
             var next = function() {
@@ -626,7 +628,7 @@ var magic = function() {
                     break;
                 }
 
-                if (node === container.node) {
+                if (node === containerNode) {
                     path.unshift(container.path);
                     break;
                 }
