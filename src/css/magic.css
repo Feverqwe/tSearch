@@ -120,6 +120,7 @@ div.tools .page.selectors label > input[data-id="selectors_list_input"] {
 }
 
 div.tools .page.selectors label > span:nth-child(1),
+div.tools .page.selectors .label > span:nth-child(1),
 div.tools .page.convert label > span:nth-child(1),
 div.tools .page.search label > span:nth-child(1),
 div.tools .page.auth label > span:nth-child(1),
