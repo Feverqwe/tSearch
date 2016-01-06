@@ -128,7 +128,7 @@ div.tools .page.desk label > span:nth-child(1) {
     display: inline-block;
     vertical-align: middle;
 }
-div.tools .page.selectors label > input[type="number"] {
+div.tools .page.selectors .label > input[type="number"] {
     width: 50px;
 }
 div.tools .page.search label > input[data-id="search_url"],

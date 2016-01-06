@@ -778,14 +778,14 @@ var magic = function() {
                     }
                 } catch (e) {}
 
-                var forstNode = nodeList && nodeList.length;
+                var firstNode = nodeList && nodeList[0];
 
-                if (!forstNode || !forstNode.classList.contains('kit_select')) {
+                if (!firstNode || !firstNode.classList.contains('kit_select')) {
                     _this.rmDocKitSelect();
                 }
 
-                if (nodeList && nodeList.length) {
-                    nodeList[0].classList.add('kit_select');
+                if (firstNode) {
+                    firstNode.classList.add('kit_select');
                 }
             };
 
@@ -878,6 +878,10 @@ var magic = function() {
                 });
             });
 
+            input.addEventListener('test', function() {
+                checkPath(input.value);
+            });
+
             input.addEventListener('keyup', function() {
                 checkPath(input.value);
                 selectNode(input.value);
@@ -935,7 +939,7 @@ var magic = function() {
                 for (var key in selectors) {
                     var item = selectors[key];
                     if (item.input && (!item.enable || item.enable && item.enable.checked)) {
-                        item.input.dispatchEvent(new CustomEvent('keyup'));
+                        item.input.dispatchEvent(new CustomEvent('test'));
                     }
                 }
             });
