@@ -886,7 +886,7 @@ var magic = function() {
                 if (output) {
                     var $frameDoc = _this.varCache.$frameDoc;
                     container.path = listInput.value + ':eq(' + getStartIndex() + ')';
-                    container.parent = $frameDoc.find(path).get(0);
+                    container.parent = $frameDoc.find(container.path).get(0);
                 }
                 _this.getSelectMode({
                     container: container,
