@@ -412,7 +412,7 @@ var exKit = {
             if (code.s_c) {
                 sizeFuncList.push('convertSize');
             }
-            if (sizeFuncList.length > 1) {
+            if (sizeFuncList.length) {
                 onGetValue.size = sizeFuncList;
             }
         }
