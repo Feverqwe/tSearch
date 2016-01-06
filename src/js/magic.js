@@ -13,6 +13,7 @@ var magic = function() {
             rootUrl: /([^:]+:\/\/[^\/]+)/,
             $frameDom: null,
             frameDoc: null,
+            $frameDoc: null,
             frameSelect: null,
             uid: null
         },
@@ -73,6 +74,7 @@ var magic = function() {
 
                     var documentElement = _this.domCache.frame.contentDocument.documentElement;
                     _this.varCache.frameDoc = documentElement;
+                    _this.varCache.$frameDoc = $(documentElement);
                     documentElement.textContent = '';
                     documentElement.appendChild(frameDom);
                     documentElement.appendChild(mono.create('style', {
@@ -284,6 +286,7 @@ var magic = function() {
             }
 
             this.varCache.$frameDom = null;
+            this.varCache.$frameDoc = null;
             this.varCache.frameDoc = null;
             this.varCache.frameSelect = null;
             this.varCache.uid = null;
@@ -608,8 +611,9 @@ var magic = function() {
 
             desc.icon_pic.dispatchEvent(new CustomEvent('updatePic'));
         },
-        getNodePath: function(node) {
+        getNodePath: function(node, container) {
             var doc = this.varCache.frameDoc;
+            var $doc = this.varCache.$frameDoc;
             var path = [];
 
             var next = function() {
@@ -620,6 +624,11 @@ var magic = function() {
             while(node) {
                 var parent = node.parentNode;
                 if (!parent || parent.nodeType !== 1) {
+                    break;
+                }
+
+                if (node === container.node) {
+                    path.unshift(container.path);
                     break;
                 }
 
@@ -648,9 +657,15 @@ var magic = function() {
                     });
 
                     if (list.length === 1 && list[0] === node) {
-                        path.unshift(tagName.toLowerCase() + '.' + classList.join('.'));
-                        next();
-                        continue;
+                        var selector = tagName.toLowerCase() + '.' + classList.join('.');
+                        path.unshift(selector);
+
+                        if (doc.querySelectorAll(selector).length === 1) {
+                            break;
+                        } else {
+                            next();
+                            continue;
+                        }
                     }
 
                     var index = nodeList.indexOf(node);
@@ -663,10 +678,10 @@ var magic = function() {
             var strPath = path.join('>');
 
             try {
-                var found = $(doc).find(strPath);
+                var found = $doc.find(strPath);
                 if (found.get(0) !== target) {
                     console.error('Doc is not found! ', strPath);
-                    throw '';
+                    throw 'Node is not found!';
                 }
             } catch (e) {
                 strPath = '';
@@ -701,7 +716,7 @@ var magic = function() {
 
                 target.classList.add(selectClassName);
 
-                var path = _this.getNodePath(target);
+                var path = _this.getNodePath(target, details.container);
                 lastPatch = path;
 
                 _this.domCache.statusBar.textContent = path;
@@ -769,7 +784,7 @@ var magic = function() {
 
             var selectNode = function(path) {
                 var nodeList = null;
-                var $frameDoc = $(_this.varCache.frameDoc);
+                var $frameDoc = _this.varCache.$frameDoc;
                 try {
                     if (output) {
                         nodeList = $frameDoc.find(listInput.value).eq(getStartIndex()).find(path);
@@ -868,7 +883,18 @@ var magic = function() {
             };
 
             btn.addEventListener('click', function() {
+                var container = null;
+                if (output) {
+                    var $frameDoc = _this.varCache.$frameDoc;
+                    var path = listInput.value + ':eq(' + getStartIndex() + ')';
+                    var parent = $frameDoc.find(path).get(0);
+                    container = {
+                        path: path,
+                        node: parent
+                    };
+                }
                 _this.getSelectMode({
+                    container: container,
                     onOver: function(node, path) {
                         setPath(path);
                     },
@@ -1151,6 +1177,12 @@ var magic = function() {
 
             search.url.addEventListener('keyup', function(e){
                 updateRootUrl();
+                if (e.keyCode === 13) {
+                    search.open.dispatchEvent(new CustomEvent('click'));
+                }
+            });
+
+            search.post.addEventListener('keyup', function(e){
                 if (e.keyCode === 13) {
                     search.open.dispatchEvent(new CustomEvent('click'));
                 }
