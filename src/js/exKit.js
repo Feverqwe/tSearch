@@ -710,6 +710,13 @@ var exKit = {
 
         return promise;
     },
+    isEmptyObject: function(obj) {
+        "use strict";
+        for (var item in obj) {
+            return false;
+        }
+        return true;
+    },
     matchTorrentItem: function($node, details) {
         "use strict";
         var _this = this;
@@ -762,7 +769,7 @@ var exKit = {
                     trObj.column.date = -1;
                 }
 
-                if (!mono.isEmptyObject(trObj.error)) {
+                if (!_this.isEmptyObject(trObj.error)) {
                     console.debug('[' + tracker.id + ']', 'Torrent has problems:', trObj);
                 }
 
