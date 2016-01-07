@@ -739,11 +739,9 @@ var exKit = {
                 return;
             }
 
-            var trObj = {
-                column: {},
-                error: {},
-                cache: {}
-            };
+            var trObj = Object.create({cache: {}});
+            trObj.column = {};
+            trObj.error = {};
 
             var promiseList = [];
             for (var key in search.torrentSelector) {
