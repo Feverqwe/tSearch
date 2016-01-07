@@ -33,7 +33,7 @@ engine.trackerLib.katushka = {
         requestData: 'tags=&search=%search%&type_search=groups&incldead=0&sorting=0&type_sort=desc',
         onAfterDomParse: function (details) {
             "use strict";
-            var $dom = details.tracker.$dom;
+            var $dom = details.$dom;
             if ($dom.find('table.data_table.torr_table>tbody>tr').length) {
                 details.tracker.search.listItemSelector = details.tracker.search.listItemSelectorTable;
                 details.tracker.search.torrentSelector = details.tracker.search.torrentSelectorTable;
