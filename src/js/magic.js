@@ -170,6 +170,10 @@ var magic = function() {
                     obj.attr = 'href';
                 }
 
+                if (Object.keys(obj).length === 1) {
+                    obj = obj.selector;
+                }
+
                 return obj;
             };
 
