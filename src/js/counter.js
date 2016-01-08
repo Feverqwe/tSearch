@@ -15,6 +15,46 @@ ga('send', 'screenview', {
     'appVersion': '{appVersion}'
 });
 
+engine.exceptionTracker = {
+    ddBl: {},
+    onError: function(e) {
+        "use strict";
+        var _this = engine.exceptionTracker;
+
+        var filename = e.filename;
+        var message = e.message;
+
+        if (!filename || !message || typeof filename !== 'string' || typeof message !== 'string') {
+            return;
+        }
+
+        filename = filename.match(/\/([^\/]+)$/);
+        filename = filename && filename[1];
+        if (!filename) {
+            return;
+        }
+
+        if (e.lineno) {
+            filename += ':' + e.lineno;
+        }
+
+        var desc = [filename, message].join(' ');
+
+        if (_this.ddBl[desc]) {
+            return;
+        }
+        _this.ddBl[desc] = true;
+
+        ga('send', 'exception', {
+            exDescription: desc
+        });
+    },
+    init: function() {
+        "use strict";
+        window.addEventListener('error', this.onError);
+    }
+};
+
 engine.initCounter = function() {
     "use strict";
     var gas = document.createElement('script');
@@ -23,6 +63,8 @@ engine.initCounter = function() {
     var success = function() {
         var firstScript = document.getElementsByTagName('script')[0];
         firstScript.parentNode.insertBefore(gas, firstScript);
+
+        engine.exceptionTracker.init();
     };
     if (mono.isWebApp) {
         return success();
