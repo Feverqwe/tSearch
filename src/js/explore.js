@@ -1951,7 +1951,7 @@ var explore = {
                                         },
                                         firefox: {
                                             title: 'Firefox',
-                                            link: 'http://static.tms.mooo.com/firefox/build_firefox.xpi'
+                                            link: 'http://static.tms.mooo.com/firefox/build_firefox.xpi' + '?_' + Date.now()
                                         },
                                         opera: {
                                             title: 'Opera',
