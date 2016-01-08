@@ -156,11 +156,12 @@ var bg = {
             return;
         }
 
+        var prefix = bg.settings.invertIcon ? '-i' : '';
         var contextMenu = require("sdk/context-menu");
         bg.ffContextMenu = contextMenu.Item({
             label: mono.language.ctxMenuTitle,
             context: contextMenu.SelectionContext(),
-            image: self.data.url('./icons/icon-16.png'),
+            image: self.data.url('./icons/icon-16' + prefix + '.png'),
             contentScript: contentScript,
             onMessage: function (request) {
                 var tabs = require('sdk/tabs');
