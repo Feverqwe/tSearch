@@ -379,7 +379,7 @@ var exKit = {
             search.loginFormSelector = code.auth_f;
         }
         if (code.sf || code.sl) {
-            search.listItemSplice = [code.sf || 0, code.sl || 0];
+            search.listItemSplice = [code.sf || 0, -(code.sl || 0)];
         }
         torrentSelector.title = code.tr_name;
         torrentSelector.url = {selector: code.tr_link, attr: 'href'};
