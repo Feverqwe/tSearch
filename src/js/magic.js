@@ -1184,7 +1184,7 @@ var magic = function() {
             var auth = this.nodeList.auth;
             auth.open.addEventListener('click', function(e){
                 e.preventDefault();
-                _this.openPage(auth.url.value, function(isSuccess) {
+                _this.openPage(auth.url.value, null, function(isSuccess) {
                     if (isSuccess) {
                         auth.url.classList.remove('error');
                     } else {
