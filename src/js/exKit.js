@@ -842,7 +842,7 @@ var exKit = {
     search: function (tracker, query, onSearch) {
         "use strict";
         var _this = this;
-        var xhr = null;
+        var xhr = undefined;
         var details = {
             tracker: tracker,
             query: query
@@ -858,6 +858,9 @@ var exKit = {
 
         new Promise(function(resolve, reject) {
             Promise.resolve().then(function() {
+                if (xhr === null) {
+                    throw 'Search aborted!';
+                }
                 xhr = mono.ajax({
                     safe: true,
                     url: tracker.search.searchUrl.replace('%search%', details.query),
@@ -909,11 +912,11 @@ var exKit = {
             return exKit.parseDom(details);
         }).then(function(result) {
             onSearch.onSuccess(tracker, query, result);
+        }).then(function() {
+            onSearch.onDone(tracker);
         }).catch(function(err) {
             console.error('Search', tracker.id, err);
             onSearch.onError(tracker, err);
-        }).then(function() {
-            onSearch.onDone(tracker);
         });
 
         return {
