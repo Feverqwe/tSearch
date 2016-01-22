@@ -616,7 +616,7 @@ var exKit = {
     },
     setResultsHostProxy: function(torrentList, proxyIndex) {
         "use strict";
-        var urlKeys = exKit.isUrlList;
+        var urlKeys = this.isUrlList;
         for (var i = 0, item; item = torrentList[i]; i++) {
             for (var ii = 0, key; key = urlKeys[ii]; ii++) {
                 if (!item[key]) {
