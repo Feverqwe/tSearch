@@ -938,9 +938,12 @@ var exKit = {
 
                 return _this.parseDom(details);
             }).then(function (result) {
+                if (result.requireAuth) {
+                    result.requireAuth = tracker.search.loginUrl;
+                }
+                
                 if (proxyIndex > 0) {
                     if (result.requireAuth) {
-                        result.requireAuth = tracker.search.loginUrl;
                         result.requireAuth = _this.setHostProxyUrl(result.requireAuth, proxyIndex);
                     }
 
