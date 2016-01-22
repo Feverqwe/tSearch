@@ -941,7 +941,7 @@ var exKit = {
                 if (result.requireAuth) {
                     result.requireAuth = tracker.search.loginUrl;
                 }
-                
+
                 if (proxyIndex > 0) {
                     if (result.requireAuth) {
                         result.requireAuth = _this.setHostProxyUrl(result.requireAuth, proxyIndex);
@@ -959,7 +959,12 @@ var exKit = {
 
         requestData().catch(function(err) {
             if (err === 'Request error!') {
-                return requestData(1).catch(function (err) {
+                var proxyIndex = 1;
+                if (tracker.search.requestType !== 'GET') {
+                    proxyIndex = 2;
+                }
+
+                return requestData(proxyIndex).catch(function (err) {
                     throw err;
                 });
             }
