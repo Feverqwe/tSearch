@@ -842,7 +842,7 @@ var exKit = {
     search: function (tracker, query, onSearch) {
         "use strict";
         var _this = this;
-        var xhr = undefined;
+        var xhr = null;
         var details = {
             tracker: tracker,
             query: query
@@ -858,9 +858,6 @@ var exKit = {
 
         new Promise(function(resolve, reject) {
             Promise.resolve().then(function() {
-                if (xhr === null) {
-                    throw 'Search aborted!';
-                }
                 xhr = mono.ajax({
                     safe: true,
                     url: tracker.search.searchUrl.replace('%search%', details.query),
@@ -897,7 +894,10 @@ var exKit = {
                         reject('Request timeout');
                     },
                     abort: function () {
-                        reject('Request aborted!');
+                        var err = 'Request aborted!';
+                        reject(err);
+                        onSearch.onError(tracker, err);
+                        onSearch.onDone(tracker);
                     }
                 });
             }).catch(reject)
@@ -912,11 +912,15 @@ var exKit = {
             return exKit.parseDom(details);
         }).then(function(result) {
             onSearch.onSuccess(tracker, query, result);
-        }).then(function() {
             onSearch.onDone(tracker);
         }).catch(function(err) {
             console.error('Search', tracker.id, err);
+            if (err === 'Request aborted!') {
+                return;
+            }
+
             onSearch.onError(tracker, err);
+            onSearch.onDone(tracker);
         });
 
         return {
