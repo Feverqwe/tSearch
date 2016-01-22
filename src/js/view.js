@@ -1025,10 +1025,10 @@ var view = {
     },
     setOnSuccessStatus: function (tracker, data) {
         "use strict";
-        if (data.requireAuth === 1) {
+        if (data.requireAuth) {
             view.resetTrackerStatusById(tracker.id, ['auth']);
             return view.setTrackerStatusById(tracker.id, 'auth', {
-                url: tracker.search.loginUrl
+                url: data.requireAuth
             });
         }
         view.resetTrackerStatusById(tracker.id);
@@ -1036,7 +1036,9 @@ var view = {
     onSearchSuccess: function(tracker, request, data) {
         "use strict";
         view.setOnSuccessStatus(tracker, data);
-        if (data.requireAuth === 1) return;
+        if (data.requireAuth) {
+            return;
+        }
         view.writeResultList(tracker, data.torrentList);
     },
     resetTrackerStatusById: function(trackerId, except) {

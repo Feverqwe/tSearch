@@ -1763,7 +1763,9 @@ var explore = {
     onSearchSuccess: function(qualityLabel, tracker, request, data) {
         "use strict";
         view.setOnSuccessStatus(tracker, data);
-        if (data.requireAuth === 1) return;
+        if (data.requireAuth) {
+            return;
+        }
 
         var torrentList = data.torrentList;
         var topList = this.getTop5Response(torrentList, tracker);

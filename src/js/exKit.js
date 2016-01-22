@@ -930,8 +930,15 @@ var exKit = {
 
                 return _this.parseDom(details);
             }).then(function (result) {
-                if (tracker.proxyIndex > 0 && result.torrentList) {
-                    _this.setResultsHostProxy(result.torrentList, tracker.proxyIndex);
+                if (tracker.proxyIndex > 0) {
+                    if (result.requireAuth) {
+                        result.requireAuth = tracker.search.loginUrl;
+                        result.requireAuth = _this.setHostProxyUrl(result.requireAuth, tracker.proxyIndex);
+                    }
+                    
+                    if (result.torrentList) {
+                        _this.setResultsHostProxy(result.torrentList, tracker.proxyIndex);
+                    }
                 }
 
                 onSearch.onSuccess(tracker, query, result);
