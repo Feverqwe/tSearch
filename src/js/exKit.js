@@ -605,6 +605,8 @@ var exKit = {
         }
 
         url = proxy.url.replace('{url}', encodeURIComponent(url));
+
+        return url;
     },
     setHostProxyUrl: function (url, proxyIndex) {
         "use strict";
@@ -878,7 +880,13 @@ var exKit = {
             details.query = encodeURIComponent(details.query);
         }
 
-        var requestData = function() {
+        var proxyIndex = tracker.proxyIndex;
+
+        var requestData = function(forceProxyIndex) {
+            if (forceProxyIndex !== undefined) {
+                proxyIndex = forceProxyIndex;
+            }
+
             return new Promise(function (resolve, reject) {
                 Promise.resolve().then(function () {
                     xhr = mono.ajax({
@@ -888,14 +896,14 @@ var exKit = {
                         mimeType: tracker.search.requestMimeType,
                         dataType: tracker.search.requestDataType,
                         data: (tracker.search.requestData || '').replace('%search%', details.query),
-                        changeUrl: tracker.proxyIndex > 0 && function (url, method) {
-                            var proxy = engine.settings.proxyList[tracker.proxyIndex - 1];
+                        changeUrl: proxyIndex > 0 && function (url, method) {
+                            var proxy = engine.settings.proxyList[proxyIndex - 1];
 
                             if (proxy) {
                                 if (proxy.type === 0 && method === 'GET') {
-                                    url = _this.setUrlProxy(url, tracker.proxyIndex);
+                                    url = _this.setUrlProxy(url, proxyIndex);
                                 } else if (proxy.type === 1) {
-                                    url = _this.setHostProxyUrl(url, tracker.proxyIndex);
+                                    url = _this.setHostProxyUrl(url, proxyIndex);
                                 }
                             }
 
@@ -930,14 +938,14 @@ var exKit = {
 
                 return _this.parseDom(details);
             }).then(function (result) {
-                if (tracker.proxyIndex > 0) {
+                if (proxyIndex > 0) {
                     if (result.requireAuth) {
                         result.requireAuth = tracker.search.loginUrl;
-                        result.requireAuth = _this.setHostProxyUrl(result.requireAuth, tracker.proxyIndex);
+                        result.requireAuth = _this.setHostProxyUrl(result.requireAuth, proxyIndex);
                     }
-                    
+
                     if (result.torrentList) {
-                        _this.setResultsHostProxy(result.torrentList, tracker.proxyIndex);
+                        _this.setResultsHostProxy(result.torrentList, proxyIndex);
                     }
                 }
 
@@ -946,7 +954,15 @@ var exKit = {
             });
         };
 
-        requestData().catch(function (err) {
+        requestData().catch(function(err) {
+            if (err === 'Request error!') {
+                return requestData(1).catch(function (err) {
+                    throw err;
+                });
+            }
+
+            throw err;
+        }).catch(function (err) {
             console.error('Search', tracker.id, err);
             if (err === 'Request aborted!') {
                 return;
