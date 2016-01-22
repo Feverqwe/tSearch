@@ -593,6 +593,19 @@ var exKit = {
         }
         return tracker.search.baseUrl + value;
     },
+    setUrlProxy: function(url, proxyIndex) {
+        "use strict";
+        var proxy = engine.settings.proxyList[proxyIndex - 1];
+        if (!proxy) {
+            return url;
+        }
+
+        if (proxy.fixSpaces) {
+            url = url.replace(/[\t\s]+/g, '%20');
+        }
+
+        url = proxy.url.replace('{url}', encodeURIComponent(url));
+    },
     setHostProxyUrl: function (url, proxyIndex) {
         "use strict";
         var proxy = engine.settings.proxyList[proxyIndex - 1];
@@ -600,6 +613,18 @@ var exKit = {
             return url;
         }
         return url.replace(/(https?:\/\/[^\/]+)(.*)/, '$1.' + proxy.url + '$2');
+    },
+    setResultsHostProxy: function(torrentList, proxyIndex) {
+        "use strict";
+        var urlKeys = exKit.isUrlList;
+        for (var i = 0, item; item = torrentList[i]; i++) {
+            for (var ii = 0, key; key = urlKeys[ii]; ii++) {
+                if (!item[key]) {
+                    continue;
+                }
+                item[key] = this.setHostProxyUrl(item[key], proxyIndex);
+            }
+        }
     },
     matchTorrentSelector: function(trObj, details) {
         "use strict";
@@ -699,9 +724,6 @@ var exKit = {
                 }
                 if (exKit.isUrlList.indexOf(key) !== -1) {
                     value = exKit.urlCheck(tracker, value);
-                    if (tracker.proxyIndex > 0) {
-                        value = _this.setHostProxyUrl(value, tracker.proxyIndex);
-                    }
                 }
             }
 
@@ -856,64 +878,68 @@ var exKit = {
             details.query = encodeURIComponent(details.query);
         }
 
-        new Promise(function(resolve, reject) {
-            Promise.resolve().then(function() {
-                xhr = mono.ajax({
-                    safe: true,
-                    url: tracker.search.searchUrl.replace('%search%', details.query),
-                    type: tracker.search.requestType,
-                    mimeType: tracker.search.requestMimeType,
-                    dataType: tracker.search.requestDataType,
-                    data: (tracker.search.requestData || '').replace('%search%', details.query),
-                    changeUrl: function (url, method) {
-                        var proxy;
-                        if (tracker.proxyIndex > 0 && (proxy = engine.settings.proxyList[tracker.proxyIndex - 1])) {
-                            if (proxy.type === 0) {
-                                if (method === 'GET') {
-                                    if (proxy.fixSpaces) {
-                                        url = url.replace(/[\t\s]+/g, '%20');
-                                    }
-                                    url = proxy.url.replace('{url}', encodeURIComponent(url));
+        var requestData = function() {
+            return new Promise(function (resolve, reject) {
+                Promise.resolve().then(function () {
+                    xhr = mono.ajax({
+                        safe: true,
+                        url: tracker.search.searchUrl.replace('%search%', details.query),
+                        type: tracker.search.requestType,
+                        mimeType: tracker.search.requestMimeType,
+                        dataType: tracker.search.requestDataType,
+                        data: (tracker.search.requestData || '').replace('%search%', details.query),
+                        changeUrl: tracker.proxyIndex > 0 && function (url, method) {
+                            var proxy = engine.settings.proxyList[tracker.proxyIndex - 1];
+
+                            if (proxy) {
+                                if (proxy.type === 0 && method === 'GET') {
+                                    url = exKit.setUrlProxy(url, tracker.proxyIndex);
+                                } else if (proxy.type === 1) {
+                                    url = _this.setHostProxyUrl(url, tracker.proxyIndex);
                                 }
                             }
-                            if (proxy.type === 1) {
-                                url = _this.setHostProxyUrl(url, tracker.proxyIndex);
-                            }
-                        }
-                        return url;
-                    },
-                    success: function (data, xhr) {
-                        details.data = exKit.contentFilter(data);
-                        details.responseUrl = xhr.responseURL;
-                        resolve();
-                    },
-                    error: function (xhr) {
-                        reject(['Request error', xhr.status, xhr.statusText].join(' '));
-                    },
-                    timeout: function () {
-                        reject('Request timeout');
-                    },
-                    abort: function () {
-                        var err = 'Request aborted!';
-                        reject(err);
-                        onSearch.onError(tracker, err);
-                        onSearch.onDone(tracker);
-                    }
-                });
-            }).catch(reject)
-        }).then(function() {
-            if (tracker.search.onAfterRequest) {
-                tracker.search.onAfterRequest(details);
-                if (details.result) {
-                    return details.result;
-                }
-            }
 
-            return exKit.parseDom(details);
-        }).then(function(result) {
-            onSearch.onSuccess(tracker, query, result);
-            onSearch.onDone(tracker);
-        }).catch(function(err) {
+                            return url;
+                        },
+                        success: function (data, xhr) {
+                            details.data = exKit.contentFilter(data);
+                            details.responseUrl = xhr.responseURL;
+                            resolve();
+                        },
+                        error: function (xhr) {
+                            reject('Request error!');
+                        },
+                        timeout: function () {
+                            reject('Request timeout');
+                        },
+                        abort: function () {
+                            var err = 'Request aborted!';
+                            reject(err);
+                            onSearch.onError(tracker, err);
+                            onSearch.onDone(tracker);
+                        }
+                    });
+                }).catch(reject)
+            }).then(function () {
+                if (tracker.search.onAfterRequest) {
+                    tracker.search.onAfterRequest(details);
+                    if (details.result) {
+                        return details.result;
+                    }
+                }
+
+                return exKit.parseDom(details);
+            }).then(function (result) {
+                if (tracker.proxyIndex > 0 && result.torrentList) {
+                    exKit.setResultsHostProxy(result.torrentList, tracker.proxyIndex);
+                }
+
+                onSearch.onSuccess(tracker, query, result);
+                onSearch.onDone(tracker);
+            });
+        };
+
+        requestData().catch(function (err) {
             console.error('Search', tracker.id, err);
             if (err === 'Request aborted!') {
                 return;

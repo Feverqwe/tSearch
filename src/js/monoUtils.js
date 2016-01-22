@@ -46,7 +46,7 @@ mono.ajax = function(obj) {
         url += (url.indexOf('?') === -1 ? '?' : '&') + nc;
     }
 
-    if (obj.changeUrl !== undefined) {
+    if (obj.changeUrl) {
         url = obj.changeUrl(url, method);
     }
 
