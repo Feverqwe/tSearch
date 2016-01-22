@@ -893,7 +893,7 @@ var exKit = {
 
                             if (proxy) {
                                 if (proxy.type === 0 && method === 'GET') {
-                                    url = exKit.setUrlProxy(url, tracker.proxyIndex);
+                                    url = _this.setUrlProxy(url, tracker.proxyIndex);
                                 } else if (proxy.type === 1) {
                                     url = _this.setHostProxyUrl(url, tracker.proxyIndex);
                                 }
@@ -902,7 +902,7 @@ var exKit = {
                             return url;
                         },
                         success: function (data, xhr) {
-                            details.data = exKit.contentFilter(data);
+                            details.data = _this.contentFilter(data);
                             details.responseUrl = xhr.responseURL;
                             resolve();
                         },
@@ -928,10 +928,10 @@ var exKit = {
                     }
                 }
 
-                return exKit.parseDom(details);
+                return _this.parseDom(details);
             }).then(function (result) {
                 if (tracker.proxyIndex > 0 && result.torrentList) {
-                    exKit.setResultsHostProxy(result.torrentList, tracker.proxyIndex);
+                    _this.setResultsHostProxy(result.torrentList, tracker.proxyIndex);
                 }
 
                 onSearch.onSuccess(tracker, query, result);
