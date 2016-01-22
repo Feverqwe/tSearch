@@ -185,6 +185,8 @@
     "ok": {"message": "OK"},
     "notNow": {"message": "Не сейчас"},
 
+    "autoUseProxy": {"message": "Использовать проксирование если трекер недоступен"},
+
     "kitSearch": {"message": "Поиск"},
     "kitSelectors": {"message": "Селекторы"},
     "kitConvert": {"message": "Преобразование"},

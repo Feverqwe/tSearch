@@ -185,6 +185,8 @@
     "ok": {"message": "OK"},
     "notNow": {"message": "Not now"},
 
+    "autoUseProxy": {"message": "Use a proxy if a tracker is unavailable"},
+
     "kitSearch": {"message": "Search"},
     "kitSelectors": {"message": "Selectors"},
     "kitConvert": {"message": "Convert"},

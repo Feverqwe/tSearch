@@ -29,7 +29,8 @@ var engine = {
         langCode: undefined,
         sortColumn: 'quality',
         sortOrder: 0,
-        invertIcon: 0
+        invertIcon: 0,
+        autoUseProxy: 1
     },
     settings: {},
     defaultExplorerOptions: [
