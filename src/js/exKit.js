@@ -958,7 +958,7 @@ var exKit = {
         };
 
         requestData().catch(function(err) {
-            if (err === 'Request error!') {
+            if (engine.settings.autoUseProxy && err === 'Request error!') {
                 var proxyIndex = 1;
                 if (tracker.search.requestType !== 'GET') {
                     proxyIndex = 2;
