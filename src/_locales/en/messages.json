@@ -186,6 +186,10 @@
     "notNow": {"message": "Not now"},
 
     "autoUseProxy": {"message": "Use a proxy if a tracker is unavailable"},
+    "enableProxyApi": {"message": "Enable proxy via Chrome API"},
+    "hostPattern": {"message": "Host-pattern"},
+    "deleteSelected": {"message": "Delete selected"},
+    "proxyApi": {"message": "Googlezip proxy"},
 
     "kitSearch": {"message": "Search"},
     "kitSelectors": {"message": "Selectors"},

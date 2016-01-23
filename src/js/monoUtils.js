@@ -697,3 +697,45 @@ mono.hashParseParam = function(string) {
     }
     return params;
 };
+
+mono.escapeRegex = function(value) {
+    "use strict";
+    return value.replace( /[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&" );
+};
+
+mono.urlPatternToStrRe = function(value) {
+    var m = value.match(/(\*|http|https):\/\/([^\/]+)(?:\/(.*))?/);
+    if (!m) {
+        throw new Error("Invalid url-pattern");
+    }
+
+    var scheme = m[1];
+    if (scheme === '*') {
+        scheme = 'https?';
+    }
+
+    var host = m[2];
+    host = mono.escapeRegex(host);
+    host = host.replace(/^\\\*\\\./, '(?:[^\/]+\\.)?');
+
+    var pattern = ['^', scheme, ':\\/\\/', host];
+
+    var path = m[3];
+    if (!path) {
+        pattern.push('$');
+    } else
+    if (path === '*') {
+        path = '(?:|\/.*)';
+        pattern.push(path);
+        pattern.push('$');
+    } else
+    if (path) {
+        path = '\/' + path;
+        path = mono.escapeRegex(path);
+        path = path.replace(/\\\*/g, '.*');
+        pattern.push(path);
+        pattern.push('$');
+    }
+
+    return pattern.join('');
+};

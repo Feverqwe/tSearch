@@ -228,114 +228,63 @@ var bg = {
         }
         bg.run();
     },
-    fastMigration: function() {
-        "use strict";
-        var migrateProfileList = function(value, storage) {
-            if (typeof value !== 'string') {
-                return;
+    proxy: {
+        currentProxy: null,
+        getChromeProxy: function() {
+            "use strict";
+            return {
+                address: ['HTTPS proxy.googlezip.net:443', 'PROXY compress.googlezip.net:80', 'PROXY 74.125.205.211:80']
             }
-            try {
-                var obj = JSON.parse(value);
-                if (typeof obj === 'object') {
-                    var profileArr = [];
-                    for (var key in obj) {
-                        profileArr.push({name: key, trackerList: obj[key]});
-                    }
-                    storage.profileList = profileArr;
-                }
-            } catch (e) {}
-        };
-        var migrateExploreOptions = function(value, storage) {
-            if (typeof value !== 'string') {
+        },
+        enable: function(hostList) {
+            "use strict";
+            if (!chrome.proxy) {
                 return;
-            }
-            var langMap = {
-                favorites: 'favoriteList',
-                kp_favorites: 'kpFavoriteList',
-                kp_in_cinema: 'kpInCinema',
-                kp_popular: 'kpPopular',
-                kp_serials: 'kpSerials',
-                imdb_in_cinema: 'imdbInCinema',
-                imdb_popular: 'imdbPopular',
-                imdb_serials: 'imdbSerials',
-                gg_games_top: 'ggGamesTop',
-                gg_games_new: 'ggGamesNew'
-            };
-            try {
-                var obj = JSON.parse(value);
-                var explorerOptions = [];
-                for (var key in obj) {
-                    var p = obj[key];
-                    explorerOptions.push({
-                        enable: p.e ? 1 : 0,
-                        lang: langMap[key],
-                        lineCount: parseInt(p.c) || 1,
-                        show: p.s ? 1 : 0,
-                        type: key,
-                        width: parseInt(p.w) || 100
-                    });
-                }
-                storage.explorerOptions = explorerOptions;
-            } catch (e) {}
-        };
-
-        mono.storage.get(null, function(storage) {
-            if (storage.isMigrated) {
-                return;
-            }
-            var rmList = [
-                'add_in_omnibox', 'advFiltration', 'click_history',
-                'hideTrackerIcons', 'enableTeaserFilter', 'hideZeroSeed',
-                'history', 'lang', 'listOptions',
-                'noBlankPageOnDownloadClick', 'noTransition', 'noTransitionLinks',
-                'optMigrated', 'proxyHost', 'proxyHostLinks', 'proxyList',
-                'proxyURL', 'proxyUrlFixSpaces', 'qualityBoxCache',
-                'qualityCache', 'table_sort_by', 'table_sort_colum',
-                'torrentListHeight', 'torrent_list_h', 'titleQualityList'
-            ];
-            var inList = {
-                isMigrated: 1
-            };
-            for (var key in storage) {
-                if (key.substr(0, 10) === 'exp_cache_') {
-                    if (key === 'exp_cache_favorites') {
-                        inList.expCache_favorites = storage[key];
-                    }
-                    rmList.push(key);
-                }
-                if (key === 'enableTeaserFilter') {
-                    inList.teaserFilter = !!storage[key] ? 1 : 0;
-                }
-                if (key === 'lang') {
-                    inList.langCode = storage[key];
-                }
-                if (key === 'profileList') {
-                    migrateProfileList(storage[key], inList);
-                }
-                if (key === 'listOptions') {
-                    migrateExploreOptions(storage[key], inList);
-                }
             }
 
-            mono.storage.remove(rmList, function() {
-                mono.storage.set(inList);
-                if (mono.isChrome) {
-                    var syncList = {};
-                    if (storage.profileListSync) {
-                        syncList.profileList = inList.profileList;
-                    }
-                    if (storage.enableFavoriteSync) {
-                        syncList.expCache_favorites = inList.expCache_favorites;
-                    }
-                    mono.storage.sync.set(syncList);
+            var _this = this;
+
+            var hostListRe = hostList.map(function(pattern) {
+                return mono.urlPatternToStrRe(pattern);
+            }).join('|');
+
+            this.currentProxy = this.getChromeProxy();
+
+            var config = {
+                mode: "pac_script",
+                pacScript: {
+                    data: function FindProxyForURL(url){
+                        var matchRe = new RegExp("{regexp}");
+                        var address = "{address}";
+                        if (matchRe.test(url)) {
+                            return address + ';DIRECT';
+                        }
+                        return 'DIRECT';
+                    }.toString().replace('{address}', _this.currentProxy.address.join(';')).replace('{regexp}', hostListRe)
+                }
+            };
+
+            chrome.proxy.settings.set({
+                value: config,
+                scope: 'regular'
+            });
+        },
+        init: function(enable, proxyHostList) {
+            "use strict";
+            var _this = this;
+            chrome.proxy.settings.clear({
+                scope: 'regular'
+            }, function() {
+                if (enable && proxyHostList.length) {
+                    _this.enable(proxyHostList);
                 }
             });
-        });
+        }
     },
     run: function() {
         "use strict";
-        this.fastMigration();
-        mono.storage.get(['contextMenu', 'searchPopup', 'langCode', 'invertIcon'], function(storage) {
+        var _this = this;
+        mono.storage.get(['contextMenu', 'searchPopup', 'langCode', 'invertIcon', 'proxyHostList', 'enableProxyApi'], function(storage) {
             if (storage.hasOwnProperty('contextMenu')) {
                 bg.settings.contextMenu = storage.contextMenu;
             }
@@ -345,6 +294,7 @@ var bg = {
             if (storage.hasOwnProperty('invertIcon')) {
                 bg.settings.invertIcon = storage.invertIcon;
             }
+            var proxyHostList = storage.proxyHostList || [];
 
             mono.getLanguage(function() {
                 bg.updateContextMenu();
@@ -353,6 +303,10 @@ var bg = {
 
             if ((mono.isChrome && !mono.isChromeWebApp) || mono.isFF) {
                 bg.updateIcon();
+            }
+
+            if (mono.isChrome) {
+                _this.proxy.init(storage.enableProxyApi || 0, proxyHostList);
             }
         });
     }

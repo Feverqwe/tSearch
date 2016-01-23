@@ -186,6 +186,10 @@
     "notNow": {"message": "Не сейчас"},
 
     "autoUseProxy": {"message": "Использовать проксирование если трекер недоступен"},
+    "enableProxyApi": {"message": "Включить проксироание через Chrome API"},
+    "hostPattern": {"message": "Host-pattern"},
+    "deleteSelected": {"message": "Удалить выбранное"},
+    "proxyApi": {"message": "Googlezip proxy"},
 
     "kitSearch": {"message": "Поиск"},
     "kitSelectors": {"message": "Селекторы"},

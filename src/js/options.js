@@ -12,7 +12,11 @@ var options = {
         langSelect: document.getElementById("language"),
         sectionList: document.querySelector('.sectionList'),
         proxyList: document.querySelector('.proxyList'),
-        qualityList: document.querySelector('.qualityList')
+        qualityList: document.querySelector('.qualityList'),
+        proxyHostPattern: document.querySelector('#proxyHostPattern'),
+        proxyAddHostPattern: document.querySelector('#proxyAddHostPattern'),
+        proxyHostPatternList: document.querySelector('#proxyHostPatternList'),
+        proxyDeleteSelected: document.querySelector('#proxyDeleteSelected')
     },
 
     defaultSettings: {},
@@ -66,8 +70,10 @@ var options = {
         var key = el.dataset.option;
         if (!key) {
             var section = el.dataset.section;
-            engine.explorerOptionsObj[section].enable = el.checked ? 1 : 0;
-            mono.storage.set({explorerOptions: engine.explorerOptions});
+            if (section) {
+                engine.explorerOptionsObj[section].enable = el.checked ? 1 : 0;
+                mono.storage.set({explorerOptions: engine.explorerOptions});
+            }
         }
         if (key && el.type === 'checkbox' || section) {
             var label = el.parentNode;
@@ -866,6 +872,68 @@ var options = {
             node.addEventListener('click', onQualityControlsClick);
         }
     },
+    bindProxyForm: function() {
+        "use strict";
+        var _this = this;
+        var input = this.domCache.proxyHostPattern;
+        var select = this.domCache.proxyHostPatternList;
+
+        var saveHostList = function() {
+            var hostList = [];
+            [].slice.call(select.childNodes).forEach(function(node) {
+                if (node.tagName !== 'OPTION') {
+                    return;
+                }
+                hostList.push(node.value);
+            });
+            mono.storage.set({proxyHostList: hostList}, function() {
+                mono.storage.sync.set({proxyHostList: hostList}, function() {
+                    mono.sendMessage('reloadSettings');
+                });
+            });
+        };
+
+        this.domCache.proxyAddHostPattern.addEventListener('click', function(e) {
+            e.preventDefault();
+            var value = input.value.trim();
+            if (!value) {
+                return;
+            }
+            try {
+                mono.urlPatternToStrRe(value);
+            } catch (e) {
+                alert('Host pattern error!');
+                return;
+            }
+            select.appendChild(mono.create('option', {
+                value: value,
+                text: value
+            }));
+            input.value = '';
+            saveHostList();
+        });
+
+        this.domCache.proxyDeleteSelected.addEventListener('click', function(e) {
+            e.preventDefault();
+            var nodeList = [];
+            [].slice.call(select.childNodes).forEach(function(node) {
+                if (node.selected) {
+                    nodeList.push(node);
+                }
+            });
+            nodeList.forEach(function(node) {
+                node.parentNode.removeChild(node);
+            });
+            saveHostList();
+        });
+
+        engine.settings.proxyHostList.forEach(function(item) {
+            select.appendChild(mono.create('option', {
+                value: item,
+                text: item
+            }));
+        });
+    },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
@@ -876,6 +944,7 @@ var options = {
             this.domCache.clearCloudStorageBtn.style.display = 'none';
             document.querySelector('input[data-option="enableFavoriteSync"]').parentNode.style.display = 'none';
             document.querySelector('input[data-option="profileListSync"]').parentNode.style.display = 'none';
+            document.querySelector('input[data-option="enableProxyApi"]').parentNode.style.display = 'none';
         }
         if (mono.isChrome && mono.isChromeWebApp) {
             //Chromeum app
@@ -981,6 +1050,8 @@ var options = {
         document.body.addEventListener('click', this.saveChange);
 
         document.querySelector('input[data-option="kinopoiskFolderId"]').addEventListener('change', mono.debounce(this.saveChange));
+
+        this.bindProxyForm();
 
         setTimeout(function() {
             rate.init();

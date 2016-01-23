@@ -30,7 +30,9 @@ var engine = {
         sortColumn: 'quality',
         sortOrder: 0,
         invertIcon: 0,
-        autoUseProxy: 1
+        autoUseProxy: 1,
+        enableProxyApi: 0,
+        proxyHostList: []
     },
     settings: {},
     defaultExplorerOptions: [
@@ -224,6 +226,7 @@ var engine = {
             if (settings.profileListSync) {
                 syncOptionsList.push('profileList');
                 syncOptionsList.push('proxyList');
+                syncOptionsList.push('proxyHostList');
             }
             settings.enableFavoriteSync && syncOptionsList.push('expCache_' + 'favorites');
 

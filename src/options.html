@@ -63,6 +63,13 @@
                         <h2 data-lang="proxy">{Proxy}</h2>
                         <label><input type="checkbox" data-option="autoUseProxy"><span data-lang="autoUseProxy">{autoUseProxy}</span></label>
                         <div class="proxyList"></div>
+                        <h2 data-lang="proxyApi">{Googlezip}</h2>
+                        <label><input type="checkbox" data-option="enableProxyApi"><span data-lang="enableProxyApi">{enableProxyApi}</span></label>
+                        <div class="gzForm">
+                            <p class="item"><span data-lang="hostPattern">{Host-pattern}</span> <input id="proxyHostPattern" type="text"> <input id="proxyAddHostPattern" data-lang="add" type="button" value="{Add}"></p>
+                            <p class="item"><select multiple id="proxyHostPatternList"></select></p>
+                            <p class="item"><button id="proxyDeleteSelected" data-lang="deleteSelected,text">{Delete selected}</button></p>
+                        </div>
                     </div>
                     <div class="page quality">
                         <h2 data-lang="qualityDefine">{qualityDefine}</h2>
