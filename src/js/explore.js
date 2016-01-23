@@ -2034,6 +2034,9 @@ var explore = {
 
             while (el !== this && el.tagName !== 'A') {
                 el = el.parentNode;
+                if (el === null) {
+                    return;
+                }
             }
             if (el === this) {
                 return;

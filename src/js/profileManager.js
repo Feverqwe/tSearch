@@ -715,6 +715,9 @@ var profileManager = {
             if (this === el) return;
             while (el.parentNode !== this) {
                 el = el.parentNode;
+                if (el === null) {
+                    return;
+                }
             }
 
             var type = el.dataset.type;
@@ -733,6 +736,9 @@ var profileManager = {
             if (this === el) return;
             while (el.parentNode !== this) {
                 el = el.parentNode;
+                if (el === null) {
+                    return;
+                }
             }
 
             var _this = profileManager;

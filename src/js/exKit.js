@@ -593,9 +593,26 @@ var exKit = {
         }
         return tracker.search.baseUrl + value;
     },
-    setUrlProxy: function(url, proxyIndex) {
+    setProxy: function(url, proxyIndex, typeOnly) {
         "use strict";
         var proxy = engine.settings.proxyList[proxyIndex - 1];
+
+        if (proxy) {
+            if (typeOnly !== undefined && typeOnly !== proxy.type) {
+                return url;
+            }
+            if (proxy.type === 0 && method === 'GET') {
+                url = this.setUrlProxy(url, proxyIndex, proxy);
+            } else if (proxy.type === 1) {
+                url = this.setHostProxyUrl(url, proxyIndex, proxy);
+            }
+        }
+
+        return url;
+    },
+    setUrlProxy: function(url, proxyIndex, proxy) {
+        "use strict";
+        proxy = proxy || engine.settings.proxyList[proxyIndex - 1];
         if (!proxy) {
             return url;
         }
@@ -608,9 +625,9 @@ var exKit = {
 
         return url;
     },
-    setHostProxyUrl: function (url, proxyIndex) {
+    setHostProxyUrl: function (url, proxyIndex, proxy) {
         "use strict";
-        var proxy = engine.settings.proxyList[proxyIndex - 1];
+        proxy = proxy || engine.settings.proxyList[proxyIndex - 1];
         if (!proxy || proxy.type !== 1 || url.substr(0, 4) !== 'http') {
             return url;
         }
@@ -897,17 +914,7 @@ var exKit = {
                         dataType: tracker.search.requestDataType,
                         data: (tracker.search.requestData || '').replace('%search%', details.query),
                         changeUrl: proxyIndex > 0 && function (url, method) {
-                            var proxy = engine.settings.proxyList[proxyIndex - 1];
-
-                            if (proxy) {
-                                if (proxy.type === 0 && method === 'GET') {
-                                    url = _this.setUrlProxy(url, proxyIndex);
-                                } else if (proxy.type === 1) {
-                                    url = _this.setHostProxyUrl(url, proxyIndex);
-                                }
-                            }
-
-                            return url;
+                            return _this.setProxy(url, proxyIndex);
                         },
                         success: function (data, xhr) {
                             details.data = _this.contentFilter(data);

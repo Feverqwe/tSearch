@@ -372,7 +372,7 @@ var view = {
                             },
                             class: ['icon', 'tracker-icon'],
                             target: '_blank',
-                            href: tracker.search.baseUrl
+                            href: exKit.setProxy(tracker.search.baseUrl, tracker.proxyIndex, 1)
                         }),
                         mono.create('a', {
                             class: 'title',
@@ -1686,6 +1686,9 @@ var view = {
             if (this === el) return;
             while (el.parentNode !== this) {
                 el = el.parentNode;
+                if (el === null) {
+                    return;
+                }
             }
 
             if (!el.dataset.id) {
@@ -1704,6 +1707,9 @@ var view = {
             if (this === el) return;
             while (el.parentNode !== this) {
                 el = el.parentNode;
+                if (el === null) {
+                    return;
+                }
             }
 
             view.onCategoryListItemClick.call(el, e);
@@ -1727,6 +1733,9 @@ var view = {
             var el = e.target;
             while (el !== this && el.tagName !== 'A') {
                 el = el.parentNode;
+                if (el === null) {
+                    return;
+                }
             }
 
             if (el === this) return;
@@ -1736,6 +1745,9 @@ var view = {
 
             while (el.parentNode !== this) {
                 el = el.parentNode;
+                if (el === null) {
+                    return;
+                }
             }
 
             var index = el.dataset.index;
