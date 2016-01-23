@@ -32,7 +32,9 @@ var engine = {
         invertIcon: 0,
         autoUseProxy: 1,
         enableProxyApi: 0,
-        proxyHostList: []
+        proxyHostList: [
+            '*://*.kinozal.tv/*'
+        ]
     },
     settings: {},
     defaultExplorerOptions: [
