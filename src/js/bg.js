@@ -265,14 +265,25 @@ var bg = {
             var config = {
                 mode: "pac_script",
                 pacScript: {
-                    data: function FindProxyForURL(url){
-                        var matchRe = new RegExp("{regexp}");
-                        var address = "{address}";
-                        if (matchRe.test(url)) {
-                            return address + ';DIRECT';
-                        }
-                        return 'DIRECT';
-                    }.toString().replace('function ', 'function FindProxyForURL').replace('{address}', _this.currentProxy.address.join(';')).replace('{regexp}', hostListRe)
+                    data: (function() {
+                        var strFunc = 'function FindProxyForURL(url){'
+                        +  'var matchRe = getRegexp();'
+                        +  'var address = "{address}";'
+                        +    'if (matchRe.test(url)) {'
+                        +      'return address + ";DIRECT";'
+                        +    '}'
+                        +  'return "DIRECT";'
+                        +'}'
+                        +'function getRegexp() {'
+                        +  'if (getRegexp.re) {'
+                        +    'return getRegexp.re;'
+                        +  '}'
+                        +  'return getRegexp.re = new RegExp("{regexp}");'
+                        +'}';
+                        strFunc = strFunc.replace('{address}', _this.currentProxy.address.join(';'));
+                        strFunc = strFunc.replace('{regexp}', hostListRe);
+                        return strFunc;
+                    })()
                 }
             };
 
