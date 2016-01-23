@@ -120,7 +120,7 @@ var options = {
         obj[key] = value;
 
         mono.storage.set(obj, function() {
-            if (obj.hasOwnProperty('contextMenu') || obj.hasOwnProperty('searchPopup') || obj.hasOwnProperty('invertIcon')) {
+            if (obj.hasOwnProperty('contextMenu') || obj.hasOwnProperty('searchPopup') || obj.hasOwnProperty('invertIcon') || obj.hasOwnProperty('enableProxyApi')) {
                 mono.sendMessage('reloadSettings');
             }
         });

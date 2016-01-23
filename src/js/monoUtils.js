@@ -725,7 +725,7 @@ mono.urlPatternToStrRe = function(value) {
         pattern.push('$');
     } else
     if (path === '*') {
-        path = '(?:|\/.*)';
+        path = '(?:|\\/.*)';
         pattern.push(path);
         pattern.push('$');
     } else

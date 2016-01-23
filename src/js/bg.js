@@ -42,7 +42,11 @@ var bg = {
     settings: {
         contextMenu: 1,
         searchPopup: 1,
-        invertIcon: 0
+        invertIcon: 0,
+        enableProxyApi: 0,
+        proxyHostList: [
+            '*://*.kinozal.tv/*'
+        ]
     },
     updateIcon: function() {
         "use strict";
@@ -236,14 +240,22 @@ var bg = {
                 address: ['HTTPS proxy.googlezip.net:443', 'PROXY compress.googlezip.net:80', 'PROXY 74.125.205.211:80']
             }
         },
-        enable: function(hostList) {
+        onError: function(details) {
             "use strict";
-            if (!chrome.proxy) {
+            var _this = bg.proxy;
+            if (details.fatal) {
+                _this.stop();
+                console.error('Fatal error', details);
                 return;
             }
-
+            console.error('Proxy error', details);
+            _this.check();
+        },
+        enable: function() {
+            "use strict";
             var _this = this;
 
+            var hostList = bg.settings.proxyHostList;
             var hostListRe = hostList.map(function(pattern) {
                 return mono.urlPatternToStrRe(pattern);
             }).join('|');
@@ -260,7 +272,7 @@ var bg = {
                             return address + ';DIRECT';
                         }
                         return 'DIRECT';
-                    }.toString().replace('{address}', _this.currentProxy.address.join(';')).replace('{regexp}', hostListRe)
+                    }.toString().replace('function ', 'function FindProxyForURL').replace('{address}', _this.currentProxy.address.join(';')).replace('{regexp}', hostListRe)
                 }
             };
 
@@ -268,15 +280,41 @@ var bg = {
                 value: config,
                 scope: 'regular'
             });
+
+            chrome.proxy.onProxyError.addListener(_this.onError);
         },
-        init: function(enable, proxyHostList) {
+        check: function(cb) {
             "use strict";
             var _this = this;
+            chrome.proxy.settings.get({incognito:false}, function(details) {
+                if (['controllable_by_this_extension', 'controlled_by_this_extension'].indexOf(details.levelOfControl) === -1) {
+                    console.error('Run proxy error!');
+                    _this.stop();
+                    return;
+                }
+                cb && cb();
+            });
+        },
+        stop: function(cb) {
+            "use strict";
+            var _this = this;
+            chrome.proxy.onProxyError.removeListener(_this.onError);
             chrome.proxy.settings.clear({
                 scope: 'regular'
-            }, function() {
-                if (enable && proxyHostList.length) {
-                    _this.enable(proxyHostList);
+            }, cb);
+        },
+        init: function() {
+            "use strict";
+            if (!chrome.proxy) {
+                return;
+            }
+
+            var _this = this;
+            _this.stop(function() {
+                if (bg.settings.enableProxyApi && bg.settings.proxyHostList.length) {
+                    _this.check(function() {
+                        _this.enable();
+                    });
                 }
             });
         }
@@ -294,7 +332,12 @@ var bg = {
             if (storage.hasOwnProperty('invertIcon')) {
                 bg.settings.invertIcon = storage.invertIcon;
             }
-            var proxyHostList = storage.proxyHostList || [];
+            if (storage.hasOwnProperty('enableProxyApi')) {
+                bg.settings.enableProxyApi = storage.enableProxyApi;
+            }
+            if (storage.hasOwnProperty('proxyHostList')) {
+                bg.settings.proxyHostList = storage.proxyHostList;
+            }
 
             mono.getLanguage(function() {
                 bg.updateContextMenu();
@@ -306,7 +349,7 @@ var bg = {
             }
 
             if (mono.isChrome) {
-                _this.proxy.init(storage.enableProxyApi || 0, proxyHostList);
+                _this.proxy.init();
             }
         });
     }
