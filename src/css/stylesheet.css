@@ -159,8 +159,8 @@ body.home #result_block {
 }
 .link-block .vk-group {
     background: url(../img/vk.svg) center left no-repeat;
-    background-size: 16px
-    background-position-x: 0px;
+    background-size: 16px;
+    background-position-x: 2px;
 }
 
 .filter-block > p {
@@ -257,23 +257,28 @@ body.home #result_block {
     display: inline-block;
 }
 
-#tracker_list div:hover > a,
+#tracker_list div:hover > a.title,
 #tracker_list div:hover > i.count {
     background-color: #ddd;
 }
 
-#tracker_list div.selected > a,
+#tracker_list div.selected > a.title,
 #tracker_list div.selected > i.count {
     background-color: #337AF8;
     color: #fff;
 }
 
-#tracker_list div > i.icon {
+#tracker_list div > a.icon {
     width: 20px;
     height: 20px;
 }
 
-#tracker_list div > a {
+#tracker_list div > a.icon:hover {
+    background: url(../img/external.svg) no-repeat center;
+    background-size: 10px;
+}
+
+#tracker_list div > a.title {
     width: 120px;
     width: calc(100% - 50px);
     text-decoration: none;
@@ -293,6 +298,7 @@ body.home #result_block {
 #tracker_list div > i.count {
     width: 24px;
     font-style: normal;
+    cursor: pointer;
 }
 
 .icon {

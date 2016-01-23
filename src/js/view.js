@@ -366,13 +366,16 @@ var view = {
                         id: tracker.id
                     },
                     append: [
-                        trackerObj.iconEl = mono.create('i', {
+                        trackerObj.iconEl = mono.create('a', {
                             data: {
                                 id: tracker.id
                             },
-                            class: ['icon', 'tracker-icon']
+                            class: ['icon', 'tracker-icon'],
+                            target: '_blank',
+                            href: tracker.search.baseUrl
                         }),
                         mono.create('a', {
+                            class: 'title',
                             text: tracker.title,
                             href: '#'
                         }),
@@ -1678,7 +1681,8 @@ var view = {
         view.bindFilterRange();
 
         view.domCache.trackerList.addEventListener('click', function(e) {
-            var el = e.target;
+            var target = e.target;
+            var el = target;
             if (this === el) return;
             while (el.parentNode !== this) {
                 el = el.parentNode;
@@ -1687,6 +1691,11 @@ var view = {
             if (!el.dataset.id) {
                 return;
             }
+
+            if (target.tagName === 'A' && target.classList.contains('tracker-icon')) {
+                return;
+            }
+
             view.onTrackerListItemClick.call(el, e);
         });
 
