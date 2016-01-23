@@ -593,14 +593,11 @@ var exKit = {
         }
         return tracker.search.baseUrl + value;
     },
-    setProxy: function(url, proxyIndex, typeOnly) {
+    setProxy: function(url, proxyIndex, method) {
         "use strict";
         var proxy = engine.settings.proxyList[proxyIndex - 1];
 
         if (proxy) {
-            if (typeOnly !== undefined && typeOnly !== proxy.type) {
-                return url;
-            }
             if (proxy.type === 0 && method === 'GET') {
                 url = this.setUrlProxy(url, proxyIndex, proxy);
             } else if (proxy.type === 1) {
@@ -914,7 +911,7 @@ var exKit = {
                         dataType: tracker.search.requestDataType,
                         data: (tracker.search.requestData || '').replace('%search%', details.query),
                         changeUrl: proxyIndex > 0 && function (url, method) {
-                            return _this.setProxy(url, proxyIndex);
+                            return _this.setProxy(url, proxyIndex, method);
                         },
                         success: function (data, xhr) {
                             details.data = _this.contentFilter(data);
