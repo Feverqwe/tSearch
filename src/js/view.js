@@ -266,6 +266,7 @@ var view = {
                                 class: ['icon', 'auth']
                             }),
                             mono.create('a', {
+                                class: 'title',
                                 text: mono.language.login,
                                 href: data.url,
                                 target: '_blank'
