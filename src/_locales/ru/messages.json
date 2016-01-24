@@ -190,6 +190,7 @@
     "hostPattern": {"message": "Host-pattern"},
     "deleteSelected": {"message": "Удалить выбранное"},
     "proxyApi": {"message": "Googlezip proxy"},
+    "proxyInfo": {"message": "Не совместимо с другими проксирующими расширениями, такими как friGate или Stealthy"},
 
     "kitSearch": {"message": "Поиск"},
     "kitSelectors": {"message": "Селекторы"},

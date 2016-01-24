@@ -228,8 +228,11 @@ var engine = {
             if (settings.profileListSync) {
                 syncOptionsList.push('profileList');
                 syncOptionsList.push('proxyList');
-                syncOptionsList.push('proxyHostList');
             }
+
+            syncOptionsList.push('enableProxyApi');
+            syncOptionsList.push('proxyHostList');
+
             settings.enableFavoriteSync && syncOptionsList.push('expCache_' + 'favorites');
 
             if (Array.isArray(storage.searchHistory)) {
@@ -267,6 +270,10 @@ var engine = {
                     for (var i = 0, item; item = syncOptionsList[i]; i++) {
                         if (syncStorage.hasOwnProperty(item)) {
                             storage[item] = syncStorage[item];
+
+                            if (defaultSettings.hasOwnProperty(item)) {
+                                settings[item] = syncStorage[item];
+                            }
                         }
                     }
 

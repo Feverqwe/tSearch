@@ -334,34 +334,45 @@ var bg = {
         "use strict";
         var _this = this;
         mono.storage.get(['contextMenu', 'searchPopup', 'langCode', 'invertIcon', 'proxyHostList', 'enableProxyApi'], function(storage) {
-            if (storage.hasOwnProperty('contextMenu')) {
-                bg.settings.contextMenu = storage.contextMenu;
-            }
-            if (storage.hasOwnProperty('searchPopup')) {
-                bg.settings.searchPopup = storage.searchPopup;
-            }
-            if (storage.hasOwnProperty('invertIcon')) {
-                bg.settings.invertIcon = storage.invertIcon;
-            }
-            if (storage.hasOwnProperty('enableProxyApi')) {
-                bg.settings.enableProxyApi = storage.enableProxyApi;
-            }
-            if (storage.hasOwnProperty('proxyHostList')) {
-                bg.settings.proxyHostList = storage.proxyHostList;
-            }
+            var syncOptionsList = [];
+            syncOptionsList.push('enableProxyApi');
+            syncOptionsList.push('proxyHostList');
+            mono.storage.sync.get(syncOptionsList, function(syncStorage) {
+                for (var i = 0, item; item = syncOptionsList[i]; i++) {
+                    if (syncStorage.hasOwnProperty(item)) {
+                        storage[item] = syncStorage[item];
+                    }
+                }
 
-            mono.getLanguage(function() {
-                bg.updateContextMenu();
-                bg.updateBtnAction();
-            }, storage.langCode);
+                if (storage.hasOwnProperty('contextMenu')) {
+                    bg.settings.contextMenu = storage.contextMenu;
+                }
+                if (storage.hasOwnProperty('searchPopup')) {
+                    bg.settings.searchPopup = storage.searchPopup;
+                }
+                if (storage.hasOwnProperty('invertIcon')) {
+                    bg.settings.invertIcon = storage.invertIcon;
+                }
+                if (storage.hasOwnProperty('enableProxyApi')) {
+                    bg.settings.enableProxyApi = storage.enableProxyApi;
+                }
+                if (storage.hasOwnProperty('proxyHostList')) {
+                    bg.settings.proxyHostList = storage.proxyHostList;
+                }
 
-            if ((mono.isChrome && !mono.isChromeWebApp) || mono.isFF) {
-                bg.updateIcon();
-            }
+                mono.getLanguage(function () {
+                    bg.updateContextMenu();
+                    bg.updateBtnAction();
+                }, storage.langCode);
 
-            if (mono.isChrome) {
-                _this.proxy.init();
-            }
+                if ((mono.isChrome && !mono.isChromeWebApp) || mono.isFF) {
+                    bg.updateIcon();
+                }
+
+                if (mono.isChrome) {
+                    _this.proxy.init();
+                }
+            });
         });
     }
 };

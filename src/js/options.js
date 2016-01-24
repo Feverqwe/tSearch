@@ -877,6 +877,7 @@ var options = {
         var _this = this;
         var input = this.domCache.proxyHostPattern;
         var select = this.domCache.proxyHostPatternList;
+        var btn = this.domCache.proxyAddHostPattern;
 
         var saveHostList = function() {
             var hostList = [];
@@ -893,7 +894,13 @@ var options = {
             });
         };
 
-        this.domCache.proxyAddHostPattern.addEventListener('click', function(e) {
+        input.addEventListener('keydown', function(e) {
+            if (e.keyCode === 13) {
+                btn.dispatchEvent(new CustomEvent("click"))
+            }
+        });
+
+        btn.addEventListener('click', function(e) {
             e.preventDefault();
             var value = input.value.trim();
             if (!value) {
@@ -944,7 +951,7 @@ var options = {
             this.domCache.clearCloudStorageBtn.style.display = 'none';
             document.querySelector('input[data-option="enableFavoriteSync"]').parentNode.style.display = 'none';
             document.querySelector('input[data-option="profileListSync"]').parentNode.style.display = 'none';
-            document.querySelector('input[data-option="enableProxyApi"]').parentNode.style.display = 'none';
+            document.querySelector('.gzForm').style.display = 'none';
         }
         if (mono.isChrome && mono.isChromeWebApp) {
             //Chromeum app
