@@ -103,7 +103,7 @@ engine.trackerLib.thepiratebay = {
                 var m;
                 var minAgoFunc = function (tracker, value) {
                     var dateSelector = tracker.search.torrentSelector.date.selector || tracker.search.torrentSelector.date;
-                    var minAgo = tracker.$node.find(dateSelector).children('b').text();
+                    var minAgo = details.$node.find(dateSelector).children('b').text();
                     if (minAgo === value) {
                         var minCount = value.match(/(\d+)/);
                         if (!minCount) {
