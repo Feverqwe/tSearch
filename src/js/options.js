@@ -951,8 +951,12 @@ var options = {
             this.domCache.clearCloudStorageBtn.style.display = 'none';
             document.querySelector('input[data-option="enableFavoriteSync"]').parentNode.style.display = 'none';
             document.querySelector('input[data-option="profileListSync"]').parentNode.style.display = 'none';
+        }
+
+        if (!mono.isChrome || /OPR\//.test(navigator.userAgent) || /YaBrowser\//.test(navigator.userAgent)) {
             document.querySelector('.gzForm').style.display = 'none';
         }
+
         if (mono.isChrome && mono.isChromeWebApp) {
             //Chromeum app
             document.querySelector('input[data-option="searchPopup"]').parentNode.style.display = 'none';
