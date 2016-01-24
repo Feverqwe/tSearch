@@ -268,7 +268,7 @@ body.home #result_block {
     color: #fff;
 }
 
-#tracker_list div > a.icon {
+#tracker_list div > .icon {
     width: 20px;
     height: 20px;
 }
