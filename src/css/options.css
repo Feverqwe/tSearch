@@ -510,6 +510,10 @@ input[data-option="kinopoiskFolderId"] {
     margin-bottom: 5px;
 }
 
+.gzForm {
+    margin-top: 36px;
+}
+
 #proxyHostPattern {
     width: 235px;
 }
