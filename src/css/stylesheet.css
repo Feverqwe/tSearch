@@ -273,7 +273,7 @@ body.home #result_block {
     height: 20px;
 }
 
-#tracker_list div > a.icon:hover {
+#tracker_list div > a.icon:not(.error):hover {
     background: url(../img/external.svg) no-repeat center;
     background-size: 10px;
 }
