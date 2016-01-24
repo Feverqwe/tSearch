@@ -24,7 +24,7 @@ var magic = function() {
             return content;
         },
         domFilter: function(fragment) {
-            [].slice.call(fragment.querySelectorAll(['script', 'link', 'style'])).forEach(function(node) {
+            [].slice.call(fragment.querySelectorAll(['script', 'link', 'style', 'iframe'])).forEach(function(node) {
                 var newNode = mono.create(node.tagName, {
                     data: {
                         blockNode: 1
