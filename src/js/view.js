@@ -284,11 +284,11 @@ var view = {
         if (status === 'loading' || status === 'error') {
             trackerObj.status[status] = (function(iconEl, status, data) {
                 iconEl.classList.add(status);
-                data && (iconEl.title = data);
+                iconEl.title = data || '';
                 return {
                     disable: function() {
                         iconEl.classList.remove(status);
-                        data && (iconEl.title = '');
+                        iconEl.title = mono.language.goToTheWebsite;
                     }
                 }
             })(trackerObj.iconEl, status, data);
@@ -372,6 +372,7 @@ var view = {
                                 id: tracker.id
                             },
                             class: ['icon', 'tracker-icon'],
+                            title: mono.language.goToTheWebsite,
                             target: '_blank',
                             href: exKit.setProxy(tracker.search.baseUrl, tracker.proxyIndex, 'POST')
                         }),
