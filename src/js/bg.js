@@ -329,7 +329,7 @@ var bg = {
                     cb && cb();
                 };
 
-                if (['controllable_by_this_extension', 'controlled_by_this_extension'].indexOf(details.levelOfControl) !== -1) {
+                if (details.levelOfControl === 'controlled_by_this_extension') {
                     chrome.proxy.settings.clear({
                         scope: 'regular'
                     }, next);
