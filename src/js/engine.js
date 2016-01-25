@@ -216,19 +216,20 @@ var engine = {
 
         mono.storage.get(optionsList, function(storage) {
             mono.storage.sync.get(optionsList, function(syncStorage) {
+                var settings = _this.settings = {};
                 ['enableFavoriteSync', 'profileListSync'].forEach(function(key) {
                     if (storage.hasOwnProperty(key)) {
-                        storage[key] = storage[key];
+                        settings[key] = storage[key];
                     } else {
-                        storage[key] = defaultSettings[key];
+                        settings[key] = defaultSettings[key];
                     }
                 });
 
-                if (!storage.enableFavoriteSync) {
+                if (!settings.enableFavoriteSync) {
                     delete syncStorage.expCache_favorites;
                 }
 
-                if (!storage.profileListSync) {
+                if (!settings.profileListSync) {
                     delete syncStorage.profileList;
                     delete syncStorage.proxyList;
                 }
@@ -237,7 +238,6 @@ var engine = {
                     storage[key] = syncStorage[key];
                 });
 
-                var settings = _this.settings = {};
                 Object.keys(defaultSettings).forEach(function(key) {
                     if (storage.hasOwnProperty(key)) {
                         settings[key] = storage[key];
