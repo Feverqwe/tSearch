@@ -248,13 +248,10 @@ var bg = {
                 return;
             }
 
-            ['proxyHostList'].forEach(function(key) {
-                if (changes[key]) {
-                    bg.settings[key] = changes[key].newValue;
-                }
-            });
-
-            bg.proxy.init();
+            if (changes.proxyHostList) {
+                bg.settings.proxyHostList = changes.proxyHostList.newValue;
+                bg.proxy.init();
+            }
         },
         onError: function(details) {
             "use strict";
