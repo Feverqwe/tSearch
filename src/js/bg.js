@@ -324,21 +324,33 @@ var bg = {
             var _this = this;
             chrome.storage.onChanged.removeListener(_this.onStorageChange);
             chrome.proxy.onProxyError.removeListener(_this.onError);
-            chrome.proxy.settings.clear({
-                scope: 'regular'
-            }, cb);
+            chrome.proxy.settings.get({incognito:false}, function(details) {
+                var next = function() {
+                    cb && cb();
+                };
+
+                if (['controllable_by_this_extension', 'controlled_by_this_extension'].indexOf(details.levelOfControl) !== -1) {
+                    chrome.proxy.settings.clear({
+                        scope: 'regular'
+                    }, next);
+                } else {
+                    next();
+                }
+            });
         },
         init: function() {
             "use strict";
-            if (!chrome.proxy || !bg.settings.enableProxyApi) {
+            if (!chrome.proxy) {
                 return;
             }
 
             var _this = this;
             _this.stop(function() {
-                _this.check(function() {
-                    _this.enable();
-                });
+                if (bg.settings.enableProxyApi) {
+                    _this.check(function () {
+                        _this.enable();
+                    });
+                }
             });
         }
     },
