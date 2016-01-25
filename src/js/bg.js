@@ -327,32 +327,18 @@ var bg = {
     run: function() {
         "use strict";
         var _this = this;
-        mono.storage.get(['contextMenu', 'searchPopup', 'langCode', 'invertIcon', 'proxyHostList', 'enableProxyApi'], function(storage) {
-            var syncOptionsList = [];
-            syncOptionsList.push('enableProxyApi');
-            syncOptionsList.push('proxyHostList');
-            mono.storage.sync.get(syncOptionsList, function(syncStorage) {
-                for (var i = 0, item; item = syncOptionsList[i]; i++) {
-                    if (syncStorage.hasOwnProperty(item)) {
-                        storage[item] = syncStorage[item];
-                    }
-                }
+        var storageKeys = Object.keys(bg.settings).concat(['langCode']);
+        mono.storage.get(storageKeys, function(storage) {
+            mono.storage.sync.get(storageKeys, function(syncStorage) {
+                Object.keys(syncStorage).forEach(function(key) {
+                    storage[key] = syncStorage[key];
+                });
 
-                if (storage.hasOwnProperty('contextMenu')) {
-                    bg.settings.contextMenu = storage.contextMenu;
-                }
-                if (storage.hasOwnProperty('searchPopup')) {
-                    bg.settings.searchPopup = storage.searchPopup;
-                }
-                if (storage.hasOwnProperty('invertIcon')) {
-                    bg.settings.invertIcon = storage.invertIcon;
-                }
-                if (storage.hasOwnProperty('enableProxyApi')) {
-                    bg.settings.enableProxyApi = storage.enableProxyApi;
-                }
-                if (storage.hasOwnProperty('proxyHostList')) {
-                    bg.settings.proxyHostList = storage.proxyHostList;
-                }
+                Object.keys(bg.settings).forEach(function(key) {
+                    if (storage.hasOwnProperty(key)) {
+                        bg.settings[key] = storage[key];
+                    }
+                });
 
                 mono.getLanguage(function () {
                     bg.updateContextMenu();

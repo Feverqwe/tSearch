@@ -175,124 +175,117 @@ var engine = {
     },
     loadSettings: function(cb) {
         "use strict";
+        var _this = this;
         var browserLocale = String(navigator.language).substr(0, 2).toLowerCase();
 
-        var defaultSettings = this.defaultSettings;
+        var defaultSettings = _this.defaultSettings;
 
         if (browserLocale !== 'ru') {
             defaultSettings.hideTopSearch = 1;
-            this.defaultExplorerOptions[1].enable = 0;
-            this.defaultExplorerOptions[2].enable = 0;
-            this.defaultExplorerOptions[3].enable = 0;
-            this.defaultExplorerOptions[4].enable = 0;
+            _this.defaultExplorerOptions[1].enable = 0;
+            _this.defaultExplorerOptions[2].enable = 0;
+            _this.defaultExplorerOptions[3].enable = 0;
+            _this.defaultExplorerOptions[4].enable = 0;
         } else {
-            this.defaultExplorerOptions[5].enable = 0;
-            this.defaultExplorerOptions[6].enable = 0;
-            this.defaultExplorerOptions[4].enable = 0;
+            _this.defaultExplorerOptions[5].enable = 0;
+            _this.defaultExplorerOptions[6].enable = 0;
+            _this.defaultExplorerOptions[4].enable = 0;
         }
+
         if (mono.isWebApp) {
             defaultSettings.allowGetDescription = 0;
         }
 
-        var optionsList = [];
-        for (var item in defaultSettings) {
-            optionsList.push(item);
-        }
-
-        optionsList.push('profileList');
-        optionsList.push('customTorrentList');
-        optionsList.push('searchHistory');
-        optionsList.push('currentProfile');
-        optionsList.push('explorerOptions');
-        optionsList.push('topList');
-        optionsList.push('explorerQualityList');
-        optionsList.push('qualityObj');
+        var optionsList = Object.keys(defaultSettings).concat([
+            'profileList',
+            'customTorrentList',
+            'searchHistory',
+            'currentProfile',
+            'explorerOptions',
+            'topList',
+            'explorerQualityList',
+            'qualityObj'
+        ]);
 
         var cacheList = [];
-        for (var i = 0, item; item = this.defaultExplorerOptions[i]; i++) {
+        for (var i = 0, item; item = _this.defaultExplorerOptions[i]; i++) {
             var itemKey = 'expCache_' + item.type;
             optionsList.push(itemKey);
             cacheList.push(itemKey);
         }
 
         mono.storage.get(optionsList, function(storage) {
-            var settings = {};
-            for (var item in defaultSettings) {
-                settings[item] = storage.hasOwnProperty(item) ? storage[item] : defaultSettings[item];
-            }
-            this.settings = settings;
-
-            !settings.doNotSendStatistics && this.initCounter();
-
-            var syncOptionsList = [];
-            if (settings.profileListSync) {
-                syncOptionsList.push('profileList');
-                syncOptionsList.push('proxyList');
-            }
-
-            syncOptionsList.push('enableProxyApi');
-            syncOptionsList.push('proxyHostList');
-
-            settings.enableFavoriteSync && syncOptionsList.push('expCache_' + 'favorites');
-
-            if (Array.isArray(storage.searchHistory)) {
-                this.history = storage.searchHistory;
-            }
-
-            if (Array.isArray(storage.qualityObj)) {
-                rate.qualityList = storage.qualityObj;
-            }
-
-            if (Array.isArray(storage.explorerOptions)) {
-                this.explorerOptions = storage.explorerOptions;
-            } else {
-                this.explorerOptions = mono.cloneObj(this.defaultExplorerOptions);
-            }
-
-            if (typeof storage.explorerQualityList === 'object') {
-                this.explorerQualityList = storage.explorerQualityList;
-            }
-
-            this.prepareExploreOptionsObj();
-
-            if (typeof storage.customTorrentList === 'object') {
-                for (var id in storage.customTorrentList) {
-                    exKit.prepareCustomTracker(storage.customTorrentList[id]);
+            mono.storage.sync.get(optionsList, function(syncStorage) {
+                if (!storage.enableFavoriteSync) {
+                    delete syncStorage.expCache_favorites;
                 }
-            }
 
-            if (typeof storage.topList === 'object') {
-                this.topList = storage.topList;
-            }
+                if (!storage.profileListSync) {
+                    delete syncStorage.profileList;
+                    delete syncStorage.proxyList;
+                }
 
-            mono.getLanguage(function() {
-                mono.storage.sync.get(syncOptionsList, function(syncStorage) {
-                    for (var i = 0, item; item = syncOptionsList[i]; i++) {
-                        if (syncStorage.hasOwnProperty(item)) {
-                            storage[item] = syncStorage[item];
+                Object.keys(syncStorage).forEach(function(key) {
+                    storage[key] = syncStorage[key];
+                });
 
-                            if (defaultSettings.hasOwnProperty(item)) {
-                                settings[item] = syncStorage[item];
-                            }
-                        }
+                var settings = _this.settings = {};
+                Object.keys(defaultSettings).forEach(function(key) {
+                    if (storage.hasOwnProperty(key)) {
+                        settings[key] = storage[key];
+                    } else {
+                        settings[key] = defaultSettings[key];
+                    }
+                });
+
+                !settings.doNotSendStatistics && _this.initCounter();
+
+                if (Array.isArray(storage.searchHistory)) {
+                    _this.history = storage.searchHistory;
+                }
+
+                if (Array.isArray(storage.qualityObj)) {
+                    rate.qualityList = storage.qualityObj;
+                }
+
+                if (Array.isArray(storage.explorerOptions)) {
+                    _this.explorerOptions = storage.explorerOptions;
+                } else {
+                    _this.explorerOptions = mono.cloneObj(_this.defaultExplorerOptions);
+                }
+                _this.prepareExploreOptionsObj();
+
+                if (typeof storage.explorerQualityList === 'object') {
+                    _this.explorerQualityList = storage.explorerQualityList;
+                }
+
+                if (typeof storage.customTorrentList === 'object') {
+                    for (var id in storage.customTorrentList) {
+                        exKit.prepareCustomTracker(storage.customTorrentList[id]);
+                    }
+                }
+
+                if (typeof storage.topList === 'object') {
+                    _this.topList = storage.topList;
+                }
+
+                cacheList.forEach(function(key) {
+                    if (typeof storage[key] !== 'object') {
+                        storage[key] = {};
                     }
 
-                    for (var i = 0, item; item = cacheList[i]; i++) {
-                        if (!storage[item] || typeof storage[item] !== 'object') {
-                            storage[item] = {};
-                        }
+                    _this.exploreCache[key] = storage[key];
+                });
 
-                        this.exploreCache[item] = storage[item];
-                    }
+                mono.getLanguage(function() {
+                    _this.defaultPrepare(mono.language.langCode);
 
-                    this.defaultPrepare(mono.language.langCode);
-
-                    this.prepareProfileList(storage.currentProfile, storage);
+                    _this.prepareProfileList(storage.currentProfile, storage);
 
                     return cb();
-                }.bind(this));
-            }.bind(this), settings.langCode);
-        }.bind(this));
+                }, settings.langCode);
+            });
+        });
     },
 
     ping: function(cb) {
