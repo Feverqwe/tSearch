@@ -39,15 +39,17 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
 })();
 
 var bg = {
-    settings: {
+    defaultSettings: {
         contextMenu: 1,
         searchPopup: 1,
         invertIcon: 0,
         enableProxyApi: 0,
+        langCode: undefined,
         proxyHostList: [
             '*://*.kinozal.tv/*'
         ]
     },
+    settings: {},
     updateIcon: function() {
         "use strict";
         var prefix;
@@ -240,6 +242,20 @@ var bg = {
                 address: ['HTTPS proxy.googlezip.net:443', 'PROXY compress.googlezip.net:80', 'PROXY 74.125.205.211:80']
             }
         },
+        onStorageChange: function(changes, areaName) {
+            "use strict";
+            if (['sync', 'local'].indexOf(areaName) === -1) {
+                return;
+            }
+
+            ['proxyHostList'].forEach(function(key) {
+                if (changes[key]) {
+                    bg.settings[key] = changes[key].newValue;
+                }
+            });
+
+            bg.proxy.init();
+        },
         onError: function(details) {
             "use strict";
             var _this = bg.proxy;
@@ -287,6 +303,8 @@ var bg = {
             });
 
             chrome.proxy.onProxyError.addListener(_this.onError);
+
+            chrome.storage.onChanged.addListener(_this.onStorageChange);
         },
         check: function(cb) {
             "use strict";
@@ -303,6 +321,7 @@ var bg = {
         stop: function(cb) {
             "use strict";
             var _this = this;
+            chrome.storage.onChanged.removeListener(_this.onStorageChange);
             chrome.proxy.onProxyError.removeListener(_this.onError);
             chrome.proxy.settings.clear({
                 scope: 'regular'
@@ -310,13 +329,13 @@ var bg = {
         },
         init: function() {
             "use strict";
-            if (!chrome.proxy) {
+            if (!chrome.proxy || !bg.settings.enableProxyApi) {
                 return;
             }
 
             var _this = this;
             _this.stop(function() {
-                if (bg.settings.enableProxyApi && bg.settings.proxyHostList.length) {
+                if (bg.settings.proxyHostList.length) {
                     _this.check(function() {
                         _this.enable();
                     });
@@ -327,16 +346,18 @@ var bg = {
     run: function() {
         "use strict";
         var _this = this;
-        var storageKeys = Object.keys(bg.settings).concat(['langCode']);
+        var storageKeys = Object.keys(bg.defaultSettings);
         mono.storage.get(storageKeys, function(storage) {
             mono.storage.sync.get(storageKeys, function(syncStorage) {
                 Object.keys(syncStorage).forEach(function(key) {
                     storage[key] = syncStorage[key];
                 });
 
-                Object.keys(bg.settings).forEach(function(key) {
+                Object.keys(bg.defaultSettings).forEach(function(key) {
                     if (storage.hasOwnProperty(key)) {
                         bg.settings[key] = storage[key];
+                    } else {
+                        bg.settings[key] = bg.defaultSettings[key];
                     }
                 });
 

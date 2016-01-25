@@ -888,9 +888,7 @@ var options = {
                 hostList.push(node.value);
             });
             mono.storage.set({proxyHostList: hostList}, function() {
-                mono.storage.sync.set({proxyHostList: hostList}, function() {
-                    mono.sendMessage('reloadSettings');
-                });
+                mono.storage.sync.set({proxyHostList: hostList});
             });
         };
 
