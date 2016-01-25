@@ -289,7 +289,7 @@ var bg = {
                         +'var matchRe = new RegExp("{regexp}");'
                         +'var FindProxyForURL = function(url){'
                         +  'if (matchRe.test(url)) {'
-                        +    'return "{address};DIRECT";'
+                        +    'return "{address}";'
                         +  '}'
                         +  'return "DIRECT";'
                         +'}';
