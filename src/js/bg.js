@@ -268,7 +268,13 @@ var bg = {
             "use strict";
             var _this = this;
 
+            chrome.storage.onChanged.addListener(_this.onStorageChange);
+
             var hostList = bg.settings.proxyHostList;
+            if (!hostList.length) {
+                return;
+            }
+
             var hostListRe = hostList.map(function(pattern) {
                 return mono.urlPatternToStrRe(pattern);
             }).join('|');
@@ -300,8 +306,6 @@ var bg = {
             });
 
             chrome.proxy.onProxyError.addListener(_this.onError);
-
-            chrome.storage.onChanged.addListener(_this.onStorageChange);
         },
         check: function(cb) {
             "use strict";
@@ -332,11 +336,9 @@ var bg = {
 
             var _this = this;
             _this.stop(function() {
-                if (bg.settings.proxyHostList.length) {
-                    _this.check(function() {
-                        _this.enable();
-                    });
-                }
+                _this.check(function() {
+                    _this.enable();
+                });
             });
         }
     },
