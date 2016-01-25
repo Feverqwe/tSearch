@@ -216,6 +216,14 @@ var engine = {
 
         mono.storage.get(optionsList, function(storage) {
             mono.storage.sync.get(optionsList, function(syncStorage) {
+                ['enableFavoriteSync', 'profileListSync'].forEach(function(key) {
+                    if (storage.hasOwnProperty(key)) {
+                        storage[key] = storage[key];
+                    } else {
+                        storage[key] = defaultSettings[key];
+                    }
+                });
+
                 if (!storage.enableFavoriteSync) {
                     delete syncStorage.expCache_favorites;
                 }
