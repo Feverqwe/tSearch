@@ -30,6 +30,7 @@ engine.trackerLib['rutracker'] = {
         loginUrl: 'http://login.rutracker.org/forum/login.php',
         loginFormSelector: '#login-form',
         searchUrl: 'http://rutracker.org/forum/tracker.php',
+        nextPageSelector: {selector: 'div.nav>p:eq(1)>a.pg:eq(-1)', attr: 'href'},
         baseUrl: 'http://rutracker.org/forum/',
         requestType: 'POST',
         requestData: 'nm=%search%',

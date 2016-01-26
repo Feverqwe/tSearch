@@ -30,7 +30,8 @@ var view = {
         peerFilterMax: document.getElementById('peer_filter_to'),
         mainBtn: document.getElementById('main_btn'),
         editProfile: document.getElementById('edit_profile'),
-        topBtn: document.getElementById('top_btn')
+        topBtn: document.getElementById('top_btn'),
+        loadMoreBtn: document.getElementById('load_more')
     },
     varCache: {
         categoryList: [
@@ -68,6 +69,7 @@ var view = {
             sum: 0
         },
         searchResultCache: [],
+        nextPageUrlList: [],
         trackerListStyle: undefined,
         filter: {
             trackerList: undefined,
@@ -897,7 +899,7 @@ var view = {
         "use strict";
         return this.teaserFilterR.test(title);
     },
-    writeResultList: function(tracker, torrentList) {
+    writeResultList: function(tracker, torrentList, nextPageUrl) {
         "use strict";
         var filter = view.getFilterStyleState();
         var filterTrackerList = view.varCache.filter.trackerList || [];
@@ -1027,6 +1029,14 @@ var view = {
         }
         view.sortResults();
         view.resultCounterUpdate();
+
+        if (nextPageUrl) {
+            view.varCache.nextPageUrlList.push({id: tracker.id, url: nextPageUrl});
+        }
+
+        if (view.varCache.nextPageUrlList.length > 0) {
+            view.loadMoreBtn.show();
+        }
     },
     setOnSuccessStatus: function (tracker, data) {
         "use strict";
@@ -1044,7 +1054,7 @@ var view = {
         if (data.requireAuth) {
             return;
         }
-        view.writeResultList(tracker, data.torrentList);
+        view.writeResultList(tracker, data.torrentList, data.nextPageUrl);
     },
     resetTrackerStatusById: function(trackerId, except) {
         "use strict";
@@ -1318,10 +1328,37 @@ var view = {
             trackerList: this.varCache.filter.trackerList
         });
     },
+    loadMoreBtn: {
+        isShow: false,
+        hide: function() {
+            "use strict";
+            if (this.isShow) {
+                view.domCache.loadMoreBtn.classList.add('hide');
+                this.isShow = false;
+            }
+        },
+        show: function() {
+            "use strict";
+            if (!this.isShow) {
+                view.domCache.loadMoreBtn.classList.remove('hide');
+                this.isShow = true;
+            }
+        },
+        onClick: function(e) {
+            "use strict";
+            e.preventDefault();
+        },
+        bind: function() {
+            "use strict";
+            view.domCache.loadMoreBtn.addEventListener('click', this.onClick);
+        }
+    },
     search: function(request, fromHistory) {
         "use strict";
         view.domCache.resultTableBody.textContent = '';
-        view.varCache.searchResultCache = [];
+        view.varCache.searchResultCache.splice(0);
+        view.varCache.nextPageUrlList.splice(0);
+        view.loadMoreBtn.hide();
         view.resultCounterReset();
         request = view.prepareRequest(request);
         this.updHistory(function() {
@@ -1769,6 +1806,9 @@ var view = {
         view.writeCategory();
 
         view.selectProfile(engine.currentProfile);
+
+        view.loadMoreBtn.bind();
+
         view.domCache.profileSelect.addEventListener('change', function() {
             var service = this.childNodes[this.selectedIndex].dataset.service;
             if (service) {

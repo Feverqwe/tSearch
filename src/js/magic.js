@@ -166,7 +166,7 @@ var magic = function() {
                 if (item.attr && item.attr.value) {
                     obj.attr = item.attr.value;
                 } else
-                if (['category_link', 'torrent_link', 'torrent_dl'].indexOf(key) !== -1) {
+                if (['category_link', 'torrent_link', 'torrent_dl', 'next_page_link'].indexOf(key) !== -1) {
                     obj.attr = 'href';
                 }
 
@@ -231,6 +231,7 @@ var magic = function() {
                     loginUrl: nodeList.auth.url.value,
                     loginFormSelector: nodeList.auth.input.value,
                     searchUrl: nodeList.search.url.value,
+                    nextPageSelector: getSelectorObj('next_page_link'),
                     baseUrl: nodeList.search.root.value,
                     requestType: nodeList.search.post.value ? 'POST' : 'GET',
                     requestData: nodeList.search.post.value || null,
@@ -442,7 +443,8 @@ var magic = function() {
                 downloadUrl: 'torrent_dl',
                 seed: 'seed',
                 peer: 'peer',
-                date: 'time'
+                date: 'time',
+                nextPageSelector: 'next_page_link'
             };
 
             var readSelector = function(key, obj) {
@@ -533,6 +535,8 @@ var magic = function() {
             selectors.list.input.value = code.search.listItemSelector;
 
             readSplice();
+
+            readSelector('nextPageSelector', code.search.nextPageSelector);
 
             for (var key in code.search.torrentSelector) {
                 readSelector(key, code.search.torrentSelector[key]);
@@ -778,6 +782,7 @@ var magic = function() {
             var skipFirst = this.nodeList.selectors.skip.first;
             var skipLast = this.nodeList.selectors.skip.last;
             var listInput = _this.nodeList.selectors.list.input;
+            var useParentNode = output && key !== 'next_page_link';
 
             var getStartIndex = function() {
                 var index = skipFirst.value;
@@ -809,7 +814,7 @@ var magic = function() {
                 var nodeList = null;
                 var $frameDoc = _this.varCache.$frameDoc;
                 try {
-                    if (output) {
+                    if (useParentNode) {
                         nodeList = $frameDoc.find(listInput.value).eq(getStartIndex()).find(path);
                     } else {
                         nodeList = $frameDoc.find(path);
@@ -831,7 +836,7 @@ var magic = function() {
                 var nodeList = null;
                 var $dom = _this.varCache.$frameDom;
                 try {
-                    if (output) {
+                    if (useParentNode) {
                         nodeList = $dom.find(listInput.value).eq(getStartIndex()).find(path);
                     } else {
                         nodeList = $dom.find(path);
@@ -858,7 +863,7 @@ var magic = function() {
                     }
                 }
 
-                if (output && path.indexOf(listInput.value) === 0) {
+                if (useParentNode && path.indexOf(listInput.value) === 0) {
                     path = path.substr(listInput.value.length).replace(/^:eq\(\d+\)\s*>\s*/, '');
                 }
 
@@ -873,7 +878,7 @@ var magic = function() {
                 attr && attr.classList.remove('error');
 
                 var attrValue = attr && attr.value;
-                if (!attrValue && ['category_link', 'torrent_link', 'torrent_dl'].indexOf(key) !== -1) {
+                if (!attrValue && ['category_link', 'torrent_link', 'torrent_dl', 'next_page_link'].indexOf(key) !== -1) {
                     attrValue = 'href';
                 }
 
@@ -907,7 +912,7 @@ var magic = function() {
 
             btn.addEventListener('click', function() {
                 var container = {};
-                if (output) {
+                if (useParentNode) {
                     var $frameDoc = _this.varCache.$frameDoc;
                     container.path = listInput.value + ':eq(' + getStartIndex() + ')';
                     container.parent = $frameDoc.find(container.path).get(0);
@@ -1282,7 +1287,7 @@ var magic = function() {
             dataIdList.forEach(function(node) {
                 var keyList = node.dataset.id;
                 keyList = keyList.split('_').map(function(item) {
-                    return item.replace(/([A-Z])/, '_$1').toLowerCase();
+                    return item.replace(/([A-Z])/g, '_$1').toLowerCase();
                 });
                 var key = keyList.pop();
                 var obj = _this.nodeList;

@@ -38,6 +38,10 @@ body.home #result_block {
     display: none;
 }
 
+#result_block #load_more.hide {
+    display: none;
+}
+
 .head {
     position: relative;
     border-bottom: 1px solid #ddd;
