@@ -520,7 +520,7 @@ var explore = {
                     if (!url) {
                         continue;
                     }
-                    url = exKit.urlCheck(urlObj, url);
+                    url = exKit.urlCheck({}, urlObj, url);
                     node.setAttribute('href', url);
                 }
 

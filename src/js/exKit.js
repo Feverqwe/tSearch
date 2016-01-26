@@ -574,7 +574,7 @@ var exKit = {
     intList: ['categoryId', 'size', 'seed', 'peer', 'date'],
     isUrlList: ['categoryUrl', 'url', 'downloadUrl', 'nextPageUrl'],
     unFilterKeyList: ['categoryTitle', 'categoryUrl', 'title', 'url', 'downloadUrl'],
-    urlCheck: function (tracker, value) {
+    urlCheck: function (details, tracker, value) {
         "use strict";
         if (value.substr(0, 7) === 'magnet:') {
             return value;
@@ -590,6 +590,14 @@ var exKit = {
         }
         if (value.substr(0, 2) === './') {
             return tracker.search.baseUrl + value.substr(2);
+        }
+        if (value[0] === '?') {
+            var url = details.requestUrl || '';
+            var pos = url.search(/[?#]/);
+            if (pos !== -1) {
+                url = url.substr(0, pos);
+            }
+            return url + value;
         }
         return tracker.search.baseUrl + value;
     },
@@ -737,7 +745,7 @@ var exKit = {
                     value = exKit.contentUnFilter(value);
                 }
                 if (exKit.isUrlList.indexOf(key) !== -1) {
-                    value = exKit.urlCheck(tracker, value);
+                    value = exKit.urlCheck(details, tracker, value);
                 }
             }
 
@@ -843,7 +851,7 @@ var exKit = {
                     value = exKit.contentUnFilter(value);
                 }
                 if (exKit.isUrlList.indexOf(key) !== -1) {
-                    value = exKit.urlCheck(tracker, value);
+                    value = exKit.urlCheck(details, tracker, value);
                 }
             }
 
@@ -1032,6 +1040,8 @@ var exKit = {
                         success: function (data, xhr) {
                             details.data = _this.contentFilter(data);
                             details.responseUrl = xhr.responseURL;
+                            details.requestUrl = ajaxData.url;
+
                             resolve();
                         },
                         error: function (xhr) {

@@ -69,7 +69,7 @@ var view = {
             sum: 0
         },
         searchResultCache: [],
-        nextPageUrlList: [],
+        nextPageUrlList: {},
         trackerListStyle: undefined,
         filter: {
             trackerList: undefined,
@@ -334,6 +334,7 @@ var view = {
             (pos !== -1) && view.varCache.filter.trackerList.splice(pos, 1);
         }
         view.filterUpdate();
+        view.loadMore.checkUrlList();
     },
     selectProfile: function(profileName, cb) {
         "use strict";
@@ -1032,11 +1033,7 @@ var view = {
         view.resultCounterUpdate();
 
         if (nextPageUrl) {
-            view.varCache.nextPageUrlList.push({id: tracker.id, url: nextPageUrl, query: requestObj.request});
-        }
-
-        if (view.varCache.nextPageUrlList.length > 0) {
-            view.loadMoreBtn.show();
+            view.loadMore.addUrl(tracker.id, nextPageUrl, requestObj.request);
         }
     },
     setOnSuccessStatus: function (tracker, data) {
@@ -1048,11 +1045,6 @@ var view = {
             });
         }
         view.resetTrackerStatusById(tracker.id);
-    },
-    onNextSearchSuccess: function(tracker, request, data) {
-        "use strict";
-        view.loadMoreBtn.hide();
-        view.onSearchSuccess(tracker, request, data);
     },
     onSearchSuccess: function(tracker, request, data) {
         "use strict";
@@ -1081,10 +1073,13 @@ var view = {
         "use strict";
         view.resetTrackerStatusById(tracker.id, ['auth']);
         view.setTrackerStatusById(tracker.id, 'loading');
+
+        view.domCache.loadMoreBtn.classList.add('loading');
     },
     onSearchBegin: function(tracker, request) {
         "use strict";
-        view.onNextSearchBegin(tracker, request);
+        view.resetTrackerStatusById(tracker.id, ['auth']);
+        view.setTrackerStatusById(tracker.id, 'loading');
 
         view.varCache.searchResultCounter.tracker[tracker.id] = 0;
     },
@@ -1338,22 +1333,49 @@ var view = {
             trackerList: this.varCache.filter.trackerList
         });
     },
-    loadMoreBtn: {
+    loadMore: {
         isShow: false,
+        addUrl: function(trackerId, url, query) {
+            "use strict";
+            view.varCache.nextPageUrlList[trackerId] = {id: trackerId, url: url, query: query};
+            view.loadMore.checkUrlList();
+        },
+        checkUrlList: function() {
+            "use strict";
+            var nextPageUrlList = view.varCache.nextPageUrlList;
+            if (Object.keys(nextPageUrlList).length === 0) {
+                view.loadMore.hide();
+            }
+
+            var list = view.getTrackerList();
+
+            var hasUrl = list.some(function(trackerId) {
+                return !!nextPageUrlList[trackerId];
+            });
+
+            if (hasUrl) {
+                view.loadMore.show();
+            } else {
+                view.loadMore.hide();
+            }
+        },
         hide: function() {
             "use strict";
-            if (this.isShow) {
-                view.domCache.loadMoreBtn.classList.add('hide');
-                this.isShow = false;
+            if (!this.isShow) {
+                return;
             }
+            this.isShow = false;
+
+            view.domCache.loadMoreBtn.classList.add('hide');
         },
         show: function() {
             "use strict";
-            if (!this.isShow) {
-                view.domCache.loadMoreBtn.classList.remove('hide');
-                view.domCache.loadMoreBtn.classList.remove('loading');
-                this.isShow = true;
+            if (this.isShow) {
+                return;
             }
+            this.isShow = true;
+
+            view.domCache.loadMoreBtn.classList.remove('hide');
         },
         onClick: function(e) {
             "use strict";
@@ -1361,9 +1383,33 @@ var view = {
             if (this.classList.contains('loading')) {
                 return;
             }
-            this.classList.add('loading');
 
             view.searchNext();
+        },
+        clearList: function() {
+            "use strict";
+            var nextPageUrlList = view.varCache.nextPageUrlList;
+            for (var key in nextPageUrlList) {
+                delete nextPageUrlList[key];
+            }
+        },
+        getNextPageList: function(rmItems) {
+            "use strict";
+            var nextPageUrlList = view.varCache.nextPageUrlList;
+
+            var trackerList = view.getTrackerList();
+
+            trackerList = trackerList.filter(function(trackerId) {
+                return !!nextPageUrlList[trackerId];
+            }).map(function (trackerId) {
+                return nextPageUrlList[trackerId];
+            });
+
+            rmItems && trackerList.forEach(function(item) {
+                delete nextPageUrlList[item.id];
+            });
+
+            return trackerList;
         },
         bind: function() {
             "use strict";
@@ -1372,19 +1418,21 @@ var view = {
     },
     searchNext: function() {
         "use strict";
-        var nextPageUrlList = view.varCache.nextPageUrlList.splice(0);
-        exKit.loadMore(nextPageUrlList, {
-            onSuccess: view.onNextSearchSuccess.bind(this),
+        exKit.loadMore(view.loadMore.getNextPageList(1), {
+            onSuccess: view.onSearchSuccess.bind(this),
             onError: view.onSearchError.bind(this),
-            onBegin: view.onNextSearchBegin.bind(this)
+            onBegin: view.onNextSearchBegin.bind(this),
+            onDone: function() {
+                view.domCache.loadMoreBtn.classList.remove('loading');
+            }
         });
     },
     search: function(request, fromHistory) {
         "use strict";
         view.domCache.resultTableBody.textContent = '';
         view.varCache.searchResultCache.splice(0);
-        view.varCache.nextPageUrlList.splice(0);
-        view.loadMoreBtn.hide();
+        view.loadMore.clearList();
+        view.loadMore.hide();
         view.resultCounterReset();
         request = view.prepareRequest(request);
         this.updHistory(function() {
@@ -1833,7 +1881,7 @@ var view = {
 
         view.selectProfile(engine.currentProfile);
 
-        view.loadMoreBtn.bind();
+        view.loadMore.bind();
 
         view.domCache.profileSelect.addEventListener('change', function() {
             var service = this.childNodes[this.selectedIndex].dataset.service;
