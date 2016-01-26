@@ -235,5 +235,7 @@
     "kitTrackerTitle": {"message": "Tracker title"},
     "kitTrackerDesc": {"message": "Tracker description"},
     "kitGetCode": {"message": "Get code"},
-    "kitReadCode": {"message": "Read code"}
+    "kitReadCode": {"message": "Read code"},
+    "kitNextPageLink": {"message": "Next page link"},
+    "loadMore": {"message": "Load more"}
 }
