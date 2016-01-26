@@ -1220,7 +1220,6 @@ var magic = function() {
 
             search.open.addEventListener('click', function(e){
                 e.preventDefault();
-                updateRootUrl();
                 _this.openPage(search.url.value, search.post.value, function(isSuccess) {
                     if (isSuccess) {
                         search.url.classList.remove('error');
