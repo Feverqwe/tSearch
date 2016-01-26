@@ -285,7 +285,7 @@ var bg = {
                 mode: "pac_script",
                 pacScript: {
                     data: (function() {
-                        var strFunc = ''
+                        var strFunc = '/*tms*/'
                         +'var matchRe = new RegExp("{regexp}");'
                         +'var FindProxyForURL = function(url){'
                         +  'if (matchRe.test(url)) {'
