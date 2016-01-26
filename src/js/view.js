@@ -905,6 +905,7 @@ var view = {
         var filterTrackerList = view.varCache.filter.trackerList || [];
         var searchResultCounter = view.varCache.searchResultCounter;
         var searchResultCache = view.varCache.searchResultCache;
+        var requestObj = view.varCache.requestObj;
         for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
             var cacheItemIndex = searchResultCache.length;
             var cacheItem = {
@@ -919,8 +920,8 @@ var view = {
             }
             cacheItem.filter = view.getFilterState(torrentObj);
 
-            var titleObj = view.hlTextToFragment(torrentObj.title, view.varCache.requestObj);
-            var ratingObj = rate.rateText(view.varCache.requestObj, titleObj, torrentObj);
+            var titleObj = view.hlTextToFragment(torrentObj.title, requestObj);
+            var ratingObj = rate.rateText(requestObj, titleObj, torrentObj);
             if (engine.settings.defineCategory && torrentObj.categoryId === -1) {
                 torrentObj.categoryId = rate.categoryDefine(ratingObj, torrentObj.lowerCategoryTitle);
             }
@@ -1031,7 +1032,7 @@ var view = {
         view.resultCounterUpdate();
 
         if (nextPageUrl) {
-            view.varCache.nextPageUrlList.push({id: tracker.id, url: nextPageUrl});
+            view.varCache.nextPageUrlList.push({id: tracker.id, url: nextPageUrl, query: requestObj.request});
         }
 
         if (view.varCache.nextPageUrlList.length > 0) {
@@ -1047,6 +1048,11 @@ var view = {
             });
         }
         view.resetTrackerStatusById(tracker.id);
+    },
+    onNextSearchSuccess: function(tracker, request, data) {
+        "use strict";
+        view.loadMoreBtn.hide();
+        view.onSearchSuccess(tracker, request, data);
     },
     onSearchSuccess: function(tracker, request, data) {
         "use strict";
@@ -1071,10 +1077,14 @@ var view = {
         view.resetTrackerStatusById(tracker.id);
         view.setTrackerStatusById(tracker.id, 'error', err);
     },
-    onSearchBegin: function(tracker, request) {
+    onNextSearchBegin: function(tracker, request) {
         "use strict";
         view.resetTrackerStatusById(tracker.id, ['auth']);
         view.setTrackerStatusById(tracker.id, 'loading');
+    },
+    onSearchBegin: function(tracker, request) {
+        "use strict";
+        view.onNextSearchBegin(tracker, request);
 
         view.varCache.searchResultCounter.tracker[tracker.id] = 0;
     },
@@ -1341,17 +1351,33 @@ var view = {
             "use strict";
             if (!this.isShow) {
                 view.domCache.loadMoreBtn.classList.remove('hide');
+                view.domCache.loadMoreBtn.classList.remove('loading');
                 this.isShow = true;
             }
         },
         onClick: function(e) {
             "use strict";
             e.preventDefault();
+            if (this.classList.contains('loading')) {
+                return;
+            }
+            this.classList.add('loading');
+
+            view.searchNext();
         },
         bind: function() {
             "use strict";
             view.domCache.loadMoreBtn.addEventListener('click', this.onClick);
         }
+    },
+    searchNext: function() {
+        "use strict";
+        var nextPageUrlList = view.varCache.nextPageUrlList.splice(0);
+        exKit.loadMore(nextPageUrlList, {
+            onSuccess: view.onNextSearchSuccess.bind(this),
+            onError: view.onSearchError.bind(this),
+            onBegin: view.onNextSearchBegin.bind(this)
+        });
     },
     search: function(request, fromHistory) {
         "use strict";

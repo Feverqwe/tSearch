@@ -992,10 +992,14 @@ var exKit = {
 
         return promise;
     },
-    search: function (tracker, query, onSearch) {
+    search: function (tracker, _details) {
         "use strict";
         var _this = this;
         var xhr = null;
+
+        var onSearch = _details.onSearch;
+        var query = _details.query;
+
         var details = {
             tracker: tracker,
             query: query
@@ -1018,13 +1022,10 @@ var exKit = {
 
             return new Promise(function (resolve, reject) {
                 Promise.resolve().then(function () {
-                    xhr = mono.ajax({
+                    var ajaxData = {
                         safe: true,
-                        url: tracker.search.searchUrl.replace('%search%', details.query),
-                        type: tracker.search.requestType,
                         mimeType: tracker.search.requestMimeType,
                         dataType: tracker.search.requestDataType,
-                        data: (tracker.search.requestData || '').replace('%search%', details.query),
                         changeUrl: proxyIndex > 0 && function (url, method) {
                             return _this.setProxy(url, proxyIndex, method);
                         },
@@ -1045,7 +1046,20 @@ var exKit = {
                             onSearch.onError(tracker, err);
                             onSearch.onDone(tracker);
                         }
-                    });
+                    };
+                    if (!_details.url) {
+                        mono.expand(ajaxData, {
+                            type: tracker.search.requestType,
+                            url: tracker.search.searchUrl.replace('%search%', details.query),
+                            data: (tracker.search.requestData || '').replace('%search%', details.query),
+                        });
+                    } else {
+                        mono.expand(ajaxData, {
+                            type: 'GET',
+                            url: _details.url
+                        });
+                    }
+                    xhr = mono.ajax(ajaxData);
                 }).catch(reject)
             }).then(function () {
                 if (tracker.search.onAfterRequest) {
@@ -1133,8 +1147,25 @@ var exKit = {
             exKit.searchProgressListClear();
             exKit.searchProgressListBind(onSearch);
             for (var i = 0, trackerId; trackerId = trackerList[i]; i++) {
-                exKit.searchProgressList[trackerId] = exKit.search(engine.trackerLib[trackerId], query, onSearch);
+                exKit.searchProgressList[trackerId] = exKit.search(engine.trackerLib[trackerId], {
+                    query: query,
+                    onSearch: onSearch
+                });
             }
+        });
+    },
+    loadMore: function(nextPageLinks, onSearch) {
+        "use strict";
+        define.on(['jquery', 'promise'], function() {
+            exKit.searchProgressListBind(onSearch);
+            nextPageLinks.forEach(function (obj) {
+                var trackerId = obj.id;
+                exKit.searchProgressList[trackerId] = exKit.search(engine.trackerLib[trackerId], {
+                    query: obj.query,
+                    url: obj.url,
+                    onSearch: onSearch
+                });
+            });
         });
     },
     getTrackerIconUrl: function (icon) {

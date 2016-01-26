@@ -760,3 +760,29 @@ body.home #result_block {
 .extInfoContainer .close {
     float: right;
 }
+
+.loadMoreCtr {
+    text-align: center;
+}
+
+#load_more {
+    border-radius: 2px;
+    display: inline-block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    cursor: pointer;
+    background-color: #337AF8;
+    border: 1px solid #337AF8;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    line-height: 26px;
+    text-decoration: none;
+    outline-color: #3802FD;
+    min-width: 100px;
+    padding: 0 10px;
+    margin: 20px 0;
+}
+
+#load_more.loading {
+    opacity: 0.5;
+}
