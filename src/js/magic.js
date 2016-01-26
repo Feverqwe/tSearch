@@ -450,7 +450,7 @@ var magic = function() {
             var readSelector = function(key, obj) {
                 var selectorItem = selectors[selectorMap[key]];
 
-                if (typeof obj === 'string') {
+                if (typeof obj !== 'object') {
                     obj = {selector: obj};
                 }
 
