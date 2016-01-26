@@ -29,6 +29,7 @@ engine.trackerLib.tapochek = {
     search: {
         loginUrl: 'http://tapochek.net/login.php',
         searchUrl: 'http://tapochek.net/tracker.php',
+        nextPageSelector: {selector: '.bottom_info div.nav a:eq(-1)', attr: 'href'},
         baseUrl: 'http://tapochek.net/',
         requestType: 'GET',
         requestData: 'nm=%search%',

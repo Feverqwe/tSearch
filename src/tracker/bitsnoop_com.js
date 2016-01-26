@@ -27,6 +27,7 @@ engine.trackerLib['bitsnoop'] = {
     },
     search: {
         searchUrl: 'http://bitsnoop.com/search/all/%search%/c/d/1/',
+        nextPageSelector: {selector: '#pages a.next', attr: 'href'},
         baseUrl: 'http://bitsnoop.com',
         requestType: 'GET',
         listItemSelector: '#torrents>li',

@@ -14,6 +14,7 @@ engine.trackerLib.btdigg = {
     },
     search: {
         searchUrl: 'http://btdigg.org/search',
+        nextPageSelector: {selector: 'table.pager a:eq(-1)', attr: 'href'},
         baseUrl: 'http://btdigg.org',
         requestType: 'GET',
         requestData: '%search%&p=0&order=0',

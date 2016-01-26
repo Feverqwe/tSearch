@@ -28,6 +28,7 @@ engine.trackerLib.underverse = {
     },
     search: {
         searchUrl: 'http://underverse.su/tracker.php',
+        nextPageSelector: {selector: '.bottom_info div.nav a:eq(-1)', attr: 'href'},
         baseUrl: 'http://underverse.su/',
         requestType: 'GET',
         requestData: 'nm=%search%',

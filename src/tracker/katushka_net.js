@@ -28,6 +28,7 @@ engine.trackerLib.katushka = {
     },
     search: {
         searchUrl: 'http://katushka.net/torrent/',
+        nextPageSelector: {selector: '.torrents_list .pagination a:eq(-1)', attr: 'href'},
         baseUrl: 'http://katushka.net',
         requestType: 'GET',
         requestData: 'tags=&search=%search%&type_search=groups&incldead=0&sorting=0&type_sort=desc',

@@ -28,6 +28,7 @@ engine.trackerLib.megashara = {
     },
     search: {
         searchUrl: 'http://megashara.com/search/',
+        nextPageSelector: {selector: 'table.pagination-table td:eq(-1) a', attr: 'href'},
         baseUrl: 'http://megashara.com/',
         requestType: 'GET',
         requestData: 'text=%search%&sorting=seed&time=ALL&year=0&parent=0&where=title&all_words=1&order=added',

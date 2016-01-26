@@ -28,6 +28,7 @@ engine.trackerLib['free-torrents'] = {
     },
     search: {
         searchUrl: 'http://tr.free-torrents.org/forum/tracker.php',
+        nextPageSelector: {selector: 'div.bottom_info>div.nav>p:eq(1)>a:eq(-1)', attr: 'href'},
         baseUrl: 'http://tr.free-torrents.org/forum/',
         loginUrl: 'http://login.free-torrents.org/forum/login.php',
         requestType: 'GET',

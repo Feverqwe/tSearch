@@ -28,6 +28,7 @@ engine.trackerLib['bigfangroup'] = {
     },
     search: {
         searchUrl: 'http://www.bigfangroup.org/browse.php',
+        nextPageSelector: {selector: '#releases-table table.main td.pager a:eq(-1)', attr: 'href'},
         baseUrl: 'http://www.bigfangroup.org/',
         requestType: 'GET',
         requestData: 'search=%search%',

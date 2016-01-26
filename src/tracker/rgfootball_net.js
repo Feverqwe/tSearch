@@ -28,6 +28,7 @@ engine.trackerLib.rgfootball = {
     },
     search: {
         searchUrl: 'http://rgfootball.net/tracker.php',
+        nextPageSelector: {selector: '.bottom_info div.nav a:eq(-1)', attr: 'href'},
         baseUrl: 'http://rgfootball.net/',
         requestType: 'GET',
         requestData: 'nm=%search%',

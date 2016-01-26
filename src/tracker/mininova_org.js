@@ -28,6 +28,7 @@ engine.trackerLib.mininova = {
     },
     search: {
         searchUrl: 'http://www.mininova.org/search/',
+        nextPageSelector: {selector: '#pagination ul li:eq(-1) a', attr: 'href'},
         baseUrl: 'http://www.mininova.org/',
         requestType: 'GET',
         requestData: 'search=%search%&cat=0',

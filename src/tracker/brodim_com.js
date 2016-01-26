@@ -28,6 +28,7 @@ engine.trackerLib['brodim'] = {
     },
     search: {
         searchUrl: 'http://brodim.com/tracker.php',
+        nextPageSelector: {selector: 'div.bottom_info div.nav a:eq(-1)', attr: 'href'},
         loginUrl: 'http://brodim.com/login.php',
         baseUrl: 'http://brodim.com/',
         requestType: 'GET',

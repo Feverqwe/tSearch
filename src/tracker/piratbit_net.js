@@ -29,6 +29,7 @@ engine.trackerLib.piratbit = {
     search: {
         loginUrl: 'http://pb.wtf/login.php',
         searchUrl: 'http://pb.wtf/tracker.php',
+        nextPageSelector: {selector: '.bottom_info .nav .pagination li:eq(-1) a', attr: 'href'},
         baseUrl: 'http://pb.wtf/',
         requestType: 'GET',
         requestData: 'ss=%search%&max=1&to=1',

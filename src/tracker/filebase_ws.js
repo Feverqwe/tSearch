@@ -28,6 +28,7 @@ engine.trackerLib.filebase = {
     },
     search: {
         searchUrl: 'http://www.filebase.ws/torrents/search/',
+        nextPageSelector: {selector: 'table.def_block p>a:eq(-1)', attr: 'href'},
         baseUrl: 'http://www.filebase.ws',
         requestType: 'GET',
         requestData: 'search=%search%&c=0&t=liveonly',

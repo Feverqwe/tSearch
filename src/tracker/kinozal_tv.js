@@ -71,6 +71,7 @@ engine.trackerLib.kinozal = {
     },
     search: {
         searchUrl: 'http://kinozal.tv/browse.php',
+        nextPageSelector: {selector: 'div.paginator a[rel="next"]', attr: 'href'},
         baseUrl: 'http://kinozal.tv',
         requestType: 'GET',
         requestData: 's=%search%',

@@ -28,6 +28,7 @@ engine.trackerLib['hdclub'] = {
     },
     search: {
         searchUrl: 'http://hdclub.org/browse.php',
+        nextPageSelector: {selector: 'tbody#highlighted + tbody table.main td.pager:eq(-1)>a', attr: 'href'},
         baseUrl: 'http://hdclub.org/',
         requestType: 'GET',
         requestData: 'search=%search%',

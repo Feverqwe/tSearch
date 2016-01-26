@@ -14,6 +14,7 @@ engine.trackerLib.libertorrent = {
     },
     search: {
         searchUrl: 'http://booktracker.org/tracker.php',
+        nextPageSelector: {selector: '#main_content .bottom_info .nav a:eq(-1)', attr: 'href'},
         baseUrl: 'http://booktracker.org/',
         loginUrl: 'http://booktracker.org/login.php',
         requestType: 'GET',

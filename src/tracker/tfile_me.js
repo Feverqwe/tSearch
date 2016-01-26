@@ -29,6 +29,7 @@ engine.trackerLib.tfile = {
     search: {
         loginUrl: 'http://tfile.me',
         searchUrl: 'http://tfile.me/forum/ssearch.php',
+        nextPageSelector: {selector: '.pagination a.next', attr: 'href'},
         baseUrl: 'http://tfile.me/forum/',
         requestType: 'GET',
         requestData: 'q=%search%',

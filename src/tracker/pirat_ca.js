@@ -29,6 +29,7 @@ engine.trackerLib.piratca = {
     search: {
         loginUrl: 'http://pirat.ca/login.php',
         searchUrl: 'http://pirat.ca/tracker.php',
+        nextPageSelector: {selector: '.bottom_info .nav a:eq(-1)', attr: 'href'},
         baseUrl: 'http://pirat.ca/',
         requestType: 'GET',
         requestData: 'nm=%search%&to=1&max=1',
