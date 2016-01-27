@@ -705,6 +705,13 @@ var view = {
         var countMinutesSeconds = countMinutes * 60;
         var countSeconds = Math.floor(diff - countDaysSeconds - countHourSeconds - countMinutesSeconds);
 
+        var currentDate = new Date();
+        var todaySec = countHour * 60 * 60 + countMinutes * 60 + countSeconds;
+        var currentSec = currentDate.getHours() * 60 * 60 + currentDate.getMinutes() * 60 + currentDate.getSeconds();
+        if (countDays === 0 && todaySec > currentSec) {
+            countDays++;
+        }
+
         if (mono.language.langCode === 'ru') {
             return view.timeAgoRu(countDays, countHour, countMinutes, countSeconds, seconds);
         } else {
