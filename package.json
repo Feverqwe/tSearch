@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "ffUpdateUrl": "http://static.tms.mooo.com/firefox/update.rdf",
   "ffMinVersion": "29.0",
-  "ffMaxVersion": "46.0",
+  "ffMaxVersion": "47.0",
   "devDependencies": {
     "grunt-contrib-compress": "",
     "grunt-closurecompiler": "",
