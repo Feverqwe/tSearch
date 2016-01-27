@@ -70,6 +70,7 @@ var view = {
         },
         searchResultCache: [],
         nextPageUrlList: {},
+        ddBlNextPageList: {},
         trackerListStyle: undefined,
         filter: {
             trackerList: undefined,
@@ -234,6 +235,8 @@ var view = {
 
         view.resultCounterUpdate();
 
+        view.loadMore.checkUrlList();
+
         if (view.varCache.filterStyle) {
             if (view.varCache.filterStyle.textContent === styleText) {
                 return;
@@ -334,7 +337,6 @@ var view = {
             (pos !== -1) && view.varCache.filter.trackerList.splice(pos, 1);
         }
         view.filterUpdate();
-        view.loadMore.checkUrlList();
     },
     selectProfile: function(profileName, cb) {
         "use strict";
@@ -1332,9 +1334,15 @@ var view = {
     },
     loadMore: {
         isShow: false,
+        isLoading: false,
         addUrl: function(trackerId, url, query) {
             "use strict";
-            view.varCache.nextPageUrlList[trackerId] = {id: trackerId, url: url, query: query};
+            var key = url + ':' + query;
+            if (!view.varCache.ddBlNextPageList[key]) {
+                view.varCache.ddBlNextPageList[key] = true;
+
+                view.varCache.nextPageUrlList[trackerId] = {id: trackerId, url: url, query: query};
+            }
             view.loadMore.checkUrlList();
         },
         checkUrlList: function() {
@@ -1358,21 +1366,22 @@ var view = {
         },
         hide: function() {
             "use strict";
-            if (!this.isShow) {
-                return;
+            if (this.isShow) {
+                this.isShow = false;
+                view.domCache.loadMoreBtn.classList.add('hide');
             }
-            this.isShow = false;
-
-            view.domCache.loadMoreBtn.classList.add('hide');
         },
         show: function() {
             "use strict";
-            if (this.isShow) {
-                return;
+            if (this.isLoading) {
+                this.isLoading = false;
+                view.domCache.loadMoreBtn.classList.remove('loading');
             }
-            this.isShow = true;
 
-            view.domCache.loadMoreBtn.classList.remove('hide');
+            if (!this.isShow) {
+                this.isShow = true;
+                view.domCache.loadMoreBtn.classList.remove('hide');
+            }
         },
         onClick: function(e) {
             "use strict";
@@ -1381,6 +1390,7 @@ var view = {
                 return;
             }
             view.domCache.loadMoreBtn.classList.add('loading');
+            view.loadMore.isLoading = true;
 
             view.searchNext();
         },
@@ -1390,8 +1400,15 @@ var view = {
             for (var key in nextPageUrlList) {
                 delete nextPageUrlList[key];
             }
+
+            var ddBlNextPageList = view.varCache.ddBlNextPageList;
+            for (var key in ddBlNextPageList) {
+                delete ddBlNextPageList[key];
+            }
+
+            view.loadMore.hide();
         },
-        getNextPageList: function(rmItems) {
+        getNextPageList: function() {
             "use strict";
             var nextPageUrlList = view.varCache.nextPageUrlList;
 
@@ -1400,11 +1417,9 @@ var view = {
             trackerList = trackerList.filter(function(trackerId) {
                 return !!nextPageUrlList[trackerId];
             }).map(function (trackerId) {
-                return nextPageUrlList[trackerId];
-            });
-
-            rmItems && trackerList.forEach(function(item) {
-                delete nextPageUrlList[item.id];
+                var value = nextPageUrlList[trackerId];
+                delete nextPageUrlList[trackerId];
+                return value;
             });
 
             return trackerList;
@@ -1416,13 +1431,10 @@ var view = {
     },
     searchNext: function() {
         "use strict";
-        exKit.loadMore(view.loadMore.getNextPageList(1), {
+        exKit.loadMore(view.loadMore.getNextPageList(), {
             onSuccess: view.onSearchSuccess.bind(this),
             onError: view.onSearchError.bind(this),
-            onBegin: view.onNextSearchBegin.bind(this),
-            onDone: function() {
-                view.domCache.loadMoreBtn.classList.remove('loading');
-            }
+            onBegin: view.onNextSearchBegin.bind(this)
         });
     },
     search: function(request, fromHistory) {
@@ -1430,7 +1442,6 @@ var view = {
         view.domCache.resultTableBody.textContent = '';
         view.varCache.searchResultCache.splice(0);
         view.loadMore.clearList();
-        view.loadMore.hide();
         view.resultCounterReset();
         request = view.prepareRequest(request);
         this.updHistory(function() {

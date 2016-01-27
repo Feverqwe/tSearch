@@ -783,6 +783,16 @@ body.home #result_block {
     margin: 20px 0;
 }
 
+#load_more:hover {
+    background-color: #337AF8;
+    border-color: #2B68C1;
+    box-shadow: 0 1px 0 rgba(0,0,0,.15);
+}
+#load_more:active {
+    border-color: #2B68C1;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
 #load_more.loading {
     opacity: 0.5;
 }
