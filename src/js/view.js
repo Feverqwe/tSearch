@@ -717,15 +717,9 @@ var view = {
         var countSeconds = Math.floor(diff - countDaysSeconds - countHourSeconds - countMinutesSeconds);
 
 
-        if (countDays === 0 || countDays === 1) {
-            var todayStart = view.getTodayStartSec();
-            if (seconds < todayStart) {
-                countDays = 1;
-
-                if (seconds < todayStart - 24 * 60 * 60) {
-                    countDays = 2;
-                }
-            }
+        var todayStart = view.getTodayStartSec();
+        if (seconds < todayStart - (24 * 60 * 60 * countDays)) {
+            countDays++;
         }
 
         if (mono.language.langCode === 'ru') {
