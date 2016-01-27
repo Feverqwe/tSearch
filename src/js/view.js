@@ -683,6 +683,16 @@ var view = {
         }
         return view.timeStampToDate(seconds);
     },
+    getTodayStartSec: function() {
+        "use strict";
+        var today = new Date();
+        var ms = today.getMilliseconds();
+        var sec = today.getSeconds();
+        var min = today.getMinutes();
+        var hours = today.getHours();
+
+        return parseInt(today.getTime() / 1000 - (hours * 60 * 60 * 1000 + min * 60 * 1000 + sec * 1000 + ms));
+    },
     timeStampToTimeAgo: function(seconds) {
         "use strict";
         if (seconds <= 0) {
@@ -705,12 +715,15 @@ var view = {
         var countMinutesSeconds = countMinutes * 60;
         var countSeconds = Math.floor(diff - countDaysSeconds - countHourSeconds - countMinutesSeconds);
 
-        if (countDays === 0) {
-            var currentDate = new Date();
-            var todaySec = countHour * 60 * 60 + countMinutes * 60 + countSeconds;
-            var currentSec = currentDate.getHours() * 60 * 60 + currentDate.getMinutes() * 60 + currentDate.getSeconds();
-            if (todaySec > currentSec) {
-                countDays++;
+
+        if (countDays === 0 || countDays === 1) {
+            var todayStart = view.getTodayStartSec();
+            if (seconds < todayStart) {
+                countDays = 1;
+
+                if (seconds < todayStart - 24 * 60 * 60) {
+                    countDays = 2;
+                }
             }
         }
 
