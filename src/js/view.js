@@ -1073,13 +1073,10 @@ var view = {
         "use strict";
         view.resetTrackerStatusById(tracker.id, ['auth']);
         view.setTrackerStatusById(tracker.id, 'loading');
-
-        view.domCache.loadMoreBtn.classList.add('loading');
     },
     onSearchBegin: function(tracker, request) {
         "use strict";
-        view.resetTrackerStatusById(tracker.id, ['auth']);
-        view.setTrackerStatusById(tracker.id, 'loading');
+        view.onNextSearchBegin(tracker, request);
 
         view.varCache.searchResultCounter.tracker[tracker.id] = 0;
     },
@@ -1383,6 +1380,7 @@ var view = {
             if (this.classList.contains('loading')) {
                 return;
             }
+            view.domCache.loadMoreBtn.classList.add('loading');
 
             view.searchNext();
         },
