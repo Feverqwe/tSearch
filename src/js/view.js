@@ -1054,6 +1054,8 @@ var view = {
         if (nextPageUrl) {
             view.loadMore.addUrl(tracker.id, nextPageUrl, requestObj.request);
         }
+
+        view.loadMore.checkUrlList();
     },
     setOnSuccessStatus: function (tracker, data) {
         "use strict";
@@ -1360,7 +1362,6 @@ var view = {
 
                 view.varCache.nextPageUrlList[trackerId] = {id: trackerId, url: url, query: query};
             }
-            view.loadMore.checkUrlList();
         },
         checkUrlList: function() {
             "use strict";
