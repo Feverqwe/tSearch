@@ -691,7 +691,8 @@ var view = {
         var min = today.getMinutes();
         var hours = today.getHours();
 
-        return parseInt(today.getTime() / 1000 - (hours * 60 * 60 * 1000 + min * 60 * 1000 + sec * 1000 + ms));
+        var startMs = today.getTime() - (hours * 60 * 60 * 1000 + min * 60 * 1000 + sec * 1000 + ms);
+        return parseInt(startMs / 1000);
     },
     timeStampToTimeAgo: function(seconds) {
         "use strict";
