@@ -70,7 +70,7 @@ var options = {
         var key = el.dataset.option;
         if (!key) {
             var section = el.dataset.section;
-            if (section) {
+            if (section && engine.explorerOptionsObj[section]) {
                 engine.explorerOptionsObj[section].enable = el.checked ? 1 : 0;
                 mono.storage.set({explorerOptions: engine.explorerOptions});
             }
