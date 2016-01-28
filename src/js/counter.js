@@ -7,13 +7,11 @@ ga.l = Date.now();
 ga('create', 'UA-10717861-22', 'auto');
 ga('set', 'forceSSL', true);
 ga('set', 'checkProtocolTask', null);
+ga('set', 'appName', 'tms');
+ga('set', 'appId', '{appId}');
+ga('set', 'appVersion', '{appVersion}');
 ga('require', 'displayfeatures');
 ga('send', 'pageview');
-ga('send', 'screenview', {
-    'appName': 'tms',
-    'appId': '{appId}',
-    'appVersion': '{appVersion}'
-});
 
 engine.exceptionTracker = {
     ddBl: {},
