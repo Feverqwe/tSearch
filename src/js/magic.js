@@ -8,8 +8,6 @@ var magic = function() {
         },
         varCache: {
             lastXhr: null,
-            rmDisplayNode:      /display\s*:\s*['"]*none['"]*/gim,
-            rmVisibilityHidden:       /visibility\s*:\s*['"]*hidden['"]*/gim,
             rootUrl: /([^:]+:\/\/[^\/]+)/,
             $frameDom: null,
             frameDoc: null,
@@ -19,8 +17,6 @@ var magic = function() {
         },
         nodeList: {},
         contentFilter: function(content) {
-            content = content.replace(this.varCache.rmDisplayNode, '');
-            content = content.replace(this.varCache.rmVisibilityHidden, '');
             return content;
         },
         domFilter: function(fragment) {
