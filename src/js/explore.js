@@ -2076,31 +2076,31 @@ var explore = {
             }, requestObj);
         });
 
-        this.writeCategoryList();
-
-        if (mono.isChrome && engine.settings.enableFavoriteSync) {
-            chrome.storage.onChanged.addListener(function(changes, areaName) {
-                var aName = engine.settings.enableFavoriteSync ? 'sync' : 'local';
-                if (areaName !== aName) {
-                    return;
-                }
-                if (!changes.hasOwnProperty('expCache_favorites')) {
-                    return;
-                }
-                var cache = changes.expCache_favorites.newValue || {};
-                var type = 'favorites';
-                if (JSON.stringify(engine.exploreCache.expCache_favorites) === JSON.stringify(cache)) {
-                    return;
-                }
-                engine.exploreCache.expCache_favorites = cache;
-                var options = engine.explorerOptionsObj[type];
-                if (options.enable && options.show) {
-                    explore.updateCategoryContent(type);
-                }
-            });
-        }
-
         define.on(['jquery', 'jqueryui'], function() {
+            this.writeCategoryList();
+
+            if (mono.isChrome && engine.settings.enableFavoriteSync) {
+                chrome.storage.onChanged.addListener(function(changes, areaName) {
+                    var aName = engine.settings.enableFavoriteSync ? 'sync' : 'local';
+                    if (areaName !== aName) {
+                        return;
+                    }
+                    if (!changes.hasOwnProperty('expCache_favorites')) {
+                        return;
+                    }
+                    var cache = changes.expCache_favorites.newValue || {};
+                    var type = 'favorites';
+                    if (JSON.stringify(engine.exploreCache.expCache_favorites) === JSON.stringify(cache)) {
+                        return;
+                    }
+                    engine.exploreCache.expCache_favorites = cache;
+                    var options = engine.explorerOptionsObj[type];
+                    if (options.enable && options.show) {
+                        explore.updateCategoryContent(type);
+                    }
+                });
+            }
+
             (this.domCache.$gallery = $(this.domCache.gallery)).sortable({
                 axis: 'y',
                 handle: '.head .move',
