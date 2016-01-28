@@ -1911,7 +1911,8 @@ var view = {
         view.loadMore.bind();
 
         view.domCache.profileSelect.addEventListener('change', function() {
-            var service = this.childNodes[this.selectedIndex].dataset.service;
+            var node = this.childNodes[this.selectedIndex];
+            var service = node && node.dataset.service;
             if (service) {
                 var option = this.querySelector('option[value="'+engine.currentProfile+'"]');
                 if (!option) return;
@@ -1942,11 +1943,14 @@ var view = {
             }
             view.domCache.timeFilterRange.classList.remove('show');
             var date;
-            var seconds = parseInt(this.childNodes[this.selectedIndex].dataset.seconds);
-            if (seconds === 0) {
-                date = undefined
-            } else {
-                date = parseInt(Date.now() / 1000) - seconds;
+            var node = this.childNodes[this.selectedIndex];
+            if (node) {
+                var seconds = parseInt(node.dataset.seconds);
+                if (seconds === 0) {
+                    date = undefined
+                } else {
+                    date = parseInt(Date.now() / 1000) - seconds;
+                }
             }
             view.varCache.filter.date = date;
             view.filterUpdate();
