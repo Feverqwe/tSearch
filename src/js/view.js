@@ -2040,6 +2040,9 @@ var view = {
                         url: 'http://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(value),
                         dataType: 'json',
                         success: function(data) {
+                            if (!data || data.length < 2) {
+                                return;
+                            }
                             view.varCache.autocompleteCache[value] = data[1];
                             cb(data[1]);
                         }
