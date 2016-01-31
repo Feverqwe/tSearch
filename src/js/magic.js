@@ -700,6 +700,9 @@ var magic = function() {
         rmDocKitSelect: function() {
             var selectClassName = 'kit_select';
             var frameDoc = this.varCache.frameDoc;
+            if (!frameDoc) {
+                return;
+            }
             [].slice.call(frameDoc.querySelectorAll('.' + selectClassName)).forEach(function(node) {
                 node.classList.remove(selectClassName);
             });

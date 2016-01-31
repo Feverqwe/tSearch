@@ -1749,7 +1749,7 @@ var view = {
                                 mono.storage.set({extensionPopup: 1});
                                 popup.style.opacity = 0;
                                 setTimeout(function() {
-                                    popup.parentNode.removeChild(popup);
+                                    popup.parentNode && popup.parentNode.removeChild(popup);
                                 }, 1000);
                             }]
                         })
@@ -1973,21 +1973,23 @@ var view = {
         rate.init();
         view.prepareHistory();
 
-        if (window.onpopstate === null) {
-            window.addEventListener('popstate', function() {
-                if (location.hash === this.varCache.locationHash) {
-                    return;
-                }
-                this.onUrlChange();
-            }.bind(this), false);
-        } else {
-            window.addEventListener('hashchange', function() {
-                if (location.hash === this.varCache.locationHash){
-                    return;
-                }
-                this.onUrlChange();
-            }.bind(this));
-        }
+        define.on(['jquery', 'promise'], function() {
+            if (window.onpopstate === null) {
+                window.addEventListener('popstate', function () {
+                    if (location.hash === this.varCache.locationHash) {
+                        return;
+                    }
+                    this.onUrlChange();
+                }.bind(this), false);
+            } else {
+                window.addEventListener('hashchange', function () {
+                    if (location.hash === this.varCache.locationHash) {
+                        return;
+                    }
+                    this.onUrlChange();
+                }.bind(this));
+            }
+        }.bind(this));
 
         window.addEventListener('scroll', mono.throttle(function (e) {
             if (window.scrollY > 100) {
