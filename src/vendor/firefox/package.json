@@ -1,25 +1,32 @@
 {
     "name": "torrents_multisearch",
-    "title": "Torrents MultiSearch",
-    "id": "{d03fdff0-d3a0-11e0-baa5-14d64d08fdac}",
+    "title": "Torrents MultiSearch webApp",
+    "id": "{0a06d1b2-08d1-11e5-b948-d1fe1c5d46b0}",
     "description": "Torrents MultiSearch - search on some of the trackers at once!",
+    "main": "lib/main.js",
     "preferences": [
         {
             "type": "control",
             "label": "Open",
             "name": "openBtn",
-            "title": ""
+            "title": "Open"
         },
         {
             "type": "control",
             "label": "Settings",
             "name": "settingsBtn",
-            "title": ""
+            "title": "Settings"
         }
     ],
     "author": "Anton V.",
     "license": "MPL 2.0",
     "version": "1.0.88",
-    "icon": "data/icons/icon-48.png",
-    "icon64": "data/icons/icon-64.png"
+    "icon": {
+        "48": "icon.png",
+        "64": "icon64.png"
+    },
+    "engines": {
+        "firefox": ">=28 <=47",
+        "fennec": ">= 28 <= 47"
+    }
 }

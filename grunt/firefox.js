@@ -13,17 +13,17 @@ exports.run = function (grunt) {
         content = content.replace(/%ffMMinVersion%/g, grunt.config('pkg.ffMinVersion'));
         content = content.replace(/%ffMMaxVersion%/g, grunt.config('pkg.ffMaxVersion'));
 
-        if (sha1) {
-            content = content.replace(/%buildName%/g, grunt.config('buildName'));
-            content = content.replace(/%sha1hash%/g, sha1);
+        content = content.replace(/%buildName%/g, grunt.config('buildName'));
+        content = content.replace(/%sha1hash%/g, sha1);
 
-            content = content.replace(/%buildName%/g, grunt.config('buildName'));
-            content = content.replace(/%sha1hash%/g, sha1);
-        }
+        content = content.replace(/%buildName%/g, grunt.config('buildName'));
+        content = content.replace(/%sha1hash%/g, sha1);
+
         return content;
     };
 
-    grunt.registerTask('fixFfJsJs', function () {
+    grunt.registerTask('ffRePack', function() {
+        "use strict";
         grunt.config.merge({
             compress: {
                 ffZipBuild: {
@@ -39,17 +39,6 @@ exports.run = function (grunt) {
                         dest: ''
                     }]
                 }
-            },
-            'json-format': {
-                ffHarnessOptions: {
-                    expand: true,
-                    cwd: '<%= output %><%= vendor %>../unzip/',
-                    src: 'harness-options.json',
-                    dest: '<%= output %><%= vendor %>../unzip/',
-                    options: {
-                        indent: 2
-                    }
-                }
             }
         });
 
@@ -63,18 +52,7 @@ exports.run = function (grunt) {
 
         fs.createReadStream(buildPath).pipe(unzip.Extract({
             path: unZipPath
-        })).on('close', function () {
-            var harnessOptionsPath = unZipPath + 'harness-options.json';
-            var content = grunt.file.readJSON(harnessOptionsPath);
-            for (var modulePath in content.manifest) {
-                var module = content.manifest[modulePath];
-                if (!module.moduleName || module.moduleName.slice(-3) !== '.js') continue;
-                module.moduleName = module.moduleName.slice(0, -3);
-            }
-            grunt.file.write(harnessOptionsPath, JSON.stringify(content));
-
-            grunt.task.run('json-format:ffHarnessOptions');
-
+        })).on('close', function() {
             grunt.task.run('compress:ffZipBuild');
 
             done();
@@ -82,25 +60,25 @@ exports.run = function (grunt) {
     });
 
     grunt.registerTask('ffRenameBuild', function () {
-        var vendor = grunt.template.process('<%= output %><%= vendor %>../');
-        var path = vendor + 'torrents_multisearch.xpi';
-        grunt.file.copy(path, vendor + grunt.config('buildName') + '.xpi');
+        var vendor = grunt.template.process('<%= output %><%= vendor %>');
+        var fileList = grunt.file.expand(vendor + '*.xpi');
+        var path = fileList[0];
+        grunt.file.copy(path, vendor + '../' + grunt.config('buildName') + '.xpi');
         grunt.file.delete(path);
     });
 
     grunt.registerTask('ffPackage', function() {
         var packagePath = grunt.template.process('<%= output %><%= vendor %>package.json');
         var content = grunt.file.readJSON('src/vendor/firefox/package.json');
-        content.version = grunt.config('pkg.extVersion');
-        grunt.file.write(packagePath, JSON.stringify(content));
-    });
 
-    grunt.registerTask('setInstallRdf', function() {
-        "use strict";
-        var patch = grunt.template.process('<%= output %><%= vendor %>/../template/install.rdf');
-        var content = grunt.file.read(patch);
-        content = replaceContent(content);
-        grunt.file.write(patch, content);
+        content.version = grunt.config('pkg.extVersion');
+
+        var engines = {};
+        engines.firefox = '>=' + grunt.config('pkg.ffMinVersion') + ' <=' + grunt.config('pkg.ffMaxVersion');
+        engines.fennec = '>=' + grunt.config('pkg.ffMinVersion') + ' <=' + grunt.config('pkg.ffMaxVersion');
+        content.engines = engines;
+
+        grunt.file.write(packagePath, JSON.stringify(content));
     });
 
     grunt.config.merge({
@@ -111,16 +89,10 @@ exports.run = function (grunt) {
                 src: [
                     'locale/*',
                     'lib/*',
-                    'data/**'
+                    'data/**',
+                    '*.png'
                 ],
                 dest: '<%= output %><%= vendor %>'
-            },
-
-            ffTemplateDir: {
-                expand: true,
-                cwd: 'src/vendor/firefox_tools/template/',
-                src: '**',
-                dest: '<%= output %><%= vendor %>/../template/'
             }
         },
         'json-format': {
@@ -136,7 +108,7 @@ exports.run = function (grunt) {
         },
         exec: {
             buildFF: {
-                command: 'cd <%= output %><%= vendor %> && call <%= env.addonSdkPath %>activate && cfx xpi --templatedir=../template --update-url "<%= ffUpdateUrl %>" && move *.xpi ../'
+                command: 'cd <%= output %><%= vendor %> && jpm xpi'
             }
         }
     });
@@ -144,7 +116,7 @@ exports.run = function (grunt) {
     grunt.registerTask('getHash', function () {
         var done = this.async();
         var vendor = grunt.template.process('<%= output %><%= vendor %>../');
-        var buildPath = grunt.config('hashFile');
+        var buildPath = grunt.config('sigFile');
 
         var fs = require('fs');
         var crypto = require('crypto');
@@ -175,18 +147,6 @@ exports.run = function (grunt) {
             return;
         }
 
-        var newId = '{0a06d1b2-08d1-11e5-b948-d1fe1c5d46b0}';
-        var newTitle = 'Torrents MultiSearch webApp';
-
-        grunt.registerTask('setPackageId', function() {
-            "use strict";
-            var patch = grunt.template.process('<%= output %><%= vendor %>package.json');
-            var content = grunt.file.readJSON(patch);
-            content.id = newId;
-            content.title = newTitle;
-            grunt.file.write(patch, JSON.stringify(content));
-        });
-
         grunt.registerTask('copySsFigVersion', function() {
             "use strict";
             grunt.file.copy(
@@ -194,7 +154,7 @@ exports.run = function (grunt) {
                 grunt.template.process('<%= output %><%= vendor %>../<%= noSigBuildName %>.xpi')
             );
             grunt.file.copy(
-                grunt.template.process('<%= hashFile %>'),
+                grunt.template.process('<%= sigFile %>'),
                 grunt.template.process('<%= output %><%= vendor %>../<%= sigBuildName %>.xpi')
             );
         });
@@ -209,7 +169,7 @@ exports.run = function (grunt) {
             buildName: 'build_firefox',
             noSigBuildName: 'build_firefox-no-sig',
             sigBuildName: 'build_firefox',
-            hashFile: './build_firefox-sig.xpi',
+            sigFile: './build_firefox-sig.xpi',
             appId: 'firefoxExt',
             browser: 'firefox'
         });
@@ -219,14 +179,11 @@ exports.run = function (grunt) {
             'copy:ffBase',
             'buildJs',
             'ffPackage',
-            'setPackageId',
             'json-format:ffPackage',
             'setAppInfo',
-            'copy:ffTemplateDir',
-            'setInstallRdf',
             'exec:buildFF',
             'ffRenameBuild',
-            'fixFfJsJs',
+            'ffRePack',
             'getHash',
             'copySsFigVersion'
         ]);
