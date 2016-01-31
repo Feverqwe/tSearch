@@ -39,7 +39,6 @@ module.exports = function (grunt) {
         'monoUtils.js'
     ];
     grunt.initConfig({
-        env: grunt.file.exists('env.json') ? grunt.file.readJSON('env.json') : {},
         pkg: grunt.file.readJSON('package.json'),
         clean: {
             output: [

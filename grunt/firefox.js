@@ -53,6 +53,26 @@ exports.run = function (grunt) {
         fs.createReadStream(buildPath).pipe(unzip.Extract({
             path: unZipPath
         })).on('close', function() {
+            var installRdfPath = unZipPath + 'install.rdf';
+            var content = grunt.file.read(installRdfPath);
+
+            var insert = function(text, target) {
+                var insertPos = content.lastIndexOf(target) + target.length;
+
+                var parts = [];
+                parts.push(content.substr(0, insertPos));
+                parts.push(text);
+                parts.push(content.substr(insertPos));
+
+                content = parts.join('');
+            };
+
+            insert([
+                '\n', '<em:multiprocessCompatible>true</em:multiprocessCompatible>'
+            ].join(''), '</em:optionsType>');
+
+            grunt.file.write(installRdfPath, content);
+
             grunt.task.run('compress:ffZipBuild');
 
             done();
@@ -79,6 +99,17 @@ exports.run = function (grunt) {
         content.engines = engines;
 
         grunt.file.write(packagePath, JSON.stringify(content));
+    });
+
+    grunt.registerTask('ffSetUpdateUrl', function() {
+        "use strict";
+        var vendor = grunt.template.process('<%= output %><%= vendor %>');
+        var content = grunt.file.readJSON(vendor + 'package.json');
+
+        content.updateURL = grunt.config('ffUpdateUrl');
+        content.updateKey = grunt.config('ffUpdateKey');
+
+        grunt.file.write(vendor + 'package.json', JSON.stringify(content));
     });
 
     grunt.config.merge({
@@ -142,11 +173,6 @@ exports.run = function (grunt) {
     grunt.registerTask('firefox-sig', function () {
         grunt.config('monoParams', monoParams);
 
-        if (!grunt.config('env.addonSdkPath')) {
-            console.error("Add-on SDK is not found!");
-            return;
-        }
-
         grunt.registerTask('copySsFigVersion', function() {
             "use strict";
             grunt.file.copy(
@@ -166,6 +192,7 @@ exports.run = function (grunt) {
             includesFolder: 'data/includes/',
             dataFolder: 'data/',
             ffUpdateUrl: '<%= pkg.ffUpdateUrl %>',
+            ffUpdateKey: '<%= pkg.ffUpdateKey %>',
             buildName: 'build_firefox',
             noSigBuildName: 'build_firefox-no-sig',
             sigBuildName: 'build_firefox',
@@ -179,6 +206,7 @@ exports.run = function (grunt) {
             'copy:ffBase',
             'buildJs',
             'ffPackage',
+            'ffSetUpdateUrl',
             'json-format:ffPackage',
             'setAppInfo',
             'exec:buildFF',

@@ -3,6 +3,7 @@
   "id": "jid1-LvizCaettR4MOg",
   "version": "1.0.0",
   "ffUpdateUrl": "http://static.tms.mooo.com/firefox/update.rdf",
+  "ffUpdateKey": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDaPMxKGUu9BUptO1WKf7/18HTUJFsMwSk8GipbMBy1GyMBi+2XXANF2YCfJefYJVo3KxitDvMEwqISbEYhucdZ6FNNNNcaDTvmd5slDG748Xg8/4fUcspeWEq105h+94Xv8+iVkTOPwnGwD5dJmtcS7+n4EpypkCFlPLfaCkl+cQIDAQAB",
   "ffMinVersion": "29.0",
   "ffMaxVersion": "47.0",
   "devDependencies": {

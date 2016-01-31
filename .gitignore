@@ -1,6 +1,5 @@
 /.idea/
 /node_modules/
 /output/
-env.json
 cmd.bat
 /src/old/
