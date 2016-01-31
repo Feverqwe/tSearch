@@ -14,6 +14,7 @@ engine.trackerLib.torrentz = {
     },
     search: {
         searchUrl: 'https://torrentz.eu/search',
+        nextPageSelector: {selector: 'div.results>p:eq(-1)>span>a:eq(-1)', attr: 'href'},
         baseUrl: 'https://torrentz.eu/',
         requestType: 'GET',
         requestData: 'q=%search%',

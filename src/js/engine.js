@@ -33,6 +33,7 @@ var engine = {
         autoUseProxy: 1,
         enableProxyApi: 0,
         proxyHostList: [
+            '*://*.rutracker.org/*',
             '*://*.kinozal.tv/*'
         ]
     },
@@ -65,7 +66,7 @@ var engine = {
         "use strict";
         var list;
         if (mono.language.langCode === 'ru') {
-            list = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'hdclub', 'tfile', 'fast-torrent', 'btdigg'];
+            list = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'hdclub', 'tfile', 'fast-torrent', 'opentorrent', 'btdigg'];
             if (mono.isWebApp) {
                 list.splice(list.indexOf('rutracker'), 1);
                 list.splice(list.indexOf('rutor'), 1);

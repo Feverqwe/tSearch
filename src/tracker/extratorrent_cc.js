@@ -28,6 +28,7 @@ engine.trackerLib.extratorrent = {
     },
     search: {
         searchUrl: 'http://extratorrent.cc/search/',
+        nextPageSelector: {selector: 'table>tbody>tr>td>a.pager_link:eq(-2)', attr: 'href'},
         baseUrl: 'http://extratorrent.cc/',
         requestType: 'GET',
         requestData: 'search=%search%',
