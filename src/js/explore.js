@@ -1697,6 +1697,9 @@ var explore = {
 
         var top5List = [];
         for (i = 0, torrentObj; torrentObj = quickSearchResultList[i]; i++) {
+            if (!torrentObj.titleObj) {
+                continue;
+            }
             top5List.push({
                 id: tracker.id,
                 quality: torrentObj.rating.quality,
