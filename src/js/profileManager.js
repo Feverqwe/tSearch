@@ -633,6 +633,8 @@ var profileManager = {
         if (this.once.ready) return;
         this.once.ready = 1;
 
+        var _this = this;
+
         this.writeFilterList();
 
         if (mono.isWebApp) {
@@ -818,9 +820,11 @@ var profileManager = {
             this.dispatchEvent(new CustomEvent('keyup'));
         });
 
-        $(this.domCache.trackerList).sortable({
-            placeholder: "ui-state-highlight",
-            delay: 150
+        define.on(['jquery', 'jqueryui'], function() {
+            $(_this.domCache.trackerList).sortable({
+                placeholder: "ui-state-highlight",
+                delay: 150
+            });
         });
     },
     isShow: function() {
