@@ -216,7 +216,9 @@ var engine = {
         }
 
         mono.storage.get(optionsList, function(storage) {
+            storage = storage || {};
             mono.storage.sync.get(optionsList, function(syncStorage) {
+                syncStorage = syncStorage || {};
                 var settings = _this.settings = {};
                 ['enableFavoriteSync', 'profileListSync'].forEach(function(key) {
                     if (storage.hasOwnProperty(key)) {
