@@ -952,7 +952,9 @@ var options = {
         }
 
         if (!mono.isChrome || /OPR\//.test(navigator.userAgent) || /YaBrowser\//.test(navigator.userAgent)) {
-            document.querySelector('.gzForm').style.display = 'none';
+            if (!engine.settings.enableProxyApi) {
+                document.querySelector('.gzForm').style.display = 'none';
+            }
         }
 
         if (mono.isChrome && mono.isChromeWebApp) {
