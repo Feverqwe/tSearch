@@ -377,7 +377,6 @@
 
 .ml-layer .ml-head {
     padding: 14px;
-    overflow: hidden;
 }
 
 .ml-layer .ml-head span {
@@ -398,9 +397,6 @@
     padding: 12px;
     border-top: 1px dashed #ccc;
     line-height: 28px;
-    overflow: hidden;
-
-    min-height: 29px;
 }
 
 .ml-layer .ml-footer > * {
