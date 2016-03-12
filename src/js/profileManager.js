@@ -397,7 +397,7 @@ var profileManager = {
         var list = [];
         for (var i = 0, el; el = elList[i]; i++) {
             var trackerObj = this.varCache.trackerList[el.dataset.id];
-            list.push(trackerObj.id);
+            list.push({id: trackerObj.id});
         }
         return list;
     },
