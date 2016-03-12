@@ -67,7 +67,9 @@ var engine = {
                 list.splice(list.indexOf('thepiratebay'), 1);
             }
         }
-        return list;
+        return list.map(function(item) {
+            return {id: item};
+        });
     },
 
     updProfileArr: function() {
@@ -110,19 +112,21 @@ var engine = {
     prepareTrackerList: function(profileName, cb) {
         "use strict";
         var trackerList = [];
-        var list = engine.profileList[profileName];
-        for (var i = 0, item; item = list[i]; i++) {
+        var _trackerList = engine.profileList[profileName];
+        for (var i = 0, item; item = _trackerList[i]; i++) {
             var trackerId = item;
             if (typeof trackerId === 'object') {
                 trackerId = item.id;
             }
             var tracker = engine.trackerLib[trackerId];
-            if (tracker === undefined) continue;
+            if (!tracker) {
+                continue;
+            }
             var trackerObj = exKit.prepareTracker(tracker);
 
             trackerList.push(trackerObj);
         }
-        cb(trackerList);
+        return cb(trackerList);
     },
 
     setProfileList: function(storage, cb) {

@@ -182,12 +182,12 @@ var view = {
         mono.create(view.domCache.profileSelect, {
             append: (function(){
                 var elList = [];
-                for (var key in engine.profileList) {
+                Object.keys(engine.profileList).forEach(function(key) {
                     elList.push(mono.create('option', {
                         text: key.replace('%defaultProfileName%', mono.language.defaultProfileName),
                         value: key
                     }));
-                }
+                });
                 elList.push(mono.create('option', {
                     data: {
                         service: 'new'

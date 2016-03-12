@@ -627,7 +627,7 @@ var profileManager = {
         this.domCache.saveBtn.addEventListener('click', function(e) {
             e.preventDefault();
 
-            var profileName = this.varCache.currentProfileName || this.domCache.profileName.value.trim();
+            var profileName = this.domCache.profileName.value.trim() || this.varCache.currentProfileName;
             if (!profileName) {
                 this.domCache.profileName.classList.add('error');
                 setTimeout(function() {
@@ -641,6 +641,10 @@ var profileManager = {
             mono.isWebApp && this.webAppFilterList(trackerList);
 
             engine.profileList[profileName] = trackerList;
+
+            if (this.varCache.currentProfileName !== profileName) {
+                delete engine.profileList[this.varCache.currentProfileName];
+            }
 
             engine.updProfileArr();
 
