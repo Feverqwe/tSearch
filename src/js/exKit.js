@@ -509,7 +509,7 @@ var exKit = {
             return trackerObj;
         }
     },
-    prepareTracker: function (tracker, extend) {
+    prepareTracker: function (tracker) {
         "use strict";
         var itemList = ['onGetValue', 'onSelectorIsNotFound', 'onEmptySelectorValue'];
         for (var i = 0, item; item = itemList[i]; i++) {
@@ -535,11 +535,6 @@ var exKit = {
         if (!exKit.prepareTrackerR.hasEndSlash.test(tracker.search.baseUrl)) {
             tracker.search.baseUrl = tracker.search.baseUrl + '/';
         }
-
-        if (extend) {
-            tracker = mono.merge(mono.deepClone(tracker), extend);
-        }
-
         return tracker;
     },
     parseHtml: function (html) {

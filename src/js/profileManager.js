@@ -148,12 +148,10 @@ var profileManager = {
 
         this.filterValueUpdate();
     },
-    getTrackerEl: function(trackerObj, selected, hasList, notFound, extend) {
+    getTrackerEl: function(trackerObj, selected, hasList, notFound) {
         "use strict";
-        var prevTrackerItem = this.varCache.trackerList[trackerObj.id] || {};
         var trackerItem = this.varCache.trackerList[trackerObj.id] = {};
         trackerItem.id = trackerObj.id;
-        trackerItem.extend = extend || prevTrackerItem.extend;
         var classList = ['tracker-item'];
         if (selected) {
             trackerItem.selected = 1;
@@ -171,17 +169,6 @@ var profileManager = {
 
         notFound && classList.push('not-found');
 
-        var vTrackerObj = {
-            icon: trackerObj.icon,
-            title: trackerObj.title,
-            desc: trackerObj.desc,
-            search: {
-                baseUrl: trackerObj.search.baseUrl
-            }
-        };
-
-        mono.merge(vTrackerObj, trackerItem.extend || {});
-
         trackerItem.el = mono.create('div', {
             class: classList,
             data: {
@@ -195,9 +182,9 @@ var profileManager = {
                 mono.create('div', {
                     class: 'title',
                     append: mono.create('a', {
-                        title: vTrackerObj.title,
-                        text: vTrackerObj.title,
-                        href: vTrackerObj.search.baseUrl,
+                        title: trackerObj.title,
+                        text: trackerObj.title,
+                        href: trackerObj.search.baseUrl,
                         target: '_blank'
                     })
                 }),
@@ -206,8 +193,8 @@ var profileManager = {
                     append: [
                         mono.create('div', {
                             class: 'text',
-                            text: vTrackerObj.desc,
-                            title: vTrackerObj.desc
+                            text: trackerObj.desc,
+                            title: trackerObj.desc
                         }),
                         mono.create('div', {
                             class: 'extend',
@@ -438,7 +425,7 @@ var profileManager = {
 
         var selected = el && el.classList.contains('selected');
 
-        var newEl = this.getTrackerEl(trackerObj, selected, hasList, notFound, null);
+        var newEl = this.getTrackerEl(trackerObj, selected, hasList, notFound);
 
         if (!el) {
             this.domCache.trackerList.appendChild(newEl);
@@ -457,12 +444,10 @@ var profileManager = {
             append: function() {
                 var list = [];
                 var hasIdList = [];
-                var trackerItem, trackerId, selected, hasList, notFound, i, extend;
+                var trackerItem, trackerId, selected, hasList, notFound, i;
                 for (i = 0; trackerItem = trackerList[i]; i++) {
                     trackerId = trackerItem;
-                    extend = null;
                     if (typeof trackerId === 'object') {
-                        extend = trackerId.extend;
                         trackerId = trackerId.id;
                     }
                     hasIdList.push(trackerId);
@@ -477,7 +462,7 @@ var profileManager = {
                         selected = this.trackerInProfile(trackerList, trackerObj.id);
                         notFound = false;
                     }
-                    list.push(this.getTrackerEl(trackerObj, selected, hasList, notFound, extend));
+                    list.push(this.getTrackerEl(trackerObj, selected, hasList, notFound));
                 }
                 for (trackerId in engine.trackerLib) {
                     if (hasIdList.indexOf(trackerId) !== -1) {
@@ -488,7 +473,7 @@ var profileManager = {
                     trackerObj = engine.trackerLib[trackerId];
                     hasList = this.trackerInList(trackerObj);
                     selected = this.trackerInProfile(trackerList, trackerObj.id);
-                    list.push(this.getTrackerEl(trackerObj, selected, hasList, null, null));
+                    list.push(this.getTrackerEl(trackerObj, selected, hasList, null));
                 }
                 return list;
             }.call(this)
@@ -501,9 +486,6 @@ var profileManager = {
         for (var i = 0, el; el = elList[i]; i++) {
             var trackerObj = this.varCache.trackerList[el.dataset.id];
             var trackerListItem = {id: trackerObj.id};
-            if (trackerObj.extend) {
-                trackerListItem.extend = trackerObj.extend;
-            }
             list.push(trackerListItem);
         }
         return list;
