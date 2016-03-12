@@ -172,6 +172,15 @@
 }
 
 
+#manager .mgr-footer .extend.btn {
+    background: url(../img/view.svg) center no-repeat;
+    background-size: 16px;
+    margin-right: 6px;
+}
+#manager .mgr-footer .extend.btn.checked {
+    background-color: #eee;
+}
+
 #manager .mgr-tracker-list .tracker-item {
     border: 1px solid transparent;
     cursor: pointer;
@@ -232,6 +241,13 @@
     white-space: nowrap;
     overflow: hidden;
 }
+#manager .mgr-tracker-list .tracker-item .desc .extend {
+    margin-top: 2px;
+    display: none;
+}
+#manager.extend .mgr-tracker-list .tracker-item .desc .extend {
+    display: block;
+}
 #manager .mgr-tracker-list .tracker-item .action {
     cursor: default;
 }
@@ -239,7 +255,8 @@
     vertical-align: middle;
     margin-top: 0px;
 }
-#manager .mgr-tracker-list .tracker-item .action .act-btn {
+#manager .mgr-tracker-list .tracker-item .action .act-btn,
+#manager.extend .mgr-tracker-list .tracker-item .desc .extend .act-btn {
     display: inline-block;
     width: 18px;
     height: 18px;
@@ -256,10 +273,12 @@
     -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
 }
-#manager .mgr-tracker-list .tracker-item .action .act-btn:hover {
+#manager .mgr-tracker-list .tracker-item .action .act-btn:hover,
+#manager.extend .mgr-tracker-list .tracker-item .desc .extend .act-btn:hover {
     opacity: 1;
 }
-#manager .mgr-tracker-list .tracker-item .action .act-btn.edit {
+#manager .mgr-tracker-list .tracker-item .action .act-btn.edit,
+#manager.extend .mgr-tracker-list .tracker-item .desc .extend .act-btn.edit {
     background-image: url(../img/edit.svg);
     background-size: 16px;
 }

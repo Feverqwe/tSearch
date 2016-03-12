@@ -85,6 +85,7 @@
     "peerFilter": {"message": "Пиры"},
 
     "external_html": {"message": "['Добавь внешние трекеры с ', {a: {href:'http://code-tms.blogspot.ru/?utm_source=TMS', target:'_blank', text:'официального сайта'}}, '!']"},
+    "advanced_options": {"message": "Расширенные опции"},
     "save": {"message": "Сохранить"},
 
     "general": {"message": "Общие"},

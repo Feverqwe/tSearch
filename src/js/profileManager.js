@@ -12,6 +12,7 @@ var profileManager = {
         profileName: document.getElementById('manager_list_title'),
         closeBtn: document.getElementById('manager_close'),
         removeListBtn: document.getElementById('manager_remove_list'),
+        extendView: document.getElementById('manager_extend_view'),
         saveBtn: document.getElementById('manager_save'),
         addCustomTrackerBtn: document.getElementById('manager_add_custom'),
         createCustomTrackerBtn: document.getElementById('manager_create_custom')
@@ -194,6 +195,11 @@ var profileManager = {
                             class: 'text',
                             text: trackerObj.desc,
                             title: trackerObj.desc
+                        }),
+                        mono.create('div', {
+                            class: 'extend',
+                            append: [
+                            ]
                         })
                     ]
                 }),
@@ -397,7 +403,11 @@ var profileManager = {
         var list = [];
         for (var i = 0, el; el = elList[i]; i++) {
             var trackerObj = this.varCache.trackerList[el.dataset.id];
-            list.push({id: trackerObj.id});
+            var trackerListItem = {id: trackerObj.id};
+            if (trackerObj.extend) {
+                trackerListItem.extend = trackerObj.extend;
+            }
+            list.push(trackerListItem);
         }
         return list;
     },
@@ -709,6 +719,17 @@ var profileManager = {
             trackerObj.select(!trackerObj.selected ? 1 : 0)
         });
 
+        this.domCache.extendView.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (this.classList.contains('checked')) {
+                profileManager.domCache.managerBody.classList.remove('extend');
+                this.classList.remove('checked');
+            } else {
+                profileManager.domCache.managerBody.classList.add('extend');
+                this.classList.add('checked');
+            }
+        });
+
         this.domCache.addCustomTrackerBtn.addEventListener('click', function(e) {
             e.preventDefault();
             var _this = this;
@@ -796,6 +817,9 @@ var profileManager = {
         this.domCache.trackerList.textContent = '';
         this.domCache.profileName.value = '';
         this.domCache.filterInput.dispatchEvent(new CustomEvent('dblclick'));
+        if (this.domCache.extendView.classList.contains('checked')) {
+            this.domCache.extendView.dispatchEvent(new CustomEvent('click', {cancelable: true}));
+        }
     },
     add: function() {
         "use strict";

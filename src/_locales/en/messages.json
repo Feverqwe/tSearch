@@ -85,6 +85,7 @@
     "peerFilter": {"message": "Filter by peers"},
 
     "external_html": {"message": "['Add external trackers from the ', {a: {href:'http://code-tms.blogspot.ru/?utm_source=TMS', target:'_blank', text:'official site'}}, '!']"},
+    "advanced_options": {"message": "Advanced view"},
     "save": {"message": "Save"},
 
     "general": {"message": "Main"},
