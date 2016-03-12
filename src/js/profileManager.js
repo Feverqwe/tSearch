@@ -199,6 +199,20 @@ var profileManager = {
                         mono.create('div', {
                             class: 'extend',
                             append: [
+                                mono.create('a', {
+                                    class: ['act-btn', 'edit'],
+                                    href: '#',
+                                    title: mono.language.edit,
+                                    on: ['click', function(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+
+                                        var layer = new mono.Layer({
+                                            title: mono.language.editing
+                                        });
+                                        return layer.show();
+                                    }]
+                                })
                             ]
                         })
                     ]

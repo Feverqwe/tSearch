@@ -739,3 +739,85 @@ mono.merge = function(origData, mergeData) {
 
     return origData;
 };
+
+mono.Layer = function(details) {
+    "use strict";
+    details = details || {};
+    var _this = this;
+    this.blocks = {};
+    this.blocks.layer = mono.create('div', {
+        class: ['ml-layer-back'],
+        on: ['click', function(e) {
+            e.stopPropagation();
+            _this.close();
+        }]
+    });
+    this.blocks.head = mono.create('div', {
+        class: 'ml-head',
+        append: [
+            mono.create('span', {
+                text: details.title || ''
+            }),
+            mono.create('a', {
+                text: mono.language.close,
+                href: '#',
+                on: ['click', function(e) {
+                    e.preventDefault();
+                    _this.close();
+                }]
+            })
+        ]
+    });
+    this.blocks.body = mono.create('div', {
+        class: 'ml-body'
+    });
+    this.blocks.footer = mono.create('div', {
+        class: 'ml-footer',
+        append: [
+            mono.create('a', {
+                class: ['btn', 'save'],
+                text: mono.language.save,
+                href: '#',
+                on: ['click', function(e) {
+                    e.preventDefault();
+                    _this.close(1);
+                }]
+            })
+        ]
+    });
+    this.blocks.container = mono.create('div', {
+        class: 'ml-layer',
+        append: [
+            this.blocks.head,
+            this.blocks.body,
+            this.blocks.footer
+        ]
+    });
+    this.blocks.container = mono.create('div', {
+        class: ['ml-wrapper'],
+        append: [
+            this.blocks.container
+        ],
+        on: ['click', function(e) {
+            e.stopPropagation();
+        }]
+    });
+    this.show = function() {
+        document.body.appendChild(this.blocks.layer);
+        document.body.appendChild(this.blocks.container);
+
+        details.onShow && details.onShow();
+    };
+    this.close = function(isSave) {
+        if (isSave) {
+            details.onSave && details.onSave();
+        } else {
+            details.onCancel && details.onCancel();
+        }
+
+        this.blocks.layer.parentNode.removeChild(this.blocks.layer);
+        this.blocks.container.parentNode.removeChild(this.blocks.container);
+
+        details.onClose && details.onClose();
+    };
+};

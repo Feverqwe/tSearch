@@ -323,3 +323,92 @@
 #manager #manager_remove_list.hide {
     display: none;
 }
+
+.ml-layer-back {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.ml-wrapper {
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    z-index: 110;
+}
+
+.ml-layer {
+    display: inline-block;
+    width: 700px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    margin-top: 70px;
+    text-align: left;
+}
+
+.ml-layer a {
+    color: #0051D8;
+}
+
+.ml-layer a.btn {
+    display: inline-block;
+    line-height: 24px;
+    height: 24px;
+    padding-left: 14px;
+    padding-right: 14px;
+    text-decoration: none;
+    background-color: #ffffff;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid #cccccc;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.ml-layer a.btn:hover {
+    border-color: #adadad;
+}
+
+.ml-layer .ml-head {
+    padding: 14px;
+    background-color: #FFC107;
+    overflow: hidden;
+}
+
+.ml-layer .ml-head span {
+    font-size: 16px;
+}
+
+.ml-layer .ml-head a {
+    float: right;
+}
+
+.ml-layer .ml-body {
+    min-height: 490px;
+    max-height: 490px;
+    overflow: auto;
+}
+
+.ml-layer .ml-footer {
+    padding: 12px;
+    border-top: 1px dashed #ccc;
+    line-height: 28px;
+    overflow: hidden;
+
+    min-height: 29px;
+}
+
+.ml-layer .ml-footer > * {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.ml-layer .ml-footer a.btn.save {
+    float: right;
+}

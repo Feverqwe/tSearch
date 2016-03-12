@@ -104,6 +104,7 @@
     "trackerExists": {"message": "Torrent-tracker already exists!"},
     "cancel": {"message": "Cancel"},
     "edit": {"message": "Edit"},
+    "editing": {"message": "Editing"},
     "change": {"message": "Change"},
 
     "favoriteList": {"message": "Favorites"},

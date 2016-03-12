@@ -104,6 +104,7 @@
     "trackerExists": {"message": "Торрент-трекер уже добавлен!"},
     "cancel": {"message": "Отменить"},
     "edit": {"message": "Редактировать"},
+    "editing": {"message": "Редактирование"},
     "change": {"message": "Изменить"},
 
     "favoriteList": {"message": "Избранное"},
