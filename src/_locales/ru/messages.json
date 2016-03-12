@@ -168,6 +168,7 @@
     "addRuleBeforeItem": {"message": "Добавить правило (искать до найденного слова)"},
     "addRuleAfterItem": {"message": "Добавить правило (искать после найденного слова)"},
     "resetSettings": {"message": "Сбросить настройки"},
+    "reset": {"message": "Сбросить"},
 
     "extPopupInfo": {"message": "Добавь быстрый поиск в свой браузер!"},
     "extPopupInstall": {"message": "Скачай расширение!"},

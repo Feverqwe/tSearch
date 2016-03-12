@@ -168,6 +168,7 @@
     "addRuleBeforeItem": {"message": "Add rule (look up words found)"},
     "addRuleAfterItem": {"message": "Add rule (look after the found word)"},
     "resetSettings": {"message": "Reset rules"},
+    "reset": {"message": "Reset"},
 
     "extPopupInfo": {"message": "Add a quick search in your browser!"},
     "extPopupInstall": {"message": "Download the extension!"},

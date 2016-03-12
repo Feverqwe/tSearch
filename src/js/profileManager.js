@@ -248,7 +248,7 @@ var profileManager = {
                                         mono.create(layer.blocks.footer, {
                                             append: [
                                                 mono.create('a', {
-                                                    text: 'Reset',
+                                                    text: mono.language.reset,
                                                     class: ['btn', 'reset'],
                                                     on: ['click', function() {
                                                         var json = mono.deepClone(origTrackerObj, function(value) {
