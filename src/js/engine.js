@@ -115,14 +115,16 @@ var engine = {
         var _trackerList = engine.profileList[profileName];
         for (var i = 0, item; item = _trackerList[i]; i++) {
             var trackerId = item;
+            var extend = null;
             if (typeof trackerId === 'object') {
                 trackerId = item.id;
+                extend = item.extend || null;
             }
             var tracker = engine.trackerLib[trackerId];
             if (!tracker) {
                 continue;
             }
-            var trackerObj = exKit.prepareTracker(tracker);
+            var trackerObj = exKit.prepareTracker(tracker, extend);
 
             trackerList.push(trackerObj);
         }

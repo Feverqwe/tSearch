@@ -693,3 +693,49 @@ mono.hashParseParam = function(string) {
     }
     return params;
 };
+
+mono.deepClone = function (origData) {
+    "use strict";
+    if (typeof origData !== 'object' || origData === null) {
+        return origData;
+    }
+
+    var data = null;
+    if (Array.isArray(origData)) {
+        var len = origData.length;
+        data = new Array(len);
+        for (var i = 0; i < len; i++) {
+            data[i] = this.deepClone(origData[i]);
+        }
+        return data;
+    }
+
+    data = {};
+    for (var key in origData) {
+        if (!origData.hasOwnProperty(key)) {
+            continue;
+        }
+        data[key] = this.deepClone(origData[key]);
+    }
+    return data;
+};
+
+mono.merge = function(origData, mergeData) {
+    "use strict";
+    if (typeof origData !== 'object' || origData === null || Array.isArray(origData)) {
+        return mergeData;
+    }
+
+    if (typeof mergeData !== 'object' || mergeData === null || Array.isArray(mergeData)) {
+        return mergeData;
+    }
+
+    for (var key in mergeData) {
+        if (!mergeData.hasOwnProperty(key)) {
+            continue;
+        }
+        origData[key] = this.merge(origData[key], mergeData[key]);
+    }
+
+    return origData;
+};
