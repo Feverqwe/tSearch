@@ -171,14 +171,6 @@
     border-color: #adadad;
 }
 
-#manager .mgr-footer .extend.btn {
-    background: url(../img/view.svg) center no-repeat;
-    background-size: 16px;
-    margin-right: 6px;
-}
-#manager .mgr-footer .extend.btn.checked {
-    background-color: #eee;
-}
 
 #manager .mgr-tracker-list .tracker-item {
     border: 1px solid transparent;
@@ -239,13 +231,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-}
-#manager .mgr-tracker-list .tracker-item .desc .extend {
-    margin-top: 2px;
-    display: none;
-}
-#manager.extend .mgr-tracker-list .tracker-item .desc .extend {
-    display: block;
 }
 #manager .mgr-tracker-list .tracker-item .action {
     cursor: default;

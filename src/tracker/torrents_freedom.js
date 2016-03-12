@@ -9,8 +9,7 @@ engine.trackerLib['torrents.freedom'] = {
     flags: {
         auth: 1,
         language: 'ru',
-        cyrillic: 1,
-        allowProxy: 1
+        cyrillic: 1
     },
     categoryList: {
         serials: [205, 575, 689, 469, 204, 449, 448, 465, 537, 206, 121, 209, 208, 207],

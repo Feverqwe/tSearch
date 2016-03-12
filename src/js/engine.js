@@ -21,21 +21,11 @@ var engine = {
         hideTopSearch: 0,
         trackerListHeight: 200,
         profileListSync: 0,
-        proxyList: [
-            {label: 'Google user content', url: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&container=pos', type: 0, fixSpaces: 1},
-            {label: '3s3s.org', url: '3s3s.org', type: 1}
-        ],
         calcSeedCount: 1,
         langCode: undefined,
         sortColumn: 'quality',
         sortOrder: 0,
-        invertIcon: 0,
-        autoUseProxy: 1,
-        enableProxyApi: 0,
-        proxyHostList: [
-            '*://*.rutracker.org/*',
-            '*://*.kinozal.tv/*'
-        ]
+        invertIcon: 0
     },
     settings: {},
     defaultExplorerOptions: [
@@ -129,8 +119,6 @@ var engine = {
             var tracker = engine.trackerLib[trackerId];
             if (tracker === undefined) continue;
             var trackerObj = exKit.prepareTracker(tracker);
-
-            trackerObj.proxyIndex = item.proxyIndex || 0;
 
             trackerList.push(trackerObj);
         }
@@ -234,7 +222,6 @@ var engine = {
 
                 if (!settings.profileListSync) {
                     delete syncStorage.profileList;
-                    delete syncStorage.proxyList;
                 }
 
                 Object.keys(syncStorage).forEach(function(key) {

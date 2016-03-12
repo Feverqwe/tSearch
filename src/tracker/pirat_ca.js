@@ -9,8 +9,7 @@ engine.trackerLib.piratca = {
     flags: {
         auth: 1,
         language: 'ru',
-        cyrillic: 1,
-        allowProxy: 1
+        cyrillic: 1
     },
     categoryList: {
         serials: [2385, 24, 2462, 1799, 2341, 998, 888, 1504, 1492, 1491, 1493, 1494, 1500, 2339, 1495, 1497, 2338, 1502, 1503, 2079, 999, 1506, 26, 2463, 1800, 2053, 2054, 2055, 2057, 2056, 2058, 1723],

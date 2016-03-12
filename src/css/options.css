@@ -295,63 +295,6 @@ input[data-option="kinopoiskFolderId"] {
     width: 100px;
 }
 
-.proxyList {
-    width: 620px;
-}
-.proxyList .item {
-    padding: 5px;
-    border-bottom: 1px dashed #848484;
-}
-.proxyList .label {
-    width: 200px;
-}
-.proxyList .delete {
-    margin-left: 5px;
-}
-.proxyList .url {
-    width: 540px;
-    margin-left: 5px;
-}
-.proxyList form {
-    margin: 5px;
-}
-.proxyList .proxy-type > * {
-    display: inline-block;
-}
-.proxyList .url-options,
-.proxyList .host-options {
-    display: none;
-}
-.proxyList .url-show .url-options,
-.proxyList .host-show .host-options {
-    display: block;
-}
-.proxyList a.add {
-    margin: 5px;
-    float: right;
-}
-
-.proxyList a {
-    color: #0051D8;
-}
-.proxyList a.btn {
-    display: inline-block;
-    line-height: 24px;
-    height: 24px;
-    padding-left: 14px;
-    padding-right: 14px;
-    text-decoration: none;
-    background-color: #ffffff;
-    border-radius: 3px;
-    cursor: pointer;
-    border: 1px solid #cccccc;
-    background-position: center center;
-    background-repeat: no-repeat;
-}
-.proxyList a.btn:hover {
-    border-color: #adadad;
-}
-
 .qualityList .header {
     cursor: pointer;
     padding-top: 2px;
@@ -508,22 +451,4 @@ input[data-option="kinopoiskFolderId"] {
     text-align: right;
     margin-top: 5px;
     margin-bottom: 5px;
-}
-
-.gzForm {
-    margin-top: 36px;
-}
-
-#proxyHostPattern {
-    width: 235px;
-}
-
-#proxyHostPatternList {
-    display: block;
-    width: 400px;
-    height: 200px;
-}
-
-.gzForm .item {
-    margin: 5px 0;
 }

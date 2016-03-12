@@ -9,8 +9,7 @@ engine.trackerLib.btdigg = {
     flags: {
         auth: 0,
         language: 'ru',
-        cyrillic: 1,
-        allowProxy: 1
+        cyrillic: 1
     },
     search: {
         searchUrl: 'http://btdigg.org/search',

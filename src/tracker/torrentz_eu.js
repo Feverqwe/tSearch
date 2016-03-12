@@ -9,8 +9,7 @@ engine.trackerLib.torrentz = {
     flags: {
         auth: 0,
         language: 'en',
-        cyrillic: 1,
-        allowProxy: 1
+        cyrillic: 1
     },
     search: {
         searchUrl: 'https://torrentz.eu/search',

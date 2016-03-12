@@ -85,7 +85,6 @@
     "peerFilter": {"message": "Filter by peers"},
 
     "external_html": {"message": "['Add external trackers from the ', {a: {href:'http://code-tms.blogspot.ru/?utm_source=TMS', target:'_blank', text:'official site'}}, '!']"},
-    "advanced_options": {"message": "Advanced view"},
     "save": {"message": "Save"},
 
     "general": {"message": "Main"},
@@ -130,8 +129,6 @@
     "imageUrl": {"message": "URL picture"},
     "descUrl": {"message": "URL description"},
 
-    "direct": {"message": "Direct"},
-    "requestContentVia": {"message": "Request content via:"},
     "VkGroup": {"message": "Group in VK"},
     "feedback": {"message": "Feedback"},
 
@@ -157,12 +154,7 @@
     "home": {"message": "Main page"},
     "showSections": {"message": "Show section:"},
     "other": {"message": "Other"},
-    "proxy": {"message": "Proxy requests"},
-    "type": {"message": "Type:"},
-    "fixSpaces": {"message": "To escape spaces"},
     "label": {"message": "Label:"},
-    "workExample": {"message": "Example work:"},
-    "onlyGetMethod": {"message": "Only GET requests"},
     "qualityDefine": {"message": "Definition of quality"},
     "wordList": {"message": "Word list:"},
     "rateList": {"message": "Weight list:"},
@@ -185,12 +177,8 @@
     "ok": {"message": "OK"},
     "notNow": {"message": "Not now"},
 
-    "autoUseProxy": {"message": "Use a proxy if a tracker is unavailable"},
-    "enableProxyApi": {"message": "Enable proxy via Chrome API"},
-    "hostPattern": {"message": "Host-pattern"},
-    "deleteSelected": {"message": "Delete selected"},
-    "proxyApi": {"message": "Googlezip proxy"},
-    "proxyInfo": {"message": "Not compatible with other proxy extensions like friGate or Stealthy"},
+    "proxy": {"message": "Proxy requests"},
+    "proxyIsRemoved": {"message": "Proxy functions have been removed. To effectively use the bypass locks extensions such as the Data Saver or Toubro function in your browser."},
 
     "kitSearch": {"message": "Search"},
     "kitSelectors": {"message": "Selectors"},

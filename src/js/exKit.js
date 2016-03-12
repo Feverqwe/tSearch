@@ -495,8 +495,6 @@ var exKit = {
 
             trackerObj.search = trackerObj.search || {};
 
-            trackerObj.flags.allowProxy = trackerObj.search.requestData ? 0 : 1;
-
             ['onBeforeRequest', 'onAfterRequest', 'onBeforeDomParse', 'onAfterDomParse', 'onGetListItem'].forEach(function(key) {
                 trackerObj.search[key] = _this.listToFunction(key, trackerObj.search[key]);
             });
@@ -600,55 +598,6 @@ var exKit = {
             return url + value;
         }
         return tracker.search.baseUrl + value;
-    },
-    setProxy: function(url, proxyIndex, method) {
-        "use strict";
-        var proxy = engine.settings.proxyList[proxyIndex - 1];
-
-        if (proxy) {
-            if (proxy.type === 0 && method === 'GET') {
-                url = this.setUrlProxy(url, proxyIndex, proxy);
-            } else if (proxy.type === 1) {
-                url = this.setHostProxyUrl(url, proxyIndex, proxy);
-            }
-        }
-
-        return url;
-    },
-    setUrlProxy: function(url, proxyIndex, proxy) {
-        "use strict";
-        proxy = proxy || engine.settings.proxyList[proxyIndex - 1];
-        if (!proxy) {
-            return url;
-        }
-
-        if (proxy.fixSpaces) {
-            url = url.replace(/[\t\s]+/g, '%20');
-        }
-
-        url = proxy.url.replace('{url}', encodeURIComponent(url));
-
-        return url;
-    },
-    setHostProxyUrl: function (url, proxyIndex, proxy) {
-        "use strict";
-        proxy = proxy || engine.settings.proxyList[proxyIndex - 1];
-        if (!proxy || proxy.type !== 1 || url.substr(0, 4) !== 'http') {
-            return url;
-        }
-        return url.replace(/(https?:\/\/[^\/]+)(.*)/, '$1.' + proxy.url + '$2');
-    },
-    setResultsHostProxy: function(torrentList, proxyIndex) {
-        "use strict";
-        var urlKeys = this.isUrlList;
-        for (var i = 0, item; item = torrentList[i]; i++) {
-            for (var ii = 0, key; key = urlKeys[ii]; ii++) {
-                if (!item[key]) {
-                    continue;
-                }
-                item[key] = this.setHostProxyUrl(item[key], proxyIndex);
-            }
-        }
     },
     matchSelector: function(result, details) {
         "use strict";
@@ -1021,22 +970,13 @@ var exKit = {
             details.query = encodeURIComponent(details.query);
         }
 
-        var proxyIndex = tracker.proxyIndex;
-
-        var requestData = function(forceProxyIndex) {
-            if (forceProxyIndex !== undefined) {
-                proxyIndex = forceProxyIndex;
-            }
-
+        var requestData = function() {
             return new Promise(function (resolve, reject) {
                 Promise.resolve().then(function () {
                     var ajaxData = {
                         safe: true,
                         mimeType: tracker.search.requestMimeType,
                         dataType: tracker.search.requestDataType,
-                        changeUrl: proxyIndex > 0 && function (url, method) {
-                            return _this.setProxy(url, proxyIndex, method);
-                        },
                         success: function (data, xhr) {
                             details.data = _this.contentFilter(data);
                             details.responseUrl = xhr.responseURL;
@@ -1085,35 +1025,12 @@ var exKit = {
                     result.requireAuth = tracker.search.loginUrl;
                 }
 
-                if (proxyIndex > 0) {
-                    if (result.requireAuth) {
-                        result.requireAuth = _this.setHostProxyUrl(result.requireAuth, proxyIndex);
-                    }
-
-                    if (result.torrentList) {
-                        _this.setResultsHostProxy(result.torrentList, proxyIndex);
-                    }
-                }
-
                 onSearch.onSuccess(tracker, query, result);
                 onSearch.onDone(tracker);
             });
         };
 
-        requestData().catch(function(err) {
-            if (engine.settings.autoUseProxy && err === 'Request error!') {
-                var proxyIndex = 1;
-                if (tracker.search.requestType !== 'GET') {
-                    proxyIndex = 2;
-                }
-
-                return requestData(proxyIndex).catch(function (err) {
-                    throw err;
-                });
-            }
-
-            throw err;
-        }).catch(function (err) {
+        requestData().catch(function (err) {
             console.error('Search', tracker.id, err);
             if (err === 'Request aborted!') {
                 return;

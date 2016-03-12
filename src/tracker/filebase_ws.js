@@ -9,8 +9,7 @@ engine.trackerLib.filebase = {
     flags: {
         auth: 1,
         language: 'ru',
-        cyrillic: 1,
-        allowProxy: 1
+        cyrillic: 1
     },
     categoryList: {
         serials: ['serials'],

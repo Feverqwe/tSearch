@@ -85,7 +85,6 @@
     "peerFilter": {"message": "Пиры"},
 
     "external_html": {"message": "['Добавь внешние трекеры с ', {a: {href:'http://code-tms.blogspot.ru/?utm_source=TMS', target:'_blank', text:'официального сайта'}}, '!']"},
-    "advanced_options": {"message": "Расширенные опции"},
     "save": {"message": "Сохранить"},
 
     "general": {"message": "Общие"},
@@ -130,8 +129,6 @@
     "imageUrl": {"message": "URL изображения"},
     "descUrl": {"message": "URL описания"},
 
-    "direct": {"message": "Напрямую"},
-    "requestContentVia": {"message": "Получать контент через:"},
     "VkGroup": {"message": "Группа в ВК"},
     "feedback": {"message": "Сообщить о проблеме"},
 
@@ -157,12 +154,7 @@
     "home": {"message": "Главная страница"},
     "showSections": {"message": "Отображать секции:"},
     "other": {"message": "Прочие"},
-    "proxy": {"message": "Проксирование запросов"},
-    "type": {"message": "Тип:"},
-    "fixSpaces": {"message": "Экранировать пробелы"},
     "label": {"message": "Название:"},
-    "workExample": {"message": "Пример работы:"},
-    "onlyGetMethod": {"message": "Только для GET запросов"},
     "qualityDefine": {"message": "Определение качества"},
     "wordList": {"message": "Список слов:"},
     "rateList": {"message": "Список весов:"},
@@ -185,12 +177,8 @@
     "ok": {"message": "OK"},
     "notNow": {"message": "Не сейчас"},
 
-    "autoUseProxy": {"message": "Использовать проксирование если трекер недоступен"},
-    "enableProxyApi": {"message": "Включить проксирование через Chrome API"},
-    "hostPattern": {"message": "Host-pattern"},
-    "deleteSelected": {"message": "Удалить выбранное"},
-    "proxyApi": {"message": "Googlezip proxy"},
-    "proxyInfo": {"message": "Не совместимо с другими проксирующими расширениями, такими как friGate или Stealthy"},
+    "proxy": {"message": "Проксирование запросов"},
+    "proxyIsRemoved": {"message": "Функции проксирования были удалены. Для эффективного обхода блокировок используйте расширения такие как Data Saver или функцию тубро в вашем браузере."},
 
     "kitSearch": {"message": "Поиск"},
     "kitSelectors": {"message": "Селекторы"},

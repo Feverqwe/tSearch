@@ -9,8 +9,7 @@ engine.trackerLib.piratbit = {
     flags: {
         auth: 1,
         language: 'ru',
-        cyrillic: 1,
-        allowProxy: 1
+        cyrillic: 1
     },
     categoryList: {
         serials: [24, 767, 766, 764, 762, 763, 25, 1566, 1511, 1510, 1427, 1415, 1413, 1412, 1411, 1410, 1242, 1243, 1232, 777, 773, 776, 775, 778],

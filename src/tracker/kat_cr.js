@@ -9,8 +9,7 @@ engine.trackerLib.kickass = {
     flags: {
         auth: 0,
         language: 'en',
-        cyrillic: 0,
-        allowProxy: 1
+        cyrillic: 0
     },
     categoryList: {
         serials: [],

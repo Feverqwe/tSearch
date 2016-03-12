@@ -9,8 +9,7 @@ engine.trackerLib.underverse = {
     flags: {
         auth: 1,
         language: 'ru',
-        cyrillic: 1,
-        allowProxy: 1
+        cyrillic: 1
     },
     categoryList: {
         serials: [6, 38, 39, 628, 747, 749],

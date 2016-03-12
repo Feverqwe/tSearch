@@ -9,8 +9,7 @@ engine.trackerLib.kaztorka = {
     flags: {
         auth: 1,
         language: 'ru',
-        cyrillic: 1,
-        allowProxy: 1
+        cyrillic: 1
     },
     search: {
         searchUrl: 'http://kaztorka.org/search',

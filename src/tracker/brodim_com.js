@@ -9,8 +9,7 @@ engine.trackerLib['brodim'] = {
     flags: {
         auth: 1,
         language: 'ru',
-        cyrillic: 1,
-        allowProxy: 1
+        cyrillic: 1
     },
     categoryList: {
         serials: [12, 135, 136, 137, 138, 139, 140, 123, 122, 121, 13, 512, 513, 514, 504, 503, 502, 501, 134, 133, 132, 131, 127, 128, 130, 129, 126, 125, 124, 144, 143, 142, 141],

@@ -379,7 +379,7 @@ var view = {
                             class: ['icon', 'tracker-icon'],
                             title: mono.language.goToTheWebsite,
                             target: '_blank',
-                            href: exKit.setProxy(tracker.search.baseUrl, tracker.proxyIndex, 'POST')
+                            href: tracker.search.baseUrl
                         }),
                         mono.create('a', {
                             class: 'title',

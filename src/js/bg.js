@@ -43,11 +43,7 @@ var bg = {
         contextMenu: 1,
         searchPopup: 1,
         invertIcon: 0,
-        enableProxyApi: 0,
-        langCode: undefined,
-        proxyHostList: [
-            '*://*.kinozal.tv/*'
-        ]
+        langCode: undefined
     },
     settings: {},
     updateIcon: function() {
@@ -234,126 +230,6 @@ var bg = {
         }
         bg.run();
     },
-    proxy: {
-        currentProxy: null,
-        getChromeProxy: function() {
-            "use strict";
-            return {
-                address: ['HTTPS proxy.googlezip.net:443', 'PROXY compress.googlezip.net:80', 'PROXY 74.125.205.211:80']
-            }
-        },
-        onStorageChange: function(changes, areaName) {
-            "use strict";
-            if (['sync', 'local'].indexOf(areaName) === -1) {
-                return;
-            }
-
-            if (changes.proxyHostList) {
-                bg.settings.proxyHostList = changes.proxyHostList.newValue;
-                bg.proxy.init();
-            }
-        },
-        onError: function(details) {
-            "use strict";
-            var _this = bg.proxy;
-            if (details.fatal) {
-                _this.stop();
-                console.error('Fatal error', details);
-                return;
-            }
-            console.error('Proxy error', details);
-            _this.check();
-        },
-        enable: function() {
-            "use strict";
-            var _this = this;
-
-            chrome.storage.onChanged.addListener(_this.onStorageChange);
-
-            var hostList = bg.settings.proxyHostList;
-            if (!hostList.length) {
-                return;
-            }
-
-            var hostListRe = hostList.map(function(pattern) {
-                return mono.urlPatternToStrRe(pattern);
-            }).join('|');
-
-            this.currentProxy = this.getChromeProxy();
-
-            var config = {
-                mode: "pac_script",
-                pacScript: {
-                    data: (function() {
-                        var strFunc = '/*tms*/'
-                        +'var matchRe = new RegExp("{regexp}");'
-                        +'var FindProxyForURL = function(url){'
-                        +  'if (matchRe.test(url)) {'
-                        +    'return "{address};DIRECT";'
-                        +  '}'
-                        +  'return "DIRECT";'
-                        +'}';
-                        strFunc = strFunc.replace('{address}', _this.currentProxy.address.join(';'));
-                        strFunc = strFunc.replace('{regexp}', hostListRe);
-                        return strFunc;
-                    })()
-                }
-            };
-
-            chrome.proxy.settings.set({
-                value: config,
-                scope: 'regular'
-            });
-
-            chrome.proxy.onProxyError.addListener(_this.onError);
-        },
-        check: function(cb) {
-            "use strict";
-            var _this = this;
-            chrome.proxy.settings.get({incognito:false}, function(details) {
-                if (['controllable_by_this_extension', 'controlled_by_this_extension'].indexOf(details.levelOfControl) === -1) {
-                    console.error('Run proxy error!');
-                    _this.stop();
-                    return;
-                }
-                cb && cb();
-            });
-        },
-        stop: function(cb) {
-            "use strict";
-            var _this = this;
-            chrome.storage.onChanged.removeListener(_this.onStorageChange);
-            chrome.proxy.onProxyError.removeListener(_this.onError);
-            chrome.proxy.settings.get({incognito:false}, function(details) {
-                var next = function() {
-                    cb && cb();
-                };
-
-                if (details.levelOfControl === 'controlled_by_this_extension') {
-                    chrome.proxy.settings.clear({
-                        scope: 'regular'
-                    }, next);
-                } else {
-                    next();
-                }
-            });
-        },
-        init: function() {
-            "use strict";
-            if (!chrome.proxy) {
-                return;
-            }
-
-            var _this = this;
-            _this.stop(function() {
-                if (bg.settings.enableProxyApi) {
-                    _this.check(function () {
-                        _this.enable();
-                    });
-                }
-            });
-        }
-    },
     run: function() {
         "use strict";
         var _this = this;
@@ -379,10 +255,6 @@ var bg = {
 
                 if ((mono.isChrome && !mono.isChromeWebApp) || mono.isFF) {
                     bg.updateIcon();
-                }
-
-                if (mono.isChrome) {
-                    _this.proxy.init();
                 }
             });
         });

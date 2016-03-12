@@ -11,12 +11,7 @@ var options = {
         restoreInp: document.getElementById('restoreInp'),
         langSelect: document.getElementById("language"),
         sectionList: document.querySelector('.sectionList'),
-        proxyList: document.querySelector('.proxyList'),
-        qualityList: document.querySelector('.qualityList'),
-        proxyHostPattern: document.querySelector('#proxyHostPattern'),
-        proxyAddHostPattern: document.querySelector('#proxyAddHostPattern'),
-        proxyHostPatternList: document.querySelector('#proxyHostPatternList'),
-        proxyDeleteSelected: document.querySelector('#proxyDeleteSelected')
+        qualityList: document.querySelector('.qualityList')
     },
 
     defaultSettings: {},
@@ -120,7 +115,7 @@ var options = {
         obj[key] = value;
 
         mono.storage.set(obj, function() {
-            if (obj.hasOwnProperty('contextMenu') || obj.hasOwnProperty('searchPopup') || obj.hasOwnProperty('invertIcon') || obj.hasOwnProperty('enableProxyApi')) {
+            if (obj.hasOwnProperty('contextMenu') || obj.hasOwnProperty('searchPopup') || obj.hasOwnProperty('invertIcon')) {
                 mono.sendMessage('reloadSettings');
             }
         });
@@ -195,204 +190,6 @@ var options = {
                 this.domCache.restoreInp.value = storage.backup;
             }.bind(this));
         }.bind(this));
-    },
-    saveProxyList: function() {
-        "use strict";
-        mono.storage.set({proxyList: engine.settings.proxyList});
-        if (engine.settings.profileListSync) {
-            mono.storage.sync.set({proxyList: engine.settings.proxyList});
-        }
-    },
-    writeProxyList: function() {
-        "use strict";
-        this.domCache.proxyList.textContent = '';
-        mono.create(this.domCache.proxyList, {
-            append: (function() {
-                var list = [];
-                engine.settings.proxyList.forEach(function(item, index) {
-                    var itemEl;
-                    list.push(itemEl = mono.create('div', {
-                        class: 'item',
-                        append: [
-                            mono.create('div', {
-                                class: 'host-options',
-                                append: [
-                                    mono.create('div', {
-                                        class: 'info',
-                                        append: [
-                                            mono.create('span', {
-                                                text: mono.language.workExample + ' '
-                                            }),
-                                            mono.create('span', {
-                                                text: '{protocol}://{host}.3s3s.org/{path}'
-                                            })
-                                        ]
-                                    })
-                                ]
-                            }),
-                            mono.create('div', {
-                                class: 'url-options',
-                                append: [
-                                    mono.create('div', {
-                                        class: 'info',
-                                        append: [
-                                            mono.create('span', {
-                                                text: mono.language.onlyGetMethod
-                                            })
-                                        ]
-                                    })
-                                ]
-                            }),
-                            mono.create('label', {
-                                append: [
-                                    mono.create('span', {
-                                        text: mono.language.label + ' '
-                                    }),
-                                    mono.create('input', {
-                                        type: 'text',
-                                        class: 'label',
-                                        value: item.label,
-                                        on: ['keyup', mono.debounce(function() {
-                                            item.label = this.value;
-                                            options.saveProxyList();
-                                        })]
-                                    }),
-                                    index < 2 ? undefined : mono.create('a', {
-                                        class: 'delete btn',
-                                        text: mono.language.delete,
-                                        href: '#',
-                                        on: ['click', function(e) {
-                                            e.preventDefault();
-                                            engine.settings.proxyList.splice(index, 1);
-                                            options.saveProxyList();
-                                            options.writeProxyList();
-                                        }]
-                                    })
-                                ]
-                            }),
-                            mono.create('label', {
-                                append: [
-                                    mono.create('span', {
-                                        text: 'URL:'
-                                    }),
-                                    mono.create('input', {
-                                        type: 'text',
-                                        class: 'url',
-                                        value: item.url,
-                                        on: ['keyup', mono.debounce(function() {
-                                            item.url = this.value;
-                                            options.saveProxyList();
-                                        })]
-                                    })
-                                ]
-                            }),
-                            mono.create('form', {
-                                class: 'proxy-type',
-                                append: [
-                                    mono.create('span', {
-                                        text: mono.language.type
-                                    }),
-                                    mono.create('label', {
-                                        append: [
-                                            mono.create('input', {
-                                                type: 'radio',
-                                                name: 'proxyType',
-                                                value: '0',
-                                                checked: item.type === 0
-                                            }),
-                                            mono.create('span', {
-                                                text: 'URL'
-                                            })
-                                        ]
-                                    }),
-                                    mono.create('label', {
-                                        append: [
-                                            mono.create('input', {
-                                                type: 'radio',
-                                                name: 'proxyType',
-                                                value: '1',
-                                                checked: item.type === 1
-                                            }),
-                                            mono.create('span', {
-                                                text: 'Host'
-                                            })
-                                        ]
-                                    })
-                                ],
-                                on: ['change', function(e) {
-                                    var el = e.target;
-                                    if (el.name === 'proxyType') {
-                                        if (el.value === '0') {
-                                            itemEl.classList.add('url-show');
-                                            itemEl.classList.remove('host-show');
-                                        } else {
-                                            itemEl.classList.remove('url-show');
-                                            itemEl.classList.add('host-show');
-                                        }
-                                    }
-                                    if (isNaN(parseInt(el.value))) {
-                                        return;
-                                    }
-                                    item.type = parseInt(el.value);
-                                    options.saveProxyList();
-                                }]
-                            }),
-                            mono.create('div', {
-                                class: 'url-options',
-                                append: [
-                                    mono.create('label', {
-                                        append: [
-                                            mono.create('input', {
-                                                type: 'checkbox',
-                                                data: {
-                                                    param: 'fixSpaces'
-                                                },
-                                                checked: !!item.fixSpaces
-                                            }),
-                                            mono.create('span', {
-                                                text: mono.language.fixSpaces
-                                            })
-                                        ],
-                                        on: ['change', function(e) {
-                                            var el = e.target;
-                                            var key = el.dataset.param;
-                                            if (!key) {
-                                                return;
-                                            }
-                                            item[key] = el.checked ? 1 : 0;
-                                            options.saveProxyList();
-                                        }]
-                                    })
-                                ]
-                            })
-                        ],
-                        onCreate: function() {
-                            if (item.type === 0) {
-                                this.classList.add('url-show');
-                            } else {
-                                this.classList.add('host-show');
-                            }
-                        }
-                    }));
-                });
-                list.push(mono.create('a', {
-                    class: 'add btn',
-                    href: '#',
-                    text: mono.language.add,
-                    on: ['click', function(e) {
-                        e.preventDefault();
-                        engine.settings.proxyList.push({
-                            label: 'new',
-                            url: '',
-                            type: 0
-                        });
-                        options.saveProxyList();
-                        options.writeProxyList();
-                    }]
-                }));
-                return list;
-            })()
-        });
     },
     writeQualityList: function() {
         "use strict";
@@ -872,73 +669,6 @@ var options = {
             node.addEventListener('click', onQualityControlsClick);
         }
     },
-    bindProxyForm: function() {
-        "use strict";
-        var _this = this;
-        var input = this.domCache.proxyHostPattern;
-        var select = this.domCache.proxyHostPatternList;
-        var btn = this.domCache.proxyAddHostPattern;
-
-        var saveHostList = function() {
-            var hostList = [];
-            [].slice.call(select.childNodes).forEach(function(node) {
-                if (node.tagName !== 'OPTION') {
-                    return;
-                }
-                hostList.push(node.value);
-            });
-            mono.storage.set({proxyHostList: hostList}, function() {
-                mono.storage.sync.set({proxyHostList: hostList});
-            });
-        };
-
-        input.addEventListener('keydown', function(e) {
-            if (e.keyCode === 13) {
-                btn.dispatchEvent(new CustomEvent("click"))
-            }
-        });
-
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            var value = input.value.trim();
-            if (!value) {
-                return;
-            }
-            try {
-                mono.urlPatternToStrRe(value);
-            } catch (e) {
-                alert('Host pattern error!');
-                return;
-            }
-            select.appendChild(mono.create('option', {
-                value: value,
-                text: value
-            }));
-            input.value = '';
-            saveHostList();
-        });
-
-        this.domCache.proxyDeleteSelected.addEventListener('click', function(e) {
-            e.preventDefault();
-            var nodeList = [];
-            [].slice.call(select.childNodes).forEach(function(node) {
-                if (node.selected) {
-                    nodeList.push(node);
-                }
-            });
-            nodeList.forEach(function(node) {
-                node.parentNode.removeChild(node);
-            });
-            saveHostList();
-        });
-
-        engine.settings.proxyHostList.forEach(function(item) {
-            select.appendChild(mono.create('option', {
-                value: item,
-                text: item
-            }));
-        });
-    },
     once: function() {
         "use strict";
         mono.writeLanguage(mono.language);
@@ -949,12 +679,6 @@ var options = {
             this.domCache.clearCloudStorageBtn.style.display = 'none';
             document.querySelector('input[data-option="enableFavoriteSync"]').parentNode.style.display = 'none';
             document.querySelector('input[data-option="profileListSync"]').parentNode.style.display = 'none';
-        }
-
-        if (!mono.isChrome || /OPR\//.test(navigator.userAgent) || /YaBrowser\//.test(navigator.userAgent)) {
-            if (!engine.settings.enableProxyApi) {
-                document.querySelector('.gzForm').style.display = 'none';
-            }
         }
 
         if (mono.isChrome && mono.isChromeWebApp) {
@@ -1002,8 +726,6 @@ var options = {
                 ]
             }));
         }.bind(this));
-
-        this.writeProxyList();
 
         mono.rmChildTextNodes(this.domCache.langSelect);
         this.domCache.langSelect.selectedIndex = this.domCache.langSelect.querySelector('[value="'+mono.language.langCode+'"]').index;
@@ -1061,8 +783,6 @@ var options = {
         document.body.addEventListener('click', this.saveChange);
 
         document.querySelector('input[data-option="kinopoiskFolderId"]').addEventListener('change', mono.debounce(this.saveChange));
-
-        this.bindProxyForm();
 
         setTimeout(function() {
             rate.init();

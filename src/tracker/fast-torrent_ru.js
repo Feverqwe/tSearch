@@ -9,8 +9,7 @@ engine.trackerLib['fast-torrent'] = {
     flags: {
         auth: 0,
         language: 'ru',
-        cyrillic: 1,
-        allowProxy: 1
+        cyrillic: 1
     },
     search: {
         searchUrl: 'http://fast-torrent.ru/search/%search%/1.html',

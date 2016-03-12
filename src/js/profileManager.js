@@ -12,7 +12,6 @@ var profileManager = {
         profileName: document.getElementById('manager_list_title'),
         closeBtn: document.getElementById('manager_close'),
         removeListBtn: document.getElementById('manager_remove_list'),
-        extendView: document.getElementById('manager_extend_view'),
         saveBtn: document.getElementById('manager_save'),
         addCustomTrackerBtn: document.getElementById('manager_add_custom'),
         createCustomTrackerBtn: document.getElementById('manager_create_custom')
@@ -152,7 +151,6 @@ var profileManager = {
         "use strict";
         var trackerItem = this.varCache.trackerList[trackerObj.id] = {};
         trackerItem.id = trackerObj.id;
-        trackerItem.proxyIndex = trackerObj.proxyIndex || 0;
         var classList = ['tracker-item'];
         if (selected) {
             trackerItem.selected = 1;
@@ -196,32 +194,6 @@ var profileManager = {
                             class: 'text',
                             text: trackerObj.desc,
                             title: trackerObj.desc
-                        }),
-                        mono.create('div', {
-                            class: 'extend',
-                            append: [
-                                mono.language.requestContentVia,
-                                mono.create('select', {
-                                    name: 'proxyIndex',
-                                    append: (function(proxyList) {
-                                        var list = [];
-                                        var option;
-                                        for (var i = 0, item; item = proxyList[i]; i++) {
-                                            list.push(option = mono.create('option', {
-                                                text: item.label,
-                                                value: i
-                                            }));
-                                        }
-                                        return list;
-                                    })([{label: mono.language.direct}].concat(engine.settings.proxyList)),
-                                    onCreate: function() {
-                                        this.selectedIndex = trackerItem.proxyIndex;
-                                    },
-                                    on: ['change', function(e) {
-                                        trackerItem.proxyIndex = parseInt(this.value);
-                                    }]
-                                })
-                            ]
                         })
                     ]
                 }),
@@ -336,11 +308,10 @@ var profileManager = {
             }
         }
     },
-    getRemovedTrackerObj: function(trackerId, proxyIndex) {
+    getRemovedTrackerObj: function(trackerId) {
         "use strict";
         var customId = trackerId.substr(0, 3) === 'ct_' ? trackerId.substr(3) : trackerId;
         return {
-            proxyIndex: proxyIndex || 0,
             id: trackerId,
             icon: '#skull',
             title: trackerId,
@@ -357,19 +328,9 @@ var profileManager = {
 
         var trackerObj = engine.trackerLib[trackerId];
 
-        var proxyIndex;
-        var proxySelect = el && el.querySelector('select[name="proxyIndex"]');
-        if (proxySelect) {
-            proxyIndex = proxySelect.selectedIndex;
-            if (trackerObj && proxyIndex) {
-                trackerObj.proxyIndex = proxyIndex;
-            }
-            proxySelect = null;
-        }
-
         var notFound;
         if (!trackerObj) {
-            trackerObj = this.getRemovedTrackerObj(trackerId, proxyIndex);
+            trackerObj = this.getRemovedTrackerObj(trackerId);
             notFound = true;
         }
         var hasList = notFound ? true : this.trackerInList(trackerObj);
@@ -404,7 +365,7 @@ var profileManager = {
                     hasIdList.push(trackerId);
                     var trackerObj = engine.trackerLib[trackerId];
                     if (!trackerObj) {
-                        trackerObj = this.getRemovedTrackerObj(trackerId, trackerItem.proxyIndex);
+                        trackerObj = this.getRemovedTrackerObj(trackerId);
                         hasList = true;
                         selected = true;
                         notFound = true;
@@ -436,10 +397,6 @@ var profileManager = {
         var list = [];
         for (var i = 0, el; el = elList[i]; i++) {
             var trackerObj = this.varCache.trackerList[el.dataset.id];
-            if (trackerObj.proxyIndex) {
-                list.push({id: trackerObj.id, proxyIndex: trackerObj.proxyIndex});
-                continue;
-            }
             list.push(trackerObj.id);
         }
         return list;
@@ -748,17 +705,6 @@ var profileManager = {
             trackerObj.select(!trackerObj.selected ? 1 : 0)
         });
 
-        this.domCache.extendView.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (this.classList.contains('checked')) {
-                profileManager.domCache.managerBody.classList.remove('extend');
-                this.classList.remove('checked');
-            } else {
-                profileManager.domCache.managerBody.classList.add('extend');
-                this.classList.add('checked');
-            }
-        });
-
         this.domCache.addCustomTrackerBtn.addEventListener('click', function(e) {
             e.preventDefault();
             var _this = this;
@@ -846,9 +792,6 @@ var profileManager = {
         this.domCache.trackerList.textContent = '';
         this.domCache.profileName.value = '';
         this.domCache.filterInput.dispatchEvent(new CustomEvent('dblclick'));
-        if (this.domCache.extendView.classList.contains('checked')) {
-            this.domCache.extendView.dispatchEvent(new CustomEvent('click', {cancelable: true}));
-        }
     },
     add: function() {
         "use strict";
