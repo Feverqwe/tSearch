@@ -704,7 +704,7 @@ mono.deepClone = function (origData, prepValue) {
         origData = prepValue(origData);
     }
 
-    if (typeof origData !== 'object' || origData === null) {
+    if (typeof origData !== 'object' || origData === null || origData instanceof RegExp) {
         return origData;
     }
 

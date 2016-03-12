@@ -244,6 +244,10 @@ var profileManager = {
 
                                                 delete diff.id;
 
+                                                if (Object.keys(diff).length === 0) {
+                                                    diff = undefined;
+                                                }
+
                                                 engine.extendTrackerList[origTrackerObj.id] = diff;
 
                                                 var storage = {
