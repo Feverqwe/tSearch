@@ -599,6 +599,17 @@ var exKit = {
         }
         return tracker.search.baseUrl + value;
     },
+    setUrlProxy: function(url, proxyIndex) {
+        "use strict";
+        var proxy = engine.settings.proxyList[proxyIndex - 1];
+        if (!proxy) {
+            return url;
+        }
+
+        url = proxy.url.replace('{url}', encodeURIComponent(url));
+
+        return url;
+    },
     matchSelector: function(result, details) {
         "use strict";
         var _this = this;
@@ -970,13 +981,23 @@ var exKit = {
             details.query = encodeURIComponent(details.query);
         }
 
-        var requestData = function() {
+        var profileTrackerSettings = engine.getProfileTrackerOptions(tracker.id);
+        var proxyIndex = profileTrackerSettings && profileTrackerSettings.proxyIndex || 0;
+
+        var requestData = function(forceProxyIndex) {
+            if (forceProxyIndex !== undefined) {
+                proxyIndex = forceProxyIndex;
+            }
+
             return new Promise(function (resolve, reject) {
                 Promise.resolve().then(function () {
                     var ajaxData = {
                         safe: true,
                         mimeType: tracker.search.requestMimeType,
                         dataType: tracker.search.requestDataType,
+                        changeUrl: proxyIndex > 0 && function (url, method) {
+                            return _this.setUrlProxy(url, proxyIndex);
+                        },
                         success: function (data, xhr) {
                             details.data = _this.contentFilter(data);
                             details.responseUrl = xhr.responseURL;
@@ -1030,7 +1051,32 @@ var exKit = {
             });
         };
 
-        requestData().catch(function (err) {
+
+        var onRequestDataCatch = function(err) {
+            if (!engine.settings.autoUseProxy || err !== 'Request error!') {
+                throw err;
+            }
+
+            var nextProxyIndex = null;
+            engine.settings.proxyList.slice(proxyIndex).some(function(item, index) {
+                if (tracker.search.requestType !== 'GET' && !item.supportPostMethod) {
+                    return;
+                }
+                if (tracker.search.requestType === 'GET' && !item.supportGetMethod) {
+                    return;
+                }
+                nextProxyIndex = index + 1;
+            });
+
+
+            if (nextProxyIndex === null) {
+                throw err;
+            }
+
+            return requestData(nextProxyIndex).catch(onRequestDataCatch);
+        };
+
+        requestData().catch(onRequestDataCatch).catch(function (err) {
             console.error('Search', tracker.id, err);
             if (err === 'Request aborted!') {
                 return;

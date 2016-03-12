@@ -11,7 +11,8 @@ var options = {
         restoreInp: document.getElementById('restoreInp'),
         langSelect: document.getElementById("language"),
         sectionList: document.querySelector('.sectionList'),
-        qualityList: document.querySelector('.qualityList')
+        qualityList: document.querySelector('.qualityList'),
+        proxyList: document.querySelector('.proxyList')
     },
 
     defaultSettings: {},
@@ -190,6 +191,140 @@ var options = {
                 this.domCache.restoreInp.value = storage.backup;
             }.bind(this));
         }.bind(this));
+    },
+    saveProxyList: function() {
+        "use strict";
+        mono.storage.set({proxyList: engine.settings.proxyList}, function() {
+            if (engine.settings.profileListSync) {
+                mono.storage.sync.set({proxyList: engine.settings.proxyList});
+            }
+        });
+    },
+    writeProxyList: function() {
+        "use strict";
+        this.domCache.proxyList.textContent = '';
+        mono.create(this.domCache.proxyList, {
+            append: (function() {
+                var list = [];
+                engine.settings.proxyList.forEach(function(item, index) {
+                    list.push(mono.create('div', {
+                        class: ['item'],
+                        append: [
+                            mono.create('label', {
+                                append: [
+                                    mono.create('span', {
+                                        text: mono.language.label
+                                    }),
+                                    ' ',
+                                    mono.create('input', {
+                                        type: 'text',
+                                        class: 'label',
+                                        value: item.label,
+                                        on: ['keyup', mono.debounce(function() {
+                                            item.label = this.value;
+                                            options.saveProxyList();
+                                        })]
+                                    }),
+                                    index === 0 ? undefined : mono.create('a', {
+                                        class: ['btn', 'delete'],
+                                        text: mono.language.delete,
+                                        href: '#',
+                                        on: ['click', function(e) {
+                                            e.preventDefault();
+                                            engine.settings.proxyList.splice(index, 1);
+                                            options.saveProxyList();
+                                            options.writeProxyList();
+                                        }]
+                                    })
+                                ]
+                            }),
+                            mono.create('label', {
+                                append: [
+                                    mono.create('span', {
+                                        text: 'URL:'
+                                    }),
+                                    mono.create('input', {
+                                        type: 'text',
+                                        class: 'url',
+                                        value: item.url,
+                                        on: ['keyup', mono.debounce(function() {
+                                            item.url = this.value;
+                                            options.saveProxyList();
+                                        })]
+                                    })
+                                ]
+                            }),
+                            mono.create('div', {
+                                append: [
+                                    mono.create('label', {
+                                        append: [
+                                            mono.create('input', {
+                                                type: 'checkbox',
+                                                data: {
+                                                    param: 'supportGetMethod'
+                                                },
+                                                checked: !!item.supportGetMethod
+                                            }),
+                                            mono.create('span', {
+                                                text: mono.language.supportGetMethod
+                                            })
+                                        ],
+                                        on: ['change', function(e) {
+                                            var el = e.target;
+                                            var key = el.dataset.param;
+                                            if (!key) {
+                                                return;
+                                            }
+                                            item[key] = el.checked ? 1 : 0;
+                                            options.saveProxyList();
+                                        }]
+                                    }),
+                                    mono.create('label', {
+                                        append: [
+                                            mono.create('input', {
+                                                type: 'checkbox',
+                                                data: {
+                                                    param: 'supportPostMethod'
+                                                },
+                                                checked: !!item.supportPostMethod
+                                            }),
+                                            mono.create('span', {
+                                                text: mono.language.supportPostMethod
+                                            })
+                                        ],
+                                        on: ['change', function(e) {
+                                            var el = e.target;
+                                            var key = el.dataset.param;
+                                            if (!key) {
+                                                return;
+                                            }
+                                            item[key] = el.checked ? 1 : 0;
+                                            options.saveProxyList();
+                                        }]
+                                    })
+                                ]
+                            })
+                        ]
+                    }));
+                });
+                list.push(mono.create('a', {
+                    class: 'add btn',
+                    href: '#',
+                    text: mono.language.add,
+                    on: ['click', function(e) {
+                        e.preventDefault();
+                        engine.settings.proxyList.push({
+                            label: 'new',
+                            url: '',
+                            type: 0
+                        });
+                        options.saveProxyList();
+                        options.writeProxyList();
+                    }]
+                }));
+                return list;
+            })()
+        });
     },
     writeQualityList: function() {
         "use strict";
@@ -726,6 +861,8 @@ var options = {
                 ]
             }));
         }.bind(this));
+
+        this.writeProxyList();
 
         mono.rmChildTextNodes(this.domCache.langSelect);
         this.domCache.langSelect.selectedIndex = this.domCache.langSelect.querySelector('[value="'+mono.language.langCode+'"]').index;

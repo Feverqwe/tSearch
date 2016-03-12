@@ -46,6 +46,10 @@ mono.ajax = function(obj) {
         url += (url.indexOf('?') === -1 ? '?' : '&') + nc;
     }
 
+    if (obj.changeUrl) {
+        url = obj.changeUrl(url, method);
+    }
+
     if (mono.isWebApp) {
         url = mono.wrapWebAppUrl(url);
     }

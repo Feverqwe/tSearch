@@ -181,7 +181,15 @@
     "notNow": {"message": "Not now"},
 
     "proxy": {"message": "Proxy requests"},
-    "proxyIsRemoved": {"message": "Proxy functions have been removed. To effectively use the bypass locks extensions such as the Data Saver or Toubro function in your browser."},
+
+    "supportPostMethod": {"message": "Support POST method"},
+    "supportGetMethod": {"message": "Support GET method"},
+
+    "requestContentVia": {"message": "Request content via:"},
+    "direct": {"message": "Direct"},
+    "autoUseProxy": {"message": "Use a proxy if a tracker is unavailable"},
+
+    "proxyInfo": {"message": "For effective bypass of locks, use extensions such as Data Saver or function Toubro in your browser."},
 
     "kitSearch": {"message": "Search"},
     "kitSelectors": {"message": "Selectors"},

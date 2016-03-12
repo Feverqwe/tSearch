@@ -148,10 +148,12 @@ var profileManager = {
 
         this.filterValueUpdate();
     },
-    getTrackerEl: function(trackerObj, selected, hasList, notFound) {
+    getTrackerEl: function(trackerObj, selected, hasList, notFound, proxyIndex) {
         "use strict";
+        var prevTrackerItem = this.varCache.trackerList[trackerObj.id] || {};
         var trackerItem = this.varCache.trackerList[trackerObj.id] = {};
         trackerItem.id = trackerObj.id;
+        trackerItem.proxyIndex = proxyIndex || prevTrackerItem.proxyIndex || 0;
         var classList = ['tracker-item'];
         if (selected) {
             trackerItem.selected = 1;
@@ -199,6 +201,28 @@ var profileManager = {
                         mono.create('div', {
                             class: 'extend',
                             append: [
+                                mono.language.requestContentVia,
+                                mono.create('select', {
+                                    name: 'proxyIndex',
+                                    append: (function(proxyList) {
+                                        proxyList = [{label: mono.language.direct}].concat(proxyList);
+                                        var list = [];
+                                        var option;
+                                        for (var i = 0, item; item = proxyList[i]; i++) {
+                                            list.push(option = mono.create('option', {
+                                                text: item.label,
+                                                value: i
+                                            }));
+                                        }
+                                        return list;
+                                    })(engine.settings.proxyList),
+                                    onCreate: function() {
+                                        this.selectedIndex = trackerItem.proxyIndex;
+                                    },
+                                    on: ['change', function(e) {
+                                        trackerItem.proxyIndex = parseInt(this.value);
+                                    }]
+                                }),
                                 mono.create('a', {
                                     class: ['act-btn', 'edit'],
                                     href: '#',
@@ -435,7 +459,7 @@ var profileManager = {
 
         var selected = el && el.classList.contains('selected');
 
-        var newEl = this.getTrackerEl(trackerObj, selected, hasList, notFound);
+        var newEl = this.getTrackerEl(trackerObj, selected, hasList, notFound, null);
 
         if (!el) {
             this.domCache.trackerList.appendChild(newEl);
@@ -454,10 +478,12 @@ var profileManager = {
             append: function() {
                 var list = [];
                 var hasIdList = [];
-                var trackerItem, trackerId, selected, hasList, notFound, i;
+                var trackerItem, trackerId, selected, hasList, notFound, i, proxyIndex;
                 for (i = 0; trackerItem = trackerList[i]; i++) {
                     trackerId = trackerItem;
+                    proxyIndex = 0;
                     if (typeof trackerId === 'object') {
+                        proxyIndex = trackerId.proxyIndex || 0;
                         trackerId = trackerId.id;
                     }
                     hasIdList.push(trackerId);
@@ -472,7 +498,7 @@ var profileManager = {
                         selected = this.trackerInProfile(trackerList, trackerObj.id);
                         notFound = false;
                     }
-                    list.push(this.getTrackerEl(trackerObj, selected, hasList, notFound));
+                    list.push(this.getTrackerEl(trackerObj, selected, hasList, notFound, proxyIndex));
                 }
                 for (trackerId in engine.trackerLib) {
                     if (hasIdList.indexOf(trackerId) !== -1) {
@@ -483,7 +509,7 @@ var profileManager = {
                     trackerObj = engine.trackerLib[trackerId];
                     hasList = this.trackerInList(trackerObj);
                     selected = this.trackerInProfile(trackerList, trackerObj.id);
-                    list.push(this.getTrackerEl(trackerObj, selected, hasList, null));
+                    list.push(this.getTrackerEl(trackerObj, selected, hasList, null, null));
                 }
                 return list;
             }.call(this)
@@ -496,6 +522,9 @@ var profileManager = {
         for (var i = 0, el; el = elList[i]; i++) {
             var trackerObj = this.varCache.trackerList[el.dataset.id];
             var trackerListItem = {id: trackerObj.id};
+            if (trackerObj.proxyIndex) {
+                trackerListItem.proxyIndex = trackerObj.proxyIndex;
+            }
             list.push(trackerListItem);
         }
         return list;

@@ -21,11 +21,15 @@ var engine = {
         hideTopSearch: 0,
         trackerListHeight: 200,
         profileListSync: 0,
+        proxyList: [
+            {label: 'Google user content', url: 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?url={url}&container=pos', supportGetMethod: true}
+        ],
         calcSeedCount: 1,
         langCode: undefined,
         sortColumn: 'quality',
         sortOrder: 0,
-        invertIcon: 0
+        invertIcon: 0,
+        autoUseProxy: 1
     },
     settings: {},
     defaultExplorerOptions: [
@@ -45,6 +49,7 @@ var engine = {
     explorerOptions: [],
     profileList: {},
     profileArr: [],
+    profileTrackerList: {},
     currentProfile: undefined,
     history: [],
     topList: {},
@@ -111,15 +116,29 @@ var engine = {
         engine.currentProfile = currentProfile;
     },
 
+    getProfileTrackerOptions: function(trackerId) {
+        "use strict";
+        return engine.profileTrackerList[trackerId];
+    },
+
     prepareTrackerList: function(profileName, cb) {
         "use strict";
         var trackerList = [];
         var _trackerList = engine.profileList[profileName];
+
+        var profileTrackerList = engine.profileTrackerList;
+        Object.keys(profileTrackerList).forEach(function(key) {
+            delete profileTrackerList[key];
+        });
+
+
         for (var i = 0, item; item = _trackerList[i]; i++) {
             var trackerId = item;
             if (typeof trackerId === 'object') {
                 trackerId = item.id;
+                profileTrackerList[item.id] = item;
             }
+
             var tracker = engine.trackerLib[trackerId];
             if (!tracker) {
                 continue;
@@ -242,6 +261,19 @@ var engine = {
                         settings[key] = defaultSettings[key];
                     }
                 });
+
+                if (Array.isArray(settings.proxyList)) {
+                    settings.proxyList = settings.proxyList.filter(function (item) {
+                        if (item.type && item.type > 0) {
+                            return false;
+                        }
+                        delete item.type;
+                        if (!item.hasOwnProperty('supportGetMethod')) {
+                            item.supportGetMethod = true;
+                        }
+                        return true;
+                    });
+                }
 
                 !settings.doNotSendStatistics && _this.initCounter();
 
