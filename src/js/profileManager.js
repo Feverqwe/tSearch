@@ -210,29 +210,33 @@ var profileManager = {
                                         var _this = profileManager;
 
                                         var editor = null;
+                                        var origTrackerObj = engine.origTrackerLib[trackerObj.id] || engine.trackerLib[trackerObj.id];
 
                                         var layer = new mono.Layer({
                                             title: mono.language.editing,
                                             onSave: function() {
                                                 var json = editor.get();
-                                                var diff = mono.diffObj(trackerObj, json, ['[Function]']);
+                                                var diff = mono.diffObj(origTrackerObj, json, ['[Function]']);
 
                                                 delete diff.id;
 
-                                                trackerItem.extend = diff;
+                                                engine.extendTrackerList[origTrackerObj.id] = diff;
 
-                                                _this.updateTrackerItem(trackerObj.id);
+                                                var storage = {
+                                                    extendTrackerList: engine.extendTrackerList
+                                                };
+
+                                                mono.storage.set(storage, function() {
+                                                    if (engine.settings.profileListSync) {
+                                                        mono.storage.sync.set(storage);
+                                                    }
+                                                });
+
+                                                exKit.extendTrackerLib();
+
+                                                _this.updateTrackerItem(origTrackerObj.id);
                                             }
                                         });
-
-                                        if (!define.amd['jsoneditor']) {
-                                            document.body.appendChild(mono.create('link', {
-                                                rel: 'stylesheet',
-                                                type: 'text/css',
-                                                href: 'css/jsoneditor.min.css'
-                                            }));
-                                            document.body.appendChild(mono.create('script', {src: 'js/jsoneditor.min.js'}));
-                                        }
 
                                         mono.create(layer.blocks.head, {
                                             style: {
@@ -247,7 +251,7 @@ var profileManager = {
                                                     text: 'Reset',
                                                     class: ['btn', 'reset'],
                                                     on: ['click', function() {
-                                                        var json = mono.deepClone(trackerObj, function(value) {
+                                                        var json = mono.deepClone(origTrackerObj, function(value) {
                                                             if (typeof value === 'function') {
                                                                 return '[Function]';
                                                             }
@@ -261,14 +265,11 @@ var profileManager = {
                                         });
 
                                         define.on('jsoneditor', function() {
-
                                             var options = {};
 
                                             editor = new JSONEditor(layer.blocks.body, options);
 
-                                            var _trackerObj = exKit.prepareTracker(mono.deepClone(trackerObj), trackerItem.extend);
-
-                                            var json = mono.deepClone(_trackerObj, function(value) {
+                                            var json = mono.deepClone(trackerObj, function(value) {
                                                 if (typeof value === 'function') {
                                                     return '[Function]';
                                                 }
@@ -277,8 +278,17 @@ var profileManager = {
 
                                             editor.set(json);
 
-                                            return layer.show();
+                                            layer.show();
                                         });
+
+                                        if (!define.amd['jsoneditor']) {
+                                            document.body.appendChild(mono.create('link', {
+                                                rel: 'stylesheet',
+                                                type: 'text/css',
+                                                href: 'css/jsoneditor.min.css'
+                                            }));
+                                            document.body.appendChild(mono.create('script', {src: 'js/jsoneditor.min.js'}));
+                                        }
                                     }]
                                 })
                             ]

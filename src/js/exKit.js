@@ -1110,6 +1110,25 @@ var exKit = {
         }
         svg += btoa(data);
         return svg;
+    },
+    extendTrackerLib: function() {
+        "use strict";
+        Object.keys(engine.origTrackerLib).forEach(function(trackerId) {
+            engine.trackerLib[trackerId] = engine.origTrackerLib[trackerId];
+            delete engine.origTrackerLib[trackerId];
+        });
+
+        Object.keys(engine.extendTrackerList).forEach(function(trackerId) {
+            var trackerObj = engine.trackerLib[trackerId];
+
+            var extendObj = engine.extendTrackerList[trackerId];
+            if (!trackerObj || !extendObj) {
+                return;
+            }
+
+            engine.origTrackerLib[trackerId] = trackerObj;
+            engine.trackerLib[trackerId] = mono.merge(mono.deepClone(trackerObj), extendObj);
+        });
     }
 };
 exKit.funcList.dateFormat = exKit.legacy.dateFormat.bind(exKit.legacy);

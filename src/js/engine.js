@@ -40,6 +40,8 @@ var engine = {
         {type: 'gg_games_top',   enable: 1, show: 1, width: 100, lineCount: 1, lang: 'ggGamesTop'},  //8
         {type: 'gg_games_new',   enable: 1, show: 1, width: 100, lineCount: 1, lang: 'ggGamesNew'}   //9
     ],
+
+    extendTrackerList: {},
     explorerOptions: [],
     profileList: {},
     profileArr: [],
@@ -192,6 +194,7 @@ var engine = {
         var optionsList = Object.keys(defaultSettings).concat([
             'profileList',
             'customTorrentList',
+            'extendTrackerList',
             'searchHistory',
             'currentProfile',
             'explorerOptions',
@@ -267,6 +270,11 @@ var engine = {
                     }
                 }
 
+                if (typeof storage.extendTrackerList === 'object') {
+                    _this.extendTrackerList = storage.extendTrackerList;
+                    exKit.extendTrackerLib();
+                }
+
                 if (typeof storage.topList === 'object') {
                     _this.topList = storage.topList;
                 }
@@ -336,5 +344,6 @@ var engine = {
     exploreCache: {},
     explorerQualityList: {},
 
-    trackerLib: {}
+    trackerLib: {},
+    origTrackerLib: {}
 };
