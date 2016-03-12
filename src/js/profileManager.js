@@ -148,10 +148,12 @@ var profileManager = {
 
         this.filterValueUpdate();
     },
-    getTrackerEl: function(trackerObj, selected, hasList, notFound) {
+    getTrackerEl: function(trackerObj, selected, hasList, notFound, extend) {
         "use strict";
+        var prevTrackerItem = this.varCache.trackerList[trackerObj.id] || {};
         var trackerItem = this.varCache.trackerList[trackerObj.id] = {};
         trackerItem.id = trackerObj.id;
+        trackerItem.extend = extend || prevTrackerItem.extend;
         var classList = ['tracker-item'];
         if (selected) {
             trackerItem.selected = 1;
@@ -169,6 +171,17 @@ var profileManager = {
 
         notFound && classList.push('not-found');
 
+        var vTrackerObj = {
+            icon: trackerObj.icon,
+            title: trackerObj.title,
+            desc: trackerObj.desc,
+            search: {
+                baseUrl: trackerObj.search.baseUrl
+            }
+        };
+
+        mono.merge(vTrackerObj, trackerItem.extend || {});
+
         trackerItem.el = mono.create('div', {
             class: classList,
             data: {
@@ -182,9 +195,9 @@ var profileManager = {
                 mono.create('div', {
                     class: 'title',
                     append: mono.create('a', {
-                        title: trackerObj.title,
-                        text: trackerObj.title,
-                        href: trackerObj.search.baseUrl,
+                        title: vTrackerObj.title,
+                        text: vTrackerObj.title,
+                        href: vTrackerObj.search.baseUrl,
                         target: '_blank'
                     })
                 }),
@@ -193,8 +206,8 @@ var profileManager = {
                     append: [
                         mono.create('div', {
                             class: 'text',
-                            text: trackerObj.desc,
-                            title: trackerObj.desc
+                            text: vTrackerObj.desc,
+                            title: vTrackerObj.desc
                         }),
                         mono.create('div', {
                             class: 'extend',
@@ -207,10 +220,78 @@ var profileManager = {
                                         e.preventDefault();
                                         e.stopPropagation();
 
+                                        var _this = profileManager;
+
+                                        var editor = null;
+
                                         var layer = new mono.Layer({
-                                            title: mono.language.editing
+                                            title: mono.language.editing,
+                                            onSave: function() {
+                                                var json = editor.get();
+                                                var diff = mono.diffObj(trackerObj, json, ['[Function]']);
+
+                                                delete diff.id;
+
+                                                trackerItem.extend = diff;
+
+                                                _this.updateTrackerItem(trackerObj.id);
+                                            }
                                         });
-                                        return layer.show();
+
+                                        if (!define.amd['jsoneditor']) {
+                                            document.body.appendChild(mono.create('link', {
+                                                rel: 'stylesheet',
+                                                type: 'text/css',
+                                                href: 'css/jsoneditor.min.css'
+                                            }));
+                                            document.body.appendChild(mono.create('script', {src: 'js/jsoneditor.min.js'}));
+                                        }
+
+                                        mono.create(layer.blocks.head, {
+                                            style: {
+                                                backgroundColor: '#3883fa',
+                                                color: '#fff'
+                                            }
+                                        });
+
+                                        mono.create(layer.blocks.footer, {
+                                            append: [
+                                                mono.create('a', {
+                                                    text: 'Reset',
+                                                    class: ['btn', 'reset'],
+                                                    on: ['click', function() {
+                                                        var json = mono.deepClone(trackerObj, function(value) {
+                                                            if (typeof value === 'function') {
+                                                                return '[Function]';
+                                                            }
+                                                            return value;
+                                                        });
+
+                                                        editor.set(json);
+                                                    }]
+                                                })
+                                            ]
+                                        });
+
+                                        define.on('jsoneditor', function() {
+
+                                            var options = {};
+
+                                            editor = new JSONEditor(layer.blocks.body, options);
+
+                                            var _trackerObj = exKit.prepareTracker(mono.deepClone(trackerObj), trackerItem.extend);
+
+                                            var json = mono.deepClone(_trackerObj, function(value) {
+                                                if (typeof value === 'function') {
+                                                    return '[Function]';
+                                                }
+                                                return value;
+                                            });
+
+                                            editor.set(json);
+
+                                            return layer.show();
+                                        });
                                     }]
                                 })
                             ]
@@ -357,7 +438,7 @@ var profileManager = {
 
         var selected = el && el.classList.contains('selected');
 
-        var newEl = this.getTrackerEl(trackerObj, selected, hasList, notFound);
+        var newEl = this.getTrackerEl(trackerObj, selected, hasList, notFound, null);
 
         if (!el) {
             this.domCache.trackerList.appendChild(newEl);
@@ -370,16 +451,18 @@ var profileManager = {
     },
     writeTrackerList: function(profileName) {
         "use strict";
-        var currentProfile = engine.profileList[profileName] || [];
+        var trackerList = engine.profileList[profileName] || [];
         this.domCache.trackerList.textContent = '';
         mono.create(this.domCache.trackerList, {
             append: function() {
                 var list = [];
                 var hasIdList = [];
-                var trackerItem, trackerId, selected, hasList, notFound, i;
-                for (i = 0; trackerItem = currentProfile[i]; i++) {
+                var trackerItem, trackerId, selected, hasList, notFound, i, extend;
+                for (i = 0; trackerItem = trackerList[i]; i++) {
                     trackerId = trackerItem;
+                    extend = null;
                     if (typeof trackerId === 'object') {
+                        extend = trackerId.extend;
                         trackerId = trackerId.id;
                     }
                     hasIdList.push(trackerId);
@@ -391,10 +474,10 @@ var profileManager = {
                         notFound = true;
                     } else {
                         hasList = this.trackerInList(trackerObj);
-                        selected = this.trackerInProfile(currentProfile, trackerObj.id);
+                        selected = this.trackerInProfile(trackerList, trackerObj.id);
                         notFound = false;
                     }
-                    list.push(this.getTrackerEl(trackerObj, selected, hasList, notFound));
+                    list.push(this.getTrackerEl(trackerObj, selected, hasList, notFound, extend));
                 }
                 for (trackerId in engine.trackerLib) {
                     if (hasIdList.indexOf(trackerId) !== -1) {
@@ -404,8 +487,8 @@ var profileManager = {
 
                     trackerObj = engine.trackerLib[trackerId];
                     hasList = this.trackerInList(trackerObj);
-                    selected = this.trackerInProfile(currentProfile, trackerObj.id);
-                    list.push(this.getTrackerEl(trackerObj, selected, hasList));
+                    selected = this.trackerInProfile(trackerList, trackerObj.id);
+                    list.push(this.getTrackerEl(trackerObj, selected, hasList, null, null));
                 }
                 return list;
             }.call(this)
@@ -830,6 +913,7 @@ var profileManager = {
         this.varCache.currentProfileName = undefined;
         this.domCache.trackerList.textContent = '';
         this.domCache.profileName.value = '';
+        this.varCache.trackerList = {};
         this.domCache.filterInput.dispatchEvent(new CustomEvent('dblclick'));
         if (this.domCache.extendView.classList.contains('checked')) {
             this.domCache.extendView.dispatchEvent(new CustomEvent('click', {cancelable: true}));

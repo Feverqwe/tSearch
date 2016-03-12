@@ -25,7 +25,8 @@ module.exports = function (grunt) {
         'selectBox.js',
         'view.js',
         'bluebird.min.js',
-        'magic.js'
+        'magic.js',
+        'jsoneditor.min.js'
     ];
     var engineJsList = [
         'engine.js',

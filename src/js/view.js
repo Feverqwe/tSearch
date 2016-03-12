@@ -2190,6 +2190,11 @@ var define = function(name, deps, callback) {
             type = 'promise';
             amd[type] = true;
             window.Promise = r;
+        } else
+        if (r.registerMode) {
+            type = 'jsoneditor';
+            amd[type] = true;
+            window.JSONEditor = r;
         }
     }
 
@@ -2200,6 +2205,7 @@ define.stackList = [];
 define.stack = function() {
     "use strict";
     var rmList = [];
+    var cbList = [];
     define.stackList.forEach(function(item) {
         var list = item[0];
         var cb = item[1];
@@ -2210,12 +2216,15 @@ define.stack = function() {
 
         if (isReady) {
             rmList.push(item);
-            return cb();
+            cbList.push(cb);
         }
     });
     rmList.forEach(function(item) {
         var index = define.stackList.indexOf(item);
         define.stackList.splice(index, 1);
+    });
+    cbList.forEach(function(fn) {
+        fn();
     });
 };
 define.on = function(list, cb) {

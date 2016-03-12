@@ -694,8 +694,12 @@ mono.hashParseParam = function(string) {
     return params;
 };
 
-mono.deepClone = function (origData) {
+mono.deepClone = function (origData, prepValue) {
     "use strict";
+    if (prepValue) {
+        origData = prepValue(origData);
+    }
+
     if (typeof origData !== 'object' || origData === null) {
         return origData;
     }
@@ -705,7 +709,7 @@ mono.deepClone = function (origData) {
         var len = origData.length;
         data = new Array(len);
         for (var i = 0; i < len; i++) {
-            data[i] = this.deepClone(origData[i]);
+            data[i] = this.deepClone(origData[i], prepValue);
         }
         return data;
     }
@@ -715,9 +719,61 @@ mono.deepClone = function (origData) {
         if (!origData.hasOwnProperty(key)) {
             continue;
         }
-        data[key] = this.deepClone(origData[key]);
+        data[key] = this.deepClone(origData[key], prepValue);
     }
     return data;
+};
+
+mono.diffObj = function(origData, changeData, skipValue) {
+    "use strict";
+    if (skipValue) {
+        if (skipValue.indexOf(changeData) !== -1) {
+            return;
+        }
+    }
+
+    if (origData === changeData) {
+        return;
+    }
+
+    if (typeof origData !== 'object' || origData === null) {
+        return changeData;
+    }
+
+    if (Array.isArray(origData) && Array.isArray(changeData)) {
+        var isEq = !origData.some(function(value, index) {
+            return value !== changeData[index];
+        });
+        if (isEq) {
+            return;
+        }
+    }
+
+    var diff = {};
+    var value = null;
+
+    Object.keys(origData).forEach(function(item) {
+        if (!changeData.hasOwnProperty(item)) {
+            changeData[item] = null;
+        }
+    });
+
+    for (var key in changeData) {
+        if (!changeData.hasOwnProperty(key)) {
+            continue;
+        }
+        value = this.diffObj(origData[key], changeData[key], skipValue);
+        if (typeof value === 'object' && value !== null) {
+            if (!Array.isArray(value) && Object.keys(value).length === 0) {
+                value = undefined;
+            }
+        }
+        if (value !== undefined) {
+            diff[key] = value;
+        }
+    }
+
+    return diff;
 };
 
 mono.merge = function(origData, mergeData) {

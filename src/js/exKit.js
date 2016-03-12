@@ -537,7 +537,7 @@ var exKit = {
         }
 
         if (extend) {
-            tracker = mono.merge(mono.deepClone(tracker));
+            tracker = mono.merge(mono.deepClone(tracker), extend);
         }
 
         return tracker;
