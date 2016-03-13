@@ -12,10 +12,10 @@ engine.trackerLib.rutor = {
         cyrillic: 1
     },
     search: {
-        blankUrl: 'http://zerkalo-rutor.org/browse/',
-        wordUrl: 'http://zerkalo-rutor.org/search/0/0/100/0/%search%',
-        searchUrl: 'http://zerkalo-rutor.org/search/0/0/100/0/%search%',
-        baseUrl: 'http://zerkalo-rutor.org/',
+        blankUrl: 'http://rutor.info/browse/',
+        wordUrl: 'http://rutor.info/search/0/0/100/0/%search%',
+        searchUrl: 'http://rutor.info/search/0/0/100/0/%search%',
+        baseUrl: 'http://rutor.info/',
         requestType: 'GET',
         onBeforeRequest: function (details) {
             "use strict";

@@ -12,9 +12,9 @@ engine.trackerLib.riperam = {
         cyrillic: 1
     },
     search: {
-        loginUrl: 'http://www.riper.am/ucp.php?mode=login',
-        searchUrl: 'http://www.riper.am/search.php',
-        baseUrl: 'http://www.riper.am/',
+        loginUrl: 'http://riperam.org/ucp.php?mode=login',
+        searchUrl: 'http://riperam.org/search.php',
+        baseUrl: 'http://riperam.org/',
         requestType: 'GET',
         onAfterRequest: function (details) {
             "use strict";
