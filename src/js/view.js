@@ -2179,6 +2179,11 @@ var define = function(name, deps, callback) {
         });
         return;
     } else
+    if (name === 'ace') {
+        amd[type] = true;
+
+        define.stack(type);
+    } else
     if (!name && deps.toString() === 'jquery') {
         callback(jQuery);
         type = 'jqueryui';

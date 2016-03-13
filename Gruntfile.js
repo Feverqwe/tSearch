@@ -26,7 +26,8 @@ module.exports = function (grunt) {
         'view.js',
         'bluebird.min.js',
         'magic.js',
-        'jsoneditor.min.js'
+        'jsoneditor.min.js',
+        'ace/**'
     ];
     var engineJsList = [
         'engine.js',
@@ -203,7 +204,7 @@ module.exports = function (grunt) {
 
         var fileList = grunt.file.expand(grunt.template.process('<%= output %><%= vendor %>') + '**/*.js');
         fileList = fileList.filter(function(path) {
-            if (/\.min\.js$/.test(path)) {
+            if (/\.min\.js$/.test(path) || /\/js\/ace\//.test(path)) {
                 return false;
             }
             return true;

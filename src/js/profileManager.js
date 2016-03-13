@@ -233,13 +233,37 @@ var profileManager = {
 
                                         var _this = profileManager;
 
-                                        var editor = null;
+                                        var jsonEditor = null;
+                                        var aceEditor = null;
+                                        var jsonEditorCtr = null;
+                                        var aceEditorCtr = null;
+
+                                        var setJson = function(json) {
+                                            if (jsonEditorCtr.dataset.isHidden === '1') {
+                                                aceEditor.setValue(JSON.stringify(json, null, 2));
+                                            } else {
+                                                jsonEditor.set(json);
+                                            }
+                                        };
+
+                                        var getJson = function() {
+                                            var json = {};
+                                            if (jsonEditorCtr.dataset.isHidden === '1') {
+                                                try {
+                                                    json = JSON.parse(aceEditor.getValue());
+                                                } catch (e) {}
+                                            } else {
+                                                json = jsonEditor.get();
+                                            }
+                                            return json;
+                                        };
+
                                         var origTrackerObj = engine.origTrackerLib[trackerObj.id] || engine.trackerLib[trackerObj.id];
 
                                         var layer = new mono.Layer({
                                             title: mono.language.editing,
                                             onSave: function() {
-                                                var json = editor.get();
+                                                var json = getJson();
                                                 var diff = mono.diffObj(origTrackerObj, json, ['[Function]']);
 
                                                 delete diff.id;
@@ -278,7 +302,10 @@ var profileManager = {
                                                 mono.create('a', {
                                                     text: mono.language.reset,
                                                     class: ['btn', 'reset'],
-                                                    on: ['click', function() {
+                                                    href: '#',
+                                                    on: ['click', function(e) {
+                                                        e.preventDefault();
+
                                                         var json = mono.deepClone(origTrackerObj, function(value) {
                                                             if (typeof value === 'function') {
                                                                 return '[Function]';
@@ -286,7 +313,7 @@ var profileManager = {
                                                             return value;
                                                         });
 
-                                                        editor.set(json);
+                                                        return setJson(json);
                                                     }]
                                                 })
                                             ]
@@ -295,7 +322,13 @@ var profileManager = {
                                         define.on('jsoneditor', function() {
                                             var options = {};
 
-                                            editor = new JSONEditor(layer.blocks.body, options);
+                                            var container = jsonEditorCtr = mono.create('div', {
+                                                id: 'JSONEditor'
+                                            });
+
+                                            layer.blocks.body.appendChild(container);
+
+                                            jsonEditor = new JSONEditor(container, options);
 
                                             var json = mono.deepClone(trackerObj, function(value) {
                                                 if (typeof value === 'function') {
@@ -304,9 +337,64 @@ var profileManager = {
                                                 return value;
                                             });
 
-                                            editor.set(json);
+                                            setJson(json);
 
-                                            layer.show();
+                                            return layer.show();
+                                        });
+
+                                        define.on('ace', function() {
+                                            mono.create(layer.blocks.footer, {
+                                                append: [
+                                                    mono.create('a', {
+                                                        text: '{ }',
+                                                        class: ['btn', 'ace'],
+                                                        href: '#',
+                                                        style: {
+                                                            padding: '0 10px',
+                                                            marginLeft: '10px'
+                                                        },
+                                                        on: ['click', function(e) {
+                                                            e.preventDefault();
+
+                                                            var json = getJson();
+                                                            if (jsonEditorCtr.dataset.isHidden === '1') {
+                                                                jsonEditor.set(json);
+
+                                                                aceEditorCtr.style.display = 'none';
+                                                                jsonEditorCtr.style.display = 'block';
+                                                                jsonEditorCtr.dataset.isHidden = '0';
+                                                            } else {
+                                                                aceEditor.setValue(JSON.stringify(json, null, 2));
+
+                                                                jsonEditorCtr.style.display = 'none';
+                                                                aceEditorCtr.style.display = 'block';
+                                                                jsonEditorCtr.dataset.isHidden = '1';
+                                                            }
+                                                        }]
+                                                    })
+                                                ]
+                                            });
+
+                                            var container = aceEditorCtr = mono.create('div', {
+                                                class: 'aceEditor',
+                                                style: {
+                                                    display: 'none',
+                                                    position: 'absolute',
+                                                    width: '700px',
+                                                    height: '490px',
+                                                    fontSize: '10pt',
+                                                    fontFamily: 'droid sans mono,consolas,monospace,courier new,courier,sans-serif;'
+                                                }
+                                            });
+
+                                            layer.blocks.body.appendChild(container);
+
+                                            aceEditor = ace.edit(container);
+                                            aceEditor.$blockScrolling = Infinity;
+                                            aceEditor.setTheme("ace/theme/chrome");
+                                            aceEditor.getSession().setOption("useWorker", false);
+                                            aceEditor.getSession().setMode("ace/mode/json");
+                                            aceEditor.getSession().setUseWrapMode(true);
                                         });
 
                                         if (!define.amd['jsoneditor']) {
@@ -316,6 +404,20 @@ var profileManager = {
                                                 href: 'css/jsoneditor.min.css'
                                             }));
                                             document.body.appendChild(mono.create('script', {src: 'js/jsoneditor.min.js'}));
+                                        }
+
+                                        if (!define.amd['ace']) {
+                                            document.body.appendChild(mono.create('script', {src: 'js/ace/ace.js'}));
+                                            (function wait(limit) {
+                                                setTimeout(function() {
+                                                    if (window.ace) {
+                                                        define('ace');
+                                                    } else
+                                                    if (limit > 0) {
+                                                        return wait(--limit);
+                                                    }
+                                                }, 250);
+                                            })(30 * 4 * 1000);
                                         }
                                     }]
                                 })
