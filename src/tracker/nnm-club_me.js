@@ -26,8 +26,8 @@ engine.trackerLib['nnm-club'] = {
         humor: [610, 613, 612, 655, 654, 611, 656, 399, 400]
     },
     search: {
-        searchUrl: 'http://nnm-club.me/forum/tracker.php',
-        baseUrl: 'http://nnm-club.me/forum/',
+        searchUrl: 'http://nnmclub.to/forum/tracker.php',
+        baseUrl: 'http://nnmclub.to/forum/',
         requestType: 'GET',
         requestData: 'nm=%search%&f=-1',
         requestMimeType: 'text/html; charset=windows-1251',
