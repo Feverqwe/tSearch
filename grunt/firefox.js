@@ -149,6 +149,10 @@ exports.run = function (grunt) {
         var vendor = grunt.template.process('<%= output %><%= vendor %>../');
         var buildPath = grunt.config('sigFile');
 
+        if (!grunt.file.exists(buildPath)) {
+            return;
+        }
+
         var fs = require('fs');
         var crypto = require('crypto');
 
