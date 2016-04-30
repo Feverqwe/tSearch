@@ -26,7 +26,7 @@ engine.trackerLib['rutracker'] = {
         humor: [24, 1959, 939, 1481, 113, 115, 882, 1482, 393, 1569, 373, 1186, 137, 2537, 1321, 532, 979, 827, 1484, 1485, 114, 1332, 1495]
     },
     search: {
-        loginUrl: 'https://login.rutracker.org/forum/login.php',
+        loginUrl: 'https://rutracker.org/forum/login.php',
         loginFormSelector: '#login-form',
         searchUrl: 'https://rutracker.org/forum/tracker.php',
         nextPageSelector: {selector: 'div.nav>p:eq(1)>a.pg:eq(-1)', attr: 'href'},

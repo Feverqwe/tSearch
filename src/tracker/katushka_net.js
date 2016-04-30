@@ -56,15 +56,15 @@ engine.trackerLib.katushka = {
             categoryTitle: {selector: 'td.start>a', attr: 'title'},
             categoryUrl: {selector: 'td.start>a', attr: 'href'},
             categoryId: {selector: 'td.start>a', attr: 'href'},
-            title: 'td.name>div.torr_name>a:eq(1)',
-            url: {selector: 'td.name>div.torr_name>a:eq(1)', attr: 'href'},
+            title: 'td.name>div.torr_name>a',
+            url: {selector: 'td.name>div.torr_name>a', attr: 'href'},
             date: 'td.name>div.date'
         },
-        listItemSelectorGallery: 'div.content.after_clear>div.torr_block',
+        listItemSelectorGallery: 'div.panel.torrents_list>div>div',
         torrentSelectorGallery: {
             categoryTitle: 'div.descr>div.tags',
-            title: 'div.descr>div.torr_name>a:eq(1)',
-            url: {selector: 'div.descr>div.torr_name>a:eq(1)', attr: 'href'}
+            title: 'div.descr>div.torr_name>a',
+            url: {selector: 'div.descr>div.torr_name>a', attr: 'href'}
         },
         onGetValue: {
             categoryId: function (details, url) {
