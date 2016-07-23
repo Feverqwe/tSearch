@@ -71,11 +71,9 @@ var bg = {
     },
     updateBtnAction: function() {
         "use strict";
-        if (mono.isChrome && !mono.isChromeWebApp) {
-            chrome.browserAction.setPopup({
-                popup: bg.settings.searchPopup ? 'popup.html' : ''
-            });
-        }
+        chrome.browserAction.setPopup({
+            popup: bg.settings.searchPopup ? 'popup.html' : ''
+        });
     },
     ffContextMenu: null,
     chromeUpdateContextMenu: function() {
@@ -201,16 +199,14 @@ var bg = {
                     selected: true
                 });
             });
-            if (!mono.isChromeWebApp) {
-                chrome.browserAction.onClicked.addListener(function () {
-                    if (bg.settings.searchPopup) {
-                        return;
-                    }
-                    chrome.tabs.create({
-                        url: 'index.html'
-                    });
+            chrome.browserAction.onClicked.addListener(function () {
+                if (bg.settings.searchPopup) {
+                    return;
+                }
+                chrome.tabs.create({
+                    url: 'index.html'
                 });
-            }
+            });
         }
         bg.run();
     },

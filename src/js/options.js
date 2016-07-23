@@ -816,10 +816,6 @@ var options = {
             document.querySelector('input[data-option="profileListSync"]').parentNode.style.display = 'none';
         }
 
-        if ((!mono.isChrome || mono.isChrome && mono.isChromeWebApp) && !mono.isFF) {
-            document.querySelector('input[data-option="invertIcon"]').parentNode.style.display = 'none';
-        }
-
         if (mono.language.langCode !== 'ru') {
             document.querySelector('input[data-option="useEnglishPosterName"]').parentNode.style.display = 'none';
         }
