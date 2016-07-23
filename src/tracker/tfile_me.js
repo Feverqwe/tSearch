@@ -26,10 +26,10 @@ engine.trackerLib.tfile = {
         humor: []
     },
     search: {
-        loginUrl: 'http://tfile.me',
-        searchUrl: 'http://tfile.me/forum/ssearch.php',
+        loginUrl: 'http://tfile.co',
+        searchUrl: 'http://tfile.co/forum/ssearch.php',
         nextPageSelector: {selector: '.pagination a.next', attr: 'href'},
-        baseUrl: 'http://tfile.me/forum/',
+        baseUrl: 'http://tfile.co/forum/',
         requestType: 'GET',
         requestData: 'q=%search%',
         onBeforeRequest: function (details) {

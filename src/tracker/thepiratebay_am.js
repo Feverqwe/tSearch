@@ -27,9 +27,9 @@ engine.trackerLib.thepiratebay = {
     },
     search: {
         mode: '',
-        searchUrl: 'https://thepiratebay.se/search/%search%/0/99/0',
+        searchUrl: 'https://thepiratebay.org/search/%search%/0/99/0',
         nextPageSelector: {selector: '#main-content+div a:eq(-1)', attr: 'href'},
-        baseUrl: 'https://thepiratebay.se/',
+        baseUrl: 'https://thepiratebay.org/',
         requestType: 'GET',
         onAfterDomParse: function (details) {
             "use strict";
