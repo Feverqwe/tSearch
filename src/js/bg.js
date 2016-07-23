@@ -61,15 +61,13 @@ var bg = {
                 64: './icons/icon-64' + prefix + '.png'
             };
         }
-        if (mono.isChrome && !mono.isChromeWebApp) {
-            prefix = bg.settings.invertIcon ? '_i' : '';
-            chrome.browserAction.setIcon({
-                path: {
-                    19: 'img/icon_19' + prefix + '.png',
-                    38: 'img/icon_38' + prefix + '.png'
-                }
-            });
-        }
+        prefix = bg.settings.invertIcon ? '_i' : '';
+        chrome.browserAction.setIcon({
+            path: {
+                19: 'img/icon_19' + prefix + '.png',
+                38: 'img/icon_38' + prefix + '.png'
+            }
+        });
     },
     updateBtnAction: function() {
         "use strict";
@@ -80,43 +78,29 @@ var bg = {
         }
     },
     ffContextMenu: null,
-    checkExtExists: function(cb) {
-        "use strict";
-        if (!mono.isChromeWebApp) {
-            return cb();
-        }
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'chrome-extension://ngcldkkokhibdmeamidppdknbhegmhdh/img/icon_16.png', true);
-        xhr.onerror = function() {
-            cb();
-        };
-        xhr.send();
-    },
     chromeUpdateContextMenu: function() {
         "use strict";
         chrome.contextMenus.removeAll(function () {
             if (!bg.settings.contextMenu) {
                 return;
             }
-            bg.checkExtExists(function() {
-                chrome.contextMenus.create({
-                    type: "normal",
-                    id: "item",
-                    title: mono.language.ctxMenuTitle,
-                    contexts: ["selection"],
-                    onclick: function (info) {
-                        var request = info.selectionText;
-                        if (request) {
-                            request = '#?' + mono.hashParam({
-                                    search: request
-                                });
-                        }
-                        chrome.tabs.create({
-                            url: 'index.html' + request,
-                            selected: true
-                        });
+            chrome.contextMenus.create({
+                type: "normal",
+                id: "item",
+                title: mono.language.ctxMenuTitle,
+                contexts: ["selection"],
+                onclick: function (info) {
+                    var request = info.selectionText;
+                    if (request) {
+                        request = '#?' + mono.hashParam({
+                                search: request
+                            });
                     }
-                });
+                    chrome.tabs.create({
+                        url: 'index.html' + request,
+                        selected: true
+                    });
+                }
             });
         });
     },
@@ -253,9 +237,7 @@ var bg = {
                     bg.updateBtnAction();
                 }, storage.langCode);
 
-                if ((mono.isChrome && !mono.isChromeWebApp) || mono.isFF) {
-                    bg.updateIcon();
-                }
+                bg.updateIcon();
             });
         });
     }

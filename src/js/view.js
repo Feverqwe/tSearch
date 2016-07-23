@@ -1705,62 +1705,6 @@ var view = {
             view.varCache.$requestInput.autocomplete('enable');
         }, 1000);
     },
-    showExtensionInfo: function() {
-        "use strict";
-        var popup, closeBtn;
-        var extUrl = 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh?utm_source=TmsInfoPopup';
-        document.body.appendChild(popup = mono.create('div', {
-            class: 'extInfoContainer',
-            append: [
-                mono.create('a', {
-                    title: mono.language.extPopupInstall,
-                    href: extUrl + '&utm_content=img',
-                    target: '_blank',
-                    append: mono.create('img', {
-                        src: 'img/extAd_'+mono.language.langCode+'.png'
-                    }),
-                    on: ['click', function() {
-                        closeBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
-                    }]
-                }),
-                mono.create('div', {
-                    class: 'info-head',
-                    append: [
-                        mono.create('span', {
-                            class: 'text',
-                            append: [
-                                mono.language.extPopupInfo + ' ',
-                                mono.create('a', {
-                                    text: mono.language.extPopupInstall,
-                                    href: extUrl + '&utm_content=link',
-                                    target: '_blank',
-                                    on: ['click', function() {
-                                        closeBtn.dispatchEvent(new CustomEvent('click', {cancelable: true}));
-                                    }]
-                                })
-                            ]
-                        }),
-                        closeBtn = mono.create('a', {
-                            class: 'close',
-                            href: '#',
-                            text: mono.language.close,
-                            on: ['click', function(e) {
-                                e.preventDefault();
-                                mono.storage.set({extensionPopup: 1});
-                                popup.style.opacity = 0;
-                                setTimeout(function() {
-                                    popup.parentNode && popup.parentNode.removeChild(popup);
-                                }, 1000);
-                            }]
-                        })
-                    ]
-                })
-            ]
-        }));
-        setTimeout(function() {
-            popup.style.opacity = 1;
-        }, 500);
-    },
     once: function() {
         "use strict";
         view.varCache.tableSortColumnId = engine.settings.sortColumn;
@@ -2134,15 +2078,6 @@ var view = {
         } else {
             define.amd['promise'] = true;
             define.stack('promise');
-        }
-
-        if (mono.isChrome && mono.isChromeWebApp) {
-            mono.storage.get('extensionPopup', function(storage) {
-                "use strict";
-                if (!storage.extensionPopup) {
-                    view.showExtensionInfo();
-                }
-            });
         }
     }
 };

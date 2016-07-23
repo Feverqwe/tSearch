@@ -98,37 +98,4 @@ exports.run = function (grunt) {
             'compress:chrome'
         ]);
     });
-
-    grunt.registerTask('chromeApp', function () {
-        grunt.config('monoParams', monoParams);
-
-        grunt.registerTask('chromeAppManifest', function() {
-            var manifestPath = grunt.config('output') + grunt.config('vendor') + 'manifest.json';
-            var content = grunt.file.readJSON('src/vendor/chromeApp/manifest.json');
-            content.version = grunt.config('pkg.extVersion');
-            grunt.file.write(manifestPath, JSON.stringify(content));
-        });
-
-        grunt.config.merge({
-            vendor: 'chromeApp/src/',
-            libFolder: 'js/',
-            dataJsFolder: 'js/',
-            includesFolder: 'includes/',
-            dataFolder: '',
-            buildName: 'tmsApp_<%= pkg.extVersion %>',
-            appId: 'chromeApp',
-            browser: 'chrome'
-        });
-
-        grunt.task.run([
-            'extensionBase',
-            'buildJs',
-            'chromeAppManifest',
-            'rmPopup',
-            'json-format:chromeManifestFormat',
-            'setAppInfo',
-            'compressJs',
-            'compress:chrome'
-        ]);
-    });
 };

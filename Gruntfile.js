@@ -317,7 +317,6 @@ module.exports = function (grunt) {
         'clean:output',
         'chrome',
         'opera',
-        'chromeApp',
         'firefox-sig',
         'web'
     ]);
