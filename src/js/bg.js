@@ -60,17 +60,20 @@ var bg = {
     },
     once: function() {
         "use strict";
-        chrome.omnibox.onInputEntered.addListener(function (request) {
-            if (request) {
-                request = '#?' + mono.hashParam({
-                        search: request
-                    });
-            }
-            chrome.tabs.create({
-                url: "index.html" + request,
-                selected: true
+        // firefox don't have it
+        if (chrome.omnibox) {
+            chrome.omnibox.onInputEntered.addListener(function (request) {
+                if (request) {
+                    request = '#?' + mono.hashParam({
+                            search: request
+                        });
+                }
+                chrome.tabs.create({
+                    url: "index.html" + request,
+                    selected: true
+                });
             });
-        });
+        }
         chrome.browserAction.onClicked.addListener(function () {
             if (bg.settings.searchPopup) {
                 return;

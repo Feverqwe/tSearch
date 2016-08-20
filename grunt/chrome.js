@@ -24,6 +24,13 @@ exports.run = function (grunt) {
         grunt.file.write(manifestPath, JSON.stringify(content, null, 4));
     });
 
+    grunt.registerTask('ffManifest', function() {
+        var manifestPath = grunt.config('output') + grunt.config('vendor') + 'manifest.json';
+        var content = grunt.file.readJSON('src/vendor/firefox/manifest.json');
+        content.version = grunt.config('pkg.extVersion');
+        grunt.file.write(manifestPath, JSON.stringify(content, null, 4));
+    });
+
     grunt.registerTask('chrome', function () {
         grunt.config.merge({
             vendor: 'chrome/src/',
@@ -32,8 +39,7 @@ exports.run = function (grunt) {
             includesFolder: 'includes/',
             dataFolder: '',
             buildName: 'tmsExt_<%= pkg.extVersion %>',
-            appId: 'chromeExt',
-            browser: 'chrome'
+            appId: 'chromeExt'
         });
 
         grunt.task.run([
@@ -41,7 +47,7 @@ exports.run = function (grunt) {
             'buildJs',
             'chromeManifest',
             'setAppInfo',
-            // 'compressJs',
+            'compressJs',
             'compress:chrome'
         ]);
     });
@@ -54,8 +60,7 @@ exports.run = function (grunt) {
             includesFolder: 'includes/',
             dataFolder: '',
             buildName: 'tmsExt_opera_<%= pkg.extVersion %>',
-            appId: 'operaExt',
-            browser: 'chrome'
+            appId: 'operaExt'
         });
 
         grunt.task.run([
@@ -63,7 +68,28 @@ exports.run = function (grunt) {
             'buildJs',
             'chromeManifest',
             'setAppInfo',
-            // 'compressJs',
+            'compressJs',
+            'compress:chrome'
+        ]);
+    });
+
+    grunt.registerTask('firefox', function () {
+        grunt.config.merge({
+            vendor: 'firefox/src/',
+            libFolder: 'js/',
+            dataJsFolder: 'js/',
+            includesFolder: 'includes/',
+            dataFolder: '',
+            buildName: 'tmsExt_ff_<%= pkg.extVersion %>',
+            appId: 'firefoxExt'
+        });
+
+        grunt.task.run([
+            'extensionBase',
+            'buildJs',
+            'ffManifest',
+            'setAppInfo',
+            'compressJs',
             'compress:chrome'
         ]);
     });

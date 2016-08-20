@@ -308,6 +308,10 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
 
     var initChromeStorage = function(type) {
       type = type || 'local';
+      // firefox don't support sync
+      if (type === 'sync' && !chrome.storage[type]) {
+        type = 'local';
+      }
       return {
         /**
          * @param {String|[String]|Object|null|undefined} [keys]
