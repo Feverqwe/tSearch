@@ -23,7 +23,7 @@
     },
     "manifest_version": 2,
     "name": "__MSG_extName__",
-    "permissions": ["storage", "contextMenus", "http://*/*", "https://*/*", "unlimitedStorage"],
+    "permissions": ["storage", "contextMenus", "http://*/*", "https://*/*"],
     "version": "1.0.88",
     "options_ui": {
         "page": "options.html"
