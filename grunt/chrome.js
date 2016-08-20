@@ -89,7 +89,6 @@ exports.run = function (grunt) {
             'buildJs',
             'ffManifest',
             'setAppInfo',
-            'compressJs',
             'compress:chrome'
         ]);
     });
