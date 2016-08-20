@@ -129,6 +129,10 @@ module.exports = function (grunt) {
 
     require('google-closure-compiler').grunt(grunt);
     grunt.registerTask('compressJs', function() {
+        if (devMode) {
+            return;
+        }
+
         var fs = require('fs');
         var crypto = require('crypto');
 

@@ -62,6 +62,9 @@ var selectBox = {
     select: function(currentBox, index) {
         var control = currentBox.control;
         var options = currentBox.options;
+        if (index === -1) {
+            index = undefined;
+        }
         if (index === undefined) {
             if (!currentBox.isOpen) {
                 return;
