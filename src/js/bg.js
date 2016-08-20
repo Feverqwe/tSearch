@@ -25,8 +25,7 @@ var bg = {
             popup: bg.settings.searchPopup ? 'popup.html' : ''
         });
     },
-    ffContextMenu: null,
-    chromeUpdateContextMenu: function() {
+    updateContextMenu: function() {
         "use strict";
         chrome.contextMenus.removeAll(function () {
             if (!bg.settings.contextMenu) {
@@ -52,26 +51,11 @@ var bg = {
             });
         });
     },
-    updateContextMenu: function() {
-        "use strict";
-        return this.chromeUpdateContextMenu();
-    },
     onMessage: function(msg, cb) {
         "use strict";
         if (msg === 'reloadSettings') {
             bg.run();
             return cb();
-        } else
-        if (msg.action === 'openTab') {
-            var tab = opera.extension.tabs.create({url: msg.url});
-            tab.focus();
-        } else
-        if (msg.action === 'resize') {
-            msg.height && (bg.operaBtn.popup.height = msg.height);
-            msg.width && (bg.operaBtn.popup.width = msg.width);
-        } else
-        if (msg.action === 'ping') {
-            return cb('pong');
         }
     },
     once: function() {
@@ -107,7 +91,7 @@ var bg = {
                 });
 
                 Object.keys(bg.defaultSettings).forEach(function(key) {
-                    if (storage.hasOwnProperty(key)) {
+                    if (storage[key] !== undefined) {
                         bg.settings[key] = storage[key];
                     } else {
                         bg.settings[key] = bg.defaultSettings[key];
@@ -117,9 +101,8 @@ var bg = {
                 mono.loadLanguage(storage.langCode, function () {
                     bg.updateContextMenu();
                     bg.updateBtnAction();
+                    bg.updateIcon();
                 });
-
-                bg.updateIcon();
             });
         });
     }

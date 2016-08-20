@@ -159,9 +159,9 @@ var popup = {
                 popup.varCache.history = storage.searchHistory;
             }
             if (storage.hasOwnProperty('langCode') && storage.langCode !== mono.language.langCode) {
-                mono.getLanguage(function () {
+                mono.loadLanguage(storage.langCode, function () {
                     mono.writeLanguage(mono.language);
-                }, storage.langCode);
+                });
             }
         });
     }
@@ -200,7 +200,7 @@ mono.onReady(function() {
         if (Array.isArray(storage.searchHistory)) {
             popup.varCache.history = storage.searchHistory;
         }
-        mono.getLanguage(function () {
+        mono.loadLanguage(storage.langCode, function () {
             popup.once();
             if (!storage.hasOwnProperty('autoComplite')) {
                 storage.autoComplite = 1;
@@ -209,6 +209,6 @@ mono.onReady(function() {
             popup.varCache.autoComplite = storage.autoComplite;
 
             document.body.appendChild(mono.create('script', {src: 'lib/jquery-2.1.4.min.js'}));
-        }, storage.langCode);
+        });
     });
 });

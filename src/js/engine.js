@@ -54,11 +54,6 @@ var engine = {
     history: [],
     topList: {},
 
-    webAppSupportTrackerList: [
-        'nnm-club', 'kinozal', 'hdclub', 'rutor', 'tfile', 'fast-torrent', 'btdigg',
-        'bitsnoop', 'extratorrent', 'torrentz', 'thepiratebay', 'kickass'
-    ],
-
     getDefaultProfileList: function() {
         "use strict";
         var list;

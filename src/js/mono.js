@@ -54,7 +54,7 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
   "use strict";
   var browserApi = function() {
     "use strict";
-    var isInject = location.protocol !== 'chrome-extension:' || location.host !== chrome.runtime.id;
+    var isInject = location.protocol !== 'chrome-extension:';
     var isBgPage = !isInject && location.pathname.indexOf('_generated_background_page.html') !== -1;
 
     var emptyFn = function() {};
@@ -338,10 +338,9 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
         }
       };
     };
-    if (chrome.storage) {
-      api.storage = initChromeStorage();
-      api.storage.sync = initChromeStorage('sync');
-    }
+
+    api.storage = initChromeStorage();
+    api.storage.sync = initChromeStorage('sync');
 
     /**
      * @param {Function} cb
@@ -376,8 +375,6 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
       "use strict";
       return clearInterval(timeout);
     };
-
-    api.language = {};
 
     /**
      * @param {String} locale
@@ -1262,6 +1259,8 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
     return obj;
   };
 
+  mono.language = {};
+
   mono.loadLanguage = function (customLang, cb) {
     var _this = this;
     var langList = ['en', 'ru'];
@@ -1280,7 +1279,7 @@ var mono = (typeof mono !== 'undefined') ? mono : undefined;
         throw err;
       }
 
-      _this.extend(mono.language, _language);
+      _this.extend(_this.language, _language);
       cb();
     });
   };
