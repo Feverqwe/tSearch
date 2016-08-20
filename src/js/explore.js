@@ -201,7 +201,7 @@ var explore = {
         return {
             kp_favorites: function(content) {
                 var dom = exKit.parseHtml(exKit.contentFilter(content));
-                if (dom.querySelector('#login')) {
+                if (dom.querySelector('.login > .js-external-login-action')) {
                     return {requireAuth: 1};
                 }
                 var elList = dom.querySelectorAll('#itemList > li.item');

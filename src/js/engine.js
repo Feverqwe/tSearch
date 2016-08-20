@@ -57,9 +57,9 @@ var engine = {
         "use strict";
         var list;
         if (mono.language.langCode === 'ru') {
-            list = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'hdclub', 'tfile', 'fast-torrent', 'opentorrent', 'btdigg'];
+            list = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'hdclub', 'tfile', 'opentorrent'];
         } else {
-            list = ['bitsnoop', 'extratorrent', 'torrentz', 'thepiratebay', 'kickass'];
+            list = ['bitsnoop', 'extratorrent', 'thepiratebay'];
         }
         return list.map(function(item) {
             return {id: item};
