@@ -150,7 +150,6 @@
     "enableHighlight": {"message": "Подсвечивать результаты поиска"},
     "kinopoiskFolderId": {"message": "ID категории кинопоиска:"},
     "rightPanel": {"message": "Переместить панель со списком трекеров вправо"},
-    "hideTopSearch": {"message": "Не отображать топ-40 поисковых запросов"},
     "profileListSync": {"message": "Включить синхронизацию списка профилей"},
     "calcSeedCount": {"message": "Учитывать количество сидов (раздающих)"},
     "home": {"message": "Главная страница"},

@@ -18,7 +18,6 @@ var engine = {
         enableHighlight: 1,
         kinopoiskFolderId: '1',
         rightPanel: 0,
-        hideTopSearch: 0,
         trackerListHeight: 200,
         profileListSync: 0,
         proxyList: [
@@ -183,7 +182,6 @@ var engine = {
         var defaultSettings = _this.defaultSettings;
 
         if (browserLocale !== 'ru') {
-            defaultSettings.hideTopSearch = 1;
             _this.defaultExplorerOptions[1].enable = 0;
             _this.defaultExplorerOptions[2].enable = 0;
             _this.defaultExplorerOptions[3].enable = 0;

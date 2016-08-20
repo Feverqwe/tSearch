@@ -150,7 +150,6 @@
     "enableHighlight": {"message": "To highlight the search results"},
     "kinopoiskFolderId": {"message": "ID category kinopoisk.ru site:"},
     "rightPanel": {"message": "Move the tracker list panel to the right"},
-    "hideTopSearch": {"message": "Hide the Top 40 search queries"},
     "profileListSync": {"message": "To synchronize the tracker list"},
     "calcSeedCount": {"message": "Consider the number of seeders"},
     "home": {"message": "Main page"},
