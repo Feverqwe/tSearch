@@ -467,21 +467,21 @@ var rate = {
                 if (typeof qualityObj.sub === 'string') {
                     qualityObj.sub = rate.template[qualityObj.sub];
                 }
-                mono.expand(qualityObj, rate.readQualityList(qualityObj.sub, 'sub'));
+                mono.extend(qualityObj, rate.readQualityList(qualityObj.sub, 'sub'));
                 subList.push('sub');
             }
             if (qualityObj.subAfter !== undefined) {
                 if (typeof qualityObj.subAfter === 'string') {
                     qualityObj.subAfter = rate.template[qualityObj.subAfter];
                 }
-                mono.expand(qualityObj, rate.readQualityList(qualityObj.subAfter, 'subAfter'));
+                mono.extend(qualityObj, rate.readQualityList(qualityObj.subAfter, 'subAfter'));
                 subList.push('subAfter');
             }
             if (qualityObj.subBefore !== undefined) {
                 if (typeof qualityObj.subBefore === 'string') {
                     qualityObj.subBefore = rate.template[qualityObj.subBefore];
                 }
-                mono.expand(qualityObj, rate.readQualityList(qualityObj.subBefore, 'subBefore'));
+                mono.extend(qualityObj, rate.readQualityList(qualityObj.subBefore, 'subBefore'));
                 subList.push('subBefore');
             }
             if (subList.length !== 0) {

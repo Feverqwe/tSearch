@@ -1,43 +1,6 @@
 /**
  * Created by Anton on 28.02.2015.
  */
-var mono = (typeof mono !== 'undefined') ? mono : undefined;
-
-(function() {
-    "use strict";
-    if (typeof window !== 'undefined') return;
-    var self = require('sdk/self');
-    mono = require('toolkit/loader').main(require('toolkit/loader').Loader({
-        paths: {
-            'data/': self.data.url('js/')
-        },
-        name: self.name,
-        prefixURI: self.data.url().match(/([^:]+:\/\/[^/]+\/)/)[1],
-        globals: {
-            console: console,
-            _require: function(path) {
-                switch (path) {
-                    case 'sdk/simple-storage':
-                        return require('sdk/simple-storage');
-                    case 'sdk/window/utils':
-                        return require('sdk/window/utils');
-                    case 'sdk/self':
-                        return require('sdk/self');
-                    case 'sdk/net/xhr':
-                        return require('sdk/net/xhr');
-                    case 'sdk/l10n':
-                        return require('sdk/l10n');
-                    case 'sdk/base64':
-                        return require('sdk/base64');
-                    default:
-                        console.error('Module not found!', path);
-                }
-            }
-        }
-    }), "data/mono");
-    self = null;
-})();
-
 var bg = {
     defaultSettings: {
         contextMenu: 1,
@@ -48,20 +11,7 @@ var bg = {
     settings: {},
     updateIcon: function() {
         "use strict";
-        var prefix;
-        if (mono.isFF) {
-            if (!mono.ffButton) {
-                return;
-            }
-
-            prefix = bg.settings.invertIcon ? '-i' : '';
-            mono.ffButton.icon = {
-                16: './icons/icon-16' + prefix + '.png',
-                32: './icons/icon-32' + prefix + '.png',
-                64: './icons/icon-64' + prefix + '.png'
-            };
-        }
-        prefix = bg.settings.invertIcon ? '_i' : '';
+        var prefix = bg.settings.invertIcon ? '_i' : '';
         chrome.browserAction.setIcon({
             path: {
                 19: 'img/icon_19' + prefix + '.png',
@@ -102,70 +52,9 @@ var bg = {
             });
         });
     },
-    ffUpdateContextMenu: function() {
-        "use strict";
-        if (!mono.ffButton) {
-            return;
-        }
-
-        var contentScript = (function() {
-            var onContext = function() {
-                "self".on("click", function() {
-                    var text = window.getSelection().toString();
-                    "self".postMessage(text);
-                });
-            };
-            var minifi = function(str) {
-                var list = str.split('\n');
-                var newList = [];
-                list.forEach(function(line) {
-                    newList.push(line.trim());
-                });
-                return newList.join('');
-            };
-            var onClickString = onContext.toString().replace(/"self"/g, 'self');
-            var n_pos =  onClickString.indexOf('{')+1;
-            onClickString = onClickString.substr(n_pos, onClickString.length - 1 - n_pos).trim();
-            return minifi(onClickString);
-        })();
-
-        var self = require('sdk/self');
-
-        if (bg.ffContextMenu) {
-            bg.ffContextMenu.parentMenu.removeItem(bg.ffContextMenu);
-            bg.ffContextMenu = null;
-        }
-
-        if (!bg.settings.contextMenu) {
-            return;
-        }
-
-        var prefix = bg.settings.invertIcon ? '-i' : '';
-        var contextMenu = require("sdk/context-menu");
-        bg.ffContextMenu = contextMenu.Item({
-            label: mono.language.ctxMenuTitle,
-            context: contextMenu.SelectionContext(),
-            image: self.data.url('./icons/icon-16' + prefix + '.png'),
-            contentScript: contentScript,
-            onMessage: function (request) {
-                var tabs = require('sdk/tabs');
-                if (request) {
-                    request = '#?' + mono.hashParam({
-                            search: request
-                        });
-                }
-                tabs.open(self.data.url('index.html') + request);
-            }
-        });
-    },
     updateContextMenu: function() {
         "use strict";
-        if (mono.isChrome) {
-            return this.chromeUpdateContextMenu();
-        }
-        if (mono.isFF) {
-            return this.ffUpdateContextMenu();
-        }
+        return this.chromeUpdateContextMenu();
     },
     onMessage: function(msg, cb) {
         "use strict";
@@ -187,35 +76,32 @@ var bg = {
     },
     once: function() {
         "use strict";
-        if (mono.isChrome) {
-            chrome.omnibox.onInputEntered.addListener(function (request) {
-                if (request) {
-                    request = '#?' + mono.hashParam({
+        chrome.omnibox.onInputEntered.addListener(function (request) {
+            if (request) {
+                request = '#?' + mono.hashParam({
                         search: request
                     });
-                }
-                chrome.tabs.create({
-                    url: "index.html" + request,
-                    selected: true
-                });
+            }
+            chrome.tabs.create({
+                url: "index.html" + request,
+                selected: true
             });
-            chrome.browserAction.onClicked.addListener(function () {
-                if (bg.settings.searchPopup) {
-                    return;
-                }
-                chrome.tabs.create({
-                    url: 'index.html'
-                });
+        });
+        chrome.browserAction.onClicked.addListener(function () {
+            if (bg.settings.searchPopup) {
+                return;
+            }
+            chrome.tabs.create({
+                url: 'index.html'
             });
-        }
+        });
         bg.run();
     },
     run: function() {
         "use strict";
         var _this = this;
-        var storageKeys = Object.keys(bg.defaultSettings);
-        mono.storage.get(storageKeys, function(storage) {
-            mono.storage.sync.get(storageKeys, function(syncStorage) {
+        mono.storage.get(bg.defaultSettings, function(storage) {
+            mono.storage.sync.get(bg.defaultSettings, function(syncStorage) {
                 Object.keys(syncStorage).forEach(function(key) {
                     storage[key] = syncStorage[key];
                 });
@@ -228,10 +114,10 @@ var bg = {
                     }
                 });
 
-                mono.getLanguage(function () {
+                mono.loadLanguage(storage.langCode, function () {
                     bg.updateContextMenu();
                     bg.updateBtnAction();
-                }, storage.langCode);
+                });
 
                 bg.updateIcon();
             });
@@ -243,23 +129,10 @@ var bg = {
     "use strict";
     var init = function(addon, button, initPopup) {
         "use strict";
-        if (addon) {
-            mono = mono.init(addon);
-            mono.ffButton = button;
-            initPopup();
-            mono.ajax.xhr = require('sdk/net/xhr').XMLHttpRequest;
-        } else {
-            mono.ajax.xhr = XMLHttpRequest;
-        }
-
-        mono.onMessage(bg.onMessage);
+        mono.onMessage.addListener(bg.onMessage);
         bg.once();
     };
-    if (mono.isModule) {
-        exports.init = init;
-    } else {
-        mono.onReady(function() {
-            return init();
-        });
-    }
+    mono.onReady(function() {
+        return init();
+    });
 })();

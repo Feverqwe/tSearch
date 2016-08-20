@@ -676,7 +676,6 @@ var explore = {
             return;
         }
         mono.ajax({
-            safe: true,
             url: 'https://www.google.com/search?q='+request,
             success: function(data) {
                 this.content_parser.google(data, request, cb);
@@ -1136,25 +1135,6 @@ var explore = {
         categoryObj.body.textContent = '';
         categoryObj.body.appendChild(contentBody);
     },
-    limitObjSize: function(obj, count) {
-        "use strict";
-        var i;
-        var arr = [];
-        for (i in obj) {
-            if (obj.hasOwnProperty(i) === false) {
-                continue;
-            }
-            arr.push(i);
-        }
-        var arr_len = arr.length;
-        if (arr_len < count) {
-            return;
-        }
-        var end = arr_len - count;
-        for (i = 0; i < end; i++) {
-            delete obj[arr[i]];
-        }
-    },
     xhr_dune: function(type, source) {
         "use strict";
         source.xhr_wait_count--;
@@ -1198,7 +1178,6 @@ var explore = {
         source.xhr_wait_count++;
         source.xhr.push(
             mono.ajax({
-                safe: true,
                 url: (page_mode)?source.url.replace('%page%', page):source.url,
                 success: function(data) {
                     source.xhr_content.push([page, this.content_parser[type](data)]);
@@ -1386,7 +1365,6 @@ var explore = {
         var urlTemplate = source.url.replace('%category%', engine.settings.kinopoiskFolderId);
         (function getPage(page) {
             source.xhr = mono.ajax({
-                safe: true,
                 url: urlTemplate.replace('%page%', page),
                 success: function (data) {
                     var pContent = explore.content_parser.kp_favorites(data);
@@ -1907,98 +1885,6 @@ var explore = {
 
                 onResize.lock = false;
             }.bind(this), 250));
-        }
-
-        if (mono.isWebApp) {
-            return (function() {
-                var getBrowserName = function() {
-                    var browser = '';
-                    if(navigator && navigator.userAgent) {
-                        if(navigator.userAgent.indexOf('OPR\/') !== -1) {
-                            browser = 'opera';
-                        } else
-                        if(navigator.userAgent.indexOf('Opera\/') !== -1) {
-                            browser = 'opera';
-                        } else
-                        if(navigator.userAgent.indexOf('Firefox\/') !== -1) {
-                            browser = 'firefox';
-                        } else
-                        if(navigator.userAgent.indexOf('Chrome\/') !== -1) {
-                            browser = 'chrome';
-                        } else
-                        if(navigator.userAgent.indexOf('Safari\/') !== -1) {
-                            browser = 'safari';
-                        }
-                    }
-                    return browser;
-                };
-
-                var currentBrowser = undefined;
-                var domList = {};
-                var dlExBody = undefined;
-                explore.domCache.gallery.parentNode.appendChild(
-                    dlExBody = mono.create('div', {
-                        id: 'explore_download_extension',
-                        append: [
-                            mono.create('h1', {
-                                text: mono.language.downloadExtensionTitle
-                            }),
-                            currentBrowser = mono.create('div', {
-                                class: 'currentBrowser'
-                            }),
-                            mono.create('div', {
-                                class: 'browserList',
-                                append: (function(){
-                                    var obj = {
-                                        chrome: {
-                                            title: 'Chrome',
-                                            link: 'https://chrome.google.com/webstore/detail/ngcldkkokhibdmeamidppdknbhegmhdh?utm_source=webApp'
-                                        },
-                                        firefox: {
-                                            title: 'Firefox',
-                                            link: 'http://static.tms.mooo.com/firefox/build_firefox.xpi' + '?_=' + Date.now()
-                                        },
-                                        opera: {
-                                            title: 'Opera',
-                                            link: 'https://addons.opera.com/ru/extensions/details/torrents-multisearch/'
-                                        }
-                                    };
-                                    var list = [];
-                                    for (var key in obj) {
-                                        var item = obj[key];
-                                        list.push(domList[key] = mono.create('a', {
-                                            href: item.link,
-                                            class: key,
-                                            target: '_blank',
-                                            append: [
-                                                mono.create('img', {
-                                                    src: 'web/'+key+'.png'
-                                                }),
-                                                mono.create('p', {
-                                                    text: item.title
-                                                })
-                                            ]
-                                        }));
-                                    }
-                                    return list;
-                                })()
-                            })
-                        ]
-                    })
-                );
-                currentBrowser.appendChild(domList[getBrowserName()] || mono.create('img', {src: 'img/icon_128.png'}));
-                document.addEventListener('installExtensionMenu', function() {
-                    dlExBody.classList.add('popupMode');
-                    var stopProp = function(e) {
-                        e.stopPropagation();
-                    };
-                    dlExBody.addEventListener('click', stopProp);
-                    document.addEventListener('click', function() {
-                        dlExBody.classList.remove('popupMode');
-                        dlExBody.removeEventListener('click', stopProp);
-                    });
-                });
-            })();
         }
 
         window.addEventListener('resize', mono.debounce(function onResizeCategoryList() {

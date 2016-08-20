@@ -992,7 +992,6 @@ var exKit = {
             return new Promise(function (resolve, reject) {
                 Promise.resolve().then(function () {
                     var ajaxData = {
-                        safe: true,
                         mimeType: tracker.search.requestMimeType,
                         dataType: tracker.search.requestDataType,
                         changeUrl: proxyIndex > 0 && function (url, method) {
@@ -1019,13 +1018,13 @@ var exKit = {
                         }
                     };
                     if (!_details.url) {
-                        mono.expand(ajaxData, {
+                        mono.extend(ajaxData, {
                             type: tracker.search.requestType,
                             url: tracker.search.searchUrl.replace('%search%', details.query),
                             data: (tracker.search.requestData || '').replace('%search%', details.query),
                         });
                     } else {
-                        mono.expand(ajaxData, {
+                        mono.extend(ajaxData, {
                             type: 'GET',
                             url: _details.url
                         });

@@ -808,14 +808,6 @@ var options = {
         "use strict";
         mono.writeLanguage(mono.language);
 
-        if (!mono.isChrome) {
-            this.domCache.saveInCloudBtn.style.display = 'none';
-            this.domCache.getFromCloudBtn.style.display = 'none';
-            this.domCache.clearCloudStorageBtn.style.display = 'none';
-            document.querySelector('input[data-option="enableFavoriteSync"]').parentNode.style.display = 'none';
-            document.querySelector('input[data-option="profileListSync"]').parentNode.style.display = 'none';
-        }
-
         if (mono.language.langCode !== 'ru') {
             document.querySelector('input[data-option="useEnglishPosterName"]').parentNode.style.display = 'none';
         }
@@ -866,12 +858,6 @@ var options = {
         });
 
         this.set_place_holder();
-
-        if (!mono.isChrome) {
-            this.domCache.saveInCloudBtn.style.display = 'none';
-            this.domCache.getFromCloudBtn.style.display = 'none';
-            this.domCache.clearCloudStorageBtn.style.display = 'none';
-        }
 
         this.bindBackupForm();
 

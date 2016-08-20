@@ -64,15 +64,8 @@ var engine = {
         var list;
         if (mono.language.langCode === 'ru') {
             list = ['nnm-club', 'rutracker', 'kinozal', 'rutor', 'hdclub', 'tfile', 'fast-torrent', 'opentorrent', 'btdigg'];
-            if (mono.isWebApp) {
-                list.splice(list.indexOf('rutracker'), 1);
-                list.splice(list.indexOf('rutor'), 1);
-            }
         } else {
             list = ['bitsnoop', 'extratorrent', 'torrentz', 'thepiratebay', 'kickass'];
-            if (mono.isWebApp) {
-                list.splice(list.indexOf('thepiratebay'), 1);
-            }
         }
         return list.map(function(item) {
             return {id: item};
@@ -206,10 +199,6 @@ var engine = {
             _this.defaultExplorerOptions[4].enable = 0;
         }
 
-        if (mono.isWebApp) {
-            defaultSettings.allowGetDescription = 0;
-        }
-
         var optionsList = Object.keys(defaultSettings).concat([
             'profileList',
             'customTorrentList',
@@ -230,12 +219,10 @@ var engine = {
         }
 
         mono.storage.get(optionsList, function(storage) {
-            storage = storage || {};
             mono.storage.sync.get(optionsList, function(syncStorage) {
-                syncStorage = syncStorage || {};
-                var settings = _this.settings = {};
+                var settings = _this.settings;
                 ['enableFavoriteSync', 'profileListSync'].forEach(function(key) {
-                    if (storage.hasOwnProperty(key)) {
+                    if (storage[key] !== undefined) {
                         settings[key] = storage[key];
                     } else {
                         settings[key] = defaultSettings[key];
@@ -255,7 +242,7 @@ var engine = {
                 });
 
                 Object.keys(defaultSettings).forEach(function(key) {
-                    if (storage.hasOwnProperty(key)) {
+                    if (storage[key] !== undefined) {
                         settings[key] = storage[key];
                     } else {
                         settings[key] = defaultSettings[key];
@@ -319,56 +306,23 @@ var engine = {
                     _this.exploreCache[key] = storage[key];
                 });
 
-                mono.getLanguage(function() {
+                mono.loadLanguage(settings.langCode, function() {
                     _this.defaultPrepare(mono.language.langCode);
 
                     _this.prepareProfileList(storage.currentProfile, storage);
 
                     return cb();
-                }, settings.langCode);
+                });
             });
         });
-    },
-
-    ping: function(cb) {
-        "use strict";
-        if (!mono.isFF) {
-            return cb();
-        }
-        var dune = false;
-        var limit = 10;
-        (function ping() {
-            if (dune) {
-                return;
-            }
-
-            limit--;
-            if (limit === 0) {
-                return document.location.reload();
-            }
-
-            mono.sendMessage({action: 'ping'}, function() {
-                if (dune) {
-                    return;
-                }
-                dune = true;
-                cb();
-            });
-
-            setTimeout(function() {
-                ping();
-            }, 100);
-        })();
     },
 
     init: function(cb) {
         "use strict";
         var _this = this;
         mono.onReady(function() {
-            _this.ping(function() {
-                _this.loadSettings(function() {
-                    cb && cb();
-                });
+            _this.loadSettings(function() {
+                cb && cb();
             });
         });
     },

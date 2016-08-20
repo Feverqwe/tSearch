@@ -2072,9 +2072,9 @@ var view = {
         }.bind(this));
 
         document.body.appendChild(mono.create('script', {src: 'js/notifer.js'}));
-        document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.4.min.js'}));
+        document.body.appendChild(mono.create('script', {src: 'lib/jquery-2.1.4.min.js'}));
         if (typeof Promise === 'undefined') {
-            document.body.appendChild(mono.create('script', {src: 'js/bluebird.min.js'}));
+            document.body.appendChild(mono.create('script', {src: 'lib/bluebird.min.js'}));
         } else {
             define.amd['promise'] = true;
             define.stack('promise');
@@ -2110,7 +2110,7 @@ var define = function(name, deps, callback) {
 
             define.stack(type);
 
-            document.body.appendChild(mono.create('script', {src: 'js/jquery-ui.min.js'}));
+            document.body.appendChild(mono.create('script', {src: 'lib/jquery-ui.min.js'}));
         });
         return;
     } else

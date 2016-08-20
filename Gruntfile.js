@@ -5,6 +5,7 @@ module.exports = function (grunt) {
         '_locales/**',
         'css/**',
         'img/**',
+        'lib/**',
         'index.html',
         'popup.html',
         'history.html',
@@ -12,11 +13,10 @@ module.exports = function (grunt) {
         'magic.html'
     ];
     var dataJsList = [
+        'mono.js',
         'explore.js',
         'exKit.js',
         'history.js',
-        'jquery-2.1.4.min.js',
-        'jquery-ui.min.js',
         'notifer.js',
         'options.js',
         'popup.js',
@@ -24,10 +24,7 @@ module.exports = function (grunt) {
         'rate.js',
         'selectBox.js',
         'view.js',
-        'bluebird.min.js',
-        'magic.js',
-        'jsoneditor.min.js',
-        'ace/**'
+        'magic.js'
     ];
     var engineJsList = [
         'engine.js',
@@ -36,28 +33,12 @@ module.exports = function (grunt) {
     var bgJsList = [
         'bg.js'
     ];
-    var monoJsList = [
-        'mono.js',
-        'monoUtils.js'
-    ];
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         clean: {
             output: [
                 '<%= output %>/*',
                 '!<%= output %>/hash'
-            ],
-            magic: [
-                '<%= output %><%= vendor %>magic.html',
-                '<%= output %><%= vendor %><%= dataJsFolder %>magic.js',
-                '<%= output %><%= vendor %>css/magic.css'
-            ],
-            popup: [
-                '<%= output %><%= vendor %>popup.html',
-                '<%= output %><%= vendor %><%= dataJsFolder %>popup.js'
-            ],
-            bg: [
-                '<%= output %><%= vendor %>js/bg.js'
             ]
         },
         concat: {
@@ -75,14 +56,6 @@ module.exports = function (grunt) {
                 files: {
                     '<%= output %><%= vendor %><%= dataJsFolder %>trackerLib.js': 'src/tracker/*.js'
                 }
-            }
-        },
-        insert: {
-            mono: {
-                src: monoJsList.map(function(item) {
-                    return 'src/js/' + item;
-                }),
-                dest: '<%= output %><%= vendor %><%= dataJsFolder %>mono.js'
             }
         },
         copy: {
@@ -116,12 +89,6 @@ module.exports = function (grunt) {
                     'src/tracker/*.js'
                 ],
                 tasks: ['concat:trackerLib']
-            },
-            monoJs: {
-                files: monoJsList.map(function(item) {
-                    return 'src/js/'+item
-                }),
-                tasks: ['insert:mono']
             },
             bgJs: {
                 files: bgJsList.map(function(item) {
@@ -160,41 +127,36 @@ module.exports = function (grunt) {
         grunt.file.write(enginePath, content);
     });
 
+    require('google-closure-compiler').grunt(grunt);
     grunt.registerTask('compressJs', function() {
-        var getHash = function(path, cb) {
-            var fs = require('fs');
-            var crypto = require('crypto');
+        var fs = require('fs');
+        var crypto = require('crypto');
 
+        var done = this.async();
+
+        var getHash = function(path, cb) {
             var fd = fs.createReadStream(path);
             var hash = crypto.createHash('sha256');
             hash.setEncoding('hex');
-
             fd.on('end', function () {
                 hash.end();
                 cb(hash.read());
             });
-
             fd.pipe(hash);
         };
 
-        var done = this.async();
-        if (devMode) {
-            return done();
-        }
-
         var gruntTask = {
-            closurecompiler: {
+            'closure-compiler': {
                 minify: {
                     files: {},
                     options: {
-                        jscomp_warning: 'const',
-                        language_in: 'ECMASCRIPT5',
-                        max_processes: 2
+                        language_in: 'ECMASCRIPT5'
                     }
                 }
             }
         };
-        grunt.config.merge({closurecompiler: {
+
+        grunt.config.merge({'closure-compiler': {
             minify: ''
         }});
 
@@ -204,12 +166,10 @@ module.exports = function (grunt) {
 
         var fileList = grunt.file.expand(grunt.template.process('<%= output %><%= vendor %>') + '**/*.js');
         fileList = fileList.filter(function(path) {
-            if (/\.min\.js$/.test(path) || /\/js\/ace\//.test(path)) {
-                return false;
-            }
-            return true;
+            return !/\.min\.js$/.test(path);
         });
 
+        var ccFiles = gruntTask['closure-compiler'].minify.files;
         var onReady = function() {
             ready++;
             if (wait !== ready) {
@@ -223,7 +183,7 @@ module.exports = function (grunt) {
                 var hashFilePath = hashFolder + hash + '.js';
 
                 if (!grunt.file.exists(hashFilePath)) {
-                    gruntTask.closurecompiler.minify.files[hashFilePath] = pathList[0];
+                    ccFiles[hashFilePath] = pathList[0];
                 }
 
                 pathList.forEach(function(path) {
@@ -239,7 +199,12 @@ module.exports = function (grunt) {
                 });
             });
 
-            grunt.task.run(['closurecompiler:minify', 'copyFromCache']);
+            var tasks = ['copyFromCache'];
+            if (Object.keys(ccFiles).length) {
+                tasks.unshift('closure-compiler:minify');
+            }
+
+            grunt.task.run(tasks);
 
             done();
         };
@@ -256,56 +221,16 @@ module.exports = function (grunt) {
         });
     });
 
-    grunt.registerTask('monoPrepare', function() {
-        "use strict";
-        var path = grunt.template.process('<%= output %><%= vendor %><%= dataJsFolder %>');
-        var fileName = 'mono.js';
-        var content = grunt.file.read(path + fileName);
-        var ifStrip = require('./grunt/ifStrip.js').ifStrip;
-        content = ifStrip(content, grunt.config('monoParams') || {});
-        content = content.replace(/\n[\t\s]*\n/g, '\n\n');
-        grunt.file.write(path + fileName, content);
-    });
-
-    grunt.registerMultiTask('insert', 'Insert file in file, like concat but in current position', function() {
-        var options = this.options({
-            word: '//@insert'
-        });
-
-        this.files.forEach(function(filePair) {
-            var dest = filePair.dest;
-
-            var src = filePair.src.shift();
-            var content = grunt.file.read(src);
-            var pos = content.indexOf(options.word);
-            var list = [content.substr(0, pos)];
-            var end = content.substr(pos);
-
-            filePair.src.forEach(function(src, index) {
-                list.push(grunt.file.read(src));
-            });
-
-            list.push(end);
-
-            grunt.file.write(dest, list.join('\n'));
-        });
-    });
-
     grunt.registerTask('extensionBase', ['copy:baseData', 'copy:dataJs', 'copy:bg', 'concat:trackerLib']);
-    grunt.registerTask('buildJs', ['concat:engine', 'insert:mono', 'monoPrepare']);
+    grunt.registerTask('buildJs', ['concat:engine']);
 
-    grunt.loadNpmTasks('grunt-contrib-compress');
-    grunt.loadNpmTasks('grunt-closurecompiler');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-json-format');
-    grunt.loadNpmTasks('grunt-exec');
+    grunt.loadNpmTasks('grunt-contrib-compress');
 
     require('./grunt/chrome.js').run(grunt);
-    require('./grunt/firefox.js').run(grunt);
-    require('./grunt/web.js').run(grunt);
 
     grunt.registerTask('devMode', function() {
         devMode = true;
@@ -316,8 +241,6 @@ module.exports = function (grunt) {
     grunt.registerTask('default', [
         'clean:output',
         'chrome',
-        'opera',
-        'firefox-sig',
-        'web'
+        'opera'
     ]);
 };

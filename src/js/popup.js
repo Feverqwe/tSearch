@@ -22,14 +22,6 @@ var popup = {
 
         popup.domCache.requestInput.focus();
 
-        window.addEventListener('resize', function(e) {
-            var height = document.body.scrollHeight;
-            if (height < 72) {
-                height = 72;
-            }
-            mono.resizePopup(650, height);
-        });
-
         popup.domCache.clearBtn.addEventListener('click', function() {
             popup.domCache.requestInput.value = '';
             popup.domCache.requestInput.dispatchEvent(new CustomEvent('keyup'));
@@ -63,9 +55,6 @@ var popup = {
             }
             var url = 'index.html' + request;
             mono.openTab(url);
-            if (mono.isFF) {
-                mono.closePopup();
-            }
             popup.domCache.clearBtn.dispatchEvent(new CustomEvent('click'));
         });
     },
@@ -181,7 +170,7 @@ var popup = {
 var define = function(name, func) {
     "use strict";
     if (name === 'jquery') {
-        document.body.appendChild(mono.create('script', {src: 'js/jquery-ui.min.js'}));
+        document.body.appendChild(mono.create('script', {src: 'lib/jquery-ui.min.js'}));
         return;
     }
     if (name[0] === 'jquery') {
@@ -194,7 +183,7 @@ define.amd = {};
 
 mono.onReady(function() {
     "use strict";
-    mono.onMessage(function(msg) {
+    mono.onMessage.addListener(function(msg) {
         "use strict";
         if (msg.action === 'empty') {
             popup.domCache.$requestInput.autocomplete('close');
@@ -219,7 +208,7 @@ mono.onReady(function() {
 
             popup.varCache.autoComplite = storage.autoComplite;
 
-            document.body.appendChild(mono.create('script', {src: 'js/jquery-2.1.4.min.js'}));
+            document.body.appendChild(mono.create('script', {src: 'lib/jquery-2.1.4.min.js'}));
         }, storage.langCode);
     });
 });

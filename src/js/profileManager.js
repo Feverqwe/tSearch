@@ -403,11 +403,11 @@ var profileManager = {
                                                 type: 'text/css',
                                                 href: 'css/jsoneditor.min.css'
                                             }));
-                                            document.body.appendChild(mono.create('script', {src: 'js/jsoneditor.min.js'}));
+                                            document.body.appendChild(mono.create('script', {src: 'lib/jsoneditor.min.js'}));
                                         }
 
                                         if (!define.amd['ace']) {
-                                            document.body.appendChild(mono.create('script', {src: 'js/ace/ace.js'}));
+                                            document.body.appendChild(mono.create('script', {src: 'lib/ace/ace.js'}));
                                             (function wait(limit) {
                                                 setTimeout(function() {
                                                     if (window.ace) {
@@ -787,38 +787,6 @@ var profileManager = {
             + '}'
         }));
     },
-    webAppFilterList: function(trackerList) {
-        "use strict";
-        var supportTrackerList = engine.webAppSupportTrackerList;
-        var rmList = [];
-        var i, item;
-        for (i = 0; item = trackerList[i]; i++) {
-            var id = typeof item === 'string' ? item : item.id;
-            if ( supportTrackerList.indexOf(id) === -1 ) {
-                rmList.push(item);
-            }
-        }
-        for (i = 0; item = rmList[i]; i++) {
-            trackerList.splice(trackerList.indexOf(item), 1);
-        }
-        if (rmList.length > 0) {
-            var body = showNotification([
-                [{div: {append: mono.parseTemplate(mono.language.webAppTrackersUnavailable)}}],
-                [
-                    {input: {type: "button", value: mono.language.ok, name: 'yesBtn', on: ['click', function(e) {
-                        e.stopPropagation();
-                        this.close();
-                        document.dispatchEvent(new CustomEvent('installExtensionMenu'));
-                    }]}},
-                    {input: {type: "button", value: mono.language.notNow, name: 'noBtn', on: ['click', function(e) {
-                        e.stopPropagation();
-                        this.close();
-                    }]}}
-                ]
-            ]);
-        }
-        return trackerList;
-    },
     once: function() {
         "use strict";
         if (this.once.ready) return;
@@ -827,27 +795,6 @@ var profileManager = {
         var _this = this;
 
         this.writeFilterList();
-
-        if (mono.isWebApp) {
-            this.domCache.createCustomTrackerBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                var body = showNotification([
-                    [{div: {append: mono.parseTemplate(mono.language.webAppFunctionUnavailable)}}],
-                    [
-                        {input: {type: "button", value: mono.language.ok, name: 'yesBtn', on: ['click', function(e) {
-                            e.stopPropagation();
-                            this.close();
-                            document.dispatchEvent(new CustomEvent('installExtensionMenu'));
-                        }]}},
-                        {input: {type: "button", value: mono.language.notNow, name: 'noBtn', on: ['click', function(e) {
-                            e.stopPropagation();
-                            this.close();
-                        }]}}
-                    ]
-                ]);
-                body.addClass('functionUnavailable');
-            });
-        }
 
         this.domCache.managerBody.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -871,8 +818,6 @@ var profileManager = {
             }
 
             var trackerList = this.getSelectedTrackerList();
-
-            mono.isWebApp && this.webAppFilterList(trackerList);
 
             engine.profileList[profileName] = trackerList;
 

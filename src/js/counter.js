@@ -64,9 +64,6 @@ engine.initCounter = function() {
 
         engine.exceptionTracker.init();
     };
-    if (mono.isWebApp) {
-        return success();
-    }
     mono.ajax({
         type: 'HEAD',
         url: gas.src,

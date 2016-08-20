@@ -4,22 +4,18 @@
   "version": "1.0.0",
   "ffUpdateUrl": "http://static.tms.mooo.com/firefox/update.rdf",
   "ffUpdateKey": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDaPMxKGUu9BUptO1WKf7/18HTUJFsMwSk8GipbMBy1GyMBi+2XXANF2YCfJefYJVo3KxitDvMEwqISbEYhucdZ6FNNNNcaDTvmd5slDG748Xg8/4fUcspeWEq105h+94Xv8+iVkTOPwnGwD5dJmtcS7+n4EpypkCFlPLfaCkl+cQIDAQAB",
-  "ffMinVersion": "29.0",
-  "ffMaxVersion": "47.0",
   "devDependencies": {
-    "grunt-contrib-compress": "^1.2.0",
-    "grunt-closurecompiler": "^0.9.9",
-    "grunt-contrib-concat": "^1.0.0",
+    "grunt-contrib-compress": "^1.3.0",
+    "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-json-format": "^1.0.1",
-    "grunt-exec": "^0.4.6",
-    "crypto": "^0.0.3",
-    "grunt": "~0.4.5",
-    "unzip": "^0.1.11",
-    "fs": "^0.0.2"
+    "google-closure-compiler": "",
+    "grunt": "^1.0.1"
+  },
+  "globalDep": {
+    "grunt-cli": ""
   },
   "outputDir": "output/",
-  "extVersion": "1.7.0"
+  "extVersion": "1.8.0"
 }
