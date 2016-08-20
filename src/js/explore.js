@@ -437,16 +437,16 @@ var explore = {
             imdb_popular: function(content) {
                 var dom = exKit.parseHtml(exKit.contentFilter(content));
 
-                var elList = dom.querySelectorAll('table.results > tbody > tr.detailed');
+                var elList = dom.querySelectorAll('.lister-list > .lister-item');
                 var arr = [];
                 for (var i = 0, el; el = elList[i]; i++) {
-                    var img = el.querySelector('td.image img');
-                    img !== null && (img = img.getAttribute('src'));
+                    var img = el.querySelector('.lister-item-image img');
+                    img !== null && (img = img.getAttribute('loadlate'));
 
-                    var title = el.querySelector('td.title > a');
+                    var title = el.querySelector('.lister-item-header > a');
                     title !== null && (title = title.textContent);
 
-                    var url = el.querySelector('td.title > a');
+                    var url = el.querySelector('.lister-item-header > a');
                     url !== null && (url = url.getAttribute('href'));
 
                     var obj = {
@@ -469,16 +469,16 @@ var explore = {
             imdb_serials: function(content) {
                 var dom = exKit.parseHtml(exKit.contentFilter(content));
 
-                var elList = dom.querySelectorAll('table.results > tbody > tr.detailed');
+                var elList = dom.querySelectorAll('.lister-list > .lister-item');
                 var arr = [];
                 for (var i = 0, el; el = elList[i]; i++) {
-                    var img = el.querySelector('td.image img');
-                    img !== null && (img = img.getAttribute('src'));
+                    var img = el.querySelector('.lister-item-image img');
+                    img !== null && (img = img.getAttribute('loadlate'));
 
-                    var title = el.querySelector('td.title > a');
+                    var title = el.querySelector('.lister-item-header > a');
                     title !== null && (title = title.textContent);
 
-                    var url = el.querySelector('td.title > a');
+                    var url = el.querySelector('.lister-item-header > a');
                     url !== null && (url = url.getAttribute('href'));
 
                     var obj = {
