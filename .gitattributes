@@ -1,14 +1,2 @@
 # Auto detect text files and perform LF normalization
 * text=auto
-*.js text eol=lf
-*.sh text eol=lf
-*.css text eol=lf
-*.json text eol=lf
-*.html text eol=lf
-.gitattributes text eol=lf
-.gitignore text eol=lf
-*.md text eol=lf
-*.bat text eol=crlf
-*.path text eol=crlf
-jquery*.js text eol=auto
-/vendor/firefox_tools/template/* text eol=lf
