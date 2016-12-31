@@ -55,7 +55,6 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
     })();
 
     document.body.classList.remove('loading');
-    document.querySelector('*[autofocus]').focus();
 
     var initAutoComplete = function () {
         var historySuggests = (function () {
