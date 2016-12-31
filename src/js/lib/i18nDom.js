@@ -7,8 +7,14 @@ define(function () {
         var map = {
             text: 'textContent'
         };
-        [].slice.call(document.querySelectorAll('*[data-i18n]')).forEach(function (node) {
-            var details = JSON.parse(node.dataset.i18n);
+        [].slice.call(document.querySelectorAll('*[data-i18n]')).map(function (node) {
+            return {
+                node: node,
+                details: JSON.parse(node.dataset.i18n)
+            };
+        }).forEach(function (item) {
+            var node = item.node;
+            var details = item.details;
             var key, value;
             for (key in details) {
                 value = details[key];
