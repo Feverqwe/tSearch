@@ -19,7 +19,7 @@ define(function () {
             for (key in details) {
                 value = details[key];
                 key = map[key] || key;
-                node[key] = chrome.i18n.getMessage(value) || node[key];
+                node[key] = chrome.i18n.getMessage(value);
             }
         });
     };
