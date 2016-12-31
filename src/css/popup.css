@@ -30,8 +30,8 @@ body {
     font-size: 16px;
     padding-left: 5px;
     padding-right: 26px;
-    border: 1px solid #ccc;
-    width: 481px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    width: 473px;
 }
 
 .input__input:hover {
@@ -52,7 +52,8 @@ body {
     height: 24px;
     background: url(../img/delete.svg) center center no-repeat;
     background-size: 16px;
-    opacity: 0.5;
+    opacity: 0.3;
+    transition: opacity .2s;
 }
 
 .input__clear.input__clear_visible {
@@ -95,7 +96,7 @@ body {
 .ui-autocomplete {
     margin: 0;
     box-sizing: border-box;
-    border: 1px solid silver;
+    border: 1px solid rgba(0, 0, 0, 0.3);
     border-top: 0;
     background: #FFF;
     color: #333;
@@ -103,7 +104,7 @@ body {
     max-height: 153px;
     overflow-y: auto;
     z-index: 100;
-    width: 481px !important;
+    width: 473px !important;
     padding-left: 0;
     font-size: 14px;
     outline: none;

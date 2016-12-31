@@ -13,5 +13,14 @@
   },
   "clear": {
     "message": "Очистить"
+  },
+  "main": {
+    "message": "Главная"
+  },
+  "history": {
+    "message": "История"
+  },
+  "options": {
+    "message": "Настройки"
   }
 }

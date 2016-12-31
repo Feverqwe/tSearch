@@ -6,21 +6,23 @@
         <link rel="shortcut icon" href="img/icon_16.png">
         <link rel="stylesheet" type="text/css" href="css/index.css">
     </head>
-    <body class="loading home">
+    <body class="loading">
         <div class="head">
-            <div id="search_form">
-                <input type="text" id="request_input" autofocus/>
-                <div data-lang="clear" id="clear_btn" title="{clear}"></div>
-                <a href="#" data-lang="search,title,text" id="search_btn">{search}</a>
+            <div class="search">
+                <div class="search__input">
+                    <input type="text" class="input__input" autofocus data-i18n='{"placeholder":"searchPlaceholder"}' placeholder="{searchPlaceholder}"/>
+                    <a href="#clear" data-i18n='{"title":"clear"}' title="{clear}" class="input__clear"></a>
+                </div>
+                <a href="#search" class="search__submit" data-i18n='{"text":"search"}'>{search}</a>
             </div>
-            <div class="quick-menu">
-                <a href="#" data-lang="main,title" id="main_btn" title="{main}"></a>
-                <a href="history.html" data-lang="searchHistory,title" id="history_btn" title="{history}"></a>
-                <a href="options.html" data-lang="options,title" id="settings_btn" title="{options}"></a>
+            <div class="menu">
+                <a href="#main" class="menu__btn menu__btn-main" data-i18n='{"title":"main"}' title="{main}"></a>
+                <a href="history.html" class="menu__btn menu__btn-history" data-i18n='{"title":"history"}' title="{history}"></a>
+                <a href="options.html" class="menu__btn menu__btn-options" data-i18n='{"title":"options"}' title="{options}"></a>
             </div>
         </div>
         <div class="content">
-            <div class="additional-column">
+            <!--<div class="additional-column">
                 <div class="profile-select-block">
                     <select id="profile_select"></select>
                     <a id="edit_profile" href="#" data-lang="editProfile,title" title="{edit profile}"></a>
@@ -86,9 +88,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
-        <a id="top_btn" data-lang="up,title" href="#" title="{up}"></a>
+        <!--<a id="top_btn" data-lang="up,title" href="#" title="{up}"></a>
         <div id="manager_layer">
             <div id="manager">
                 <div class="mgr-header">
@@ -114,7 +116,7 @@
                     <a href="#" id="manager_save" class="btn" data-lang="save">{save}</a>
                 </div>
             </div>
-        </div>
+        </div>-->
         <script src="js/min/require.js"></script>
         <script src="js/index.js"></script>
     </body>
