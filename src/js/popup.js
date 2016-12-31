@@ -64,6 +64,7 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
     })();
 
     var initAutoComplete = function () {
+        var lastHistoryRequest = null;
         var historySuggests = (function () {
             var history = null;
             var initHistory = function (cb) {
@@ -71,8 +72,14 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
                     history: []
                 }, function (storage) {
                     history = storage.history;
-                    cb();
+                    cb && cb();
                 });
+
+                return {
+                    abort: function () {
+                        cb = null;
+                    }
+                }
             };
             var onGetHistory = function (term, cb) {
                 var termLen = term.length;
@@ -95,7 +102,7 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
             };
             return function (term, cb) {
                 if (!history) {
-                    initHistory(function () {
+                    lastHistoryRequest = initHistory(function () {
                         onGetHistory(term, cb);
                     });
                 } else {
@@ -106,22 +113,16 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
 
         var webSuggests = (function () {
             var cache = {};
-            var lastRequest = null;
             var onGetSuggests = function (term, suggests, cb) {
                 cache[term] = suggests;
                 cb(suggests);
             };
             return function (term, cb) {
-                if (lastRequest) {
-                    lastRequest.abort();
-                    lastRequest = null;
-                }
-
                 var _cache = cache[term];
                 if (_cache) {
                     onGetSuggests(term, _cache, cb);
                 } else {
-                    lastRequest = utils.request({
+                    lastHistoryRequest = utils.request({
                         url: 'http://suggestqueries.google.com/complete/search',
                         data: {
                             client: 'firefox',
@@ -144,6 +145,11 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
                 collision: "bottom"
             },
             source: function(query, cb) {
+                if (lastHistoryRequest) {
+                    lastHistoryRequest.abort();
+                    lastHistoryRequest = null;
+                }
+
                 var term = query.term;
                 if (!term.length) {
                     historySuggests(term, cb);
