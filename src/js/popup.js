@@ -7,9 +7,9 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
 
     document.body.classList.remove('loading');
 
-    var input =  document.querySelector('.input__input');
-    var clear =  document.querySelector('.input__clear');
-    var submit =  document.querySelector('.search__submit');
+    var input =  document.querySelector('.search .input__input');
+    var clear =  document.querySelector('.search .input__clear');
+    var submit =  document.querySelector('.search .search__submit');
 
     (function () {
         var clearIsVisible = false;
@@ -172,6 +172,7 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
             }
         });
     };
+
     setTimeout(function () {
         require(['./js/min/jquery-3.1.1.min'], function () {
             require(['./js/min/jquery-ui.min'], function () {
