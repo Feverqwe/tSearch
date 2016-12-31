@@ -8,6 +8,9 @@
   "search": {
     "message": "Найти"
   },
+  "searchPlaceholder": {
+    "message": "Введите поисковый запрос"
+  },
   "clear": {
     "message": "Очистить"
   }
