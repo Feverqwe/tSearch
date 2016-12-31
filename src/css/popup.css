@@ -1,0 +1,121 @@
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+}
+
+.loading {
+    visibility: hidden;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    height: 70px;
+    margin: 0 25px;
+}
+
+.search__input {
+    position: relative;
+}
+
+.input__input {
+    box-sizing: border-box;
+    height: 28px;
+
+    padding-bottom: 1px;
+    padding-top: 1px;
+    outline: none;
+    margin: 0;
+
+    font-size: 16px;
+    padding-left: 5px;
+    padding-right: 26px;
+    border: 1px solid #ccc;
+    width: 481px;
+}
+
+.input__input:hover {
+    border: 1px solid #999;
+}
+
+.input__input:focus {
+    border: 1px solid #3366ff;
+}
+
+.input__clear {
+    visibility: hidden;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: url(../img/delete.svg) center center no-repeat;
+    background-size: 16px;
+    opacity: 0.5;
+}
+
+.input__clear.input__clear_visible {
+    visibility: visible;
+}
+
+.input__clear:hover {
+    opacity: 0.7;
+}
+
+.search__submit {
+    box-sizing: border-box;
+    height: 28px;
+    padding: 5px 0;
+
+    display: inline-block;
+    background-color: #337AF8;
+    border: 1px solid #337AF8;
+    border-radius: 2px;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    margin-left: 2px;
+    text-decoration: none;
+    outline-color: #3802FD;
+    width: 75px;
+}
+
+.search__submit:hover {
+    background-color: #337AF8;
+    border-color: #2B68C1;
+    box-shadow: 0 1px 0 rgba(0,0,0,.15);
+}
+
+.search__submit:active {
+    border-color: #2B68C1;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+.ui-autocomplete {
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid silver;
+    border-top: 0;
+    background: #FFF;
+    color: #333;
+    list-style: none;
+    max-height: 153px;
+    overflow-y: auto;
+    z-index: 100;
+    width: 481px !important;
+    padding-left: 0;
+    font-size: 14px;
+    outline: none;
+}
+.ui-autocomplete li div {
+    padding: 3px 5px;
+    cursor: pointer;
+}
+.ui-autocomplete li div.ui-state-active {
+    background-color: #337AF8;
+    color: #fff;
+}
+.ui-helper-hidden-accessible {
+    display: none;
+}

@@ -1,4 +1,14 @@
 {
-    "extName": {"message": "TMS - Поиск торрентов, расширение"},
-    "extDesc": {"message": "Torrents MultiSearch - поиск по нескольким трекерам сразу!"},
+  "extName": {
+    "message": "TMS - Поиск торрентов, расширение"
+  },
+  "extDesc": {
+    "message": "Torrents MultiSearch - поиск по нескольким трекерам сразу!"
+  },
+  "search": {
+    "message": "Найти"
+  },
+  "clear": {
+    "message": "Очистить"
+  }
 }
