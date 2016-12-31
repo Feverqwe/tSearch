@@ -139,8 +139,8 @@ body {
 .menu__btn {
     box-sizing: border-box;
     display: inline-block;
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     margin: 0 2px;
 
     border: 1px solid rgba(0, 0, 0, 0.3);
@@ -156,14 +156,16 @@ body {
 }
 
 .menu__btn-history {
-    background-image: url(../img/history.png);
+    background-image: url(../img/history.svg);
+    background-size: 16px;
 }
 
 .menu__btn-options {
-    background-image: url(../img/settings-btn.svg);
+    background-image: url(../img/options.svg);
     background-size: 16px;
 }
 
 .menu__btn-main {
-    background-image: url(../img/main.png);
+    background-image: url(../img/main.svg);
+    background-size: 16px;
 }
