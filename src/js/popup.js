@@ -12,11 +12,18 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
     var submit =  document.querySelector('.search__submit');
 
     (function () {
+        var clearIsVisible = false;
         input.addEventListener('keyup', function() {
             if (this.value.length > 0) {
-                clear.classList.add('input__clear_visible');
+                if (!clearIsVisible) {
+                    clearIsVisible = true;
+                    clear.classList.add('input__clear_visible');
+                }
             } else {
-                clear.classList.remove('input__clear_visible');
+                if (clearIsVisible) {
+                    clearIsVisible = false;
+                    clear.classList.remove('input__clear_visible');
+                }
             }
         });
 
