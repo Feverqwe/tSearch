@@ -5,6 +5,8 @@
 require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
     i18nDom();
 
+    document.body.classList.remove('loading');
+
     var input =  document.querySelector('.input__input');
     var clear =  document.querySelector('.input__clear');
     var submit =  document.querySelector('.search__submit');
@@ -53,8 +55,6 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
             chrome.tabs.create({url: url});
         });
     })();
-
-    document.body.classList.remove('loading');
 
     var initAutoComplete = function () {
         var historySuggests = (function () {
