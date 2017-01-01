@@ -182,21 +182,45 @@ body {
 
 .content {
     display: flex;
+}
+
+.content-row {
     flex-direction: row;
 }
 
-.parameters-column {
-
+.content-column {
+    flex-direction: column;
 }
 
-.parameter {
+.content-row .parameter_box {
+    display: flex;
+    flex-direction: column;
+}
+
+.content-column .parameter_box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.content-row .parameter {
     margin-top: 8px;
     margin-bottom: 1px;
     padding: 0 5px;
 }
 
-.filter__label {
+.content-column .parameter {
+    padding: 0 5px;
+}
+
+.content-row .filter__label {
+    display: block;
     margin: 2px 0;
+}
+
+.content-column .input_box-filter {
+    white-space: nowrap;
 }
 
 .input__input-word-filter {

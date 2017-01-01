@@ -2,7 +2,7 @@
  * Created by Anton on 31.12.2016.
  */
 "use strict";
-require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
+require(['./js/min/promise.min', './js/lib/i18nDom', './js/lib/utils'], function (Promise, i18nDom, utils) {
     i18nDom();
 
     document.body.classList.remove('loading');
