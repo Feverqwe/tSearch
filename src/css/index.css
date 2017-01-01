@@ -350,6 +350,7 @@ body {
     padding: 2px;
     white-space: nowrap;
     overflow: hidden;
+    min-height: 16px;
 }
 .simple_select__menu__item:hover {
     background-color: rgba(0, 0, 0, 0.1);

@@ -403,6 +403,30 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
     })();
 
     (function () {
+        var trackers = {};
+        var profiles = [];
+        var idProfileMap = {};
+        var getProfileId = function () {
+            var id = 0;
+            while (idProfileMap[id]) {
+                id++;
+            }
+            return id;
+        };
+        var createDefaultProfile = function () {
+            return {
+                name: chrome.i18n.getMessage('defaultProfileName'),
+                id: getProfileId(),
+                trackers: [
+                    'rutracker',
+                    'nnmclub',
+                    'kinozal',
+                    'tapochek',
+                    'rutor'
+                ]
+            }
+        };
+
         var manageProfile = document.querySelector('.button-manage-profile');
         var profileSelect = document.querySelector('.profile__select');
         var profileSelectWrapper = null;
@@ -416,14 +440,22 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         });
 
         chrome.storage.local.get({
-            profiles: []
+            profiles: [],
+            trackers: {}
         }, function (storage) {
-            var elList = [];
+            trackers = storage.trackers;
+            profiles = storage.profiles;
             storage.profiles.forEach(function (item) {
-                elList.push(dom.el('option', {
+                idProfileMap[item.id] = item;
+            });
+            if (storage.profiles.length === 0) {
+                storage.profiles.push(createDefaultProfile());
+            }
+            var elList = storage.profiles.map(function (item) {
+                return dom.el('option', {
                     text: item.name,
-                    value: item.id
-                }))
+                    id: item.id
+                });
             });
             dom.el(profileSelect, {
                 append: elList

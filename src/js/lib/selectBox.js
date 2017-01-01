@@ -118,16 +118,9 @@ define(['./dom'], function (dom) {
         };
 
         self.update = function () {
-            var display = 'none';
-            if (self.menu) {
-                display = self.menu.style.display;
-                if (self.menu.parentNode) {
-                    self.menu.parentNode.removeChild(self.menu);
-                }
-            }
-
-            var options = getOptions().map(function (optionNode, index) {
-                return dom.el('a', {
+            var options = document.createDocumentFragment();
+            getOptions().forEach(function (optionNode, index) {
+                options.appendChild(dom.el('a', {
                     class: 'simple_select__menu__item',
                     href: '#option',
                     data: {
@@ -139,20 +132,25 @@ define(['./dom'], function (dom) {
                         e.preventDefault();
                         self.select(this.dataset.index);
                     }]
-                });
+                }));
             });
 
-            self.menu = dom.el('div', {
-                class: 'simple_select__menu',
-                style: {
-                    display: display,
-                    position: 'absolute'
-                },
-                on: ['click', function(e) {
-                    e.stopPropagation();
-                }],
-                append: options
-            });
+            if (self.menu) {
+                self.menu.textContent = '';
+                self.menu.appendChild(options);
+            } else {
+                self.menu = dom.el('div', {
+                    class: 'simple_select__menu',
+                    style: {
+                        display: 'none',
+                        position: 'absolute'
+                    },
+                    on: ['click', function (e) {
+                        e.stopPropagation();
+                    }],
+                    append: options
+                });
+            }
         };
 
         (function () {
