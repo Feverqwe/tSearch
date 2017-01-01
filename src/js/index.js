@@ -37,6 +37,17 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         });
     };
 
+    var bindDblClickClear = function (nodeList) {
+        if (!Array.isArray(nodeList)) {
+            nodeList = [nodeList];
+        }
+        nodeList.forEach(function (node) {
+            node.addEventListener('dblclick', function() {
+                this.value = '';
+            });
+        });
+    };
+
     (function () {
         var searchInput = document.querySelector('.input__input-search');
         var searchClear = document.querySelector('.input__clear-search');
@@ -266,13 +277,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             });
 
-            inputFrom.addEventListener('dblclick', function() {
-                this.value = '';
-            });
-
-            inputTo.addEventListener('dblclick', function() {
-                this.value = '';
-            });
+            bindDblClickClear([inputFrom, inputTo]);
         })(sizeInputFromFilter, sizeInputToFilter);
 
         (function timeFilter(select, inputBox, inputFrom, inputTo) {
@@ -319,13 +324,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
 
             });
 
-            inputFrom.addEventListener('dblclick', function() {
-                this.value = '';
-            });
-
-            inputTo.addEventListener('dblclick', function() {
-                this.value = '';
-            });
+            bindDblClickClear([inputFrom, inputTo]);
         })(selectTimeFilter, inputBoxTimeFilter, timeInputFromFilter, timeInputToFilter);
 
         (function seedFilter(inputFrom, inputTo) {
@@ -350,13 +349,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             });
 
-            inputFrom.addEventListener('dblclick', function() {
-                this.value = '';
-            });
-
-            inputTo.addEventListener('dblclick', function() {
-                this.value = '';
-            });
+            bindDblClickClear([inputFrom, inputTo]);
         })(seedInputFromFilter, seedInputToFilter);
 
         (function peerFilter(inputFrom, inputTo) {
@@ -381,13 +374,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             });
 
-            inputFrom.addEventListener('dblclick', function() {
-                this.value = '';
-            });
-
-            inputTo.addEventListener('dblclick', function() {
-                this.value = '';
-            });
+            bindDblClickClear([inputFrom, inputTo]);
         })(peerInputFromFilter, peerInputToFilter);
     })();
 
