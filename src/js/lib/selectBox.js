@@ -10,6 +10,12 @@ define(['./dom'], function (dom) {
         self.selected = null;
         self.menu = null;
 
+        var getOptions = function () {
+            return [].slice.call(select.childNodes).filter(function (node) {
+                return node.tagName === 'OPTION';
+            });
+        };
+
         var bodyEvent = function (e) {
             if (!self.control.contains(e.target) && !self.menu.contains(e.target)) {
                 document.removeEventListener('click', bodyEvent, true);
@@ -32,7 +38,7 @@ define(['./dom'], function (dom) {
                 self.overItem(self.control.dataset.selectedIndex);
 
                 if (!self.menu.parentNode) {
-                    document.body.appendChild(self.menu);
+                    self.control.parentNode.insertBefore(self.menu, self.control.nextElementSibling);
                 }
 
                 document.addEventListener('click', bodyEvent, true);
@@ -53,7 +59,7 @@ define(['./dom'], function (dom) {
                 selectedOption.classList.remove('simple_select__menu__item-selected');
             }
 
-            var option = self.menu.childNodes[index];
+            var option = getOptions()[index];
             if (option) {
                 option.classList.add('simple_select__menu__item-selected');
             }
@@ -96,7 +102,7 @@ define(['./dom'], function (dom) {
             }
             if (self.control.dataset.selectedIndex != index) {
                 self.control.dataset.selectedIndex = index;
-                var option = select.childNodes[index];
+                var option = getOptions()[index];
                 if (option) {
                     self.selected.textContent = option.textContent;
                     self.selected.dataset.index = index;
@@ -104,7 +110,7 @@ define(['./dom'], function (dom) {
 
                 if (select.selectedIndex != index) {
                     select.selectedIndex = index;
-                    select.dispatchEvent(new CustomEvent('change'));
+                    select.dispatchEvent(new CustomEvent('change', {detail: 'simpleSelect'}));
                 }
             }
 
@@ -118,9 +124,7 @@ define(['./dom'], function (dom) {
                 self.menu.parentNode.removeChild(self.menu);
             }
 
-            var options = [].slice.call(select.childNodes).filter(function (node) {
-                return node.tagName === 'OPTION';
-            }).map(function (optionNode, index) {
+            var options = getOptions().map(function (optionNode, index) {
                 return dom.el('a', {
                     class: 'simple_select__menu__item',
                     href: '#option',
@@ -157,22 +161,20 @@ define(['./dom'], function (dom) {
                     self.selected = dom.el('span', {
                         class: ['simple_select__value']
                     }),
-                    !details.editBtn ? '' : self.editBtn = dom.el('a', {
-                        href: '#manageProfiles',
-                        title: chrome.i18n.getMessage('manageProfiles'),
-                        class: ['simple_select__btn', 'simple_select__btn-manage_profiles'],
+                    !details.editBtn ? '' : self.editBtn = dom.el('span', {
+                        class: ['simple_select__btn'],
                         append: [
-                            dom.el('i', {
-                                class: ['simple_select__btn__icon', 'simple_select__btn__icon-manage_profiles']
-                            })
+                            details.editBtn
                         ],
                         on: ['click', function (e) {
-                            e.stopPropagation();
+                            if (!self.isOpen) {
+                                e.stopPropagation();
+                            }
                         }]
                     }),
                     self.arrowBtn = dom.el('a', {
                         href: '#open',
-                        class: ['simple_select__btn', 'simple_select__btn-arrow'],
+                        class: ['simple_select__btn'],
                         append: [
                             dom.el('i', {
                                 class: ['simple_select__btn__icon', 'simple_select__btn__icon-arrow']
@@ -214,6 +216,12 @@ define(['./dom'], function (dom) {
 
             select.style.display = 'none';
             select.parentNode.insertBefore(self.control, select);
+
+            select.addEventListener('change', function (e) {
+                if (e.detail !== 'simpleSelect') {
+                    self.select(select.selectedIndex);
+                }
+            });
 
             self.update();
             self.select();

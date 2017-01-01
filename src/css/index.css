@@ -158,11 +158,15 @@ body {
     border-radius: 2px;
     background-position: center;
     background-repeat: no-repeat;
-    outline-color: #3802FD;
+    outline: none;
 }
 
 .menu__btn:hover {
     border-color: rgba(0, 0, 0, 0.7);
+}
+
+.menu__btn:focus {
+    border: 1px solid #3366ff;
 }
 
 .menu__btn-history {
@@ -263,17 +267,18 @@ body {
 .button {
     width: 22px;
     height: 22px;
-    display: inline-block;
+    display: block;
     box-sizing: border-box;
+    opacity: 0.7;
 }
 
 .button:hover {
+    opacity: 1;
 }
 
 .button-manage-profile {
     background: url(../img/edit.svg) center no-repeat;
     background-size: 16px;
-    vertical-align: middle;
 }
 
 .simple_select {
@@ -285,10 +290,15 @@ body {
     color: #000;
     text-decoration: none;
     align-items: center;
+    outline: none;
 }
 
 .simple_select:hover {
     border: 1px solid rgba(0, 0, 0, 0.7);
+}
+
+.simple_select:focus {
+    border: 1px solid #3366ff;
 }
 
 .simple_select__value {
@@ -314,11 +324,6 @@ body {
     opacity: 1;
 }
 
-.simple_select__btn__icon-manage_profiles {
-    background: url(../img/edit.svg) center no-repeat;
-    background-size: 16px;
-}
-
 .simple_select__btn__icon-arrow {
     background: url(../img/arrow-drop-down.svg) center no-repeat;
     background-size: 16px;
@@ -333,11 +338,8 @@ body {
     display: flex;
     flex-direction: column;
     background-color: #FFF;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-}
-
-.simple_select__menu:hover {
     border: 1px solid rgba(0, 0, 0, 0.7);
+    z-index: 10;
 }
 
 .simple_select__menu__item {

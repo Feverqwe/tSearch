@@ -282,6 +282,8 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             };
 
+            var selectWrapper = new selectBox(select);
+
             select.addEventListener('change', function (e) {
                 var value = this.value;
                 if (value < 0) {
@@ -388,10 +390,16 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
     })();
 
     (function () {
+        var manageProfile = document.querySelector('.button-manage-profile');
         var profileSelect = document.querySelector('.profile__select');
+        var profileSelectWrapper = null;
 
-        new selectBox(profileSelect, {
-            editBtn: true
+        manageProfile.addEventListener('click', function (e) {
+            e.preventDefault();
+        });
+
+        profileSelectWrapper = new selectBox(profileSelect, {
+            editBtn: manageProfile
         });
 
         chrome.storage.local.get({
