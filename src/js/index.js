@@ -35,10 +35,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             input.dispatchEvent(new CustomEvent('keyup'));
             input.focus();
         });
-
-        details.dblClick && input.addEventListener('dblclick', function() {
-            clear.dispatchEvent(new MouseEvent('click', {cancelable: true}));
-        });
     };
 
     (function () {
@@ -239,9 +235,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             };
 
-            bindClearBtn(clearWordFilter, input, {
-                dblClick: true
-            });
+            bindClearBtn(clearWordFilter, input);
 
             input.addEventListener('keyup', function(e) {
                 if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
@@ -270,6 +264,14 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
                     uiState.push(stateItem);
                 }
+            });
+
+            inputFrom.addEventListener('dblclick', function() {
+                this.value = '';
+            });
+
+            inputTo.addEventListener('dblclick', function() {
+                this.value = '';
             });
         })(sizeInputFromFilter, sizeInputToFilter);
 
@@ -316,6 +318,14 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             inputTo.addEventListener('keyup', function(e) {
 
             });
+
+            inputFrom.addEventListener('dblclick', function() {
+                this.value = '';
+            });
+
+            inputTo.addEventListener('dblclick', function() {
+                this.value = '';
+            });
         })(selectTimeFilter, inputBoxTimeFilter, timeInputFromFilter, timeInputToFilter);
 
         (function seedFilter(inputFrom, inputTo) {
@@ -339,6 +349,14 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     uiState.push(stateItem);
                 }
             });
+
+            inputFrom.addEventListener('dblclick', function() {
+                this.value = '';
+            });
+
+            inputTo.addEventListener('dblclick', function() {
+                this.value = '';
+            });
         })(seedInputFromFilter, seedInputToFilter);
 
         (function peerFilter(inputFrom, inputTo) {
@@ -361,6 +379,14 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
                     uiState.push(stateItem);
                 }
+            });
+
+            inputFrom.addEventListener('dblclick', function() {
+                this.value = '';
+            });
+
+            inputTo.addEventListener('dblclick', function() {
+                this.value = '';
             });
         })(peerInputFromFilter, peerInputToFilter);
     })();

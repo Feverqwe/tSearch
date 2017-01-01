@@ -303,7 +303,7 @@ body {
 
 .simple_select__value {
     flex-grow: 1;
-    padding: 0 4px;
+    padding: 0 2px;
     width: 114px;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -346,7 +346,7 @@ body {
     color: #000;
     text-decoration: none;
     text-overflow: ellipsis;
-    padding: 2px 4px;
+    padding: 2px;
     white-space: nowrap;
     overflow: hidden;
 }
