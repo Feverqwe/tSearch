@@ -403,6 +403,11 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
     })();
 
     (function () {
+        var manageProfile = document.querySelector('.button-manage-profile');
+        var profileSelect = document.querySelector('.profile__select');
+        var profileSelectWrapper = null;
+
+        var currentProfileId = {};
         var trackers = {};
         var profiles = [];
         var idProfileMap = {};
@@ -426,10 +431,21 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 ]
             }
         };
+        var selectProfileId = function (id) {
+            var index = 0;
+            profiles.some(function (item, i) {
+                if (item.id === id) {
+                    index = i;
+                    return true;
+                }
+            });
+            if (profileSelect.selectedIndex != index) {
+                profileSelect.selectedIndex = index;
+            }
+        };
+        var loadProfile = function (profile) {
 
-        var manageProfile = document.querySelector('.button-manage-profile');
-        var profileSelect = document.querySelector('.profile__select');
-        var profileSelectWrapper = null;
+        };
 
         manageProfile.addEventListener('click', function (e) {
             e.preventDefault();
@@ -440,26 +456,34 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         });
 
         chrome.storage.local.get({
+            currentProfileId: null,
             profiles: [],
             trackers: {}
         }, function (storage) {
+            currentProfileId = storage.currentProfileId;
             trackers = storage.trackers;
             profiles = storage.profiles;
-            storage.profiles.forEach(function (item) {
+            if (profiles.length === 0) {
+                profiles.push(createDefaultProfile());
+            }
+            profiles.forEach(function (item) {
                 idProfileMap[item.id] = item;
             });
-            if (storage.profiles.length === 0) {
-                storage.profiles.push(createDefaultProfile());
+            if (currentProfileId === null || !idProfileMap[currentProfileId]) {
+                currentProfileId = profiles[0].id;
             }
-            var elList = storage.profiles.map(function (item) {
+            var elList = profiles.map(function (item) {
                 return dom.el('option', {
                     text: item.name,
-                    id: item.id
+                    value: item.id
                 });
             });
             dom.el(profileSelect, {
                 append: elList
             });
+            selectProfileId(currentProfileId);
+            loadProfile(idProfileMap[currentProfileId]);
+
             profileSelectWrapper.update();
             profileSelectWrapper.select();
         });
