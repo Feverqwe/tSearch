@@ -10,6 +10,13 @@ define(['./dom'], function (dom) {
         self.selected = null;
         self.menu = null;
 
+        var bodyEvent = function (e) {
+            if (!self.control.contains(e.target) && !self.menu.contains(e.target)) {
+                document.removeEventListener('click', bodyEvent, true);
+                self.hide();
+            }
+        };
+
         self.open = function () {
             if (!self.isOpen) {
                 self.isOpen = true;
@@ -27,6 +34,8 @@ define(['./dom'], function (dom) {
                 if (!self.menu.parentNode) {
                     document.body.appendChild(self.menu);
                 }
+
+                document.addEventListener('click', bodyEvent, true);
             }
         };
 

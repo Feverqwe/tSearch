@@ -282,7 +282,6 @@ body {
     box-sizing: border-box;
     height: 22px;
     border: 1px solid rgba(0, 0, 0, 0.3);
-    border-radius: 2px;
     color: #000;
     text-decoration: none;
     align-items: center;
@@ -335,6 +334,10 @@ body {
     flex-direction: column;
     background-color: #FFF;
     border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.simple_select__menu:hover {
+    border: 1px solid rgba(0, 0, 0, 0.7);
 }
 
 .simple_select__menu__item {
