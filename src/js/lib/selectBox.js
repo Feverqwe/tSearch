@@ -59,7 +59,7 @@ define(['./dom'], function (dom) {
                 selectedOption.classList.remove('simple_select__menu__item-selected');
             }
 
-            var option = getOptions()[index];
+            var option = self.menu.childNodes[index];
             if (option) {
                 option.classList.add('simple_select__menu__item-selected');
             }
@@ -95,7 +95,7 @@ define(['./dom'], function (dom) {
             if (!index && index != 0) {
                 var selectedOption = self.menu.querySelector('.simple_select__menu__item-selected');
                 if (selectedOption) {
-                    index = selectedOption.dataset.value;
+                    index = selectedOption.dataset.index;
                 } else {
                     index = select.selectedIndex;
                 }
