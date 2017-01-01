@@ -121,7 +121,9 @@ define(['./dom'], function (dom) {
             var display = 'none';
             if (self.menu) {
                 display = self.menu.style.display;
-                self.menu.parentNode.removeChild(self.menu);
+                if (self.menu.parentNode) {
+                    self.menu.parentNode.removeChild(self.menu);
+                }
             }
 
             var options = getOptions().map(function (optionNode, index) {

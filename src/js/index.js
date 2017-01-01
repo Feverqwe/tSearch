@@ -428,6 +428,8 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             dom.el(profileSelect, {
                 append: elList
             });
+            profileSelectWrapper.update();
+            profileSelectWrapper.select();
         });
     })();
 
