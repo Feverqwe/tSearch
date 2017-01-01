@@ -2,7 +2,10 @@
  * Created by Anton on 31.12.2016.
  */
 "use strict";
-require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
+require.config({
+    baseUrl: './js'
+});
+require(['./lib/i18nDom', './lib/utils'], function (i18nDom, utils) {
     i18nDom();
 
     document.body.classList.remove('loading');
@@ -180,8 +183,8 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
     };
 
     setTimeout(function () {
-        require(['./js/min/jquery-3.1.1.min'], function () {
-            require(['./js/min/jquery-ui.min'], function () {
+        require(['./min/jquery-3.1.1.min'], function () {
+            require(['./min/jquery-ui.min'], function () {
                 initAutoComplete(input, submit);
             });
         });

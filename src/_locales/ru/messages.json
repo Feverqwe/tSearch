@@ -70,5 +70,14 @@
   },
   "scrollTop": {
     "message": "Вверх!"
+  },
+  "manageProfile": {
+    "message": "Управление профилями"
+  },
+  "newProfile": {
+    "message": "Добавить"
+  },
+  "editProfile": {
+    "message": "Редактировать"
   }
 }

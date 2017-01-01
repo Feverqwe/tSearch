@@ -2,7 +2,10 @@
  * Created by Anton on 31.12.2016.
  */
 "use strict";
-require(['./js/min/promise.min', './js/lib/i18nDom', './js/lib/utils'], function (Promise, i18nDom, utils) {
+require.config({
+    baseUrl: './js'
+});
+require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './lib/selectBox'], function (Promise, i18nDom, utils, dom, selectBox) {
     i18nDom();
 
     document.body.classList.remove('loading');
@@ -204,8 +207,8 @@ require(['./js/min/promise.min', './js/lib/i18nDom', './js/lib/utils'], function
         };
 
         setTimeout(function () {
-            require(['./js/min/jquery-3.1.1.min'], function () {
-                require(['./js/min/jquery-ui.min'], function () {
+            require(['./min/jquery-3.1.1.min'], function () {
+                require(['./min/jquery-ui.min'], function () {
                     initAutoComplete(searchInput, searchSubmit);
                 });
             });
@@ -381,6 +384,29 @@ require(['./js/min/promise.min', './js/lib/i18nDom', './js/lib/utils'], function
                     scrollTop.classList.remove('scroll_top-show');
                 }
             }
+        });
+    })();
+
+    (function () {
+        var profileSelect = document.querySelector('.profile__select');
+
+        new selectBox(profileSelect, {
+            editBtn: true
+        });
+
+        chrome.storage.local.get({
+            profiles: []
+        }, function (storage) {
+            var elList = [];
+            storage.profiles.forEach(function (item) {
+                elList.push(dom.el('option', {
+                    text: item.name,
+                    value: item.id
+                }))
+            });
+            dom.el(profileSelect, {
+                append: elList
+            });
         });
     })();
 

@@ -1,8 +1,8 @@
 /**
  * Created by Anton on 31.12.2016.
  */
+"use strict";
 define(function () {
-    "use strict";
     return function () {
         var map = {
             text: 'textContent'
