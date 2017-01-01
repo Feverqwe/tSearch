@@ -11,7 +11,15 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
     var clear =  document.querySelector('.search .input__clear');
     var submit =  document.querySelector('.search .search__submit');
 
-    (function () {
+    (function (input, submit) {
+        input.addEventListener('keypress', function(e) {
+            if (e.keyCode === 13) {
+                submit.dispatchEvent(new MouseEvent('click', {cancelable: true}));
+            }
+        });
+    })(input, submit);
+
+    (function (clear, input) {
         var clearIsVisible = false;
         input.addEventListener('keyup', function() {
             if (this.value.length > 0) {
@@ -27,23 +35,15 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
             }
         });
 
-        input.addEventListener('keypress', function(e) {
-            if (e.keyCode === 13) {
-                submit.dispatchEvent(new MouseEvent('click', {cancelable: true}));
-            }
-        });
-    })();
-
-    (function () {
         clear.addEventListener('click', function (e) {
             e.preventDefault();
             input.value = '';
             input.dispatchEvent(new CustomEvent('keyup'));
             input.focus();
         });
-    })();
+    })(clear, input);
 
-    (function () {
+    (function (submit) {
         submit.addEventListener('click', function(e) {
             e.preventDefault();
             var query = '';
@@ -61,9 +61,9 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
             var url = 'index.html' + query;
             chrome.tabs.create({url: url});
         });
-    })();
+    })(submit);
 
-    var initAutoComplete = function () {
+    var initAutoComplete = function (input, submit) {
         var lastHistoryRequest = null;
         var historySuggests = (function () {
             var history = null;
@@ -182,7 +182,7 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
     setTimeout(function () {
         require(['./js/min/jquery-3.1.1.min'], function () {
             require(['./js/min/jquery-ui.min'], function () {
-                initAutoComplete();
+                initAutoComplete(input, submit);
             });
         });
     }, 50);

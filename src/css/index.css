@@ -1,6 +1,7 @@
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     margin: 0;
+    font-size: 14px;
 }
 
 .loading {
@@ -9,41 +10,46 @@ body {
 
 .head {
     display: flex;
+    flex-direction: row;
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
     justify-content: center;
+    height: 70px;
 }
 
 .search {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    height: 70px;
     margin: 0 25px;
     flex-grow: 1;
     max-width: 758px;
 }
 
-.search__input {
+.input_box {
     position: relative;
 }
 
 .input__input {
     box-sizing: border-box;
-    height: 28px;
-
-    padding-bottom: 1px;
-    padding-top: 1px;
+    font-size: 14px;
     outline: none;
     margin: 0;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    height: 22px;
+    padding: 0 2px;
+}
 
+.input__input-search {
+    height: 28px;
+    padding-bottom: 1px;
+    padding-top: 1px;
     font-size: 16px;
     padding-left: 5px;
     padding-right: 26px;
-    border: 1px solid rgba(0, 0, 0, 0.3);
     width: 512px;
 }
 
 .input__input:hover {
-    border: 1px solid #999;
+    border: 1px solid rgba(0, 0, 0, 0.7);
 }
 
 .input__input:focus {
@@ -51,17 +57,23 @@ body {
 }
 
 .input__clear {
+    top: 0;
+    right: 0;
+    width: 22px;
+    height: 22px;
     visibility: hidden;
     position: absolute;
-    top: 2px;
-    right: 2px;
     display: inline-block;
-    width: 24px;
-    height: 24px;
     background: url(../img/delete.svg) center center no-repeat;
     background-size: 16px;
     opacity: 0.3;
-    transition: opacity .2s;
+}
+
+.input__clear-search {
+    top: 2px;
+    right: 2px;
+    width: 24px;
+    height: 24px;
 }
 
 .input__clear.input__clear_visible {
@@ -130,9 +142,8 @@ body {
 }
 
 .menu {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    height: 70px;
     margin: 0 25px;
 }
 
@@ -148,7 +159,6 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     outline-color: #3802FD;
-    transition: border-color .2s;
 }
 
 .menu__btn:hover {
@@ -168,4 +178,40 @@ body {
 .menu__btn-main {
     background-image: url(../img/main.svg);
     background-size: 16px;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+}
+
+.parameters-column {
+
+}
+
+.parameter {
+    margin-top: 8px;
+    margin-bottom: 1px;
+    padding: 0 5px;
+}
+
+.filter__label {
+    margin: 2px 0;
+}
+
+.input__input-word-filter {
+    width: 166px;
+}
+
+.input__input-range {
+    width: 72px;
+}
+
+.input_box-time-filter {
+    padding-top: 10px;
+    display: none;
+}
+
+.input_box-time-filter.input_box-time-filter-visible {
+    display: block;
 }

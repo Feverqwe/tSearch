@@ -22,5 +22,50 @@
   },
   "options": {
     "message": "Настройки"
+  },
+  "wordFilterLabel": {
+    "message": "Фильтр слов"
+  },
+  "sizeFilterLabel": {
+    "message": "Размер ГБ"
+  },
+  "timeFilterLabel": {
+    "message": "Дата"
+  },
+  "seedFilterLabel": {
+    "message": "Сиды"
+  },
+  "peerFilterLabel": {
+    "message": "Пиры"
+  },
+  "rangeFromPlaceholder": {
+    "message": "от"
+  },
+  "rangeToPlaceholder": {
+    "message": "до"
+  },
+  "timeFilterAll": {
+    "message": "За всё время"
+  },
+  "timeFilter1h": {
+    "message": "За час"
+  },
+  "timeFilter24h": {
+    "message": "За сутки"
+  },
+  "timeFilter72h": {
+    "message": "За 3-е суток"
+  },
+  "timeFilter1w": {
+    "message": "За неделю"
+  },
+  "timeFilter1m": {
+    "message": "За месяц"
+  },
+  "timeFilter1y": {
+    "message": "За год"
+  },
+  "timeFilterRange": {
+    "message": "За период..."
   }
 }

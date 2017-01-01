@@ -7,44 +7,67 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
 
     document.body.classList.remove('loading');
 
+    var uiState = [];
+
+    var bindClearBtn = function (clear, input, details) {
+        details = details || {};
+        var clearIsVisible = false;
+        input.addEventListener('keyup', function() {
+            if (this.value.length > 0) {
+                if (!clearIsVisible) {
+                    clearIsVisible = true;
+                    clear.classList.add('input__clear_visible');
+                }
+            } else {
+                if (clearIsVisible) {
+                    clearIsVisible = false;
+                    clear.classList.remove('input__clear_visible');
+                }
+            }
+        });
+
+        clear.addEventListener('click', function (e) {
+            e.preventDefault();
+            input.value = '';
+            input.dispatchEvent(new CustomEvent('keyup'));
+            input.focus();
+        });
+
+        details.dblClick && input.addEventListener('dblclick', function() {
+            clear.dispatchEvent(new MouseEvent('click', {cancelable: true}));
+        });
+    };
+
     (function () {
         var input =  document.querySelector('.search .input__input');
         var clear =  document.querySelector('.search .input__clear');
         var submit =  document.querySelector('.search .search__submit');
 
-        (function () {
-            var clearIsVisible = false;
-            input.addEventListener('keyup', function() {
-                if (this.value.length > 0) {
-                    if (!clearIsVisible) {
-                        clearIsVisible = true;
-                        clear.classList.add('input__clear_visible');
-                    }
-                } else {
-                    if (clearIsVisible) {
-                        clearIsVisible = false;
-                        clear.classList.remove('input__clear_visible');
-                    }
+        (function (input, submit) {
+            var stateItem = {
+                id: 'searchInput',
+                discard: function () {
+                    input.value = '';
+                    input.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
                 }
-            });
+            };
 
             input.addEventListener('keypress', function(e) {
                 if (e.keyCode === 13) {
                     submit.dispatchEvent(new MouseEvent('click', {cancelable: true}));
                 }
             });
-        })();
 
-        (function () {
-            clear.addEventListener('click', function (e) {
-                e.preventDefault();
-                input.value = '';
-                input.dispatchEvent(new CustomEvent('keyup'));
-                input.focus();
+            input.addEventListener('keyup', function(e) {
+                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
+                    uiState.push(stateItem);
+                }
             });
-        })();
+        })(input, submit);
 
-        (function () {
+        bindClearBtn(clear, input);
+
+        (function (submit) {
             submit.addEventListener('click', function(e) {
                 e.preventDefault();
                 var query = '';
@@ -62,9 +85,9 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
                 var url = 'index.html' + query;
                 chrome.tabs.create({url: url});
             });
-        })();
+        })(submit);
 
-        var initAutoComplete = function () {
+        var initAutoComplete = function (input, submit) {
             var lastHistoryRequest = null;
             var historySuggests = (function () {
                 var history = null;
@@ -183,9 +206,158 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
         setTimeout(function () {
             require(['./js/min/jquery-3.1.1.min'], function () {
                 require(['./js/min/jquery-ui.min'], function () {
-                    initAutoComplete();
+                    initAutoComplete(input, submit);
                 });
             });
         }, 50);
     })();
+
+    (function () {
+        var inputBoxTimeFilterVisible = false;
+        var inputBoxTimeFilter = document.querySelector('.input_box-time-filter');
+        var inputWordFilter = document.querySelector('.input__input-word-filter');
+        var clearWordFilter = document.querySelector('.input__clear-word-filter');
+        var sizeInputFromFilter = document.querySelector('.input__input-size-filter.input__input-range-from');
+        var sizeInputToFilter = document.querySelector('.input__input-size-filter.input__input-range-to');
+        var selectTimeFilter = document.querySelector('.select__select-time-filter');
+        var timeInputFromFilter = document.querySelector('.input__input-time-filter.input__input-range-from');
+        var timeInputToFilter = document.querySelector('.input__input-time-filter.input__input-range-to');
+        var seedInputFromFilter = document.querySelector('.input__input-seed-filter.input__input-range-from');
+        var seedInputToFilter = document.querySelector('.input__input-seed-filter.input__input-range-to');
+        var peerInputFromFilter = document.querySelector('.input__input-peer-filter.input__input-range-from');
+        var peerInputToFilter = document.querySelector('.input__input-peer-filter.input__input-range-to');
+
+        (function wordFilter(input, clearWordFilter) {
+            var stateItem = {
+                id: 'wordFilter',
+                discard: function () {
+                    input.value = '';
+                    input.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
+                }
+            };
+
+            bindClearBtn(clearWordFilter, input, {
+                dblClick: true
+            });
+
+            input.addEventListener('keyup', function(e) {
+                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
+                    uiState.push(stateItem);
+                }
+            });
+        })(inputWordFilter, clearWordFilter);
+
+        (function sizeFilter(inputFrom, inputTo) {
+            var stateItem = {
+                id: 'sizeFilter',
+                discard: function () {
+                    inputFrom.value = '';
+                    inputTo.value = '';
+                    inputTo.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
+                }
+            };
+
+            inputFrom.addEventListener('keyup', function(e) {
+                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
+                    uiState.push(stateItem);
+                }
+            });
+
+            inputTo.addEventListener('keyup', function(e) {
+                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
+                    uiState.push(stateItem);
+                }
+            });
+        })(sizeInputFromFilter, sizeInputToFilter);
+
+        (function timeFilter(select, inputBox) {
+            var stateItem = {
+                id: 'timeFilter',
+                discard: function () {
+                    select.selectedIndex = 0;
+                    select.dispatchEvent(new CustomEvent('change', {detail: 'stateReset'}));
+                }
+            };
+
+            select.addEventListener('change', function (e) {
+                var value = this.value;
+                if (value < 0) {
+                    if (!inputBoxTimeFilterVisible) {
+                        inputBoxTimeFilterVisible = true;
+                        inputBox.classList.add('input_box-time-filter-visible');
+                    }
+                } else {
+                    if (inputBoxTimeFilterVisible) {
+                        inputBoxTimeFilterVisible = false;
+                        timeInputFromFilter.value = '';
+                        timeInputToFilter.value = '';
+                        inputBox.classList.remove('input_box-time-filter-visible');
+                    }
+                }
+
+                if (!inputBoxTimeFilterVisible) {
+                    // apply time template filters
+                }
+
+                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
+                    uiState.push(stateItem);
+                }
+            });
+        })(selectTimeFilter, inputBoxTimeFilter);
+
+        (function seedFilter(inputFrom, inputTo) {
+            var stateItem = {
+                id: 'seedFilter',
+                discard: function () {
+                    inputFrom.value = '';
+                    inputTo.value = '';
+                    inputTo.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
+                }
+            };
+
+            inputFrom.addEventListener('keyup', function(e) {
+                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
+                    uiState.push(stateItem);
+                }
+            });
+
+            inputTo.addEventListener('keyup', function(e) {
+                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
+                    uiState.push(stateItem);
+                }
+            });
+        })(seedInputFromFilter, seedInputToFilter);
+
+        (function peerFilter(inputFrom, inputTo) {
+            var stateItem = {
+                id: 'peerFilter',
+                discard: function () {
+                    inputFrom.value = '';
+                    inputTo.value = '';
+                    inputTo.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
+                }
+            };
+
+            inputFrom.addEventListener('keyup', function(e) {
+                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
+                    uiState.push(stateItem);
+                }
+            });
+
+            inputTo.addEventListener('keyup', function(e) {
+                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
+                    uiState.push(stateItem);
+                }
+            });
+        })(peerInputFromFilter, peerInputToFilter);
+    })();
+
+    window.resetState = function () {
+        uiState.splice(0).forEach(function (state) {
+            state.discard();
+        });
+        if (uiState.length > 0) {
+            console.error('State is not empty!', uiState);
+        }
+    };
 });

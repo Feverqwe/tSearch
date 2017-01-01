@@ -9,9 +9,9 @@
     <body class="loading">
         <div class="head">
             <div class="search">
-                <div class="search__input">
-                    <input type="text" class="input__input" autofocus data-i18n='{"placeholder":"searchPlaceholder"}' placeholder="{searchPlaceholder}"/>
-                    <a href="#clear" data-i18n='{"title":"clear"}' title="{clear}" class="input__clear"></a>
+                <div class="input_box search__input">
+                    <input type="text" class="input__input input__input-search" autofocus data-i18n='{"placeholder":"searchPlaceholder"}' placeholder="{searchPlaceholder}"/>
+                    <a href="#clear" data-i18n='{"title":"clear"}' title="{clear}" class="input__clear input__clear-search"></a>
                 </div>
                 <a href="#search" class="search__submit" data-i18n='{"text":"search"}'>{search}</a>
             </div>
@@ -22,51 +22,69 @@
             </div>
         </div>
         <div class="content">
-            <!--<div class="additional-column">
-                <div class="profile-select-block">
-                    <select id="profile_select"></select>
-                    <a id="edit_profile" href="#" data-lang="editProfile,title" title="{edit profile}"></a>
+            <div class="parameter_box parameter_box-column">
+                <div class="parameter parameter-profile">
+                    <select class="profile__select"></select>
                 </div>
-                <div class="tracker-list-block">
-                    <div id="tracker_list"></div>
+                <div class="parameter parameter-tracker">
+                    <div class="tracker__list"></div>
                 </div>
-                <div class="filter-block">
-                    <p data-lang="wordFilter">{word filter}</p>
-                    <div id="wordFilter">
-                        <input type="text" id="word_filter_input" />
-                        <div id="word_filter_clear_btn" data-lang="clear" title="{clear}"></div>
+                <div class="parameter parameter-filter">
+                    <p class="filter__label" data-i18n='{"text":"wordFilterLabel"}'>{wordFilterLabel}</p>
+                    <div class="input_box">
+                        <input type="text" class="input__input input__input-word-filter"/>
+                        <a href="#clear" data-i18n='{"title":"clear"}' title="{clear}" class="input__clear input__clear-word-filter"></a>
                     </div>
-                    <p data-lang="sizeFilter">{size filter}</p>
-                    <div id="size_filter" class="range">
-                        <input id="size_filter_from" type="text" data-lang="from,placeholder" placeholder="{from}"/> — <input id="size_filter_to" type="text" data-lang="to,placeholder" placeholder="{to}"/>
+                </div>
+                <div class="parameter parameter-filter">
+                    <p class="filter__label" data-i18n='{"text":"sizeFilterLabel"}'>{sizeFilterLabel}</p>
+                    <div class="input_box">
+                        <input class="input__input input__input-size-filter input__input-range input__input-range-from" type="number" data-i18n='{"placeholder": "rangeFromPlaceholder"}' placeholder="{rangeFromPlaceholder}"/>
+                        —
+                        <input class="input__input input__input-size-filter input__input-range input__input-range-to" type="number" data-i18n='{"placeholder": "rangeToPlaceholder"}' placeholder="{rangeToPlaceholder}"/>
                     </div>
-                    <p data-lang="timeFilter">{time filter}</p>
-                    <div id="time_filter">
-                        <select id="time_filter_select">
-                            <option data-seconds="0" data-lang="timeFilterAll" selected>{all}</option>
-                            <option data-seconds="3600" data-lang="timeFilter1h">{1h}</option>
-                            <option data-seconds="86400" data-lang="timeFilter24h">{24h}</option>
-                            <option data-seconds="259200" data-lang="timeFilter72h">{72h}</option>
-                            <option data-seconds="604800" data-lang="timeFilter1w">{1w}</option>
-                            <option data-seconds="2592000" data-lang="timeFilter1m">{1m}</option>
-                            <option data-seconds="31536000" data-lang="timeFilter1y">{1y}</option>
-                            <option value="range" data-lang="timeFilterRange">{custom range}</option>
+                </div>
+                <div class="parameter parameter-filter">
+                    <p class="filter__label" data-i18n='{"text":"timeFilterLabel"}'>{timeFilterLabel}</p>
+                    <div class="select">
+                        <select class="select__select select__select-time-filter">
+                            <option value="0" data-i18n='{"text":"timeFilterAll"}' selected>{timeFilterAll}</option>
+                            <option value="3600" data-i18n='{"text":"timeFilter1h"}'>{timeFilter1h}</option>
+                            <option value="86400" data-i18n='{"text":"timeFilter24h"}'>{timeFilter24h}</option>
+                            <option value="259200" data-i18n='{"text":"timeFilter72h"}'>{timeFilter72h}</option>
+                            <option value="604800" data-i18n='{"text":"timeFilter1w"}'>{timeFilter1w}</option>
+                            <option value="2592000" data-i18n='{"text":"timeFilter1m"}'>{timeFilter1m}</option>
+                            <option value="31536000" data-i18n='{"text":"timeFilter1y"}'>{timeFilter1y}</option>
+                            <option value="-1" data-i18n='{"text":"timeFilterRange"}'>{timeFilterRange}</option>
                         </select>
                     </div>
-                    <div id="time_filter_range" class="range">
-                        <input id="time_filter_from" type="text" data-lang="from,placeholder" placeholder="{from}"/> — <input id="time_filter_to" type="text" data-lang="to,placeholder" placeholder="{to}"/>
+                    <div class="input_box input_box-time-filter">
+                        <input class="input__input input__input-time-filter input__input-range input__input-range-from" type="text" data-i18n='{"placeholder": "rangeFromPlaceholder"}' placeholder="{rangeFromPlaceholder}"/>
+                        —
+                        <input class="input__input input__input-time-filter input__input-range input__input-range-to" type="text" data-i18n='{"placeholder": "rangeToPlaceholder"}' placeholder="{rangeToPlaceholder}"/>
                     </div>
-                    <p data-lang="seedFilter">{seed filter}</p>
-                    <div id="seed_filter" class="range">
-                        <input id="seed_filter_from" type="text" data-lang="from,placeholder" placeholder="{from}"/> — <input id="seed_filter_to" type="text" data-lang="to,placeholder" placeholder="{to}"/>
+                </div>
+                <div class="parameter parameter-filter">
+                    <p class="filter__label" data-i18n='{"text":"seedFilterLabel"}'>{seedFilterLabel}</p>
+                    <div class="input_box">
+                        <input class="input__input input__input-seed-filter input__input-range input__input-range-from" type="number" data-i18n='{"placeholder": "rangeFromPlaceholder"}' placeholder="{rangeFromPlaceholder}"/>
+                        —
+                        <input class="input__input input__input-seed-filter input__input-range input__input-range-to" type="number" data-i18n='{"placeholder": "rangeToPlaceholder"}' placeholder="{rangeToPlaceholder}"/>
                     </div>
-                    <p data-lang="peerFilter">{peer filter}</p>
-                    <div id="peer_filter" class="range">
-                        <input id="peer_filter_from" type="text" data-lang="from,placeholder" placeholder="{from}"/> — <input id="peer_filter_to" type="text" data-lang="to,placeholder" placeholder="{to}"/>
+                </div>
+                <div class="parameter parameter-filter">
+                    <p class="filter__label" data-i18n='{"text":"peerFilterLabel"}'>{peerFilterLabel}</p>
+                    <div class="input_box">
+                        <input class="input__input input__input-peer-filter input__input-range input__input-range-from" type="number" data-i18n='{"placeholder": "rangeFromPlaceholder"}' placeholder="{rangeFromPlaceholder}"/>
+                        —
+                        <input class="input__input input__input-peer-filter input__input-range input__input-range-to" type="number" data-i18n='{"placeholder": "rangeToPlaceholder"}' placeholder="{rangeToPlaceholder}"/>
                     </div>
                 </div>
             </div>
-            <div class="main-column">
+            <div class="main">
+
+            </div>
+            <!--<div class="main-column">
                 <div id="result_block">
                     <div class="about-panel" id="request_desc_container" ></div>
                     <div class="categorys" id="result_category_container"></div>
