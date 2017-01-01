@@ -39,9 +39,9 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
     };
 
     (function () {
-        var input =  document.querySelector('.search .input__input');
-        var clear =  document.querySelector('.search .input__clear');
-        var submit =  document.querySelector('.search .search__submit');
+        var searchInput = document.querySelector('.input__input-search');
+        var searchClear = document.querySelector('.input__clear-search');
+        var searchSubmit = document.querySelector('.search__submit');
 
         (function (input, submit) {
             var stateItem = {
@@ -63,9 +63,9 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
                     uiState.push(stateItem);
                 }
             });
-        })(input, submit);
+        })(searchInput, searchSubmit);
 
-        bindClearBtn(clear, input);
+        bindClearBtn(searchClear, searchInput);
 
         (function (submit) {
             submit.addEventListener('click', function(e) {
@@ -74,7 +74,7 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
                 if (e.detail && e.detail.query) {
                     query = e.detail.query;
                 } else {
-                    query = input.value;
+                    query = searchInput.value;
                 }
                 query = query.trim();
                 if (query) {
@@ -85,7 +85,7 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
                 var url = 'index.html' + query;
                 chrome.tabs.create({url: url});
             });
-        })(submit);
+        })(searchSubmit);
 
         var initAutoComplete = function (input, submit) {
             var lastHistoryRequest = null;
@@ -206,7 +206,7 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
         setTimeout(function () {
             require(['./js/min/jquery-3.1.1.min'], function () {
                 require(['./js/min/jquery-ui.min'], function () {
-                    initAutoComplete(input, submit);
+                    initAutoComplete(searchInput, searchSubmit);
                 });
             });
         }, 50);
@@ -270,7 +270,7 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
             });
         })(sizeInputFromFilter, sizeInputToFilter);
 
-        (function timeFilter(select, inputBox) {
+        (function timeFilter(select, inputBox, inputFrom, inputTo) {
             var stateItem = {
                 id: 'timeFilter',
                 discard: function () {
@@ -289,8 +289,8 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
                 } else {
                     if (inputBoxTimeFilterVisible) {
                         inputBoxTimeFilterVisible = false;
-                        timeInputFromFilter.value = '';
-                        timeInputToFilter.value = '';
+                        inputFrom.value = '';
+                        inputTo.value = '';
                         inputBox.classList.remove('input_box-time-filter-visible');
                     }
                 }
@@ -303,7 +303,15 @@ require(['./js/lib/i18nDom', './js/lib/utils'], function (i18nDom, utils) {
                     uiState.push(stateItem);
                 }
             });
-        })(selectTimeFilter, inputBoxTimeFilter);
+
+            inputFrom.addEventListener('keyup', function(e) {
+
+            });
+
+            inputTo.addEventListener('keyup', function(e) {
+
+            });
+        })(selectTimeFilter, inputBoxTimeFilter, timeInputFromFilter, timeInputToFilter);
 
         (function seedFilter(inputFrom, inputTo) {
             var stateItem = {
