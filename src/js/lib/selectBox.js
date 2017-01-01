@@ -206,15 +206,6 @@ define(['./dom'], function (dom) {
             select.style.display = 'none';
             select.parentNode.insertBefore(self.control, select);
 
-            dom.el(select, {
-                append: ['a','b','c'].map(function (value, index) {
-                    return dom.el('option', {
-                        value: index,
-                        text: value
-                    })
-                })
-            });
-
             self.update();
             self.select();
         })();
