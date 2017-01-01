@@ -360,6 +360,30 @@ require(['./js/min/promise.min', './js/lib/i18nDom', './js/lib/utils'], function
         })(peerInputFromFilter, peerInputToFilter);
     })();
 
+    (function () {
+        var scrollTopVisible = false;
+        var scrollTop = document.querySelector('.scroll_top');
+
+        scrollTop.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo(0, 0);
+        });
+
+        window.addEventListener('scroll', function (e) {
+            if (window.scrollY > 100) {
+                if (!scrollTopVisible) {
+                    scrollTopVisible = true;
+                    scrollTop.classList.add('scroll_top-show');
+                }
+            } else {
+                if (scrollTopVisible) {
+                    scrollTopVisible = false;
+                    scrollTop.classList.remove('scroll_top-show');
+                }
+            }
+        });
+    })();
+
     window.resetState = function () {
         uiState.splice(0).forEach(function (state) {
             state.discard();

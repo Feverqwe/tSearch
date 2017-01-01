@@ -67,5 +67,8 @@
   },
   "timeFilterRange": {
     "message": "За период..."
+  },
+  "scrollTop": {
+    "message": "Вверх!"
   }
 }

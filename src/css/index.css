@@ -239,3 +239,23 @@ body {
 .input_box-time-filter.input_box-time-filter-visible {
     display: block;
 }
+
+.scroll_top {
+    display: none;
+    bottom: 0;
+    width: 50px;
+    background: url(../img/arrow-up.svg) no-repeat center bottom;
+    position: fixed;
+    left: 0;
+    z-index: 10;
+    height: 100%;
+    right: 0;
+}
+
+.scroll_top:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.scroll_top.scroll_top-show {
+    display: block;
+}
