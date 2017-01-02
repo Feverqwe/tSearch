@@ -21,8 +21,6 @@ require([
 
     document.body.classList.remove('loading');
 
-    var trackers = {};
-
     var params = utils.parseUrl(location.hash.substr(1), {
         params: true
     });
@@ -94,9 +92,14 @@ require([
             info: {},
             code: code
         };
-        trackers[tracker.id] = tracker;
-        chrome.storage.local.set({
-            trackers: trackers
+        chrome.storage.local.get({
+            trackers: {}
+        }, function (storage) {
+            var trackers = storage.trackers;
+            trackers[tracker.id] = tracker;
+            chrome.storage.local.set({
+                trackers: trackers
+            });
         });
     });
 
@@ -127,7 +130,7 @@ require([
     chrome.storage.local.get({
         trackers: {}
     }, function (storage) {
-        trackers = storage.trackers;
+        var trackers = storage.trackers;
         var tracker = null;
         if (params.id) {
             tracker = trackers[params.id];

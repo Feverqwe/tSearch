@@ -516,7 +516,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
 
         var getProfile = function (/**profile*/profile, trackers) {
             var getTrackerItem = function (tracker, checked, exists) {
-                return dom.el('вшм', {
+                return dom.el('div', {
                     class: 'item',
                     data: {
                         id: tracker.id
@@ -559,6 +559,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 })
             };
 
+            var trackersNode = null;
             return dom.el(document.createDocumentFragment(), {
                 append: [
                     getHeader(chrome.i18n.getMessage('manageProfile')),
@@ -577,7 +578,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                             })
                         ]
                     }),
-                    dom.el('div', {
+                    trackersNode = dom.el('div', {
                         class: 'manager__trackers',
                         append: (function () {
                             var list = [];
@@ -619,7 +620,27 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         dom.el('a', {
                             href: '#save',
                             class: ['manager__footer__btn'],
-                            text: chrome.i18n.getMessage('save')
+                            text: chrome.i18n.getMessage('save'),
+                            on: ['click', function (e) {
+                                e.preventDefault();
+                                var profileTrackers = [];
+                                [].slice.call(trackersNode.childNodes).forEach(function (trackerNode) {
+                                    var id = trackerNode.dataset.id;
+                                    var checkbox = trackerNode.querySelector('.item__checkbox');
+                                    var checked = checkbox.checked;
+                                    if (checked) {
+                                        profileTrackers.push({
+                                            id: id
+                                        })
+                                    }
+                                });
+                                profile.trackers = profileTrackers;
+                                chrome.storage.local.set({
+                                    profiles: profiles
+                                }, function () {
+                                    activeProfile.reload();
+                                });
+                            }]
                         }),
                         dom.el('a', {
                             href: '#update',
@@ -667,13 +688,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             return {
                 name: chrome.i18n.getMessage('defaultProfileName'),
                 id: getProfileId(),
-                trackers: [
-                    {id: 'rutracker'},
-                    {id: 'nnmclub'},
-                    {id: 'kinozal'},
-                    {id: 'tapochek'},
-                    {id: 'rutor'}
-                ]
+                trackers: []
             }
         };
         var selectProfileId = function (id) {
@@ -807,105 +822,137 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
 
             this.onmessage = null;
             this.terminate = function () {
-                frame.parentNode.removeChild(frame);
+                if (frame) {
+                    frame.parentNode.removeChild(frame);
+                    frame = null;
+                }
                 window.removeEventListener("message", msgListener);
                 self.onmessage = null;
             };
 
             load();
         };
-        var Profile = function (profile) {
-            var Tracker = function (/**tracker*/tracker) {
-                var self = this;
-                var ready = false;
-                var stack = [];
-                var worker = null;
-                var transport = null;
-                var load = function (onReady) {
-                    worker = new FrameWorker();
-                    transport = new Transport({
-                        sendMessage: function (msg) {
-                            worker.postMessage(msg);
-                        },
-                        onMessage: function (cb) {
-                            worker.onmessage = function (data) {
-                                cb(data);
+        var Tracker = function (/**tracker*/tracker) {
+            var self = this;
+            var ready = false;
+            var stack = [];
+            var worker = null;
+            var transport = null;
+            var load = function (onReady) {
+                worker = new FrameWorker();
+                transport = new Transport({
+                    sendMessage: function (msg) {
+                        worker.postMessage(msg);
+                    },
+                    onMessage: function (cb) {
+                        worker.onmessage = function (data) {
+                            cb(data);
+                        }
+                    }
+                });
+                transport.onMessage(function (msg, response) {
+                    if (msg.action === 'init') {
+                        response(tracker.code);
+                    } else
+                    if (msg.action === 'ready') {
+                        onReady();
+                    } else
+                    if (msg.action === 'request') {
+                        utils.request(msg.details, function (err, resp) {
+                            var error = null;
+                            if (err) {
+                                error = {
+                                    name: err.name,
+                                    message: err.message
+                                };
                             }
-                        }
-                    });
-                    transport.onMessage(function (msg, response) {
-                        if (msg.action === 'init') {
-                            response(tracker.code);
-                        } else
-                        if (msg.action === 'ready') {
-                            onReady();
-                        } else
-                        if (msg.action === 'error') {
-                            console.error( tracker.id, 'Loading error!', msg.name + ':', msg.message);
-                        } else {
-                            console.error(tracker.id, 'msg', msg);
-                        }
-                    });
-                };
-                var onReady = function () {
-                    ready = true;
-                    while (stack.length) {
-                        self.sendMessage(stack.shift());
-                    }
-                };
-                this.sendMessage = function (message) {
-                    if (ready) {
-                        transport.sendMessage(message);
+                            response({
+                                error: error,
+                                response: resp
+                            });
+                        });
+                        return true;
+                    } else
+                    if (msg.action === 'error') {
+                        console.error( tracker.id, 'Loading error!', msg.name + ':', msg.message);
                     } else {
-                        stack.push(message);
+                        console.error(tracker.id, 'msg', msg);
                     }
-                };
-                this.reload = function () {
-                    worker.terminate();
-                    load(onReady);
-                };
-                this.destroy = function () {
-                    ready = false;
-                    worker.terminate();
-                };
+                });
+            };
+            var onReady = function () {
+                ready = true;
+                while (stack.length) {
+                    self.sendMessage(stack.shift());
+                }
+            };
+            this.sendMessage = function (message) {
+                if (ready) {
+                    transport.sendMessage(message);
+                } else {
+                    stack.push(message);
+                }
+            };
+            this.reload = function () {
+                worker.terminate();
                 load(onReady);
             };
+            this.destroy = function () {
+                ready = false;
+                worker.terminate();
+            };
+            this.search = function (query) {
+                self.sendMessage({
+                    event: 'search',
+                    query: query
+                });
+            };
+            load(onReady);
+        };
+        var Profile = function (profile) {
+            var self = this;
             var workers = [];
-            var trackersNode = document.createDocumentFragment();
-            profile.trackers.forEach(function (/**profileTracker*/item) {
-                var tracker = trackers[item.id] || {
-                    id: item.id,
-                    meta: {},
-                    info: {},
-                    code: '(' + function () {
-                    }.toString() + ')();'
-                };
-                if (tracker) {
-                    workers.push(new Tracker(tracker));
-                }
-                trackersNode.appendChild(dom.el('div', {
-                    class: 'tracker',
-                    append: [
-                        dom.el('img', {
-                            class: 'tracker__icon',
-                            src: tracker.meta.icon64 || tracker.meta.icon,
-                            on: ['error', function () {
-                                this.src = './img/blank.svg';
-                            }]
-                        }),
-                        dom.el('div', {
-                            class: 'tracker__name',
-                            text: tracker.meta.name || tracker.id
-                        }),
-                        dom.el('div', {
-                            class: 'tracker__counter',
-                            text: 0
-                        })
-                    ]
-                }));
-            });
-            trackerList.textContent = '';
-            trackerList.appendChild(trackersNode);
+            var load = function () {
+                var trackersNode = document.createDocumentFragment();
+                profile.trackers.forEach(function (/**profileTracker*/item) {
+                    var tracker = trackers[item.id] || {
+                            id: item.id,
+                            meta: {},
+                            info: {},
+                            code: '(' + function () {}.toString() + ')();'
+                        };
+                    if (tracker) {
+                        workers.push(new Tracker(tracker));
+                    }
+                    trackersNode.appendChild(dom.el('div', {
+                        class: 'tracker',
+                        append: [
+                            dom.el('img', {
+                                class: 'tracker__icon',
+                                src: tracker.meta.icon64 || tracker.meta.icon,
+                                on: ['error', function () {
+                                    this.src = './img/blank.svg';
+                                }]
+                            }),
+                            dom.el('div', {
+                                class: 'tracker__name',
+                                text: tracker.meta.name || tracker.id
+                            }),
+                            dom.el('div', {
+                                class: 'tracker__counter',
+                                text: 0
+                            })
+                        ]
+                    }));
+                });
+                trackerList.textContent = '';
+                trackerList.appendChild(trackersNode);
+            };
+            load();
+            this.reload = function () {
+                self.destroy();
+                load();
+            };
             this.id = profile.id;
             this.destroy = function () {
                 workers.forEach(function (myWorker) {
