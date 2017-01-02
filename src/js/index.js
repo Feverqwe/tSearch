@@ -405,6 +405,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
     (function () {
         var manageProfile = document.querySelector('.button-manage-profile');
         var profileSelect = document.querySelector('.profile__select');
+        var trackerList = document.querySelector('.tracker__list');
         var profileSelectWrapper = null;
 
         var profile = null;
@@ -628,15 +629,38 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 load(onReady);
             };
             var workers = [];
+            trackerList.textContent = '';
             profile.trackers.forEach(function (/**profileTracker*/item) {
                 var tracker = trackers[item.id] || {
                     id: item.id,
+                    meta: {},
+                    info: {},
                     code: '(' + function () {
                     }.toString() + ')();'
                 };
                 if (tracker) {
                     workers.push(new Tracker(tracker));
                 }
+                trackerList.appendChild(dom.el('div', {
+                    class: 'tracker',
+                    append: [
+                        dom.el('img', {
+                            class: 'tracker__icon',
+                            src: tracker.meta.icon,
+                            on: ['error', function () {
+                                this.src = './img/blank.svg';
+                            }]
+                        }),
+                        dom.el('div', {
+                            class: 'tracker__name',
+                            text: tracker.meta.name || tracker.id
+                        }),
+                        dom.el('div', {
+                            class: 'tracker__counter',
+                            text: 0
+                        })
+                    ]
+                }));
             });
             this.destroy = function () {
                 workers.forEach(function (myWorker) {

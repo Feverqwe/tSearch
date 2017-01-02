@@ -77,6 +77,9 @@ define(function () {
             extraProp = extraProperty[prop];
             if (typeof extraProp === 'function') {
                 extraProp(el, value);
+            } else
+            if (extraProp !== undefined) {
+                el[extraProp] = value;
             } else {
                 el[prop] = value;
             }

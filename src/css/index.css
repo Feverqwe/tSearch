@@ -360,3 +360,23 @@ body {
     background-color: #337AF8;
     color: #fff;
 }
+
+.tracker {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2px 0;
+    max-width: 166px;
+}
+
+.tracker__icon {
+    width: 16px;
+    height: 16px;
+}
+
+.tracker__name {
+    flex-grow: 1;
+    padding: 0 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
