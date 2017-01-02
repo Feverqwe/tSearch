@@ -80,19 +80,8 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         (function (submit) {
             submit.addEventListener('click', function(e) {
                 e.preventDefault();
-                var query = '';
-                if (e.detail && e.detail.query) {
-                    query = e.detail.query;
-                } else {
-                    query = searchInput.value;
-                }
-                query = query.trim();
-                if (query) {
-                    query = '#?' + utils.hashParam({
-                            query: query
-                        });
-                }
-                ee.trigger('search', query);
+                var query = searchInput.value.trim();
+                ee.trigger('search', [query]);
             });
         })(searchSubmit);
 
@@ -1031,7 +1020,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             ee.on('search', function (query) {
                 activeProfile.trackers.forEach(function (tracker) {
                     tracker.search(query, function (result) {
-                        ee.trigger('results', tracker.id, query, result);
+                        ee.trigger('results', [tracker.id, query, result]);
                     });
                 });
             });
