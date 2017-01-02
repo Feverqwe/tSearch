@@ -407,27 +407,28 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         var profileSelect = document.querySelector('.profile__select');
         var profileSelectWrapper = null;
 
-        var currentProfileId = {};
+        var profile = null;
+        var currentProfileId = null;
         var trackers = {};
         var profiles = [];
-        var idProfileMap = {};
+        var profileIdProfileMap = {};
         var getProfileId = function () {
             var id = 0;
-            while (idProfileMap[id]) {
+            while (profileIdProfileMap[id]) {
                 id++;
             }
             return id;
         };
-        var createDefaultProfile = function () {
+        var getDefaultProfile = function () {
             return {
                 name: chrome.i18n.getMessage('defaultProfileName'),
                 id: getProfileId(),
                 trackers: [
-                    'rutracker',
-                    'nnmclub',
-                    'kinozal',
-                    'tapochek',
-                    'rutor'
+                    {id: 'rutracker'},
+                    {id: 'nnmclub'},
+                    {id: 'kinozal'},
+                    {id: 'tapochek'},
+                    {id: 'rutor'}
                 ]
             }
         };
@@ -443,8 +444,123 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 profileSelect.selectedIndex = index;
             }
         };
-        var loadProfile = function (profile) {
+        /**
+         * @typedef {Object} profile
+         * @property {string} name
+         * @property {number} id
+         * @property {[profileTracker]} trackers
+         */
+        /**
+         * @typedef {Object} profileTracker
+         * @property {string} id
+         */
+        /**
+         * @typedef {Object} tracker
+         * @property {Object} meta
+         * @property {string} meta.name
+         * @property {string} meta.version
+         * @property {string} [meta.author]
+         * @property {string} [meta.description]
+         * @property {string} [meta.homepageURL]
+         * @property {string} meta.icon
+         * @property {string} [meta.icon64]
+         * @property {string} meta.updateURL
+         * @property {string} meta.downloadURL
+         * @property {string} [meta.supportURL]
+         * @property {string} meta.connect
+         * @property {Object} info
+         * @property {number} info.lastUpdate
+         * @property {string} code
+         */
 
+        var Profile = function (profile) {
+            var Transport = function (worker) {
+                var emptyFn = function () {};
+                var onceFn = function (cb, scope) {
+                    return function () {
+                        if (cb) {
+                            var context = scope || this;
+                            cb.apply(context, arguments);
+                            cb = null;
+                        }
+                    };
+                };
+                var transport = {
+                    sendMessage: function (msg) {
+                        worker.postMessage(msg);
+                    },
+                    onMessage: function (cb) {
+                        worker.onmessage = function (e) {
+                            cb(e.data);
+                        };
+                    }
+                };
+                var callbackId = 0;
+                var callbackIdCallback = {};
+
+                this.onMessage = function (cb) {
+                    transport.onMessage(function (msg) {
+                        if (msg.responseId) {
+                            return callbackIdCallback[msg.responseId](msg.message);
+                        }
+
+                        var response;
+                        if (msg.callbackId) {
+                            response = onceFn(function (message) {
+                                transport.sendMessage({
+                                    responseId: msg.callbackId,
+                                    message: message
+                                });
+                            });
+                        } else {
+                            response = emptyFn;
+                        }
+                        var result = cb(msg.message, response);
+                        if (result !== true) {
+                            response();
+                        }
+                    });
+                };
+                this.sendMessage = function (message, callback) {
+                    var msg = {
+                        message: message
+                    };
+                    if (callback) {
+                        msg.callbackId = ++callbackId;
+                        callbackIdCallback[msg.callbackId] = function (message) {
+                            delete callbackIdCallback[msg.callbackId];
+                            callback(message);
+                        };
+                    }
+                    transport.sendMessage(msg);
+                };
+            };
+            var MyWorker = function (/**profileTracker*/tracker) {
+                var worker = new Worker('./js/worker.js');
+                var transport = new Transport(worker);
+                this.sendMessage = transport.sendMessage;
+                var onMessage = transport.onMessage;
+                onMessage(function (msg, response) {
+                    if (msg.action === 'init') {
+                        response(tracker.code);
+                    } else {
+                        console.error('msg', tracker, msg);
+                    }
+                });
+                this.destroy = function () {
+                    worker.terminate();
+                };
+            };
+            var workers = [];
+            profile.trackers.forEach(function (item) {
+                var myWorker = new MyWorker(item);
+                workers.push(myWorker);
+            });
+            this.destroy = function () {
+                workers.forEach(function (myWorker) {
+                    myWorker.destroy();
+                })
+            };
         };
 
         manageProfile.addEventListener('click', function (e) {
@@ -464,15 +580,10 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             trackers = storage.trackers;
             profiles = storage.profiles;
             if (profiles.length === 0) {
-                profiles.push(createDefaultProfile());
+                profiles.push(getDefaultProfile());
             }
-            profiles.forEach(function (item) {
-                idProfileMap[item.id] = item;
-            });
-            if (currentProfileId === null || !idProfileMap[currentProfileId]) {
-                currentProfileId = profiles[0].id;
-            }
-            var elList = profiles.map(function (item) {
+            var elList = profiles.map(function (/**profile*/item) {
+                profileIdProfileMap[item.id] = item;
                 return dom.el('option', {
                     text: item.name,
                     value: item.id
@@ -481,11 +592,18 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             dom.el(profileSelect, {
                 append: elList
             });
+            if (!profileIdProfileMap[currentProfileId]) {
+                currentProfileId = profiles[0].id;
+            }
             selectProfileId(currentProfileId);
-            loadProfile(idProfileMap[currentProfileId]);
 
             profileSelectWrapper.update();
             profileSelectWrapper.select();
+
+            if (profile) {
+                profile.destroy();
+            }
+            profile = new Profile(profileIdProfileMap[currentProfileId]);
         });
     })();
 
