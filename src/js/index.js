@@ -474,7 +474,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
          */
 
         var Profile = function (profile) {
-            var Transport = function (worker) {
+            var Transport = function (transport) {
                 var emptyFn = function () {};
                 var onceFn = function (cb, scope) {
                     return function () {
@@ -484,25 +484,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                             cb = null;
                         }
                     };
-                };
-                var transport = {
-                    sendMessage: function (msg) {
-                        if (worker) {
-                            worker.postMessage(msg);
-                        } else {
-                            postMessage(msg);
-                        }
-                    },
-                    onMessage: function (cb) {
-                        var listener = function (e) {
-                            cb(e.data);
-                        };
-                        if (worker) {
-                            worker.onmessage = listener;
-                        } else {
-                            onmessage = listener;
-                        }
-                    }
                 };
                 var callbackId = 0;
                 var callbackIdCallback = {};
@@ -545,9 +526,18 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 };
             };
             var getCode = function (code) {
-                return '(' + function (Transport, fn) {
+                return '(' + function (Transport, trackerFn) {
                         (function () {
-                            var transport = new Transport();
+                            var transport = new Transport({
+                                sendMessage: function (msg) {
+                                    postMessage(msg);
+                                },
+                                onMessage: function (cb) {
+                                    onmessage = function (e) {
+                                        cb(e.data);
+                                    };
+                                }
+                            });
                             Transport = null;
                             var onMessage = transport.onMessage;
                             var sendMessage = transport.sendMessage;
@@ -557,10 +547,10 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                             });
                         })();
 
-                        (fn)();
+                        trackerFn();
                     } + ')(' + [
                         Transport.toString(),
-                        'function(){'+code+'}'
+                        'function(){trackerFn=null;'+code+'}'
                     ].join(', ') + ')'
             };
             var MyWorker = function (/**profileTracker*/tracker) {
@@ -574,7 +564,16 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     worker.onerror = function (err) {
                         console.log('Worker', tracker.id, 'error!', err.message);
                     };
-                    transport = new Transport(worker);
+                    transport = new Transport({
+                        sendMessage: function (msg) {
+                            worker.postMessage(msg);
+                        },
+                        onMessage: function (cb) {
+                            worker.onmessage =  function (e) {
+                                cb(e.data);
+                            };
+                        }
+                    });
                     transport.onMessage(function (msg, response) {
                         console.error('msg', tracker.id, msg);
                     });
