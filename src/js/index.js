@@ -882,15 +882,16 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             };
             var onReady = function () {
                 ready = true;
+                var item = null;
                 while (stack.length) {
-                    self.sendMessage(stack.shift());
+                    self.sendMessage.apply(null, stack.shift());
                 }
             };
-            this.sendMessage = function (message) {
+            this.sendMessage = function (message, callback) {
                 if (ready) {
-                    transport.sendMessage(message);
+                    transport.sendMessage(message, callback);
                 } else {
-                    stack.push(message);
+                    stack.push([message, callback]);
                 }
             };
             this.reload = function () {
@@ -901,17 +902,18 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 ready = false;
                 worker.terminate();
             };
-            this.search = function (query) {
+            this.search = function (query, cb) {
                 self.sendMessage({
                     event: 'search',
                     query: query
-                });
+                }, cb);
             };
             load(onReady);
         };
         var Profile = function (profile) {
             var self = this;
             var workers = [];
+            window.myWorkers = workers;
             var load = function () {
                 var trackersNode = document.createDocumentFragment();
                 profile.trackers.forEach(function (/**profileTracker*/item) {

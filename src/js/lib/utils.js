@@ -103,6 +103,7 @@ define(function () {
 
             response.statusCode = xhr.status;
             response.statusText = xhr.statusText;
+            response.url = xhr.responseURL;
 
             var headers = null;
             var allHeaders = xhr.getAllResponseHeaders();

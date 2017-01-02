@@ -21,15 +21,15 @@ var onPageLoad = function (response) {
     for (var i = 0, len = torrentElList.length; i < len; i++) {
         try {
             var item = torrentElList.eq(i);
-            var categoryTitle = item.find('td.row1.f-name>div>a').get(0);
-            var categoryUrl = item.find('td.row1.f-name>div>a').get(0).attr('href');
-            var title = item.find('td.row4.med.tLeft.t-title>div.wbr.t-title>a').get(0).text();
-            var url = item.find('td.row4.med.tLeft.t-title>div.wbr.t-title>a').get(0).attr('href');
-            var size = item.find('td.row4.small.nowrap.tor-size>u').get(0).text();
-            var downloadUrl = item.find('td.row4.small.nowrap.tor-size>a').get(0).attr('href');
-            var seed = item.find('td.row4.nowrap:eq(1)>u').get(0).text();
-            var peer = item.find('td.row4.leechmed>b').get(0).text();
-            var date = item.find('td.row4.small.nowrap:eq(1)>u').get(0).text();
+            var categoryTitle = item.find('td.row1.f-name>div>a').text();
+            var categoryUrl = item.find('td.row1.f-name>div>a').attr('href');
+            var title = item.find('td.row4.med.tLeft.t-title>div.wbr.t-title>a').text();
+            var url = item.find('td.row4.med.tLeft.t-title>div.wbr.t-title>a').attr('href');
+            var size = item.find('td.row4.small.nowrap.tor-size>u').text();
+            var downloadUrl = item.find('td.row4.small.nowrap.tor-size>a').attr('href');
+            var seed = item.find('td.row4.nowrap:eq(1)>u').text();
+            var peer = item.find('td.row4.leechmed>b').text();
+            var date = item.find('td.row4.small.nowrap:eq(1)>u').text();
             results.push({
                 categoryTitle: categoryTitle,
                 categoryUrl: categoryUrl,
@@ -45,7 +45,7 @@ var onPageLoad = function (response) {
             console.error(e);
         }
     }
-    var nextPageUrl = $bodyDom.find('div.nav>p:eq(1)>a.pg:eq(-1)').get(0).attr('href');
+    var nextPageUrl = $bodyDom.find('div.nav>p:eq(1)>a.pg:eq(-1)').attr('href');
     return {
         success: true,
         results: results,
