@@ -629,7 +629,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 load(onReady);
             };
             var workers = [];
-            trackerList.textContent = '';
+            var trackersNode = document.createDocumentFragment();
             profile.trackers.forEach(function (/**profileTracker*/item) {
                 var tracker = trackers[item.id] || {
                     id: item.id,
@@ -641,7 +641,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 if (tracker) {
                     workers.push(new Tracker(tracker));
                 }
-                trackerList.appendChild(dom.el('div', {
+                trackersNode.appendChild(dom.el('div', {
                     class: 'tracker',
                     append: [
                         dom.el('img', {
@@ -662,6 +662,8 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     ]
                 }));
             });
+            trackerList.textContent = '';
+            trackerList.appendChild(trackersNode);
             this.destroy = function () {
                 workers.forEach(function (myWorker) {
                     myWorker.destroy();
