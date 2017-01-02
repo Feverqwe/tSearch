@@ -5,15 +5,15 @@
 require.config({
     baseUrl: './js'
 });
-require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './lib/selectBox'], function (Promise, i18nDom, utils, dom, selectBox) {
+require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './lib/selectBox', './min/EventEmitter.min'], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter) {
     i18nDom();
 
     document.body.classList.remove('loading');
 
+    var ee = new EventEmitter();
     var uiState = [];
 
-    var bindClearBtn = function (clear, input, details) {
-        details = details || {};
+    var bindClearBtn = function (clear, input) {
         var clearIsVisible = false;
         input.addEventListener('keyup', function() {
             if (this.value.length > 0) {
@@ -92,8 +92,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                             query: query
                         });
                 }
-                var url = 'index.html' + query;
-                chrome.tabs.create({url: url});
+                ee.trigger('search', query);
             });
         })(searchSubmit);
 
@@ -836,6 +835,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             var self = this;
             var ready = false;
             var stack = [];
+            var requests = [];
             var worker = null;
             var transport = null;
             var load = function (onReady) {
@@ -858,7 +858,13 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         onReady();
                     } else
                     if (msg.action === 'request') {
-                        utils.request(msg.details, function (err, resp) {
+                        var request = utils.request(msg.details, function (err, resp) {
+                            var pos = requests.indexOf(request);
+                            if (pos !== -1) {
+                                requests.splice(pos, 1);
+                            }
+                            request = null;
+
                             var error = null;
                             if (err) {
                                 error = {
@@ -871,10 +877,11 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                                 response: resp
                             });
                         });
+                        request && requests.push(request);
                         return true;
                     } else
                     if (msg.action === 'error') {
-                        console.error( tracker.id, 'Loading error!', msg.name + ':', msg.message);
+                        console.error(tracker.id, 'Loading error!', msg.name + ':', msg.message);
                     } else {
                         console.error(tracker.id, 'msg', msg);
                     }
@@ -900,6 +907,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             this.destroy = function () {
                 ready = false;
                 worker.terminate();
+                self.abort();
             };
             this.search = function (query, cb) {
                 self.sendMessage({
@@ -907,10 +915,16 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     query: query
                 }, cb);
             };
+            this.abort = function () {
+                requests.splice(0).forEach(function (request) {
+                    request.abort();
+                });
+            };
             load(onReady);
         };
         var Profile = function (profile) {
             var self = this;
+            var trackerIdWorker = {};
             var workers = [];
             // todo: rm me
             window.myWorkers = workers;
@@ -923,8 +937,11 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                             info: {},
                             code: '(' + function () {}.toString() + ')();'
                         };
+                    var worker = null;
                     if (tracker) {
-                        workers.push(new Tracker(tracker));
+                        worker = new Tracker(tracker);
+                        workers.push(worker);
+                        trackerIdWorker[worker.id] = worker;
                     }
                     trackersNode.appendChild(dom.el('div', {
                         class: 'tracker',
@@ -957,10 +974,14 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             };
             this.id = profile.id;
             this.trackers = workers;
+            this.trackerIdTracker = trackerIdWorker;
             this.destroy = function () {
-                workers.forEach(function (myWorker) {
+                workers.splice(0).forEach(function (myWorker) {
                     myWorker.destroy();
-                })
+                });
+                for (var key in trackerIdWorker) {
+                    delete trackerIdWorker[key];
+                }
             };
         };
 
@@ -1007,12 +1028,19 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             }
             activeProfile = new Profile(profileIdProfileMap[currentProfileId]);
 
-            // todo: rm me
-            /*activeProfile.trackers.forEach(function (tracker) {
-                tracker.search('test', function (r) {
-                    console.log(r);
+            ee.on('search', function (query) {
+                activeProfile.trackers.forEach(function (tracker) {
+                    tracker.search(query, function (result) {
+                        ee.trigger('results', tracker.id, query, result);
+                    });
                 });
-            });*/
+            });
+
+            ee.on('abort', function () {
+                activeProfile.trackers.forEach(function (tracker) {
+                    tracker.abort();
+                });
+            });
         });
     })();
 
