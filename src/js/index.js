@@ -548,9 +548,10 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         })();
 
                         trackerFn();
+                        trackerFn=null;
                     } + ')(' + [
                         Transport.toString(),
-                        'function(){trackerFn=null;'+code+'}'
+                        'function(){'+code+'}'
                     ].join(', ') + ')'
             };
             var MyWorker = function (/**profileTracker*/tracker) {
