@@ -614,8 +614,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     }.toString() + ')();'
                 };
                 if (tracker) {
-                    var myWorker = new Tracker(tracker);
-                    workers.push(myWorker);
+                    workers.push(new Tracker(tracker));
                 }
             });
             this.destroy = function () {
