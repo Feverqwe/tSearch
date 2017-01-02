@@ -72,7 +72,7 @@
     "message": "Вверх!"
   },
   "manageProfiles": {
-    "message": "Управление профилями"
+    "message": "Управление списками"
   },
   "newProfile": {
     "message": "Добавить"
@@ -82,5 +82,23 @@
   },
   "defaultProfileName": {
     "message": "Стандартный"
+  },
+  "close": {
+    "message": "Закрыть"
+  },
+  "remove": {
+    "message": "Удалить"
+  },
+  "save": {
+    "message": "Сохранить"
+  },
+  "edit": {
+    "message": "Редактировать"
+  },
+  "manageProfile": {
+    "message": "Редактирование списка"
+  },
+  "update": {
+    "message": "Обновить"
   }
 }

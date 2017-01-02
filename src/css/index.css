@@ -380,3 +380,107 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.manager__layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+}
+
+.manager {
+    width: 700px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    z-index: 90;
+    box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0,0,0,0.15);
+    display: block;
+    position: relative;
+    margin: 0 auto;
+    margin-top: 70px;
+}
+
+.manager a {
+    color: #0051D8;
+}
+
+.manager__header {
+    align-items: center;
+    height: 46px;
+    padding: 0 14px;
+    background-color: rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+}
+
+.manager__header .header__title {
+    font-size: 16px;
+    flex-grow: 1;
+}
+
+.manager__footer {
+    border-top: 1px dashed #ccc;
+    height: 46px;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+.manager__footer__btn {
+    padding: 0 8px;
+}
+
+.manager__profiles {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px dashed #ccc;
+    min-height: 370px;
+    max-height: 370px;
+}
+
+.manager__profile {
+    align-items: center;
+    height: 46px;
+    padding: 0 14px;
+    display: flex;
+    flex-direction: row;
+    border-top: 1px dashed #ccc;
+}
+
+.manager__profile .profile__input {
+    flex-grow: 1;
+}
+
+.manager__trackers {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px dashed #ccc;
+    min-height: 370px;
+    max-height: 370px;
+}
+
+.manager .item {
+    display: flex;
+    flex-direction: row;
+    height: 34px;
+    align-items: center;
+}
+
+.manager .item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.manager .item__name {
+    flex-grow: 1;
+    padding: 0 8px;
+}
+
+.manager .item__action {
+    padding: 0 8px;
+}
+
+.manager__trackers {
+    display: flex;
+    flex-direction: column;
+}
