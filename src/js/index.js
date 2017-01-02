@@ -580,7 +580,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 };
             };
             var workers = [];
-            window.myWorkers = workers;
             profile.trackers.forEach(function (/**profileTracker*/item) {
                 var tracker = trackers[item.id] || {
                     id: item.id,
