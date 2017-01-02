@@ -547,7 +547,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                             });
                         })();
 
-                        trackerFn();
+                        trackerFn.call(this);
                     } + ')(' + [
                         Transport.toString(),
                         'function(){trackerFn=null;'+code+'}'
