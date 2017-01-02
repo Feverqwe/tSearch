@@ -588,7 +588,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     });
                     transport.onMessage(function (msg, response) {
                         if (msg.action === 'init') {
-                            response(tracker.code)
+                            response(tracker.code);
                         } else {
                             console.error('msg', tracker.id, msg);
                         }
@@ -610,7 +610,8 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             profile.trackers.forEach(function (/**profileTracker*/item) {
                 var tracker = trackers[item.id] || {
                     id: item.id,
-                    code: ''
+                    code: '(' + function () {
+                    }.toString() + ')();'
                 };
                 if (tracker) {
                     var myWorker = new MyWorker(tracker);
