@@ -646,7 +646,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     append: [
                         dom.el('img', {
                             class: 'tracker__icon',
-                            src: tracker.meta.icon,
+                            src: tracker.meta.icon64 || tracker.meta.icon,
                             on: ['error', function () {
                                 this.src = './img/blank.svg';
                             }]
