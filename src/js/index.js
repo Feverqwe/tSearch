@@ -564,20 +564,32 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     ].join(', ') + ')'
             };
             var MyWorker = function (/**profileTracker*/tracker) {
-                var blob = new Blob([getCode(tracker.code)], {type : 'text/javascript'});
-                var worker = new Worker(window.URL.createObjectURL(blob));
-                worker.onerror = function (err) {
-                    console.log('Worker', tracker.id, 'error!', err.message);
+                var worker = null;
+                var transport = null;
+                var load = function () {
+                    var blob = new Blob([getCode(tracker.code)], {type : 'text/javascript'});
+                    var blobUrl = window.URL.createObjectURL(blob);
+                    worker = new Worker(blobUrl);
+                    window.URL.revokeObjectURL(blobUrl);
+                    worker.onerror = function (err) {
+                        console.log('Worker', tracker.id, 'error!', err.message);
+                    };
+                    transport = new Transport(worker);
+                    transport.onMessage(function (msg, response) {
+                        console.error('msg', tracker.id, msg);
+                    });
                 };
-                var transport = new Transport(worker);
-                this.sendMessage = transport.sendMessage;
-                var onMessage = transport.onMessage;
-                onMessage(function (msg, response) {
-                    console.error('msg', tracker.id, msg);
-                });
+                this.sendMessage = function (message) {
+                    transport.sendMessage(message);
+                };
+                this.reload = function () {
+                    worker.terminate();
+                    load();
+                };
                 this.destroy = function () {
                     worker.terminate();
                 };
+                load();
             };
             var workers = [];
             profile.trackers.forEach(function (/**profileTracker*/item) {
