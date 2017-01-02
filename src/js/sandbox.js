@@ -80,6 +80,22 @@ require(['./min/promise.min', './min/jquery-3.1.1.min'], function (Promise) {
             return fragment;
         };
 
+        var parseUrl = function (pageUrl) {
+            var pathname = /([^#?]+)/.exec(pageUrl)[1];
+            var path = /(.+:\/\/.*)\//.exec(pathname);
+            if (path) {
+                path = path[1];
+            } else {
+                path = pageUrl;
+            }
+            path += '/';
+            return {
+                protocol: /(.+:)\/\//.exec(pathname)[1],
+                origin: /(.+:\/\/[^\/]+)/.exec(pathname)[1],
+                path: path,
+                pathname: pathname
+            };
+        };
         var urlParseCache = {};
         window.API_normalizeUrl = function (pageUrl, value) {
             if (/^magnet:/.test(value)) {
@@ -91,20 +107,7 @@ require(['./min/promise.min', './min/jquery-3.1.1.min'], function (Promise) {
 
             var parsedUrl = urlParseCache[pageUrl];
             if (!parsedUrl) {
-                var pathname = /([^#?]+)/.exec(pageUrl)[1];
-                var path = /(.+:\/\/.*)\//.exec(pathname);
-                if (path) {
-                    path = path[1];
-                } else {
-                    path = pageUrl;
-                }
-                path += '/';
-                parsedUrl = urlParseCache[pageUrl] = {
-                    protocol: /(.+:)\/\//.exec(pathname)[1],
-                    origin: /(.+:\/\/[^\/]+)/.exec(pathname)[1],
-                    path: path,
-                    pathname: pathname
-                };
+                parsedUrl = urlParseCache[pageUrl] = parseUrl(pageUrl)
             }
 
             if (/^\/\//.test(value)) {
