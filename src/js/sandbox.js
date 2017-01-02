@@ -3,7 +3,7 @@
  */
 "use strict";
 (function () {
-    var Transport = function () {
+    var Transport = function (transport) {
         var emptyFn = function () {};
         var onceFn = function (cb, scope) {
             return function () {
@@ -14,16 +14,7 @@
                 }
             };
         };
-        var transport = {
-            sendMessage: function (msg) {
-                postMessage(msg);
-            },
-            onMessage: function (cb) {
-                onmessage = function (e) {
-                    cb(e.data);
-                };
-            }
-        };
+
         var callbackId = 0;
         var callbackIdCallback = {};
 
@@ -64,14 +55,26 @@
             transport.sendMessage(msg);
         };
     };
-    var transport = new Transport();
+    var transport = new Transport({
+        sendMessage: function (msg) {
+            parent.postMessage(msg, '*');
+        },
+        onMessage: function (cb) {
+            window.onmessage = function (e) {
+                if (e.source === parent) {
+                    cb(e.data);
+                }
+            };
+        }
+    });
     var onMessage = transport.onMessage;
     var sendMessage = transport.sendMessage;
 
-    onMessage(function (msg) {
+    onMessage(function (msg, response) {
         console.error('worker', msg);
     });
-    sendMessage({action: 'init'}, function (code) {
-        eval(code);
+
+    sendMessage({action: 'init'}, function (response) {
+        eval(response);
     });
 })();

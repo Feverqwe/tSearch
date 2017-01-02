@@ -474,7 +474,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
          */
 
         var Profile = function (profile) {
-            var Transport = function (worker) {
+            var Transport = function (transport) {
                 var emptyFn = function () {};
                 var onceFn = function (cb, scope) {
                     return function () {
@@ -485,16 +485,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         }
                     };
                 };
-                var transport = {
-                    sendMessage: function (msg) {
-                        worker.postMessage(msg);
-                    },
-                    onMessage: function (cb) {
-                        worker.onmessage = function (e) {
-                            cb(e.data);
-                        };
-                    }
-                };
+
                 var callbackId = 0;
                 var callbackIdCallback = {};
 
@@ -535,26 +526,94 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     transport.sendMessage(msg);
                 };
             };
-            var MyWorker = function (/**profileTracker*/tracker) {
-                var worker = new Worker('./js/worker.js');
-                var transport = new Transport(worker);
-                this.sendMessage = transport.sendMessage;
-                var onMessage = transport.onMessage;
-                onMessage(function (msg, response) {
-                    if (msg.action === 'init') {
-                        response(tracker.code);
+            var FrameWorker = function () {
+                var self = this;
+                var stack = [];
+                var frame = null;
+                var contentWindow = null;
+
+                var load = function () {
+                    frame = document.createElement('iframe');
+                    frame.src = 'sandbox.html';
+                    frame.style.display = 'none';
+                    frame.onload = function () {
+                        contentWindow = frame.contentWindow;
+                        while (stack.length) {
+                            self.postMessage(stack.shift());
+                        }
+                    };
+                    document.body.appendChild(frame);
+                };
+
+                this.postMessage = function (msg) {
+                    if (contentWindow) {
+                        contentWindow.postMessage(msg, '*');
                     } else {
-                        console.error('msg', tracker, msg);
+                        stack.push(msg);
                     }
-                });
+                };
+
+                var msgListener = function(event) {
+                    if (event.source === contentWindow) {
+                        if (self.onmessage) {
+                            self.onmessage(event.data);
+                        }
+                    }
+                };
+                window.addEventListener("message", msgListener);
+
+                this.onmessage = null;
+                this.terminate = function () {
+                    frame.parentNode.removeChild(frame);
+                    window.removeEventListener("message", msgListener);
+                    self.onmessage = null;
+                };
+
+                load();
+            };
+            var MyWorker = function (/**tracker*/tracker) {
+                var worker = null;
+                var transport = null;
+                var load = function () {
+                    worker = new FrameWorker();
+                    transport = new Transport({
+                        sendMessage: function (msg) {
+                            worker.postMessage(msg);
+                        },
+                        onMessage: function (cb) {
+                            worker.onmessage = function (data) {
+                                cb(data);
+                            }
+                        }
+                    });
+                    transport.onMessage(function (msg, response) {
+                        if (msg.action === 'init') {
+                            response(tracker.code)
+                        } else {
+                            console.error('msg', tracker.id, msg);
+                        }
+                    });
+                };
+                load();
+                this.reload = function () {
+                    worker.terminate();
+                    load();
+                };
+                this.sendMessage = function (message) {
+                    transport.sendMessage(message);
+                };
                 this.destroy = function () {
                     worker.terminate();
                 };
             };
             var workers = [];
-            profile.trackers.forEach(function (item) {
-                var myWorker = new MyWorker(item);
-                workers.push(myWorker);
+            window.myWorkers = workers;
+            profile.trackers.forEach(function (/**profileTracker*/item) {
+                var tracker = trackers[item.id];
+                if (tracker) {
+                    var myWorker = new MyWorker(tracker);
+                    workers.push(myWorker);
+                }
             });
             this.destroy = function () {
                 workers.forEach(function (myWorker) {
