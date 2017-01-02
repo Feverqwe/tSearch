@@ -485,6 +485,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         }
                     };
                 };
+
                 var callbackId = 0;
                 var callbackIdCallback = {};
 
@@ -525,58 +526,72 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     transport.sendMessage(msg);
                 };
             };
-            var getCode = function (code) {
-                return '(' + function (Transport, trackerFn) {
-                        (function () {
-                            var transport = new Transport({
-                                sendMessage: function (msg) {
-                                    postMessage(msg);
-                                },
-                                onMessage: function (cb) {
-                                    onmessage = function (e) {
-                                        cb(e.data);
-                                    };
-                                }
-                            });
-                            Transport = null;
-                            var onMessage = transport.onMessage;
-                            var sendMessage = transport.sendMessage;
+            var FrameWorker = function () {
+                var self = this;
+                var stack = [];
+                var frame = null;
+                var contentWindow = null;
 
-                            onMessage(function (msg) {
-                                console.error('worker', msg);
-                            });
-                        })();
+                var load = function () {
+                    frame = document.createElement('iframe');
+                    frame.src = 'sandbox.html';
+                    frame.style.display = 'none';
+                    frame.onload = function () {
+                        contentWindow = frame.contentWindow;
+                        while (stack.length) {
+                            self.postMessage(stack.shift());
+                        }
+                    };
+                    document.body.appendChild(frame);
+                };
 
-                        trackerFn();
-                        trackerFn=null;
-                    } + ')(' + [
-                        Transport.toString(),
-                        'function(){'+code+'}'
-                    ].join(', ') + ')'
+                this.postMessage = function (msg) {
+                    if (contentWindow) {
+                        contentWindow.postMessage(msg, '*');
+                    } else {
+                        stack.push(msg);
+                    }
+                };
+
+                var msgListener = function(event) {
+                    if (event.source === contentWindow) {
+                        if (self.onmessage) {
+                            self.onmessage(event.data);
+                        }
+                    }
+                };
+                window.addEventListener("message", msgListener);
+
+                this.onmessage = null;
+                this.terminate = function () {
+                    frame.parentNode.removeChild(frame);
+                    window.removeEventListener("message", msgListener);
+                    self.onmessage = null;
+                };
+
+                load();
             };
-            var MyWorker = function (/**profileTracker*/tracker) {
+            var MyWorker = function (/**tracker*/tracker) {
                 var worker = null;
                 var transport = null;
                 var load = function () {
-                    var blob = new Blob([getCode(tracker.code)], {type : 'text/javascript'});
-                    var blobUrl = window.URL.createObjectURL(blob);
-                    worker = new Worker(blobUrl);
-                    window.URL.revokeObjectURL(blobUrl);
-                    worker.onerror = function (err) {
-                        console.log('Worker', tracker.id, 'error!', err.message);
-                    };
+                    worker = new FrameWorker();
                     transport = new Transport({
                         sendMessage: function (msg) {
                             worker.postMessage(msg);
                         },
                         onMessage: function (cb) {
-                            worker.onmessage =  function (e) {
-                                cb(e.data);
-                            };
+                            worker.onmessage = function (data) {
+                                cb(data);
+                            }
                         }
                     });
                     transport.onMessage(function (msg, response) {
-                        console.error('msg', tracker.id, msg);
+                        if (msg.action === 'init') {
+                            response(tracker.code)
+                        } else {
+                            console.error('msg', tracker.id, msg);
+                        }
                     });
                 };
                 this.sendMessage = function (message) {
