@@ -21,11 +21,6 @@
     "background": {
         "scripts": ["js/bg.js"]
     },
-    "sandbox": {
-        "pages": [
-            "sandbox.html"
-        ]
-    },
     "content_security_policy": "script-src 'self' https://www.google-analytics.com/analytics.js; object-src 'self'",
     "name": "__MSG_extName__",
     "description": "__MSG_extDesc__",
