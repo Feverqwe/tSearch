@@ -473,105 +473,105 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
          * @property {string} code
          */
 
-        var Profile = function (profile) {
-            var Transport = function (transport) {
-                var emptyFn = function () {};
-                var onceFn = function (cb, scope) {
-                    return function () {
-                        if (cb) {
-                            var context = scope || this;
-                            cb.apply(context, arguments);
-                            cb = null;
-                        }
-                    };
+        var Transport = function (transport) {
+            var emptyFn = function () {};
+            var onceFn = function (cb, scope) {
+                return function () {
+                    if (cb) {
+                        var context = scope || this;
+                        cb.apply(context, arguments);
+                        cb = null;
+                    }
                 };
+            };
 
-                var callbackId = 0;
-                var callbackIdCallback = {};
+            var callbackId = 0;
+            var callbackIdCallback = {};
 
-                this.onMessage = function (cb) {
-                    transport.onMessage(function (msg) {
-                        if (msg.responseId) {
-                            return callbackIdCallback[msg.responseId](msg.message);
-                        }
+            this.onMessage = function (cb) {
+                transport.onMessage(function (msg) {
+                    if (msg.responseId) {
+                        return callbackIdCallback[msg.responseId](msg.message);
+                    }
 
-                        var response;
-                        if (msg.callbackId) {
-                            response = onceFn(function (message) {
-                                transport.sendMessage({
-                                    responseId: msg.callbackId,
-                                    message: message
-                                });
+                    var response;
+                    if (msg.callbackId) {
+                        response = onceFn(function (message) {
+                            transport.sendMessage({
+                                responseId: msg.callbackId,
+                                message: message
                             });
-                        } else {
-                            response = emptyFn;
-                        }
-                        var result = cb(msg.message, response);
-                        if (result !== true) {
-                            response();
-                        }
-                    });
-                };
-                this.sendMessage = function (message, callback) {
-                    var msg = {
-                        message: message
-                    };
-                    if (callback) {
-                        msg.callbackId = ++callbackId;
-                        callbackIdCallback[msg.callbackId] = function (message) {
-                            delete callbackIdCallback[msg.callbackId];
-                            callback(message);
-                        };
-                    }
-                    transport.sendMessage(msg);
-                };
-            };
-            var FrameWorker = function () {
-                var self = this;
-                var stack = [];
-                var frame = null;
-                var contentWindow = null;
-
-                var load = function () {
-                    frame = document.createElement('iframe');
-                    frame.src = 'sandbox.html';
-                    frame.style.display = 'none';
-                    frame.onload = function () {
-                        contentWindow = frame.contentWindow;
-                        while (stack.length) {
-                            self.postMessage(stack.shift());
-                        }
-                    };
-                    document.body.appendChild(frame);
-                };
-
-                this.postMessage = function (msg) {
-                    if (contentWindow) {
-                        contentWindow.postMessage(msg, '*');
+                        });
                     } else {
-                        stack.push(msg);
+                        response = emptyFn;
                     }
-                };
-
-                var msgListener = function(event) {
-                    if (event.source === contentWindow) {
-                        if (self.onmessage) {
-                            self.onmessage(event.data);
-                        }
+                    var result = cb(msg.message, response);
+                    if (result !== true) {
+                        response();
                     }
-                };
-                window.addEventListener("message", msgListener);
-
-                this.onmessage = null;
-                this.terminate = function () {
-                    frame.parentNode.removeChild(frame);
-                    window.removeEventListener("message", msgListener);
-                    self.onmessage = null;
-                };
-
-                load();
+                });
             };
-            var MyWorker = function (/**tracker*/tracker) {
+            this.sendMessage = function (message, callback) {
+                var msg = {
+                    message: message
+                };
+                if (callback) {
+                    msg.callbackId = ++callbackId;
+                    callbackIdCallback[msg.callbackId] = function (message) {
+                        delete callbackIdCallback[msg.callbackId];
+                        callback(message);
+                    };
+                }
+                transport.sendMessage(msg);
+            };
+        };
+        var FrameWorker = function () {
+            var self = this;
+            var stack = [];
+            var frame = null;
+            var contentWindow = null;
+
+            var load = function () {
+                frame = document.createElement('iframe');
+                frame.src = 'sandbox.html';
+                frame.style.display = 'none';
+                frame.onload = function () {
+                    contentWindow = frame.contentWindow;
+                    while (stack.length) {
+                        self.postMessage(stack.shift());
+                    }
+                };
+                document.body.appendChild(frame);
+            };
+
+            this.postMessage = function (msg) {
+                if (contentWindow) {
+                    contentWindow.postMessage(msg, '*');
+                } else {
+                    stack.push(msg);
+                }
+            };
+
+            var msgListener = function(event) {
+                if (event.source === contentWindow) {
+                    if (self.onmessage) {
+                        self.onmessage(event.data);
+                    }
+                }
+            };
+            window.addEventListener("message", msgListener);
+
+            this.onmessage = null;
+            this.terminate = function () {
+                frame.parentNode.removeChild(frame);
+                window.removeEventListener("message", msgListener);
+                self.onmessage = null;
+            };
+
+            load();
+        };
+        var Profile = function (profile) {
+            var Tracker = function (/**tracker*/tracker) {
                 var worker = null;
                 var transport = null;
                 var load = function () {
@@ -614,7 +614,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     }.toString() + ')();'
                 };
                 if (tracker) {
-                    var myWorker = new MyWorker(tracker);
+                    var myWorker = new Tracker(tracker);
                     workers.push(myWorker);
                 }
             });
