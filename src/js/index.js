@@ -882,7 +882,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             };
             var onReady = function () {
                 ready = true;
-                var item = null;
                 while (stack.length) {
                     self.sendMessage.apply(null, stack.shift());
                 }
@@ -913,6 +912,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         var Profile = function (profile) {
             var self = this;
             var workers = [];
+            // todo: rm me
             window.myWorkers = workers;
             var load = function () {
                 var trackersNode = document.createDocumentFragment();
@@ -956,6 +956,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 load();
             };
             this.id = profile.id;
+            this.trackers = workers;
             this.destroy = function () {
                 workers.forEach(function (myWorker) {
                     myWorker.destroy();
@@ -1005,9 +1006,17 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 activeProfile.destroy();
             }
             activeProfile = new Profile(profileIdProfileMap[currentProfileId]);
+
+            // todo: rm me
+            /*activeProfile.trackers.forEach(function (tracker) {
+                tracker.search('test', function (r) {
+                    console.log(r);
+                });
+            });*/
         });
     })();
 
+    // todo: rm me
     window.resetState = function () {
         uiState.splice(0).forEach(function (state) {
             state.discard();
