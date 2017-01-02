@@ -79,6 +79,48 @@ require(['./min/promise.min', './min/jquery-3.1.1.min'], function (Promise) {
             }
             return fragment;
         };
+
+        var urlParseCache = {};
+        window.API_normalizeUrl = function (pageUrl, value) {
+            if (/^magnet:/.test(value)) {
+                return value;
+            }
+            if (/^http/.test(value)) {
+                return value;
+            }
+
+            var parsedUrl = urlParseCache[pageUrl];
+            if (!parsedUrl) {
+                var pathname = /([^#?]+)/.exec(pageUrl)[1];
+                var path = /(.+:\/\/.*)\//.exec(pathname);
+                if (path) {
+                    path = path[1];
+                } else {
+                    path = pageUrl;
+                }
+                path += '/';
+                parsedUrl = urlParseCache[pageUrl] = {
+                    protocol: /(.+:)\/\//.exec(pathname)[1],
+                    origin: /(.+:\/\/[^\/]+)/.exec(pathname)[1],
+                    path: path,
+                    pathname: pathname
+                };
+            }
+
+            if (/^\/\//.test(value)) {
+                return parsedUrl.protocol + value;
+            }
+            if (/^\//.test(value)) {
+                return parsedUrl.origin + value;
+            }
+            if (/^\.\//.test(value)) {
+                return parsedUrl.path + value.substr(2);
+            }
+            if (/^\?/.test(value)) {
+                return parsedUrl.pathname + value;
+            }
+            return parsedUrl.path + value;
+        };
     })(function (transport) {
         var emptyFn = function () {
         };

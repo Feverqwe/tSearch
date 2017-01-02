@@ -30,6 +30,15 @@ var onPageLoad = function (response) {
             var seed = item.find('td.row4.nowrap:eq(1)>u').text();
             var peer = item.find('td.row4.leechmed>b').text();
             var date = item.find('td.row4.small.nowrap:eq(1)>u').text();
+            if (categoryUrl) {
+                categoryUrl = API_normalizeUrl(response.url, categoryUrl);
+            }
+            if (url) {
+                url = API_normalizeUrl(response.url, url);
+            }
+            if (downloadUrl) {
+                downloadUrl = API_normalizeUrl(response.url, downloadUrl);
+            }
             results.push({
                 categoryTitle: categoryTitle,
                 categoryUrl: categoryUrl,
@@ -46,6 +55,9 @@ var onPageLoad = function (response) {
         }
     }
     var nextPageUrl = $bodyDom.find('div.nav>p:eq(1)>a.pg:eq(-1)').attr('href');
+    if (nextPageUrl) {
+        nextPageUrl = API_normalizeUrl(response.url, nextPageUrl);
+    }
     return {
         success: true,
         results: results,
