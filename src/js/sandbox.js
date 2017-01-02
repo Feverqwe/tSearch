@@ -23,7 +23,13 @@
     });
 
     sendMessage({action: 'init'}, function (response) {
-        runCode(response);
+        try {
+            runCode(response);
+            sendMessage({action: 'ready'});
+        } catch (e) {
+            sendMessage({action: 'error', message: e.message, name: e.name, stack: e.stack});
+            throw e;
+        }
     });
 
 

@@ -456,6 +456,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
          */
         /**
          * @typedef {Object} tracker
+         * @property {string} id
          * @property {Object} meta
          * @property {string} meta.name
          * @property {string} meta.version
@@ -572,9 +573,12 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         };
         var Profile = function (profile) {
             var Tracker = function (/**tracker*/tracker) {
+                var self = this;
+                var ready = false;
+                var stack = [];
                 var worker = null;
                 var transport = null;
-                var load = function () {
+                var load = function (onReady) {
                     worker = new FrameWorker();
                     transport = new Transport({
                         sendMessage: function (msg) {
@@ -589,22 +593,39 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     transport.onMessage(function (msg, response) {
                         if (msg.action === 'init') {
                             response(tracker.code);
+                        } else
+                        if (msg.action === 'ready') {
+                            onReady();
+                        } else
+                        if (msg.action === 'error') {
+                            console.error( tracker.id, 'Loading error!', msg.name + ':', msg.message);
                         } else {
-                            console.error('msg', tracker.id, msg);
+                            console.error(tracker.id, 'msg', msg);
                         }
                     });
                 };
+                var onReady = function () {
+                    ready = true;
+                    while (stack.length) {
+                        self.sendMessage(stack.shift());
+                    }
+                };
                 this.sendMessage = function (message) {
-                    transport.sendMessage(message);
+                    if (ready) {
+                        transport.sendMessage(message);
+                    } else {
+                        stack.push(message);
+                    }
                 };
                 this.reload = function () {
                     worker.terminate();
-                    load();
+                    load(onReady);
                 };
                 this.destroy = function () {
+                    ready = false;
                     worker.terminate();
                 };
-                load();
+                load(onReady);
             };
             var workers = [];
             profile.trackers.forEach(function (/**profileTracker*/item) {
