@@ -193,12 +193,14 @@ define(['./dom'], function (dom) {
                     }],
                     ['keydown', function (e) {
                         if (e.keyCode === 40) {
+                            e.preventDefault();
                             if (!self.isOpen) {
                                 self.open();
                             } else {
                                 self.overNextItem();
                             }
                         } else if (e.keyCode === 38) {
+                            e.preventDefault();
                             if (!self.isOpen) {
                                 self.open();
                             } else {

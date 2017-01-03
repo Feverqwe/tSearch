@@ -579,6 +579,10 @@ a.simple_select__menu__item {
     flex-grow: 1;
 }
 
+.table-results .body__row .cell-date {
+    color: #666;
+}
+
 .table-results .body__row .cell-title {
     display: flex;
     flex-direction: column;
