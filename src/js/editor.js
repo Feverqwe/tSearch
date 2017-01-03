@@ -10,12 +10,12 @@ require([
     './lib/i18nDom',
     './lib/utils',
     './lib/dom',
-    './codeMirror/lib/codemirror',
-    './codeMirror/mode/javascript/javascript',
-    './codeMirror/addon/edit/matchbrackets',
-    './codeMirror/addon/edit/closebrackets',
-    './codeMirror/addon/comment/continuecomment',
-    './codeMirror/addon/selection/active-line'
+    '../codeMirror/lib/codemirror',
+    '../codeMirror/mode/javascript/javascript',
+    '../codeMirror/addon/edit/matchbrackets',
+    '../codeMirror/addon/edit/closebrackets',
+    '../codeMirror/addon/comment/continuecomment',
+    '../codeMirror/addon/selection/active-line'
 ], function (Promise, i18nDom, utils, dom, CodeMirror) {
     i18nDom();
 
