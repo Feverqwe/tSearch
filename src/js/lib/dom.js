@@ -87,6 +87,22 @@ define(function () {
         return el;
     };
     return {
+        getParentChild: function (parent, someChild) {
+            if (parent === someChild) {
+                return null;
+            }
+            if (!parent.contains(someChild)) {
+                return null;
+            }
+            var parentNode;
+            while (parentNode = someChild.parentNode) {
+                if (parentNode !== parent) {
+                    someChild = parentNode;
+                } else {
+                    return someChild;
+                }
+            }
+        },
         el: create
     };
 });

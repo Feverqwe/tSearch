@@ -388,8 +388,23 @@ a.simple_select__menu__item {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 2px 0;
     max-width: 166px;
+    margin: 1px 0;
+    cursor: pointer;
+}
+
+.tracker:hover > *:not(.tracker__icon) {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.tracker .tracker__name,
+.tracker .tracker__counter {
+    padding: 2px 0;
+}
+
+.tracker.tracker-selected > *:not(.tracker__icon) {
+    background-color: #337AF8;
+    color: #fff;
 }
 
 .tracker__icon {
@@ -402,6 +417,10 @@ a.simple_select__menu__item {
     padding: 0 2px;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.tracker .tracker__counter {
+    padding: 2px;
 }
 
 .manager__layer {

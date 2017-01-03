@@ -662,6 +662,13 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         var trackerList = document.querySelector('.tracker__list');
         var profileSelectWrapper = null;
 
+        trackerList.addEventListener('click', function (e) {
+            var child = dom.getParentChild(this, e.target);
+            if (child) {
+                activeProfile.trackerIdTracker[child.dataset.id].select();
+            }
+        });
+
         var currentProfileId = null;
         var trackers = {};
         var profiles = [];
@@ -915,27 +922,47 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         };
         var Profile = function (profile) {
             var self = this;
-            var trackerIdWorker = {};
-            var workers = [];
+            var trackerIdTracker = {};
+            var wrappedTrackers = [];
             // todo: rm me
-            window.myWorkers = workers;
+            window.myTrackers = wrappedTrackers;
             var load = function () {
+                var trackerSelect = function (state) {
+                    if (state === undefined) {
+                        state = !this.selected;
+                    } else {
+                        state = !!state;
+                    }
+                    if (this.selected !== state) {
+                        this.selected = state;
+                        if (state) {
+                            this.node.classList.add('tracker-selected');
+                        } else {
+                            this.node.classList.remove('tracker-selected');
+                        }
+                        ee.trigger('trackerFilter', [this.id, state]);
+                    }
+                };
                 var trackersNode = document.createDocumentFragment();
                 profile.trackers.forEach(function (/**profileTracker*/item) {
-                    var tracker = trackers[item.id] || {
+                    var worker = null;
+                    var tracker = trackers[item.id];
+                    if (tracker) {
+                        worker = new Tracker(tracker);
+                    } else {
+                        tracker = {
                             id: item.id,
                             meta: {},
                             info: {},
-                            code: '(' + function () {}.toString() + ')();'
-                        };
-                    var worker = null;
-                    if (tracker) {
-                        worker = new Tracker(tracker);
-                        workers.push(worker);
-                        trackerIdWorker[worker.id] = worker;
+                            code: ''
+                        }
                     }
-                    trackersNode.appendChild(dom.el('div', {
+
+                    var node = dom.el('div', {
                         class: 'tracker',
+                        data: {
+                            id: tracker.id
+                        },
                         append: [
                             dom.el('img', {
                                 class: 'tracker__icon',
@@ -953,7 +980,20 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                                 text: 0
                             })
                         ]
-                    }));
+                    });
+
+                    var trackerWrapper = {
+                        id: tracker.id,
+                        node: node,
+                        worker: worker,
+                        selected: false,
+                        select: trackerSelect
+                    };
+
+                    wrappedTrackers.push(trackerWrapper);
+                    trackerIdTracker[trackerWrapper.id] = trackerWrapper;
+
+                    trackersNode.appendChild(node);
                 });
                 trackerList.textContent = '';
                 trackerList.appendChild(trackersNode);
@@ -964,14 +1004,14 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 load();
             };
             this.id = profile.id;
-            this.trackers = workers;
-            this.trackerIdTracker = trackerIdWorker;
+            this.trackers = wrappedTrackers;
+            this.trackerIdTracker = trackerIdTracker;
             this.destroy = function () {
-                workers.splice(0).forEach(function (myWorker) {
-                    myWorker.destroy();
+                trackers.splice(0).forEach(function (tracker) {
+                    tracker.worker && tracker.worker.destroy();
                 });
-                for (var key in trackerIdWorker) {
-                    delete trackerIdWorker[key];
+                for (var key in trackerIdTracker) {
+                    delete trackerIdTracker[key];
                 }
             };
         };
@@ -1240,12 +1280,25 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
 
         ee.on('search', function (query) {
             activeProfile.trackers.forEach(function (tracker) {
-                tracker.search(query, function (response) {
+                tracker.worker && tracker.worker.search(query, function (response) {
                     if (response.success) {
                         table.insertReslts(tracker, query, response.results)
                     }
                 });
             });
+        });
+    })();
+
+    (function () {
+        var main = document.querySelector('.menu__btn-main');
+        main.addEventListener('click', function (e) {
+            e.preventDefault();
+            uiState.splice(0).forEach(function (state) {
+                state.discard();
+            });
+            if (uiState.length > 0) {
+                console.error('State is not empty!', uiState);
+            }
         });
     })();
 
