@@ -1040,22 +1040,24 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         (function () {
             var Table = function () {
                 var rows = ['date', 'title', 'size', 'seeds', 'peers'];
-                var getHeadRows = function () {
-                    var node = document.createDocumentFragment();
+                var getHeadRow = function () {
+                    var node = dom.el('div', {
+                        class: ['row', 'head__row']
+                    });
                     rows.forEach(function (type) {
                         node.appendChild(dom.el('a', {
-                            class: ['head__row', 'head__row-' + type, 'row-' + type],
-                            href: '#row-' + type,
+                            class: ['cell', 'row__cell', 'cell-' + type],
+                            href: '#cell-' + type,
                             data: {
                                 type: type
                             },
                             append: [
                                 dom.el('span', {
-                                    class: ['row__title'],
+                                    class: ['cell__title'],
                                     text: chrome.i18n.getMessage('row_' + type)
                                 }),
                                 dom.el('i', {
-                                    class: ['row__sort']
+                                    class: ['cell__sort']
                                 })
                             ]
                         }))
@@ -1087,9 +1089,9 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                  * @property {string} [peer]
                  * @property {string} [date]
                  */
-                var getBodyColumn = function (tracker, /**torrent*/torrent) {
+                var getBodyRow = function (tracker, /**torrent*/torrent) {
                     var row = dom.el('div', {
-                        class: ['column', 'table__column'],
+                        class: ['row', 'body__row'],
                         data: {
                             trackerId: tracker.id
                         }
@@ -1097,7 +1099,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     rows.forEach(function (type) {
                         if (type === 'date') {
                             row.appendChild(dom.el('div', {
-                                class: ['row', 'row-' + type],
+                                class: ['cell', 'row__cell', 'cell-' + type],
                                 text: torrent.date
                             }))
                         } else
@@ -1106,23 +1108,23 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                             if (tracker.categoryTitle) {
                                 if (tracker.categoryUrl) {
                                     category = dom.el('a', {
-                                        class: ['row__category'],
+                                        class: ['cell__category'],
                                         target: '_blank',
                                         href: torrent.categoryUrl,
                                         text: torrent.categoryTitle
                                     });
                                 } else {
                                     category = dom.el('span', {
-                                        class: ['row__category'],
+                                        class: ['cell__category'],
                                         text: torrent.categoryTitle
                                     });
                                 }
                             }
                             row.appendChild(dom.el('div', {
-                                class: ['row', 'row-' + type],
+                                class: ['cell', 'row__cell', 'cell-' + type],
                                 append: [
                                     dom.el('a', {
-                                        class: ['row__title'],
+                                        class: ['cell__title'],
                                         target: '_blank',
                                         href: torrent.url,
                                         text: torrent.title
@@ -1133,19 +1135,19 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         } else
                         if (type === 'size') {
                             row.appendChild(dom.el('div', {
-                                class: ['row', 'row-' + type],
+                                class: ['cell', 'row__cell', 'cell-' + type],
                                 text: torrent.size
                             }))
                         } else
                         if (type === 'seeds') {
                             row.appendChild(dom.el('div', {
-                                class: ['row', 'row-' + type],
+                                class: ['cell', 'row__cell', 'cell-' + type],
                                 text: torrent.seed
                             }))
                         } else
                         if (type === 'peers') {
                             row.appendChild(dom.el('div', {
-                                class: ['row', 'row-' + type],
+                                class: ['cell', 'row__cell', 'cell-' + type],
                                 text: torrent.peer
                             }))
                         }
@@ -1155,21 +1157,21 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
 
                 var body;
                 this.node = dom.el('div', {
-                    class: ['table', 'results__table'],
+                    class: ['table', 'table-results'],
                     append: [
                         dom.el('div', {
-                            class: ['table__head'],
-                            append: getHeadRows()
+                            class: ['head', 'table__head'],
+                            append: getHeadRow()
                         }),
                         body = dom.el('div', {
-                            class: ['table__body']
+                            class: ['body', 'table__body']
                         })
                     ]
                 });
 
                 this.insertReslts = function (tracker, query, results) {
                     results.forEach(function (item) {
-                        var column = getBodyColumn(tracker, item);
+                        var column = getBodyRow(tracker, item);
                         body.appendChild(column);
                     });
                 };

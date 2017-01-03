@@ -504,11 +504,15 @@ body {
     flex-direction: row;
 }
 
-.results {
+.table-results {
     margin-top: 8px;
 }
 
-.results .table .head__row {
+.table-results .cell {
+    overflow: hidden;
+}
+
+.table-results .head__row .cell {
     padding: 4px;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
@@ -516,53 +520,54 @@ body {
     text-decoration: none;
 }
 
-.results .table .head__row.head__row-order {
+.table-results .head__row .cell.cell-order {
     border-bottom-color: #3366ff;
     border-bottom-width: 2px;
     padding-bottom: 3px;
 }
 
-.results .table .head__row-title {
+.table-results .head__row .cell-title {
     text-align: center;
 }
 
-.results .table .row__title {
+.table-results .head__row .cell__title {
     display: inline-block;
 }
 
-.results .table .row__sort {
+.table-results .head__row .cell__sort {
     display: inline-block;
 }
 
-.results .table .row-date {
+.table-results .cell-date {
     width: 100px;
     min-width: 100px;
     max-width: 100px;
 }
 
-.results .table .row-title {
+.table-results .cell-title {
     flex-grow: 1;
 }
 
-.results .table .row {
-    overflow: hidden;
+.table-results .body__row .cell-title {
+    display: flex;
+    flex-direction: column;
 }
 
-.results .table .row-size {
+.table-results .cell-size {
     width: 80px;
     min-width: 80px;
     max-width: 80px;
     text-align: center;
 }
 
-.results .table .row-seeds {
+.table-results .cell-seeds {
     width: 30px;
     min-width: 30px;
     max-width: 30px;
     text-align: center;
 }
 
-.results .table .row-peers {
+.table-results .cell-peers {
     width: 30px;
     min-width: 30px;
     max-width: 30px;
