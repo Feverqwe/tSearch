@@ -5,7 +5,7 @@
 require.config({
     baseUrl: './js'
 });
-require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './lib/selectBox', './min/EventEmitter.min', './min/moment-with-locales.min'], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, moment) {
+require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './lib/selectBox', './min/EventEmitter.min', './min/moment-with-locales.min', './min/filesize.min'], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, moment, filesize) {
     i18nDom();
 
     document.body.classList.remove('loading');
@@ -1184,7 +1184,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         if (type === 'size') {
                             row.appendChild(dom.el('div', {
                                 class: ['cell', 'row__cell', 'cell-' + type],
-                                text: torrent.size
+                                text: filesize(torrent.size)
                             }))
                         } else
                         if (type === 'seeds') {
