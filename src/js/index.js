@@ -663,7 +663,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         var profileSelectWrapper = null;
 
         trackerList.addEventListener('click', function (e) {
-            var child = dom.getParentChild(this, e.target);
+            var child = dom.closest(this, e.target);
             if (child) {
                 activeProfile.trackerIdTracker[child.dataset.id].select();
             }

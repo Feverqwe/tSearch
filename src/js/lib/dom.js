@@ -87,7 +87,7 @@ define(function () {
         return el;
     };
     return {
-        getParentChild: function (parent, someChild) {
+        closest: function (parent, someChild) {
             if (parent === someChild) {
                 return null;
             }
