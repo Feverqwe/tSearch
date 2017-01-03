@@ -882,6 +882,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     self.sendMessage.apply(null, stack.shift());
                 }
             };
+            this.id = tracker.id;
             this.sendMessage = function (message, callback) {
                 if (ready) {
                     transport.sendMessage(message, callback);
@@ -1037,6 +1038,45 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         var results = document.querySelector('.results');
         var table = null;
 
+        var sortInsertList = function(tableBody, sortedList, nodeList) {
+            "use strict";
+            var node;
+            var insertItems = [];
+            var insertPosition = null;
+            var nodes = null;
+            var child = null;
+
+            for (var i = 0; node = sortedList[i]; i++) {
+                if (nodeList[i] === node) {
+                    continue;
+                }
+                insertPosition = i;
+
+                nodes = document.createDocumentFragment();
+                while (sortedList[i] !== undefined && sortedList[i] !== nodeList[i]) {
+                    var pos = nodeList.indexOf(sortedList[i], i);
+                    if (pos !== -1) {
+                        nodeList.splice(pos, 1);
+                    }
+                    nodeList.splice(i, 0, sortedList[i]);
+
+                    nodes.appendChild(sortedList[i].node);
+                    i++;
+                }
+
+                insertItems.push([insertPosition, nodes]);
+            }
+
+            for (var n = 0; node = insertItems[n]; n++) {
+                child = tableBody.childNodes[node[0]];
+                if (child !== undefined) {
+                    tableBody.insertBefore(node[1], child);
+                } else {
+                    tableBody.appendChild(node[1]);
+                }
+            }
+        };
+
         (function () {
             var Table = function () {
                 var rows = ['date', 'title', 'size', 'seeds', 'peers'];
@@ -1066,18 +1106,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 };
 
                 /**
-                 * categoryTitle: categoryTitle,
-                 categoryUrl: categoryUrl,
-                 title: title,
-                 url: url,
-                 size: size,
-                 downloadUrl: downloadUrl,
-                 seed: seed,
-                 peer: peer,
-                 date: date
-                 */
-
-                /**
                  * @typedef {Object} torrent
                  * @property {string} [categoryTitle]
                  * @property {string} [categoryUrl]
@@ -1105,17 +1133,17 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         } else
                         if (type === 'title') {
                             var category = '';
-                            if (tracker.categoryTitle) {
-                                if (tracker.categoryUrl) {
+                            if (torrent.categoryTitle) {
+                                if (torrent.categoryUrl) {
                                     category = dom.el('a', {
-                                        class: ['cell__category'],
+                                        class: ['category'],
                                         target: '_blank',
                                         href: torrent.categoryUrl,
                                         text: torrent.categoryTitle
                                     });
                                 } else {
                                     category = dom.el('span', {
-                                        class: ['cell__category'],
+                                        class: ['category'],
                                         text: torrent.categoryTitle
                                     });
                                 }
@@ -1123,13 +1151,23 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                             row.appendChild(dom.el('div', {
                                 class: ['cell', 'row__cell', 'cell-' + type],
                                 append: [
-                                    dom.el('a', {
+                                    dom.el('div', {
                                         class: ['cell__title'],
-                                        target: '_blank',
-                                        href: torrent.url,
-                                        text: torrent.title
+                                        append: [
+                                            dom.el('a', {
+                                                class: ['title'],
+                                                target: '_blank',
+                                                href: torrent.url,
+                                                text: torrent.title
+                                            })
+                                        ]
                                     }),
-                                    category
+                                    category && dom.el('div', {
+                                        class: ['cell__category'],
+                                        append: [
+                                            category
+                                        ]
+                                    })
                                 ]
                             }))
                         } else
@@ -1160,7 +1198,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     class: ['table', 'table-results'],
                     append: [
                         dom.el('div', {
-                            class: ['head', 'table__head'],
+                            class: ['table__head'],
                             append: getHeadRow()
                         }),
                         body = dom.el('div', {
@@ -1169,11 +1207,19 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     ]
                 });
 
+                var tableRows = [];
+                var tableSortedRows = [];
+
                 this.insertReslts = function (tracker, query, results) {
                     results.forEach(function (item) {
-                        var column = getBodyRow(tracker, item);
-                        body.appendChild(column);
+                        tableRows.push({
+                            node: getBodyRow(tracker, item),
+                            torrent: item,
+                            tracker: tracker.id
+                        });
                     });
+                    var sortedRows = tableRows.slice(0);
+                    sortInsertList(body, sortedRows, tableSortedRows);
                 };
             };
 
