@@ -542,7 +542,7 @@ a.simple_select__menu__item {
 }
 
 .table-results .head__row .cell {
-    padding: 4px;
+    padding: 4px 0;
     border-top: 1px solid rgba(0,0,0,0.3);
     border-bottom: 1px solid rgba(0,0,0,0.3);
     color: #000;
