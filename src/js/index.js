@@ -5,10 +5,11 @@
 require.config({
     baseUrl: './js'
 });
-require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './lib/selectBox', './min/EventEmitter.min'], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter) {
+require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './lib/selectBox', './min/EventEmitter.min', './min/moment-with-locales.min'], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, moment) {
     i18nDom();
 
     document.body.classList.remove('loading');
+    moment.locale(chrome.i18n.getUILanguage());
 
     var ee = new EventEmitter();
     var activeProfile = null;
@@ -1038,6 +1039,14 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         var results = document.querySelector('.results');
         var table = null;
 
+        var unixTimeToString = function (unixtime) {
+            return moment(unixtime * 1000).format('lll');
+        };
+
+        var unixTimeToFromNow = function (unixtime) {
+            return moment(unixtime * 1000).fromNow();
+        };
+
         var sortInsertList = function(tableBody, sortedList, nodeList) {
             "use strict";
             var node;
@@ -1128,7 +1137,8 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         if (type === 'date') {
                             row.appendChild(dom.el('div', {
                                 class: ['cell', 'row__cell', 'cell-' + type],
-                                text: torrent.date
+                                title: unixTimeToString(torrent.date),
+                                text: unixTimeToFromNow(torrent.date)
                             }))
                         } else
                         if (type === 'title') {

@@ -542,7 +542,8 @@ a.simple_select__menu__item {
 }
 
 .table-results .head__row .cell {
-    padding: 4px 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
     border-top: 1px solid rgba(0,0,0,0.3);
     border-bottom: 1px solid rgba(0,0,0,0.3);
     color: #000;
@@ -571,6 +572,7 @@ a.simple_select__menu__item {
     width: 100px;
     min-width: 100px;
     max-width: 100px;
+    padding-left: 5px;
 }
 
 .table-results .cell-title {
