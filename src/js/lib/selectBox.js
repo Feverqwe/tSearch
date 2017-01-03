@@ -207,6 +207,7 @@ define(['./dom'], function (dom) {
                                 self.overPreviewItem();
                             }
                         } else if (e.keyCode === 27) {
+                            e.preventDefault();
                             if (self.isOpen) {
                                 e.preventDefault();
                                 self.hide();
