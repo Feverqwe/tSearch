@@ -11,6 +11,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
     document.body.classList.remove('loading');
 
     var ee = new EventEmitter();
+    var activeProfile = null;
     var uiState = [];
 
     var bindClearBtn = function (clear, input) {
@@ -660,7 +661,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         var trackerList = document.querySelector('.tracker__list');
         var profileSelectWrapper = null;
 
-        var activeProfile = null;
         var currentProfileId = null;
         var trackers = {};
         var profiles = [];
@@ -1017,7 +1017,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             }
             activeProfile = new Profile(profileIdProfileMap[currentProfileId]);
 
-            ee.on('search', function (query) {
+            /*ee.on('search', function (query) {
                 activeProfile.trackers.forEach(function (tracker) {
                     tracker.search(query, function (result) {
                         ee.trigger('results', [tracker.id, query, result]);
@@ -1028,6 +1028,164 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             ee.on('abort', function () {
                 activeProfile.trackers.forEach(function (tracker) {
                     tracker.abort();
+                });
+            });*/
+        });
+    })();
+
+    (function () {
+        var results = document.querySelector('.results');
+        var table = null;
+
+        (function () {
+            var Table = function () {
+                var rows = ['date', 'title', 'size', 'seeds', 'peers'];
+                var getHeadRows = function () {
+                    var node = document.createDocumentFragment();
+                    rows.forEach(function (type) {
+                        node.appendChild(dom.el('a', {
+                            class: ['head__row', 'head__row-' + type, 'row-' + type],
+                            href: '#row-' + type,
+                            data: {
+                                type: type
+                            },
+                            append: [
+                                dom.el('span', {
+                                    class: ['row__title'],
+                                    text: chrome.i18n.getMessage('row_' + type)
+                                }),
+                                dom.el('i', {
+                                    class: ['row__sort']
+                                })
+                            ]
+                        }))
+                    });
+                    return node;
+                };
+
+                /**
+                 * categoryTitle: categoryTitle,
+                 categoryUrl: categoryUrl,
+                 title: title,
+                 url: url,
+                 size: size,
+                 downloadUrl: downloadUrl,
+                 seed: seed,
+                 peer: peer,
+                 date: date
+                 */
+
+                /**
+                 * @typedef {Object} torrent
+                 * @property {string} [categoryTitle]
+                 * @property {string} [categoryUrl]
+                 * @property {string} title
+                 * @property {string} url
+                 * @property {string} [size]
+                 * @property {string} [downloadUrl]
+                 * @property {string} [seed]
+                 * @property {string} [peer]
+                 * @property {string} [date]
+                 */
+                var getBodyColumn = function (tracker, /**torrent*/torrent) {
+                    var row = dom.el('div', {
+                        class: ['column', 'table__column'],
+                        data: {
+                            trackerId: tracker.id
+                        }
+                    });
+                    rows.forEach(function (type) {
+                        if (type === 'date') {
+                            row.appendChild(dom.el('div', {
+                                class: ['row', 'row-' + type],
+                                text: torrent.date
+                            }))
+                        } else
+                        if (type === 'title') {
+                            var category = '';
+                            if (tracker.categoryTitle) {
+                                if (tracker.categoryUrl) {
+                                    category = dom.el('a', {
+                                        class: ['row__category'],
+                                        target: '_blank',
+                                        href: torrent.categoryUrl,
+                                        text: torrent.categoryTitle
+                                    });
+                                } else {
+                                    category = dom.el('span', {
+                                        class: ['row__category'],
+                                        text: torrent.categoryTitle
+                                    });
+                                }
+                            }
+                            row.appendChild(dom.el('div', {
+                                class: ['row', 'row-' + type],
+                                append: [
+                                    dom.el('a', {
+                                        class: ['row__title'],
+                                        target: '_blank',
+                                        href: torrent.url,
+                                        text: torrent.title
+                                    }),
+                                    category
+                                ]
+                            }))
+                        } else
+                        if (type === 'size') {
+                            row.appendChild(dom.el('div', {
+                                class: ['row', 'row-' + type],
+                                text: torrent.size
+                            }))
+                        } else
+                        if (type === 'seeds') {
+                            row.appendChild(dom.el('div', {
+                                class: ['row', 'row-' + type],
+                                text: torrent.seed
+                            }))
+                        } else
+                        if (type === 'peers') {
+                            row.appendChild(dom.el('div', {
+                                class: ['row', 'row-' + type],
+                                text: torrent.peer
+                            }))
+                        }
+                    });
+                    return row;
+                };
+
+                var body;
+                this.node = dom.el('div', {
+                    class: ['table', 'results__table'],
+                    append: [
+                        dom.el('div', {
+                            class: ['table__head'],
+                            append: getHeadRows()
+                        }),
+                        body = dom.el('div', {
+                            class: ['table__body']
+                        })
+                    ]
+                });
+
+                this.insertReslts = function (tracker, query, results) {
+                    results.forEach(function (item) {
+                        var column = getBodyColumn(tracker, item);
+                        body.appendChild(column);
+                    });
+                };
+            };
+
+            table = new Table();
+            results.textContent = '';
+            results.appendChild(table.node);
+        })();
+
+        ee.on('search', function (query) {
+            activeProfile.trackers.forEach(function (tracker) {
+                tracker.search(query, function (response) {
+                    if (response.success) {
+                        table.insertReslts(tracker, query, response.results)
+                    }
                 });
             });
         });

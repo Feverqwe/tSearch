@@ -188,6 +188,10 @@ body {
     display: flex;
 }
 
+.content .main {
+    flex-grow: 1;
+}
+
 .content-row {
     flex-direction: row;
 }
@@ -483,4 +487,84 @@ body {
 .manager__trackers {
     display: flex;
     flex-direction: column;
+}
+
+.table.results__table {
+    display: flex;
+    flex-direction: column;
+}
+
+.table .table__head {
+    display: flex;
+    flex-direction: row;
+}
+
+.table .table__column {
+    display: flex;
+    flex-direction: row;
+}
+
+.results {
+    margin-top: 8px;
+}
+
+.results .table .head__row {
+    padding: 4px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    color: #000;
+    text-decoration: none;
+}
+
+.results .table .head__row.head__row-order {
+    border-bottom-color: #3366ff;
+    border-bottom-width: 2px;
+    padding-bottom: 3px;
+}
+
+.results .table .head__row-title {
+    text-align: center;
+}
+
+.results .table .row__title {
+    display: inline-block;
+}
+
+.results .table .row__sort {
+    display: inline-block;
+}
+
+.results .table .row-date {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+}
+
+.results .table .row-title {
+    flex-grow: 1;
+}
+
+.results .table .row {
+    overflow: hidden;
+}
+
+.results .table .row-size {
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    text-align: center;
+}
+
+.results .table .row-seeds {
+    width: 30px;
+    min-width: 30px;
+    max-width: 30px;
+    text-align: center;
+}
+
+.results .table .row-peers {
+    width: 30px;
+    min-width: 30px;
+    max-width: 30px;
+    text-align: center;
 }

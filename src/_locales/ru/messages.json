@@ -100,5 +100,20 @@
   },
   "update": {
     "message": "Обновить"
+  },
+  "row_date": {
+    "message": "Добавлено"
+  },
+  "row_title": {
+    "message": "Название"
+  },
+  "row_size": {
+    "message": "Размер"
+  },
+  "row_seeds": {
+    "message": "С"
+  },
+  "row_peers": {
+    "message": "П"
   }
 }
