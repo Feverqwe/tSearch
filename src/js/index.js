@@ -1234,6 +1234,10 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         sortCells.splice(0);
                         sortCells.push([this.type, this.sortDirection]);
 
+                        chrome.storage.local.set({
+                            sortCells: sortCells
+                        });
+
                         insertSortedRows();
                     };
 
@@ -1426,8 +1430,14 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     ]
                 });
 
-                sortCells.forEach(function (row) {
-                    head.cellTypeCell[row[0]].sort(row[1]);
+                chrome.storage.local.get({
+                    sortCells: []
+                }, function (storage) {
+                    sortCells.splice(0);
+                    sortCells.push.apply(sortCells, storage.sortCells);
+                    sortCells.forEach(function (row) {
+                        head.cellTypeCell[row[0]].sort(row[1]);
+                    });
                 });
 
                 var tableRows = [];
