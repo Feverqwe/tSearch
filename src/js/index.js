@@ -1473,8 +1473,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
     })();
 
     (function () {
-        var results = document.querySelector('.results');
-
         var unixTimeToString = function (unixtime) {
             return moment(unixtime * 1000).format('lll');
         };
@@ -1597,7 +1595,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 /**
                  * @type {tableRow}
                  */
-                var row = null;
+                var row;
                 if (link.classList.contains('title')) {
                     type = 'open';
                     row = tableRows[link.dataset.index];
@@ -2011,6 +2009,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             var table = new Table();
             searchResults.push(table);
 
+            var results = document.querySelector('.results');
             results.textContent = '';
             results.appendChild(table.node);
 
