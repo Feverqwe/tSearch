@@ -46,6 +46,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         nodeList.forEach(function (node) {
             node.addEventListener('dblclick', function() {
                 this.value = '';
+                this.dispatchEvent(new CustomEvent('keyup'));
             });
         });
     };
@@ -212,7 +213,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         }, 50);
     })();
 
-    (function () {
+    var Filter = function () {
         var inputBoxTimeFilterVisible = false;
         var inputBoxTimeFilter = document.querySelector('.input_box-time-filter');
         var inputWordFilter = document.querySelector('.input__input-word-filter');
@@ -227,7 +228,73 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         var peerInputFromFilter = document.querySelector('.input__input-peer-filter.input__input-range-from');
         var peerInputToFilter = document.querySelector('.input__input-peer-filter.input__input-range-to');
 
+        var timer = null;
+        var applyFilter = function () {
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                ee.trigger('filterUpdate');
+            }, 150);
+        };
+
+        var filters = [];
+
         (function wordFilter(input, clearWordFilter) {
+            var strToRe = function (string) {
+                var lowString = string.toLowerCase();
+                var i, symbol;
+                var part = '';
+                var parts = [];
+                var isSpace = /\s/;
+                for (i = 0; symbol = lowString[i]; i++) {
+                    if (isSpace.test(symbol)) {
+                        if (lowString[i - 1] !== '\\') {
+                            part && parts.push(part);
+                            part = '';
+                        } else {
+                            part = part.substr(0, part.length - 1) + symbol;
+                        }
+                    } else {
+                        part += symbol;
+                    }
+                }
+                part && parts.push(part);
+
+                var list = null;
+                var includeList = [];
+                var excludeList = [];
+                var excludeRe = /^[!-]\w+/;
+                var sanitizeText = /[\-\[\]{}()*+?.,\\\^$|#\s]/g;
+                for (i = 0; part = parts[i]; i++) {
+                    if (excludeRe.test(part)) {
+                        list = excludeList;
+                        part = part.substr(1);
+                    } else {
+                        list = includeList;
+                    }
+                    part = part.replace(sanitizeText, '\\$&');
+                    if (list.indexOf(part) === -1) {
+                        list.push(part);
+                    }
+                }
+
+                var sortFn = function(a, b){
+                    return a.length > b.length ? -1 : 1;
+                };
+
+                excludeList.sort(sortFn);
+                includeList.sort(sortFn);
+
+                var result = new Array(3);
+                if (excludeList.length) {
+                    result[0] = new RegExp(excludeList.join('|'));
+                }
+                if (includeList.length) {
+                    result[1] = new RegExp(includeList.join('|'), 'g');
+                    result[2] = includeList.length;
+                }
+                return (result[0] || result[1]) && result;
+            };
+
             var stateItem = {
                 id: 'wordFilter',
                 discard: function () {
@@ -236,9 +303,27 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             };
 
+            var filter = {
+                type: 'word',
+                re: null
+            };
+
             bindClearBtn(clearWordFilter, input);
 
             input.addEventListener('keyup', function(e) {
+                filter.re = strToRe(this.value);
+
+                var pos = filters.indexOf(filter);
+                if (pos !== -1) {
+                    filters.splice(pos, 1);
+                }
+
+                if (filter.re) {
+                    filters.push(filter);
+                }
+
+                applyFilter();
+
                 if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
                     uiState.push(stateItem);
                 }
@@ -255,13 +340,45 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             };
 
+            var filter = {
+                type: 'size',
+                min: 0,
+                max: 0
+            };
+
             inputFrom.addEventListener('keyup', function(e) {
+                filter.min = parseFloat(this.value) * 1024 * 1024 * 1024 || 0;
+
+                var pos = filters.indexOf(filter);
+                if (pos !== -1) {
+                    filters.splice(pos, 1);
+                }
+
+                if (filter.min > 0 || filter.max > 0) {
+                    filters.push(filter);
+                }
+
+                applyFilter();
+
                 if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
                     uiState.push(stateItem);
                 }
             });
 
             inputTo.addEventListener('keyup', function(e) {
+                filter.max = parseFloat(this.value) * 1024 * 1024 * 1024 || 0;
+
+                var pos = filters.indexOf(filter);
+                if (pos !== -1) {
+                    filters.splice(pos, 1);
+                }
+
+                if (filter.min > 0 || filter.max > 0) {
+                    filters.push(filter);
+                }
+
+                applyFilter();
+
                 if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
                     uiState.push(stateItem);
                 }
@@ -277,6 +394,12 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     select.selectedIndex = 0;
                     select.dispatchEvent(new CustomEvent('change', {detail: 'stateReset'}));
                 }
+            };
+
+            var filter = {
+                type: 'date',
+                min: 0,
+                max: 0
             };
 
             var selectWrapper = new selectBox(select);
@@ -297,9 +420,21 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     }
                 }
 
-                if (!inputBoxTimeFilterVisible) {
-                    // apply time template filters
+                var pos = filters.indexOf(filter);
+                if (pos !== -1) {
+                    filters.splice(pos, 1);
                 }
+
+                if (!inputBoxTimeFilterVisible) {
+                    filter.max = 0;
+                    filter.min = parseInt(this.value) || 0;
+
+                    if (filter.min > 0) {
+                        filters.push(filter);
+                    }
+                }
+
+                applyFilter();
 
                 if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
                     uiState.push(stateItem);
@@ -307,11 +442,33 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             });
 
             inputFrom.addEventListener('keyup', function(e) {
+                filter.min = parseInt(this.value) || 0;
 
+                var pos = filters.indexOf(filter);
+                if (pos !== -1) {
+                    filters.splice(pos, 1);
+                }
+
+                if (filter.min > 0 || filter.max > 0) {
+                    filters.push(filter);
+                }
+
+                applyFilter();
             });
 
             inputTo.addEventListener('keyup', function(e) {
+                filter.max = parseInt(this.value) || 0;
 
+                var pos = filters.indexOf(filter);
+                if (pos !== -1) {
+                    filters.splice(pos, 1);
+                }
+
+                if (filter.min > 0 || filter.max > 0) {
+                    filters.push(filter);
+                }
+
+                applyFilter();
             });
 
             bindDblClickClear([inputFrom, inputTo]);
@@ -327,13 +484,45 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             };
 
+            var filter = {
+                type: 'seed',
+                min: 0,
+                max: 0
+            };
+
             inputFrom.addEventListener('keyup', function(e) {
+                filter.min = parseInt(this.value) || 0;
+
+                var pos = filters.indexOf(filter);
+                if (pos !== -1) {
+                    filters.splice(pos, 1);
+                }
+
+                if (filter.min > 0 || filter.max > 0) {
+                    filters.push(filter);
+                }
+
+                applyFilter();
+
                 if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
                     uiState.push(stateItem);
                 }
             });
 
             inputTo.addEventListener('keyup', function(e) {
+                filter.max = parseInt(this.value) || 0;
+
+                var pos = filters.indexOf(filter);
+                if (pos !== -1) {
+                    filters.splice(pos, 1);
+                }
+
+                if (filter.min > 0 || filter.max > 0) {
+                    filters.push(filter);
+                }
+
+                applyFilter();
+
                 if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
                     uiState.push(stateItem);
                 }
@@ -352,13 +541,45 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             };
 
+            var filter = {
+                type: 'peer',
+                min: 0,
+                max: 0
+            };
+
             inputFrom.addEventListener('keyup', function(e) {
+                filter.min = parseInt(this.value) || 0;
+
+                var pos = filters.indexOf(filter);
+                if (pos !== -1) {
+                    filters.splice(pos, 1);
+                }
+
+                if (filter.min > 0 || filter.max > 0) {
+                    filters.push(filter);
+                }
+
+                applyFilter();
+
                 if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
                     uiState.push(stateItem);
                 }
             });
 
             inputTo.addEventListener('keyup', function(e) {
+                filter.max = parseInt(this.value) || 0;
+
+                var pos = filters.indexOf(filter);
+                if (pos !== -1) {
+                    filters.splice(pos, 1);
+                }
+
+                if (filter.min > 0 || filter.max > 0) {
+                    filters.push(filter);
+                }
+
+                applyFilter();
+
                 if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
                     uiState.push(stateItem);
                 }
@@ -366,7 +587,81 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
 
             bindDblClickClear([inputFrom, inputTo]);
         })(peerInputFromFilter, peerInputToFilter);
-    })();
+
+        var unique = function (value, index, self) {
+            return self.indexOf(value) === index;
+        };
+
+        var filterTypeMap = {
+            word: function (filter, torrent) {
+                var result = true;
+                if (filter.re[0]) {
+                    result = !filter.re[0].test(torrent.wordFilterLow);
+                }
+                if (result && filter.re[1]) {
+                    var m = torrent.wordFilterLow.match(filter.re[1]);
+                    result = m && m.filter(unique).length === filter.re[2];
+                }
+                return result;
+            },
+            size: function (filter, torrent) {
+                var result = filter.min === 0 ? true : torrent.size >= filter.min;
+                if (result && filter.max) {
+                    result = torrent.size <= filter.max;
+                }
+                return result;
+            },
+            date: function (filter, torrent) {
+                var result = filter.min === 0 ? true : torrent.date >= filter.min;
+                if (result && filter.max) {
+                    result = torrent.date <= filter.max;
+                }
+                return result;
+            },
+            seed: function (filter, torrent) {
+                var result = filter.min === 0 ? true : torrent.seed >= filter.min;
+                if (result && filter.max) {
+                    result = torrent.seed <= filter.max;
+                }
+                return result;
+            },
+            peer: function (filter, torrent) {
+                var result = filter.min === 0 ? true : torrent.peer >= filter.min;
+                if (result && filter.max) {
+                    result = torrent.peer <= filter.max;
+                }
+                return result;
+            }
+        };
+
+        var styleNode = dom.el('style', {
+            class: ['style_filter'],
+            text: ''
+        });
+        document.body.appendChild(styleNode);
+
+        var tableRowSelector = '.table-results .body__row';
+        ee.on('filterUpdate', function () {
+            var style = [];
+            if (filters.length) {
+                var state = filters.map(function () {
+                    return 1;
+                }).join('');
+                style.push(tableRowSelector + ':not([data-filter="' + state+ '"]){display: none}');
+            }
+            styleNode.textContent = style.join('');
+        });
+
+        this.getFilterValue = function (/**torrent*/torrent) {
+            var state = new Array(filters.length);
+            for (var i = 0, filter; filter = filters[i]; i++) {
+                state[i] = filterTypeMap[filter.type](filter, torrent) ? 1 : 0;
+            }
+            return state.join('');
+        }
+    };
+
+    var filter = new Filter();
 
     (function () {
         var scrollTopVisible = false;
@@ -1167,7 +1462,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         return a === b ? 0 : a > b ? moveUp : moveDown;
                     };
                 },
-                seeds: function (direction) {
+                seed: function (direction) {
                     var moveUp = -1;
                     var moveDown = 1;
                     if (direction > 0) {
@@ -1180,7 +1475,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         return a === b ? 0 : a > b ? moveUp : moveDown;
                     };
                 },
-                peers: function (direction) {
+                peer: function (direction) {
                     var moveUp = -1;
                     var moveDown = 1;
                     if (direction > 0) {
@@ -1195,8 +1490,8 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             };
 
-            var onLickClick = function (e) {
-                var link = dom.closest('a', e.target);
+            var onLickClick = function (target, tableRows) {
+                var link = dom.closest('a', target);
                 if (link) {
                     var type = null;
                     /**
@@ -1243,7 +1538,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             };
 
             var Table = function () {
-                var cells = ['date', 'title', 'size', 'seeds', 'peers'];
+                var cells = ['date', 'title', 'size', 'seed', 'peer'];
                 var sortCells = [];
 
                 var getHeadRow = function () {
@@ -1345,6 +1640,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     if (!torrent.size) {
                         torrent.size = 0;
                     }
+
                     if (torrent.seed) {
                         torrent.seed = parseInt(torrent.seed);
                         if (isNaN(torrent.seed)) {
@@ -1354,15 +1650,17 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     if (!torrent.seed) {
                         torrent.seed = 1;
                     }
+
                     if (torrent.peer) {
                         torrent.peer = parseInt(torrent.peer);
                         if (isNaN(torrent.peer)) {
                             torrent.peer = null;
                         }
                     }
-                    if (!torrent.seed) {
-                        torrent.seed = 0;
+                    if (!torrent.peer) {
+                        torrent.peer = 0;
                     }
+
                     if (torrent.date) {
                         torrent.date = parseInt(torrent.date);
                         if (isNaN(torrent.date)) {
@@ -1371,6 +1669,25 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     }
                     if (!torrent.date) {
                         torrent.date = 0;
+                    }
+
+                    if (torrent.categoryTitle) {
+                        torrent.categoryTitle = torrent.categoryTitle.toLowerCase();
+                    }
+                    if (!torrent.categoryTitle) {
+                        torrent.categoryTitle = '';
+                    }
+
+                    torrent.titleLow = torrent.title.toLowerCase();
+                    torrent.categoryTitleLow = torrent.categoryTitle.toLowerCase();
+                    torrent.wordFilterLow = torrent.titleLow + ' ' + torrent.categoryTitleLow;
+
+                    if (!torrent.categoryUrl) {
+                        torrent.categoryUrl = '';
+                    }
+
+                    if (!torrent.downloadUrl) {
+                        torrent.downloadUrl = '';
                     }
                 };
 
@@ -1385,10 +1702,18 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                  * @property {number} [seed]
                  * @property {number} [peer]
                  * @property {number} [date]
+                 *
+                 * @property {string} titleLow
+                 * @property {string} categoryTitleLow
+                 * @property {string} wordFilterLow
                  */
                 var getBodyRow = function (tracker, /**torrent*/torrent, index) {
                     var row = dom.el('div', {
-                        class: ['row', 'body__row']
+                        class: ['row', 'body__row'],
+                        data: {
+                            trackerId: tracker.id,
+                            filter: filter.getFilterValue(torrent)
+                        }
                     });
                     cells.forEach(function (type) {
                         if (type === 'date') {
@@ -1459,13 +1784,13 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                                 append: downloadLink
                             }));
                         } else
-                        if (type === 'seeds') {
+                        if (type === 'seed') {
                             row.appendChild(dom.el('div', {
                                 class: ['cell', 'row__cell', 'cell-' + type],
                                 text: torrent.seed
                             }))
                         } else
-                        if (type === 'peers') {
+                        if (type === 'peer') {
                             row.appendChild(dom.el('div', {
                                 class: ['cell', 'row__cell', 'cell-' + type],
                                 text: torrent.peer
@@ -1481,7 +1806,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         class: ['body', 'table__body'],
                         on: [
                             ['mouseup', function (e) {
-                                onLickClick(e);
+                                onLickClick(e.target, tableRows);
                             }]
                         ]
                     })
@@ -1538,6 +1863,12 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     });
                     insertSortedRows();
                 };
+
+                ee.on('filterUpdate', function () {
+                    for (var i = 0, /**tableRow*/row; row = tableRows[i]; i++) {
+                        row.node.dataset.filter = filter.getFilterValue(row.torrent);
+                    }
+                });
             };
 
             table = new Table();

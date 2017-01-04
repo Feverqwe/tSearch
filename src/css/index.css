@@ -696,14 +696,14 @@ a.simple_select__menu__item {
     text-align: center;
 }
 
-.table-results .cell-seeds {
+.table-results .cell-seed {
     width: 30px;
     min-width: 30px;
     max-width: 30px;
     text-align: center;
 }
 
-.table-results .cell-peers {
+.table-results .cell-peer {
     width: 30px;
     min-width: 30px;
     max-width: 30px;
