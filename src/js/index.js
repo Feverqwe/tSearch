@@ -5,7 +5,18 @@
 require.config({
     baseUrl: './js'
 });
-require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './lib/selectBox', './min/EventEmitter.min', './min/moment-with-locales.min', './min/filesize.min'], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, moment, filesize) {
+require([
+    './min/promise.min',
+    './lib/i18nDom',
+    './lib/utils',
+    './lib/dom',
+    './lib/selectBox',
+    './min/EventEmitter.min',
+    './min/moment-with-locales.min',
+    './min/filesize.min',
+    './lib/profileManager',
+    './lib/profile'
+], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, moment, filesize, ProfileManager, Profile) {
     i18nDom();
 
     document.body.classList.remove('loading');
@@ -15,42 +26,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
     var activeProfile = null;
     var searchResults = [];
     var uiState = [];
-
-    var bindClearBtn = function (clear, input) {
-        var clearIsVisible = false;
-        input.addEventListener('keyup', function() {
-            if (this.value.length > 0) {
-                if (!clearIsVisible) {
-                    clearIsVisible = true;
-                    clear.classList.add('input__clear_visible');
-                }
-            } else {
-                if (clearIsVisible) {
-                    clearIsVisible = false;
-                    clear.classList.remove('input__clear_visible');
-                }
-            }
-        });
-
-        clear.addEventListener('click', function (e) {
-            e.preventDefault();
-            input.value = '';
-            input.dispatchEvent(new CustomEvent('keyup'));
-            input.focus();
-        });
-    };
-
-    var bindDblClickClear = function (nodeList) {
-        if (!Array.isArray(nodeList)) {
-            nodeList = [nodeList];
-        }
-        nodeList.forEach(function (node) {
-            node.addEventListener('dblclick', function() {
-                this.value = '';
-                this.dispatchEvent(new CustomEvent('keyup'));
-            });
-        });
-    };
 
     (function () {
         var searchInput = document.querySelector('.input__input-search');
@@ -79,7 +54,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             });
         })(searchInput, searchSubmit);
 
-        bindClearBtn(searchClear, searchInput);
+        utils.bindClearBtn(searchClear, searchInput);
 
         (function (submit) {
             submit.addEventListener('click', function(e) {
@@ -214,6 +189,43 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         }, 50);
     })();
 
+    (function () {
+        var main = document.querySelector('.menu__btn-main');
+        main.addEventListener('click', function (e) {
+            e.preventDefault();
+            uiState.splice(0).forEach(function (state) {
+                state.discard();
+            });
+            if (uiState.length > 0) {
+                console.error('State is not empty!', uiState);
+            }
+        });
+    })();
+
+    (function () {
+        var scrollTopVisible = false;
+        var scrollTop = document.querySelector('.scroll_top');
+
+        scrollTop.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo(0, 0);
+        });
+
+        window.addEventListener('scroll', function (e) {
+            if (window.scrollY > 100) {
+                if (!scrollTopVisible) {
+                    scrollTopVisible = true;
+                    scrollTop.classList.add('scroll_top-show');
+                }
+            } else {
+                if (scrollTopVisible) {
+                    scrollTopVisible = false;
+                    scrollTop.classList.remove('scroll_top-show');
+                }
+            }
+        });
+    })();
+
     var Filter = function () {
         var inputBoxTimeFilterVisible = false;
         var inputBoxTimeFilter = document.querySelector('.input_box-time-filter');
@@ -309,7 +321,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 re: null
             };
 
-            bindClearBtn(clearWordFilter, input);
+            utils.bindClearBtn(clearWordFilter, input);
 
             input.addEventListener('keyup', function(e) {
                 filter.re = strToRe(this.value);
@@ -395,7 +407,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             });
 
-            bindDblClickClear([inputFrom, inputTo]);
+            utils.bindDblClickClear([inputFrom, inputTo]);
         })(sizeInputFromFilter, sizeInputToFilter);
 
         (function timeFilter(select, inputBox, inputFrom, inputTo) {
@@ -495,7 +507,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 applyFilter();
             });
 
-            bindDblClickClear([inputFrom, inputTo]);
+            utils.bindDblClickClear([inputFrom, inputTo]);
 
             var initDataPicker = function (inputFrom, inputTo) {
                 $([inputFrom, inputTo]).datepicker({
@@ -587,7 +599,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             });
 
-            bindDblClickClear([inputFrom, inputTo]);
+            utils.bindDblClickClear([inputFrom, inputTo]);
         })(seedInputFromFilter, seedInputToFilter);
 
         (function peerFilter(inputFrom, inputTo) {
@@ -654,7 +666,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             });
 
-            bindDblClickClear([inputFrom, inputTo]);
+            utils.bindDblClickClear([inputFrom, inputTo]);
         })(peerInputFromFilter, peerInputToFilter);
 
         var unique = function (value, index, self) {
@@ -743,294 +755,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
     var filter = new Filter();
 
     (function () {
-        var scrollTopVisible = false;
-        var scrollTop = document.querySelector('.scroll_top');
-
-        scrollTop.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo(0, 0);
-        });
-
-        window.addEventListener('scroll', function (e) {
-            if (window.scrollY > 100) {
-                if (!scrollTopVisible) {
-                    scrollTopVisible = true;
-                    scrollTop.classList.add('scroll_top-show');
-                }
-            } else {
-                if (scrollTopVisible) {
-                    scrollTopVisible = false;
-                    scrollTop.classList.remove('scroll_top-show');
-                }
-            }
-        });
-    })();
-
-    var ProfileManager = function (profiles, profileIdProfileMap, trackers, activeProfile) {
-        var layer = null;
-
-        var getHeader = function (title) {
-            return dom.el('div', {
-                class: 'manager__header',
-                append: [
-                    dom.el('div', {
-                        class: 'header__title',
-                        text: title
-                    }),
-                    dom.el('a', {
-                        href: '#close',
-                        class: 'header__close',
-                        text: chrome.i18n.getMessage('close'),
-                        on: ['click', function (e) {
-                            e.preventDefault();
-                            close();
-                        }]
-                    })
-                ]
-            });
-        };
-
-        var getFooter = function (childNodes) {
-            return dom.el('div', {
-                class: 'manager__footer',
-                append: childNodes
-            });
-        };
-
-        var getLayer = function () {
-            var content = null;
-            var node = dom.el('div', {
-                class: 'manager__layer',
-                append: [
-                    content = dom.el('div', {
-                        class: 'manager'
-                    })
-                ]
-            });
-            return {
-                node: node,
-                content: content
-            }
-        };
-
-        var getProfiles = function (profiles) {
-            var getProfileItem = function (profile) {
-                return dom.el('div', {
-                    class: 'item',
-                    data: {
-                        id: profile.id
-                    },
-                    append: [
-                        dom.el('div', {
-                            class: 'item__name',
-                            text: profile.name
-                        }),
-                        dom.el('a', {
-                            class: 'item__action',
-                            href: '#edit',
-                            data: {
-                                action: 'edit'
-                            },
-                            text: chrome.i18n.getMessage('edit')
-                        }),
-                        dom.el('a', {
-                            class: 'item__action',
-                            href: '#remove',
-                            data: {
-                                action: 'remove'
-                            },
-                            text: chrome.i18n.getMessage('remove')
-                        })
-                    ]
-                });
-            };
-            return dom.el(document.createDocumentFragment(), {
-                append: [
-                    getHeader(chrome.i18n.getMessage('manageProfiles')),
-                    dom.el('div', {
-                        class: 'manager__profiles',
-                        append: (function () {
-                            var list = [];
-                            profiles.forEach(function (/**profile*/profile) {
-                                list.push(getProfileItem(profile))
-                            });
-                            return list;
-                        })(),
-                        on: ['click', function (e) {
-                            var target = e.target;
-                            if (target.dataset.action === 'edit') {
-                                e.preventDefault();
-                                var profileId = target.parentNode.dataset.id;
-                                var profile = profileIdProfileMap[profileId];
-                                layer.content.textContent = '';
-                                layer.content.appendChild(getProfile(profile, trackers));
-                            }
-                        }]
-                    }),
-                    getFooter([
-                        dom.el('a', {
-                            href: '#save',
-                            class: ['manager__footer__btn'],
-                            text: chrome.i18n.getMessage('save')
-                        })
-                    ])
-                ]
-            });
-        };
-
-        var getProfile = function (/**profile*/profile, trackers) {
-            var getTrackerItem = function (tracker, checked, exists) {
-                return dom.el('div', {
-                    class: 'item',
-                    data: {
-                        id: tracker.id
-                    },
-                    append: [
-                        dom.el('input', {
-                            class: 'item__checkbox',
-                            type: 'checkbox',
-                            checked: checked
-                        }),
-                        dom.el('div', {
-                            class: 'item__name',
-                            text: tracker.meta.name || tracker.id
-                        }),
-                        !exists || !tracker.meta.updateURL ? '' : dom.el('a', {
-                            class: 'item__action',
-                            href: '#update',
-                            data: {
-                                action: 'update'
-                            },
-                            text: chrome.i18n.getMessage('update')
-                        }),
-                        dom.el('a', {
-                            class: 'item__action',
-                            href: '#edit',
-                            data: {
-                                action: 'edit'
-                            },
-                            text: chrome.i18n.getMessage('edit')
-                        }),
-                        dom.el('a', {
-                            class: 'item__action',
-                            href: '#remove',
-                            data: {
-                                action: 'remove'
-                            },
-                            text: chrome.i18n.getMessage('remove')
-                        })
-                    ]
-                })
-            };
-
-            var trackersNode = null;
-            return dom.el(document.createDocumentFragment(), {
-                append: [
-                    getHeader(chrome.i18n.getMessage('manageProfile')),
-                    dom.el('div', {
-                        class: 'manager__profile',
-                        append: [
-                            dom.el('div', {
-                                class: ['profile__input'],
-                                append: [
-                                    dom.el('input', {
-                                        class: ['input__input'],
-                                        type: 'text',
-                                        value: profile.name
-                                    })
-                                ]
-                            })
-                        ]
-                    }),
-                    trackersNode = dom.el('div', {
-                        class: 'manager__trackers',
-                        append: (function () {
-                            var list = [];
-                            var idList = [];
-                            profile.trackers.forEach(function (/**profileTracker*/profileTracker) {
-                                var tracker = trackers[profileTracker.id];
-                                var exists = !!tracker;
-                                if (!tracker) {
-                                    tracker = {
-                                        id: profileTracker.id,
-                                        meta: {}
-                                    }
-                                }
-                                idList.push(tracker.id);
-                                list.push(getTrackerItem(tracker, true, exists))
-                            });
-                            Object.keys(trackers).forEach(function (/**tracker*/trackerId) {
-                                var tracker = trackers[trackerId];
-                                if (idList.indexOf(tracker.id) === -1) {
-                                    list.push(getTrackerItem(tracker, false, true))
-                                }
-                            });
-                            return list;
-                        })(),
-                        on: ['click', function (e) {
-                            var target = e.target;
-                            if (target.dataset.action === 'edit') {
-                                e.preventDefault();
-                                var trackerId = target.parentNode.dataset.id;
-                                chrome.tabs.create({
-                                    url: 'editor.html#' + utils.param({
-                                        id: trackerId
-                                    })
-                                });
-                            }
-                        }]
-                    }),
-                    getFooter([
-                        dom.el('a', {
-                            href: '#save',
-                            class: ['manager__footer__btn'],
-                            text: chrome.i18n.getMessage('save'),
-                            on: ['click', function (e) {
-                                e.preventDefault();
-                                var profileTrackers = [];
-                                [].slice.call(trackersNode.childNodes).forEach(function (trackerNode) {
-                                    var id = trackerNode.dataset.id;
-                                    var checkbox = trackerNode.querySelector('.item__checkbox');
-                                    var checked = checkbox.checked;
-                                    if (checked) {
-                                        profileTrackers.push({
-                                            id: id
-                                        })
-                                    }
-                                });
-                                profile.trackers = profileTrackers;
-                                chrome.storage.local.set({
-                                    profiles: profiles
-                                }, function () {
-                                    activeProfile.reload();
-                                });
-                            }]
-                        }),
-                        dom.el('a', {
-                            href: '#update',
-                            class: ['manager__footer__btn'],
-                            text: chrome.i18n.getMessage('update')
-                        })
-                    ])
-                ]
-            });
-        };
-
-        var createLayer = function () {
-            var layer = getLayer();
-            layer.content.appendChild(getProfiles(profiles));
-            return layer;
-        };
-
-        var close = function () {
-            layer.node.parentNode.removeChild(layer.node);
-        };
-
-        layer = createLayer();
-        document.body.appendChild(layer.node);
-    };
-
-    (function () {
         var manageProfile = document.querySelector('.button-manage-profile');
         var profileSelect = document.querySelector('.profile__select');
         var trackerList = document.querySelector('.tracker__list');
@@ -1104,321 +828,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
          * @property {string} code
          */
 
-        var Transport = function (transport) {
-            var emptyFn = function () {};
-            var onceFn = function (cb, scope) {
-                return function () {
-                    if (cb) {
-                        var context = scope || this;
-                        cb.apply(context, arguments);
-                        cb = null;
-                    }
-                };
-            };
 
-            var callbackId = 0;
-            var callbackIdCallback = {};
-
-            this.onMessage = function (cb) {
-                transport.onMessage(function (msg) {
-                    if (msg.responseId) {
-                        return callbackIdCallback[msg.responseId](msg.message);
-                    }
-
-                    var response;
-                    if (msg.callbackId) {
-                        response = onceFn(function (message) {
-                            transport.sendMessage({
-                                responseId: msg.callbackId,
-                                message: message
-                            });
-                        });
-                    } else {
-                        response = emptyFn;
-                    }
-                    var result = cb(msg.message, response);
-                    if (result !== true) {
-                        response();
-                    }
-                });
-            };
-            this.sendMessage = function (message, callback) {
-                var msg = {
-                    message: message
-                };
-                if (callback) {
-                    msg.callbackId = ++callbackId;
-                    callbackIdCallback[msg.callbackId] = function (message) {
-                        delete callbackIdCallback[msg.callbackId];
-                        callback(message);
-                    };
-                }
-                transport.sendMessage(msg);
-            };
-        };
-        var FrameWorker = function () {
-            var self = this;
-            var stack = [];
-            var frame = null;
-            var contentWindow = null;
-
-            var load = function () {
-                frame = document.createElement('iframe');
-                frame.src = 'sandbox.html';
-                frame.style.display = 'none';
-                frame.onload = function () {
-                    contentWindow = frame.contentWindow;
-                    while (stack.length) {
-                        self.postMessage(stack.shift());
-                    }
-                };
-                document.body.appendChild(frame);
-            };
-
-            this.postMessage = function (msg) {
-                if (contentWindow) {
-                    contentWindow.postMessage(msg, '*');
-                } else {
-                    stack.push(msg);
-                }
-            };
-
-            var msgListener = function(event) {
-                if (event.source === contentWindow) {
-                    if (self.onmessage) {
-                        self.onmessage(event.data);
-                    }
-                }
-            };
-            window.addEventListener("message", msgListener);
-
-            this.onmessage = null;
-            this.terminate = function () {
-                if (frame) {
-                    frame.parentNode.removeChild(frame);
-                    frame = null;
-                }
-                window.removeEventListener("message", msgListener);
-                self.onmessage = null;
-            };
-
-            load();
-        };
-        var Tracker = function (/**tracker*/tracker) {
-            var self = this;
-            var ready = false;
-            var stack = [];
-            var requests = [];
-            var worker = null;
-            var transport = null;
-            var load = function (onReady) {
-                worker = new FrameWorker();
-                transport = new Transport({
-                    sendMessage: function (msg) {
-                        worker.postMessage(msg);
-                    },
-                    onMessage: function (cb) {
-                        worker.onmessage = function (data) {
-                            cb(data);
-                        }
-                    }
-                });
-                transport.onMessage(function (msg, response) {
-                    if (msg.action === 'init') {
-                        response({
-                            code: tracker.code,
-                            require: tracker.meta.require || []
-                        });
-                    } else
-                    if (msg.action === 'ready') {
-                        onReady();
-                    } else
-                    if (msg.action === 'request') {
-                        var request = utils.request(msg.details, function (err, resp) {
-                            var pos = requests.indexOf(request);
-                            if (pos !== -1) {
-                                requests.splice(pos, 1);
-                            }
-                            request = null;
-
-                            var error = null;
-                            if (err) {
-                                error = {
-                                    name: err.name,
-                                    message: err.message
-                                };
-                            }
-                            response({
-                                error: error,
-                                response: resp
-                            });
-                        });
-                        request && requests.push(request);
-                        return true;
-                    } else
-                    if (msg.action === 'error') {
-                        console.error(tracker.id, 'Loading error!', msg.name + ':', msg.message);
-                    } else {
-                        console.error(tracker.id, 'msg', msg);
-                    }
-                });
-            };
-            var onReady = function () {
-                ready = true;
-                while (stack.length) {
-                    self.sendMessage.apply(null, stack.shift());
-                }
-            };
-            this.id = tracker.id;
-            this.sendMessage = function (message, callback) {
-                if (ready) {
-                    transport.sendMessage(message, callback);
-                } else {
-                    stack.push([message, callback]);
-                }
-            };
-            this.reload = function () {
-                worker.terminate();
-                load(onReady);
-            };
-            this.destroy = function () {
-                ready = false;
-                worker.terminate();
-                self.abort();
-            };
-            this.search = function (query, cb) {
-                self.sendMessage({
-                    event: 'search',
-                    query: query
-                }, cb);
-            };
-            this.abort = function () {
-                requests.splice(0).forEach(function (request) {
-                    request.abort();
-                });
-            };
-            load(onReady);
-        };
-        var Profile = function (profile) {
-            var self = this;
-            var trackerIdTracker = {};
-            var wrappedTrackers = [];
-            var selectedTrackerIds = [];
-            // todo: rm me
-            window.myTrackers = wrappedTrackers;
-            var load = function () {
-                var trackerSelect = function (state) {
-                    if (state === undefined) {
-                        state = !this.selected;
-                    } else {
-                        state = !!state;
-                    }
-                    if (this.selected !== state) {
-                        this.selected = state;
-                        var pos = selectedTrackerIds.indexOf(this.id);
-                        if (pos !== -1) {
-                            selectedTrackerIds.splice(pos, 1);
-                        }
-                        if (state) {
-                            this.node.classList.add('tracker-selected');
-                            selectedTrackerIds.push(this.id);
-                        } else {
-                            this.node.classList.remove('tracker-selected');
-                        }
-
-                        filter.update();
-                    }
-                };
-                var trackerCount = function (count) {
-                    this.countNode.textContent = count;
-                };
-                var trackersNode = document.createDocumentFragment();
-                profile.trackers.forEach(function (/**profileTracker*/item) {
-                    var worker = null;
-                    var tracker = trackers[item.id];
-                    if (tracker) {
-                        worker = new Tracker(tracker);
-                    } else {
-                        tracker = {
-                            id: item.id,
-                            meta: {},
-                            info: {},
-                            code: ''
-                        }
-                    }
-
-                    var countNode;
-                    var node = dom.el('div', {
-                        class: 'tracker',
-                        data: {
-                            id: tracker.id
-                        },
-                        append: [
-                            dom.el('img', {
-                                class: 'tracker__icon',
-                                src: tracker.meta.icon64 || tracker.meta.icon,
-                                on: ['error', function () {
-                                    this.src = './img/blank.svg';
-                                }]
-                            }),
-                            dom.el('div', {
-                                class: 'tracker__name',
-                                text: tracker.meta.name || tracker.id
-                            }),
-                            countNode = dom.el('div', {
-                                class: 'tracker__counter',
-                                text: 0
-                            })
-                        ]
-                    });
-
-                    /**
-                     * @typedef trackerWrapper
-                     * @property {string} id
-                     * @property {Element} node
-                     * @property {Element} countNode
-                     * @property {Worker} worker
-                     * @property {boolean} selected
-                     * @property {function} select
-                     * @property {function} count
-                     */
-
-                    var trackerWrapper = {
-                        id: tracker.id,
-                        node: node,
-                        countNode: countNode,
-                        worker: worker,
-                        selected: false,
-                        select: trackerSelect,
-                        count: trackerCount
-                    };
-
-                    wrappedTrackers.push(trackerWrapper);
-                    trackerIdTracker[trackerWrapper.id] = trackerWrapper;
-
-                    trackersNode.appendChild(node);
-                });
-                trackerList.textContent = '';
-                trackerList.appendChild(trackersNode);
-            };
-            load();
-            this.reload = function () {
-                self.destroy();
-                load();
-            };
-            this.id = profile.id;
-            this.trackers = wrappedTrackers;
-            this.trackerIdTracker = trackerIdTracker;
-            this.selectedTrackerIds = selectedTrackerIds;
-            this.destroy = function () {
-                trackers.splice(0).forEach(function (tracker) {
-                    tracker.worker && tracker.worker.destroy();
-                });
-                for (var key in trackerIdTracker) {
-                    delete trackerIdTracker[key];
-                }
-            };
-        };
 
         manageProfile.addEventListener('click', function (e) {
             e.preventDefault();
@@ -1461,7 +871,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             if (activeProfile) {
                 activeProfile.destroy();
             }
-            activeProfile = new Profile(profileIdProfileMap[currentProfileId]);
+            activeProfile = new Profile(profileIdProfileMap[currentProfileId], trackers, filter, trackerList);
 
             /*ee.on('search', function (query) {
                 activeProfile.trackers.forEach(function (tracker) {
@@ -1478,7 +888,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             });*/
         });
     })();
-
 
     var Table = function () {
         var cells = ['date', 'title', 'size', 'seed', 'peer'];
@@ -2049,29 +1458,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         });
         for (var trackerId in counter) {
             activeProfile.trackerIdTracker[trackerId].count(counter[trackerId]);
-        }
-    };
-
-    (function () {
-        var main = document.querySelector('.menu__btn-main');
-        main.addEventListener('click', function (e) {
-            e.preventDefault();
-            uiState.splice(0).forEach(function (state) {
-                state.discard();
-            });
-            if (uiState.length > 0) {
-                console.error('State is not empty!', uiState);
-            }
-        });
-    })();
-
-    // todo: rm me
-    window.resetState = function () {
-        uiState.splice(0).forEach(function (state) {
-            state.discard();
-        });
-        if (uiState.length > 0) {
-            console.error('State is not empty!', uiState);
         }
     };
 });

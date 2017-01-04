@@ -60,7 +60,7 @@ define(function () {
         }
     };
     /**
-     * @param {string|Element} element
+     * @param {string|Element|DocumentFragment} element
      * @param details
      * @return {Element}
      */

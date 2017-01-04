@@ -237,5 +237,39 @@ define(function () {
             return v.toString(16);
         });
     };
+    utils.bindClearBtn = function (clear, input) {
+        var clearIsVisible = false;
+        input.addEventListener('keyup', function() {
+            if (this.value.length > 0) {
+                if (!clearIsVisible) {
+                    clearIsVisible = true;
+                    clear.classList.add('input__clear_visible');
+                }
+            } else {
+                if (clearIsVisible) {
+                    clearIsVisible = false;
+                    clear.classList.remove('input__clear_visible');
+                }
+            }
+        });
+
+        clear.addEventListener('click', function (e) {
+            e.preventDefault();
+            input.value = '';
+            input.dispatchEvent(new CustomEvent('keyup'));
+            input.focus();
+        });
+    };
+    utils.bindDblClickClear = function (nodeList) {
+        if (!Array.isArray(nodeList)) {
+            nodeList = [nodeList];
+        }
+        nodeList.forEach(function (node) {
+            node.addEventListener('dblclick', function() {
+                this.value = '';
+                this.dispatchEvent(new CustomEvent('keyup'));
+            });
+        });
+    };
     return utils;
 });
