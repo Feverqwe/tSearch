@@ -1212,6 +1212,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                             }
                         } else
                         if (sortedCell) {
+                            this.sortDirection = 0;
                             sortedCell.node.classList.remove('cell-sort-up');
                             sortedCell.node.classList.remove('cell-sort-down');
                         }
