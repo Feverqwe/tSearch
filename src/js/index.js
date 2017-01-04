@@ -1450,12 +1450,23 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                                 query: row.query,
                                 trackerId: row.trackerId,
                                 title: row.torrent.title,
+                                url: row.torrent.url,
                                 time: parseInt(Date.now() / 1000)
                             };
 
                             chrome.storage.local.get({
                                 clickHistory: []
                             }, function (storage) {
+                                var pos = -1;
+                                storage.clickHistory.some(function (item, index) {
+                                    if (item.query === item.query && item.url === title.url) {
+                                        pos = index;
+                                        return true;
+                                    }
+                                });
+                                if (pos !== -1) {
+                                    storage.clickHistory.splice(pos, 1);
+                                }
                                 storage.clickHistory.unshift(item);
                                 storage.clickHistory.splice(300);
                                 chrome.storage.local.set(storage);
