@@ -110,10 +110,10 @@
   "row_size": {
     "message": "Размер"
   },
-  "row_seeds": {
+  "row_seed": {
     "message": "С"
   },
-  "row_peers": {
+  "row_peer": {
     "message": "П"
   }
 }
