@@ -679,6 +679,16 @@ a.simple_select__menu__item {
     text-decoration: underline;
 }
 
+.table-results .body__row .cell-size,
+.table-results .body__row .cell-size a.cell__download {
+    color: #000;
+    text-decoration: none;
+}
+
+.table-results .body__row .cell-size a.cell__download:hover {
+    text-decoration: underline;
+}
+
 .table-results .cell-size {
     width: 80px;
     min-width: 80px;

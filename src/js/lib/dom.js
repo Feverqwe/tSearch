@@ -87,7 +87,7 @@ define(function () {
         return el;
     };
     return {
-        closest: function (parent, someChild) {
+        closestNode: function (parent, someChild) {
             if (parent === someChild) {
                 return null;
             }
@@ -97,6 +97,22 @@ define(function () {
             var parentNode;
             while (parentNode = someChild.parentNode) {
                 if (parentNode !== parent) {
+                    someChild = parentNode;
+                } else {
+                    return someChild;
+                }
+            }
+        },
+        closest: function (selector, someChild) {
+            if (someChild.matches(selector)) {
+                return someChild;
+            }
+            if (!someChild.matches(selector + ' ' + someChild.tagName)) {
+                return null;
+            }
+            var parentNode;
+            while (parentNode = someChild.parentNode) {
+                if (!parentNode.matches(selector)) {
                     someChild = parentNode;
                 } else {
                     return someChild;

@@ -663,7 +663,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         var profileSelectWrapper = null;
 
         trackerList.addEventListener('click', function (e) {
-            var child = dom.closest(this, e.target);
+            var child = dom.closestNode(this, e.target);
             if (child) {
                 activeProfile.trackerIdTracker[child.dataset.id].select();
             }
@@ -1244,7 +1244,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     var nodes = dom.el('div', {
                         class: ['row', 'head__row'],
                         on: ['click', function (e) {
-                            var child = dom.closest(this, e.target);
+                            var child = dom.closestNode(this, e.target);
                             if (child) {
                                 e.preventDefault();
                                 var row = wrappedCells[child.dataset.type];
@@ -1339,12 +1339,9 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                  * @property {number} [peer]
                  * @property {number} [date]
                  */
-                var getBodyRow = function (tracker, /**torrent*/torrent) {
+                var getBodyRow = function (tracker, /**torrent*/torrent, index) {
                     var row = dom.el('div', {
-                        class: ['row', 'body__row'],
-                        data: {
-                            trackerId: tracker.id
-                        }
+                        class: ['row', 'body__row']
                     });
                     cells.forEach(function (type) {
                         if (type === 'date') {
@@ -1379,6 +1376,9 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                                         append: [
                                             dom.el('a', {
                                                 class: ['title'],
+                                                data: {
+                                                    index: index
+                                                },
                                                 target: '_blank',
                                                 href: torrent.url,
                                                 text: torrent.title
@@ -1395,10 +1395,22 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                             }))
                         } else
                         if (type === 'size') {
+                            var downloadLink = filesize(torrent.size);
+                            if (torrent.downloadUrl) {
+                                downloadLink = dom.el('a', {
+                                    class: ['cell__download'],
+                                    data: {
+                                        index: index
+                                    },
+                                    target: '_blank',
+                                    href: torrent.downloadUrl,
+                                    text: downloadLink + ' ' + String.fromCharCode(8595)
+                                });
+                            }
                             row.appendChild(dom.el('div', {
                                 class: ['cell', 'row__cell', 'cell-' + type],
-                                text: filesize(torrent.size)
-                            }))
+                                append: downloadLink
+                            }));
                         } else
                         if (type === 'seeds') {
                             row.appendChild(dom.el('div', {
@@ -1416,10 +1428,51 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     return row;
                 };
 
+                var onLickClick = function (e) {
+                    var link = dom.closest('a', e.target);
+                    if (link) {
+                        var type = null;
+                        /**
+                         * @type {tableRow}
+                         */
+                        var row = null;
+                        if (link.classList.contains('title')) {
+                            type = 'open';
+                            row = tableRows[link.dataset.index];
+                        } else
+                        if (link.classList.contains('cell__download')) {
+                            type = 'download';
+                            row = tableRows[link.dataset.index];
+                        }
+                        if (row) {
+                            var item = {
+                                type: type,
+                                query: row.query,
+                                trackerId: row.trackerId,
+                                title: row.torrent.title,
+                                time: parseInt(Date.now() / 1000)
+                            };
+
+                            chrome.storage.local.get({
+                                clickHistory: []
+                            }, function (storage) {
+                                storage.clickHistory.unshift(item);
+                                storage.clickHistory.splice(300);
+                                chrome.storage.local.set(storage);
+                            });
+                        }
+                    }
+                };
+
                 var head = getHeadRow();
                 var body = {
                     node: dom.el('div', {
-                        class: ['body', 'table__body']
+                        class: ['body', 'table__body'],
+                        on: [
+                            ['mouseup', function (e) {
+                                onLickClick(e);
+                            }]
+                        ]
                     })
                 };
                 this.node = dom.el('div', {
@@ -1459,12 +1512,15 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         /**
                          * @typedef {Object} tableRow
                          * @property {Element} node
+                         * @property {string} query
                          * @property {torrent} torrent
                          * @property {string} trackerId
                          */
                         normalizeTorrent(item);
+                        var node = getBodyRow(tracker, item, tableRows.length);
                         tableRows.push({
-                            node: getBodyRow(tracker, item),
+                            node: node,
+                            query: query,
                             torrent: item,
                             trackerId: tracker.id
                         });
