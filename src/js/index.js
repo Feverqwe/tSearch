@@ -354,6 +354,11 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     filters.splice(pos, 1);
                 }
 
+                if (filter.max && filter.min > filter.max) {
+                    this.value = '';
+                    filter.min = 0;
+                }
+
                 if (filter.min > 0 || filter.max > 0) {
                     filters.push(filter);
                 }
@@ -371,6 +376,11 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 var pos = filters.indexOf(filter);
                 if (pos !== -1) {
                     filters.splice(pos, 1);
+                }
+
+                if (filter.min && filter.max < filter.min) {
+                    this.value = '';
+                    filter.max = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
@@ -428,6 +438,9 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 if (!inputBoxTimeFilterVisible) {
                     filter.max = 0;
                     filter.min = parseInt(this.value) || 0;
+                    if (filter.min) {
+                        filter.min = parseInt(Date.now() / 1000) - filter.min;
+                    }
 
                     if (filter.min > 0) {
                         filters.push(filter);
@@ -442,11 +455,16 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             });
 
             inputFrom.addEventListener('keyup', function(e) {
-                filter.min = parseInt(this.value) || 0;
+                filter.min = parseInt(this.value && this.dataset.time) || 0;
 
                 var pos = filters.indexOf(filter);
                 if (pos !== -1) {
                     filters.splice(pos, 1);
+                }
+
+                if (filter.max && filter.min > filter.max) {
+                    this.value = '';
+                    filter.min = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
@@ -457,11 +475,16 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             });
 
             inputTo.addEventListener('keyup', function(e) {
-                filter.max = parseInt(this.value) || 0;
+                filter.max = parseInt(this.value && this.dataset.time) || 0;
 
                 var pos = filters.indexOf(filter);
                 if (pos !== -1) {
                     filters.splice(pos, 1);
+                }
+
+                if (filter.min && filter.max < filter.min) {
+                    this.value = '';
+                    filter.max = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
@@ -472,6 +495,31 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             });
 
             bindDblClickClear([inputFrom, inputTo]);
+
+            var initDataPicker = function (inputFrom, inputTo) {
+                $([inputFrom, inputTo]).datepicker({
+                    defaultDate: '0',
+                    changeMonth: true,
+                    numberOfMonths: 1,
+                    prevText: '',
+                    nextText: '',
+                    firstDay: 1,
+                    maxDate: "+1d",
+                    hideIfNoPrevNext: true,
+                    dateFormat: "yy-mm-dd",
+                    onClose: function(date, ui) {
+                        var input = ui.input[0];
+                        input.dataset.time = Math.round((new Date(date).getTime() / 1000));
+                        input.dispatchEvent(new CustomEvent('keyup'));
+                    }
+                });
+            };
+
+            require(['./min/jquery-3.1.1.min'], function () {
+                require(['./min/jquery-ui.min'], function () {
+                    initDataPicker(inputFrom, inputTo);
+                });
+            });
         })(selectTimeFilter, inputBoxTimeFilter, timeInputFromFilter, timeInputToFilter);
 
         (function seedFilter(inputFrom, inputTo) {
@@ -498,6 +546,11 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     filters.splice(pos, 1);
                 }
 
+                if (filter.max && filter.min > filter.max) {
+                    this.value = '';
+                    filter.min = 0;
+                }
+
                 if (filter.min > 0 || filter.max > 0) {
                     filters.push(filter);
                 }
@@ -515,6 +568,11 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 var pos = filters.indexOf(filter);
                 if (pos !== -1) {
                     filters.splice(pos, 1);
+                }
+
+                if (filter.min && filter.max < filter.min) {
+                    this.value = '';
+                    filter.max = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
@@ -555,6 +613,11 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     filters.splice(pos, 1);
                 }
 
+                if (filter.max && filter.min > filter.max) {
+                    this.value = '';
+                    filter.min = 0;
+                }
+
                 if (filter.min > 0 || filter.max > 0) {
                     filters.push(filter);
                 }
@@ -572,6 +635,11 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 var pos = filters.indexOf(filter);
                 if (pos !== -1) {
                     filters.splice(pos, 1);
+                }
+
+                if (filter.min && filter.max < filter.min) {
+                    this.value = '';
+                    filter.max = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
@@ -645,10 +713,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             var style = [];
 
             if (filters.length) {
-                var state = filters.map(function () {
-                    return 1;
-                }).join('');
-                style.push(tableRowSelector + ':not([data-filter="' + state + '"]){display: none}');
+                style.push(tableRowSelector + ':not([data-filter="true"]){display: none}');
             }
 
             var selectedTrackers = [];
@@ -668,11 +733,9 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         });
 
         this.getFilterValue = function (/**torrent*/torrent) {
-            var state = new Array(filters.length);
-            for (var i = 0, filter; filter = filters[i]; i++) {
-                state[i] = filterTypeMap[filter.type](filter, torrent) ? 1 : 0;
-            }
-            return state.join('');
+            return filters.every(function (filter) {
+                return filterTypeMap[filter.type](filter, torrent);
+            });
         }
     };
 
