@@ -6,15 +6,15 @@ require.config({
     baseUrl: './js'
 });
 require([
-    './min/promise.min',
-    './lib/i18nDom',
-    './lib/utils',
-    './lib/dom',
-    './lib/selectBox',
-    './min/EventEmitter.min',
-    './lib/profileManager',
-    './lib/profile',
-    './lib/table'
+    './lib/promise.min',
+    './module/i18nDom',
+    './module/utils',
+    './module/dom',
+    './module/selectBox',
+    './lib/EventEmitter.min',
+    './module/profileManager',
+    './module/profile',
+    './module/table'
 ], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Profile, Table) {
     i18nDom();
 
@@ -179,8 +179,8 @@ require([
         };
 
         setTimeout(function () {
-            require(['./min/jquery-3.1.1.min'], function () {
-                require(['./min/jquery-ui.min'], function () {
+            require(['./lib/jquery-3.1.1.min'], function () {
+                require(['./lib/jquery-ui.min'], function () {
                     initAutoComplete(searchInput, searchSubmit);
                 });
             });
@@ -526,8 +526,8 @@ require([
                 });
             };
 
-            require(['./min/jquery-3.1.1.min'], function () {
-                require(['./min/jquery-ui.min'], function () {
+            require(['./lib/jquery-3.1.1.min'], function () {
+                require(['./lib/jquery-ui.min'], function () {
                     initDataPicker(inputFrom, inputTo);
                 });
             });

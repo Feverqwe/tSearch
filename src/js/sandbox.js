@@ -5,10 +5,13 @@
 require.config({
     baseUrl: './js',
     paths: {
-        jquery: './min/jquery-3.1.1.min'
+        jquery: './lib/jquery-3.1.1.min'
     }
 });
-require(['./min/promise.min', './lib/transport'], function (Promise, Transport) {
+require([
+    './lib/promise.min',
+    './module/transport'
+], function (Promise, Transport) {
     (function (runCode) {
         var transport = new Transport({
             sendMessage: function (msg) {

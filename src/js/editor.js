@@ -6,10 +6,10 @@ require.config({
     baseUrl: './js'
 });
 require([
-    './min/promise.min',
-    './lib/i18nDom',
-    './lib/utils',
-    './lib/dom',
+    './lib/promise.min',
+    './module/i18nDom',
+    './module/utils',
+    './module/dom',
     '../codeMirror/lib/codemirror',
     '../codeMirror/mode/javascript/javascript',
     '../codeMirror/addon/edit/matchbrackets',

@@ -4,8 +4,8 @@
 "use strict";
 define([
     './dom',
-    '../min/filesize.min',
-    '../min/moment-with-locales.min'
+    '../lib/filesize.min',
+    '../lib/moment-with-locales.min'
 ], function (dom, filesize, moment) {
     moment.locale(chrome.i18n.getUILanguage());
 

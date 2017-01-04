@@ -5,7 +5,10 @@
 require.config({
     baseUrl: './js'
 });
-require(['./lib/i18nDom', './lib/utils'], function (i18nDom, utils) {
+require([
+    './module/i18nDom',
+    './module/utils'
+], function (i18nDom, utils) {
     i18nDom();
 
     document.body.classList.remove('loading');
@@ -183,8 +186,8 @@ require(['./lib/i18nDom', './lib/utils'], function (i18nDom, utils) {
     };
 
     setTimeout(function () {
-        require(['./min/jquery-3.1.1.min'], function () {
-            require(['./min/jquery-ui.min'], function () {
+        require(['./lib/jquery-3.1.1.min'], function () {
+            require(['./lib/jquery-ui.min'], function () {
                 initAutoComplete(input, submit);
             });
         });
