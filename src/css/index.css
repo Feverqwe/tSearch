@@ -125,6 +125,7 @@ a.search__submit {
 }
 
 .ui-autocomplete {
+    position: absolute;
     margin: 0;
     box-sizing: border-box;
     border: 1px solid rgba(0, 0, 0, 0.3);
