@@ -2020,6 +2020,10 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
 
             activeProfile.trackers.forEach(function (tracker) {
                 tracker.worker && tracker.worker.search(query, function (response) {
+                    if (!response) {
+                        throw new Error('Tracker response is empty!');
+                    }
+
                     if (response.success) {
                         table.insertResults(tracker, query, response.results);
                         updateCounter();

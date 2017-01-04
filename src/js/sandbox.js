@@ -93,6 +93,10 @@ require(['./min/promise.min'], function (Promise) {
         });
 
         sendMessage({action: 'init'}, function (response) {
+            if (!response) {
+                throw  new Error("API response is empty")
+            }
+
             var code = response.code;
             var requireList = response.require;
 
@@ -124,6 +128,10 @@ require(['./min/promise.min'], function (Promise) {
         window.API_request = function (details) {
             return new Promise(function (resolve, reject) {
                 sendMessage({action: 'request', details: details}, function (result) {
+                    if (!result) {
+                        throw new Error("API response is empty")
+                    }
+
                     var err = result.error;
                     var response = result.response;
                     if (err) {
