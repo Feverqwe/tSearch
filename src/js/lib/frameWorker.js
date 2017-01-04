@@ -9,12 +9,21 @@ define(function () {
         var frame = null;
         var contentWindow = null;
 
+        var msgListener = function(event) {
+            if (event.source === contentWindow) {
+                if (self.onmessage) {
+                    self.onmessage(event.data);
+                }
+            }
+        };
+
         var load = function () {
             frame = document.createElement('iframe');
             frame.src = 'sandbox.html';
             frame.style.display = 'none';
             frame.onload = function () {
                 contentWindow = frame.contentWindow;
+                window.addEventListener("message", msgListener);
                 while (stack.length) {
                     self.postMessage(stack.shift());
                 }
@@ -30,21 +39,13 @@ define(function () {
             }
         };
 
-        var msgListener = function(event) {
-            if (event.source === contentWindow) {
-                if (self.onmessage) {
-                    self.onmessage(event.data);
-                }
-            }
-        };
-        window.addEventListener("message", msgListener);
-
         this.onmessage = null;
+
         this.terminate = function () {
-            if (frame) {
+            if (frame && frame.parentNode) {
                 frame.parentNode.removeChild(frame);
-                frame = null;
             }
+            frame = null;
             window.removeEventListener("message", msgListener);
             self.onmessage = null;
         };
