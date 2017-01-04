@@ -3,18 +3,17 @@
  */
 "use strict";
 define(function () {
-    var Transport = function (transport) {
-        var emptyFn = function () {};
-        var onceFn = function (cb, scope) {
-            return function () {
-                if (cb) {
-                    var context = scope || this;
-                    cb.apply(context, arguments);
-                    cb = null;
-                }
-            };
+    var emptyFn = function () {};
+    var onceFn = function (cb) {
+        return function () {
+            if (cb) {
+                cb.apply(null, arguments);
+                cb = null;
+            }
         };
+    };
 
+    var Transport = function (transport) {
         var callbackId = 0;
         var callbackIdCallback = {};
 
@@ -35,12 +34,14 @@ define(function () {
                 } else {
                     response = emptyFn;
                 }
+
                 var result = cb(msg.message, response);
                 if (result !== true) {
                     response();
                 }
             });
         };
+
         this.sendMessage = function (message, callback) {
             var msg = {
                 message: message
@@ -55,5 +56,6 @@ define(function () {
             transport.sendMessage(msg);
         };
     };
+
     return Transport;
 });
