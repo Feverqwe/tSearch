@@ -3,9 +3,12 @@
  */
 "use strict";
 require.config({
-    baseUrl: './js'
+    baseUrl: './js',
+    paths: {
+        jquery: './min/jquery-3.1.1.min'
+    }
 });
-require(['./min/promise.min', './min/jquery-3.1.1.min'], function (Promise) {
+require(['./min/promise.min'], function (Promise) {
     (function (runCode) {
         var Transport = function (transport) {
             var emptyFn = function () {
@@ -90,13 +93,24 @@ require(['./min/promise.min', './min/jquery-3.1.1.min'], function (Promise) {
         });
 
         sendMessage({action: 'init'}, function (response) {
-            try {
-                runCode(response);
-                sendMessage({action: 'ready'});
-            } catch (e) {
-                sendMessage({action: 'error', message: e.message, name: e.name, stack: e.stack});
-                throw e;
-            }
+            var code = response.code;
+            var requireList = response.require;
+
+            require(requireList, function () {
+                new Promise(function (resolve) {
+                    resolve(runCode(code));
+                }).then(function () {
+                    sendMessage({action: 'ready'});
+                }).catch(function (e) {
+                    sendMessage({
+                        action: 'error',
+                        message: e.message,
+                        name: e.name,
+                        stack: e.stack
+                    });
+                    throw e;
+                });
+            });
         });
 
         var events = {};
@@ -177,7 +191,7 @@ require(['./min/promise.min', './min/jquery-3.1.1.min'], function (Promise) {
             }
             return parsedUrl.path + value;
         };
-    })(function (code) {
+    })(function (requires, code) {
         eval(code);
     });
 });

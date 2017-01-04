@@ -1096,6 +1096,8 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
          * @property {string} meta.updateURL
          * @property {string} meta.downloadURL
          * @property {string} [meta.supportURL]
+         * @property {string[]} [meta.require]
+         * @property {string[]} [meta.connect]
          * @property {Object} info
          * @property {number} info.lastUpdate
          * @property {string} code
@@ -1222,7 +1224,10 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 });
                 transport.onMessage(function (msg, response) {
                     if (msg.action === 'init') {
-                        response(tracker.code);
+                        response({
+                            code: tracker.code,
+                            require: tracker.meta.require || []
+                        });
                     } else
                     if (msg.action === 'ready') {
                         onReady();

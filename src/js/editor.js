@@ -34,18 +34,20 @@ require([
     var parseMeta = function (code) {
         var meta = {};
         var readMeta = false;
-        var params = [
-            'name',
-            'version',
-            'author',
-            'description',
-            'homepageURL',
-            'icon',
-            'icon64',
-            'updateURL',
-            'downloadURL',
-            'supportURL'
-        ];
+        var params = {
+            name: 'string',
+            version: 'string',
+            author: 'string',
+            description: 'string',
+            homepageURL: 'string',
+            icon: 'string',
+            icon64: 'string',
+            updateURL: 'string',
+            downloadURL: 'string',
+            supportURL: 'string',
+            require: 'array',
+            connect: 'array'
+        };
         code.split(/\r?\n/).some(function (line) {
             if (!/^\s*\/\//.test(line)) {
                 return;
@@ -59,8 +61,19 @@ require([
             }
             if (readMeta) {
                 var m = /^\s*\/\/\s*@([A-Za-z0-9]+)\s+(.+)$/.exec(line);
-                if (m && params.indexOf(m[1]) !== -1) {
-                    meta[m[1]] = m[2].trim();
+                var key = m[1];
+                var value = m[2].trim();
+                var type = params[key];
+                if (m && type) {
+                    if (type === 'string') {
+                        meta[key] = value;
+                    } else
+                    if (type === 'array') {
+                        if (!meta[key]) {
+                            meta[key] = [];
+                        }
+                        meta[key].push(value);
+                    }
                 }
             }
         });
