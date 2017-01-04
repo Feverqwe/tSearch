@@ -1,6 +1,7 @@
 /**
  * Created by Anton on 04.01.2017.
  */
+"use strict";
 define([
     './utils',
     './frameWorker',
