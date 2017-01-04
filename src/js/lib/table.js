@@ -4,7 +4,7 @@
 "use strict";
 define([
     './dom',
-    './min/filesize.min'
+    '../min/filesize.min'
 ], function (dom, filesize) {
     var unixTimeToString = function (unixtime) {
         return moment(unixtime * 1000).format('lll');
