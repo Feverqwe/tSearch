@@ -1127,14 +1127,129 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         };
 
         (function () {
+            var sortTypeMap = {
+                date: function (direction) {
+                    var moveUp = -1;
+                    var moveDown = 1;
+                    if (direction > 0) {
+                        moveUp = 1;
+                        moveDown = -1;
+                    }
+                    return function (/*tableRow*/a, /*tableRow*/b) {
+                        a = a.torrent.date;
+                        b = b.torrent.date;
+                        return a === b ? 0 : a > b ? moveUp : moveDown;
+                    };
+                },
+                title: function (direction) {
+                    var moveUp = -1;
+                    var moveDown = 1;
+                    if (direction > 0) {
+                        moveUp = 1;
+                        moveDown = -1;
+                    }
+                    return function (/*tableRow*/a, /*tableRow*/b) {
+                        a = a.torrent.title;
+                        b = b.torrent.title;
+                        return a === b ? 0 : a < b ? moveUp : moveDown;
+                    };
+                },
+                size: function (direction) {
+                    var moveUp = -1;
+                    var moveDown = 1;
+                    if (direction > 0) {
+                        moveUp = 1;
+                        moveDown = -1;
+                    }
+                    return function (/*tableRow*/a, /*tableRow*/b) {
+                        a = a.torrent.size;
+                        b = b.torrent.size;
+                        return a === b ? 0 : a > b ? moveUp : moveDown;
+                    };
+                },
+                seeds: function (direction) {
+                    var moveUp = -1;
+                    var moveDown = 1;
+                    if (direction > 0) {
+                        moveUp = 1;
+                        moveDown = -1;
+                    }
+                    return function (/*tableRow*/a, /*tableRow*/b) {
+                        a = a.torrent.seed;
+                        b = b.torrent.seed;
+                        return a === b ? 0 : a > b ? moveUp : moveDown;
+                    };
+                },
+                peers: function (direction) {
+                    var moveUp = -1;
+                    var moveDown = 1;
+                    if (direction > 0) {
+                        moveUp = 1;
+                        moveDown = -1;
+                    }
+                    return function (/*tableRow*/a, /*tableRow*/b) {
+                        a = a.torrent.peer;
+                        b = b.torrent.peer;
+                        return a === b ? 0 : a > b ? moveUp : moveDown;
+                    };
+                }
+            };
+
             var Table = function () {
-                var rows = ['date', 'title', 'size', 'seeds', 'peers'];
+                var cells = ['date', 'title', 'size', 'seeds', 'peers'];
+                var sortCells = [];
+
                 var getHeadRow = function () {
-                    var node = dom.el('div', {
-                        class: ['row', 'head__row']
+                    var wrappedCells = {};
+                    var sortedCell = null;
+
+                    var sort = function (direction) {
+                        if (this === sortedCell) {
+                            if (this.sortDirection > 0) {
+                                this.sortDirection = -1;
+                            } else {
+                                this.sortDirection = 1;
+                            }
+                        } else
+                        if (sortedCell) {
+                            sortedCell.node.classList.remove('cell-sort-up');
+                            sortedCell.node.classList.remove('cell-sort-down');
+                        }
+
+                        if (direction) {
+                            this.sortDirection = direction;
+                        }
+
+                        if (this.sortDirection > 0) {
+                            this.node.classList.remove('cell-sort-down');
+                            this.node.classList.add('cell-sort-up');
+                        } else {
+                            this.node.classList.remove('cell-sort-up');
+                            this.node.classList.add('cell-sort-down');
+                        }
+
+                        sortedCell = this;
+
+                        sortCells.splice(0);
+                        sortCells.push([this.type, this.sortDirection]);
+
+                        insertSortedRows();
+                    };
+
+                    var nodes = dom.el('div', {
+                        class: ['row', 'head__row'],
+                        on: ['click', function (e) {
+                            var child = dom.closest(this, e.target);
+                            if (child) {
+                                e.preventDefault();
+                                var row = wrappedCells[child.dataset.type];
+                                row.sort();
+                            }
+                        }]
                     });
-                    rows.forEach(function (type) {
-                        node.appendChild(dom.el('a', {
+
+                    cells.forEach(function (type) {
+                        var node = dom.el('a', {
                             class: ['cell', 'row__cell', 'cell-' + type],
                             href: '#cell-' + type,
                             data: {
@@ -1149,9 +1264,62 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                                     class: ['cell__sort']
                                 })
                             ]
-                        }))
+                        });
+                        wrappedCells[type] = {
+                            type: type,
+                            sortDirection: 0,
+                            node: node,
+                            sort: sort
+                        };
+                        nodes.appendChild(node);
                     });
-                    return node;
+
+                    return {
+                        node: dom.el('div', {
+                            class: ['table__head'],
+                            append: nodes
+                        }),
+                        cellTypeCell: wrappedCells
+                    };
+                };
+
+                var normalizeTorrent = function (/**torrent*/torrent) {
+                    if (torrent.size) {
+                        torrent.size = parseInt(torrent.size);
+                        if (isNaN(torrent.size)) {
+                            torrent.size = null;
+                        }
+                    }
+                    if (!torrent.size) {
+                        torrent.size = 0;
+                    }
+                    if (torrent.seed) {
+                        torrent.seed = parseInt(torrent.seed);
+                        if (isNaN(torrent.seed)) {
+                            torrent.seed = null;
+                        }
+                    }
+                    if (!torrent.seed) {
+                        torrent.seed = 1;
+                    }
+                    if (torrent.peer) {
+                        torrent.peer = parseInt(torrent.peer);
+                        if (isNaN(torrent.peer)) {
+                            torrent.peer = null;
+                        }
+                    }
+                    if (!torrent.seed) {
+                        torrent.seed = 0;
+                    }
+                    if (torrent.date) {
+                        torrent.date = parseInt(torrent.date);
+                        if (isNaN(torrent.date)) {
+                            torrent.date = null;
+                        }
+                    }
+                    if (!torrent.date) {
+                        torrent.date = 0;
+                    }
                 };
 
                 /**
@@ -1160,11 +1328,11 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                  * @property {string} [categoryUrl]
                  * @property {string} title
                  * @property {string} url
-                 * @property {string} [size]
+                 * @property {number} [size]
                  * @property {string} [downloadUrl]
-                 * @property {string} [seed]
-                 * @property {string} [peer]
-                 * @property {string} [date]
+                 * @property {number} [seed]
+                 * @property {number} [peer]
+                 * @property {number} [date]
                  */
                 var getBodyRow = function (tracker, /**torrent*/torrent) {
                     var row = dom.el('div', {
@@ -1173,7 +1341,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                             trackerId: tracker.id
                         }
                     });
-                    rows.forEach(function (type) {
+                    cells.forEach(function (type) {
                         if (type === 'date') {
                             row.appendChild(dom.el('div', {
                                 class: ['cell', 'row__cell', 'cell-' + type],
@@ -1243,33 +1411,54 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                     return row;
                 };
 
-                var body;
+                var head = getHeadRow();
+                var body = {
+                    node: dom.el('div', {
+                        class: ['body', 'table__body']
+                    })
+                };
                 this.node = dom.el('div', {
                     class: ['table', 'table-results'],
                     append: [
-                        dom.el('div', {
-                            class: ['table__head'],
-                            append: getHeadRow()
-                        }),
-                        body = dom.el('div', {
-                            class: ['body', 'table__body']
-                        })
+                        head.node,
+                        body.node
                     ]
+                });
+
+                sortCells.forEach(function (row) {
+                    head.cellTypeCell[row[0]].sort(row[1]);
                 });
 
                 var tableRows = [];
                 var tableSortedRows = [];
 
+                var insertSortedRows = function () {
+                    var sortedRows = tableRows.slice(0);
+                    sortCells.forEach(function (item) {
+                        var type = item[0];
+                        var direction = item[1];
+                        var sortFn = sortTypeMap[type](direction);
+                        sortedRows.sort(sortFn);
+                    });
+                    sortInsertList(body.node, sortedRows, tableSortedRows);
+                };
+
                 this.insertReslts = function (tracker, query, results) {
                     results.forEach(function (item) {
+                        /**
+                         * @typedef {Object} tableRow
+                         * @property {Element} node
+                         * @property {torrent} torrent
+                         * @property {string} trackerId
+                         */
+                        normalizeTorrent(item);
                         tableRows.push({
                             node: getBodyRow(tracker, item),
                             torrent: item,
-                            tracker: tracker.id
+                            trackerId: tracker.id
                         });
                     });
-                    var sortedRows = tableRows.slice(0);
-                    sortInsertList(body, sortedRows, tableSortedRows);
+                    insertSortedRows();
                 };
             };
 

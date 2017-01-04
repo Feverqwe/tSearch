@@ -263,7 +263,7 @@ a.search__submit {
     display: none;
     bottom: 0;
     width: 50px;
-    background: url(../img/arrow-up.svg) no-repeat center bottom;
+    background: url(../img/scroll_top.svg) no-repeat center bottom;
     background-size: 50px;
     position: fixed;
     left: 0;
@@ -561,18 +561,49 @@ a.simple_select__menu__item {
 }
 
 .table-results .head__row .cell {
+    position: relative;
     padding-top: 4px;
     padding-bottom: 4px;
     border-top: 1px solid rgba(0,0,0,0.3);
     border-bottom: 1px solid rgba(0,0,0,0.3);
     color: #000;
     text-decoration: none;
+    overflow: visible;
 }
 
-.table-results .head__row .cell.cell-order {
+.table-results .head__row .cell.cell-sort-up .cell__sort,
+.table-results .head__row .cell.cell-sort-down .cell__sort {
+    display: block;
+}
+
+.table-results .head__row .cell.cell-sort-up,
+.table-results .head__row .cell.cell-sort-down {
     border-bottom-color: #3366ff;
     border-bottom-width: 2px;
     padding-bottom: 3px;
+}
+
+.table-results .head__row .cell .cell__sort {
+    display: none;
+    position: absolute;
+    background: url(../img/arrow_up.svg) center no-repeat;
+    background-size: 27px;
+    background-origin: content-box;
+    transition: transform 0.2s;
+    width: 16px;
+    height: 16px;
+    top: 4px;
+    right: -8px;
+}
+
+.table-results .head__row .cell:last-child .cell__sort {
+    right: initial;
+    left: -8px;
+}
+
+.table-results .head__row .cell.cell-sort-down .cell__sort {
+    transform: rotate(180deg);
+    background-position-y: -5px;
 }
 
 .table-results .head__row .cell-title {
