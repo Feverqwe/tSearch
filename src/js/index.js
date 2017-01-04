@@ -233,7 +233,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         var applyFilter = function () {
             clearTimeout(timer);
             timer = setTimeout(function () {
-                ee.trigger('filterUpdate');
+                filter.update();
             }, 150);
         };
 
@@ -710,9 +710,10 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         document.body.appendChild(styleNode);
 
         var tableRowSelector = '.table-results .body__row';
-        ee.on('filterUpdate', function () {
+
+        this.update = function () {
             searchResults.forEach(function (table) {
-               table.updateFilter();
+                table.updateFilter();
             });
 
             updateCounter();
@@ -725,7 +726,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
             }
 
             styleNode.textContent = style.join('');
-        });
+        };
 
         this.getFilterValue = function (/**torrent*/torrent) {
             var trackerIds = activeProfile.selectedTrackerIds;
@@ -1324,7 +1325,8 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         } else {
                             this.node.classList.remove('tracker-selected');
                         }
-                        ee.trigger('filterUpdate');
+
+                        filter.update();
                     }
                 };
                 var trackerCount = function (count) {
