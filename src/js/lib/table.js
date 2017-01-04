@@ -55,124 +55,124 @@ define([
         }
     };
 
+    var sortTypeMap = {
+        date: function (direction) {
+            var moveUp = -1;
+            var moveDown = 1;
+            if (direction > 0) {
+                moveUp = 1;
+                moveDown = -1;
+            }
+            return function (/*tableRow*/a, /*tableRow*/b) {
+                var _a = a.torrent.date;
+                var _b = b.torrent.date;
+                return _a === _b ? 0 : _a > _b ? moveUp : moveDown;
+            };
+        },
+        title: function (direction) {
+            var moveUp = -1;
+            var moveDown = 1;
+            if (direction > 0) {
+                moveUp = 1;
+                moveDown = -1;
+            }
+            return function (/*tableRow*/a, /*tableRow*/b) {
+                var _a = a.torrent.title;
+                var _b = b.torrent.title;
+                return _a === _b ? 0 : _a < _b ? moveUp : moveDown;
+            };
+        },
+        size: function (direction) {
+            var moveUp = -1;
+            var moveDown = 1;
+            if (direction > 0) {
+                moveUp = 1;
+                moveDown = -1;
+            }
+            return function (/*tableRow*/a, /*tableRow*/b) {
+                var _a = a.torrent.size;
+                var _b = b.torrent.size;
+                return _a === _b ? 0 : _a > _b ? moveUp : moveDown;
+            };
+        },
+        seed: function (direction) {
+            var moveUp = -1;
+            var moveDown = 1;
+            if (direction > 0) {
+                moveUp = 1;
+                moveDown = -1;
+            }
+            return function (/*tableRow*/a, /*tableRow*/b) {
+                var _a = a.torrent.seed;
+                var _b = b.torrent.seed;
+                return _a === _b ? 0 : _a > _b ? moveUp : moveDown;
+            };
+        },
+        peer: function (direction) {
+            var moveUp = -1;
+            var moveDown = 1;
+            if (direction > 0) {
+                moveUp = 1;
+                moveDown = -1;
+            }
+            return function (/*tableRow*/a, /*tableRow*/b) {
+                var _a = a.torrent.peer;
+                var _b = b.torrent.peer;
+                return _a === _b ? 0 : _a > _b ? moveUp : moveDown;
+            };
+        }
+    };
+
+    var onLickClick = function (target, tableRows) {
+        var link = dom.closest('a', target);
+        if (link) {
+            var type = null;
+            /**
+             * @type {tableRow}
+             */
+            var row;
+            if (link.classList.contains('title')) {
+                type = 'open';
+                row = tableRows[link.dataset.index];
+            } else
+            if (link.classList.contains('cell__download')) {
+                type = 'download';
+                row = tableRows[link.dataset.index];
+            }
+            if (row) {
+                var item = {
+                    type: type,
+                    query: row.query,
+                    trackerId: row.torrent.trackerId,
+                    title: row.torrent.title,
+                    url: row.torrent.url,
+                    time: parseInt(Date.now() / 1000)
+                };
+
+                chrome.storage.local.get({
+                    clickHistory: []
+                }, function (storage) {
+                    var pos = -1;
+                    storage.clickHistory.some(function (item, index) {
+                        if (item.query === item.query && item.url === item.url) {
+                            pos = index;
+                            return true;
+                        }
+                    });
+                    if (pos !== -1) {
+                        storage.clickHistory.splice(pos, 1);
+                    }
+                    storage.clickHistory.unshift(item);
+                    storage.clickHistory.splice(300);
+                    chrome.storage.local.set(storage);
+                });
+            }
+        }
+    };
+
     var Table = function (filter) {
         var cells = ['date', 'title', 'size', 'seed', 'peer'];
         var sortCells = [];
-
-        var sortTypeMap = {
-            date: function (direction) {
-                var moveUp = -1;
-                var moveDown = 1;
-                if (direction > 0) {
-                    moveUp = 1;
-                    moveDown = -1;
-                }
-                return function (/*tableRow*/a, /*tableRow*/b) {
-                    var _a = a.torrent.date;
-                    var _b = b.torrent.date;
-                    return _a === _b ? 0 : _a > _b ? moveUp : moveDown;
-                };
-            },
-            title: function (direction) {
-                var moveUp = -1;
-                var moveDown = 1;
-                if (direction > 0) {
-                    moveUp = 1;
-                    moveDown = -1;
-                }
-                return function (/*tableRow*/a, /*tableRow*/b) {
-                    var _a = a.torrent.title;
-                    var _b = b.torrent.title;
-                    return _a === _b ? 0 : _a < _b ? moveUp : moveDown;
-                };
-            },
-            size: function (direction) {
-                var moveUp = -1;
-                var moveDown = 1;
-                if (direction > 0) {
-                    moveUp = 1;
-                    moveDown = -1;
-                }
-                return function (/*tableRow*/a, /*tableRow*/b) {
-                    var _a = a.torrent.size;
-                    var _b = b.torrent.size;
-                    return _a === _b ? 0 : _a > _b ? moveUp : moveDown;
-                };
-            },
-            seed: function (direction) {
-                var moveUp = -1;
-                var moveDown = 1;
-                if (direction > 0) {
-                    moveUp = 1;
-                    moveDown = -1;
-                }
-                return function (/*tableRow*/a, /*tableRow*/b) {
-                    var _a = a.torrent.seed;
-                    var _b = b.torrent.seed;
-                    return _a === _b ? 0 : _a > _b ? moveUp : moveDown;
-                };
-            },
-            peer: function (direction) {
-                var moveUp = -1;
-                var moveDown = 1;
-                if (direction > 0) {
-                    moveUp = 1;
-                    moveDown = -1;
-                }
-                return function (/*tableRow*/a, /*tableRow*/b) {
-                    var _a = a.torrent.peer;
-                    var _b = b.torrent.peer;
-                    return _a === _b ? 0 : _a > _b ? moveUp : moveDown;
-                };
-            }
-        };
-
-        var onLickClick = function (target, tableRows) {
-            var link = dom.closest('a', target);
-            if (link) {
-                var type = null;
-                /**
-                 * @type {tableRow}
-                 */
-                var row;
-                if (link.classList.contains('title')) {
-                    type = 'open';
-                    row = tableRows[link.dataset.index];
-                } else
-                if (link.classList.contains('cell__download')) {
-                    type = 'download';
-                    row = tableRows[link.dataset.index];
-                }
-                if (row) {
-                    var item = {
-                        type: type,
-                        query: row.query,
-                        trackerId: row.torrent.trackerId,
-                        title: row.torrent.title,
-                        url: row.torrent.url,
-                        time: parseInt(Date.now() / 1000)
-                    };
-
-                    chrome.storage.local.get({
-                        clickHistory: []
-                    }, function (storage) {
-                        var pos = -1;
-                        storage.clickHistory.some(function (item, index) {
-                            if (item.query === item.query && item.url === item.url) {
-                                pos = index;
-                                return true;
-                            }
-                        });
-                        if (pos !== -1) {
-                            storage.clickHistory.splice(pos, 1);
-                        }
-                        storage.clickHistory.unshift(item);
-                        storage.clickHistory.splice(300);
-                        chrome.storage.local.set(storage);
-                    });
-                }
-            }
-        };
 
         var getHeadRow = function () {
             var wrappedCells = {};

@@ -38,9 +38,7 @@ define(function () {
                 stack.push(msg);
             }
         };
-
         this.onmessage = null;
-
         this.terminate = function () {
             if (frame && frame.parentNode) {
                 frame.parentNode.removeChild(frame);

@@ -12,7 +12,6 @@ define(function () {
             }
         };
     };
-
     var Transport = function (transport) {
         var callbackId = 0;
         var callbackIdCallback = {};
@@ -41,7 +40,6 @@ define(function () {
                 }
             });
         };
-
         this.sendMessage = function (message, callback) {
             var msg = {
                 message: message
@@ -56,6 +54,5 @@ define(function () {
             transport.sendMessage(msg);
         };
     };
-
     return Transport;
 });

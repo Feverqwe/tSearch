@@ -154,82 +154,80 @@ define(['./dom'], function (dom) {
             }
         };
 
-        (function () {
-            self.control = dom.el('a', {
-                href: '#selectBox',
-                class: ['simple_select'],
-                append: [
-                    self.selected = dom.el('span', {
-                        class: ['simple_select__value']
-                    }),
-                    !details.editBtn ? '' : self.editBtn = dom.el('span', {
-                        class: ['simple_select__btn'],
-                        append: [
-                            details.editBtn
-                        ],
-                        on: ['click', function (e) {
-                            if (!self.isOpen) {
-                                e.stopPropagation();
-                            }
-                        }]
-                    }),
-                    self.arrowBtn = dom.el('a', {
-                        href: '#open',
-                        class: ['simple_select__btn'],
-                        append: [
-                            dom.el('i', {
-                                class: ['simple_select__btn__icon', 'simple_select__btn__icon-arrow']
-                            })
-                        ]
-                    })
-                ],
-                on: [
-                    ['click', function (e) {
-                        e.preventDefault();
-                        if (self.isOpen) {
-                            self.select();
-                        } else {
-                            self.open();
-                        }
-                    }],
-                    ['keydown', function (e) {
-                        if (e.keyCode === 40) {
-                            e.preventDefault();
-                            if (!self.isOpen) {
-                                self.open();
-                            } else {
-                                self.overNextItem();
-                            }
-                        } else if (e.keyCode === 38) {
-                            e.preventDefault();
-                            if (!self.isOpen) {
-                                self.open();
-                            } else {
-                                self.overPreviewItem();
-                            }
-                        } else if (e.keyCode === 27) {
-                            e.preventDefault();
-                            if (self.isOpen) {
-                                e.preventDefault();
-                                self.hide();
-                            }
+        self.control = dom.el('a', {
+            href: '#selectBox',
+            class: ['simple_select'],
+            append: [
+                self.selected = dom.el('span', {
+                    class: ['simple_select__value']
+                }),
+                !details.editBtn ? '' : self.editBtn = dom.el('span', {
+                    class: ['simple_select__btn'],
+                    append: [
+                        details.editBtn
+                    ],
+                    on: ['click', function (e) {
+                        if (!self.isOpen) {
+                            e.stopPropagation();
                         }
                     }]
-                ]
-            });
+                }),
+                self.arrowBtn = dom.el('a', {
+                    href: '#open',
+                    class: ['simple_select__btn'],
+                    append: [
+                        dom.el('i', {
+                            class: ['simple_select__btn__icon', 'simple_select__btn__icon-arrow']
+                        })
+                    ]
+                })
+            ],
+            on: [
+                ['click', function (e) {
+                    e.preventDefault();
+                    if (self.isOpen) {
+                        self.select();
+                    } else {
+                        self.open();
+                    }
+                }],
+                ['keydown', function (e) {
+                    if (e.keyCode === 40) {
+                        e.preventDefault();
+                        if (!self.isOpen) {
+                            self.open();
+                        } else {
+                            self.overNextItem();
+                        }
+                    } else if (e.keyCode === 38) {
+                        e.preventDefault();
+                        if (!self.isOpen) {
+                            self.open();
+                        } else {
+                            self.overPreviewItem();
+                        }
+                    } else if (e.keyCode === 27) {
+                        e.preventDefault();
+                        if (self.isOpen) {
+                            e.preventDefault();
+                            self.hide();
+                        }
+                    }
+                }]
+            ]
+        });
 
-            select.style.display = 'none';
-            select.parentNode.insertBefore(self.control, select);
+        select.style.display = 'none';
+        select.parentNode.insertBefore(self.control, select);
 
-            select.addEventListener('change', function (e) {
-                if (e.detail !== 'simpleSelect') {
-                    self.select(select.selectedIndex);
-                }
-            });
+        select.addEventListener('change', function (e) {
+            if (e.detail !== 'simpleSelect') {
+                self.select(select.selectedIndex);
+            }
+        });
 
-            self.update();
-            self.select();
-        })();
+        self.update();
+        self.select();
     };
     return SelectBox;
 });
