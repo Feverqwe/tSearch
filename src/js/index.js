@@ -643,12 +643,27 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
         var tableRowSelector = '.table-results .body__row';
         ee.on('filterUpdate', function () {
             var style = [];
+
             if (filters.length) {
                 var state = filters.map(function () {
                     return 1;
                 }).join('');
-                style.push(tableRowSelector + ':not([data-filter="' + state+ '"]){display: none}');
+                style.push(tableRowSelector + ':not([data-filter="' + state + '"]){display: none}');
             }
+
+            var selectedTrackers = [];
+            activeProfile.trackers.forEach(function (tracker) {
+                if (tracker.selected) {
+                    selectedTrackers.push(tracker.id);
+                }
+            });
+            if (selectedTrackers.length) {
+                var trackerList = selectedTrackers.map(function (id) {
+                    return ':not([data-tracker-id="' + id + '"])';
+                }).join('');
+                style.push(tableRowSelector + trackerList + '{display: none}');
+            }
+
             styleNode.textContent = style.join('');
         });
 
@@ -1235,7 +1250,7 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         } else {
                             this.node.classList.remove('tracker-selected');
                         }
-                        ee.trigger('trackerFilter', [this.id, state]);
+                        ee.trigger('filterUpdate');
                     }
                 };
                 var trackersNode = document.createDocumentFragment();
@@ -1276,6 +1291,15 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                             })
                         ]
                     });
+
+                    /**
+                     * @typedef trackerWrapper
+                     * @property {string} id
+                     * @property {Element} node
+                     * @property {Worker} worker
+                     * @property {boolean} selected
+                     * @property {function} trackerSelect
+                     */
 
                     var trackerWrapper = {
                         id: tracker.id,
