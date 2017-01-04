@@ -191,7 +191,7 @@ require(['./min/promise.min'], function (Promise) {
             }
             return parsedUrl.path + value;
         };
-    })(function (requires, code) {
+    })(function (code) {
         eval(code);
     });
 });

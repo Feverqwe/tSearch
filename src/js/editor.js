@@ -61,10 +61,10 @@ require([
             }
             if (readMeta) {
                 var m = /^\s*\/\/\s*@([A-Za-z0-9]+)\s+(.+)$/.exec(line);
-                var key = m[1];
-                var value = m[2].trim();
-                var type = params[key];
-                if (m && type) {
+                if (m) {
+                    var key = m[1];
+                    var value = m[2].trim();
+                    var type = params[key];
                     if (type === 'string') {
                         meta[key] = value;
                     } else
