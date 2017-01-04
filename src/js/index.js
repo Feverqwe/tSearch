@@ -12,15 +12,13 @@ require([
     './lib/dom',
     './lib/selectBox',
     './min/EventEmitter.min',
-    './min/moment-with-locales.min',
     './lib/profileManager',
     './lib/profile',
     './lib/table'
-], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, moment, ProfileManager, Profile, Table) {
+], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Profile, Table) {
     i18nDom();
 
     document.body.classList.remove('loading');
-    moment.locale(chrome.i18n.getUILanguage());
 
     var ee = new EventEmitter();
     var activeProfile = null;
