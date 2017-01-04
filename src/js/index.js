@@ -1195,6 +1195,53 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                 }
             };
 
+            var onLickClick = function (e) {
+                var link = dom.closest('a', e.target);
+                if (link) {
+                    var type = null;
+                    /**
+                     * @type {tableRow}
+                     */
+                    var row = null;
+                    if (link.classList.contains('title')) {
+                        type = 'open';
+                        row = tableRows[link.dataset.index];
+                    } else
+                    if (link.classList.contains('cell__download')) {
+                        type = 'download';
+                        row = tableRows[link.dataset.index];
+                    }
+                    if (row) {
+                        var item = {
+                            type: type,
+                            query: row.query,
+                            trackerId: row.trackerId,
+                            title: row.torrent.title,
+                            url: row.torrent.url,
+                            time: parseInt(Date.now() / 1000)
+                        };
+
+                        chrome.storage.local.get({
+                            clickHistory: []
+                        }, function (storage) {
+                            var pos = -1;
+                            storage.clickHistory.some(function (item, index) {
+                                if (item.query === item.query && item.url === title.url) {
+                                    pos = index;
+                                    return true;
+                                }
+                            });
+                            if (pos !== -1) {
+                                storage.clickHistory.splice(pos, 1);
+                            }
+                            storage.clickHistory.unshift(item);
+                            storage.clickHistory.splice(300);
+                            chrome.storage.local.set(storage);
+                        });
+                    }
+                }
+            };
+
             var Table = function () {
                 var cells = ['date', 'title', 'size', 'seeds', 'peers'];
                 var sortCells = [];
@@ -1426,53 +1473,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         }
                     });
                     return row;
-                };
-
-                var onLickClick = function (e) {
-                    var link = dom.closest('a', e.target);
-                    if (link) {
-                        var type = null;
-                        /**
-                         * @type {tableRow}
-                         */
-                        var row = null;
-                        if (link.classList.contains('title')) {
-                            type = 'open';
-                            row = tableRows[link.dataset.index];
-                        } else
-                        if (link.classList.contains('cell__download')) {
-                            type = 'download';
-                            row = tableRows[link.dataset.index];
-                        }
-                        if (row) {
-                            var item = {
-                                type: type,
-                                query: row.query,
-                                trackerId: row.trackerId,
-                                title: row.torrent.title,
-                                url: row.torrent.url,
-                                time: parseInt(Date.now() / 1000)
-                            };
-
-                            chrome.storage.local.get({
-                                clickHistory: []
-                            }, function (storage) {
-                                var pos = -1;
-                                storage.clickHistory.some(function (item, index) {
-                                    if (item.query === item.query && item.url === title.url) {
-                                        pos = index;
-                                        return true;
-                                    }
-                                });
-                                if (pos !== -1) {
-                                    storage.clickHistory.splice(pos, 1);
-                                }
-                                storage.clickHistory.unshift(item);
-                                storage.clickHistory.splice(300);
-                                chrome.storage.local.set(storage);
-                            });
-                        }
-                    }
                 };
 
                 var head = getHeadRow();
