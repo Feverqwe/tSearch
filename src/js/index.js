@@ -1671,9 +1671,6 @@ require(['./min/promise.min', './lib/i18nDom', './lib/utils', './lib/dom', './li
                         torrent.date = 0;
                     }
 
-                    if (torrent.categoryTitle) {
-                        torrent.categoryTitle = torrent.categoryTitle.toLowerCase();
-                    }
                     if (!torrent.categoryTitle) {
                         torrent.categoryTitle = '';
                     }
