@@ -682,8 +682,7 @@ require([
         manageProfile.addEventListener('click', function (e) {
             e.stopPropagation();
             e.preventDefault();
-            var cloneProfiles = JSON.parse(JSON.stringify(profiles));
-            var pm = new ProfileManager(cloneProfiles, trackers);
+            var pm = new ProfileManager(profiles, profileIdProfileMap, trackers);
             pm.onSave = function () {
                 ee.trigger('reloadProfiles');
             };

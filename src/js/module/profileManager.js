@@ -6,13 +6,9 @@ define([
     './utils',
     './dom'
 ], function (utils, dom) {
-    var ProfileManager = function (profiles, trackers) {
+    var ProfileManager = function (profiles, profileIdProfileMap, trackers) {
         var self = this;
         var layer = null;
-        var profileIdProfileMap = {};
-        profiles.forEach(function (item) {
-            profileIdProfileMap[item.id] = item;
-        });
 
         var getHeader = function (title) {
             return dom.el('div', {
@@ -292,6 +288,7 @@ define([
                                         })
                                     }
                                 });
+
                                 profile.name = profileName.value;
                                 profile.trackers = profileTrackers;
 
