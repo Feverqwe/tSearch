@@ -214,6 +214,7 @@ define([
 
             var profileName = null;
             var trackersNode = null;
+            var removedTrackerIds = [];
             return dom.el(document.createDocumentFragment(), {
                 append: [
                     getHeader(chrome.i18n.getMessage('manageProfile')),
@@ -259,14 +260,22 @@ define([
                         })(),
                         on: ['click', function (e) {
                             var target = e.target;
+                            var trackerId;
                             if (target.dataset.action === 'edit') {
                                 e.preventDefault();
-                                var trackerId = target.parentNode.dataset.id;
+                                trackerId = target.parentNode.dataset.id;
                                 chrome.tabs.create({
                                     url: 'editor.html#' + utils.param({
                                         id: trackerId
                                     })
                                 });
+                            } else
+                            if (target.dataset.action === 'remove') {
+                                e.preventDefault();
+                                var trackerNode = target.parentNode;
+                                trackerId = trackerNode.dataset.id;
+                                trackerNode.parentNode.removeChild(trackerNode);
+                                removedTrackerIds.push(trackerId);
                             }
                         }]
                     }),
@@ -296,8 +305,13 @@ define([
                                     profileIdProfileMap[profile.id] = profile;
                                 }
 
+                                removedTrackerIds.forEach(function (id) {
+                                    delete trackers[id];
+                                });
+
                                 chrome.storage.local.set({
-                                    profiles: profiles
+                                    profiles: profiles,
+                                    trackers: trackers
                                 }, function () {
                                     close();
                                     self.onSave();
