@@ -227,6 +227,34 @@ require([
         });
     })();
 
+    (function () {
+        ee.on('search', function (query) {
+            searchResults.forEach(function (table) {
+                table.destroy();
+            });
+
+            var table = new Table(resultFilter);
+            searchResults.push(table);
+
+            var results = document.querySelector('.results');
+            results.textContent = '';
+            results.appendChild(table.node);
+
+            global.activeProfile.trackers.forEach(function (tracker) {
+                tracker.worker && tracker.worker.search(query, function (response) {
+                    if (!response) {
+                        throw new Error('Tracker response is empty!');
+                    }
+
+                    if (response.success) {
+                        table.insertResults(tracker, query, response.results);
+                        updateCounter();
+                    }
+                });
+            });
+        });
+    })();
+
     var updateCounter = function () {
         var counter = {};
         searchResults.forEach(function (table) {
@@ -528,11 +556,13 @@ require([
                 });
             };
 
-            require(['./lib/jquery-3.1.1.min'], function () {
-                require(['./lib/jquery-ui.min'], function () {
-                    initDataPicker(inputFrom, inputTo);
+            setTimeout(function () {
+                require(['./lib/jquery-3.1.1.min'], function () {
+                    require(['./lib/jquery-ui.min'], function () {
+                        initDataPicker(inputFrom, inputTo);
+                    });
                 });
-            });
+            }, 50);
         })(selectTimeFilter, inputBoxTimeFilter, timeInputFromFilter, timeInputToFilter);
 
         (function seedFilter(inputFrom, inputTo) {
@@ -790,34 +820,6 @@ require([
                     tracker.abort();
                 });
             });*/
-        });
-    })();
-
-    (function () {
-        ee.on('search', function (query) {
-            searchResults.forEach(function (table) {
-                table.destroy();
-            });
-
-            var table = new Table(resultFilter);
-            searchResults.push(table);
-
-            var results = document.querySelector('.results');
-            results.textContent = '';
-            results.appendChild(table.node);
-
-            global.activeProfile.trackers.forEach(function (tracker) {
-                tracker.worker && tracker.worker.search(query, function (response) {
-                    if (!response) {
-                        throw new Error('Tracker response is empty!');
-                    }
-
-                    if (response.success) {
-                        table.insertResults(tracker, query, response.results);
-                        updateCounter();
-                    }
-                });
-            });
         });
     })();
 });
