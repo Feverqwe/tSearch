@@ -686,13 +686,21 @@ require([
             pm.onProfilesSave = function () {
                 ee.trigger('reloadProfiles');
             };
-            pm.onProfileSave = function (profileId, trackers) {
-                var profile = profileIdProfileMap[profileId];
+            pm.onProfileSave = function (_profile, trackers) {
+                var profile = profileIdProfileMap[_profile.id];
                 if (profile) {
-                    profile.trackers.splice(0);
-                    profile.trackers.push.apply(profile.trackers, trackers);
+                    for (var key in _profile) {
+                        profile[key] = _profile[key];
+                    }
+                } else {
+                    profiles.push(_profile);
+                    profileIdProfileMap[_profile.id] = _profile;
                 }
-                ee.trigger('reloadProfile');
+                chrome.storage.local.set({
+                    profiles: profiles
+                }, function () {
+                    ee.trigger('reloadProfile');
+                });
             };
             pm.show();
         });

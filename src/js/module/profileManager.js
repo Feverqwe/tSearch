@@ -212,6 +212,7 @@ define([
                 })
             };
 
+            var profileName = null;
             var trackersNode = null;
             return dom.el(document.createDocumentFragment(), {
                 append: [
@@ -222,7 +223,7 @@ define([
                             dom.el('div', {
                                 class: ['profile__input'],
                                 append: [
-                                    dom.el('input', {
+                                    profileName = dom.el('input', {
                                         class: ['input__input'],
                                         type: 'text',
                                         value: profile.name
@@ -287,13 +288,10 @@ define([
                                         })
                                     }
                                 });
+                                profile.name = profileName.value;
                                 profile.trackers = profileTrackers;
-                                chrome.storage.local.set({
-                                    profiles: profiles
-                                }, function () {
-                                    close();
-                                    self.onProfileSave(profile.id, trackers);
-                                });
+                                close();
+                                self.onProfileSave(profile);
                             }]
                         }),
                         dom.el('a', {
