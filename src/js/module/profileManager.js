@@ -6,7 +6,8 @@ define([
     './utils',
     './dom'
 ], function (utils, dom) {
-    var ProfileManager = function (profiles, profileIdProfileMap, trackers, global) {
+    var ProfileManager = function (profiles, profileIdProfileMap, trackers) {
+        var self = this;
         var layer = null;
 
         var getHeader = function (title) {
@@ -242,7 +243,7 @@ define([
                                 chrome.storage.local.set({
                                     profiles: profiles
                                 }, function () {
-                                    global.activeProfile.reload();
+                                    self.onProfileSave();
                                 });
                             }]
                         }),
@@ -266,8 +267,22 @@ define([
             layer.node.parentNode.removeChild(layer.node);
         };
 
-        layer = createLayer();
-        document.body.appendChild(layer.node);
+        this.onClose = function () {
+
+        };
+
+        this.onProfilesSave = function () {
+
+        };
+
+        this.onProfileSave = function () {
+
+        };
+
+        this.show = function () {
+            layer = createLayer();
+            document.body.appendChild(layer.node);
+        };
     };
     return ProfileManager;
 });

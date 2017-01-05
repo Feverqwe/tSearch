@@ -761,11 +761,13 @@ require([
          * @property {string} code
          */
 
-
-
         manageProfile.addEventListener('click', function (e) {
             e.preventDefault();
-            new ProfileManager(profiles, profileIdProfileMap, trackers, global);
+            var pm = new ProfileManager(profiles, profileIdProfileMap, trackers);
+            pm.onProfileSave = function () {
+                global.activeProfile.reload();
+            };
+            pm.show();
         });
 
         profileSelectWrapper = new selectBox(profileSelect, {
