@@ -442,12 +442,19 @@ define([
                 ]
             })
         };
+        var footer = {
+            node: dom.el('div', {
+                class: ['footer', 'table__footer']
+            }),
+            hasMore: false
+        };
 
         var tableNode = dom.el('div', {
             class: ['table', 'table-results'],
             append: [
                 head.node,
-                body.node
+                body.node,
+                footer.node
             ]
         });
         this.node = tableNode;
@@ -509,6 +516,29 @@ define([
             });
 
             insertSortedRows();
+        };
+
+        this.showMore = function (searchMore) {
+            var loading = false;
+            if (!footer.hasMore) {
+                footer.hasMore = true;
+                footer.node.appendChild(dom.el('a', {
+                    class: ['loadMore', 'search__submit', 'footer__loadMore'],
+                    href: '#more',
+                    text: chrome.i18n.getMessage('loadMore'),
+                    on: ['click', function (e) {
+                        e.preventDefault();
+                        var _this = this;
+                        if (!loading) {
+                            loading = true;
+                            _this.classList.add('loadMore-loading');
+                            searchMore(function () {
+                                _this.parentNode && _this.parentNode.removeChild(_this);
+                            });
+                        }
+                    }]
+                }));
+            }
         };
 
         this.applyFilter = function () {

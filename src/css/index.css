@@ -535,8 +535,11 @@ a.simple_select__menu__item {
 .table-results {
     display: flex;
     flex-direction: column;
-    margin-top: 8px;
     font-size: 13px;
+}
+
+.table-results:first-child {
+    margin-top: 8px;
 }
 
 .table-results .table__head {
@@ -713,6 +716,22 @@ a.simple_select__menu__item {
     min-width: 30px;
     max-width: 30px;
     text-align: center;
+}
+
+.table-results .table__footer {
+    text-align: center;
+}
+
+.table-results .footer__loadMore {
+    width: inherit;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 5px;
+}
+
+.table-results .footer__loadMore.loadMore-loading {
+    opacity: 0.5;
+    cursor: default;
 }
 
 #ui-datepicker-div {

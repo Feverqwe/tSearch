@@ -14,6 +14,7 @@ define([
         var trackerIdTracker = {};
         var wrappedTrackers = [];
         var tables = [];
+        var moreEvents = {};
         var load = function () {
             var trackerSelect = function (state) {
                 if (state === undefined) {
@@ -130,6 +131,13 @@ define([
             });
         };
 
+        var setMoreEvent = function (trackerId, query, response) {
+            moreEvents[trackerId] = {
+                message: response.nextPageRequest,
+                query: query
+            };
+        };
+
         var onSearch = function (query) {
             destroyTables();
 
@@ -144,6 +152,53 @@ define([
                     }
 
                     if (response.success) {
+                        var more = !!response.nextPageRequest;
+                        if (more) {
+                            setMoreEvent(tracker.id, query, response);
+                            table.showMore(onSearchMore);
+                        }
+                        table.insertResults(tracker, query, response.results);
+                        updateCounter();
+                    }
+                });
+            });
+        };
+
+        var createTable = function () {
+            var table = new Table(resultFilter);
+            tables.push(table);
+            tableParent.appendChild(table.node);
+            return table;
+        };
+
+        var onSearchMore = function (cb) {
+            var onceCb = function () {
+                cb && cb();
+                cb = null;
+            };
+            var table = null;
+            Object.keys(moreEvents).forEach(function (trackerId) {
+                var moreEvent = moreEvents[trackerId];
+                delete moreEvents[trackerId];
+
+                var message = moreEvent.message;
+                var query = moreEvent.query;
+                var tracker = trackerIdTracker[trackerId];
+                tracker.worker && tracker.worker.sendMessage(message, function (response) {
+                    if (!response) {
+                        throw new Error('Tracker response is empty!');
+                    }
+
+                    if (response.success) {
+                        onceCb();
+                        if (!table) {
+                            table = createTable();
+                        }
+                        var more = !!response.nextPageRequest;
+                        if (more) {
+                            setMoreEvent(tracker.id, query, response);
+                            table.showMore(onSearchMore);
+                        }
                         table.insertResults(tracker, query, response.results);
                         updateCounter();
                     }
@@ -191,6 +246,9 @@ define([
             ee.off('selectTracker', onSelectTracker);
             ee.off('filterChange', onFilterChange);
             ee.off('search', onSearch);
+            for (var key in moreEvents) {
+                delete moreEvents[key];
+            }
             trackers.splice(0).forEach(function (tracker) {
                 tracker.worker && tracker.worker.destroy();
             });

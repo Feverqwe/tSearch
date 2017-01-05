@@ -115,5 +115,8 @@
   },
   "row_peer": {
     "message": "П"
+  },
+  "loadMore": {
+    "message": "Загрузить ещё"
   }
 }
