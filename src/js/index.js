@@ -636,6 +636,21 @@ require([
         var trackers = {};
         var profiles = [];
         var profileIdProfileMap = {};
+
+        profileSelect.addEventListener('change', function () {
+            currentProfileId = profileIdProfileMap[this.value].id;
+
+            chrome.storage.local.set({
+                currentProfileId: currentProfileId
+            }, function () {
+                if (activeProfile) {
+                    activeProfile.destroy();
+                }
+
+                activeProfile = new Profile(profileIdProfileMap[currentProfileId], trackers, resultFilter, trackerList, ee);
+            });
+        });
+
         var selectProfileId = function (id) {
             var index = 0;
             profiles.some(function (item, i) {
