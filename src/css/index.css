@@ -492,7 +492,6 @@ a.simple_select__menu__item {
     padding: 0 14px;
     display: flex;
     flex-direction: row;
-    border-top: 1px dashed #ccc;
 }
 
 .manager__profile .profile__input {
