@@ -108,7 +108,7 @@ define([
         };
 
         var destroyTables = function () {
-            tables.forEach(function (table) {
+            tables.splice(0).forEach(function (table) {
                 table.destroy();
             });
         };
