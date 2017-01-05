@@ -74,9 +74,6 @@
   "manageProfiles": {
     "message": "Управление списками"
   },
-  "newProfile": {
-    "message": "Добавить"
-  },
   "editProfile": {
     "message": "Редактировать"
   },
@@ -118,5 +115,8 @@
   },
   "loadMore": {
     "message": "Загрузить ещё"
+  },
+  "newProfile": {
+    "message": "Создать список"
   }
 }

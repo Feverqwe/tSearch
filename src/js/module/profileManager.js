@@ -6,9 +6,13 @@ define([
     './utils',
     './dom'
 ], function (utils, dom) {
-    var ProfileManager = function (profiles, profileIdProfileMap, trackers) {
+    var ProfileManager = function (profiles, trackers) {
         var self = this;
         var layer = null;
+        var profileIdProfileMap = {};
+        profiles.forEach(function (item) {
+            profileIdProfileMap[item.id] = item;
+        });
 
         var getHeader = function (title) {
             return dom.el('div', {
@@ -85,10 +89,28 @@ define([
                     ]
                 });
             };
+
+            var profilesNode = null;
             return dom.el(document.createDocumentFragment(), {
                 append: [
                     getHeader(chrome.i18n.getMessage('manageProfiles')),
                     dom.el('div', {
+                        class: ['manager__sub_header', 'manager__sub_header-profiles'],
+                        append: [
+                            dom.el('a', {
+                                class: ['manager__new_profile'],
+                                href: '#new_profile',
+                                text: chrome.i18n.getMessage('newProfile'),
+                                on: ['click', function (e) {
+                                    e.preventDefault();
+                                    var profile = self.getDefaultProfile(profileIdProfileMap);
+                                    layer.content.textContent = '';
+                                    layer.content.appendChild(getProfile(profile, trackers));
+                                }]
+                            })
+                        ]
+                    }),
+                    profilesNode = dom.el('div', {
                         class: 'manager__profiles',
                         append: (function () {
                             var list = [];
@@ -99,12 +121,23 @@ define([
                         })(),
                         on: ['click', function (e) {
                             var target = e.target;
+                            var profileId, profile;
                             if (target.dataset.action === 'edit') {
                                 e.preventDefault();
-                                var profileId = target.parentNode.dataset.id;
-                                var profile = profileIdProfileMap[profileId];
+                                profileId = target.parentNode.dataset.id;
+                                profile = profileIdProfileMap[profileId];
                                 layer.content.textContent = '';
                                 layer.content.appendChild(getProfile(profile, trackers));
+                            } else
+                            if (target.dataset.action === 'remove') {
+                                profileId = target.parentNode.dataset.id;
+                                profile = profileIdProfileMap[profileId];
+                                delete profileIdProfileMap[profileId];
+                                var pos = profiles.indexOf(profile);
+                                if (pos !== -1) {
+                                    profiles.splice(pos, 1);
+                                }
+
                             }
                         }]
                     }),
@@ -112,7 +145,22 @@ define([
                         dom.el('a', {
                             href: '#save',
                             class: ['manager__footer__btn'],
-                            text: chrome.i18n.getMessage('save')
+                            text: chrome.i18n.getMessage('save'),
+                            on: ['click', function (e) {
+                                e.preventDefault();
+                                var _profiles = [];
+                                [].slice.call(profilesNode.childNodes).forEach(function (profileNode) {
+                                    var id = profileNode.dataset.id;
+                                    var profile = profileIdProfileMap[id];
+                                    _profiles.push(profile);
+                                });
+                                chrome.storage.local.set({
+                                    profiles: _profiles
+                                }, function () {
+                                    close();
+                                    self.onProfilesSave();
+                                });
+                            }]
                         })
                     ])
                 ]
@@ -169,7 +217,7 @@ define([
                 append: [
                     getHeader(chrome.i18n.getMessage('manageProfile')),
                     dom.el('div', {
-                        class: 'manager__profile',
+                        class: 'manager__sub_header',
                         append: [
                             dom.el('div', {
                                 class: ['profile__input'],
@@ -243,7 +291,8 @@ define([
                                 chrome.storage.local.set({
                                     profiles: profiles
                                 }, function () {
-                                    self.onProfileSave();
+                                    close();
+                                    self.onProfileSave(profile.id, trackers);
                                 });
                             }]
                         }),
@@ -283,6 +332,20 @@ define([
             layer = createLayer();
             document.body.appendChild(layer.node);
         };
+    };
+    ProfileManager.prototype.getProfileId = function (profileIdProfileMap) {
+        var id = 0;
+        while (profileIdProfileMap[id]) {
+            id++;
+        }
+        return id;
+    };
+    ProfileManager.prototype.getDefaultProfile = function (profileIdProfileMap) {
+        return {
+            name: chrome.i18n.getMessage('defaultProfileName'),
+            id: this.getProfileId(profileIdProfileMap),
+            trackers: []
+        }
     };
     return ProfileManager;
 });

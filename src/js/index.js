@@ -636,20 +636,6 @@ require([
         var trackers = {};
         var profiles = [];
         var profileIdProfileMap = {};
-        var getProfileId = function () {
-            var id = 0;
-            while (profileIdProfileMap[id]) {
-                id++;
-            }
-            return id;
-        };
-        var getDefaultProfile = function () {
-            return {
-                name: chrome.i18n.getMessage('defaultProfileName'),
-                id: getProfileId(),
-                trackers: []
-            }
-        };
         var selectProfileId = function (id) {
             var index = 0;
             profiles.some(function (item, i) {
@@ -695,8 +681,17 @@ require([
 
         manageProfile.addEventListener('click', function (e) {
             e.preventDefault();
-            var pm = new ProfileManager(profiles, profileIdProfileMap, trackers);
-            pm.onProfileSave = function () {
+            var cloneProfiles = JSON.parse(JSON.stringify(profiles));
+            var pm = new ProfileManager(cloneProfiles, trackers);
+            pm.onProfilesSave = function () {
+                ee.trigger('reloadProfiles');
+            };
+            pm.onProfileSave = function (profileId, trackers) {
+                var profile = profileIdProfileMap[profileId];
+                if (profile) {
+                    profile.trackers.splice(0);
+                    profile.trackers.push.apply(profile.trackers, trackers);
+                }
                 ee.trigger('reloadProfile');
             };
             pm.show();
@@ -706,39 +701,51 @@ require([
             editBtn: manageProfile
         });
 
-        chrome.storage.local.get({
-            currentProfileId: null,
-            profiles: [],
-            trackers: {}
-        }, function (storage) {
-            currentProfileId = storage.currentProfileId;
-            trackers = storage.trackers;
-            profiles = storage.profiles;
-            if (profiles.length === 0) {
-                profiles.push(getDefaultProfile());
-            }
-            var elList = profiles.map(function (/**profile*/item) {
-                profileIdProfileMap[item.id] = item;
-                return dom.el('option', {
-                    text: item.name,
-                    value: item.id
+        var loadProfiles = function () {
+            chrome.storage.local.get({
+                currentProfileId: null,
+                profiles: [],
+                trackers: {}
+            }, function (storage) {
+                currentProfileId = storage.currentProfileId;
+                trackers = storage.trackers;
+                profiles = storage.profiles;
+                if (profiles.length === 0) {
+                    profiles.push(ProfileManager.prototype.getDefaultProfile(profileIdProfileMap));
+                }
+
+                profileSelect.textContent = '';
+                var elList = profiles.map(function (/**profile*/item) {
+                    profileIdProfileMap[item.id] = item;
+                    return dom.el('option', {
+                        text: item.name,
+                        value: item.id
+                    });
                 });
-            });
-            dom.el(profileSelect, {
-                append: elList
-            });
-            if (!profileIdProfileMap[currentProfileId]) {
-                currentProfileId = profiles[0].id;
-            }
-            selectProfileId(currentProfileId);
+                dom.el(profileSelect, {
+                    append: elList
+                });
 
-            profileSelectWrapper.update();
-            profileSelectWrapper.select();
+                if (!profileIdProfileMap[currentProfileId]) {
+                    currentProfileId = profiles[0].id;
+                }
 
-            if (activeProfile) {
-                activeProfile.destroy();
-            }
-            activeProfile = new Profile(profileIdProfileMap[currentProfileId], trackers, resultFilter, trackerList, ee);
+                selectProfileId(currentProfileId);
+                profileSelectWrapper.update();
+                profileSelectWrapper.select();
+
+                if (activeProfile) {
+                    activeProfile.destroy();
+                }
+
+                activeProfile = new Profile(profileIdProfileMap[currentProfileId], trackers, resultFilter, trackerList, ee);
+            });
+        };
+
+        ee.on('reloadProfiles', function () {
+            loadProfiles();
         });
+
+        loadProfiles();
     })();
 });

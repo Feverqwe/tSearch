@@ -486,7 +486,7 @@ a.simple_select__menu__item {
     max-height: 370px;
 }
 
-.manager__profile {
+.manager__sub_header {
     align-items: center;
     height: 46px;
     padding: 0 14px;
