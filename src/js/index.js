@@ -680,6 +680,7 @@ require([
          */
 
         manageProfile.addEventListener('click', function (e) {
+            e.stopPropagation();
             e.preventDefault();
             var cloneProfiles = JSON.parse(JSON.stringify(profiles));
             var pm = new ProfileManager(cloneProfiles, trackers);

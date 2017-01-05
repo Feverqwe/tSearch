@@ -165,12 +165,7 @@ define(['./dom'], function (dom) {
                     class: ['simple_select__btn'],
                     append: [
                         details.editBtn
-                    ],
-                    on: ['click', function (e) {
-                        if (!self.isOpen) {
-                            e.stopPropagation();
-                        }
-                    }]
+                    ]
                 }),
                 self.arrowBtn = dom.el('a', {
                     href: '#open',
