@@ -38,6 +38,21 @@ define([
             var trackerCount = function (count) {
                 this.countNode.textContent = count;
             };
+            var trackerStatus = function (status, message) {
+                this.iconNode.classList.remove('tracker__icon-loading');
+                this.iconNode.classList.remove('tracker__icon-error');
+                this.iconNode.title = '';
+
+                if (status === 'error') {
+                    this.iconNode.title = message;
+                    this.iconNode.classList.add('tracker__icon-error');
+                } else
+                if (status === 'search') {
+                    this.iconNode.classList.add('tracker__icon-loading');
+                } else
+                if (status === 'success') {
+                }
+            };
             var trackersNode = document.createDocumentFragment();
             profile.trackers.forEach(function (/**profileTracker*/item) {
                 var worker = null;
@@ -53,19 +68,24 @@ define([
                     }
                 }
 
+                var iconClass = 'icon_' + tracker.id;
+                var iconStyleNode = dom.el('style', {
+                    text: '.' + iconClass + '{' + 'background-image:url(' + JSON.stringify(tracker.meta.icon64 || tracker.meta.icon) + ')' + '}'
+                });
+
                 var countNode;
+                var iconNode;
                 var node = dom.el('div', {
                     class: 'tracker',
                     data: {
                         id: tracker.id
                     },
                     append: [
-                        dom.el('img', {
-                            class: 'tracker__icon',
-                            src: tracker.meta.icon64 || tracker.meta.icon,
-                            on: ['error', function () {
-                                this.src = './img/blank.svg';
-                            }]
+                        iconNode = dom.el('div', {
+                            class: ['tracker__icon', iconClass],
+                            append: [
+                                iconStyleNode
+                            ]
                         }),
                         dom.el('div', {
                             class: 'tracker__name',
@@ -82,21 +102,28 @@ define([
                  * @typedef trackerWrapper
                  * @property {string} id
                  * @property {Element} node
+                 * @property {Element} iconStyleNode
                  * @property {Element} countNode
+                 * @property {Element} iconNode
                  * @property {Worker} worker
                  * @property {boolean} selected
                  * @property {function} select
                  * @property {function} count
+                 * @property {function} status
                  */
 
                 var trackerWrapper = {
                     id: tracker.id,
+                    iconClass: iconClass,
                     node: node,
+                    iconStyleNode: iconStyleNode,
                     countNode: countNode,
+                    iconNode: iconNode,
                     worker: worker,
                     selected: false,
                     select: trackerSelect,
-                    count: trackerCount
+                    count: trackerCount,
+                    status: trackerStatus
                 };
 
                 wrappedTrackers.push(trackerWrapper);
@@ -146,21 +173,28 @@ define([
             tableParent.appendChild(table.node);
 
             wrappedTrackers.forEach(function (tracker) {
-                tracker.worker && tracker.worker.search(query, function (response) {
-                    if (!response) {
-                        throw new Error('Tracker response is empty!');
-                    }
-
-                    if (response.success) {
-                        var more = !!response.nextPageRequest;
-                        if (more) {
-                            setMoreEvent(tracker.id, query, response);
-                            table.showMore(onSearchMore);
+                if (tracker.worker) {
+                    tracker.status('search');
+                    tracker.worker.search(query, function (response) {
+                        if (!response) {
+                            tracker.status('error', 'Tracker response is empty!');
+                            throw new Error('Tracker response is empty!');
                         }
-                        table.insertResults(tracker, query, response.results);
-                        updateCounter();
-                    }
-                });
+
+                        if (response.success) {
+                            tracker.status('success');
+                            var more = !!response.nextPageRequest;
+                            if (more) {
+                                setMoreEvent(tracker.id, query, response);
+                                table.showMore(onSearchMore);
+                            }
+                            table.insertResults(tracker, query, response.results);
+                            updateCounter();
+                        } else {
+                            tracker.status('error', response.error);
+                        }
+                    });
+                }
             });
         };
 
@@ -184,26 +218,33 @@ define([
                 var message = moreEvent.message;
                 var query = moreEvent.query;
                 var tracker = trackerIdTracker[trackerId];
-                tracker.worker && tracker.worker.sendMessage(message, function (response) {
-                    onceCb();
+                if (tracker.worker) {
+                    tracker.status('search');
+                    tracker.worker.sendMessage(message, function (response) {
+                        onceCb();
 
-                    if (!response) {
-                        throw new Error('Tracker response is empty!');
-                    }
+                        if (!response) {
+                            tracker.status('error', 'Tracker response is empty!');
+                            throw new Error('Tracker response is empty!');
+                        }
 
-                    if (response.success) {
-                        if (!table) {
-                            table = createTable();
+                        if (response.success) {
+                            tracker.status('success');
+                            if (!table) {
+                                table = createTable();
+                            }
+                            var more = !!response.nextPageRequest;
+                            if (more) {
+                                setMoreEvent(tracker.id, query, response);
+                                table.showMore(onSearchMore);
+                            }
+                            table.insertResults(tracker, query, response.results);
+                            updateCounter();
+                        } else {
+                            tracker.status('error', response.error);
                         }
-                        var more = !!response.nextPageRequest;
-                        if (more) {
-                            setMoreEvent(tracker.id, query, response);
-                            table.showMore(onSearchMore);
-                        }
-                        table.insertResults(tracker, query, response.results);
-                        updateCounter();
-                    }
-                });
+                    });
+                }
             });
         };
 

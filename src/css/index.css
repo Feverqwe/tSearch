@@ -413,8 +413,24 @@ a.simple_select__menu__item {
 }
 
 .tracker__icon {
+    display: block;
     width: 16px;
     height: 16px;
+    background-size: 16px;
+}
+
+@keyframes rotate360 { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+.tracker__icon.tracker__icon-loading {
+    background: url(../img/refresh.svg) no-repeat center !important;
+    background-size: 14px !important;
+    opacity: 0.8;
+    animation: rotate360 0.8s linear infinite;
+}
+
+.tracker__icon.tracker__icon-error {
+    background: url(../img/ghost.svg) no-repeat center !important;
+    background-size: 18px !important;
+    opacity: 0.8;
 }
 
 .tracker__name {
