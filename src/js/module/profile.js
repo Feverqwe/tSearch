@@ -185,12 +185,13 @@ define([
                 var query = moreEvent.query;
                 var tracker = trackerIdTracker[trackerId];
                 tracker.worker && tracker.worker.sendMessage(message, function (response) {
+                    onceCb();
+
                     if (!response) {
                         throw new Error('Tracker response is empty!');
                     }
 
                     if (response.success) {
-                        onceCb();
                         if (!table) {
                             table = createTable();
                         }
