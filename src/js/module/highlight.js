@@ -79,7 +79,7 @@ define([
 
             var fragment, root, lastPos = 0;
             fragment = root = document.createDocumentFragment();
-            var item, tagName, pos, isClose, fragmentLen;
+            var item, tagName, pos, isClose;
             for (var i = 0, len = posMap.length; i < len; i++) {
                 item = posMap[i];
                 tagName = item[0];
