@@ -146,8 +146,6 @@ define([
            if (stringFilters !== activeFilters) {
                activeFilters = stringFilters;
 
-               console.log(activeFilters);
-
                searchResults.forEach(function (table) {
                    table.updateFilter();
                });
