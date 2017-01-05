@@ -683,24 +683,8 @@ require([
             e.preventDefault();
             var cloneProfiles = JSON.parse(JSON.stringify(profiles));
             var pm = new ProfileManager(cloneProfiles, trackers);
-            pm.onProfilesSave = function () {
+            pm.onSave = function () {
                 ee.trigger('reloadProfiles');
-            };
-            pm.onProfileSave = function (_profile, trackers) {
-                var profile = profileIdProfileMap[_profile.id];
-                if (profile) {
-                    for (var key in _profile) {
-                        profile[key] = _profile[key];
-                    }
-                } else {
-                    profiles.push(_profile);
-                    profileIdProfileMap[_profile.id] = _profile;
-                }
-                chrome.storage.local.set({
-                    profiles: profiles
-                }, function () {
-                    ee.trigger('reloadProfile');
-                });
             };
             pm.show();
         });

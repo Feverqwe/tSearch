@@ -158,7 +158,7 @@ define([
                                     profiles: _profiles
                                 }, function () {
                                     close();
-                                    self.onProfilesSave();
+                                    self.onSave();
                                 });
                             }]
                         })
@@ -290,8 +290,18 @@ define([
                                 });
                                 profile.name = profileName.value;
                                 profile.trackers = profileTrackers;
-                                close();
-                                self.onProfileSave(profile);
+
+                                if (profiles.indexOf(profile) === -1) {
+                                    profiles.push(profile);
+                                    profileIdProfileMap[profile.id] = profile;
+                                }
+
+                                chrome.storage.local.set({
+                                    profiles: profiles
+                                }, function () {
+                                    close();
+                                    self.onSave();
+                                });
                             }]
                         }),
                         dom.el('a', {
@@ -318,11 +328,7 @@ define([
 
         };
 
-        this.onProfilesSave = function () {
-
-        };
-
-        this.onProfileSave = function () {
+        this.onSave = function () {
 
         };
 
