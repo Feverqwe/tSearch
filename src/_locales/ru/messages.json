@@ -118,5 +118,8 @@
   },
   "newProfile": {
     "message": "Создать список"
+  },
+  "newTracker": {
+    "message": "Создать трекер"
   }
 }

@@ -309,6 +309,17 @@ define([
                                     self.onSave();
                                 });
                             }]
+                        }),
+                        dom.el('a', {
+                            href: '#newTracker',
+                            class: ['manager__footer__btn'],
+                            text: chrome.i18n.getMessage('newTracker'),
+                            on: ['click', function (e) {
+                                e.preventDefault();
+                                chrome.tabs.create({
+                                    url: 'editor.html'
+                                });
+                            }]
                         })
                     ])
                 ]
