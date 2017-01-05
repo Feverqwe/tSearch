@@ -325,6 +325,7 @@ define([
         };
 
         var close = function () {
+            document.removeEventListener('click', closeEvent, true);
             layer.node.parentNode.removeChild(layer.node);
         };
 
@@ -336,9 +337,16 @@ define([
 
         };
 
+        var closeEvent = function (e) {
+            if (!layer.node.contains(e.target)) {
+                close();
+            }
+        };
+
         this.show = function () {
             layer = createLayer();
             document.body.appendChild(layer.node);
+            document.addEventListener('click', closeEvent, true);
         };
     };
     ProfileManager.prototype.getProfileId = function (profileIdProfileMap) {
