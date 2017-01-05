@@ -130,14 +130,9 @@ define([
                                 layer.content.appendChild(getProfile(profile, trackers));
                             } else
                             if (target.dataset.action === 'remove') {
-                                profileId = target.parentNode.dataset.id;
-                                profile = profileIdProfileMap[profileId];
-                                delete profileIdProfileMap[profileId];
-                                var pos = profiles.indexOf(profile);
-                                if (pos !== -1) {
-                                    profiles.splice(pos, 1);
-                                }
-
+                                e.preventDefault();
+                                var profileNode = target.parentNode;
+                                profileNode.parentNode.removeChild(profileNode);
                             }
                         }]
                     }),
@@ -317,11 +312,6 @@ define([
                                     self.onSave();
                                 });
                             }]
-                        }),
-                        dom.el('a', {
-                            href: '#update',
-                            class: ['manager__footer__btn'],
-                            text: chrome.i18n.getMessage('update')
                         })
                     ])
                 ]
