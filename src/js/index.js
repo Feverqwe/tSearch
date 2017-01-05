@@ -21,7 +21,6 @@ require([
     document.body.classList.remove('loading');
 
     var ee = new EventEmitter();
-    var uiState = [];
 
     (function () {
         var searchInput = document.querySelector('.input__input-search');
@@ -29,12 +28,9 @@ require([
         var searchSubmit = document.querySelector('.search__submit');
 
         (function (input, submit) {
-            var stateItem = {
-                id: 'searchInput',
-                discard: function () {
-                    input.value = '';
-                    input.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
-                }
+            var discard = function () {
+                input.value = '';
+                input.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
             };
 
             input.addEventListener('keypress', function(e) {
@@ -44,8 +40,8 @@ require([
             });
 
             input.addEventListener('keyup', function(e) {
-                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
-                    uiState.push(stateItem);
+                if (e.detail !== 'stateReset') {
+                    ee.once('stateReset', discard);
                 }
             });
         })(searchInput, searchSubmit);
@@ -189,12 +185,7 @@ require([
         var main = document.querySelector('.menu__btn-main');
         main.addEventListener('click', function (e) {
             e.preventDefault();
-            uiState.splice(0).forEach(function (state) {
-                state.discard();
-            });
-            if (uiState.length > 0) {
-                console.error('State is not empty!', uiState);
-            }
+            ee.trigger('stateReset');
         });
     })();
 
@@ -304,12 +295,9 @@ require([
                 return (result[0] || result[1]) && result;
             };
 
-            var stateItem = {
-                id: 'wordFilter',
-                discard: function () {
-                    input.value = '';
-                    input.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
-                }
+            var discard = function () {
+                input.value = '';
+                input.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
             };
 
             var filter = {
@@ -330,20 +318,18 @@ require([
 
                 applyFilter();
 
-                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
-                    uiState.push(stateItem);
+                if (e.detail !== 'stateReset') {
+                    ee.once('stateReset', discard);
                 }
             });
         })(inputWordFilter, clearWordFilter);
 
         (function sizeFilter(inputFrom, inputTo) {
-            var stateItem = {
-                id: 'sizeFilter',
-                discard: function () {
-                    inputFrom.value = '';
-                    inputTo.value = '';
-                    inputTo.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
-                }
+            var discard = function () {
+                inputFrom.value = '';
+                inputTo.value = '';
+                inputFrom.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
+                inputTo.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
             };
 
             var filter = {
@@ -353,9 +339,9 @@ require([
             };
 
             inputFrom.addEventListener('keyup', function(e) {
-                filter.min = parseFloat(this.value) * 1024 * 1024 * 1024 || 0;
+                filter.min = parseFloat(this.value) * 1024 * 1024 * 1024;
 
-                if (filter.max && filter.min > filter.max) {
+                if (isNaN(filter.min) || filter.max && filter.min > filter.max) {
                     this.value = '';
                     filter.min = 0;
                 }
@@ -368,15 +354,15 @@ require([
 
                 applyFilter();
 
-                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
-                    uiState.push(stateItem);
+                if (e.detail !== 'stateReset') {
+                    ee.once('stateReset', discard);
                 }
             });
 
             inputTo.addEventListener('keyup', function(e) {
-                filter.max = parseFloat(this.value) * 1024 * 1024 * 1024 || 0;
+                filter.max = parseFloat(this.value) * 1024 * 1024 * 1024;
 
-                if (filter.min && filter.max < filter.min) {
+                if (isNaN(filter.max) || filter.min && filter.max < filter.min) {
                     this.value = '';
                     filter.max = 0;
                 }
@@ -389,8 +375,8 @@ require([
 
                 applyFilter();
 
-                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
-                    uiState.push(stateItem);
+                if (e.detail !== 'stateReset') {
+                    ee.once('stateReset', discard);
                 }
             });
 
@@ -398,12 +384,9 @@ require([
         })(sizeInputFromFilter, sizeInputToFilter);
 
         (function timeFilter(select, inputBox, inputFrom, inputTo) {
-            var stateItem = {
-                id: 'timeFilter',
-                discard: function () {
-                    select.selectedIndex = 0;
-                    select.dispatchEvent(new CustomEvent('change', {detail: 'stateReset'}));
-                }
+            var discard = function () {
+                select.selectedIndex = 0;
+                select.dispatchEvent(new CustomEvent('change', {detail: 'stateReset'}));
             };
 
             var filter = {
@@ -448,8 +431,8 @@ require([
 
                 applyFilter();
 
-                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
-                    uiState.push(stateItem);
+                if (e.detail !== 'stateReset') {
+                    ee.once('stateReset', discard);
                 }
             });
 
@@ -518,13 +501,11 @@ require([
         })(selectTimeFilter, inputBoxTimeFilter, timeInputFromFilter, timeInputToFilter);
 
         (function seedFilter(inputFrom, inputTo) {
-            var stateItem = {
-                id: 'seedFilter',
-                discard: function () {
-                    inputFrom.value = '';
-                    inputTo.value = '';
-                    inputTo.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
-                }
+            var discard = function () {
+                inputFrom.value = '';
+                inputTo.value = '';
+                inputFrom.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
+                inputTo.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
             };
 
             var filter = {
@@ -534,9 +515,9 @@ require([
             };
 
             inputFrom.addEventListener('keyup', function(e) {
-                filter.min = parseInt(this.value) || 0;
+                filter.min = parseInt(this.value);
 
-                if (filter.max && filter.min > filter.max) {
+                if (isNaN(filter.min) || filter.max && filter.min > filter.max) {
                     this.value = '';
                     filter.min = 0;
                 }
@@ -549,15 +530,15 @@ require([
 
                 applyFilter();
 
-                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
-                    uiState.push(stateItem);
+                if (e.detail !== 'stateReset') {
+                    ee.once('stateReset', discard);
                 }
             });
 
             inputTo.addEventListener('keyup', function(e) {
-                filter.max = parseInt(this.value) || 0;
+                filter.max = parseInt(this.value);
 
-                if (filter.min && filter.max < filter.min) {
+                if (isNaN(filter.max) || filter.min && filter.max < filter.min) {
                     this.value = '';
                     filter.max = 0;
                 }
@@ -570,8 +551,8 @@ require([
 
                 applyFilter();
 
-                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
-                    uiState.push(stateItem);
+                if (e.detail !== 'stateReset') {
+                    ee.once('stateReset', discard);
                 }
             });
 
@@ -579,13 +560,11 @@ require([
         })(seedInputFromFilter, seedInputToFilter);
 
         (function peerFilter(inputFrom, inputTo) {
-            var stateItem = {
-                id: 'peerFilter',
-                discard: function () {
-                    inputFrom.value = '';
-                    inputTo.value = '';
-                    inputTo.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
-                }
+            var discard = function () {
+                inputFrom.value = '';
+                inputTo.value = '';
+                inputFrom.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
+                inputTo.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
             };
 
             var filter = {
@@ -595,9 +574,9 @@ require([
             };
 
             inputFrom.addEventListener('keyup', function(e) {
-                filter.min = parseInt(this.value) || 0;
+                filter.min = parseInt(this.value);
 
-                if (filter.max && filter.min > filter.max) {
+                if (isNaN(filter.min) || filter.max && filter.min > filter.max) {
                     this.value = '';
                     filter.min = 0;
                 }
@@ -610,15 +589,15 @@ require([
 
                 applyFilter();
 
-                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
-                    uiState.push(stateItem);
+                if (e.detail !== 'stateReset') {
+                    ee.once('stateReset', discard);
                 }
             });
 
             inputTo.addEventListener('keyup', function(e) {
-                filter.max = parseInt(this.value) || 0;
+                filter.max = parseInt(this.value);
 
-                if (filter.min && filter.max < filter.min) {
+                if (isNaN(filter.max) || filter.min && filter.max < filter.min) {
                     this.value = '';
                     filter.max = 0;
                 }
@@ -631,8 +610,8 @@ require([
 
                 applyFilter();
 
-                if (e.detail !== 'stateReset' && uiState.indexOf(stateItem) === -1) {
-                    uiState.push(stateItem);
+                if (e.detail !== 'stateReset') {
+                    ee.once('stateReset', discard);
                 }
             });
 
