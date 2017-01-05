@@ -250,7 +250,7 @@ define([
             for (var key in moreEvents) {
                 delete moreEvents[key];
             }
-            trackers.splice(0).forEach(function (tracker) {
+            wrappedTrackers.splice(0).forEach(function (tracker) {
                 tracker.worker && tracker.worker.destroy();
             });
             for (var key in trackerIdTracker) {
