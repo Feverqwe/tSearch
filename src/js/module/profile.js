@@ -4,12 +4,16 @@
 "use strict";
 define([
     './dom',
-    './tracker'
-], function (dom, Tracker) {
-    var Profile = function (profile, trackers, resultFilter, trackerList) {
+    './tracker',
+    './table'
+], function (dom, Tracker, Table) {
+    var tableParent = document.querySelector('.results');
+
+    var Profile = function (profile, trackers, resultFilter, trackerList, ee) {
         var self = this;
         var trackerIdTracker = {};
         var wrappedTrackers = [];
+        var tables = [];
         var load = function () {
             var trackerSelect = function (state) {
                 if (state === undefined) {
@@ -102,15 +106,79 @@ define([
             trackerList.textContent = '';
             trackerList.appendChild(trackersNode);
         };
-        load();
+
+        var updateCounter = function () {
+            var counter = {};
+            var tableCounter, trackerId;
+            for (var i = 0, table; table = tables[i]; i++) {
+                tableCounter = table.counter;
+                for (trackerId in tableCounter) {
+                    if (!counter[trackerId]) {
+                        counter[trackerId] = 0;
+                    }
+                    counter[trackerId] += tableCounter[trackerId];
+                }
+            }
+            for (var trackerId in counter) {
+                trackerIdTracker[trackerId].count(counter[trackerId]);
+            }
+        };
+
+        var onSearch = function (query) {
+            tables.forEach(function (table) {
+                table.destroy();
+            });
+
+            var table = new Table(resultFilter);
+            tables.push(table);
+            tableParent.appendChild(table.node);
+
+            wrappedTrackers.forEach(function (tracker) {
+                tracker.worker && tracker.worker.search(query, function (response) {
+                    if (!response) {
+                        throw new Error('Tracker response is empty!');
+                    }
+
+                    if (response.success) {
+                        table.insertResults(tracker, query, response.results);
+                        updateCounter();
+                    }
+                });
+            });
+        };
+
+        var onFilterChange = function () {
+            tables.forEach(function (table) {
+                table.applyFilter();
+            });
+            updateCounter();
+        };
+
+        var onSelectTracker = function (id) {
+            trackerIdTracker[id].select();
+        };
+
+        var onReload = function () {
+            self.reload();
+        };
+
+        ee.on('reloadProfile', onReload);
+        ee.on('selectTracker', onSelectTracker);
+        ee.on('filterChange', onFilterChange);
+        ee.on('search', onSearch);
+
+        this.id = profile.id;
+        this.trackers = wrappedTrackers;
+        this.trackerIdTracker = trackerIdTracker;
         this.reload = function () {
             self.destroy();
             load();
         };
-        this.id = profile.id;
-        this.trackers = wrappedTrackers;
-        this.trackerIdTracker = trackerIdTracker;
         this.destroy = function () {
+            ee.off('reloadProfile', onReload);
+            ee.off('selectTracker', onSelectTracker);
+            ee.off('filterChange', onFilterChange);
+            ee.off('search', onSearch);
             trackers.splice(0).forEach(function (tracker) {
                 tracker.worker && tracker.worker.destroy();
             });
@@ -118,6 +186,7 @@ define([
                 delete trackerIdTracker[key];
             }
         };
+        load();
     };
     return Profile;
 });

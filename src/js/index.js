@@ -14,18 +14,13 @@ require([
     './lib/EventEmitter.min',
     './module/profileManager',
     './module/profile',
-    './module/table',
     './module/filter'
-], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Profile, Table, Filter) {
+], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Profile, Filter) {
     i18nDom();
 
     document.body.classList.remove('loading');
 
     var ee = new EventEmitter();
-    var global = {
-        activeProfile: null
-    };
-    var searchResults = [];
     var uiState = [];
 
     (function () {
@@ -226,48 +221,6 @@ require([
             }
         });
     })();
-
-    (function () {
-        ee.on('search', function (query) {
-            searchResults.forEach(function (table) {
-                table.destroy();
-            });
-
-            var table = new Table(ee, resultFilter);
-            searchResults.push(table);
-
-            var results = document.querySelector('.results');
-            results.textContent = '';
-            results.appendChild(table.node);
-
-            global.activeProfile.trackers.forEach(function (tracker) {
-                tracker.worker && tracker.worker.search(query, function (response) {
-                    if (!response) {
-                        throw new Error('Tracker response is empty!');
-                    }
-
-                    if (response.success) {
-                        table.insertResults(tracker, query, response.results);
-                    }
-                });
-            });
-        });
-    })();
-
-    var updateCounter = function () {
-        var counter = {};
-        searchResults.forEach(function (table) {
-            for (var trackerId in table.counter) {
-                if (!counter[trackerId]) {
-                    counter[trackerId] = 0;
-                }
-                counter[trackerId] += table.counter[trackerId];
-            }
-        });
-        for (var trackerId in counter) {
-            global.activeProfile.trackerIdTracker[trackerId].count(counter[trackerId]);
-        }
-    };
 
     var resultFilter = new Filter(ee);
 
@@ -696,10 +649,11 @@ require([
         trackerList.addEventListener('click', function (e) {
             var child = dom.closestNode(this, e.target);
             if (child) {
-                global.activeProfile.trackerIdTracker[child.dataset.id].select();
+                ee.trigger('selectTracker', [child.dataset.id]);
             }
         });
 
+        var activeProfile = null;
         var currentProfileId = null;
         var trackers = {};
         var profiles = [];
@@ -765,7 +719,7 @@ require([
             e.preventDefault();
             var pm = new ProfileManager(profiles, profileIdProfileMap, trackers);
             pm.onProfileSave = function () {
-                global.activeProfile.reload();
+                ee.trigger('reloadProfile');
             };
             pm.show();
         });
@@ -803,10 +757,10 @@ require([
             profileSelectWrapper.update();
             profileSelectWrapper.select();
 
-            if (global.activeProfile) {
-                global.activeProfile.destroy();
+            if (activeProfile) {
+                activeProfile.destroy();
             }
-            global.activeProfile = new Profile(profileIdProfileMap[currentProfileId], trackers, resultFilter, trackerList);
+            activeProfile = new Profile(profileIdProfileMap[currentProfileId], trackers, resultFilter, trackerList, ee);
 
             /*ee.on('search', function (query) {
                 activeProfile.trackers.forEach(function (tracker) {
