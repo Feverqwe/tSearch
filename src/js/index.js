@@ -761,20 +761,6 @@ require([
                 activeProfile.destroy();
             }
             activeProfile = new Profile(profileIdProfileMap[currentProfileId], trackers, resultFilter, trackerList, ee);
-
-            /*ee.on('search', function (query) {
-                activeProfile.trackers.forEach(function (tracker) {
-                    tracker.search(query, function (result) {
-                        ee.trigger('results', [tracker.id, query, result]);
-                    });
-                });
-            });
-
-            ee.on('abort', function () {
-                activeProfile.trackers.forEach(function (tracker) {
-                    tracker.abort();
-                });
-            });*/
         });
     })();
 });

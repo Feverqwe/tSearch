@@ -170,7 +170,7 @@ define([
         }
     };
 
-    var Table = function (filter) {
+    var Table = function (resultFilter) {
         var cells = ['date', 'title', 'size', 'seed', 'peer'];
         var sortCells = [];
 
@@ -494,7 +494,7 @@ define([
                  * @property {boolean} filterValue
                  */
                 normalizeTorrent(tracker.id, torrent);
-                var filterValue = filter.getFilterValue(torrent);
+                var filterValue = resultFilter.getFilterValue(torrent);
                 var node = getBodyRow(torrent, filterValue, tableRows.length);
                 tableRows.push({
                     node: node,
@@ -518,7 +518,7 @@ define([
             }
 
             for (var i = 0, /**tableRow*/row; row = tableRows[i]; i++) {
-                filterValue = filter.getFilterValue(row.torrent);
+                filterValue = resultFilter.getFilterValue(row.torrent);
                 trackerId = row.torrent.trackerId;
                 row.filterValue = filterValue;
                 row.node.dataset.filter = filterValue;
