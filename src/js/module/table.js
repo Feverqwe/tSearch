@@ -170,7 +170,7 @@ define([
         }
     };
 
-    var Table = function (filter) {
+    var Table = function (ee, filter) {
         var cells = ['date', 'title', 'size', 'seed', 'peer'];
         var sortCells = [];
 
@@ -511,7 +511,7 @@ define([
             insertSortedRows();
         };
 
-        this.updateFilter = function () {
+        var onFilterChange = function () {
             var trackerId, filterValue;
             for (trackerId in trackerIdCount){
                 trackerIdCount[trackerId] = 0;
@@ -527,8 +527,10 @@ define([
                 }
             }
         };
+        ee.on('filterChange', onFilterChange);
 
         this.destroy = function () {
+            ee.off('filterChange', onFilterChange);
             var parent = tableNode.parentNode;
             if (parent) {
                 parent.removeChild(tableNode);

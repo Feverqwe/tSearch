@@ -75,7 +75,7 @@ define([
         }
     };
 
-   var Filter = function (searchResults, updateCounter) {
+   var Filter = function (ee) {
        var self = this;
        var styleNode = dom.el('style', {
            class: ['style_filter'],
@@ -146,11 +146,7 @@ define([
            if (stringFilters !== activeFilters) {
                activeFilters = stringFilters;
 
-               searchResults.forEach(function (table) {
-                   table.updateFilter();
-               });
-
-               updateCounter();
+               ee.trigger('filterChange');
 
                var style = [];
 

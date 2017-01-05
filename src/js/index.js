@@ -233,7 +233,7 @@ require([
                 table.destroy();
             });
 
-            var table = new Table(resultFilter);
+            var table = new Table(ee, resultFilter);
             searchResults.push(table);
 
             var results = document.querySelector('.results');
@@ -248,7 +248,6 @@ require([
 
                     if (response.success) {
                         table.insertResults(tracker, query, response.results);
-                        updateCounter();
                     }
                 });
             });
@@ -270,7 +269,7 @@ require([
         }
     };
 
-    var resultFilter = new Filter(searchResults, updateCounter);
+    var resultFilter = new Filter(ee);
 
     (function (resultFilter) {
         var inputBoxTimeFilterVisible = false;
