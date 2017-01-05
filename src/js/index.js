@@ -14,14 +14,17 @@ require([
     './lib/EventEmitter.min',
     './module/profileManager',
     './module/profile',
-    './module/table'
-], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Profile, Table) {
+    './module/table',
+    './module/filter'
+], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Profile, Table, Filter) {
     i18nDom();
 
     document.body.classList.remove('loading');
 
     var ee = new EventEmitter();
-    var activeProfile = null;
+    var global = {
+        activeProfile: null
+    };
     var searchResults = [];
     var uiState = [];
 
@@ -224,7 +227,24 @@ require([
         });
     })();
 
-    var Filter = function () {
+    var updateCounter = function () {
+        var counter = {};
+        searchResults.forEach(function (table) {
+            for (var trackerId in table.counter) {
+                if (!counter[trackerId]) {
+                    counter[trackerId] = 0;
+                }
+                counter[trackerId] += table.counter[trackerId];
+            }
+        });
+        for (var trackerId in counter) {
+            global.activeProfile.trackerIdTracker[trackerId].count(counter[trackerId]);
+        }
+    };
+
+    var resultFilter = new Filter(searchResults, updateCounter);
+
+    (function (resultFilter) {
         var inputBoxTimeFilterVisible = false;
         var inputBoxTimeFilter = document.querySelector('.input_box-time-filter');
         var inputWordFilter = document.querySelector('.input__input-word-filter');
@@ -243,11 +263,9 @@ require([
         var applyFilter = function () {
             clearTimeout(timer);
             timer = setTimeout(function () {
-                filter.update();
+                resultFilter.update();
             }, 150);
         };
-
-        var filters = [];
 
         (function wordFilter(input, clearWordFilter) {
             var strToRe = function (string) {
@@ -324,13 +342,10 @@ require([
             input.addEventListener('keyup', function(e) {
                 filter.re = strToRe(this.value);
 
-                var pos = filters.indexOf(filter);
-                if (pos !== -1) {
-                    filters.splice(pos, 1);
-                }
-
                 if (filter.re) {
-                    filters.push(filter);
+                    resultFilter.add(filter);
+                } else {
+                    resultFilter.remove(filter);
                 }
 
                 applyFilter();
@@ -360,18 +375,15 @@ require([
             inputFrom.addEventListener('keyup', function(e) {
                 filter.min = parseFloat(this.value) * 1024 * 1024 * 1024 || 0;
 
-                var pos = filters.indexOf(filter);
-                if (pos !== -1) {
-                    filters.splice(pos, 1);
-                }
-
                 if (filter.max && filter.min > filter.max) {
                     this.value = '';
                     filter.min = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
-                    filters.push(filter);
+                    resultFilter.add(filter);
+                } else {
+                    resultFilter.remove(filter);
                 }
 
                 applyFilter();
@@ -384,18 +396,15 @@ require([
             inputTo.addEventListener('keyup', function(e) {
                 filter.max = parseFloat(this.value) * 1024 * 1024 * 1024 || 0;
 
-                var pos = filters.indexOf(filter);
-                if (pos !== -1) {
-                    filters.splice(pos, 1);
-                }
-
                 if (filter.min && filter.max < filter.min) {
                     this.value = '';
                     filter.max = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
-                    filters.push(filter);
+                    resultFilter.add(filter);
+                } else {
+                    resultFilter.remove(filter);
                 }
 
                 applyFilter();
@@ -441,11 +450,6 @@ require([
                     }
                 }
 
-                var pos = filters.indexOf(filter);
-                if (pos !== -1) {
-                    filters.splice(pos, 1);
-                }
-
                 if (!inputBoxTimeFilterVisible) {
                     filter.max = 0;
                     filter.min = parseInt(this.value) || 0;
@@ -454,8 +458,12 @@ require([
                     }
 
                     if (filter.min > 0) {
-                        filters.push(filter);
+                        resultFilter.add(filter);
+                    } else {
+                        resultFilter.remove(filter);
                     }
+                } else {
+                    resultFilter.remove(filter);
                 }
 
                 applyFilter();
@@ -468,18 +476,15 @@ require([
             inputFrom.addEventListener('keyup', function(e) {
                 filter.min = parseInt(this.value && this.dataset.time) || 0;
 
-                var pos = filters.indexOf(filter);
-                if (pos !== -1) {
-                    filters.splice(pos, 1);
-                }
-
                 if (filter.max && filter.min > filter.max) {
                     this.value = '';
                     filter.min = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
-                    filters.push(filter);
+                    resultFilter.add(filter);
+                } else {
+                    resultFilter.remove(filter);
                 }
 
                 applyFilter();
@@ -488,18 +493,15 @@ require([
             inputTo.addEventListener('keyup', function(e) {
                 filter.max = parseInt(this.value && this.dataset.time) || 0;
 
-                var pos = filters.indexOf(filter);
-                if (pos !== -1) {
-                    filters.splice(pos, 1);
-                }
-
                 if (filter.min && filter.max < filter.min) {
                     this.value = '';
                     filter.max = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
-                    filters.push(filter);
+                    resultFilter.add(filter);
+                } else {
+                    resultFilter.remove(filter);
                 }
 
                 applyFilter();
@@ -552,18 +554,15 @@ require([
             inputFrom.addEventListener('keyup', function(e) {
                 filter.min = parseInt(this.value) || 0;
 
-                var pos = filters.indexOf(filter);
-                if (pos !== -1) {
-                    filters.splice(pos, 1);
-                }
-
                 if (filter.max && filter.min > filter.max) {
                     this.value = '';
                     filter.min = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
-                    filters.push(filter);
+                    resultFilter.add(filter);
+                } else {
+                    resultFilter.remove(filter);
                 }
 
                 applyFilter();
@@ -576,18 +575,15 @@ require([
             inputTo.addEventListener('keyup', function(e) {
                 filter.max = parseInt(this.value) || 0;
 
-                var pos = filters.indexOf(filter);
-                if (pos !== -1) {
-                    filters.splice(pos, 1);
-                }
-
                 if (filter.min && filter.max < filter.min) {
                     this.value = '';
                     filter.max = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
-                    filters.push(filter);
+                    resultFilter.add(filter);
+                } else {
+                    resultFilter.remove(filter);
                 }
 
                 applyFilter();
@@ -619,18 +615,15 @@ require([
             inputFrom.addEventListener('keyup', function(e) {
                 filter.min = parseInt(this.value) || 0;
 
-                var pos = filters.indexOf(filter);
-                if (pos !== -1) {
-                    filters.splice(pos, 1);
-                }
-
                 if (filter.max && filter.min > filter.max) {
                     this.value = '';
                     filter.min = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
-                    filters.push(filter);
+                    resultFilter.add(filter);
+                } else {
+                    resultFilter.remove(filter);
                 }
 
                 applyFilter();
@@ -643,18 +636,15 @@ require([
             inputTo.addEventListener('keyup', function(e) {
                 filter.max = parseInt(this.value) || 0;
 
-                var pos = filters.indexOf(filter);
-                if (pos !== -1) {
-                    filters.splice(pos, 1);
-                }
-
                 if (filter.min && filter.max < filter.min) {
                     this.value = '';
                     filter.max = 0;
                 }
 
                 if (filter.min > 0 || filter.max > 0) {
-                    filters.push(filter);
+                    resultFilter.add(filter);
+                } else {
+                    resultFilter.remove(filter);
                 }
 
                 applyFilter();
@@ -666,91 +656,7 @@ require([
 
             utils.bindDblClickClear([inputFrom, inputTo]);
         })(peerInputFromFilter, peerInputToFilter);
-
-        var unique = function (value, index, self) {
-            return self.indexOf(value) === index;
-        };
-
-        var filterTypeMap = {
-            word: function (filter, torrent) {
-                var result = true;
-                if (filter.re[0]) {
-                    result = !filter.re[0].test(torrent.wordFilterLow);
-                }
-                if (result && filter.re[1]) {
-                    var m = torrent.wordFilterLow.match(filter.re[1]);
-                    result = m && m.filter(unique).length === filter.re[2];
-                }
-                return result;
-            },
-            size: function (filter, torrent) {
-                var result = filter.min === 0 ? true : torrent.size >= filter.min;
-                if (result && filter.max) {
-                    result = torrent.size <= filter.max;
-                }
-                return result;
-            },
-            date: function (filter, torrent) {
-                var result = filter.min === 0 ? true : torrent.date >= filter.min;
-                if (result && filter.max) {
-                    result = torrent.date <= filter.max;
-                }
-                return result;
-            },
-            seed: function (filter, torrent) {
-                var result = filter.min === 0 ? true : torrent.seed >= filter.min;
-                if (result && filter.max) {
-                    result = torrent.seed <= filter.max;
-                }
-                return result;
-            },
-            peer: function (filter, torrent) {
-                var result = filter.min === 0 ? true : torrent.peer >= filter.min;
-                if (result && filter.max) {
-                    result = torrent.peer <= filter.max;
-                }
-                return result;
-            }
-        };
-
-        var styleNode = dom.el('style', {
-            class: ['style_filter'],
-            text: ''
-        });
-        document.body.appendChild(styleNode);
-
-        var tableRowSelector = '.table-results .body__row';
-
-        this.update = function () {
-            searchResults.forEach(function (table) {
-                table.updateFilter();
-            });
-
-            updateCounter();
-
-            var style = [];
-            var trackerIds = activeProfile.selectedTrackerIds;
-
-            if (filters.length || trackerIds.length) {
-                style.push(tableRowSelector + ':not([data-filter="true"]){display: none}');
-            }
-
-            styleNode.textContent = style.join('');
-        };
-
-        this.getFilterValue = function (/**torrent*/torrent) {
-            var trackerIds = activeProfile.selectedTrackerIds;
-            var selected = true;
-            if (trackerIds.length) {
-                selected = trackerIds.indexOf(torrent.trackerId) !== -1;
-            }
-            return selected && filters.every(function (filter) {
-                return filterTypeMap[filter.type](filter, torrent);
-            });
-        }
-    };
-
-    var filter = new Filter();
+    })(resultFilter);
 
     (function () {
         var manageProfile = document.querySelector('.button-manage-profile');
@@ -761,7 +667,7 @@ require([
         trackerList.addEventListener('click', function (e) {
             var child = dom.closestNode(this, e.target);
             if (child) {
-                activeProfile.trackerIdTracker[child.dataset.id].select();
+                global.activeProfile.trackerIdTracker[child.dataset.id].select();
             }
         });
 
@@ -830,7 +736,7 @@ require([
 
         manageProfile.addEventListener('click', function (e) {
             e.preventDefault();
-            new ProfileManager(profiles, profileIdProfileMap, trackers, activeProfile);
+            new ProfileManager(profiles, profileIdProfileMap, trackers, global);
         });
 
         profileSelectWrapper = new selectBox(profileSelect, {
@@ -866,10 +772,10 @@ require([
             profileSelectWrapper.update();
             profileSelectWrapper.select();
 
-            if (activeProfile) {
-                activeProfile.destroy();
+            if (global.activeProfile) {
+                global.activeProfile.destroy();
             }
-            activeProfile = new Profile(profileIdProfileMap[currentProfileId], trackers, filter, trackerList);
+            global.activeProfile = new Profile(profileIdProfileMap[currentProfileId], trackers, resultFilter, trackerList);
 
             /*ee.on('search', function (query) {
                 activeProfile.trackers.forEach(function (tracker) {
@@ -893,14 +799,14 @@ require([
                 table.destroy();
             });
 
-            var table = new Table(filter);
+            var table = new Table(resultFilter);
             searchResults.push(table);
 
             var results = document.querySelector('.results');
             results.textContent = '';
             results.appendChild(table.node);
 
-            activeProfile.trackers.forEach(function (tracker) {
+            global.activeProfile.trackers.forEach(function (tracker) {
                 tracker.worker && tracker.worker.search(query, function (response) {
                     if (!response) {
                         throw new Error('Tracker response is empty!');
@@ -914,19 +820,4 @@ require([
             });
         });
     })();
-
-    var updateCounter = function () {
-        var counter = {};
-        searchResults.forEach(function (table) {
-            for (var trackerId in table.counter) {
-                if (!counter[trackerId]) {
-                    counter[trackerId] = 0;
-                }
-                counter[trackerId] += table.counter[trackerId];
-            }
-        });
-        for (var trackerId in counter) {
-            activeProfile.trackerIdTracker[trackerId].count(counter[trackerId]);
-        }
-    };
 });

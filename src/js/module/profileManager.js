@@ -6,7 +6,7 @@ define([
     './utils',
     './dom'
 ], function (utils, dom) {
-    var ProfileManager = function (profiles, profileIdProfileMap, trackers, activeProfile) {
+    var ProfileManager = function (profiles, profileIdProfileMap, trackers, global) {
         var layer = null;
 
         var getHeader = function (title) {
@@ -242,7 +242,7 @@ define([
                                 chrome.storage.local.set({
                                     profiles: profiles
                                 }, function () {
-                                    activeProfile.reload();
+                                    global.activeProfile.reload();
                                 });
                             }]
                         }),

@@ -6,11 +6,10 @@ define([
     './dom',
     './tracker'
 ], function (dom, Tracker) {
-    var Profile = function (profile, trackers, filter, trackerList) {
+    var Profile = function (profile, trackers, resultFilter, trackerList) {
         var self = this;
         var trackerIdTracker = {};
         var wrappedTrackers = [];
-        var selectedTrackerIds = [];
         var load = function () {
             var trackerSelect = function (state) {
                 if (state === undefined) {
@@ -20,18 +19,15 @@ define([
                 }
                 if (this.selected !== state) {
                     this.selected = state;
-                    var pos = selectedTrackerIds.indexOf(this.id);
-                    if (pos !== -1) {
-                        selectedTrackerIds.splice(pos, 1);
-                    }
                     if (state) {
                         this.node.classList.add('tracker-selected');
-                        selectedTrackerIds.push(this.id);
+                        resultFilter.addTracker(this.id);
                     } else {
                         this.node.classList.remove('tracker-selected');
+                        resultFilter.removeTracker(this.id);
                     }
 
-                    filter.update();
+                    resultFilter.update();
                 }
             };
             var trackerCount = function (count) {
@@ -114,7 +110,6 @@ define([
         this.id = profile.id;
         this.trackers = wrappedTrackers;
         this.trackerIdTracker = trackerIdTracker;
-        this.selectedTrackerIds = selectedTrackerIds;
         this.destroy = function () {
             trackers.splice(0).forEach(function (tracker) {
                 tracker.worker && tracker.worker.destroy();
