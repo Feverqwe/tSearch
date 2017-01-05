@@ -263,7 +263,6 @@ require([
                 var includeList = [];
                 var excludeList = [];
                 var excludeRe = /^[!-]\w+/;
-                var sanitizeText = /[\-\[\]{}()*+?.,\\\^$|#\s]/g;
                 for (i = 0; part = parts[i]; i++) {
                     if (excludeRe.test(part)) {
                         list = excludeList;
@@ -271,7 +270,7 @@ require([
                     } else {
                         list = includeList;
                     }
-                    part = part.replace(sanitizeText, '\\$&');
+                    part = utils.sanitizeTextRe(part);
                     if (list.indexOf(part) === -1) {
                         list.push(part);
                     }

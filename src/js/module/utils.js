@@ -271,5 +271,9 @@ define(function () {
             });
         });
     };
+    var sanitizeText = /[\-\[\]{}()*+?.,\\\^$|#\s]/g;
+    utils.sanitizeTextRe = function (text) {
+        return text.replace(sanitizeText, '\\$&');
+    };
     return utils;
 });

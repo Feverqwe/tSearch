@@ -5,8 +5,9 @@
 define([
     './dom',
     '../lib/filesize.min',
-    '../lib/moment-with-locales.min'
-], function (dom, filesize, moment) {
+    '../lib/moment-with-locales.min',
+    './highlight'
+], function (dom, filesize, moment, highlight) {
     moment.locale(chrome.i18n.getUILanguage());
 
     var unixTimeToString = function (unixtime) {
@@ -339,7 +340,7 @@ define([
          * @property {string} categoryTitleLow
          * @property {string} wordFilterLow
          */
-        var getBodyRow = function (/**torrent*/torrent, filterValue, index) {
+        var getBodyRow = function (/**torrent*/torrent, filterValue, index, highlightMap) {
             var row = dom.el('div', {
                 class: ['row', 'body__row'],
                 data: {
@@ -384,7 +385,7 @@ define([
                                         },
                                         target: '_blank',
                                         href: torrent.url,
-                                        text: torrent.title
+                                        append: highlight.insert(torrent.title, highlightMap)
                                     })
                                 ]
                             }),
@@ -491,6 +492,8 @@ define([
                 trackerIdCount[tracker.id] = 0;
             }
 
+            var highlightMap = highlight.getMap(query);
+
             results.forEach(function (torrent) {
                 /**
                  * @typedef {Object} tableRow
@@ -502,7 +505,7 @@ define([
                  */
                 normalizeTorrent(tracker.id, torrent);
                 var filterValue = resultFilter.getFilterValue(torrent);
-                var node = getBodyRow(torrent, filterValue, tableRows.length);
+                var node = getBodyRow(torrent, filterValue, tableRows.length, highlightMap);
                 tableRows.push({
                     node: node,
                     query: query,

@@ -669,6 +669,10 @@ a.simple_select__menu__item {
     border-bottom-color: #609;
 }
 
+.table-results .body__row .cell-title .cell__title a span {
+    color: #000;
+}
+
 .table-results .body__row .cell-title .cell__category {
     margin-top: 3px;
 }
