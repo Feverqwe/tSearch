@@ -107,6 +107,12 @@ define([
             trackerList.appendChild(trackersNode);
         };
 
+        var destroyTables = function () {
+            tables.forEach(function (table) {
+                table.destroy();
+            });
+        };
+
         var updateCounter = function () {
             var counter = {};
             var tableCounter, trackerId;
@@ -125,9 +131,7 @@ define([
         };
 
         var onSearch = function (query) {
-            tables.forEach(function (table) {
-                table.destroy();
-            });
+            destroyTables();
 
             var table = new Table(resultFilter);
             tables.push(table);
@@ -175,6 +179,7 @@ define([
             load();
         };
         this.destroy = function () {
+            destroyTables();
             ee.off('reloadProfile', onReload);
             ee.off('selectTracker', onSelectTracker);
             ee.off('filterChange', onFilterChange);
