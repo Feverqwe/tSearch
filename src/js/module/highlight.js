@@ -47,7 +47,7 @@ define([
             wordsRe.sort(function(a, b){
                 return a.length > b.length ? -1 : 1;
             });
-            return new RegExp(wordsRe.join('|'), 'ig');
+            return wordsRe.length && new RegExp(wordsRe.join('|'), 'ig');
         },
         getHlMap: function (string, map, posMap) {
             var wordLen;
@@ -71,7 +71,7 @@ define([
         },
         insert: function (/**String*/str, map) {
             var posMap = [];
-            this.getHlMap(str, map, posMap);
+            map && this.getHlMap(str, map, posMap);
             this.getBracketsMap(str, posMap);
             posMap.sort(function (a, b) {
                 return a[1] === b[1] ? 0 : a[1] < b[1] ? -1 : 1;
