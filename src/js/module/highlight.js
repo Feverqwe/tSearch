@@ -77,7 +77,7 @@ define([
                 return a[1] === b[1] ? 0 : a[1] < b[1] ? -1 : 1;
             });
 
-            var fragment, root, level = 0, lastPos = 0;
+            var fragment, root, lastPos = 0;
             fragment = root = document.createDocumentFragment();
             var item, tagName, pos, isClose, fragmentLen;
             for (var i = 0, len = posMap.length; i < len; i++) {
