@@ -683,6 +683,9 @@ require([
             var trackerList = document.querySelector('.tracker__list');
             var profileSelectWrapper = null;
 
+            trackerList.parentNode.style.height = storage.trackerListHeight + 'px';
+            trackerList.style.height = storage.trackerListHeight  + 'px';
+
             manageProfile.addEventListener('click', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
@@ -746,31 +749,26 @@ require([
 
             profileController.load();
 
-            (function (trackerList) {
-                var initResizable = function () {
-                    $(trackerList.parentNode).resizable({
-                        minHeight: 56,
-                        handles: 's',
-                        alsoResize: trackerList,
-                        stop: function(e, ui) {
-                            chrome.storage.local.set({
-                                trackerListHeight: ui.size.height
-                            });
-                        }
-                    });
-                };
-
-                trackerList.parentNode.style.height = storage.trackerListHeight + 'px';
-                trackerList.style.height = storage.trackerListHeight  + 'px';
-
-                setTimeout(function () {
-                    require(['./lib/jquery-3.1.1.min'], function () {
-                        require(['./lib/jquery-ui.min'], function () {
-                            initResizable();
+            var initResizable = function () {
+                $(trackerList.parentNode).resizable({
+                    minHeight: 56,
+                    handles: 's',
+                    alsoResize: trackerList,
+                    stop: function(e, ui) {
+                        chrome.storage.local.set({
+                            trackerListHeight: ui.size.height
                         });
+                    }
+                });
+            };
+
+            setTimeout(function () {
+                require(['./lib/jquery-3.1.1.min'], function () {
+                    require(['./lib/jquery-ui.min'], function () {
+                        initResizable();
                     });
-                }, 50);
-            })(trackerList);
+                });
+            }, 50);
         })(profileController);
     });
 });
