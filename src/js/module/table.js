@@ -171,9 +171,9 @@ define([
         }
     };
 
-    var Table = function (resultFilter) {
+    var Table = function (resultFilter, storage) {
         var cells = ['date', 'title', 'size', 'seed', 'peer'];
-        var sortCells = [];
+        var sortCells = storage.sortCells;
 
         var getHeadRow = function () {
             var wrappedCells = {};
@@ -253,6 +253,10 @@ define([
                     sort: sort
                 };
                 nodes.appendChild(node);
+            });
+
+            sortCells.forEach(function (row) {
+                wrappedCells[row[0]].sort(row[1]);
             });
 
             return {
@@ -459,16 +463,6 @@ define([
             ]
         });
         this.node = tableNode;
-
-        chrome.storage.local.get({
-            sortCells: []
-        }, function (storage) {
-            sortCells.splice(0);
-            sortCells.push.apply(sortCells, storage.sortCells);
-            sortCells.forEach(function (row) {
-                head.cellTypeCell[row[0]].sort(row[1]);
-            });
-        });
 
         var tableRows = [];
         var tableSortedRows = [];

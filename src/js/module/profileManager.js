@@ -139,14 +139,26 @@ define([
                             text: chrome.i18n.getMessage('save'),
                             on: ['click', function (e) {
                                 e.preventDefault();
-                                var _profiles = [];
+                                var profileIds = [];
                                 [].slice.call(profilesNode.childNodes).forEach(function (profileNode) {
                                     var id = profileNode.dataset.id;
-                                    var profile = profileIdProfileMap[id];
-                                    _profiles.push(profile);
+                                    profileIds.push(id);
                                 });
+
+                                Object.keys(profileIdProfileMap).forEach(function (id) {
+                                    var profile = profileIdProfileMap[id];
+                                    if (profileIds.indexOf(id) === -1) {
+                                        delete profileIdProfileMap[id];
+
+                                        var pos = profiles.indexOf(profile);
+                                        if (pos !== -1) {
+                                            profiles.splice(pos, 1);
+                                        }
+                                    }
+                                });
+
                                 chrome.storage.local.set({
-                                    profiles: _profiles
+                                    profiles: profiles
                                 }, function () {
                                     close();
                                     self.onSave();

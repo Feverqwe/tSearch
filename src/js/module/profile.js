@@ -9,8 +9,9 @@ define([
 ], function (dom, Tracker, Table) {
     var tableParent = document.querySelector('.results');
 
-    var Profile = function (profile, trackers, resultFilter, trackerList, ee) {
+    var Profile = function (profile, resultFilter, trackerList, ee, storage) {
         var self = this;
+        var trackers = storage.trackers;
         var trackerIdTracker = {};
         var wrappedTrackers = [];
         var tables = [];
@@ -56,6 +57,26 @@ define([
             var trackersNode = document.createDocumentFragment();
             profile.trackers.forEach(function (/**profileTracker*/item) {
                 var worker = null;
+                /**
+                 * @typedef {Object} tracker
+                 * @property {string} id
+                 * @property {Object} meta
+                 * @property {string} meta.name
+                 * @property {string} meta.version
+                 * @property {string} [meta.author]
+                 * @property {string} [meta.description]
+                 * @property {string} [meta.homepageURL]
+                 * @property {string} meta.icon
+                 * @property {string} [meta.icon64]
+                 * @property {string} meta.updateURL
+                 * @property {string} meta.downloadURL
+                 * @property {string} [meta.supportURL]
+                 * @property {string[]} [meta.require]
+                 * @property {string[]} [meta.connect]
+                 * @property {Object} info
+                 * @property {number} info.lastUpdate
+                 * @property {string} code
+                 */
                 var tracker = trackers[item.id];
                 if (tracker) {
                     worker = new Tracker(tracker);
@@ -168,7 +189,7 @@ define([
         var onSearch = function (query) {
             destroyTables();
 
-            var table = new Table(resultFilter);
+            var table = new Table(resultFilter, storage);
             tables.push(table);
             tableParent.appendChild(table.node);
 
@@ -199,7 +220,7 @@ define([
         };
 
         var createTable = function () {
-            var table = new Table(resultFilter);
+            var table = new Table(resultFilter, storage);
             tables.push(table);
             tableParent.appendChild(table.node);
             return table;
