@@ -40,8 +40,6 @@ define([
                 currentProfileId = storage.currentProfileId = profiles[0].id;
             }
 
-            self.setSelectValue(profiles, currentProfileId);
-
             self.select(currentProfileId);
         };
 
@@ -52,10 +50,12 @@ define([
         this.profile = activeProfile;
         this.profileIdProfileMap = profileIdProfileMap;
         this.select = function (id) {
+            var profile = profileIdProfileMap[id];
+            self.setSelectValue(storage.profiles, profile.id);
             if (activeProfile) {
                 activeProfile.destroy();
             }
-            activeProfile = new Profile(profileIdProfileMap[id], resultFilter, self.getTrackerList(), ee, storage);
+            activeProfile = new Profile(profile, resultFilter, self.getTrackerList(), ee, storage);
             self.profile = activeProfile;
         };
         this.setSelectOptions = function () {};

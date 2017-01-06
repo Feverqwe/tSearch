@@ -769,7 +769,7 @@ require([
                 if (profileSelect.selectedIndex != index) {
                     profileSelect.selectedIndex = index;
                 }
-                profileSelectWrapper.select();
+                profileSelectWrapper.syncSelectedIndex();
             };
 
             profileController.getTrackerList = function () {

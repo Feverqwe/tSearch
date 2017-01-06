@@ -92,6 +92,18 @@ define(['./dom'], function (dom) {
             prevOption.classList.add('simple_select__menu__item-selected');
         };
 
+        self.syncSelectedIndex = function () {
+            var index = select.selectedIndex;
+            if (self.control.dataset.selectedIndex != index) {
+                self.control.dataset.selectedIndex = index;
+                var option = getOptions()[index];
+                if (option) {
+                    self.selected.textContent = option.textContent;
+                    self.selected.dataset.index = index;
+                }
+            }
+        };
+
         self.select = function (index) {
             if (!index && index != 0) {
                 var selectedOption = self.menu.querySelector('.simple_select__menu__item-selected');
