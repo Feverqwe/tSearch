@@ -17,6 +17,7 @@ require([
     './module/profileController'
 ], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Filter, ProfileController) {
     new Promise(function (resolve) {
+        i18nDom();
         chrome.storage.local.get({
             trackerListHeight: 200,
             currentProfileId: null,
@@ -25,7 +26,6 @@ require([
             history: []
         }, resolve);
     }).then(function (storage) {
-        i18nDom();
         document.body.classList.remove('loading');
 
         /*var pageUrl = (function () {
