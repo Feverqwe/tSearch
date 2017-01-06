@@ -754,5 +754,34 @@ require([
         });
 
         loadProfiles();
+
+        (function (trackerList) {
+            var height = localStorage.getItem('trackerListHeight');
+            if (height === null) {
+                height = 200;
+            }
+
+            var initResizable = function () {
+                $(trackerList.parentNode).resizable({
+                    minHeight: 56,
+                    handles: 's',
+                    alsoResize: trackerList,
+                    stop: function(e, ui) {
+                        localStorage.setItem('trackerListHeight', ui.size.height);
+                    }
+                });
+            };
+
+            trackerList.parentNode.style.height = height + 'px';
+            trackerList.style.height = height + 'px';
+
+            setTimeout(function () {
+                require(['./lib/jquery-3.1.1.min'], function () {
+                    require(['./lib/jquery-ui.min'], function () {
+                        initResizable();
+                    });
+                });
+            }, 50);
+        })(trackerList);
     })();
 });
