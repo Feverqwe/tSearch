@@ -150,7 +150,7 @@ require([
                     var history = null;
                     var initHistory = function (cb) {
                         setTimeout(function () {
-                            cb(storage.history);
+                            cb(history = storage.history);
                         });
 
                         return {
