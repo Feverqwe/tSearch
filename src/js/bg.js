@@ -9,6 +9,29 @@ require([
     './module/utils'
 ], function (utils) {
     var state = [];
+    var initIcon = function () {
+        chrome.storage.local.get({
+            invertIcon: false
+        }, function (storage) {
+            if (storage.invertIcon) {
+                chrome.browserAction.setIcon({
+                    path: {
+                        19: 'img/icon_19_i.png',
+                        38: 'img/icon_38_i.png'
+                    }
+                });
+
+                state.push(function () {
+                    chrome.browserAction.setIcon({
+                        path: {
+                            19: 'img/icon_19.png',
+                            38: 'img/icon_38.png'
+                        }
+                    });
+                });
+            }
+        });
+    };
     var initContextMenu = function () {
         chrome.storage.local.get({
             contextMenu: true
@@ -93,6 +116,7 @@ require([
         initContextMenu();
         initBrowserAction();
         initOmniboxListener();
+        initIcon();
     };
     var reload = function () {
         destroy();
