@@ -49,12 +49,14 @@ define([
             load();
         });
 
+        this.profile = activeProfile;
         this.profileIdProfileMap = profileIdProfileMap;
         this.select = function (id) {
             if (activeProfile) {
                 activeProfile.destroy();
             }
             activeProfile = new Profile(profileIdProfileMap[id], resultFilter, self.getTrackerList(), ee, storage);
+            self.profile = activeProfile;
         };
         this.setSelectOptions = function () {};
         this.setSelectValue = function () {};

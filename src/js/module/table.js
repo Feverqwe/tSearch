@@ -255,10 +255,6 @@ define([
                 nodes.appendChild(node);
             });
 
-            sortCells.forEach(function (row) {
-                wrappedCells[row[0]].sort(row[1]);
-            });
-
             return {
                 node: dom.el('div', {
                     class: ['table__head'],
@@ -479,6 +475,11 @@ define([
         };
 
         var trackerIdCount = {};
+
+        sortCells.forEach(function (row) {
+            head.cellTypeCell[row[0]].sort(row[1]);
+        });
+
         this.counter = trackerIdCount;
 
         this.insertResults = function (/**trackerWrapper*/tracker, query, results) {

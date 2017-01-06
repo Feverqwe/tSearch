@@ -23,16 +23,14 @@ require([
             currentProfileId: null,
             profiles: [],
             trackers: {},
-            history: []
+            history: [],
+            sortCells: []
         }, resolve);
     }).then(function (storage) {
         document.body.classList.remove('loading');
 
-        /*var pageUrl = (function () {
+        var pageUrl = (function () {
             var params = {};
-            var get = function (key) {
-                return params[key] || null;
-            };
             var load = function () {
                 var queryString = location.hash.substr(1);
                 var queryObj = utils.hashParseParam(queryString);
@@ -42,31 +40,59 @@ require([
                     }
                 }
             };
-            load();
+            var get = function (key) {
+                if (typeof params[key] === 'string') {
+                    return params[key];
+                } else {
+                    return null;
+                }
+            };
+            var set = function (key, value) {
+                params[key] = value;
+                return controls;
+            };
+            var remove = function (key) {
+                delete  params[key];
+                return controls;
+            };
+            var clear = function () {
+                for (var key in params) {
+                    delete params[key];
+                }
+                return controls;
+            };
+            var reload = function () {
+                clear();
+                load();
+            };
+            var applyUrl = function () {
+                var profileId = get('profileId');
+                if (!profileController.profileIdProfileMap[profileId]) {
+                    remove('profileId');
+                    profileId = null;
+                }
+                if (profileId) {
+                    profileController.select(profileId);
+                }
+                var query = get('query');
+                if (typeof query === 'string') {
+                    ee.trigger('search', [query]);
+                } else {
+                    ee.trigger('stateReset');
+                }
+            };
 
             window.addEventListener('popstate', function () {
-                load();
-                if (get('profileId')) {
-                    ee.trigger('setProfileId', [get('profileId')]);
-                }
-                if (get('query')) {
-                    ee.trigger('search', [get('query')]);
-                }
+                reload();
+                applyUrl();
             });
 
             var controls = {
-                reload: load,
                 get: get,
-                set: function (key, value) {
-                    params[key] = value;
-                    return controls;
-                },
-                clear: function () {
-                    for (var key in params) {
-                        delete params[key];
-                    }
-                    return controls;
-                },
+                set: set,
+                remove: remove,
+                clear: clear,
+                applyUrl: applyUrl,
                 go: function () {
                     var title = document.title;
                     var url = location.origin + location.pathname;
@@ -77,8 +103,9 @@ require([
                     window.history.pushState(hash, title, url);
                 }
             };
+            load();
             return controls;
-        })();*/
+        })();
 
         var ee = new EventEmitter();
 
@@ -112,6 +139,7 @@ require([
                 submit.addEventListener('click', function(e) {
                     e.preventDefault();
                     var query = searchInput.value.trim();
+                    pageUrl.set('profileId', profileController.profile.id).set('query', query).go();
                     ee.trigger('search', [query]);
                 });
             })(searchSubmit);
@@ -242,6 +270,7 @@ require([
             var main = document.querySelector('.menu__btn-main');
             main.addEventListener('click', function (e) {
                 e.preventDefault();
+                pageUrl.clear().go();
                 ee.trigger('stateReset');
             });
         })();
@@ -770,5 +799,7 @@ require([
                 });
             }, 50);
         })(profileController);
+
+        pageUrl.applyUrl();
     });
 });

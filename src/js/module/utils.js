@@ -74,7 +74,7 @@ define(function () {
                 }
             }
         }
-        return hashParams;
+        return params;
     };
     utils.parseXhrHeader = function(head) {
         head = head.split(/\r?\n/);
