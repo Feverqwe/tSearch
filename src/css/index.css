@@ -646,6 +646,7 @@ a.simple_select__menu__item {
     min-width: 100px;
     max-width: 100px;
     padding-left: 5px;
+    padding-right: 5px;
 }
 
 .table-results .cell-title {
