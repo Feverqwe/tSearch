@@ -49,10 +49,14 @@ define(function () {
     };
     utils.hashParam = function (params) {
         var hashParams = {};
+        var len = 0;
         for (var key in params) {
+            len++;
             hashParams[key] = btoa(unescape(encodeURIComponent(params[key])));
         }
-        hashParams.base64 = true;
+        if (len) {
+            hashParams.base64 = true;
+        }
         return utils.param(hashParams);
     };
     utils.hashParseParam = function(queryString) {

@@ -22,6 +22,60 @@ require([
 
     var ee = new EventEmitter();
 
+    var pageUrl = (function () {
+        var params = {};
+        var get = function (key) {
+            return params[key] || null;
+        };
+        var load = function () {
+            var queryString = location.hash.substr(1);
+            var queryObj = utils.hashParseParam(queryString);
+            for (var key in queryObj) {
+                if (key) {
+                    params[key] = queryObj[key];
+                }
+            }
+        };
+        load();
+
+        window.addEventListener('popstate', function () {
+            load();
+            if (get('profileId')) {
+                ee.trigger('setProfileId', [get('profileId')]);
+            }
+            if (get('query')) {
+                ee.trigger('search', [get('query')]);
+            }
+        });
+
+        var controls = {
+            reload: load,
+            get: get,
+            set: function (key, value) {
+                params[key] = value;
+                return controls;
+            },
+            clear: function () {
+                for (var key in params) {
+                    delete params[key];
+                }
+                return controls;
+            },
+            go: function () {
+                var title = document.title;
+                var url = location.origin + location.pathname;
+                var hash = utils.hashParam(params);
+                if (hash) {
+                    url += '#' + hash;
+                }
+                window.history.pushState(hash, title, url);
+            }
+        };
+        return controls;
+    })();
+
+    window.myLocation = pageUrl;
+
     (function () {
         var searchInput = document.querySelector('.input__input-search');
         var searchClear = document.querySelector('.input__clear-search');
@@ -44,6 +98,11 @@ require([
                     ee.once('stateReset', discard);
                 }
             });
+
+            var query = pageUrl.get('query');
+            if (query) {
+                searchInput.value = query;
+            }
         })(searchInput, searchSubmit);
 
         utils.bindClearBtn(searchClear, searchInput);
@@ -185,6 +244,7 @@ require([
         var main = document.querySelector('.menu__btn-main');
         main.addEventListener('click', function (e) {
             e.preventDefault();
+            pageUrl.clear().go();
             ee.trigger('stateReset');
         });
     })();
