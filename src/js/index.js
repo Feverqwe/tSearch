@@ -76,8 +76,10 @@ require([
                 }
                 var query = get('query');
                 if (typeof query === 'string') {
+                    document.title = params.query + '  :: TMS';
                     ee.trigger('search', [query]);
                 } else {
+                    document.title = 'Torrents MultiSearch';
                     ee.trigger('stateReset');
                 }
             };
@@ -140,6 +142,7 @@ require([
                     e.preventDefault();
                     var query = searchInput.value.trim();
                     pageUrl.set('profileId', profileController.profile.id).set('query', query).go();
+                    document.title = query + '  :: TMS';
                     ee.trigger('search', [query]);
                 });
             })(searchSubmit);
@@ -271,6 +274,7 @@ require([
             main.addEventListener('click', function (e) {
                 e.preventDefault();
                 pageUrl.clear().go();
+                document.title = 'Torrents MultiSearch';
                 ee.trigger('stateReset');
             });
         })();
