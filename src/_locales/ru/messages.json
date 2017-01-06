@@ -121,5 +121,8 @@
   },
   "newTracker": {
     "message": "Создать трекер"
+  },
+  "contextMenuTitle": {
+    "message": "Найти торрент"
   }
 }
