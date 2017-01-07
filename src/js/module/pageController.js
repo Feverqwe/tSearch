@@ -30,7 +30,6 @@ define([
             self.applyUrl();
         });
 
-        this.getTitle = function () {};
         this.get = function (key) {
             if (typeof params[key] === 'string') {
                 return params[key];

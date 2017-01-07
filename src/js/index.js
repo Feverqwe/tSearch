@@ -37,38 +37,41 @@ require([
         var ee = new EventEmitter();
 
         var pageController = new PageController();
-        pageController.getTitle = function () {
-            var title;
-            var query = pageController.get('query');
-            if (typeof query === 'string') {
-                title = JSON.stringify(query) + ' :: TMS';
-            } else {
-                title = 'Torrents MultiSearch';
-            }
-            return title;
-        };
-        pageController.applyUrl = function () {
-            var self = pageController;
-            var title = document.title = self.getTitle();
+        (function (pageController) {
+            var getTitle = function () {
+                var title;
+                var query = pageController.get('query');
+                if (typeof query === 'string') {
+                    title = JSON.stringify(query) + ' :: TMS';
+                } else {
+                    title = 'Torrents MultiSearch';
+                }
+                return title;
+            };
+            pageController.applyUrl = function () {
+                var self = pageController;
+                var title = document.title = getTitle();
 
-            var profileId = self.get('profileId');
-            ee.trigger('selectProfileById', [profileId]);
+                var profileId = self.get('profileId');
+                ee.trigger('selectProfileById', [profileId]);
 
-            var query = self.get('query');
-            if (typeof query === 'string') {
-                ee.trigger('setSearchQuery', [query]);
-                ee.trigger('search', [query]);
-            } else {
-                ee.trigger('stateReset');
-                explore.init(function () {
-                    explore.show();
-                });
-            }
+                var query = self.get('query');
+                if (typeof query === 'string') {
+                    explore.hide();
+                    ee.trigger('setSearchQuery', [query]);
+                    ee.trigger('search', [query]);
+                } else {
+                    ee.trigger('stateReset');
+                    explore.init(function () {
+                        explore.show();
+                    });
+                }
 
-            var url = self.getUrl();
+                var url = self.getUrl();
 
-            history.replaceState(null, title, url);
-        };
+                history.replaceState(null, title, url);
+            };
+        })(pageController);
 
         (function () {
             var searchInput = document.querySelector('.input__input-search');
