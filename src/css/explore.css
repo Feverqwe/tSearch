@@ -184,7 +184,7 @@ ul.explore__gallery div.head div.collapses:hover {
     opacity: 1;
 }
 ul.explore__gallery li.collapsed div.head div.collapses {
-    transform: rotate(90deg);
+    transform: rotate(270deg);
 }
 ul.explore__gallery div.head:hover div.collapses {
     opacity: 1;
