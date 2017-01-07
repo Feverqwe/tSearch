@@ -881,3 +881,7 @@ a.tracker {
 .parameter-tracker .ui-resizable-s:hover {
     opacity: 1;
 }
+
+.explore.explore-hide {
+    display: none;
+}
