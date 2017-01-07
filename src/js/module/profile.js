@@ -96,8 +96,9 @@ define([
 
                 var countNode;
                 var iconNode;
-                var node = dom.el('div', {
+                var node = dom.el('a', {
                     class: 'tracker',
+                    href: '#' + tracker.id,
                     data: {
                         id: tracker.id
                     },
@@ -356,6 +357,7 @@ define([
             for (var key in trackerIdTracker) {
                 delete trackerIdTracker[key];
             }
+            resultFilter.clearTrackerFilter();
         };
         load();
     };

@@ -690,9 +690,12 @@ require([
             });
 
             trackerList.addEventListener('click', function (e) {
-                var child = dom.closestNode(this, e.target);
+                e.preventDefault();
+                var child = dom.closest('a', e.target);
                 if (child) {
-                    ee.trigger('selectTracker', [child.dataset.id]);
+                    if (child.dataset.id) {
+                        ee.trigger('selectTracker', [child.dataset.id]);
+                    }
                 }
             });
 

@@ -108,7 +108,8 @@ a:visited {
 
 }
 
-.item:hover .item__remove {
+.item:hover .item__remove,
+.item__remove:focus {
     background: url(../img/delete.svg) center no-repeat;
     background-size: 16px;
 }

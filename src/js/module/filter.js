@@ -141,6 +141,12 @@ define([
            }
        };
 
+       this.clearTrackerFilter = function () {
+           var trackerIds = trackerFilter.trackerIds;
+           trackerIds.splice(0);
+           self.remove(trackerFilter);
+       };
+
        this.update = function () {
            var stringFilters = stringifyFilter();
            if (stringFilters !== activeFilters) {
