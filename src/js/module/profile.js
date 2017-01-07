@@ -222,12 +222,17 @@ define([
             });
         };
 
-        var onSearch = function (query) {
-            destroyTables();
-
+        var createTable = function () {
             var table = new Table(resultFilter, storage);
             tables.push(table);
             tableParent.appendChild(table.node);
+            return table;
+        };
+
+        var onSearch = function (query) {
+            destroyTables();
+
+            var table = createTable();
 
             wrappedTrackers.forEach(function (tracker) {
                 if (tracker.worker) {
@@ -255,13 +260,6 @@ define([
             });
 
             inHistory(query);
-        };
-
-        var createTable = function () {
-            var table = new Table(resultFilter, storage);
-            tables.push(table);
-            tableParent.appendChild(table.node);
-            return table;
         };
 
         var onSearchMore = function (cb) {
