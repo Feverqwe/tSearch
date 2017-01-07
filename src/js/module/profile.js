@@ -191,7 +191,7 @@ define([
         var inHistory = function (query) {
             var item = {
                 query: query,
-                profileId: profile.if,
+                profileId: profile.id,
                 time: parseInt(Date.now() / 1000)
             };
 
@@ -200,7 +200,7 @@ define([
             }, function (storage) {
                 var pos = -1;
                 storage.history.some(function (item, index) {
-                    if (item.query === item.query) {
+                    if (item.query === query) {
                         pos = index;
                         return true;
                     }
