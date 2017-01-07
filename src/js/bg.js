@@ -9,34 +9,27 @@ require([
     './lib/promise.min',
     './module/utils'
 ], function (Promise, utils) {
-    new Promise(function (resolve) {
-        chrome.storage.local.get({
-            invertIcon: false,
-            contextMenu: true,
-            disablePopup: false
-        }, resolve);
-    }).then(function (storage) {
-        var state = [];
-        var initIcon = function () {
-            if (storage.invertIcon) {
-                chrome.browserAction.setIcon({
-                    path: {
-                        19: 'img/icon_19_i.png',
-                        38: 'img/icon_38_i.png'
-                    }
-                });
+    var initIcon = function (storage, reset) {
+        if (reset) {
+            chrome.browserAction.setIcon({
+                path: {
+                    19: 'img/icon_19.png',
+                    38: 'img/icon_38.png'
+                }
+            });
+        }
 
-                state.push(function () {
-                    chrome.browserAction.setIcon({
-                        path: {
-                            19: 'img/icon_19.png',
-                            38: 'img/icon_38.png'
-                        }
-                    });
-                });
-            }
-        };
-        var initContextMenu = function () {
+        if (storage.invertIcon) {
+            chrome.browserAction.setIcon({
+                path: {
+                    19: 'img/icon_19_i.png',
+                    38: 'img/icon_38_i.png'
+                }
+            });
+        }
+    };
+    var initContextMenu = function (storage, reset) {
+        var next = function () {
             if (storage.contextMenu) {
                 chrome.contextMenus.create({
                     type: "normal",
@@ -54,75 +47,72 @@ require([
                         });
                     }
                 });
-
-                state.push(function () {
-                    chrome.contextMenus.remove("tms");
-                });
             }
         };
-        var initBrowserAction = function () {
-            if (storage.disablePopup) {
-                chrome.browserAction.setPopup({
-                    popup: ''
-                });
 
-                var listener = function () {
-                    chrome.tabs.create({
-                        url: 'index.html'
-                    });
-                };
-
-                chrome.browserAction.onClicked.addListener(listener);
-                state.push(function () {
-                    chrome.browserAction.setPopup({
-                        popup: 'popup.html'
-                    });
-                    chrome.browserAction.onClicked.removeListener(listener);
-                });
-            }
-        };
-        var initOmniboxListener = function () {
-            var listener = function (request) {
-                var params = request && '#' + utils.hashParam({
-                        query: request
-                    });
-                chrome.tabs.create({
-                    url: 'index.html' + params,
-                    selected: true
-                });
-            };
-
-            chrome.omnibox.onInputEntered.addListener(listener);
-            state.push(function () {
-                chrome.omnibox.onInputEntered.removeListener(listener);
+        if (reset) {
+            chrome.contextMenus.remove("tms", next);
+        } else {
+            next();
+        }
+    };
+    var initBrowserAction = function (storage, reset) {
+        var listener = function () {
+            chrome.tabs.create({
+                url: 'index.html'
             });
         };
-        var load = function () {
-            var listener = function (message) {
-                if (message.action === 'reload') {
-                    reload();
-                }
-            };
 
-            chrome.runtime.onMessage.addListener(listener);
-            state.push(function () {
-                chrome.runtime.onMessage.removeListener(listener);
+        if (reset) {
+            chrome.browserAction.setPopup({
+                popup: 'popup.html'
             });
+            chrome.browserAction.onClicked.removeListener(listener);
+        }
 
-            initContextMenu();
-            initBrowserAction();
-            initOmniboxListener();
-            initIcon();
-        };
-        var reload = function () {
-            destroy();
-            load();
-        };
-        var destroy = function () {
-            state.slice(0).forEach(function (destroyFn) {
-                destroyFn();
+        if (storage.disablePopup) {
+            chrome.browserAction.setPopup({
+                popup: ''
+            });
+            chrome.browserAction.onClicked.addListener(listener);
+        }
+    };
+    var initOmniboxListener = function (reset) {
+        var listener = function (request) {
+            var params = request && '#' + utils.hashParam({
+                    query: request
+                });
+            chrome.tabs.create({
+                url: 'index.html' + params,
+                selected: true
             });
         };
-        load();
+
+        if (reset) {
+            chrome.omnibox.onInputEntered.removeListener(listener);
+        }
+
+        chrome.omnibox.onInputEntered.addListener(listener);
+    };
+
+    var load = function (reset) {
+        chrome.storage.local.get({
+            invertIcon: false,
+            contextMenu: true,
+            disablePopup: false
+        }, function (storage) {
+            initOmniboxListener(reset);
+            initContextMenu(storage, reset);
+            initBrowserAction(storage, reset);
+            initIcon(storage, reset);
+        });
+    };
+
+    chrome.runtime.onMessage.addListener(function (message) {
+        if (message.action === 'reload') {
+            load(true);
+        }
     });
+
+    load();
 });
