@@ -8,7 +8,7 @@ require.config({
 require([
     './module/utils'
 ], function (utils) {
-    var initIcon = function (storage, reset) {
+    var changeIcon = function (storage, reset) {
         if (reset) {
             chrome.browserAction.setIcon({
                 path: {
@@ -27,71 +27,73 @@ require([
             });
         }
     };
-    var initContextMenu = function (storage, reset) {
+
+    var initContextMenuListener = function () {
+        chrome.contextMenus.onClicked.addListener(function (info) {
+            if (info.menuItemId === 'tms') {
+                var request = info.selectionText;
+                var params = request && '#' + utils.hashParam({
+                        query: request
+                    });
+                chrome.tabs.create({
+                    url: 'index.html' + params,
+                    selected: true
+                });
+            }
+        });
+    };
+
+    var changeContextMenu = function (storage, reset) {
         var next = function () {
             if (storage.contextMenu) {
                 chrome.contextMenus.create({
                     type: "normal",
                     id: "tms",
                     title: chrome.i18n.getMessage('contextMenuTitle'),
-                    contexts: ["selection"],
-                    onclick: function (info) {
-                        var request = info.selectionText;
-                        var params = request && '#' + utils.hashParam({
-                                query: request
-                            });
-                        chrome.tabs.create({
-                            url: 'index.html' + params,
-                            selected: true
-                        });
-                    }
+                    contexts: ["selection"]
                 });
             }
         };
 
         if (reset) {
-            chrome.contextMenus.remove("tms", next);
+            chrome.contextMenus.removeAll(next);
         } else {
             next();
         }
     };
-    var initBrowserAction = function (storage, reset) {
-        var listener = function () {
+
+    var initBrowserActionListener = function () {
+        chrome.browserAction.onClicked.addListener(function () {
             chrome.tabs.create({
                 url: 'index.html'
             });
-        };
+        });
+    };
 
+    var changeBrowserAction = function (storage, reset) {
         if (reset) {
             chrome.browserAction.setPopup({
                 popup: 'popup.html'
             });
-            chrome.browserAction.onClicked.removeListener(listener);
         }
 
         if (storage.disablePopup) {
             chrome.browserAction.setPopup({
                 popup: ''
             });
-            chrome.browserAction.onClicked.addListener(listener);
         }
     };
-    var initOmniboxListener = function (reset) {
-        var listener = function (request) {
+
+    var initOmniboxListener = function () {
+        chrome.omnibox.onInputEntered.addListener(function (request) {
             var params = request && '#' + utils.hashParam({
-                    query: request
-                });
+                query: request
+            });
             chrome.tabs.create({
                 url: 'index.html' + params,
                 selected: true
             });
-        };
-
-        if (reset) {
-            chrome.omnibox.onInputEntered.removeListener(listener);
-        }
-
-        chrome.omnibox.onInputEntered.addListener(listener);
+        });
     };
 
     var load = function (reset) {
@@ -100,10 +102,9 @@ require([
             contextMenu: true,
             disablePopup: false
         }, function (storage) {
-            initOmniboxListener(reset);
-            initContextMenu(storage, reset);
-            initBrowserAction(storage, reset);
-            initIcon(storage, reset);
+            changeContextMenu(storage, reset);
+            changeBrowserAction(storage, reset);
+            changeIcon(storage, reset);
         });
     };
 
@@ -113,5 +114,8 @@ require([
         }
     });
 
+    initOmniboxListener();
+    initContextMenuListener();
+    initBrowserActionListener();
     load();
 });
