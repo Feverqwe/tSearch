@@ -178,6 +178,11 @@ require([
                         }
                     },
                     select: function(e, ui) {
+                        if (lastHistoryRequest) {
+                            lastHistoryRequest.abort();
+                            lastHistoryRequest = null;
+                        }
+
                         submit.dispatchEvent(new CustomEvent('click', {cancelable: true, detail: {query: ui.item.value}}));
                     },
                     create: function() {
