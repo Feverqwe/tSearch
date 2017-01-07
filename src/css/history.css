@@ -90,8 +90,8 @@ a:visited {
     margin: 5px;
 }
 
-.item {
-
+.item-click_history {
+    margin: 5px;
 }
 
 .item__remove {
