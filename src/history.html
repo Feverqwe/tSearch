@@ -7,16 +7,16 @@
         <link rel="stylesheet" type="text/css" href="css/history.css">
     </head>
     <body class="loading">
-        <div class="head">
-            <div id="search_form">
-                <span data-lang="history">{History}</span>
+        <div class="body__head">
+            <div class="search">
+                <h1 class="title" data-i18n='{"text": "history"}'>{history}</h1>
             </div>
-            <div class="quick-menu">
-                <a href="index.html" data-lang="main,title" id="main_btn" title="{main}"></a>
+            <div class="menu">
+                <a href="index.html" class="menu__btn menu__btn-main" data-i18n='{"title":"main"}' title="{main}"></a>
             </div>
         </div>
-        <div class="content">
-            <div id="history_list"></div>
+        <div class="main">
+            <div class="history"></div>
         </div>
         <script src="js/lib/require.js"></script>
         <script src="js/history.js"></script>

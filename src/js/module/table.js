@@ -141,6 +141,15 @@ define([
                 row = tableRows[link.dataset.index];
             }
             if (row) {
+                /**
+                 * @typedef {Object} clickHistoryItem
+                 * @property {String} type
+                 * @property {String} query
+                 * @property {String} trackerId
+                 * @property {String} title
+                 * @property {String} url
+                 * @property {number} time
+                 */
                 var item = {
                     type: type,
                     query: row.query,
@@ -154,8 +163,8 @@ define([
                     clickHistory: []
                 }, function (storage) {
                     var pos = -1;
-                    storage.clickHistory.some(function (item, index) {
-                        if (item.query === item.query && item.url === item.url) {
+                    storage.clickHistory.some(function (_item, index) {
+                        if (_item.query === item.query && _item.url === item.url) {
                             pos = index;
                             return true;
                         }

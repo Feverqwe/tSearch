@@ -189,6 +189,13 @@ define([
         };
 
         var inHistory = function (query) {
+            /**
+             * @typedef {Object} historyItem
+             * @property {String} query
+             * @property {String} profileId
+             * @property {number} time
+             */
+
             var item = {
                 query: query,
                 profileId: profile.id,

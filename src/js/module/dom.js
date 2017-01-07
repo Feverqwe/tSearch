@@ -115,7 +115,7 @@ define(function () {
                 if (!parentNode.matches(selector)) {
                     someChild = parentNode;
                 } else {
-                    return someChild;
+                    return parentNode;
                 }
             }
         },
