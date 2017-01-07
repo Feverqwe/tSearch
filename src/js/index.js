@@ -73,7 +73,6 @@ require([
             };
             var applyUrl = function () {
                 var title = document.title = getTitle();
-                history.replaceState(null, title, location.href);
 
                 var profileId = get('profileId');
                 if (!profileController.getProfileById(profileId)) {
@@ -92,6 +91,8 @@ require([
                 } else {
                     ee.trigger('stateReset');
                 }
+
+                history.replaceState(null, title, location.href);
             };
             var getTitle = function () {
                 var title;
