@@ -6,13 +6,18 @@ require.config({
     baseUrl: './js'
 });
 require([
+    './lib/promise.min',
     './module/utils'
-], function (utils) {
-    var state = [];
-    var initIcon = function () {
+], function (Promise, utils) {
+    new Promise(function (resolve) {
         chrome.storage.local.get({
-            invertIcon: false
-        }, function (storage) {
+            invertIcon: false,
+            contextMenu: true,
+            disablePopup: false
+        }, resolve);
+    }).then(function (storage) {
+        var state = [];
+        var initIcon = function () {
             if (storage.invertIcon) {
                 chrome.browserAction.setIcon({
                     path: {
@@ -30,12 +35,8 @@ require([
                     });
                 });
             }
-        });
-    };
-    var initContextMenu = function () {
-        chrome.storage.local.get({
-            contextMenu: true
-        }, function (storage) {
+        };
+        var initContextMenu = function () {
             if (storage.contextMenu) {
                 chrome.contextMenus.create({
                     type: "normal",
@@ -45,8 +46,8 @@ require([
                     onclick: function (info) {
                         var request = info.selectionText;
                         var params = request && '#' + utils.hashParam({
-                            query: request
-                        });
+                                query: request
+                            });
                         chrome.tabs.create({
                             url: 'index.html' + params,
                             selected: true
@@ -58,12 +59,8 @@ require([
                     chrome.contextMenus.remove("tms");
                 });
             }
-        });
-    };
-    var initBrowserAction = function () {
-        chrome.storage.local.get({
-            disablePopup: false
-        }, function (storage) {
+        };
+        var initBrowserAction = function () {
             if (storage.disablePopup) {
                 chrome.browserAction.setPopup({
                     popup: ''
@@ -83,49 +80,49 @@ require([
                     chrome.browserAction.onClicked.removeListener(listener);
                 });
             }
-        });
-    };
-    var initOmniboxListener = function () {
-        var listener = function (request) {
-            var params = request && '#' + utils.hashParam({
-                query: request
-            });
-            chrome.tabs.create({
-                url: 'index.html' + params,
-                selected: true
+        };
+        var initOmniboxListener = function () {
+            var listener = function (request) {
+                var params = request && '#' + utils.hashParam({
+                        query: request
+                    });
+                chrome.tabs.create({
+                    url: 'index.html' + params,
+                    selected: true
+                });
+            };
+
+            chrome.omnibox.onInputEntered.addListener(listener);
+            state.push(function () {
+                chrome.omnibox.onInputEntered.removeListener(listener);
             });
         };
+        var load = function () {
+            var listener = function (message) {
+                if (message.action === 'reload') {
+                    reload();
+                }
+            };
 
-        chrome.omnibox.onInputEntered.addListener(listener);
-        state.push(function () {
-            chrome.omnibox.onInputEntered.removeListener(listener);
-        });
-    };
-    var load = function () {
-        var listener = function (message) {
-            if (message.action === 'reload') {
-                reload();
-            }
+            chrome.runtime.onMessage.addListener(listener);
+            state.push(function () {
+                chrome.runtime.onMessage.removeListener(listener);
+            });
+
+            initContextMenu();
+            initBrowserAction();
+            initOmniboxListener();
+            initIcon();
         };
-
-        chrome.runtime.onMessage.addListener(listener);
-        state.push(function () {
-            chrome.runtime.onMessage.removeListener(listener);
-        });
-
-        initContextMenu();
-        initBrowserAction();
-        initOmniboxListener();
-        initIcon();
-    };
-    var reload = function () {
-        destroy();
+        var reload = function () {
+            destroy();
+            load();
+        };
+        var destroy = function () {
+            state.slice(0).forEach(function (destroyFn) {
+                destroyFn();
+            });
+        };
         load();
-    };
-    var destroy = function () {
-        state.slice(0).forEach(function (destroyFn) {
-            destroyFn();
-        });
-    };
-    load();
+    });
 });
