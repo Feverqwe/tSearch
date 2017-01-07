@@ -1,0 +1,463 @@
+.explore.hide {
+    display: none;
+}
+
+ul.explore__gallery {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+ul.explore__gallery li.collapsed > ul {
+    display: none;
+}
+ul.explore__gallery li.empty {
+    display: none;
+}
+
+ul.explore__gallery li div.head {
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    line-height: 24px;
+    height: 24px;
+}
+ul.explore__gallery li.collapsed div.head {
+    border-bottom-color: transparent;
+}
+ul.explore__gallery div.head > * {
+    display: inline-block;
+    cursor: default;
+    vertical-align: middle;
+}
+ul.explore__gallery li.loading div.head div.move {
+    background: url(../img/refresh.svg) no-repeat center;
+    background-size: 14px;
+    opacity: 0.8;
+
+    -moz-animation: loadingIcon 0.8s linear infinite;
+    -webkit-animation: loadingIcon 0.8s linear infinite;
+    animation: loadingIcon 0.8s linear infinite;
+}
+ul.explore__gallery li.login div.head div.move {
+    background: url(../img/login.svg) no-repeat center;
+    background-size: 16px;
+    opacity: 1;
+}
+ul.explore__gallery li.error div.head div.move {
+    background: url(../img/history.svg) no-repeat center;
+    background-size: 16px;
+    opacity: 1;
+}
+ul.explore__gallery div.head div.move {
+    width: 24px;
+    height: 24px;
+    background: url(../img/moveble.svg) center no-repeat;
+    background-size: 16px;
+    cursor: move;
+    -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
+    transition: opacity 0.2s;
+    opacity: 0.5;
+}
+ul.explore__gallery div.head div.move:hover,
+ul.explore__gallery li.ui-sortable-helper div.head div.move{
+    opacity: 1;
+}
+ul.explore__gallery div.head div.title {
+    font-size: 21px;
+}
+ul.explore__gallery li.collapsed div.head div.actionList {
+    display: none;
+}
+ul.explore__gallery li div.head div.actionList > * {
+    vertical-align: bottom;
+}
+ul.explore__gallery div.head div.actionList div {
+    display: inline-block;
+}
+ul.explore__gallery div.head div.actionList div.setup {
+    background: url(../img/options.svg) center no-repeat;
+    background-size: 14px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    opacity: 0.5;
+    -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
+    transition: opacity 0.2s;
+}
+ul.explore__gallery div.head div.actionList div.setup:hover {
+    opacity: 1;
+}
+ul.explore__gallery div.head div.actionList div.update {
+    width: 24px;
+    height: 24px;
+    background: url(../img/refresh.svg) no-repeat center;
+    background-size: 14px;
+    cursor: pointer;
+    -webkit-transition: -webkit-transform 0.5s;
+    -moz-transition: -moz-transform 0.5s;
+    transition: transform 0.5s;
+    opacity: 0.5;
+}
+ul.explore__gallery div.head div.actionList div.update:hover {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    transform: rotate(360deg);
+    opacity: 1;
+}
+ul.explore__gallery div.head div.actionList div.update.loading {
+    background: url(../img/refresh.svg) no-repeat center;
+    background-size: 14px;
+    opacity: 0.8;
+
+    -moz-animation: loadingIcon 0.8s linear infinite;
+    -webkit-animation: loadingIcon 0.8s linear infinite;
+    animation: loadingIcon 0.8s linear infinite;
+}
+ul.explore__gallery div.head div.actionList div.update.error {
+    background: url(../img/ghost.svg) no-repeat center;
+}
+
+ul.explore__gallery div.head div.actionList a.open {
+    width: 24px;
+    height: 24px;
+    background: url(../img/external.svg) no-repeat top center;
+    background-size: 10px;
+    display: inline-block;
+    opacity: 0.5;
+    -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
+    transition: opacity 0.2s;
+}
+ul.explore__gallery div.head div.actionList a.open:hover {
+    opacity: 1;
+}
+
+ul.explore__gallery div.head .setupBody {
+    display: inline-block;
+    height: 24px;
+    vertical-align: bottom;
+}
+
+ul.explore__gallery div.head .setupBody input[type="range"] {
+    vertical-align: bottom;
+    width: 120px;
+    margin: 0;
+    margin-right: 5px;
+    margin-left: 5px;
+    height: 24px;
+}
+
+ul.explore__gallery div.head .setupBody .defaultSize {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: inline-block;
+    opacity: 0.5;
+    -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
+    transition: opacity 0.2s;
+    background: url(../img/delete.svg) center no-repeat;
+    background-size: 14px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+ul.explore__gallery div.head .setupBody .defaultSize:hover {
+    opacity: 1;
+}
+
+ul.explore__gallery div.head div.collapses {
+    float: right;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-right: 5px;
+    background: url(../img/arrow_up.svg) center no-repeat;
+    background-size: 32px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    transform: rotate(180deg);
+    opacity: 0.5;
+}
+ul.explore__gallery div.head div.collapses:hover {
+    opacity: 1;
+}
+ul.explore__gallery li.collapsed div.head div.collapses {
+    transform: rotate(90deg);
+}
+ul.explore__gallery div.head:hover div.collapses {
+    opacity: 1;
+}
+ul.explore__gallery div.head > *:hover ~ div.collapses {
+    opacity: 0.5;
+}
+
+ul.explore__gallery ul.pageList {
+    text-align: center;
+}
+ul.explore__gallery ul.pageList.hide {
+    display: none;
+}
+ul.explore__gallery ul.pageList > li {
+    display: inline-block;
+    border-radius: 4px;
+    margin-left: 2px;
+    min-width: 24px;
+    height: 16px;
+    cursor: default;
+
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+ul.explore__gallery ul.pageList > li.active {
+    background-color: #337af8;
+    color: #fff;
+}
+
+ul.explore__gallery ul.body {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+ul.explore__gallery ul.body a {
+    text-decoration: none;
+}
+ul.explore__gallery ul.body > li {
+    display: inline-block;
+    position: relative;
+    margin: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+ul.explore__gallery ul.body div.picture {
+    text-align: center;
+    position: relative;
+}
+
+ul.explore__gallery ul.body div.picture img {
+    max-width: 100%;
+    box-shadow: 0 0 1px rgba(0,0,0,0.8);
+}
+ul.explore__gallery ul.body div.title {
+    position: relative;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 0.857em;
+}
+
+ul.explore__gallery ul.body div.title a {
+    color: #000;
+}
+
+ul.explore__gallery.sortMode .collapses,
+ul.explore__gallery.sortMode .actionList,
+ul.explore__gallery.sortMode .setupBody,
+ul.explore__gallery.sortMode ul.body,
+ul.explore__gallery.sortMode ul.pageList {
+    display: none !important;
+}
+ul.explore__gallery.sortMode > li > .head {
+    border-bottom-width: 0;
+}
+ul.explore__gallery li.ui-sortable-helper {
+    background-color: #fff;
+    border-radius: 3px;
+    opacity: 0.8;
+    padding-top: 2px;
+    box-shadow: 0 0 1px rgba(0,0,0,0.8);
+    height: auto !important;
+}
+ul.explore__gallery > li.ui-sortable-placeholder {
+    height: 25px !important;
+}
+
+ul.explore__gallery .ui-sortable-placeholder {
+    background-color: #337AF8;
+    visibility: visible !important;
+    border-radius: 3px;
+}
+ul.explore__gallery ul.body div.picture > div.quality {
+    position: absolute;
+    visibility: hidden;
+    bottom: -5px;
+    left: -5px;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.7);
+    min-width: 16px;
+    padding-left: 2px;
+    padding-right: 2px;
+    line-height: 18px;
+    cursor: pointer;
+    z-index: 1;
+    -webkit-transition: background-color 0.2s;
+    -moz-transition: background-color 0.2s;
+    transition: background-color 0.2s;
+
+    white-space: nowrap;
+    font-size: .857em;
+}
+ul.explore__gallery ul.body div.picture:hover > div.quality {
+    z-index: 14;
+    visibility: visible;
+}
+ul.explore__gallery ul.body div.picture > div.quality:hover {
+    background-color: #fff;
+}
+ul.explore__gallery ul.body div.picture > div.quality:hover #info_popup {
+    visibility: visible;
+}
+ul.explore__gallery ul.body div.picture > a.link {
+    top: 0px;
+    background: url(../img/external.svg) no-repeat center;
+    background-size: 10px;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+}
+ul.explore__gallery ul.body div.picture > div.inFavorite {
+    top: 20px;
+    background: url(../img/favorite.svg) no-repeat center center;
+    background-size: 16px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+ul.explore__gallery ul.body div.picture > div.rmFavorite {
+    top: 20px;
+    background: url(../img/rm_favorite.svg) no-repeat center center;
+    background-size: 16px;
+}
+ul.explore__gallery ul.body div.picture > div.edit {
+    top: 40px;
+    background: url(../img/edit.svg) no-repeat center;
+    background-size: 16px;
+    background-position-x: 3px;
+}
+ul.explore__gallery ul.body div.picture > div.move {
+    top: 60px;
+    background: url(../img/moveble.svg) no-repeat center center;
+    background-size: 16px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+ul.explore__gallery ul.body li div.picture > div.inFavorite,
+ul.explore__gallery ul.body li div.picture > div.rmFavorite,
+ul.explore__gallery ul.body li div.picture > div.move,
+ul.explore__gallery ul.body li div.picture > div.edit,
+ul.explore__gallery ul.body li div.picture > a.link {
+    position: absolute;
+    right: -10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 1;
+    visibility: hidden;
+    -webkit-transition: background-color 0.2s;
+    -moz-transition: background-color 0.2s;
+    transition: background-color 0.2s;
+}
+ul.explore__gallery ul.body li div.picture > div.move {
+    cursor: move;
+}
+ul.explore__gallery ul.body li div.picture:hover > div.inFavorite,
+ul.explore__gallery ul.body li div.picture:hover > div.rmFavorite,
+ul.explore__gallery ul.body li div.picture:hover > div.move,
+ul.explore__gallery ul.body li div.picture:hover > div.edit,
+ul.explore__gallery ul.body li div.picture:hover > a.link {
+    visibility: visible;
+}
+ul.explore__gallery ul.body li div.picture > div.inFavorite:hover,
+ul.explore__gallery ul.body li div.picture > div.rmFavorite:hover,
+ul.explore__gallery ul.body li div.picture > div.move:hover,
+ul.explore__gallery ul.body li div.picture > div.edit:hover,
+ul.explore__gallery ul.body li div.picture > a.link:hover {
+    background-color: #fff;
+}
+
+.nf-notifi.favoriteItemEdit {
+    width: 300px;
+}
+
+.nf-notifi.favoriteItemEdit input[type="text"] {
+    width: 290px;
+}
+
+.explore__gallery #info_popup:hover {
+    visibility: visible;
+}
+.explore__gallery #info_popup {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    z-index: 12;
+    width: 300px;
+    visibility: hidden;
+    padding-top: 11px;
+    text-align: left;
+    cursor: default;
+    font-size: 13px;
+    white-space: normal;
+}
+.explore__gallery div.popup {
+    background-color: #fff;
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.explore__gallery #info_popup .corner2 {
+    border: 8px solid transparent;
+    border-bottom: 10px solid #fff;
+    border-top: 0;
+    width: 0;
+    top: 1px;
+    position: absolute;
+    left: 50%;
+    margin-left: -8px;
+}
+.explore__gallery #info_popup .corner {
+    border: 8px solid transparent;
+    border-bottom: 10px solid rgb(192, 187, 187);
+    border-top: 0;
+    width: 0;
+    top: 2px;
+    position: absolute;
+    left: 50%;
+    margin-left: -8px;
+
+}
+.explore__gallery #info_popup .content {
+    padding: 6px;
+}
+.explore__gallery #info_popup ul {
+    list-style-type: lower-greek;
+    padding-left: 20px;
+    margin: 0;
+    word-wrap: break-word;
+}
+.explore__gallery #info_popup li {
+    margin: 0;
+    margin-bottom: 6px;
+    line-height: normal;
+}
+.explore__gallery #info_popup li:first-child {
+    border-bottom: 1px dashed rgb(111, 111, 111);
+    margin-bottom: 3px;
+    padding-bottom: 3px;
+    font-size: 14px;
+}
+.explore__gallery #info_popup li:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.nf-notifi.functionUnavailable {
+    text-align: left;
+
+}

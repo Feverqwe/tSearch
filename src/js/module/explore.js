@@ -734,7 +734,7 @@ define([
 
                     var fragment = document.createDocumentFragment();
                     if (info.picList.length > 0) {
-                        fragment.appendChild(dom.el('div', {
+                        var el = dom.el('div', {
                             class: 'poster',
                             append: [
                                 dom.el('img', {
@@ -742,13 +742,12 @@ define([
                                         index: 0
                                     },
                                     src: info.picList[0],
-                                    alt: info.title,
-                                    onCreate: function () {
-                                        this.addEventListener('error', onGooglePosterError.bind(this, info.picList))
-                                    }
+                                    alt: info.title
                                 })
                             ]
-                        }));
+                        });
+                        el.addEventListener('error', onGooglePosterError.bind(this, info.picList));
+                        fragment.appendChild(el);
                     }
 
                     fragment.appendChild(dom.el('h1', {
@@ -910,19 +909,10 @@ define([
                 this.varCache.movebleStyleList['style.' + moveName] = styleEl = dom.el('style', {
                     class: moveName,
                     text: ''
-                    + '@-webkit-keyframes a_' + moveName
-                    + keyFrames
                     + '@keyframes a_' + moveName
-                    + keyFrames
-                    + '@-moz-keyframes a_' + moveName
-                    + keyFrames
-                    + '@-o-keyframes a_' + moveName
                     + keyFrames
                     + 'div.' + moveName + ':hover > span {'
                     + 'overflow: visible;'
-                    + '-webkit-animation:a_' + moveName + ' ' + timeCalc + 's;'
-                    + '-moz-animation:a_' + moveName + ' ' + timeCalc + 's;'
-                    + '-o-animation:a_' + moveName + ' ' + timeCalc + 's;'
                     + 'animation:a_' + moveName + ' ' + timeCalc + 's;'
                     + '}'
                 });
@@ -952,7 +942,7 @@ define([
             var categoryObj = this.varCache.categoryList[type];
             var fontSize = this.width2fontSize(type, options.width);
 
-            var base = 'ul#explore_gallery li[data-type="' + type + '"] > ul.body > li';
+            var base = 'ul.explore__gallery li[data-type="' + type + '"] > ul.body > li';
 
             var imgSize = base + '{width: ' + options.width + 'px;}';
 
@@ -1019,14 +1009,11 @@ define([
                         href: search_link,
                         text: title,
                         title: title
-                    }),
-                    onCreate: function () {
-                        var $this = $(this);
-                        $this.on('mouseenter', function onMouseEnter(e) {
-                            explore.calculateMoveble(this, explorerOptions.width);
-                            $this.off('mouseenter', onMouseEnter);
-                        });
-                    }
+                    })
+                });
+                var $titleEl = $(titleEl);
+                $titleEl.one('mouseenter', function onMouseEnter(e) {
+                    explore.calculateMoveble(this, explorerOptions.width);
                 });
 
                 var imgUrl = this.addRootUrl(content[index].img, sourceOptions.imgUrl);
@@ -1226,6 +1213,30 @@ define([
 
             var onChangeRange = null;
             var range;
+            var select = dom.el('select', {
+                class: 'lineCount',
+                append: (function () {
+                    var list = [];
+                    for (var i = 1; i < 7; i++) {
+                        list.push(
+                            dom.el('option', {
+                                text: i,
+                                value: i
+                            })
+                        );
+                    }
+                    return list;
+                })(),
+                on: ['change', function () {
+                    var value = parseInt(this.value);
+                    options.lineCount = parseInt(value);
+                    explore.updateCategoryContent(type);
+
+                    chrome.storage.local.set({explorerOptions: explorerOptions});
+                }]
+            });
+            select.selectedIndex = options.lineCount - 1;;
+
             return dom.el('div', {
                 class: 'setupBody',
                 append: [
@@ -1258,31 +1269,7 @@ define([
                             range.dispatchEvent(new CustomEvent('input'));
                         }]
                     }),
-                    dom.el('select', {
-                        class: 'lineCount',
-                        append: (function () {
-                            var list = [];
-                            for (var i = 1; i < 7; i++) {
-                                list.push(
-                                    dom.el('option', {
-                                        text: i,
-                                        value: i
-                                    })
-                                );
-                            }
-                            return list;
-                        })(),
-                        onCreate: function () {
-                            this.selectedIndex = options.lineCount - 1;
-                        },
-                        on: ['change', function () {
-                            var value = parseInt(this.value);
-                            options.lineCount = parseInt(value);
-                            explore.updateCategoryContent(type);
-
-                            chrome.storage.local.set({explorerOptions: explorerOptions});
-                        }]
-                    })
+                    select
                 ]
             });
         },

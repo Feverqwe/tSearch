@@ -154,5 +154,52 @@
   },
   "invertIcon": {
     "message": "Инвертировать цвет иконки расширения"
-  }
+  },
+
+  "favoriteList": {
+    "message": "Избранное"
+  },
+  "kpFavoriteList": {
+    "message": "Кинопоиск: Избранное"
+  },
+  "kpInCinema": {
+    "message": "Сейчас в кино"
+  },
+  "kpPopular": {
+    "message": "Фильмы"
+  },
+  "kpSerials": {
+    "message": "Сериалы"
+  },
+  "imdbInCinema": {
+    "message": "IMDB: Сейчас в кино"
+  },
+  "imdbPopular": {
+    "message": "IMDB: Фильмы"
+  },
+  "imdbSerials": {
+    "message": "IMDB: Сериалы"
+  },
+  "ggGamesTop": {
+    "message": "Игры: Лучшие"
+  },
+  "ggGamesNew": {
+    "message": "Игры: Новые"
+  },
+
+  "addInFavorite": {"message": "В избранное"},
+  "removeFromFavorite": {"message": "Удалить из избранного"},
+  "move": {"message": "Переместить"},
+  "requestQuality": {"message": "Узнать качество"},
+  "readMore": {"message": "Подробнее"},
+  "default": {"message": "По умолчанию"},
+  "goToTheWebsite": {"message": "Перейти на сайт"},
+  "setupView": {"message": "Настроить вид"},
+
+  "title": {"message": "Заголовок"},
+  "imageUrl": {"message": "URL изображения"},
+  "descUrl": {"message": "URL описания"},
+
+  "cancel": {"message": "Отменить"},
+  "change": {"message": "Изменить"}
 }
