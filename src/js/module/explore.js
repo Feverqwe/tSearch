@@ -48,6 +48,68 @@ define([
     var __storage, storage;
     __storage = storage = {};
 
+    var exKit = {
+        contentFilterR: {
+            searchJs: /javascript/ig,
+            blockHref: /\/\//,
+            blockSrc: /src=(['"]?)/ig,
+            blockSrcSet: /srcset=(['"]?)/ig,
+            blockOnEvent: /on(\w+)=/ig
+        },
+        contentFilter: function (content) {
+            "use strict";
+            return content.replace(exKit.contentFilterR.searchJs, 'tms-block-javascript')
+                .replace(exKit.contentFilterR.blockHref, '//about:blank#blockurl#')
+                .replace(exKit.contentFilterR.blockSrc, 'src=$1data:image/gif,base64#blockurl#')
+                .replace(exKit.contentFilterR.blockSrcSet, 'data-block-attr-srcset=$1')
+                .replace(exKit.contentFilterR.blockOnEvent, 'data-block-event-$1=');
+        },
+        contentUnFilter: function (content) {
+            "use strict";
+            return content.replace(/data:image\/gif,base64#blockurl#/g, '')
+                .replace(/about:blank#blockurl#/g, '')
+                .replace(/tms-block-javascript/g, 'javascript');
+        },
+        parseHtml: function (html) {
+            "use strict";
+            var fragment = document.createDocumentFragment();
+            var div = document.createElement('html');
+            div.innerHTML = html;
+            var el;
+            while (el = div.firstChild) {
+                fragment.appendChild(el);
+            }
+            return fragment;
+        },
+        urlCheck: function (details, tracker, value) {
+            "use strict";
+            if (value.substr(0, 7) === 'magnet:') {
+                return value;
+            }
+            if (value.substr(0, 2) === '//') {
+                value = value.replace(/^\/\/[^\/?#]+/, '');
+            }
+            if (value.substr(0, 4) === 'http') {
+                return value;
+            }
+            if (value[0] === '/') {
+                return tracker.search.rootUrl + value.substr(1);
+            }
+            if (value.substr(0, 2) === './') {
+                return tracker.search.baseUrl + value.substr(2);
+            }
+            if (value[0] === '?') {
+                var url = details.requestUrl || '';
+                var pos = url.search(/[?#]/);
+                if (pos !== -1) {
+                    url = url.substr(0, pos);
+                }
+                return url + value;
+            }
+            return tracker.search.baseUrl + value;
+        }
+    };
+
     var explore = {
         domCache: {
             container: document.querySelector('.explore'),
@@ -1092,6 +1154,7 @@ define([
             }
         },
         xhr_send: function (type, source, page, page_mode) {
+            var _this = explore;
             source.xhr_wait_count++;
             source.xhr.push(
                 utils.request({
@@ -1100,7 +1163,8 @@ define([
                     if (err) {
                         explore.xhr_dune(type, source);
                     } else {
-                        source.xhr_content.push([page, this.content_parser[type](response.body)]);
+                        var item = [page, _this.content_parser[type](response.body)];
+                        source.xhr_content.push(item);
                         explore.xhr_dune(type, source);
                     }
                 })
@@ -1666,7 +1730,7 @@ define([
 
                         var cacheList = {};
                         for (var i = 0, item; item = defaultExplorerOptions[i]; i++) {
-                            cacheList['expCache_' + item.type] = item;
+                            cacheList['expCache_' + item.type] = {};
                         }
 
                         chrome.storage.local.get(cacheList, function (storage) {
