@@ -62,9 +62,7 @@ require([
                     ee.trigger('search', [query]);
                 } else {
                     ee.trigger('stateReset');
-                    explore.init(function () {
-                        explore.show();
-                    });
+                    explore.show();
                 }
 
                 var url = self.getUrl();

@@ -803,8 +803,20 @@ define([
             return parseInt(currentDate.getTime() / 1000) - day * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60 - seconds;
         },
         show: function () {
-            this.once && this.once();
-            this.domCache.container.classList.remove('explore-hide');
+            var _this = this;
+            var next = function () {
+                _this.domCache.container.classList.remove('explore-hide');
+            };
+            if (_this.init) {
+                _this.init(function () {
+                    _this.once();
+                    _this.once = null;
+                    _this.init = null;
+                    next();
+                });
+            } else {
+                next();
+            }
         },
         hide: function () {
             this.domCache.container.classList.add('explore-hide');
@@ -1579,7 +1591,6 @@ define([
             $body.addClass('favoriteItemEdit');
         },
         once: function once() {
-            explore.once = null;
             window.addEventListener('resize', debounce(function onResizeCategoryList() {
                 if (onResizeCategoryList.lock) return;
                 onResizeCategoryList.lock = true;
