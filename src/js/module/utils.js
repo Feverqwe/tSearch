@@ -73,6 +73,8 @@ define(function () {
                     console.error('Error decode param', key, hashParams[key], e);
                 }
             }
+        } else {
+            params = hashParams;
         }
         return params;
     };
