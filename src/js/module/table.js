@@ -374,7 +374,7 @@ define([
                     }
                     var trackerIcon = dom.el('div', {
                         class: ['tracker__icon', tracker.iconClass],
-                        title: tracker.worker.name
+                        title: tracker.name
                     });
                     row.appendChild(dom.el('div', {
                         class: ['cell', 'row__cell', 'cell-' + type],

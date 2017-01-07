@@ -122,6 +122,7 @@ define([
                 /**
                  * @typedef trackerWrapper
                  * @property {string} id
+                 * @property {string} name
                  * @property {string} iconClass
                  * @property {Element} node
                  * @property {Element} iconStyleNode
@@ -136,6 +137,7 @@ define([
 
                 var trackerWrapper = {
                     id: tracker.id,
+                    name: tracker.meta.name || tracker.id,
                     iconClass: iconClass,
                     node: node,
                     iconStyleNode: iconStyleNode,
