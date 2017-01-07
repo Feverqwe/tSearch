@@ -19,18 +19,36 @@ define([
             }, delay);
         };
     };
-    var getPosition = function(node) {
-        var box = node.getBoundingClientRect();
-        return {
-            top: Math.round(box.top + window.pageYOffset),
-            left: Math.round(box.left + window.pageXOffset),
-            width: box.width,
-            height: box.height
-        }
-    };
-    var getSize = function(node) {
-        return {width: node.offsetWidth, height: node.offsetHeight};
-    };
+    var defaultExplorerOptions = [
+        {type: 'favorites',      enable: 1, show: 1, width: 100, lineCount: 1, lang: 'favoriteList'},     //0
+        {type: 'kp_favorites',   enable: 1, show: 1, width: 100, lineCount: 1, lang: 'kpFavoriteList'},  //1
+        {type: 'kp_in_cinema',   enable: 1, show: 1, width: 100, lineCount: 1, lang: 'kpInCinema'},  //2
+        {type: 'kp_popular',     enable: 1, show: 1, width: 100, lineCount: 2, lang: 'kpPopular'},    //3
+        {type: 'kp_serials',     enable: 1, show: 1, width: 100, lineCount: 1, lang: 'kpSerials'},    //4
+        {type: 'imdb_in_cinema', enable: 1, show: 1, width: 100, lineCount: 1, lang: 'imdbInCinema'},//5
+        {type: 'imdb_popular',   enable: 1, show: 1, width: 100, lineCount: 2, lang: 'imdbPopular'},  //6
+        {type: 'imdb_serials',   enable: 1, show: 1, width: 100, lineCount: 1, lang: 'imdbSerials'},  //7
+        {type: 'gg_games_top',   enable: 1, show: 1, width: 100, lineCount: 1, lang: 'ggGamesTop'},  //8
+        {type: 'gg_games_new',   enable: 1, show: 1, width: 100, lineCount: 1, lang: 'ggGamesNew'}   //9
+    ];
+    var optionsList = [];
+    var cacheList = [];
+    for (var i = 0, item; item = defaultExplorerOptions[i]; i++) {
+        var itemKey = 'expCache_' + item.type;
+        optionsList.push(itemKey);
+        cacheList.push(itemKey);
+    }
+    var exploreCache = {};
+    cacheList.forEach(function(key) {
+        exploreCache[key] = storage[key];
+    });
+    var defaultExplorerOptionsObj = {};
+    var explorerOptionsObj = {};
+    var explorerQualityList = {};
+    var __storage;
+    var storage = {};
+    __storage = storage;
+    var explorerOptions = {};
     var explore = {
         domCache: {
             container: document.getElementById('explore_block'),
@@ -755,7 +773,7 @@ define([
                 this.minHeight = height;
             }
 
-            var cache = engine.exploreCache[this.cacheName];
+            var cache = exploreCache[this.cacheName];
             if (cache && cache.content) {
                 explore.writeCategoryContent(this.type, cache.content, page);
             }
@@ -873,7 +891,7 @@ define([
         },
         calculateSize: function(type) {
             "use strict";
-            var options = engine.explorerOptionsObj[type];
+            var options = explorerOptionsObj[type];
             var categoryObj = this.varCache.categoryList[type];
             var fontSize = this.width2fontSize(type, options.width);
 
@@ -893,7 +911,7 @@ define([
             }
         },
         getCategoryDisplayItemCount: function(type) {
-            var explorerOptions = engine.explorerOptionsObj[type];
+            var explorerOptions = explorerOptionsObj[type];
             var lineCount = explorerOptions.lineCount;
             var width = document.body.clientWidth - 180;
             var itemCount = Math.ceil(width / (explorerOptions.width + 10*2)) - 1;
@@ -908,7 +926,7 @@ define([
         },
         getCategoryItemTitle: function(item) {
             var title;
-            if (item.title_en && engine.settings.useEnglishPosterName) {
+            if (item.title_en && storage.useEnglishPosterName) {
                 title = item.title_en;
             } else {
                 title = item.title;
@@ -918,7 +936,7 @@ define([
         getItemQualityLabel: function (title) {
             "use strict";
             var label = '?';
-            var qualityObj = engine.explorerQualityList[title];
+            var qualityObj = explorerQualityList[title];
             label = qualityObj && qualityObj.label || label;
             return label;
         },
@@ -928,7 +946,7 @@ define([
             content = content || [];
             var contentLen = content.length;
             var categoryObj = this.varCache.categoryList[type];
-            var explorerOptions = engine.explorerOptionsObj[type];
+            var explorerOptions = explorerOptionsObj[type];
             var sourceOptions = this.sourceOptions[type];
 
 
@@ -1062,7 +1080,7 @@ define([
             }
 
             var categoryObj = this.varCache.categoryList[type];
-            var cache = engine.exploreCache[categoryObj.cacheName];
+            var cache = exploreCache[categoryObj.cacheName];
 
             var content = [];
             source.xhr_content.sort(function(a,b){return a[0] > b[0] ? 1 : -1;});
@@ -1088,7 +1106,7 @@ define([
             var storage = {};
             storage[categoryObj.cacheName] = cache;
             chrome.storage.local.set(storage);
-            if (engine.settings.enableFavoriteSync && type === 'favorites') {
+            if (__storage.enableFavoriteSync && type === 'favorites') {
                 chrome.storage.sync.set(storage);
             }
         },
@@ -1109,7 +1127,7 @@ define([
         },
         getCategoryContent: function(type) {
             var categoryObj = this.varCache.categoryList[type];
-            var cache = engine.exploreCache[categoryObj.cacheName];
+            var cache = exploreCache[categoryObj.cacheName];
             var source = this.sourceOptions[type];
             if (source.noAutoUpdate) {
                 this.writeCategoryContent(type, cache.content);
@@ -1150,11 +1168,11 @@ define([
             var categoryObj = this.varCache.categoryList[type];
             categoryObj.body.style.minHeight = '';
             categoryObj.minHeight = '';
-            var cache = engine.exploreCache[categoryObj.cacheName];
+            var cache = exploreCache[categoryObj.cacheName];
             this.writeCategoryContent(categoryObj.type, cache.content, categoryObj.currentPage, 1);
         },
         getSetupBody: function(type) {
-            var options = engine.explorerOptionsObj[type];
+            var options = explorerOptionsObj[type];
             var source = this.sourceOptions[type];
             var categoryObj = this.varCache.categoryList[type];
 
@@ -1181,7 +1199,7 @@ define([
                             onChangeRange = setTimeout(function() {
                                 explore.updateCategoryContent(type);
 
-                                chrome.storage.local.set({explorerOptions: engine.explorerOptions});
+                                chrome.storage.local.set({explorerOptions: explorerOptions});
                             }, 250);
                         }]
                     }),
@@ -1190,7 +1208,7 @@ define([
                         title: chrome.i18n.getMessage('default'),
                         on: ['click', function(e) {
                             e.preventDefault();
-                            var defaultOptions = engine.defaultExplorerOptionsObj[type];
+                            var defaultOptions = defaultExplorerOptionsObj[type];
                             range.value = defaultOptions.width;
                             range.dispatchEvent(new CustomEvent('input'));
                         }]
@@ -1217,7 +1235,7 @@ define([
                             options.lineCount = parseInt(value);
                             explore.updateCategoryContent(type);
 
-                            chrome.storage.local.set({explorerOptions: engine.explorerOptions});
+                            chrome.storage.local.set({explorerOptions: explorerOptions});
                         }]
                     })
                 ]
@@ -1273,7 +1291,7 @@ define([
                 categoryObj.li.classList.add(className);
             };
 
-            var urlTemplate = source.url.replace('%category%', engine.settings.kinopoiskFolderId);
+            var urlTemplate = source.url.replace('%category%', __storage.kinopoiskFolderId);
             (function getPage(page) {
                 source.xhr = utils.request({
                     url: urlTemplate.replace('%page%', page)
@@ -1308,7 +1326,7 @@ define([
                     explore.writeCategoryContent(type, contentList, currentPage, 1);
 
                     var storage = {};
-                    engine.exploreCache[categoryObj.cacheName] = storage[categoryObj.cacheName] = {
+                    exploreCache[categoryObj.cacheName] = storage[categoryObj.cacheName] = {
                         content: contentList
                     };
 
@@ -1319,7 +1337,7 @@ define([
             })(1);
         },
         writeCategoryList: function () {
-            for (var i = 0, item; item = engine.explorerOptions[i]; i++) {
+            for (var i = 0, item; item = explorerOptions[i]; i++) {
                 if (!item.enable) continue;
 
                 var source = this.sourceOptions[item.type];
@@ -1335,7 +1353,7 @@ define([
                                 class: 'open',
                                 target: '_blank',
                                 title: chrome.i18n.getMessage('goToTheWebsite'),
-                                href: source.url.replace('%page%', 1).replace('%category%', engine.settings.kinopoiskFolderId)
+                                href: source.url.replace('%page%', 1).replace('%category%', __storage.kinopoiskFolderId)
                             }),
                             dom.el('div', {
                                 class: 'update',
@@ -1386,7 +1404,7 @@ define([
                                 var li = this.parentNode;
                                 var type = li.dataset.type;
                                 var categoryObj = explore.varCache.categoryList[type];
-                                var options = engine.explorerOptionsObj[type];
+                                var options = explorerOptionsObj[type];
 
                                 if (options.show) {
                                     options.show = 0;
@@ -1398,7 +1416,7 @@ define([
                                     explore.getCategoryContent(type);
                                 }
 
-                                chrome.storage.local.set({explorerOptions: engine.explorerOptions});
+                                chrome.storage.local.set({explorerOptions: explorerOptions});
                             }]
                         }),
                         categoryObj.pageEl = dom.el('ul', {
@@ -1419,12 +1437,12 @@ define([
         },
         saveFavorites: function () {
             var fCategoryObj = this.varCache.categoryList.favorites;
-            var fCache = engine.exploreCache[fCategoryObj.cacheName];
+            var fCache = exploreCache[fCategoryObj.cacheName];
 
             var storage = {};
             storage[fCategoryObj.cacheName] = fCache;
             chrome.storage.local.set(storage);
-            if (engine.settings.enableFavoriteSync) {
+            if (__storage.enableFavoriteSync) {
                 chrome.storage.sync.set(storage);
             }
         },
@@ -1442,7 +1460,7 @@ define([
 
             var sourceOptions = this.sourceOptions[type];
             var categoryObj = this.varCache.categoryList[type];
-            var cache = engine.exploreCache[categoryObj.cacheName];
+            var cache = exploreCache[categoryObj.cacheName];
             var item = cloneObj(cache.content[index]);
 
             item.img = this.addRootUrl(item.img, sourceOptions.imgUrl);
@@ -1452,7 +1470,7 @@ define([
             delete item.title_en;
 
             var fCategoryObj = this.varCache.categoryList.favorites;
-            var fCache = engine.exploreCache[fCategoryObj.cacheName];
+            var fCache = exploreCache[fCategoryObj.cacheName];
             if (!fCache.content) {
                 fCache.content = [];
             }
@@ -1469,7 +1487,7 @@ define([
             var index = parseInt(el.dataset.index);
 
             var categoryObj = this.varCache.categoryList[type];
-            var cache = engine.exploreCache[categoryObj.cacheName];
+            var cache = exploreCache[categoryObj.cacheName];
 
             cache.content.splice(index, 1);
 
@@ -1484,7 +1502,7 @@ define([
             var index = parseInt(el.dataset.index);
 
             var categoryObj = this.varCache.categoryList[type];
-            var cache = engine.exploreCache[categoryObj.cacheName];
+            var cache = exploreCache[categoryObj.cacheName];
 
             var item = cache.content[index];
 
@@ -1517,258 +1535,6 @@ define([
             ]);
             $body.addClass('favoriteItemEdit');
         },
-        /*getTorrentWeight: function(ratingObj) {
-            ratingObj.sum -= (ratingObj.rate.seed + ratingObj.rate.music + ratingObj.rate.audio + ratingObj.rate.books + ratingObj.rate.xxx);
-            return ratingObj.sum;
-        },*/
-        /*getTop5Response: function(torrentList, tracker) {
-            var now = Date.now();
-            var maxTime = 180*24*60*60*1000;
-            var hYearAgo = now - maxTime;
-
-            var minTitleRate = 170;
-
-            var quickSearchResultList = this.varCache.quickSearchResultList;
-            var searchResultCounter = view.varCache.searchResultCounter;
-
-            for (var i = 0, torrentObj; torrentObj = torrentList[i]; i++) {
-                torrentObj.lowerCategoryTitle = !torrentObj.categoryTitle ? '' : torrentObj.categoryTitle.toLowerCase();
-                if (engine.settings.teaserFilter && view.teaserFilter(torrentObj.title + ' ' + torrentObj.lowerCategoryTitle)) {
-                    continue;
-                }
-                if (torrentObj.date < hYearAgo) {
-                    torrentObj.quality += 100 * (hYearAgo - torrentObj.date) / maxTime;
-                }
-                var titleObj = view.hlTextToFragment(torrentObj.title, this.varCache.requestObj);
-                var ratingObj = rate.rateText(this.varCache.requestObj, titleObj, torrentObj);
-
-                if (ratingObj.rate.title < minTitleRate) {
-                    continue;
-                }
-
-                torrentObj.quality = this.getTorrentWeight(ratingObj);
-
-                torrentObj.rating = ratingObj;
-                torrentObj.titleObj = titleObj;
-
-                torrentObj.size && dom.el(titleObj.node, {
-                    append: [
-                        ', ',
-                        view.formatSize(torrentObj.size)
-                    ]
-                });
-
-                quickSearchResultList.push(torrentObj);
-
-                searchResultCounter.tracker[tracker.id]++;
-                searchResultCounter.category[undefined]++;
-                searchResultCounter.sum++;
-            }
-
-            view.resultCounterUpdate();
-
-            quickSearchResultList.sort(function(a,b) {
-                if (a.quality > b.quality) {
-                    return -1;
-                } else
-                if (a.quality === b.quality) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            });
-
-            quickSearchResultList.splice(5);
-
-            var top5List = [];
-            for (i = 0, torrentObj; torrentObj = quickSearchResultList[i]; i++) {
-                if (!torrentObj.titleObj) {
-                    continue;
-                }
-                top5List.push({
-                    id: tracker.id,
-                    quality: torrentObj.rating.quality,
-                    titleObj: mono.domToTemplate(torrentObj.titleObj.node),
-                    url: torrentObj.url
-                });
-            }
-            return top5List;
-        },*/
-        /*updateInfoPopup: function(qualityLabel, qualityObj, request) {
-            var label = qualityObj && qualityObj.label || '?';
-            qualityLabel.replaceChild(document.createTextNode(label), qualityLabel.firstChild);
-
-            if (this.domCache.infoPopup.parentNode !== qualityLabel) {
-                return;
-            }
-
-            this.domCache.infoPopup.style.display = 'none';
-            this.domCache.infoPopupList.textContent = '';
-
-            if (!qualityObj || qualityObj.list.length === 0) {
-                return;
-            }
-
-            var list = document.createDocumentFragment();
-            for (var i = 0, torrentObj; torrentObj = qualityObj.list[i]; i++) {
-                list.appendChild(dom.el('li', {
-                    append: dom.el('a', {
-                        data: {
-                            index: i
-                        },
-                        append: mono.templateToDom(torrentObj.titleObj),
-                        href: torrentObj.url,
-                        target: '_blank',
-                        onCreate: function() {
-                            this.title = this.textContent;
-                        }
-                    })
-                }));
-            }
-
-            this.domCache.infoPopupList.appendChild(list);
-            this.domCache.infoPopup.style.display = 'block';
-        },*/
-        /*limitQualityList: function(obj) {
-            var list = [];
-            for (var key in obj) {
-                list.push([key, obj[key].createTime || 0]);
-            }
-            list.sort(function(a,b) {
-                if (a[1] > b[1]) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            });
-            list.splice(0, this.varCache.qualityListLimit);
-            for (var i = 0, item; item = list[i]; i++) {
-                delete obj[item[0]];
-            }
-        },*/
-        /*onSearchSuccess: function(qualityLabel, tracker, request, data) {
-            view.setOnSuccessStatus(tracker, data);
-            if (data.requireAuth) {
-                return;
-            }
-
-            var torrentList = data.torrentList;
-            var topList = this.getTop5Response(torrentList, tracker);
-            var qualityObj = {
-                createTime: parseInt(Date.now() / 1000),
-                list: topList,
-                label: topList.length > 0 && topList[0].quality || undefined
-            };
-
-            this.updateInfoPopup(qualityLabel, qualityObj, request);
-
-            engine.explorerQualityList[request] = qualityObj;
-
-            if (Object.keys(engine.explorerQualityList).length > this.varCache.qualityListLimit) {
-                this.limitQualityList(engine.explorerQualityList);
-            }
-
-            chrome.storage.local.set({explorerQualityList: engine.explorerQualityList});
-        },*/
-        /*onClickQuality: function(el, e) {
-            e.preventDefault();
-            var qualityLabel = el;
-            el = el.parentNode;
-
-            qualityLabel.replaceChild(document.createTextNode('*'), qualityLabel.firstChild);
-
-            var li = el.parentNode;
-            while (li.tagName !== 'LI' || !li.dataset.type) {
-                li = li.parentNode;
-            }
-
-            var type = li.dataset.type;
-            var index = parseInt(el.dataset.index);
-
-            var categoryObj = this.varCache.categoryList[type];
-            var cache = engine.exploreCache[categoryObj.cacheName];
-            var item = cache.content[index];
-
-            var request = this.getCategoryItemTitle(item);
-            this.varCache.requestObj = {};
-            request = view.prepareRequest(request, undefined, this.varCache.requestObj);
-
-            view.inHistory(this.varCache.requestObj);
-
-            var trackerList = view.getTrackerList();
-
-            view.resultCounterReset();
-            this.varCache.quickSearchResultList = [];
-            exKit.searchList(trackerList, request, {
-                onSuccess: this.onSearchSuccess.bind(this, qualityLabel),
-                onError: view.onSearchError,
-                onBegin: view.onSearchBegin
-            });
-        },*/
-        /*setInfoPopupPos: function(el, infoPopup, corner) {
-            var width = 300;
-
-            var parent = el;
-            var labelPos = {
-                left: 0,
-                top: 0
-            };
-            while (parent.offsetParent !== null) {
-                labelPos.left += parent.offsetLeft;
-                labelPos.top += parent.offsetTop;
-                parent = parent.offsetParent;
-            }
-            var rLabelPos = getPosition(el);
-
-            var labelSize = getSize(el);
-
-            var docWidth = document.body.clientWidth;
-            var anglPos = labelPos.left + labelSize.width / 2;
-            var rigthPos = anglPos + width / 2;
-            var leftPos = anglPos - width / 2;
-            if (rigthPos > docWidth) {
-                rigthPos = docWidth - width / 2;
-                leftPos = docWidth - width;
-            }
-            if (leftPos < 0) {
-                leftPos = 0;
-                rigthPos = width;
-            }
-
-            var cornerPersent = 100 * (anglPos - leftPos) / width;
-
-            leftPos -= rLabelPos.left;
-            labelPos.top -= rLabelPos.top;
-
-            corner.style.left = cornerPersent + '%';
-            infoPopup.style.left = leftPos + 'px';
-            infoPopup.style.top = (labelPos.top + labelSize.height - 5) + 'px';
-        },*/
-        /*onMouseEnterQuality: function(el, type, index) {
-            var infoPopup = this.domCache.infoPopup;
-
-            if (infoPopup.dataset.type === type && parseInt(infoPopup.dataset.index) === index) {
-                return;
-            }
-            infoPopup.dataset.type = type;
-            infoPopup.dataset.index = index;
-
-            var infoPopupCorner = this.domCache.infoPopupCorner;
-            this.setInfoPopupPos(el, infoPopup, infoPopupCorner);
-
-            var categoryObj = this.varCache.categoryList[type];
-            var cache = engine.exploreCache[categoryObj.cacheName];
-            var item = cache.content[index];
-
-            var request = this.getCategoryItemTitle(item);
-            request = view.prepareRequest(request, 1);
-
-            var qualityObj = engine.explorerQualityList[request];
-
-            el.appendChild(infoPopup);
-
-            this.updateInfoPopup(el, qualityObj, request);
-        },*/
         once: function once() {
             if (once.inited) return;
             once.inited = 1;
@@ -1779,7 +1545,7 @@ define([
 
                 for (var type in this.varCache.categoryList) {
                     var categoryObj = this.varCache.categoryList[type];
-                    var options = engine.explorerOptionsObj[type];
+                    var options = explorerOptionsObj[type];
                     if (options.show && categoryObj.displayItemCount !== this.getCategoryDisplayItemCount(type)) {
                         this.updateCategoryContent(type);
                     }
@@ -1821,7 +1587,7 @@ define([
                 var index = parseInt(this.dataset.index);
 
                 var categoryObj = explore.varCache.categoryList[type];
-                var cache = engine.exploreCache[categoryObj.cacheName];
+                var cache = exploreCache[categoryObj.cacheName];
                 var item = cloneObj(cache.content[index]);
 
                 var request = explore.getCategoryItemTitle(item);
@@ -1830,7 +1596,7 @@ define([
 
                 var listIndex = parseInt(el.dataset.index);
 
-                var qualityObj = engine.explorerQualityList[request];
+                var qualityObj = explorerQualityList[request];
 
                 if (!qualityObj) return;
 
@@ -1853,9 +1619,9 @@ define([
 
             this.writeCategoryList();
 
-            if (engine.settings.enableFavoriteSync) {
+            if (__storage.enableFavoriteSync) {
                 chrome.storage.onChanged.addListener(function(changes, areaName) {
-                    var aName = engine.settings.enableFavoriteSync ? 'sync' : 'local';
+                    var aName = __storage.enableFavoriteSync ? 'sync' : 'local';
                     if (areaName !== aName) {
                         return;
                     }
@@ -1864,11 +1630,11 @@ define([
                     }
                     var cache = changes.expCache_favorites.newValue || {};
                     var type = 'favorites';
-                    if (JSON.stringify(engine.exploreCache.expCache_favorites) === JSON.stringify(cache)) {
+                    if (JSON.stringify(exploreCache.expCache_favorites) === JSON.stringify(cache)) {
                         return;
                     }
-                    engine.exploreCache.expCache_favorites = cache;
-                    var options = engine.explorerOptionsObj[type];
+                    exploreCache.expCache_favorites = cache;
+                    var options = explorerOptionsObj[type];
                     if (options.enable && options.show) {
                         explore.updateCategoryContent(type);
                     }
@@ -1889,21 +1655,21 @@ define([
                     this.domCache.gallery.classList.remove('sortMode');
 
                     var typeList = [];
-                    var explorerOptions = [];
+                    var _explorerOptions = [];
                     var type;
                     for (var i = 0, node, childNodes = this.domCache.gallery.childNodes; node = childNodes[i]; i++) {
                         type = node.dataset.type;
                         typeList.push(type);
-                        explorerOptions.push(engine.explorerOptionsObj[type]);
+                        _explorerOptions.push(explorerOptionsObj[type]);
                     }
-                    for (type in engine.explorerOptionsObj) {
+                    for (type in explorerOptionsObj) {
                         if (typeList.indexOf(type) === -1) {
-                            explorerOptions.push(engine.explorerOptionsObj[type]);
+                            _explorerOptions.push(explorerOptionsObj[type]);
                         }
                     }
-                    engine.explorerOptions = explorerOptions;
+                    explorerOptions = _explorerOptions;
 
-                    chrome.storage.loca.set({explorerOptions: engine.explorerOptions});
+                    chrome.storage.loca.set({explorerOptions: explorerOptions});
                 }.bind(this)
             });
 
@@ -1919,7 +1685,7 @@ define([
                     var index = parseInt(pic.dataset.index);
 
                     var categoryObj = this.varCache.categoryList[type];
-                    var cache = engine.exploreCache[categoryObj.cacheName];
+                    var cache = exploreCache[categoryObj.cacheName];
 
                     var item = cache.content.splice(index, 1)[0];
                     if (!nextLi) {
@@ -1936,6 +1702,14 @@ define([
                     this.updateCategoryContent('favorites');
                     this.saveFavorites();
                 }.bind(this)
+            });
+        },
+        init: function (cb) {
+            chrome.storage.local.get({
+
+            }, function (_storage) {
+                storage = __storage = _storage;
+                cb();
             });
         }
     };
