@@ -75,16 +75,22 @@ require([
 
             utils.bindClearBtn(searchClear, searchInput);
 
-            (function (submit) {
+            (function (submit, input) {
                 submit.addEventListener('click', function(e) {
                     e.preventDefault();
-                    var query = searchInput.value.trim();
+                    var query = '';
+                    if (e.detail && e.detail.query) {
+                        query = e.detail.query;
+                    } else {
+                        query = input.value;
+                    }
+                    query = query.trim();
                     pageController
                         .set('profileId', profileController.profile.id)
                         .set('query', query)
                         .go();
                 });
-            })(searchSubmit);
+            })(searchSubmit, searchInput);
 
             var initAutoComplete = function (input, submit) {
                 var lastHistoryRequest = null;
@@ -158,7 +164,17 @@ require([
                     };
                 })();
 
-                $(input).autocomplete({
+                var $input = $(input);
+
+                searchSubmit.addEventListener('click', function () {
+                    $input.autocomplete('close');
+                    $input.autocomplete('disable');
+                    setTimeout(function() {
+                        $input.autocomplete('enable');
+                    }, 1000);
+                });
+
+                $input.autocomplete({
                     minLength: 0,
                     delay: 100,
                     position: {
@@ -178,12 +194,8 @@ require([
                         }
                     },
                     select: function(e, ui) {
-                        if (lastHistoryRequest) {
-                            lastHistoryRequest.abort();
-                            lastHistoryRequest = null;
-                        }
-
-                        submit.dispatchEvent(new CustomEvent('click', {cancelable: true, detail: {query: ui.item.value}}));
+                        e.preventDefault();
+                        submit.dispatchEvent(new CustomEvent('click', {cancelable: true, detail: {query: input.value}}));
                     },
                     create: function() {
                         var hasTopShadow = false;

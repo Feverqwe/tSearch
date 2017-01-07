@@ -164,7 +164,8 @@ require([
                 }
             },
             select: function(e, ui) {
-                submit.dispatchEvent(new CustomEvent('click', {cancelable: true, detail: {query: ui.item.value}}));
+                e.preventDefault();
+                submit.dispatchEvent(new CustomEvent('click', {cancelable: true, detail: {query: input.value}}));
             },
             create: function() {
                 var hasTopShadow = false;
