@@ -882,6 +882,10 @@ a.tracker {
     opacity: 1;
 }
 
+.explore {
+    margin-top: 8px;
+}
+
 .explore.explore-hide {
     display: none;
 }
