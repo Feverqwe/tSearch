@@ -6,9 +6,8 @@ require.config({
     baseUrl: './js'
 });
 require([
-    './lib/promise.min',
     './module/utils'
-], function (Promise, utils) {
+], function (utils) {
     var initIcon = function (storage, reset) {
         if (reset) {
             chrome.browserAction.setIcon({
