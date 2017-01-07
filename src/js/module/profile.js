@@ -296,6 +296,7 @@ define([
         ee.on('stateReset', onStateReset);
 
         this.id = profile.id;
+        this.name = profile.name;
         this.trackers = wrappedTrackers;
         this.trackerIdTracker = trackerIdTracker;
         this.reload = function () {

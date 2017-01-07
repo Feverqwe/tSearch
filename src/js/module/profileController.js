@@ -13,7 +13,6 @@ define([
             for (var key in profileIdProfileMap) {
                 delete profileIdProfileMap[key];
             }
-            var currentProfileId = storage.currentProfileId;
             var profiles = storage.profiles;
             if (profiles.length === 0) {
                 profiles.push(ProfileManager.prototype.getDefaultProfile(profileIdProfileMap));
@@ -36,15 +35,19 @@ define([
 
             self.setSelectOptions(profiles);
 
+            var currentProfileId = storage.currentProfileId;
             if (!profileIdProfileMap[currentProfileId]) {
-                currentProfileId = storage.currentProfileId = profiles[0].id;
+                storage.currentProfileId = profiles[0].id;
             }
-
-            self.select(currentProfileId);
         };
 
         ee.on('reloadProfiles', function () {
             load();
+            self.select(activeProfile.id);
+        });
+
+        ee.on('selectProfileById', function (id) {
+            self.select(id);
         });
 
         this.profile = activeProfile;

@@ -34,9 +34,15 @@ require([
             var load = function () {
                 var queryString = location.hash.substr(1);
                 var queryObj = utils.hashParseParam(queryString);
+                var value;
                 for (var key in queryObj) {
+                    value = queryObj[key];
+                    // legacy support
+                    if (key === '?query') {
+                        key = 'query';
+                    }
                     if (key) {
-                        params[key] = queryObj[key];
+                        params[key] = value;
                     }
                 }
             };
@@ -66,22 +72,36 @@ require([
                 load();
             };
             var applyUrl = function () {
+                var title = document.title = getTitle();
+                history.replaceState(null, title, location.href);
+
                 var profileId = get('profileId');
                 if (!profileController.profileIdProfileMap[profileId]) {
                     remove('profileId');
                     profileId = null;
                 }
-                if (profileId) {
-                    profileController.select(profileId);
+                if (!profileId) {
+                    profileId = storage.currentProfileId;
                 }
+                ee.trigger('selectProfileById', [profileId]);
+
                 var query = get('query');
                 if (typeof query === 'string') {
-                    document.title = params.query + '  :: TMS';
+                    ee.trigger('setSearchQuery', [query]);
                     ee.trigger('search', [query]);
                 } else {
-                    document.title = 'Torrents MultiSearch';
                     ee.trigger('stateReset');
                 }
+            };
+            var getTitle = function () {
+                var title;
+                var query = get('query');
+                if (typeof query === 'string') {
+                    title = query + ' :: TMS';
+                } else {
+                    title = 'Torrents MultiSearch';
+                }
+                return title;
             };
 
             window.addEventListener('popstate', function () {
@@ -96,13 +116,13 @@ require([
                 clear: clear,
                 applyUrl: applyUrl,
                 go: function () {
-                    var title = document.title;
                     var url = location.origin + location.pathname;
                     var hash = utils.hashParam(params);
                     if (hash) {
                         url += '#' + hash;
                     }
-                    window.history.pushState(hash, title, url);
+                    window.history.pushState(null, "", url);
+                    applyUrl();
                 }
             };
             load();
@@ -115,6 +135,11 @@ require([
             var searchInput = document.querySelector('.input__input-search');
             var searchClear = document.querySelector('.input__clear-search');
             var searchSubmit = document.querySelector('.search__submit');
+
+            ee.on('setSearchQuery', function (query) {
+                searchInput.value = query;
+                searchInput.dispatchEvent(new CustomEvent('keyup'));
+            });
 
             (function (input, submit) {
                 var discard = function () {
@@ -142,8 +167,6 @@ require([
                     e.preventDefault();
                     var query = searchInput.value.trim();
                     pageUrl.set('profileId', profileController.profile.id).set('query', query).go();
-                    document.title = query + '  :: TMS';
-                    ee.trigger('search', [query]);
                 });
             })(searchSubmit);
 
@@ -274,8 +297,6 @@ require([
             main.addEventListener('click', function (e) {
                 e.preventDefault();
                 pageUrl.clear().go();
-                document.title = 'Torrents MultiSearch';
-                ee.trigger('stateReset');
             });
         })();
 
@@ -745,7 +766,7 @@ require([
                 chrome.storage.local.set({
                     currentProfileId: storage.currentProfileId = id
                 }, function () {
-                    profileController.select(id);
+                    ee.trigger('selectProfileById', [id]);
                 });
             });
 

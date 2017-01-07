@@ -370,7 +370,7 @@ define([
         };
     };
     ProfileManager.prototype.getProfileId = function (profileIdProfileMap) {
-        var id = 0;
+        var id = 1;
         while (profileIdProfileMap[id]) {
             id++;
         }
