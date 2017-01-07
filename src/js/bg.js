@@ -44,7 +44,7 @@ require([
                     contexts: ["selection"],
                     onclick: function (info) {
                         var request = info.selectionText;
-                        var params = request && '#' + utils.param({
+                        var params = request && '#' + utils.hashParam({
                             query: request
                         });
                         chrome.tabs.create({
@@ -87,7 +87,7 @@ require([
     };
     var initOmniboxListener = function () {
         var listener = function (request) {
-            var params = request && '#' + utils.param({
+            var params = request && '#' + utils.hashParam({
                 query: request
             });
             chrome.tabs.create({

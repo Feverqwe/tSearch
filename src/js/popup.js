@@ -60,7 +60,7 @@ require([
             }
             query = query.trim();
             if (query) {
-                query = '#' + utils.param({
+                query = '#' + utils.hashParam({
                     query: query
                 });
             }

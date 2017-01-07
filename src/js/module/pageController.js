@@ -72,7 +72,7 @@ define([
         };
         this.getUrl = function () {
             var url = location.origin + location.pathname;
-            var hash = utils.param(params);
+            var hash = utils.hashParam(params);
             if (hash) {
                 url += '#' + hash;
             }
