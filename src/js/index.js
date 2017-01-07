@@ -37,7 +37,7 @@ require([
             var title;
             var query = pageController.get('query');
             if (typeof query === 'string') {
-                title = query + ' :: TMS';
+                title = JSON.stringify(query) + ' :: TMS';
             } else {
                 title = 'Torrents MultiSearch';
             }
