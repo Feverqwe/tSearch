@@ -994,8 +994,8 @@ define([
             var elCount = 0;
             for (var index = form; index < end; index++) {
                 var title = this.getCategoryItemTitle(content[index]);
-                var search_link = 'index.html#?' + utils.hashParam({
-                        search: title
+                var search_link = 'index.html#' + utils.hashParam({
+                        query: title
                     });
                 var titleEl = dom.el('span', {
                     append: dom.el('a', {
