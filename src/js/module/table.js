@@ -173,7 +173,7 @@ define([
                         storage.clickHistory.splice(pos, 1);
                     }
                     storage.clickHistory.unshift(item);
-                    storage.clickHistory.splice(300);
+                    storage.clickHistory.splice(500);
                     chrome.storage.local.set(storage);
                 });
             }

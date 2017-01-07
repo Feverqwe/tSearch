@@ -216,7 +216,7 @@ define([
                     storage.history.splice(pos, 1);
                 }
                 storage.history.unshift(item);
-                storage.history.splice(100);
+                storage.history.splice(500);
                 chrome.storage.local.set(storage);
             });
         };
