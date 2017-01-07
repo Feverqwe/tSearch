@@ -70,12 +70,12 @@ define([
             if (activeProfile) {
                 activeProfile.destroy();
             }
-            activeProfile = new Profile(profile, resultFilter, self.getTrackerList(), ee, storage);
+            activeProfile = new Profile(profile, resultFilter, self.setTrackerList, ee, storage);
             self.profile = activeProfile;
         };
         this.setSelectOptions = function () {};
         this.setSelectValue = function () {};
-        this.getTrackerList = function () {};
+        this.setTrackerList = function () {};
         this.load = load;
     };
     return ProfileController;

@@ -786,7 +786,7 @@ require([
             profileController.setSelectValue = function (profiles, id) {
                 var index = 0;
                 profiles.some(function (item, i) {
-                    if (item.id == id) {
+                    if (item.id === id) {
                         index = i;
                         return true;
                     }
@@ -797,8 +797,9 @@ require([
                 profileSelectWrapper.syncSelectedIndex();
             };
 
-            profileController.getTrackerList = function () {
-                return trackerList;
+            profileController.setTrackerList = function (trackersNode) {
+                trackerList.textContent = '';
+                trackerList.appendChild(trackersNode);
             };
 
             profileController.load();

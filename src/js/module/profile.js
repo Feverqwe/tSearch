@@ -9,7 +9,7 @@ define([
 ], function (dom, Tracker, Table) {
     var tableParent = document.querySelector('.results');
 
-    var Profile = function (profile, resultFilter, trackerList, ee, storage) {
+    var Profile = function (profile, resultFilter, setTrackerList, ee, storage) {
         var self = this;
         var trackers = storage.trackers;
         var trackerIdTracker = {};
@@ -152,8 +152,7 @@ define([
 
                 trackersNode.appendChild(node);
             });
-            trackerList.textContent = '';
-            trackerList.appendChild(trackersNode);
+            setTrackerList(trackersNode);
         };
 
         var destroyTables = function (index) {
