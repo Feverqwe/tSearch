@@ -184,6 +184,13 @@ define([
                             type: 'checkbox',
                             checked: checked
                         }),
+                        dom.el('img', {
+                            class: ['item__icon'],
+                            src: tracker.meta.icon || tracker.meta.icon64,
+                            on: ['error', function () {
+                                this.src = './img/blank.svg'
+                            }]
+                        }),
                         dom.el('div', {
                             class: 'item__name',
                             text: tracker.meta.name || tracker.id

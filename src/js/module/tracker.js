@@ -73,6 +73,7 @@ define([
             }
         };
         this.id = tracker.id;
+        this.name = tracker.meta.name || tracker.id;
         this.sendMessage = function (message, callback) {
             if (ready) {
                 transport.sendMessage(message, callback);

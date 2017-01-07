@@ -417,6 +417,8 @@ a.simple_select__menu__item {
     width: 16px;
     height: 16px;
     background-size: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 @keyframes rotate360 { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
@@ -531,6 +533,12 @@ a.simple_select__menu__item {
 
 .manager .item:hover {
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+.manager .item__icon {
+    padding-left: 8px;
+    width: 16px;
+    height: 16px;
 }
 
 .manager .item__name {
@@ -661,6 +669,19 @@ a.simple_select__menu__item {
     display: flex;
     flex-direction: column;
     padding: 12px 0;
+}
+
+.table-results .body__row .cell-title .tracker__icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    padding-left: 5px;
+    opacity: 0.5;
+}
+
+.table-results .body__row .cell-title .tracker__icon:hover {
+    opacity: 1;
 }
 
 .table-results .body__row .cell-title a {

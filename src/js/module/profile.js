@@ -122,11 +122,12 @@ define([
                 /**
                  * @typedef trackerWrapper
                  * @property {string} id
+                 * @property {string} iconClass
                  * @property {Element} node
                  * @property {Element} iconStyleNode
                  * @property {Element} countNode
                  * @property {Element} iconNode
-                 * @property {Worker} worker
+                 * @property {Tracker} worker
                  * @property {boolean} selected
                  * @property {function} select
                  * @property {function} count

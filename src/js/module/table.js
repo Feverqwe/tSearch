@@ -340,7 +340,7 @@ define([
          * @property {string} categoryTitleLow
          * @property {string} wordFilterLow
          */
-        var getBodyRow = function (/**torrent*/torrent, filterValue, index, highlightMap) {
+        var getBodyRow = function (/**trackerWrapper*/tracker, /**torrent*/torrent, filterValue, index, highlightMap) {
             var row = dom.el('div', {
                 class: ['row', 'body__row'],
                 data: {
@@ -372,6 +372,10 @@ define([
                             });
                         }
                     }
+                    var trackerIcon = dom.el('div', {
+                        class: ['tracker__icon', tracker.iconClass],
+                        title: tracker.worker.name
+                    });
                     row.appendChild(dom.el('div', {
                         class: ['cell', 'row__cell', 'cell-' + type],
                         append: [
@@ -385,14 +389,18 @@ define([
                                         },
                                         target: '_blank',
                                         href: torrent.url,
-                                        append: highlight.insert(torrent.title, highlightMap)
-                                    })
+                                        append: [
+                                            highlight.insert(torrent.title, highlightMap)
+                                        ]
+                                    }),
+                                    trackerIcon
                                 ]
                             }),
                             category && dom.el('div', {
                                 class: ['cell__category'],
                                 append: [
-                                    category
+                                    category,
+                                    trackerIcon
                                 ]
                             })
                         ]
@@ -500,7 +508,7 @@ define([
                  */
                 normalizeTorrent(tracker.id, torrent);
                 var filterValue = resultFilter.getFilterValue(torrent);
-                var node = getBodyRow(torrent, filterValue, tableRows.length, highlightMap);
+                var node = getBodyRow(tracker, torrent, filterValue, tableRows.length, highlightMap);
                 tableRows.push({
                     node: node,
                     query: query,
