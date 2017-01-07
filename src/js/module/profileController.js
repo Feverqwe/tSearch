@@ -10,12 +10,10 @@ define([
         var profileIdProfileMap = {};
         var activeProfile = null;
         var load = function () {
-            for (var key in profileIdProfileMap) {
-                delete profileIdProfileMap[key];
-            }
+            self.refreshProfileIdMap();
             var profiles = storage.profiles;
             if (profiles.length === 0) {
-                profiles.push(ProfileManager.prototype.getDefaultProfile(profileIdProfileMap));
+                profiles.push(ProfileManager.prototype.getDefaultProfile(self));
             }
 
             /**
@@ -29,9 +27,6 @@ define([
              * @property {number} id
              * @property {[profileTracker]} trackers
              */
-            profiles.forEach(function (/**profile*/item) {
-                profileIdProfileMap[item.id] = item;
-            });
 
             self.setSelectOptions(profiles);
 
@@ -51,7 +46,24 @@ define([
         });
 
         this.profile = activeProfile;
-        this.profileIdProfileMap = profileIdProfileMap;
+        this.getProfileById = function (id) {
+            return profileIdProfileMap[id] || null;
+        };
+        this.getProfileId = function () {
+            var id = 1;
+            while (profileIdProfileMap[id]) {
+                id++;
+            }
+            return id;
+        };
+        this.refreshProfileIdMap = function () {
+            for (var key in profileIdProfileMap) {
+                delete profileIdProfileMap[key];
+            }
+            storage.profiles.forEach(function (/**profile*/item) {
+                profileIdProfileMap[item.id] = item;
+            });
+        };
         this.select = function (id) {
             var profile = profileIdProfileMap[id];
             self.setSelectValue(storage.profiles, profile.id);

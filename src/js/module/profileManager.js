@@ -6,7 +6,7 @@ define([
     './utils',
     './dom'
 ], function (utils, dom) {
-    var ProfileManager = function (profiles, profileIdProfileMap, trackers) {
+    var ProfileManager = function (profiles, profileController, trackers) {
         var self = this;
         var layer = null;
 
@@ -99,7 +99,7 @@ define([
                                 text: chrome.i18n.getMessage('newProfile'),
                                 on: ['click', function (e) {
                                     e.preventDefault();
-                                    var profile = self.getDefaultProfile(profileIdProfileMap);
+                                    var profile = self.getDefaultProfile(profileController);
                                     layer.content.textContent = '';
                                     layer.content.appendChild(getProfile(profile, trackers));
                                 }]
@@ -121,7 +121,7 @@ define([
                             if (target.dataset.action === 'edit') {
                                 e.preventDefault();
                                 profileId = target.parentNode.dataset.id;
-                                profile = profileIdProfileMap[profileId];
+                                profile = profileController.getProfileById(profileId);
                                 layer.content.textContent = '';
                                 layer.content.appendChild(getProfile(profile, trackers));
                             } else
@@ -139,23 +139,24 @@ define([
                             text: chrome.i18n.getMessage('save'),
                             on: ['click', function (e) {
                                 e.preventDefault();
-                                var profileIds = [];
+
+                                var existsProfileIds = [];
                                 [].slice.call(profilesNode.childNodes).forEach(function (profileNode) {
                                     var id = profileNode.dataset.id;
-                                    profileIds.push(id);
+                                    existsProfileIds.push(id);
                                 });
 
-                                Object.keys(profileIdProfileMap).forEach(function (id) {
-                                    var profile = profileIdProfileMap[id];
-                                    if (profileIds.indexOf(id) === -1) {
-                                        delete profileIdProfileMap[id];
-
+                                profiles.slice(0).forEach(function (profile) {
+                                    var id = String(profile.id);
+                                    if (existsProfileIds.indexOf(id) === -1) {
                                         var pos = profiles.indexOf(profile);
                                         if (pos !== -1) {
                                             profiles.splice(pos, 1);
                                         }
                                     }
                                 });
+
+                                profileController.refreshProfileIdMap();
 
                                 chrome.storage.local.set({
                                     profiles: profiles
@@ -306,7 +307,7 @@ define([
 
                                 if (profiles.indexOf(profile) === -1) {
                                     profiles.push(profile);
-                                    profileIdProfileMap[profile.id] = profile;
+                                    profileController.refreshProfileIdMap();
                                 }
 
                                 removedTrackerIds.forEach(function (id) {
@@ -369,17 +370,10 @@ define([
             document.addEventListener('click', closeEvent, true);
         };
     };
-    ProfileManager.prototype.getProfileId = function (profileIdProfileMap) {
-        var id = 1;
-        while (profileIdProfileMap[id]) {
-            id++;
-        }
-        return id;
-    };
-    ProfileManager.prototype.getDefaultProfile = function (profileIdProfileMap) {
+    ProfileManager.prototype.getDefaultProfile = function (profileController) {
         return {
             name: chrome.i18n.getMessage('defaultProfileName'),
-            id: this.getProfileId(profileIdProfileMap),
+            id: profileController.getProfileId(),
             trackers: []
         }
     };

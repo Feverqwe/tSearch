@@ -76,7 +76,7 @@ require([
                 history.replaceState(null, title, location.href);
 
                 var profileId = get('profileId');
-                if (!profileController.profileIdProfileMap[profileId]) {
+                if (!profileController.getProfileById(profileId)) {
                     remove('profileId');
                     profileId = null;
                 }
@@ -743,7 +743,7 @@ require([
             manageProfile.addEventListener('click', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                var pm = new ProfileManager(storage.profiles, profileController.profileIdProfileMap, storage.trackers);
+                var pm = new ProfileManager(storage.profiles, profileController, storage.trackers);
                 pm.onSave = function () {
                     ee.trigger('reloadProfiles');
                 };
@@ -762,7 +762,7 @@ require([
             });
 
             profileSelect.addEventListener('change', function () {
-                var id = profileController.profileIdProfileMap[this.value].id;
+                var id = profileController.getProfileById(this.value).id;
                 chrome.storage.local.set({
                     currentProfileId: storage.currentProfileId = id
                 }, function () {
