@@ -22,6 +22,9 @@ require([
         chrome.storage.local.get({
             trackerListHeight: 200,
             currentProfileId: null,
+            hidePeerRow: false,
+            hideSeedRow: false,
+            categoryWordFilter: true,
             profiles: [],
             trackers: {},
             history: [],
@@ -553,6 +556,10 @@ require([
                     inputTo.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
                 };
 
+                if (storage.hideSeedRow) {
+                    dom.closest('.parameter-filter', inputFrom).style.display = 'none';
+                }
+
                 var filter = {
                     type: 'seed',
                     min: 0,
@@ -611,6 +618,10 @@ require([
                     inputFrom.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
                     inputTo.dispatchEvent(new CustomEvent('keyup', {detail: 'stateReset'}));
                 };
+
+                if (storage.hidePeerRow) {
+                    dom.closest('.parameter-filter', inputFrom).style.display = 'none';
+                }
 
                 var filter = {
                     type: 'peer',

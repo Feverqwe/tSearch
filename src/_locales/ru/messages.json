@@ -124,5 +124,35 @@
   },
   "contextMenuTitle": {
     "message": "Найти торрент"
+  },
+  "basic": {
+    "message": "Основные"
+  },
+  "mainPage": {
+    "message": "Главная страница"
+  },
+  "backup": {
+    "message": "Архивирование"
+  },
+  "restore": {
+    "message": "Восстановление"
+  },
+  "hidePeerRow": {
+    "message": "Скрыть столбец \"пиры\" (скачивающие)"
+  },
+  "hideSeedRow": {
+    "message": "Скрыть столбец \"сиды\" (раздающих)"
+  },
+  "categoryWordFilter": {
+    "message": "Учитывать категорию при фильтрации слов"
+  },
+  "contextMenu": {
+    "message": "Добавить поиск в контекстное меню"
+  },
+  "disablePopup": {
+    "message": "Не отображать окно поиска при нажатии на иконку расширения"
+  },
+  "invertIcon": {
+    "message": "Инвертировать цвет иконки расширения"
   }
 }

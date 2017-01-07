@@ -182,6 +182,13 @@ define([
 
     var Table = function (resultFilter, storage) {
         var cells = ['date', 'title', 'size', 'seed', 'peer'];
+        if (storage.hidePeerRow) {
+            cells.splice(cells.indexOf('peer'), 1);
+        }
+        if (storage.hideSeedRow) {
+            cells.splice(cells.indexOf('seed'), 1);
+        }
+
         var sortCells = storage.sortCells;
 
         var getHeadRow = function () {
@@ -321,7 +328,11 @@ define([
 
             torrent.titleLow = torrent.title.toLowerCase();
             torrent.categoryTitleLow = torrent.categoryTitle.toLowerCase();
-            torrent.wordFilterLow = torrent.titleLow + ' ' + torrent.categoryTitleLow;
+            torrent.wordFilterLow = torrent.titleLow;
+
+            if (storage.categoryWordFilter) {
+                torrent.wordFilterLow = torrent.categoryTitleLow + ' ' + torrent.wordFilterLow;
+            }
 
             if (!torrent.categoryUrl) {
                 torrent.categoryUrl = '';
