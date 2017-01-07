@@ -80,7 +80,6 @@ define(function () {
         head = head.split(/\r?\n/);
         var headers = {};
         head.forEach(function(line) {
-            "use strict";
             var sep = line.indexOf(':');
             if (sep === -1) {
                 return;
