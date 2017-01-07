@@ -116,7 +116,6 @@ define([
             gallery: document.querySelector('.explore__gallery')
         },
         varCache: {
-            isHidden: true,
             topListColumnCount: undefined,
             categoryList: {},
             movebleStyleList: {},
@@ -804,16 +803,10 @@ define([
             return parseInt(currentDate.getTime() / 1000) - day * 24 * 60 * 60 - hours * 60 * 60 - minutes * 60 - seconds;
         },
         show: function () {
-            if (!this.varCache.isHidden) return;
-            this.varCache.isHidden = true;
-
             this.once && this.once();
             this.domCache.container.classList.remove('explore-hide');
         },
         hide: function () {
-            if (this.varCache.isHidden) return;
-            this.varCache.isHidden = false;
-
             this.domCache.container.classList.add('explore-hide');
         },
         onSetPage: function (page) {
