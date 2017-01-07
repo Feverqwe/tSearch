@@ -42,6 +42,9 @@ define([
         });
 
         ee.on('selectProfileById', function (id) {
+            if (!profileIdProfileMap[id]) {
+                id = storage.currentProfileId;
+            }
             self.select(id);
         });
 

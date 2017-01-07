@@ -14,8 +14,9 @@ require([
     './lib/EventEmitter.min',
     './module/profileManager',
     './module/filter',
-    './module/profileController'
-], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Filter, ProfileController) {
+    './module/profileController',
+    './module/pageController'
+], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Filter, ProfileController, PageController) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -29,108 +30,19 @@ require([
     }).then(function (storage) {
         document.body.classList.remove('loading');
 
-        var pageUrl = (function () {
-            var params = {};
-            var load = function () {
-                var queryString = location.hash.substr(1);
-                var queryObj = utils.hashParseParam(queryString);
-                var value;
-                for (var key in queryObj) {
-                    value = queryObj[key];
-                    // legacy support
-                    if (key === '?query') {
-                        key = 'query';
-                    }
-                    if (key) {
-                        params[key] = value;
-                    }
-                }
-            };
-            var get = function (key) {
-                if (typeof params[key] === 'string') {
-                    return params[key];
-                } else {
-                    return null;
-                }
-            };
-            var set = function (key, value) {
-                params[key] = value;
-                return controls;
-            };
-            var remove = function (key) {
-                delete  params[key];
-                return controls;
-            };
-            var clear = function () {
-                for (var key in params) {
-                    delete params[key];
-                }
-                return controls;
-            };
-            var reload = function () {
-                clear();
-                load();
-            };
-            var applyUrl = function () {
-                var title = document.title = getTitle();
-
-                var profileId = get('profileId');
-                if (!profileController.getProfileById(profileId)) {
-                    remove('profileId');
-                    profileId = null;
-                }
-                if (!profileId) {
-                    profileId = storage.currentProfileId;
-                }
-                ee.trigger('selectProfileById', [profileId]);
-
-                var query = get('query');
-                if (typeof query === 'string') {
-                    ee.trigger('setSearchQuery', [query]);
-                    ee.trigger('search', [query]);
-                } else {
-                    ee.trigger('stateReset');
-                }
-
-                history.replaceState(null, title, location.href);
-            };
-            var getTitle = function () {
-                var title;
-                var query = get('query');
-                if (typeof query === 'string') {
-                    title = query + ' :: TMS';
-                } else {
-                    title = 'Torrents MultiSearch';
-                }
-                return title;
-            };
-
-            window.addEventListener('popstate', function () {
-                reload();
-                applyUrl();
-            });
-
-            var controls = {
-                get: get,
-                set: set,
-                remove: remove,
-                clear: clear,
-                applyUrl: applyUrl,
-                go: function () {
-                    var url = location.origin + location.pathname;
-                    var hash = utils.hashParam(params);
-                    if (hash) {
-                        url += '#' + hash;
-                    }
-                    window.history.pushState(null, "", url);
-                    applyUrl();
-                }
-            };
-            load();
-            return controls;
-        })();
-
         var ee = new EventEmitter();
+
+        var pageController = new PageController(ee);
+        pageController.getTitle = function () {
+            var title;
+            var query = pageController.get('query');
+            if (typeof query === 'string') {
+                title = query + ' :: TMS';
+            } else {
+                title = 'Torrents MultiSearch';
+            }
+            return title;
+        };
 
         (function () {
             var searchInput = document.querySelector('.input__input-search');
@@ -167,7 +79,10 @@ require([
                 submit.addEventListener('click', function(e) {
                     e.preventDefault();
                     var query = searchInput.value.trim();
-                    pageUrl.set('profileId', profileController.profile.id).set('query', query).go();
+                    pageController
+                        .set('profileId', profileController.profile.id)
+                        .set('query', query)
+                        .go();
                 });
             })(searchSubmit);
 
@@ -297,7 +212,9 @@ require([
             var main = document.querySelector('.menu__btn-main');
             main.addEventListener('click', function (e) {
                 e.preventDefault();
-                pageUrl.clear().go();
+                pageController
+                    .clear()
+                    .go();
             });
         })();
 
@@ -827,6 +744,6 @@ require([
             }, 50);
         })(profileController);
 
-        pageUrl.applyUrl();
+        pageController.applyUrl();
     });
 });
