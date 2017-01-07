@@ -4,6 +4,14 @@ body {
     font-size: 14px;
 }
 
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 a:link {
     color: #1A3DC1;
 }
