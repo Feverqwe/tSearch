@@ -5,7 +5,7 @@
 define([
     './utils'
 ], function (utils) {
-    var PageController = function (ee) {
+    var PageController = function () {
         var self = this;
         var params = {};
         var load = function () {
@@ -52,24 +52,7 @@ define([
             }
             return self;
         };
-        this.applyUrl = function () {
-            var title = document.title = self.getTitle();
-
-            var profileId = self.get('profileId');
-            ee.trigger('selectProfileById', [profileId]);
-
-            var query = self.get('query');
-            if (typeof query === 'string') {
-                ee.trigger('setSearchQuery', [query]);
-                ee.trigger('search', [query]);
-            } else {
-                ee.trigger('stateReset');
-            }
-
-            var url = self.getUrl();
-
-            history.replaceState(null, title, url);
-        };
+        this.applyUrl = function () {};
         this.getUrl = function () {
             var url = location.origin + location.pathname;
             var hash = utils.hashParam(params);

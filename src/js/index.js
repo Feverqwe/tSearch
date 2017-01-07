@@ -15,8 +15,9 @@ require([
     './module/profileManager',
     './module/filter',
     './module/profileController',
-    './module/pageController'
-], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Filter, ProfileController, PageController) {
+    './module/pageController',
+    './module/explore'
+], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Filter, ProfileController, PageController, explore) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -35,7 +36,7 @@ require([
 
         var ee = new EventEmitter();
 
-        var pageController = new PageController(ee);
+        var pageController = new PageController();
         pageController.getTitle = function () {
             var title;
             var query = pageController.get('query');
@@ -45,6 +46,28 @@ require([
                 title = 'Torrents MultiSearch';
             }
             return title;
+        };
+        pageController.applyUrl = function () {
+            var self = pageController;
+            var title = document.title = self.getTitle();
+
+            var profileId = self.get('profileId');
+            ee.trigger('selectProfileById', [profileId]);
+
+            var query = self.get('query');
+            if (typeof query === 'string') {
+                ee.trigger('setSearchQuery', [query]);
+                ee.trigger('search', [query]);
+            } else {
+                ee.trigger('stateReset');
+                explore.init(function () {
+                    explore.show();
+                });
+            }
+
+            var url = self.getUrl();
+
+            history.replaceState(null, title, url);
         };
 
         (function () {
