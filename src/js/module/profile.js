@@ -188,6 +188,32 @@ define([
             };
         };
 
+        var inHistory = function (query) {
+            var item = {
+                query: query,
+                profileId: profile.if,
+                time: parseInt(Date.now() / 1000)
+            };
+
+            chrome.storage.local.get({
+                history: []
+            }, function (storage) {
+                var pos = -1;
+                storage.history.some(function (item, index) {
+                    if (item.query === item.query) {
+                        pos = index;
+                        return true;
+                    }
+                });
+                if (pos !== -1) {
+                    storage.history.splice(pos, 1);
+                }
+                storage.history.unshift(item);
+                storage.history.splice(100);
+                chrome.storage.local.set(storage);
+            });
+        };
+
         var onSearch = function (query) {
             destroyTables();
 
@@ -219,6 +245,8 @@ define([
                     });
                 }
             });
+
+            inHistory(query);
         };
 
         var createTable = function () {
