@@ -1,15 +1,12 @@
-.explore {
+ul.explore {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
     margin-top: 8px;
 }
 
 .explore.explore-hide {
     display: none;
-}
-
-ul.explore {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
 }
 
 .explore li.section-collapsed > ul {

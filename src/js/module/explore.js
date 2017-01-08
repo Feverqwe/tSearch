@@ -23,6 +23,9 @@ define([
                     width: 100,
                     lines: 1
                 };
+                if (['kpPopular', 'imdbPopular'].indexOf(id) !== -1) {
+                    item.lines = 2;
+                }
                 sections.push(idSectionMap[id] = item);
             }
         });
