@@ -593,21 +593,20 @@ define([
         };
 
         var updateKpFavorites = function () {
-            var sectionWrapper = sectionWrapperIdMap.kpFavorites;
-            if (!sectionWrapper.cache) {
-                sectionWrapper.cache = {};
+            var _this = this;
+            if (!_this.cache) {
+                _this.cache = {};
             }
 
-            sectionWrapper.node.classList.add('section-loading');
-            var cache = sectionWrapper.cache;
-            loadFavorites(sectionWrapper, cache).then(function () {
-                sectionWrapper.node.classList.remove('section-loading');
+            _this.node.classList.add('section-loading');
+            loadFavorites(_this).then(function () {
+                _this.node.classList.remove('section-loading');
 
                 var storageDate = {};
-                storageDate[sectionWrapper.cacheKey] = cache;
+                storageDate[_this.cacheKey] = _this.cache;
                 chrome.storage.local.set(storageDate);
 
-                setContent(sectionWrapper, cache.content);
+                setContent(_this, _this.cache.content);
             });
         };
 
@@ -960,7 +959,7 @@ define([
             sectionWrapper.bodyNode.appendChild(contentBody);
         };
 
-        var loadContent = function (sectionWrapper, cache) {
+        var loadContent = function (sectionWrapper) {
             sectionWrapper.requestList.splice(0).forEach(function (request) {
                 request.abort();
             });
@@ -996,6 +995,8 @@ define([
             });
 
             sectionWrapper.node.classList.add('section-error');
+
+            var cache = sectionWrapper.cache;
             return Promise.all(promiseList).then(function (contentList) {
                 var content = [].concat.apply([], contentList);
                 if (!content.length) {
@@ -1011,7 +1012,8 @@ define([
             });
         };
 
-        var loadFavorites = function (sectionWrapper, cache) {
+        var loadFavorites = function (sectionWrapper) {
+            var cache = sectionWrapper.cache;
             sectionWrapper.requestList.splice(0).forEach(function (request) {
                 request.abort();
             });
@@ -1096,7 +1098,7 @@ define([
                 } else {
                     sectionWrapper.node.classList.add('section-loading');
                     cache.keepAlive = date;
-                    loadContent(sectionWrapper, cache).then(function (result) {
+                    loadContent(sectionWrapper).then(function (result) {
                         sectionWrapper.node.classList.remove('section-loading');
 
                         var storageDate = {};
@@ -1161,6 +1163,10 @@ define([
             sectionWrapper.displayItemCount = null;
             sectionWrapper.setPage = null;
 
+            if (section.id === 'kpFavorites') {
+                sectionWrapper.update = updateKpFavorites;
+            }
+
             sectionWrapper.node = dom.el('li', {
                 class: ['section', 'section-' + section.id],
                 data: {
@@ -1186,12 +1192,12 @@ define([
                                         title: chrome.i18n.getMessage('goToTheWebsite'),
                                         href: sectionWrapper.source.url.replace('%page%', 1).replace('%category%', storage.kinopoiskFolderId)
                                     }),
-                                    section.id !== 'kpFavorites' ? '' : dom.el('div', {
+                                    !sectionWrapper.update ? '' : dom.el('div', {
                                         class: 'action__update',
                                         title: chrome.i18n.getMessage('update'),
                                         on: ['click', function (e) {
                                             e.preventDefault();
-                                            updateKpFavorites();
+                                            sectionWrapper.update();
                                         }]
                                     }),
                                     dom.el('div', {
