@@ -28,15 +28,16 @@ define([
                     state = !!state;
                 }
 
-                if (!multiSelect && state) {
-                    if (selectedTracker && selectedTracker !== this) {
-                        selectedTracker.select(false, true);
-                    }
-                    selectedTracker = this;
-                }
-
                 if (this.selected !== state) {
                     this.selected = state;
+
+                    if (!multiSelect && state) {
+                        if (selectedTracker && selectedTracker !== this) {
+                            selectedTracker.select(false, true);
+                        }
+                        selectedTracker = this;
+                    }
+
                     if (state) {
                         this.node.classList.add('tracker-selected');
                         resultFilter.addTracker(this.id);
