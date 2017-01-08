@@ -92,6 +92,7 @@ require([
     var save = document.querySelector('.head__action-save');
     save.addEventListener('click', function (e) {
         e.preventDefault();
+        var _this = this;
         var code = editor.getValue();
         try {
             var meta = parseMeta(code);
@@ -99,12 +100,16 @@ require([
             alert("Parse meta error!\n" + e.message);
             throw e;
         }
+        var id = params.id || utils.getUuid();
         var tracker = {
-            id: params.id || utils.getUuid(),
+            id: id,
             meta: meta,
             info: {},
             code: code
         };
+
+        var defText = _this.textContent;
+        _this.textContent = '...';
         chrome.storage.local.get({
             trackers: {}
         }, function (storage) {
@@ -112,6 +117,12 @@ require([
             trackers[tracker.id] = tracker;
             chrome.storage.local.set({
                 trackers: trackers
+            }, function () {
+                params.id = id;
+                location.hash = utils.param({
+                    id: id
+                });
+                _this.textContent = defText;
             });
         });
     });
@@ -124,7 +135,12 @@ require([
         matchBrackets: true,
         autoCloseBrackets: true,
         continueComments: true,
-        styleActiveLine: true
+        styleActiveLine: true,
+        extraKeys: {
+            "Ctrl-S": function() {
+                save.dispatchEvent(new MouseEvent('click'));
+            }
+        }
     });
 
     var getNewTrackerCode = function () {
