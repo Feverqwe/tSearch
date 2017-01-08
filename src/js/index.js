@@ -17,7 +17,7 @@ require([
     './module/profileController',
     './module/pageController',
     './module/explore'
-], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Filter, ProfileController, PageController, Explore) {
+], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Filter, ProfileController, PageController, explore) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -31,7 +31,6 @@ require([
             history: [],
             sortCells: [],
 
-            eSections: [],
             kinopoiskFolderId: 1
         }, resolve);
     }).then(function (storage) {
@@ -60,10 +59,12 @@ require([
 
                 var query = self.get('query');
                 if (typeof query === 'string') {
+                    explore.hide();
                     ee.trigger('setSearchQuery', [query]);
                     ee.trigger('search', [query]);
                 } else {
                     ee.trigger('stateReset');
+                    explore.show();
                 }
 
                 var url = self.getUrl();
@@ -71,17 +72,6 @@ require([
                 history.replaceState(null, title, url);
             };
         })(pageController);
-
-        (function () {
-            var exploreNode = document.querySelector('.explore');
-            var explore = new Explore(storage, exploreNode);
-            ee.on('stateReset', function () {
-                explore.show();
-            });
-            ee.on('search', function () {
-                explore.hide();
-            });
-        })();
 
         (function () {
             var searchInput = document.querySelector('.input__input-search');
