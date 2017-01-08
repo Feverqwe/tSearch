@@ -16,6 +16,10 @@ define([
         var wrappedTrackers = [];
         var tables = [];
         var moreEvents = {};
+
+        var multiSelect = false;
+        var selectedTracker = null;
+
         var load = function () {
             var trackerSelect = function (state) {
                 if (state === undefined) {
@@ -34,6 +38,12 @@ define([
                     }
 
                     resultFilter.update();
+                }
+                if (multiSelect && state) {
+                    if (selectedTracker && selectedTracker !== this) {
+                        selectedTracker.select(false);
+                    }
+                    selectedTracker = this;
                 }
             };
             var trackerCount = function (count) {
