@@ -919,25 +919,17 @@ define([
                     }
 
                     onSearch.onSuccess(tracker, query, result);
-                    onSearch.onDone(tracker);
                 });
             };
 
-            requestData().catch(function (err) {
+            return requestData().catch(function (err) {
                 console.error('Search', tracker.id, err);
                 if (err === 'Request aborted!') {
                     return;
                 }
 
                 onSearch.onError(tracker, err);
-                onSearch.onDone(tracker);
             });
-
-            return {
-                tracker: tracker,
-                abort: function () {
-                }
-            }
         },
         getTrackerIconUrl: function (icon) {
             icon = icon || '#ccc';
@@ -965,27 +957,25 @@ define([
         exKit.prepareTracker(tracker);
 
         var search = function (query, nextPageUrl) {
-            return new Promise(function (resolve, reject) {
-                exKit.search(tracker, {
-                    query: query,
-                    url: nextPageUrl,
-                    onSearch: {
-                        onSuccess: function (tracker, query, result) {
-                            resolve({
-                                success: true,
-                                results: result.torrentList,
-                                nextPageRequest: result.nextPageUrl && {
-                                    event: 'getNextPage',
-                                    url: result.nextPageUrl,
-                                    query: query
-                                }
-                            });
-                        },
-                        onError: function (tracker, err) {
-                            reject(err);
-                        }
+            return exKit.search(tracker, {
+                query: query,
+                url: nextPageUrl,
+                onSearch: {
+                    onSuccess: function (tracker, query, result) {
+                        resolve({
+                            success: true,
+                            results: result.torrentList,
+                            nextPageRequest: result.nextPageUrl && {
+                                event: 'getNextPage',
+                                url: result.nextPageUrl,
+                                query: query
+                            }
+                        });
+                    },
+                    onError: function (tracker, err) {
+                        reject(err);
                     }
-                });
+                }
             });
         };
 
