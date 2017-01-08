@@ -860,7 +860,6 @@ define(['jquery'], function () {
         search: function (tracker, _details) {
             var _this = this;
 
-            var onSearch = _details.onSearch;
             var query = _details.query;
 
             var details = {
@@ -884,7 +883,7 @@ define(['jquery'], function () {
                 extend(requestDetails, {
                     type: tracker.search.requestType,
                     url: tracker.search.searchUrl.replace('%search%', details.query),
-                    data: (tracker.search.requestData || '').replace('%search%', details.query),
+                    data: (tracker.search.requestData || '').replace('%search%', details.query)
                 });
             } else {
                 extend(requestDetails, {
