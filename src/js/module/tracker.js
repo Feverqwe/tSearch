@@ -38,11 +38,11 @@ define([
                 } else
                 if (msg.action === 'request') {
                     var request = utils.request(msg.details, function (err, resp) {
-                        var pos = requests.indexOf(request);
+                        var pos = requests.indexOf(requestWrapper);
                         if (pos !== -1) {
                             requests.splice(pos, 1);
                         }
-                        request = null;
+                        requestWrapper = null;
 
                         var error = null;
                         if (err) {
@@ -56,7 +56,18 @@ define([
                             response: resp
                         });
                     });
-                    request && requests.push(request);
+                    var requestWrapper = {
+                        abort: function () {
+                            response({
+                                error: {
+                                    name: 'Error',
+                                    message: 'ABORT'
+                                }
+                            });
+                            request.abort();
+                        }
+                    };
+                    requestWrapper && requests.push(requestWrapper);
                     return true;
                 } else
                 if (msg.action === 'error') {

@@ -264,8 +264,11 @@ define([
                                 setMoreEvent(tracker.id, query, response, table);
                             }
                             updateCounter();
+                        } else
+                        if (response.message === 'ABORT') {
+                            tracker.status('success');
                         } else {
-                            tracker.status('error', response.error);
+                            tracker.status('error', response.name + ': ' + response.message);
                         }
                     });
                 }
@@ -335,7 +338,14 @@ define([
             self.reload();
         };
 
+        var abort = function () {
+            wrappedTrackers.forEach(function (wrappedTracker) {
+                wrappedTracker.worker.abort();
+            });
+        };
+
         var onStateReset = function () {
+            abort();
             destroyTables();
             updateCounter();
         };

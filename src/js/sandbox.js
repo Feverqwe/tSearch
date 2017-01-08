@@ -35,7 +35,9 @@ require([
                 if (fn) {
                     fn(msg).then(response).catch(function (err) {
                         response({success: false, error: 'exception', name: err.name, message: err.message});
-                        throw err;
+                        if (err.message !== 'ABORT') {
+                            throw err;
+                        }
                     });
                     return true;
                 }
