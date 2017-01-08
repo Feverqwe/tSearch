@@ -512,14 +512,7 @@ define(['jquery'], function () {
             return tracker;
         },
         parseHtml: function (html) {
-            var fragment = document.createDocumentFragment();
-            var div = document.createElement('html');
-            div.innerHTML = html;
-            var el;
-            while (el = div.firstChild) {
-                fragment.appendChild(el);
-            }
-            return fragment;
+            return API_getDom(html);
         },
         contentFilterR: {
             searchJs: /javascript/ig,
