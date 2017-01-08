@@ -15,7 +15,7 @@ define([
         var worker = null;
         var transport = null;
         var load = function (onReady) {
-            worker = new FrameWorker();
+            worker = new FrameWorker(tracker.id);
             transport = new Transport({
                 sendMessage: function (msg) {
                     worker.postMessage(msg);

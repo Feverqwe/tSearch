@@ -3,7 +3,7 @@
  */
 "use strict";
 define(function () {
-    var FrameWorker = function () {
+    var FrameWorker = function (id) {
         var self = this;
         var stack = [];
         var frame = null;
@@ -19,7 +19,7 @@ define(function () {
 
         var load = function () {
             frame = document.createElement('iframe');
-            frame.src = 'sandbox.html';
+            frame.src = 'sandbox.html?id=' + id;
             frame.style.display = 'none';
             frame.onload = function () {
                 contentWindow = frame.contentWindow;
