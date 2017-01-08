@@ -10,11 +10,12 @@ define([
         var profileIdProfileMap = {};
         var activeProfile = null;
         var load = function () {
-            self.refreshProfileIdMap();
             var profiles = storage.profiles;
             if (profiles.length === 0) {
                 profiles.push(ProfileManager.prototype.getDefaultProfile(self));
             }
+
+            self.refreshProfileIdMap();
 
             /**
              * @typedef {Object} profileTracker
