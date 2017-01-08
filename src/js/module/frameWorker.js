@@ -19,7 +19,7 @@ define(function () {
 
         var load = function () {
             frame = document.createElement('iframe');
-            frame.src = 'sandbox.html?id=' + id;
+            frame.src = 'sandbox.html#id=' + id;
             frame.style.display = 'none';
             frame.onload = function () {
                 contentWindow = frame.contentWindow;
