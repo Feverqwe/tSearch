@@ -29,7 +29,9 @@ require([
             profiles: [],
             trackers: {},
             history: [],
-            sortCells: []
+            sortCells: [],
+
+            kinopoiskFolderId: 1
         }, resolve);
     }).then(function (storage) {
         document.body.classList.remove('loading');
