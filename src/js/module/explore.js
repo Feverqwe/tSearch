@@ -572,15 +572,14 @@ define([
         var updateCategoryContent = function (sectionWrapper) {
             sectionWrapper.bodyNode.style.minHeight = '';
             sectionWrapper.minHeight = 0;
-            var content = sectionWrapper.cache && sectionWrapper.cache.content;
-            setContent(sectionWrapper, content, sectionWrapper.currentPage, 1);
+            setContent(sectionWrapper, sectionWrapper.currentPage, 1);
         };
 
         var onResize = function () {
             var section;
             for (var i = 0, sectionWrapper; sectionWrapper = sectionWrappers[i]; i++) {
                 section = sectionWrapper.section;
-                if (section.show && sectionWrapper.displayItemCount !== getCategoryDisplayItemCount(section)) {
+                if (section.enable && section.show && sectionWrapper.displayItemCount !== getCategoryDisplayItemCount(section)) {
                     updateCategoryContent(sectionWrapper);
                 }
             }
@@ -594,9 +593,6 @@ define([
 
         var updateKpFavorites = function () {
             var _this = this;
-            if (!_this.cache) {
-                _this.cache = {};
-            }
 
             _this.node.classList.add('section-loading');
             loadFavorites(_this).then(function () {
@@ -606,7 +602,7 @@ define([
                 storageDate[_this.cacheKey] = _this.cache;
                 chrome.storage.local.set(storageDate);
 
-                setContent(_this, _this.cache.content);
+                setContent(_this);
             });
         };
 
@@ -641,9 +637,6 @@ define([
             };
 
             var favoritesSectionWrapper = sectionWrapperIdMap.favorites;
-            if (!favoritesSectionWrapper.cache) {
-                favoritesSectionWrapper.cache = {};
-            }
             if (!favoritesSectionWrapper.cache.content) {
                 favoritesSectionWrapper.cache.content = [];
             }
@@ -800,9 +793,8 @@ define([
                     this.minHeight = height;
                 }
 
-                var content = this.cache && this.cache.content;
-                if (content) {
-                    setContent(this, content, page);
+                if (this.cache.content) {
+                    setContent(this, page);
                 }
             }
         };
@@ -847,11 +839,11 @@ define([
             sectionWrapper.setPage = onSetPage;
         };
 
-        var setContent = function (sectionWrapper, content, page, update_pages) {
+        var setContent = function (sectionWrapper, page, update_pages) {
             var sourceOptions = sectionWrapper.source;
             var id = sectionWrapper.id;
             page = page || 0;
-            content = content || [];
+            var content = sectionWrapper.cache.content || [];
 
             var displayItemCount = sectionWrapper.displayItemCount = getCategoryDisplayItemCount(sectionWrapper.section);
             var from = displayItemCount * page;
@@ -941,7 +933,7 @@ define([
             if (!contentBody.childNodes.length) {
                 if (page > 0) {
                     page--;
-                    return setContent(sectionWrapper, content, page, update_pages);
+                    return setContent(sectionWrapper, page, update_pages);
                 }
                 if (id === 'favorites') {
                     sectionWrapper.node.classList.add('section-empty');
@@ -1088,13 +1080,13 @@ define([
                 var source = sectionWrapper.source;
                 var date = getCacheDate(source.keepAlive);
                 if (source.noAutoUpdate) {
-                    setContent(sectionWrapper, cache.content);
+                    setContent(sectionWrapper);
                 } else
                 if (cache.errorTimeout && cache.errorTimeout > parseInt(Date.now() / 1000)) {
                     sectionWrapper.node.classList.add('section-error');
                 } else
                 if (cache.keepAlive === date || !navigator.onLine) {
-                    setContent(sectionWrapper, cache.content);
+                    setContent(sectionWrapper);
                 } else {
                     sectionWrapper.node.classList.add('section-loading');
                     cache.keepAlive = date;
@@ -1105,7 +1097,7 @@ define([
                         storageDate[sectionWrapper.cacheKey] = cache;
                         chrome.storage.local.set(storageDate);
 
-                        setContent(sectionWrapper, cache.content);
+                        setContent(sectionWrapper);
                     });
                 }
             });
@@ -1156,7 +1148,7 @@ define([
             sectionWrapper.collapse = sectionCollapse;
             sectionWrapper.requestList = [];
 
-            sectionWrapper.cache = null;
+            sectionWrapper.cache = {};
             sectionWrapper.currentPage = null;
             sectionWrapper.currentPageEl = null;
             sectionWrapper.minHeight = 0;
