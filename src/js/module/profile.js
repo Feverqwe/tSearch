@@ -39,7 +39,7 @@ define([
 
                     resultFilter.update();
                 }
-                if (multiSelect && state) {
+                if (!multiSelect && state) {
                     if (selectedTracker && selectedTracker !== this) {
                         selectedTracker.select(false);
                     }
