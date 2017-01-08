@@ -2,9 +2,7 @@
  * Created by Anton on 08.01.2017.
  */
 "use strict";
-define([
-    '../lib/promise.min'
-], function (Promise) {
+define(['jquery'], function () {
     var extend = function() {
         var obj = arguments[0];
         for (var i = 1, len = arguments.length; i < len; i++) {
@@ -913,7 +911,7 @@ define([
                     result.requireAuth = tracker.search.loginUrl;
                 }
 
-                onSearch.onSuccess(tracker, query, result);
+                return result;
             });
         },
         getTrackerIconUrl: function (icon) {
@@ -937,30 +935,26 @@ define([
     exKit.funcList.sizeFormat = exKit.legacy.sizeFormat.bind(exKit.legacy);
     exKit.funcList.todayReplace = exKit.legacy.todayReplace.bind(exKit.legacy);
 
-    window.API_exKit = function (code) {
-        var tracker = exKit.prepareCustomTracker(code);
+    window.exKit = exKit;
+
+    window.API_exKit = function (tracker) {
+        exKit.prepareCustomTracker(tracker);
         exKit.prepareTracker(tracker);
 
         var search = function (query, nextPageUrl) {
             return exKit.search(tracker, {
                 query: query,
-                url: nextPageUrl,
-                onSearch: {
-                    onSuccess: function (tracker, query, result) {
-                        resolve({
-                            success: true,
-                            results: result.torrentList,
-                            nextPageRequest: result.nextPageUrl && {
-                                event: 'getNextPage',
-                                url: result.nextPageUrl,
-                                query: query
-                            }
-                        });
-                    },
-                    onError: function (tracker, err) {
-                        reject(err);
+                url: nextPageUrl
+            }).then(function (result) {
+                return {
+                    success: true,
+                    results: result.torrentList,
+                    nextPageRequest: result.nextPageUrl && {
+                        event: 'getNextPage',
+                        url: result.nextPageUrl,
+                        query: query
                     }
-                }
+                };
             });
         };
 

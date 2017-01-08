@@ -38,7 +38,7 @@ define([
 
         ee.on('reloadProfiles', function () {
             load();
-            self.select(activeProfile.id);
+            self.select(activeProfile.id, true);
         });
 
         ee.on('selectProfileById', function (id) {
@@ -67,9 +67,9 @@ define([
                 profileIdProfileMap[item.id] = item;
             });
         };
-        this.select = function (id) {
+        this.select = function (id, force) {
             var profile = profileIdProfileMap[id];
-            if (!activeProfile || activeProfile.id !== profile.id) {
+            if (force || !activeProfile || activeProfile.id !== profile.id) {
                 self.setSelectValue(storage.profiles, profile.id);
                 if (activeProfile) {
                     activeProfile.destroy();
