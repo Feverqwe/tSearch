@@ -44,10 +44,12 @@ define([
         kpInCinema: {//new in cinema
             rootUrl: 'http://www.kinopoisk.ru',
             maxWidth: 120,
-            url: 'http://www.kinopoisk.ru/afisha/new/page/%page%/',
+            url: [
+                'http://www.kinopoisk.ru/afisha/new/page/0/',
+                'http://www.kinopoisk.ru/afisha/new/page/1/',
+                'http://www.kinopoisk.ru/afisha/new/page/2/'
+            ],
             keepAlive: [2, 4, 6],
-            pageEnd: 2,
-            pageStart: 0,
             baseUrl: 'http://www.kinopoisk.ru/film/',
             imgUrl: 'http://st.kinopoisk.ru/images/film/'
         },
@@ -988,11 +990,12 @@ define([
                     if (!content) {
                         throw new Error("ERROR");
                     }
+                    return content;
                 }));
             });
 
             sectionWrapper.node.classList.add('section-error');
-            return Promise.all(promiseList).remove(function (contentList) {
+            return Promise.all(promiseList).then(function (contentList) {
                 var content = [].concat.apply([], contentList);
                 if (!content.length) {
                     throw new Error("Content is empty!");
