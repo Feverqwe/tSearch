@@ -280,5 +280,21 @@ define(function () {
     utils.sanitizeTextRe = function (text) {
         return text.replace(sanitizeText, '\\$&');
     };
+    utils.throttle = function (fn, time) {
+        var lastTime = 0;
+        var timer = null;
+        return function () {
+            clearTimeout(timer);
+            var now = Date.now();
+            if (now - lastTime > time) {
+                lastTime = now;
+                fn.apply(null, arguments);
+            } else {
+                timer = setTimeout(function () {
+                    fn.apply(null, arguments);
+                }, time);
+            }
+        };
+    };
     return utils;
 });

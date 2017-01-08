@@ -586,6 +586,8 @@ define([
             }
         };
 
+        var onResizeThrottle = utils.throttle(onResize, 100);
+
         var saveOptions = function () {
             chrome.storage.local.set({eSections: sections});
         };
@@ -1241,6 +1243,7 @@ define([
         var init = function () {
             sections.forEach(function (/**section*/item) {
                 var sectionWrapper = createSection(item);
+                sectionWrappers.push(sectionWrapper);
                 sectionWrapperIdMap[sectionWrapper.id] = sectionWrapper;
                 if (item.enable) {
                     exploreNode.appendChild(sectionWrapper.node);
@@ -1270,11 +1273,11 @@ define([
         this.show = function () {
             init && init();
             init = null;
-            window.addEventListener('resize', onResize);
+            window.addEventListener('resize', onResizeThrottle);
             exploreNode.classList.remove('explore-hide');
         };
         this.hide = function () {
-            window.removeEventListener('resize', onResize);
+            window.removeEventListener('resize', onResizeThrottle);
             exploreNode.classList.add('explore-hide');
         };
     };
