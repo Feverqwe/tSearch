@@ -8,8 +8,12 @@
 // @description Крупнейший русскоязычный битторрент трекер. Скачать бесплатно фильмы, музыку, книги, программы..
 // @require jquery
 // ==/UserScript==
+var deSanitizeKeys = ['categoryTitle', 'categoryUrl', 'title', 'url', 'downloadUrl'];
+var urlKeys = ['categoryUrl', 'url', 'downloadUrl', 'nextPageUrl'];
+
 var onPageLoad = function (response) {
     var body = response.body;
+    body = API_sanitizeHtml(body);
     var bodyDom = API_getDom(body);
     var $bodyDom = $(bodyDom);
 
@@ -19,6 +23,7 @@ var onPageLoad = function (response) {
 
     var torrentElList = $bodyDom.find('#tor-tbl>tbody>tr');
     var results = [];
+
     for (var i = 0, len = torrentElList.length; i < len; i++) {
         try {
             var item = torrentElList.eq(i);
@@ -31,16 +36,8 @@ var onPageLoad = function (response) {
             var seed = item.find('td.row4.nowrap:eq(1)>u').text();
             var peer = item.find('td.row4.leechmed>b').text();
             var date = item.find('td.row4.small.nowrap:eq(1)>u').text();
-            if (categoryUrl) {
-                categoryUrl = API_normalizeUrl(response.url, categoryUrl);
-            }
-            if (url) {
-                url = API_normalizeUrl(response.url, url);
-            }
-            if (downloadUrl) {
-                downloadUrl = API_normalizeUrl(response.url, downloadUrl);
-            }
-            results.push({
+
+            var item = {
                 categoryTitle: categoryTitle,
                 categoryUrl: categoryUrl,
                 title: title,
@@ -50,7 +47,21 @@ var onPageLoad = function (response) {
                 seed: seed,
                 peer: peer,
                 date: date
+            };
+
+            deSanitizeKeys.forEach(function (key) {
+                if (item[key]) {
+                    item[key] = API_deSanitizeHtml(item[key]);
+                }
             });
+
+            urlKeys.forEach(function (key) {
+                if (item[key]) {
+                    item[key] = API_normalizeUrl(response.url, item[key]);
+                }
+            });
+
+            results.push(item);
         } catch (e) {
             console.error(e);
         }

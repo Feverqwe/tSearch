@@ -106,6 +106,32 @@ require([
             return fragment;
         };
 
+        (function () {
+            var searchJs = /javascript/ig;
+            var blockHref = /\/\//;
+            var blockSrc = /src=(['"]?)/ig;
+            var blockSrcSet = /srcset=(['"]?)/ig;
+            var blockOnEvent = /on(\w+)=/ig;
+
+            var deImg = /data:image\/gif,base64#blockurl#/g;
+            var deUrl = /about:blank#blockurl#/g;
+            var deJs = /tms-block-javascript/g;
+
+            window.API_sanitizeHtml = function (str) {
+                return str.replace(searchJs, 'tms-block-javascript')
+                    .replace(blockHref, '//about:blank#blockurl#')
+                    .replace(blockSrc, 'src=$1data:image/gif,base64#blockurl#')
+                    .replace(blockSrcSet, 'data-block-attr-srcset=$1')
+                    .replace(blockOnEvent, 'data-block-event-$1=');
+            };
+
+            window.API_deSanitizeHtml = function (str) {
+                return str.replace(deImg, '')
+                    .replace(deUrl, '')
+                    .replace(deJs, 'javascript');
+            };
+        })();
+
         var parseUrl = function (pageUrl) {
             var pathname = /([^#?]+)/.exec(pageUrl)[1];
             var path = /(.+:\/\/.*)\//.exec(pathname);
