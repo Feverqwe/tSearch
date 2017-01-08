@@ -31,6 +31,7 @@ API_exKit({
     },
     search: {
         searchUrl: 'http://nnmclub.to/forum/tracker.php',
+        nextPageSelector: {selector: 'table td[align="right"] .nav a:eq(-1)', attr: 'href'},
         baseUrl: 'http://nnmclub.to/forum/',
         requestType: 'GET',
         requestData: 'nm=%search%&f=-1',
