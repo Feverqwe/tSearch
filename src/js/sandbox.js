@@ -5,7 +5,8 @@
 require.config({
     baseUrl: './js',
     paths: {
-        jquery: './lib/jquery-3.1.1.min'
+        jquery: './lib/jquery-3.1.1.min',
+        exKit: './module/exKit'
     }
 });
 require([

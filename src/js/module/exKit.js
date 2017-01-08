@@ -3,8 +3,8 @@
  */
 "use strict";
 define([
-
-], function () {
+    '../lib/promise.min'
+], function (Promise) {
     var extend = function() {
         var obj = arguments[0];
         for (var i = 1, len = arguments.length; i < len; i++) {
@@ -870,8 +870,6 @@ define([
                 query: query
             };
 
-            onSearch.onBegin && onSearch.onBegin(tracker);
-
             if (tracker.search.onBeforeRequest) {
                 tracker.search.onBeforeRequest(details);
             } else {
@@ -966,6 +964,37 @@ define([
         var tracker = exKit.prepareCustomTracker(code);
         exKit.prepareTracker(tracker);
 
+        var search = function (query, nextPageUrl) {
+            return new Promise(function (resolve, reject) {
+                exKit.search(tracker, {
+                    query: query,
+                    url: nextPageUrl,
+                    onSearch: {
+                        onSuccess: function (tracker, query, result) {
+                            resolve({
+                                success: true,
+                                results: result.torrentList,
+                                nextPageRequest: result.nextPageUrl && {
+                                    event: 'getNextPage',
+                                    url: result.nextPageUrl,
+                                    query: query
+                                }
+                            });
+                        },
+                        onError: function (tracker, err) {
+                            reject(err);
+                        }
+                    }
+                });
+            });
+        };
 
+        API_event('getNextPage', function (request) {
+            return search(request.query, request.url);
+        });
+
+        API_event('search', function (request) {
+            return search(request.query);
+        });
     };
 });
