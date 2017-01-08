@@ -836,7 +836,7 @@ define([
                 sectionWrapper.pagesNode.classList.remove('pages-hide');
             }
 
-            sectionWrapper.setPage = onSetPage;
+            sectionWrapper.hasPages = true;
         };
 
         var setContent = function (sectionWrapper, page, update_pages) {
@@ -932,8 +932,7 @@ define([
 
             if (!contentBody.childNodes.length) {
                 if (page > 0) {
-                    page--;
-                    return setContent(sectionWrapper, page, update_pages);
+                    return setContent(sectionWrapper, --page, update_pages);
                 }
                 if (id === 'favorites') {
                     sectionWrapper.node.classList.add('section-empty');
@@ -943,7 +942,7 @@ define([
                 sectionWrapper.node.classList.remove('section-empty');
             }
 
-            if (!sectionWrapper.setPage || update_pages) {
+            if (!sectionWrapper.hasPages || update_pages) {
                 setPages(sectionWrapper, content, page);
             }
 
@@ -1153,7 +1152,8 @@ define([
             sectionWrapper.currentPageEl = null;
             sectionWrapper.minHeight = 0;
             sectionWrapper.displayItemCount = null;
-            sectionWrapper.setPage = null;
+            sectionWrapper.hasPages = false;
+            sectionWrapper.setPage = onSetPage;
 
             if (section.id === 'kpFavorites') {
                 sectionWrapper.update = updateKpFavorites;
@@ -1212,19 +1212,18 @@ define([
                         ]
                     }),
                     sectionWrapper.pagesNode = dom.el('ul', {
-                        class: ['section__pages']
+                        class: ['section__pages'],
+                        on: ['mouseover', function (e) {
+                            var node = dom.closestNode(this, e.target);
+                            if (node) {
+                                sectionWrapper.setPage(parseInt(node.dataset.page));
+                            }
+                        }]
                     }),
                     sectionWrapper.bodyNode = dom.el('ul', {
                         class: ['section__body']
                     })
                 ]
-            });
-
-            sectionWrapper.pagesNode.addEventListener('mouseover', function (e) {
-                var node = dom.closestNode(this, e.target);
-                if (node) {
-                    sectionWrapper.setPage(parseInt(node.dataset.page));
-                }
             });
 
             if (!section.show) {
