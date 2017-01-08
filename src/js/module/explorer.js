@@ -1,6 +1,6 @@
 /**
- * Created by Anton on 02.05.2015.
- */
+* Created by Anton on 02.05.2015.
+*/
 "use strict";
 define([
     './utils',
@@ -1647,67 +1647,67 @@ define([
             }
 
             /*(this.domCache.$gallery = $(this.domCache.gallery)).sortable({
-                axis: 'y',
-                handle: '.head .move',
-                scroll: false,
-                start: function () {
-                    window.scrollTo(0, 0);
-                    this.domCache.gallery.classList.add('sortMode');
+             axis: 'y',
+             handle: '.head .move',
+             scroll: false,
+             start: function () {
+             window.scrollTo(0, 0);
+             this.domCache.gallery.classList.add('sortMode');
 
-                    this.domCache.$gallery.sortable("refreshPositions");
-                }.bind(this),
-                stop: function () {
-                    this.domCache.gallery.classList.remove('sortMode');
+             this.domCache.$gallery.sortable("refreshPositions");
+             }.bind(this),
+             stop: function () {
+             this.domCache.gallery.classList.remove('sortMode');
 
-                    var typeList = [];
-                    var _explorerOptions = [];
-                    var type;
-                    for (var i = 0, node, childNodes = this.domCache.gallery.childNodes; node = childNodes[i]; i++) {
-                        type = node.dataset.type;
-                        typeList.push(type);
-                        _explorerOptions.push(explorerOptionsObj[type]);
-                    }
-                    for (type in explorerOptionsObj) {
-                        if (typeList.indexOf(type) === -1) {
-                            _explorerOptions.push(explorerOptionsObj[type]);
-                        }
-                    }
-                    explorerOptions = _explorerOptions;
+             var typeList = [];
+             var _explorerOptions = [];
+             var type;
+             for (var i = 0, node, childNodes = this.domCache.gallery.childNodes; node = childNodes[i]; i++) {
+             type = node.dataset.type;
+             typeList.push(type);
+             _explorerOptions.push(explorerOptionsObj[type]);
+             }
+             for (type in explorerOptionsObj) {
+             if (typeList.indexOf(type) === -1) {
+             _explorerOptions.push(explorerOptionsObj[type]);
+             }
+             }
+             explorerOptions = _explorerOptions;
 
-                    chrome.storage.loca.set({explorerOptions: explorerOptions});
-                }.bind(this)
-            });*/
+             chrome.storage.loca.set({explorerOptions: explorerOptions});
+             }.bind(this)
+             });*/
 
             /*this.varCache.categoryList.favorites && $(this.varCache.categoryList.favorites.body).sortable({
-                handle: '.move',
-                items: 'li',
-                opacity: 0.8,
-                stop: function (e, ui) {
-                    var li = ui.item[0];
-                    var type = 'favorites';
-                    var pic = li.firstChild;
-                    var nextLi = li.nextElementSibling;
-                    var index = parseInt(pic.dataset.index);
+             handle: '.move',
+             items: 'li',
+             opacity: 0.8,
+             stop: function (e, ui) {
+             var li = ui.item[0];
+             var type = 'favorites';
+             var pic = li.firstChild;
+             var nextLi = li.nextElementSibling;
+             var index = parseInt(pic.dataset.index);
 
-                    var categoryObj = this.varCache.categoryList[type];
-                    var cache = exploreCache[categoryObj.cacheName];
+             var categoryObj = this.varCache.categoryList[type];
+             var cache = exploreCache[categoryObj.cacheName];
 
-                    var item = cache.content.splice(index, 1)[0];
-                    if (!nextLi) {
-                        cache.content.push(item);
-                    } else {
-                        var nextPic = nextLi.firstChild;
-                        var nextIndex = parseInt(nextPic.dataset.index);
-                        if (index < nextIndex) {
-                            nextIndex--;
-                        }
-                        cache.content.splice(nextIndex, 0, item);
-                    }
+             var item = cache.content.splice(index, 1)[0];
+             if (!nextLi) {
+             cache.content.push(item);
+             } else {
+             var nextPic = nextLi.firstChild;
+             var nextIndex = parseInt(nextPic.dataset.index);
+             if (index < nextIndex) {
+             nextIndex--;
+             }
+             cache.content.splice(nextIndex, 0, item);
+             }
 
-                    this.updateCategoryContent('favorites');
-                    this.saveFavorites();
-                }.bind(this)
-            });*/
+             this.updateCategoryContent('favorites');
+             this.saveFavorites();
+             }.bind(this)
+             });*/
         },
         init: function (cb) {
             require(['./lib/jquery-3.1.1.min'], function () {
