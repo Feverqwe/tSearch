@@ -17,270 +17,270 @@
     </div>
     <div class="body" id="container">
         <div class="page search active">
-            <h2 data-lang="kitSearch">{Search}</h2>
+            <h2 data-i18n='{"text":"kitSearch"}'>{Search}</h2>
             <label>
-                <span data-lang="kitSearchUrl">{Search results page url}</span>
+                <span data-i18n='{"text":"kitSearchUrl"}'>{Search results page url}</span>
                 <input type="text" data-id="search_url"/>
-                <input type="button" data-id="search_open" data-lang="kitOpen" value="{Open}"/>
+                <input type="button" data-id="search_open" data-i18n='{"value":"kitOpen"}' value="{Open}"/>
             </label>
             <label>
-                <span data-lang="kitSearchQuery">{Search query}</span>
+                <span data-i18n='{"text":"kitSearchQuery"}'>{Search query}</span>
                 <input type="text" data-id="search_request"/>
             </label>
             <label>
-                <span data-lang="kitSearchQueryEncoding">{Query encoding}</span>
+                <span data-i18n='{"text":"kitSearchQueryEncoding"}'>{Query encoding}</span>
                 <select data-id="search_queryEncoding">
                     <option value="utf-8" selected>utf-8</option>
                     <option value="cp1251">cp1251</option>
                 </select>
             </label>
             <label>
-                <span data-lang="kitPageCharset">{Page charset}</span>
+                <span data-i18n='{"text":"kitPageCharset"}'>{Page charset}</span>
                 <input type="text" data-id="search_charset" placeholder="auto">
             </label>
             <label>
-                <span data-lang="kitPostParams">{POST params}</span>
+                <span data-i18n='{"text":"kitPostParams"}'>{POST params}</span>
                 <input type="text" data-id="search_post" placeholder="key=value&key2=value2"/>
             </label>
             <label>
-                <span data-lang="kitBaseUrl">{Base url}</span>
+                <span data-i18n='{"text":"kitBaseUrl"}'>{Base url}</span>
                 <input type="text" data-id="search_root"/>
             </label>
         </div>
         <div class="page auth">
-            <h2 data-lang="kitLogin">{Login}</h2>
+            <h2 data-i18n='{"text":"kitLogin"}'>{Login}</h2>
             <label>
-                <span data-lang="kitLoginUrl">{Login page url}</span>
+                <span data-i18n='{"text":"kitLoginUrl"}'>{Login page url}</span>
                 <input type="text" data-id="auth_url"/>
-                <input type="button" data-id="auth_open" value="{Open}" data-lang="kitOpen"/>
+                <input type="button" data-id="auth_open" data-i18n='{"value":"kitOpen"}' value="{Open}"/>
             </label>
             <label>
-                <span data-lang="kitLoginFormSelector">{Login form selector}</span>
+                <span data-i18n='{"text":"kitLoginFormSelector"}'>{kitLoginFormSelector}</span>
                 <input type="text" data-id="auth_input"/>
-                <input type="button" data-id="auth_btn" value="{Select}" data-lang="kitSelect"/>
+                <input type="button" data-id="auth_btn" data-i18n='{"value":"kitSelect"}' value="{Select}"/>
             </label>
         </div>
         <div class="page selectors">
-            <h2 data-lang="kitSelectors">{Selectors}</h2>
+            <h2 data-i18n='{"text":"kitSelectors"}'>{Selectors}</h2>
             <label>
-                <span data-lang="kitRowSelector">{List item selector}</span>
+                <span data-i18n='{"text":"kitRowSelector"}'>{List item selector}</span>
                 <input type="text" data-id="selectors_list_input"/>
                 <input type="checkbox" data-id="selectors_list_tableMode"/>
-                <span data-lang="kitTableRow">{Table mode}</span>
-                <input type="button" data-id="selectors_list_btn" value="{Select}" data-lang="kitSelect"/>
+                <span data-i18n='{"text":"kitTableRow"}'>{Table mode}</span>
+                <input type="button" data-id="selectors_list_btn" data-i18n='{"value":"kitSelect"}' value="{Select}"/>
             </label>
             <label>
                 <span>
                     <input type="checkbox" data-id="selectors_categoryName_enable"/>
-                    <span data-lang="kitCategoryName">{Category name}</span>
+                    <span data-i18n='{"text":"kitCategoryName"}'>{Category name}</span>
                 </span>
                 <input type="text" data-id="selectors_categoryName_input"/>
                 <input type="text" data-id="selectors_categoryName_output"/>
-                <span data-lang="kitAttribute">{Attribute}</span>
+                <span data-i18n='{"text":"kitAttribute"}'>{Attribute}</span>
                 <input type="text" data-id="selectors_categoryName_attr"/>
-                <input type="button" data-id="selectors_categoryName_btn" value="{Select}" data-lang="kitSelect"/>
+                <input type="button" data-id="selectors_categoryName_btn" data-i18n='{"value":"kitSelect"}' value="{Select}"/>
             </label>
             <label>
                 <span>
                     <input type="checkbox" data-id="selectors_categoryLink_enable"/>
-                    <span data-lang="kitCategoryLink">{Category link}</span>
+                    <span data-i18n='{"text":"kitCategoryLink"}'>{Category link}</span>
                 </span>
                 <input type="text" data-id="selectors_categoryLink_input"/>
                 <input type="text" data-id="selectors_categoryLink_output"/>
-                <input type="button" data-id="selectors_categoryLink_btn" value="{Select}" data-lang="kitSelect"/>
+                <input type="button" data-id="selectors_categoryLink_btn" data-i18n='{"value":"kitSelect"}' value="{Select}"/>
             </label>
             <label>
-                <span data-lang="kitTorrentTitle">{Torrent title}</span>
+                <span data-i18n='{"text":"kitTorrentTitle"}'>{Torrent title}</span>
                 <input type="text" data-id="selectors_torrentName_input"/>
                 <input type="text" data-id="selectors_torrentName_output"/>
-                <input type="button" data-id="selectors_torrentName_btn" value="{Select}" data-lang="kitSelect"/>
+                <input type="button" data-id="selectors_torrentName_btn" data-i18n='{"value":"kitSelect"}' value="{Select}"/>
             </label>
             <label>
-                <span data-lang="kitTorrentLink">{Torent link}</span>
+                <span data-i18n='{"text":"kitTorrentLink"}'>{Torrent link}</span>
                 <input type="text" data-id="selectors_torrentLink_input"/>
                 <input type="text" data-id="selectors_torrentLink_output"/>
-                <input type="button" data-id="selectors_torrentLink_btn" value="{Select}" data-lang="kitSelect"/>
+                <input type="button" data-id="selectors_torrentLink_btn" data-i18n='{"value":"kitSelect"}' value="{Select}"/>
             </label>
             <label>
                 <span>
                     <input type="checkbox" data-id="selectors_size_enable"/>
-                    <span data-lang="kitTorrentSize">{Torrent size}</span>
+                    <span data-i18n='{"text":"kitTorrentSize"}'>{Torrent size}</span>
                 </span>
                 <input type="text" data-id="selectors_size_input"/>
                 <input type="text" data-id="selectors_size_output"/>
-                <span data-lang="kitAttribute">{Attribute}</span>
+                <span data-i18n='{"text":"kitAttribute"}'>{Attribute}</span>
                 <input type="text" data-id="selectors_size_attr"/>
-                <input type="button" data-id="selectors_size_btn" value="{Select}" data-lang="kitSelect"/>
+                <input type="button" data-id="selectors_size_btn" data-i18n='{"value":"kitSelect"}' value="{Select}"/>
             </label>
             <label>
                 <span>
                     <input type="checkbox" data-id="selectors_torrentDl_enable"/>
-                    <span data-lang="kitTorrentDownloadLink">{Torrent download link}</span>
+                    <span data-i18n='{"text":"kitTorrentDownloadLink"}'>{Torrent download link}</span>
                 </span>
                 <input type="text" data-id="selectors_torrentDl_input"/>
                 <input type="text" data-id="selectors_torrentDl_output"/>
-                <input type="button" data-id="selectors_torrentDl_btn" value="{Select}" data-lang="kitSelect"/>
+                <input type="button" data-id="selectors_torrentDl_btn" data-i18n='{"value":"kitSelect"}' value="{Select}"/>
             </label>
             <label>
                 <span>
                     <input type="checkbox" data-id="selectors_seed_enable"/>
-                    <span data-lang="kitSeedCount">{Seed count}</span>
+                    <span data-i18n='{"text":"kitSeedCount"}'>{Seed count}</span>
                 </span>
                 <input type="text" data-id="selectors_seed_input"/>
                 <input type="text" data-id="selectors_seed_output"/>
-                <input type="button" data-id="selectors_seed_btn" value="{Select}" data-lang="kitSelect"/>
+                <input type="button" data-id="selectors_seed_btn" data-i18n='{"value":"kitSelect"}' value="{Select}"/>
             </label>
             <label>
                 <span>
                     <input type="checkbox" data-id="selectors_peer_enable"/>
-                    <span data-lang="kitPeerCount">{Peer count}</span>
+                    <span data-i18n='{"text":"kitPeerCount"}'>{Peer count}</span>
                 </span>
                 <input type="text" data-id="selectors_peer_input"/>
                 <input type="text" data-id="selectors_peer_output"/>
-                <input type="button" data-id="selectors_peer_btn" value="{Select}" data-lang="kitSelect"/>
+                <input type="button" data-id="selectors_peer_btn" data-i18n='{"value":"kitSelect"}' value="{Select}"/>
             </label>
             <label>
                 <span>
                     <input type="checkbox" data-id="selectors_time_enable"/>
-                    <span data-lang="kitAddTime">{Add time}</span>
+                    <span data-i18n='{"text":"kitAddTime"}'>{Add time}</span>
                 </span>
                 <input type="text" data-id="selectors_time_input"/>
                 <input type="text" data-id="selectors_time_output"/>
-                <span data-lang="kitAttribute">{Attribute}</span>
+                <span data-i18n='{"text":"kitAttribute"}'>{Attribute}</span>
                 <input type="text" data-id="selectors_time_attr"/>
-                <input type="button" data-id="selectors_time_btn" value="{Select}" data-lang="kitSelect"/>
+                <input type="button" data-id="selectors_time_btn" data-i18n='{"value":"kitSelect"}' value="{Select}"/>
             </label>
             <div class="label">
-                <span data-lang="kitSkipFirstRows">{Skip first N lines}</span>
+                <span data-i18n='{"text":"kitSkipFirstRows"}'>{Skip first N lines}</span>
                 <input type="number" data-id="selectors_skip_first" value="0"/>
             </div>
             <div class="label">
-                <span data-lang="kitSkipLastRows">{Skip last N lines}</span>
+                <span data-i18n='{"text":"kitSkipLastRows"}'>{Skip last N lines}</span>
                 <input type="number" data-id="selectors_skip_last" value="0"/>
             </div>
             <label>
                 <span>
                     <input type="checkbox" data-id="selectors_nextPageLink_enable"/>
-                    <span data-lang="kitNextPageLink">{Next page link}</span>
+                    <span data-i18n='{"text":"kitNextPageLink"}'>{Next page link}</span>
                 </span>
                 <input type="text" data-id="selectors_nextPageLink_input"/>
                 <input type="text" data-id="selectors_nextPageLink_output"/>
-                <input type="button" data-id="selectors_nextPageLink_btn" value="{Select}" data-lang="kitSelect"/>
+                <input type="button" data-id="selectors_nextPageLink_btn" data-i18n='{"value":"kitSelect"}' value="{Select}"/>
             </label>
         </div>
         <div class="page convert">
-            <h2 data-lang="kitConvert">{Convert}</h2>
+            <h2 data-i18n='{"text":"kitConvert"}'>{Convert}</h2>
 
-            <h3 data-lang="kitAddTime">{Add time}</h3>
+            <h3 data-i18n='{"text":"kitAddTime"}'>{Add time}</h3>
             <label>
-                <span data-lang="kitRegexpPattern">{Regexp pattern}</span>
+                <span data-i18n='{"text":"kitRegexpPattern"}'>{Regexp pattern}</span>
                 <input data-id="convert_time_regexp" type="text"/>
-                <span data-lang="kitReplaceString">{replace string}</span>
+                <span data-i18n='{"text":"kitReplaceString"}'>{replace string}</span>
                 <input data-id="convert_time_regexpText" type="text"/>
             </label>
             <label>
                 <input data-id="convert_time_today" type="checkbox"/>
-                <span data-lang="kitReplaceToday">{Replace words now\today\yesterday}</span>
+                <span data-i18n='{"text":"kitReplaceToday"}'>{Replace words now\today\yesterday}</span>
             </label>
             <label>
                 <input data-id="convert_time_month" type="checkbox"/>
-                <span data-lang="kitReplaceMonth">{Replace month name to number}</span>
+                <span data-i18n='{"text":"kitReplaceMonth"}'>{Replace month name to number}</span>
             </label>
             <label>
-                <span data-lang="kitUseTemplate">{Apply time pattern}</span>
+                <span data-i18n='{"text":"kitUseTemplate"}'>{Apply time pattern}</span>
                 <select data-id="convert_time_format"></select>
             </label>
             <label>
-                <span data-lang="kitSourceString">{Source string}</span>
+                <span data-i18n='{"text":"kitSourceString"}'>{Source string}</span>
                 <input data-id="convert_time_original" type="text"/>
-                <span data-lang="kitConvertedString">{Сonverted string}</span>
+                <span data-i18n='{"text":"kitConvertedString"}'>{Сonverted string}</span>
                 <input data-id="convert_time_converted" type="text"/>
             </label>
             <label>
-                <span data-lang="kitResult">{Result}</span>
+                <span data-i18n='{"text":"kitResult"}'>{Result}</span>
                 <input data-id="convert_time_result" type="text"/>
             </label>
 
-            <h3 data-lang="kitTorrentSize">{Torrent size}</h3>
+            <h3 data-i18n='{"text":"kitTorrentSize"}'>{Torrent size}</h3>
             <label>
-                <span data-lang="kitRegexpPattern">{Regexp pattern}</span>
+                <span data-i18n='{"text":"kitRegexpPattern"}'>{Regexp pattern}</span>
                 <input data-id="convert_size_regexp" type="text"/>
-                <span data-lang="kitReplaceString">{replace string}</span>
+                <span data-i18n='{"text":"kitReplaceString"}'>{replace string}</span>
                 <input data-id="convert_size_regexpText" type="text"/>
             </label>
             <label>
                 <input data-id="convert_size_convert" type="checkbox"/>
-                <span data-lang="kitConvertToNumber">{Convert}</span>
+                <span data-i18n='{"text":"kitConvertToNumber"}'>{Convert}</span>
             </label>
             <label>
-                <span data-lang="kitSourceString">{Source string}</span>
+                <span data-i18n='{"text":"kitSourceString"}'>{Source string}</span>
                 <input data-id="convert_size_original" type="text"/>
-                <span data-lang="kitConvertedString">{Сonverted string}</span>
+                <span data-i18n='{"text":"kitConvertedString"}'>{Сonverted string}</span>
                 <input data-id="convert_size_converted" type="text"/>
             </label>
             <label>
-                <span data-lang="kitResult">{Result}</span>
+                <span data-i18n='{"text":"kitResult"}'>{Result}</span>
                 <input data-id="convert_size_result" type="text"/>
             </label>
 
-            <h3 data-lang="kitSeedCount">{Seed count}</h3>
+            <h3 data-i18n='{"text":"kitSeedCount"}'>{Seed count}</h3>
             <label>
-                <span data-lang="kitRegexpPattern">{Regexp pattern}</span>
+                <span data-i18n='{"text":"kitRegexpPattern"}'>{Regexp pattern}</span>
                 <input data-id="convert_seed_regexp" type="text"/>
-                <span data-lang="kitReplaceString">{replace string}</span>
+                <span data-i18n='{"text":"kitReplaceString"}'>{replace string}</span>
                 <input data-id="convert_seed_regexpText" type="text"/>
             </label>
             <label>
-                <span data-lang="kitSourceString">{Source string}</span>
+                <span data-i18n='{"text":"kitSourceString"}'>{Source string}</span>
                 <input data-id="convert_seed_original" type="text"/>
-                <span data-lang="kitConvertedString">{Сonverted string}</span>
+                <span data-i18n='{"text":"kitConvertedString"}'>{Сonverted string}</span>
                 <input data-id="convert_seed_converted" type="text"/>
             </label>
             <label>
-                <span data-lang="kitResult">{Result}</span>
+                <span data-i18n='{"text":"kitResult"}'>{Result}</span>
                 <input data-id="convert_seed_result" type="text"/>
             </label>
 
-            <h3 data-lang="kitPeerCount">{Peer count}</h3>
+            <h3 data-i18n='{"text":"kitPeerCount"}'>{Peer count}</h3>
             <label>
-                <span data-lang="kitRegexpPattern">{Regexp pattern}</span>
+                <span data-i18n='{"text":"kitRegexpPattern"}'>{Regexp pattern}</span>
                 <input data-id="convert_peer_regexp" type="text"/>
-                <span data-lang="kitReplaceString">{replace string}</span>
+                <span data-i18n='{"text":"kitReplaceString"}'>{replace string}</span>
                 <input data-id="convert_peer_regexpText" type="text"/>
             </label>
             <label>
-                <span data-lang="kitSourceString">{Source string}</span>
+                <span data-i18n='{"text":"kitSourceString"}'>{Source string}</span>
                 <input data-id="convert_peer_original" type="text"/>
-                <span data-lang="kitConvertedString">{Сonverted string}</span>
+                <span data-i18n='{"text":"kitConvertedString"}'>{Сonverted string}</span>
                 <input data-id="convert_peer_converted" type="text"/>
             </label>
             <label>
-                <span data-lang="kitResult">{Result}</span>
+                <span data-i18n='{"text":"kitResult"}'>{Result}</span>
                 <input data-id="convert_peer_result" type="text"/>
             </label>
         </div>
         <div class="page desk">
-            <h2 data-lang="kitDesc">{Desc}</h2>
+            <h2 data-i18n='{"text":"kitDesc"}'>{Desc}</h2>
             <label>
-                <span data-lang="kitIcon">{Icon}</span>
+                <span data-i18n='{"text":"kitIcon"}'>{Icon}</span>
                 <i class="tracker_iconPic" data-id="desk_tracker_iconPic"></i>
                 <input type="file" data-id="desk_tracker_iconFile"/>
                 <input type="hidden" data-id="desk_tracker_icon" placeholder="data:image/png,base64:"/>
             </label>
             <label>
-                <span data-lang="kitTrackerTitle">{Tracker title}</span>
+                <span data-i18n='{"text":"kitTrackerTitle"}'>{Tracker title}</span>
                 <input type="text" data-id="desk_tracker_title"/>
             </label>
             <label>
-                <span data-lang="kitTrackerDesc">{Tracker description}</span>
+                <span data-i18n='{"text":"kitTrackerDesc"}'>{Tracker description}</span>
                 <input type="text" data-id="desk_tracker_desk"/>
             </label>
         </div>
         <div class="page save">
-            <h2 data-lang="kitSaveLoad">{Save\load code}</h2>
+            <h2 data-i18n='{"text":"kitSaveLoad"}'>{Save\load code}</h2>
             <div class="label">
-                <input type="button" data-id="save_code_write" value="{Get code}" data-lang="kitGetCode"/>
-                <input type="button" data-id="save_code_read" value="{Read code}" data-lang="kitReadCode"/>
+                <input type="button" data-id="save_code_write" data-i18n='{"value":"kitGetCode"}' value="{Get code}"/>
+                <input type="button" data-id="save_code_read" data-i18n='{"value":"kitReadCode"}' value="{Read code}"/>
             </div>
             <label>
                 <textarea data-id="save_code_textarea"></textarea>
