@@ -43,7 +43,7 @@ ul.explore {
     -webkit-animation: loadingIcon 0.8s linear infinite;
     animation: loadingIcon 0.8s linear infinite;
 }
-.explore li.login div.section__head div.section__move {
+.explore li.section-login div.section__head div.section__move {
     background: url(../img/login.svg) no-repeat center;
     background-size: 16px;
     opacity: 1;

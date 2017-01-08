@@ -36,7 +36,7 @@ define([
         kpFavorites: {
             rootUrl: 'http://www.kinopoisk.ru',
             maxWidth: 120,
-            url: 'http://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
+            url: 'https://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
             baseUrl: 'http://www.kinopoisk.ru/film/',
             imgUrl: 'http://st.kinopoisk.ru/images/film/',
             noAutoUpdate: 1
@@ -564,7 +564,7 @@ define([
         insertDefaultSections(idSectionMap, sections);
 
         var sectionWrappers = [];
-        var sectionWrapperIdMap = [];
+        var sectionWrapperIdMap = {};
 
         var updateCategoryContent = function (sectionWrapper) {
             sectionWrapper.bodyNode.style.minHeight = '';
@@ -1238,20 +1238,20 @@ define([
         var init = function () {
             sections.forEach(function (/**section*/item) {
                 var sectionWrapper = createSection(item);
-                sectionWrappers.push(sectionWrapper);
-                sectionWrappers[sectionWrapper.id] = sectionWrappers;
+                sectionWrapperIdMap[sectionWrapper.id] = sectionWrapper;
                 if (item.enable) {
                     exploreNode.appendChild(sectionWrapper.node);
                 }
             });
             exploreNode.addEventListener('click', function (e) {
-                var el = e.target;
-                var item = dom.closest('li', el);
+                var target = e.target;
+                var el = dom.closest('.item__picture', target);
+                var item = el && dom.closest('.section', el);
                 if (item) {
-                    if (el.classList.contains('action__inFavorite')) {
+                    if (target.classList.contains('action__inFavorite')) {
                         return onInFavorite(el, item, e);
                     }
-                    if (el.classList.contains('action__rmFavorite')) {
+                    if (target.classList.contains('action__rmFavorite')) {
                         return onRmFavorite(el, item, e);
                     }
                     /*if (el.classList.contains('edit')) {
