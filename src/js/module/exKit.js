@@ -965,4 +965,6 @@ define(['jquery'], function () {
             return search(request.query);
         });
     };
+
+    return exKit;
 });
