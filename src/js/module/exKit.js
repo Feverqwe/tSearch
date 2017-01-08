@@ -503,16 +503,10 @@ define(['jquery'], function () {
             } else {
                 tracker.search.requestType = tracker.search.requestType.toUpperCase();
             }
-            if (!tracker.search.rootUrl) {
-                tracker.search.rootUrl = tracker.search.searchUrl.substr(0, tracker.search.searchUrl.indexOf('/', tracker.search.searchUrl.indexOf('//') + 2) + 1);
-            }
-            if (!tracker.search.baseUrl) {
-                tracker.search.baseUrl = tracker.search.searchUrl.substr(0, tracker.search.searchUrl.lastIndexOf('/'));
-            }
-            if (!exKit.prepareTrackerR.hasEndSlash.test(tracker.search.rootUrl)) {
+            if (tracker.search.rootUrl && !exKit.prepareTrackerR.hasEndSlash.test(tracker.search.rootUrl)) {
                 tracker.search.rootUrl = tracker.search.rootUrl + '/';
             }
-            if (!exKit.prepareTrackerR.hasEndSlash.test(tracker.search.baseUrl)) {
+            if (tracker.search.baseUrl && !exKit.prepareTrackerR.hasEndSlash.test(tracker.search.baseUrl)) {
                 tracker.search.baseUrl = tracker.search.baseUrl + '/';
             }
             return tracker;
@@ -550,30 +544,10 @@ define(['jquery'], function () {
         isUrlList: ['categoryUrl', 'url', 'downloadUrl', 'nextPageUrl'],
         unFilterKeyList: ['categoryTitle', 'categoryUrl', 'title', 'url', 'downloadUrl'],
         urlCheck: function (details, tracker, value) {
-            if (value.substr(0, 7) === 'magnet:') {
-                return value;
-            }
-            if (value.substr(0, 2) === '//') {
-                value = value.replace(/^\/\/[^\/?#]+/, '');
-            }
-            if (value.substr(0, 4) === 'http') {
-                return value;
-            }
-            if (value[0] === '/') {
-                return tracker.search.rootUrl + value.substr(1);
-            }
-            if (value.substr(0, 2) === './') {
-                return tracker.search.baseUrl + value.substr(2);
-            }
-            if (value[0] === '?') {
-                var url = details.requestUrl || '';
-                var pos = url.search(/[?#]/);
-                if (pos !== -1) {
-                    url = url.substr(0, pos);
-                }
-                return url + value;
-            }
-            return tracker.search.baseUrl + value;
+            return API_normalizeUrl(details.responseUrl, value, {
+                origin: tracker.search.rootUrl,
+                path: tracker.search.baseUrl
+            });
         },
         matchSelector: function(result, details) {
             var _this = this;

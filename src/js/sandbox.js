@@ -132,50 +132,60 @@ require([
             };
         })();
 
-        var parseUrl = function (pageUrl) {
-            var pathname = /([^#?]+)/.exec(pageUrl)[1];
-            var path = /(.+:\/\/.*)\//.exec(pathname);
-            if (path) {
-                path = path[1];
-            } else {
-                path = pageUrl;
-            }
-            path += '/';
-            return {
-                protocol: /(.+:)\/\//.exec(pathname)[1],
-                origin: /(.+:\/\/[^\/]+)/.exec(pathname)[1],
-                path: path,
-                pathname: pathname
+        (function () {
+            var parseUrl = function (pageUrl, details) {
+                details = details || {};
+                var pathname = /([^#?]+)/.exec(pageUrl)[1];
+                var path = /(.+:\/\/.*)\//.exec(pathname);
+                if (path) {
+                    path = path[1];
+                } else {
+                    path = pageUrl;
+                }
+                path += '/';
+                var result = {
+                    protocol: /(.+:)\/\//.exec(pathname)[1],
+                    origin: /(.+:\/\/[^\/]+)/.exec(pathname)[1],
+                    path: path,
+                    pathname: pathname
+                };
+                if (details.origin) {
+                    result.origin = details.origin;
+                }
+                if (details.path) {
+                    result.path = details.path;
+                }
+                return result;
             };
-        };
-        var urlParseCache = {};
-        window.API_normalizeUrl = function (pageUrl, value) {
-            if (/^magnet:/.test(value)) {
-                return value;
-            }
-            if (/^http/.test(value)) {
-                return value;
-            }
+            var urlParseCache = {};
+            window.API_normalizeUrl = function (pageUrl, value, details) {
+                if (/^magnet:/.test(value)) {
+                    return value;
+                }
+                if (/^http/.test(value)) {
+                    return value;
+                }
 
-            var parsedUrl = urlParseCache[pageUrl];
-            if (!parsedUrl) {
-                parsedUrl = urlParseCache[pageUrl] = parseUrl(pageUrl)
-            }
+                var parsedUrl = urlParseCache[pageUrl];
+                if (!parsedUrl) {
+                    parsedUrl = urlParseCache[pageUrl] = parseUrl(pageUrl, details)
+                }
 
-            if (/^\/\//.test(value)) {
-                return parsedUrl.protocol + value;
-            }
-            if (/^\//.test(value)) {
-                return parsedUrl.origin + value;
-            }
-            if (/^\.\//.test(value)) {
-                return parsedUrl.path + value.substr(2);
-            }
-            if (/^\?/.test(value)) {
-                return parsedUrl.pathname + value;
-            }
-            return parsedUrl.path + value;
-        };
+                if (/^\/\//.test(value)) {
+                    return parsedUrl.protocol + value;
+                }
+                if (/^\//.test(value)) {
+                    return parsedUrl.origin + value;
+                }
+                if (/^\.\//.test(value)) {
+                    return parsedUrl.path + value.substr(2);
+                }
+                if (/^\?/.test(value)) {
+                    return parsedUrl.pathname + value;
+                }
+                return parsedUrl.path + value;
+            };
+        })();
     })(function (code) {
         return eval(code);
     });
