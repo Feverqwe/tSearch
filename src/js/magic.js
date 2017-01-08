@@ -10,13 +10,12 @@ require.config({
     }
 });
 require([
-    './lib/promise.min',
     './module/i18nDom',
     './module/utils',
     './module/dom',
     './lib/filesize.min',
     'exKit'
-], function (Promise, i18nDom, utils, dom, filesize, exKit) {
+], function (i18nDom, utils, dom, filesize, exKit) {
     i18nDom();
 
     var magic = {
