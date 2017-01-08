@@ -1133,7 +1133,7 @@ define([
 
             var imgSize = base + '{width: ' + section.width + 'px;}';
 
-            var fontStyle = base + ' > div.title{' + (fontSize ? 'font-size:' + fontSize + 'px;' : 'display:none;') + '}';
+            var fontStyle = base + ' > div.item__title{' + (fontSize ? 'font-size:' + fontSize + 'px;' : 'display:none;') + '}';
 
             if (!styleNode) {
                 styleNode = sectionWrapper.styleNode = dom.el('style', {
