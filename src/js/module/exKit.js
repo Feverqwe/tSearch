@@ -876,59 +876,44 @@ define([
                 details.query = encodeURIComponent(details.query);
             }
 
-            var requestData = function() {
-                return new Promise(function (resolve, reject) {
-                    var ajaxData = {
-                        mimeType: tracker.search.requestMimeType
-                    };
-                    if (/json/i.test(tracker.search.requestDataType)) {
-                        ajaxData.json = true;
-                    }
-                    if (!_details.url) {
-                        extend(ajaxData, {
-                            type: tracker.search.requestType,
-                            url: tracker.search.searchUrl.replace('%search%', details.query),
-                            data: (tracker.search.requestData || '').replace('%search%', details.query),
-                        });
-                    } else {
-                        extend(ajaxData, {
-                            type: 'GET',
-                            url: _details.url
-                        });
-                    }
-
-                    var requestPromise = API_request(ajaxData).then(function (response) {
-                        details.data = _this.contentFilter(response.body);
-                        details.responseUrl = response.url;
-                        details.requestUrl = ajaxData.url;
-                    }).catch(reject);
-
-                    resolve(requestPromise);
-                }).then(function () {
-                    if (tracker.search.onAfterRequest) {
-                        tracker.search.onAfterRequest(details);
-                        if (details.result) {
-                            return details.result;
-                        }
-                    }
-
-                    return _this.parseDom(details);
-                }).then(function (result) {
-                    if (result.requireAuth) {
-                        result.requireAuth = tracker.search.loginUrl;
-                    }
-
-                    onSearch.onSuccess(tracker, query, result);
-                });
+            var requestDetails = {
+                mimeType: tracker.search.requestMimeType
             };
+            if (/json/i.test(tracker.search.requestDataType)) {
+                requestDetails.json = true;
+            }
+            if (!_details.url) {
+                extend(requestDetails, {
+                    type: tracker.search.requestType,
+                    url: tracker.search.searchUrl.replace('%search%', details.query),
+                    data: (tracker.search.requestData || '').replace('%search%', details.query),
+                });
+            } else {
+                extend(requestDetails, {
+                    type: 'GET',
+                    url: _details.url
+                });
+            }
 
-            return requestData().catch(function (err) {
-                console.error('Search', tracker.id, err);
-                if (err === 'Request aborted!') {
-                    return;
+            return API_request(requestDetails).then(function (response) {
+                details.data = _this.contentFilter(response.body);
+                details.responseUrl = response.url;
+                details.requestUrl = requestDetails.url;
+            }).then(function () {
+                if (tracker.search.onAfterRequest) {
+                    tracker.search.onAfterRequest(details);
+                    if (details.result) {
+                        return details.result;
+                    }
                 }
 
-                onSearch.onError(tracker, err);
+                return _this.parseDom(details);
+            }).then(function (result) {
+                if (result.requireAuth) {
+                    result.requireAuth = tracker.search.loginUrl;
+                }
+
+                onSearch.onSuccess(tracker, query, result);
             });
         },
         getTrackerIconUrl: function (icon) {
