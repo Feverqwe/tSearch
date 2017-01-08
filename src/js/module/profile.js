@@ -21,12 +21,20 @@ define([
         var selectedTracker = null;
 
         var load = function () {
-            var trackerSelect = function (state) {
+            var trackerSelect = function (state, noUpdate) {
                 if (state === undefined) {
                     state = !this.selected;
                 } else {
                     state = !!state;
                 }
+
+                if (!multiSelect && state) {
+                    if (selectedTracker && selectedTracker !== this) {
+                        selectedTracker.select(false, true);
+                    }
+                    selectedTracker = this;
+                }
+
                 if (this.selected !== state) {
                     this.selected = state;
                     if (state) {
@@ -37,13 +45,7 @@ define([
                         resultFilter.removeTracker(this.id);
                     }
 
-                    resultFilter.update();
-                }
-                if (!multiSelect && state) {
-                    if (selectedTracker && selectedTracker !== this) {
-                        selectedTracker.select(false);
-                    }
-                    selectedTracker = this;
+                    !noUpdate && resultFilter.update();
                 }
             };
             var trackerCount = function (count) {
