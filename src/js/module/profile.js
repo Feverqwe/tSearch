@@ -74,7 +74,10 @@ define([
                     class: ['tracker__login'],
                     target: '_blank',
                     href: url,
-                    text: chrome.i18n.getMessage('login')
+                    title: chrome.i18n.getMessage('login'),
+                    on: ['click', function (e) {
+                        e.stopPropagation();
+                    }]
                 });
                 _this.countNode.classList.add('counter-hidden');
                 _this.node.insertBefore(authNode, _this.countNode);
@@ -290,6 +293,7 @@ define([
                         } else
                         if (response.error === 'AUTH') {
                             tracker.setAuth(response);
+                            tracker.status('success');
                         } else
                         if (response.message === 'ABORT') {
                             tracker.status('success');
