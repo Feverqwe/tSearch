@@ -1,40 +1,34 @@
-.explore {
-    margin-top: 8px;
-}
-
-.explore.explore-hide {
+.explore.hide {
     display: none;
 }
 
-ul.explore {
+ul.explore__gallery {
     list-style: none;
     padding-left: 0;
     margin: 0;
 }
-
-.explore li.section-collapsed > ul {
+ul.explore__gallery li.collapsed > ul {
+    display: none;
+}
+ul.explore__gallery li.empty {
     display: none;
 }
 
-.explore li.section-empty {
-    display: none;
-}
-
-.explore li div.section__head {
+ul.explore__gallery li div.head {
     border-bottom: 1px solid #ddd;
     cursor: pointer;
     line-height: 24px;
     height: 24px;
 }
-.explore li.section-collapsed div.section__head {
+ul.explore__gallery li.collapsed div.head {
     border-bottom-color: transparent;
 }
-.explore div.section__head > * {
+ul.explore__gallery div.head > * {
     display: inline-block;
     cursor: default;
     vertical-align: middle;
 }
-.explore li.loading div.section__head div.section__move {
+ul.explore__gallery li.loading div.head div.move {
     background: url(../img/refresh.svg) no-repeat center;
     background-size: 14px;
     opacity: 0.8;
@@ -43,17 +37,17 @@ ul.explore {
     -webkit-animation: loadingIcon 0.8s linear infinite;
     animation: loadingIcon 0.8s linear infinite;
 }
-.explore li.login div.section__head div.section__move {
+ul.explore__gallery li.login div.head div.move {
     background: url(../img/login.svg) no-repeat center;
     background-size: 16px;
     opacity: 1;
 }
-.explore li.error div.section__head div.section__move {
+ul.explore__gallery li.error div.head div.move {
     background: url(../img/history.svg) no-repeat center;
     background-size: 16px;
     opacity: 1;
 }
-.explore div.section__head div.section__move {
+ul.explore__gallery div.head div.move {
     width: 24px;
     height: 24px;
     background: url(../img/moveble.svg) center no-repeat;
@@ -64,23 +58,23 @@ ul.explore {
     transition: opacity 0.2s;
     opacity: 0.5;
 }
-.explore div.section__head div.section__move:hover,
-.explore li.ui-sortable-helper div.section__head div.section__move{
+ul.explore__gallery div.head div.move:hover,
+ul.explore__gallery li.ui-sortable-helper div.head div.move{
     opacity: 1;
 }
-.explore div.section__head div.section__title {
+ul.explore__gallery div.head div.title {
     font-size: 21px;
 }
-.explore li.section-collapsed div.section__head div.section__actions {
+ul.explore__gallery li.collapsed div.head div.actionList {
     display: none;
 }
-.explore li div.section__head div.section__actions > * {
+ul.explore__gallery li div.head div.actionList > * {
     vertical-align: bottom;
 }
-.explore div.section__head div.section__actions div {
+ul.explore__gallery div.head div.actionList div {
     display: inline-block;
 }
-.explore div.section__head div.section__actions div.action__setup {
+ul.explore__gallery div.head div.actionList div.setup {
     background: url(../img/options.svg) center no-repeat;
     background-size: 14px;
     width: 24px;
@@ -91,10 +85,10 @@ ul.explore {
     -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
 }
-.explore div.section__head div.section__actions div.action__setup:hover {
+ul.explore__gallery div.head div.actionList div.setup:hover {
     opacity: 1;
 }
-.explore div.section__head div.section__actions div.action__update {
+ul.explore__gallery div.head div.actionList div.update {
     width: 24px;
     height: 24px;
     background: url(../img/refresh.svg) no-repeat center;
@@ -105,13 +99,13 @@ ul.explore {
     transition: transform 0.5s;
     opacity: 0.5;
 }
-.explore div.section__head div.section__actions div.action__update:hover {
+ul.explore__gallery div.head div.actionList div.update:hover {
     -webkit-transform: rotate(360deg);
     -moz-transform: rotate(360deg);
     transform: rotate(360deg);
     opacity: 1;
 }
-.explore div.section__head div.section__actions div.action__update.loading {
+ul.explore__gallery div.head div.actionList div.update.loading {
     background: url(../img/refresh.svg) no-repeat center;
     background-size: 14px;
     opacity: 0.8;
@@ -120,11 +114,11 @@ ul.explore {
     -webkit-animation: loadingIcon 0.8s linear infinite;
     animation: loadingIcon 0.8s linear infinite;
 }
-.explore div.section__head div.section__actions div.action__update.error {
+ul.explore__gallery div.head div.actionList div.update.error {
     background: url(../img/ghost.svg) no-repeat center;
 }
 
-.explore div.section__head div.section__actions a.action__open {
+ul.explore__gallery div.head div.actionList a.open {
     width: 24px;
     height: 24px;
     background: url(../img/external.svg) no-repeat top center;
@@ -135,17 +129,17 @@ ul.explore {
     -moz-transition: opacity 0.2s;
     transition: opacity 0.2s;
 }
-.explore div.section__head div.section__actions a.action__open:hover {
+ul.explore__gallery div.head div.actionList a.open:hover {
     opacity: 1;
 }
 
-.explore div.section__head .setupBody {
+ul.explore__gallery div.head .setupBody {
     display: inline-block;
     height: 24px;
     vertical-align: bottom;
 }
 
-.explore div.section__head .setupBody input[type="range"] {
+ul.explore__gallery div.head .setupBody input[type="range"] {
     vertical-align: bottom;
     width: 120px;
     margin: 0;
@@ -154,7 +148,7 @@ ul.explore {
     height: 24px;
 }
 
-.explore div.section__head .setupBody .defaultSize {
+ul.explore__gallery div.head .setupBody .defaultSize {
     width: 24px;
     height: 24px;
     cursor: pointer;
@@ -169,11 +163,11 @@ ul.explore {
     margin-right: 5px;
 }
 
-.explore div.section__head .setupBody .defaultSize:hover {
+ul.explore__gallery div.head .setupBody .defaultSize:hover {
     opacity: 1;
 }
 
-.explore div.section__head div.section__collapses {
+ul.explore__gallery div.head div.collapses {
     float: right;
     display: inline-block;
     width: 24px;
@@ -186,26 +180,26 @@ ul.explore {
     transform: rotate(180deg);
     opacity: 0.5;
 }
-.explore div.section__head div.section__collapses:hover {
+ul.explore__gallery div.head div.collapses:hover {
     opacity: 1;
 }
-.explore li.section-collapsed div.section__head div.section__collapses {
+ul.explore__gallery li.collapsed div.head div.collapses {
     transform: rotate(270deg);
 }
-.explore div.section__head:hover div.section__collapses {
+ul.explore__gallery div.head:hover div.collapses {
     opacity: 1;
 }
-.explore div.section__head > *:hover ~ div.section__collapses {
+ul.explore__gallery div.head > *:hover ~ div.collapses {
     opacity: 0.5;
 }
 
-.explore ul.section__pages {
+ul.explore__gallery ul.pageList {
     text-align: center;
 }
-.explore ul.section__pages.pages-hide {
+ul.explore__gallery ul.pageList.hide {
     display: none;
 }
-.explore ul.section__pages > li {
+ul.explore__gallery ul.pageList > li {
     display: inline-block;
     border-radius: 4px;
     margin-left: 2px;
@@ -218,37 +212,37 @@ ul.explore {
     margin-top: 2px;
     margin-bottom: 2px;
 }
-.explore ul.section__pages > li.item-active {
+ul.explore__gallery ul.pageList > li.active {
     background-color: #337af8;
     color: #fff;
 }
 
-.explore ul.section__body {
+ul.explore__gallery ul.body {
     list-style: none;
     padding-left: 0;
     margin: 0;
 }
 
-.explore ul.section__body a {
+ul.explore__gallery ul.body a {
     text-decoration: none;
 }
-.explore ul.section__body > li {
+ul.explore__gallery ul.body > li {
     display: inline-block;
     position: relative;
     margin: 10px;
     margin-top: 5px;
     margin-bottom: 5px;
 }
-.explore ul.section__body div.item__picture {
+ul.explore__gallery ul.body div.picture {
     text-align: center;
     position: relative;
 }
 
-.explore ul.section__body div.item__picture img {
+ul.explore__gallery ul.body div.picture img {
     max-width: 100%;
     box-shadow: 0 0 1px rgba(0,0,0,0.8);
 }
-.explore ul.section__body div.item__title {
+ul.explore__gallery ul.body div.title {
     position: relative;
     width: 100%;
     text-overflow: ellipsis;
@@ -258,21 +252,21 @@ ul.explore {
     font-size: 0.857em;
 }
 
-.explore ul.section__body div.item__title a {
+ul.explore__gallery ul.body div.title a {
     color: #000;
 }
 
-.explore.sortMode .section__collapses,
-.explore.sortMode .section__actions,
-.explore.sortMode .setupBody,
-.explore.sortMode ul.section__body,
-.explore.sortMode ul.section__pages {
+ul.explore__gallery.sortMode .collapses,
+ul.explore__gallery.sortMode .actionList,
+ul.explore__gallery.sortMode .setupBody,
+ul.explore__gallery.sortMode ul.body,
+ul.explore__gallery.sortMode ul.pageList {
     display: none !important;
 }
-.explore.sortMode > li > .section__head {
+ul.explore__gallery.sortMode > li > .head {
     border-bottom-width: 0;
 }
-.explore li.ui-sortable-helper {
+ul.explore__gallery li.ui-sortable-helper {
     background-color: #fff;
     border-radius: 3px;
     opacity: 0.8;
@@ -280,16 +274,16 @@ ul.explore {
     box-shadow: 0 0 1px rgba(0,0,0,0.8);
     height: auto !important;
 }
-.explore > li.ui-sortable-placeholder {
+ul.explore__gallery > li.ui-sortable-placeholder {
     height: 25px !important;
 }
 
-.explore .ui-sortable-placeholder {
+ul.explore__gallery .ui-sortable-placeholder {
     background-color: #337AF8;
     visibility: visible !important;
     border-radius: 3px;
 }
-.explore ul.section__body div.item__picture > div.quality {
+ul.explore__gallery ul.body div.picture > div.quality {
     position: absolute;
     visibility: hidden;
     bottom: -5px;
@@ -309,53 +303,53 @@ ul.explore {
     white-space: nowrap;
     font-size: .857em;
 }
-.explore ul.section__body div.item__picture:hover > div.quality {
+ul.explore__gallery ul.body div.picture:hover > div.quality {
     z-index: 14;
     visibility: visible;
 }
-.explore ul.section__body div.item__picture > div.quality:hover {
+ul.explore__gallery ul.body div.picture > div.quality:hover {
     background-color: #fff;
 }
-.explore ul.section__body div.item__picture > div.quality:hover #info_popup {
+ul.explore__gallery ul.body div.picture > div.quality:hover #info_popup {
     visibility: visible;
 }
-.explore ul.section__body div.item__picture > a.item__link {
+ul.explore__gallery ul.body div.picture > a.link {
     top: 0px;
     background: url(../img/external.svg) no-repeat center;
     background-size: 10px;
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
 }
-.explore ul.section__body div.item__picture > div.action__inFavorite {
+ul.explore__gallery ul.body div.picture > div.inFavorite {
     top: 20px;
     background: url(../img/favorite.svg) no-repeat center center;
     background-size: 16px;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
 }
-.explore ul.section__body div.item__picture > div.action__rmFavorite {
+ul.explore__gallery ul.body div.picture > div.rmFavorite {
     top: 20px;
     background: url(../img/rm_favorite.svg) no-repeat center center;
     background-size: 16px;
 }
-.explore ul.section__body div.item__picture > div.action__edit {
+ul.explore__gallery ul.body div.picture > div.edit {
     top: 40px;
     background: url(../img/edit.svg) no-repeat center;
     background-size: 16px;
     background-position-x: 3px;
 }
-.explore ul.section__body div.item__picture > div.section__move {
+ul.explore__gallery ul.body div.picture > div.move {
     top: 60px;
     background: url(../img/moveble.svg) no-repeat center center;
     background-size: 16px;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
 }
-.explore ul.section__body li div.item__picture > div.action__inFavorite,
-.explore ul.section__body li div.item__picture > div.action__rmFavorite,
-.explore ul.section__body li div.item__picture > div.section__move,
-.explore ul.section__body li div.item__picture > div.action__edit,
-.explore ul.section__body li div.item__picture > a.item__link {
+ul.explore__gallery ul.body li div.picture > div.inFavorite,
+ul.explore__gallery ul.body li div.picture > div.rmFavorite,
+ul.explore__gallery ul.body li div.picture > div.move,
+ul.explore__gallery ul.body li div.picture > div.edit,
+ul.explore__gallery ul.body li div.picture > a.link {
     position: absolute;
     right: -10px;
     background-color: rgba(255, 255, 255, 0.7);
@@ -368,21 +362,21 @@ ul.explore {
     -moz-transition: background-color 0.2s;
     transition: background-color 0.2s;
 }
-.explore ul.section__body li div.item__picture > div.section__move {
+ul.explore__gallery ul.body li div.picture > div.move {
     cursor: move;
 }
-.explore ul.section__body li div.item__picture:hover > div.action__inFavorite,
-.explore ul.section__body li div.item__picture:hover > div.action__rmFavorite,
-.explore ul.section__body li div.item__picture:hover > div.section__move,
-.explore ul.section__body li div.item__picture:hover > div.action__edit,
-.explore ul.section__body li div.item__picture:hover > a.item__link {
+ul.explore__gallery ul.body li div.picture:hover > div.inFavorite,
+ul.explore__gallery ul.body li div.picture:hover > div.rmFavorite,
+ul.explore__gallery ul.body li div.picture:hover > div.move,
+ul.explore__gallery ul.body li div.picture:hover > div.edit,
+ul.explore__gallery ul.body li div.picture:hover > a.link {
     visibility: visible;
 }
-.explore ul.section__body li div.item__picture > div.action__inFavorite:hover,
-.explore ul.section__body li div.item__picture > div.action__rmFavorite:hover,
-.explore ul.section__body li div.item__picture > div.section__move:hover,
-.explore ul.section__body li div.item__picture > div.action__edit:hover,
-.explore ul.section__body li div.item__picture > a.item__link:hover {
+ul.explore__gallery ul.body li div.picture > div.inFavorite:hover,
+ul.explore__gallery ul.body li div.picture > div.rmFavorite:hover,
+ul.explore__gallery ul.body li div.picture > div.move:hover,
+ul.explore__gallery ul.body li div.picture > div.edit:hover,
+ul.explore__gallery ul.body li div.picture > a.link:hover {
     background-color: #fff;
 }
 
@@ -394,10 +388,10 @@ ul.explore {
     width: 290px;
 }
 
-.explore #info_popup:hover {
+.explore__gallery #info_popup:hover {
     visibility: visible;
 }
-.explore #info_popup {
+.explore__gallery #info_popup {
     position: absolute;
     top: 16px;
     left: 0;
@@ -410,13 +404,13 @@ ul.explore {
     font-size: 13px;
     white-space: normal;
 }
-.explore div.popup {
+.explore__gallery div.popup {
     background-color: #fff;
     box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-.explore #info_popup .corner2 {
+.explore__gallery #info_popup .corner2 {
     border: 8px solid transparent;
     border-bottom: 10px solid #fff;
     border-top: 0;
@@ -426,7 +420,7 @@ ul.explore {
     left: 50%;
     margin-left: -8px;
 }
-.explore #info_popup .corner {
+.explore__gallery #info_popup .corner {
     border: 8px solid transparent;
     border-bottom: 10px solid rgb(192, 187, 187);
     border-top: 0;
@@ -437,27 +431,27 @@ ul.explore {
     margin-left: -8px;
 
 }
-.explore #info_popup .content {
+.explore__gallery #info_popup .content {
     padding: 6px;
 }
-.explore #info_popup ul {
+.explore__gallery #info_popup ul {
     list-style-type: lower-greek;
     padding-left: 20px;
     margin: 0;
     word-wrap: break-word;
 }
-.explore #info_popup li {
+.explore__gallery #info_popup li {
     margin: 0;
     margin-bottom: 6px;
     line-height: normal;
 }
-.explore #info_popup li:first-child {
+.explore__gallery #info_popup li:first-child {
     border-bottom: 1px dashed rgb(111, 111, 111);
     margin-bottom: 3px;
     padding-bottom: 3px;
     font-size: 14px;
 }
-.explore #info_popup li:last-child {
+.explore__gallery #info_popup li:last-child {
     margin-bottom: 0;
     padding-bottom: 0;
     border-bottom: 0;

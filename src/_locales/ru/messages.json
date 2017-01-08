@@ -156,10 +156,10 @@
     "message": "Инвертировать цвет иконки расширения"
   },
 
-  "favoriteList": {
+  "favorites": {
     "message": "Избранное"
   },
-  "kpFavoriteList": {
+  "kpFavorites": {
     "message": "Кинопоиск: Избранное"
   },
   "kpInCinema": {

@@ -567,8 +567,8 @@ define([
         var sectionWrapperIdMap = [];
 
         var updateCategoryContent = function (sectionWrapper) {
-            sectionWrapper.node.style.minHeight = '';
-            sectionWrapper.minHeight = '';
+            sectionWrapper.bodyNode.style.minHeight = '';
+            sectionWrapper.minHeight = 0;
             var content = sectionWrapper.cache && sectionWrapper.cache.content;
             setContent(sectionWrapper, content, sectionWrapper.currentPage, 1);
         };
@@ -785,14 +785,14 @@ define([
         var onSetPage = function (page) {
             if (this.currentPage !== page) {
                 this.currentPage = page;
-                var previewActivePage = this.currentPageEl;
+                this.currentPageEl && this.currentPageEl.classList.remove('item-active');
                 var activePage = this.pagesNode.querySelector('li[data-page="' + page + '"]');
-                previewActivePage && previewActivePage.classList.remove('item-active');
                 activePage && activePage.classList.add('item-active');
+                this.currentPageEl = activePage;
 
-                var height = this.node.clientHeight;
+                var height = this.bodyNode.clientHeight;
                 if (this.minHeight < height) {
-                    this.node.style.minHeight = height + 'px';
+                    this.bodyNode.style.minHeight = height + 'px';
                     this.minHeight = height;
                 }
 
@@ -865,7 +865,6 @@ define([
 
                 var actionList = document.createDocumentFragment();
                 if (id === 'favorites') {
-                    actionList.push();
                     dom.el(actionList, {
                         append: [
                             dom.el('div', {
@@ -898,10 +897,7 @@ define([
                             },
                             class: 'item__picture',
                             append: [
-                                dom.el('div', {
-                                    class: 'item__actions',
-                                    append: actionList
-                                }),
+                                actionList,
                                 dom.el('a', {
                                     class: 'item__link',
                                     href: readMoreUrl,
@@ -944,11 +940,11 @@ define([
                     return setContent(sectionWrapper, content, page, update_pages);
                 }
                 if (id === 'favorites') {
-                    sectionWrapper.node.classList.add('empty');
+                    sectionWrapper.node.classList.add('section-empty');
                 }
             } else
-            if (id === 'favorites' && sectionWrapper.node.classList.contains('empty')) {
-                sectionWrapper.node.classList.remove('empty');
+            if (id === 'favorites' && sectionWrapper.node.classList.contains('section-empty')) {
+                sectionWrapper.node.classList.remove('section-empty');
             }
 
             if (!sectionWrapper.setPage || update_pages) {
@@ -1156,7 +1152,7 @@ define([
             sectionWrapper.cache = null;
             sectionWrapper.currentPage = null;
             sectionWrapper.currentPageEl = null;
-            sectionWrapper.minHeight = null;
+            sectionWrapper.minHeight = 0;
             sectionWrapper.displayItemCount = null;
             sectionWrapper.setPage = null;
 
@@ -1180,13 +1176,13 @@ define([
                                 class: ['section__actions'],
                                 append: [
                                     section.id !== 'kpFavorites' ? '' : dom.el('a', {
-                                        class: 'actions__open',
+                                        class: 'action__open',
                                         target: '_blank',
                                         title: chrome.i18n.getMessage('goToTheWebsite'),
                                         href: sectionWrapper.source.url.replace('%page%', 1).replace('%category%', storage.kinopoiskFolderId)
                                     }),
                                     section.id !== 'kpFavorites' ? '' : dom.el('div', {
-                                        class: 'actions__update',
+                                        class: 'action__update',
                                         title: chrome.i18n.getMessage('update'),
                                         on: ['click', function (e) {
                                             e.preventDefault();
@@ -1194,7 +1190,7 @@ define([
                                         }]
                                     }),
                                     dom.el('div', {
-                                        class: 'actions__setup',
+                                        class: 'action__setup',
                                         title: chrome.i18n.getMessage('setupView'),
                                         on: ['click', function (e) {
                                             e.preventDefault();
