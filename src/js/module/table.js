@@ -191,6 +191,8 @@ define([
 
         var sortCells = storage.sortCells;
 
+        var trackerIdCount = {};
+
         var getHeadRow = function () {
             var wrappedCells = {};
             var sortedCell = null;
@@ -475,7 +477,7 @@ define([
             node: dom.el('div', {
                 class: ['footer', 'table__footer']
             }),
-            hasMore: false
+            more: {}
         };
 
         var tableNode = dom.el('div', {
@@ -501,8 +503,6 @@ define([
             });
             sortInsertList(body.node, sortedRows, tableSortedRows);
         };
-
-        var trackerIdCount = {};
 
         sortCells.forEach(function (row) {
             head.cellTypeCell[row[0]].sort(row[1]);
@@ -544,11 +544,15 @@ define([
             insertSortedRows();
         };
 
-        this.showMore = function (searchMore) {
+        this.insertMoreBtn = function (searchMore, trackerIds) {
             var loading = false;
-            if (!footer.hasMore) {
-                footer.hasMore = true;
-                footer.node.appendChild(dom.el('a', {
+            var more = footer.more;
+            if (!more) {
+                more = footer.more = {};
+            }
+            more.trackerIds = trackerIds;
+            if (!more.node) {
+                more.node = dom.el('a', {
                     class: ['loadMore', 'search__submit', 'footer__loadMore'],
                     href: '#more',
                     text: chrome.i18n.getMessage('loadMore'),
@@ -560,10 +564,13 @@ define([
                             _this.classList.add('loadMore-loading');
                             searchMore(function () {
                                 _this.parentNode && _this.parentNode.removeChild(_this);
+                                footer.more = null;
                             });
                         }
                     }]
-                }));
+                });
+                footer.hide = false;
+                footer.node.appendChild(more.node);
             }
         };
 
@@ -580,6 +587,23 @@ define([
                 row.node.dataset.filter = filterValue;
                 if (filterValue) {
                     trackerIdCount[trackerId]++;
+                }
+            }
+
+            var more = footer.more;
+            if (more) {
+                var isHidden = more.trackerIds.every(function (id) {
+                    return !resultFilter.isFilteredTracker(id);
+                });
+                if (isHidden) {
+                    if (!more.hide) {
+                        more.node.classList.add('loadMore-hidden');
+                        more.hide = true;
+                    }
+                } else
+                if (more.hide) {
+                    more.node.classList.remove('loadMore-hidden');
+                    more.hide = false;
                 }
             }
         };

@@ -780,6 +780,10 @@ a.tracker {
     cursor: default;
 }
 
+.table-results .footer__loadMore.loadMore-hidden {
+    display: none;
+}
+
 #ui-datepicker-div {
     border: 1px solid #C0C0C0;
     background-color: #fff;

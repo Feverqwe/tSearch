@@ -182,11 +182,12 @@ define([
             });
         };
 
-        var setMoreEvent = function (trackerId, query, response) {
+        var setMoreEvent = function (trackerId, query, response, table) {
             moreEvents[trackerId] = {
                 message: response.nextPageRequest,
                 query: query
             };
+            table.insertMoreBtn(onSearchMore, Object.keys(moreEvents));
         };
 
         var inHistory = function (query) {
@@ -245,12 +246,10 @@ define([
 
                         if (response.success) {
                             tracker.status('success');
-                            var more = !!response.nextPageRequest;
-                            if (more) {
-                                setMoreEvent(tracker.id, query, response);
-                                table.showMore(onSearchMore);
-                            }
                             table.insertResults(tracker, query, response.results);
+                            if (response.nextPageRequest) {
+                                setMoreEvent(tracker.id, query, response, table);
+                            }
                             updateCounter();
                         } else {
                             tracker.status('error', response.error);
@@ -290,12 +289,10 @@ define([
                             if (!table) {
                                 table = createTable();
                             }
-                            var more = !!response.nextPageRequest;
-                            if (more) {
-                                setMoreEvent(tracker.id, query, response);
-                                table.showMore(onSearchMore);
-                            }
                             table.insertResults(tracker, query, response.results);
+                            if (response.nextPageRequest) {
+                                setMoreEvent(tracker.id, query, response, table);
+                            }
                             updateCounter();
                         } else {
                             tracker.status('error', response.error);

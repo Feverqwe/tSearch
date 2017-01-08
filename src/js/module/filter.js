@@ -147,6 +147,12 @@ define([
            self.remove(trackerFilter);
        };
 
+       this.isFilteredTracker = function (id) {
+           return filterTypeMap.tracker(trackerFilter, {
+               trackerId: id
+           });
+       };
+
        this.update = function () {
            var stringFilters = stringifyFilter();
            if (stringFilters !== activeFilters) {
