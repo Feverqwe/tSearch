@@ -181,6 +181,7 @@ define([
     };
 
     var Table = function (resultFilter, storage) {
+        var self = this;
         var cells = ['date', 'title', 'size', 'seed', 'peer'];
         if (storage.hidePeerRow) {
             cells.splice(cells.indexOf('peer'), 1);
@@ -569,12 +570,13 @@ define([
                         }
                     }]
                 });
-                footer.hide = false;
+                more.show = true;
                 footer.node.appendChild(more.node);
             }
         };
 
         this.applyFilter = function () {
+            var visibleCount = 0;
             var trackerId, filterValue;
             for (trackerId in trackerIdCount){
                 trackerIdCount[trackerId] = 0;
@@ -586,6 +588,7 @@ define([
                 row.filterValue = filterValue;
                 row.node.dataset.filter = filterValue;
                 if (filterValue) {
+                    visibleCount++;
                     trackerIdCount[trackerId]++;
                 }
             }
@@ -596,18 +599,35 @@ define([
                     return !resultFilter.isFilteredTracker(id);
                 });
                 if (isHidden) {
-                    if (!more.hide) {
+                    if (more.show) {
                         more.node.classList.add('loadMore-hidden');
-                        more.hide = true;
+                        more.show = false;
                     }
                 } else
-                if (more.hide) {
+                if (!more.show) {
                     more.node.classList.remove('loadMore-hidden');
-                    more.hide = false;
+                    more.show = true;
                 }
             }
-        };
 
+            return {
+                visible: visibleCount,
+                moreVisible: more && more.show
+            };
+        };
+        this.visible = true;
+        this.show = function () {
+            if (!self.visible) {
+                self.node.classList.remove('table-hide');
+                self.visible = true;
+            }
+        };
+        this.hide = function () {
+            if (self.visible) {
+                self.node.classList.add('table-hide');
+                self.visible = false;
+            }
+        };
         this.destroy = function () {
             var parent = tableNode.parentNode;
             if (parent) {

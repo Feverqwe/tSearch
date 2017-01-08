@@ -313,8 +313,13 @@ define([
         };
 
         var onFilterChange = function () {
-            tables.forEach(function (table) {
-                table.applyFilter();
+            tables.forEach(function (table, index) {
+                var result = table.applyFilter();
+                if (index > 0 && !result.visible && !result.moreVisible) {
+                    table.hide();
+                } else {
+                    table.show();
+                }
             });
             updateCounter();
         };
