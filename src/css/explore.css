@@ -18,7 +18,7 @@ ul.explore {
 }
 
 .explore li div.section__head {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
     cursor: pointer;
     line-height: 24px;
     height: 24px;

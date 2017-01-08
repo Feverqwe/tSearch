@@ -329,6 +329,11 @@ define([
                 torrent.categoryTitle = '';
             }
 
+            if (!torrent.title || !torrent.url) {
+                console.debug('[' + trackerId + ']', 'Skip torrent:', torrent);
+                return true;
+            }
+
             torrent.titleLow = torrent.title.toLowerCase();
             torrent.categoryTitleLow = torrent.categoryTitle.toLowerCase();
             torrent.wordFilterLow = torrent.titleLow;
@@ -344,6 +349,8 @@ define([
             if (!torrent.downloadUrl) {
                 torrent.downloadUrl = '';
             }
+
+            return false;
         };
 
         /**
@@ -527,18 +534,20 @@ define([
                  * @property {trackerWrapper} tracker
                  * @property {boolean} filterValue
                  */
-                normalizeTorrent(tracker.id, torrent);
-                var filterValue = resultFilter.getFilterValue(torrent);
-                var node = getBodyRow(tracker, torrent, filterValue, tableRows.length, highlightMap);
-                tableRows.push({
-                    node: node,
-                    query: query,
-                    torrent: torrent,
-                    tracker: tracker,
-                    filterValue: filterValue
-                });
-                if (filterValue) {
-                    trackerIdCount[tracker.id]++;
+                var skip = normalizeTorrent(tracker.id, torrent);
+                if (!skip) {
+                    var filterValue = resultFilter.getFilterValue(torrent);
+                    var node = getBodyRow(tracker, torrent, filterValue, tableRows.length, highlightMap);
+                    tableRows.push({
+                        node: node,
+                        query: query,
+                        torrent: torrent,
+                        tracker: tracker,
+                        filterValue: filterValue
+                    });
+                    if (filterValue) {
+                        trackerIdCount[tracker.id]++;
+                    }
                 }
             });
 
