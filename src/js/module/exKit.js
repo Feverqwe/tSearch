@@ -912,15 +912,26 @@ define(['jquery'], function () {
                 query: query,
                 url: nextPageUrl
             }).then(function (result) {
-                return {
-                    success: true,
-                    results: result.torrentList,
-                    nextPageRequest: result.nextPageUrl && {
-                        event: 'getNextPage',
-                        url: result.nextPageUrl,
-                        query: query
-                    }
-                };
+                var response;
+                if (result.requireAuth) {
+                    response = {
+                        success: false,
+                        error: 'AUTH',
+                        message: 'requireAuth',
+                        url: result.requireAuth
+                    };
+                } else {
+                    response = {
+                        success: true,
+                        results: result.torrentList,
+                        nextPageRequest: result.nextPageUrl && {
+                            event: 'getNextPage',
+                            url: result.nextPageUrl,
+                            query: query
+                        }
+                    };
+                }
+                return response;
             });
         };
 

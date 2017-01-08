@@ -67,6 +67,26 @@ define([
                 if (status === 'success') {
                 }
             };
+            var trackerAuth = function (response) {
+                var _this = this;
+                var url = response.url;
+                var authNode = dom.el('a', {
+                    class: ['tracker__login'],
+                    target: '_blank',
+                    href: url,
+                    text: chrome.i18n.getMessage('login')
+                });
+                _this.countNode.classList.add('counter-hidden');
+                _this.node.insertBefore(authNode, _this.countNode);
+                _this.auth = {
+                    node: authNode,
+                    destroy: function () {
+                        _this.countNode.classList.remove('counter-hidden');
+                        authNode.parentNode.removeChild(authNode);
+                        _this.auth = null;
+                    }
+                };
+            };
             var trackersNode = document.createDocumentFragment();
             profile.trackers.forEach(function (/**profileTracker*/item) {
                 var worker = null;
@@ -161,7 +181,9 @@ define([
                     selected: false,
                     select: trackerSelect,
                     count: trackerCount,
-                    status: trackerStatus
+                    status: trackerStatus,
+                    auth: null,
+                    setAuth: trackerAuth
                 };
 
                 wrappedTrackers.push(trackerWrapper);
@@ -251,6 +273,7 @@ define([
             wrappedTrackers.forEach(function (tracker) {
                 if (tracker.worker) {
                     tracker.status('search');
+                    tracker.auth && tracker.auth.destroy();
                     tracker.worker.search(query, function (response) {
                         if (!response) {
                             tracker.status('error', 'Tracker response is empty!');
@@ -264,6 +287,9 @@ define([
                                 setMoreEvent(tracker.id, query, response, table);
                             }
                             updateCounter();
+                        } else
+                        if (response.error === 'AUTH') {
+                            tracker.setAuth(response);
                         } else
                         if (response.message === 'ABORT') {
                             tracker.status('success');

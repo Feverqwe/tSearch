@@ -411,6 +411,17 @@ a.tracker {
 .tracker .tracker__counter {
     padding: 2px 0;
 }
+.tracker .tracker__counter.counter-hidden {
+    display: none;
+}
+
+.tracker .tracker__login {
+    display: block;
+    width: 16px;
+    height: 16px;
+    background: url(../img/login.svg) center no-repeat;
+    background-size: 16px;
+}
 
 .tracker.tracker-selected > *:not(.tracker__icon) {
     background-color: #337AF8;

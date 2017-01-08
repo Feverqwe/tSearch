@@ -203,6 +203,8 @@
   "cancel": {"message": "Отменить"},
   "change": {"message": "Изменить"},
 
+  "login": {"message": "Войти"},
+
   "kitTrackerCodeReadError": {
     "message": "Ошибка разбора кода трекера"
   },

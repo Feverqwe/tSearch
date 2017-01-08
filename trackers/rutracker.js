@@ -18,7 +18,7 @@ var onPageLoad = function (response) {
     var $bodyDom = $(bodyDom);
 
     if (/login\.php/.test(response.url) || $bodyDom.find('#login-form').length) {
-        return {success: false, error: 'requireAuth', loginUrl: 'https://rutracker.org/forum/login.php'};
+        return {success: false, error: 'AUTH', message: 'requireAuth', url: 'https://rutracker.org/forum/login.php'};
     }
 
     var torrentElList = $bodyDom.find('#tor-tbl>tbody>tr');
