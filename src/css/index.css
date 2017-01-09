@@ -547,6 +547,20 @@ a.tracker {
     max-height: 370px;
 }
 
+.manager__profiles .item__move {
+    width: 24px;
+    height: 24px;
+    background: url(../img/moveble.svg) center no-repeat;
+    background-size: 16px;
+    cursor: move;
+    transition: opacity 0.2s;
+    opacity: 0.5;
+}
+
+.manager__profiles .item__move:hover {
+    opacity: 1;
+}
+
 .manager__sub_header {
     align-items: center;
     height: 46px;

@@ -63,6 +63,9 @@ define([
                     },
                     append: [
                         dom.el('div', {
+                            class: 'item__move'
+                        }),
+                        dom.el('div', {
                             class: 'item__name',
                             text: profile.name
                         }),
@@ -87,7 +90,7 @@ define([
             };
 
             var profilesNode = null;
-            return dom.el(document.createDocumentFragment(), {
+            var node = dom.el(document.createDocumentFragment(), {
                 append: [
                     getHeader(chrome.i18n.getMessage('manageProfiles')),
                     dom.el('div', {
@@ -140,21 +143,19 @@ define([
                             on: ['click', function (e) {
                                 e.preventDefault();
 
+                                var profileIdMap = {};
+                                profiles.forEach(function (profile) {
+                                    profileIdMap[profile.id] = profile;
+                                });
+
                                 var existsProfileIds = [];
                                 [].slice.call(profilesNode.childNodes).forEach(function (profileNode) {
                                     var id = profileNode.dataset.id;
-                                    existsProfileIds.push(id);
+                                    existsProfileIds.push(profileIdMap[id]);
                                 });
 
-                                profiles.slice(0).forEach(function (profile) {
-                                    var id = String(profile.id);
-                                    if (existsProfileIds.indexOf(id) === -1) {
-                                        var pos = profiles.indexOf(profile);
-                                        if (pos !== -1) {
-                                            profiles.splice(pos, 1);
-                                        }
-                                    }
-                                });
+                                profiles.splice(0);
+                                profiles.push.apply(profiles, existsProfileIds);
 
                                 profileController.refreshProfileIdMap();
 
@@ -169,6 +170,19 @@ define([
                     ])
                 ]
             });
+
+            require(['./lib/jquery-3.1.1.min'], function () {
+                require(['./lib/jquery-ui.min'], function () {
+                    var $profilesNode = $(profilesNode);
+                    $profilesNode.sortable({
+                        axis: 'y',
+                        handle: '.item__move',
+                        scroll: false
+                    });
+                });
+            });
+
+            return node;
         };
 
         var getProfile = function (/**profile*/profile, trackers) {
