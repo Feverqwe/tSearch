@@ -1297,7 +1297,13 @@ define([
                                     sectionWrapper.collapse();
                                 }]
                             })
-                        ]
+                        ],
+                        on: ['click', function (e) {
+                            var node = dom.closestNode(this, e.target);
+                            if (e.target === this || node && node.classList.contains('section__title')) {
+                                sectionWrapper.collapse();
+                            }
+                        }]
                     }),
                     sectionWrapper.pagesNode = dom.el('ul', {
                         class: ['section__pages'],
