@@ -191,7 +191,8 @@ define([
                 if (err.message === 'C_ACTUAL') {
                     return {success: false, message: 'ACTUAL'};
                 } else {
-                    throw err;
+                    console.error('Update error', tracker.id, err);
+                    return {success: false, message: 'ERROR'};
                 }
             });
         };
