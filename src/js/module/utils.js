@@ -296,5 +296,86 @@ define(function () {
             }
         };
     };
+    utils.parseMeta = function (code) {
+        var meta = {};
+        var readMeta = false;
+        var params = {
+            name: 'string',
+            version: 'string',
+            author: 'string',
+            description: 'string',
+            homepageURL: 'string',
+            icon: 'string',
+            icon64: 'string',
+            updateURL: 'string',
+            downloadURL: 'string',
+            supportURL: 'string',
+            require: 'array',
+            connect: 'array'
+        };
+        code.split(/\r?\n/).some(function (line) {
+            if (!/^\s*\/\//.test(line)) {
+                return;
+            }
+            if (!readMeta && /[=]+UserScript[=]+/.test(line)) {
+                readMeta = true;
+            }
+            if (readMeta && /[=]+\/UserScript[=]+/.test(line)) {
+                readMeta = false;
+                return true;
+            }
+            if (readMeta) {
+                var m = /^\s*\/\/\s*@([A-Za-z0-9]+)\s+(.+)$/.exec(line);
+                if (m) {
+                    var key = m[1];
+                    var value = m[2].trim();
+                    var type = params[key];
+                    if (type === 'string') {
+                        meta[key] = value;
+                    } else
+                    if (type === 'array') {
+                        if (!meta[key]) {
+                            meta[key] = [];
+                        }
+                        meta[key].push(value);
+                    }
+                }
+            }
+        });
+        if (!Object.keys(meta).length) {
+            throw new Error("Meta data is not found!");
+        }
+        if (!meta.name) {
+            throw new Error("Name field is not found!");
+        }
+        if (!meta.version) {
+            throw new Error("Version field is not found!");
+        }
+        return meta;
+    };
+    utils.isNewVersion = function (oldVersion, newVersion) {
+        var validate = /^[\d.]+$/;
+        if (!validate.test(oldVersion) || !validate.test(newVersion)) {
+            throw new Error('Incorrect version');
+        }
+        var normlize = function (value, len) {
+            while (value.length < len) {
+                value += '0';
+            }
+            return value;
+        };
+        var oldParts = oldVersion.split('.');
+        var newParts = newVersion.split('.');
+        return newParts.some(function (value, index) {
+            var oldValue = oldParts[index] || '';
+            var newValue = newParts[index] || '';
+            var len = Math.max(oldValue.length, newValue.length);
+            oldValue = parseInt(normlize(oldValue, len));
+            newValue = parseInt(normlize(newValue, len));
+            if (newValue > oldValue) {
+                return true;
+            }
+        });
+    };
     return utils;
 });

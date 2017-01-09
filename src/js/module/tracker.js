@@ -3,10 +3,11 @@
  */
 "use strict";
 define([
+    '../lib/promise.min',
     './utils',
     './frameWorker',
     './transport'
-], function (utils, FrameWorker, Transport) {
+], function (Promise, utils, FrameWorker, Transport) {
     var Tracker = function (/**tracker*/tracker) {
         var self = this;
         var ready = false;
@@ -109,6 +110,69 @@ define([
         this.abort = function () {
             requests.splice(0).forEach(function (request) {
                 request.abort();
+            });
+        };
+
+
+        var getContent = function (url) {
+            utils.request({
+                url: url
+            }, function (err, response) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(response.data);
+                }
+            });
+        };
+        var checkUpdate = function () {
+            return getContent(tracker.meta.updateURL).then(function (data) {
+                var meta = utils.parseMeta(data);
+                var version = tracker.meta.version;
+                var result;
+                if (utils.isNewVersion(meta.version, version)) {
+                    result = getContent(tracker.meta.downloadURL).then(function (data) {
+                        var meta = utils.parseMeta(data);
+                        if (utils.isNewVersion(meta.version, version)) {
+                            tracker.meta = meta;
+                            tracker.code = data;
+                            tracker.info.lastUpdate = parseInt(Date.now() / 1000);
+                            return {
+                                success: true,
+                                previewVersion: version,
+                                version: meta.version
+                            };
+                        } else {
+                            result = {
+                                success: false,
+                                message: 'ACTUAL',
+                                version: meta.version
+                            };
+                        }
+                    });
+                } else {
+                    result = {
+                        success: false,
+                        message: 'ACTUAL',
+                        version: meta.version
+                    };
+                }
+                return result;
+            });
+        };
+        this.update = function (force) {
+            return Promise.resolve().then(function () {
+                var now = parseInt(Date.now() / 1000);
+                var updateURL = tracker.meta.updateURL;
+                var lastUpdate = tracker.info.lastUpdate || 0;
+                if (updateURL && (now - lastUpdate > 24 * 60 * 60 || force)) {
+                    return checkUpdate();
+                } else {
+                    return {
+                        success: false,
+                        message: 'TIMEOUT'
+                    };
+                }
             });
         };
         load(onReady);

@@ -32,71 +32,13 @@ require([
         window.close();
     });
 
-    var parseMeta = function (code) {
-        var meta = {};
-        var readMeta = false;
-        var params = {
-            name: 'string',
-            version: 'string',
-            author: 'string',
-            description: 'string',
-            homepageURL: 'string',
-            icon: 'string',
-            icon64: 'string',
-            updateURL: 'string',
-            downloadURL: 'string',
-            supportURL: 'string',
-            require: 'array',
-            connect: 'array'
-        };
-        code.split(/\r?\n/).some(function (line) {
-            if (!/^\s*\/\//.test(line)) {
-                return;
-            }
-            if (!readMeta && /[=]+UserScript[=]+/.test(line)) {
-                readMeta = true;
-            }
-            if (readMeta && /[=]+\/UserScript[=]+/.test(line)) {
-                readMeta = false;
-                return true;
-            }
-            if (readMeta) {
-                var m = /^\s*\/\/\s*@([A-Za-z0-9]+)\s+(.+)$/.exec(line);
-                if (m) {
-                    var key = m[1];
-                    var value = m[2].trim();
-                    var type = params[key];
-                    if (type === 'string') {
-                        meta[key] = value;
-                    } else
-                    if (type === 'array') {
-                        if (!meta[key]) {
-                            meta[key] = [];
-                        }
-                        meta[key].push(value);
-                    }
-                }
-            }
-        });
-        if (!Object.keys(meta).length) {
-            throw new Error("Meta data is not found!");
-        }
-        if (!meta.name) {
-            throw new Error("Name field is not found!");
-        }
-        if (!meta.version) {
-            throw new Error("Version field is not found!");
-        }
-        return meta;
-    };
-
     var save = document.querySelector('.head__action-save');
     save.addEventListener('click', function (e) {
         e.preventDefault();
         var _this = this;
         var code = editor.getValue();
         try {
-            var meta = parseMeta(code);
+            var meta = utils.parseMeta(code);
         } catch (e) {
             alert("Parse meta error!\n" + e.message);
             throw e;
