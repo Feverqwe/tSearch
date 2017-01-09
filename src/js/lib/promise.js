@@ -190,20 +190,15 @@ define(function () {
             };
     }
 
-    var asap = null;
     var _Promise = null;
     if (typeof Promise === 'function') {
         _Promise = Promise;
     } else {
-        if (typeof setImmediate === 'function') {
-            asap = setImmediate;
-		} else {
-			asap = function (fn) {
-                setTimeout(fn, 0)
-            };
-		}
-        _Promise = MakePromise(asap);
+        _Promise = MakePromise(typeof setImmediate === 'function' ? setImmediate : function (fn) {setTimeout(fn, 0)});
+        window.Promise = _Promise;
     }
+
     WrapPromise(_Promise);
+
     return _Promise;
 });
