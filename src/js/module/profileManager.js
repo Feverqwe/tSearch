@@ -233,6 +233,36 @@ define([
             var profileName = null;
             var trackersNode = null;
             var removedTrackerIds = [];
+
+            var getTrackerList = function () {
+                var fragment = document.createDocumentFragment();
+                var idList = [];
+                profile.trackers.forEach(function (/**profileTracker*/profileTracker) {
+                    var tracker = trackers[profileTracker.id];
+                    var exists = !!tracker;
+                    if (!tracker) {
+                        tracker = {
+                            id: profileTracker.id,
+                            meta: {}
+                        }
+                    }
+                    idList.push(tracker.id);
+                    fragment.appendChild(getTrackerItem(tracker, true, exists));
+                });
+                Object.keys(trackers).forEach(function (/**tracker*/trackerId) {
+                    var tracker = trackers[trackerId];
+                    if (idList.indexOf(tracker.id) === -1) {
+                        fragment.appendChild(getTrackerItem(tracker, false, true))
+                    }
+                });
+                return fragment;
+            };
+
+            onTrackersUpdate = function () {
+                trackersNode.textContent = '';
+                trackersNode.appendChild(getTrackerList());
+            };
+
             return dom.el(document.createDocumentFragment(), {
                 append: [
                     getHeader(chrome.i18n.getMessage('manageProfile')),
@@ -253,29 +283,7 @@ define([
                     }),
                     trackersNode = dom.el('div', {
                         class: 'manager__trackers',
-                        append: (function () {
-                            var list = [];
-                            var idList = [];
-                            profile.trackers.forEach(function (/**profileTracker*/profileTracker) {
-                                var tracker = trackers[profileTracker.id];
-                                var exists = !!tracker;
-                                if (!tracker) {
-                                    tracker = {
-                                        id: profileTracker.id,
-                                        meta: {}
-                                    }
-                                }
-                                idList.push(tracker.id);
-                                list.push(getTrackerItem(tracker, true, exists))
-                            });
-                            Object.keys(trackers).forEach(function (/**tracker*/trackerId) {
-                                var tracker = trackers[trackerId];
-                                if (idList.indexOf(tracker.id) === -1) {
-                                    list.push(getTrackerItem(tracker, false, true))
-                                }
-                            });
-                            return list;
-                        })(),
+                        append: getTrackerList(),
                         on: ['click', function (e) {
                             var target = e.target;
                             var trackerId;
@@ -375,19 +383,37 @@ define([
             });
         };
 
+        var onTrackersUpdate = null;
+
         var createLayer = function () {
             var layer = getLayer();
             layer.content.appendChild(getProfiles(profiles));
             return layer;
         };
 
-        var close = function () {
-            document.removeEventListener('click', closeEvent, true);
-            layer.node.parentNode.removeChild(layer.node);
+
+        var onStorageChange = function(changes, areaName) {
+            var key;
+            if (areaName === 'local') {
+                var change = changes.trackers;
+                if (change) {
+                    for (key in trackers) {
+                        delete trackers[key];
+                    }
+                    for (key in change.newValue) {
+                        trackers[key] = change.newValue[key];
+                    }
+                    onTrackersUpdate && onTrackersUpdate();
+                }
+            }
         };
 
-        this.onClose = function () {
 
+        var close = function () {
+            onTrackersUpdate = null;
+            document.removeEventListener('click', closeEvent, true);
+            layer.node.parentNode.removeChild(layer.node);
+            chrome.storage.onChanged.removeListener(onStorageChange);
         };
 
         this.onSave = function () {
@@ -404,6 +430,7 @@ define([
             layer = createLayer();
             document.body.appendChild(layer.node);
             document.addEventListener('click', closeEvent, true);
+            chrome.storage.onChanged.addListener(onStorageChange);
         };
     };
     ProfileManager.prototype.getDefaultProfile = function (profileController) {
