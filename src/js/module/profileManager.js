@@ -194,6 +194,9 @@ define([
                         id: tracker.id
                     },
                     append: [
+                        dom.el('div', {
+                            class: 'item__move'
+                        }),
                         checkboxNode = dom.el('input', {
                             class: 'item__checkbox',
                             type: 'checkbox',
@@ -277,7 +280,7 @@ define([
                 trackersNode.appendChild(getTrackerList());
             };
 
-            return dom.el(document.createDocumentFragment(), {
+            var node = dom.el(document.createDocumentFragment(), {
                 append: [
                     getHeader(chrome.i18n.getMessage('manageProfile')),
                     dom.el('div', {
@@ -395,6 +398,19 @@ define([
                     ])
                 ]
             });
+
+            require(['./lib/jquery-3.1.1.min'], function () {
+                require(['./lib/jquery-ui.min'], function () {
+                    var $trackersNode = $(trackersNode);
+                    $trackersNode.sortable({
+                        axis: 'y',
+                        handle: '.item__move',
+                        scroll: false
+                    });
+                });
+            });
+
+            return node;
         };
 
         var onTrackersUpdate = null;

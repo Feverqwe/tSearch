@@ -547,6 +547,7 @@ a.tracker {
     max-height: 370px;
 }
 
+.manager__trackers .item__move,
 .manager__profiles .item__move {
     width: 24px;
     height: 24px;
@@ -557,6 +558,7 @@ a.tracker {
     opacity: 0.5;
 }
 
+.manager__trackers .item__move,
 .manager__profiles .item__move:hover {
     opacity: 1;
 }
