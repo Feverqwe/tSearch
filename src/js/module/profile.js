@@ -20,6 +20,8 @@ define([
         var multiSelect = false;
         var selectedTracker = null;
 
+        var selectedTrackerIds = [];
+
         var load = function () {
             var trackerSelect = function (state, noUpdate) {
                 if (state === undefined) {
@@ -38,12 +40,19 @@ define([
                         selectedTracker = this;
                     }
 
+                    var pos = selectedTrackerIds.indexOf(this.id);
                     if (state) {
                         this.node.classList.add('tracker-selected');
                         resultFilter.addTracker(this.id);
+                        if (pos === -1) {
+                            selectedTrackerIds.push(this.id);
+                        }
                     } else {
                         this.node.classList.remove('tracker-selected');
                         resultFilter.removeTracker(this.id);
+                        if (pos !== -1) {
+                            selectedTrackerIds.splice(pos, 1);
+                        }
                     }
 
                     !noUpdate && resultFilter.update();
@@ -274,6 +283,10 @@ define([
             var table = createTable();
 
             wrappedTrackers.forEach(function (tracker) {
+                if (selectedTrackerIds.length && selectedTrackerIds.indexOf(tracker.id) === -1) {
+                    return;
+                }
+
                 if (tracker.worker) {
                     tracker.status('search');
                     tracker.auth && tracker.auth.destroy();
