@@ -24,6 +24,8 @@ require([
         document.body.classList.remove('loading');
 
         (function (history, clickHistory) {
+            var cloneHistory = history.slice(0);
+
             var queryClickHistoryItemMap = {};
             clickHistory.forEach(function (/**clickHistoryItem*/clickHistoryItem) {
                 var query = clickHistoryItem.query.trim();
@@ -34,7 +36,7 @@ require([
             });
 
             dom.el(document.querySelector('.history'), {
-                append: history.map(function (/**historyItem*/historyItem, index) {
+                append: cloneHistory.map(function (/**historyItem*/historyItem, index) {
                     var query = historyItem.query;
                     var queryClickHistory = queryClickHistoryItemMap[query] || [];
                     var map = highlight.getMap(query);
@@ -126,7 +128,7 @@ require([
                         if (link.dataset.action === 'remove-query') {
                             e.preventDefault();
                             var node = link.parentNode;
-                            var item = history[node.dataset.index];
+                            var item = cloneHistory[node.dataset.index];
                             var pos = history.indexOf(item);
                             if (pos !== -1) {
                                 history.splice(pos, 1);
