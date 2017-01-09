@@ -616,7 +616,7 @@ define([
             var _this = this;
 
             _this.node.classList.add('section-loading');
-            loadFavorites(_this).then(function () {
+            loadKpFavorites(_this).then(function () {
                 _this.node.classList.remove('section-loading');
 
                 var storageDate = {};
@@ -709,6 +709,9 @@ define([
             var storage = {};
             storage[sectionWrapper.cacheKey] = sectionWrapper.cache;
             chrome.storage.local.set(storage);
+            if (storage.enableFavoriteSync) {
+                chrome.storage.sync.set(storage);
+            }
         };
 
         var sectionFavorite = function (index) {
@@ -1160,7 +1163,7 @@ define([
             });
         };
 
-        var loadFavorites = function (sectionWrapper) {
+        var loadKpFavorites = function (sectionWrapper) {
             var cache = sectionWrapper.cache;
             sectionWrapper.requestList.splice(0).forEach(function (request) {
                 request.abort();
@@ -1230,33 +1233,49 @@ define([
         };
 
         var getSectionContent = function (sectionWrapper) {
-            chrome.storage.local.get(sectionWrapper.cacheKey, function (storage) {
-                var cache = storage[sectionWrapper.cacheKey] || {};
-                sectionWrapper.cache = cache;
-                var source = sectionWrapper.source;
-                var date = getCacheDate(source.keepAlive);
-                if (source.noAutoUpdate) {
-                    setContent(sectionWrapper);
-                } else
-                if (cache.errorTimeout && cache.errorTimeout > parseInt(Date.now() / 1000)) {
-                    sectionWrapper.node.classList.add('section-error');
-                } else
-                if (cache.keepAlive === date || !navigator.onLine) {
-                    setContent(sectionWrapper);
-                } else {
-                    sectionWrapper.node.classList.add('section-loading');
-                    cache.keepAlive = date;
-                    loadContent(sectionWrapper).then(function (result) {
-                        sectionWrapper.node.classList.remove('section-loading');
+            var next = function (syncStorage) {
+                chrome.storage.local.get(sectionWrapper.cacheKey, function (storage) {
+                    var cache = null;
+                    if (syncStorage) {
+                        cache = syncStorage[sectionWrapper.cacheKey];
+                    }
+                    if (!cache) {
+                        cache = storage[sectionWrapper.cacheKey] || {};
+                    }
 
-                        var storageDate = {};
-                        storageDate[sectionWrapper.cacheKey] = cache;
-                        chrome.storage.local.set(storageDate);
-
+                    sectionWrapper.cache = cache;
+                    var source = sectionWrapper.source;
+                    var date = getCacheDate(source.keepAlive);
+                    if (source.noAutoUpdate) {
                         setContent(sectionWrapper);
-                    });
-                }
-            });
+                    } else
+                    if (cache.errorTimeout && cache.errorTimeout > parseInt(Date.now() / 1000)) {
+                        sectionWrapper.node.classList.add('section-error');
+                    } else
+                    if (cache.keepAlive === date || !navigator.onLine) {
+                        setContent(sectionWrapper);
+                    } else {
+                        sectionWrapper.node.classList.add('section-loading');
+                        cache.keepAlive = date;
+                        loadContent(sectionWrapper).then(function (result) {
+                            sectionWrapper.node.classList.remove('section-loading');
+
+                            var storageDate = {};
+                            storageDate[sectionWrapper.cacheKey] = cache;
+                            chrome.storage.local.set(storageDate);
+
+                            setContent(sectionWrapper);
+                        });
+                    }
+                });
+            };
+            if (sectionWrapper.id === 'favorites') {
+                chrome.storage.sync.get(sectionWrapper.cacheKey, function (syncStorage) {
+                    next(syncStorage);
+                });
+            } else {
+                next();
+            }
         };
 
         var width2fontSize = function (sectionWrapper) {
@@ -1443,6 +1462,28 @@ define([
                     }*/
                 }
             });
+
+            (function () {
+                var favoritesSW = sectionWrapperIdMap.favorites;
+                chrome.storage.onChanged.addListener(function(changes) {
+                    var key;
+                    var change = changes[favoritesSW.cacheKey];
+                    if (change) {
+                        var newValue = change.newValue;
+                        if (JSON.stringify(favoritesSW.cache) !== JSON.stringify(newValue)) {
+                            for (key in favoritesSW.cache) {
+                                delete favoritesSW.cache[key];
+                            }
+                            for (key in newValue) {
+                                favoritesSW.cache[key] = newValue[key];
+                            }
+                            if (favoritesSW.section.enable && favoritesSW.section.show) {
+                                updateCategoryContent(favoritesSW);
+                            }
+                        }
+                    }
+                });
+            })();
 
             setTimeout(function () {
                 require(['./lib/jquery-3.1.1.min'], function () {

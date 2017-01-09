@@ -32,7 +32,8 @@ require([
             sortCells: [],
 
             eSections: [],
-            kinopoiskFolderId: 1
+            kinopoiskFolderId: 1,
+            enableFavoriteSync: true
         }, resolve);
     }).then(function (storage) {
         document.body.classList.remove('loading');
