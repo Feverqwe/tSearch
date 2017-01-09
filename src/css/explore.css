@@ -13,7 +13,10 @@ ul.explore {
     display: none;
 }
 
-.explore li.section-hidden,
+.explore li.section-hidden {
+    opacity: 0;
+}
+
 .explore li.section-empty {
     display: none;
 }
