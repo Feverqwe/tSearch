@@ -146,80 +146,62 @@ define([
         }
     };
     var contentParser = (function () {
-        var exKit = {
-            contentFilterR: {
-                searchJs: /javascript/ig,
-                blockHref: /\/\//,
-                blockSrc: /src=(['"]?)/ig,
-                blockSrcSet: /srcset=(['"]?)/ig,
-                blockOnEvent: /on(\w+)=/ig
-            },
-            contentFilter: function (content) {
-                return content.replace(exKit.contentFilterR.searchJs, 'tms-block-javascript')
-                    .replace(exKit.contentFilterR.blockHref, '//about:blank#blockurl#')
-                    .replace(exKit.contentFilterR.blockSrc, 'src=$1data:image/gif,base64#blockurl#')
-                    .replace(exKit.contentFilterR.blockSrcSet, 'data-block-attr-srcset=$1')
-                    .replace(exKit.contentFilterR.blockOnEvent, 'data-block-event-$1=');
-            },
-            contentUnFilter: function (content) {
-                return content.replace(/data:image\/gif,base64#blockurl#/g, '')
-                    .replace(/about:blank#blockurl#/g, '')
-                    .replace(/tms-block-javascript/g, 'javascript');
-            },
-            parseHtml: function (html) {
-                var fragment = document.createDocumentFragment();
-                var div = document.createElement('html');
-                div.innerHTML = html;
-                var el;
-                while (el = div.firstChild) {
-                    fragment.appendChild(el);
-                }
-                return fragment;
-            },
-            urlCheck: function (details, tracker, value) {
-                if (value.substr(0, 7) === 'magnet:') {
-                    return value;
-                }
-                if (value.substr(0, 2) === '//') {
-                    value = value.replace(/^\/\/[^\/?#]+/, '');
-                }
-                if (value.substr(0, 4) === 'http') {
-                    return value;
-                }
-                if (value[0] === '/') {
-                    return tracker.search.rootUrl + value.substr(1);
-                }
-                if (value.substr(0, 2) === './') {
-                    return tracker.search.baseUrl + value.substr(2);
-                }
-                if (value[0] === '?') {
-                    var url = details.requestUrl || '';
-                    var pos = url.search(/[?#]/);
-                    if (pos !== -1) {
-                        url = url.substr(0, pos);
-                    }
-                    return url + value;
-                }
-                return tracker.search.baseUrl + value;
-            }
+        var searchJs = /javascript/ig;
+        var blockHref = /\/\//;
+        var blockSrc = /src=(['"]?)/ig;
+        var blockSrcSet = /srcset=(['"]?)/ig;
+        var blockOnEvent = /on(\w+)=/ig;
+
+        var deImg = /data:image\/gif,base64#blockurl#/g;
+        var deUrl = /about:blank#blockurl#/g;
+        var deJs = /tms-block-javascript/g;
+
+        var API_sanitizeHtml = function (str) {
+            return str.replace(searchJs, 'tms-block-javascript')
+                .replace(blockHref, '//about:blank#blockurl#')
+                .replace(blockSrc, 'src=$1data:image/gif,base64#blockurl#')
+                .replace(blockSrcSet, 'data-block-attr-srcset=$1')
+                .replace(blockOnEvent, 'data-block-event-$1=');
         };
-        var prepareObj = function (obj) {
+
+        var API_deSanitizeHtml = function (str) {
+            return str.replace(deImg, '')
+                .replace(deUrl, '')
+                .replace(deJs, 'javascript');
+        };
+        
+        var API_getDom = function (html) {
+            var fragment = document.createDocumentFragment();
+            var div = document.createElement('html');
+            div.innerHTML = html;
+            var el;
+            while (el = div.firstChild) {
+                fragment.appendChild(el);
+            }
+            return fragment;
+        };
+
+        var spaceReplace = function (text) {
+            return text.replace(/[\s\xA0]/g, ' ');
+        };
+
+        var checkResult = function (obj) {
             for (var key in obj) {
-                var item = obj[key];
-                if (typeof item !== 'string' || !item) {
+                obj[key] = obj[key] && spaceReplace(API_deSanitizeHtml(obj[key])).trim();
+                if (typeof obj[key] !== 'string' || !obj[key]) {
                     if (key === 'title_en') {
-                        // console.log('English title is not found!', obj);
+                        // console.debug('Original title is not found!', obj);
                         obj[key] = undefined;
                         continue;
                     }
-                    return;
+                    return false;
                 }
-                obj[key] = spaceReplace(exKit.contentUnFilter(item));
             }
-            return 1;
+            return true;
         };
+
         var kpGetImgFileName = function (url) {
-            var m = url.match(/film\/(\d+)/);
+            var m = /film\/(\d+)/.exec(url);
             return m && m[1] + '.jpg' || url;
         };
         var imdbGetImgFilename = function (url) {
@@ -228,7 +210,7 @@ define([
         };
 
         var kpGetYear = function (text) {
-            var m = text.match(/\s+\(.*([1-2]\d{3}).*\)/);
+            var m = /\s+\(.*([1-2]\d{3}).*\)/.exec(text);
             return m && parseInt(m[1]);
         };
         var kpRmYear = function (text) {
@@ -237,23 +219,24 @@ define([
         var kpRmDesc = function (text) {
             return text.replace(/(.*)\s+\(.*\)$/, '$1').trim();
         };
-        var spaceReplace = function (text) {
-            return text.replace(/[\s\xA0]/g, ' ');
+        var kpRmMin = function (text) {
+            return text.replace(/\s\d+\s.{3}\.$/, '');
         };
         var gg_games_new = function (content) {
-            var dom = exKit.parseHtml(exKit.contentFilter(content));
+            var dom = API_getDom(API_sanitizeHtml(content));
 
-            var elList = dom.querySelectorAll('.cnt-box-td .enc-tab1 .enc-box-list > .enc-item');
             var arr = [];
-            for (var i = 0, el; el = elList[i]; i++) {
+            var nodes = dom.querySelectorAll('.cnt-box-td .enc-tab1 .enc-box-list > .enc-item');
+            [].slice.call(nodes).forEach(function (el) {
                 var img = el.querySelector('.im img');
-                img !== null && (img = img.getAttribute('src'));
+                img = img && img.getAttribute('src');
+                img = img && img.replace('/f/games/', '');
 
                 var title = el.querySelector('.e-title a');
-                title !== null && (title = title.textContent);
+                title = title && title.textContent.trim();
 
                 var url = el.querySelector('.e-title a');
-                url !== null && (url = url.getAttribute('href'));
+                url = url && url.getAttribute('href');
 
                 var obj = {
                     img: img,
@@ -261,37 +244,36 @@ define([
                     url: url
                 };
 
-                if (!prepareObj(obj)) {
-                    console.log("Explorer gg_games_new have problem!");
-                    continue;
+                if (!checkResult(obj)) {
+                    console.debug("Explorer gg_games_new have problem!");
+                    return;
                 }
 
-                obj.img = obj.img.replace('/f/games/', '');
-                obj.title = obj.title.trim();
                 arr.push(obj);
-            }
+            });
             return arr;
         };
         return {
             kpFavorites: function (content) {
-                var dom = exKit.parseHtml(exKit.contentFilter(content));
+                var dom = API_getDom(API_sanitizeHtml(content));
                 if (dom.querySelector('.login > .js-external-login-action')) {
                     return {requireAuth: 1};
                 }
-                var elList = dom.querySelectorAll('#itemList > li.item');
+                var nodes = dom.querySelectorAll('#itemList > li.item');
                 var arr = [];
-                for (var i = 0, el; el = elList[i]; i++) {
+                [].slice.call(nodes).forEach(function (el) {
                     var img = el.querySelector('img.poster[title]');
-                    img !== null && (img = img.getAttribute('title'));
+                    img = img && img.getAttribute('title');
+                    img = img && kpGetImgFileName(img);
 
                     var title = el.querySelector('div.info > a.name');
-                    title !== null && (title = title.textContent);
+                    title = title && title.textContent.trim();
 
                     var titleEn = el.querySelector('div.info > span');
-                    titleEn !== null && (titleEn = titleEn.textContent);
+                    titleEn = titleEn && titleEn.textContent.trim();
 
                     var url = el.querySelector('div.info > a.name');
-                    url !== null && (url = url.getAttribute('href'));
+                    url = url && url.getAttribute('href');
 
                     var obj = {
                         img: img,
@@ -300,75 +282,14 @@ define([
                         url: url
                     };
 
-                    if (!prepareObj(obj)) {
-                        console.log("Explorer kp_favorites have problem!");
-                        continue;
-                    }
-
-                    obj.img = kpGetImgFileName(obj.img);
-
-                    var isSerial = kpRmDesc(obj.title);
-                    if (obj.title !== isSerial) {
+                    var serialTitle = kpRmDesc(obj.title);
+                    if (obj.title !== serialTitle) {
                         // isSerial
-                        obj.title = isSerial;
-                        obj.title_en && (obj.title_en = kpRmYear(obj.title_en));
-                    } else {
-                        var year;
-                        if (obj.title_en) {
-                            year = kpGetYear(obj.title_en);
-                            if (year) {
-                                obj.title_en = kpRmYear(obj.title_en);
-                                obj.title_en += ' ' + year;
-                                obj.title += ' ' + year;
-                            }
-                        }
-                    }
-
-                    arr.push(obj);
-                }
-                return arr;
-            },
-            kpInCinema: function (content) {
-                var dom = exKit.parseHtml(exKit.contentFilter(content));
-
-                var threeD = dom.querySelectorAll('div.filmsListNew > div.item div.threeD');
-                for (var i = 0, el; el = threeD[i]; i++) {
-                    var parent = threeD.parentNode;
-                    parent && parent.removeChild(threeD);
-                }
-
-                var elList = dom.querySelectorAll('div.filmsListNew > div.item');
-                var arr = [];
-                for (var i = 0, el; el = elList[i]; i++) {
-                    var img = el.querySelector('div > a > img');
-                    img !== null && (img = img.getAttribute('src'));
-
-                    var title = el.querySelector('div > div.name > a');
-                    title !== null && (title = title.textContent);
-
-                    var titleEn = el.querySelector('div > div.name > span');
-                    titleEn !== null && (titleEn = titleEn = titleEn.textContent);
-
-                    var url = el.querySelector('div > div.name > a');
-                    url !== null && (url = url.getAttribute('href'));
-
-                    var obj = {
-                        img: img,
-                        title: title,
-                        title_en: titleEn,
-                        url: url
-                    };
-
-                    if (!prepareObj(obj)) {
-                        console.log("Explorer kp_in_cinema have problem!");
-                        continue;
-                    }
-
-                    obj.img = kpGetImgFileName(obj.img);
-
-                    var year;
+                        obj.title = serialTitle;
+                        obj.title_en = obj.title_en && kpRmYear(obj.title_en);
+                    } else
                     if (obj.title_en) {
-                        year = kpGetYear(obj.title_en);
+                        var year = kpGetYear(obj.title_en);
                         if (year) {
                             obj.title_en = kpRmYear(obj.title_en);
                             obj.title_en += ' ' + year;
@@ -376,27 +297,43 @@ define([
                         }
                     }
 
+                    if (!checkResult(obj)) {
+                        console.log("Explorer kp_favorites have problem!");
+                        return;
+                    }
+
                     arr.push(obj);
-                }
+                });
                 return arr;
             },
-            kpPopular: function (content) {
-                var dom = exKit.parseHtml(exKit.contentFilter(content));
+            kpInCinema: function (content) {
+                var dom = API_getDom(API_sanitizeHtml(content));
 
-                var elList = dom.querySelectorAll('div.stat > div.el');
+                var threeD = dom.querySelectorAll('div.filmsListNew > div.item div.threeD');
+                for (var i = 0, el; el = threeD[i]; i++) {
+                    var parent = el.parentNode;
+                    parent && parent.removeChild(el);
+                }
+
+                var elList = dom.querySelectorAll('div.filmsListNew > div.item');
                 var arr = [];
                 for (var i = 0, el; el = elList[i]; i++) {
-                    var img = el.querySelectorAll('a')[1];
-                    img && (img = img.getAttribute('href'));
+                    var img = el.querySelector('div > a > img');
+                    img = img && img.getAttribute('src');
+                    img = img && kpGetImgFileName(img);
 
-                    var title = el.querySelectorAll('a')[1];
-                    title && (title = title.textContent);
+                    var title = el.querySelector('div > div.name > a');
+                    title = title && title.textContent.trim();
 
-                    var titleEn = el.querySelector('i');
-                    titleEn !== null && (titleEn = titleEn.textContent);
+                    var titleEn = el.querySelector('div > div.name > span');
+                    titleEn = titleEn && titleEn.textContent.trim();
+                    titleEn = titleEn && kpRmMin(titleEn);
+                    if (/^\(([1-2]\d{3})\)$/.test(titleEn)) {
+                        titleEn = '';
+                    }
 
-                    var url = el.querySelectorAll('a')[1];
-                    url && (url = url.getAttribute('href'));
+                    var url = el.querySelector('div > div.name > a');
+                    url = url && url.getAttribute('href');
 
                     var obj = {
                         img: img,
@@ -405,12 +342,49 @@ define([
                         url: url
                     };
 
-                    if (!prepareObj(obj)) {
-                        console.log("Explorer kp_popular have problem!");
+                    if (obj.title_en) {
+                        var year = kpGetYear(obj.title_en);
+                        if (year) {
+                            obj.title_en = kpRmYear(obj.title_en);
+                            obj.title_en += ' ' + year;
+                            obj.title += ' ' + year;
+                        }
+                    }
+
+                    if (!checkResult(obj)) {
+                        console.log("Explorer kp_in_cinema have problem!");
                         continue;
                     }
 
-                    obj.img = kpGetImgFileName(obj.img);
+                    arr.push(obj);
+                }
+                return arr;
+            },
+            kpPopular: function (content) {
+                var dom = API_getDom(API_sanitizeHtml(content));
+
+                var elList = dom.querySelectorAll('div.stat > div.el');
+                var arr = [];
+                for (var i = 0, el; el = elList[i]; i++) {
+                    var img = el.querySelectorAll('a')[1];
+                    img = img && img.getAttribute('href');
+                    img = img && kpGetImgFileName(img);
+
+                    var title = el.querySelectorAll('a')[1];
+                    title = title && title.textContent.trim();
+
+                    var titleEn = el.querySelector('i');
+                    titleEn = titleEn && titleEn.textContent.trim();
+
+                    var url = el.querySelectorAll('a')[1];
+                    url = url && url.getAttribute('href');
+
+                    var obj = {
+                        img: img,
+                        title: title,
+                        title_en: titleEn,
+                        url: url
+                    };
 
                     var year = kpGetYear(obj.title);
                     if (year) {
@@ -421,27 +395,35 @@ define([
                         }
                     }
 
+                    if (!checkResult(obj)) {
+                        console.log("Explorer kp_popular have problem!");
+                        continue;
+                    }
+
                     arr.push(obj);
                 }
                 return arr;
             },
             kpSerials: function (content) {
-                var dom = exKit.parseHtml(exKit.contentFilter(content));
+                var dom = API_getDom(API_sanitizeHtml(content));
 
                 var elList = dom.querySelectorAll('#itemList > tbody > tr');
                 var arr = [];
                 for (var i = 0, el; el = elList[i]; i++) {
                     var img = el.querySelector('td > div > a');
-                    img !== null && (img = img.getAttribute('href'));
+                    img = img && img.getAttribute('href');
+                    img = img && kpGetImgFileName(img);
 
                     var title = el.querySelector('td~td > div > a');
-                    title !== null && (title = title.textContent);
+                    title = title && title.textContent.trim();
+                    title = title && kpRmDesc(title);
 
                     var titleEn = el.querySelector('td > div > span');
-                    titleEn !== null && (titleEn = titleEn.textContent);
+                    titleEn = titleEn && titleEn.textContent.trim();
+                    titleEn = titleEn && kpRmYear(titleEn);
 
                     var url = el.querySelector('td > div > a');
-                    url !== null && (url = url.getAttribute('href'));
+                    url = url && url.getAttribute('href');
 
                     var obj = {
                         img: img,
@@ -450,17 +432,9 @@ define([
                         url: url
                     };
 
-                    if (!prepareObj(obj)) {
+                    if (!checkResult(obj)) {
                         console.log("Explorer kp_serials have problem!");
                         continue;
-                    }
-
-                    obj.img = kpGetImgFileName(obj.img);
-
-                    obj.title = kpRmDesc(obj.title);
-
-                    if (obj.title_en) {
-                        obj.title_en = kpRmYear(obj.title_en);
                     }
 
                     arr.push(obj);
@@ -468,19 +442,27 @@ define([
                 return arr;
             },
             imdbInCinema: function (content) {
-                var dom = exKit.parseHtml(exKit.contentFilter(content));
+                var dom = API_getDom(API_sanitizeHtml(content));
 
                 var elList = dom.querySelectorAll('table.nm-title-overview-widget-layout');
                 var arr = [];
                 for (var i = 0, el; el = elList[i]; i++) {
                     var img = el.querySelector('div.image img');
-                    img !== null && (img = img.getAttribute('src'));
+                    img = img && img.getAttribute('src');
+                    img = img && imdbGetImgFilename(img);
 
                     var title = el.querySelector('*[itemprop="name"] a');
-                    title !== null && (title = title.textContent);
+                    title = title && title.textContent.trim();
+
+                    var year = kpGetYear(title);
+                    if (year) {
+                        title = kpRmYear(title);
+                        title += ' ' + year;
+                    }
 
                     var url = el.querySelector('*[itemprop="name"] a');
-                    url !== null && (url = url.getAttribute('href'));
+                    url = url && url.getAttribute('href');
+                    url = url && url.replace(/\?ref.*$/, '');
 
                     var obj = {
                         img: img,
@@ -488,40 +470,30 @@ define([
                         url: url
                     };
 
-                    if (!prepareObj(obj)) {
+                    if (!checkResult(obj)) {
                         console.log("Explorer imdb_in_cinema have problem!");
                         continue;
                     }
-
-                    obj.img = imdbGetImgFilename(obj.img);
-
-                    var year = kpGetYear(obj.title);
-                    obj.title = kpRmYear(obj.title);
-
-                    if (year) {
-                        obj.title += ' ' + year;
-                    }
-
-                    obj.url = obj.url.replace(/\?ref.*$/, '');
 
                     arr.push(obj);
                 }
                 return arr;
             },
             imdbPopular: function (content) {
-                var dom = exKit.parseHtml(exKit.contentFilter(content));
+                var dom = API_getDom(API_sanitizeHtml(content));
 
                 var elList = dom.querySelectorAll('.lister-list > .lister-item');
                 var arr = [];
                 for (var i = 0, el; el = elList[i]; i++) {
                     var img = el.querySelector('.lister-item-image img');
-                    img !== null && (img = img.getAttribute('loadlate'));
+                    img = img && img.getAttribute('loadlate');
+                    img = img && imdbGetImgFilename(img);
 
                     var title = el.querySelector('.lister-item-header > a');
-                    title !== null && (title = title.textContent);
+                    title = title && title.textContent.trim();
 
                     var url = el.querySelector('.lister-item-header > a');
-                    url !== null && (url = url.getAttribute('href'));
+                    url = url && url.getAttribute('href');
 
                     var obj = {
                         img: img,
@@ -529,31 +501,30 @@ define([
                         url: url
                     };
 
-                    if (!prepareObj(obj)) {
+                    if (!checkResult(obj)) {
                         console.log("Explorer imdb_popular have problem!");
                         continue;
                     }
-
-                    obj.img = imdbGetImgFilename(obj.img);
 
                     arr.push(obj);
                 }
                 return arr;
             },
             imdbSerials: function (content) {
-                var dom = exKit.parseHtml(exKit.contentFilter(content));
+                var dom = API_getDom(API_sanitizeHtml(content));
 
                 var elList = dom.querySelectorAll('.lister-list > .lister-item');
                 var arr = [];
                 for (var i = 0, el; el = elList[i]; i++) {
                     var img = el.querySelector('.lister-item-image img');
-                    img !== null && (img = img.getAttribute('loadlate'));
+                    img = img && img.getAttribute('loadlate');
+                    img = img && imdbGetImgFilename(img);
 
                     var title = el.querySelector('.lister-item-header > a');
-                    title !== null && (title = title.textContent);
+                    title = title && title.textContent.trim();
 
                     var url = el.querySelector('.lister-item-header > a');
-                    url !== null && (url = url.getAttribute('href'));
+                    url = url && url.getAttribute('href');
 
                     var obj = {
                         img: img,
@@ -561,12 +532,10 @@ define([
                         url: url
                     };
 
-                    if (!prepareObj(obj)) {
+                    if (!checkResult(obj)) {
                         console.log("Explorer imdb_serials have problem!");
                         continue;
                     }
-
-                    obj.img = imdbGetImgFilename(obj.img);
 
                     arr.push(obj);
                 }
@@ -1145,7 +1114,7 @@ define([
                 }));
             });
 
-            sectionWrapper.node.classList.add('section-error');
+            sectionWrapper.node.classList.remove('section-error');
 
             var cache = sectionWrapper.cache;
             return Promise.all(promiseList).then(function (contentList) {
@@ -1156,6 +1125,7 @@ define([
                 cache.content = content;
                 return {success: true};
             }).catch(function (err) {
+                console.log('Error', err);
                 cache.keepAlive = null;
                 cache.errorTimeout = parseInt(Date.now() / 1000 + 60 * 60 * 2);
                 sectionWrapper.node.classList.add('section-error');
