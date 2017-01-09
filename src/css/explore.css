@@ -46,7 +46,7 @@ ul.explore {
 }
 .explore li.section-error div.section__head div.section__move {
     background: url(../img/ghost.svg) no-repeat center;
-    background-size: 14px;
+    background-size: 18px;
     opacity: 1;
 }
 .explore div.section__head div.section__move {
