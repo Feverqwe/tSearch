@@ -1114,8 +1114,6 @@ define([
                 }));
             });
 
-            sectionWrapper.node.classList.remove('section-error');
-
             var cache = sectionWrapper.cache;
             return Promise.all(promiseList).then(function (contentList) {
                 var content = [].concat.apply([], contentList);
@@ -1213,6 +1211,7 @@ define([
                         cache = storage[sectionWrapper.cacheKey] || {};
                     }
 
+                    sectionWrapper.node.classList.remove('section-error');
                     sectionWrapper.cache = cache;
                     var source = sectionWrapper.source;
                     var date = getCacheDate(source.keepAlive);
