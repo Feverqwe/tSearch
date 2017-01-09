@@ -259,14 +259,14 @@ ul.explore {
     color: #000;
 }
 
-.explore.sortMode .section__collapses,
-.explore.sortMode .section__actions,
-.explore.sortMode .section__setup,
-.explore.sortMode ul.section__body,
-.explore.sortMode ul.section__pages {
+.explore.explore-sort .section__collapses,
+.explore.explore-sort .section__actions,
+.explore.explore-sort .section__setup,
+.explore.explore-sort ul.section__body,
+.explore.explore-sort ul.section__pages {
     display: none !important;
 }
-.explore.sortMode > li > .section__head {
+.explore.explore-sort > li > .section__head {
     border-bottom-width: 0;
 }
 .explore li.ui-sortable-helper {

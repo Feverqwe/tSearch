@@ -1438,14 +1438,76 @@ define([
                             return sectionWrapper.edit(posterIndex);
                         }
                     }
-                    /*if (el.classList.contains('edit')) {
-                        return onEditItem(el, item, e);
-                    }*/
                     /*if (el.classList.contains('quality')) {
                         return this.onClickQuality(el, item, e);
                     }*/
                 }
             });
+
+            setTimeout(function () {
+                require(['./lib/jquery-3.1.1.min'], function () {
+                    require(['./lib/jquery-ui.min'], function () {
+                        var $exploreNode = $(exploreNode);
+                        $exploreNode.sortable({
+                            axis: 'y',
+                            handle: '.section__move',
+                            scroll: false,
+                            start: function() {
+                                window.scrollTo(0,0);
+
+                                exploreNode.classList.add('explore-sort');
+
+                                $exploreNode.sortable("refreshPositions");
+                            },
+                            stop: function() {
+                                exploreNode.classList.remove('explore-sort');
+
+                                sections.splice(0);
+                                [].slice.call(exploreNode.childNodes).forEach(function (sectionNode) {
+                                    var id = sectionNode.dataset.id;
+                                    sections.push(sectionWrapperIdMap[id].section);
+                                });
+
+                                saveSections();
+                            }
+                        });
+
+                        var $favoritesBodyNode = $(sectionWrapperIdMap.favorites.bodyNode);
+                        $favoritesBodyNode.sortable({
+                            handle: '.action__move',
+                            items: '.poster',
+                            opacity: 0.8,
+                            stop: function(e, ui) {
+                                var posterNode = ui.item[0];
+                                var index = parseInt(posterNode.dataset.index);
+
+                                var nextIndex = null;
+                                var nextPosterNode = posterNode.nextElementSibling;
+                                if (nextPosterNode) {
+                                    nextIndex = parseInt(nextPosterNode.dataset.index);
+                                }
+
+                                var sectionWrapper = sectionWrapperIdMap.favorites;
+                                var content = sectionWrapper.cache.content;
+
+                                var poster = content.splice(index, 1)[0];
+                                if (!nextPosterNode) {
+                                    content.push(poster);
+                                } else {
+                                    if (index < nextIndex) {
+                                        nextIndex--;
+                                    }
+                                    content.splice(nextIndex, 0, poster);
+                                }
+
+                                updateCategoryContent(sectionWrapper);
+
+                                saveFavorites();
+                            }
+                        });
+                    });
+                });
+            }, 50);
         };
 
         this.show = function () {
