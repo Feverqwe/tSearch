@@ -1541,6 +1541,7 @@ define([
             init = null;
             window.addEventListener('resize', onResizeThrottle);
             exploreNode.classList.remove('explore-hide');
+            onResizeThrottle();
         };
         this.hide = function () {
             window.removeEventListener('resize', onResizeThrottle);
