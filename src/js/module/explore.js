@@ -13,19 +13,18 @@ define([
         'imdbInCinema', 'imdbPopular', 'imdbSerials',
         'ggGamesTop', 'ggGamesNew'
     ];
+
     var insertDefaultSections = function (idSectionMap, sections) {
         defaultSections.forEach(function (id) {
             if (!idSectionMap[id]) {
+                var source = contentSource[id];
                 var item = {
                     id: id,
                     enable: true,
                     show: true,
-                    width: 100,
-                    lines: 1
+                    width: source.defaultWidth,
+                    lines: source.defaultLines
                 };
-                if (['kpPopular', 'imdbPopular'].indexOf(id) !== -1) {
-                    item.lines = 2;
-                }
                 sections.push(idSectionMap[id] = item);
             }
         });
@@ -33,11 +32,15 @@ define([
 
     var contentSource = {
         favorites: {
+            defaultLines: 1,
+            defaultWidth: 100,
             maxWidth: 120,
             noAutoUpdate: 1
         },
         kpFavorites: {
             rootUrl: 'http://www.kinopoisk.ru',
+            defaultLines: 1,
+            defaultWidth: 100,
             maxWidth: 120,
             url: 'https://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
             baseUrl: 'http://www.kinopoisk.ru/film/',
@@ -46,6 +49,8 @@ define([
         },
         kpInCinema: {//new in cinema
             rootUrl: 'http://www.kinopoisk.ru',
+            defaultLines: 1,
+            defaultWidth: 100,
             maxWidth: 120,
             url: [
                 'http://www.kinopoisk.ru/afisha/new/page/0/',
@@ -58,6 +63,8 @@ define([
         },
         kpPopular: {
             rootUrl: 'http://www.kinopoisk.ru',
+            defaultLines: 2,
+            defaultWidth: 100,
             maxWidth: 120,
             url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
             keepAlive: [0, 3],
@@ -66,6 +73,8 @@ define([
         },
         kpSerials: {
             rootUrl: 'http://www.kinopoisk.ru',
+            defaultLines: 1,
+            defaultWidth: 100,
             maxWidth: 120,
             url: 'http://www.kinopoisk.ru/top/lists/45/',
             keepAlive: [0],
@@ -74,6 +83,8 @@ define([
         },
         imdbInCinema: {
             rootUrl: 'http://www.imdb.com',
+            defaultLines: 1,
+            defaultWidth: 100,
             maxWidth: 120,
             url: 'http://www.imdb.com/movies-in-theaters/',
             keepAlive: [2, 4, 6],
@@ -82,6 +93,8 @@ define([
         },
         imdbPopular: {
             rootUrl: 'http://www.imdb.com',
+            defaultLines: 2,
+            defaultWidth: 100,
             maxWidth: 120,
             url: 'http://www.imdb.com/search/title?count=100&title_type=feature',
             keepAlive: [0, 2],
@@ -90,6 +103,8 @@ define([
         },
         imdbSerials: {
             rootUrl: 'http://www.imdb.com',
+            defaultLines: 1,
+            defaultWidth: 100,
             maxWidth: 120,
             url: 'http://www.imdb.com/search/title?count=100&title_type=tv_series',
             keepAlive: [0],
@@ -98,6 +113,8 @@ define([
         },
         ggGamesTop: {//best
             rootUrl: 'http://gameguru.ru',
+            defaultLines: 1,
+            defaultWidth: 100,
             maxWidth: 120,
             url: [
                 'http://gameguru.ru/pc/games/rated/list.html',
@@ -112,6 +129,8 @@ define([
         },
         ggGamesNew: {//new
             rootUrl: 'http://gameguru.ru',
+            defaultLines: 1,
+            defaultWidth: 100,
             maxWidth: 120,
             url: [
                 'http://gameguru.ru/pc/games/released/list.html',
@@ -565,6 +584,7 @@ define([
             idSectionMap[item.id] = item;
         });
         insertDefaultSections(idSectionMap, sections);
+        var activeSectionSetup = null;
 
         var sectionWrappers = [];
         var sectionWrapperIdMap = {};
@@ -587,7 +607,7 @@ define([
 
         var onResizeThrottle = utils.throttle(onResize, 100);
 
-        var saveOptions = function () {
+        var saveSections = function () {
             chrome.storage.local.set({eSections: sections});
         };
 
@@ -606,12 +626,81 @@ define([
             });
         };
 
-        var getSetupBody = function () {
+        var getSetupBody = function (sectionWrapper) {
+            var section = sectionWrapper.section;
+            var source = sectionWrapper.source;
 
+            var saveRangeThrottle = utils.throttle(function () {
+                updateCategoryContent(sectionWrapper);
+                saveSections();
+            }, 250);
+
+            var range;
+            var select;
+            return dom.el('div', {
+                class: ['section__setup'],
+                append: [
+                    range = dom.el('input', {
+                        type: 'range',
+                        class: ['setup__size_range'],
+                        min: 20,
+                        max: source.maxWidth,
+                        value: section.width,
+                        on: ['input', function () {
+                            section.width = parseInt(this.value);
+                            calculateSize(sectionWrapper);
+
+                            saveRangeThrottle();
+                        }]
+                    }),
+                    dom.el('a', {
+                        class: ['setup__size_default'],
+                        href: '#size_default',
+                        title: chrome.i18n.getMessage('default'),
+                        on: ['click', function (e) {
+                            e.preventDefault();
+                            range.value = source.defaultWidth;
+                            range.dispatchEvent(new CustomEvent('input'));
+                        }]
+                    }),
+                    select = dom.el('select', {
+                        class: ['setup__lines'],
+                        append: (function () {
+                            var options = [];
+                            for (var i = 1; i < 7; i++) {
+                                options.push(dom.el('option', {
+                                    text: i,
+                                    value: i
+                                }));
+                            }
+                            return options;
+                        })(),
+                        on: ['change', function () {
+                            section.lines = parseInt(this.value);
+                            updateCategoryContent(sectionWrapper);
+                            saveSections();
+                        }],
+                        selectedIndex: section.lines - 1
+                    })
+                ]
+            });
         };
 
         var sectionSetup = function () {
+            if (activeSectionSetup && activeSectionSetup !== this) {
+                activeSectionSetup.setupNode.parentNode.removeChild(activeSectionSetup.setupNode);
+                activeSectionSetup.setupNode = null;
+            }
 
+            if (this.setupNode) {
+                activeSectionSetup = null;
+                this.setupNode.parentNode.removeChild(this.setupNode);
+                this.setupNode = null;
+            } else {
+                activeSectionSetup = this;
+                this.setupNode = getSetupBody(this);
+                this.setupBtnNode.parentNode.insertBefore(this.setupNode, this.setupBtnNode);
+            }
         };
 
         var saveFavorites = function () {
@@ -671,7 +760,7 @@ define([
                 this.node.classList.remove('section-collapsed');
                 getSectionContent(this);
             }
-            saveOptions();
+            saveSections();
         };
 
         /**
@@ -1146,6 +1235,7 @@ define([
             sectionWrapper.setup = sectionSetup;
             sectionWrapper.collapse = sectionCollapse;
             sectionWrapper.requestList = [];
+            sectionWrapper.setupNode = null;
 
             sectionWrapper.cache = {};
             sectionWrapper.currentPage = null;
@@ -1192,7 +1282,7 @@ define([
                                             sectionWrapper.update();
                                         }]
                                     }),
-                                    dom.el('div', {
+                                    sectionWrapper.setupBtnNode = dom.el('div', {
                                         class: 'action__setup',
                                         title: chrome.i18n.getMessage('setupView'),
                                         on: ['click', function (e) {
@@ -1248,14 +1338,14 @@ define([
             });
             exploreNode.addEventListener('click', function (e) {
                 var target = e.target;
-                var el = dom.closest('.item__picture', target);
-                var item = el && dom.closest('.section', el);
-                if (item) {
+                var galleryItem = dom.closest('.item__picture', target);
+                var section = galleryItem && dom.closest('.section', galleryItem);
+                if (section) {
                     if (target.classList.contains('action__inFavorite')) {
-                        return onInFavorite(el, item, e);
+                        return onInFavorite(galleryItem, section, e);
                     }
                     if (target.classList.contains('action__rmFavorite')) {
-                        return onRmFavorite(el, item, e);
+                        return onRmFavorite(galleryItem, section, e);
                     }
                     /*if (el.classList.contains('edit')) {
                         return onEditItem(el, item, e);

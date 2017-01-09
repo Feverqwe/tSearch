@@ -136,13 +136,13 @@ ul.explore {
     opacity: 1;
 }
 
-.explore div.section__head .setupBody {
+.explore div.section__head .section__setup {
     display: inline-block;
     height: 24px;
     vertical-align: bottom;
 }
 
-.explore div.section__head .setupBody input[type="range"] {
+.explore div.section__head .section__setup .setup__size_range {
     vertical-align: bottom;
     width: 120px;
     margin: 0;
@@ -151,7 +151,7 @@ ul.explore {
     height: 24px;
 }
 
-.explore div.section__head .setupBody .defaultSize {
+.explore div.section__head .section__setup .setup__size_default {
     width: 24px;
     height: 24px;
     cursor: pointer;
@@ -166,7 +166,7 @@ ul.explore {
     margin-right: 5px;
 }
 
-.explore div.section__head .setupBody .defaultSize:hover {
+.explore div.section__head .section__setup .setup__size_default:hover {
     opacity: 1;
 }
 
@@ -261,7 +261,7 @@ ul.explore {
 
 .explore.sortMode .section__collapses,
 .explore.sortMode .section__actions,
-.explore.sortMode .setupBody,
+.explore.sortMode .section__setup,
 .explore.sortMode ul.section__body,
 .explore.sortMode ul.section__pages {
     display: none !important;
