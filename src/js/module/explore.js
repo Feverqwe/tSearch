@@ -1522,6 +1522,12 @@ define([
                                 var posterNode = ui.item[0];
                                 var index = parseInt(posterNode.dataset.index);
 
+                                var prevIndex = null;
+                                var prevPosterNode = posterNode.previousElementSibling;
+                                if (prevPosterNode) {
+                                    prevIndex = parseInt(prevPosterNode.dataset.index);
+                                }
+
                                 var nextIndex = null;
                                 var nextPosterNode = posterNode.nextElementSibling;
                                 if (nextPosterNode) {
@@ -1532,13 +1538,16 @@ define([
                                 var content = sectionWrapper.cache.content;
 
                                 var poster = content.splice(index, 1)[0];
-                                if (!nextPosterNode) {
+                                if (!nextPosterNode && !prevPosterNode) {
                                     content.push(poster);
-                                } else {
+                                } else
+                                if (nextPosterNode) {
                                     if (index < nextIndex) {
                                         nextIndex--;
                                     }
                                     content.splice(nextIndex, 0, poster);
+                                } else {
+                                    content.splice(prevIndex, 0, poster);
                                 }
 
                                 updateCategoryContent(sectionWrapper);
