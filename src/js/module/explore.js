@@ -832,7 +832,7 @@ define([
 
         var getCategoryDisplayItemCount = function (section) {
             var lineCount = section.lines;
-            var width = document.body.clientWidth - 176;
+            var width = document.body.clientWidth - 180;
             var itemCount = Math.ceil(width / (section.width + 10 * 2)) - 1;
             return itemCount * lineCount;
         };
@@ -1537,11 +1537,14 @@ define([
         };
 
         this.show = function () {
-            init && init();
-            init = null;
+            if (init) {
+                init && init();
+                init = null;
+            } else {
+                onResizeThrottle();
+            }
             window.addEventListener('resize', onResizeThrottle);
             exploreNode.classList.remove('explore-hide');
-            onResizeThrottle();
         };
         this.hide = function () {
             window.removeEventListener('resize', onResizeThrottle);
