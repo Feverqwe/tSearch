@@ -960,10 +960,10 @@ define([
                                 class: 'action__move',
                                 title: chrome.i18n.getMessage('move')
                             }),
-                            /*dom.el('div', {
+                            dom.el('div', {
                                 class: 'action__edit',
                                 title: chrome.i18n.getMessage('edit')
-                            })*/
+                            })
                         ]
                     });
                 } else {
