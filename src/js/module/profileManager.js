@@ -338,9 +338,9 @@ define([
                             }]
                         }),
                         dom.el('a', {
-                            href: '#newTracker',
+                            href: '#add',
                             class: ['button', 'manager__footer__btn'],
-                            text: chrome.i18n.getMessage('newTracker'),
+                            text: chrome.i18n.getMessage('add'),
                             on: ['click', function (e) {
                                 e.preventDefault();
                                 chrome.tabs.create({
@@ -356,6 +356,17 @@ define([
                                 e.preventDefault();
                                 chrome.tabs.create({
                                     url: 'editor.html#code=true'
+                                });
+                            }]
+                        }),
+                        dom.el('a', {
+                            href: '#createCode',
+                            class: ['button', 'manager__footer__btn'],
+                            text: chrome.i18n.getMessage('createCode'),
+                            on: ['click', function (e) {
+                                e.preventDefault();
+                                chrome.tabs.create({
+                                    url: 'magic.html'
                                 });
                             }]
                         })

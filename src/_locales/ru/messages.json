@@ -119,9 +119,6 @@
   "newProfile": {
     "message": "Создать список"
   },
-  "newTracker": {
-    "message": "Создать трекер"
-  },
   "contextMenuTitle": {
     "message": "Найти торрент"
   },
@@ -205,6 +202,7 @@
 
   "login": {"message": "Войти"},
 
+  "createCode": {"message": "Создать код"},
   "addTrackerCode": {"message": "Добавить код"},
   "add": {"message": "Добавить"},
   "enterTrackerCode": {"message": "Вставьте код трекера"},
