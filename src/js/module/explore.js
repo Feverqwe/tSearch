@@ -1503,10 +1503,16 @@ define([
                             stop: function() {
                                 exploreNode.classList.remove('explore-sort');
 
-                                sections.splice(0);
+                                var prevSections = sections.splice(0);
                                 [].slice.call(exploreNode.childNodes).forEach(function (sectionNode) {
                                     var id = sectionNode.dataset.id;
                                     sections.push(sectionWrapperIdMap[id].section);
+                                });
+
+                                prevSections.forEach(function (section) {
+                                    if (sections.indexOf(section) === -1) {
+                                        sections.push(section);
+                                    }
                                 });
 
                                 saveSections();
