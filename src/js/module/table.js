@@ -485,7 +485,7 @@ define([
             node: dom.el('div', {
                 class: ['footer', 'table__footer']
             }),
-            more: {}
+            more: null
         };
 
         var tableNode = dom.el('div', {
