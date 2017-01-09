@@ -5,8 +5,9 @@
 define([
     '../lib/promise.min',
     './utils',
-    './dom'
-], function (Promise, utils, dom) {
+    './dom',
+    './dialog'
+], function (Promise, utils, dom, Dialog) {
     var defaultSections = [
         'favorites',
         'kpFavorites', 'kpInCinema', 'kpPopular', 'kpSerials',
@@ -711,13 +712,13 @@ define([
         };
 
         var sectionFavorite = function (index) {
-            var item = this.cache.content[index];
+            var poster = this.cache.content[index];
             var source = this.source;
 
             var _item = {
-                img: addRootUrl(item.img, source.imgUrl),
-                url: addRootUrl(item.url, source.rootUrl),
-                title: getCategoryItemTitle(item)
+                img: addRootUrl(poster.img, source.imgUrl),
+                url: addRootUrl(poster.url, source.rootUrl),
+                title: getCategoryItemTitle(poster)
             };
 
             var favoritesSectionWrapper = sectionWrapperIdMap.favorites;
@@ -738,6 +739,81 @@ define([
             updateCategoryContent(this);
 
             saveFavorites();
+        };
+
+        var sectionEdit = function (index) {
+            var _this = this;
+            var poster = this.cache.content[index];
+
+            var dialog = new Dialog();
+            dom.el(dialog.body, {
+                class: ['dialog-poster_edit'],
+                append: [
+                    dom.el('span', {
+                        class: 'dialog__label',
+                        text: chrome.i18n.getMessage('title')
+                    }),
+                    dialog.addInput(dom.el('input', {
+                        class: ['input__input'],
+                        name: 'title',
+                        type: 'text',
+                        value: poster.title
+                    })),
+                    dom.el('span', {
+                        class: 'dialog__label',
+                        text: chrome.i18n.getMessage('imageUrl')
+                    }),
+                    dialog.addInput(dom.el('input', {
+                        class: ['input__input'],
+                        name: 'img',
+                        type: 'text',
+                        value: poster.img
+                    })),
+                    dom.el('span', {
+                        class: 'dialog__label',
+                        text: chrome.i18n.getMessage('descUrl')
+                    }),
+                    dialog.addInput(dom.el('input', {
+                        class: ['input__input'],
+                        name: 'url',
+                        type: 'text',
+                        value: poster.url
+                    })),
+                    dom.el('div', {
+                        class: ['dialog__button_box'],
+                        append: [
+                            dom.el('a', {
+                                class: ['button', 'button-save'],
+                                href: '#save',
+                                text: chrome.i18n.getMessage('save'),
+                                on: ['click', function (e) {
+                                    e.preventDefault();
+                                    var values = dialog.getValues();
+                                    for (var key in values) {
+                                        poster[key] = values[key];
+                                    }
+
+                                    updateCategoryContent(_this);
+
+                                    saveFavorites();
+
+                                    dialog.destroy();
+                                }]
+                            }),
+                            dom.el('a', {
+                                class: ['button', 'button-cancel'],
+                                href: '#cancel',
+                                text: chrome.i18n.getMessage('cancel'),
+                                on: ['click', function (e) {
+                                    e.preventDefault();
+                                    dialog.destroy();
+                                }]
+                            })
+                        ]
+                    })
+                ]
+            });
+            dialog.show();
         };
 
         var sectionCollapse = function () {
@@ -1239,6 +1315,7 @@ define([
 
             if (section.id === 'favorites') {
                 sectionWrapper.rmFavorite = sectionRmFavorite;
+                sectionWrapper.edit = sectionEdit;
             } else {
                 sectionWrapper.favorite = sectionFavorite;
             }
@@ -1355,6 +1432,10 @@ define([
                         if (target.classList.contains('action__rmFavorite')) {
                             e.preventDefault();
                             return sectionWrapper.rmFavorite(posterIndex);
+                        }
+                        if (target.classList.contains('action__edit')) {
+                            e.preventDefault();
+                            return sectionWrapper.edit(posterIndex);
                         }
                     }
                     /*if (el.classList.contains('edit')) {

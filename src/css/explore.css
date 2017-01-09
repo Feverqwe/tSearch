@@ -383,14 +383,6 @@ ul.explore {
     background-color: #fff;
 }
 
-.nf-notifi.favoriteItemEdit {
-    width: 300px;
-}
-
-.nf-notifi.favoriteItemEdit input[type="text"] {
-    width: 290px;
-}
-
 .explore #info_popup:hover {
     visibility: visible;
 }
@@ -460,8 +452,6 @@ ul.explore {
     border-bottom: 0;
 }
 
-.nf-notifi.functionUnavailable {
-    text-align: left;
 .dialog__layer {
     position: absolute;
     top: 0;

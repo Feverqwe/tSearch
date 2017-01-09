@@ -170,7 +170,6 @@ a.search__submit {
     border-radius: 2px;
     background-position: center;
     background-repeat: no-repeat;
-    outline: none;
 }
 
 .menu__btn:hover {
@@ -286,20 +285,38 @@ a.search__submit {
 }
 
 .button {
+    display: inline-block;
+    padding: 4px 10px;
+    text-decoration: none;
+    background-color: #ffffff;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.3);
+}
+
+a.button {
+    color: #0051D8;
+}
+
+.button:hover {
+    border-color: rgba(0, 0, 0, 0.5);
+}
+
+.button:focus {
+    border: 1px solid #3366ff;
+}
+
+.button-manage-profile {
     width: 20px;
     height: 20px;
     display: block;
     box-sizing: border-box;
     opacity: 0.7;
-}
-
-.button:hover {
-    opacity: 1;
-}
-
-.button-manage-profile {
     background: url(../img/edit.svg) center no-repeat;
     background-size: 16px;
+}
+
+.button-manage-profile:hover {
+    opacity: 1;
 }
 
 .simple_select {
@@ -514,7 +531,8 @@ a.tracker {
 }
 
 .manager__footer__btn {
-    padding: 0 8px;
+    padding: 4px 8px;
+    margin-right: 8px;
 }
 
 .manager__profiles {

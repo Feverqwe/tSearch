@@ -135,7 +135,7 @@ define([
                     getFooter([
                         dom.el('a', {
                             href: '#save',
-                            class: ['manager__footer__btn'],
+                            class: ['button', 'manager__footer__btn'],
                             text: chrome.i18n.getMessage('save'),
                             on: ['click', function (e) {
                                 e.preventDefault();
@@ -293,7 +293,7 @@ define([
                     getFooter([
                         dom.el('a', {
                             href: '#save',
-                            class: ['manager__footer__btn'],
+                            class: ['button', 'manager__footer__btn'],
                             text: chrome.i18n.getMessage('save'),
                             on: ['click', function (e) {
                                 e.preventDefault();
@@ -332,7 +332,7 @@ define([
                         }),
                         dom.el('a', {
                             href: '#newTracker',
-                            class: ['manager__footer__btn'],
+                            class: ['button', 'manager__footer__btn'],
                             text: chrome.i18n.getMessage('newTracker'),
                             on: ['click', function (e) {
                                 e.preventDefault();

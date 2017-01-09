@@ -63,7 +63,6 @@ a:visited {
     border-radius: 2px;
     background-position: center;
     background-repeat: no-repeat;
-    outline: none;
 }
 
 .menu__btn:hover {
