@@ -244,12 +244,11 @@ define([
                     url: url
                 };
 
-                if (!checkResult(obj)) {
+                if (checkResult(obj)) {
+                    arr.push(obj);
+                } else {
                     console.debug("Explorer gg_games_new have problem!");
-                    return;
                 }
-
-                arr.push(obj);
             });
             return arr;
         };
@@ -297,12 +296,11 @@ define([
                         }
                     }
 
-                    if (!checkResult(obj)) {
-                        console.log("Explorer kp_favorites have problem!");
-                        return;
+                    if (checkResult(obj)) {
+                        arr.push(obj);
+                    } else {
+                        console.debug("Explorer kp_favorites have problem!");
                     }
-
-                    arr.push(obj);
                 });
                 return arr;
             },
@@ -315,9 +313,9 @@ define([
                     parent && parent.removeChild(el);
                 }
 
-                var elList = dom.querySelectorAll('div.filmsListNew > div.item');
+                var nodes = dom.querySelectorAll('div.filmsListNew > div.item');
                 var arr = [];
-                for (var i = 0, el; el = elList[i]; i++) {
+                [].slice.call(nodes).forEach(function (el) {
                     var img = el.querySelector('div > a > img');
                     img = img && img.getAttribute('src');
                     img = img && kpGetImgFileName(img);
@@ -351,21 +349,20 @@ define([
                         }
                     }
 
-                    if (!checkResult(obj)) {
-                        console.log("Explorer kp_in_cinema have problem!");
-                        continue;
+                    if (checkResult(obj)) {
+                        arr.push(obj);
+                    } else {
+                        console.debug("Explorer kp_in_cinema have problem!");
                     }
-
-                    arr.push(obj);
-                }
+                });
                 return arr;
             },
             kpPopular: function (content) {
                 var dom = API_getDom(API_sanitizeHtml(content));
 
-                var elList = dom.querySelectorAll('div.stat > div.el');
+                var nodes = dom.querySelectorAll('div.stat > div.el');
                 var arr = [];
-                for (var i = 0, el; el = elList[i]; i++) {
+                [].slice.call(nodes).forEach(function (el) {
                     var img = el.querySelectorAll('a')[1];
                     img = img && img.getAttribute('href');
                     img = img && kpGetImgFileName(img);
@@ -395,21 +392,20 @@ define([
                         }
                     }
 
-                    if (!checkResult(obj)) {
-                        console.log("Explorer kp_popular have problem!");
-                        continue;
+                    if (checkResult(obj)) {
+                        arr.push(obj);
+                    } else {
+                        console.debug("Explorer kp_popular have problem!");
                     }
-
-                    arr.push(obj);
-                }
+                });
                 return arr;
             },
             kpSerials: function (content) {
                 var dom = API_getDom(API_sanitizeHtml(content));
 
-                var elList = dom.querySelectorAll('#itemList > tbody > tr');
+                var nodes = dom.querySelectorAll('#itemList > tbody > tr');
                 var arr = [];
-                for (var i = 0, el; el = elList[i]; i++) {
+                [].slice.call(nodes).forEach(function (el) {
                     var img = el.querySelector('td > div > a');
                     img = img && img.getAttribute('href');
                     img = img && kpGetImgFileName(img);
@@ -432,21 +428,20 @@ define([
                         url: url
                     };
 
-                    if (!checkResult(obj)) {
-                        console.log("Explorer kp_serials have problem!");
-                        continue;
+                    if (checkResult(obj)) {
+                        arr.push(obj);
+                    } else {
+                        console.debug("Explorer kp_serials have problem!");
                     }
-
-                    arr.push(obj);
-                }
+                });
                 return arr;
             },
             imdbInCinema: function (content) {
                 var dom = API_getDom(API_sanitizeHtml(content));
 
-                var elList = dom.querySelectorAll('table.nm-title-overview-widget-layout');
+                var nodes = dom.querySelectorAll('table.nm-title-overview-widget-layout');
                 var arr = [];
-                for (var i = 0, el; el = elList[i]; i++) {
+                [].slice.call(nodes).forEach(function (el) {
                     var img = el.querySelector('div.image img');
                     img = img && img.getAttribute('src');
                     img = img && imdbGetImgFilename(img);
@@ -470,21 +465,20 @@ define([
                         url: url
                     };
 
-                    if (!checkResult(obj)) {
-                        console.log("Explorer imdb_in_cinema have problem!");
-                        continue;
+                    if (checkResult(obj)) {
+                        arr.push(obj);
+                    } else {
+                        console.debug("Explorer imdb_in_cinema have problem!");
                     }
-
-                    arr.push(obj);
-                }
+                });
                 return arr;
             },
             imdbPopular: function (content) {
                 var dom = API_getDom(API_sanitizeHtml(content));
 
-                var elList = dom.querySelectorAll('.lister-list > .lister-item');
+                var nodes = dom.querySelectorAll('.lister-list > .lister-item');
                 var arr = [];
-                for (var i = 0, el; el = elList[i]; i++) {
+                [].slice.call(nodes).forEach(function (el) {
                     var img = el.querySelector('.lister-item-image img');
                     img = img && img.getAttribute('loadlate');
                     img = img && imdbGetImgFilename(img);
@@ -501,21 +495,20 @@ define([
                         url: url
                     };
 
-                    if (!checkResult(obj)) {
-                        console.log("Explorer imdb_popular have problem!");
-                        continue;
+                    if (checkResult(obj)) {
+                        arr.push(obj);
+                    } else {
+                        console.debug("Explorer imdb_popular have problem!");
                     }
-
-                    arr.push(obj);
-                }
+                });
                 return arr;
             },
             imdbSerials: function (content) {
                 var dom = API_getDom(API_sanitizeHtml(content));
 
-                var elList = dom.querySelectorAll('.lister-list > .lister-item');
+                var nodes = dom.querySelectorAll('.lister-list > .lister-item');
                 var arr = [];
-                for (var i = 0, el; el = elList[i]; i++) {
+                [].slice.call(nodes).forEach(function (el) {
                     var img = el.querySelector('.lister-item-image img');
                     img = img && img.getAttribute('loadlate');
                     img = img && imdbGetImgFilename(img);
@@ -532,13 +525,12 @@ define([
                         url: url
                     };
 
-                    if (!checkResult(obj)) {
-                        console.log("Explorer imdb_serials have problem!");
-                        continue;
+                    if (checkResult(obj)) {
+                        arr.push(obj);
+                    } else {
+                        console.debug("Explorer imdb_serials have problem!");
                     }
-
-                    arr.push(obj);
-                }
+                });
                 return arr;
             },
             ggGamesTop: gg_games_new,
@@ -1123,7 +1115,7 @@ define([
                 cache.content = content;
                 return {success: true};
             }).catch(function (err) {
-                console.log('Error', err);
+                console.error('Error', err);
                 cache.keepAlive = null;
                 cache.errorTimeout = parseInt(Date.now() / 1000 + 60 * 60 * 2);
                 sectionWrapper.node.classList.add('section-error');
