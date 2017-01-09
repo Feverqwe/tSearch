@@ -870,7 +870,7 @@ define([
 
         var getCategoryItemTitle = function (item) {
             var title;
-            if (item.title_en && storage.useEnglishPosterName) {
+            if (item.title_en && storage.originalPosterName) {
                 title = item.title_en;
             } else {
                 title = item.title;

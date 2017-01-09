@@ -33,7 +33,8 @@ require([
 
             eSections: [],
             kinopoiskFolderId: 1,
-            enableFavoriteSync: true
+            enableFavoriteSync: true,
+            originalPosterName: false
         }, resolve);
     }).then(function (storage) {
         document.body.classList.remove('loading');
