@@ -173,13 +173,14 @@ define([
 
         var getProfile = function (/**profile*/profile, trackers) {
             var getTrackerItem = function (tracker, checked, exists) {
+                var checkboxNode;
                 return dom.el('div', {
                     class: 'item',
                     data: {
                         id: tracker.id
                     },
                     append: [
-                        dom.el('input', {
+                        checkboxNode = dom.el('input', {
                             class: 'item__checkbox',
                             type: 'checkbox',
                             checked: checked
@@ -219,7 +220,13 @@ define([
                             },
                             text: chrome.i18n.getMessage('remove')
                         })
-                    ]
+                    ],
+                    on: ['click', function (e) {
+                        var child = dom.closestNode(this, e.target);
+                        if (e.target === this || child && child.classList.contains('item__name')) {
+                            checkboxNode.checked = !checkboxNode.checked;
+                        }
+                    }]
                 })
             };
 
