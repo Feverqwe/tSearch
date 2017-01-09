@@ -114,64 +114,84 @@ define([
         };
 
 
+        var updateRequest = null;
         var getContent = function (url) {
-            utils.request({
-                url: url
-            }, function (err, response) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(response.data);
+            return new Promise(function (resolve, reject) {
+                if (updateRequest) {
+                    updateRequest.abort();
                 }
+                updateRequest = utils.request({
+                    url: url
+                }, function (err, response) {
+                    updateRequest = null;
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(response.body);
+                    }
+                });
+            });
+        };
+        var checkVersion = function (url) {
+            return getContent(url).then(function (body) {
+                var meta = utils.parseMeta(body);
+                var version = tracker.meta.version;
+                if (!utils.isNewVersion(meta.version, version)) {
+                    throw new Error('C_ACTUAL');
+                }
+                return {
+                    previewVersion: version,
+                    version: meta.version,
+                    meta: meta,
+                    body: body
+                };
             });
         };
         var checkUpdate = function () {
-            return getContent(tracker.meta.updateURL).then(function (data) {
-                var meta = utils.parseMeta(data);
-                var version = tracker.meta.version;
-                var result;
-                if (utils.isNewVersion(meta.version, version)) {
-                    result = getContent(tracker.meta.downloadURL).then(function (data) {
-                        var meta = utils.parseMeta(data);
-                        if (utils.isNewVersion(meta.version, version)) {
-                            tracker.meta = meta;
-                            tracker.code = data;
-                            tracker.info.lastUpdate = parseInt(Date.now() / 1000);
-                            return {
-                                success: true,
-                                previewVersion: version,
-                                version: meta.version
-                            };
-                        } else {
-                            result = {
-                                success: false,
-                                message: 'ACTUAL',
-                                version: meta.version
-                            };
-                        }
-                    });
-                } else {
-                    result = {
-                        success: false,
-                        message: 'ACTUAL',
-                        version: meta.version
-                    };
+            var promise = Promise.resolve();
+            if (tracker.meta.updateURL) {
+                promise = promise.then(function () {
+                    return checkVersion(tracker.meta.updateURL);
+                });
+            }
+            return promise.then(function () {
+                return checkVersion(tracker.meta.downloadURL);
+            }).then(function (result) {
+                tracker.meta = result.meta;
+                tracker.code = result.body;
+                tracker.info.lastUpdate = parseInt(Date.now() / 1000);
+                return {
+                    previewVersion: result.previewVersion,
+                    version: result.version
                 }
-                return result;
             });
         };
+
         this.update = function (force) {
             return Promise.resolve().then(function () {
+                if (!tracker.meta.downloadURL) {
+                    throw new Error('C_UNAVAILABLE');
+                }
                 var now = parseInt(Date.now() / 1000);
-                var updateURL = tracker.meta.updateURL;
                 var lastUpdate = tracker.info.lastUpdate || 0;
-                if (updateURL && (now - lastUpdate > 24 * 60 * 60 || force)) {
+                if (now - lastUpdate > 24 * 60 * 60 || force) {
                     return checkUpdate();
                 } else {
-                    return {
-                        success: false,
-                        message: 'TIMEOUT'
-                    };
+                    throw new Error('C_TIMEOUT');
+                }
+            }).then(function (result) {
+                return {success: true, result: result};
+            }).catch(function (err) {
+                if (err.message === 'C_UNAVAILABLE') {
+                    return {success: false, message: 'UNAVAILABLE'};
+                } else
+                if (err.message === 'C_TIMEOUT') {
+                    return {success: false, message: 'TIMEOUT'};
+                } else
+                if (err.message === 'C_ACTUAL') {
+                    return {success: false, message: 'ACTUAL'};
+                } else {
+                    throw err;
                 }
             });
         };
