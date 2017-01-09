@@ -427,13 +427,16 @@ define([
             if (areaName === 'local') {
                 var change = changes.trackers;
                 if (change) {
-                    for (key in trackers) {
-                        delete trackers[key];
+                    var newTrackers = change.newValue;
+                    if (JSON.stringify(trackers) !== JSON.stringify(newTrackers)) {
+                        for (key in trackers) {
+                            delete trackers[key];
+                        }
+                        for (key in newTrackers) {
+                            trackers[key] = newTrackers[key];
+                        }
+                        onTrackersUpdate && onTrackersUpdate();
                     }
-                    for (key in change.newValue) {
-                        trackers[key] = change.newValue[key];
-                    }
-                    onTrackersUpdate && onTrackersUpdate();
                 }
             }
         };
