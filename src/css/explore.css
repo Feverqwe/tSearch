@@ -236,16 +236,16 @@ ul.explore {
     margin-top: 5px;
     margin-bottom: 5px;
 }
-.explore ul.section__body div.item__picture {
+.explore ul.section__body div.poster__image {
     text-align: center;
     position: relative;
 }
 
-.explore ul.section__body div.item__picture img {
+.explore ul.section__body div.poster__image img {
     max-width: 100%;
     box-shadow: 0 0 1px rgba(0,0,0,0.8);
 }
-.explore ul.section__body div.item__title {
+.explore ul.section__body div.poster__title {
     position: relative;
     width: 100%;
     text-overflow: ellipsis;
@@ -255,7 +255,7 @@ ul.explore {
     font-size: 0.857em;
 }
 
-.explore ul.section__body div.item__title a {
+.explore ul.section__body div.poster__title a {
     color: #000;
 }
 
@@ -286,7 +286,7 @@ ul.explore {
     visibility: visible !important;
     border-radius: 3px;
 }
-.explore ul.section__body div.item__picture > div.quality {
+.explore ul.section__body div.poster__image > div.quality {
     position: absolute;
     visibility: hidden;
     bottom: -5px;
@@ -306,53 +306,53 @@ ul.explore {
     white-space: nowrap;
     font-size: .857em;
 }
-.explore ul.section__body div.item__picture:hover > div.quality {
+.explore ul.section__body div.poster__image:hover > div.quality {
     z-index: 14;
     visibility: visible;
 }
-.explore ul.section__body div.item__picture > div.quality:hover {
+.explore ul.section__body div.poster__image > div.quality:hover {
     background-color: #fff;
 }
-.explore ul.section__body div.item__picture > div.quality:hover #info_popup {
+.explore ul.section__body div.poster__image > div.quality:hover #info_popup {
     visibility: visible;
 }
-.explore ul.section__body div.item__picture > a.item__link {
+.explore ul.section__body div.poster__image > a.image__more_link {
     top: 0px;
     background: url(../img/external.svg) no-repeat center;
     background-size: 10px;
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
 }
-.explore ul.section__body div.item__picture > div.action__inFavorite {
+.explore ul.section__body div.poster__image > div.action__favorite {
     top: 20px;
     background: url(../img/favorite.svg) no-repeat center center;
     background-size: 18px;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
 }
-.explore ul.section__body div.item__picture > div.action__rmFavorite {
+.explore ul.section__body div.poster__image > div.action__rmFavorite {
     top: 20px;
     background: url(../img/rm_favorite.svg) no-repeat center center;
     background-size: 16px;
 }
-.explore ul.section__body div.item__picture > div.action__edit {
+.explore ul.section__body div.poster__image > div.action__edit {
     top: 40px;
     background: url(../img/edit.svg) no-repeat center;
     background-size: 16px;
     background-position-x: 3px;
 }
-.explore ul.section__body div.item__picture > div.action__move {
+.explore ul.section__body div.poster__image > div.action__move {
     top: 60px;
     background: url(../img/moveble.svg) no-repeat center center;
     background-size: 16px;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
 }
-.explore ul.section__body li div.item__picture > div.action__inFavorite,
-.explore ul.section__body li div.item__picture > div.action__rmFavorite,
-.explore ul.section__body li div.item__picture > div.action__move,
-.explore ul.section__body li div.item__picture > div.action__edit,
-.explore ul.section__body li div.item__picture > a.item__link {
+.explore ul.section__body li div.poster__image > div.action__favorite,
+.explore ul.section__body li div.poster__image > div.action__rmFavorite,
+.explore ul.section__body li div.poster__image > div.action__move,
+.explore ul.section__body li div.poster__image > div.action__edit,
+.explore ul.section__body li div.poster__image > a.image__more_link {
     position: absolute;
     right: -10px;
     background-color: rgba(255, 255, 255, 0.7);
@@ -365,21 +365,21 @@ ul.explore {
     -moz-transition: background-color 0.2s;
     transition: background-color 0.2s;
 }
-.explore ul.section__body li div.item__picture > div.action__move {
+.explore ul.section__body li div.poster__image > div.action__move {
     cursor: move;
 }
-.explore ul.section__body li div.item__picture:hover > div.action__inFavorite,
-.explore ul.section__body li div.item__picture:hover > div.action__rmFavorite,
-.explore ul.section__body li div.item__picture:hover > div.action__move,
-.explore ul.section__body li div.item__picture:hover > div.action__edit,
-.explore ul.section__body li div.item__picture:hover > a.item__link {
+.explore ul.section__body li div.poster__image:hover > div.action__favorite,
+.explore ul.section__body li div.poster__image:hover > div.action__rmFavorite,
+.explore ul.section__body li div.poster__image:hover > div.action__move,
+.explore ul.section__body li div.poster__image:hover > div.action__edit,
+.explore ul.section__body li div.poster__image:hover > a.image__more_link {
     visibility: visible;
 }
-.explore ul.section__body li div.item__picture > div.action__inFavorite:hover,
-.explore ul.section__body li div.item__picture > div.action__rmFavorite:hover,
-.explore ul.section__body li div.item__picture > div.action__move:hover,
-.explore ul.section__body li div.item__picture > div.action__edit:hover,
-.explore ul.section__body li div.item__picture > a.item__link:hover {
+.explore ul.section__body li div.poster__image > div.action__favorite:hover,
+.explore ul.section__body li div.poster__image > div.action__rmFavorite:hover,
+.explore ul.section__body li div.poster__image > div.action__move:hover,
+.explore ul.section__body li div.poster__image > div.action__edit:hover,
+.explore ul.section__body li div.poster__image > a.image__more_link:hover {
     background-color: #fff;
 }
 

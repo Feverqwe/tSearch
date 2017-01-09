@@ -710,14 +710,9 @@ define([
             chrome.storage.local.set(storage);
         };
 
-        var onInFavorite = function (el, li, e) {
-            e.preventDefault();
-
-            var index = parseInt(el.dataset.index);
-            var sectionWrapper = sectionWrapperIdMap[li.dataset.id];
-            var item = sectionWrapper.cache.content[index];
-
-            var source = sectionWrapper.source;
+        var sectionFavorite = function (index) {
+            var item = this.cache.content[index];
+            var source = this.source;
 
             var _item = {
                 img: addRootUrl(item.img, source.imgUrl),
@@ -737,15 +732,10 @@ define([
             saveFavorites();
         };
 
-        var onRmFavorite = function (el, e) {
-            e.preventDefault();
+        var sectionRmFavorite = function (index) {
+            this.cache.content.splice(index, 1);
 
-            var index = parseInt(el.dataset.index);
-            var sectionWrapper = sectionWrapperIdMap.favorites;
-
-            sectionWrapper.cache.content.splice(index, 1);
-
-            updateCategoryContent(sectionWrapper);
+            updateCategoryContent(this);
 
             saveFavorites();
         };
@@ -967,31 +957,33 @@ define([
                     });
                 } else {
                     actionList.appendChild(dom.el('div', {
-                        class: 'action__inFavorite',
+                        class: 'action__favorite',
                         title: chrome.i18n.getMessage('addInFavorite')
                     }));
                 }
 
                 contentBody.appendChild(dom.el('li', {
-                    class: ['gallery__item'],
+                    class: ['section__poster', 'poster'],
+                    data: {
+                        index: index
+                    },
                     append: [
                         dom.el('div', {
-                            data: {
-                                index: index
-                            },
-                            class: 'item__picture',
+                            class: 'poster__image',
                             append: [
                                 actionList,
                                 dom.el('a', {
-                                    class: 'item__link',
+                                    class: 'image__more_link',
                                     href: readMoreUrl,
                                     target: '_blank',
                                     title: chrome.i18n.getMessage('readMore')
                                 }),
                                 dom.el('a', {
+                                    class: 'image__search_link',
                                     href: search_link,
                                     title: title,
                                     append: dom.el('img', {
+                                        class: ['image__image'],
                                         src: imgUrl,
                                         on: ['error', function () {
                                             this.src = 'img/no_poster.png';
@@ -1001,9 +993,10 @@ define([
                             ]
                         }),
                         dom.el('div', {
-                            class: 'item__title',
+                            class: 'poster__title',
                             append: dom.el('span', {
                                 append: dom.el('a', {
+                                    class: 'poster__search_link',
                                     href: search_link,
                                     text: title,
                                     title: title
@@ -1214,7 +1207,7 @@ define([
 
             var imgSize = base + '{width: ' + section.width + 'px;}';
 
-            var fontStyle = base + ' > div.item__title{' + (fontSize ? 'font-size:' + fontSize + 'px;' : 'display:none;') + '}';
+            var fontStyle = base + ' > div.poster__title{' + (fontSize ? 'font-size:' + fontSize + 'px;' : 'display:none;') + '}';
 
             if (!styleNode) {
                 styleNode = sectionWrapper.styleNode = dom.el('style', {
@@ -1243,6 +1236,12 @@ define([
             sectionWrapper.displayItemCount = null;
             sectionWrapper.hasPages = false;
             sectionWrapper.setPage = onSetPage;
+
+            if (section.id === 'favorites') {
+                sectionWrapper.rmFavorite = sectionRmFavorite;
+            } else {
+                sectionWrapper.favorite = sectionFavorite;
+            }
 
             if (section.id === 'kpFavorites') {
                 sectionWrapper.update = updateKpFavorites;
@@ -1337,14 +1336,20 @@ define([
             });
             exploreNode.addEventListener('click', function (e) {
                 var target = e.target;
-                var galleryItem = dom.closest('.item__picture', target);
-                var section = galleryItem && dom.closest('.section', galleryItem);
-                if (section) {
-                    if (target.classList.contains('action__inFavorite')) {
-                        return onInFavorite(galleryItem, section, e);
-                    }
-                    if (target.classList.contains('action__rmFavorite')) {
-                        return onRmFavorite(galleryItem, e);
+                var section = dom.closest('.section', target);
+                var sectionWrapper = sectionWrapperIdMap[section.dataset.id];
+                if (sectionWrapper) {
+                    var poster = dom.closest('.poster', target);
+                    if (poster) {
+                        var posterIndex = poster && parseInt(poster.dataset.index);
+                        if (target.classList.contains('action__favorite')) {
+                            e.preventDefault();
+                            return sectionWrapper.favorite(posterIndex);
+                        }
+                        if (target.classList.contains('action__rmFavorite')) {
+                            e.preventDefault();
+                            return sectionWrapper.rmFavorite(posterIndex);
+                        }
                     }
                     /*if (el.classList.contains('edit')) {
                         return onEditItem(el, item, e);
