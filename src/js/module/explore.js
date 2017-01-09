@@ -737,9 +737,8 @@ define([
             saveFavorites();
         };
 
-        var onRmFavorite = function (el, li, e) {
+        var onRmFavorite = function (el, e) {
             e.preventDefault();
-            el = el.parentNode;
 
             var index = parseInt(el.dataset.index);
             var sectionWrapper = sectionWrapperIdMap.favorites;
@@ -1345,7 +1344,7 @@ define([
                         return onInFavorite(galleryItem, section, e);
                     }
                     if (target.classList.contains('action__rmFavorite')) {
-                        return onRmFavorite(galleryItem, section, e);
+                        return onRmFavorite(galleryItem, e);
                     }
                     /*if (el.classList.contains('edit')) {
                         return onEditItem(el, item, e);
