@@ -669,7 +669,7 @@ define([
             } else {
                 activeSectionSetup = this;
                 this.setupNode = getSetupBody(this);
-                this.setupBtnNode.parentNode.insertBefore(this.setupNode, this.setupBtnNode);
+                this.actionsNode.appendChild(this.setupNode);
             }
         };
 
@@ -1329,7 +1329,7 @@ define([
                                 class: ['section__title'],
                                 text: chrome.i18n.getMessage(section.id)
                             }),
-                            dom.el('div', {
+                            sectionWrapper.actionsNode = dom.el('div', {
                                 class: ['section__actions'],
                                 append: [
                                     section.id !== 'kpFavorites' ? '' : dom.el('a', {
