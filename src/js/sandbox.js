@@ -6,6 +6,7 @@ require.config({
     baseUrl: './js',
     paths: {
         jquery: './lib/jquery-3.1.1.min',
+        moment: './lib/moment-with-locales.min',
         exKit: './module/exKit'
     }
 });
