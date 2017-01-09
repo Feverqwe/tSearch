@@ -13,6 +13,7 @@ ul.explore {
     display: none;
 }
 
+.explore li.section-hidden,
 .explore li.section-empty {
     display: none;
 }

@@ -1200,7 +1200,7 @@ define([
             });
         };
 
-        var getSectionContent = function (sectionWrapper) {
+        var getSectionContent = function (sectionWrapper, onReady) {
             var next = function (syncStorage) {
                 chrome.storage.local.get(sectionWrapper.cacheKey, function (storage) {
                     var cache = null;
@@ -1236,6 +1236,8 @@ define([
                             setContent(sectionWrapper);
                         });
                     }
+
+                    onReady && onReady();
                 });
             };
             if (sectionWrapper.id === 'favorites' && storage.enableFavoriteSync) {
@@ -1388,7 +1390,10 @@ define([
             if (!section.show) {
                 sectionWrapper.node.classList.add('section-collapsed');
             } else {
-                getSectionContent(sectionWrapper);
+                sectionWrapper.node.classList.add('section-hidden');
+                getSectionContent(sectionWrapper, function () {
+                    sectionWrapper.node.classList.remove('section-hidden');
+                });
             }
 
             calculateSize(sectionWrapper);
