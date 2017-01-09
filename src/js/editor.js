@@ -10,13 +10,14 @@ require([
     './module/i18nDom',
     './module/utils',
     './module/dom',
+    './module/dialog',
     '../codeMirror/lib/codemirror',
     '../codeMirror/mode/javascript/javascript',
     '../codeMirror/addon/edit/matchbrackets',
     '../codeMirror/addon/edit/closebrackets',
     '../codeMirror/addon/comment/continuecomment',
     '../codeMirror/addon/selection/active-line'
-], function (Promise, i18nDom, utils, dom, CodeMirror) {
+], function (Promise, i18nDom, utils, dom, Dialog, CodeMirror) {
     i18nDom();
 
     document.body.classList.remove('loading');
@@ -156,6 +157,79 @@ require([
         return code.join('\n');
     };
 
+    var insertTrackerCode = function (trackerObj) {
+        var code = [];
+        code.unshift('==UserScript==');
+        code.push(['@name', trackerObj.title].join(' '));
+        if (trackerObj.desc) {
+            code.push(['@description', trackerObj.desc].join(' '));
+        }
+        if (trackerObj.icon) {
+            code.push(['@icon', trackerObj.icon].join(' '));
+        }
+        code.push(['@version', '1.0'].join(' '));
+        code.push(['@require', 'exKit'].join(' '));
+        code.push('==/UserScript==');
+        code = code.map(function (line) {
+            return ['//', line].join(' ');
+        });
+        code.push('');
+        code.push('var code = ' + JSON.stringify(trackerObj, null, 2) + ';');
+        code.push('');
+        code.push('API_exKit(code);');
+        editor.setValue(code.join('\n'));
+    };
+
+    var codeDialog = function () {
+        var dialog = new Dialog();
+        dom.el(dialog.body, {
+            class: ['dialog-code'],
+            append: [
+                dom.el('span', {
+                    class: 'dialog__label',
+                    text: chrome.i18n.getMessage('enterTrackerCode')
+                }),
+                dialog.addInput(dom.el('textarea', {
+                    class: 'dialog__textarea',
+                    name: 'code'
+                })),
+                dom.el('div', {
+                    class: ['dialog__button_box'],
+                    append: [
+                        dom.el('a', {
+                            class: ['button', 'button-add'],
+                            href: '#add',
+                            text: chrome.i18n.getMessage('add'),
+                            on: ['click', function (e) {
+                                e.preventDefault();
+                                var values = dialog.getValues();
+
+                                try {
+                                    var trackerObj = JSON.parse(values.code);
+                                    insertTrackerCode(trackerObj);
+                                } catch (e) {
+                                    alert('Error!\n' + e.message);
+                                }
+
+                                dialog.destroy();
+                            }]
+                        }),
+                        dom.el('a', {
+                            class: ['button', 'button-cancel'],
+                            href: '#cancel',
+                            text: chrome.i18n.getMessage('cancel'),
+                            on: ['click', function (e) {
+                                e.preventDefault();
+                                dialog.destroy();
+                            }]
+                        })
+                    ]
+                })
+            ]
+        });
+        dialog.show();
+    };
+
     chrome.storage.local.get({
         trackers: {}
     }, function (storage) {
@@ -171,5 +245,9 @@ require([
             code = tracker.code;
         }
         editor.setValue(code);
+
+        if (params.code) {
+            codeDialog();
+        }
     });
 });

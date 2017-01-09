@@ -28,7 +28,7 @@ body {
 }
 
 .editor__head .head__action {
-    padding: 0 8px;
+    margin-right: 10px;
 }
 
 .editor__body {
@@ -37,4 +37,32 @@ body {
 
 .CodeMirror {
     height: 100% !important;
+}
+
+.button {
+    display: inline-block;
+    padding: 4px 10px;
+    text-decoration: none;
+    background-color: #ffffff;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.3);
+}
+
+a.button {
+    color: #0051D8;
+}
+
+.button:hover {
+    border-color: rgba(0, 0, 0, 0.5);
+}
+
+.button:focus {
+    border: 1px solid #3366ff;
+}
+
+.dialog__body .dialog__textarea {
+    height: 250px;
+}
+.dialog__body.dialog-code {
+    width: 450px;
 }

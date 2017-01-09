@@ -469,7 +469,7 @@ define(['jquery'], function () {
             if (code.version === 2) {
                 id = 'ct_' + code.uid;
 
-                trackerObj = JSON.parse(JSON.stringify(code));
+                trackerObj = code;
                 trackerObj.code = JSON.stringify(code);
                 trackerObj.id = id;
                 trackerObj.flags = trackerObj.flags || {};
@@ -486,9 +486,9 @@ define(['jquery'], function () {
                         section[key] = _this.listToFunction(sectionName, section[key]);
                     }
                 });
-
-                return trackerObj;
             }
+
+            return code;
         },
         prepareTracker: function (tracker) {
             var itemList = ['onGetValue', 'onSelectorIsNotFound', 'onEmptySelectorValue'];
@@ -903,8 +903,8 @@ define(['jquery'], function () {
 
     window.exKit = exKit;
 
-    window.API_exKit = function (tracker) {
-        exKit.prepareCustomTracker(tracker);
+    window.API_exKit = function (trackerObj) {
+        var tracker = exKit.prepareCustomTracker(trackerObj);
         exKit.prepareTracker(tracker);
 
         var search = function (query, nextPageUrl) {

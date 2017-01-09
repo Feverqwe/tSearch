@@ -205,6 +205,10 @@
 
   "login": {"message": "Войти"},
 
+  "addTrackerCode": {"message": "Добавить код"},
+  "add": {"message": "Добавить"},
+  "enterTrackerCode": {"message": "Вставьте код трекера"},
+
   "kitTrackerCodeReadError": {
     "message": "Ошибка разбора кода трекера"
   },
