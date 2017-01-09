@@ -1269,7 +1269,7 @@ define([
                     }
                 });
             };
-            if (sectionWrapper.id === 'favorites') {
+            if (sectionWrapper.id === 'favorites' && storage.enableFavoriteSync) {
                 chrome.storage.sync.get(sectionWrapper.cacheKey, function (syncStorage) {
                     next(syncStorage);
                 });
