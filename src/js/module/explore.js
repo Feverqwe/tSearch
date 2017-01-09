@@ -1257,7 +1257,7 @@ define([
                     } else {
                         sectionWrapper.node.classList.add('section-loading');
                         cache.keepAlive = date;
-                        loadContent(sectionWrapper).then(function (result) {
+                        loadContent(sectionWrapper).then(function () {
                             sectionWrapper.node.classList.remove('section-loading');
 
                             var storageDate = {};
@@ -1368,7 +1368,7 @@ define([
                                         title: chrome.i18n.getMessage('goToTheWebsite'),
                                         href: sectionWrapper.source.url.replace('%page%', 1).replace('%category%', storage.kinopoiskFolderId)
                                     }),
-                                    !sectionWrapper.update ? '' : dom.el('div', {
+                                    !sectionWrapper.update ? '' : sectionWrapper.updateBtnNode = dom.el('div', {
                                         class: 'action__update',
                                         title: chrome.i18n.getMessage('update'),
                                         on: ['click', function (e) {
