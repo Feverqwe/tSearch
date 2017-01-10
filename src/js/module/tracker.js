@@ -95,9 +95,10 @@ define([
         };
         this.reload = function () {
             self.destroy();
-            load(onReady);
+            self.load();
         };
         this.destroy = function () {
+            self.loaded = false;
             ready = false;
             worker.terminate();
             self.abort();
@@ -203,7 +204,10 @@ define([
                 }
             });
         };
-        load(onReady);
+        this.load = function () {
+            self.loaded = true;
+            load(onReady);
+        };
     };
     return Tracker;
 });

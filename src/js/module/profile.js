@@ -126,6 +126,7 @@ define([
                 var tracker = trackers[item.id];
                 if (tracker) {
                     worker = new Tracker(tracker);
+                    worker.load();
                 } else {
                     tracker = {
                         id: item.id,
@@ -406,20 +407,26 @@ define([
         this.name = profile.name;
         this.trackers = wrappedTrackers;
         this.trackerIdTracker = trackerIdTracker;
+
+        var updateInProgress = false;
         this.update = function () {
-            var promiseList = wrappedTrackers.map(function (wrappedTracker) {
-                return wrappedTracker.worker.update();
-            });
-            return Promise.all(promiseList).then(function (result) {
-                var save = result.some(function (result) {
-                    return result.success;
+            if (!updateInProgress) {
+                updateInProgress = true;
+                var promiseList = wrappedTrackers.map(function (wrappedTracker) {
+                    return wrappedTracker.worker.update();
                 });
-                if (save) {
-                    chrome.storage.local.set({
-                        trackers: trackers
+                Promise.all(promiseList).then(function (result) {
+                    updateInProgress = false;
+                    var save = result.some(function (result) {
+                        return result.success;
                     });
-                }
-            });
+                    if (save) {
+                        chrome.storage.local.set({
+                            trackers: trackers
+                        });
+                    }
+                });
+            }
         };
         this.reload = function () {
             self.destroy();
