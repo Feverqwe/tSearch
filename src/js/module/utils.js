@@ -358,7 +358,7 @@ define(function () {
         if (!validate.test(oldVersion) || !validate.test(newVersion)) {
             throw new Error('Incorrect version');
         }
-        var normlize = function (value, len) {
+        var normalize = function (value, len) {
             while (value.length < len) {
                 value += '0';
             }
@@ -370,8 +370,8 @@ define(function () {
             var oldValue = oldParts[index] || '';
             var newValue = newParts[index] || '';
             var len = Math.max(oldValue.length, newValue.length);
-            oldValue = parseInt(normlize(oldValue, len));
-            newValue = parseInt(normlize(newValue, len));
+            oldValue = parseInt(normalize(oldValue, len));
+            newValue = parseInt(normalize(newValue, len));
             if (newValue > oldValue) {
                 return true;
             }
