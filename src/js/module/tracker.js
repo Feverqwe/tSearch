@@ -15,6 +15,7 @@ define([
         var requests = [];
         var worker = null;
         var transport = null;
+        var requireReload = false;
         var load = function (onReady) {
             worker = new FrameWorker(tracker.id);
             transport = new Transport({
@@ -96,13 +97,21 @@ define([
             self.destroy();
             self.load();
         };
+        this.safeReload = function () {
+            requireReload = true;
+        };
         this.destroy = function () {
+            requireReload = false;
             self.loaded = false;
             ready = false;
             worker.terminate();
             self.abort();
         };
         this.search = function (query, cb) {
+            if (requireReload) {
+                self.reload();
+            }
+
             self.sendMessage({
                 event: 'search',
                 query: query

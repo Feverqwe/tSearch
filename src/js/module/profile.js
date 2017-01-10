@@ -213,7 +213,7 @@ define([
         var onTrackerChange = function (id, tracker, changes) {
             var trackerWrapper = trackerIdTracker[id];
             if (trackerWrapper && changes.indexOf('code') !== -1) {
-                trackerWrapper.worker.reload();
+                trackerWrapper.worker.safeReload();
             }
         };
 
