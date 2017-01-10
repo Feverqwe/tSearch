@@ -1381,6 +1381,7 @@ define([
 
             if (!section.show) {
                 sectionWrapper.node.classList.add('section-collapsed');
+                onReady();
             } else {
                 getSectionContent(sectionWrapper, onReady);
             }
@@ -1405,9 +1406,11 @@ define([
                 }));
             });
             Promise.all(promiseList).then(function () {
-                promiseList = null;
                 exploreNode.classList.remove('explore-hidden');
-                onResize();
+                setTimeout(function () {
+                    onResize();
+                }, 0);
+                promiseList = null;
             });
 
             exploreNode.addEventListener('click', function (e) {
@@ -1541,6 +1544,7 @@ define([
         };
 
         this.show = function () {
+            exploreNode.classList.remove('explore-hide');
             if (init) {
                 init && init();
                 init = null;
@@ -1548,7 +1552,6 @@ define([
                 onResizeThrottle();
             }
             window.addEventListener('resize', onResizeThrottle);
-            exploreNode.classList.remove('explore-hide');
         };
         this.hide = function () {
             window.removeEventListener('resize', onResizeThrottle);
