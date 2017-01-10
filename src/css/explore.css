@@ -9,11 +9,14 @@ ul.explore {
     display: none;
 }
 
+.explore.explore-hidden {
+    visibility: hidden;
+}
+
 .explore li.section-collapsed > ul {
     display: none;
 }
 
-.explore li.section-hidden,
 .explore li.section-empty {
     display: none;
 }

@@ -824,7 +824,7 @@ define([
 
         var getCategoryDisplayItemCount = function (section) {
             var lineCount = section.lines;
-            var width = document.body.clientWidth - 190;
+            var width = document.body.clientWidth - 175;
             var itemCount = Math.ceil(width / (section.width + 10 * 2)) - 1;
             return itemCount * lineCount;
         };
@@ -1276,7 +1276,7 @@ define([
             styleNode.textContent = imgSize + fontStyle;
         };
 
-        var createSection = function (/**section*/section) {
+        var createSection = function (/**section*/section, onReady) {
             var sectionWrapper = {};
             sectionWrapper.id = section.id;
             sectionWrapper.source = contentSource[section.id];
@@ -1382,10 +1382,7 @@ define([
             if (!section.show) {
                 sectionWrapper.node.classList.add('section-collapsed');
             } else {
-                sectionWrapper.node.classList.add('section-hidden');
-                getSectionContent(sectionWrapper, function () {
-                    sectionWrapper.node.classList.remove('section-hidden');
-                });
+                getSectionContent(sectionWrapper, onReady);
             }
 
             calculateSize(sectionWrapper);
@@ -1394,14 +1391,25 @@ define([
         };
 
         var init = function () {
+            exploreNode.classList.add('explore-hidden');
+
+            var promiseList = [];
             sections.forEach(function (/**section*/item) {
-                var sectionWrapper = createSection(item);
-                sectionWrappers.push(sectionWrapper);
-                sectionWrapperIdMap[sectionWrapper.id] = sectionWrapper;
-                if (item.enable) {
-                    exploreNode.appendChild(sectionWrapper.node);
-                }
+                promiseList.push(new Promise(function (resolve) {
+                    var sectionWrapper = createSection(item, resolve);
+                    sectionWrappers.push(sectionWrapper);
+                    sectionWrapperIdMap[sectionWrapper.id] = sectionWrapper;
+                    if (item.enable) {
+                        exploreNode.appendChild(sectionWrapper.node);
+                    }
+                }));
             });
+            Promise.all(promiseList).then(function () {
+                promiseList = null;
+                exploreNode.classList.remove('explore-hidden');
+                onResize();
+            });
+
             exploreNode.addEventListener('click', function (e) {
                 var target = e.target;
                 var section = dom.closest('.section', target);
