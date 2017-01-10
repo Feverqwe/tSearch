@@ -377,5 +377,43 @@ define(function () {
             }
         });
     };
+    utils.escapeRegex = function (value) {
+        return value.replace( /[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&" );
+    };
+    utils.urlPatternToStrRe = function(value) {
+        "use strict";
+        var m = /^(\*|http|https):\/\/([^\/]+)(?:\/(.*))?$/.exec(value);
+        if (!m) {
+            throw new Error("Invalid url-pattern");
+        }
+
+        var scheme = m[1];
+        if (scheme === '*') {
+            scheme = 'https?';
+        }
+
+        var host = m[2];
+        host = utils.escapeRegex(host);
+        host = host.replace(/^\\\*\\\./, '(?:[^\/]+\\.)?');
+
+        var pattern = ['^', scheme, ':\\/\\/', host];
+
+        var path = m[3];
+        if (!path) {
+            pattern.push('$');
+        } else
+        if (path === '*') {
+            path = '(?:|\/.*)';
+            pattern.push(path, '$');
+        } else
+        if (path) {
+            path = '\/' + path;
+            path = utils.escapeRegex(path);
+            path = path.replace(/\\\*/g, '.*');
+            pattern.push(path, '$');
+        }
+
+        return pattern.join('');
+    };
     return utils;
 });

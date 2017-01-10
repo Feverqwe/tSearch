@@ -16,7 +16,24 @@ define([
         var worker = null;
         var transport = null;
         var requireReload = false;
+        var connectRe = null;
+        var prepareConnect = function (connect) {
+            connect = connect || [];
+            var connectRe = [];
+            connect.forEach(function (patter) {
+                try {
+                    connectRe.push(utils.urlPatternToStrRe(patter));
+                } catch (e) {
+                    console.error('Connect pattern error!', tracker.id, patter, e);
+                }
+            });
+            if (!connectRe.length) {
+                return null;
+            }
+            return new RegExp(connectRe.join('|'), 'i');
+        };
         var load = function (onReady) {
+            connectRe = prepareConnect(tracker.meta.connect);
             worker = new FrameWorker(tracker.id);
             transport = new Transport({
                 sendMessage: function (msg) {
@@ -39,6 +56,20 @@ define([
                     onReady();
                 } else
                 if (msg.action === 'request') {
+                    if (typeof msg.details !== 'object') {
+                        msg.details = {url: msg.details};
+                    }
+
+                    if (!connectRe || !connectRe.test(msg.details.url)) {
+                        console.error('Connection is not allowed!', msg.details.url, 'Add url patter in @connect!');
+                        return response({
+                            error: {
+                                name: 'Error',
+                                message: 'Connection is not allowed!'
+                            }
+                        });
+                    }
+
                     var request = utils.request(msg.details, function (err, resp) {
                         var pos = requests.indexOf(requestWrapper);
                         if (pos !== -1) {
