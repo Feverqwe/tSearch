@@ -206,6 +206,15 @@ define([
                 trackersNode.appendChild(node);
             });
             setTrackerList(trackersNode);
+
+            ee.on('trackerChange', onTrackerChange);
+        };
+
+        var onTrackerChange = function (id, tracker, changes) {
+            var trackerWrapper = trackerIdTracker[id];
+            if (trackerWrapper && changes.indexOf('code') !== -1) {
+                trackerWrapper.worker.reload();
+            }
         };
 
         var destroyTables = function (index) {
@@ -410,6 +419,7 @@ define([
             load();
         };
         this.destroy = function () {
+            ee.off('trackerChange', onTrackerChange);
             destroyTables();
             ee.off('stateReset', onStateReset);
             ee.off('reloadProfile', onReload);
