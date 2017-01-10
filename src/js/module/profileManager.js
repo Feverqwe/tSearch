@@ -377,7 +377,7 @@ define([
                                 var profileTrackers = [];
                                 [].slice.call(trackersNode.childNodes).forEach(function (trackerNode) {
                                     var id = trackerNode.dataset.id;
-                                    var checkbox = trackerNode.querySelector('.item__checkbox');
+                                    var checkbox = trackerNode.querySelector('.item__checkbox input');
                                     var checked = checkbox.checked;
                                     if (checked) {
                                         profileTrackers.push({
