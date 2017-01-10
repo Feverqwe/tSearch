@@ -477,6 +477,11 @@ a.tracker {
     opacity: 0.8;
 }
 
+.tracker .tracker__icon.tracker__link:hover {
+    background: url(../img/external.svg) center no-repeat;
+    background-size: 12px;
+}
+
 .tracker__name {
     flex-grow: 1;
     padding: 0 2px;

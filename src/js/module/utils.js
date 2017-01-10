@@ -307,6 +307,7 @@ define(function () {
             homepageURL: 'string',
             icon: 'string',
             icon64: 'string',
+            trackerURL: 'string',
             updateURL: 'string',
             downloadURL: 'string',
             supportURL: 'string',

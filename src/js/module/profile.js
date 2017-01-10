@@ -112,13 +112,14 @@ define([
                  * @property {string} [meta.author]
                  * @property {string} [meta.description]
                  * @property {string} [meta.homepageURL]
+                 * @property {string} [meta.trackerURL]
                  * @property {string} meta.icon
                  * @property {string} [meta.icon64]
                  * @property {string} meta.updateURL
                  * @property {string} meta.downloadURL
                  * @property {string} [meta.supportURL]
                  * @property {string[]} [meta.require]
-                 * @property {string[]} [meta.connect]
+                 * @property {string[]} meta.connect
                  * @property {Object} info
                  * @property {number} info.lastUpdate
                  * @property {string} code
@@ -143,6 +144,21 @@ define([
 
                 var countNode;
                 var iconNode;
+                if (tracker.meta.trackerURL) {
+                    iconNode = dom.el('a', {
+                        class: ['tracker__icon', iconClass, 'tracker__link'],
+                        target: '_blank',
+                        href: tracker.meta.trackerURL,
+                        on: ['click', function (e) {
+                            e.stopPropagation();
+                        }]
+                    });
+                } else {
+                    iconNode = dom.el('div', {
+                        class: ['tracker__icon', iconClass]
+                    });
+                }
+                iconNode.appendChild(iconStyleNode);
                 var node = dom.el('a', {
                     class: 'tracker',
                     href: '#' + tracker.id,
@@ -150,12 +166,7 @@ define([
                         id: tracker.id
                     },
                     append: [
-                        iconNode = dom.el('div', {
-                            class: ['tracker__icon', iconClass],
-                            append: [
-                                iconStyleNode
-                            ]
-                        }),
+                        iconNode,
                         dom.el('div', {
                             class: 'tracker__name',
                             text: tracker.meta.name || tracker.id
