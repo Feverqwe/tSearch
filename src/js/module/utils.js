@@ -351,6 +351,9 @@ define(function () {
         if (!meta.version) {
             throw new Error("Version field is not found!");
         }
+        if (!/^[\d.]+$/.test(meta.version)) {
+            throw new Error("Version field is not correct!");
+        }
         return meta;
     };
     utils.isNewVersion = function (oldVersion, newVersion) {
