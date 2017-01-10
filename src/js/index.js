@@ -826,13 +826,21 @@ require([
             }
 
             chrome.storage.onChanged.addListener(function(changes, areaName) {
+                var history = storage.history;
                 var trackers = storage.trackers;
                 var key;
                 if (areaName === 'local') {
-                    var change = changes.trackers;
-                    if (change) {
-                        var oldTrackers = change.oldValue;
-                        var newTrackers = change.newValue;
+                    var changeHistory = changes.history;
+                    if (changeHistory) {
+                        var newHistory = changeHistory.newValue;
+                        history.splice(0);
+                        history.push.apply(history, newHistory);
+                    }
+
+                    var changeTrackers = changes.trackers;
+                    if (changeTrackers) {
+                        var oldTrackers = changeTrackers.oldValue;
+                        var newTrackers = changeTrackers.newValue;
 
                         var removedIds = [];
                         var modifiedIds = [];
