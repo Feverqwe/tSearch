@@ -586,6 +586,14 @@ a.tracker {
     padding: 4px;
 }
 
+.manager__trackers .item__version {
+    padding: 4px;
+}
+
+.manager__trackers .item__update {
+    padding: 4px;
+}
+
 .manager__trackers .item__homepage {
     padding: 4px;
 }

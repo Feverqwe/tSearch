@@ -223,7 +223,7 @@ define([
                             text: tracker.meta.version
                         }),
                         (!tracker.meta.updateURL && !tracker.meta.downloadURL) ? '' : dom.el('a', {
-                            class: ['item__action', 'item__button', 'button-update'],
+                            class: ['item__update', 'item__button', 'button-update'],
                             href: '#update',
                             data: {
                                 action: 'update'
