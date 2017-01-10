@@ -3,10 +3,11 @@
  */
 "use strict";
 define([
+    '../lib/promise.min',
     './dom',
     './tracker',
     './table'
-], function (dom, Tracker, Table) {
+], function (Promise, dom, Tracker, Table) {
     var tableParent = document.querySelector('.results');
 
     var Profile = function (profile, resultFilter, setTrackerList, ee, storage) {
@@ -403,6 +404,21 @@ define([
         this.name = profile.name;
         this.trackers = wrappedTrackers;
         this.trackerIdTracker = trackerIdTracker;
+        this.update = function () {
+            var promiseList = wrappedTrackers.map(function (wrappedTracker) {
+                return wrappedTracker.update();
+            });
+            return Promise.all(promiseList).then(function (result) {
+                var save = result.some(function (result) {
+                    return result.success;
+                });
+                if (save) {
+                    chrome.storage.local.set({
+                        trackers: trackers
+                    });
+                }
+            });
+        };
         this.reload = function () {
             self.destroy();
             load();
