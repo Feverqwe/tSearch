@@ -854,7 +854,7 @@ require([
 
                         removedIds.forEach(function (id) {
                             delete trackers[id];
-                            console.debug('trackerRemoved', id);
+                            // console.debug('trackerRemoved', id);
                             ee.trigger('trackerRemoved', [id]);
                         });
 
@@ -869,14 +869,14 @@ require([
                                 }
                             }
                             if (changes.length) {
-                                console.debug('trackerChange', id, changes);
+                                // console.debug('trackerChange', id, changes);
                                 ee.trigger('trackerChange', [id, oldTracker, changes]);
                             }
                         });
 
                         newIds.forEach(function (id) {
                             trackers[key] = newTrackers[id];
-                            console.debug('trackerInsert', id);
+                            // console.debug('trackerInsert', id);
                             ee.trigger('trackerInsert', [id, trackers[key]]);
                         });
                     }
