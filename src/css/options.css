@@ -39,7 +39,6 @@ a:visited {
 .button {
     display: inline-block;
     padding: 4px 10px;
-    text-decoration: none;
     background-color: #ffffff;
     border-radius: 3px;
     border: 1px solid rgba(0,0,0,0.3);
@@ -47,6 +46,7 @@ a:visited {
 
 a.button {
     color: #0051D8;
+    text-decoration: none;
 }
 
 .button:hover {
@@ -183,4 +183,15 @@ a.button {
     display: inline-block;
     width: 30%;
     margin: 5px;
+}
+
+.page__buttons {
+    margin: 5px;
+}
+
+.restore_textarea,
+.backup_textarea {
+    margin: 5px;
+    width: 480px;
+    height: 320px;
 }

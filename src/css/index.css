@@ -287,7 +287,6 @@ a.search__submit {
 .button {
     display: inline-block;
     padding: 4px 10px;
-    text-decoration: none;
     background-color: #ffffff;
     border-radius: 3px;
     border: 1px solid rgba(0,0,0,0.3);
@@ -295,6 +294,7 @@ a.search__submit {
 
 a.button {
     color: #0051D8;
+    text-decoration: none;
 }
 
 .button:hover {

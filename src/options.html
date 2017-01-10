@@ -87,13 +87,18 @@
                 </div>
                 <div class="page page-backup">
                     <h2 class="page__title" data-i18n='{"text":"backup"}'>{backup}</h2>
-
+                    <div class="page__buttons">
+                        <a type="button" href="#update" class="button backup__update" data-i18n='{"text":"update"}'>{update}</a>
+                        <a type="button" href="#saveInCloud" class="button backup__save-in-cloud" data-i18n='{"text":"saveInCloud"}'>{saveInCloud}</a>
+                    </div>
                     <textarea class="backup_textarea"></textarea>
                 </div>
                 <div class="page page-restore">
                     <h2 class="page__title" data-i18n='{"text":"restore"}'>{restore}</h2>
-                    <div>
-                        <input type="button" class="restore-button" data-i18n='{"value":"restore"}'/>
+                    <div class="page__buttons">
+                        <a type="button" href="#restore" class="button button-restore" data-i18n='{"text":"restoreBtn"}'>{restoreBtn}</a>
+                        <a type="button" href="#getFromCloud" class="button button-get-from-cloud" data-i18n='{"text":"getFromCloud"}'>{getFromCloud}</a>
+                        <a type="button" href="#clearCloud" class="button button-clear-cloud" data-i18n='{"text":"clearCloud"}'>{clearCloud}</a>
                     </div>
                     <textarea class="restore_textarea"></textarea>
                 </div>

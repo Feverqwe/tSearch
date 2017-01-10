@@ -98,6 +98,15 @@
   "update": {
     "message": "Обновить"
   },
+  "saveInCloud": {
+    "message": "Сохранить в облаке"
+  },
+  "getFromCloud": {
+    "message": "Получить настройки из облака"
+  },
+  "clearCloud": {
+    "message": "Очистить настройки в облаке"
+  },
   "row_date": {
     "message": "Добавлено"
   },
@@ -133,6 +142,9 @@
   },
   "restore": {
     "message": "Восстановление"
+  },
+  "restoreBtn": {
+    "message": "Восстановить"
   },
   "hidePeerRow": {
     "message": "Скрыть столбец \"пиры\" (скачивающие)"
