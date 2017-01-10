@@ -70,20 +70,20 @@ define([
                             text: profile.name
                         }),
                         dom.el('a', {
-                            class: 'item__action',
+                            class: ['item__action', 'item__button', 'button-edit'],
                             href: '#edit',
                             data: {
                                 action: 'edit'
                             },
-                            text: chrome.i18n.getMessage('edit')
+                            title: chrome.i18n.getMessage('edit')
                         }),
                         dom.el('a', {
-                            class: 'item__action',
+                            class: ['item__action', 'item__button', 'button-remove'],
                             href: '#remove',
                             data: {
                                 action: 'remove'
                             },
-                            text: chrome.i18n.getMessage('remove')
+                            title: chrome.i18n.getMessage('remove')
                         })
                     ]
                 });
@@ -188,6 +188,7 @@ define([
         var getProfile = function (/**profile*/profile, trackers) {
             var getTrackerItem = function (tracker, checked, exists) {
                 var checkboxNode;
+                var versionNode;
                 return dom.el('div', {
                     class: 'item',
                     data: {
@@ -197,10 +198,14 @@ define([
                         dom.el('div', {
                             class: 'item__move'
                         }),
-                        checkboxNode = dom.el('input', {
+                        dom.el('div', {
                             class: 'item__checkbox',
-                            type: 'checkbox',
-                            checked: checked
+                            append: [
+                                checkboxNode = dom.el('input', {
+                                    type: 'checkbox',
+                                    checked: checked
+                                })
+                            ]
                         }),
                         dom.el('img', {
                             class: ['item__icon'],
@@ -213,55 +218,68 @@ define([
                             class: 'item__name',
                             text: tracker.meta.name || tracker.id
                         }),
+                        !tracker.meta.version ? '' : versionNode = dom.el('div', {
+                            class: 'item__version',
+                            text: tracker.meta.version
+                        }),
                         (!tracker.meta.updateURL && !tracker.meta.downloadURL) ? '' : dom.el('a', {
-                            class: 'item__action',
+                            class: ['item__action', 'item__button', 'button-update'],
                             href: '#update',
                             data: {
                                 action: 'update'
                             },
-                            text: chrome.i18n.getMessage('update'),
+                            title: chrome.i18n.getMessage('update'),
                             on: ['click', function (e) {
-                                var _this = this;
                                 e.preventDefault();
-                                var defText = _this.textContent;
-                                _this.textContent = '...';
+                                var defText = versionNode.textContent;
+                                versionNode.textContent = '...';
                                 chrome.runtime.sendMessage({
                                     action: 'update',
                                     id: tracker.id,
                                     force: true
                                 }, function (response) {
                                     if (!response.success) {
-                                        _this.textContent = defText;
+                                        versionNode.textContent = defText;
                                     } else {
                                         var result = response.results[0];
                                         if (!result.success) {
-                                            _this.textContent = result.message;
+                                            versionNode.textContent = result.message;
                                         } else {
-                                            _this.textContent = result.version;
+                                            versionNode.textContent = result.version;
                                         }
                                     }
                                 })
                             }]
                         }),
-                        tracker.meta.version && dom.el('div', {
-                            class: 'item__version',
-                            text: tracker.meta.version
+                        !tracker.meta.supportURL ? '' : dom.el('a', {
+                            class: ['item__homepage', 'item__button', 'button-support'],
+                            target: '_blank',
+                            href: tracker.meta.supportURL
                         }),
+                        !tracker.meta.homepageURL ? '' : dom.el('a', {
+                            class: ['item__homepage', 'item__button', 'button-home'],
+                            target: '_blank',
+                            href: tracker.meta.homepageURL
+                        }),
+                        !tracker.meta.author ? '' : dom.el('div', {
+                                class: 'item__author',
+                                text: tracker.meta.author
+                            }),
                         dom.el('a', {
-                            class: 'item__action',
+                            class: ['item__action', 'item__button', 'button-edit'],
                             href: '#edit',
                             data: {
                                 action: 'edit'
                             },
-                            text: chrome.i18n.getMessage('edit')
+                            title: chrome.i18n.getMessage('edit')
                         }),
                         dom.el('a', {
-                            class: 'item__action',
+                            class: ['item__action', 'item__button', 'button-remove'],
                             href: '#remove',
                             data: {
                                 action: 'remove'
                             },
-                            text: chrome.i18n.getMessage('remove')
+                            title: chrome.i18n.getMessage('remove')
                         })
                     ],
                     on: ['click', function (e) {

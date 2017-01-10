@@ -563,6 +563,58 @@ a.tracker {
     opacity: 1;
 }
 
+.manager .item__button {
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    opacity: 0.7;
+}
+
+.manager .item__button:hover {
+    opacity: 1;
+}
+
+.manager__trackers .item__author {
+    padding: 4px;
+}
+
+.manager__trackers .item__homepage {
+    padding: 4px;
+}
+
+.manager__trackers .item__support {
+    padding: 4px;
+}
+
+.manager__trackers .button-home {
+    background-image: url(../img/main.svg);
+}
+
+.manager__trackers .button-support {
+    background-image: url(../img/support.svg);
+}
+
+.manager__trackers .button-update {
+    background-image: url(../img/refresh.svg);
+    transition: transform 0.5s;
+}
+
+.manager__trackers .button-update:hover {
+    transform: rotate(360deg);
+    opacity: 1;
+}
+
+.manager .button-edit {
+    background-image: url(../img/edit.svg);
+}
+
+.manager .button-remove {
+    background-image: url(../img/delete.svg);
+}
+
 .manager__sub_header {
     align-items: center;
     height: 46px;
