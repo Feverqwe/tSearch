@@ -20,6 +20,11 @@ a:visited {
     color: #609;
 }
 
+.option {
+    display: block;
+    margin: 5px;
+}
+
 .loading {
     opacity: 0;
 }
@@ -29,6 +34,27 @@ a:visited {
     flex-direction: row;
     justify-content: center;
     height: 70px;
+}
+
+.button {
+    display: inline-block;
+    padding: 4px 10px;
+    text-decoration: none;
+    background-color: #ffffff;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.3);
+}
+
+a.button {
+    color: #0051D8;
+}
+
+.button:hover {
+    border-color: rgba(0, 0, 0, 0.5);
+}
+
+.button:focus {
+    border: 1px solid #3366ff;
 }
 
 .search {
@@ -88,6 +114,7 @@ a:visited {
     flex-direction: column;
     padding: 0 5px;
     width: 180px;
+    min-width: 180px;
 }
 
 .sections .sections__item {
@@ -136,7 +163,24 @@ a:visited {
     margin-bottom: 10px;
 }
 
+.page__sub_title {
+    font-size: 18px;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+    font-weight: normal;
+    height: 32px;
+    margin: 0;
+    align-items: center;
+    display: flex;
+    margin-bottom: 10px;
+}
+
 .page-basic {
     display: flex;
     flex-direction: column;
+}
+
+.mainPage__sections div.option {
+    display: inline-block;
+    width: 30%;
+    margin: 5px;
 }

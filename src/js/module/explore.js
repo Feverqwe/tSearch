@@ -824,7 +824,7 @@ define([
 
         var getCategoryDisplayItemCount = function (section) {
             var lineCount = section.lines;
-            var width = document.body.clientWidth - 180;
+            var width = document.body.clientWidth - 190;
             var itemCount = Math.ceil(width / (section.width + 10 * 2)) - 1;
             return itemCount * lineCount;
         };
@@ -1133,7 +1133,7 @@ define([
             var unicUrlList = [];
             var contentList = [];
 
-            var urlTemplate = sectionWrapper.source.url.replace('%category%', storage.kinopoiskFolderId);
+            var urlTemplate = sectionWrapper.source.url.replace('%category%', storage.kpFolderId);
             var loadPage = function (page) {
                 return new Promise(function(resolve, reject) {
                     var request = utils.request({
@@ -1329,7 +1329,7 @@ define([
                                         class: 'action__open',
                                         target: '_blank',
                                         title: chrome.i18n.getMessage('goToTheWebsite'),
-                                        href: sectionWrapper.source.url.replace('%page%', 1).replace('%category%', storage.kinopoiskFolderId)
+                                        href: sectionWrapper.source.url.replace('%page%', 1).replace('%category%', storage.kpFolderId)
                                     }),
                                     !sectionWrapper.update ? '' : sectionWrapper.updateBtnNode = dom.el('div', {
                                         class: 'action__update',
@@ -1547,5 +1547,8 @@ define([
             exploreNode.classList.add('explore-hide');
         };
     };
+
+    Explore.prototype.insertDefaultSections = insertDefaultSections;
+
     return Explore;
 });

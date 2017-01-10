@@ -9,8 +9,9 @@ require([
     './lib/promise.min',
     './module/i18nDom',
     './module/utils',
-    './module/dom'
-], function (Promise, i18nDom, utils, dom) {
+    './module/dom',
+    './module/explore'
+], function (Promise, i18nDom, utils, dom, Explore) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -19,56 +20,24 @@ require([
             categoryWordFilter: true,
             contextMenu: true,
             disablePopup: false,
-            invertIcon: false
+            invertIcon: false,
+            eSections: [],
+            enableFavoriteSync: true,
+            originalPosterName: false,
+            kpFolderId: '1'
         }, resolve);
     }).then(function (storage) {
         document.body.classList.remove('loading');
 
-        var Page = function (type) {
-            var self = this;
-            var basePage = function () {
-                var options = {
-                    hidePeerRow: 'boolean',
-                    hideSeedRow: 'boolean',
-                    categoryWordFilter: 'boolean',
-                    contextMenu: 'boolean',
-                    disablePopup: 'boolean',
-                    invertIcon: 'boolean'
-                };
-                Object.keys(options).forEach(function (option) {
-                    var type = options[option];
-                    if (type === 'boolean') {
-                        return dom.el('input', {
-                            type: 'checkbox',
-
-                        })
-                    }
-                });
-            };
-            var content = [];
-            if (type === 'base') {
-                content = basePage();
-            }
-            this.node = dom.el('div', {
-                class: ['options__page', 'page-' + type],
-                append: content
-            });
-            this.destroy = function () {
-
-            };
-        };
-
         (function () {
             var activePage = null;
             var options = document.querySelector('.options');
-            var activeItem = document.querySelector('.sections .item-active');
+            var activeItem = null;
 
             var sections = document.querySelector('.sections');
             sections.addEventListener('click', function(e) {
                 var link = dom.closest('a', e.target);
                 if (link) {
-                    e.preventDefault();
-
                     activePage && activePage.classList.remove('page-visible');
                     activeItem.classList.remove('item-active');
                     activeItem = link;
@@ -81,6 +50,10 @@ require([
                 }
             });
 
+            activeItem = document.querySelector('.sections a[href="' + location.hash + '"]');
+            if (!activeItem) {
+                activeItem = document.querySelector('.sections a[href="#basic"]');
+            }
             activeItem.dispatchEvent(new MouseEvent('click', {
                 cancelable: true,
                 bubbles: true
@@ -98,18 +71,65 @@ require([
             };
             [].slice.call(document.querySelectorAll('[data-option]')).forEach(function (node) {
                 var option = node.dataset.option;
-                node.checked = !!storage[option];
-                node.addEventListener('click', function () {
-                    var _storage = {};
-                    if (node.type === 'checkbox') {
+                if (node.type === 'checkbox') {
+                    node.checked = !!storage[option];
+                    node.addEventListener('click', function () {
+                        var _storage = {};
                         _storage[option] = storage[option] = !!node.checked;
-                    }
-                    chrome.storage.local.set(_storage, function () {
-                        var onChange = onChangeOption[option];
-                        onChange && onChange();
+                        chrome.storage.local.set(_storage, function () {
+                            var onChange = onChangeOption[option];
+                            onChange && onChange();
+                        });
                     });
-                });
+                } else
+                if (node.type === 'text') {
+                    node.value = storage[option];
+                    node.addEventListener('keyup', utils.throttle(function () {
+                        var _storage = {};
+                        _storage[option] = storage[option] = node.value;
+                        chrome.storage.local.set(_storage);
+                    }, 250));
+                }
             });
+        })();
+
+        (function () {
+            var sectionsNode = document.querySelector('.mainPage__sections');
+
+            var sections = storage.eSections;
+            var idSectionMap = {};
+            sections.forEach(function (item) {
+                idSectionMap[item.id] = item;
+            });
+            Explore.prototype.insertDefaultSections(idSectionMap, sections);
+
+            sections.forEach(function (section) {
+                if (section.id === 'favorites') {
+                    return;
+                }
+                sectionsNode.appendChild(dom.el('div', {
+                    class: 'option',
+                    append: [
+                        dom.el('label', {
+                            append: [
+                                dom.el('input', {
+                                    type: 'checkbox',
+                                    checked: section.enable,
+                                    on: ['click', function () {
+                                        section.enable = this.checked;
+                                        chrome.storage.local.set({
+                                            eSections: sections
+                                        });
+                                    }]
+                                }),
+                                dom.el('span', {
+                                    text: chrome.i18n.getMessage(section.id)
+                                })
+                            ]
+                        })
+                    ]
+                }))
+            })
         })();
     });
 });

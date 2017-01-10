@@ -33,7 +33,7 @@ require([
             checkUpdateTime: 0,
 
             eSections: [],
-            kinopoiskFolderId: 1,
+            kpFolderId: '1',
             enableFavoriteSync: true,
             originalPosterName: false
         }, resolve);
