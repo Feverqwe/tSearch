@@ -95,6 +95,7 @@ require([
         code.unshift('==UserScript==');
         code.push(['@name', 'New Tracker'].join(' '));
         code.push(['@version', '1.0'].join(' '));
+        code.push(['@connect', ''].join(' '));
         code.push('==/UserScript==');
         code = code.map(function (line) {
             return ['//', line].join(' ');
@@ -112,6 +113,13 @@ require([
         }
         if (trackerObj.icon) {
             code.push(['@icon', trackerObj.icon].join(' '));
+        }
+        var hostname = /\/\/([^\/]+)/.exec(trackerObj.search.searchUrl);
+        if (hostname) {
+            code.push(['@connect', '*://'+hostname[1]+'/*'].join(' '));
+        }
+        if (trackerObj.search.baseUrl) {
+            code.push(['@trackerURL', trackerObj.search.baseUrl].join(' '));
         }
         code.push(['@version', '1.0'].join(' '));
         code.push(['@require', 'exKit'].join(' '));

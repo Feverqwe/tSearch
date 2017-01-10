@@ -308,13 +308,17 @@ define([
                             info: {}
                         }
                     }
-                    idList.push(tracker.id);
-                    fragment.appendChild(getTrackerItem(tracker, true, exists));
+                    if (removedTrackerIds.indexOf(tracker.id) === -1) {
+                        idList.push(tracker.id);
+                        fragment.appendChild(getTrackerItem(tracker, true, exists));
+                    }
                 });
                 Object.keys(trackers).forEach(function (/**tracker*/trackerId) {
                     var tracker = trackers[trackerId];
-                    if (idList.indexOf(tracker.id) === -1) {
-                        fragment.appendChild(getTrackerItem(tracker, false, true))
+                    if (removedTrackerIds.indexOf(tracker.id) === -1) {
+                        if (idList.indexOf(tracker.id) === -1) {
+                            fragment.appendChild(getTrackerItem(tracker, false, true))
+                        }
                     }
                 });
                 return fragment;

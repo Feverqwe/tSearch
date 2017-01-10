@@ -883,9 +883,9 @@ require([
                         });
 
                         newIds.forEach(function (id) {
-                            trackers[key] = newTrackers[id];
+                            trackers[id] = newTrackers[id];
                             // console.debug('trackerInsert', id);
-                            ee.trigger('trackerInsert', [id, trackers[key]]);
+                            ee.trigger('trackerInsert', [id, trackers[id]]);
                         });
                     }
                 }
