@@ -178,14 +178,14 @@ define([
         };
 
         this.update = function (force) {
-            return Promise.resolve().then(function () {
+            return new Promise(function (resolve) {
                 if (!tracker.meta.downloadURL) {
                     throw new Error('C_UNAVAILABLE');
                 }
                 var now = parseInt(Date.now() / 1000);
                 var lastUpdate = tracker.info.lastUpdate || 0;
                 if (now - lastUpdate > 24 * 60 * 60 || force) {
-                    return checkUpdate();
+                    resolve(checkUpdate());
                 } else {
                     throw new Error('C_TIMEOUT');
                 }
