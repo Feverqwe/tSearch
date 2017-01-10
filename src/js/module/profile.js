@@ -319,6 +319,8 @@ define([
             });
 
             inHistory(query);
+
+            self.update();
         };
 
         var onSearchMore = function (cb) {
