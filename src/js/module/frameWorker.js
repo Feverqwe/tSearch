@@ -44,6 +44,7 @@ define(function () {
                 frame.parentNode.removeChild(frame);
             }
             frame = null;
+            contentWindow = null;
             window.removeEventListener("message", msgListener);
             self.onmessage = null;
         };

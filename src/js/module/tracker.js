@@ -15,6 +15,7 @@ define([
         var requests = [];
         var worker = null;
         var transport = null;
+        var reloadRequierd = false;
         var load = function (onReady) {
             worker = new FrameWorker(tracker.id);
             transport = new Transport({
@@ -93,7 +94,7 @@ define([
             }
         };
         this.reload = function () {
-            worker.terminate();
+            self.destroy();
             load(onReady);
         };
         this.destroy = function () {
@@ -102,6 +103,11 @@ define([
             self.abort();
         };
         this.search = function (query, cb) {
+            if (reloadRequierd) {
+                reloadRequierd = false;
+                self.reload();
+            }
+
             self.sendMessage({
                 event: 'search',
                 query: query
@@ -180,6 +186,7 @@ define([
                     throw new Error('C_TIMEOUT');
                 }
             }).then(function (result) {
+                reloadRequierd = true;
                 return {success: true, result: result};
             }).catch(function (err) {
                 if (err.message === 'C_UNAVAILABLE') {
