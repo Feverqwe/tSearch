@@ -182,7 +182,7 @@ require([
                 return {success: false, trackerId: tracker.id, message: 'TIMEOUT'};
             } else
             if (err.message === 'C_ACTUAL') {
-                return {success: true, trackerId: tracker.id, message: 'ACTUAL'};
+                return {success: true, trackerId: tracker.id, message: 'ACTUAL', version: tracker.meta.version};
             } else {
                 console.error('Update error', tracker.id, err);
                 return {success: false, trackerId: tracker.id, message: 'ERROR'};
@@ -213,9 +213,9 @@ require([
                 }
             }
 
-            return Promise.all(promiseList).then(function (result) {
+            return Promise.all(promiseList).then(function (results) {
                 var promise = Promise.resolve();
-                var save = result.some(function (result) {
+                var save = results.some(function (result) {
                     return result.success;
                 });
                 if (save) {
@@ -229,7 +229,7 @@ require([
                 }
                 return promise.then(function () {
                     updateInProgress = false;
-                    return {success: true, result: result};
+                    return {success: true, results: results};
                 });
             });
         });

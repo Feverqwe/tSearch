@@ -213,14 +213,40 @@ define([
                             class: 'item__name',
                             text: tracker.meta.name || tracker.id
                         }),
-                        !exists || !tracker.meta.updateURL ? '' : dom.el('a', {
-                                class: 'item__action',
-                                href: '#update',
-                                data: {
-                                    action: 'update'
-                                },
-                                text: chrome.i18n.getMessage('update')
-                            }),
+                        (!tracker.meta.updateURL && !tracker.meta.downloadURL) ? '' : dom.el('a', {
+                            class: 'item__action',
+                            href: '#update',
+                            data: {
+                                action: 'update'
+                            },
+                            text: chrome.i18n.getMessage('update'),
+                            on: ['click', function (e) {
+                                var _this = this;
+                                e.preventDefault();
+                                var defText = _this.textContent;
+                                _this.textContent = '...';
+                                chrome.runtime.sendMessage({
+                                    action: 'update',
+                                    id: tracker.id,
+                                    force: true
+                                }, function (response) {
+                                    if (!response.success) {
+                                        _this.textContent = defText;
+                                    } else {
+                                        var result = response.results[0];
+                                        if (!result.success) {
+                                            _this.textContent = result.message;
+                                        } else {
+                                            _this.textContent = result.version;
+                                        }
+                                    }
+                                })
+                            }]
+                        }),
+                        tracker.meta.version && dom.el('div', {
+                            class: 'item__version',
+                            text: tracker.meta.version
+                        }),
                         dom.el('a', {
                             class: 'item__action',
                             href: '#edit',
@@ -260,7 +286,8 @@ define([
                     if (!tracker) {
                         tracker = {
                             id: profileTracker.id,
-                            meta: {}
+                            meta: {},
+                            info: {}
                         }
                     }
                     idList.push(tracker.id);
@@ -423,11 +450,16 @@ define([
         var onTrackersUpdateListener = function () {
             onTrackersUpdate && onTrackersUpdate();
         };
+        var onTrackersChangeListener = function (id, tracker, changes) {
+            if (changes.indexOf('meta') !== -1) {
+                onTrackersUpdate && onTrackersUpdate();
+            }
+        };
 
         var close = function () {
             ee.off('trackerRemoved', onTrackersUpdateListener);
             ee.off('trackerInsert', onTrackersUpdateListener);
-            ee.off('trackerChange', onTrackersUpdateListener);
+            ee.off('trackerChange', onTrackersChangeListener);
             document.removeEventListener('click', closeEvent, true);
             layer.node.parentNode.removeChild(layer.node);
         };
@@ -448,7 +480,7 @@ define([
             document.addEventListener('click', closeEvent, true);
             ee.on('trackerRemoved', onTrackersUpdateListener);
             ee.on('trackerInsert', onTrackersUpdateListener);
-            ee.on('trackerChange', onTrackersUpdateListener);
+            ee.on('trackerChange', onTrackersChangeListener);
         };
     };
     ProfileManager.prototype.getDefaultProfile = function (profileController) {
