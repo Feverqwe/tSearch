@@ -461,7 +461,7 @@ define([
                     });
 
                     if (removedIds.length || modifiedIds.length || newIds.length) {
-                        onTrackersUpdate && onTrackersUpdate();
+                        onTrackersUpdate && onTrackersUpdate(removedIds, modifiedIds, newIds);
                     }
                 }
             }
