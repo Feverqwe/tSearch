@@ -161,9 +161,12 @@ define([
                     return checkVersion(tracker.meta.updateURL);
                 });
             }
-            return promise.then(function () {
-                return checkVersion(tracker.meta.downloadURL);
-            }).then(function (result) {
+            if (tracker.meta.updateURL !== tracker.meta.downloadURL) {
+                promise = promise.then(function () {
+                    return checkVersion(tracker.meta.downloadURL);
+                })
+            }
+            return promise.then(function (result) {
                 tracker.meta = result.meta;
                 tracker.code = result.body;
                 tracker.info.lastUpdate = parseInt(Date.now() / 1000);
