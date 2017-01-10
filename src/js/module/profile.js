@@ -406,7 +406,7 @@ define([
         this.trackerIdTracker = trackerIdTracker;
         this.update = function () {
             var promiseList = wrappedTrackers.map(function (wrappedTracker) {
-                return wrappedTracker.update();
+                return wrappedTracker.worker.update();
             });
             return Promise.all(promiseList).then(function (result) {
                 var save = result.some(function (result) {
