@@ -351,6 +351,17 @@ define(function () {
         if (!meta.version) {
             throw new Error("Version field is not found!");
         }
+
+        if (!meta.connect) {
+            throw new Error("Connect field is not found!");
+        }
+        meta.connect = meta.connect.filter(function (pattern) {
+            return !!pattern;
+        });
+        if (!meta.connect.length) {
+            throw new Error("Connect field is empty!");
+        }
+
         if (!/^[\d.]+$/.test(meta.version)) {
             throw new Error("Version field is not correct!");
         }
