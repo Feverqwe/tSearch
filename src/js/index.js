@@ -30,6 +30,7 @@ require([
             trackers: {},
             history: [],
             sortCells: [],
+            checkUpdateTime: 0,
 
             eSections: [],
             kinopoiskFolderId: 1,
@@ -727,7 +728,7 @@ require([
             manageProfile.addEventListener('click', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                var pm = new ProfileManager(storage.profiles, profileController, storage.trackers);
+                var pm = new ProfileManager(storage.profiles, profileController, storage.trackers, ee);
                 pm.onSave = function () {
                     ee.trigger('reloadProfiles');
                 };
@@ -812,6 +813,76 @@ require([
                 });
             }, 50);
         })(profileController);
+
+        (function () {
+            var now = parseInt(Date.now() / 1000);
+            if (now - storage.checkUpdateTime > 24 * 60 * 60) {
+                chrome.runtime.sendMessage({action: 'update'}, function (result) {
+                    console.debug('Update', result);
+                    result.success && chrome.storage.local.set({
+                        checkUpdateTime: storage.checkUpdateTime = now
+                    });
+                });
+            }
+
+            chrome.storage.onChanged.addListener(function(changes, areaName) {
+                var trackers = storage.trackers;
+                var key;
+                if (areaName === 'local') {
+                    var change = changes.trackers;
+                    if (change) {
+                        var oldTrackers = change.oldValue;
+                        var newTrackers = change.newValue;
+
+                        var removedIds = [];
+                        var modifiedIds = [];
+                        var newIds = [];
+                        for (key in oldTrackers) {
+                            if (!newTrackers[key]) {
+                                removedIds.push(key);
+                            } else
+                            if (JSON.stringify(oldTrackers[key]) !== JSON.stringify(newTrackers[key])) {
+                                modifiedIds.push(key);
+                            }
+                        }
+
+                        for (key in newTrackers) {
+                            if (!oldTrackers[key]) {
+                                newIds.push(key);
+                            }
+                        }
+
+                        removedIds.forEach(function (id) {
+                            delete trackers[id];
+                            console.debug('trackerRemoved', id);
+                            ee.trigger('trackerRemoved', [id]);
+                        });
+
+                        modifiedIds.forEach(function (id) {
+                            var changes = [];
+                            var oldTracker = trackers[id];
+                            var newTracker = newTrackers[id];
+                            for (var key in newTracker) {
+                                if (JSON.stringify(newTracker[key]) !== JSON.stringify(oldTracker[key])) {
+                                    changes.push(key);
+                                    oldTracker[key] = newTracker[key];
+                                }
+                            }
+                            if (changes.length) {
+                                console.debug('trackerChange', id, changes);
+                                ee.trigger('trackerChange', [id, oldTracker, changes]);
+                            }
+                        });
+
+                        newIds.forEach(function (id) {
+                            trackers[key] = newTrackers[id];
+                            console.debug('trackerInsert', id);
+                            ee.trigger('trackerInsert', [id, trackers[key]]);
+                        });
+                    }
+                }
+            });
+        })();
 
         pageController.applyUrl();
     });

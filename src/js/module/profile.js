@@ -320,8 +320,6 @@ define([
             });
 
             inHistory(query);
-
-            self.update();
         };
 
         var onSearchMore = function (cb) {
@@ -406,28 +404,7 @@ define([
         this.id = profile.id;
         this.name = profile.name;
         this.trackers = wrappedTrackers;
-        this.trackerIdTracker = trackerIdTracker;
 
-        var updateInProgress = false;
-        this.update = function () {
-            if (!updateInProgress) {
-                updateInProgress = true;
-                var promiseList = wrappedTrackers.map(function (wrappedTracker) {
-                    return wrappedTracker.worker.update();
-                });
-                Promise.all(promiseList).then(function (result) {
-                    updateInProgress = false;
-                    var save = result.some(function (result) {
-                        return result.success;
-                    });
-                    if (save) {
-                        chrome.storage.local.set({
-                            trackers: trackers
-                        });
-                    }
-                });
-            }
-        };
         this.reload = function () {
             self.destroy();
             load();

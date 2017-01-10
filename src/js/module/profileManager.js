@@ -6,7 +6,7 @@ define([
     './utils',
     './dom'
 ], function (utils, dom) {
-    var ProfileManager = function (profiles, profileController, trackers) {
+    var ProfileManager = function (profiles, profileController, trackers, ee) {
         var self = this;
         var layer = null;
 
@@ -413,66 +413,23 @@ define([
             return node;
         };
 
-        var onTrackersUpdate = null;
-
         var createLayer = function () {
             var layer = getLayer();
             layer.content.appendChild(getProfiles(profiles));
             return layer;
         };
 
-
-        var onStorageChange = function(changes, areaName) {
-            var key;
-            if (areaName === 'local') {
-                var change = changes.trackers;
-                if (change) {
-                    var oldTrackers = change.oldValue;
-                    var newTrackers = change.newValue;
-
-                    var removedIds = [];
-                    var modifiedIds = [];
-                    var newIds = [];
-                    for (key in oldTrackers) {
-                        if (!newTrackers[key]) {
-                            removedIds.push(key);
-                        } else
-                        if (JSON.stringify(oldTrackers[key]) !== JSON.stringify(newTrackers[key])) {
-                            modifiedIds.push(key);
-                        }
-                    }
-
-                    for (key in newTrackers) {
-                        if (!oldTrackers[key]) {
-                            newIds.push(key);
-                        }
-                    }
-
-                    removedIds.forEach(function (id) {
-                        delete trackers[id];
-                    });
-
-                    modifiedIds.forEach(function (id) {
-                        trackers[key] = newTrackers[id];
-                    });
-
-                    newIds.forEach(function (id) {
-                        trackers[key] = newTrackers[id];
-                    });
-
-                    if (removedIds.length || modifiedIds.length || newIds.length) {
-                        onTrackersUpdate && onTrackersUpdate(removedIds, modifiedIds, newIds);
-                    }
-                }
-            }
+        var onTrackersUpdate = null;
+        var onTrackersUpdateListener = function () {
+            onTrackersUpdate && onTrackersUpdate();
         };
 
-
         var close = function () {
-            onTrackersUpdate = null;
+            ee.off('trackerRemoved', onTrackersUpdateListener);
+            ee.off('trackerInsert', onTrackersUpdateListener);
+            ee.off('trackerChange', onTrackersUpdateListener);
             document.removeEventListener('click', closeEvent, true);
             layer.node.parentNode.removeChild(layer.node);
-            chrome.storage.onChanged.removeListener(onStorageChange);
         };
 
         this.onSave = function () {
@@ -489,7 +446,9 @@ define([
             layer = createLayer();
             document.body.appendChild(layer.node);
             document.addEventListener('click', closeEvent, true);
-            chrome.storage.onChanged.addListener(onStorageChange);
+            ee.on('trackerRemoved', onTrackersUpdateListener);
+            ee.on('trackerInsert', onTrackersUpdateListener);
+            ee.on('trackerChange', onTrackersUpdateListener);
         };
     };
     ProfileManager.prototype.getDefaultProfile = function (profileController) {

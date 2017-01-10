@@ -57,6 +57,10 @@ require([
             trackers: {}
         }, function (storage) {
             var trackers = storage.trackers;
+            var prevTracker = trackers[tracker.id];
+            if (prevTracker) {
+                tracker.info = prevTracker.info;
+            }
             trackers[tracker.id] = tracker;
             chrome.storage.local.set({
                 trackers: trackers
