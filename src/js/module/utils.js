@@ -447,8 +447,8 @@ define(function () {
             }
         }
 
-        for (key in newKeys) {
-            if (!newKeys.hasOwnProperty(key)) {
+        for (key in newObj) {
+            if (!newObj.hasOwnProperty(key)) {
                 continue;
             }
             if (!oldObj.hasOwnProperty(key)) {
