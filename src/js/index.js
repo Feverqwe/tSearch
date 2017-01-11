@@ -881,7 +881,7 @@ require([
                 var history = storage.history;
                 var changeHistory = changes.history;
                 if (changeHistory) {
-                    var newHistory = changeHistory.newValue;
+                    var newHistory = changeHistory.newValue || [];
                     history.splice(0);
                     history.push.apply(history, newHistory);
                 }
@@ -889,7 +889,7 @@ require([
                 var trackers = storage.trackers;
                 var changeTrackers = changes.trackers;
                 if (changeTrackers) {
-                    var newTrackers = changeTrackers.newValue;
+                    var newTrackers = changeTrackers.newValue || {};
                     var diff = utils.getDiffObj(trackers, newTrackers);
 
                     diff.removed.forEach(function (id) {
@@ -923,7 +923,7 @@ require([
                 var profiles = storage.profiles;
                 var changeProfiles = changes.profiles;
                 if (changeProfiles) {
-                    var newProfiles = changeProfiles.newValue;
+                    var newProfiles = changeProfiles.newValue || [];
 
                     var oldProfileIds = profiles.map(function (item) {
                         return item.id;
