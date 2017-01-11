@@ -430,5 +430,37 @@ define(function () {
 
         return pattern.join('');
     };
+    utils.getDiff = function (oldObj, newObj) {
+        var removedKeys = [];
+        var modifiedKeys = [];
+        var newKeys = [];
+
+        for (var key in oldObj) {
+            if (!oldObj.hasOwnProperty(key)) {
+                continue;
+            }
+            if (!newObj.hasOwnProperty(key)) {
+                removedKeys.push(key);
+            } else
+            if (JSON.stringify(oldObj[key]) !== JSON.stringify(newObj[key])) {
+                modifiedKeys.push(key);
+            }
+        }
+
+        for (key in newKeys) {
+            if (!newKeys.hasOwnProperty(key)) {
+                continue;
+            }
+            if (!oldObj.hasOwnProperty(key)) {
+                newKeys.push(key);
+            }
+        }
+        
+        return {
+            removed: removedKeys,
+            modified: modifiedKeys,
+            new: newKeys
+        };
+    };
     return utils;
 });

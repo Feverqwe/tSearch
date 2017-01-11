@@ -841,48 +841,30 @@ require([
                     if (changeTrackers) {
                         var oldTrackers = changeTrackers.oldValue;
                         var newTrackers = changeTrackers.newValue;
+                        var diff = utils.getDiff(oldTrackers, newTrackers);
 
-                        var removedIds = [];
-                        var modifiedIds = [];
-                        var newIds = [];
-                        for (key in oldTrackers) {
-                            if (!newTrackers[key]) {
-                                removedIds.push(key);
-                            } else
-                            if (JSON.stringify(oldTrackers[key]) !== JSON.stringify(newTrackers[key])) {
-                                modifiedIds.push(key);
-                            }
-                        }
-
-                        for (key in newTrackers) {
-                            if (!oldTrackers[key]) {
-                                newIds.push(key);
-                            }
-                        }
-
-                        removedIds.forEach(function (id) {
+                        diff.removed.forEach(function (id) {
                             delete trackers[id];
                             // console.debug('trackerRemoved', id);
                             ee.trigger('trackerRemoved', [id]);
                         });
 
-                        modifiedIds.forEach(function (id) {
-                            var changes = [];
+                        diff.modified.forEach(function (id) {
                             var oldTracker = trackers[id];
                             var newTracker = newTrackers[id];
-                            for (var key in newTracker) {
-                                if (JSON.stringify(newTracker[key]) !== JSON.stringify(oldTracker[key])) {
-                                    changes.push(key);
-                                    oldTracker[key] = newTracker[key];
-                                }
-                            }
-                            if (changes.length) {
-                                // console.debug('trackerChange', id, changes);
-                                ee.trigger('trackerChange', [id, oldTracker, changes]);
+                            var diff = utils.getDiff(oldTracker, newTracker);
+
+                            diff.modified.forEach(function (key) {
+                                oldTracker[key] = newTracker[key];
+                            });
+
+                            if (diff.modified.length) {
+                                // console.debug('trackerChange', id, diff.modified);
+                                ee.trigger('trackerChange', [id, oldTracker, diff.modified]);
                             }
                         });
 
-                        newIds.forEach(function (id) {
+                        diff.new.forEach(function (id) {
                             trackers[id] = newTrackers[id];
                             // console.debug('trackerInsert', id);
                             ee.trigger('trackerInsert', [id, trackers[id]]);
