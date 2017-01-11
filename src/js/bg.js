@@ -6,7 +6,7 @@ require.config({
     baseUrl: './js'
 });
 require([
-    './lib/promise.min',
+    'promise',
     './module/utils'
 ], function (Promise, utils) {
     var changeIcon = function (storage, reset) {

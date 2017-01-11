@@ -3,10 +3,13 @@
  */
 "use strict";
 require.config({
-    baseUrl: './js'
+    baseUrl: './js',
+    paths: {
+        promise: './lib/promise.min'
+    }
 });
 require([
-    './lib/promise.min',
+    'promise',
     './module/i18nDom',
     './module/dom',
     './module/utils',

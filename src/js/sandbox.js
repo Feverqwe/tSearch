@@ -5,13 +5,14 @@
 require.config({
     baseUrl: './js',
     paths: {
+        promise: './lib/promise.min',
         jquery: './lib/jquery-3.1.1.min',
         moment: './lib/moment-with-locales.min',
         exKit: './module/exKit'
     }
 });
 require([
-    './lib/promise.min',
+    'promise',
     './module/transport'
 ], function (Promise, Transport) {
     (function (runCode) {

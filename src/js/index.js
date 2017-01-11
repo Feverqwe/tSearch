@@ -7,22 +7,24 @@ require.config({
     paths: {
         jquery: './lib/jquery-3.1.1.min',
         jqueryUi: './lib/jquery-ui.min',
-        moment: './lib/moment-with-locales.min'
+        moment: './lib/moment-with-locales.min',
+        promise: './lib/promise.min',
+        EventEmitter: './lib/EventEmitter.min'
     }
 });
 require([
-    './lib/promise.min',
+    'promise',
+    'EventEmitter',
     './module/i18nDom',
     './module/utils',
     './module/dom',
     './module/selectBox',
-    './lib/EventEmitter.min',
     './module/profileManager',
     './module/resultFilter',
     './module/profileController',
     './module/pageController',
     './module/explore'
-], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, ResultFilter, ProfileController, PageController, Explore) {
+], function (Promise, EventEmitter, i18nDom, utils, dom, selectBox, ProfileManager, ResultFilter, ProfileController, PageController, Explore) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({

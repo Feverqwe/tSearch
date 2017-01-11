@@ -3,7 +3,7 @@
  */
 "use strict";
 define([
-    '../lib/promise.min',
+    'promise',
     './dom',
     './tracker',
     './table'
