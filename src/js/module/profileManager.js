@@ -517,10 +517,18 @@ define([
         };
     };
     ProfileManager.prototype.getDefaultProfile = function (profileController) {
+        var trackers = null;
+        if (/^ru-?/.test(chrome.i18n.getUILanguage())) {
+            trackers = ['nnmclub', 'rutracker', 'kinozal', 'rutor', 'hdclub', 'tfile', 'opentorrent'];
+        } else {
+            trackers = ['bitsnoop', 'extratorrent', 'thepiratebay'];
+        }
         return {
             name: chrome.i18n.getMessage('defaultProfileName'),
             id: profileController.getProfileId(),
-            trackers: []
+            trackers: trackers.map(function (name) {
+                return {id: name};
+            })
         }
     };
     return ProfileManager;

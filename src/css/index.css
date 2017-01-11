@@ -473,7 +473,7 @@ a.tracker {
 
 .tracker__icon.tracker__icon-error {
     background: url(../img/ghost.svg) no-repeat center !important;
-    background-size: 18px !important;
+    background-size: 16px !important;
     opacity: 0.8;
 }
 

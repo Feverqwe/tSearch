@@ -134,6 +134,7 @@ require([
                     meta = utils.parseMeta(code);
                 } catch (e) {
                     alert("Parse meta error!\n" + e.message);
+                    onReady();
                     throw e;
                 }
 
@@ -261,6 +262,14 @@ require([
                 return code.join('\n');
             };
 
+            var getEmptyTracker = function () {
+                return {
+                    meta: {},
+                    info: {},
+                    code: getNewTrackerCode()
+                };
+            };
+
             ee.on('editTracker', function (id) {
                 if (trackerEditor && trackerEditor.id === id) {
                     return;
@@ -272,8 +281,9 @@ require([
 
                 var tracker = storage.trackers[id];
                 if (!tracker) {
+                    tracker = getEmptyTracker();
+                    tracker.id = id;
                     alert('Tracker id not exists!');
-                    return pageController.clear().go();
                 }
 
                 trackerEditor = new TrackerEditor(tracker);
@@ -284,11 +294,7 @@ require([
                     trackerEditor.destroy();
                 }
 
-                var tracker = {
-                    meta: {},
-                    info: {},
-                    code: getNewTrackerCode()
-                };
+                var tracker = getEmptyTracker();
                 trackerEditor = new TrackerEditor(tracker);
             });
         })();
