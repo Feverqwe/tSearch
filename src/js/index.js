@@ -963,7 +963,7 @@ require([
                     });
 
                     profiles.forEach(function (profile, index) {
-                        var newProfile = newProfiles[index];
+                        var newProfile = newProfiles[index] || {};
                         var diff = utils.getDiffObj(profile, newProfile);
                         diff.modified.forEach(function (key) {
                             profile[key] = newProfile[key];
