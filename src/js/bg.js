@@ -240,7 +240,9 @@ require([
             load(true);
         }
         if (message.action === 'update') {
-            update(message).then(response);
+            update(message).catch(function (err) {
+                console.error('Update error!', err);
+            }).then(response);
             return true;
         }
     });

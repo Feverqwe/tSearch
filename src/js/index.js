@@ -863,14 +863,10 @@ require([
         (function () {
             var now = parseInt(Date.now() / 1000);
             if (now - storage.checkUpdateTime > 24 * 60 * 60) {
-                chrome.storage.local.set({
-                    checkUpdateTime: now - 24 * 60 * 60 / 4
-                }, function () {
-                    chrome.runtime.sendMessage({action: 'update'}, function (result) {
-                        // console.debug('Update', result);
-                        result.success && chrome.storage.local.set({
-                            checkUpdateTime: storage.checkUpdateTime = now
-                        });
+                chrome.runtime.sendMessage({action: 'update'}, function (result) {
+                    // console.debug('Update', result);
+                    result && result.success && chrome.storage.local.set({
+                        checkUpdateTime: storage.checkUpdateTime = now
                     });
                 });
             }
