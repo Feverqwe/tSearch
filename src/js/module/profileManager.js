@@ -185,8 +185,8 @@ define([
                 ]
             });
 
-            require(['./lib/jquery-3.1.1.min'], function () {
-                require(['./lib/jquery-ui.min'], function () {
+            require(['jquery'], function () {
+                require(['jqueryUi'], function () {
                     var $profilesNode = $(profilesNode);
                     $profilesNode.sortable({
                         axis: 'y',
@@ -462,8 +462,8 @@ define([
                 ]
             });
 
-            require(['./lib/jquery-3.1.1.min'], function () {
-                require(['./lib/jquery-ui.min'], function () {
+            require(['jquery'], function () {
+                require(['jqueryUi'], function () {
                     var $trackersNode = $(trackersNode);
                     $trackersNode.sortable({
                         axis: 'y',

@@ -3,7 +3,11 @@
  */
 "use strict";
 require.config({
-    baseUrl: './js'
+    baseUrl: './js',
+    paths: {
+        jquery: './lib/jquery-3.1.1.min',
+        jqueryUi: './lib/jquery-ui.min'
+    }
 });
 require([
     './lib/promise.min',
@@ -271,8 +275,8 @@ require([
             };
 
             setTimeout(function () {
-                require(['./lib/jquery-3.1.1.min'], function () {
-                    require(['./lib/jquery-ui.min'], function () {
+                require(['jquery'], function () {
+                    require(['jqueryUi'], function () {
                         initAutoComplete(searchInput, searchSubmit);
                     });
                 });
@@ -591,8 +595,8 @@ require([
                 };
 
                 setTimeout(function () {
-                    require(['./lib/jquery-3.1.1.min'], function () {
-                        require(['./lib/jquery-ui.min'], function () {
+                    require(['jquery'], function () {
+                        require(['jqueryUi'], function () {
                             initDataPicker(inputFrom, inputTo);
                         });
                     });
@@ -815,8 +819,8 @@ require([
             };
 
             setTimeout(function () {
-                require(['./lib/jquery-3.1.1.min'], function () {
-                    require(['./lib/jquery-ui.min'], function () {
+                require(['jquery'], function () {
+                    require(['jqueryUi'], function () {
                         initResizable();
                     });
                 });

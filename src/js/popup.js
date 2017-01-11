@@ -187,8 +187,8 @@ require([
     };
 
     setTimeout(function () {
-        require(['./lib/jquery-3.1.1.min'], function () {
-            require(['./lib/jquery-ui.min'], function () {
+        require(['jquery'], function () {
+            require(['jqueryUi'], function () {
                 initAutoComplete(input, submit);
             });
         });
