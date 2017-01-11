@@ -26,14 +26,16 @@ body {
     height: 46px;
     align-items: center;
     justify-content: space-between;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+    padding: 0 10px;
 }
 
 .editor__head .head__action {
-    margin-right: 10px;
+    margin-left: 10px;
 }
 
 .editor__body {
-    height: calc(100% - 46px);
+    height: calc(100% - 47px);
 }
 
 .CodeMirror {
