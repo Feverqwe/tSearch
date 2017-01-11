@@ -242,8 +242,9 @@ require([
                                         try {
                                             var trackerObj = JSON.parse(values.code);
                                             code = getTrackerCode(trackerObj);
-                                        } catch (e) {
-                                            alert('Error!\n' + e.message);
+                                        } catch (err) {
+                                            alert('Error!\n' + err.message);
+                                            throw err;
                                         }
 
                                         trackerEditor.setCode(code);
