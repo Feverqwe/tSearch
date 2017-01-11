@@ -361,7 +361,7 @@ define([
                 cb && cb();
                 cb = null;
             };
-            var table = null;
+            var tablePromise = null;
             Object.keys(moreEvents).forEach(function (trackerId) {
                 var moreEvent = moreEvents[trackerId];
                 delete moreEvents[trackerId];
@@ -381,13 +381,10 @@ define([
 
                         if (response.success) {
                             tracker.status('success');
-                            var promise = Promise.resolve();
-                            if (!table) {
-                                promise = promise.then(function () {
-                                    return createTable();
-                                });
+                            if (!tablePromise) {
+                                tablePromise = createTable();
                             }
-                            promise.then(function (table) {
+                            tablePromise.then(function (table) {
                                 table.insertResults(tracker, query, response.results);
                                 if (response.nextPageRequest) {
                                     setMoreEvent(tracker.id, query, response, table);
