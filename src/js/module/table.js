@@ -6,8 +6,9 @@ define([
     'promise',
     './dom',
     '../lib/filesize.min',
-    './highlight'
-], function (Promise, dom, filesize, highlight) {
+    './highlight',
+    './rate'
+], function (Promise, dom, filesize, highlight, rate) {
     var moment = null;
     var unixTimeToString = function (unixtime) {
         return moment(unixtime * 1000).format('lll');
@@ -65,6 +66,19 @@ define([
             return function (/*tableRow*/a, /*tableRow*/b) {
                 var _a = a.torrent.date;
                 var _b = b.torrent.date;
+                return _a === _b ? 0 : _a > _b ? moveUp : moveDown;
+            };
+        },
+        quality: function (direction) {
+            var moveUp = -1;
+            var moveDown = 1;
+            if (direction > 0) {
+                moveUp = 1;
+                moveDown = -1;
+            }
+            return function (/*tableRow*/a, /*tableRow*/b) {
+                var _a = a.torrent.quality;
+                var _b = b.torrent.quality;
                 return _a === _b ? 0 : _a > _b ? moveUp : moveDown;
             };
         },
@@ -180,7 +194,7 @@ define([
 
     var Table = function (resultFilter, storage) {
         var self = this;
-        var cells = ['date', 'title', 'size', 'seed', 'peer'];
+        var cells = ['date', 'quality', 'title', 'size', 'seed', 'peer'];
         if (storage.hidePeerRow) {
             cells.splice(cells.indexOf('peer'), 1);
         }
@@ -247,6 +261,9 @@ define([
             });
 
             cells.forEach(function (type) {
+                var name = chrome.i18n.getMessage('row_' + type);
+                var nameShort = chrome.i18n.getMessage('row_' + type + '__short') || name;
+
                 var node = dom.el('a', {
                     class: ['cell', 'row__cell', 'cell-' + type],
                     href: '#cell-' + type,
@@ -256,7 +273,8 @@ define([
                     append: [
                         dom.el('span', {
                             class: ['cell__title'],
-                            text: chrome.i18n.getMessage('row_' + type)
+                            title: name,
+                            text: nameShort
                         }),
                         dom.el('i', {
                             class: ['cell__sort']
@@ -363,6 +381,7 @@ define([
          * @property {number} [peer]
          * @property {number} [date]
          *
+         * @property {number} quality
          * @property {string} trackerId
          * @property {string} titleLow
          * @property {string} categoryTitleLow
@@ -381,6 +400,12 @@ define([
                         class: ['cell', 'row__cell', 'cell-' + type],
                         title: unixTimeToString(torrent.date),
                         text: unixTimeToFromNow(torrent.date)
+                    }))
+                } else
+                if (type === 'quality') {
+                    row.appendChild(dom.el('div', {
+                        class: ['cell', 'row__cell', 'cell-' + type],
+                        text: torrent.quality
                     }))
                 } else
                 if (type === 'title') {
@@ -541,6 +566,7 @@ define([
             }
 
             var highlightMap = highlight.getMap(query);
+            var rateScheme = rate.getScheme(query);
 
             results.forEach(function (torrent) {
                 /**
@@ -554,6 +580,7 @@ define([
                 var skip = normalizeTorrent(tracker.id, torrent);
                 if (!skip) {
                     var filterValue = resultFilter.getFilterValue(torrent);
+                    torrent.quality = rate.getRate(torrent, rateScheme);
                     var node = getBodyRow(tracker, torrent, filterValue, tableRows.length, highlightMap);
                     tableRows.push({
                         node: node,

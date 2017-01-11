@@ -5,34 +5,6 @@
 define([
     './utils'
 ], function (utils) {
-    var isPunctuation = function (char) {
-        if (char === undefined) {
-            return true;
-        }
-        var code = char.charCodeAt(0);
-        if (code > 31 && code < 48) {
-            return true;
-        }
-        if (code > 126 || code < 31) {
-            return false;
-        }
-        if (code > 57 && code < 65) {
-            return true;
-        }
-        if (code > 90 && code < 97) {
-            return true;
-        }
-        if (code > 122 && code < 127) {
-            return true;
-        }
-        if ([171, 174, 169, 187, 8222, 8221, 8220].indexOf(code) !== -1) {
-            return true;
-        }
-        return false;
-    };
-    var isBoundary = function(leftChar, rightChar) {
-        return isPunctuation(leftChar) && isPunctuation(rightChar);
-    };
     var highlight = {
         getMap: function (query) {
             var words = query.split(/\s+/);
@@ -53,7 +25,7 @@ define([
             var wordLen;
             string.replace(map, function (word, pos) {
                 wordLen = word.length;
-                if (wordLen && isBoundary(string[pos - 1], string[pos + wordLen])) {
+                if (wordLen && utils.isBoundary(string[pos - 1], string[pos + wordLen])) {
                     posMap.push(['b', pos]);
                     posMap.push(['b', pos + wordLen, true]);
                 }

@@ -36,7 +36,7 @@ require([
             profiles: [],
             trackers: {},
             history: [],
-            sortCells: [],
+            sortCells: [['quality', -1]],
             checkUpdateTime: 0,
 
             eSections: [],

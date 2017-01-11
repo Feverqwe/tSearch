@@ -465,5 +465,51 @@ define(function () {
     utils.clone = function (obj) {
         return JSON.parse(JSON.stringify({w:obj})).w;
     };
+    utils.isPunctuation = function (char) {
+        if (char === undefined) {
+            return true;
+        }
+        var code = char.charCodeAt(0);
+        if (code > 31 && code < 48) {
+            return true;
+        }
+        if (code > 126 || code < 31) {
+            return false;
+        }
+        if (code > 57 && code < 65) {
+            return true;
+        }
+        if (code > 90 && code < 97) {
+            return true;
+        }
+        if (code > 122 && code < 127) {
+            return true;
+        }
+        if ([171, 174, 169, 187, 8222, 8221, 8220].indexOf(code) !== -1) {
+            return true;
+        }
+        return false;
+    };
+    utils.isBoundary = function(leftChar, rightChar) {
+        return utils.isPunctuation(leftChar) && utils.isPunctuation(rightChar);
+    };
+    utils.extend = function() {
+        var obj = arguments[0];
+        for (var i = 1, len = arguments.length; i < len; i++) {
+            var item = arguments[i];
+            for (var key in item) {
+                if (item[key] !== undefined) {
+                    obj[key] = item[key];
+                }
+            }
+        }
+        return obj;
+    };
+    utils.isEmptyObject = function(obj) {
+        for (var item in obj) {
+            return false;
+        }
+        return true;
+    };
     return utils;
 });

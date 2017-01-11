@@ -113,6 +113,12 @@
   "row_date": {
     "message": "Добавлено"
   },
+  "row_quality": {
+    "message": "Качество"
+  },
+  "row_quality__short": {
+    "message": "К"
+  },
   "row_title": {
     "message": "Название"
   },
@@ -120,9 +126,15 @@
     "message": "Размер"
   },
   "row_seed": {
+    "message": "Сиды (раздающие)"
+  },
+  "row_seed__short": {
     "message": "С"
   },
   "row_peer": {
+    "message": "Сиды (скачивающие)"
+  },
+  "row_peer__short": {
     "message": "П"
   },
   "loadMore": {
