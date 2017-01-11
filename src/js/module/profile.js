@@ -13,93 +13,106 @@ define([
     var Profile = function (profile, resultFilter, setTrackerList, ee, storage) {
         var self = this;
         var trackers = storage.trackers;
+        var multiSelect = false;
         var trackerIdTracker = {};
         var wrappedTrackers = [];
         var tables = [];
         var moreEvents = {};
 
-        var multiSelect = false;
         var selectedTracker = null;
-
         var selectedTrackerIds = [];
 
-        var load = function () {
-            var trackerSelect = function (state, noUpdate) {
-                if (state === undefined) {
-                    state = !this.selected;
+        var trackerSelect = function (state, noUpdate) {
+            if (state === undefined) {
+                state = !this.selected;
+            } else {
+                state = !!state;
+            }
+
+            if (this.selected !== state) {
+                this.selected = state;
+
+                if (!multiSelect && state) {
+                    if (selectedTracker && selectedTracker !== this) {
+                        selectedTracker.select(false, true);
+                    }
+                    selectedTracker = this;
+                }
+
+                var pos = selectedTrackerIds.indexOf(this.id);
+                if (state) {
+                    this.node.classList.add('tracker-selected');
+                    resultFilter.addTracker(this.id);
+                    if (pos === -1) {
+                        selectedTrackerIds.push(this.id);
+                    }
                 } else {
-                    state = !!state;
+                    this.node.classList.remove('tracker-selected');
+                    resultFilter.removeTracker(this.id);
+                    if (pos !== -1) {
+                        selectedTrackerIds.splice(pos, 1);
+                    }
                 }
 
-                if (this.selected !== state) {
-                    this.selected = state;
+                !noUpdate && resultFilter.update();
+            }
+        };
 
-                    if (!multiSelect && state) {
-                        if (selectedTracker && selectedTracker !== this) {
-                            selectedTracker.select(false, true);
-                        }
-                        selectedTracker = this;
-                    }
+        var trackerCount = function (count) {
+            this.countNode.textContent = count;
+        };
 
-                    var pos = selectedTrackerIds.indexOf(this.id);
-                    if (state) {
-                        this.node.classList.add('tracker-selected');
-                        resultFilter.addTracker(this.id);
-                        if (pos === -1) {
-                            selectedTrackerIds.push(this.id);
-                        }
-                    } else {
-                        this.node.classList.remove('tracker-selected');
-                        resultFilter.removeTracker(this.id);
-                        if (pos !== -1) {
-                            selectedTrackerIds.splice(pos, 1);
-                        }
-                    }
+        var trackerStatus = function (status, message) {
+            this.iconNode.classList.remove('tracker__icon-loading');
+            this.iconNode.classList.remove('tracker__icon-error');
+            this.iconNode.title = '';
 
-                    !noUpdate && resultFilter.update();
+            if (status === 'error') {
+                this.iconNode.title = message;
+                this.iconNode.classList.add('tracker__icon-error');
+            } else
+            if (status === 'search') {
+                this.iconNode.classList.add('tracker__icon-loading');
+            } else
+            if (status === 'success') {
+            }
+        };
+
+        var trackerAuth = function (response) {
+            var _this = this;
+            var url = response.url;
+            var authNode = dom.el('a', {
+                class: ['tracker__login'],
+                target: '_blank',
+                href: url,
+                title: chrome.i18n.getMessage('login'),
+                on: ['click', function (e) {
+                    e.stopPropagation();
+                }]
+            });
+            _this.countNode.classList.add('counter-hidden');
+            _this.node.insertBefore(authNode, _this.countNode);
+            _this.auth = {
+                node: authNode,
+                destroy: function () {
+                    _this.countNode.classList.remove('counter-hidden');
+                    authNode.parentNode.removeChild(authNode);
+                    _this.auth = null;
                 }
             };
-            var trackerCount = function (count) {
-                this.countNode.textContent = count;
-            };
-            var trackerStatus = function (status, message) {
-                this.iconNode.classList.remove('tracker__icon-loading');
-                this.iconNode.classList.remove('tracker__icon-error');
-                this.iconNode.title = '';
+        };
 
-                if (status === 'error') {
-                    this.iconNode.title = message;
-                    this.iconNode.classList.add('tracker__icon-error');
-                } else
-                if (status === 'search') {
-                    this.iconNode.classList.add('tracker__icon-loading');
-                } else
-                if (status === 'success') {
-                }
-            };
-            var trackerAuth = function (response) {
-                var _this = this;
-                var url = response.url;
-                var authNode = dom.el('a', {
-                    class: ['tracker__login'],
-                    target: '_blank',
-                    href: url,
-                    title: chrome.i18n.getMessage('login'),
-                    on: ['click', function (e) {
-                        e.stopPropagation();
-                    }]
-                });
-                _this.countNode.classList.add('counter-hidden');
-                _this.node.insertBefore(authNode, _this.countNode);
-                _this.auth = {
-                    node: authNode,
-                    destroy: function () {
-                        _this.countNode.classList.remove('counter-hidden');
-                        authNode.parentNode.removeChild(authNode);
-                        _this.auth = null;
-                    }
-                };
-            };
+        var load = function () {
+            ee.on('profileFieldChange', onProfileFieldChange);
+            ee.on('reloadProfile', onReload);
+            ee.on('selectTracker', onSelectTracker);
+            ee.on('filterChange', onFilterChange);
+            ee.on('search', onSearch);
+            ee.on('stateReset', onStateReset);
+
+            self.id = profile.id;
+            self.name = profile.name;
+
             var trackersNode = document.createDocumentFragment();
             profile.trackers.forEach(function (/**profileTracker*/item) {
                 var worker = null;
@@ -421,15 +434,6 @@ define([
             }
         };
 
-        ee.on('profileFieldChange', onProfileFieldChange);
-        ee.on('reloadProfile', onReload);
-        ee.on('selectTracker', onSelectTracker);
-        ee.on('filterChange', onFilterChange);
-        ee.on('search', onSearch);
-        ee.on('stateReset', onStateReset);
-
-        this.id = profile.id;
-        this.name = profile.name;
         this.trackers = wrappedTrackers;
 
         this.reload = function () {
@@ -446,6 +450,9 @@ define([
             ee.off('search', onSearch);
 
             destroyTables();
+
+            selectedTracker = null;
+            selectedTrackerIds.splice(0);
 
             for (var key in moreEvents) {
                 delete moreEvents[key];
