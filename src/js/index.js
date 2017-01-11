@@ -13,11 +13,11 @@ require([
     './module/selectBox',
     './lib/EventEmitter.min',
     './module/profileManager',
-    './module/filter',
+    './module/resultFilter',
     './module/profileController',
     './module/pageController',
     './module/explore'
-], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, Filter, ProfileController, PageController, Explore) {
+], function (Promise, i18nDom, utils, dom, selectBox, EventEmitter, ProfileManager, ResultFilter, ProfileController, PageController, Explore) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -313,7 +313,7 @@ require([
             });
         })();
 
-        var resultFilter = new Filter(ee);
+        var resultFilter = new ResultFilter(ee);
 
         (function (resultFilter) {
             var inputBoxTimeFilterVisible = false;

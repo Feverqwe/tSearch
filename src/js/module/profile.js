@@ -457,6 +457,7 @@ define([
             for (var key in trackerIdTracker) {
                 delete trackerIdTracker[key];
             }
+
             resultFilter.clearTrackerFilter();
         };
         load();

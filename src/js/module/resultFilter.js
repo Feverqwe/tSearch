@@ -75,7 +75,7 @@ define([
         }
     };
 
-   var Filter = function (ee) {
+   var ResultFilter = function (ee) {
        var self = this;
        var styleNode = dom.el('style', {
            class: ['style_filter'],
@@ -111,14 +111,12 @@ define([
                filters.splice(pos, 1);
            }
        };
-
        this.add = function (filter) {
            var pos = filters.indexOf(filter);
            if (pos === -1) {
                filters.push(filter);
            }
        };
-
        this.addTracker = function (id) {
            var trackerIds = trackerFilter.trackerIds;
            var pos = trackerIds.indexOf(id);
@@ -129,7 +127,6 @@ define([
                self.add(trackerFilter);
            }
        };
-
        this.removeTracker = function (id) {
            var trackerIds = trackerFilter.trackerIds;
            var pos = trackerIds.indexOf(id);
@@ -140,19 +137,16 @@ define([
                self.remove(trackerFilter);
            }
        };
-
        this.clearTrackerFilter = function () {
            var trackerIds = trackerFilter.trackerIds;
            trackerIds.splice(0);
            self.remove(trackerFilter);
        };
-
        this.isFilteredTracker = function (id) {
            return filterTypeMap.tracker(trackerFilter, {
                trackerId: id
            });
        };
-
        this.update = function () {
            var stringFilters = stringifyFilter();
            if (stringFilters !== activeFilters) {
@@ -169,12 +163,11 @@ define([
                styleNode.textContent = style.join('');
            }
        };
-
        this.getFilterValue = function (/**torrent*/torrent) {
            return filters.every(function (filter) {
                return filterTypeMap[filter.type](filter, torrent);
            });
        }
    };
-   return Filter;
+   return ResultFilter;
 });
