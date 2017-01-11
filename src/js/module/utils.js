@@ -534,27 +534,28 @@ define(function () {
     };
     utils.trackerObjToUserScript = function (trackerObj) {
         var code = [];
-        code.unshift('==UserScript==');
-        code.push(['@name', trackerObj.title].join(' '));
+        var meta = [];
+        meta.unshift('==UserScript==');
+        meta.push(['@name', trackerObj.title].join(' '));
         if (trackerObj.desc) {
-            code.push(['@description', trackerObj.desc].join(' '));
+            meta.push(['@description', trackerObj.desc].join(' '));
         }
         if (trackerObj.icon) {
-            code.push(['@icon', trackerObj.icon].join(' '));
+            meta.push(['@icon', trackerObj.icon].join(' '));
         }
         var hostname = /\/\/([^\/]+)/.exec(trackerObj.search.searchUrl);
         if (hostname) {
-            code.push(['@connect', '*://'+hostname[1]+'/*'].join(' '));
+            meta.push(['@connect', '*://'+hostname[1]+'/*'].join(' '));
         }
         if (trackerObj.search.baseUrl) {
-            code.push(['@trackerURL', trackerObj.search.baseUrl].join(' '));
+            meta.push(['@trackerURL', trackerObj.search.baseUrl].join(' '));
         }
-        code.push(['@version', '1.0'].join(' '));
-        code.push(['@require', 'exKit'].join(' '));
-        code.push('==/UserScript==');
-        code = code.map(function (line) {
+        meta.push(['@version', '1.0'].join(' '));
+        meta.push(['@require', 'exKit'].join(' '));
+        meta.push('==/UserScript==');
+        code.push(meta.map(function (line) {
             return ['//', line].join(' ');
-        });
+        }));
         code.push('');
         code.push('var code = ' + JSON.stringify(trackerObj, null, 2) + ';');
         code.push('');
