@@ -828,7 +828,6 @@ require([
             chrome.storage.onChanged.addListener(function(changes, areaName) {
                 var history = storage.history;
                 var trackers = storage.trackers;
-                var key;
                 if (areaName === 'local') {
                     var changeHistory = changes.history;
                     if (changeHistory) {

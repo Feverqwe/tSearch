@@ -455,7 +455,7 @@ define(function () {
                 newKeys.push(key);
             }
         }
-        
+
         return {
             removed: removedKeys,
             modified: modifiedKeys,
