@@ -10,8 +10,9 @@ require([
     './module/i18nDom',
     './module/utils',
     './module/dom',
-    './module/explore'
-], function (Promise, i18nDom, utils, dom, Explore) {
+    './module/explore',
+    './lib/jszip.min'
+], function (Promise, i18nDom, utils, dom, Explore, JSZip) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -28,37 +29,6 @@ require([
         }, resolve);
     }).then(function (storage) {
         document.body.classList.remove('loading');
-
-        (function () {
-            var activePage = null;
-            var options = document.querySelector('.options');
-            var activeItem = null;
-
-            var sections = document.querySelector('.sections');
-            sections.addEventListener('click', function(e) {
-                var link = dom.closest('a', e.target);
-                if (link) {
-                    activePage && activePage.classList.remove('page-visible');
-                    activeItem.classList.remove('item-active');
-                    activeItem = link;
-                    link.classList.add('item-active');
-
-                    var type = link.dataset.page;
-                    var page = document.querySelector('.page.page-' + type);
-                    page.classList.add('page-visible');
-                    activePage = page;
-                }
-            });
-
-            activeItem = document.querySelector('.sections a[href="' + location.hash + '"]');
-            if (!activeItem) {
-                activeItem = document.querySelector('.sections a[href="#basic"]');
-            }
-            activeItem.dispatchEvent(new MouseEvent('click', {
-                cancelable: true,
-                bubbles: true
-            }));
-        })();
 
         (function () {
             var bgReload = function () {
@@ -130,6 +100,111 @@ require([
                     ]
                 }))
             })
+        })();
+
+        (function () {
+            var exportZip = document.querySelector('.backup__export-zip');
+            var importZip = document.querySelector('.backup__import-zip');
+
+            exportZip.addEventListener('click', function (e) {
+                e.preventDefault();
+                var _this = this;
+                var defText = _this.textContent;
+                _this.textContent = '...';
+                var downloadBlob = function (blob) {
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'tmsBackup.zip';
+                    a.click();
+                    setTimeout(function () {
+                        URL.revokeObjectURL(url);
+                    });
+                    _this.textContent = defText;
+                };
+                chrome.storage.local.get(null, function (storage) {
+                    var zip = new JSZip();
+                    for (var key in storage) {
+                        zip.file(key + '.json', JSON.stringify(storage[key]));
+                    }
+                    zip.generateAsync({type:"blob"}).then(function(blob) {
+                        downloadBlob(blob);
+                    });
+                });
+            });
+
+            importZip.addEventListener('click', function (e) {
+                e.preventDefault();
+                var _this = this;
+                var defText = _this.textContent;
+                _this.textContent = '...';
+                var input = dom.el('input', {
+                    style: {
+                        display: 'none'
+                    },
+                    type: 'file',
+                    on: ['change', function (e) {
+                        var file = e.target.files[0];
+                        JSZip.loadAsync(file).then(function(zip) {
+                            var storage = {};
+                            var promiseList = [];
+                            zip.forEach(function (relativePath, zipEntry) {
+                                var key = /(.+)\.json/i.exec(zipEntry.name);
+                                if (key) {
+                                    var promise = zip.file(relativePath).async("string").then(function (value) {
+                                        try {
+                                            storage[key] = JSON.parse(value);
+                                        } catch (err) {
+                                            console.error('Read file error!', relativePath, err);
+                                        }
+                                    });
+                                    promiseList.push(promise);
+                                }
+                            });
+                            Promise.all(promiseList).then(function () {
+                                chrome.storage.local.set(storage);
+                                _this.textContent = defText;
+                            });
+                        }, function (e) {
+                            _this.textContent = defText;
+                            console.error('Read file error', e);
+                            alert('Read file error! ' + e.message);
+                        });
+                    }]
+                });
+                input.click();
+            });
+        })();
+
+        (function () {
+            var activePage = null;
+            var options = document.querySelector('.options');
+            var activeItem = null;
+
+            var sections = document.querySelector('.sections');
+            sections.addEventListener('click', function(e) {
+                var link = dom.closest('a', e.target);
+                if (link) {
+                    activePage && activePage.classList.remove('page-visible');
+                    activeItem.classList.remove('item-active');
+                    activeItem = link;
+                    link.classList.add('item-active');
+
+                    var type = link.dataset.page;
+                    var page = document.querySelector('.page.page-' + type);
+                    page.classList.add('page-visible');
+                    activePage = page;
+                }
+            });
+
+            activeItem = document.querySelector('.sections a[href="' + location.hash + '"]');
+            if (!activeItem) {
+                activeItem = document.querySelector('.sections a[href="#basic"]');
+            }
+            activeItem.dispatchEvent(new MouseEvent('click', {
+                cancelable: true,
+                bubbles: true
+            }));
         })();
     });
 });

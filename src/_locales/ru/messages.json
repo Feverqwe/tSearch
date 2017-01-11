@@ -98,8 +98,11 @@
   "update": {
     "message": "Обновить"
   },
-  "saveInCloud": {
-    "message": "Сохранить в облаке"
+  "exportZip": {
+    "message": "Экспорт в ZIP-файл"
+  },
+  "importZip": {
+    "message": "Импорт из ZIP-файла"
   },
   "getFromCloud": {
     "message": "Получить настройки из облака"
@@ -137,14 +140,8 @@
   "mainPage": {
     "message": "Главная страница"
   },
-  "backup": {
-    "message": "Архивирование"
-  },
-  "restore": {
-    "message": "Восстановление"
-  },
-  "restoreBtn": {
-    "message": "Восстановить"
+  "backupRestore": {
+    "message": "Архивирование / Восстановление"
   },
   "hidePeerRow": {
     "message": "Скрыть столбец \"пиры\" (скачивающие)"

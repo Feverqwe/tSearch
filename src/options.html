@@ -19,8 +19,7 @@
             <div class="sections">
                 <a href="#basic" class="sections__item" data-page="basic" data-i18n='{"text":"basic"}'>{basic}</a>
                 <a href="#mainPage" class="sections__item" data-page="mainPage" data-i18n='{"text":"mainPage"}'>{mainPage}</a>
-                <a href="#backup" class="sections__item" data-page="backup" data-i18n='{"text":"backup"}'>{backup}</a>
-                <a href="#restore" class="sections__item" data-page="restore" data-i18n='{"text":"restore"}'>{restore}</a>
+                <a href="#backup" class="sections__item" data-page="backup" data-i18n='{"text":"backupRestore"}'>{backupRestore}</a>
             </div>
             <div class="options">
                 <div class="page page-basic">
@@ -86,21 +85,11 @@
                     <div class="mainPage__sections"></div>
                 </div>
                 <div class="page page-backup">
-                    <h2 class="page__title" data-i18n='{"text":"backup"}'>{backup}</h2>
+                    <h2 class="page__title" data-i18n='{"text":"backupRestore"}'>{backupRestore}</h2>
                     <div class="page__buttons">
-                        <a type="button" href="#update" class="button backup__update" data-i18n='{"text":"update"}'>{update}</a>
-                        <a type="button" href="#saveInCloud" class="button backup__save-in-cloud" data-i18n='{"text":"saveInCloud"}'>{saveInCloud}</a>
+                        <a type="button" href="#exportZip" class="button backup__export-zip" data-i18n='{"text":"exportZip"}'>{exportZip}</a>
+                        <a type="button" href="#importZip" class="button backup__import-zip" data-i18n='{"text":"importZip"}'>{importZip}</a>
                     </div>
-                    <textarea class="backup_textarea"></textarea>
-                </div>
-                <div class="page page-restore">
-                    <h2 class="page__title" data-i18n='{"text":"restore"}'>{restore}</h2>
-                    <div class="page__buttons">
-                        <a type="button" href="#restore" class="button button-restore" data-i18n='{"text":"restoreBtn"}'>{restoreBtn}</a>
-                        <a type="button" href="#getFromCloud" class="button button-get-from-cloud" data-i18n='{"text":"getFromCloud"}'>{getFromCloud}</a>
-                        <a type="button" href="#clearCloud" class="button button-clear-cloud" data-i18n='{"text":"clearCloud"}'>{clearCloud}</a>
-                    </div>
-                    <textarea class="restore_textarea"></textarea>
                 </div>
             </div>
         </div>

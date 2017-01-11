@@ -188,10 +188,3 @@ a.button {
 .page__buttons {
     margin: 5px;
 }
-
-.restore_textarea,
-.backup_textarea {
-    margin: 5px;
-    width: 480px;
-    height: 320px;
-}
