@@ -104,7 +104,6 @@ define([
 
         var load = function () {
             ee.on('profileFieldChange', onProfileFieldChange);
-            ee.on('reloadProfile', onReload);
             ee.on('selectTracker', onSelectTracker);
             ee.on('filterChange', onFilterChange);
             ee.on('search', onSearch);
@@ -412,10 +411,6 @@ define([
             trackerIdTracker[id].select();
         };
 
-        var onReload = function () {
-            self.reload();
-        };
-
         var abort = function () {
             wrappedTrackers.forEach(function (wrappedTracker) {
                 wrappedTracker.worker.abort();
@@ -444,7 +439,6 @@ define([
             ee.off('profileFieldChange', onProfileFieldChange);
             ee.off('trackerChange', onTrackerChange);
             ee.off('stateReset', onStateReset);
-            ee.off('reloadProfile', onReload);
             ee.off('selectTracker', onSelectTracker);
             ee.off('filterChange', onFilterChange);
             ee.off('search', onSearch);
