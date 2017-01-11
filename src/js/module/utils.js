@@ -470,11 +470,11 @@ define(function () {
             return true;
         }
         var code = char.charCodeAt(0);
+        if (code < 31) {
+            return false;
+        }
         if (code > 31 && code < 48) {
             return true;
-        }
-        if (code > 126 || code < 31) {
-            return false;
         }
         if (code > 57 && code < 65) {
             return true;
