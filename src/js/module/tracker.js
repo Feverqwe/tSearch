@@ -135,7 +135,9 @@ define([
             requireReload = false;
             self.loaded = false;
             ready = false;
+            transport = null;
             worker.terminate();
+            worker = null;
             self.abort();
         };
         this.search = function (query, cb) {
