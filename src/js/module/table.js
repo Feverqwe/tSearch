@@ -3,17 +3,15 @@
  */
 "use strict";
 define([
+    '../lib/promise.min',
     './dom',
     '../lib/filesize.min',
-    '../lib/moment-with-locales.min',
     './highlight'
-], function (dom, filesize, moment, highlight) {
-    moment.locale(chrome.i18n.getUILanguage());
-
+], function (Promise, dom, filesize, highlight) {
+    var moment = null;
     var unixTimeToString = function (unixtime) {
         return moment(unixtime * 1000).format('lll');
     };
-
     var unixTimeToFromNow = function (unixtime) {
         return moment(unixtime * 1000).fromNow();
     };
@@ -470,34 +468,6 @@ define([
             return row;
         };
 
-        var head = getHeadRow();
-        var body = {
-            node: dom.el('div', {
-                class: ['body', 'table__body'],
-                on: [
-                    ['mouseup', function (e) {
-                        onLickClick(e.target, tableRows);
-                    }]
-                ]
-            })
-        };
-        var footer = {
-            node: dom.el('div', {
-                class: ['footer', 'table__footer']
-            }),
-            more: null
-        };
-
-        var tableNode = dom.el('div', {
-            class: ['table', 'table-results'],
-            append: [
-                head.node,
-                body.node,
-                footer.node
-            ]
-        });
-        this.node = tableNode;
-
         var tableRows = [];
         var tableSortedRows = [];
 
@@ -512,11 +482,58 @@ define([
             sortInsertList(body.node, sortedRows, tableSortedRows);
         };
 
-        sortCells.forEach(function (row) {
-            head.cellTypeCell[row[0]].sort(row[1]);
-        });
+        var head = null;
+        var body = null;
+        var footer = null;
 
         this.counter = trackerIdCount;
+        this.node = null;
+
+        this.load = function () {
+            var promise = Promise.resolve();
+            if (!moment) {
+                promise = promise.then(function () {
+                    return new Promise(function (resolve) {
+                        require(['moment'], function (_moment) {
+                            moment = _moment;
+                            moment.locale(chrome.i18n.getUILanguage());
+                            resolve();
+                        });
+                    });
+                });
+            }
+            return promise.then(function () {
+                head = getHeadRow();
+                body = {
+                    node: dom.el('div', {
+                        class: ['body', 'table__body'],
+                        on: [
+                            ['mouseup', function (e) {
+                                onLickClick(e.target, tableRows);
+                            }]
+                        ]
+                    })
+                };
+                footer = {
+                    node: dom.el('div', {
+                        class: ['footer', 'table__footer']
+                    }),
+                    more: null
+                };
+                self.node = dom.el('div', {
+                    class: ['table', 'table-results'],
+                    append: [
+                        head.node,
+                        body.node,
+                        footer.node
+                    ]
+                });
+
+                sortCells.forEach(function (row) {
+                    head.cellTypeCell[row[0]].sort(row[1]);
+                });
+            });
+        };
 
         this.insertResults = function (/**trackerWrapper*/tracker, query, results) {
             if (!trackerIdCount[tracker.id]) {
@@ -638,9 +655,9 @@ define([
             }
         };
         this.destroy = function () {
-            var parent = tableNode.parentNode;
+            var parent = self.node.parentNode;
             if (parent) {
-                parent.removeChild(tableNode);
+                parent.removeChild(self.node);
             }
         };
     };

@@ -6,7 +6,8 @@ require.config({
     baseUrl: './js',
     paths: {
         jquery: './lib/jquery-3.1.1.min',
-        jqueryUi: './lib/jquery-ui.min'
+        jqueryUi: './lib/jquery-ui.min',
+        moment: './lib/moment-with-locales.min'
     }
 });
 require([

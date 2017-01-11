@@ -306,49 +306,51 @@ define([
 
         var createTable = function () {
             var table = new Table(resultFilter, storage);
-            tables.push(table);
-            tableParent.appendChild(table.node);
-            return table;
+            return table.load().then(function () {
+                tables.push(table);
+                tableParent.appendChild(table.node);
+                return table;
+            });
         };
 
         var onSearch = function (query) {
             destroyTables();
 
-            var table = createTable();
+            createTable().then(function (table) {
+                wrappedTrackers.forEach(function (tracker) {
+                    if (selectedTrackerIds.length && selectedTrackerIds.indexOf(tracker.id) === -1) {
+                        return;
+                    }
 
-            wrappedTrackers.forEach(function (tracker) {
-                if (selectedTrackerIds.length && selectedTrackerIds.indexOf(tracker.id) === -1) {
-                    return;
-                }
-
-                if (tracker.worker) {
-                    tracker.status('search');
-                    tracker.auth && tracker.auth.destroy();
-                    tracker.worker.search(query, function (response) {
-                        if (!response) {
-                            tracker.status('error', 'Tracker response is empty!');
-                            throw new Error('Tracker response is empty!');
-                        }
-
-                        if (response.success) {
-                            tracker.status('success');
-                            table.insertResults(tracker, query, response.results);
-                            if (response.nextPageRequest) {
-                                setMoreEvent(tracker.id, query, response, table);
+                    if (tracker.worker) {
+                        tracker.status('search');
+                        tracker.auth && tracker.auth.destroy();
+                        tracker.worker.search(query, function (response) {
+                            if (!response) {
+                                tracker.status('error', 'Tracker response is empty!');
+                                throw new Error('Tracker response is empty!');
                             }
-                            updateCounter();
-                        } else
-                        if (response.error === 'AUTH') {
-                            tracker.setAuth(response);
-                            tracker.status('success');
-                        } else
-                        if (response.message === 'ABORT') {
-                            tracker.status('success');
-                        } else {
-                            tracker.status('error', response.name + ': ' + response.message);
-                        }
-                    });
-                }
+
+                            if (response.success) {
+                                tracker.status('success');
+                                table.insertResults(tracker, query, response.results);
+                                if (response.nextPageRequest) {
+                                    setMoreEvent(tracker.id, query, response, table);
+                                }
+                                updateCounter();
+                            } else
+                            if (response.error === 'AUTH') {
+                                tracker.setAuth(response);
+                                tracker.status('success');
+                            } else
+                            if (response.message === 'ABORT') {
+                                tracker.status('success');
+                            } else {
+                                tracker.status('error', response.name + ': ' + response.message);
+                            }
+                        });
+                    }
+                });
             });
 
             inHistory(query);
@@ -379,14 +381,19 @@ define([
 
                         if (response.success) {
                             tracker.status('success');
+                            var promise = Promise.resolve();
                             if (!table) {
-                                table = createTable();
+                                promise = promise.then(function () {
+                                    return createTable();
+                                });
                             }
-                            table.insertResults(tracker, query, response.results);
-                            if (response.nextPageRequest) {
-                                setMoreEvent(tracker.id, query, response, table);
-                            }
-                            updateCounter();
+                            promise.then(function (table) {
+                                table.insertResults(tracker, query, response.results);
+                                if (response.nextPageRequest) {
+                                    setMoreEvent(tracker.id, query, response, table);
+                                }
+                                updateCounter();
+                            });
                         } else {
                             tracker.status('error', response.error);
                         }
