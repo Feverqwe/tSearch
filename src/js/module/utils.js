@@ -511,5 +511,26 @@ define(function () {
         }
         return true;
     };
+    utils.getItemId = function (obj, id) {
+        var item = null;
+        if (Array.isArray(obj)) {
+            obj.some(function (_item) {
+                if (_item.id === id) {
+                    item = _item;
+                    return true;
+                }
+            });
+        } else
+        if (typeof obj === 'object') {
+            for (var key in obj) {
+                var _item = obj[key];
+                if (_item.id === id) {
+                    item = _item;
+                    break;
+                }
+            }
+        }
+        return item;
+    };
     return utils;
 });

@@ -11,8 +11,13 @@
 <body class="loading">
     <div class="editor">
         <div class="editor__head">
-            <a href="#close" class="button head__action head__action-close" data-i18n='{"text":"close"}'>{close}</a>
-            <a href="#save" class="button head__action head__action-save" data-i18n='{"text":"save"}'>{save}</a>
+            <div class="head__options">
+                <label><input type="checkbox" class="option__auto-update"/><span data-i18n='{"text":"autoUpdate"}'>{autoUpdate}</span></label>
+            </div>
+            <div class="head__action">
+                <a href="#save" class="button head__action head__action-save" data-i18n='{"text":"save"}'>{save}</a>
+                <a href="#close" class="button head__action head__action-close" data-i18n='{"text":"close"}'>{close}</a>
+            </div>
         </div>
         <div class="editor__body"><textarea class="editor__textarea"></textarea></div>
     </div>

@@ -22,9 +22,10 @@ body {
 .editor__head {
     background-color: rgba(0,0,0,0.1);
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     height: 46px;
     align-items: center;
+    justify-content: space-between;
 }
 
 .editor__head .head__action {
@@ -65,4 +66,8 @@ a.button {
 }
 .dialog__body.dialog-code {
     width: 450px;
+}
+
+.option-hidden {
+    display: none;
 }

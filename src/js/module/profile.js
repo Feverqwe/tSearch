@@ -134,6 +134,7 @@ define([
                  * @property {string[]} meta.connect
                  * @property {Object} info
                  * @property {number} info.lastUpdate
+                 * @property {boolean} [info.disableAutoUpdate]
                  * @property {string} code
                  */
                 var tracker = trackers[item.id];

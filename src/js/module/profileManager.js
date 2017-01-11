@@ -163,17 +163,14 @@ define([
                                     profileIdMap[profile.id] = profile;
                                 });
 
-                                var existsProfileIds = [];
+                                var newProfiles = [];
                                 [].slice.call(profilesNode.childNodes).forEach(function (profileNode) {
                                     var id = profileNode.dataset.id;
-                                    existsProfileIds.push(profileIdMap[id]);
+                                    newProfiles.push(profileIdMap[id]);
                                 });
 
-                                profiles.splice(0);
-                                profiles.push.apply(profiles, existsProfileIds);
-
                                 chrome.storage.local.set({
-                                    profiles: profiles
+                                    profiles: newProfiles
                                 }, function () {
                                     syncProfiles(function () {
                                         close();
@@ -404,20 +401,24 @@ define([
                                     }
                                 });
 
-                                profile.name = profileName.value;
-                                profile.trackers = profileTrackers;
-
-                                if (profiles.indexOf(profile) === -1) {
-                                    profiles.push(profile);
+                                var cloneProfiles = utils.clone(profiles);
+                                var cloneProfile = utils.getItemId(cloneProfiles, profile.id);
+                                if (!cloneProfile) {
+                                    cloneProfile = profile;
+                                    cloneProfiles.push(profile);
                                 }
 
+                                cloneProfile.name = profileName.value;
+                                cloneProfile.trackers = profileTrackers;
+
+                                var cloneTrackers = utils.clone(trackers);
                                 removedTrackerIds.forEach(function (id) {
-                                    delete trackers[id];
+                                    delete cloneTrackers[id];
                                 });
 
                                 chrome.storage.local.set({
-                                    profiles: profiles,
-                                    trackers: trackers
+                                    profiles: cloneProfiles,
+                                    trackers: cloneTrackers
                                 }, function () {
                                     syncProfiles(function () {
                                         close();

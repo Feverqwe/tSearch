@@ -61,7 +61,7 @@ require([
 
         var ee = new EventEmitter();
 
-        var pageController = new PageController();
+        var pageController = new PageController({useHash: true});
         (function (pageController) {
             var getTitle = function () {
                 var title;
@@ -747,7 +747,7 @@ require([
             manageProfile.addEventListener('click', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                var pm = new ProfileManager(utils.clone(storage.profiles), profileController, utils.clone(storage.trackers), ee);
+                var pm = new ProfileManager(storage.profiles, profileController, storage.trackers, ee);
                 pm.show();
             });
 

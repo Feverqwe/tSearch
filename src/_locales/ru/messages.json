@@ -269,6 +269,9 @@
   "enterTrackerCode": {
     "message": "Вставьте код трекера"
   },
+  "autoUpdate": {
+    "message": "Обновлять автоматически"
+  },
   "kitTrackerCodeReadError": {
     "message": "Ошибка разбора кода трекера"
   },

@@ -5,12 +5,13 @@
 define([
     './utils'
 ], function (utils) {
-    var PageController = function () {
+    var PageController = function (deatils) {
+        deatils = deatils || {};
         var self = this;
         var params = {};
         var load = function () {
             var queryString = location.hash.substr(1);
-            var queryObj = utils.hashParseParam(queryString);
+            var queryObj = deatils.useHash ? utils.hashParseParam(queryString) : utils.parseUrl(queryString, {params: true});
             var value;
             for (var key in queryObj) {
                 value = queryObj[key];
@@ -54,7 +55,7 @@ define([
         this.applyUrl = function () {};
         this.getUrl = function () {
             var url = location.origin + location.pathname;
-            var hash = utils.hashParam(params);
+            var hash =  deatils.useHash ? utils.hashParam(params) : utils.param(params);
             if (hash) {
                 url += '#' + hash;
             }
