@@ -237,7 +237,7 @@ define([
         var onTrackerChange = function (id, changes) {
             var trackerWrapper = trackerIdTracker[id];
             if (trackerWrapper && changes.indexOf('code') !== -1) {
-                trackerWrapper.worker.safeReload();
+                trackerWrapper.worker && trackerWrapper.worker.safeReload();
             }
         };
 
@@ -418,7 +418,7 @@ define([
 
         var abort = function () {
             wrappedTrackers.forEach(function (wrappedTracker) {
-                wrappedTracker.worker.abort();
+                wrappedTracker.worker && wrappedTracker.worker.abort();
             });
         };
 
