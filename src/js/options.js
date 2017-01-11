@@ -106,30 +106,79 @@ require([
             var exportZip = document.querySelector('.backup__export-zip');
             var importZip = document.querySelector('.backup__import-zip');
 
+            var downloadBlob = function (blob) {
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'tmsBackup.zip';
+                a.click();
+                setTimeout(function () {
+                    URL.revokeObjectURL(url);
+                });
+            };
+
+            var writeFile = function () {
+                return new Promise(function (resolve) {
+                    chrome.storage.local.get(null, resolve);
+                }).then(function (storage) {
+                    var zip = new JSZip();
+                    for (var key in storage) {
+                        if (/^cache/.test(key) && key !== 'cache__favorites') {
+                            continue;
+                        }
+                        zip.file(key + '.json', JSON.stringify(storage[key]));
+                    }
+                    return zip.generateAsync({
+                        type:"blob",
+                        compression: 'DEFLATE',
+                        compressionOptions: {
+                            level: 9
+                        }
+                    });
+                }).then(function(blob) {
+                    downloadBlob(blob);
+                }).catch(function (err) {
+                    console.error('Compress error', err);
+                    alert('Write file error! ' + err.message);
+                })
+            };
+
+            var readFile = function (file) {
+                return JSZip.loadAsync(file).then(function (zip) {
+                    var storage = {};
+                    var promiseList = [];
+                    zip.forEach(function (relativePath, zipEntry) {
+                        var key = /(.+)\.json/i.exec(zipEntry.name);
+                        if (key) {
+                            key = key[1];
+                            var promise = zip.file(relativePath).async("string").then(function (value) {
+                                try {
+                                    storage[key] = JSON.parse(value);
+                                } catch (err) {
+                                    console.error('Read file error!', relativePath, err);
+                                }
+                            });
+                            promiseList.push(promise);
+                        }
+                    });
+                    return Promise.all(promiseList).then(function () {
+                        return new Promise(function (resolve) {
+                            chrome.storage.local.set(storage, resolve);
+                        });
+                    });
+                }).catch(function (err) {
+                    console.error('Read file error', err);
+                    alert('Read file error! ' + err.message);
+                });
+            };
+
             exportZip.addEventListener('click', function (e) {
                 e.preventDefault();
                 var _this = this;
                 var defText = _this.textContent;
                 _this.textContent = '...';
-                var downloadBlob = function (blob) {
-                    var url = URL.createObjectURL(blob);
-                    var a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'tmsBackup.zip';
-                    a.click();
-                    setTimeout(function () {
-                        URL.revokeObjectURL(url);
-                    });
+                writeFile().then(function () {
                     _this.textContent = defText;
-                };
-                chrome.storage.local.get(null, function (storage) {
-                    var zip = new JSZip();
-                    for (var key in storage) {
-                        zip.file(key + '.json', JSON.stringify(storage[key]));
-                    }
-                    zip.generateAsync({type:"blob"}).then(function(blob) {
-                        downloadBlob(blob);
-                    });
                 });
             });
 
@@ -137,7 +186,6 @@ require([
                 e.preventDefault();
                 var _this = this;
                 var defText = _this.textContent;
-                _this.textContent = '...';
                 var input = dom.el('input', {
                     style: {
                         display: 'none'
@@ -145,30 +193,9 @@ require([
                     type: 'file',
                     on: ['change', function (e) {
                         var file = e.target.files[0];
-                        JSZip.loadAsync(file).then(function(zip) {
-                            var storage = {};
-                            var promiseList = [];
-                            zip.forEach(function (relativePath, zipEntry) {
-                                var key = /(.+)\.json/i.exec(zipEntry.name);
-                                if (key) {
-                                    var promise = zip.file(relativePath).async("string").then(function (value) {
-                                        try {
-                                            storage[key] = JSON.parse(value);
-                                        } catch (err) {
-                                            console.error('Read file error!', relativePath, err);
-                                        }
-                                    });
-                                    promiseList.push(promise);
-                                }
-                            });
-                            Promise.all(promiseList).then(function () {
-                                chrome.storage.local.set(storage);
-                                _this.textContent = defText;
-                            });
-                        }, function (e) {
+                        _this.textContent = '...';
+                        readFile(file).then(function () {
                             _this.textContent = defText;
-                            console.error('Read file error', e);
-                            alert('Read file error! ' + e.message);
                         });
                     }]
                 });
