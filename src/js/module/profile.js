@@ -152,7 +152,7 @@ define([
 
                 var iconClass = 'icon_' + tracker.id;
                 var iconStyleNode = dom.el('style', {
-                    text: '.' + iconClass + '{' + 'background-image:url(' + JSON.stringify(tracker.meta.icon64 || tracker.meta.icon || './img/ghost.svg') + ')' + '}'
+                    text: '.' + iconClass + '{' + 'background-image:url(' + JSON.stringify(tracker.meta.icon64 || tracker.meta.icon || './img/blank.svg') + ')' + '}'
                 });
 
                 var countNode;
