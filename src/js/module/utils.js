@@ -532,5 +532,34 @@ define(function () {
         }
         return item;
     };
+    utils.trackerObjToUserScript = function (trackerObj) {
+        var code = [];
+        code.unshift('==UserScript==');
+        code.push(['@name', trackerObj.title].join(' '));
+        if (trackerObj.desc) {
+            code.push(['@description', trackerObj.desc].join(' '));
+        }
+        if (trackerObj.icon) {
+            code.push(['@icon', trackerObj.icon].join(' '));
+        }
+        var hostname = /\/\/([^\/]+)/.exec(trackerObj.search.searchUrl);
+        if (hostname) {
+            code.push(['@connect', '*://'+hostname[1]+'/*'].join(' '));
+        }
+        if (trackerObj.search.baseUrl) {
+            code.push(['@trackerURL', trackerObj.search.baseUrl].join(' '));
+        }
+        code.push(['@version', '1.0'].join(' '));
+        code.push(['@require', 'exKit'].join(' '));
+        code.push('==/UserScript==');
+        code = code.map(function (line) {
+            return ['//', line].join(' ');
+        });
+        code.push('');
+        code.push('var code = ' + JSON.stringify(trackerObj, null, 2) + ';');
+        code.push('');
+        code.push('API_exKit(code);');
+        return code.join('\n');
+    };
     return utils;
 });

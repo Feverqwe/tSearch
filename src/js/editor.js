@@ -184,36 +184,6 @@ require([
         (function () {
             var currentDialog = null;
 
-            var getTrackerCode = function (trackerObj) {
-                var code = [];
-                code.unshift('==UserScript==');
-                code.push(['@name', trackerObj.title].join(' '));
-                if (trackerObj.desc) {
-                    code.push(['@description', trackerObj.desc].join(' '));
-                }
-                if (trackerObj.icon) {
-                    code.push(['@icon', trackerObj.icon].join(' '));
-                }
-                var hostname = /\/\/([^\/]+)/.exec(trackerObj.search.searchUrl);
-                if (hostname) {
-                    code.push(['@connect', '*://'+hostname[1]+'/*'].join(' '));
-                }
-                if (trackerObj.search.baseUrl) {
-                    code.push(['@trackerURL', trackerObj.search.baseUrl].join(' '));
-                }
-                code.push(['@version', '1.0'].join(' '));
-                code.push(['@require', 'exKit'].join(' '));
-                code.push('==/UserScript==');
-                code = code.map(function (line) {
-                    return ['//', line].join(' ');
-                });
-                code.push('');
-                code.push('var code = ' + JSON.stringify(trackerObj, null, 2) + ';');
-                code.push('');
-                code.push('API_exKit(code);');
-                return code.join('\n');
-            };
-
             var codeDialog = function () {
                 var dialog = new Dialog();
                 dom.el(dialog.body, {
@@ -241,7 +211,7 @@ require([
                                         var code = '';
                                         try {
                                             var trackerObj = JSON.parse(values.code);
-                                            code = getTrackerCode(trackerObj);
+                                            code = utils.trackerObjToUserScript(trackerObj);
                                         } catch (err) {
                                             alert('Error!\n' + err.message);
                                             throw err;
