@@ -6,9 +6,19 @@ define([
     './utils',
     './dom'
 ], function (utils, dom) {
-    var ProfileManager = function (profiles, profileController, trackers, ee) {
+    var ProfileManager = function (profiles, profileController, trackers, ee, sync) {
         var self = this;
         var layer = null;
+
+        var syncProfiles = function (cb) {
+            if (sync) {
+                chrome.storage.sync.set({
+                    profiles: profiles
+                }, cb);
+            } else {
+                cb();
+            }
+        };
 
         var getHeader = function (title) {
             return dom.el('div', {
@@ -124,7 +134,12 @@ define([
                             if (target.dataset.action === 'edit') {
                                 e.preventDefault();
                                 profileId = target.parentNode.dataset.id;
-                                profile = profileController.getProfileById(profileId);
+                                profile = null;
+                                profiles.some(function (_profile) {
+                                    if (_profile.id == profileId) {
+                                        profile = _profile;
+                                    }
+                                });
                                 layer.content.textContent = '';
                                 layer.content.appendChild(getProfile(profile, trackers));
                             } else
@@ -157,13 +172,12 @@ define([
                                 profiles.splice(0);
                                 profiles.push.apply(profiles, existsProfileIds);
 
-                                profileController.refreshProfileIdMap();
-
                                 chrome.storage.local.set({
                                     profiles: profiles
                                 }, function () {
-                                    close();
-                                    self.onSave();
+                                    syncProfiles(function () {
+                                        close();
+                                    });
                                 });
                             }]
                         })
@@ -395,7 +409,6 @@ define([
 
                                 if (profiles.indexOf(profile) === -1) {
                                     profiles.push(profile);
-                                    profileController.refreshProfileIdMap();
                                 }
 
                                 removedTrackerIds.forEach(function (id) {
@@ -406,8 +419,9 @@ define([
                                     profiles: profiles,
                                     trackers: trackers
                                 }, function () {
-                                    close();
-                                    self.onSave();
+                                    syncProfiles(function () {
+                                        close();
+                                    });
                                 });
                             }]
                         }),
@@ -472,7 +486,7 @@ define([
         var onTrackersUpdateListener = function () {
             onTrackersUpdate && onTrackersUpdate();
         };
-        var onTrackersChangeListener = function (id, tracker, changes) {
+        var onTrackersChangeListener = function (id, changes) {
             if (changes.indexOf('meta') !== -1) {
                 onTrackersUpdate && onTrackersUpdate();
             }
@@ -484,10 +498,6 @@ define([
             ee.off('trackerChange', onTrackersChangeListener);
             document.removeEventListener('click', closeEvent, true);
             layer.node.parentNode.removeChild(layer.node);
-        };
-
-        this.onSave = function () {
-
         };
 
         var closeEvent = function (e) {

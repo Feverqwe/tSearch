@@ -94,13 +94,11 @@ define(['./dom'], function (dom) {
 
         self.syncSelectedIndex = function () {
             var index = select.selectedIndex;
-            if (self.control.dataset.selectedIndex != index) {
-                self.control.dataset.selectedIndex = index;
-                var option = getOptions()[index];
-                if (option) {
-                    self.selected.textContent = option.textContent;
-                    self.selected.dataset.index = index;
-                }
+            self.control.dataset.selectedIndex = index;
+            var option = getOptions()[index];
+            if (option) {
+                self.selected.textContent = option.textContent;
+                self.selected.dataset.index = index;
             }
         };
 

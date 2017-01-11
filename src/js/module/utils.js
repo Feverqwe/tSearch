@@ -430,7 +430,7 @@ define(function () {
 
         return pattern.join('');
     };
-    utils.getDiff = function (oldObj, newObj) {
+    utils.getDiffObj = function (oldObj, newObj) {
         var removedKeys = [];
         var modifiedKeys = [];
         var newKeys = [];
@@ -461,6 +461,9 @@ define(function () {
             modified: modifiedKeys,
             new: newKeys
         };
+    };
+    utils.clone = function (obj) {
+        return JSON.parse(JSON.stringify({w:obj})).w;
     };
     return utils;
 });

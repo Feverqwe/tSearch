@@ -35,8 +35,20 @@ require([
             eSections: [],
             kpFolderId: '1',
             enableFavoriteSync: true,
-            originalPosterName: false
-        }, resolve);
+            originalPosterName: false,
+            syncProfiles: true
+        }, function (storage) {
+            if (storage.syncProfiles) {
+                chrome.storage.sync.get('profiles', function (syncStorage) {
+                    if (syncStorage.profiles) {
+                        storage.profiles = syncStorage.profiles;
+                    }
+                    resolve(storage);
+                });
+            } else {
+                resolve(storage);
+            }
+        });
     }).then(function (storage) {
         document.body.classList.remove('loading');
 
@@ -714,7 +726,7 @@ require([
             })(peerInputFromFilter, peerInputToFilter);
         })(resultFilter);
 
-        var profileController = new ProfileController(storage, ee, ProfileManager, resultFilter);
+        var profileController = new ProfileController(storage, ee, ProfileManager, resultFilter, storage.syncProfiles);
 
         (function (profileController) {
             var manageProfile = document.querySelector('.button-manage-profile');
@@ -728,10 +740,7 @@ require([
             manageProfile.addEventListener('click', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                var pm = new ProfileManager(storage.profiles, profileController, storage.trackers, ee);
-                pm.onSave = function () {
-                    ee.trigger('reloadProfiles');
-                };
+                var pm = new ProfileManager(utils.clone(storage.profiles), profileController, utils.clone(storage.trackers), ee);
                 pm.show();
             });
 
@@ -827,48 +836,100 @@ require([
 
             chrome.storage.onChanged.addListener(function(changes, areaName) {
                 var history = storage.history;
+                var changeHistory = changes.history;
+                if (changeHistory) {
+                    var newHistory = changeHistory.newValue;
+                    history.splice(0);
+                    history.push.apply(history, newHistory);
+                }
+
                 var trackers = storage.trackers;
-                if (areaName === 'local') {
-                    var changeHistory = changes.history;
-                    if (changeHistory) {
-                        var newHistory = changeHistory.newValue;
-                        history.splice(0);
-                        history.push.apply(history, newHistory);
-                    }
+                var changeTrackers = changes.trackers;
+                if (changeTrackers) {
+                    var newTrackers = changeTrackers.newValue;
+                    var diff = utils.getDiffObj(trackers, newTrackers);
 
-                    var changeTrackers = changes.trackers;
-                    if (changeTrackers) {
-                        var oldTrackers = changeTrackers.oldValue;
-                        var newTrackers = changeTrackers.newValue;
-                        var diff = utils.getDiff(oldTrackers, newTrackers);
+                    diff.removed.forEach(function (id) {
+                        delete trackers[id];
+                        // console.debug('trackerRemoved', id);
+                        ee.trigger('trackerRemoved', [id]);
+                    });
 
-                        diff.removed.forEach(function (id) {
-                            delete trackers[id];
-                            // console.debug('trackerRemoved', id);
-                            ee.trigger('trackerRemoved', [id]);
+                    diff.modified.forEach(function (id) {
+                        var oldTracker = trackers[id];
+                        var newTracker = newTrackers[id];
+                        var diff = utils.getDiffObj(oldTracker, newTracker);
+
+                        diff.modified.forEach(function (key) {
+                            oldTracker[key] = newTracker[key];
                         });
 
-                        diff.modified.forEach(function (id) {
-                            var oldTracker = trackers[id];
-                            var newTracker = newTrackers[id];
-                            var diff = utils.getDiff(oldTracker, newTracker);
+                        if (diff.modified.length) {
+                            // console.debug('trackerChange', id, diff.modified);
+                            ee.trigger('trackerChange', [id, diff.modified]);
+                        }
+                    });
 
-                            diff.modified.forEach(function (key) {
-                                oldTracker[key] = newTracker[key];
-                            });
+                    diff.new.forEach(function (id) {
+                        trackers[id] = newTrackers[id];
+                        // console.debug('trackerInsert', id);
+                        ee.trigger('trackerInsert', [id]);
+                    });
+                }
 
-                            if (diff.modified.length) {
-                                // console.debug('trackerChange', id, diff.modified);
-                                ee.trigger('trackerChange', [id, oldTracker, diff.modified]);
-                            }
+                var profiles = storage.profiles;
+                var changeProfiles = changes.profiles;
+                if (changeProfiles) {
+                    var newProfiles = changeProfiles.newValue;
+
+                    var oldProfileIds = profiles.map(function (item) {
+                        return item.id;
+                    });
+
+                    var newProfileIds = newProfiles.map(function (item) {
+                        return item.id;
+                    });
+
+                    oldProfileIds.slice(0).forEach(function (oldStaticItem, oldPos) {
+                        var newPos = newProfileIds.indexOf(oldStaticItem);
+                        if (newPos === -1) {
+                            oldProfileIds.splice(oldPos, 1);
+                            var profile = profiles.splice(oldPos, 1)[0];
+                            // console.debug('profileRemoved', profile.id);
+                            ee.trigger('profileRemoved', [profile.id]);
+                        }
+                    });
+
+                    newProfileIds.forEach(function (newStaticItem, newPos) {
+                        var newItem = newProfiles[newPos];
+                        var oldPos = oldProfileIds.indexOf(newStaticItem);
+                        if (oldPos === -1) {
+                            oldProfileIds.splice(newPos, 1, newStaticItem);
+                            profiles.splice(newPos, 1, newItem);
+                            // console.debug('profileInsert', newItem.id);
+                            ee.trigger('profileInsert', [newItem.id]);
+                        } else
+                        if (oldPos !== newPos) {
+                            oldProfileIds.splice(oldPos, 1);
+                            oldProfileIds.splice(newPos, 0, newStaticItem);
+                            profiles.splice(oldPos, 1);
+                            profiles.splice(newPos, 0, newItem);
+                            // console.debug('profilesSortChange');
+                            ee.trigger('profilesSortChange');
+                        }
+                    });
+
+                    profiles.forEach(function (profile, index) {
+                        var newProfile = newProfiles[index];
+                        var diff = utils.getDiffObj(profile, newProfiles[index]);
+                        diff.modified.forEach(function (key) {
+                            profile[key] = newProfile[key];
                         });
-
-                        diff.new.forEach(function (id) {
-                            trackers[id] = newTrackers[id];
-                            // console.debug('trackerInsert', id);
-                            ee.trigger('trackerInsert', [id, trackers[id]]);
-                        });
-                    }
+                        if (diff.modified.length) {
+                            // console.debug('profileFieldChange', profile.id, diff.modified);
+                            ee.trigger('profileFieldChange', [profile.id, diff.modified]);
+                        }
+                    });
                 }
             });
         })();

@@ -9,13 +9,23 @@ define([
         var self = this;
         var profileIdProfileMap = {};
         var activeProfile = null;
+
+        var refreshProfileIdMap = function () {
+            for (var key in profileIdProfileMap) {
+                delete profileIdProfileMap[key];
+            }
+            storage.profiles.forEach(function (/**profile*/item) {
+                profileIdProfileMap[item.id] = item;
+            });
+        };
+
         var load = function () {
             var profiles = storage.profiles;
             if (profiles.length === 0) {
                 profiles.push(ProfileManager.prototype.getDefaultProfile(self));
             }
 
-            self.refreshProfileIdMap();
+            refreshProfileIdMap();
 
             /**
              * @typedef {Object} profileTracker
@@ -37,17 +47,40 @@ define([
             }
         };
 
-        ee.on('reloadProfiles', function () {
-            load();
-            self.select(activeProfile.id, true);
-        });
-
         ee.on('selectProfileById', function (id) {
             if (!profileIdProfileMap[id]) {
                 id = storage.currentProfileId;
             }
             self.select(id);
         });
+
+        ee.on('profileRemoved', function (id) {
+            if (activeProfile.id === id) {
+                self.load();
+                self.select(storage.currentProfileId, true);
+            } else {
+                refreshProfileIdMap();
+                self.setSelectOptions(storage.profiles);
+            }
+        });
+        ee.on('profileInsert', function (id) {
+            refreshProfileIdMap();
+            self.setSelectOptions(storage.profiles);
+        });
+        ee.on('profilesSortChange', function () {
+            self.setSelectOptions(storage.profiles);
+        });
+
+        ee.on('profileFieldChange', function (id, changes) {
+            if (activeProfile.id === id && changes.indexOf('name') !== -1) {
+                self.setSelectOptions(storage.profiles);
+                self.setSelectValue(storage.profiles, id);
+            }
+        });
+
+        this.setSelectOptions = function () {};
+        this.setSelectValue = function () {};
+        this.setTrackerList = function () {};
 
         this.profile = activeProfile;
         this.getProfileById = function (id) {
@@ -60,14 +93,6 @@ define([
             }
             return id;
         };
-        this.refreshProfileIdMap = function () {
-            for (var key in profileIdProfileMap) {
-                delete profileIdProfileMap[key];
-            }
-            storage.profiles.forEach(function (/**profile*/item) {
-                profileIdProfileMap[item.id] = item;
-            });
-        };
         this.select = function (id, force) {
             var profile = profileIdProfileMap[id];
             if (force || !activeProfile || activeProfile.id !== profile.id) {
@@ -79,9 +104,6 @@ define([
                 self.profile = activeProfile;
             }
         };
-        this.setSelectOptions = function () {};
-        this.setSelectValue = function () {};
-        this.setTrackerList = function () {};
         this.load = load;
     };
     return ProfileController;

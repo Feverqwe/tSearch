@@ -221,7 +221,7 @@ define([
             ee.on('trackerChange', onTrackerChange);
         };
 
-        var onTrackerChange = function (id, tracker, changes) {
+        var onTrackerChange = function (id, changes) {
             var trackerWrapper = trackerIdTracker[id];
             if (trackerWrapper && changes.indexOf('code') !== -1) {
                 trackerWrapper.worker.safeReload();
@@ -415,6 +415,13 @@ define([
             updateCounter();
         };
 
+        var onProfileFieldChange = function (id, changes) {
+            if (id === self.id && changes.indexOf('trackers') !== -1) {
+                self.reload();
+            }
+        };
+
+        ee.on('profileFieldChange', onProfileFieldChange);
         ee.on('reloadProfile', onReload);
         ee.on('selectTracker', onSelectTracker);
         ee.on('filterChange', onFilterChange);
@@ -430,13 +437,16 @@ define([
             load();
         };
         this.destroy = function () {
+            ee.off('profileFieldChange', onProfileFieldChange);
             ee.off('trackerChange', onTrackerChange);
-            destroyTables();
             ee.off('stateReset', onStateReset);
             ee.off('reloadProfile', onReload);
             ee.off('selectTracker', onSelectTracker);
             ee.off('filterChange', onFilterChange);
             ee.off('search', onSearch);
+
+            destroyTables();
+
             for (var key in moreEvents) {
                 delete moreEvents[key];
             }
