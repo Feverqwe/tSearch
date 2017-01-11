@@ -80,7 +80,13 @@ require([
                         });
                     }));
                 });
-                return Promise.all(promiseList);
+                return Promise.all(promiseList).then(function () {
+                    return new Promise(function (resolve) {
+                        chrome.storage.local.set({
+                            trackers: trackers
+                        }, resolve);
+                    })
+                });
             });
         }
         return promise.then(function () {
