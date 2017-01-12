@@ -275,6 +275,9 @@
   "autoUpdate": {
     "message": "Обновлять автоматически"
   },
+  "doNotSendStatistics": {
+    "message": "Не отправлять статистику"
+  },
   "kitTrackerCodeReadError": {
     "message": "Ошибка разбора кода трекера"
   },

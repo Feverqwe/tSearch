@@ -14,8 +14,9 @@ require([
     './module/utils',
     './module/dom',
     './lib/filesize.min',
-    'exKit'
-], function (i18nDom, utils, dom, filesize, exKit) {
+    'exKit',
+    './module/counter'
+], function (i18nDom, utils, dom, filesize, exKit, counter) {
     i18nDom();
 
     var magic = {
@@ -1310,4 +1311,6 @@ require([
     };
 
     magic.one();
+
+    counter();
 });

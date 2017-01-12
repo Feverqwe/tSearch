@@ -14,8 +14,9 @@ require([
     './module/utils',
     './module/dom',
     './module/explore',
-    './lib/jszip.min'
-], function (Promise, i18nDom, utils, dom, Explore, JSZip) {
+    './lib/jszip.min',
+    './module/counter'
+], function (Promise, i18nDom, utils, dom, Explore, JSZip, counter) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -29,7 +30,8 @@ require([
             favoriteSync: true,
             originalPosterName: false,
             kpFolderId: '1',
-            syncProfiles: true
+            syncProfiles: true,
+            doNotSendStatistics: false
         }, resolve);
     }).then(function (storage) {
         document.body.classList.remove('loading');
@@ -237,5 +239,7 @@ require([
                 bubbles: true
             }));
         })();
+
+        counter();
     });
 });

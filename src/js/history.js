@@ -14,8 +14,9 @@ require([
     './module/dom',
     './module/utils',
     './lib/moment-with-locales.min',
-    './module/highlight'
-], function (Promise, i18nDom, dom, utils, moment, highlight) {
+    './module/highlight',
+    './module/counter'
+], function (Promise, i18nDom, dom, utils, moment, highlight, counter) {
     new Promise(function (resolve) {
         moment.locale(chrome.i18n.getUILanguage());
         i18nDom();
@@ -147,5 +148,7 @@ require([
                 }]
             });
         })(storage.history, storage.clickHistory);
+
+        counter();
     });
 });

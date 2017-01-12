@@ -396,7 +396,6 @@ define(function () {
         return value.replace( /[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&" );
     };
     utils.urlPatternToStrRe = function(value) {
-        "use strict";
         var m = /^(\*|http|https):\/\/([^\/]+)(?:\/(.*))?$/.exec(value);
         if (!m) {
             throw new Error("Invalid url-pattern");

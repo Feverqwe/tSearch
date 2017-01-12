@@ -17,13 +17,14 @@ require([
     './module/utils',
     './module/dom',
     './module/dialog',
+    './module/counter',
     '../codeMirror/lib/codemirror',
     '../codeMirror/mode/javascript/javascript',
     '../codeMirror/addon/edit/matchbrackets',
     '../codeMirror/addon/edit/closebrackets',
     '../codeMirror/addon/comment/continuecomment',
     '../codeMirror/addon/selection/active-line'
-], function (Promise, EventEmitter, PageController, i18nDom, utils, dom, Dialog, CodeMirror) {
+], function (Promise, EventEmitter, PageController, i18nDom, utils, dom, Dialog, counter, CodeMirror) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -300,5 +301,7 @@ require([
         })();
 
         pageController.applyUrl();
+
+        counter();
     });
 });

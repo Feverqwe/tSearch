@@ -23,8 +23,9 @@ require([
     './module/resultFilter',
     './module/profileController',
     './module/pageController',
-    './module/explore'
-], function (Promise, EventEmitter, i18nDom, utils, dom, selectBox, ProfileManager, ResultFilter, ProfileController, PageController, Explore) {
+    './module/explore',
+    './module/counter'
+], function (Promise, EventEmitter, i18nDom, utils, dom, selectBox, ProfileManager, ResultFilter, ProfileController, PageController, Explore, counter) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -942,5 +943,7 @@ require([
         })();
 
         pageController.applyUrl();
+
+        counter();
     });
 });
