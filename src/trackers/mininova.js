@@ -55,15 +55,12 @@ API_exKit({
         },
         onGetValue: {
             categoryId: function (details, value) {
-                "use strict";
                 return exKit.funcList.idInCategoryListInt(details.tracker, value, /cat\/([d+])$/);
             },
             size: function (details, value) {
-                "use strict";
                 return exKit.funcList.sizeFormat(value)
             },
             date: function (details, value) {
-                "use strict";
                 value = exKit.funcList.monthReplace(value, 1);
                 return exKit.funcList.dateFormat(1, value)
             }

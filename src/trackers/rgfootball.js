@@ -54,7 +54,6 @@ API_exKit({
         },
         onGetValue: {
             categoryId: function (details, value) {
-                "use strict";
                 return exKit.funcList.idInCategoryListInt(details.tracker, value, /f=([0-9]+)/);
             }
         }

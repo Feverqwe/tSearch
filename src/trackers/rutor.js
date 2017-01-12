@@ -26,7 +26,6 @@ API_exKit({
         baseUrl: 'http://rutor.info/',
         requestType: 'GET',
         onBeforeRequest: function (details) {
-            "use strict";
             if (!details.query) {
                 details.tracker.search.searchUrl = details.tracker.search.blankUrl;
             } else {
@@ -46,11 +45,9 @@ API_exKit({
         },
         onGetValue: {
             size: function (details, value) {
-                "use strict";
                 return exKit.funcList.sizeFormat(value);
             },
             date: function (details, value) {
-                "use strict";
                 value = exKit.funcList.monthReplace(value, 1);
                 return exKit.funcList.dateFormat(1, value)
             }

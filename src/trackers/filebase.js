@@ -54,15 +54,12 @@ API_exKit({
         },
         onGetValue: {
             categoryId: function (details, url) {
-                "use strict";
                 return exKit.funcList.idInCategoryListStr(details.tracker, url, /\/([^\/]+)\/$/);
             },
             size: function (details, value) {
-                "use strict";
                 return exKit.funcList.sizeFormat(value)
             },
             date: function (details, value) {
-                "use strict";
                 return exKit.funcList.dateFormat(1, value)
             }
         }

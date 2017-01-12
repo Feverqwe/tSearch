@@ -38,7 +38,6 @@ API_exKit({
         requestType: 'GET',
         requestData: 'ss=%search%&max=1&to=1',
         onAfterRequest: function (details) {
-            "use strict";
             if (/login\.php/.test(details.responseUrl)) {
                 details.result = {requireAuth: 1};
             }
@@ -58,7 +57,6 @@ API_exKit({
         },
         onGetValue: {
             categoryId: function (details, value) {
-                "use strict";
                 return exKit.funcList.idInCategoryListInt(details.tracker, value, /f=([0-9]+)/);
             }
         }

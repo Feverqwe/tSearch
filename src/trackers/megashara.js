@@ -52,11 +52,9 @@ API_exKit({
         },
         onGetValue: {
             categoryId: function (details, value) {
-                "use strict";
                 return exKit.funcList.idInCategoryList(details.tracker, value);
             },
             size: function (details, value) {
-                "use strict";
                 return exKit.funcList.sizeFormat(value);
             }
         }

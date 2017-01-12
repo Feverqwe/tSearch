@@ -41,7 +41,6 @@ API_exKit({
         requestData: 'search=%search%',
         requestMimeType: 'text/html; charset=windows-1251',
         onBeforeRequest: function (details) {
-            "use strict";
             details.query = exKit.funcList.encodeCp1251(details.query);
         },
         listItemSelector: '#highlighted>tr',
@@ -58,15 +57,12 @@ API_exKit({
         },
         onGetValue: {
             categoryId: function (details, value) {
-                "use strict";
                 return exKit.funcList.idInCategoryList(details.tracker, value);
             },
             size: function (details, value) {
-                "use strict";
                 return exKit.funcList.sizeFormat(value)
             },
             date: function (details, value) {
-                "use strict";
                 return exKit.funcList.dateFormat(0, value)
             }
         }

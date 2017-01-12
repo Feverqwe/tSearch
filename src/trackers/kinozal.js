@@ -34,7 +34,6 @@ API_exKit({
         humor: []
     },
     categoryNameList: function (n) {
-        "use strict";
         var map = {
             1: 'Другое - Видеоклипы',
             2: 'Другое - АудиоКниги',
@@ -98,7 +97,6 @@ API_exKit({
         onGetValue: {
             categoryIdR: /\/([0-9]+)\./,
             categoryTitle: function (details, value) {
-                "use strict";
                 var id = value.match(this.categoryIdR);
                 if (!id) {
                     return '';
@@ -107,7 +105,6 @@ API_exKit({
                 return details.tracker.categoryNameList(id);
             },
             categoryUrl: function (details, value) {
-                "use strict";
                 var id = value.match(this.categoryIdR);
                 if (!id) {
                     return '';
@@ -116,7 +113,6 @@ API_exKit({
                 return id;
             },
             categoryId: function (details, value) {
-                "use strict";
                 var id = value.match(this.categoryIdR);
                 if (!id) {
                     return '';
@@ -125,11 +121,9 @@ API_exKit({
                 return exKit.funcList.idInCategoryList(details.tracker, id);
             },
             size: function (details, value) {
-                "use strict";
                 return exKit.funcList.sizeFormat(value);
             },
             date: function (details, value) {
-                "use strict";
                 value = exKit.funcList.todayReplace(value, 1);
                 return exKit.funcList.dateFormat(1, value)
             }

@@ -41,7 +41,6 @@ API_exKit({
         requestType: 'GET',
         requestData: 'q=%search%',
         onBeforeRequest: function (details) {
-            "use strict";
             details.query = exKit.funcList.encodeCp1251(details.query);
         },
         listItemSelector: '#topics>tbody>tr',
@@ -58,15 +57,12 @@ API_exKit({
         },
         onGetValue: {
             categoryId: function (details, value) {
-                "use strict";
                 return exKit.funcList.idInCategoryListInt(details.tracker, value, /f=([0-9]+)/);
             },
             size: function (details, value) {
-                "use strict";
                 return exKit.funcList.sizeFormat(value);
             },
             date: function (details, value) {
-                "use strict";
                 return exKit.funcList.dateFormat(0, value)
             }
         }

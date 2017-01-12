@@ -40,7 +40,6 @@ API_exKit({
         baseUrl: 'https://thepiratebay.org/',
         requestType: 'GET',
         onAfterDomParse: function (details) {
-            "use strict";
             var $dom = details.$dom;
             var firstItem = $dom.find(details.tracker.search.listItemSelector).first();
             if (firstItem.children('td').length > 4) {
@@ -90,12 +89,10 @@ API_exKit({
         },
         onGetValue: {
             categoryId: function (details, value) {
-                "use strict";
                 return exKit.funcList.idInCategoryListInt(details.tracker, value, /\/([0-9]+)$/);
             },
             sizeR: /[^\s]+\s([^,]+),\s[^\s]+\s([^,]+)/,
             size: function (details, value) {
-                "use strict";
                 if (details.tracker.search.mode === 'dbl') {
                     var m = value.match(this.sizeR);
                     if (!m) {
@@ -107,7 +104,6 @@ API_exKit({
                 return exKit.funcList.sizeFormat(value);
             },
             date: function (details, value) {
-                "use strict";
                 var m;
                 var minAgoFunc = function (tracker, value) {
                     var dateSelector = tracker.search.torrentSelector.date.selector || tracker.search.torrentSelector.date;

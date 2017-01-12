@@ -72,19 +72,15 @@ API_exKit({
         },
         onGetValue: {
             categoryId: function (details, value) {
-                "use strict";
                 return exKit.funcList.idInCategoryListInt(details.tracker, value, /\/([0-9]*)\/$/);
             },
             size: function (details, value) {
-                "use strict";
                 return exKit.funcList.sizeFormat(value)
             },
             peer: function (details, value) {
-                "use strict";
                 return value === '---' ? 0 : value
             },
             seed: function (details, value) {
-                "use strict";
                 return value === '---' ? 0 : value
             }
         }

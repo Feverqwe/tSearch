@@ -40,7 +40,6 @@ API_exKit({
         requestType: 'GET',
         requestData: 'nm=%search%',
         onAfterRequest: function (details) {
-            "use strict";
             if (/login\.php/.test(details.responseUrl)) {
                 details.result = {requireAuth: 1};
             }
@@ -61,15 +60,12 @@ API_exKit({
         },
         onGetValue: {
             categoryId: function (details, value) {
-                "use strict";
                 return exKit.funcList.idInCategoryListInt(details.tracker, value, /f=([0-9]+)/);
             },
             size: function (details, value) {
-                "use strict";
                 return exKit.funcList.sizeFormat(value)
             },
             date: function (details, value) {
-                "use strict";
                 return exKit.funcList.dateFormat(1, value)
             }
         }
