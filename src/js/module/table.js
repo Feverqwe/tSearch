@@ -11,10 +11,10 @@ define([
 ], function (Promise, dom, filesize, highlight, rate) {
     var moment = null;
     var unixTimeToString = function (unixtime) {
-        return moment(unixtime * 1000).format('lll');
+        return unixtime <= 0 ? '∞' : moment(unixtime * 1000).format('lll');
     };
     var unixTimeToFromNow = function (unixtime) {
-        return moment(unixtime * 1000).fromNow();
+        return !unixtime <= 0 ? '∞' : moment(unixtime * 1000).fromNow();
     };
 
     var sortInsertList = function(tableBody, sortedList, nodeList) {
@@ -338,7 +338,7 @@ define([
                 }
             }
             if (!torrent.date) {
-                torrent.date = 0;
+                torrent.date = -1;
             }
 
             if (!torrent.categoryTitle) {
