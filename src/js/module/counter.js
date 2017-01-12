@@ -15,8 +15,8 @@ define([
     ga('set', 'forceSSL', true);
     ga('set', 'checkProtocolTask', null);
     ga('set', 'appName', 'tms');
-    ga('set', 'appId', '{appId}');
-    ga('set', 'appVersion', '{appVersion}');
+    ga('set', 'appId', 'tmsV4');
+    ga('set', 'appVersion', chrome.runtime.getManifest().version);
     ga('require', 'displayfeatures');
     ga('send', 'pageview');
 
