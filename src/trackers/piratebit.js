@@ -1,13 +1,12 @@
-/**
- * Created by Anton on 08.01.2017.
- */
 // ==UserScript==
 // @name Piratbit
+// @trackerURL http://pb.wtf
 // @icon data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACf0lEQVR4nI2SW0gUYRTH//ON3+yszbQ7rutqu6WRj3ZRS0iQIozeIrAeJAqD8iGiICOIiJLAXpKoB4uIejHMZAoqCKR9atNIKizwEhWuPmRpq3tx19n55vt6CKWLt/N4Lj/O/5y/hBVEyNQIheIjkDcTkICBvMibusEoAEhLDQZNzZAh72WwD0ggVIHSQUGffKr7HpvrWRAQMnU/g91owz6mcHVUZLQWyt3hsYYR+9/evwBrTZ1KIPWzSF8SnECJh5qzY+s7JppfZJfVWWJ6C4Km9iDPlLLBTu/DotaqNXO13Oo7i0qVfg8boSysxxmkKzzcd82aCJz/dnzA0vdcL0x/2HhaZDxbJSKNEEm+J7gTYVMVYh5QYhpKFtbzDNK73FjVR7P6jmj9eMbfeMITMxuewSEQglhcWJsgHI0quVcEd1rYVKUDADkq3OUzSEYA1MiQu6L14xkAcCWLS7Tq8GHYNMomAxCxkM+O65ft7MwFVdUmGHDrTwkKB+9KI7XT4/hPsuTqThY3LD7tl10qq+YD2/tH2y/GaUGPwmaVbiHsIonQu6qL3p4/TrHp9XHw+ykka1WoXyjoVwe8kCYKwyNHPp8BgNxgX3k6Yb+E4G6qaGft2JZWMgeI1k3/lIW8z8t9R3O4a4gzmbBJ/81UT+05AFBLu0OzM2iD4KpMtTYunBtLvjW/af/8dsqG7hp4Xg9A752WPP1NsvGOLusLAFDKHvlJIHIVem8c+tswPB+3LeiD/5J57w0IdkgwcQrC+QGitgLiKRIV1qIAJX9IcpgoFYId5NzeDYkMESK3cyf7CsnKRa0sAYCxbpjYNqlKZ5xSITAoBBtGoiy1Epm/AGvkDrjq7XpKAAAAAElFTkSuQmCC
-// @version 1.0
 // @description Крупнейший русскоязычный торрент трекер. фильмы, dvdrip, hdrip, 720p, 1080p, repack, сериалы, mp3...
+// @downloadURL https://github.com/Feverqwe/tSearch/raw/master/src/trackers/piratebit.js
 // @connect *://pb.wtf/*
 // @require exKit
+// @version 1.0.1
 // ==/UserScript==
 
 API_exKit({
