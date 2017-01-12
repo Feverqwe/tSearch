@@ -165,7 +165,7 @@ require([
         };
 
         return new Promise(function (resolve) {
-            if (!tracker.meta.downloadURL || tracker.info.disableAutoUpdate) {
+            if (!tracker.meta.downloadURL) {
                 throw new Error('C_UNAVAILABLE');
             }
             var now = parseInt(Date.now() / 1000);
@@ -211,7 +211,7 @@ require([
             var promiseList = [];
             var trackers = storage.trackers;
             for (var key in trackers) {
-                if (!id || id === trackers[key].id) {
+                if ((!id && !trackers[key].info.disableAutoUpdate) || id === trackers[key].id) {
                     promiseList.push(updateTracker(trackers[key], message.force));
                 }
             }
