@@ -561,6 +561,7 @@ define([
         };
 
         this.insertResults = function (/**trackerWrapper*/tracker, query, results) {
+            var visibleCount = 0;
             if (!trackerIdCount[tracker.id]) {
                 trackerIdCount[tracker.id] = {
                     filtered: 0,
@@ -594,12 +595,19 @@ define([
                     });
                     trackerIdCount[tracker.id].all++;
                     if (filterValue) {
+                        visibleCount++;
                         trackerIdCount[tracker.id].filtered++;
                     }
                 }
             });
 
             insertSortedRows();
+
+            if (visibleCount === 0) {
+                self.hide();
+            } else {
+                self.show();
+            }
         };
 
         this.insertMoreBtn = function (searchMore, trackerIds) {
@@ -671,10 +679,11 @@ define([
                 }
             }
 
-            return {
-                visible: visibleCount,
-                moreVisible: more && more.show
-            };
+            if (visibleCount === 0) {
+                self.hide();
+            } else {
+                self.show();
+            }
         };
         this.visible = true;
         this.show = function () {

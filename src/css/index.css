@@ -680,7 +680,8 @@ a.tracker {
     font-size: 13px;
 }
 
-.table-results.table-hide {
+.table-results.table-hide:not(:last-child) .table__head,
+.table-results.table-hide:not(:last-child) .table__body {
     display: none;
 }
 

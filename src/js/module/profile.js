@@ -251,8 +251,8 @@ define([
             }
         };
 
-        var destroyTables = function (index) {
-            tables.splice(index || 0).forEach(function (table) {
+        var destroyTables = function () {
+            tables.splice(0).forEach(function (table) {
                 table.destroy();
             });
         };
@@ -416,12 +416,7 @@ define([
 
         var onFilterChange = function () {
             tables.forEach(function (table, index) {
-                var result = table.applyFilter();
-                if (index > 0 && !result.visible && !result.moreVisible) {
-                    table.hide();
-                } else {
-                    table.show();
-                }
+                table.applyFilter();
             });
             updateCounter();
         };
