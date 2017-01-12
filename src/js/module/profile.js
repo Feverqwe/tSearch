@@ -59,9 +59,9 @@ define([
         };
 
         var trackerCount = function (countObj) {
-            var value = 0;
-            if (!resultFilter.isFilteredTracker(this.id)) {
-                value = countObj.all;
+            var value = '';
+            if (countObj.filtered !== countObj.all) {
+                value = countObj.filtered + '/' + countObj.all;
             } else {
                 value = countObj.filtered;
             }
