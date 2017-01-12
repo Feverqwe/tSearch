@@ -641,11 +641,11 @@ a.tracker {
 }
 
 .manager__trackers {
-    display: flex;
-    flex-direction: column;
+    display: block;
     border-top: 1px dashed #ccc;
     min-height: 370px;
     max-height: 370px;
+    overflow: auto;
 }
 
 .manager .item {
@@ -672,11 +672,6 @@ a.tracker {
 
 .manager .item__action {
     padding: 0 8px;
-}
-
-.manager__trackers {
-    display: flex;
-    flex-direction: column;
 }
 
 .table-results {
