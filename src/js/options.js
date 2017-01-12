@@ -28,7 +28,8 @@ require([
             eSections: [],
             favoriteSync: true,
             originalPosterName: false,
-            kpFolderId: '1'
+            kpFolderId: '1',
+            syncProfiles: true
         }, resolve);
     }).then(function (storage) {
         document.body.classList.remove('loading');
