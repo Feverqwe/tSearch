@@ -58,8 +58,8 @@ API_exKit({
             var content = eContent.html();
             var ll = '', dd = content;
             var l1 = 'le', ss = '.ten';
-            var lI = JSON.parse(dd), jj = 'code', g = '';
-            var l1l = (($dom.find(ss + '_artic' + l1 + 's li a')[0] + '').split(l1 + '/')[1] + '').split('/')[0];;
+            var lI = JSON.parse(dd);
+            var l1l = (($dom.find(ss + '_artic' + l1 + 's li a')[0] + '').split(l1 + '/')[1] + '').split('/')[0];
             var ff = 0;
             var l1I = 0;
             var jj = l1l;
