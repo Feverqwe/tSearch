@@ -293,7 +293,12 @@ require([
                 try {
                     var trackers = [];
                     Array.isArray(profile.trackerList) && profile.trackerList.forEach(function (tracker) {
-                        var id = tracker.id;
+                        var id;
+                        if (typeof tracker === 'object') {
+                            id = tracker.id;
+                        } else {
+                            id = tracker;
+                        }
                         id = idMap[id] || id;
                         trackers.push({id: id});
                     });
@@ -313,7 +318,14 @@ require([
             for (var id in customTorrentList) {
                 var trackerObj = customTorrentList[id];
                 try {
-                    trackers[id] = utils.trackerObjToUserScript(trackerObj);
+                    var code = utils.trackerObjToUserScript(trackerObj);
+                    var meta = utils.parseMeta(code);
+                    trackers[id] = {
+                        id: id,
+                        meta: meta,
+                        info: {},
+                        code: code
+                    };
                 } catch (err) {
                     console.error('Migrate tracker error!', err);
                 }

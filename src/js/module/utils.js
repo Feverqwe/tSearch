@@ -553,7 +553,7 @@ define(function () {
         meta.push(['@version', '1.0'].join(' '));
         meta.push(['@require', 'exKit'].join(' '));
         meta.push('==/UserScript==');
-        code.push(meta.map(function (line) {
+        code.push.apply(code, meta.map(function (line) {
             return ['//', line].join(' ');
         }));
         code.push('');
