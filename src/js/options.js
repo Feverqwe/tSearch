@@ -26,7 +26,7 @@ require([
             disablePopup: false,
             invertIcon: false,
             eSections: [],
-            enableFavoriteSync: true,
+            favoriteSync: true,
             originalPosterName: false,
             kpFolderId: '1'
         }, resolve);

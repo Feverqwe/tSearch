@@ -209,7 +209,7 @@
   "originalPosterName": {
     "message": "Отображать оригинальные названия"
   },
-  "enableFavoriteSync": {
+  "favoriteSync": {
     "message": "Синхронизировать список избранного"
   },
   "kpFolderId": {

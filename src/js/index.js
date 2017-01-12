@@ -41,7 +41,7 @@ require([
 
             eSections: [],
             kpFolderId: '1',
-            enableFavoriteSync: true,
+            favoriteSync: true,
             originalPosterName: false,
             syncProfiles: true
         }, function (storage) {

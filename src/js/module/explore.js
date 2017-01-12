@@ -670,7 +670,7 @@ define([
             var storage = {};
             storage[sectionWrapper.cacheKey] = sectionWrapper.cache;
             chrome.storage.local.set(storage);
-            if (storage.enableFavoriteSync) {
+            if (storage.favoriteSync) {
                 chrome.storage.sync.set(storage);
             }
         };
@@ -1232,7 +1232,7 @@ define([
                     onReady && onReady();
                 });
             };
-            if (sectionWrapper.id === 'favorites' && storage.enableFavoriteSync) {
+            if (sectionWrapper.id === 'favorites' && storage.favoriteSync) {
                 chrome.storage.sync.get(sectionWrapper.cacheKey, function (syncStorage) {
                     next(syncStorage);
                 });
