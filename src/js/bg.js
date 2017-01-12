@@ -32,21 +32,6 @@ require([
         }
     };
 
-    var initContextMenuListener = function () {
-        chrome.contextMenus.onClicked.addListener(function (info) {
-            if (info.menuItemId === 'tms') {
-                var request = info.selectionText;
-                var params = request && '#' + utils.hashParam({
-                        query: request
-                    });
-                chrome.tabs.create({
-                    url: 'index.html' + params,
-                    selected: true
-                });
-            }
-        });
-    };
-
     var changeContextMenu = function (storage) {
         chrome.contextMenus.removeAll(function () {
             if (storage.contextMenu) {
@@ -57,14 +42,6 @@ require([
                     contexts: ["selection"]
                 });
             }
-        });
-    };
-
-    var initBrowserActionListener = function () {
-        chrome.browserAction.onClicked.addListener(function () {
-            chrome.tabs.create({
-                url: 'index.html'
-            });
         });
     };
 
@@ -80,18 +57,6 @@ require([
                 popup: ''
             });
         }
-    };
-
-    var initOmniboxListener = function () {
-        chrome.omnibox.onInputEntered.addListener(function (request) {
-            var params = request && '#' + utils.hashParam({
-                query: request
-            });
-            chrome.tabs.create({
-                url: 'index.html' + params,
-                selected: true
-            });
-        });
     };
 
     var load = function (reset) {
@@ -415,12 +380,64 @@ require([
         }
     });
 
-    initOmniboxListener();
-    initContextMenuListener();
-    initBrowserActionListener();
     load();
 
     migrate().then(function () {
         return loadLocalTrackers();
     });
 });
+
+(function () {
+    var param = function(params) {
+        var args = [];
+        for (var key in params) {
+            var value = params[key];
+            if (value !== null && value !== undefined) {
+                args.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+            }
+        }
+        return args.join('&');
+    };
+
+    var hashParam = function (params) {
+        var hashParams = {};
+        var len = 0;
+        for (var key in params) {
+            len++;
+            hashParams[key] = btoa(unescape(encodeURIComponent(params[key])));
+        }
+        if (len) {
+            hashParams.base64 = true;
+        }
+        return param(hashParams);
+    };
+
+    chrome.contextMenus.onClicked.addListener(function (info) {
+        if (info.menuItemId === 'tms') {
+            var request = info.selectionText;
+            var params = request && '#' + hashParam({
+                    query: request
+                });
+            chrome.tabs.create({
+                url: 'index.html' + params,
+                selected: true
+            });
+        }
+    });
+
+    chrome.omnibox.onInputEntered.addListener(function (request) {
+        var params = request && '#' + hashParam({
+                query: request
+            });
+        chrome.tabs.create({
+            url: 'index.html' + params,
+            selected: true
+        });
+    });
+
+    chrome.browserAction.onClicked.addListener(function () {
+        chrome.tabs.create({
+            url: 'index.html'
+        });
+    });
+})();
