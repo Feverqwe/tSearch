@@ -129,7 +129,7 @@ require([
             return getContent(url).then(function (body) {
                 var meta = utils.parseMeta(body);
                 var version = tracker.meta.version;
-                if (!utils.isNewVersion(meta.version, version)) {
+                if (!utils.isNewVersion(version, meta.version)) {
                     tracker.info.lastUpdate = parseInt(Date.now() / 1000);
                     throw new Error('C_ACTUAL');
                 }
