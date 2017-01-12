@@ -337,8 +337,17 @@ require([
             }, resolve);
         }).then(function (storage) {
             return !storage.migrated && new Promise(function (resolve) {
-                chrome.storage.local.get(null, resolve);
-            }).then(function (oldStorage) {
+                chrome.storage.local.get(null, function (storage) {
+                    chrome.storage.sync.get(null, function (syncStorage) {
+                        resolve({
+                            storage: storage,
+                            syncStorage: syncStorage
+                        });
+                    });
+                });
+            }).then(function (result) {
+                var oldStorage = result.storage;
+                var oldSyncStorage = result.syncStorage;
                 var storage = {
                     profiles: [],
                     trackers: {},
@@ -370,6 +379,12 @@ require([
                 }
                 if (oldStorage.hasOwnProperty('trackerListHeight') && typeof oldStorage.trackerListHeight === 'number') {
                     storage.trackerListHeight = oldStorage.trackerListHeight;
+                }
+                if (oldStorage.hasOwnProperty('expCache_favorites') && oldStorage.expCache_favorites) {
+                    storage.cache_favorites = oldStorage.expCache_favorites;
+                }
+                if (oldSyncStorage.hasOwnProperty('expCache_favorites') && oldSyncStorage.expCache_favorites) {
+                    storage.cache_favorites = oldSyncStorage.expCache_favorites;
                 }
                 if (oldStorage.hasOwnProperty('useEnglishPosterName') && oldStorage.useEnglishPosterName) {
                     storage.originalPosterName = true;
