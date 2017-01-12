@@ -8,6 +8,7 @@
 // @require jquery
 // @version 1.0.1
 // ==/UserScript==
+
 var deSanitizeKeys = ['categoryTitle', 'categoryUrl', 'title', 'url', 'downloadUrl'];
 var urlKeys = ['categoryUrl', 'url', 'downloadUrl', 'nextPageUrl'];
 
