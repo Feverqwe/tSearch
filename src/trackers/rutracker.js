@@ -27,16 +27,16 @@ var onPageLoad = function (response) {
 
     for (var i = 0, len = torrentElList.length; i < len; i++) {
         try {
-            var item = torrentElList.eq(i);
-            var categoryTitle = item.find('td.row1.f-name>div>a').text();
-            var categoryUrl = item.find('td.row1.f-name>div>a').attr('href');
-            var title = item.find('td.row4.med.tLeft.t-title>div.wbr.t-title>a').text();
-            var url = item.find('td.row4.med.tLeft.t-title>div.wbr.t-title>a').attr('href');
-            var size = item.find('td.row4.small.nowrap.tor-size>u').text();
-            var downloadUrl = item.find('td.row4.small.nowrap.tor-size>a').attr('href');
-            var seed = item.find('td.row4.nowrap:eq(1)>u').text();
-            var peer = item.find('td.row4.leechmed>b').text();
-            var date = item.find('td.row4.small.nowrap:eq(1)>u').text();
+            var $node = torrentElList.eq(i);
+            var categoryTitle = $node.find('td.row1.f-name>div>a').text();
+            var categoryUrl = $node.find('td.row1.f-name>div>a').attr('href');
+            var title = $node.find('td.row4.med.tLeft.t-title>div.wbr.t-title>a').text();
+            var url = $node.find('td.row4.med.tLeft.t-title>div.wbr.t-title>a').attr('href');
+            var size = $node.find('td.row4.small.nowrap.tor-size>u').text();
+            var downloadUrl = $node.find('td.row4.small.nowrap.tor-size>a').attr('href');
+            var seed = $node.find('td.row4.nowrap:eq(1)>u').text();
+            var peer = $node.find('td.row4.leechmed>b').text();
+            var date = $node.find('td.row4.small.nowrap:eq(1)>u').text();
 
             var item = {
                 categoryTitle: categoryTitle,
