@@ -14,7 +14,7 @@ define([
         return unixtime <= 0 ? '∞' : moment(unixtime * 1000).format('lll');
     };
     var unixTimeToFromNow = function (unixtime) {
-        return !unixtime <= 0 ? '∞' : moment(unixtime * 1000).fromNow();
+        return unixtime <= 0 ? '∞' : moment(unixtime * 1000).fromNow();
     };
 
     var sortInsertList = function(tableBody, sortedList, nodeList) {
