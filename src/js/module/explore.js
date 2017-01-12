@@ -16,12 +16,19 @@ define([
     ];
 
     var insertDefaultSections = function (idSectionMap, sections) {
+        var localeDisabled;
+        if (/^ru-?/.test(chrome.i18n.getUILanguage())) {
+            localeDisabled = ['imdbInCinema', 'imdbPopular', 'imdbSerials'];
+        } else {
+            localeDisabled = ['kpFavorites', 'kpInCinema', 'kpPopular', 'kpSerials'];
+        }
+
         defaultSections.forEach(function (id) {
             if (!idSectionMap[id]) {
                 var source = contentSource[id];
                 var item = {
                     id: id,
-                    enable: true,
+                    enable: localeDisabled.indexOf(id) === -1,
                     show: true,
                     width: source.defaultWidth,
                     lines: source.defaultLines
