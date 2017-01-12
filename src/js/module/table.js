@@ -561,7 +561,6 @@ define([
         };
 
         this.insertResults = function (/**trackerWrapper*/tracker, query, results) {
-            var visibleCount = 0;
             if (!trackerIdCount[tracker.id]) {
                 trackerIdCount[tracker.id] = {
                     filtered: 0,
@@ -595,7 +594,6 @@ define([
                     });
                     trackerIdCount[tracker.id].all++;
                     if (filterValue) {
-                        visibleCount++;
                         trackerIdCount[tracker.id].filtered++;
                     }
                 }
@@ -603,10 +601,18 @@ define([
 
             insertSortedRows();
 
-            if (visibleCount === 0) {
-                self.hide();
-            } else {
+            var hasResults = false;
+            for (var id in trackerIdCount) {
+                if (trackerIdCount[id].filtered) {
+                    hasResults = true;
+                    break;
+                }
+            }
+
+            if (hasResults) {
                 self.show();
+            } else {
+                self.hide();
             }
         };
 
@@ -641,7 +647,7 @@ define([
         };
 
         this.applyFilter = function () {
-            var visibleCount = 0;
+            var hasResults = false;
             var trackerId, filterValue;
             for (trackerId in trackerIdCount){
                 trackerIdCount[trackerId] = {
@@ -657,7 +663,7 @@ define([
                 row.node.dataset.filter = filterValue;
                 trackerIdCount[trackerId].all++;
                 if (filterValue) {
-                    visibleCount++;
+                    hasResults = true;
                     trackerIdCount[trackerId].filtered++;
                 }
             }
@@ -679,10 +685,10 @@ define([
                 }
             }
 
-            if (visibleCount === 0) {
-                self.hide();
-            } else {
+            if (hasResults) {
                 self.show();
+            } else {
+                self.hide();
             }
         };
         this.visible = true;
