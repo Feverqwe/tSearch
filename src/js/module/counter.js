@@ -62,7 +62,7 @@ define([
             var url = 'https://www.google-analytics.com/analytics.js';
             utils.request({
                 type: 'HEAD',
-                url: gas.src
+                url: url
             }, function (err) {
                 if (err) return;
 
