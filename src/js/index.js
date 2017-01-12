@@ -370,7 +370,7 @@ require([
                     var list = null;
                     var includeList = [];
                     var excludeList = [];
-                    var excludeRe = /^[!-]\w+/;
+                    var excludeRe = /^[!-].+/;
                     for (i = 0; part = parts[i]; i++) {
                         if (excludeRe.test(part)) {
                             list = excludeList;
