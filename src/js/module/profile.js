@@ -61,9 +61,9 @@ define([
         var trackerCount = function (countObj) {
             var value = '';
             if (countObj.filtered !== countObj.all) {
-                value = countObj.filtered + '/' + countObj.all;
+                value += countObj.filtered + '/' + countObj.all;
             } else {
-                value = countObj.filtered;
+                value += countObj.filtered;
             }
             if (this.currentCount !== value) {
                 this.currentCount = value;
