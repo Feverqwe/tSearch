@@ -2,6 +2,8 @@
  * Created by Anton on 31.12.2016.
  */
 "use strict";
+
+var messageStack = [];
 require.config({
     baseUrl: './js',
     paths: {
@@ -33,15 +35,18 @@ require([
     };
 
     var changeContextMenu = function (storage) {
-        chrome.contextMenus.removeAll(function () {
-            if (storage.contextMenu) {
-                chrome.contextMenus.create({
-                    type: "normal",
-                    id: "tms",
-                    title: chrome.i18n.getMessage('contextMenuTitle'),
-                    contexts: ["selection"]
-                });
-            }
+        return new Promise(function (resolve) {
+            chrome.contextMenus.removeAll(function () {
+                if (storage.contextMenu) {
+                    chrome.contextMenus.create({
+                        type: "normal",
+                        id: "tms",
+                        title: chrome.i18n.getMessage('contextMenuTitle'),
+                        contexts: ["selection"]
+                    });
+                }
+                resolve();
+            });
         });
     };
 
@@ -60,14 +65,18 @@ require([
     };
 
     var load = function (reset) {
-        chrome.storage.local.get({
-            invertIcon: false,
-            contextMenu: true,
-            disablePopup: false
-        }, function (storage) {
-            changeContextMenu(storage);
-            changeBrowserAction(storage, reset);
-            changeIcon(storage, reset);
+        return new Promise(function (resolve) {
+            chrome.storage.local.get({
+                invertIcon: false,
+                contextMenu: true,
+                disablePopup: false
+            }, resolve)
+        }).then(function (storage) {
+            return Promise.all([
+                changeContextMenu(storage),
+                changeBrowserAction(storage, reset),
+                changeIcon(storage, reset)
+            ]);
         });
     };
 
@@ -368,7 +377,7 @@ require([
         });
     };
 
-    chrome.runtime.onMessage.addListener(function (message, sender, response) {
+    var onMessage = function (message, sender, response) {
         if (message.action === 'reload') {
             load(true);
         }
@@ -378,12 +387,23 @@ require([
             }).then(response);
             return true;
         }
-    });
+    };
 
-    load();
+    var _stackEvents = messageStack;
+    messageStack = {
+        push: function (args) {
+            onMessage(args[0], args[1], args[2])
+        }
+    };
 
     migrate().then(function () {
-        return loadLocalTrackers();
+        load().then(function () {
+            var event;
+            while (event = _stackEvents.shift()) {
+                messageStack.push(event);
+            }
+        });
+        loadLocalTrackers();
     });
 });
 
@@ -439,5 +459,10 @@ require([
         chrome.tabs.create({
             url: 'index.html'
         });
+    });
+
+    chrome.runtime.onMessage.addListener(function (message, sender, response) {
+        messageStack.push([message, sender, response]);
+        return true;
     });
 })();
