@@ -280,6 +280,99 @@ require([
         });
     };
 
+    var migrate = function () {
+        var migrateProfiles = function (storage, oldStorage) {
+            var idMap = {
+                'nnm-club': 'nnmclub',
+                'free-torrents': 'freeTorrents',
+                'libertorrent': 'booktracker'
+            };
+            var profiles = storage.profiles;
+            var profileList = oldStorage.profileList;
+            Array.isArray(profileList) && profileList.forEach(function (profile) {
+                try {
+                    var trackers = [];
+                    Array.isArray(profile.trackerList) && profile.trackerList.forEach(function (tracker) {
+                        var id = tracker.id;
+                        id = idMap[id] || id;
+                        trackers.push({id: id});
+                    });
+                    profiles.push({
+                        id: profiles.length,
+                        name: profile.name,
+                        trackers: trackers
+                    });
+                } catch (err) {
+                    console.error('Migrate profile error!', err);
+                }
+            });
+        };
+        var migrateCustomTrackers = function (storage, oldStorage) {
+            var trackers = storage.trackers;
+            var customTorrentList = oldStorage.customTorrentList;
+            for (var id in customTorrentList) {
+                var trackerObj = customTorrentList[id];
+                try {
+                    trackers[id] = utils.trackerObjToUserScript(trackerObj);
+                } catch (err) {
+                    console.error('Migrate tracker error!', err);
+                }
+            }
+        };
+        return new Promise(function (resolve) {
+            chrome.storage.local.get({
+                migrated: false
+            }, resolve);
+        }).then(function (storage) {
+            return !storage.migrated && new Promise(function (resolve) {
+                chrome.storage.local.get(null, resolve);
+            }).then(function (oldStorage) {
+                var storage = {
+                    profiles: [],
+                    trackers: {},
+                    migrated: true
+                };
+                if (oldStorage.hasOwnProperty('contextMenu') && !oldStorage.contextMenu) {
+                    storage.contextMenu = false;
+                }
+                if (oldStorage.hasOwnProperty('enableFavoriteSync') && !oldStorage.enableFavoriteSync) {
+                    storage.favoriteSync = false;
+                }
+                if (oldStorage.hasOwnProperty('hidePeerColumn') && !oldStorage.hidePeerColumn) {
+                    storage.hidePeerRow = false;
+                }
+                if (oldStorage.hasOwnProperty('hideSeedColumn') && oldStorage.hideSeedColumn) {
+                    storage.hideSeedRow = true;
+                }
+                if (oldStorage.hasOwnProperty('invertIcon') && oldStorage.invertIcon) {
+                    storage.invertIcon = true;
+                }
+                if (oldStorage.hasOwnProperty('kinopoiskFolderId') && typeof oldStorage.kinopoiskFolderId === 'string') {
+                    storage.kpFolderId = oldStorage.kinopoiskFolderId;
+                }
+                if (oldStorage.hasOwnProperty('searchPopup') && !oldStorage.searchPopup) {
+                    storage.disablePopup = true;
+                }
+                if (oldStorage.hasOwnProperty('subCategoryFilter') && !oldStorage.subCategoryFilter) {
+                    storage.categoryWordFilter = false;
+                }
+                if (oldStorage.hasOwnProperty('trackerListHeight') && typeof oldStorage.trackerListHeight === 'number') {
+                    storage.trackerListHeight = oldStorage.trackerListHeight;
+                }
+                if (oldStorage.hasOwnProperty('useEnglishPosterName') && oldStorage.useEnglishPosterName) {
+                    storage.originalPosterName = true;
+                }
+                migrateCustomTrackers(storage, oldStorage);
+                migrateProfiles(storage, oldStorage);
+                return new Promise(function (resove) {
+                    chrome.storage.local.clear(function () {
+                        chrome.storage.local.set(storage, resove);
+                    });
+                });
+            });
+        });
+    };
+
     chrome.runtime.onMessage.addListener(function (message, sender, response) {
         if (message.action === 'reload') {
             load(true);
@@ -296,5 +389,8 @@ require([
     initContextMenuListener();
     initBrowserActionListener();
     load();
-    loadLocalTrackers();
+
+    migrate().then(function () {
+        return loadLocalTrackers();
+    });
 });
