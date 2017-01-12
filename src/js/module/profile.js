@@ -58,8 +58,17 @@ define([
             }
         };
 
-        var trackerCount = function (count) {
-            this.countNode.textContent = count;
+        var trackerCount = function (countObj) {
+            var value = 0;
+            if (!resultFilter.isFilteredTracker(this.id)) {
+                value = countObj.all;
+            } else {
+                value = countObj.filtered;
+            }
+            if (this.currentCount !== value) {
+                this.currentCount = value;
+                this.countNode.textContent = value;
+            }
         };
 
         var trackerStatus = function (status, message) {
@@ -218,6 +227,7 @@ define([
                     worker: worker,
                     selected: false,
                     select: trackerSelect,
+                    currentCount: 0,
                     count: trackerCount,
                     status: trackerStatus,
                     auth: null,
@@ -254,13 +264,17 @@ define([
                 tableCounter = table.counter;
                 for (trackerId in tableCounter) {
                     if (!counter[trackerId]) {
-                        counter[trackerId] = 0;
+                        counter[trackerId] = {
+                            filtered: 0,
+                            all: 0
+                        };
                     }
-                    counter[trackerId] += tableCounter[trackerId];
+                    counter[trackerId].filtered += tableCounter[trackerId].filtered;
+                    counter[trackerId].all += tableCounter[trackerId].all;
                 }
             }
             wrappedTrackers.forEach(function (/**trackerWrapper*/tracker) {
-                tracker.count(counter[tracker.id] || 0);
+                tracker.count(counter[tracker.id] || {filtered: 0, all: 0});
             });
         };
 

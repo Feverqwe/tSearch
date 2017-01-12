@@ -562,7 +562,10 @@ define([
 
         this.insertResults = function (/**trackerWrapper*/tracker, query, results) {
             if (!trackerIdCount[tracker.id]) {
-                trackerIdCount[tracker.id] = 0;
+                trackerIdCount[tracker.id] = {
+                    filtered: 0,
+                    all: 0
+                };
             }
 
             var highlightMap = highlight.getMap(query);
@@ -589,8 +592,9 @@ define([
                         tracker: tracker,
                         filterValue: filterValue
                     });
+                    trackerIdCount[tracker.id].all++;
                     if (filterValue) {
-                        trackerIdCount[tracker.id]++;
+                        trackerIdCount[tracker.id].filtered++;
                     }
                 }
             });
@@ -632,7 +636,10 @@ define([
             var visibleCount = 0;
             var trackerId, filterValue;
             for (trackerId in trackerIdCount){
-                trackerIdCount[trackerId] = 0;
+                trackerIdCount[trackerId] = {
+                    filtered: 0,
+                    all: 0
+                };
             }
 
             for (var i = 0, /**tableRow*/row; row = tableRows[i]; i++) {
@@ -640,9 +647,10 @@ define([
                 trackerId = row.torrent.trackerId;
                 row.filterValue = filterValue;
                 row.node.dataset.filter = filterValue;
+                trackerIdCount[trackerId].all++;
                 if (filterValue) {
                     visibleCount++;
-                    trackerIdCount[trackerId]++;
+                    trackerIdCount[trackerId].filtered++;
                 }
             }
 
