@@ -56,7 +56,7 @@ define([
 
         ee.on('profileRemoved', function (id) {
             if (activeProfile.id === id) {
-                self.load();
+                load();
                 self.select(storage.currentProfileId, true);
             } else {
                 refreshProfileIdMap();
