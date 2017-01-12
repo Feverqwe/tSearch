@@ -373,6 +373,9 @@ require([
                 }
                 if (oldStorage.hasOwnProperty('useEnglishPosterName') && oldStorage.useEnglishPosterName) {
                     storage.originalPosterName = true;
+                } else
+                if (!/^ru-?/.test(chrome.i18n.getUILanguage())) {
+                    storage.originalPosterName = true;
                 }
                 migrateCustomTrackers(storage, oldStorage);
                 migrateProfiles(storage, oldStorage);
