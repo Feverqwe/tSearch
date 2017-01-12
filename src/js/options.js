@@ -19,7 +19,7 @@ require([
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
-            hidePeerRow: false,
+            hidePeerRow: true,
             hideSeedRow: false,
             categoryWordFilter: true,
             contextMenu: true,

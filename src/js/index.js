@@ -30,7 +30,7 @@ require([
         chrome.storage.local.get({
             trackerListHeight: 200,
             currentProfileId: null,
-            hidePeerRow: false,
+            hidePeerRow: true,
             hideSeedRow: false,
             categoryWordFilter: true,
             profiles: [],
