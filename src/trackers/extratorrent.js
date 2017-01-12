@@ -47,10 +47,10 @@ API_exKit({
             categoryId: {selector: 'td:eq(1)>a', attr: 'href'},
             title: 'td.tli>a:eq(0)',
             url: {selector: 'td.tli>a:eq(0)', attr: 'href'},
-            size: 'td:eq(3)',
+            size: 'td:eq(4)',
             downloadUrl: {selector: 'td:eq(0)>a', attr: 'href'},
-            seed: 'td:eq(4)',
-            peer: 'td:eq(5)'
+            seed: 'td:eq(6)',
+            peer: 'td:eq(7)'
         },
         onAfterDomParse: function (details) {
             var $dom = details.$dom;
