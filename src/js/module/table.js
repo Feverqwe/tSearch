@@ -405,7 +405,7 @@ define([
                 if (type === 'quality') {
                     row.appendChild(dom.el('div', {
                         class: ['cell', 'row__cell', 'cell-' + type],
-                        text: torrent.quality
+                        text: parseInt(torrent.quality)
                     }))
                 } else
                 if (type === 'title') {
