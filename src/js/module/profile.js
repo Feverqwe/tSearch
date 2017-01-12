@@ -329,6 +329,8 @@ define([
         };
 
         var onSearch = function (query) {
+            ga('send', 'event', 'Search', 'keyword', query);
+
             destroyTables();
 
             createTable().then(function (table) {
