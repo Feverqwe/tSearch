@@ -165,7 +165,7 @@ require([
         };
 
         return new Promise(function (resolve) {
-            if (!tracker.meta.downloadURL) {
+            if (!tracker.meta.downloadURL || tracker.info.disableAutoUpdate) {
                 throw new Error('C_UNAVAILABLE');
             }
             var now = parseInt(Date.now() / 1000);
