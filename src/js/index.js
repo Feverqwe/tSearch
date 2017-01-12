@@ -57,42 +57,6 @@ require([
             }
         });
     }).then(function (storage) {
-        var promise = Promise.resolve();
-        if (utils.isEmptyObject(storage.trackers)) {
-            promise = promise.then(function () {
-                var promiseList = [];
-                var trackers = storage.trackers;
-                ['nnmclub', 'piratebit', 'rutracker'].forEach(function (name) {
-                    promiseList.push(new Promise(function (resolve) {
-                        utils.request('./trackers/' + name + '.js', function (err, response) {
-                            try {
-                                if (err) throw err;
-                                trackers[name] = {
-                                    id: name,
-                                    meta: utils.parseMeta(response.body),
-                                    info: {},
-                                    code: response.body
-                                };
-                            } catch (err) {
-                                console.error('Load local tracker error!', err);
-                            }
-                            resolve();
-                        });
-                    }));
-                });
-                return Promise.all(promiseList).then(function () {
-                    return new Promise(function (resolve) {
-                        chrome.storage.local.set({
-                            trackers: trackers
-                        }, resolve);
-                    })
-                });
-            });
-        }
-        return promise.then(function () {
-            return storage;
-        });
-    }).then(function (storage) {
         document.body.classList.remove('loading');
 
         var ee = new EventEmitter();
