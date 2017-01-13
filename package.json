@@ -1,6 +1,6 @@
 {
   "name": "TMS",
   "version": "1.0.0",
-  "outputDir": "output/",
-  "extVersion": "1.8.0"
+  "output": "output/",
+  "extVersion": "2.0.6"
 }
