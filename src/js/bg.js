@@ -269,17 +269,8 @@ require([
             }, resolve);
         }).then(function (storage) {
             return !storage.migrated && new Promise(function (resolve) {
-                chrome.storage.local.get(null, function (storage) {
-                    chrome.storage.sync.get(null, function (syncStorage) {
-                        resolve({
-                            storage: storage,
-                            syncStorage: syncStorage
-                        });
-                    });
-                });
-            }).then(function (result) {
-                var oldStorage = result.storage;
-                var oldSyncStorage = result.syncStorage;
+                chrome.storage.local.get(null, resolve);
+            }).then(function (oldStorage) {
                 var storage = {
                     profiles: [],
                     trackers: {},
@@ -315,9 +306,6 @@ require([
                 if (oldStorage.hasOwnProperty('expCache_favorites') && oldStorage.expCache_favorites) {
                     storage.cache_favorites = oldStorage.expCache_favorites;
                 }
-                if (oldSyncStorage.hasOwnProperty('expCache_favorites') && oldSyncStorage.expCache_favorites) {
-                    storage.cache_favorites = oldSyncStorage.expCache_favorites;
-                }
                 if (oldStorage.hasOwnProperty('useEnglishPosterName') && oldStorage.useEnglishPosterName) {
                     storage.originalPosterName = true;
                 } else
@@ -326,9 +314,9 @@ require([
                 }
                 migrateCustomTrackers(storage, oldStorage);
                 migrateProfiles(storage, oldStorage);
-                return new Promise(function (resove) {
+                return new Promise(function (resolve) {
                     chrome.storage.local.clear(function () {
-                        chrome.storage.local.set(storage, resove);
+                        chrome.storage.local.set(storage, resolve);
                     });
                 });
             });
