@@ -212,48 +212,6 @@ require([
         });
     };
 
-    var loadLocalTrackers = function () {
-        return new Promise(function (resolve) {
-            chrome.storage.local.get({
-                trackers: {}
-            }, resolve);
-        }).then(function (storage) {
-            var promiseList = [];
-            var trackers = storage.trackers;
-            [
-                'bitsnoop', 'booktracker', 'brodim', 'extratorrent',
-                'filebase', 'freeTorrents', 'hdclub', 'inmac',
-                'kinozal', 'megashara', 'mininova', 'nnmclub',
-                'opentorrent', 'piratebit', 'rgfootball', 'rutor',
-                'rutracker', 'tapochek', 'tfile', 'thepiratebay'
-            ].forEach(function (name) {
-                !trackers[name] && promiseList.push(new Promise(function (resolve) {
-                    utils.request('./trackers/' + name + '.js', function (err, response) {
-                        try {
-                            if (err) throw err;
-                            trackers[name] = {
-                                id: name,
-                                meta: utils.parseMeta(response.body),
-                                info: {},
-                                code: response.body
-                            };
-                        } catch (err) {
-                            console.error('Load local tracker error!', err);
-                        }
-                        resolve();
-                    });
-                }));
-            });
-            return Promise.all(promiseList).then(function (result) {
-                return result.length && new Promise(function (resolve) {
-                    chrome.storage.local.set({
-                        trackers: trackers
-                    }, resolve);
-                });
-            });
-        });
-    };
-
     var migrate = function () {
         var migrateProfiles = function (storage, oldStorage) {
             var idMap = {
@@ -403,7 +361,6 @@ require([
                 messageStack.push(event);
             }
         });
-        loadLocalTrackers();
     });
 });
 
