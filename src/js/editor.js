@@ -5,6 +5,7 @@
 require.config({
     baseUrl: './js',
     paths: {
+        jquery: './lib/jquery-3.1.1.min',
         promise: './lib/promise.min',
         EventEmitter: './lib/EventEmitter.min'
     }
@@ -208,20 +209,31 @@ require([
                                     text: chrome.i18n.getMessage('add'),
                                     on: ['click', function (e) {
                                         e.preventDefault();
-                                        var values = dialog.getValues();
-
-                                        var code = '';
-                                        try {
+                                        Promise.resolve().then(function () {
+                                            var result = Promise.resolve();
+                                            var values = dialog.getValues();
                                             var trackerObj = JSON.parse(values.code);
-                                            code = utils.trackerObjToUserScript(trackerObj);
-                                        } catch (err) {
+                                            if (trackerObj.version === 1) {
+                                                result = result.then(function () {
+                                                    return new Promise(function (resolve) {
+                                                        require(['./module/exKit'], resolve);
+                                                    }).then(function (exKit) {
+                                                        trackerObj = exKit.convertV1ToV2(trackerObj);
+                                                    });
+                                                });
+                                            }
+                                            return result.then(function () {
+                                                return trackerObj;
+                                            });
+                                        }).then(function (trackerObj) {
+                                            var code = utils.trackerObjToUserScript(trackerObj);
+                                            trackerEditor.setCode(code);
+
+                                            dialog.destroy();
+                                        }).catch(function (err) {
                                             alert('Error!\n' + err.message);
                                             throw err;
-                                        }
-
-                                        trackerEditor.setCode(code);
-
-                                        dialog.destroy();
+                                        });
                                     }]
                                 }),
                                 dom.el('a', {
