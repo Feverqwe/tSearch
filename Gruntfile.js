@@ -136,7 +136,7 @@ module.exports = function(grunt) {
         };
     })();
 
-    grunt.registerTask('build', function () {
+    grunt.registerTask('buildChrome', function () {
         grunt.config.set('vendor', 'chrome/');
 
         var files = grunt.file.expand({
@@ -158,6 +158,6 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('default', [
-        'build'
+        'buildChrome'
     ]);
 };
