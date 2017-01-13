@@ -18,6 +18,7 @@ require([
     './module/utils',
     './module/dom',
     './module/dialog',
+    './module/exKit',
     './module/counter',
     '../codeMirror/lib/codemirror',
     '../codeMirror/mode/javascript/javascript',
@@ -25,7 +26,7 @@ require([
     '../codeMirror/addon/edit/closebrackets',
     '../codeMirror/addon/comment/continuecomment',
     '../codeMirror/addon/selection/active-line'
-], function (Promise, EventEmitter, PageController, i18nDom, utils, dom, Dialog, counter, CodeMirror) {
+], function (Promise, EventEmitter, PageController, i18nDom, utils, dom, Dialog, exKit, counter, CodeMirror) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -209,31 +210,22 @@ require([
                                     text: chrome.i18n.getMessage('add'),
                                     on: ['click', function (e) {
                                         e.preventDefault();
-                                        Promise.resolve().then(function () {
-                                            var result = Promise.resolve();
-                                            var values = dialog.getValues();
+                                        var values = dialog.getValues();
+                                        var code = '';
+
+                                        try {
                                             var trackerObj = JSON.parse(values.code);
                                             if (trackerObj.version === 1) {
-                                                result = result.then(function () {
-                                                    return new Promise(function (resolve) {
-                                                        require(['./module/exKit'], resolve);
-                                                    }).then(function (exKit) {
-                                                        trackerObj = exKit.convertV1ToV2(trackerObj);
-                                                    });
-                                                });
+                                                trackerObj = exKit.convertV1ToV2(trackerObj);
                                             }
-                                            return result.then(function () {
-                                                return trackerObj;
-                                            });
-                                        }).then(function (trackerObj) {
-                                            var code = utils.trackerObjToUserScript(trackerObj);
-                                            trackerEditor.setCode(code);
-
-                                            dialog.destroy();
-                                        }).catch(function (err) {
+                                            code = utils.trackerObjToUserScript(trackerObj);
+                                        } catch (err) {
                                             alert('Error!\n' + err.message);
                                             throw err;
-                                        });
+                                        }
+
+                                        trackerEditor.setCode(code);
+                                        dialog.destroy();
                                     }]
                                 }),
                                 dom.el('a', {
