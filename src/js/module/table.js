@@ -4,12 +4,13 @@
 "use strict";
 define([
     'promise',
+    'moment',
     './dom',
     '../lib/filesize.min',
     './highlight',
     './rate'
-], function (Promise, dom, filesize, highlight, rate) {
-    var moment = null;
+], function (Promise, moment, dom, filesize, highlight, rate) {
+    moment.locale(chrome.i18n.getUILanguage());
     var unixTimeToString = function (unixtime) {
         return unixtime <= 0 ? '∞' : moment(unixtime * 1000).format('lll');
     };
@@ -515,48 +516,34 @@ define([
         this.node = null;
 
         this.load = function () {
-            var promise = Promise.resolve();
-            if (!moment) {
-                promise = promise.then(function () {
-                    return new Promise(function (resolve) {
-                        require(['moment'], function (_moment) {
-                            moment = _moment;
-                            moment.locale(chrome.i18n.getUILanguage());
-                            resolve();
-                        });
-                    });
-                });
-            }
-            return promise.then(function () {
-                head = getHeadRow();
-                body = {
-                    node: dom.el('div', {
-                        class: ['body', 'table__body'],
-                        on: [
-                            ['mouseup', function (e) {
-                                onLickClick(e.target, tableRows);
-                            }]
-                        ]
-                    })
-                };
-                footer = {
-                    node: dom.el('div', {
-                        class: ['footer', 'table__footer']
-                    }),
-                    more: null
-                };
-                self.node = dom.el('div', {
-                    class: ['table', 'table-results'],
-                    append: [
-                        head.node,
-                        body.node,
-                        footer.node
+            head = getHeadRow();
+            body = {
+                node: dom.el('div', {
+                    class: ['body', 'table__body'],
+                    on: [
+                        ['mouseup', function (e) {
+                            onLickClick(e.target, tableRows);
+                        }]
                     ]
-                });
+                })
+            };
+            footer = {
+                node: dom.el('div', {
+                    class: ['footer', 'table__footer']
+                }),
+                more: null
+            };
+            self.node = dom.el('div', {
+                class: ['table', 'table-results'],
+                append: [
+                    head.node,
+                    body.node,
+                    footer.node
+                ]
+            });
 
-                sortCells.forEach(function (row) {
-                    head.cellTypeCell[row[0]].sort(row[1]);
-                });
+            sortCells.forEach(function (row) {
+                head.cellTypeCell[row[0]].sort(row[1]);
             });
         };
 
