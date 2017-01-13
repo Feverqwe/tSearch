@@ -7,7 +7,6 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    require('google-closure-compiler').grunt(grunt);
 
     grunt.initConfig({
         output: 'output/',
@@ -36,31 +35,127 @@ module.exports = function(grunt) {
         language_in: 'ECMASCRIPT5_STRICT'
     };
 
+    var compressJs = (function () {
+        var ClosureCompiler = require('google-closure-compiler').compiler;
+        var crypto = require('crypto');
+        var fs = require('fs');
+        var getHash = function(filePath) {
+            return new Promise(function (resolve) {
+                var fd = fs.createReadStream(filePath);
+                var hash = crypto.createHash('sha256');
+                hash.setEncoding('hex');
+                fd.on('end', function () {
+                    hash.end();
+                    resolve(hash.read());
+                });
+                fd.pipe(hash);
+            });
+        };
+        var fileExists = function (filePath) {
+            return new Promise(function (resolve) {
+                fs.stat(filePath, function (err, stat) {
+                    if (err) {
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                });
+            })
+        };
+        var compressJs = function (filePath, minFilePath) {
+            return new Promise(function (resolve, reject) {
+                var compilerProcess = new ClosureCompiler({
+                    js: filePath
+                });
+                compilerProcess.run(function(exitCode, stdOut, stdErr) {
+                    if (exitCode === 0) {
+                        if (stdErr) {
+                            console.log(stdErr);
+                        }
+                        return fs.writeFile(minFilePath, stdOut, function (err) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve();
+                            }
+                        });
+                    } else {
+                        reject(new Error(exitCode + ': ' + stdErr));
+                    }
+                });
+            })
+        };
+        var mkdirSync = function (path) {
+            try {
+                fs.accessSync(path, fs.F_OK);
+            } catch (e) {
+                if (e.code === 'ENOENT') {
+                    fs.mkdirSync(path);
+                } else {
+                    throw e;
+                }
+            }
+        };
+
+        return function (files) {
+            var profileMinPath = path.join(__dirname, './output/cache');
+            mkdirSync(profileMinPath);
+
+            var promise = Promise.resolve();
+            files.forEach(function (filePath) {
+                promise = promise.then(function () {
+                    return getHash(filePath).then(function (hash) {
+                        var minFilename = hash + '.js';
+                        var minFilePath = path.join(profileMinPath, minFilename);
+                        return fileExists(minFilePath).then(function (minFileExists) {
+                            var compressPromise;
+                            if (minFileExists) {
+                                compressPromise = Promise.resolve()
+                            } else {
+                                compressPromise = compressJs(filePath, minFilePath);
+                            }
+                            return compressPromise.then(function () {
+                                return new Promise(function (resolve, reject) {
+                                    var rd = fs.createReadStream(minFilePath);
+                                    rd.on("error", function(err) {
+                                        reject(err);
+                                    });
+                                    var wr = fs.createWriteStream(filePath);
+                                    wr.on("error", function(err) {
+                                        reject(err);
+                                    });
+                                    wr.on("close", function(ex) {
+                                        resolve();
+                                    });
+                                    rd.pipe(wr);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+            return promise;
+        };
+    })();
+
     grunt.registerTask('build', function () {
         grunt.config.set('vendor', 'chrome/');
 
         var files = grunt.file.expand({
             cwd: 'src/'
-        }, ["./js/*.js", "./js/module/*.js"]).map(function (path) {
-            var fullPath = '<%= output %><%= vendor %>' + path;
-            var obj = {};
-            obj[fullPath] = fullPath;
-            return obj;
+        }, ["./js/*.js", "./js/module/*.js"]).map(function (filepath) {
+            return path.resolve(grunt.config('output') + grunt.config('vendor') + filepath);
         });
 
-        grunt.config.merge({
-            'closure-compiler': {
-                main: {
-                    files: files,
-                    options: ccCompressOptions
-                }
-            }
+        grunt.registerTask('compressJs', function () {
+            var async = this.async();
+            compressJs(files).then(async);
         });
 
         grunt.task.run([
             'clean:vendor',
             'copy:main',
-            'closure-compiler:main'
+            'compressJs'
         ]);
     });
 
