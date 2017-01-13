@@ -1,9 +1,9 @@
 /**
  * Created by Anton on 05.01.2017.
  */
-(function () {
-    var dom = require('./dom');
-
+define([
+    './dom'
+], function (dom) {
     var unique = function (value, index, self) {
         return self.indexOf(value) === index;
     };
@@ -169,5 +169,5 @@
            });
        }
    };
-   module.exports = ResultFilter;
-})();
+   return ResultFilter;
+});

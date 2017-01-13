@@ -2,8 +2,18 @@
  * Created by Anton on 31.12.2016.
  */
 "use strict";
-(function () {
-    var utils = require('./module/utils');
+
+var messageStack = [];
+require.config({
+    baseUrl: './js',
+    paths: {
+        promise: './lib/promise.min'
+    }
+});
+require([
+    'promise',
+    './module/utils'
+], function (Promise, utils) {
     var changeIcon = function (storage, reset) {
         if (reset) {
             chrome.browserAction.setIcon({
@@ -24,21 +34,6 @@
         }
     };
 
-    var initContextMenuListener = function () {
-        chrome.contextMenus.onClicked.addListener(function (info) {
-            if (info.menuItemId === 'tms') {
-                var request = info.selectionText;
-                var params = request && '#' + utils.hashParam({
-                        query: request
-                    });
-                chrome.tabs.create({
-                    url: 'index.html' + params,
-                    selected: true
-                });
-            }
-        });
-    };
-
     var changeContextMenu = function (storage) {
         return new Promise(function (resolve) {
             chrome.contextMenus.removeAll(function () {
@@ -51,14 +46,6 @@
                     });
                 }
                 resolve();
-            });
-        });
-    };
-
-    var initBrowserActionListener = function () {
-        chrome.browserAction.onClicked.addListener(function () {
-            chrome.tabs.create({
-                url: 'index.html'
             });
         });
     };
@@ -282,92 +269,145 @@
             }, resolve);
         }).then(function (storage) {
             return !storage.migrated && new Promise(function (resolve) {
-                    chrome.storage.local.get(null, resolve);
-                }).then(function (oldStorage) {
-                    var storage = {
-                        profiles: [],
-                        trackers: {},
-                        migrated: true
-                    };
-                    if (oldStorage.hasOwnProperty('contextMenu') && !oldStorage.contextMenu) {
-                        storage.contextMenu = false;
-                    }
-                    if (oldStorage.hasOwnProperty('enableFavoriteSync') && !oldStorage.enableFavoriteSync) {
-                        storage.favoriteSync = false;
-                    }
-                    if (oldStorage.hasOwnProperty('hidePeerColumn') && !oldStorage.hidePeerColumn) {
-                        storage.hidePeerRow = false;
-                    }
-                    if (oldStorage.hasOwnProperty('hideSeedColumn') && oldStorage.hideSeedColumn) {
-                        storage.hideSeedRow = true;
-                    }
-                    if (oldStorage.hasOwnProperty('invertIcon') && oldStorage.invertIcon) {
-                        storage.invertIcon = true;
-                    }
-                    if (oldStorage.hasOwnProperty('kinopoiskFolderId') && typeof oldStorage.kinopoiskFolderId === 'string') {
-                        storage.kpFolderId = oldStorage.kinopoiskFolderId;
-                    }
-                    if (oldStorage.hasOwnProperty('searchPopup') && !oldStorage.searchPopup) {
-                        storage.disablePopup = true;
-                    }
-                    if (oldStorage.hasOwnProperty('subCategoryFilter') && !oldStorage.subCategoryFilter) {
-                        storage.categoryWordFilter = false;
-                    }
-                    if (oldStorage.hasOwnProperty('trackerListHeight') && typeof oldStorage.trackerListHeight === 'number') {
-                        storage.trackerListHeight = oldStorage.trackerListHeight;
-                    }
-                    if (oldStorage.hasOwnProperty('expCache_favorites') && oldStorage.expCache_favorites) {
-                        storage.cache_favorites = oldStorage.expCache_favorites;
-                    }
-                    if (oldStorage.hasOwnProperty('useEnglishPosterName') && oldStorage.useEnglishPosterName) {
-                        storage.originalPosterName = true;
-                    } else
-                    if (!/^ru-?/.test(chrome.i18n.getUILanguage())) {
-                        storage.originalPosterName = true;
-                    }
-                    migrateCustomTrackers(storage, oldStorage);
-                    migrateProfiles(storage, oldStorage);
-                    return new Promise(function (resolve) {
-                        chrome.storage.local.clear(function () {
-                            chrome.storage.local.set(storage, resolve);
-                        });
+                chrome.storage.local.get(null, resolve);
+            }).then(function (oldStorage) {
+                var storage = {
+                    profiles: [],
+                    trackers: {},
+                    migrated: true
+                };
+                if (oldStorage.hasOwnProperty('contextMenu') && !oldStorage.contextMenu) {
+                    storage.contextMenu = false;
+                }
+                if (oldStorage.hasOwnProperty('enableFavoriteSync') && !oldStorage.enableFavoriteSync) {
+                    storage.favoriteSync = false;
+                }
+                if (oldStorage.hasOwnProperty('hidePeerColumn') && !oldStorage.hidePeerColumn) {
+                    storage.hidePeerRow = false;
+                }
+                if (oldStorage.hasOwnProperty('hideSeedColumn') && oldStorage.hideSeedColumn) {
+                    storage.hideSeedRow = true;
+                }
+                if (oldStorage.hasOwnProperty('invertIcon') && oldStorage.invertIcon) {
+                    storage.invertIcon = true;
+                }
+                if (oldStorage.hasOwnProperty('kinopoiskFolderId') && typeof oldStorage.kinopoiskFolderId === 'string') {
+                    storage.kpFolderId = oldStorage.kinopoiskFolderId;
+                }
+                if (oldStorage.hasOwnProperty('searchPopup') && !oldStorage.searchPopup) {
+                    storage.disablePopup = true;
+                }
+                if (oldStorage.hasOwnProperty('subCategoryFilter') && !oldStorage.subCategoryFilter) {
+                    storage.categoryWordFilter = false;
+                }
+                if (oldStorage.hasOwnProperty('trackerListHeight') && typeof oldStorage.trackerListHeight === 'number') {
+                    storage.trackerListHeight = oldStorage.trackerListHeight;
+                }
+                if (oldStorage.hasOwnProperty('expCache_favorites') && oldStorage.expCache_favorites) {
+                    storage.cache_favorites = oldStorage.expCache_favorites;
+                }
+                if (oldStorage.hasOwnProperty('useEnglishPosterName') && oldStorage.useEnglishPosterName) {
+                    storage.originalPosterName = true;
+                } else
+                if (!/^ru-?/.test(chrome.i18n.getUILanguage())) {
+                    storage.originalPosterName = true;
+                }
+                migrateCustomTrackers(storage, oldStorage);
+                migrateProfiles(storage, oldStorage);
+                return new Promise(function (resolve) {
+                    chrome.storage.local.clear(function () {
+                        chrome.storage.local.set(storage, resolve);
                     });
                 });
+            });
         });
     };
 
-    var initOmniboxListener = function () {
-        chrome.omnibox.onInputEntered.addListener(function (request) {
-            var params = request && '#' + utils.hashParam({
+    var onMessage = function (message, sender, response) {
+        if (message.action === 'reload') {
+            load(true);
+        }
+        if (message.action === 'update') {
+            update(message).catch(function (err) {
+                console.error('Update error!', err);
+            }).then(response);
+            return true;
+        }
+    };
+
+    var _stackEvents = messageStack;
+    messageStack = {
+        push: function (args) {
+            onMessage(args[0], args[1], args[2])
+        }
+    };
+
+    migrate().then(function () {
+        load().then(function () {
+            var event;
+            while (event = _stackEvents.shift()) {
+                messageStack.push(event);
+            }
+        });
+    });
+});
+
+(function () {
+    var param = function(params) {
+        var args = [];
+        for (var key in params) {
+            var value = params[key];
+            if (value !== null && value !== undefined) {
+                args.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+            }
+        }
+        return args.join('&');
+    };
+
+    var hashParam = function (params) {
+        var hashParams = {};
+        var len = 0;
+        for (var key in params) {
+            len++;
+            hashParams[key] = btoa(unescape(encodeURIComponent(params[key])));
+        }
+        if (len) {
+            hashParams.base64 = true;
+        }
+        return param(hashParams);
+    };
+
+    chrome.contextMenus.onClicked.addListener(function (info) {
+        if (info.menuItemId === 'tms') {
+            var request = info.selectionText;
+            var params = request && '#' + hashParam({
                     query: request
                 });
             chrome.tabs.create({
                 url: 'index.html' + params,
                 selected: true
             });
+        }
+    });
+
+    chrome.omnibox.onInputEntered.addListener(function (request) {
+        var params = request && '#' + hashParam({
+                query: request
+            });
+        chrome.tabs.create({
+            url: 'index.html' + params,
+            selected: true
         });
-    };
+    });
 
-    var initMessageListener = function () {
-        chrome.runtime.onMessage.addListener(function (message, sender, response) {
-            if (message.action === 'reload') {
-                load(true);
-            }
-            if (message.action === 'update') {
-                update(message).catch(function (err) {
-                    console.error('Update error!', err);
-                }).then(response);
-                return true;
-            }
+    chrome.browserAction.onClicked.addListener(function () {
+        chrome.tabs.create({
+            url: 'index.html'
         });
-    };
+    });
 
-    initOmniboxListener();
-    initContextMenuListener();
-    initBrowserActionListener();
-    initMessageListener();
-
-    migrate().then(function () {
-        return load();
+    chrome.runtime.onMessage.addListener(function (message, sender, response) {
+        messageStack.push([message, sender, response]);
+        return true;
     });
 })();

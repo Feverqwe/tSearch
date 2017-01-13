@@ -2,7 +2,7 @@
  * Created by Anton on 01.01.2017.
  */
 "use strict";
-(function () {
+define(function () {
     var extraProperty = {
         text: 'textContent',
         data: function(el, obj) {
@@ -86,7 +86,7 @@
         }
         return el;
     };
-    var dom = {
+    return {
         closestNode: function (parent, someChild) {
             if (parent === someChild) {
                 return null;
@@ -121,6 +121,4 @@
         },
         el: create
     };
-
-    module.exports = dom;
-})();
+});

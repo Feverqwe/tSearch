@@ -2,10 +2,17 @@
  * Created by Anton on 31.12.2016.
  */
 "use strict";
-(function () {
-    var i18nDom = require('./module/i18nDom');
-    var utils = require('./module/utils');
-
+require.config({
+    baseUrl: './js',
+    paths: {
+        jquery: './lib/jquery-3.1.1.min',
+        jqueryUi: './lib/jquery-ui.min'
+    }
+});
+require([
+    './module/i18nDom',
+    './module/utils'
+], function (i18nDom, utils) {
     i18nDom();
 
     document.body.classList.remove('loading');
@@ -184,7 +191,10 @@
     };
 
     setTimeout(function () {
-        require('jqueryUi');
-        initAutoComplete(input, submit);
+        require(['jquery'], function () {
+            require(['jqueryUi'], function () {
+                initAutoComplete(input, submit);
+            });
+        });
     }, 50);
-})();
+});

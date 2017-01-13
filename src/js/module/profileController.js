@@ -2,8 +2,9 @@
  * Created by Anton on 06.01.2017.
  */
 "use strict";
-(function () {
-    var Profile = require('./profile');
+define([
+    './profile'
+], function (Profile) {
     var ProfileController = function (storage, ee, ProfileManager, resultFilter) {
         var self = this;
         var profileIdProfileMap = {};
@@ -105,5 +106,5 @@
         };
         this.load = load;
     };
-    module.exports = ProfileController;
-})();
+    return ProfileController;
+});

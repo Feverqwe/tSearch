@@ -2,15 +2,30 @@
  * Created by Anton on 02.01.2017.
  */
 "use strict";
-(function () {
-    var PageController = require('./module/pageController');
-    var i18nDom = require('./module/i18nDom');
-    var utils = require('./module/utils');
-    var dom = require('./module/dom');
-    var Dialog = require('./module/dialog');
-    var counter = require('./module/counter');
-    var CodeMirror = require('../codeMirror/lib/codemirror');
-
+require.config({
+    baseUrl: './js',
+    paths: {
+        jquery: './lib/jquery-3.1.1.min',
+        promise: './lib/promise.min',
+        EventEmitter: './lib/EventEmitter.min'
+    }
+});
+require([
+    'promise',
+    'EventEmitter',
+    './module/pageController',
+    './module/i18nDom',
+    './module/utils',
+    './module/dom',
+    './module/dialog',
+    './module/counter',
+    '../codeMirror/lib/codemirror',
+    '../codeMirror/mode/javascript/javascript',
+    '../codeMirror/addon/edit/matchbrackets',
+    '../codeMirror/addon/edit/closebrackets',
+    '../codeMirror/addon/comment/continuecomment',
+    '../codeMirror/addon/selection/active-line'
+], function (Promise, EventEmitter, PageController, i18nDom, utils, dom, Dialog, counter, CodeMirror) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -194,20 +209,31 @@
                                     text: chrome.i18n.getMessage('add'),
                                     on: ['click', function (e) {
                                         e.preventDefault();
-                                        var values = dialog.getValues();
-                                        var code = '';
-                                        try {
+                                        Promise.resolve().then(function () {
+                                            var result = Promise.resolve();
+                                            var values = dialog.getValues();
                                             var trackerObj = JSON.parse(values.code);
                                             if (trackerObj.version === 1) {
-                                                trackerObj = exKit.convertV1ToV2(trackerObj);
+                                                result = result.then(function () {
+                                                    return new Promise(function (resolve) {
+                                                        require(['./module/exKit'], resolve);
+                                                    }).then(function (exKit) {
+                                                        trackerObj = exKit.convertV1ToV2(trackerObj);
+                                                    });
+                                                });
                                             }
-                                            code = utils.trackerObjToUserScript(trackerObj);
-                                        } catch (err) {
+                                            return result.then(function () {
+                                                return trackerObj;
+                                            });
+                                        }).then(function (trackerObj) {
+                                            var code = utils.trackerObjToUserScript(trackerObj);
+                                            trackerEditor.setCode(code);
+
+                                            dialog.destroy();
+                                        }).catch(function (err) {
                                             alert('Error!\n' + err.message);
                                             throw err;
-                                        }
-                                        trackerEditor.setCode(code);
-                                        dialog.destroy();
+                                        });
                                     }]
                                 }),
                                 dom.el('a', {
@@ -290,4 +316,4 @@
 
         counter();
     });
-})();
+});

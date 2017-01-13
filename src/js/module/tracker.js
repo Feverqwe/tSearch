@@ -2,11 +2,12 @@
  * Created by Anton on 04.01.2017.
  */
 "use strict";
-(function () {
-    var utils = require('./utils');
-    var FrameWorker = require('./frameWorker');
-    var Transport = require('./transport');
-
+define([
+    'promise',
+    './utils',
+    './frameWorker',
+    './transport'
+], function (Promise, utils, FrameWorker, Transport) {
     var Tracker = function (/**tracker*/tracker) {
         var self = this;
         var ready = false;
@@ -159,5 +160,5 @@
             load(onReady);
         };
     };
-    module.exports = Tracker;
-})();
+    return Tracker;
+});

@@ -2,18 +2,30 @@
  * Created by Anton on 31.12.2016.
  */
 "use strict";
-(function () {
-    var i18nDom = require('./module/i18nDom');
-    var utils = require('./module/utils');
-    var dom = require('./module/dom');
-    var selectBox = require('./module/selectBox');
-    var ProfileManager = require('./module/profileManager');
-    var ResultFilter = require('./module/resultFilter');
-    var ProfileController = require('./module/profileController');
-    var PageController = require('./module/pageController');
-    var Explore = require('./module/explore');
-    var counter = require('./module/counter');
-
+require.config({
+    baseUrl: './js',
+    paths: {
+        jquery: './lib/jquery-3.1.1.min',
+        jqueryUi: './lib/jquery-ui.min',
+        moment: './lib/moment-with-locales.min',
+        promise: './lib/promise.min',
+        EventEmitter: './lib/EventEmitter.min'
+    }
+});
+require([
+    'promise',
+    'EventEmitter',
+    './module/i18nDom',
+    './module/utils',
+    './module/dom',
+    './module/selectBox',
+    './module/profileManager',
+    './module/resultFilter',
+    './module/profileController',
+    './module/pageController',
+    './module/explore',
+    './module/counter'
+], function (Promise, EventEmitter, i18nDom, utils, dom, selectBox, ProfileManager, ResultFilter, ProfileController, PageController, Explore, counter) {
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -304,8 +316,11 @@
             };
 
             setTimeout(function () {
-                require('jqueryUi');
-                initAutoComplete(searchInput, searchSubmit);
+                require(['jquery'], function () {
+                    require(['jqueryUi'], function () {
+                        initAutoComplete(searchInput, searchSubmit);
+                    });
+                });
             }, 50);
         })();
 
@@ -621,8 +636,11 @@
                 };
 
                 setTimeout(function () {
-                    require('jqueryUi');
-                    initDataPicker(inputFrom, inputTo);
+                    require(['jquery'], function () {
+                        require(['jqueryUi'], function () {
+                            initDataPicker(inputFrom, inputTo);
+                        });
+                    });
                 }, 50);
             })(selectTimeFilter, inputBoxTimeFilter, timeInputFromFilter, timeInputToFilter);
 
@@ -842,8 +860,11 @@
             };
 
             setTimeout(function () {
-                require('jqueryUi');
-                initResizable();
+                require(['jquery'], function () {
+                    require(['jqueryUi'], function () {
+                        initResizable();
+                    });
+                });
             }, 50);
         })(profileController);
 
@@ -962,4 +983,4 @@
 
         counter();
     });
-})();
+});

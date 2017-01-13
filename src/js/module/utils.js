@@ -2,7 +2,7 @@
  * Created by Anton on 31.12.2016.
  */
 "use strict";
-(function () {
+define(function () {
     var utils = {};
     utils.param = function(params) {
         var args = [];
@@ -561,5 +561,5 @@
         code.push('API_exKit(code);');
         return code.join('\n');
     };
-    module.exports = utils;
-})();
+    return utils;
+});

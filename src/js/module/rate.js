@@ -2,8 +2,9 @@
  * Created by Anton on 02.04.2015.
  */
 "use strict";
-(function () {
-    var utils = require('./utils');
+define([
+    './utils'
+], function (utils) {
     var rate = {
         template: {
             bitrate: [
@@ -683,5 +684,5 @@
         }
     };
     rate.init();
-    module.exports = rate;
-})();
+    return rate;
+});

@@ -2,10 +2,10 @@
  * Created by Anton on 04.01.2017.
  */
 "use strict";
-(function () {
-    var utils = require('./utils');
-    var dom = require('./dom');
-
+define([
+    './utils',
+    './dom'
+], function (utils, dom) {
     var ProfileManager = function (profiles, profileController, trackers, ee, sync) {
         var self = this;
         var layer = null;
@@ -182,12 +182,15 @@
                 ]
             });
 
-            require('jqueryUi');
-            var $profilesNode = $(profilesNode);
-            $profilesNode.sortable({
-                axis: 'y',
-                handle: '.item__move',
-                scroll: false
+            require(['jquery'], function () {
+                require(['jqueryUi'], function () {
+                    var $profilesNode = $(profilesNode);
+                    $profilesNode.sortable({
+                        axis: 'y',
+                        handle: '.item__move',
+                        scroll: false
+                    });
+                });
             });
 
             return node;
@@ -460,13 +463,17 @@
                 ]
             });
 
-            require('jqueryUi');
-            var $trackersNode = $(trackersNode);
-            $trackersNode.sortable({
-                axis: 'y',
-                handle: '.item__move',
-                scroll: false
+            require(['jquery'], function () {
+                require(['jqueryUi'], function () {
+                    var $trackersNode = $(trackersNode);
+                    $trackersNode.sortable({
+                        axis: 'y',
+                        handle: '.item__move',
+                        scroll: false
+                    });
+                });
             });
+
             return node;
         };
 
@@ -524,5 +531,5 @@
             })
         }
     };
-    module.exports = ProfileManager;
-})();
+    return ProfileManager;
+});

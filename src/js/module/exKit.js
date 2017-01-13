@@ -2,7 +2,7 @@
  * Created by Anton on 08.01.2017.
  */
 "use strict";
-(function () {
+define(['jquery'], function () {
     var extend = function() {
         var obj = arguments[0];
         for (var i = 1, len = arguments.length; i < len; i++) {
@@ -944,5 +944,5 @@
         });
     };
 
-    module.exports = exKit;
-})();
+    return exKit;
+});

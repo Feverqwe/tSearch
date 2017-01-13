@@ -2,11 +2,12 @@
  * Created by Anton on 04.01.2017.
  */
 "use strict";
-(function () {
-    var dom = require('./dom');
-    var Tracker = require('./tracker');
-    var Table = require('./table');
-
+define([
+    'promise',
+    './dom',
+    './tracker',
+    './table'
+], function (Promise, dom, Tracker, Table) {
     var tableParent = document.querySelector('.results');
 
     var Profile = function (profile, resultFilter, setTrackerList, ee, storage) {
@@ -473,5 +474,5 @@
         };
         load();
     };
-    module.exports = Profile;
-})();
+    return Profile;
+});
