@@ -838,12 +838,12 @@ a.tracker {
     border-bottom-color: #1A3DC1;
 }
 
-.table-results .body__row .cell-title .cell__title a:visited:hover {
-    border-bottom-color: #609;
+.table-results .body__row .cell-title .cell__title a:not(:visited) span {
+    color: #000;
 }
 
-.table-results .body__row .cell-title .cell__title a span {
-    color: #000;
+.table-results .body__row .cell-title .cell__title a:visited:hover {
+    border-bottom-color: #609;
 }
 
 .table-results .body__row .cell-title .cell__category {
