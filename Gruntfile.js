@@ -31,10 +31,6 @@ module.exports = function(grunt) {
         }
     });
 
-    var ccCompressOptions = {
-        language_in: 'ECMASCRIPT5_STRICT'
-    };
-
     var compressJs = (function () {
         var ClosureCompiler = require('google-closure-compiler').compiler;
         var crypto = require('crypto');
@@ -65,7 +61,9 @@ module.exports = function(grunt) {
         var compressJs = function (filePath, minFilePath) {
             return new Promise(function (resolve, reject) {
                 var compilerProcess = new ClosureCompiler({
-                    js: filePath
+                    js: filePath,
+                    language_in: 'ECMASCRIPT5_STRICT',
+                    compilation_level: 'SIMPLE_OPTIMIZATIONS'
                 });
                 compilerProcess.run(function(exitCode, stdOut, stdErr) {
                     if (exitCode === 0) {
