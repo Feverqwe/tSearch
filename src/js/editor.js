@@ -135,10 +135,10 @@ require([
 
                 try {
                     meta = utils.parseMeta(code);
-                } catch (e) {
-                    alert("Parse meta error!\n" + e.message);
+                } catch (err) {
+                    alert("Parse meta error!\n" + err.message);
                     onReady();
-                    throw e;
+                    throw err;
                 }
 
                 var tracker = {

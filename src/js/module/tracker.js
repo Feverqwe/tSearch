@@ -23,8 +23,8 @@ define([
             connect.forEach(function (patter) {
                 try {
                     connectRe.push(utils.urlPatternToStrRe(patter));
-                } catch (e) {
-                    console.error('Connect pattern error!', tracker.id, patter, e);
+                } catch (err) {
+                    console.error('Connect pattern error!', tracker.id, patter, err);
                 }
             });
             if (!connectRe.length) {

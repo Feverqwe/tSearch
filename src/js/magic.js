@@ -575,8 +575,8 @@ require([
 
                 try {
                     var obj = JSON.parse(save.textarea.value);
-                } catch (e) {
-                    alert(chrome.i18m.getMessage('kitTrackerCodeReadError') + "\n" + e);
+                } catch (err) {
+                    alert(chrome.i18m.getMessage('kitTrackerCodeReadError') + "\n" + err);
                     return;
                 }
 
@@ -710,7 +710,7 @@ require([
                     console.error('Doc is not found! ', strPath);
                     throw 'Node is not found!';
                 }
-            } catch (e) {
+            } catch (err) {
                 strPath = '';
             }
 
@@ -837,7 +837,7 @@ require([
                     } else {
                         nodeList = $frameDoc.find(path);
                     }
-                } catch (e) {}
+                } catch (err) {}
 
                 var firstNode = nodeList && nodeList.eq(nodeIndex).get(0);
 
@@ -859,7 +859,7 @@ require([
                     } else {
                         nodeList = $dom.find(path);
                     }
-                } catch (e) {}
+                } catch (err) {}
 
                 if (!nodeList || !nodeList.length) {
                     input.classList.add('error');
@@ -1105,7 +1105,7 @@ require([
                 this.classList.remove('error');
                 try {
                     new RegExp(this.value, 'ig');
-                } catch (e) {
+                } catch (err) {
                     this.classList.add('error');
                     return;
                 }

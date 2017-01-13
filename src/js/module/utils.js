@@ -69,8 +69,8 @@ define(function () {
                 }
                 try {
                     params[key] = decodeURIComponent(escape(atob(hashParams[key])));
-                } catch (e) {
-                    console.error('Error decode param', key, hashParams[key], e);
+                } catch (err) {
+                    console.error('Error decode param', key, hashParams[key], err);
                 }
             }
         } else {
@@ -188,8 +188,8 @@ define(function () {
                     return cb && cb(null, body);
                 }
                 throw new Error(xhr.status + ' ' + xhr.statusText);
-            } catch (e) {
-                return cb && cb(e);
+            } catch (err) {
+                return cb && cb(err);
             }
         };
 
@@ -223,9 +223,9 @@ define(function () {
                 };
             }
             xhr.send(request.data || null);
-        } catch (e) {
+        } catch (err) {
             setTimeout(function() {
-                cb && cb(e);
+                cb && cb(err);
             });
         }
 

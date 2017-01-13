@@ -313,9 +313,9 @@ define(['jquery'], function () {
                 for (var i = 0, _func; _func = funcList[i]; i++) {
                     try {
                         value = _func(details, value);
-                    } catch (e) {
+                    } catch (err) {
                         value = null;
-                        console.error('listToFunction error!', e);
+                        console.error('listToFunction error!', err);
                         break;
                     }
                 }
