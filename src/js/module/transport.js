@@ -2,7 +2,7 @@
  * Created by Anton on 04.01.2017.
  */
 "use strict";
-define(function () {
+(function () {
     var emptyFn = function () {};
     var onceFn = function (cb) {
         return function () {
@@ -54,5 +54,5 @@ define(function () {
             transport.sendMessage(msg);
         };
     };
-    return Transport;
-});
+    module.exports = Transport;
+})();

@@ -2,12 +2,11 @@
  * Created by Anton on 02.05.2015.
  */
 "use strict";
-define([
-    'promise',
-    './utils',
-    './dom',
-    './dialog'
-], function (Promise, utils, dom, Dialog) {
+(function () {
+    var utils = require('./utils');
+    var dom = require('./dom');
+    var Dialog = require('./dialog');
+
     var defaultSections = [
         'favorites',
         'kpFavorites', 'kpInCinema', 'kpPopular', 'kpSerials',
@@ -1470,82 +1469,79 @@ define([
             })();
 
             setTimeout(function () {
-                require(['jquery'], function () {
-                    require(['jqueryUi'], function () {
-                        var $exploreNode = $(exploreNode);
-                        $exploreNode.sortable({
-                            axis: 'y',
-                            handle: '.section__move',
-                            scroll: false,
-                            start: function() {
-                                window.scrollTo(0,0);
+                require('jqueryUi');
+                var $exploreNode = $(exploreNode);
+                $exploreNode.sortable({
+                    axis: 'y',
+                    handle: '.section__move',
+                    scroll: false,
+                    start: function() {
+                        window.scrollTo(0,0);
 
-                                exploreNode.classList.add('explore-sort');
+                        exploreNode.classList.add('explore-sort');
 
-                                $exploreNode.sortable("refreshPositions");
-                            },
-                            stop: function() {
-                                exploreNode.classList.remove('explore-sort');
+                        $exploreNode.sortable("refreshPositions");
+                    },
+                    stop: function() {
+                        exploreNode.classList.remove('explore-sort');
 
-                                var prevSections = sections.splice(0);
-                                [].slice.call(exploreNode.childNodes).forEach(function (sectionNode) {
-                                    var id = sectionNode.dataset.id;
-                                    sections.push(sectionWrapperIdMap[id].section);
-                                });
+                        var prevSections = sections.splice(0);
+                        [].slice.call(exploreNode.childNodes).forEach(function (sectionNode) {
+                            var id = sectionNode.dataset.id;
+                            sections.push(sectionWrapperIdMap[id].section);
+                        });
 
-                                prevSections.forEach(function (section) {
-                                    if (sections.indexOf(section) === -1) {
-                                        sections.push(section);
-                                    }
-                                });
-
-                                saveSections();
+                        prevSections.forEach(function (section) {
+                            if (sections.indexOf(section) === -1) {
+                                sections.push(section);
                             }
                         });
 
-                        var $favoritesBodyNode = $(sectionWrapperIdMap.favorites.bodyNode);
-                        $favoritesBodyNode.sortable({
-                            handle: '.action__move',
-                            items: '.poster',
-                            opacity: 0.8,
-                            stop: function(e, ui) {
-                                var posterNode = ui.item[0];
-                                var index = parseInt(posterNode.dataset.index);
+                        saveSections();
+                    }
+                });
 
-                                var prevIndex = null;
-                                var prevPosterNode = posterNode.previousElementSibling;
-                                if (prevPosterNode) {
-                                    prevIndex = parseInt(prevPosterNode.dataset.index);
-                                }
+                var $favoritesBodyNode = $(sectionWrapperIdMap.favorites.bodyNode);
+                $favoritesBodyNode.sortable({
+                    handle: '.action__move',
+                    items: '.poster',
+                    opacity: 0.8,
+                    stop: function(e, ui) {
+                        var posterNode = ui.item[0];
+                        var index = parseInt(posterNode.dataset.index);
 
-                                var nextIndex = null;
-                                var nextPosterNode = posterNode.nextElementSibling;
-                                if (nextPosterNode) {
-                                    nextIndex = parseInt(nextPosterNode.dataset.index);
-                                }
+                        var prevIndex = null;
+                        var prevPosterNode = posterNode.previousElementSibling;
+                        if (prevPosterNode) {
+                            prevIndex = parseInt(prevPosterNode.dataset.index);
+                        }
 
-                                var sectionWrapper = sectionWrapperIdMap.favorites;
-                                var content = sectionWrapper.cache.content;
+                        var nextIndex = null;
+                        var nextPosterNode = posterNode.nextElementSibling;
+                        if (nextPosterNode) {
+                            nextIndex = parseInt(nextPosterNode.dataset.index);
+                        }
 
-                                var poster = content.splice(index, 1)[0];
-                                if (!nextPosterNode && !prevPosterNode) {
-                                    content.push(poster);
-                                } else
-                                if (nextPosterNode) {
-                                    if (index < nextIndex) {
-                                        nextIndex--;
-                                    }
-                                    content.splice(nextIndex, 0, poster);
-                                } else {
-                                    content.splice(prevIndex, 0, poster);
-                                }
+                        var sectionWrapper = sectionWrapperIdMap.favorites;
+                        var content = sectionWrapper.cache.content;
 
-                                updateCategoryContent(sectionWrapper);
-
-                                saveFavorites();
+                        var poster = content.splice(index, 1)[0];
+                        if (!nextPosterNode && !prevPosterNode) {
+                            content.push(poster);
+                        } else
+                        if (nextPosterNode) {
+                            if (index < nextIndex) {
+                                nextIndex--;
                             }
-                        });
-                    });
+                            content.splice(nextIndex, 0, poster);
+                        } else {
+                            content.splice(prevIndex, 0, poster);
+                        }
+
+                        updateCategoryContent(sectionWrapper);
+
+                        saveFavorites();
+                    }
                 });
             }, 50);
         };
@@ -1568,5 +1564,5 @@ define([
 
     Explore.prototype.insertDefaultSections = insertDefaultSections;
 
-    return Explore;
-});
+    module.exports = Explore;
+})();

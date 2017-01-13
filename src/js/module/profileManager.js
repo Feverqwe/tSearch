@@ -2,10 +2,10 @@
  * Created by Anton on 04.01.2017.
  */
 "use strict";
-define([
-    './utils',
-    './dom'
-], function (utils, dom) {
+(function () {
+    var utils = require('./utils');
+    var dom = require('./dom');
+
     var ProfileManager = function (profiles, profileController, trackers, ee, sync) {
         var self = this;
         var layer = null;
@@ -182,15 +182,12 @@ define([
                 ]
             });
 
-            require(['jquery'], function () {
-                require(['jqueryUi'], function () {
-                    var $profilesNode = $(profilesNode);
-                    $profilesNode.sortable({
-                        axis: 'y',
-                        handle: '.item__move',
-                        scroll: false
-                    });
-                });
+            require('jqueryUi');
+            var $profilesNode = $(profilesNode);
+            $profilesNode.sortable({
+                axis: 'y',
+                handle: '.item__move',
+                scroll: false
             });
 
             return node;
@@ -463,17 +460,13 @@ define([
                 ]
             });
 
-            require(['jquery'], function () {
-                require(['jqueryUi'], function () {
-                    var $trackersNode = $(trackersNode);
-                    $trackersNode.sortable({
-                        axis: 'y',
-                        handle: '.item__move',
-                        scroll: false
-                    });
-                });
+            require('jqueryUi');
+            var $trackersNode = $(trackersNode);
+            $trackersNode.sortable({
+                axis: 'y',
+                handle: '.item__move',
+                scroll: false
             });
-
             return node;
         };
 
@@ -531,5 +524,5 @@ define([
             })
         }
     };
-    return ProfileManager;
-});
+    module.exports = ProfileManager;
+})();

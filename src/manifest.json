@@ -19,7 +19,7 @@
         "keyword" : "tms"
     },
     "background": {
-        "scripts": ["js/lib/require.js", "js/bg.js"],
+        "scripts": ["js/bg.js"],
         "persistent": false
     },
     "sandbox": {

@@ -2,8 +2,8 @@
  * Created by Anton on 31.12.2016.
  */
 "use strict";
-define(function () {
-    return function () {
+(function () {
+    var i18nDom = function () {
         var map = {
             text: 'textContent'
         };
@@ -23,4 +23,5 @@ define(function () {
             }
         });
     };
-});
+    module.exports = i18nDom;
+})();

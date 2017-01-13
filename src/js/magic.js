@@ -2,21 +2,13 @@
  * Created by Anton on 08.01.2017.
  */
 "use strict";
-require.config({
-    baseUrl: './js',
-    paths: {
-        jquery: './lib/jquery-3.1.1.min',
-        exKit: './module/exKit'
-    }
-});
-require([
-    './module/i18nDom',
-    './module/utils',
-    './module/dom',
-    './lib/filesize.min',
-    'exKit',
-    './module/counter'
-], function (i18nDom, utils, dom, filesize, exKit, counter) {
+(function () {
+    var fileSize = require('./lib/filesize.min');
+    var i18nDom = require('./module/i18nDom');
+    var utils = require('./module/utils');
+    var dom = require('./module/dom');
+    var counter = require('./module/counter');
+
     i18nDom();
 
     var magic = {
@@ -1085,7 +1077,7 @@ require([
                 }
                 original.value = value;
                 converted.value = _result;
-                result.value = filesize(_result);
+                result.value = fileSize(_result);
             };
 
             var updateValue = function(type) {
@@ -1313,4 +1305,4 @@ require([
     magic.one();
 
     counter();
-});
+})();

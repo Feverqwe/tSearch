@@ -2,9 +2,9 @@
  * Created by Anton on 07.01.2017.
  */
 "use strict";
-define([
-    './utils'
-], function (utils) {
+(function () {
+    var utils = require('./utils');
+
     var PageController = function (deatils) {
         deatils = deatils || {};
         var self = this;
@@ -68,5 +68,5 @@ define([
         };
         load();
     };
-    return PageController;
-});
+    module.exports = PageController;
+})();

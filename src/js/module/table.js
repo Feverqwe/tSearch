@@ -2,14 +2,12 @@
  * Created by Anton on 05.01.2017.
  */
 "use strict";
-define([
-    'promise',
-    'moment',
-    './dom',
-    '../lib/filesize.min',
-    './highlight',
-    './rate'
-], function (Promise, moment, dom, filesize, highlight, rate) {
+(function () {
+    var fileSize = require('../lib/filesize.min');
+    var dom = require('./dom');
+    var highlight = require('./highlight');
+    var rate = require('./rate');
+    var moment = require('../lib/moment-with-locales.min');
     moment.locale(chrome.i18n.getUILanguage());
     var unixTimeToString = function (unixtime) {
         return unixtime <= 0 ? '∞' : moment(unixtime * 1000).format('lll');
@@ -461,7 +459,7 @@ define([
                     }))
                 } else
                 if (type === 'size') {
-                    var downloadLink = filesize(torrent.size);
+                    var downloadLink = fileSize(torrent.size);
                     if (torrent.downloadUrl) {
                         downloadLink = dom.el('a', {
                             class: ['cell__download'],
@@ -698,5 +696,5 @@ define([
             }
         };
     };
-    return Table;
-});
+    module.exports = Table;
+})();

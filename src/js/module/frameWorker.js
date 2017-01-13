@@ -2,7 +2,7 @@
  * Created by Anton on 04.01.2017.
  */
 "use strict";
-define(function () {
+(function () {
     var FrameWorker = function (id) {
         var self = this;
         var stack = [];
@@ -51,5 +51,5 @@ define(function () {
 
         load();
     };
-    return FrameWorker;
-});
+    module.exports = FrameWorker;
+})();

@@ -2,21 +2,13 @@
  * Created by Anton on 31.12.2016.
  */
 "use strict";
-require.config({
-    baseUrl: './js',
-    paths: {
-        promise: './lib/promise.min'
-    }
-});
-require([
-    'promise',
-    './module/i18nDom',
-    './module/utils',
-    './module/dom',
-    './module/explore',
-    './lib/jszip.min',
-    './module/counter'
-], function (Promise, i18nDom, utils, dom, Explore, JSZip, counter) {
+(function () {
+    var i18nDom = require('./module/i18nDom');
+    var utils = require('./module/utils');
+    var dom = require('./module/dom');
+    var Explore = require('./module/explore');
+    var counter = require('./module/counter');
+
     new Promise(function (resolve) {
         i18nDom();
         chrome.storage.local.get({
@@ -242,4 +234,4 @@ require([
 
         counter();
     });
-});
+})();

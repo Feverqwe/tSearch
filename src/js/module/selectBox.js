@@ -2,7 +2,9 @@
  * Created by Anton on 02.01.2015.
  */
 "use strict";
-define(['./dom'], function (dom) {
+(function () {
+    var dom = require('./dom');
+
     var SelectBox = function (select, details) {
         details = details || {};
         var self = this;
@@ -234,5 +236,5 @@ define(['./dom'], function (dom) {
         self.update();
         self.select();
     };
-    return SelectBox;
-});
+    module.exports = SelectBox;
+})();

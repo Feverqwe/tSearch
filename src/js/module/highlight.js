@@ -2,9 +2,9 @@
  * Created by Anton on 05.01.2017.
  */
 "use strict";
-define([
-    './utils'
-], function (utils) {
+(function (utils) {
+    var utils = require('./utils');
+
     var highlight = {
         getMap: function (query) {
             var words = query.split(/\s+/);
@@ -75,5 +75,5 @@ define([
             return fragment;
         }
     };
-    return highlight;
-});
+    module.exports = highlight;
+})();

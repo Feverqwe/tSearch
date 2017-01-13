@@ -1,6 +1,13 @@
 {
   "name": "TMS",
   "version": "1.0.0",
-  "output": "output/",
-  "extVersion": "2.0.6"
+  "extVersion": "2.0.6",
+  "dependencies": {
+    "google-closure-compiler": "^20161201.0.0",
+    "grunt": "^1.0.1",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-webpack": "^1.0.18",
+    "webpack": "^1.14.0",
+    "webpack-dev-server": "^1.16.2"
+  }
 }
