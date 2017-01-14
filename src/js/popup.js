@@ -155,6 +155,11 @@ require([
                 collision: "bottom"
             },
             source: function(query, cb) {
+                var onceCb = function (suggests) {
+                    cb(suggests);
+                    cb = null;
+                };
+
                 if (lastHistoryRequest) {
                     lastHistoryRequest.abort();
                     lastHistoryRequest = null;
@@ -162,14 +167,18 @@ require([
 
                 var term = query.term;
                 if (!term.length) {
-                    historySuggests(term, cb);
+                    historySuggests(term, onceCb);
                 } else {
-                    webSuggests(term, cb);
+                    webSuggests(term, onceCb);
                 }
+
+                setTimeout(function () {
+                    cb && cb();
+                });
             },
             select: function(e, ui) {
                 e.preventDefault();
-                submit.dispatchEvent(new CustomEvent('click', {cancelable: true, detail: {query: input.value}}));
+                submit.dispatchEvent(new CustomEvent('click', {cancelable: true, detail: {query: ui.item.value}}));
             },
             create: function() {
                 var hasTopShadow = false;
