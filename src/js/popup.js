@@ -148,6 +148,7 @@ require([
             };
         })();
 
+        var autocompleteMenu = null;
         $(input).autocomplete({
             minLength: 0,
             delay: 100,
@@ -155,11 +156,6 @@ require([
                 collision: "bottom"
             },
             source: function(query, cb) {
-                var onceCb = function (suggests) {
-                    cb(suggests);
-                    cb = null;
-                };
-
                 if (lastHistoryRequest) {
                     lastHistoryRequest.abort();
                     lastHistoryRequest = null;
@@ -167,14 +163,15 @@ require([
 
                 var term = query.term;
                 if (!term.length) {
-                    historySuggests(term, onceCb);
+                    historySuggests(term, cb);
                 } else {
-                    webSuggests(term, onceCb);
+                    webSuggests(term, cb);
                 }
 
-                setTimeout(function () {
-                    cb && cb();
-                });
+                var selectedItem = autocompleteMenu && autocompleteMenu.querySelector('.ui-state-active');
+                if (selectedItem) {
+                    cb();
+                }
             },
             select: function(e, ui) {
                 e.preventDefault();
@@ -182,8 +179,8 @@ require([
             },
             create: function() {
                 var hasTopShadow = false;
-                var ac = document.querySelector('ul.ui-autocomplete');
-                ac.addEventListener('scroll', function () {
+                autocompleteMenu = document.querySelector('ul.ui-autocomplete');
+                autocompleteMenu.addEventListener('scroll', function () {
                     if (this.scrollTop !== 0) {
                         if (hasTopShadow !== true) {
                             hasTopShadow = true;
