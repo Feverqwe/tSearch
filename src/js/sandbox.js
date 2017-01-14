@@ -14,7 +14,8 @@ require.config({
 });
 require([
     'promise',
-    './module/transport'
+    './module/transport',
+    'baseApi'
 ], function (Promise, Transport) {
     (function (runCode) {
         var transport = new Transport({
