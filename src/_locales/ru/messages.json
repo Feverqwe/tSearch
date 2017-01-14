@@ -395,6 +395,12 @@
   "kitTrackerDesc": {
     "message": "Описание трекера"
   },
+  "kitTrackerDownloadUrl": {
+    "message": "Url обновления"
+  },
+  "kitTrackerVersion": {
+    "message": "Версия"
+  },
   "kitGetCode": {
     "message": "Получить код"
   },

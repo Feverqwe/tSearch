@@ -542,6 +542,9 @@ define(function () {
         if (trackerObj.icon) {
             meta.push(['@icon', trackerObj.icon].join(' '));
         }
+        if (trackerObj.downloadUrl) {
+            meta.push(['@downloadURL', trackerObj.downloadUrl].join(' '));
+        }
         var hostname = /\/\/([^\/]+)/.exec(trackerObj.search.searchUrl);
         if (hostname) {
             meta.push(['@connect', '*://'+hostname[1]+'/*'].join(' '));
@@ -549,7 +552,11 @@ define(function () {
         if (trackerObj.search.baseUrl) {
             meta.push(['@trackerURL', trackerObj.search.baseUrl].join(' '));
         }
-        meta.push(['@version', '1.0'].join(' '));
+        if (trackerObj.tVersion) {
+            meta.push(['@version', trackerObj.tVersion].join(' '));
+        } else {
+            meta.push(['@version', '1.0'].join(' '));
+        }
         meta.push(['@require', 'exKit'].join(' '));
         meta.push('==/UserScript==');
         code.push.apply(code, meta.map(function (line) {

@@ -242,6 +242,8 @@ require([
                 title: nodeList.desk.tracker.title.value,
                 icon: getIcon(),
                 desc: nodeList.desk.tracker.desk.value,
+                downloadUrl: nodeList.desk.tracker.download_url.value,
+                tVersion: nodeList.desk.tracker.t_version.value,
                 search: {
                     loginUrl: nodeList.auth.url.value,
                     loginFormSelector: nodeList.auth.input.value,
