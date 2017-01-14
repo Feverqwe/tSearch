@@ -330,11 +330,6 @@ define(['jquery'], function () {
             obj.icon = code.icon;
             obj.title = code.name;
             obj.desc = code.about;
-            obj.flags = !code.flags ? {} : {
-                    auth: code.a ? 1 : 0,
-                    language: code.l ? 'ru' : undefined,
-                    cyrillic: code.rs ? 1 : 0
-                };
             var search = obj.search = {};
             var torrentSelector = search.torrentSelector = {};
             var onGetValue = search.onGetValue = {};
@@ -460,19 +455,24 @@ define(['jquery'], function () {
         prepareCustomTracker: function (code) {
             var _this = this;
             var trackerObj = null;
-            var id = null;
 
             if (code.version === 1) {
                 code = this.convertV1ToV2(code);
             }
 
             if (code.version === 2) {
-                id = 'ct_' + code.uid;
-
                 trackerObj = code;
-                trackerObj.code = JSON.stringify(code);
-                trackerObj.id = id;
-                trackerObj.flags = trackerObj.flags || {};
+
+                var id = '';
+                var params = location.hash.substr(1).split('&');
+                params.some(function (item) {
+                    var keyValue = item.split('=');
+                    if (keyValue[0] === 'id') {
+                        id = keyValue[1];
+                        return true;
+                    }
+                });
+                trackerObj.id = id || 'noTrackerId';
 
                 trackerObj.search = trackerObj.search || {};
 
