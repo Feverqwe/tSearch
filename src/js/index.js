@@ -777,7 +777,7 @@ require([
             })(peerInputFromFilter, peerInputToFilter);
         })(resultFilter);
 
-        var profileController = new ProfileController(storage, ee, ProfileManager, resultFilter, storage.syncProfiles);
+        var profileController = new ProfileController(storage, ee, ProfileManager, resultFilter);
 
         (function (profileController) {
             var manageProfile = document.querySelector('.button-manage-profile');
@@ -791,7 +791,7 @@ require([
             manageProfile.addEventListener('click', function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                var pm = new ProfileManager(storage.profiles, profileController, storage.trackers, ee);
+                var pm = new ProfileManager(storage.profiles, profileController, storage.trackers, ee, storage.syncProfiles);
                 pm.show();
             });
 
