@@ -535,6 +535,10 @@ require([
 
             nodeList.desk.tracker.desk.value = code.desc;
 
+            nodeList.desk.tracker.download_url.value = code.downloadUrl || '';
+
+            nodeList.desk.tracker.t_version.value = code.tVersion || '';
+
             nodeList.auth.url.value = code.search.loginUrl || '';
 
             nodeList.auth.input.value = code.search.loginFormSelector || '';
