@@ -6,6 +6,7 @@ require.config({
     baseUrl: './js',
     paths: {
         jquery: './lib/jquery-3.1.1.min',
+        baseApi: './module/baseApi',
         exKit: './module/exKit'
     }
 });
@@ -89,6 +90,7 @@ require([
 
             if (this.varCache.lastXhr) {
                 this.varCache.lastXhr.abort();
+                this.varCache.lastXhr = null;
             }
             this.varCache.lastXhr = utils.request(params, function (err, response) {
                 if (err) {
