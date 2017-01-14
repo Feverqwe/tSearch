@@ -675,7 +675,7 @@ define([
                 value = node.textContent;
             }
             if (value) {
-                value = $.trim(value);
+                value = $.trim(value.replace(/\r?\n/g, ' '));
             }
 
             if (!value && search.onEmptySelectorValue[key]) {
