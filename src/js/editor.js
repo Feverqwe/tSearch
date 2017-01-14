@@ -7,7 +7,9 @@ require.config({
     paths: {
         jquery: './lib/jquery-3.1.1.min',
         promise: './lib/promise.min',
-        EventEmitter: './lib/EventEmitter.min'
+        EventEmitter: './lib/EventEmitter.min',
+        baseApi: './module/baseApi',
+        exKit: './module/exKit'
     }
 });
 require([
@@ -18,7 +20,7 @@ require([
     './module/utils',
     './module/dom',
     './module/dialog',
-    './module/exKit',
+    'exKit',
     './module/counter',
     '../codeMirror/lib/codemirror',
     '../codeMirror/mode/javascript/javascript',
