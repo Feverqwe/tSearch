@@ -674,11 +674,11 @@ define([
 
         var saveFavorites = function () {
             var sectionWrapper = sectionWrapperIdMap.favorites;
-            var storage = {};
-            storage[sectionWrapper.cacheKey] = sectionWrapper.cache;
-            chrome.storage.local.set(storage);
+            var _storage = {};
+            _storage[sectionWrapper.cacheKey] = sectionWrapper.cache;
+            chrome.storage.local.set(_storage);
             if (storage.favoriteSync) {
-                chrome.storage.sync.set(storage);
+                chrome.storage.sync.set(_storage);
             }
         };
 
