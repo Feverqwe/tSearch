@@ -290,6 +290,26 @@ define([
 
             return result;
         },
+        getRateMap: function (rating) {
+            var map = {
+                title: ['title', 'wordSpaces', 'wordOrder', 'caseSens']
+            };
+            var getSubSections = function (rating) {
+                var sections = [];
+                rating && rating.forEach(function (section) {
+                    sections.push.apply(sections, getSubSections(section.after).concat(section.name));
+                });
+                return sections;
+            };
+            rating.forEach(function (section) {
+                map[section.name] = getSubSections(section.after).concat(section.name);
+            });
+            return {
+                count: rating.length,
+                map: map
+            };
+        },
+        rateMap: {},
         baseQualityList: {},
         getScheme: function (query) {
             var scheme = {};
@@ -434,10 +454,10 @@ define([
             var wordsLow = scheme.wordsLow.slice(0);
             var wordRate = 100 / wordsLen;
             var wordsSpaces = scheme.wordsSpaces;
-            rating.queryRate.title = 0;
-            rating.queryRate.wordSpaces = 0;
-            rating.queryRate.wordOrder = 0;
-            rating.queryRate.caseSens = 0;
+            rating.rate.title = 0;
+            rating.rate.wordSpaces = 0;
+            rating.rate.wordOrder = 0;
+            rating.rate.caseSens = 0;
             var lastWordEndPos = null;
             var wordIndex = 0;
             return function (word, pos, str) {
@@ -454,7 +474,7 @@ define([
 
                     var isYear = scheme.years.indexOf(wordLow) !== -1;
 
-                    rating.queryRate.title += wordRate;
+                    rating.rate.title += wordRate;
 
                     if (!isYear) {
                         if (lastWordEndPos === null) {
@@ -466,19 +486,19 @@ define([
                         if (spaceCount > spaceSize) {
                             spaceSize = spaceCount;
                         }
-                        rating.queryRate.wordSpaces += spaceCount / spaceSize * wordRate;
+                        rating.rate.wordSpaces += spaceCount / spaceSize * wordRate;
                         lastWordEndPos = pos + wordLen;
                     } else {
-                        rating.queryRate.wordSpaces += wordRate;
+                        rating.rate.wordSpaces += wordRate;
                     }
 
                     if (wordIndex === index) {
-                        rating.queryRate.wordOrder += wordRate;
+                        rating.rate.wordOrder += wordRate;
                     }
 
                     var queryWord = wordsCase[index];
                     if (queryWord && wordsCase === word[0]) {
-                        rating.queryRate.caseSens += wordRate;
+                        rating.rate.caseSens += wordRate;
                     }
 
                     wordIndex++;
@@ -488,52 +508,48 @@ define([
         getRate: function (torrent, scheme) {
             var rating = {
                 quality: [],
-                queryRate: {
+                rate: {
                     title: 0,
                     wordSpaces: 0,
                     wordOrder: 0,
                     caseSens: 0
                 },
-                rate: {},
+                sectionRate: {},
                 sum: 0
             };
 
             if (torrent.title.indexOf(scheme.query) !== -1) {
-                rating.queryRate.title = 100;
-                rating.queryRate.wordSpaces = 100;
-                rating.queryRate.wordOrder = 100;
-                rating.queryRate.caseSens = 100;
+                rating.rate.title = 100;
+                rating.rate.wordSpaces = 100;
+                rating.rate.wordOrder = 100;
+                rating.rate.caseSens = 100;
             } else {
                 torrent.title.replace(scheme.wordsRe, rate.getTitleReplace(rating, scheme));
             }
 
-            var count = 0;
-            var coefficient = 0;
-            for (var item in rating.queryRate) {
-                coefficient += rating.queryRate[item];
-                count++;
-            }
-            coefficient = coefficient / count;
-
             torrent.title.replace(rate.baseQualityList.wordsRe, rate.getReplace(rating, rate.baseQualityList));
 
-            count = 0;
-            for (var item in rating.rate) {
-                rating.sum += rating.rate[item];
-                count++;
-            }
-            if (count > 0) {
-                rating.sum /= count;
+            var rateMap = this.rateMap;
+            var map = rateMap.map;
+            for (var key in map) {
+                var arr = map[key];
+                var value = 0;
+                for (var i = 0, len = arr.length; i < len; i++) {
+                    value += rating.rate[arr[i]] || 0;
+                }
+                value /= i;
+                rating.sectionRate[key] = value;
+                rating.sum += value;
             }
 
-            return rating.sum + coefficient;
+            return rating.sum / rateMap.count;
         },
         init: function () {
             /**
              * @type {{wordsRe: Object, scope: Object, scopeCase: Object}}
              */
-            this.baseQualityList = this.readQualityList(this.rating);
-
+            this.rateMap = this.getRateMap(this.rating);
+            this.baseQualityList = this.readQualityList(JSON.parse(JSON.stringify(this.rating)));
         }
     };
     rate.init();
