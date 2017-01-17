@@ -7,416 +7,204 @@ define([
 ], function (utils) {
     var rate = {
         rating: [
-
-        ],
-        template: {
-            bitrate: [
+            {name: 'videoFormat', rules: [
                 {
-                    list: ['32'],
-                    rate: {audio: -2}
+                    match: ['DCPRip'],
+                    value: 100,
+                    name: 'DCPRip'
                 },
                 {
-                    list: ['64'],
-                    rate: {audio: 0}
+                    match: ['blu-ray cee', {word: 'CEE'}],
+                    value: 100,
+                    name: 'Blu-ray CEE'
                 },
                 {
-                    list: ['96'],
-                    rate: {audio: 2}
+                    match: ['blu-ray'],
+                    value: 98,
+                    name: 'Blu-ray'
                 },
                 {
-                    list: ['128'],
-                    rate: {audio: 5}
+                    match: ['bd-remux', 'bd remux', 'BDRemux'],
+                    value: 95,
+                    name: 'BDRemux'
                 },
                 {
-                    list: ['192'],
-                    rate: {audio: 10}
+                    match: ['BDRip-AVC', 'BD-Rip', 'BDRip'],
+                    value: 90,
+                    name: 'BDRip'
                 },
                 {
-                    list: ['320'],
-                    rate: {audio: 15}
+                    match: ['CAMRip', 'CamRip-AVC'],
+                    value: 10,
+                    name: 'CAMRip'
+                },
+                {
+                    match: ['HDTV-Rip', 'HDTVRip'],
+                    value: 60,
+                    name: 'HDTV-Rip'
+                },
+                {
+                    match: ['DTheater-Rip'],
+                    value: 60,
+                    name: 'DTheater-Rip'
+                },
+                {
+                    match: ['LowHDRip', 'VHSRip'],
+                    value: 10,
+                    name: 'LowHDRip'
+                },
+                {
+                    match: [{word: 'HDTV'}, 'HDRip', 'HDRip-AVC'],
+                    value: 50,
+                    name: 'HDTV'
+                },
+                {
+                    match: ['DVDRip', 'DVD-Rip', 'DVDRip-AVC'],
+                    value: 50,
+                    name: 'DVD-Rip'
+                },
+                {
+                    match: ['HD-DVD'],
+                    value: 55,
+                    name: 'HD-DVD'
+                },
+                {
+                    match: [{regexp: 1, word: '\\d\\s?[x\\*]\\s?DVD\\-?9', caseSens: 0}],
+                    value: 50,
+                    name: 'DVD-9'
+                },
+                {
+                    match: [{regexp: 1, word: '\\d\\s?[x\\*]\\s?DVD\\-?5', caseSens: 0}],
+                    value: 45,
+                    name: 'DVD-5'
+                },
+                {
+                    match: [{word: 'DVD'}],
+                    value: 40,
+                    name: 'DVD'
+                },
+                {
+                    match: ['HQSATRip', 'HQRip', 'HQRip-AVC'],
+                    value: 38,
+                    name: 'HDrip'
+                },
+                {
+                    match: ['TVRip', 'IPTVRip'],
+                    value: 35,
+                    name: 'TV-Rip'
+                },
+                {
+                    match: ['WEBRip'],
+                    value: 35,
+                    name: 'WebRip'
+                },
+                {
+                    match: ['WEB-DLRip-AVC', 'WebDL-Rip', 'WEB-DLRip', 'WEB-DL'],
+                    value: 35,
+                    name: 'WEB-DL'
+                },
+                {
+                    match: ['SATRip'],
+                    value: 35,
+                    name: 'SAT-Rip'
+                },
+                {
+                    match: [{word: 'DVB'}],
+                    value: 35,
+                    name: 'DVB'
+                },
+                {
+                    match: [{word: 'TS'}, 'TeleSynch'],
+                    value: 15,
+                    name: 'Telesync'
+                },
+                {
+                    match: ['DVDScr', 'DVDScreener'],
+                    value: 15,
+                    name: 'DVD-Screener'
                 }
-            ]
-        },
-        defaultQualityList: [
-            /*{
-             list: [],
-             rate: {
-             video: 0,
-             music: 0,
-             games: 0,
-             books: 0,
-             serials: 0,
-             cartoons: 0,
-             xxx: 0
-             },
-             name: '',
-             sub: [],
-             subAfter: [],
-             subBefore: []
-             },*/
-            {
-                list: ['blu-ray cee'],
-                rate: {
-                    video: 105
-                },
-                name: 'Blu-ray CEE'
-            },
-            {
-                list: ['blu-ray'],
-                rate: {
-                    video: 100
-                },
-                name: 'Blu-ray'
-            },
-            {
-                list: ['bd-remux', 'bd remux', 'BDRemux'],
-                rate: {
-                    video: 90
-                },
-                name: 'BDRemux'
-            },
-            {
-                list: ['BDRip-AVC', 'BD-Rip', 'BDRip'],
-                rate: {
-                    video: 80
-                },
-                name: 'BDRip'
-            },
-            {
-                list: ['CAMRip', 'CamRip-AVC'],
-                rate: {
-                    video: 10
-                },
-                name: 'CAMRip'
-            },
-            {
-                list: ['HDTV-Rip', 'HDTVRip'],
-                rate: {
-                    video: 70
-                },
-                name: 'HDTV-Rip'
-            },
-            {
-                list: ['DTheater-Rip'],
-                rate: {
-                    video: 70
-                },
-                name: 'DTheater-Rip'
-            },
-            {
-                list: ['LowHDRip', 'VHSRip'],
-                rate: {
-                    video: 10
-                },
-                name: 'LowHDRip'
-            },
-            {
-                list: [{word: 'HDTV'}, 'HDRip', 'HDRip-AVC'],
-                rate: {
-                    video: 60
-                },
-                name: 'HDTV'
-            },
-            {
-                list: ['DVDRip', 'DVD-Rip', 'DVDRip-AVC'],
-                rate: {
-                    video: 60
-                },
-                name: 'DVD-Rip'
-            },
-            {
-                list: ['HD-DVD'],
-                rate: {
-                    video: 68
-                },
-                name: 'HD-DVD'
-            },
-            {
-                list: [{regexp: 1, word: '\\d\\s?[x\\*]\\s?DVD\\-?9', caseSens: 0}],
-                rate: {
-                    video: 65
-                },
-                name: 'DVD-9'
-            },
-            {
-                list: [{regexp: 1, word: '\\d\\s?[x\\*]\\s?DVD\\-?5', caseSens: 0}],
-                rate: {
-                    video: 53
-                },
-                name: 'DVD-5'
-            },
-            {
-                list: [{word: 'DVD'}],
-                rate: {
-                    video: 50
-                },
-                name: 'DVD'
-            },
-            {
-                list: ['HQSATRip', 'HQRip', 'HQRip-AVC'],
-                rate: {
-                    video: 44
-                },
-                name: 'HDrip'
-            },
-            {
-                list: ['TVRip', 'IPTVRip'],
-                rate: {
-                    video: 40
-                },
-                name: 'TV-Rip'
-            },
-            {
-                list: ['WEBRip'],
-                rate: {
-                    video: 40
-                },
-                name: 'WebRip'
-            },
-            {
-                list: ['WEB-DLRip-AVC', 'WebDL-Rip', 'WEB-DLRip', 'WEB-DL'],
-                rate: {
-                    video: 40
-                },
-                name: 'WEB-DL'
-            },
-            {
-                list: ['SATRip'],
-                rate: {
-                    video: 40
-                },
-                name: 'SAT-Rip'
-            },
-            {
-                list: [{word: 'DVB'}],
-                rate: {
-                    video: 40
-                },
-                name: 'DVB'
-            },
-            {
-                list: [{word: 'TS'}, 'TeleSynch'],
-                rate: {
-                    video: 20
-                },
-                name: 'Telesync'
-            },
-            {
-                list: ['DVDScr', 'DVDScreener'],
-                rate: {
-                    video: 20
-                },
-                name: 'DVD-Screener'
-            },
-            {
-                list: ['lossless'],
-                rate: {
-                    audio: 100
-                },
-                name: 'lossless',
-                subAfter: [
+            ], after: [
+                {name: 'videoQuality', rules: [
                     {
-                        list: ['repack'],
-                        rate: {
-                            audio: -100
-                        }
+                        match: ['4k', '2k'],
+                        value: 100
+                    },
+                    {
+                        match: ['2160p', '2160i'],
+                        value: 100
+                    },
+                    {
+                        match: ['1080p', '1080i'],
+                        value: 90
+                    },
+                    {
+                        match: ['720p'],
+                        value: 50
+                    },
+                    {
+                        match: ['HD'],
+                        value: 40
+                    },
+                    {
+                        match: ['SD'],
+                        value: 20
                     }
-                ]
-            },
-            {
-                list: ['FLAC', 'ALAC'],
-                rate: {
-                    music: 100
+                ]}
+            ]},
+            {name: 'audioFormat', rules: [
+                {
+                    match: ['ALAC'],
+                    value: 100,
+                    name: 'ALAC'
                 },
-                name: 'lossless'
-            },
-            {
-                list: ['MP3'],
-                rate: {
-                    music: 80
+                {
+                    match: ['FLAC'],
+                    value: 100,
+                    name: 'FLAC'
                 },
-                name: 'MP3',
-                subAfter: "bitrate"
-            },
-            {
-                list: ['AAC'],
-                rate: {
-                    audio: 85
+                {
+                    match: ['APE'],
+                    value: 100,
+                    name: 'APE'
                 },
-                name: 'AAC',
-                subAfter: "bitrate"
-            },
-            {
-                list: [{word: 'PS3'}],
-                rate: {
-                    games: 80
+                {
+                    match: ['AAC'],
+                    value: 90,
+                    name: 'MP3'
                 },
-                name: 'PS3'
-            },
-            {
-                list: ['XBOX'],
-                rate: {
-                    games: 80
-                },
-                name: 'XBox'
-            },
-            {
-                list: [{word: 'PS2'}, '(ps2)'],
-                rate: {
-                    games: 80
-                },
-                name: 'PS2'
-            },
-            {
-                list: ['[p]', '{p}', '(p)'],
-                rate: {
-                    games: 20
-                },
-                name: 'P'
-            },
-            {
-                list: ['repack', 'lossless repack', 'steamrip', 'steam-rip', '(lossy rip)', 'reloaded'],
-                rate: {
-                    games: 60
-                },
-                name: 'RePack'
-            },
-            {
-                list: ['[Native]'],
-                rate: {
-                    games: 100
-                },
-                name: 'Native'
-            },
-            {
-                list: ['[rip]', '{rip}', '(rip)'],
-                rate: {
-                    games: 80
-                },
-                name: 'Rip'
-            },
-            {
-                list: [{word: '[L]'}, {word: '{L}'}, {word: '(L)'}],
-                rate: {
-                    games: 100
-                },
-                name: 'L'
-            },
-            {
-                list: ['fb2', 'pdf', 'djvu', 'rtf', 'epub', 'doc', 'docx'],
-                rate: {
-                    books: 100
-                },
-                name: 'Book'
-            },
-            {
-                list: ['h.264', 'h264', 'mp4', 'm4v'],
-                rate: {
-                    video: 2
+                {
+                    match: ['MP3'],
+                    value: 80,
+                    name: 'MP3'
                 }
-            },
-            {
-                list: ['2160p', '2160i'],
-                rate: {
-                    video: 20
-                }
-            },
-            {
-                list: ['1080p', '1080i'],
-                rate: {
-                    video: 20
-                }
-            },
-            {
-                list: ['720p'],
-                rate: {
-                    video: 10
-                }
-            },
-            {
-                list: ['720p-LQ'],
-                rate: {
-                    video: -5
-                }
-            },
-            {
-                list: ['звук с ts'],
-                rate: {
-                    video: -50
-                }
-            },
-            {
-                list: [{word: 'СТ'}, 'sub', 'subs'],
-                rate: {
-                    video: 1
-                }
-            },
-            {
-                list: ['itunes russia', 'itunes lp'],
-                rate: {
-                    video: 10
-                }
-            },
-            {
-                list: [{word: 'DUB'}, {word: 'Dub'}, {word: 'ДБ'}, {word: 'ПО'}, {word: 'ПД'}, '2xDub'],
-                rate: {
-                    video: 3
-                }
-            },
-            {
-                list: [{word: 'ПМ'}],
-                rate: {
-                    video: 2
-                }
-            },
-            {
-                list: [{word: 'АП'}, {word: 'ЛО'}, {word: 'ЛД'}, {word: 'VO'}],
-                rate: {
-                    video: 1
-                }
-            },
-            {
-                list: ['pc (windows)'],
-                rate: {
-                    games: 5
-                }
-            },
-            {
-                list: ['сезон', 'season'],
-                rate: {
-                    serials: 1
-                }
-            },
-            {
-                list: [{word: 'CUE'}, '.cue'],
-                rate: {
-                    music: 20
-                }
-            },
-            {
-                list: ['soundtrack'],
-                rate: {
-                    music: 1
-                }
-            },
-            {
-                list: ['мультфильм'],
-                rate: {
-                    cartoons: 1
-                }
-            },
-            {
-                list: ['чистый звук'],
-                rate: {
-                    video: 2
-                }
-            },
-            {
-                list: ['обновляемая'],
-                rate: {
-                    serials: 5
-                }
-            }
+            ], after: [
+                {name: 'audioQuality', rules: [
+                    {
+                        match: ['320'],
+                        value: 100
+                    },
+                    {
+                        match: ['192'],
+                        value: 70
+                    },
+                    {
+                        match: ['128'],
+                        value: 50
+                    },
+                    {
+                        match: ['96'],
+                        value: 30
+                    },
+                    {
+                        match: ['64'],
+                        value: 15
+                    },
+                    {
+                        match: ['32'],
+                        value: 10
+                    }
+                ]}
+            ]}
         ],
         qualityList: {},
         /**
@@ -425,103 +213,82 @@ define([
          * @param [type] String
          * @returns {{}|{wordsRe: object, scope: object, scopeCase: object}}
          */
-        readQualityList: function(qualityList, type) {
-            type = type || '';
-            var wordsRe = [];
+        readQualityList: function(qualityList) {
+            var wordsRe = null;
+            var words = [];
+            var wordsReTest = [];
             var scope = {};
             var scopeCase = {};
-            var tmpScopeRegexp = [];
-            qualityList.forEach(function(qualityObj) {
-                if (qualityObj.list !== undefined) {
-                    qualityObj.list.forEach(function(wordItem) {
-                        if (typeof wordItem === 'string') {
-                            /**
-                             * List item in qualityList
-                             * @type {{word: String, caseSens: Number, regexp: Number}}
-                             */
-                            wordItem = {word: wordItem, caseSens: 0};
+            qualityList.forEach(function (section) {
+                section.rules.forEach(function (qualityObj, index) {
+                    qualityObj.section = section;
+                    qualityObj.index = index;
+                    qualityObj.match && qualityObj.match.forEach(function (wordObj) {
+                        if (typeof wordObj === 'string') {
+                            wordObj = {word: wordObj, caseSens: false};
                         }
-                        if (wordItem.regexp === 1) {
-                            wordsRe.push(wordItem.word);
+
+                        if (wordObj.regexp === 1) {
+                            words.push(wordObj.word);
                             var caseSens = 'g';
-                            if (wordItem.caseSens !== 0) {
+                            if (wordObj.caseSens) {
                                 caseSens += 'i';
                             }
-                            tmpScopeRegexp.push([new RegExp(wordItem.word, caseSens), qualityObj]);
+                            wordsReTest.push({
+                                re: new RegExp(wordObj.word, caseSens),
+                                qualityObj: qualityObj
+                            });
                         } else {
-                            if (wordItem.caseSens !== 0) {
-                                if (scopeCase[wordItem.word] !== undefined) {
-                                    console.log('Word case conflict!', wordItem);
+                            if (!wordObj.caseSens) {
+                                wordObj.word = wordObj.word.toLowerCase();
+                                if (!scope[wordObj.word]) {
+                                    scope[wordObj.word] = qualityObj;
+                                } else {
+                                    console.log('Word conflict!', wordObj);
                                 }
-                                scopeCase[wordItem.word] = qualityObj;
                             } else {
-                                wordItem.word = wordItem.word.toLowerCase();
-                                if (scope[wordItem.word] !== undefined) {
-                                    console.log('Word conflict!', wordItem);
+                                if (!scopeCase[wordObj.word]) {
+                                    scopeCase[wordObj.word] = qualityObj;
+                                } else {
+                                    console.log('Word case conflict!', wordObj);
                                 }
-                                scope[wordItem.word] = qualityObj;
                             }
-                            wordsRe.push(utils.sanitizeTextRe(wordItem.word));
+                            words.push(utils.sanitizeTextRe(wordObj.word));
                         }
                     });
-                }
-                var subList = [];
-                if (qualityObj.sub !== undefined) {
-                    if (typeof qualityObj.sub === 'string') {
-                        qualityObj.sub = rate.template[qualityObj.sub];
-                    }
-                    utils.extend(qualityObj, rate.readQualityList(qualityObj.sub, 'sub'));
-                    subList.push('sub');
-                }
-                if (qualityObj.subAfter !== undefined) {
-                    if (typeof qualityObj.subAfter === 'string') {
-                        qualityObj.subAfter = rate.template[qualityObj.subAfter];
-                    }
-                    utils.extend(qualityObj, rate.readQualityList(qualityObj.subAfter, 'subAfter'));
-                    subList.push('subAfter');
-                }
-                if (qualityObj.subBefore !== undefined) {
-                    if (typeof qualityObj.subBefore === 'string') {
-                        qualityObj.subBefore = rate.template[qualityObj.subBefore];
-                    }
-                    utils.extend(qualityObj, rate.readQualityList(qualityObj.subBefore, 'subBefore'));
-                    subList.push('subBefore');
-                }
-                if (subList.length !== 0) {
-                    qualityObj.subList = subList;
+                });
+
+                if (section.after) {
+                    section.after = rate.readQualityList(section.after);
                 }
             });
-            if (wordsRe.length > 0) {
-                wordsRe = new RegExp(wordsRe.sort(function(a, b) {
-                    return String(a).length > String(b).length ? -1 : 1
+
+            if (words.length) {
+                wordsRe = new RegExp(words.sort(function(a, b) {
+                    return a.length > b.length ? -1 : 1
                 }).join('|'), 'ig');
-            } else {
-                wordsRe = undefined;
             }
 
-            var scopeRegexpIndex;
-            var scopeRegexp;
-            if (tmpScopeRegexp.length > 0) {
-                scopeRegexp = [];
-                scopeRegexpIndex = [];
-                tmpScopeRegexp.sort(function(a, b) {
-                    return String(a[0]).length > String(b[0]).length ? -1 : 1
+            var scopeRegexpIndex = [];
+            var scopeRegexp = [];
+            if (wordsReTest.length) {
+                wordsReTest.sort(function(a, b) {
+                    return String(a.re).length > String(b.re).length ? -1 : 1
                 });
-                for (var i = 0, item; item = tmpScopeRegexp[i]; i++) {
-                    scopeRegexp.push(item[0]);
-                    scopeRegexpIndex.push(item[1]);
-                }
-                tmpScopeRegexp = null;
+                wordsReTest.forEach(function (item) {
+                    scopeRegexp.push(item.re);
+                    scopeRegexpIndex.push(item.qualityObj);
+                });
             }
-            var rObj = {};
-            wordsRe && (rObj['wordsRe'+type] = wordsRe);
-            !utils.isEmptyObject(scope) && (rObj['scope'+type] = scope);
-            !utils.isEmptyObject(scopeCase) && (rObj['scopeCase'+type] = scopeCase);
-            if (scopeRegexp) {
-                rObj['scopeRegexp'+type] = scopeRegexp;
-                rObj['scopeRegexpIndex'+type] = scopeRegexpIndex;
-            }
-            return rObj;
+
+            var result = {};
+            result.wordsRe = wordsRe;
+            result.scope = !utils.isEmptyObject(scope) && scope;
+            result.scopeCase = !utils.isEmptyObject(scopeCase) && scopeCase;
+            result.scopeRegexp = scopeRegexp.length && scopeRegexp;
+            result.scopeRegexpIndex = scopeRegexpIndex;
+
+            return result;
         },
         baseQualityList: {},
         getScheme: function (query) {
@@ -593,6 +360,9 @@ define([
         },
         getReplace: function (rating, qualityList, matched) {
             matched = matched || [];
+            var lastSectionIndex = {};
+            var lastQuality = '';
+
             return function () {
                 var word = arguments[0];
                 var wordLen = word.length;
@@ -605,68 +375,56 @@ define([
                     return '';
                 }
 
-                var wordLowCase;
                 var qualityObj = qualityList.scopeCase && qualityList.scopeCase[word];
-                if (!qualityObj) {
-                    wordLowCase = word.toLowerCase();
-                    qualityObj = qualityList.scope && qualityList.scope[wordLowCase];
+
+                if (!qualityObj && qualityList.scope) {
+                    var wordLowCase = word.toLowerCase();
+                    qualityObj = qualityList.scope[wordLowCase];
                     if (qualityObj) {
                         word = wordLowCase;
                     }
                 }
 
-                qualityList.scopeRegexp && qualityList.scopeRegexp.some(function(regexp, index) {
-                    if (regexp.test(word)) {
-                        qualityObj = qualityList.scopeRegexpIndex[index];
-                        return true;
-                    }
-                });
+                if (matched.indexOf(word) !== -1) {
+                    return '';
+                }
+
+                if (!qualityObj && qualityList.scopeRegexp) {
+                    qualityList.scopeRegexp.some(function (re, index) {
+                        if (re.test(word)) {
+                            qualityObj = qualityList.scopeRegexpIndex[index];
+                            return true;
+                        }
+                    });
+                }
 
                 if (!qualityObj) {
                     return '';
                 }
 
-                if (matched.indexOf(word) !== -1) {
-                    return '';
-                }
                 matched.push(word);
 
-                if (qualityObj.name) {
-                    if (!rating.quality) {
-                        rating.quality = qualityObj.name;
-                    } else {
-                        return '';
+                var section = qualityObj.section;
+                var sectionName = section.name;
+                if (!lastSectionIndex[sectionName]) {
+                    lastSectionIndex[sectionName] = -1;
+                }
+
+                if (qualityObj.index > lastSectionIndex[sectionName]) {
+                    lastSectionIndex[sectionName] = qualityObj.index;
+                    rating.rate[sectionName] = qualityObj.value;
+                    if (qualityObj.name) {
+                        lastQuality && rating.quality.splice(rating.quality.indexOf(lastQuality), 1);
+                        rating.quality.push(qualityObj.name);
+                        lastQuality = qualityObj.name;
+                    }
+
+                    if (section.after) {
+                        str.replace(section.after.wordsRe, rate.getReplace(rating, section.after, matched));
                     }
                 }
 
-                for (var key in qualityObj.rate) {
-                    if (!rating.rate[key]) {
-                        rating.rate[key] = 0;
-                    }
-                    rating.rate[key] += qualityObj.rate[key];
-                }
-
-                var subText;
-                if (qualityObj.subList) {
-                    for (var m = 0, type; type = qualityObj.subList[m]; m++) {
-                        if (type === 'subAfter') {
-                            subText = str.substr(pos + wordLen);
-                        } else
-                        if (type === 'subBefore') {
-                            subText = str.substr(0, pos);
-                        } else {
-                            subText = str;
-                        }
-                        if (subText) {
-                            subText.replace(qualityObj['wordsRe' + type], rate.getReplace(rating, {
-                                scope: qualityObj['scope'+type],
-                                scopeCase: qualityObj['scopeCase'+type],
-                                scopeRegexp: qualityObj['scopeRegexp'+type],
-                                scopeRegexpIndex: qualityObj['scopeRegexpIndex'+type]
-                            }, matched));
-                        }
-                    }
-                }
+                return '';
             };
         },
         getTitleReplace: function (rating, scheme) {
@@ -676,10 +434,10 @@ define([
             var wordsLow = scheme.wordsLow.slice(0);
             var wordRate = 100 / wordsLen;
             var wordsSpaces = scheme.wordsSpaces;
-            rating.rate.title = 0;
-            rating.rate.wordSpaces = 0;
-            rating.rate.wordOrder = 0;
-            rating.rate.caseSens = 0;
+            rating.queryRate.title = 0;
+            rating.queryRate.wordSpaces = 0;
+            rating.queryRate.wordOrder = 0;
+            rating.queryRate.caseSens = 0;
             var lastWordEndPos = null;
             var wordIndex = 0;
             return function (word, pos, str) {
@@ -696,7 +454,7 @@ define([
 
                     var isYear = scheme.years.indexOf(wordLow) !== -1;
 
-                    rating.rate.title += wordRate;
+                    rating.queryRate.title += wordRate;
 
                     if (!isYear) {
                         if (lastWordEndPos === null) {
@@ -708,19 +466,19 @@ define([
                         if (spaceCount > spaceSize) {
                             spaceSize = spaceCount;
                         }
-                        rating.rate.wordSpaces += spaceCount / spaceSize * wordRate;
+                        rating.queryRate.wordSpaces += spaceCount / spaceSize * wordRate;
                         lastWordEndPos = pos + wordLen;
                     } else {
-                        rating.rate.wordSpaces += wordRate;
+                        rating.queryRate.wordSpaces += wordRate;
                     }
 
                     if (wordIndex === index) {
-                        rating.rate.wordOrder += wordRate;
+                        rating.queryRate.wordOrder += wordRate;
                     }
 
                     var queryWord = wordsCase[index];
                     if (queryWord && wordsCase === word[0]) {
-                        rating.rate.caseSens += wordRate;
+                        rating.queryRate.caseSens += wordRate;
                     }
 
                     wordIndex++;
@@ -729,39 +487,53 @@ define([
         },
         getRate: function (torrent, scheme) {
             var rating = {
+                quality: [],
+                queryRate: {
+                    title: 0,
+                    wordSpaces: 0,
+                    wordOrder: 0,
+                    caseSens: 0
+                },
                 rate: {},
                 sum: 0
             };
 
-            /*torrent.title.replace(rate.baseQualityList.wordsRe, rate.getReplace(rating, rate.baseQualityList));
-
-            if (!rating.quality) {
-                rating.quality = '+';
-            }*/
-
             if (torrent.title.indexOf(scheme.query) !== -1) {
-                rating.rate.title = 100;
-                rating.rate.wordSpaces = 100;
-                rating.rate.wordOrder = 100;
-                rating.rate.caseSens = 100;
+                rating.queryRate.title = 100;
+                rating.queryRate.wordSpaces = 100;
+                rating.queryRate.wordOrder = 100;
+                rating.queryRate.caseSens = 100;
             } else {
                 torrent.title.replace(scheme.wordsRe, rate.getTitleReplace(rating, scheme));
             }
 
+            var count = 0;
+            var coefficient = 0;
+            for (var item in rating.queryRate) {
+                coefficient += rating.queryRate[item];
+                count++;
+            }
+            coefficient = coefficient / count;
+
+            torrent.title.replace(rate.baseQualityList.wordsRe, rate.getReplace(rating, rate.baseQualityList));
+
+            count = 0;
             for (var item in rating.rate) {
                 rating.sum += rating.rate[item];
+                count++;
+            }
+            if (count > 0) {
+                rating.sum /= count;
             }
 
-            return rating.sum;
+            return rating.sum + coefficient;
         },
         init: function () {
             /**
              * @type {{wordsRe: Object, scope: Object, scopeCase: Object}}
              */
-            if (utils.isEmptyObject(this.qualityList)) {
-                this.qualityList = this.defaultQualityList;
-            }
-            this.baseQualityList = this.readQualityList(this.qualityList);
+            this.baseQualityList = this.readQualityList(this.rating);
+
         }
     };
     rate.init();
