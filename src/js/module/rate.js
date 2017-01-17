@@ -184,6 +184,10 @@ define([
                         value: 100
                     },
                     {
+                        match: ['256'],
+                        value: 80
+                    },
+                    {
                         match: ['192'],
                         value: 70
                     },
