@@ -6,6 +6,9 @@ define([
     './utils'
 ], function (utils) {
     var rate = {
+        rating: [
+
+        ],
         template: {
             bitrate: [
                 {
@@ -524,6 +527,8 @@ define([
         getScheme: function (query) {
             var scheme = {};
 
+            scheme.query = query;
+
             scheme.words = [];
             query.split(/[-\s]+/).forEach(function (word) {
                 while (word.length && utils.isPunctuation(word[0])) {
@@ -537,8 +542,21 @@ define([
                 }
             });
 
+            scheme.wordsCase = scheme.words.map(function (word) {
+                var firstChar = word[0];
+                if (firstChar && firstChar.toUpperCase() === firstChar) {
+                    return firstChar;
+                } else {
+                    return null;
+                }
+            });
+
             scheme.wordsLow = scheme.words.map(function (word) {
                 return word.toLowerCase();
+            });
+
+            scheme.years = scheme.wordsLow.filter(function (word) {
+                return /\d{4}/.test(word);
             });
 
             scheme.wordsRe = scheme.words.slice(0).sort(function(a, b){
@@ -547,6 +565,29 @@ define([
                 return utils.sanitizeTextRe(word);
             });
             scheme.wordsRe = new RegExp(scheme.wordsRe.join('|'), 'ig');
+
+            scheme.wordsSpaces = new Array(scheme.wordsLow.length);
+
+            var words = scheme.words.slice(0);
+            var lastWordEndPos = null;
+            query.replace(scheme.wordsRe, function (word, pos, str) {
+                var wordLen = word.length;
+                if (!word || !utils.isBoundary(str[pos - 1], str[pos + wordLen])) {
+                    return '';
+                }
+
+                var index = words.indexOf(word);
+                if (index !== -1) {
+                    words.splice(index, 1, null);
+
+                    if (lastWordEndPos === null) {
+                        lastWordEndPos = pos - 1;
+                    }
+
+                    scheme.wordsSpaces[index] = pos - lastWordEndPos;
+                    lastWordEndPos = pos + wordLen;
+                }
+            });
 
             return scheme;
         },
@@ -630,42 +671,82 @@ define([
         },
         getTitleReplace: function (rating, scheme) {
             var words = scheme.words;
-            var wordsLow = scheme.wordsLow;
-            var matched = [];
-            var wordRate = 200 / words.length;
+            var wordsLen = words.length;
+            var wordsCase = scheme.wordsCase;
+            var wordsLow = scheme.wordsLow.slice(0);
+            var wordRate = 100 / wordsLen;
+            var wordsSpaces = scheme.wordsSpaces;
             rating.rate.title = 0;
+            rating.rate.wordSpaces = 0;
+            rating.rate.wordOrder = 0;
+            rating.rate.caseSens = 0;
+            var lastWordEndPos = null;
+            var wordIndex = 0;
             return function (word, pos, str) {
-                if (!word || !utils.isBoundary(str[pos - 1], str[pos + word.length])) {
+                var wordLen = word.length;
+                if (!word || !utils.isBoundary(str[pos - 1], str[pos + wordLen])) {
                     return '';
                 }
 
                 var wordLow = word.toLowerCase();
-                if (matched.indexOf(wordLow) !== -1) {
-                    return '';
-                }
-
-                matched.push(wordLow);
 
                 var index = wordsLow.indexOf(wordLow);
                 if (index !== -1) {
+                    wordsLow.splice(index, 1, null);
+
+                    var isYear = scheme.years.indexOf(wordLow) !== -1;
+
                     rating.rate.title += wordRate;
+
+                    if (!isYear) {
+                        if (lastWordEndPos === null) {
+                            lastWordEndPos = pos - 1;
+                        }
+
+                        var spaceSize = pos - lastWordEndPos;
+                        var spaceCount = wordsSpaces[index];
+                        if (spaceCount > spaceSize) {
+                            spaceSize = spaceCount;
+                        }
+                        rating.rate.wordSpaces += spaceCount / spaceSize * wordRate;
+                        lastWordEndPos = pos + wordLen;
+                    } else {
+                        rating.rate.wordSpaces += wordRate;
+                    }
+
+                    if (wordIndex === index) {
+                        rating.rate.wordOrder += wordRate;
+                    }
+
+                    var queryWord = wordsCase[index];
+                    if (queryWord && wordsCase === word[0]) {
+                        rating.rate.caseSens += wordRate;
+                    }
+
+                    wordIndex++;
                 }
             };
         },
         getRate: function (torrent, scheme) {
             var rating = {
-                quality: '',
                 rate: {},
                 sum: 0
             };
 
-            torrent.title.replace(rate.baseQualityList.wordsRe, rate.getReplace(rating, rate.baseQualityList));
+            /*torrent.title.replace(rate.baseQualityList.wordsRe, rate.getReplace(rating, rate.baseQualityList));
 
             if (!rating.quality) {
                 rating.quality = '+';
-            }
+            }*/
 
-            torrent.title.replace(scheme.wordsRe, rate.getTitleReplace(rating, scheme));
+            if (torrent.title.indexOf(scheme.query) !== -1) {
+                rating.rate.title = 100;
+                rating.rate.wordSpaces = 100;
+                rating.rate.wordOrder = 100;
+                rating.rate.caseSens = 100;
+            } else {
+                torrent.title.replace(scheme.wordsRe, rate.getTitleReplace(rating, scheme));
+            }
 
             for (var item in rating.rate) {
                 rating.sum += rating.rate[item];
