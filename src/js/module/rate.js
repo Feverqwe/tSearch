@@ -11,203 +11,201 @@ define([
                 {
                     match: ['DCPRip'],
                     value: 100,
-                    name: 'DCPRip'
+                    label: 'DCPRip'
                 },
                 {
                     match: ['blu-ray cee', {word: 'CEE'}],
                     value: 100,
-                    name: 'Blu-ray CEE'
+                    label: 'Blu-ray CEE'
                 },
                 {
                     match: ['blu-ray'],
                     value: 98,
-                    name: 'Blu-ray'
+                    label: 'Blu-ray'
                 },
                 {
                     match: ['bd-remux', 'bd remux', 'BDRemux'],
                     value: 95,
-                    name: 'BDRemux'
+                    label: 'BDRemux'
                 },
                 {
                     match: ['BDRip-AVC', 'BD-Rip', 'BDRip'],
                     value: 90,
-                    name: 'BDRip'
+                    label: 'BDRip'
                 },
                 {
                     match: ['CAMRip', 'CamRip-AVC'],
                     value: 10,
-                    name: 'CAMRip'
+                    label: 'CAMRip'
                 },
                 {
                     match: ['HDTV-Rip', 'HDTVRip'],
                     value: 60,
-                    name: 'HDTV-Rip'
+                    label: 'HDTV-Rip'
                 },
                 {
                     match: ['DTheater-Rip'],
                     value: 60,
-                    name: 'DTheater-Rip'
+                    label: 'DTheater-Rip'
                 },
                 {
                     match: ['LowHDRip', 'VHSRip'],
                     value: 10,
-                    name: 'LowHDRip'
+                    label: 'LowHDRip'
                 },
                 {
                     match: [{word: 'HDTV'}, 'HDRip', 'HDRip-AVC'],
                     value: 50,
-                    name: 'HDTV'
+                    label: 'HDTV'
                 },
                 {
                     match: ['DVDRip', 'DVD-Rip', 'DVDRip-AVC'],
                     value: 50,
-                    name: 'DVD-Rip'
+                    label: 'DVD-Rip'
                 },
                 {
                     match: ['HD-DVD'],
                     value: 55,
-                    name: 'HD-DVD'
+                    label: 'HD-DVD'
                 },
                 {
                     match: [{regexp: 1, word: '\\d\\s?[x\\*]\\s?DVD\\-?9', caseSens: 0}],
                     value: 50,
-                    name: 'DVD-9'
+                    label: 'DVD-9'
                 },
                 {
                     match: [{regexp: 1, word: '\\d\\s?[x\\*]\\s?DVD\\-?5', caseSens: 0}],
                     value: 45,
-                    name: 'DVD-5'
+                    label: 'DVD-5'
                 },
                 {
                     match: [{word: 'DVD'}],
                     value: 40,
-                    name: 'DVD'
+                    label: 'DVD'
                 },
                 {
                     match: ['HQSATRip', 'HQRip', 'HQRip-AVC'],
                     value: 38,
-                    name: 'HDrip'
+                    label: 'HDrip'
                 },
                 {
                     match: ['TVRip', 'IPTVRip'],
                     value: 35,
-                    name: 'TV-Rip'
+                    label: 'TV-Rip'
                 },
                 {
                     match: ['WEBRip'],
                     value: 35,
-                    name: 'WebRip'
+                    label: 'WebRip'
                 },
                 {
                     match: ['WEB-DLRip-AVC', 'WebDL-Rip', 'WEB-DLRip', 'WEB-DL'],
                     value: 35,
-                    name: 'WEB-DL'
+                    label: 'WEB-DL'
                 },
                 {
                     match: ['SATRip'],
                     value: 35,
-                    name: 'SAT-Rip'
+                    label: 'SAT-Rip'
                 },
                 {
                     match: [{word: 'DVB'}],
                     value: 35,
-                    name: 'DVB'
+                    label: 'DVB'
                 },
                 {
                     match: [{word: 'TS'}, 'TeleSynch'],
                     value: 15,
-                    name: 'Telesync'
+                    label: 'Telesync'
                 },
                 {
                     match: ['DVDScr', 'DVDScreener'],
                     value: 15,
-                    name: 'DVD-Screener'
+                    label: 'DVD-Screener'
                 }
-            ], after: [
-                {name: 'videoQuality', rules: [
-                    {
-                        match: ['4k', '2k'],
-                        value: 100
-                    },
-                    {
-                        match: ['2160p', '2160i'],
-                        value: 100
-                    },
-                    {
-                        match: ['1080p', '1080i'],
-                        value: 90
-                    },
-                    {
-                        match: ['720p'],
-                        value: 50
-                    },
-                    {
-                        match: ['HD'],
-                        value: 40
-                    },
-                    {
-                        match: ['SD'],
-                        value: 20
-                    }
-                ]}
+            ]},
+            {name: 'videoQuality', parent: 'videoFormat', rules: [
+                {
+                    match: ['4k', '2k'],
+                    value: 100
+                },
+                {
+                    match: ['2160p', '2160i'],
+                    value: 100
+                },
+                {
+                    match: ['1080p', '1080i'],
+                    value: 90
+                },
+                {
+                    match: ['720p'],
+                    value: 50
+                },
+                {
+                    match: ['HD'],
+                    value: 40
+                },
+                {
+                    match: ['SD'],
+                    value: 20
+                }
             ]},
             {name: 'audioFormat', rules: [
                 {
                     match: ['ALAC'],
                     value: 100,
-                    name: 'ALAC'
+                    label: 'ALAC'
                 },
                 {
                     match: ['FLAC'],
                     value: 100,
-                    name: 'FLAC'
+                    label: 'FLAC'
                 },
                 {
                     match: ['APE'],
                     value: 100,
-                    name: 'APE'
+                    label: 'APE'
                 },
                 {
                     match: ['AAC'],
                     value: 90,
-                    name: 'MP3'
+                    label: 'MP3'
                 },
                 {
                     match: ['MP3'],
-                    value: 80,
-                    name: 'MP3'
+                    value: 50,
+                    label: 'MP3',
+                    sub: [
+                        {
+                            match: ['320'],
+                            value: 40
+                        },
+                        {
+                            match: ['256'],
+                            value: 30
+                        },
+                        {
+                            match: ['192'],
+                            value: 20
+                        },
+                        {
+                            match: ['128'],
+                            value: 10
+                        },
+                        {
+                            match: ['96'],
+                            value: 0
+                        },
+                        {
+                            match: ['64'],
+                            value: -10
+                        },
+                        {
+                            match: ['32'],
+                            value: -20
+                        }
+                    ]
                 }
-            ], after: [
-                {name: 'audioQuality', rules: [
-                    {
-                        match: ['320'],
-                        value: 100
-                    },
-                    {
-                        match: ['256'],
-                        value: 80
-                    },
-                    {
-                        match: ['192'],
-                        value: 70
-                    },
-                    {
-                        match: ['128'],
-                        value: 50
-                    },
-                    {
-                        match: ['96'],
-                        value: 30
-                    },
-                    {
-                        match: ['64'],
-                        value: 15
-                    },
-                    {
-                        match: ['32'],
-                        value: 10
-                    }
-                ]}
             ]}
         ],
         qualityList: {},
@@ -223,7 +221,13 @@ define([
             var wordsReTest = [];
             var scope = {};
             var scopeCase = {};
+            var sections = {};
             qualityList.forEach(function (section) {
+                if (section.parent) {
+                    sections[section.parent].push(section.name);
+                } else {
+                    sections[section.name] = [section.name];
+                }
                 section.rules.forEach(function (qualityObj, index) {
                     qualityObj.section = section;
                     qualityObj.index = index;
@@ -260,11 +264,14 @@ define([
                             words.push(utils.sanitizeTextRe(wordObj.word));
                         }
                     });
-                });
 
-                if (section.after) {
-                    section.after = rate.readQualityList(section.after);
-                }
+                    if (qualityObj.sub) {
+                        qualityObj.sub = rate.readQualityList([{
+                            name: section.name,
+                            rules: qualityObj.sub
+                        }]);
+                    }
+                });
             });
 
             if (words.length) {
@@ -291,29 +298,10 @@ define([
             result.scopeCase = !utils.isEmptyObject(scopeCase) && scopeCase;
             result.scopeRegexp = scopeRegexp.length && scopeRegexp;
             result.scopeRegexpIndex = scopeRegexpIndex;
+            result.sections = sections;
 
             return result;
         },
-        getRateMap: function (rating) {
-            var map = {
-                title: ['title', 'wordSpaces', 'wordOrder', 'caseSens']
-            };
-            var getSubSections = function (rating) {
-                var sections = [];
-                rating && rating.forEach(function (section) {
-                    sections.push.apply(sections, getSubSections(section.after).concat(section.name));
-                });
-                return sections;
-            };
-            rating.forEach(function (section) {
-                map[section.name] = getSubSections(section.after).concat(section.name);
-            });
-            return {
-                count: rating.length,
-                map: map
-            };
-        },
-        rateMap: {},
         baseQualityList: {},
         getScheme: function (query) {
             var scheme = {};
@@ -382,12 +370,11 @@ define([
 
             return scheme;
         },
-        getReplace: function (rating, qualityList, matched) {
+        getQualityRating: function (torrentTitle, rating, qualityList, matched, parentRule) {
             matched = matched || [];
-            var lastSectionIndex = {};
-            var lastQuality = '';
+            var sectionRules = {};
 
-            return function () {
+            torrentTitle.replace(qualityList.wordsRe, function () {
                 var word = arguments[0];
                 var wordLen = word.length;
 
@@ -430,26 +417,58 @@ define([
 
                 var section = qualityObj.section;
                 var sectionName = section.name;
-                if (!lastSectionIndex[sectionName]) {
-                    lastSectionIndex[sectionName] = -1;
+
+                var currentRule = sectionRules[sectionName];
+
+                if (!currentRule) {
+                    currentRule = sectionRules[sectionName] = {index: -1};
                 }
 
-                if (qualityObj.index > lastSectionIndex[sectionName]) {
-                    lastSectionIndex[sectionName] = qualityObj.index;
-                    rating.rate[sectionName] = qualityObj.value;
-                    if (qualityObj.name) {
-                        lastQuality && rating.quality.splice(rating.quality.indexOf(lastQuality), 1);
-                        rating.quality.push(qualityObj.name);
-                        lastQuality = qualityObj.name;
+                if (qualityObj.index > currentRule.index) {
+                    currentRule.index = qualityObj.index;
+                    currentRule.parent = qualityObj.parent;
+
+                    if (!parentRule) {
+                        currentRule.value = qualityObj.value;
+                    } else {
+                        parentRule.value += qualityObj.value;
                     }
 
-                    if (section.after) {
-                        str.replace(section.after.wordsRe, rate.getReplace(rating, section.after, matched));
+                    if (!parentRule && qualityObj.label) {
+                        currentRule.label = qualityObj.label
+                    }
+
+                    if (qualityObj.sub) {
+                        rate.getQualityRating(str, rating, qualityObj.sub, matched, parentRule);
                     }
                 }
 
                 return '';
-            };
+            });
+
+            if (!parentRule) {
+                var sections = qualityList.sections;
+                var labels = [];
+                for (var key in sections) {
+                    var item = sections[key];
+                    var sum = 0;
+                    for (var i = 0, len = item.length; i < len; i++) {
+                        var sectionObj = sectionRules[item[i]];
+                        if (sectionObj && sectionObj.parent && !sectionRules[sectionObj.parent]) {
+                            sectionObj = null;
+                        }
+                        if (sectionObj) {
+                            sum += sectionObj.value;
+                            if (sectionObj.label) {
+                                labels.push(sectionObj.label);
+                            }
+                        }
+                    }
+                    sum /= len;
+                    rating.rate[key] = sum;
+                    rating.quality = labels.join(';');
+                }
+            }
         },
         getTitleReplace: function (rating, scheme) {
             var words = scheme.words;
@@ -511,48 +530,42 @@ define([
         },
         getRate: function (torrent, scheme) {
             var rating = {
-                quality: [],
+                quality: '',
                 rate: {
                     title: 0,
                     wordSpaces: 0,
                     wordOrder: 0,
                     caseSens: 0
                 },
-                sectionRate: {},
                 sum: 0
             };
 
-            if (torrent.title.indexOf(scheme.query) !== -1) {
-                rating.rate.title = 100;
-                rating.rate.wordSpaces = 100;
-                rating.rate.wordOrder = 100;
-                rating.rate.caseSens = 100;
-            } else {
-                torrent.title.replace(scheme.wordsRe, rate.getTitleReplace(rating, scheme));
-            }
+            var torrentTitle = torrent.title;
 
-            torrent.title.replace(rate.baseQualityList.wordsRe, rate.getReplace(rating, rate.baseQualityList));
-
-            var rateMap = this.rateMap;
-            var map = rateMap.map;
-            for (var key in map) {
-                var arr = map[key];
-                var value = 0;
-                for (var i = 0, len = arr.length; i < len; i++) {
-                    value += rating.rate[arr[i]] || 0;
+            if (scheme.query) {
+                var pos = torrent.title.indexOf(scheme.query);
+                if (pos !== -1 && utils.isBoundary(torrentTitle[pos - 1], torrentTitle[pos + scheme.query.length])) {
+                    rating.rate.title = 100;
+                    rating.rate.wordSpaces = 100;
+                    rating.rate.wordOrder = 100;
+                    rating.rate.caseSens = 100;
+                } else {
+                    torrentTitle.replace(scheme.wordsRe, rate.getTitleReplace(rating, scheme));
                 }
-                value /= i;
-                rating.sectionRate[key] = value;
-                rating.sum += value;
             }
 
-            return rating.sum / rateMap.count;
+            rate.getQualityRating(torrentTitle, rating, rate.baseQualityList);
+
+            for (var key in rating.rate) {
+                rating.sum += rating.rate[key];
+            }
+
+            return rating.sum;
         },
         init: function () {
             /**
              * @type {{wordsRe: Object, scope: Object, scopeCase: Object}}
              */
-            this.rateMap = this.getRateMap(this.rating);
             this.baseQualityList = this.readQualityList(JSON.parse(JSON.stringify(this.rating)));
         }
     };
