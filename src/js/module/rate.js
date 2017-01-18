@@ -124,7 +124,7 @@ define([
                     label: 'DVD-Screener'
                 }
             ]},
-            {name: 'videoQuality', parent: 'videoFormat', rules: [
+            {name: 'videoQuality', join: 'videoFormat', rules: [
                 {
                     match: ['4k', '2k'],
                     value: 100
@@ -225,6 +225,9 @@ define([
             qualityList.forEach(function (section) {
                 if (section.parent) {
                     sections[section.parent].push(section.name);
+                } else
+                if (section.join) {
+                    sections[section.join].push(section.name);
                 } else {
                     sections[section.name] = [section.name];
                 }
@@ -421,12 +424,13 @@ define([
                 var currentRule = sectionRules[sectionName];
 
                 if (!currentRule) {
-                    currentRule = sectionRules[sectionName] = {index: -1};
+                    currentRule = sectionRules[sectionName] = {index: null};
                 }
 
-                if (qualityObj.index > currentRule.index) {
+                if (currentRule.index === null || qualityObj.index < currentRule.index) {
                     currentRule.index = qualityObj.index;
-                    currentRule.parent = qualityObj.parent;
+                    currentRule.parent = section.parent;
+                    currentRule.label = '';
 
                     if (!parentRule) {
                         currentRule.value = qualityObj.value;
