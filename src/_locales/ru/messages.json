@@ -266,6 +266,9 @@
   "doNotSendStatistics": {
     "message": "Не отправлять статистику"
   },
+  "quickSearch": {
+    "message": "Быстрый поиск"
+  },
   "kitTrackerCodeReadError": {
     "message": "Ошибка разбора кода трекера"
   },

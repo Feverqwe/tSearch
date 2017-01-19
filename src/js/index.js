@@ -41,6 +41,7 @@ require([
             checkUpdateTime: 0,
 
             eSections: [],
+            quickSearch: [],
             kpFolderId: '1',
             favoriteSync: true,
             originalPosterName: false,

@@ -576,6 +576,142 @@ define([
 
         var onResizeThrottle = utils.throttle(onResize, 100);
 
+        var quickSearch = (function () {
+            var angleNode = null;
+            var popuBodyNode = null;
+            var popupNode = dom.el('div', {
+                class: 'quickSearch__popup_box',
+                append: [
+                    dom.el('div', {
+                        class: 'popup',
+                        append: [
+                            angleNode = dom.el('div', {
+                                class: 'popup__angle_shadow',
+                                append: [
+                                    dom.el('div', {
+                                        class: 'popup__angle'
+                                    })
+                                ]
+                            }),
+                            popuBodyNode = dom.el('div', {
+                                class: 'popup__body'
+                            })
+                        ]
+                    })
+                ]
+            });
+
+            var idSearchObjMap = {};
+            storage.quickSearch.forEach(function (quickSearchObj) {
+                idSearchObjMap[quickSearchObj.id] = quickSearchObj;
+            });
+
+            var getPosition = function(node) {
+                var box = node.getBoundingClientRect();
+                return {
+                    top: Math.round(box.top + window.pageYOffset),
+                    left: Math.round(box.left + window.pageXOffset),
+                    width: box.width,
+                    height: box.height
+                }
+            };
+
+            var getSize = function(node) {
+                return {width: node.offsetWidth, height: node.offsetHeight};
+            };
+
+            var setPosition = function (labelNode, popupNode, angleNode) {
+                var width = 300;
+
+                var labelPos = {
+                    left: 0,
+                    top: 0
+                };
+
+                var parent = labelNode;
+                while (parent.offsetParent !== null) {
+                    labelPos.left += parent.offsetLeft;
+                    labelPos.top += parent.offsetTop;
+                    parent = parent.offsetParent;
+                }
+
+                var rLabelPos = getPosition(labelNode);
+
+                var labelSize = getSize(labelNode);
+
+                var docWidth = document.body.clientWidth;
+                var anglePos = labelPos.left + labelSize.width / 2;
+                var rightPos = anglePos + width / 2;
+                var leftPos = anglePos - width / 2;
+                if (rightPos > docWidth) {
+                    leftPos = docWidth - width;
+                }
+                if (leftPos < 0) {
+                    leftPos = 0;
+                }
+
+                var angleLeftPercent = 100 * (anglePos - leftPos) / width;
+
+                leftPos -= rLabelPos.left;
+                labelPos.top -= rLabelPos.top;
+
+                angleNode.style.left = angleLeftPercent + '%';
+                popupNode.style.left = leftPos + 'px';
+                popupNode.style.top = (labelPos.top + labelSize.height - 5) + 'px';
+            };
+
+            var showPopup = function (node, query) {
+                popuBodyNode.textContent = '';
+                node.appendChild(popupNode);
+                setPosition(node, popupNode, angleNode);
+
+                var quickSearchObj = idSearchObjMap[query] || {};
+                var list = quickSearchObj.list || [];
+                if (!list.length) {
+                    popuBodyNode.textContent = '...';
+                } else {
+                    /*popuBodyNode.appendChild(dom.el('ul', {
+                        append: [
+                            list.map(function (item) {
+                                dom.el('li', {
+                                    append: dom.el('a', {
+                                        append: mono.templateToDom(torrentObj.titleObj),
+                                        href: torrentObj.url,
+                                        target: '_blank',
+                                        onCreate: function() {
+                                            this.title = this.textContent;
+                                        }
+                                    })
+                                })
+                            })
+                        ]
+                    }));*/
+                }
+            };
+
+            return {
+                getLabel: function (title) {
+                    var quickSearchObj = idSearchObjMap[title] || {};
+                    return quickSearchObj.label || '?';
+                },
+                onLabelClick: function (node, index) {
+                    var poster = this.cache.content[index];
+                    var query = getCategoryItemTitle(poster);
+
+                },
+                onLabelOver: function (node, index) {
+                    var poster = this.cache.content[index];
+                    var query = getCategoryItemTitle(poster);
+                    showPopup(node, query);
+                },
+                onLabelLeave: function (node, index) {
+                    var poster = this.cache.content[index];
+                    var query = getCategoryItemTitle(poster);
+
+                }
+            }
+        })();
+
         var saveSections = function () {
             chrome.storage.local.set({eSections: sections});
         };
@@ -1009,6 +1145,20 @@ define([
                     }));
                 }
 
+                actionList.appendChild(dom.el('div', {
+                    class: 'action__quick_search',
+                    title: chrome.i18n.getMessage('quickSearch'),
+                    text: quickSearch.getLabel(title),
+                    on: [
+                        ['mouseenter', function () {
+                            sectionWrapper.quickSearchOver(this, index);
+                        }],
+                        ['mouseleave', function () {
+                            sectionWrapper.quickSearchLeave(this, index);
+                        }]
+                    ]
+                }));
+
                 contentBody.appendChild(dom.el('li', {
                     class: ['section__poster', 'poster'],
                     data: {
@@ -1302,6 +1452,10 @@ define([
             sectionWrapper.hasPages = false;
             sectionWrapper.setPage = onSetPage;
 
+            sectionWrapper.quickSearch = quickSearch.onLabelClick;
+            sectionWrapper.quickSearchOver = quickSearch.onLabelOver;
+            sectionWrapper.quickSearchLeave = quickSearch.onLabelLeave;
+
             if (section.id === 'favorites') {
                 sectionWrapper.rmFavorite = sectionRmFavorite;
                 sectionWrapper.edit = sectionEdit;
@@ -1440,10 +1594,11 @@ define([
                             e.preventDefault();
                             return sectionWrapper.edit(posterIndex);
                         }
+                        if (target.classList.contains('action__quick_search')) {
+                            e.preventDefault();
+                            return sectionWrapper.quickSearch(target, posterIndex);
+                        }
                     }
-                    /*if (el.classList.contains('quality')) {
-                        return this.onClickQuality(el, item, e);
-                    }*/
                 }
             });
 

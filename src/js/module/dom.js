@@ -61,7 +61,7 @@ define(function () {
     };
     /**
      * @param {string|Element|DocumentFragment} element
-     * @param details
+     * @param [details]
      * @return {Element}
      */
     var create = function (element, details) {

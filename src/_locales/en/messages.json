@@ -266,6 +266,9 @@
     "doNotSendStatistics": {
         "message": "Do not send statistics"
     },
+    "quickSearch": {
+        "message": "Quick search"
+    },
     "kitTrackerCodeReadError": {
         "message": "Error parsing of the tracker code"
     },
