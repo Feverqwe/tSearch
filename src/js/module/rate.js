@@ -524,7 +524,11 @@ define([
                     }
 
                     var queryWord = wordsCase[index];
-                    if (queryWord && wordsCase === word[0]) {
+                    if (queryWord) {
+                        if (queryWord === word[0]) {
+                            rating.rate.caseSens += wordRate;
+                        }
+                    } else {
                         rating.rate.caseSens += wordRate;
                     }
 
@@ -564,7 +568,7 @@ define([
                 rating.sum += rating.rate[key];
             }
 
-            return rating.sum;
+            return rating;
         },
         init: function () {
             /**
