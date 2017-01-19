@@ -244,6 +244,7 @@ a.search__submit {
 
 .input__input-word-filter {
     width: 166px;
+    padding-right: 20px;
 }
 
 .input__input-range {
