@@ -470,7 +470,7 @@ define([
                             },
                             target: '_blank',
                             href: torrent.downloadUrl,
-                            text: downloadLink + ' ' + String.fromCharCode(8595)
+                            text: downloadLink + String.fromCharCode(160) + String.fromCharCode(8595)
                         });
                     }
                     row.appendChild(dom.el('div', {
