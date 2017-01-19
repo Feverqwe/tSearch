@@ -135,7 +135,7 @@ require([
 
         (function () {
             var exploreNode = document.querySelector('.explore');
-            var explore = new Explore(storage, exploreNode);
+            var explore = new Explore(storage, exploreNode, ee);
             ee.on('stateReset', function () {
                 explore.show();
             });

@@ -6,8 +6,11 @@ define([
     'promise',
     './utils',
     './dom',
-    './dialog'
-], function (Promise, utils, dom, Dialog) {
+    './dialog',
+    './table',
+    './highlight',
+    './rate'
+], function (Promise, utils, dom, Dialog, Table, highlight, rate) {
     var defaultSections = [
         'favorites',
         'kpFavorites', 'kpInCinema', 'kpPopular', 'kpSerials',
@@ -545,7 +548,7 @@ define([
         };
     })();
 
-    var Explore = function (storage, exploreNode) {
+    var Explore = function (storage, exploreNode, ee) {
         var movebleStyleList = {};
         var sections = storage.eSections;
         var idSectionMap = {};
@@ -577,34 +580,19 @@ define([
         var onResizeThrottle = utils.throttle(onResize, 100);
 
         var quickSearch = (function () {
-            var angleNode = null;
-            var popuBodyNode = null;
-            var popupNode = dom.el('div', {
-                class: 'quickSearch__popup_box',
-                append: [
-                    dom.el('div', {
-                        class: 'popup',
-                        append: [
-                            angleNode = dom.el('div', {
-                                class: 'popup__angle_shadow',
-                                append: [
-                                    dom.el('div', {
-                                        class: 'popup__angle'
-                                    })
-                                ]
-                            }),
-                            popuBodyNode = dom.el('div', {
-                                class: 'popup__body'
-                            })
-                        ]
-                    })
-                ]
-            });
-
             var idSearchObjMap = {};
             storage.quickSearch.forEach(function (quickSearchObj) {
                 idSearchObjMap[quickSearchObj.id] = quickSearchObj;
             });
+
+            var current = {
+                query: '',
+                labelNode: null
+            };
+            var angleNode = null;
+            var bodyNode = null;
+            var visible = false;
+            var popupNode = null;
 
             var getPosition = function(node) {
                 var box = node.getBoundingClientRect();
@@ -615,11 +603,9 @@ define([
                     height: box.height
                 }
             };
-
             var getSize = function(node) {
                 return {width: node.offsetWidth, height: node.offsetHeight};
             };
-
             var setPosition = function (labelNode, popupNode, angleNode) {
                 var width = 300;
 
@@ -660,54 +646,155 @@ define([
                 popupNode.style.top = (labelPos.top + labelSize.height - 5) + 'px';
             };
 
-            var showPopup = function (node, query) {
-                popuBodyNode.textContent = '';
-                node.appendChild(popupNode);
-                setPosition(node, popupNode, angleNode);
+            var getPopupNode = function () {
+                return dom.el('div', {
+                    class: 'quick_search',
+                    title: "",
+                    append: [
+                        dom.el('div', {
+                            class: 'popup',
+                            append: [
+                                angleNode = dom.el('div', {
+                                    class: 'popup__angle_shadow',
+                                    append: [
+                                        dom.el('div', {
+                                            class: 'popup__angle'
+                                        })
+                                    ]
+                                }),
+                                bodyNode = dom.el('div', {
+                                    class: 'popup__body'
+                                })
+                            ]
+                        })
+                    ]
+                });
+            };
+            var show = function () {
+                if (!visible) {
+                    visible = true;
+                    popupNode.classList.add('quick_search__visible');
+                }
+            };
+            var hide = function () {
+                if (visible) {
+                    visible = false;
+                    popupNode.classList.remove('quick_search__visible');
+                }
+            };
+            var save = function () {
+                chrome.storage.local.set({
+                    quickSearch: storage.quickSearch
+                });
+            };
+
+            var showPopup = function (labelNode, query) {
+                if (!popupNode) {
+                    popupNode = getPopupNode();
+                }
+                hide();
+                labelNode.appendChild(popupNode);
+                setPosition(labelNode, popupNode, angleNode);
 
                 var quickSearchObj = idSearchObjMap[query] || {};
-                var list = quickSearchObj.list || [];
-                if (!list.length) {
-                    popuBodyNode.textContent = '...';
-                } else {
-                    /*popuBodyNode.appendChild(dom.el('ul', {
-                        append: [
-                            list.map(function (item) {
-                                dom.el('li', {
-                                    append: dom.el('a', {
-                                        append: mono.templateToDom(torrentObj.titleObj),
-                                        href: torrentObj.url,
-                                        target: '_blank',
-                                        onCreate: function() {
-                                            this.title = this.textContent;
-                                        }
-                                    })
-                                })
+                var results = quickSearchObj.results || [];
+
+                if (results.length) {
+                    insertResults(query, labelNode, results);
+                }
+            };
+
+            var insertResults = function (query, labelNode, results) {
+                var highlightMap = highlight.getMap(query);
+
+                bodyNode.textContent = '';
+                bodyNode.appendChild(dom.el('ul', {
+                    append: results.map(function (torrent, index) {
+                        return dom.el('li', {
+                            class: 'torrent__title',
+                            append: dom.el('a', {
+                                class: ['title'],
+                                target: '_blank',
+                                href: torrent.url,
+                                append: [
+                                    highlight.insert(torrent.title, highlightMap)
+                                ]
                             })
-                        ]
-                    }));*/
+                        })
+                    })
+                }));
+
+                show();
+            };
+
+            var onGetResults = function (tracker, query, searchResults) {
+                var quickSearchObj = idSearchObjMap[query];
+                if (!quickSearchObj) {
+                    quickSearchObj = idSearchObjMap[query] = {
+                        id: query,
+                        label: '',
+                        results: []
+                    };
+                    storage.quickSearch.push(quickSearchObj);
+                }
+                var results = quickSearchObj.results;
+
+                var rateScheme = rate.getScheme(query);
+
+                searchResults.forEach(function (torrent) {
+                    var skip = Table.prototype.normalizeTorrent(storage, tracker.id, torrent);
+                    if (!skip) {
+                        var rateObj = rate.getRate(torrent, rateScheme);
+                        torrent.rate = rateObj;
+                        torrent.quality = rateObj.sum;
+                        if (rateObj.rate.title >= 100 &&
+                            rateObj.rate.wordSpaces > 50 &&
+                            rateObj.rate.wordOrder >= 100 &&
+                            rateObj.rate.caseSens > 50 &&
+                            rateObj.rate.videoFormat > 50
+                        ) {
+                            results.push(torrent);
+                        }
+                    }
+                });
+
+                results.sort(function (aa, bb) {
+                    var a = aa.quality;
+                    var b = bb.quality;
+                    return a === b ? 0 : a > b ? -1 : 1;
+                }).splice(5);
+
+                if (current.query === query && results.length) {
+                    quickSearchObj.label = results[0].rate.quality || '+';
+
+                    current.labelNode.textContent = quickSearchObj.label;
+                    current.labelNode.appendChild(popupNode);
+                    insertResults(query, current.labelNode, results);
+
+                    save();
                 }
             };
 
             return {
-                getLabel: function (title) {
-                    var quickSearchObj = idSearchObjMap[title] || {};
+                getLabel: function (query) {
+                    var quickSearchObj = idSearchObjMap[query] || {};
                     return quickSearchObj.label || '?';
                 },
                 onLabelClick: function (node, index) {
                     var poster = this.cache.content[index];
                     var query = getCategoryItemTitle(poster);
+                    current.query = query;
+                    current.labelNode = node;
 
+                    ee.trigger('quickSearch', [query, onGetResults]);
                 },
                 onLabelOver: function (node, index) {
                     var poster = this.cache.content[index];
                     var query = getCategoryItemTitle(poster);
-                    showPopup(node, query);
-                },
-                onLabelLeave: function (node, index) {
-                    var poster = this.cache.content[index];
-                    var query = getCategoryItemTitle(poster);
+                    current.query = query;
+                    current.labelNode = node;
 
+                    showPopup(node, query);
                 }
             }
         })();
@@ -1152,9 +1239,6 @@ define([
                     on: [
                         ['mouseenter', function () {
                             sectionWrapper.quickSearchOver(this, index);
-                        }],
-                        ['mouseleave', function () {
-                            sectionWrapper.quickSearchLeave(this, index);
                         }]
                     ]
                 }));
@@ -1454,7 +1538,6 @@ define([
 
             sectionWrapper.quickSearch = quickSearch.onLabelClick;
             sectionWrapper.quickSearchOver = quickSearch.onLabelOver;
-            sectionWrapper.quickSearchLeave = quickSearch.onLabelLeave;
 
             if (section.id === 'favorites') {
                 sectionWrapper.rmFavorite = sectionRmFavorite;

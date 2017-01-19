@@ -820,29 +820,35 @@ a.tracker {
     opacity: 1;
 }
 
+.torrent__title a,
 .table-results .body__row .cell-title a {
     text-decoration: none;
 }
 
+.torrent__title,
 .table-results .body__row .cell-title .cell__title {
     text-decoration: none;
     font-size: 14px;
 }
 
+.torrent__title a,
 .table-results .body__row .cell-title .cell__title a {
     line-height: 130%;
     padding-bottom: 1px;
     border-bottom: 1px solid transparent;
 }
 
+.torrent__title a:link:hover,
 .table-results .body__row .cell-title .cell__title a:link:hover {
     border-bottom-color: #1A3DC1;
 }
 
+.torrent__title a:not(:visited) span,
 .table-results .body__row .cell-title .cell__title a:not(:visited) span {
     color: #000;
 }
 
+.torrent__title a:visited:hover,
 .table-results .body__row .cell-title .cell__title a:visited:hover {
     border-bottom-color: #609;
 }

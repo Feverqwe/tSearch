@@ -363,10 +363,7 @@ ul.explore {
     background-color: #fff;
 }
 
-.explore #info_popup:hover {
-    visibility: visible;
-}
-.explore #info_popup {
+.explore .quick_search {
     position: absolute;
     top: 16px;
     left: 0;
@@ -379,13 +376,18 @@ ul.explore {
     font-size: 13px;
     white-space: normal;
 }
-.explore div.popup {
+
+.explore .action__quick_search:hover .quick_search.quick_search__visible {
+    visibility: visible;
+}
+
+.explore .quick_search .popup {
     background-color: #fff;
     box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-.explore #info_popup .corner2 {
+.explore .quick_search .popup__angle {
     border: 8px solid transparent;
     border-bottom: 10px solid #fff;
     border-top: 0;
@@ -395,7 +397,7 @@ ul.explore {
     left: 50%;
     margin-left: -8px;
 }
-.explore #info_popup .corner {
+.explore .quick_search .popup__angle_shadow {
     border: 8px solid transparent;
     border-bottom: 10px solid rgb(192, 187, 187);
     border-top: 0;
@@ -406,27 +408,34 @@ ul.explore {
     margin-left: -8px;
 
 }
-.explore #info_popup .content {
+.explore .quick_search .popup__body {
     padding: 6px;
 }
-.explore #info_popup ul {
+.explore .quick_search ul {
     list-style-type: lower-greek;
     padding-left: 20px;
     margin: 0;
     word-wrap: break-word;
 }
-.explore #info_popup li {
+.explore .quick_search li {
     margin: 0;
     margin-bottom: 6px;
     line-height: normal;
+    font-size: 13px;
 }
-.explore #info_popup li:first-child {
+.explore .quick_search li a.title {
+    padding-bottom: 0;
+}
+.explore .quick_search li:first-child a.title {
+    padding-bottom: 1px;
+}
+.explore .quick_search li:first-child {
     border-bottom: 1px dashed rgb(111, 111, 111);
     margin-bottom: 3px;
     padding-bottom: 3px;
     font-size: 14px;
 }
-.explore #info_popup li:last-child {
+.explore .quick_search li:last-child {
     margin-bottom: 0;
     padding-bottom: 0;
     border-bottom: 0;

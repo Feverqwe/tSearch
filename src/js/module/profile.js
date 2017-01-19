@@ -116,6 +116,7 @@ define([
             ee.on('selectTracker', onSelectTracker);
             ee.on('filterChange', onFilterChange);
             ee.on('search', onSearch);
+            ee.on('quickSearch', onQuickSearch);
             ee.on('stateReset', onStateReset);
 
             self.id = profile.id;
@@ -327,6 +328,37 @@ define([
             return table;
         };
 
+        var onQuickSearch = function (query, callback) {
+            wrappedTrackers.forEach(function (tracker) {
+                if (tracker.worker) {
+                    tracker.status('search');
+                    tracker.auth && tracker.auth.destroy();
+                    tracker.worker.search(query, function (response) {
+                        if (!response) {
+                            tracker.status('error', 'Tracker response is empty!');
+                            throw new Error('Tracker response is empty!');
+                        }
+
+                        if (response.success) {
+                            tracker.status('success');
+                            var count = response.results.length;
+                            tracker.count({filtered: count, all: count});
+                            callback(tracker, query, response.results);
+                        } else
+                        if (response.error === 'AUTH') {
+                            tracker.setAuth(response);
+                            tracker.status('success');
+                        } else
+                        if (response.message === 'ABORT') {
+                            tracker.status('success');
+                        } else {
+                            tracker.status('error', response.name + ': ' + response.message);
+                        }
+                    });
+                }
+            });
+        };
+
         var onSearch = function (query) {
             ga('send', 'event', 'Search', 'keyword', query);
 
@@ -454,6 +486,7 @@ define([
             ee.off('selectTracker', onSelectTracker);
             ee.off('filterChange', onFilterChange);
             ee.off('search', onSearch);
+            ee.off('quickSearch', onQuickSearch);
 
             destroyTables();
 
