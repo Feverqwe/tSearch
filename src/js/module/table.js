@@ -300,76 +300,6 @@ define([
             };
         };
 
-        var normalizeTorrent = function (trackerId, /**torrent*/torrent) {
-            torrent.trackerId = trackerId;
-            if (torrent.size) {
-                torrent.size = parseInt(torrent.size);
-                if (isNaN(torrent.size)) {
-                    torrent.size = null;
-                }
-            }
-            if (!torrent.size) {
-                torrent.size = 0;
-            }
-
-            if (torrent.seed) {
-                torrent.seed = parseInt(torrent.seed);
-                if (isNaN(torrent.seed)) {
-                    torrent.seed = null;
-                }
-            }
-            if (!torrent.seed) {
-                torrent.seed = 1;
-            }
-
-            if (torrent.peer) {
-                torrent.peer = parseInt(torrent.peer);
-                if (isNaN(torrent.peer)) {
-                    torrent.peer = null;
-                }
-            }
-            if (!torrent.peer) {
-                torrent.peer = 0;
-            }
-
-            if (torrent.date) {
-                torrent.date = parseInt(torrent.date);
-                if (isNaN(torrent.date)) {
-                    torrent.date = null;
-                }
-            }
-            if (!torrent.date) {
-                torrent.date = -1;
-            }
-
-            if (!torrent.categoryTitle) {
-                torrent.categoryTitle = '';
-            }
-
-            if (!torrent.title || !torrent.url) {
-                console.debug('[' + trackerId + ']', 'Skip torrent:', torrent);
-                return true;
-            }
-
-            torrent.titleLow = torrent.title.toLowerCase();
-            torrent.categoryTitleLow = torrent.categoryTitle.toLowerCase();
-            torrent.wordFilterLow = torrent.titleLow;
-
-            if (storage.categoryWordFilter) {
-                torrent.wordFilterLow = torrent.categoryTitleLow + ' ' + torrent.wordFilterLow;
-            }
-
-            if (!torrent.categoryUrl) {
-                torrent.categoryUrl = '';
-            }
-
-            if (!torrent.downloadUrl) {
-                torrent.downloadUrl = '';
-            }
-
-            return false;
-        };
-
         /**
          * @typedef {Object} torrent
          * @property {string} [categoryTitle]
@@ -567,10 +497,12 @@ define([
                  * @property {trackerWrapper} tracker
                  * @property {boolean} filterValue
                  */
-                var skip = normalizeTorrent(tracker.id, torrent);
+                var skip = self.normalizeTorrent(storage, tracker.id, torrent);
                 if (!skip) {
                     var filterValue = resultFilter.getFilterValue(torrent);
-                    torrent.quality = rate.getRate(torrent, rateScheme);
+                    var rateObj = rate.getRate(torrent, rateScheme);
+                    torrent.rate = rateObj;
+                    torrent.quality = rateObj.sum;
                     var node = getBodyRow(tracker, torrent, filterValue, tableRows.length, highlightMap);
                     tableRows.push({
                         node: node,
@@ -698,5 +630,76 @@ define([
             }
         };
     };
+
+    Table.prototype.normalizeTorrent = function (storage, trackerId, /**torrent*/torrent) {
+        torrent.trackerId = trackerId;
+        if (torrent.size) {
+            torrent.size = parseInt(torrent.size);
+            if (isNaN(torrent.size)) {
+                torrent.size = null;
+            }
+        }
+        if (!torrent.size) {
+            torrent.size = 0;
+        }
+
+        if (torrent.seed) {
+            torrent.seed = parseInt(torrent.seed);
+            if (isNaN(torrent.seed)) {
+                torrent.seed = null;
+            }
+        }
+        if (!torrent.seed) {
+            torrent.seed = 1;
+        }
+
+        if (torrent.peer) {
+            torrent.peer = parseInt(torrent.peer);
+            if (isNaN(torrent.peer)) {
+                torrent.peer = null;
+            }
+        }
+        if (!torrent.peer) {
+            torrent.peer = 0;
+        }
+
+        if (torrent.date) {
+            torrent.date = parseInt(torrent.date);
+            if (isNaN(torrent.date)) {
+                torrent.date = null;
+            }
+        }
+        if (!torrent.date) {
+            torrent.date = -1;
+        }
+
+        if (!torrent.categoryTitle) {
+            torrent.categoryTitle = '';
+        }
+
+        if (!torrent.title || !torrent.url) {
+            console.debug('[' + trackerId + ']', 'Skip torrent:', torrent);
+            return true;
+        }
+
+        torrent.titleLow = torrent.title.toLowerCase();
+        torrent.categoryTitleLow = torrent.categoryTitle.toLowerCase();
+        torrent.wordFilterLow = torrent.titleLow;
+
+        if (storage.categoryWordFilter) {
+            torrent.wordFilterLow = torrent.categoryTitleLow + ' ' + torrent.wordFilterLow;
+        }
+
+        if (!torrent.categoryUrl) {
+            torrent.categoryUrl = '';
+        }
+
+        if (!torrent.downloadUrl) {
+            torrent.downloadUrl = '';
+        }
+
+        return false;
+    };
+
     return Table;
 });
