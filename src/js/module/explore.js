@@ -735,7 +735,8 @@ define([
                         label: '',
                         results: []
                     };
-                    storage.quickSearch.push(quickSearchObj);
+                    storage.quickSearch.unshift(quickSearchObj);
+                    storage.quickSearch.splice(0, 50);
                 }
                 var results = quickSearchObj.results;
 
@@ -748,13 +749,16 @@ define([
                         torrent.rate = rateObj;
                         torrent.quality = rateObj.sum;
                         if (rateObj.rate.title >= 100 &&
-                            rateObj.rate.wordSpaces > 50 &&
+                            rateObj.rate.wordSpaces >= 50 &&
                             rateObj.rate.wordOrder >= 100 &&
-                            rateObj.rate.caseSens > 50 &&
-                            rateObj.rate.videoFormat > 50
+                            rateObj.rate.caseSens >= 50 &&
+                            rateObj.rate.videoFormat >= 25
                         ) {
                             results.push(torrent);
+                        } else {
+                            console.log(rateObj.rate)
                         }
+
                     }
                 });
 
