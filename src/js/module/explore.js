@@ -736,7 +736,7 @@ define([
                         results: []
                     };
                     storage.quickSearch.unshift(quickSearchObj);
-                    storage.quickSearch.splice(0, 50);
+                    storage.quickSearch.splice(50);
                 }
                 var results = quickSearchObj.results;
 
@@ -755,10 +755,7 @@ define([
                             rateObj.rate.videoFormat >= 25
                         ) {
                             results.push(torrent);
-                        } else {
-                            console.log(rateObj.rate)
                         }
-
                     }
                 });
 
@@ -793,6 +790,9 @@ define([
                     ee.trigger('quickSearch', [query, onGetResults]);
                 },
                 onLabelOver: function (node, index) {
+                    if (current.labelNode === node) {
+                        return;
+                    }
                     var poster = this.cache.content[index];
                     var query = getCategoryItemTitle(poster);
                     current.query = query;
