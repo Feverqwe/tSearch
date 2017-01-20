@@ -9,8 +9,9 @@ define([
     './dialog',
     './table',
     './highlight',
-    './rate'
-], function (Promise, utils, dom, Dialog, Table, highlight, rate) {
+    './rate',
+    '../lib/filesize.min'
+], function (Promise, utils, dom, Dialog, Table, highlight, rate, filesize) {
     var defaultSections = [
         'favorites',
         'kpFavorites', 'kpInCinema', 'kpPopular', 'kpSerials',
@@ -710,6 +711,10 @@ define([
                 bodyNode.textContent = '';
                 bodyNode.appendChild(dom.el('ul', {
                     append: results.map(function (torrent, index) {
+                        var size = '';
+                        if (torrent.size) {
+                            size += ', ' + filesize(torrent.size);
+                        }
                         return dom.el('li', {
                             class: 'torrent__title',
                             append: dom.el('a', {
@@ -717,7 +722,8 @@ define([
                                 target: '_blank',
                                 href: torrent.url,
                                 append: [
-                                    highlight.insert(torrent.title, highlightMap)
+                                    highlight.insert(torrent.title, highlightMap),
+                                    size
                                 ]
                             })
                         })
@@ -755,7 +761,8 @@ define([
                                 label: rateObj.quality,
                                 quality: torrent.quality,
                                 title: torrent.title,
-                                url: torrent.url
+                                url: torrent.url,
+                                size: torrent.size
                             });
                         }
                     }
