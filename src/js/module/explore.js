@@ -727,7 +727,7 @@ define([
                 show();
             };
 
-            var onGetResults = function (tracker, query, searchResults) {
+            var onGetResults = function (results, tracker, query, searchResults) {
                 var quickSearchObj = idSearchObjMap[query];
                 if (!quickSearchObj) {
                     quickSearchObj = idSearchObjMap[query] = {
@@ -738,7 +738,6 @@ define([
                     storage.quickSearch.unshift(quickSearchObj);
                     storage.quickSearch.splice(50);
                 }
-                var results = quickSearchObj.results;
 
                 var rateScheme = rate.getScheme(query);
 
@@ -746,14 +745,18 @@ define([
                     var skip = Table.prototype.normalizeTorrent(storage, tracker.id, torrent);
                     if (!skip) {
                         var rateObj = rate.getRate(torrent, rateScheme);
-                        torrent.rate = rateObj;
                         torrent.quality = rateObj.sum;
                         if (rateObj.rate.title >= 100 &&
                             rateObj.rate.wordSpaces >= 50 &&
                             rateObj.rate.wordOrder >= 100 &&
                             rateObj.rate.caseSens >= 50
                         ) {
-                            results.push(torrent);
+                            results.push({
+                                label: rateObj.quality,
+                                quality: torrent.quality,
+                                title: torrent.title,
+                                url: torrent.url
+                            });
                         }
                     }
                 });
@@ -765,7 +768,8 @@ define([
                 }).splice(5);
 
                 if (current.query === query && results.length) {
-                    quickSearchObj.label = results[0].rate.quality || '+';
+                    quickSearchObj.results = results;
+                    quickSearchObj.label = results[0].label || '+';
 
                     current.labelNode.textContent = quickSearchObj.label;
                     current.labelNode.appendChild(popupNode);
@@ -786,7 +790,10 @@ define([
                     current.query = query;
                     current.labelNode = node;
 
-                    ee.trigger('quickSearch', [query, onGetResults]);
+                    var results = [];
+                    ee.trigger('quickSearch', [query, function (tracker, query, searchResults) {
+                        onGetResults(results, tracker, query, searchResults);
+                    }]);
                 },
                 onLabelOver: function (node, index) {
                     if (current.labelNode === node) {
