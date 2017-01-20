@@ -767,15 +767,16 @@ define([
                     return a === b ? 0 : a > b ? -1 : 1;
                 }).splice(5);
 
-                if (current.query === query && results.length) {
+                if (results.length) {
                     quickSearchObj.results = results;
                     quickSearchObj.label = results[0].label || '+';
-
-                    current.labelNode.textContent = quickSearchObj.label;
-                    current.labelNode.appendChild(popupNode);
-                    insertResults(query, current.labelNode, results);
-
                     save();
+
+                    if (current.query === query) {
+                        current.labelNode.textContent = quickSearchObj.label;
+                        current.labelNode.appendChild(popupNode);
+                        insertResults(query, current.labelNode, results);
+                    }
                 }
             };
 
