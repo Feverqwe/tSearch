@@ -751,8 +751,7 @@ define([
                         if (rateObj.rate.title >= 100 &&
                             rateObj.rate.wordSpaces >= 50 &&
                             rateObj.rate.wordOrder >= 100 &&
-                            rateObj.rate.caseSens >= 50 &&
-                            rateObj.rate.videoFormat >= 25
+                            rateObj.rate.caseSens >= 50
                         ) {
                             results.push(torrent);
                         }

@@ -153,22 +153,22 @@ define([
             {name: 'audioFormat', rules: [
                 {
                     match: ['ALAC'],
-                    value: 100,
+                    value: 90,
                     label: 'ALAC'
                 },
                 {
                     match: ['FLAC'],
-                    value: 100,
+                    value: 90,
                     label: 'FLAC'
                 },
                 {
                     match: ['APE'],
-                    value: 100,
+                    value: 90,
                     label: 'APE'
                 },
                 {
                     match: ['AAC'],
-                    value: 90,
+                    value: 80,
                     label: 'MP3'
                 },
                 {
@@ -178,11 +178,11 @@ define([
                     sub: [
                         {
                             match: ['320'],
-                            value: 40
+                            value: 30
                         },
                         {
                             match: ['256'],
-                            value: 30
+                            value: 25
                         },
                         {
                             match: ['192'],
@@ -543,7 +543,9 @@ define([
                     title: 0,
                     wordSpaces: 0,
                     wordOrder: 0,
-                    caseSens: 0
+                    caseSens: 0,
+                    videoFormat: 0,
+                    audioFormat: 0
                 },
                 sum: 0
             };
