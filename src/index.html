@@ -23,64 +23,68 @@
         </div>
         <div class="content content-row">
             <div class="parameter_box">
-                <div class="parameter parameter-profile">
-                    <div class="profile_box">
-                        <select class="profile__select"></select>
-                        <a href="#manageProfiles" data-i18n='{"title":"manageProfiles"}' title="{manageProfiles}" class="button-manage-profile"></a>
+                <div class="parameter_box__left">
+                    <div class="parameter parameter-profile">
+                        <div class="profile_box">
+                            <select class="profile__select"></select>
+                            <a href="#manageProfiles" data-i18n='{"title":"manageProfiles"}' title="{manageProfiles}" class="button-manage-profile"></a>
+                        </div>
+                    </div>
+                    <div class="parameter parameter-tracker">
+                        <div class="tracker__list"></div>
                     </div>
                 </div>
-                <div class="parameter parameter-tracker">
-                    <div class="tracker__list"></div>
-                </div>
-                <div class="parameter parameter-filter">
-                    <span class="filter__label" data-i18n='{"text":"wordFilterLabel"}'>{wordFilterLabel}</span>
-                    <div class="input_box input_box-filter">
-                        <input type="text" class="input__input input__input-word-filter"/>
-                        <a href="#clear" data-i18n='{"title":"clear"}' title="{clear}" class="input__clear input__clear-word-filter"></a>
+                <div class="parameter_box__right">
+                    <div class="parameter parameter-filter">
+                        <span class="filter__label" data-i18n='{"text":"wordFilterLabel"}'>{wordFilterLabel}</span>
+                        <div class="input_box input_box-filter">
+                            <input type="text" class="input__input input__input-word-filter"/>
+                            <a href="#clear" data-i18n='{"title":"clear"}' title="{clear}" class="input__clear input__clear-word-filter"></a>
+                        </div>
                     </div>
-                </div>
-                <div class="parameter parameter-filter">
-                    <span class="filter__label" data-i18n='{"text":"sizeFilterLabel"}'>{sizeFilterLabel}</span>
-                    <div class="input_box input_box-filter">
-                        <input class="input__input input__input-size-filter input__input-range input__input-range-from" type="text" data-i18n='{"placeholder": "rangeFromPlaceholder"}' placeholder="{rangeFromPlaceholder}"/>
-                        —
-                        <input class="input__input input__input-size-filter input__input-range input__input-range-to" type="text" data-i18n='{"placeholder": "rangeToPlaceholder"}' placeholder="{rangeToPlaceholder}"/>
+                    <div class="parameter parameter-filter">
+                        <span class="filter__label" data-i18n='{"text":"sizeFilterLabel"}'>{sizeFilterLabel}</span>
+                        <div class="input_box input_box-filter">
+                            <input class="input__input input__input-size-filter input__input-range input__input-range-from" type="text" data-i18n='{"placeholder": "rangeFromPlaceholder"}' placeholder="{rangeFromPlaceholder}"/>
+                            —
+                            <input class="input__input input__input-size-filter input__input-range input__input-range-to" type="text" data-i18n='{"placeholder": "rangeToPlaceholder"}' placeholder="{rangeToPlaceholder}"/>
+                        </div>
                     </div>
-                </div>
-                <div class="parameter parameter-filter">
-                    <span class="filter__label" data-i18n='{"text":"timeFilterLabel"}'>{timeFilterLabel}</span>
-                    <div class="select">
-                        <select class="select__select select__select-time-filter">
-                            <option value="0" data-i18n='{"text":"timeFilterAll"}' selected>{timeFilterAll}</option>
-                            <option value="3600" data-i18n='{"text":"timeFilter1h"}'>{timeFilter1h}</option>
-                            <option value="86400" data-i18n='{"text":"timeFilter24h"}'>{timeFilter24h}</option>
-                            <option value="259200" data-i18n='{"text":"timeFilter72h"}'>{timeFilter72h}</option>
-                            <option value="604800" data-i18n='{"text":"timeFilter1w"}'>{timeFilter1w}</option>
-                            <option value="2592000" data-i18n='{"text":"timeFilter1m"}'>{timeFilter1m}</option>
-                            <option value="31536000" data-i18n='{"text":"timeFilter1y"}'>{timeFilter1y}</option>
-                            <option value="-1" data-i18n='{"text":"timeFilterRange"}'>{timeFilterRange}</option>
-                        </select>
+                    <div class="parameter parameter-filter">
+                        <span class="filter__label" data-i18n='{"text":"timeFilterLabel"}'>{timeFilterLabel}</span>
+                        <div class="select">
+                            <select class="select__select select__select-time-filter">
+                                <option value="0" data-i18n='{"text":"timeFilterAll"}' selected>{timeFilterAll}</option>
+                                <option value="3600" data-i18n='{"text":"timeFilter1h"}'>{timeFilter1h}</option>
+                                <option value="86400" data-i18n='{"text":"timeFilter24h"}'>{timeFilter24h}</option>
+                                <option value="259200" data-i18n='{"text":"timeFilter72h"}'>{timeFilter72h}</option>
+                                <option value="604800" data-i18n='{"text":"timeFilter1w"}'>{timeFilter1w}</option>
+                                <option value="2592000" data-i18n='{"text":"timeFilter1m"}'>{timeFilter1m}</option>
+                                <option value="31536000" data-i18n='{"text":"timeFilter1y"}'>{timeFilter1y}</option>
+                                <option value="-1" data-i18n='{"text":"timeFilterRange"}'>{timeFilterRange}</option>
+                            </select>
+                        </div>
+                        <div class="input_box input_box-filter input_box-time-filter">
+                            <input class="input__input input__input-time-filter input__input-range input__input-range-from" type="text" data-i18n='{"placeholder": "rangeFromPlaceholder"}' placeholder="{rangeFromPlaceholder}"/>
+                            —
+                            <input class="input__input input__input-time-filter input__input-range input__input-range-to" type="text" data-i18n='{"placeholder": "rangeToPlaceholder"}' placeholder="{rangeToPlaceholder}"/>
+                        </div>
                     </div>
-                    <div class="input_box input_box-filter input_box-time-filter">
-                        <input class="input__input input__input-time-filter input__input-range input__input-range-from" type="text" data-i18n='{"placeholder": "rangeFromPlaceholder"}' placeholder="{rangeFromPlaceholder}"/>
-                        —
-                        <input class="input__input input__input-time-filter input__input-range input__input-range-to" type="text" data-i18n='{"placeholder": "rangeToPlaceholder"}' placeholder="{rangeToPlaceholder}"/>
+                    <div class="parameter parameter-filter">
+                        <span class="filter__label" data-i18n='{"text":"seedFilterLabel"}'>{seedFilterLabel}</span>
+                        <div class="input_box input_box-filter">
+                            <input class="input__input input__input-seed-filter input__input-range input__input-range-from" type="text" data-i18n='{"placeholder": "rangeFromPlaceholder"}' placeholder="{rangeFromPlaceholder}"/>
+                            —
+                            <input class="input__input input__input-seed-filter input__input-range input__input-range-to" type="text" data-i18n='{"placeholder": "rangeToPlaceholder"}' placeholder="{rangeToPlaceholder}"/>
+                        </div>
                     </div>
-                </div>
-                <div class="parameter parameter-filter">
-                    <span class="filter__label" data-i18n='{"text":"seedFilterLabel"}'>{seedFilterLabel}</span>
-                    <div class="input_box input_box-filter">
-                        <input class="input__input input__input-seed-filter input__input-range input__input-range-from" type="text" data-i18n='{"placeholder": "rangeFromPlaceholder"}' placeholder="{rangeFromPlaceholder}"/>
-                        —
-                        <input class="input__input input__input-seed-filter input__input-range input__input-range-to" type="text" data-i18n='{"placeholder": "rangeToPlaceholder"}' placeholder="{rangeToPlaceholder}"/>
-                    </div>
-                </div>
-                <div class="parameter parameter-filter">
-                    <span class="filter__label" data-i18n='{"text":"peerFilterLabel"}'>{peerFilterLabel}</span>
-                    <div class="input_box input_box-filter">
-                        <input class="input__input input__input-peer-filter input__input-range input__input-range-from" type="text" data-i18n='{"placeholder": "rangeFromPlaceholder"}' placeholder="{rangeFromPlaceholder}"/>
-                        —
-                        <input class="input__input input__input-peer-filter input__input-range input__input-range-to" type="text" data-i18n='{"placeholder": "rangeToPlaceholder"}' placeholder="{rangeToPlaceholder}"/>
+                    <div class="parameter parameter-filter">
+                        <span class="filter__label" data-i18n='{"text":"peerFilterLabel"}'>{peerFilterLabel}</span>
+                        <div class="input_box input_box-filter">
+                            <input class="input__input input__input-peer-filter input__input-range input__input-range-from" type="text" data-i18n='{"placeholder": "rangeFromPlaceholder"}' placeholder="{rangeFromPlaceholder}"/>
+                            —
+                            <input class="input__input input__input-peer-filter input__input-range input__input-range-to" type="text" data-i18n='{"placeholder": "rangeToPlaceholder"}' placeholder="{rangeToPlaceholder}"/>
+                        </div>
                     </div>
                 </div>
             </div>
