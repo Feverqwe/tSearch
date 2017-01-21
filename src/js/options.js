@@ -5,7 +5,8 @@
 require.config({
     baseUrl: './js',
     paths: {
-        promise: './lib/promise.min'
+        promise: './lib/promise.min',
+        moment: './lib/moment-with-locales.min'
     }
 });
 require([
