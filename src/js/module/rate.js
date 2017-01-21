@@ -160,7 +160,7 @@ define([
                     rate: {
                         videoFormat: 15
                     },
-                    label: 'Telesync'
+                    label: 'TeleSynch'
                 },
                 {
                     match: ['DVDScr', 'DVDScreener'],
