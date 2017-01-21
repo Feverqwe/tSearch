@@ -10,199 +10,281 @@ define([
             {name: 'videoFormat', rules: [
                 {
                     match: ['DCPRip'],
-                    value: 100,
+                    rate: {
+                        videoFormat: 100
+                    },
                     label: 'DCPRip'
                 },
                 {
                     match: ['blu-ray cee', {word: 'CEE'}],
-                    value: 100,
+                    rate: {
+                        videoFormat: 100
+                    },
                     label: 'Blu-ray CEE'
                 },
                 {
                     match: ['blu-ray'],
-                    value: 98,
+                    rate: {
+                        videoFormat: 98
+                    },
                     label: 'Blu-ray'
                 },
                 {
                     match: ['bd-remux', 'bd remux', 'BDRemux'],
-                    value: 95,
+                    rate: {
+                        videoFormat: 95
+                    },
                     label: 'BDRemux'
                 },
                 {
                     match: ['BDRip-AVC', 'BD-Rip', 'BDRip'],
-                    value: 90,
+                    rate: {
+                        videoFormat: 90
+                    },
                     label: 'BDRip'
                 },
                 {
                     match: ['CAMRip', 'CamRip-AVC'],
-                    value: 10,
+                    rate: {
+                        videoFormat: 10
+                    },
                     label: 'CAMRip'
                 },
                 {
                     match: ['HDTV-Rip', 'HDTVRip'],
-                    value: 60,
+                    rate: {
+                        videoFormat: 60
+                    },
                     label: 'HDTV-Rip'
                 },
                 {
                     match: ['DTheater-Rip'],
-                    value: 60,
+                    rate: {
+                        videoFormat: 60
+                    },
                     label: 'DTheater-Rip'
                 },
                 {
                     match: ['LowHDRip', 'VHSRip'],
-                    value: 10,
+                    rate: {
+                        videoFormat: 10
+                    },
                     label: 'LowHDRip'
                 },
                 {
                     match: [{word: 'HDTV'}, 'HDRip', 'HDRip-AVC'],
-                    value: 50,
+                    rate: {
+                        videoFormat: 50
+                    },
                     label: 'HDTV'
                 },
                 {
                     match: ['DVDRip', 'DVD-Rip', 'DVDRip-AVC'],
-                    value: 50,
+                    rate: {
+                        videoFormat: 50
+                    },
                     label: 'DVD-Rip'
                 },
                 {
                     match: ['HD-DVD'],
-                    value: 55,
+                    rate: {
+                        videoFormat: 55
+                    },
                     label: 'HD-DVD'
                 },
                 {
                     match: [{regexp: 1, word: '\\d\\s?[x\\*]\\s?DVD\\-?9', caseSens: 0}],
-                    value: 50,
+                    rate: {
+                        videoFormat: 50
+                    },
                     label: 'DVD-9'
                 },
                 {
                     match: [{regexp: 1, word: '\\d\\s?[x\\*]\\s?DVD\\-?5', caseSens: 0}],
-                    value: 45,
+                    rate: {
+                        videoFormat: 45
+                    },
                     label: 'DVD-5'
                 },
                 {
                     match: [{word: 'DVD'}],
-                    value: 40,
+                    rate: {
+                        videoFormat: 40
+                    },
                     label: 'DVD'
                 },
                 {
                     match: ['HQSATRip', 'HQRip', 'HQRip-AVC'],
-                    value: 38,
+                    rate: {
+                        videoFormat: 38
+                    },
                     label: 'HDrip'
                 },
                 {
                     match: ['TVRip', 'IPTVRip'],
-                    value: 35,
+                    rate: {
+                        videoFormat: 35
+                    },
                     label: 'TV-Rip'
                 },
                 {
                     match: ['WEBRip'],
-                    value: 35,
+                    rate: {
+                        videoFormat: 35
+                    },
                     label: 'WebRip'
                 },
                 {
                     match: ['WEB-DLRip-AVC', 'WebDL-Rip', 'WEB-DLRip', 'WEB-DL'],
-                    value: 35,
+                    rate: {
+                        videoFormat: 35
+                    },
                     label: 'WEB-DL'
                 },
                 {
                     match: ['SATRip'],
-                    value: 35,
+                    rate: {
+                        videoFormat: 35
+                    },
                     label: 'SAT-Rip'
                 },
                 {
                     match: [{word: 'DVB'}],
-                    value: 35,
+                    rate: {
+                        videoFormat: 35
+                    },
                     label: 'DVB'
                 },
                 {
                     match: [{word: 'TS'}, 'TeleSynch'],
-                    value: 15,
+                    rate: {
+                        videoFormat: 15
+                    },
                     label: 'Telesync'
                 },
                 {
                     match: ['DVDScr', 'DVDScreener'],
-                    value: 15,
+                    rate: {
+                        videoFormat: 15
+                    },
                     label: 'DVD-Screener'
                 }
             ]},
             {name: 'videoQuality', join: 'videoFormat', rules: [
                 {
                     match: ['4k', '2k'],
-                    value: 100
+                    rate: {
+                        videoQuality: 100
+                    }
                 },
                 {
                     match: ['2160p', '2160i'],
-                    value: 100
+                    rate: {
+                        videoQuality: 100
+                    }
                 },
                 {
                     match: ['1080p', '1080i'],
-                    value: 90
+                    rate: {
+                        videoQuality: 90
+                    }
                 },
                 {
                     match: ['720p'],
-                    value: 50
+                    rate: {
+                        videoQuality: 50
+                    }
                 },
                 {
                     match: ['HD'],
-                    value: 40
+                    rate: {
+                        videoQuality: 40
+                    }
                 },
                 {
                     match: ['SD'],
-                    value: 20
+                    rate: {
+                        videoQuality: 20
+                    }
                 }
             ]},
             {name: 'audioFormat', rules: [
                 {
                     match: ['ALAC'],
-                    value: 90,
+                    rate: {
+                        audioFormat: 90
+                    },
                     label: 'ALAC'
                 },
                 {
                     match: ['FLAC'],
-                    value: 90,
+                    rate: {
+                        audioFormat: 90
+                    },
                     label: 'FLAC'
                 },
                 {
                     match: ['APE'],
-                    value: 90,
+                    rate: {
+                        audioFormat: 90
+                    },
                     label: 'APE'
                 },
                 {
                     match: ['AAC'],
-                    value: 80,
+                    rate: {
+                        audioFormat: 80
+                    },
                     label: 'MP3'
                 },
                 {
                     match: ['MP3'],
-                    value: 50,
+                    rate: {
+                        audioFormat: 50
+                    },
                     label: 'MP3',
                     sub: [
                         {
                             match: ['320'],
-                            value: 30
+                            rate: {
+                                audioFormat: 30
+                            }
                         },
                         {
                             match: ['256'],
-                            value: 25
+                            rate: {
+                                audioFormat: 25
+                            }
                         },
                         {
                             match: ['192'],
-                            value: 20
+                            rate: {
+                                audioFormat: 20
+                            }
                         },
                         {
                             match: ['128'],
-                            value: 10
+                            rate: {
+                                audioFormat: 10
+                            }
                         },
                         {
                             match: ['96'],
-                            value: 0
+                            rate: {
+                                audioFormat: 0
+                            }
                         },
                         {
                             match: ['64'],
-                            value: -10
+                            rate: {
+                                audioFormat: -10
+                            }
                         },
                         {
                             match: ['32'],
-                            value: -20
+                            rate: {
+                                audioFormat: -20
+                            }
                         }
                     ]
                 }
@@ -212,7 +294,6 @@ define([
         /**
          *
          * @param [qualityList] Array
-         * @param [type] String
          * @returns {{}|{wordsRe: object, scope: object, scopeCase: object}}
          */
         readQualityList: function(qualityList) {
@@ -424,7 +505,7 @@ define([
                 var currentRule = sectionRules[sectionName];
 
                 if (!currentRule) {
-                    currentRule = sectionRules[sectionName] = {index: null};
+                    currentRule = sectionRules[sectionName] = {index: null, rate: {}};
                 }
 
                 if (currentRule.index === null || qualityObj.index < currentRule.index) {
@@ -432,10 +513,12 @@ define([
                     currentRule.parent = section.parent;
                     currentRule.label = '';
 
-                    if (!parentRule) {
-                        currentRule.value = qualityObj.value;
-                    } else {
-                        parentRule.value += qualityObj.value;
+                    for (var rName in qualityObj.rate) {
+                        if (!parentRule) {
+                            currentRule.rate[rName] = qualityObj.rate[rName];
+                        } else {
+                            currentRule.rate[rName] += qualityObj.rate[rName];
+                        }
                     }
 
                     if (!parentRule && qualityObj.label) {
@@ -453,23 +536,31 @@ define([
             if (!parentRule) {
                 var sections = qualityList.sections;
                 var labels = [];
+                var rName;
                 for (var key in sections) {
                     var item = sections[key];
-                    var sum = 0;
+                    var rateSum = {};
                     for (var i = 0, len = item.length; i < len; i++) {
                         var sectionObj = sectionRules[item[i]];
                         if (sectionObj && sectionObj.parent && !sectionRules[sectionObj.parent]) {
                             sectionObj = null;
                         }
                         if (sectionObj) {
-                            sum += sectionObj.value;
+                            for (rName in sectionObj.rate) {
+                                if (!rateSum[rName]) {
+                                    rateSum[rName] = 0;
+                                }
+                                rateSum[rName] += sectionObj.rate[rName];
+                            }
                             if (sectionObj.label) {
                                 labels.push(sectionObj.label);
                             }
                         }
                     }
-                    sum /= len;
-                    rating.rate[key] = sum;
+                    for (rName in rateSum) {
+                        rateSum[rName] /= len;
+                        rating.rate[rName] = rateSum[rName];
+                    }
                     rating.quality = labels.join(';');
                 }
             }
