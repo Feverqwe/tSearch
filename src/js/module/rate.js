@@ -7,7 +7,7 @@ define([
 ], function (utils) {
     var rate = {
         rating: [
-            {name: 'videoFormat', rules: [
+            {name: 'videoFormat', unic: true, rules: [
                 {
                     match: ['DCPRip'],
                     rate: {
@@ -208,7 +208,7 @@ define([
                     }
                 }
             ]},
-            {name: 'audioFormat', rules: [
+            {name: 'audioFormat', unic: true, rules: [
                 {
                     match: ['ALAC'],
                     rate: {
@@ -302,15 +302,21 @@ define([
             var wordsReTest = [];
             var scope = {};
             var scopeCase = {};
-            var sections = {};
+            var sections = {
+                each: {},
+                some: {}
+            };
             qualityList.forEach(function (section) {
                 if (section.parent) {
                     sections[section.parent].push(section.name);
                 } else
                 if (section.join) {
                     sections[section.join].push(section.name);
+                } else
+                if (section.unic) {
+                    sections[section.name] = sections.some[section.name] = [section.name];
                 } else {
-                    sections[section.name] = [section.name];
+                    sections[section.name] = sections.each[section.name] = [section.name];
                 }
                 section.rules.forEach(function (qualityObj, index) {
                     qualityObj.section = section;
@@ -336,13 +342,13 @@ define([
                                 if (!scope[wordObj.word]) {
                                     scope[wordObj.word] = qualityObj;
                                 } else {
-                                    console.log('Word conflict!', wordObj);
+                                    console.error('Word conflict!', wordObj);
                                 }
                             } else {
                                 if (!scopeCase[wordObj.word]) {
                                     scopeCase[wordObj.word] = qualityObj;
                                 } else {
-                                    console.log('Word case conflict!', wordObj);
+                                    console.error('Word case conflict!', wordObj);
                                 }
                             }
                             words.push(utils.sanitizeTextRe(wordObj.word));
@@ -375,6 +381,12 @@ define([
                     scopeRegexpIndex.push(item.qualityObj);
                 });
             }
+
+            Object.keys(sections).forEach(function (key) {
+                if (key !== 'each' && key !== 'some') {
+                    delete sections[key];
+                }
+            });
 
             var result = {};
             result.wordsRe = wordsRe;
@@ -537,31 +549,44 @@ define([
                 var sections = qualityList.sections;
                 var labels = [];
                 var rName;
-                for (var key in sections) {
-                    var item = sections[key];
-                    var rateSum = {};
-                    for (var i = 0, len = item.length; i < len; i++) {
-                        var sectionObj = sectionRules[item[i]];
-                        if (sectionObj && sectionObj.parent && !sectionRules[sectionObj.parent]) {
-                            sectionObj = null;
-                        }
-                        if (sectionObj) {
-                            for (rName in sectionObj.rate) {
-                                if (!rateSum[rName]) {
-                                    rateSum[rName] = 0;
+                var rateSum;
+                var hasSection;
+                var item;
+                var key;
+                for (var type in sections) {
+                    for (key in sections[type]) {
+                        item = sections[type][key];
+                        rateSum = {};
+                        hasSection = false;
+                        for (var i = 0, len = item.length; i < len; i++) {
+                            var sectionObj = sectionRules[item[i]];
+                            if (sectionObj && sectionObj.parent && !sectionRules[sectionObj.parent]) {
+                                sectionObj = null;
+                            }
+                            if (sectionObj) {
+                                hasSection = true;
+                                for (rName in sectionObj.rate) {
+                                    if (!rateSum[rName]) {
+                                        rateSum[rName] = 0;
+                                    }
+                                    rateSum[rName] += sectionObj.rate[rName];
                                 }
-                                rateSum[rName] += sectionObj.rate[rName];
+                                if (sectionObj.label) {
+                                    labels.push(sectionObj.label);
+                                }
                             }
-                            if (sectionObj.label) {
-                                labels.push(sectionObj.label);
+                        }
+                        if (hasSection) {
+                            for (rName in rateSum) {
+                                rateSum[rName] /= len;
+                                rating.rate[rName] = rateSum[rName];
+                            }
+                            rating.quality = labels.join(';');
+                            if (type === 'some') {
+                                break;
                             }
                         }
                     }
-                    for (rName in rateSum) {
-                        rateSum[rName] /= len;
-                        rating.rate[rName] = rateSum[rName];
-                    }
-                    rating.quality = labels.join(';');
                 }
             }
         },
