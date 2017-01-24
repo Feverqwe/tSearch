@@ -233,9 +233,53 @@ define([
                 {
                     match: ['AAC'],
                     rate: {
-                        audioFormat: 80
+                        audioFormat: 50
                     },
-                    label: 'MP3'
+                    label: 'AAC',
+                    sub: [
+                        {
+                            match: ['320'],
+                            rate: {
+                                audioFormat: 30
+                            }
+                        },
+                        {
+                            match: ['256'],
+                            rate: {
+                                audioFormat: 25
+                            }
+                        },
+                        {
+                            match: ['192'],
+                            rate: {
+                                audioFormat: 20
+                            }
+                        },
+                        {
+                            match: ['128'],
+                            rate: {
+                                audioFormat: 10
+                            }
+                        },
+                        {
+                            match: ['96'],
+                            rate: {
+                                audioFormat: 0
+                            }
+                        },
+                        {
+                            match: ['64'],
+                            rate: {
+                                audioFormat: -10
+                            }
+                        },
+                        {
+                            match: ['32'],
+                            rate: {
+                                audioFormat: -20
+                            }
+                        }
+                    ]
                 },
                 {
                     match: ['MP3'],
