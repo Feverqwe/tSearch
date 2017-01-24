@@ -335,9 +335,28 @@ define([
                     }))
                 } else
                 if (type === 'quality') {
+                    var qualityValue = parseInt(torrent.quality);
+                    var percent = torrent.quality / 500 * 100;
                     row.appendChild(dom.el('div', {
                         class: ['cell', 'row__cell', 'cell-' + type],
-                        text: parseInt(torrent.quality)
+                        append: [
+                            dom.el('div', {
+                                class: ['quality_box'],
+                                title: qualityValue,
+                                append: [
+                                    dom.el('div', {
+                                        class: ['quality_progress'],
+                                        style: {
+                                            width: percent + '%'
+                                        }
+                                    }),
+                                    dom.el('span', {
+                                        class: ['quality_value'],
+                                        text: qualityValue
+                                    })
+                                ]
+                            })
+                        ]
                     }))
                 } else
                 if (type === 'title') {

@@ -836,6 +836,24 @@ a.tracker {
     color: #666;
 }
 
+.table-results .body__row .cell-quality .quality_box {
+    display: block;
+    border-radius: 2px;
+    background-color: #ccc;
+    overflow: hidden;
+    cursor: default;
+}
+
+.table-results .body__row .cell-quality .quality_progress {
+    height: 14px;
+    background-color: #337AF8;
+    margin-bottom: -14px;
+}
+
+.table-results .body__row .cell-quality .quality_value {
+    color: #ccc;
+}
+
 .table-results .body__row .cell-title {
     display: flex;
     flex-direction: column;
