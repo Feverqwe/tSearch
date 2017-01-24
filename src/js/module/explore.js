@@ -704,7 +704,6 @@ define([
                     insertResults(query, labelNode, results);
                 }
             };
-
             var insertResults = function (query, labelNode, results) {
                 var highlightMap = highlight.getMap(query);
 
@@ -732,7 +731,9 @@ define([
 
                 show();
             };
-
+            var isTrailer = function(title) {
+                return /Трейлер|Тизер|Teaser|Trailer/i.test(title);
+            };
             var onGetResults = function (results, tracker, query, searchResults) {
                 var quickSearchObj = idSearchObjMap[query];
                 if (!quickSearchObj) {
@@ -749,7 +750,7 @@ define([
 
                 searchResults.forEach(function (torrent) {
                     var skip = Table.prototype.normalizeTorrent(storage, tracker.id, torrent);
-                    if (!skip) {
+                    if (!skip && !isTrailer(torrent.title)) {
                         var rateObj = rate.getRate(torrent, rateScheme);
                         torrent.quality = rateObj.sum;
                         if (rateObj.rate.title >= 100 &&
