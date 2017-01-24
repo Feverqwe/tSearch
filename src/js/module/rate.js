@@ -5,9 +5,54 @@
 define([
     './utils'
 ], function (utils) {
+    var bitRate = [
+        {
+            match: [{regexp: 1, word: '320\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: 30
+            }
+        },
+        {
+            match: [{regexp: 1, word: '256\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: 25
+            }
+        },
+        {
+            match: [{regexp: 1, word: '192\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: 20
+            }
+        },
+        {
+            match: [{regexp: 1, word: '128\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: 10
+            }
+        },
+        {
+            match: [{regexp: 1, word: '96\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: 0
+            }
+        },
+        {
+            match: [{regexp: 1, word: '64\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: -10
+            }
+        },
+        {
+            match: [{regexp: 1, word: '32\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: -20
+            }
+        }
+    ];
+
     var rate = {
         rating: [
-            {name: 'videoFormat', rules: [
+            {name: 'videoFormat', unic: true, rules: [
                 {
                     match: ['DCPRip'],
                     rate: {
@@ -208,7 +253,7 @@ define([
                     }
                 }
             ]},
-            {name: 'audioFormat', rules: [
+            {name: 'audioFormat', unic: true, rules: [
                 {
                     match: ['ALAC'],
                     rate: {
@@ -221,7 +266,15 @@ define([
                     rate: {
                         audioFormat: 90
                     },
-                    label: 'FLAC'
+                    label: 'FLAC',
+                    sub: [
+                        {
+                            match: ['.cue'],
+                            rate: {
+                                audioFormat: 10
+                            }
+                        }
+                    ]
                 },
                 {
                     match: ['APE'],
@@ -231,62 +284,105 @@ define([
                     label: 'APE'
                 },
                 {
-                    match: ['AAC'],
+                    match: ['AAC', 'ААС'],
                     rate: {
-                        audioFormat: 80
+                        audioFormat: 50
                     },
-                    label: 'MP3'
+                    label: 'AAC',
+                    sub: bitRate
                 },
                 {
-                    match: ['MP3'],
+                    match: ['MP3', 'MР3'],
                     rate: {
                         audioFormat: 50
                     },
                     label: 'MP3',
-                    sub: [
-                        {
-                            match: ['320'],
-                            rate: {
-                                audioFormat: 30
-                            }
-                        },
-                        {
-                            match: ['256'],
-                            rate: {
-                                audioFormat: 25
-                            }
-                        },
-                        {
-                            match: ['192'],
-                            rate: {
-                                audioFormat: 20
-                            }
-                        },
-                        {
-                            match: ['128'],
-                            rate: {
-                                audioFormat: 10
-                            }
-                        },
-                        {
-                            match: ['96'],
-                            rate: {
-                                audioFormat: 0
-                            }
-                        },
-                        {
-                            match: ['64'],
-                            rate: {
-                                audioFormat: -10
-                            }
-                        },
-                        {
-                            match: ['32'],
-                            rate: {
-                                audioFormat: -20
-                            }
-                        }
-                    ]
+                    sub: bitRate
+                }
+            ]},
+            {name: 'gameQuality', unic: true, rules: [
+                {
+                    match: [{word: 'PS3'}],
+                    rate: {
+                        gameQuality: 80
+                    },
+                    label: 'PS3'
+                },
+                {
+                    match: [{word: 'XBOX'}, 'Xbox360', 'Xbox 360'],
+                    rate: {
+                        gameQuality: 80
+                    },
+                    label: 'XBOX'
+                },
+                {
+                    match: [{word: 'PC'}],
+                    rate: {
+                        gameQuality: 80
+                    },
+                    label: 'PC'
+                },
+                {
+                    match: [{word: 'PS2'}, '(ps2)'],
+                    rate: {
+                        gameQuality: 70
+                    },
+                    label: 'PS2'
+                },
+                {
+                    match: [{word: 'Wii'}],
+                    rate: {
+                        gameQuality: 50
+                    },
+                    label: 'Wii'
+                },
+                {
+                    match: [{word: 'GOG'}],
+                    rate: {
+                        gameQuality: 80
+                    },
+                    label: 'GOG'
+                },
+                {
+                    match: ['Steam', 'SteamRip', 'Steam-Rip'],
+                    rate: {
+                        gameQuality: 80
+                    },
+                    label: 'SteamRip'
+                }
+            ]},
+            {name: 'soft', unic: true, rules: [
+                {
+                    match: [{word: '[L]'}, {word: '{L}'}, {word: '(L)'}, 'License', 'Лицензия'],
+                    rate: {
+                        soft: 80
+                    }
+                },
+                {
+                    match: ['[Native]'],
+                    rate: {
+                        soft: 80
+                    }
+                },
+                {
+                    match: ['repack'],
+                    rate: {
+                        soft: 50
+                    }
+                }
+            ]},
+            {name: 'book', unic: true, rules: [
+                {
+                    match: ['fb2', 'djvu', 'epub'],
+                    rate: {
+                        book: 70
+                    }
+                },
+                {
+                    match: ['pdf', 'rtf', 'doc', 'DОС', 'docx'],
+                    rate: {
+                        book: 50
+                    }
                 }
             ]}
         ],
@@ -302,15 +398,21 @@ define([
             var wordsReTest = [];
             var scope = {};
             var scopeCase = {};
-            var sections = {};
+            var sections = {
+                each: {},
+                some: {}
+            };
             qualityList.forEach(function (section) {
                 if (section.parent) {
                     sections[section.parent].push(section.name);
                 } else
                 if (section.join) {
                     sections[section.join].push(section.name);
+                } else
+                if (section.unic) {
+                    sections[section.name] = sections.some[section.name] = [section.name];
                 } else {
-                    sections[section.name] = [section.name];
+                    sections[section.name] = sections.each[section.name] = [section.name];
                 }
                 section.rules.forEach(function (qualityObj, index) {
                     qualityObj.section = section;
@@ -336,13 +438,13 @@ define([
                                 if (!scope[wordObj.word]) {
                                     scope[wordObj.word] = qualityObj;
                                 } else {
-                                    console.log('Word conflict!', wordObj);
+                                    console.error('Word conflict!', wordObj);
                                 }
                             } else {
                                 if (!scopeCase[wordObj.word]) {
                                     scopeCase[wordObj.word] = qualityObj;
                                 } else {
-                                    console.log('Word case conflict!', wordObj);
+                                    console.error('Word case conflict!', wordObj);
                                 }
                             }
                             words.push(utils.sanitizeTextRe(wordObj.word));
@@ -375,6 +477,12 @@ define([
                     scopeRegexpIndex.push(item.qualityObj);
                 });
             }
+
+            Object.keys(sections).forEach(function (key) {
+                if (key !== 'each' && key !== 'some') {
+                    delete sections[key];
+                }
+            });
 
             var result = {};
             result.wordsRe = wordsRe;
@@ -537,31 +645,44 @@ define([
                 var sections = qualityList.sections;
                 var labels = [];
                 var rName;
-                for (var key in sections) {
-                    var item = sections[key];
-                    var rateSum = {};
-                    for (var i = 0, len = item.length; i < len; i++) {
-                        var sectionObj = sectionRules[item[i]];
-                        if (sectionObj && sectionObj.parent && !sectionRules[sectionObj.parent]) {
-                            sectionObj = null;
-                        }
-                        if (sectionObj) {
-                            for (rName in sectionObj.rate) {
-                                if (!rateSum[rName]) {
-                                    rateSum[rName] = 0;
+                var rateSum;
+                var hasSection;
+                var item;
+                var key;
+                for (var type in sections) {
+                    for (key in sections[type]) {
+                        item = sections[type][key];
+                        rateSum = {};
+                        hasSection = false;
+                        for (var i = 0, len = item.length; i < len; i++) {
+                            var sectionObj = sectionRules[item[i]];
+                            if (sectionObj && sectionObj.parent && !sectionRules[sectionObj.parent]) {
+                                sectionObj = null;
+                            }
+                            if (sectionObj) {
+                                hasSection = true;
+                                for (rName in sectionObj.rate) {
+                                    if (!rateSum[rName]) {
+                                        rateSum[rName] = 0;
+                                    }
+                                    rateSum[rName] += sectionObj.rate[rName];
                                 }
-                                rateSum[rName] += sectionObj.rate[rName];
+                                if (sectionObj.label) {
+                                    labels.push(sectionObj.label);
+                                }
                             }
-                            if (sectionObj.label) {
-                                labels.push(sectionObj.label);
+                        }
+                        if (hasSection) {
+                            for (rName in rateSum) {
+                                rateSum[rName] /= len;
+                                rating.rate[rName] = rateSum[rName];
+                            }
+                            rating.quality = labels.join(';');
+                            if (type === 'some') {
+                                break;
                             }
                         }
                     }
-                    for (rName in rateSum) {
-                        rateSum[rName] /= len;
-                        rating.rate[rName] = rateSum[rName];
-                    }
-                    rating.quality = labels.join(';');
                 }
             }
         },
@@ -636,7 +757,11 @@ define([
                     wordOrder: 0,
                     caseSens: 0,
                     videoFormat: 0,
-                    audioFormat: 0
+                    videoQuality: 0,
+                    audioFormat: 0,
+                    gameQuality: 0,
+                    soft: 0,
+                    book: 0
                 },
                 sum: 0
             };

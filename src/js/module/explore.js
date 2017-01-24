@@ -704,7 +704,6 @@ define([
                     insertResults(query, labelNode, results);
                 }
             };
-
             var insertResults = function (query, labelNode, results) {
                 var highlightMap = highlight.getMap(query);
 
@@ -732,7 +731,9 @@ define([
 
                 show();
             };
-
+            var isTrailer = function(title) {
+                return /Трейлер|Тизер|Teaser|Trailer/i.test(title);
+            };
             var onGetResults = function (results, tracker, query, searchResults) {
                 var quickSearchObj = idSearchObjMap[query];
                 if (!quickSearchObj) {
@@ -749,12 +750,15 @@ define([
 
                 searchResults.forEach(function (torrent) {
                     var skip = Table.prototype.normalizeTorrent(storage, tracker.id, torrent);
-                    if (!skip) {
+                    if (!skip && !isTrailer(torrent.title)) {
                         var rateObj = rate.getRate(torrent, rateScheme);
+                        torrent.rate = rateObj;
                         torrent.quality = rateObj.sum;
-                        if (rateObj.rate.title >= 100 &&
+                        if (torrent.rate.rate.audioFormat) {
+                            torrent.quality -= torrent.rate.rate.audioFormat;
+                        }
+                        if (rateObj.rate.title >= 80 &&
                             rateObj.rate.wordSpaces >= 50 &&
-                            rateObj.rate.wordOrder >= 100 &&
                             rateObj.rate.caseSens >= 50
                         ) {
                             results.push({
@@ -1209,10 +1213,18 @@ define([
             var sourceOptions = sectionWrapper.source;
             var id = sectionWrapper.id;
             page = page || 0;
-            var content = sectionWrapper.cache.content || [];
+            var cache = sectionWrapper.cache;
+            var content = cache.content || [];
 
             var displayItemCount = sectionWrapper.displayItemCount = getCategoryDisplayItemCount(sectionWrapper.section);
             var from = displayItemCount * page;
+
+            var contentId = [from, displayItemCount, cache.keepAlive].join(':');
+            if (sectionWrapper.contentId === contentId) {
+                return;
+            }
+
+            sectionWrapper.contentId = contentId;
 
             var contentBody = document.createDocumentFragment();
             var items = content.slice(from, from + displayItemCount);
@@ -1476,6 +1488,7 @@ define([
                         setContent(sectionWrapper);
                     } else {
                         sectionWrapper.node.classList.add('section-loading');
+                        setContent(sectionWrapper);
                         cache.keepAlive = date;
                         loadContent(sectionWrapper).then(function () {
                             sectionWrapper.node.classList.remove('section-loading');

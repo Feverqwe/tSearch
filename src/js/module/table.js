@@ -312,6 +312,7 @@ define([
          * @property {number} [peer]
          * @property {number} [date]
          *
+         * @property {Object} rate
          * @property {number} quality
          * @property {string} trackerId
          * @property {string} titleLow
