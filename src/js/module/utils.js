@@ -375,7 +375,7 @@ define(function () {
         }
         var normalize = function (value, len) {
             while (value.length < len) {
-                value += '0';
+                value = '0' + value;
             }
             return value;
         };
