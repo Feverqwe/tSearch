@@ -1210,10 +1210,18 @@ define([
             var sourceOptions = sectionWrapper.source;
             var id = sectionWrapper.id;
             page = page || 0;
-            var content = sectionWrapper.cache.content || [];
+            var cache = sectionWrapper.cache;
+            var content = cache.content || [];
 
             var displayItemCount = sectionWrapper.displayItemCount = getCategoryDisplayItemCount(sectionWrapper.section);
             var from = displayItemCount * page;
+
+            var contentId = [from, displayItemCount, cache.keepAlive].join(':');
+            if (sectionWrapper.contentId === contentId) {
+                return;
+            }
+
+            sectionWrapper.contentId = contentId;
 
             var contentBody = document.createDocumentFragment();
             var items = content.slice(from, from + displayItemCount);
@@ -1477,6 +1485,7 @@ define([
                         setContent(sectionWrapper);
                     } else {
                         sectionWrapper.node.classList.add('section-loading');
+                        setContent(sectionWrapper);
                         cache.keepAlive = date;
                         loadContent(sectionWrapper).then(function () {
                             sectionWrapper.node.classList.remove('section-loading');
