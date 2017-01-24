@@ -753,9 +753,8 @@ define([
                     if (!skip && !isTrailer(torrent.title)) {
                         var rateObj = rate.getRate(torrent, rateScheme);
                         torrent.quality = rateObj.sum;
-                        if (rateObj.rate.title >= 100 &&
+                        if (rateObj.rate.title >= 80 &&
                             rateObj.rate.wordSpaces >= 50 &&
-                            rateObj.rate.wordOrder >= 100 &&
                             rateObj.rate.caseSens >= 50
                         ) {
                             results.push({

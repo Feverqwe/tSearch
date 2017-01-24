@@ -5,6 +5,51 @@
 define([
     './utils'
 ], function (utils) {
+    var bitRate = [
+        {
+            match: [{regexp: 1, word: '320\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: 30
+            }
+        },
+        {
+            match: [{regexp: 1, word: '256\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: 25
+            }
+        },
+        {
+            match: [{regexp: 1, word: '192\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: 20
+            }
+        },
+        {
+            match: [{regexp: 1, word: '128\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: 10
+            }
+        },
+        {
+            match: [{regexp: 1, word: '96\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: 0
+            }
+        },
+        {
+            match: [{regexp: 1, word: '64\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: -10
+            }
+        },
+        {
+            match: [{regexp: 1, word: '32\\s*(kbps)?', caseSens: 0}],
+            rate: {
+                audioFormat: -20
+            }
+        }
+    ];
+
     var rate = {
         rating: [
             {name: 'videoFormat', unic: true, rules: [
@@ -221,7 +266,15 @@ define([
                     rate: {
                         audioFormat: 90
                     },
-                    label: 'FLAC'
+                    label: 'FLAC',
+                    sub: [
+                        {
+                            match: ['.cue'],
+                            rate: {
+                                audioFormat: 10
+                            }
+                        }
+                    ]
                 },
                 {
                     match: ['APE'],
@@ -231,106 +284,105 @@ define([
                     label: 'APE'
                 },
                 {
-                    match: ['AAC'],
+                    match: ['AAC', 'ААС'],
                     rate: {
                         audioFormat: 50
                     },
                     label: 'AAC',
-                    sub: [
-                        {
-                            match: ['320'],
-                            rate: {
-                                audioFormat: 30
-                            }
-                        },
-                        {
-                            match: ['256'],
-                            rate: {
-                                audioFormat: 25
-                            }
-                        },
-                        {
-                            match: ['192'],
-                            rate: {
-                                audioFormat: 20
-                            }
-                        },
-                        {
-                            match: ['128'],
-                            rate: {
-                                audioFormat: 10
-                            }
-                        },
-                        {
-                            match: ['96'],
-                            rate: {
-                                audioFormat: 0
-                            }
-                        },
-                        {
-                            match: ['64'],
-                            rate: {
-                                audioFormat: -10
-                            }
-                        },
-                        {
-                            match: ['32'],
-                            rate: {
-                                audioFormat: -20
-                            }
-                        }
-                    ]
+                    sub: bitRate
                 },
                 {
-                    match: ['MP3'],
+                    match: ['MP3', 'MР3'],
                     rate: {
                         audioFormat: 50
                     },
                     label: 'MP3',
-                    sub: [
-                        {
-                            match: ['320'],
-                            rate: {
-                                audioFormat: 30
-                            }
-                        },
-                        {
-                            match: ['256'],
-                            rate: {
-                                audioFormat: 25
-                            }
-                        },
-                        {
-                            match: ['192'],
-                            rate: {
-                                audioFormat: 20
-                            }
-                        },
-                        {
-                            match: ['128'],
-                            rate: {
-                                audioFormat: 10
-                            }
-                        },
-                        {
-                            match: ['96'],
-                            rate: {
-                                audioFormat: 0
-                            }
-                        },
-                        {
-                            match: ['64'],
-                            rate: {
-                                audioFormat: -10
-                            }
-                        },
-                        {
-                            match: ['32'],
-                            rate: {
-                                audioFormat: -20
-                            }
-                        }
-                    ]
+                    sub: bitRate
+                }
+            ]},
+            {name: 'gameQuality', unic: true, rules: [
+                {
+                    match: [{word: 'PS3'}],
+                    rate: {
+                        gameQuality: 100
+                    },
+                    label: 'PS3'
+                },
+                {
+                    match: [{word: 'XBOX'}, 'Xbox360', 'Xbox 360'],
+                    rate: {
+                        gameQuality: 100
+                    },
+                    label: 'XBOX'
+                },
+                {
+                    match: [{word: 'PC'}],
+                    rate: {
+                        gameQuality: 100
+                    },
+                    label: 'PC'
+                },
+                {
+                    match: [{word: 'PS2'}, '(ps2)'],
+                    rate: {
+                        gameQuality: 80
+                    },
+                    label: 'PS2'
+                },
+                {
+                    match: [{word: 'Wii'}],
+                    rate: {
+                        gameQuality: 70
+                    },
+                    label: 'Wii'
+                },
+                {
+                    match: [{word: 'GOG'}],
+                    rate: {
+                        gameQuality: 100
+                    },
+                    label: 'GOG'
+                },
+                {
+                    match: ['Steam', 'SteamRip', 'Steam-Rip'],
+                    rate: {
+                        gameQuality: 100
+                    },
+                    label: 'SteamRip'
+                }
+            ]},
+            {name: 'soft', unic: true, rules: [
+                {
+                    match: [{word: '[L]'}, {word: '{L}'}, {word: '(L)'}, 'License', 'Лицензия'],
+                    rate: {
+                        soft: 100
+                    }
+                },
+                {
+                    match: ['[Native]'],
+                    rate: {
+                        soft: 100
+                    }
+                },
+                {
+                    match: ['repack'],
+                    rate: {
+                        soft: 80
+                    }
+                }
+            ]},
+            {name: 'book', unic: true, rules: [
+                {
+                    match: ['fb2', 'djvu', 'epub'],
+                    rate: {
+                        book: 70
+                    }
+                },
+                {
+                    match: ['pdf', 'rtf', 'doc', 'DОС', 'docx'],
+                    rate: {
+                        book: 50
+                    }
                 }
             ]}
         ],
@@ -705,7 +757,11 @@ define([
                     wordOrder: 0,
                     caseSens: 0,
                     videoFormat: 0,
-                    audioFormat: 0
+                    videoQuality: 0,
+                    audioFormat: 0,
+                    gameQuality: 0,
+                    soft: 0,
+                    book: 0
                 },
                 sum: 0
             };
