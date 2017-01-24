@@ -752,7 +752,11 @@ define([
                     var skip = Table.prototype.normalizeTorrent(storage, tracker.id, torrent);
                     if (!skip && !isTrailer(torrent.title)) {
                         var rateObj = rate.getRate(torrent, rateScheme);
+                        torrent.rate = rateObj;
                         torrent.quality = rateObj.sum;
+                        if (torrent.rate.rate.audioFormat) {
+                            torrent.quality -= torrent.rate.rate.audioFormat;
+                        }
                         if (rateObj.rate.title >= 80 &&
                             rateObj.rate.wordSpaces >= 50 &&
                             rateObj.rate.caseSens >= 50

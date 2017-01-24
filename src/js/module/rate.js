@@ -304,49 +304,49 @@ define([
                 {
                     match: [{word: 'PS3'}],
                     rate: {
-                        gameQuality: 100
+                        gameQuality: 80
                     },
                     label: 'PS3'
                 },
                 {
                     match: [{word: 'XBOX'}, 'Xbox360', 'Xbox 360'],
                     rate: {
-                        gameQuality: 100
+                        gameQuality: 80
                     },
                     label: 'XBOX'
                 },
                 {
                     match: [{word: 'PC'}],
                     rate: {
-                        gameQuality: 100
+                        gameQuality: 80
                     },
                     label: 'PC'
                 },
                 {
                     match: [{word: 'PS2'}, '(ps2)'],
                     rate: {
-                        gameQuality: 80
+                        gameQuality: 70
                     },
                     label: 'PS2'
                 },
                 {
                     match: [{word: 'Wii'}],
                     rate: {
-                        gameQuality: 70
+                        gameQuality: 50
                     },
                     label: 'Wii'
                 },
                 {
                     match: [{word: 'GOG'}],
                     rate: {
-                        gameQuality: 100
+                        gameQuality: 80
                     },
                     label: 'GOG'
                 },
                 {
                     match: ['Steam', 'SteamRip', 'Steam-Rip'],
                     rate: {
-                        gameQuality: 100
+                        gameQuality: 80
                     },
                     label: 'SteamRip'
                 }
@@ -355,19 +355,19 @@ define([
                 {
                     match: [{word: '[L]'}, {word: '{L}'}, {word: '(L)'}, 'License', 'Лицензия'],
                     rate: {
-                        soft: 100
+                        soft: 80
                     }
                 },
                 {
                     match: ['[Native]'],
                     rate: {
-                        soft: 100
+                        soft: 80
                     }
                 },
                 {
                     match: ['repack'],
                     rate: {
-                        soft: 80
+                        soft: 50
                     }
                 }
             ]},
