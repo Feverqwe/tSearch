@@ -120,12 +120,14 @@ require([
             if (tracker.meta.updateURL) {
                 promise = promise.then(function () {
                     return checkVersion(tracker.meta.updateURL);
+                }).then(function (result) {
+                    return checkVersion(result.meta.downloadURL);
                 });
-            }
-            if (tracker.meta.updateURL !== tracker.meta.downloadURL) {
+            } else
+            if (tracker.meta.downloadURL) {
                 promise = promise.then(function () {
                     return checkVersion(tracker.meta.downloadURL);
-                })
+                });
             }
             return promise.then(function (result) {
                 tracker.meta = result.meta;
