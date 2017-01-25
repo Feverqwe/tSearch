@@ -87,7 +87,7 @@ define([
                 onDestroyFnList.push(cb);
             };
             this.replace = function (newBlank) {
-                this.destroy(true);
+                self.destroy(true);
                 node.parentNode.replaceChild(newBlank.node, node);
                 newBlank.show(true);
             };
