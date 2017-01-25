@@ -1219,7 +1219,9 @@ define([
             var displayItemCount = sectionWrapper.displayItemCount = getCategoryDisplayItemCount(sectionWrapper.section);
             var from = displayItemCount * page;
 
-            var contentId = [from, displayItemCount, cache.keepAlive].join(':');
+            var items = content.slice(from, from + displayItemCount);
+
+            var contentId = [from, displayItemCount, items.length, cache.keepAlive].join(':');
             if (sectionWrapper.contentId === contentId) {
                 return;
             }
@@ -1227,7 +1229,6 @@ define([
             sectionWrapper.contentId = contentId;
 
             var contentBody = document.createDocumentFragment();
-            var items = content.slice(from, from + displayItemCount);
             items.forEach(function (item, index) {
                 index = index + from;
                 var title = getCategoryItemTitle(item);
