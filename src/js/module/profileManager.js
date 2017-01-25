@@ -8,7 +8,6 @@ define([
 ], function (utils, dom) {
     var ProfileManager = function (profiles, profileController, trackers, ee, sync) {
         var self = this;
-        var currentBlank = null;
 
         var syncProfiles = function (cb) {
             if (sync) {
@@ -20,7 +19,8 @@ define([
             }
         };
 
-        var getBlank = function () {
+        var Blank = function () {
+            var self = this;
             var titleNode;
             var bodyNode;
             var footerNode;
@@ -42,7 +42,7 @@ define([
                                         text: chrome.i18n.getMessage('close'),
                                         on: ['click', function (e) {
                                             e.preventDefault();
-                                            close();
+                                            self.destroy();
                                         }]
                                     })
                                 ]
@@ -58,20 +58,42 @@ define([
                 ]
             });
 
-            return {
-                node: node,
-                titleNode: titleNode,
-                bodyNode: bodyNode,
-                footerNode: footerNode,
-                replace: function (newBlank) {
-                    currentBlank = newBlank;
-                    node.parentNode.replaceChild(newBlank.node, node);
+            var closeEvent = function (e) {
+                if (!node.contains(e.target)) {
+                    self.destroy();
                 }
+            };
+
+            var onDestroyFnList = [];
+
+            this.node = node;
+            this.titleNode = titleNode;
+            this.bodyNode = bodyNode;
+            this.footerNode = footerNode;
+            this.show = function () {
+                document.body.appendChild(node);
+                document.addEventListener('click', closeEvent, true);
+            };
+            this.destroy = function (isReplace) {
+                !isReplace && node.parentNode.removeChild(node);
+                document.removeEventListener('click', closeEvent, true);
+
+                var fn;
+                while (fn = onDestroyFnList.shift()) {
+                    fn();
+                }
+            };
+            this.onDestroy = function (cb) {
+                onDestroyFnList.push(cb);
+            };
+            this.replace = function (newBlank) {
+                this.destroy(true);
+                node.parentNode.replaceChild(newBlank.node, node);
             };
         };
 
         var getProfileEditor = function (/**profile*/profile) {
-            var blankObj = getBlank();
+            var blankObj = new Blank();
 
             blankObj.titleNode.textContent = chrome.i18n.getMessage('manageProfile');
 
@@ -220,7 +242,7 @@ define([
                 return fragment;
             };
 
-            onTrackersUpdate = function () {
+            var onTrackersUpdate = function () {
                 trackersNode.textContent = '';
                 trackersNode.appendChild(getTrackerList());
             };
@@ -307,7 +329,7 @@ define([
                                 trackers: cloneTrackers
                             }, function () {
                                 syncProfiles(function () {
-                                    close();
+                                    blankObj.destroy();
                                 });
                             });
                         }]
@@ -359,11 +381,27 @@ define([
                 });
             });
 
+            var onTrackersChangeListener = function (id, changes) {
+                if (changes.indexOf('meta') !== -1) {
+                    onTrackersUpdate();
+                }
+            };
+
+            ee.on('trackerRemoved', onTrackersUpdate);
+            ee.on('trackerInsert', onTrackersUpdate);
+            ee.on('trackerChange', onTrackersChangeListener);
+
+            blankObj.onDestroy(function () {
+                ee.off('trackerRemoved', onTrackersUpdate);
+                ee.off('trackerInsert', onTrackersUpdate);
+                ee.off('trackerChange', onTrackersChangeListener);
+            });
+
             return blankObj;
         };
 
         var getProfileChooser = function () {
-            var blankObj = getBlank();
+            var blankObj = new Blank();
 
             blankObj.titleNode.textContent = chrome.i18n.getMessage('manageProfiles');
 
@@ -470,7 +508,7 @@ define([
                         profiles: newProfiles
                     }, function () {
                         syncProfiles(function () {
-                            close();
+                            blankObj.destroy();
                         });
                     });
                 }]
@@ -490,39 +528,8 @@ define([
             return blankObj;
         };
 
-
-        var onTrackersUpdate = null;
-        var onTrackersUpdateListener = function () {
-            onTrackersUpdate && onTrackersUpdate();
-        };
-        var onTrackersChangeListener = function (id, changes) {
-            if (changes.indexOf('meta') !== -1) {
-                onTrackersUpdate && onTrackersUpdate();
-            }
-        };
-
-        var close = function () {
-            ee.off('trackerRemoved', onTrackersUpdateListener);
-            ee.off('trackerInsert', onTrackersUpdateListener);
-            ee.off('trackerChange', onTrackersChangeListener);
-            document.removeEventListener('click', closeEvent, true);
-            currentBlank.node.parentNode.removeChild(currentBlank.node);
-        };
-
-        var closeEvent = function (e) {
-            if (!currentBlank.node.contains(e.target)) {
-                close();
-            }
-        };
-
         this.show = function () {
-            var profileChooser = getProfileChooser();
-            currentBlank = profileChooser;
-            document.body.appendChild(profileChooser.node);
-            document.addEventListener('click', closeEvent, true);
-            ee.on('trackerRemoved', onTrackersUpdateListener);
-            ee.on('trackerInsert', onTrackersUpdateListener);
-            ee.on('trackerChange', onTrackersChangeListener);
+            getProfileChooser().show();
         };
     };
     ProfileManager.prototype.getDefaultProfile = function (profileController) {
