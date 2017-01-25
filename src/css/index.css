@@ -263,6 +263,10 @@ a.search__submit {
     padding: 0 5px;
 }
 
+.content-row .parameter-tracker {
+    margin-bottom: 10px;
+}
+
 .content-column .parameter {
     padding: 0 5px;
 }
