@@ -123,8 +123,7 @@ require([
                 }).then(function (result) {
                     return checkVersion(result.meta.downloadURL);
                 });
-            } else
-            if (tracker.meta.downloadURL) {
+            } else {
                 promise = promise.then(function () {
                     return checkVersion(tracker.meta.downloadURL);
                 });
