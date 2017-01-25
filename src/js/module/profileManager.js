@@ -70,8 +70,8 @@ define([
             this.titleNode = titleNode;
             this.bodyNode = bodyNode;
             this.footerNode = footerNode;
-            this.show = function () {
-                document.body.appendChild(node);
+            this.show = function (isReplace) {
+                !isReplace && document.body.appendChild(node);
                 document.addEventListener('click', closeEvent, true);
             };
             this.destroy = function (isReplace) {
@@ -89,6 +89,7 @@ define([
             this.replace = function (newBlank) {
                 this.destroy(true);
                 node.parentNode.replaceChild(newBlank.node, node);
+                newBlank.show(true);
             };
         };
 
