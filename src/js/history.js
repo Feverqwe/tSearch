@@ -128,22 +128,31 @@ require([
                 }),
                 on: ['click', function (e) {
                     var link = dom.closest('a', e.target);
-                    if (link) {
-                        if (link.dataset.action === 'remove-query') {
-                            e.preventDefault();
-                            var node = link.parentNode;
-                            var item = cloneHistory[node.dataset.index];
-                            var pos = history.indexOf(item);
-                            if (pos !== -1) {
-                                history.splice(pos, 1);
-                                chrome.storage.local.set({
-                                    history: history
-                                }, function () {
-                                    var historyItem = node.parentNode;
-                                    historyItem.parentNode.removeChild(historyItem);
-                                });
-                            }
+                    if (link && link.dataset.action === 'remove-query') {
+                        e.preventDefault();
+                        var node = link.parentNode;
+
+                        var item = cloneHistory[node.dataset.index];
+                        var pos = history.indexOf(item);
+                        if (pos !== -1) {
+                            history.splice(pos, 1);
                         }
+
+                        var queryClickHistory = queryClickHistoryItemMap[item.query] || [];
+                        queryClickHistory.forEach(function (item) {
+                            var pos = clickHistory.indexOf(item);
+                            if (pos !== -1) {
+                                clickHistory.splice(pos, 1);
+                            }
+                        });
+
+                        chrome.storage.local.set({
+                            history: history,
+                            clickHistory: clickHistory
+                        }, function () {
+                            var historyItemNode = node.parentNode;
+                            historyItemNode.parentNode.removeChild(historyItemNode);
+                        });
                     }
                 }]
             });
