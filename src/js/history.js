@@ -27,7 +27,21 @@ require([
     }).then(function (storage) {
         document.body.classList.remove('loading');
 
-        (function (history, clickHistory) {
+        var getEmptyItem = function () {
+            return dom.el('div', {
+                class: ['history_empty'],
+                append: [
+                    dom.el('span', {
+                        text: chrome.i18n.getMessage('historyEmpty')
+                    })
+                ]
+            });
+        };
+
+        var clearHistory = null;
+
+        var load = function (history, clickHistory) {
+            var onHistoryClickEvent = null;
             var cloneHistory = history.slice(0);
 
             var queryClickHistoryItemMap = {};
@@ -39,7 +53,12 @@ require([
                 queryClickHistoryItemMap[query].push(clickHistoryItem);
             });
 
-            dom.el(document.querySelector('.history'), {
+            var historyNode = document.querySelector('.history');
+            clearHistory && clearHistory();
+            if (!cloneHistory.length) {
+                historyNode.appendChild(getEmptyItem());
+            } else
+            dom.el(historyNode, {
                 append: cloneHistory.map(function (/**historyItem*/historyItem, index) {
                     var query = historyItem.query;
                     var queryClickHistory = queryClickHistoryItemMap[query] || [];
@@ -126,7 +145,7 @@ require([
                         ]
                     });
                 }),
-                on: ['click', function (e) {
+                on: ['click', onHistoryClickEvent = function (e) {
                     var link = dom.closest('a', e.target);
                     if (link && link.dataset.action === 'remove-query') {
                         e.preventDefault();
@@ -151,12 +170,44 @@ require([
                             clickHistory: clickHistory
                         }, function () {
                             var historyItemNode = node.parentNode;
-                            historyItemNode.parentNode.removeChild(historyItemNode);
+                            var parent = historyItemNode.parentNode;
+                            parent.removeChild(historyItemNode);
+                            if (parent.childNodes.length === 0) {
+                                parent.appendChild(getEmptyItem());
+                            }
                         });
                     }
                 }]
             });
-        })(storage.history, storage.clickHistory);
+
+            clearHistory = function () {
+                historyNode.textContent = '';
+                historyNode.removeEventListener('click', onHistoryClickEvent);
+            };
+        };
+
+        load(storage.history, storage.clickHistory);
+
+        chrome.storage.onChanged.addListener(function(changes) {
+            var history = storage.history;
+            var changeHistory = changes.history;
+            var clickHistory = storage.clickHistory;
+            var changeClickHistory = changes.clickHistory;
+            var hasChanges = false;
+            if (changeHistory && JSON.stringify(changeHistory.newValue) !== JSON.stringify(history)) {
+                history.splice(0);
+                history.push.apply(history, changeHistory.newValue);
+                hasChanges = true;
+            }
+            if (changeClickHistory && JSON.stringify(changeClickHistory.newValue) !== JSON.stringify(clickHistory)) {
+                clickHistory.splice(0);
+                clickHistory.push.apply(clickHistory, changeClickHistory.newValue);
+                hasChanges = true;
+            }
+            if (hasChanges) {
+                load(storage.history, storage.clickHistory);
+            }
+        });
 
         counter();
     });

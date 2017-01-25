@@ -269,6 +269,9 @@
   "quickSearch": {
     "message": "Быстрый поиск"
   },
+  "historyEmpty": {
+    "message": "Здесь пусто, пока..."
+  },
   "kitTrackerCodeReadError": {
     "message": "Ошибка разбора кода трекера"
   },

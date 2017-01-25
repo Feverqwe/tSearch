@@ -269,6 +269,9 @@
     "quickSearch": {
         "message": "Quick search"
     },
+    "historyEmpty": {
+        "message": "Here empty, yet..."
+    },
     "kitTrackerCodeReadError": {
         "message": "Error parsing of the tracker code"
     },
