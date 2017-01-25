@@ -64,41 +64,41 @@ define([
             }
         };
 
-        var getProfiles = function (profiles) {
-            var getProfileItem = function (profile) {
-                return dom.el('div', {
-                    class: 'item',
-                    data: {
-                        id: profile.id
-                    },
-                    append: [
-                        dom.el('div', {
-                            class: 'item__move'
-                        }),
-                        dom.el('div', {
-                            class: 'item__name',
-                            text: profile.name
-                        }),
-                        dom.el('a', {
-                            class: ['item__action', 'item__button', 'button-edit'],
-                            href: '#edit',
-                            data: {
-                                action: 'edit'
-                            },
-                            title: chrome.i18n.getMessage('edit')
-                        }),
-                        dom.el('a', {
-                            class: ['item__action', 'item__button', 'button-remove'],
-                            href: '#remove',
-                            data: {
-                                action: 'remove'
-                            },
-                            title: chrome.i18n.getMessage('remove')
-                        })
-                    ]
-                });
-            };
+        var getProfileItemNode = function (profile) {
+            return dom.el('div', {
+                class: 'item',
+                data: {
+                    id: profile.id
+                },
+                append: [
+                    dom.el('div', {
+                        class: 'item__move'
+                    }),
+                    dom.el('div', {
+                        class: 'item__name',
+                        text: profile.name
+                    }),
+                    dom.el('a', {
+                        class: ['item__action', 'item__button', 'button-edit'],
+                        href: '#edit',
+                        data: {
+                            action: 'edit'
+                        },
+                        title: chrome.i18n.getMessage('edit')
+                    }),
+                    dom.el('a', {
+                        class: ['item__action', 'item__button', 'button-remove'],
+                        href: '#remove',
+                        data: {
+                            action: 'remove'
+                        },
+                        title: chrome.i18n.getMessage('remove')
+                    })
+                ]
+            });
+        };
 
+        var getProfileOrderPage = function (profiles) {
             var profilesNode = null;
             var node = dom.el(document.createDocumentFragment(), {
                 append: [
@@ -114,7 +114,7 @@ define([
                                     e.preventDefault();
                                     var profile = self.getDefaultProfile(profileController);
                                     layer.content.textContent = '';
-                                    layer.content.appendChild(getProfile(profile, trackers));
+                                    layer.content.appendChild(getEditProfilePage(profile, trackers));
                                 }]
                             })
                         ]
@@ -124,7 +124,7 @@ define([
                         append: (function () {
                             var list = [];
                             profiles.forEach(function (/**profile*/profile) {
-                                list.push(getProfileItem(profile))
+                                list.push(getProfileItemNode(profile))
                             });
                             return list;
                         })(),
@@ -141,7 +141,7 @@ define([
                                     }
                                 });
                                 layer.content.textContent = '';
-                                layer.content.appendChild(getProfile(profile, trackers));
+                                layer.content.appendChild(getEditProfilePage(profile, trackers));
                             } else
                             if (target.dataset.action === 'remove') {
                                 e.preventDefault();
@@ -196,44 +196,45 @@ define([
             return node;
         };
 
-        var getProfile = function (/**profile*/profile, trackers) {
-            var getTrackerItem = function (tracker, checked, exists) {
-                var checkboxNode;
-                var versionNode;
-                return dom.el('div', {
-                    class: 'item',
-                    data: {
-                        id: tracker.id
-                    },
-                    append: [
-                        dom.el('div', {
-                            class: 'item__move'
-                        }),
-                        dom.el('div', {
-                            class: 'item__checkbox',
-                            append: [
-                                checkboxNode = dom.el('input', {
-                                    type: 'checkbox',
-                                    checked: checked
-                                })
-                            ]
-                        }),
-                        dom.el('img', {
-                            class: ['item__icon'],
-                            src: tracker.meta.icon || tracker.meta.icon64,
-                            on: ['error', function () {
-                                this.src = './img/blank.svg'
-                            }]
-                        }),
-                        dom.el('div', {
-                            class: 'item__name',
-                            text: tracker.meta.name || tracker.id
-                        }),
-                        !tracker.meta.version ? '' : versionNode = dom.el('div', {
+        var getTrackerItemObj = function (tracker, checked) {
+            var itemObj = {};
+
+            var checkboxNode;
+            var versionNode;
+            itemObj.node = dom.el('div', {
+                class: 'item',
+                data: {
+                    id: tracker.id
+                },
+                append: [
+                    dom.el('div', {
+                        class: 'item__move'
+                    }),
+                    dom.el('div', {
+                        class: 'item__checkbox',
+                        append: [
+                            checkboxNode = dom.el('input', {
+                                type: 'checkbox',
+                                checked: checked
+                            })
+                        ]
+                    }),
+                    dom.el('img', {
+                        class: ['item__icon'],
+                        src: tracker.meta.icon || tracker.meta.icon64,
+                        on: ['error', function () {
+                            this.src = './img/blank.svg'
+                        }]
+                    }),
+                    dom.el('div', {
+                        class: 'item__name',
+                        text: tracker.meta.name || tracker.id
+                    }),
+                    !tracker.meta.version ? '' : versionNode = dom.el('div', {
                             class: 'item__version',
                             text: tracker.meta.version
                         }),
-                        (!tracker.meta.updateURL && !tracker.meta.downloadURL) ? '' : dom.el('a', {
+                    (!tracker.meta.updateURL && !tracker.meta.downloadURL) ? '' : dom.el('a', {
                             class: ['item__update', 'item__button', 'button-update'],
                             href: '#update',
                             data: {
@@ -262,46 +263,49 @@ define([
                                 })
                             }]
                         }),
-                        !tracker.meta.supportURL ? '' : dom.el('a', {
+                    !tracker.meta.supportURL ? '' : dom.el('a', {
                             class: ['item__homepage', 'item__button', 'button-support'],
                             target: '_blank',
                             href: tracker.meta.supportURL
                         }),
-                        !tracker.meta.homepageURL ? '' : dom.el('a', {
+                    !tracker.meta.homepageURL ? '' : dom.el('a', {
                             class: ['item__homepage', 'item__button', 'button-home'],
                             target: '_blank',
                             href: tracker.meta.homepageURL
                         }),
-                        !tracker.meta.author ? '' : dom.el('div', {
-                                class: 'item__author',
-                                text: tracker.meta.author
-                            }),
-                        dom.el('a', {
-                            class: ['item__action', 'item__button', 'button-edit'],
-                            href: '#edit',
-                            data: {
-                                action: 'edit'
-                            },
-                            title: chrome.i18n.getMessage('edit')
+                    !tracker.meta.author ? '' : dom.el('div', {
+                            class: 'item__author',
+                            text: tracker.meta.author
                         }),
-                        dom.el('a', {
-                            class: ['item__action', 'item__button', 'button-remove'],
-                            href: '#remove',
-                            data: {
-                                action: 'remove'
-                            },
-                            title: chrome.i18n.getMessage('remove')
-                        })
-                    ],
-                    on: ['click', function (e) {
-                        var child = dom.closestNode(this, e.target);
-                        if (e.target === this || child && child.classList.contains('item__name')) {
-                            checkboxNode.checked = !checkboxNode.checked;
-                        }
-                    }]
-                })
-            };
+                    dom.el('a', {
+                        class: ['item__action', 'item__button', 'button-edit'],
+                        href: '#edit',
+                        data: {
+                            action: 'edit'
+                        },
+                        title: chrome.i18n.getMessage('edit')
+                    }),
+                    dom.el('a', {
+                        class: ['item__action', 'item__button', 'button-remove'],
+                        href: '#remove',
+                        data: {
+                            action: 'remove'
+                        },
+                        title: chrome.i18n.getMessage('remove')
+                    })
+                ],
+                on: ['click', function (e) {
+                    var child = dom.closestNode(this, e.target);
+                    if (e.target === this || child && child.classList.contains('item__name')) {
+                        checkboxNode.checked = !checkboxNode.checked;
+                    }
+                }]
+            });
 
+            return itemObj;
+        };
+
+        var getEditProfilePage = function (/**profile*/profile, trackers) {
             var profileName = null;
             var trackersNode = null;
             var removedTrackerIds = [];
@@ -309,9 +313,9 @@ define([
             var getTrackerList = function () {
                 var fragment = document.createDocumentFragment();
                 var idList = [];
+                var trackerObjList = [];
                 profile.trackers.forEach(function (/**profileTracker*/profileTracker) {
                     var tracker = trackers[profileTracker.id];
-                    var exists = !!tracker;
                     if (!tracker) {
                         tracker = {
                             id: profileTracker.id,
@@ -321,14 +325,18 @@ define([
                     }
                     if (removedTrackerIds.indexOf(tracker.id) === -1) {
                         idList.push(tracker.id);
-                        fragment.appendChild(getTrackerItem(tracker, true, exists));
+                        var itemObj = getTrackerItemObj(tracker, true);
+                        trackerObjList.push(itemObj);
+                        fragment.appendChild(itemObj.node);
                     }
                 });
                 Object.keys(trackers).forEach(function (/**tracker*/trackerId) {
                     var tracker = trackers[trackerId];
                     if (removedTrackerIds.indexOf(tracker.id) === -1) {
                         if (idList.indexOf(tracker.id) === -1) {
-                            fragment.appendChild(getTrackerItem(tracker, false, true))
+                            var itemObj = getTrackerItemObj(tracker, false);
+                            trackerObjList.push(itemObj);
+                            fragment.appendChild(itemObj.node);
                         }
                     }
                 });
@@ -479,7 +487,7 @@ define([
 
         var createLayer = function () {
             var layer = getLayer();
-            layer.content.appendChild(getProfiles(profiles));
+            layer.content.appendChild(getProfileOrderPage(profiles));
             return layer;
         };
 
