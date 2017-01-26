@@ -513,7 +513,10 @@ define([
             };
 
             var profileRemove = function () {
-                this.node.parentNode.removeChild(this.node);
+                var parent = this.node.parentNode;
+                if (parent) {
+                    parent.removeChild(this.node);
+                }
             };
 
             var profileRefresh = function () {
