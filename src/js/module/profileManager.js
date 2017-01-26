@@ -98,15 +98,26 @@ define([
 
             blankObj.titleNode.textContent = chrome.i18n.getMessage('manageProfile');
 
-            var profileName = null;
-            var removedTrackerIds = [];
+            var profileNameNode = null;
 
-            var getTrackerItemObj = function (tracker, checked) {
-                var itemObj = {};
+            blankObj.bodyNode.appendChild(dom.el('div', {
+                class: 'manager__sub_header',
+                append: [
+                    dom.el('div', {
+                        class: ['profile__input'],
+                        append: [
+                            profileNameNode = dom.el('input', {
+                                class: ['input__input'],
+                                type: 'text',
+                                value: profile.name
+                            })
+                        ]
+                    })
+                ]
+            }));
 
-                var checkboxNode;
-                var versionNode;
-                itemObj.node = dom.el('div', {
+            var getTrackerItemNode = function (tracker, checked) {
+                return dom.el('div', {
                     class: 'item',
                     data: {
                         id: tracker.id
@@ -118,7 +129,7 @@ define([
                         dom.el('div', {
                             class: 'item__checkbox',
                             append: [
-                                checkboxNode = dom.el('input', {
+                                dom.el('input', {
                                     type: 'checkbox',
                                     checked: checked
                                 })
@@ -135,7 +146,7 @@ define([
                             class: 'item__name',
                             text: tracker.meta.name || tracker.id
                         }),
-                        !tracker.meta.version ? '' : versionNode = dom.el('div', {
+                        !tracker.meta.version ? '' : dom.el('div', {
                                 class: 'item__version',
                                 text: tracker.meta.version
                             }),
@@ -145,28 +156,7 @@ define([
                                 data: {
                                     action: 'update'
                                 },
-                                title: chrome.i18n.getMessage('update'),
-                                on: ['click', function (e) {
-                                    e.preventDefault();
-                                    var defText = versionNode.textContent;
-                                    versionNode.textContent = '...';
-                                    chrome.runtime.sendMessage({
-                                        action: 'update',
-                                        id: tracker.id,
-                                        force: true
-                                    }, function (response) {
-                                        if (!response.success) {
-                                            versionNode.textContent = defText;
-                                        } else {
-                                            var result = response.results[0];
-                                            if (!result.success) {
-                                                versionNode.textContent = result.message;
-                                            } else {
-                                                versionNode.textContent = result.version;
-                                            }
-                                        }
-                                    })
-                                }]
+                                title: chrome.i18n.getMessage('update')
                             }),
                         !tracker.meta.supportURL ? '' : dom.el('a', {
                                 class: ['item__homepage', 'item__button', 'button-support'],
@@ -198,97 +188,172 @@ define([
                             },
                             title: chrome.i18n.getMessage('remove')
                         })
-                    ],
+                    ]
+                });
+            };
+
+            var getTrackerList = function () {
+                var removedTrackerIds = [];
+                var trackerIdItem = {};
+
+                var trackerRefresh = function () {
+                    var _this = this;
+                    var newTracker = trackers[_this.id];
+                    var newNode = getTrackerItemNode(newTracker, this.checked);
+                    this.node.parentNode.replaceChild(newNode, this.node);
+                    this.node = newNode;
+                };
+
+                var trackerRemove = function () {
+                    var parent = this.node.parentNode;
+                    if (parent) {
+                        parent.removeChild(this.node);
+                    }
+                };
+
+                var node = dom.el('div', {
+                    class: 'manager__trackers',
+                    append: (function () {
+                        var list = [];
+                        profile.trackers.forEach(function (/**profileTracker*/profileTracker) {
+                            var tracker = trackers[profileTracker.id];
+                            if (!tracker) {
+                                tracker = {
+                                    id: profileTracker.id,
+                                    meta: {},
+                                    info: {}
+                                }
+                            }
+                            var trackerItem = {
+                                id: tracker.id,
+                                checked: true,
+                                node: getTrackerItemNode(tracker, true),
+                                refresh: trackerRefresh,
+                                remove: trackerRemove
+                            };
+                            trackerIdItem[trackerItem.id] = trackerItem;
+                            list.push(trackerItem.node);
+                        });
+                        Object.keys(trackers).forEach(function (/**tracker*/trackerId) {
+                            var tracker = trackers[trackerId];
+                            if (!trackerIdItem[tracker.id]) {
+                                var trackerItem = {
+                                    id: tracker.id,
+                                    checked: false,
+                                    node: getTrackerItemNode(tracker, false),
+                                    refresh: trackerRefresh,
+                                    remove: trackerRemove
+                                };
+                                trackerIdItem[trackerItem.id] = trackerItem;
+                                list.push(trackerItem.node);
+                            }
+                        });
+                        return list;
+                    })(),
                     on: ['click', function (e) {
-                        var child = dom.closestNode(this, e.target);
-                        if (e.target === this || child && child.classList.contains('item__name')) {
-                            checkboxNode.checked = !checkboxNode.checked;
+                        var target = e.target;
+                        var itemNode = dom.closestNode(this, target);
+                        var trackerItem = trackerIdItem[itemNode && itemNode.dataset.id];
+                        if (trackerItem) {
+                            var trackerId = trackerItem.id;
+                            if (target.dataset.action === 'edit') {
+                                e.preventDefault();
+                                chrome.tabs.create({
+                                    url: 'editor.html#' + utils.param({
+                                        id: trackerId
+                                    })
+                                });
+                            } else
+                            if (target.dataset.action === 'remove') {
+                                e.preventDefault();
+                                var trackerNode = target.parentNode;
+                                trackerNode.parentNode.removeChild(trackerNode);
+                                removedTrackerIds.push(trackerId);
+                            } else
+                            if (target.dataset.action === 'update') {
+                                e.preventDefault();
+                                var versionNode = trackerItem.node.querySelector('.item__version');
+                                var defText = versionNode.textContent;
+                                versionNode.textContent = '...';
+                                chrome.runtime.sendMessage({
+                                    action: 'update',
+                                    id: trackerId,
+                                    force: true
+                                }, function (response) {
+                                    if (!response.success) {
+                                        versionNode.textContent = defText;
+                                    } else {
+                                        var result = response.results[0];
+                                        if (!result.success) {
+                                            versionNode.textContent = result.message;
+                                        } else {
+                                            versionNode.textContent = result.version;
+                                        }
+                                    }
+                                });
+                            } else
+                            if (target.type === 'checkbox' && target.parentNode.classList.contains('item__checkbox')) {
+                                trackerItem.checked = target.checked;
+                            } else
+                            if (target.classList.contains('item') || target.classList.contains('item__name')) {
+                                e.preventDefault();
+                                var checkboxNode = trackerItem.node.querySelector('.item__checkbox input');
+                                trackerItem.checked = !trackerItem.checked;
+                                checkboxNode.checked = trackerItem.checked;
+                            }
                         }
                     }]
                 });
 
-                return itemObj;
-            };
-
-            var getTrackerList = function () {
-                var fragment = document.createDocumentFragment();
-                var idList = [];
-                var trackerObjList = [];
-                profile.trackers.forEach(function (/**profileTracker*/profileTracker) {
-                    var tracker = trackers[profileTracker.id];
-                    if (!tracker) {
-                        tracker = {
-                            id: profileTracker.id,
-                            meta: {},
-                            info: {}
-                        }
-                    }
-                    if (removedTrackerIds.indexOf(tracker.id) === -1) {
-                        idList.push(tracker.id);
-                        var itemObj = getTrackerItemObj(tracker, true);
-                        trackerObjList.push(itemObj);
-                        fragment.appendChild(itemObj.node);
-                    }
-                });
-                Object.keys(trackers).forEach(function (/**tracker*/trackerId) {
-                    var tracker = trackers[trackerId];
-                    if (removedTrackerIds.indexOf(tracker.id) === -1) {
-                        if (idList.indexOf(tracker.id) === -1) {
-                            var itemObj = getTrackerItemObj(tracker, false);
-                            trackerObjList.push(itemObj);
-                            fragment.appendChild(itemObj.node);
-                        }
-                    }
-                });
-                return fragment;
-            };
-
-            var onTrackersUpdate = function () {
-                trackersNode.textContent = '';
-                trackersNode.appendChild(getTrackerList());
-            };
-
-            blankObj.bodyNode.appendChild(dom.el('div', {
-                class: 'manager__sub_header',
-                append: [
-                    dom.el('div', {
-                        class: ['profile__input'],
-                        append: [
-                            profileName = dom.el('input', {
-                                class: ['input__input'],
-                                type: 'text',
-                                value: profile.name
-                            })
-                        ]
-                    })
-                ]
-            }));
-
-            var trackersNode = dom.el('div', {
-                class: 'manager__trackers',
-                append: getTrackerList(),
-                on: ['click', function (e) {
-                    var target = e.target;
-                    var trackerId;
-                    if (target.dataset.action === 'edit') {
-                        e.preventDefault();
-                        trackerId = target.parentNode.dataset.id;
-                        chrome.tabs.create({
-                            url: 'editor.html#' + utils.param({
-                                id: trackerId
-                            })
+                require(['jquery'], function () {
+                    require(['jqueryUi'], function () {
+                        var $node = $(node);
+                        $node.sortable({
+                            axis: 'y',
+                            handle: '.item__move',
+                            scroll: false
                         });
-                    } else
-                    if (target.dataset.action === 'remove') {
-                        e.preventDefault();
-                        var trackerNode = target.parentNode;
-                        trackerId = trackerNode.dataset.id;
-                        trackerNode.parentNode.removeChild(trackerNode);
-                        removedTrackerIds.push(trackerId);
+                    });
+                });
+                
+                return {
+                    node: node,
+                    refreshTracker: function (id) {
+                        trackerIdItem[id].refresh();
+                    },
+                    removeTracker: function (id) {
+                        trackerIdItem[id].remove();
+                    },
+                    getTrackers: function () {
+                        var cloneTrackers = utils.clone(trackers);
+                        removedTrackerIds.forEach(function (id) {
+                            delete cloneTrackers[id];
+                        });
+                        return cloneTrackers;
+                    },
+                    getProfileTrackers: function () {
+                        var profileTrackers = [];
+                        [].slice.call(node.childNodes).forEach(function (trackerNode) {
+                            var id = trackerNode.dataset.id;
+                            var trackerItem = trackerIdItem[id];
+                            if (trackerItem.checked) {
+                                profileTrackers.push({
+                                    id: id
+                                });
+                            }
+                        });
+                        return profileTrackers;
                     }
-                }]
-            });
-            blankObj.bodyNode.appendChild(trackersNode);
+                }
+            };
+            var trackersList = getTrackerList();
+            blankObj.bodyNode.appendChild(trackersList.node);
+
+            var onTrackerInsert = function () {
+                var newTrackerList = getTrackerList();
+                trackersList.node.parentNode.replaceChild(newTrackerList.node, trackersList.node);
+                trackersList = newTrackerList;
+            };
 
             blankObj.footerNode.appendChild(dom.el(document.createDocumentFragment(), {
                 append: [
@@ -298,17 +363,6 @@ define([
                         text: chrome.i18n.getMessage('save'),
                         on: ['click', function (e) {
                             e.preventDefault();
-                            var profileTrackers = [];
-                            [].slice.call(trackersNode.childNodes).forEach(function (trackerNode) {
-                                var id = trackerNode.dataset.id;
-                                var checkbox = trackerNode.querySelector('.item__checkbox input');
-                                var checked = checkbox.checked;
-                                if (checked) {
-                                    profileTrackers.push({
-                                        id: id
-                                    })
-                                }
-                            });
 
                             var cloneProfiles = utils.clone(profiles);
                             var cloneProfile = utils.getItemId(cloneProfiles, profile.id);
@@ -317,13 +371,10 @@ define([
                                 cloneProfiles.push(profile);
                             }
 
-                            cloneProfile.name = profileName.value;
-                            cloneProfile.trackers = profileTrackers;
+                            cloneProfile.name = profileNameNode.value;
+                            cloneProfile.trackers = trackersList.getProfileTrackers();
 
-                            var cloneTrackers = utils.clone(trackers);
-                            removedTrackerIds.forEach(function (id) {
-                                delete cloneTrackers[id];
-                            });
+                            var cloneTrackers = trackersList.getTrackers();
 
                             chrome.storage.local.set({
                                 profiles: cloneProfiles,
@@ -371,31 +422,37 @@ define([
                 ]
             }));
 
-            require(['jquery'], function () {
-                require(['jqueryUi'], function () {
-                    var $trackersNode = $(trackersNode);
-                    $trackersNode.sortable({
-                        axis: 'y',
-                        handle: '.item__move',
-                        scroll: false
-                    });
-                });
-            });
-
-            var onTrackersChangeListener = function (id, changes) {
+            var onTrackerChange = function (id, changes) {
                 if (changes.indexOf('meta') !== -1) {
-                    onTrackersUpdate();
+                    trackersList.refreshTracker(id);
                 }
             };
 
-            ee.on('trackerRemoved', onTrackersUpdate);
-            ee.on('trackerInsert', onTrackersUpdate);
-            ee.on('trackerChange', onTrackersChangeListener);
+            var onTrackerRemoved = function (id) {
+                trackersList.removeTracker(id);
+            };
+
+            var onProfileFieldChange = function (id, changes) {
+                if (id === profile.id) {
+                    if (changes.indexOf('name') !== -1) {
+                        profileNameNode.value = profile.name;
+                    }
+                    if (changes.indexOf('trackers') !== -1) {
+                        onTrackerInsert();
+                    }
+                }
+            };
+
+            ee.on('trackerChange', onTrackerChange);
+            ee.on('trackerRemoved', onTrackerRemoved);
+            ee.on('trackerInsert', onTrackerInsert);
+            ee.on('profileFieldChange', onProfileFieldChange);
 
             blankObj.onDestroy(function () {
-                ee.off('trackerRemoved', onTrackersUpdate);
-                ee.off('trackerInsert', onTrackersUpdate);
-                ee.off('trackerChange', onTrackersChangeListener);
+                ee.off('trackerChange', onTrackerChange);
+                ee.off('trackerRemoved', onTrackerRemoved);
+                ee.off('trackerInsert', onTrackerInsert);
+                ee.off('profileFieldChange', onProfileFieldChange);
             });
 
             return blankObj;
@@ -466,6 +523,7 @@ define([
                 profiles.some(function (profile) {
                     if (_this.id === profile.id) {
                         newProfile = profile;
+                        return true;
                     }
                 });
                 var newNode = getProfileItemNode(newProfile);
@@ -573,8 +631,10 @@ define([
                 profilesList.removeProfile(id);
             };
 
-            var onProfileFieldChange = function (id) {
-                profilesList.refreshProfile(id);
+            var onProfileFieldChange = function (id, changes) {
+                if (changes.indexOf('name') !== -1) {
+                    profilesList.refreshProfile(id);
+                }
             };
 
             var refreshProfileList = function () {
