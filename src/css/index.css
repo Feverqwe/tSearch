@@ -715,6 +715,14 @@ a.tracker {
     color: #fff;
 }
 
+.manager .filter__input {
+    padding-left: 20px;
+    background-image: url(../img/mini_search.svg);
+    background-size: 14px;
+    background-position: 3px center;
+    background-repeat: no-repeat;
+}
+
 .manager__profile .profile__input {
     flex-grow: 1;
 }

@@ -158,7 +158,7 @@ define([
                             class: ['filter__search'],
                             append: [
                                 dom.el('input', {
-                                    class: ['input__input'],
+                                    class: ['input__input', 'filter__input'],
                                     type: 'text',
                                     placeholder: chrome.i18n.getMessage('quickSearch')
                                 })
