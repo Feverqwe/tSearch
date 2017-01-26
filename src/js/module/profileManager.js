@@ -9,10 +9,10 @@ define([
     var ProfileManager = function (profiles, profileController, trackers, ee, sync) {
         var self = this;
 
-        var syncProfiles = function (cb) {
+        var syncProfiles = function (newProfiles, cb) {
             if (sync) {
                 chrome.storage.sync.set({
-                    profiles: profiles
+                    profiles: newProfiles
                 }, cb);
             } else {
                 cb();
@@ -380,7 +380,7 @@ define([
                                 profiles: cloneProfiles,
                                 trackers: cloneTrackers
                             }, function () {
-                                syncProfiles(function () {
+                                syncProfiles(cloneProfiles, function () {
                                     blankObj.destroy();
                                 });
                             });
@@ -620,7 +620,7 @@ define([
                     chrome.storage.local.set({
                         profiles: newProfiles
                     }, function () {
-                        syncProfiles(function () {
+                        syncProfiles(newProfiles, function () {
                             blankObj.destroy();
                         });
                     });
