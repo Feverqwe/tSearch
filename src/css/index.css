@@ -585,11 +585,11 @@ a.tracker {
 }
 
 .manager__profiles {
-    display: flex;
-    flex-direction: column;
+    display: block;
     border-top: 1px dashed #ccc;
     min-height: 370px;
     max-height: 370px;
+    overflow: auto;
 }
 
 .manager__trackers .item__move,
