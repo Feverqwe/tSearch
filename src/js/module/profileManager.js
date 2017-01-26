@@ -456,13 +456,38 @@ define([
                 });
             };
 
+            var profileRemove = function () {
+                this.node.parentNode.removeChild(this.node);
+            };
+
+            var profileRefresh = function () {
+                var _this = this;
+                var newProfile = null;
+                profiles.some(function (profile) {
+                    if (_this.id === profile.id) {
+                        newProfile = profile;
+                    }
+                });
+                var newNode = getProfileItemNode(newProfile);
+                this.node.parentNode.replaceChild(newNode, this.node);
+                this.node = newNode;
+            };
+
             var getProfileList = function () {
+                var profileIdItem = {};
                 var node = dom.el('div', {
                     class: 'manager__profiles',
                     append: (function () {
                         var list = [];
                         profiles.forEach(function (/**profile*/profile) {
-                            list.push(getProfileItemNode(profile))
+                            var profileObj = {
+                                id: profile.id,
+                                node: getProfileItemNode(profile),
+                                refresh: profileRefresh,
+                                remove: profileRemove
+                            };
+                            profileIdItem[profileObj.id] = profileObj;
+                            list.push(profileObj.node)
                         });
                         return list;
                     })(),
@@ -500,6 +525,12 @@ define([
 
                 return {
                     node: node,
+                    refreshProfile: function (id) {
+                        profileIdItem[id].refresh();
+                    },
+                    removeProfile: function (id) {
+                        profileIdItem[id].remove();
+                    },
                     getProfiles: function () {
                         var profileIdMap = {};
                         profiles.forEach(function (profile) {
@@ -538,22 +569,30 @@ define([
                 }]
             }));
 
+            var onProfileRemoved = function (id) {
+                profilesList.removeProfile(id);
+            };
+
+            var onProfileFieldChange = function (id) {
+                profilesList.refreshProfile(id);
+            };
+
             var refreshProfileList = function () {
                 var newProfilesList = getProfileList();
                 blankObj.bodyNode.replaceChild(newProfilesList.node, profilesList.node);
                 profilesList = newProfilesList;
             };
 
-            ee.on('profileRemoved', refreshProfileList);
+            ee.on('profileRemoved', onProfileRemoved);
+            ee.on('profileFieldChange', onProfileFieldChange);
             ee.on('profileInsert', refreshProfileList);
             ee.on('profilesSortChange', refreshProfileList);
-            ee.on('profileFieldChange', refreshProfileList);
 
             blankObj.onDestroy(function () {
-                ee.off('profileRemoved', refreshProfileList);
+                ee.off('profileRemoved', onProfileRemoved);
+                ee.off('profileFieldChange', onProfileFieldChange);
                 ee.off('profileInsert', refreshProfileList);
                 ee.off('profilesSortChange', refreshProfileList);
-                ee.off('profileFieldChange', refreshProfileList);
             });
 
             return blankObj;
