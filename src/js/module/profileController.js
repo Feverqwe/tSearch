@@ -72,9 +72,13 @@ define([
         });
 
         ee.on('profileFieldChange', function (id, changes) {
-            if (activeProfile.id === id && changes.indexOf('name') !== -1) {
-                self.setSelectOptions(storage.profiles);
-                self.setSelectValue(storage.profiles, id);
+            if (changes.indexOf('name') !== -1) {
+                if (activeProfile.id === id) {
+                    self.setSelectOptions(storage.profiles);
+                    self.setSelectValue(storage.profiles, id);
+                } else {
+                    self.setSelectOptions(storage.profiles);
+                }
             }
         });
 
