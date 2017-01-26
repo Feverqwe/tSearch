@@ -116,56 +116,61 @@ define([
                 ]
             }));
 
-            blankObj.bodyNode.appendChild(dom.el('div', {
-                class: ['manager__sub_header', 'sub_header__filter'],
-                append: [
-                    dom.el('a', {
-                        class: ['filter__item', 'item__selected'],
-                        href: '#all',
-                        append: [
-                            'All',
-                            ' ',
-                            dom.el('span', {
-                                class: ['item__count'],
-                                text: '0'
-                            })
-                        ]
-                    }),
-                    dom.el('a', {
-                        class: ['filter__item'],
-                        href: '#all',
-                        append: [
-                            'Without list',
-                            ' ',
-                            dom.el('span', {
-                                class: ['item__count'],
-                                text: '0'
-                            })
-                        ]
-                    }),
-                    dom.el('a', {
-                        class: ['filter__item'],
-                        href: '#selected',
-                        append: [
-                            'Selected',
-                            ' ',
-                            dom.el('span', {
-                                class: ['item__count'],
-                                text: '0'
-                            })
-                        ]
-                    }),
-                    dom.el('div', {
-                        class: ['filter__search'],
-                        append: [
-                            dom.el('input', {
-                                class: ['input__input'],
-                                type: 'text'
-                            })
-                        ]
-                    })
-                ]
-            }));
+            var getFilter = function () {
+                var result = {};
+                result.counter = {};
+                result.filter = {};
+                result.node = dom.el('div', {
+                    class: ['manager__sub_header', 'sub_header__filter'],
+                    append: [
+                        dom.el('div', {
+                            class: ['filter__box'],
+                            append: ['all', 'withoutList', 'selected'].map(function (type) {
+                                return result.filter[type] = dom.el('a', {
+                                    class: ['filter__item'],
+                                    href: '#' + type,
+                                    data: {
+                                        type: type
+                                    },
+                                    append: [
+                                        chrome.i18n.getMessage('filter_' + type),
+                                        ' ',
+                                        result.counter[type] = dom.el('span', {
+                                            class: ['item__count'],
+                                            text: '0'
+                                        })
+                                    ]
+                                });
+                            }),
+                            on: ['click', function (e) {
+                                e.preventDefault();
+                                var node = dom.closestNode(this, e.target);
+                                if (node) {
+                                    result.type = node.dataset.type;
+                                    result.filterNode && result.filterNode.classList.remove('item__selected');
+                                    node.classList.add('item__selected');
+                                    result.filterNode = node;
+                                    trackersList && trackersList.updateFilter();
+                                }
+                            }]
+                        }),
+                        dom.el('div', {
+                            class: ['filter__search'],
+                            append: [
+                                dom.el('input', {
+                                    class: ['input__input'],
+                                    type: 'text',
+                                    placeholder: chrome.i18n.getMessage('quickSearch')
+                                })
+                            ]
+                        })
+                    ]
+                });
+                result.node.querySelector('[data-type="selected"]').dispatchEvent(new MouseEvent('click', {cancelable: true, bubbles: true}));
+                return result;
+            };
+            var filterObj = getFilter();
+            blankObj.bodyNode.appendChild(filterObj.node);
 
             var getTrackerItemNode = function (tracker, checked) {
                 var classList = ['item'];
@@ -381,6 +386,49 @@ define([
                         });
                     });
                 });
+
+                var updateFilter = function () {
+                    var type = filterObj.type;
+                    var all = 0;
+                    var withoutCategory = 0;
+                    var selected = 0;
+                    [].slice.call(node.childNodes).forEach(function (trackerNode) {
+                        var id = trackerNode.dataset.id;
+                        var trackerItem = trackerIdItem[id];
+                        trackerItem.filtered = true;
+                        all++;
+                        if (type === 'all') {
+                            trackerItem.filtered = false;
+                        }
+                        if (trackerItem.checked) {
+                            selected++;
+                            if (type === 'selected') {
+                                trackerItem.filtered = false;
+                            }
+                        }
+                        var inCategory = profiles.some(function (/**profile*/profile) {
+                            return profile.trackers.some(function (item) {
+                                return item.id === id;
+                            });
+                        });
+                        if (!inCategory) {
+                            withoutCategory++;
+                            if (type === 'withoutList') {
+                                trackerItem.filtered = false;
+                            }
+                        }
+                        if (trackerItem.filtered) {
+                            trackerItem.node.classList.add('item__filtered')
+                        } else {
+                            trackerItem.node.classList.remove('item__filtered')
+                        }
+                    });
+                    filterObj.counter.all.textContent = all;
+                    filterObj.counter.selected.textContent = selected;
+                    filterObj.counter.withoutList.textContent = withoutCategory;
+                };
+
+                updateFilter();
                 
                 return {
                     node: node,
@@ -409,7 +457,8 @@ define([
                             }
                         });
                         return profileTrackers;
-                    }
+                    },
+                    updateFilter: updateFilter
                 }
             };
             var trackersList = getTrackerList();

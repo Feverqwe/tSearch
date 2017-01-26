@@ -269,6 +269,18 @@
   "quickSearch": {
     "message": "Быстрый поиск"
   },
+  "filter_all": {
+    "message": "Все"
+  },
+  "filter_withoutList": {
+    "message": "Без списка"
+  },
+  "filter_selected": {
+    "message": "Выбранные"
+  },
+  "select_count": {
+    "message": "Выбрано элементов"
+  },
   "historyEmpty": {
     "message": "Здесь пусто, пока..."
   },

@@ -269,6 +269,18 @@
     "quickSearch": {
         "message": "Quick search"
     },
+    "filter_all": {
+        "message": "All"
+    },
+    "filter_withoutList": {
+        "message": "Without list"
+    },
+    "filter_selected": {
+        "message": "Selected"
+    },
+    "select_count": {
+        "message": "Selected items"
+    },
     "historyEmpty": {
         "message": "Here empty, yet..."
     },
