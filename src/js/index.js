@@ -820,16 +820,23 @@ require([
             });
 
             profileController.setSelectOptions = function (profiles) {
+                var value = profileSelect.value;
+                var newIndex = 0;
                 profileSelect.textContent = '';
                 dom.el(profileSelect, {
-                    append: profiles.map(function (/**profile*/item) {
+                    append: profiles.map(function (/**profile*/item, index) {
+                        if (value == item.id) {
+                            newIndex = index;
+                        }
                         return dom.el('option', {
                             text: item.name,
                             value: item.id
                         });
                     })
                 });
+                profileSelect.selectedIndex = newIndex;
                 profileSelectWrapper.update();
+                profileSelectWrapper.syncSelectedIndex();
             };
 
             profileController.setSelectValue = function (profiles, id) {
