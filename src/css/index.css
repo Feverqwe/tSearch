@@ -699,10 +699,18 @@ a.tracker {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
+.manager__trackers .item.item__selected {
+    background-color: #337AF8;
+    color: #fff;
+}
+
 .manager .item__icon {
-    padding-left: 8px;
+    margin-left: 8px;
     width: 16px;
     height: 16px;
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 2px;
 }
 
 .manager .item__name {

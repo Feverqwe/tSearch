@@ -117,8 +117,12 @@ define([
             }));
 
             var getTrackerItemNode = function (tracker, checked) {
+                var classList = ['item'];
+                if (checked) {
+                    classList.push('item__selected');
+                }
                 return dom.el('div', {
-                    class: 'item',
+                    class: classList,
                     data: {
                         id: tracker.id
                     },
@@ -192,6 +196,18 @@ define([
                 });
             };
 
+            var trackerSetChecked = function (checked) {
+                this.checked = checked;
+                var checkboxNode = this.node.querySelector('.item__checkbox input');
+                if (checked) {
+                    this.node.classList.add('item__selected');
+                    checkboxNode.checked = true;
+                } else {
+                    this.node.classList.remove('item__selected');
+                    checkboxNode.checked = false;
+                }
+            };
+
             var getTrackerList = function () {
                 var removedTrackerIds = [];
                 var trackerIdItem = {};
@@ -225,6 +241,7 @@ define([
                             }
                             var trackerItem = {
                                 id: tracker.id,
+                                setChecked: trackerSetChecked,
                                 checked: true,
                                 node: getTrackerItemNode(tracker, true),
                                 refresh: trackerRefresh,
@@ -238,6 +255,7 @@ define([
                             if (!trackerIdItem[tracker.id]) {
                                 var trackerItem = {
                                     id: tracker.id,
+                                    setChecked: trackerSetChecked,
                                     checked: false,
                                     node: getTrackerItemNode(tracker, false),
                                     refresh: trackerRefresh,
@@ -292,13 +310,11 @@ define([
                                 });
                             } else
                             if (target.type === 'checkbox' && target.parentNode.classList.contains('item__checkbox')) {
-                                trackerItem.checked = target.checked;
+                                trackerItem.setChecked(target.checked);
                             } else
                             if (target.classList.contains('item') || target.classList.contains('item__name')) {
                                 e.preventDefault();
-                                var checkboxNode = trackerItem.node.querySelector('.item__checkbox input');
-                                trackerItem.checked = !trackerItem.checked;
-                                checkboxNode.checked = trackerItem.checked;
+                                trackerItem.setChecked(!trackerItem.checked);
                             }
                         }
                     }]
