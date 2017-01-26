@@ -101,7 +101,7 @@ define([
             var profileNameNode = null;
 
             blankObj.bodyNode.appendChild(dom.el('div', {
-                class: 'manager__sub_header',
+                class: ['manager__sub_header', 'sub_header__profile'],
                 append: [
                     dom.el('div', {
                         class: ['profile__input'],
@@ -110,6 +110,57 @@ define([
                                 class: ['input__input'],
                                 type: 'text',
                                 value: profile.name
+                            })
+                        ]
+                    })
+                ]
+            }));
+
+            blankObj.bodyNode.appendChild(dom.el('div', {
+                class: ['manager__sub_header', 'sub_header__filter'],
+                append: [
+                    dom.el('a', {
+                        class: ['filter__item', 'item__selected'],
+                        href: '#all',
+                        append: [
+                            'All',
+                            ' ',
+                            dom.el('span', {
+                                class: ['item__count'],
+                                text: '0'
+                            })
+                        ]
+                    }),
+                    dom.el('a', {
+                        class: ['filter__item'],
+                        href: '#all',
+                        append: [
+                            'Without list',
+                            ' ',
+                            dom.el('span', {
+                                class: ['item__count'],
+                                text: '0'
+                            })
+                        ]
+                    }),
+                    dom.el('a', {
+                        class: ['filter__item'],
+                        href: '#selected',
+                        append: [
+                            'Selected',
+                            ' ',
+                            dom.el('span', {
+                                class: ['item__count'],
+                                text: '0'
+                            })
+                        ]
+                    }),
+                    dom.el('div', {
+                        class: ['filter__search'],
+                        append: [
+                            dom.el('input', {
+                                class: ['input__input'],
+                                type: 'text'
                             })
                         ]
                     })

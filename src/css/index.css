@@ -676,6 +676,38 @@ a.tracker {
     flex-direction: row;
 }
 
+.manager .sub_header__profile {
+    height: 36px;
+}
+
+.manager .sub_header__filter {
+    height: 36px;
+    justify-content: space-between;
+    border-top: 1px dashed #ccc;
+}
+
+.manager .filter__item {
+    font-weight: bolder;
+    font-size: 12px;
+    padding: 2px 5px;
+    text-decoration: none;
+    border-radius: 3px;
+    color: #000;
+}
+
+.manager .filter__item .item__count {
+    color: #949494;
+}
+
+.manager .filter__item.item__selected {
+    background-color: #337AF8;
+    color: #fff;
+}
+
+.manager .filter__item.item__selected .item__count {
+    color: #fff;
+}
+
 .manager__profile .profile__input {
     flex-grow: 1;
 }
