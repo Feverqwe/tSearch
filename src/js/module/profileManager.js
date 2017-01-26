@@ -197,8 +197,7 @@ define([
                 var trackerIdItem = {};
 
                 var trackerRefresh = function () {
-                    var _this = this;
-                    var newTracker = trackers[_this.id];
+                    var newTracker = trackers[this.id];
                     var newNode = getTrackerItemNode(newTracker, this.checked);
                     this.node.parentNode.replaceChild(newNode, this.node);
                     this.node = newNode;
