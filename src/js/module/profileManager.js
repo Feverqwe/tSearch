@@ -456,36 +456,68 @@ define([
                 });
             };
 
-            var profilesNode = dom.el('div', {
-                class: 'manager__profiles',
-                append: (function () {
-                    var list = [];
-                    profiles.forEach(function (/**profile*/profile) {
-                        list.push(getProfileItemNode(profile))
-                    });
-                    return list;
-                })(),
-                on: ['click', function (e) {
-                    var target = e.target;
-                    var profileId, profile = null;
-                    if (target.dataset.action === 'edit') {
-                        e.preventDefault();
-                        profileId = target.parentNode.dataset.id;
-                        profiles.some(function (_profile) {
-                            if (_profile.id == profileId) {
-                                profile = _profile;
-                            }
+            var getProfileList = function () {
+                var node = dom.el('div', {
+                    class: 'manager__profiles',
+                    append: (function () {
+                        var list = [];
+                        profiles.forEach(function (/**profile*/profile) {
+                            list.push(getProfileItemNode(profile))
                         });
-                        blankObj.replace(getProfileEditor(profile));
-                    } else
-                    if (target.dataset.action === 'remove') {
-                        e.preventDefault();
-                        var profileNode = target.parentNode;
-                        profileNode.parentNode.removeChild(profileNode);
+                        return list;
+                    })(),
+                    on: ['click', function (e) {
+                        var target = e.target;
+                        var profileId, profile = null;
+                        if (target.dataset.action === 'edit') {
+                            e.preventDefault();
+                            profileId = target.parentNode.dataset.id;
+                            profiles.some(function (_profile) {
+                                if (_profile.id == profileId) {
+                                    profile = _profile;
+                                }
+                            });
+                            blankObj.replace(getProfileEditor(profile));
+                        } else
+                        if (target.dataset.action === 'remove') {
+                            e.preventDefault();
+                            var profileNode = target.parentNode;
+                            profileNode.parentNode.removeChild(profileNode);
+                        }
+                    }]
+                });
+
+                require(['jquery'], function () {
+                    require(['jqueryUi'], function () {
+                        var $node = $(node);
+                        $node.sortable({
+                            axis: 'y',
+                            handle: '.item__move',
+                            scroll: false
+                        });
+                    });
+                });
+
+                return {
+                    node: node,
+                    getProfiles: function () {
+                        var profileIdMap = {};
+                        profiles.forEach(function (profile) {
+                            profileIdMap[profile.id] = profile;
+                        });
+
+                        var newProfiles = [];
+                        [].slice.call(node.childNodes).forEach(function (profileNode) {
+                            var id = profileNode.dataset.id;
+                            newProfiles.push(profileIdMap[id]);
+                        });
+                        return newProfiles;
                     }
-                }]
-            });
-            blankObj.bodyNode.appendChild(profilesNode);
+                };
+            };
+
+            var profilesList = getProfileList();
+            blankObj.bodyNode.appendChild(profilesList.node);
 
             blankObj.footerNode.appendChild(dom.el('a', {
                 href: '#save',
@@ -494,16 +526,7 @@ define([
                 on: ['click', function (e) {
                     e.preventDefault();
 
-                    var profileIdMap = {};
-                    profiles.forEach(function (profile) {
-                        profileIdMap[profile.id] = profile;
-                    });
-
-                    var newProfiles = [];
-                    [].slice.call(profilesNode.childNodes).forEach(function (profileNode) {
-                        var id = profileNode.dataset.id;
-                        newProfiles.push(profileIdMap[id]);
-                    });
+                    var newProfiles = profilesList.getProfiles();
 
                     chrome.storage.local.set({
                         profiles: newProfiles
@@ -515,15 +538,22 @@ define([
                 }]
             }));
 
-            require(['jquery'], function () {
-                require(['jqueryUi'], function () {
-                    var $profilesNode = $(profilesNode);
-                    $profilesNode.sortable({
-                        axis: 'y',
-                        handle: '.item__move',
-                        scroll: false
-                    });
-                });
+            var refreshProfileList = function () {
+                var newProfilesList = getProfileList();
+                blankObj.bodyNode.replaceChild(newProfilesList.node, profilesList.node);
+                profilesList = newProfilesList;
+            };
+
+            ee.on('profileRemoved', refreshProfileList);
+            ee.on('profileInsert', refreshProfileList);
+            ee.on('profilesSortChange', refreshProfileList);
+            ee.on('profileFieldChange', refreshProfileList);
+
+            blankObj.onDestroy(function () {
+                ee.off('profileRemoved', refreshProfileList);
+                ee.off('profileInsert', refreshProfileList);
+                ee.off('profilesSortChange', refreshProfileList);
+                ee.off('profileFieldChange', refreshProfileList);
             });
 
             return blankObj;
