@@ -159,6 +159,21 @@ define([
                                     filterNode.classList.remove('item__selected');
                                     filterNode = node;
                                     node.classList.add('item__selected');
+                                    [].slice.call(trackersList.node.childNodes).forEach(function (trackerNode) {
+                                        var id = trackerNode.dataset.id;
+                                        var trackerItem = trackersList.trackerIdItem[id];
+                                        if (self.isFiltered(trackerItem)) {
+                                            if (!trackerItem.filtered) {
+                                                trackerItem.filtered = true;
+                                                trackerItem.node.classList.add('item__filtered');
+                                            }
+                                        } else {
+                                            if (trackerItem.filtered) {
+                                                trackerItem.filtered = false;
+                                                trackerItem.node.classList.remove('item__filtered');
+                                            }
+                                        }
+                                    });
                                 }
                             }]
                         }),
@@ -174,6 +189,63 @@ define([
                         })
                     ]
                 });
+                /**
+                 * @param {string} [type]
+                 * @param {object} trackerItem
+                 * @returns {boolean}
+                 */
+                this.isFiltered = function (type, trackerItem) {
+                    if (!trackerItem) {
+                        trackerItem = type;
+                        type = self.type;
+                    }
+                    if (type === 'all') {
+                        return false;
+                    } else
+                    if (type === 'selected') {
+                        return !trackerItem.checked;
+                    } else
+                    if (type === 'withoutList') {
+                        return profiles.some(function (/**profile*/_profile) {
+                            if (_profile !== profile) {
+                                return _profile.trackers.some(function (item) {
+                                    return item.id === trackerItem.id;
+                                });
+                            } else {
+                                return trackerItem.checked;
+                            }
+                        });
+                    }
+                };
+                /**
+                 * @param {[]} [nodes]
+                 * @param {{}} [trackerIdItem]
+                 */
+                this.updateCount = function (nodes, trackerIdItem) {
+                    if (!nodes) {
+                        nodes = [].slice.call(trackersList.node.childNodes);
+                        trackerIdItem = trackersList.trackerIdItem
+                    }
+                    var all = 0;
+                    var selected = 0;
+                    var withoutList = 0;
+                    nodes.forEach(function (trackerNode) {
+                        var id = trackerNode.dataset.id;
+                        var trackerItem = trackerIdItem[id];
+                        if (!trackerItem.removed) {
+                            all++;
+                            if (!self.isFiltered('selected', trackerItem)) {
+                                selected++;
+                            }
+                            if (!self.isFiltered('withoutList', trackerItem)) {
+                                withoutList++;
+                            }
+                        }
+                    });
+                    self.typeItemObj.all.count.textContent = all;
+                    self.typeItemObj.selected.count.textContent = selected;
+                    self.typeItemObj.withoutList.count.textContent = withoutList;
+                };
             };
             var mgrFilter = new MgrFilter();
             blankObj.bodyNode.appendChild(mgrFilter.node);
@@ -268,25 +340,32 @@ define([
                     this.node.classList.remove('item__selected');
                     checkboxNode.checked = false;
                 }
+
+                mgrFilter.updateCount();
+            };
+
+            var trackerRefresh = function () {
+                var newTracker = trackers[this.id];
+                var newNode = getTrackerItemNode(newTracker, this.checked);
+                var parent = this.node.parentNode;
+                if (parent) {
+                    parent.replaceChild(newNode, this.node);
+                }
+                this.node = newNode;
+            };
+
+            var trackerRemove = function () {
+                var parent = this.node.parentNode;
+                if (parent) {
+                    parent.removeChild(this.node);
+                }
+                this.removed = true;
+
+                mgrFilter.updateCount();
             };
 
             var getTrackerList = function () {
-                var removedTrackerIds = [];
                 var trackerIdItem = {};
-
-                var trackerRefresh = function () {
-                    var newTracker = trackers[this.id];
-                    var newNode = getTrackerItemNode(newTracker, this.checked);
-                    this.node.parentNode.replaceChild(newNode, this.node);
-                    this.node = newNode;
-                };
-
-                var trackerRemove = function () {
-                    var parent = this.node.parentNode;
-                    if (parent) {
-                        parent.removeChild(this.node);
-                    }
-                };
 
                 var node = dom.el('div', {
                     class: 'manager__trackers',
@@ -307,8 +386,13 @@ define([
                                 checked: true,
                                 node: getTrackerItemNode(tracker, true),
                                 refresh: trackerRefresh,
-                                remove: trackerRemove
+                                remove: trackerRemove,
+                                removed: false
                             };
+                            trackerItem.filtered = mgrFilter.isFiltered(trackerItem);
+                            if (trackerItem.filtered) {
+                                trackerItem.node.classList.add('item__filtered');
+                            }
                             trackerIdItem[trackerItem.id] = trackerItem;
                             list.push(trackerItem.node);
                         });
@@ -321,12 +405,20 @@ define([
                                     checked: false,
                                     node: getTrackerItemNode(tracker, false),
                                     refresh: trackerRefresh,
-                                    remove: trackerRemove
+                                    remove: trackerRemove,
+                                    removed: false
                                 };
+                                trackerItem.filtered = mgrFilter.isFiltered(trackerItem);
+                                if (trackerItem.filtered) {
+                                    trackerItem.node.classList.add('item__filtered');
+                                }
                                 trackerIdItem[trackerItem.id] = trackerItem;
                                 list.push(trackerItem.node);
                             }
                         });
+
+                        mgrFilter.updateCount(list, trackerIdItem);
+
                         return list;
                     })(),
                     on: ['click', function (e) {
@@ -345,9 +437,7 @@ define([
                             } else
                             if (target.dataset.action === 'remove') {
                                 e.preventDefault();
-                                var trackerNode = target.parentNode;
-                                trackerNode.parentNode.removeChild(trackerNode);
-                                removedTrackerIds.push(trackerId);
+                                trackerItem.remove();
                             } else
                             if (target.dataset.action === 'update') {
                                 e.preventDefault();
@@ -375,7 +465,6 @@ define([
                                 trackerItem.setChecked(target.checked);
                             } else
                             if (target.classList.contains('item') || target.classList.contains('item__name')) {
-                                e.preventDefault();
                                 trackerItem.setChecked(!trackerItem.checked);
                             }
                         }
@@ -395,6 +484,7 @@ define([
 
                 return {
                     node: node,
+                    trackerIdItem: trackerIdItem,
                     refreshTracker: function (id) {
                         trackerIdItem[id].refresh();
                     },
@@ -403,8 +493,10 @@ define([
                     },
                     getTrackers: function () {
                         var cloneTrackers = utils.clone(trackers);
-                        removedTrackerIds.forEach(function (id) {
-                            delete cloneTrackers[id];
+                        Object.keys(trackerIdItem).forEach(function (trackerItem) {
+                            if (trackerItem.removed) {
+                                delete cloneTrackers[trackerItem.id];
+                            }
                         });
                         return cloneTrackers;
                     },
@@ -420,46 +512,6 @@ define([
                             }
                         });
                         return profileTrackers;
-                    },
-                    updateFilter: function () {
-                        var type = mgrFilter.type;
-                        var all = 0;
-                        var withoutCategory = 0;
-                        var selected = 0;
-                        [].slice.call(node.childNodes).forEach(function (trackerNode) {
-                            var id = trackerNode.dataset.id;
-                            var trackerItem = trackerIdItem[id];
-                            trackerItem.filtered = true;
-                            all++;
-                            if (type === 'all') {
-                                trackerItem.filtered = false;
-                            }
-                            if (trackerItem.checked) {
-                                selected++;
-                                if (type === 'selected') {
-                                    trackerItem.filtered = false;
-                                }
-                            }
-                            var inCategory = profiles.some(function (/**profile*/profile) {
-                                return profile.trackers.some(function (item) {
-                                    return item.id === id;
-                                });
-                            });
-                            if (!inCategory) {
-                                withoutCategory++;
-                                if (type === 'withoutList') {
-                                    trackerItem.filtered = false;
-                                }
-                            }
-                            if (trackerItem.filtered) {
-                                trackerItem.node.classList.add('item__filtered')
-                            } else {
-                                trackerItem.node.classList.remove('item__filtered')
-                            }
-                        });
-                        mgrFilter.typeItemObj.all.count.textContent = all;
-                        mgrFilter.typeItemObj.selected.count.textContent = selected;
-                        mgrFilter.typeItemObj.withoutList.count.textContent = withoutCategory;
                     }
                 }
             };
