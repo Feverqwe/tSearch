@@ -229,9 +229,14 @@ define([
                     } else
                     if (type === 'search') {
                         if (!trackerItem.searchCache) {
-                            var tracker = trackers[trackerItem.id];
+                            var tracker = trackers[trackerItem.id] || {
+                                id: trackerItem.id,
+                                meta: {},
+                                info: {}
+                            };
                             var meta = tracker.meta;
                             trackerItem.searchCache = [
+                                meta.id,
                                 meta.name,
                                 meta.author,
                                 meta.description,
