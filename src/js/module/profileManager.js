@@ -733,7 +733,10 @@ define([
                     }
                 });
                 var newNode = getProfileItemNode(newProfile);
-                this.node.parentNode.replaceChild(newNode, this.node);
+                var parent = this.node.parentNode;
+                if (parent) {
+                    parent.replaceChild(newNode, this.node);
+                }
                 this.node = newNode;
             };
 
@@ -770,8 +773,8 @@ define([
                         } else
                         if (target.dataset.action === 'remove') {
                             e.preventDefault();
-                            var profileNode = target.parentNode;
-                            profileNode.parentNode.removeChild(profileNode);
+                            profileId = target.parentNode.dataset.id;
+                            profileIdItem[profileId].remove();
                         }
                     }]
                 });
