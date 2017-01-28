@@ -119,6 +119,27 @@ define([
             var MgrFilter = function () {
                 var self = this;
                 var filterNode = null;
+                var searchText = '';
+
+                var setFilter = function (type) {
+                    [].slice.call(trackersList.node.childNodes).forEach(function (trackerNode) {
+                        var id = trackerNode.dataset.id;
+                        var trackerItem = trackersList.trackerIdItem[id];
+                        if (self.isFiltered(type, trackerItem)) {
+                            if (!trackerItem.filtered) {
+                                trackerItem.filtered = true;
+                                trackerItem.node.classList.add('item__filtered');
+                            }
+                        } else {
+                            if (trackerItem.filtered) {
+                                trackerItem.filtered = false;
+                                trackerItem.node.classList.remove('item__filtered');
+                            }
+                        }
+                    });
+                };
+
+                var setFilterThrottle = utils.throttle(setFilter, 150);
 
                 this.type = 'selected';
                 this.typeItemObj = {};
@@ -159,21 +180,7 @@ define([
                                     filterNode.classList.remove('item__selected');
                                     filterNode = node;
                                     node.classList.add('item__selected');
-                                    [].slice.call(trackersList.node.childNodes).forEach(function (trackerNode) {
-                                        var id = trackerNode.dataset.id;
-                                        var trackerItem = trackersList.trackerIdItem[id];
-                                        if (self.isFiltered(trackerItem)) {
-                                            if (!trackerItem.filtered) {
-                                                trackerItem.filtered = true;
-                                                trackerItem.node.classList.add('item__filtered');
-                                            }
-                                        } else {
-                                            if (trackerItem.filtered) {
-                                                trackerItem.filtered = false;
-                                                trackerItem.node.classList.remove('item__filtered');
-                                            }
-                                        }
-                                    });
+                                    setFilter(self.type);
                                 }
                             }]
                         }),
@@ -183,7 +190,11 @@ define([
                                 dom.el('input', {
                                     class: ['input__input', 'filter__input'],
                                     type: 'text',
-                                    placeholder: chrome.i18n.getMessage('quickSearch')
+                                    placeholder: chrome.i18n.getMessage('quickSearch'),
+                                    on: ['keyup', function (e) {
+                                        searchText = this.value.toLowerCase();
+                                        setFilterThrottle('search');
+                                    }]
                                 })
                             ]
                         })
@@ -215,6 +226,27 @@ define([
                                 return trackerItem.checked;
                             }
                         });
+                    } else
+                    if (type === 'search') {
+                        if (!trackerItem.searchCache) {
+                            var tracker = trackers[trackerItem.id];
+                            var meta = tracker.meta;
+                            trackerItem.searchCache = [
+                                meta.name,
+                                meta.author,
+                                meta.description,
+                                meta.homepageURL,
+                                meta.trackerURL,
+                                meta.updateURL,
+                                meta.downloadURL,
+                                meta.supportURL
+                            ].join(' ').toLowerCase();
+                        }
+                        if (trackerItem.searchCache.indexOf(searchText) !== -1) {
+                            return false;
+                        } else {
+                            return true;
+                        }
                     }
                 };
                 /**
@@ -224,7 +256,7 @@ define([
                 this.updateCount = function (nodes, trackerIdItem) {
                     if (!nodes) {
                         nodes = [].slice.call(trackersList.node.childNodes);
-                        trackerIdItem = trackersList.trackerIdItem
+                        trackerIdItem = trackersList.trackerIdItem;
                     }
                     var all = 0;
                     var selected = 0;
@@ -387,7 +419,8 @@ define([
                                 node: getTrackerItemNode(tracker, true),
                                 refresh: trackerRefresh,
                                 remove: trackerRemove,
-                                removed: false
+                                removed: false,
+                                searchCache: ''
                             };
                             trackerItem.filtered = mgrFilter.isFiltered(trackerItem);
                             if (trackerItem.filtered) {
@@ -406,7 +439,8 @@ define([
                                     node: getTrackerItemNode(tracker, false),
                                     refresh: trackerRefresh,
                                     remove: trackerRemove,
-                                    removed: false
+                                    removed: false,
+                                    searchCache: ''
                                 };
                                 trackerItem.filtered = mgrFilter.isFiltered(trackerItem);
                                 if (trackerItem.filtered) {
