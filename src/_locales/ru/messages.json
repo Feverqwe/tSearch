@@ -278,9 +278,6 @@
   "filter_selected": {
     "message": "Выбранные"
   },
-  "select_count": {
-    "message": "Выбрано элементов"
-  },
   "historyEmpty": {
     "message": "Здесь пусто, пока..."
   },

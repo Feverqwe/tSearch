@@ -278,9 +278,6 @@
     "filter_selected": {
         "message": "Selected"
     },
-    "select_count": {
-        "message": "Selected items"
-    },
     "historyEmpty": {
         "message": "Here empty, yet..."
     },
