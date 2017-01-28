@@ -116,17 +116,20 @@ define([
                 ]
             }));
 
-            var getFilter = function () {
-                var result = {};
-                result.counter = {};
-                result.filter = {};
-                result.node = dom.el('div', {
+            var MgrFilter = function () {
+                var self = this;
+                var filterNode = null;
+
+                this.type = 'selected';
+                this.typeItemObj = {};
+                this.node = dom.el('div', {
                     class: ['manager__sub_header', 'sub_header__filter'],
                     append: [
                         dom.el('div', {
                             class: ['filter__box'],
                             append: ['all', 'withoutList', 'selected'].map(function (type) {
-                                return result.filter[type] = dom.el('a', {
+                                var itemObj = {};
+                                var node = itemObj.node = dom.el('a', {
                                     class: ['filter__item'],
                                     href: '#' + type,
                                     data: {
@@ -135,22 +138,27 @@ define([
                                     append: [
                                         chrome.i18n.getMessage('filter_' + type),
                                         ' ',
-                                        result.counter[type] = dom.el('span', {
+                                        itemObj.count = dom.el('span', {
                                             class: ['item__count'],
                                             text: '0'
                                         })
                                     ]
                                 });
+                                if (self.type === type) {
+                                  node.classList.add('item__selected');
+                                  filterNode = node;
+                                }
+                                self.typeItemObj[type] = itemObj;
+                                return node;
                             }),
                             on: ['click', function (e) {
                                 e.preventDefault();
                                 var node = dom.closestNode(this, e.target);
                                 if (node) {
-                                    result.type = node.dataset.type;
-                                    result.filterNode && result.filterNode.classList.remove('item__selected');
+                                    self.type = node.dataset.type;
+                                    filterNode.classList.remove('item__selected');
+                                    filterNode = node;
                                     node.classList.add('item__selected');
-                                    result.filterNode = node;
-                                    trackersList && trackersList.updateFilter();
                                 }
                             }]
                         }),
@@ -166,11 +174,9 @@ define([
                         })
                     ]
                 });
-                result.node.querySelector('[data-type="selected"]').dispatchEvent(new MouseEvent('click', {cancelable: true, bubbles: true}));
-                return result;
             };
-            var filterObj = getFilter();
-            blankObj.bodyNode.appendChild(filterObj.node);
+            var mgrFilter = new MgrFilter();
+            blankObj.bodyNode.appendChild(mgrFilter.node);
 
             var getTrackerItemNode = function (tracker, checked) {
                 var classList = ['item'];
@@ -387,49 +393,6 @@ define([
                     });
                 });
 
-                var updateFilter = function () {
-                    var type = filterObj.type;
-                    var all = 0;
-                    var withoutCategory = 0;
-                    var selected = 0;
-                    [].slice.call(node.childNodes).forEach(function (trackerNode) {
-                        var id = trackerNode.dataset.id;
-                        var trackerItem = trackerIdItem[id];
-                        trackerItem.filtered = true;
-                        all++;
-                        if (type === 'all') {
-                            trackerItem.filtered = false;
-                        }
-                        if (trackerItem.checked) {
-                            selected++;
-                            if (type === 'selected') {
-                                trackerItem.filtered = false;
-                            }
-                        }
-                        var inCategory = profiles.some(function (/**profile*/profile) {
-                            return profile.trackers.some(function (item) {
-                                return item.id === id;
-                            });
-                        });
-                        if (!inCategory) {
-                            withoutCategory++;
-                            if (type === 'withoutList') {
-                                trackerItem.filtered = false;
-                            }
-                        }
-                        if (trackerItem.filtered) {
-                            trackerItem.node.classList.add('item__filtered')
-                        } else {
-                            trackerItem.node.classList.remove('item__filtered')
-                        }
-                    });
-                    filterObj.counter.all.textContent = all;
-                    filterObj.counter.selected.textContent = selected;
-                    filterObj.counter.withoutList.textContent = withoutCategory;
-                };
-
-                updateFilter();
-                
                 return {
                     node: node,
                     refreshTracker: function (id) {
@@ -458,7 +421,46 @@ define([
                         });
                         return profileTrackers;
                     },
-                    updateFilter: updateFilter
+                    updateFilter: function () {
+                        var type = mgrFilter.type;
+                        var all = 0;
+                        var withoutCategory = 0;
+                        var selected = 0;
+                        [].slice.call(node.childNodes).forEach(function (trackerNode) {
+                            var id = trackerNode.dataset.id;
+                            var trackerItem = trackerIdItem[id];
+                            trackerItem.filtered = true;
+                            all++;
+                            if (type === 'all') {
+                                trackerItem.filtered = false;
+                            }
+                            if (trackerItem.checked) {
+                                selected++;
+                                if (type === 'selected') {
+                                    trackerItem.filtered = false;
+                                }
+                            }
+                            var inCategory = profiles.some(function (/**profile*/profile) {
+                                return profile.trackers.some(function (item) {
+                                    return item.id === id;
+                                });
+                            });
+                            if (!inCategory) {
+                                withoutCategory++;
+                                if (type === 'withoutList') {
+                                    trackerItem.filtered = false;
+                                }
+                            }
+                            if (trackerItem.filtered) {
+                                trackerItem.node.classList.add('item__filtered')
+                            } else {
+                                trackerItem.node.classList.remove('item__filtered')
+                            }
+                        });
+                        mgrFilter.typeItemObj.all.count.textContent = all;
+                        mgrFilter.typeItemObj.selected.count.textContent = selected;
+                        mgrFilter.typeItemObj.withoutList.count.textContent = withoutCategory;
+                    }
                 }
             };
             var trackersList = getTrackerList();
