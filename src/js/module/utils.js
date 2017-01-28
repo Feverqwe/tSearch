@@ -285,13 +285,14 @@ define(function () {
         var timer = null;
         return function () {
             clearTimeout(timer);
+            var args = arguments;
             var now = Date.now();
             if (now - lastTime > time) {
                 lastTime = now;
-                fn.apply(null, arguments);
+                fn.apply(null, args);
             } else {
                 timer = setTimeout(function () {
-                    fn.apply(null, arguments);
+                    fn.apply(null, args);
                 }, time);
             }
         };
