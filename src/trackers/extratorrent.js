@@ -7,7 +7,7 @@
 // @connect *://extratorrent.cc/*
 // @require exKit
 // @require https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js
-// @version 1.0.1
+// @version 1.0.2
 // ==/UserScript==
 
 API_exKit({
@@ -59,14 +59,14 @@ API_exKit({
             var ll = '', dd = content;
             var l1 = 'le', ss = '.ten';
             var lI = JSON.parse(dd);
-            var l1l = (($dom.find(ss + '_artic' + l1 + 's li a')[0] + '').split(l1 + '/')[1] + '').split('/')[0];
+            var l1l = (($dom.find(ss + '_artic' + l1 + 's li a')[3] + '').split(l1 + '/')[1] + '').split('/')[0];
             var ff = 0;
             var l1I = 0;
             var jj = l1l;
 
             var CryptoJSAesJson={stringify:function(a){var j={ct:a.ciphertext.toString(CryptoJS.enc.Base64)};if(a.iv)j.iv=a.iv.toString();if(a.salt)j.s=a.salt.toString();return JSON.stringify(j)},parse:function(a){var j=JSON.parse(a);var b=CryptoJS.lib.CipherParams.create({ciphertext:CryptoJS.enc.Base64.parse(j.ct)});if(j.iv)b.iv=CryptoJS.enc.Hex.parse(j.iv);if(j.s)b.salt=CryptoJS.enc.Hex.parse(j.s);return b}};
 
-            var zx = JSON.parse(CryptoJS.AES.decrypt(dd, lI.s[1] + ll + ff + ff + l1I + jj + lI.s[5], {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8));
+            var zx = JSON.parse(CryptoJS.AES.decrypt(dd, lI.s[5] + ll + ff + ff + l1I + jj + lI.s[2], {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8));
 
             eContent.html(exKit.contentFilter(zx));
         },
