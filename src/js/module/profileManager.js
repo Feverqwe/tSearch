@@ -220,10 +220,16 @@ define([
                                     class: ['input__input', 'filter__input'],
                                     type: 'text',
                                     placeholder: chrome.i18n.getMessage('quickSearch'),
-                                    on: ['keyup', function (e) {
-                                        searchText = this.value.toLowerCase();
-                                        setFilterThrottle('search');
-                                    }]
+                                    on: [
+                                        ['keyup', function (e) {
+                                            searchText = this.value.toLowerCase();
+                                            setFilterThrottle('search');
+                                        }],
+                                        ['dblclick', function () {
+                                            this.value = searchText = '';
+                                            setFilterThrottle('search');
+                                        }]
+                                    ]
                                 })
                             ]
                         })
