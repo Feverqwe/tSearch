@@ -614,6 +614,7 @@ define([
                                 trackers: cloneTrackers
                             }, function () {
                                 syncProfiles(cloneProfiles, function () {
+                                    ee.trigger('selectProfileById', [profile.id]);
                                     blankObj.destroy();
                                 });
                             });

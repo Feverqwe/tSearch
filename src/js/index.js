@@ -894,6 +894,7 @@ require([
             }
 
             chrome.storage.onChanged.addListener(function(changes, areaName) {
+                var DEBUG = false;
                 var history = storage.history;
                 var changeHistory = changes.history;
                 if (changeHistory) {
@@ -910,7 +911,7 @@ require([
 
                     diff.removed.forEach(function (id) {
                         delete trackers[id];
-                        // console.debug('trackerRemoved', id);
+                        DEBUG && console.debug('trackerRemoved', id);
                         ee.trigger('trackerRemoved', [id]);
                     });
 
@@ -924,14 +925,14 @@ require([
                         });
 
                         if (diff.modified.length) {
-                            // console.debug('trackerChange', id, diff.modified);
+                            DEBUG && console.debug('trackerChange', id, diff.modified);
                             ee.trigger('trackerChange', [id, diff.modified]);
                         }
                     });
 
                     diff.new.forEach(function (id) {
                         trackers[id] = newTrackers[id];
-                        // console.debug('trackerInsert', id);
+                        DEBUG && console.debug('trackerInsert', id);
                         ee.trigger('trackerInsert', [id]);
                     });
                 }
@@ -954,7 +955,7 @@ require([
                         if (newPos === -1) {
                             oldProfileIds.splice(oldPos, 1);
                             var profile = profiles.splice(oldPos, 1)[0];
-                            // console.debug('profileRemoved', profile.id);
+                            DEBUG && console.debug('profileRemoved', profile.id);
                             ee.trigger('profileRemoved', [profile.id]);
                         }
                     });
@@ -965,7 +966,7 @@ require([
                         if (oldPos === -1) {
                             oldProfileIds.splice(newPos, 1, newStaticItem);
                             profiles.splice(newPos, 1, newItem);
-                            // console.debug('profileInsert', newItem.id);
+                            DEBUG && console.debug('profileInsert', newItem.id);
                             ee.trigger('profileInsert', [newItem.id]);
                         } else
                         if (oldPos !== newPos) {
@@ -973,7 +974,7 @@ require([
                             oldProfileIds.splice(newPos, 0, newStaticItem);
                             profiles.splice(oldPos, 1);
                             profiles.splice(newPos, 0, newItem);
-                            // console.debug('profilesSortChange');
+                            DEBUG && console.debug('profilesSortChange');
                             ee.trigger('profilesSortChange');
                         }
                     });
@@ -985,7 +986,7 @@ require([
                             profile[key] = newProfile[key];
                         });
                         if (diff.modified.length) {
-                            // console.debug('profileFieldChange', profile.id, diff.modified);
+                            DEBUG && console.debug('profileFieldChange', profile.id, diff.modified);
                             ee.trigger('profileFieldChange', [profile.id, diff.modified]);
                         }
                     });
