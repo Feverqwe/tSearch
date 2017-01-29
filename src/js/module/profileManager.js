@@ -551,7 +551,8 @@ define([
                     },
                     getTrackers: function () {
                         var cloneTrackers = utils.clone(trackers);
-                        Object.keys(trackerIdItem).forEach(function (trackerItem) {
+                        Object.keys(trackerIdItem).forEach(function (key) {
+                            var trackerItem = trackerIdItem[key];
                             if (trackerItem.removed) {
                                 delete cloneTrackers[trackerItem.id];
                             }
