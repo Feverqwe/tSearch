@@ -353,11 +353,11 @@ define([
                             text: tracker.meta.name || tracker.id
                         }),
                         dom.el('div', {
-                                class: 'item__version',
+                                class: ['item__cell', 'item__version'],
                                 text: tracker.meta.version || ''
                             }),
                         (!tracker.meta.updateURL && !tracker.meta.downloadURL) ? '' : dom.el('a', {
-                                class: ['item__update', 'item__button', 'button-update'],
+                                class: ['item__cell', 'item__button', 'button-update'],
                                 href: '#update',
                                 data: {
                                     action: 'update'
@@ -365,21 +365,21 @@ define([
                                 title: chrome.i18n.getMessage('update')
                             }),
                         !tracker.meta.supportURL ? '' : dom.el('a', {
-                                class: ['item__homepage', 'item__button', 'button-support'],
+                                class: ['item__cell', 'item__button', 'button-support'],
                                 target: '_blank',
                                 href: tracker.meta.supportURL
                             }),
                         !tracker.meta.homepageURL ? '' : dom.el('a', {
-                                class: ['item__homepage', 'item__button', 'button-home'],
+                                class: ['item__cell', 'item__button', 'button-home'],
                                 target: '_blank',
                                 href: tracker.meta.homepageURL
                             }),
                         !tracker.meta.author ? '' : dom.el('div', {
-                                class: 'item__author',
+                                class: ['item__cell', 'item__author'],
                                 text: tracker.meta.author
                             }),
                         dom.el('a', {
-                            class: ['item__action', 'item__button', 'button-edit'],
+                            class: ['item__cell', 'item__button', 'button-edit'],
                             href: '#edit',
                             data: {
                                 action: 'edit'
@@ -387,7 +387,7 @@ define([
                             title: chrome.i18n.getMessage('edit')
                         }),
                         dom.el('a', {
-                            class: ['item__action', 'item__button', 'button-remove'],
+                            class: ['item__cell', 'item__button', 'button-remove'],
                             href: '#remove',
                             data: {
                                 action: 'remove'
@@ -749,7 +749,7 @@ define([
                             text: profile.name
                         }),
                         dom.el('a', {
-                            class: ['item__action', 'item__button', 'button-edit'],
+                            class: ['item__cell', 'item__button', 'button-edit'],
                             href: '#edit',
                             data: {
                                 action: 'edit'
@@ -757,7 +757,7 @@ define([
                             title: chrome.i18n.getMessage('edit')
                         }),
                         dom.el('a', {
-                            class: ['item__action', 'item__button', 'button-remove'],
+                            class: ['item__cell', 'item__button', 'button-remove'],
                             href: '#remove',
                             data: {
                                 action: 'remove'

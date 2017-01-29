@@ -626,23 +626,7 @@ a.tracker {
     opacity: 1;
 }
 
-.manager__trackers .item__author {
-    padding: 4px;
-}
-
-.manager__trackers .item__version {
-    padding: 4px;
-}
-
-.manager__trackers .item__update {
-    padding: 4px;
-}
-
-.manager__trackers .item__homepage {
-    padding: 4px;
-}
-
-.manager__trackers .item__support {
+.manager__trackers .item__cell {
     padding: 4px;
 }
 
@@ -772,10 +756,6 @@ a.tracker {
     flex-grow: 1;
     padding: 9px 8px;
     cursor: pointer;
-}
-
-.manager .item__action {
-    padding: 0 8px;
 }
 
 .table-results {
