@@ -340,7 +340,7 @@ define([
                             class: 'item__name',
                             text: tracker.meta.name || tracker.id
                         }),
-                        !tracker.meta.version ? '' : dom.el('div', {
+                        dom.el('div', {
                                 class: 'item__version',
                                 text: tracker.meta.version
                             }),
@@ -433,7 +433,9 @@ define([
                                 tracker = {
                                     id: profileTracker.id,
                                     meta: profileTracker.meta || {},
-                                    info: {}
+                                    info: {
+                                        virtual: true
+                                    }
                                 }
                             }
                             var trackerItem = {
@@ -444,7 +446,8 @@ define([
                                 refresh: trackerRefresh,
                                 remove: trackerRemove,
                                 removed: false,
-                                searchCache: ''
+                                searchCache: '',
+                                profileMeta: profileTracker.meta
                             };
                             trackerItem.filtered = mgrFilter.isFiltered(trackerItem);
                             if (trackerItem.filtered) {
@@ -464,7 +467,8 @@ define([
                                     refresh: trackerRefresh,
                                     remove: trackerRemove,
                                     removed: false,
-                                    searchCache: ''
+                                    searchCache: '',
+                                    profileMeta: null
                                 };
                                 trackerItem.filtered = mgrFilter.isFiltered(trackerItem);
                                 if (trackerItem.filtered) {
@@ -505,7 +509,8 @@ define([
                                 chrome.runtime.sendMessage({
                                     action: 'update',
                                     id: trackerId,
-                                    force: true
+                                    force: true,
+                                    profileMeta: trackerItem.profileMeta
                                 }, function (response) {
                                     if (!response.success) {
                                         versionNode.textContent = defText;
@@ -573,7 +578,6 @@ define([
                                     meta.homepageURL = tracker.meta.homepageURL;
                                     meta.updateURL = tracker.meta.updateURL;
                                     meta.downloadURL = tracker.meta.downloadURL;
-                                    meta.supportURL = tracker.meta.supportURL;
                                 }
 
                                 profileTrackers.push({

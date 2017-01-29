@@ -185,10 +185,27 @@ require([
             var id = message.id;
             var promiseList = [];
             var trackers = storage.trackers;
+            var found = false;
             for (var key in trackers) {
                 if ((!id && !trackers[key].info.disableAutoUpdate) || id === trackers[key].id) {
+                    found = true;
                     promiseList.push(updateTracker(trackers[key], message.force));
                 }
+            }
+            if (id && !found && message.profileMeta) {
+                var vTracker = {
+                    id: id,
+                    meta: message.profileMeta,
+                    info: {},
+                    code: ''
+                };
+                vTracker.meta.version = '0';
+                promiseList.push(updateTracker(vTracker, message.force).then(function (result) {
+                    if (result.success) {
+                        trackers[id] = vTracker;
+                    }
+                    return result;
+                }));
             }
 
             return Promise.all(promiseList).then(function (results) {
