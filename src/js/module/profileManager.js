@@ -142,18 +142,20 @@ define([
                 var searchText = '';
 
                 var setFilter = function (type) {
-                    [].slice.call(trackersList.node.childNodes).forEach(function (trackerNode) {
-                        var id = trackerNode.dataset.id;
-                        var trackerItem = trackersList.trackerIdItem[id];
-                        if (self.isFiltered(type, trackerItem)) {
-                            if (!trackerItem.filtered) {
-                                trackerItem.filtered = true;
-                                trackerItem.node.classList.add('item__filtered');
-                            }
-                        } else {
-                            if (trackerItem.filtered) {
-                                trackerItem.filtered = false;
-                                trackerItem.node.classList.remove('item__filtered');
+                    var trackerIdItem = trackersList.trackerIdItem;
+                    Object.keys(trackerIdItem).forEach(function (key) {
+                        var trackerItem = trackerIdItem[key];
+                        if (!trackerItem.removed) {
+                            if (self.isFiltered(type, trackerItem)) {
+                                if (!trackerItem.filtered) {
+                                    trackerItem.filtered = true;
+                                    trackerItem.node.classList.add('item__filtered');
+                                }
+                            } else {
+                                if (trackerItem.filtered) {
+                                    trackerItem.filtered = false;
+                                    trackerItem.node.classList.remove('item__filtered');
+                                }
                             }
                         }
                     });
@@ -274,20 +276,17 @@ define([
                     }
                 };
                 /**
-                 * @param {[]} [nodes]
                  * @param {{}} [trackerIdItem]
                  */
-                this.updateCount = function (nodes, trackerIdItem) {
-                    if (!nodes) {
-                        nodes = [].slice.call(trackersList.node.childNodes);
+                this.updateCount = function (trackerIdItem) {
+                    if (!trackerIdItem) {
                         trackerIdItem = trackersList.trackerIdItem;
                     }
                     var all = 0;
                     var selected = 0;
                     var withoutList = 0;
-                    nodes.forEach(function (trackerNode) {
-                        var id = trackerNode.dataset.id;
-                        var trackerItem = trackerIdItem[id];
+                    Object.keys(trackerIdItem).forEach(function (key) {
+                        var trackerItem = trackerIdItem[key];
                         if (!trackerItem.removed) {
                             all++;
                             if (!self.isFiltered('selected', trackerItem)) {
@@ -477,7 +476,7 @@ define([
                             }
                         });
 
-                        mgrFilter.updateCount(list, trackerIdItem);
+                        mgrFilter.updateCount(trackerIdItem);
 
                         return list;
                     })(),
@@ -564,24 +563,26 @@ define([
                     },
                     getProfileTrackers: function () {
                         var profileTrackers = [];
-                        [].slice.call(node.childNodes).forEach(function (trackerNode) {
-                            var id = trackerNode.dataset.id;
-                            var trackerItem = trackerIdItem[id];
-                            var tracker = trackers[id];
-                            if (trackerItem.checked) {
-                                var meta = {};
-                                if (tracker) {
-                                    meta.name = tracker.meta.name;
-                                    meta.author = tracker.meta.author;
-                                    meta.homepageURL = tracker.meta.homepageURL;
-                                    meta.updateURL = tracker.meta.updateURL;
-                                    meta.downloadURL = tracker.meta.downloadURL;
-                                }
+                        Object.keys(trackerIdItem).forEach(function (key) {
+                            var trackerItem = trackerIdItem[key];
+                            if (!trackerItem.removed) {
+                                var id = trackerItem.id;
+                                var tracker = trackers[id];
+                                if (trackerItem.checked) {
+                                    var meta = {};
+                                    if (tracker) {
+                                        meta.name = tracker.meta.name;
+                                        meta.author = tracker.meta.author;
+                                        meta.homepageURL = tracker.meta.homepageURL;
+                                        meta.updateURL = tracker.meta.updateURL;
+                                        meta.downloadURL = tracker.meta.downloadURL;
+                                    }
 
-                                profileTrackers.push({
-                                    id: id,
-                                    meta: meta
-                                });
+                                    profileTrackers.push({
+                                        id: id,
+                                        meta: meta
+                                    });
+                                }
                             }
                         });
                         return profileTrackers;
