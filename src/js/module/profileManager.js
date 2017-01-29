@@ -341,7 +341,7 @@ define([
                         }),
                         dom.el('div', {
                                 class: 'item__version',
-                                text: tracker.meta.version
+                                text: tracker.meta.version || ''
                             }),
                         (!tracker.meta.updateURL && !tracker.meta.downloadURL) ? '' : dom.el('a', {
                                 class: ['item__update', 'item__button', 'button-update'],
