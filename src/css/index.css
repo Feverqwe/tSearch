@@ -770,7 +770,8 @@ a.tracker {
 
 .manager .item__name {
     flex-grow: 1;
-    padding: 0 8px;
+    padding: 9px 8px;
+    cursor: pointer;
 }
 
 .manager .item__action {
