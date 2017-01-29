@@ -950,7 +950,8 @@ require([
                         return item.id;
                     });
 
-                    oldProfileIds.slice(0).forEach(function (oldStaticItem, oldPos) {
+                    oldProfileIds.slice(0).forEach(function (oldStaticItem) {
+                        var oldPos = oldProfileIds.indexOf(oldStaticItem);
                         var newPos = newProfileIds.indexOf(oldStaticItem);
                         if (newPos === -1) {
                             oldProfileIds.splice(oldPos, 1);
