@@ -932,6 +932,7 @@ define([
                 return {
                     id: name,
                     meta: {
+                        name: name,
                         downloadURL: './trackers/' + name + '.js'
                     }
                 };
