@@ -64,6 +64,10 @@ a:visited {
     border: 1px solid #3366ff;
 }
 
+.input__input.input__error {
+    border: 1px solid rgba(255, 0, 28, 0.5);
+}
+
 .input__clear {
     top: 0;
     right: 0;

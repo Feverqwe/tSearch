@@ -98,6 +98,7 @@ define([
 
             blankObj.titleNode.textContent = chrome.i18n.getMessage('manageProfile');
 
+            var profileNameError = false;
             var profileNameNode = null;
 
             blankObj.bodyNode.appendChild(dom.el('div', {
@@ -109,12 +110,31 @@ define([
                             profileNameNode = dom.el('input', {
                                 class: ['input__input'],
                                 type: 'text',
-                                value: profile.name
+                                value: '',
+                                on: ['keyup', function (e) {
+                                    if (this.value.length) {
+                                        if (profileNameError) {
+                                            profileNameError = false;
+                                            profileNameNode.classList.remove('input__error');
+                                        }
+                                    } else {
+                                        if (!profileNameError) {
+                                            profileNameError = true;
+                                            profileNameNode.classList.add('input__error');
+                                        }
+                                    }
+                                }]
                             })
                         ]
                     })
                 ]
             }));
+
+            var setProfileName = function (value) {
+                profileNameNode.value = value;
+                profileNameNode.dispatchEvent(new CustomEvent('keyup'));
+            };
+            setProfileName(profile.name);
 
             var MgrFilter = function () {
                 var self = this;
@@ -582,6 +602,11 @@ define([
                             cloneProfile.name = profileNameNode.value;
                             cloneProfile.trackers = trackersList.getProfileTrackers();
 
+                            if (!cloneProfile.name) {
+                                setProfileName(cloneProfile.value);
+                                return;
+                            }
+
                             var cloneTrackers = trackersList.getTrackers();
 
                             chrome.storage.local.set({
@@ -643,7 +668,7 @@ define([
             var onProfileFieldChange = function (id, changes) {
                 if (id === profile.id) {
                     if (changes.indexOf('name') !== -1) {
-                        profileNameNode.value = profile.name;
+                        setProfileName(profile.name);
                     }
                     if (changes.indexOf('trackers') !== -1) {
                         onTrackerInsert();
@@ -681,6 +706,8 @@ define([
                         on: ['click', function (e) {
                             e.preventDefault();
                             var profile = self.getDefaultProfile(profileController);
+                            profile.name = '';
+                            profile.trackers.splice(0);
                             blankObj.replace(getProfileEditor(profile));
                         }]
                     })
