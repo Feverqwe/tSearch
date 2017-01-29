@@ -61,7 +61,7 @@ require([
     }).then(function (storage) {
         var promiseList = [];
         var trackers = storage.trackers;
-        [
+        Object.keys(trackers).length === 0 && [
             'bitsnoop', 'booktracker', 'brodim', 'extratorrent',
             'filebase', 'freeTorrents', 'hdclub', 'inmac',
             'kinozal', 'megashara', 'mininova', 'nnmclub',
