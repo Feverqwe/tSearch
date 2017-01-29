@@ -30,6 +30,7 @@ define([
             /**
              * @typedef {Object} profileTracker
              * @property {string} id
+             * @property {{}} [meta]
              */
 
             /**

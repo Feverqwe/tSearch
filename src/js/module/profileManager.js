@@ -98,43 +98,50 @@ define([
 
             blankObj.titleNode.textContent = chrome.i18n.getMessage('manageProfile');
 
-            var profileNameError = false;
-            var profileNameNode = null;
-
-            blankObj.bodyNode.appendChild(dom.el('div', {
-                class: ['manager__sub_header', 'sub_header__profile'],
-                append: [
-                    dom.el('div', {
-                        class: ['profile__input'],
-                        append: [
-                            profileNameNode = dom.el('input', {
-                                class: ['input__input'],
-                                type: 'text',
-                                value: '',
-                                on: ['keyup', function (e) {
-                                    if (this.value.length) {
-                                        if (profileNameError) {
-                                            profileNameError = false;
-                                            profileNameNode.classList.remove('input__error');
+            var profileName = (function () {
+                var isError = false;
+                var inputNode = null;
+                var node = dom.el('div', {
+                    class: ['manager__sub_header', 'sub_header__profile'],
+                    append: [
+                        dom.el('div', {
+                            class: ['profile__input'],
+                            append: [
+                                inputNode = dom.el('input', {
+                                    class: ['input__input'],
+                                    type: 'text',
+                                    value: '',
+                                    on: ['keyup', function (e) {
+                                        if (this.value.length) {
+                                            if (isError) {
+                                                isError = false;
+                                                inputNode.classList.remove('input__error');
+                                            }
+                                        } else {
+                                            if (!isError) {
+                                                isError = true;
+                                                inputNode.classList.add('input__error');
+                                            }
                                         }
-                                    } else {
-                                        if (!profileNameError) {
-                                            profileNameError = true;
-                                            profileNameNode.classList.add('input__error');
-                                        }
-                                    }
-                                }]
-                            })
-                        ]
-                    })
-                ]
-            }));
-
-            var setProfileName = function (value) {
-                profileNameNode.value = value;
-                profileNameNode.dispatchEvent(new CustomEvent('keyup'));
-            };
-            setProfileName(profile.name);
+                                    }]
+                                })
+                            ]
+                        })
+                    ]
+                });
+                return {
+                    node: node,
+                    set: function (value) {
+                        inputNode.value = value;
+                        inputNode.dispatchEvent(new CustomEvent('keyup'));
+                    },
+                    get: function () {
+                        return inputNode.value;
+                    }
+                }
+            })();
+            profileName.set(profile.name);
+            blankObj.bodyNode.appendChild(profileName.node);
 
             var MgrFilter = function () {
                 var self = this;
@@ -385,92 +392,85 @@ define([
                 });
             };
 
-            var trackerSetChecked = function (checked) {
-                this.checked = checked;
-                var checkboxNode = this.node.querySelector('.item__checkbox input');
-                if (checked) {
-                    this.node.classList.add('item__selected');
-                    checkboxNode.checked = true;
-                } else {
-                    this.node.classList.remove('item__selected');
-                    checkboxNode.checked = false;
-                }
-
-                mgrFilter.updateCount();
-            };
-
-            var trackerRefresh = function () {
-                var newTracker = trackers[this.id];
-                var newNode = getTrackerItemNode(newTracker, this.checked);
-                var parent = this.node.parentNode;
-                if (parent) {
-                    parent.replaceChild(newNode, this.node);
-                }
-                this.node = newNode;
-            };
-
-            var trackerRemove = function () {
-                var parent = this.node.parentNode;
-                if (parent) {
-                    parent.removeChild(this.node);
-                }
-                this.removed = true;
-
-                mgrFilter.updateCount();
-            };
-
             var getTrackerList = function () {
                 var trackerIdItem = {};
+
+                var trackerSetChecked = function (checked) {
+                    this.checked = checked;
+                    var checkboxNode = this.node.querySelector('.item__checkbox input');
+                    if (checked) {
+                        this.node.classList.add('item__selected');
+                        checkboxNode.checked = true;
+                    } else {
+                        this.node.classList.remove('item__selected');
+                        checkboxNode.checked = false;
+                    }
+
+                    mgrFilter.updateCount();
+                };
+
+                var trackerRefresh = function () {
+                    var newTracker = trackers[this.id];
+                    var newNode = getTrackerItemNode(newTracker, this.checked);
+                    var parent = this.node.parentNode;
+                    if (parent) {
+                        parent.replaceChild(newNode, this.node);
+                    }
+                    this.node = newNode;
+                };
+
+                var trackerRemove = function () {
+                    var parent = this.node.parentNode;
+                    if (parent) {
+                        parent.removeChild(this.node);
+                    }
+                    this.removed = true;
+
+                    mgrFilter.updateCount();
+                };
 
                 var node = dom.el('div', {
                     class: 'manager__trackers',
                     append: (function () {
                         var list = [];
-                        profile.trackers.forEach(function (/**profileTracker*/profileTracker) {
-                            var tracker = trackers[profileTracker.id];
-                            if (!tracker) {
-                                tracker = {
-                                    id: profileTracker.id,
-                                    meta: profileTracker.meta || {},
-                                    info: {}
-                                }
-                            }
+
+                        var getTrackerItem = function (tracker, checked) {
                             var trackerItem = {
                                 id: tracker.id,
+                                node: getTrackerItemNode(tracker, checked),
                                 setChecked: trackerSetChecked,
-                                checked: true,
-                                node: getTrackerItemNode(tracker, true),
+                                checked: checked,
                                 refresh: trackerRefresh,
                                 remove: trackerRemove,
                                 removed: false,
                                 searchCache: '',
-                                profileMeta: profileTracker.meta
+                                profileMeta: tracker.meta,
+                                filtered: false
                             };
                             trackerItem.filtered = mgrFilter.isFiltered(trackerItem);
                             if (trackerItem.filtered) {
                                 trackerItem.node.classList.add('item__filtered');
                             }
+                            return trackerItem;
+                        };
+
+                        profile.trackers.map(function (/**profileTracker*/profileTracker) {
+                            return trackers[profileTracker.id] || {
+                                id: profileTracker.id,
+                                meta: profileTracker.meta || {},
+                                info: {}
+                            }
+                        }).forEach(function (tracker) {
+                            var trackerItem = getTrackerItem(tracker, true);
                             trackerIdItem[trackerItem.id] = trackerItem;
                             list.push(trackerItem.node);
                         });
-                        Object.keys(trackers).forEach(function (trackerId) {
-                            var tracker = trackers[trackerId];
+
+                        Object.keys(trackers).map(function (trackerId) {
+                            return trackers[trackerId];
+                        }).forEach(function (tracker) {
                             if (!trackerIdItem[tracker.id]) {
-                                var trackerItem = {
-                                    id: tracker.id,
-                                    setChecked: trackerSetChecked,
-                                    checked: false,
-                                    node: getTrackerItemNode(tracker, false),
-                                    refresh: trackerRefresh,
-                                    remove: trackerRemove,
-                                    removed: false,
-                                    searchCache: '',
-                                    profileMeta: null
-                                };
-                                trackerItem.filtered = mgrFilter.isFiltered(trackerItem);
-                                if (trackerItem.filtered) {
-                                    trackerItem.node.classList.add('item__filtered');
-                                }
+                                var trackerItem = getTrackerItem(tracker, false);
                                 trackerIdItem[trackerItem.id] = trackerItem;
                                 list.push(trackerItem.node);
                             }
@@ -612,11 +612,11 @@ define([
                                 cloneProfiles.push(profile);
                             }
 
-                            cloneProfile.name = profileNameNode.value;
+                            cloneProfile.name = profileName.get();
                             cloneProfile.trackers = trackersList.getProfileTrackers();
 
                             if (!cloneProfile.name) {
-                                setProfileName(cloneProfile.name);
+                                profileName.set(cloneProfile.name);
                                 return;
                             }
 
@@ -682,7 +682,7 @@ define([
             var onProfileFieldChange = function (id, changes) {
                 if (id === profile.id) {
                     if (changes.indexOf('name') !== -1) {
-                        setProfileName(profile.name);
+                        profileName.set(profile.name);
                     }
                     if (changes.indexOf('trackers') !== -1) {
                         onTrackerInsert();
