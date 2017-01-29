@@ -433,9 +433,7 @@ define([
                                 tracker = {
                                     id: profileTracker.id,
                                     meta: profileTracker.meta || {},
-                                    info: {
-                                        virtual: true
-                                    }
+                                    info: {}
                                 }
                             }
                             var trackerItem = {
