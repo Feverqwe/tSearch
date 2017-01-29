@@ -626,7 +626,7 @@ a.tracker {
     opacity: 1;
 }
 
-.manager__trackers .item__cell {
+.manager .item__cell {
     padding: 4px;
 }
 
