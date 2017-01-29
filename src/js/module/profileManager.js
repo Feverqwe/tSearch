@@ -563,26 +563,24 @@ define([
                     },
                     getProfileTrackers: function () {
                         var profileTrackers = [];
-                        Object.keys(trackerIdItem).forEach(function (key) {
-                            var trackerItem = trackerIdItem[key];
-                            if (!trackerItem.removed) {
-                                var id = trackerItem.id;
-                                var tracker = trackers[id];
-                                if (trackerItem.checked) {
-                                    var meta = {};
-                                    if (tracker) {
-                                        meta.name = tracker.meta.name;
-                                        meta.author = tracker.meta.author;
-                                        meta.homepageURL = tracker.meta.homepageURL;
-                                        meta.updateURL = tracker.meta.updateURL;
-                                        meta.downloadURL = tracker.meta.downloadURL;
-                                    }
-
-                                    profileTrackers.push({
-                                        id: id,
-                                        meta: meta
-                                    });
+                        [].slice.call(node.childNodes).forEach(function (trackerNode) {
+                            var id = trackerNode.dataset.id;
+                            var trackerItem = trackerIdItem[id];
+                            var tracker = trackers[id];
+                            if (trackerItem.checked) {
+                                var meta = {};
+                                if (tracker) {
+                                    meta.name = tracker.meta.name;
+                                    meta.author = tracker.meta.author;
+                                    meta.homepageURL = tracker.meta.homepageURL;
+                                    meta.updateURL = tracker.meta.updateURL;
+                                    meta.downloadURL = tracker.meta.downloadURL;
                                 }
+
+                                profileTrackers.push({
+                                    id: id,
+                                    meta: meta
+                                });
                             }
                         });
                         return profileTrackers;
