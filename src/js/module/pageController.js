@@ -6,10 +6,12 @@ define([
     './utils'
 ], function (utils) {
     var PageController = function (deatils) {
+        var DEBUG = false;
         deatils = deatils || {};
         var self = this;
         var params = {};
         var load = function () {
+            DEBUG && console.debug('load', location.href);
             var queryString = location.hash.substr(1);
             var queryObj = deatils.useHash ? utils.hashParseParam(queryString) : utils.parseUrl(queryString, {params: true});
             var value;
@@ -32,6 +34,7 @@ define([
         });
 
         this.get = function (key) {
+            DEBUG && console.debug('get', key, JSON.stringify(params));
             if (typeof params[key] === 'string') {
                 return params[key];
             } else {
@@ -39,14 +42,20 @@ define([
             }
         };
         this.set = function (key, value) {
+            if (typeof value === 'number') {
+                value = value.toString();
+            }
+            DEBUG && console.debug('set', key, value);
             params[key] = value;
             return self;
         };
         this.remove = function (key) {
-            delete  params[key];
+            DEBUG && console.debug('remove', key);
+            delete params[key];
             return self;
         };
         this.clear = function () {
+            DEBUG && console.debug('clear');
             for (var key in params) {
                 delete params[key];
             }
@@ -59,11 +68,13 @@ define([
             if (hash) {
                 url += '#' + hash;
             }
+            DEBUG && console.debug('getUrl', url);
             return url;
         };
         this.go = function () {
             var url = self.getUrl();
             window.history.pushState(null, "", url);
+            DEBUG && console.debug('go', url);
             self.applyUrl();
         };
         load();

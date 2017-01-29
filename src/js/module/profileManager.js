@@ -603,7 +603,7 @@ define([
                             cloneProfile.trackers = trackersList.getProfileTrackers();
 
                             if (!cloneProfile.name) {
-                                setProfileName(cloneProfile.value);
+                                setProfileName(cloneProfile.name);
                                 return;
                             }
 
