@@ -251,8 +251,7 @@ define([
                         if (!trackerItem.searchCache) {
                             var tracker = trackers[trackerItem.id] || {
                                 id: trackerItem.id,
-                                meta: {},
-                                info: {}
+                                meta: {}
                             };
                             var meta = tracker.meta;
                             trackerItem.searchCache = [
@@ -433,7 +432,7 @@ define([
                             if (!tracker) {
                                 tracker = {
                                     id: profileTracker.id,
-                                    meta: {},
+                                    meta: profileTracker.meta || {},
                                     info: {}
                                 }
                             }
@@ -454,7 +453,7 @@ define([
                             trackerIdItem[trackerItem.id] = trackerItem;
                             list.push(trackerItem.node);
                         });
-                        Object.keys(trackers).forEach(function (/**tracker*/trackerId) {
+                        Object.keys(trackers).forEach(function (trackerId) {
                             var tracker = trackers[trackerId];
                             if (!trackerIdItem[tracker.id]) {
                                 var trackerItem = {
@@ -564,9 +563,21 @@ define([
                         [].slice.call(node.childNodes).forEach(function (trackerNode) {
                             var id = trackerNode.dataset.id;
                             var trackerItem = trackerIdItem[id];
+                            var tracker = trackers[id];
                             if (trackerItem.checked) {
+                                var meta = {};
+                                if (tracker) {
+                                    meta.name = tracker.meta.name;
+                                    meta.author = tracker.meta.author;
+                                    meta.homepageURL = tracker.meta.homepageURL;
+                                    meta.updateURL = tracker.meta.updateURL;
+                                    meta.downloadURL = tracker.meta.downloadURL;
+                                    meta.supportURL = tracker.meta.supportURL;
+                                }
+
                                 profileTrackers.push({
-                                    id: id
+                                    id: id,
+                                    meta: meta
                                 });
                             }
                         });
@@ -915,7 +926,12 @@ define([
             name: chrome.i18n.getMessage('defaultProfileName'),
             id: profileController.getProfileId(),
             trackers: trackers.map(function (name) {
-                return {id: name};
+                return {
+                    id: name,
+                    meta: {
+                        downloadURL: './trackers/' + name + '.js'
+                    }
+                };
             })
         }
     };
