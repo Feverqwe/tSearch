@@ -343,7 +343,7 @@ define([
                         }),
                         dom.el('img', {
                             class: ['item__icon'],
-                            src: tracker.meta.icon || tracker.meta.icon64,
+                            src: tracker.meta.icon || tracker.meta.icon64 || './img/blank.svg',
                             on: ['error', function () {
                                 this.src = './img/blank.svg'
                             }]
