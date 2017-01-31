@@ -489,7 +489,7 @@ define([
                     on: ['click', function (e) {
                         var target = e.target;
                         var itemNode = dom.closestNode(this, target);
-                        var trackerItem = trackerIdItem[itemNode && itemNode.dataset.id];
+                        var trackerItem = itemNode && trackerIdItem[itemNode.dataset.id];
                         if (trackerItem) {
                             var trackerId = trackerItem.id;
                             if (target.dataset.action === 'edit') {
@@ -814,19 +814,19 @@ define([
                     })(),
                     on: ['click', function (e) {
                         var target = e.target;
-                        var profileId = target.parentNode.dataset.id;
-                        var profileObj = profileId && profileIdItem[profileId];
-                        if (profileObj) {
+                        var itemNode = dom.closestNode(this, target);
+                        var profileItem = itemNode && profileIdItem[itemNode.dataset.id];
+                        if (profileItem) {
                             if (target.dataset.action === 'remove') {
                                 e.preventDefault();
-                                profileObj.remove();
+                                profileItem.remove();
                             } else
                             if (target.dataset.action === 'edit') {
                                 e.preventDefault();
-                                profileObj.edit();
+                                profileItem.edit();
                             } else
                             if (target.classList.contains('item') || target.classList.contains('item__name')) {
-                                profileObj.edit();
+                                profileItem.edit();
                             }
                         }
                     }]
