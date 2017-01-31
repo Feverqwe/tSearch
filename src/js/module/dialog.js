@@ -25,9 +25,11 @@ define(function () {
 
         this.destroy = function () {
             document.removeEventListener('click', closeEvent, true);
-            layer.parentNode.removeChild(layer);
+            var parent = layer.parentNode;
+            if (parent) {
+                parent.removeChild(layer);
+            }
         };
-
         this.show = function () {
             layer.appendChild(body);
             document.addEventListener('click', closeEvent, true);

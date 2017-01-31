@@ -64,6 +64,12 @@ require([
                 }]);
             });
 
+            var addCode = document.querySelector('.head__action-add-code');
+            addCode.addEventListener('click', function (e) {
+                e.preventDefault();
+                ee.trigger('showCodeDialog');
+            });
+
             var editorTextarea = document.querySelector('.editor__textarea');
             editor = CodeMirror.fromTextArea(editorTextarea, {
                 mode: 'javascript',

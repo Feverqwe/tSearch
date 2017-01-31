@@ -651,17 +651,6 @@ define([
                         }]
                     }),
                     dom.el('a', {
-                        href: '#addTrackerCode',
-                        class: ['button', 'manager__footer__btn'],
-                        text: chrome.i18n.getMessage('addTrackerCode'),
-                        on: ['click', function (e) {
-                            e.preventDefault();
-                            chrome.tabs.create({
-                                url: 'editor.html#code=true'
-                            });
-                        }]
-                    }),
-                    dom.el('a', {
                         href: '#createCode',
                         class: ['button', 'manager__footer__btn'],
                         text: chrome.i18n.getMessage('createCode'),
