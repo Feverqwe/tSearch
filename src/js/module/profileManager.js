@@ -815,7 +815,7 @@ define([
                     on: ['click', function (e) {
                         var target = e.target;
                         var profileId = target.parentNode.dataset.id;
-                        var profileObj = profileIdItem[profileId];
+                        var profileObj = profileId && profileIdItem[profileId];
                         if (profileObj) {
                             if (target.dataset.action === 'remove') {
                                 e.preventDefault();
