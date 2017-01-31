@@ -792,6 +792,18 @@ define([
                 this.node = newNode;
             };
 
+            var profileEdit = function () {
+                var _this = this;
+                var profile = null;
+                profiles.some(function (_profile) {
+                    if (_profile.id == _this.id) {
+                        profile = _profile;
+                        return true;
+                    }
+                });
+                blankObj.replace(getProfileEditor(profile));
+            };
+
             var getProfileList = function () {
                 var profileIdItem = {};
                 var node = dom.el('div', {
@@ -803,7 +815,8 @@ define([
                                 id: profile.id,
                                 node: getProfileItemNode(profile),
                                 refresh: profileRefresh,
-                                remove: profileRemove
+                                remove: profileRemove,
+                                edit: profileEdit
                             };
                             profileIdItem[profileObj.id] = profileObj;
                             list.push(profileObj.node)
@@ -812,21 +825,20 @@ define([
                     })(),
                     on: ['click', function (e) {
                         var target = e.target;
-                        var profileId, profile = null;
-                        if (target.dataset.action === 'edit') {
-                            e.preventDefault();
-                            profileId = target.parentNode.dataset.id;
-                            profiles.some(function (_profile) {
-                                if (_profile.id == profileId) {
-                                    profile = _profile;
-                                }
-                            });
-                            blankObj.replace(getProfileEditor(profile));
-                        } else
-                        if (target.dataset.action === 'remove') {
-                            e.preventDefault();
-                            profileId = target.parentNode.dataset.id;
-                            profileIdItem[profileId].remove();
+                        var profileId = target.parentNode.dataset.id;
+                        var profileObj = profileIdItem[profileId];
+                        if (profileObj) {
+                            if (target.dataset.action === 'remove') {
+                                e.preventDefault();
+                                profileObj.remove();
+                            } else
+                            if (target.dataset.action === 'edit') {
+                                e.preventDefault();
+                                profileObj.edit();
+                            } else
+                            if (target.classList.contains('item') || target.classList.contains('item__name')) {
+                                profileObj.edit();
+                            }
                         }
                     }]
                 });
