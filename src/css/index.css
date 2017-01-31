@@ -960,15 +960,15 @@ a.tracker {
 
 .table-results .body__row .cell-title .cell__category .category {
     padding-left: 4px;
-}
-
-.table-results .body__row .cell-title .cell__category .category,
-.table-results .body__row .cell-title .cell__category .category a {
     color: #093;
 }
 
-.table-results .body__row .cell-title .cell__category a:hover {
+.table-results .body__row .cell-title .cell__category a.category:hover {
     text-decoration: underline;
+}
+
+.table-results .body__row .cell-title .cell__category a.category:visited:hover {
+    color: #609;
 }
 
 .table-results .body__row .cell-size,
