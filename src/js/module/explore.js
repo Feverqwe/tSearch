@@ -1221,13 +1221,6 @@ define([
 
             var items = content.slice(from, from + displayItemCount);
 
-            var contentId = [from, displayItemCount, items.length, cache.keepAlive].join(':');
-            if (sectionWrapper.contentId === contentId) {
-                return;
-            }
-
-            sectionWrapper.contentId = contentId;
-
             var contentBody = document.createDocumentFragment();
             items.forEach(function (item, index) {
                 index = index + from;
