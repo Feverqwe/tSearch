@@ -514,8 +514,8 @@ define([
             }
             return tracker;
         },
-        parseHtml: function (html) {
-            return API_getDom(html);
+        parseHtml: function (html, responseUrl) {
+            return API_getDom(html, responseUrl);
         },
         contentFilterR: {
             searchJs: /javascript/ig,
@@ -781,7 +781,7 @@ define([
                 return details.result;
             }
 
-            var dom = exKit.parseHtml(details.data);
+            var dom = exKit.parseHtml(details.data, details.responseUrl);
             var $dom = details.$dom = $(dom);
 
             if (search.onAfterDomParse) {

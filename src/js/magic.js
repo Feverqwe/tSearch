@@ -99,10 +99,10 @@ require([
                     var data = response.body;
                     var domData = exKit.contentFilter(data);
 
-                    var $frameDom = exKit.parseHtml(domData);
+                    var $frameDom = exKit.parseHtml(domData, params.url);
                     _this.varCache.$frameDom = $($frameDom);
 
-                    var frameDom = exKit.parseHtml(_this.contentFilter(domData));
+                    var frameDom = exKit.parseHtml(_this.contentFilter(domData), params.url);
                     _this.domFilter(frameDom);
 
                     var documentElement = _this.domCache.frame.contentDocument.documentElement;
