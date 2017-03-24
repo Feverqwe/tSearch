@@ -5,16 +5,9 @@ define(function () {
     /**
      * @returns {DocumentFragment}
      */
-    window.API_getDom = function (html, baseUrl) {
-        var context = document.implementation.createHTMLDocument('');
-        if (baseUrl) {
-            var base = context.createElement('base');
-            base.href = baseUrl;
-            context.head.appendChild(base);
-        }
-
-        var fragment = context.createDocumentFragment();
-        var div = context.createElement('html');
+    window.API_getDom = function (html) {
+        var fragment = document.createDocumentFragment();
+        var div = document.createElement('html');
         div.innerHTML = html;
         var el;
         while (el = div.firstChild) {
