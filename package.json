@@ -2,7 +2,7 @@
   "name": "TMS",
   "version": "1.0.0",
   "dependencies": {
-    "google-closure-compiler": "^20161201.0.0",
+    "google-closure-compiler": "",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0"
   }
