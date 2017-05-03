@@ -382,16 +382,18 @@ define(function () {
         };
         var oldParts = oldVersion.split('.');
         var newParts = newVersion.split('.');
-        return newParts.some(function (value, index) {
+        for (var index = 0; index < newParts.length; index++) {
             var oldValue = oldParts[index] || '';
             var newValue = newParts[index] || '';
             var len = Math.max(oldValue.length, newValue.length);
             oldValue = parseInt(normalize(oldValue, len));
             newValue = parseInt(normalize(newValue, len));
-            if (newValue > oldValue) {
-                return true;
+            if (newValue === oldValue) {
+                continue;
             }
-        });
+            return newValue > oldValue;
+        }
+        return false;
     };
     utils.escapeRegex = function (value) {
         return value.replace( /[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&" );
