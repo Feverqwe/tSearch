@@ -37,7 +37,9 @@ define([
             worker = new FrameWorker(tracker.id);
             transport = new Transport({
                 sendMessage: function (msg) {
-                    worker.postMessage(msg);
+                    if (worker !== null) {
+                        worker.postMessage(msg);
+                    }
                 },
                 onMessage: function (cb) {
                     worker.onmessage = function (data) {
