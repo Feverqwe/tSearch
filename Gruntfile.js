@@ -32,6 +32,8 @@ module.exports = function(grunt) {
     });
 
     var compressJs = (function () {
+        var ccVersion = require('google-closure-compiler/package.json').version;
+        var version = ccVersion.replace(/[^\d]/, '_');
         var ClosureCompiler = require('google-closure-compiler').compiler;
         var crypto = require('crypto');
         var fs = require('fs');
@@ -103,7 +105,7 @@ module.exports = function(grunt) {
             files.forEach(function (filePath) {
                 promise = promise.then(function () {
                     return getHash(filePath).then(function (hash) {
-                        var minFilename = hash + '.js';
+                        var minFilename = hash + '-' + version + '.js';
                         var minFilePath = path.join(profileMinPath, minFilename);
                         return fileExists(minFilePath).then(function (minFileExists) {
                             var compressPromise;
