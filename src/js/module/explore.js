@@ -56,7 +56,7 @@ define([
             maxWidth: 120,
             url: 'https://www.kinopoisk.ru/mykp/movies/list/type/%category%/page/%page%/sort/default/vector/desc/vt/all/format/full/perpage/25/',
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/',
+            imgUrl: 'https://st.kp.yandex.net/images/film/',
             noAutoUpdate: 1
         },
         kpInCinema: {//new in cinema
@@ -71,7 +71,7 @@ define([
             ],
             keepAlive: [2, 4, 6],
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/'
+            imgUrl: 'https://st.kp.yandex.net/images/film/'
         },
         kpPopular: {
             rootUrl: 'http://www.kinopoisk.ru',
@@ -81,7 +81,7 @@ define([
             url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/',
             keepAlive: [0, 3],
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/'
+            imgUrl: 'https://st.kp.yandex.net/images/film/'
         },
         kpSerials: {
             rootUrl: 'http://www.kinopoisk.ru',
@@ -91,7 +91,7 @@ define([
             url: 'http://www.kinopoisk.ru/top/lists/45/',
             keepAlive: [0],
             baseUrl: 'http://www.kinopoisk.ru/film/',
-            imgUrl: 'http://st.kinopoisk.ru/images/film/'
+            imgUrl: 'https://st.kp.yandex.net/images/film/'
         },
         imdbInCinema: {
             rootUrl: 'http://www.imdb.com',
@@ -212,8 +212,8 @@ define([
         };
 
         var kpGetImgFileName = function (url) {
-            var m = /film\/(\d+)/.exec(url);
-            return m && m[1] + '.jpg' || url;
+            var bigImgUrl = url.replace(/sm_film/, 'film');
+            return bigImgUrl;
         };
         var imdbGetImgFilename = function (url) {
             var m = url.match(/images\/(.+)_V1/);
@@ -221,17 +221,17 @@ define([
         };
 
         var kpGetYear = function (text) {
-            var m = /\s+\(.*([1-2]\d{3}).*\)/.exec(text);
+            var m = /\s+\([^)]*([1-2]\d{3})[^)]*\)$/.exec(text);
             return m && parseInt(m[1]);
         };
         var kpRmYear = function (text) {
-            return text.replace(/(.*)\s+\(.*([1-2]\d{3}).*\).*/, '$1').trim();
+            return text.replace(/\s+\([^)]*([1-2]\d{3})[^)]*\)$/, '').trim();
         };
         var kpRmDesc = function (text) {
-            return text.replace(/(.*)\s+\(.*\)$/, '$1').trim();
+            return text.replace(/\s+\([^)]+\)$/, '').trim();
         };
-        var kpRmMin = function (text) {
-            return text.replace(/\s\d+\s.{3}\.$/, '');
+        var kpRmRuntime = function (text) {
+            return text.replace(/\s+\d+\s+.{3}\.$/, '').trim();
         };
         var gg_games_new = function (content) {
             var dom = API_getDom(API_sanitizeHtml(content));
@@ -272,18 +272,24 @@ define([
                 var nodes = dom.querySelectorAll('#itemList > li.item');
                 var arr = [];
                 [].slice.call(nodes).forEach(function (el) {
-                    var img = el.querySelector('img.poster[title]');
-                    img = img && img.getAttribute('title');
-                    img = img && kpGetImgFileName(img);
+                    var linkNode = el.querySelector('div.info > a.name');
 
-                    var title = el.querySelector('div.info > a.name');
-                    title = title && title.textContent.trim();
+                    var url = linkNode && linkNode.getAttribute('href');
+
+                    var title = linkNode && linkNode.textContent.trim();
 
                     var titleEn = el.querySelector('div.info > span');
                     titleEn = titleEn && titleEn.textContent.trim();
+                    titleEn = titleEn && kpRmRuntime(titleEn);
+                    if (/^\([^)]+\)$/.test(titleEn)) {
+                        titleEn = '';
+                    }
 
-                    var url = el.querySelector('div.info > a.name');
-                    url = url && url.getAttribute('href');
+                    var img = '';
+                    var m = /-(\d+)\/$/.exec(url);
+                    if (m) {
+                        img = m[1] + '.jpg';
+                    }
 
                     var obj = {
                         img: img,
@@ -292,12 +298,6 @@ define([
                         url: url
                     };
 
-                    var serialTitle = kpRmDesc(obj.title);
-                    if (obj.title !== serialTitle) {
-                        // isSerial
-                        obj.title = serialTitle;
-                        obj.title_en = obj.title_en && kpRmYear(obj.title_en);
-                    } else
                     if (obj.title_en) {
                         var year = kpGetYear(obj.title_en);
                         if (year) {
@@ -336,8 +336,8 @@ define([
 
                     var titleEn = el.querySelector('div > div.name > span');
                     titleEn = titleEn && titleEn.textContent.trim();
-                    titleEn = titleEn && kpRmMin(titleEn);
-                    if (/^\(([1-2]\d{3})\)$/.test(titleEn)) {
+                    titleEn = titleEn && kpRmRuntime(titleEn);
+                    if (/^\([^)]+\)$/.test(titleEn)) {
                         titleEn = '';
                     }
 
@@ -374,18 +374,19 @@ define([
                 var nodes = dom.querySelectorAll('div.stat > div.el');
                 var arr = [];
                 [].slice.call(nodes).forEach(function (el) {
-                    var img = el.querySelectorAll('a')[1];
-                    img = img && img.getAttribute('href');
-                    img = img && kpGetImgFileName(img);
+                    var linkNode = el.querySelectorAll('a')[1];
+                    var url = linkNode && linkNode.getAttribute('href');
 
-                    var title = el.querySelectorAll('a')[1];
-                    title = title && title.textContent.trim();
+                    var img = '';
+                    var m = /-(\d+)\/$/.exec(url);
+                    if (m) {
+                        img = m[1] + '.jpg';
+                    }
+
+                    var title = linkNode && linkNode.textContent.trim();
 
                     var titleEn = el.querySelector('i');
                     titleEn = titleEn && titleEn.textContent.trim();
-
-                    var url = el.querySelectorAll('a')[1];
-                    url = url && url.getAttribute('href');
 
                     var obj = {
                         img: img,
@@ -417,20 +418,22 @@ define([
                 var nodes = dom.querySelectorAll('#itemList > tbody > tr');
                 var arr = [];
                 [].slice.call(nodes).forEach(function (el) {
-                    var img = el.querySelector('td > div > a');
-                    img = img && img.getAttribute('href');
-                    img = img && kpGetImgFileName(img);
+                    var linkNode = el.querySelector('td~td > div > a');
+                    var url = linkNode && linkNode.getAttribute('href');
 
-                    var title = el.querySelector('td~td > div > a');
-                    title = title && title.textContent.trim();
+                    var title = linkNode && linkNode.textContent.trim();
                     title = title && kpRmDesc(title);
 
-                    var titleEn = el.querySelector('td > div > span');
-                    titleEn = titleEn && titleEn.textContent.trim();
-                    titleEn = titleEn && kpRmYear(titleEn);
+                    var img = '';
+                    var m = /-(\d+)\/$/.exec(url);
+                    if (m) {
+                        img = m[1] + '.jpg';
+                    }
 
-                    var url = el.querySelector('td > div > a');
-                    url = url && url.getAttribute('href');
+                    var titleEn = el.querySelector('td~td > div > a~span');
+                    titleEn = titleEn && titleEn.textContent.trim();
+                    titleEn = titleEn && kpRmRuntime(titleEn);
+                    titleEn = titleEn && kpRmDesc(titleEn);
 
                     var obj = {
                         img: img,
@@ -1491,7 +1494,7 @@ define([
                             storageDate[sectionWrapper.cacheKey] = cache;
                             chrome.storage.local.set(storageDate);
 
-                            setContent(sectionWrapper);
+                            setContent(sectionWrapper, sectionWrapper.currentPage, 1);
                         });
                     }
 
