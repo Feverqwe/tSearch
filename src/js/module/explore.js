@@ -839,7 +839,7 @@ define([
                 storageDate[_this.cacheKey] = _this.cache;
                 chrome.storage.local.set(storageDate);
 
-                setContent(_this);
+                setContent(_this, _this.currentPage, 1);
             });
         };
 
