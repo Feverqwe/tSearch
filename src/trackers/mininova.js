@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name Mininova
-// @trackerURL http://mininova.org
+// @trackerURL http://mininova.404
 // @icon data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////AOJwNgDws5QAh0ogAPjZygDpkmYA9MmzAOaATQDsonwA++riAO6riQDyvKIA5HY/APni1gDnh1cARERERERERERBERERERERFEEREREREREUQRERERERERRBInHiLhciFEEiceIuFyIUQSJx4i4XIhRBIsHiJRciFEEiYXIjEygUQSIv0tJtKxRBiMYoVY2aFEEREREREREUQRERERERERRBERERERERFEEREREREREUREREREREREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 // @description Download Movies, TV Shows, Music, Software and more. Mininova is the largest BitTorrent search engine and directory on the net with thousands of torrents.
 // @downloadURL https://github.com/Feverqwe/tSearch/raw/master/src/trackers/mininova.js
-// @connect *://*.mininova.org/*
+// @connect *://*.mininova.404/*
 // @require exKit
-// @version 1.0.1
+// @version 1.0.2
 // ==/UserScript==
 
 API_exKit({
@@ -34,9 +34,9 @@ API_exKit({
         humor: []
     },
     search: {
-        searchUrl: 'http://www.mininova.org/search/',
+        searchUrl: 'http://www.mininova.404/search/',
         nextPageSelector: {selector: '#pagination ul li:eq(-1) a', attr: 'href'},
-        baseUrl: 'http://www.mininova.org/',
+        baseUrl: 'http://www.mininova.404/',
         requestType: 'GET',
         requestData: 'search=%search%&cat=0',
         listItemSelector: 'table.maintable>tbody>tr',
