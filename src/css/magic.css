@@ -1,0 +1,168 @@
+html {
+    height: 100%;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.875em;
+    margin: 0;
+    min-width: 960px;
+    height: 100%;
+}
+
+body.loading {
+    visibility: hidden;
+}
+
+input[type=text] {
+    border: 1px solid #cccccc;
+    padding-left: 2px;
+    line-height: 18px;
+    font-size: 14px;
+}
+input[type=text]:hover {
+    border: 1px solid #999999;
+}
+
+div.tools {
+    position: relative;
+    height: 300px;
+    background-color: #fff;
+    border-bottom: 1px solid #e6e6e6;
+}
+div.tools > .menu {
+    background-color: #e6e6e6;
+    margin: 0;
+    padding: 0;
+    font-size: 1.143em;
+}
+div.tools > .menu > a {
+    display: inline-block;
+    padding-top: 1px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: 5px;
+    margin-top: 3px;
+    text-decoration: none;
+    color: #0051D8;
+}
+div.tools > .menu > a.active {
+    background-color: #fff;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: #000;
+}
+
+div.tools > div.body {
+    overflow-y: scroll;
+    height: 259px;
+    width: 100%;
+}
+div.tools > div.body > .page {
+    display: none;
+}
+div.tools > div.body > .page.active {
+    display: block;
+}
+
+h2 {
+    font-size: 1.5em;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 2px;
+    font-weight: normal;
+    margin-top: 5px;
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+h3 {
+    font-size: 18px;
+    margin-top: 4px;
+    margin-bottom: 2px;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+div.tools > div.body label,
+div.tools > div.body div.label {
+    display: block;
+    margin: 5px;
+}
+
+div.tools > div.body textarea[data-id="save_code_textarea"] {
+    height: 180px;
+    width: 600px;
+    border-color: #ccc;
+}
+
+div.tools > div.status_bar {
+    position: absolute;
+    bottom: 0;
+    height: 16px;
+    width: 100%;
+    border-top: 1px solid #e6e6e6;
+    background-color: #fff;
+}
+
+iframe {
+    height: calc(100% - 304px);
+    width: 100%;
+    border: 0;
+}
+
+div.tools input.error {
+    box-shadow: 0 0 2px 1px #FF0000;
+    outline-color: red;
+}
+
+div.tools .page.selectors label > input[data-id="selectors_list_input"] {
+    width: 508px;
+}
+
+div.tools .page.selectors label > span:nth-child(1),
+div.tools .page.selectors .label > span:nth-child(1),
+div.tools .page.convert label > span:nth-child(1),
+div.tools .page.search label > span:nth-child(1),
+div.tools .page.auth label > span:nth-child(1),
+div.tools .page.desk label > span:nth-child(1) {
+    width: 200px;
+    display: inline-block;
+    vertical-align: middle;
+}
+div.tools .page.selectors .label > input[type="number"] {
+    width: 50px;
+}
+div.tools .page.search label > input[data-id="search_url"],
+div.tools .page.search label > input[data-id="search_post"],
+div.tools .page.search label > input[data-id="search_root"],
+div.tools .page.auth input[type="text"],
+div.tools .page.desk input[type="text"] {
+    width: 450px;
+}
+div.tools .page.search label > input[data-id="search_charset"] {
+    width: 150px;
+}
+div.tools .page.convert input[data-id="convert_time_result"] {
+    width: 457px;
+}
+div.tools input.output {
+    border: 1px dashed #B6B6B6;
+    background-color: #fff;
+    width: 200px;
+}
+div.tools input.input {
+    width: 300px;
+}
+div.tools input.attr {
+    width: 50px;
+}
+
+i.tracker_iconPic {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-size: 16px;
+    vertical-align: middle;
+    background-position: center;
+    background-repeat: no-repeat;
+}

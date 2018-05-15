@@ -1,0 +1,75 @@
+html {
+    height: 100%;
+}
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    font-size: 14px;
+    height: 100%;
+}
+
+.loading {
+    opacity: 0;
+}
+
+.editor {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.editor__head {
+    background-color: rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: row;
+    height: 46px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+    padding: 0 10px;
+}
+
+.editor__head .head__action {
+    margin-left: 10px;
+}
+
+.editor__body {
+    height: calc(100% - 47px);
+}
+
+.CodeMirror {
+    height: 100% !important;
+}
+
+.button {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #ffffff;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.3);
+}
+
+a.button {
+    color: #0051D8;
+    text-decoration: none;
+}
+
+.button:hover {
+    border-color: rgba(0, 0, 0, 0.5);
+}
+
+.button:focus {
+    border: 1px solid #3366ff;
+}
+
+.dialog__body .dialog__textarea {
+    height: 250px;
+}
+.dialog__body.dialog-code {
+    width: 450px;
+}
+
+.option-hidden {
+    display: none;
+}

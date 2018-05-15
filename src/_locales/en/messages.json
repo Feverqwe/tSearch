@@ -1,0 +1,428 @@
+{
+    "extName": {
+        "message": "TMS - Torrent search, extension"
+    },
+    "extDesc": {
+        "message": "Torrents MultiSearch - search on some of the trackers at once!"
+    },
+    "search": {
+        "message": "Search"
+    },
+    "searchPlaceholder": {
+        "message": " "
+    },
+    "clear": {
+        "message": "Clear"
+    },
+    "main": {
+        "message": "Main"
+    },
+    "history": {
+        "message": "History"
+    },
+    "options": {
+        "message": "Options"
+    },
+    "wordFilterLabel": {
+        "message": "Filter by words"
+    },
+    "sizeFilterLabel": {
+        "message": "Filter by size GB"
+    },
+    "timeFilterLabel": {
+        "message": "Filter by date"
+    },
+    "seedFilterLabel": {
+        "message": "Filter by seeders"
+    },
+    "peerFilterLabel": {
+        "message": "Filter by peers"
+    },
+    "rangeFromPlaceholder": {
+        "message": "from"
+    },
+    "rangeToPlaceholder": {
+        "message": "to"
+    },
+    "timeFilterAll": {
+        "message": "For all the time"
+    },
+    "timeFilter1h": {
+        "message": "For an hour"
+    },
+    "timeFilter24h": {
+        "message": "For the day"
+    },
+    "timeFilter72h": {
+        "message": "For the 3 day"
+    },
+    "timeFilter1w": {
+        "message": "For the week"
+    },
+    "timeFilter1m": {
+        "message": "For the month"
+    },
+    "timeFilter1y": {
+        "message": "For the year"
+    },
+    "timeFilterRange": {
+        "message": "For the period..."
+    },
+    "scrollTop": {
+        "message": "Up!"
+    },
+    "manageProfiles": {
+        "message": "Manage tracker lists"
+    },
+    "defaultProfileName": {
+        "message": "Default"
+    },
+    "close": {
+        "message": "Close"
+    },
+    "remove": {
+        "message": "Delete"
+    },
+    "save": {
+        "message": "Save"
+    },
+    "edit": {
+        "message": "Edit"
+    },
+    "manageProfile": {
+        "message": "Editing list of trackers"
+    },
+    "update": {
+        "message": "Update"
+    },
+    "exportZip": {
+        "message": "Export to the ZIP-file"
+    },
+    "importZip": {
+        "message": "Import from ZIP-file"
+    },
+    "row_date": {
+        "message": "Date"
+    },
+    "row_quality": {
+        "message": "Quality"
+    },
+    "row_quality__short": {
+        "message": "Q"
+    },
+    "row_title": {
+        "message": "Title"
+    },
+    "row_size": {
+        "message": "Size"
+    },
+    "row_seed": {
+        "message": "Seeders"
+    },
+    "row_seed__short": {
+        "message": "S"
+    },
+    "row_peer": {
+        "message": "Peers"
+    },
+    "row_peer__short": {
+        "message": "P"
+    },
+    "loadMore": {
+        "message": "Load more"
+    },
+    "newProfile": {
+        "message": "Create list"
+    },
+    "contextMenuTitle": {
+        "message": "Search torrent"
+    },
+    "basic": {
+        "message": "Main"
+    },
+    "mainPage": {
+        "message": "Main page"
+    },
+    "backupRestore": {
+        "message": "Backup / Restore"
+    },
+    "hidePeerRow": {
+        "message": "Hide \"Peers\" row"
+    },
+    "hideSeedRow": {
+        "message": "Hide \"Seeders\" row"
+    },
+    "categoryWordFilter": {
+        "message": "Consider the category in \"Filter by words\""
+    },
+    "contextMenu": {
+        "message": "Add search in the context menu"
+    },
+    "disablePopup": {
+        "message": "Disable search popup"
+    },
+    "invertIcon": {
+        "message": "To invert the color of the icon"
+    },
+    "favorites": {
+        "message": "Favorites"
+    },
+    "kpFavorites": {
+        "message": "Kinopoisk: Favorites"
+    },
+    "kpInCinema": {
+        "message": "Now in movie"
+    },
+    "kpPopular": {
+        "message": "Movies"
+    },
+    "kpSerials": {
+        "message": "TV Series"
+    },
+    "imdbInCinema": {
+        "message": "IMDB: Now in movie"
+    },
+    "imdbPopular": {
+        "message": "IMDB: Movies"
+    },
+    "imdbSerials": {
+        "message": "IMDB: TV Series"
+    },
+    "ggGamesTop": {
+        "message": "Games: Best"
+    },
+    "ggGamesNew": {
+        "message": "Games: New"
+    },
+    "showSections": {
+        "message": "Show section:"
+    },
+    "originalPosterName": {
+        "message": "Show original names"
+    },
+    "favoriteSync": {
+        "message": "Synchronize the favorites"
+    },
+    "syncProfiles": {
+        "message": "To synchronize the tracker list"
+    },
+    "kpFolderId": {
+        "message": "ID category kinopoisk.ru site"
+    },
+    "addInFavorite": {
+        "message": "Add in favorites"
+    },
+    "removeFromFavorite": {
+        "message": "Delete from the favorites"
+    },
+    "move": {
+        "message": "Move"
+    },
+    "readMore": {
+        "message": "Read More"
+    },
+    "default": {
+        "message": "Default"
+    },
+    "goToTheWebsite": {
+        "message": "Go to the site"
+    },
+    "setupView": {
+        "message": "Customize"
+    },
+    "title": {
+        "message": "Title"
+    },
+    "imageUrl": {
+        "message": "URL picture"
+    },
+    "descUrl": {
+        "message": "URL description"
+    },
+    "cancel": {
+        "message": "Cancel"
+    },
+    "change": {
+        "message": "Change"
+    },
+    "login": {
+        "message": "Login"
+    },
+    "createCode": {
+        "message": "Create code"
+    },
+    "addTrackerCode": {
+        "message": "Add code"
+    },
+    "add": {
+        "message": "Add"
+    },
+    "enterTrackerCode": {
+        "message": "Copy and paste the tracker code:"
+    },
+    "autoUpdate": {
+        "message": "Auto update"
+    },
+    "doNotSendStatistics": {
+        "message": "Do not send statistics"
+    },
+    "quickSearch": {
+        "message": "Quick search"
+    },
+    "filter_all": {
+        "message": "All"
+    },
+    "filter_withoutList": {
+        "message": "Without list"
+    },
+    "filter_selected": {
+        "message": "Selected"
+    },
+    "historyEmpty": {
+        "message": "Here empty, yet..."
+    },
+    "kitTrackerCodeReadError": {
+        "message": "Error parsing of the tracker code"
+    },
+    "kitSearch": {
+        "message": "Search"
+    },
+    "kitSelectors": {
+        "message": "Selectors"
+    },
+    "kitConvert": {
+        "message": "Convert"
+    },
+    "kitLogin": {
+        "message": "Login"
+    },
+    "kitDesc": {
+        "message": "Description"
+    },
+    "kitSaveLoad": {
+        "message": "Save / Load"
+    },
+    "kitSearchUrl": {
+        "message": "Search page URL"
+    },
+    "kitOpen": {
+        "message": "Open"
+    },
+    "kitSearchQuery": {
+        "message": "Search query (use %search% as template in query string parameters)"
+    },
+    "kitSearchQueryEncoding": {
+        "message": "Search query encoding"
+    },
+    "kitPageCharset": {
+        "message": "Page charset"
+    },
+    "kitPostParams": {
+        "message": "POST query string parameters"
+    },
+    "kitBaseUrl": {
+        "message": "Base URL"
+    },
+    "kitLoginUrl": {
+        "message": "Login page URL"
+    },
+    "kitLoginFormSelector": {
+        "message": "Login form selector"
+    },
+    "kitSelect": {
+        "message": "Select"
+    },
+    "kitRowSelector": {
+        "message": "Rows selector"
+    },
+    "kitTableRow": {
+        "message": "Table row"
+    },
+    "kitCategoryName": {
+        "message": "Category name"
+    },
+    "kitAttribute": {
+        "message": "Attribute"
+    },
+    "kitCategoryLink": {
+        "message": "Category link"
+    },
+    "kitTorrentTitle": {
+        "message": "Torrent title"
+    },
+    "kitTorrentLink": {
+        "message": "Torrent link"
+    },
+    "kitTorrentSize": {
+        "message": "Torrent size"
+    },
+    "kitTorrentDownloadLink": {
+        "message": "Download link"
+    },
+    "kitSeedCount": {
+        "message": "Seed count"
+    },
+    "kitPeerCount": {
+        "message": "Peer count"
+    },
+    "kitAddTime": {
+        "message": "Add time"
+    },
+    "kitSkipFirstRows": {
+        "message": "Skip first N rows"
+    },
+    "kitSkipLastRows": {
+        "message": "Skip last N rows"
+    },
+    "kitRegexpPattern": {
+        "message": "Regexp pattern"
+    },
+    "kitReplaceString": {
+        "message": "replace string"
+    },
+    "kitReplaceToday": {
+        "message": "Replace the words now\\today\\yesterday in date"
+    },
+    "kitReplaceMonth": {
+        "message": "Replace the names of the months in numbers"
+    },
+    "kitUseTemplate": {
+        "message": "To apply a template to the string"
+    },
+    "kitSourceString": {
+        "message": "Source string"
+    },
+    "kitConvertedString": {
+        "message": "Converted string"
+    },
+    "kitResult": {
+        "message": "Result"
+    },
+    "kitConvertToNumber": {
+        "message": "Convert to a number"
+    },
+    "kitIcon": {
+        "message": "Tracker icon (16x16)"
+    },
+    "kitTrackerTitle": {
+        "message": "Tracker title"
+    },
+    "kitTrackerDesc": {
+        "message": "Tracker description"
+    },
+    "kitTrackerDownloadUrl": {
+        "message": "Update url"
+    },
+    "kitTrackerVersion": {
+        "message": "Version"
+    },
+    "kitGetCode": {
+        "message": "Get code"
+    },
+    "kitReadCode": {
+        "message": "Read code"
+    },
+    "kitNextPageLink": {
+        "message": "Next page link"
+    }
+}
