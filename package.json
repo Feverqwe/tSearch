@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "compare-versions": "^3.1.0",
+    "compare-versions": "^3.2.1",
     "debug": "^3.1.0",
     "deserialize-error": "0.0.3",
     "dom-treeadapter": "^0.2.1",
@@ -52,7 +52,7 @@
     "script-loader": "^0.7.2",
     "style-loader": "^0.20.3",
     "url-loader": "^1.0.1",
-    "webpack": "^4.8.1",
+    "webpack": "^4.8.3",
     "webpack-cli": "^2.1.3"
   }
 }
