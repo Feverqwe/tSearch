@@ -10,13 +10,15 @@ const debug = require('debug')('searchFrag');
  * @property {string} state
  * @property {number} id
  * @property {string} query
- * @property {TrackerSearchM[]} trackerSearchList
+ * @property {Map<string,TrackerSearchM>} trackerSearchMap
  * @property {SearchFragTableM[]} tables
  * Actions:
  * @property {function(string)} setState
  * @property {function} search
  * @property {function} searchNext
  * @property {function} clearSearch
+ * @property {function} addTable
+ * @property {function(string)} pushSearchTracker
  * Views:
  * @property {ProfileM} profile
  * @property {function:string} getTableId
@@ -30,7 +32,7 @@ const searchFragModel = types.model('searchFragModel', {
   state: types.optional(types.string, 'idle'), // idle, loading, done
   id: types.identifier(types.number),
   query: types.string,
-  trackerSearchList: types.optional(types.array(trackerSearchModel), []),
+  trackerSearchMap: types.optional(types.map(trackerSearchModel), {}),
   tables: types.optional(types.array(searchFragTableModel), []),
 }).actions(/**SearchFragM*/self => {
   const isReady = () => {
@@ -46,29 +48,15 @@ const searchFragModel = types.model('searchFragModel', {
     search() {
       isReady();
       self.clearSearch();
-      self.tables.push(searchFragTableModel.create({
-        id: self.getTableId(),
-        index: self.tables.length,
-        sortByList: getRoot(self).localStore.sortByList,
-      }));
-      self.profile.getSelectedProfileTrackers().forEach(profileTracker => {
-        const trackerSearch = trackerSearchModel.create({
-          id: self.id + '_' + profileTracker.id,
-          query: self.query,
-          trackerId: profileTracker.id
-        });
-        self.trackerSearchList.push(trackerSearch);
+      self.addTable();
+      self.trackerSearchMap.forEach(trackerSearch => {
         trackerSearch.search();
       });
     },
     searchNext() {
       isReady();
-      self.tables.push(searchFragTableModel.create({
-        id: self.getTableId(),
-        index: self.tables.length,
-        sortByList: getRoot(self).localStore.sortByList,
-      }));
-      self.trackerSearchList.forEach(trackerSearch => {
+      self.addTable();
+      self.trackerSearchMap.forEach(trackerSearch => {
         trackerSearch.searchNext();
       });
     },
@@ -76,10 +64,25 @@ const searchFragModel = types.model('searchFragModel', {
       self.tables.forEach(table => {
         destroy(table);
       });
-      self.trackerSearchList.forEach(trackerSearch => {
+      self.trackerSearchMap.forEach(trackerSearch => {
         destroy(trackerSearch);
       });
     },
+    addTable() {
+      self.tables.push(searchFragTableModel.create({
+        id: self.getTableId(),
+        index: self.tables.length,
+        sortByList: getRoot(self).localStore.sortByList,
+      }));
+    },
+    pushSearchTracker(trackerId) {
+      const trackerSearch = trackerSearchModel.create({
+        id: self.id + '_' + trackerId,
+        query: self.query,
+        trackerId: trackerId
+      });
+      self.trackerSearchMap.put(trackerSearch.id, trackerSearch);
+    }
   };
 }).views(/**SearchFragM*/self => {
   let readyPromise = null;
@@ -117,6 +120,9 @@ const searchFragModel = types.model('searchFragModel', {
       readyPromise = self.profile.readyPromise.then(() => {
         if (isAlive(self)) {
           self.setState('done');
+          self.profile.getSelectedProfileTrackers().forEach(profileTracker => {
+            self.pushSearchTracker(profileTracker.id);
+          });
           self.search();
         } else {
           debug('skip, dead');
