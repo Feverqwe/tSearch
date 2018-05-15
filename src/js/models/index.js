@@ -12,9 +12,11 @@ import loadTrackerModule from "../tools/loadTrackerModule";
 import profileTemplateModel from "./profile/profileTemplate";
 import historyModel from "./history";
 import _unic from "lodash.uniq";
+import getTrackersJson from "../tools/getTrackersJson";
 
 const debug = require('debug')('indexModel');
 const promiseLimit = require('promise-limit');
+const compareVersions = require('compare-versions');
 
 const oneLimit = promiseLimit(1);
 
@@ -30,6 +32,7 @@ const oneLimit = promiseLimit(1);
  * @property {ExploreM} explore
  * @property {PageM[]} page
  * @property {HistoryM[]} history
+ * @property {Map<string,{id:string,state:string}>} trackerState
  * Actions:
  * @property {function(string)} setState
  * @property {function(ProfileM[])} setProfiles
@@ -44,7 +47,7 @@ const oneLimit = promiseLimit(1);
  * @property {function:Promise} saveProfiles
  * @property {function(string):ProfileM} getProfileTemplate
  * @property {Object} localStore
- * @property {function:string} getTrackerState
+ * @property {function(string):string} getTrackerState
  * @property {function} onProfileChange
  * @property {function(string)} loadTrackerModule
  * @property {function} afterCreate
@@ -149,8 +152,8 @@ const indexModel = types.model('indexModel', {
       return promisifyApi('chrome.storage.local.get')(null).then(storage => {
         return Object.keys(storage).filter(key => /^trackerModule_/.test(key));
       }).then(storageTrackerIds => {
-        return fetch('./trackers.json').then(r => r.json()).then(trackerIds => {
-          return _unic([...storageTrackerIds, ...trackerIds]);
+        return getTrackersJson().then(trackers => {
+          return _unic([...storageTrackerIds, ...Object.keys(trackers)]);
         });
       }).then(trackerIds => {
         return Promise.all(trackerIds.map(id => self.loadTrackerModule(id)));
@@ -161,19 +164,33 @@ const indexModel = types.model('indexModel', {
       if (!module && !self.getTrackerState(id)) {
         // await new Promise(resolve => setTimeout(resolve, 3000));
         self.setTrackerState(id, 'loading');
+
+        const trackersJson = await getTrackersJson();
+
         const key = `trackerModule_${id}`;
         module = await promisifyApi('chrome.storage.local.get')({
           [key]: null
         }).then(storage => storage[key]);
-        if (!module) {
-          module = await loadTrackerModule(id);
-          if (module) {
-            await promisifyApi('chrome.storage.local.set')({[key]: module});
+
+        if (module && trackersJson[id]) {
+          if (compareVersions(trackersJson[id], module.meta.version) > 0) {
+            debug('Local module is newer then in storage');
+            module = null;
           }
         }
+
+        let saveIsStore = false;
+        if (!module) {
+          module = await loadTrackerModule(id);
+          saveIsStore = !!module;
+        }
+
         if (module) {
-          self.setTrackerState(id, 'success');
           self.putTrackerModule(module);
+          if (saveIsStore) {
+            await promisifyApi('chrome.storage.local.set')({[key]: module});
+          }
+          self.setTrackerState(id, 'success');
         } else {
           self.setTrackerState(id, 'error');
         }
