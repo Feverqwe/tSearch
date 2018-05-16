@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import blankSvg from '../../img/blank.svg';
 import {observer} from "mobx-react/index";
 
-const debug = require('debug')('profileConfig');
+const debug = require('debug')('ProfilesEditor');
 const Sortable = require('sortablejs');
 
-@observer class ProfileConfig extends React.Component {
+@observer class ProfilesEditor extends React.Component {
   constructor() {
     super();
 
@@ -20,9 +20,13 @@ const Sortable = require('sortablejs');
     this.handleEdit = this.handleEdit.bind(this);
   }
   componentWillMount() {
+    this.props.store.createProfileEditor();
+
     document.body.addEventListener('click', this.handleBodyClick);
   }
   componentWillUnmount() {
+    this.props.store.destroyProfileEditor();
+
     document.body.removeEventListener('click', this.handleBodyClick);
   }
   handleBodyClick(e) {
@@ -42,21 +46,29 @@ const Sortable = require('sortablejs');
   }
   render() {
     let body = null;
-    switch (this.state.page) {
-      case 'profiles': {
-        body = (
-          <ProfileChooser ref={'page'} {...this.props} profiles={this.props.store.profiles}
-                          onClose={this.handleClose}
-                          onEdit={this.handleEdit}/>
-        );
+    switch (this.props.store.profileEditor.state) {
+      case 'loading': {
+        body = ('Loading');
         break;
       }
-      case 'edit': {
-        body = (
-          <ProfileEditor ref={'page'} {...this.props} profile={this.state.profile}
-                         onClose={this.handleClose}/>
-        );
-        break;
+      case 'done': {
+        switch (this.state.page) {
+          case 'profiles': {
+            body = (
+              <ProfileChooser ref={'page'} {...this.props} profiles={this.props.store.profiles}
+                              onClose={this.handleClose}
+                              onEdit={this.handleEdit}/>
+            );
+            break;
+          }
+          case 'edit': {
+            body = (
+              <ProfileEditor ref={'page'} {...this.props} profile={this.state.profile}
+                             onClose={this.handleClose}/>
+            );
+            break;
+          }
+        }
       }
     }
     return ReactDOM.createPortal(body, document.body);
@@ -338,4 +350,4 @@ const Sortable = require('sortablejs');
   }
 }
 
-export default ProfileConfig;
+export default ProfilesEditor;

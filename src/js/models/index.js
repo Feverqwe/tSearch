@@ -6,13 +6,14 @@ import filterModel from "./filters";
 import getSearchFragModelId from "../tools/getSearchFragModelId";
 import exploreModel from "./explore/explore";
 import page from "./page";
-import {types, destroy, resolveIdentifier, getSnapshot, getRoot} from "mobx-state-tree";
+import {destroy, getSnapshot, resolveIdentifier, types} from "mobx-state-tree";
 import promisifyApi from "../tools/promisifyApi";
 import loadTrackerModule from "../tools/loadTrackerModule";
 import profileTemplateModel from "./profile/profileTemplate";
 import historyModel from "./history";
 import _unic from "lodash.uniq";
 import getTrackersJson from "../tools/getTrackersJson";
+import profileEditorModel from "./profileEditor";
 
 const debug = require('debug')('indexModel');
 const promiseLimit = require('promise-limit');
@@ -32,7 +33,6 @@ const oneLimit = promiseLimit(1);
  * @property {ExploreM} explore
  * @property {PageM[]} page
  * @property {HistoryM[]} history
- * @property {Map<string,{id:string,state:string}>} trackerState
  * Actions:
  * @property {function(string)} setState
  * @property {function(ProfileM[])} setProfiles
@@ -42,12 +42,13 @@ const oneLimit = promiseLimit(1);
  * @property {function(TrackerM)} putTrackerModule
  * @property {function(string)} removeProfile
  * @property {function(string, string)} setTrackerState
+ * @property {function} createProfileEditor
+ * @property {function} destroyProfileEditor
  * Views:
  * @property {function:Promise} saveProfile
  * @property {function:Promise} saveProfiles
  * @property {function(string):ProfileM} getProfileTemplate
  * @property {Object} localStore
- * @property {function(string):string} getTrackerState
  * @property {function} onProfileChange
  * @property {function(string)} loadTrackerModule
  * @property {function} afterCreate
@@ -66,10 +67,7 @@ const indexModel = types.model('indexModel', {
   explore: types.optional(exploreModel, {}),
   page: types.optional(page, {}),
   history: types.optional(historyModel, {}),
-  trackerState: types.optional(types.map(types.model({
-    id: types.identifier(types.string),
-    state: types.string
-  })), {}),
+  profileEditor: types.maybe(profileEditorModel),
 }).actions(/**IndexM*/self => {
   return {
     setState(value) {
@@ -106,12 +104,11 @@ const indexModel = types.model('indexModel', {
       }
       self.saveProfiles();
     },
-    setTrackerState(id, state) {
-      let item = self.trackerState.get(id);
-      if (!item) {
-        self.trackerState.set(id, item = {id, state: ''});
-      }
-      item.state = state;
+    createProfileEditor() {
+      self.profileEditor = {};
+    },
+    destroyProfileEditor() {
+      self.profileEditor = null;
     }
   };
 }).views(/**IndexM*/self => {
@@ -144,26 +141,10 @@ const indexModel = types.model('indexModel', {
     get localStore() {
       return localStore;
     },
-    getTrackerState(id) {
-      const item = self.trackerState.get(id);
-      return item && item.state;
-    },
-    loadAllTrackers() {
-      return promisifyApi('chrome.storage.local.get')(null).then(storage => {
-        return Object.keys(storage).filter(key => /^trackerModule_/.test(key));
-      }).then(storageTrackerIds => {
-        return getTrackersJson().then(trackers => {
-          return _unic([...storageTrackerIds, ...Object.keys(trackers)]);
-        });
-      }).then(trackerIds => {
-        return Promise.all(trackerIds.map(id => self.loadTrackerModule(id)));
-      });
-    },
     async loadTrackerModule(id) {
       let module = self.trackers.get(id);
-      if (!module && !self.getTrackerState(id)) {
+      if (!module) {
         // await new Promise(resolve => setTimeout(resolve, 3000));
-        self.setTrackerState(id, 'loading');
 
         const trackersJson = await getTrackersJson();
 
@@ -190,9 +171,6 @@ const indexModel = types.model('indexModel', {
           if (saveIsStore) {
             await promisifyApi('chrome.storage.local.set')({[key]: module});
           }
-          self.setTrackerState(id, 'success');
-        } else {
-          self.setTrackerState(id, 'error');
         }
       }
       return module;

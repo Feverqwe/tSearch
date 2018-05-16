@@ -1,6 +1,6 @@
 import React from "react";
 import {observer} from "mobx-react/index";
-import ProfileConfig from "./ProfileConfig";
+import ProfilesEditor from "./ProfilesEditor";
 
 
 @observer class ProfileSelect extends React.Component {
@@ -56,7 +56,7 @@ import ProfileConfig from "./ProfileConfig";
     let editor = null;
     if (this.state.editing) {
       editor = (
-        <ProfileConfig key={'editor'} store={this.props.store} onClose={this.handleEditClose}/>
+        <ProfilesEditor key={'editor'} store={this.props.store} onClose={this.handleEditClose}/>
       );
     }
 
