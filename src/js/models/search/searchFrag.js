@@ -81,7 +81,7 @@ const searchFragModel = types.model('searchFragModel', {
         query: self.query,
         trackerId: trackerId
       });
-      self.trackerSearchMap.put(trackerSearch.id, trackerSearch);
+      self.trackerSearchMap.set(trackerSearch.id, trackerSearch);
     }
   };
 }).views(/**SearchFragM*/self => {
