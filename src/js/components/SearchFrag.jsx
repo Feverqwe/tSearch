@@ -8,28 +8,18 @@ const qs = require('querystring');
 @observer class SearchFrag extends React.Component {
   componentDidMount() {
     const params = qs.parse(this.props.location.search.substr(1));
-    this.search(params.query);
+    this.props.store.createSearch(params.query);
   }
   componentWillUnmount() {
-    this.clearSearch();
+    this.props.store.destroySearch();
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.location !== nextProps.location) {
       if (nextProps.location) {
         const params = qs.parse(nextProps.location.search.substr(1));
-        this.search(params.query);
+        this.props.store.createSearch(params.query);
       }
     }
-  }
-  clearSearch() {
-    /**@type {IndexM}*/
-    const store = this.props.store;
-    store.clearSearch();
-  }
-  search(query) {
-    /**@type {IndexM}*/
-    const store = this.props.store;
-    store.createSearch(query);
   }
   render() {
     /**@type {IndexM}*/

@@ -83,10 +83,8 @@ const indexModel = types.model('indexModel', {
         query: query
       };
     },
-    clearSearch() {
-      if (self.searchFrag) {
-        destroy(self.searchFrag);
-      }
+    destroySearch() {
+      self.searchFrag = null;
     },
     setProfile(name) {
       const profileItem = self.getProfileTemplate(name);
