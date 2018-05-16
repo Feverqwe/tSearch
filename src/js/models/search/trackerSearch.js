@@ -3,7 +3,6 @@ import filesize from 'filesize';
 import highlight from "../../tools/highlight";
 import rate from "../../tools/rate";
 import {types, isAlive, resolveIdentifier} from "mobx-state-tree";
-import profileTrackerModel from "../profile/profileTracker";
 import trackerModel from "../tracker";
 import getTrackerIconClassName from "../../tools/getTrackerIconClassName";
 
@@ -29,7 +28,6 @@ moment.locale(chrome.i18n.getUILanguage());
  * @property {function(string, Object)} setResult
  * @property {function} clearNextQuery
  * Views:
- * @property {ProfileTrackerM} profileTracker
  * @property {TrackerM} trackerModule
  * @property {function:Object} getQueryHighlightMap
  * @property {function:Object} getQueryRateScheme
@@ -43,7 +41,7 @@ moment.locale(chrome.i18n.getUILanguage());
  * @typedef {{}} TrackerResultM
  * Model:
  * @property {string} id
- * @property {ProfileTrackerInfoM} trackerInfo
+ * @property {TrackerResultModelTrackerInfoM} trackerInfo
  * @property {string} title
  * @property {Object} titleHighlightMap
  * @property {string} url
@@ -215,9 +213,6 @@ const trackerSearchModel = types.model('trackerSearchModel', {
   };
 
   return {
-    get profileTracker() {
-      return resolveIdentifier(profileTrackerModel, self, self.trackerId)
-    },
     get trackerModule() {
       return resolveIdentifier(trackerModel, self, self.trackerId);
     },

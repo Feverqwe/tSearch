@@ -14,7 +14,6 @@ const debug = require('debug')('searchFragTable');
  * @property {function(string)} subSortBy
  * Views:
  * @property {FilterM} filter
- * @property {ProfileM} profile
  * @property {SearchFragM} searchFrag
  * @property {function(TrackerSearchM):TrackerResultM[]} getTrackerResults
  * @property {function(TrackerSearchM):TrackerResultM[]} getFilteredTrackerResults
@@ -79,9 +78,6 @@ const searchFragTableModel = types.model('searchFragTableModel', {
     get filter() {
       return getParent(self, 3).filter;
     },
-    get profile() {
-      return getParent(self, 3).profile;
-    },
     getTrackerResults(trackerSearch) {
       return trackerSearch.getResultsPage(self.index);
     },
@@ -90,7 +86,7 @@ const searchFragTableModel = types.model('searchFragTableModel', {
     },
     getResults() {
       const results = [];
-      self.searchFrag.trackerSearchList.forEach(trackerSearch => {
+      self.searchFrag.trackerSearchMap.forEach(trackerSearch => {
         results.push(...self.getTrackerResults(trackerSearch));
       });
       return results;

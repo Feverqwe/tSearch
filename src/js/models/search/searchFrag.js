@@ -1,6 +1,6 @@
 import searchFragTableModel from "./searchFragTable";
 import trackerSearchModel from "./trackerSearch";
-import {types, getParent, isAlive, getRoot, destroy, resolveIdentifier} from "mobx-state-tree";
+import {types, isAlive, getParent, getRoot} from "mobx-state-tree";
 
 const debug = require('debug')('searchFrag');
 
@@ -16,7 +16,6 @@ const debug = require('debug')('searchFrag');
  * @property {function(string)} setState
  * @property {function} search
  * @property {function} searchNext
- * @property {function} clearSearch
  * @property {function} addTable
  * @property {function(string)} pushSearchTracker
  * Views:
@@ -47,7 +46,6 @@ const searchFragModel = types.model('searchFragModel', {
     },
     search() {
       isReady();
-      self.clearSearch();
       self.addTable();
       self.trackerSearchMap.forEach(trackerSearch => {
         trackerSearch.search();
@@ -60,14 +58,6 @@ const searchFragModel = types.model('searchFragModel', {
         trackerSearch.searchNext();
       });
     },
-    clearSearch() {
-      self.tables.forEach(table => {
-        destroy(table);
-      });
-      self.trackerSearchMap.forEach(trackerSearch => {
-        destroy(trackerSearch);
-      });
-    },
     addTable() {
       self.tables.push(searchFragTableModel.create({
         id: self.getTableId(),
@@ -76,12 +66,11 @@ const searchFragModel = types.model('searchFragModel', {
       }));
     },
     pushSearchTracker(trackerId) {
-      const trackerSearch = trackerSearchModel.create({
+      self.trackerSearchMap.put({
         id: self.id + '_' + trackerId,
         query: self.query,
         trackerId: trackerId
       });
-      self.trackerSearchMap.set(trackerSearch.id, trackerSearch);
     }
   };
 }).views(/**SearchFragM*/self => {
@@ -113,7 +102,7 @@ const searchFragModel = types.model('searchFragModel', {
       }, 0);
     },
     getSearchTrackerByTracker(profile) {
-      return resolveIdentifier(trackerSearchModel, self, self.id + '_' + profile.id);
+      return self.trackerSearchMap.get(self.id + '_' + profile.id);
     },
     afterCreate() {
       self.setState('loading');
