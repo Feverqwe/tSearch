@@ -1,7 +1,8 @@
-const debug = require('debug')('SearchFrag');
 import {observer} from 'mobx-react';
 import React from 'react';
 import Table from './Table';
+
+const debug = require('debug')('SearchFrag');
 const qs = require('querystring');
 
 @observer class SearchFrag extends React.Component {
