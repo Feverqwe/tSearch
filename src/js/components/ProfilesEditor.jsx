@@ -284,24 +284,21 @@ const Sortable = require('sortablejs');
 
 @observer class TrackerTemplateItem extends React.Component {
   render() {
-    const store = /**@type IndexM*/this.props.store;
+    const indexModel = /**@type IndexM*/this.props.store;
     const trackerTemplate = /**@type ProfileTemplateTrackerM*/this.props.trackerTemplate;
-    const module = /**@type TrackerM*/store.getTrackerModel(trackerTemplate.id);
+    const tracker = /**@type TrackerM*/indexModel.getTrackerModel(trackerTemplate.id);
 
     const classList = ['item'];
     if (0) {
       classList.push('item__selected');
     }
 
-    const icon = module && module.getIconUrl() || blankSvg;
-    const name = module && module.meta.name || trackerTemplate.meta.name;
-    const version = module && module.meta.version || '';
+    const icon = tracker.isLoaded() && tracker.getIconUrl() || blankSvg;
+    const name = tracker.meta.name;
+    const version = tracker.meta.version || '';
 
     let updateBtn = null;
-    if (
-      (module && (module.meta.updateURL || module.meta.downloadURL)) ||
-      trackerTemplate.meta.downloadURL
-    ) {
+    if (tracker.meta.updateURL || tracker.meta.downloadURL) {
       updateBtn = (
         <a className="item__cell item__button button-update" href="#update" title={chrome.i18n.getMessage('update')}/>
       );
@@ -310,28 +307,26 @@ const Sortable = require('sortablejs');
     let supportBtn = null;
     let homepageBtn = null;
     let author = null;
-    if (module) {
-      if (module.meta.supportURL) {
-        supportBtn = (
-          <a className="item__cell item__button button-support" target="_blank" href={module.meta.supportURL}/>
-        );
-      }
+    if (tracker.meta.supportURL) {
+      supportBtn = (
+        <a className="item__cell item__button button-support" target="_blank" href={tracker.meta.supportURL}/>
+      );
+    }
 
-      if (module.meta.homepageURL) {
-        homepageBtn = (
-          <a className="item__cell item__button button-home" target="_blank" href={module.meta.homepageURL}/>
-        );
-      }
+    if (tracker.meta.homepageURL) {
+      homepageBtn = (
+        <a className="item__cell item__button button-home" target="_blank" href={tracker.meta.homepageURL}/>
+      );
+    }
 
-      if (module.meta.author) {
-        author = (
-          <div className="item__cell item__author">{module.meta.author}</div>
-        );
-      }
+    if (tracker.meta.author) {
+      author = (
+        <div className="item__cell item__author">{tracker.meta.author}</div>
+      );
     }
 
     return (
-      <div className={classList.join(' ')} data-id={trackerTemplate.id}>
+      <div className={classList.join(' ')} data-id={tracker.id}>
         <div className="item__move"/>
         <div className="item__checkbox">
           <input type="checkbox" defaultChecked={true}/>

@@ -22,9 +22,6 @@ const profileEditorModel = types.model('profileEditorModel', {
   };
 }).views(self => {
   return {
-    get index() {
-      return getParent(self, 1);
-    },
     loadAllTrackers() {
       return promisifyApi('chrome.storage.local.get')(null).then(storage => {
         return Object.keys(storage).filter(key => /^trackerModule_/.test(key)).map(key => /^trackerModule_(.+)$/.exec(key)[1]);
@@ -33,7 +30,13 @@ const profileEditorModel = types.model('profileEditorModel', {
           return _unic([...storageTrackerIds, ...Object.keys(trackers)]);
         });
       }).then(trackerIds => {
-        return Promise.all(trackerIds.map(id => self.index.loadTrackerModule(id)));
+        const indexModel = /**IndexM*/getParent(self, 1);
+        return Promise.all(trackerIds.map(id => {
+          if (!indexModel.trackers.has(id)) {
+            indexModel.putTrackerModule({id});
+          }
+          return indexModel.trackers.get(id).readyPromise;
+        }));
       });
     },
     afterCreate() {

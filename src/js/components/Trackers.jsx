@@ -10,11 +10,9 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
     const store = this.props.store;
     const trackers = [];
     store.profile.trackers.forEach(profileTracker => {
-      if (profileTracker.state === 'done') {
-        trackers.push(
-          <ProfileTracker key={profileTracker.id} profileTracker={profileTracker} store={store}/>
-        );
-      }
+      trackers.push(
+        <ProfileTracker key={profileTracker.id} profileTracker={profileTracker} store={store}/>
+      );
     });
     return (
       <div className="tracker__list">
@@ -44,12 +42,12 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
     const store = this.props.store;
     /**@type {ProfileTrackerM}*/
     const profileTracker = this.props.profileTracker;
-
     const tracker = profileTracker.trackerModule;
+
     let icon = null;
     const iconClassList = [];
 
-    const trackerSearch = store.searchFrag && store.searchFrag.getSearchTrackerByTracker(profileTracker);
+    const trackerSearch = store.searchFrag && store.searchFrag.getSearchTrackerByTracker(tracker);
     if (trackerSearch) {
       if (trackerSearch.readyState === 'loading') {
         iconClassList.push('tracker__icon-loading');
@@ -58,13 +56,13 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
       }
     }
 
-    if (tracker && tracker.meta.trackerURL) {
-      const classList = iconClassList.concat(['tracker__icon', getTrackerIconClassName(profileTracker.id), 'tracker__link']);
+    if (tracker.meta.trackerURL) {
+      const classList = iconClassList.concat(['tracker__icon', getTrackerIconClassName(tracker.id), 'tracker__link']);
       icon = (
         <a className={classList.join(' ')} target="_blank" href={tracker.meta.trackerURL}/>
       );
     } else {
-      const classList = iconClassList.concat(['tracker__icon', getTrackerIconClassName(profileTracker.id)]);
+      const classList = iconClassList.concat(['tracker__icon', getTrackerIconClassName(tracker.id)]);
       icon = (
         <div className={classList.join(' ')}/>
       );
@@ -96,8 +94,8 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
     }
 
     let iconUrl = null;
-    if (profileTracker.trackerModule) {
-      iconUrl = JSON.stringify(profileTracker.trackerModule.getIconUrl());
+    if (tracker.isLoaded()) {
+      iconUrl = JSON.stringify(tracker.getIconUrl());
     }
     if (!iconUrl) {
       iconUrl = blankSvg;
@@ -110,10 +108,10 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
     return (
       <div className={classList.join(' ')}>
         {icon}
-        <a className="tracker__name" href={'#' + profileTracker.id}
-           onClick={this.handleClick}>{profileTracker.meta.name}</a>
+        <a className="tracker__name" href={'#' + tracker.id}
+           onClick={this.handleClick}>{tracker.meta.name}</a>
         {extraInfo}
-        <style>{`.${getTrackerIconClassName(profileTracker.id)}{background-image:url(${iconUrl})}`}</style>
+        <style>{`.${getTrackerIconClassName(tracker.id)}{background-image:url(${iconUrl})}`}</style>
       </div>
     );
   }

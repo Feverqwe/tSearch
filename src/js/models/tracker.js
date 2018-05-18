@@ -1,5 +1,11 @@
 import {types, getSnapshot} from "mobx-state-tree";
 import TrackerWorker from "../tools/trackerWorker";
+import promisifyApi from "../tools/promisifyApi";
+import loadTrackerModule from "../tools/loadTrackerModule";
+import getTrackersJson from "../tools/getTrackersJson";
+
+const debug = require('debug')('trackerModel');
+const compareVersions = require('compare-versions');
 
 /**
  * @typedef {{}} TrackerM
@@ -9,7 +15,11 @@ import TrackerWorker from "../tools/trackerWorker";
  * @property {TrackerInfoM} info
  * @property {string} code
  * Actions:
+ * @property {function(Object)} assign
  * Views:
+ * @property {Promise} readyPromise
+ * @property {function:Promise} save
+ * @property {function:boolean} isLoaded
  * @property {function:string} getIconUrl
  * @property {function:TrackerWorker} getWorker
  * @property {function} destroyWorker
@@ -47,7 +57,7 @@ import TrackerWorker from "../tools/trackerWorker";
 
 const trackerMetaModel = types.model('trackerMetaModel', {
   name: types.string,
-  version: types.string,
+  version: types.maybe(types.string),
   author: types.maybe(types.string),
   description: types.maybe(types.string),
   homepageURL: types.maybe(types.string),
@@ -58,24 +68,51 @@ const trackerMetaModel = types.model('trackerMetaModel', {
   downloadURL: types.maybe(types.string),
   supportURL: types.maybe(types.string),
   require: types.optional(types.array(types.string), []),
-  connect: types.array(types.string),
+  connect: types.optional(types.array(types.string), []),
 });
 
 const trackerModel = types.model('trackerModel', {
+  state: types.optional(types.string, 'idle'),
   id: types.identifier(types.string),
   meta: trackerMetaModel,
-  info: types.model('trackerInfo', {
+  info: types.optional(types.model('trackerInfo', {
     lastUpdate: types.optional(types.number, 0),
     disableAutoUpdate: types.optional(types.boolean, false),
-  }),
-  code: types.string,
+  }), {}),
+  code: types.maybe(types.string),
+}).preProcessSnapshot(snapshot => {
+  if (!snapshot.meta) {
+    snapshot.meta = {};
+  }
+  if (!snapshot.meta.name) {
+    snapshot.meta.name = snapshot.id;
+  }
+  return snapshot;
 }).actions(/**TrackerM*/self => {
-  return {};
+  return {
+    assign(obj) {
+      Object.assign(self, obj);
+    }
+  };
 }).views(/**TrackerM*/self => {
   let worker = null;
+  let readyPromise = null;
+
+  const mustBeLoaded = () => {
+    if (!self.isLoaded()) {
+      throw new Error('Tracker is not loaded');
+    }
+  };
 
   return {
+    get readyPromise() {
+      return readyPromise;
+    },
+    isLoaded() {
+      return self.state === 'success';
+    },
     getWorker() {
+      mustBeLoaded();
       if (!worker) {
         worker = new TrackerWorker(getSnapshot(self));
       }
@@ -88,16 +125,68 @@ const trackerModel = types.model('trackerModel', {
       }
     },
     getIconUrl() {
+      mustBeLoaded();
       if (self.meta.icon64) {
         return self.meta.icon64;
-      } else
-      if (self.meta.icon) {
+      } else if (self.meta.icon) {
         return self.meta.icon;
       }
       return '';
     },
+    get storageKey() {
+      return `trackerModule_${self.id}`;
+    },
+    save() {
+      const snapshot = JSON.parse(JSON.stringify(self));
+      snapshot.state = undefined;
+      return promisifyApi('chrome.storage.local.set')({[self.storageKey]: snapshot});
+    },
     beforeDestroy() {
       this.destroyWorker();
+    },
+    afterCreate() {
+      self.assign({state: 'loading'});
+      readyPromise = Promise.resolve().then(async () => {
+        const trackersJson = await getTrackersJson();
+
+        const key = self.storageKey;
+        let module = await promisifyApi('chrome.storage.local.get')({
+          [key]: null
+        }).then(storage => storage[key]);
+
+        if (module && trackersJson[self.id]) {
+          let isHigher = true;
+          try {
+            isHigher = compareVersions(trackersJson[self.id], module.meta.version) > 0;
+          } catch (err) {
+            debug('Version compare error', self.id, err);
+          }
+          if (isHigher) {
+            debug('Local module version is higher then in storage', self.id);
+            module = null;
+          }
+        }
+
+        let saveIsStore = false;
+        if (!module) {
+          module = await loadTrackerModule(self.id);
+          saveIsStore = !!module;
+        }
+
+        if (!module) {
+          throw new Error(`Tracker is not found ${self.id}`);
+        }
+
+        self.assign(module);
+        if (saveIsStore) {
+          await self.save();
+        }
+      }).then(() => {
+        self.assign({state: 'success'});
+      }).catch(err => {
+        debug('Loading tracker error', err);
+        self.assign({state: 'error'});
+      });
     },
   };
 });

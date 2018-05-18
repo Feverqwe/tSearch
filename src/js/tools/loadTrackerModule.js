@@ -9,10 +9,6 @@ const loadTrackerModule = id => {
     return {
       id: id,
       meta: getTrackerCodeMeta(response),
-      info: {
-        lastUpdate: 0,
-        disableAutoUpdate: false,
-      },
       code: response,
     }
   }).catch(function (err) {

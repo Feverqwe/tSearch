@@ -230,7 +230,7 @@ const trackerSearchModel = types.model('trackerSearchModel', {
       }
     },
     search() {
-      if (!self.trackerModule) {
+      if (!self.trackerModule.isLoaded()) {
         return Promise.resolve();
       }
       return wrapSearchPromise(self.trackerModule.id, 'search', () => {
@@ -238,7 +238,7 @@ const trackerSearchModel = types.model('trackerSearchModel', {
       });
     },
     searchNext() {
-      if (!self.trackerModule) {
+      if (!self.trackerModule.isLoaded()) {
         return Promise.resolve();
       }
       const nextQuery = self.nextQuery;

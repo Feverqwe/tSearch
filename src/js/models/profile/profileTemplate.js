@@ -29,6 +29,14 @@ const profileTemplateModel = types.model('profileTemplateModel', {
       name: types.string,
       downloadURL: types.maybe(types.string),
     }),
+  }).preProcessSnapshot(snapshot => {
+    if (!snapshot.meta) {
+      snapshot.meta = {};
+    }
+    if (!snapshot.meta.name) {
+      snapshot.meta.name = snapshot.id;
+    }
+    return snapshot;
   })), []),
 }).actions(/**ProfileTemplateM*/self => {
   return {

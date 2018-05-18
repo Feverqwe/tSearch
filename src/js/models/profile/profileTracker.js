@@ -1,5 +1,5 @@
 import trackerModel from '../tracker';
-import {types, resolveIdentifier, getRoot, isAlive} from "mobx-state-tree";
+import {types, resolveIdentifier, getRoot, getSnapshot} from "mobx-state-tree";
 
 const debug = require('debug')('profileTracker');
 
@@ -33,14 +33,13 @@ const debug = require('debug')('profileTracker');
  */
 
 const profileTrackerMetaModel = types.model('profileTrackerMetaModel', {
-  name: types.string,
+  name: types.maybe(types.string),
   downloadURL: types.maybe(types.string),
 });
 
 const profileTrackerModel = types.model('profileTrackerModel', {
-  state: types.optional(types.string, 'idle'), // idle, loading, done
   id: types.identifier(types.string),
-  meta: profileTrackerMetaModel,
+  meta: types.optional(profileTrackerMetaModel, {}),
   selected: types.optional(types.boolean, false),
 }).actions(/**ProfileTrackerM*/self => {
   return {
@@ -49,39 +48,30 @@ const profileTrackerModel = types.model('profileTrackerModel', {
     },
     setSelected(value) {
       self.selected = value;
-    },
-    setState(value) {
-      self.state = value;
     }
   };
 }).views(/**ProfileTrackerM*/self => {
-  let readyPromise = null;
   return {
+    get state() {
+      return self.trackerModule.state;
+    },
     get readyPromise() {
-      return readyPromise;
+      return self.trackerModule.readyPromise;
     },
     get trackerModule() {
       return resolveIdentifier(trackerModel, self, self.id);
     },
     afterCreate() {
-      self.setState('loading');
-      const indexModel = /**IndexM*/getRoot(self);
-      readyPromise = indexModel.loadTrackerModule(self.id).then(() => {
-        if (isAlive(self) && self.trackerModule) {
-          self.trackerModule.getWorker();
-        }
-      }, err => {
-        debug('loadTrackerModule error', self.id, err);
-      }).then(() => {
-        if (isAlive(self)) {
-          self.setState('done');
-        }
-      });
+      if (!self.trackerModule) {
+        const indexModel = /**IndexM*/getRoot(self);
+        indexModel.putTrackerModule({
+          id: self.id,
+          meta: getSnapshot(self.meta)
+        });
+      }
     },
     beforeDestroy() {
-      if (self.trackerModule) {
-        self.trackerModule.destroyWorker();
-      }
+      self.trackerModule.destroyWorker();
     },
   };
 });
