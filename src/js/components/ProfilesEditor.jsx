@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import blankSvg from '../../img/blank.svg';
 import {observer} from "mobx-react/index";
+import {getSnapshot} from "mobx-state-tree";
 
 const debug = require('debug')('ProfilesEditor');
 const Sortable = require('sortablejs');
@@ -226,7 +227,10 @@ const Sortable = require('sortablejs');
     }
   }
   render() {
-    const profile = /**@type ProfileTemplateM*/this.props.profile;
+    /**@type IndexM*/
+    const store = this.props.store;
+    /**@type ProfileTemplateM*/
+    const profile = this.props.profile;
 
     const filterItems = ['all', 'withoutList', 'selected'].map(type => {
       const classList = ['filter__item'];
@@ -242,10 +246,20 @@ const Sortable = require('sortablejs');
       );
     });
 
+    const existsIds = [];
     const trackers = profile.trackers.map(trackerTemplate => {
+      const tracker = trackerTemplate.getModule();
+      existsIds.push(tracker.id);
       return (
-        <TrackerTemplateItem key={trackerTemplate.id} {...this.props} trackerTemplate={trackerTemplate}/>
+        <TrackerTemplateItem key={tracker.id} {...this.props} tracker={tracker} checked={true}/>
       );
+    });
+    store.getAllTrackerModules().forEach(tracker => {
+      if (existsIds.indexOf(tracker.id) === -1) {
+        trackers.push(
+          <TrackerTemplateItem key={tracker.id} {...this.props} tracker={tracker} checked={false}/>
+        );
+      }
     });
 
     return (
@@ -284,9 +298,8 @@ const Sortable = require('sortablejs');
 
 @observer class TrackerTemplateItem extends React.Component {
   render() {
-    const indexModel = /**@type IndexM*/this.props.store;
-    const trackerTemplate = /**@type ProfileTemplateTrackerM*/this.props.trackerTemplate;
-    const tracker = /**@type TrackerM*/indexModel.getTrackerModel(trackerTemplate.id);
+    /**@type TrackerM*/
+    const tracker = this.props.tracker;
 
     const classList = ['item'];
     if (0) {
@@ -329,7 +342,7 @@ const Sortable = require('sortablejs');
       <div className={classList.join(' ')} data-id={tracker.id}>
         <div className="item__move"/>
         <div className="item__checkbox">
-          <input type="checkbox" defaultChecked={true}/>
+          <input type="checkbox" defaultChecked={this.props.checked}/>
         </div>
         <img className="item__icon" src={icon}/>
         <div className="item__name">{name}</div>

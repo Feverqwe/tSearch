@@ -21,7 +21,7 @@ const oneLimit = promiseLimit(1);
  * @typedef {{}} IndexM
  * Model:
  * @property {ProfileM} profile
- * @property {ProfileM[]} profiles
+ * @property {ProfileTemplateM[]} profiles
  * @property {Map<string,TrackerM>} trackers
  * @property {SearchFormM} searchForm
  * @property {SearchFragM} searchFrag
@@ -35,7 +35,6 @@ const oneLimit = promiseLimit(1);
  * @property {function(string)} createSearch
  * @property {function} clearSearch
  * @property {function(string)} setProfile
- * @property {function(TrackerM)} putTrackerModule
  * @property {function(string)} removeProfile
  * @property {function(string, string)} setTrackerState
  * @property {function} createProfileEditor
@@ -47,7 +46,10 @@ const oneLimit = promiseLimit(1);
  * @property {Object} localStore
  * @property {function} onProfileChange
  * @property {function} afterCreate
+ * @property {function(string):TrackerM} getTrackerModel
+ * @property {function:TrackerM[]} getAllTrackerModules
  * @property {function(string)} changeProfile
+ * @property {function(string, [Object])} initTrackerModule
  * @property {function(string, string, string)} moveProfile
  */
 
@@ -87,8 +89,10 @@ const indexModel = types.model('indexModel', {
         self.profile = getSnapshot(profileItem);
       }
     },
-    putTrackerModule(module) {
-      self.trackers.put(module);
+    initTrackerModule(id, template) {
+      if (!self.trackers.has(id)) {
+        self.trackers.put(template || {id});
+      }
     },
     removeProfile(name) {
       const profile = self.getProfileTemplate(name);
@@ -131,12 +135,41 @@ const indexModel = types.model('indexModel', {
     getTrackerModel(id) {
       return self.trackers.get(id);
     },
-    createTrackerModel(template) {
-      self.putTrackerModule(template);
-      return self.getTrackerModel(template.id);
+    getAllTrackerModules() {
+      return Array.from(self.trackers.values());
     },
     get localStore() {
       return localStore;
+    },
+    changeProfile(name) {
+      self.setProfile(name);
+      return self.saveProfile();
+    },
+    moveProfile(index, prevIndex, nextIndex) {
+      const profiles = self.profiles.slice(0);
+      const item = profiles[index];
+      const prevItem = profiles[prevIndex];
+      const nextItem = profiles[nextIndex];
+
+      profiles.splice(index, 1);
+
+      if (prevItem) {
+        const pos = profiles.indexOf(prevItem);
+        if (pos !== -1) {
+          profiles.splice(pos + 1, 0, item);
+        }
+      } else
+      if (nextItem) {
+        const pos = profiles.indexOf(nextItem);
+        if (pos !== -1) {
+          profiles.splice(pos, 0, item);
+        }
+      } else {
+        profiles.push(item);
+      }
+
+      self.setProfiles(profiles);
+      return self.saveProfiles();
     },
     afterCreate() {
       self.setState('loading');
@@ -178,36 +211,6 @@ const indexModel = types.model('indexModel', {
         debug('index load error', err);
         self.setState('error');
       });
-    },
-    changeProfile(name) {
-      self.setProfile(name);
-      return self.saveProfile();
-    },
-    moveProfile(index, prevIndex, nextIndex) {
-      const profiles = self.profiles.slice(0);
-      const item = profiles[index];
-      const prevItem = profiles[prevIndex];
-      const nextItem = profiles[nextIndex];
-
-      profiles.splice(index, 1);
-
-      if (prevItem) {
-        const pos = profiles.indexOf(prevItem);
-        if (pos !== -1) {
-          profiles.splice(pos + 1, 0, item);
-        }
-      } else
-      if (nextItem) {
-        const pos = profiles.indexOf(nextItem);
-        if (pos !== -1) {
-          profiles.splice(pos, 0, item);
-        }
-      } else {
-        profiles.push(item);
-      }
-
-      self.setProfiles(profiles);
-      return self.saveProfiles();
     },
   };
 });

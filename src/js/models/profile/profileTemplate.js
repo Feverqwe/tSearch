@@ -1,4 +1,4 @@
-import {types, getParent} from "mobx-state-tree";
+import {types, getSnapshot, getParent, getRoot} from "mobx-state-tree";
 
 /**
  * @typedef {{}} ProfileTemplateM
@@ -19,6 +19,7 @@ import {types, getParent} from "mobx-state-tree";
  * @property {{name:string,[downloadURL]:string}} meta
  * Actions:
  * Views:
+ * @property {function:TrackerM} getModule
  */
 
 const profileTemplateModel = types.model('profileTemplateModel', {
@@ -37,6 +38,15 @@ const profileTemplateModel = types.model('profileTemplateModel', {
       snapshot.meta.name = snapshot.id;
     }
     return snapshot;
+  }).views(self => {
+    return {
+      getModule() {
+        /**@type IndexM*/
+        const indexModel = getRoot(self);
+        indexModel.initTrackerModule(self.id, getSnapshot(self));
+        return indexModel.getTrackerModel(self.id);
+      }
+    };
   })), []),
 }).actions(/**ProfileTemplateM*/self => {
   return {
@@ -54,7 +64,8 @@ const profileTemplateModel = types.model('profileTemplateModel', {
       return map;
     },
     moveTracker(id, prevId, nextId) {
-      const indexModel = /**@type IndexM*/getParent(self, 2);
+      /**@type IndexM*/
+      const indexModel = getParent(self, 2);
       const list = self.trackers.slice(0);
       const map = self.getTrackerMap();
 

@@ -8,21 +8,25 @@ const debug = require('debug')('profileEditorModel');
 /**
  * @typedef {{}} ProfileEditorM
  * Model:
+ * @property {string} state
  * Actions:
+ * @property {function(Object)} assign
  * Views:
+ * @property {function:Promise} loadAllTrackers
  */
 
 const profileEditorModel = types.model('profileEditorModel', {
   state: types.optional(types.string, 'idle'),
-}).actions(/**PageM*/self => {
+}).actions(/**ProfileEditorM*/self => {
   return {
     assign(obj) {
       Object.assign(self, obj);
     },
   };
-}).views(self => {
+}).views(/**ProfileEditorM*/self => {
   return {
     loadAllTrackers() {
+      const /**IndexM*/indexModel = getParent(self, 1);
       return promisifyApi('chrome.storage.local.get')(null).then(storage => {
         return Object.keys(storage).filter(key => /^trackerModule_/.test(key)).map(key => /^trackerModule_(.+)$/.exec(key)[1]);
       }).then(storageTrackerIds => {
@@ -30,12 +34,22 @@ const profileEditorModel = types.model('profileEditorModel', {
           return _unic([...storageTrackerIds, ...Object.keys(trackers)]);
         });
       }).then(trackerIds => {
-        const indexModel = /**IndexM*/getParent(self, 1);
         return Promise.all(trackerIds.map(id => {
-          if (!indexModel.trackers.has(id)) {
-            indexModel.putTrackerModule({id});
-          }
-          return indexModel.trackers.get(id).readyPromise;
+          indexModel.initTrackerModule(id);
+          return indexModel.getTrackerModel(id).readyPromise;
+        }));
+      }).then(() => {
+        const trackerIds = [];
+        indexModel.profiles.forEach(profile => {
+          profile.trackers.forEach(trackerTemplate => {
+            const tracker = trackerTemplate.getModule();
+            if (!trackerIds.includes(tracker.id)) {
+              trackerIds.push(tracker.id);
+            }
+          });
+        });
+        return Promise.all(trackerIds.map(id => {
+          return indexModel.getTrackerModel(id).readyPromise;
         }));
       });
     },
