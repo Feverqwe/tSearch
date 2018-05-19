@@ -22,6 +22,7 @@ import {types, getSnapshot, getParent, getRoot} from "mobx-state-tree";
  * @property {{name:string,[downloadURL]:string}} meta
  * Actions:
  * Views:
+ * @property {function:TrackerM} initModule
  * @property {function:TrackerM} getModule
  */
 
@@ -43,10 +44,15 @@ const profileTemplateModel = types.model('profileTemplateModel', {
     return snapshot;
   }).views(self => {
     return {
-      getModule() {
+      initModule() {
         /**@type IndexM*/
         const indexModel = getRoot(self);
         indexModel.initTrackerModule(self.id, getSnapshot(self));
+      },
+      getModule() {
+        /**@type IndexM*/
+        const indexModel = getRoot(self);
+        self.initModule();
         return indexModel.getTrackerModel(self.id);
       }
     };
@@ -100,6 +106,8 @@ const profileTemplateModel = types.model('profileTemplateModel', {
       const map = self.getTrackerMap();
 
       const item = map.get(id);
+      if (!item) return;
+
       const prevItem = map.get(prevId);
       const nextItem = map.get(nextId);
 

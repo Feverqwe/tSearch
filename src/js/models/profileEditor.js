@@ -12,6 +12,8 @@ const debug = require('debug')('profileEditorModel');
  * Actions:
  * @property {function(Object)} assign
  * Views:
+ * @property {function} initProfilesTrackers
+ * @property {function:Promise} initAllTrackers
  * @property {function:Promise} loadAllTrackers
  */
 
@@ -25,7 +27,15 @@ const profileEditorModel = types.model('profileEditorModel', {
   };
 }).views(/**ProfileEditorM*/self => {
   return {
-    loadAllTrackers() {
+    initProfilesTrackers() {
+      const /**IndexM*/indexModel = getParent(self, 1);
+      indexModel.profiles.forEach(profile => {
+        profile.trackers.forEach(trackerTemplate => {
+          trackerTemplate.initModule();
+        });
+      });
+    },
+    initAllTrackers() {
       const /**IndexM*/indexModel = getParent(self, 1);
       return promisifyApi('chrome.storage.local.get')(null).then(storage => {
         return Object.keys(storage).filter(key => /^trackerModule_/.test(key)).map(key => /^trackerModule_(.+)$/.exec(key)[1]);
@@ -34,23 +44,16 @@ const profileEditorModel = types.model('profileEditorModel', {
           return _unic([...storageTrackerIds, ...Object.keys(trackers)]);
         });
       }).then(trackerIds => {
-        return Promise.all(trackerIds.map(id => {
+        trackerIds.forEach(id => {
           indexModel.initTrackerModule(id);
-          return indexModel.getTrackerModel(id).readyPromise;
-        }));
-      }).then(() => {
-        const trackerIds = [];
-        indexModel.profiles.forEach(profile => {
-          profile.trackers.forEach(trackerTemplate => {
-            const tracker = trackerTemplate.getModule();
-            if (!trackerIds.includes(tracker.id)) {
-              trackerIds.push(tracker.id);
-            }
-          });
         });
-        return Promise.all(trackerIds.map(id => {
-          return indexModel.getTrackerModel(id).readyPromise;
-        }));
+      });
+    },
+    loadAllTrackers() {
+      const /**IndexM*/indexModel = getParent(self, 1);
+      return self.initAllTrackers().then(() => {
+        self.initProfilesTrackers();
+        return Promise.all(indexModel.getAllTrackerModules().map(tracker => tracker.readyPromise));
       });
     },
     afterCreate() {
