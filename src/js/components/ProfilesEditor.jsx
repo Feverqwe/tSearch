@@ -188,6 +188,7 @@ const Sortable = require('sortablejs');
     super();
 
     this.refTrackers = this.refTrackers.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
   }
   refTrackers(node) {
     if (!node) {
@@ -226,6 +227,15 @@ const Sortable = require('sortablejs');
       });
     }
   }
+  handleSelect(checked, tracker) {
+    /**@type ProfileTemplateM*/
+    const profile = this.props.profile;
+    if (checked) {
+      profile.addTracker(tracker);
+    } else {
+      profile.removeTracker(tracker.id);
+    }
+  }
   render() {
     /**@type IndexM*/
     const store = this.props.store;
@@ -251,13 +261,13 @@ const Sortable = require('sortablejs');
       const tracker = trackerTemplate.getModule();
       existsIds.push(tracker.id);
       return (
-        <TrackerTemplateItem key={tracker.id} {...this.props} tracker={tracker} checked={true}/>
+        <TrackerTemplateItem key={tracker.id} {...this.props} tracker={tracker} checked={true} onSelect={this.handleSelect}/>
       );
     });
     store.getAllTrackerModules().forEach(tracker => {
       if (existsIds.indexOf(tracker.id) === -1) {
         trackers.push(
-          <TrackerTemplateItem key={tracker.id} {...this.props} tracker={tracker} checked={false}/>
+          <TrackerTemplateItem key={tracker.id} {...this.props} tracker={tracker} checked={false} onSelect={this.handleSelect}/>
         );
       }
     });
@@ -297,6 +307,27 @@ const Sortable = require('sortablejs');
 }
 
 @observer class TrackerTemplateItem extends React.Component {
+  constructor() {
+    super();
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
+  }
+  handleChange(e) {
+    e.stopPropagation();
+
+    this.props.onSelect(this.refs.checkbox.checked, this.props.tracker);
+  }
+  handleToggle(e) {
+    if (
+      e.target === this.refs.item ||
+      e.target.classList.contains('item__name')
+    ) {
+      e.preventDefault();
+      this.refs.checkbox.checked = !this.refs.checkbox.checked;
+      this.handleChange(e);
+    }
+  }
   render() {
     /**@type TrackerM*/
     const tracker = this.props.tracker;
@@ -339,10 +370,10 @@ const Sortable = require('sortablejs');
     }
 
     return (
-      <div className={classList.join(' ')} data-id={tracker.id}>
+      <div ref={'item'} className={classList.join(' ')} data-id={tracker.id} onClick={this.handleToggle}>
         <div className="item__move"/>
         <div className="item__checkbox">
-          <input type="checkbox" defaultChecked={this.props.checked}/>
+          <input ref={'checkbox'} type="checkbox" defaultChecked={this.props.checked} onChange={this.handleChange}/>
         </div>
         <img className="item__icon" src={icon}/>
         <div className="item__name">{name}</div>

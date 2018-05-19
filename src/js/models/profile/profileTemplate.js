@@ -7,8 +7,11 @@ import {types, getSnapshot, getParent, getRoot} from "mobx-state-tree";
  * @property {ProfileTemplateTrackerM[]} trackers
  * Actions:
  * @property {function(ProfileTemplateTrackerM[])} setTrackers
+ * @property {function(TrackerM)} addTracker
+ * @property {function(string)} removeTracker
  * Views:
  * @property {function:Map<string,ProfileTemplateTrackerM>} getTrackerMap
+ * @property {function:string[]} getTrackerIds
  * @property {function(string,string,string):Promise} moveTracker
  */
 
@@ -52,10 +55,36 @@ const profileTemplateModel = types.model('profileTemplateModel', {
   return {
     setTrackers(trackers) {
       self.trackers = trackers;
-    }
+    },
+    addTracker(tracker) {
+      const trackerTemplate = self.getTrackerMap().get(tracker.id);
+      if (!trackerTemplate) {
+        self.trackers.push({
+          id: tracker.id,
+          meta: {
+            name: tracker.name,
+            downloadURL: tracker.meta.downloadURL
+          }
+        });
+      }
+      return self.save();
+    },
+    removeTracker(trackerId) {
+      const trackerTemplate = self.getTrackerMap().get(trackerId);
+      const pos = self.trackers.indexOf(trackerTemplate);
+      if (pos !== -1) {
+        self.trackers.splice(pos, 1);
+      }
+      return self.save();
+    },
   };
 }).views(/**ProfileTemplateM*/self => {
   return {
+    save() {
+      /**@type IndexM*/
+      const indexModel = getParent(self, 2);
+      return indexModel.saveProfiles();
+    },
     getTrackerMap() {
       const map = new Map();
       self.trackers.forEach(trackerTemplate => {
@@ -63,9 +92,10 @@ const profileTemplateModel = types.model('profileTemplateModel', {
       });
       return map;
     },
+    getTrackerIds() {
+      return self.trackers.map(tracker => tracker.id);
+    },
     moveTracker(id, prevId, nextId) {
-      /**@type IndexM*/
-      const indexModel = getParent(self, 2);
       const list = self.trackers.slice(0);
       const map = self.getTrackerMap();
 
@@ -93,7 +123,7 @@ const profileTemplateModel = types.model('profileTemplateModel', {
       }
 
       self.setTrackers(list);
-      return indexModel.saveProfiles();
+      return self.save();
     },
   };
 });
