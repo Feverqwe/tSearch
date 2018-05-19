@@ -302,7 +302,7 @@ const Sortable = require('sortablejs');
     const tracker = this.props.tracker;
 
     const classList = ['item'];
-    if (0) {
+    if (this.props.checked) {
       classList.push('item__selected');
     }
 
