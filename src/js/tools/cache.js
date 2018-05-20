@@ -15,6 +15,7 @@ class Cache {
     this._id = id;
     this._storageType = 'local';
     this._cache = null;
+    this._listnersMap = new WeakMap();
   }
 
   /**
@@ -87,7 +88,7 @@ class Cache {
   }
 
   addChangeListener(listener) {
-    chrome.storage.onChanged.addListener((changes, namespace) => {
+    const _listener = (changes, namespace) => {
       if (this._storageType === namespace) {
         const change = changes[this.getKey()];
         if (change) {
@@ -98,11 +99,14 @@ class Cache {
           }
         }
       }
-    });
+    };
+    this._listnersMap.set(listener, _listener);
+    chrome.storage.onChanged.addListener(_listener);
   }
 
   removeChangeListener(listener) {
-    chrome.storage.onChanged.removeListener(listener);
+    const _listener = this._listnersMap.get(listener);
+    chrome.storage.onChanged.removeListener(_listener);
   }
 }
 
