@@ -93,6 +93,9 @@ const profileTemplateModel = types.model('profileTemplateModel', {
     save() {
       /**@type IndexM*/
       const indexModel = getParent(self, 2);
+      if (indexModel.profile.name === self.name) {
+        indexModel.setProfile(self.name);
+      }
       return indexModel.saveProfiles();
     },
     getTrackerMap() {

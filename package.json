@@ -16,6 +16,7 @@
     "jquery": "^3.3.1",
     "lodash.difference": "^4.5.0",
     "lodash.escaperegexp": "^4.1.2",
+    "lodash.isequal": "^4.5.0",
     "lodash.once": "^4.1.1",
     "lodash.throttle": "^4.1.1",
     "lodash.uniq": "^4.5.0",

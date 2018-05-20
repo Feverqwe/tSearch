@@ -12,6 +12,7 @@ import profileTemplateModel from "./profile/profileTemplate";
 import historyModel from "./history";
 import profileEditorModel from "./profileEditor";
 import _uniq from "lodash.uniq";
+import _isEqual from "lodash.isequal";
 
 const debug = require('debug')('indexModel');
 const promiseLimit = require('promise-limit');
@@ -120,6 +121,18 @@ const indexModel = types.model('indexModel', {
     }
   };
 
+  const handleProfilesChangeListener = (changes, namespace) => {
+    if (namespace === 'local') {
+      const change = changes.profiles;
+      if (change) {
+        const profiles = change.newValue;
+        if (!_isEqual(profiles, getSnapshot(self.profiles))) {
+          self.setProfiles(profiles);
+        }
+      }
+    }
+  };
+
   return {
     saveProfile() {
       return oneLimit(() => {
@@ -188,6 +201,8 @@ const indexModel = types.model('indexModel', {
         profiles: [],
         sortByList: [{by: 'quality'}]
       }).then(storage => {
+        chrome.storage.onChanged.addListener(handleProfilesChangeListener);
+
         self.localStore.sortByList = storage.sortByList;
 
         if (!storage.profiles.length) {
