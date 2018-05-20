@@ -151,7 +151,7 @@ const exploreModuleModel = types.model('exploreModuleModel', {
       return snapshot;
     },
     beforeDestroy() {
-      this.destroyWorker();
+      self.destroyWorker();
     }
   };
 });

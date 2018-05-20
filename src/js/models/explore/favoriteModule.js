@@ -41,7 +41,7 @@ const favoriteModuleModel = types.compose('favoriteModuleModel', exploreModuleMo
   return {
     loadCache() {
       if (!cache.isLoaded()) {
-        return this.loadItems();
+        return self.loadItems();
       }
       return Promise.resolve();
     },
@@ -104,6 +104,7 @@ const favoriteModuleModel = types.compose('favoriteModuleModel', exploreModuleMo
     sendCommand() {},
     beforeDestroy() {
       cache.removeChangeListener(handleChangeListener);
+      self.destroyWorker();
     }
   };
 });
