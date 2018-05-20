@@ -1,4 +1,5 @@
 import {types, getSnapshot, getParent, getRoot} from "mobx-state-tree";
+import _difference from "lodash.difference";
 
 /**
  * @typedef {{}} ProfileTemplateM
@@ -12,6 +13,10 @@ import {types, getSnapshot, getParent, getRoot} from "mobx-state-tree";
  * Views:
  * @property {function:Map<string,ProfileTemplateTrackerM>} getTrackerMap
  * @property {function:string[]} getTrackerIds
+ * @property {function(string):TrackerM[]} getTrackersByFilter
+ * @property {function:TrackerM[]} getTrackerModules
+ * @property {function:TrackerM[]} getWithoutList
+ * @property {function:TrackerM[]} getAllTrackerModules
  * @property {function(string,string,string):Promise} moveTracker
  */
 
@@ -100,6 +105,40 @@ const profileTemplateModel = types.model('profileTemplateModel', {
     },
     getTrackerIds() {
       return self.trackers.map(tracker => tracker.id);
+    },
+    getTrackersByFilter(type) {
+      switch (type) {
+        case 'all': {
+          return self.getAllTrackerModules();
+        }
+        case 'selected': {
+          return self.getTrackerModules();
+        }
+        case 'withoutList': {
+          return self.getWithoutList();
+        }
+      }
+    },
+    getWithoutList() {
+      return _difference(self.getAllTrackerModules(), self.getTrackerModules());
+    },
+    getTrackerModules() {
+      const modules = [];
+      self.trackers.forEach(trackerTemplate => {
+        modules.push(trackerTemplate.getModule());
+      });
+      return modules;
+    },
+    getAllTrackerModules() {
+      const modules = self.getTrackerModules();
+      /**@type IndexM*/
+      const indexModel = getRoot(self);
+      indexModel.getAllTrackerModules().forEach(module => {
+        if (modules.indexOf(module) === -1) {
+          modules.push(module);
+        }
+      });
+      return modules;
     },
     moveTracker(id, prevId, nextId) {
       const list = self.trackers.slice(0);

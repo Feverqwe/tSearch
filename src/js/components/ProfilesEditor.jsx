@@ -187,6 +187,10 @@ const Sortable = require('sortablejs');
   constructor() {
     super();
 
+    this.state = {
+      filter: 'selected'
+    };
+
     this.refTrackers = this.refTrackers.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
   }
@@ -203,6 +207,17 @@ const Sortable = require('sortablejs');
     } else {
       // debug('create');
       const self = this;
+
+      // fix sortable bug with checkbox
+      node.getElementsByTagName = ((node, getElementsByTagName) => {
+        return tagName => {
+          if (tagName === 'input') {
+            tagName = 'null-input';
+          }
+          return getElementsByTagName.call(node, tagName);
+        }
+      })(node, node.getElementsByTagName);
+
       this.sortable = new Sortable(node, {
         group: 'trackers',
         handle: '.item__move',
@@ -227,6 +242,12 @@ const Sortable = require('sortablejs');
       });
     }
   }
+  handleFilter(type, e) {
+    e.preventDefault();
+    this.setState({
+      filter: type
+    });
+  }
   handleSelect(checked, tracker) {
     /**@type ProfileTemplateM*/
     const profile = this.props.profile;
@@ -244,32 +265,25 @@ const Sortable = require('sortablejs');
 
     const filterItems = ['all', 'withoutList', 'selected'].map(type => {
       const classList = ['filter__item'];
-      if (type === 'selected') {
+      if (type === this.state.filter) {
         classList.push('item__selected');
       }
+      const count = profile.getTrackersByFilter(type).length;
       return (
-        <a key={type} className={classList.join(' ')} href={'#' + type}>
+        <a key={type} className={classList.join(' ')} onClick={this.handleFilter.bind(this, type)} href={'#'}>
           {chrome.i18n.getMessage('filter_' + type)}
           {' '}
-          <span className="item__count">0</span>
+          <span className="item__count">{count}</span>
         </a>
       );
     });
 
-    const existsIds = [];
-    const trackers = profile.trackers.map(trackerTemplate => {
-      const tracker = trackerTemplate.getModule();
-      existsIds.push(tracker.id);
+    const enabledTrackerIds = profile.getTrackerIds();
+    const trackers = profile.getTrackersByFilter(this.state.filter).map(tracker => {
+      const isEnabled = enabledTrackerIds.indexOf(tracker.id) !== -1;
       return (
-        <TrackerTemplateItem key={tracker.id} {...this.props} tracker={tracker} checked={true} onSelect={this.handleSelect}/>
+        <TrackerTemplateItem key={tracker.id} {...this.props} tracker={tracker} checked={isEnabled} onSelect={this.handleSelect}/>
       );
-    });
-    store.getAllTrackerModules().forEach(tracker => {
-      if (existsIds.indexOf(tracker.id) === -1) {
-        trackers.push(
-          <TrackerTemplateItem key={tracker.id} {...this.props} tracker={tracker} checked={false} onSelect={this.handleSelect}/>
-        );
-      }
     });
 
     return (
