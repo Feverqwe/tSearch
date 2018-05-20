@@ -49,7 +49,13 @@ const Sortable = require('sortablejs');
     let body = null;
     switch (this.props.store.profileEditor.state) {
       case 'loading': {
-        body = ('Loading');
+        body = (
+          <div ref={'body'} className="manager">
+            <div className="manager__header">
+              <div className="header__title">Loading...</div>
+            </div>
+          </div>
+        );
         break;
       }
       case 'done': {
