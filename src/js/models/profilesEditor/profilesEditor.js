@@ -1,4 +1,4 @@
-import {getParent, getSnapshot, getRoot, types} from "mobx-state-tree";
+import {destroy, getParent, getRoot, getSnapshot, types} from "mobx-state-tree";
 import getTrackersJson from "../../tools/getTrackersJson";
 import promisifyApi from "../../tools/promisifyApi";
 import _unic from "lodash.uniq";

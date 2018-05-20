@@ -229,6 +229,7 @@ const Sortable = require('sortablejs');
     this.refTrackers = this.refTrackers.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.handleSave = this.handleSave.bind(this);
+    this.handleChangeName = this.handleChangeName.bind(this);
   }
   refTrackers(node) {
     if (!node) {
@@ -298,6 +299,9 @@ const Sortable = require('sortablejs');
     e.preventDefault();
     this.props.onSave();
   }
+  handleChangeName() {
+    this.props.profile.changeName(this.refs.name.value);
+  }
   render() {
     /**@type IndexM*/
     const store = this.props.store;
@@ -336,7 +340,7 @@ const Sortable = require('sortablejs');
         <div className="manager__body">
           <div className="manager__sub_header sub_header__profile">
             <div className="profile__input">
-              <input className="input__input" type="text" defaultValue={profile.name}/>
+              <input ref={'name'} className="input__input" type="text" defaultValue={profile.name} onChange={this.handleChangeName}/>
             </div>
           </div>
           <div className="manager__sub_header sub_header__filter">

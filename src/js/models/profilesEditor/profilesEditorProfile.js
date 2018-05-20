@@ -1,4 +1,4 @@
-import {getRoot, types, getParent} from "mobx-state-tree";
+import {getRoot, types} from "mobx-state-tree";
 import profileTemplateModel from "../profile/profileTemplate";
 import _difference from "lodash.difference";
 
