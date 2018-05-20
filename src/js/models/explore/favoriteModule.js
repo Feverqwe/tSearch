@@ -34,6 +34,10 @@ const favoriteModuleModel = types.compose('favoriteModuleModel', exploreModuleMo
   const cache = self.getCache();
   cache.setStorageType('sync');
 
+  const handleChangeListener = cacheDate => {
+    self.setItems(cacheDate.data);
+  };
+
   return {
     loadCache() {
       if (!cache.isLoaded()) {
@@ -47,6 +51,7 @@ const favoriteModuleModel = types.compose('favoriteModuleModel', exploreModuleMo
       return cache.getData([]).then(cacheDate => {
         return cacheDate.data;
       }).then(items => {
+        cache.addChangeListener(handleChangeListener);
         self.setItems(items);
         self.setState('ready');
       }).catch(err => {
@@ -96,7 +101,10 @@ const favoriteModuleModel = types.compose('favoriteModuleModel', exploreModuleMo
       self.setItems(items);
       return self.saveItems();
     },
-    sendCommand() {}
+    sendCommand() {},
+    beforeDestroy() {
+      cache.removeChangeListener(handleChangeListener);
+    }
   };
 });
 

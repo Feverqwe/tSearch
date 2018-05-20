@@ -85,6 +85,25 @@ class Cache {
       });
     }).then(() => this._cache);
   }
+
+  addChangeListener(listener) {
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+      if (this._storageType === namespace) {
+        const change = changes[this.getKey()];
+        if (change) {
+          const cacheData = change.newValue;
+          if (this._cache.insertTime !== cacheData) {
+            this._cache = cacheData;
+            listener(this._cache);
+          }
+        }
+      }
+    });
+  }
+
+  removeChangeListener(listener) {
+    chrome.storage.onChanged.removeListener(listener);
+  }
 }
 
 export default Cache;
