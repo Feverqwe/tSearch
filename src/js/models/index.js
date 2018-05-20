@@ -10,7 +10,7 @@ import {destroy, getSnapshot, resolveIdentifier, types} from "mobx-state-tree";
 import promisifyApi from "../tools/promisifyApi";
 import profileTemplateModel from "./profile/profileTemplate";
 import historyModel from "./history";
-import profileEditorModel from "./profileEditor";
+import profilesEditorModel from "./profilesEditor/profilesEditor";
 import _uniq from "lodash.uniq";
 import _isEqual from "lodash.isequal";
 
@@ -31,16 +31,16 @@ const oneLimit = promiseLimit(1);
  * @property {ExploreM} explore
  * @property {PageM[]} page
  * @property {HistoryM[]} history
+ * @property {ProfilesEditorM[]} profilesEditor
  * Actions:
  * @property {function(string)} setState
  * @property {function(ProfileM[])} setProfiles
  * @property {function(string)} createSearch
  * @property {function} clearSearch
  * @property {function(string)} setProfile
- * @property {function(string)} removeProfile
  * @property {function(string, string)} setTrackerState
- * @property {function} createProfileEditor
- * @property {function} destroyProfileEditor
+ * @property {function} createProfilesEditor
+ * @property {function} destroyProfilesEditor
  * Views:
  * @property {function:Promise} saveProfile
  * @property {function:Promise} saveProfiles
@@ -67,7 +67,7 @@ const indexModel = types.model('indexModel', {
   explore: types.optional(exploreModel, {}),
   page: types.optional(page, {}),
   history: types.optional(historyModel, {}),
-  profileEditor: types.maybe(profileEditorModel),
+  profilesEditor: types.maybe(profilesEditorModel),
 }).actions(/**IndexM*/self => {
   return {
     setState(value) {
@@ -97,18 +97,13 @@ const indexModel = types.model('indexModel', {
         self.trackers.put(template || {id});
       }
     },
-    removeProfile(name) {
-      const profile = self.getProfileTemplate(name);
-      if (profile) {
-        destroy(profile);
-      }
-      self.saveProfiles();
+    createProfilesEditor() {
+      self.profilesEditor = {
+        profiles: getSnapshot(self.profiles),
+      };
     },
-    createProfileEditor() {
-      self.profileEditor = {};
-    },
-    destroyProfileEditor() {
-      self.profileEditor = null;
+    destroyProfilesEditor() {
+      self.profilesEditor = null;
     }
   };
 }).views(/**IndexM*/self => {
@@ -167,32 +162,6 @@ const indexModel = types.model('indexModel', {
     changeProfile(name) {
       self.setProfile(name);
       return self.saveProfile();
-    },
-    moveProfile(index, prevIndex, nextIndex) {
-      const profiles = self.profiles.slice(0);
-      const item = profiles[index];
-      const prevItem = profiles[prevIndex];
-      const nextItem = profiles[nextIndex];
-
-      profiles.splice(index, 1);
-
-      if (prevItem) {
-        const pos = profiles.indexOf(prevItem);
-        if (pos !== -1) {
-          profiles.splice(pos + 1, 0, item);
-        }
-      } else
-      if (nextItem) {
-        const pos = profiles.indexOf(nextItem);
-        if (pos !== -1) {
-          profiles.splice(pos, 0, item);
-        }
-      } else {
-        profiles.push(item);
-      }
-
-      self.setProfiles(profiles);
-      return self.saveProfiles();
     },
     afterCreate() {
       self.setState('loading');

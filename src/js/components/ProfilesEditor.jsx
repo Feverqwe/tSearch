@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import blankSvg from '../../img/blank.svg';
 import {observer} from "mobx-react/index";
-import {getSnapshot} from "mobx-state-tree";
 
 const debug = require('debug')('ProfilesEditor');
 const Sortable = require('sortablejs');
@@ -16,17 +15,23 @@ const Sortable = require('sortablejs');
       profile: null
     };
 
+    this.profilesEditor = null;
+
     this.handleClose = this.handleClose.bind(this);
     this.handleBodyClick = this.handleBodyClick.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+    this.handleCreate = this.handleCreate.bind(this);
+    this.handleSave = this.handleSave.bind(this);
   }
   componentWillMount() {
-    this.props.store.createProfileEditor();
+    this.props.store.createProfilesEditor();
+    this.profilesEditor = this.props.store.profilesEditor;
 
     document.body.addEventListener('click', this.handleBodyClick);
   }
   componentWillUnmount() {
-    this.props.store.destroyProfileEditor();
+    this.props.store.destroyProfilesEditor();
+    this.profilesEditor = null;
 
     document.body.removeEventListener('click', this.handleBodyClick);
   }
@@ -41,16 +46,25 @@ const Sortable = require('sortablejs');
       profile: profile
     });
   }
+  handleCreate() {
+    this.setState({
+      page: 'edit',
+      profile: this.profilesEditor.createProfile(),
+    });
+  }
   handleClose(e) {
     e.preventDefault();
     this.props.onClose();
   }
+  handleSave() {
+    this.profilesEditor.save();
+  }
   render() {
     let body = null;
-    switch (this.props.store.profileEditor.state) {
+    switch (this.profilesEditor.state) {
       case 'loading': {
         body = (
-          <div ref={'body'} className="manager">
+          <div className="manager">
             <div className="manager__header">
               <div className="header__title">Loading...</div>
             </div>
@@ -62,16 +76,22 @@ const Sortable = require('sortablejs');
         switch (this.state.page) {
           case 'profiles': {
             body = (
-              <ProfileChooser ref={'page'} {...this.props} profiles={this.props.store.profiles}
+              <ProfileChooser ref={'page'} {...this.props} profilesEditor={this.profilesEditor}
                               onClose={this.handleClose}
-                              onEdit={this.handleEdit}/>
+                              onEdit={this.handleEdit}
+                              onCreate={this.handleCreate}
+                              onSave={this.handleSave}
+              />
             );
             break;
           }
           case 'edit': {
             body = (
-              <ProfileEditor ref={'page'} {...this.props} profile={this.state.profile}
-                             onClose={this.handleClose}/>
+              <ProfileEditor ref={'page'} {...this.props} profilesEditor={this.profilesEditor}
+                             profile={this.state.profile}
+                             onClose={this.handleClose}
+                             onSave={this.handleSave}
+              />
             );
             break;
           }
@@ -87,6 +107,8 @@ const Sortable = require('sortablejs');
     super();
 
     this.refProfiles = this.refProfiles.bind(this);
+    this.handleCreate = this.handleCreate.bind(this);
+    this.handleSave = this.handleSave.bind(this);
 
     this.sortable = null;
   }
@@ -121,14 +143,21 @@ const Sortable = require('sortablejs');
           const prev = prevNode && parseInt(prevNode.dataset.index, 10);
           const next = nextNode && parseInt(nextNode.dataset.index, 10);
 
-          const store = /**IndexM*/self.props.store;
-          store.moveProfile(index, prev, next);
+          self.props.profilesEditor.moveProfile(index, prev, next);
         }
       });
     }
   }
+  handleCreate(e) {
+    e.preventDefault();
+    this.props.onCreate();
+  }
+  handleSave(e) {
+    e.preventDefault();
+    this.props.onSave();
+  }
   render() {
-    const profiles = this.props.profiles.map((/**ProfileM*/profile, index) => (
+    const profiles = this.props.profilesEditor.profiles.map((/**ProfileM*/profile, index) => (
       <ProfileTemplateItem key={index} index={index} profile={profile} {...this.props} onEdit={this.props.onEdit}/>
     ));
 
@@ -140,14 +169,14 @@ const Sortable = require('sortablejs');
         </div>
         <div className="manager__body">
           <div className="manager__sub_header manager__sub_header-profiles">
-            <a className="manager__new_profile" href="#new_profile">{chrome.i18n.getMessage('newProfile')}</a>
+            <a className="manager__new_profile" href="#new_profile" onClick={this.handleCreate}>{chrome.i18n.getMessage('newProfile')}</a>
           </div>
           <div ref={this.refProfiles} className="manager__profiles">
             {profiles}
           </div>
         </div>
         <div className="manager__footer">
-          <a className="button manager__footer__btn">{chrome.i18n.getMessage('save')}</a>
+          <a className="button manager__footer__btn" href="#save" onClick={this.handleSave}>{chrome.i18n.getMessage('save')}</a>
         </div>
       </div>
     );
@@ -169,7 +198,7 @@ const Sortable = require('sortablejs');
     e.preventDefault();
     const /**@type IndexM*/store = this.props.store;
     const /**@type ProfileM*/profile = this.props.profile;
-    store.removeProfile(profile.name);
+    store.profilesEditor.removeProfile(profile);
   }
   render() {
     const /**@type ProfileM*/profile = this.props.profile;
@@ -199,6 +228,7 @@ const Sortable = require('sortablejs');
 
     this.refTrackers = this.refTrackers.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
+    this.handleSave = this.handleSave.bind(this);
   }
   refTrackers(node) {
     if (!node) {
@@ -242,7 +272,8 @@ const Sortable = require('sortablejs');
           const prev = prevNode && prevNode.dataset.id;
           const next = nextNode && nextNode.dataset.id;
 
-          const store = /**IndexM*/self.props.profile;
+          /**@type ProfilesEditorProfileM*/
+          const store = self.props.profile;
           store.moveTracker(current, prev, next);
         }
       });
@@ -255,7 +286,7 @@ const Sortable = require('sortablejs');
     });
   }
   handleSelect(checked, tracker) {
-    /**@type ProfileTemplateM*/
+    /**@type ProfilesEditorProfileM*/
     const profile = this.props.profile;
     if (checked) {
       profile.addTracker(tracker);
@@ -263,10 +294,14 @@ const Sortable = require('sortablejs');
       profile.removeTracker(tracker.id);
     }
   }
+  handleSave(e) {
+    e.preventDefault();
+    this.props.onSave();
+  }
   render() {
     /**@type IndexM*/
     const store = this.props.store;
-    /**@type ProfileTemplateM*/
+    /**@type ProfilesEditorProfileM*/
     const profile = this.props.profile;
 
     const filterItems = ['all', 'withoutList', 'selected'].map(type => {
@@ -317,7 +352,7 @@ const Sortable = require('sortablejs');
           </div>
         </div>
         <div className="manager__footer">
-          <a href="#save" className="button manager__footer__btn">{chrome.i18n.getMessage('save')}</a>
+          <a href="#save" className="button manager__footer__btn" onClick={this.handleSave}>{chrome.i18n.getMessage('save')}</a>
           <a href="#add" className="button manager__footer__btn">{chrome.i18n.getMessage('add')}</a>
           <a href="#createCode" className="button manager__footer__btn">{chrome.i18n.getMessage('createCode')}</a>
         </div>
