@@ -11,6 +11,7 @@ import promisifyApi from "../tools/promisifyApi";
 import profileTemplateModel from "./profile/profileTemplate";
 import historyModel from "./history";
 import profileEditorModel from "./profileEditor";
+import _uniq from "lodash.uniq";
 
 const debug = require('debug')('indexModel');
 const promiseLimit = require('promise-limit');
@@ -47,7 +48,8 @@ const oneLimit = promiseLimit(1);
  * @property {function} onProfileChange
  * @property {function} afterCreate
  * @property {function(string):TrackerM} getTrackerModel
- * @property {function:TrackerM[]} getAllTrackerModules
+ * @property {function:TrackerM[]} getProfilesTrackers
+ * @property {function:TrackerM[]} getTrackerModules
  * @property {function(string)} changeProfile
  * @property {function(string, [Object])} initTrackerModule
  * @property {function(string, string, string)} moveProfile
@@ -135,8 +137,16 @@ const indexModel = types.model('indexModel', {
     getTrackerModel(id) {
       return self.trackers.get(id);
     },
-    getAllTrackerModules() {
-      return Array.from(self.trackers.values());
+    getProfilesTrackers() {
+      const modules = [];
+      /**@type IndexM*/
+      self.profiles.forEach(profile => {
+        return modules.push(...profile.getTrackerModules());
+      });
+      return _uniq(modules);
+    },
+    getTrackerModules() {
+      return _uniq(Array.from(self.trackers.values()), self.getProfilesTrackers());
     },
     get localStore() {
       return localStore;

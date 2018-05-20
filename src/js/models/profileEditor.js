@@ -12,7 +12,6 @@ const debug = require('debug')('profileEditorModel');
  * Actions:
  * @property {function(Object)} assign
  * Views:
- * @property {function} initProfilesTrackers
  * @property {function:Promise} initAllTrackers
  * @property {function:Promise} loadAllTrackers
  */
@@ -27,14 +26,6 @@ const profileEditorModel = types.model('profileEditorModel', {
   };
 }).views(/**ProfileEditorM*/self => {
   return {
-    initProfilesTrackers() {
-      const /**IndexM*/indexModel = getParent(self, 1);
-      indexModel.profiles.forEach(profile => {
-        profile.trackers.forEach(trackerTemplate => {
-          trackerTemplate.initModule();
-        });
-      });
-    },
     initAllTrackers() {
       const /**IndexM*/indexModel = getParent(self, 1);
       return promisifyApi('chrome.storage.local.get')(null).then(storage => {
@@ -52,8 +43,7 @@ const profileEditorModel = types.model('profileEditorModel', {
     loadAllTrackers() {
       const /**IndexM*/indexModel = getParent(self, 1);
       return self.initAllTrackers().then(() => {
-        self.initProfilesTrackers();
-        return Promise.all(indexModel.getAllTrackerModules().map(tracker => tracker.readyPromise));
+        return Promise.all(indexModel.getTrackerModules().map(tracker => tracker.readyPromise));
       });
     },
     afterCreate() {

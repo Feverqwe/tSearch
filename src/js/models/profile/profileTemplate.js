@@ -15,8 +15,7 @@ import _difference from "lodash.difference";
  * @property {function:string[]} getTrackerIds
  * @property {function(string):TrackerM[]} getTrackersByFilter
  * @property {function:TrackerM[]} getTrackerModules
- * @property {function:TrackerM[]} getWithoutList
- * @property {function:TrackerM[]} getAllTrackerModules
+ * @property {function:TrackerM[]} getTrackerModulesWithoutList
  * @property {function(string,string,string):Promise} moveTracker
  */
 
@@ -109,34 +108,27 @@ const profileTemplateModel = types.model('profileTemplateModel', {
     getTrackersByFilter(type) {
       switch (type) {
         case 'all': {
-          return self.getAllTrackerModules();
+          /**@type IndexM*/
+          const indexModel = getRoot(self);
+          return indexModel.getTrackerModules();
         }
         case 'selected': {
           return self.getTrackerModules();
         }
         case 'withoutList': {
-          return self.getWithoutList();
+          return self.getTrackerModulesWithoutList();
         }
       }
     },
-    getWithoutList() {
-      return _difference(self.getAllTrackerModules(), self.getTrackerModules());
+    getTrackerModulesWithoutList() {
+      /**@type IndexM*/
+      const indexModel = getRoot(self);
+      return _difference(indexModel.getTrackerModules(), indexModel.getProfilesTrackers());
     },
     getTrackerModules() {
       const modules = [];
       self.trackers.forEach(trackerTemplate => {
         modules.push(trackerTemplate.getModule());
-      });
-      return modules;
-    },
-    getAllTrackerModules() {
-      const modules = self.getTrackerModules();
-      /**@type IndexM*/
-      const indexModel = getRoot(self);
-      indexModel.getAllTrackerModules().forEach(module => {
-        if (modules.indexOf(module) === -1) {
-          modules.push(module);
-        }
       });
       return modules;
     },
