@@ -1,14 +1,12 @@
-import moment from "moment/moment";
 import filesize from 'filesize';
 import highlight from "../../tools/highlight";
 import rate from "../../tools/rate";
 import {types, isAlive, resolveIdentifier} from "mobx-state-tree";
 import trackerModel from "../tracker";
 import getTrackerIconClassName from "../../tools/getTrackerIconClassName";
+import {unixTimeToFromNow, unixTimeToString} from "../../tools/unixTimeTo";
 
 const debug = require('debug')('trackerSearch');
-
-moment.locale(chrome.i18n.getUILanguage());
 
 /**
  * @typedef {{}} TrackerSearchM
@@ -61,13 +59,6 @@ moment.locale(chrome.i18n.getUILanguage());
  * Actions:
  * Views:
  */
-
-const unixTimeToString = function (unixtime) {
-  return unixtime <= 0 ? '∞' : moment(unixtime * 1000).format('lll');
-};
-const unixTimeToFromNow = function (unixtime) {
-  return unixtime <= 0 ? '∞' : moment(unixtime * 1000).fromNow();
-};
 
 /**
  * @typedef {{}} TrackerResultModelTrackerInfoM
