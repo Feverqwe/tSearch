@@ -96,6 +96,8 @@ const favoriteModuleModel = types.compose('favoriteModuleModel', exploreModuleMo
         if (pos !== -1) {
           items.splice(pos, 0, item);
         }
+      } else {
+        items.push(item);
       }
 
       self.setItems(items);
