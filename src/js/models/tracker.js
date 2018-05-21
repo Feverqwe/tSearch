@@ -167,10 +167,10 @@ const trackerModel = types.model('trackerModel', {
           }
         }
 
-        let saveIsStore = false;
+        let saveInStore = false;
         if (!module) {
           module = await loadTrackerModule(self.id);
-          saveIsStore = !!module;
+          saveInStore = !!module;
         }
 
         if (!module) {
@@ -178,7 +178,7 @@ const trackerModel = types.model('trackerModel', {
         }
 
         self.assign(module);
-        if (saveIsStore) {
+        if (saveInStore) {
           await self.save();
         }
       }).then(() => {

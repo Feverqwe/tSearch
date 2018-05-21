@@ -1,12 +1,14 @@
 import moduleModel from "./module";
-import {types, applySnapshot, getSnapshot} from "mobx-state-tree";
+import {applySnapshot, getSnapshot, types} from "mobx-state-tree";
 import promisifyApi from "../../tools/promisifyApi";
 import sectionModel from "./section";
 import favoriteModuleModel from "./favoriteModule";
 import loadExploreModule from "../../tools/loadExploreModule";
+import getExplorersJson from "../../tools/getExplorersJson";
 
 const debug = require('debug')('explore');
 const promiseLimit = require('promise-limit');
+const compareVersions = require('compare-versions');
 
 const limitOne = promiseLimit(1);
 
@@ -87,18 +89,37 @@ const exploreModel = types.model('exploreModel', {
 
       let module = self.modules.get(id);
       if (!module) {
+        const explorersJson = getExplorersJson();
+
         const key = `exploreModule_${id}`;
         module = await promisifyApi('chrome.storage.local.get')({
           [key]: null
         }).then(storage => storage[key]);
-        if (!module) {
-          module = await loadExploreModule(id);
-          if (module) {
-            await promisifyApi('chrome.storage.local.set')({[key]: module});
+
+        if (module && explorersJson[id]) {
+          let isHigher = true;
+          try {
+            isHigher = compareVersions(explorersJson[id], module.meta.version) > 0;
+          } catch (err) {
+            debug('Version compare error', id, err);
+          }
+          if (isHigher) {
+            debug('Local module version is higher then in storage', id);
+            module = null;
           }
         }
+
+        let saveInStore = false;
+        if (!module) {
+          module = await loadExploreModule(id);
+          saveInStore = !!module;
+        }
+
         if (module) {
           self.putModule(module);
+          if (saveInStore) {
+            await promisifyApi('chrome.storage.local.set')({[key]: module});
+          }
         }
       }
       return module;

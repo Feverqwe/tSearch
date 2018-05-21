@@ -2,9 +2,10 @@
   "name": "TMS",
   "version": "1.0.0",
   "scripts": {
+    "buildExplorersJson": "babel-node --presets env buildExplorersJson.js",
     "buildTrackersJson": "babel-node --presets env buildTrackersJson.js",
-    "watch": "npm run buildTrackersJson && webpack --mode development --watch --config webpack.config.js",
-    "build": "npm run buildTrackersJson && webpack --mode production --config webpack.config.js"
+    "watch": "npm run buildTrackersJson && npm run buildExplorersJson && webpack --mode development --watch --config webpack.config.js",
+    "build": "npm run buildTrackersJson && npm run buildExplorersJson && webpack --mode production --config webpack.config.js"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
