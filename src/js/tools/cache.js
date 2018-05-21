@@ -1,4 +1,5 @@
 import promisifyApi from "./promisifyApi";
+import _isEqual from "lodash.isequal";
 
 const promiseLimit = require('promise-limit');
 
@@ -93,7 +94,7 @@ class Cache {
         const change = changes[this.getKey()];
         if (change) {
           const cacheData = change.newValue;
-          if (this._cache.insertTime !== cacheData) {
+          if (!_isEqual(cacheData, this._cache)) {
             this._cache = cacheData;
             listener(this._cache);
           }
