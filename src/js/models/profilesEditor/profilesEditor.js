@@ -10,13 +10,16 @@ const debug = require('debug')('profilesEditorModel');
  * @typedef {{}} ProfilesEditorM
  * Model:
  * @property {string} state
- * @property {ProfileTemplateM[]} profiles
+ * @property {ProfilesEditorProfileM[]} profiles
  * Actions:
  * @property {function(Object)} assign
- * @property {function(ProfileTemplateM)} removeProfile
+ * @property {function(ProfilesEditorProfileM)} removeProfile
  * Views:
+ * @property {function:Map<string, ProfilesEditorProfileM>} getProfileMap
+ * @property {function:Promise} save
  * @property {function:Promise} initAllTrackers
  * @property {function:Promise} loadAllTrackers
+ * @property {function(number,number,number)} moveProfile
  */
 
 const profilesEditorModel = types.model('profilesEditorModel', {
@@ -46,11 +49,24 @@ const profilesEditorModel = types.model('profilesEditorModel', {
         debug('loadAllTrackers error', err);
       });
     },
+    getProfileMap() {
+      const map = new Map();
+      self.profiles.forEach(profile => {
+        map.set(profile.name, profile);
+      });
+      return map;
+    },
     save() {
       /**@type IndexM*/
       const indexModel = getRoot(self);
+      const profileMap = self.getProfileMap();
       indexModel.setProfiles(getSnapshot(self.profiles));
-      indexModel.setProfile(indexModel.profile.name);
+      let currentProfileName = indexModel.profile.name;
+      if (self.profiles.length && !profileMap.has(currentProfileName)) {
+        const profile = self.profiles[0];
+        currentProfileName = profile && profile.name;
+      }
+      indexModel.setProfile(currentProfileName);
       return indexModel.saveProfiles();
     },
     initAllTrackers() {
