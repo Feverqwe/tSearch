@@ -1,5 +1,5 @@
 import {StatusCodeError, AbortError} from '../tools/errors';
-import escapeRegExp from 'lodash.escaperegexp';
+import _escapeRegExp from 'lodash.escaperegexp';
 import {types, isAlive, getRoot} from "mobx-state-tree";
 import promisifyApi from "../tools/promisifyApi";
 
@@ -87,7 +87,7 @@ const searchFormModel = types.model('searchFormModel', {
       let suggestions = history.map(item => item.query).filter(query => query.length);
 
       if (value) {
-        const queryRe = new RegExp('^' + escapeRegExp(value), 'i');
+        const queryRe = new RegExp('^' + _escapeRegExp(value), 'i');
         suggestions = suggestions.filter(value => queryRe.test(value));
       }
 

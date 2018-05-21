@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import blankSvg from '../../img/blank.svg';
 import {observer} from "mobx-react/index";
+import _escapeRegExp from "lodash.escaperegexp";
 
 const debug = require('debug')('ProfilesEditor');
 const Sortable = require('sortablejs');
@@ -56,8 +57,10 @@ const Sortable = require('sortablejs');
     e.preventDefault();
     this.props.onClose();
   }
-  handleSave() {
+  handleSave(e) {
+    e.preventDefault();
     this.profilesEditor.save();
+    this.props.onClose();
   }
   render() {
     let body = null;
@@ -108,7 +111,6 @@ const Sortable = require('sortablejs');
 
     this.refProfiles = this.refProfiles.bind(this);
     this.handleCreate = this.handleCreate.bind(this);
-    this.handleSave = this.handleSave.bind(this);
 
     this.sortable = null;
   }
@@ -152,10 +154,6 @@ const Sortable = require('sortablejs');
     e.preventDefault();
     this.props.onCreate();
   }
-  handleSave(e) {
-    e.preventDefault();
-    this.props.onSave();
-  }
   render() {
     const profiles = this.props.profilesEditor.profiles.map((/**ProfileM*/profile, index) => (
       <ProfileTemplateItem key={index} index={index} profile={profile} {...this.props} onEdit={this.props.onEdit}/>
@@ -176,7 +174,7 @@ const Sortable = require('sortablejs');
           </div>
         </div>
         <div className="manager__footer">
-          <a className="button manager__footer__btn" href="#save" onClick={this.handleSave}>{chrome.i18n.getMessage('save')}</a>
+          <a className="button manager__footer__btn" href="#save" onClick={this.props.onSave}>{chrome.i18n.getMessage('save')}</a>
         </div>
       </div>
     );
@@ -223,13 +221,14 @@ const Sortable = require('sortablejs');
     super();
 
     this.state = {
-      filter: 'selected'
+      filter: 'selected',
+      searchRe: null,
     };
 
     this.refTrackers = this.refTrackers.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
-    this.handleSave = this.handleSave.bind(this);
     this.handleChangeName = this.handleChangeName.bind(this);
+    this.handleSearchChange = this.handleSearchChange.bind(this);
   }
   refTrackers(node) {
     if (!node) {
@@ -295,12 +294,18 @@ const Sortable = require('sortablejs');
       profile.removeTracker(tracker.id);
     }
   }
-  handleSave(e) {
-    e.preventDefault();
-    this.props.onSave();
-  }
   handleChangeName() {
     this.props.profile.changeName(this.refs.name.value);
+  }
+  handleSearchChange() {
+    const text = this.refs.search.value;
+    let re = null;
+    if (text) {
+      re = new RegExp(_escapeRegExp(text), 'i');
+    }
+    this.setState({
+      searchRe: re
+    });
   }
   render() {
     /**@type IndexM*/
@@ -324,7 +329,22 @@ const Sortable = require('sortablejs');
     });
 
     const enabledTrackerIds = profile.getTrackerIds();
-    const trackers = profile.getTrackersByFilter(this.state.filter).map(tracker => {
+    const trackers = profile.getTrackersByFilter(this.state.filter).filter(tracker => {
+      if (this.state.searchRe) {
+        return this.state.searchRe.test([
+          tracker.id,
+          tracker.meta.name,
+          tracker.meta.author,
+          tracker.meta.description,
+          tracker.meta.homepageURL,
+          tracker.meta.trackerURL,
+          tracker.meta.updateURL,
+          tracker.meta.downloadURL,
+          tracker.meta.supportURL,
+        ].join(' '));
+      }
+      return true;
+    }).map(tracker => {
       const isEnabled = enabledTrackerIds.indexOf(tracker.id) !== -1;
       return (
         <TrackerTemplateItem key={tracker.id} {...this.props} tracker={tracker} checked={isEnabled} onSelect={this.handleSelect}/>
@@ -346,8 +366,9 @@ const Sortable = require('sortablejs');
           <div className="manager__sub_header sub_header__filter">
             <div className="filter__box">{filterItems}</div>
             <div className="filter__search">
-              <input className="input__input filter__input" type="text"
+              <input ref={'search'} className="input__input filter__input" type="text"
                      placeholder={chrome.i18n.getMessage('quickSearch')}
+                     onChange={this.handleSearchChange}
               />
             </div>
           </div>
@@ -356,7 +377,7 @@ const Sortable = require('sortablejs');
           </div>
         </div>
         <div className="manager__footer">
-          <a href="#save" className="button manager__footer__btn" onClick={this.handleSave}>{chrome.i18n.getMessage('save')}</a>
+          <a href="#save" className="button manager__footer__btn" onClick={this.props.onSave}>{chrome.i18n.getMessage('save')}</a>
           <a href="#add" className="button manager__footer__btn">{chrome.i18n.getMessage('add')}</a>
           <a href="#createCode" className="button manager__footer__btn">{chrome.i18n.getMessage('createCode')}</a>
         </div>
