@@ -47,6 +47,7 @@ const profilesEditorModel = types.model('profilesEditorModel', {
         self.assign({state: 'done'});
       }).catch(err => {
         debug('loadAllTrackers error', err);
+        self.assign({state: 'error'});
       });
     },
     getProfileByName(name) {
