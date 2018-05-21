@@ -187,6 +187,7 @@ const Sortable = require('sortablejs');
 
     this.handleRemove = this.handleRemove.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+    this.handleNameClick = this.handleNameClick.bind(this);
   }
   handleEdit(e) {
     e.preventDefault();
@@ -198,11 +199,19 @@ const Sortable = require('sortablejs');
     const /**@type ProfileM*/profile = this.props.profile;
     store.profilesEditor.removeProfile(profile);
   }
+  handleNameClick(e) {
+    if (
+      e.target === this.refs.item ||
+      e.target.classList.contains('item__name')
+    ) {
+      this.handleEdit(e);
+    }
+  }
   render() {
     const /**@type ProfileM*/profile = this.props.profile;
 
     return (
-      <div key={profile.name} data-index={this.props.index} className="item">
+      <div key={profile.name} ref={'item'} data-index={this.props.index} className="item" onClick={this.handleNameClick}>
         <div className="item__move"/>
         <div className="item__name">{profile.name}</div>
         <a className="item__cell item__button button-edit"
