@@ -117,7 +117,7 @@ const indexModel = types.model('indexModel', {
   };
 
   const handleProfilesChangeListener = (changes, namespace) => {
-    if (namespace === 'local') {
+    if (namespace === 'sync') {
       const change = changes.profiles;
       if (change) {
         const profiles = change.newValue;
@@ -136,7 +136,7 @@ const indexModel = types.model('indexModel', {
     },
     saveProfiles() {
       return oneLimit(() => {
-        promisifyApi('chrome.storage.local.set')({profiles: getSnapshot(self.profiles)});
+        promisifyApi('chrome.storage.sync.set')({profiles: getSnapshot(self.profiles)});
       });
     },
     getProfileTemplate(name) {
@@ -165,10 +165,16 @@ const indexModel = types.model('indexModel', {
     },
     afterCreate() {
       self.setState('loading');
-      promisifyApi('chrome.storage.local.get')({
-        profile: null,
-        profiles: [],
-        sortByList: [{by: 'quality'}]
+      Promise.all([
+        promisifyApi('chrome.storage.local.get')({
+          profile: null,
+          sortByList: [{by: 'quality'}]
+        }),
+        promisifyApi('chrome.storage.sync.get')({
+          profiles: []
+        }),
+      ]).then(storages => {
+        return Object.assign({}, ...storages);
       }).then(storage => {
         chrome.storage.onChanged.addListener(handleProfilesChangeListener);
 
