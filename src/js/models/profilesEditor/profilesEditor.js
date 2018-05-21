@@ -15,7 +15,7 @@ const debug = require('debug')('profilesEditorModel');
  * @property {function(Object)} assign
  * @property {function(ProfilesEditorProfileM)} removeProfile
  * Views:
- * @property {function:Map<string, ProfilesEditorProfileM>} getProfileMap
+ * @property {function(string):ProfilesEditorProfileM} getProfileByName
  * @property {function:Promise} save
  * @property {function:Promise} initAllTrackers
  * @property {function:Promise} loadAllTrackers
@@ -49,22 +49,25 @@ const profilesEditorModel = types.model('profilesEditorModel', {
         debug('loadAllTrackers error', err);
       });
     },
-    getProfileMap() {
-      const map = new Map();
-      self.profiles.forEach(profile => {
-        map.set(profile.name, profile);
+    getProfileByName(name) {
+      let result = null;
+      self.profiles.some(profile => {
+        if (profile.name === name) {
+          result = profile;
+          return true;
+        }
       });
-      return map;
+      return result;
     },
     save() {
       /**@type IndexM*/
       const indexModel = getRoot(self);
-      const profileMap = self.getProfileMap();
       indexModel.setProfiles(getSnapshot(self.profiles));
       let currentProfileName = indexModel.profile.name;
-      if (self.profiles.length && !profileMap.has(currentProfileName)) {
-        const profile = self.profiles[0];
-        currentProfileName = profile && profile.name;
+      if (!self.getProfileByName(currentProfileName)) {
+        if (self.profiles.length) {
+          currentProfileName = self.profiles[0].name;
+        }
       }
       indexModel.setProfile(currentProfileName);
       return indexModel.saveProfiles();
