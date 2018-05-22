@@ -4,6 +4,7 @@ import promisifyApi from "../tools/promisifyApi";
 import loadTrackerModule from "../tools/loadTrackerModule";
 import getTrackersJson from "../tools/getTrackersJson";
 import getTrackerCodeMeta from "../tools/getTrackerCodeMeta";
+import _isEqual from "lodash.isequal";
 
 const debug = require('debug')('trackerModel');
 const compareVersions = require('compare-versions');
@@ -21,9 +22,11 @@ const compareVersions = require('compare-versions');
  * Views:
  * @property {Promise} readyPromise
  * @property {function:Promise} save
+ * @property {function:Object} getSnapshot
  * @property {function(string)} setCode
  * @property {function:boolean} isLoaded
  * @property {function:string} getIconUrl
+ * @property {string} storageKey
  * @property {function:TrackerWorker} getWorker
  * @property {function} destroyWorker
  */
@@ -106,6 +109,21 @@ const trackerModel = types.model('trackerModel', {
   let worker = null;
   let readyPromise = null;
 
+  const handleTrackerChangeListener = (changes, namespace) => {
+    if (namespace === 'local') {
+      const change = changes[self.storageKey];
+      if (change) {
+        const module = change.newValue;
+        if (!_isEqual(module, self.getSnapshot())) {
+          debug('Sync with storage', self.id);
+          self.destroyWorker();
+          self.assign(module);
+          self.assign({state: 'success'});
+        }
+      }
+    }
+  };
+
   const mustBeLoaded = () => {
     if (!self.isLoaded()) {
       throw new Error('Tracker is not loaded');
@@ -125,7 +143,7 @@ const trackerModel = types.model('trackerModel', {
     getWorker() {
       mustBeLoaded();
       if (!worker) {
-        worker = new TrackerWorker(getSnapshot(self));
+        worker = new TrackerWorker(self.getSnapshot(self));
       }
       return worker;
     },
@@ -147,19 +165,19 @@ const trackerModel = types.model('trackerModel', {
     get storageKey() {
       return `trackerModule_${self.id}`;
     },
+    getSnapshot() {
+      const snapshot = Object.assign({}, getSnapshot(self));
+      delete snapshot.state;
+      return snapshot;
+    },
     save() {
-      const snapshot = JSON.parse(JSON.stringify(self));
-      snapshot.state = undefined;
-      return promisifyApi('chrome.storage.local.set')({[self.storageKey]: snapshot});
+      return promisifyApi('chrome.storage.local.set')({[self.storageKey]: self.getSnapshot()});
     },
     setCode(code) {
       self.assign({
         meta: getTrackerCodeMeta(code),
         code: code
       });
-    },
-    beforeDestroy() {
-      this.destroyWorker();
     },
     afterCreate() {
       self.assign({state: 'loading'});
@@ -203,7 +221,13 @@ const trackerModel = types.model('trackerModel', {
       }).catch(err => {
         debug('Loading tracker error', err);
         self.assign({state: 'error'});
+      }).then(() => {
+        chrome.storage.onChanged.addListener(handleTrackerChangeListener);
       });
+    },
+    beforeDestroy() {
+      chrome.storage.onChanged.removeListener(handleTrackerChangeListener);
+      this.destroyWorker();
     },
   };
 });
