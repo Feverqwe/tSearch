@@ -1,6 +1,5 @@
 import React from 'react';
 import {observer} from 'mobx-react';
-import exploreStyle from '../../../css/explore.less';
 import Dialog from "../Dialog";
 
 const debug = require('debug')('Explore');
