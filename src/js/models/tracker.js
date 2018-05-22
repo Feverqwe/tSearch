@@ -1,4 +1,4 @@
-import {types, getSnapshot} from "mobx-state-tree";
+import {types, getSnapshot, applySnapshot} from "mobx-state-tree";
 import TrackerWorker from "../tools/trackerWorker";
 import promisifyApi from "../tools/promisifyApi";
 import loadTrackerModule from "../tools/loadTrackerModule";
@@ -117,8 +117,13 @@ const trackerModel = types.model('trackerModel', {
         if (!_isEqual(module, self.getSnapshot())) {
           debug('Sync with storage', self.id);
           self.destroyWorker();
-          self.assign(module);
-          self.assign({state: 'success'});
+          if (module) {
+            applySnapshot(self, module);
+            self.assign({state: 'success'});
+          } else {
+            applySnapshot(self, {id: self.id});
+            self.assign({state: 'error'});
+          }
         }
       }
     }
@@ -182,7 +187,7 @@ const trackerModel = types.model('trackerModel', {
     afterCreate() {
       self.assign({state: 'loading'});
       readyPromise = Promise.resolve().then(async () => {
-        const trackersJson = await getTrackersJson();
+        const trackersJson = getTrackersJson();
 
         const key = self.storageKey;
         let module = await promisifyApi('chrome.storage.local.get')({
