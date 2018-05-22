@@ -1,36 +1,35 @@
 const jsonToUserscript = json => {
-  const code = [];
   const meta = [];
-  meta.unshift('==UserScript==');
-  meta.push(['@name', json.title].join(' '));
+  meta.push('==UserScript==');
+  meta.push(`@name ${json.title}`);
   if (json.desc) {
-    meta.push(['@description', json.desc].join(' '));
+    meta.push(`@description ${json.desc}`);
   }
   if (json.icon) {
-    meta.push(['@icon', json.icon].join(' '));
+    meta.push(`@icon ${json.icon}`);
   }
   if (json.downloadUrl) {
-    meta.push(['@downloadURL', json.downloadUrl].join(' '));
+    meta.push(`@downloadURL ${json.downloadUrl}`);
   }
   const hostname = /\/\/([^\/]+)/.exec(json.search.searchUrl);
   if (hostname) {
-    meta.push(['@connect', '*://'+hostname[1]+'/*'].join(' '));
+    meta.push(`@connect *://${hostname[1]}`);
   }
   if (json.search.baseUrl) {
-    meta.push(['@trackerURL', json.search.baseUrl].join(' '));
+    meta.push(`@trackerURL ${json.search.baseUrl}`);
   }
   if (json.tVersion) {
-    meta.push(['@version', json.tVersion].join(' '));
+    meta.push(`@version ${json.tVersion}`);
   } else {
-    meta.push(['@version', '1.0'].join(' '));
+    meta.push(`@version 1.0`);
   }
-  meta.push(['@require', 'exKit'].join(' '));
+  meta.push('@require exKit');
   meta.push('==/UserScript==');
-  code.push.apply(code, meta.map(function (line) {
-    return ['//', line].join(' ');
-  }));
+
+  const code = [];
+  code.push(...meta.map(line => `// ${line}`));
   code.push('');
-  code.push('var code = ' + JSON.stringify(json, null, 2) + ';');
+  code.push(`var code = ${JSON.stringify(json, null, 2)};`);
   code.push('');
   code.push('API_exKit(code);');
   return code.join('\n');
