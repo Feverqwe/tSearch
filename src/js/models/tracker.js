@@ -10,6 +10,7 @@ const compareVersions = require('compare-versions');
 /**
  * @typedef {{}} TrackerM
  * Model:
+ * @property {string} state
  * @property {string} id
  * @property {TrackerMetaM} meta
  * @property {TrackerInfoM} info
@@ -81,11 +82,13 @@ const trackerModel = types.model('trackerModel', {
   }), {}),
   code: types.maybe(types.string),
 }).preProcessSnapshot(snapshot => {
-  if (!snapshot.meta) {
-    snapshot.meta = {};
-  }
-  if (!snapshot.meta.name) {
-    snapshot.meta.name = snapshot.id;
+  if (snapshot) {
+    if (!snapshot.meta) {
+      snapshot.meta = {};
+    }
+    if (!snapshot.meta.name) {
+      snapshot.meta.name = snapshot.id;
+    }
   }
   return snapshot;
 }).actions(/**TrackerM*/self => {

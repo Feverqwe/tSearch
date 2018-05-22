@@ -5,6 +5,7 @@ import {observer} from "mobx-react/index";
 import _escapeRegExp from "lodash.escaperegexp";
 
 const debug = require('debug')('ProfilesEditor');
+const qs = require('querystring');
 const Sortable = require('sortablejs');
 
 @observer class ProfilesEditor extends React.Component {
@@ -458,6 +459,10 @@ const Sortable = require('sortablejs');
       );
     }
 
+    const editUrl = 'editor.html#' + qs.stringify({
+      trackerId: tracker.id
+    });
+
     return (
       <div ref={'item'} className={classList.join(' ')} data-id={tracker.id} onClick={this.handleToggle}>
         <div className="item__move"/>
@@ -471,7 +476,7 @@ const Sortable = require('sortablejs');
         {supportBtn}
         {homepageBtn}
         {author}
-        <a className="item__cell item__button button-edit" href="#edit" title={chrome.i18n.getMessage('edit')}/>
+        <a className="item__cell item__button button-edit" href={editUrl} target="_blank" title={chrome.i18n.getMessage('edit')}/>
         <a className="item__cell item__button button-remove" href="#remove" title={chrome.i18n.getMessage('remove')}/>
       </div>
     );
