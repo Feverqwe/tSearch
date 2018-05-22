@@ -1,6 +1,7 @@
 import React from 'react';
 import {observer} from 'mobx-react';
 import Dialog from "../Dialog";
+import '../../../css/explore.less';
 
 const debug = require('debug')('Explore');
 const Sortable = require('sortablejs');
