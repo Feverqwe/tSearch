@@ -135,6 +135,7 @@ require('codemirror/addon/selection/active-line');
       await store.module.save();
       this.setState({saveState: 'success'});
     } catch(err) {
+      alert('Save code error: \n' + err.stack);
       debug('handleSave error', err);
       this.setState({saveState: 'error'});
     }
