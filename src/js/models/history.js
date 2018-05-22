@@ -184,11 +184,11 @@ const historyModel = types.model('historyModel', {
       return readyPromise = promisifyApi('chrome.storage.local.get')({
         history: {}
       }).then(storage => {
-        chrome.storage.onChanged.addListener(handleHistoryChangeListener);
         self.assign(storage);
       }).catch(err => {
         debug('afterCreate error', err);
       }).then(() => {
+        chrome.storage.onChanged.addListener(handleHistoryChangeListener);
         self.assign({state: 'done'});
       });
     },
