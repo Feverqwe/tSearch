@@ -404,6 +404,7 @@ const Sortable = require('sortablejs');
 
     this.handleChange = this.handleChange.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
   }
   handleChange(e) {
     e.stopPropagation();
@@ -419,6 +420,12 @@ const Sortable = require('sortablejs');
       this.refs.checkbox.checked = !this.refs.checkbox.checked;
       this.handleChange(e);
     }
+  }
+  handleRemove(e) {
+    e.preventDefault();
+    /**@type TrackerM*/
+    const tracker = this.props.tracker;
+    tracker.remove();
   }
   render() {
     /**@type TrackerM*/
@@ -477,7 +484,7 @@ const Sortable = require('sortablejs');
         {homepageBtn}
         {author}
         <a className="item__cell item__button button-edit" href={editUrl} target="_blank" title={chrome.i18n.getMessage('edit')}/>
-        <a className="item__cell item__button button-remove" href="#remove" title={chrome.i18n.getMessage('remove')}/>
+        <a onClick={this.handleRemove} className="item__cell item__button button-remove" href="#remove" title={chrome.i18n.getMessage('remove')}/>
       </div>
     );
   }

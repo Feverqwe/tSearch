@@ -1,4 +1,4 @@
-import {types, getSnapshot, applySnapshot} from "mobx-state-tree";
+import {applySnapshot, getSnapshot, types} from "mobx-state-tree";
 import TrackerWorker from "../tools/trackerWorker";
 import promisifyApi from "../tools/promisifyApi";
 import loadTrackerModule from "../tools/loadTrackerModule";
@@ -19,9 +19,11 @@ const compareVersions = require('compare-versions');
  * @property {string} code
  * Actions:
  * @property {function(Object)} assign
+ * @property {function(boolean)} setAutoUpdate
  * Views:
  * @property {Promise} readyPromise
  * @property {function:Promise} save
+ * @property {function:Promise} remove
  * @property {function:Object} getSnapshot
  * @property {function(string)} setCode
  * @property {function:boolean} isLoaded
@@ -177,6 +179,9 @@ const trackerModel = types.model('trackerModel', {
     },
     save() {
       return promisifyApi('chrome.storage.local.set')({[self.storageKey]: self.getSnapshot()});
+    },
+    remove() {
+      return promisifyApi('chrome.storage.local.remove')([self.storageKey]);
     },
     setCode(code) {
       self.assign({
