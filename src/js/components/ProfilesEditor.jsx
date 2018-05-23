@@ -361,6 +361,8 @@ const Sortable = require('sortablejs');
       );
     });
 
+    const newUrl = 'editor.html#/tracker';
+
     return (
       <div ref={'body'} className="manager">
         <div className="manager__header">
@@ -388,7 +390,7 @@ const Sortable = require('sortablejs');
         </div>
         <div className="manager__footer">
           <a href="#save" className="button manager__footer__btn" onClick={this.props.onSave}>{chrome.i18n.getMessage('save')}</a>
-          <a href="#add" className="button manager__footer__btn">{chrome.i18n.getMessage('add')}</a>
+          <a href={newUrl} target="_blank" className="button manager__footer__btn">{chrome.i18n.getMessage('add')}</a>
           <a href="#createCode" className="button manager__footer__btn">{chrome.i18n.getMessage('createCode')}</a>
         </div>
       </div>

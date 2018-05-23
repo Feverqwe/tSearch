@@ -10,6 +10,7 @@ import jsonToUserscript from "./tools/jsonToUserscript";
 import {HashRouter, Route} from 'react-router-dom';
 
 const debug = require('debug')('editor');
+const uuid = require('uuid/v4');
 const CodeMirror = require('codemirror');
 require('codemirror/mode/javascript/javascript');
 require('codemirror/addon/edit/matchbrackets');
@@ -21,12 +22,20 @@ require('codemirror/addon/selection/active-line');
   render() {
     return (
       <HashRouter>
-        <Route path="/:type/:id" component={observer(props => {
-          const {type, id} = props.match.params;
-          return (
-            <LoaderEditor key={[type, id].join(':')} type={type} id={id} {...this.props} {...props}/>
-          );
-        })}/>
+        <div>
+          <Route exact path="/:type" component={observer(props => {
+            const id = uuid();
+            const type = props.match.params.type;
+            props.history.replace(`/${type}/${id}`);
+            return null;
+          })}/>
+          <Route path="/:type/:id" component={observer(props => {
+            const {type, id} = props.match.params;
+            return (
+              <LoaderEditor key={[type, id].join(':')} type={type} id={id} {...this.props} {...props}/>
+            );
+          })}/>
+        </div>
       </HashRouter>
     );
   }

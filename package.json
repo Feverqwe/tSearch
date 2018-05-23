@@ -37,7 +37,8 @@
     "requirejs": "^2.3.5",
     "requires-port": "^1.0.0",
     "serialize-error": "^2.1.0",
-    "sortablejs": "^1.7.0"
+    "sortablejs": "^1.7.0",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
