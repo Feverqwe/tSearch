@@ -7,6 +7,7 @@ import "../css/editor.less";
 import Dialog from "./components/Dialog";
 import exKit from "./sandbox/exKit";
 import jsonToUserscript from "./tools/jsonToUserscript";
+import {HashRouter, Route} from 'react-router-dom';
 
 const debug = require('debug')('editor');
 const CodeMirror = require('codemirror');
@@ -18,23 +19,65 @@ require('codemirror/addon/selection/active-line');
 
 @observer class EditorPage extends React.Component {
   render() {
-    let content = null;
-    switch (this.props.store.state) {
-      case 'loading': {
-        content = ('Loading...');
-        break;
-      }
-      case 'done': {
-        content = (
-          <Editor {...this.props}/>
-        );
-        break;
-      }
+    return (
+      <HashRouter>
+        <Route path="/:type/:id" component={observer(props => {
+          const {type, id} = props.match.params;
+          return (
+            <LoaderEditor key={[type, id].join(':')} type={type} id={id} {...this.props} {...props}/>
+          );
+        })}/>
+      </HashRouter>
+    );
+  }
+}
+
+@observer class LoaderEditor extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+      error: false
+    };
+
+    this.store = null;
+  }
+  componentWillMount() {
+    try {
+      this.store = editorModel.create({
+        module: {
+          moduleType: this.props.type,
+          id: this.props.id
+        }
+      });
+    } catch (err) {
+      this.setState({
+        error: true
+      });
+    }
+  }
+  componentWillUnmount() {
+    if (this.store) {
+      this.store.destroy();
+      this.store = null;
+    }
+  }
+  render() {
+    if (this.state.error) {
+      return ('Loading error');
     }
 
-    return (
-      content
-    );
+    switch (this.store.state) {
+      case 'loading': {
+        return ('Loading...');
+      }
+      case 'done': {
+        return (
+          <Editor {...this.props} store={this.store}/>
+        );
+      }
+    }
+    return null;
   }
 }
 
@@ -45,6 +88,8 @@ require('codemirror/addon/selection/active-line');
     this.state = {
       saveState: 'idle',
       addCodeDialog: false,
+      default: null,
+      hasChanges: false,
     };
 
     this.refTextarea = this.refTextarea.bind(this);
@@ -55,12 +100,22 @@ require('codemirror/addon/selection/active-line');
     this.handleDialogSave = this.handleDialogSave.bind(this);
     this.handleDialogCancel = this.handleDialogCancel.bind(this);
     this.handleDialogClose = this.handleDialogClose.bind(this);
+    this.handleTextareaChange = this.handleTextareaChange.bind(this);
 
     this.editor = null;
+  }
+  componentWillMount() {
+    this.state.default = this.getDefault();
+  }
+  getDefault() {
+    const /**EditorM*/store = this.props.store;
+    const /**TrackerM*/module = store.module;
+    return JSON.stringify([module.code, module.info]);
   }
   refTextarea(node) {
     if (!node) {
       if (this.editor) {
+        this.editor.off('change', this.handleTextareaChange);
         this.editor.toTextArea();
         this.editor = null;
       }
@@ -85,7 +140,15 @@ require('codemirror/addon/selection/active-line');
           }
         }
       });
+      this.editor.on('change', this.handleTextareaChange);
     }
+  }
+  handleTextareaChange() {
+    const /**EditorM*/store = this.props.store;
+
+    store.module.setCode(this.editor.getValue());
+
+    this.checkChanges();
   }
   handleDialogSave(e) {
     e.preventDefault();
@@ -122,17 +185,18 @@ require('codemirror/addon/selection/active-line');
     });
   }
   async handleSave(e) {
-    if (e) {
-      e.preventDefault();
-    }
+    e && e.preventDefault();
 
     if (this.state.saveState === 'loading') return;
 
     const /**EditorM*/store = this.props.store;
     try {
       this.setState({saveState: 'loading'});
-      store.module.setCode(this.editor.getValue());
+      this.handleAutoUpdateChange();
+      this.handleTextareaChange();
       await store.module.save();
+      this.state.default = this.getDefault();
+      this.checkChanges();
       this.setState({saveState: 'success'});
     } catch(err) {
       alert('Save code error: \n' + err.stack);
@@ -140,31 +204,45 @@ require('codemirror/addon/selection/active-line');
       this.setState({saveState: 'error'});
     }
   }
-  async handleClose(e) {
+  handleClose(e) {
     e.preventDefault();
-    window.close();
-  }
-  async handleAutoUpdateChange() {
-    const /**EditorM*/store = this.props.store;
 
-    if (this.state.saveState === 'loading') return;
-
-    try {
-      this.setState({saveState: 'loading'});
-      store.module.setAutoUpdate(this.refs.autoUpdate.checked);
-      await store.module.save();
-      this.setState({saveState: 'success'});
-    } catch(err) {
-      debug('handleAutoUpdateChange error', err);
-      this.setState({saveState: 'error'});
+    if (!this.state.hasChanges || confirm("Sure?")) {
+      window.close();
     }
+  }
+  handleAutoUpdateChange() {
+    const /**EditorM*/store = this.props.store;
+    store.module.setAutoUpdate(this.refs.autoUpdate.checked);
+
+    this.checkChanges();
+  }
+  checkChanges() {
+    const hasChanges = this.state.default !== this.getDefault();
+    this.setState({
+      hasChanges
+    });
+  }
+  getDefaultCode() {
+    const meta = [];
+    meta.push('==UserScript==');
+    meta.push(`@name New Tracker`);
+    meta.push(`@version 1.0`);
+    meta.push(`@connect *://localhost`);
+    meta.push('==/UserScript==');
+
+    const code = [];
+    code.push(...meta.map(line => ['//', line].join(' ')));
+    code.push('');
+    return code.join('\n');
   }
   render() {
     const /**EditorM*/store = this.props.store;
+    const /**TrackerM*/module = store.module;
 
-    let code = store.module.code;
-    if (store.module.state === 'error') {
-      // some default value
+    let code = module.code;
+    if (module.state === 'error') {
+      code = this.getDefaultCode();
     }
 
     let saveBtn = null;
@@ -178,7 +256,7 @@ require('codemirror/addon/selection/active-line');
         classList.push('error');
       }
       saveBtn = (
-        <a onClick={this.handleSave} href="#save" className={classList.join(' ')}>{chrome.i18n.getMessage('save')}</a>
+        <a onClick={this.handleSave} href="#save" className={classList.join(' ')}>{chrome.i18n.getMessage('save')}{this.state.hasChanges ? '*' : ''}</a>
       );
     }
 
@@ -203,7 +281,7 @@ require('codemirror/addon/selection/active-line');
         <div className="editor__head">
           <div className="head__options">
             <label>
-              <input ref={'autoUpdate'} onChange={this.handleAutoUpdateChange} type="checkbox" className="option__auto-update" checked={store.module.isAutoUpdate}/>
+              <input ref={'autoUpdate'} type="checkbox" className="option__auto-update" defaultChecked={module.isAutoUpdate} onChange={this.handleAutoUpdateChange}/>
               <span>{chrome.i18n.getMessage('autoUpdate')}</span>
             </label>
           </div>
@@ -222,4 +300,4 @@ require('codemirror/addon/selection/active-line');
   }
 }
 
-window.app = ReactDOM.render(<EditorPage store={editorModel.create()}/>, document.getElementById('root'));
+window.app = ReactDOM.render(<EditorPage/>, document.getElementById('root'));

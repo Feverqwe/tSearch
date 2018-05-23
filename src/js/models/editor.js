@@ -1,4 +1,4 @@
-import {types} from "mobx-state-tree";
+import {types, destroy} from "mobx-state-tree";
 import trackerModel from "./tracker";
 
 const qs = require('querystring');
@@ -13,17 +13,27 @@ const debug = require('debug')('editorModel');
  * @property {function(Object)} assign
  * Views:
  * @property {Promise} readyPromise
- * @property {function(RegExp):Array} getTitleHighlightMap
+ * @property {function(string)} loadTracker
+ * @property {function} destroy
  */
 
 const editorModel = types.model('editorModel', {
   state: types.optional(types.string, 'idle'), // idle, loading, done
-  module: types.maybe(trackerModel),
+  module: types.union(snapshot => {
+    switch (snapshot.moduleType) {
+      case 'tracker': {
+        return trackerModel;
+      }
+    }
+  }, trackerModel),
 }).actions(/**EditorM*/self => {
   return {
     assign(obj) {
       Object.assign(self, obj);
     },
+    setModule(obj) {
+      self.module = obj;
+    }
   };
 }).views(/**EditorM*/self => {
   let readyPromise = null;
@@ -34,17 +44,14 @@ const editorModel = types.model('editorModel', {
     },
     afterCreate() {
       self.assign({state: 'loading'});
-      const uri = new URL(location.href);
-      const query = qs.parse(uri.hash.substr(1));
-      self.assign({module: trackerModel.create({
-        moduleType: 'tracker',
-        id: query.trackerId
-      })});
       return readyPromise = self.module.readyPromise.catch(err => {
         debug('afterCreate error', err);
       }).then(() => {
         self.assign({state: 'done'});
       });
+    },
+    destroy() {
+      destroy(self);
     }
   };
 });

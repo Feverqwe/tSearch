@@ -459,9 +459,7 @@ const Sortable = require('sortablejs');
       );
     }
 
-    const editUrl = 'editor.html#' + qs.stringify({
-      trackerId: tracker.id
-    });
+    const editUrl = 'editor.html#/tracker/' + tracker.id;
 
     return (
       <div ref={'item'} className={classList.join(' ')} data-id={tracker.id} onClick={this.handleToggle}>
