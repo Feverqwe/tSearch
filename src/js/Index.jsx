@@ -8,7 +8,7 @@ import {observer} from 'mobx-react';
 import ProfileSelect from './components/ProfileSelect';
 import ScrollTop from './components/ScrollTop';
 import Trackers from './components/Trackers';
-import {HashRouter, Route, Link} from 'react-router-dom';
+import {HashRouter, Route, Link, withRouter} from 'react-router-dom';
 import SearchFrag from './components/SearchFrag';
 import Explore from "./components/Explore";
 
@@ -17,25 +17,31 @@ const qs = require('querystring');
 
 
 @observer class Index extends React.Component {
+  constructor() {
+    super();
+
+    this.RouterRender = withRouter(observer(this.RouterRender.bind(this)));
+  }
+  RouterRender(props) {
+    switch (this.props.store.state) {
+      case 'loading': {
+        return ('Loading...');
+      }
+      case 'error': {
+        return ('Error');
+      }
+      case 'ready': {
+        return (
+          <Main {...this.props} {...props}/>
+        );
+      }
+    }
+    return null;
+  }
   render() {
     return (
       <HashRouter>
-        <Route component={observer(props => {
-          switch (this.props.store.state) {
-            case 'loading': {
-              return ('Loading...');
-            }
-            case 'error': {
-              return ('Error');
-            }
-            case 'ready': {
-              return (
-                <Main {...this.props} {...props}/>
-              );
-            }
-          }
-          return null;
-        })}/>
+        <this.RouterRender/>
       </HashRouter>
     );
   }
