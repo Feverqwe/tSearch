@@ -42,6 +42,22 @@ const qs = require('querystring');
 }
 
 @observer class Main extends React.Component {
+  constructor() {
+    super();
+
+    this.routeExploreRender = this.routeExploreRender.bind(this);
+    this.routeSearchRender = this.routeSearchRender.bind(this);
+  }
+  routeExploreRender(props) {
+    return (
+      <Explore {...this.props} {...props}/>
+    );
+  }
+  routeSearchRender(props) {
+    return (
+      <SearchFrag {...this.props} {...props}/>
+    );
+  }
   render() {
     return (
       <div>
@@ -70,16 +86,8 @@ const qs = require('querystring');
             <Filters store={this.props.store}/>
           </div>
           <div className="main">
-            <Route exact path="/" component={props => {
-              return (
-                <Explore store={this.props.store} {...props}/>
-              );
-            }}/>
-            <Route path="/search" component={props => {
-              return (
-                <SearchFrag store={this.props.store} {...props}/>
-              );
-            }}/>
+            <Route exact path="/" render={this.routeExploreRender}/>
+            <Route path="/search" render={this.routeSearchRender}/>
           </div>
         </div>
         <ScrollTop key="scroll_top"/>
