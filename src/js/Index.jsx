@@ -2,7 +2,7 @@ import Filters from "./components/Filters";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import '../css/index.less';
-import {SearchForm_} from './components/SearchForm';
+import SearchForm from './components/searchForm/SearchForm';
 import indexModel from './models/index';
 import {observer} from 'mobx-react';
 import ProfileSelect from './components/ProfileSelect';
@@ -53,6 +53,7 @@ const qs = require('querystring');
 
     this.routeExploreRender = this.routeExploreRender.bind(this);
     this.routeSearchRender = this.routeSearchRender.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
   routeExploreRender(props) {
     return (
@@ -64,12 +65,19 @@ const qs = require('querystring');
       <SearchFrag {...this.props} {...props}/>
     );
   }
+  handleSubmit(query) {
+    const state = {
+      query: query
+    };
+    const location = 'search?' + qs.stringify(state);
+    this.props.history.push(location);
+  }
   render() {
     return (
       <div>
         <div key="head" className="body__head">
           <div className="search">
-            <IndexSearchForm {...this.props}/>
+            <SearchForm onSubmit={this.handleSubmit}/>
           </div>
           <div className="menu">
             <Link to="/" className="menu__btn menu__btn-main" title={chrome.i18n.getMessage('main')}/>
@@ -99,22 +107,6 @@ const qs = require('querystring');
         <ScrollTop key="scroll_top"/>
       </div>
     );
-  }
-}
-
-@observer class IndexSearchForm extends SearchForm_ {
-  constructor() {
-    super();
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-  handleSubmit(e) {
-    e.preventDefault();
-    const state = {
-      query: this.props.store.searchForm.query
-    };
-    const location = 'search?' + qs.stringify(state);
-    this.props.history.push(location);
   }
 }
 

@@ -1,12 +1,11 @@
 import profileModel from './profile/profile';
 import trackerModel from './tracker';
-import searchFormModel from "./searchForm";
 import searchFragModel from "./search/searchFrag";
 import filterModel from "./filters";
 import getSearchFragModelId from "../tools/getSearchFragModelId";
 import exploreModel from "./explore/explore";
 import page from "./page";
-import {destroy, getSnapshot, resolveIdentifier, types} from "mobx-state-tree";
+import {getSnapshot, resolveIdentifier, types} from "mobx-state-tree";
 import promisifyApi from "../tools/promisifyApi";
 import profileTemplateModel from "./profile/profileTemplate";
 import historyModel from "./history";
@@ -61,7 +60,6 @@ const indexModel = types.model('indexModel', {
   profile: types.maybe(profileModel),
   profiles: types.optional(types.array(profileTemplateModel), []),
   trackers: types.optional(types.map(trackerModel), {}),
-  searchForm: types.optional(searchFormModel, {}),
   searchFrag: types.maybe(searchFragModel),
   filter: types.optional(filterModel, {}),
   explore: types.optional(exploreModel, {}),

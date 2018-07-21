@@ -1,14 +1,13 @@
-import '../../css/searchForm.less';
+import './searchForm.less';
 import React from 'react';
 import Autosuggest from 'react-autosuggest';
 import {observer} from 'mobx-react';
-import searchFormModel from "../models/searchForm";
+import searchFormModel from "./searchFormModel";
 
 const debug = require('debug')('SearchForm');
-const qs = require('querystring');
 
-class SearchForm_ extends React.Component {
-  constructor(props) {
+@observer class SearchForm extends React.Component {
+  constructor() {
     super();
 
     this.store = searchFormModel.create();
@@ -39,13 +38,7 @@ class SearchForm_ extends React.Component {
   }
   handleSubmit(e) {
     e.preventDefault();
-    let url = 'index.html';
-    if (this.store.query) {
-      url += '#' + qs.stringify({
-        query: this.store.query
-      });
-    }
-    chrome.tabs.create({url: url});
+    this.props.onSubmit(this.state.query);
   }
   RenderSuggestion(suggestion) {
     return (
@@ -94,7 +87,4 @@ class SearchForm_ extends React.Component {
   }
 }
 
-@observer class SearchForm extends SearchForm_ {}
-
 export default SearchForm;
-export {SearchForm_};
