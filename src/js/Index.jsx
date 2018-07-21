@@ -17,8 +17,6 @@ const qs = require('querystring');
 
 const debug = getLogger('Index');
 
-window.debug1 = debug;
-
 @observer class Index extends React.Component {
   constructor() {
     super();
