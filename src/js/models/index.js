@@ -24,8 +24,6 @@ const oneLimit = promiseLimit(1);
  * @property {Map<string,TrackerM>} trackers
  * @property {SearchFragM} searchFrag
  * @property {FilterM} filter
- * @property {ExploreM} explore
- * @property {HistoryM[]} history
  * @property {ProfilesEditorM[]} profilesEditor
  * Actions:
  * @property {function(string)} setState
