@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "codemirror": "^5.39.0",
+    "codemirror": "^5.39.2",
     "compare-versions": "^3.3.0",
     "debug": "^3.1.0",
     "deserialize-error": "0.0.3",
@@ -53,12 +53,12 @@
     "css-loader": "^1.0.0",
     "fs-extra": "^6.0.1",
     "html-webpack-plugin": "^3.2.0",
-    "less": "^3.6.0",
+    "less": "^3.7.1",
     "less-loader": "^4.1.0",
     "script-loader": "^0.7.2",
     "style-loader": "^0.20.3",
     "url-loader": "^1.0.1",
-    "webpack": "^4.15.1",
+    "webpack": "^4.16.1",
     "webpack-cli": "^2.1.5"
   }
 }
