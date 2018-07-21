@@ -37,13 +37,19 @@ function selectColor(namespace) {
  * @return {Logger}
  */
 const getLogger = name => {
-  const color = selectColor(name);
-  const fn = console.log.bind(console, `%c${name}`, `color: ${color}`);
-  fn.log = fn;
-  fn.info = console.info.bind(console, `%c${name}`, `color: ${color}`);
-  fn.warn = console.warn.bind(console, `%c${name}`, `color: ${color}`);
-  fn.error = console.error.bind(console, `%c${name}`, `color: ${color}`);
-  fn.debug = console.debug.bind(console, `%c${name}`, `color: ${color}`);
+  let fn = null;
+  if (process.env.DEBUG) {
+    fn = () => {};
+    fn.log = fn.info = fn.warn = fn.error = fn.debug = fn;
+  } else {
+    const color = selectColor(name);
+    fn = console.log.bind(console, `%c${name}`, `color: ${color}`);
+    fn.log = fn;
+    fn.info = console.info.bind(console, `%c${name}`, `color: ${color}`);
+    fn.warn = console.warn.bind(console, `%c${name}`, `color: ${color}`);
+    fn.error = console.error.bind(console, `%c${name}`, `color: ${color}`);
+    fn.debug = console.debug.bind(console, `%c${name}`, `color: ${color}`);
+  }
   return fn;
 };
 

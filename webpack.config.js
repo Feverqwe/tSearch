@@ -161,6 +161,14 @@ if (isWatch) {
       }
     })
   );
+} else {
+  config.plugins.push(
+    new DefinePlugin({
+      'process.env': {
+        'DEBUG': JSON.stringify('')
+      }
+    })
+  );
 }
 
 module.exports = config;
