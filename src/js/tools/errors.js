@@ -14,7 +14,7 @@ class AbortError extends Error {
   constructor(message) {
     super(message);
 
-    this.name = 'Aborted';
+    this.name = 'AbortError';
     this.code = 'EABORT';
   }
 }

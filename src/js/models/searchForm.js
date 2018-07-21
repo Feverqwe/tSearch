@@ -1,10 +1,12 @@
-import {StatusCodeError, AbortError} from '../tools/errors';
-import _escapeRegExp from 'lodash.escaperegexp';
-import {types, isAlive, getRoot} from "mobx-state-tree";
-import promisifyApi from "../tools/promisifyApi";
+import {AbortError} from '../tools/errors';
+import {types, isAlive, destroy} from "mobx-state-tree";
+import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
+import 'whatwg-fetch'
+import controllers from "../constrollers/conterolles";
 
-const popsicle = require('popsicle');
 const debug = require('debug')('searchForm');
+const qs = require('querystring');
+const escapeStringRegexp = require('escape-string-regexp');
 
 /**
  * @typedef {{}} SearchFormM
@@ -31,55 +33,37 @@ const searchFormModel = types.model('searchFormModel', {
   },
   setSuggestions(results) {
     self.suggestions = results;
-  }
+  },
 })).views(/**SearchFormM*/self => {
   let lastFetch = null;
 
   const fetchGoogleSuggestions = value => {
-    let aborted = false;
+    const controller = new AbortController();
 
-    const request = popsicle.get({
-      url: 'http://suggestqueries.google.com/complete/search',
-      query: {
-        client: 'firefox',
-        q: value
-      }
+    const promise = fetch('http://suggestqueries.google.com/complete/search?' + qs.stringify({
+      client: 'firefox',
+      q: value
+    }), {
+      signal: controller.signal
+    }).then(response => response.json()).then(body => {
+      return body[1];
     });
 
-    const promise = request.then(response => {
-      if (!/^2/.test('' + response.status)) {
-        throw new StatusCodeError(response.status, response.body, null, response);
-      }
-
-      if (aborted) {
-        throw new AbortError('fetchGoogleSuggestions aborted');
-      }
-
-      return JSON.parse(response.body)[1];
-    });
     promise.abort = () => {
-      aborted = true;
-      request.abort();
+      controller.abort();
     };
+
     return promise;
   };
 
   const fetchHistorySuggestions = value => {
     let aborted = false;
-    let promise = null;
-    const history = getRoot(self).history;
-    if (history) {
-      promise = history.readyPromise.then(() => {
-        return history.getHistory();
-      });
-    } else {
-      promise = promisifyApi('chrome.storage.local.get')({
-        history: {}
-      }).then(({history}) => {
-        return Array.from(Object.values(history));
-      });
-    }
-    promise = promise.then(history => {
+    const history = controllers.history;
+    const promise = history.getAll().then(history => {
+      if (aborted) {
+        throw new AbortError('fetchHistorySuggestions aborted');
+      }
+
       history.sort(({count: a}, {count: b}) => {
         return a === b ? 0 : a < b ? 1 : -1;
       });
@@ -87,12 +71,8 @@ const searchFormModel = types.model('searchFormModel', {
       let suggestions = history.map(item => item.query).filter(query => query.length);
 
       if (value) {
-        const queryRe = new RegExp('^' + _escapeRegExp(value), 'i');
+        const queryRe = new RegExp('^' + escapeStringRegexp(value), 'i');
         suggestions = suggestions.filter(value => queryRe.test(value));
-      }
-
-      if (aborted) {
-        throw new AbortError('fetchHistorySuggestions aborted');
       }
 
       return suggestions;
@@ -103,7 +83,7 @@ const searchFormModel = types.model('searchFormModel', {
     return promise;
   };
 
-  const fetchAbort = () => {
+  const abortFetch = () => {
     if (lastFetch) {
       lastFetch.abort();
       lastFetch = null;
@@ -115,7 +95,7 @@ const searchFormModel = types.model('searchFormModel', {
       return self.suggestions.slice(0);
     },
     fetchSuggestions(value) {
-      fetchAbort();
+      abortFetch();
       if (!value) {
         lastFetch = fetchHistorySuggestions();
       } else {
@@ -128,7 +108,7 @@ const searchFormModel = types.model('searchFormModel', {
           debug('setSuggestions skip, dead', results);
         }
       }, err => {
-        if (err.code === 'EABORT') return;
+        if (err.name === 'AbortError') return;
         debug('fetchSuggestions error', err);
       });
     },
@@ -136,7 +116,7 @@ const searchFormModel = types.model('searchFormModel', {
       self.fetchSuggestions(value);
     },
     handleClearSuggestions() {
-      fetchAbort();
+      abortFetch();
       self.setSuggestions([]);
     }
   };
