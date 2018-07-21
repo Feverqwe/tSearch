@@ -2,7 +2,7 @@ import Filters from "./components/Filters";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import '../css/index.less';
-import SearchForm from './components/searchForm/SearchForm';
+import SearchForm from './components/SearchForm/SearchForm';
 import indexModel from './models/index';
 import {observer} from 'mobx-react';
 import ProfileSelect from './components/ProfileSelect';

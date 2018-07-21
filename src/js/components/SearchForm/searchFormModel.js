@@ -4,7 +4,7 @@ import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
 import 'whatwg-fetch'
 import history from "../../constrollers/history";
 
-const debug = require('debug')('searchForm');
+const debug = require('debug')('searchFormModel');
 const qs = require('querystring');
 const escapeStringRegexp = require('escape-string-regexp');
 

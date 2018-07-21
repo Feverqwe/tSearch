@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import '../css/popup.less';
-import SearchForm from './components/searchForm/SearchForm';
+import SearchForm from './components/SearchForm/SearchForm';
 
 const qs = require('querystring');
 

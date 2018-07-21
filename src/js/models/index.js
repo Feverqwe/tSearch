@@ -24,7 +24,6 @@ const oneLimit = promiseLimit(1);
  * @property {ProfileM} profile
  * @property {ProfileTemplateM[]} profiles
  * @property {Map<string,TrackerM>} trackers
- * @property {SearchFormM} searchForm
  * @property {SearchFragM} searchFrag
  * @property {FilterM} filter
  * @property {ExploreM} explore
