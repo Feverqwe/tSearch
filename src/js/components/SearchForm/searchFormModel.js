@@ -1,4 +1,4 @@
-import {AbortError} from '../../tools/errors';
+import {AbortError, StatusCodeError} from '../../tools/errors';
 import {types, isAlive, destroy} from "mobx-state-tree";
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
 import 'whatwg-fetch'
@@ -48,7 +48,13 @@ const searchFormModel = types.model('searchFormModel', {
       q: value
     }), {
       signal: controller.signal
-    }).then(response => response.json()).then(body => {
+    }).then(response => {
+      if(response.ok) {
+        return response.json();
+      } else {
+        throw new StatusCodeError(response.status, null, null, response);
+      }
+    }).then(body => {
       return body[1];
     });
 
