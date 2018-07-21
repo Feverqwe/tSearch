@@ -34,6 +34,9 @@ const searchFormModel = types.model('searchFormModel', {
   setSuggestions(results) {
     self.suggestions = results;
   },
+  destroy() {
+    destroy(self);
+  },
 })).views(/**SearchFormM*/self => {
   let lastFetch = null;
 

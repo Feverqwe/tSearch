@@ -3,8 +3,6 @@ import trackerModel from './tracker';
 import searchFragModel from "./search/searchFrag";
 import filterModel from "./filters";
 import getSearchFragModelId from "../tools/getSearchFragModelId";
-import exploreModel from "./explore/explore";
-import page from "./page";
 import {getSnapshot, resolveIdentifier, types} from "mobx-state-tree";
 import promisifyApi from "../tools/promisifyApi";
 import profileTemplateModel from "./profile/profileTemplate";
@@ -27,7 +25,6 @@ const oneLimit = promiseLimit(1);
  * @property {SearchFragM} searchFrag
  * @property {FilterM} filter
  * @property {ExploreM} explore
- * @property {PageM[]} page
  * @property {HistoryM[]} history
  * @property {ProfilesEditorM[]} profilesEditor
  * Actions:
@@ -61,8 +58,6 @@ const indexModel = types.model('indexModel', {
   trackers: types.optional(types.map(trackerModel), {}),
   searchFrag: types.maybe(searchFragModel),
   filter: types.optional(filterModel, {}),
-  explore: types.optional(exploreModel, {}),
-  page: types.optional(page, {}),
   history: types.optional(historyModel, {}),
   profilesEditor: types.maybe(profilesEditorModel),
 }).actions(/**IndexM*/self => {

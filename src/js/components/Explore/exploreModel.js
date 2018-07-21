@@ -1,5 +1,5 @@
 import moduleModel from "./module";
-import {applySnapshot, getSnapshot, types} from "mobx-state-tree";
+import {applySnapshot, getSnapshot, types, destroy} from "mobx-state-tree";
 import promisifyApi from "../../tools/promisifyApi";
 import sectionModel from "./section";
 import favoriteModuleModel from "./favoriteModule";
@@ -46,6 +46,9 @@ const exploreModel = types.model('exploreModel', {
     },
     putModule(module) {
       self.modules.put(module);
+    },
+    destroy() {
+      destroy(self);
     }
   };
 }).views(/**ExploreM*/self => {

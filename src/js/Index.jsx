@@ -10,7 +10,7 @@ import ScrollTop from './components/ScrollTop';
 import Trackers from './components/Trackers';
 import {HashRouter, Route, Link, withRouter} from 'react-router-dom';
 import SearchFrag from './components/SearchFrag';
-import Explore from "./components/Explore";
+import Explore from "./components/Explore/Explore";
 
 const debug = require('debug')('Index');
 const qs = require('querystring');

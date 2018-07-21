@@ -2,18 +2,25 @@ import React from 'react';
 import {observer} from 'mobx-react';
 import Dialog from "../Dialog";
 import '../../../css/explore.less';
+import exploreModel from "./exploreModel";
+import pageModel from "../../tools/pageModel";
 
 const debug = require('debug')('Explore');
 const Sortable = require('sortablejs');
-
 
 @observer class Explore extends React.Component {
   constructor() {
     super();
 
+    this.store = exploreModel.create();
+
     this.refSections = this.refSections.bind(this);
 
     this.sortable = null;
+  }
+  componentWillUnmount() {
+    this.store.destroy();
+    this.store = null;
   }
   refSections(node) {
     if (!node) {
@@ -46,22 +53,21 @@ const Sortable = require('sortablejs');
           const prev = prevNode && parseInt(prevNode.dataset.index, 10);
           const next = nextNode && parseInt(nextNode.dataset.index, 10);
 
-          const store = /**IndexM*/self.props.store;
-          store.explore.moveSection(index, prev, next);
+          this.store.moveSection(index, prev, next);
         }
       });
     }
   }
   render() {
-    const store = /**IndexM*/this.props.store;
+    const store = /**IndexM*/this.store;
 
-    switch (store.explore.state) {
+    switch (store.state) {
       case 'loading': {
         return 'Explore loading...';
       }
       case 'ready': {
         const sections = [];
-        store.explore.sections.forEach((section, index) => {
+        store.sections.forEach((section, index) => {
           if (section.state === 'done' && section.module) {
             sections.push(
               <ExploreSection key={section.id} data-index={index} section={section} store={store}/>
@@ -114,10 +120,9 @@ const Sortable = require('sortablejs');
     }
   }
   getDisplayItemCount() {
-    const store = /**IndexM*/this.props.store;
     const section = /**ExploreSectionM*/this.props.section;
 
-    const itemCount = Math.ceil((store.page.width - 175) / (120 * section.zoom / 100 + 10 * 2)) - 1;
+    const itemCount = Math.ceil((pageModel.width - 175) / (120 * section.zoom / 100 + 10 * 2)) - 1;
 
     return itemCount * section.rowCount;
   }
@@ -299,18 +304,18 @@ const Sortable = require('sortablejs');
   refBody(node) {
     this.bodyNode = node;
 
-    const section = /**ExploreSectionM*/this.props.section;
-    if (section.id === 'favorite') {
-      if (!node) {
-        if (this.sortable) {
-          this.sortable.destroy();
-          this.sortable = null;
-          // debug('destroy');
-        }
-      } else
+    if (!node) {
       if (this.sortable) {
-        // debug('update');
-      } else {
+        this.sortable.destroy();
+        this.sortable = null;
+        // debug('destroy');
+      }
+    } else
+    if (this.sortable) {
+      // debug('update');
+    } else {
+      const section = /**ExploreSectionM*/this.props.section;
+      if (section.id === 'favorite') {
         // debug('create');
         this.sortable = new Sortable(node, {
           group: 'favorite',

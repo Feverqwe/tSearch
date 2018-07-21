@@ -22,6 +22,10 @@ const debug = require('debug')('SearchForm');
     this.handleSubmit = this.handleSubmit.bind(this);
     this.enableRenderSuggestions = this.enableRenderSuggestions.bind(this);
   }
+  componentWillUnmount() {
+    this.store.destroy();
+    this.store = null;
+  }
   enableRenderSuggestions() {
     if (!this.state.shouldRenderSuggestions) {
       this.setState({

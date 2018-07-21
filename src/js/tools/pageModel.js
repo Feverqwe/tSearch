@@ -12,7 +12,7 @@ const debug = require('debug')('pageModel');
  * Views:
  */
 
-const page = types.model('pageModel', {
+const pageModel = types.model('pageModel', {
   id: types.optional(types.identifier(types.string), 'page'),
   width: types.optional(types.number, 0)
 }).actions(/**PageM*/self => {
@@ -35,6 +35,6 @@ const page = types.model('pageModel', {
       window.removeEventListener('resize', onResizeThrottled);
     }
   };
-});
+}).create();
 
-export default page;
+export default pageModel;

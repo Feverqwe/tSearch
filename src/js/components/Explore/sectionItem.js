@@ -35,12 +35,12 @@ const sectionItemMode = types.model('sectionItemMode', {
   return {
     handleAddFavorite(e) {
       e.preventDefault();
-      const explore = /**ExploreM*/getRoot(self).explore;
+      const explore = /**ExploreM*/getRoot(self);
       explore.favouriteModule.addItem(clone(self));
     },
     handleRemoveFavorite(e) {
       e.preventDefault();
-      const explore = /**ExploreM*/getRoot(self).explore;
+      const explore = /**ExploreM*/getRoot(self);
       explore.favouriteModule.removeItem(self);
     },
   };
