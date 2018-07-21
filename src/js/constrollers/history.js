@@ -37,4 +37,6 @@ class History extends Events {
   }
 }
 
-export default History;
+const history = new History();
+
+export default history;
