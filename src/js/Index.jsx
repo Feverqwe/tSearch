@@ -11,10 +11,13 @@ import Trackers from './components/Trackers';
 import {HashRouter, Route, Link, withRouter} from 'react-router-dom';
 import SearchFrag from './components/SearchFrag';
 import Explore from "./components/Explore/Explore";
+import getLogger from "./tools/getLogger";
 
-const debug = require('debug')('Index');
 const qs = require('querystring');
 
+const debug = getLogger('Index');
+
+window.debug1 = debug;
 
 @observer class Index extends React.Component {
   constructor() {
@@ -75,7 +78,7 @@ const qs = require('querystring');
   render() {
     return (
       <div>
-        <div key="head" className="body__head">
+        <div className="body__head">
           <div className="search">
             <SearchForm onSubmit={this.handleSubmit}/>
           </div>
@@ -85,7 +88,7 @@ const qs = require('querystring');
             <a href="options.html" className="menu__btn menu__btn-options" title={chrome.i18n.getMessage('options')}/>
           </div>
         </div>
-        <div key="body" className="content content-row">
+        <div className="content content-row">
           <div className="parameter_box">
             <div className="parameter_box__left">
               <div className="parameter parameter-profile">
@@ -104,7 +107,7 @@ const qs = require('querystring');
             <Route path="/search" render={this.routeSearchRender}/>
           </div>
         </div>
-        <ScrollTop key="scroll_top"/>
+        <ScrollTop/>
       </div>
     );
   }

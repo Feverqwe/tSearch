@@ -1,7 +1,8 @@
 import throttle from 'lodash.throttle';
 import {types} from "mobx-state-tree";
+import getLogger from "../tools/getLogger";
 
-const debug = require('debug')('pageModel');
+const debug = getLogger('pageModel');
 
 /**
  * @typedef {{}} PageM

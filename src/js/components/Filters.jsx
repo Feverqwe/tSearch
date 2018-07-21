@@ -1,8 +1,10 @@
 import React from "react";
 import {observer} from "mobx-react/index";
 import DatePicker from 'react-datepicker';
-import styleDatePicker from 'react-datepicker/dist/react-datepicker.min.css';
-const debug = require('debug')('Filters');
+import 'react-datepicker/dist/react-datepicker.min.css';
+import getLogger from "../tools/getLogger";
+
+const debug = getLogger('Filters');
 
 @observer class Filters extends React.Component {
   constructor() {

@@ -1,10 +1,11 @@
 import {types, getSnapshot} from "mobx-state-tree";
 import highlight from "../tools/highlight";
 import _isEqual from "lodash.isequal";
+import getLogger from "../tools/getLogger";
 
-const debug = require('debug')('historyModel');
 const promiseLimit = require('promise-limit');
 
+const debug = getLogger('historyModel');
 const oneLimit = promiseLimit(1);
 
 /**

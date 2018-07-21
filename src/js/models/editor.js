@@ -1,8 +1,10 @@
 import {types, destroy} from "mobx-state-tree";
 import trackerModel from "./tracker";
+import getLogger from "../tools/getLogger";
 
 const qs = require('querystring');
-const debug = require('debug')('editorModel');
+
+const debug = getLogger('editorModel');
 
 /**
  * @typedef {{}} EditorM

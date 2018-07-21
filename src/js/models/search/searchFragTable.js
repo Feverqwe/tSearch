@@ -1,7 +1,8 @@
 import sortResults from "../../tools/sortResults";
 import {types, getParent, isAlive, detach, unprotect, getRoot, getSnapshot} from "mobx-state-tree";
+import getLogger from "../../tools/getLogger";
 
-const debug = require('debug')('searchFragTable');
+const debug = getLogger('searchFragTable');
 
 /**
  * @typedef {{}} SearchFragTableM

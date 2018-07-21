@@ -3,7 +3,9 @@ import React from "react";
 import {typeSortMap} from "../tools/sortResults";
 import highlight from "../tools/highlight";
 import historyModel from "../models/historyModel";
-const debug = require('debug')('Table');
+import getLogger from "../tools/getLogger";
+
+const debug = getLogger('Table');
 
 @observer class Table extends React.Component {
   constructor() {

@@ -10,10 +10,11 @@ import profilesEditorModel from "./profilesEditor/profilesEditor";
 import _uniq from "lodash.uniq";
 import _isEqual from "lodash.isequal";
 import historyModel from "./historyModel";
+import getLogger from "../tools/getLogger";
 
-const debug = require('debug')('indexModel');
 const promiseLimit = require('promise-limit');
 
+const debug = getLogger('indexModel');
 const oneLimit = promiseLimit(1);
 
 /**

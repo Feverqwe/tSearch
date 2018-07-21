@@ -1,6 +1,7 @@
-const debug = require('debug')('loadTrackers');
+import getLogger from "./getLogger";
 import getTrackerCodeMeta from "./getTrackerCodeMeta";
 
+const debug = getLogger('loadTrackers');
 
 const loadTrackers = () => {
   return Promise.all([

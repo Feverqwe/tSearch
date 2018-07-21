@@ -1,8 +1,9 @@
 import {types} from "mobx-state-tree";
 import exploreModuleModel from "./module";
 import exploreModuleMetaModel from "./moduleMeta";
+import getLogger from "../../tools/getLogger";
 
-const debug = require('debug')('favoriteModuleModel');
+const debug = getLogger('favoriteModuleModel');
 
 /**
  * @typedef {ExploreModuleM} ExploreFavoriteModuleM

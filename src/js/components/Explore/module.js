@@ -3,8 +3,9 @@ import exploreModuleMetaModel from "./moduleMeta";
 import sectionItemMode from "./sectionItem";
 import Cache from "../../tools/cache";
 import SectionWorker from "../../tools/sectionWorker";
+import getLogger from "../../tools/getLogger";
 
-const debug = require('debug')('exploreModuleModel');
+const debug = getLogger('exploreModuleModel');
 
 /**
  * @typedef {{}} ExploreModuleM

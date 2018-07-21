@@ -1,7 +1,8 @@
 import {getParent, types} from "mobx-state-tree";
 import processLocale from "../../tools/processLocale";
+import getLogger from "../../tools/getLogger";
 
-const debug = require('debug')('moduleMeta');
+const debug = getLogger('moduleMeta');
 
 /**
  * @typedef {{}} ExploreModuleMetaActionM

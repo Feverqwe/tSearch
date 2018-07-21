@@ -1,9 +1,11 @@
-const debug = require('debug')('sandbox');
+import getLogger from "../tools/getLogger";
 import Transport from '../tools/transport';
 
 import baseApi from './baseApi';
 
 import requirejs from 'script-loader!requirejs/require';
+
+const debug = getLogger('sandbox');
 
 window.define('jquery', () => window.$ = window.jQuery = require('jquery'));
 window.define('moment', () => window.moment = require('moment'));

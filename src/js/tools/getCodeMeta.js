@@ -1,5 +1,7 @@
-const debug = require('debug')('getCodeMeta');
+import getLogger from "./getLogger";
 import compareVersion from 'compare-versions';
+
+const debug = getLogger('getCodeMeta');
 
 const processVersion = value => {
   compareVersion(value, value);
@@ -125,7 +127,7 @@ const getCodeMeta = (code, fieldScheme) => {
               Object.assign(meta[key], {[_key]: _value});
               break;
             default: {
-              debug('Skip meta key %s: %v', key, value);
+              debug(`Skip meta key ${key}: ${value}`);
             }
           }
         }

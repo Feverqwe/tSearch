@@ -1,9 +1,11 @@
 import {observer} from 'mobx-react';
 import React from 'react';
 import Table from './Table';
+import getLogger from "../tools/getLogger";
 
-const debug = require('debug')('SearchFrag');
 const qs = require('querystring');
+
+const debug = getLogger('SearchFrag');
 
 @observer class SearchFrag extends React.Component {
   componentDidMount() {

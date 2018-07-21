@@ -8,8 +8,8 @@ import Dialog from "./components/Dialog";
 import exKit from "./sandbox/exKit";
 import jsonToUserscript from "./tools/jsonToUserscript";
 import {HashRouter, Route} from 'react-router-dom';
+import getLogger from "./tools/getLogger";
 
-const debug = require('debug')('editor');
 const uuid = require('uuid/v4');
 const CodeMirror = require('codemirror');
 require('codemirror/mode/javascript/javascript');
@@ -17,6 +17,8 @@ require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/closebrackets');
 require('codemirror/addon/comment/continuecomment');
 require('codemirror/addon/selection/active-line');
+
+const debug = getLogger('editor');
 
 @observer class EditorPage extends React.Component {
   render() {

@@ -13,7 +13,7 @@ const outputPath = path.resolve('./dist/');
 
 const env = {
   targets: {
-    browsers: ['Chrome >= 22']
+    browsers: ['Chrome >= 48']
   }
 };
 

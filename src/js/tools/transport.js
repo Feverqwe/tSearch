@@ -1,7 +1,9 @@
-const debug = require('debug')('frameWorker');
+import getLogger from "./getLogger";
 import once from 'lodash.once';
 import deserializeError from 'deserialize-error';
 import serializeError from 'serialize-error';
+
+const debug = getLogger('frameWorker');
 
 const emptyFn = () => {};
 

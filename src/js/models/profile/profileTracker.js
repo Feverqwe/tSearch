@@ -1,7 +1,8 @@
 import trackerModel from '../tracker';
 import {types, resolveIdentifier, getRoot, getSnapshot} from "mobx-state-tree";
+import getLogger from "../../tools/getLogger";
 
-const debug = require('debug')('profileTracker');
+const debug = getLogger('profileTracker');
 
 /**
  * @typedef {{}} ProfileTrackerM

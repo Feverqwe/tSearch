@@ -3,8 +3,9 @@ import React from 'react';
 import Autosuggest from 'react-autosuggest';
 import {observer} from 'mobx-react';
 import searchFormModel from "./searchFormModel";
+import getLogger from "../../tools/getLogger";
 
-const debug = require('debug')('SearchForm');
+const debug = getLogger('SearchForm');
 
 @observer class SearchForm extends React.Component {
   constructor() {

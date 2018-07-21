@@ -5,9 +5,11 @@ import loadTrackerModule from "../tools/loadTrackerModule";
 import getTrackersJson from "../tools/getTrackersJson";
 import getTrackerCodeMeta from "../tools/getTrackerCodeMeta";
 import _isEqual from "lodash.isequal";
+import getLogger from "../tools/getLogger";
 
-const debug = require('debug')('trackerModel');
 const compareVersions = require('compare-versions');
+
+const debug = getLogger('trackerModel');
 
 /**
  * @typedef {{}} TrackerM

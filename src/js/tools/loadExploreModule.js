@@ -1,6 +1,7 @@
-const debug = require('debug')('loadExploreSections');
+import getLogger from "./getLogger";
 import getExploreSectionCodeMeta from "./getExploreSectionCodeMeta";
 
+const debug = getLogger('loadExploreSections');
 
 const loadExploreModule = id => {
   return fetch('./exploreSections/' + id + '.js').then(response => {

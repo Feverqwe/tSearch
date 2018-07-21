@@ -1,8 +1,9 @@
 import FrameWorker from "./frameWorker";
 import exKitRequest from "./exKitRequest";
 import exKitBuildConnectRe from "./exKitBuildConnectRe";
+import getLogger from "./getLogger";
 
-const debug = require('debug')('moduleWorker');
+const debug = getLogger('moduleWorker');
 
 class ModuleWorker {
   constructor(module) {

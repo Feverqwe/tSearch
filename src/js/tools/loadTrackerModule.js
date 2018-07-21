@@ -1,6 +1,7 @@
-const debug = require('debug')('loadTrackers');
+import getLogger from "./getLogger";
 import getTrackerCodeMeta from "./getTrackerCodeMeta";
 
+const debug = getLogger('loadTrackers');
 
 const loadTrackerModule = id => {
   return fetch('./trackers/' + id + '.js').then(response => {

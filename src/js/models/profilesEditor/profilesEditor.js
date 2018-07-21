@@ -3,8 +3,9 @@ import getTrackersJson from "../../tools/getTrackersJson";
 import promisifyApi from "../../tools/promisifyApi";
 import _unic from "lodash.uniq";
 import profilesEditorProfileModel from "./profilesEditorProfile";
+import getLogger from "../../tools/getLogger";
 
-const debug = require('debug')('profilesEditorModel');
+const debug = getLogger('profilesEditorModel');
 
 /**
  * @typedef {{}} ProfilesEditorM

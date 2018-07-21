@@ -5,11 +5,12 @@ import sectionModel from "./section";
 import favoriteModuleModel from "./favoriteModule";
 import loadExploreModule from "../../tools/loadExploreModule";
 import getExplorersJson from "../../tools/getExplorersJson";
+import getLogger from "../../tools/getLogger";
 
-const debug = require('debug')('explore');
 const promiseLimit = require('promise-limit');
 const compareVersions = require('compare-versions');
 
+const debug = getLogger('explore');
 const limitOne = promiseLimit(1);
 
 /**

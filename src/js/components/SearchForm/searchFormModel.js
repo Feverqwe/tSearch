@@ -3,10 +3,12 @@ import {types, isAlive, destroy} from "mobx-state-tree";
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
 import 'whatwg-fetch'
 import historyModel from "../../models/historyModel";
+import getLogger from "../../tools/getLogger";
 
-const debug = require('debug')('searchFormModel');
 const qs = require('querystring');
 const escapeStringRegexp = require('escape-string-regexp');
+
+const debug = getLogger('searchFormModel');
 
 /**
  * @typedef {{}} SearchFormM

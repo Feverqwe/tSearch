@@ -4,9 +4,11 @@ import Dialog from "../Dialog";
 import '../../../css/explore.less';
 import exploreModel from "./exploreModel";
 import pageModel from "../../models/pageModel";
+import getLogger from "../../tools/getLogger";
 
-const debug = require('debug')('Explore');
 const Sortable = require('sortablejs');
+
+const debug = getLogger('Explore');
 
 @observer class Explore extends React.Component {
   constructor() {

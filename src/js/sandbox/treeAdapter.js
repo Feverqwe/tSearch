@@ -1,4 +1,6 @@
-const debug = require('debug')('treeAdapter');
+import getLogger from "../tools/getLogger";
+
+const debug = getLogger('treeAdapter');
 const DomTreeAdapter = require('dom-treeadapter');
 
 class _Adapter {}

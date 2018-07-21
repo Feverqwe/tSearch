@@ -1,7 +1,9 @@
-const debug = require('debug')('frameWorker');
-const qs = require('querystring');
+import getLogger from "./getLogger";
 import Transport from './transport';
 
+const qs = require('querystring');
+
+const debug = getLogger('frameWorker');
 
 class FrameWorker {
   constructor(query, actions) {

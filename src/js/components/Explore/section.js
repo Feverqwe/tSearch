@@ -1,8 +1,9 @@
 import {resolveIdentifier, types, getParent} from "mobx-state-tree";
 import moduleModel from "./module";
 import favoriteModuleModel from "./favoriteModule";
+import getLogger from "../../tools/getLogger";
 
-const debug = require('debug')('section');
+const debug = getLogger('section');
 
 /**
  * @typedef {{}} ExploreSectionM

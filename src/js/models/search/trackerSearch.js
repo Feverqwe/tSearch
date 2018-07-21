@@ -5,8 +5,9 @@ import {types, isAlive, resolveIdentifier} from "mobx-state-tree";
 import trackerModel from "../tracker";
 import getTrackerIconClassName from "../../tools/getTrackerIconClassName";
 import {unixTimeToFromNow, unixTimeToString} from "../../tools/unixTimeTo";
+import getLogger from "../../tools/getLogger";
 
-const debug = require('debug')('trackerSearch');
+const debug = getLogger('trackerSearch');
 
 /**
  * @typedef {{}} TrackerSearchM
@@ -181,7 +182,7 @@ const trackerSearchModel = types.model('trackerSearchModel', {
         self.setAuthRequired(null);
         self.setResult(trackerId, result);
       } else {
-        debug('%s skip, dead', type, trackerId, result);
+        debug(`${type} skip, dead`, trackerId, result);
       }
     }, err => {
       if (isAlive(self)) {
@@ -199,7 +200,7 @@ const trackerSearchModel = types.model('trackerSearchModel', {
           self.setReadyState('error');
         }
       }
-      debug('%s error', type, trackerId, err);
+      debug(`${type} error`, trackerId, err);
     });
   };
 

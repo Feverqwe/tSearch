@@ -2,8 +2,9 @@ import escapeRegExp from 'lodash.escaperegexp';
 import sortByLength from "../tools/sortByLength";
 import uniq from 'lodash.uniq';
 import {types} from "mobx-state-tree";
+import getLogger from "../tools/getLogger";
 
-const debug = require('debug')('searchFrag');
+const debug = getLogger('searchFrag');
 
 /**
  * @typedef {{}} FilterM
