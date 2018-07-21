@@ -12,7 +12,6 @@
     "babel-polyfill": "^6.26.0",
     "codemirror": "^5.39.2",
     "compare-versions": "^3.3.0",
-    "debug": "^3.1.0",
     "deserialize-error": "0.0.3",
     "dom-treeadapter": "^0.2.1",
     "escape-string-regexp": "^1.0.5",
