@@ -175,6 +175,6 @@ const filterModel = types.model('filterModel', {
       });
     },
   };
-});
+}).create();
 
 export default filterModel;

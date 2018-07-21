@@ -1,6 +1,7 @@
 import sortResults from "../../tools/sortResults";
 import {types, getParent, isAlive, detach, unprotect, getRoot, getSnapshot} from "mobx-state-tree";
 import getLogger from "../../tools/getLogger";
+import filterModel from "../filters";
 
 const debug = getLogger('searchFragTable');
 
@@ -83,7 +84,7 @@ const searchFragTableModel = types.model('searchFragTableModel', {
       return trackerSearch.getResultsPage(self.index);
     },
     getFilteredTrackerResults(trackerSearch) {
-      return self.filter.processResults(trackerSearch.getResultsPage(self.index));
+      return filterModel.processResults(trackerSearch.getResultsPage(self.index));
     },
     getResults() {
       const results = [];

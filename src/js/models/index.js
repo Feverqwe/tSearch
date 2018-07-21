@@ -1,7 +1,6 @@
 import profileModel from './profile/profile';
 import trackerModel from './tracker';
 import searchFragModel from "./search/searchFrag";
-import filterModel from "./filters";
 import getSearchFragModelId from "../tools/getSearchFragModelId";
 import {getSnapshot, resolveIdentifier, types} from "mobx-state-tree";
 import promisifyApi from "../tools/promisifyApi";
@@ -56,7 +55,6 @@ const indexModel = types.model('indexModel', {
   profiles: types.optional(types.array(profileTemplateModel), []),
   trackers: types.optional(types.map(trackerModel), {}),
   searchFrag: types.maybe(searchFragModel),
-  filter: types.optional(filterModel, {}),
   profilesEditor: types.maybe(profilesEditorModel),
 }).actions(/**IndexM*/self => {
   return {

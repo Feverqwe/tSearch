@@ -3,6 +3,7 @@ import {observer} from "mobx-react/index";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import getLogger from "../tools/getLogger";
+import filterModel from "../models/filters";
 
 const debug = getLogger('Filters');
 
@@ -12,16 +13,13 @@ const debug = getLogger('Filters');
   }
 
   render() {
-    /**@type {IndexM}*/
-    const store = this.props.store;
-
     return (
       <div className="parameter_box__right">
-        <TextFilter filter={this.props.store.filter}/>
-        <SizeFilter filter={this.props.store.filter}/>
-        <TimeFilter filter={this.props.store.filter}/>
-        <SeedFilter filter={this.props.store.filter}/>
-        <PeedFilter filter={this.props.store.filter}/>
+        <TextFilter filter={filterModel}/>
+        <SizeFilter filter={filterModel}/>
+        <TimeFilter filter={filterModel}/>
+        <SeedFilter filter={filterModel}/>
+        <PeedFilter filter={filterModel}/>
       </div>
     );
   }
