@@ -3,7 +3,7 @@ import {observer} from 'mobx-react';
 import Dialog from "../Dialog";
 import '../../../css/explore.less';
 import exploreModel from "./exploreModel";
-import pageModel from "../../tools/pageModel";
+import pageModel from "../../models/pageModel";
 
 const debug = require('debug')('Explore');
 const Sortable = require('sortablejs');

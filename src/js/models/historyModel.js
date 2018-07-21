@@ -1,5 +1,4 @@
 import {types, getSnapshot} from "mobx-state-tree";
-import promisifyApi from "../tools/promisifyApi";
 import highlight from "../tools/highlight";
 import _isEqual from "lodash.isequal";
 
@@ -7,23 +6,6 @@ const debug = require('debug')('historyModel');
 const promiseLimit = require('promise-limit');
 
 const oneLimit = promiseLimit(1);
-
-/**
- * @typedef {{}} HistoryM
- * Model:
- * @property {string} state
- * @property {Map<string,QueryM>} searchHistory
- * Actions:
- * @property {function(string)} setQuery
- * @property {function(string,string,string,string)} setClick
- * Views:
- * @property {function(string):QueryM} getOrCreateQuery
- * @property {function:Promise} save
- * @property {function:QueryM[]} getHistory
- * @property {function:QueryM[]} getHistorySortByTime
- * @property {function(string):Promise} onQuery
- * @property {function(string, string, string, string):Promise} onClick
- */
 
 /**
  * @typedef {{}} ClickM
@@ -49,6 +31,7 @@ const clickModel = types.model('click', {
     }
   };
 });
+
 
 /**
  * @typedef {{}} QueryM
@@ -100,6 +83,27 @@ const queryModel = types.model('query', {
     },
   };
 });
+
+
+/**
+ * @typedef {{}} HistoryM
+ * Model:
+ * @property {string} state
+ * @property {Map<string,QueryM>} history
+ * Actions:
+ * @property {function(Object)} assign
+ * @property {function(string)} setQuery
+ * @property {function(string,string,string,string)} setClick
+ * @property {function(string)} removeQuery
+ * Views:
+ * @property {Promise} readyPromise
+ * @property {function(string):QueryM} getOrCreateQuery
+ * @property {function:Promise} save
+ * @property {function:QueryM[]} getHistory
+ * @property {function:QueryM[]} getHistorySortByTime
+ * @property {function(string):Promise} onQuery
+ * @property {function(string, string, string, string):Promise} onClick
+ */
 
 const historyModel = types.model('historyModel', {
   state: types.optional(types.string, 'idle'), // idle, loading, done
@@ -156,9 +160,9 @@ const historyModel = types.model('historyModel', {
     },
     save() {
       return oneLimit(() => {
-        return promisifyApi('chrome.storage.local.set')({
+        return new Promise(resolve => chrome.storage.local.set({
           history: getSnapshot(self.history)
-        });
+        }, resolve));
       });
     },
     getHistory() {
@@ -167,6 +171,11 @@ const historyModel = types.model('historyModel', {
     getHistorySortByTime() {
       return self.getHistory().sort(({time: a}, {time: b}) => {
         return a === b ? 0 : a > b ? -1 : 1;
+      });
+    },
+    getHistorySortByCount() {
+      return self.getHistory().sort(({count: a}, {count: b}) => {
+        return a === b ? 0 : a < b ? 1 : -1;
       });
     },
     onQuery(query) {
@@ -181,21 +190,20 @@ const historyModel = types.model('historyModel', {
     },
     afterCreate() {
       self.assign({state: 'loading'});
-      return readyPromise = promisifyApi('chrome.storage.local.get')({
+      return readyPromise = new Promise(resolve => chrome.storage.local.get({
         history: {}
-      }).then(storage => {
-        self.assign(storage);
-      }).catch(err => {
-        debug('afterCreate error', err);
-      }).then(() => {
+      }, resolve)).then(storage => {
         chrome.storage.onChanged.addListener(handleHistoryChangeListener);
-        self.assign({state: 'done'});
+        self.assign({
+          state: 'done',
+          history: storage.history,
+        });
       });
     },
     beforeDestroy() {
       chrome.storage.onChanged.removeListener(handleHistoryChangeListener);
     }
   };
-});
+}).create();
 
 export default historyModel;

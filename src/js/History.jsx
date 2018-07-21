@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from "react-dom";
-import historyModel from "./models/history";
+import historyModel from "./models/historyModel";
 import '../css/history.less';
 import {observer} from 'mobx-react';
 import highlight from "./tools/highlight";
@@ -139,4 +139,4 @@ const qs = require('querystring');
   }
 }
 
-window.app = ReactDOM.render(<HistoryPage store={historyModel.create()}/>, document.getElementById('root'));
+window.app = ReactDOM.render(<HistoryPage store={historyModel}/>, document.getElementById('root'));

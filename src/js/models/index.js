@@ -6,10 +6,10 @@ import getSearchFragModelId from "../tools/getSearchFragModelId";
 import {getSnapshot, resolveIdentifier, types} from "mobx-state-tree";
 import promisifyApi from "../tools/promisifyApi";
 import profileTemplateModel from "./profile/profileTemplate";
-import historyModel from "./history";
 import profilesEditorModel from "./profilesEditor/profilesEditor";
 import _uniq from "lodash.uniq";
 import _isEqual from "lodash.isequal";
+import historyModel from "./historyModel";
 
 const debug = require('debug')('indexModel');
 const promiseLimit = require('promise-limit');
@@ -58,7 +58,6 @@ const indexModel = types.model('indexModel', {
   trackers: types.optional(types.map(trackerModel), {}),
   searchFrag: types.maybe(searchFragModel),
   filter: types.optional(filterModel, {}),
-  history: types.optional(historyModel, {}),
   profilesEditor: types.maybe(profilesEditorModel),
 }).actions(/**IndexM*/self => {
   return {
@@ -69,7 +68,7 @@ const indexModel = types.model('indexModel', {
       self.profiles = profiles;
     },
     createSearch(query) {
-      self.history.onQuery(query);
+      historyModel.onQuery(query);
       self.searchFrag = {
         id: getSearchFragModelId(),
         query: query

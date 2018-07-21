@@ -2,6 +2,7 @@ import {observer} from "mobx-react/index";
 import React from "react";
 import {typeSortMap} from "../tools/sortResults";
 import highlight from "../tools/highlight";
+import historyModel from "../models/historyModel";
 const debug = require('debug')('Table');
 
 @observer class Table extends React.Component {
@@ -101,11 +102,9 @@ const debug = require('debug')('Table');
     this.handleClick = this.handleClick.bind(this);
   }
   handleClick() {
-    /**@type {IndexM}*/
-    const store = this.props.store;
     const /**SearchFragM*/searchFrag = this.props.searchFrag;
     const /**TrackerResultM*/row = this.props.row;
-    store.history.onClick(searchFrag.query, row.title, row.url, row.trackerInfo.id);
+    historyModel.onClick(searchFrag.query, row.title, row.url, row.trackerInfo.id);
   }
   render() {
     const /**TrackerResultM*/result = this.props.row;

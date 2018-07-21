@@ -2,7 +2,7 @@ import {AbortError} from '../../tools/errors';
 import {types, isAlive, destroy} from "mobx-state-tree";
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
 import 'whatwg-fetch'
-import history from "../../constrollers/history";
+import historyModel from "../../models/historyModel";
 
 const debug = require('debug')('searchFormModel');
 const qs = require('querystring');
@@ -61,14 +61,12 @@ const searchFormModel = types.model('searchFormModel', {
 
   const fetchHistorySuggestions = value => {
     let aborted = false;
-    const promise = history.getAll().then(history => {
+    const promise = historyModel.readyPromise.then(() => {
+      return historyModel.getHistorySortByCount();
+    }).then(history => {
       if (aborted) {
         throw new AbortError('fetchHistorySuggestions aborted');
       }
-
-      history.sort(({count: a}, {count: b}) => {
-        return a === b ? 0 : a < b ? 1 : -1;
-      });
 
       let suggestions = history.map(item => item.query).filter(query => query.length);
 
