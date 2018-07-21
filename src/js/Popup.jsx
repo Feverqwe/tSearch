@@ -14,7 +14,7 @@ class Popup extends React.Component {
   handleSubmit(query) {
     let url = 'index.html';
     if (query) {
-      url += '#' + qs.stringify({
+      url += '#/search?' + qs.stringify({
         query: query
       });
     }

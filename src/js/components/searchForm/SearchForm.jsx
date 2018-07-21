@@ -38,7 +38,7 @@ const debug = require('debug')('SearchForm');
   }
   handleSubmit(e) {
     e.preventDefault();
-    this.props.onSubmit(this.state.query);
+    this.props.onSubmit(this.store.query);
   }
   RenderSuggestion(suggestion) {
     return (
