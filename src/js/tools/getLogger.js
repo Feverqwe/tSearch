@@ -7,8 +7,6 @@
  * @property {function} debug
  */
 
-const methods = ['log', 'info', 'warn', 'error', 'debug'];
-
 const colors = [
   '#0000CC', '#0000FF', '#0033CC', '#0033FF', '#0066CC', '#0066FF', '#0099CC',
   '#0099FF', '#00CC00', '#00CC33', '#00CC66', '#00CC99', '#00CCCC', '#00CCFF',
@@ -41,10 +39,12 @@ function selectColor(namespace) {
 const getLogger = name => {
   const color = selectColor(name);
   const fn = console.log.bind(console, `%c${name}`, `color: ${color}`);
-  return methods.reduce((result, method) => {
-    result[method] = console[method].bind(console, `%c${name}`, `color: ${color}`);
-    return result;
-  }, fn);
+  fn.log = fn;
+  fn.info = console.info.bind(console, `%c${name}`, `color: ${color}`);
+  fn.warn = console.warn.bind(console, `%c${name}`, `color: ${color}`);
+  fn.error = console.error.bind(console, `%c${name}`, `color: ${color}`);
+  fn.debug = console.debug.bind(console, `%c${name}`, `color: ${color}`);
+  return fn;
 };
 
 export default getLogger;
