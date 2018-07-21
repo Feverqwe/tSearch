@@ -475,11 +475,9 @@ const Sortable = require('sortablejs');
     const section = /**ExploreSectionM*/this.props.section;
     const item = /**ExploreSectionItemM*/this.props.item;
 
-    let posterUrl = null;
-    if (this.state.posterError) {
+    let posterUrl = item.poster;
+    if (!posterUrl || this.state.posterError) {
       posterUrl = require('!url-loader!../../../img/no_poster.png');
-    } else {
-      posterUrl = item.poster;
     }
 
     const itemStyle = {
