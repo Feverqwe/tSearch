@@ -1,9 +1,9 @@
+require('./builder/defaultBuildEnv');
 const {DefinePlugin} = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-
 
 const isWatch = process.argv.some(function (arg) {
   return arg === '--watch';
@@ -19,6 +19,8 @@ const env = {
 
 if (isWatch) {
   env.targets.browsers = ['Chrome >= 65'];
+} else {
+  BUILD_ENV.FLAG_ENABLE_LOGGER = false;
 }
 
 const config = {
@@ -138,6 +140,12 @@ const config = {
       template: './src/magic.html',
       chunks: ['commons', 'magic']
     }),
+    new DefinePlugin({
+      'BUILD_ENV': Object.keys(BUILD_ENV).reduce((obj, key) => {
+        obj[key] = JSON.stringify(BUILD_ENV[key]);
+        return obj;
+      }, {}),
+    })
   ]
 };
 
@@ -151,24 +159,6 @@ if (!isWatch) {
 
     config.entry[entryName] = value;
   });
-}
-
-if (isWatch) {
-  config.plugins.push(
-    new DefinePlugin({
-      'process.env': {
-        'DEBUG': JSON.stringify('*')
-      }
-    })
-  );
-} else {
-  config.plugins.push(
-    new DefinePlugin({
-      'process.env': {
-        'DEBUG': JSON.stringify('')
-      }
-    })
-  );
 }
 
 module.exports = config;
