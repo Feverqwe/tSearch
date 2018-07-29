@@ -1,4 +1,4 @@
-import {types, getSnapshot} from "mobx-state-tree";
+import {getSnapshot, types} from "mobx-state-tree";
 import getLogger from "../tools/getLogger";
 
 const debug = getLogger('optionsModel');
@@ -10,12 +10,16 @@ const defaultOptions = {
   sortByList: [{by: 'quality'}]
 };
 
+const optionModelMap = {
+  sortByList: types.frozen,
+};
+
 const optionsKeys = Object.keys(defaultOptions);
 
 const optionsModel = types.model('optionsModel', Object.assign({
   state: types.optional(types.string, 'idle'), // idle, loading, ready, error
   options: types.optional(types.model(optionsKeys.reduce((obj, key) => {
-    obj[key] = types.frozen;
+    obj[key] = optionModelMap[key];
     return obj;
   }, {})), {}),
 })).actions(self => {
