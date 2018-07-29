@@ -10,6 +10,7 @@ import _uniq from "lodash.uniq";
 import _isEqual from "lodash.isequal";
 import historyModel from "./historyModel";
 import getLogger from "../tools/getLogger";
+import optionsModel from "./optionsModel";
 
 const promiseLimit = require('promise-limit');
 
@@ -38,7 +39,6 @@ const oneLimit = promiseLimit(1);
  * @property {function:Promise} saveProfile
  * @property {function:Promise} saveProfiles
  * @property {function(string):ProfileM} getProfileTemplate
- * @property {Object} localStore
  * @property {function} onProfileChange
  * @property {function} afterCreate
  * @property {function(string):TrackerM} getTrackerModel
@@ -95,15 +95,6 @@ const indexModel = types.model('indexModel', {
     }
   };
 }).views(/**IndexM*/self => {
-  const localStore = {
-    set(key, value) {
-      this[key] = value;
-      promisifyApi('chrome.storage.local.set')({
-        [key]: value,
-      });
-    }
-  };
-
   const handleProfilesChangeListener = (changes, namespace) => {
     if (namespace === 'sync') {
       const change = changes.profiles;
@@ -144,29 +135,27 @@ const indexModel = types.model('indexModel', {
     getTrackerModules() {
       return _uniq(Array.from(self.trackers.values()), self.getProfilesTrackers());
     },
-    get localStore() {
-      return localStore;
-    },
     changeProfile(name) {
       self.setProfile(name);
       return self.saveProfile();
     },
     afterCreate() {
       self.setState('loading');
-      Promise.all([
-        promisifyApi('chrome.storage.local.get')({
-          profile: null,
-          sortByList: [{by: 'quality'}]
-        }),
-        promisifyApi('chrome.storage.sync.get')({
-          profiles: []
-        }),
-      ]).then(storages => {
+      return Promise.resolve().then(() => {
+        return optionsModel.readyPromise
+      }).then(() => {
+        return Promise.all([
+          promisifyApi('chrome.storage.local.get')({
+            profile: null,
+          }),
+          promisifyApi('chrome.storage.sync.get')({
+            profiles: [],
+          }),
+        ]);
+      }).then(storages => {
         return Object.assign({}, ...storages);
       }).then(storage => {
         chrome.storage.onChanged.addListener(handleProfilesChangeListener);
-
-        self.localStore.sortByList = storage.sortByList;
 
         if (!storage.profiles.length) {
           storage.profiles.push({

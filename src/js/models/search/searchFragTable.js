@@ -2,6 +2,7 @@ import sortResults from "../../tools/sortResults";
 import {types, getParent, isAlive, detach, unprotect, getRoot, getSnapshot} from "mobx-state-tree";
 import getLogger from "../../tools/getLogger";
 import filterModel from "../filters";
+import optionsModel from "../optionsModel";
 
 const debug = getLogger('searchFragTable');
 
@@ -54,7 +55,7 @@ const searchFragTableModel = types.model('searchFragTableModel', {
       }
       self.sortByList = [item];
 
-      getRoot(self).localStore.set('sortByList', getSnapshot(self.sortByList));
+      optionsModel.set('sortByList', getSnapshot(self.sortByList));
     },
     subSortBy(by) {
       let item = self.getSortBy(by);
@@ -69,7 +70,7 @@ const searchFragTableModel = types.model('searchFragTableModel', {
       }
       self.sortByList.push(item);
 
-      getRoot(self).localStore.set('sortByList', getSnapshot(self.sortByList));
+      optionsModel.set('sortByList', getSnapshot(self.sortByList));
     }
   };
 }).views(/**SearchFragTableM*/self => {

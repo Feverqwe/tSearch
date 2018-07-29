@@ -2,6 +2,7 @@ import searchFragTableModel from "./searchFragTable";
 import trackerSearchModel from "./trackerSearch";
 import {types, isAlive, getParent, getRoot} from "mobx-state-tree";
 import getLogger from "../../tools/getLogger";
+import optionsModel from "../optionsModel";
 
 const debug = getLogger('searchFrag');
 
@@ -63,7 +64,7 @@ const searchFragModel = types.model('searchFragModel', {
       self.tables.push(searchFragTableModel.create({
         id: self.getTableId(),
         index: self.tables.length,
-        sortByList: getRoot(self).localStore.sortByList,
+        sortByList: optionsModel.get('sortByList'),
       }));
     },
     pushSearchTracker(trackerId) {
