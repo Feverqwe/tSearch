@@ -4,8 +4,8 @@
   "scripts": {
     "buildExplorersJson": "babel-node --presets env ./builder/buildExplorersJson.js",
     "buildTrackersJson": "babel-node --presets env ./builder/buildTrackersJson.js",
-    "watch": "npm run buildTrackersJson && npm run buildExplorersJson && webpack --mode development --watch --config webpack.config.js",
-    "build": "npm run buildTrackersJson && npm run buildExplorersJson && webpack --mode production --config webpack.config.js"
+    "watch": "webpack --mode development --watch --config webpack.config.js",
+    "build": "webpack --mode production --config webpack.config.js"
   },
   "dependencies": {
     "abortcontroller-polyfill": "^1.1.9",
