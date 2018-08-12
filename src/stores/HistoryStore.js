@@ -129,9 +129,9 @@ const HistoryStore = types.model('HistoryStore', {
           self.state = 'done';
         }
       } catch (err) {
-        logger.error('fetchSections error', err);
+        logger.error('fetchHistory error', err);
         if (isAlive(self)) {
-          self.createDownloadState = 'error';
+          self.state = 'error';
         }
       }
     }),
