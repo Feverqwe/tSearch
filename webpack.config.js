@@ -25,14 +25,14 @@ if (isWatch) {
 
 const config = {
   entry: {
-    bg: './src/js/bg',
-    popup: './src/js/Popup',
-    index: './src/js/Index',
-    options: './src/js/options',
-    sandbox: './src/js/sandbox',
-    history: './src/js/history',
+    bg: './src/background',
+    sandbox: './src/sandbox',
+    popup: './src/Popup',
+    index: './src/App',
+    options: './src/Options',
+    /*history: './src/js/history',
     editor: './src/js/editor',
-    magic: './src/js/magic',
+    magic: './src/js/magic',*/
   },
   output: {
     path: outputPath,
@@ -54,7 +54,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /.jsx?$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -99,33 +99,30 @@ const config = {
     new CleanWebpackPlugin(outputPath),
     new CopyWebpackPlugin([
       {from: './src/manifest.json',},
-      {from: './src/trackers.json',},
-      {from: './src/icons', to: './icons'},
-      {from: './src/trackers', to: './trackers'},
-      {from: './src/exploreSections', to: './exploreSections'},
+      {from: './src/assets', to: './assets'},
       {from: './src/_locales', to: './_locales'},
     ]),
     new HtmlWebpackPlugin({
+      filename: 'sandbox.html',
+      template: './src/templates/sandbox.html',
+      chunks: ['sandbox']
+    }),
+    new HtmlWebpackPlugin({
       filename: 'popup.html',
-      template: './src/popup.html',
+      template: './src/templates/popup.html',
       chunks: ['commons', 'popup']
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: './src/index.html',
+      template: './src/templates/index.html',
       chunks: ['commons', 'index']
     }),
     new HtmlWebpackPlugin({
       filename: 'options.html',
-      template: './src/options.html',
+      template: './src/templates/options.html',
       chunks: ['commons', 'options']
     }),
-    new HtmlWebpackPlugin({
-      filename: 'sandbox.html',
-      template: './src/sandbox.html',
-      chunks: ['sandbox']
-    }),
-    new HtmlWebpackPlugin({
+    /*new HtmlWebpackPlugin({
       filename: 'history.html',
       template: './src/history.html',
       chunks: ['commons', 'history']
@@ -139,7 +136,7 @@ const config = {
       filename: 'magic.html',
       template: './src/magic.html',
       chunks: ['commons', 'magic']
-    }),
+    }),*/
     new DefinePlugin({
       'BUILD_ENV': Object.keys(BUILD_ENV).reduce((obj, key) => {
         obj[key] = JSON.stringify(BUILD_ENV[key]);
