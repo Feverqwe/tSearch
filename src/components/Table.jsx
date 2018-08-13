@@ -1,9 +1,9 @@
 import {observer} from "mobx-react/index";
 import React from "react";
-import {typeSortMap} from "../../../src/tools/sortResults";
-import highlight from "../../../src/tools/highlight";
-import historyModel from "../models/historyModel";
-import getLogger from "../../../src/tools/getLogger";
+import {typeSortMap} from "../tools/sortResults";
+import highlight from "../tools/highlight";
+import historyModel from "../../srcDraft/js/models/historyModel";
+import getLogger from "../tools/getLogger";
 
 const debug = getLogger('Table');
 

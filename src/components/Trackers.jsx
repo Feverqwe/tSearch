@@ -1,7 +1,7 @@
 import React from "react";
 import {observer} from "mobx-react/index";
-import blankSvg from '../../../src/assets/img/blank.svg';
-import getTrackerIconClassName from "../../../src/tools/getTrackerIconClassName";
+import blankSvg from '../assets/img/blank.svg';
+import getTrackerIconClassName from "../tools/getTrackerIconClassName";
 
 
 @observer class Trackers extends React.Component {

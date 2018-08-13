@@ -1,7 +1,7 @@
 import React from 'react';
 import {observer} from 'mobx-react';
 import Dialog from "../Dialog";
-import '../../../../src/assets/css/explore.less';
+import '../../assets/css/explore.less';
 import exploreModel from "./exploreModel";
 import pageModel from "../../models/pageModel";
 import getLogger from "../../../../src/tools/getLogger";

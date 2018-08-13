@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import '../../../src/assets/css/dialog.less';
+import '../assets/css/dialog.less';
 
 class Dialog extends React.Component {
   constructor() {

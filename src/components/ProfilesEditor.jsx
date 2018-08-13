@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import blankSvg from '../../../src/assets/img/blank.svg';
+import blankSvg from '../assets/img/blank.svg';
 import {observer} from "mobx-react/index";
 import _escapeRegExp from "lodash.escaperegexp";
-import getLogger from "../../../src/tools/getLogger";
+import getLogger from "../tools/getLogger";
 
 const qs = require('querystring');
 const Sortable = require('sortablejs');

@@ -1,11 +1,11 @@
 import moduleModel from "./module";
 import {applySnapshot, getSnapshot, types, destroy} from "mobx-state-tree";
-import promisifyApi from "../../../../src/tools/promisifyApi";
+import promisifyApi from "../../tools/promisifyApi";
 import sectionModel from "./section";
 import favoriteModuleModel from "./favoriteModule";
-import loadExploreModule from "../../../../src/tools/loadExploreModule";
-import getExplorersJson from "../../../../src/tools/getExplorersJson";
-import getLogger from "../../../../src/tools/getLogger";
+import loadExploreModule from "../../tools/loadExploreModule";
+import getExplorersJson from "../../tools/getExplorersJson";
+import getLogger from "../../tools/getLogger";
 
 const promiseLimit = require('promise-limit');
 const compareVersions = require('compare-versions');

@@ -1,9 +1,9 @@
 import {types, destroy, getSnapshot} from "mobx-state-tree";
 import exploreModuleMetaModel from "./moduleMeta";
 import sectionItemMode from "./sectionItem";
-import Cache from "../../../../src/tools/cache";
-import SectionWorker from "../../../../src/tools/sectionWorker";
-import getLogger from "../../../../src/tools/getLogger";
+import Cache from "../../tools/cache";
+import SectionWorker from "../../tools/sectionWorker";
+import getLogger from "../../tools/getLogger";
 
 const debug = getLogger('exploreModuleModel');
 

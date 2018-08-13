@@ -1,31 +1,30 @@
 import React from "react";
-import {observer} from "mobx-react/index";
+import {observer, inject} from "mobx-react/index";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
-import getLogger from "../../../src/tools/getLogger";
-import filterModel from "../models/filters";
+import getLogger from "../tools/getLogger";
+import PropTypes from "prop-types";
+import RootStore from "../stores/RootStore";
 
-const debug = getLogger('Filters');
+const logger = getLogger('Filters');
 
-@observer class Filters extends React.Component {
-  constructor() {
-    super();
-  }
-
+class Filters extends React.Component {
   render() {
     return (
       <div className="parameter_box__right">
-        <TextFilter filter={filterModel}/>
-        <SizeFilter filter={filterModel}/>
-        <TimeFilter filter={filterModel}/>
-        <SeedFilter filter={filterModel}/>
-        <PeedFilter filter={filterModel}/>
+        <TextFilter/>
+        <SizeFilter/>
+        <TimeFilter/>
+        <SeedFilter/>
+        <PeerFilter/>
       </div>
     );
   }
 }
 
-@observer class TextFilter extends React.Component {
+@inject('rootStore')
+@observer
+class TextFilter extends React.Component {
   constructor() {
     super();
 
@@ -34,8 +33,7 @@ const debug = getLogger('Filters');
     this.onChange = this.onChange.bind(this);
   }
   onChange() {
-    /**@type {FilterM}*/
-    const filter = this.props.filter;
+    const filter = this.props.rootStore.filters;
 
     filter.setText(this.refs.input.value);
   }
@@ -49,8 +47,7 @@ const debug = getLogger('Filters');
     this.onChange();
   }
   render() {
-    /**@type {FilterM}*/
-    const filter = this.props.filter;
+    const filter = this.props.rootStore.filters;
 
     return (
       <div className="parameter parameter-filter">
@@ -68,7 +65,13 @@ const debug = getLogger('Filters');
   }
 }
 
-@observer class SizeFilter extends React.Component {
+TextFilter.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore)
+};
+
+@inject('rootStore')
+@observer
+class SizeFilter extends React.Component {
   constructor() {
     super();
 
@@ -78,8 +81,7 @@ const debug = getLogger('Filters');
     this.factor = 1024 * 1024 * 1024;
   }
   onChange() {
-    /**@type {FilterM}*/
-    const filter = this.props.filter;
+    const filter = this.props.rootStore.filters;
 
     filter.setSize(this.refs.min.value * this.factor, this.refs.max.value * this.factor);
   }
@@ -94,8 +96,7 @@ const debug = getLogger('Filters');
     this.onChange();
   }
   render() {
-    /**@type {FilterM}*/
-    const filter = this.props.filter;
+    const filter = this.props.rootStore.filters;
 
     return (
       <div className="parameter parameter-filter">
@@ -122,7 +123,13 @@ const debug = getLogger('Filters');
   }
 }
 
-@observer class SeedFilter extends React.Component {
+SizeFilter.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore)
+};
+
+@inject('rootStore')
+@observer
+class SeedFilter extends React.Component {
   constructor() {
     super();
 
@@ -132,8 +139,7 @@ const debug = getLogger('Filters');
     this.factor = 1;
   }
   onChange() {
-    /**@type {FilterM}*/
-    const filter = this.props.filter;
+    const filter = this.props.rootStore.filters;
 
     filter.setSeed(this.refs.min.value * this.factor, this.refs.max.value * this.factor);
   }
@@ -148,8 +154,7 @@ const debug = getLogger('Filters');
     this.onChange();
   }
   render() {
-    /**@type {FilterM}*/
-    const filter = this.props.filter;
+    const filter = this.props.rootStore.filters;
 
     return (
       <div className="parameter parameter-filter">
@@ -176,7 +181,13 @@ const debug = getLogger('Filters');
   }
 }
 
-@observer class PeedFilter extends React.Component {
+SeedFilter.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore)
+};
+
+@inject('rootStore')
+@observer
+class PeerFilter extends React.Component {
   constructor() {
     super();
 
@@ -186,8 +197,7 @@ const debug = getLogger('Filters');
     this.factor = 1;
   }
   onChange() {
-    /**@type {FilterM}*/
-    const filter = this.props.filter;
+    const filter = this.props.rootStore.filters;
 
     filter.setPeer(this.refs.min.value * this.factor, this.refs.max.value * this.factor);
   }
@@ -202,8 +212,7 @@ const debug = getLogger('Filters');
     this.onChange();
   }
   render() {
-    /**@type {FilterM}*/
-    const filter = this.props.filter;
+    const filter = this.props.rootStore.filters;
 
     return (
       <div className="parameter parameter-filter">
@@ -230,7 +239,13 @@ const debug = getLogger('Filters');
   }
 }
 
-@observer class TimeFilter extends React.Component {
+PeerFilter.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore)
+};
+
+@inject('rootStore')
+@observer
+class TimeFilter extends React.Component {
   constructor() {
     super();
 
@@ -268,8 +283,7 @@ const debug = getLogger('Filters');
     this.factor = 1;
   }
   onChange() {
-    /**@type {FilterM}*/
-    const filter = this.props.filter;
+    const filter = this.props.rootStore.filters;
 
     filter.setTime(this.state.min * this.factor, this.state.max * this.factor);
   }
@@ -311,8 +325,7 @@ const debug = getLogger('Filters');
     }
   }
   getSelect() {
-    /**@type {FilterM}*/
-    const filter = this.props.filter;
+    const filter = this.props.rootStore.filters;
 
     let defaultValue = -1;
     const options = [];
@@ -388,5 +401,9 @@ const debug = getLogger('Filters');
     );
   }
 }
+
+TimeFilter.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore)
+};
 
 export default Filters;
