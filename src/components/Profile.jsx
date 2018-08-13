@@ -4,7 +4,7 @@ import blankSvg from '../assets/img/blank.svg';
 import getTrackerIconClassName from "../tools/getTrackerIconClassName";
 
 
-@observer class Trackers extends React.Component {
+@observer class Profile extends React.Component {
   render() {
     /**@type {IndexM}*/
     const store = this.props.store;
@@ -117,4 +117,4 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
   }
 }
 
-export default Trackers;
+export default Profile;
