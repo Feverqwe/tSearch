@@ -11,6 +11,10 @@ class Profiles extends React.Component {
     super();
 
     this.handleSelect = this.handleSelect.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
+    this.refSelect = this.refSelect.bind(this);
+
+    this.select = null;
   }
 
   componentDidMount() {
@@ -21,9 +25,16 @@ class Profiles extends React.Component {
 
   handleSelect() {
     const rootStore = this.props.rootStore;
-    const value = this.refs.select.value;
-    const profile = rootStore.profiles.getProfileById(value);
-    rootStore.setProfile(profile);
+    const id = this.select.value;
+    rootStore.profiles.setProfileId(id);
+  }
+
+  handleEdit() {
+
+  }
+
+  refSelect(element) {
+    this.select = element;
   }
 
   render() {
@@ -40,46 +51,37 @@ class Profiles extends React.Component {
       }
       case 'done': {
         const options = [];
-        let foundActive = false;
+
+        let activeProfile = null;
         profilesStore.profiles.forEach(profile => {
-          if (!foundActive && profile.name === profileStore.name) {
-            foundActive = true;
+          if (!activeProfile && (!profilesStore.profileId || profilesStore.profileId === profile.id)) {
+            activeProfile = profile;
           }
           options.push(
-            <option key={profile.name} value={profile.name}>{profile.name}</option>
+            <option key={profile.id} value={profile.id}>{profile.name}</option>
           );
         });
-        if (!foundActive) {
-          options.push(
-            <option key={profileStore.name} value={profileStore.name}>{profileStore.name}</option>
-          );
-        }
-
-        let profile = null;
-        if (profilesStore.state === 'done') {
-          profile = (
-            <Profile/>
-          );
-        }
 
         return (
           <div className="parameter_box__left">
             <div className="parameter parameter-profile">
               <div className="profile_box">
-                <select key={'select'} ref="select" className="profile__select" defaultValue={profileStore.name} onChange={this.handleSelect}>
+                <select ref={this.refSelect} className="profile__select" defaultValue={activeProfile.id} onChange={this.handleSelect}>
                   {options}
                 </select>
-                <a key={'manageBtn'}
-                   onClick={this.handleEdit}
+                <a onClick={this.handleEdit}
                    href="#manageProfiles" title={chrome.i18n.getMessage('manageProfiles')}
                    className="button-manage-profile"/>
               </div>
             </div>
             <div className="parameter parameter-tracker">
-              {profile}
+              <Profile key={activeProfile.id} profileItem={activeProfile}/>
             </div>
           </div>
         );
+      }
+      default: {
+        return ('Idle');
       }
     }
   }

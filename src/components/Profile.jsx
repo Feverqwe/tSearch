@@ -1,12 +1,28 @@
 import React from "react";
-import {observer} from "mobx-react/index";
+import {inject, observer} from "mobx-react";
 import blankSvg from '../assets/img/blank.svg';
 import getTrackerIconClassName from "../tools/getTrackerIconClassName";
+import PropTypes from "prop-types";
+import RootStore from "../stores/RootStore";
+import ProfilesItemStore from "../stores/ProfilesItemStore";
 
 
-@observer class Profile extends React.Component {
+@inject('rootStore')
+@observer
+class Profile extends React.Component {
+  componentDidMount() {
+    if (!this.props.rootStore.profile || this.props.rootStore.profile.id !== this.props.profileItem.id) {
+      this.props.rootStore.setProfile(this.props.profileItem);
+    }
+  }
+
   render() {
-    /**@type {IndexM}*/
+    return (
+      <div className="tracker__list">
+        {null}
+      </div>
+    );
+
     const store = this.props.store;
     const trackers = [];
     store.profile.trackers.forEach(profileTracker => {
@@ -21,6 +37,11 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
     );
   }
 }
+
+Profile.propTypes = null && {
+  profileItem: PropTypes.instanceOf(ProfilesItemStore),
+  rootStore: PropTypes.instanceOf(RootStore)
+};
 
 @observer class ProfileTracker extends React.Component {
   constructor() {

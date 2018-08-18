@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import '../../src/assets/css/index.less';
 import ScrollTop from "../components/ScrollTop";
 import Filters from "../components/Filters";
+import Profiles from "../components/Profiles";
 
 
 class Main extends React.Component {
@@ -34,16 +35,7 @@ class Main extends React.Component {
         </div>
         <div className="content content-row">
           <div className="parameter_box">
-            <div className="parameter_box__left">
-              <div className="parameter parameter-profile">
-                <div className="profile_box">
-                  {/*<ProfileSelect store={this.props.store}/>*/}
-                </div>
-              </div>
-              <div className="parameter parameter-tracker">
-                {/*<Trackers store={this.props.store}/>*/}
-              </div>
-            </div>
+            <Profiles/>
             <Filters/>
           </div>
           <div className="main">

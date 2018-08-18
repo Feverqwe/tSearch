@@ -3,21 +3,21 @@ import {types} from 'mobx-state-tree';
 
 /**
  * @typedef {{}} ProfilesItemTrackerStore
- * @property {integer} id
+ * @property {string} id
  */
 const ProfilesItemTrackerStore = types.model('ProfilesItemTrackerStore', {
-  id: types.integer,
+  id: types.string,
 });
 
 
 /**
  * @typedef {{}} ProfilesItemStore
- * @property {integer} id
+ * @property {string} id
  * @property {string} name
  * @property {ProfilesItemTrackerStore[]} trackers
  */
 const ProfilesItemStore = types.model('ProfilesItemStore', {
-  id: types.integer,
+  id: types.identifier,
   name: types.string,
   trackers: types.array(ProfilesItemTrackerStore)
 });

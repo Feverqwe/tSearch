@@ -1,7 +1,9 @@
-import {flow, getSnapshot, isAlive, types} from 'mobx-state-tree';
+import {flow, getSnapshot, isAlive, types, resolveIdentifier} from 'mobx-state-tree';
 import ProfilesItemStore from "./ProfilesItemStore";
 import getLogger from "../tools/getLogger";
 import _isEqual from "lodash.isequal";
+
+const uuid = require('uuid/v4');
 
 const logger = getLogger('ProfilesStore');
 
@@ -10,25 +12,38 @@ const logger = getLogger('ProfilesStore');
  * @typedef {{}} ProfilesStore
  * @property {string} [state]
  * @property {ProfilesItemStore[]} profiles
+ * @property {string|undefined|null} profileId
  * @property {function} setProfiles
+ * @property {function} setProfileId
  * @property {function:Promise} fetchProfiles
  * @property {function} afterCreate
  * @property {function} beforeDestroy
  */
 const ProfilesStore = types.model('ProfilesStore', {
   state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
-  profiles: types.array(ProfilesItemStore)
+  profiles: types.array(ProfilesItemStore),
+  profileId: types.maybeNull(types.string),
 }).actions(/**ProfilesStore*/self => {
   return {
     setProfiles(profiles) {
+      if (!profiles.length) {
+        profiles.push(getDefaultProfile());
+      }
       self.profiles = profiles;
+    },
+    setProfileId(id) {
+      self.profileId = id;
     },
     fetchProfiles: flow(function* () {
       self.state = 'pending';
       try {
-        const storage = yield new Promise(resolve => chrome.storage.local.get({profiles: []}, resolve));
+        const [syncStorage, storage] = yield Promise.all([
+          new Promise(resolve => chrome.storage.sync.get({profiles: []}, resolve)),
+          new Promise(resolve => chrome.storage.local.get({profileId: null}, resolve)),
+        ]);
         if (isAlive(self)) {
-          self.profiles = storage.profiles;
+          self.setProfiles(syncStorage.profiles);
+          self.setProfileId(storage.profileId);
           self.state = 'done';
         }
       } catch (err) {
@@ -63,5 +78,17 @@ const ProfilesStore = types.model('ProfilesStore', {
     },
   };
 });
+
+const getDefaultProfile = () => {
+  return {
+    id: uuid(),
+    name: 'Default',
+    trackers: [{
+      id: 'rutracker'
+    }, {
+      id: 'nnmclub'
+    }]
+  };
+};
 
 export default ProfilesStore;
