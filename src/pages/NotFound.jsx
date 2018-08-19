@@ -4,18 +4,14 @@ import Profiles from "../components/Profiles";
 import Filters from "../components/Filters";
 import ScrollTop from "../components/ScrollTop";
 
-class Main extends React.Component {
+class NotFound extends React.Component {
   render() {
     return (
       <div>
         <Header {...this.props}/>
         <div className="content content-row">
-          <div className="parameter_box">
-            <Profiles/>
-            <Filters/>
-          </div>
           <div className="main">
-            Main...
+            Not found
           </div>
         </div>
         <ScrollTop/>
@@ -24,4 +20,4 @@ class Main extends React.Component {
   }
 }
 
-export default Main;
+export default NotFound;

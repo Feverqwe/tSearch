@@ -11,23 +11,21 @@ import ProfileStore from "../stores/ProfileStore";
 @inject('rootStore')
 @observer
 class ProfileTracker extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
 
     this.handleClick = this.handleClick.bind(this);
 
-    this.tracker = null;
+    const id = props.profileItemTracker.id;
+    let tracker = props.rootStore.trackers.get(id);
+    if (!tracker) {
+      tracker = props.rootStore.initTracker(id);
+    }
+    this.tracker = tracker;
   }
 
   componentDidMount() {
-    const id = this.props.profileItemTracker.id;
-    let tracker = this.props.rootStore.trackers.get(id);
-    if (!tracker) {
-      tracker = this.props.rootStore.initTracker(id);
-    }
-    this.tracker = tracker;
-    tracker.attach();
-    this.forceUpdate();
+    this.tracker.attach();
   }
 
   componentWillUnmount() {

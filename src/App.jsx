@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import RootStore from "./stores/RootStore";
-import {HashRouter, Switch, Route} from 'react-router-dom';
+import {HashRouter, Route, Switch} from 'react-router-dom';
 import {Provider} from 'mobx-react';
 import routes from "./routes";
-
+import '../src/assets/css/index.less';
 
 const rootStore = window.rootStore = RootStore.create();
 

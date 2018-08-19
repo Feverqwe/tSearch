@@ -9,17 +9,13 @@ import ProfileTracker from "./ProfileTracker";
 @inject('rootStore')
 @observer
 class Profile extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
 
-    this.profile = null;
-  }
-  componentDidMount() {
-    if (!this.props.rootStore.profile || this.props.rootStore.profile.id !== this.props.profileItem.id) {
-      this.props.rootStore.setProfile(this.props.profileItem);
+    if (!props.rootStore.profile || props.rootStore.profile.id !== props.profileItem.id) {
+      props.rootStore.setProfile(props.profileItem);
     }
-    this.profile = this.props.rootStore.profile;
-    this.forceUpdate();
+    this.profile = props.rootStore.profile;
   }
 
   render() {

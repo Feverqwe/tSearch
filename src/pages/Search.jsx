@@ -4,7 +4,7 @@ import Profiles from "../components/Profiles";
 import Filters from "../components/Filters";
 import ScrollTop from "../components/ScrollTop";
 
-class Main extends React.Component {
+class Search extends React.Component {
   render() {
     return (
       <div>
@@ -15,7 +15,7 @@ class Main extends React.Component {
             <Filters/>
           </div>
           <div className="main">
-            Main...
+            Search...
           </div>
         </div>
         <ScrollTop/>
@@ -24,4 +24,4 @@ class Main extends React.Component {
   }
 }
 
-export default Main;
+export default Search;

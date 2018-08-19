@@ -62,6 +62,7 @@ const TrackerStore = types.model('TrackerStore', {
       } else {
         if (worker) {
           self.destroyWorker();
+          self.setState('idle');
         }
       }
     },
