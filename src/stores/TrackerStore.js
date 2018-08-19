@@ -12,6 +12,9 @@ const logger = getLogger('TrackerStore');
  * @property {string} [state]
  * @property {function} attach
  * @property {function} deattach
+ * @property {function} setState
+ * @property {*} meta
+ * @property {function} getIconUrl
  * @property {function} handleAttachedChange
  * @property {function} createWorker
  * @property {function} destroyWorker

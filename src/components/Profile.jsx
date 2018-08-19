@@ -9,19 +9,31 @@ import ProfileTracker from "./ProfileTracker";
 @inject('rootStore')
 @observer
 class Profile extends React.Component {
+  constructor() {
+    super();
+
+    this.profile = null;
+  }
   componentDidMount() {
     if (!this.props.rootStore.profile || this.props.rootStore.profile.id !== this.props.profileItem.id) {
       this.props.rootStore.setProfile(this.props.profileItem);
     }
+    this.profile = this.props.rootStore.profile;
+    this.forceUpdate();
   }
 
   render() {
+    if (!this.profile) {
+      return ('Prepare...');
+    }
+
     const trackers = [];
-    this.props.profileItem.trackers.forEach(profileTracker => {
+    this.profile.trackers.forEach(profileItemTracker => {
       trackers.push(
-        <ProfileTracker key={profileTracker.id} profileItemTracker={profileTracker}/>
+        <ProfileTracker key={profileItemTracker.id} profileItemTracker={profileItemTracker} profile={this.profile}/>
       );
     });
+
     return (
       <div className="tracker__list">
         {trackers}

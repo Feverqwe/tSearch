@@ -5,6 +5,7 @@ import blankSvg from "../assets/img/blank.svg";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import {ProfileItemTrackerStore} from "../stores/ProfileStore";
+import ProfileStore from "../stores/ProfileStore";
 
 
 @inject('rootStore')
@@ -37,11 +38,9 @@ class ProfileTracker extends React.Component {
   handleClick(e) {
     e.preventDefault();
 
-    /**@type {IndexM}*/
-    const store = this.props.store;
-    /**@type {ProfileTrackerM}*/
-    const profileTracker = this.props.profileTracker;
-    store.profile.selectTracker(profileTracker.id);
+    const selected = !this.props.profileItemTracker.selected;
+    this.props.profile.setSelectedAll(false);
+    this.props.profileItemTracker.setSelected(selected);
   }
 
   render() {
@@ -93,10 +92,10 @@ class ProfileTracker extends React.Component {
         } else {
           let count = 0;
           let visibleCount = 0;
-          /*if (trackerSearch) {
+          if (false && 'have some searches') {
             count = store.searchFrag.getTrackerResultCount(trackerSearch);
             visibleCount = store.searchFrag.getTrackerVisibleResultCount(trackerSearch);
-          }*/
+          }
 
           let text = '';
           if (count === visibleCount) {
@@ -112,7 +111,7 @@ class ProfileTracker extends React.Component {
         const iconUrl = this.tracker.getIconUrl() || blankSvg;
 
         const classList = ['tracker'];
-        if (false && 'selected') {
+        if (this.props.profileItemTracker.selected) {
           classList.push('tracker-selected');
         }
 
@@ -139,6 +138,7 @@ class ProfileTracker extends React.Component {
 
 ProfileTracker.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
+  profile: PropTypes.instanceOf(ProfileStore),
   profileItemTracker: PropTypes.instanceOf(ProfileItemTrackerStore),
 };
 
