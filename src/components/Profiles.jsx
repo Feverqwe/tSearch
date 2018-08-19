@@ -27,6 +27,7 @@ class Profiles extends React.Component {
     const rootStore = this.props.rootStore;
     const id = this.select.value;
     rootStore.profiles.setProfileId(id);
+    rootStore.profiles.saveProfile();
   }
 
   handleEdit() {
@@ -53,13 +54,16 @@ class Profiles extends React.Component {
 
         let activeProfile = null;
         profilesStore.profiles.forEach(profile => {
-          if (!activeProfile && (!profilesStore.profileId || profilesStore.profileId === profile.id)) {
+          if (!profilesStore.profileId || profilesStore.profileId === profile.id) {
             activeProfile = profile;
           }
           options.push(
             <option key={profile.id} value={profile.id}>{profile.name}</option>
           );
         });
+        if (!activeProfile) {
+          activeProfile = profilesStore.profiles[0];
+        }
 
         return (
           <div className="parameter_box__left">

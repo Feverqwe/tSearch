@@ -28,6 +28,7 @@ const ProfilesStore = types.model('ProfilesStore', {
     setProfiles(profiles) {
       if (!profiles.length) {
         profiles.push(getDefaultProfile());
+        profiles.push(getTestProfile());
       }
       self.profiles = profiles;
     },
@@ -70,6 +71,12 @@ const ProfilesStore = types.model('ProfilesStore', {
   };
 
   return {
+    saveProfile() {
+      return new Promise(resolve => chrome.storage.local.set({profileId: self.profileId}, resolve));
+    },
+    saveProfiles() {
+      return new Promise(resolve => chrome.storage.sync.set({profiles: self.profiles.toJSON()}, resolve));
+    },
     afterCreate() {
       chrome.storage.onChanged.addListener(storageChangeListener);
     },
@@ -87,6 +94,18 @@ const getDefaultProfile = () => {
       id: 'rutracker'
     }, {
       id: 'nnmclub'
+    }]
+  };
+};
+
+const getTestProfile = () => {
+  return {
+    id: 'test',
+    name: 'Test',
+    trackers: [{
+      id: 'rutracker'
+    }, {
+      id: 'nnmclub1'
     }]
   };
 };
