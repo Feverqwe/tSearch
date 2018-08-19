@@ -31,20 +31,24 @@ class TextFilter extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.refInput = this.refInput.bind(this);
   }
   onChange() {
     const filter = this.props.rootStore.filters;
 
-    filter.setText(this.refs.input.value);
+    filter.setText(this.input.value);
   }
   handleDoubleClick() {
-    this.refs.input.value = '';
+    this.input.value = '';
     this.onChange();
   }
   handleSubmit(e) {
     e.preventDefault();
 
     this.onChange();
+  }
+  refInput(element) {
+    this.input = element;
   }
   render() {
     const filter = this.props.rootStore.filters;
@@ -55,7 +59,7 @@ class TextFilter extends React.Component {
         <form onSubmit={this.handleSubmit} className="input_box input_box-filter">
           <input
             onDoubleClick={this.handleDoubleClick}
-            ref={'input'}
+            ref={this.refInput}
             onChange={this.onChange}
             defaultValue={filter.text}
             type="search" name="textFilter" className="input__input input__input-word-filter"/>
@@ -78,22 +82,33 @@ class SizeFilter extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.refMin = this.refMin.bind(this);
+    this.refMax = this.refMax.bind(this);
+
     this.factor = 1024 * 1024 * 1024;
+    this.min = null;
+    this.max = null;
   }
   onChange() {
     const filter = this.props.rootStore.filters;
 
-    filter.setSize(this.refs.min.value * this.factor, this.refs.max.value * this.factor);
+    filter.setSize(this.min.value * this.factor, this.max.value * this.factor);
   }
   handleDoubleClick() {
-    this.refs.min.value = '';
-    this.refs.max.value = '';
+    this.min.value = '';
+    this.max.value = '';
     this.onChange();
   }
   handleSubmit(e) {
     e.preventDefault();
 
     this.onChange();
+  }
+  refMin(element) {
+    this.min = element;
+  }
+  refMax(element) {
+    this.max = element;
   }
   render() {
     const filter = this.props.rootStore.filters;
@@ -106,7 +121,7 @@ class SizeFilter extends React.Component {
             onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
             defaultValue={filter.minSize || ''}
-            ref={'min'} name={'sizeMin'}
+            ref={this.refMin} name={'sizeMin'}
             className="input__input input__input-size-filter input__input-range input__input-range-from"
             type="number" placeholder={chrome.i18n.getMessage('rangeFromPlaceholder')}/>
           {' — '}
@@ -114,7 +129,7 @@ class SizeFilter extends React.Component {
             onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
             defaultValue={filter.maxSize || ''}
-            ref={'max'} name={'sizeMax'}
+            ref={this.refMax} name={'sizeMax'}
             className="input__input input__input-size-filter input__input-range input__input-range-to"
             type="number" placeholder={chrome.i18n.getMessage('rangeToPlaceholder')}/>
         </form>
@@ -136,22 +151,33 @@ class SeedFilter extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.refMin = this.refMin.bind(this);
+    this.refMax = this.refMax.bind(this);
+
     this.factor = 1;
+    this.min = null;
+    this.max = null;
   }
   onChange() {
     const filter = this.props.rootStore.filters;
 
-    filter.setSeed(this.refs.min.value * this.factor, this.refs.max.value * this.factor);
+    filter.setSeed(this.min.value * this.factor, this.max.value * this.factor);
   }
   handleDoubleClick() {
-    this.refs.min.value = '';
-    this.refs.max.value = '';
+    this.min.value = '';
+    this.max.value = '';
     this.onChange();
   }
   handleSubmit(e) {
     e.preventDefault();
 
     this.onChange();
+  }
+  refMin(element) {
+    this.min = element;
+  }
+  refMax(element) {
+    this.max = element;
   }
   render() {
     const filter = this.props.rootStore.filters;
@@ -164,7 +190,7 @@ class SeedFilter extends React.Component {
             onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
             defaultValue={filter.minSeed || ''}
-            ref={'min'} name={'seedMin'}
+            ref={this.refMin} name={'seedMin'}
             className="input__input input__input-seed-filter input__input-range input__input-range-from"
             type="number" placeholder={chrome.i18n.getMessage('rangeFromPlaceholder')}/>
           {' — '}
@@ -172,7 +198,7 @@ class SeedFilter extends React.Component {
             onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
             defaultValue={filter.maxSeed || ''}
-            ref={'max'} name={'seedMax'}
+            ref={this.refMax} name={'seedMax'}
             className="input__input input__input-seed-filter input__input-range input__input-range-to"
             type="number" placeholder={chrome.i18n.getMessage('rangeToPlaceholder')}/>
         </form>
@@ -194,22 +220,33 @@ class PeerFilter extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.refMin = this.refMin.bind(this);
+    this.refMax = this.refMax.bind(this);
+
     this.factor = 1;
+    this.min = null;
+    this.max = null;
   }
   onChange() {
     const filter = this.props.rootStore.filters;
 
-    filter.setPeer(this.refs.min.value * this.factor, this.refs.max.value * this.factor);
+    filter.setPeer(this.min.value * this.factor, this.max.value * this.factor);
   }
   handleDoubleClick() {
-    this.refs.min.value = '';
-    this.refs.max.value = '';
+    this.min.value = '';
+    this.max.value = '';
     this.onChange();
   }
   handleSubmit(e) {
     e.preventDefault();
 
     this.onChange();
+  }
+  refMin(element) {
+    this.min = element;
+  }
+  refMax(element) {
+    this.max = element;
   }
   render() {
     const filter = this.props.rootStore.filters;
@@ -222,7 +259,7 @@ class PeerFilter extends React.Component {
             onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
             defaultValue={filter.minPeer || ''}
-            ref={'min'} name={'peerMin'}
+            ref={this.refMin} name={'peerMin'}
             className="input__input input__input-peer-filter input__input-range input__input-range-from"
             type="number" placeholder={chrome.i18n.getMessage('rangeFromPlaceholder')}/>
           {' — '}
@@ -230,7 +267,7 @@ class PeerFilter extends React.Component {
             onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
             defaultValue={filter.maxPeer || ''}
-            ref={'max'} name={'peerMax'}
+            ref={this.refMax} name={'peerMax'}
             className="input__input input__input-peer-filter input__input-range input__input-range-to"
             type="number" placeholder={chrome.i18n.getMessage('rangeToPlaceholder')}/>
         </form>
@@ -262,9 +299,10 @@ class TimeFilter extends React.Component {
     this.handleMinDateChange = this.handleMinDateChange.bind(this);
     this.handleMaxDateChange = this.handleMaxDateChange.bind(this);
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
+    this.refSelect = this.refSelect.bind(this);
 
     this.onChange = this.onChange.bind(this);
-    this.onCreateDatePicker = this.onCreateDatePicker.bind(this);
+    this.refDatePicker = this.refDatePicker.bind(this);
 
     this.selectorOptions = new Map();
     [
@@ -281,6 +319,8 @@ class TimeFilter extends React.Component {
     });
 
     this.factor = 1;
+
+    this.select = null;
   }
   onChange() {
     const filter = this.props.rootStore.filters;
@@ -302,7 +342,7 @@ class TimeFilter extends React.Component {
     this.onChange();
   }
   handleSelectChange() {
-    const value = parseInt(this.refs.select.value, 10);
+    const value = parseInt(this.select.value, 10);
     const isExtra = value === -1;
     if (this.state.showRange !== isExtra) {
       const {minDate, maxDate} = this.state;
@@ -324,6 +364,9 @@ class TimeFilter extends React.Component {
       this.onChange();
     }
   }
+  refSelect(element) {
+    this.select = element;
+  }
   getSelect() {
     const filter = this.props.rootStore.filters;
 
@@ -339,7 +382,7 @@ class TimeFilter extends React.Component {
     });
 
     return (
-      <select ref={'select'} onChange={this.handleSelectChange} className="select__select select__select-time-filter" defaultValue={defaultValue}>
+      <select ref={this.refSelect} onChange={this.handleSelectChange} className="select__select select__select-time-filter" defaultValue={defaultValue}>
         {options}
       </select>
     );
@@ -358,7 +401,7 @@ class TimeFilter extends React.Component {
       maxDate: date
     });
   }
-  onCreateDatePicker(dataPicker) {
+  refDatePicker(dataPicker) {
     if (dataPicker) {
       dataPicker.input.addEventListener('dblclick', this.handleDoubleClick);
     }
@@ -367,7 +410,7 @@ class TimeFilter extends React.Component {
     return (
       <form onSubmit={this.handleSubmit} className="input_box input_box-filter input_box-time-filter input_box-time-filter-visible">
         <DatePicker
-          ref={this.onCreateDatePicker}
+          ref={this.refDatePicker}
           name={'timeMin'}
           selected={this.state.minDate}
           onChange={this.handleMinDateChange}
@@ -375,7 +418,7 @@ class TimeFilter extends React.Component {
         />
         {' — '}
         <DatePicker
-          ref={this.onCreateDatePicker}
+          ref={this.refDatePicker}
           name={'timeMax'}
           selected={this.state.maxDate}
           onChange={this.handleMaxDateChange}
