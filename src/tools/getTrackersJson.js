@@ -1,5 +1,5 @@
 const getTrackersJson = async () => {
-  return require('../templates/trackers.json');
+  return require('../trackers.json');
 };
 
 export default getTrackersJson;

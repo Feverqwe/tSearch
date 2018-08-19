@@ -40,7 +40,6 @@ class Profiles extends React.Component {
   render() {
     const rootStore = this.props.rootStore;
     const profilesStore = rootStore.profiles;
-    const profileStore = rootStore.profile;
 
     switch (profilesStore.state) {
       case 'pending': {

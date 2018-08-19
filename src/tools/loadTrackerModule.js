@@ -12,8 +12,6 @@ const loadTrackerModule = id => {
       meta: getTrackerCodeMeta(response),
       code: response,
     }
-  }).catch(function (err) {
-    debug('Load tracker error', err);
   });
 };
 

@@ -1,4 +1,4 @@
-import getTrackerCodeMeta from "../src/js/tools/getTrackerCodeMeta";
+import getTrackerCodeMeta from "../src/tools/getTrackerCodeMeta";
 
 const fs = require('fs-extra');
 const path = require('path');

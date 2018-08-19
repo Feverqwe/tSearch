@@ -1,0 +1,145 @@
+import {inject, observer} from "mobx-react";
+import React from "react";
+import getTrackerIconClassName from "../tools/getTrackerIconClassName";
+import blankSvg from "../assets/img/blank.svg";
+import PropTypes from "prop-types";
+import RootStore from "../stores/RootStore";
+import {ProfileItemTrackerStore} from "../stores/ProfileStore";
+
+
+@inject('rootStore')
+@observer
+class ProfileTracker extends React.Component {
+  constructor() {
+    super();
+
+    this.handleClick = this.handleClick.bind(this);
+
+    this.tracker = null;
+  }
+
+  componentDidMount() {
+    const id = this.props.profileItemTracker.id;
+    let tracker = this.props.rootStore.trackers.get(id);
+    if (!tracker) {
+      tracker = this.props.rootStore.initTracker(id);
+    }
+    this.tracker = tracker;
+    tracker.attach();
+    this.forceUpdate();
+  }
+
+  componentWillUnmount() {
+    this.tracker.deattach();
+    this.tracker = null;
+  }
+
+  handleClick(e) {
+    e.preventDefault();
+
+    /**@type {IndexM}*/
+    const store = this.props.store;
+    /**@type {ProfileTrackerM}*/
+    const profileTracker = this.props.profileTracker;
+    store.profile.selectTracker(profileTracker.id);
+  }
+
+  render() {
+    switch (this.tracker && this.tracker.state) {
+      case 'pending': {
+        return (
+          <div className="tracker">
+            Loading...
+          </div>
+        );
+      }
+      case 'error': {
+        return (
+          <div className="tracker">
+            Error
+          </div>
+        );
+      }
+      case 'done': {
+        const iconClassList = ['tracker__icon'];
+
+        iconClassList.push(getTrackerIconClassName(this.tracker.id));
+
+        if (false && 'isSearch') {
+          iconClassList.push('tracker__icon-loading');
+        } else
+        if (false && 'isError') {
+          iconClassList.push('tracker__icon-error');
+        }
+
+        let icon = null;
+        if (this.tracker.meta.trackerURL) {
+          iconClassList.push('tracker__link');
+          icon = (
+            <a className={iconClassList.join(' ')} target="_blank" href={this.tracker.meta.trackerURL}/>
+          );
+        } else {
+          icon = (
+            <div className={iconClassList.join(' ')}/>
+          );
+        }
+
+        let searchState = null;
+        if (false && 'authRequired') {
+          searchState = (
+            <a className="tracker__login" target="_blank" href={trackerSearch.authRequired.url}
+               title={chrome.i18n.getMessage('login')}/>
+          );
+        } else {
+          let count = 0;
+          let visibleCount = 0;
+          /*if (trackerSearch) {
+            count = store.searchFrag.getTrackerResultCount(trackerSearch);
+            visibleCount = store.searchFrag.getTrackerVisibleResultCount(trackerSearch);
+          }*/
+
+          let text = '';
+          if (count === visibleCount) {
+            text = count;
+          } else {
+            text = visibleCount + '/' + count;
+          }
+          searchState = (
+            <div className="tracker__counter">{text}</div>
+          )
+        }
+
+        const iconUrl = this.tracker.getIconUrl() || blankSvg;
+
+        const classList = ['tracker'];
+        if (false && 'selected') {
+          classList.push('tracker-selected');
+        }
+
+        return (
+          <div className={classList.join(' ')}>
+            {icon}
+            <a className="tracker__name" href={'#' + this.tracker.id}
+               onClick={this.handleClick}>{this.tracker.meta.name}</a>
+            {searchState}
+            <style>{`.${getTrackerIconClassName(this.tracker.id)}{background-image:url(${iconUrl})}`}</style>
+          </div>
+        );
+      }
+      default: {
+        return (
+          <div className="tracker">
+            Idle
+          </div>
+        );
+      }
+    }
+  }
+}
+
+ProfileTracker.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
+  profileItemTracker: PropTypes.instanceOf(ProfileItemTrackerStore),
+};
+
+export default ProfileTracker;
