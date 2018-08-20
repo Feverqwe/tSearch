@@ -1,0 +1,167 @@
+import {types, flow, isAlive, getParentOfType, resolveIdentifier} from 'mobx-state-tree';
+import getLogger from "../tools/getLogger";
+import RootStore from "./RootStore";
+import TrackerStore from "./TrackerStore";
+
+const logger = getLogger('SearchStore');
+
+/**
+ * @typedef {{}} ResultPageItemStore
+ * @property {string} id
+ * @property {string} trackerId
+ * @property {string} title
+ * @property {*} titleHighlightMap
+ * @property {string} url
+ * @property {*} rate
+ * @property {number} quality
+ * @property {number|undefined|null} categoryId
+ * @property {string|undefined|null} categoryTitle
+ * @property {string|undefined|null} categoryUrl
+ * @property {number|undefined|null} size
+ * @property {string|undefined|null} downloadUrl
+ * @property {number|undefined|null} seed
+ * @property {number|undefined|null} peer
+ * @property {number|undefined|null} date
+ * @property {string} dateTitle
+ * @property {string} dateText
+ * @property {string} sizeText
+ */
+const ResultPageItemStore = types.model('ResultPageItemStore', {
+  id: types.identifier,
+  trackerId: types.string,
+  title: types.string,
+  titleHighlightMap: types.frozen(),
+  url: types.string,
+  rate: types.frozen(),
+  quality: types.number,
+  categoryId: types.maybeNull(types.number),
+  categoryTitle: types.maybeNull(types.string),
+  categoryUrl: types.maybeNull(types.string),
+  size: types.maybeNull(types.number),
+  downloadUrl: types.maybeNull(types.string),
+  seed: types.maybeNull(types.number),
+  peer: types.maybeNull(types.number),
+  date: types.maybeNull(types.number),
+  dateTitle: types.string,
+  dateText: types.string,
+  sizeText: types.string,
+});
+
+/**
+ * @typedef {{}} TrackerSessionStore
+ * @property {string} id
+ * @property {string} [state]
+ * @property {*} nextQuery
+ * @property {number} [searchIndex]
+ * @property {function:Promise} fetchResult
+ * @property {*} tracker
+ */
+const TrackerSessionStore = types.model('TrackerSessionStore', {
+  id: types.identifier,
+  state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
+  nextQuery: types.frozen(),
+  searchIndex: types.optional(types.number, 0),
+}).actions(self => {
+  return {
+    fetchResult: flow(function* () {
+      self.state = 'pending';
+      try {
+        self.searchIndex++;
+        const searchStore = getParentOfType(self, SearchStore);
+        let result = null;
+        if (self.searchIndex === 1) {
+          result = yield self.tracker.worker.search(searchStore.query);
+        } else
+        if (self.nextQuery) {
+          const nextQuery = self.nextQuery;
+          self.nextQuery = null;
+          result = yield self.tracker.worker.searchNext(self.nextQuery);
+        }
+        if (!result) {
+          throw new Error('Search error');
+        }
+        if (!result.success) {
+          if (result.error === 'AUTH') {
+            if (isAlive(self)) {
+              self.tracker.setAuthRequired(result.url);
+            }
+          }
+          throw new Error('Search error');
+        }
+        if (isAlive(self)) {
+          if (result.nextPageRequest) {
+            self.nextQuery = result.nextPageRequest;
+          }
+          self.state = 'done';
+        }
+        return result.results;
+      } catch (err) {
+        logger.error('fetchResult error', err);
+        if (isAlive(self)) {
+          self.state = 'error';
+        }
+        return [];
+      }
+    }),
+  };
+}).views(self => {
+  return {
+    get tracker() {
+      return resolveIdentifier(TrackerStore, self, self.id);
+    }
+  };
+});
+
+/**
+ * @typedef {{}} SearchStore
+ * @property {string} [state]
+ * @property {string} query
+ * @property {Map<*,TrackerSessionStore>} trackerSessions
+ * @property {ResultPageItemStore[][]} resultPages
+ * @property {function:Promise} fetchResults
+ * @property {function} getTrackerSessions
+ */
+const SearchStore = types.model('SearchStore', {
+  state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
+  query: types.string,
+  trackerSessions: types.map(TrackerSessionStore),
+  resultPages: types.array(types.array(ResultPageItemStore)),
+}).actions(self => {
+  return {
+    fetchResults: flow(function* () {
+      self.state = 'pending';
+      try {
+        const results = yield Promise.all(self.getTrackerSessions().map(trackerSession => {
+          return trackerSession.fetchResult();
+        }));
+        const resultPage = [].concat(...results);
+        if (isAlive(self)) {
+          self.resultPages.push(resultPage);
+          self.state = 'done';
+        }
+      } catch (err) {
+        logger.error('fetchResults error', err);
+        if (isAlive(self)) {
+          self.state = 'error';
+        }
+      }
+    }),
+    getTrackerSessions() {
+      const result = [];
+      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+      rootStore.profile.selectedTrackers.forEach(profileItemTracker => {
+        const /**TrackerStore*/tracker = profileItemTracker.tracker;
+        if (tracker.state === 'done') {
+          if (!self.trackerSessions.has(tracker.id)) {
+            self.trackerSessions.set(tracker.id, {id: tracker.id});
+          }
+          const session = self.trackerSessions.get(tracker.id);
+          result.push(session);
+        }
+      });
+      return result;
+    }
+  };
+});
+
+export default SearchStore;

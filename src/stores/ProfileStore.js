@@ -32,6 +32,7 @@ const ProfileItemTrackerStore = types.model('ProfileItemTrackerStore', {
  * @property {string} name
  * @property {ProfileItemTrackerStore[]} trackers
  * @property {function} setSelectedAll
+ * @property {*} selectedTrackers
  */
 const ProfileStore = types.model('ProfileStore', {
   id: types.identifier,
@@ -52,6 +53,11 @@ const ProfileStore = types.model('ProfileStore', {
         result = self.trackers;
       }
       return result;
+    },
+    get trackersIsReady() {
+      return this.trackers.every(trackerProfile => {
+        return !['idle', 'pending'].includes(trackerProfile.tracker.state);
+      });
     }
   };
 });

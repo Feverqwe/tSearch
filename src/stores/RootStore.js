@@ -5,6 +5,7 @@ import FiltersStore from "./FiltersStore";
 import ProfilesStore from "./ProfilesStore";
 import ProfileStore from "./ProfileStore";
 import TrackerStore from "./TrackerStore";
+import SearchStore from "./SearchStore";
 
 
 /**
@@ -15,8 +16,11 @@ import TrackerStore from "./TrackerStore";
  * @property {ProfileStore|undefined} profile
  * @property {ProfilesStore} [profiles]
  * @property {Map<*,TrackerStore>} trackers
+ * @property {SearchStore[]} searches
  * @property {function} setProfile
  * @property {function} initTracker
+ * @property {function} createSearch
+ * @property {function} destroySearch
  */
 const RootStore = types.model('RootStore', {
   searchForm: types.optional(SearchForm, {}),
@@ -25,6 +29,7 @@ const RootStore = types.model('RootStore', {
   profile: types.maybe(ProfileStore),
   profiles: types.optional(ProfilesStore, {}),
   trackers: types.map(TrackerStore),
+  searches: types.array(SearchStore),
 }).actions(/**RootStore*/self => {
   return {
     setProfile(profile) {
@@ -37,6 +42,16 @@ const RootStore = types.model('RootStore', {
         tracker = self.trackers.get(id);
       }
       return tracker;
+    },
+    createSearch(query) {
+      self.searches.push({query});
+      return self.searches.slice(-1)[0];
+    },
+    destroySearch(search) {
+      const pos = self.searches.indexOf(search);
+      if (pos !== -1) {
+        self.searches.splice(pos, 1);
+      }
     }
   };
 });

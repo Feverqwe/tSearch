@@ -24,6 +24,9 @@ const TrackerStore = types.model('TrackerStore', {
   id: types.identifier,
   attached: types.optional(types.number, 0),
   state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
+  authRequired: types.maybe(types.model({
+    url: types.maybeNull(types.string)
+  })),
 }).actions(self => {
   return {
     attach() {
@@ -38,6 +41,9 @@ const TrackerStore = types.model('TrackerStore', {
     },
     setState(state) {
       self.state = state;
+    },
+    setAuthRequired(url) {
+      self.authRequired = {url};
     }
   };
 }).views(self => {
@@ -45,6 +51,9 @@ const TrackerStore = types.model('TrackerStore', {
   return {
     get meta() {
       return worker.module.meta || {};
+    },
+    get worker() {
+      return worker;
     },
     getIconUrl() {
       if (self.meta.icon64) {
