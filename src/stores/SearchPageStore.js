@@ -11,6 +11,7 @@ import sortResults from "../tools/sortResults";
  * @property {function} sortBy
  * @property {function} appendSortBy
  * @property {function} getSortBy
+ * @property {function} getResultsBySelectedTrackers
  * @property {function} getFilteredResults
  * @property {function} getSortedAndFilteredResults
  * @property {function} getResultCountByTrackerId
@@ -59,12 +60,16 @@ const SearchPageStore = types.model('SearchPageStore', {
       });
       return result;
     },
-    getFilteredResults() {
+    getResultsBySelectedTrackers() {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
       const selectedTrackerIds = rootStore.profile.selectedTrackers.map(tracker => tracker.id);
-      return rootStore.filters.processResults(self.results).filter(result => {
+      return self.results.filter(result => {
         return selectedTrackerIds.includes(result.trackerId);
       });
+    },
+    getFilteredResults() {
+      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+      return rootStore.filters.processResults(self.getResultsBySelectedTrackers());
     },
     getSortedAndFilteredResults() {
       return sortResults(self.getFilteredResults(), self.sorts);
