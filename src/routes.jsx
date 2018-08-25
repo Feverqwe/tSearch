@@ -24,7 +24,7 @@ const routes = [{
       );
     }
     return (
-      <Search {...props} query={query.query}/>
+      <Search key={query.query} {...props} query={query.query}/>
     );
   },
 }, {
