@@ -1,7 +1,7 @@
 import {observer} from 'mobx-react';
 import React from 'react';
 import Table from './Table';
-import getLogger from "../tools/getLogger";
+import getLogger from "../../../src/tools/getLogger";
 
 const qs = require('querystring');
 
