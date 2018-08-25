@@ -13,7 +13,7 @@ const outputPath = path.resolve('./dist/');
 
 const env = {
   targets: {
-    browsers: ['Chrome >= 48']
+    browsers: ['Chrome >= 60']
   }
 };
 
@@ -147,7 +147,7 @@ const config = {
   ]
 };
 
-if (!isWatch) {
+/*if (!isWatch) {
   Object.keys(config.entry).forEach(entryName => {
     let value = config.entry[entryName];
     if (!Array.isArray(value)) {
@@ -157,6 +157,6 @@ if (!isWatch) {
 
     config.entry[entryName] = value;
   });
-}
+}*/
 
 module.exports = config;
