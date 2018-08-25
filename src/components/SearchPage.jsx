@@ -25,9 +25,7 @@ class SearchPage extends React.Component {
       )
     });
 
-    let moreBtn = null;
-
-    const body = this.props.searchPage.getSortedAndFilteredResults().map(result => {
+    const body = this.props.searchPageStore.getSortedAndFilteredResults().map(result => {
       return (
         <SearchPageRow key={`result-${result.id}`} {...this.props} columns={this.columns} result={result}/>
       )
@@ -42,9 +40,6 @@ class SearchPage extends React.Component {
           <div className="body table__body">
             {body}
           </div>
-          <div className="footer table__footer">
-            {moreBtn}
-          </div>
         </div>
       </div>
     );
@@ -54,7 +49,7 @@ class SearchPage extends React.Component {
 SearchPage.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   searchStore: PropTypes.instanceOf(SearchStore),
-  searchPage: PropTypes.instanceOf(SearchPageStore),
+  searchPageStore: PropTypes.instanceOf(SearchPageStore),
 };
 
 @observer
@@ -67,16 +62,16 @@ class SearchPageColumn extends React.Component {
   handleClick(e) {
     e.preventDefault();
     if (e.ctrlKey) {
-      this.props.searchPage.appendSortBy(this.props.type);
+      this.props.searchPageStore.appendSortBy(this.props.type);
     } else {
-      this.props.searchPage.sortBy(this.props.type);
+      this.props.searchPageStore.sortBy(this.props.type);
     }
   }
   render() {
     const type = this.props.type;
     const name = chrome.i18n.getMessage('row_' + type);
     const nameShort = chrome.i18n.getMessage('row_' + type + '__short') || name;
-    const sortBy = this.props.searchPage.getSortBy(type);
+    const sortBy = this.props.searchPageStore.getSortBy(type);
     const sortReverse = typeSortMap[type] && typeSortMap[type].reverse;
 
     const classList = ['cell', 'row__cell', 'cell-' + type];
@@ -102,7 +97,7 @@ class SearchPageColumn extends React.Component {
 
 SearchPageColumn.propTypes = null && {
   searchStore: PropTypes.instanceOf(SearchStore),
-  searchPage: PropTypes.instanceOf(SearchPageStore),
+  searchPageStore: PropTypes.instanceOf(SearchPageStore),
   type: PropTypes.string,
 };
 
@@ -232,7 +227,7 @@ class SearchPageRow extends React.Component {
 SearchPageRow.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   searchStore: PropTypes.instanceOf(SearchStore),
-  searchPage: PropTypes.instanceOf(SearchPageStore),
+  searchPageStore: PropTypes.instanceOf(SearchPageStore),
   row: PropTypes.instanceOf(ResultPageItemStore),
   columns: PropTypes.arrayOf(PropTypes.string)
 };

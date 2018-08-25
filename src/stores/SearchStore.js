@@ -42,7 +42,7 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
         if (self.nextQuery) {
           const nextQuery = self.nextQuery;
           self.nextQuery = null;
-          result = yield self.tracker.worker.searchNext(self.nextQuery);
+          result = yield self.tracker.worker.searchNext(nextQuery);
         }
         if (!result) {
           throw new ErrorWithCode(`Search error: result is empty`, 'EMPTY_RESULT');
@@ -149,6 +149,15 @@ const SearchStore = types.model('SearchStore', {
         count += page.getVisibleResultCountByTrackerId(id);
         return count;
       }, 0);
+    },
+    hasNextQuery() {
+      let result = false;
+      self.trackerSessions.forEach(trackerSession => {
+        if (trackerSession.nextQuery) {
+          result = true;
+        }
+      });
+      return result;
     }
   };
 });

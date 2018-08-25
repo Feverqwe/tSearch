@@ -16,6 +16,8 @@ class Search extends React.Component {
   constructor(props) {
     super(props);
 
+    this.handleSearchNext = this.handleSearchNext.bind(this);
+
     /**@type SearchStore*/
     this.searchStore = props.rootStore.createSearch(props.query);
   }
@@ -23,7 +25,12 @@ class Search extends React.Component {
     this.props.rootStore.destroySearch(this.searchStore);
     this.searchStore = null;
   }
+  handleSearchNext(e) {
+    e.preventDefault();
+    this.searchStore.fetchResults();
+  }
   render() {
+    let moreBtn = null;
     let result = null;
     if (
       this.props.rootStore.profile &&
@@ -31,13 +38,23 @@ class Search extends React.Component {
     ) {
       result = (
         <SearchQuery searchStore={this.searchStore}>
-          {this.searchStore.resultPages.map((searchPage, index) => {
+          {this.searchStore.resultPages.map((searchPageStore, index) => {
             return (
-              <SearchPage key={`search-page-${index}`} searchStore={this.searchStore} searchPage={searchPage}/>
+              <SearchPage key={`search-page-${index}`} searchStore={this.searchStore} searchPageStore={searchPageStore}/>
             );
           })}
         </SearchQuery>
       );
+
+      if (this.searchStore.hasNextQuery()) {
+        moreBtn = (
+          <div className="footer table__footer">
+            <a className="loadMore search__submit footer__loadMore" href="#search-next" onClick={this.handleSearchNext}>{
+              chrome.i18n.getMessage('loadMore')
+            }</a>
+          </div>
+        );
+      }
     }
 
     return (
@@ -50,6 +67,7 @@ class Search extends React.Component {
           </div>
           <div className="main">
             {result}
+            {moreBtn}
           </div>
         </div>
         <ScrollTop/>
