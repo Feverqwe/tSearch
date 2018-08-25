@@ -128,11 +128,7 @@ const FiltersStore = types.model('FiltersStore', {
       }
       if (textFilter.includeRe) {
         const m = text.match(textFilter.includeRe);
-        if (!m) {
-          return false;
-        }
-        m.shift();
-        if (uniq(m).length !== textFilter.includeCount) {
+        if (!m || uniq(m).length !== textFilter.includeCount) {
           return false;
         }
       }
@@ -161,7 +157,7 @@ const FiltersStore = types.model('FiltersStore', {
         if (!self.testRange(result.date, self.minTime, self.maxTime)) {
           return false;
         } else
-        if (!self.testText(result.categoryTitle + ' ' + result.title)) {
+        if (!self.testText(result.categoryTitleLowerCase + ' ' + result.titleLowerCase)) {
           return false;
         } else {
           return true;

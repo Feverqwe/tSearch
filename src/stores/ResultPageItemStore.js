@@ -45,6 +45,12 @@ const ResultPageItemStore = types.model('ResultPageItemStore', {
   sizeText: types.string,
 }).views(self => {
   return {
+    get titleLowerCase() {
+      return self.title.toLowerCase();
+    },
+    get categoryTitleLowerCase() {
+      return self.categoryTitle.toLowerCase();
+    },
     get tracker() {
       if (!isAlive(self)) {
         return null;
