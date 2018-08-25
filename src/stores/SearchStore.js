@@ -19,6 +19,7 @@ const logger = getLogger('SearchStore');
  * @property {number} [searchIndex]
  * @property {function:Promise} fetchResult
  * @property {*} tracker
+ * @property {*} search
  */
 const TrackerSessionStore = types.model('TrackerSessionStore', {
   id: types.identifier,
@@ -92,8 +93,10 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
  * @property {SearchPageStore[]} resultPages
  * @property {function:Promise} fetchResults
  * @property {function} getTrackerSessions
+ * @property {function} reset
  * @property {function} getResultCountByTrackerId
  * @property {function} getVisibleResultCountByTrackerId
+ * @property {function} hasNextQuery
  */
 const SearchStore = types.model('SearchStore', {
   state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
@@ -134,6 +137,11 @@ const SearchStore = types.model('SearchStore', {
         }
       });
       return result;
+    },
+    reset() {
+      self.state = 'idle';
+      self.trackerSessions = {};
+      self.resultPages = [];
     }
   };
 }).views(self => {

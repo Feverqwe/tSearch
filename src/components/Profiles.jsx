@@ -38,6 +38,11 @@ class Profiles extends React.Component {
   }
 
   handleSelect() {
+    const searchStore = this.props.searchStore;
+    if (searchStore) {
+      searchStore.reset();
+    }
+
     const rootStore = this.props.rootStore;
     const id = this.select.value;
     rootStore.profiles.setProfileId(id);
