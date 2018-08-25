@@ -26,7 +26,7 @@ const logger = getLogger('searchFrag');
  * @property {function} getTextFilterRe
  * @property {function} testText
  * @property {function} testRange
- * @property {function} processResults
+ * @property {function} getFilter
  */
 const FiltersStore = types.model('FiltersStore', {
   text: types.optional(types.string, ''),
@@ -143,8 +143,8 @@ const FiltersStore = types.model('FiltersStore', {
       }
       return true;
     },
-    processResults(results) {
-      return results.filter(result => {
+    getFilter() {
+      return result => {
         if (!self.testRange(result.size, self.minSize, self.maxSize)) {
           return false;
         } else
@@ -162,7 +162,7 @@ const FiltersStore = types.model('FiltersStore', {
         } else {
           return true;
         }
-      });
+      };
     },
   };
 });

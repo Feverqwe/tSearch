@@ -17,11 +17,14 @@ const sortResults = (results, sorts) => {
       return a === b ? 0 : a > b ? -1 : 1;
     };
   });
+  const sortFnsLen = sortFns.length;
   results.sort((a, b) => {
     let result = 0;
-    sortFns.some(fn => {
-      return (result = fn(a, b)) !== 0;
-    });
+    for (let i = 0; i < sortFnsLen; i++) {
+      if ((result = sortFns[i](a, b)) !== 0) {
+        break;
+      }
+    }
     return result;
   });
   return results;

@@ -11,7 +11,7 @@ import sortResults from "../tools/sortResults";
  * @property {function} sortBy
  * @property {function} appendSortBy
  * @property {function} getSortBy
- * @property {function} getResultsBySelectedTrackers
+ * @property {function} getFilterBySelectedTrackers
  * @property {function} getFilteredResults
  * @property {function} getSortedAndFilteredResults
  * @property {function} getResultCountByTrackerId
@@ -60,16 +60,16 @@ const SearchPageStore = types.model('SearchPageStore', {
       });
       return result;
     },
-    getResultsBySelectedTrackers() {
+    getFilterBySelectedTrackers() {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
       const selectedTrackerIds = rootStore.profile.selectedTrackers.map(tracker => tracker.id);
-      return self.results.filter(result => {
+      return result => {
         return selectedTrackerIds.includes(result.trackerId);
-      });
+      };
     },
     getFilteredResults() {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-      return rootStore.filters.processResults(self.getResultsBySelectedTrackers());
+      return multiFilter(self.results, self.getFilterBySelectedTrackers(), rootStore.filters.getFilter());
     },
     getSortedAndFilteredResults() {
       return sortResults(self.getFilteredResults(), self.sorts);
@@ -86,5 +86,19 @@ const SearchPageStore = types.model('SearchPageStore', {
     }
   };
 });
+
+const multiFilter = (results, ...filters) => {
+  const filtersLen = filters.length;
+  return results.filter(item => {
+    let result = true;
+    for (let i = 0; i < filtersLen; i++) {
+      if (filters[i](item) === false) {
+        result = false;
+        break;
+      }
+    }
+    return result;
+  });
+};
 
 export default SearchPageStore;
