@@ -172,6 +172,7 @@ class SearchPageRow extends React.Component {
                   {titleIcon}
                 </div>
               );
+              titleIcon = null;
             }
 
             return (
