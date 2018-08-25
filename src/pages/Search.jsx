@@ -24,12 +24,12 @@ class Search extends React.Component {
     this.searchStore = null;
   }
   render() {
-    let searchQuery = null;
+    let result = null;
     if (
       this.props.rootStore.profile &&
       this.props.rootStore.profile.trackersIsReady
     ) {
-      searchQuery = (
+      result = (
         <SearchQuery searchStore={this.searchStore}>
           {this.searchStore.resultPages.map((searchPage, index) => {
             return (
@@ -45,12 +45,11 @@ class Search extends React.Component {
         <Header {...this.props}/>
         <div className="content content-row">
           <div className="parameter_box">
-            <Profiles/>
+            <Profiles searchStore={this.searchStore}/>
             <Filters/>
           </div>
           <div className="main">
-            {searchQuery}
-            Search...
+            {result}
           </div>
         </div>
         <ScrollTop/>

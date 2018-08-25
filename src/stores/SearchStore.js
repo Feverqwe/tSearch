@@ -77,6 +77,9 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
   return {
     get tracker() {
       return resolveIdentifier(TrackerStore, self, self.id);
+    },
+    get search() {
+      return getParentOfType(self, SearchStore);
     }
   };
 });
@@ -89,6 +92,8 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
  * @property {SearchPageStore[]} resultPages
  * @property {function:Promise} fetchResults
  * @property {function} getTrackerSessions
+ * @property {function} getResultCountByTrackerId
+ * @property {function} getVisibleResultCountByTrackerId
  */
 const SearchStore = types.model('SearchStore', {
   state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
@@ -131,6 +136,21 @@ const SearchStore = types.model('SearchStore', {
       return result;
     }
   };
+}).views(self => {
+  return {
+    getResultCountByTrackerId(id) {
+      return self.resultPages.reduce((count, page) => {
+        count += page.getResultCountByTrackerId(id);
+        return count;
+      }, 0);
+    },
+    getVisibleResultCountByTrackerId(id) {
+      return self.resultPages.reduce((count, page) => {
+        count += page.getVisibleResultCountByTrackerId(id);
+        return count;
+      }, 0);
+    }
+  };
 });
 
 const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, results) => {
@@ -168,3 +188,4 @@ const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, result
 };
 
 export default SearchStore;
+export {TrackerSessionStore};

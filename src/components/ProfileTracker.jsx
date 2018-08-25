@@ -6,13 +6,13 @@ import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import {ProfileItemTrackerStore} from "../stores/ProfileStore";
 import ProfileStore from "../stores/ProfileStore";
-
+import {TrackerSessionStore} from '../stores/SearchStore';
 
 @inject('rootStore')
 @observer
 class ProfileTracker extends React.Component {
   constructor(props) {
-    super();
+    super(props);
 
     this.handleClick = this.handleClick.bind(this);
 
@@ -62,11 +62,14 @@ class ProfileTracker extends React.Component {
 
         iconClassList.push(getTrackerIconClassName(this.tracker.id));
 
-        if (false && 'isSearch') {
-          iconClassList.push('tracker__icon-loading');
-        } else
-        if (false && 'isError') {
-          iconClassList.push('tracker__icon-error');
+        const searchSession = this.props.trackerSearchSession;
+        if (searchSession) {
+          if (searchSession.state === 'pending') {
+            iconClassList.push('tracker__icon-loading');
+          } else
+          if (searchSession.state === 'error') {
+            iconClassList.push('tracker__icon-error');
+          }
         }
 
         let icon = null;
@@ -82,18 +85,15 @@ class ProfileTracker extends React.Component {
         }
 
         let searchState = null;
-        if (false && 'authRequired') {
+        if (this.tracker.authRequired) {
           searchState = (
-            <a className="tracker__login" target="_blank" href={trackerSearch.authRequired.url}
+            <a className="tracker__login" target="_blank" href={this.tracker.authRequired.url}
                title={chrome.i18n.getMessage('login')}/>
           );
-        } else {
-          let count = 0;
-          let visibleCount = 0;
-          if (false && 'have some searches') {
-            count = store.searchFrag.getTrackerResultCount(trackerSearch);
-            visibleCount = store.searchFrag.getTrackerVisibleResultCount(trackerSearch);
-          }
+        } else
+        if (searchSession) {
+          const count = searchSession.search.getResultCountByTrackerId(this.tracker.id);
+          const visibleCount = searchSession.search.getVisibleResultCountByTrackerId(this.tracker.id);
 
           let text = '';
           if (count === visibleCount) {
@@ -138,6 +138,7 @@ ProfileTracker.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   profile: PropTypes.instanceOf(ProfileStore),
   profileItemTracker: PropTypes.instanceOf(ProfileItemTrackerStore),
+  trackerSearchSession: PropTypes.instanceOf(TrackerSessionStore),
 };
 
 export default ProfileTracker;

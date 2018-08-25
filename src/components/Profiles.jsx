@@ -3,18 +3,32 @@ import {observer, inject} from "mobx-react/index";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import Profile from "./Profile";
+import SearchStore from "../stores/SearchStore";
 
 @inject('rootStore')
 @observer
 class Profiles extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      searchStore: props.searchStore
+    };
 
     this.handleSelect = this.handleSelect.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.refSelect = this.refSelect.bind(this);
 
     this.select = null;
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.searchStore !== state.searchStore) {
+      return {
+        searchStore: props.searchStore
+      };
+    }
+    return null;
   }
 
   componentDidMount() {
@@ -78,7 +92,7 @@ class Profiles extends React.Component {
               </div>
             </div>
             <div className="parameter parameter-tracker">
-              <Profile key={activeProfile.id} profileItem={activeProfile}/>
+              <Profile key={activeProfile.id} {...this.props} profileItem={activeProfile}/>
             </div>
           </div>
         );
@@ -91,7 +105,8 @@ class Profiles extends React.Component {
 }
 
 Profiles.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore)
+  rootStore: PropTypes.instanceOf(RootStore),
+  searchStore: PropTypes.instanceOf(SearchStore),
 };
 
 export default Profiles;

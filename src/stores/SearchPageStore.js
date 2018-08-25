@@ -13,6 +13,8 @@ import sortResults from "../tools/sortResults";
  * @property {function} getSortBy
  * @property {function} getFilteredResults
  * @property {function} getSortedAndFilteredResults
+ * @property {function} getResultCountByTrackerId
+ * @property {function} getVisibleResultCountByTrackerId
  */
 const SearchPageStore = types.model('SearchPageStore', {
   results: types.array(ResultPageItemStore),
@@ -59,10 +61,23 @@ const SearchPageStore = types.model('SearchPageStore', {
     },
     getFilteredResults() {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-      return rootStore.filters.processResults(this.results);
+      const selectedTrackerIds = rootStore.profile.selectedTrackers.map(tracker => tracker.id);
+      return rootStore.filters.processResults(self.results).filter(result => {
+        return selectedTrackerIds.includes(result.trackerId);
+      });
     },
     getSortedAndFilteredResults() {
       return sortResults(self.getFilteredResults(), self.sorts);
+    },
+    getResultCountByTrackerId(id) {
+      return self.results.filter(result => {
+        return result.trackerId === id;
+      }).length;
+    },
+    getVisibleResultCountByTrackerId(id) {
+      return self.getFilteredResults().filter(result => {
+        return result.trackerId === id;
+      }).length;
     }
   };
 });
