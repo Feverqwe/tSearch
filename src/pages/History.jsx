@@ -7,6 +7,7 @@ import RootStore from "../stores/RootStore";
 import highlight from "../tools/highlight";
 import '../../src/assets/css/history.less';
 import {HistoryClickStore, HistoryQueryStore} from '../stores/HistoryStore';
+import {Link} from "react-router-dom";
 
 const qs = require('querystring');
 
@@ -92,7 +93,7 @@ class HistoryQuery extends React.Component {
       );
     });
 
-    const link = 'index.html#/search?' + qs.stringify({
+    const link = '/search?' + qs.stringify({
       query: query.query
     });
 
@@ -103,7 +104,7 @@ class HistoryQuery extends React.Component {
              title={chrome.i18n.getMessage('remove')}
              onClick={this.handleRemove}
           />
-          <a className="item__link" href={link}>{query.query}</a>
+          <Link className="item__link" to={link}>{query.query}</Link>
         </div>
         <div className="click_history item__click_history">
           {links}
