@@ -4,8 +4,8 @@ const typeSortMap = {
   }
 };
 
-const sortResults = (results, sortByList) => {
-  const sortFnList = sortByList.map(({by, direction}) => {
+const sortResults = (results, sorts) => {
+  const sortFns = sorts.map(({by, direction}) => {
     const info = typeSortMap[by];
     return ({[by]: a}, {[by]: b}) => {
       if (info && info.reverse) {
@@ -19,7 +19,7 @@ const sortResults = (results, sortByList) => {
   });
   results.sort((a, b) => {
     let result = 0;
-    sortFnList.some(fn => {
+    sortFns.some(fn => {
       return (result = fn(a, b)) !== 0;
     });
     return result;

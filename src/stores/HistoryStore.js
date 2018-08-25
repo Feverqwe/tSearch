@@ -4,7 +4,10 @@ import _isEqual from "lodash.isequal";
 import getLogger from "../tools/getLogger";
 import getNow from "../tools/getNow";
 
+const promiseLimit = require('promise-limit');
+
 const logger = getLogger('HistoryStore');
+const oneLimit = promiseLimit(1);
 
 
 /**

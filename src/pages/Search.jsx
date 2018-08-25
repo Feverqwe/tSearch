@@ -7,6 +7,8 @@ import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import {inject, observer} from "mobx-react";
 import SearchStore from "../stores/SearchStore";
+import SearchPage from "../components/SearchPage";
+
 
 @inject('rootStore')
 @observer
@@ -15,11 +17,11 @@ class Search extends React.Component {
     super(props);
 
     /**@type SearchStore*/
-    this.search = props.rootStore.createSearch(props.query);
+    this.searchStore = props.rootStore.createSearch(props.query);
   }
   componentWillUnmount() {
-    this.props.rootStore.destroySearch(this.search);
-    this.search = null;
+    this.props.rootStore.destroySearch(this.searchStore);
+    this.searchStore = null;
   }
   render() {
     let searchQuery = null;
@@ -28,7 +30,13 @@ class Search extends React.Component {
       this.props.rootStore.profile.trackersIsReady
     ) {
       searchQuery = (
-        <SearchQuery search={this.search}/>
+        <SearchQuery searchStore={this.searchStore}>
+          {this.searchStore.resultPages.map((searchPage, index) => {
+            return (
+              <SearchPage key={`search-page-${index}`} searchStore={this.searchStore} searchPage={searchPage}/>
+            );
+          })}
+        </SearchQuery>
       );
     }
 
@@ -55,20 +63,21 @@ Search.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore)
 };
 
+
 @inject('rootStore')
 @observer
 class SearchQuery extends React.Component {
   componentDidMount() {
-    this.props.search.fetchResults();
+    this.props.searchStore.fetchResults();
   }
   render() {
-    return (null);
+    return this.props.children || null;
   }
 }
 
 SearchQuery.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
-  search: PropTypes.instanceOf(SearchStore),
+  searchStore: PropTypes.instanceOf(SearchStore),
 };
 
 export default Search;
