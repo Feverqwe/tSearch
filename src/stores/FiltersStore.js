@@ -128,7 +128,11 @@ const FiltersStore = types.model('FiltersStore', {
       }
       if (textFilter.includeRe) {
         const m = text.match(textFilter.includeRe);
-        if (!m || uniq(m).length !== textFilter.includeCount) {
+        if (!m) {
+          return false;
+        }
+        m.shift();
+        if (uniq(m).length !== textFilter.includeCount) {
           return false;
         }
       }
