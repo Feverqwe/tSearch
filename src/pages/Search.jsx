@@ -6,6 +6,7 @@ import ScrollTop from "../components/ScrollTop";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import {inject, observer} from "mobx-react";
+import SearchStore from "../stores/SearchStore";
 
 @inject('rootStore')
 @observer
@@ -54,7 +55,7 @@ Search.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore)
 };
 
-
+@inject('rootStore')
 @observer
 class SearchQuery extends React.Component {
   componentDidMount() {
@@ -64,4 +65,10 @@ class SearchQuery extends React.Component {
     return (null);
   }
 }
+
+SearchQuery.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
+  search: PropTypes.instanceOf(SearchStore),
+};
+
 export default Search;

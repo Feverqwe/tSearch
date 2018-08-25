@@ -1,7 +1,12 @@
-import {types, flow, isAlive, getParentOfType, resolveIdentifier} from 'mobx-state-tree';
+import {flow, getParentOfType, isAlive, resolveIdentifier, types} from 'mobx-state-tree';
 import getLogger from "../tools/getLogger";
 import RootStore from "./RootStore";
 import TrackerStore from "./TrackerStore";
+import highlight from "../tools/highlight";
+import rate from "../tools/rate";
+import {unixTimeToFromNow, unixTimeToString} from "../tools/unixTimeTo";
+import filesize from "filesize";
+import {ErrorWithCode} from "../tools/errors";
 
 const logger = getLogger('SearchStore');
 
@@ -64,10 +69,13 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
 }).actions(self => {
   return {
     fetchResult: flow(function* () {
+      const id = self.id;
       self.state = 'pending';
       try {
         self.searchIndex++;
         const searchStore = getParentOfType(self, SearchStore);
+        const queryHighlightMap = highlight.getMap(searchStore.query);
+        const queryRateScheme = rate.getScheme(searchStore.query);
         let result = null;
         if (self.searchIndex === 1) {
           result = yield self.tracker.worker.search(searchStore.query);
@@ -78,15 +86,17 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
           result = yield self.tracker.worker.searchNext(self.nextQuery);
         }
         if (!result) {
-          throw new Error('Search error');
+          throw new ErrorWithCode(`Search error: result is empty`, 'EMPTY_RESULT');
         }
         if (!result.success) {
           if (result.error === 'AUTH') {
             if (isAlive(self)) {
               self.tracker.setAuthRequired(result.url);
             }
+            throw new ErrorWithCode(`Search error: auth required`, 'AUTH_REQUIRED');
+          } else {
+            throw new ErrorWithCode(`Search error: not success`, 'NOT_SUCCESS');
           }
-          throw new Error('Search error');
         }
         if (isAlive(self)) {
           if (result.nextPageRequest) {
@@ -94,9 +104,9 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
           }
           self.state = 'done';
         }
-        return result.results;
+        return prepSearchResults(self.id, queryHighlightMap, queryRateScheme, result.results);
       } catch (err) {
-        logger.error('fetchResult error', err);
+        logger.error(`[${id}] fetchResult error`, err);
         if (isAlive(self)) {
           self.state = 'error';
         }
@@ -163,5 +173,39 @@ const SearchStore = types.model('SearchStore', {
     }
   };
 });
+
+const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, results) => {
+  return results.filter(result => {
+    if (!result.url) {
+      logger.warn(`[${trackerId}] Skip torrent, cause no url`, result);
+      return false;
+    } else
+    if (!result.title) {
+      logger.warn(`[${trackerId}] Skip torrent cause no title`, result);
+      return false;
+    } else {
+      ['size', 'seed', 'peer', 'date'].forEach(key => {
+        let value = result[key];
+        if (['undefined', 'number'].indexOf(typeof value) === -1) {
+          value = parseInt(value, 10);
+          if (!Number.isFinite(value)) {
+            value = undefined;
+          }
+          result[key] = value;
+        }
+      });
+      result.id = result.url;
+      result.trackerId = trackerId;
+      result.titleHighlightMap = highlight.getTextMap(result.title, queryHighlightMap);
+      const itemRate = rate.getRate(result, queryRateScheme);
+      result.rate = itemRate;
+      result.quality = itemRate.sum;
+      result.dateTitle = unixTimeToString(result.date);
+      result.dateText = unixTimeToFromNow(result.date);
+      result.sizeText = filesize(result.size);
+      return true;
+    }
+  });
+};
 
 export default SearchStore;
