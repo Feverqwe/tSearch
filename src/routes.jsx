@@ -3,6 +3,7 @@ import Main from "./pages/Main";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 import {Redirect} from "react-router-dom";
+import History from "./pages/History";
 
 const qs = require('querystring');
 
@@ -25,6 +26,13 @@ const routes = [{
     }
     return (
       <Search key={query.query} {...props} query={query.query}/>
+    );
+  },
+}, {
+  path: '/history',
+  render: props => {
+    return (
+      <History {...props}/>
     );
   },
 }, {

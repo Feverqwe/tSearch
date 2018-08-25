@@ -1,8 +1,9 @@
-import {getSnapshot, types, flow, isAlive} from 'mobx-state-tree';
+import {flow, getParentOfType, getSnapshot, isAlive, types} from 'mobx-state-tree';
 import highlight from "../tools/highlight";
 import _isEqual from "lodash.isequal";
 import getLogger from "../tools/getLogger";
 import getNow from "../tools/getNow";
+import {unixTimeToString} from "../tools/unixTimeTo";
 
 const promiseLimit = require('promise-limit');
 
@@ -16,7 +17,8 @@ const oneLimit = promiseLimit(1);
  * @property {string} title
  * @property {string} trackerId
  * @property {number} time
- * @property {function} getTitleHighlightMap
+ * @property {*} titleHighlightMap
+ * @property {*} timeString
  */
 const HistoryClickStore = types.model('HistoryClickStore', {
   url: types.identifier,
@@ -25,8 +27,12 @@ const HistoryClickStore = types.model('HistoryClickStore', {
   time: types.number,
 }).views(self => {
   return {
-    getTitleHighlightMap(queryHighlightMap) {
-      return highlight.getTextMap(self.title, queryHighlightMap);
+    get titleHighlightMap() {
+      const query = getParentOfType(self, HistoryQueryStore);
+      return highlight.getTextMap(self.title, query.queryHighlightMap);
+    },
+    get timeString() {
+      return unixTimeToString(self.time);
     }
   };
 });
@@ -42,7 +48,7 @@ const HistoryClickStore = types.model('HistoryClickStore', {
  * @property {function} removeClick
  * @property {function} getClicks
  * @property {function} getClicksSortByTime
- * @property {function} getQueryHighlightMap
+ * @property {*} queryHighlightMap
  */
 const HistoryQueryStore = types.model('HistoryQueryStore', {
   query: types.identifier,
@@ -73,7 +79,7 @@ const HistoryQueryStore = types.model('HistoryQueryStore', {
         return a === b ? 0 : a > b ? -1 : 1;
       });
     },
-    getQueryHighlightMap() {
+    get queryHighlightMap() {
       return highlight.getMap(self.query);
     },
   };
@@ -200,3 +206,4 @@ const HistoryStore = types.model('HistoryStore', {
 });
 
 export default HistoryStore;
+export {HistoryQueryStore, HistoryClickStore};
