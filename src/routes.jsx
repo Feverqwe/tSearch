@@ -4,6 +4,7 @@ import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 import {Redirect} from "react-router-dom";
 import History from "./pages/History";
+import Options from "./pages/Options";
 
 const qs = require('querystring');
 
@@ -33,6 +34,19 @@ const routes = [{
   render: props => {
     return (
       <History {...props}/>
+    );
+  },
+}, {
+  path: '/options',
+  render: props => {
+    const query = qs.parse(props.location.search.substr(1));
+    if (query.section === undefined) {
+      return (
+        <Redirect to={'/options?section=main'}/>
+      );
+    }
+    return (
+      <Options {...props} section={query.section}/>
     );
   },
 }, {
