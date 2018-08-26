@@ -13,19 +13,16 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
 @inject('rootStore')
 @observer
 class SearchPage extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.columns = ['date', 'quality', 'title', 'size', 'seed', 'peer'];
-    if (props.rootStore.options.options.hidePeerRow) {
-      this.columns.splice(this.columns.indexOf('peer'), 1);
-    }
-    if (props.rootStore.options.options.hideSeedRow) {
-      this.columns.splice(this.columns.indexOf('seed'), 1);
-    }
-  }
   render() {
-    const headers = this.columns.map(column => {
+    const columns = ['date', 'quality', 'title', 'size', 'seed', 'peer'];
+    if (this.props.rootStore.options.options.hidePeerRow) {
+      columns.splice(columns.indexOf('peer'), 1);
+    }
+    if (this.props.rootStore.options.options.hideSeedRow) {
+      columns.splice(columns.indexOf('seed'), 1);
+    }
+
+    const headers = columns.map(column => {
       return (
         <SearchPageColumn key={`column-${column}`} {...this.props} type={column}/>
       )
@@ -33,7 +30,7 @@ class SearchPage extends React.Component {
 
     const body = this.props.searchPageStore.getSortedAndFilteredResults().map(result => {
       return (
-        <SearchPageRow key={`result-${result.id}`} {...this.props} columns={this.columns} result={result}/>
+        <SearchPageRow key={`result-${result.id}`} {...this.props} columns={columns} result={result}/>
       )
     });
 
