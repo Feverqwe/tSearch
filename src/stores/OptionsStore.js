@@ -35,7 +35,7 @@ const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
   ggGamesTop: types.optional(types.boolean, true),
 }).actions(self => {
   return {
-    setValue(key, value) {
+    setEnabled(key, value) {
       self[key] = value;
     }
   };
@@ -73,6 +73,9 @@ const OptionsValueStore = types.model('OptionsValueStore', {
   explorerSections: types.optional(ExplorerSectionsStore, {}),
 }).actions(self => {
   return {
+    setEnabled(key, value) {
+      self[key] = value;
+    },
     setValue(key, value) {
       self[key] = value;
     }

@@ -131,7 +131,7 @@ class OptionCheckbox extends React.Component {
   }
   handleOptionChange(e) {
     const name = this.props.name;
-    this.store.setValue(name, this.input.checked);
+    this.store.setEnabled(name, this.input.checked);
     this.props.rootStore.options.save();
   }
   refInput(element) {
