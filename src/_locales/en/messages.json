@@ -176,7 +176,7 @@
     "kpPopular": {
         "message": "Movies"
     },
-    "kpSerials": {
+    "kpSeries": {
         "message": "TV Series"
     },
     "imdbInCinema": {
@@ -185,7 +185,7 @@
     "imdbPopular": {
         "message": "IMDB: Movies"
     },
-    "imdbSerials": {
+    "imdbSeries": {
         "message": "IMDB: TV Series"
     },
     "ggGamesTop": {

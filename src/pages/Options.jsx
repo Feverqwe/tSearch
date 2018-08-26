@@ -51,6 +51,13 @@ class Options extends React.Component {
             break;
           }
           case 'explorer': {
+            const sections = Object.keys(options.options.explorerSections).map(name => {
+              if (name === 'favorite') return null;
+              return (
+                <OptionCheckbox store={options.options.explorerSections} key={name} name={name}/>
+              );
+            });
+
             page = (
               <div className="page page-mainPage">
                 <h2 className="page__title">{chrome.i18n.getMessage('mainPage')}</h2>
@@ -58,7 +65,7 @@ class Options extends React.Component {
                 <OptionCheckbox name={'favoriteSync'}/>
                 <OptionText name={'kpFolderId'}/>
                 <h2 className="page__sub_title">{chrome.i18n.getMessage('showSections')}</h2>
-                <div className="mainPage__sections"></div>
+                <div className="mainPage__sections">{sections}</div>
               </div>
             );
             break;
@@ -124,20 +131,22 @@ class OptionCheckbox extends React.Component {
   }
   handleOptionChange(e) {
     const name = this.props.name;
-    this.props.rootStore.options.options.setValue(name, this.input.checked);
+    this.store.setValue(name, this.input.checked);
     this.props.rootStore.options.save();
   }
   refInput(element) {
     this.input = element;
   }
+  get store() {
+    return this.props.store || this.props.rootStore.options.options;
+  }
   render() {
-    const options = this.props.rootStore.options;
     const name = this.props.name;
 
     return (
       <div className="option">
         <label>
-          <input ref={this.refInput} defaultChecked={options.options[name]} onChange={this.handleOptionChange} type="checkbox"/>
+          <input ref={this.refInput} defaultChecked={this.store[name]} onChange={this.handleOptionChange} type="checkbox"/>
           <span>{chrome.i18n.getMessage(name)}</span>
         </label>
       </div>
@@ -148,6 +157,7 @@ class OptionCheckbox extends React.Component {
 OptionCheckbox.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   name: PropTypes.string,
+  store: PropTypes.object,
 };
 
 

@@ -7,6 +7,7 @@ import ProfileStore from "./ProfileStore";
 import TrackerStore from "./TrackerStore";
 import SearchStore from "./SearchStore";
 import OptionsStore from "./OptionsStore";
+import ExplorerStore from "./ExplorerStore";
 
 
 /**
@@ -33,6 +34,7 @@ const RootStore = types.model('RootStore', {
   trackers: types.map(TrackerStore),
   searches: types.array(SearchStore),
   options: types.optional(OptionsStore, {}),
+  explorer: types.optional(ExplorerStore, {}),
 }).actions(/**RootStore*/self => {
   return {
     setProfile(profile) {

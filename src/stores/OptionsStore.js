@@ -9,6 +9,40 @@ const oneLimit = promiseLimit(1);
 
 
 /**
+ * @typedef {{}} ExplorerSectionsStore
+ * @property {boolean} [favorite]
+ * @property {boolean} [kpFavorites]
+ * @property {boolean} [kpInCinema]
+ * @property {boolean} [imdbInCinema]
+ * @property {boolean} [kpPopular]
+ * @property {boolean} [imdbPopular]
+ * @property {boolean} [kpSeries]
+ * @property {boolean} [imdbSeries]
+ * @property {boolean} [ggGamesNew]
+ * @property {boolean} [ggGamesTop]
+ * @property {function} setValue
+ */
+const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
+  favorite: types.optional(types.boolean, true),
+  kpFavorites: types.optional(types.boolean, true),
+  kpInCinema: types.optional(types.boolean, true),
+  imdbInCinema: types.optional(types.boolean, true),
+  kpPopular: types.optional(types.boolean, true),
+  imdbPopular: types.optional(types.boolean, true),
+  kpSeries: types.optional(types.boolean, true),
+  imdbSeries: types.optional(types.boolean, true),
+  ggGamesNew: types.optional(types.boolean, true),
+  ggGamesTop: types.optional(types.boolean, true),
+}).actions(self => {
+  return {
+    setValue(key, value) {
+      self[key] = value;
+    }
+  };
+});
+
+
+/**
  * @typedef {{}} OptionsValueStore
  * @property {boolean} [hidePeerRow]
  * @property {boolean} [hideSeedRow]
@@ -21,6 +55,7 @@ const oneLimit = promiseLimit(1);
  * @property {boolean} [originalPosterName]
  * @property {boolean} [favoriteSync]
  * @property {string} [kpFolderId]
+ * @property {ExplorerSectionsStore} [explorerSections]
  * @property {function} setValue
  */
 const OptionsValueStore = types.model('OptionsValueStore', {
@@ -35,6 +70,7 @@ const OptionsValueStore = types.model('OptionsValueStore', {
   originalPosterName: types.optional(types.boolean, false),
   favoriteSync: types.optional(types.boolean, true),
   kpFolderId: types.optional(types.string, '1'),
+  explorerSections: types.optional(ExplorerSectionsStore, {}),
 }).actions(self => {
   return {
     setValue(key, value) {
