@@ -1,9 +1,6 @@
-import {flow, getParentOfType, getSnapshot, isAlive, types} from 'mobx-state-tree';
-import highlight from "../tools/highlight";
+import {flow, getSnapshot, isAlive, types} from 'mobx-state-tree';
 import _isEqual from "lodash.isequal";
 import getLogger from "../tools/getLogger";
-import getNow from "../tools/getNow";
-import {unixTimeToString} from "../tools/unixTimeTo";
 
 const promiseLimit = require('promise-limit');
 
@@ -22,6 +19,7 @@ const OptionsValueStore = types.model('OptionsValueStore', {
   doNotSendStatistics: types.optional(types.boolean, false),
   originalPosterName: types.optional(types.boolean, false),
   favoriteSync: types.optional(types.boolean, true),
+  kpFolderId: types.optional(types.string, '1'),
 }).actions(self => {
   return {
     setValue(key, value) {
@@ -45,7 +43,7 @@ const OptionsValueStore = types.model('OptionsValueStore', {
  */
 const OptionsStore = types.model('OptionsStore', {
   state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
-  options: types.optional(OptionsValueStore, {}),
+  options: types.maybeNull(OptionsValueStore),
 }).actions(self => {
   return {
     setOptions(value) {
