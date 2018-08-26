@@ -1,8 +1,9 @@
-import {types} from "mobx-state-tree";
+import {getParentOfType, types} from "mobx-state-tree";
 import escapeRegExp from "lodash.escaperegexp";
 import sortByLength from "../tools/sortByLength";
 import uniq from "lodash.uniq";
 import getLogger from "../tools/getLogger";
+import RootStore from "./RootStore";
 
 const logger = getLogger('searchFrag');
 
@@ -156,11 +157,19 @@ const FiltersStore = types.model('FiltersStore', {
         } else
         if (!self.testRange(result.date, self.minTime, self.maxTime)) {
           return false;
-        } else
-        if (!self.testText(result.categoryTitleLowerCase + ' ' + result.titleLowerCase)) {
-          return false;
         } else {
-          return true;
+          const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+          let text = null;
+          if (rootStore.options.options.categoryWordFilter) {
+            text = result.categoryTitleLowerCase + ' ' + result.titleLowerCase;
+          } else {
+            text = result.titleLowerCase
+          }
+          if (!self.testText(text)) {
+            return false;
+          } else {
+            return true;
+          }
         }
       };
     },

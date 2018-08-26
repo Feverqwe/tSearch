@@ -113,7 +113,11 @@ const SearchStore = types.model('SearchStore', {
         }));
         const results = [].concat(...promiseResults);
         if (isAlive(self)) {
-          self.resultPages.push({results});
+          const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+          self.resultPages.push({
+            results,
+            sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
+          });
           self.state = 'done';
         }
       } catch (err) {

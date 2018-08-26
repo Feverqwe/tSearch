@@ -41,7 +41,6 @@ class Options extends React.Component {
                 <OptionCheckbox name={'hidePeerRow'}/>
                 <OptionCheckbox name={'hideSeedRow'}/>
                 <OptionCheckbox name={'categoryWordFilter'}/>
-                <OptionCheckbox name={'syncProfiles'}/>
                 <OptionCheckbox name={'contextMenu'}/>
                 <OptionCheckbox name={'disablePopup'}/>
                 <OptionCheckbox name={'invertIcon'}/>
@@ -62,7 +61,6 @@ class Options extends React.Component {
               <div className="page page-mainPage">
                 <h2 className="page__title">{chrome.i18n.getMessage('mainPage')}</h2>
                 <OptionCheckbox name={'originalPosterName'}/>
-                <OptionCheckbox name={'favoriteSync'}/>
                 <OptionText name={'kpFolderId'}/>
                 <h2 className="page__sub_title">{chrome.i18n.getMessage('showSections')}</h2>
                 <div className="mainPage__sections">{sections}</div>

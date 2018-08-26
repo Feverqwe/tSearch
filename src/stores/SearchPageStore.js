@@ -32,6 +32,10 @@ const SearchPageStore = types.model('SearchPageStore', {
         newItem.direction = item.direction === 0 ? 1 : 0
       }
       self.sorts = [newItem];
+
+      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+      rootStore.options.options.setValue('sorts', JSON.parse(JSON.stringify(self.sorts)));
+      rootStore.options.save();
     },
     appendSortBy(by) {
       const sorts = self.sorts.slice(0);
@@ -46,6 +50,10 @@ const SearchPageStore = types.model('SearchPageStore', {
       }
       sorts.push(newItem);
       self.sorts = sorts;
+
+      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+      rootStore.options.options.setValue('sorts', JSON.parse(JSON.stringify(self.sorts)));
+      rootStore.options.save();
     }
   };
 }).views(self => {

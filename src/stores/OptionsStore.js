@@ -62,16 +62,18 @@ const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
 const OptionsValueStore = types.model('OptionsValueStore', {
   hidePeerRow: types.optional(types.boolean, false),
   hideSeedRow: types.optional(types.boolean, false),
-  categoryWordFilter: types.optional(types.boolean, false),
-  syncProfiles: types.optional(types.boolean, true),
+  categoryWordFilter: types.optional(types.boolean, true),
   contextMenu: types.optional(types.boolean, true),
   disablePopup: types.optional(types.boolean, false),
-  invertIcon: types.optional(types.boolean, true),
+  invertIcon: types.optional(types.boolean, false),
   doNotSendStatistics: types.optional(types.boolean, false),
   originalPosterName: types.optional(types.boolean, false),
-  favoriteSync: types.optional(types.boolean, true),
   kpFolderId: types.optional(types.string, '1'),
   explorerSections: types.optional(ExplorerSectionsStore, {}),
+  sorts: types.optional(types.array(types.model({
+    by: types.string,
+    direction: types.optional(types.number, 0),
+  })), [{by: 'quality'}]),
 }).actions(self => {
   return {
     setEnabled(key, value) {

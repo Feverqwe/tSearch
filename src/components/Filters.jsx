@@ -8,19 +8,43 @@ import RootStore from "../stores/RootStore";
 
 const logger = getLogger('Filters');
 
+@inject('rootStore')
+@observer
 class Filters extends React.Component {
+  componentDidMount() {
+    if (this.props.rootStore.options.state === 'idle') {
+      this.props.rootStore.options.fetchOptions();
+    }
+  }
   render() {
-    return (
-      <div className="parameter_box__right">
-        <TextFilter/>
-        <SizeFilter/>
-        <TimeFilter/>
-        <SeedFilter/>
-        <PeerFilter/>
-      </div>
-    );
+    switch (this.props.rootStore.options.state) {
+      case 'loading': {
+        return ('Loading...');
+      }
+      case 'error': {
+        return ('Error...');
+      }
+      case 'done': {
+        return (
+          <div className="parameter_box__right">
+            <TextFilter/>
+            <SizeFilter/>
+            <TimeFilter/>
+            <SeedFilter/>
+            <PeerFilter/>
+          </div>
+        );
+      }
+      default: {
+        return ('Idle...');
+      }
+    }
   }
 }
+
+Filters.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore)
+};
 
 @inject('rootStore')
 @observer

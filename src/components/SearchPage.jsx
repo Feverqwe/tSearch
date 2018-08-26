@@ -17,6 +17,12 @@ class SearchPage extends React.Component {
     super(props);
 
     this.columns = ['date', 'quality', 'title', 'size', 'seed', 'peer'];
+    if (props.rootStore.options.options.hidePeerRow) {
+      this.columns.splice(this.columns.indexOf('peer'), 1);
+    }
+    if (props.rootStore.options.options.hideSeedRow) {
+      this.columns.splice(this.columns.indexOf('seed'), 1);
+    }
   }
   render() {
     const headers = this.columns.map(column => {

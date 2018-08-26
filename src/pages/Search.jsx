@@ -21,6 +21,11 @@ class Search extends React.Component {
     /**@type SearchStore*/
     this.searchStore = props.rootStore.createSearch(props.query);
   }
+  componentDidMount() {
+    if (this.props.rootStore.options.state === 'idle') {
+      this.props.rootStore.options.fetchOptions();
+    }
+  }
   componentWillUnmount() {
     this.props.rootStore.destroySearch(this.searchStore);
     this.searchStore = null;
@@ -33,6 +38,7 @@ class Search extends React.Component {
     let moreBtn = null;
     let result = null;
     if (
+      this.props.rootStore.options.state === 'done' &&
       this.props.rootStore.profile &&
       this.props.rootStore.profile.trackersIsReady
     ) {
