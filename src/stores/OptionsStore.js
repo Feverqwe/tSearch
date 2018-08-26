@@ -20,7 +20,7 @@ const oneLimit = promiseLimit(1);
  * @property {boolean} [imdbSeries]
  * @property {boolean} [ggGamesNew]
  * @property {boolean} [ggGamesTop]
- * @property {function} setValue
+ * @property {function} setEnabled
  */
 const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
   favorite: types.optional(types.boolean, true),
@@ -56,6 +56,7 @@ const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
  * @property {boolean} [favoriteSync]
  * @property {string} [kpFolderId]
  * @property {ExplorerSectionsStore} [explorerSections]
+ * @property {function} setEnabled
  * @property {function} setValue
  */
 const OptionsValueStore = types.model('OptionsValueStore', {
