@@ -6,6 +6,7 @@ import ProfilesStore from "./ProfilesStore";
 import ProfileStore from "./ProfileStore";
 import TrackerStore from "./TrackerStore";
 import SearchStore from "./SearchStore";
+import OptionsStore from "./OptionsStore";
 
 
 /**
@@ -17,6 +18,7 @@ import SearchStore from "./SearchStore";
  * @property {ProfilesStore} [profiles]
  * @property {Map<*,TrackerStore>} trackers
  * @property {SearchStore[]} searches
+ * @property {OptionsStore} options
  * @property {function} setProfile
  * @property {function} initTracker
  * @property {function} createSearch
@@ -30,6 +32,7 @@ const RootStore = types.model('RootStore', {
   profiles: types.optional(ProfilesStore, {}),
   trackers: types.map(TrackerStore),
   searches: types.array(SearchStore),
+  options: types.optional(OptionsStore, {}),
 }).actions(/**RootStore*/self => {
   return {
     setProfile(profile) {

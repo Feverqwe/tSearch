@@ -5,111 +5,103 @@ import '../../src/assets/css/options.less';
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import {Link} from "react-router-dom";
+import {inject, observer} from "mobx-react";
 
+
+@inject('rootStore')
+@observer
 class Options extends React.Component {
   constructor(props) {
     super(props);
-
-
+  }
+  componentDidMount() {
+    if (this.props.rootStore.options.state === 'idle') {
+      this.props.rootStore.options.fetchOptions();
+    }
   }
   render() {
+    const options = this.props.rootStore.options;
     let page = null;
-    switch (this.props.section) {
-      case 'main': {
-        page = (
-          <div className="page page-basic">
-            <h2 className="page__title">{chrome.i18n.getMessage('basic')}</h2>
-            <div className="option">
-              <label>
-                <input type="checkbox" data-option="hidePeerRow"/>
-                <span>{chrome.i18n.getMessage('hidePeerRow')}</span>
-              </label>
-            </div>
-            <div className="option">
-              <label>
-                <input type="checkbox" data-option="hideSeedRow"/>
-                <span>{chrome.i18n.getMessage('hideSeedRow')}</span>
-              </label>
-            </div>
-            <div className="option">
-              <label>
-                <input type="checkbox" data-option="categoryWordFilter"/>
-                <span>{chrome.i18n.getMessage('categoryWordFilter')}</span>
-              </label>
-            </div>
-            <div className="option">
-              <label>
-                <input type="checkbox" data-option="syncProfiles"/>
-                <span>{chrome.i18n.getMessage('syncProfiles')}</span>
-              </label>
-            </div>
-            <div className="option">
-              <label>
-                <input type="checkbox" data-option="contextMenu"/>
-                <span>{chrome.i18n.getMessage('contextMenu')}</span>
-              </label>
-            </div>
-            <div className="option">
-              <label>
-                <input type="checkbox" data-option="disablePopup"/>
-                <span>{chrome.i18n.getMessage('disablePopup')}</span>
-              </label>
-            </div>
-            <div className="option">
-              <label>
-                <input type="checkbox" data-option="invertIcon"/>
-                <span>{chrome.i18n.getMessage('invertIcon')}</span>
-              </label>
-            </div>
-            <div className="option">
-              <label>
-                <input type="checkbox" data-option="doNotSendStatistics"/>
-                <span>{chrome.i18n.getMessage('doNotSendStatistics')}</span>
-              </label>
-            </div>
-          </div>
-        );
+
+    switch (options.state) {
+      case 'pending': {
+        page = ('Loading...');
         break;
       }
-      case 'explorer': {
-        page = (
-          <div className="page page-mainPage">
-            <h2 className="page__title">{chrome.i18n.getMessage('mainPage')}</h2>
-            <div className="option">
-              <label>
-                <input type="checkbox" data-option="originalPosterName"/>
-                <span>{chrome.i18n.getMessage('originalPosterName')}</span>
-              </label>
-            </div>
-            <div className="option">
-              <label>
-                <input type="checkbox" data-option="favoriteSync"/>
-                <span>{chrome.i18n.getMessage('favoriteSync')}</span>
-              </label>
-            </div>
-            <div className="option">
-              <label>
-                <span>{chrome.i18n.getMessage('kpFolderId')}</span>:
-                <input type="text" data-option="kpFolderId"/>
-              </label>
-            </div>
-            <h2 className="page__sub_title">{chrome.i18n.getMessage('showSections')}</h2>
-            <div className="mainPage__sections"></div>
-          </div>
-        );
+      case 'error': {
+        page = ('Error...');
         break;
       }
-      case 'backup': {
-        page = (
-          <div className="page page-backup">
-            <h2 className="page__title">{chrome.i18n.getMessage('backupRestore')}</h2>
-            <div className="page__buttons">
-              <a type="button" href="#exportZip" className="button backup__export-zip">{chrome.i18n.getMessage('exportZip')}</a>
-              <a type="button" href="#importZip" className="button backup__import-zip">{chrome.i18n.getMessage('importZip')}</a>
-            </div>
-          </div>
-        );
+      case 'done': {
+        switch (this.props.section) {
+          case 'main': {
+            page = (
+              <div className="page page-basic">
+                <h2 className="page__title">{chrome.i18n.getMessage('basic')}</h2>
+                <div className="option">
+                  <OptionCheckbox name={'hidePeerRow'}/>
+                </div>
+                <div className="option">
+                  <OptionCheckbox name={'hideSeedRow'}/>
+                </div>
+                <div className="option">
+                  <OptionCheckbox name={'categoryWordFilter'}/>
+                </div>
+                <div className="option">
+                  <OptionCheckbox name={'syncProfiles'}/>
+                </div>
+                <div className="option">
+                  <OptionCheckbox name={'contextMenu'}/>
+                </div>
+                <div className="option">
+                  <OptionCheckbox name={'disablePopup'}/>
+                </div>
+                <div className="option">
+                  <OptionCheckbox name={'invertIcon'}/>
+                </div>
+                <div className="option">
+                  <OptionCheckbox name={'doNotSendStatistics'}/>
+                </div>
+              </div>
+            );
+            break;
+          }
+          case 'explorer': {
+            page = (
+              <div className="page page-mainPage">
+                <h2 className="page__title">{chrome.i18n.getMessage('mainPage')}</h2>
+                <div className="option">
+                  <OptionCheckbox name={'originalPosterName'}/>
+                </div>
+                <div className="option">
+                  <OptionCheckbox name={'favoriteSync'}/>
+                </div>
+                <div className="option">
+                  <OptionText name={'kpFolderId'}/>
+                </div>
+                <h2 className="page__sub_title">{chrome.i18n.getMessage('showSections')}</h2>
+                <div className="mainPage__sections"></div>
+              </div>
+            );
+            break;
+          }
+          case 'backup': {
+            page = (
+              <div className="page page-backup">
+                <h2 className="page__title">{chrome.i18n.getMessage('backupRestore')}</h2>
+                <div className="page__buttons">
+                  <a type="button" href="#exportZip" className="button backup__export-zip">{chrome.i18n.getMessage('exportZip')}</a>
+                  <a type="button" href="#importZip" className="button backup__import-zip">{chrome.i18n.getMessage('importZip')}</a>
+                </div>
+              </div>
+            );
+            break;
+          }
+        }
         break;
+      }
+      default: {
+        page = ('Idle');
       }
     }
 
@@ -138,6 +130,84 @@ class Options extends React.Component {
 Options.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   section: PropTypes.string,
+};
+
+
+@inject('rootStore')
+@observer
+class OptionCheckbox extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleOptionChange = this.handleOptionChange.bind(this);
+  }
+  handleOptionChange(e) {
+    const input = getParentByTagName(e.target, 'INPUT');
+    const name = this.props.name;
+    this.props.rootStore.options.options.setValue(name, input.checked);
+    this.props.rootStore.options.save();
+  }
+  render() {
+    const options = this.props.rootStore.options;
+    const name = this.props.name;
+
+    return (
+      <label>
+        <input defaultChecked={options.options[name]} onChange={this.handleOptionChange} type="checkbox"/>
+        <span>{chrome.i18n.getMessage(name)}</span>
+      </label>
+    );
+  }
+}
+
+OptionCheckbox.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
+  name: PropTypes.string,
+};
+
+
+@inject('rootStore')
+@observer
+class OptionText extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleOptionChange = this.handleOptionChange.bind(this);
+  }
+  handleOptionChange(e) {
+    const input = getParentByTagName(e.target, 'INPUT');
+    const name = this.props.name;
+    this.props.rootStore.options.options.setValue(name, input.value);
+    this.props.rootStore.options.save();
+  }
+  render() {
+    const options = this.props.rootStore.options;
+    const name = this.props.name;
+
+    return (
+      <label>
+        <span>{chrome.i18n.getMessage(name)}</span>:
+        <input defaultValue={options.options[name]} onChange={this.handleOptionChange} type="text"/>
+      </label>
+    );
+  }
+}
+
+OptionText.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
+  name: PropTypes.string,
+};
+
+
+const getParentByTagName = (node, tagName) => {
+  let result = null;
+  do {
+    if (node.tagName === tagName) {
+      result = node;
+      break;
+    }
+  } while (node = node.parentNode);
+  return result;
 };
 
 export default Options;
