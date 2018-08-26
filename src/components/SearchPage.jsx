@@ -120,109 +120,110 @@ class SearchPageRow extends React.Component {
   }
   render() {
     const result = this.props.result;
-    return (
-      <div className="row body__row">{this.props.columns.map(type => {
-        switch (type) {
-          case 'date': {
-            return (
-              <div key="date" className={`cell row__cell cell-${type}`}
-                   title={result.dateTitle}>{result.dateText}</div>
-            );
-          }
-          case 'quality': {
-            const qualityValue = result.quality;
-            const percent = result.quality / 500 * 100;
-            return (
-              <div key="quality" className={`cell row__cell cell-${type}`}>
-                <div className="quality_box" title={qualityValue}>
-                  <div className="quality_progress" style={{width: percent + '%'}}/>
-                  <span className="quality_value">{qualityValue}</span>
-                </div>
+    const cells = this.props.columns.map(type => {
+      switch (type) {
+        case 'date': {
+          return (
+            <div key="date" className={`cell row__cell cell-${type}`}
+                 title={result.dateTitle}>{result.dateText}</div>
+          );
+        }
+        case 'quality': {
+          const qualityValue = result.quality;
+          const percent = result.quality / 500 * 100;
+          return (
+            <div key="quality" className={`cell row__cell cell-${type}`}>
+              <div className="quality_box" title={qualityValue}>
+                <div className="quality_progress" style={{width: percent + '%'}}/>
+                <span className="quality_value">{qualityValue}</span>
               </div>
-            );
-          }
-          case 'title': {
-            let category = null;
-            if (result.categoryTitle) {
-              if (result.categoryUrl) {
-                category = (
-                  <a className="category" target="_blank" href={result.categoryUrl}>{result.categoryTitle}</a>
-                );
-              } else {
-                category = (
-                  <span className="category">{result.categoryTitle}</span>
-                );
-              }
-            }
-
-            let titleIcon = null;
-            if (result.tracker) {
-              titleIcon = (
-                <div className={`tracker__icon ${getTrackerIconClassName(result.trackerId)}`}
-                     title={result.tracker.name}/>
-              );
-            }
-
-            if (category) {
+            </div>
+          );
+        }
+        case 'title': {
+          let category = null;
+          if (result.categoryTitle) {
+            if (result.categoryUrl) {
               category = (
-                <div className="cell__category">
-                  {category}
-                  {titleIcon}
-                </div>
-              );
-              titleIcon = null;
-            }
-
-            return (
-              <div key="title" className={`cell row__cell cell-${type}`} onClick={this.handleClick}>
-                <div className="cell__title">
-                  {highlight.getReactComponent('a', {
-                    className: 'title',
-                    target: '_blank',
-                    href: result.url
-                  }, result.title, result.titleHighlightMap)}
-                  {titleIcon}
-                </div>
-                {category}
-              </div>
-            );
-          }
-          case 'size': {
-            let downloadLink = null;
-            if (result.downloadUrl) {
-              downloadLink = (
-                <a className="cell__download" target="_blank" href={result.downloadUrl}>{
-                  result.sizeText + String.fromCharCode(160) + String.fromCharCode(8595)
-                }</a>
+                <a className="category" target="_blank" href={result.categoryUrl}>{result.categoryTitle}</a>
               );
             } else {
-              downloadLink = result.sizeText;
+              category = (
+                <span className="category">{result.categoryTitle}</span>
+              );
             }
-            return (
-              <div key="size" className={`cell row__cell cell-${type}`}>
-                {downloadLink}
-              </div>
+          }
+
+          let titleIcon = null;
+          if (result.tracker) {
+            titleIcon = (
+              <div className={`tracker__icon ${getTrackerIconClassName(result.trackerId)}`}
+                   title={result.tracker.name}/>
             );
           }
-          case 'seed': {
-            return (
-              <div key="seed" className={`cell row__cell cell-${type}`}>
-                {result.seed}
+
+          if (category) {
+            category = (
+              <div className="cell__category">
+                {category}
+                {titleIcon}
               </div>
             );
+            titleIcon = null;
           }
-          case 'peer': {
-            return (
-              <div key="peer" className={`cell row__cell cell-${type}`}>
-                {result.peer}
+
+          return (
+            <div key="title" className={`cell row__cell cell-${type}`} onClick={this.handleClick}>
+              <div className="cell__title">
+                {highlight.getReactComponent('a', {
+                  className: 'title',
+                  target: '_blank',
+                  href: result.url
+                }, result.title, result.titleHighlightMap)}
+                {titleIcon}
               </div>
-            );
-          }
-          default: {
-            return null;
-          }
+              {category}
+            </div>
+          );
         }
-      })}</div>
+        case 'size': {
+          let downloadLink = null;
+          if (result.downloadUrl) {
+            downloadLink = (
+              <a className="cell__download" target="_blank" href={result.downloadUrl}>{
+                result.sizeText + String.fromCharCode(160) + String.fromCharCode(8595)
+              }</a>
+            );
+          } else {
+            downloadLink = result.sizeText;
+          }
+          return (
+            <div key="size" className={`cell row__cell cell-${type}`}>
+              {downloadLink}
+            </div>
+          );
+        }
+        case 'seed': {
+          return (
+            <div key="seed" className={`cell row__cell cell-${type}`}>
+              {result.seed}
+            </div>
+          );
+        }
+        case 'peer': {
+          return (
+            <div key="peer" className={`cell row__cell cell-${type}`}>
+              {result.peer}
+            </div>
+          );
+        }
+        default: {
+          return null;
+        }
+      }
+    });
+    return (
+      <div className="row body__row">{cells}</div>
     );
   }
 }
