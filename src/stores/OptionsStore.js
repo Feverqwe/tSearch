@@ -8,6 +8,21 @@ const logger = getLogger('OptionsStore');
 const oneLimit = promiseLimit(1);
 
 
+/**
+ * @typedef {{}} OptionsValueStore
+ * @property {boolean} [hidePeerRow]
+ * @property {boolean} [hideSeedRow]
+ * @property {boolean} [categoryWordFilter]
+ * @property {boolean} [syncProfiles]
+ * @property {boolean} [contextMenu]
+ * @property {boolean} [disablePopup]
+ * @property {boolean} [invertIcon]
+ * @property {boolean} [doNotSendStatistics]
+ * @property {boolean} [originalPosterName]
+ * @property {boolean} [favoriteSync]
+ * @property {string} [kpFolderId]
+ * @property {function} setValue
+ */
 const OptionsValueStore = types.model('OptionsValueStore', {
   hidePeerRow: types.optional(types.boolean, false),
   hideSeedRow: types.optional(types.boolean, false),
@@ -32,11 +47,9 @@ const OptionsValueStore = types.model('OptionsValueStore', {
 /**
  * @typedef {{}} OptionsStore
  * @property {string} [state]
- * @property {OptionsValueStore} options
+ * @property {OptionsValueStore|undefined|null} options
  * @property {function} setOptions
  * @property {function:Promise} fetchOptions
- * @property {function} set
- * @property {function} get
  * @property {function} save
  * @property {function} afterCreate
  * @property {function} beforeDestroy
