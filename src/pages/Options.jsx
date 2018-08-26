@@ -140,12 +140,17 @@ class OptionCheckbox extends React.Component {
     super(props);
 
     this.handleOptionChange = this.handleOptionChange.bind(this);
+    this.refInput = this.refInput.bind(this);
+
+    this.input = null;
   }
   handleOptionChange(e) {
-    const input = getParentByTagName(e.target, 'INPUT');
     const name = this.props.name;
-    this.props.rootStore.options.options.setValue(name, input.checked);
+    this.props.rootStore.options.options.setValue(name, this.input.checked);
     this.props.rootStore.options.save();
+  }
+  refInput(element) {
+    this.input = element;
   }
   render() {
     const options = this.props.rootStore.options;
@@ -153,7 +158,7 @@ class OptionCheckbox extends React.Component {
 
     return (
       <label>
-        <input defaultChecked={options.options[name]} onChange={this.handleOptionChange} type="checkbox"/>
+        <input ref={this.refInput} defaultChecked={options.options[name]} onChange={this.handleOptionChange} type="checkbox"/>
         <span>{chrome.i18n.getMessage(name)}</span>
       </label>
     );
@@ -173,12 +178,17 @@ class OptionText extends React.Component {
     super(props);
 
     this.handleOptionChange = this.handleOptionChange.bind(this);
+    this.refInput = this.refInput.bind(this);
+
+    this.input = null;
   }
   handleOptionChange(e) {
-    const input = getParentByTagName(e.target, 'INPUT');
     const name = this.props.name;
-    this.props.rootStore.options.options.setValue(name, input.value);
+    this.props.rootStore.options.options.setValue(name, this.input.value);
     this.props.rootStore.options.save();
+  }
+  refInput(element) {
+    this.input = element;
   }
   render() {
     const options = this.props.rootStore.options;
@@ -187,7 +197,7 @@ class OptionText extends React.Component {
     return (
       <label>
         <span>{chrome.i18n.getMessage(name)}</span>:
-        <input defaultValue={options.options[name]} onChange={this.handleOptionChange} type="text"/>
+        <input ref={this.refInput} defaultValue={options.options[name]} onChange={this.handleOptionChange} type="text"/>
       </label>
     );
   }
@@ -196,18 +206,6 @@ class OptionText extends React.Component {
 OptionText.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   name: PropTypes.string,
-};
-
-
-const getParentByTagName = (node, tagName) => {
-  let result = null;
-  do {
-    if (node.tagName === tagName) {
-      result = node;
-      break;
-    }
-  } while (node = node.parentNode);
-  return result;
 };
 
 export default Options;
