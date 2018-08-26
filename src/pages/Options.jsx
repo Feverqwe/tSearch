@@ -38,30 +38,14 @@ class Options extends React.Component {
             page = (
               <div className="page page-basic">
                 <h2 className="page__title">{chrome.i18n.getMessage('basic')}</h2>
-                <div className="option">
-                  <OptionCheckbox name={'hidePeerRow'}/>
-                </div>
-                <div className="option">
-                  <OptionCheckbox name={'hideSeedRow'}/>
-                </div>
-                <div className="option">
-                  <OptionCheckbox name={'categoryWordFilter'}/>
-                </div>
-                <div className="option">
-                  <OptionCheckbox name={'syncProfiles'}/>
-                </div>
-                <div className="option">
-                  <OptionCheckbox name={'contextMenu'}/>
-                </div>
-                <div className="option">
-                  <OptionCheckbox name={'disablePopup'}/>
-                </div>
-                <div className="option">
-                  <OptionCheckbox name={'invertIcon'}/>
-                </div>
-                <div className="option">
-                  <OptionCheckbox name={'doNotSendStatistics'}/>
-                </div>
+                <OptionCheckbox name={'hidePeerRow'}/>
+                <OptionCheckbox name={'hideSeedRow'}/>
+                <OptionCheckbox name={'categoryWordFilter'}/>
+                <OptionCheckbox name={'syncProfiles'}/>
+                <OptionCheckbox name={'contextMenu'}/>
+                <OptionCheckbox name={'disablePopup'}/>
+                <OptionCheckbox name={'invertIcon'}/>
+                <OptionCheckbox name={'doNotSendStatistics'}/>
               </div>
             );
             break;
@@ -70,15 +54,9 @@ class Options extends React.Component {
             page = (
               <div className="page page-mainPage">
                 <h2 className="page__title">{chrome.i18n.getMessage('mainPage')}</h2>
-                <div className="option">
-                  <OptionCheckbox name={'originalPosterName'}/>
-                </div>
-                <div className="option">
-                  <OptionCheckbox name={'favoriteSync'}/>
-                </div>
-                <div className="option">
-                  <OptionText name={'kpFolderId'}/>
-                </div>
+                <OptionCheckbox name={'originalPosterName'}/>
+                <OptionCheckbox name={'favoriteSync'}/>
+                <OptionText name={'kpFolderId'}/>
                 <h2 className="page__sub_title">{chrome.i18n.getMessage('showSections')}</h2>
                 <div className="mainPage__sections"></div>
               </div>
@@ -157,10 +135,12 @@ class OptionCheckbox extends React.Component {
     const name = this.props.name;
 
     return (
-      <label>
-        <input ref={this.refInput} defaultChecked={options.options[name]} onChange={this.handleOptionChange} type="checkbox"/>
-        <span>{chrome.i18n.getMessage(name)}</span>
-      </label>
+      <div className="option">
+        <label>
+          <input ref={this.refInput} defaultChecked={options.options[name]} onChange={this.handleOptionChange} type="checkbox"/>
+          <span>{chrome.i18n.getMessage(name)}</span>
+        </label>
+      </div>
     );
   }
 }
@@ -195,10 +175,12 @@ class OptionText extends React.Component {
     const name = this.props.name;
 
     return (
-      <label>
-        <span>{chrome.i18n.getMessage(name)}</span>:
-        <input ref={this.refInput} defaultValue={options.options[name]} onChange={this.handleOptionChange} type="text"/>
-      </label>
+      <div className="option">
+        <label>
+          <span>{chrome.i18n.getMessage(name)}</span>:
+          <input ref={this.refInput} defaultValue={options.options[name]} onChange={this.handleOptionChange} type="text"/>
+        </label>
+      </div>
     );
   }
 }
