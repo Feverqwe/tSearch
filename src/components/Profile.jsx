@@ -13,23 +13,10 @@ class Profile extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      searchStore: props.searchStore
-    };
-
     if (!props.rootStore.profile || props.rootStore.profile.id !== props.profileItem.id) {
       props.rootStore.setProfile(props.profileItem);
     }
     this.profile = props.rootStore.profile;
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    if (props.searchStore !== state.searchStore) {
-      return {
-        searchStore: props.searchStore
-      };
-    }
-    return null;
   }
 
   render() {
