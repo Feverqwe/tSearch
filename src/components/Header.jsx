@@ -3,14 +3,19 @@ import {Link} from "react-router-dom";
 import React from "react";
 import PropTypes from "prop-types";
 import SearchStore from "../stores/SearchStore";
+import {inject, observer} from "mobx-react";
+import RootStore from "../stores/RootStore";
 
 const qs = require('querystring');
 
+@inject('rootStore')
+@observer
 class Header extends React.Component {
   constructor(props) {
     super(props);
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
   handleSubmit(query) {
     if (this.props.searchStore && this.props.searchStore.query === query) {
@@ -22,6 +27,9 @@ class Header extends React.Component {
       this.props.history.push(location);
     }
   }
+  handleClick() {
+    this.props.rootStore.searchForm.setQuery('');
+  }
   render() {
     return (
       <div className="body__head">
@@ -29,9 +37,9 @@ class Header extends React.Component {
           <SearchForm onSubmit={this.handleSubmit}/>
         </div>
         <div className="menu">
-          <Link to="/" className="menu__btn menu__btn-main" title={chrome.i18n.getMessage('main')}/>
-          <Link to="/history" className="menu__btn menu__btn-history" title={chrome.i18n.getMessage('history')}/>
-          <Link to="/options" className="menu__btn menu__btn-options" title={chrome.i18n.getMessage('options')}/>
+          <Link to="/" onClick={this.handleClick} className="menu__btn menu__btn-main" title={chrome.i18n.getMessage('main')}/>
+          <Link to="/history" onClick={this.handleClick} className="menu__btn menu__btn-history" title={chrome.i18n.getMessage('history')}/>
+          <Link to="/options" onClick={this.handleClick} className="menu__btn menu__btn-options" title={chrome.i18n.getMessage('options')}/>
         </div>
       </div>
     );
@@ -39,6 +47,7 @@ class Header extends React.Component {
 }
 
 Header.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
   resetSearch: PropTypes.func,
   searchStore: PropTypes.instanceOf(SearchStore),
 };
