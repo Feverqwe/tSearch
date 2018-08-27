@@ -117,16 +117,19 @@ const SearchStore = types.model('SearchStore', {
     fetchResults: flow(function* () {
       self.state = 'pending';
       try {
-        const promiseResults = yield Promise.all(self.getTrackerSessions().map(trackerSession => {
-          return trackerSession.fetchResult();
-        }));
-        const results = [].concat(...promiseResults);
-        if (isAlive(self)) {
-          const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-          self.resultPages.push({
-            results,
-            sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
+        const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+        const searchPage = SearchPageStore.create({
+          sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
+        });
+        self.resultPages.push(searchPage);
+        yield Promise.all(self.getTrackerSessions().map(trackerSession => {
+          return trackerSession.fetchResult().then(results => {
+            if (isAlive(searchPage)) {
+              searchPage.appendResults(results);
+            }
           });
+        }));
+        if (isAlive(self)) {
           self.state = 'done';
         }
       } catch (err) {

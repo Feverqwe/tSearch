@@ -10,6 +10,7 @@ import sortResults from "../tools/sortResults";
  * @property {{by:string,[direction]:number}[]} sorts
  * @property {function} sortBy
  * @property {function} appendSortBy
+ * @property {function} appendResults
  * @property {function} getSortBy
  * @property {function} getFilterBySelectedTrackers
  * @property {*} filteredResults
@@ -54,6 +55,9 @@ const SearchPageStore = types.model('SearchPageStore', {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
       rootStore.options.options.setValue('sorts', JSON.parse(JSON.stringify(self.sorts)));
       rootStore.options.save();
+    },
+    appendResults(results) {
+      self.results.push(...results);
     }
   };
 }).views(self => {
