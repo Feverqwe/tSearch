@@ -1,21 +1,26 @@
 import SearchForm from "./SearchForm/SearchForm";
 import {Link} from "react-router-dom";
 import React from "react";
+import PropTypes from "prop-types";
+import SearchStore from "../stores/SearchStore";
 
 const qs = require('querystring');
 
 class Header extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleSubmit(query) {
-    const state = {
-      query: query
-    };
-    const location = '/search?' + qs.stringify(state);
-    this.props.history.push(location);
+    if (this.props.searchStore && this.props.searchStore.query === query) {
+      this.props.resetSearch();
+    } else {
+      const location = '/search?' + qs.stringify({
+        query: query
+      });
+      this.props.history.push(location);
+    }
   }
   render() {
     return (
@@ -32,5 +37,10 @@ class Header extends React.Component {
     );
   }
 }
+
+Header.propTypes = null && {
+  resetSearch: PropTypes.func,
+  searchStore: PropTypes.instanceOf(SearchStore),
+};
 
 export default Header;

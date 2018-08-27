@@ -11,24 +11,11 @@ class Profiles extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      searchStore: props.searchStore
-    };
-
     this.handleSelect = this.handleSelect.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.refSelect = this.refSelect.bind(this);
 
     this.select = null;
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    if (props.searchStore !== state.searchStore) {
-      return {
-        searchStore: props.searchStore
-      };
-    }
-    return null;
   }
 
   componentDidMount() {
@@ -38,11 +25,6 @@ class Profiles extends React.Component {
   }
 
   handleSelect() {
-    const searchStore = this.props.searchStore;
-    if (searchStore) {
-      searchStore.reset();
-    }
-
     const rootStore = this.props.rootStore;
     const id = this.select.value;
     rootStore.profiles.setProfileId(id);
@@ -97,7 +79,7 @@ class Profiles extends React.Component {
               </div>
             </div>
             <div className="parameter parameter-tracker">
-              <Profile key={activeProfile.id} {...this.props} profileItem={activeProfile}/>
+              <Profile key={activeProfile.id} searchStore={this.props.searchStore} profileItem={activeProfile}/>
             </div>
           </div>
         );
