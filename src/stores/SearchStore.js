@@ -17,7 +17,9 @@ const logger = getLogger('SearchStore');
  * @property {string} [state]
  * @property {*} nextQuery
  * @property {number} [searchIndex]
+ * @property {{url:string|undefined|null}|undefined} authRequired
  * @property {function:Promise} fetchResult
+ * @property {function} setAuthRequired
  * @property {*} tracker
  * @property {*} search
  */
@@ -26,6 +28,9 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
   state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
   nextQuery: types.frozen(),
   searchIndex: types.optional(types.number, 0),
+  authRequired: types.maybe(types.model({
+    url: types.maybeNull(types.string)
+  })),
 }).actions(self => {
   return {
     fetchResult: flow(function* () {
@@ -51,7 +56,7 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
         if (!result.success) {
           if (result.error === 'AUTH') {
             if (isAlive(self)) {
-              self.tracker.setAuthRequired(result.url);
+              self.setAuthRequired(result.url);
             }
             throw new ErrorWithCode(`Search error: auth required`, 'AUTH_REQUIRED');
           } else {
@@ -73,6 +78,9 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
         return [];
       }
     }),
+    setAuthRequired(url) {
+      self.authRequired = {url};
+    },
   };
 }).views(self => {
   return {

@@ -85,25 +85,26 @@ class ProfileTracker extends React.Component {
         }
 
         let searchState = null;
-        if (this.tracker.authRequired) {
-          searchState = (
-            <a className="tracker__login" target="_blank" href={this.tracker.authRequired.url}
-               title={chrome.i18n.getMessage('login')}/>
-          );
-        } else
         if (searchSession) {
-          const count = searchSession.search.getResultCountByTrackerId(this.tracker.id);
-          const visibleCount = searchSession.search.getVisibleResultCountByTrackerId(this.tracker.id);
-
-          let text = '';
-          if (count === visibleCount) {
-            text = count;
+          if (searchSession.authRequired) {
+            searchState = (
+              <a className="tracker__login" target="_blank" href={searchSession.authRequired.url}
+                 title={chrome.i18n.getMessage('login')}/>
+            );
           } else {
-            text = visibleCount + '/' + count;
+            const count = searchSession.search.getResultCountByTrackerId(this.tracker.id);
+            const visibleCount = searchSession.search.getVisibleResultCountByTrackerId(this.tracker.id);
+
+            let text = '';
+            if (count === visibleCount) {
+              text = count;
+            } else {
+              text = visibleCount + '/' + count;
+            }
+            searchState = (
+              <div className="tracker__counter">{text}</div>
+            )
           }
-          searchState = (
-            <div className="tracker__counter">{text}</div>
-          )
         }
 
         const iconUrl = this.tracker.getIconUrl() || blankSvg;
