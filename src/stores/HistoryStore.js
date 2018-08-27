@@ -91,8 +91,8 @@ const HistoryQueryStore = types.model('HistoryQueryStore', {
  * @property {string} [state]
  * @property {Map<*,HistoryQueryStore>|undefined} history
  * @property {function} setHistory
- * @property {function} setQuery
- * @property {function} setClick
+ * @property {function} addQuery
+ * @property {function} addClick
  * @property {function} removeQuery
  * @property {function:Promise} fetchHistory
  * @property {function} getOrCreateQuery
@@ -100,8 +100,6 @@ const HistoryQueryStore = types.model('HistoryQueryStore', {
  * @property {function} getHistory
  * @property {function} getHistorySortByTime
  * @property {function} getHistorySortByCount
- * @property {function} onQuery
- * @property {function} onClick
  * @property {function} afterCreate
  * @property {function} beforeDestroy
  */
@@ -113,14 +111,14 @@ const HistoryStore = types.model('HistoryStore', {
     setHistory(value) {
       self.history = value;
     },
-    setQuery(query) {
+    addQuery(query) {
       const q = self.getOrCreateQuery(query);
       q.count++;
       q.time = getNow();
 
       self.save();
     },
-    setClick(query, title, url, trackerId) {
+    addClick(query, title, url, trackerId) {
       const q = self.getOrCreateQuery(query);
       q.setClick(query, title, url, trackerId);
 
@@ -144,6 +142,15 @@ const HistoryStore = types.model('HistoryStore', {
         }
       }
     }),
+    getOrCreateQuery(query) {
+      let q = self.history.get(query);
+      if (!q) {
+        q = self.history.put({
+          query: query
+        });
+      }
+      return q;
+    },
   };
 }).views(self => {
   const storageChangeListener = (changes, namespace) => {
@@ -161,15 +168,6 @@ const HistoryStore = types.model('HistoryStore', {
   };
 
   return {
-    getOrCreateQuery(query) {
-      let q = self.history.get(query);
-      if (!q) {
-        q = self.history.put({
-          query: query
-        });
-      }
-      return q;
-    },
     save() {
       return oneLimit(() => {
         return new Promise(resolve => chrome.storage.local.set({
@@ -189,12 +187,6 @@ const HistoryStore = types.model('HistoryStore', {
       return self.getHistory().sort(({count: a}, {count: b}) => {
         return a === b ? 0 : a < b ? 1 : -1;
       });
-    },
-    onQuery(query) {
-      self.setQuery(query);
-    },
-    onClick(query, title, url, trackerId) {
-      self.setClick(query, title, url, trackerId);
     },
     afterCreate() {
       chrome.storage.onChanged.addListener(storageChangeListener);

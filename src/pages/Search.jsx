@@ -28,6 +28,12 @@ class Search extends React.Component {
     if (this.props.rootStore.options.state === 'idle') {
       this.props.rootStore.options.fetchOptions();
     }
+    if (this.props.rootStore.history.state === 'idle') {
+      this.props.rootStore.history.fetchHistory();
+    }
+    if (this.props.rootStore.profiles.state === 'idle') {
+      this.props.rootStore.profiles.fetchProfiles();
+    }
   }
   resetSearch() {
     this.setState({
@@ -44,6 +50,8 @@ class Search extends React.Component {
     let searchSession = null;
     if (
       this.props.rootStore.options.state === 'done' &&
+      this.props.rootStore.history.state === 'done' &&
+      this.props.rootStore.profiles.state === 'done' &&
       this.props.rootStore.profile &&
       this.props.rootStore.profile.trackersIsReady
     ) {
@@ -89,6 +97,7 @@ class SearchSession extends React.Component {
   }
   componentDidMount() {
     this.searchStore.fetchResults();
+    this.props.rootStore.history.addQuery(this.searchStore.query);
   }
   componentWillUnmount() {
     this.props.rootStore.destroySearch(this.searchStore);

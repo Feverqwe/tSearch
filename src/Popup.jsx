@@ -9,8 +9,8 @@ const qs = require('querystring');
 const rootStore = window.rootStore = RootStore.create();
 
 class Popup extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }

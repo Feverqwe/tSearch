@@ -116,7 +116,7 @@ class SearchPageRow extends React.Component {
     const rootStore = this.props.rootStore;
     const searchStore = this.props.searchStore;
     const result = this.props.result;
-    rootStore.history.onClick(searchStore.query, result.title, result.url, result.trackerId);
+    rootStore.history.addClick(searchStore.query, result.title, result.url, result.trackerId);
   }
   render() {
     const result = this.props.result;
@@ -174,7 +174,7 @@ class SearchPageRow extends React.Component {
 
           return (
             <div key={type} className={`cell row__cell cell-${type}`}>
-              <div className="cell__title" onClick={this.handleClick}>
+              <div className="cell__title" onMouseUp={this.handleClick}>
                 {highlight.getReactComponent('a', {
                   className: 'title',
                   target: '_blank',
