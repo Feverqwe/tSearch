@@ -124,7 +124,7 @@ class SearchPageRow extends React.Component {
       switch (type) {
         case 'date': {
           return (
-            <div key="date" className={`cell row__cell cell-${type}`}
+            <div key={type} className={`cell row__cell cell-${type}`}
                  title={result.dateTitle}>{result.dateText}</div>
           );
         }
@@ -132,7 +132,7 @@ class SearchPageRow extends React.Component {
           const qualityValue = result.quality;
           const percent = result.quality / 500 * 100;
           return (
-            <div key="quality" className={`cell row__cell cell-${type}`}>
+            <div key={type} className={`cell row__cell cell-${type}`}>
               <div className="quality_box" title={qualityValue}>
                 <div className="quality_progress" style={{width: percent + '%'}}/>
                 <span className="quality_value">{qualityValue}</span>
@@ -173,8 +173,8 @@ class SearchPageRow extends React.Component {
           }
 
           return (
-            <div key="title" className={`cell row__cell cell-${type}`} onClick={this.handleClick}>
-              <div className="cell__title">
+            <div key={type} className={`cell row__cell cell-${type}`}>
+              <div className="cell__title" onClick={this.handleClick}>
                 {highlight.getReactComponent('a', {
                   className: 'title',
                   target: '_blank',
@@ -198,21 +198,21 @@ class SearchPageRow extends React.Component {
             downloadLink = result.sizeText;
           }
           return (
-            <div key="size" className={`cell row__cell cell-${type}`}>
+            <div key={type} className={`cell row__cell cell-${type}`}>
               {downloadLink}
             </div>
           );
         }
         case 'seed': {
           return (
-            <div key="seed" className={`cell row__cell cell-${type}`}>
+            <div key={type} className={`cell row__cell cell-${type}`}>
               {result.seed}
             </div>
           );
         }
         case 'peer': {
           return (
-            <div key="peer" className={`cell row__cell cell-${type}`}>
+            <div key={type} className={`cell row__cell cell-${type}`}>
               {result.peer}
             </div>
           );
