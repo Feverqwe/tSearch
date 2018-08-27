@@ -49,6 +49,8 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
           const nextQuery = self.nextQuery;
           self.nextQuery = null;
           result = yield self.tracker.worker.searchNext(nextQuery);
+        } else {
+          result = {success: true, results: []};
         }
         if (!result) {
           throw new ErrorWithCode(`Search error: result is empty`, 'EMPTY_RESULT');
