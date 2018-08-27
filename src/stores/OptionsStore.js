@@ -102,12 +102,12 @@ const OptionsStore = types.model('OptionsStore', {
 }).actions(self => {
   return {
     setOptions(value) {
-      this.options = value;
+      self.options = value;
     },
     fetchOptions: flow(function* () {
       self.state = 'pending';
       try {
-        const storage = yield new Promise(resolve => chrome.storage.local.get({options: {}}, resolve));
+        const storage = yield new Promise(resolve => chrome.storage.sync.get({options: {}}, resolve));
         if (isAlive(self)) {
           self.options = storage.options;
           self.state = 'done';
@@ -138,8 +138,8 @@ const OptionsStore = types.model('OptionsStore', {
   return {
     save() {
       return oneLimit(() => {
-        return new Promise(resolve => chrome.storage.local.set({
-          options: getSnapshot(self.options)
+        return new Promise(resolve => chrome.storage.sync.set({
+          options: getSnapshot(self.options),
         }, resolve));
       });
     },

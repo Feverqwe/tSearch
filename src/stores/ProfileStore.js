@@ -55,7 +55,7 @@ const ProfileStore = types.model('ProfileStore', {
       return result;
     },
     get trackersIsReady() {
-      return this.trackers.every(trackerProfile => {
+      return self.trackers.every(trackerProfile => {
         return !['idle', 'pending'].includes(trackerProfile.tracker.state);
       });
     }

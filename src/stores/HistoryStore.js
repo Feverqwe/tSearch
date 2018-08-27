@@ -111,7 +111,7 @@ const HistoryStore = types.model('HistoryStore', {
 }).actions(self => {
   return {
     setHistory(value) {
-      this.history = value;
+      self.history = value;
     },
     setQuery(query) {
       const q = self.getOrCreateQuery(query);
