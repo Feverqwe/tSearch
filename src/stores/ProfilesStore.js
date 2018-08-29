@@ -20,7 +20,7 @@ const logger = getLogger('ProfilesStore');
  * @property {function} beforeDestroy
  */
 const ProfilesStore = types.model('ProfilesStore', {
-  state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
+  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   profiles: types.array(ProfilesItemStore),
   profileId: types.maybeNull(types.string),
 }).actions(/**ProfilesStore*/self => {
