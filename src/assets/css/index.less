@@ -577,22 +577,19 @@ a.tracker__name {
 }
 
 .manager {
-  position: fixed;
-  top: 70px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-
-  width: 700px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  z-index: 90;
-  box-shadow: 0 4px 23px 5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.15);
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .manager a {
   color: #0051D8;
+}
+
+.manager__body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .manager__header {
@@ -623,11 +620,8 @@ a.tracker__name {
 }
 
 .manager__profiles {
-  display: block;
+  flex-grow: 1;
   border-top: 1px dashed #ccc;
-  min-height: 370px;
-  max-height: 370px;
-  overflow: auto;
 }
 
 .manager__trackers .item__move,

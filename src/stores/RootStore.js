@@ -8,6 +8,7 @@ import TrackerStore from "./TrackerStore";
 import SearchStore from "./SearchStore";
 import OptionsStore from "./OptionsStore";
 import ExplorerStore from "./ExplorerStore";
+import ProfileEditorStore from "./ProfileEditorStore";
 
 
 /**
@@ -19,11 +20,15 @@ import ExplorerStore from "./ExplorerStore";
  * @property {ProfilesStore} [profiles]
  * @property {Map<*,TrackerStore>} trackers
  * @property {SearchStore[]} searches
- * @property {OptionsStore} options
+ * @property {OptionsStore} [options]
+ * @property {ExplorerStore} [explorer]
+ * @property {ProfileEditorStore|undefined|null} profileEditor
  * @property {function} setProfile
  * @property {function} initTracker
  * @property {function} createSearch
  * @property {function} destroySearch
+ * @property {function} createProfileEditor
+ * @property {function} destroyProfileEditor
  */
 const RootStore = types.model('RootStore', {
   searchForm: types.optional(SearchForm, {}),
@@ -35,6 +40,7 @@ const RootStore = types.model('RootStore', {
   searches: types.array(SearchStore),
   options: types.optional(OptionsStore, {}),
   explorer: types.optional(ExplorerStore, {}),
+  profileEditor: types.maybeNull(ProfileEditorStore)
 }).actions(/**RootStore*/self => {
   return {
     setProfile(profile) {
@@ -57,6 +63,14 @@ const RootStore = types.model('RootStore', {
       if (pos !== -1) {
         self.searches.splice(pos, 1);
       }
+    },
+    createProfileEditor() {
+      self.profileEditor = {
+        profiles: JSON.parse(JSON.stringify(self.profiles.profiles))
+      };
+    },
+    destroyProfileEditor() {
+      self.profileEditor = null;
     }
   };
 });

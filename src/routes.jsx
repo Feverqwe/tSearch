@@ -5,6 +5,7 @@ import NotFound from "./pages/NotFound";
 import {Redirect} from "react-router-dom";
 import History from "./pages/History";
 import Options from "./pages/Options";
+import ProfileEditor from "./pages/ProfileEditor";
 
 const qs = require('querystring');
 
@@ -14,6 +15,22 @@ const routes = [{
   render: props => {
     return (
       <Main {...props}/>
+    );
+  },
+}, {
+  path: '/profileEditor',
+  exact: true,
+  render: props => {
+    return (
+      <ProfileEditor {...props}/>
+    );
+  },
+}, {
+  path: '/profileEditor/:id',
+  render: props => {
+    const id = props.match.params.id;
+    return (
+      <ProfileEditor {...props} profileId={id}/>
     );
   },
 }, {

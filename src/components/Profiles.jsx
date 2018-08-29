@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import Profile from "./Profile";
 import SearchStore from "../stores/SearchStore";
+import {Link} from "react-router-dom";
 
 @inject('rootStore')
 @observer
@@ -12,7 +13,6 @@ class Profiles extends React.Component {
     super(props);
 
     this.handleSelect = this.handleSelect.bind(this);
-    this.handleEdit = this.handleEdit.bind(this);
     this.refSelect = this.refSelect.bind(this);
 
     this.select = null;
@@ -29,10 +29,6 @@ class Profiles extends React.Component {
     const id = this.select.value;
     rootStore.profiles.setProfileId(id);
     rootStore.profiles.saveProfile();
-  }
-
-  handleEdit() {
-
   }
 
   refSelect(element) {
@@ -73,8 +69,7 @@ class Profiles extends React.Component {
                 <select ref={this.refSelect} className="profile__select" defaultValue={activeProfile.id} onChange={this.handleSelect}>
                   {options}
                 </select>
-                <a onClick={this.handleEdit}
-                   href="#manageProfiles" title={chrome.i18n.getMessage('manageProfiles')}
+                <Link to="/profileEditor" title={chrome.i18n.getMessage('manageProfiles')}
                    className="button-manage-profile"/>
               </div>
             </div>
