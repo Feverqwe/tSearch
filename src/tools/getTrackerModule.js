@@ -1,6 +1,6 @@
 import getTrackersJson from "./getTrackersJson";
 import getLogger from "./getLogger";
-import loadTrackerModule from "./loadTrackerModule";
+import loadLocalTrackerModule from "./loadLocalTrackerModule";
 
 const compareVersions = require('compare-versions');
 const {ErrorWithCode} = require('./errors');
@@ -14,21 +14,20 @@ const getTrackerModule = id => {
     new Promise(resolve => chrome.storage.local.get({[id]: null}, resolve)).then(storage => storage[id])
   ]).then(([localVersion, module]) => {
     if (localVersion && module) {
-      let isHigher = true;
+      let localIsHigher = true;
       try {
-        isHigher = compareVersions(localVersion, module.meta.version) > 0;
+        localIsHigher = compareVersions(localVersion, module.meta.version) > 0;
       } catch (err) {
         logger.error('compareVersions error', id, err);
       }
-      if (isHigher) {
+      if (localIsHigher) {
         module = null;
       }
     }
 
-
     if (!module) {
-      return loadTrackerModule(id).catch(err => {
-        logger.error('loadTrackerModule error', id, err);
+      return loadLocalTrackerModule(id).catch(err => {
+        logger.error('loadLocalTrackerModule error', id, err);
         return null;
       }).then(module => {
         return new Promise(resolve => chrome.storage.local.set({[id]: module}, resolve)).then(() => module);

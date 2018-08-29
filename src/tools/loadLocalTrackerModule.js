@@ -1,9 +1,6 @@
-import getLogger from "./getLogger";
 import getTrackerCodeMeta from "./getTrackerCodeMeta";
 
-const debug = getLogger('loadTrackers');
-
-const loadTrackerModule = id => {
+const loadLocalTrackerModule = id => {
   return fetch('./trackers/' + id + '.js').then(response => {
     return response.text();
   }).then(response => {
@@ -15,4 +12,4 @@ const loadTrackerModule = id => {
   });
 };
 
-export default loadTrackerModule;
+export default loadLocalTrackerModule;
