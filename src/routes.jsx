@@ -30,7 +30,7 @@ const routes = [{
   render: props => {
     const id = props.match.params.id;
     return (
-      <ProfileEditor {...props} profileId={id}/>
+      <ProfileEditor {...props} id={id}/>
     );
   },
 }, {
