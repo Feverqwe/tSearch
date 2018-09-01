@@ -20,6 +20,12 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       self.name = name;
     }
   };
+}).views(self => {
+  return {
+    getTrackersByFilter(type) {
+      return [];
+    }
+  };
 });
 
 
@@ -115,3 +121,4 @@ const getIndexById = (items, id) => {
 };
 
 export default ProfileEditorStore;
+export {EditProfileItemStore};

@@ -18,15 +18,8 @@ const routes = [{
     );
   },
 }, {
-  path: '/profileEditor',
+  path: '/profileEditor/:id?',
   exact: true,
-  render: props => {
-    return (
-      <ProfileEditor {...props}/>
-    );
-  },
-}, {
-  path: '/profileEditor/:id',
   render: props => {
     const id = props.match.params.id;
     return (

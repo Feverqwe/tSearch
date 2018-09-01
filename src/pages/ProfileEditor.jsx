@@ -8,6 +8,9 @@ import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import EditProfiles from "../components/EditProfiles";
 import EditProfile from "../components/EditProfile";
+import getLogger from "../tools/getLogger";
+
+const logger = getLogger('ProfileEditor');
 
 
 @inject('rootStore')

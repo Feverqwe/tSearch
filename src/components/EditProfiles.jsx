@@ -4,8 +4,11 @@ import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import {Link} from "react-router-dom";
 import ProfilesItemStore from "../stores/ProfilesItemStore";
+import getLogger from "../tools/getLogger";
 
 const Sortable = require('sortablejs');
+
+const logger = getLogger('EditProfiles');
 
 
 @inject('rootStore')
