@@ -24,9 +24,15 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
 
 
 /**
+ * @typedef {ProfilesItemStore} EditProfilesItemStore
+ */
+const EditProfilesItemStore = types.compose('EditProfilesItemStore', ProfilesItemStore);
+
+
+/**
  * @typedef {{}} ProfileEditorStore
  * @property {string} [saveState]
- * @property {ProfilesItemStore[]} profiles
+ * @property {EditProfilesItemStore[]} profiles
  * @property {EditProfileItemStore|undefined|null} profile
  * @property {function:Promise} save
  * @property {function} moveProfile
@@ -35,7 +41,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
  */
 const ProfileEditorStore = types.model('ProfileEditorStore', {
   saveState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
-  profiles: types.array(ProfilesItemStore),
+  profiles: types.array(EditProfilesItemStore),
   profile: types.maybeNull(EditProfileItemStore),
 }).actions(self => {
   return {
@@ -92,13 +98,7 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
 }).views(self => {
   return {
     getProfileById(id) {
-      let result = null;
-      self.profiles.some(profile => {
-        if (profile.id === id) {
-          return result = profile;
-        }
-      });
-      return result;
+      return resolveIdentifier(EditProfilesItemStore, self, id);
     }
   };
 });
