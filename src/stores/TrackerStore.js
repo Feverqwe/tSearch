@@ -60,7 +60,7 @@ const TrackerStore = types.model('TrackerStore', {
     },
     handleAttachedChange() {
       if (self.attached) {
-        if (!worker) {
+        if (!worker && self.state !== 'pending') {
           self.createWorker();
         }
       } else {
