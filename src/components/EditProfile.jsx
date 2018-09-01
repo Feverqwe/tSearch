@@ -210,7 +210,7 @@ class TrackerItem extends React.Component {
       classList.push('item__selected');
     }
 
-    let icon = blankSvg;
+    let icon = null;
     let name = null;
     let version = null;
     let updateBtn = null;
@@ -242,6 +242,9 @@ class TrackerItem extends React.Component {
           <div className="item__cell item__author">{tracker.meta.author}</div>
         );
       }
+    } else {
+      icon = blankSvg;
+      name = this.tracker.id
     }
 
     const editUrl = 'editor.html#/tracker/' + tracker.id;
