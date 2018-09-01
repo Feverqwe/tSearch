@@ -1,6 +1,7 @@
 import {flow, isAlive, resolveIdentifier, types} from 'mobx-state-tree';
 import getLogger from "../tools/getLogger";
 import ProfilesItemStore from "./ProfilesItemStore";
+import getTrackersJson from "../tools/getTrackersJson";
 
 const logger = getLogger('ProfileEditorStore');
 
@@ -49,6 +50,8 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
   saveState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   profiles: types.array(EditProfilesItemStore),
   profile: types.maybeNull(EditProfileItemStore),
+  trackerIdsState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
+  trackerIds: types.maybeNull(types.array(types.string)),
 }).actions(self => {
   return {
     save: flow(function* () {
@@ -100,6 +103,29 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
       }
       self.profile = JSON.parse(JSON.stringify(profile));
     },
+    fetchTrackerIds: flow(function* () {
+      self.trackerIdsState = 'pending';
+      try {
+        const trackerIds = yield Promise.all([
+          new Promise(resolve => chrome.storage.local.get({trackers: {}}, resolve)).then(storage => Object.keys(storage.trackers)),
+          getTrackersJson().then(trackers => Object.keys(trackers))
+        ]).then(results => {
+          const trackerIds = [].concat(...results);
+          return trackerIds.filter((id, index) => {
+            return trackerIds.indexOf(id) === index;
+          });
+        });
+        if (isAlive(self)) {
+          self.trackerIds = trackerIds;
+          self.trackerIdsState = 'done';
+        }
+      } catch (err) {
+        logger.error('fetchHistory error', err);
+        if (isAlive(self)) {
+          self.trackerIdsState = 'error';
+        }
+      }
+    }),
   };
 }).views(self => {
   return {

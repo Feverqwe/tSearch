@@ -32,6 +32,9 @@ class EditProfile extends React.Component {
     this.trackers = null;
   }
   componentDidMount() {
+    if (this.props.rootStore.profileEditor.trackerIdsState === 'idle') {
+      this.props.rootStore.profileEditor.fetchTrackerIds();
+    }
     this.props.rootStore.profileEditor.setProfileById(this.props.id);
   }
   handleChangeName() {
@@ -59,6 +62,10 @@ class EditProfile extends React.Component {
     });
   }
   render() {
+    if (this.props.rootStore.profileEditor.trackerIdsState !== 'done') {
+      return ('Loading');
+    }
+
     const profile = this.props.rootStore.profileEditor.profile;
 
     if (!profile) {
@@ -72,11 +79,21 @@ class EditProfile extends React.Component {
       );
     });
 
+    const existsTrackerIds = [];
     const trackers = profile.trackers.map(tracker => {
+      existsTrackerIds.push(tracker.id);
       const checked = true;
       return (
         <TrackerItem key={`tracker-${tracker.id}`} id={tracker.id} profileItemTracker={tracker} checked={checked}/>
       );
+    });
+    this.props.rootStore.profileEditor.trackerIds.forEach(id => {
+      if (existsTrackerIds.indexOf(id) === -1) {
+        const checked = false;
+        trackers.push(
+          <TrackerItem key={`tracker-${id}`} id={id} profileItemTracker={{id}} checked={checked}/>
+        );
+      }
     });
 
     return (
@@ -221,7 +238,7 @@ class TrackerItem extends React.Component {
     if (tracker.state === 'done') {
       icon = tracker.getIconUrl();
       name = tracker.meta.name;
-      version = tracker.meta.version || '';
+      version = tracker.meta.version;
       if (tracker.meta.supportURL) {
         supportBtn = (
           <a className="item__cell item__button button-support" target="_blank" href={tracker.meta.supportURL}/>
