@@ -19,16 +19,6 @@ class EditProfiles extends React.Component {
     this.sortable = null;
   }
 
-  componentDidMount() {
-    if (!this.props.rootStore.profileEditor) {
-      this.props.rootStore.createProfileEditor();
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.rootStore.destroyProfileEditor();
-  }
-
   refProfiles(node) {
     if (!node) {
       if (this.sortable) {
@@ -64,10 +54,6 @@ class EditProfiles extends React.Component {
 
   render() {
     const profileEditor = this.props.rootStore.profileEditor;
-    if (!profileEditor) {
-      return ('Loading...');
-    }
-
     const profiles = profileEditor.profiles.map((profilesItem, index) => {
       return (
         <ProfileItem key={profilesItem.id} index={index} profilesItem={profilesItem} history={this.props.history}/>
@@ -94,6 +80,7 @@ class EditProfiles extends React.Component {
 
 EditProfiles.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
+  history: PropTypes.object,
 };
 
 
@@ -151,6 +138,7 @@ ProfileItem.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   index: PropTypes.number,
   profilesItem: PropTypes.instanceOf(ProfilesItemStore),
+  history: PropTypes.object,
 };
 
 export default EditProfiles;

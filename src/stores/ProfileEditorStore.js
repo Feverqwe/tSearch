@@ -6,15 +6,37 @@ const logger = getLogger('ProfileEditorStore');
 
 
 /**
+ * @typedef {ProfilesItemStore} EditProfileItemStore
+ * @property {string} id
+ * @property {string|undefined|null} name
+ * @property {function} setName
+ */
+const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemStore, types.model({
+  id: types.string,
+  name: types.maybeNull(types.string),
+})).actions(self => {
+  return {
+    setName(name) {
+      self.name = name;
+    }
+  };
+});
+
+
+/**
  * @typedef {{}} ProfileEditorStore
  * @property {string} [saveState]
  * @property {ProfilesItemStore[]} profiles
+ * @property {EditProfileItemStore|undefined|null} profile
  * @property {function:Promise} save
  * @property {function} moveProfile
+ * @property {function} setProfileById
+ * @property {function} getProfileById
  */
 const ProfileEditorStore = types.model('ProfileEditorStore', {
   saveState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   profiles: types.array(ProfilesItemStore),
+  profile: types.maybeNull(EditProfileItemStore),
 }).actions(self => {
   return {
     save: flow(function* () {
@@ -59,11 +81,24 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
 
       self.profiles = items;
     },
+    setProfileById(id) {
+      let profile = self.getProfileById(id);
+      if (!profile) {
+        profile = {id};
+      }
+      self.profile = JSON.parse(JSON.stringify(profile));
+    },
   };
 }).views(self => {
   return {
     getProfileById(id) {
-      return resolveIdentifier(ProfilesItemStore, self, id);
+      let result = null;
+      self.profiles.some(profile => {
+        if (profile.id === id) {
+          return result = profile;
+        }
+      });
+      return result;
     }
   };
 });

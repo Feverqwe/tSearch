@@ -34,15 +34,9 @@ class ProfileEditor extends React.Component {
         break;
       }
       case 'done': {
-        if (this.props.id) {
-          page = (
-            <EditProfile history={this.props.history} id={this.props.id}/>
-          );
-        } else {
-          page = (
-            <EditProfiles history={this.props.history}/>
-          );
-        }
+        page = (
+          <ProfileEditorPage {...this.props}/>
+        );
         break;
       }
       default: {
@@ -69,6 +63,42 @@ class ProfileEditor extends React.Component {
 }
 
 ProfileEditor.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
+  id: PropTypes.string,
+};
+
+
+@inject('rootStore')
+@observer
+class ProfileEditorPage extends React.Component {
+  componentDidMount() {
+    if (!this.props.rootStore.profileEditor) {
+      this.props.rootStore.createProfileEditor();
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.rootStore.destroyProfileEditor();
+  }
+
+  render() {
+    if (!this.props.rootStore.profileEditor) {
+      return ('Loading...');
+    }
+
+    if (this.props.id) {
+      return (
+        <EditProfile key={this.props.id} id={this.props.id}/>
+      );
+    } else {
+      return (
+        <EditProfiles history={this.props.history}/>
+      );
+    }
+  }
+}
+
+ProfileEditorPage.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   id: PropTypes.string,
 };
