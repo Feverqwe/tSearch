@@ -184,7 +184,7 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
       if (!self.profilePages.has(id)) {
         const profile = self.getProfileById(id) || {id};
         const snapshot = JSON.parse(JSON.stringify(profile));
-        snapshot.selectedTrackerIds = snapshot.trackers.map(tracker => tracker.id);
+        snapshot.selectedTrackerIds = snapshot.trackers && snapshot.trackers.map(tracker => tracker.id) || [];
         self.profilePages.set(id, snapshot);
       }
       return self.profilePages.get(id);
