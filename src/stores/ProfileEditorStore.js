@@ -47,12 +47,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
   trackerModulesState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   trackerModules: types.array(EditorProfileTrackerStore),
   selectedTrackerIds: types.array(types.string),
-})).preProcessSnapshot(snapshot => {
-  if (!snapshot.selectedTrackerIds) {
-    snapshot.selectedTrackerIds = snapshot.trackers.map(tracker => tracker.id);
-  }
-  return snapshot;
-}).actions(self => {
+})).actions(self => {
   return {
     setName(name) {
       self.name = name;
@@ -188,7 +183,9 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
     getProfile(id) {
       if (!self.profilePages.has(id)) {
         const profile = self.getProfileById(id) || {id};
-        self.profilePages.set(id, JSON.parse(JSON.stringify(profile)));
+        const snapshot = JSON.parse(JSON.stringify(profile));
+        snapshot.selectedTrackerIds = snapshot.trackers.map(tracker => tracker.id);
+        self.profilePages.set(id, snapshot);
       }
       return self.profilePages.get(id);
     },
