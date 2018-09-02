@@ -35,11 +35,16 @@ class EditProfile extends React.Component {
     if (this.props.rootStore.profileEditor.trackerIdsState === 'idle') {
       this.props.rootStore.profileEditor.fetchTrackerIds();
     }
-    this.props.rootStore.profileEditor.setProfileById(this.props.id);
+    this.profile = this.props.rootStore.profileEditor.getProfile(this.props.id);
+    this.forceUpdate();
+  }
+  componentWillUnmount() {
+    if (this.props.rootStore.profileEditor) {
+      this.props.rootStore.profileEditor.removeProfile(this.props.id);
+    }
   }
   handleChangeName() {
-    const profile = this.props.rootStore.profileEditor.profile;
-    profile.setName(this.name.value);
+    this.profile.setName(this.name.value);
   }
   refName(element) {
     this.name = element;
@@ -62,38 +67,22 @@ class EditProfile extends React.Component {
     });
   }
   render() {
-    if (this.props.rootStore.profileEditor.trackerIdsState !== 'done') {
-      return ('Loading');
-    }
-
-    const profile = this.props.rootStore.profileEditor.profile;
-
-    if (!profile) {
+    if (this.props.rootStore.profileEditor.trackerIdsState !== 'done' || !this.profile) {
       return ('Loading...');
     }
 
     const filterItems = ['all', 'withoutList', 'selected'].map(type => {
       const isActive = type === this.state.filter;
       return (
-        <FilterButton key={`filter-${type}`} isActive={isActive} type={type} profile={profile} onClick={this.handleFilterClick}/>
+        <FilterButton key={`filter-${type}`} isActive={isActive} type={type} profile={this.profile} onClick={this.handleFilterClick}/>
       );
     });
 
-    const existsTrackerIds = [];
-    const trackers = profile.trackers.map(tracker => {
-      existsTrackerIds.push(tracker.id);
-      const checked = true;
+    const trackers = this.profile.getTrackersByFilter(this.state.filter).map(tracker => {
+      const checked = this.profile.trackers.indexOf(tracker) !== -1;
       return (
         <TrackerItem key={`tracker-${tracker.id}`} id={tracker.id} profileItemTracker={tracker} checked={checked}/>
       );
-    });
-    this.props.rootStore.profileEditor.trackerIds.forEach(id => {
-      if (existsTrackerIds.indexOf(id) === -1) {
-        const checked = false;
-        trackers.push(
-          <TrackerItem key={`tracker-${id}`} id={id} profileItemTracker={{id}} checked={checked}/>
-        );
-      }
     });
 
     return (
@@ -101,7 +90,7 @@ class EditProfile extends React.Component {
         <div className="manager__body">
           <div className="manager__sub_header sub_header__profile">
             <div className="profile__input">
-              <input ref={this.refName} className="input__input" type="text" defaultValue={profile.name} onChange={this.handleChangeName}/>
+              <input ref={this.refName} className="input__input" type="text" defaultValue={this.profile.name} onChange={this.handleChangeName}/>
             </div>
           </div>
           <div className="manager__sub_header sub_header__filter">

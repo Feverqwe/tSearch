@@ -1,19 +1,18 @@
-import {flow, isAlive, resolveIdentifier, types} from 'mobx-state-tree';
+import {flow, getParentOfType, isAlive, resolveIdentifier, types} from 'mobx-state-tree';
 import getLogger from "../tools/getLogger";
 import ProfilesItemStore from "./ProfilesItemStore";
 import getTrackersJson from "../tools/getTrackersJson";
 
 const logger = getLogger('ProfileEditorStore');
 
-
 /**
  * @typedef {ProfilesItemStore} EditProfileItemStore
- * @property {string} id
  * @property {string|undefined|null} name
  * @property {function} setName
+ * @property {function} getTrackersByFilter
+ * @property {*} allTrackers
  */
 const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemStore, types.model({
-  id: types.string,
   name: types.maybeNull(types.string),
 })).actions(self => {
   return {
@@ -24,7 +23,34 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
 }).views(self => {
   return {
     getTrackersByFilter(type) {
-      return [];
+      switch (type) {
+        case 'selected': {
+          return self.trackers;
+        }
+        case 'withoutList': {
+          return self.allTrackers.filter(tracker => {
+            return self.trackers.indexOf(tracker) === -1;
+          });
+        }
+        default: {
+          return self.allTrackers;
+        }
+      }
+    },
+    get allTrackers() {
+      const result = [];
+      const ids = [];
+      self.trackers.forEach(tracker => {
+        ids.push(tracker.id);
+        result.push(tracker);
+      });
+      const profileEditorStore = getParentOfType(self, ProfileEditorStore);
+      profileEditorStore.trackerIds.forEach(id => {
+        if (ids.indexOf(id) === -1) {
+          result.push({id});
+        }
+      });
+      return result;
     }
   };
 });
@@ -40,16 +66,20 @@ const EditProfilesItemStore = types.compose('EditProfilesItemStore', ProfilesIte
  * @typedef {{}} ProfileEditorStore
  * @property {string} [saveState]
  * @property {EditProfilesItemStore[]} profiles
- * @property {EditProfileItemStore|undefined|null} profile
+ * @property {Map<*,EditProfileItemStore>} profilePages
+ * @property {string} [trackerIdsState]
+ * @property {string[]|undefined|null} trackerIds
  * @property {function:Promise} save
  * @property {function} moveProfile
- * @property {function} setProfileById
+ * @property {function} getProfile
+ * @property {function} removeProfile
+ * @property {function:Promise} fetchTrackerIds
  * @property {function} getProfileById
  */
 const ProfileEditorStore = types.model('ProfileEditorStore', {
   saveState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   profiles: types.array(EditProfilesItemStore),
-  profile: types.maybeNull(EditProfileItemStore),
+  profilePages: types.map(EditProfileItemStore),
   trackerIdsState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   trackerIds: types.maybeNull(types.array(types.string)),
 }).actions(self => {
@@ -96,12 +126,15 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
 
       self.profiles = items;
     },
-    setProfileById(id) {
-      let profile = self.getProfileById(id);
-      if (!profile) {
-        profile = {id};
+    getProfile(id) {
+      if (!self.profilePages.has(id)) {
+        const profile = self.getProfileById(id) || {id};
+        self.profilePages.set(id, JSON.parse(JSON.stringify(profile)));
       }
-      self.profile = JSON.parse(JSON.stringify(profile));
+      return self.profilePages.get(id);
+    },
+    removeProfile(id) {
+      self.profilePages.delete(id);
     },
     fetchTrackerIds: flow(function* () {
       self.trackerIdsState = 'pending';
