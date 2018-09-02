@@ -97,7 +97,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
           return self.withoutListTackers;
         }
         default: {
-          return self.trackerModules;
+          return self.selectedTackers.concat(self.withoutListTackers);
         }
       }
     },
