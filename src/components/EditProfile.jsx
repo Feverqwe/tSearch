@@ -39,7 +39,7 @@ class EditProfile extends React.Component {
   }
   componentDidMount() {
     this.profile = this.props.rootStore.profileEditor.getProfile(this.props.id);
-    if (this.profile.trackerModulesState === 'idle') {
+    if (this.profile.trackerModuleMapState === 'idle') {
       this.profile.fetchTrackerModules().then(() => {
         this.syncTrackers(null, null);
       });
@@ -139,7 +139,7 @@ class EditProfile extends React.Component {
     this.syncTrackers(type, null);
   }
   render() {
-    if (!this.profile || this.profile.trackerModulesState !== 'done') {
+    if (!this.profile || this.profile.trackerModuleMapState !== 'done') {
       return ('Loading...');
     }
 

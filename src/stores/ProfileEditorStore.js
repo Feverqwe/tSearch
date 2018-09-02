@@ -35,22 +35,24 @@ const EditorProfileTrackerStore = types.model('EditorTrackerStore', {
 /**
  * @typedef {ProfilesItemStore} EditProfileItemStore
  * @property {string|undefined|null} name
- * @property {string} [trackerModulesState]
- * @property {EditorProfileTrackerStore[]} trackerModules
+ * @property {string} [trackerModuleMapState]
+ * @property {Map<*,EditorProfileTrackerStore>} trackerModuleMap
  * @property {string[]} selectedTrackerIds
  * @property {function} setName
  * @property {function:Promise} fetchTrackerModules
  * @property {function} addSelectedTrackerId
  * @property {function} removeSelectedTrackerId
+ * @property {function} moveTracker
  * @property {function} getTrackersByFilter
  * @property {function} getTrackersWithFilter
+ * @property {function} getTackerModuleById
  * @property {*} selectedTackers
  * @property {*} withoutListTackers
  */
 const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemStore, types.model({
   name: types.maybeNull(types.string),
-  trackerModulesState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
-  trackerModules: types.array(EditorProfileTrackerStore),
+  trackerModuleMapState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
+  trackerModuleMap: types.map(EditorProfileTrackerStore),
   selectedTrackerIds: types.array(types.string),
 })).actions(self => {
   return {
@@ -58,7 +60,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       self.name = name;
     },
     fetchTrackerModules: flow(function* () {
-      self.trackerModulesState = 'pending';
+      self.trackerModuleMapState = 'pending';
       try {
         const trackerIds = yield Promise.all([
           new Promise(resolve => chrome.storage.local.get({trackers: {}}, resolve)).then(storage => Object.keys(storage.trackers)),
@@ -81,13 +83,16 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
           }
         });
         if (isAlive(self)) {
-          self.trackerModules = trackerModules;
-          self.trackerModulesState = 'done';
+          self.trackerModuleMap = trackerModules.reduce((obj, tracker) => {
+            obj[tracker.id] = tracker;
+            return obj;
+          }, {});
+          self.trackerModuleMapState = 'done';
         }
       } catch (err) {
         logger.error('fetchHistory error', err);
         if (isAlive(self)) {
-          self.trackerModulesState = 'error';
+          self.trackerModuleMapState = 'error';
         }
       }
     }),
@@ -169,13 +174,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       return result;
     },
     getTackerModuleById(id) {
-      let result = null;
-      self.trackerModules.some(module => {
-        if (module.id === id) {
-          return result = module;
-        }
-      });
-      return result;
+      return self.trackerModuleMap.get(id);
     },
     get selectedTackers() {
       return self.selectedTrackerIds.map(id => {
@@ -183,7 +182,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       });
     },
     get withoutListTackers() {
-      return self.trackerModules.filter(tracker => {
+      return Array.from(self.trackerModuleMap.values()).filter(tracker => {
         return self.selectedTrackerIds.indexOf(tracker.id) === -1;
       });
     },
