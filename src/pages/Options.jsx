@@ -89,7 +89,7 @@ class Options extends React.Component {
     }
 
     return (
-      <div>
+      <div className="page-ctr">
         <Header {...this.props}/>
         <div className="main options-ctr">
           <div className="sections">

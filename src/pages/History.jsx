@@ -52,7 +52,7 @@ class History extends React.Component {
     }
 
     return (
-      <div>
+      <div className="page-ctr">
         <Header {...this.props}/>
         <div className="content content-row">
           <div className="main history-ctr">

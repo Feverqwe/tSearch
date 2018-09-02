@@ -61,7 +61,7 @@ class Search extends React.Component {
     }
 
     return (
-      <div>
+      <div className="page-ctr">
         <Header {...this.props} searchStore={this.state.searchStore} resetSearch={this.resetSearch}/>
         <div className="content content-row">
           <div className="parameter_box">
