@@ -46,7 +46,13 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
   name: types.maybeNull(types.string),
   trackerModulesState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   trackerModules: types.array(EditorProfileTrackerStore),
-})).actions(self => {
+  selectedTrackerIds: types.array(types.string),
+})).preProcessSnapshot(snapshot => {
+  if (!snapshot.selectedTrackerIds) {
+    snapshot.selectedTrackerIds = snapshot.trackers.map(tracker => tracker.id);
+  }
+  return snapshot;
+}).actions(self => {
   return {
     setName(name) {
       self.name = name;
@@ -103,16 +109,13 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
     },
     get selectedTackers() {
       return self.trackerModules.filter(tracker => {
-        return self.trackerIds.indexOf(tracker.id) !== -1;
+        return self.selectedTrackerIds.indexOf(tracker.id) !== -1;
       });
     },
     get withoutListTackers() {
       return self.trackerModules.filter(tracker => {
-        return self.trackerIds.indexOf(tracker.id) === -1;
+        return self.selectedTrackerIds.indexOf(tracker.id) === -1;
       });
-    },
-    get trackerIds() {
-      return self.trackers.map(tracker => tracker.id);
     },
   };
 });

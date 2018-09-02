@@ -79,7 +79,7 @@ class EditProfile extends React.Component {
     });
 
     const trackers = this.profile.getTrackersByFilter(this.state.filter).map(tracker => {
-      const checked = this.profile.trackerIds.indexOf(tracker.id) !== -1;
+      const checked = this.profile.selectedTrackerIds.indexOf(tracker.id) !== -1;
       return (
         <TrackerItem key={`tracker-${tracker.id}`} id={tracker.id} tracker={tracker} checked={checked}/>
       );
