@@ -19,7 +19,7 @@ const api = {
   info: null,
   init: function (code, requireList, info) {
     api.info = info;
-    return new Promise(r => window.require(requireList, r)).then(() => {
+    return new Promise((resove, reject) => window.require(requireList, resove, reject)).then(() => {
       return runCode(code);
     }).catch(err => {
       debug('Init error', err);
