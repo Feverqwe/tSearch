@@ -32,10 +32,10 @@ class EditProfile extends React.Component {
     this.trackers = null;
   }
   componentDidMount() {
-    if (this.props.rootStore.profileEditor.trackerIdsState === 'idle') {
-      this.props.rootStore.profileEditor.fetchTrackerIds();
-    }
     this.profile = this.props.rootStore.profileEditor.getProfile(this.props.id);
+    if (this.profile.trackerModulesState === 'idle') {
+      this.profile.fetchTrackerModules();
+    }
     this.forceUpdate();
   }
   componentWillUnmount() {
@@ -67,7 +67,7 @@ class EditProfile extends React.Component {
     });
   }
   render() {
-    if (this.props.rootStore.profileEditor.trackerIdsState !== 'done' || !this.profile) {
+    if (!this.profile || this.profile.trackerModulesState !== 'done') {
       return ('Loading...');
     }
 
@@ -79,9 +79,9 @@ class EditProfile extends React.Component {
     });
 
     const trackers = this.profile.getTrackersByFilter(this.state.filter).map(tracker => {
-      const checked = this.profile.trackers.indexOf(tracker) !== -1;
+      const checked = this.profile.trackerIds.indexOf(tracker.id) !== -1;
       return (
-        <TrackerItem key={`tracker-${tracker.id}`} id={tracker.id} profileItemTracker={tracker} checked={checked}/>
+        <TrackerItem key={`tracker-${tracker.id}`} id={tracker.id} tracker={tracker} checked={checked}/>
       );
     });
 
@@ -174,22 +174,7 @@ class TrackerItem extends React.Component {
     this.refCheckbox = this.refCheckbox.bind(this);
     this.handleClick = this.handleClick.bind(this);
 
-    let tracker = props.rootStore.trackers.get(props.id);
-    if (!tracker) {
-      tracker = props.rootStore.initTracker(props.id);
-    }
-    this.tracker = tracker;
-
     this.checkbox = null;
-  }
-
-  componentDidMount() {
-    this.tracker.attach();
-  }
-
-  componentWillUnmount() {
-    this.tracker.deattach();
-    this.tracker = null;
   }
 
   handleChecked() {
@@ -209,7 +194,7 @@ class TrackerItem extends React.Component {
   }
 
   render() {
-    const tracker = this.tracker;
+    const tracker = this.props.tracker;
 
     const classList = ['item'];
     if (this.state.checked) {
@@ -224,33 +209,28 @@ class TrackerItem extends React.Component {
     let homepageBtn = null;
     let author = null;
 
-    if (tracker.state === 'done') {
-      icon = tracker.getIconUrl();
-      name = tracker.meta.name;
-      version = tracker.meta.version;
-      if (tracker.meta.supportURL) {
-        supportBtn = (
-          <a className="item__cell item__button button-support" target="_blank" href={tracker.meta.supportURL}/>
-        );
-      }
-      if (tracker.meta.updateURL || tracker.meta.downloadURL) {
-        updateBtn = (
-          <a className="item__cell item__button button-update" href="#update" title={chrome.i18n.getMessage('update')}/>
-        );
-      }
-      if (tracker.meta.homepageURL) {
-        homepageBtn = (
-          <a className="item__cell item__button button-home" target="_blank" href={tracker.meta.homepageURL}/>
-        );
-      }
-      if (tracker.meta.author) {
-        author = (
-          <div className="item__cell item__author">{tracker.meta.author}</div>
-        );
-      }
-    } else {
-      icon = blankSvg;
-      name = this.tracker.id
+    icon = tracker.getIconUrl() || blankSvg;
+    name = tracker.meta.name || tracker.id;
+    version = tracker.meta.version;
+    if (tracker.meta.supportURL) {
+      supportBtn = (
+        <a className="item__cell item__button button-support" target="_blank" href={tracker.meta.supportURL}/>
+      );
+    }
+    if (tracker.meta.updateURL || tracker.meta.downloadURL) {
+      updateBtn = (
+        <a className="item__cell item__button button-update" href="#update" title={chrome.i18n.getMessage('update')}/>
+      );
+    }
+    if (tracker.meta.homepageURL) {
+      homepageBtn = (
+        <a className="item__cell item__button button-home" target="_blank" href={tracker.meta.homepageURL}/>
+      );
+    }
+    if (tracker.meta.author) {
+      author = (
+        <div className="item__cell item__author">{tracker.meta.author}</div>
+      );
     }
 
     const editUrl = 'editor.html#/tracker/' + tracker.id;

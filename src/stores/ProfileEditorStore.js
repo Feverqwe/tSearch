@@ -1,57 +1,119 @@
-import {flow, getParentOfType, isAlive, resolveIdentifier, types} from 'mobx-state-tree';
+import {flow, isAlive, types} from 'mobx-state-tree';
 import getLogger from "../tools/getLogger";
 import ProfilesItemStore from "./ProfilesItemStore";
 import getTrackersJson from "../tools/getTrackersJson";
+import getTrackerModule from "../tools/getTrackerModule";
 
 const logger = getLogger('ProfileEditorStore');
 
 /**
+ * @typedef {{}} EditorTrackerStore
+ * @property {string} id
+ * @property {string} [state]
+ * @property {*} [meta]
+ * @property {function} getIconUrl
+ */
+const EditorProfileTrackerStore = types.model('EditorTrackerStore', {
+  id: types.identifier,
+  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
+  meta: types.optional(types.frozen(), {}),
+}).views(self => {
+  return {
+    getIconUrl() {
+      if (self.meta.icon64) {
+        return self.meta.icon64;
+      } else if (self.meta.icon) {
+        return self.meta.icon;
+      }
+      return '';
+    },
+  };
+});
+
+/**
  * @typedef {ProfilesItemStore} EditProfileItemStore
  * @property {string|undefined|null} name
+ * @property {string} [trackerModulesState]
+ * @property {EditorProfileTrackerStore[]} trackerModules
  * @property {function} setName
+ * @property {function:Promise} fetchTrackerModules
  * @property {function} getTrackersByFilter
- * @property {*} allTrackers
+ * @property {*} selectedTackers
+ * @property {*} withoutListTackers
+ * @property {*} trackerIds
  */
 const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemStore, types.model({
   name: types.maybeNull(types.string),
+  trackerModulesState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
+  trackerModules: types.array(EditorProfileTrackerStore),
 })).actions(self => {
   return {
     setName(name) {
       self.name = name;
-    }
+    },
+    fetchTrackerModules: flow(function* () {
+      self.trackerModulesState = 'pending';
+      try {
+        const trackerIds = yield Promise.all([
+          new Promise(resolve => chrome.storage.local.get({trackers: {}}, resolve)).then(storage => Object.keys(storage.trackers)),
+          getTrackersJson().then(trackers => Object.keys(trackers)),
+        ]).then(results => {
+          const trackerIds = [].concat(...results);
+          return trackerIds.filter((id, index) => {
+            return trackerIds.indexOf(id) === index;
+          });
+        });
+        const trackerModules = yield Promise.all(trackerIds.map(id => {
+          return getTrackerModule(id).catch(err => {
+            logger.error('getTrackerModule error', id, err);
+            return {id};
+          });
+        }));
+        self.trackers.forEach(profilesItemTracker => {
+          if (trackerIds.indexOf(profilesItemTracker.id) === -1) {
+            trackerModules.push(profilesItemTracker);
+          }
+        });
+        if (isAlive(self)) {
+          self.trackerModules = trackerModules;
+          self.trackerModulesState = 'done';
+        }
+      } catch (err) {
+        logger.error('fetchHistory error', err);
+        if (isAlive(self)) {
+          self.trackerModulesState = 'error';
+        }
+      }
+    }),
   };
 }).views(self => {
   return {
     getTrackersByFilter(type) {
       switch (type) {
         case 'selected': {
-          return self.trackers;
+          return self.selectedTackers;
         }
         case 'withoutList': {
-          return self.allTrackers.filter(tracker => {
-            return self.trackers.indexOf(tracker) === -1;
-          });
+          return self.withoutListTackers;
         }
         default: {
-          return self.allTrackers;
+          return self.trackerModules;
         }
       }
     },
-    get allTrackers() {
-      const result = [];
-      const ids = [];
-      self.trackers.forEach(tracker => {
-        ids.push(tracker.id);
-        result.push(tracker);
+    get selectedTackers() {
+      return self.trackerModules.filter(tracker => {
+        return self.trackerIds.indexOf(tracker.id) !== -1;
       });
-      const profileEditorStore = getParentOfType(self, ProfileEditorStore);
-      profileEditorStore.trackerIds.forEach(id => {
-        if (ids.indexOf(id) === -1) {
-          result.push({id});
-        }
+    },
+    get withoutListTackers() {
+      return self.trackerModules.filter(tracker => {
+        return self.trackerIds.indexOf(tracker.id) === -1;
       });
-      return result;
-    }
+    },
+    get trackerIds() {
+      return self.trackers.map(tracker => tracker.id);
+    },
   };
 });
 
@@ -61,27 +123,21 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
  */
 const EditProfilesItemStore = types.compose('EditProfilesItemStore', ProfilesItemStore);
 
-
 /**
  * @typedef {{}} ProfileEditorStore
  * @property {string} [saveState]
  * @property {EditProfilesItemStore[]} profiles
  * @property {Map<*,EditProfileItemStore>} profilePages
- * @property {string} [trackerIdsState]
- * @property {string[]|undefined|null} trackerIds
  * @property {function:Promise} save
  * @property {function} moveProfile
  * @property {function} getProfile
  * @property {function} removeProfile
- * @property {function:Promise} fetchTrackerIds
  * @property {function} getProfileById
  */
 const ProfileEditorStore = types.model('ProfileEditorStore', {
   saveState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   profiles: types.array(EditProfilesItemStore),
   profilePages: types.map(EditProfileItemStore),
-  trackerIdsState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
-  trackerIds: types.maybeNull(types.array(types.string)),
 }).actions(self => {
   return {
     save: flow(function* () {
@@ -136,34 +192,17 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
     removeProfile(id) {
       self.profilePages.delete(id);
     },
-    fetchTrackerIds: flow(function* () {
-      self.trackerIdsState = 'pending';
-      try {
-        const trackerIds = yield Promise.all([
-          new Promise(resolve => chrome.storage.local.get({trackers: {}}, resolve)).then(storage => Object.keys(storage.trackers)),
-          getTrackersJson().then(trackers => Object.keys(trackers))
-        ]).then(results => {
-          const trackerIds = [].concat(...results);
-          return trackerIds.filter((id, index) => {
-            return trackerIds.indexOf(id) === index;
-          });
-        });
-        if (isAlive(self)) {
-          self.trackerIds = trackerIds;
-          self.trackerIdsState = 'done';
-        }
-      } catch (err) {
-        logger.error('fetchHistory error', err);
-        if (isAlive(self)) {
-          self.trackerIdsState = 'error';
-        }
-      }
-    }),
   };
 }).views(self => {
   return {
     getProfileById(id) {
-      return resolveIdentifier(EditProfilesItemStore, self, id);
+      let result = null;
+      self.profiles.forEach(profile => {
+        if (profile.id === id) {
+          return result = profile;
+        }
+      });
+      return result;
     }
   };
 });
