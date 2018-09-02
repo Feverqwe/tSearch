@@ -59,6 +59,11 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
     setName(name) {
       self.name = name;
     },
+    setTrackers() {
+      self.trackers = JSON.parse(JSON.stringify(self.selectedTrackerIds.map(id => {
+        return self.trackerModuleMap.get(id);
+      })));
+    },
     fetchTrackerModules: flow(function* () {
       self.trackerModuleMapState = 'pending';
       try {
@@ -79,7 +84,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
         }));
         self.trackers.forEach(profilesItemTracker => {
           if (trackerIds.indexOf(profilesItemTracker.id) === -1) {
-            trackerModules.push(profilesItemTracker);
+            trackerModules.push(JSON.parse(JSON.stringify(profilesItemTracker)));
           }
         });
         if (isAlive(self)) {
@@ -90,7 +95,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
           self.trackerModuleMapState = 'done';
         }
       } catch (err) {
-        logger.error('fetchHistory error', err);
+        logger.error('fetchTrackerModules error', err);
         if (isAlive(self)) {
           self.trackerModuleMapState = 'error';
         }
@@ -100,6 +105,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       const pos = self.selectedTrackerIds.indexOf(id);
       if (pos === -1) {
         self.selectedTrackerIds.push(id);
+        self.setTrackers();
       }
     },
     removeSelectedTrackerId(id) {
@@ -108,6 +114,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       if (pos !== -1) {
         selectedTrackerIds.splice(pos, 1);
         self.selectedTrackerIds = selectedTrackerIds;
+        self.setTrackers();
       }
     },
     moveTracker(id, prevId, nextId) {
@@ -136,6 +143,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       }
 
       self.selectedTrackerIds = items;
+      self.setTrackers();
     }
   };
 }).views(self => {
@@ -215,12 +223,13 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
     save: flow(function* () {
       self.state = 'pending';
       try {
-        yield new Promise(resolve => chrome.storage.sync.set({profiles: self.profiles}, resolve));
+        const profiles = JSON.parse(JSON.stringify(self.profiles));
+        yield new Promise(resolve => chrome.storage.sync.set({profiles}, resolve));
         if (isAlive(self)) {
           self.state = 'done';
         }
       } catch (err) {
-        logger.error('fetchHistory error', err);
+        logger.error('save error', err);
         if (isAlive(self)) {
           self.state = 'error';
         }
@@ -265,6 +274,20 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
     },
     removeProfile(id) {
       self.profilePages.delete(id);
+    },
+    saveProfile(id) {
+      const profile = JSON.parse(JSON.stringify(self.profilePages.get(id)));
+      const prevProfile = self.getProfileById(id);
+      if (prevProfile) {
+        const profiles = self.profiles.slice(0);
+        const pos = profiles.indexOf(prevProfile);
+        if (pos !== -1) {
+          profiles.splice(pos, 1, profile);
+          self.profiles = profiles;
+        }
+      } else {
+        self.profiles.push(profile);
+      }
     },
   };
 }).views(self => {

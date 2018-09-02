@@ -48,7 +48,7 @@ const ProfilesStore = types.model('ProfilesStore', {
           self.state = 'done';
         }
       } catch (err) {
-        logger.error('fetchHistory error', err);
+        logger.error('fetchProfiles error', err);
         if (isAlive(self)) {
           self.state = 'error';
         }
@@ -62,7 +62,7 @@ const ProfilesStore = types.model('ProfilesStore', {
     if (namespace === 'sync') {
       const change = changes.profiles;
       if (change) {
-        const profiles = change.newValue;
+        const profiles = change.newValue || [];
         if (!_isEqual(profiles, getSnapshot(self.profiles))) {
           self.setProfiles(profiles);
         }

@@ -29,6 +29,7 @@ class EditProfile extends React.Component {
     this.refSearch = this.refSearch.bind(this);
     this.refTrackers = this.refTrackers.bind(this);
     this.handleFilterClick = this.handleFilterClick.bind(this);
+    this.handleSave = this.handleSave.bind(this);
 
     this.profile = null;
 
@@ -138,6 +139,11 @@ class EditProfile extends React.Component {
     e.preventDefault();
     this.syncTrackers(type, null);
   }
+  handleSave(e) {
+    e.preventDefault();
+    this.props.rootStore.profileEditor.saveProfile(this.props.id);
+    this.props.rootStore.profileEditor.save();
+  }
   render() {
     if (!this.profile || this.profile.trackerModuleMapState !== 'done') {
       return ('Loading...');
@@ -178,7 +184,7 @@ class EditProfile extends React.Component {
           </div>
         </div>
         <div className="manager__footer">
-          <a href="#save" className="button manager__footer__btn" onClick={this.props.onSave}>{chrome.i18n.getMessage('save')}</a>
+          <a href="#save" className="button manager__footer__btn" onClick={this.handleSave}>{chrome.i18n.getMessage('save')}</a>
           <a href={null} target="_blank" className="button manager__footer__btn">{chrome.i18n.getMessage('add')}</a>
           <a href="#createCode" className="button manager__footer__btn">{chrome.i18n.getMessage('createCode')}</a>
         </div>

@@ -32,7 +32,7 @@ const getTrackerModule = id => {
         logger.error('loadLocalTrackerModule error', id, err);
         return null;
       }).then(localTracker => {
-        return oneLimit(() => {
+        return localTracker && oneLimit(() => {
           return new Promise(resolve => chrome.storage.local.get({trackers: {}}, resolve)).then(storage => {
             storage.trackers[id] = localTracker;
             return new Promise(resolve => chrome.storage.local.set(storage, resolve)).then(() => localTracker);
