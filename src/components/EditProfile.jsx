@@ -212,17 +212,14 @@ class TrackerItem extends React.Component {
       classList.push('item__selected');
     }
 
-    let icon = null;
-    let name = null;
-    let version = null;
     let updateBtn = null;
     let supportBtn = null;
     let homepageBtn = null;
     let author = null;
 
-    icon = tracker.getIconUrl() || blankSvg;
-    name = tracker.meta.name || tracker.id;
-    version = tracker.meta.version;
+    const icon = tracker.getIconUrl() || blankSvg;
+    const name = tracker.meta.name || tracker.id;
+    const version = tracker.meta.version;
     if (tracker.meta.supportURL) {
       supportBtn = (
         <a className="item__cell item__button button-support" target="_blank" href={tracker.meta.supportURL}/>
