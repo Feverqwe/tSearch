@@ -104,6 +104,33 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
         selectedTrackerIds.splice(pos, 1);
         self.selectedTrackerIds = selectedTrackerIds;
       }
+    },
+    moveTracker(id, prevId, nextId) {
+      const items = self.selectedTrackerIds.slice(0);
+
+      const pos = items.indexOf(id);
+      if (pos === -1) {
+        return;
+      }
+
+      items.splice(pos, 1);
+
+      if (prevId) {
+        const pos = items.indexOf(prevId);
+        if (pos !== -1) {
+          items.splice(pos + 1, 0, id);
+        }
+      } else
+      if (nextId) {
+        const pos = items.indexOf(nextId);
+        if (pos !== -1) {
+          items.splice(pos, 0, id);
+        }
+      } else {
+        items.push(id);
+      }
+
+      self.selectedTrackerIds = items;
     }
   };
 }).views(self => {
@@ -141,9 +168,18 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       }
       return result;
     },
+    getTackerModuleById(id) {
+      let result = null;
+      self.trackerModules.some(module => {
+        if (module.id === id) {
+          return result = module;
+        }
+      });
+      return result;
+    },
     get selectedTackers() {
-      return self.trackerModules.filter(tracker => {
-        return self.selectedTrackerIds.indexOf(tracker.id) !== -1;
+      return self.selectedTrackerIds.map(id => {
+        return self.getTackerModuleById(id);
       });
     },
     get withoutListTackers() {

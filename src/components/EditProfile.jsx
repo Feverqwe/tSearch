@@ -6,6 +6,8 @@ import {EditProfileItemStore} from '../stores/ProfileEditorStore';
 import getLogger from "../tools/getLogger";
 import blankSvg from "../assets/img/blank.svg";
 
+const Sortable = require('sortablejs');
+
 const logger = getLogger('EditProfile');
 
 
@@ -28,9 +30,12 @@ class EditProfile extends React.Component {
     this.refTrackers = this.refTrackers.bind(this);
     this.handleFilterClick = this.handleFilterClick.bind(this);
 
+    this.profile = null;
+
     this.name = null;
     this.search = null;
-    this.trackers = null;
+
+    this.sortable = null;
   }
   componentDidMount() {
     this.profile = this.props.rootStore.profileEditor.getProfile(this.props.id);
@@ -72,8 +77,62 @@ class EditProfile extends React.Component {
   refSearch(element) {
     this.search = element;
   }
-  refTrackers(element) {
-    this.trackers = element;
+  refTrackers(node) {
+    if (!node) {
+      if (this.sortable) {
+        this.sortable.destroy();
+        this.sortable = null;
+      }
+    } else
+    if (!this.sortable) {
+      // fix sortable bug with checkbox
+      node.getElementsByTagName = ((node, getElementsByTagName) => {
+        return tagName => {
+          if (tagName === 'input') {
+            tagName = 'null-input';
+          }
+          return getElementsByTagName.call(node, tagName);
+        }
+      })(node, node.getElementsByTagName);
+
+      const getPrevSelectedTracker = node => {
+        node = node.previousElementSibling;
+        while (node && !node.classList.contains('item__selected')) {
+          node = node.previousElementSibling;
+        }
+        return node;
+      };
+
+      const getNextSelectedTracker = node => {
+        node = node.nextElementSibling;
+        while (node && !node.classList.contains('item__selected')) {
+          node = node.nextElementSibling;
+        }
+        return node;
+      };
+
+      this.sortable = new Sortable(node, {
+        group: 'trackers',
+        handle: '.item__move',
+        draggable: '.item',
+        animation: 150,
+        onStart: () => {
+          node.classList.add('sorting');
+        },
+        onEnd: e => {
+          node.classList.remove('sorting');
+
+          const itemNode = e.item;
+          const prevNode = getPrevSelectedTracker(itemNode);
+          const nextNode = getNextSelectedTracker(itemNode);
+          const id = itemNode.dataset.id;
+          const prevId = prevNode && prevNode.dataset.id;
+          const nextId = nextNode && nextNode.dataset.id;
+
+          this.profile.moveTracker(id, prevId, nextId);
+        }
+      });
+    }
   }
   handleFilterClick(e, type) {
     e.preventDefault();

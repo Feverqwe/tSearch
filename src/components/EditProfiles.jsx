@@ -30,16 +30,15 @@ class EditProfiles extends React.Component {
       }
     } else
     if (!this.sortable) {
-      const self = this;
       this.sortable = new Sortable(node, {
         group: 'profiles',
         handle: '.item__move',
         draggable: '.item',
         animation: 150,
-        onStart() {
+        onStart: () => {
           node.classList.add('sorting');
         },
-        onEnd(e) {
+        onEnd: e => {
           node.classList.remove('sorting');
 
           const itemNode = e.item;
@@ -49,7 +48,7 @@ class EditProfiles extends React.Component {
           const prevId = prevNode && prevNode.dataset.id;
           const nextId = nextNode && nextNode.dataset.id;
 
-          self.props.rootStore.profileEditor.moveProfile(id, prevId, nextId);
+          this.props.rootStore.profileEditor.moveProfile(id, prevId, nextId);
         }
       });
     }
