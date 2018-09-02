@@ -1,9 +1,9 @@
 import getLogger from "../tools/getLogger";
 import Transport from '../tools/transport';
 
-import baseApi from './baseApi';
+import './baseApi';
 
-import requirejs from 'script-loader!requirejs/require';
+import 'script-loader!requirejs/require';
 
 const debug = getLogger('sandbox');
 
