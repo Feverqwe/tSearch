@@ -1,7 +1,9 @@
-import {flow, getSnapshot, isAlive, types, resolveIdentifier} from 'mobx-state-tree';
+import {flow, getSnapshot, isAlive, types, getParentOfType, resolveIdentifier} from 'mobx-state-tree';
 import ProfilesItemStore from "./ProfilesItemStore";
 import getLogger from "../tools/getLogger";
 import _isEqual from "lodash.isequal";
+import ProfileStore from "./ProfileStore";
+import RootStore from "./RootStore";
 
 const uuid = require('uuid/v4');
 
@@ -65,12 +67,20 @@ const ProfilesStore = types.model('ProfilesStore', {
         const profiles = change.newValue || [];
         if (!_isEqual(profiles, getSnapshot(self.profiles))) {
           self.setProfiles(profiles);
+          self.syncActiveProfile();
         }
       }
     }
   };
 
   return {
+    syncActiveProfile() {
+      const rootStore = getParentOfType(self, RootStore);
+      const profile = resolveIdentifier(ProfilesItemStore, self, self.profileId);
+      if (profile) {
+        rootStore.setProfile(profile);
+      }
+    },
     saveProfile() {
       return new Promise(resolve => chrome.storage.local.set({profileId: self.profileId}, resolve));
     },

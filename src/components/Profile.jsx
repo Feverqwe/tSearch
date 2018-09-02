@@ -10,28 +10,26 @@ import SearchStore from "../stores/SearchStore";
 @inject('rootStore')
 @observer
 class Profile extends React.Component {
-  constructor(props) {
-    super(props);
-
-    if (!props.rootStore.profile || props.rootStore.profile.id !== props.profileItem.id) {
-      props.rootStore.setProfile(props.profileItem);
+  componentDidMount() {
+    if (!this.props.rootStore.profile || this.props.rootStore.profile.id !== this.props.profileItem.id) {
+      this.props.rootStore.setProfile(this.props.profileItem);
     }
-    this.profile = props.rootStore.profile;
   }
 
   render() {
-    if (!this.profile) {
+    const profile = this.props.rootStore.profile;
+    if (!profile) {
       return ('Prepare...');
     }
 
     const trackers = [];
-    this.profile.trackers.forEach(profileItemTracker => {
+    profile.trackers.forEach(profileItemTracker => {
       let trackerSearchSession = null;
       if (this.props.searchStore) {
         trackerSearchSession = this.props.searchStore.trackerSessions.get(profileItemTracker.id);
       }
       trackers.push(
-        <ProfileTracker key={profileItemTracker.id} profileItemTracker={profileItemTracker} profile={this.profile} trackerSearchSession={trackerSearchSession}/>
+        <ProfileTracker key={profileItemTracker.id} profileItemTracker={profileItemTracker} profile={profile} trackerSearchSession={trackerSearchSession}/>
       );
     });
 
