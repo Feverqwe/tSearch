@@ -17,7 +17,8 @@ class EditProfile extends React.Component {
 
     this.state = {
       filter: 'selected',
-      search: ''
+      search: '',
+      trackers: []
     };
 
     this.handleChangeName = this.handleChangeName.bind(this);
@@ -34,14 +35,30 @@ class EditProfile extends React.Component {
   componentDidMount() {
     this.profile = this.props.rootStore.profileEditor.getProfile(this.props.id);
     if (this.profile.trackerModulesState === 'idle') {
-      this.profile.fetchTrackerModules();
+      this.profile.fetchTrackerModules().then(() => {
+        this.syncTrackers(null, null);
+      });
+    } else {
+      this.syncTrackers(null, null);
     }
-    this.forceUpdate();
   }
   componentWillUnmount() {
     if (this.props.rootStore.profileEditor) {
       this.props.rootStore.profileEditor.removeProfile(this.props.id);
     }
+  }
+  syncTrackers(filter, search) {
+    if (filter === null) {
+      filter = this.state.filter;
+    }
+    if (search === null) {
+      search = this.state.search;
+    }
+    this.setState({
+      filter: filter,
+      search: search,
+      trackers: this.profile.getTrackersWithFilter(filter, search).slice(0)
+    });
   }
   handleChangeName() {
     this.profile.setName(this.name.value);
@@ -50,9 +67,7 @@ class EditProfile extends React.Component {
     this.name = element;
   }
   handleSearchChange() {
-    this.setState({
-      search: this.search.value
-    });
+    this.syncTrackers(null, this.search.value);
   }
   refSearch(element) {
     this.search = element;
@@ -62,9 +77,7 @@ class EditProfile extends React.Component {
   }
   handleFilterClick(e, type) {
     e.preventDefault();
-    this.setState({
-      filter: type
-    });
+    this.syncTrackers(type, null);
   }
   render() {
     if (!this.profile || this.profile.trackerModulesState !== 'done') {
@@ -78,10 +91,9 @@ class EditProfile extends React.Component {
       );
     });
 
-    const trackers = this.profile.getTrackersByFilter(this.state.filter).map(tracker => {
-      const checked = this.profile.selectedTrackerIds.indexOf(tracker.id) !== -1;
+    const trackers = this.state.trackers.map(tracker => {
       return (
-        <TrackerItem key={`tracker-${tracker.id}`} id={tracker.id} tracker={tracker} checked={checked}/>
+        <TrackerItem key={`tracker-${tracker.id}`} id={tracker.id} tracker={tracker} profile={this.profile}/>
       );
     });
 
@@ -160,15 +172,10 @@ FilterButton.propTypes = null && {
 };
 
 
-@inject('rootStore')
 @observer
 class TrackerItem extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      checked: props.checked,
-    };
 
     this.handleChecked = this.handleChecked.bind(this);
     this.refCheckbox = this.refCheckbox.bind(this);
@@ -178,9 +185,11 @@ class TrackerItem extends React.Component {
   }
 
   handleChecked() {
-    this.setState({
-      checked: this.checkbox.checked
-    })
+    if (this.checkbox.checked) {
+      this.props.profile.addSelectedTrackerId(this.props.id);
+    } else {
+      this.props.profile.removeSelectedTrackerId(this.props.id);
+    }
   }
 
   handleClick(e) {
@@ -196,8 +205,10 @@ class TrackerItem extends React.Component {
   render() {
     const tracker = this.props.tracker;
 
+    const checked = this.props.profile.selectedTrackerIds.indexOf(this.props.id) !== -1;
+
     const classList = ['item'];
-    if (this.state.checked) {
+    if (checked) {
       classList.push('item__selected');
     }
 
@@ -239,7 +250,7 @@ class TrackerItem extends React.Component {
       <div className={classList.join(' ')} data-id={tracker.id}>
         <div className="item__move"/>
         <div className="item__checkbox">
-          <input ref={this.refCheckbox} type="checkbox" defaultChecked={this.state.checked} onChange={this.handleChecked}/>
+          <input ref={this.refCheckbox} type="checkbox" defaultChecked={checked} onChange={this.handleChecked}/>
         </div>
         <img className="item__icon" src={icon}/>
         <div className="item__name" onClick={this.handleClick}>{name}</div>
@@ -256,8 +267,8 @@ class TrackerItem extends React.Component {
 }
 
 TrackerItem.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
   id: PropTypes.string,
+  profile: PropTypes.instanceOf(EditProfileItemStore),
 };
 
 export default EditProfile;

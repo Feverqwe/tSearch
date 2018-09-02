@@ -4,6 +4,8 @@ import ProfilesItemStore from "./ProfilesItemStore";
 import getTrackersJson from "../tools/getTrackersJson";
 import getTrackerModule from "../tools/getTrackerModule";
 
+const escapeStringRegexp = require('escape-string-regexp');
+
 const logger = getLogger('ProfileEditorStore');
 
 /**
@@ -35,12 +37,15 @@ const EditorProfileTrackerStore = types.model('EditorTrackerStore', {
  * @property {string|undefined|null} name
  * @property {string} [trackerModulesState]
  * @property {EditorProfileTrackerStore[]} trackerModules
+ * @property {string[]} selectedTrackerIds
  * @property {function} setName
  * @property {function:Promise} fetchTrackerModules
+ * @property {function} addSelectedTrackerId
+ * @property {function} removeSelectedTrackerId
  * @property {function} getTrackersByFilter
+ * @property {function} getTrackersWithFilter
  * @property {*} selectedTackers
  * @property {*} withoutListTackers
- * @property {*} trackerIds
  */
 const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemStore, types.model({
   name: types.maybeNull(types.string),
@@ -86,6 +91,20 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
         }
       }
     }),
+    addSelectedTrackerId(id) {
+      const pos = self.selectedTrackerIds.indexOf(id);
+      if (pos === -1) {
+        self.selectedTrackerIds.push(id);
+      }
+    },
+    removeSelectedTrackerId(id) {
+      const selectedTrackerIds = self.selectedTrackerIds.slice(0);
+      const pos = selectedTrackerIds.indexOf(id);
+      if (pos !== -1) {
+        selectedTrackerIds.splice(pos, 1);
+        self.selectedTrackerIds = selectedTrackerIds;
+      }
+    }
   };
 }).views(self => {
   return {
@@ -101,6 +120,26 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
           return self.selectedTackers.concat(self.withoutListTackers);
         }
       }
+    },
+    getTrackersWithFilter(filter, search) {
+      let result = self.getTrackersByFilter(filter);
+      if (search) {
+        const re = new RegExp(escapeStringRegexp(search), 'i');
+        result = result.filter(tracker => {
+          return re.test([
+            tracker.id,
+            tracker.meta.name,
+            tracker.meta.author,
+            tracker.meta.description,
+            tracker.meta.homepageURL,
+            tracker.meta.trackerURL,
+            tracker.meta.updateURL,
+            tracker.meta.downloadURL,
+            tracker.meta.supportURL,
+          ].join(' '));
+        });
+      }
+      return result;
     },
     get selectedTackers() {
       return self.trackerModules.filter(tracker => {
