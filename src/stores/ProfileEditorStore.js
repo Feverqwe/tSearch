@@ -210,8 +210,9 @@ const EditProfilesItemStore = types.compose('EditProfilesItemStore', ProfilesIte
  * @property {Map<*,EditProfileItemStore>} profilePages
  * @property {function:Promise} save
  * @property {function} moveProfile
- * @property {function} getProfile
- * @property {function} removeProfile
+ * @property {function} getProfilePage
+ * @property {function} removeProfilePage
+ * @property {function} saveProfilePage
  * @property {function} getProfileById
  */
 const ProfileEditorStore = types.model('ProfileEditorStore', {
@@ -263,7 +264,7 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
 
       self.profiles = items;
     },
-    getProfile(id) {
+    getProfilePage(id) {
       if (!self.profilePages.has(id)) {
         const profile = self.getProfileById(id) || {id};
         const snapshot = JSON.parse(JSON.stringify(profile));
@@ -272,10 +273,10 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
       }
       return self.profilePages.get(id);
     },
-    removeProfile(id) {
+    removeProfilePage(id) {
       self.profilePages.delete(id);
     },
-    saveProfile(id) {
+    saveProfilePage(id) {
       const profile = JSON.parse(JSON.stringify(self.profilePages.get(id)));
       const prevProfile = self.getProfileById(id);
       if (prevProfile) {
@@ -289,6 +290,15 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
         self.profiles.push(profile);
       }
     },
+    removeProfileById(id) {
+      const profiles = self.profiles.slice(0);
+      const profile = self.getProfileById(id);
+      const pos = profiles.indexOf(profile);
+      if (pos !== -1) {
+        profiles.splice(pos, 1);
+        self.profiles = profiles;
+      }
+    }
   };
 }).views(self => {
   return {

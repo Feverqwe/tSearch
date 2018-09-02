@@ -6,6 +6,7 @@ import {Link} from "react-router-dom";
 import ProfilesItemStore from "../stores/ProfilesItemStore";
 import getLogger from "../tools/getLogger";
 
+const uuid = require('uuid/v4');
 const Sortable = require('sortablejs');
 
 const logger = getLogger('EditProfiles');
@@ -18,6 +19,8 @@ class EditProfiles extends React.Component {
     super(props);
 
     this.refProfiles = this.refProfiles.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleCreate = this.handleCreate.bind(this);
 
     this.sortable = null;
   }
@@ -54,6 +57,17 @@ class EditProfiles extends React.Component {
     }
   }
 
+  handleSave(e) {
+    e.preventDefault();
+    const profileEditor = this.props.rootStore.profileEditor;
+    profileEditor.save();
+  }
+
+  handleCreate(e) {
+    e.preventDefault();
+    this.props.history.push(`/profileEditor/${uuid()}`);
+  }
+
   render() {
     const profileEditor = this.props.rootStore.profileEditor;
     const profiles = profileEditor.profiles.map((profilesItem, index) => {
@@ -73,7 +87,7 @@ class EditProfiles extends React.Component {
           </div>
         </div>
         <div className="manager__footer">
-          <a className="button manager__footer__btn" href="#save" onClick={this.props.onSave}>{chrome.i18n.getMessage('save')}</a>
+          <a className="button manager__footer__btn" href="#save" onClick={this.handleSave}>{chrome.i18n.getMessage('save')}</a>
         </div>
       </div>
     );
@@ -85,7 +99,7 @@ EditProfiles.propTypes = null && {
   history: PropTypes.object,
 };
 
-
+@inject('rootStore')
 @observer
 class ProfileItem extends React.Component {
   constructor(props) {
@@ -100,9 +114,7 @@ class ProfileItem extends React.Component {
 
   handleRemove(e) {
     e.preventDefault();
-    /*const store = this.props.store;
-    const profile = this.props.profile;
-    store.profilesEditor.removeProfile(profile);*/
+    this.props.rootStore.profileEditor.removeProfileById(this.props.profilesItem.id);
   }
 
   handleNameClick(e) {

@@ -39,7 +39,7 @@ class EditProfile extends React.Component {
     this.sortable = null;
   }
   componentDidMount() {
-    this.profile = this.props.rootStore.profileEditor.getProfile(this.props.id);
+    this.profile = this.props.rootStore.profileEditor.getProfilePage(this.props.id);
     if (this.profile.trackerModuleMapState === 'idle') {
       this.profile.fetchTrackerModules().then(() => {
         this.syncTrackers(null, null);
@@ -50,7 +50,7 @@ class EditProfile extends React.Component {
   }
   componentWillUnmount() {
     if (this.props.rootStore.profileEditor) {
-      this.props.rootStore.profileEditor.removeProfile(this.props.id);
+      this.props.rootStore.profileEditor.removeProfilePage(this.props.id);
     }
   }
   syncTrackers(filter, search) {
@@ -141,7 +141,7 @@ class EditProfile extends React.Component {
   }
   handleSave(e) {
     e.preventDefault();
-    this.props.rootStore.profileEditor.saveProfile(this.props.id);
+    this.props.rootStore.profileEditor.saveProfilePage(this.props.id);
     this.props.rootStore.profileEditor.save();
   }
   render() {
