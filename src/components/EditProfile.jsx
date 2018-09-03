@@ -141,7 +141,8 @@ class EditProfile extends React.Component {
   }
   handleSave(e) {
     e.preventDefault();
-    this.props.rootStore.profileEditor.saveProfilePage(this.props.id);
+    this.profile.save();
+    this.syncTrackers(null, null);
     this.props.rootStore.profileEditor.save();
   }
   render() {

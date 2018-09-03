@@ -1,4 +1,4 @@
-import {flow, isAlive, types} from "mobx-state-tree";
+import {flow, isAlive, resolveIdentifier, types} from "mobx-state-tree";
 import TrackerStore from "./TrackerStore";
 import getLogger from "../tools/getLogger";
 import getTrackers from "../tools/getTrackers";
@@ -37,7 +37,11 @@ const TrackersStore = types.model('TrackersStore', {
     }),
   };
 }).views(self => {
-  return {};
+  return {
+    getTackerById(id) {
+      return resolveIdentifier(TrackerStore, self, id);
+    }
+  };
 });
 
 export default TrackersStore;
