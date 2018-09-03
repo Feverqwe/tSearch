@@ -74,8 +74,8 @@ const ProfilesStore = types.model('ProfilesStore', {
 
   return {
     syncActiveProfile() {
-      const rootStore = getParentOfType(self, RootStore);
-      const profile = resolveIdentifier(ProfilesItemStore, self, self.profileId);
+      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+      const profile = resolveIdentifier(ProfilesItemStore, self, rootStore.profile.id);
       if (profile) {
         rootStore.setProfile(profile);
       }
