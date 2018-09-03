@@ -61,9 +61,9 @@ const EditProfileStore = types.compose('EditProfileStore', ProfilesItemStore, ty
       self.name = name;
     },
     syncTrackers() {
-      self.trackers = JSON.parse(JSON.stringify(self.selectedTrackerIds.map(id => {
-        return self.editorTrackers.get(id);
-      })));
+      self.trackers = self.selectedTrackerIds.map(id => {
+        return self.editorTrackers.get(id).toJSON();
+      });
     },
     save() {
       self.syncTrackers();
