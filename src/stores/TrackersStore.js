@@ -8,13 +8,14 @@ const logger = getLogger('TrackersStore');
 /**
  * @typedef {{}} TrackersStore
  * @property {string} [state]
- * @property {Map<*,TrackerStore>} trackers
+ * @property {Map<*,TrackerStore>|undefined|null} trackers
  * @property {function} setTrackers
  * @property {function:Promise} fetchTrackers
+ * @property {function} getTackerById
  */
 const TrackersStore = types.model('TrackersStore', {
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
-  trackers: types.map(TrackerStore),
+  trackers: types.maybeNull(types.map(TrackerStore)),
 }).actions(self => {
   return {
     setTrackers(trackers) {

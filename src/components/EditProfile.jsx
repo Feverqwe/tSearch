@@ -5,6 +5,8 @@ import RootStore from "../stores/RootStore";
 import {EditProfileItemStore} from '../stores/ProfileEditorStore';
 import getLogger from "../tools/getLogger";
 import blankSvg from "../assets/img/blank.svg";
+import TrackerStore from "../stores/TrackerStore";
+import {EditorProfileTrackerStore} from '../stores/ProfileEditorStore';
 
 const Sortable = require('sortablejs');
 
@@ -40,8 +42,8 @@ class EditProfile extends React.Component {
   }
   componentDidMount() {
     this.profile = this.props.rootStore.profileEditor.getProfilePage(this.props.id);
-    if (this.profile.trackerModuleMapState === 'idle') {
-      this.profile.fetchTrackerModules().then(() => {
+    if (this.profile.state === 'idle') {
+      this.profile.fetchEditorTrackers().then(() => {
         this.syncTrackers(null, null);
       });
     } else {
@@ -146,7 +148,7 @@ class EditProfile extends React.Component {
     this.props.rootStore.profileEditor.save();
   }
   render() {
-    if (!this.profile || this.profile.trackerModuleMapState !== 'done') {
+    if (!this.profile || this.profile.state !== 'done') {
       return ('Loading...');
     }
 
@@ -157,9 +159,10 @@ class EditProfile extends React.Component {
       );
     });
 
-    const trackers = this.state.trackers.map(tracker => {
+    const trackers = this.state.trackers.map(editorTracker => {
+      const tracker = this.props.rootStore.trackers.getTackerById(editorTracker.id);
       return (
-        <TrackerItem key={`tracker-${tracker.id}`} id={tracker.id} tracker={tracker} profile={this.profile}/>
+        <TrackerItem key={`tracker-${editorTracker.id}`} id={editorTracker.id} editorTracker={editorTracker} tracker={tracker} profile={this.profile}/>
       );
     });
 
@@ -269,7 +272,7 @@ class TrackerItem extends React.Component {
   }
 
   render() {
-    const tracker = this.props.tracker;
+    const tracker = this.props.tracker || this.props.editorTracker;
 
     const checked = this.props.profile.selectedTrackerIds.indexOf(this.props.id) !== -1;
 
@@ -332,6 +335,8 @@ class TrackerItem extends React.Component {
 TrackerItem.propTypes = null && {
   id: PropTypes.string,
   profile: PropTypes.instanceOf(EditProfileItemStore),
+  tracker: PropTypes.instanceOf(TrackerStore),
+  editorTracker: PropTypes.instanceOf(EditorProfileTrackerStore),
 };
 
 export default EditProfile;

@@ -1,15 +1,15 @@
-import {types, resolveIdentifier, getParentOfType} from 'mobx-state-tree';
+import {resolveIdentifier, types} from 'mobx-state-tree';
 import TrackerStore from "./TrackerStore";
 
 
 /**
- * @typedef {{}} ProfileItemTrackerStore
+ * @typedef {{}} ProfileTrackerStore
  * @property {string} id
  * @property {boolean} [selected]
  * @property {function} setSelected
  * @property {*} tracker
  */
-const ProfileItemTrackerStore = types.model('ProfileItemTrackerStore', {
+const ProfileTrackerStore = types.model('ProfileTrackerStore', {
   id: types.identifier,
   selected: types.optional(types.boolean, false),
 }).actions(self => {
@@ -30,14 +30,15 @@ const ProfileItemTrackerStore = types.model('ProfileItemTrackerStore', {
  * @typedef {{}} ProfileStore
  * @property {string} id
  * @property {string} name
- * @property {ProfileItemTrackerStore[]} trackers
+ * @property {ProfileTrackerStore[]} trackers
  * @property {function} setSelectedAll
  * @property {*} selectedTrackers
+ * @property {*} trackersIsReady
  */
 const ProfileStore = types.model('ProfileStore', {
   id: types.identifier,
   name: types.string,
-  trackers: types.array(ProfileItemTrackerStore)
+  trackers: types.array(ProfileTrackerStore)
 }).views(self => {
   return {
     setSelectedAll(value) {
@@ -63,4 +64,4 @@ const ProfileStore = types.model('ProfileStore', {
 });
 
 export default ProfileStore;
-export {ProfileItemTrackerStore};
+export {ProfileTrackerStore};

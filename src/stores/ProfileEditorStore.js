@@ -2,6 +2,7 @@ import {flow, getParentOfType, isAlive, types} from 'mobx-state-tree';
 import getLogger from "../tools/getLogger";
 import ProfilesItemStore from "./ProfilesItemStore";
 import RootStore from "./RootStore";
+import getTrackers from "../tools/getTrackers";
 
 const escapeStringRegexp = require('escape-string-regexp');
 
@@ -10,7 +11,6 @@ const logger = getLogger('ProfileEditorStore');
 /**
  * @typedef {{}} EditorTrackerStore
  * @property {string} id
- * @property {string} [state]
  * @property {*} [meta]
  * @property {function} getIconUrl
  */
@@ -33,11 +33,13 @@ const EditorProfileTrackerStore = types.model('EditorTrackerStore', {
 /**
  * @typedef {ProfilesItemStore} EditProfileItemStore
  * @property {string|undefined|null} name
- * @property {string} [trackerModuleMapState]
- * @property {Map<*,EditorProfileTrackerStore>} trackerModuleMap
+ * @property {string} [state]
  * @property {string[]} selectedTrackerIds
+ * @property {Map<*,EditorProfileTrackerStore>|undefined|null} editorTrackers
  * @property {function} setName
- * @property {function:Promise} fetchTrackerModules
+ * @property {function} syncTrackers
+ * @property {function} save
+ * @property {function:Promise} fetchEditorTrackers
  * @property {function} addSelectedTrackerId
  * @property {function} removeSelectedTrackerId
  * @property {function} moveTracker
@@ -49,42 +51,42 @@ const EditorProfileTrackerStore = types.model('EditorTrackerStore', {
  */
 const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemStore, types.model({
   name: types.maybeNull(types.string),
-  trackerModuleMapState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
-  trackerModuleMap: types.map(EditorProfileTrackerStore),
+  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   selectedTrackerIds: types.array(types.string),
+  editorTrackers: types.maybeNull(types.map(EditorProfileTrackerStore)),
 })).actions(self => {
   return {
     setName(name) {
       self.name = name;
     },
+    syncTrackers() {
+      self.trackers = JSON.parse(JSON.stringify(self.selectedTrackerIds.map(id => {
+        return self.editorTrackers.get(id);
+      })));
+    },
     save() {
-      self.trackers = self.selectedTrackerIds.map(id => {
-        return self.trackerModuleMap.get(id).toJSON();
-      });
+      self.syncTrackers();
       const /**ProfileEditorStore*/profileEditorStore = getParentOfType(self, ProfileEditorStore);
       profileEditorStore.saveProfilePage(self.id);
     },
-    fetchTrackerModules: flow(function* () {
-      self.trackerModuleMapState = 'pending';
+    fetchEditorTrackers: flow(function* () {
+      self.state = 'pending';
       try {
         const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-        const trackers = {};
-        rootStore.trackers.trackers.forEach((tracker, id) => {
-          trackers[id] = tracker.toJSON();
-        });
-        self.trackers.forEach(profilesItemTracker => {
-          if (!trackers[profilesItemTracker.id]) {
-            trackers[profilesItemTracker.id] = profilesItemTracker.toJSON();
+        const trackers = yield getTrackers();
+        self.trackers.forEach(profileTracker => {
+          if (!trackers[profileTracker.id]) {
+            trackers[profileTracker.id] = profileTracker.toJSON();
           }
         });
         if (isAlive(self)) {
-          self.trackerModuleMap = trackers;
-          self.trackerModuleMapState = 'done';
+          self.editorTrackers = trackers;
+          self.state = 'done';
         }
       } catch (err) {
         logger.error('fetchTrackerModules error', err);
         if (isAlive(self)) {
-          self.trackerModuleMapState = 'error';
+          self.state = 'error';
         }
       }
     }),
@@ -92,6 +94,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       const pos = self.selectedTrackerIds.indexOf(id);
       if (pos === -1) {
         self.selectedTrackerIds.push(id);
+        self.syncTrackers();
       }
     },
     removeSelectedTrackerId(id) {
@@ -100,6 +103,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       if (pos !== -1) {
         selectedTrackerIds.splice(pos, 1);
         self.selectedTrackerIds = selectedTrackerIds;
+        self.syncTrackers();
       }
     },
     moveTracker(id, prevId, nextId) {
@@ -128,7 +132,8 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       }
 
       self.selectedTrackerIds = items;
-    }
+      self.syncTrackers();
+    },
   };
 }).views(self => {
   return {
@@ -149,24 +154,24 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       let result = self.getTrackersByFilter(filter);
       if (search) {
         const re = new RegExp(escapeStringRegexp(search), 'i');
-        result = result.filter(tracker => {
+        result = result.filter(editorTracker => {
           return re.test([
-            tracker.id,
-            tracker.meta.name,
-            tracker.meta.author,
-            tracker.meta.description,
-            tracker.meta.homepageURL,
-            tracker.meta.trackerURL,
-            tracker.meta.updateURL,
-            tracker.meta.downloadURL,
-            tracker.meta.supportURL,
+            editorTracker.id,
+            editorTracker.meta.name,
+            editorTracker.meta.author,
+            editorTracker.meta.description,
+            editorTracker.meta.homepageURL,
+            editorTracker.meta.trackerURL,
+            editorTracker.meta.updateURL,
+            editorTracker.meta.downloadURL,
+            editorTracker.meta.supportURL,
           ].join(' '));
         });
       }
       return result;
     },
     getTackerModuleById(id) {
-      return self.trackerModuleMap.get(id);
+      return self.editorTrackers.get(id);
     },
     get selectedTackers() {
       return self.selectedTrackerIds.map(id => {
@@ -174,7 +179,7 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
       });
     },
     get withoutListTackers() {
-      return Array.from(self.trackerModuleMap.values()).filter(tracker => {
+      return Array.from(self.editorTrackers.values()).filter(tracker => {
         return self.selectedTrackerIds.indexOf(tracker.id) === -1;
       });
     },
@@ -311,4 +316,4 @@ const getIndexById = (items, id) => {
 };
 
 export default ProfileEditorStore;
-export {EditProfileItemStore};
+export {EditProfileItemStore, EditorProfileTrackerStore};

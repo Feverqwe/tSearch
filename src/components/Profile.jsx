@@ -23,13 +23,13 @@ class Profile extends React.Component {
     }
 
     const trackers = [];
-    profile.trackers.forEach(profileItemTracker => {
+    profile.trackers.forEach(profileTracker => {
       let trackerSearchSession = null;
       if (this.props.searchStore) {
-        trackerSearchSession = this.props.searchStore.trackerSessions.get(profileItemTracker.id);
+        trackerSearchSession = this.props.searchStore.trackerSessions.get(profileTracker.id);
       }
       trackers.push(
-        <ProfileTracker key={profileItemTracker.id} profileItemTracker={profileItemTracker} profile={profile} trackerSearchSession={trackerSearchSession}/>
+        <ProfileTracker key={profileTracker.id} id={profileTracker.id} profileTracker={profileTracker} profile={profile} trackerSearchSession={trackerSearchSession}/>
       );
     });
 
