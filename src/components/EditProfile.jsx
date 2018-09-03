@@ -2,11 +2,11 @@ import {inject, observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
-import {EditProfileStore} from '../stores/ProfileEditorStore';
+import EditProfileStore from '../stores/EditProfileStore';
 import getLogger from "../tools/getLogger";
 import blankSvg from "../assets/img/blank.svg";
 import TrackerStore from "../stores/TrackerStore";
-import {EditorProfileTrackerStore} from '../stores/ProfileEditorStore';
+import {EditorProfileTrackerStore} from '../stores/EditProfileStore';
 
 const Sortable = require('sortablejs');
 
