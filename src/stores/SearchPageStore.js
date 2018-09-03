@@ -1,4 +1,4 @@
-import {types, getParentOfType} from "mobx-state-tree";
+import {getParentOfType, types} from "mobx-state-tree";
 import ResultPageItemStore from "./ResultPageItemStore";
 import RootStore from "./RootStore";
 import sortResults from "../tools/sortResults";

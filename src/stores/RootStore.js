@@ -4,7 +4,6 @@ import HistoryStore from "./HistoryStore";
 import FiltersStore from "./FiltersStore";
 import ProfilesStore from "./ProfilesStore";
 import ProfileStore from "./ProfileStore";
-import TrackerStore from "./TrackerStore";
 import SearchStore from "./SearchStore";
 import OptionsStore from "./OptionsStore";
 import ExplorerStore from "./ExplorerStore";
@@ -43,8 +42,8 @@ const RootStore = types.model('RootStore', {
   profileEditor: types.maybeNull(ProfileEditorStore)
 }).actions(/**RootStore*/self => {
   return {
-    setProfile(profile) {
-      self.profile = profile.toJSON();
+    setProfile(id) {
+      self.profile = ProfileStore.create({id});
     },
     createSearch(query) {
       self.searches.push({query});

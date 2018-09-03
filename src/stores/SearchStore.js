@@ -144,7 +144,7 @@ const SearchStore = types.model('SearchStore', {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
       rootStore.profile.selectedTrackers.forEach(profileTracker => {
         const /**TrackerStore*/tracker = profileTracker.tracker;
-        if (tracker.state === 'done') {
+        if (tracker && tracker.state === 'done') {
           if (!self.trackerSessions.has(tracker.id)) {
             self.trackerSessions.set(tracker.id, {id: tracker.id});
           }

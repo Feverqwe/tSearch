@@ -11,15 +11,20 @@ import SearchStore from "../stores/SearchStore";
 @observer
 class Profile extends React.Component {
   componentDidMount() {
-    if (!this.props.rootStore.profile || this.props.rootStore.profile.id !== this.props.profileItem.id) {
-      this.props.rootStore.setProfile(this.props.profileItem);
+    if (!this.props.rootStore.profile || this.props.rootStore.profile.id !== this.props.id) {
+      this.props.rootStore.setProfile(this.props.id);
     }
   }
 
   render() {
-    const profile = this.props.rootStore.profile;
-    if (!profile) {
+    const profileStore = this.props.rootStore.profile;
+    if (!profileStore) {
       return ('Prepare...');
+    }
+
+    const profile = profileStore.profile;
+    if (!profile) {
+      return ('Not found');
     }
 
     const trackers = [];
@@ -29,7 +34,7 @@ class Profile extends React.Component {
         trackerSearchSession = this.props.searchStore.trackerSessions.get(profileTracker.id);
       }
       trackers.push(
-        <ProfileTracker key={profileTracker.id} id={profileTracker.id} profileTracker={profileTracker} profile={profile} trackerSearchSession={trackerSearchSession}/>
+        <ProfileTracker key={profileTracker.id} id={profileTracker.id} profileTracker={profileTracker} profileStore={profileStore} trackerSearchSession={trackerSearchSession}/>
       );
     });
 
@@ -42,7 +47,7 @@ class Profile extends React.Component {
 }
 
 Profile.propTypes = null && {
-  profileItem: PropTypes.instanceOf(ProfilesItemStore),
+  id: PropTypes.string,
   rootStore: PropTypes.instanceOf(RootStore),
   searchStore: PropTypes.instanceOf(SearchStore),
 };

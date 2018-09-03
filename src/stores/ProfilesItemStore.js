@@ -1,12 +1,20 @@
-import {types} from 'mobx-state-tree';
+import {resolveIdentifier, types} from 'mobx-state-tree';
+import TrackerStore from "./TrackerStore";
 
 
 /**
  * @typedef {{}} ProfilesTrackerStore
  * @property {string} id
+ * @property {*} tracker
  */
 const ProfilesTrackerStore = types.model('ProfilesTrackerStore', {
   id: types.string,
+}).views(self => {
+  return {
+    get tracker() {
+      return resolveIdentifier(TrackerStore, self, self.id);
+    }
+  };
 });
 
 
@@ -23,3 +31,4 @@ const ProfilesItemStore = types.model('ProfilesItemStore', {
 });
 
 export default ProfilesItemStore;
+export {ProfilesTrackerStore};

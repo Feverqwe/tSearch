@@ -1,4 +1,4 @@
-import {isAlive, types, getParentOfType} from 'mobx-state-tree';
+import {getParentOfType, isAlive, types} from 'mobx-state-tree';
 import {AbortError, StatusCodeError} from "../tools/errors";
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
 import 'whatwg-fetch'

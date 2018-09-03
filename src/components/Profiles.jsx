@@ -57,24 +57,18 @@ class Profiles extends React.Component {
       case 'done': {
         const options = [];
 
-        let activeProfile = null;
+        const activeProfile = profilesStore.getActiveProfile();
         profilesStore.profiles.forEach(profile => {
-          if (!profilesStore.profileId || profilesStore.profileId === profile.id) {
-            activeProfile = profile;
-          }
           options.push(
             <option key={profile.id} value={profile.id}>{profile.name}</option>
           );
         });
-        if (!activeProfile) {
-          activeProfile = profilesStore.profiles[0];
-        }
 
         return (
           <div className="parameter_box__left">
             <div className="parameter parameter-profile">
               <div className="profile_box">
-                <select ref={this.refSelect} className="profile__select" defaultValue={activeProfile.id} onChange={this.handleSelect}>
+                <select ref={this.refSelect} className="profile__select" value={activeProfile.id} onChange={this.handleSelect}>
                   {options}
                 </select>
                 <Link to="/profileEditor" title={chrome.i18n.getMessage('manageProfiles')}
@@ -82,7 +76,7 @@ class Profiles extends React.Component {
               </div>
             </div>
             <div className="parameter parameter-tracker">
-              <Profile key={activeProfile.id} searchStore={this.props.searchStore} profileItem={activeProfile}/>
+              <Profile key={activeProfile.id} id={activeProfile.id} searchStore={this.props.searchStore}/>
             </div>
           </div>
         );

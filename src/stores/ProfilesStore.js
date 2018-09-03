@@ -17,6 +17,7 @@ const logger = getLogger('ProfilesStore');
  * @property {function} setProfiles
  * @property {function} setProfileId
  * @property {function:Promise} fetchProfiles
+ * @property {function} getActiveProfile
  * @property {function} getProfileById
  * @property {function} syncActiveProfile
  * @property {function} saveProfile
@@ -38,11 +39,7 @@ const ProfilesStore = types.model('ProfilesStore', {
       self.profiles = profiles;
     },
     setProfileId(id) {
-      let profile = self.getProfileById(id);
-      if (!profile) {
-        profile = self.profiles[0];
-      }
-      self.profileId = profile.id;
+      self.profileId = id;
     },
     fetchProfiles: flow(function* () {
       self.state = 'pending';
@@ -81,14 +78,21 @@ const ProfilesStore = types.model('ProfilesStore', {
   };
 
   return {
+    getActiveProfile() {
+      let profile = self.getProfileById(self.profileId);
+      if (!profile) {
+        profile = self.profiles[0];
+      }
+      return profile;
+    },
     getProfileById(id) {
       return resolveIdentifier(ProfilesItemStore, self, id);
     },
     syncActiveProfile() {
-      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-      const profile = resolveIdentifier(ProfilesItemStore, self, rootStore.profile.id);
+      const profile = self.getActiveProfile();
       if (profile) {
-        rootStore.setProfile(profile);
+        const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+        rootStore.setProfile(profile.id);
       }
     },
     saveProfile() {
