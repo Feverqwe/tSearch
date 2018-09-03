@@ -31,7 +31,7 @@ const EditorProfileTrackerStore = types.model('EditorTrackerStore', {
 });
 
 /**
- * @typedef {ProfilesItemStore} EditProfileItemStore
+ * @typedef {ProfilesItemStore} EditProfileStore
  * @property {string|undefined|null} name
  * @property {string} [state]
  * @property {string[]} selectedTrackerIds
@@ -49,7 +49,7 @@ const EditorProfileTrackerStore = types.model('EditorTrackerStore', {
  * @property {*} selectedTackers
  * @property {*} withoutListTackers
  */
-const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemStore, types.model({
+const EditProfileStore = types.compose('EditProfileStore', ProfilesItemStore, types.model({
   name: types.maybeNull(types.string),
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   selectedTrackerIds: types.array(types.string),
@@ -188,15 +188,15 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
 
 
 /**
- * @typedef {ProfilesItemStore} EditProfilesItemStore
+ * @typedef {ProfilesItemStore} EditProfilesStore
  */
-const EditProfilesItemStore = types.compose('EditProfilesItemStore', ProfilesItemStore);
+const EditProfilesStore = types.compose('EditProfilesItemStore', ProfilesItemStore);
 
 /**
  * @typedef {{}} ProfileEditorStore
  * @property {string} [saveState]
- * @property {EditProfilesItemStore[]} profiles
- * @property {Map<*,EditProfileItemStore>} profilePages
+ * @property {EditProfilesStore[]} profiles
+ * @property {Map<*,EditProfileStore>} profilePages
  * @property {function:Promise} save
  * @property {function} moveProfile
  * @property {function} getProfilePage
@@ -207,8 +207,8 @@ const EditProfilesItemStore = types.compose('EditProfilesItemStore', ProfilesIte
  */
 const ProfileEditorStore = types.model('ProfileEditorStore', {
   saveState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
-  profiles: types.array(EditProfilesItemStore),
-  profilePages: types.map(EditProfileItemStore),
+  profiles: types.array(EditProfilesStore),
+  profilePages: types.map(EditProfileStore),
 }).actions(self => {
   return {
     save: flow(function* () {
@@ -316,4 +316,4 @@ const getIndexById = (items, id) => {
 };
 
 export default ProfileEditorStore;
-export {EditProfileItemStore, EditorProfileTrackerStore};
+export {EditProfileStore, EditorProfileTrackerStore};

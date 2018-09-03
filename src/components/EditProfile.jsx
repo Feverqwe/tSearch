@@ -2,7 +2,7 @@ import {inject, observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
-import {EditProfileItemStore} from '../stores/ProfileEditorStore';
+import {EditProfileStore} from '../stores/ProfileEditorStore';
 import getLogger from "../tools/getLogger";
 import blankSvg from "../assets/img/blank.svg";
 import TrackerStore from "../stores/TrackerStore";
@@ -236,7 +236,7 @@ class FilterButton extends React.Component {
 FilterButton.propTypes = null && {
   type: PropTypes.string,
   isActive: PropTypes.bool,
-  profile: PropTypes.instanceOf(EditProfileItemStore),
+  profile: PropTypes.instanceOf(EditProfileStore),
   onClick: PropTypes.func,
 };
 
@@ -334,7 +334,7 @@ class TrackerItem extends React.Component {
 
 TrackerItem.propTypes = null && {
   id: PropTypes.string,
-  profile: PropTypes.instanceOf(EditProfileItemStore),
+  profile: PropTypes.instanceOf(EditProfileStore),
   tracker: PropTypes.instanceOf(TrackerStore),
   editorTracker: PropTypes.instanceOf(EditorProfileTrackerStore),
 };
