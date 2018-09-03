@@ -10,10 +10,11 @@ const logger = getLogger('TrackerStore');
  * @property {string} id
  * @property {number} [attached]
  * @property {string} [state]
+ * @property {*} meta
+ * @property {string} code
  * @property {function} attach
  * @property {function} deattach
  * @property {function} setState
- * @property {*} meta
  * @property {*} worker
  * @property {function} getIconUrl
  * @property {function} handleAttachedChange
@@ -25,6 +26,8 @@ const TrackerStore = types.model('TrackerStore', {
   id: types.identifier,
   attached: types.optional(types.number, 0),
   state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
+  meta: types.frozen(),
+  code: types.string
 }).actions(self => {
   return {
     attach() {
@@ -44,9 +47,6 @@ const TrackerStore = types.model('TrackerStore', {
 }).views(self => {
   let worker = null;
   return {
-    get meta() {
-      return worker.module.meta || {};
-    },
     get worker() {
       return worker;
     },
@@ -72,10 +72,8 @@ const TrackerStore = types.model('TrackerStore', {
     },
     createWorker() {
       self.setState('pending');
-      getTrackerModule(self.id).then(module => {
-        worker = new TrackerWorker(module);
-        return worker.init();
-      }).then(() => {
+      worker = new TrackerWorker();
+      return worker.init(self).then(() => {
         self.setState('done');
       }).catch(err => {
         logger.error('createWorker error', err);

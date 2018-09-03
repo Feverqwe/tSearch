@@ -22,6 +22,9 @@ class Profiles extends React.Component {
     if (this.props.rootStore.profiles.state === 'idle') {
       this.props.rootStore.profiles.fetchProfiles();
     }
+    if (this.props.rootStore.trackers.state === 'idle') {
+      this.props.rootStore.trackers.fetchTrackers();
+    }
   }
 
   handleSelect() {
@@ -39,7 +42,12 @@ class Profiles extends React.Component {
     const rootStore = this.props.rootStore;
     const profilesStore = rootStore.profiles;
 
-    switch (profilesStore.state) {
+    let state = profilesStore.state;
+    if (state === 'done') {
+      state = rootStore.trackers.state;
+    }
+
+    switch (state) {
       case 'pending': {
         return ('Loading...');
       }

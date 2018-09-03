@@ -15,22 +15,23 @@ class ProfileTracker extends React.Component {
     super(props);
 
     this.handleClick = this.handleClick.bind(this);
-
-    const id = props.profileItemTracker.id;
-    let tracker = props.rootStore.trackers.get(id);
-    if (!tracker) {
-      tracker = props.rootStore.initTracker(id);
-    }
-    this.tracker = tracker;
   }
 
   componentDidMount() {
-    this.tracker.attach();
+    if (this.tracker) {
+      this.tracker.attach();
+    }
   }
 
   componentWillUnmount() {
-    this.tracker.deattach();
-    this.tracker = null;
+    if (this.tracker) {
+      this.tracker.deattach();
+    }
+  }
+
+  get tracker() {
+    const id = this.props.profileItemTracker.id;
+    return this.props.rootStore.trackers.trackers.get(id);
   }
 
   handleClick(e) {
@@ -42,6 +43,14 @@ class ProfileTracker extends React.Component {
   }
 
   render() {
+    if (!this.tracker) {
+      return (
+        <div className="tracker">
+          Not found
+        </div>
+      );
+    }
+
     switch (this.tracker && this.tracker.state) {
       case 'pending': {
         return (

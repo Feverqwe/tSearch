@@ -9,6 +9,7 @@ import SearchStore from "./SearchStore";
 import OptionsStore from "./OptionsStore";
 import ExplorerStore from "./ExplorerStore";
 import ProfileEditorStore from "./ProfileEditorStore";
+import TrackersStore from "./TrackersStore";
 
 
 /**
@@ -18,13 +19,12 @@ import ProfileEditorStore from "./ProfileEditorStore";
  * @property {FiltersStore} [filters]
  * @property {ProfileStore|undefined} profile
  * @property {ProfilesStore} [profiles]
- * @property {Map<*,TrackerStore>} trackers
+ * @property {TrackersStore} [trackers]
  * @property {SearchStore[]} searches
  * @property {OptionsStore} [options]
  * @property {ExplorerStore} [explorer]
  * @property {ProfileEditorStore|undefined|null} profileEditor
  * @property {function} setProfile
- * @property {function} initTracker
  * @property {function} createSearch
  * @property {function} destroySearch
  * @property {function} createProfileEditor
@@ -36,7 +36,7 @@ const RootStore = types.model('RootStore', {
   filters: types.optional(FiltersStore, {}),
   profile: types.maybe(ProfileStore),
   profiles: types.optional(ProfilesStore, {}),
-  trackers: types.map(TrackerStore),
+  trackers: types.optional(TrackersStore, {}),
   searches: types.array(SearchStore),
   options: types.optional(OptionsStore, {}),
   explorer: types.optional(ExplorerStore, {}),
@@ -45,14 +45,6 @@ const RootStore = types.model('RootStore', {
   return {
     setProfile(profile) {
       self.profile = profile.toJSON();
-    },
-    initTracker(id) {
-      let tracker = self.trackers.get(id);
-      if (!tracker) {
-        self.trackers.set(id, {id});
-        tracker = self.trackers.get(id);
-      }
-      return tracker;
     },
     createSearch(query) {
       self.searches.push({query});

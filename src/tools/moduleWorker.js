@@ -6,13 +6,12 @@ import getLogger from "./getLogger";
 const logger = getLogger('moduleWorker');
 
 class ModuleWorker {
-  constructor(module) {
-    this.module = module;
+  constructor() {
     this.worker = null;
 
     this.requests = [];
 
-    this.connectRe = exKitBuildConnectRe(module.meta.connect);
+    this.connectRe = null;
 
     const self = this;
     this.api = {
@@ -21,8 +20,8 @@ class ModuleWorker {
       }
     };
   }
-  init() {
-    const module = this.module;
+  init(module) {
+    this.connectRe = exKitBuildConnectRe(module.meta.connect);
     this.worker = new FrameWorker({
       moduleId: module.id
     }, this.api);
@@ -49,7 +48,6 @@ class ModuleWorker {
     }
   }
   destroy() {
-    this.module = null;
     this.destroyWorker();
     this.abortAllRequests();
   }
