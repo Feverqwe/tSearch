@@ -1,8 +1,7 @@
-import {flow, getSnapshot, isAlive, types, getParentOfType, resolveIdentifier} from 'mobx-state-tree';
+import {flow, getParentOfType, getSnapshot, isAlive, resolveIdentifier, types} from 'mobx-state-tree';
 import ProfilesItemStore from "./ProfilesItemStore";
 import getLogger from "../tools/getLogger";
 import _isEqual from "lodash.isequal";
-import ProfileStore from "./ProfileStore";
 import RootStore from "./RootStore";
 
 const uuid = require('uuid/v4');

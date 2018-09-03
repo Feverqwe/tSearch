@@ -1,8 +1,7 @@
 import {flow, isAlive, types} from "mobx-state-tree";
 import TrackerStore from "./TrackerStore";
-import getTrackersJson from "../tools/getTrackersJson";
-import getTrackerModule from "../tools/getTrackerModule";
 import getLogger from "../tools/getLogger";
+import getTrackers from "../tools/getTrackers";
 
 const logger = getLogger('TrackersStore');
 
@@ -24,27 +23,9 @@ const TrackersStore = types.model('TrackersStore', {
     fetchTrackers: flow(function* () {
       self.state = 'pending';
       try {
-        const trackerIds = yield Promise.all([
-          new Promise(resolve => chrome.storage.local.get({trackers: {}}, resolve)).then(storage => Object.keys(storage.trackers)),
-          getTrackersJson().then(trackers => Object.keys(trackers)),
-        ]).then(results => {
-          const trackerIds = [].concat(...results);
-          return trackerIds.filter((id, index) => {
-            return trackerIds.indexOf(id) === index;
-          });
-        });
-        const trackerModules = yield Promise.all(trackerIds.map(id => {
-          return getTrackerModule(id).catch(err => {
-            logger.error('getTrackerModule error', id, err);
-            return {id};
-          });
-        }));
-        const trackersObj = trackerModules.reduce((obj, tracker) => {
-          obj[tracker.id] = tracker;
-          return obj;
-        }, {});
+        const trackers = yield getTrackers();
         if (isAlive(self)) {
-          self.setTrackers(trackersObj);
+          self.setTrackers(trackers);
           self.state = 'done';
         }
       } catch (err) {

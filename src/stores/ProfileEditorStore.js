@@ -1,8 +1,7 @@
 import {flow, isAlive, types} from 'mobx-state-tree';
 import getLogger from "../tools/getLogger";
 import ProfilesItemStore from "./ProfilesItemStore";
-import getTrackersJson from "../tools/getTrackersJson";
-import getTrackerModule from "../tools/getTrackerModule";
+import getTrackers from "../tools/getTrackers";
 
 const escapeStringRegexp = require('escape-string-regexp');
 
@@ -67,31 +66,14 @@ const EditProfileItemStore = types.compose('EditProfileItemStore', ProfilesItemS
     fetchTrackerModules: flow(function* () {
       self.trackerModuleMapState = 'pending';
       try {
-        const trackerIds = yield Promise.all([
-          new Promise(resolve => chrome.storage.local.get({trackers: {}}, resolve)).then(storage => Object.keys(storage.trackers)),
-          getTrackersJson().then(trackers => Object.keys(trackers)),
-        ]).then(results => {
-          const trackerIds = [].concat(...results);
-          return trackerIds.filter((id, index) => {
-            return trackerIds.indexOf(id) === index;
-          });
-        });
-        const trackerModules = yield Promise.all(trackerIds.map(id => {
-          return getTrackerModule(id).catch(err => {
-            logger.error('getTrackerModule error', id, err);
-            return {id};
-          });
-        }));
+        const trackers = yield getTrackers();
         self.trackers.forEach(profilesItemTracker => {
-          if (trackerIds.indexOf(profilesItemTracker.id) === -1) {
-            trackerModules.push(JSON.parse(JSON.stringify(profilesItemTracker)));
+          if (!trackers[profilesItemTracker.id]) {
+            trackers[profilesItemTracker.id] = JSON.parse(JSON.stringify(profilesItemTracker));
           }
         });
         if (isAlive(self)) {
-          self.trackerModuleMap = trackerModules.reduce((obj, tracker) => {
-            obj[tracker.id] = tracker;
-            return obj;
-          }, {});
+          self.trackerModuleMap = trackers;
           self.trackerModuleMapState = 'done';
         }
       } catch (err) {

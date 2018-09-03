@@ -1,6 +1,5 @@
 import {types} from 'mobx-state-tree';
 import TrackerWorker from "../tools/trackerWorker";
-import getTrackerModule from "../tools/getTrackerModule";
 import getLogger from "../tools/getLogger";
 
 const logger = getLogger('TrackerStore');
