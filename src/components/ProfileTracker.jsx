@@ -5,7 +5,6 @@ import blankSvg from "../assets/img/blank.svg";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import {ProfilesTrackerStore} from "../stores/ProfilesItemStore";
-import ProfileStore from "../stores/ProfileStore";
 import {TrackerSessionStore} from '../stores/SearchStore';
 
 @inject('rootStore')
@@ -32,10 +31,10 @@ class ProfileTracker extends React.Component {
   handleClick(e) {
     e.preventDefault();
 
-    const wasSelected = this.props.profileStore.isSelectedTracker(this.props.id);
-    this.props.profileStore.clearSelectedTrackers();
+    const wasSelected = this.props.rootStore.profiles.isSelectedTracker(this.props.id);
+    this.props.rootStore.profiles.clearSelectedTrackers();
     if (!wasSelected) {
-      this.props.profileStore.addSelectedTracker(this.props.id);
+      this.props.rootStore.profiles.addSelectedTracker(this.props.id);
     }
   }
 
@@ -101,7 +100,7 @@ class ProfileTracker extends React.Component {
     const iconUrl = tracker.getIconUrl() || blankSvg;
 
     const classList = ['tracker'];
-    if (this.props.profileStore.isSelectedTracker(this.props.id)) {
+    if (this.props.rootStore.profiles.isSelectedTracker(this.props.id)) {
       classList.push('tracker-selected');
     }
 
@@ -120,7 +119,6 @@ class ProfileTracker extends React.Component {
 ProfileTracker.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   id: PropTypes.string,
-  profileStore: PropTypes.instanceOf(ProfileStore),
   profileTracker: PropTypes.instanceOf(ProfilesTrackerStore),
   trackerSearchSession: PropTypes.instanceOf(TrackerSessionStore),
 };

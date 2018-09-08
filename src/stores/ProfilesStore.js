@@ -14,12 +14,16 @@ const logger = getLogger('ProfilesStore');
  * @property {string} [state]
  * @property {ProfilesItemStore[]} profiles
  * @property {string|undefined|null} profileId
+ * @property {string[]} selectedTrackerIds
  * @property {function} setProfiles
  * @property {function} setProfileId
  * @property {function:Promise} fetchProfiles
- * @property {function} getActiveProfile
+ * @property {function} addSelectedTracker
+ * @property {function} clearSelectedTrackers
+ * @property {*} profile
  * @property {function} getProfileById
- * @property {function} syncActiveProfile
+ * @property {function} isSelectedTracker
+ * @property {*} selectedTrackers
  * @property {function} saveProfile
  * @property {function} saveProfiles
  * @property {function} afterCreate
@@ -29,6 +33,7 @@ const ProfilesStore = types.model('ProfilesStore', {
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   profiles: types.array(ProfilesItemStore),
   profileId: types.maybeNull(types.string),
+  selectedTrackerIds: types.array(types.string),
 }).actions(/**ProfilesStore*/self => {
   return {
     setProfiles(profiles) {
@@ -60,6 +65,12 @@ const ProfilesStore = types.model('ProfilesStore', {
         }
       }
     }),
+    addSelectedTracker(id) {
+      self.selectedTrackerIds.push(id);
+    },
+    clearSelectedTrackers() {
+      self.selectedTrackerIds = [];
+    },
   };
 }).views(/**ProfilesStore*/self => {
   const storageChangeListener = (changes, namespace) => {
@@ -71,15 +82,14 @@ const ProfilesStore = types.model('ProfilesStore', {
         const profiles = change.newValue || [];
         if (!_isEqual(profiles, getSnapshot(self.profiles))) {
           self.setProfiles(profiles);
-          self.syncActiveProfile();
         }
       }
     }
   };
 
   return {
-    getActiveProfile() {
-      let profile = self.getProfileById(self.profileId);
+    get profile() {
+      let profile = resolveIdentifier(ProfilesItemStore, self, self.profileId);
       if (!profile) {
         profile = self.profiles[0];
       }
@@ -88,12 +98,17 @@ const ProfilesStore = types.model('ProfilesStore', {
     getProfileById(id) {
       return resolveIdentifier(ProfilesItemStore, self, id);
     },
-    syncActiveProfile() {
-      const profile = self.getActiveProfile();
-      if (profile) {
-        const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-        rootStore.setProfile(profile.id);
+    isSelectedTracker(id) {
+      return self.selectedTrackerIds.indexOf(id) !== -1;
+    },
+    get selectedTrackers() {
+      let result = self.profile.trackers.filter(tracker => {
+        return self.selectedTrackerIds.indexOf(tracker.id) !== -1;
+      });
+      if (!result.length) {
+        result = self.profile.trackers;
       }
+      return result;
     },
     saveProfile() {
       return new Promise(resolve => chrome.storage.local.set({profileId: self.profileId}, resolve));

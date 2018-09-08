@@ -74,7 +74,7 @@ const SearchPageStore = types.model('SearchPageStore', {
     },
     getFilterBySelectedTrackers() {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-      const selectedTrackerIds = rootStore.profile.selectedTrackers.map(tracker => tracker.id);
+      const selectedTrackerIds = rootStore.profiles.selectedTrackers.map(tracker => tracker.id);
       return result => {
         return selectedTrackerIds.includes(result.trackerId);
       };
