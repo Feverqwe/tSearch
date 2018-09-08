@@ -11,7 +11,9 @@ const logger = getLogger('TrackersStore');
  * @property {Map<*,TrackerStore>|undefined|null} trackers
  * @property {function} setTrackers
  * @property {function:Promise} fetchTrackers
+ * @property {function} deleteTrackerById
  * @property {function} getTackerById
+ * @property {function} saveTrackers
  */
 const TrackersStore = types.model('TrackersStore', {
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
@@ -36,12 +38,19 @@ const TrackersStore = types.model('TrackersStore', {
         }
       }
     }),
+    deleteTrackerById(id) {
+      self.trackers.delete(id);
+      self.saveTrackers();
+    }
   };
 }).views(self => {
   return {
     getTackerById(id) {
       return resolveIdentifier(TrackerStore, self, id);
-    }
+    },
+    saveTrackers() {
+      return new Promise(resolve => chrome.storage.local.set({trackers: self.trackers.toJSON()}, resolve));
+    },
   };
 });
 

@@ -18,6 +18,9 @@ const EditorProfileTrackerStore = types.compose('EditorProfileTrackerStore', Pro
   id: types.identifier,
 })).views(self => {
   return {
+    get isEditorProfileTrackerStore() {
+      return true;
+    },
     getIconUrl() {
       if (self.meta.icon64) {
         return self.meta.icon64;

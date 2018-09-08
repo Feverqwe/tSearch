@@ -2,11 +2,10 @@ import {inject, observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
-import EditProfileStore from '../stores/EditProfileStore';
+import EditProfileStore, {EditorProfileTrackerStore} from '../stores/EditProfileStore';
 import getLogger from "../tools/getLogger";
 import blankSvg from "../assets/img/blank.svg";
 import TrackerStore from "../stores/TrackerStore";
-import {EditorProfileTrackerStore} from '../stores/EditProfileStore';
 
 const Sortable = require('sortablejs');
 
@@ -156,10 +155,8 @@ class EditProfile extends React.Component {
     const trackers = this.state.trackerIds.reduce((result, id) => {
       const editorTracker = this.profile.editorTrackers.get(id);
       if (editorTracker) {
-        const tracker = editorTracker.tracker;
         result.push(
-          <TrackerItem key={`tracker-${editorTracker.id}`} id={editorTracker.id} editorTracker={editorTracker}
-                       tracker={tracker} profile={this.profile}/>
+          <TrackerItem key={`tracker-${editorTracker.id}`} id={editorTracker.id} editorTracker={editorTracker} profile={this.profile}/>
         );
       }
       return result;
@@ -240,6 +237,7 @@ FilterButton.propTypes = null && {
 };
 
 
+@inject('rootStore')
 @observer
 class TrackerItem extends React.Component {
   constructor(props) {
@@ -248,6 +246,7 @@ class TrackerItem extends React.Component {
     this.handleChecked = this.handleChecked.bind(this);
     this.refCheckbox = this.refCheckbox.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
 
     this.checkbox = null;
   }
@@ -266,12 +265,17 @@ class TrackerItem extends React.Component {
     this.handleChecked();
   }
 
+  handleRemove(e) {
+    e.preventDefault();
+    this.props.rootStore.trackers.deleteTrackerById(this.props.id);
+  }
+
   refCheckbox(element) {
     this.checkbox = element;
   }
 
   render() {
-    const tracker = this.props.tracker || this.props.editorTracker;
+    const tracker = this.props.editorTracker;
 
     const checked = this.props.profile.selectedTrackerIds.indexOf(this.props.id) !== -1;
 
@@ -283,6 +287,7 @@ class TrackerItem extends React.Component {
     let updateBtn = null;
     let supportBtn = null;
     let homepageBtn = null;
+    let deleteBtn = null;
     let author = null;
 
     const icon = tracker.getIconUrl() || blankSvg;
@@ -309,6 +314,12 @@ class TrackerItem extends React.Component {
       );
     }
 
+    if (!tracker.isEditorProfileTrackerStore) {
+      deleteBtn = (
+        <a onClick={this.handleRemove} className="item__cell item__button button-remove" href="#remove" title={chrome.i18n.getMessage('remove')}/>
+      );
+    }
+
     const editUrl = 'editor.html#/tracker/' + tracker.id;
 
     return (
@@ -325,17 +336,20 @@ class TrackerItem extends React.Component {
         {homepageBtn}
         {author}
         <a className="item__cell item__button button-edit" href={editUrl} target="_blank" title={chrome.i18n.getMessage('edit')}/>
-        <a onClick={this.handleRemove} className="item__cell item__button button-remove" href="#remove" title={chrome.i18n.getMessage('remove')}/>
+        {deleteBtn}
       </div>
     );
   }
 }
 
 TrackerItem.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
   id: PropTypes.string,
   profile: PropTypes.instanceOf(EditProfileStore),
-  tracker: PropTypes.instanceOf(TrackerStore),
-  editorTracker: PropTypes.instanceOf(EditorProfileTrackerStore),
+  editorTracker: PropTypes.oneOfType([
+    PropTypes.instanceOf(EditorProfileTrackerStore),
+    PropTypes.instanceOf(TrackerStore)
+  ]),
 };
 
 export default EditProfile;
