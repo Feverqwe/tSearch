@@ -70,8 +70,11 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
             self.nextQuery = result.nextPageRequest;
           }
           self.state = 'done';
+
+          return prepSearchResults(self.id, queryHighlightMap, queryRateScheme, result.results);
+        } else {
+          return [];
         }
-        return prepSearchResults(self.id, queryHighlightMap, queryRateScheme, result.results);
       } catch (err) {
         logger.error(`[${id}] fetchResult error`, err);
         if (isAlive(self)) {
