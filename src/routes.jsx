@@ -6,6 +6,7 @@ import {Redirect} from "react-router-dom";
 import History from "./pages/History";
 import Options from "./pages/Options";
 import ProfileEditor from "./pages/ProfileEditor";
+import ComponentLoader from "./components/ComponentLoader";
 
 const qs = require('querystring');
 
@@ -19,7 +20,6 @@ const routes = [{
   },
 }, {
   path: '/profileEditor/:id?',
-  exact: true,
   render: props => {
     const id = props.match.params.id;
     return (
@@ -57,6 +57,15 @@ const routes = [{
     }
     return (
       <Options {...props} section={query.section}/>
+    );
+  },
+}, {
+  path: '/editor/:type/:id?',
+  render: props => {
+    const type = props.match.params.type;
+    const id = props.match.params.id;
+    return (
+      <ComponentLoader {...props} page={'editor'} type={type} id={id}/>
     );
   },
 }, {

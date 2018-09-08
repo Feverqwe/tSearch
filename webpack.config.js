@@ -36,7 +36,8 @@ const config = {
   },
   output: {
     path: outputPath,
-    filename: '[name].js'
+    filename: '[name].js',
+    chunkFilename: 'chunk-[name].js',
   },
   devtool: 'source-map',
   optimization: {
@@ -61,6 +62,7 @@ const config = {
           options: {
             plugins: [
               ["@babel/plugin-proposal-decorators", { "legacy": true }],
+              '@babel/plugin-syntax-dynamic-import'
             ],
             presets: [
               '@babel/preset-react',

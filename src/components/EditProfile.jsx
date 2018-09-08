@@ -6,6 +6,7 @@ import EditProfileStore, {EditorProfileTrackerStore} from '../stores/EditProfile
 import getLogger from "../tools/getLogger";
 import blankSvg from "../assets/img/blank.svg";
 import TrackerStore from "../stores/TrackerStore";
+import {Link} from "react-router-dom";
 
 const Sortable = require('sortablejs');
 
@@ -320,7 +321,7 @@ class TrackerItem extends React.Component {
       );
     }
 
-    const editUrl = 'editor.html#/tracker/' + tracker.id;
+    const editUrl = '/editor/tracker/' + tracker.id;
 
     return (
       <div className={classList.join(' ')} data-id={tracker.id}>
@@ -335,7 +336,7 @@ class TrackerItem extends React.Component {
         {supportBtn}
         {homepageBtn}
         {author}
-        <a className="item__cell item__button button-edit" href={editUrl} target="_blank" title={chrome.i18n.getMessage('edit')}/>
+        <Link className="item__cell item__button button-edit" to={editUrl} target="_blank" title={chrome.i18n.getMessage('edit')}/>
         {deleteBtn}
       </div>
     );
