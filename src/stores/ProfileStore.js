@@ -9,6 +9,12 @@ import TrackerStore from "./TrackerStore";
  */
 const ProfileTrackerStore = types.model('ProfileTrackerStore', {
   id: types.string,
+  meta: types.optional(types.model({
+    name: types.maybe(types.string),
+    downloadURL: types.maybe(types.string),
+    homepageURL: types.maybe(types.string),
+    author: types.maybe(types.string),
+  }), {}),
 }).views(self => {
   return {
     get tracker() {

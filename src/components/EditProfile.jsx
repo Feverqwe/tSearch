@@ -156,7 +156,7 @@ class EditProfile extends React.Component {
     const trackers = this.state.trackerIds.reduce((result, id) => {
       const editorTracker = this.profile.editorTrackers.get(id);
       if (editorTracker) {
-        const tracker = this.props.rootStore.trackers.getTackerById(id);
+        const tracker = editorTracker.tracker;
         result.push(
           <TrackerItem key={`tracker-${editorTracker.id}`} id={editorTracker.id} editorTracker={editorTracker}
                        tracker={tracker} profile={this.profile}/>

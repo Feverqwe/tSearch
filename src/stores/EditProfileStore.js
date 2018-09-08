@@ -16,7 +16,6 @@ const logger = getLogger('ProfileEditorStore');
  */
 const EditorProfileTrackerStore = types.compose('EditorProfileTrackerStore', ProfileTrackerStore, types.model({
   id: types.identifier,
-  meta: types.optional(types.frozen(), {}),
 })).views(self => {
   return {
     getIconUrl() {
