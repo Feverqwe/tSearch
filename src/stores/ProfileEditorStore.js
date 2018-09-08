@@ -30,17 +30,17 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
 }).actions(self => {
   return {
     save: flow(function* () {
-      self.state = 'pending';
+      self.saveState = 'pending';
       try {
         const profiles = JSON.parse(JSON.stringify(self.profiles));
         yield new Promise(resolve => chrome.storage.sync.set({profiles}, resolve));
         if (isAlive(self)) {
-          self.state = 'done';
+          self.saveState = 'done';
         }
       } catch (err) {
         logger.error('save error', err);
         if (isAlive(self)) {
-          self.state = 'error';
+          self.saveState = 'error';
         }
       }
     }),
