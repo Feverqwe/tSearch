@@ -3,18 +3,30 @@ import TrackerStore from "./TrackerStore";
 
 
 /**
+ * @typedef {{}} ProfileTrackerMetaStore
+ * @property {string|undefined} name
+ * @property {string|undefined} author
+ * @property {string|undefined} homepageURL
+ * @property {string|undefined} trackerURL
+ * @property {string|undefined} downloadURL
+ */
+const ProfileTrackerMetaStore = types.model('ProfileTrackerMetaStore', {
+  name: types.maybe(types.string),
+  author: types.maybe(types.string),
+  homepageURL: types.maybe(types.string),
+  trackerURL: types.maybe(types.string),
+  downloadURL: types.maybe(types.string),
+});
+
+/**
  * @typedef {{}} ProfileTrackerStore
  * @property {string} id
+ * @property {ProfileTrackerMetaStore} [meta]
  * @property {*} tracker
  */
 const ProfileTrackerStore = types.model('ProfileTrackerStore', {
   id: types.string,
-  meta: types.optional(types.model({
-    name: types.maybe(types.string),
-    downloadURL: types.maybe(types.string),
-    homepageURL: types.maybe(types.string),
-    author: types.maybe(types.string),
-  }), {}),
+  meta: types.optional(ProfileTrackerMetaStore, {}),
 }).views(self => {
   return {
     get tracker() {
