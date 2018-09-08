@@ -20,7 +20,7 @@ class Profile extends React.Component {
         trackerSearchSession = this.props.searchStore.trackerSessions.get(profileTracker.id);
       }
       trackers.push(
-        <ProfileTracker key={profileTracker.id} id={profileTracker.id} profileTracker={profileTracker} trackerSearchSession={trackerSearchSession}/>
+        <ProfileTracker key={profileTracker.id} id={profileTracker.id} profileTrackerStore={profileTracker} trackerSearchSession={trackerSearchSession}/>
       );
     });
 

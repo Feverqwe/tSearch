@@ -4,7 +4,7 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
 import blankSvg from "../assets/img/blank.svg";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
-import {ProfilesTrackerStore} from "../stores/ProfileStore";
+import {ProfileTrackerStore} from "../stores/ProfileStore";
 import {TrackerSessionStore} from '../stores/SearchStore';
 
 @inject('rootStore')
@@ -17,14 +17,14 @@ class ProfileTracker extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.profileTracker.tracker) {
-      this.props.profileTracker.tracker.attach();
+    if (this.props.profileTrackerStore.tracker) {
+      this.props.profileTrackerStore.tracker.attach();
     }
   }
 
   componentWillUnmount() {
-    if (this.props.profileTracker.tracker) {
-      this.props.profileTracker.tracker.deattach();
+    if (this.props.profileTrackerStore.tracker) {
+      this.props.profileTrackerStore.tracker.deattach();
     }
   }
 
@@ -39,7 +39,7 @@ class ProfileTracker extends React.Component {
   }
 
   render() {
-    const tracker = this.props.profileTracker.tracker;
+    const tracker = this.props.profileTrackerStore.tracker;
     if (!tracker) {
       return (
         <div className="tracker">
@@ -119,7 +119,7 @@ class ProfileTracker extends React.Component {
 ProfileTracker.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   id: PropTypes.string,
-  profileTracker: PropTypes.instanceOf(ProfilesTrackerStore),
+  profileTrackerStore: PropTypes.instanceOf(ProfileTrackerStore),
   trackerSearchSession: PropTypes.instanceOf(TrackerSessionStore),
 };
 

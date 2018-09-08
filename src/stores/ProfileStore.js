@@ -3,11 +3,11 @@ import TrackerStore from "./TrackerStore";
 
 
 /**
- * @typedef {{}} ProfilesTrackerStore
+ * @typedef {{}} ProfileTrackerStore
  * @property {string} id
  * @property {*} tracker
  */
-const ProfilesTrackerStore = types.model('ProfilesTrackerStore', {
+const ProfileTrackerStore = types.model('ProfileTrackerStore', {
   id: types.string,
 }).views(self => {
   return {
@@ -22,13 +22,13 @@ const ProfilesTrackerStore = types.model('ProfilesTrackerStore', {
  * @typedef {{}} ProfileStore
  * @property {string} id
  * @property {string} name
- * @property {ProfilesTrackerStore[]} trackers
+ * @property {ProfileTrackerStore[]} trackers
  * @property {*} trackersIsReady
  */
 const ProfileStore = types.model('ProfileStore', {
   id: types.identifier,
   name: types.string,
-  trackers: types.array(ProfilesTrackerStore)
+  trackers: types.array(ProfileTrackerStore)
 }).views(self => {
   return {
     get trackersIsReady() {
@@ -45,4 +45,4 @@ const ProfileStore = types.model('ProfileStore', {
 });
 
 export default ProfileStore;
-export {ProfilesTrackerStore};
+export {ProfileTrackerStore};
