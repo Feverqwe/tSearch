@@ -20,14 +20,23 @@ class ProfileEditor extends React.Component {
     if (this.props.rootStore.profiles.state === 'idle') {
       this.props.rootStore.profiles.fetchProfiles();
     }
+    if (this.props.rootStore.trackers.state === 'idle') {
+      this.props.rootStore.trackers.fetchTrackers();
+    }
   }
 
   render() {
     const rootStore = this.props.rootStore;
     const profilesStore = rootStore.profiles;
+    const trackersStore = rootStore.trackers;
+
+    let state = profilesStore.state;
+    if (state === 'done') {
+      state = trackersStore.state;
+    }
 
     let page = null;
-    switch (profilesStore.state) {
+    switch (state) {
       case 'pending': {
         page = ('Loading...');
         break;

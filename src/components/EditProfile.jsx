@@ -42,13 +42,7 @@ class EditProfile extends React.Component {
   }
   componentDidMount() {
     this.profile = this.props.rootStore.profileEditor.getProfilePage(this.props.id);
-    if (this.profile.state === 'idle') {
-      this.profile.fetchEditorTrackers().then(() => {
-        this.syncTrackers(null, null);
-      });
-    } else {
-      this.syncTrackers(null, null);
-    }
+    this.syncTrackers(null, null);
   }
   componentWillUnmount() {
     if (this.props.rootStore.profileEditor) {
@@ -65,7 +59,7 @@ class EditProfile extends React.Component {
     this.setState({
       filter: filter,
       search: search,
-      trackers: this.profile.getTrackersWithFilter(filter, search).slice(0)
+      trackerIds: this.profile.getTrackerIdsWithFilter(filter, search).slice(0)
     });
   }
   handleChangeName() {
@@ -148,7 +142,7 @@ class EditProfile extends React.Component {
     this.props.rootStore.profileEditor.save();
   }
   render() {
-    if (!this.profile || this.profile.state !== 'done') {
+    if (!this.profile) {
       return ('Loading...');
     }
 
@@ -159,12 +153,17 @@ class EditProfile extends React.Component {
       );
     });
 
-    const trackers = this.state.trackers.map(editorTracker => {
-      const tracker = this.props.rootStore.trackers.getTackerById(editorTracker.id);
-      return (
-        <TrackerItem key={`tracker-${editorTracker.id}`} id={editorTracker.id} editorTracker={editorTracker} tracker={tracker} profile={this.profile}/>
-      );
-    });
+    const trackers = this.state.trackerIds.reduce((result, id) => {
+      const editorTracker = this.profile.editorTrackers.get(id);
+      if (editorTracker) {
+        const tracker = this.props.rootStore.trackers.getTackerById(id);
+        result.push(
+          <TrackerItem key={`tracker-${editorTracker.id}`} id={editorTracker.id} editorTracker={editorTracker}
+                       tracker={tracker} profile={this.profile}/>
+        );
+        return result;
+      }
+    }, []);
 
     return (
       <div className="manager">

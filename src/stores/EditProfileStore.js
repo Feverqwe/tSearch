@@ -1,8 +1,7 @@
 import getLogger from "../tools/getLogger";
-import {flow, getParentOfType, isAlive, types} from "mobx-state-tree";
-import ProfileStore from "./ProfileStore";
+import {getParentOfType, types} from "mobx-state-tree";
+import ProfileStore, {ProfileTrackerStore} from "./ProfileStore";
 import RootStore from "./RootStore";
-import getTrackers from "../tools/getTrackers";
 import ProfileEditorStore from "./ProfileEditorStore";
 
 const escapeStringRegexp = require('escape-string-regexp');
@@ -10,15 +9,15 @@ const escapeStringRegexp = require('escape-string-regexp');
 const logger = getLogger('ProfileEditorStore');
 
 /**
- * @typedef {{}} EditorTrackerStore
+ * @typedef {ProfileTrackerStore} EditorProfileTrackerStore
  * @property {string} id
  * @property {*} [meta]
  * @property {function} getIconUrl
  */
-const EditorProfileTrackerStore = types.model('EditorTrackerStore', {
+const EditorProfileTrackerStore = types.compose('EditorProfileTrackerStore', ProfileTrackerStore, types.model({
   id: types.identifier,
   meta: types.optional(types.frozen(), {}),
-}).views(self => {
+})).views(self => {
   return {
     getIconUrl() {
       if (self.meta.icon64) {
@@ -34,27 +33,24 @@ const EditorProfileTrackerStore = types.model('EditorTrackerStore', {
 /**
  * @typedef {ProfileStore} EditProfileStore
  * @property {string|undefined|null} name
- * @property {string} [state]
+ * @property {EditorProfileTrackerStore[]} trackers
  * @property {string[]} selectedTrackerIds
- * @property {Map<*,EditorProfileTrackerStore>|undefined|null} editorTrackers
  * @property {function} setName
  * @property {function} syncTrackers
  * @property {function} save
- * @property {function:Promise} fetchEditorTrackers
  * @property {function} addSelectedTrackerId
  * @property {function} removeSelectedTrackerId
  * @property {function} moveTracker
  * @property {function} getTrackersByFilter
- * @property {function} getTrackersWithFilter
- * @property {function} getTackerModuleById
+ * @property {function} getTrackerIdsWithFilter
  * @property {*} selectedTackers
  * @property {*} withoutListTackers
+ * @property {*} editorTrackers
  */
 const EditProfileStore = types.compose('EditProfileStore', ProfileStore, types.model({
   name: types.maybeNull(types.string),
-  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
+  trackers: types.array(EditorProfileTrackerStore),
   selectedTrackerIds: types.array(types.string),
-  editorTrackers: types.maybeNull(types.map(EditorProfileTrackerStore)),
 })).actions(self => {
   return {
     setName(name) {
@@ -70,32 +66,10 @@ const EditProfileStore = types.compose('EditProfileStore', ProfileStore, types.m
       const /**ProfileEditorStore*/profileEditorStore = getParentOfType(self, ProfileEditorStore);
       profileEditorStore.saveProfilePage(self.id);
     },
-    fetchEditorTrackers: flow(function* () {
-      self.state = 'pending';
-      try {
-        const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-        const trackers = yield getTrackers();
-        self.trackers.forEach(profileTracker => {
-          if (!trackers[profileTracker.id]) {
-            trackers[profileTracker.id] = profileTracker.toJSON();
-          }
-        });
-        if (isAlive(self)) {
-          self.editorTrackers = trackers;
-          self.state = 'done';
-        }
-      } catch (err) {
-        logger.error('fetchTrackerModules error', err);
-        if (isAlive(self)) {
-          self.state = 'error';
-        }
-      }
-    }),
     addSelectedTrackerId(id) {
       const pos = self.selectedTrackerIds.indexOf(id);
       if (pos === -1) {
         self.selectedTrackerIds.push(id);
-        self.syncTrackers();
       }
     },
     removeSelectedTrackerId(id) {
@@ -104,7 +78,6 @@ const EditProfileStore = types.compose('EditProfileStore', ProfileStore, types.m
       if (pos !== -1) {
         selectedTrackerIds.splice(pos, 1);
         self.selectedTrackerIds = selectedTrackerIds;
-        self.syncTrackers();
       }
     },
     moveTracker(id, prevId, nextId) {
@@ -133,7 +106,6 @@ const EditProfileStore = types.compose('EditProfileStore', ProfileStore, types.m
       }
 
       self.selectedTrackerIds = items;
-      self.syncTrackers();
     },
   };
 }).views(self => {
@@ -151,7 +123,7 @@ const EditProfileStore = types.compose('EditProfileStore', ProfileStore, types.m
         }
       }
     },
-    getTrackersWithFilter(filter, search) {
+    getTrackerIdsWithFilter(filter, search) {
       let result = self.getTrackersByFilter(filter);
       if (search) {
         const re = new RegExp(escapeStringRegexp(search), 'i');
@@ -169,20 +141,31 @@ const EditProfileStore = types.compose('EditProfileStore', ProfileStore, types.m
           ].join(' '));
         });
       }
-      return result;
-    },
-    getTackerModuleById(id) {
-      return self.editorTrackers.get(id);
+      return result.map(editorTracker => editorTracker.id);
     },
     get selectedTackers() {
       return self.selectedTrackerIds.map(id => {
-        return self.getTackerModuleById(id);
+        return self.editorTrackers.get(id);
       });
     },
     get withoutListTackers() {
       return Array.from(self.editorTrackers.values()).filter(tracker => {
         return self.selectedTrackerIds.indexOf(tracker.id) === -1;
       });
+    },
+    get editorTrackers() {
+      const result = new Map();
+      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+      rootStore.trackers.trackers.forEach((tracker, id) => {
+        result.set(id, tracker);
+      });
+      self.trackers.forEach(profileTracker => {
+        const id = profileTracker.id;
+        if (!result.has(id)) {
+          result.set(profileTracker.id, profileTracker);
+        }
+      });
+      return result;
     },
   };
 });
