@@ -57,7 +57,7 @@ class Profiles extends React.Component {
       case 'done': {
         const options = [];
 
-        const profile = profilesStore.profile;
+        const profileStore = profilesStore.profile;
         profilesStore.profiles.forEach(profile => {
           options.push(
             <option key={profile.id} value={profile.id}>{profile.name}</option>
@@ -68,7 +68,7 @@ class Profiles extends React.Component {
           <div className="parameter_box__left">
             <div className="parameter parameter-profile">
               <div className="profile_box">
-                <select ref={this.refSelect} className="profile__select" value={profile.id} onChange={this.handleSelect}>
+                <select ref={this.refSelect} className="profile__select" value={profileStore.id} onChange={this.handleSelect}>
                   {options}
                 </select>
                 <Link to="/profileEditor" title={chrome.i18n.getMessage('manageProfiles')}
@@ -76,7 +76,7 @@ class Profiles extends React.Component {
               </div>
             </div>
             <div className="parameter parameter-tracker">
-              <Profile key={profile.id} profile={profile} searchStore={this.props.searchStore}/>
+              <Profile key={profileStore.id} profileStore={profileStore} searchStore={this.props.searchStore}/>
             </div>
           </div>
         );

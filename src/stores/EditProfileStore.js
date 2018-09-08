@@ -1,6 +1,6 @@
 import getLogger from "../tools/getLogger";
 import {flow, getParentOfType, isAlive, types} from "mobx-state-tree";
-import ProfilesItemStore from "./ProfilesItemStore";
+import ProfileStore from "./ProfileStore";
 import RootStore from "./RootStore";
 import getTrackers from "../tools/getTrackers";
 import ProfileEditorStore from "./ProfileEditorStore";
@@ -32,7 +32,7 @@ const EditorProfileTrackerStore = types.model('EditorTrackerStore', {
 });
 
 /**
- * @typedef {ProfilesItemStore} EditProfileStore
+ * @typedef {ProfileStore} EditProfileStore
  * @property {string|undefined|null} name
  * @property {string} [state]
  * @property {string[]} selectedTrackerIds
@@ -50,7 +50,7 @@ const EditorProfileTrackerStore = types.model('EditorTrackerStore', {
  * @property {*} selectedTackers
  * @property {*} withoutListTackers
  */
-const EditProfileStore = types.compose('EditProfileStore', ProfilesItemStore, types.model({
+const EditProfileStore = types.compose('EditProfileStore', ProfileStore, types.model({
   name: types.maybeNull(types.string),
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   selectedTrackerIds: types.array(types.string),

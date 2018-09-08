@@ -2,7 +2,7 @@ import React from "react";
 import {inject, observer} from "mobx-react";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
-import ProfilesItemStore from "../stores/ProfilesItemStore";
+import ProfileStore from "../stores/ProfileStore";
 import ProfileTracker from "./ProfileTracker";
 import SearchStore from "../stores/SearchStore";
 
@@ -11,10 +11,10 @@ import SearchStore from "../stores/SearchStore";
 @observer
 class Profile extends React.Component {
   render() {
-    const profile = this.props.profile;
+    const profileStore = this.props.profileStore;
 
     const trackers = [];
-    profile.trackers.forEach(profileTracker => {
+    profileStore.trackers.forEach(profileTracker => {
       let trackerSearchSession = null;
       if (this.props.searchStore) {
         trackerSearchSession = this.props.searchStore.trackerSessions.get(profileTracker.id);
@@ -35,7 +35,7 @@ class Profile extends React.Component {
 Profile.propTypes = null && {
   id: PropTypes.string,
   rootStore: PropTypes.instanceOf(RootStore),
-  profile: PropTypes.instanceOf(ProfilesItemStore),
+  profileStore: PropTypes.instanceOf(ProfileStore),
   searchStore: PropTypes.instanceOf(SearchStore),
 };
 

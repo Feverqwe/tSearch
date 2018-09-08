@@ -1,14 +1,14 @@
 import {flow, isAlive, types} from 'mobx-state-tree';
 import getLogger from "../tools/getLogger";
-import ProfilesItemStore from "./ProfilesItemStore";
+import ProfileStore from "./ProfileStore";
 import EditProfileStore from "./EditProfileStore";
 
 const logger = getLogger('ProfileEditorStore');
 
 /**
- * @typedef {ProfilesItemStore} EditProfilesStore
+ * @typedef {ProfileStore} EditProfilesStore
  */
-const EditProfilesStore = types.compose('EditProfilesItemStore', ProfilesItemStore);
+const EditProfilesStore = types.compose('EditProfilesItemStore', ProfileStore);
 
 /**
  * @typedef {{}} ProfileEditorStore

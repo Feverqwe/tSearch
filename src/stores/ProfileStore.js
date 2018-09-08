@@ -19,13 +19,13 @@ const ProfilesTrackerStore = types.model('ProfilesTrackerStore', {
 
 
 /**
- * @typedef {{}} ProfilesItemStore
+ * @typedef {{}} ProfileStore
  * @property {string} id
  * @property {string} name
  * @property {ProfilesTrackerStore[]} trackers
  * @property {*} trackersIsReady
  */
-const ProfilesItemStore = types.model('ProfilesItemStore', {
+const ProfileStore = types.model('ProfileStore', {
   id: types.identifier,
   name: types.string,
   trackers: types.array(ProfilesTrackerStore)
@@ -44,5 +44,5 @@ const ProfilesItemStore = types.model('ProfilesItemStore', {
   };
 });
 
-export default ProfilesItemStore;
+export default ProfileStore;
 export {ProfilesTrackerStore};

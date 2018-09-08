@@ -1,5 +1,5 @@
 import {flow, getParentOfType, getSnapshot, isAlive, resolveIdentifier, types} from 'mobx-state-tree';
-import ProfilesItemStore from "./ProfilesItemStore";
+import ProfileStore from "./ProfileStore";
 import getLogger from "../tools/getLogger";
 import _isEqual from "lodash.isequal";
 import RootStore from "./RootStore";
@@ -12,7 +12,7 @@ const logger = getLogger('ProfilesStore');
 /**
  * @typedef {{}} ProfilesStore
  * @property {string} [state]
- * @property {ProfilesItemStore[]} profiles
+ * @property {ProfileStore[]} profiles
  * @property {string|undefined|null} profileId
  * @property {string[]} selectedTrackerIds
  * @property {function} setProfiles
@@ -31,7 +31,7 @@ const logger = getLogger('ProfilesStore');
  */
 const ProfilesStore = types.model('ProfilesStore', {
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
-  profiles: types.array(ProfilesItemStore),
+  profiles: types.array(ProfileStore),
   profileId: types.maybeNull(types.string),
   selectedTrackerIds: types.array(types.string),
 }).actions(/**ProfilesStore*/self => {
@@ -89,14 +89,14 @@ const ProfilesStore = types.model('ProfilesStore', {
 
   return {
     get profile() {
-      let profile = resolveIdentifier(ProfilesItemStore, self, self.profileId);
+      let profile = resolveIdentifier(ProfileStore, self, self.profileId);
       if (!profile) {
         profile = self.profiles[0];
       }
       return profile;
     },
     getProfileById(id) {
-      return resolveIdentifier(ProfilesItemStore, self, id);
+      return resolveIdentifier(ProfileStore, self, id);
     },
     isSelectedTracker(id) {
       return self.selectedTrackerIds.indexOf(id) !== -1;

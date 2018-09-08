@@ -4,7 +4,7 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
 import blankSvg from "../assets/img/blank.svg";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
-import {ProfilesTrackerStore} from "../stores/ProfilesItemStore";
+import {ProfilesTrackerStore} from "../stores/ProfileStore";
 import {TrackerSessionStore} from '../stores/SearchStore';
 
 @inject('rootStore')

@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import {Link} from "react-router-dom";
-import ProfilesItemStore from "../stores/ProfilesItemStore";
+import ProfileStore from "../stores/ProfileStore";
 import getLogger from "../tools/getLogger";
 
 const uuid = require('uuid/v4');
@@ -70,9 +70,9 @@ class EditProfiles extends React.Component {
 
   render() {
     const profileEditor = this.props.rootStore.profileEditor;
-    const profiles = profileEditor.profiles.map((profilesItem, index) => {
+    const profiles = profileEditor.profiles.map((profileStore, index) => {
       return (
-        <ProfileItem key={profilesItem.id} index={index} profilesItem={profilesItem} history={this.props.history}/>
+        <ProfileItem key={profileStore.id} index={index} profileStore={profileStore} history={this.props.history}/>
       );
     });
 
@@ -114,7 +114,7 @@ class ProfileItem extends React.Component {
 
   handleRemove(e) {
     e.preventDefault();
-    this.props.rootStore.profileEditor.removeProfileById(this.props.profilesItem.id);
+    this.props.rootStore.profileEditor.removeProfileById(this.props.profileStore.id);
   }
 
   handleNameClick(e) {
@@ -122,7 +122,7 @@ class ProfileItem extends React.Component {
       e.target === this.item ||
       e.target.classList.contains('item__name')
     ) {
-      this.props.history.push(`/profileEditor/${this.props.profilesItem.id}`);
+      this.props.history.push(`/profileEditor/${this.props.profileStore.id}`);
     }
   }
 
@@ -131,13 +131,13 @@ class ProfileItem extends React.Component {
   }
 
   render() {
-    const profilesItem = this.props.profilesItem;
+    const profileStore = this.props.profileStore;
 
     return (
-      <div ref={this.refItem} onClick={this.handleNameClick} data-id={profilesItem.id} className="item">
+      <div ref={this.refItem} onClick={this.handleNameClick} data-id={profileStore.id} className="item">
         <div className="item__move"/>
-        <div className="item__name">{profilesItem.name}</div>
-        <Link to={`/profileEditor/${profilesItem.id}`}
+        <div className="item__name">{profileStore.name}</div>
+        <Link to={`/profileEditor/${profileStore.id}`}
               className="item__cell item__button button-edit"
               title={chrome.i18n.getMessage('edit')}/>
         <a onClick={this.handleRemove}
@@ -151,7 +151,7 @@ class ProfileItem extends React.Component {
 ProfileItem.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   index: PropTypes.number,
-  profilesItem: PropTypes.instanceOf(ProfilesItemStore),
+  profileStore: PropTypes.instanceOf(ProfileStore),
   history: PropTypes.object,
 };
 
