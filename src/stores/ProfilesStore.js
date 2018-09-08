@@ -89,7 +89,10 @@ const ProfilesStore = types.model('ProfilesStore', {
 
   return {
     get profile() {
-      let profile = resolveIdentifier(ProfileStore, self, self.profileId);
+      let profile = null;
+      if (self.profileId) {
+        profile = resolveIdentifier(ProfileStore, self, self.profileId);
+      }
       if (!profile) {
         profile = self.profiles[0];
       }
