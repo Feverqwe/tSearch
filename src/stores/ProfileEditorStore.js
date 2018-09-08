@@ -6,14 +6,14 @@ import EditProfileStore from "./EditProfileStore";
 const logger = getLogger('ProfileEditorStore');
 
 /**
- * @typedef {ProfileStore} EditProfilesStore
+ * @typedef {ProfileStore} ProfileEditorProfileStore
  */
-const EditProfilesStore = types.compose('EditProfilesItemStore', ProfileStore);
+const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', ProfileStore);
 
 /**
  * @typedef {{}} ProfileEditorStore
  * @property {string} [saveState]
- * @property {EditProfilesStore[]} profiles
+ * @property {ProfileEditorProfileStore[]} profiles
  * @property {Map<*,EditProfileStore>} profilePages
  * @property {function:Promise} save
  * @property {function} moveProfile
@@ -25,7 +25,7 @@ const EditProfilesStore = types.compose('EditProfilesItemStore', ProfileStore);
  */
 const ProfileEditorStore = types.model('ProfileEditorStore', {
   saveState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
-  profiles: types.array(EditProfilesStore),
+  profiles: types.array(ProfileEditorProfileStore),
   profilePages: types.map(EditProfileStore),
 }).actions(self => {
   return {
