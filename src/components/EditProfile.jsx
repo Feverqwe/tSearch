@@ -161,8 +161,8 @@ class EditProfile extends React.Component {
           <TrackerItem key={`tracker-${editorTracker.id}`} id={editorTracker.id} editorTracker={editorTracker}
                        tracker={tracker} profile={this.profile}/>
         );
-        return result;
       }
+      return result;
     }, []);
 
     return (
