@@ -1,4 +1,3 @@
-import {inject, observer} from "mobx-react";
 import React from "react";
 import getLogger from "../tools/getLogger";
 import PropTypes from "prop-types";
