@@ -47,19 +47,6 @@ const ProfileStore = types.model('ProfileStore', {
   id: types.identifier,
   name: types.string,
   trackers: types.array(ProfileTrackerStore)
-}).views(self => {
-  return {
-    get trackersIsReady() {
-      return self.trackers.every(trackerProfile => {
-        const tracker = trackerProfile.tracker;
-        if (!tracker) {
-          return true;
-        } else {
-          return !['idle', 'pending'].includes(trackerProfile.tracker.state);
-        }
-      });
-    },
-  };
 });
 
 export default ProfileStore;

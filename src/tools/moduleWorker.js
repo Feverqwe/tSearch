@@ -6,7 +6,9 @@ import getLogger from "./getLogger";
 const logger = getLogger('moduleWorker');
 
 class ModuleWorker {
-  constructor() {
+  constructor(module) {
+    this.module = module;
+
     this.worker = null;
 
     this.requests = [];
@@ -20,7 +22,8 @@ class ModuleWorker {
       }
     };
   }
-  init(module) {
+  init() {
+    const module = this.module;
     this.connectRe = exKitBuildConnectRe(module.meta.connect);
     this.worker = new FrameWorker({
       moduleId: module.id

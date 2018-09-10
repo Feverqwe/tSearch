@@ -52,8 +52,7 @@ class Search extends React.Component {
       this.props.rootStore.options.state === 'done' &&
       this.props.rootStore.history.state === 'done' &&
       this.props.rootStore.profiles.state === 'done' &&
-      this.props.rootStore.profiles.profile &&
-      this.props.rootStore.profiles.profile.trackersIsReady
+      this.props.rootStore.profiles.profile
     ) {
       searchSession = (
         <SearchSession key={`${this.props.rootStore.profiles.profile.id}_${this.state.session}`} query={this.props.query} onCreateSearchStore={this.handleCreateSearchStore}/>

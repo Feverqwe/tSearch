@@ -50,13 +50,11 @@ const TrackerMetaStore = types.model('TrackerMetaStore', {
  * @typedef {{}} TrackerStore
  * @property {string} id
  * @property {number} [attached]
- * @property {string} [state]
  * @property {TrackerOptionsStore} [options]
  * @property {TrackerMetaStore} meta
  * @property {string} code
  * @property {function} attach
  * @property {function} deattach
- * @property {function} setState
  * @property {*} worker
  * @property {function} getIconUrl
  * @property {function} handleAttachedChange
@@ -67,7 +65,6 @@ const TrackerMetaStore = types.model('TrackerMetaStore', {
 const TrackerStore = types.model('TrackerStore', {
   id: types.identifier,
   attached: types.optional(types.number, 0),
-  state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
   options: types.optional(TrackerOptionsStore, {}),
   meta: TrackerMetaStore,
   code: types.string
@@ -82,9 +79,6 @@ const TrackerStore = types.model('TrackerStore', {
       setTimeout(() => {
         self.handleAttachedChange();
       }, 1);
-    },
-    setState(state) {
-      self.state = state;
     },
   };
 }).views(self => {
@@ -103,34 +97,24 @@ const TrackerStore = types.model('TrackerStore', {
     },
     handleAttachedChange() {
       if (self.attached) {
-        if (!worker && self.state !== 'pending') {
-          self.createWorker();
-        }
+        self.createWorker();
       } else {
-        if (worker) {
-          self.destroyWorker();
-          self.setState('idle');
-        }
+        self.destroyWorker();
       }
     },
     createWorker() {
-      self.setState('pending');
-      worker = new TrackerWorker();
-      return worker.init(self.toJSON()).then(() => {
-        self.setState('done');
-      }).catch(err => {
-        logger.error('createWorker error', err);
-        self.setState('error');
-      });
+      if (!worker) {
+        worker = new TrackerWorker(self.toJSON());
+      }
     },
     destroyWorker() {
-      worker.destroy();
+      if (worker) {
+        worker.destroy();
+      }
       worker = null;
     },
     beforeDestroy() {
-      if (worker) {
-        self.destroyWorker();
-      }
+      self.destroyWorker();
     }
   };
 });
