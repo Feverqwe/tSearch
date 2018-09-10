@@ -1,3 +1,4 @@
+import '../../src/assets/css/history.less';
 import React from 'react';
 import Header from "../components/Header";
 import ScrollTop from "../components/ScrollTop";
@@ -5,7 +6,6 @@ import {inject, observer} from "mobx-react";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import highlight from "../tools/highlight";
-import '../../src/assets/css/history.less';
 import {HistoryClickStore, HistoryQueryStore} from '../stores/HistoryStore';
 import {Link} from "react-router-dom";
 

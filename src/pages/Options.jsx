@@ -1,7 +1,7 @@
+import '../../src/assets/css/options.less';
 import React from 'react';
 import Header from "../components/Header";
 import ScrollTop from "../components/ScrollTop";
-import '../../src/assets/css/options.less';
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import {Link} from "react-router-dom";

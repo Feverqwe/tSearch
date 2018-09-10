@@ -4,6 +4,15 @@ import getLogger from "../tools/getLogger";
 
 const logger = getLogger('TrackerStore');
 
+/**
+ * @typedef {{}} TrackerOptionsStore
+ * @property {number} [lastUpdate]
+ * @property {boolean} [autoUpdate]
+ */
+const TrackerOptionsStore = types.model('TrackerOptionsStore', {
+  lastUpdate: types.optional(types.number, 0),
+  autoUpdate: types.optional(types.boolean, true),
+});
 
 /**
  * @typedef {{}} TrackerMetaStore
@@ -42,6 +51,7 @@ const TrackerMetaStore = types.model('TrackerMetaStore', {
  * @property {string} id
  * @property {number} [attached]
  * @property {string} [state]
+ * @property {TrackerOptionsStore} [options]
  * @property {TrackerMetaStore} meta
  * @property {string} code
  * @property {function} attach
@@ -58,6 +68,7 @@ const TrackerStore = types.model('TrackerStore', {
   id: types.identifier,
   attached: types.optional(types.number, 0),
   state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
+  options: types.optional(TrackerOptionsStore, {}),
   meta: TrackerMetaStore,
   code: types.string
 }).actions(self => {
@@ -125,3 +136,4 @@ const TrackerStore = types.model('TrackerStore', {
 });
 
 export default TrackerStore;
+export {TrackerOptionsStore};

@@ -8,6 +8,7 @@ import OptionsStore from "./OptionsStore";
 import ExplorerStore from "./ExplorerStore";
 import ProfileEditorStore from "./ProfileEditorStore";
 import TrackersStore from "./TrackersStore";
+import EditorStore from "./EditorStore";
 
 
 /**
@@ -21,10 +22,13 @@ import TrackersStore from "./TrackersStore";
  * @property {OptionsStore} [options]
  * @property {ExplorerStore} [explorer]
  * @property {ProfileEditorStore|undefined|null} profileEditor
+ * @property {EditorStore|undefined|null} editor
  * @property {function} createSearch
  * @property {function} destroySearch
  * @property {function} createProfileEditor
  * @property {function} destroyProfileEditor
+ * @property {function} createEditor
+ * @property {function} destroyEditor
  */
 const RootStore = types.model('RootStore', {
   searchForm: types.optional(SearchForm, {}),
@@ -35,7 +39,8 @@ const RootStore = types.model('RootStore', {
   searches: types.array(SearchStore),
   options: types.optional(OptionsStore, {}),
   explorer: types.optional(ExplorerStore, {}),
-  profileEditor: types.maybeNull(ProfileEditorStore)
+  profileEditor: types.maybeNull(ProfileEditorStore),
+  editor: types.maybeNull(EditorStore),
 }).actions(/**RootStore*/self => {
   return {
     createSearch(query) {
@@ -55,7 +60,13 @@ const RootStore = types.model('RootStore', {
     },
     destroyProfileEditor() {
       self.profileEditor = null;
-    }
+    },
+    createEditor(type, id) {
+      self.editor = {type, id};
+    },
+    destroyEditor() {
+      self.editor = null;
+    },
   };
 });
 

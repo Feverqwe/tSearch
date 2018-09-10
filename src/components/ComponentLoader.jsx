@@ -47,8 +47,10 @@ class ComponentLoader extends React.Component {
       );
     }
 
+    const {page, ...props} = this.props;
+
     return (
-      <this.Component {...this.props}/>
+      <this.Component {...props}/>
     );
   }
 }
