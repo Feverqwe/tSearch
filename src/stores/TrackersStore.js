@@ -62,10 +62,10 @@ const TrackersStore = types.model('TrackersStore', {
         ids.forEach(id => {
           const tracker = self.trackers.get(id);
           const newTracker = newValue[id];
-          if (tracker && !newTracker) {
+          if (!newTracker) {
             self.deleteTracker(id);
           } else
-          if (!tracker && newTracker) {
+          if (!tracker) {
             self.setTracker(id, newTracker);
           } else
           if (tracker.code !== newTracker.code) {
