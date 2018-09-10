@@ -268,7 +268,9 @@ class TrackerItem extends React.Component {
 
   handleRemove(e) {
     e.preventDefault();
-    this.props.rootStore.trackers.deleteTrackerById(this.props.id);
+    const trackers = this.props.rootStore.trackers;
+    trackers.deleteTracker(this.props.id);
+    trackers.saveTrackers();
   }
 
   refCheckbox(element) {

@@ -1,8 +1,9 @@
-import {flow, isAlive, types} from 'mobx-state-tree';
+import {flow, isAlive, types, destroy} from 'mobx-state-tree';
 import {TrackerOptionsStore} from '../stores/TrackerStore';
 import getTrackerCodeMeta from "../tools/getTrackerCodeMeta";
 import getLogger from "../tools/getLogger";
 import getHash from "../tools/getHash";
+import TrackerStore from "./TrackerStore";
 
 const logger = getLogger('EditorStore');
 
@@ -74,13 +75,17 @@ const EditorStore = types.model('EditorStore', {
       self.saveState = 'pending';
       try {
         if (self.type === 'tracker') {
+          const trackerStore = TrackerStore.create({
+            id: self.id,
+            meta: getTrackerCodeMeta(self.code),
+            code: self.code,
+            options: self.options.toJSON(),
+          });
+          const tracker = trackerStore.toJSON();
+          destroy(trackerStore);
+
           yield new Promise(resolve => chrome.storage.local.get({trackers: {}}, resolve)).then(storage => {
-            storage.trackers[self.id] = {
-              id: self.id,
-              meta: getTrackerCodeMeta(self.code),
-              code: self.code,
-              options: self.options.toJSON(),
-            };
+            storage.trackers[self.id] = tracker;
             return new Promise(resolve => chrome.storage.local.set(storage, resolve));
           });
           if (isAlive(self)) {

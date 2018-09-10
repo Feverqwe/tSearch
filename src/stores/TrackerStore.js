@@ -49,44 +49,36 @@ const TrackerMetaStore = types.model('TrackerMetaStore', {
 /**
  * @typedef {{}} TrackerStore
  * @property {string} id
- * @property {number} [attached]
  * @property {TrackerOptionsStore} [options]
  * @property {TrackerMetaStore} meta
  * @property {string} code
+ * @property {function} setOptions
+ * @property {function} getIconUrl
+ * @property {*} attached
+ * @property {*} worker
  * @property {function} attach
  * @property {function} deattach
- * @property {*} worker
- * @property {function} getIconUrl
  * @property {function} handleAttachedChange
  * @property {function} createWorker
  * @property {function} destroyWorker
+ * @property {function} reloadWorker
  * @property {function} beforeDestroy
  */
 const TrackerStore = types.model('TrackerStore', {
   id: types.identifier,
-  attached: types.optional(types.number, 0),
   options: types.optional(TrackerOptionsStore, {}),
   meta: TrackerMetaStore,
   code: types.string
 }).actions(self => {
   return {
-    attach() {
-      self.attached++;
-      self.handleAttachedChange();
-    },
-    deattach() {
-      self.attached--;
-      setTimeout(() => {
-        self.handleAttachedChange();
-      }, 1);
-    },
+    setOptions(value) {
+      self.options = value;
+    }
   };
 }).views(self => {
+  let attached = 0;
   let worker = null;
   return {
-    get worker() {
-      return worker;
-    },
     getIconUrl() {
       if (self.meta.icon64) {
         return self.meta.icon64;
@@ -95,8 +87,24 @@ const TrackerStore = types.model('TrackerStore', {
       }
       return '';
     },
+    get attached() {
+      return attached;
+    },
+    get worker() {
+      return worker;
+    },
+    attach() {
+      attached++;
+      self.handleAttachedChange();
+    },
+    deattach() {
+      attached--;
+      setTimeout(() => {
+        self.handleAttachedChange();
+      }, 1);
+    },
     handleAttachedChange() {
-      if (self.attached) {
+      if (attached) {
         self.createWorker();
       } else {
         self.destroyWorker();
@@ -112,6 +120,12 @@ const TrackerStore = types.model('TrackerStore', {
         worker.destroy();
       }
       worker = null;
+    },
+    reloadWorker() {
+      if (worker) {
+        self.destroyWorker();
+        self.createWorker();
+      }
     },
     beforeDestroy() {
       self.destroyWorker();

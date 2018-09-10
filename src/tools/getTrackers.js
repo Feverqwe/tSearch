@@ -1,6 +1,8 @@
 import getTrackersJson from "./getTrackersJson";
 import loadLocalTrackerModule from "./loadLocalTrackerModule";
 import getLogger from "./getLogger";
+import TrackerStore from "../stores/TrackerStore";
+import {destroy} from "mobx-state-tree";
 
 const compareVersions = require('compare-versions');
 
@@ -33,8 +35,12 @@ const getTrackers = () => {
 
       if (!tracker) {
         return loadLocalTrackerModule(id).then(localTracker => {
+          const trackerStore = TrackerStore.create(localTracker);
+          const tracker = trackerStore.toJSON();
+          destroy(trackerStore);
+
           storageChanged = true;
-          return idTracker[id] = localTracker;
+          return idTracker[id] = tracker;
         }, err => {
           logger.error('loadLocalTrackerModule error', id, err);
         });
