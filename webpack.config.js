@@ -45,7 +45,7 @@ const config = {
       cacheGroups: {
         commons: {
           name: "commons",
-          chunks: chunk => ['bg', 'popup', 'index', 'options', 'history', 'editor', 'magic'].indexOf(chunk.name) !== -1,
+          chunks: chunk => ['bg', 'popup', 'index'].indexOf(chunk.name) !== -1,
           minChunks: 2,
           priority: -10
         },
