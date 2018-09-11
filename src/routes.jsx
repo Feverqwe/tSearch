@@ -9,6 +9,7 @@ import ProfileEditor from "./pages/ProfileEditor";
 import ComponentLoader from "./components/ComponentLoader";
 
 const qs = require('querystring');
+const uuid = require('uuid/v4');
 
 const routes = [{
   path: '/',
@@ -64,6 +65,11 @@ const routes = [{
   render: props => {
     const type = props.match.params.type;
     const id = props.match.params.id;
+    if (!id) {
+      return (
+        <Redirect to={`/editor/${type}/${uuid()}`}/>
+      );
+    }
     return (
       <ComponentLoader {...props} page={'editor'} type={type} id={id}/>
     );

@@ -186,7 +186,7 @@ class EditProfile extends React.Component {
         </div>
         <div className="manager__footer">
           <a href="#save" className="button manager__footer__btn" onClick={this.handleSave}>{chrome.i18n.getMessage('save')}</a>
-          <a href={null} target="_blank" className="button manager__footer__btn">{chrome.i18n.getMessage('add')}</a>
+          <Link to={'/editor/tracker'} target="_blank" className="button manager__footer__btn">{chrome.i18n.getMessage('add')}</Link>
           <a href="#createCode" className="button manager__footer__btn">{chrome.i18n.getMessage('createCode')}</a>
         </div>
       </div>
