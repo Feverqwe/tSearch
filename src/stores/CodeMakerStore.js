@@ -45,7 +45,7 @@ const CodeMakerStore = types.model('CodeMakerStore', {
     dateRegexp: types.maybe(RegexpStore),
     dateReplaceToday: types.optional(types.boolean, false),
     dateReplaceMonth: types.optional(types.boolean, false),
-    dateUseTemplate: types.maybe(types.enumeration(['a', 'b', 'c'])),
+    dateUseTemplate: types.maybe(types.enumeration(['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago', '04-31-2013[[[ 07]:03]:27]', '2d 1h 0m 0s ago'])),
     sizeRegexp: types.maybe(RegexpStore),
     sizeConvert: types.optional(types.boolean, false),
     peersRegexp: types.maybe(RegexpStore),

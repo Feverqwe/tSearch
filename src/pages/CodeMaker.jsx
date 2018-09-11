@@ -2,6 +2,7 @@ import '../assets/css/magic.less';
 import React from 'react';
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
+import getRandomColor from "../tools/getRandomColor";
 
 class CodeMaker extends React.Component {
   constructor(props) {
@@ -305,7 +306,13 @@ class CodeMakerConvertPage extends React.Component {
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitUseTemplate')}</span>
-          <select data-id="convert_time_format"/>
+          <select data-id="convert_time_format" defaultValue={'-'}>
+            {['-', '2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago', '04-31-2013[[[ 07]:03]:27]', '2d 1h 0m 0s ago'].map(option => {
+              return (
+                <option key={option} value={option}>{option}</option>
+              );
+            })}
+          </select>
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitSourceString')}</span>
@@ -381,15 +388,41 @@ class CodeMakerConvertPage extends React.Component {
 }
 
 class CodeMakerDescPage extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      iconData: '',
+    };
+
+    this.handleIconClick = this.handleIconClick.bind(this);
+  }
+  generateIcon(color) {
+    const icon = btoa(`<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="${color}" /></svg>`);
+    return `data:image/svg+xml;base64,${icon}`;
+  }
+  componentDidMount() {
+    if (!this.state.iconData) {
+      this.handleIconClick();
+    }
+  }
+  handleIconClick(e) {
+    e && e.preventDefault();
+    this.setState({
+      iconData: getRandomColor(),
+    });
+  }
   render() {
     return (
       <div className="page desk">
         <h2>{chrome.i18n.getMessage('kitDesc')}</h2>
         <label>
           <span>{chrome.i18n.getMessage('kitIcon')}</span>
-          <i className="tracker_iconPic" data-id="desk_tracker_iconPic"/>
+          <i onClick={this.handleIconClick} style={{
+            backgroundImage: `url(${this.generateIcon(this.state.iconData)})`
+          }} className="tracker_iconPic" data-id="desk_tracker_iconPic"/>
           <input type="file" data-id="desk_tracker_iconFile"/>
-          <input type="hidden" data-id="desk_tracker_icon" placeholder="data:image/png,base64:"/>
+          <input type="hidden" data-id="desk_tracker_icon" value={this.state.iconData}/>
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitTrackerTitle')}</span>
