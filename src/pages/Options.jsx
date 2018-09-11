@@ -93,9 +93,9 @@ class Options extends React.Component {
         <Header {...this.props}/>
         <div className="main options-ctr">
           <div className="sections">
-            <Link to="/options?section=main" className="sections__item" data-page="basic">{chrome.i18n.getMessage('basic')}</Link>
-            <Link to="/options?section=explorer" className="sections__item" data-page="mainPage">{chrome.i18n.getMessage('mainPage')}</Link>
-            <Link to="/options?section=backup" className="sections__item" data-page="backup">{chrome.i18n.getMessage('backupRestore')}</Link>
+            <Link to="/options/main" className="sections__item" data-page="basic">{chrome.i18n.getMessage('basic')}</Link>
+            <Link to="/options/explorer" className="sections__item" data-page="mainPage">{chrome.i18n.getMessage('mainPage')}</Link>
+            <Link to="/options/backup" className="sections__item" data-page="backup">{chrome.i18n.getMessage('backupRestore')}</Link>
           </div>
           <div className="options">
             {page}

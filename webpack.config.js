@@ -29,8 +29,8 @@ const config = {
     sandbox: './src/sandbox',
     popup: './src/Popup',
     index: './src/App',
-    options: './src/Options',
-    /*history: './src/js/history',
+    /*options: './src/Options',
+    history: './src/js/history',
     editor: './src/js/editor',
     magic: './src/js/magic',*/
   },
@@ -119,11 +119,6 @@ const config = {
       filename: 'index.html',
       template: './src/templates/index.html',
       chunks: ['commons', 'index']
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'options.html',
-      template: './src/templates/options.html',
-      chunks: ['commons', 'options']
     }),
     /*new HtmlWebpackPlugin({
       filename: 'history.html',

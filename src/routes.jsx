@@ -53,16 +53,16 @@ const routes = [{
     );
   },
 }, {
-  path: '/options',
+  path: '/options/:section?',
   render: props => {
-    const query = qs.parse(props.location.search.substr(1));
-    if (query.section === undefined) {
+    const section = props.match.params.section;
+    if (!section) {
       return (
-        <Redirect to={'/options?section=main'}/>
+        <Redirect to={'/options/main'}/>
       );
     }
     return (
-      <Options {...props} section={query.section}/>
+      <Options {...props} section={section}/>
     );
   },
 }, {

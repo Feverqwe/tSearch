@@ -13,7 +13,7 @@
         "48": "assets/icons/icon_48.png",
         "16": "assets/icons/icon_16.png"
     },
-    "options_page": "options.html",
+    "options_page": "index.html#/options",
     "permissions": ["storage", "contextMenus", "http://*/*", "https://*/*", "unlimitedStorage"],
     "omnibox": {
         "keyword" : "tms"
