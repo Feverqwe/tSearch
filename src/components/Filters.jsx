@@ -204,6 +204,10 @@ class SeedFilter extends React.Component {
     this.max = element;
   }
   render() {
+    if (this.props.rootStore.options.options.hideSeedRow) {
+      return null;
+    }
+
     const filter = this.props.rootStore.filters;
 
     return (
@@ -273,6 +277,10 @@ class PeerFilter extends React.Component {
     this.max = element;
   }
   render() {
+    if (this.props.rootStore.options.options.hidePeerRow) {
+      return null;
+    }
+
     const filter = this.props.rootStore.filters;
 
     return (
