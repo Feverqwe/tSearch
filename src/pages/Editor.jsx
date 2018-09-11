@@ -191,7 +191,7 @@ class Editor extends React.Component {
     }
 
     return (
-      <div className="editor">
+      <div className="page-ctr page-ctr--editor">
         <div className="editor__head">
           <div className="head__options">
             <label>
