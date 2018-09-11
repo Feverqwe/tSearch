@@ -80,7 +80,7 @@ class EditProfiles extends React.Component {
       <div className="manager">
         <div className="manager__body">
           <div className="manager__sub_header manager__sub_header-profiles">
-            <a className="manager__new_profile" href="#new_profile" onClick={this.handleCreate}>{chrome.i18n.getMessage('newProfile')}</a>
+            <Link className="manager__new_profile" to={`/profileEditor/new`} onClick={this.handleCreate}>{chrome.i18n.getMessage('newProfile')}</Link>
           </div>
           <div ref={this.refProfiles} className="manager__profiles">
             {profiles}

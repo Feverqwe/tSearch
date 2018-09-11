@@ -23,6 +23,11 @@ const routes = [{
   path: '/profileEditor/:id?',
   render: props => {
     const id = props.match.params.id;
+    if (id === 'new') {
+      return (
+        <Redirect to={`/profileEditor/${uuid()}`}/>
+      );
+    }
     return (
       <ProfileEditor {...props} id={id}/>
     );
