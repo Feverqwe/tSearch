@@ -7,9 +7,25 @@ import 'script-loader!requirejs/require';
 
 const debug = getLogger('sandbox');
 
-window.define('jquery', () => window.$ = window.jQuery = require('jquery'));
-window.define('moment', () => window.moment = require('moment'));
-window.define('exKit', () => require('./exKit').default);
+const altRequire = modules => {
+  const promiseList = [];
+  if (modules.indexOf('jquery') !== -1) {
+    promiseList.push(import('jquery').then(jQuery => {
+      window.define('jquery', () => window.$ = window.jQuery = jQuery.default);
+    }));
+  }
+  if (modules.indexOf('moment') !== -1) {
+    promiseList.push(import('moment').then(moment => {
+      window.define('moment', () => window.moment = moment.default);
+    }));
+  }
+  if (modules.indexOf('exKit') -1) {
+    promiseList.push(import('./exKit').then(module => {
+      window.define('exKit', () => module.default);
+    }));
+  }
+  return Promise.all(promiseList);
+};
 
 const runCode = code => {
   return eval(code);
@@ -19,7 +35,9 @@ const api = {
   info: null,
   init: function (code, requireList, info) {
     api.info = info;
-    return new Promise((resove, reject) => window.require(requireList, resove, reject)).then(() => {
+    return altRequire(requireList).then(() => {
+      return new Promise((resolve, reject) => window.require(requireList, resolve, reject));
+    }).then(() => {
       return runCode(code);
     }).catch(err => {
       debug('Init error', err);

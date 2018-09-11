@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import baseApi from './baseApi';
+import './baseApi';
 
 const extend = function () {
   const obj = arguments[0];
