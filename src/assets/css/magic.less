@@ -1,18 +1,3 @@
-html {
-    height: 100%;
-}
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.875em;
-    margin: 0;
-    min-width: 960px;
-    height: 100%;
-}
-
-body.loading {
-    visibility: hidden;
-}
-
 input[type=text] {
     border: 1px solid #cccccc;
     padding-left: 2px;
@@ -23,19 +8,23 @@ input[type=text]:hover {
     border: 1px solid #999999;
 }
 
+.page-ctr--code-maker {
+    overflow: auto;
+}
+
 div.tools {
     position: relative;
     height: 300px;
     background-color: #fff;
     border-bottom: 1px solid #e6e6e6;
 }
-div.tools > .menu {
+div.tools > .top-menu {
     background-color: #e6e6e6;
     margin: 0;
     padding: 0;
     font-size: 1.143em;
 }
-div.tools > .menu > a {
+div.tools > .top-menu > a {
     display: inline-block;
     padding-top: 1px;
     padding-bottom: 2px;
@@ -46,7 +35,7 @@ div.tools > .menu > a {
     text-decoration: none;
     color: #0051D8;
 }
-div.tools > .menu > a.active {
+div.tools > .top-menu > a.active {
     background-color: #fff;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;

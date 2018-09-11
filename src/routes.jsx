@@ -80,6 +80,13 @@ const routes = [{
     );
   },
 }, {
+  path: '/codeMaker',
+  render: props => {
+    return (
+      <ComponentLoader {...props} page={'codeMaker'}/>
+    );
+  },
+}, {
   path: null,
   render: props => {
     return (

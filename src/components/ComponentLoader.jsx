@@ -29,6 +29,10 @@ class ComponentLoader extends React.Component {
           result = await import('../pages/Editor');
           break;
         }
+        case 'codeMaker': {
+          result = await import('../pages/CodeMaker');
+          break;
+        }
         default: {
           throw new Error('Component is not found');
         }
