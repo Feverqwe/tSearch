@@ -33,7 +33,7 @@ class Options extends React.Component {
         break;
       }
       case 'done': {
-        switch (this.props.section) {
+        switch (this.props.page) {
           case 'main': {
             page = (
               <div className="page page-basic">
@@ -112,7 +112,7 @@ class Options extends React.Component {
 
 Options.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
-  section: PropTypes.string,
+  page: PropTypes.string,
 };
 
 

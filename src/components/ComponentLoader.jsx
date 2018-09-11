@@ -24,7 +24,7 @@ class ComponentLoader extends React.Component {
     this.setState({state: 'pending'});
     try {
       let result = null;
-      switch (this.props.page) {
+      switch (this.props['load-page']) {
         case 'editor': {
           result = await import('../pages/Editor');
           break;
@@ -51,7 +51,7 @@ class ComponentLoader extends React.Component {
       );
     }
 
-    const {page, ...props} = this.props;
+    const {'load-page': loadPage, ...props} = this.props;
 
     return (
       <this.Component {...props}/>
@@ -60,7 +60,7 @@ class ComponentLoader extends React.Component {
 }
 
 ComponentLoader.propTypes = null && {
-  page: PropTypes.string,
+  'load-page': PropTypes.string,
 };
 
 export default ComponentLoader;

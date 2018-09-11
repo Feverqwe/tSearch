@@ -53,16 +53,16 @@ const routes = [{
     );
   },
 }, {
-  path: '/options/:section?',
+  path: '/options/:page?',
   render: props => {
-    const section = props.match.params.section;
-    if (!section) {
+    const page = props.match.params.page;
+    if (!page) {
       return (
         <Redirect to={'/options/main'}/>
       );
     }
     return (
-      <Options {...props} section={section}/>
+      <Options {...props} page={page}/>
     );
   },
 }, {
@@ -76,14 +76,20 @@ const routes = [{
       );
     }
     return (
-      <ComponentLoader {...props} page={'editor'} type={type} id={id}/>
+      <ComponentLoader {...props} load-page={'editor'} type={type} id={id}/>
     );
   },
 }, {
-  path: '/codeMaker',
+  path: '/codeMaker/:page?',
   render: props => {
+    const page = props.match.params.page;
+    if (!page) {
+      return (
+        <Redirect to={'/codeMaker/search'}/>
+      );
+    }
     return (
-      <ComponentLoader {...props} page={'codeMaker'}/>
+      <ComponentLoader {...props} load-page={'codeMaker'} page={page}/>
     );
   },
 }, {
