@@ -11,6 +11,7 @@ class CodeMaker extends React.Component {
 
     this.pageTitleMap = {
       search: 'kitSearch',
+      selectors: 'kitSelectors',
       convert: 'kitConvert',
       auth: 'kitLogin',
       desc: 'kitDesc',
