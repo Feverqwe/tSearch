@@ -19,7 +19,7 @@ const altRequire = modules => {
       window.define('moment', () => window.moment = moment.default);
     }));
   }
-  if (modules.indexOf('exKit') -1) {
+  if (modules.indexOf('exKit') !== -1) {
     promiseList.push(import('./exKit').then(module => {
       window.define('exKit', () => module.default);
     }));
