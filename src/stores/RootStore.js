@@ -9,6 +9,7 @@ import ExplorerStore from "./ExplorerStore";
 import ProfileEditorStore from "./ProfileEditorStore";
 import TrackersStore from "./TrackersStore";
 import EditorStore from "./EditorStore";
+import CodeMakerStore from "./CodeMakerStore";
 
 
 /**
@@ -23,12 +24,15 @@ import EditorStore from "./EditorStore";
  * @property {ExplorerStore} [explorer]
  * @property {ProfileEditorStore|undefined|null} profileEditor
  * @property {EditorStore|undefined|null} editor
+ * @property {CodeMakerStore|undefined|null} codeMaker
  * @property {function} createSearch
  * @property {function} destroySearch
  * @property {function} createProfileEditor
  * @property {function} destroyProfileEditor
  * @property {function} createEditor
  * @property {function} destroyEditor
+ * @property {function} createCodeMaker
+ * @property {function} destroyCodeMaker
  */
 const RootStore = types.model('RootStore', {
   searchForm: types.optional(SearchForm, {}),
@@ -41,6 +45,7 @@ const RootStore = types.model('RootStore', {
   explorer: types.optional(ExplorerStore, {}),
   profileEditor: types.maybeNull(ProfileEditorStore),
   editor: types.maybeNull(EditorStore),
+  codeMaker: types.maybeNull(CodeMakerStore),
 }).actions(/**RootStore*/self => {
   return {
     createSearch(query) {
@@ -66,6 +71,12 @@ const RootStore = types.model('RootStore', {
     },
     destroyEditor() {
       self.editor = null;
+    },
+    createCodeMaker() {
+      self.codeMaker = {};
+    },
+    destroyCodeMaker() {
+      self.codeMaker = null;
     },
   };
 });

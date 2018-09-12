@@ -3,7 +3,12 @@ import React from 'react';
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import getRandomColor from "../tools/getRandomColor";
+import {inject, observer} from "mobx-react";
+import RootStore from "../stores/RootStore";
+import CodeStore from "../stores/CodeStore";
 
+@inject('rootStore')
+@observer
 class CodeMaker extends React.Component {
   constructor(props) {
     super(props);
@@ -13,7 +18,6 @@ class CodeMaker extends React.Component {
     this.pageTitleMap = {
       search: 'kitSearch',
       selectors: 'kitSelectors',
-      convert: 'kitConvert',
       auth: 'kitLogin',
       desc: 'kitDesc',
       save: 'kitSaveLoad',
@@ -22,12 +26,24 @@ class CodeMaker extends React.Component {
     this.frame = null;
   }
 
+  componentDidMount() {
+    this.props.rootStore.createCodeMaker();
+  }
+
+  componentWillUnmount() {
+    this.props.rootStore.destroyCodeMaker();
+  }
+
   refFrame(element) {
     this.frame = element;
   }
 
   render() {
-    const menuItems = ['search', 'selectors', 'convert', 'auth', 'desc', 'save'].map(page => {
+    if (!this.props.rootStore.codeMaker) {
+      return ('Loading...');
+    }
+
+    const menuItems = ['search', 'selectors', 'auth', 'desc', 'save'].map(page => {
       const isActive = this.props.page === page;
       const classList = [];
       if (isActive) {
@@ -43,37 +59,31 @@ class CodeMaker extends React.Component {
     switch (this.props.page) {
       case 'search': {
         page = (
-          <CodeMakerSearchPage/>
+          <CodeMakerSearchPage codeStore={this.props.rootStore.codeMaker.code}/>
         );
         break;
       }
       case 'auth': {
         page = (
-          <CodeMakerAuthPage/>
+          <CodeMakerAuthPage codeStore={this.props.rootStore.codeMaker.code}/>
         );
         break;
       }
       case 'selectors': {
         page = (
-          <CodeMakerSelectorsPage/>
-        );
-        break;
-      }
-      case 'convert': {
-        page = (
-          <CodeMakerConvertPage/>
+          <CodeMakerSelectorsPage codeStore={this.props.rootStore.codeMaker.code}/>
         );
         break;
       }
       case 'desc': {
         page = (
-          <CodeMakerDescPage/>
+          <CodeMakerDescPage codeStore={this.props.rootStore.codeMaker.code}/>
         );
         break;
       }
       case 'save': {
         page = (
-          <CodeMakerSavePage/>
+          <CodeMakerSavePage codeStore={this.props.rootStore.codeMaker.code}/>
         );
         break;
       }
@@ -97,9 +107,12 @@ class CodeMaker extends React.Component {
 }
 
 CodeMaker.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
   page: PropTypes.string,
 };
 
+@inject('rootStore')
+@observer
 class CodeMakerSearchPage extends React.Component {
   render() {
     return (
@@ -138,6 +151,13 @@ class CodeMakerSearchPage extends React.Component {
   }
 }
 
+CodeMakerSearchPage.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
+  codeStore: PropTypes.instanceOf(CodeStore),
+};
+
+@inject('rootStore')
+@observer
 class CodeMakerAuthPage extends React.Component {
   render() {
     return (
@@ -158,6 +178,13 @@ class CodeMakerAuthPage extends React.Component {
   }
 }
 
+CodeMakerAuthPage.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
+  codeStore: PropTypes.instanceOf(CodeStore),
+};
+
+@inject('rootStore')
+@observer
 class CodeMakerSelectorsPage extends React.Component {
   render() {
     return (
@@ -283,117 +310,16 @@ class CodeMakerSelectorsPage extends React.Component {
   }
 }
 
-class CodeMakerConvertPage extends React.Component {
-  render() {
-    return (
-      <div className="page convert">
-        <h2>{chrome.i18n.getMessage('kitConvert')}</h2>
+CodeMakerSelectorsPage.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
+  codeStore: PropTypes.instanceOf(CodeStore),
+};
 
-        <h3>{chrome.i18n.getMessage('kitAddTime')}</h3>
-        <label>
-          <span>{chrome.i18n.getMessage('kitRegexpPattern')}</span>
-          <input data-id="convert_time_regexp" type="text"/>
-          <span>{chrome.i18n.getMessage('kitReplaceString')}</span>
-          <input data-id="convert_time_regexpText" type="text"/>
-        </label>
-        <label>
-          <input data-id="convert_time_today" type="checkbox"/>
-          <span>{chrome.i18n.getMessage('kitReplaceToday')}</span>
-        </label>
-        <label>
-          <input data-id="convert_time_month" type="checkbox"/>
-          <span>{chrome.i18n.getMessage('kitReplaceMonth')}</span>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitUseTemplate')}</span>
-          <select data-id="convert_time_format" defaultValue={'-'}>
-            {['-', '2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago', '04-31-2013[[[ 07]:03]:27]', '2d 1h 0m 0s ago'].map(option => {
-              return (
-                <option key={option} value={option}>{option}</option>
-              );
-            })}
-          </select>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitSourceString')}</span>
-          <input data-id="convert_time_original" type="text"/>
-          <span>{chrome.i18n.getMessage('kitConvertedString')}</span>
-          <input data-id="convert_time_converted" type="text"/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitResult')}</span>
-          <input data-id="convert_time_result" type="text"/>
-        </label>
-
-        <h3>{chrome.i18n.getMessage('kitTorrentSize')}</h3>
-        <label>
-          <span>{chrome.i18n.getMessage('kitRegexpPattern')}</span>
-          <input data-id="convert_size_regexp" type="text"/>
-          <span>{chrome.i18n.getMessage('kitReplaceString')}</span>
-          <input data-id="convert_size_regexpText" type="text"/>
-        </label>
-        <label>
-          <input data-id="convert_size_convert" type="checkbox"/>
-          <span>{chrome.i18n.getMessage('kitConvertToNumber')}</span>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitSourceString')}</span>
-          <input data-id="convert_size_original" type="text"/>
-          <span>{chrome.i18n.getMessage('kitConvertedString')}</span>
-          <input data-id="convert_size_converted" type="text"/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitResult')}</span>
-          <input data-id="convert_size_result" type="text"/>
-        </label>
-
-        <h3>{chrome.i18n.getMessage('kitSeedCount')}</h3>
-        <label>
-          <span>{chrome.i18n.getMessage('kitRegexpPattern')}</span>
-          <input data-id="convert_seed_regexp" type="text"/>
-          <span>{chrome.i18n.getMessage('kitReplaceString')}</span>
-          <input data-id="convert_seed_regexpText" type="text"/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitSourceString')}</span>
-          <input data-id="convert_seed_original" type="text"/>
-          <span>{chrome.i18n.getMessage('kitConvertedString')}</span>
-          <input data-id="convert_seed_converted" type="text"/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitResult')}</span>
-          <input data-id="convert_seed_result" type="text"/>
-        </label>
-
-        <h3>{chrome.i18n.getMessage('kitPeerCount')}</h3>
-        <label>
-          <span>{chrome.i18n.getMessage('kitRegexpPattern')}</span>
-          <input data-id="convert_peer_regexp" type="text"/>
-          <span>{chrome.i18n.getMessage('kitReplaceString')}</span>
-          <input data-id="convert_peer_regexpText" type="text"/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitSourceString')}</span>
-          <input data-id="convert_peer_original" type="text"/>
-          <span>{chrome.i18n.getMessage('kitConvertedString')}</span>
-          <input data-id="convert_peer_converted" type="text"/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitResult')}</span>
-          <input data-id="convert_peer_result" type="text"/>
-        </label>
-      </div>
-    );
-  }
-}
-
+@inject('rootStore')
+@observer
 class CodeMakerDescPage extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      iconData: '',
-    };
 
     this.handleIconClick = this.handleIconClick.bind(this);
   }
@@ -404,28 +330,24 @@ class CodeMakerDescPage extends React.Component {
     const icon = btoa(`<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="${color}" /></svg>`);
     return `data:image/svg+xml;base64,${icon}`;
   }
-  componentDidMount() {
-    if (!this.state.iconData) {
-      this.handleIconClick();
-    }
-  }
   handleIconClick(e) {
-    e && e.preventDefault();
-    this.setState({
-      iconData: getRandomColor(),
-    });
+    e.preventDefault();
+    const codeStore = this.props.codeStore;
+    codeStore.description.set('icon', getRandomColor());
   }
   render() {
+    const codeStore = this.props.codeStore;
+
     return (
       <div className="page desk">
         <h2>{chrome.i18n.getMessage('kitDesc')}</h2>
         <label>
           <span>{chrome.i18n.getMessage('kitIcon')}</span>
           <i onClick={this.handleIconClick} style={{
-            backgroundImage: `url(${this.generateIcon(this.state.iconData)})`
+            backgroundImage: `url(${this.generateIcon(codeStore.description.icon)})`
           }} className="tracker_iconPic" data-id="desk_tracker_iconPic"/>
           <input type="file" data-id="desk_tracker_iconFile"/>
-          <input type="hidden" data-id="desk_tracker_icon" value={this.state.iconData}/>
+          <input type="hidden" data-id="desk_tracker_icon" value={codeStore.description.icon}/>
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitTrackerTitle')}</span>
@@ -448,6 +370,13 @@ class CodeMakerDescPage extends React.Component {
   }
 }
 
+CodeMakerDescPage.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
+  codeStore: PropTypes.instanceOf(CodeStore),
+};
+
+@inject('rootStore')
+@observer
 class CodeMakerSavePage extends React.Component {
   render() {
     return (
@@ -466,5 +395,10 @@ class CodeMakerSavePage extends React.Component {
     );
   }
 }
+
+CodeMakerSavePage.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
+  codeStore: PropTypes.instanceOf(CodeStore),
+};
 
 export default CodeMaker;
