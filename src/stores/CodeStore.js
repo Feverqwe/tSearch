@@ -129,6 +129,24 @@ const StringSelectorStore = types.model('StringSelectorStore', {
         pipeline.splice(pos, 1);
         self.pipeline = pipeline;
       }
+    },
+    moveLeft(method) {
+      const pipeline = self.pipeline.slice(0);
+      const pos = pipeline.indexOf(method);
+      if (pos !== -1 && pos > 0) {
+        pipeline.splice(pos, 1);
+        pipeline.splice(pos - 1, 0, method);
+        self.pipeline = pipeline;
+      }
+    },
+    moveRight(method) {
+      const pipeline = self.pipeline.slice(0);
+      const pos = pipeline.indexOf(method);
+      if (pos !== -1 && pipeline.length > pos + 1) {
+        pipeline.splice(pos, 1);
+        pipeline.splice(pos + 1, 0, method);
+        self.pipeline = pipeline;
+      }
     }
   };
 });

@@ -239,6 +239,14 @@ class PipelineSelector extends ElementSelector {
     this.closeDialog();
   };
 
+  handleLeftMethod = method => {
+    this.selectorStore.moveLeft(method);
+  };
+
+  handleRightMethod = method => {
+    this.selectorStore.moveRight(method);
+  };
+
   handleRemoveMethod = method => {
     this.selectorStore.removeMethod(method);
   };
@@ -268,7 +276,8 @@ class PipelineSelector extends ElementSelector {
 
       pipeline = this.selectorStore.pipeline.map((method, index) => {
         return (
-          <Method key={`${index}_${method.op}`} method={method} onRemove={this.handleRemoveMethod}/>
+          <Method key={`${index}_${method.op}`} method={method}
+            onLeft={this.handleLeftMethod} onRight={this.handleRightMethod} onRemove={this.handleRemoveMethod}/>
         );
       });
     }
@@ -331,7 +340,7 @@ class AddMethodDialog extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     const args = Object.keys(this.args).map(key => this.args[key].value);
-    this.props.onAdd(this.state.methodName, args);
+    this.props.onAdd(this.state.methodName || this.select.value, args);
   };
 
   handleCancel = e => {
@@ -468,6 +477,16 @@ class Method extends React.Component {
     });
   };
 
+  handleLeft = e => {
+    e.preventDefault();
+    this.props.onLeft(this.props.method);
+  };
+
+  handleRight = e => {
+    e.preventDefault();
+    this.props.onRight(this.props.method);
+  };
+
   handleRemove = e => {
     e.preventDefault();
     this.props.onRemove(this.props.method);
@@ -503,6 +522,8 @@ class Method extends React.Component {
           <div className="method-args">{args}</div>
         </div>
         {editBtn}
+        <button onClick={this.handleLeft} title={'Move left'} className={'pipeline-button'}>{'<'}</button>
+        <button onClick={this.handleRight} title={'Move right'} className={'pipeline-button'}>{'>'}</button>
         <button onClick={this.handleRemove} title={'Remove'} className={'pipeline-button'}>X</button>
         {dialog}
       </div>
@@ -513,6 +534,8 @@ class Method extends React.Component {
 Method.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   method: PropTypes.instanceOf(MethodStore),
+  onLeft: PropTypes.func,
+  onRight: PropTypes.func,
   onRemove: PropTypes.func,
 };
 
