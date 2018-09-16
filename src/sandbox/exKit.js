@@ -805,7 +805,7 @@ const exKit = {
 
     const requestOptions = {};
 
-    let headers = [];
+    let headers = {};
     if (tracker.search.requestHeaders) {
       headers = JSON.parse(tracker.search.requestHeaders);
     }
@@ -821,7 +821,7 @@ const exKit = {
       Object.assign(requestOptions, {
         method: tracker.search.requestType,
         url: tracker.search.searchUrl.replace('%search%', details.query),
-        body: (tracker.search.requestData || '').replace('%search%', details.query),
+        data: (tracker.search.requestData || '').replace('%search%', details.query),
         headers: headers,
       });
     } else {
@@ -829,36 +829,6 @@ const exKit = {
         method: 'GET',
         url: _details.url
       });
-    }
-
-    if (requestOptions.method === 'GET' && requestOptions.body) {
-      if (/\?/.test(requestOptions.url)) {
-        requestOptions.url += '&' + requestOptions.body;
-      } else {
-        requestOptions.url += '?' + requestOptions.body;
-      }
-      delete requestOptions.body;
-    }
-
-    if (!requestOptions.headers) {
-      requestOptions.headers = {};
-    }
-
-    if (requestOptions.body) {
-      if (Array.isArray(requestOptions)) {
-        const found = requestOptions.some(([key, value]) => {
-          if (key === 'Content-Type') {
-            return true;
-          }
-        });
-        if (!found) {
-          requestOptions.push(['Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8']);
-        }
-      } else {
-        if (!requestOptions.headers['Content-Type']) {
-          requestOptions.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
-        }
-      }
     }
 
     return API_request(requestOptions).then(function (response) {

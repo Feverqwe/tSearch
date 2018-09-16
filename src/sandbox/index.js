@@ -4,6 +4,7 @@ import Transport from '../tools/transport';
 import './baseApi';
 
 import 'script-loader!requirejs/require';
+import {Headers} from 'whatwg-fetch';
 
 const qs = require('querystring');
 
@@ -83,10 +84,10 @@ window.API_request = function (options) {
     options.method = options.type;
     delete options.type;
   }
-
   if (!options.method) {
     options.method = 'GET';
   }
+  options.method = options.method.toUpperCase();
 
   if (options.data) {
     if (options.method === 'POST') {
@@ -97,29 +98,39 @@ window.API_request = function (options) {
     delete options.data;
   }
 
-  if (!options.headers) {
-    options.headers = {};
-  }
+  const headers = new Headers(options.headers);
 
-  if (options.body && !options.headers['Content-Type']) {
-    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+  if (options.body) {
+    if (!headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    }
   }
 
   if (typeof options.body !== 'string') {
-    if (options.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
+    if (/^application\/x-www-form-urlencoded/.test(headers.get('Content-Type'))) {
       options.body = qs.stringify(options.body);
+    } else
+    if (/^application\/json/.test(headers.get('Content-Type'))) {
+      options.body = JSON.stringify(options.body);
     }
   }
 
-  if (options.cache === false && ['GET', 'HEAD'].indexOf(options.method) !== -1) {
-    if (!options.query) {
-      options.query = {};
+  if (options.query) {
+    if (typeof options.query !== 'string') {
+      options.query = qs.stringify(options.query);
     }
-    options.query._ = Date.now();
+    options.url += (/\?/.test(options.url) ? '&' : '?') + options.query;
+
+    delete options.query;
   }
 
   const toJson = options.json;
   delete options.json;
+
+  options.headers = Array.from(headers.entries()).reduce((result, entry) => {
+    result.push(entry);
+    return result;
+  }, []);
 
   return transport.callFn('request', [options]).then(response => {
     if (toJson) {
