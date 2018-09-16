@@ -85,19 +85,29 @@ const methods = {
 };
 
 /**
- * @typedef {{}} ElementMethodStore
- * @property {string} op
+ * @typedef {{}} MethodStore
+ * @property {string} name
  * @property {*[]} args
+ * @property {function} setArgs
  */
-const MethodStore = types.model('ElementMethodStore', {
-  op: types.string,
+const MethodStore = types.model('MethodStore', {
+  name: types.string,
   args: types.array(types.frozen()),
+}).actions(self => {
+  return {
+    setArgs(args) {
+      self.args = args;
+    }
+  };
 });
 
 /**
  * @typedef {{}} StringSelectorStore
  * @property {string} selector
  * @property {MethodStore[]} pipeline
+ * @property {function} set
+ * @property {function} addMethod
+ * @property {function} removeMethod
  */
 const StringSelectorStore = types.model('StringSelectorStore', {
   selector: types.string,
@@ -107,6 +117,19 @@ const StringSelectorStore = types.model('StringSelectorStore', {
     set(key, value) {
       self[key] = value;
     },
+    addMethod(name, args) {
+      self.pipeline.push({
+        name, args
+      });
+    },
+    removeMethod(method) {
+      const pipeline = self.pipeline.slice(0);
+      const pos = pipeline.indexOf(method);
+      if (pos !== -1) {
+        pipeline.splice(pos, 1);
+        self.pipeline = pipeline;
+      }
+    }
   };
 });
 
@@ -114,6 +137,7 @@ const StringSelectorStore = types.model('StringSelectorStore', {
  * @typedef {{}} NumberSelectorStore
  * @property {string} selector
  * @property {MethodStore[]} pipeline
+ * @property {function} set
  */
 const NumberSelectorStore = types.model('NumberSelectorStore', {
   selector: types.string,
@@ -128,7 +152,8 @@ const NumberSelectorStore = types.model('NumberSelectorStore', {
 
 /**
  * @typedef {{}} ElementSelectorStore
- * @property {string} selector
+ * @property {string} [selector]
+ * @property {function} set
  */
 const ElementSelectorStore = types.model('ElementSelectorStore', {
   selector: types.optional(types.string, ''),
@@ -172,7 +197,7 @@ const CodeSearchStore = types.model('CodeSearchStore', {
 /**
  * @typedef {{}} CodeAuthStore
  * @property {string} [url]
- * @property {ElementSelectorStore|undefined} selector
+ * @property {ElementSelectorStore} [selector]
  * @property {function} set
  */
 const CodeAuthStore = types.model('CodeAuthStore', {
@@ -233,7 +258,7 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
  * @property {string} name
  * @property {string} [description]
  * @property {string} [updateUrl]
- * @property {string} version
+ * @property {string} [version]
  * @property {function} set
  */
 const CodeDescriptionStore = types.model('CodeDescriptionStore', {
@@ -265,3 +290,4 @@ const CodeStore = types.model('CodeStore', {
 });
 
 export default CodeStore;
+export {MethodStore, methods};

@@ -1,11 +1,12 @@
 import '../assets/css/magic.less';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import getRandomColor from "../tools/getRandomColor";
 import {inject, observer} from "mobx-react";
 import RootStore from "../stores/RootStore";
-import CodeStore from "../stores/CodeStore";
+import CodeStore, {MethodStore, methods} from "../stores/CodeStore";
 import getLogger from "../tools/getLogger";
 
 const logger = getLogger('codeMaker');
@@ -108,6 +109,11 @@ class CodeMaker extends React.Component {
   }
 }
 
+CodeMaker.propTypes = null && {
+  rootStore: PropTypes.instanceOf(RootStore),
+  page: PropTypes.string,
+};
+
 
 class BindInput extends React.Component {
   input = null;
@@ -159,16 +165,27 @@ class ElementSelector extends React.Component {
 
     props.defaultValue = this.selectorStore.selector;
 
-    return [
-      <input key={'input'} {...props} data-id={id} ref={this.refInput} onChange={this.handleChange}/>,
-      children,
-      <input key={'button'} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
-    ]
+    const title = (
+      <label className="field-name">{this.props.title}</label>
+    );
+
+    return (
+      <div className="field">
+        {title}
+        <input {...props} data-id={id} ref={this.refInput} onChange={this.handleChange}/>
+        {children}
+        <input type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
+      </div>
+    )
   }
 }
 
 @observer
 class PipelineSelector extends ElementSelector {
+  state = {
+    showAddDialog: false,
+  };
+
   get store() {
     return this.props.store;
   }
@@ -181,8 +198,20 @@ class PipelineSelector extends ElementSelector {
   handleOptionalChange = e => {
     if (this.optionalCheckbox.checked) {
       if (!this.selectorStore) {
+        let pipeline = null;
+        if (/Link$/.test(this.props.id)) {
+          pipeline = [{
+            name: 'getProp',
+            args: ['href']
+          }];
+        } else {
+          pipeline = [{
+            name: 'getText'
+          }];
+        }
         this.store.set(this.props.id, {
-          selector: this.input.value
+          selector: this.input.value,
+          pipeline: pipeline
         });
       }
     } else {
@@ -192,6 +221,28 @@ class PipelineSelector extends ElementSelector {
     }
   };
 
+  handleShowDialod = e => {
+    e.preventDefault();
+    this.setState({
+      showAddDialog: true
+    });
+  };
+
+  closeDialog = () => {
+    this.setState({
+      showAddDialog: false
+    });
+  };
+
+  addMethod = (method, args) => {
+    this.selectorStore.addMethod(method, args);
+    this.closeDialog();
+  };
+
+  handleRemoveMethod = method => {
+    this.selectorStore.removeMethod(method);
+  };
+
   render() {
     const {id, optional} = this.props;
 
@@ -199,32 +250,272 @@ class PipelineSelector extends ElementSelector {
     let title = null;
     if (optional) {
       title = (
-        <span key={'title'}>
+        <label className="field-name">
           <input ref={this.refOptionalCheckbox} defaultChecked={!isDisabled} onChange={this.handleOptionalChange} type="checkbox" data-id={`${id}-optional`}/>
           <span>{this.props.title}</span>
-        </span>
+        </label>
       );
     } else {
       title = (
-        <span key={'title'}>{this.props.title}</span>
+        <label className="field-name">{this.props.title}</label>
       );
     }
 
-    const defaultValue = this.selectorStore && this.selectorStore.selector || '';
+    let defaultValue = '';
+    let pipeline = [];
+    if (this.selectorStore) {
+      defaultValue = this.selectorStore.selector || '';
 
-    return [
-      title,
-      <input disabled={isDisabled} key={'input'} type="text" data-id={id} ref={this.refInput} onChange={this.handleChange} defaultValue={defaultValue}/>,
-      <input disabled={isDisabled} key={'output'} type="text" data-id={`${id}-result`} readOnly={true}/>,
-      <input disabled={isDisabled} key={'button'} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
-    ]
+      pipeline = this.selectorStore.pipeline.map((method, index) => {
+        return (
+          <Method key={`${index}_${method.op}`} method={method} onRemove={this.handleRemoveMethod}/>
+        );
+      });
+    }
+
+    const pipeControls = [
+      <button disabled={isDisabled} key={'add'} onClick={this.handleShowDialod} className={'pipeline-button method-add'} title={'Add'}>+</button>
+    ];
+
+    let dialog = null;
+    if (this.state.showAddDialog) {
+      dialog = (
+        <AddMethodDialog onClose={this.closeDialog} onAdd={this.addMethod}/>
+      );
+    }
+
+    return (
+      <div className={'field pipeline-selector'}>
+        <div className={'field-left'}>
+          {title}
+        </div>
+        <div className={'field-right'}>
+          <div className='select'>
+            <input disabled={isDisabled} type="text" data-id={id} ref={this.refInput}
+                   onChange={this.handleChange} defaultValue={defaultValue} className={'input'}/>
+            <input disabled={isDisabled} type="text" data-id={`${id}-result`} readOnly={true} className={'output'}/>
+            <input disabled={isDisabled} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
+          </div>
+          <div className='pipeline'>
+            {pipeline}
+            <div className={'controls'}>
+              {pipeControls}
+            </div>
+          </div>
+        </div>
+        {dialog}
+      </div>
+    );
   }
 }
 
-CodeMaker.propTypes = null && {
+class AddMethodDialog extends React.Component {
+  state = {
+    methodName: null
+  };
+
+  select = null;
+  refSelect = element => {
+    this.select = element;
+  };
+
+  args = {};
+  refArg = (index, element) => {
+    if (element) {
+      this.args[index] = element;
+    } else {
+      delete this.args[index];
+    }
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    const args = Object.keys(this.args).map(key => this.args[key].value);
+    this.props.onAdd(this.state.methodName, args);
+  };
+
+  handleCancel = e => {
+    e.preventDefault();
+    this.props.onClose();
+  };
+
+  handleSelect = e => {
+    this.setState({
+      methodName: this.select.value,
+    });
+  };
+
+  render() {
+    const methodName = this.state.methodName;
+    const method = methods[this.state.methodName];
+
+    const options = Object.keys(methods).map(key => {
+      return (
+        <option key={key} value={key}>{key}</option>
+      );
+    });
+
+    let args = null;
+    if (method) {
+      args = method.args && method.args.map((arg, index) => {
+        return (
+          <div className={'method-arg'} key={index}>
+            <div className={'arg-name'}>{arg.name}</div>
+            <div className={'arg-input'}>
+              <input ref={this.refArg.bind(this, index)} type={arg.type}/>
+            </div>
+          </div>
+        );
+      });
+    }
+
+    return ReactDOM.createPortal(
+      <div className={'method-dialog'}>
+        <form onSubmit={this.handleSubmit}>
+          <div className={'method-select-wrapper'}>
+            <select className={'method-select'} ref={this.refSelect} onChange={this.handleSelect} defaultValue={methodName}>
+              {options}
+            </select>
+          </div>
+          {args}
+          <div className={'dialog-footer'}>
+            <button className={'dialog-button dialog-button-submit'} type="submit">Add</button>
+            <button className={'dialog-button'} onClick={this.handleCancel}>Cancel</button>
+          </div>
+        </form>
+      </div>,
+      document.body
+    );
+  }
+}
+
+class EditMethodDialog extends React.Component {
+  state = {
+    args: this.props.method.args.slice(0),
+  };
+
+  args = {};
+  refArg = (index, element) => {
+    if (element) {
+      this.args[index] = element;
+    } else {
+      delete this.args[index];
+    }
+  };
+
+  argChange = (index, e) => {
+    this.state.args[index] = this.args[index].value;
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.method.setArgs(this.state.args);
+    this.props.onClose();
+  };
+
+  handleCancel = e => {
+    e.preventDefault();
+    this.props.onClose();
+  };
+
+  render() {
+    const method = this.props.method;
+    const methodScheme = methods[method.name];
+
+    const args = methodScheme.args && methodScheme.args.map((arg, index) => {
+      return (
+        <div className={'method-arg'} key={index}>
+          <div className={'arg-name'}>{arg.name}</div>
+          <div className={'arg-input'}>
+            <input ref={this.refArg.bind(this, index)} onChange={this.argChange.bind(this, index)} type={arg.type} defaultValue={this.state.args[index]}/>
+          </div>
+        </div>
+      );
+    });
+
+    return ReactDOM.createPortal(
+      <div className={'method-dialog'}>
+        <form onSubmit={this.handleSubmit}>
+          <div className="method-title">{method.name}</div>
+          {args}
+          <div className={'dialog-footer'}>
+            <button className={'dialog-button dialog-button-submit'} type="submit">Save</button>
+            <button className={'dialog-button'} onClick={this.handleCancel}>Cancel</button>
+          </div>
+        </form>
+      </div>,
+      document.body
+    );
+  }
+}
+
+@observer
+class Method extends React.Component {
+  state = {
+    showEditDialog: false,
+  };
+
+  handleShowDialog = e => {
+    e.preventDefault();
+    this.setState({
+      showEditDialog: true
+    });
+  };
+
+  closeDialog = () => {
+    this.setState({
+      showEditDialog: false
+    });
+  };
+
+  handleRemove = e => {
+    e.preventDefault();
+    this.props.onRemove(this.props.method);
+  };
+
+  render() {
+    const method = this.props.method;
+
+    const args = method.args.map((arg, index) => {
+      return (
+        <div className={'method-arg'} key={index}>{arg}</div>
+      );
+    });
+
+    let dialog = null;
+    if (this.state.showEditDialog) {
+      dialog = (
+        <EditMethodDialog method={this.props.method} onClose={this.closeDialog}/>
+      );
+    }
+
+    let editBtn = null;
+    if (method.args.length) {
+      editBtn = (
+        <button onClick={this.handleShowDialog} title={'Edit'} className={'pipeline-button'}>E</button>
+      );
+    }
+
+    return (
+      <div className="method-wrapper">
+        <div className="method">
+          <div className="method-name">{method.name}</div>
+          <div className="method-args">{args}</div>
+        </div>
+        {editBtn}
+        <button onClick={this.handleRemove} title={'Remove'} className={'pipeline-button'}>X</button>
+        {dialog}
+      </div>
+    );
+  }
+}
+
+Method.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
-  page: PropTypes.string,
+  method: PropTypes.instanceOf(MethodStore),
+  onRemove: PropTypes.func,
 };
+
 
 @inject('rootStore')
 @observer
@@ -262,35 +553,35 @@ class CodeMakerSearchPage extends React.Component {
     return (
       <div className="page search">
         <h2>{chrome.i18n.getMessage('kitSearch')}</h2>
-        <label>
-          <span>{chrome.i18n.getMessage('kitSearchUrl')}</span>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitSearchUrl')}</span>
           <BindInput store={this.codeSearchStore} id={'url'} type="text"/>
           {' '}
           <input ref={this.refRequestPage} onClick={this.handleRequestPage} type="button" value={chrome.i18n.getMessage('kitOpen')}/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitSearchQuery')}</span>
+        </div>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitSearchQuery')}</span>
           <BindInput store={this.codeSearchStore} id={'query'} type="text"/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitSearchQueryEncoding')}</span>
+        </div>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitSearchQueryEncoding')}</span>
           <select onChange={this.handleEncodingChange} ref={this.refEncoding} defaultValue={this.codeSearchStore.encoding}>
             <option value="">utf-8</option>
             <option value="cp1251">cp1251</option>
           </select>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitPageCharset')}</span>
+        </div>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitPageCharset')}</span>
           <BindInput store={this.codeSearchStore} id={'charset'} type="text" placeholder="auto"/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitPostParams')}</span>
+        </div>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitPostParams')}</span>
           <BindInput store={this.codeSearchStore} id={'body'} type="text" placeholder="key=value&key2=value2"/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitBaseUrl')}</span>
+        </div>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitBaseUrl')}</span>
           <BindInput store={this.codeSearchStore} id={'baseUrl'} type="text" placeholder="auto"/>
-        </label>
+        </div>
       </div>
     );
   }
@@ -313,15 +604,13 @@ class CodeMakerAuthPage extends React.Component {
     return (
       <div className="page auth">
         <h2>{chrome.i18n.getMessage('kitLogin')}</h2>
-        <label>
-          <span>{chrome.i18n.getMessage('kitLoginUrl')}</span>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitLoginUrl')}</span>
           <BindInput store={this.codeSearchAuth} id={'url'} type="text"/>
           <input type="button" data-id="auth_open" value={chrome.i18n.getMessage('kitOpen')}/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitLoginFormSelector')}</span>
-          <ElementSelector store={this.codeSearchAuth} id={'selector'} type="text"/>
-        </label>
+        </div>
+        <ElementSelector store={this.codeSearchAuth} id={'selector'}
+                         type="text" title={chrome.i18n.getMessage('kitLoginFormSelector')}/>
       </div>
     );
   }
@@ -344,64 +633,42 @@ class CodeMakerSelectorsPage extends React.Component {
     return (
       <div className="page selectors">
         <h2>{chrome.i18n.getMessage('kitSelectors')}</h2>
-        <label>
-          <span>{chrome.i18n.getMessage('kitRowSelector')}</span>
-          <ElementSelector store={this.codeSearchSelectors} id={'row'} type="text" className={'input'}>
-            {' '}
-            <BindInput store={this.codeSearchSelectors} id={'isTableRow'} type="checkbox"/>
-            {' '}
-            <span>{chrome.i18n.getMessage('kitTableRow')}</span>
-            {' '}
-          </ElementSelector>
-        </label>
-        <label>
-          <PipelineSelector store={this.codeSearchSelectors} id={'categoryTitle'} optional={true}
-            title={chrome.i18n.getMessage('kitCategoryName')}/>
-        </label>
-        <label>
-          <PipelineSelector store={this.codeSearchSelectors} id={'categoryLink'} optional={true}
-            title={chrome.i18n.getMessage('kitCategoryLink')}/>
-        </label>
-        <label>
-          <PipelineSelector store={this.codeSearchSelectors} id={'title'}
-            title={chrome.i18n.getMessage('kitTorrentTitle')}/>
-        </label>
-        <label>
-          <PipelineSelector store={this.codeSearchSelectors} id={'link'}
-            title={chrome.i18n.getMessage('kitTorrentLink')}/>
-        </label>
-        <label>
-          <PipelineSelector store={this.codeSearchSelectors} id={'size'} optional={true}
-            title={chrome.i18n.getMessage('kitTorrentSize')}/>
-        </label>
-        <label>
-          <PipelineSelector store={this.codeSearchSelectors} id={'downloadLink'} optional={true}
-            title={chrome.i18n.getMessage('kitTorrentDownloadLink')}/>
-        </label>
-        <label>
-          <PipelineSelector store={this.codeSearchSelectors} id={'seeds'} optional={true}
-            title={chrome.i18n.getMessage('kitSeedCount')}/>
-        </label>
-        <label>
-          <PipelineSelector store={this.codeSearchSelectors} id={'peers'} optional={true}
-            title={chrome.i18n.getMessage('kitPeerCount')}/>
-        </label>
-        <label>
-          <PipelineSelector store={this.codeSearchSelectors} id={'date'} optional={true}
-            title={chrome.i18n.getMessage('kitAddTime')}/>
-        </label>
-        <div className="label">
-          <span>{chrome.i18n.getMessage('kitSkipFirstRows')}</span>
+        <ElementSelector store={this.codeSearchSelectors} id={'row'}
+                         type="text" className={'input'} title={chrome.i18n.getMessage('kitRowSelector')}>
+          {' '}
+          <BindInput store={this.codeSearchSelectors} id={'isTableRow'} type="checkbox"/>
+          {' '}
+          <span>{chrome.i18n.getMessage('kitTableRow')}</span>
+          {' '}
+        </ElementSelector>
+        <PipelineSelector store={this.codeSearchSelectors} id={'categoryTitle'} optional={true}
+                          title={chrome.i18n.getMessage('kitCategoryName')}/>
+        <PipelineSelector store={this.codeSearchSelectors} id={'categoryLink'} optional={true}
+                          title={chrome.i18n.getMessage('kitCategoryLink')}/>
+        <PipelineSelector store={this.codeSearchSelectors} id={'title'}
+                          title={chrome.i18n.getMessage('kitTorrentTitle')}/>
+        <PipelineSelector store={this.codeSearchSelectors} id={'link'}
+                          title={chrome.i18n.getMessage('kitTorrentLink')}/>
+        <PipelineSelector store={this.codeSearchSelectors} id={'size'} optional={true}
+                          title={chrome.i18n.getMessage('kitTorrentSize')}/>
+        <PipelineSelector store={this.codeSearchSelectors} id={'downloadLink'} optional={true}
+                          title={chrome.i18n.getMessage('kitTorrentDownloadLink')}/>
+        <PipelineSelector store={this.codeSearchSelectors} id={'seeds'} optional={true}
+                          title={chrome.i18n.getMessage('kitSeedCount')}/>
+        <PipelineSelector store={this.codeSearchSelectors} id={'peers'} optional={true}
+                          title={chrome.i18n.getMessage('kitPeerCount')}/>
+        <PipelineSelector store={this.codeSearchSelectors} id={'date'} optional={true}
+                          title={chrome.i18n.getMessage('kitAddTime')}/>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitSkipFirstRows')}</span>
           <BindInput store={this.codeSearchSelectors} id={'skipFromStart'} type="number"/>
         </div>
-        <div className="label">
-          <span>{chrome.i18n.getMessage('kitSkipLastRows')}</span>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitSkipLastRows')}</span>
           <BindInput store={this.codeSearchSelectors} id={'skipFromEnd'} type="number"/>
         </div>
-        <label>
-          <PipelineSelector store={this.codeSearchSelectors} id={'nextPageLink'}  optional={true}
-            title={chrome.i18n.getMessage('kitNextPageLink')}/>
-        </label>
+        <PipelineSelector store={this.codeSearchSelectors} id={'nextPageLink'}  optional={true}
+                          title={chrome.i18n.getMessage('kitNextPageLink')}/>
       </div>
     );
   }
@@ -442,30 +709,30 @@ class CodeMakerDescPage extends React.Component {
     return (
       <div className="page desk">
         <h2>{chrome.i18n.getMessage('kitDesc')}</h2>
-        <label>
-          <span>{chrome.i18n.getMessage('kitIcon')}</span>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitIcon')}</span>
           <i onClick={this.handleIconClick} style={{
             backgroundImage: `url(${this.generateIcon(codeStore.description.icon)})`
           }} className="tracker_iconPic" data-id="desk_tracker_iconPic"/>
           <input type="file" data-id="desk_tracker_iconFile"/>
           <input type="hidden" data-id="desk_tracker_icon" value={codeStore.description.icon}/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitTrackerTitle')}</span>
+        </div>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitTrackerTitle')}</span>
           <BindInput store={this.codeStoreDescription} id={'name'} type={'text'}/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitTrackerDesc')}</span>
+        </div>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitTrackerDesc')}</span>
           <BindInput store={this.codeStoreDescription} id={'description'} type={'text'}/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitTrackerDownloadUrl')}</span>
+        </div>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitTrackerDownloadUrl')}</span>
           <BindInput store={this.codeStoreDescription} id={'updateUrl'} type={'text'}/>
-        </label>
-        <label>
-          <span>{chrome.i18n.getMessage('kitTrackerVersion')}</span>
+        </div>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitTrackerVersion')}</span>
           <BindInput store={this.codeStoreDescription} id={'version'} type={'text'} placeholder="1.0"/>
-        </label>
+        </div>
       </div>
     );
   }
@@ -483,7 +750,7 @@ class CodeMakerSavePage extends React.Component {
     return (
       <div className="page save">
         <h2>{chrome.i18n.getMessage('kitSaveLoad')}</h2>
-        <div className="label">
+        <div>
           <input type="button" data-id="save_code_write"
                  value={chrome.i18n.getMessage('kitGetCode')}/>
           <input type="button" data-id="save_code_read"

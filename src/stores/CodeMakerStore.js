@@ -16,8 +16,19 @@ const CodeMakerStore = types.model('CodeMakerStore', {
     },
     selectors: {
       row: {selector: ''},
-      title: {selector: ''},
-      link: {selector: ''},
+      title: {
+        selector: '',
+        pipeline: [{
+          name: 'getText'
+        }],
+      },
+      link: {
+        selector: '',
+        pipeline: [{
+          name: 'getProp',
+          args: ['href'],
+        }],
+      },
     },
     description: {
       icon: getRandomColor(),

@@ -73,12 +73,6 @@
     margin-left: 5px;
   }
 
-  div.tools > div.body label,
-  div.tools > div.body div.label {
-    display: block;
-    margin: 5px;
-  }
-
   div.tools > div.body textarea[data-id="save_code_textarea"] {
     height: 180px;
     width: 600px;
@@ -105,53 +99,54 @@
     outline-color: red;
   }
 
-  div.tools .page.selectors label > input[data-id="selectors_list_input"] {
+  .field {
+    display: block;
+    margin: 5px;
+
+    .field-name {
+      width: 200px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  div.tools .page.selectors input[data-id="row"] {
     width: 508px;
   }
 
-  div.tools .page.selectors label > span:nth-child(1),
-  div.tools .page.selectors .label > span:nth-child(1),
-  div.tools .page.convert label > span:nth-child(1),
-  div.tools .page.search label > span:nth-child(1),
-  div.tools .page.auth label > span:nth-child(1),
-  div.tools .page.desk label > span:nth-child(1) {
+  div.tools .page.selectors .field-name,
+  div.tools .page.search .field-name,
+  div.tools .page.auth .field-name,
+  div.tools .page.desk .field-name {
     width: 200px;
     display: inline-block;
     vertical-align: middle;
   }
 
-  div.tools .page.selectors .label > input[type="number"] {
+  div.tools .page.selectors input[type="number"] {
     width: 50px;
   }
 
-  div.tools .page.search label > input[data-id="url"],
-  div.tools .page.search label > input[data-id="body"],
-  div.tools .page.search label > input[data-id="baseUrl"],
+  div.tools .page.search input[data-id="url"],
+  div.tools .page.search input[data-id="body"],
+  div.tools .page.search input[data-id="baseUrl"],
   div.tools .page.auth input[type="text"],
   div.tools .page.desk input[type="text"] {
     width: 450px;
   }
 
-  div.tools .page.search label > input[data-id="charset"] {
+  div.tools .page.search input[data-id="charset"] {
     width: 150px;
   }
 
-  div.tools .page.convert input[data-id="convert_time_result"] {
-    width: 457px;
-  }
-
-  div.tools input.output {
-    border: 1px dashed #B6B6B6;
-    background-color: #fff;
-    width: 200px;
-  }
-
-  div.tools input.input {
+  div.tools .input {
     width: 300px;
   }
 
-  div.tools input.attr {
-    width: 50px;
+  div.tools .output {
+    border: 1px dashed #B6B6B6;
+    background-color: #fff;
+    width: 200px;
   }
 
   i.tracker_iconPic {
@@ -162,5 +157,71 @@
     vertical-align: middle;
     background-position: center;
     background-repeat: no-repeat;
+  }
+
+  .pipeline-selector {
+    display: flex;
+    flex-direction: row;
+    .pipeline {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: wrap;
+      .controls {
+        display: flex;
+        align-items: center;
+        height: 24px;
+      }
+      .method-wrapper {
+        display: flex;
+        flex-direction: row;
+        background-color: #F3E5F5;
+        border-radius: 6px;
+        margin: 1px 3px;
+        align-items: center;
+        height: 22px;
+        padding: 0 2px;
+        cursor: default;
+        user-select: none;
+        &:hover {
+          background-color: #d1c4e9;
+        }
+        .method {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          .method-name {
+            margin-left: 3px;
+            margin-right: 3px;
+          }
+          .method-args {
+            display: flex;
+            flex-direction: row;
+            .method-arg {
+              padding: 2px 3px;
+              margin-right: 2px;
+              background-color: #fff;
+              border-radius: 3px;
+            }
+          }
+        }
+      }
+    }
+    .pipeline-button {
+      border-radius: 3px;
+      background-color: #ECEFF1;
+      height: 18px;
+      margin: 0 1px;
+      border: 1px solid #9E9E9E;
+      color: #263238;
+      cursor: pointer;
+      &:active {
+        background-color: #fff;
+        border-color: #ccc;
+      }
+      &:disabled {
+        color: #9E9E9E;
+      }
+    }
   }
 }
