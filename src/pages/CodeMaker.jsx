@@ -238,6 +238,20 @@ class PipelineSelector extends ElementSelector {
     if (this.optionalCheckbox.checked) {
       if (!this.selectorStore) {
         let pipeline = null;
+        if (['seeds', 'peers'].indexOf(this.props.id) !== -1) {
+          pipeline = [{
+            name: 'getText'
+          }, {
+            name: 'toInt'
+          }];
+        } else
+        if (['size'].indexOf(this.props.id) !== -1) {
+          pipeline = [{
+            name: 'getText'
+          }, {
+            name: 'parseSize'
+          }];
+        } else
         if (/Link$/.test(this.props.id)) {
           pipeline = [{
             name: 'getProp',

@@ -160,21 +160,12 @@ const StringSelectorStore = types.model('StringSelectorStore', {
 });
 
 /**
- * @typedef {{}} NumberSelectorStore
- * @property {string} selector
- * @property {MethodStore[]} pipeline
- * @property {function} set
+ * @typedef {StringSelectorStore} NumberSelectorStore
  */
-const NumberSelectorStore = types.model('NumberSelectorStore', {
+const NumberSelectorStore = types.compose('NumberSelectorStore', StringSelectorStore, types.model({
   selector: types.string,
   pipeline: types.array(MethodStore),
-}).actions(self => {
-  return {
-    set(key, value) {
-      self[key] = value;
-    },
-  };
-});
+}));
 
 /**
  * @typedef {{}} ElementSelectorStore
