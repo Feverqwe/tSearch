@@ -275,7 +275,7 @@ class CodeMakerSearchPage extends React.Component {
         <label>
           <span>{chrome.i18n.getMessage('kitSearchQueryEncoding')}</span>
           <select onChange={this.handleEncodingChange} ref={this.refEncoding} defaultValue={this.codeSearchStore.encoding}>
-            <option value="">auto</option>
+            <option value="">utf-8</option>
             <option value="cp1251">cp1251</option>
           </select>
         </label>
