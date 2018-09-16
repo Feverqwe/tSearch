@@ -138,12 +138,12 @@ const ElementSelectorStore = types.model('ElementSelectorStore', {
 const CodeSearchStore = types.model('CodeSearchStore', {
   url: types.string,
   method: types.optional(types.enumeration(['GET', 'POST']), 'GET'),
-  baseUrl: types.maybe(types.string),
-  headers: types.maybe(types.string),
-  body: types.maybe(types.string),
-  encoding: types.maybe(types.string),
-  query: types.maybe(types.string),
-  charset: types.maybe(types.string),
+  baseUrl: types.optional(types.string, ''),
+  headers: types.optional(types.string, ''),
+  body: types.optional(types.string, ''),
+  encoding: types.optional(types.string, ''),
+  query: types.optional(types.string, ''),
+  charset: types.optional(types.string, ''),
 }).actions(self => {
   return {
     set(key, value) {

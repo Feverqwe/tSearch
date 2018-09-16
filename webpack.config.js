@@ -62,7 +62,8 @@ const config = {
           options: {
             plugins: [
               ["@babel/plugin-proposal-decorators", { "legacy": true }],
-              '@babel/plugin-syntax-dynamic-import'
+              '@babel/plugin-syntax-dynamic-import',
+              '@babel/plugin-proposal-class-properties'
             ],
             presets: [
               '@babel/preset-react',

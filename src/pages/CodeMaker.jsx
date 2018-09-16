@@ -6,25 +6,22 @@ import getRandomColor from "../tools/getRandomColor";
 import {inject, observer} from "mobx-react";
 import RootStore from "../stores/RootStore";
 import CodeStore from "../stores/CodeStore";
+import getLogger from "../tools/getLogger";
+
+const logger = getLogger('codeMaker');
 
 @inject('rootStore')
 @observer
 class CodeMaker extends React.Component {
-  constructor(props) {
-    super(props);
+  pageTitleMap = {
+    search: 'kitSearch',
+    selectors: 'kitSelectors',
+    auth: 'kitLogin',
+    desc: 'kitDesc',
+    save: 'kitSaveLoad',
+  };
 
-    this.refFrame = this.refFrame.bind(this);
-
-    this.pageTitleMap = {
-      search: 'kitSearch',
-      selectors: 'kitSelectors',
-      auth: 'kitLogin',
-      desc: 'kitDesc',
-      save: 'kitSaveLoad',
-    };
-
-    this.frame = null;
-  }
+  frame = null;
 
   componentDidMount() {
     this.props.rootStore.createCodeMaker();
@@ -34,8 +31,13 @@ class CodeMaker extends React.Component {
     this.props.rootStore.destroyCodeMaker();
   }
 
-  refFrame(element) {
+  refFrame = (element) => {
     this.frame = element;
+  };
+
+  handleRequestPage() {
+    const searchStore = this.props.rootStore.codeMaker.code.search;
+
   }
 
   render() {
@@ -59,7 +61,7 @@ class CodeMaker extends React.Component {
     switch (this.props.page) {
       case 'search': {
         page = (
-          <CodeMakerSearchPage codeStore={this.props.rootStore.codeMaker.code}/>
+          <CodeMakerSearchPage onRequestPage={this.handleRequestPage} codeStore={this.props.rootStore.codeMaker.code}/>
         );
         break;
       }
@@ -114,37 +116,68 @@ CodeMaker.propTypes = null && {
 @inject('rootStore')
 @observer
 class CodeMakerSearchPage extends React.Component {
+  get codeSearchStore() {
+    return this.props.codeStore.search;
+  }
+
+  handleRequestPage = (e) => {
+    e.preventDefault();
+    this.requestPage.classList.remove('error');
+    this.props.onRequestPage().catch(err => {
+      logger.error('onRequestPage error', err);
+      if (this.requestPage) {
+        this.requestPage.classList.add('error');
+      }
+    });
+  };
+
+  requestPage = null;
+  refRequestPage = (element) => {
+    this.requestPage = element;
+  };
+
+  encoding = null;
+  refEncoding = element => {
+    this.encoding = element;
+  };
+
+  handleEncodingChange = e => {
+    console.log(this.encoding.value);
+    this.codeSearchStore.set('encoding', this.encoding.value);
+  };
+
   render() {
     return (
       <div className="page search">
         <h2>{chrome.i18n.getMessage('kitSearch')}</h2>
         <label>
           <span>{chrome.i18n.getMessage('kitSearchUrl')}</span>
-          <input type="text" data-id="search_url"/>
-          <input type="button" data-id="search_open" value={chrome.i18n.getMessage('kitOpen')}/>
+          <BindInput store={this.codeSearchStore} id={'url'} type="text"/>
+          {' '}
+          <input ref={this.refRequestPage} onClick={this.handleRequestPage} type="button" value={chrome.i18n.getMessage('kitOpen')}/>
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitSearchQuery')}</span>
-          <input type="text" data-id="search_request"/>
+          <BindInput store={this.codeSearchStore} id={'query'} type="text"/>
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitSearchQueryEncoding')}</span>
-          <select data-id="search_queryEncoding" defaultValue="utf-8">
-            <option value="utf-8">utf-8</option>
+          <select onChange={this.handleEncodingChange} ref={this.refEncoding} defaultValue={this.codeSearchStore.encoding}>
+            <option value="">auto</option>
             <option value="cp1251">cp1251</option>
           </select>
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitPageCharset')}</span>
-          <input type="text" data-id="search_charset" placeholder="auto"/>
+          <BindInput store={this.codeSearchStore} id={'charset'} type="text" placeholder="auto"/>
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitPostParams')}</span>
-          <input type="text" data-id="search_post" placeholder="key=value&key2=value2"/>
+          <BindInput store={this.codeSearchStore} id={'body'} type="text" placeholder="key=value&key2=value2"/>
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitBaseUrl')}</span>
-          <input type="text" data-id="search_root"/>
+          <BindInput store={this.codeSearchStore} id={'baseUrl'} type="text"/>
         </label>
       </div>
     );
@@ -154,7 +187,35 @@ class CodeMakerSearchPage extends React.Component {
 CodeMakerSearchPage.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   codeStore: PropTypes.instanceOf(CodeStore),
+  onRequestPage: PropTypes.func,
 };
+
+class BindInput extends React.Component {
+  input = null;
+  refInput = element => {
+    this.input = element;
+  };
+  handleChange = e => {
+    if (this.props.type === 'checkbox') {
+      this.props.store.set(this.props.id, this.input.checked);
+    } else {
+      this.props.store.set(this.props.id, this.input.value);
+    }
+  };
+  render() {
+    const {store, id, ...props} = this.props;
+
+    if (props.type === 'checkbox') {
+      props.defaultChecked = store[this.props.id];
+    } else {
+      props.defaultValue = store[this.props.id];
+    }
+
+    return (
+      <input {...props} data-id={id} ref={this.refInput} onChange={this.handleChange}/>
+    )
+  }
+}
 
 @inject('rootStore')
 @observer

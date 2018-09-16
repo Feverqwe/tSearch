@@ -1,19 +1,5 @@
 import $ from 'jquery';
-
 import './baseApi';
-
-const extend = function () {
-  const obj = arguments[0];
-  for (let i = 1, len = arguments.length; i < len; i++) {
-    const item = arguments[i];
-    for (let key in item) {
-      if (item[key] !== undefined) {
-        obj[key] = item[key];
-      }
-    }
-  }
-  return obj;
-};
 
 const exKit = {
   legacy: {
@@ -817,29 +803,68 @@ const exKit = {
       details.query = encodeURIComponent(details.query);
     }
 
-    const requestDetails = {
-      mimeType: tracker.search.requestMimeType
-    };
-    if (/json/i.test(tracker.search.requestDataType)) {
-      requestDetails.json = true;
+    const requestOptions = {};
+
+    let headers = [];
+    if (tracker.search.requestHeaders) {
+      headers = JSON.parse(tracker.search.requestHeaders);
     }
+
+    if (tracker.search.requestMimeType) {
+      const m = /charset=([^;]+)/.exec(tracker.search.requestMimeType);
+      if (m) {
+        requestOptions.charset = m[1];
+      }
+    }
+
     if (!_details.url) {
-      extend(requestDetails, {
-        type: tracker.search.requestType,
+      Object.assign(requestOptions, {
+        method: tracker.search.requestType,
         url: tracker.search.searchUrl.replace('%search%', details.query),
-        data: (tracker.search.requestData || '').replace('%search%', details.query)
+        body: (tracker.search.requestData || '').replace('%search%', details.query),
+        headers: headers,
       });
     } else {
-      extend(requestDetails, {
-        type: 'GET',
+      Object.assign(requestOptions, {
+        method: 'GET',
         url: _details.url
       });
     }
 
-    return API_request(requestDetails).then(function (response) {
+    if (requestOptions.method === 'GET' && requestOptions.body) {
+      if (/\?/.test(requestOptions.url)) {
+        requestOptions.url += '&' + requestOptions.body;
+      } else {
+        requestOptions.url += '?' + requestOptions.body;
+      }
+      delete requestOptions.body;
+    }
+
+    if (!requestOptions.headers) {
+      requestOptions.headers = {};
+    }
+
+    if (requestOptions.body) {
+      if (Array.isArray(requestOptions)) {
+        const found = requestOptions.some(([key, value]) => {
+          if (key === 'Content-Type') {
+            return true;
+          }
+        });
+        if (!found) {
+          requestOptions.push(['Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8']);
+        }
+      } else {
+        if (!requestOptions.headers['Content-Type']) {
+          requestOptions.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+        }
+      }
+    }
+
+    return API_request(requestOptions).then(function (response) {
       details.data = response.body;
       details.responseUrl = response.url;
-      details.requestUrl = requestDetails.url;
+      details.requestUrl = requestOptions.url;
     }).then(function () {
       if (tracker.search.onAfterRequest) {
         tracker.search.onAfterRequest(details);

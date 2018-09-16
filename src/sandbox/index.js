@@ -5,6 +5,8 @@ import './baseApi';
 
 import 'script-loader!requirejs/require';
 
+const qs = require('querystring');
+
 const debug = getLogger('sandbox');
 
 const altRequire = modules => {
@@ -101,6 +103,12 @@ window.API_request = function (options) {
 
   if (options.body && !options.headers['Content-Type']) {
     options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+  }
+
+  if (typeof options.body !== 'string') {
+    if (options.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
+      options.body = qs.stringify(options.body);
+    }
   }
 
   if (options.cache === false && ['GET', 'HEAD'].indexOf(options.method) !== -1) {
