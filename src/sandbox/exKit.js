@@ -329,7 +329,7 @@ const exKit = {
     }
     search.listItemSelector = code.items;
     if (code.charset) {
-      search.requestMimeType = 'text/html; charset=' + code.charset;
+      search.charset = code.charset;
     }
     if (code.cat_alt) {
       code.cat_attr = 'alt';
@@ -797,6 +797,14 @@ const exKit = {
       query: query
     };
 
+    let charset = tracker.search.charset;
+    if (!charset && tracker.search.requestMimeType) {
+      const m = /charset=([^;]+)/.exec(tracker.search.requestMimeType);
+      if (m) {
+        charset = m[1];
+      }
+    }
+
     if (tracker.search.onBeforeRequest) {
       tracker.search.onBeforeRequest(details);
     } else {
@@ -810,18 +818,12 @@ const exKit = {
       headers = JSON.parse(tracker.search.requestHeaders);
     }
 
-    if (tracker.search.requestMimeType) {
-      const m = /charset=([^;]+)/.exec(tracker.search.requestMimeType);
-      if (m) {
-        requestOptions.charset = m[1];
-      }
-    }
-
     if (!_details.url) {
       Object.assign(requestOptions, {
         method: tracker.search.requestType,
         url: tracker.search.searchUrl.replace('%search%', details.query),
         data: (tracker.search.requestData || '').replace('%search%', details.query),
+        charset: charset,
         headers: headers,
       });
     } else {
