@@ -4,7 +4,7 @@ const methods = {
   getAttr: {
     in: 'node',
     args: [{
-      name: 'attribute',
+      name: 'Attribute',
       type: 'string',
     }],
     out: 'string'
@@ -12,7 +12,7 @@ const methods = {
   getProp: {
     in: 'node',
     args: [{
-      name: 'property',
+      name: 'Property',
       type: 'string',
     }],
     out: 'string'
@@ -29,10 +29,10 @@ const methods = {
   replace: {
     in: 'string',
     args: [{
-      name: 'pattern',
+      name: 'Pattern',
       type: 'string',
     }, {
-      name: 'replaceTo',
+      name: 'ReplaceTo',
       type: 'string',
     }],
     out: 'string'
@@ -41,7 +41,7 @@ const methods = {
   parseDate: {
     in: 'string',
     args: [{
-      name: 'formats',
+      name: 'Formats',
       multiple: true,
       type: 'string',
     }],
@@ -71,7 +71,7 @@ const methods = {
   legacyParseDate: {
     in: 'string',
     args: [{
-      name: 'template',
+      name: 'Template',
       type: 'select',
       values: [
         '2013-04-31[[[ 07]:03]:27]',
