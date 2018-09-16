@@ -1,7 +1,7 @@
 import {getParentOfType, isAlive, types} from 'mobx-state-tree';
 import {AbortError, StatusCodeError} from "../tools/errors";
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-import 'whatwg-fetch'
+import {fetch} from 'whatwg-fetch'
 import getLogger from "../tools/getLogger";
 import RootStore from "./RootStore";
 

@@ -1,5 +1,5 @@
 import {StatusCodeError, ErrorWithCode} from './errors';
-import 'whatwg-fetch';
+import {fetch} from 'whatwg-fetch';
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
 import getLogger from "./getLogger";
 
