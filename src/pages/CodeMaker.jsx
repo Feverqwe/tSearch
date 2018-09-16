@@ -353,7 +353,8 @@ class PipelineSelector extends ElementSelector {
 
 class AddMethodDialog extends React.Component {
   state = {
-    methodName: null
+    methodName: null,
+    clonedInputs: 0
   };
 
   select = null;
@@ -387,9 +388,25 @@ class AddMethodDialog extends React.Component {
     });
   };
 
+  handleAddArg = e => {
+    e.preventDefault();
+    this.setState({
+      clonedInputs: this.state.clonedInputs + 1
+    });
+  };
+
+  handleRemoveArg = e => {
+    e.preventDefault();
+    if (this.state.clonedInputs !== 0) {
+      this.setState({
+        clonedInputs: this.state.clonedInputs - 1
+      });
+    }
+  };
+
   render() {
     const methodName = this.state.methodName;
-    const method = methods[this.state.methodName];
+    const methodScheme = methods[this.state.methodName];
 
     const options = Object.keys(methods).map(key => {
       return (
@@ -398,33 +415,64 @@ class AddMethodDialog extends React.Component {
     });
 
     let args = null;
-    if (method) {
-      args = method.args && method.args.map((arg, index) => {
-        let element = null;
-        if (arg.type === 'select') {
-          element = (
-            <select ref={this.refArg.bind(this, index)}>
-              {arg.values.map(key => {
-                return (
-                  <option key={key} value={key}>{key}</option>
-                );
-              })}
-            </select>
+    if (methodScheme) {
+      if (methodScheme.args) {
+        args = methodScheme.args.map((arg, index) => {
+          let element = null;
+          if (arg.type === 'select') {
+            element = (
+              <select ref={this.refArg.bind(this, index)}>
+                {arg.values.map(key => {
+                  return (
+                    <option key={key} value={key}>{key}</option>
+                  );
+                })}
+              </select>
+            );
+          } else {
+            element = (
+              <input ref={this.refArg.bind(this, index)} type={arg.type}/>
+            );
+          }
+          return (
+            <div className={'method-arg'} key={index}>
+              <div className={'arg-name'}>{arg.name}</div>
+              <div className={'arg-input'}>
+                {element}
+              </div>
+            </div>
           );
-        } else {
-          element = (
-            <input ref={this.refArg.bind(this, index)} type={arg.type}/>
+        });
+
+        if (methodScheme.multipleArgs) {
+          const fistsArg = methodScheme.args[0];
+          for (let i = 0; i < this.state.clonedInputs; i++) {
+            const index = args.length;
+            args.push(
+              <div className={'method-arg'} key={index}>
+                <div className={'arg-name'}>{fistsArg.name}</div>
+                <div className={'arg-input'}>
+                  <input ref={this.refArg.bind(this, index)} type={fistsArg.type}/>
+                </div>
+              </div>
+            );
+          }
+
+          let removeBtn = null;
+          if (this.state.clonedInputs > 0) {
+            removeBtn = (
+              <button onClick={this.handleRemoveArg}>Remove argument</button>
+            );
+          }
+
+          args.push(
+            <div className={'arg-controls'}>
+              <button onClick={this.handleAddArg}>Add argument</button>
+              {removeBtn}
+            </div>
           );
         }
-        return (
-          <div className={'method-arg'} key={index}>
-            <div className={'arg-name'}>{arg.name}</div>
-            <div className={'arg-input'}>
-              {element}
-            </div>
-          </div>
-        );
-      });
+      }
     }
 
     return ReactDOM.createPortal(
@@ -448,9 +496,20 @@ class AddMethodDialog extends React.Component {
 }
 
 class EditMethodDialog extends React.Component {
-  state = {
-    args: this.props.method.args.slice(0),
-  };
+  constructor(props) {
+    super(props);
+
+    const method = props.method;
+    const methodScheme = methods[method.name];
+
+    this.state = {
+      clonedInputs: 0
+    };
+
+    if (methodScheme.args) {
+      this.state.clonedInputs = method.args.length - methodScheme.args.length;
+    }
+  }
 
   args = {};
   refArg = (index, element) => {
@@ -461,13 +520,10 @@ class EditMethodDialog extends React.Component {
     }
   };
 
-  argChange = (index, e) => {
-    this.state.args[index] = this.args[index].value;
-  };
-
   handleSubmit = e => {
     e.preventDefault();
-    this.props.method.setArgs(this.state.args);
+    const args = Object.keys(this.args).map(key => this.args[key].value);
+    this.props.method.setArgs(args);
     this.props.onClose();
   };
 
@@ -476,36 +532,89 @@ class EditMethodDialog extends React.Component {
     this.props.onClose();
   };
 
+  handleAddArg = e => {
+    e.preventDefault();
+    this.setState({
+      clonedInputs: this.state.clonedInputs + 1
+    });
+  };
+
+  handleRemoveArg = e => {
+    e.preventDefault();
+    if (this.state.clonedInputs !== 0) {
+      this.setState({
+        clonedInputs: this.state.clonedInputs - 1
+      });
+    }
+  };
+
   render() {
     const method = this.props.method;
     const methodScheme = methods[method.name];
 
-    const args = methodScheme.args && methodScheme.args.map((arg, index) => {
-      let element = null;
-      if (arg.type === 'select') {
-        element = (
-          <select ref={this.refArg.bind(this, index)} onChange={this.argChange.bind(this, index)} defaultValue={this.state.args[index]}>
-            {arg.values.map(key => {
-              return (
-                <option key={key} value={key}>{key}</option>
-              );
-            })}
-          </select>
-        );
-      } else {
-        element = (
-          <input ref={this.refArg.bind(this, index)} onChange={this.argChange.bind(this, index)} type={arg.type} defaultValue={this.state.args[index]}/>
-        );
+    let args = null;
+    if (methodScheme) {
+      if (methodScheme.args) {
+        args = methodScheme.args.map((arg, index) => {
+          let element = null;
+          if (arg.type === 'select') {
+            element = (
+              <select ref={this.refArg.bind(this, index)}
+                      defaultValue={method.args[index]}>
+                {arg.values.map(key => {
+                  return (
+                    <option key={key} value={key}>{key}</option>
+                  );
+                })}
+              </select>
+            );
+          } else {
+            element = (
+              <input ref={this.refArg.bind(this, index)} type={arg.type}
+                     defaultValue={method.args[index]}/>
+            );
+          }
+          return (
+            <div className={'method-arg'} key={index}>
+              <div className={'arg-name'}>{arg.name}</div>
+              <div className={'arg-input'}>
+                {element}
+              </div>
+            </div>
+          );
+        });
+
+        if (methodScheme.multipleArgs) {
+          const fistsArg = methodScheme.args[0];
+          for (let i = 0; i < this.state.clonedInputs; i++) {
+            const index = args.length;
+            args.push(
+              <div className={'method-arg'} key={index}>
+                <div className={'arg-name'}>{fistsArg.name}</div>
+                <div className={'arg-input'}>
+                  <input ref={this.refArg.bind(this, index)} type={fistsArg.type}
+                         defaultValue={method.args[index]}/>
+                </div>
+              </div>
+            );
+          }
+
+          let removeBtn = null;
+          if (this.state.clonedInputs > 0) {
+            removeBtn = (
+              <button onClick={this.handleRemoveArg}>Remove argument</button>
+            );
+          }
+
+          args.push(
+            <div className={'arg-controls'}>
+              <button onClick={this.handleAddArg}>Add argument</button>
+              {removeBtn}
+            </div>
+          );
+        }
       }
-      return (
-        <div className={'method-arg'} key={index}>
-          <div className={'arg-name'}>{arg.name}</div>
-          <div className={'arg-input'}>
-            {element}
-          </div>
-        </div>
-      );
-    });
+    }
 
     return ReactDOM.createPortal(
       <div className={'method-dialog'}>

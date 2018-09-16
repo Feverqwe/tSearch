@@ -40,9 +40,9 @@ const methods = {
 
   parseDate: {
     in: 'string',
+    multipleArgs: true,
     args: [{
-      name: 'Formats',
-      multiple: true,
+      name: 'Format',
       type: 'string',
     }],
     out: 'number'
