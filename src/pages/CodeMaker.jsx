@@ -177,7 +177,7 @@ class CodeMakerSearchPage extends React.Component {
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitBaseUrl')}</span>
-          <BindInput store={this.codeSearchStore} id={'baseUrl'} type="text"/>
+          <BindInput store={this.codeSearchStore} id={'baseUrl'} type="text" placeholder="auto"/>
         </label>
       </div>
     );

@@ -85,7 +85,7 @@ const methods = {
 };
 
 /**
- * @typedef {{}} MethodStore
+ * @typedef {{}} ElementMethodStore
  * @property {string} op
  * @property {*[]} args
  */
@@ -117,7 +117,6 @@ const NumberSelectorStore = types.model('NumberSelectorStore', {
 /**
  * @typedef {{}} ElementSelectorStore
  * @property {string} selector
- * @property {MethodStore[]} pipeline
  */
 const ElementSelectorStore = types.model('ElementSelectorStore', {
   selector: types.string,
@@ -127,12 +126,12 @@ const ElementSelectorStore = types.model('ElementSelectorStore', {
  * @typedef {{}} CodeSearchStore
  * @property {string} url
  * @property {string} [method]
- * @property {string|undefined} baseUrl
- * @property {string|undefined} headers
- * @property {string|undefined} body
- * @property {string|undefined} encoding
- * @property {string|undefined} query
- * @property {string|undefined} charset
+ * @property {string} [baseUrl]
+ * @property {string} [headers]
+ * @property {string} [body]
+ * @property {string} [encoding]
+ * @property {string} [query]
+ * @property {string} [charset]
  * @property {function} set
  */
 const CodeSearchStore = types.model('CodeSearchStore', {
@@ -154,12 +153,12 @@ const CodeSearchStore = types.model('CodeSearchStore', {
 
 /**
  * @typedef {{}} CodeAuthStore
- * @property {string|undefined} url
+ * @property {string} [url]
  * @property {ElementSelectorStore|undefined} selector
  * @property {function} set
  */
 const CodeAuthStore = types.model('CodeAuthStore', {
-  url: types.maybe(types.string),
+  url: types.optional(types.string, ''),
   selector: types.maybe(ElementSelectorStore),
 }).actions(self => {
   return {
@@ -214,16 +213,16 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
  * @typedef {{}} CodeDescriptionStore
  * @property {string} icon
  * @property {string} name
- * @property {string|undefined} description
- * @property {string|undefined} updateUrl
+ * @property {string} [description]
+ * @property {string} [updateUrl]
  * @property {string} version
  * @property {function} set
  */
 const CodeDescriptionStore = types.model('CodeDescriptionStore', {
   icon: types.string,
   name: types.string,
-  description: types.maybe(types.string),
-  updateUrl: types.maybe(types.string),
+  description: types.optional(types.string, ''),
+  updateUrl: types.optional(types.string, ''),
   version: types.string,
 }).actions(self => {
   return {
