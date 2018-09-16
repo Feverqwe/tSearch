@@ -67,7 +67,7 @@ class CodeMaker extends React.Component {
       }
       case 'auth': {
         page = (
-          <CodeMakerAuthPage codeStore={this.props.rootStore.codeMaker.code}/>
+          <CodeMakerAuthPage onRequestPage={this.handleRequestPage} codeStore={this.props.rootStore.codeMaker.code}/>
         );
         break;
       }
@@ -108,6 +108,120 @@ class CodeMaker extends React.Component {
   }
 }
 
+
+class BindInput extends React.Component {
+  input = null;
+  refInput = element => {
+    this.input = element;
+  };
+  handleChange = e => {
+    if (this.props.type === 'checkbox') {
+      this.props.store.set(this.props.id, this.input.checked);
+    } else {
+      let value = this.input.value;
+      if (this.props.type === 'number') {
+        value = parseInt(value, 10);
+        if (!Number.isFinite(value)) {
+          value = 0;
+        }
+      }
+      this.props.store.set(this.props.id, value);
+    }
+  };
+  render() {
+    const {store, id, ...props} = this.props;
+
+    if (props.type === 'checkbox') {
+      props.defaultChecked = store[this.props.id];
+    } else {
+      props.defaultValue = store[this.props.id];
+    }
+
+    return (
+      <input {...props} data-id={id} ref={this.refInput} onChange={this.handleChange}/>
+    )
+  }
+}
+
+class BindElementSelector extends React.Component {
+  get selectorStore() {
+    return this.props.store[this.props.id];
+  }
+  input = null;
+  refInput = element => {
+    this.input = element;
+  };
+  handleChange = e => {
+    this.selectorStore.set('selector', this.input.value);
+  };
+  render() {
+    const {store, id, children, ...props} = this.props;
+
+    props.defaultValue = this.selectorStore.selector;
+
+    return [
+      <input key={'input'} {...props} data-id={id} ref={this.refInput} onChange={this.handleChange}/>,
+      children,
+      <input key={'button'} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
+    ]
+  }
+}
+
+@observer
+class PipelineSelectorStore extends BindElementSelector {
+  get store() {
+    return this.props.store;
+  }
+
+  optionalCheckbox = null;
+  refOptionalCheckbox = element => {
+    this.optionalCheckbox = element;
+  };
+
+  handleOptionalChange = e => {
+    if (this.optionalCheckbox.checked) {
+      if (!this.selectorStore) {
+        this.store.set(this.props.id, {
+          selector: this.input.value
+        });
+      }
+    } else {
+      if (this.selectorStore) {
+        this.store.set(this.props.id, undefined);
+      }
+    }
+  };
+
+  render() {
+    const {store, id, optional, ...props} = this.props;
+
+    props.defaultValue = this.selectorStore && this.selectorStore.selector || '';
+
+    const isDisabled = !this.selectorStore;
+    let title = null;
+    if (optional) {
+      title = (
+        <span key={'title'}>
+          <input ref={this.refOptionalCheckbox} defaultChecked={!isDisabled} onChange={this.handleOptionalChange} type="checkbox" data-id={`${id}-optional`}/>
+          <span>{this.props.title}</span>
+        </span>
+      );
+    } else {
+      title = (
+        <span key={'title'}>{this.props.title}</span>
+      );
+    }
+
+
+    return [
+      title,
+      <input disabled={isDisabled} key={'input'} {...props} data-id={id} ref={this.refInput} onChange={this.handleChange}/>,
+      <input disabled={isDisabled} key={'output'} type="text" data-id={`${id}-result`} readOnly={true}/>,
+      <input disabled={isDisabled} key={'button'} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
+    ]
+  }
+}
+
 CodeMaker.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   page: PropTypes.string,
@@ -142,7 +256,6 @@ class CodeMakerSearchPage extends React.Component {
   };
 
   handleEncodingChange = e => {
-    console.log(this.encoding.value);
     this.codeSearchStore.set('encoding', this.encoding.value);
   };
 
@@ -190,49 +303,25 @@ CodeMakerSearchPage.propTypes = null && {
   onRequestPage: PropTypes.func,
 };
 
-class BindInput extends React.Component {
-  input = null;
-  refInput = element => {
-    this.input = element;
-  };
-  handleChange = e => {
-    if (this.props.type === 'checkbox') {
-      this.props.store.set(this.props.id, this.input.checked);
-    } else {
-      this.props.store.set(this.props.id, this.input.value);
-    }
-  };
-  render() {
-    const {store, id, ...props} = this.props;
-
-    if (props.type === 'checkbox') {
-      props.defaultChecked = store[this.props.id];
-    } else {
-      props.defaultValue = store[this.props.id];
-    }
-
-    return (
-      <input {...props} data-id={id} ref={this.refInput} onChange={this.handleChange}/>
-    )
-  }
-}
-
 @inject('rootStore')
 @observer
 class CodeMakerAuthPage extends React.Component {
+  get codeSearchAuth() {
+    return this.props.codeStore.auth;
+  }
+
   render() {
     return (
       <div className="page auth">
         <h2>{chrome.i18n.getMessage('kitLogin')}</h2>
         <label>
           <span>{chrome.i18n.getMessage('kitLoginUrl')}</span>
-          <input type="text" data-id="auth_url"/>
+          <BindInput store={this.codeSearchAuth} id={'url'} type="text"/>
           <input type="button" data-id="auth_open" value={chrome.i18n.getMessage('kitOpen')}/>
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitLoginFormSelector')}</span>
-          <input type="text" data-id="auth_input"/>
-          <input type="button" data-id="auth_btn" value={chrome.i18n.getMessage('kitSelect')}/>
+          <BindElementSelector store={this.codeSearchAuth} id={'selector'} type="text"/>
         </label>
       </div>
     );
@@ -242,129 +331,77 @@ class CodeMakerAuthPage extends React.Component {
 CodeMakerAuthPage.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
   codeStore: PropTypes.instanceOf(CodeStore),
+  onRequestPage: PropTypes.func,
 };
 
 @inject('rootStore')
 @observer
 class CodeMakerSelectorsPage extends React.Component {
+  get codeSearchSelectors() {
+    return this.props.codeStore.selectors;
+  }
+
   render() {
     return (
       <div className="page selectors">
         <h2>{chrome.i18n.getMessage('kitSelectors')}</h2>
         <label>
           <span>{chrome.i18n.getMessage('kitRowSelector')}</span>
-          <input type="text" data-id="selectors_list_input"/>
-          <input type="checkbox" data-id="selectors_list_tableMode"/>
-          <span>{chrome.i18n.getMessage('kitTableRow')}</span>
-          <input type="button" data-id="selectors_list_btn" value={chrome.i18n.getMessage('kitSelect')}/>
+          <BindElementSelector store={this.codeSearchSelectors} id={'row'} type="text" className={'input'}>
+            {' '}
+            <BindInput store={this.codeSearchSelectors} id={'isTableRow'} type="checkbox"/>
+            {' '}
+            <span>{chrome.i18n.getMessage('kitTableRow')}</span>
+            {' '}
+          </BindElementSelector>
         </label>
         <label>
-          <span>
-            <input type="checkbox" data-id="selectors_categoryName_enable"/>
-            <span>{chrome.i18n.getMessage('kitCategoryName')}</span>
-          </span>
-          <input type="text" data-id="selectors_categoryName_input"/>
-          <input type="text" data-id="selectors_categoryName_output"/>
-          <span>{chrome.i18n.getMessage('kitAttribute')}</span>
-          <input type="text" data-id="selectors_categoryName_attr"/>
-          <input type="button" data-id="selectors_categoryName_btn"
-                 value={chrome.i18n.getMessage('kitSelect')}/>
+          <PipelineSelectorStore store={this.codeSearchSelectors} id={'categoryTitle'} optional={true}
+            type={'text'} title={chrome.i18n.getMessage('kitCategoryName')}/>
         </label>
         <label>
-          <span>
-            <input type="checkbox" data-id="selectors_categoryLink_enable"/>
-            <span>{chrome.i18n.getMessage('kitCategoryLink')}</span>
-          </span>
-          <input type="text" data-id="selectors_categoryLink_input"/>
-          <input type="text" data-id="selectors_categoryLink_output"/>
-          <input type="button" data-id="selectors_categoryLink_btn"
-                 value={chrome.i18n.getMessage('kitSelect')}/>
+          <PipelineSelectorStore store={this.codeSearchSelectors} id={'categoryLink'} optional={true}
+            type={'text'} title={chrome.i18n.getMessage('kitCategoryLink')}/>
         </label>
         <label>
-          <span>{chrome.i18n.getMessage('kitTorrentTitle')}</span>
-          <input type="text" data-id="selectors_torrentName_input"/>
-          <input type="text" data-id="selectors_torrentName_output"/>
-          <input type="button" data-id="selectors_torrentName_btn"
-                 value={chrome.i18n.getMessage('kitSelect')}/>
+          <PipelineSelectorStore store={this.codeSearchSelectors} id={'title'}
+            type={'text'} title={chrome.i18n.getMessage('kitTorrentTitle')}/>
         </label>
         <label>
-          <span>{chrome.i18n.getMessage('kitTorrentLink')}</span>
-          <input type="text" data-id="selectors_torrentLink_input"/>
-          <input type="text" data-id="selectors_torrentLink_output"/>
-          <input type="button" data-id="selectors_torrentLink_btn"
-                 value={chrome.i18n.getMessage('kitSelect')}/>
+          <PipelineSelectorStore store={this.codeSearchSelectors} id={'link'}
+            type={'text'} title={chrome.i18n.getMessage('kitTorrentLink')}/>
         </label>
         <label>
-          <span>
-            <input type="checkbox" data-id="selectors_size_enable"/>
-            <span>{chrome.i18n.getMessage('kitTorrentSize')}</span>
-          </span>
-          <input type="text" data-id="selectors_size_input"/>
-          <input type="text" data-id="selectors_size_output"/>
-          <span>{chrome.i18n.getMessage('kitAttribute')}</span>
-          <input type="text" data-id="selectors_size_attr"/>
-          <input type="button" data-id="selectors_size_btn"
-                 value={chrome.i18n.getMessage('kitSelect')}/>
+          <PipelineSelectorStore store={this.codeSearchSelectors} id={'size'} optional={true}
+            type={'text'} title={chrome.i18n.getMessage('kitTorrentSize')}/>
         </label>
         <label>
-          <span>
-            <input type="checkbox" data-id="selectors_torrentDl_enable"/>
-            <span>{chrome.i18n.getMessage('kitTorrentDownloadLink')}</span>
-          </span>
-          <input type="text" data-id="selectors_torrentDl_input"/>
-          <input type="text" data-id="selectors_torrentDl_output"/>
-          <input type="button" data-id="selectors_torrentDl_btn"
-                 value={chrome.i18n.getMessage('kitSelect')}/>
+          <PipelineSelectorStore store={this.codeSearchSelectors} id={'downloadLink'} optional={true}
+            type={'text'} title={chrome.i18n.getMessage('kitTorrentDownloadLink')}/>
         </label>
         <label>
-          <span>
-            <input type="checkbox" data-id="selectors_seed_enable"/>
-            <span>{chrome.i18n.getMessage('kitSeedCount')}</span>
-          </span>
-          <input type="text" data-id="selectors_seed_input"/>
-          <input type="text" data-id="selectors_seed_output"/>
-          <input type="button" data-id="selectors_seed_btn"
-                 value={chrome.i18n.getMessage('kitSelect')}/>
+          <PipelineSelectorStore store={this.codeSearchSelectors} id={'seeds'} optional={true}
+            type={'text'} title={chrome.i18n.getMessage('kitSeedCount')}/>
         </label>
         <label>
-          <span>
-            <input type="checkbox" data-id="selectors_peer_enable"/>
-            <span>{chrome.i18n.getMessage('kitPeerCount')}</span>
-          </span>
-          <input type="text" data-id="selectors_peer_input"/>
-          <input type="text" data-id="selectors_peer_output"/>
-          <input type="button" data-id="selectors_peer_btn"
-                 value={chrome.i18n.getMessage('kitSelect')}/>
+          <PipelineSelectorStore store={this.codeSearchSelectors} id={'peers'} optional={true}
+            type={'text'} title={chrome.i18n.getMessage('kitPeerCount')}/>
         </label>
         <label>
-          <span>
-            <input type="checkbox" data-id="selectors_time_enable"/>
-            <span>{chrome.i18n.getMessage('kitAddTime')}</span>
-          </span>
-          <input type="text" data-id="selectors_time_input"/>
-          <input type="text" data-id="selectors_time_output"/>
-          <span>{chrome.i18n.getMessage('kitAttribute')}</span>
-          <input type="text" data-id="selectors_time_attr"/>
-          <input type="button" data-id="selectors_time_btn"
-                 value={chrome.i18n.getMessage('kitSelect')}/>
+          <PipelineSelectorStore store={this.codeSearchSelectors} id={'date'} optional={true}
+            type={'text'} title={chrome.i18n.getMessage('kitAddTime')}/>
         </label>
         <div className="label">
           <span>{chrome.i18n.getMessage('kitSkipFirstRows')}</span>
-          <input type="number" data-id="selectors_skip_first" defaultValue={0}/>
+          <BindInput store={this.codeSearchSelectors} id={'skipFromStart'} type="number"/>
         </div>
         <div className="label">
           <span>{chrome.i18n.getMessage('kitSkipLastRows')}</span>
-          <input type="number" data-id="selectors_skip_last" defaultValue={0}/>
+          <BindInput store={this.codeSearchSelectors} id={'skipFromEnd'} type="number"/>
         </div>
         <label>
-          <span>
-            <input type="checkbox" data-id="selectors_nextPageLink_enable"/>
-            <span>{chrome.i18n.getMessage('kitNextPageLink')}</span>
-          </span>
-          <input type="text" data-id="selectors_nextPageLink_input"/>
-          <input type="text" data-id="selectors_nextPageLink_output"/>
-          <input type="button" data-id="selectors_nextPageLink_btn"
-                 value={chrome.i18n.getMessage('kitSelect')}/>
+          <PipelineSelectorStore store={this.codeSearchSelectors} id={'nextPageLink'}  optional={true}
+            type="text" title={chrome.i18n.getMessage('kitNextPageLink')}/>
         </label>
       </div>
     );
@@ -379,6 +416,10 @@ CodeMakerSelectorsPage.propTypes = null && {
 @inject('rootStore')
 @observer
 class CodeMakerDescPage extends React.Component {
+  get codeStoreDescription() {
+    return this.props.codeStore.description;
+  }
+
   constructor(props) {
     super(props);
 
@@ -412,19 +453,19 @@ class CodeMakerDescPage extends React.Component {
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitTrackerTitle')}</span>
-          <input type="text" data-id="desk_tracker_title"/>
+          <BindInput store={this.codeStoreDescription} id={'name'} type={'text'}/>
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitTrackerDesc')}</span>
-          <input type="text" data-id="desk_tracker_desk"/>
+          <BindInput store={this.codeStoreDescription} id={'description'} type={'text'}/>
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitTrackerDownloadUrl')}</span>
-          <input type="text" data-id="desk_tracker_downloadUrl"/>
+          <BindInput store={this.codeStoreDescription} id={'updateUrl'} type={'text'}/>
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitTrackerVersion')}</span>
-          <input type="text" data-id="desk_tracker_tVersion" placeholder="1.0"/>
+          <BindInput store={this.codeStoreDescription} id={'version'} type={'text'} placeholder="1.0"/>
         </label>
       </div>
     );
@@ -450,7 +491,7 @@ class CodeMakerSavePage extends React.Component {
                  value={chrome.i18n.getMessage('kitReadCode')}/>
         </div>
         <label>
-          <textarea data-id="save_code_textarea"/>
+          <textarea data-id="save_code_textarea" defaultValue={JSON.stringify(this.props.codeStore, null, 2)}/>
         </label>
       </div>
     );

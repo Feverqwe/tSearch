@@ -102,6 +102,12 @@ const MethodStore = types.model('ElementMethodStore', {
 const StringSelectorStore = types.model('StringSelectorStore', {
   selector: types.string,
   pipeline: types.array(MethodStore),
+}).actions(self => {
+  return {
+    set(key, value) {
+      self[key] = value;
+    },
+  };
 });
 
 /**
@@ -112,6 +118,12 @@ const StringSelectorStore = types.model('StringSelectorStore', {
 const NumberSelectorStore = types.model('NumberSelectorStore', {
   selector: types.string,
   pipeline: types.array(MethodStore),
+}).actions(self => {
+  return {
+    set(key, value) {
+      self[key] = value;
+    },
+  };
 });
 
 /**
@@ -119,7 +131,13 @@ const NumberSelectorStore = types.model('NumberSelectorStore', {
  * @property {string} selector
  */
 const ElementSelectorStore = types.model('ElementSelectorStore', {
-  selector: types.string,
+  selector: types.optional(types.string, ''),
+}).actions(self => {
+  return {
+    set(key, value) {
+      self[key] = value;
+    },
+  };
 });
 
 /**
@@ -159,7 +177,7 @@ const CodeSearchStore = types.model('CodeSearchStore', {
  */
 const CodeAuthStore = types.model('CodeAuthStore', {
   url: types.optional(types.string, ''),
-  selector: types.maybe(ElementSelectorStore),
+  selector: types.optional(ElementSelectorStore, {}),
 }).actions(self => {
   return {
     set(key, value) {
@@ -223,7 +241,7 @@ const CodeDescriptionStore = types.model('CodeDescriptionStore', {
   name: types.string,
   description: types.optional(types.string, ''),
   updateUrl: types.optional(types.string, ''),
-  version: types.string,
+  version: types.optional(types.string, '1.0'),
 }).actions(self => {
   return {
     set(key, value) {
