@@ -72,6 +72,7 @@ const methods = {
     in: 'string',
     args: [{
       name: 'template',
+      type: 'select',
       values: [
         '2013-04-31[[[ 07]:03]:27]',
         '31-04-2013[[[ 07]:03]:27]',

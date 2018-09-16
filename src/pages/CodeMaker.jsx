@@ -400,11 +400,27 @@ class AddMethodDialog extends React.Component {
     let args = null;
     if (method) {
       args = method.args && method.args.map((arg, index) => {
+        let element = null;
+        if (arg.type === 'select') {
+          element = (
+            <select ref={this.refArg.bind(this, index)}>
+              {arg.values.map(key => {
+                return (
+                  <option key={key} value={key}>{key}</option>
+                );
+              })}
+            </select>
+          );
+        } else {
+          element = (
+            <input ref={this.refArg.bind(this, index)} type={arg.type}/>
+          );
+        }
         return (
           <div className={'method-arg'} key={index}>
             <div className={'arg-name'}>{arg.name}</div>
             <div className={'arg-input'}>
-              <input ref={this.refArg.bind(this, index)} type={arg.type}/>
+              {element}
             </div>
           </div>
         );
@@ -465,11 +481,27 @@ class EditMethodDialog extends React.Component {
     const methodScheme = methods[method.name];
 
     const args = methodScheme.args && methodScheme.args.map((arg, index) => {
+      let element = null;
+      if (arg.type === 'select') {
+        element = (
+          <select ref={this.refArg.bind(this, index)} onChange={this.argChange.bind(this, index)} defaultValue={this.state.args[index]}>
+            {arg.values.map(key => {
+              return (
+                <option key={key} value={key}>{key}</option>
+              );
+            })}
+          </select>
+        );
+      } else {
+        element = (
+          <input ref={this.refArg.bind(this, index)} onChange={this.argChange.bind(this, index)} type={arg.type} defaultValue={this.state.args[index]}/>
+        );
+      }
       return (
         <div className={'method-arg'} key={index}>
           <div className={'arg-name'}>{arg.name}</div>
           <div className={'arg-input'}>
-            <input ref={this.refArg.bind(this, index)} onChange={this.argChange.bind(this, index)} type={arg.type} defaultValue={this.state.args[index]}/>
+            {element}
           </div>
         </div>
       );
