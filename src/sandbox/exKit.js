@@ -329,7 +329,7 @@ const exKit = {
     }
     search.listItemSelector = code.items;
     if (code.charset) {
-      search.charset = code.charset;
+      search.requestMimeType = 'text/html; charset=' + code.charset;
     }
     if (code.cat_alt) {
       code.cat_attr = 'alt';
