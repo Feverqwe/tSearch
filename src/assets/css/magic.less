@@ -172,36 +172,42 @@
         align-items: center;
         height: 24px;
       }
-      .method-wrapper {
-        display: flex;
-        flex-direction: row;
-        background-color: #F3E5F5;
-        border-radius: 6px;
-        margin: 1px 3px;
-        align-items: center;
-        height: 22px;
-        padding: 0 2px;
-        cursor: default;
-        user-select: none;
-        &:hover {
-          background-color: #d1c4e9;
-        }
-        .method {
+      .pipeline-sortable {
+        display: inherit;
+        flex-direction: inherit;
+        align-items: inherit;
+        flex-wrap: inherit;
+        .method-wrapper {
           display: flex;
           flex-direction: row;
+          background-color: #F3E5F5;
+          border-radius: 6px;
+          margin: 1px 3px;
           align-items: center;
-          .method-name {
-            margin-left: 3px;
-            margin-right: 3px;
+          height: 22px;
+          padding: 0 2px;
+          cursor: default;
+          user-select: none;
+          &:hover {
+            background-color: #d1c4e9;
           }
-          .method-args {
+          .method {
             display: flex;
             flex-direction: row;
-            .method-arg {
-              padding: 2px 3px;
-              margin-right: 2px;
-              background-color: #fff;
-              border-radius: 3px;
+            align-items: center;
+            .method-name {
+              margin-left: 3px;
+              margin-right: 3px;
+            }
+            .method-args {
+              display: flex;
+              flex-direction: row;
+              .method-arg {
+                padding: 2px 3px;
+                margin-right: 2px;
+                background-color: #fff;
+                border-radius: 3px;
+              }
             }
           }
         }

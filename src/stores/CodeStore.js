@@ -130,24 +130,31 @@ const StringSelectorStore = types.model('StringSelectorStore', {
         self.pipeline = pipeline;
       }
     },
-    moveLeft(method) {
-      const pipeline = self.pipeline.slice(0);
-      const pos = pipeline.indexOf(method);
-      if (pos !== -1 && pos > 0) {
-        pipeline.splice(pos, 1);
-        pipeline.splice(pos - 1, 0, method);
-        self.pipeline = pipeline;
+    moveMethod(index, prevIndex, nextIndex) {
+      const items = self.pipeline.slice(0);
+      const item = items[index];
+      const prevItem = items[prevIndex];
+      const nextItem = items[nextIndex];
+
+      items.splice(index, 1);
+
+      if (prevItem) {
+        const pos = items.indexOf(prevItem);
+        if (pos !== -1) {
+          items.splice(pos + 1, 0, item);
+        }
+      } else
+      if (nextItem) {
+        const pos = items.indexOf(nextItem);
+        if (pos !== -1) {
+          items.splice(pos, 0, item);
+        }
+      } else {
+        items.push(item);
       }
+
+      self.pipeline = items;
     },
-    moveRight(method) {
-      const pipeline = self.pipeline.slice(0);
-      const pos = pipeline.indexOf(method);
-      if (pos !== -1 && pipeline.length > pos + 1) {
-        pipeline.splice(pos, 1);
-        pipeline.splice(pos + 1, 0, method);
-        self.pipeline = pipeline;
-      }
-    }
   };
 });
 

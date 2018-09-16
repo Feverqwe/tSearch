@@ -9,6 +9,8 @@ import RootStore from "../stores/RootStore";
 import CodeStore, {MethodStore, methods} from "../stores/CodeStore";
 import getLogger from "../tools/getLogger";
 
+const Sortable = require('sortablejs');
+
 const logger = getLogger('codeMaker');
 
 @inject('rootStore')
@@ -190,6 +192,43 @@ class PipelineSelector extends ElementSelector {
     return this.props.store;
   }
 
+  sortable = null;
+  refSortable = node => {
+    if (!node) {
+      if (this.sortable) {
+        this.sortable.destroy();
+        this.sortable = null;
+      }
+    } else
+    if (!this.sortable) {
+      this.sortable = new Sortable(node, {
+        group: {
+          name: 'methods',
+          pull: false,
+          put: false
+        },
+        handle: '.method',
+        draggable: '.method-wrapper',
+        animation: 150,
+        onStart: () => {
+          node.classList.add('sorting');
+        },
+        onEnd: e => {
+          node.classList.remove('sorting');
+
+          const itemNode = e.item;
+          const prevNode = itemNode.previousElementSibling;
+          const nextNode = itemNode.nextElementSibling;
+          const index = itemNode.dataset.index;
+          const prevIndex = prevNode && prevNode.dataset.index;
+          const nextIndex = nextNode && nextNode.dataset.index;
+
+          this.selectorStore.moveMethod(index, prevIndex, nextIndex);
+        }
+      });
+    }
+  };
+
   optionalCheckbox = null;
   refOptionalCheckbox = element => {
     this.optionalCheckbox = element;
@@ -239,14 +278,6 @@ class PipelineSelector extends ElementSelector {
     this.closeDialog();
   };
 
-  handleLeftMethod = method => {
-    this.selectorStore.moveLeft(method);
-  };
-
-  handleRightMethod = method => {
-    this.selectorStore.moveRight(method);
-  };
-
   handleRemoveMethod = method => {
     this.selectorStore.removeMethod(method);
   };
@@ -276,8 +307,8 @@ class PipelineSelector extends ElementSelector {
 
       pipeline = this.selectorStore.pipeline.map((method, index) => {
         return (
-          <Method key={`${index}_${method.op}`} method={method}
-            onLeft={this.handleLeftMethod} onRight={this.handleRightMethod} onRemove={this.handleRemoveMethod}/>
+          <Method key={`${index}_${method.name}`} index={index} method={method}
+            onRemove={this.handleRemoveMethod}/>
         );
       });
     }
@@ -306,7 +337,9 @@ class PipelineSelector extends ElementSelector {
             <input disabled={isDisabled} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
           </div>
           <div className='pipeline'>
-            {pipeline}
+            <div ref={this.refSortable} className={'pipeline-sortable'}>
+              {pipeline}
+            </div>
             <div className={'controls'}>
               {pipeControls}
             </div>
@@ -477,16 +510,6 @@ class Method extends React.Component {
     });
   };
 
-  handleLeft = e => {
-    e.preventDefault();
-    this.props.onLeft(this.props.method);
-  };
-
-  handleRight = e => {
-    e.preventDefault();
-    this.props.onRight(this.props.method);
-  };
-
   handleRemove = e => {
     e.preventDefault();
     this.props.onRemove(this.props.method);
@@ -516,14 +539,12 @@ class Method extends React.Component {
     }
 
     return (
-      <div className="method-wrapper">
+      <div data-index={this.props.index} className="method-wrapper">
         <div className="method">
           <div className="method-name">{method.name}</div>
           <div className="method-args">{args}</div>
         </div>
         {editBtn}
-        <button onClick={this.handleLeft} title={'Move left'} className={'pipeline-button'}>{'<'}</button>
-        <button onClick={this.handleRight} title={'Move right'} className={'pipeline-button'}>{'>'}</button>
         <button onClick={this.handleRemove} title={'Remove'} className={'pipeline-button'}>X</button>
         {dialog}
       </div>
