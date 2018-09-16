@@ -143,7 +143,7 @@ class BindInput extends React.Component {
   }
 }
 
-class BindElementSelector extends React.Component {
+class ElementSelector extends React.Component {
   get selectorStore() {
     return this.props.store[this.props.id];
   }
@@ -168,7 +168,7 @@ class BindElementSelector extends React.Component {
 }
 
 @observer
-class PipelineSelectorStore extends BindElementSelector {
+class PipelineSelector extends ElementSelector {
   get store() {
     return this.props.store;
   }
@@ -321,7 +321,7 @@ class CodeMakerAuthPage extends React.Component {
         </label>
         <label>
           <span>{chrome.i18n.getMessage('kitLoginFormSelector')}</span>
-          <BindElementSelector store={this.codeSearchAuth} id={'selector'} type="text"/>
+          <ElementSelector store={this.codeSearchAuth} id={'selector'} type="text"/>
         </label>
       </div>
     );
@@ -347,48 +347,48 @@ class CodeMakerSelectorsPage extends React.Component {
         <h2>{chrome.i18n.getMessage('kitSelectors')}</h2>
         <label>
           <span>{chrome.i18n.getMessage('kitRowSelector')}</span>
-          <BindElementSelector store={this.codeSearchSelectors} id={'row'} type="text" className={'input'}>
+          <ElementSelector store={this.codeSearchSelectors} id={'row'} type="text" className={'input'}>
             {' '}
             <BindInput store={this.codeSearchSelectors} id={'isTableRow'} type="checkbox"/>
             {' '}
             <span>{chrome.i18n.getMessage('kitTableRow')}</span>
             {' '}
-          </BindElementSelector>
+          </ElementSelector>
         </label>
         <label>
-          <PipelineSelectorStore store={this.codeSearchSelectors} id={'categoryTitle'} optional={true}
+          <PipelineSelector store={this.codeSearchSelectors} id={'categoryTitle'} optional={true}
             type={'text'} title={chrome.i18n.getMessage('kitCategoryName')}/>
         </label>
         <label>
-          <PipelineSelectorStore store={this.codeSearchSelectors} id={'categoryLink'} optional={true}
+          <PipelineSelector store={this.codeSearchSelectors} id={'categoryLink'} optional={true}
             type={'text'} title={chrome.i18n.getMessage('kitCategoryLink')}/>
         </label>
         <label>
-          <PipelineSelectorStore store={this.codeSearchSelectors} id={'title'}
+          <PipelineSelector store={this.codeSearchSelectors} id={'title'}
             type={'text'} title={chrome.i18n.getMessage('kitTorrentTitle')}/>
         </label>
         <label>
-          <PipelineSelectorStore store={this.codeSearchSelectors} id={'link'}
+          <PipelineSelector store={this.codeSearchSelectors} id={'link'}
             type={'text'} title={chrome.i18n.getMessage('kitTorrentLink')}/>
         </label>
         <label>
-          <PipelineSelectorStore store={this.codeSearchSelectors} id={'size'} optional={true}
+          <PipelineSelector store={this.codeSearchSelectors} id={'size'} optional={true}
             type={'text'} title={chrome.i18n.getMessage('kitTorrentSize')}/>
         </label>
         <label>
-          <PipelineSelectorStore store={this.codeSearchSelectors} id={'downloadLink'} optional={true}
+          <PipelineSelector store={this.codeSearchSelectors} id={'downloadLink'} optional={true}
             type={'text'} title={chrome.i18n.getMessage('kitTorrentDownloadLink')}/>
         </label>
         <label>
-          <PipelineSelectorStore store={this.codeSearchSelectors} id={'seeds'} optional={true}
+          <PipelineSelector store={this.codeSearchSelectors} id={'seeds'} optional={true}
             type={'text'} title={chrome.i18n.getMessage('kitSeedCount')}/>
         </label>
         <label>
-          <PipelineSelectorStore store={this.codeSearchSelectors} id={'peers'} optional={true}
+          <PipelineSelector store={this.codeSearchSelectors} id={'peers'} optional={true}
             type={'text'} title={chrome.i18n.getMessage('kitPeerCount')}/>
         </label>
         <label>
-          <PipelineSelectorStore store={this.codeSearchSelectors} id={'date'} optional={true}
+          <PipelineSelector store={this.codeSearchSelectors} id={'date'} optional={true}
             type={'text'} title={chrome.i18n.getMessage('kitAddTime')}/>
         </label>
         <div className="label">
@@ -400,7 +400,7 @@ class CodeMakerSelectorsPage extends React.Component {
           <BindInput store={this.codeSearchSelectors} id={'skipFromEnd'} type="number"/>
         </div>
         <label>
-          <PipelineSelectorStore store={this.codeSearchSelectors} id={'nextPageLink'}  optional={true}
+          <PipelineSelector store={this.codeSearchSelectors} id={'nextPageLink'}  optional={true}
             type="text" title={chrome.i18n.getMessage('kitNextPageLink')}/>
         </label>
       </div>
