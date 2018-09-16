@@ -35,10 +35,10 @@ class CodeMaker extends React.Component {
     this.frame = element;
   };
 
-  handleRequestPage() {
+  handleRequestPage = () => {
     const searchStore = this.props.rootStore.codeMaker.code.search;
 
-  }
+  };
 
   render() {
     if (!this.props.rootStore.codeMaker) {
