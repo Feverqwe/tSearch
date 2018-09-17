@@ -2,175 +2,9 @@ import $ from 'jquery';
 import './baseApi';
 import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
 import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
+import exKitMethods from "./exKitMethods";
 
 const exKit = {
-  legacy: {
-    varCache: {
-      size_check: /[^0-9.,кбмгтkmgtb]/g,
-      size_kb: /кб|kb/,
-      size_mb: /мб|mb/,
-      size_gb: /гб|gb/,
-      size_tb: /тб|tb/,
-      today_now: /сейчас|now/,
-      today_today: /сегодня|today/,
-      today_yest: /вчера|yesterday/,
-      ex_num: /[^0-9]/g,
-      spaces: /\s+/g,
-      timeFormat4: /([0-9]{1,2}d)?[^0-9]*([0-9]{1,2}h)?[^0-9]*([0-9]{1,2}m)?[^0-9]*([0-9]{1,2}s)?/
-    },
-    sizeFormat: function (s) {
-      const size = s.toLowerCase().replace(this.varCache.size_check, '').replace(',', '.');
-      let t = size.replace(this.varCache.size_kb, '');
-      const size_len = size.length;
-      if (t.length !== size_len) {
-        t = parseFloat(t);
-        return Math.round(t * 1024);
-      }
-      t = size.replace(this.varCache.size_mb, '');
-      if (t.length !== size_len) {
-        t = parseFloat(t);
-        return Math.round(t * 1024 * 1024);
-      }
-      t = size.replace(this.varCache.size_gb, '');
-      if (t.length !== size_len) {
-        t = parseFloat(t);
-        return Math.round(t * 1024 * 1024 * 1024);
-      }
-      t = size.replace(this.varCache.size_tb, '');
-      if (t.length !== size_len) {
-        t = parseFloat(t);
-        return Math.round(t * 1024 * 1024 * 1024 * 1024);
-      }
-      return 0;
-    },
-    monthReplace: function (t) {
-      return t.toLowerCase().replace('янв', '1').replace('фев', '2').replace('мар', '3')
-        .replace('апр', '4').replace('мая', '5').replace('май', '5').replace('июн', '6')
-        .replace('июл', '7').replace('авг', '8').replace('сен', '9')
-        .replace('окт', '10').replace('ноя', '11').replace('дек', '12')
-        .replace('jan', '1').replace('feb', '2').replace('mar', '3')
-        .replace('apr', '4').replace('may', '5').replace('jun', '6')
-        .replace('jul', '7').replace('aug', '8').replace('sep', '9')
-        .replace('oct', '10').replace('nov', '11').replace('dec', '12');
-    },
-    todayReplace: function (t, f) {
-      f = parseInt(f);
-      t = t.toLowerCase();
-      const tt = new Date();
-      if ((this.varCache.today_now).test(t)) {
-        t = 'today ' + tt.getHours() + ':' + tt.getMinutes();
-      }
-      const tty = new Date((Math.round(tt.getTime() / 1000) - 24 * 60 * 60) * 1000);
-      let today;
-      let yesterday;
-      if (f === 0) {
-        today = tt.getFullYear() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getDate() + ' ';
-        yesterday = tty.getFullYear() + ' ' + (tty.getMonth() + 1) + ' ' + tty.getDate() + ' ';
-      } else if (f === 3) {
-        today = (tt.getMonth() + 1) + ' ' + tt.getDate() + ' ' + tt.getFullYear() + ' ';
-        yesterday = (tty.getMonth() + 1) + ' ' + tty.getDate() + ' ' + tty.getFullYear() + ' ';
-      } else {
-        today = tt.getDate() + ' ' + (tt.getMonth() + 1) + ' ' + tt.getFullYear() + ' ';
-        yesterday = tty.getDate() + ' ' + (tty.getMonth() + 1) + ' ' + tty.getFullYear() + ' ';
-      }
-      t = t.replace(this.varCache.today_today, today).replace(this.varCache.today_yest, yesterday);
-      return t;
-    },
-    dateFormat: function (f, t) {
-      if (f === undefined) {
-        return ['2013-04-31[[[ 07]:03]:27]', '31-04-2013[[[ 07]:03]:27]', 'n day ago', '04-31-2013[[[ 07]:03]:27]', '2d 1h 0m 0s ago'];
-      }
-      f = parseInt(f);
-      if (f === 0) { // || f === '2013-04-31[[[ 07]:03]:27]') {
-        const dd = t.replace(this.varCache.ex_num, ' ').replace(this.varCache.spaces, ' ').trim().split(' ');
-        for (let i = 0; i < 6; i++) {
-          if (dd[i] === undefined) {
-            dd[i] = 0;
-          } else {
-            dd[i] = parseInt(dd[i]);
-            if (isNaN(dd[i])) {
-              if (i < 3) {
-                return 0;
-              } else {
-                dd[i] = 0;
-              }
-            }
-          }
-        }
-        if (dd[0] < 10) {
-          dd[0] = '200' + dd[0];
-        } else if (dd[0] < 100) {
-          dd[0] = '20' + dd[0];
-        }
-        return Math.round((new Date(dd[0], dd[1] - 1, dd[2], dd[3], dd[4], dd[5])).getTime() / 1000);
-      }
-      if (f === 1) { //  || f === '31-04-2013[[[ 07]:03]:27]') {
-        const dd = t.replace(this.varCache.ex_num, ' ').replace(this.varCache.spaces, ' ').trim().split(' ');
-        for (let i = 0; i < 6; i++) {
-          if (dd[i] === undefined) {
-            dd[i] = 0;
-          } else {
-            dd[i] = parseInt(dd[i]);
-            if (isNaN(dd[i])) {
-              if (i < 3) {
-                return 0;
-              } else {
-                dd[i] = 0;
-              }
-            }
-          }
-        }
-        if (dd[2] < 10) {
-          dd[2] = '200' + dd[2];
-        } else if (dd[2] < 100) {
-          dd[2] = '20' + dd[2];
-        }
-        return Math.round((new Date(dd[2], dd[1] - 1, dd[0], dd[3], dd[4], dd[5])).getTime() / 1000);
-      }
-      if (f === 2) { //  || f === 'n day ago') {
-        const old = parseFloat(t.replace(this.varCache.ex_num, '')) * 24 * 60 * 60;
-        return Math.round(Date.now() / 1000) - old;
-      }
-      if (f === 3) { //  || f === '04-31-2013[[[ 07]:03]:27]') {
-        const dd = t.replace(this.varCache.ex_num, ' ').replace(this.varCache.spaces, ' ').trim().split(' ');
-        for (let i = 0; i < 6; i++) {
-          if (dd[i] === undefined) {
-            dd[i] = 0;
-          } else {
-            dd[i] = parseInt(dd[i]);
-            if (isNaN(dd[i])) {
-              if (i < 3) {
-                return 0;
-              } else {
-                dd[i] = 0;
-              }
-            }
-          }
-        }
-        if (dd[2] < 10) {
-          dd[2] = '200' + dd[2];
-        } else if (dd[2] < 100) {
-          dd[2] = '20' + dd[2];
-        }
-        return Math.round((new Date(dd[2], dd[0] - 1, dd[1], dd[3], dd[4], dd[5])).getTime() / 1000);
-      }
-      if (f === 4) { //  || f === '2d 1h 0m 0s ago') {
-        const match = t.match(this.varCache.timeFormat4);
-        if (match) {
-          const d = parseInt(match[1]) || 0;
-          const h = parseInt(match[2]) || 0;
-          const m = parseInt(match[3]) || 0;
-          const s = parseInt(match[4]) || 0;
-          const time = d * 24 * 60 * 60 + h * 60 * 60 + m * 60 + s;
-          if (time === 0) {
-            return 0;
-          }
-          return parseInt(Date.now() / 1000) - time;
-        }
-        return 0;
-      }
-    }
-  },
   prepareTrackerR: {
     hasEndSlash: /\/$/
   },
@@ -728,52 +562,266 @@ const exKit = {
     });
   },
 };
-exKit.funcList.dateFormat = exKit.legacy.dateFormat.bind(exKit.legacy);
-exKit.funcList.monthReplace = exKit.legacy.monthReplace.bind(exKit.legacy);
-exKit.funcList.sizeFormat = exKit.legacy.sizeFormat.bind(exKit.legacy);
-exKit.funcList.todayReplace = exKit.legacy.todayReplace.bind(exKit.legacy);
+exKit.funcList.dateFormat = exKitMethods.legacyParseDate;
+exKit.funcList.monthReplace = exKitMethods.legacyReplaceMonth;
+exKit.funcList.sizeFormat = exKitMethods.legacySizeFormat;
+exKit.funcList.todayReplace = exKitMethods.legacyReplaceToday;
 
 window.exKit = exKit;
 
-window.API_exKit = function (trackerObj) {
-  const tracker = exKit.prepareCustomTracker(trackerObj);
-  exKit.prepareTracker(tracker);
+class ExKitTracker {
+  constructor(code) {
+    this.code = this.prepareCode(code);
+  }
+  search(session, query) {
+    let encodedQuery = null;
+    if (this.code.search.encoding === 'cp1251') {
+      encodedQuery = exKit.funcList.encodeCp1251(query);
+    } else {
+      encodedQuery = encodeURIComponent(query);
+    }
 
-  const search = function (query, nextPageUrl) {
-    return exKit.search(tracker, {
-      query: query,
-      url: nextPageUrl
-    }).then(function (result) {
-      let response;
-      if (result.requireAuth) {
-        response = {
-          success: false,
-          error: 'AUTH',
-          message: 'requireAuth',
-          url: result.requireAuth
-        };
-      } else {
-        response = {
-          success: true,
-          results: result.torrentList,
-          nextPageRequest: result.nextPageUrl && {
-            event: 'getNextPage',
-            url: result.nextPageUrl,
-            query: query
-          }
-        };
+    const options = {
+      method: this.code.search.method,
+      url: this.code.search.url.replace('%search%', encodedQuery),
+      query: this.code.search.query.replace('%search%', encodedQuery),
+      body: this.code.search.body.replace('%search%', encodedQuery),
+      charset: this.code.search.charset,
+    };
+
+    this.setHeaders(options);
+
+    if (this.code.search.onBeforeRequest) {
+      this.code.search.onBeforeRequest(session, options);
+    }
+
+    return API_request(options);
+  }
+  searchNext(session, url) {
+    const options = {
+      method: 'GET',
+      url: url,
+      charset: this.code.search.charset,
+    };
+
+    this.setHeaders(options);
+
+    if (this.code.search.onBeforeRequest) {
+      this.code.search.onBeforeRequest(session, options);
+    }
+
+    return API_request(options);
+  }
+  parseResponse(session, response) {
+    if (this.code.search.onAfterRequest) {
+      const result = {};
+      this.code.search.onAfterRequest(result, session);
+      if (result.result) {
+        return this.handleHookResult(result.result);
       }
-      return response;
+    }
+
+    if (this.code.search.onBeforeDomParse) {
+      this.code.search.onBeforeDomParse(session);
+    }
+
+    const dom = session.dom = API_getDoc(response.body, response.url);
+    const $dom = session.$dom = $(dom);
+
+    if (this.code.search.onAfterDomParse) {
+      const result = {};
+      this.code.search.onAfterDomParse(result, session);
+      if (result.result) {
+        return this.handleHookResult(result.result);
+      }
+    }
+
+    if (this.code.auth.selector && $dom.find(this.code.auth.selector).length) {
+      throw new AuthError(this.code);
+    }
+
+    const rows = $dom.find(this.code.search.row);
+    if (this.code.search.skipFromStart) {
+      rows.splice(0, this.code.search.skipFromStart);
+    }
+    if (this.code.search.skipFromEnd) {
+      rows.splice(this.code.search.skipFromEnd * -1);
+    }
+
+    const results = rows;
+    rows.forEach(row => {
+      try {
+        const result = this.parseRow(row);
+        results.push(result);
+      } catch (err) {
+        console.error('parseRow error', err);
+      }
     });
+
+    let nextPageUrl = null;
+    if (this.code.search.nextPageLink) {
+      try {
+        nextPageUrl = this.matchSelector('nextPageLink', session, this.code.search.nextPageLink);
+      } catch (err) {
+        console.error('nextPageLink matchSelector error', err);
+      }
+    }
+
+    return {
+      results,
+      nextPageUrl
+    };
+  }
+
+  /**
+   * @param {string} id
+   * @param session
+   * @param {StringSelectorStore|NumberSelectorStore|ElementSelectorStore} selector
+   */
+  matchSelector(id, session, selector) {
+    const {$dom} = session;
+
+    let result = $dom.find(selector.selector).get(0);
+
+    selector.pipeline && selector.pipeline.forEach(method => {
+      switch (method.name) {
+        case 'getAttr': {
+          result = exKitMethods.getAttr(result, method.args[0]);
+          break;
+        }
+        case 'getProp': {
+          result = exKitMethods.getProp(result, method.args[0]);
+          break;
+        }
+        case 'getText': {
+          result = exKitMethods.getText(result);
+          break;
+        }
+        case 'getHtml': {
+          result = exKitMethods.getText(result);
+          break;
+        }
+        case 'getChild': {
+          result = exKitMethods.getChild(result, method.args[0]);
+          break;
+        }
+        case 'replace': {
+          result = exKitMethods.replace(result, method.args[0], method.args[1]);
+          break;
+        }
+        case 'parseDate': {
+          result = exKitMethods.parseDate(result, method.args);
+          break;
+        }
+        case 'parseSize': {
+          result = exKitMethods.parseDate(result);
+          break;
+        }
+        case 'toInt': {
+          result = exKitMethods.toInt(result);
+          break;
+        }
+        case 'toFloat': {
+          result = exKitMethods.toFloat(result);
+          break;
+        }
+        case 'legacyReplaceToday': {
+          result = exKitMethods.legacyReplaceToday(result, method.args[0], method.args[1]);
+          break;
+        }
+        case 'legacyReplaceMonth': {
+          result = exKitMethods.legacyReplaceToday(result, method.args[0]);
+          break;
+        }
+        case 'legacyParseDate': {
+          result = exKitMethods.legacyParseDate(result, method.args[0], method.args[1]);
+          break;
+        }
+        case 'legacySizeFormat': {
+          result = exKitMethods.legacySizeFormat(result, method.args[0]);
+          break;
+        }
+      }
+    });
+
+    return result;
+  }
+  handleHookResult(result) {
+    if (result.requireAuth) {
+      throw new AuthError(this.code);
+    }
+    return result;
+  }
+  setHeaders(options) {
+    let headers = null;
+    if (this.code.search.headers) {
+      headers = JSON.parse(this.code.search.headers);
+    }
+    options.headers = headers;
+  }
+  prepareCode(code) {
+    if (code.version === 1) {
+      code = convertCodeV1toV2(code);
+    }
+    if (code.version === 2) {
+      code = convertCodeV2toV3(code);
+    }
+
+    if (code.search.baseUrl && !/\/$/.test(code.search.baseUrl)) {
+      code.search.baseUrl = code.search.baseUrl + '/';
+    }
+
+    return code;
+  }
+}
+
+window.API_exKit = function (code) {
+  const exKitTracker = new ExKitTracker(code);
+
+  const onResult = result => {
+    let nextPageRequest = null;
+    if (result.nextPageUrl) {
+      nextPageRequest = {
+        url: result.nextPageUrl,
+      }
+    }
+
+    return {
+      success: true,
+      results: result.results,
+      nextPageRequest: nextPageRequest,
+    };
   };
 
-  API_event('getNextPage', function (request) {
-    return search(request.query, request.url);
+  API_event('search', function (request) {
+    const session = {
+      cache: {},
+      eventName: 'search',
+      request,
+    };
+    return exKitTracker.search(session, request.query).then(response => {
+      return exKitTracker.parseResponse(session, response);
+    }).then(onResult);
   });
 
-  API_event('search', function (request) {
-    return search(request.query);
+  API_event('getNextPage', function (request) {
+    const session = {
+      cache: {},
+      eventName: 'getNextPage',
+      request,
+    };
+    return exKitTracker.searchNext(session, request.url).then(response => {
+      return exKitTracker.parseResponse(session, response);
+    }).then(onResult);
   });
 };
+
+class AuthError extends Error {
+  constructor(code) {
+    super('Auth required');
+    this.code = 'AUTH_REQUIRED';
+    this.url = code.auth.url;
+  }
+}
 
 export default exKit;
