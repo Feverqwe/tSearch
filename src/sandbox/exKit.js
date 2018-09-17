@@ -2,7 +2,15 @@ import $ from 'jquery';
 import './baseApi';
 import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
 import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
-import exKitMethods from "./exKitMethods";
+import moment from "moment";
+import {
+  sizeFormat as legacySizeFormat,
+  monthReplace as legacyReplaceMonth,
+  todayReplace as legacyReplaceToday,
+  dateFormat as legacyParseDate
+} from '../tools/exKitLegacyFn';
+
+const filesizeParser = require('filesize-parser');
 
 const exKit = {
   prepareTrackerR: {
@@ -562,10 +570,10 @@ const exKit = {
     });
   },
 };
-exKit.funcList.dateFormat = exKitMethods.legacyParseDate;
-exKit.funcList.monthReplace = exKitMethods.legacyReplaceMonth;
-exKit.funcList.sizeFormat = exKitMethods.legacySizeFormat;
-exKit.funcList.todayReplace = exKitMethods.legacyReplaceToday;
+exKit.funcList.dateFormat = legacyParseDate;
+exKit.funcList.monthReplace = legacyReplaceMonth;
+exKit.funcList.sizeFormat = legacySizeFormat;
+exKit.funcList.todayReplace = legacyReplaceToday;
 
 window.exKit = exKit;
 
@@ -683,66 +691,9 @@ class ExKitTracker {
 
     let result = $dom.find(selector.selector).get(0);
 
-    selector.pipeline && selector.pipeline.forEach(method => {
-      switch (method.name) {
-        case 'getAttr': {
-          result = exKitMethods.getAttr(result, method.args[0]);
-          break;
-        }
-        case 'getProp': {
-          result = exKitMethods.getProp(result, method.args[0]);
-          break;
-        }
-        case 'getText': {
-          result = exKitMethods.getText(result);
-          break;
-        }
-        case 'getHtml': {
-          result = exKitMethods.getText(result);
-          break;
-        }
-        case 'getChild': {
-          result = exKitMethods.getChild(result, method.args[0]);
-          break;
-        }
-        case 'replace': {
-          result = exKitMethods.replace(result, method.args[0], method.args[1]);
-          break;
-        }
-        case 'parseDate': {
-          result = exKitMethods.parseDate(result, method.args);
-          break;
-        }
-        case 'parseSize': {
-          result = exKitMethods.parseDate(result);
-          break;
-        }
-        case 'toInt': {
-          result = exKitMethods.toInt(result);
-          break;
-        }
-        case 'toFloat': {
-          result = exKitMethods.toFloat(result);
-          break;
-        }
-        case 'legacyReplaceToday': {
-          result = exKitMethods.legacyReplaceToday(result, method.args[0], method.args[1]);
-          break;
-        }
-        case 'legacyReplaceMonth': {
-          result = exKitMethods.legacyReplaceToday(result, method.args[0]);
-          break;
-        }
-        case 'legacyParseDate': {
-          result = exKitMethods.legacyParseDate(result, method.args[0], method.args[1]);
-          break;
-        }
-        case 'legacySizeFormat': {
-          result = exKitMethods.legacySizeFormat(result, method.args[0]);
-          break;
-        }
-      }
-    });
+    if (selector.pipelineBuild) {
+      result = selector.pipelineBuild(result);
+    }
 
     return result;
   }
@@ -771,7 +722,100 @@ class ExKitTracker {
       code.search.baseUrl = code.search.baseUrl + '/';
     }
 
+    Object.keys(code.search).forEach(key => {
+      const value = code.search[key];
+      if (value && value.pipeline) {
+        value.pipelineBuild = this.buildPipeline(value.pipeline);
+      }
+    });
+
     return code;
+  }
+  buildPipeline(pipeline) {
+    if (!Array.isArray(pipeline) || !pipeline.length) {
+      return null;
+    }
+
+    const line = [];
+    pipeline.forEach(method => {
+      switch (method.name) {
+        case 'getAttr': {
+          const attr = method.args[0];
+          line.push(value => value.getAttribute(attr));
+          break;
+        }
+        case 'getProp': {
+          const prop = method.args[0];
+          line.push(value => value[prop]);
+          break;
+        }
+        case 'getText': {
+          line.push(value => value.textContent);
+          break;
+        }
+        case 'getHtml': {
+          line.push(value => value.innerHTML);
+          break;
+        }
+        case 'getChild': {
+          const index = method.args[0];
+          line.push(value => value.childNodes[index]);
+          break;
+        }
+        case 'replace': {
+          const re = new RegExp(method.args[0], 'ig');
+          const replaceTo = method.args[1];
+          line.push(value => value.replace(re, replaceTo));
+          break;
+        }
+        case 'parseDate': {
+          const formats = method.args;
+          line.push(value => moment(value, formats).unix());
+          break;
+        }
+        case 'parseSize': {
+          line.push(value => filesizeParser(value));
+          break;
+        }
+        case 'toInt': {
+          line.push(value => parseInt(value, 10));
+          break;
+        }
+        case 'toFloat': {
+          line.push(value => parseFloat(value));
+          break;
+        }
+        case 'legacyReplaceToday': {
+          line.push(value => legacyReplaceToday(value));
+          break;
+        }
+        case 'legacyReplaceMonth': {
+          line.push(value => legacyReplaceMonth(value));
+          break;
+        }
+        case 'legacyParseDate': {
+          line.push(value => legacyParseDate(method.args[0], value));
+          break;
+        }
+        case 'legacySizeFormat': {
+          line.push(value => legacySizeFormat(value));
+          break;
+        }
+      }
+    });
+
+    return value => {
+      for (let i = 0, method; method = line[i]; i++) {
+        try {
+          value = method(value);
+        } catch (err) {
+          value = null;
+          console.error('Call pipepine error!', err);
+          break;
+        }
+      }
+      return value;
+    };
   }
 }
 
