@@ -160,7 +160,7 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
   selectors.peers = convertSelector(code.search.torrentSelector.peer, code.search.onGetValue.peer);
   selectors.date = convertSelector(code.search.torrentSelector.date, code.search.onGetValue.date);
 
-  selectors.nextPageLink = convertSelector(code.search.nextPageSelector);
+  selectors.nextPageLink = convertSelector(code.search.nextPageSelector, code.search.onGetValue.nextPageSelector);
 
 
   const description = codeV3.description = {};
