@@ -1,5 +1,8 @@
 import $ from 'jquery';
 import './baseApi';
+import convertCodeV3toV4 from "../tools/convertCodeV3toV4";
+import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
+import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
 
 const exKit = {
   legacy: {
@@ -248,224 +251,19 @@ const exKit = {
       return this.idInCategoryList(tracker, cId);
     }
   },
-  listToFunction: function (key, list) {
-    if (!Array.isArray(list)) {
-      return null;
-    }
-
-    const funcList = [];
-    list.forEach(function (item) {
-      if (item.name === 'encode') {
-        if (item.type === 'cp1251') {
-          funcList.push(function (details) {
-            details.query = exKit.funcList.encodeCp1251(details.query);
-          });
-        }
-      } else if (item.name === 'replaceRe') {
-        const re = new RegExp(item.re, 'ig');
-        funcList.push(function (details, value) {
-          return value.replace(re, item.text);
-        });
-      } else if (item === 'replaceToday') {
-        funcList.push(function (details, value) {
-          return exKit.funcList.todayReplace(value);
-        });
-      } else if (item === 'replaceMonth') {
-        funcList.push(function (details, value) {
-          return exKit.funcList.monthReplace(value);
-        });
-      } else if (item.name === 'timeFormat') {
-        funcList.push(function (details, value) {
-          return exKit.funcList.dateFormat(item.format, value);
-        });
-      } else if (item === 'convertSize') {
-        funcList.push(function (details, value) {
-          return exKit.funcList.sizeFormat(value);
-        });
-      }
-    });
-
-    if (!funcList.length) {
-      return null;
-    }
-
-    return function (details, value) {
-      for (let i = 0, _func; _func = funcList[i]; i++) {
-        try {
-          value = _func(details, value);
-        } catch (err) {
-          value = null;
-          console.error('listToFunction error!', err);
-          break;
-        }
-      }
-      return value;
-    }
-  },
-  convertV1ToV2: function (code) {
-    const obj = {};
-    obj.version = 2;
-    obj.type = 'kit';
-    obj.uid = code.uid;
-    obj.icon = code.icon;
-    obj.title = code.name;
-    obj.desc = code.about;
-    const search = obj.search = {};
-    const torrentSelector = search.torrentSelector = {};
-    const onGetValue = search.onGetValue = {};
-    search.searchUrl = code.search_path;
-    if (code.root_url) {
-      search.baseUrl = code.root_url;
-    }
-    if (code.auth) {
-      search.loginUrl = code.auth;
-    }
-    if (code.post) {
-      search.requestType = 'POST';
-      search.requestData = code.post;
-    }
-    if (code.encode) {
-      search.onBeforeRequest = [{name: 'encode', type: 'cp1251'}];
-    }
-    search.listItemSelector = code.items;
-    if (code.charset) {
-      search.requestMimeType = 'text/html; charset=' + code.charset;
-    }
-    if (code.cat_alt) {
-      code.cat_attr = 'alt';
-      code.cat_alt = undefined;
-    }
-    if (code.auth_f) {
-      search.loginFormSelector = code.auth_f;
-    }
-    if (code.sf || code.sl) {
-      search.listItemSplice = [code.sf || 0, -(code.sl || 0)];
-    }
-    torrentSelector.title = code.tr_name;
-    torrentSelector.url = {selector: code.tr_link, attr: 'href'};
-    if (code.cat_name) {
-      torrentSelector.categoryTitle = code.cat_name;
-      if (code.cat_attr) {
-        torrentSelector.categoryTitle = {
-          selector: torrentSelector.categoryTitle,
-          attr: code.cat_attr
-        };
-      }
-      if (code.cat_link) {
-        torrentSelector.categoryUrl = {selector: code.cat_link, attr: 'href'};
-      }
-    }
-    if (code.tr_size) {
-      torrentSelector.size = code.tr_size;
-      if (code.size_attr) {
-        torrentSelector.size = {selector: torrentSelector.size, attr: code.size_attr};
-      }
-
-      const sizeFuncList = [];
-      if (code.size_r && code.size_rp !== undefined) {
-        sizeFuncList.push({
-          name: 'replaceRe',
-          re: code.size_r,
-          text: code.size_rp
-        });
-      }
-      if (code.s_c) {
-        sizeFuncList.push('convertSize');
-      }
-      if (sizeFuncList.length) {
-        onGetValue.size = sizeFuncList;
-      }
-    }
-    if (code.tr_dl) {
-      torrentSelector.downloadUrl = {selector: code.tr_dl, attr: 'href'};
-    }
-    if (code.seed) {
-      torrentSelector.seed = code.seed;
-      if (code.seed_r) {
-        onGetValue.seed = [
-          {
-            name: 'replaceRe',
-            re: code.seed_r,
-            text: code.seed_rp
-          }
-        ];
-      }
-    }
-    if (code.peer) {
-      torrentSelector.peer = code.peer;
-      if (code.peer_r) {
-        onGetValue.peer = [
-          {
-            name: 'replaceRe',
-            re: code.peer_r,
-            text: code.peer_rp
-          }
-        ];
-      }
-    }
-    if (code.date) {
-      torrentSelector.date = code.date;
-      if (code.date_attr) {
-        torrentSelector.date = {selector: torrentSelector.date, attr: code.date_attr};
-      }
-      const dateFuncList = [];
-      if (code.t_r) {
-        dateFuncList.push({
-          name: 'replaceRe',
-          re: code.t_r,
-          text: code.t_r_r
-        });
-      }
-      if (code.t_t_r) {
-        dateFuncList.push('replaceToday');
-      }
-      if (code.t_m_r) {
-        dateFuncList.push('replaceMonth');
-      }
-      if (code.t_f !== undefined && code.t_f !== "-1") {
-        dateFuncList.push({name: 'timeFormat', format: code.t_f});
-      }
-      if (dateFuncList.length) {
-        onGetValue.date = dateFuncList;
-      }
-    }
-
-    return obj;
-  },
   prepareCustomTracker: function (code) {
     const _this = this;
-    let trackerObj = null;
 
     if (code.version === 1) {
-      code = this.convertV1ToV2(code);
+      code = convertCodeV1toV2(code);
     }
 
     if (code.version === 2) {
-      trackerObj = code;
+      code = convertCodeV2toV3(code);
+    }
 
-      let id = '';
-      const params = location.hash.substr(1).split('&');
-      params.some(function (item) {
-        const keyValue = item.split('=');
-        if (keyValue[0] === 'id') {
-          id = keyValue[1];
-          return true;
-        }
-      });
-      trackerObj.id = id || 'noTrackerId';
-
-      trackerObj.search = trackerObj.search || {};
-
-      ['onBeforeRequest', 'onAfterRequest', 'onBeforeDomParse', 'onAfterDomParse', 'onGetListItem'].forEach(function (key) {
-        trackerObj.search[key] = _this.listToFunction(key, trackerObj.search[key]);
-      });
-
-      ['onSelectorIsNotFound', 'onEmptySelectorValue', 'onGetValue'].forEach(function (sectionName) {
-        const section = trackerObj.search[sectionName];
-        for (let key in section) {
-          section[key] = _this.listToFunction(sectionName, section[key]);
-        }
-      });
+    if (code.version === 3) {
+      code = convertCodeV3toV4(code);
     }
 
     return code;
@@ -854,21 +652,6 @@ const exKit = {
       return result;
     });
   },
-  getTrackerIconUrl: function (icon) {
-    icon = icon || '#ccc';
-    if (icon[0] !== '#') {
-      return icon;
-    }
-    let svg = 'data:image/svg+xml;base64,';
-    let data = '';
-    if (icon === '#skull') {
-      data = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 48 48" version="1.1" viewBox="0 0 48 48" height="20px" width="20px"><g><g><path d="M33,46c-0.553,0-1-0.447-1-1V34h1c4.963,0,9-4.037,9-9v-5c0-9.925-8.075-18-18-18S6,10.075,6,20v5c0,4.963,4.037,9,9,9h1     v11c0,0.553-0.447,1-1,1s-1-0.447-1-1v-9.045C8.401,35.448,4,30.729,4,25v-5C4,8.972,12.972,0,24,0s20,8.972,20,20v5     c0,5.729-4.401,10.448-10,10.955V45C34,45.553,33.553,46,33,46z"/></g><g><path d="M21,46c-0.553,0-1-0.447-1-1V35c0-0.553,0.447-1,1-1s1,0.447,1,1v10C22,45.553,21.553,46,21,46z"/></g><g><path d="M27,46c-0.553,0-1-0.447-1-1V35c0-0.553,0.447-1,1-1s1,0.447,1,1v10C28,45.553,27.553,46,27,46z"/></g><g><path d="M33,32c-3.859,0-7-3.141-7-7s3.141-7,7-7s7,3.141,7,7S36.859,32,33,32z M33,20c-2.757,0-5,2.243-5,5s2.243,5,5,5     s5-2.243,5-5S35.757,20,33,20z"/></g><g><path d="M15,32c-3.859,0-7-3.141-7-7s3.141-7,7-7s7,3.141,7,7S18.859,32,15,32z M15,20c-2.757,0-5,2.243-5,5s2.243,5,5,5     s5-2.243,5-5S17.757,20,15,20z"/></g><g><path d="M5.236,18c-0.553,0-1-0.447-1-1s0.447-1,1-1C7.955,16,12,14.136,12,9c0-0.553,0.447-1,1-1s1,0.447,1,1     C14,14.908,9.592,18,5.236,18z"/></g><g><path d="M42.764,18C38.408,18,34,14.908,34,9c0-0.553,0.447-1,1-1s1,0.447,1,1c0,5.136,4.045,7,6.764,7c0.553,0,1,0.447,1,1     S43.316,18,42.764,18z"/></g><g><path d="M25.02,32c-0.005,0.001-0.012,0.001-0.02,0h-2c-0.347,0-0.668-0.18-0.851-0.475s-0.199-0.663-0.044-0.973l1-2     c0.34-0.678,1.449-0.678,1.789,0l0.92,1.84c0.129,0.168,0.205,0.379,0.205,0.607C26.02,31.553,25.572,32,25.02,32z"/></g></g></svg>';
-    } else {
-      data = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 48 48" version="1.1" viewBox="0 0 48 48" height="20px" width="20px"><circle cx="24" cy="24" r="20" stroke="black" fill="' + icon + '" /></svg>';
-    }
-    svg += btoa(data);
-    return svg;
-  }
 };
 exKit.funcList.dateFormat = exKit.legacy.dateFormat.bind(exKit.legacy);
 exKit.funcList.monthReplace = exKit.legacy.monthReplace.bind(exKit.legacy);
