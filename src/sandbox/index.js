@@ -104,14 +104,14 @@ window.API_request = function (options) {
     if (!headers.has('Content-Type')) {
       headers.set('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
     }
-  }
 
-  if (typeof options.body !== 'string') {
-    if (/^application\/x-www-form-urlencoded/.test(headers.get('Content-Type'))) {
-      options.body = qs.stringify(options.body);
-    } else
-    if (/^application\/json/.test(headers.get('Content-Type'))) {
-      options.body = JSON.stringify(options.body);
+    if (typeof options.body !== 'string') {
+      if (/^application\/x-www-form-urlencoded/.test(headers.get('Content-Type'))) {
+        options.body = qs.stringify(options.body);
+      } else
+      if (/^application\/json/.test(headers.get('Content-Type'))) {
+        options.body = JSON.stringify(options.body);
+      }
     }
   }
 
