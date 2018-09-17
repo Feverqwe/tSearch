@@ -207,7 +207,7 @@ class PipelineSelector extends ElementSelector {
           pull: false,
           put: false
         },
-        handle: '.method',
+        handle: '.move',
         draggable: '.method-wrapper',
         animation: 150,
         onStart: () => {
@@ -695,6 +695,7 @@ class Method extends React.Component {
 
     return (
       <div data-index={this.props.index} className="method-wrapper">
+        <div className="move"/>
         <div className="method">
           <div className="method-name">{method.name}</div>
           <div className="method-args">{args}</div>
