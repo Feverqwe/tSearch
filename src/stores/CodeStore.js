@@ -267,6 +267,37 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
       self[key] = value;
     },
   };
+}).views(self => {
+  return {
+    getDefaultPipeline(id) {
+      let pipeline = null;
+      if (['seeds', 'peers'].indexOf(id) !== -1) {
+        pipeline = [{
+          name: 'getText'
+        }, {
+          name: 'toInt'
+        }];
+      } else
+      if (['size'].indexOf(id) !== -1) {
+        pipeline = [{
+          name: 'getText'
+        }, {
+          name: 'parseSize'
+        }];
+      } else
+      if (/Link$/.test(id)) {
+        pipeline = [{
+          name: 'getProp',
+          args: ['href']
+        }];
+      } else {
+        pipeline = [{
+          name: 'getText'
+        }];
+      }
+      return pipeline;
+    }
+  };
 });
 
 /**

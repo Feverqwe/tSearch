@@ -238,32 +238,8 @@ class PipelineSelector extends ElementSelector {
   handleOptionalChange = e => {
     if (this.optionalCheckbox.checked) {
       if (!this.selectorStore) {
-        let pipeline = null;
-        if (['seeds', 'peers'].indexOf(this.props.id) !== -1) {
-          pipeline = [{
-            name: 'getText'
-          }, {
-            name: 'toInt'
-          }];
-        } else
-        if (['size'].indexOf(this.props.id) !== -1) {
-          pipeline = [{
-            name: 'getText'
-          }, {
-            name: 'parseSize'
-          }];
-        } else
-        if (/Link$/.test(this.props.id)) {
-          pipeline = [{
-            name: 'getProp',
-            args: ['href']
-          }];
-        } else {
-          pipeline = [{
-            name: 'getText'
-          }];
-        }
         const snapshot = this.state.snapshot && JSON.parse(this.state.snapshot);
+        const pipeline = this.store.getDefaultPipeline(this.props.id);
         this.store.set(this.props.id, snapshot || {
           selector: this.input.value,
           pipeline: pipeline
