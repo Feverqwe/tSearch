@@ -186,6 +186,7 @@ class ElementSelector extends React.Component {
 class PipelineSelector extends ElementSelector {
   state = {
     showAddDialog: false,
+    snapshot: null
   };
 
   get store() {
@@ -262,13 +263,15 @@ class PipelineSelector extends ElementSelector {
             name: 'getText'
           }];
         }
-        this.store.set(this.props.id, {
+        const snapshot = this.state.snapshot && JSON.parse(this.state.snapshot);
+        this.store.set(this.props.id, snapshot || {
           selector: this.input.value,
           pipeline: pipeline
         });
       }
     } else {
       if (this.selectorStore) {
+        this.state.snapshot = JSON.stringify(this.selectorStore);
         this.store.set(this.props.id, undefined);
       }
     }
