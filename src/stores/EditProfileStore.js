@@ -137,7 +137,6 @@ const EditProfileStore = types.compose('EditProfileStore', ProfileStore, types.m
             editorTracker.meta.description,
             editorTracker.meta.homepageURL,
             editorTracker.meta.trackerURL,
-            editorTracker.meta.updateURL,
             editorTracker.meta.downloadURL,
             editorTracker.meta.supportURL,
           ].join(' '));

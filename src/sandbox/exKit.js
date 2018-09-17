@@ -1,8 +1,7 @@
 import $ from 'jquery';
 import './baseApi';
-import convertCodeV3toV4 from "../tools/convertCodeV3toV4";
-import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
 import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
+import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
 
 const exKit = {
   legacy: {
@@ -251,6 +250,60 @@ const exKit = {
       return this.idInCategoryList(tracker, cId);
     }
   },
+  listToFunction: function (key, list) {
+    if (!Array.isArray(list)) {
+      return null;
+    }
+
+    const funcList = [];
+    list.forEach(function (item) {
+      if (item.name === 'encode') {
+        if (item.type === 'cp1251') {
+          funcList.push(function (details) {
+            details.query = exKit.funcList.encodeCp1251(details.query);
+          });
+        }
+      } else if (item.name === 'replaceRe') {
+        const re = new RegExp(item.re, 'ig');
+        funcList.push(function (details, value) {
+          return value.replace(re, item.text);
+        });
+      } else if (item === 'replaceToday') {
+        funcList.push(function (details, value) {
+          return exKit.funcList.todayReplace(value);
+        });
+      } else if (item === 'replaceMonth') {
+        funcList.push(function (details, value) {
+          return exKit.funcList.monthReplace(value);
+        });
+      } else if (item.name === 'timeFormat') {
+        funcList.push(function (details, value) {
+          return exKit.funcList.dateFormat(item.format, value);
+        });
+      } else if (item === 'convertSize') {
+        funcList.push(function (details, value) {
+          return exKit.funcList.sizeFormat(value);
+        });
+      }
+    });
+
+    if (!funcList.length) {
+      return null;
+    }
+
+    return function (details, value) {
+      for (let i = 0, _func; _func = funcList[i]; i++) {
+        try {
+          value = _func(details, value);
+        } catch (err) {
+          value = null;
+          console.error('listToFunction error!', err);
+          break;
+        }
+      }
+      return value;
+    }
+  },
   prepareCustomTracker: function (code) {
     const _this = this;
 
@@ -258,12 +311,34 @@ const exKit = {
       code = convertCodeV1toV2(code);
     }
 
-    if (code.version === 2) {
+    /*if (code.version === 2) {
       code = convertCodeV2toV3(code);
-    }
+    }*/
 
-    if (code.version === 3) {
-      code = convertCodeV3toV4(code);
+    if (code.version === 2) {
+      let id = '';
+      const params = location.hash.substr(1).split('&');
+      params.some(function (item) {
+        const keyValue = item.split('=');
+        if (keyValue[0] === 'id') {
+          id = keyValue[1];
+          return true;
+        }
+      });
+      code.id = id || 'noTrackerId';
+
+      code.search = code.search || {};
+
+      ['onBeforeRequest', 'onAfterRequest', 'onBeforeDomParse', 'onAfterDomParse', 'onGetListItem'].forEach(function (key) {
+        code.search[key] = _this.listToFunction(key, code.search[key]);
+      });
+
+      ['onSelectorIsNotFound', 'onEmptySelectorValue', 'onGetValue'].forEach(function (sectionName) {
+        const section = code.search[sectionName];
+        for (let key in section) {
+          section[key] = _this.listToFunction(sectionName, section[key]);
+        }
+      });
     }
 
     return code;

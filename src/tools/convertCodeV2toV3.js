@@ -1,114 +1,176 @@
-import exKit from "../sandbox/exKit";
+const convertSelector = (selector, postProcess) => {
+  const result = {
+    selector: null,
+    pipeline: [],
+  };
 
-/**
- * @typedef {CodeV2} CodeV3
- * @property {number} version
- * @property {string} id
- * @property {CodeV3Search} search
- */
-
-/**
- * @typedef {CodeV2Search} CodeV3Search
- * @property {function} onBeforeRequest
- * @property {function} onAfterRequest
- * @property {function} onBeforeDomParse
- * @property {function} onAfterDomParse
- * @property {function} onGetListItem
- * @property {function} onSelectorIsNotFound
- * @property {function} onEmptySelectorValue
- * @property {function} onGetValue
- * @property {string|{selector,attr}} nextPageSelector
- */
-
-const listToFunction = (key, list) => {
-  if (!Array.isArray(list)) {
-    return null;
+  if (!Array.isArray(postProcess)) {
+    postProcess = [];
   }
 
-  const funcList = [];
-  list.forEach(function (item) {
-    if (item.name === 'encode') {
-      if (item.type === 'cp1251') {
-        funcList.push(function (details) {
-          details.query = exKit.funcList.encodeCp1251(details.query);
-        });
-      }
-    } else
-    if (item.name === 'replaceRe') {
-      const re = new RegExp(item.re, 'ig');
-      funcList.push(function (details, value) {
-        return value.replace(re, item.text);
+  if (typeof selector === 'string') {
+    selector = {selector};
+  }
+
+  result.selector = selector.selector;
+
+  if (typeof selector.childNodeIndex === 'number') {
+    result.pipeline.push({
+      name: 'getChild',
+      args: [selector.childNodeIndex]
+    });
+  }
+
+  if (selector.attr) {
+    result.pipeline.push({
+      name: 'getAttr',
+      args: [selector.attr]
+    });
+  } else
+  if (selector.prop) {
+    result.pipeline.push({
+      name: 'getProp',
+      args: [selector.prop]
+    });
+  } else
+  if (selector.html) {
+    result.pipeline.push({
+      name: 'getHtml'
+    });
+  } else {
+    result.pipeline.push({
+      name: 'getText'
+    });
+  }
+
+  postProcess.forEach(item => {
+    if (item === 'convertSize') {
+      result.pipeline.push({
+        name: 'legacySizeFormat',
       });
     } else
     if (item === 'replaceToday') {
-      funcList.push(function (details, value) {
-        return exKit.funcList.todayReplace(value);
+      result.pipeline.push({
+        name: 'legacyReplaceToday',
       });
     } else
     if (item === 'replaceMonth') {
-      funcList.push(function (details, value) {
-        return exKit.funcList.monthReplace(value);
+      result.pipeline.push({
+        name: 'legacyReplaceMonth',
+      });
+    } else
+    if (item.name === 'replaceRe') {
+      result.pipeline.push({
+        name: 'replace',
+        args: [item.re, item.text]
       });
     } else
     if (item.name === 'timeFormat') {
-      funcList.push(function (details, value) {
-        return exKit.funcList.dateFormat(item.format, value);
-      });
-    } else
-    if (item === 'convertSize') {
-      funcList.push(function (details, value) {
-        return exKit.funcList.sizeFormat(value);
+      result.pipeline.push({
+        name: 'legacyParseDate',
+        args: [item.format],
       });
     }
   });
 
-  if (!funcList.length) {
-    return null;
-  }
-
-  return function (details, value) {
-    for (let i = 0, _func; _func = funcList[i]; i++) {
-      try {
-        value = _func(details, value);
-      } catch (err) {
-        value = null;
-        console.error('listToFunction error!', err);
-        break;
-      }
-    }
-    return value;
-  }
+  return result;
 };
 
 const convertCodeV2toV3 = /**CodeV2*/code => {
-  const codeV3 = Object.assign({}, code);
-  codeV3.version = 3;
+  const /**CodeStore*/codeV4 = {};
 
-  let id = '';
-  const params = location.hash.substr(1).split('&');
-  params.some(function (item) {
-    const keyValue = item.split('=');
-    if (keyValue[0] === 'id') {
-      id = keyValue[1];
-      return true;
+  codeV4.version = 3;
+
+
+  const search = codeV4.search = {};
+
+  search.url = code.search.searchUrl;
+
+  const method = code.search.requestType;
+  if (method) {
+    search.method = method.toUpperCase();
+  }
+
+  const data = code.search.requestData;
+  if (data) {
+    if (search.method === 'POST') {
+      search.body = data;
+    } else {
+      search.query = data;
     }
-  });
-  codeV3.id = id || 'noTrackerId';
+  }
 
-  codeV3.search = Object.assign({}, codeV3.search);
+  const onBeforeRequest = code.search.onBeforeRequest;
+  if (Array.isArray(onBeforeRequest)) {
+    onBeforeRequest.some(item => {
+      if (item.name === 'encode') {
+        if (item.type === 'cp1251') {
+          search.encoding = item.type;
+          return true;
+        }
+      }
+    });
+  }
 
-  ['onBeforeRequest', 'onAfterRequest', 'onBeforeDomParse', 'onAfterDomParse', 'onGetListItem'].forEach(function (key) {
-    codeV3.search[key] = listToFunction(key, codeV3.search[key]);
-  });
+  const baseUrl = code.search.baseUrl;
+  if (baseUrl) {
+    search.baseUrl = baseUrl;
+  }
 
-  ['onSelectorIsNotFound', 'onEmptySelectorValue', 'onGetValue'].forEach(function (sectionName) {
-    const section = codeV3.search[sectionName];
-    for (let key in section) {
-      section[key] = listToFunction(sectionName, section[key]);
+  const overrideMimeType = code.search.requestMimeType;
+  if (overrideMimeType) {
+    const m = /charset=([^;]+)/.exec(code.search.requestMimeType);
+    if (m) {
+      code.search.charset = m[1];
     }
-  });
+  }
 
-  return codeV3;
+
+  const auth = codeV4.auth = {};
+
+  const loginUrl = code.search.loginUrl;
+  if (loginUrl) {
+    auth.url = loginUrl;
+  }
+
+  const loginFormSelector = code.search.loginFormSelector;
+  if (loginFormSelector) {
+    auth.selector = {selector: loginFormSelector};
+  }
+
+
+  const selectors = codeV4.selectors = {};
+
+  selectors.row = convertSelector(code.search.listItemSelector);
+
+  if (codeV4.search.listItemSplice) {
+    selectors.skipFromStart = code.search.listItemSplice[0];
+    selectors.skipFromEnd = code.search.listItemSplice[1] * -1;
+  }
+
+  selectors.categoryTitle = convertSelector(code.search.torrentSelector.categoryTitle, code.search.onGetValue.categoryTitle);
+  selectors.categoryLink = convertSelector(code.search.torrentSelector.categoryUrl, code.search.onGetValue.categoryUrl);
+  selectors.title = convertSelector(code.search.torrentSelector.title, code.search.onGetValue.title);
+  selectors.link = convertSelector(code.search.torrentSelector.url, code.search.onGetValue.url);
+  selectors.size = convertSelector(code.search.torrentSelector.size, code.search.onGetValue.size);
+  selectors.downloadLink = convertSelector(code.search.torrentSelector.downloadUrl, code.search.onGetValue.downloadUrl);
+  selectors.seeds = convertSelector(code.search.torrentSelector.seed, code.search.onGetValue.seed);
+  selectors.peers = convertSelector(code.search.torrentSelector.peer, code.search.onGetValue.peer);
+  selectors.date = convertSelector(code.search.torrentSelector.date, code.search.onGetValue.date);
+
+  selectors.nextPageLink = convertSelector(code.search.nextPageSelector);
+
+
+  const description = codeV4.description = {};
+
+  description.icon = code.icon;
+  description.name = code.title;
+  description.description = code.desc;
+  description.downloadUrl = code.downloadUrl;
+  description.version = code.tVersion;
+
+
+  return code;
 };
 
 export default convertCodeV2toV3;

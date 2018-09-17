@@ -3,39 +3,47 @@
  * @property {number} version
  * @property {string} type
  * @property {number} uid
- * @property {string} icon
  * @property {string} title
+ * @property {string} icon
  * @property {string} desc
+ * @property {string} downloadUrl
+ * @property {string} tVersion
  * @property {CodeV2Search} search
  */
 
 /**
  * @typedef {{}} CodeV2Search
+ * @property {string} [loginUrl]
+ * @property {string} [loginFormSelector]
+ * @property {string} searchUrl
+ * @property {string} nextPageSelector
+ * @property {string} [baseUrl]
+ * @property {string} [requestType]
+ * @property {string} [requestData]
+ * @property {string} [requestMimeType]
+ * @property {{name,type}[]} [onBeforeRequest]
+ * @property {{}} listItemSelector
+ * @property {[number, number]} [listItemSplice]
  * @property {{}} torrentSelector
- * @property {string} [torrentSelector.title]
- * @property {{selector,attr}} [torrentSelector.url]
  * @property {string|{selector,attr}} [torrentSelector.categoryTitle]
  * @property {{selector,attr}} [torrentSelector.categoryUrl]
+ * @property {string} [torrentSelector.title]
+ * @property {{selector,attr}} [torrentSelector.url]
  * @property {string|{selector,attr}} [torrentSelector.size]
- * @property {{selector,attr}} [downloadUrl.size]
- * @property {string} [downloadUrl.seed]
- * @property {string} [downloadUrl.peer]
- * @property {string|{selector,attr}} [downloadUrl.date]
+ * @property {{selector,attr}} [torrentSelector.downloadUrl]
+ * @property {string} [torrentSelector.seed]
+ * @property {string} [torrentSelector.peer]
+ * @property {string|{selector,attr}} [torrentSelector.date]
  * @property {{}} onGetValue
+ * @property {{name,re,text}[]} [onGetValue.categoryTitle]
+ * @property {{name,re,text}[]} [onGetValue.categoryUrl]
+ * @property {{name,re,text}[]} [onGetValue.title]
+ * @property {{name,re,text}[]} [onGetValue.url]
  * @property {{name,re,text}[]} [onGetValue.size]
+ * @property {{name,re,text}[]} [onGetValue.downloadUrl]
  * @property {{name,re,text}[]} [onGetValue.seed]
  * @property {{name,re,text}[]} [onGetValue.peer]
  * @property {{name,re,text}[]|string[]|{name,format}[]} [onGetValue.date]
- * @property {string} searchUrl
- * @property {string} [baseUrl]
- * @property {string} [loginUrl]
- * @property {string} [requestType]
- * @property {string} [requestData]
- * @property {{name,type}[]} [onBeforeRequest]
- * @property {{}} listItemSelector
- * @property {string} [requestMimeType]
- * @property {string} [loginFormSelector]
- * @property {[number, number]} [listItemSplice]
  */
 
 const convertCodeV1toV2 = code => {

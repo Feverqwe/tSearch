@@ -14,7 +14,6 @@ import exploreModuleMetaActionModel from "./moduleMetaAction";
  * @property {string} [icon]
  * @property {string} [icon64]
  * @property {string} [siteURL]
- * @property {string} [updateURL]
  * @property {string} [downloadURL]
  * @property {string} [supportURL]
  * @property {string[]} require
@@ -38,7 +37,6 @@ const exploreModuleMetaModel = types.model('exploreModuleMetaModel', {
   icon: types.maybe(types.string),
   icon64: types.maybe(types.string),
   siteURL: types.maybe(types.string),
-  updateURL: types.maybe(types.string),
   downloadURL: types.maybe(types.string),
   supportURL: types.maybe(types.string),
   require: types.optional(types.array(types.string), []),

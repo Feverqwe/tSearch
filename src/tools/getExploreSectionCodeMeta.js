@@ -9,7 +9,6 @@ const fieldType = {
   icon: 'string',
   icon64: 'string',
   siteURL: 'string',
-  updateURL: 'string',
   downloadURL: 'string',
   supportURL: 'string',
   require: 'array',

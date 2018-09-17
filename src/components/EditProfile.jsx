@@ -301,7 +301,7 @@ class TrackerItem extends React.Component {
         <a className="item__cell item__button button-support" target="_blank" href={tracker.meta.supportURL}/>
       );
     }
-    if (tracker.meta.updateURL || tracker.meta.downloadURL) {
+    if (tracker.meta.downloadURL) {
       updateBtn = (
         <a className="item__cell item__button button-update" href="#update" title={chrome.i18n.getMessage('update')}/>
       );

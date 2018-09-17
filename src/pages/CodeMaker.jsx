@@ -910,7 +910,7 @@ class CodeMakerDescPage extends React.Component {
         </div>
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitTrackerDownloadUrl')}</span>
-          <BindInput store={this.codeStoreDescription} id={'updateUrl'} type={'text'}/>
+          <BindInput store={this.codeStoreDescription} id={'downloadUrl'} type={'text'}/>
         </div>
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitTrackerVersion')}</span>

@@ -25,6 +25,14 @@ const methods = {
     in: 'node',
     out: 'string'
   },
+  getChild: {
+    in: 'node',
+    args: [{
+      name: 'Index',
+      type: 'number',
+    }],
+    out: 'node'
+  },
 
   replace: {
     in: 'string',
@@ -83,6 +91,10 @@ const methods = {
     }],
     out: 'number'
   },
+  legacySizeFormat: {
+    in: 'string',
+    out: 'number'
+  }
 };
 
 /**
@@ -109,6 +121,7 @@ const MethodStore = types.model('MethodStore', {
  * @property {function} set
  * @property {function} addMethod
  * @property {function} removeMethod
+ * @property {function} moveMethod
  */
 const StringSelectorStore = types.model('StringSelectorStore', {
   selector: types.string,
@@ -161,6 +174,8 @@ const StringSelectorStore = types.model('StringSelectorStore', {
 
 /**
  * @typedef {StringSelectorStore} NumberSelectorStore
+ * @property {string} selector
+ * @property {MethodStore[]} pipeline
  */
 const NumberSelectorStore = types.compose('NumberSelectorStore', StringSelectorStore, types.model({
   selector: types.string,
@@ -245,6 +260,7 @@ const CodeAuthStore = types.model('CodeAuthStore', {
  * @property {StringSelectorStore|undefined} date
  * @property {StringSelectorStore|undefined} nextPageLink
  * @property {function} set
+ * @property {function} getDefaultPipeline
  */
 const CodeSelectorsStore = types.model('CodeSelectorsStore', {
   row: ElementSelectorStore,
@@ -305,7 +321,7 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
  * @property {string} icon
  * @property {string} name
  * @property {string} [description]
- * @property {string} [updateUrl]
+ * @property {string} [downloadUrl]
  * @property {string} [version]
  * @property {function} set
  */
@@ -313,7 +329,7 @@ const CodeDescriptionStore = types.model('CodeDescriptionStore', {
   icon: types.string,
   name: types.string,
   description: types.optional(types.string, ''),
-  updateUrl: types.optional(types.string, ''),
+  downloadUrl: types.optional(types.string, ''),
   version: types.optional(types.string, '1.0'),
 }).actions(self => {
   return {
@@ -325,12 +341,16 @@ const CodeDescriptionStore = types.model('CodeDescriptionStore', {
 
 /**
  * @typedef {{}} CodeStore
+ * @property {string|undefined} id
+ * @property {number} [version]
  * @property {CodeSearchStore} search
  * @property {CodeAuthStore} [auth]
  * @property {CodeSelectorsStore} selectors
  * @property {CodeDescriptionStore} description
  */
 const CodeStore = types.model('CodeStore', {
+  id: types.maybe(types.string),
+  version: types.optional(types.refinement(types.number, value => value === 3), 3),
   search: CodeSearchStore,
   auth: types.optional(CodeAuthStore, {}),
   selectors: CodeSelectorsStore,
