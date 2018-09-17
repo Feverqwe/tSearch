@@ -8,6 +8,7 @@ const logger = getLogger('CodeMakerStore');
 /**
  * @typedef {{}} CodeMakerStore
  * @property {CodeStore} [code]
+ * @property {function} setCode
  */
 const CodeMakerStore = types.model('CodeMakerStore', {
   code: types.optional(CodeStore, {
@@ -36,6 +37,13 @@ const CodeMakerStore = types.model('CodeMakerStore', {
       version: '1.0',
     }
   })
+}).actions(self => {
+  return {
+    setCode(data) {
+      const code = CodeStore.create(data);
+      self.code = code;
+    }
+  };
 });
 
 export default CodeMakerStore;

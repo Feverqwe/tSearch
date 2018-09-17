@@ -77,12 +77,12 @@ const convertSelector = (selector, postProcess) => {
 };
 
 const convertCodeV2toV3 = /**CodeV2*/code => {
-  const /**CodeStore*/codeV4 = {};
+  const /**CodeStore*/codeV3 = {};
 
-  codeV4.version = 3;
+  codeV3.version = 3;
 
 
-  const search = codeV4.search = {};
+  const search = codeV3.search = {};
 
   search.url = code.search.searchUrl;
 
@@ -126,7 +126,7 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
   }
 
 
-  const auth = codeV4.auth = {};
+  const auth = codeV3.auth = {};
 
   const loginUrl = code.search.loginUrl;
   if (loginUrl) {
@@ -139,14 +139,16 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
   }
 
 
-  const selectors = codeV4.selectors = {};
+  const selectors = codeV3.selectors = {};
 
   selectors.row = convertSelector(code.search.listItemSelector);
 
-  if (codeV4.search.listItemSplice) {
+  if (codeV3.search.listItemSplice) {
     selectors.skipFromStart = code.search.listItemSplice[0];
     selectors.skipFromEnd = code.search.listItemSplice[1] * -1;
   }
+
+  code.search.onGetValue = code.search.onGetValue || {};
 
   selectors.categoryTitle = convertSelector(code.search.torrentSelector.categoryTitle, code.search.onGetValue.categoryTitle);
   selectors.categoryLink = convertSelector(code.search.torrentSelector.categoryUrl, code.search.onGetValue.categoryUrl);
@@ -161,7 +163,7 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
   selectors.nextPageLink = convertSelector(code.search.nextPageSelector);
 
 
-  const description = codeV4.description = {};
+  const description = codeV3.description = {};
 
   description.icon = code.icon;
   description.name = code.title;
@@ -199,7 +201,7 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
   });
 
 
-  return code;
+  return codeV3;
 };
 
 export default convertCodeV2toV3;

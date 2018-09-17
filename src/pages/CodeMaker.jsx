@@ -8,6 +8,9 @@ import {inject, observer} from "mobx-react";
 import RootStore from "../stores/RootStore";
 import CodeStore, {MethodStore, methods} from "../stores/CodeStore";
 import getLogger from "../tools/getLogger";
+import CodeMakerStore from "../stores/CodeMakerStore";
+import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
+import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
 
 const Sortable = require('sortablejs');
 
@@ -88,7 +91,7 @@ class CodeMaker extends React.Component {
       }
       case 'save': {
         page = (
-          <CodeMakerSavePage codeStore={this.props.rootStore.codeMaker.code}/>
+          <CodeMakerSavePage codeMaker={this.props.rootStore.codeMaker}/>
         );
         break;
       }
@@ -929,18 +932,40 @@ CodeMakerDescPage.propTypes = null && {
 @inject('rootStore')
 @observer
 class CodeMakerSavePage extends React.Component {
+  handleSetCode = e => {
+    e.preventDefault();
+    let code = JSON.parse(this.textarea.value);
+    if (code.version === 1) {
+      code = convertCodeV1toV2(code);
+    }
+    if (code.version === 2) {
+      code = convertCodeV2toV3(code);
+    }
+    this.props.codeMaker.setCode(code);
+  };
+
+  handleGetCode = e => {
+    e.preventDefault();
+    this.textarea.value = JSON.stringify(this.props.codeMaker.code);
+  };
+
+  textarea = null;
+  refTextarea = element => {
+    this.textarea = element;
+  };
+
   render() {
     return (
       <div className="page save">
         <h2>{chrome.i18n.getMessage('kitSaveLoad')}</h2>
         <div>
-          <input type="button" data-id="save_code_write"
+          <input onClick={this.handleGetCode} type="button"
                  value={chrome.i18n.getMessage('kitGetCode')}/>
-          <input type="button" data-id="save_code_read"
+          <input onClick={this.handleSetCode} type="button"
                  value={chrome.i18n.getMessage('kitReadCode')}/>
         </div>
         <label>
-          <textarea data-id="save_code_textarea" defaultValue={JSON.stringify(this.props.codeStore, null, 2)}/>
+          <textarea ref={this.refTextarea} data-id="save_code_textarea" defaultValue={JSON.stringify(this.props.codeMaker.code)}/>
         </label>
       </div>
     );
@@ -949,7 +974,7 @@ class CodeMakerSavePage extends React.Component {
 
 CodeMakerSavePage.propTypes = null && {
   rootStore: PropTypes.instanceOf(RootStore),
-  codeStore: PropTypes.instanceOf(CodeStore),
+  codeMaker: PropTypes.instanceOf(CodeMakerStore),
 };
 
 export default CodeMaker;
