@@ -82,11 +82,11 @@ const methods = {
       name: 'Template',
       type: 'select',
       values: [
-        '2013-04-31[[[ 07]:03]:27]',
-        '31-04-2013[[[ 07]:03]:27]',
-        'n day ago',
-        '04-31-2013[[[ 07]:03]:27]',
-        '2d 1h 0m 0s ago'
+        {key: 0, text: '2013-04-31[[[ 07]:03]:27]'},
+        {key: 1, text: '31-04-2013[[[ 07]:03]:27]'},
+        {key: 2, text: 'n day ago'},
+        {key: 3, text: '04-31-2013[[[ 07]:03]:27]'},
+        {key: 4, text: '2d 1h 0m 0s ago'},
       ],
     }],
     out: 'number'

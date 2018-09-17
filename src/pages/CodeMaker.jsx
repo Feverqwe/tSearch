@@ -418,9 +418,9 @@ class AddMethodDialog extends React.Component {
           if (arg.type === 'select') {
             element = (
               <select ref={this.refArg.bind(this, index)}>
-                {arg.values.map(key => {
+                {arg.values.map(({key, text}) => {
                   return (
-                    <option key={key} value={key}>{key}</option>
+                    <option key={key} value={key}>{text}</option>
                   );
                 })}
               </select>
@@ -557,9 +557,9 @@ class EditMethodDialog extends React.Component {
             element = (
               <select ref={this.refArg.bind(this, index)}
                       defaultValue={method.args[index]}>
-                {arg.values.map(key => {
+                {arg.values.map(({key, text}) => {
                   return (
-                    <option key={key} value={key}>{key}</option>
+                    <option key={key} value={key}>{text}</option>
                   );
                 })}
               </select>

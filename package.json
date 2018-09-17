@@ -17,6 +17,7 @@
     "dom-treeadapter": "^0.2.1",
     "escape-string-regexp": "^1.0.5",
     "filesize": "^3.6.1",
+    "filesize-parser": "^1.5.0",
     "jquery": "^3.3.1",
     "lodash.difference": "^4.5.0",
     "lodash.escaperegexp": "^4.1.2",
