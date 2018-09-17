@@ -165,8 +165,15 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
 
   description.icon = code.icon;
   description.name = code.title;
-  description.description = code.desc;
-  description.downloadUrl = code.downloadUrl;
+
+  if (code.desc) {
+    description.description = code.desc;
+  }
+
+  if (code.downloadUrl) {
+    description.downloadUrl = code.downloadUrl;
+  }
+
   description.version = code.tVersion;
 
 
