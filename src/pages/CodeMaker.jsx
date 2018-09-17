@@ -651,6 +651,7 @@ class Method extends React.Component {
 
   render() {
     const method = this.props.method;
+    const methodScheme = methods[method.name];
 
     const args = method.args.map((arg, index) => {
       return (
@@ -672,9 +673,12 @@ class Method extends React.Component {
       );
     }
 
+    const methodTypeClass = `color-${methodScheme.in}-${methodScheme.out}`;
+    const methodInputTypeClass = `color-${methodScheme.in}`;
+
     return (
-      <div data-index={this.props.index} className="method-wrapper">
-        <div className="move"/>
+      <div data-index={this.props.index} className={`method-wrapper ${methodTypeClass}`}>
+        <div className={`move ${methodInputTypeClass}`}/>
         <div className="method">
           <div className="method-name">{method.name}</div>
           <div className="method-args">{args}</div>

@@ -191,6 +191,15 @@
           &:hover {
             background-color: #d1c4e9;
           }
+          &.color-node-string {
+            background: linear-gradient(90deg, #f3e5f5 10%, #f1f8e9 90%);
+          }
+          &.color-string-string {
+            background: #f1f8e9;
+          }
+          &.color-string-number {
+            background: linear-gradient(90deg, #f1f8e9 10%, #e3f2fd 90%);
+          }
           .move {
             cursor: move;
             width: 6px;
@@ -199,6 +208,15 @@
             border-radius: 10px;
             margin: 4px;
             margin-right: 1px;
+            &.color-node {
+              border-color: #ce93d8;
+            }
+            &.color-string {
+              border-color: #c5e1a5;
+            }
+            &.color-number {
+              border-color: #90caf9;
+            }
           }
           .method {
             display: flex;
@@ -217,6 +235,12 @@
                 background-color: #fff;
                 border-radius: 3px;
               }
+            }
+          }
+          .pipeline-button {
+            background-color: transparent;
+            &:active {
+              background-color: #fff;
             }
           }
         }
