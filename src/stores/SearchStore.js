@@ -57,10 +57,10 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
         }
         if (!result.success) {
           if (result.error === 'AUTH') {
-            if (isAlive(self)) {
-              self.setAuthRequired(result.url);
-            }
-            throw new ErrorWithCode(`Search error: auth required`, 'AUTH_REQUIRED');
+            // legacy
+            const err = new ErrorWithCode(`Search error: auth required`, 'AUTH_REQUIRED');
+            err.url = result.url;
+            throw err;
           } else {
             throw new ErrorWithCode(`Search error: not success`, 'NOT_SUCCESS');
           }
@@ -76,7 +76,13 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
           return [];
         }
       } catch (err) {
-        logger.error(`[${id}] fetchResult error`, err);
+        if (err.code === 'AUTH_REQUIRED') {
+          if (isAlive(self)) {
+            self.setAuthRequired(err.url);
+          }
+        } else {
+          logger.error(`[${id}] fetchResult error`, err);
+        }
         if (isAlive(self)) {
           self.state = 'error';
         }
