@@ -659,7 +659,7 @@ class ExKitTracker {
     const results = rows;
     rows.forEach(row => {
       try {
-        const result = this.parseRow(row);
+        const result = this.parseRow(session, row);
         results.push(result);
       } catch (err) {
         console.error('parseRow error', err);
@@ -681,6 +681,10 @@ class ExKitTracker {
     };
   }
 
+  parseRow(session, row) {
+
+  }
+
   /**
    * @param {string} id
    * @param session
@@ -693,6 +697,18 @@ class ExKitTracker {
 
     if (selector.pipelineBuild) {
       result = selector.pipelineBuild(result);
+    }
+
+    if (exKit.intList.indexOf(id) !== -1) {
+      if (typeof result !== 'number') {
+        result = parseInt(result, 10);
+        if (!Number.isFinite(result)) {
+          result = -1;
+        }
+      }
+    } else
+    if (exKit.isUrlList.indexOf(id) !== -1) {
+      result = API_normalizeUrl(session.response.url, result);
     }
 
     return result;
@@ -759,7 +775,13 @@ class ExKitTracker {
         }
         case 'getChild': {
           const index = method.args[0];
-          line.push(value => value.childNodes[index]);
+          line.push(value => {
+            if (index < 0) {
+              return value.childNodes[value.childNodes.length + index];
+            } else {
+              return value.childNodes[index];
+            }
+          });
           break;
         }
         case 'replace': {
