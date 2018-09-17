@@ -274,7 +274,7 @@ class PipelineSelector extends ElementSelector {
     }
   };
 
-  handleShowDialod = e => {
+  handleShowDialog = e => {
     e.preventDefault();
     this.setState({
       showAddDialog: true
@@ -328,7 +328,7 @@ class PipelineSelector extends ElementSelector {
     }
 
     const pipeControls = [
-      <button disabled={isDisabled} key={'add'} onClick={this.handleShowDialod} className={'pipeline-button method-add'} title={'Add'}>+</button>
+      <button disabled={isDisabled} key={'add'} onClick={this.handleShowDialog} className={'pipeline-button method-add'} title={'Add'}>+</button>
     ];
 
     let dialog = null;
