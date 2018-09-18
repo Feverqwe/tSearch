@@ -34,6 +34,10 @@ const methods = {
     out: 'node'
   },
 
+  trim: {
+    in: 'string',
+    out: 'string'
+  },
   replace: {
     in: 'string',
     args: [{

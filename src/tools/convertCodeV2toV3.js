@@ -37,9 +37,15 @@ const convertSelector = (selector, postProcess) => {
     result.pipeline.push({
       name: 'getHtml'
     });
+    result.pipeline.push({
+      name: 'trim'
+    });
   } else {
     result.pipeline.push({
       name: 'getText'
+    });
+    result.pipeline.push({
+      name: 'trim'
     });
   }
 

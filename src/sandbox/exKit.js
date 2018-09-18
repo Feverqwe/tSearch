@@ -784,6 +784,10 @@ class ExKitTracker {
           });
           break;
         }
+        case 'trim': {
+          line.push(value => value.trim());
+          break;
+        }
         case 'replace': {
           const re = new RegExp(method.args[0], 'ig');
           const replaceTo = method.args[1];
