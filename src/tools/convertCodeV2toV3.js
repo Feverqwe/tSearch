@@ -158,6 +158,7 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
 
   selectors.categoryTitle = convertSelector(code.search.torrentSelector.categoryTitle, code.search.onGetValue.categoryTitle);
   selectors.categoryUrl = convertSelector(code.search.torrentSelector.categoryUrl, code.search.onGetValue.categoryUrl);
+  selectors.categoryId = convertSelector(code.search.torrentSelector.categoryId, code.search.onGetValue.categoryId);
   selectors.title = convertSelector(code.search.torrentSelector.title, code.search.onGetValue.title);
   selectors.url = convertSelector(code.search.torrentSelector.url, code.search.onGetValue.url);
   selectors.size = convertSelector(code.search.torrentSelector.size, code.search.onGetValue.size);

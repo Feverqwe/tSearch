@@ -255,6 +255,7 @@ const CodeAuthStore = types.model('CodeAuthStore', {
  * @property {boolean} [isTableRow]
  * @property {StringSelectorStore|undefined} categoryTitle
  * @property {StringSelectorStore|undefined} categoryUrl
+ * @property {StringSelectorStore|undefined} categoryId
  * @property {StringSelectorStore} title
  * @property {StringSelectorStore} url
  * @property {NumberSelectorStore|undefined} size
@@ -273,6 +274,7 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
   isTableRow: types.optional(types.boolean, false),
   categoryTitle: types.maybe(StringSelectorStore),
   categoryUrl: types.maybe(StringSelectorStore),
+  categoryId: types.maybe(StringSelectorStore),
   title: StringSelectorStore,
   url: StringSelectorStore,
   size: types.maybe(NumberSelectorStore),
