@@ -14,12 +14,12 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
 @observer
 class SearchPage extends React.Component {
   render() {
-    const columns = ['date', 'quality', 'title', 'size', 'seed', 'peer'];
+    const columns = ['date', 'quality', 'title', 'size', 'seeds', 'peers'];
     if (this.props.rootStore.options.options.hidePeerRow) {
-      columns.splice(columns.indexOf('peer'), 1);
+      columns.splice(columns.indexOf('peers'), 1);
     }
     if (this.props.rootStore.options.options.hideSeedRow) {
-      columns.splice(columns.indexOf('seed'), 1);
+      columns.splice(columns.indexOf('seeds'), 1);
     }
 
     const headers = columns.map(column => {
@@ -203,17 +203,17 @@ class SearchPageRow extends React.Component {
             </div>
           );
         }
-        case 'seed': {
+        case 'seeds': {
           return (
             <div key={type} className={`cell row__cell cell-${type}`}>
-              {result.seed}
+              {result.seeds}
             </div>
           );
         }
-        case 'peer': {
+        case 'peers': {
           return (
             <div key={type} className={`cell row__cell cell-${type}`}>
-              {result.peer}
+              {result.peers}
             </div>
           );
         }

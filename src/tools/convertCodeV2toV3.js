@@ -157,11 +157,11 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
   code.search.onGetValue = code.search.onGetValue || {};
 
   selectors.categoryTitle = convertSelector(code.search.torrentSelector.categoryTitle, code.search.onGetValue.categoryTitle);
-  selectors.categoryLink = convertSelector(code.search.torrentSelector.categoryUrl, code.search.onGetValue.categoryUrl);
+  selectors.categoryUrl = convertSelector(code.search.torrentSelector.categoryUrl, code.search.onGetValue.categoryUrl);
   selectors.title = convertSelector(code.search.torrentSelector.title, code.search.onGetValue.title);
-  selectors.link = convertSelector(code.search.torrentSelector.url, code.search.onGetValue.url);
+  selectors.url = convertSelector(code.search.torrentSelector.url, code.search.onGetValue.url);
   selectors.size = convertSelector(code.search.torrentSelector.size, code.search.onGetValue.size);
-  selectors.downloadLink = convertSelector(code.search.torrentSelector.downloadUrl, code.search.onGetValue.downloadUrl);
+  selectors.downloadUrl = convertSelector(code.search.torrentSelector.downloadUrl, code.search.onGetValue.downloadUrl);
   selectors.seeds = convertSelector(code.search.torrentSelector.seed, code.search.onGetValue.seed);
   selectors.peers = convertSelector(code.search.torrentSelector.peer, code.search.onGetValue.peer);
   selectors.date = convertSelector(code.search.torrentSelector.date, code.search.onGetValue.date);

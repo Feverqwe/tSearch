@@ -829,15 +829,15 @@ class CodeMakerSelectorsPage extends React.Component {
         </ElementSelector>
         <PipelineSelector store={this.codeSearchSelectors} id={'categoryTitle'} optional={true}
                           title={chrome.i18n.getMessage('kitCategoryName')}/>
-        <PipelineSelector store={this.codeSearchSelectors} id={'categoryLink'} optional={true}
+        <PipelineSelector store={this.codeSearchSelectors} id={'categoryUrl'} optional={true}
                           title={chrome.i18n.getMessage('kitCategoryLink')}/>
         <PipelineSelector store={this.codeSearchSelectors} id={'title'}
                           title={chrome.i18n.getMessage('kitTorrentTitle')}/>
-        <PipelineSelector store={this.codeSearchSelectors} id={'link'}
+        <PipelineSelector store={this.codeSearchSelectors} id={'url'}
                           title={chrome.i18n.getMessage('kitTorrentLink')}/>
         <PipelineSelector store={this.codeSearchSelectors} id={'size'} optional={true}
                           title={chrome.i18n.getMessage('kitTorrentSize')}/>
-        <PipelineSelector store={this.codeSearchSelectors} id={'downloadLink'} optional={true}
+        <PipelineSelector store={this.codeSearchSelectors} id={'downloadUrl'} optional={true}
                           title={chrome.i18n.getMessage('kitTorrentDownloadLink')}/>
         <PipelineSelector store={this.codeSearchSelectors} id={'seeds'} optional={true}
                           title={chrome.i18n.getMessage('kitSeedCount')}/>

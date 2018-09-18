@@ -116,16 +116,16 @@
     "row_size": {
         "message": "Size"
     },
-    "row_seed": {
+    "row_seeds": {
         "message": "Seeders"
     },
-    "row_seed__short": {
+    "row_seeds__short": {
         "message": "S"
     },
-    "row_peer": {
+    "row_peers": {
         "message": "Peers"
     },
-    "row_peer__short": {
+    "row_peers__short": {
         "message": "P"
     },
     "loadMore": {

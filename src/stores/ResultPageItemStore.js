@@ -16,8 +16,8 @@ import TrackerStore from "./TrackerStore";
  * @property {string|undefined|null} categoryUrl
  * @property {number|undefined|null} size
  * @property {string|undefined|null} downloadUrl
- * @property {number|undefined|null} seed
- * @property {number|undefined|null} peer
+ * @property {number|undefined|null} seeds
+ * @property {number|undefined|null} peers
  * @property {number|undefined|null} date
  * @property {string} dateTitle
  * @property {string} dateText
@@ -37,8 +37,8 @@ const ResultPageItemStore = types.model('ResultPageItemStore', {
   categoryUrl: types.maybeNull(types.string),
   size: types.maybeNull(types.number),
   downloadUrl: types.maybeNull(types.string),
-  seed: types.maybeNull(types.number),
-  peer: types.maybeNull(types.number),
+  seeds: types.maybeNull(types.number),
+  peers: types.maybeNull(types.number),
   date: types.maybeNull(types.number),
   dateTitle: types.string,
   dateText: types.string,

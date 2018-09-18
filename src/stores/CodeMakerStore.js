@@ -23,7 +23,7 @@ const CodeMakerStore = types.model('CodeMakerStore', {
           name: 'getText'
         }],
       },
-      link: {
+      url: {
         selector: '',
         pipeline: [{
           name: 'getProp',

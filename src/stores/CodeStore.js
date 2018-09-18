@@ -254,11 +254,11 @@ const CodeAuthStore = types.model('CodeAuthStore', {
  * @property {number} [skipFromEnd]
  * @property {boolean} [isTableRow]
  * @property {StringSelectorStore|undefined} categoryTitle
- * @property {StringSelectorStore|undefined} categoryLink
+ * @property {StringSelectorStore|undefined} categoryUrl
  * @property {StringSelectorStore} title
- * @property {StringSelectorStore} link
+ * @property {StringSelectorStore} url
  * @property {NumberSelectorStore|undefined} size
- * @property {StringSelectorStore|undefined} downloadLink
+ * @property {StringSelectorStore|undefined} downloadUrl
  * @property {NumberSelectorStore|undefined} seeds
  * @property {NumberSelectorStore|undefined} peers
  * @property {StringSelectorStore|undefined} date
@@ -272,11 +272,11 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
   skipFromEnd: types.optional(types.number, 0),
   isTableRow: types.optional(types.boolean, false),
   categoryTitle: types.maybe(StringSelectorStore),
-  categoryLink: types.maybe(StringSelectorStore),
+  categoryUrl: types.maybe(StringSelectorStore),
   title: StringSelectorStore,
-  link: StringSelectorStore,
+  url: StringSelectorStore,
   size: types.maybe(NumberSelectorStore),
-  downloadLink: types.maybe(StringSelectorStore),
+  downloadUrl: types.maybe(StringSelectorStore),
   seeds: types.maybe(NumberSelectorStore),
   peers: types.maybe(NumberSelectorStore),
   date: types.maybe(StringSelectorStore),

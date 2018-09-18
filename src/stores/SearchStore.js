@@ -200,7 +200,7 @@ const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, result
       logger.warn(`[${trackerId}] Skip torrent cause no title`, result);
       return false;
     } else {
-      ['size', 'seed', 'peer', 'date'].forEach(key => {
+      ['size', 'seeds', 'peers', 'date'].forEach(key => {
         let value = result[key];
         if (['undefined', 'number'].indexOf(typeof value) === -1) {
           value = parseInt(value, 10);

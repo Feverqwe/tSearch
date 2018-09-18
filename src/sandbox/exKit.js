@@ -209,7 +209,7 @@ const exKit = {
   parseHtml: function (html, location) {
     return API_getDoc(html, location);
   },
-  intList: ['categoryId', 'size', 'seed', 'peer', 'date'],
+  intList: ['categoryId', 'size', 'seeds', 'peers', 'date'],
   isUrlList: ['categoryUrl', 'url', 'downloadUrl', 'nextPageUrl'],
   urlCheck: function (details, tracker, value) {
     return API_normalizeUrl(details.responseUrl, value);

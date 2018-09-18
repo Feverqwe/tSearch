@@ -116,16 +116,16 @@
   "row_size": {
     "message": "Размер"
   },
-  "row_seed": {
+  "row_seeds": {
     "message": "Сиды (раздающие)"
   },
-  "row_seed__short": {
+  "row_seeds__short": {
     "message": "С"
   },
-  "row_peer": {
+  "row_peers": {
     "message": "Пиры (скачивающие)"
   },
-  "row_peer__short": {
+  "row_peers__short": {
     "message": "П"
   },
   "loadMore": {

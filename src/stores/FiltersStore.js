@@ -149,10 +149,10 @@ const FiltersStore = types.model('FiltersStore', {
         if (!self.testRange(result.size, self.minSize, self.maxSize)) {
           return false;
         } else
-        if (!self.testRange(result.seed, self.minSeed, self.maxSeed)) {
+        if (!self.testRange(result.seeds, self.minSeed, self.maxSeed)) {
           return false;
         } else
-        if (!self.testRange(result.peer, self.minPeer, self.maxPeer)) {
+        if (!self.testRange(result.peers, self.minPeer, self.maxPeer)) {
           return false;
         } else
         if (!self.testRange(result.date, self.minTime, self.maxTime)) {
