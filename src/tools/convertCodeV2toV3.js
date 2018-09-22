@@ -185,29 +185,6 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
 
   description.version = code.tVersion;
 
-
-  ['onBeforeRequest', 'onAfterRequest', 'onBeforeDomParse', 'onAfterDomParse', 'onGetListItem'].forEach(key => {
-    const value = code.search[key];
-    if (typeof value === 'function') {
-      search[key] = value;
-    }
-  });
-
-  ['onSelectorIsNotFound', 'onEmptySelectorValue', 'onGetValue'].forEach(sectionName => {
-    const codeSearchSection = code.search[sectionName];
-    for (let key in codeSearchSection) {
-      const value = codeSearchSection[key];
-      if (typeof value === 'function') {
-        let section = search[sectionName];
-        if (!section) {
-          section = search[sectionName] = {};
-        }
-        section[key] = value;
-      }
-    }
-  });
-
-
   return codeV3;
 };
 
