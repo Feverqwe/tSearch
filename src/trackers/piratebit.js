@@ -10,7 +10,6 @@
 // ==/UserScript==
 
 API_exKit({
-    version: 2,
     id: 'piratbit',
     flags: {
         auth: 1,
