@@ -162,8 +162,8 @@ class ExKitTracker {
     const results = [];
     for (let i = 0, len = rows.length; i < len; i++) {
       try {
-        const row = rows.eq(i);
-        const result = this.parseRow(session, row);
+        const $row = rows.eq(i);
+        const result = this.parseRow(session, $row);
         results.push(result);
       } catch (err) {
         console.error('parseRow error', err);
@@ -185,7 +185,7 @@ class ExKitTracker {
     };
   }
 
-  parseRow(session, row) {
+  parseRow(session, $row) {
     const result = {};
     const errors = [];
     const cache = {};
@@ -194,7 +194,7 @@ class ExKitTracker {
       const selector = this.code.selectors[key];
       if (selector) {
         try {
-          result[key] = this.matchSelector(session, row, key, selector, cache);
+          result[key] = this.matchSelector(session, $row, key, selector, cache);
         } catch (err) {
           // console.log('matchSelector error', err);
           errors.push({
@@ -228,7 +228,7 @@ class ExKitTracker {
     }
 
     if (errors.length) {
-      console.warn('parseRow warnings', {row, result, errors});
+      console.warn('parseRow warnings', {$row, result, errors});
     }
 
     return result;
