@@ -150,7 +150,7 @@ class ExKitTracker {
       this.code.hooks.onGetDoc(session, $doc);
     }
 
-    if (this.code.auth.selector && $doc.find(this.code.auth.selector.selector).length) {
+    if (this.code.auth.loginForm && $doc.find(this.code.auth.loginForm.selector).length) {
       throw new AuthError(this.code);
     }
 

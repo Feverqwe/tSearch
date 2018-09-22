@@ -233,12 +233,12 @@ const CodeSearchStore = types.model('CodeSearchStore', {
 /**
  * @typedef {{}} CodeAuthStore
  * @property {string} [url]
- * @property {ElementSelectorStore} [selector]
+ * @property {ElementSelectorStore} [loginForm]
  * @property {function} set
  */
 const CodeAuthStore = types.model('CodeAuthStore', {
   url: types.optional(types.string, ''),
-  selector: types.maybe(ElementSelectorStore),
+  loginForm: types.maybe(ElementSelectorStore),
 }).actions(self => {
   return {
     set(key, value) {

@@ -141,7 +141,7 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
 
   const loginFormSelector = code.search.loginFormSelector;
   if (loginFormSelector) {
-    auth.selector = {selector: loginFormSelector};
+    auth.loginForm = {selector: loginFormSelector};
   }
 
 
