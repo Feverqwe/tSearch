@@ -10,6 +10,7 @@
 // ==/UserScript==
 
 API_exKit({
+    version: 2,
     flags: {
         auth: 1,
         language: 'ru',
