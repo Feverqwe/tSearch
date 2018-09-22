@@ -582,6 +582,7 @@ class ExKitTracker {
   constructor(code) {
     this.code = this.prepareCode(code);
   }
+
   search(session, query) {
     let encodedQuery = null;
     if (this.code.search.encoding === 'cp1251') {
@@ -600,12 +601,9 @@ class ExKitTracker {
 
     this.setHeaders(options);
 
-    if (this.code.search.onBeforeRequest) {
-      this.code.search.onBeforeRequest(session, options);
-    }
-
-    return API_request(options);
+    return this.request(session, options);
   }
+
   searchNext(session, url) {
     const options = {
       method: 'GET',
@@ -615,41 +613,22 @@ class ExKitTracker {
 
     this.setHeaders(options);
 
-    if (this.code.search.onBeforeRequest) {
-      this.code.search.onBeforeRequest(session, options);
-    }
-
-    return API_request(options);
+    return this.request(session, options);
   }
+
   parseResponse(session, response) {
-    if (this.code.search.onAfterRequest) {
-      const result = {};
-      this.code.search.onAfterRequest(result, session);
-      if (result.result) {
-        return this.handleHookResult(result.result);
-      }
+    const doc = session.doc = API_getDoc(response.body, response.url);
+    const $doc = session.$doc = $(doc);
+
+    if (this.code.hooks.onGetDoc) {
+      this.code.hooks.onGetDoc(session, $doc);
     }
 
-    if (this.code.search.onBeforeDomParse) {
-      this.code.search.onBeforeDomParse(session);
-    }
-
-    const dom = session.dom = API_getDoc(response.body, response.url);
-    const $dom = session.$dom = $(dom);
-
-    if (this.code.search.onAfterDomParse) {
-      const result = {};
-      this.code.search.onAfterDomParse(result, session);
-      if (result.result) {
-        return this.handleHookResult(result.result);
-      }
-    }
-
-    if (this.code.auth.selector && $dom.find(this.code.auth.selector).length) {
+    if (this.code.auth.selector && $doc.find(this.code.auth.selector).length) {
       throw new AuthError(this.code);
     }
 
-    const rows = $dom.find(this.code.search.row);
+    const rows = $doc.find(this.code.search.row);
     if (this.code.search.skipFromStart) {
       rows.splice(0, this.code.search.skipFromStart);
     }
@@ -670,7 +649,7 @@ class ExKitTracker {
     let nextPageUrl = null;
     if (this.code.search.nextPageUrl) {
       try {
-        nextPageUrl = this.matchSelector(session, session.$dom, 'nextPageUrl', this.code.search.nextPageSelector);
+        nextPageUrl = this.matchSelector(session, $doc, 'nextPageUrl', this.code.search.nextPageUrl);
       } catch (err) {
         console.error('nextPageUrl matchSelector error', err);
       }
@@ -749,23 +728,27 @@ class ExKitTracker {
       result = selector.pipelineBuild(result);
     }
 
+    if (this.code.hooks.transform[key]) {
+      result = this.code.hooks.transform[key](session, result);
+    }
+
     if (exKit.intList.indexOf(key) !== -1) {
       if (typeof result !== 'number') {
         result = isNumber(parseInt(isString(result), 10));
       }
-    } else
-    if (exKit.isUrlList.indexOf(key) !== -1) {
+    } else if (exKit.isUrlList.indexOf(key) !== -1) {
       result = API_normalizeUrl(this.code.search.baseUrl || session.response.url, isString(result));
     }
 
     return result;
   }
-  handleHookResult(result) {
+
+  /*handleHookResult(result) {
     if (result.requireAuth) {
       throw new AuthError(this.code);
     }
     return result;
-  }
+  }*/
   setHeaders(options) {
     let headers = null;
     if (this.code.search.headers) {
@@ -773,6 +756,22 @@ class ExKitTracker {
     }
     options.headers = headers;
   }
+
+  request(session, options) {
+    if (this.code.hooks.onBeforeRequest) {
+      this.code.hooks.onBeforeRequest(session, options);
+    }
+    return API_request(options).then(response => {
+      session.response = response;
+
+      if (this.code.hooks.onAfterRequest) {
+        this.code.hooks.onAfterRequest(session, response);
+      }
+
+      return response;
+    });
+  }
+
   prepareCode(code) {
     if (code.version === 1) {
       code = convertCodeV1toV2(code);
@@ -788,8 +787,17 @@ class ExKitTracker {
       }
     });
 
+    if (!code.hooks) {
+      code.hooks = {};
+    }
+
+    if (!code.hooks.transform) {
+      code.hooks.transform = {};
+    }
+
     return code;
   }
+
   buildPipeline(pipeline) {
     if (!Array.isArray(pipeline) || !pipeline.length) {
       return null;
@@ -881,7 +889,7 @@ class ExKitTracker {
   }
 }
 
-window.API_exKit = function (code) {
+window.API_exKit = code => {
   const exKitTracker = new ExKitTracker(code);
 
   const onResult = result => {
@@ -899,9 +907,9 @@ window.API_exKit = function (code) {
     };
   };
 
-  API_event('search', function (request) {
+  API_event('search', request => {
     const session = {
-      eventName: 'search',
+      event: 'search',
       request,
     };
     return exKitTracker.search(session, request.query).then(response => {
@@ -909,9 +917,9 @@ window.API_exKit = function (code) {
     }).then(onResult);
   });
 
-  API_event('getNextPage', function (request) {
+  API_event('getNextPage', request => {
     const session = {
-      eventName: 'getNextPage',
+      event: 'getNextPage',
       request,
     };
     return exKitTracker.searchNext(session, request.url).then(response => {
