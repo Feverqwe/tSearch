@@ -268,13 +268,6 @@ class ExKitTracker {
     return result;
   }
 
-  /*handleHookResult(result) {
-    if (result.requireAuth) {
-      throw new AuthError(this.code);
-    }
-    return result;
-  }*/
-
   setHeaders(options) {
     let headers = null;
     if (this.code.search.headers) {
