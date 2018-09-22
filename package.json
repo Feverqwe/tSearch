@@ -16,6 +16,7 @@
     "deserialize-error": "0.0.3",
     "dom-treeadapter": "^0.2.1",
     "escape-string-regexp": "^1.0.5",
+    "fecha": "^2.3.3",
     "filesize": "^3.6.1",
     "filesize-parser": "^1.5.0",
     "jquery": "^3.3.1",

@@ -52,7 +52,6 @@ const methods = {
 
   parseDate: {
     in: 'string',
-    multipleArgs: true,
     args: [{
       name: 'Format',
       type: 'string',

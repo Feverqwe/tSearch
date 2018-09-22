@@ -2,7 +2,6 @@ import $ from 'jquery';
 import './baseApi';
 import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
 import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
-import moment from "moment";
 import {
   sizeFormat as legacySizeFormat,
   monthReplace as legacyReplaceMonth,
@@ -11,6 +10,7 @@ import {
 } from '../tools/exKitLegacyFn';
 import {ErrorWithCode} from "../tools/errors";
 import {API_legacyExKit} from './legacyExKit';
+import {parse as fechaParse} from 'fecha';
 
 const filesizeParser = require('filesize-parser');
 
@@ -367,8 +367,8 @@ class ExKitTracker {
           break;
         }
         case 'parseDate': {
-          const formats = method.args;
-          line.push(assertType(isString, isNumber, value => moment(value, formats).unix()));
+          const format = method.args[0];
+          line.push(assertType(isString, isNumber, value => fechaParse(value, format).getTime()));
           break;
         }
         case 'parseSize': {
