@@ -6,7 +6,7 @@
 // @downloadURL https://github.com/Feverqwe/tSearch/raw/master/src/trackers/rutracker.js
 // @connect *://rutracker.org/*
 // @require jquery
-// @version 1.0.1
+// @version 1.0.2
 // ==/UserScript==
 
 
@@ -15,7 +15,10 @@ var onPageLoad = function (response) {
     var $bodyDom = $(bodyDom);
 
     if (/login\.php/.test(response.url) || $bodyDom.find('#login-form').length) {
-        return {success: false, error: 'AUTH', message: 'requireAuth', url: 'https://rutracker.org/forum/login.php'};
+        const err = new Error('Auth required');
+        err.code = 'AUTH_REQUIRED';
+        err.url = 'https://rutracker.org/forum/login.php';
+        throw err;
     }
 
     var torrentElList = $bodyDom.find('#tor-tbl>tbody>tr');
@@ -30,8 +33,8 @@ var onPageLoad = function (response) {
             var url = $node.find('td.row4.med.tLeft.t-title>div.wbr.t-title>a').prop('href');
             var size = $node.find('td.row4.small.nowrap.tor-size>u').text();
             var downloadUrl = $node.find('td.row4.small.nowrap.tor-size>a').prop('href');
-            var seed = $node.find('td.row4.nowrap:eq(1)>u').text();
-            var peer = $node.find('td.row4.leechmed>b').text();
+            var seeds = $node.find('td.row4.nowrap:eq(1)>u').text();
+            var peers = $node.find('td.row4.leechmed>b').text();
             var date = $node.find('td.row4.small.nowrap:eq(1)>u').text();
 
             var item = {
@@ -41,8 +44,8 @@ var onPageLoad = function (response) {
                 url: url,
                 size: size,
                 downloadUrl: downloadUrl,
-                seed: seed,
-                peer: peer,
+                seeds: seeds,
+                peers: peers,
                 date: date
             };
 
