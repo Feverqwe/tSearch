@@ -238,7 +238,7 @@ const CodeSearchStore = types.model('CodeSearchStore', {
  */
 const CodeAuthStore = types.model('CodeAuthStore', {
   url: types.optional(types.string, ''),
-  selector: types.optional(ElementSelectorStore, {}),
+  selector: types.maybe(ElementSelectorStore),
 }).actions(self => {
   return {
     set(key, value) {
