@@ -21,7 +21,7 @@ const code = {
     "query": "nm=%search%&f=-1",
     "charset": ""
   },
-  "auth": { "url": "", "selector": { "selector": "" } },
+  "auth": { "url": "" },
   "selectors": {
     "row": { "selector": "table.forumline.tablesorter>tbody>tr" },
     "skipFromStart": 0,
