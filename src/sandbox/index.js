@@ -27,6 +27,11 @@ const altRequire = modules => {
       window.define('exKit', () => module.default);
     }));
   }
+  if (modules.indexOf('datejs') !== -1) {
+    promiseList.push(import('date.js').then(module => {
+      window.define('datejs', () => window.datejs = module.default);
+    }));
+  }
   return Promise.all(promiseList);
 };
 
