@@ -910,11 +910,6 @@ class CodeMakerDescPage extends React.Component {
     return this.props.codeStore.description;
   }
 
-  constructor(props) {
-    super(props);
-
-    this.handleIconClick = this.handleIconClick.bind(this);
-  }
   generateIcon(color) {
     if (!/^#/.test(color)) {
       return color;
@@ -922,11 +917,60 @@ class CodeMakerDescPage extends React.Component {
     const icon = btoa(`<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="${color}" /></svg>`);
     return `data:image/svg+xml;base64,${icon}`;
   }
-  handleIconClick(e) {
+
+  handleIconClick = e => {
     e.preventDefault();
-    const codeStore = this.props.codeStore;
-    codeStore.description.set('icon', getRandomColor());
-  }
+    this.codeStoreDescription.set('icon', getRandomColor());
+  };
+
+  iconDataInput = element => {
+    this.iconData = element;
+  };
+
+  handleIconDataChange = e => {
+    this.codeStoreDescription.set('icon', this.iconData.value);
+  };
+
+  handleIconFileChange = e => {
+    const files = this.iconFile.files;
+
+    const readFile = file => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          resolve(reader.result);
+        };
+        reader.onerror = e => {
+          reject(new Error('Read file error'));
+        };
+        reader.readAsDataURL(file);
+      }).then(data => {
+        this.codeStoreDescription.set('icon', data);
+      }).catch(err => {
+        logger.error('readFile error', file.name, err);
+      });
+    };
+
+    const imageType = /^image\//;
+    for (let i = 0, file; file = files[i]; i++) {
+      try {
+        if (!imageType.test(file.type)) {
+          throw new Error('Incorrect file type');
+        }
+        if (file.size > 1024 * 1024) {
+          throw new Error('File size more then 1mb');
+        }
+        readFile(file);
+      } catch (err) {
+        logger('Skip file cause: ', file.name, err);
+      }
+    }
+  };
+
+  iconFileInput = element => {
+    this.iconFile = element;
+  };
+
   render() {
     const codeStore = this.props.codeStore;
 
@@ -938,8 +982,8 @@ class CodeMakerDescPage extends React.Component {
           <i onClick={this.handleIconClick} style={{
             backgroundImage: `url(${this.generateIcon(codeStore.description.icon)})`
           }} className="tracker_iconPic" data-id="desk_tracker_iconPic"/>
-          <input type="file" data-id="desk_tracker_iconFile"/>
-          <input type="hidden" data-id="desk_tracker_icon" value={codeStore.description.icon}/>
+          <input ref={this.iconDataInput} onChange={this.handleIconDataChange} data-id="desk_tracker_icon" value={codeStore.description.icon}/>
+          <input ref={this.iconFileInput} onChange={this.handleIconFileChange} type="file" data-id="desk_tracker_iconFile"/>
         </div>
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitTrackerTitle')}</span>
