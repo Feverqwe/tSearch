@@ -2,8 +2,8 @@
   "name": "TMS",
   "version": "1.0.0",
   "scripts": {
-    "buildExplorersJson": "babel-node --presets env ./builder/buildExplorersJson.js",
-    "buildTrackersJson": "babel-node --presets env ./builder/buildTrackersJson.js",
+    "buildExplorersJson": "babel-node --presets @babel/env ./builder/buildExplorersJson.js",
+    "buildTrackersJson": "babel-node --presets @babel/env ./builder/buildTrackersJson.js",
     "watch": "webpack --mode development --watch --config webpack.config.js",
     "build": "webpack --mode production --config webpack.config.js"
   },
@@ -47,6 +47,7 @@
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.1",
+    "@babel/node": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/plugin-proposal-decorators": "^7.0.0",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
