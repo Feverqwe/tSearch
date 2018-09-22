@@ -400,6 +400,9 @@ class ExKitTracker {
           line.push(assertType(isString, isNumber, value => legacySizeFormat(value)));
           break;
         }
+        default: {
+          console.error('Pipeline method is no supported', method.name);
+        }
       }
     });
 
