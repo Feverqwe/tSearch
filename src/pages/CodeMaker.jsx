@@ -941,6 +941,20 @@ class CodeMakerSavePage extends React.Component {
     if (code.version === 2) {
       code = convertCodeV2toV3(code);
     }
+
+    if (!code.description) {
+      code.description = {};
+    }
+    if (!code.description.icon) {
+      code.description.icon = getRandomColor();
+    }
+    if (!code.description.name) {
+      code.description.name = '';
+    }
+    if (!code.description.version) {
+      code.description.version = '1.0';
+    }
+
     this.props.codeMaker.setCode(code);
   };
 

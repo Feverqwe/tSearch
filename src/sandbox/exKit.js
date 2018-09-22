@@ -154,28 +154,28 @@ class ExKitTracker {
       throw new AuthError(this.code);
     }
 
-    const rows = $doc.find(this.code.search.row);
-    if (this.code.search.skipFromStart) {
-      rows.splice(0, this.code.search.skipFromStart);
+    const rows = $doc.find(this.code.selectors.row.selector);
+    if (this.code.selectors.skipFromStart) {
+      rows.splice(0, this.code.selectors.skipFromStart);
     }
-    if (this.code.search.skipFromEnd) {
-      rows.splice(this.code.search.skipFromEnd * -1);
+    if (this.code.selectors.skipFromEnd) {
+      rows.splice(this.code.selectors.skipFromEnd * -1);
     }
 
     const results = [];
-    rows.forEach(row => {
+    for (let row, i = 0; row = rows[i]; i++) {
       try {
         const result = this.parseRow(session, row);
         results.push(result);
       } catch (err) {
         console.error('parseRow error', err);
       }
-    });
+    }
 
     let nextPageUrl = null;
-    if (this.code.search.nextPageUrl) {
+    if (this.code.selectors.nextPageUrl) {
       try {
-        nextPageUrl = this.matchSelector(session, $doc, 'nextPageUrl', this.code.search.nextPageUrl);
+        nextPageUrl = this.matchSelector(session, $doc, 'nextPageUrl', this.code.selectors.nextPageUrl);
       } catch (err) {
         console.error('nextPageUrl matchSelector error', err);
       }
@@ -193,7 +193,7 @@ class ExKitTracker {
     const cache = {};
 
     ['categoryTitle', 'categoryUrl', 'categoryId', 'title', 'url', 'size', 'downloadUrl', 'seeds', 'peers', 'date'].forEach(key => {
-      const selector = this.code.search[key];
+      const selector = this.code.selectors[key];
       if (selector) {
         try {
           result[key] = this.matchSelector(session, row, key, selector, cache);
@@ -300,8 +300,8 @@ class ExKitTracker {
       code = convertCodeV2toV3(code);
     }
 
-    Object.keys(code.search).forEach(key => {
-      const value = code.search[key];
+    Object.keys(code.selectors).forEach(key => {
+      const value = code.selectors[key];
       if (value && value.pipeline) {
         value.pipelineBuild = this.buildPipeline(value.pipeline);
       }
