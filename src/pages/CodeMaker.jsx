@@ -923,6 +923,7 @@ class CodeMakerDescPage extends React.Component {
     this.codeStoreDescription.set('icon', getRandomColor());
   };
 
+  iconData = null;
   iconDataInput = element => {
     this.iconData = element;
   };
@@ -967,6 +968,7 @@ class CodeMakerDescPage extends React.Component {
     }
   };
 
+  iconFile = null;
   iconFileInput = element => {
     this.iconFile = element;
   };
