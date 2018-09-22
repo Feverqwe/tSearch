@@ -853,7 +853,7 @@ class CodeMakerSelectorsPage extends React.Component {
           <span className="field-name">{chrome.i18n.getMessage('kitSkipLastRows')}</span>
           <BindInput store={this.codeSearchSelectors} id={'skipFromEnd'} type="number"/>
         </div>
-        <PipelineSelector store={this.codeSearchSelectors} id={'nextPageLink'}  optional={true}
+        <PipelineSelector store={this.codeSearchSelectors} id={'nextPageUrl'}  optional={true}
                           title={chrome.i18n.getMessage('kitNextPageLink')}/>
       </div>
     );

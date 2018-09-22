@@ -9,6 +9,7 @@ import {
   todayReplace as legacyReplaceToday,
   dateFormat as legacyParseDate
 } from '../tools/exKitLegacyFn';
+import {ErrorWithCode} from "../tools/errors";
 
 const filesizeParser = require('filesize-parser');
 
@@ -656,7 +657,7 @@ class ExKitTracker {
       rows.splice(this.code.search.skipFromEnd * -1);
     }
 
-    const results = rows;
+    const results = [];
     rows.forEach(row => {
       try {
         const result = this.parseRow(session, row);
@@ -667,11 +668,11 @@ class ExKitTracker {
     });
 
     let nextPageUrl = null;
-    if (this.code.search.nextPageLink) {
+    if (this.code.search.nextPageUrl) {
       try {
-        nextPageUrl = this.matchSelector('nextPageLink', session, this.code.search.nextPageLink);
+        nextPageUrl = this.matchSelector(session, session.$dom, 'nextPageUrl', this.code.search.nextPageSelector);
       } catch (err) {
-        console.error('nextPageLink matchSelector error', err);
+        console.error('nextPageUrl matchSelector error', err);
       }
     }
 
@@ -682,33 +683,79 @@ class ExKitTracker {
   }
 
   parseRow(session, row) {
+    const result = {};
+    const errors = [];
+    const cache = {};
 
+    ['categoryTitle', 'categoryUrl', 'categoryId', 'title', 'url', 'size', 'downloadUrl', 'seeds', 'peers', 'date'].forEach(key => {
+      const selector = this.code.search[key];
+      if (selector) {
+        try {
+          result[key] = this.matchSelector(session, row, key, selector, cache);
+        } catch (err) {
+          errors.push({
+            key: key,
+            error: err
+          });
+        }
+      }
+    });
+
+    if (!result.title) {
+      const err = new Error('Title is not exists');
+      err.result = result;
+      err.errors = errors;
+      throw err;
+    }
+
+    if (!result.url) {
+      const err = new Error('Url is not exists');
+      err.result = result;
+      err.errors = errors;
+      throw err;
+    }
+
+    if (!result.categoryId && result.categoryId !== 0) {
+      result.categoryId = -1;
+    }
+
+    if (!result.date) {
+      result.date = -1;
+    }
+
+    if (errors.length) {
+      console.warn('parseRow errors', {result, errors});
+    }
+
+    return result;
   }
 
   /**
-   * @param {string} id
    * @param session
+   * @param $container
+   * @param {string} key
    * @param {StringSelectorStore|NumberSelectorStore|ElementSelectorStore} selector
+   * @param {{}} cache
    */
-  matchSelector(id, session, selector) {
-    const {$dom} = session;
+  matchSelector(session, $container, key, selector, cache = {}) {
+    let node = cache[selector.selector];
+    if (!node) {
+      node = cache[selector.selector] = $container.find(selector.selector).get(0);
+    }
 
-    let result = $dom.find(selector.selector).get(0);
+    let result = node;
 
     if (selector.pipelineBuild) {
       result = selector.pipelineBuild(result);
     }
 
-    if (exKit.intList.indexOf(id) !== -1) {
+    if (exKit.intList.indexOf(key) !== -1) {
       if (typeof result !== 'number') {
-        result = parseInt(result, 10);
-        if (!Number.isFinite(result)) {
-          result = -1;
-        }
+        result = isNumber(parseInt(isString(result), 10));
       }
     } else
-    if (exKit.isUrlList.indexOf(id) !== -1) {
-      result = API_normalizeUrl(session.response.url, result);
+    if (exKit.isUrlList.indexOf(key) !== -1) {
+      result = API_normalizeUrl(this.code.search.baseUrl || session.response.url, isString(result));
     }
 
     return result;
@@ -734,10 +781,6 @@ class ExKitTracker {
       code = convertCodeV2toV3(code);
     }
 
-    if (code.search.baseUrl && !/\/$/.test(code.search.baseUrl)) {
-      code.search.baseUrl = code.search.baseUrl + '/';
-    }
-
     Object.keys(code.search).forEach(key => {
       const value = code.search[key];
       if (value && value.pipeline) {
@@ -757,74 +800,73 @@ class ExKitTracker {
       switch (method.name) {
         case 'getAttr': {
           const attr = method.args[0];
-          line.push(value => value.getAttribute(attr));
+          line.push(assertType(isElement, isString, value => value.getAttribute(attr)));
           break;
         }
         case 'getProp': {
           const prop = method.args[0];
-          line.push(value => value[prop]);
+          line.push(assertType(isElement, isString, value => value[prop]));
           break;
         }
         case 'getText': {
-          line.push(value => value.textContent);
+          line.push(assertType(isNode, isString, value => value.textContent));
           break;
         }
         case 'getHtml': {
-          line.push(value => value.innerHTML);
+          line.push(assertType(isElement, isString, value => value.innerHTML));
           break;
         }
         case 'getChild': {
           const index = method.args[0];
-          line.push(value => {
-            if (index < 0) {
-              return value.childNodes[value.childNodes.length + index];
-            } else {
-              return value.childNodes[index];
-            }
-          });
+          if (index < 0) {
+            line.push(assertType(isNode, isNode, value => value.childNodes[value.childNodes.length + index]));
+          } else {
+            line.push(assertType(isNode, isNode, value => value.childNodes[index]));
+          }
           break;
         }
         case 'trim': {
-          line.push(value => value.trim());
+          line.push(assertType(isString, isString, value => value.trim()));
           break;
         }
         case 'replace': {
           const re = new RegExp(method.args[0], 'ig');
           const replaceTo = method.args[1];
-          line.push(value => value.replace(re, replaceTo));
+          line.push(assertType(isString, isString, value => value.replace(re, replaceTo)));
           break;
         }
         case 'parseDate': {
           const formats = method.args;
-          line.push(value => moment(value, formats).unix());
+          line.push(assertType(isString, isNumber, value => moment(value, formats).unix()));
           break;
         }
         case 'parseSize': {
-          line.push(value => filesizeParser(value));
+          line.push(assertType(isString, isNumber, value => filesizeParser(value)));
           break;
         }
         case 'toInt': {
-          line.push(value => parseInt(value, 10));
+          line.push(assertType(isString, isNumber, value => parseInt(value, 10)));
           break;
         }
         case 'toFloat': {
-          line.push(value => parseFloat(value));
+          line.push(assertType(isString, isNumber, value => parseFloat(value)));
           break;
         }
         case 'legacyReplaceToday': {
-          line.push(value => legacyReplaceToday(value));
+          line.push(assertType(isString, isString, value => legacyReplaceToday(value)));
           break;
         }
         case 'legacyReplaceMonth': {
-          line.push(value => legacyReplaceMonth(value));
+          line.push(assertType(isString, isString, value => legacyReplaceMonth(value)));
           break;
         }
         case 'legacyParseDate': {
-          line.push(value => legacyParseDate(method.args[0], value));
+          const format = method.args[0];
+          line.push(assertType(isString, isNumber, value => legacyParseDate(format, value)));
           break;
         }
         case 'legacySizeFormat': {
-          line.push(value => legacySizeFormat(value));
+          line.push(assertType(isString, isNumber, value => legacySizeFormat(value)));
           break;
         }
       }
@@ -832,13 +874,7 @@ class ExKitTracker {
 
     return value => {
       for (let i = 0, method; method = line[i]; i++) {
-        try {
-          value = method(value);
-        } catch (err) {
-          value = null;
-          console.error('Call pipepine error!', err);
-          break;
-        }
+        value = method(value);
       }
       return value;
     };
@@ -865,7 +901,6 @@ window.API_exKit = function (code) {
 
   API_event('search', function (request) {
     const session = {
-      cache: {},
       eventName: 'search',
       request,
     };
@@ -876,7 +911,6 @@ window.API_exKit = function (code) {
 
   API_event('getNextPage', function (request) {
     const session = {
-      cache: {},
       eventName: 'getNextPage',
       request,
     };
@@ -893,5 +927,61 @@ class AuthError extends Error {
     this.url = code.auth.url;
   }
 }
+
+const assertType = (inType, outType, fn) => {
+  return value => outType(fn(inType(value)));
+};
+
+/**
+ * @param value
+ * @return {Node}
+ */
+const isNode = value => {
+  if (!value || value.nodeType) {
+    const err = new ErrorWithCode('Value is not Node', 'IS_NOT_NODE');
+    err.value = value;
+    throw err;
+  }
+  return value;
+};
+
+/**
+ * @param value
+ * @return {Element}
+ */
+const isElement = value => {
+  if (!value || value.nodeType !== 1) {
+    const err = new ErrorWithCode('Value is not Element', 'IS_NOT_ELEMENT');
+    err.value = value;
+    throw err;
+  }
+  return value;
+};
+
+/**
+ * @param value
+ * @return {String}
+ */
+const isString = value => {
+  if (typeof value !== 'string') {
+    const err = new ErrorWithCode('Value is not String', 'IS_NOT_STRING');
+    err.value = value;
+    throw err;
+  }
+  return value;
+};
+
+/**
+ * @param value
+ * @return {Number}
+ */
+const isNumber = value => {
+  if (Number.isFinite(value)) {
+    const err = new ErrorWithCode('Value is not Finite Number', 'IS_NOT_NUMBER');
+    err.value = value;
+    throw err;
+  }
+  return value;
+};
 
 export default exKit;

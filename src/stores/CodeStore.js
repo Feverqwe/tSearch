@@ -263,7 +263,7 @@ const CodeAuthStore = types.model('CodeAuthStore', {
  * @property {NumberSelectorStore|undefined} seeds
  * @property {NumberSelectorStore|undefined} peers
  * @property {StringSelectorStore|undefined} date
- * @property {StringSelectorStore|undefined} nextPageLink
+ * @property {StringSelectorStore|undefined} nextPageUrl
  * @property {function} set
  * @property {function} getDefaultPipeline
  */
@@ -282,7 +282,7 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
   seeds: types.maybe(NumberSelectorStore),
   peers: types.maybe(NumberSelectorStore),
   date: types.maybe(StringSelectorStore),
-  nextPageLink: types.maybe(StringSelectorStore),
+  nextPageUrl: types.maybe(StringSelectorStore),
 }).actions(self => {
   return {
     set(key, value) {

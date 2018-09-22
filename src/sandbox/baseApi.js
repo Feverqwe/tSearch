@@ -44,7 +44,7 @@ window.API_deSanitizeHtml = a => a;
    * @returns {string}
    */
   window.API_normalizeUrl = function (location, link) {
-    if (/(^https?|^magnet):/.test(link)) {
+    if (/^[^:\/]+:/.test(link)) {
       return link;
     }
 
