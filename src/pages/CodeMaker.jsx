@@ -833,7 +833,7 @@ class CodeMakerAuthPage extends React.Component {
           <BindInput store={this.codeSearchAuth} id={'url'} type="text"/>
           <input type="button" data-id="auth_open" value={chrome.i18n.getMessage('kitOpen')}/>
         </div>
-        <ElementSelector store={this.codeSearchAuth} id={'selector'} optional={true}
+        <ElementSelector store={this.codeSearchAuth} id={'loginForm'} optional={true}
                          type="text" title={chrome.i18n.getMessage('kitLoginFormSelector')}/>
       </div>
     );
