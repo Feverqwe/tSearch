@@ -231,7 +231,7 @@ class ExKitTracker {
     }
 
     if (errors.length) {
-      console.warn('parseRow errors', {result, errors});
+      console.warn('parseRow warnings', {row, result, errors});
     }
 
     return result;
