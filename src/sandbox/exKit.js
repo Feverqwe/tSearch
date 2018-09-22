@@ -15,9 +15,6 @@ import {parse as fechaParse} from 'fecha';
 const filesizeParser = require('filesize-parser');
 
 const exKit = {
-  prepareTrackerR: {
-    hasEndSlash: /\/$/
-  },
   funcList: {
     encodeCp1251: function (string) {
       let output = '', charCode, ExitValue, char;
