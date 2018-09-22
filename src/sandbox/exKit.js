@@ -10,6 +10,7 @@ import {
   dateFormat as legacyParseDate
 } from '../tools/exKitLegacyFn';
 import {ErrorWithCode} from "../tools/errors";
+import {API_legacyExKit} from './legacyExKit';
 
 const filesizeParser = require('filesize-parser');
 
@@ -409,6 +410,11 @@ class ExKitTracker {
 }
 
 window.API_exKit = code => {
+  if (!code.version) {
+    API_legacyExKit(code);
+    return;
+  }
+
   const exKitTracker = new ExKitTracker(code);
 
   const onResult = result => {
