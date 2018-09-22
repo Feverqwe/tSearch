@@ -399,26 +399,35 @@ const API_legacyExKit = function (trackerObj) {
       query: query,
       url: nextPageUrl
     }).then(function (result) {
-      let response;
       if (result.requireAuth) {
-        response = {
-          success: false,
-          error: 'AUTH',
-          message: 'requireAuth',
-          url: result.requireAuth
-        };
-      } else {
-        response = {
-          success: true,
-          results: result.torrentList,
-          nextPageRequest: result.nextPageUrl && {
-            event: 'getNextPage',
-            url: result.nextPageUrl,
-            query: query
-          }
-        };
+        const err = new Error('Auth required');
+        err.code = 'AUTH_REQUIRED';
+        err.url = result.requireAuth;
+        throw err;
       }
-      return response;
+
+      return {
+        success: true,
+        results: result.torrentList.map(item => {
+          return {
+            categoryTitle: item.categoryTitle,
+            categoryUrl: item.categoryUrl,
+            categoryId: item.categoryId,
+            title: item.title,
+            url: item.url,
+            size: item.size,
+            downloadUrl: item.downloadUrl,
+            seeds: item.seed,
+            peers: item.peer,
+            date: item.date,
+          };
+        }),
+        nextPageRequest: result.nextPageUrl && {
+          event: 'getNextPage',
+          url: result.nextPageUrl,
+          query: query
+        }
+      };
     });
   };
 
