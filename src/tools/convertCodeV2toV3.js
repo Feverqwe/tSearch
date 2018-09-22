@@ -86,6 +86,7 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
   const /**CodeStore*/codeV3 = {};
 
   codeV3.version = 3;
+  codeV3.type = 'kit';
 
 
   const search = codeV3.search = {};
