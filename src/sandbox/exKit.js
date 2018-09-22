@@ -148,7 +148,7 @@ class ExKitTracker {
     }
 
     if (this.code.auth.loginForm && $doc.find(this.code.auth.loginForm.selector).length) {
-      throw new AuthError(this.code);
+      throw new AuthError(this.code.auth.url);
     }
 
     const rows = $doc.find(this.code.selectors.row.selector);
@@ -459,10 +459,10 @@ window.API_exKit = code => {
 };
 
 class AuthError extends Error {
-  constructor(code) {
+  constructor(url) {
     super('Auth required');
     this.code = 'AUTH_REQUIRED';
-    this.url = code.auth.url;
+    this.url = url;
   }
 }
 
