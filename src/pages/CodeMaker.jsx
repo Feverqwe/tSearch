@@ -951,7 +951,7 @@ class CodeMakerDescPage extends React.Component {
       });
     };
 
-    const imageType = /^image\//;
+    const imageType = /^image\/(x-icon|jpeg|png|svg)$/;
     for (let i = 0, file; file = files[i]; i++) {
       try {
         if (!imageType.test(file.type)) {
