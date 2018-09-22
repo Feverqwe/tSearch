@@ -163,8 +163,9 @@ class ExKitTracker {
     }
 
     const results = [];
-    for (let row, i = 0; row = rows[i]; i++) {
+    for (let i = 0, len = rows.length; i < len; i++) {
       try {
+        const row = rows.eq(i);
         const result = this.parseRow(session, row);
         results.push(result);
       } catch (err) {
@@ -198,6 +199,7 @@ class ExKitTracker {
         try {
           result[key] = this.matchSelector(session, row, key, selector, cache);
         } catch (err) {
+          // console.log('matchSelector error', err);
           errors.push({
             key: key,
             error: err
@@ -262,7 +264,8 @@ class ExKitTracker {
       if (typeof result !== 'number') {
         result = isNumber(parseInt(isString(result), 10));
       }
-    } else if (exKit.isUrlList.indexOf(key) !== -1) {
+    } else
+    if (exKit.isUrlList.indexOf(key) !== -1) {
       result = API_normalizeUrl(this.code.search.baseUrl || session.response.url, isString(result));
     }
 
@@ -472,7 +475,7 @@ const assertType = (inType, outType, fn) => {
  * @return {Node}
  */
 const isNode = value => {
-  if (!value || value.nodeType) {
+  if (!value || !value.nodeType) {
     const err = new ErrorWithCode('Value is not Node', 'IS_NOT_NODE');
     err.value = value;
     throw err;
@@ -511,7 +514,7 @@ const isString = value => {
  * @return {Number}
  */
 const isNumber = value => {
-  if (Number.isFinite(value)) {
+  if (!Number.isFinite(value)) {
     const err = new ErrorWithCode('Value is not Finite Number', 'IS_NOT_NUMBER');
     err.value = value;
     throw err;
