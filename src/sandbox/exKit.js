@@ -62,11 +62,11 @@ exKit.funcList.sizeFormat = legacySizeFormat;
 exKit.funcList.todayReplace = legacyReplaceToday;
 
 const API_exKit = code => {
-  if (!code.version) {
-    return API_legacyExKit(code);
-  }
-
   return API_async(() => {
+    if (!code.version) {
+      return API_legacyExKit(code);
+    }
+
     const exKitTracker = new ExKitTracker();
     return exKitTracker.init(code).then(() => {
       const onResult = result => {
