@@ -38,7 +38,7 @@ const altRequire = modules => {
     }));
   }
   if (modules.indexOf('filesizeParser') !== -1) {
-    promiseList.push(import('filesizeParser').then(module => {
+    promiseList.push(import('filesize-parser').then(module => {
       window.filesizeParse = module;
     }));
   }
