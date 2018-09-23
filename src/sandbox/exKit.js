@@ -10,6 +10,7 @@ import {
 import {ErrorWithCode} from "../tools/errors";
 import {parse as fechaParse} from 'fecha';
 import {sizzleQuerySelector, sizzleQuerySelectorAll} from "../tools/sizzleQuery";
+import {API_legacyExKit} from './legacyExKit';
 
 const filesizeParser = require('filesize-parser');
 
@@ -411,7 +412,7 @@ class ExKitTracker {
 
 window.API_exKit = code => {
   if (!code.version) {
-    require('./legacyExKit').API_legacyExKit(code);
+    API_legacyExKit(code);
     return;
   }
 

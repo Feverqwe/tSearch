@@ -1,5 +1,3 @@
-import $ from 'jquery/dist/jquery.slim';
-
 const legacyExKit = {
   prepareTrackerR: {
     hasEndSlash: /\/$/
@@ -432,12 +430,26 @@ const API_legacyExKit = function (trackerObj) {
   };
 
   API_event('getNextPage', function (request) {
-    return search(request.query, request.url);
+    return defineJQuery().then(() => {
+      return search(request.query, request.url);
+    });
   });
 
   API_event('search', function (request) {
-    return search(request.query);
+    return defineJQuery().then(() => {
+      return search(request.query);
+    });
   });
+};
+
+const defineJQuery = () => {
+  if (!window.$) {
+    return import('jquery/dist/jquery.slim').then(jQuery => {
+      window.$ = window.jQuery = jQuery.default;
+    });
+  } else {
+    return Promise.resolve();
+  }
 };
 
 export {API_legacyExKit};
