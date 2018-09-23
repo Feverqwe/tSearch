@@ -244,31 +244,7 @@ class ExKitTracker {
     const line = [];
     pipeline.forEach(method => {
       const pipelineMethod = exKitPipelineMethods[method.name];
-      const modules = (pipelineMethod.modules || []).map(name => {
-        switch (name) {
-          case 'legacySizeFormat': {
-            return legacySizeFormat;
-          }
-          case 'legacyParseDate': {
-            return legacyParseDate;
-          }
-          case 'legacyReplaceMonth': {
-            return legacyReplaceMonth;
-          }
-          case 'legacyReplaceToday': {
-            return legacyReplaceToday;
-          }
-          case 'filesizeParser': {
-            return filesizeParser;
-          }
-          case 'fechaParse': {
-            return fechaParse;
-          }
-          default: {
-            throw new Error(`Pipeline method module ${name} is not found`);
-          }
-        }
-      });
+      const modules = getModules(pipelineMethod.modules || []);
       const args = method.args || [];
       line.push(pipelineMethod.getMethod(...modules, ...args));
     });
@@ -289,5 +265,33 @@ class AuthError extends Error {
     this.url = url;
   }
 }
+
+const getModules = modules => {
+  return modules.map(name => {
+    switch (name) {
+      case 'legacySizeFormat': {
+        return legacySizeFormat;
+      }
+      case 'legacyParseDate': {
+        return legacyParseDate;
+      }
+      case 'legacyReplaceMonth': {
+        return legacyReplaceMonth;
+      }
+      case 'legacyReplaceToday': {
+        return legacyReplaceToday;
+      }
+      case 'filesizeParser': {
+        return filesizeParser;
+      }
+      case 'fechaParse': {
+        return fechaParse;
+      }
+      default: {
+        throw new Error(`Pipeline method module ${name} is not found`);
+      }
+    }
+  });
+};
 
 export default ExKitTracker;
