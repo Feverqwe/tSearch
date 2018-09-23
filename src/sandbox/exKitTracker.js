@@ -1,26 +1,23 @@
 import {sizzleQuerySelector, sizzleQuerySelectorAll} from "../tools/sizzleQuery";
 import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
 import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
-import {parse as fechaParse} from "fecha";
-import {
-  dateFormat as legacyParseDate,
-  monthReplace as legacyReplaceMonth,
-  sizeFormat as legacySizeFormat,
-  todayReplace as legacyReplaceToday
-} from "../tools/exKitLegacyFn";
 import encodeCp1251 from "../tools/encodeCp1251";
 import {isNumber, isString} from "../tools/assertType";
 import exKitPipelineMethods from "../tools/exKitPipelineMethods";
-
-const filesizeParser = require('filesize-parser');
 
 const strFields = ['categoryTitle', 'title'];
 const intFields = ['categoryId', 'size', 'seeds', 'peers', 'date'];
 const urlFields = ['categoryUrl', 'url', 'downloadUrl', 'nextPageUrl'];
 
 class ExKitTracker {
-  constructor(code) {
-    this.code = this.prepareCode(code);
+  constructor() {
+    this.code = null;
+  }
+
+  init(code) {
+    return this.prepareCode(code).then(code => {
+      this.code = code;
+    });
   }
 
   search(session, query) {
@@ -217,50 +214,59 @@ class ExKitTracker {
   }
 
   prepareCode(code) {
-    if (code.version === 1) {
-      code = convertCodeV1toV2(code);
-    }
-    if (code.version === 2) {
-      code = convertCodeV2toV3(code);
-    }
-
-    Object.keys(code.selectors).forEach(key => {
-      const value = code.selectors[key];
-      if (value && value.pipeline) {
-        value.pipelineBuild = this.buildPipeline(value.pipeline);
+    return Promise.resolve().then(() => {
+      if (code.version === 1) {
+        code = convertCodeV1toV2(code);
       }
+
+      if (code.version === 2) {
+        code = convertCodeV2toV3(code);
+      }
+
+      if (!code.hooks) {
+        code.hooks = {};
+      }
+
+      if (!code.hooks.transform) {
+        code.hooks.transform = {};
+      }
+
+      const promiseList = Object.keys(code.selectors).map(key => {
+        const value = code.selectors[key];
+        if (value && value.pipeline) {
+          return this.buildPipeline(value.pipeline).then(pipelineBuild => {
+            value.pipelineBuild = pipelineBuild;
+          });
+        }
+      });
+
+      return Promise.all(promiseList).then(() => code);
     });
-
-    if (!code.hooks) {
-      code.hooks = {};
-    }
-
-    if (!code.hooks.transform) {
-      code.hooks.transform = {};
-    }
-
-    return code;
   }
 
   buildPipeline(pipeline) {
-    if (!Array.isArray(pipeline) || !pipeline.length) {
-      return null;
-    }
-
-    const line = [];
-    pipeline.forEach(method => {
-      const pipelineMethod = exKitPipelineMethods[method.name];
-      const modules = getModules(pipelineMethod.modules || []);
-      const args = method.args || [];
-      line.push(pipelineMethod.getMethod(...modules, ...args));
-    });
-
-    return value => {
-      for (let i = 0, method; method = line[i]; i++) {
-        value = method(value);
+    return Promise.resolve().then(() => {
+      if (!Array.isArray(pipeline) || !pipeline.length) {
+        return null;
       }
-      return value;
-    };
+
+      const promiseList = pipeline.map(method => {
+        return Promise.resolve().then(() => {
+          const pipelineMethod = exKitPipelineMethods[method.name];
+          const args = method.args || [];
+          return pipelineMethod.getMethod(...args);
+        });
+      });
+
+      return Promise.all(promiseList).then(line => {
+        return value => {
+          for (let i = 0, method; method = line[i]; i++) {
+            value = method(value);
+          }
+          return value;
+        };
+      });
+    });
   }
 }
 
@@ -271,33 +277,5 @@ class AuthError extends Error {
     this.url = url;
   }
 }
-
-const getModules = modules => {
-  return modules.map(name => {
-    switch (name) {
-      case 'legacySizeFormat': {
-        return legacySizeFormat;
-      }
-      case 'legacyParseDate': {
-        return legacyParseDate;
-      }
-      case 'legacyReplaceMonth': {
-        return legacyReplaceMonth;
-      }
-      case 'legacyReplaceToday': {
-        return legacyReplaceToday;
-      }
-      case 'filesizeParser': {
-        return filesizeParser;
-      }
-      case 'fechaParse': {
-        return fechaParse;
-      }
-      default: {
-        throw new Error(`Pipeline method module ${name} is not found`);
-      }
-    }
-  });
-};
 
 export default ExKitTracker;

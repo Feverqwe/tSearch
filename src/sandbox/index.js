@@ -46,7 +46,23 @@ const altRequire = modules => {
 };
 
 const runCode = code => {
-  return eval(code);
+  return Promise.resolve().then(() => {
+    let promiseList = [];
+    window.API_async = fn => {
+      const promise = Promise.resolve().then(() => {
+        return fn();
+      });
+      promiseList && promiseList.push(promise);
+      return promise;
+    };
+    new Function(code)();
+    const result = Promise.all(promiseList);
+    promiseList = null;
+    return result;
+  }).then(() => {
+  }, err => {
+    throw err;
+  });
 };
 
 const api = {

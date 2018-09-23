@@ -63,47 +63,49 @@ exKit.funcList.todayReplace = legacyReplaceToday;
 
 const API_exKit = code => {
   if (!code.version) {
-    API_legacyExKit(code);
-    return;
+    return API_legacyExKit(code);
   }
 
-  const exKitTracker = new ExKitTracker(code);
-
-  const onResult = result => {
-    let nextPageRequest = null;
-    if (result.nextPageUrl) {
-      nextPageRequest = {
-        url: result.nextPageUrl,
+  const exKitTracker = new ExKitTracker();
+  return API_async(() => {
+    return exKitTracker.init(code)
+  }).then(() => {
+    const onResult = result => {
+      let nextPageRequest = null;
+      if (result.nextPageUrl) {
+        nextPageRequest = {
+          url: result.nextPageUrl,
+        }
       }
-    }
 
-    return {
-      success: true,
-      results: result.results,
-      nextPageRequest: nextPageRequest,
+      return {
+        success: true,
+        results: result.results,
+        nextPageRequest: nextPageRequest,
+      };
     };
-  };
 
-  API_event('search', request => {
-    const session = {
-      tracker: exKitTracker,
-      event: 'search',
-      request,
-    };
-    return exKitTracker.search(session, request.query).then(response => {
-      return exKitTracker.parseResponse(session, response);
-    }).then(onResult);
-  });
+    API_event('search', request => {
+      const session = {
+        tracker: exKitTracker,
+        event: 'search',
+        request,
+      };
+      return exKitTracker.search(session, request.query).then(response => {
+        return exKitTracker.parseResponse(session, response);
+      }).then(onResult);
+    });
 
-  API_event('getNextPage', request => {
-    const session = {
-      tracker: exKitTracker,
-      event: 'getNextPage',
-      request,
-    };
-    return exKitTracker.searchNext(session, request.url).then(response => {
-      return exKitTracker.parseResponse(session, response);
-    }).then(onResult);
+    API_event('getNextPage', request => {
+      const session = {
+        tracker: exKitTracker,
+        event: 'getNextPage',
+        request,
+      };
+      return exKitTracker.searchNext(session, request.url).then(response => {
+        return exKitTracker.parseResponse(session, response);
+      }).then(onResult);
+    });
   });
 };
 

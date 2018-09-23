@@ -82,17 +82,21 @@ const exKitPipelineMethods = {
       type: 'string',
     }],
     out: 'number',
-    modules: ['fechaParse'],
-    getMethod(fechaParse, format) {
-      return assertType(isString, isNumber, value => fechaParse(value, format).getTime());
+    getMethod(format) {
+      return import('fecha').then(module => {
+        const fechaParse = module.parse;
+        return assertType(isString, isNumber, value => fechaParse(value, format).getTime());
+      });
     }
   },
   parseSize: {
     in: 'string',
     out: 'number',
-    modules: ['filesizeParser'],
-    getMethod(filesizeParser) {
-      return assertType(isString, isNumber, value => filesizeParser(value));
+    getMethod() {
+      return import('filesize-parser').then(module => {
+        const filesizeParser = module.default;
+        return assertType(isString, isNumber, value => filesizeParser(value));
+      });
     }
   },
   toInt: {
@@ -113,17 +117,21 @@ const exKitPipelineMethods = {
   legacyReplaceToday: {
     in: 'string',
     out: 'string',
-    modules: ['legacyReplaceToday'],
-    getMethod(legacyReplaceToday) {
-      return assertType(isString, isString, value => legacyReplaceToday(value));
+    getMethod() {
+      return import('../tools/exKitLegacyFn').then(module => {
+        const legacyReplaceToday = module.todayReplace;
+        return assertType(isString, isString, value => legacyReplaceToday(value));
+      });
     }
   },
   legacyReplaceMonth: {
     in: 'string',
     out: 'string',
-    modules: ['legacyReplaceMonth'],
-    getMethod(legacyReplaceMonth) {
-      return assertType(isString, isString, value => legacyReplaceMonth(value));
+    getMethod() {
+      return import('../tools/exKitLegacyFn').then(module => {
+        const legacyReplaceMonth = module.monthReplace;
+        return assertType(isString, isString, value => legacyReplaceMonth(value));
+      });
     }
   },
   legacyParseDate: {
@@ -140,17 +148,21 @@ const exKitPipelineMethods = {
       ],
     }],
     out: 'number',
-    modules: ['legacyParseDate'],
-    getMethod(legacyParseDate, format) {
-      return assertType(isString, isNumber, value => legacyParseDate(format, value));
+    getMethod(format) {
+      return import('../tools/exKitLegacyFn').then(module => {
+        const legacyParseDate = module.dateFormat;
+        return assertType(isString, isNumber, value => legacyParseDate(format, value));
+      });
     }
   },
   legacySizeFormat: {
     in: 'string',
     out: 'number',
-    modules: ['legacySizeFormat'],
-    getMethod(legacySizeFormat) {
-      return assertType(isString, isNumber, value => legacySizeFormat(value));
+    getMethod() {
+      return import('../tools/exKitLegacyFn').then(module => {
+        const legacySizeFormat = module.sizeFormat;
+        return assertType(isString, isNumber, value => legacySizeFormat(value));
+      });
     }
   }
 };

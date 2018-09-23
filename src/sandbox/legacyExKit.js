@@ -389,67 +389,59 @@ const legacyExKit = {
 };
 
 const API_legacyExKit = function (trackerObj) {
-  const tracker = trackerObj;
-  legacyExKit.prepareTracker(tracker);
-
-  const search = function (query, nextPageUrl) {
-    return legacyExKit.search(tracker, {
-      query: query,
-      url: nextPageUrl
-    }).then(function (result) {
-      if (result.requireAuth) {
-        const err = new Error('Auth required');
-        err.code = 'AUTH_REQUIRED';
-        err.url = result.requireAuth;
-        throw err;
-      }
-
-      return {
-        success: true,
-        results: result.torrentList.map(item => {
-          return {
-            categoryTitle: item.categoryTitle,
-            categoryUrl: item.categoryUrl,
-            categoryId: item.categoryId,
-            title: item.title,
-            url: item.url,
-            size: item.size,
-            downloadUrl: item.downloadUrl,
-            seeds: item.seed,
-            peers: item.peer,
-            date: item.date,
-          };
-        }),
-        nextPageRequest: result.nextPageUrl && {
-          event: 'getNextPage',
-          url: result.nextPageUrl,
-          query: query
-        }
-      };
-    });
-  };
-
-  API_event('getNextPage', function (request) {
-    return defineJQuery().then(() => {
-      return search(request.query, request.url);
-    });
-  });
-
-  API_event('search', function (request) {
-    return defineJQuery().then(() => {
-      return search(request.query);
-    });
-  });
-};
-
-const defineJQuery = () => {
-  if (!window.$) {
+  return API_async(() => {
     return import('jquery/dist/jquery.slim').then(jQuery => {
       window.$ = window.jQuery = jQuery.default;
     });
-  } else {
-    return Promise.resolve();
-  }
+  }).then(() => {
+    const tracker = trackerObj;
+    legacyExKit.prepareTracker(tracker);
+
+    const search = function (query, nextPageUrl) {
+      return legacyExKit.search(tracker, {
+        query: query,
+        url: nextPageUrl
+      }).then(function (result) {
+        if (result.requireAuth) {
+          const err = new Error('Auth required');
+          err.code = 'AUTH_REQUIRED';
+          err.url = result.requireAuth;
+          throw err;
+        }
+
+        return {
+          success: true,
+          results: result.torrentList.map(item => {
+            return {
+              categoryTitle: item.categoryTitle,
+              categoryUrl: item.categoryUrl,
+              categoryId: item.categoryId,
+              title: item.title,
+              url: item.url,
+              size: item.size,
+              downloadUrl: item.downloadUrl,
+              seeds: item.seed,
+              peers: item.peer,
+              date: item.date,
+            };
+          }),
+          nextPageRequest: result.nextPageUrl && {
+            event: 'getNextPage',
+            url: result.nextPageUrl,
+            query: query
+          }
+        };
+      });
+    };
+
+    API_event('getNextPage', function (request) {
+      return search(request.query, request.url);
+    });
+
+    API_event('search', function (request) {
+      return search(request.query);
+    });
+  });
 };
 
 export {API_legacyExKit};
