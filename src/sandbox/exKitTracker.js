@@ -251,11 +251,9 @@ class ExKitTracker {
       }
 
       const promiseList = pipeline.map(method => {
-        return Promise.resolve().then(() => {
-          const pipelineMethod = exKitPipelineMethods[method.name];
-          const args = method.args || [];
-          return pipelineMethod.getMethod(...args);
-        });
+        const pipelineMethod = exKitPipelineMethods[method.name];
+        const args = method.args || [];
+        return pipelineMethod.getMethod(...args);
       });
 
       return Promise.all(promiseList).then(line => {
