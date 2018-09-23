@@ -181,7 +181,7 @@ class ExKitTracker {
       }
     } else
     if (urlFields.indexOf(key) !== -1) {
-      result = API_normalizeUrl(this.code.search.baseUrl || session.response.url, isString(result));
+      result = API_normalizeUrl(session.response.url, isString(result));
     } else
     if (strFields.indexOf(key) !== -1) {
       result = isString(result);
