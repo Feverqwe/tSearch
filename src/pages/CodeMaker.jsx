@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 import getRandomColor from "../tools/getRandomColor";
 import {inject, observer} from "mobx-react";
 import RootStore from "../stores/RootStore";
-import CodeStore, {MethodStore, methods} from "../stores/CodeStore";
+import CodeStore, {methods, MethodStore} from "../stores/CodeStore";
 import getLogger from "../tools/getLogger";
 import CodeMakerStore from "../stores/CodeMakerStore";
 import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
@@ -19,6 +19,10 @@ const logger = getLogger('codeMaker');
 @inject('rootStore')
 @observer
 class CodeMaker extends React.Component {
+  get codeMakerStore() {
+    return this.props.rootStore.codeMaker;
+  }
+
   pageTitleMap = {
     search: 'kitSearch',
     selectors: 'kitSelectors',
@@ -42,12 +46,11 @@ class CodeMaker extends React.Component {
   };
 
   handleRequestPage = () => {
-    const searchStore = this.props.rootStore.codeMaker.code.search;
-
+    return Promise.reject(new Error('Unimplemented'))
   };
 
   render() {
-    if (!this.props.rootStore.codeMaker) {
+    if (!this.codeMakerStore) {
       return ('Loading...');
     }
 
@@ -67,31 +70,31 @@ class CodeMaker extends React.Component {
     switch (this.props.page) {
       case 'search': {
         page = (
-          <CodeMakerSearchPage onRequestPage={this.handleRequestPage} codeStore={this.props.rootStore.codeMaker.code}/>
+          <CodeMakerSearchPage onRequestPage={this.handleRequestPage} codeStore={this.codeMakerStore.code}/>
         );
         break;
       }
       case 'auth': {
         page = (
-          <CodeMakerAuthPage onRequestPage={this.handleRequestPage} codeStore={this.props.rootStore.codeMaker.code}/>
+          <CodeMakerAuthPage onRequestPage={this.handleRequestPage} codeStore={this.codeMakerStore.code}/>
         );
         break;
       }
       case 'selectors': {
         page = (
-          <CodeMakerSelectorsPage codeStore={this.props.rootStore.codeMaker.code}/>
+          <CodeMakerSelectorsPage codeStore={this.codeMakerStore.code}/>
         );
         break;
       }
       case 'desc': {
         page = (
-          <CodeMakerDescPage codeStore={this.props.rootStore.codeMaker.code}/>
+          <CodeMakerDescPage codeStore={this.codeMakerStore.code}/>
         );
         break;
       }
       case 'save': {
         page = (
-          <CodeMakerSavePage codeMaker={this.props.rootStore.codeMaker}/>
+          <CodeMakerSavePage codeMaker={this.codeMakerStore}/>
         );
         break;
       }
@@ -744,18 +747,28 @@ Method.propTypes = null && {
 @inject('rootStore')
 @observer
 class CodeMakerSearchPage extends React.Component {
+  state = {
+    requestPageError: false
+  };
+
   get codeSearchStore() {
     return this.props.codeStore.search;
   }
 
   handleRequestPage = (e) => {
     e.preventDefault();
-    this.requestPage.classList.remove('error');
+    this.setState({
+      requestPageError: false
+    });
+    const codeSearchStore = this.codeSearchStore;
+
+
+
     this.props.onRequestPage().catch(err => {
       logger.error('onRequestPage error', err);
-      if (this.requestPage) {
-        this.requestPage.classList.add('error');
-      }
+      this.setState({
+        requestPageError: true
+      });
     });
   };
 
@@ -774,14 +787,19 @@ class CodeMakerSearchPage extends React.Component {
   };
 
   render() {
+    const requestPageClassList = [];
+    if (this.state.requestPageError) {
+      requestPageClassList.push('error')
+    }
+
     return (
       <div className="page search">
         <h2>{chrome.i18n.getMessage('kitSearch')}</h2>
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitSearchUrl')}</span>
-          <BindInput store={this.codeSearchStore} id={'url'} type="text"/>
+          <BindInput className={requestPageClassList} store={this.codeSearchStore} id={'url'} type="text"/>
           {' '}
-          <input ref={this.refRequestPage} onClick={this.handleRequestPage} type="button" value={chrome.i18n.getMessage('kitOpen')}/>
+          <input onClick={this.handleRequestPage} type="button" value={chrome.i18n.getMessage('kitOpen')}/>
         </div>
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitSearchQuery')}</span>
