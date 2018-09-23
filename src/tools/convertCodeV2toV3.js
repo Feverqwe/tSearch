@@ -4,6 +4,10 @@ const convertSelector = (selector, postProcess) => {
     pipeline: [],
   };
 
+  if (!selector) {
+    return undefined;
+  }
+
   if (!Array.isArray(postProcess)) {
     postProcess = [];
   }
