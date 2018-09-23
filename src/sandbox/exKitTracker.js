@@ -14,6 +14,7 @@ import exKitPipelineMethods from "../tools/exKitPipelineMethods";
 
 const filesizeParser = require('filesize-parser');
 
+const strFields = ['categoryTitle', 'title'];
 const intFields = ['categoryId', 'size', 'seeds', 'peers', 'date'];
 const urlFields = ['categoryUrl', 'url', 'downloadUrl', 'nextPageUrl'];
 
@@ -182,6 +183,9 @@ class ExKitTracker {
     } else
     if (urlFields.indexOf(key) !== -1) {
       result = API_normalizeUrl(this.code.search.baseUrl || session.response.url, isString(result));
+    } else
+    if (strFields.indexOf(key) !== -1) {
+      result = isString(result);
     }
 
     return result;
