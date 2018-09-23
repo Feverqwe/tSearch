@@ -34,12 +34,12 @@ const altRequire = modules => {
   }
   if (modules.indexOf('fecha') !== -1) {
     promiseList.push(import('fecha').then(module => {
-      window.fecha = module;
+      window.fecha = module.default;
     }));
   }
   if (modules.indexOf('filesizeParser') !== -1) {
     promiseList.push(import('filesize-parser').then(module => {
-      window.filesizeParse = module;
+      window.filesizeParser = module.default;
     }));
   }
   return Promise.all(promiseList);
