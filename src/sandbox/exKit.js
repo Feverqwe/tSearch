@@ -1,16 +1,15 @@
-import $ from 'jquery/dist/jquery.slim';
 import './baseApi';
 import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
 import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
 import {
-  sizeFormat as legacySizeFormat,
+  dateFormat as legacyParseDate,
   monthReplace as legacyReplaceMonth,
-  todayReplace as legacyReplaceToday,
-  dateFormat as legacyParseDate
+  sizeFormat as legacySizeFormat,
+  todayReplace as legacyReplaceToday
 } from '../tools/exKitLegacyFn';
 import {ErrorWithCode} from "../tools/errors";
-import {API_legacyExKit} from './legacyExKit';
 import {parse as fechaParse} from 'fecha';
+import {sizzleQuerySelector, sizzleQuerySelectorAll} from "../tools/sizzleQuery";
 
 const filesizeParser = require('filesize-parser');
 
@@ -141,17 +140,16 @@ class ExKitTracker {
 
   parseResponse(session, response) {
     const doc = session.doc = API_getDoc(response.body, response.url);
-    const $doc = session.$doc = $(doc);
 
     if (this.code.hooks.onGetDoc) {
-      this.code.hooks.onGetDoc(session, $doc);
+      this.code.hooks.onGetDoc(session, doc);
     }
 
-    if (this.code.auth.loginForm && $doc.find(this.code.auth.loginForm.selector).length) {
+    if (this.code.auth.loginForm && sizzleQuerySelector(doc, this.code.auth.loginForm.selector)) {
       throw new AuthError(this.code.auth.url);
     }
 
-    const rows = $doc.find(this.code.selectors.row.selector);
+    const rows = sizzleQuerySelectorAll(doc, this.code.selectors.row.selector);
     if (this.code.selectors.skipFromStart) {
       rows.splice(0, this.code.selectors.skipFromStart);
     }
@@ -160,10 +158,9 @@ class ExKitTracker {
     }
 
     const results = [];
-    for (let i = 0, len = rows.length; i < len; i++) {
+    for (let i = 0, row; row = rows[i]; i++) {
       try {
-        const $row = rows.eq(i);
-        const result = this.parseRow(session, $row);
+        const result = this.parseRow(session, row);
         results.push(result);
       } catch (err) {
         console.error('parseRow error', err);
@@ -173,7 +170,7 @@ class ExKitTracker {
     let nextPageUrl = null;
     if (this.code.selectors.nextPageUrl) {
       try {
-        nextPageUrl = this.matchSelector(session, $doc, 'nextPageUrl', this.code.selectors.nextPageUrl);
+        nextPageUrl = this.matchSelector(session, doc, 'nextPageUrl', this.code.selectors.nextPageUrl);
       } catch (err) {
         console.error('nextPageUrl matchSelector error', err);
       }
@@ -185,7 +182,7 @@ class ExKitTracker {
     };
   }
 
-  parseRow(session, $row) {
+  parseRow(session, row) {
     const result = {};
     const errors = [];
     const cache = {};
@@ -194,7 +191,7 @@ class ExKitTracker {
       const selector = this.code.selectors[key];
       if (selector) {
         try {
-          result[key] = this.matchSelector(session, $row, key, selector, cache);
+          result[key] = this.matchSelector(session, row, key, selector, cache);
         } catch (err) {
           // console.log('matchSelector error', err);
           errors.push({
@@ -228,7 +225,7 @@ class ExKitTracker {
     }
 
     if (errors.length) {
-      console.warn('parseRow warnings', {$row, result, errors});
+      console.warn('parseRow warnings', {row, result, errors});
     }
 
     return result;
@@ -236,15 +233,15 @@ class ExKitTracker {
 
   /**
    * @param session
-   * @param $container
+   * @param container
    * @param {string} key
    * @param {StringSelectorStore|NumberSelectorStore|ElementSelectorStore} selector
    * @param {{}} cache
    */
-  matchSelector(session, $container, key, selector, cache = {}) {
+  matchSelector(session, container, key, selector, cache = {}) {
     let node = cache[selector.selector];
     if (!node) {
-      node = cache[selector.selector] = $container.find(selector.selector).get(0);
+      node = cache[selector.selector] = sizzleQuerySelector(container, selector.selector);
     }
 
     let result = node;
@@ -254,7 +251,7 @@ class ExKitTracker {
     }
 
     if (this.code.hooks.transform[key]) {
-      result = this.code.hooks.transform[key](session, result, $container);
+      result = this.code.hooks.transform[key](session, result, container);
     }
 
     if (exKit.intList.indexOf(key) !== -1) {
@@ -414,7 +411,7 @@ class ExKitTracker {
 
 window.API_exKit = code => {
   if (!code.version) {
-    API_legacyExKit(code);
+    require('./legacyExKit').API_legacyExKit(code);
     return;
   }
 

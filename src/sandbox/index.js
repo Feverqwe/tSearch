@@ -14,6 +14,11 @@ const altRequire = modules => {
       window.$ = window.jQuery = jQuery.default;
     }));
   }
+  if (modules.indexOf('sizzle') !== -1) {
+    promiseList.push(import('sizzle').then(sizzle => {
+      window.sizzle = sizzle.default;
+    }));
+  }
   if (modules.indexOf('moment') !== -1) {
     promiseList.push(import('moment').then(moment => {
       window.moment = moment.default;

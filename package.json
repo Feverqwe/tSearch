@@ -42,6 +42,7 @@
     "react-router-dom": "^4.3.1",
     "requires-port": "^1.0.0",
     "serialize-error": "^2.1.0",
+    "sizzle": "^2.3.3",
     "sortablejs": "^1.7.0",
     "uuid": "^3.3.2",
     "whatwg-fetch": "^3.0.0"
