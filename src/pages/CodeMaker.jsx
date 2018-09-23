@@ -984,6 +984,7 @@ class CodeMakerDescPage extends React.Component {
           <i onClick={this.handleIconClick} style={{
             backgroundImage: `url(${this.generateIcon(codeStore.description.icon)})`
           }} className="tracker_iconPic" data-id="desk_tracker_iconPic"/>
+          {' '}
           <input ref={this.iconDataInput} onChange={this.handleIconDataChange} data-id="desk_tracker_icon" value={codeStore.description.icon}/>
           <input ref={this.iconFileInput} onChange={this.handleIconFileChange} type="file" data-id="desk_tracker_iconFile"/>
         </div>
