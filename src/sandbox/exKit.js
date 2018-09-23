@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jquery/dist/jquery.slim';
 import './baseApi';
 import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
 import convertCodeV2toV3 from "../tools/convertCodeV2toV3";

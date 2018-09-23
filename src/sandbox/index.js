@@ -10,7 +10,7 @@ const debug = getLogger('sandbox');
 const altRequire = modules => {
   const promiseList = [];
   if (modules.indexOf('jquery') !== -1) {
-    promiseList.push(import('jquery').then(jQuery => {
+    promiseList.push(import('jquery/dist/jquery.slim').then(jQuery => {
       window.$ = window.jQuery = jQuery.default;
     }));
   }
