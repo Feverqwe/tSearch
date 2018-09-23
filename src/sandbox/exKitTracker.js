@@ -8,8 +8,9 @@ import {
   sizeFormat as legacySizeFormat,
   todayReplace as legacyReplaceToday
 } from "../tools/exKitLegacyFn";
-import {ErrorWithCode} from "../tools/errors";
 import encodeCp1251 from "../tools/encodeCp1251";
+import {isNumber, isString} from "../tools/assertType";
+import exKitPipelineMethods from "../tools/exKitPipelineMethods";
 
 const filesizeParser = require('filesize-parser');
 
@@ -242,82 +243,34 @@ class ExKitTracker {
 
     const line = [];
     pipeline.forEach(method => {
-      switch (method.name) {
-        case 'getAttr': {
-          const attr = method.args[0];
-          line.push(assertType(isElement, isString, value => value.getAttribute(attr)));
-          break;
-        }
-        case 'getProp': {
-          const prop = method.args[0];
-          line.push(assertType(isElement, isString, value => value[prop]));
-          break;
-        }
-        case 'getText': {
-          line.push(assertType(isNode, isString, value => value.textContent));
-          break;
-        }
-        case 'getHtml': {
-          line.push(assertType(isElement, isString, value => value.innerHTML));
-          break;
-        }
-        case 'getChild': {
-          const index = method.args[0];
-          if (index < 0) {
-            line.push(assertType(isNode, isNode, value => value.childNodes[value.childNodes.length + index]));
-          } else {
-            line.push(assertType(isNode, isNode, value => value.childNodes[index]));
+      const pipelineMethod = exKitPipelineMethods[method.name];
+      const modules = (pipelineMethod.modules || []).map(name => {
+        switch (name) {
+          case 'legacySizeFormat': {
+            return legacySizeFormat;
           }
-          break;
+          case 'legacyParseDate': {
+            return legacyParseDate;
+          }
+          case 'legacyReplaceMonth': {
+            return legacyReplaceMonth;
+          }
+          case 'legacyReplaceToday': {
+            return legacyReplaceToday;
+          }
+          case 'filesizeParser': {
+            return filesizeParser;
+          }
+          case 'fechaParse': {
+            return fechaParse;
+          }
+          default: {
+            throw new Error(`Pipeline method module ${name} is not found`);
+          }
         }
-        case 'trim': {
-          line.push(assertType(isString, isString, value => value.trim()));
-          break;
-        }
-        case 'replace': {
-          const re = new RegExp(method.args[0], 'ig');
-          const replaceTo = method.args[1];
-          line.push(assertType(isString, isString, value => value.replace(re, replaceTo)));
-          break;
-        }
-        case 'parseDate': {
-          const format = method.args[0];
-          line.push(assertType(isString, isNumber, value => fechaParse(value, format).getTime()));
-          break;
-        }
-        case 'parseSize': {
-          line.push(assertType(isString, isNumber, value => filesizeParser(value)));
-          break;
-        }
-        case 'toInt': {
-          line.push(assertType(isString, isNumber, value => parseInt(value, 10)));
-          break;
-        }
-        case 'toFloat': {
-          line.push(assertType(isString, isNumber, value => parseFloat(value)));
-          break;
-        }
-        case 'legacyReplaceToday': {
-          line.push(assertType(isString, isString, value => legacyReplaceToday(value)));
-          break;
-        }
-        case 'legacyReplaceMonth': {
-          line.push(assertType(isString, isString, value => legacyReplaceMonth(value)));
-          break;
-        }
-        case 'legacyParseDate': {
-          const format = method.args[0];
-          line.push(assertType(isString, isNumber, value => legacyParseDate(format, value)));
-          break;
-        }
-        case 'legacySizeFormat': {
-          line.push(assertType(isString, isNumber, value => legacySizeFormat(value)));
-          break;
-        }
-        default: {
-          console.error('Pipeline method is no supported', method.name);
-        }
-      }
+      });
+      const args = method.args || [];
+      line.push(pipelineMethod.getMethod(...modules, ...args));
     });
 
     return value => {
@@ -336,61 +289,5 @@ class AuthError extends Error {
     this.url = url;
   }
 }
-
-const assertType = (inType, outType, fn) => {
-  return value => outType(fn(inType(value)));
-};
-
-/**
- * @param value
- * @return {Node}
- */
-const isNode = value => {
-  if (!value || !value.nodeType) {
-    const err = new ErrorWithCode('Value is not Node', 'IS_NOT_NODE');
-    err.value = value;
-    throw err;
-  }
-  return value;
-};
-
-/**
- * @param value
- * @return {Element}
- */
-const isElement = value => {
-  if (!value || value.nodeType !== 1) {
-    const err = new ErrorWithCode('Value is not Element', 'IS_NOT_ELEMENT');
-    err.value = value;
-    throw err;
-  }
-  return value;
-};
-
-/**
- * @param value
- * @return {String}
- */
-const isString = value => {
-  if (typeof value !== 'string') {
-    const err = new ErrorWithCode('Value is not String', 'IS_NOT_STRING');
-    err.value = value;
-    throw err;
-  }
-  return value;
-};
-
-/**
- * @param value
- * @return {Number}
- */
-const isNumber = value => {
-  if (!Number.isFinite(value)) {
-    const err = new ErrorWithCode('Value is not Finite Number', 'IS_NOT_NUMBER');
-    err.value = value;
-    throw err;
-  }
-  return value;
-};
 
 export default ExKitTracker;

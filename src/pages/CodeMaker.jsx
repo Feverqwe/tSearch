@@ -6,11 +6,12 @@ import {Link} from "react-router-dom";
 import getRandomColor from "../tools/getRandomColor";
 import {inject, observer} from "mobx-react";
 import RootStore from "../stores/RootStore";
-import CodeStore, {methods, MethodStore} from "../stores/CodeStore";
+import CodeStore, {MethodStore} from "../stores/CodeStore";
 import getLogger from "../tools/getLogger";
 import CodeMakerStore from "../stores/CodeMakerStore";
 import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
 import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
+import exKitPipelineMethods from "../tools/exKitPipelineMethods";
 
 const Sortable = require('sortablejs');
 
@@ -443,9 +444,9 @@ class AddMethodDialog extends React.Component {
 
   render() {
     const methodName = this.state.methodName;
-    const methodScheme = methods[this.state.methodName];
+    const methodScheme = exKitPipelineMethods[this.state.methodName];
 
-    const options = Object.keys(methods).map(key => {
+    const options = Object.keys(exKitPipelineMethods).map(key => {
       return (
         <option key={key} value={key}>{key}</option>
       );
@@ -537,7 +538,7 @@ class EditMethodDialog extends React.Component {
     super(props);
 
     const method = props.method;
-    const methodScheme = methods[method.name];
+    const methodScheme = exKitPipelineMethods[method.name];
 
     this.state = {
       clonedInputs: 0
@@ -587,7 +588,7 @@ class EditMethodDialog extends React.Component {
 
   render() {
     const method = this.props.method;
-    const methodScheme = methods[method.name];
+    const methodScheme = exKitPipelineMethods[method.name];
 
     let args = null;
     if (methodScheme) {
@@ -695,7 +696,7 @@ class Method extends React.Component {
 
   render() {
     const method = this.props.method;
-    const methodScheme = methods[method.name];
+    const methodScheme = exKitPipelineMethods[method.name];
 
     const args = method.args.map((arg, index) => {
       return (
