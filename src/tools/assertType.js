@@ -1,7 +1,14 @@
 import {ErrorWithCode} from "./errors";
 
 const assertType = (inType, outType, fn) => {
-  return value => outType(fn(inType(value)));
+  if (inType && outType) {
+    return value => outType(fn(inType(value)));
+  } else
+  if (inType) {
+    return value => fn(inType(value));
+  } else {
+    return value => outType(fn(value));
+  }
 };
 
 /**
