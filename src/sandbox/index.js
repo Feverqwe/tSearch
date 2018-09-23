@@ -1,10 +1,7 @@
 import getLogger from "../tools/getLogger";
 import Transport from '../tools/transport';
-
-import './baseApi';
-
-import 'script-loader!requirejs/require';
 import {Headers} from 'whatwg-fetch';
+import './baseApi';
 
 const qs = require('querystring');
 
@@ -14,22 +11,20 @@ const altRequire = modules => {
   const promiseList = [];
   if (modules.indexOf('jquery') !== -1) {
     promiseList.push(import('jquery').then(jQuery => {
-      window.define('jquery', () => window.$ = window.jQuery = jQuery.default);
+      window.$ = window.jQuery = jQuery.default;
     }));
   }
   if (modules.indexOf('moment') !== -1) {
     promiseList.push(import('moment').then(moment => {
-      window.define('moment', () => window.moment = moment.default);
+      window.moment = moment.default;
     }));
   }
   if (modules.indexOf('exKit') !== -1) {
-    promiseList.push(import('./exKit').then(module => {
-      window.define('exKit', () => module.default);
-    }));
+    promiseList.push(import('./exKit'));
   }
   if (modules.indexOf('datejs') !== -1) {
     promiseList.push(import('date.js').then(module => {
-      window.define('datejs', () => window.datejs = module.default);
+      window.datejs = module.default;
     }));
   }
   return Promise.all(promiseList);
@@ -44,8 +39,6 @@ const api = {
   init: function (code, requireList, info) {
     api.info = info;
     return altRequire(requireList).then(() => {
-      return new Promise((resolve, reject) => window.require(requireList, resolve, reject));
-    }).then(() => {
       return runCode(code);
     }).catch(err => {
       debug('Init error', err);
