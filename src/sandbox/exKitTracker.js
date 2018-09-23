@@ -179,6 +179,8 @@ class ExKitTracker {
     if (intFields.indexOf(key) !== -1) {
       if (typeof result !== 'number') {
         result = isNumber(parseInt(isString(result), 10));
+      } else {
+        result = isNumber(result);
       }
     } else
     if (urlFields.indexOf(key) !== -1) {
