@@ -60,6 +60,7 @@ const runCode = code => {
     promiseList = null;
     return result;
   }).then(() => {
+    return null;
   }, err => {
     throw err;
   });
