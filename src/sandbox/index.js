@@ -32,6 +32,16 @@ const altRequire = modules => {
       window.datejs = module.default;
     }));
   }
+  if (modules.indexOf('fecha') !== -1) {
+    promiseList.push(import('fecha').then(module => {
+      window.fecha = module;
+    }));
+  }
+  if (modules.indexOf('filesizeParser') !== -1) {
+    promiseList.push(import('filesizeParser').then(module => {
+      window.filesizeParse = module;
+    }));
+  }
   return Promise.all(promiseList);
 };
 
