@@ -56,13 +56,9 @@ const runCode = code => {
       return promise;
     };
     new Function(code)();
-    const result = Promise.all(promiseList);
+    const result = Promise.all(promiseList).then(() => null);
     promiseList = null;
     return result;
-  }).then(() => {
-    return null;
-  }, err => {
-    throw err;
   });
 };
 
