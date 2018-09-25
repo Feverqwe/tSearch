@@ -147,19 +147,12 @@ class CodeMakerSearchPage extends React.Component {
 
     const codeSearchStore = this.codeSearchStore;
 
-
-
     this.props.onRequestPage().catch(err => {
       logger.error('onRequestPage error', err);
       this.setState({
         requestPageError: true
       });
     });
-  };
-
-  requestPage = null;
-  refRequestPage = (element) => {
-    this.requestPage = element;
   };
 
   encoding = null;
