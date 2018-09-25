@@ -144,6 +144,7 @@ class CodeMakerSearchPage extends React.Component {
     this.setState({
       requestPageError: false
     });
+
     const codeSearchStore = this.codeSearchStore;
 
 

@@ -202,6 +202,7 @@ class ExKitTracker {
     if (this.code.hooks.onBeforeRequest) {
       this.code.hooks.onBeforeRequest(session, options);
     }
+
     return API_request(options).then(response => {
       session.response = response;
 
