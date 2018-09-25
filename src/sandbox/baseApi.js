@@ -1,4 +1,6 @@
 import exKitRequestOptionsNormalize from "../tools/exKitRequestOptionsNormalize";
+import exKitGetDoc from "../tools/exKitGetDoc";
+import exKitNormalizeUrl from "../tools/exKitNormalizeUrl";
 
 class BaseApi {
   constructor(api, transport) {
@@ -9,8 +11,8 @@ class BaseApi {
       API_getDom: getDom.bind(this),
       API_sanitizeHtml: sanitizeHtml.bind(this),
       API_deSanitizeHtml: sanitizeHtml.bind(this),
-      API_normalizeUrl: normalizeUrl.bind(this),
-      API_getDoc: getDoc.bind(this),
+      API_normalizeUrl: exKitNormalizeUrl.bind(this),
+      API_getDoc: exKitGetDoc.bind(this),
       API_event: this.event.bind(this),
       API_getInfo: this.getInfo.bind(this),
       API_request: this.request.bind(this),
@@ -42,42 +44,6 @@ class BaseApi {
   };
 }
 
-class LinkNormalizer {
-  constructor(location) {
-    this.doc = document.implementation.createHTMLDocument('');
-
-    const base = this.doc.createElement('base');
-    base.href = location;
-    this.doc.head.appendChild(base);
-
-    this.link = document.createElement('a');
-    this.doc.body.appendChild(this.link);
-  }
-  getUrl(href) {
-    this.link.setAttribute('href', href);
-    return this.link.href;
-  }
-}
-
-const linkNormalizerCache = {};
-/**
- * @param {string} location
- * @param {string} link
- * @returns {string}
- */
-const normalizeUrl = (location, link) => {
-  if (/^[^:\/]+:/.test(link)) {
-    return link;
-  }
-
-  let linkNormalizer = linkNormalizerCache[location];
-  if (!linkNormalizer) {
-    linkNormalizer = linkNormalizerCache[location] = new LinkNormalizer(location);
-  }
-
-  return linkNormalizer.getUrl(link);
-};
-
 /**
  * @deprecated
  */
@@ -89,24 +55,5 @@ const getDom = html => {
  * @deprecated
  */
 const sanitizeHtml = a => a;
-
-/**
- * @param {string} html
- * @param {string} location
- * @returns {Document}
- */
-const getDoc = (html, location) => {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-
-  const base = doc.head.querySelector('base');
-  if (!base) {
-    const base = doc.createElement('base');
-    base.href = location;
-    doc.head.appendChild(base);
-  }
-
-  return doc;
-};
 
 export default BaseApi;
