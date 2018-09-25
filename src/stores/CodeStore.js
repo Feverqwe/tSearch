@@ -233,6 +233,7 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
 const CodeDescriptionStore = types.model('CodeDescriptionStore', {
   icon: types.string,
   name: types.string,
+  url: types.optional(types.string, ''),
   description: types.optional(types.string, ''),
   downloadUrl: types.optional(types.string, ''),
   version: types.optional(types.string, '1.0'),

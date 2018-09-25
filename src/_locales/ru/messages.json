@@ -308,17 +308,11 @@
   "kitOpen": {
     "message": "Открыть"
   },
-  "kitSearchQuery": {
-    "message": "Поисковый запрос (используйте %search% как шаблон в строке запроса)"
-  },
   "kitSearchQueryEncoding": {
     "message": "Кодировка поискового запроса"
   },
   "kitPageCharset": {
     "message": "Кодировка страницы"
-  },
-  "kitPostParams": {
-    "message": "POST строка запроса"
   },
   "kitBaseUrl": {
     "message": "Основной URL"

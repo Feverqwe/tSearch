@@ -19,6 +19,11 @@ const logger = getLogger('codeMaker');
 @inject('rootStore')
 @observer
 class CodeMaker extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    page: PropTypes.string,
+  };
+
   get codeMakerStore() {
     return this.props.rootStore.codeMaker;
   }
@@ -88,7 +93,7 @@ class CodeMaker extends React.Component {
       }
       case 'desc': {
         page = (
-          <CodeMakerDescPage codeStore={this.codeMakerStore.code}/>
+          <CodeMakerDescriptionPage codeStore={this.codeMakerStore.code}/>
         );
         break;
       }
@@ -117,15 +122,15 @@ class CodeMaker extends React.Component {
   }
 }
 
-CodeMaker.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  page: PropTypes.string,
-};
-
-
 @inject('rootStore')
 @observer
 class CodeMakerSearchPage extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    codeStore: PropTypes.instanceOf(CodeStore),
+    onRequestPage: PropTypes.func,
+  };
+
   state = {
     requestPageError: false
   };
@@ -165,6 +170,11 @@ class CodeMakerSearchPage extends React.Component {
     this.codeSearchStore.set('encoding', this.encoding.value);
   };
 
+  searchQuery = null;
+  refSearchQuery = (element) => {
+    this.searchQuery = element;
+  };
+
   render() {
     const requestPageClassList = [];
     if (this.state.requestPageError) {
@@ -177,11 +187,12 @@ class CodeMakerSearchPage extends React.Component {
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitSearchUrl')}</span>
           <BindInput className={requestPageClassList} store={this.codeSearchStore} id={'url'} type="text"/>
+          <input ref={this.refSearchQuery} type="text" placeholder="Search query"/>
           {' '}
           <input onClick={this.handleRequestPage} type="button" value={chrome.i18n.getMessage('kitOpen')}/>
         </div>
         <div className="field">
-          <span className="field-name">{chrome.i18n.getMessage('kitSearchQuery')}</span>
+          <span className="field-name">{chrome.i18n.getMessage('kitQuery')}</span>
           <BindInput store={this.codeSearchStore} id={'query'} type="text"/>
         </div>
         <div className="field">
@@ -196,27 +207,23 @@ class CodeMakerSearchPage extends React.Component {
           <BindInput store={this.codeSearchStore} id={'charset'} type="text" placeholder="auto"/>
         </div>
         <div className="field">
-          <span className="field-name">{chrome.i18n.getMessage('kitPostParams')}</span>
+          <span className="field-name">{chrome.i18n.getMessage('kitPostBody')}</span>
           <BindInput store={this.codeSearchStore} id={'body'} type="text" placeholder="key=value&key2=value2"/>
-        </div>
-        <div className="field">
-          <span className="field-name">{chrome.i18n.getMessage('kitBaseUrl')}</span>
-          <BindInput store={this.codeSearchStore} id={'baseUrl'} type="text" placeholder="auto"/>
         </div>
       </div>
     );
   }
 }
 
-CodeMakerSearchPage.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  codeStore: PropTypes.instanceOf(CodeStore),
-  onRequestPage: PropTypes.func,
-};
-
 @inject('rootStore')
 @observer
 class CodeMakerAuthPage extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    codeStore: PropTypes.instanceOf(CodeStore),
+    onRequestPage: PropTypes.func,
+  };
+
   get codeSearchAuth() {
     return this.props.codeStore.auth;
   }
@@ -237,15 +244,14 @@ class CodeMakerAuthPage extends React.Component {
   }
 }
 
-CodeMakerAuthPage.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  codeStore: PropTypes.instanceOf(CodeStore),
-  onRequestPage: PropTypes.func,
-};
-
 @inject('rootStore')
 @observer
 class CodeMakerSelectorsPage extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    codeStore: PropTypes.instanceOf(CodeStore),
+  };
+
   get codeSearchSelectors() {
     return this.props.codeStore.selectors;
   }
@@ -295,14 +301,14 @@ class CodeMakerSelectorsPage extends React.Component {
   }
 }
 
-CodeMakerSelectorsPage.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  codeStore: PropTypes.instanceOf(CodeStore),
-};
-
 @inject('rootStore')
 @observer
-class CodeMakerDescPage extends React.Component {
+class CodeMakerDescriptionPage extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    codeStore: PropTypes.instanceOf(CodeStore),
+  };
+
   get codeStoreDescription() {
     return this.props.codeStore.description;
   }
@@ -390,6 +396,10 @@ class CodeMakerDescPage extends React.Component {
           <BindInput store={this.codeStoreDescription} id={'name'} type={'text'}/>
         </div>
         <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitTrackerUrl')}</span>
+          <BindInput store={this.codeStoreDescription} id={'url'} type="text" placeholder="auto"/>
+        </div>
+        <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitTrackerDesc')}</span>
           <BindInput store={this.codeStoreDescription} id={'description'} type={'text'}/>
         </div>
@@ -406,14 +416,14 @@ class CodeMakerDescPage extends React.Component {
   }
 }
 
-CodeMakerDescPage.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  codeStore: PropTypes.instanceOf(CodeStore),
-};
-
 @inject('rootStore')
 @observer
 class CodeMakerSavePage extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    codeMaker: PropTypes.instanceOf(CodeMakerStore),
+  };
+
   handleSetCode = e => {
     e.preventDefault();
     let code = JSON.parse(this.textarea.value);
@@ -467,10 +477,5 @@ class CodeMakerSavePage extends React.Component {
     );
   }
 }
-
-CodeMakerSavePage.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  codeMaker: PropTypes.instanceOf(CodeMakerStore),
-};
 
 export default CodeMaker;

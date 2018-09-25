@@ -123,11 +123,6 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
     });
   }
 
-  const baseUrl = code.search.baseUrl;
-  if (baseUrl) {
-    search.baseUrl = baseUrl;
-  }
-
   const overrideMimeType = code.search.requestMimeType;
   if (overrideMimeType) {
     const m = /charset=([^;]+)/.exec(code.search.requestMimeType);
@@ -186,6 +181,11 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
 
   if (code.downloadUrl) {
     description.downloadUrl = code.downloadUrl;
+  }
+
+  const baseUrl = code.search.baseUrl;
+  if (baseUrl) {
+    description.url = baseUrl;
   }
 
   description.version = code.tVersion;

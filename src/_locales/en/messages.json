@@ -308,8 +308,11 @@
     "kitOpen": {
         "message": "Open"
     },
-    "kitSearchQuery": {
-        "message": "Search query (use %search% as template in query string parameters)"
+    "kitOpenQuery": {
+        "message": "Search query"
+    },
+    "kitQuery": {
+        "message": "Query string"
     },
     "kitSearchQueryEncoding": {
         "message": "Search query encoding"
@@ -317,11 +320,14 @@
     "kitPageCharset": {
         "message": "Page charset"
     },
-    "kitPostParams": {
-        "message": "POST query string parameters"
+    "kitPostBody": {
+        "message": "Post body"
     },
     "kitBaseUrl": {
         "message": "Base URL"
+    },
+    "kitTrackerUrl": {
+        "message": "URL"
     },
     "kitLoginUrl": {
         "message": "Login page URL"
