@@ -12,6 +12,7 @@ import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
 import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
 import BindInput from "../components/BindInput";
 import ElementSelector from "../components/ElementSelector";
+import PipelineSelector from "../components/PipelineSelector";
 
 const logger = getLogger('codeMaker');
 
