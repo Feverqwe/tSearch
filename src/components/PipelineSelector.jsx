@@ -8,6 +8,8 @@ import {MethodStore} from "../stores/CodeStore";
 import AddMethodDialog from "./AddMethodDialog";
 import EditMethodDialog from "./EditMethodDialog";
 
+const Sortable = require('sortablejs');
+
 @observer
 class PipelineSelector extends ElementSelector {
   state = {

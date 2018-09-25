@@ -13,8 +13,6 @@ import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
 import BindInput from "../components/BindInput";
 import ElementSelector from "../components/ElementSelector";
 
-const Sortable = require('sortablejs');
-
 const logger = getLogger('codeMaker');
 
 @inject('rootStore')
