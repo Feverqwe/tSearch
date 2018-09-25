@@ -1,5 +1,5 @@
 import React from "react";
-import {observer, inject} from "mobx-react/index";
+import {inject, observer} from "mobx-react/index";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import getLogger from "../tools/getLogger";

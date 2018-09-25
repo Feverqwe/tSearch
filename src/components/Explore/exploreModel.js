@@ -1,5 +1,5 @@
 import moduleModel from "./module";
-import {applySnapshot, getSnapshot, types, destroy} from "mobx-state-tree";
+import {applySnapshot, destroy, getSnapshot, types} from "mobx-state-tree";
 import promisifyApi from "../../tools/promisifyApi";
 import sectionModel from "./section";
 import favoriteModuleModel from "./favoriteModule";

@@ -1,4 +1,4 @@
-import {flow, isAlive, types, destroy} from 'mobx-state-tree';
+import {destroy, flow, isAlive, types} from 'mobx-state-tree';
 import {TrackerOptionsStore} from '../stores/TrackerStore';
 import getTrackerCodeMeta from "../tools/getTrackerCodeMeta";
 import getLogger from "../tools/getLogger";

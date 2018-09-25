@@ -1,4 +1,4 @@
-import {resolveIdentifier, types, getParent} from "mobx-state-tree";
+import {getParent, resolveIdentifier, types} from "mobx-state-tree";
 import moduleModel from "./module";
 import favoriteModuleModel from "./favoriteModule";
 import getLogger from "../../tools/getLogger";

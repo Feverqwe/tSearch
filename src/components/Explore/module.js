@@ -1,4 +1,4 @@
-import {types, destroy, getSnapshot} from "mobx-state-tree";
+import {getSnapshot, types} from "mobx-state-tree";
 import exploreModuleMetaModel from "./moduleMeta";
 import sectionItemMode from "./sectionItem";
 import Cache from "../../tools/cache";

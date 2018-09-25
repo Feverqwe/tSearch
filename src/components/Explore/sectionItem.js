@@ -1,4 +1,4 @@
-import {types, getRoot, getParent, clone} from "mobx-state-tree";
+import {clone, getParent, getRoot, types} from "mobx-state-tree";
 
 /**
  * @typedef {{}} ExploreSectionItemM

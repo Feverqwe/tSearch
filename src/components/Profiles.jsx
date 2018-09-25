@@ -1,5 +1,5 @@
 import React from "react";
-import {observer, inject} from "mobx-react/index";
+import {inject, observer} from "mobx-react/index";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import Profile from "./Profile";
