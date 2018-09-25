@@ -8,18 +8,18 @@ class BaseApi {
     this.transport = transport;
 
     this.public = {
-      API_getDom: getDom.bind(this),
-      API_sanitizeHtml: sanitizeHtml.bind(this),
-      API_deSanitizeHtml: sanitizeHtml.bind(this),
-      API_normalizeUrl: exKitNormalizeUrl.bind(this),
-      API_getDoc: exKitGetDoc.bind(this),
-      API_event: this.event.bind(this),
-      API_getInfo: this.getInfo.bind(this),
-      API_request: this.request.bind(this),
+      API_getDom: getDom,
+      API_sanitizeHtml: noop,
+      API_deSanitizeHtml: noop,
+      API_normalizeUrl: exKitNormalizeUrl,
+      API_getDoc: exKitGetDoc,
+      API_event: this.event,
+      API_getInfo: this.getInfo,
+      API_request: this.request,
     };
   }
 
-  event(name, callback) {
+  event = (name, callback) => {
     this.api.events[name] = function (query) {
       return Promise.resolve().then(function () {
         return callback(query);
@@ -27,11 +27,11 @@ class BaseApi {
     };
   };
 
-  getInfo() {
+  getInfo = () => {
     return this.api.info;
   };
 
-  request(rawOptions) {
+  request = (rawOptions) => {
     const {options, toJson} = exKitRequestOptionsNormalize(rawOptions);
 
     return this.transport.callFn('request', [options]).then(response => {
@@ -54,6 +54,6 @@ const getDom = html => {
 /**
  * @deprecated
  */
-const sanitizeHtml = a => a;
+const noop = a => a;
 
 export default BaseApi;
