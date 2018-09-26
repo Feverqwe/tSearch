@@ -262,6 +262,12 @@ const CodeStore = types.model('CodeStore', {
   auth: types.optional(CodeAuthStore, {}),
   selectors: CodeSelectorsStore,
   description: CodeDescriptionStore,
+}).views(self => {
+  return {
+    getSnapshot() {
+      return JSON.parse(JSON.stringify(self));
+    }
+  };
 });
 
 export default CodeStore;

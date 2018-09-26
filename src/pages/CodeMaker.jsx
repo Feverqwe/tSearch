@@ -13,6 +13,11 @@ import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
 import BindInput from "../components/BindInput";
 import ElementSelector from "../components/ElementSelector";
 import PipelineSelector from "../components/PipelineSelector";
+import ExKitTracker from "../sandbox/exKitTracker";
+import exKitRequestOptionsNormalize from "../tools/exKitRequestOptionsNormalize";
+import exKitRequest from "../tools/exKitRequest";
+import exKitGetDoc from "../tools/exKitGetDoc";
+import getDoc5 from "../sandbox/getDoc5";
 
 const logger = getLogger('codeMaker');
 
@@ -23,6 +28,15 @@ class CodeMaker extends React.Component {
     rootStore: PropTypes.instanceOf(RootStore),
     page: PropTypes.string,
   };
+
+  constructor(props) {
+    super(props);
+
+    this.reqTracker = {
+      connectRe: /.+/,
+      requests: [],
+    };
+  }
 
   get codeMakerStore() {
     return this.props.rootStore.codeMaker;
@@ -37,6 +51,8 @@ class CodeMaker extends React.Component {
   };
 
   frame = null;
+  frameDoc = null;
+  doc = null;
 
   componentDidMount() {
     this.props.rootStore.createCodeMaker();
@@ -50,8 +66,39 @@ class CodeMaker extends React.Component {
     this.frame = element;
   };
 
-  handleRequestPage = () => {
-    return Promise.reject(new Error('Unimplemented'))
+  handleRequestPage = (options) => {
+    this.reqTracker.requests.forEach(request => {
+      request.abort();
+    });
+    return exKitRequest(this.reqTracker, options).then(response => {
+      const doc = this.doc = exKitGetDoc(response.body, response.url);
+      const frameDoc = this.frameDoc = getDoc5(response.body, response.url);
+
+      const kitStyle = document.createElement('style');
+      kitStyle.textContent = `
+      .kit_select {
+        color:#000 !important;
+        background-color:#FFCC33 !important;
+        cursor:pointer;
+        box-shadow: 0 0 3px red, inset 0 0 3px red !important;
+      }`;
+
+      if (frameDoc.head) {
+        frameDoc.head.appendChild(kitStyle);
+      } else
+      if (frameDoc.body) {
+        frameDoc.body.appendChild(kitStyle);
+      } else {
+        frameDoc.appendChild(kitStyle);
+      }
+
+      const currentFrameDoc = this.frame.contentDocument.documentElement.parentNode;
+      currentFrameDoc.replaceChild(frameDoc.documentElement, currentFrameDoc.documentElement);
+
+      return response;
+    }, err => {
+      throw err;
+    });
   };
 
   render() {
@@ -132,7 +179,7 @@ class CodeMakerSearchPage extends React.Component {
   };
 
   state = {
-    requestPageError: false
+    requestState: 'idle'
   };
 
   get codeSearchStore() {
@@ -142,15 +189,26 @@ class CodeMakerSearchPage extends React.Component {
   handleRequestPage = (e) => {
     e.preventDefault();
     this.setState({
-      requestPageError: false
+      requestState: 'pending'
     });
 
-    const codeSearchStore = this.codeSearchStore;
-
-    this.props.onRequestPage().catch(err => {
+    const session = {};
+    const query = this.searchQuery.value;
+    const tracker = new CodeMakerExKitTracker();
+    tracker.code = this.props.codeStore.getSnapshot();
+    return Promise.resolve().then(() => {
+      return tracker.search(session, query);
+    }).then(options => {
+      return this.props.onRequestPage(options);
+    }).then(result => {
+      logger(result);
+      this.setState({
+        requestState: 'done'
+      });
+    }, err => {
       logger.error('onRequestPage error', err);
       this.setState({
-        requestPageError: true
+        requestState: 'error'
       });
     });
   };
@@ -469,6 +527,13 @@ class CodeMakerSavePage extends React.Component {
         </label>
       </div>
     );
+  }
+}
+
+class CodeMakerExKitTracker extends ExKitTracker {
+  request(session, rawOptions) {
+    const {options} = exKitRequestOptionsNormalize(rawOptions);
+    return options;
   }
 }
 
