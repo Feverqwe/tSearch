@@ -15,9 +15,7 @@ import ElementSelector from "../components/ElementSelector";
 import PipelineSelector from "../components/PipelineSelector";
 import ExKitTracker from "../sandbox/exKitTracker";
 import exKitRequestOptionsNormalize from "../tools/exKitRequestOptionsNormalize";
-import exKitRequest from "../tools/exKitRequest";
-import exKitGetDoc from "../tools/exKitGetDoc";
-import getDoc5 from "../sandbox/getDoc5";
+import CodeMakerFrame from "../components/CodeMakerFrame";
 
 const logger = getLogger('codeMaker');
 
@@ -65,6 +63,14 @@ class CodeMaker extends React.Component {
     });
   };
 
+  handleSelectElement = (selectMode = false, listener = null, handleSelect = null) => {
+    this.setState({
+      frameSelectMode: selectMode,
+      frameSelectListener: listener,
+      frameOnSelect: handleSelect,
+    });
+  };
+
   render() {
     if (!this.codeMakerStore) {
       return ('Loading...');
@@ -92,13 +98,13 @@ class CodeMaker extends React.Component {
       }
       case 'auth': {
         page = (
-          <CodeMakerAuthPage onRequestPage={this.handleRequestPage} codeStore={this.codeMakerStore.code}/>
+          <CodeMakerAuthPage onRequestPage={this.handleRequestPage} onSelectElement={this.handleSelectElement} codeStore={this.codeMakerStore.code}/>
         );
         break;
       }
       case 'selectors': {
         page = (
-          <CodeMakerSelectorsPage codeStore={this.codeMakerStore.code}/>
+          <CodeMakerSelectorsPage onSelectElement={this.handleSelectElement} codeStore={this.codeMakerStore.code}/>
         );
         break;
       }
@@ -119,7 +125,12 @@ class CodeMaker extends React.Component {
     let frame = null;
     if (this.state.frameOptions) {
       frame = (
-        <CodeMakerFrame ref={this.refFrame} key={`frame_${JSON.stringify(this.state.frameOptions)}`} options={this.state.frameOptions}/>
+        <CodeMakerFrame ref={this.refFrame} key={`frame_${JSON.stringify(this.state.frameOptions)}`}
+          options={this.state.frameOptions}
+          selectMode={this.state.frameSelectMode}
+          selectListener={this.state.frameSelectListener}
+          onSelect={this.state.frameOnSelect}
+        />
       );
     }
 
@@ -140,95 +151,6 @@ class CodeMaker extends React.Component {
   }
 }
 
-class CodeMakerFrame extends React.Component {
-  static propTypes = {
-    options: PropTypes.object,
-  };
-
-  static getDerivedStateFromProps(props, state) {
-    /*if (props.currentRow !== state.lastRow) {
-      return {
-        isScrollingDown: props.currentRow > state.lastRow,
-        lastRow: props.currentRow,
-      };
-    }*/
-    // Return null to indicate no change to state.
-    return null;
-  }
-
-  state = {
-    state: 'idle'
-  };
-
-  componentDidMount() {
-    if (this.props.options) {
-      this.requestPage(this.props.options);
-    }
-  }
-
-  componentWillUnmount() {
-    this.abort();
-  }
-
-  frameDoc = null;
-  doc = null;
-
-  frame = null;
-  refFrame = element => {
-    this.frame = element;
-  };
-
-  reqTracker = {
-    connectRe: /.+/,
-    requests: [],
-  };
-
-  requestPage(options) {
-    this.abort();
-    return exKitRequest(this.reqTracker, options).then(response => {
-      const doc = this.doc = exKitGetDoc(response.body, response.url);
-      const frameDoc = this.frameDoc = getDoc5(response.body, response.url);
-
-      const kitStyle = document.createElement('style');
-      kitStyle.textContent = `
-      .kit_select {
-        color:#000 !important;
-        background-color:#FFCC33 !important;
-        cursor:pointer;
-        box-shadow: 0 0 3px red, inset 0 0 3px red !important;
-      }`;
-
-      if (frameDoc.head) {
-        frameDoc.head.appendChild(kitStyle);
-      } else
-      if (frameDoc.body) {
-        frameDoc.body.appendChild(kitStyle);
-      } else {
-        frameDoc.appendChild(kitStyle);
-      }
-
-      const currentFrameDoc = this.frame.contentDocument.documentElement.parentNode;
-      currentFrameDoc.replaceChild(frameDoc.documentElement, currentFrameDoc.documentElement);
-
-      return response;
-    }, err => {
-      throw err;
-    });
-  }
-
-  abort() {
-    this.reqTracker.requests.forEach(request => {
-      request.abort();
-    });
-  }
-
-  render() {
-    return (
-      <iframe ref={this.refFrame} sandbox="allow-same-origin allow-scripts"/>
-    );
-  }
-}
-
 @inject('rootStore')
 @observer
 class CodeMakerSearchPage extends React.Component {
@@ -238,19 +160,12 @@ class CodeMakerSearchPage extends React.Component {
     onRequestPage: PropTypes.func,
   };
 
-  state = {
-    requestState: 'idle'
-  };
-
   get codeSearchStore() {
     return this.props.codeStore.search;
   }
 
   handleRequestPage = (e) => {
     e.preventDefault();
-    this.setState({
-      requestState: 'pending'
-    });
 
     const session = {};
     const query = this.searchQuery.value;
@@ -259,17 +174,7 @@ class CodeMakerSearchPage extends React.Component {
     return Promise.resolve().then(() => {
       return tracker.search(session, query);
     }).then(options => {
-      return this.props.onRequestPage(options);
-    }).then(result => {
-      logger(result);
-      this.setState({
-        requestState: 'done'
-      });
-    }, err => {
-      logger.error('onRequestPage error', err);
-      this.setState({
-        requestState: 'error'
-      });
+      this.props.onRequestPage(options);
     });
   };
 
@@ -289,9 +194,10 @@ class CodeMakerSearchPage extends React.Component {
 
   render() {
     const requestPageClassList = [];
-    if (this.state.requestPageError) {
+    // todo: fix me
+    /*if (this.state.requestPageError) {
       requestPageClassList.push('error')
-    }
+    }*/
 
     return (
       <div className="page search">
@@ -342,16 +248,29 @@ class CodeMakerAuthPage extends React.Component {
     return this.props.codeStore.auth;
   }
 
+  handleSubmit = e => {
+    e.preventDefault();
+    const tracker = new CodeMakerExKitTracker();
+    tracker.code = this.props.codeStore.getSnapshot();
+    const options = {
+      method: 'GET',
+      url: tracker.code.auth.url,
+    };
+    this.props.onRequestPage(options);
+  };
+
   render() {
     return (
       <div className="page auth">
         <h2>{chrome.i18n.getMessage('kitLogin')}</h2>
         <div className="field">
-          <span className="field-name">{chrome.i18n.getMessage('kitLoginUrl')}</span>
-          <BindInput store={this.codeSearchAuth} id={'url'} type="text"/>
-          <input type="button" data-id="auth_open" value={chrome.i18n.getMessage('kitOpen')}/>
+          <form onSubmit={this.handleSubmit}>
+            <span className="field-name">{chrome.i18n.getMessage('kitLoginUrl')}</span>
+            <BindInput store={this.codeSearchAuth} id={'url'} type="text"/>
+            <input type="submit" data-id="auth_open" value={chrome.i18n.getMessage('kitOpen')}/>
+          </form>
         </div>
-        <ElementSelector store={this.codeSearchAuth} id={'loginForm'} optional={true}
+        <ElementSelector store={this.codeSearchAuth} onSelectElement={this.props.onSelectElement} id={'loginForm'} optional={true}
                          type="text" title={chrome.i18n.getMessage('kitLoginFormSelector')}/>
       </div>
     );
@@ -374,7 +293,7 @@ class CodeMakerSelectorsPage extends React.Component {
     return (
       <div className="page selectors">
         <h2>{chrome.i18n.getMessage('kitSelectors')}</h2>
-        <ElementSelector store={this.codeSearchSelectors} id={'row'}
+        <ElementSelector store={this.codeSearchSelectors} onSelectElement={this.props.onSelectElement} id={'row'}
                          type="text" className={'input'} title={chrome.i18n.getMessage('kitRowSelector')}>
           {' '}
           <BindInput store={this.codeSearchSelectors} id={'isTableRow'} type="checkbox"/>
@@ -382,23 +301,23 @@ class CodeMakerSelectorsPage extends React.Component {
           <span>{chrome.i18n.getMessage('kitTableRow')}</span>
           {' '}
         </ElementSelector>
-        <PipelineSelector store={this.codeSearchSelectors} id={'categoryTitle'} optional={true}
+        <PipelineSelector store={this.codeSearchSelectors} onSelectElement={this.props.onSelectElement} id={'categoryTitle'} optional={true}
                           title={chrome.i18n.getMessage('kitCategoryName')}/>
-        <PipelineSelector store={this.codeSearchSelectors} id={'categoryUrl'} optional={true}
+        <PipelineSelector store={this.codeSearchSelectors} onSelectElement={this.props.onSelectElement} id={'categoryUrl'} optional={true}
                           title={chrome.i18n.getMessage('kitCategoryLink')}/>
-        <PipelineSelector store={this.codeSearchSelectors} id={'title'}
+        <PipelineSelector store={this.codeSearchSelectors} onSelectElement={this.props.onSelectElement} id={'title'}
                           title={chrome.i18n.getMessage('kitTorrentTitle')}/>
-        <PipelineSelector store={this.codeSearchSelectors} id={'url'}
+        <PipelineSelector store={this.codeSearchSelectors} onSelectElement={this.props.onSelectElement} id={'url'}
                           title={chrome.i18n.getMessage('kitTorrentLink')}/>
-        <PipelineSelector store={this.codeSearchSelectors} id={'size'} optional={true}
+        <PipelineSelector store={this.codeSearchSelectors} onSelectElement={this.props.onSelectElement} id={'size'} optional={true}
                           title={chrome.i18n.getMessage('kitTorrentSize')}/>
-        <PipelineSelector store={this.codeSearchSelectors} id={'downloadUrl'} optional={true}
+        <PipelineSelector store={this.codeSearchSelectors} onSelectElement={this.props.onSelectElement} id={'downloadUrl'} optional={true}
                           title={chrome.i18n.getMessage('kitTorrentDownloadLink')}/>
-        <PipelineSelector store={this.codeSearchSelectors} id={'seeds'} optional={true}
+        <PipelineSelector store={this.codeSearchSelectors} onSelectElement={this.props.onSelectElement} id={'seeds'} optional={true}
                           title={chrome.i18n.getMessage('kitSeedCount')}/>
-        <PipelineSelector store={this.codeSearchSelectors} id={'peers'} optional={true}
+        <PipelineSelector store={this.codeSearchSelectors} onSelectElement={this.props.onSelectElement} id={'peers'} optional={true}
                           title={chrome.i18n.getMessage('kitPeerCount')}/>
-        <PipelineSelector store={this.codeSearchSelectors} id={'date'} optional={true}
+        <PipelineSelector store={this.codeSearchSelectors} onSelectElement={this.props.onSelectElement} id={'date'} optional={true}
                           title={chrome.i18n.getMessage('kitAddTime')}/>
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitSkipFirstRows')}</span>
@@ -408,7 +327,7 @@ class CodeMakerSelectorsPage extends React.Component {
           <span className="field-name">{chrome.i18n.getMessage('kitSkipLastRows')}</span>
           <BindInput store={this.codeSearchSelectors} id={'skipFromEnd'} type="number"/>
         </div>
-        <PipelineSelector store={this.codeSearchSelectors} id={'nextPageUrl'}  optional={true}
+        <PipelineSelector store={this.codeSearchSelectors} onSelectElement={this.props.onSelectElement} id={'nextPageUrl'}  optional={true}
                           title={chrome.i18n.getMessage('kitNextPageLink')}/>
       </div>
     );

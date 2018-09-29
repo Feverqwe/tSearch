@@ -94,6 +94,19 @@ class PipelineSelector extends ElementSelector {
     this.selectorStore.removeMethod(method);
   };
 
+  selectListener = (path, node) => {
+    super.selectListener(path);
+  };
+
+  handleSelectElement = (path, node) => {
+    super.selectListener(path);
+  };
+
+  output = null;
+  refOutput = input => {
+    this.output = input;
+  };
+
   render() {
     const {id, optional} = this.props;
 
@@ -145,8 +158,8 @@ class PipelineSelector extends ElementSelector {
           <div className='select'>
             <input disabled={isDisabled} type="text" data-id={id} ref={this.refInput}
                    onChange={this.handleChange} defaultValue={defaultValue} className={'input'}/>
-            <input disabled={isDisabled} type="text" data-id={`${id}-result`} readOnly={true} className={'output'}/>
-            <input disabled={isDisabled} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
+            <input disabled={isDisabled} type="text" data-id={`${id}-result`} ref={this.refOutput} readOnly={true} className={'output'}/>
+            <input disabled={isDisabled} onClick={this.handleSelect} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
           </div>
           <div className='pipeline'>
             <div ref={this.refSortable} className={'pipeline-sortable'}>

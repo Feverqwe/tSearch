@@ -1,11 +1,19 @@
 import {observer} from "mobx-react";
 import React from "react";
+import PropTypes from "prop-types";
+import getLogger from "../tools/getLogger";
+
+const logger = getLogger('ElementSelector');
 
 @observer
 class ElementSelector extends React.Component {
+  static propTypes = null && {
+    onSelectElement: PropTypes.func,
+  };
+
   state = {
     showAddDialog: false,
-    snapshot: null
+    snapshot: null,
   };
 
   get store() {
@@ -44,6 +52,20 @@ class ElementSelector extends React.Component {
     }
   };
 
+  selectListener = (path, node) => {
+    logger('select listener', path);
+  };
+
+  handleSelectElement = (path, node) => {
+    logger('select', path);
+    this.props.onSelectElement();
+  };
+
+  handleSelect = e => {
+    e.preventDefault();
+    this.props.onSelectElement(true, this.selectListener, this.handleSelectElement);
+  };
+
   render() {
     const {id, children, optional} = this.props;
 
@@ -73,7 +95,7 @@ class ElementSelector extends React.Component {
         {title}
         <input disabled={isDisabled} type={type} defaultValue={defaultValue} data-id={id} ref={this.refInput} onChange={this.handleChange}/>
         {children}
-        <input disabled={isDisabled} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
+        <input disabled={isDisabled} onClick={this.handleSelect} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
       </div>
     )
   }
