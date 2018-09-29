@@ -24,19 +24,14 @@ const logger = getLogger('codeMaker');
 @inject('rootStore')
 @observer
 class CodeMaker extends React.Component {
+  state = {
+    frameOptions: null
+  };
+
   static propTypes = null && {
     rootStore: PropTypes.instanceOf(RootStore),
     page: PropTypes.string,
   };
-
-  constructor(props) {
-    super(props);
-
-    this.reqTracker = {
-      connectRe: /.+/,
-      requests: [],
-    };
-  }
 
   get codeMakerStore() {
     return this.props.rootStore.codeMaker;
@@ -51,8 +46,6 @@ class CodeMaker extends React.Component {
   };
 
   frame = null;
-  frameDoc = null;
-  doc = null;
 
   componentDidMount() {
     this.props.rootStore.createCodeMaker();
@@ -67,37 +60,8 @@ class CodeMaker extends React.Component {
   };
 
   handleRequestPage = (options) => {
-    this.reqTracker.requests.forEach(request => {
-      request.abort();
-    });
-    return exKitRequest(this.reqTracker, options).then(response => {
-      const doc = this.doc = exKitGetDoc(response.body, response.url);
-      const frameDoc = this.frameDoc = getDoc5(response.body, response.url);
-
-      const kitStyle = document.createElement('style');
-      kitStyle.textContent = `
-      .kit_select {
-        color:#000 !important;
-        background-color:#FFCC33 !important;
-        cursor:pointer;
-        box-shadow: 0 0 3px red, inset 0 0 3px red !important;
-      }`;
-
-      if (frameDoc.head) {
-        frameDoc.head.appendChild(kitStyle);
-      } else
-      if (frameDoc.body) {
-        frameDoc.body.appendChild(kitStyle);
-      } else {
-        frameDoc.appendChild(kitStyle);
-      }
-
-      const currentFrameDoc = this.frame.contentDocument.documentElement.parentNode;
-      currentFrameDoc.replaceChild(frameDoc.documentElement, currentFrameDoc.documentElement);
-
-      return response;
-    }, err => {
-      throw err;
+    this.setState({
+      frameOptions: options
     });
   };
 
@@ -152,6 +116,13 @@ class CodeMaker extends React.Component {
       }
     }
 
+    let frame = null;
+    if (this.state.frameOptions) {
+      frame = (
+        <CodeMakerFrame ref={this.refFrame} key={`frame_${JSON.stringify(this.state.frameOptions)}`} options={this.state.frameOptions}/>
+      );
+    }
+
     return (
       <div className="page-ctr page-ctr--code-maker">
         <div className="tools">
@@ -163,8 +134,97 @@ class CodeMaker extends React.Component {
           </div>
           <div className="status_bar" id="status_bar"/>
         </div>
-        <iframe ref={this.refFrame} sandbox="allow-same-origin allow-scripts"/>
+        {frame}
       </div>
+    );
+  }
+}
+
+class CodeMakerFrame extends React.Component {
+  static propTypes = {
+    options: PropTypes.object,
+  };
+
+  static getDerivedStateFromProps(props, state) {
+    /*if (props.currentRow !== state.lastRow) {
+      return {
+        isScrollingDown: props.currentRow > state.lastRow,
+        lastRow: props.currentRow,
+      };
+    }*/
+    // Return null to indicate no change to state.
+    return null;
+  }
+
+  state = {
+    state: 'idle'
+  };
+
+  componentDidMount() {
+    if (this.props.options) {
+      this.requestPage(this.props.options);
+    }
+  }
+
+  componentWillUnmount() {
+    this.abort();
+  }
+
+  frameDoc = null;
+  doc = null;
+
+  frame = null;
+  refFrame = element => {
+    this.frame = element;
+  };
+
+  reqTracker = {
+    connectRe: /.+/,
+    requests: [],
+  };
+
+  requestPage(options) {
+    this.abort();
+    return exKitRequest(this.reqTracker, options).then(response => {
+      const doc = this.doc = exKitGetDoc(response.body, response.url);
+      const frameDoc = this.frameDoc = getDoc5(response.body, response.url);
+
+      const kitStyle = document.createElement('style');
+      kitStyle.textContent = `
+      .kit_select {
+        color:#000 !important;
+        background-color:#FFCC33 !important;
+        cursor:pointer;
+        box-shadow: 0 0 3px red, inset 0 0 3px red !important;
+      }`;
+
+      if (frameDoc.head) {
+        frameDoc.head.appendChild(kitStyle);
+      } else
+      if (frameDoc.body) {
+        frameDoc.body.appendChild(kitStyle);
+      } else {
+        frameDoc.appendChild(kitStyle);
+      }
+
+      const currentFrameDoc = this.frame.contentDocument.documentElement.parentNode;
+      currentFrameDoc.replaceChild(frameDoc.documentElement, currentFrameDoc.documentElement);
+
+      return response;
+    }, err => {
+      throw err;
+    });
+  }
+
+  abort() {
+    this.reqTracker.requests.forEach(request => {
+      request.abort();
+    });
+  }
+
+  render() {
+    return (
+      <iframe ref={this.refFrame} sandbox="allow-same-origin allow-scripts"/>
     );
   }
 }
@@ -237,11 +297,13 @@ class CodeMakerSearchPage extends React.Component {
       <div className="page search">
         <h2>{chrome.i18n.getMessage('kitSearch')}</h2>
         <div className="field">
-          <span className="field-name">{chrome.i18n.getMessage('kitSearchUrl')}</span>
-          <BindInput className={requestPageClassList} store={this.codeSearchStore} id={'url'} type="text"/>
-          <input ref={this.refSearchQuery} type="text" placeholder="Search query"/>
-          {' '}
-          <input onClick={this.handleRequestPage} type="button" value={chrome.i18n.getMessage('kitOpen')}/>
+          <form onSubmit={this.handleRequestPage}>
+            <span className="field-name">{chrome.i18n.getMessage('kitSearchUrl')}</span>
+            <BindInput className={requestPageClassList} store={this.codeSearchStore} id={'url'} type="text"/>
+            <input ref={this.refSearchQuery} type="text" placeholder="Search query"/>
+            {' '}
+            <input type="submit" value={chrome.i18n.getMessage('kitOpen')}/>
+          </form>
         </div>
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitQuery')}</span>
