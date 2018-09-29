@@ -127,6 +127,7 @@ class CodeMaker extends React.Component {
           <CodeMakerAuthPage
             onRequestPage={this.handleRequestPage}
             onSelectElement={this.handleSelectElement}
+            onResolvePath={this.handleResolvePath}
             codeStore={this.codeMakerStore.code}
           />
         );
@@ -279,6 +280,8 @@ class CodeMakerAuthPage extends React.Component {
     rootStore: PropTypes.instanceOf(RootStore),
     codeStore: PropTypes.instanceOf(CodeStore),
     onRequestPage: PropTypes.func,
+    onSelectElement: PropTypes.func,
+    onResolvePath: PropTypes.func,
   };
 
   get codeSearchAuth() {
@@ -307,7 +310,7 @@ class CodeMakerAuthPage extends React.Component {
             <input type="submit" data-id="auth_open" value={chrome.i18n.getMessage('kitOpen')}/>
           </form>
         </div>
-        <ElementSelector store={this.codeSearchAuth} onSelectElement={this.props.onSelectElement} id={'loginForm'} optional={true}
+        <ElementSelector store={this.codeSearchAuth} onSelectElement={this.props.onSelectElement} onResolvePath={this.props.onResolvePath} id={'loginForm'} optional={true}
                          type="text" title={chrome.i18n.getMessage('kitLoginFormSelector')}/>
       </div>
     );
@@ -338,7 +341,8 @@ class CodeMakerSelectorsPage extends React.Component {
     return (
       <div className="page selectors">
         <h2>{chrome.i18n.getMessage('kitSelectors')}</h2>
-        <ElementSelector store={this.codeSearchSelectors} onSelectElement={this.props.onSelectElement} id={'row'}
+        <ElementSelector store={this.codeSearchSelectors}
+                         onSelectElement={this.props.onSelectElement} onResolvePath={this.props.onResolvePath} id={'row'}
                          type="text" className={'input'} title={chrome.i18n.getMessage('kitRowSelector')}>
           {' '}
           <BindInput store={this.codeSearchSelectors} id={'isTableRow'} type="checkbox"/>

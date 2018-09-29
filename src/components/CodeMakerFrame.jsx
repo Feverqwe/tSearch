@@ -5,6 +5,7 @@ import exKitGetDoc from "../tools/exKitGetDoc";
 import getDoc5 from "../sandbox/getDoc5";
 import getLogger from "../tools/getLogger";
 import getNodePath from "../tools/getNodePath";
+import {sizzleQuerySelector} from "../tools/sizzleQuery";
 
 const logger = getLogger('CodeMakerFrame');
 
@@ -126,7 +127,7 @@ class CodeMakerFrame extends React.Component {
   }
 
   resolvePath(path) {
-    return this.doc.querySelector(path);
+    return sizzleQuerySelector(this.doc, path);
   }
 
   render() {

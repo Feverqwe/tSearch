@@ -17,7 +17,9 @@ const logger = getLogger('PipelineSelector');
 class PipelineSelector extends ElementSelector {
   state = {
     showAddDialog: false,
-    snapshot: null
+    snapshot: null,
+    inputError: null,
+    outputError: null,
   };
 
   sortable = null;
@@ -71,6 +73,7 @@ class PipelineSelector extends ElementSelector {
       if (this.selectorStore) {
         this.state.snapshot = JSON.stringify(this.selectorStore);
         this.store.set(this.props.id, undefined);
+        this.fireActiveSelect();
       }
     }
   };
@@ -97,35 +100,55 @@ class PipelineSelector extends ElementSelector {
     this.selectorStore.removeMethod(method);
   };
 
-  handleSelect = e => {
-    e.preventDefault();
-    this.props.onSelectElement(true, this.pipelineSelectListener, this.pipelineHandleSelectElement);
+  selectListener = (path) => {
+    this.input.value = path;
+
+    this.updateResult();
   };
 
-  pipelineSelectListener = (path) => {
-    this.selectListener(path);
-    try {
-      const result = this.props.onResolvePath(path);
-      this.output.value = result.textContent;
-    } catch (err) {
-      logger('onResolvePath error', err);
-    }
-  };
+  handleSelectElement = (path) => {
+    this.props.onSelectElement();
 
-  pipelineHandleSelectElement = (path) => {
-    this.handleSelectElement(path);
-    try {
-      const result = this.props.onResolvePath(path);
-      this.output.value = result.textContent;
-    } catch (err) {
-      logger('onResolvePath error', err);
-    }
+    this.input.value = path;
+
+    this.updateResult();
   };
 
   output = null;
   refOutput = input => {
     this.output = input;
   };
+
+  updateResult() {
+    if (this.state.outputError || this.state.inputError) {
+      this.setState({
+        inputError: null,
+        outputError: null
+      });
+    }
+
+    try {
+      const node = this.props.onResolvePath(this.input.value);
+      if (!node) {
+        throw new Error('Node is not found');
+      }
+      try {
+        this.output.value = node.textContent;
+      } catch (err) {
+        logger('updateResult error', err);
+
+        this.setState({
+          outputError: err.message
+        });
+      }
+    } catch (err) {
+      logger('updateResult error', err);
+
+      this.setState({
+        inputError: err.message
+      });
+    }
+  }
 
   render() {
     const {id, optional} = this.props;
@@ -169,6 +192,16 @@ class PipelineSelector extends ElementSelector {
       );
     }
 
+    let inputClassList = ['input'];
+    if (this.state.inputError) {
+      inputClassList.push('error');
+    }
+
+    let outputClassList = ['output'];
+    if (this.state.outputError) {
+      outputClassList.push('error');
+    }
+
     return (
       <div className={'field pipeline-selector'}>
         <div className={'field-left'}>
@@ -177,8 +210,9 @@ class PipelineSelector extends ElementSelector {
         <div className={'field-right'}>
           <div className='select'>
             <input disabled={isDisabled} type="text" data-id={id} ref={this.refInput}
-                   onChange={this.handleChange} defaultValue={defaultValue} className={'input'}/>
-            <input disabled={isDisabled} type="text" data-id={`${id}-result`} ref={this.refOutput} readOnly={true} className={'output'}/>
+                   onChange={this.handleChange} defaultValue={defaultValue} className={inputClassList.join(' ')}/>
+            <input disabled={isDisabled} type="text" data-id={`${id}-result`} ref={this.refOutput}
+                   className={outputClassList.join(' ')} readOnly={true}/>
             <input disabled={isDisabled} onClick={this.handleSelect} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
           </div>
           <div className='pipeline'>

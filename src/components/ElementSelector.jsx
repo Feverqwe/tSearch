@@ -11,10 +11,21 @@ class ElementSelector extends React.Component {
     onSelectElement: PropTypes.func,
   };
 
+  constructor(props) {
+    super(props);
+
+    this.activeSelect = null;
+  }
+
   state = {
     showAddDialog: false,
     snapshot: null,
+    inputError: null,
   };
+
+  componentWillUnmount() {
+    this.fireActiveSelect();
+  }
 
   get store() {
     return this.props.store;
@@ -23,13 +34,24 @@ class ElementSelector extends React.Component {
   get selectorStore() {
     return this.props.store[this.props.id];
   }
+
   input = null;
   refInput = element => {
     this.input = element;
   };
+
   handleChange = e => {
     this.selectorStore.set('selector', this.input.value);
+
+    this.updateResult();
   };
+
+  fireActiveSelect() {
+    if (this.activeSelect) {
+      this.activeSelect();
+      this.activeSelect = null;
+    }
+  }
 
   optionalCheckbox = null;
   refOptionalCheckbox = element => {
@@ -48,6 +70,7 @@ class ElementSelector extends React.Component {
       if (this.selectorStore) {
         this.state.snapshot = JSON.stringify(this.selectorStore);
         this.store.set(this.props.id, undefined);
+        this.fireActiveSelect();
       }
     }
   };
@@ -55,28 +78,46 @@ class ElementSelector extends React.Component {
   handleSelect = e => {
     e.preventDefault();
     this.props.onSelectElement(true, this.selectListener, this.handleSelectElement);
+
+    this.activeSelect = () => {
+      this.props.onSelectElement();
+    };
   };
 
   selectListener = (path) => {
-    if (!this.input) {
-      this.props.onSelectElement();
-      return;
-    }
-
     this.input.value = path;
-    // logger('select listener', path);
+
+    this.updateResult();
   };
 
   handleSelectElement = (path) => {
-    if (!this.input) {
-      this.props.onSelectElement();
-      return;
-    }
+    this.props.onSelectElement();
 
     this.input.value = path;
-    // logger('select', path);
-    this.props.onSelectElement();
+
+    this.updateResult();
   };
+
+  updateResult() {
+    if (this.state.inputError) {
+      this.setState({
+        inputError: null
+      });
+    }
+
+    try {
+      const node = this.props.onResolvePath(this.input.value);
+      if (!node) {
+        throw new Error('Node is not found');
+      }
+    } catch (err) {
+      logger('updateResult error', err);
+
+      this.setState({
+        inputError: err.message
+      });
+    }
+  }
 
   render() {
     const {id, children, optional} = this.props;
@@ -102,10 +143,15 @@ class ElementSelector extends React.Component {
       defaultValue = this.selectorStore.selector;
     }
 
+    let inputClassList = [];
+    if (this.state.inputError) {
+      inputClassList.push('error');
+    }
+
     return (
       <div className="field">
         {title}
-        <input disabled={isDisabled} type={type} defaultValue={defaultValue} data-id={id} ref={this.refInput} onChange={this.handleChange}/>
+        <input disabled={isDisabled} type={type} defaultValue={defaultValue} data-id={id} ref={this.refInput} onChange={this.handleChange} className={inputClassList.join(' ')}/>
         {children}
         <input disabled={isDisabled} onClick={this.handleSelect} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
       </div>
