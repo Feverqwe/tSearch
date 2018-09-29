@@ -42,8 +42,6 @@ class ElementSelector extends React.Component {
 
   handleChange = e => {
     this.selectorStore.set('selector', this.input.value);
-
-    this.updateResult();
   };
 
   fireActiveSelect() {
@@ -86,16 +84,14 @@ class ElementSelector extends React.Component {
 
   selectListener = (path) => {
     this.input.value = path;
-
-    this.updateResult();
+    this.handleChange();
   };
 
   handleSelectElement = (path) => {
     this.props.onSelectElement();
 
     this.input.value = path;
-
-    this.updateResult();
+    this.handleChange();
   };
 
   updateResult() {
@@ -106,7 +102,7 @@ class ElementSelector extends React.Component {
     }
 
     try {
-      const node = this.props.onResolvePath(this.input.value);
+      const node = this.props.onResolvePath(this.selectorStore.selector);
       if (!node) {
         throw new Error('Node is not found');
       }

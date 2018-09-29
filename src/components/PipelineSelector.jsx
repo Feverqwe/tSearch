@@ -1,3 +1,4 @@
+import {autorun} from "mobx";
 import {observer} from "mobx-react";
 import ElementSelector from "./ElementSelector";
 import React from "react";
@@ -21,6 +22,21 @@ class PipelineSelector extends ElementSelector {
     inputError: null,
     outputError: null,
   };
+
+  outputAutorun = null;
+  componentDidMount() {
+    this.outputAutorun = autorun(() => {
+      if (this.selectorStore) {
+        this.updateResult();
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.outputAutorun) {
+      this.outputAutorun();
+    }
+  }
 
   sortable = null;
   refSortable = node => {
@@ -95,28 +111,22 @@ class PipelineSelector extends ElementSelector {
   addMethod = (method, args) => {
     this.selectorStore.addMethod(method, args);
     this.closeDialog();
-
-    this.updateResult();
   };
 
   handleRemoveMethod = method => {
     this.selectorStore.removeMethod(method);
-
-    this.updateResult();
   };
 
   selectListener = (path) => {
     this.input.value = path;
-
-    this.updateResult();
+    this.handleChange();
   };
 
   handleSelectElement = (path) => {
     this.props.onSelectElement();
 
     this.input.value = path;
-
-    this.updateResult();
+    this.handleChange();
   };
 
   output = null;
@@ -134,7 +144,7 @@ class PipelineSelector extends ElementSelector {
 
     let node = null;
     try {
-      node = this.props.onResolvePath(this.input.value);
+      node = this.props.onResolvePath(this.selectorStore.selector);
       if (!node) {
         throw new Error('Node is not found');
       }
@@ -159,9 +169,12 @@ class PipelineSelector extends ElementSelector {
     }, err => {
       logger('updateResult error', err);
 
-      this.setState({
-        outputError: err.message
-      });
+      if (this.output) {
+        this.output.value = '';
+        this.setState({
+          outputError: err.message
+        });
+      }
     });
   };
 
@@ -190,8 +203,7 @@ class PipelineSelector extends ElementSelector {
 
       pipeline = this.selectorStore.pipeline.map((method, index) => {
         return (
-          <Method key={`${index}_${method.name}`} index={index} method={method}
-            onUpdateResult={this.updateResult} onRemove={this.handleRemoveMethod}/>
+          <Method key={`${index}_${method.name}`} index={index} method={method} onRemove={this.handleRemoveMethod}/>
         );
       });
     }
@@ -208,13 +220,14 @@ class PipelineSelector extends ElementSelector {
     }
 
     let inputClassList = ['input'];
-    if (this.state.inputError) {
-      inputClassList.push('error');
-    }
-
     let outputClassList = ['output'];
-    if (this.state.outputError) {
-      outputClassList.push('error');
+    if (!isDisabled) {
+      if (this.state.inputError) {
+        inputClassList.push('error');
+      }
+      if (this.state.outputError) {
+        outputClassList.push('error');
+      }
     }
 
     return (
@@ -251,7 +264,6 @@ class Method extends React.Component {
     rootStore: PropTypes.instanceOf(RootStore),
     method: PropTypes.instanceOf(MethodStore),
     onRemove: PropTypes.func,
-    onUpdateResult: PropTypes.func,
   };
 
   state = {
@@ -269,7 +281,6 @@ class Method extends React.Component {
     this.setState({
       showEditDialog: false
     });
-    this.props.onUpdateResult();
   };
 
   handleRemove = e => {
