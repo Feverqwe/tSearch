@@ -147,14 +147,11 @@ class PipelineSelector extends ElementSelector {
     }
 
     return this.selectorStore.pipeline.reduce((promise, method) => {
-      promise = promise.then(result => {
+      return promise.then(result => {
         return Promise.resolve().then(() => {
           return exKitPipelineMethods[method.name].getMethod(...method.args);
-        }).then(fn => {
-          return fn(result);
-        });
+        }).then(fn => fn(result));
       });
-      return promise;
     }, Promise.resolve(node)).then(result => {
       if (this.output) {
         this.output.value = result;
