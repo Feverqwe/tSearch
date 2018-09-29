@@ -4,13 +4,25 @@ const DomTreeAdapter = require('dom-treeadapter');
 
 const logger = getLogger('treeAdapter');
 
-class _Adapter {}
-Object.assign(_Adapter.prototype, DomTreeAdapter(document));
+class Adapter {
+  constructor(document) {
+    let proto = this;
+    while (proto = proto.__proto__) {
+      if (proto.constructor === Adapter) {
+        Object.assign(proto, DomTreeAdapter(document));
+        break;
+      }
+    }
+  }
+}
 
-class TreeAdapter extends _Adapter {
+class TreeAdapter extends Adapter {
+  static denyPropsRe = /^(on|src$|srcset$|style$)/i;
+  static denyTags = ['NOSCRIPT', 'LINK', 'SCRIPT', 'IFRAME', 'STYLE'];
+
   createElement(tagName, nameSpaceUri, attrs) {
     attrs.forEach(pair => {
-      if (/^(on|src$|srcset$|style$)/i.test(pair.name)) {
+      if (TreeAdapter.denyPropsRe.test(pair.name)) {
         pair.name = 'deny-' + pair.name;
       }
       if (pair.name === 'href' && /^javascript:/.test(pair.value)) {
@@ -18,7 +30,7 @@ class TreeAdapter extends _Adapter {
       }
     });
     const tagNameU = tagName.toUpperCase();
-    if (['NOSCRIPT', 'LINK', 'SCRIPT', 'IFRAME', 'STYLE'].indexOf(tagNameU) !== -1) {
+    if (TreeAdapter.denyTags.indexOf(tagNameU) !== -1) {
       tagName = `DENY_${tagNameU}`;
       const styleAttr = getAttr(attrs, 'style');
       if (styleAttr) {

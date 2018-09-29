@@ -3,7 +3,7 @@ import TreeAdapter from "./treeAdapter";
 const parse5 = require('parse5');
 
 
-const getDoc5 = (html, location) => {
+const getDoc5 = (html, location, document) => {
   const doc = parse5.parse(html, {
     treeAdapter: new TreeAdapter(document)
   });

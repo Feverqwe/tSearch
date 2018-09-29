@@ -66,8 +66,8 @@ class CodeMakerFrame extends React.Component {
     });
 
     return exKitRequest(this.reqTracker, options).then(response => {
-      const doc = this.doc = exKitGetDoc(response.body, response.url);
-      const frameDoc = this.frameDoc = getDoc5(response.body, response.url);
+      const doc = exKitGetDoc(response.body, response.url);
+      const newFrameDoc = getDoc5(response.body, response.url, this.frame.contentDocument);
 
       const kitStyle = document.createElement('style');
       kitStyle.textContent = `
@@ -78,17 +78,26 @@ class CodeMakerFrame extends React.Component {
         box-shadow: 0 0 3px red, inset 0 0 3px red !important;
       }`;
 
-      if (frameDoc.head) {
-        frameDoc.head.appendChild(kitStyle);
+      if (newFrameDoc.head) {
+        newFrameDoc.head.appendChild(kitStyle);
       } else
-      if (frameDoc.body) {
-        frameDoc.body.appendChild(kitStyle);
+      if (newFrameDoc.body) {
+        newFrameDoc.body.appendChild(kitStyle);
       } else {
-        frameDoc.appendChild(kitStyle);
+        newFrameDoc.appendChild(kitStyle);
       }
 
-      const currentFrameDoc = this.frame.contentDocument.documentElement.parentNode;
-      currentFrameDoc.replaceChild(frameDoc.documentElement, currentFrameDoc.documentElement);
+      const frameDoc = this.frame.contentDocument.documentElement.parentNode;
+      frameDoc.textContent = '';
+      while (frameDoc.childNodes.length) {
+        frameDoc.removeChild(frameDoc.firstChild);
+      }
+      while (newFrameDoc.childNodes.length) {
+        frameDoc.appendChild(newFrameDoc.firstChild);
+      }
+
+      this.doc = doc;
+      this.frameDoc = frameDoc;
 
       this.setState({
         state: 'done'
@@ -114,7 +123,7 @@ class CodeMakerFrame extends React.Component {
     let selectMode = null;
     if (this.state.state === 'done' && this.state.selectMode) {
       selectMode = (
-        <CodeMakerFrameSelectMode key={'selectMode'} frame={this.frame} selectListener={this.state.selectListener} onSelect={this.state.onSelect}/>
+        <CodeMakerFrameSelectMode key={'selectMode'} frameDoc={this.frameDoc} selectListener={this.state.selectListener} onSelect={this.state.onSelect}/>
       );
     }
 
@@ -126,6 +135,10 @@ class CodeMakerFrame extends React.Component {
 }
 
 class CodeMakerFrameSelectMode extends React.Component {
+  static propTypes = null && {
+    frameDoc: PropTypes.instanceOf(HTMLDocument),
+  };
+
   constructor(props) {
     super(props);
 
@@ -133,6 +146,10 @@ class CodeMakerFrameSelectMode extends React.Component {
       selectListener: props.selectListener,
       onSelect: props.onSelect,
     };
+
+    this.selectClassName = 'kit_select';
+
+    this.lastSelectedNode = null;
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -140,7 +157,6 @@ class CodeMakerFrameSelectMode extends React.Component {
       props.selectListener !== state.selectListener ||
       props.onSelect !== state.onSelect
     ) {
-      logger('selectListener, onSelect change');
       return {
         selectListener: props.selectListener,
         onSelect: props.onSelect,
@@ -151,36 +167,108 @@ class CodeMakerFrameSelectMode extends React.Component {
   }
 
   componentDidMount() {
-    logger('select mount');
-    // this.frame
+    this.props.frameDoc.addEventListener('mouseover', this.handleMouseOver);
+    this.props.frameDoc.addEventListener('mouseup', this.handleClick);
   }
 
   componentWillUnmount() {
-    logger('select unmount');
-    // this.frame
+    this.hideSelect();
+    this.props.frameDoc.removeEventListener('mouseover', this.handleMouseOver);
+    this.props.frameDoc.removeEventListener('mouseup', this.handleClick);
   }
 
-  handleSelectElement = e => {
-    if (!this.state.onSelect) return;
+  hideSelect() {
+    Array.from(this.props.frameDoc.querySelectorAll(`.${this.selectClassName}`)).forEach(element => {
+      element.classList.remove(this.selectClassName);
+    });
+  }
 
-    const path = null;
-    const node = null;
+  handleClick = e => {
+    const node = e.target;
+    if (node.nodeType === 1) {
+      if (this.state.onSelect) {
+        const path = getNodePath(node, this.props.frameDoc);
 
-    this.state.onSelect(path, node);
+        this.state.onSelect(path, node);
+      }
+    }
   };
 
-  handleElementEnter = e => {
-    if (!this.state.selectListener) return;
+  handleMouseOver = e => {
+    const node = e.target;
+    if (node.nodeType === 1) {
+      if (this.lastSelectedNode) {
+        this.lastSelectedNode.classList.remove(this.selectClassName);
+      }
+      this.lastSelectedNode = node;
 
-    const path = null;
-    const node = null;
+      node.classList.add(this.selectClassName);
 
-    this.state.selectListener(path, node);
+      if (this.state.selectListener) {
+        const path = getNodePath(node, this.props.frameDoc);
+
+        this.state.selectListener(path, node);
+      }
+    }
   };
 
   render() {
     return null;
   }
 }
+
+const getNodePath = (target, container) => {
+  const pathParts = [];
+
+  let parent = target;
+  let element;
+  while (element = parent) {
+    parent = element.parentNode;
+
+    if (!parent || parent.nodeType !== 1) {
+      break;
+    }
+
+    if (element === container) {
+      break;
+    }
+
+    if (element.id) {
+      const selector = `#${element.id}`;
+      if (container.querySelectorAll(selector).length === 1) {
+        pathParts.unshift(selector);
+        break;
+      }
+    }
+
+    const tagName = element.tagName;
+    const tagNameLow = tagName.toLowerCase();
+    const classList = Array.from(element.classList).filter(name => name !== 'kit_select');
+
+    const childNodesWithSameTagName = Array.from(parent.childNodes).filter(child => child.tagName === tagName);
+    if (childNodesWithSameTagName.length === 1) {
+      pathParts.unshift(tagNameLow);
+    } else {
+      const childNodesWithSameTagNameAndClasses = childNodesWithSameTagName.filter(child => {
+        return classList.every(name => child.classList.contains(name));
+      });
+
+      if (childNodesWithSameTagNameAndClasses.length === 1) {
+        const selector = `${tagNameLow}.${classList.join('.')}`;
+
+        pathParts.unshift(selector);
+
+        if (container.querySelectorAll(selector).length === 1) {
+          break;
+        }
+      } else {
+        const index = childNodesWithSameTagName.indexOf(element);
+        pathParts.unshift(`${tagNameLow}:eq(${index})`);
+      }
+    }
+  }
+
+  return pathParts.join(' > ');
+};
 
 export default CodeMakerFrame;

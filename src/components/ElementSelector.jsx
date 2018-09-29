@@ -53,11 +53,11 @@ class ElementSelector extends React.Component {
   };
 
   selectListener = (path, node) => {
-    logger('select listener', path);
+    // logger('select listener', path);
   };
 
   handleSelectElement = (path, node) => {
-    logger('select', path);
+    // logger('select', path);
     this.props.onSelectElement();
   };
 

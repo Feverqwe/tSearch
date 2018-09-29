@@ -71,6 +71,25 @@ class CodeMaker extends React.Component {
     });
   };
 
+  statusBar = null;
+  refStatusBar = element => {
+    this.statusBar = element;
+  };
+
+  frameSelectListener = (path, node) => {
+    this.statusBar.textContent = path;
+    if (this.state.frameSelectListener) {
+      this.state.frameSelectListener(path, node);
+    }
+  };
+
+  frameOnSelect = (path, node) => {
+    this.statusBar.textContent = path;
+    if (this.state.frameOnSelect) {
+      this.state.frameOnSelect(path, node);
+    }
+  };
+
   render() {
     if (!this.codeMakerStore) {
       return ('Loading...');
@@ -128,8 +147,8 @@ class CodeMaker extends React.Component {
         <CodeMakerFrame ref={this.refFrame} key={`frame_${JSON.stringify(this.state.frameOptions)}`}
           options={this.state.frameOptions}
           selectMode={this.state.frameSelectMode}
-          selectListener={this.state.frameSelectListener}
-          onSelect={this.state.frameOnSelect}
+          selectListener={this.frameSelectListener}
+          onSelect={this.frameOnSelect}
         />
       );
     }
@@ -143,7 +162,7 @@ class CodeMaker extends React.Component {
           <div className="body" id="container">
             {page}
           </div>
-          <div className="status_bar" id="status_bar"/>
+          <div ref={this.refStatusBar} className="status_bar" id="status_bar"/>
         </div>
         {frame}
       </div>
