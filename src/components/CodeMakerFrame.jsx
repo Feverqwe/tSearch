@@ -4,12 +4,16 @@ import exKitRequest from "../tools/exKitRequest";
 import exKitGetDoc from "../tools/exKitGetDoc";
 import getDoc5 from "../sandbox/getDoc5";
 import getLogger from "../tools/getLogger";
+import getNodePath from "../tools/getNodePath";
 
 const logger = getLogger('CodeMakerFrame');
 
 class CodeMakerFrame extends React.Component {
   static propTypes = {
     options: PropTypes.object,
+    selectMode: PropTypes.bool,
+    selectListener: PropTypes.func,
+    onSelect: PropTypes.func,
   };
 
   state = {
@@ -65,7 +69,9 @@ class CodeMakerFrame extends React.Component {
       state: 'pending'
     });
 
-    return exKitRequest(this.reqTracker, options).then(response => {
+    return Promise.resolve().then(() => {
+      return exKitRequest(this.reqTracker, options);
+    }).then(response => {
       const doc = exKitGetDoc(response.body, response.url);
       const newFrameDoc = getDoc5(response.body, response.url, this.frame.contentDocument);
 
@@ -109,7 +115,7 @@ class CodeMakerFrame extends React.Component {
         state: 'error'
       });
 
-      throw err;
+      logger.error('requestPage error', err);
     });
   }
 
@@ -117,6 +123,10 @@ class CodeMakerFrame extends React.Component {
     this.reqTracker.requests.forEach(request => {
       request.abort();
     });
+  }
+
+  resolvePath(path) {
+    return this.doc.querySelector(path);
   }
 
   render() {
@@ -187,9 +197,10 @@ class CodeMakerFrameSelectMode extends React.Component {
     const node = e.target;
     if (node.nodeType === 1) {
       if (this.state.onSelect) {
-        const path = getNodePath(node, this.props.frameDoc);
-
-        this.state.onSelect(path, node);
+        const path = getNodePath(node, this.props.frameDoc, {
+          skipClassNames: ['kit_select']
+        });
+        this.state.onSelect(path);
       }
     }
   };
@@ -205,9 +216,10 @@ class CodeMakerFrameSelectMode extends React.Component {
       node.classList.add(this.selectClassName);
 
       if (this.state.selectListener) {
-        const path = getNodePath(node, this.props.frameDoc);
-
-        this.state.selectListener(path, node);
+        const path = getNodePath(node, this.props.frameDoc, {
+          skipClassNames: ['kit_select']
+        });
+        this.state.selectListener(path);
       }
     }
   };
@@ -216,59 +228,5 @@ class CodeMakerFrameSelectMode extends React.Component {
     return null;
   }
 }
-
-const getNodePath = (target, container) => {
-  const pathParts = [];
-
-  let parent = target;
-  let element;
-  while (element = parent) {
-    parent = element.parentNode;
-
-    if (!parent || parent.nodeType !== 1) {
-      break;
-    }
-
-    if (element === container) {
-      break;
-    }
-
-    if (element.id) {
-      const selector = `#${element.id}`;
-      if (container.querySelectorAll(selector).length === 1) {
-        pathParts.unshift(selector);
-        break;
-      }
-    }
-
-    const tagName = element.tagName;
-    const tagNameLow = tagName.toLowerCase();
-    const classList = Array.from(element.classList).filter(name => name !== 'kit_select');
-
-    const childNodesWithSameTagName = Array.from(parent.childNodes).filter(child => child.tagName === tagName);
-    if (childNodesWithSameTagName.length === 1) {
-      pathParts.unshift(tagNameLow);
-    } else {
-      const childNodesWithSameTagNameAndClasses = childNodesWithSameTagName.filter(child => {
-        return classList.every(name => child.classList.contains(name));
-      });
-
-      if (childNodesWithSameTagNameAndClasses.length === 1) {
-        const selector = `${tagNameLow}.${classList.join('.')}`;
-
-        pathParts.unshift(selector);
-
-        if (container.querySelectorAll(selector).length === 1) {
-          break;
-        }
-      } else {
-        const index = childNodesWithSameTagName.indexOf(element);
-        pathParts.unshift(`${tagNameLow}:eq(${index})`);
-      }
-    }
-  }
-
-  return pathParts.join(' > ');
-};
 
 export default CodeMakerFrame;

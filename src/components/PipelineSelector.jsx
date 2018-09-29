@@ -7,8 +7,11 @@ import RootStore from "../stores/RootStore";
 import {MethodStore} from "../stores/CodeStore";
 import AddMethodDialog from "./AddMethodDialog";
 import EditMethodDialog from "./EditMethodDialog";
+import getLogger from "../tools/getLogger";
 
 const Sortable = require('sortablejs');
+
+const logger = getLogger('PipelineSelector');
 
 @observer
 class PipelineSelector extends ElementSelector {
@@ -94,12 +97,29 @@ class PipelineSelector extends ElementSelector {
     this.selectorStore.removeMethod(method);
   };
 
-  selectListener = (path, node) => {
-    super.selectListener(path);
+  handleSelect = e => {
+    e.preventDefault();
+    this.props.onSelectElement(true, this.pipelineSelectListener, this.pipelineHandleSelectElement);
   };
 
-  handleSelectElement = (path, node) => {
-    super.selectListener(path);
+  pipelineSelectListener = (path) => {
+    this.selectListener(path);
+    try {
+      const result = this.props.onResolvePath(path);
+      this.output.value = result.textContent;
+    } catch (err) {
+      logger('onResolvePath error', err);
+    }
+  };
+
+  pipelineHandleSelectElement = (path) => {
+    this.handleSelectElement(path);
+    try {
+      const result = this.props.onResolvePath(path);
+      this.output.value = result.textContent;
+    } catch (err) {
+      logger('onResolvePath error', err);
+    }
   };
 
   output = null;
