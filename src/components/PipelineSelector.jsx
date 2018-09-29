@@ -1,4 +1,3 @@
-import {autorun} from "mobx";
 import {observer} from "mobx-react";
 import ElementSelector from "./ElementSelector";
 import React from "react";
@@ -104,7 +103,7 @@ class PipelineSelector extends ElementSelector {
 
   handleSelect = e => {
     e.preventDefault();
-    this.props.onSelectElement(true, this.store.row.selector, this.selectListener, this.handleSelectElement);
+    this.props.onSelectElement(true, this.getContainerSelector(), this.selectListener, this.handleSelectElement);
 
     this.activeSelect = () => {
       this.props.onSelectElement();
@@ -139,7 +138,7 @@ class PipelineSelector extends ElementSelector {
     let node = null;
     try {
       node = this.props.onResolvePath(this.selectorStore.selector, {
-        containerSelector: this.store.row.selector,
+        containerSelector: this.getContainerSelector(),
         skipFromStart: this.store.skipFromStart,
         skipFromEnd: this.store.skipFromEnd,
       });
@@ -175,6 +174,15 @@ class PipelineSelector extends ElementSelector {
       }
     });
   };
+
+  getContainerSelector() {
+    let result = '';
+    const container = this.props.container;
+    if (container) {
+      result = this.store[container].selector;
+    }
+    return result;
+  }
 
   render() {
     const {id, optional} = this.props;

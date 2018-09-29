@@ -353,23 +353,23 @@ class CodeMakerSelectorsPage extends React.Component {
           <span>{chrome.i18n.getMessage('kitTableRow')}</span>
           {' '}
         </ElementSelector>
-        <PipelineSelector {...pipelineProps} id={'categoryTitle'} optional={true}
+        <PipelineSelector {...pipelineProps} id={'categoryTitle'} optional={true} container={'row'}
           title={chrome.i18n.getMessage('kitCategoryName')}/>
-        <PipelineSelector {...pipelineProps} id={'categoryUrl'} optional={true}
+        <PipelineSelector {...pipelineProps} id={'categoryUrl'} optional={true} container={'row'}
           title={chrome.i18n.getMessage('kitCategoryLink')}/>
-        <PipelineSelector {...pipelineProps} id={'title'}
+        <PipelineSelector {...pipelineProps} id={'title'} container={'row'}
           title={chrome.i18n.getMessage('kitTorrentTitle')}/>
-        <PipelineSelector {...pipelineProps} id={'url'}
+        <PipelineSelector {...pipelineProps} id={'url'} container={'row'}
           title={chrome.i18n.getMessage('kitTorrentLink')}/>
-        <PipelineSelector {...pipelineProps} id={'size'} optional={true}
+        <PipelineSelector {...pipelineProps} id={'size'} optional={true} container={'row'}
           title={chrome.i18n.getMessage('kitTorrentSize')}/>
-        <PipelineSelector {...pipelineProps} id={'downloadUrl'} optional={true}
+        <PipelineSelector {...pipelineProps} id={'downloadUrl'} optional={true} container={'row'}
           title={chrome.i18n.getMessage('kitTorrentDownloadLink')}/>
-        <PipelineSelector {...pipelineProps} id={'seeds'} optional={true}
+        <PipelineSelector {...pipelineProps} id={'seeds'} optional={true} container={'row'}
           title={chrome.i18n.getMessage('kitSeedCount')}/>
-        <PipelineSelector {...pipelineProps} id={'peers'} optional={true}
+        <PipelineSelector {...pipelineProps} id={'peers'} optional={true} container={'row'}
           title={chrome.i18n.getMessage('kitPeerCount')}/>
-        <PipelineSelector {...pipelineProps} id={'date'} optional={true}
+        <PipelineSelector {...pipelineProps} id={'date'} optional={true} container={'row'}
           title={chrome.i18n.getMessage('kitAddTime')}/>
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitSkipFirstRows')}</span>
