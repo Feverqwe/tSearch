@@ -101,15 +101,6 @@ class PipelineSelector extends ElementSelector {
     this.selectorStore.removeMethod(method);
   };
 
-  handleSelect = e => {
-    e.preventDefault();
-    this.props.onSelectElement(true, this.getContainerSelector(), this.selectListener, this.handleSelectElement);
-
-    this.activeSelect = () => {
-      this.props.onSelectElement();
-    };
-  };
-
   selectListener = (path) => {
     this.input.value = path;
     this.handleChange();
