@@ -2,6 +2,7 @@ import {observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
 import getLogger from "../tools/getLogger";
+import {autorun} from "mobx";
 
 const logger = getLogger('ElementSelector');
 
@@ -23,8 +24,20 @@ class ElementSelector extends React.Component {
     inputError: null,
   };
 
+  outputAutorun = null;
+  componentDidMount() {
+    this.outputAutorun = autorun(() => {
+      if (this.selectorStore) {
+        this.updateResult();
+      }
+    });
+  }
+
   componentWillUnmount() {
     this.fireActiveSelect();
+    if (this.outputAutorun) {
+      this.outputAutorun();
+    }
   }
 
   get store() {
@@ -75,7 +88,7 @@ class ElementSelector extends React.Component {
 
   handleSelect = e => {
     e.preventDefault();
-    this.props.onSelectElement(true, this.selectListener, this.handleSelectElement);
+    this.props.onSelectElement(true, '', this.selectListener, this.handleSelectElement);
 
     this.activeSelect = () => {
       this.props.onSelectElement();

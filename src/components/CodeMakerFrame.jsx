@@ -5,7 +5,7 @@ import exKitGetDoc from "../tools/exKitGetDoc";
 import getDoc5 from "../sandbox/getDoc5";
 import getLogger from "../tools/getLogger";
 import getNodePath from "../tools/getNodePath";
-import {sizzleQuerySelector} from "../tools/sizzleQuery";
+import {sizzleQuerySelector, sizzleQuerySelectorAll} from "../tools/sizzleQuery";
 
 const logger = getLogger('CodeMakerFrame');
 
@@ -13,6 +13,7 @@ class CodeMakerFrame extends React.Component {
   static propTypes = {
     options: PropTypes.object,
     selectMode: PropTypes.bool,
+    containerSelector: PropTypes.string,
     selectListener: PropTypes.func,
     onSelect: PropTypes.func,
   };
@@ -20,6 +21,7 @@ class CodeMakerFrame extends React.Component {
   state = {
     state: 'idle',
     selectMode: false,
+    containerSelector: '',
     selectListener: null,
     onSelect: null,
   };
@@ -27,11 +29,13 @@ class CodeMakerFrame extends React.Component {
   static getDerivedStateFromProps(props, state) {
     if (
       props.selectMode !== state.selectMode ||
+      props.containerSelector !== state.containerSelector ||
       props.selectListener !== state.selectListener ||
       props.onSelect !== state.onSelect
     ) {
       return {
         selectMode: props.selectMode,
+        containerSelector: props.containerSelector,
         selectListener: props.selectListener,
         onSelect: props.onSelect,
       };
@@ -126,15 +130,32 @@ class CodeMakerFrame extends React.Component {
     });
   }
 
-  resolvePath(path) {
-    return sizzleQuerySelector(this.doc, path);
+  resolvePath(path, options = {}) {
+    let container = null;
+    if (options.containerSelector) {
+      container = sizzleQuerySelectorAll(this.doc, options.containerSelector);
+      if (options.skipFromStart) {
+        container.splice(0, options.skipFromStart);
+      }
+      if (options.skipFromEnd) {
+        container.splice(options.skipFromEnd * -1);
+      }
+      container = container[0];
+    } else {
+      container = this.doc;
+    }
+
+    return sizzleQuerySelector(container, path);
   }
 
   render() {
     let selectMode = null;
     if (this.state.state === 'done' && this.state.selectMode) {
       selectMode = (
-        <CodeMakerFrameSelectMode key={'selectMode'} frameDoc={this.frameDoc} selectListener={this.state.selectListener} onSelect={this.state.onSelect}/>
+        <CodeMakerFrameSelectMode key={'selectMode'} frameDoc={this.frameDoc}
+          containerSelector={this.state.containerSelector}
+          selectListener={this.state.selectListener}
+          onSelect={this.state.onSelect}/>
       );
     }
 
@@ -148,6 +169,9 @@ class CodeMakerFrame extends React.Component {
 class CodeMakerFrameSelectMode extends React.Component {
   static propTypes = null && {
     frameDoc: PropTypes.instanceOf(HTMLDocument),
+    containerSelector: PropTypes.string,
+    selectListener: PropTypes.func,
+    onSelect: PropTypes.func,
   };
 
   constructor(props) {
@@ -198,9 +222,7 @@ class CodeMakerFrameSelectMode extends React.Component {
     const node = e.target;
     if (node.nodeType === 1) {
       if (this.state.onSelect) {
-        const path = getNodePath(node, this.props.frameDoc, {
-          skipClassNames: ['kit_select']
-        });
+        const path = this.getPath(node);
         this.state.onSelect(path);
       }
     }
@@ -217,13 +239,28 @@ class CodeMakerFrameSelectMode extends React.Component {
       node.classList.add(this.selectClassName);
 
       if (this.state.selectListener) {
-        const path = getNodePath(node, this.props.frameDoc, {
-          skipClassNames: ['kit_select']
-        });
+        const path = this.getPath(node);
         this.state.selectListener(path);
       }
     }
   };
+
+  getPath(node) {
+    let container = null;
+    if (this.props.containerSelector) {
+      container = sizzleQuerySelector(this.props.frameDoc, this.props.containerSelector);
+    } else {
+      container = this.props.frameDoc;
+    }
+
+    if (!container.contains(node)) {
+      return '';
+    }
+
+    return getNodePath(node, container, {
+      skipClassNames: ['kit_select']
+    });
+  }
 
   render() {
     return null;

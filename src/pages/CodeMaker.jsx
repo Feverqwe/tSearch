@@ -24,7 +24,8 @@ const logger = getLogger('codeMaker');
 class CodeMaker extends React.Component {
   state = {
     frameOptions: null,
-    frameSelectMode: null,
+    frameSelectMode: false,
+    frameContainerSelector: null,
     frameSelectListener: null,
     frameOnSelect: null
   };
@@ -66,16 +67,17 @@ class CodeMaker extends React.Component {
     });
   };
 
-  handleSelectElement = (selectMode = false, listener = null, handleSelect = null) => {
+  handleSelectElement = (selectMode = false, containerSelector = '', listener = null, handleSelect = null) => {
     this.setState({
       frameSelectMode: selectMode,
+      frameContainerSelector: containerSelector,
       frameSelectListener: listener,
       frameOnSelect: handleSelect,
     });
   };
 
-  handleResolvePath = (path) => {
-    return this.frame.resolvePath(path);
+  handleResolvePath = (path, options) => {
+    return this.frame.resolvePath(path, options);
   };
 
   statusBar = null;
@@ -163,6 +165,7 @@ class CodeMaker extends React.Component {
         <CodeMakerFrame ref={this.refFrame} key={`frame_${JSON.stringify(this.state.frameOptions)}`}
           options={this.state.frameOptions}
           selectMode={this.state.frameSelectMode}
+          containerSelector={this.state.frameContainerSelector}
           selectListener={this.frameSelectListener}
           onSelect={this.frameOnSelect}
         />
@@ -342,8 +345,8 @@ class CodeMakerSelectorsPage extends React.Component {
       <div className="page selectors">
         <h2>{chrome.i18n.getMessage('kitSelectors')}</h2>
         <ElementSelector store={this.codeSearchSelectors}
-                         onSelectElement={this.props.onSelectElement} onResolvePath={this.props.onResolvePath} id={'row'}
-                         type="text" className={'input'} title={chrome.i18n.getMessage('kitRowSelector')}>
+          onSelectElement={this.props.onSelectElement} onResolvePath={this.props.onResolvePath} id={'row'}
+          type="text" className={'input'} title={chrome.i18n.getMessage('kitRowSelector')}>
           {' '}
           <BindInput store={this.codeSearchSelectors} id={'isTableRow'} type="checkbox"/>
           {' '}
@@ -351,23 +354,23 @@ class CodeMakerSelectorsPage extends React.Component {
           {' '}
         </ElementSelector>
         <PipelineSelector {...pipelineProps} id={'categoryTitle'} optional={true}
-                          title={chrome.i18n.getMessage('kitCategoryName')}/>
+          title={chrome.i18n.getMessage('kitCategoryName')}/>
         <PipelineSelector {...pipelineProps} id={'categoryUrl'} optional={true}
-                          title={chrome.i18n.getMessage('kitCategoryLink')}/>
+          title={chrome.i18n.getMessage('kitCategoryLink')}/>
         <PipelineSelector {...pipelineProps} id={'title'}
-                          title={chrome.i18n.getMessage('kitTorrentTitle')}/>
+          title={chrome.i18n.getMessage('kitTorrentTitle')}/>
         <PipelineSelector {...pipelineProps} id={'url'}
-                          title={chrome.i18n.getMessage('kitTorrentLink')}/>
+          title={chrome.i18n.getMessage('kitTorrentLink')}/>
         <PipelineSelector {...pipelineProps} id={'size'} optional={true}
-                          title={chrome.i18n.getMessage('kitTorrentSize')}/>
+          title={chrome.i18n.getMessage('kitTorrentSize')}/>
         <PipelineSelector {...pipelineProps} id={'downloadUrl'} optional={true}
-                          title={chrome.i18n.getMessage('kitTorrentDownloadLink')}/>
+          title={chrome.i18n.getMessage('kitTorrentDownloadLink')}/>
         <PipelineSelector {...pipelineProps} id={'seeds'} optional={true}
-                          title={chrome.i18n.getMessage('kitSeedCount')}/>
+          title={chrome.i18n.getMessage('kitSeedCount')}/>
         <PipelineSelector {...pipelineProps} id={'peers'} optional={true}
-                          title={chrome.i18n.getMessage('kitPeerCount')}/>
+          title={chrome.i18n.getMessage('kitPeerCount')}/>
         <PipelineSelector {...pipelineProps} id={'date'} optional={true}
-                          title={chrome.i18n.getMessage('kitAddTime')}/>
+          title={chrome.i18n.getMessage('kitAddTime')}/>
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitSkipFirstRows')}</span>
           <BindInput store={this.codeSearchSelectors} id={'skipFromStart'} type="number"/>
@@ -377,7 +380,7 @@ class CodeMakerSelectorsPage extends React.Component {
           <BindInput store={this.codeSearchSelectors} id={'skipFromEnd'} type="number"/>
         </div>
         <PipelineSelector {...pipelineProps} id={'nextPageUrl'}  optional={true}
-                          title={chrome.i18n.getMessage('kitNextPageLink')}/>
+          title={chrome.i18n.getMessage('kitNextPageLink')}/>
       </div>
     );
   }

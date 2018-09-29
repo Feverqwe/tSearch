@@ -23,21 +23,6 @@ class PipelineSelector extends ElementSelector {
     outputError: null,
   };
 
-  outputAutorun = null;
-  componentDidMount() {
-    this.outputAutorun = autorun(() => {
-      if (this.selectorStore) {
-        this.updateResult();
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    if (this.outputAutorun) {
-      this.outputAutorun();
-    }
-  }
-
   sortable = null;
   refSortable = node => {
     if (!node) {
@@ -117,6 +102,15 @@ class PipelineSelector extends ElementSelector {
     this.selectorStore.removeMethod(method);
   };
 
+  handleSelect = e => {
+    e.preventDefault();
+    this.props.onSelectElement(true, this.store.row.selector, this.selectListener, this.handleSelectElement);
+
+    this.activeSelect = () => {
+      this.props.onSelectElement();
+    };
+  };
+
   selectListener = (path) => {
     this.input.value = path;
     this.handleChange();
@@ -144,7 +138,11 @@ class PipelineSelector extends ElementSelector {
 
     let node = null;
     try {
-      node = this.props.onResolvePath(this.selectorStore.selector);
+      node = this.props.onResolvePath(this.selectorStore.selector, {
+        containerSelector: this.store.row.selector,
+        skipFromStart: this.store.skipFromStart,
+        skipFromEnd: this.store.skipFromEnd,
+      });
       if (!node) {
         throw new Error('Node is not found');
       }
