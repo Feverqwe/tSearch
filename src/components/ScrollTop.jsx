@@ -7,9 +7,6 @@ class ScrollTop extends React.Component {
     this.state = {
       visible: false
     };
-
-    this.onClick = this.onClick.bind(this);
-    this.onScroll = this.onScroll.bind(this);
   }
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll);
@@ -17,7 +14,7 @@ class ScrollTop extends React.Component {
   componentWillUnmount() {
     window.removeEventListener('scroll', this.onScroll);
   }
-  onScroll() {
+  onScroll = () => {
     if (window.scrollY > 100) {
       if (!this.state.visible) {
         this.setState({
@@ -30,11 +27,11 @@ class ScrollTop extends React.Component {
         visible: false
       });
     }
-  }
-  onClick(e) {
+  };
+  onClick = (e) => {
     e.preventDefault();
     window.scrollTo(0, 0);
-  }
+  };
   render() {
     const classList = ['scroll_top'];
     if (this.state.visible) {
