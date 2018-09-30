@@ -1,15 +1,15 @@
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
 import getLogger from "../tools/getLogger";
 import {autorun} from "mobx";
+import RootStore from "../stores/RootStore";
 
 const logger = getLogger('ElementSelector');
 
-@observer
-class ElementSelector extends React.Component {
+class _ElementSelector extends React.Component {
   static propTypes = null && {
-    onSelectElement: PropTypes.func,
+    rootStore: PropTypes.instanceOf(RootStore),
   };
 
   constructor(props) {
@@ -38,6 +38,10 @@ class ElementSelector extends React.Component {
     if (this.outputAutorun) {
       this.outputAutorun();
     }
+  }
+
+  get frameStore() {
+    return this.props.rootStore.codeMaker.frame;
   }
 
   get store() {
@@ -88,10 +92,10 @@ class ElementSelector extends React.Component {
 
   handleSelect = e => {
     e.preventDefault();
-    this.props.onSelectElement(true, this.getContainerSelector(), this.selectListener, this.handleSelectElement);
+    this.frameStore.setSelect(true, this.getContainerSelector(), this.selectListener, this.handleSelectElement);
 
     this.activeSelect = () => {
-      this.props.onSelectElement();
+      this.frameStore.setSelect();
     };
   };
 
@@ -101,7 +105,7 @@ class ElementSelector extends React.Component {
   };
 
   handleSelectElement = (path) => {
-    this.props.onSelectElement();
+    this.frameStore.setSelect();
 
     this.input.value = path;
     this.handleChange();
@@ -172,4 +176,9 @@ class ElementSelector extends React.Component {
   }
 }
 
+@inject('rootStore')
+@observer
+class ElementSelector extends _ElementSelector {}
+
 export default ElementSelector;
+export {_ElementSelector};

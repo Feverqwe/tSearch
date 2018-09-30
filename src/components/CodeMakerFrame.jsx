@@ -6,47 +6,31 @@ import getDoc5 from "../sandbox/getDoc5";
 import getLogger from "../tools/getLogger";
 import getNodePath from "../tools/getNodePath";
 import {sizzleQuerySelector, sizzleQuerySelectorAll} from "../tools/sizzleQuery";
+import {inject, observer} from "mobx-react";
+import RootStore from "../stores/RootStore";
 
 const logger = getLogger('CodeMakerFrame');
 
+@inject('rootStore')
+@observer
 class CodeMakerFrame extends React.Component {
-  static propTypes = {
-    options: PropTypes.object,
-    selectMode: PropTypes.bool,
-    containerSelector: PropTypes.string,
-    selectListener: PropTypes.func,
-    onSelect: PropTypes.func,
+  constructor(props) {
+    super(props);
+
+    this.frameStore.setState('idle');
+  }
+
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
   };
 
-  state = {
-    state: 'idle',
-    selectMode: false,
-    containerSelector: '',
-    selectListener: null,
-    onSelect: null,
-  };
-
-  static getDerivedStateFromProps(props, state) {
-    if (
-      props.selectMode !== state.selectMode ||
-      props.containerSelector !== state.containerSelector ||
-      props.selectListener !== state.selectListener ||
-      props.onSelect !== state.onSelect
-    ) {
-      return {
-        selectMode: props.selectMode,
-        containerSelector: props.containerSelector,
-        selectListener: props.selectListener,
-        onSelect: props.onSelect,
-      };
-    }
-    // Return null to indicate no change to state.
-    return null;
+  get frameStore() {
+    return this.props.rootStore.codeMaker.frame;
   }
 
   componentDidMount() {
-    if (this.props.options) {
-      this.requestPage(this.props.options);
+    if (this.frameStore.options) {
+      this.requestPage(this.frameStore.options);
     }
   }
 
@@ -70,9 +54,7 @@ class CodeMakerFrame extends React.Component {
   requestPage(options) {
     this.abort();
 
-    this.setState({
-      state: 'pending'
-    });
+    this.frameStore.setState('pending');
 
     return Promise.resolve().then(() => {
       return exKitRequest(this.reqTracker, options);
@@ -110,15 +92,11 @@ class CodeMakerFrame extends React.Component {
       this.doc = doc;
       this.frameDoc = frameDoc;
 
-      this.setState({
-        state: 'done'
-      });
+      this.frameStore.setState('done');
 
       return response;
     }, err => {
-      this.setState({
-        state: 'error'
-      });
+      this.frameStore.setState('error');
 
       logger.error('requestPage error', err);
     });
@@ -150,12 +128,9 @@ class CodeMakerFrame extends React.Component {
 
   render() {
     let selectMode = null;
-    if (this.state.state === 'done' && this.state.selectMode) {
+    if (this.frameStore.state === 'done' && this.frameStore.selectMode) {
       selectMode = (
-        <CodeMakerFrameSelectMode key={'selectMode'} frameDoc={this.frameDoc}
-          containerSelector={this.state.containerSelector}
-          selectListener={this.state.selectListener}
-          onSelect={this.state.onSelect}/>
+        <CodeMakerFrameSelectMode key={'selectMode'} frameDoc={this.frameDoc}/>
       );
     }
 
@@ -166,39 +141,24 @@ class CodeMakerFrame extends React.Component {
   }
 }
 
+@inject('rootStore')
+@observer
 class CodeMakerFrameSelectMode extends React.Component {
   static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
     frameDoc: PropTypes.instanceOf(HTMLDocument),
-    containerSelector: PropTypes.string,
-    selectListener: PropTypes.func,
-    onSelect: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      selectListener: props.selectListener,
-      onSelect: props.onSelect,
-    };
 
     this.selectClassName = 'kit_select';
 
     this.lastSelectedNode = null;
   }
 
-  static getDerivedStateFromProps(props, state) {
-    if (
-      props.selectListener !== state.selectListener ||
-      props.onSelect !== state.onSelect
-    ) {
-      return {
-        selectListener: props.selectListener,
-        onSelect: props.onSelect,
-      };
-    }
-    // Return null to indicate no change to state.
-    return null;
+  get frameStore() {
+    return this.props.rootStore.codeMaker.frame;
   }
 
   componentDidMount() {
@@ -221,10 +181,8 @@ class CodeMakerFrameSelectMode extends React.Component {
   handleClick = e => {
     const node = e.target;
     if (node.nodeType === 1) {
-      if (this.state.onSelect) {
-        const path = this.getPath(node);
-        this.state.onSelect(path);
-      }
+      const path = this.getPath(node);
+      this.frameStore.selectHandler(path);
     }
   };
 
@@ -238,17 +196,15 @@ class CodeMakerFrameSelectMode extends React.Component {
 
       node.classList.add(this.selectClassName);
 
-      if (this.state.selectListener) {
-        const path = this.getPath(node);
-        this.state.selectListener(path);
-      }
+      const path = this.getPath(node);
+      this.frameStore.selectListener(path);
     }
   };
 
   getPath(node) {
     let container = null;
-    if (this.props.containerSelector) {
-      container = sizzleQuerySelector(this.props.frameDoc, this.props.containerSelector);
+    if (this.frameStore.containerSelector) {
+      container = sizzleQuerySelector(this.props.frameDoc, this.frameStore.containerSelector);
     } else {
       container = this.props.frameDoc;
     }

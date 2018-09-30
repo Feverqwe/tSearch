@@ -22,14 +22,6 @@ const logger = getLogger('codeMaker');
 @inject('rootStore')
 @observer
 class CodeMaker extends React.Component {
-  state = {
-    frameOptions: null,
-    frameSelectMode: false,
-    frameContainerSelector: null,
-    frameSelectListener: null,
-    frameOnSelect: null
-  };
-
   static propTypes = null && {
     rootStore: PropTypes.instanceOf(RootStore),
     page: PropTypes.string,
@@ -61,42 +53,8 @@ class CodeMaker extends React.Component {
     this.frame = element;
   };
 
-  handleRequestPage = (options) => {
-    this.setState({
-      frameOptions: options
-    });
-  };
-
-  handleSelectElement = (selectMode = false, containerSelector = '', listener = null, handleSelect = null) => {
-    this.setState({
-      frameSelectMode: selectMode,
-      frameContainerSelector: containerSelector,
-      frameSelectListener: listener,
-      frameOnSelect: handleSelect,
-    });
-  };
-
   handleResolvePath = (path, options) => {
     return this.frame.resolvePath(path, options);
-  };
-
-  statusBar = null;
-  refStatusBar = element => {
-    this.statusBar = element;
-  };
-
-  frameSelectListener = (path) => {
-    this.statusBar.textContent = path;
-    if (this.state.frameSelectListener) {
-      this.state.frameSelectListener(path);
-    }
-  };
-
-  frameOnSelect = (path) => {
-    this.statusBar.textContent = path;
-    if (this.state.frameOnSelect) {
-      this.state.frameOnSelect(path);
-    }
   };
 
   render() {
@@ -120,15 +78,13 @@ class CodeMaker extends React.Component {
     switch (this.props.page) {
       case 'search': {
         page = (
-          <CodeMakerSearchPage onRequestPage={this.handleRequestPage} codeStore={this.codeMakerStore.code}/>
+          <CodeMakerSearchPage codeStore={this.codeMakerStore.code}/>
         );
         break;
       }
       case 'auth': {
         page = (
           <CodeMakerAuthPage
-            onRequestPage={this.handleRequestPage}
-            onSelectElement={this.handleSelectElement}
             onResolvePath={this.handleResolvePath}
             codeStore={this.codeMakerStore.code}
           />
@@ -138,7 +94,6 @@ class CodeMaker extends React.Component {
       case 'selectors': {
         page = (
           <CodeMakerSelectorsPage
-            onSelectElement={this.handleSelectElement}
             onResolvePath={this.handleResolvePath}
             codeStore={this.codeMakerStore.code}
           />
@@ -160,14 +115,14 @@ class CodeMaker extends React.Component {
     }
 
     let frame = null;
-    if (this.state.frameOptions) {
+    if (this.codeMakerStore.frame.options) {
       frame = (
-        <CodeMakerFrame ref={this.refFrame} key={`frame_${JSON.stringify(this.state.frameOptions)}`}
-          options={this.state.frameOptions}
-          selectMode={this.state.frameSelectMode}
-          containerSelector={this.state.frameContainerSelector}
-          selectListener={this.frameSelectListener}
-          onSelect={this.frameOnSelect}
+        <CodeMakerFrame ref={this.refFrame} key={`frame_${JSON.stringify(this.codeMakerStore.frame.options)}`}
+          options={this.codeMakerStore.frame.options}
+          selectMode={this.codeMakerStore.frame.selectMode}
+          containerSelector={this.codeMakerStore.frame.containerSelector}
+          selectListener={this.codeMakerStore.frame.selectListener}
+          onSelect={this.codeMakerStore.frame.selectHandler}
         />
       );
     }
@@ -181,7 +136,9 @@ class CodeMaker extends React.Component {
           <div className="body" id="container">
             {page}
           </div>
-          <div ref={this.refStatusBar} className="status_bar" id="status_bar"/>
+          <div className="status_bar" id="status_bar">
+            {this.codeMakerStore.frame.path}
+          </div>
         </div>
         {frame}
       </div>
@@ -195,12 +152,11 @@ class CodeMakerSearchPage extends React.Component {
   static propTypes = null && {
     rootStore: PropTypes.instanceOf(RootStore),
     codeStore: PropTypes.instanceOf(CodeStore),
-    onRequestPage: PropTypes.func,
   };
 
-  state = {
-    state: 'idle'
-  };
+  get frameStore() {
+    return this.props.rootStore.codeMaker.frame;
+  }
 
   get codeSearchStore() {
     return this.props.codeStore.search;
@@ -216,7 +172,7 @@ class CodeMakerSearchPage extends React.Component {
     return Promise.resolve().then(() => {
       return tracker.search(session, query);
     }).then(options => {
-      this.props.onRequestPage(options);
+      this.frameStore.setOptions(options);
     });
   };
 
@@ -236,7 +192,7 @@ class CodeMakerSearchPage extends React.Component {
 
   render() {
     const requestPageClassList = [];
-    if (this.state.state === 'error') {
+    if (this.frameStore.state === 'error') {
       requestPageClassList.push('error')
     }
 
@@ -282,10 +238,12 @@ class CodeMakerAuthPage extends React.Component {
   static propTypes = null && {
     rootStore: PropTypes.instanceOf(RootStore),
     codeStore: PropTypes.instanceOf(CodeStore),
-    onRequestPage: PropTypes.func,
-    onSelectElement: PropTypes.func,
     onResolvePath: PropTypes.func,
   };
+
+  get frameStore() {
+    return this.props.rootStore.codeMaker.frame;
+  }
 
   get codeSearchAuth() {
     return this.props.codeStore.auth;
@@ -299,21 +257,26 @@ class CodeMakerAuthPage extends React.Component {
       method: 'GET',
       url: tracker.code.auth.url,
     };
-    this.props.onRequestPage(options);
+    this.frameStore.setOptions(options);
   };
 
   render() {
+    const requestPageClassList = [];
+    if (this.frameStore.state === 'error') {
+      requestPageClassList.push('error')
+    }
+
     return (
       <div className="page auth">
         <h2>{chrome.i18n.getMessage('kitLogin')}</h2>
         <div className="field">
           <form onSubmit={this.handleSubmit}>
             <span className="field-name">{chrome.i18n.getMessage('kitLoginUrl')}</span>
-            <BindInput store={this.codeSearchAuth} id={'url'} type="text"/>
+            <BindInput className={requestPageClassList.join(' ')} store={this.codeSearchAuth} id={'url'} type="text"/>
             <input type="submit" data-id="auth_open" value={chrome.i18n.getMessage('kitOpen')}/>
           </form>
         </div>
-        <ElementSelector store={this.codeSearchAuth} onSelectElement={this.props.onSelectElement} onResolvePath={this.props.onResolvePath} id={'loginForm'} optional={true}
+        <ElementSelector store={this.codeSearchAuth} onResolvePath={this.props.onResolvePath} id={'loginForm'} optional={true}
                          type="text" title={chrome.i18n.getMessage('kitLoginFormSelector')}/>
       </div>
     );
@@ -326,7 +289,6 @@ class CodeMakerSelectorsPage extends React.Component {
   static propTypes = null && {
     rootStore: PropTypes.instanceOf(RootStore),
     codeStore: PropTypes.instanceOf(CodeStore),
-    onSelectElement: PropTypes.func,
     onResolvePath: PropTypes.func,
   };
 
@@ -337,7 +299,6 @@ class CodeMakerSelectorsPage extends React.Component {
   render() {
     const pipelineProps = {
       store: this.codeSearchSelectors,
-      onSelectElement: this.props.onSelectElement,
       onResolvePath: this.props.onResolvePath,
     };
 
@@ -345,7 +306,7 @@ class CodeMakerSelectorsPage extends React.Component {
       <div className="page selectors">
         <h2>{chrome.i18n.getMessage('kitSelectors')}</h2>
         <ElementSelector store={this.codeSearchSelectors}
-          onSelectElement={this.props.onSelectElement} onResolvePath={this.props.onResolvePath} id={'row'}
+          onResolvePath={this.props.onResolvePath} id={'row'}
           type="text" className={'input'} title={chrome.i18n.getMessage('kitRowSelector')}>
           {' '}
           <BindInput store={this.codeSearchSelectors} id={'isTableRow'} type="checkbox"/>

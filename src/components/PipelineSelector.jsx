@@ -1,5 +1,5 @@
-import {observer} from "mobx-react";
-import ElementSelector from "./ElementSelector";
+import {inject, observer} from "mobx-react";
+import {_ElementSelector} from "./ElementSelector";
 import React from "react";
 import exKitPipelineMethods from "../tools/exKitPipelineMethods";
 import PropTypes from "prop-types";
@@ -13,8 +13,13 @@ const Sortable = require('sortablejs');
 
 const logger = getLogger('PipelineSelector');
 
+@inject('rootStore')
 @observer
-class PipelineSelector extends ElementSelector {
+class PipelineSelector extends _ElementSelector {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+  };
+
   state = {
     showAddDialog: false,
     snapshot: null,
@@ -107,7 +112,7 @@ class PipelineSelector extends ElementSelector {
   };
 
   handleSelectElement = (path) => {
-    this.props.onSelectElement();
+    this.frameStore.setSelect();
 
     this.input.value = path;
     this.handleChange();
