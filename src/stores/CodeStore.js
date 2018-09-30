@@ -151,7 +151,6 @@ const CodeAuthStore = types.model('CodeAuthStore', {
  * @property {ElementSelectorStore} row
  * @property {number} [skipFromStart]
  * @property {number} [skipFromEnd]
- * @property {boolean} [isTableRow]
  * @property {StringSelectorStore|undefined} categoryTitle
  * @property {StringSelectorStore|undefined} categoryUrl
  * @property {StringSelectorStore|undefined} categoryId
@@ -170,7 +169,6 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
   row: ElementSelectorStore,
   skipFromStart: types.optional(types.number, 0),
   skipFromEnd: types.optional(types.number, 0),
-  isTableRow: types.optional(types.boolean, false),
   categoryTitle: types.maybe(StringSelectorStore),
   categoryUrl: types.maybe(StringSelectorStore),
   categoryId: types.maybe(StringSelectorStore),

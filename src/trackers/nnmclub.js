@@ -26,7 +26,6 @@ const code = {
     "row": { "selector": "table.forumline.tablesorter>tbody>tr" },
     "skipFromStart": 0,
     "skipFromEnd": 0,
-    "isTableRow": false,
     "categoryTitle": {
       "selector": "td:eq(1)>a",
       "pipeline": [

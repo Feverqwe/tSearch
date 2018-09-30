@@ -5,9 +5,10 @@ import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import {inject, observer} from "mobx-react";
 import Dialog from "../components/Dialog";
-import exKit from "../sandbox/exKit";
 import jsonToUserscript from "../tools/jsonToUserscript";
 import getLogger from "../tools/getLogger";
+import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
+import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
 
 const CodeMirror = require('codemirror');
 require('codemirror/mode/javascript/javascript');
@@ -121,12 +122,16 @@ class Editor extends React.Component {
       let json = JSON.parse(text);
 
       if (json.version === 1) {
-        json = exKit.convertV1ToV2(json);
+        json = convertCodeV1toV2(json);
+      }
+      if (json.version === 2) {
+        json = convertCodeV2toV3(json);
       }
 
       const script = jsonToUserscript(json);
 
       editor.setCode(script);
+      this.editor.setValue(script);
 
       this.setState({
         showAddCodeDialog: false
