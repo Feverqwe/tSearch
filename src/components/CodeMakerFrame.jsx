@@ -123,7 +123,9 @@ class CodeMakerFrame extends React.Component {
     }));
 
     this.hideSelect();
-    node.classList.add(this.selectClassName);
+    if (node) {
+      node.classList.add(this.selectClassName);
+    }
   }
 
   hideSelect = () => {

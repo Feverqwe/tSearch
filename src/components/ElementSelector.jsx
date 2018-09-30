@@ -148,11 +148,15 @@ class _ElementSelector extends React.Component {
   handleKeyup = (e) => {
     if (this.selectorStore) {
       this.updateResult();
-      this.props.onHighlightPath(this.selectorStore.selector, {
-        containerSelector: this.getContainerSelector(),
-        skipFromStart: this.store.skipFromStart,
-        skipFromEnd: this.store.skipFromEnd,
-      });
+      try {
+        this.props.onHighlightPath(this.selectorStore.selector, {
+          containerSelector: this.getContainerSelector(),
+          skipFromStart: this.store.skipFromStart,
+          skipFromEnd: this.store.skipFromEnd,
+        });
+      } catch (err) {
+        // pass
+      }
     }
   };
 
