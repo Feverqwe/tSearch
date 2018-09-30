@@ -312,7 +312,7 @@
         "message": "Search query"
     },
     "kitQuery": {
-        "message": "Query string"
+        "message": "Query string (use %search% as template for search query)"
     },
     "kitSearchQueryEncoding": {
         "message": "Search query encoding"
@@ -376,6 +376,15 @@
     },
     "kitSkipFirstRows": {
         "message": "Skip first N rows"
+    },
+    "kitSkip": {
+        "message": "Skip rows"
+    },
+    "kitSkipTop": {
+        "message": "From top"
+    },
+    "kitSkipEnd": {
+        "message": "From end"
     },
     "kitSkipLastRows": {
         "message": "Skip last N rows"

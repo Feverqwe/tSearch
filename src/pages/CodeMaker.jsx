@@ -310,14 +310,22 @@ class CodeMakerSelectorsPage extends React.Component {
       <div className="page selectors">
         <h2>{chrome.i18n.getMessage('kitSelectors')}</h2>
         <ElementSelector store={this.codeSearchSelectors}
-          onResolvePath={this.props.onResolvePath} onHighlightPath={this.props.onHighlightPath} id={'row'}
-          type="text" className={'input'} title={chrome.i18n.getMessage('kitRowSelector')}>
-          {' '}
-          <BindInput store={this.codeSearchSelectors} id={'isTableRow'} type="checkbox"/>
-          {' '}
-          <span>{chrome.i18n.getMessage('kitTableRow')}</span>
-          {' '}
-        </ElementSelector>
+          onResolvePath={this.props.onResolvePath} onHighlightPath={this.props.onHighlightPath}
+         id={'row'} type="text" className={'input'} title={chrome.i18n.getMessage('kitRowSelector')}/>
+        <div className="field skip-field">
+          <div className={'field-left'}>
+            <span className="field-name">{chrome.i18n.getMessage('kitSkip')}</span>
+          </div>
+          <div className={'field-right'}>
+            <span>{chrome.i18n.getMessage('kitSkipTop')}</span>
+            {' '}
+            <BindInput store={this.codeSearchSelectors} id={'skipFromStart'} type="number"/>
+            {' '}
+            <span>{chrome.i18n.getMessage('kitSkipEnd')}</span>
+            {' '}
+            <BindInput store={this.codeSearchSelectors} id={'skipFromEnd'} type="number"/>
+          </div>
+        </div>
         <PipelineSelector {...pipelineProps} id={'categoryTitle'} optional={true} container={'row'}
           title={chrome.i18n.getMessage('kitCategoryName')}/>
         <PipelineSelector {...pipelineProps} id={'categoryUrl'} optional={true} container={'row'}
@@ -336,14 +344,6 @@ class CodeMakerSelectorsPage extends React.Component {
           title={chrome.i18n.getMessage('kitPeerCount')}/>
         <PipelineSelector {...pipelineProps} id={'date'} optional={true} container={'row'}
           title={chrome.i18n.getMessage('kitAddTime')}/>
-        <div className="field">
-          <span className="field-name">{chrome.i18n.getMessage('kitSkipFirstRows')}</span>
-          <BindInput store={this.codeSearchSelectors} id={'skipFromStart'} type="number"/>
-        </div>
-        <div className="field">
-          <span className="field-name">{chrome.i18n.getMessage('kitSkipLastRows')}</span>
-          <BindInput store={this.codeSearchSelectors} id={'skipFromEnd'} type="number"/>
-        </div>
         <PipelineSelector {...pipelineProps} id={'nextPageUrl'}  optional={true}
           title={chrome.i18n.getMessage('kitNextPageLink')}/>
       </div>
