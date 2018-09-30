@@ -117,13 +117,7 @@ class CodeMaker extends React.Component {
     let frame = null;
     if (this.codeMakerStore.frame.options) {
       frame = (
-        <CodeMakerFrame ref={this.refFrame} key={`frame_${JSON.stringify(this.codeMakerStore.frame.options)}`}
-          options={this.codeMakerStore.frame.options}
-          selectMode={this.codeMakerStore.frame.selectMode}
-          containerSelector={this.codeMakerStore.frame.containerSelector}
-          selectListener={this.codeMakerStore.frame.selectListener}
-          onSelect={this.codeMakerStore.frame.selectHandler}
-        />
+        <CodeMakerFrame ref={this.refFrame} key={`frame_${JSON.stringify(this.codeMakerStore.frame.options)}`}/>
       );
     }
 
