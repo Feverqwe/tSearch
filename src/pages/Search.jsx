@@ -34,6 +34,7 @@ class Search extends React.Component {
     if (this.props.rootStore.profiles.state === 'idle') {
       this.props.rootStore.profiles.fetchProfiles();
     }
+    this.props.rootStore.searchForm.setQuery(this.props.query);
   }
   resetSearch() {
     this.setState({
