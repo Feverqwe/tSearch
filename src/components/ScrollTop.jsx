@@ -1,8 +1,8 @@
 import React from "react";
 
 class ScrollTop extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       visible: false
@@ -11,7 +11,7 @@ class ScrollTop extends React.Component {
     this.onClick = this.onClick.bind(this);
     this.onScroll = this.onScroll.bind(this);
   }
-  componentWillMount() {
+  componentDidMount() {
     window.addEventListener('scroll', this.onScroll);
   }
   componentWillUnmount() {
