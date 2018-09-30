@@ -18,6 +18,8 @@ class CodeMakerFrame extends React.Component {
     super(props);
 
     this.frameStore.setState('idle');
+
+    this.selectClassName = 'kit_select';
   }
 
   static propTypes = null && {
@@ -64,7 +66,7 @@ class CodeMakerFrame extends React.Component {
 
       const kitStyle = document.createElement('style');
       kitStyle.textContent = `
-      .kit_select {
+      .${this.selectClassName} {
         color:#000 !important;
         background-color:#FFCC33 !important;
         cursor:pointer;
@@ -109,28 +111,32 @@ class CodeMakerFrame extends React.Component {
   }
 
   resolvePath(path, options = {}) {
-    let container = null;
-    if (options.containerSelector) {
-      container = sizzleQuerySelectorAll(this.doc, options.containerSelector);
-      if (options.skipFromStart) {
-        container.splice(0, options.skipFromStart);
-      }
-      if (options.skipFromEnd) {
-        container.splice(options.skipFromEnd * -1);
-      }
-      container = container[0];
-    } else {
-      container = this.doc;
-    }
+    const doc = options.doc || this.doc;
+    const container = getContainer(doc, options);
 
     return sizzleQuerySelector(container, path);
   }
+
+  highlightPath(path, options = {}) {
+    const node = this.resolvePath(path, Object.assign({}, options, {
+      doc: this.frameDoc
+    }));
+
+    this.hideSelect();
+    node.classList.add(this.selectClassName);
+  }
+
+  hideSelect = () => {
+    Array.from(this.frameDoc.querySelectorAll(`.${this.selectClassName}`)).forEach(element => {
+      element.classList.remove(this.selectClassName);
+    });
+  };
 
   render() {
     let selectMode = null;
     if (this.frameStore.state === 'done' && this.frameStore.selectMode) {
       selectMode = (
-        <CodeMakerFrameSelectMode key={'selectMode'} frameDoc={this.frameDoc}/>
+        <CodeMakerFrameSelectMode key={'selectMode'} frameDoc={this.frameDoc} selectClassName={this.selectClassName} hideSelect={this.hideSelect}/>
       );
     }
 
@@ -141,21 +147,32 @@ class CodeMakerFrame extends React.Component {
   }
 }
 
+const getContainer = (doc, options) => {
+  let container = null;
+  if (options.containerSelector) {
+    container = sizzleQuerySelectorAll(doc, options.containerSelector);
+    if (options.skipFromStart) {
+      container.splice(0, options.skipFromStart);
+    }
+    if (options.skipFromEnd) {
+      container.splice(options.skipFromEnd * -1);
+    }
+    container = container[0];
+  } else {
+    container = doc;
+  }
+  return container;
+};
+
 @inject('rootStore')
 @observer
 class CodeMakerFrameSelectMode extends React.Component {
   static propTypes = null && {
     rootStore: PropTypes.instanceOf(RootStore),
     frameDoc: PropTypes.instanceOf(HTMLDocument),
+    selectClassName: PropTypes.string,
+    hideSelect: PropTypes.func,
   };
-
-  constructor(props) {
-    super(props);
-
-    this.selectClassName = 'kit_select';
-
-    this.lastSelectedNode = null;
-  }
 
   get frameStore() {
     return this.props.rootStore.codeMaker.frame;
@@ -167,15 +184,9 @@ class CodeMakerFrameSelectMode extends React.Component {
   }
 
   componentWillUnmount() {
-    this.hideSelect();
+    this.props.hideSelect();
     this.props.frameDoc.removeEventListener('mouseover', this.handleMouseOver);
     this.props.frameDoc.removeEventListener('mouseup', this.handleClick);
-  }
-
-  hideSelect() {
-    Array.from(this.props.frameDoc.querySelectorAll(`.${this.selectClassName}`)).forEach(element => {
-      element.classList.remove(this.selectClassName);
-    });
   }
 
   handleClick = e => {
@@ -189,12 +200,9 @@ class CodeMakerFrameSelectMode extends React.Component {
   handleMouseOver = e => {
     const node = e.target;
     if (node.nodeType === 1) {
-      if (this.lastSelectedNode) {
-        this.lastSelectedNode.classList.remove(this.selectClassName);
-      }
-      this.lastSelectedNode = node;
+      this.props.hideSelect();
 
-      node.classList.add(this.selectClassName);
+      node.classList.add(this.props.selectClassName);
 
       const path = this.getPath(node);
       this.frameStore.selectListener(path);
@@ -214,7 +222,7 @@ class CodeMakerFrameSelectMode extends React.Component {
     }
 
     return getNodePath(node, container, {
-      skipClassNames: ['kit_select']
+      skipClassNames: [this.props.selectClassName]
     });
   }
 

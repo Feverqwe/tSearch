@@ -9,7 +9,16 @@ const logger = getLogger('ElementSelector');
 
 class _ElementSelector extends React.Component {
   static propTypes = null && {
+    id: PropTypes.string,
+    optional: PropTypes.bool,
+    container: PropTypes.string,
+    className: PropTypes.string,
+    title: PropTypes.string,
+    type: PropTypes.string,
+    store: PropTypes.any,
     rootStore: PropTypes.instanceOf(RootStore),
+    onResolvePath: PropTypes.func,
+    onHighlightPath: PropTypes.func,
   };
 
   constructor(props) {
@@ -136,6 +145,17 @@ class _ElementSelector extends React.Component {
     return '';
   }
 
+  handleKeyup = (e) => {
+    if (this.selectorStore) {
+      this.updateResult();
+      this.props.onHighlightPath(this.selectorStore.selector, {
+        containerSelector: this.getContainerSelector(),
+        skipFromStart: this.store.skipFromStart,
+        skipFromEnd: this.store.skipFromEnd,
+      });
+    }
+  };
+
   render() {
     const {id, children, optional} = this.props;
 
@@ -168,7 +188,7 @@ class _ElementSelector extends React.Component {
     return (
       <div className="field">
         {title}
-        <input disabled={isDisabled} type={type} defaultValue={defaultValue} data-id={id} ref={this.refInput} onChange={this.handleChange} className={inputClassList.join(' ')}/>
+        <input disabled={isDisabled} type={type} defaultValue={defaultValue} data-id={id} ref={this.refInput} onChange={this.handleChange} onKeyUp={this.handleKeyup} className={inputClassList.join(' ')}/>
         {children}
         <input disabled={isDisabled} onClick={this.handleSelect} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
       </div>

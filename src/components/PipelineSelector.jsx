@@ -17,7 +17,14 @@ const logger = getLogger('PipelineSelector');
 @observer
 class PipelineSelector extends _ElementSelector {
   static propTypes = null && {
+    id: PropTypes.string,
+    optional: PropTypes.bool,
+    container: PropTypes.string,
+    title: PropTypes.string,
+    store: PropTypes.any,
     rootStore: PropTypes.instanceOf(RootStore),
+    onResolvePath: PropTypes.func,
+    onHighlightPath: PropTypes.func,
   };
 
   state = {
@@ -240,7 +247,7 @@ class PipelineSelector extends _ElementSelector {
         <div className={'field-right'}>
           <div className='select'>
             <input disabled={isDisabled} type="text" data-id={id} ref={this.refInput}
-                   onChange={this.handleChange} defaultValue={defaultValue} className={inputClassList.join(' ')}/>
+                   onChange={this.handleChange} onKeyUp={this.handleKeyup} defaultValue={defaultValue} className={inputClassList.join(' ')}/>
             <input disabled={isDisabled} type="text" data-id={`${id}-result`} ref={this.refOutput}
                    className={outputClassList.join(' ')} readOnly={true}/>
             <input disabled={isDisabled} onClick={this.handleSelect} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>

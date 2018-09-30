@@ -39,8 +39,6 @@ class CodeMaker extends React.Component {
     save: 'kitSaveLoad',
   };
 
-  frame = null;
-
   componentDidMount() {
     this.props.rootStore.createCodeMaker();
   }
@@ -49,12 +47,17 @@ class CodeMaker extends React.Component {
     this.props.rootStore.destroyCodeMaker();
   }
 
+  frame = null;
   refFrame = (element) => {
-    this.frame = element;
+    this.frame = element && element.wrappedInstance;
   };
 
   handleResolvePath = (path, options) => {
     return this.frame.resolvePath(path, options);
+  };
+
+  handleHighlightPath = (path, options) => {
+    return this.frame.highlightPath(path, options);
   };
 
   render() {
@@ -86,6 +89,7 @@ class CodeMaker extends React.Component {
         page = (
           <CodeMakerAuthPage
             onResolvePath={this.handleResolvePath}
+            onHighlightPath={this.handleHighlightPath}
             codeStore={this.codeMakerStore.code}
           />
         );
@@ -95,6 +99,7 @@ class CodeMaker extends React.Component {
         page = (
           <CodeMakerSelectorsPage
             onResolvePath={this.handleResolvePath}
+            onHighlightPath={this.handleHighlightPath}
             codeStore={this.codeMakerStore.code}
           />
         );
@@ -166,6 +171,7 @@ class CodeMakerSearchPage extends React.Component {
     return Promise.resolve().then(() => {
       return tracker.search(session, query);
     }).then(options => {
+      options._ = Date.now();
       this.frameStore.setOptions(options);
     });
   };
@@ -233,6 +239,7 @@ class CodeMakerAuthPage extends React.Component {
     rootStore: PropTypes.instanceOf(RootStore),
     codeStore: PropTypes.instanceOf(CodeStore),
     onResolvePath: PropTypes.func,
+    onHighlightPath: PropTypes.func,
   };
 
   get frameStore() {
@@ -251,6 +258,7 @@ class CodeMakerAuthPage extends React.Component {
       method: 'GET',
       url: tracker.code.auth.url,
     };
+    options._ = Date.now();
     this.frameStore.setOptions(options);
   };
 
@@ -270,7 +278,7 @@ class CodeMakerAuthPage extends React.Component {
             <input type="submit" data-id="auth_open" value={chrome.i18n.getMessage('kitOpen')}/>
           </form>
         </div>
-        <ElementSelector store={this.codeSearchAuth} onResolvePath={this.props.onResolvePath} id={'loginForm'} optional={true}
+        <ElementSelector store={this.codeSearchAuth} onResolvePath={this.props.onResolvePath} onHighlightPath={this.props.onHighlightPath} id={'loginForm'} optional={true}
                          type="text" title={chrome.i18n.getMessage('kitLoginFormSelector')}/>
       </div>
     );
@@ -284,6 +292,7 @@ class CodeMakerSelectorsPage extends React.Component {
     rootStore: PropTypes.instanceOf(RootStore),
     codeStore: PropTypes.instanceOf(CodeStore),
     onResolvePath: PropTypes.func,
+    onHighlightPath: PropTypes.func,
   };
 
   get codeSearchSelectors() {
@@ -294,13 +303,14 @@ class CodeMakerSelectorsPage extends React.Component {
     const pipelineProps = {
       store: this.codeSearchSelectors,
       onResolvePath: this.props.onResolvePath,
+      onHighlightPath: this.props.onHighlightPath,
     };
 
     return (
       <div className="page selectors">
         <h2>{chrome.i18n.getMessage('kitSelectors')}</h2>
         <ElementSelector store={this.codeSearchSelectors}
-          onResolvePath={this.props.onResolvePath} id={'row'}
+          onResolvePath={this.props.onResolvePath} onHighlightPath={this.props.onHighlightPath} id={'row'}
           type="text" className={'input'} title={chrome.i18n.getMessage('kitRowSelector')}>
           {' '}
           <BindInput store={this.codeSearchSelectors} id={'isTableRow'} type="checkbox"/>
