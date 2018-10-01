@@ -5,16 +5,24 @@ import 'react-datepicker/dist/react-datepicker.min.css';
 import getLogger from "../tools/getLogger";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
+import FiltersStore from "../stores/FiltersStore";
 
 const logger = getLogger('Filters');
 
 @inject('rootStore')
 @observer
 class Filters extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore)
+  };
+
   componentDidMount() {
     if (this.props.rootStore.options.state === 'idle') {
       this.props.rootStore.options.fetchOptions();
     }
+  }
+  get filtersStore() {
+    return this.props.rootStore.filters;
   }
   render() {
     switch (this.props.rootStore.options.state) {
@@ -27,11 +35,11 @@ class Filters extends React.Component {
       case 'done': {
         return (
           <div className="parameter_box__right">
-            <TextFilter/>
-            <SizeFilter/>
-            <TimeFilter/>
-            <SeedFilter/>
-            <PeerFilter/>
+            <TextFilter filtersStore={this.filtersStore}/>
+            <SizeFilter filtersStore={this.filtersStore}/>
+            <TimeFilter filtersStore={this.filtersStore}/>
+            <SeedFilter filtersStore={this.filtersStore}/>
+            <PeerFilter filtersStore={this.filtersStore}/>
           </div>
         );
       }
@@ -42,13 +50,12 @@ class Filters extends React.Component {
   }
 }
 
-Filters.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore)
-};
-
-@inject('rootStore')
 @observer
 class TextFilter extends React.Component {
+  static propTypes = null && {
+    filtersStore: PropTypes.instanceOf(FiltersStore),
+  };
+
   constructor() {
     super();
 
@@ -58,7 +65,7 @@ class TextFilter extends React.Component {
     this.refInput = this.refInput.bind(this);
   }
   onChange() {
-    const filter = this.props.rootStore.filters;
+    const filter = this.props.filtersStore;
 
     filter.setText(this.input.value);
   }
@@ -75,7 +82,7 @@ class TextFilter extends React.Component {
     this.input = element;
   }
   render() {
-    const filter = this.props.rootStore.filters;
+    const filter = this.props.filtersStore;
 
     return (
       <div className="parameter parameter-filter">
@@ -93,13 +100,12 @@ class TextFilter extends React.Component {
   }
 }
 
-TextFilter.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore)
-};
-
-@inject('rootStore')
 @observer
 class SizeFilter extends React.Component {
+  static propTypes = null && {
+    filtersStore: PropTypes.instanceOf(FiltersStore),
+  };
+
   constructor() {
     super();
 
@@ -109,14 +115,11 @@ class SizeFilter extends React.Component {
     this.refMin = this.refMin.bind(this);
     this.refMax = this.refMax.bind(this);
 
-    this.factor = 1024 * 1024 * 1024;
     this.min = null;
     this.max = null;
   }
   onChange() {
-    const filter = this.props.rootStore.filters;
-
-    filter.setSize(this.min.value * this.factor, this.max.value * this.factor);
+    this.props.filtersStore.setSize(this.min.value * 1, this.max.value * 1);
   }
   handleDoubleClick() {
     this.min.value = '';
@@ -135,7 +138,7 @@ class SizeFilter extends React.Component {
     this.max = element;
   }
   render() {
-    const filter = this.props.rootStore.filters;
+    const filter = this.props.filtersStore;
 
     return (
       <div className="parameter parameter-filter">
@@ -144,7 +147,7 @@ class SizeFilter extends React.Component {
           <input
             onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
-            defaultValue={filter.minSize || ''}
+            defaultValue={filter.minSizeGb || ''}
             ref={this.refMin} name={'sizeMin'}
             className="input__input input__input-size-filter input__input-range input__input-range-from"
             type="number" placeholder={chrome.i18n.getMessage('rangeFromPlaceholder')}/>
@@ -152,7 +155,7 @@ class SizeFilter extends React.Component {
           <input
             onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
-            defaultValue={filter.maxSize || ''}
+            defaultValue={filter.maxSizeGb || ''}
             ref={this.refMax} name={'sizeMax'}
             className="input__input input__input-size-filter input__input-range input__input-range-to"
             type="number" placeholder={chrome.i18n.getMessage('rangeToPlaceholder')}/>
@@ -162,13 +165,14 @@ class SizeFilter extends React.Component {
   }
 }
 
-SizeFilter.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore)
-};
-
 @inject('rootStore')
 @observer
 class SeedFilter extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    filtersStore: PropTypes.instanceOf(FiltersStore),
+  };
+
   constructor() {
     super();
 
@@ -178,14 +182,13 @@ class SeedFilter extends React.Component {
     this.refMin = this.refMin.bind(this);
     this.refMax = this.refMax.bind(this);
 
-    this.factor = 1;
     this.min = null;
     this.max = null;
   }
   onChange() {
-    const filter = this.props.rootStore.filters;
+    const filter = this.props.filtersStore;
 
-    filter.setSeed(this.min.value * this.factor, this.max.value * this.factor);
+    filter.setSeed(this.min.value * 1, this.max.value * 1);
   }
   handleDoubleClick() {
     this.min.value = '';
@@ -208,7 +211,7 @@ class SeedFilter extends React.Component {
       return null;
     }
 
-    const filter = this.props.rootStore.filters;
+    const filter = this.props.filtersStore;
 
     return (
       <div className="parameter parameter-filter">
@@ -235,13 +238,14 @@ class SeedFilter extends React.Component {
   }
 }
 
-SeedFilter.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore)
-};
-
 @inject('rootStore')
 @observer
 class PeerFilter extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    filtersStore: PropTypes.instanceOf(FiltersStore),
+  };
+
   constructor() {
     super();
 
@@ -251,14 +255,13 @@ class PeerFilter extends React.Component {
     this.refMin = this.refMin.bind(this);
     this.refMax = this.refMax.bind(this);
 
-    this.factor = 1;
     this.min = null;
     this.max = null;
   }
   onChange() {
-    const filter = this.props.rootStore.filters;
+    const filter = this.props.filtersStore;
 
-    filter.setPeer(this.min.value * this.factor, this.max.value * this.factor);
+    filter.setPeer(this.min.value * 1, this.max.value * 1);
   }
   handleDoubleClick() {
     this.min.value = '';
@@ -281,7 +284,7 @@ class PeerFilter extends React.Component {
       return null;
     }
 
-    const filter = this.props.rootStore.filters;
+    const filter = this.props.filtersStore;
 
     return (
       <div className="parameter parameter-filter">
@@ -308,13 +311,12 @@ class PeerFilter extends React.Component {
   }
 }
 
-PeerFilter.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore)
-};
-
-@inject('rootStore')
 @observer
 class TimeFilter extends React.Component {
+  static propTypes = null && {
+    filtersStore: PropTypes.instanceOf(FiltersStore),
+  };
+
   constructor() {
     super();
 
@@ -350,14 +352,12 @@ class TimeFilter extends React.Component {
       this.selectorOptions.set(key, value);
     });
 
-    this.factor = 1;
-
     this.select = null;
   }
   onChange() {
-    const filter = this.props.rootStore.filters;
+    const filter = this.props.filtersStore;
 
-    filter.setTime(this.state.min * this.factor, this.state.max * this.factor);
+    filter.setTime(this.state.min * 1, this.state.max * 1);
   }
   handleDoubleClick() {
     this.state.min = 0;
@@ -400,7 +400,7 @@ class TimeFilter extends React.Component {
     this.select = element;
   }
   getSelect() {
-    const filter = this.props.rootStore.filters;
+    const filter = this.props.filtersStore;
 
     let defaultValue = -1;
     const options = [];
@@ -476,9 +476,5 @@ class TimeFilter extends React.Component {
     );
   }
 }
-
-TimeFilter.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore)
-};
 
 export default Filters;

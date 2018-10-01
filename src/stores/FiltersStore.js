@@ -33,6 +33,8 @@ const FiltersStore = types.model('FiltersStore', {
   text: types.optional(types.string, ''),
   minSize: types.optional(types.number, 0),
   maxSize: types.optional(types.number, 0),
+  minSizeGb: types.optional(types.number, 0),
+  maxSizeGb: types.optional(types.number, 0),
   minSeed: types.optional(types.number, 0),
   maxSeed: types.optional(types.number, 0),
   minPeer: types.optional(types.number, 0),
@@ -45,8 +47,11 @@ const FiltersStore = types.model('FiltersStore', {
       self.text = value;
     },
     setSize(min, max) {
-      self.minSize = min;
-      self.maxSize = max;
+      const factor = 1024 * 1024 * 1024;
+      self.minSize = min * factor;
+      self.maxSize = max * factor;
+      self.minSizeGb = min;
+      self.minSizeGb = max;
     },
     setSeed(min, max) {
       self.minSeed = min;
