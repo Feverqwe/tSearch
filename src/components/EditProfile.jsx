@@ -1,4 +1,5 @@
 import {inject, observer} from "mobx-react";
+import {isAlive} from "mobx-state-tree";
 import React from "react";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
@@ -44,7 +45,9 @@ class EditProfile extends React.Component {
   }
 
   componentWillUnmount() {
-    this.profileEditorStore.removeProfilePage(this.props.id);
+    if (isAlive(this.profileEditorStore)) {
+      this.profileEditorStore.removeProfilePage(this.props.id);
+    }
   }
 
   get profileEditorStore() {
