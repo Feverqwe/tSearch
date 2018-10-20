@@ -36,7 +36,9 @@ class EditProfile extends React.Component {
     this.search = null;
 
     this.sortable = null;
+  }
 
+  componentDidMount() {
     this.profileEditorStore.createProfilePage(this.props.id);
     this.syncTrackers(null, null);
   }
