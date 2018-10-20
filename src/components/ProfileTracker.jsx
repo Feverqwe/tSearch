@@ -10,11 +10,12 @@ import {TrackerSessionStore} from '../stores/SearchStore';
 @inject('rootStore')
 @observer
 class ProfileTracker extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleClick = this.handleClick.bind(this);
-  }
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    id: PropTypes.string,
+    profileTrackerStore: PropTypes.instanceOf(ProfileTrackerStore),
+    trackerSearchSession: PropTypes.instanceOf(TrackerSessionStore),
+  };
 
   componentDidMount() {
     if (this.props.profileTrackerStore.tracker) {
@@ -28,7 +29,7 @@ class ProfileTracker extends React.Component {
     }
   }
 
-  handleClick(e) {
+  handleClick = (e) => {
     e.preventDefault();
 
     const wasSelected = this.props.rootStore.profiles.isSelectedTracker(this.props.id);
@@ -36,7 +37,7 @@ class ProfileTracker extends React.Component {
     if (!wasSelected) {
       this.props.rootStore.profiles.addSelectedTracker(this.props.id);
     }
-  }
+  };
 
   render() {
     const tracker = this.props.profileTrackerStore.tracker;
@@ -115,12 +116,5 @@ class ProfileTracker extends React.Component {
     );
   }
 }
-
-ProfileTracker.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  id: PropTypes.string,
-  profileTrackerStore: PropTypes.instanceOf(ProfileTrackerStore),
-  trackerSearchSession: PropTypes.instanceOf(TrackerSessionStore),
-};
 
 export default ProfileTracker;

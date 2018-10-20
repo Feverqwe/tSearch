@@ -10,6 +10,13 @@ import SearchStore from "../stores/SearchStore";
 @inject('rootStore')
 @observer
 class Profile extends React.Component {
+  static propTypes = null && {
+    id: PropTypes.string,
+    rootStore: PropTypes.instanceOf(RootStore),
+    profileStore: PropTypes.instanceOf(ProfileStore),
+    searchStore: PropTypes.instanceOf(SearchStore),
+  };
+
   render() {
     const profileStore = this.props.profileStore;
 
@@ -31,12 +38,5 @@ class Profile extends React.Component {
     );
   }
 }
-
-Profile.propTypes = null && {
-  id: PropTypes.string,
-  rootStore: PropTypes.instanceOf(RootStore),
-  profileStore: PropTypes.instanceOf(ProfileStore),
-  searchStore: PropTypes.instanceOf(SearchStore),
-};
 
 export default Profile;

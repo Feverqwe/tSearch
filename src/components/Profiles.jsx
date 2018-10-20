@@ -9,11 +9,13 @@ import {Link} from "react-router-dom";
 @inject('rootStore')
 @observer
 class Profiles extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    searchStore: PropTypes.instanceOf(SearchStore),
+  };
+
   constructor(props) {
     super(props);
-
-    this.handleSelect = this.handleSelect.bind(this);
-    this.refSelect = this.refSelect.bind(this);
 
     this.select = null;
   }
@@ -27,16 +29,16 @@ class Profiles extends React.Component {
     }
   }
 
-  handleSelect() {
+  handleSelect = () => {
     const rootStore = this.props.rootStore;
     const id = this.select.value;
     rootStore.profiles.setProfileId(id);
     rootStore.profiles.saveProfile();
-  }
+  };
 
-  refSelect(element) {
+  refSelect = (element) => {
     this.select = element;
-  }
+  };
 
   render() {
     const rootStore = this.props.rootStore;
@@ -87,10 +89,5 @@ class Profiles extends React.Component {
     }
   }
 }
-
-Profiles.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  searchStore: PropTypes.instanceOf(SearchStore),
-};
 
 export default Profiles;

@@ -14,6 +14,10 @@ const logger = getLogger('CodeMakerFrame');
 @inject('rootStore')
 @observer
 class CodeMakerFrame extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+  };
+
   constructor(props) {
     super(props);
 
@@ -21,10 +25,6 @@ class CodeMakerFrame extends React.Component {
 
     this.selectClassName = 'kit_select';
   }
-
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-  };
 
   get frameStore() {
     return this.props.rootStore.codeMaker.frame;

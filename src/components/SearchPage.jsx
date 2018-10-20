@@ -13,6 +13,12 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
 @inject('rootStore')
 @observer
 class SearchPage extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    searchStore: PropTypes.instanceOf(SearchStore),
+    searchPageStore: PropTypes.instanceOf(SearchPageStore),
+  };
+
   render() {
     const columns = ['date', 'quality', 'title', 'size', 'seeds', 'peers'];
     if (this.props.rootStore.options.options.hidePeerRow) {
@@ -49,27 +55,24 @@ class SearchPage extends React.Component {
   }
 }
 
-SearchPage.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  searchStore: PropTypes.instanceOf(SearchStore),
-  searchPageStore: PropTypes.instanceOf(SearchPageStore),
-};
 
 @observer
 class SearchPageColumn extends React.Component {
-  constructor(props) {
-    super(props);
+  static propTypes = null && {
+    searchStore: PropTypes.instanceOf(SearchStore),
+    searchPageStore: PropTypes.instanceOf(SearchPageStore),
+    type: PropTypes.string,
+  };
 
-    this.handleClick = this.handleClick.bind(this);
-  }
-  handleClick(e) {
+  handleClick = (e) => {
     e.preventDefault();
     if (e.ctrlKey) {
       this.props.searchPageStore.appendSortBy(this.props.type);
     } else {
       this.props.searchPageStore.sortBy(this.props.type);
     }
-  }
+  };
+
   render() {
     const type = this.props.type;
     const name = chrome.i18n.getMessage('row_' + type);
@@ -98,26 +101,24 @@ class SearchPageColumn extends React.Component {
   }
 }
 
-SearchPageColumn.propTypes = null && {
-  searchStore: PropTypes.instanceOf(SearchStore),
-  searchPageStore: PropTypes.instanceOf(SearchPageStore),
-  type: PropTypes.string,
-};
-
 @inject('rootStore')
 @observer
 class SearchPageRow extends React.Component {
-  constructor(props) {
-    super(props);
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    searchStore: PropTypes.instanceOf(SearchStore),
+    searchPageStore: PropTypes.instanceOf(SearchPageStore),
+    row: PropTypes.instanceOf(ResultPageItemStore),
+    columns: PropTypes.arrayOf(PropTypes.string)
+  };
 
-    this.handleClick = this.handleClick.bind(this);
-  }
-  handleClick() {
+  handleClick = () => {
     const rootStore = this.props.rootStore;
     const searchStore = this.props.searchStore;
     const result = this.props.result;
     rootStore.history.addClick(searchStore.query, result.title, result.url, result.trackerId);
-  }
+  };
+
   render() {
     const result = this.props.result;
     const cells = this.props.columns.map(type => {
@@ -227,13 +228,5 @@ class SearchPageRow extends React.Component {
     );
   }
 }
-
-SearchPageRow.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  searchStore: PropTypes.instanceOf(SearchStore),
-  searchPageStore: PropTypes.instanceOf(SearchPageStore),
-  row: PropTypes.instanceOf(ResultPageItemStore),
-  columns: PropTypes.arrayOf(PropTypes.string)
-};
 
 export default SearchPage;

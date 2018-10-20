@@ -11,57 +11,62 @@ const debug = getLogger('SearchForm');
 @inject('rootStore')
 @observer
 class SearchForm extends React.Component {
-  constructor() {
-    super();
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore)
+  };
+
+  constructor(props) {
+    super(props);
 
     this.state = {
       shouldRenderSuggestions: false
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.renderSuggestion = this.renderSuggestion.bind(this);
-    this.shouldRenderSuggestions = this.shouldRenderSuggestions.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.enableRenderSuggestions = this.enableRenderSuggestions.bind(this);
-    this.handleFetchSuggestions = this.handleFetchSuggestions.bind(this);
-    this.handleClearSuggestions = this.handleClearSuggestions.bind(this);
   }
+
   componentDidMount() {
     if (this.props.rootStore.history.state === 'idle') {
       this.props.rootStore.history.fetchHistory();
     }
   }
-  enableRenderSuggestions() {
+
+  enableRenderSuggestions = () => {
     if (!this.state.shouldRenderSuggestions) {
       this.setState({
         shouldRenderSuggestions: true
       });
     }
-  }
-  handleChange(e, {newValue}) {
+  };
+
+  handleChange = (e, {newValue}) => {
     const searchForm = this.props.rootStore.searchForm;
     this.enableRenderSuggestions();
     searchForm.setQuery(newValue);
-  }
-  shouldRenderSuggestions() {
+  };
+
+  shouldRenderSuggestions = () => {
     return this.state.shouldRenderSuggestions;
-  }
-  handleSubmit(e) {
+  };
+
+  handleSubmit = (e) => {
     const searchForm = this.props.rootStore.searchForm;
     e.preventDefault();
     this.props.onSubmit(searchForm.query);
-  }
-  handleFetchSuggestions({value}) {
+  };
+
+  handleFetchSuggestions = ({value}) => {
     this.props.rootStore.searchForm.fetchSuggestions(value);
-  }
-  handleClearSuggestions() {
+  };
+
+  handleClearSuggestions = () => {
     this.props.rootStore.searchForm.clearSuggestions();
-  }
-  renderSuggestion(suggestion) {
+  };
+
+  renderSuggestion = (suggestion) => {
     return (
       <span>{suggestion}</span>
     );
-  }
+  };
+
   render() {
     const searchForm = this.props.rootStore.searchForm;
     const inputProps = {
@@ -104,9 +109,5 @@ class SearchForm extends React.Component {
     );
   }
 }
-
-SearchForm.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore)
-};
 
 export default SearchForm;

@@ -11,13 +11,13 @@ const qs = require('querystring');
 @inject('rootStore')
 @observer
 class Header extends React.Component {
-  constructor(props) {
-    super(props);
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    resetSearch: PropTypes.func,
+    searchStore: PropTypes.instanceOf(SearchStore),
+  };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-  }
-  handleSubmit(query) {
+  handleSubmit = (query) => {
     if (this.props.searchStore && this.props.searchStore.query === query) {
       this.props.resetSearch();
     } else {
@@ -26,10 +26,12 @@ class Header extends React.Component {
       });
       this.props.history.push(location);
     }
-  }
-  handleClick() {
+  };
+
+  handleClick = () => {
     this.props.rootStore.searchForm.setQuery('');
-  }
+  };
+
   render() {
     return (
       <div className="body__head">
@@ -45,11 +47,5 @@ class Header extends React.Component {
     );
   }
 }
-
-Header.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  resetSearch: PropTypes.func,
-  searchStore: PropTypes.instanceOf(SearchStore),
-};
 
 export default Header;

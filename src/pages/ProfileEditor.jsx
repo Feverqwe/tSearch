@@ -16,7 +16,14 @@ const logger = getLogger('ProfileEditor');
 @inject('rootStore')
 @observer
 class ProfileEditor extends React.Component {
-  componentDidMount() {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    id: PropTypes.string,
+  };
+
+  constructor(props) {
+    super(props);
+
     if (this.props.rootStore.profiles.state === 'idle') {
       this.props.rootStore.profiles.fetchProfiles();
     }
@@ -30,30 +37,11 @@ class ProfileEditor extends React.Component {
     const profilesStore = rootStore.profiles;
     const trackersStore = rootStore.trackers;
 
-    let state = profilesStore.state;
-    if (state === 'done') {
-      state = trackersStore.state;
+    if (profilesStore.state !== 'done') {
+      return (`Loading profile: ${profilesStore.state}`);
     }
-
-    let page = null;
-    switch (state) {
-      case 'pending': {
-        page = ('Loading...');
-        break;
-      }
-      case 'error': {
-        page = ('Error');
-        break;
-      }
-      case 'done': {
-        page = (
-          <ProfileEditorPage {...this.props}/>
-        );
-        break;
-      }
-      default: {
-        page = ('Idle');
-      }
+    if (trackersStore.state !== 'done') {
+      return (`Loading trackers: ${trackersStore.state}`);
     }
 
     return (
@@ -65,7 +53,7 @@ class ProfileEditor extends React.Component {
             <Filters/>
           </div>
           <div className="main">
-            {page}
+            <ProfileEditorPage {...this.props}/>
           </div>
         </div>
         <ScrollTop/>
@@ -74,19 +62,25 @@ class ProfileEditor extends React.Component {
   }
 }
 
-ProfileEditor.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  id: PropTypes.string,
-};
-
 
 @inject('rootStore')
 @observer
 class ProfileEditorPage extends React.Component {
-  componentDidMount() {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    id: PropTypes.string,
+  };
+
+  constructor(props) {
+    super(props);
+
     if (!this.props.rootStore.profileEditor) {
       this.props.rootStore.createProfileEditor();
     }
+  }
+
+  get profileEditorStore() {
+    return this.props.rootStore.profileEditor;
   }
 
   componentWillUnmount() {
@@ -94,25 +88,16 @@ class ProfileEditorPage extends React.Component {
   }
 
   render() {
-    if (!this.props.rootStore.profileEditor) {
-      return ('Loading...');
-    }
-
     if (this.props.id) {
       return (
-        <EditProfile key={this.props.id} id={this.props.id}/>
+        <EditProfile key={this.props.id} id={this.props.id} profileEditorStore={this.profileEditorStore}/>
       );
     } else {
       return (
-        <EditProfiles history={this.props.history}/>
+        <EditProfiles history={this.props.history} profileEditorStore={this.profileEditorStore}/>
       );
     }
   }
 }
-
-ProfileEditorPage.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  id: PropTypes.string,
-};
 
 export default ProfileEditor;

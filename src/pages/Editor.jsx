@@ -22,6 +22,12 @@ const logger = getLogger('Editor');
 @inject('rootStore')
 @observer
 class Editor extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    type: PropTypes.string,
+    id: PropTypes.string,
+  };
+
   constructor(props) {
     super(props);
 
@@ -29,32 +35,25 @@ class Editor extends React.Component {
       showAddCodeDialog: false
     };
 
-    this.handleAutoUpdateChange = this.handleAutoUpdateChange.bind(this);
-    this.handleTextareaChange = this.handleTextareaChange.bind(this);
-    this.handleAddCode = this.handleAddCode.bind(this);
-    this.handleCloseWindow = this.handleCloseWindow.bind(this);
-    this.handleDialogCancel = this.handleDialogCancel.bind(this);
-    this.handleDialogSave = this.handleDialogSave.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-
-    this.refTextarea = this.refTextarea.bind(this);
-    this.refAutoUpdate = this.refAutoUpdate.bind(this);
-    this.refDialogTextarea = this.refDialogTextarea.bind(this);
-
     this.editor = null;
     this.autoUpdate = null;
     this.dialogTextarea = null;
-  }
-  componentDidMount() {
-    this.props.rootStore.createEditor(this.props.type, this.props.id);
-    if (this.props.rootStore.editor.state === 'idle') {
-      this.props.rootStore.editor.fetchModule();
+
+    this.props.rootStore.createEditor(props.type, props.id);
+    if (this.editorStore.state === 'idle') {
+      this.editorStore.fetchModule();
     }
   }
   componentWillUnmount() {
     this.props.rootStore.destroyEditor();
   }
-  refTextarea(element) {
+
+  /**@return EditorStore*/
+  get editorStore() {
+    return this.props.rootStore.editor;
+  }
+
+  refTextarea = (element) => {
     if (!element) {
       if (this.editor) {
         this.editor.off('change', this.handleTextareaChange);
@@ -82,40 +81,48 @@ class Editor extends React.Component {
       });
       this.editor.on('change', this.handleTextareaChange);
     }
-  }
-  refAutoUpdate(element) {
+  };
+
+  refAutoUpdate = (element) => {
     this.autoUpdate = element;
-  }
-  refDialogTextarea(element) {
+  };
+
+  refDialogTextarea = (element) => {
     this.dialogTextarea = element;
-  }
-  handleTextareaChange() {
-    const editor = this.props.rootStore.editor;
-    editor.setCode(this.editor.getValue());
-  }
-  handleAutoUpdateChange() {
-    const editor = this.props.rootStore.editor;
-    editor.options.setAutoUpdate(this.autoUpdate.checked);
-  }
-  handleAddCode(e) {
+  };
+
+  handleTextareaChange = (e) => {
+    const editorStore = this.editorStore;
+    editorStore.setCode(this.editor.getValue());
+  };
+
+  handleAutoUpdateChange = (e) => {
+    const editorStore = this.editorStore;
+    editorStore.options.setAutoUpdate(this.autoUpdate.checked);
+  };
+
+  handleAddCode = (e) => {
     e.preventDefault();
     this.setState({
       showAddCodeDialog: true
     });
-  }
-  handleCloseWindow(e) {
+  };
+
+  handleCloseWindow = (e) => {
     e.preventDefault();
     window.close();
-  }
-  handleDialogCancel(e) {
+  };
+
+  handleDialogCancel = (e) => {
     e && e.preventDefault();
     this.setState({
       showAddCodeDialog: false
     });
-  }
-  handleDialogSave(e) {
+  };
+
+  handleDialogSave = (e) => {
     e.preventDefault();
-    const editor = this.props.rootStore.editor;
+    const editorStore = this.editorStore;
 
     try {
       const text = this.dialogTextarea.value;
@@ -130,7 +137,7 @@ class Editor extends React.Component {
 
       const script = jsonToUserscript(json);
 
-      editor.setCode(script);
+      editorStore.setCode(script);
       this.editor.setValue(script);
 
       this.setState({
@@ -140,42 +147,32 @@ class Editor extends React.Component {
       logger.error('Add code error', err);
       alert('Add code error: \n' + err.stack);
     }
-  }
-  handleSave(e) {
-    e && e.preventDefault();
-    const editor = this.props.rootStore.editor;
-    editor.save();
-  }
-  render() {
-    const editor = this.props.rootStore.editor;
+  };
 
-    switch (!editor || editor.state) {
-      case 'pending': {
-        return ('Loading...');
-      }
-      case 'error': {
-        return ('Error');
-      }
-      case 'done': {
-        break;
-      }
-      default: {
-        return ('Idle');
-      }
+  handleSave = (e) => {
+    e && e.preventDefault();
+    const editorStore = this.editorStore;
+    editorStore.save();
+  };
+
+  render() {
+    const editorStore = this.editorStore;
+    if (editorStore.state !== 'done') {
+      return (`Loading editor: ${editorStore.state}`);
     }
 
     let saveBtn = null;
-    if (editor.saveState === 'pending') {
+    if (editorStore.saveState === 'pending') {
       saveBtn = (
         '...'
       );
     } else {
       const classList = ['button head__action head__action-save'];
-      if (editor.saveState === 'error') {
+      if (editorStore.saveState === 'error') {
         classList.push('error');
       }
       saveBtn = (
-        <a onClick={this.handleSave} href="#save" className={classList.join(' ')}>{chrome.i18n.getMessage('save')}{editor.hasChanges() ? '*' : ''}</a>
+        <a onClick={this.handleSave} href="#save" className={classList.join(' ')}>{chrome.i18n.getMessage('save')}{editorStore.hasChanges() ? '*' : ''}</a>
       );
     }
 
@@ -200,7 +197,7 @@ class Editor extends React.Component {
         <div className="editor__head">
           <div className="head__options">
             <label>
-              <input ref={this.refAutoUpdate} type="checkbox" className="option__auto-update" defaultChecked={editor.options.autoUpdate} onChange={this.handleAutoUpdateChange}/>
+              <input ref={this.refAutoUpdate} type="checkbox" className="option__auto-update" defaultChecked={editorStore.options.autoUpdate} onChange={this.handleAutoUpdateChange}/>
               <span>{chrome.i18n.getMessage('autoUpdate')}</span>
             </label>
           </div>
@@ -211,18 +208,12 @@ class Editor extends React.Component {
           </div>
         </div>
         <div className="editor__body">
-          <textarea ref={this.refTextarea} className="editor__textarea" defaultValue={editor.code}/>
+          <textarea ref={this.refTextarea} className="editor__textarea" defaultValue={editorStore.code}/>
         </div>
         {dialog}
       </div>
     );
   }
 }
-
-Editor.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  type: PropTypes.string,
-  id: PropTypes.string,
-};
 
 export default Editor;

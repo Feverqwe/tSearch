@@ -6,25 +6,27 @@ class Dialog extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleBodyClick = this.handleBodyClick.bind(this);
-    this.refDialog = this.refDialog.bind(this);
-
     this.dialog = null;
   }
-  handleBodyClick(e) {
-    if (!this.dialog.contains(e.target)) {
-      this.props.onClose();
-    }
-  }
+
   componentDidMount() {
     document.addEventListener('click', this.handleBodyClick);
   }
+
   componentWillUnmount() {
     document.removeEventListener('click', this.handleBodyClick);
   }
-  refDialog(element) {
+
+  handleBodyClick = (e) => {
+    if (!this.dialog.contains(e.target)) {
+      this.props.onClose();
+    }
+  };
+
+  refDialog = (element) => {
     this.dialog = element;
-  }
+  };
+
   render() {
     const classList = ['dialog__body'];
     if (this.props.className) {

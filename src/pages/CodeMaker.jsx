@@ -27,6 +27,12 @@ class CodeMaker extends React.Component {
     page: PropTypes.string,
   };
 
+  constructor(props) {
+    super(props);
+
+    this.props.rootStore.createCodeMaker();
+  }
+
   get codeMakerStore() {
     return this.props.rootStore.codeMaker;
   }
@@ -38,10 +44,6 @@ class CodeMaker extends React.Component {
     desc: 'kitDesc',
     save: 'kitSaveLoad',
   };
-
-  componentDidMount() {
-    this.props.rootStore.createCodeMaker();
-  }
 
   componentWillUnmount() {
     this.props.rootStore.destroyCodeMaker();
@@ -61,10 +63,6 @@ class CodeMaker extends React.Component {
   };
 
   render() {
-    if (!this.codeMakerStore) {
-      return ('Loading...');
-    }
-
     const menuItems = ['search', 'selectors', 'auth', 'desc', 'save'].map(page => {
       const isActive = this.props.page === page;
       const classList = [];

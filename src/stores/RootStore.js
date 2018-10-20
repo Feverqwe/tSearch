@@ -40,7 +40,7 @@ const RootStore = types.model('RootStore', {
   filters: types.optional(FiltersStore, {}),
   profiles: types.optional(ProfilesStore, {}),
   trackers: types.optional(TrackersStore, {}),
-  searches: types.array(SearchStore),
+  searches: types.map(SearchStore),
   options: types.optional(OptionsStore, {}),
   explorer: types.optional(ExplorerStore, {}),
   profileEditor: types.maybeNull(ProfileEditorStore),
@@ -49,14 +49,11 @@ const RootStore = types.model('RootStore', {
 }).actions(/**RootStore*/self => {
   return {
     createSearch(query) {
-      self.searches.push({query});
-      return self.searches.slice(-1)[0];
+      self.searches.set(query, {query});
+      return query;
     },
-    destroySearch(search) {
-      const pos = self.searches.indexOf(search);
-      if (pos !== -1) {
-        self.searches.splice(pos, 1);
-      }
+    destroySearch(query) {
+      self.searches.delete(query);
     },
     createProfileEditor() {
       self.profileEditor = {

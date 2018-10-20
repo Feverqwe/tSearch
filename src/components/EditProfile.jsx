@@ -7,6 +7,7 @@ import getLogger from "../tools/getLogger";
 import blankSvg from "../assets/img/blank.svg";
 import TrackerStore from "../stores/TrackerStore";
 import {Link} from "react-router-dom";
+import ProfileEditorStore from "../stores/ProfileEditorStore";
 
 const Sortable = require('sortablejs');
 
@@ -16,6 +17,12 @@ const logger = getLogger('EditProfile');
 @inject('rootStore')
 @observer
 class EditProfile extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    id: PropTypes.string,
+    profileEditorStore: PropTypes.instanceOf(ProfileEditorStore),
+  };
+
   constructor(props) {
     super(props);
 
@@ -25,30 +32,27 @@ class EditProfile extends React.Component {
       trackers: []
     };
 
-    this.handleChangeName = this.handleChangeName.bind(this);
-    this.handleSearchChange = this.handleSearchChange.bind(this);
-    this.refName = this.refName.bind(this);
-    this.refSearch = this.refSearch.bind(this);
-    this.refTrackers = this.refTrackers.bind(this);
-    this.handleFilterClick = this.handleFilterClick.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-
-    this.profile = null;
-
     this.name = null;
     this.search = null;
 
     this.sortable = null;
-  }
-  componentDidMount() {
-    this.profile = this.props.rootStore.profileEditor.getProfilePage(this.props.id);
+
+    this.profileEditorStore.createProfilePage(this.props.id);
     this.syncTrackers(null, null);
   }
+
   componentWillUnmount() {
-    if (this.props.rootStore.profileEditor) {
-      this.props.rootStore.profileEditor.removeProfilePage(this.props.id);
-    }
+    this.profileEditorStore.removeProfilePage(this.props.id);
   }
+
+  get profileEditorStore() {
+    return this.props.profileEditorStore;
+  }
+
+  get profileStore() {
+    return this.profileEditorStore.profilePages.get(this.props.id);
+  }
+
   syncTrackers(filter, search) {
     if (filter === null) {
       filter = this.state.filter;
@@ -59,22 +63,27 @@ class EditProfile extends React.Component {
     this.setState({
       filter: filter,
       search: search,
-      trackerIds: this.profile.getTrackerIdsWithFilter(filter, search).slice(0)
+      trackerIds: this.profileStore.getTrackerIdsWithFilter(filter, search).slice(0)
     });
   }
-  handleChangeName() {
-    this.profile.setName(this.name.value);
-  }
-  refName(element) {
+
+  handleChangeName = () => {
+    this.profileStore.setName(this.name.value);
+  };
+
+  refName = (element) => {
     this.name = element;
-  }
-  handleSearchChange() {
+  };
+
+  handleSearchChange = () => {
     this.syncTrackers(null, this.search.value);
-  }
-  refSearch(element) {
+  };
+
+  refSearch = (element) => {
     this.search = element;
-  }
-  refTrackers(node) {
+  };
+
+  refTrackers = (node) => {
     if (!node) {
       if (this.sortable) {
         this.sortable.destroy();
@@ -126,38 +135,41 @@ class EditProfile extends React.Component {
           const prevId = prevNode && prevNode.dataset.id;
           const nextId = nextNode && nextNode.dataset.id;
 
-          this.profile.moveTracker(id, prevId, nextId);
+          this.profileStore.moveTracker(id, prevId, nextId);
         }
       });
     }
-  }
-  handleFilterClick(e, type) {
+  };
+
+  handleFilterClick = (e, type) => {
     e.preventDefault();
     this.syncTrackers(type, null);
-  }
-  handleSave(e) {
+  };
+
+  handleSave = (e) => {
     e.preventDefault();
-    this.profile.save();
+    this.profileStore.save();
     this.syncTrackers(null, null);
-    this.props.rootStore.profileEditor.save();
-  }
+    this.profileEditorStore.save();
+  };
+
   render() {
-    if (!this.profile) {
+    if (!this.profileStore) {
       return ('Loading...');
     }
 
     const filterItems = ['all', 'withoutList', 'selected'].map(type => {
       const isActive = type === this.state.filter;
       return (
-        <FilterButton key={`filter-${type}`} isActive={isActive} type={type} profile={this.profile} onClick={this.handleFilterClick}/>
+        <FilterButton key={`filter-${type}`} isActive={isActive} type={type} profile={this.profileStore} onClick={this.handleFilterClick}/>
       );
     });
 
     const trackers = this.state.trackerIds.reduce((result, id) => {
-      const editorTracker = this.profile.editorTrackers.get(id);
+      const editorTracker = this.profileStore.editorTrackers.get(id);
       if (editorTracker) {
         result.push(
-          <TrackerItem key={`tracker-${editorTracker.id}`} id={editorTracker.id} editorTracker={editorTracker} profile={this.profile}/>
+          <TrackerItem key={`tracker-${editorTracker.id}`} id={editorTracker.id} editorTracker={editorTracker} profile={this.profileStore}/>
         );
       }
       return result;
@@ -168,7 +180,7 @@ class EditProfile extends React.Component {
         <div className="manager__body">
           <div className="manager__sub_header sub_header__profile">
             <div className="profile__input">
-              <input ref={this.refName} className="input__input" type="text" defaultValue={this.profile.name} onChange={this.handleChangeName}/>
+              <input ref={this.refName} className="input__input" type="text" defaultValue={this.profileStore.name} onChange={this.handleChangeName}/>
             </div>
           </div>
           <div className="manager__sub_header sub_header__filter">
@@ -194,22 +206,24 @@ class EditProfile extends React.Component {
   }
 }
 
-EditProfile.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  id: PropTypes.string,
-};
-
 
 @observer
 class FilterButton extends React.Component {
-  constructor(props) {
-    super(props);
+  static propTypes = null && {
+    type: PropTypes.string,
+    isActive: PropTypes.bool,
+    profile: PropTypes.instanceOf(EditProfileStore),
+    onClick: PropTypes.func,
+  };
 
-    this.handleClick = this.handleClick.bind(this);
+  get profileStore() {
+    return this.props.profile;
   }
-  handleClick(e) {
+
+  handleClick = (e) => {
     this.props.onClick(e, this.props.type);
-  }
+  };
+
   render() {
     const type = this.props.type;
 
@@ -218,7 +232,7 @@ class FilterButton extends React.Component {
       classList.push('item__selected');
     }
 
-    const count = this.props.profile.getTrackersByFilter(type).length;
+    const count = this.profileStore.getTrackersByFilter(type).length;
 
     return (
       <a key={type} className={classList.join(' ')} onClick={this.handleClick} href={'#'}>
@@ -230,57 +244,59 @@ class FilterButton extends React.Component {
   }
 }
 
-FilterButton.propTypes = null && {
-  type: PropTypes.string,
-  isActive: PropTypes.bool,
-  profile: PropTypes.instanceOf(EditProfileStore),
-  onClick: PropTypes.func,
-};
-
 
 @inject('rootStore')
 @observer
 class TrackerItem extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    id: PropTypes.string,
+    profile: PropTypes.instanceOf(EditProfileStore),
+    editorTracker: PropTypes.oneOfType([
+      PropTypes.instanceOf(EditorProfileTrackerStore),
+      PropTypes.instanceOf(TrackerStore)
+    ]),
+  };
+
   constructor(props) {
     super(props);
-
-    this.handleChecked = this.handleChecked.bind(this);
-    this.refCheckbox = this.refCheckbox.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
 
     this.checkbox = null;
   }
 
-  handleChecked() {
-    if (this.checkbox.checked) {
-      this.props.profile.addSelectedTrackerId(this.props.id);
-    } else {
-      this.props.profile.removeSelectedTrackerId(this.props.id);
-    }
+  get profileStore() {
+    return this.props.profile;
   }
 
-  handleClick(e) {
+  handleChecked = () => {
+    if (this.checkbox.checked) {
+      this.profileStore.addSelectedTrackerId(this.props.id);
+    } else {
+      this.profileStore.removeSelectedTrackerId(this.props.id);
+    }
+  };
+
+  handleClick = (e) => {
     e.preventDefault();
     this.checkbox.checked = !this.checkbox.checked;
     this.handleChecked();
-  }
+  };
 
-  handleRemove(e) {
+  handleRemove = (e) => {
     e.preventDefault();
     const trackers = this.props.rootStore.trackers;
     trackers.deleteTracker(this.props.id);
     trackers.saveTrackers();
-  }
+  };
 
-  refCheckbox(element) {
+  refCheckbox = (element) => {
     this.checkbox = element;
-  }
+  };
 
   render() {
     const tracker = this.props.editorTracker;
 
-    const checked = this.props.profile.selectedTrackerIds.indexOf(this.props.id) !== -1;
+    const checked = this.profileStore.selectedTrackerIds.indexOf(this.props.id) !== -1;
 
     const classList = ['item'];
     if (checked) {
@@ -344,15 +360,5 @@ class TrackerItem extends React.Component {
     );
   }
 }
-
-TrackerItem.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  id: PropTypes.string,
-  profile: PropTypes.instanceOf(EditProfileStore),
-  editorTracker: PropTypes.oneOfType([
-    PropTypes.instanceOf(EditorProfileTrackerStore),
-    PropTypes.instanceOf(TrackerStore)
-  ]),
-};
 
 export default EditProfile;

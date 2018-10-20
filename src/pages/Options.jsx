@@ -11,80 +11,77 @@ import {inject, observer} from "mobx-react";
 @inject('rootStore')
 @observer
 class Options extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    page: PropTypes.string,
+  };
+
   constructor(props) {
     super(props);
-  }
-  componentDidMount() {
+
     if (this.props.rootStore.options.state === 'idle') {
       this.props.rootStore.options.fetchOptions();
     }
   }
+
+  /**@return OptionsStore*/
+  get optionsStore() {
+    return this.props.rootStore.options;
+  }
+
   render() {
-    const options = this.props.rootStore.options;
+    const optionsStore = this.optionsStore;
+    if (optionsStore.state !== 'done') {
+      return (`Loading options: ${optionsStore.state}`);
+    }
+
     let page = null;
+    switch (this.props.page) {
+      case 'main': {
+        page = (
+          <div className="page page-basic">
+            <h2 className="page__title">{chrome.i18n.getMessage('basic')}</h2>
+            <OptionCheckbox name={'hidePeerRow'}/>
+            <OptionCheckbox name={'hideSeedRow'}/>
+            <OptionCheckbox name={'categoryWordFilter'}/>
+            <OptionCheckbox name={'contextMenu'}/>
+            <OptionCheckbox name={'disablePopup'}/>
+            <OptionCheckbox name={'invertIcon'}/>
+            <OptionCheckbox name={'doNotSendStatistics'}/>
+          </div>
+        );
+        break;
+      }
+      case 'explorer': {
+        const sections = Object.keys(optionsStore.options.explorerSections).map(name => {
+          if (name === 'favorite') return null;
+          return (
+            <OptionCheckbox store={optionsStore.options.explorerSections} key={name} name={name}/>
+          );
+        });
 
-    switch (options.state) {
-      case 'pending': {
-        page = ('Loading...');
+        page = (
+          <div className="page page-mainPage">
+            <h2 className="page__title">{chrome.i18n.getMessage('mainPage')}</h2>
+            <OptionCheckbox name={'originalPosterName'}/>
+            <OptionText name={'kpFolderId'}/>
+            <h2 className="page__sub_title">{chrome.i18n.getMessage('showSections')}</h2>
+            <div className="mainPage__sections">{sections}</div>
+          </div>
+        );
         break;
       }
-      case 'error': {
-        page = ('Error...');
+      case 'backup': {
+        page = (
+          <div className="page page-backup">
+            <h2 className="page__title">{chrome.i18n.getMessage('backupRestore')}</h2>
+            <div className="page__buttons">
+              <a type="button" href="#exportZip" className="button backup__export-zip">{chrome.i18n.getMessage('exportZip')}</a>
+              <a type="button" href="#importZip" className="button backup__import-zip">{chrome.i18n.getMessage('importZip')}</a>
+            </div>
+          </div>
+        );
         break;
-      }
-      case 'done': {
-        switch (this.props.page) {
-          case 'main': {
-            page = (
-              <div className="page page-basic">
-                <h2 className="page__title">{chrome.i18n.getMessage('basic')}</h2>
-                <OptionCheckbox name={'hidePeerRow'}/>
-                <OptionCheckbox name={'hideSeedRow'}/>
-                <OptionCheckbox name={'categoryWordFilter'}/>
-                <OptionCheckbox name={'contextMenu'}/>
-                <OptionCheckbox name={'disablePopup'}/>
-                <OptionCheckbox name={'invertIcon'}/>
-                <OptionCheckbox name={'doNotSendStatistics'}/>
-              </div>
-            );
-            break;
-          }
-          case 'explorer': {
-            const sections = Object.keys(options.options.explorerSections).map(name => {
-              if (name === 'favorite') return null;
-              return (
-                <OptionCheckbox store={options.options.explorerSections} key={name} name={name}/>
-              );
-            });
-
-            page = (
-              <div className="page page-mainPage">
-                <h2 className="page__title">{chrome.i18n.getMessage('mainPage')}</h2>
-                <OptionCheckbox name={'originalPosterName'}/>
-                <OptionText name={'kpFolderId'}/>
-                <h2 className="page__sub_title">{chrome.i18n.getMessage('showSections')}</h2>
-                <div className="mainPage__sections">{sections}</div>
-              </div>
-            );
-            break;
-          }
-          case 'backup': {
-            page = (
-              <div className="page page-backup">
-                <h2 className="page__title">{chrome.i18n.getMessage('backupRestore')}</h2>
-                <div className="page__buttons">
-                  <a type="button" href="#exportZip" className="button backup__export-zip">{chrome.i18n.getMessage('exportZip')}</a>
-                  <a type="button" href="#importZip" className="button backup__import-zip">{chrome.i18n.getMessage('importZip')}</a>
-                </div>
-              </div>
-            );
-            break;
-          }
-        }
-        break;
-      }
-      default: {
-        page = ('Idle');
       }
     }
 
@@ -110,34 +107,36 @@ class Options extends React.Component {
   }
 }
 
-Options.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  page: PropTypes.string,
-};
-
 
 @inject('rootStore')
 @observer
 class OptionCheckbox extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    name: PropTypes.string,
+    store: PropTypes.object,
+  };
+
   constructor(props) {
     super(props);
 
-    this.handleOptionChange = this.handleOptionChange.bind(this);
-    this.refInput = this.refInput.bind(this);
-
     this.input = null;
   }
-  handleOptionChange(e) {
+
+  handleOptionChange = (e) => {
     const name = this.props.name;
     this.store.setEnabled(name, this.input.checked);
     this.props.rootStore.options.save();
-  }
-  refInput(element) {
+  };
+
+  refInput = (element) => {
     this.input = element;
-  }
+  };
+
   get store() {
     return this.props.store || this.props.rootStore.options.options;
   }
+
   render() {
     const name = this.props.name;
 
@@ -152,32 +151,31 @@ class OptionCheckbox extends React.Component {
   }
 }
 
-OptionCheckbox.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  name: PropTypes.string,
-  store: PropTypes.object,
-};
-
 
 @inject('rootStore')
 @observer
 class OptionText extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    name: PropTypes.string,
+  };
+
   constructor(props) {
     super(props);
 
-    this.handleOptionChange = this.handleOptionChange.bind(this);
-    this.refInput = this.refInput.bind(this);
-
     this.input = null;
   }
-  handleOptionChange(e) {
+
+  handleOptionChange = (e) => {
     const name = this.props.name;
     this.props.rootStore.options.options.setValue(name, this.input.value);
     this.props.rootStore.options.save();
-  }
-  refInput(element) {
+  };
+
+  refInput = (element) => {
     this.input = element;
-  }
+  };
+
   render() {
     const options = this.props.rootStore.options;
     const name = this.props.name;
@@ -192,10 +190,5 @@ class OptionText extends React.Component {
     );
   }
 }
-
-OptionText.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  name: PropTypes.string,
-};
 
 export default Options;

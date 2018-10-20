@@ -16,14 +16,18 @@ class Filters extends React.Component {
     rootStore: PropTypes.instanceOf(RootStore)
   };
 
-  componentDidMount() {
+  constructor(props) {
+    super(props);
+
     if (this.props.rootStore.options.state === 'idle') {
       this.props.rootStore.options.fetchOptions();
     }
   }
+
   get filtersStore() {
     return this.props.rootStore.filters;
   }
+
   render() {
     switch (this.props.rootStore.options.state) {
       case 'loading': {
@@ -56,31 +60,27 @@ class TextFilter extends React.Component {
     filtersStore: PropTypes.instanceOf(FiltersStore),
   };
 
-  constructor() {
-    super();
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleDoubleClick = this.handleDoubleClick.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.refInput = this.refInput.bind(this);
-  }
-  onChange() {
+  onChange = () => {
     const filter = this.props.filtersStore;
 
     filter.setText(this.input.value);
-  }
-  handleDoubleClick() {
+  };
+
+  handleDoubleClick = () => {
     this.input.value = '';
     this.onChange();
-  }
-  handleSubmit(e) {
+  };
+
+  handleSubmit = (e) => {
     e.preventDefault();
 
     this.onChange();
-  }
-  refInput(element) {
+  };
+
+  refInput = (element) => {
     this.input = element;
-  }
+  };
+
   render() {
     const filter = this.props.filtersStore;
 
@@ -106,37 +106,37 @@ class SizeFilter extends React.Component {
     filtersStore: PropTypes.instanceOf(FiltersStore),
   };
 
-  constructor() {
-    super();
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleDoubleClick = this.handleDoubleClick.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.refMin = this.refMin.bind(this);
-    this.refMax = this.refMax.bind(this);
+  constructor(props) {
+    super(props);
 
     this.min = null;
     this.max = null;
   }
-  onChange() {
+
+  onChange = () => {
     this.props.filtersStore.setSize(this.min.value * 1, this.max.value * 1);
-  }
-  handleDoubleClick() {
+  };
+
+  handleDoubleClick = () => {
     this.min.value = '';
     this.max.value = '';
     this.onChange();
-  }
-  handleSubmit(e) {
+  };
+
+  handleSubmit = (e) => {
     e.preventDefault();
 
     this.onChange();
-  }
-  refMin(element) {
+  };
+
+  refMin = (element) => {
     this.min = element;
-  }
-  refMax(element) {
+  };
+
+  refMax = (element) => {
     this.max = element;
-  }
+  };
+
   render() {
     const filter = this.props.filtersStore;
 
@@ -173,39 +173,39 @@ class SeedFilter extends React.Component {
     filtersStore: PropTypes.instanceOf(FiltersStore),
   };
 
-  constructor() {
-    super();
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleDoubleClick = this.handleDoubleClick.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.refMin = this.refMin.bind(this);
-    this.refMax = this.refMax.bind(this);
+  constructor(props) {
+    super(props);
 
     this.min = null;
     this.max = null;
   }
-  onChange() {
+
+  onChange = () => {
     const filter = this.props.filtersStore;
 
     filter.setSeed(this.min.value * 1, this.max.value * 1);
-  }
-  handleDoubleClick() {
+  };
+
+  handleDoubleClick = () => {
     this.min.value = '';
     this.max.value = '';
     this.onChange();
-  }
-  handleSubmit(e) {
+  };
+
+  handleSubmit = (e) => {
     e.preventDefault();
 
     this.onChange();
-  }
-  refMin(element) {
+  };
+
+  refMin = (element) => {
     this.min = element;
-  }
-  refMax(element) {
+  };
+
+  refMax = (element) => {
     this.max = element;
-  }
+  };
+
   render() {
     if (this.props.rootStore.options.options.hideSeedRow) {
       return null;
@@ -246,39 +246,39 @@ class PeerFilter extends React.Component {
     filtersStore: PropTypes.instanceOf(FiltersStore),
   };
 
-  constructor() {
-    super();
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleDoubleClick = this.handleDoubleClick.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.refMin = this.refMin.bind(this);
-    this.refMax = this.refMax.bind(this);
+  constructor(props) {
+    super(props);
 
     this.min = null;
     this.max = null;
   }
-  onChange() {
+
+  onChange = () => {
     const filter = this.props.filtersStore;
 
     filter.setPeer(this.min.value * 1, this.max.value * 1);
-  }
-  handleDoubleClick() {
+  };
+
+  handleDoubleClick = () => {
     this.min.value = '';
     this.max.value = '';
     this.onChange();
-  }
-  handleSubmit(e) {
+  };
+
+  handleSubmit = (e) => {
     e.preventDefault();
 
     this.onChange();
-  }
-  refMin(element) {
+  };
+
+  refMin = (element) => {
     this.min = element;
-  }
-  refMax(element) {
+  };
+
+  refMax = (element) => {
     this.max = element;
-  }
+  };
+
   render() {
     if (this.props.rootStore.options.options.hidePeerRow) {
       return null;
@@ -317,8 +317,8 @@ class TimeFilter extends React.Component {
     filtersStore: PropTypes.instanceOf(FiltersStore),
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       showRange: false,
@@ -327,16 +327,6 @@ class TimeFilter extends React.Component {
       min: 0,
       max: 0
     };
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleSelectChange = this.handleSelectChange.bind(this);
-    this.handleMinDateChange = this.handleMinDateChange.bind(this);
-    this.handleMaxDateChange = this.handleMaxDateChange.bind(this);
-    this.handleDoubleClick = this.handleDoubleClick.bind(this);
-    this.refSelect = this.refSelect.bind(this);
-
-    this.onChange = this.onChange.bind(this);
-    this.refDatePicker = this.refDatePicker.bind(this);
 
     this.selectorOptions = new Map();
     [
@@ -354,12 +344,14 @@ class TimeFilter extends React.Component {
 
     this.select = null;
   }
-  onChange() {
+
+  onChange = () => {
     const filter = this.props.filtersStore;
 
     filter.setTime(this.state.min * 1, this.state.max * 1);
-  }
-  handleDoubleClick() {
+  };
+
+  handleDoubleClick = () => {
     this.state.min = 0;
     this.state.max = 0;
     this.onChange();
@@ -367,13 +359,15 @@ class TimeFilter extends React.Component {
       minDate: null,
       maxDate: null
     });
-  }
-  handleSubmit(e) {
+  };
+
+  handleSubmit = (e) => {
     e.preventDefault();
 
     this.onChange();
-  }
-  handleSelectChange() {
+  };
+
+  handleSelectChange = () => {
     const value = parseInt(this.select.value, 10);
     const isExtra = value === -1;
     if (this.state.showRange !== isExtra) {
@@ -395,10 +389,12 @@ class TimeFilter extends React.Component {
       this.state.max = 0;
       this.onChange();
     }
-  }
-  refSelect(element) {
+  };
+
+  refSelect = (element) => {
     this.select = element;
-  }
+  };
+
   getSelect() {
     const filter = this.props.filtersStore;
 
@@ -419,25 +415,29 @@ class TimeFilter extends React.Component {
       </select>
     );
   }
-  handleMinDateChange(date) {
+
+  handleMinDateChange = (date) => {
     this.state.min = date && date.unix() || 0;
     this.onChange();
     this.setState({
       minDate: date
     });
-  }
-  handleMaxDateChange(date) {
+  };
+
+  handleMaxDateChange = (date) => {
     this.state.max = date && date.unix() || 0;
     this.onChange();
     this.setState({
       maxDate: date
     });
-  }
-  refDatePicker(dataPicker) {
+  };
+
+  refDatePicker = (dataPicker) => {
     if (dataPicker) {
       dataPicker.input.addEventListener('dblclick', this.handleDoubleClick);
     }
-  }
+  };
+
   getRange() {
     return (
       <form onSubmit={this.handleSubmit} className="input_box input_box-filter input_box-time-filter input_box-time-filter-visible">
@@ -459,6 +459,7 @@ class TimeFilter extends React.Component {
       </form>
     );
   }
+
   render() {
     let extra = null;
     if (this.state.showRange) {

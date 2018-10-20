@@ -14,42 +14,40 @@ const qs = require('querystring');
 @inject('rootStore')
 @observer
 class History extends React.Component {
-  componentDidMount() {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore)
+  };
+
+  constructor(props) {
+    super(props);
+
     if (this.props.rootStore.history.state === 'idle') {
       this.props.rootStore.history.fetchHistory();
     }
   }
-  render() {
-    const history = this.props.rootStore.history;
-    let body = null;
-    switch (history.state) {
-      case 'pending': {
-        body = ('Loading...');
-        break;
-      }
-      case 'error': {
-        body = ('Error');
-        break;
-      }
-      case 'done': {
-        const queries = history.getHistorySortByTime().map(query => {
-          return (
-            <HistoryQuery key={query.query} query={query} {...this.props}/>
-          );
-        });
 
-        body = (
-          <div className="history">
-            {queries}
-          </div>
-        );
-        break;
-      }
-      case 'idle': {
-        body = ('Idle');
-        break;
-      }
+  /**@return HistoryStore*/
+  get historyStore() {
+    return this.props.rootStore.history;
+  }
+
+  render() {
+    const historyStore = this.historyStore;
+    if (historyStore.state !== 'done') {
+      return (`Loading history: ${historyStore.state}`);
     }
+
+    const queries = historyStore.getHistorySortByTime().map(query => {
+      return (
+        <HistoryQuery key={query.query} query={query} {...this.props}/>
+      );
+    });
+
+    const body = (
+      <div className="history">
+        {queries}
+      </div>
+    );
 
     return (
       <div className="page-ctr">
@@ -65,25 +63,22 @@ class History extends React.Component {
   }
 }
 
-History.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore)
-};
-
 @inject('rootStore')
 @observer
 class HistoryQuery extends React.Component {
-  constructor(props) {
-    super(props);
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    query: PropTypes.instanceOf(HistoryQueryStore),
+  };
 
-    this.handleRemove = this.handleRemove.bind(this);
-  }
-  handleRemove(e) {
+  handleRemove = (e) => {
     e.preventDefault();
     const history = this.props.rootStore.history;
     const query = this.props.query;
     history.removeQuery(query.query);
     history.save();
-  }
+  };
+
   render() {
     const query = this.props.query;
 
@@ -114,27 +109,24 @@ class HistoryQuery extends React.Component {
   }
 }
 
-HistoryQuery.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  query: PropTypes.instanceOf(HistoryQueryStore),
-};
-
 @inject('rootStore')
 @observer
 class HistoryQueryLink extends React.Component {
-  constructor(props) {
-    super(props);
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    query: PropTypes.instanceOf(HistoryQueryStore),
+    link: PropTypes.instanceOf(HistoryClickStore),
+  };
 
-    this.handleRemove = this.handleRemove.bind(this);
-  }
-  handleRemove(e) {
+  handleRemove = (e) => {
     e.preventDefault();
     const history = this.props.rootStore.history;
     const query = this.props.query;
     const link = this.props.link;
     query.removeClick(link.url);
     history.save();
-  }
+  };
+
   render() {
     const link = this.props.link;
 
@@ -159,11 +151,5 @@ class HistoryQueryLink extends React.Component {
     );
   }
 }
-
-HistoryQueryLink.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  query: PropTypes.instanceOf(HistoryQueryStore),
-  link: PropTypes.instanceOf(HistoryClickStore),
-};
 
 export default History;

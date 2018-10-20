@@ -72,14 +72,13 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
 
       self.profiles = items;
     },
-    getProfilePage(id) {
+    createProfilePage(id) {
       if (!self.profilePages.has(id)) {
         const profile = self.getProfileById(id) || {id};
         const snapshot = JSON.parse(JSON.stringify(profile));
         snapshot.selectedTrackerIds = snapshot.trackers && snapshot.trackers.map(tracker => tracker.id) || [];
         self.profilePages.set(id, snapshot);
       }
-      return self.profilePages.get(id);
     },
     removeProfilePage(id) {
       self.profilePages.delete(id);

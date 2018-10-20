@@ -5,6 +5,7 @@ import RootStore from "../stores/RootStore";
 import {Link} from "react-router-dom";
 import ProfileStore from "../stores/ProfileStore";
 import getLogger from "../tools/getLogger";
+import ProfileEditorStore from "../stores/ProfileEditorStore";
 
 const uuid = require('uuid/v4');
 const Sortable = require('sortablejs');
@@ -15,17 +16,23 @@ const logger = getLogger('EditProfiles');
 @inject('rootStore')
 @observer
 class EditProfiles extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    history: PropTypes.object,
+    profileEditorStore: PropTypes.instanceOf(ProfileEditorStore),
+  };
+
   constructor(props) {
     super(props);
-
-    this.refProfiles = this.refProfiles.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-    this.handleCreate = this.handleCreate.bind(this);
 
     this.sortable = null;
   }
 
-  refProfiles(node) {
+  get profileEditorStore() {
+    return this.props.profileEditorStore;
+  }
+
+  refProfiles = (node) => {
     if (!node) {
       if (this.sortable) {
         this.sortable.destroy();
@@ -51,28 +58,28 @@ class EditProfiles extends React.Component {
           const prevId = prevNode && prevNode.dataset.id;
           const nextId = nextNode && nextNode.dataset.id;
 
-          this.props.rootStore.profileEditor.moveProfile(id, prevId, nextId);
+          this.profileEditorStore.moveProfile(id, prevId, nextId);
         }
       });
     }
-  }
+  };
 
-  handleSave(e) {
+  handleSave = (e) => {
     e.preventDefault();
-    const profileEditor = this.props.rootStore.profileEditor;
+    const profileEditor = this.profileEditorStore;
     profileEditor.save();
-  }
+  };
 
-  handleCreate(e) {
+  handleCreate = (e) => {
     e.preventDefault();
     this.props.history.push(`/profileEditor/${uuid()}`);
-  }
+  };
 
   render() {
-    const profileEditor = this.props.rootStore.profileEditor;
-    const profiles = profileEditor.profiles.map((profileStore, index) => {
+    const profileEditorStore = this.profileEditorStore;
+    const profiles = profileEditorStore.profiles.map((profileStore, index) => {
       return (
-        <ProfileItem key={profileStore.id} index={index} profileStore={profileStore} history={this.props.history}/>
+        <ProfileItem key={profileStore.id} index={index} profileEditorStore={this.profileEditorStore} profileStore={profileStore} history={this.props.history}/>
       );
     });
 
@@ -94,41 +101,44 @@ class EditProfiles extends React.Component {
   }
 }
 
-EditProfiles.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  history: PropTypes.object,
-};
-
 @inject('rootStore')
 @observer
 class ProfileItem extends React.Component {
+  static propTypes = null && {
+    rootStore: PropTypes.instanceOf(RootStore),
+    index: PropTypes.number,
+    profileStore: PropTypes.instanceOf(ProfileStore),
+    history: PropTypes.object,
+    profileEditorStore: PropTypes.instanceOf(ProfileEditorStore),
+  };
+
   constructor(props) {
     super(props);
-
-    this.handleRemove = this.handleRemove.bind(this);
-    this.handleNameClick = this.handleNameClick.bind(this);
-    this.refItem = this.refItem.bind(this);
 
     this.item = null;
   }
 
-  handleRemove(e) {
-    e.preventDefault();
-    this.props.rootStore.profileEditor.removeProfileById(this.props.profileStore.id);
+  get profileEditorStore() {
+    return this.props.profileEditorStore;
   }
 
-  handleNameClick(e) {
+  handleRemove = (e) => {
+    e.preventDefault();
+    this.profileEditorStore.removeProfileById(this.props.profileStore.id);
+  };
+
+  handleNameClick = (e) => {
     if (
       e.target === this.item ||
       e.target.classList.contains('item__name')
     ) {
       this.props.history.push(`/profileEditor/${this.props.profileStore.id}`);
     }
-  }
+  };
 
-  refItem(element) {
+  refItem = (element) => {
     this.item = element;
-  }
+  };
 
   render() {
     const profileStore = this.props.profileStore;
@@ -147,12 +157,5 @@ class ProfileItem extends React.Component {
     );
   }
 }
-
-ProfileItem.propTypes = null && {
-  rootStore: PropTypes.instanceOf(RootStore),
-  index: PropTypes.number,
-  profileStore: PropTypes.instanceOf(ProfileStore),
-  history: PropTypes.object,
-};
 
 export default EditProfiles;

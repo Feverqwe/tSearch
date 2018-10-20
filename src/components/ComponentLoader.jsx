@@ -6,6 +6,10 @@ const logger = getLogger('ComponentLoader');
 
 
 class ComponentLoader extends React.Component {
+  static propTypes = null && {
+    'load-page': PropTypes.string,
+  };
+
   constructor(props) {
     super(props);
 
@@ -58,9 +62,5 @@ class ComponentLoader extends React.Component {
     );
   }
 }
-
-ComponentLoader.propTypes = null && {
-  'load-page': PropTypes.string,
-};
 
 export default ComponentLoader;
