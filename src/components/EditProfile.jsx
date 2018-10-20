@@ -1,5 +1,4 @@
 import {inject, observer} from "mobx-react";
-import {isAlive} from "mobx-state-tree";
 import React from "react";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
@@ -8,7 +7,6 @@ import getLogger from "../tools/getLogger";
 import blankSvg from "../assets/img/blank.svg";
 import TrackerStore from "../stores/TrackerStore";
 import {Link} from "react-router-dom";
-import ProfileEditorStore from "../stores/ProfileEditorStore";
 
 const Sortable = require('sortablejs');
 
@@ -21,7 +19,6 @@ class EditProfile extends React.Component {
   static propTypes = null && {
     rootStore: PropTypes.instanceOf(RootStore),
     id: PropTypes.string,
-    profileEditorStore: PropTypes.instanceOf(ProfileEditorStore),
   };
 
   constructor(props) {
@@ -45,13 +42,13 @@ class EditProfile extends React.Component {
   }
 
   componentWillUnmount() {
-    if (isAlive(this.profileEditorStore)) {
+    if (this.profileEditorStore) {
       this.profileEditorStore.removeProfilePage(this.props.id);
     }
   }
 
   get profileEditorStore() {
-    return this.props.profileEditorStore;
+    return this.props.rootStore.profileEditor;
   }
 
   get profileStore() {

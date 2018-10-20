@@ -79,10 +79,6 @@ class ProfileEditorPage extends React.Component {
     }
   }
 
-  get profileEditorStore() {
-    return this.props.rootStore.profileEditor;
-  }
-
   componentWillUnmount() {
     this.props.rootStore.destroyProfileEditor();
   }
@@ -90,11 +86,11 @@ class ProfileEditorPage extends React.Component {
   render() {
     if (this.props.id) {
       return (
-        <EditProfile key={this.props.id} id={this.props.id} profileEditorStore={this.profileEditorStore}/>
+        <EditProfile key={this.props.id} id={this.props.id}/>
       );
     } else {
       return (
-        <EditProfiles history={this.props.history} profileEditorStore={this.profileEditorStore}/>
+        <EditProfiles history={this.props.history}/>
       );
     }
   }

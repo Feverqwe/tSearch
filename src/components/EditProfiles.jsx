@@ -5,7 +5,6 @@ import RootStore from "../stores/RootStore";
 import {Link} from "react-router-dom";
 import ProfileStore from "../stores/ProfileStore";
 import getLogger from "../tools/getLogger";
-import ProfileEditorStore from "../stores/ProfileEditorStore";
 
 const uuid = require('uuid/v4');
 const Sortable = require('sortablejs');
@@ -19,7 +18,6 @@ class EditProfiles extends React.Component {
   static propTypes = null && {
     rootStore: PropTypes.instanceOf(RootStore),
     history: PropTypes.object,
-    profileEditorStore: PropTypes.instanceOf(ProfileEditorStore),
   };
 
   constructor(props) {
@@ -29,7 +27,7 @@ class EditProfiles extends React.Component {
   }
 
   get profileEditorStore() {
-    return this.props.profileEditorStore;
+    return this.props.rootStore.profileEditor;
   }
 
   refProfiles = (node) => {
@@ -79,7 +77,7 @@ class EditProfiles extends React.Component {
     const profileEditorStore = this.profileEditorStore;
     const profiles = profileEditorStore.profiles.map((profileStore, index) => {
       return (
-        <ProfileItem key={profileStore.id} index={index} profileEditorStore={this.profileEditorStore} profileStore={profileStore} history={this.props.history}/>
+        <ProfileItem key={profileStore.id} index={index} profileStore={profileStore} history={this.props.history}/>
       );
     });
 
@@ -109,7 +107,6 @@ class ProfileItem extends React.Component {
     index: PropTypes.number,
     profileStore: PropTypes.instanceOf(ProfileStore),
     history: PropTypes.object,
-    profileEditorStore: PropTypes.instanceOf(ProfileEditorStore),
   };
 
   constructor(props) {
@@ -119,7 +116,7 @@ class ProfileItem extends React.Component {
   }
 
   get profileEditorStore() {
-    return this.props.profileEditorStore;
+    return this.props.rootStore.profileEditor;
   }
 
   handleRemove = (e) => {

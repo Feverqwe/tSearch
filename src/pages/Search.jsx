@@ -6,7 +6,6 @@ import ScrollTop from "../components/ScrollTop";
 import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import {inject, observer} from "mobx-react";
-import SearchStore from "../stores/SearchStore";
 import SearchPage from "../components/SearchPage";
 
 
