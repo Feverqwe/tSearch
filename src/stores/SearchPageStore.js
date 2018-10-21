@@ -19,6 +19,7 @@ import sortResults from "../tools/sortResults";
  * @property {function} getVisibleResultCountByTrackerId
  */
 const SearchPageStore = types.model('SearchPageStore', {
+  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   results: types.array(ResultPageItemStore),
   sorts: types.array(types.model({
     by: types.string,
@@ -26,6 +27,9 @@ const SearchPageStore = types.model('SearchPageStore', {
   })),
 }).actions(self => {
   return {
+    setState(value) {
+      self.state = value;
+    },
     sortBy(by) {
       const item = self.getSortBy(by);
       const newItem = {by};

@@ -13,13 +13,12 @@ const qs = require('querystring');
 class Header extends React.Component {
   static propTypes = null && {
     rootStore: PropTypes.instanceOf(RootStore),
-    resetSearch: PropTypes.func,
     searchStore: PropTypes.instanceOf(SearchStore),
   };
 
   handleSubmit = (query) => {
     if (this.props.searchStore && this.props.searchStore.query === query) {
-      this.props.resetSearch();
+      this.props.searchStore.fetchResults();
     } else {
       const location = '/search?' + qs.stringify({
         query: query

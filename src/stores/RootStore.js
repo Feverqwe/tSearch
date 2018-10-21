@@ -19,7 +19,7 @@ import CodeMakerStore from "./CodeMakerStore";
  * @property {FiltersStore} [filters]
  * @property {ProfilesStore} [profiles]
  * @property {TrackersStore} [trackers]
- * @property {SearchStore[]} searches
+ * @property {Map<*,SearchStore>} searches
  * @property {OptionsStore} [options]
  * @property {ExplorerStore} [explorer]
  * @property {ProfileEditorStore|undefined|null} profileEditor
@@ -49,8 +49,7 @@ const RootStore = types.model('RootStore', {
 }).actions(/**RootStore*/self => {
   return {
     createSearch(query) {
-      self.searches.set(query, {query});
-      return query;
+      self.searches.set(query, SearchStore.create({query}));
     },
     destroySearch(query) {
       self.searches.delete(query);

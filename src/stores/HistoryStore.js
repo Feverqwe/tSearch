@@ -104,7 +104,7 @@ const HistoryQueryStore = types.model('HistoryQueryStore', {
  * @property {function} beforeDestroy
  */
 const HistoryStore = types.model('HistoryStore', {
-  state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
+  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   history: types.maybe(types.map(HistoryQueryStore)),
 }).actions(self => {
   return {

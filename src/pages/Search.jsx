@@ -20,11 +20,6 @@ class Search extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      session: Math.random(),
-      searchStore: null
-    };
-
     if (this.props.rootStore.options.state === 'idle') {
       this.props.rootStore.options.fetchOptions();
     }
@@ -41,18 +36,9 @@ class Search extends React.Component {
     this.props.rootStore.searchForm.setQuery(this.props.query);
   }
 
-  resetSearch = () => {
-    this.setState({
-      session: Math.random(),
-      searchStore: null
-    });
-  };
-
-  handleCreateSearchStore = (searchStore) => {
-    this.setState({
-      searchStore: searchStore
-    });
-  };
+  get searchStore() {
+    return this.props.rootStore.searches.get(this.props.query);
+  }
 
   render() {
     let searchSession = null;
@@ -64,16 +50,16 @@ class Search extends React.Component {
       this.props.rootStore.profiles.profile
     ) {
       searchSession = (
-        <SearchSession key={`${this.props.rootStore.profiles.profile.id}_${this.state.session}`} query={this.props.query} onCreateSearchStore={this.handleCreateSearchStore}/>
+        <SearchSession key={`query-${this.props.query}`} query={this.props.query}/>
       )
     }
 
     return (
       <div className="page-ctr">
-        <Header {...this.props} searchStore={this.state.searchStore} resetSearch={this.resetSearch}/>
+        <Header {...this.props} searchStore={this.searchStore}/>
         <div className="content content-row">
           <div className="parameter_box">
-            <Profiles searchStore={this.state.searchStore}/>
+            <Profiles searchStore={this.searchStore}/>
             <Filters/>
           </div>
           <div className="main">
@@ -92,28 +78,25 @@ class SearchSession extends React.Component {
   static propTypes = null && {
     rootStore: PropTypes.instanceOf(RootStore),
     query: PropTypes.string,
-    onCreateSearchStore: PropTypes.func,
   };
 
   componentDidMount() {
-    this.searchStoreId = this.props.rootStore.createSearch(this.props.query);
-    this.props.onCreateSearchStore(this.searchStore);
+    this.props.rootStore.createSearch(this.props.query);
     this.searchStore.fetchResults();
     this.props.rootStore.history.addQuery(this.searchStore.query);
-    this.forceUpdate();
   }
 
   componentWillUnmount() {
-    this.props.rootStore.destroySearch(this.searchStoreId);
+    this.props.rootStore.destroySearch(this.props.query);
   }
 
   get searchStore() {
-    return this.props.rootStore.searches.get(this.searchStoreId);
+    return this.props.rootStore.searches.get(this.props.query);
   }
 
   handleSearchNext = (e) => {
     e.preventDefault();
-    this.searchStore.fetchResults();
+    this.searchStore.fetchNextResults();
   };
 
   render() {
@@ -122,16 +105,25 @@ class SearchSession extends React.Component {
     }
 
     const pages = this.searchStore.resultPages.map((searchPageStore, index) => {
-      return (
-        <SearchPage key={`search-page-${index}`} searchStore={this.searchStore} searchPageStore={searchPageStore}/>
-      );
+      if (searchPageStore.state === 'done') {
+        return (
+          <SearchPage key={`page-${index}`} searchStore={this.searchStore} searchPageStore={searchPageStore}/>
+        );
+      } else {
+        return null;
+      }
     });
 
+    let nextQuery = this.searchStore.getNextQuery();
     let moreBtn = null;
-    if (this.searchStore.hasNextQuery()) {
+    if (nextQuery) {
+      const classList = ['loadMore search__submit footer__loadMore'];
+      if (nextQuery.state === 'pending') {
+        classList.push('loadMore-loading');
+      }
       moreBtn = (
         <div key={'more'} className="footer table__footer">
-          <a className="loadMore search__submit footer__loadMore" href="#search-next" onClick={this.handleSearchNext}>{
+          <a className={classList.join(' ')} href="#search-next" onClick={this.handleSearchNext}>{
             chrome.i18n.getMessage('loadMore')
           }</a>
         </div>

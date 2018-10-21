@@ -97,7 +97,7 @@ const OptionsValueStore = types.model('OptionsValueStore', {
  * @property {function} beforeDestroy
  */
 const OptionsStore = types.model('OptionsStore', {
-  state: types.optional(types.enumeration('State', ['idle', 'pending', 'done', 'error']), 'idle'),
+  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   options: types.maybeNull(OptionsValueStore),
 }).actions(self => {
   return {
