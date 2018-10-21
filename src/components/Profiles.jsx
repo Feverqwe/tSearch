@@ -19,12 +19,13 @@ class Profiles extends React.Component {
 
     this.select = null;
 
-    if (this.props.rootStore.profiles.state === 'idle') {
-      this.props.rootStore.profiles.fetchProfiles();
+    if (this.profilesStore.state === 'idle') {
+      this.profilesStore.fetchProfiles();
     }
-    if (this.props.rootStore.trackers.state === 'idle') {
-      this.props.rootStore.trackers.fetchTrackers();
-    }
+  }
+
+  get profilesStore() {
+    return this.props.rootStore.profiles;
   }
 
   handleSelect = () => {
@@ -38,40 +39,53 @@ class Profiles extends React.Component {
     this.select = element;
   };
 
+  handleEditClick = (e) =>{
+    if (this.profilesStore.state !== 'done') {
+      e.preventDefault();
+    }
+  };
+
   render() {
-    const rootStore = this.props.rootStore;
-    const profilesStore = rootStore.profiles;
-    const trackersStore = rootStore.trackers;
+    const profilesStore = this.profilesStore;
 
-    if (profilesStore.state !== 'done') {
-      return (`Loading profiles: ${profilesStore.state}`);
-    }
-    if (trackersStore.state !== 'done') {
-      return (`Loading trackers: ${trackersStore.state}`);
-    }
-
-    const options = [];
-
-    const profileStore = profilesStore.profile;
-    profilesStore.profiles.forEach(profile => {
-      options.push(
-        <option key={profile.id} value={profile.id}>{profile.name}</option>
+    let profileStore = null;
+    let selectValue = null;
+    const selectOptions = [];
+    if (profilesStore.state === 'done') {
+      profileStore = profilesStore.profile;
+      selectValue = profileStore.id;
+      profilesStore.profiles.forEach(profile => {
+        selectOptions.push(
+          <option key={profile.id} value={profile.id}>{profile.name}</option>
+        );
+      });
+    } else {
+      selectValue = 'loading';
+      selectOptions.push(
+        <option key={'loading'} value="loading" disabled>Loading...</option>
       );
-    });
+    }
+
+    let profile = null;
+    if (profileStore) {
+      profile = (
+        <Profile key={profileStore.id} profileStore={profileStore} searchStore={this.props.searchStore}/>
+      );
+    }
 
     return (
       <div className="parameter_box__left">
         <div className="parameter parameter-profile">
           <div className="profile_box">
-            <select ref={this.refSelect} className="profile__select" value={profileStore.id} onChange={this.handleSelect}>
-              {options}
+            <select ref={this.refSelect} className="profile__select" value={selectValue} onChange={this.handleSelect}>
+              {selectOptions}
             </select>
-            <Link to="/profileEditor" title={chrome.i18n.getMessage('manageProfiles')}
+            <Link onClick={this.handleEditClick} to="/profileEditor" title={chrome.i18n.getMessage('manageProfiles')}
                   className="button-manage-profile"/>
           </div>
         </div>
         <div className="parameter parameter-tracker">
-          <Profile key={profileStore.id} profileStore={profileStore} searchStore={this.props.searchStore}/>
+          {profile}
         </div>
       </div>
     );

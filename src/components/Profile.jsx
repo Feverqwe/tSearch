@@ -17,14 +17,36 @@ class Profile extends React.Component {
     searchStore: PropTypes.instanceOf(SearchStore),
   };
 
+  constructor(props) {
+    super(props);
+
+    if (this.trackersStore.state === 'idle') {
+      this.trackersStore.fetchTrackers();
+    }
+  }
+
+  get trackersStore() {
+    return this.props.rootStore.trackers;
+  }
+
+  get profileStore() {
+    return this.props.profileStore;
+  }
+
+  get searchStore() {
+    return this.props.searchStore;
+  }
+
   render() {
-    const profileStore = this.props.profileStore;
+    if (this.trackersStore.state !== 'done') {
+      return (`Loading trackers: ${this.trackersStore.state}`);
+    }
 
     const trackers = [];
-    profileStore.trackers.forEach(profileTracker => {
+    this.profileStore.trackers.forEach(profileTracker => {
       let trackerSearchSession = null;
-      if (this.props.searchStore) {
-        trackerSearchSession = this.props.searchStore.trackerSessions.get(profileTracker.id);
+      if (this.searchStore) {
+        trackerSearchSession = this.searchStore.trackerSessions.get(profileTracker.id);
       }
       trackers.push(
         <ProfileTracker key={profileTracker.id} id={profileTracker.id} profileTrackerStore={profileTracker} trackerSearchSession={trackerSearchSession}/>
