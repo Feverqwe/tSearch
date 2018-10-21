@@ -105,7 +105,7 @@ class SearchSession extends React.Component {
     }
 
     const pages = this.searchStore.resultPages.map((searchPageStore, index) => {
-      if (searchPageStore.state === 'done') {
+      if (searchPageStore.results.length) {
         return (
           <SearchPage key={`page-${index}`} searchStore={this.searchStore} searchPageStore={searchPageStore}/>
         );
