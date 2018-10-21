@@ -18,9 +18,7 @@ class Profiles extends React.Component {
     super(props);
 
     this.select = null;
-  }
 
-  componentDidMount() {
     if (this.props.rootStore.profiles.state === 'idle') {
       this.props.rootStore.profiles.fetchProfiles();
     }
@@ -43,50 +41,40 @@ class Profiles extends React.Component {
   render() {
     const rootStore = this.props.rootStore;
     const profilesStore = rootStore.profiles;
+    const trackersStore = rootStore.trackers;
 
-    let state = profilesStore.state;
-    if (state === 'done') {
-      state = rootStore.trackers.state;
+    if (profilesStore.state !== 'done') {
+      return (`Loading profiles: ${profilesStore.state}`);
+    }
+    if (trackersStore.state !== 'done') {
+      return (`Loading trackers: ${trackersStore.state}`);
     }
 
-    switch (state) {
-      case 'pending': {
-        return ('Loading...');
-      }
-      case 'error': {
-        return ('Error');
-      }
-      case 'done': {
-        const options = [];
+    const options = [];
 
-        const profileStore = profilesStore.profile;
-        profilesStore.profiles.forEach(profile => {
-          options.push(
-            <option key={profile.id} value={profile.id}>{profile.name}</option>
-          );
-        });
+    const profileStore = profilesStore.profile;
+    profilesStore.profiles.forEach(profile => {
+      options.push(
+        <option key={profile.id} value={profile.id}>{profile.name}</option>
+      );
+    });
 
-        return (
-          <div className="parameter_box__left">
-            <div className="parameter parameter-profile">
-              <div className="profile_box">
-                <select ref={this.refSelect} className="profile__select" value={profileStore.id} onChange={this.handleSelect}>
-                  {options}
-                </select>
-                <Link to="/profileEditor" title={chrome.i18n.getMessage('manageProfiles')}
-                   className="button-manage-profile"/>
-              </div>
-            </div>
-            <div className="parameter parameter-tracker">
-              <Profile key={profileStore.id} profileStore={profileStore} searchStore={this.props.searchStore}/>
-            </div>
+    return (
+      <div className="parameter_box__left">
+        <div className="parameter parameter-profile">
+          <div className="profile_box">
+            <select ref={this.refSelect} className="profile__select" value={profileStore.id} onChange={this.handleSelect}>
+              {options}
+            </select>
+            <Link to="/profileEditor" title={chrome.i18n.getMessage('manageProfiles')}
+                  className="button-manage-profile"/>
           </div>
-        );
-      }
-      default: {
-        return ('Idle');
-      }
-    }
+        </div>
+        <div className="parameter parameter-tracker">
+          <Profile key={profileStore.id} profileStore={profileStore} searchStore={this.props.searchStore}/>
+        </div>
+      </div>
+    );
   }
 }
 
